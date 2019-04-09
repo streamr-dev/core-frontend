@@ -11,6 +11,7 @@
 .CanvasToolbar > * {
   display: flex;
   align-items: center;
+  flex-wrap: nowrap;
 }
 
 .ToolbarLeft {
@@ -24,12 +25,19 @@
 .StateSelectorContainer {
   flex: 1;
   display: flex;
-  justify-content: space-around;
 }
 
 .StateSelector {
   display: flex;
   flex: 1;
+  justify-content: center;
+}
+
+.OpenAddButtons {
+  position: relative;
+  display: flex;
+  flex-wrap: nowrap;
+  margin: 0 16px;
 }
 
 .ToolbarButton {
@@ -214,17 +222,14 @@
 }
 
 .CanvasToolbar .runTabToggle {
-  margin: 0 8px;
+  margin: 0 16px;
   white-space: nowrap;
   position: relative;
   display: flex;
-  flex: 1;
-  justify-content: flex-end;
 }
 
 .CanvasToolbar .runTabValueToggle {
   display: flex;
-  flex: 1;
   justify-content: flex-start;
   position: relative;
 }
@@ -270,18 +275,17 @@
 .CanvasToolbar .saveStateToggleSection {
   background: #FFFFFF;
   border-radius: 4px;
-  margin: 0 8px;
   white-space: nowrap;
-  color: #CDCDCD;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   padding: 0 16px;
+  min-width: 176px;
+  color: #CDCDCD;
 }
 
 .CanvasToolbar .saveStateToggleSection .saveStateToggleLabel {
-  margin-right: 20px;
-  color: #CDCDCD;
+  margin-right: 16px;
   font-weight: 500;
   text-align: left;
   letter-spacing: 0;
@@ -319,6 +323,10 @@
 
 .CalendarRoot {
   position: relative;
+}
+
+.CalendarRoot .StateSelectorActive {
+  padding: 0 8px; /* half padding once calendar item set */
 }
 
 .CalendarWrapper {

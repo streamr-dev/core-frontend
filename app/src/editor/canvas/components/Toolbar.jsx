@@ -125,28 +125,26 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                     )}
                                 </UseState>
                             </div>
-                            <div className={styles.ToolbarLeft}>
-                                <div style={{ position: 'relative' }}>
+                            <div className={cx(styles.ToolbarLeft, styles.OpenAddButtons)}>
+                                <R.Button
+                                    className={cx(styles.ToolbarButton, styles.OpenCanvasButton)}
+                                    onClick={() => this.canvasSearchOpen(!this.state.canvasSearchIsOpen)}
+                                >
+                                    Open
+                                </R.Button>
+                                <CanvasSearch
+                                    isOpen={canvasSearchIsOpen}
+                                    open={this.canvasSearchOpen}
+                                />
+                                <Tooltip value="Add module">
                                     <R.Button
-                                        className={cx(styles.ToolbarButton, styles.OpenCanvasButton)}
-                                        onClick={() => this.canvasSearchOpen(!this.state.canvasSearchIsOpen)}
+                                        className={styles.ToolbarButton}
+                                        onClick={() => this.props.moduleSearchOpen(!this.props.moduleSearchIsOpen)}
+                                        disabled={!canEdit}
                                     >
-                                        Open
+                                        <SvgIcon name="plus" className={styles.icon} />
                                     </R.Button>
-                                    <CanvasSearch
-                                        isOpen={canvasSearchIsOpen}
-                                        open={this.canvasSearchOpen}
-                                    />
-                                    <Tooltip value="Add module">
-                                        <R.Button
-                                            className={styles.ToolbarButton}
-                                            onClick={() => this.props.moduleSearchOpen(!this.props.moduleSearchIsOpen)}
-                                            disabled={!canEdit}
-                                        >
-                                            <SvgIcon name="plus" className={styles.icon} />
-                                        </R.Button>
-                                    </Tooltip>
-                                </div>
+                                </Tooltip>
                             </div>
                             <div>
                                 <R.ButtonGroup
