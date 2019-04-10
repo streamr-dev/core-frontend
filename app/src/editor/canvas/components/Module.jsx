@@ -4,6 +4,7 @@ import cx from 'classnames'
 import React from 'react'
 import { Translate } from 'react-redux-i18n'
 
+import HamburgerButton from '../../shared/components/HamburgerButton'
 import ModuleHeader from '../../shared/components/ModuleHeader'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import ModuleUI from '$editor/shared/components/ModuleUI'
@@ -78,6 +79,10 @@ class CanvasModule extends React.PureComponent {
         })
     }
 
+    onHamburgerButtonFocus = (e) => {
+        e.stopPropagation()
+    }
+
     render() {
         const {
             api,
@@ -122,9 +127,14 @@ class CanvasModule extends React.PureComponent {
                     className={styles.header}
                     disabledLabel={!!isRunning}
                     label={module.displayName || module.name}
-                    onHamburgerClick={this.onTriggerOptions}
                     onLabelChange={this.onChangeModuleName}
-                />
+                >
+                    <HamburgerButton
+                        className={ModuleHeader.styles.dragCancel}
+                        onClick={this.onTriggerOptions}
+                        onFocus={this.onHamburgerButtonFocus}
+                    />
+                </ModuleHeader>
                 <Ports
                     className={styles.ports}
                     api={api}

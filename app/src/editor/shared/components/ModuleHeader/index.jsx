@@ -1,26 +1,25 @@
 // @flow
 
-import React, { useState } from 'react'
+import React, { useState, type Node } from 'react'
 import cx from 'classnames'
 import EditableText from '$shared/components/EditableText'
-import HamburgerButton from './HamburgerButton'
 import styles from './moduleHeader.pcss'
 
 type Props = {
+    children?: Node,
     className?: string,
     disabledLabel?: boolean,
     label: string,
     limitWidth?: boolean,
-    onHamburgerClick?: ?(SyntheticMouseEvent<EventTarget>) => void,
     onLabelChange: (string) => void,
 }
 
 const ModuleHeader = ({
+    children,
     className,
     disabledLabel,
     label,
     limitWidth,
-    onHamburgerClick,
     onLabelChange,
     ...props
 }: Props) => {
@@ -55,17 +54,13 @@ const ModuleHeader = ({
                     </EditableText>
                 </div>
             </div>
-            {onHamburgerClick && (
-                <HamburgerButton
-                    className={cx(styles.menuToggle, styles.dragCancel)}
-                    onClick={onHamburgerClick}
-                />
-            )}
+            {children}
         </div>
     )
 }
 
 ModuleHeader.defaultProps = {
+    children: null,
     disabledLabel: false,
     onHamburgerClick: null,
 }

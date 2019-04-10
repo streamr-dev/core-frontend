@@ -19,7 +19,6 @@ stories.add('default', () => (
             <ModuleHeader
                 label={label}
                 onLabelChange={setLabel}
-                onHamburgerClick={() => {}}
             />
         )}
     </UseState>
