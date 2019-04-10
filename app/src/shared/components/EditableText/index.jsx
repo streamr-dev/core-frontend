@@ -8,7 +8,7 @@ import styles from './editableText.pcss'
 
 type Props = {
     children?: string,
-    className?: string,
+    className?: ?string,
     disabled?: boolean,
     editing?: boolean,
     onChange?: (string) => void,
@@ -20,7 +20,6 @@ const EditableText = ({
     className,
     disabled,
     editing,
-    editing: editingProp,
     onChange: onChangeProp,
     setEditing,
     ...props
@@ -77,8 +76,8 @@ const EditableText = ({
 }
 
 EditableText.defaultProps = {
-    className: '',
     children: '',
+    className: null,
     onChange: () => {},
 }
 
