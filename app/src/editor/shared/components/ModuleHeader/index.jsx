@@ -8,7 +8,7 @@ import styles from './moduleHeader.pcss'
 type Props = {
     children?: Node,
     className?: string,
-    disabledLabel?: boolean,
+    editable?: boolean,
     label: string,
     limitWidth?: boolean,
     onLabelChange: (string) => void,
@@ -17,7 +17,7 @@ type Props = {
 const ModuleHeader = ({
     children,
     className,
-    disabledLabel,
+    editable,
     label,
     limitWidth,
     onLabelChange,
@@ -46,7 +46,7 @@ const ModuleHeader = ({
                         className={cx({
                             [styles.limitedWidth]: !!limitWidth,
                         })}
-                        disabled={!!disabledLabel}
+                        disabled={!editable}
                         editing={editing}
                         onChange={onLabelChange}
                         setEditing={setEditing}
@@ -62,7 +62,7 @@ const ModuleHeader = ({
 
 ModuleHeader.defaultProps = {
     children: null,
-    disabledLabel: false,
+    editable: true,
     onHamburgerClick: null,
 }
 

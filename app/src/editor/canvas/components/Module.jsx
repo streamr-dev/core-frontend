@@ -125,7 +125,7 @@ class CanvasModule extends React.PureComponent {
             >
                 <ModuleHeader
                     className={styles.header}
-                    disabledLabel={!!isRunning}
+                    editable={!isRunning}
                     label={module.displayName || module.name}
                     onLabelChange={this.onChangeModuleName}
                 >

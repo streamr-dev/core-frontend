@@ -103,7 +103,7 @@ class DashboardItem extends React.Component {
             >
                 <ModuleHeader
                     className={styles.header}
-                    disabledLabel={disabled}
+                    editable={!disabled}
                     label={item.title}
                     limitWidth
                     onLabelChange={this.renameItem}
