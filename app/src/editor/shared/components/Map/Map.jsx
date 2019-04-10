@@ -67,8 +67,9 @@ export default class Map extends React.Component<Props> {
         } = this.props
         const mapCenter = [centerLat, centerLong]
 
-        let tileAttribution = '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors, Streamr'
-        let tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+        /* eslint-disable-next-line max-len */
+        let tileAttribution = '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://cartodb.com/attributions">CartoDB</a>, Streamr'
+        let tileUrl = 'http://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png'
 
         if (skin === 'cartoDark') {
             /* eslint-disable-next-line max-len */
