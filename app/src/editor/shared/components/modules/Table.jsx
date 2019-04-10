@@ -111,7 +111,7 @@ export default class TableModule extends React.Component {
     }
 
     initIfActive = (isActive) => {
-        if (isActive && !this.props.canvas.adhoc) {
+        if (isActive && this.props.canvas && !this.props.canvas.adhoc) {
             this.init()
         }
     }
