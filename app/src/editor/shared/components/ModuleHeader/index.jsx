@@ -63,7 +63,6 @@ const ModuleHeader = ({
 ModuleHeader.defaultProps = {
     children: null,
     editable: true,
-    onHamburgerClick: null,
 }
 
 ModuleHeader.styles = styles
