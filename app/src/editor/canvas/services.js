@@ -164,7 +164,7 @@ export async function getStreams(params) {
 }
 
 export async function getStream(id) {
-    return API.get(`${streamsUrl}/${id}`).then(getData)
+    return api().get(`${streamsUrl}/${id}`).then(getData)
 }
 
 export async function deleteAllCanvases() {
