@@ -106,9 +106,16 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                                 {canvas.name}
                                             </EditableText>
                                             <DropdownActions
-                                                title={<Meatball alt="Select" />}
+                                                title={
+                                                    <R.Button className={cx(styles.MeatballContainer, styles.ToolbarButton)}>
+                                                        <Meatball alt="Select" />
+                                                    </R.Button>
+                                                }
                                                 noCaret
                                                 className={styles.DropdownMenu}
+                                                menuProps={{
+                                                    className: styles.DropdownMenuMenu,
+                                                }}
                                             >
                                                 <DropdownActions.Item onClick={newCanvas}>New Canvas</DropdownActions.Item>
                                                 <DropdownActions.Item onClick={() => shareDialog.open()}>Share</DropdownActions.Item>

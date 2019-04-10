@@ -97,18 +97,28 @@
   }
 }
 
-.DropdownMenu {
+.CanvasNameContainer .DropdownMenu {
   margin-left: 8px;
-}
-
-.CanvasNameContainer .DropdownMenu svg {
-  margin-bottom: -3px; /* counter default margin of meatball */
 }
 
 .CanvasNameContainer {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+.CanvasNameContainer .DropdownMenu .DropdownMenuMenu {
+  margin-bottom: 10px;
+  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.05);
+}
+
+.CanvasNameContainer .DropdownMenu svg {
+  margin-bottom: -3px; /* counter default margin of meatball */
+}
+
+.CanvasNameContainer .MeatballContainer {
+  padding-left: 8px;
+  padding-right: 8px;
 }
 
 .RunDropdownButton {
@@ -168,7 +178,7 @@
   font-size: 12px;
   padding: 8px;
   min-width: 152px !important;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.05);
   border: none;
 
