@@ -3,7 +3,7 @@ import * as R from 'reactstrap'
 import cx from 'classnames'
 
 import EditableText from '$shared/components/EditableText'
-import Prop from '$shared/components/Prop'
+import UseState from '$shared/components/UseState'
 import Meatball from '$shared/components/Meatball'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import ErrorComponentView from '$shared/components/ErrorComponentView'
@@ -37,7 +37,7 @@ export default withErrorBoundary(ErrorComponentView)(class DashboardToolbar exte
 
         return (
             <div className={cx(className, styles.CanvasToolbar)}>
-                <Prop initialValue={false}>
+                <UseState initialValue={false}>
                     {(editing, setEditing) => (
                         <R.ButtonGroup className={cx(styles.Hollow, styles.CanvasNameContainer)}>
                             <EditableText
@@ -62,7 +62,7 @@ export default withErrorBoundary(ErrorComponentView)(class DashboardToolbar exte
                             </R.UncontrolledDropdown>
                         </R.ButtonGroup>
                     )}
-                </Prop>
+                </UseState>
                 <ModalContainer modalId="DashboardModuleSearch">
                     {({ api }) => (
                         <R.Button onClick={() => api.open()}>

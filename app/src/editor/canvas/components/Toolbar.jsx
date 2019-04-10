@@ -15,7 +15,7 @@ import Tooltip from '$shared/components/Tooltip'
 import WithCalendar from '$shared/components/WithCalendar'
 import dateFormatter from '$utils/dateFormatter'
 import EditableText from '$shared/components/EditableText'
-import Prop from '$shared/components/Prop'
+import UseState from '$shared/components/UseState'
 import { RunTabs, RunStates } from '../state'
 import Toolbar from '$editor/shared/components/Toolbar'
 
@@ -91,7 +91,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                     {({ api: shareDialog }) => (
                         <React.Fragment>
                             <div className={styles.ToolbarLeft}>
-                                <Prop initialValue={false}>
+                                <UseState initialValue={false}>
                                     {(editing, setEditing) => (
                                         <div className={styles.CanvasNameContainer}>
                                             <StatusIcon status={isRunning && StatusIcon.OK} className={styles.status} />
@@ -123,7 +123,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                             </DropdownActions>
                                         </div>
                                     )}
-                                </Prop>
+                                </UseState>
                             </div>
                             <div className={styles.ToolbarLeft}>
                                 <div style={{ position: 'relative' }}>

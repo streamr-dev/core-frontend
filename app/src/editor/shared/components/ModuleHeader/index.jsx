@@ -4,7 +4,7 @@
 
 import React from 'react'
 import cx from 'classnames'
-import Prop from '$shared/components/Prop'
+import UseState from '$shared/components/UseState'
 import EditableText from '$shared/components/EditableText'
 import HamburgerButton from './HamburgerButton'
 import styles from './moduleHeader.pcss'
@@ -32,7 +32,7 @@ const ModuleHeader = ({
         {...props}
     >
         <div className={styles.expandToggle} />
-        <Prop initialValue={false}>
+        <UseState initialValue={false}>
             {(editing, setEditing) => (
                 <div
                     className={cx(styles.name, {
@@ -58,7 +58,7 @@ const ModuleHeader = ({
                     </div>
                 </div>
             )}
-        </Prop>
+        </UseState>
         {onHamburgerClick && (
             <HamburgerButton
                 className={cx(styles.menuToggle, styles.dragCancel)}

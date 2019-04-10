@@ -3,7 +3,7 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
 import styles from '@sambego/storybook-styles'
-import Prop from '$shared/components/Prop'
+import UseState from '$shared/components/UseState'
 import ModuleHeader from '.'
 
 const stories =
@@ -14,7 +14,7 @@ const stories =
         }))
 
 stories.add('default', () => (
-    <Prop initialValue="Module's name">
+    <UseState initialValue="Module's name">
         {(label, setLabel) => (
             <ModuleHeader
                 label={label}
@@ -22,5 +22,5 @@ stories.add('default', () => (
                 onHamburgerClick={() => {}}
             />
         )}
-    </Prop>
+    </UseState>
 ))

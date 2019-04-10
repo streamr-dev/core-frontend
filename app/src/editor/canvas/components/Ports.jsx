@@ -3,7 +3,7 @@ import React from 'react'
 import cx from 'classnames'
 import startCase from 'lodash/startCase'
 
-import Prop from '$shared/components/Prop'
+import UseState from '$shared/components/UseState'
 import EditableText from '$shared/components/EditableText'
 import ColorPicker from '$editor/shared/components/ColorPicker'
 import ContextMenu from '$shared/components/ContextMenu'
@@ -230,7 +230,7 @@ class Port extends React.PureComponent {
                 key={`${port.id}.name`}
                 role="gridcell"
             >
-                <Prop initialValue={false}>
+                <UseState initialValue={false}>
                     {(editing, setEditing) => (
                         <EditableText
                             className={styles.portName}
@@ -242,7 +242,7 @@ class Port extends React.PureComponent {
                             {port.displayName || startCase(port.name)}
                         </EditableText>
                     )}
-                </Prop>
+                </UseState>
             </div>,
             <PortIcon key={`${port.id}.icon`} {...this.props} />,
         ]
