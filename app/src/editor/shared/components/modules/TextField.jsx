@@ -6,7 +6,7 @@ import throttle from 'lodash/throttle'
 
 import ModuleSubscription from '../ModuleSubscription'
 
-import TextInput from '../TextInput'
+import TextControl from '$shared/components/TextControl'
 import styles from './TextField.pcss'
 
 export default class TextFieldModule extends React.Component {
@@ -68,21 +68,14 @@ export default class TextFieldModule extends React.Component {
                     onMessage={this.onMessage}
                     onActiveChange={this.onActiveChange}
                 />
-                <TextInput
-                    value={value}
+                <TextControl
+                    commitEmpty
+                    flushHistoryOnBlur
+                    onCommit={this.onChange}
                     placeholder="Enter your text here"
-                    onChange={this.onChange}
-                    selectOnFocus={false}
-                    blurOnEnterKey={false}
-                >
-                    {({ innerRef, ...props }, { hasFocus }) => (
-                        <textarea
-                            key={hasFocus}
-                            ref={innerRef}
-                            {...props}
-                        />
-                    )}
-                </TextInput>
+                    tag="textarea"
+                    value={value}
+                />
                 <button type="button" className={styles.button} onClick={this.onClick} disabled={!isActive}>
                     Send
                 </button>
