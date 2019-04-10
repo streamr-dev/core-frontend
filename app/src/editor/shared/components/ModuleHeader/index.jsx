@@ -1,10 +1,7 @@
 // @flow
 
-/* eslint-disable */
-
-import React from 'react'
+import React, { useState } from 'react'
 import cx from 'classnames'
-import UseState from '$shared/components/UseState'
 import EditableText from '$shared/components/EditableText'
 import HamburgerButton from './HamburgerButton'
 import styles from './moduleHeader.pcss'
@@ -26,47 +23,47 @@ const ModuleHeader = ({
     onHamburgerClick,
     onLabelChange,
     ...props
-}: Props) => (
-    <div
-        className={cx(styles.root, styles.dragHandle, className)}
-        {...props}
-    >
-        <div className={styles.expandToggle} />
-        <UseState initialValue={false}>
-            {(editing, setEditing) => (
+}: Props) => {
+    const [editing, setEditing] = useState(false)
+
+    return (
+        <div
+            className={cx(styles.root, styles.dragHandle, className)}
+            {...props}
+        >
+            <div className={styles.expandToggle} />
+            <div
+                className={cx(styles.name, {
+                    [styles.limitedWidth]: !!(limitWidth && editing),
+                })}
+            >
                 <div
-                    className={cx(styles.name, {
-                        [styles.limitedWidth]: !!(limitWidth && editing),
+                    className={cx({
+                        [styles.idle]: !editing,
                     })}
                 >
-                    <div
+                    <EditableText
                         className={cx({
-                            [styles.idle]: !editing,
+                            [styles.limitedWidth]: !!limitWidth,
                         })}
+                        disabled={!!disabledLabel}
+                        editing={editing}
+                        onChange={onLabelChange}
+                        setEditing={setEditing}
                     >
-                        <EditableText
-                            className={cx({
-                                [styles.limitedWidth]: !!limitWidth,
-                            })}
-                            disabled={!!disabledLabel}
-                            editing={editing}
-                            onChange={onLabelChange}
-                            setEditing={setEditing}
-                        >
-                            {label}
-                        </EditableText>
-                    </div>
+                        {label}
+                    </EditableText>
                 </div>
+            </div>
+            {onHamburgerClick && (
+                <HamburgerButton
+                    className={cx(styles.menuToggle, styles.dragCancel)}
+                    onClick={onHamburgerClick}
+                />
             )}
-        </UseState>
-        {onHamburgerClick && (
-            <HamburgerButton
-                className={cx(styles.menuToggle, styles.dragCancel)}
-                onClick={onHamburgerClick}
-            />
-        )}
-    </div>
-)
+        </div>
+    )
+}
 
 ModuleHeader.defaultProps = {
     disabledLabel: false,
