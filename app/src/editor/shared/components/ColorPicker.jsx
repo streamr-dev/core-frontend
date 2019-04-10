@@ -43,23 +43,51 @@ export default class ColorPicker extends React.Component<Props, State> {
         isOpen: false,
     }
 
+    componentDidMount() {
+        window.addEventListener('keydown', this.onKeyDown)
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('keydown', this.onKeyDown)
+    }
+
+    onKeyDown = (event: KeyboardEvent) => {
+        if (this.state.isOpen && event.key === 'Escape') {
+            this.close()
+        }
+    }
+
     onChange = (color: Object) => {
         const rgba = convertObjectToRgba(color.rgb)
         this.props.onChange(rgba)
     }
 
     onFocus = (e: SyntheticInputEvent<EventTarget>) => {
-        this.setState({
-            isOpen: true,
-        })
-        this.props.onFocus(e)
+        const { onFocus } = this.props
+        this.open()
+        if (onFocus) {
+            onFocus(e)
+        }
     }
 
     onBlur = (e: SyntheticInputEvent<EventTarget>) => {
+        const { onBlur } = this.props
+        this.close()
+        if (onBlur) {
+            onBlur(e)
+        }
+    }
+
+    open = () => {
+        this.setState({
+            isOpen: true,
+        })
+    }
+
+    close = () => {
         this.setState({
             isOpen: false,
         })
-        this.props.onBlur(e)
     }
 
     render() {
@@ -81,6 +109,7 @@ export default class ColorPicker extends React.Component<Props, State> {
                         <SketchPicker
                             color={color}
                             presetColors={[]}
+                            width={220}
                             onChange={this.onChange}
                         />
                     </div>
