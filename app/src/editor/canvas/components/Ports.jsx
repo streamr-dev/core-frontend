@@ -4,6 +4,7 @@ import cx from 'classnames'
 import startCase from 'lodash/startCase'
 
 import RenameInput from '$editor/shared/components/RenameInput'
+import ColorPicker from '$editor/shared/components/ColorPicker'
 import ContextMenu from '$shared/components/ContextMenu'
 
 import {
@@ -581,6 +582,20 @@ class PortValue extends React.Component {
                         ...props,
                     }}
                     disabled={disabled}
+                    onChange={this.onChange}
+                    onBlur={this.onBlur}
+                    onFocus={this.onFocus}
+                />
+            )
+        }
+
+        if (port.type === 'Color') {
+            return (
+                <ColorPicker
+                    {...props}
+                    value={value}
+                    disabled={disabled}
+                    style={style}
                     onChange={this.onChange}
                     onBlur={this.onBlur}
                     onFocus={this.onFocus}
