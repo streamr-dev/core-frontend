@@ -11,6 +11,7 @@ type Props = {
     className?: ?string,
     disabled?: boolean,
     editing?: boolean,
+    editOnFocus?: boolean,
     onChange?: (string) => void,
     setEditing: (boolean) => void,
 }
@@ -20,20 +21,26 @@ const EditableText = ({
     className,
     disabled,
     editing,
+    editOnFocus,
     onChange: onChangeProp,
     setEditing,
     ...props
 }: Props) => {
     const children: string = childrenProp || EditableText.defaultProps.children
     const [value, setValue] = useState(children)
-    const onDoubleClick = useCallback(() => {
+    const [hasFocus, setHasFocus] = useState(false)
+    const startEditing = useCallback(() => {
         if (!disabled) {
             setValue(children)
             setEditing(true)
         }
-    }, [children])
+    }, [disabled, children])
     const onBlur = useCallback(() => {
+        setHasFocus(false)
         setEditing(false)
+    })
+    const onFocus = useCallback(() => {
+        setHasFocus(true)
     })
     const onChange = useCallback((e: SyntheticInputEvent<EventTarget>) => {
         setValue(e.target.value)
@@ -49,7 +56,13 @@ const EditableText = ({
                 className={cx(styles.inner, {
                     [ModuleHeader.styles.dragCancel]: !!editing,
                 })}
-                onDoubleClick={onDoubleClick}
+                onDoubleClick={startEditing}
+                {...(editOnFocus ? {
+                    onFocus: startEditing,
+                    // In order to allow shift-tabbing through interactive elements
+                    // we can't let the span be focusable when the input is.
+                    tabIndex: (hasFocus ? -1 : 0),
+                } : {})}
             >
                 {editing && !disabled ? (
                     <Fragment>
@@ -61,6 +74,7 @@ const EditableText = ({
                             onBlur={onBlur}
                             onChange={onChange}
                             onCommit={onChangeProp}
+                            onFocus={onFocus}
                             revertOnEsc
                             selectAllOnFocus
                             value={children}
@@ -78,6 +92,7 @@ const EditableText = ({
 EditableText.defaultProps = {
     children: '',
     className: null,
+    editOnFocus: false,
     onChange: () => {},
 }
 
