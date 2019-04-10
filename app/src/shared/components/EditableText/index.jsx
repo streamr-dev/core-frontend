@@ -9,6 +9,7 @@ import styles from './editableText.pcss'
 type Props = {
     children?: string,
     className?: string,
+    disabled?: boolean,
     editing?: boolean,
     onChange?: (string) => void,
     setEditing: (boolean) => void,
@@ -17,6 +18,7 @@ type Props = {
 const EditableText = ({
     children: childrenProp,
     className,
+    disabled,
     editing,
     editing: editingProp,
     onChange: onChangeProp,
@@ -26,8 +28,10 @@ const EditableText = ({
     const children: string = childrenProp || EditableText.defaultProps.children
     const [value, setValue] = useState(children)
     const onDoubleClick = useCallback(() => {
-        setValue(children)
-        setEditing(true)
+        if (!disabled) {
+            setValue(children)
+            setEditing(true)
+        }
     }, [children])
     const onBlur = useCallback(() => {
         setEditing(false)
@@ -48,7 +52,7 @@ const EditableText = ({
                 })}
                 onDoubleClick={onDoubleClick}
             >
-                {editing ? (
+                {editing && !disabled ? (
                     <Fragment>
                         <TextControl
                             {...props}
