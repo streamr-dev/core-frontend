@@ -30,6 +30,7 @@ const ModuleHeader = ({
             className={cx(styles.root, styles.dragHandle, className)}
             {...props}
         >
+            {/* TODO: Replace the following line with the actual toggle. This here is just a placeholder. */}
             <div className={styles.expandToggle} />
             <div
                 className={cx(styles.name, {

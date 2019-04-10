@@ -56,6 +56,8 @@ const TextControl = ({
 
     const onBlur = useCallback((e: SyntheticInputEvent<EventTarget>) => {
         if (flushHistoryOnBlur) {
+            // `blurCount` is used as `key` of the actual control. Changing it replaces the control
+            // with a new instance thus the old instance along with its change history gets forgotten.
             setBlurCount(blurCount + 1)
         }
 
