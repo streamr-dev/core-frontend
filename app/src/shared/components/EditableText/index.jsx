@@ -7,7 +7,7 @@ import TextControl from '../TextControl'
 import styles from './editableText.pcss'
 
 type Props = {
-    children?: string,
+    children?: string | number,
     className?: ?string,
     disabled?: boolean,
     editing?: boolean,
@@ -26,7 +26,7 @@ const EditableText = ({
     setEditing,
     ...props
 }: Props) => {
-    const children: string = childrenProp || EditableText.defaultProps.children
+    const children = childrenProp == null ? EditableText.defaultProps.children : childrenProp
     const [value, setValue] = useState(children)
     const [hasFocus, setHasFocus] = useState(false)
     const startEditing = useCallback(() => {

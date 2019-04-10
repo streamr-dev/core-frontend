@@ -18,7 +18,7 @@ type Props = {
     revertOnEsc?: boolean,
     selectAllOnFocus?: boolean,
     tag?: 'input' | 'textarea',
-    value?: string,
+    value?: string | number,
 }
 
 const normalize = (value: any): string => (
@@ -45,7 +45,7 @@ const TextControl = ({
     const el = useRef(null)
     const ref = innerRef || el
     const reverted: Ref<boolean> = useRef(false)
-    const [value, setValue] = useState(valueProp || '')
+    const [value, setValue] = useState(valueProp == null ? '' : valueProp)
     const [blurCount, setBlurCount] = useState(0)
     const normalizedValue = normalize(value)
     const commit = useCallback(() => {
