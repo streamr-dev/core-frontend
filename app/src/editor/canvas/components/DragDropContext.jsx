@@ -161,7 +161,10 @@ class EditorDraggable extends React.PureComponent {
         }
 
         if (this.props.onStop) {
-            this.props.onStop(event, data, this.reset)
+            this.props.onStop(event, {
+                diff: this.getDiff(data),
+                ...data,
+            }, this.reset)
         }
 
         this.setState({
