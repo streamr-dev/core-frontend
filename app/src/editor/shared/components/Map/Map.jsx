@@ -89,7 +89,7 @@ export default class Map extends React.Component<Props> {
                     className={styles.leafletMap}
                     minZoom={minZoom}
                     maxZoom={maxZoom}
-                    crs={isImageMap ? L.CRS.Simple : null}
+                    crs={isImageMap ? L.CRS.Simple : L.CRS.EPSG3857}
                 >
                     {!isImageMap && (
                         <TileLayer
