@@ -649,16 +649,24 @@ class PortValue extends React.Component {
         }
 
         return (
-            <input
-                {...props}
-                placeholder={port.displayName || port.name}
-                value={value}
-                disabled={disabled}
-                style={style}
-                onChange={this.onChangeEvent}
-                onBlur={this.onBlur}
-                onFocus={this.onFocus}
-            />
+            <UseState initialValue={false}>
+                {(editing, setEditing) => (
+                    <EditableText
+                        {...props}
+                        className={null}
+                        disabled={disabled}
+                        editing={editing}
+                        editOnFocus
+                        /* EditableText calls its onChange on blur. This allows
+                           us to trigger changes directly using `triggerChange`. */
+                        onChange={this.triggerChange}
+                        placeholder={port.displayName || port.name}
+                        setEditing={setEditing}
+                    >
+                        {value}
+                    </EditableText>
+                )}
+            </UseState>
         )
     }
 }
