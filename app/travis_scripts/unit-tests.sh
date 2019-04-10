@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
 $(dirname $0)/build-docker-env.sh
-npm test
+NODE_OPTIONS='--trace-warnings --trace-deprecation' npm test
