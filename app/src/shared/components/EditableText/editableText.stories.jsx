@@ -3,7 +3,7 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
 import styles from '@sambego/storybook-styles'
-import Prop from '../Prop'
+import UseState from '../UseState'
 import EditableText from '.'
 
 const stories =
@@ -14,9 +14,9 @@ const stories =
         }))
 
 stories.add('default', () => (
-    <Prop initialValue={false}>
+    <UseState initialValue={false}>
         {(editing, setEditing) => (
-            <Prop initialValue="Double-click to edit…">
+            <UseState initialValue="Double-click to edit…">
                 {(text, setText) => (
                     <EditableText
                         editing={editing}
@@ -26,7 +26,7 @@ stories.add('default', () => (
                         {text}
                     </EditableText>
                 )}
-            </Prop>
+            </UseState>
         )}
-    </Prop>
+    </UseState>
 ))
