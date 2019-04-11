@@ -1,4 +1,4 @@
-/* eslint-disable react/no-unused-state */
+/* eslint-disable react/no-unused-state, no-unused-vars */
 import React from 'react'
 import cx from 'classnames'
 import startCase from 'lodash/startCase'
@@ -18,6 +18,7 @@ import {
     findLinkedVariadicPort,
     isPortConnected,
 } from '../state'
+import Plug from './Ports/Plug'
 import { DropTarget, DragSource } from './PortDragger'
 import { DragDropContext } from './DragDropContext'
 import styles from './Ports.pcss'
@@ -59,22 +60,20 @@ class PortIcon extends React.PureComponent {
         isMenuOpen: false,
     }
 
-    iconRef = React.createRef()
+    plugRef = React.createRef()
     unmounted = false
-
-    onRef = (el) => {
-        this.props.onPort(this.props.port.id, el)
-    }
 
     componentDidMount() {
         window.addEventListener('mousedown', this.documentClick)
         window.addEventListener('keydown', this.onKeyDown)
+        this.props.onPort(this.props.port.id, this.plugRef.current)
     }
 
     componentWillUnmount() {
         this.unmounted = true
         window.removeEventListener('mousedown', this.documentClick)
         window.removeEventListener('keydown', this.onKeyDown)
+        this.props.onPort(this.props.port.id, null)
     }
 
     onKeyDown = (event) => {
@@ -84,7 +83,7 @@ class PortIcon extends React.PureComponent {
     }
 
     documentClick = (e) => {
-        if (this.iconRef.current != null && !this.iconRef.current.contains(e.target)) {
+        if (this.plugRef.current != null && !this.plugRef.current.contains(e.target)) {
             this.closeContextMenu()
         }
     }
@@ -143,38 +142,41 @@ class PortIcon extends React.PureComponent {
 
         return (
             <div
-                ref={this.iconRef}
-                role="gridcell"
                 title={port.id}
-                className={cx(styles.PortIcon, {
-                    [styles.isInput]: isInput,
-                    [styles.isExported]: isExported,
-                    [styles.isOutput]: !isInput,
-                    [styles.connected]: port.connected,
-                    [styles.requiresConnection]: port.requiresConnection,
-                    [styles.drivingInput]: port.drivingInput,
-                    [styles.noRepeat]: port.noRepeat,
-                    [styles.dragPortInProgress]: dragPortInProgress,
-                    [styles.canDrop]: canDrop,
-                    [styles.draggingFromSameModule]: draggingFromSameModule,
+                className={cx(Plug.styles.root, {
+                    [Plug.styles.exported]: isExported,
+                    [Plug.styles.connected]: port.connected,
+                    [Plug.styles.mandatory]: port.requiresConnection,
+                    [Plug.styles.driver]: port.drivingInput,
+                    [Plug.styles.noRepeat]: port.noRepeat,
+                    [Plug.styles.dragInProgress]: dragPortInProgress,
+                    [Plug.styles.canDrop]: canDrop,
+                    [Plug.styles.draggingFromSameModule]: draggingFromSameModule,
                 })}
-                tabIndex="0"
+                // tabIndex="0"
                 onContextMenu={this.openContextMenu}
+                ref={this.plugRef}
             >
-                <div className={styles.portIconInner}>
-                    <div className={styles.portIconGraphic} ref={this.onRef} />
-                    <DropTarget port={port} />
-                    <DragSource port={port} api={api} />
-                </div>
-                <PortOptions port={port} canvas={canvas} setPortOptions={this.props.setPortOptions} />
-                <ContextMenu
+                <DropTarget
+                    className={cx(Plug.styles.dragger, Plug.styles.dropTarget)}
+                    port={port}
+                />
+                <DragSource
+                    api={api}
+                    className={cx(Plug.styles.dragger, Plug.styles.dragSource)}
+                    port={port}
+                />
+                {/* TODO: Enable. Ideally put it somewhere else. */}
+                {/* <PortOptions port={port} canvas={canvas} setPortOptions={this.props.setPortOptions} /> */}
+                {/* TODO: Enable. Ideally put it somewhere else. */}
+                {/* <ContextMenu
                     placement={isInput ? 'left-start' : 'right-start'}
-                    target={this.iconRef}
+                    target={this.plugRef.current}
                     isOpen={this.state.isMenuOpen}
                 >
                     <ContextMenu.Item text="Disconnect all" onClick={() => this.disconnectAll(port)} />
                     <ContextMenu.Item text={isExported ? 'Disable export' : 'Enable export'} onClick={() => this.toggleExport(port)} />
-                </ContextMenu>
+                </ContextMenu> */}
             </div>
         )
     }

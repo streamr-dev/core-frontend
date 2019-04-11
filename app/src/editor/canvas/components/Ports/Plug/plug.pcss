@@ -1,0 +1,107 @@
+:root {
+  --driving-input-color: #0324FF;
+  --no-repeat-color: #0324FF;
+  --connected-color: #2AC437;
+  --exported-color: #FFB600; /* invented in lieu of design */
+}
+
+/* TODO:
+ 1. Use rems
+ 2. Use less classes maybe? We could have (a) `.dropAllowed`, (b) `.dropDisallowed`, (c) `.dropIgnored` classes
+    representing:
+    a) plugs in other modules that we can drop onto,
+    b) plugs in other modules that we can't drop onto, and
+    c) plugs in current module which we should simply ignore – technically we can't drop onto them but
+       we don't mark them with red while dragging.
+*/
+
+.root {
+  border: 1px solid #ADADAD;
+  border-radius: 50%;
+  box-sizing: border-box;
+  font-size: 16px;
+  height: 0.5em;
+  position: relative;
+  transition: 200ms;
+  transition-property: box-shadow, transform;
+  width: 0.5em;
+}
+
+.root:--enter {
+  outline: 0;
+}
+
+.root::after {
+  background: var(--connected-color);
+  content: '';
+  height: 0.125em;
+  left: 50%;
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  transition: 200ms linear opacity;
+  width: 0.125em;
+}
+
+.mandatory {
+  border-radius: 0;
+}
+
+.driver {
+  border-color: var(--driving-input-color);
+}
+
+.noRepeat {
+  border-color: var(--no-repeat-color);
+}
+
+.exported {
+  border-color: var(--exported-color);
+}
+
+.dragInProgress:not(.draggingFromSameModule) .dropTarget {
+  z-index: 2;
+}
+
+.dragInProgress:not(.draggingFromSameModule) {
+  border-color: transparent;
+  background-color: #C90000;
+}
+
+.canDrop:not(.draggingFromSameModule) {
+  background-color: #00C900;
+}
+
+.root:not(.dragInProgress):hover {
+  box-shadow: 0 0 0 2px #ADF5FF;
+}
+
+.connected {
+  border-color: var(--connected-color);
+}
+
+.connected::after {
+  opacity: 1;
+}
+
+.dragInProgress:not(.draggingFromSameModule)::after {
+  opacity: 0;
+}
+
+.canDrop:not(.draggingFromSameModule):hover {
+  transform: scale(1.5);
+}
+
+.isDragged.dragger {
+  pointer-events: none;
+}
+
+.isDragged.dragSource {
+  opacity: 1;
+}
+
+.dragInProgress:not(.canDrop) .dragger {
+  cursor: default;
+}
