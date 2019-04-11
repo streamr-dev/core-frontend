@@ -284,42 +284,40 @@ class HistoryView extends Component<Props, State> {
                     )}
                 </Row>
                 {streamId && range && (
-                    <Fragment>
-                        <Row>
-                            <Col md={12} lg={11}>
-                                <div className={styles.storedEventsContainer}>
-                                    <DatePicker
-                                        label={I18n.t('userpages.streams.edit.history.deleteEvents')}
-                                        openOnFocus
-                                        onChange={this.onDeleteDateChanged}
-                                        error={(deleteDataError && deleteDataError.message) || ''}
-                                        value={deleteDate || 'No stored events added yet'}
-                                        preserveLabelSpace
-                                        preserveErrorSpace
-                                        className={styles.storedEvents}
-                                    />
-                                </div>
-                            </Col>
-                            <Col md={12} lg={1}>
-                                <Button
-                                    className={styles.deleteButton}
-                                    color="userpages"
-                                    onClick={() => this.deleteDataUpTo(streamId, deleteDate)}
-                                    disabled={deleteDate == null}
-                                >
-                                    <Translate value="userpages.streams.edit.history.deleteRange" />
-                                    {deleteInProgress &&
-                                        <Fragment>
-                                            <span>&nbsp;</span>
-                                            <Spinner size="small" color="white" />
-                                        </Fragment>
-                                    }
-                                </Button>
-                            </Col>
-                        </Row>
-                    </Fragment>
+                    <Row>
+                        <Col md={12} lg={11}>
+                            <div className={styles.storedEventsContainer}>
+                                <DatePicker
+                                    label={I18n.t('userpages.streams.edit.history.deleteEvents')}
+                                    openOnFocus
+                                    onChange={this.onDeleteDateChanged}
+                                    error={(deleteDataError && deleteDataError.message) || ''}
+                                    value={deleteDate || 'No stored events added yet'}
+                                    preserveLabelSpace
+                                    preserveErrorSpace
+                                    className={styles.storedEvents}
+                                />
+                            </div>
+                        </Col>
+                        <Col md={12} lg={1}>
+                            <Button
+                                className={styles.deleteButton}
+                                color="userpages"
+                                onClick={() => this.deleteDataUpTo(streamId, deleteDate)}
+                                disabled={deleteDate == null}
+                            >
+                                <Translate value="userpages.streams.edit.history.deleteRange" />
+                                {deleteInProgress &&
+                                    <Fragment>
+                                        <span>&nbsp;</span>
+                                        <Spinner size="small" color="white" />
+                                    </Fragment>
+                                }
+                            </Button>
+                        </Col>
+                    </Row>
                 )}
-                {stream && stream.storageDays &&
+                {stream && stream.storageDays !== undefined &&
                 <Row className={styles.storagePeriod}>
                     <Col xs={12}>
                         <label htmlFor="storage-period">
