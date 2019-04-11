@@ -123,6 +123,7 @@ class CanvasModule extends React.PureComponent {
                 ref={this.el}
                 {...props}
             >
+                <div className={ModuleStyles.selectionDecorator} />
                 <ModuleHeader
                     className={cx(styles.header, ModuleStyles.dragHandle)}
                     editable={!isRunning}
