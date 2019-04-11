@@ -5,7 +5,7 @@ import isEqual from 'lodash/isEqual'
 import zipObject from 'lodash/zipObject'
 import { Responsive, WidthProvider } from 'react-grid-layout'
 
-import RenameInput from '$editor/shared/components/RenameInput'
+import ModuleHeader from '$editor/shared/components/ModuleHeader'
 import ModuleUI from '$editor/shared/components/ModuleUI'
 
 import dashboardConfig from '../config'
@@ -101,16 +101,13 @@ class DashboardItem extends React.Component {
                 onFocus={() => selectItem(item.id)}
                 data-itemid={item.id}
             >
-                <div className={cx(ModuleStyles.moduleHeader, ModuleStyles.dragHandle)}>
-                    <RenameInput
-                        className={ModuleStyles.name}
-                        inputClassName={ModuleStyles.dragCancel}
-                        value={item.title}
-                        onChange={this.renameItem}
-                        disabled={disabled}
-                        required
-                    />
-                </div>
+                <ModuleHeader
+                    className={styles.header}
+                    editable={!disabled}
+                    label={item.title}
+                    limitWidth
+                    onLabelChange={this.renameItem}
+                />
                 <ModuleUI
                     className={cx(styles.dashboardModuleUI, ModuleStyles.dragCancel)}
                     canvasId={item.canvas}
