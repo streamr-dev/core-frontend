@@ -642,7 +642,7 @@ export default class Ports extends React.Component {
         const { outputs } = module
         const inputs = module.params.concat(module.inputs)
 
-        return (
+        return !!(inputs.length || outputs.length) && (
             <div className={cx(className, styles.ports)}>
                 <div className={styles.inputs}>
                     {inputs.map((port, index) => (
