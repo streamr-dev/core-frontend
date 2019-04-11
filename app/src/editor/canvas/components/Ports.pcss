@@ -5,54 +5,22 @@
   --no-repeat-color: #0324FF;
   --connected-color: #2AC437;
   --exported-color: #FFB600; /* invented in lieu of design */
-  --port-size: 8px;
 }
 
 /* stylelint-disable no-descending-specificity */
 
 .ports {
-  display: table;
-  font-family: 'IBM Plex Mono', sans-serif;
-  border-spacing: 4px;
-  padding: 8px 2px;
+  display: grid;
+  font-family: var(--mono);
+  font-size: calc(0.625 * var(--um));
+  font-weight: var(--medium);
+  grid-column-gap: var(--um);
+  grid-template-columns: auto auto;
+  padding: calc(0.625 * var(--um)) 0;
 }
 
 .ports:empty {
   display: none;
-}
-
-.ports .portRow {
-  display: table-row;
-  line-height: 1;
-}
-
-.ports .portRow > * {
-  display: table-cell;
-  padding: 0 2px;
-  vertical-align: baseline;
-}
-
-.ports .portNameContainer {
-  z-index: 1;
-  position: relative;
-  white-space: nowrap;
-  min-width: 100%;
-}
-
-.ports .portNameContainer .portName {
-  font-family: 'IBM Plex Mono', sans-serif;
-  padding: inherit;
-  display: inline;
-  color: #525252;
-  font-size: 10px;
-  font-weight: 500;
-  white-space: nowrap;
-  width: auto;
-  text-align: inherit;
-}
-
-.ports .portNameContainer.isOutput {
-  text-align: right;
 }
 
 /**
@@ -218,4 +186,23 @@
 
 .ports .mapParam button > svg {
   display: block;
+}
+
+/**
+ * (New) Port
+ */
+
+.port {
+  align-items: center;
+  display: flex;
+  padding: calc(0.3125 * var(--um)) 0;
+}
+
+.portIcon {
+  flex-shrink: 0;
+  padding: 0 calc(0.5 * var(--um));
+}
+
+.spaceholder {
+  flex-grow: 1;
 }

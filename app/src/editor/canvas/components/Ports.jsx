@@ -144,6 +144,9 @@ class PortIcon extends React.PureComponent {
             <div
                 title={port.id}
                 className={cx(Plug.styles.root, {
+                    // isInput and isOutput are here mostly for PortOptions. Let's see if that's necessary.
+                    [styles.isInput]: isInput,
+                    [styles.isOutput]: !isInput,
                     [Plug.styles.exported]: isExported,
                     [Plug.styles.connected]: port.connected,
                     [Plug.styles.mandatory]: port.requiresConnection,
@@ -197,55 +200,46 @@ class Port extends React.PureComponent {
         const hasInputField = isParam || port.canHaveInitialValue
         const isRunning = canvas.state === 'RUNNING'
 
-        let isHidden = false
         if (!isInput) {
             const linkedInput = findLinkedVariadicPort(canvas, port.id)
-            if (linkedInput) {
+
+            if (linkedInput && !isPortConnected(canvas, linkedInput.id)) {
                 // hide output if linked input is not connected
-                isHidden = !isPortConnected(canvas, linkedInput.id)
+                return null
             }
         }
 
-        if (isHidden) {
-            // layout placeholder
-            return <React.Fragment><div /><div /><div /></React.Fragment>
-        }
-
-        const portContent = [
-            <div
-                className={cx(styles.portNameContainer, {
-                    [styles.isInput]: isInput,
-                    [styles.isOutput]: !isInput,
-                })}
-                key={`${port.id}.name`}
-                role="gridcell"
-            >
-                <UseState initialValue={false}>
-                    {(editing, setEditing) => (
-                        <EditableText
-                            className={styles.portName}
-                            disabled={!!isRunning}
-                            editing={editing}
-                            onChange={this.onChangePortName}
-                            setEditing={setEditing}
-                        >
-                            {port.displayName || startCase(port.name)}
-                        </EditableText>
-                    )}
-                </UseState>
-            </div>,
-            <PortIcon key={`${port.id}.icon`} {...this.props} />,
-        ]
-
-        if (isInput) {
-            /* flip icon/name order */
-            portContent.reverse()
-        }
+        const icon = (
+            <div className={styles.portIcon}>
+                <PortIcon {...this.props} />
+            </div>
+        )
 
         return (
-            <React.Fragment>
-                {portContent}
-                {hasInputField ? (
+            <div className={styles.port}>
+                {!isInput ? (
+                    <div className={styles.spaceholder} />
+                ) : icon}
+                <div
+                    className={cx(styles.portNameContainer, {
+                        [styles.isInput]: isInput,
+                        [styles.isOutput]: !isInput,
+                    })}
+                >
+                    <UseState initialValue={false}>
+                        {(editing, setEditing) => (
+                            <EditableText
+                                disabled={!!isRunning}
+                                editing={editing}
+                                onChange={this.onChangePortName}
+                                setEditing={setEditing}
+                            >
+                                {port.displayName || startCase(port.name)}
+                            </EditableText>
+                        )}
+                    </UseState>
+                </div>
+                {false && hasInputField && (
                     /* add input for params/inputs with initial value */
                     <div className={cx(styles.portValueContainer)} role="gridcell">
                         {/* eslint-disable-next-line jsx-a11y/mouse-events-have-key-events */}
@@ -256,15 +250,9 @@ class Port extends React.PureComponent {
                             onChange={this.props.onChange}
                         />
                     </div>
-                ) : (
-                    !!isInput && (
-                        /* placeholder div for consistent icon vertical alignment */
-                        <div className={cx(styles.portValueContainer)} role="gridcell">
-                            <div className={styles.portValue} />
-                        </div>
-                    )
                 )}
-            </React.Fragment>
+                {!isInput && icon}
+            </div>
         )
     }
 }
@@ -640,9 +628,6 @@ class PortValue extends React.Component {
     }
 }
 
-// this is the `display: table` equivalent of `<td colspan="3" />`. For alignment.
-const PortPlaceholder = () => <React.Fragment><div /><div /><div style={{ minWidth: '100%' }} /></React.Fragment>
-
 export default class Ports extends React.Component {
     render() {
         const {
@@ -655,37 +640,38 @@ export default class Ports extends React.Component {
         } = this.props
 
         const { outputs } = module
-
         const inputs = module.params.concat(module.inputs)
-
-        // map inputs and outputs into visual rows
-        const rows = []
-        const maxRows = Math.max(inputs.length, outputs.length)
-        for (let i = 0; i < maxRows; i += 1) {
-            rows.push([inputs[i], outputs[i]])
-        }
 
         return (
             <div className={cx(className, styles.ports)}>
-                {rows.map((ports) => (
-                    <div key={ports.map((p) => p && p.id).join(',')} className={styles.portRow} role="row">
-                        {ports.map((port, index) => (
+                <div className={styles.inputs}>
+                    {inputs.map((port, index) => (
+                        <Port
                             /* eslint-disable react/no-array-index-key */
-                            !port ? <PortPlaceholder key={index} /> /* placeholder for alignment */ : (
-                                <Port
-                                    key={port.id + index}
-                                    port={port}
-                                    onPort={onPort}
-                                    canvas={canvas}
-                                    api={api}
-                                    onChange={onValueChange}
-                                    setPortOptions={api.port.setPortOptions}
-                                />
-                            )
-                            /* eslint-enable react/no-array-index-key */
-                        ))}
-                    </div>
-                ))}
+                            key={port.id + index}
+                            port={port}
+                            onPort={onPort}
+                            canvas={canvas}
+                            api={api}
+                            onChange={onValueChange}
+                            setPortOptions={api.port.setPortOptions}
+                        />
+                    ))}
+                </div>
+                <div className={styles.outputs}>
+                    {outputs.map((port, index) => (
+                        <Port
+                            /* eslint-disable react/no-array-index-key */
+                            key={port.id + index}
+                            port={port}
+                            onPort={onPort}
+                            canvas={canvas}
+                            api={api}
+                            onChange={onValueChange}
+                            setPortOptions={api.port.setPortOptions}
+                        />
+                    ))}
+                </div>
             </div>
         )
     }

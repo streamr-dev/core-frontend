@@ -1,5 +1,7 @@
 :root {
   --fontSize: 1rem;
+  --mono: 'IBM Plex Mono', monospace;
+  --sans: 'IBM Plex Sans', sans-serif;
   --um: 16px; /* Wishful thinking: Future 1rem? — Mariusz */
 
   /* Colors */
