@@ -48,19 +48,6 @@ function PlusIcon(props) {
     )
 }
 
-const getPortDisplayValueSize = ({ value, defaultValue, possibleValues }) => {
-    // If select, the displayed value is one of the option labels
-    let label = value || defaultValue
-    let padding = 0
-
-    if (possibleValues) {
-        label = (possibleValues.find((option) => option.value === value) || {}).name || value
-        padding = 2 // for select box arrow
-    }
-
-    return String(label).length + padding
-}
-
 /**
  * Single Port Component
  */
@@ -264,8 +251,6 @@ class Port extends React.PureComponent {
                             className={styles.portValue}
                             port={port}
                             canvas={canvas}
-                            size={this.props.size}
-                            adjustMinPortSize={this.props.adjustMinPortSize}
                             onChange={this.props.onChange}
                         />
                     </div>
@@ -419,8 +404,6 @@ class MapParam extends React.Component {
     }
 
     render() {
-        const minWidth = 4
-
         const { values } = this.state
         const rows = values.slice()
 
@@ -447,7 +430,6 @@ class MapParam extends React.Component {
                             className={cx(styles.mapParamKey, styles.portValue)}
                             placeholder="key"
                             value={key}
-                            size={`${minWidth}`}
                             onChange={this.getOnChange('key', index)}
                             onFocus={this.getOnFocus('key', index)}
                             onBlur={this.props.onBlur}
@@ -458,7 +440,6 @@ class MapParam extends React.Component {
                             className={cx(styles.mapParamValue, styles.portValue)}
                             placeholder="value"
                             value={value}
-                            size={`${minWidth}`}
                             onChange={this.getOnChange('value', index)}
                             onFocus={this.getOnFocus('value', index)}
                             onBlur={this.props.onBlur}
@@ -510,10 +491,6 @@ class PortValue extends React.Component {
     }
 
     onChange = (value, done) => {
-        this.props.adjustMinPortSize(getPortDisplayValueSize({
-            ...this.props.port,
-            value,
-        }))
         this.setState({ value }, done)
 
         // If select, fire onChange immediately
@@ -559,7 +536,6 @@ class PortValue extends React.Component {
         const {
             canvas,
             port,
-            size,
             onChange,
             adjustMinPortSize,
             ...props
@@ -577,18 +553,11 @@ class PortValue extends React.Component {
             value = '' // prevent uncontrolled/controlled switching
         }
 
-        const portSize = size + 2 // add some padding
-
-        const style = {
-            minWidth: `${portSize}ch`, // setting minWidth allows size transition
-        }
-
         if (port.type === 'Map') {
             return (
                 <MapParam
                     {...{
                         port,
-                        size,
                         value,
                         ...props,
                     }}
@@ -606,7 +575,6 @@ class PortValue extends React.Component {
                     {...props}
                     value={value}
                     disabled={disabled}
-                    style={style}
                     onChange={this.onChange}
                     onBlur={this.onBlur}
                     onFocus={this.onFocus}
@@ -621,7 +589,6 @@ class PortValue extends React.Component {
                     {...props}
                     value={value}
                     disabled={disabled}
-                    style={style}
                     onChange={this.onChangeEvent}
                     onBlur={this.onBlur}
                     onFocus={this.onFocus}
@@ -675,15 +642,6 @@ class PortValue extends React.Component {
 const PortPlaceholder = () => <React.Fragment><div /><div /><div style={{ minWidth: '100%' }} /></React.Fragment>
 
 export default class Ports extends React.Component {
-    state = {
-        minPortSize: 0,
-    }
-
-    // for resizing all port widths to match longest port value
-    adjustMinPortSize = (minPortSize) => {
-        this.setState({ minPortSize })
-    }
-
     render() {
         const {
             api,
@@ -705,11 +663,6 @@ export default class Ports extends React.Component {
             rows.push([inputs[i], outputs[i]])
         }
 
-        // dynamically size port controls based on largest value
-        const portSize = Math.min(module.params.reduce((size, port) => (
-            Math.max(size, getPortDisplayValueSize(port))
-        ), Math.max(4, this.state.minPortSize)), 40)
-
         return (
             <div className={cx(className, styles.ports)}>
                 {rows.map((ports) => (
@@ -721,8 +674,6 @@ export default class Ports extends React.Component {
                                     key={port.id + index}
                                     port={port}
                                     onPort={onPort}
-                                    size={portSize}
-                                    adjustMinPortSize={this.adjustMinPortSize}
                                     canvas={canvas}
                                     api={api}
                                     onChange={onValueChange}
