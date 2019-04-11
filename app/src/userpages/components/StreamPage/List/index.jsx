@@ -36,7 +36,7 @@ import SnippetDialog from '$userpages/components/SnippetDialog/index'
 import { ProgrammingLanguages } from '$shared/utils/constants'
 
 export const CreateStreamButton = () => (
-    <Button id="streamlist-create-stream">
+    <Button color="primary" id="streamlist-create-stream">
         <Link to={links.userpages.streamCreate}>
             <Translate value="userpages.streams.createStream" />
         </Link>

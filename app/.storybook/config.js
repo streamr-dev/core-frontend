@@ -16,10 +16,12 @@ setOptions({
     sortStoriesByKind: true,
 })
 
-// Automatically import all files ending in *.stories.js and *.stories.jsx
-const req = require.context('../stories', true, /\.stories\.jsx?$/)
-function loadStories() {
-    req.keys().forEach(req)
+const importAll = (r) => {
+    r.keys().forEach(r)
 }
 
-configure(loadStories, module)
+configure(() => {
+    // Automatically import all files ending in *.stories.js and *.stories.jsx
+    importAll(require.context('../stories/', true, /\.stories\.jsx?$/))
+    importAll(require.context('../src/', true, /\.stories\.jsx?$/))
+}, module)

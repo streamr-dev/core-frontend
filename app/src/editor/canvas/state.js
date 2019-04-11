@@ -301,13 +301,13 @@ export function updateModule(canvas, moduleHash, fn) {
     return update(modules[moduleHash], fn, canvas)
 }
 
-export function updateModulePosition(canvas, moduleHash, offset) {
+export function updateModulePosition(canvas, moduleHash, newPosition) {
     const { modules } = getIndex(canvas)
     const modulePath = modules[moduleHash]
     return update(modulePath.concat('layout', 'position'), (position) => ({
         ...position,
-        top: `${Number.parseInt(offset.top, 10)}px`,
-        left: `${Number.parseInt(offset.left, 10)}px`,
+        top: `${Number.parseInt(newPosition.top, 10)}px`,
+        left: `${Number.parseInt(newPosition.left, 10)}px`,
     }), canvas)
 }
 
@@ -916,7 +916,7 @@ export function moduleCategoriesIndex(modules = [], path = [], index = []) {
             index.push({
                 id: m.metadata.id,
                 name: m.data,
-                path: path.join(', '),
+                path: path.join(': '),
             })
         }
         if (m.children && m.children.length) {

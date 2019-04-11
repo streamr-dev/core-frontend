@@ -46,7 +46,7 @@ export type DispatchProps = {
 type Props = StateProps & DispatchProps
 
 const CreateProductButton = () => (
-    <Button>
+    <Button color="primary">
         <Link to={links.marketplace.createProduct}>
             <Translate value="userpages.products.createProduct" />
         </Link>

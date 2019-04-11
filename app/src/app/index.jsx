@@ -3,7 +3,7 @@
 import '$shared/assets/stylesheets'
 
 import React from 'react'
-import { Route as RouterRoute, Switch } from 'react-router-dom'
+import { Route as RouterRoute, Switch, Redirect } from 'react-router-dom'
 import { ConnectedRouter } from 'react-router-redux'
 
 // Marketplace
@@ -11,8 +11,15 @@ import ProductPage from '$mp/containers/ProductPage'
 import StreamPreviewPage from '$mp/containers/StreamPreviewPage'
 import EditProductPage from '$mp/containers/EditProductPage'
 import Products from '$mp/containers/Products'
-import LoginPage from '$mp/containers/LoginPage'
+
+// Auth
+import SessionProvider from '$auth/components/SessionProvider'
+import LoginPage from '$auth/containers/LoginPage'
 import LogoutPage from '$auth/containers/LogoutPage'
+import SignupPage from '$auth/containers/SignupPage'
+import ForgotPasswordPage from '$auth/containers/ForgotPasswordPage'
+import ResetPasswordPage from '$auth/containers/ResetPasswordPage'
+import RegisterPage from '$auth/containers/RegisterPage'
 
 // Userpages
 import DashboardList from '$userpages/components/DashboardPage/List'
@@ -42,7 +49,7 @@ import DashboardEditor from '$editor/dashboard'
 import ModalRoot from '$shared/components/ModalRoot'
 import Notifications from '$shared/components/Notifications'
 import { formatPath } from '$shared/utils/url'
-import { userIsAuthenticated, userIsNotAuthenticated } from '$mp/utils/auth'
+import { userIsAuthenticated } from '$mp/utils/auth'
 import links from '../links'
 import history from '../history'
 import '../analytics'
@@ -60,7 +67,6 @@ import routes from '$routes'
 // Marketplace Auth
 const CreateProductAuth = userIsAuthenticated(EditProductPage)
 const EditProductAuth = userIsAuthenticated(EditProductPage)
-const LoginRedirect = userIsNotAuthenticated(LoginPage)
 
 // Userpages Auth
 const CanvasListAuth = userIsAuthenticated(CanvasList)
@@ -84,17 +90,19 @@ const ProductPublishPage = (props) => <ProductPage overlayPublishDialog {...prop
 // Wrap each Route to an ErrorBoundary
 const Route = withErrorBoundary(ErrorPageView)(RouterRoute)
 
-const {
-    internalLogin,
-    marketplace,
-    userpages,
-    docs,
-    editor,
-} = links
+const { marketplace, userpages, docs, editor } = links
 
 const AuthenticationRouter = () => ([
+    <Route exact path={routes.login()} component={LoginPage} key="LoginPage" />,
     <Route exact path={routes.logout()} component={LogoutPage} key="LogoutPage" />,
-    <Route exact path={formatPath(internalLogin, ':type?')} component={LoginRedirect} key="LoginRedirect" />,
+    <Route path={routes.signUp()} component={SignupPage} key="SignupPage" />,
+    <Route path={routes.forgotPassword()} component={ForgotPasswordPage} key="ForgotPasswordPage" />,
+    <Route path={routes.resetPassword()} component={ResetPasswordPage} key="ResetPasswordPage" />,
+    <Route exact path={routes.register()} component={RegisterPage} key="RegisterPage" />,
+    <Redirect from="/login/auth" to={routes.login()} key="LoginRedirect" />,
+    <Redirect from="/register/register" to={routes.register()} key="RegisterRedirect" />,
+    <Redirect from="/register/resetPassword" to={routes.resetPassword()} key="ResetPasswordRedirect" />,
+    <Redirect from="/register/forgotPassword" to={routes.forgotPassword()} key="ForgotPasswordRedirect" />,
 ])
 
 const MarketplaceRouter = () => ([
@@ -144,20 +152,22 @@ const MiscRouter = () => ([
 
 const App = () => (
     <ConnectedRouter history={history}>
-        <ModalRoot>
-            <LocaleSetter />
-            <AutoScroll />
-            <Switch>
-                {AuthenticationRouter()}
-                {MarketplaceRouter()}
-                {DocsRouter()}
-                {UserpagesRouter()}
-                {EditorRouter()}
-                {MiscRouter()}
-            </Switch>
-            <Notifications />
-            {isProduction() && <GoogleAnalyticsTracker />}
-        </ModalRoot>
+        <SessionProvider>
+            <ModalRoot>
+                <LocaleSetter />
+                <AutoScroll />
+                <Switch>
+                    {AuthenticationRouter()}
+                    {MarketplaceRouter()}
+                    {DocsRouter()}
+                    {UserpagesRouter()}
+                    {EditorRouter()}
+                    {MiscRouter()}
+                </Switch>
+                <Notifications />
+                {isProduction() && <GoogleAnalyticsTracker />}
+            </ModalRoot>
+        </SessionProvider>
     </ConnectedRouter>
 )
 

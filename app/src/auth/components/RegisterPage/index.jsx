@@ -13,15 +13,17 @@ import Checkbox from '../Checkbox'
 import AuthStep from '../AuthStep'
 import AuthLayout from '../AuthLayout'
 
+import getSessionToken from '$auth/utils/getSessionToken'
 import post from '../../utils/post'
 import onInputChange from '../../utils/onInputChange'
 import schemas from '../../schemas/register'
-import type { AuthFlowProps } from '$shared/flowtype/auth-types'
+import { type Props as SessionProps } from '$auth/contexts/Session'
+import { type AuthFlowProps } from '$shared/flowtype/auth-types'
 import routes from '$routes'
 
 import styles from './registerPage.pcss'
 
-type Props = AuthFlowProps & {
+type Props = SessionProps & AuthFlowProps & {
     history: {
         replace: (string) => void,
     },
@@ -62,6 +64,10 @@ class RegisterPage extends React.Component<Props> {
         })
     }
 
+    componentWillUnmount() {
+        this.unmounted = true
+    }
+
     onFailure = (error: Error) => {
         const { setFieldError } = this.props
         setFieldError('toc', error.message)
@@ -74,6 +80,7 @@ class RegisterPage extends React.Component<Props> {
             confirmPassword: password2,
             toc: tosConfirmed,
             invite,
+            setSessionToken,
         } = this.props.form
 
         return post(routes.externalRegister(), {
@@ -82,8 +89,19 @@ class RegisterPage extends React.Component<Props> {
             password2,
             tosConfirmed,
             invite,
-        }, false, true)
+        }, false, true).then(({ username }) => !this.unmounted && (
+            getSessionToken({
+                username,
+                password,
+            }).then((token) => {
+                if (setSessionToken && !this.unmounted) {
+                    setSessionToken(token)
+                }
+            })
+        ))
     }
+
+    unmounted: boolean = false
 
     render() {
         const {
@@ -110,7 +128,7 @@ class RegisterPage extends React.Component<Props> {
                     validationSchemas={schemas}
                     onValidationError={setFieldError}
                 >
-                    <AuthStep title={I18n.t('general.signUp')} showEth={false} showSignin>
+                    <AuthStep title={I18n.t('general.signUp')} showSignin>
                         <TextInput
                             name="name"
                             label={I18n.t('auth.register.name')}

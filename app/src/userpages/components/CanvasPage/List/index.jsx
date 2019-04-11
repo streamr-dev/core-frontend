@@ -61,7 +61,7 @@ type State = {
 }
 
 const CreateCanvasButton = () => (
-    <Button>
+    <Button color="primary">
         <Link to={links.editor.canvasEditor}>
             <Translate value="userpages.canvases.createCanvas" />
         </Link>

@@ -1,4 +1,4 @@
-import { setup } from '$editor/shared/tests/utils'
+import { setupAuthorizationHeader } from '$editor/shared/tests/utils'
 
 import * as Services from '../services'
 import * as State from '../state'
@@ -16,7 +16,7 @@ describe('Canvas Services', () => {
     let teardown
 
     beforeAll(async () => {
-        teardown = await setup(Services.API)
+        teardown = await setupAuthorizationHeader()
     }, 60000) // service can take some time to respond initially
 
     afterAll(async () => {

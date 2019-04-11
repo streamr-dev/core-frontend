@@ -1,6 +1,7 @@
 import React from 'react'
 import uuid from 'uuid'
 import cx from 'classnames'
+import throttle from 'lodash/throttle'
 
 import ModuleSubscription from '../ModuleSubscription'
 
@@ -99,6 +100,8 @@ export default class TableModule extends React.Component {
         ...(this.props.module.tableConfig || {}),
     }
 
+    pendingState = this.state
+
     componentWillUnmount() {
         this.unmounted = true
     }
@@ -108,7 +111,7 @@ export default class TableModule extends React.Component {
     }
 
     initIfActive = (isActive) => {
-        if (isActive && !this.props.canvas.adhoc) {
+        if (isActive && this.props.canvas && !this.props.canvas.adhoc) {
             this.init()
         }
     }
@@ -118,13 +121,31 @@ export default class TableModule extends React.Component {
             type: 'initRequest',
         })
         if (this.unmounted) { return }
-        this.setState(initRequest)
+        this.setPendingState(initRequest)
+    }
+
+    setPendingState = (s) => {
+        if (typeof s === 'function') {
+            s = s(this.pendingState)
+        }
+        if (s === null || s === this.pendingState) {
+            return
+        }
+        this.pendingState = {
+            ...this.pendingState,
+            ...s,
+        }
+        this.queueFlushPending()
     }
 
     onMessage = (d) => {
         const { options = {} } = this.props.module
-        this.setState(parseMessage(d, options))
+        this.setPendingState(parseMessage(d, options))
     }
+
+    queueFlushPending = throttle(() => {
+        this.setState(this.pendingState)
+    }, 250)
 
     render() {
         const { className, module } = this.props

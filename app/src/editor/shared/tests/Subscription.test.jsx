@@ -1,8 +1,9 @@
 import React from 'react'
 import { mount } from 'enzyme'
-import { setup } from '$editor/shared/tests/utils'
+import { setupAuthorizationHeader } from '$editor/shared/tests/utils'
 import uniqueId from 'lodash/uniqueId'
 
+import api from '../utils/api'
 import * as Services from '../services'
 import { ClientProviderComponent, createClient } from '../components/Client'
 import Subscription from '../components/Subscription'
@@ -20,7 +21,7 @@ describe('Subscription', () => {
     let apiKey
 
     beforeAll(async () => {
-        teardown = await setup(Services.API)
+        teardown = await setupAuthorizationHeader()
     }, 60000)
 
     afterAll(async () => {
@@ -28,7 +29,7 @@ describe('Subscription', () => {
     })
 
     beforeAll(async () => {
-        const [key] = await Services.API.get(`${process.env.STREAMR_API_URL}/users/me/keys`).then(Services.getData)
+        const [key] = await api().get(`${process.env.STREAMR_API_URL}/users/me/keys`).then(Services.getData)
         apiKey = key.id
     })
 

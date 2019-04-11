@@ -35,7 +35,7 @@ type DispatchProps = {
 type Props = StateProps & DispatchProps
 
 const CreateDashboardButton = () => (
-    <Button>
+    <Button color="primary">
         <Link to={links.editor.dashboardEditor}>
             <Translate value="userpages.dashboards.createDashboard" />
         </Link>

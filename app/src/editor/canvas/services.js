@@ -2,19 +2,11 @@
  * Canvas-specific API call wrappers
  */
 
-import axios from 'axios'
-
+import api from '$editor/shared/utils/api'
 import Autosave from '$editor/shared/utils/autosave'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import { emptyCanvas } from './state'
-
-export const API = axios.create({
-    headers: {
-        'Content-Type': 'application/json',
-    },
-    withCredentials: true,
-})
 
 const getData = ({ data }) => data
 
@@ -25,7 +17,7 @@ const streamsUrl = `${process.env.STREAMR_API_URL}/streams`
 const AUTOSAVE_DELAY = 3000
 
 async function save(canvas) {
-    return API.put(`${canvasesUrl}/${canvas.id}`, canvas).then(getData)
+    return api().put(`${canvasesUrl}/${canvas.id}`, canvas).then(getData)
 }
 
 function autoSaveWithNotification() {
@@ -52,7 +44,7 @@ export async function saveNow(canvas, ...args) {
 }
 
 async function createCanvas(canvas) {
-    return API.post(canvasesUrl, canvas).then(getData)
+    return api().post(canvasesUrl, canvas).then(getData)
 }
 
 export async function create() {
@@ -60,7 +52,7 @@ export async function create() {
 }
 
 export async function moduleHelp({ id }) {
-    return API.get(`${process.env.STREAMR_API_URL}/modules/${id}/help`).then(getData)
+    return api().get(`${process.env.STREAMR_API_URL}/modules/${id}/help`).then(getData)
 }
 
 export async function duplicateCanvas(canvas) {
@@ -70,24 +62,24 @@ export async function duplicateCanvas(canvas) {
 
 export async function deleteCanvas({ id } = {}) {
     await autosave.cancel()
-    return API.delete(`${canvasesUrl}/${id}`).then(getData)
+    return api().delete(`${canvasesUrl}/${id}`).then(getData)
 }
 
 export async function getModuleCategories() {
-    return API.get(getModuleCategoriesURL).then(getData)
+    return api().get(getModuleCategoriesURL).then(getData)
 }
 
 export async function loadCanvas({ id } = {}) {
-    return API.get(`${canvasesUrl}/${id}`).then(getData)
+    return api().get(`${canvasesUrl}/${id}`).then(getData)
 }
 
 export async function loadCanvases() {
-    return API.get(canvasesUrl).then(getData)
+    return api().get(canvasesUrl).then(getData)
 }
 
 async function startCanvas(canvas, { clearState }) {
     const savedCanvas = await saveNow(canvas)
-    return API.post(`${canvasesUrl}/${savedCanvas.id}/start`, {
+    return api().post(`${canvasesUrl}/${savedCanvas.id}/start`, {
         clearState: !!clearState,
     }).then(getData)
 }
@@ -112,11 +104,11 @@ export async function start(canvas, options = {}) {
 }
 
 export async function stop(canvas) {
-    return API.post(`${canvasesUrl}/${canvas.id}/stop`).then(getData)
+    return api().post(`${canvasesUrl}/${canvas.id}/stop`).then(getData)
 }
 
 export async function getStreams(params) {
-    return API.get(`${streamsUrl}`, { params }).then(getData)
+    return api().get(`${streamsUrl}`, { params }).then(getData)
 }
 
 export async function deleteAllCanvases() {
