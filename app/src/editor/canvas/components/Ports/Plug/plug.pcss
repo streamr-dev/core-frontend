@@ -6,8 +6,7 @@
 }
 
 /* TODO:
- 1. Use rems
- 2. Use less classes maybe? We could have (a) `.dropAllowed`, (b) `.dropDisallowed`, (c) `.dropIgnored` classes
+  - Use less classes maybe? We could have (a) `.dropAllowed`, (b) `.dropDisallowed`, (c) `.dropIgnored` classes
     representing:
     a) plugs in other modules that we can drop onto,
     b) plugs in other modules that we can't drop onto, and
@@ -19,12 +18,11 @@
   border: 1px solid #ADADAD;
   border-radius: 50%;
   box-sizing: border-box;
-  font-size: 16px;
-  height: 0.5em;
+  height: calc(0.5 * var(--um));
   position: relative;
   transition: 200ms;
   transition-property: box-shadow, transform;
-  width: 0.5em;
+  width: calc(0.5 * var(--um));
 }
 
 .root:--enter {
@@ -42,7 +40,7 @@
   top: 50%;
   transform: translate(-50%, -50%);
   transition: 200ms linear opacity;
-  width: 0.125em;
+  width: calc(0.125 * var(--um));
 }
 
 .mandatory {
@@ -75,7 +73,7 @@
 }
 
 .root:not(.dragInProgress):hover {
-  box-shadow: 0 0 0 2px #ADF5FF;
+  box-shadow: 0 0 0 calc(0.125 * var(--um)) #ADF5FF;
 }
 
 .connected {

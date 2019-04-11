@@ -1,5 +1,6 @@
 :root {
   --fontSize: 1rem;
+  --um: 16px; /* Wishful thinking: Future 1rem? — Mariusz */
 
   /* Colors */
   --white: #FFFFFF;
