@@ -41,6 +41,7 @@ describe('Client', () => {
         client.once('error', done)
 
         result.unmount()
+        client.off('error', done)
         done()
     })
 
@@ -59,11 +60,10 @@ describe('Client', () => {
 
         expect(currentContext.client).toBeTruthy()
         const { client } = currentContext
-        client.once('error', (error) => {
-            done(error)
-        })
+        client.once('error', done)
 
         client.once('disconnected', () => {
+            client.off('error', done)
             expect(client.isConnected()).not.toBeTruthy()
             done()
         })
