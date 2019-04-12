@@ -70,11 +70,13 @@ export const PortTypes = {
     param: 'param',
 }
 
-export function emptyCanvas() {
+export function emptyCanvas(config = {}) {
     return {
         name: 'Untitled Canvas',
         settings: {},
         modules: [],
+        state: RunStates.Stopped,
+        ...config,
     }
 }
 
@@ -900,6 +902,10 @@ export function updateVariadic(canvas) {
     return canvas.modules.reduce((nextCanvas, { hash }) => (
         updateVariadicModule(nextCanvas, hash)
     ), canvas)
+}
+
+export function isRunning(canvas) {
+    return canvas.state === RunStates.Running
 }
 
 /**

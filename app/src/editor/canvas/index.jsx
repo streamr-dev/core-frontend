@@ -13,6 +13,7 @@ import Subscription from '$editor/shared/components/Subscription'
 import { ClientProvider } from '$editor/shared/components/Client'
 import { ModalProvider } from '$editor/shared/components/Modal'
 import * as sharedServices from '$editor/shared/services'
+import BodyClass from '$shared/components/BodyClass'
 
 import Canvas from './components/Canvas'
 import CanvasToolbar from './components/Toolbar'
@@ -185,11 +186,56 @@ const CanvasEditComponent = class CanvasEdit extends Component {
 
     loadNewDefinition = async (hash) => {
         const module = CanvasState.getModule(this.props.canvas, hash)
-        const newModule = await sharedServices.getModule(module)
+
+        // Stream module needs configuration for the getModule call
+        let configuration = null
+        if (module.id === 147) {
+            const streamPort = CanvasState.findModulePort(this.props.canvas, hash, (port) => port.type === 'Stream')
+            if (streamPort) {
+                configuration = {
+                    params: [
+                        {
+                            name: 'stream',
+                            value: streamPort.value,
+                        },
+                    ],
+                }
+            }
+        }
+
+        const newModule = await sharedServices.getModule({
+            id: module.id,
+            configuration,
+        })
+
+        // If we load new definition for the Stream module
+        // we still need to preserve current module layout etc.
+        if (module.id === 147) {
+            newModule.layout = module.layout
+            newModule.hash = hash
+        }
 
         if (this.unmounted) { return }
         this.replaceCanvas((canvas) => (
             CanvasState.updateModule(canvas, hash, () => newModule)
+        ))
+    }
+
+    pushNewDefinition = async (hash, value) => {
+        const module = CanvasState.getModule(this.props.canvas, hash)
+
+        // Update the module info, this will throw if anything went wrong.
+        await sharedServices.getModule({
+            ...module,
+            ...value,
+        })
+
+        // Otherwise ignore the result and update the pertinent values only.
+        this.setCanvas({ type: 'Update Module' }, (canvas) => (
+            CanvasState.updateModule(canvas, hash, (module) => ({
+                ...module,
+                ...value,
+            }))
         ))
     }
 
@@ -326,6 +372,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                     moduleSidebarIsOpen={this.state.moduleSidebarIsOpen}
                     setCanvas={this.setCanvas}
                     loadNewDefinition={this.loadNewDefinition}
+                    pushNewDefinition={this.pushNewDefinition}
                 >
                     <CanvasStatus updated={this.state.updated} isWaiting={this.state.isWaiting} />
                 </Canvas>
@@ -439,6 +486,7 @@ const CanvasEditWrap = () => (
 
 export default withRouter((props) => (
     <Layout className={styles.layout} footer={false}>
+        <BodyClass className="editor" />
         <ClientProvider>
             <UndoContainer key={props.match.params.id}>
                 <UndoControls disabled={isDisabled} />
