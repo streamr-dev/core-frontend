@@ -8,6 +8,12 @@ msgstr ""
 "POT-Creation-Date: 2018-09-07T10:13:34.652Z\n"
 "PO-Revision-Date: 2018-09-07T10:13:34.652Z\n"
 
+msgid "general##on"
+msgstr "On"
+
+msgid "general##off"
+msgstr "Off"
+
 msgid "general##aboutUs"
 msgstr "About Us"
 

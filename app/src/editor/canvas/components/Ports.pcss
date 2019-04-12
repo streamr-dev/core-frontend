@@ -1,8 +1,6 @@
 @import '../../shared/components/variables.pcss';
 
 :root {
-  --driving-input-color: #0324FF;
-  --no-repeat-color: #0324FF;
   --connected-color: #2AC437;
   --exported-color: #FFB600; /* invented in lieu of design */
 }
@@ -21,63 +19,6 @@
 
 .ports:empty {
   display: none;
-}
-
-/**
- * Port Options
- */
-
-.ports .PortIcon .portOptions {
-  position: absolute;
-  top: 50%;
-  display: grid;
-  grid-template-columns: auto auto auto;
-  grid-column-gap: 2px;
-  opacity: 0;
-  transition: opacity 0.25s 0.5s;
-  pointer-events: none;
-}
-
-.ports .PortIcon.isInput .portOptions {
-  right: initial;
-  left: 0;
-  padding-right: 13px;
-  transform: translate(-100%, -50%);
-}
-
-.ports .PortIcon.isOutput .portOptions {
-  left: initial;
-  right: 0;
-  padding-left: 13px;
-  transform: translate(100%, -50%);
-}
-
-.ports .PortIcon:not(.dragPortInProgress):hover .portOptions {
-  pointer-events: all;
-  opacity: 1;
-}
-
-.ports .PortIcon .portOptions > button[type=button] {
-  appearance: none;
-  border: none;
-  padding: 3px 4px;
-  background: #CDCDCD;
-  border-radius: 2px 2px 2px 2px;
-  color: #FFFFFF;
-  font-size: 10px;
-  font-weight: 500;
-  text-align: center;
-  letter-spacing: 0;
-  line-height: 10px;
-  transition: background 0.25s;
-}
-
-.ports .PortIcon .portOptions > .drivingInputOption[value='true'] {
-  background-color: var(--driving-input-color);
-}
-
-.ports .PortIcon .portOptions > .noRepeatOption[value='true'] {
-  background-color: var(--no-repeat-color);
 }
 
 /**
@@ -109,8 +50,7 @@
 }
 
 .ports input.portValue,
-.ports select.portValue,
-.ports button {
+.ports select {
   transition: background 0.25s, color 0.25s, min-width 0.25s, border 0.25s;
 }
 
@@ -135,8 +75,7 @@
 }
 
 .ports select.portValue:focus,
-.ports input.portValue:focus,
-.ports button:focus {
+.ports input.portValue:focus {
   outline: none;
   border: 1px solid var(--focus-border-color);
 }
@@ -205,4 +144,9 @@
 
 .spaceholder {
   flex-grow: 1;
+}
+
+.port:not(.dragInProgress):hover .portOption {
+  opacity: 1;
+  pointer-events: all;
 }

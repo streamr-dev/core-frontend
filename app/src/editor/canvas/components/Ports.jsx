@@ -19,6 +19,7 @@ import {
     isPortConnected,
 } from '../state'
 import Plug from './Ports/Plug'
+import Option from './Ports/Option'
 import { DropTarget, DragSource } from './PortDragger'
 import { DragDropContext } from './DragDropContext'
 import styles from './Ports.pcss'
@@ -170,8 +171,6 @@ class PortIcon extends React.PureComponent {
                     port={port}
                 />
                 {/* TODO: Enable. Ideally put it somewhere else. */}
-                {/* <PortOptions port={port} canvas={canvas} setPortOptions={this.props.setPortOptions} /> */}
-                {/* TODO: Enable. Ideally put it somewhere else. */}
                 {/* <ContextMenu
                     placement={isInput ? 'left-start' : 'right-start'}
                     target={this.plugRef.current}
@@ -186,10 +185,19 @@ class PortIcon extends React.PureComponent {
 }
 
 class Port extends React.PureComponent {
+    static contextType = DragDropContext
+
     onChangePortName = (value) => {
         const { port } = this.props
         this.props.setPortOptions(port.id, {
             displayName: value,
+        })
+    }
+
+    toggleOption = (key) => {
+        const { port, setPortOptions } = this.props
+        setPortOptions(port.id, {
+            [key]: !port[key],
         })
     }
 
@@ -199,6 +207,10 @@ class Port extends React.PureComponent {
         const isParam = 'defaultValue' in port
         const hasInputField = isParam || port.canHaveInitialValue
         const isRunning = canvas.state === 'RUNNING'
+        const dragPortInProgress = (
+            this.context.isDragging // something is dragging
+            && this.context.data.portId != null // something has a port
+        )
 
         if (!isInput) {
             const linkedInput = findLinkedVariadicPort(canvas, port.id)
@@ -216,7 +228,20 @@ class Port extends React.PureComponent {
         )
 
         return (
-            <div className={styles.port}>
+            <div
+                className={cx(styles.port, {
+                    [styles.dragInProgress]: !!dragPortInProgress,
+                })}
+            >
+                {port.canToggleDrivingInput && (
+                    <Option
+                        activated={!!port.drivingInput}
+                        className={styles.portOption}
+                        disabled={!!isRunning}
+                        name="drivingInput"
+                        onToggle={this.toggleOption}
+                    />
+                )}
                 {!isInput ? (
                     <div className={styles.spaceholder} />
                 ) : icon}
@@ -252,50 +277,14 @@ class Port extends React.PureComponent {
                     </div>
                 )}
                 {!isInput && icon}
-            </div>
-        )
-    }
-}
-
-/**
- * Port options flyout menu
- */
-
-class PortOptions extends React.PureComponent {
-    getToggleOption = (key) => () => {
-        const { port } = this.props
-        this.props.setPortOptions(port.id, { [key]: !port[key] })
-    }
-
-    render() {
-        const { port, canvas } = this.props
-        const isRunning = canvas.state === 'RUNNING'
-
-        return (
-            <div className={styles.portOptions}>
-                {port.canToggleDrivingInput && (
-                    <button
-                        type="button"
-                        title={`Driving Input: ${port.drivingInput ? 'On' : 'Off'}`}
-                        value={!!port.drivingInput}
-                        className={styles.drivingInputOption}
-                        onClick={this.getToggleOption('drivingInput')}
-                        disabled={!!isRunning}
-                    >
-                        DI
-                    </button>
-                )}
                 {port.canBeNoRepeat && (
-                    <button
-                        type="button"
-                        title={`No Repeat: ${port.drivingInput ? 'On' : 'Off'}`}
-                        value={!!port.noRepeat}
-                        className={styles.noRepeatOption}
-                        onClick={this.getToggleOption('noRepeat')}
+                    <Option
+                        activated={!!port.noRepeat}
+                        className={styles.portOption}
                         disabled={!!isRunning}
-                    >
-                        NR
-                    </button>
+                        name="noRepeat"
+                        onToggle={this.toggleOption}
+                    />
                 )}
             </div>
         )
