@@ -163,6 +163,10 @@ export async function getStreams(params) {
     return api().get(`${streamsUrl}`, { params }).then(getData)
 }
 
+export async function getStream(id) {
+    return api().get(`${streamsUrl}/${id}`).then(getData)
+}
+
 export async function deleteAllCanvases() {
     // try do some clean up so we don't fill the server with cruft
     const canvases = await loadCanvases()

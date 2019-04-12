@@ -186,7 +186,34 @@ const CanvasEditComponent = class CanvasEdit extends Component {
 
     loadNewDefinition = async (hash) => {
         const module = CanvasState.getModule(this.props.canvas, hash)
-        const newModule = await sharedServices.getModule(module)
+
+        // Stream module needs configuration for the getModule call
+        let configuration = null
+        if (module.id === 147) {
+            const streamPort = CanvasState.findModulePort(this.props.canvas, hash, (port) => port.type === 'Stream')
+            if (streamPort) {
+                configuration = {
+                    params: [
+                        {
+                            name: 'stream',
+                            value: streamPort.value,
+                        },
+                    ],
+                }
+            }
+        }
+
+        const newModule = await sharedServices.getModule({
+            id: module.id,
+            configuration,
+        })
+
+        // If we load new definition for the Stream module
+        // we still need to preserve current module layout etc.
+        if (module.id === 147) {
+            newModule.layout = module.layout
+            newModule.hash = hash
+        }
 
         if (this.unmounted) { return }
         this.replaceCanvas((canvas) => (

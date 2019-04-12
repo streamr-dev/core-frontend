@@ -6,6 +6,7 @@ import startCase from 'lodash/startCase'
 import UseState from '$shared/components/UseState'
 import EditableText from '$shared/components/EditableText'
 import ColorPicker from '$editor/shared/components/ColorPicker'
+import StreamSelector from '$editor/shared/components/StreamSelector'
 import ContextMenu from '$shared/components/ContextMenu'
 
 import {
@@ -629,6 +630,21 @@ class PortValue extends React.Component {
                         <option key={value} value={value}>{name}</option>
                     ))}
                 </select>
+            )
+        }
+
+        /* Stream */
+        if (port.type === 'Stream') {
+            return (
+                <StreamSelector
+                    {...props}
+                    value={value}
+                    disabled={disabled}
+                    style={style}
+                    onChange={this.onChange}
+                    onBlur={this.onBlur}
+                    onFocus={this.onFocus}
+                />
             )
         }
 
