@@ -331,7 +331,7 @@ class HistoryView extends Component<Props, State> {
                             id="storage-period"
                             type="number"
                             label={I18n.t('userpages.streams.edit.configure.historicalStoragePeriod.label')}
-                            value={stream.storageDays ? stream.storageDays : 365}
+                            value={stream.storageDays}
                             onChange={this.onStoragePeriodChange}
                             preserveLabelSpace
                         />

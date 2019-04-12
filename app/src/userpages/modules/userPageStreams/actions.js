@@ -505,8 +505,8 @@ export const initEditStream = () => (dispatch: Function, getState: Function) => 
             autoConfigure: stream.autoConfigure || false,
             partitions: stream.partitions || 1,
             requireSignedData: stream.requireSignedData || false,
-            storageDays: stream.storageDays || 365,
             uiChannel: stream.uiChannel || false,
+            storageDays: stream.storageDays !== undefined ? stream.storageDays : 365,
         }))
     }
 }
