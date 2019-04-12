@@ -628,51 +628,49 @@ class PortValue extends React.Component {
     }
 }
 
-export default class Ports extends React.Component {
-    render() {
-        const {
-            api,
-            module,
-            canvas,
-            onPort,
-            onValueChange,
-            className,
-        } = this.props
+const Ports = ({
+    api,
+    module,
+    canvas,
+    onPort,
+    onValueChange,
+    className,
+}) => {
+    const { outputs } = module
+    const inputs = module.params.concat(module.inputs)
 
-        const { outputs } = module
-        const inputs = module.params.concat(module.inputs)
-
-        return !!(inputs.length || outputs.length) && (
-            <div className={cx(className, styles.ports)}>
-                <div className={styles.inputs}>
-                    {inputs.map((port, index) => (
-                        <Port
-                            /* eslint-disable react/no-array-index-key */
-                            key={port.id + index}
-                            port={port}
-                            onPort={onPort}
-                            canvas={canvas}
-                            api={api}
-                            onChange={onValueChange}
-                            setPortOptions={api.port.setPortOptions}
-                        />
-                    ))}
-                </div>
-                <div className={styles.outputs}>
-                    {outputs.map((port, index) => (
-                        <Port
-                            /* eslint-disable react/no-array-index-key */
-                            key={port.id + index}
-                            port={port}
-                            onPort={onPort}
-                            canvas={canvas}
-                            api={api}
-                            onChange={onValueChange}
-                            setPortOptions={api.port.setPortOptions}
-                        />
-                    ))}
-                </div>
+    return !!(inputs.length || outputs.length) && (
+        <div className={cx(className, styles.ports)}>
+            <div className={styles.inputs}>
+                {inputs.map((port, index) => (
+                    <Port
+                        /* eslint-disable react/no-array-index-key */
+                        key={port.id + index}
+                        port={port}
+                        onPort={onPort}
+                        canvas={canvas}
+                        api={api}
+                        onChange={onValueChange}
+                        setPortOptions={api.port.setPortOptions}
+                    />
+                ))}
             </div>
-        )
-    }
+            <div className={styles.outputs}>
+                {outputs.map((port, index) => (
+                    <Port
+                        /* eslint-disable react/no-array-index-key */
+                        key={port.id + index}
+                        port={port}
+                        onPort={onPort}
+                        canvas={canvas}
+                        api={api}
+                        onChange={onValueChange}
+                        setPortOptions={api.port.setPortOptions}
+                    />
+                ))}
+            </div>
+        </div>
+    )
 }
+
+export default Ports
