@@ -6,7 +6,7 @@ import api from '$editor/shared/utils/api'
 import Autosave from '$editor/shared/utils/autosave'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
-import { emptyCanvas } from './state'
+import { emptyCanvas, isRunning, RunStates } from './state'
 
 const getData = ({ data }) => data
 
@@ -43,12 +43,57 @@ export async function saveNow(canvas, ...args) {
     return save(canvas, ...args)
 }
 
-async function createCanvas(canvas) {
-    return api().post(canvasesUrl, canvas).then(getData)
+export async function loadCanvas({ id } = {}) {
+    return api().get(`${canvasesUrl}/${id}`).then(getData)
 }
 
-export async function create() {
-    return createCanvas(emptyCanvas()) // create new empty
+export async function loadCanvases() {
+    return api().get(canvasesUrl).then(getData)
+}
+
+function getUniqueName(originalName = '', existingNames = []) {
+    let name = originalName
+    const nameSplit = /(.*) \((\d+)\)$/g.exec(name)
+    let highestCounter = 1
+    let nameCounter = 0
+    if (nameSplit) {
+        name = nameSplit[1] // eslint-disable-line prefer-destructuring
+        nameCounter = parseInt(nameSplit[2], 10) // eslint-disable-line prefer-destructuring
+    }
+
+    name = name.trim()
+    const matchingNames = existingNames.filter((currentName) => {
+        if (currentName === name) { return true }
+        const matches = /(.*) \((\d+)\)$/g.exec(currentName)
+        if (!matches) { return false }
+        const [, innerName, counter] = matches
+        if (innerName !== name) { return false }
+        highestCounter = Math.max(highestCounter, parseInt(counter, 10))
+        return true
+    })
+    if (!matchingNames.length) { return originalName }
+    return `${name} (${Math.max(highestCounter + 1, nameCounter)})`
+}
+
+async function getUniqueCanvasName(canvasName) {
+    if (!canvasName) {
+        canvasName = emptyCanvas().name // eslint-disable-line prefer-destructuring
+    }
+    const canvases = await loadCanvases()
+    const names = canvases.map(({ name }) => name)
+    return getUniqueName(canvasName, names)
+}
+
+async function createCanvas(canvas) {
+    return api().post(canvasesUrl, {
+        ...canvas,
+        name: await getUniqueCanvasName(canvas.name),
+        state: RunStates.Stopped, // always create stopped canvases
+    }).then(getData)
+}
+
+export async function create(config) {
+    return createCanvas(emptyCanvas(config)) // create new empty
 }
 
 export async function moduleHelp({ id }) {
@@ -56,8 +101,10 @@ export async function moduleHelp({ id }) {
 }
 
 export async function duplicateCanvas(canvas) {
-    const savedCanvas = await saveNow(canvas) // ensure canvas saved before duplicating
-    return createCanvas(savedCanvas)
+    if (!isRunning(canvas)) {
+        canvas = await saveNow(canvas) // ensure canvas saved before duplicating
+    }
+    return createCanvas(canvas)
 }
 
 export async function deleteCanvas({ id } = {}) {
@@ -67,14 +114,6 @@ export async function deleteCanvas({ id } = {}) {
 
 export async function getModuleCategories() {
     return api().get(getModuleCategoriesURL).then(getData)
-}
-
-export async function loadCanvas({ id } = {}) {
-    return api().get(`${canvasesUrl}/${id}`).then(getData)
-}
-
-export async function loadCanvases() {
-    return api().get(canvasesUrl).then(getData)
 }
 
 async function startCanvas(canvas, { clearState }) {

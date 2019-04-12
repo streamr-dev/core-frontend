@@ -7,7 +7,7 @@ Object {
   "hasExports": false,
   "id": Any<String>,
   "modules": Array [],
-  "name": "Untitled Canvas",
+  "name": Any<String>,
   "serialized": false,
   "settings": Object {},
   "startedById": null,
