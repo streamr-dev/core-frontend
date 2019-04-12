@@ -1,4 +1,5 @@
 import api from '$editor/shared/utils/api'
+import ModuleError from '$editor/shared/errors/ModuleError'
 
 const getModulesURL = `${process.env.STREAMR_API_URL}/modules`
 
@@ -32,4 +33,11 @@ export async function getModules() {
 
 export async function getModule({ id, configuration } = {}) {
     return api().post(`${getModulesURL}/${id}`, configuration).then(getData)
+        .then((data) => {
+            if (data.error) {
+                throw new ModuleError(data.message || 'Module load failed', data.moduleErrors)
+            }
+
+            return data
+        })
 }
