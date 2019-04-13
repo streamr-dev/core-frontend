@@ -47,13 +47,9 @@ describe('Subscription', () => {
 
         async function teardown() {
             if (client) {
+                await client.ensureDisconnected()
                 client.off('error', throwError)
-                if (
-                    client.connection.state !== 'disconnecting' &&
-                    client.connection.state !== 'disconnected'
-                ) {
-                    await client.disconnect()
-                }
+                client = undefined
             }
         }
 
@@ -93,7 +89,13 @@ describe('Subscription', () => {
                 <ClientProviderComponent apiKey={apiKey}>
                     <Subscription
                         uiChannel={stream}
-                        onSubscribed={() => {
+                        onResent={() => {
+                            // don't unmount on subscribed as this
+                            // breaks the client
+                            result.unmount()
+                        }}
+                        onNoResend={() => {
+                            // don't care if resent or not, just unmount
                             result.unmount()
                         }}
                         onUnsubscribed={() => {

@@ -15,15 +15,6 @@ import * as services from '../services'
 
 export const ClientContext = React.createContext()
 
-function canDisconnect(client) {
-    return (
-        client.isConnected() || (
-            client.connection.state !== 'connecting' &&
-            client.connection.state !== 'disconnecting'
-        )
-    )
-}
-
 export function createClient(apiKey) {
     return new StreamrClient({
         url: process.env.STREAMR_WS_URL,
@@ -57,8 +48,16 @@ export class ClientProviderComponent extends Component {
 
     setup(forceCreate) {
         const { apiKey } = this.props
-        if (!forceCreate && (!apiKey || this.state.client)) { return }
-        const client = createClient(apiKey)
+        let { client } = this.state
+        if (!forceCreate) {
+            if (!apiKey) { return }
+            if (client) {
+                client.ensureConnected()
+                return
+            }
+        }
+
+        client = createClient(apiKey)
         client.once('disconnecting', this.forceSetup)
 
         this.setState({
@@ -68,15 +67,9 @@ export class ClientProviderComponent extends Component {
 
     disconnect() {
         const { client } = this.state
-        client.off('disconnecting', this.forceSetup)
         if (!client) { return }
-        if (canDisconnect(client)) {
-            client.disconnect()
-        } else if (client.connection.state === 'connecting') {
-            client.once('connected', () => {
-                this.disconnect()
-            })
-        }
+        client.off('disconnecting', this.forceSetup)
+        return client.ensureDisconnected()
     }
 
     teardown() {
