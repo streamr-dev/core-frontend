@@ -145,9 +145,6 @@ class PortIcon extends React.PureComponent {
             <div
                 title={port.id}
                 className={cx(Plug.styles.root, {
-                    // isInput and isOutput are here mostly for PortOptions. Let's see if that's necessary.
-                    [styles.isInput]: isInput,
-                    [styles.isOutput]: !isInput,
                     [Plug.styles.exported]: isExported,
                     [Plug.styles.connected]: port.connected,
                     [Plug.styles.mandatory]: port.requiresConnection,
