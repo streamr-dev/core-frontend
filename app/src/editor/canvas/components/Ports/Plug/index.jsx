@@ -48,20 +48,23 @@ const Plug = ({ api, canvas, port, register }: Props) => {
                 return (
                     <div
                         className={cx(styles.root, {
-                            [styles.connected]: port.connected,
-                            [styles.driver]: port.drivingInput,
-                            [styles.exported]: port.export,
-                            [styles.idle]: !dragInProgress,
-                            [styles.mandatory]: port.requiresConnection,
-                            [styles.noRepeat]: port.noRepeat,
-                            // Dragging…
                             [styles.allowDrop]: !draggingFromSameModule && canDrop,
+                            [styles.idle]: !dragInProgress,
                             [styles.ignoreDrop]: draggingFromSameModule,
                             [styles.rejectDrop]: dragInProgress && !draggingFromSameModule && !canDrop,
                         })}
-                        ref={ref}
-                        title={port.id}
                     >
+                        <div
+                            className={cx(styles.inner, {
+                                [styles.connected]: port.connected,
+                                [styles.driver]: port.drivingInput,
+                                [styles.exported]: port.export,
+                                [styles.noRepeat]: port.noRepeat,
+                                [styles.optional]: !port.requiresConnection,
+                            })}
+                            ref={ref}
+                            title={port.id}
+                        />
                         <DropTarget
                             className={cx(styles.dragger, styles.dropTarget)}
                             port={port}

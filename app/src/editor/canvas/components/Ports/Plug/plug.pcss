@@ -6,21 +6,21 @@
 }
 
 .root {
-  border: 1px solid #ADADAD;
-  border-radius: 50%;
-  box-sizing: border-box;
-  height: calc(0.5 * var(--um));
+  padding: calc(0.375 * var(--um)) calc(0.5 * var(--um));
   position: relative;
+}
+
+.inner {
+  border: 1px solid #ADADAD;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  height: calc(0.5 * var(--um));
   transition: 200ms;
   transition-property: box-shadow, transform;
   width: calc(0.5 * var(--um));
 }
 
-.root:--enter {
-  outline: 0;
-}
-
-.root::after {
+.inner::after {
   background: var(--connected-color);
   content: '';
   height: 0.125em;
@@ -34,16 +34,8 @@
   width: calc(0.125 * var(--um));
 }
 
-.mandatory {
-  border-radius: 0;
-}
-
-.exported {
-  border-color: var(--exported-color);
-}
-
-.idle:hover {
-  box-shadow: 0 0 0 calc(0.125 * var(--um)) #ADF5FF;
+.optional {
+  border-radius: 50%;
 }
 
 .connected {
@@ -62,20 +54,26 @@
   border-color: var(--no-repeat-color);
 }
 
-.allowDrop,
-.rejectDrop {
-  border-color: transparent;
-
-  &::after {
-    opacity: 0;
-  }
-
-  .dropTarget {
-    z-index: 2;
-  }
+.exported {
+  border-color: var(--exported-color);
 }
 
-.rejectDrop {
+.allowDrop .inner,
+.rejectDrop .inner {
+  border-color: transparent;
+}
+
+.allowDrop .inner::after,
+.rejectDrop .inner::after {
+  opacity: 0;
+}
+
+.allowDrop .dropTarget,
+.rejectDrop .dropTarget {
+  z-index: 2;
+}
+
+.rejectDrop .inner {
   background-color: #C90000;
 }
 
@@ -83,12 +81,16 @@
   cursor: default;
 }
 
-.allowDrop {
+.allowDrop .inner {
   background-color: #00C900;
 }
 
-.allowDrop:hover {
+.allowDrop:hover .inner {
   transform: scale(1.5);
+}
+
+.idle:hover .inner {
+  box-shadow: 0 0 0 calc(0.125 * var(--um)) #ADF5FF;
 }
 
 .isDragged.dragger {
