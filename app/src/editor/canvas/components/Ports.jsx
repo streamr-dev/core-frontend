@@ -199,7 +199,7 @@ class Port extends React.PureComponent {
     }
 
     render() {
-        const { port, canvas } = this.props
+        const { onPort, api, port, canvas } = this.props
         const isInput = !!port.acceptedTypes
         const isParam = 'defaultValue' in port
         const hasInputField = isParam || port.canHaveInitialValue
@@ -219,8 +219,13 @@ class Port extends React.PureComponent {
         }
 
         const icon = (
-            <div className={styles.portIcon}>
-                <PortIcon {...this.props} />
+            <div className={styles.plug}>
+                <Plug
+                    api={api}
+                    canvas={canvas}
+                    port={port}
+                    register={onPort}
+                />
             </div>
         )
 

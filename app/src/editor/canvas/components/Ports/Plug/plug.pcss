@@ -5,15 +5,6 @@
   --exported-color: #FFB600; /* invented in lieu of design */
 }
 
-/* TODO:
-  - Use less classes maybe? We could have (a) `.dropAllowed`, (b) `.dropDisallowed`, (c) `.dropIgnored` classes
-    representing:
-    a) plugs in other modules that we can drop onto,
-    b) plugs in other modules that we can't drop onto, and
-    c) plugs in current module which we should simply ignore – technically we can't drop onto them but
-       we don't mark them with red while dragging.
-*/
-
 .root {
   border: 1px solid #ADADAD;
   border-radius: 50%;
@@ -51,20 +42,7 @@
   border-color: var(--exported-color);
 }
 
-.dragInProgress:not(.draggingFromSameModule) .dropTarget {
-  z-index: 2;
-}
-
-.dragInProgress:not(.draggingFromSameModule) {
-  border-color: transparent;
-  background-color: #C90000;
-}
-
-.canDrop:not(.draggingFromSameModule) {
-  background-color: #00C900;
-}
-
-.root:not(.dragInProgress):hover {
+.idle:hover {
   box-shadow: 0 0 0 calc(0.125 * var(--um)) #ADF5FF;
 }
 
@@ -84,11 +62,32 @@
   border-color: var(--no-repeat-color);
 }
 
-.dragInProgress:not(.draggingFromSameModule)::after {
-  opacity: 0;
+.allowDrop,
+.rejectDrop {
+  border-color: transparent;
+
+  &::after {
+    opacity: 0;
+  }
+
+  .dropTarget {
+    z-index: 2;
+  }
 }
 
-.canDrop:not(.draggingFromSameModule):hover {
+.rejectDrop {
+  background-color: #C90000;
+}
+
+.rejectDrop .dragger {
+  cursor: default;
+}
+
+.allowDrop {
+  background-color: #00C900;
+}
+
+.allowDrop:hover {
   transform: scale(1.5);
 }
 
@@ -98,8 +97,4 @@
 
 .isDragged.dragSource {
   opacity: 1;
-}
-
-.dragInProgress:not(.canDrop) .dragger {
-  cursor: default;
 }
