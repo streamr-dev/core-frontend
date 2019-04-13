@@ -242,12 +242,7 @@ class Port extends React.PureComponent {
                 {!isInput ? (
                     <div className={styles.spaceholder} />
                 ) : icon}
-                <div
-                    className={cx(styles.portNameContainer, {
-                        [styles.isInput]: isInput,
-                        [styles.isOutput]: !isInput,
-                    })}
-                >
+                <div>
                     <UseState initialValue={false}>
                         {(editing, setEditing) => (
                             <EditableText
@@ -263,7 +258,7 @@ class Port extends React.PureComponent {
                 </div>
                 {false && hasInputField && (
                     /* add input for params/inputs with initial value */
-                    <div className={cx(styles.portValueContainer)} role="gridcell">
+                    <div className={cx(styles.portValueContainer)}>
                         {/* eslint-disable-next-line jsx-a11y/mouse-events-have-key-events */}
                         <PortValue
                             className={styles.portValue}
