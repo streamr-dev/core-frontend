@@ -19,7 +19,7 @@ import {
     isPortConnected,
 } from '../state'
 import Plug from './Ports/Plug'
-import Option from './Ports/Option'
+import Port from './Ports/Port'
 import { DropTarget, DragSource } from './PortDragger'
 import { DragDropContext } from './DragDropContext'
 import styles from './Ports.pcss'
@@ -176,113 +176,6 @@ class PortIcon extends React.PureComponent {
                     <ContextMenu.Item text="Disconnect all" onClick={() => this.disconnectAll(port)} />
                     <ContextMenu.Item text={isExported ? 'Disable export' : 'Enable export'} onClick={() => this.toggleExport(port)} />
                 </ContextMenu> */}
-            </div>
-        )
-    }
-}
-
-class Port extends React.PureComponent {
-    static contextType = DragDropContext
-
-    onChangePortName = (value) => {
-        const { port } = this.props
-        this.props.setPortOptions(port.id, {
-            displayName: value,
-        })
-    }
-
-    toggleOption = (key) => {
-        const { port, setPortOptions } = this.props
-        setPortOptions(port.id, {
-            [key]: !port[key],
-        })
-    }
-
-    render() {
-        const { onPort, api, port, canvas } = this.props
-        const isInput = !!port.acceptedTypes
-        const isParam = 'defaultValue' in port
-        const hasInputField = isParam || port.canHaveInitialValue
-        const isRunning = canvas.state === 'RUNNING'
-        const dragPortInProgress = (
-            this.context.isDragging // something is dragging
-            && this.context.data.portId != null // something has a port
-        )
-
-        if (!isInput) {
-            const linkedInput = findLinkedVariadicPort(canvas, port.id)
-
-            if (linkedInput && !isPortConnected(canvas, linkedInput.id)) {
-                // hide output if linked input is not connected
-                return null
-            }
-        }
-
-        const icon = (
-            <div className={styles.plug}>
-                <Plug
-                    api={api}
-                    canvas={canvas}
-                    port={port}
-                    register={onPort}
-                />
-            </div>
-        )
-
-        return (
-            <div
-                className={cx(styles.port, {
-                    [styles.dragInProgress]: !!dragPortInProgress,
-                })}
-            >
-                {port.canToggleDrivingInput && (
-                    <Option
-                        activated={!!port.drivingInput}
-                        className={styles.portOption}
-                        disabled={!!isRunning}
-                        name="drivingInput"
-                        onToggle={this.toggleOption}
-                    />
-                )}
-                {!isInput ? (
-                    <div className={styles.spaceholder} />
-                ) : icon}
-                <div>
-                    <UseState initialValue={false}>
-                        {(editing, setEditing) => (
-                            <EditableText
-                                disabled={!!isRunning}
-                                editing={editing}
-                                onChange={this.onChangePortName}
-                                setEditing={setEditing}
-                            >
-                                {port.displayName || startCase(port.name)}
-                            </EditableText>
-                        )}
-                    </UseState>
-                </div>
-                {false && hasInputField && (
-                    /* add input for params/inputs with initial value */
-                    <div className={cx(styles.portValueContainer)}>
-                        {/* eslint-disable-next-line jsx-a11y/mouse-events-have-key-events */}
-                        <PortValue
-                            className={styles.portValue}
-                            port={port}
-                            canvas={canvas}
-                            onChange={this.props.onChange}
-                        />
-                    </div>
-                )}
-                {!isInput && icon}
-                {port.canBeNoRepeat && (
-                    <Option
-                        activated={!!port.noRepeat}
-                        className={styles.portOption}
-                        disabled={!!isRunning}
-                        name="noRepeat"
-                        onToggle={this.toggleOption}
-                    />
-                )}
             </div>
         )
     }
@@ -630,28 +523,28 @@ const Ports = ({
             <div className={styles.inputs}>
                 {inputs.map((port, index) => (
                     <Port
+                        api={api}
+                        canvas={canvas}
                         /* eslint-disable react/no-array-index-key */
                         key={port.id + index}
-                        port={port}
-                        onPort={onPort}
-                        canvas={canvas}
-                        api={api}
                         onChange={onValueChange}
-                        setPortOptions={api.port.setPortOptions}
+                        onPort={onPort}
+                        port={port}
+                        setOptions={api.port.setPortOptions}
                     />
                 ))}
             </div>
             <div className={styles.outputs}>
                 {outputs.map((port, index) => (
                     <Port
+                        api={api}
+                        canvas={canvas}
                         /* eslint-disable react/no-array-index-key */
                         key={port.id + index}
-                        port={port}
-                        onPort={onPort}
-                        canvas={canvas}
-                        api={api}
                         onChange={onValueChange}
-                        setPortOptions={api.port.setPortOptions}
+                        onPort={onPort}
+                        port={port}
+                        setOptions={api.port.setPortOptions}
                     />
                 ))}
             </div>
