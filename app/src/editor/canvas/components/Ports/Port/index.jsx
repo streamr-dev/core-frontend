@@ -1,13 +1,17 @@
 // @flow
 
-import React, { useCallback } from 'react'
+/* eslint-disable no-unused-vars */
+
+import React, { useCallback, useState, useEffect } from 'react'
 import cx from 'classnames'
 import startCase from 'lodash/startCase'
 import EditableText from '$shared/components/EditableText'
 import UseState from '$shared/components/UseState'
+import { type Ref } from '$shared/flowtype/common-types'
 import { DragDropContext } from '../../DragDropContext'
 import Option from '../Option'
 import Plug from '../Plug'
+import Menu from '../Menu'
 import styles from './port.pcss'
 
 type Props = {
@@ -30,24 +34,65 @@ const Port = ({
     const isInput = !!port.acceptedTypes
     const isParam = 'defaultValue' in port
     const hasInputField = isParam || port.canHaveInitialValue
+    const [contextMenuTarget, setContextMenuTarget] = useState(null)
+    const onContextMenu = useCallback((e: SyntheticMouseEvent<EventTarget>) => {
+        e.preventDefault()
+        // $FlowFixMe wtf?
+        setContextMenuTarget(e.currentTarget)
+    })
     const plug = (
         <Plug
             api={api}
             canvas={canvas}
+            onContextMenu={onContextMenu}
             port={port}
             register={onPort}
         />
     )
+
+    const dismiss = useCallback(() => {
+        setContextMenuTarget(null)
+    }, [])
+
+    const onDocumentClick = useCallback((e: SyntheticMouseEvent<EventTarget>) => {
+        if (contextMenuTarget && e.target instanceof HTMLElement) {
+            if (e.target.classList.contains(Menu.styles.noAutoDismiss)) {
+                return
+            }
+
+            if (!contextMenuTarget.contains(e.target)) {
+                dismiss()
+            }
+        }
+    }, [contextMenuTarget])
+
+    const onKeyDown = useCallback(({ key }: SyntheticKeyboardEvent<EventTarget>) => {
+        if (contextMenuTarget && key === 'Escape') {
+            dismiss()
+        }
+    }, [contextMenuTarget])
+
     const onNameChange = useCallback((displayName) => {
         setOptions(port.id, {
             displayName,
         })
     }, [port.id, setOptions])
+
     const onOptionToggle = useCallback((key) => {
         setOptions(port.id, {
             [key]: !port[key],
         })
     }, [port.id, setOptions])
+
+    useEffect(() => {
+        window.addEventListener('mousedown', onDocumentClick)
+        window.addEventListener('keydown', onKeyDown)
+
+        return () => {
+            window.addEventListener('mousedown', onDocumentClick)
+            window.addEventListener('keydown', onKeyDown)
+        }
+    }, [onDocumentClick, onKeyDown])
 
     return (
         <DragDropContext.Consumer>
@@ -61,6 +106,15 @@ const Port = ({
                             [styles.dragInProgress]: !!dragInProgress,
                         })}
                     >
+                        {contextMenuTarget && (
+                            <Menu
+                                api={api}
+                                dismiss={dismiss}
+                                port={port}
+                                setPortOptions={setOptions}
+                                target={contextMenuTarget}
+                            />
+                        )}
                         {port.canToggleDrivingInput && (
                             <Option
                                 activated={!!port.drivingInput}

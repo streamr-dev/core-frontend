@@ -16,11 +16,19 @@ import styles from './plug.pcss'
 type Props = {
     api: any,
     canvas: any,
+    className?: ?string,
     port: any,
     register?: ?(any, ?HTMLDivElement) => void,
 }
 
-const Plug = ({ api, canvas, port, register }: Props) => {
+const Plug = ({
+    api,
+    canvas,
+    className,
+    port,
+    register,
+    ...props
+}: Props) => {
     const ref: Ref<HTMLDivElement> = useRef(null)
 
     useEffect(() => {
@@ -47,7 +55,8 @@ const Plug = ({ api, canvas, port, register }: Props) => {
 
                 return (
                     <div
-                        className={cx(styles.root, {
+                        {...props}
+                        className={cx(styles.root, className, {
                             [styles.allowDrop]: !draggingFromSameModule && canDrop,
                             [styles.idle]: !dragInProgress,
                             [styles.ignoreDrop]: draggingFromSameModule,
