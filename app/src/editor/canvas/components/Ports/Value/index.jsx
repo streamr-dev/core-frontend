@@ -51,18 +51,18 @@ const Value = ({ canvas, port, onChange }: Props) => {
 
     return (
         <div className={styles.root}>
-            {type === 'map' && (
+            {type === 'map' && false && (
                 <Map
                     {...commonProps}
                     port={port}
                 />
             )}
-            {type === 'color' && (
+            {type === 'color' && false && (
                 <Color
                     {...commonProps}
                 />
             )}
-            {type === 'select' && (
+            {type === 'select' && false && (
                 <Select
                     {...commonProps}
                     options={port.possibleValues}
