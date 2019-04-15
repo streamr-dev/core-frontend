@@ -181,7 +181,10 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                                     <SvgIcon name="caretDown" />
                                                 )}
                                             </R.DropdownToggle>
-                                            <R.DropdownMenu className={styles.RunButtonMenu} right>
+                                            <R.DropdownMenu
+                                                className={cx(styles.RunButtonMenu, styles.HistoricalRunButtonMenu)}
+                                                right
+                                            >
                                                 <R.DropdownItem
                                                     onClick={() => setSpeed('0')}
                                                     active={!settings.speed || settings.speed === '0'}
