@@ -1,35 +1,58 @@
 .ModuleSearch {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  left: 0;
+  right: 0;
+  top: 10vw;
+  margin-left: auto;
+  margin-right: auto;
   background: white;
-  min-height: 40vh;
-  min-width: 25vw;
+  min-width: 30vw;
+  max-width: 30vw;
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: auto auto 1fr;
   z-index: 12;
   border: 1px solid #EFEFEF;
+  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.05);
   border-radius: 4px;
   overflow: hidden;
   cursor: pointer;
+  user-select: none;
 }
 
 .ModuleSearch .Header {
-  background: #F8F8F8;
   border-bottom: 1px solid #EFEFEF;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  cursor: grab;
+  height: 40px;
+  padding: 0 12px;
 }
 
 .ModuleSearch .Header button {
   appearance: none;
   display: block;
-  width: 32px;
-  height: 32px;
+  width: 24px;
   border: none;
   color: #A3A3A3;
-  margin-left: auto;
   background: none;
+}
+
+.ModuleSearch .Header button:focus {
+  outline: none;
+}
+
+.ModuleSearch .Header .minimize {
+  margin-right: auto;
+}
+
+.ModuleSearch .Header .close {
+  margin-left: auto;
+}
+
+.ModuleSearch .Header svg path {
+  stroke: #A3A3A3;
+  color: #A3A3A3;
 }
 
 .ModuleSearch .Input input {
@@ -46,6 +69,10 @@
 
 .ModuleSearch .Input input:focus {
   outline: none;
+}
+
+.ModuleSearch .Input input::placeholder {
+  color: #CDCDCD;
 }
 
 .ModuleSearch .Content {
@@ -71,6 +98,21 @@
 }
 
 .ModuleSearch .Content .Category {
+  color: #323232;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  line-height: 40px;
+  text-transform: uppercase;
+}
+
+.ModuleSearch .Content .Category.active {
+  border-left: 4px solid #0324FF;
+  padding-left: 20px;
+}
+
+.ModuleSearch .Content .SearchCategory {
   font-size: 10px;
   font-family: 'IBM Plex Mono', monospace;
   font-weight: 600;
@@ -78,6 +120,7 @@
   text-transform: uppercase;
   letter-spacing: 1.43px;
   line-height: 40px;
+  cursor: initial;
 }
 
 .ModuleSearch .Content .ModuleItem {
@@ -130,4 +173,7 @@
   height: 100vh;
   background: salmon;
   opacity: 0;
+}
+
+global(.dragHandle) {
 }

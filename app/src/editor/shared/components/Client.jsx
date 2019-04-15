@@ -15,7 +15,19 @@ import * as services from '../services'
 
 export const ClientContext = React.createContext()
 
-class ClientProviderComponent extends Component {
+export function createClient(apiKey) {
+    return new StreamrClient({
+        url: process.env.STREAMR_WS_URL,
+        restUrl: process.env.STREAMR_API_URL,
+        auth: {
+            apiKey, // assume this won't change for now
+        },
+        autoConnect: true,
+        autoDisconnect: false,
+    })
+}
+
+export class ClientProviderComponent extends Component {
     static propTypes = {
         apiKey: t.string,
     }
@@ -32,27 +44,36 @@ class ClientProviderComponent extends Component {
         this.teardown()
     }
 
-    setup() {
+    forceSetup = () => this.setup(true)
+
+    setup(forceCreate) {
         const { apiKey } = this.props
-        if (!apiKey || this.state.client) { return }
+        let { client } = this.state
+        if (!forceCreate) {
+            if (!apiKey) { return }
+            if (client) {
+                client.ensureConnected()
+                return
+            }
+        }
+
+        client = createClient(apiKey)
+        client.once('disconnecting', this.forceSetup)
+
         this.setState({
-            client: new StreamrClient({
-                url: process.env.STREAMR_WS_URL,
-                restUrl: process.env.STREAMR_API_URL,
-                auth: {
-                    apiKey,
-                },
-                autoConnect: true,
-                autoDisconnect: true,
-            }),
+            client,
         })
     }
 
-    teardown() {
+    disconnect() {
         const { client } = this.state
-        if (client && client.connection) {
-            client.disconnect()
-        }
+        if (!client) { return }
+        client.off('disconnecting', this.forceSetup)
+        return client.ensureDisconnected()
+    }
+
+    teardown() {
+        this.disconnect()
     }
 
     send = async (rest) => (

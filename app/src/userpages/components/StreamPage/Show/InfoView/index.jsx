@@ -6,11 +6,13 @@ import { Col, Row, Button } from 'reactstrap'
 import copy from 'copy-to-clipboard'
 import { I18n, Translate } from 'react-redux-i18n'
 
+import Notification from '$shared/utils/Notification'
 import type { Stream } from '$shared/flowtype/stream-types'
 import type { StoreState } from '$shared/flowtype/store-state'
 import TextInput from '$shared/components/TextInput'
 import { updateEditStreamField } from '$userpages/modules/userPageStreams/actions'
 import { selectEditedStream } from '$userpages/modules/userPageStreams/selectors'
+import { NotificationIcon } from '$shared/utils/constants'
 
 import styles from './infoView.pcss'
 
@@ -69,11 +71,23 @@ export class InfoView extends Component<Props, State> {
         this.contentChanged()
     }
 
-    copyStreamTap = (id: string) => {
+    copyStreamTap = async (id: string) => {
         this.setState({
             idCopied: true,
         })
         copy(id)
+        await new Promise((resolve) => setTimeout(resolve, 1000))
+        this.setState({
+            idCopied: false,
+        })
+        this.addStreamIdCopiedNotification()
+    }
+
+    addStreamIdCopiedNotification = () => {
+        Notification.push({
+            title: I18n.t('notifications.streamIdCopied'),
+            icon: NotificationIcon.CHECKMARK,
+        })
     }
 
     render() {

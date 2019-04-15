@@ -80,8 +80,8 @@ class AddKeyField extends React.Component<Props, State> {
         return !editing ? (
             <Button
                 type="button"
-                color="secondary"
-                className={`grey-outline grey-container ${styles.button}`}
+                color="userpages"
+                className={styles.button}
                 onClick={this.onEdit}
                 outline
                 disabled={!addKeyFieldAllowed}

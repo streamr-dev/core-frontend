@@ -6,6 +6,8 @@ import isEqual from 'lodash/isEqual'
 import throttle from 'lodash/throttle'
 import merge from 'lodash/merge'
 import remove from 'lodash/remove'
+import L from 'leaflet'
+import type { LatLngBounds } from 'react-leaflet'
 
 import Map, { type Marker, type TracePoint } from '../Map/Map'
 import ModuleSubscription from '../ModuleSubscription'
@@ -21,6 +23,9 @@ type Props = {
 
 type State = {
     markers: { [string]: Marker },
+    imageMap: boolean,
+    imageReady: boolean,
+    imageBounds: ?LatLngBounds,
 }
 
 type Message = {
@@ -39,19 +44,84 @@ type Message = {
 export default class MapModule extends React.Component<Props, State> {
     state = {
         markers: {},
+        imageMap: !!('customImageUrl' in this.props.module.options),
+        imageReady: false,
+        imageBounds: null,
     }
 
     queuedMarkers: { [string]: Marker } = {}
     positionHistory: { [string]: Array<TracePoint> } = {}
     unmounted = false
+    image: ?HTMLImageElement = null
+    queuedMessages: Array<Message> = []
+
+    componentDidMount() {
+        const customImageUrl = this.getModuleOption('customImageUrl', null)
+
+        if (customImageUrl) {
+            this.loadImage(customImageUrl)
+        }
+    }
 
     componentWillUnmount() {
+        if (this.image) {
+            delete this.image
+            this.image = null
+        }
         this.unmounted = true
     }
 
+    componentDidUpdate(prevProps: Props) {
+        const customImageUrl = this.getModuleOption('customImageUrl', null)
+
+        if (this.state.imageMap && customImageUrl !== prevProps.module.options.customImageUrl.value) {
+            this.loadImage(customImageUrl)
+        }
+    }
+
+    onLoadImage = () => {
+        if (this.unmounted || !this.image) { return }
+
+        const { width, height } = this.image
+
+        this.setState({
+            imageReady: true,
+            imageBounds: L.latLngBounds(L.latLng(height, 0), L.latLng(0, width)),
+        }, () => {
+            this.queuedMessages.forEach(this.onMessage)
+            this.queuedMessages = []
+        })
+    }
+
+    loadImage = (url: string) => {
+        if (this.image) {
+            delete this.image
+            this.image = null
+        }
+
+        this.setState({
+            imageReady: false,
+            imageBounds: null,
+        }, () => {
+            this.image = new Image()
+            this.image.onload = this.onLoadImage
+            this.image.src = url
+        })
+    }
+
     onMessage = (msg: Message) => {
-        if (msg.t === 'p') {
+        const { imageMap, imageReady } = this.state
+
+        // If the image has not yet loaded, we are not ready to handle any messages. Queue them instead
+        if (imageMap && !imageReady) {
+            this.queuedMessages.push(msg)
+        } else if (msg.t === 'p') {
             const marker = this.getMarkerFromMessage(msg)
+
+            if (imageMap && imageReady && this.image) {
+                marker.long *= this.image.width
+                marker.lat *= this.image.height
+            }
 
             // Check if data has changed
             if (isEqual(this.queuedMarkers[msg.id], marker) &&
@@ -145,7 +215,7 @@ export default class MapModule extends React.Component<Props, State> {
     }
 
     getValueOrDefault = (obj: { type: string, value: any }, defaultValue: any) => {
-        const { type, value } = obj
+        const { type, value } = obj || {}
         if ((type === 'int' || type === 'double') && value != null) {
             return value
         } else if (!value) {
@@ -169,7 +239,7 @@ export default class MapModule extends React.Component<Props, State> {
 
     render() {
         const { className } = this.props
-        const { markers } = this.state
+        const { markers, imageBounds, imageMap } = this.state
 
         const directionalMarkers = this.getModuleOption('directionalMarkers', false)
         let markerIcon = this.getModuleOption('markerIcon', 'circle')
@@ -198,6 +268,9 @@ export default class MapModule extends React.Component<Props, State> {
                     markerColor={this.getModuleOption('markerColor', '#FFFFFF')}
                     directionalMarkers={directionalMarkers}
                     skin={this.getModuleOption('skin', 'default')}
+                    isImageMap={imageMap}
+                    imageBounds={imageBounds}
+                    imageUrl={this.getModuleOption('customImageUrl', null)}
                 />
             </div>
         )

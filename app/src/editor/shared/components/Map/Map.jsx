@@ -3,7 +3,8 @@
 import React from 'react'
 import cx from 'classnames'
 import 'leaflet/dist/leaflet.css'
-import { Map as LeafletMap, TileLayer, Tooltip, Polyline } from 'react-leaflet'
+import { Map as LeafletMap, ImageOverlay, TileLayer, Tooltip, Polyline, type LatLngBounds } from 'react-leaflet'
+import L from 'leaflet'
 
 import CustomMarker from './Marker'
 
@@ -39,6 +40,9 @@ type Props = {
     markerColor: string,
     directionalMarkers: boolean,
     skin: Skin,
+    isImageMap: boolean,
+    imageBounds: ?LatLngBounds,
+    imageUrl?: string,
 }
 
 export default class Map extends React.Component<Props> {
@@ -57,11 +61,15 @@ export default class Map extends React.Component<Props> {
             markerColor,
             directionalMarkers,
             skin,
+            isImageMap,
+            imageBounds,
+            imageUrl,
         } = this.props
         const mapCenter = [centerLat, centerLong]
 
-        let tileAttribution = '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors, Streamr'
-        let tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+        /* eslint-disable-next-line max-len */
+        let tileAttribution = '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://cartodb.com/attributions">CartoDB</a>, Streamr'
+        let tileUrl = 'http://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png'
 
         if (skin === 'cartoDark') {
             /* eslint-disable-next-line max-len */
@@ -82,12 +90,20 @@ export default class Map extends React.Component<Props> {
                     className={styles.leafletMap}
                     minZoom={minZoom}
                     maxZoom={maxZoom}
+                    crs={isImageMap ? L.CRS.Simple : L.CRS.EPSG3857}
                 >
-                    <TileLayer
-                        attribution={tileAttribution}
-                        url={tileUrl}
-                    />
-
+                    {!isImageMap && (
+                        <TileLayer
+                            attribution={tileAttribution}
+                            url={tileUrl}
+                        />
+                    )}
+                    {isImageMap && !!imageUrl && !!imageBounds && (
+                        <ImageOverlay
+                            url={imageUrl}
+                            bounds={imageBounds}
+                        />
+                    )}
                     {markerArray.map((marker) => {
                         const pos = [marker.lat, marker.long]
                         const tracePoints = marker.previousPositions && marker.previousPositions

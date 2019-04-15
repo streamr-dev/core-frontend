@@ -1,39 +1,26 @@
 // @flow
 
-import { connectedRouterRedirect, connectedReduxRedirect } from 'redux-auth-wrapper/history4/redirect'
+import { connectedRouterRedirect } from 'redux-auth-wrapper/history4/redirect'
 import locationHelperBuilder from 'redux-auth-wrapper/history4/locationHelper'
-import queryString from 'query-string'
 
-import { selectUserData, isAuthenticating } from '$shared/modules/user/selectors'
-import { startExternalLogin } from '$shared/modules/user/actions'
+import { selectUserData, isAuthenticating as authenticatingSelector } from '$shared/modules/user/selectors'
+import routes from '$routes'
 
-import { getLoginUrl } from './login'
+const locationHelper = locationHelperBuilder({})
 
-export const doExternalLogin = (accessedPath: string) => {
-    // Use browser's native redirection for external redirect
-    // Use .replace to skip recording a needless step which would break native Back function
-    window.location.replace(getLoginUrl(accessedPath))
-}
-
-export const userIsAuthenticated = connectedReduxRedirect({
-    redirectPath: 'NOT_USED_BUT_MUST_PROVIDE',
-    authenticatingSelector: isAuthenticating,
+export const userIsAuthenticated = connectedRouterRedirect({
+    authenticatingSelector,
+    redirectPath: routes.login(),
+    allowRedirectBack: true,
     // If selector is true, wrapper will not redirect
     // For example let's check that state contains user data
     authenticatedSelector: (state) => !!selectUserData(state),
     // A nice display name for this check
     wrapperDisplayName: 'UserIsAuthenticated',
-    redirectAction: (newLoc) => (dispatch) => {
-        const accessedPath = queryString.parse(newLoc.search).redirect
-        dispatch(startExternalLogin())
-        doExternalLogin(accessedPath)
-    },
 })
 
-const locationHelper = locationHelperBuilder({})
-
 export const userIsNotAuthenticated = connectedRouterRedirect({
-    authenticatingSelector: isAuthenticating,
+    authenticatingSelector,
     // This sends the user either to the query param route if we have one, or to
     // the landing page if none is specified and the user is already logged in
     redirectPath: (state, ownProps) => locationHelper.getRedirectQueryParam(ownProps) || '/',

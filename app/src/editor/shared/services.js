@@ -1,15 +1,9 @@
-import axios from 'axios'
+import api from '$editor/shared/utils/api'
+import ModuleError from '$editor/shared/errors/ModuleError'
 
-const getModuleURL = `${process.env.STREAMR_URL}/module/jsonGetModule`
+const getModulesURL = `${process.env.STREAMR_API_URL}/modules`
 
-const API = axios.create({
-    headers: {
-        'Content-Type': 'application/json',
-    },
-    withCredentials: true,
-})
-
-const getData = ({ data }) => data
+export const getData = ({ data }) => data
 
 export const LOAD_JSON_REQ = {
     type: 'json',
@@ -25,7 +19,7 @@ export async function send({
     const dashboardPath = dashboardId ? `/dashboards/${dashboardId}` : ''
     const modulePath = `/canvases/${canvasId}/modules/${moduleHash}`
     const url = `${process.env.STREAMR_API_URL}${dashboardPath}${modulePath}/request`
-    return API.post(url, {
+    return api().post(url, {
         ...LOAD_JSON_REQ,
         ...data,
     }, {
@@ -33,9 +27,17 @@ export async function send({
     }).then(getData)
 }
 
-export async function getModule(module) {
-    const form = new FormData()
-    form.append('id', module.id)
-    form.append('configuration', JSON.stringify(module))
-    return API.post(getModuleURL, form).then(getData)
+export async function getModules() {
+    return api().get(getModulesURL).then(getData)
+}
+
+export async function getModule({ id, configuration } = {}) {
+    return api().post(`${getModulesURL}/${id}`, configuration).then(getData)
+        .then((data) => {
+            if (data.error) {
+                throw new ModuleError(data.message || 'Module load failed', data.moduleErrors)
+            }
+
+            return data
+        })
 }

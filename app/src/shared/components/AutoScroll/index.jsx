@@ -12,7 +12,11 @@ class AutoScroll extends React.Component<{}> {
         const root = document.getElementById('root')
         const { isModalOpen } = this.context
 
-        if (root && !isModalOpen) {
+        // Edge case for really long pages
+        // Snap straight to top
+        if (root && !isModalOpen && window.pageYOffset > 2000) {
+            window.scrollTo(0, 0)
+        } else if (root && !isModalOpen) {
             root.scrollIntoView({
                 behavior: 'smooth',
                 block: 'start',

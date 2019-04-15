@@ -68,6 +68,7 @@ export class ProfilePage extends Component<Props, State> {
             }
         })
     }
+
     render() {
         const { saving } = this.state
         return (
@@ -85,7 +86,7 @@ export class ProfilePage extends Component<Props, State> {
                                 linkTo: '/u',
                             },
                             saveChanges: {
-                                title: I18n.t('userpages.profilePage.toolbar.saveChanges'),
+                                title: I18n.t('userpages.profilePage.toolbar.saveAndExit'),
                                 color: 'primary',
                                 onClick: this.onSave,
                                 disabled: saving,

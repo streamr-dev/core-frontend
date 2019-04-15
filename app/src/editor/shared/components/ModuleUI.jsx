@@ -16,6 +16,7 @@ import MapModule from './modules/Map'
 import ModuleLoader from './ModuleLoader'
 import ExportCSVModule from './modules/ExportCSV'
 import SchedulerModule from './modules/Scheduler'
+import CustomModule from './modules/Custom'
 
 // Set by module.jsModule
 const Modules = {
@@ -27,6 +28,8 @@ const Modules = {
     ExportCSVModule,
     SchedulerModule,
     MapModule,
+    ImageMapModule: MapModule,
+    CustomModule,
 }
 
 // Set by module.widget

@@ -138,6 +138,7 @@ export default class ChartModule extends React.Component {
     }
 
     flushDataPoints = throttle(() => {
+        if (this.unmounted) { return }
         const { queuedDatapoints } = this
         this.queuedDatapoints = []
         this.setState(({ datapoints }) => ({
@@ -171,9 +172,11 @@ export default class ChartModule extends React.Component {
     }
 
     componentDidMount() {
-        if (this.props.isActive) {
-            this.load()
-        }
+        this.initIfActive(this.props.isActive)
+    }
+
+    componentWillUnmount() {
+        this.unmounted = true
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -220,15 +223,23 @@ export default class ChartModule extends React.Component {
     }
 
     resize = debounce(() => {
+        if (this.unmounted) { return }
         if (this.chart) {
             this.chart.reflow()
         }
     }, 10)
 
-    load = async () => {
+    initIfActive = (isActive) => {
+        if (isActive && !this.props.canvas.adhoc) {
+            this.init()
+        }
+    }
+
+    init = async () => {
         const { initRequest } = await this.subscription.current.send({
             type: 'initRequest',
         })
+        if (this.unmounted) { return }
         this.setState(initRequest)
     }
 
@@ -255,6 +266,7 @@ export default class ChartModule extends React.Component {
     }
 
     setExtremes = (e) => {
+        if (this.unmounted) { return }
         if (e.trigger === 'navigator' || e.trigger === 'zoom') {
             this.rangeMin = e.min
             this.rangeMax = e.max
@@ -274,6 +286,7 @@ export default class ChartModule extends React.Component {
                     {...this.props}
                     ref={this.subscription}
                     onMessage={this.onMessage}
+                    onActiveChange={this.initIfActive}
                 />
                 {!!(options.displayTitle && options.displayTitle.value && title) && (
                     <h4>{title}</h4>

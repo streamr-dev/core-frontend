@@ -28,7 +28,7 @@ const NavDropdown = ({
     <div className={classNames(styles.dropdown, 'd-none', 'd-md-inline-block', navLinkStyles.navLinkParent)}>
         {toggle || (
             <NavLink {...props}>
-                {label}
+                {label || null}
             </NavLink>
         )}
         <div

@@ -212,6 +212,11 @@ module.exports = {
                     '**/types.js',
                     // skip conditional stubs
                     '**/stub.jsx',
+                    // skip stories
+                    '**/*.stories.js',
+                    '**/*.stories.jsx',
+                    // skip MD documentation
+                    'src/docs/docsEditingGuide.md',
                 ],
             },
         }),

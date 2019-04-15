@@ -14,8 +14,10 @@ import DropdownActions from '$shared/components/DropdownActions'
 import Tooltip from '$shared/components/Tooltip'
 import WithCalendar from '$shared/components/WithCalendar'
 import dateFormatter from '$utils/dateFormatter'
-import RenameInput from '$editor/shared/components/RenameInput'
+import EditableText from '$shared/components/EditableText'
+import UseState from '$shared/components/UseState'
 import { RunTabs, RunStates } from '../state'
+import Toolbar from '$editor/shared/components/Toolbar'
 
 import ShareDialog from './ShareDialog'
 import CanvasSearch from './CanvasSearch'
@@ -26,14 +28,6 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
     state = {
         canvasSearchIsOpen: false,
         runButtonDropdownOpen: false,
-    }
-
-    onRenameRef = (el) => {
-        this.renameEl = el
-    }
-
-    onRename = () => {
-        this.renameEl.focus() // just focus the input to start renaming
     }
 
     canvasSearchOpen = (show = true) => {
@@ -97,52 +91,67 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                     {({ api: shareDialog }) => (
                         <React.Fragment>
                             <div className={styles.ToolbarLeft}>
-                                <div className={styles.CanvasNameContainer}>
-                                    <StatusIcon status={isRunning && StatusIcon.OK} className={styles.status} />
-                                    <RenameInput
-                                        inputClassName={styles.canvasName}
-                                        title={canvas.name}
-                                        value={canvas.name}
-                                        onChange={renameCanvas}
-                                        innerRef={this.onRenameRef}
-                                        disabled={!canEdit}
-                                        required
-                                    />
-                                    <DropdownActions
-                                        title={<Meatball alt="Select" />}
-                                        noCaret
-                                        className={styles.DropdownMenu}
-                                    >
-                                        <DropdownActions.Item onClick={newCanvas}>New Canvas</DropdownActions.Item>
-                                        <DropdownActions.Item onClick={() => shareDialog.open()}>Share</DropdownActions.Item>
-                                        <DropdownActions.Item onClick={this.onRename} disabled={!canEdit}>Rename</DropdownActions.Item>
-                                        <DropdownActions.Item onClick={() => duplicateCanvas()}>Duplicate</DropdownActions.Item>
-                                        <DropdownActions.Item onClick={() => deleteCanvas()} disabled={!canEdit}>Delete</DropdownActions.Item>
-                                    </DropdownActions>
-                                </div>
+                                <UseState initialValue={false}>
+                                    {(editing, setEditing) => (
+                                        <div className={styles.CanvasNameContainer}>
+                                            <StatusIcon status={isRunning && StatusIcon.OK} className={styles.status} />
+                                            <EditableText
+                                                className={Toolbar.styles.entityName}
+                                                disabled={!canEdit}
+                                                editing={editing}
+                                                onChange={renameCanvas}
+                                                setEditing={setEditing}
+                                                title={canvas.name}
+                                            >
+                                                {canvas.name}
+                                            </EditableText>
+                                            <DropdownActions
+                                                title={
+                                                    <R.Button className={cx(styles.MeatballContainer, styles.ToolbarButton)}>
+                                                        <Meatball alt="Select" />
+                                                    </R.Button>
+                                                }
+                                                noCaret
+                                                className={styles.DropdownMenu}
+                                                menuProps={{
+                                                    className: styles.DropdownMenuMenu,
+                                                }}
+                                            >
+                                                <DropdownActions.Item onClick={newCanvas}>New Canvas</DropdownActions.Item>
+                                                <DropdownActions.Item onClick={() => shareDialog.open()}>Share</DropdownActions.Item>
+                                                <DropdownActions.Item
+                                                    onClick={() => setEditing(true)}
+                                                    disabled={!canEdit}
+                                                >
+                                                    Rename
+                                                </DropdownActions.Item>
+                                                <DropdownActions.Item onClick={() => duplicateCanvas()}>Duplicate</DropdownActions.Item>
+                                                <DropdownActions.Item onClick={() => deleteCanvas()} disabled={!canEdit}>Delete</DropdownActions.Item>
+                                            </DropdownActions>
+                                        </div>
+                                    )}
+                                </UseState>
                             </div>
-                            <div className={styles.ToolbarLeft}>
-                                <div style={{ position: 'relative' }}>
+                            <div className={cx(styles.ToolbarLeft, styles.OpenAddButtons)}>
+                                <R.Button
+                                    className={cx(styles.ToolbarButton, styles.OpenCanvasButton)}
+                                    onClick={() => this.canvasSearchOpen(!this.state.canvasSearchIsOpen)}
+                                >
+                                    Open
+                                </R.Button>
+                                <CanvasSearch
+                                    isOpen={canvasSearchIsOpen}
+                                    open={this.canvasSearchOpen}
+                                />
+                                <Tooltip value="Add module">
                                     <R.Button
-                                        className={cx(styles.ToolbarButton, styles.OpenCanvasButton)}
-                                        onClick={() => this.canvasSearchOpen(!this.state.canvasSearchIsOpen)}
+                                        className={styles.ToolbarButton}
+                                        onClick={() => this.props.moduleSearchOpen(!this.props.moduleSearchIsOpen)}
+                                        disabled={!canEdit}
                                     >
-                                        Open
+                                        <SvgIcon name="plus" className={styles.icon} />
                                     </R.Button>
-                                    <CanvasSearch
-                                        isOpen={canvasSearchIsOpen}
-                                        open={this.canvasSearchOpen}
-                                    />
-                                    <Tooltip value="Add module">
-                                        <R.Button
-                                            className={styles.ToolbarButton}
-                                            onClick={() => this.props.moduleSearchOpen(!this.props.moduleSearchIsOpen)}
-                                            disabled={!canEdit}
-                                        >
-                                            <SvgIcon name="plus" className={styles.icon} />
-                                        </R.Button>
-                                    </Tooltip>
-                                </div>
+                                </Tooltip>
                             </div>
                             <div>
                                 <R.ButtonGroup
@@ -219,7 +228,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                                     <SvgIcon name="caretDown" />
                                                 )}
                                             </R.DropdownToggle>
-                                            <R.DropdownMenu className={styles.RunButtonMenu} right>
+                                            <R.DropdownMenu className={cx(styles.RunButtonMenu, styles.RealtimeRunButtonMenu)} right>
                                                 <R.DropdownItem
                                                     onClick={() => canvasStart({ clearState: true })}
                                                     disabled={!canvas.serialized || !canEdit}
@@ -239,7 +248,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                                 type="button"
                                                 onClick={() => setRunTab(RunTabs.realtime)}
                                                 disabled={!canEdit}
-                                                className={cx(styles.realTimeButton, {
+                                                className={cx(styles.ToolbarSolidButton, styles.firstButton, {
                                                     [styles.StateSelectorActive]: editorState.runTab === RunTabs.realtime,
                                                 })}
                                             >
@@ -249,7 +258,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                                 type="button"
                                                 onClick={() => setRunTab(RunTabs.historical)}
                                                 disabled={!canEdit}
-                                                className={cx(styles.historicalButton, {
+                                                className={cx(styles.ToolbarSolidButton, styles.lastButton, {
                                                     [styles.StateSelectorActive]: editorState.runTab !== RunTabs.realtime,
                                                 })}
                                             >
@@ -257,9 +266,10 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                             </button>
                                         </div>
                                         {editorState.runTab !== RunTabs.realtime ? (
-                                            <div className={styles.runTabToggle}>
+                                            <div className={styles.runTabValueToggle}>
                                                 <WithCalendar
                                                     date={!!settings.beginDate && new Date(settings.beginDate)}
+                                                    className={styles.CalendarRoot}
                                                     wrapperClassname={styles.CalendarWrapper}
                                                     onChange={this.getOnChangeHistorical('beginDate')}
                                                 >
@@ -268,7 +278,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                                             type="button"
                                                             disabled={!canEdit}
                                                             onClick={toggleCalendar}
-                                                            className={cx(styles.realTimeButton, {
+                                                            className={cx(styles.ToolbarSolidButton, styles.firstButton, {
                                                                 [styles.StateSelectorActive]: !!settings.beginDate,
                                                             })}
                                                         >
@@ -279,6 +289,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                                 </WithCalendar>
                                                 <WithCalendar
                                                     date={!!settings.endDate && new Date(settings.endDate)}
+                                                    className={styles.CalendarRoot}
                                                     wrapperClassname={styles.CalendarWrapper}
                                                     onChange={this.getOnChangeHistorical('endDate')}
                                                 >
@@ -287,7 +298,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                                             type="button"
                                                             disabled={!canEdit}
                                                             onClick={toggleCalendar}
-                                                            className={cx(styles.realTimeButton, {
+                                                            className={cx(styles.ToolbarSolidButton, styles.lastButton, {
                                                                 [styles.StateSelectorActive]: !!settings.endDate,
                                                             })}
                                                         >
@@ -298,40 +309,47 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                                 </WithCalendar>
                                             </div>
                                         ) : (
-                                            <div className={styles.saveStateToggleSection}>
-                                                {/* eslint-disable react/no-unknown-property */}
-                                                <R.Label
-                                                    for="saveStateToggle"
-                                                    className={styles.saveStateToggleLabel}
-                                                >
-                                                    Save state
-                                                </R.Label>
-                                                {/* eslint-enable react/no-unknown-property */}
-                                                <Toggle
-                                                    id="saveStateToggle"
-                                                    className={styles.saveStateToggle}
-                                                    value={settings.serializationEnabled === 'true' /* yes, it's a string. legacy compatibility */}
-                                                    onChange={(value) => setSaveState(value)}
-                                                    disabled={!canEdit}
-                                                />
+                                            <div className={styles.runTabValueToggle}>
+                                                <div className={styles.saveStateToggleSection}>
+                                                    {/* eslint-disable react/no-unknown-property */}
+                                                    <R.Label
+                                                        for="saveStateToggle"
+                                                        className={cx(styles.saveStateToggleLabel, {
+                                                            [styles.StateSelectorActive]: settings.serializationEnabled === 'true',
+                                                        })}
+
+                                                    >
+                                                        Save state
+                                                    </R.Label>
+                                                    {/* eslint-enable react/no-unknown-property */}
+                                                    {/* eslint-disable max-len */}
+                                                    <Toggle
+                                                        id="saveStateToggle"
+                                                        className={styles.saveStateToggle}
+                                                        value={settings.serializationEnabled === 'true' /* yes, it's a string. legacy compatibility */}
+                                                        onChange={(value) => setSaveState(value)}
+                                                        disabled={!canEdit}
+                                                    />
+                                                    {/* eslint-enable max-len */}
+                                                </div>
                                             </div>
                                         )}
                                     </div>
                                 </div>
                                 <div className={styles.ModalButtons}>
-                                    <Tooltip value={<React.Fragment>Keyboard<br />shortcuts</React.Fragment>}>
-                                        <R.Button
-                                            className={styles.ToolbarButton}
-                                        >
-                                            <SvgIcon name="keyboard" className={styles.icon} />
-                                        </R.Button>
-                                    </Tooltip>
                                     <Tooltip value="Share">
                                         <R.Button
                                             className={cx(styles.ToolbarButton, styles.ShareButton)}
                                             onClick={() => shareDialog.open()}
                                         >
-                                            <SvgIcon name="share" className={styles.icon} />
+                                            <SvgIcon name="share" />
+                                        </R.Button>
+                                    </Tooltip>
+                                    <Tooltip value={<React.Fragment>Keyboard<br />shortcuts</React.Fragment>}>
+                                        <R.Button
+                                            className={cx(styles.ToolbarButton, styles.KeyboardButton)}
+                                        >
+                                            <SvgIcon name="keyboard" />
                                         </R.Button>
                                     </Tooltip>
                                 </div>

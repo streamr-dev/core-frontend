@@ -7,21 +7,16 @@ import type { UserState } from '$shared/flowtype/store-state'
 import type {
     UserDataAction,
     UserErrorAction,
-    LogoutErrorAction,
 } from './types'
 import {
     USER_DATA_REQUEST,
     USER_DATA_SUCCESS,
     USER_DATA_FAILURE,
-    EXTERNAL_LOGIN_START,
-    EXTERNAL_LOGIN_END,
     SAVE_CURRENT_USER_REQUEST,
     SAVE_CURRENT_USER_SUCCESS,
     SAVE_CURRENT_USER_FAILURE,
     UPDATE_CURRENT_USER,
-    LOGOUT_REQUEST,
-    LOGOUT_SUCCESS,
-    LOGOUT_FAILURE,
+    RESET_USER_DATA,
     DELETE_USER_ACCOUNT_REQUEST,
     DELETE_USER_ACCOUNT_SUCCESS,
     DELETE_USER_ACCOUNT_FAILURE,
@@ -31,10 +26,7 @@ export const initialState: UserState = {
     user: null,
     fetchingUserData: false,
     userDataError: null,
-    fetchingExternalLogin: false,
     saved: true,
-    logoutError: null,
-    fetchingLogout: false,
     deletingUserAccount: false,
     deleteUserAccountError: null,
 }
@@ -58,30 +50,8 @@ const reducer: (UserState) => UserState = handleActions({
         userDataError: action.payload.error,
     }),
 
-    [LOGOUT_REQUEST]: (state: UserState) => ({
-        ...state,
-        fetchingLogout: true,
-        logoutError: null,
-    }),
-
-    [LOGOUT_SUCCESS]: () => ({
+    [RESET_USER_DATA]: () => ({
         ...initialState,
-    }),
-
-    [LOGOUT_FAILURE]: (state: UserState, action: LogoutErrorAction) => ({
-        ...state,
-        fetchingLogout: false,
-        logoutError: action.payload.error,
-    }),
-
-    [EXTERNAL_LOGIN_START]: (state: UserState) => ({
-        ...state,
-        fetchingExternalLogin: true,
-    }),
-
-    [EXTERNAL_LOGIN_END]: (state: UserState) => ({
-        ...state,
-        fetchingExternalLogin: false,
     }),
 
     [SAVE_CURRENT_USER_REQUEST]: (state: UserState) => ({

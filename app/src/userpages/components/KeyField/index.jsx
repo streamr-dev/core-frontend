@@ -182,7 +182,7 @@ class KeyField extends React.Component<Props, State> {
                         </div>
                     </div>
                 </Col>
-                {showPermissionType && (
+                {!showPermissionType && (
                     <Col {...rightColumn}>
                         <div className={styles.permissionDropdown}>
                             {permission}

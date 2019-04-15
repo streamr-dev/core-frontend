@@ -84,9 +84,9 @@ export default class ModuleSubscription extends React.PureComponent {
             <Subscription
                 {...this.props}
                 uiChannel={module.uiChannel}
-                resendAll={options.uiResendAll && options.uiResendAll.value}
                 resendLast={options.uiResendLast && options.uiResendLast.value}
                 resendFrom={options.uiResendFrom && options.uiResendFrom.value}
+                resendTo={options.resendTo && options.resendTo.value}
                 resendFromTime={options.uiResendFromTime && options.uiResendFromTime.value}
             />
         )

@@ -21,7 +21,6 @@ import PublishOrUnpublishDialog from '$mp/containers/ProductPage/PublishOrUnpubl
 import { getProductById, getProductSubscription, purchaseProduct, getUserProductPermissions } from '../../modules/product/actions'
 import { getRelatedProducts } from '../../modules/relatedProducts/actions'
 import { isPaidProduct } from '../../utils/product'
-import { doExternalLogin } from '../../utils/auth'
 import BackButton from '$shared/components/BackButton'
 
 import {
@@ -37,6 +36,7 @@ import {
 } from '$mp/modules/product/selectors'
 import { selectUserData } from '$shared/modules/user/selectors'
 import links from '$mp/../links'
+import routes from '$routes'
 import { selectRelatedProductList } from '$mp/modules/relatedProducts/selectors'
 
 export type OwnProps = {
@@ -307,7 +307,11 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
         if (isLoggedIn) {
             dispatch(purchaseProduct())
         } else {
-            doExternalLogin(formatPath(links.marketplace.products, id))
+            dispatch(replace(routes.login({
+                redirect: routes.product({
+                    id,
+                }),
+            })))
         }
     },
     getRelatedProducts: (id: ProductId) => dispatch(getRelatedProducts(id)),

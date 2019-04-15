@@ -65,10 +65,10 @@ class ActionBar extends Component<Props> {
         (BN(this.props.filter.maxPrice).isEqualTo('0') && dropdownValue === 'free')
     )
 
-    currentCategoryFilter = () => {
+    currentCategoryFilter = (): string => {
         const { filter: { categories: category }, categories } = this.props
         const categoryFilter = categories ? categories.find((c) => c.id === category) : null
-        return categoryFilter && categoryFilter.name
+        return (categoryFilter || {}).name || ''
     }
 
     currentSortByFilter = () => {

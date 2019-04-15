@@ -2,11 +2,10 @@ import React, { Fragment } from 'react'
 import uuid from 'uuid'
 import { arrayMove } from 'react-sortable-hoc'
 
-import ModuleSubscription from '../ModuleSubscription'
 import SortableList from '$shared/components/SortableList'
 import { withHover } from '$shared/components/WithHover'
 import SvgIcon from '$shared/components/SvgIcon'
-import TextInput from '$editor/shared/components/TextInput'
+import TextControl from '$shared/components/TextControl'
 
 import styles from './Scheduler.pcss'
 
@@ -91,19 +90,18 @@ export const ValueInput = ({ value, onChange, disabled }) => {
     const style = {
         width: `${Math.max(String(value).length, 5) + 5}ch`,
     }
+
     return (
-        <TextInput
+        <TextControl
+            className={styles.input}
+            commitEmpty
+            disabled={disabled}
+            flushHistoryOnBlur
+            onCommit={(value) => onChange(parseInt(value, 10))}
+            style={style}
             type="number"
             value={value}
-            onChange={(value) => onChange(parseInt(value, 10))}
-            disabled={disabled}
-            style={style}
-            className={styles.input}
-        >
-            {({ innerRef, ...props }) => (
-                <input type="number" {...props} ref={innerRef} />
-            )}
-        </TextInput>
+        />
     )
 }
 
@@ -601,8 +599,6 @@ const changeRule = (rules, id, properties) => rules.map((r) => {
 })
 
 export default class SchedulerModule extends React.Component {
-    subscription = React.createRef()
-
     state = {
         defaultValue: undefined,
         rules: undefined,
@@ -672,16 +668,11 @@ export default class SchedulerModule extends React.Component {
     }
 
     render() {
-        const { module, isActive } = this.props
+        const { isActive } = this.props
         const { rules, defaultValue } = this.state
 
         return (
             <div className={styles.schedulerContainer}>
-                <ModuleSubscription
-                    {...this.props}
-                    ref={this.subscription}
-                    module={module}
-                />
                 <SortableList
                     distance={1} /* This will allow clicks to pass through */
                     onSortEnd={this.onSortEnd}

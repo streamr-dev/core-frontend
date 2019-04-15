@@ -1,5 +1,6 @@
 import React from 'react'
 import cx from 'classnames'
+import throttle from 'lodash/throttle'
 
 import Toggle from '$shared/components/Toggle'
 import ModuleSubscription from '../ModuleSubscription'
@@ -20,11 +21,11 @@ export default class SwitcherModule extends React.Component {
         return value
     }
 
-    onMessage = ({ switcherValue: value }) => {
+    onMessage = throttle(({ switcherValue: value }) => {
         this.setState({
             value,
         })
-    }
+    }, 250)
 
     onChange = async (value) => {
         if (this.props.isActive) {

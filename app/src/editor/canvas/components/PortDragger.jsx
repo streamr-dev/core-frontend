@@ -44,8 +44,9 @@ class DraggablePort extends React.Component {
             let nextCanvas = canvas
             if (sourceId) {
                 // if dragging from an already connected input, treat as if dragging output
-                nextCanvas = CanvasState.disconnectPorts(nextCanvas, sourceId, portId)
-                nextCanvas = CanvasState.connectPorts(nextCanvas, sourceId, overId)
+                nextCanvas = CanvasState.movePortConnection(nextCanvas, sourceId, overId, {
+                    currentInputId: portId,
+                })
             } else {
                 nextCanvas = CanvasState.connectPorts(nextCanvas, portId, overId)
             }

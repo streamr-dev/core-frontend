@@ -32,7 +32,6 @@ const state = {
         ],
         fetchingIntegrationKeys: false,
         integrationKeysError: null,
-        fetchingExternalLogin: false,
         logoutError: null,
         fetchingLogout: false,
     },
@@ -83,26 +82,28 @@ describe('user - selectors', () => {
         assert.deepStrictEqual(all.selectUserData(state), state.user.user)
     })
 
-    it('selects external login fetcing status', () => {
-        assert.deepStrictEqual(all.selectFetchingExternalLogin(state), false)
-    })
+    describe('isAuthenticating', () => {
+        it('gives false on init', () => {
+            expect(all.isAuthenticating({
+                user: initialState,
+            })).toEqual(false)
+        })
 
-    it('selects logout error', () => {
-        assert.deepStrictEqual(all.selectLogoutError(state), null)
-    })
+        it('gives false on success', () => {
+            expect(all.isAuthenticating(state)).toEqual(false)
+        })
 
-    it('isAuthenticating', () => {
-        // initial state should be considered authenticating
-        assert.deepStrictEqual(all.isAuthenticating({
-            user: initialState,
-        }), true)
+        it('gives false on failure', () => {
+            let errorState = set('user.user', null, state)
+            errorState = set('user.userDataError', new Error(), errorState)
+            expect(all.isAuthenticating(errorState)).toEqual(false)
+        })
 
-        // success state should NOT be considered authenticating
-        assert.deepStrictEqual(all.isAuthenticating(state), false)
-
-        // fail state should NOT be considered authenticating
-        let errorState = set('user.user', null, state)
-        errorState = set('user.userDataError', new Error(), errorState)
-        assert.deepStrictEqual(all.isAuthenticating(errorState), false)
+        it('gives true when user data and user data error are blank and fetching is in progress', () => {
+            let errorState = set('user.user', null, state)
+            errorState = set('user.userDataError', null, errorState)
+            errorState = set('user.fetchingUserData', true, errorState)
+            expect(all.isAuthenticating(errorState)).toEqual(true)
+        })
     })
 })

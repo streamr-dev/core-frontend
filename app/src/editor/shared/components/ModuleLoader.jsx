@@ -25,7 +25,10 @@ export default class ModuleLoaderContainer extends React.PureComponent {
     static contextType = ClientContext
 
     loadModule = async () => {
-        const { canvasId, dashboardId, moduleHash } = this.props
+        const { canvasId, dashboardId, moduleHash, canvas } = this.props
+
+        // no load for adhoc canvases
+        if (canvas && canvas.adhoc) { return }
 
         const data = {
             type: 'json',

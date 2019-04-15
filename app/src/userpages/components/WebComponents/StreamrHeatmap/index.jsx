@@ -3,7 +3,7 @@
 import React, { Component } from 'react'
 import ComplexStreamrWidget from '../ComplexStreamrWidget'
 
-declare var StreamrHeatmap: Function
+declare var StreamrHeatmap: any
 
 import type { ModuleOptions, StreamId, SubscriptionOptions } from '../../../flowtype/streamr-client-types'
 

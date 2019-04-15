@@ -26,6 +26,9 @@ msgstr "Email"
 msgid "auth##labels##password"
 msgstr "Password"
 
+msgid "auth##labels##ethereum"
+msgstr "Signing you in, hold tight"
+
 msgid "auth##signInWithEthereum"
 msgstr "Sign in with Ethereum"
 
@@ -55,6 +58,9 @@ msgstr "Password is not strong"
 
 msgid "auth##password##strength##strong"
 msgstr "Password is quite strong"
+
+msgid "auth##login##failure"
+msgstr "Login failed"
 
 msgid "auth##login##rememberMe"
 msgstr "Remember me"

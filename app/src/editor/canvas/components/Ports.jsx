@@ -3,10 +3,21 @@ import React from 'react'
 import cx from 'classnames'
 import startCase from 'lodash/startCase'
 
-import RenameInput from '$editor/shared/components/RenameInput'
+import UseState from '$shared/components/UseState'
+import EditableText from '$shared/components/EditableText'
+import ColorPicker from '$editor/shared/components/ColorPicker'
+import StreamSelector from '$editor/shared/components/StreamSelector'
 import ContextMenu from '$shared/components/ContextMenu'
 
-import { RunStates, canConnectPorts, arePortsOfSameModule, hasPort, disconnectAllFromPort } from '../state'
+import {
+    RunStates,
+    canConnectPorts,
+    arePortsOfSameModule,
+    hasPort,
+    disconnectAllFromPort,
+    findLinkedVariadicPort,
+    isPortConnected,
+} from '../state'
 import { DropTarget, DragSource } from './PortDragger'
 import { DragDropContext } from './DragDropContext'
 import styles from './Ports.pcss'
@@ -141,6 +152,7 @@ class PortIcon extends React.PureComponent {
         const from = this.context.data || {}
         const fromId = from.sourceId || from.portId
         const canDrop = dragPortInProgress && canConnectPorts(this.props.canvas, fromId, this.props.port.id)
+        const isExported = !!port.export
 
         return (
             <div
@@ -149,6 +161,7 @@ class PortIcon extends React.PureComponent {
                 title={port.id}
                 className={cx(styles.PortIcon, {
                     [styles.isInput]: isInput,
+                    [styles.isExported]: isExported,
                     [styles.isOutput]: !isInput,
                     [styles.connected]: port.connected,
                     [styles.requiresConnection]: port.requiresConnection,
@@ -173,7 +186,7 @@ class PortIcon extends React.PureComponent {
                     isOpen={this.state.isMenuOpen}
                 >
                     <ContextMenu.Item text="Disconnect all" onClick={() => this.disconnectAll(port)} />
-                    <ContextMenu.Item text="Toggle export" onClick={() => this.toggleExport(port)} />
+                    <ContextMenu.Item text={isExported ? 'Disable export' : 'Enable export'} onClick={() => this.toggleExport(port)} />
                 </ContextMenu>
             </div>
         )
@@ -195,20 +208,43 @@ class Port extends React.PureComponent {
         const hasInputField = isParam || port.canHaveInitialValue
         const isRunning = canvas.state === 'RUNNING'
 
+        let isHidden = false
+        if (!isInput) {
+            const linkedInput = findLinkedVariadicPort(canvas, port.id)
+            if (linkedInput) {
+                // hide output if linked input is not connected
+                isHidden = !isPortConnected(canvas, linkedInput.id)
+            }
+        }
+
+        if (isHidden) {
+            // layout placeholder
+            return <React.Fragment><div /><div /><div /></React.Fragment>
+        }
+
         const portContent = [
-            <RenameInput
-                role="gridcell"
-                key={`${port.id}.name`}
+            <div
                 className={cx(styles.portNameContainer, {
                     [styles.isInput]: isInput,
                     [styles.isOutput]: !isInput,
                 })}
-                inputClassName={styles.portName}
-                value={port.displayName || startCase(port.name)}
-                onChange={this.onChangePortName}
-                disabled={!!isRunning}
-                required
-            />,
+                key={`${port.id}.name`}
+                role="gridcell"
+            >
+                <UseState initialValue={false}>
+                    {(editing, setEditing) => (
+                        <EditableText
+                            className={styles.portName}
+                            disabled={!!isRunning}
+                            editing={editing}
+                            onChange={this.onChangePortName}
+                            setEditing={setEditing}
+                        >
+                            {port.displayName || startCase(port.name)}
+                        </EditableText>
+                    )}
+                </UseState>
+            </div>,
             <PortIcon key={`${port.id}.icon`} {...this.props} />,
         ]
 
@@ -286,16 +322,6 @@ class PortOptions extends React.PureComponent {
                         NR
                     </button>
                 )}
-                <button
-                    type="button"
-                    title={`Export: ${port.export ? 'On' : 'Off'}`}
-                    value={!!port.export}
-                    className={styles.export}
-                    onClick={this.getToggleOption('export')}
-                    disabled={!!isRunning}
-                >
-                    EX
-                </button>
             </div>
         )
     }
@@ -574,6 +600,20 @@ class PortValue extends React.Component {
             )
         }
 
+        if (port.type === 'Color') {
+            return (
+                <ColorPicker
+                    {...props}
+                    value={value}
+                    disabled={disabled}
+                    style={style}
+                    onChange={this.onChange}
+                    onBlur={this.onBlur}
+                    onFocus={this.onFocus}
+                />
+            )
+        }
+
         /* Select */
         if (port.possibleValues) {
             return (
@@ -590,6 +630,21 @@ class PortValue extends React.Component {
                         <option key={value} value={value}>{name}</option>
                     ))}
                 </select>
+            )
+        }
+
+        /* Stream */
+        if (port.type === 'Stream') {
+            return (
+                <StreamSelector
+                    {...props}
+                    value={value}
+                    disabled={disabled}
+                    style={style}
+                    onChange={this.onChange}
+                    onBlur={this.onBlur}
+                    onFocus={this.onFocus}
+                />
             )
         }
 

@@ -1,5 +1,3 @@
-@import 'variables.pcss';
-
 .desktopNav {
   display: block;
 }
@@ -17,8 +15,6 @@
 ul.navList,
 ul.subNavList {
   list-style-type: none;
-  margin: 0;
-  padding: 0;
   text-align: left;
   position: sticky;
 }
@@ -31,7 +27,7 @@ ul.subNavList {
   margin-top: 1.2em;
   margin-bottom: 0.2em;
   padding-left: 1.2em;
-  border-left: 2px solid #D8D8D8;
+  border-left: 1px solid #D8D8D8;
 }
 
 ul.navList li.navListItem,
@@ -51,11 +47,11 @@ ul.subNavList li.navListItem {
 
     &:hover,
     &:active {
-      color: var(--blue);
+      color: var(--streamrBlue);
     }
 
     &.active {
-      color: var(--blue);
+      color: var(--streamrBlue);
     }
   }
 
@@ -64,11 +60,11 @@ ul.subNavList li.navListItem {
 
     &:hover,
     &:active {
-      color: var(--blue);
+      color: var(--streamrBlue);
     }
 
     &.active {
-      color: var(--blue);
+      color: var(--streamrBlue);
     }
   }
 }
@@ -86,7 +82,7 @@ ul.subNavList li.navListItem {
     display: block;
     width: 100%;
     background-color: #F8F8F8;
-    padding: 1em;
+    padding: 1em 0;
   }
 
   ul.navList,
@@ -98,10 +94,11 @@ ul.subNavList li.navListItem {
 
   ul.navList {
     padding-top: 0;
+    padding-left: 1.5rem;
   }
 
   li.navListItem a {
-    padding: 0.5em;
+    padding: 0.5em 0;
     font-size: 16px;
     letter-spacing: 0;
     line-height: 24px;
@@ -115,7 +112,7 @@ ul.subNavList li.navListItem {
     transform: rotate(90deg);
     top: 28px;
     right: 34px;
-    transition: transform 300ms ease-in-out;
+    transition: transform 180ms ease-in-out;
 
     &:hover {
       cursor: pointer;
@@ -132,13 +129,20 @@ ul.subNavList li.navListItem {
       height: 72px;
       position: sticky;
       top: 0;
-      z-index: 5;
+      z-index: 11;
       overflow: hidden;
-      border-bottom: none;
+      border-bottom: 1px solid #E7E7E7;
 
       .arrowExtender {
         transform: rotate(270deg);
       }
     }
+  }
+}
+
+@media (max-width: 991px) and (min-width: 576px) {
+  ul.navList,
+  ul.subNavList {
+    padding-left: 30px;
   }
 }

@@ -2,31 +2,22 @@
  * Canvas-specific API call wrappers
  */
 
-import axios from 'axios'
-
+import api from '$editor/shared/utils/api'
 import Autosave from '$editor/shared/utils/autosave'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
-import { emptyCanvas } from './state'
-
-export const API = axios.create({
-    headers: {
-        'Content-Type': 'application/json',
-    },
-    withCredentials: true,
-})
+import { emptyCanvas, isRunning, RunStates } from './state'
 
 const getData = ({ data }) => data
 
 const canvasesUrl = `${process.env.STREAMR_API_URL}/canvases`
-const getModuleURL = `${process.env.STREAMR_URL}/module/jsonGetModule`
-const getModuleTreeURL = `${process.env.STREAMR_URL}/module/jsonGetModuleTree`
+const getModuleCategoriesURL = `${process.env.STREAMR_API_URL}/module_categories`
 const streamsUrl = `${process.env.STREAMR_API_URL}/streams`
 
 const AUTOSAVE_DELAY = 3000
 
 async function save(canvas) {
-    return API.put(`${canvasesUrl}/${canvas.id}`, canvas).then(getData)
+    return api().put(`${canvasesUrl}/${canvas.id}`, canvas).then(getData)
 }
 
 function autoSaveWithNotification() {
@@ -52,54 +43,90 @@ export async function saveNow(canvas, ...args) {
     return save(canvas, ...args)
 }
 
-async function createCanvas(canvas) {
-    return API.post(canvasesUrl, canvas).then(getData)
+export async function loadCanvas({ id } = {}) {
+    return api().get(`${canvasesUrl}/${id}`).then(getData)
 }
 
-export async function create() {
-    return createCanvas(emptyCanvas()) // create new empty
+export async function loadCanvases() {
+    return api().get(canvasesUrl).then(getData)
+}
+
+function getUniqueName(originalName = '', existingNames = []) {
+    let name = originalName
+    const nameSplit = /(.*) \((\d+)\)$/g.exec(name)
+    let highestCounter = 1
+    let nameCounter = 0
+    if (nameSplit) {
+        name = nameSplit[1] // eslint-disable-line prefer-destructuring
+        nameCounter = parseInt(nameSplit[2], 10) // eslint-disable-line prefer-destructuring
+    }
+
+    name = name.trim()
+    const matchingNames = existingNames.filter((currentName) => {
+        if (currentName === name) { return true }
+        const matches = /(.*) \((\d+)\)$/g.exec(currentName)
+        if (!matches) { return false }
+        const [, innerName, counter] = matches
+        if (innerName !== name) { return false }
+        highestCounter = Math.max(highestCounter, parseInt(counter, 10))
+        return true
+    })
+    if (!matchingNames.length) { return originalName }
+    return `${name} (${Math.max(highestCounter + 1, nameCounter)})`
+}
+
+async function getUniqueCanvasName(canvasName) {
+    if (!canvasName) {
+        canvasName = emptyCanvas().name // eslint-disable-line prefer-destructuring
+    }
+    const canvases = await loadCanvases()
+    const names = canvases.map(({ name }) => name)
+    return getUniqueName(canvasName, names)
+}
+
+async function createCanvas(canvas) {
+    return api().post(canvasesUrl, {
+        ...canvas,
+        name: await getUniqueCanvasName(canvas.name),
+        state: RunStates.Stopped, // always create stopped canvases
+    }).then(getData)
+}
+
+export async function create(config) {
+    return createCanvas(emptyCanvas(config)) // create new empty
 }
 
 export async function moduleHelp({ id }) {
-    return API.get(`${process.env.STREAMR_API_URL}/modules/${id}/help`).then(getData)
+    return api().get(`${process.env.STREAMR_API_URL}/modules/${id}/help`).then(getData)
 }
 
 export async function duplicateCanvas(canvas) {
-    const savedCanvas = await saveNow(canvas) // ensure canvas saved before duplicating
-    return createCanvas(savedCanvas)
+    if (!isRunning(canvas)) {
+        canvas = await saveNow(canvas) // ensure canvas saved before duplicating
+    }
+    return createCanvas(canvas)
 }
 
 export async function deleteCanvas({ id } = {}) {
     await autosave.cancel()
-    return API.delete(`${canvasesUrl}/${id}`).then(getData)
+    return api().delete(`${canvasesUrl}/${id}`).then(getData)
 }
 
-export async function getModuleTree() {
-    return API.get(getModuleTreeURL).then(getData)
-}
-
-export async function addModule({ id, configuration } = {}) {
-    const form = new FormData()
-    form.append('id', id)
-    if (configuration) {
-        form.append('configuration', JSON.stringify(configuration))
-    }
-    return API.post(getModuleURL, form).then(getData)
-}
-
-export async function loadCanvas({ id } = {}) {
-    return API.get(`${canvasesUrl}/${id}`).then(getData)
-}
-
-export async function loadCanvases() {
-    return API.get(canvasesUrl).then(getData)
+export async function getModuleCategories() {
+    return api().get(getModuleCategoriesURL).then(getData)
 }
 
 async function startCanvas(canvas, { clearState }) {
     const savedCanvas = await saveNow(canvas)
-    return API.post(`${canvasesUrl}/${savedCanvas.id}/start`, {
+    return api().post(`${canvasesUrl}/${savedCanvas.id}/start`, {
         clearState: !!clearState,
-    }).then(getData)
+    }).then((data) => {
+        Notification.push({
+            title: 'Canvas started.',
+            icon: NotificationIcon.CHECKMARK,
+        })
+        return getData(data)
+    })
 }
 
 async function startAdhocCanvas(canvas, options = {}) {
@@ -122,9 +149,28 @@ export async function start(canvas, options = {}) {
 }
 
 export async function stop(canvas) {
-    return API.post(`${canvasesUrl}/${canvas.id}/stop`).then(getData)
+    return api().post(`${canvasesUrl}/${canvas.id}/stop`)
+        .then((data) => {
+            Notification.push({
+                title: 'Canvas stopped.',
+                icon: NotificationIcon.CHECKMARK,
+            })
+            return getData(data)
+        })
 }
 
 export async function getStreams(params) {
-    return API.get(`${streamsUrl}`, { params }).then(getData)
+    return api().get(`${streamsUrl}`, { params }).then(getData)
+}
+
+export async function getStream(id) {
+    return api().get(`${streamsUrl}/${id}`).then(getData)
+}
+
+export async function deleteAllCanvases() {
+    // try do some clean up so we don't fill the server with cruft
+    const canvases = await loadCanvases()
+    return Promise.all(canvases.map((canvas) => (
+        deleteCanvas(canvas)
+    )))
 }
