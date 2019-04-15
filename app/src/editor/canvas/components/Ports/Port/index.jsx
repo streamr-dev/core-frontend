@@ -85,7 +85,7 @@ const Port = ({
         setOptions(port.id, {
             [key]: !port[key],
         })
-    }, [port.id, setOptions])
+    }, [port, setOptions])
 
     const onValueChange = useCallback((value: any) => {
         onValueChangeProp(port.id, value)
