@@ -1,7 +1,8 @@
 // @flow
 
-import React, { useCallback } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import { type CommonProps } from '..'
+import styles from './select.pcss'
 
 type Props = CommonProps & {
     options: Array<{
@@ -21,17 +22,34 @@ const Select = ({
         onChangeProp(e.target.value)
     }, [onChangeProp])
 
+    const optionMap = useMemo(() => (
+        options.reduce((memo, { name, value }) => ({
+            ...memo,
+            [value]: name,
+        }), {})
+    ), [options])
+
     return (
-        <select
-            {...props}
-            value={value}
-            disabled={disabled}
-            onChange={onChange}
-        >
-            {options.map(({ name, value }) => (
-                <option key={value} value={value}>{name}</option>
-            ))}
-        </select>
+        <div className={styles.root}>
+            <div className={styles.inner}>
+                <select
+                    {...props}
+                    className={styles.control}
+                    value={value}
+                    disabled={disabled}
+                    onChange={onChange}
+                >
+                    {options.map(({ name, value }) => (
+                        <option key={value} value={value}>{name}</option>
+                    ))}
+                </select>
+                {/* Select with a single, currently selected value. This hidden (`visibility: hidden`) select
+                    dictates width of the actual, visible control. */}
+                <select className={styles.spaceholder}>
+                    <option>{optionMap[value]}</option>
+                </select>
+            </div>
+        </div>
     )
 }
 

@@ -57,12 +57,12 @@ const Value = ({ canvas, port, onChange }: Props) => {
                     port={port}
                 />
             )}
-            {type === 'color' && false && (
+            {type === 'color' && (
                 <Color
                     {...commonProps}
                 />
             )}
-            {type === 'select' && false && (
+            {type === 'select' && (
                 <Select
                     {...commonProps}
                     options={port.possibleValues}

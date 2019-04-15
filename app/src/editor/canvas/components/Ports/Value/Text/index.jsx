@@ -1,8 +1,10 @@
 // @flow
 
 import React, { useState } from 'react'
+import cx from 'classnames'
 import EditableText from '$shared/components/EditableText'
 import { type CommonProps } from '..'
+import styles from './text.pcss'
 
 type Props = CommonProps & {}
 
@@ -12,6 +14,10 @@ const Text = ({ disabled, onChange, value, ...props }: Props) => {
     return (
         <EditableText
             {...props}
+            className={cx(styles.root, {
+                [styles.editing]: editing,
+                [styles.disabled]: disabled,
+            })}
             disabled={disabled}
             editing={editing}
             editOnFocus
