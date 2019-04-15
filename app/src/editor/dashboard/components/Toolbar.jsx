@@ -51,7 +51,7 @@ export default withErrorBoundary(ErrorComponentView)(class DashboardToolbar exte
                                         {(editing, setEditing) => (
                                             <div className={styles.ToolbarLeft}>
                                                 <EditableText
-                                                    className={Toolbar.styles.entityName}
+                                                    className={cx(Toolbar.styles.entityName, styles.DashboardEntityName)}
                                                     editing={editing}
                                                     onChange={this.renameDashboard}
                                                     setEditing={setEditing}
