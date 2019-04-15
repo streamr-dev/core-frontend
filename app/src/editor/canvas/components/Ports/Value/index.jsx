@@ -54,6 +54,7 @@ const Value = ({ canvas, port, onChange }: Props) => {
             {type === 'map' && (
                 <Map
                     {...commonProps}
+                    port={port}
                 />
             )}
             {type === 'color' && (
