@@ -27,11 +27,12 @@ const convertObjectToRgba = (rgbObj: Object) => (
 )
 
 type Props = {
-    className: string,
+    className?: ?string,
     value: string,
     onChange: (value: string) => void,
-    onFocus: (event: any) => void,
-    onBlur: (event: any) => void,
+    onFocus?: ?(event: any) => void,
+    onBlur?: ?(event: any) => void,
+    onClose?: ?() => void,
 }
 
 type State = {
@@ -85,9 +86,15 @@ export default class ColorPicker extends React.Component<Props, State> {
     }
 
     close = () => {
+        const { onClose } = this.props
+
         this.setState({
             isOpen: false,
         })
+
+        if (onClose) {
+            onClose()
+        }
     }
 
     render() {

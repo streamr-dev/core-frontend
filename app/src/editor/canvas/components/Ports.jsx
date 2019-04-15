@@ -1,27 +1,14 @@
 /* eslint-disable react/no-unused-state, no-unused-vars */
 import React from 'react'
 import cx from 'classnames'
-import startCase from 'lodash/startCase'
 
 import UseState from '$shared/components/UseState'
 import EditableText from '$shared/components/EditableText'
 import ColorPicker from '$editor/shared/components/ColorPicker'
 import StreamSelector from '$editor/shared/components/StreamSelector'
-import ContextMenu from '$shared/components/ContextMenu'
 
-import {
-    RunStates,
-    canConnectPorts,
-    arePortsOfSameModule,
-    hasPort,
-    disconnectAllFromPort,
-    findLinkedVariadicPort,
-    isPortConnected,
-} from '../state'
-import Plug from './Ports/Plug'
+import { RunStates } from '../state'
 import Port from './Ports/Port'
-import { DropTarget, DragSource } from './PortDragger'
-import { DragDropContext } from './DragDropContext'
 import styles from './Ports.pcss'
 
 /**
@@ -345,7 +332,6 @@ class PortValue extends React.Component {
                     {...props}
                     value={value}
                     disabled={disabled}
-                    style={style}
                     onChange={this.onChange}
                     onBlur={this.onBlur}
                     onFocus={this.onFocus}
@@ -396,7 +382,7 @@ const Ports = ({
                         canvas={canvas}
                         /* eslint-disable react/no-array-index-key */
                         key={port.id + index}
-                        onChange={onValueChange}
+                        onValueChange={onValueChange}
                         onPort={onPort}
                         port={port}
                         setOptions={api.port.setPortOptions}
@@ -410,7 +396,7 @@ const Ports = ({
                         canvas={canvas}
                         /* eslint-disable react/no-array-index-key */
                         key={port.id + index}
-                        onChange={onValueChange}
+                        onValueChange={onValueChange}
                         onPort={onPort}
                         port={port}
                         setOptions={api.port.setPortOptions}

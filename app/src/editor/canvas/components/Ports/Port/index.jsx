@@ -11,6 +11,7 @@ import { DragDropContext } from '../../DragDropContext'
 import Option from '../Option'
 import Plug from '../Plug'
 import Menu from '../Menu'
+import Value from '../Value'
 import styles from './port.pcss'
 
 type Props = {
@@ -18,6 +19,7 @@ type Props = {
     canvas: any,
     onChange: any,
     onPort: any,
+    onValueChange: (any, any) => void,
     port: any,
     setOptions: any,
 }
@@ -27,6 +29,7 @@ const Port = ({
     canvas,
     port,
     onPort,
+    onValueChange: onValueChangeProp,
     setOptions,
 }: Props) => {
     const isRunning = canvas.state === 'RUNNING'
@@ -84,6 +87,10 @@ const Port = ({
         })
     }, [port.id, setOptions])
 
+    const onValueChange = useCallback((value: any) => {
+        onValueChangeProp(port.id, value)
+    }, [port.id, onValueChangeProp])
+
     useEffect(() => {
         window.addEventListener('mousedown', onDocumentClick)
         window.addEventListener('keydown', onKeyDown)
@@ -137,17 +144,12 @@ const Port = ({
                                 {port.displayName || startCase(port.name)}
                             </EditableText>
                         </div>
-                        {false && hasInputField && (
-                            /* add input for params/inputs with initial value */
-                            <div className={cx(styles.portValueContainer)}>
-                                {/* eslint-disable-next-line jsx-a11y/mouse-events-have-key-events */}
-                                {/* <PortValue
-                                    className={styles.portValue}
-                                    port={port}
-                                    canvas={canvas}
-                                    onChange={this.props.onChange}
-                                /> */}
-                            </div>
+                        {hasInputField && (
+                            <Value
+                                canvas={canvas}
+                                port={port}
+                                onChange={onValueChange}
+                            />
                         )}
                         {!isInput && plug}
                         {port.canBeNoRepeat && (
