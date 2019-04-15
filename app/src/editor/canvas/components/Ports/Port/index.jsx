@@ -17,7 +17,6 @@ import styles from './port.pcss'
 type Props = {
     api: any,
     canvas: any,
-    onChange: any,
     onPort: any,
     onValueChange: (any, any) => void,
     port: any,

@@ -1,18 +1,28 @@
-/* eslint-disable react/no-unused-state */
+// @flow
+
 import React from 'react'
 import cx from 'classnames'
 
-import Port from './Ports/Port'
-import styles from './Ports.pcss'
+import Port from './Port'
+import styles from './ports.pcss'
+
+type Props = {
+    api: any,
+    canvas: any,
+    className?: ?string,
+    module: any,
+    onPort: any,
+    onValueChange: any,
+}
 
 const Ports = ({
     api,
-    module,
     canvas,
+    className,
+    module,
     onPort,
     onValueChange,
-    className,
-}) => {
+}: Props) => {
     const { outputs } = module
     const inputs = module.params.concat(module.inputs)
 
