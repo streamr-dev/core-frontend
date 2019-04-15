@@ -13,6 +13,7 @@ type Props = {
     editing?: boolean,
     editOnFocus?: boolean,
     onChange?: (string) => void,
+    placeholder?: ?string,
     setEditing: (boolean) => void,
 }
 
@@ -23,6 +24,7 @@ const EditableText = ({
     editing,
     editOnFocus,
     onChange: onChangeProp,
+    placeholder,
     setEditing,
     ...props
 }: Props) => {
@@ -75,15 +77,16 @@ const EditableText = ({
                             onChange={onChange}
                             onCommit={onChangeProp}
                             onFocus={onFocus}
+                            placeholder={placeholder}
                             revertOnEsc
                             selectAllOnFocus
                             value={children}
                         />
                         <span className={styles.spaceholder}>
-                            {value}
+                            {value || placeholder || ''}
                         </span>
                     </Fragment>
-                ) : children}
+                ) : (children || placeholder)}
             </span>
         </div>
     )
