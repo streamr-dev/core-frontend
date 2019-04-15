@@ -6,7 +6,6 @@ import React, { useCallback, useState, useEffect } from 'react'
 import cx from 'classnames'
 import startCase from 'lodash/startCase'
 import EditableText from '$shared/components/EditableText'
-import UseState from '$shared/components/UseState'
 import { type Ref } from '$shared/flowtype/common-types'
 import { DragDropContext } from '../../DragDropContext'
 import Option from '../Option'
@@ -35,6 +34,7 @@ const Port = ({
     const isParam = 'defaultValue' in port
     const hasInputField = isParam || port.canHaveInitialValue
     const [contextMenuTarget, setContextMenuTarget] = useState(null)
+    const [editingName, setEditingName] = useState(false)
     const onContextMenu = useCallback((e: SyntheticMouseEvent<EventTarget>) => {
         e.preventDefault()
         // $FlowFixMe wtf?
@@ -128,18 +128,14 @@ const Port = ({
                             <div className={styles.spaceholder} />
                         ) : plug}
                         <div>
-                            <UseState initialValue={false}>
-                                {(editing, setEditing) => (
-                                    <EditableText
-                                        disabled={!!isRunning}
-                                        editing={editing}
-                                        onChange={onNameChange}
-                                        setEditing={setEditing}
-                                    >
-                                        {port.displayName || startCase(port.name)}
-                                    </EditableText>
-                                )}
-                            </UseState>
+                            <EditableText
+                                disabled={!!isRunning}
+                                editing={editingName}
+                                onChange={onNameChange}
+                                setEditing={setEditingName}
+                            >
+                                {port.displayName || startCase(port.name)}
+                            </EditableText>
                         </div>
                         {false && hasInputField && (
                             /* add input for params/inputs with initial value */
