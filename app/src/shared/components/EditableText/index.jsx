@@ -52,20 +52,18 @@ const EditableText = ({
         <div
             className={cx(styles.root, className, {
                 [styles.idle]: !editing,
+                [styles.disabled]: disabled,
+                [ModuleHeader.styles.dragCancel]: !!editing,
             })}
+            onDoubleClick={startEditing}
+            {...((editOnFocus && !disabled) ? {
+                onFocus: startEditing,
+                // In order to allow shift-tabbing through interactive elements
+                // we can't let the span be focusable when the input is.
+                tabIndex: (hasFocus ? -1 : 0),
+            } : {})}
         >
-            <span
-                className={cx(styles.inner, {
-                    [ModuleHeader.styles.dragCancel]: !!editing,
-                })}
-                onDoubleClick={startEditing}
-                {...(editOnFocus ? {
-                    onFocus: startEditing,
-                    // In order to allow shift-tabbing through interactive elements
-                    // we can't let the span be focusable when the input is.
-                    tabIndex: (hasFocus ? -1 : 0),
-                } : {})}
-            >
+            <span className={styles.inner}>
                 {editing && !disabled ? (
                     <Fragment>
                         <TextControl
