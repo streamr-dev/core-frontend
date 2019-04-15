@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, useContext } from 'react'
 import { withRouter } from 'react-router-dom'
 import { Helmet } from 'react-helmet'
 
@@ -471,18 +471,17 @@ function isDisabled({ state: canvas }) {
     return !canvas || (canvas.state === RunStates.Running || canvas.adhoc)
 }
 
-const CanvasEditWrap = () => (
-    <UndoContainer.Consumer>
-        {({ state: canvas, push, replace }) => (
-            <CanvasEdit
-                key={canvas && canvas.id}
-                push={push}
-                replace={replace}
-                canvas={canvas}
-            />
-        )}
-    </UndoContainer.Consumer>
-)
+const CanvasEditWrap = () => {
+    const { state: canvas, push, replace } = useContext(UndoContainer.Context)
+    return (
+        <CanvasEdit
+            key={canvas && canvas.id}
+            push={push}
+            replace={replace}
+            canvas={canvas}
+        />
+    )
+}
 
 export default withRouter((props) => (
     <Layout className={styles.layout} footer={false}>
