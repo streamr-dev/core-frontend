@@ -13,7 +13,7 @@ import type { StoreState } from '$shared/flowtype/store-state'
 import FieldList from '$shared/components/FieldList'
 import FieldItem from '$shared/components/FieldList/FieldItem'
 import Dropdown from '$shared/components/Dropdown'
-import { updateEditStreamField } from '$userpages/modules/userPageStreams/actions'
+import { updateEditStreamField, updateEditStream } from '$userpages/modules/userPageStreams/actions'
 import { selectEditedStream } from '$userpages/modules/userPageStreams/selectors'
 import TextInput from '$shared/components/TextInput'
 import Toggle from '$shared/components/Toggle'
@@ -30,21 +30,18 @@ type StateProps = {
 type DispatchProps = {
     copyStreamId: (string) => void,
     editField: (string, any) => void,
+    updateEditStream: (data: Stream) => void,
 }
 
 type Props = StateProps & DispatchProps
 
 type State = {
     isAddingField: boolean,
-    alwaysTryToAutoConfigure: boolean,
-    requireSignedMessages: boolean,
 }
 
 export class ConfigureView extends Component<Props, State> {
     state = {
         isAddingField: false,
-        alwaysTryToAutoConfigure: true,
-        requireSignedMessages: false,
     }
 
     componentDidUpdate(prevProps: Props) {
@@ -138,20 +135,26 @@ export class ConfigureView extends Component<Props, State> {
     }
 
     onAutoConfigureChange = (checked: boolean) => {
-        this.setState({
-            alwaysTryToAutoConfigure: checked,
+        const { updateEditStream, stream } = this.props
+
+        updateEditStream({
+            ...stream,
+            autoConfigure: checked,
         })
     }
 
     onRequireSignedChange = (checked: boolean) => {
-        this.setState({
-            requireSignedMessages: checked,
+        const { updateEditStream, stream } = this.props
+
+        updateEditStream({
+            ...stream,
+            requireSignedData: checked,
         })
     }
 
     render() {
         const { stream } = this.props
-        const { isAddingField, alwaysTryToAutoConfigure, requireSignedMessages } = this.state
+        const { isAddingField } = this.state
 
         return (
             <div>
@@ -241,25 +244,31 @@ export class ConfigureView extends Component<Props, State> {
                 }
                 <div className={styles.settings}>
                     {/* eslint-disable jsx-a11y/label-has-associated-control */}
+                    {stream && stream.autoConfigure !== undefined &&
+                        <Fragment>
+                            <Row>
+                                <Col {...leftColumn}>
+                                    <label htmlFor="auto-configure">
+                                        <Translate value="userpages.streams.edit.configure.autoConfigure" />
+                                    </label>
+                                </Col>
+                                <Col sm={12} md={3} className={styles.toggle}>
+                                    <Toggle id="auto-configure" value={stream.autoConfigure} onChange={this.onAutoConfigureChange} />
+                                </Col>
+                            </Row>
+                        </Fragment>}
                     <Row>
-                        <Col {...leftColumn}>
-                            <label htmlFor="auto-configure">
-                                <Translate value="userpages.streams.edit.configure.autoConfigure" />
-                            </label>
-                        </Col>
-                        <Col sm={12} md={3} className={styles.toggle}>
-                            <Toggle id="auto-configure" value={alwaysTryToAutoConfigure} onChange={this.onAutoConfigureChange} />
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col {...leftColumn}>
-                            <label htmlFor="require-signed">
-                                <Translate value="userpages.streams.edit.configure.requireSignedMessages" />
-                            </label>
-                        </Col>
-                        <Col sm={12} md={3} className={styles.toggle}>
-                            <Toggle id="require-signed" value={requireSignedMessages} onChange={this.onRequireSignedChange} />
-                        </Col>
+                        {stream && stream.requireSignedData !== undefined &&
+                            <Fragment>
+                                <Col {...leftColumn}>
+                                    <label htmlFor="require-signed">
+                                        <Translate value="userpages.streams.edit.configure.requireSignedData" />
+                                    </label>
+                                </Col>
+                                <Col sm={12} md={3} className={styles.toggle}>
+                                    <Toggle id="require-signed" value={stream.requireSignedData} onChange={this.onRequireSignedChange} />
+                                </Col>
+                            </Fragment>}
                     </Row>
                 </div>
             </div>
@@ -274,6 +283,7 @@ const mapStateToProps = (state: StoreState): StateProps => ({
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     copyStreamId: (id) => dispatch(copy(id)),
     editField: (field: string, data: any) => dispatch(updateEditStreamField(field, data)),
+    updateEditStream: (data: Stream) => dispatch(updateEditStream(data)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ConfigureView)
