@@ -217,6 +217,8 @@ module.exports = {
                     '**/*.stories.jsx',
                     // skip MD documentation
                     'src/docs/docsEditingGuide.md',
+                    // skip sketch files
+                    '**/*.sketch',
                 ],
             },
         }),
