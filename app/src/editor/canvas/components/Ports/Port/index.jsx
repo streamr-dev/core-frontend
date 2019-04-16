@@ -1,12 +1,9 @@
 // @flow
 
-/* eslint-disable no-unused-vars */
-
 import React, { useCallback, useState, useEffect } from 'react'
 import cx from 'classnames'
 import startCase from 'lodash/startCase'
 import EditableText from '$shared/components/EditableText'
-import { type Ref } from '$shared/flowtype/common-types'
 import { DragDropContext } from '../../DragDropContext'
 import Option from '../Option'
 import Plug from '../Plug'

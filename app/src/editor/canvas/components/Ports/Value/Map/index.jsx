@@ -3,7 +3,6 @@
 import React, { useState, useCallback, useMemo } from 'react'
 import { type CommonProps } from '..'
 import MapEntry from './MapEntry'
-import styles from './map.pcss'
 
 type Props = CommonProps & {
     port: any,
@@ -50,7 +49,7 @@ const Map = ({ disabled, onChange, value }: Props) => {
     ), [entries])
 
     return (
-        <div className={styles.root}>
+        <div>
             {finalEntries.map(([name, val], index) => {
                 const v: any = val
 

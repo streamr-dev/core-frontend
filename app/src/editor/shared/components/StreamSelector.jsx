@@ -7,7 +7,7 @@ import { getStreams, getStream } from '../../canvas/services'
 import styles from './StreamSelector.pcss'
 
 type Props = {
-    className: string,
+    className?: ?string,
     value: any,
     disabled: boolean,
     onChange: (value: string, done: any) => void,

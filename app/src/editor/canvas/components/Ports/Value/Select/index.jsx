@@ -43,8 +43,8 @@ const Select = ({
                         <option key={value} value={value}>{name}</option>
                     ))}
                 </select>
-                {/* Select with a single, currently selected value. This hidden (`visibility: hidden`) select
-                    dictates width of the actual, visible control. */}
+                {/* `select` holding a currently selected value. This hidden (`visibility: hidden`) control
+                    dictates the width of the actual (visible) control above. */}
                 <select className={styles.spaceholder}>
                     <option>{optionMap[value]}</option>
                 </select>
