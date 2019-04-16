@@ -72,7 +72,7 @@ const TextControl = ({
         if (onBlurProp) {
             onBlurProp(e)
         }
-    }, [onBlurProp, flushHistoryOnBlur, commit, valueProp, commitEmpty, normalizedValue])
+    }, [onBlurProp, flushHistoryOnBlur, commit, valueProp, commitEmpty, normalizedValue, blurCount, immediateCommit])
 
     const onFocus = useCallback((e: SyntheticInputEvent<EventTarget>) => {
         if (selectAllOnFocus) {
@@ -122,7 +122,7 @@ const TextControl = ({
         if (onKeyDownProp) {
             onKeyDownProp(e)
         }
-    }, [onKeyDownProp, revertOnEsc, immediateCommit, valueProp, tag])
+    }, [onKeyDownProp, revertOnEsc, immediateCommit, valueProp, tag, ref])
 
     useEffect(() => {
         const { current: input } = ref

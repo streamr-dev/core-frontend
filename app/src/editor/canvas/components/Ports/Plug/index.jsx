@@ -41,7 +41,7 @@ const Plug = ({
                 register(port.id, null)
             }
         }
-    }, [ref.current])
+    }, [ref, register, port.id])
 
     return (
         <DragDropContext.Consumer>

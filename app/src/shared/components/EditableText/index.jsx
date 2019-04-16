@@ -36,17 +36,17 @@ const EditableText = ({
             setValue(children)
             setEditing(true)
         }
-    }, [disabled, children])
+    }, [disabled, children, setValue, setEditing])
     const onBlur = useCallback(() => {
         setHasFocus(false)
         setEditing(false)
-    })
+    }, [setHasFocus, setEditing])
     const onFocus = useCallback(() => {
         setHasFocus(true)
-    })
+    }, [setHasFocus])
     const onChange = useCallback((e: SyntheticInputEvent<EventTarget>) => {
         setValue(e.target.value)
-    })
+    }, [setValue])
 
     return (
         <div

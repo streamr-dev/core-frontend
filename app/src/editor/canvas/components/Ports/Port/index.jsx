@@ -37,11 +37,13 @@ const Port = ({
     const hasInputField = isParam || port.canHaveInitialValue
     const [contextMenuTarget, setContextMenuTarget] = useState(null)
     const [editingName, setEditingName] = useState(false)
+
     const onContextMenu = useCallback((e: SyntheticMouseEvent<EventTarget>) => {
         e.preventDefault()
         // $FlowFixMe wtf?
         setContextMenuTarget(e.currentTarget)
-    })
+    }, [setContextMenuTarget])
+
     const plug = (
         <Plug
             api={api}
@@ -66,13 +68,13 @@ const Port = ({
                 dismiss()
             }
         }
-    }, [contextMenuTarget])
+    }, [contextMenuTarget, dismiss])
 
     const onKeyDown = useCallback(({ key }: SyntheticKeyboardEvent<EventTarget>) => {
         if (contextMenuTarget && key === 'Escape') {
             dismiss()
         }
-    }, [contextMenuTarget])
+    }, [contextMenuTarget, dismiss])
 
     const onNameChange = useCallback((displayName) => {
         setOptions(port.id, {
