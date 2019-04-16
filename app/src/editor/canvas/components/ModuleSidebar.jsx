@@ -2,9 +2,7 @@ import React from 'react'
 import cx from 'classnames'
 import startCase from 'lodash/startCase'
 
-import Header from '$editor/shared/components/Sidebar/Header'
-import Content from '$editor/shared/components/Sidebar/Content'
-import Section from '$editor/shared/components/Sidebar/Section'
+import { Header, Content, Section } from '$editor/shared/components/Sidebar'
 
 import TextControl from '$shared/components/TextControl'
 

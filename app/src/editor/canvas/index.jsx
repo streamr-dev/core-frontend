@@ -86,15 +86,16 @@ const CanvasEditComponent = class CanvasEdit extends Component {
 
     keyboardShortcutOpen = (show = true) => {
         this.setState({
+            moduleSidebarIsOpen: !!show,
             keyboardShortcutIsOpen: !!show,
         })
     }
 
     selectModule = async ({ hash } = {}) => {
-        this.setState(({ moduleSidebarIsOpen }) => ({
+        this.setState(({ moduleSidebarIsOpen, keyboardShortcutIsOpen }) => ({
             selectedModuleHash: hash,
             // close sidebar if no selection
-            moduleSidebarIsOpen: hash == null ? false : moduleSidebarIsOpen,
+            moduleSidebarIsOpen: hash == null ? keyboardShortcutIsOpen : moduleSidebarIsOpen,
         }))
     }
 
@@ -356,6 +357,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
 
     render() {
         const { canvas } = this.props
+        const { moduleSidebarIsOpen, keyboardShortcutIsOpen } = this.state
         const { settings } = canvas
         const resendFrom = settings.beginDate
         const resendTo = settings.endDate
@@ -379,7 +381,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                     updateModule={this.updateModule}
                     renameModule={this.renameModule}
                     moduleSidebarOpen={this.moduleSidebarOpen}
-                    moduleSidebarIsOpen={this.state.moduleSidebarIsOpen}
+                    moduleSidebarIsOpen={moduleSidebarIsOpen && !keyboardShortcutIsOpen}
                     setCanvas={this.setCanvas}
                     loadNewDefinition={this.loadNewDefinition}
                     pushNewDefinition={this.pushNewDefinition}
@@ -409,14 +411,14 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                 </ModalProvider>
                 <Sidebar
                     className={styles.ModuleSidebar}
-                    isOpen={this.state.keyboardShortcutIsOpen || this.state.moduleSidebarIsOpen}
+                    isOpen={moduleSidebarIsOpen}
                 >
-                    {this.state.keyboardShortcutIsOpen && (
+                    {moduleSidebarIsOpen && keyboardShortcutIsOpen && (
                         <KeyboardShortcuts
                             onClose={() => this.keyboardShortcutOpen(false)}
                         />
                     )}
-                    {this.state.moduleSidebarIsOpen && (
+                    {moduleSidebarIsOpen && !keyboardShortcutIsOpen && (
                         <ModuleSidebar
                             onClose={() => this.moduleSidebarOpen(false)}
                             canvas={canvas}

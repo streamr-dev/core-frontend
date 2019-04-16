@@ -32,4 +32,10 @@ class ModuleSidebar extends React.PureComponent<Props> {
     }
 }
 
+export {
+    Header,
+    Content,
+    Section,
+}
+
 export default withErrorBoundary(ErrorComponentView)(ModuleSidebar)
