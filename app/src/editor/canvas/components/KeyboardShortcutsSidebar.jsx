@@ -2,9 +2,7 @@
 
 import React from 'react'
 
-import Header from './Header'
-import Content from './Content'
-import Section from './Section'
+import { Header, Content, Section } from '$editor/shared/components/Sidebar'
 
 type Props = {
     onClose: () => void,

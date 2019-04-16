@@ -15,13 +15,13 @@ import { ModalProvider } from '$editor/shared/components/Modal'
 import * as sharedServices from '$editor/shared/services'
 import BodyClass from '$shared/components/BodyClass'
 import Sidebar from '$editor/shared/components/Sidebar'
-import KeyboardShortcuts from '$editor/shared/components/Sidebar/KeyboardShortcuts'
+import ModuleSidebar from './components/ModuleSidebar'
+import KeyboardShortcutsSidebar from './components/KeyboardShortcutsSidebar'
 
 import Canvas from './components/Canvas'
 import CanvasToolbar from './components/Toolbar'
 import CanvasStatus from './components/Status'
 import ModuleSearch from './components/ModuleSearch'
-import ModuleSidebar from './components/ModuleSidebar'
 
 import * as services from './services'
 import * as CanvasState from './state'
@@ -414,7 +414,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                     isOpen={moduleSidebarIsOpen}
                 >
                     {moduleSidebarIsOpen && keyboardShortcutIsOpen && (
-                        <KeyboardShortcuts
+                        <KeyboardShortcutsSidebar
                             onClose={() => this.keyboardShortcutOpen(false)}
                         />
                     )}
