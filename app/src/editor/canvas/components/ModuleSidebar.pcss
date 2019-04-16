@@ -1,17 +1,17 @@
 .sidebar {
   background: #FFFFFF;
   box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.1);
-  display: grid;
-  grid-template-rows: auto 1fr;
-  grid-template-columns: 1fr;
   max-height: 100%;
   width: 376px;
   color: #323232;
   transition: margin 0.3s;
   border-top: 1px solid #EFEFEF;
-  z-index: 1;
+  z-index: 9999;
   overflow: auto;
-  position: relative;
+  position: fixed;
+  right: 0;
+  top: 0;
+  bottom: 0;
 }
 
 .sidebar[hidden] {

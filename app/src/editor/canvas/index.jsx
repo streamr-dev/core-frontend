@@ -14,6 +14,8 @@ import { ClientProvider } from '$editor/shared/components/Client'
 import { ModalProvider } from '$editor/shared/components/Modal'
 import * as sharedServices from '$editor/shared/services'
 import BodyClass from '$shared/components/BodyClass'
+import Sidebar from '$editor/shared/components/Sidebar'
+import KeyboardShortcuts from '$editor/shared/components/Sidebar/KeyboardShortcuts'
 
 import Canvas from './components/Canvas'
 import CanvasToolbar from './components/Toolbar'
@@ -50,6 +52,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         isWaiting: false,
         moduleSearchIsOpen: false,
         moduleSidebarIsOpen: false,
+        keyboardShortcutIsOpen: false,
     }
 
     static getDerivedStateFromProps(props) {
@@ -77,6 +80,13 @@ const CanvasEditComponent = class CanvasEdit extends Component {
     moduleSidebarOpen = (show = true) => {
         this.setState({
             moduleSidebarIsOpen: !!show,
+            keyboardShortcutIsOpen: false,
+        })
+    }
+
+    keyboardShortcutOpen = (show = true) => {
+        this.setState({
+            keyboardShortcutIsOpen: !!show,
         })
     }
 
@@ -394,16 +404,27 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                         setSaveState={this.setSaveState}
                         canvasStart={this.canvasStart}
                         canvasStop={this.canvasStop}
+                        keyboardShortcutOpen={this.keyboardShortcutOpen}
                     />
                 </ModalProvider>
-                <ModuleSidebar
+                <Sidebar
                     className={styles.ModuleSidebar}
-                    isOpen={this.state.moduleSidebarIsOpen}
-                    open={this.moduleSidebarOpen}
-                    canvas={canvas}
-                    selectedModuleHash={this.state.selectedModuleHash}
-                    setModuleOptions={this.setModuleOptions}
-                />
+                    isOpen={this.state.keyboardShortcutIsOpen || this.state.moduleSidebarIsOpen}
+                >
+                    {this.state.keyboardShortcutIsOpen && (
+                        <KeyboardShortcuts
+                            onClose={() => this.keyboardShortcutOpen(false)}
+                        />
+                    )}
+                    {this.state.moduleSidebarIsOpen && (
+                        <ModuleSidebar
+                            onClose={() => this.moduleSidebarOpen(false)}
+                            canvas={canvas}
+                            selectedModuleHash={this.state.selectedModuleHash}
+                            setModuleOptions={this.setModuleOptions}
+                        />
+                    )}
+                </Sidebar>
                 <ModuleSearch
                     addModule={this.addModule}
                     isOpen={this.state.moduleSearchIsOpen}

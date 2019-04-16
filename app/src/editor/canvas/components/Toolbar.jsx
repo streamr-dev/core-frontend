@@ -348,6 +348,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                     <Tooltip value={<React.Fragment>Keyboard<br />shortcuts</React.Fragment>}>
                                         <R.Button
                                             className={cx(styles.ToolbarButton, styles.KeyboardButton)}
+                                            onClick={() => this.props.keyboardShortcutOpen()}
                                         >
                                             <SvgIcon name="keyboard" />
                                         </R.Button>
