@@ -17,20 +17,11 @@ type Props = {
     children?: Node,
 }
 
-class ModuleSidebar extends React.PureComponent<Props> {
-    static Header = Header
-    static Content = Content
-    static Section = Section
-
-    render() {
-        const { isOpen, children } = this.props
-        return (
-            <div className={cx(styles.sidebar)} hidden={!isOpen}>
-                {children}
-            </div>
-        )
-    }
-}
+const ModuleSidebar = ({ isOpen, children }: Props) => (
+    <div className={cx(styles.sidebar)} hidden={!isOpen}>
+        {children}
+    </div>
+)
 
 export {
     Header,
