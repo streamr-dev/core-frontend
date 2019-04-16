@@ -13,22 +13,36 @@ const Map = ({ disabled, onChange, value }: Props) => {
     const [entries, setEntries] = useState(Object.entries(value))
 
     const onAddClick = useCallback((index: number) => {
-        const newPairs = [...entries]
-        newPairs.splice(index + 1, 0, ['', ''])
-        setEntries(newPairs)
+        const newEntries = [...entries]
+        newEntries.splice(index + 1, 0, ['', ''])
+        setEntries(newEntries)
     }, [entries])
 
     const onRemoveClick = useCallback((index: number) => {
-        const newPairs = [...entries]
-        newPairs.splice(index, 1)
-        setEntries(newPairs)
+        const newEntries = [...entries]
+        newEntries.splice(index, 1)
+        setEntries(newEntries)
     }, [entries])
 
-    const onEntryChange = useCallback((index: number, name: string, value: mixed) => {
-        const newPairs = [...entries]
-        newPairs.splice(index, 1, [name, value])
-        setEntries(newPairs)
-        onChange(newPairs)
+    const onEntryChange = useCallback((index: number, name: string, value: string) => {
+        const newEntries = [...entries]
+        newEntries.splice(index, 1, [name, value])
+        setEntries(newEntries)
+
+        const newValue = newEntries
+            // Filter out entries with empty `name`.
+            .filter(([key = '']) => key.trim())
+            // Turn it into an Object.
+            .reduce((memo, [key, val = '']) => {
+                const v: any = val
+
+                return {
+                    ...memo,
+                    [key.trim()]: v.trim(),
+                }
+            }, {})
+
+        onChange(newValue)
     }, [entries, onChange])
 
     const finalEntries = useMemo(() => (
