@@ -5,6 +5,7 @@ import { RunStates } from '../../../state'
 import Color from './Color'
 import Map from './Map'
 import Select from './Select'
+import Stream from './Stream'
 import Text from './Text'
 import styles from './value.pcss'
 
@@ -14,7 +15,7 @@ type Props = {
     onChange: (any) => void,
 }
 
-type PortType = 'map' | 'color' | 'select' | 'text'
+type PortType = 'map' | 'color' | 'select' | 'text' | 'stream'
 
 const getPortType = (port: any): PortType => {
     switch (true) {
@@ -24,6 +25,8 @@ const getPortType = (port: any): PortType => {
             return 'color'
         case !!port.possibleValues:
             return 'select'
+        case port.type === 'Stream':
+            return 'stream'
         default:
     }
     return 'text'
@@ -72,6 +75,11 @@ const Value = ({ canvas, port, onChange }: Props) => {
                 <Text
                     {...commonProps}
                     placeholder={port.displayName || port.name}
+                />
+            )}
+            {type === 'stream' && (
+                <Stream
+                    {...commonProps}
                 />
             )}
         </div>

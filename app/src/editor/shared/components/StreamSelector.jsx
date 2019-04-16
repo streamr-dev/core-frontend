@@ -9,11 +9,10 @@ import styles from './StreamSelector.pcss'
 type Props = {
     className: string,
     value: any,
-    style: Object,
     disabled: boolean,
     onChange: (value: string, done: any) => void,
-    onBlur: (event: any) => void,
-    onFocus: (event: any) => void,
+    onBlur?: ?(event: any) => void,
+    onFocus?: ?(event: any) => void,
 }
 
 type State = {
@@ -53,7 +52,9 @@ export default class StreamSelector extends React.Component<Props, State> {
         this.setState({
             isOpen: true,
         })
-        onFocus(e)
+        if (onFocus) {
+            onFocus(e)
+        }
         this.search(search)
     }
 
@@ -62,7 +63,9 @@ export default class StreamSelector extends React.Component<Props, State> {
         this.setState({
             isOpen: false,
         })
-        onBlur(e)
+        if (onBlur) {
+            onBlur(e)
+        }
     }
 
     onChange = async (e: SyntheticInputEvent<EventTarget>) => {
@@ -101,14 +104,13 @@ export default class StreamSelector extends React.Component<Props, State> {
     }
 
     render() {
-        const { style, disabled, className } = this.props
+        const { disabled, className } = this.props
         const { isOpen, search, matchingStreams } = this.state
 
         return (
             <div
                 role="textbox"
                 className={styles.StreamSelector}
-                style={style}
                 onBlur={this.onBlur}
                 onFocus={this.onFocus}
                 tabIndex="0"
