@@ -4,7 +4,10 @@
 }
 
 .root {
+  align-items: center;
+  display: flex;
   flex: 0;
+  height: calc(1.25 * var(--um));
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.25s 0.5s;
@@ -40,13 +43,9 @@
 }
 
 .drivingInput .inner {
-  transform: translate(-100%, -50%);
+  transform: translateX(-100%);
 }
 
 .noRepeat.activated button {
   background-color: var(--no-repeat-color);
-}
-
-.noRepeat .inner {
-  transform: translateY(-50%);
 }

@@ -12,6 +12,7 @@ import Option from '../Option'
 import Plug from '../Plug'
 import Menu from '../Menu'
 import Value from '../Value'
+import Cell from './Cell'
 import styles from './port.pcss'
 
 type Props = {
@@ -133,9 +134,9 @@ const Port = ({
                             />
                         )}
                         {!isInput ? (
-                            <div className={styles.spaceholder} />
+                            <Cell className={styles.spaceholder} />
                         ) : plug}
-                        <div>
+                        <Cell>
                             <EditableText
                                 disabled={!!isRunning}
                                 editing={editingName}
@@ -144,13 +145,15 @@ const Port = ({
                             >
                                 {port.displayName || startCase(port.name)}
                             </EditableText>
-                        </div>
+                        </Cell>
                         {hasInputField && (
-                            <Value
-                                canvas={canvas}
-                                port={port}
-                                onChange={onValueChange}
-                            />
+                            <Cell>
+                                <Value
+                                    canvas={canvas}
+                                    port={port}
+                                    onChange={onValueChange}
+                                />
+                            </Cell>
                         )}
                         {!isInput && plug}
                         {port.canBeNoRepeat && (
