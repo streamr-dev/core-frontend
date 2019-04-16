@@ -1,0 +1,36 @@
+.root {
+  display: flex;
+  padding: calc(0.125 * var(--um)) 0;
+}
+
+.inner {
+  display: grid;
+  grid-column-gap: calc(0.5 * var(--um));
+  grid-template-columns: auto auto var(--um);
+}
+
+.root button {
+  appearance: none;
+  border: 0;
+  border-radius: calc(0.125 * var(--um));
+  height: var(--um);
+  outline: 0;
+  padding: 0;
+  width: var(--um);
+}
+
+.root path {
+  stroke: #A3A3A3;
+}
+
+.root button:--enter {
+  background-color: #F5F5F5;
+}
+
+.root button:--enter path {
+  stroke: #323232;
+}
+
+.root svg {
+  display: block;
+}

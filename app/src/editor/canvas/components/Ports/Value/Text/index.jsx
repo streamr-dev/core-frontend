@@ -18,6 +18,7 @@ const Text = ({ disabled, onChange, value, ...props }: Props) => {
                 [styles.editing]: editing,
                 [styles.disabled]: disabled,
             })}
+            commitEmpty
             disabled={disabled}
             editing={editing}
             editOnFocus

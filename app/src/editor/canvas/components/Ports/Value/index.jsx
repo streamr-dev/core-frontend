@@ -51,7 +51,7 @@ const Value = ({ canvas, port, onChange }: Props) => {
 
     return (
         <div className={styles.root}>
-            {type === 'map' && false && (
+            {type === 'map' && (
                 <Map
                     {...commonProps}
                     port={port}
