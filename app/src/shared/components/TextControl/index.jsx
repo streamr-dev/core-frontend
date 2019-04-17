@@ -111,8 +111,15 @@ const TextControl = ({
                     break
                 case 'Escape':
                     if (revertOnEsc) {
-                        setValue(sanitizedValue)
-                        reverted.current = true
+                        if (value === sanitizedValue) {
+                            // No change. Re-render won't happen. We can blur right away!
+                            input.blur()
+                        } else {
+                            // If the value changed then we have to wait with the `blur`
+                            // for another render. `onBlur` has to know current `value`.
+                            setValue(sanitizedValue)
+                            reverted.current = true
+                        }
                     }
                     break
                 default:
@@ -123,7 +130,7 @@ const TextControl = ({
         if (onKeyDownProp) {
             onKeyDownProp(e)
         }
-    }, [onKeyDownProp, revertOnEsc, immediateCommit, sanitizedValue, tag, ref])
+    }, [onKeyDownProp, revertOnEsc, immediateCommit, sanitizedValue, tag, ref, value])
 
     useEffect(() => {
         const { current: input } = ref
