@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback, useMemo, Fragment } from 'react'
 import Text from '../../Text'
 import styles from './mapEntry.pcss'
 
@@ -56,22 +56,24 @@ const MapEntry = ({
     ), [name, value])
 
     return (
-        <div className={styles.root}>
-            <div className={styles.inner}>
-                <Text
-                    disabled={!!disabled}
-                    onChange={onNameChange}
-                    placeholder="Key"
-                    value={name}
-                />
-                <Text
-                    disabled={!!disabled}
-                    onChange={onValueChange}
-                    placeholder="Value"
-                    value={value}
-                />
+        <Fragment>
+            <Text
+                disabled={!!disabled}
+                onChange={onNameChange}
+                placeholder="Key"
+                value={name}
+            />
+            <Text
+                disabled={!!disabled}
+                onChange={onValueChange}
+                placeholder="Value"
+                value={value}
+            />
+            {/* Unnamed possibly empty div. It's the 3rd column in Map's 3-column grid. Keep it. */}
+            <div>
                 {removable ? (
                     <button
+                        className={styles.button}
                         type="button"
                         onClick={onRemoveClick}
                     >
@@ -81,6 +83,7 @@ const MapEntry = ({
                     </button>
                 ) : (canAdd && (
                     <button
+                        className={styles.button}
                         type="button"
                         onClick={onAddClick}
                     >
@@ -90,7 +93,7 @@ const MapEntry = ({
                     </button>
                 ))}
             </div>
-        </div>
+        </Fragment>
     )
 }
 

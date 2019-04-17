@@ -1,37 +1,28 @@
-.root {
-  display: flex;
-  padding: calc(0.125 * var(--um)) 0;
-}
-
-.inner {
-  display: grid;
-  grid-column-gap: calc(0.5 * var(--um));
-  grid-template-columns: auto auto var(--um);
-}
-
-.root button {
+.button {
   appearance: none;
   background-color: transparent;
   border: 0;
-  border-radius: calc(0.125 * var(--um));
-  height: var(--um);
+  border-radius: 0.125em;
+  display: block;
+  font-size: var(--um);
+  height: 1em;
   outline: 0;
   padding: 0;
-  width: var(--um);
+  width: 1em;
 }
 
-.root path {
+.button path {
   stroke: #A3A3A3;
 }
 
-.root button:--enter {
+.button:--enter {
   background-color: #F5F5F5;
 }
 
-.root button:--enter path {
+.button:--enter path {
   stroke: #323232;
 }
 
-.root svg {
+.button svg {
   display: block;
 }
