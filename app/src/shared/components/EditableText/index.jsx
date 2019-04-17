@@ -1,7 +1,8 @@
 // @flow
 
-import React, { useState, useCallback, Fragment } from 'react'
+import React, { useState, useCallback, Fragment, useEffect, useRef } from 'react'
 import cx from 'classnames'
+import { type Ref } from '$shared/flowtype/common-types'
 import ModuleHeader from '$editor/shared/components/ModuleHeader'
 import TextControl from '../TextControl'
 import styles from './editableText.pcss'
@@ -13,6 +14,7 @@ type Props = {
     editing?: boolean,
     editOnFocus?: boolean,
     onChange?: (string) => void,
+    onModeChange?: ?(boolean) => void,
     placeholder?: ?string,
     setEditing: (boolean) => void,
 }
@@ -24,6 +26,7 @@ const EditableText = ({
     editing,
     editOnFocus,
     onChange: onChangeProp,
+    onModeChange,
     placeholder,
     setEditing,
     ...props
@@ -48,6 +51,16 @@ const EditableText = ({
         setValue(e.target.value)
     }, [setValue])
 
+    const initialRender: Ref<boolean> = useRef(true)
+
+    useEffect(() => {
+        // Skip calling `onModeChange` on the initial render.
+        if (onModeChange && !initialRender.current) {
+            onModeChange(!!editing)
+        }
+        initialRender.current = false
+    }, [onModeChange, editing])
+
     return (
         <div
             className={cx(styles.root, className, {
@@ -71,7 +84,6 @@ const EditableText = ({
                             {...props}
                             autoFocus
                             flushHistoryOnBlur
-                            immediateCommit={false}
                             onBlur={onBlur}
                             onChange={onChange}
                             onCommit={onChangeProp}
@@ -95,6 +107,7 @@ EditableText.defaultProps = {
     children: '',
     className: null,
     editOnFocus: false,
+    immediateCommit: false,
     onChange: () => {},
 }
 

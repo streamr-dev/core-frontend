@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react'
+import Text from '$editor/canvas/components/Ports/Value/Text'
 
 import { getStreams, getStream } from '../../canvas/services'
 
@@ -45,31 +46,7 @@ export default class StreamSelector extends React.Component<Props, State> {
         this.unmounted = true
     }
 
-    onFocus = (e: any) => {
-        const { onFocus } = this.props
-        const { search } = this.state
-
-        this.setState({
-            isOpen: true,
-        })
-        if (onFocus) {
-            onFocus(e)
-        }
-        this.search(search)
-    }
-
-    onBlur = (e: any) => {
-        const { onBlur } = this.props
-        this.setState({
-            isOpen: false,
-        })
-        if (onBlur) {
-            onBlur(e)
-        }
-    }
-
-    onChange = async (e: SyntheticInputEvent<EventTarget>) => {
-        const { value } = e.target
+    onChange = (value: string) => {
         this.search(value)
     }
 
@@ -103,23 +80,31 @@ export default class StreamSelector extends React.Component<Props, State> {
         onChange(id)
     }
 
+    toggleSearch = (isOpen: boolean) => {
+        const { search: value } = this.state
+
+        this.setState({
+            isOpen,
+        })
+
+        if (isOpen) {
+            this.search(value)
+        }
+    }
+
     render() {
-        const { disabled, className } = this.props
+        const { disabled } = this.props
         const { isOpen, search, matchingStreams } = this.state
 
         return (
-            <div
-                role="textbox"
-                className={styles.StreamSelector}
-                onBlur={this.onBlur}
-                onFocus={this.onFocus}
-                tabIndex="0"
-            >
-                <input
-                    className={className}
-                    value={search}
-                    disabled={disabled}
+            <div>
+                <Text
+                    disabled={!!disabled}
+                    immediateCommit
                     onChange={this.onChange}
+                    onModeChange={this.toggleSearch}
+                    placeholder="Value"
+                    value={search}
                 />
                 {isOpen && (
                     <div className={styles.searchResults}>
