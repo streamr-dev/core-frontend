@@ -187,24 +187,5 @@ describe('Canvas Services', () => {
             // can't stop a stopped canvas
             await expect(Services.stop(canvas)).rejects.toThrow()
         })
-
-        it('can start adhoc canvases', async () => {
-            const canvas = await Services.create()
-            const startedAdhocCanvas = await Services.start(canvas, { adhoc: true })
-            expect(startedAdhocCanvas.id).not.toEqual(canvas.id)
-            expect(startedAdhocCanvas).toMatchObject({
-                ...canvas,
-                ...canvasMatcher,
-                adhoc: true,
-                state: State.RunStates.Running,
-                startedById: expect.any(Number),
-                settings: expect.objectContaining({
-                    parentCanvasId: canvas.id, // captures parent canvas id
-                }),
-            })
-
-            // adhoc canvas will immediately stop, so this should throw
-            await expect(Services.stop(startedAdhocCanvas)).rejects.toThrow()
-        })
     })
 })

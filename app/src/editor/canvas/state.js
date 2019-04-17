@@ -908,6 +908,30 @@ export function isRunning(canvas) {
     return canvas.state === RunStates.Running
 }
 
+export function getChildCanvasId(canvas) {
+    return canvas.settings.childCanvasId
+}
+
+export function getParentCanvasId(canvas) {
+    return canvas.settings.parentCanvasId
+}
+
+/**
+ * Gets parent id, or own if no parent
+ */
+
+export function getRootCanvasId(canvas) {
+    return getParentCanvasId(canvas) || canvas.id
+}
+
+/**
+ * Gets child id, or own if no child
+ */
+
+export function getRelevantCanvasId(canvas) {
+    return getChildCanvasId(canvas) || canvas.id
+}
+
 /**
  * Cleanup
  */
