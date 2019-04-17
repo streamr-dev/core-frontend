@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useCallback, useState, useEffect } from 'react'
+import React, { useCallback, useState, useEffect, useContext } from 'react'
 import cx from 'classnames'
 import startCase from 'lodash/startCase'
 import EditableText from '$shared/components/EditableText'
@@ -56,8 +56,8 @@ const Port = ({
         setContextMenuTarget(null)
     }, [])
 
-    const onDocumentClick = useCallback((e: SyntheticMouseEvent<EventTarget>) => {
-        if (contextMenuTarget && e.target instanceof HTMLElement) {
+    const onWindowMouseDown = useCallback((e: SyntheticMouseEvent<EventTarget>) => {
+        if (contextMenuTarget && e.target instanceof Element) {
             if (e.target.classList.contains(Menu.styles.noAutoDismiss)) {
                 return
             }
@@ -68,7 +68,7 @@ const Port = ({
         }
     }, [contextMenuTarget, dismiss])
 
-    const onKeyDown = useCallback(({ key }: SyntheticKeyboardEvent<EventTarget>) => {
+    const onGlobalKeyDown = useCallback(({ key }: SyntheticKeyboardEvent<EventTarget>) => {
         if (contextMenuTarget && key === 'Escape') {
             dismiss()
         }
@@ -90,82 +90,77 @@ const Port = ({
         onValueChangeProp(port.id, value)
     }, [port.id, onValueChangeProp])
 
+    const { isDragging, data } = useContext(DragDropContext)
+    const { portId } = data || {}
+    const dragInProgress = !!isDragging && portId != null
+
     useEffect(() => {
-        window.addEventListener('mousedown', onDocumentClick)
-        window.addEventListener('keydown', onKeyDown)
+        window.addEventListener('mousedown', onWindowMouseDown)
+        window.addEventListener('keydown', onGlobalKeyDown)
 
         return () => {
-            window.addEventListener('mousedown', onDocumentClick)
-            window.addEventListener('keydown', onKeyDown)
+            window.removeEventListener('mousedown', onWindowMouseDown)
+            window.removeEventListener('keydown', onGlobalKeyDown)
         }
-    }, [onDocumentClick, onKeyDown])
+    }, [onWindowMouseDown, onGlobalKeyDown])
 
     return (
-        <DragDropContext.Consumer>
-            {({ isDragging, data }) => {
-                const { portId } = data || {}
-                const dragInProgress = !!isDragging && portId != null
-
-                return (
-                    <div
-                        className={cx(styles.root, {
-                            [styles.dragInProgress]: !!dragInProgress,
-                        })}
-                    >
-                        {contextMenuTarget && (
-                            <Menu
-                                api={api}
-                                dismiss={dismiss}
-                                port={port}
-                                setPortOptions={setOptions}
-                                target={contextMenuTarget}
-                            />
-                        )}
-                        {port.canToggleDrivingInput && (
-                            <Option
-                                activated={!!port.drivingInput}
-                                className={styles.portOption}
-                                disabled={!!isRunning}
-                                name="drivingInput"
-                                onToggle={onOptionToggle}
-                            />
-                        )}
-                        {!isInput ? (
-                            <Cell className={styles.spaceholder} />
-                        ) : plug}
-                        <Cell>
-                            <EditableText
-                                disabled={!!isRunning}
-                                editing={editingName}
-                                onChange={onNameChange}
-                                setEditing={setEditingName}
-                            >
-                                {port.displayName || startCase(port.name)}
-                            </EditableText>
-                        </Cell>
-                        {hasInputField && (
-                            <Cell>
-                                <Value
-                                    canvas={canvas}
-                                    port={port}
-                                    onChange={onValueChange}
-                                />
-                            </Cell>
-                        )}
-                        {!isInput && plug}
-                        {port.canBeNoRepeat && (
-                            <Option
-                                activated={!!port.noRepeat}
-                                className={styles.portOption}
-                                disabled={!!isRunning}
-                                name="noRepeat"
-                                onToggle={onOptionToggle}
-                            />
-                        )}
-                    </div>
-                )
-            }}
-        </DragDropContext.Consumer>
+        <div
+            className={cx(styles.root, {
+                [styles.dragInProgress]: !!dragInProgress,
+            })}
+        >
+            {contextMenuTarget && (
+                <Menu
+                    api={api}
+                    dismiss={dismiss}
+                    port={port}
+                    setPortOptions={setOptions}
+                    target={contextMenuTarget}
+                />
+            )}
+            {port.canToggleDrivingInput && (
+                <Option
+                    activated={!!port.drivingInput}
+                    className={styles.portOption}
+                    disabled={!!isRunning}
+                    name="drivingInput"
+                    onToggle={onOptionToggle}
+                />
+            )}
+            {!isInput ? (
+                <Cell className={styles.spaceholder} />
+            ) : plug}
+            <Cell>
+                <EditableText
+                    disabled={!!isRunning}
+                    editing={editingName}
+                    onChange={onNameChange}
+                    setEditing={setEditingName}
+                >
+                    {port.displayName || startCase(port.name)}
+                </EditableText>
+            </Cell>
+            {hasInputField && (
+                <Cell>
+                    <Value
+                        canvas={canvas}
+                        port={port}
+                        onChange={onValueChange}
+                    />
+                </Cell>
+            )}
+            {!isInput && plug}
+            {port.canBeNoRepeat && (
+                <Option
+                    activated={!!port.noRepeat}
+                    className={styles.portOption}
+                    disabled={!!isRunning}
+                    name="noRepeat"
+                    onToggle={onOptionToggle}
+                />
+            )}
+        </div>
     )
 }
 

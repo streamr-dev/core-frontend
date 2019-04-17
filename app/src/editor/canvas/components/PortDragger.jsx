@@ -93,12 +93,7 @@ export function DragSource({ api, port, className }) {
     return (
         <DraggablePort api={api} port={port}>
             <div
-                className={cx([
-                    Dragger.styles.root,
-                    Dragger.styles.source,
-                    Dragger.styles.dragHandle,
-                    className,
-                ])}
+                className={cx(Dragger.styles.root, Dragger.styles.source, Dragger.styles.dragHandle, className)}
             />
         </DraggablePort>
     )
@@ -128,11 +123,7 @@ export class DropTarget extends React.PureComponent {
             /* eslint-disable-next-line max-len */
             /* eslint-disable jsx-a11y/no-static-element-interactions, jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/mouse-events-have-key-events, jsx-a11y/no-noninteractive-tabindex */
             <div
-                className={cx([
-                    Dragger.styles.root,
-                    Dragger.styles.target,
-                    this.props.className,
-                ])}
+                className={cx(Dragger.styles.root, Dragger.styles.target, this.props.className, this.props.className)}
                 onMouseOver={this.onMouseOverTarget}
                 onMouseOut={this.onMouseOutTarget}
             />

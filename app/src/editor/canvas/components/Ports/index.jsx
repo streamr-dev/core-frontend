@@ -29,12 +29,11 @@ const Ports = ({
     return !!(inputs.length || outputs.length) && (
         <div className={cx(className, styles.ports)}>
             <div className={styles.inputs}>
-                {inputs.map((port, index) => (
+                {inputs.map((port) => (
                     <Port
                         api={api}
                         canvas={canvas}
-                        /* eslint-disable react/no-array-index-key */
-                        key={port.id + index}
+                        key={port.id}
                         onValueChange={onValueChange}
                         onPort={onPort}
                         port={port}
@@ -43,12 +42,11 @@ const Ports = ({
                 ))}
             </div>
             <div className={styles.outputs}>
-                {outputs.map((port, index) => (
+                {outputs.map((port) => (
                     <Port
                         api={api}
                         canvas={canvas}
-                        /* eslint-disable react/no-array-index-key */
-                        key={port.id + index}
+                        key={port.id}
                         onValueChange={onValueChange}
                         onPort={onPort}
                         port={port}

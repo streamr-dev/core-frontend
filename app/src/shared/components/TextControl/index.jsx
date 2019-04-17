@@ -45,7 +45,8 @@ const TextControl = ({
     const el = useRef(null)
     const ref = innerRef || el
     const reverted: Ref<boolean> = useRef(false)
-    const [value, setValue] = useState(valueProp == null ? '' : valueProp)
+    const sanitizedValue = valueProp == null ? '' : valueProp
+    const [value, setValue] = useState(sanitizedValue)
     const [blurCount, setBlurCount] = useState(0)
     const normalizedValue = normalize(value)
     const commit = useCallback(() => {
@@ -66,13 +67,13 @@ const TextControl = ({
         }
 
         if (!commitEmpty && !normalizedValue) {
-            setValue(valueProp)
+            setValue(sanitizedValue)
         }
 
         if (onBlurProp) {
             onBlurProp(e)
         }
-    }, [onBlurProp, flushHistoryOnBlur, commit, valueProp, commitEmpty, normalizedValue, blurCount, immediateCommit])
+    }, [onBlurProp, flushHistoryOnBlur, commit, sanitizedValue, commitEmpty, normalizedValue, blurCount, immediateCommit])
 
     const onFocus = useCallback((e: SyntheticInputEvent<EventTarget>) => {
         if (selectAllOnFocus) {
@@ -110,7 +111,7 @@ const TextControl = ({
                     break
                 case 'Escape':
                     if (revertOnEsc) {
-                        setValue(valueProp)
+                        setValue(sanitizedValue)
                         reverted.current = true
                     }
                     break
@@ -122,7 +123,7 @@ const TextControl = ({
         if (onKeyDownProp) {
             onKeyDownProp(e)
         }
-    }, [onKeyDownProp, revertOnEsc, immediateCommit, valueProp, tag, ref])
+    }, [onKeyDownProp, revertOnEsc, immediateCommit, sanitizedValue, tag, ref])
 
     useEffect(() => {
         const { current: input } = ref
@@ -148,8 +149,8 @@ const TextControl = ({
 }
 
 TextControl.defaultProps = {
-    flushHistoryOnBlur: false,
     commitEmpty: false,
+    flushHistoryOnBlur: false,
     immediateCommit: true,
     innerRef: null,
     revertOnEsc: false,
