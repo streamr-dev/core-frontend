@@ -93,11 +93,7 @@ const TextControl = ({
         if (onChangeProp) {
             onChangeProp(e)
         }
-
-        if (immediateCommit) {
-            commit()
-        }
-    }, [immediateCommit, onChangeProp, commit])
+    }, [onChangeProp, commit])
 
     const onKeyDown = useCallback((e: SyntheticKeyboardEvent<EventTarget>) => {
         const { current: input } = ref
@@ -140,6 +136,12 @@ const TextControl = ({
             input.blur()
         }
     })
+
+    useEffect(() => {
+        if (immediateCommit) {
+            commit()
+        }
+    }, [immediateCommit, commit])
 
     return (
         <Tag
