@@ -68,6 +68,13 @@ const Port = ({
         }
     }, [contextMenuTarget, dismiss])
 
+    const onWindowBlur = useCallback(() => {
+        const { activeElement } = document
+        if (contextMenuTarget && activeElement && activeElement.tagName.toLowerCase() === 'iframe') {
+            dismiss()
+        }
+    }, [contextMenuTarget, dismiss])
+
     const onGlobalKeyDown = useCallback(({ key }: SyntheticKeyboardEvent<EventTarget>) => {
         if (contextMenuTarget && key === 'Escape') {
             dismiss()
@@ -97,12 +104,14 @@ const Port = ({
     useEffect(() => {
         window.addEventListener('mousedown', onWindowMouseDown)
         window.addEventListener('keydown', onGlobalKeyDown)
+        window.addEventListener('blur', onWindowBlur)
 
         return () => {
             window.removeEventListener('mousedown', onWindowMouseDown)
             window.removeEventListener('keydown', onGlobalKeyDown)
+            window.removeEventListener('blur', onWindowBlur)
         }
-    }, [onWindowMouseDown, onGlobalKeyDown])
+    }, [onWindowMouseDown, onGlobalKeyDown, onWindowBlur])
 
     return (
         <div
