@@ -53,6 +53,7 @@ const EditableText = ({
             className={cx(styles.root, className, {
                 [styles.idle]: !editing,
                 [styles.disabled]: disabled,
+                [styles.blank]: (editing && !value) || (!editing && !children),
                 [ModuleHeader.styles.dragCancel]: !!editing,
             })}
             onDoubleClick={startEditing}
