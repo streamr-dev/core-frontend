@@ -102,7 +102,7 @@ class DashboardItem extends React.Component {
                 data-itemid={item.id}
             >
                 <ModuleHeader
-                    className={styles.header}
+                    className={cx(styles.header, ModuleStyles.dragHandle)}
                     editable={!disabled}
                     label={item.title}
                     limitWidth

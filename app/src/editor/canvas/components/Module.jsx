@@ -124,13 +124,13 @@ class CanvasModule extends React.PureComponent {
                 {...props}
             >
                 <ModuleHeader
-                    className={styles.header}
+                    className={cx(styles.header, ModuleStyles.dragHandle)}
                     editable={!isRunning}
                     label={module.displayName || module.name}
                     onLabelChange={this.onChangeModuleName}
                 >
                     <HamburgerButton
-                        className={ModuleHeader.styles.dragCancel}
+                        className={ModuleStyles.dragCancel}
                         onClick={this.onTriggerOptions}
                         onFocus={this.onHamburgerButtonFocus}
                     />
