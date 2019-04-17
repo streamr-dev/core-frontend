@@ -73,7 +73,10 @@ export const PortTypes = {
 export function emptyCanvas(config = {}) {
     return {
         name: 'Untitled Canvas',
-        settings: {},
+        settings: {
+            runTab: RunTabs.realtime,
+            ...config.settings,
+        },
         modules: [],
         state: RunStates.Stopped,
         ...config,

@@ -168,7 +168,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                         {!!isRunning && 'Stop'}
                                         {!isRunning && (editorState.runTab === RunTabs.realtime ? 'Start' : 'Run')}
                                     </R.Button>
-                                    {editorState.runTab !== RunTabs.realtime ? (
+                                    {editorState.runTab === RunTabs.historical ? (
                                         <R.ButtonDropdown
                                             isOpen={runButtonDropdownOpen}
                                             toggle={this.onToggleRunButtonMenu}
@@ -253,7 +253,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                                 onClick={() => setRunTab(RunTabs.realtime)}
                                                 disabled={!canEdit}
                                                 className={cx(styles.ToolbarSolidButton, styles.firstButton, {
-                                                    [styles.StateSelectorActive]: editorState.runTab === RunTabs.realtime,
+                                                    [styles.StateSelectorActive]: editorState.runTab !== RunTabs.historical,
                                                 })}
                                             >
                                                 Realtime
@@ -263,13 +263,13 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                                 onClick={() => setRunTab(RunTabs.historical)}
                                                 disabled={!canEdit}
                                                 className={cx(styles.ToolbarSolidButton, styles.lastButton, {
-                                                    [styles.StateSelectorActive]: editorState.runTab !== RunTabs.realtime,
+                                                    [styles.StateSelectorActive]: editorState.runTab === RunTabs.historical,
                                                 })}
                                             >
                                                 Historical
                                             </button>
                                         </div>
-                                        {editorState.runTab !== RunTabs.realtime ? (
+                                        {editorState.runTab === RunTabs.historical ? (
                                             <div className={styles.runTabValueToggle}>
                                                 <WithCalendar
                                                     date={!!settings.beginDate && new Date(settings.beginDate)}
