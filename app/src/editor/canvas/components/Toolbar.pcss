@@ -243,12 +243,16 @@
   margin: 0 16px;
   white-space: nowrap;
   position: relative;
-  display: flex;
+}
+
+.CanvasToolbar .runTabToggle,
+.CanvasToolbar .runTabValueToggle {
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-column-gap: 1px;
 }
 
 .CanvasToolbar .runTabValueToggle {
-  display: flex;
-  justify-content: flex-start;
   position: relative;
 }
 
@@ -277,7 +281,6 @@
 .ToolbarSolidButton.lastButton {
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
-  margin-left: 1px;
 }
 
 .ToolbarSolidButton:hover,

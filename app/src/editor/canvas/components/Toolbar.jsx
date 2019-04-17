@@ -165,7 +165,8 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                         onClick={() => (isRunning ? canvasStop() : canvasStart())}
                                         className={styles.RunButton}
                                     >
-                                        {isRunning ? 'Stop' : 'Run'}
+                                        {!!isRunning && 'Stop'}
+                                        {!isRunning && (editorState.runTab === RunTabs.realtime ? 'Start' : 'Run')}
                                     </R.Button>
                                     {editorState.runTab !== RunTabs.realtime ? (
                                         <R.ButtonDropdown
