@@ -9,7 +9,9 @@ Object {
   "modules": Array [],
   "name": Any<String>,
   "serialized": false,
-  "settings": Object {},
+  "settings": Object {
+    "runTab": "#tab-realtime",
+  },
   "startedById": null,
   "state": "STOPPED",
   "uiChannel": ObjectContaining {

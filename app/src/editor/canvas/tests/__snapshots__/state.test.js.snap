@@ -4,7 +4,9 @@ exports[`Canvas State emptyCanvas creates an empty canvas 1`] = `
 Object {
   "modules": Array [],
   "name": "Untitled Canvas",
-  "settings": Object {},
+  "settings": Object {
+    "runTab": "#tab-realtime",
+  },
   "state": "STOPPED",
 }
 `;
