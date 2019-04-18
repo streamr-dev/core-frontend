@@ -11,6 +11,7 @@ type Name = string
 type Value = string
 
 type Props = {
+    autoFocusName?: boolean,
     disabled?: boolean,
     index: Index,
     name: Name,
@@ -22,6 +23,7 @@ type Props = {
 }
 
 const MapEntry = ({
+    autoFocusName,
     disabled,
     index,
     name,
@@ -58,6 +60,7 @@ const MapEntry = ({
     return (
         <Fragment>
             <Text
+                autoFocus={autoFocusName}
                 disabled={!!disabled}
                 onChange={onNameChange}
                 placeholder="Key"

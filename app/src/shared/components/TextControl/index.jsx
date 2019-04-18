@@ -93,7 +93,7 @@ const TextControl = ({
         if (onChangeProp) {
             onChangeProp(e)
         }
-    }, [onChangeProp, commit])
+    }, [onChangeProp])
 
     const onKeyDown = useCallback((e: SyntheticKeyboardEvent<EventTarget>) => {
         const { current: input } = ref

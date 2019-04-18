@@ -1,6 +1,7 @@
 // @flow
 
-import React, { useState, useCallback, useMemo } from 'react'
+import React, { useState, useCallback, useMemo, useRef } from 'react'
+import { type Ref } from '$shared/flowtype/common-types'
 import { type CommonProps } from '..'
 import MapEntry from './MapEntry'
 import styles from './map.pcss'
@@ -10,11 +11,14 @@ type Props = CommonProps & {
 }
 
 const Map = ({ disabled, onChange, value }: Props) => {
+    const focusIndex: Ref<number> = useRef(-1)
+
     const [entries, setEntries] = useState(Object.entries(value))
 
     const onAddClick = useCallback((index: number) => {
         const newEntries = [...entries]
-        newEntries.splice(index + 1, 0, ['', ''])
+        focusIndex.current = index + 1
+        newEntries.splice(focusIndex.current, 0, ['', ''])
         setEntries(newEntries)
     }, [entries])
 
@@ -56,6 +60,7 @@ const Map = ({ disabled, onChange, value }: Props) => {
 
                 return (
                     <MapEntry
+                        autoFocusName={focusIndex.current === index}
                         disabled={disabled}
                         index={index}
                         // eslint-disable-next-line react/no-array-index-key

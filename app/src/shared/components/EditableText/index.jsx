@@ -8,6 +8,7 @@ import TextControl from '../TextControl'
 import styles from './editableText.pcss'
 
 type Props = {
+    autoFocus?: boolean,
     children?: string | number,
     className?: ?string,
     disabled?: boolean,
@@ -20,6 +21,7 @@ type Props = {
 }
 
 const EditableText = ({
+    autoFocus,
     children: childrenProp,
     className,
     disabled,
@@ -60,6 +62,14 @@ const EditableText = ({
         }
         initialRender.current = false
     }, [onModeChange, editing])
+
+    const onMount: Ref<Function> = useRef(editOnFocus && autoFocus ? startEditing : (() => {}))
+
+    useEffect(() => {
+        if (onMount.current) {
+            onMount.current()
+        }
+    }, [])
 
     return (
         <div
