@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import ColorPicker from '$editor/shared/components/ColorPicker'
 import { type CommonProps } from '..'
 
@@ -18,6 +18,10 @@ const Color = ({ disabled, onChange: onChangeProp, value: valueProp, ...props }:
         // are stored in the local state.
         onChangeProp(value)
     }, [onChangeProp, value])
+
+    useEffect(() => {
+        setValue(valueProp)
+    }, [valueProp])
 
     return (
         <ColorPicker

@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useState, useCallback, useMemo, useRef } from 'react'
+import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react'
 import { type Ref } from '$shared/flowtype/common-types'
 import { type CommonProps } from '..'
 import MapEntry from './MapEntry'
@@ -52,6 +52,10 @@ const Map = ({ disabled, onChange, value }: Props) => {
     const finalEntries = useMemo(() => (
         entries.length ? entries : [['', '']]
     ), [entries])
+
+    useEffect(() => {
+        setEntries(Object.entries(value))
+    }, [value])
 
     return (
         <div className={styles.root}>
