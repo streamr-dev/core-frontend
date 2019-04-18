@@ -15,24 +15,7 @@ const Map = ({ disabled, onChange, value }: Props) => {
 
     const [entries, setEntries] = useState(Object.entries(value))
 
-    const onAddClick = useCallback((index: number) => {
-        const newEntries = [...entries]
-        focusIndex.current = index + 1
-        newEntries.splice(focusIndex.current, 0, ['', ''])
-        setEntries(newEntries)
-    }, [entries])
-
-    const onRemoveClick = useCallback((index: number) => {
-        const newEntries = [...entries]
-        newEntries.splice(index, 1)
-        setEntries(newEntries)
-    }, [entries])
-
-    const onEntryChange = useCallback((index: number, name: string, value: string) => {
-        const newEntries = [...entries]
-        newEntries.splice(index, 1, [name, value])
-        setEntries(newEntries)
-
+    const commit = useCallback((newEntries) => {
         const newValue = newEntries
             // Filter out entries with empty `name`.
             .filter(([key = '']) => key.trim())
@@ -47,7 +30,29 @@ const Map = ({ disabled, onChange, value }: Props) => {
             }, {})
 
         onChange(newValue)
-    }, [entries, onChange])
+    }, [onChange])
+
+    const onAddClick = useCallback((index: number) => {
+        const newEntries = [...entries]
+        focusIndex.current = index + 1
+        newEntries.splice(focusIndex.current, 0, ['', ''])
+        setEntries(newEntries)
+        commit(newEntries)
+    }, [entries, commit])
+
+    const onRemoveClick = useCallback((index: number) => {
+        const newEntries = [...entries]
+        newEntries.splice(index, 1)
+        setEntries(newEntries)
+        commit(newEntries)
+    }, [entries, commit])
+
+    const onEntryChange = useCallback((index: number, name: string, value: string) => {
+        const newEntries = [...entries]
+        newEntries.splice(index, 1, [name, value])
+        setEntries(newEntries)
+        commit(newEntries)
+    }, [entries, commit])
 
     const finalEntries = useMemo(() => (
         entries.length ? entries : [['', '']]
