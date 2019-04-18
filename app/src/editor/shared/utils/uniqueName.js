@@ -19,6 +19,16 @@ function validate(originalName, existingNames) {
     if (!Array.isArray(existingNames)) {
         throw new TypeError(`existingNames must be array of non-empty strings, got: ${existingNames} (${typeof existingNames})`)
     }
+
+    existingNames.forEach((existingOriginalName, index) => {
+        if (typeof existingOriginalName !== 'string') {
+            const v = existingOriginalName
+            throw new TypeError(`existingNames must be array of non-empty strings, got: ${v} (${typeof v}) at index ${index}`)
+        }
+        if (existingOriginalName === '') {
+            throw new TypeError(`existingNames must be array of non-empty strings. Empty string found at index ${index}`)
+        }
+    })
 }
 
 export function nextUniqueName(originalName, existingNames) {
@@ -29,14 +39,7 @@ export function nextUniqueName(originalName, existingNames) {
     const [name, currentCounter] = getNameAndCounter(originalName)
 
     let highestCounter = 1
-    const matchingNames = existingNames.filter((existingOriginalName, index) => {
-        if (typeof existingOriginalName !== 'string') {
-            const v = existingOriginalName
-            throw new TypeError(`existingNames must be array of non-empty strings, got: ${v} (${typeof v}) at index ${index}`)
-        }
-        if (existingOriginalName === '') {
-            throw new TypeError(`existingNames must be array of non-empty strings. Empty string found at index ${index}`)
-        }
+    const matchingNames = existingNames.filter((existingOriginalName) => {
         if (existingOriginalName.trim() === name) { return true }
         const [existingName, existingCounter] = getNameAndCounter(existingOriginalName)
         if (existingName !== name) { return false }
@@ -57,7 +60,7 @@ export function nextUniqueCopyName(originalName, existingNames) {
     let [name] = getNameAndCounter(originalName)
     const alreadyCopy = name.endsWith(' Copy')
     if (!alreadyCopy) {
-        name = `${name} Copy`
+        name = `${originalName.trim()} Copy`
     }
     const created = nextUniqueName(name, existingNames)
     if (created === name) {

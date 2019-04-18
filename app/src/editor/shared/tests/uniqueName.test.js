@@ -1,9 +1,9 @@
 import { nextUniqueName, nextUniqueCopyName } from '../utils/uniqueName'
 
-const simpleName = 'existingname'
+const name = 'existingname'
 const nameWithSpaces = 'existing name'
 
-describe('nextUniqueName generator', () => {
+describe('nextUniqueName', () => {
     it('errors if not passed string name', () => {
         expect(() => nextUniqueName(undefined, [])).toThrow()
         expect(() => nextUniqueName(null, [])).toThrow()
@@ -24,9 +24,9 @@ describe('nextUniqueName generator', () => {
 
     describe('returns passed in name if no duplicates', () => {
         it('works with simple name', () => {
-            expect(nextUniqueName(simpleName, [])).toBe(simpleName)
-            expect(nextUniqueName(simpleName, [])).toBe(simpleName)
-            expect(nextUniqueName(simpleName, ['othername'])).toBe(simpleName)
+            expect(nextUniqueName(name, [])).toBe(name)
+            expect(nextUniqueName(name, [])).toBe(name)
+            expect(nextUniqueName(name, ['othername'])).toBe(name)
         })
 
         it('works with names with spaces', () => {
@@ -36,99 +36,105 @@ describe('nextUniqueName generator', () => {
         })
 
         it('trims whitespace', () => {
-            expect(nextUniqueName(` ${simpleName} `, [])).toBe(simpleName)
+            expect(nextUniqueName(` ${name} `, [])).toBe(name)
             expect(nextUniqueName(` ${nameWithSpaces} `, [])).toBe(nameWithSpaces)
         })
 
         it('is not case sensitive', () => {
-            const capitalizedName = simpleName.toUpperCase()
-            expect(nextUniqueName(capitalizedName, [simpleName])).toBe(capitalizedName)
-            expect(nextUniqueName(simpleName, [capitalizedName])).toBe(simpleName)
+            const capitalizedName = name.toUpperCase()
+            expect(nextUniqueName(capitalizedName, [name])).toBe(capitalizedName)
+            expect(nextUniqueName(name, [capitalizedName])).toBe(name)
         })
     })
 
     describe('appends " 02" on first duplicate', () => {
         it('works for simple cases', () => {
-            expect(nextUniqueName(simpleName, [simpleName])).toBe(`${simpleName} 02`)
+            expect(nextUniqueName(name, [name])).toBe(`${name} 02`)
             expect(nextUniqueName(nameWithSpaces, [nameWithSpaces])).toBe(`${nameWithSpaces} 02`)
         })
 
         it('ignores trimmable whitespace', () => {
-            expect(nextUniqueName(` ${simpleName} `, [` ${simpleName} `])).toBe(`${simpleName} 02`)
+            expect(nextUniqueName(` ${name} `, [` ${name} `])).toBe(`${name} 02`)
             expect(nextUniqueName(` ${nameWithSpaces} `, [` ${nameWithSpaces} `])).toBe(`${nameWithSpaces} 02`)
         })
     })
 
     describe('appends " 0n" on subsequent duplicate', () => {
         it('works for 02', () => {
-            expect(nextUniqueName(simpleName, [`${simpleName} 02`])).toBe(`${simpleName} 03`)
+            expect(nextUniqueName(name, [`${name} 02`])).toBe(`${name} 03`)
             expect(nextUniqueName(nameWithSpaces, [`${nameWithSpaces} 02 `])).toBe(`${nameWithSpaces} 03`)
         })
 
         it('works for 02-09', () => {
-            expect(nextUniqueName(simpleName, [`${simpleName} 02`])).toBe(`${simpleName} 03`)
-            expect(nextUniqueName(simpleName, [`${simpleName} 03`])).toBe(`${simpleName} 04`)
+            expect(nextUniqueName(name, [`${name} 02`])).toBe(`${name} 03`)
+            expect(nextUniqueName(name, [`${name} 03`])).toBe(`${name} 04`)
         })
 
         it('works for 09-n', () => {
-            expect(nextUniqueName(simpleName, [`${simpleName} 09`])).toBe(`${simpleName} 10`)
-            expect(nextUniqueName(simpleName, [`${simpleName} 10`])).toBe(`${simpleName} 11`)
-            expect(nextUniqueName(simpleName, [`${simpleName} 99`])).toBe(`${simpleName} 100`)
+            expect(nextUniqueName(name, [`${name} 09`])).toBe(`${name} 10`)
+            expect(nextUniqueName(name, [`${name} 10`])).toBe(`${name} 11`)
+            expect(nextUniqueName(name, [`${name} 99`])).toBe(`${name} 100`)
         })
 
         it('picks largest index found of passed in name and existing names', async () => {
-            expect(nextUniqueName(simpleName, [`${simpleName} 02`])).toBe(`${simpleName} 03`)
-            expect(nextUniqueName(`${simpleName} 02`, [simpleName])).toBe(`${simpleName} 02`)
-            expect(nextUniqueName(`${simpleName} 02`, [`${simpleName} 03`])).toBe(`${simpleName} 04`)
-            expect(nextUniqueName(`${simpleName} 03`, [`${simpleName} 02`])).toBe(`${simpleName} 03`)
+            expect(nextUniqueName(name, [`${name} 02`])).toBe(`${name} 03`)
+            expect(nextUniqueName(`${name} 02`, [name])).toBe(`${name} 02`)
+            expect(nextUniqueName(`${name} 02`, [`${name} 03`])).toBe(`${name} 04`)
+            expect(nextUniqueName(`${name} 03`, [`${name} 02`])).toBe(`${name} 03`)
         })
 
         it('ignores leading 0', () => {
-            expect(nextUniqueName(`${simpleName} 02`, [`${simpleName} 2`])).toBe(`${simpleName} 03`)
-            expect(nextUniqueName(`${simpleName} 2`, [`${simpleName} 02`])).toBe(`${simpleName} 03`)
-            expect(nextUniqueName(`${simpleName} 2`, [`${simpleName} 2`])).toBe(`${simpleName} 03`)
-            expect(nextUniqueName(`${simpleName} 1`, [`${simpleName} 01`])).toBe(`${simpleName} 02`)
-            expect(nextUniqueName(simpleName, [`${simpleName} 010`])).toBe(`${simpleName} 11`)
+            expect(nextUniqueName(`${name} 02`, [`${name} 2`])).toBe(`${name} 03`)
+            expect(nextUniqueName(`${name} 2`, [`${name} 02`])).toBe(`${name} 03`)
+            expect(nextUniqueName(`${name} 2`, [`${name} 2`])).toBe(`${name} 03`)
+            expect(nextUniqueName(`${name} 1`, [`${name} 01`])).toBe(`${name} 02`)
+            expect(nextUniqueName(name, [`${name} 010`])).toBe(`${name} 11`)
         })
 
         it('works with bad names', () => {
-            expect(nextUniqueName(`${simpleName} 0`, [simpleName])).toBe(`${simpleName} 02`)
-            expect(nextUniqueName(`${simpleName} 01`, [simpleName])).toBe(`${simpleName} 02`)
-            expect(nextUniqueName(simpleName, [`${simpleName} 0`])).toBe(`${simpleName} 02`)
-            expect(nextUniqueName(simpleName, [`${simpleName} 01`])).toBe(`${simpleName} 02`)
-            expect(nextUniqueName(simpleName, [`${simpleName} 0`, `${simpleName} 01`])).toBe(`${simpleName} 02`)
+            expect(nextUniqueName(`${name} 0`, [name])).toBe(`${name} 02`)
+            expect(nextUniqueName(`${name} 01`, [name])).toBe(`${name} 02`)
+            expect(nextUniqueName(name, [`${name} 0`])).toBe(`${name} 02`)
+            expect(nextUniqueName(name, [`${name} 01`])).toBe(`${name} 02`)
+            expect(nextUniqueName(name, [`${name} 0`, `${name} 01`])).toBe(`${name} 02`)
         })
 
         it('ignores trimmable whitespace', () => {
-            expect(nextUniqueName(` ${simpleName} `, [` ${simpleName} `])).toBe(`${simpleName} 02`)
+            expect(nextUniqueName(` ${name} `, [` ${name} `])).toBe(`${name} 02`)
             expect(nextUniqueName(` ${nameWithSpaces} `, [` ${nameWithSpaces} `])).toBe(`${nameWithSpaces} 02`)
         })
 
         it('works with names that already contain digits', async () => {
-            expect(nextUniqueName(`${simpleName} 1 Copy`, [`${simpleName} 1 Copy`])).toBe(`${simpleName} 1 Copy 02`)
-            expect(nextUniqueName(`${simpleName} Copy`, [`${simpleName} Copy`])).toBe(`${simpleName} Copy 02`)
-            expect(nextUniqueName(`${simpleName} Copy 02`, [`${simpleName} Copy`])).toBe(`${simpleName} Copy 02`)
-            expect(nextUniqueName(`${simpleName} Copy`, [`${simpleName} Copy 02`])).toBe(`${simpleName} Copy 03`)
-            expect(nextUniqueName(`${simpleName} 1 Copy 02`, [`${simpleName} 1 Copy 02`])).toBe(`${simpleName} 1 Copy 03`)
-            expect(nextUniqueName(`${simpleName}1`, [`${simpleName}1`])).toBe(`${simpleName}1 02`)
+            expect(nextUniqueName(`${name} 1 Copy`, [`${name} 1 Copy`])).toBe(`${name} 1 Copy 02`)
+            expect(nextUniqueName(`${name} Copy`, [`${name} Copy`])).toBe(`${name} Copy 02`)
+            expect(nextUniqueName(`${name} Copy 02`, [`${name} Copy`])).toBe(`${name} Copy 02`)
+            expect(nextUniqueName(`${name} Copy`, [`${name} Copy 02`])).toBe(`${name} Copy 03`)
+            expect(nextUniqueName(`${name} 1 Copy 02`, [`${name} 1 Copy 02`])).toBe(`${name} 1 Copy 03`)
+            expect(nextUniqueName(`${name}1`, [`${name}1`])).toBe(`${name}1 02`)
         })
     })
 })
 
-describe('copyName', () => {
+describe('nextUniqueCopyName', () => {
     it('appends copy if necessary', () => {
-        expect(nextUniqueCopyName(simpleName, [])).toBe(`${simpleName} Copy`)
-        expect(nextUniqueCopyName(`${simpleName} Copy`, [])).toBe(`${simpleName} Copy`)
+        expect(nextUniqueCopyName(name, [])).toBe(`${name} Copy`)
+        expect(nextUniqueCopyName(`${name} Copy`, [])).toBe(`${name} Copy`)
+    })
+
+    it('works with names with digits', () => {
+        expect(nextUniqueCopyName(`${name} 02`, [])).toBe(`${name} 02 Copy`)
+        expect(nextUniqueCopyName(`${name} 02`, [`${name} 02 Copy`])).toBe(`${name} 02 Copy 02`)
+        expect(nextUniqueCopyName(`${name} 02 Copy 02`, [`${name} 02 Copy`])).toBe(`${name} 02 Copy 02`)
     })
 
     it('returns original name if already copy & no dupes', () => {
-        expect(nextUniqueCopyName(`${simpleName} Copy 02`, [])).toBe(`${simpleName} Copy 02`)
-        expect(nextUniqueCopyName(`${simpleName} Copy 2`, [])).toBe(`${simpleName} Copy 2`)
+        expect(nextUniqueCopyName(`${name} Copy 02`, [])).toBe(`${name} Copy 02`)
+        expect(nextUniqueCopyName(`${name} Copy 2`, [])).toBe(`${name} Copy 2`)
     })
 
     it('applies appropriate counter', () => {
-        expect(nextUniqueCopyName(simpleName, [`${simpleName} Copy`])).toBe(`${simpleName} Copy 02`)
-        expect(nextUniqueCopyName(simpleName, [`${simpleName} Copy`])).toBe(`${simpleName} Copy 02`)
-        expect(nextUniqueCopyName(simpleName, [`${simpleName} Copy 2`])).toBe(`${simpleName} Copy 03`)
+        expect(nextUniqueCopyName(name, [`${name} Copy`])).toBe(`${name} Copy 02`)
+        expect(nextUniqueCopyName(name, [`${name} Copy`])).toBe(`${name} Copy 02`)
+        expect(nextUniqueCopyName(name, [`${name} Copy 2`])).toBe(`${name} Copy 03`)
     })
 })
