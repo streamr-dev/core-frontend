@@ -61,8 +61,6 @@ async function getCanvasNames() {
 async function createCanvas(canvas) {
     return api().post(canvasesUrl, {
         ...canvas,
-        // adhoc canvases should use parent name
-        name: canvas.adhoc ? canvas.name : await getUniqueCanvasName(canvas.name),
         state: RunStates.Stopped, // always create stopped canvases
     }).then(getData)
 }
@@ -72,7 +70,7 @@ export async function create(config) {
     return createCanvas({
         ...canvas,
         // adhoc canvases should use parent name
-       name: canvas.adhoc ? canvas.name : nextUniqueName(canvas.name, await getCanvasNames()),
+        name: canvas.adhoc ? canvas.name : nextUniqueName(canvas.name, await getCanvasNames()),
     })
 }
 
@@ -80,6 +78,7 @@ export async function duplicateCanvas(canvas) {
     if (!isRunning(canvas) && !canvas.adhoc) {
         canvas = await saveNow(canvas) // ensure canvas saved before duplicating
     }
+
     return createCanvas({
         ...canvas,
         adhoc: false, // duplicate canvases are never adhoc
