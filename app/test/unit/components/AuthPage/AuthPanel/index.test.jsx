@@ -4,6 +4,7 @@ import { mount } from 'enzyme'
 import AuthPanel from '$auth/components/AuthPanel'
 import AuthStep from '$auth/components/AuthStep'
 import AuthPanelNav from '$auth/components/AuthPanelNav'
+import AuthFormContext from '$auth/contexts/AuthForm'
 import * as yup from 'yup'
 
 describe(AuthPanel.name, () => {
@@ -17,33 +18,40 @@ describe(AuthPanel.name, () => {
     const onEthClick = () => {}
 
     const el = (currentStep) => mount((
-        <AuthPanel
-            currentStep={currentStep}
-            validationSchemas={[
-                validationSchema,
-            ]}
-            onPrev={onPrev}
-            onValidationError={onValidationError}
-            setIsProcessing={setIsProcessing}
-            onNext={onNext}
-            form={form}
-            isProcessing={isProcessing}
+        <AuthFormContext.Provider
+            value={{
+                errors: {},
+                form,
+                isProcessing,
+                next: onNext,
+                prev: onPrev,
+                redirect: () => {},
+                setFieldError: () => {},
+                setFormField: () => {},
+                setIsProcessing,
+                step: currentStep,
+            }}
         >
-            <AuthStep
-                showSignin
-                showSignup
-                showBack
-                onEthereumClick={onEthClick}
-                title="Step #0"
+            <AuthPanel
+                validationSchemas={[validationSchema]}
+                onValidationError={onValidationError}
             >
-                #0
-            </AuthStep>
-            <AuthStep
-                title="Step #1"
-            >
-                #1
-            </AuthStep>
-        </AuthPanel>
+                <AuthStep
+                    showSignin
+                    showSignup
+                    showBack
+                    onEthereumClick={onEthClick}
+                    title="Step #0"
+                >
+                    #0
+                </AuthStep>
+                <AuthStep
+                    title="Step #1"
+                >
+                    #1
+                </AuthStep>
+            </AuthPanel>
+        </AuthFormContext.Provider>
     ))
 
     it('renders children', () => {
