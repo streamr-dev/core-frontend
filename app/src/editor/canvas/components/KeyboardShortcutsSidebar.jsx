@@ -110,7 +110,7 @@ const getEventKey = (event) => {
 }
 
 class KeyboardShortcuts extends React.Component {
-    state = {
+    initialState = {
         pressedKeys: {},
         // eslint-disable-next-line react/no-unused-state
         modifiedKeys: {
@@ -119,17 +119,39 @@ class KeyboardShortcuts extends React.Component {
         },
     }
 
+    state = {
+        ...this.initialState,
+    }
+
     componentDidMount() {
         window.addEventListener('keydown', this.onKeyDown)
         window.addEventListener('keyup', this.onKeyUp)
+        window.addEventListener('blur', this.resetState)
+        window.addEventListener('focus', this.resetState)
     }
 
     componentWillUnmount() {
         window.removeEventListener('keydown', this.onKeyDown)
         window.removeEventListener('keyup', this.onKeyUp)
+        window.removeEventListener('blur', this.resetState)
+        window.removeEventListener('focus', this.resetState)
+    }
+
+    static shouldHandleKeyEvent(event) {
+        const element = event.target || event.srcElement
+        if (!element) { return true }
+
+        const tagName = element.tagName.toLowerCase()
+        // ignore events if user focus is in a form control or contenteditable
+        return !(tagName === 'input' || tagName === 'select' || tagName === 'textarea' || element.isContentEditable)
     }
 
     onKeyDown = (event) => {
+        if (!KeyboardShortcuts.shouldHandleKeyEvent(event)) {
+            this.resetState()
+            return
+        }
+
         this.setState(({ pressedKeys, modifiedKeys }) => {
             const key = getEventKey(event)
             const newModifiedKeys = {
@@ -159,6 +181,11 @@ class KeyboardShortcuts extends React.Component {
     }
 
     onKeyUp = (event) => {
+        if (!KeyboardShortcuts.shouldHandleKeyEvent(event)) {
+            this.resetState()
+            return
+        }
+
         this.setState(({ pressedKeys, modifiedKeys }) => {
             const key = getEventKey(event)
             let newPressedKeys
@@ -190,6 +217,12 @@ class KeyboardShortcuts extends React.Component {
                 },
                 modifiedKeys: newModifiedKeys,
             }
+        })
+    }
+
+    resetState = () => {
+        this.setState({
+            ...this.initialState,
         })
     }
 
