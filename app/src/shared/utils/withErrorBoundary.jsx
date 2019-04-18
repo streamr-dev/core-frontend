@@ -1,7 +1,7 @@
 // @flow
 
 import React, { Component, type ComponentType } from 'react'
-import Raven from 'raven-js'
+import analytics from '../../analytics'
 
 type Props = {
     path?: string,
@@ -28,7 +28,7 @@ const withErrorBoundary = (ErrorComponent: ComponentType<any>) => (
 
             componentDidCatch(error: Error, extra: any) {
                 console.error(error)
-                Raven.captureException(error, {
+                analytics.reportError(error, {
                     extra,
                 })
                 this.setState({
