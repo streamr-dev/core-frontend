@@ -124,7 +124,7 @@ class PurchasesPage extends Component<Props> {
                     <title>{I18n.t('userpages.title.purchases')}</title>
                 </Helmet>
                 <Container>
-                    {!purchases.length && (
+                    {!fetching && purchases && !purchases.length && (
                         <EmptyState
                             image={(
                                 <img

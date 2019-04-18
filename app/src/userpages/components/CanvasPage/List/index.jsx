@@ -243,7 +243,7 @@ class CanvasList extends Component<Props, State> {
                     <Helmet>
                         <title>{I18n.t('userpages.canvases.title')}</title>
                     </Helmet>
-                    {!canvases.length && (
+                    {!fetching && canvases && !canvases.length && (
                         <EmptyState
                             image={(
                                 <img

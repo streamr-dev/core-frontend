@@ -164,7 +164,7 @@ class ProductsPage extends Component<Props> {
                     <title>{I18n.t('userpages.title.products')}</title>
                 </Helmet>
                 <Container>
-                    {!products.length && (
+                    {!fetching && products && !products.length && (
                         <EmptyState
                             image={(
                                 <img

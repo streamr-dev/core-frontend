@@ -35,6 +35,8 @@ import ShareDialog from '$userpages/components/ShareDialog'
 import SnippetDialog from '$userpages/components/SnippetDialog/index'
 import { ProgrammingLanguages } from '$shared/utils/constants'
 
+import styles from './list.pcss'
+
 export const CreateStreamButton = () => (
     <Button color="primary" id="streamlist-create-stream">
         <Link to={links.userpages.streamCreate}>
@@ -217,6 +219,10 @@ class StreamList extends Component<Props, State> {
         })
     }
 
+    onStreamRowClick = (id: StreamId) => {
+        this.props.showStream(id)
+    }
+
     render() {
         const {
             fetching,
@@ -275,7 +281,7 @@ class StreamList extends Component<Props, State> {
                         <NoStreamsView />
                     )}
                     {streams && streams.length > 0 && (
-                        <Table>
+                        <Table className={styles.streamTable}>
                             <thead>
                                 <tr>
                                     <th><Translate value="userpages.streams.list.name" /></th>
@@ -288,13 +294,31 @@ class StreamList extends Component<Props, State> {
                             </thead>
                             <tbody>
                                 {streams.map((stream) => (
-                                    <tr key={stream.id}>
-                                        <th>{stream.name}</th>
-                                        <td title={stream.description}>{stream.description}</td>
-                                        <td>{moment(stream.lastUpdated).fromNow()}</td>
-                                        <td>-</td>
-                                        <td><StatusIcon /></td>
-                                        <td>
+                                    <tr
+                                        key={stream.id}
+                                        className={styles.streamRow}
+                                    >
+                                        <th onClick={() => this.onStreamRowClick(stream.id)}>{stream.name}</th>
+                                        {/* eslint-disable-next-line max-len */}
+                                        {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */}
+                                        <td
+                                            onClick={() => this.onStreamRowClick(stream.id)}
+                                            title={stream.description}
+                                        >
+                                            {stream.description}
+                                        </td>
+                                        {/* eslint-disable-next-line max-len */}
+                                        {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */}
+                                        <td onClick={() => this.onStreamRowClick(stream.id)}>
+                                            {moment(stream.lastUpdated).fromNow()}
+                                        </td>
+                                        {/* eslint-disable-next-line max-len */}
+                                        {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */}
+                                        <td onClick={() => this.onStreamRowClick(stream.id)}>-</td>
+                                        {/* eslint-disable-next-line max-len */}
+                                        {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */}
+                                        <td onClick={() => this.onStreamRowClick(stream.id)}><StatusIcon /></td>
+                                        <td className={styles.streamActions}>
                                             <DropdownActions
                                                 title={<Meatball alt={I18n.t('userpages.streams.actions')} />}
                                                 noCaret
