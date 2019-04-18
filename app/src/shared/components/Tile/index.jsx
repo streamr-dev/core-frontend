@@ -39,9 +39,7 @@ const Tile = ({
                 {dropdownActions}
             </DropdownActions>
         }
-        <div className={styles.image}>
-            <FallbackImage src={imageUrl || ''} alt="Tile" className={styles.image} />
-        </div>
+        <FallbackImage src={imageUrl || ''} alt="Tile" className={styles.image} />
         <div className={styles.content}>
             {children}
         </div>

@@ -14,6 +14,9 @@ msgstr "Create canvas"
 msgid "userpages##canvases##filterCanvases"
 msgstr "Filter canvases"
 
+msgid "userpages##canvases##updated"
+msgstr "Updated %{since}"
+
 msgid "userpages##canvases##noCanvases##title"
 msgstr "You haven't created any canvases yet."
 
