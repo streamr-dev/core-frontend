@@ -31,11 +31,8 @@ const SignupPage = () => {
         errors,
         form,
         isProcessing,
-        next,
-        prev,
         setFieldError,
         setFormField,
-        setIsProcessing,
         step,
     } = useContext(Context)
     const { email: username } = form
@@ -53,12 +50,6 @@ const SignupPage = () => {
     return (
         <AuthLayout>
             <AuthPanel
-                currentStep={step}
-                form={form}
-                onPrev={prev}
-                onNext={next}
-                setIsProcessing={setIsProcessing}
-                isProcessing={isProcessing}
                 validationSchemas={schemas}
                 onValidationError={setFieldError}
             >

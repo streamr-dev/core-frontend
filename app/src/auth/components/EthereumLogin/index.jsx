@@ -28,12 +28,9 @@ const initialForm: Form = {
 const EthereumLogin = ({ onBackClick }: Props) => {
     const {
         errors,
-        form,
         isProcessing,
-        next,
         redirect,
         setFieldError,
-        setIsProcessing,
         step,
     } = useContext(AuthFormContext)
 
@@ -82,12 +79,7 @@ const EthereumLogin = ({ onBackClick }: Props) => {
 
     return (
         <AuthPanel
-            currentStep={step}
-            form={form}
             onPrev={onBackClick}
-            onNext={next}
-            setIsProcessing={setIsProcessing}
-            isProcessing={isProcessing}
             validationSchemas={[]}
             onValidationError={setFieldError}
         >

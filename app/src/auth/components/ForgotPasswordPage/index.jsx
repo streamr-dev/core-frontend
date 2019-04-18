@@ -33,11 +33,8 @@ const ForgotPasswordPage = () => {
         errors,
         form,
         isProcessing,
-        next,
-        prev,
         setFieldError,
         setFormField,
-        setIsProcessing,
         step,
     } = useContext(Context)
 
@@ -56,12 +53,6 @@ const ForgotPasswordPage = () => {
     return (
         <AuthLayout>
             <AuthPanel
-                currentStep={step}
-                form={form}
-                onPrev={prev}
-                onNext={next}
-                setIsProcessing={setIsProcessing}
-                isProcessing={isProcessing}
                 validationSchemas={schemas}
                 onValidationError={setFieldError}
             >

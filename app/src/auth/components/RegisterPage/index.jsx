@@ -59,12 +59,9 @@ const RegisterPage = ({ location: { search, pathname }, history: { replace } }: 
         errors,
         form,
         isProcessing,
-        next,
-        prev,
         redirect,
         setFieldError,
         setFormField,
-        setIsProcessing,
         step,
     } = useContext(AuthFormContext)
 
@@ -131,12 +128,6 @@ const RegisterPage = ({ location: { search, pathname }, history: { replace } }: 
     return (
         <AuthLayout>
             <AuthPanel
-                currentStep={step}
-                form={form}
-                onPrev={prev}
-                onNext={next}
-                setIsProcessing={setIsProcessing}
-                isProcessing={isProcessing}
                 validationSchemas={schemas}
                 onValidationError={setFieldError}
             >

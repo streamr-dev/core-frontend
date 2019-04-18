@@ -44,9 +44,6 @@ const UsernamePasswordLogin = ({ onEthereumClick }: Props) => {
         step,
         errors,
         isProcessing,
-        setIsProcessing,
-        next,
-        prev,
         setFormField,
         redirect,
     } = useContext(AuthFormContext)
@@ -78,12 +75,6 @@ const UsernamePasswordLogin = ({ onEthereumClick }: Props) => {
 
     return (
         <AuthPanel
-            currentStep={step}
-            form={form}
-            onPrev={prev}
-            onNext={next}
-            setIsProcessing={setIsProcessing}
-            isProcessing={isProcessing}
             validationSchemas={schemas}
             onValidationError={setFieldError}
         >
