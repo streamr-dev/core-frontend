@@ -1,51 +1,47 @@
 // @flow
 
-import React from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import axios from 'axios'
+import { connect } from 'react-redux'
 
+import Context from '../../contexts/Session'
+import { logout as logoutAction } from '$shared/modules/user/actions'
 import ErrorPageView from '$mp/components/ErrorPageView'
-import { type Props as SessionProps } from '$auth/contexts/Session'
-import { type ErrorInUi } from '$shared/flowtype/common-types'
 import routes from '$routes'
 
 export type DispatchProps = {
     logout: () => void,
 }
 
-type Props = DispatchProps & SessionProps & {
-}
+type Props = DispatchProps & {}
 
-type State = {
-    error: ?ErrorInUi,
-}
+const LogoutPage = ({ logout }: Props) => {
+    const [error, setError] = useState(null)
+    const { setSessionToken } = useContext(Context)
 
-class LogoutPage extends React.Component<Props, State> {
-    state = {
-        error: null,
-    }
-
-    componentDidMount() {
-        const { logout, setSessionToken } = this.props
-
+    useEffect(() => {
         axios
             .post(routes.externalLogout())
-            .then(() => {
-                if (setSessionToken) {
-                    logout()
-                    setSessionToken(null)
-                }
-            }, (error) => {
-                this.setState({
-                    error,
-                })
-            })
-    }
+            .then(
+                () => {
+                    if (setSessionToken) {
+                        logout()
+                        setSessionToken(null)
+                    }
+                },
+                setError,
+            )
+    }, [])
 
-    render() {
-        return !!this.state.error && (
-            <ErrorPageView />
-        )
-    }
+    return !!error && (
+        <ErrorPageView />
+    )
 }
 
-export default LogoutPage
+export { LogoutPage }
+
+const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
+    logout: () => dispatch(logoutAction()),
+})
+
+export default connect(null, mapDispatchToProps)(LogoutPage)

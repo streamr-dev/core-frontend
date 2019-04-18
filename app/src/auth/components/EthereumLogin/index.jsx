@@ -1,30 +1,51 @@
 // @flow
 
-import React from 'react'
+import React, { useContext, useRef, useEffect, useCallback } from 'react'
 import { I18n } from 'react-redux-i18n'
 
+import { type Ref } from '$shared/flowtype/common-types'
+import AuthFormProvider from '../AuthFormProvider'
+import AuthFormContext from '../../contexts/AuthForm'
+import SessionContext from '../../contexts/Session'
 import AuthPanel from '$auth/components/AuthPanel'
 import AuthStep from '$auth/components/AuthStep'
 import TextInput from '$shared/components/TextInput'
 import getSessionToken from '$auth/utils/getSessionToken'
 import { getWeb3 } from '$shared/web3/web3Provider'
-import { type Props as SessionProps } from '$auth/contexts/Session'
-import { type AuthFlowProps } from '$shared/flowtype/auth-types'
 
-type Props = SessionProps & AuthFlowProps & {
-    form: {
-        ethereum: null,
-    },
+type Props = {
     onBackClick: () => void,
 }
 
-class EthereumLogin extends React.Component<Props> {
-    componentWillUnmount() {
-        this.unmounted = true
-    }
+type Form = {
+    ethereum: any,
+}
 
-    submit = async () => {
-        const { setSessionToken, setFieldError } = this.props
+const initialForm: Form = {
+    ethereum: null,
+}
+
+const EthereumLogin = ({ onBackClick }: Props) => {
+    const {
+        errors,
+        form,
+        isProcessing,
+        next,
+        redirect,
+        setFieldError,
+        setIsProcessing,
+        step,
+    } = useContext(AuthFormContext)
+
+    const mountedRef: Ref<boolean> = useRef(true)
+
+    useEffect(() => () => {
+        mountedRef.current = false
+    }, [])
+
+    const { setSessionToken } = useContext(SessionContext)
+
+    const submit = useCallback(async () => {
         const web3 = getWeb3()
         const accounts = await (async () => {
             try {
@@ -34,7 +55,7 @@ class EthereumLogin extends React.Component<Props> {
             }
         })()
 
-        if (this.unmounted) {
+        if (!mountedRef.current) {
             return
         }
 
@@ -54,58 +75,48 @@ class EthereumLogin extends React.Component<Props> {
             }
         })()
 
-        if (setSessionToken && !this.unmounted) {
+        if (setSessionToken && mountedRef.current) {
             setSessionToken(token)
         }
-    }
+    }, [setFieldError, mountedRef, setSessionToken])
 
-    unmounted: boolean = false
-
-    render() {
-        const {
-            setIsProcessing,
-            isProcessing,
-            step,
-            form,
-            errors,
-            setFieldError,
-            next,
-            redirect,
-            onBackClick,
-        } = this.props
-
-        return (
-            <AuthPanel
-                currentStep={step}
-                form={form}
-                onPrev={onBackClick}
-                onNext={next}
-                setIsProcessing={setIsProcessing}
-                isProcessing={isProcessing}
-                validationSchemas={[]}
-                onValidationError={setFieldError}
+    return (
+        <AuthPanel
+            currentStep={step}
+            form={form}
+            onPrev={onBackClick}
+            onNext={next}
+            setIsProcessing={setIsProcessing}
+            isProcessing={isProcessing}
+            validationSchemas={[]}
+            onValidationError={setFieldError}
+        >
+            <AuthStep
+                title={I18n.t('auth.signInWithEthereum')}
+                showBack
+                autoSubmitOnMount
+                onSubmit={submit}
+                onSuccess={redirect}
+                className={AuthStep.styles.spaceLarge}
             >
-                <AuthStep
-                    title={I18n.t('auth.signInWithEthereum')}
-                    showBack
-                    autoSubmitOnMount
-                    onSubmit={this.submit}
-                    onSuccess={redirect}
-                    className={AuthStep.styles.spaceLarge}
-                >
-                    <TextInput
-                        name="ethereum"
-                        label=""
-                        value={I18n.t('auth.labels.ethereum')}
-                        error={errors.ethereum}
-                        readOnly
-                        processing={step === 0 && isProcessing}
-                        preserveErrorSpace
-                    />
-                </AuthStep>
-            </AuthPanel>
-        )
-    }
+                <TextInput
+                    name="ethereum"
+                    label=""
+                    value={I18n.t('auth.labels.ethereum')}
+                    error={errors.ethereum}
+                    readOnly
+                    processing={step === 0 && isProcessing}
+                    preserveErrorSpace
+                />
+            </AuthStep>
+        </AuthPanel>
+    )
 }
 
-export default EthereumLogin
+export { EthereumLogin }
+
+export default (props: Props) => (
+    <AuthFormProvider initialStep={0} initialForm={initialForm}>
+        <EthereumLogin {...props} />
+    </AuthFormProvider>
+)
