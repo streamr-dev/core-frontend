@@ -27,8 +27,8 @@ const Ports = ({
     const inputs = module.params.concat(module.inputs)
 
     return !!(inputs.length || outputs.length) && (
-        <div className={cx(className, styles.ports)}>
-            <div className={styles.inputs}>
+        <div className={cx(styles.root, className)}>
+            <div>
                 {inputs.map((port) => (
                     <Port
                         api={api}
@@ -41,7 +41,7 @@ const Ports = ({
                     />
                 ))}
             </div>
-            <div className={styles.outputs}>
+            <div>
                 {outputs.map((port) => (
                     <Port
                         api={api}

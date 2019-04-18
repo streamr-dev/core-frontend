@@ -4,7 +4,7 @@ import React, { useState, useCallback } from 'react'
 import ColorPicker from '$editor/shared/components/ColorPicker'
 import { type CommonProps } from '..'
 
-type Props = CommonProps & {}
+type Props = CommonProps
 
 const Color = ({ disabled, onChange: onChangeProp, value: valueProp, ...props }: Props) => {
     const [value, setValue] = useState(valueProp)

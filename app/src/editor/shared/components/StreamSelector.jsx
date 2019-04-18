@@ -117,7 +117,7 @@ export default class StreamSelector extends React.Component<Props, State> {
                                 tabIndex="0"
                             >
                                 <div>{stream.name}</div>
-                                {stream.description && (
+                                {!!stream.description && (
                                     <div className={styles.description}>{stream.description}</div>
                                 )}
                             </div>

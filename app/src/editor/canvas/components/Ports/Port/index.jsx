@@ -119,7 +119,7 @@ const Port = ({
                 [styles.dragInProgress]: !!dragInProgress,
             })}
         >
-            {contextMenuTarget && (
+            {!!contextMenuTarget && (
                 <Menu
                     api={api}
                     dismiss={dismiss}
@@ -128,7 +128,7 @@ const Port = ({
                     target={contextMenuTarget}
                 />
             )}
-            {port.canToggleDrivingInput && (
+            {!!port.canToggleDrivingInput && (
                 <Option
                     activated={!!port.drivingInput}
                     className={styles.portOption}
@@ -150,7 +150,7 @@ const Port = ({
                     {port.displayName || startCase(port.name)}
                 </EditableText>
             </Cell>
-            {hasInputField && (
+            {!!hasInputField && (
                 <Cell>
                     <Value
                         canvas={canvas}
@@ -160,7 +160,7 @@ const Port = ({
                 </Cell>
             )}
             {!isInput && plug}
-            {port.canBeNoRepeat && (
+            {!!port.canBeNoRepeat && (
                 <Option
                     activated={!!port.noRepeat}
                     className={styles.portOption}
