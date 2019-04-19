@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useCallback, useMemo, Fragment } from 'react'
+import React, { useCallback, Fragment } from 'react'
 import Text from '../../Text'
 import styles from './mapEntry.pcss'
 
@@ -11,7 +11,6 @@ type Name = string
 type Value = string
 
 type Props = {
-    autoFocusName?: boolean,
     disabled?: boolean,
     index: Index,
     name: Name,
@@ -23,11 +22,9 @@ type Props = {
 }
 
 const MapEntry = ({
-    autoFocusName,
     disabled,
     index,
     name,
-    onAddClick: onAddClickProp,
     onChange: onChangeProp,
     onRemoveClick: onRemoveClickProp,
     removable,
@@ -47,20 +44,9 @@ const MapEntry = ({
         }
     }, [index, onRemoveClickProp])
 
-    const onAddClick = useCallback(() => {
-        if (onAddClickProp) {
-            onAddClickProp(index)
-        }
-    }, [index, onAddClickProp])
-
-    const canAdd = useMemo(() => (
-        !!(name.trim() || value.trim())
-    ), [name, value])
-
     return (
         <Fragment>
             <Text
-                autoFocus={autoFocusName}
                 disabled={!!disabled}
                 onChange={onNameChange}
                 placeholder="Key"
@@ -74,7 +60,7 @@ const MapEntry = ({
             />
             {/* Unnamed possibly empty div. It's the 3rd column in Map's 3-column grid. Keep it. */}
             <div>
-                {removable ? (
+                {!!removable && (
                     <button
                         className={styles.button}
                         type="button"
@@ -84,17 +70,7 @@ const MapEntry = ({
                             <path d="M11.2 8H4.8" stroke="#323232" fill="none" strokeLinecap="round" />
                         </svg>
                     </button>
-                ) : (canAdd && (
-                    <button
-                        className={styles.button}
-                        type="button"
-                        onClick={onAddClick}
-                    >
-                        <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M8 4.8v6.4M11.2 8H4.8" fill="none" strokeLinecap="round" stroke="#323232" />
-                        </svg>
-                    </button>
-                ))}
+                )}
             </div>
         </Fragment>
     )

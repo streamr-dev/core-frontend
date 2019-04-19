@@ -1,7 +1,6 @@
 // @flow
 
-import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react'
-import { type Ref } from '$shared/flowtype/common-types'
+import React, { useState, useCallback, useMemo, useEffect } from 'react'
 import { type CommonProps } from '..'
 import MapEntry from './MapEntry'
 import styles from './map.pcss'
@@ -11,8 +10,6 @@ type Props = CommonProps & {
 }
 
 const Map = ({ disabled, onChange, value }: Props) => {
-    const focusIndex: Ref<number> = useRef(-1)
-
     const [entries, setEntries] = useState(Object.entries(value))
 
     const commit = useCallback((newEntries) => {
@@ -32,14 +29,6 @@ const Map = ({ disabled, onChange, value }: Props) => {
         onChange(newValue)
     }, [onChange])
 
-    const onAddClick = useCallback((index: number) => {
-        const newEntries = [...entries]
-        focusIndex.current = index + 1
-        newEntries.splice(focusIndex.current, 0, ['', ''])
-        setEntries(newEntries)
-        commit(newEntries)
-    }, [entries, commit])
-
     const onRemoveClick = useCallback((index: number) => {
         const newEntries = [...entries]
         newEntries.splice(index, 1)
@@ -54,9 +43,7 @@ const Map = ({ disabled, onChange, value }: Props) => {
         commit(newEntries)
     }, [entries, commit])
 
-    const finalEntries = useMemo(() => (
-        entries.length ? entries : [['', '']]
-    ), [entries])
+    const finalEntries = useMemo(() => [...entries, ['', '']], [entries])
 
     useEffect(() => {
         setEntries(Object.entries(value))
@@ -69,13 +56,11 @@ const Map = ({ disabled, onChange, value }: Props) => {
 
                 return (
                     <MapEntry
-                        autoFocusName={focusIndex.current === index}
                         disabled={disabled}
                         index={index}
                         // eslint-disable-next-line react/no-array-index-key
                         key={index}
                         name={name}
-                        onAddClick={onAddClick}
                         onChange={onEntryChange}
                         onRemoveClick={onRemoveClick}
                         removable={index !== finalEntries.length - 1}
