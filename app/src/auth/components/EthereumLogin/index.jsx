@@ -63,7 +63,9 @@ const EthereumLogin = ({ onBackClick }: Props) => {
                     provider: web3.currentProvider,
                 })
             } catch (e) {
-                setFieldError('ethereum', I18n.t('auth.login.failure'))
+                if (mountedRef.current) {
+                    setFieldError('ethereum', I18n.t('auth.login.failure'))
+                }
                 return null
             }
         })()

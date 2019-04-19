@@ -78,11 +78,15 @@ const RegisterPage = ({ location: { search, pathname }, history: { replace } }: 
             invite,
         }).then(
             () => {
-                // To make sure that the registerPage invite doesn't stick in the browser history
-                replace(pathname)
+                if (mountedRef.current) {
+                    // To make sure that the registerPage invite doesn't stick in the browser history
+                    replace(pathname)
+                }
             },
             ({ message }: yup.ValidationError) => {
-                setFieldError('name', message)
+                if (mountedRef.current) {
+                    setFieldError('name', message)
+                }
             },
         )
     }, [])
@@ -94,7 +98,6 @@ const RegisterPage = ({ location: { search, pathname }, history: { replace } }: 
     const { setSessionToken } = useContext(SessionContext)
 
     const submit = useCallback(() => {
-        const { current: mounted } = mountedRef
         const {
             name,
             password,
@@ -109,12 +112,12 @@ const RegisterPage = ({ location: { search, pathname }, history: { replace } }: 
             password2,
             tosConfirmed,
             invite,
-        }, false, true).then(({ username }) => mounted && (
+        }, false, true).then(({ username }) => mountedRef.current && (
             getSessionToken({
                 username,
                 password,
             }).then((token) => {
-                if (setSessionToken && mounted) {
+                if (setSessionToken && mountedRef.current) {
                     setSessionToken(token)
                 }
             })

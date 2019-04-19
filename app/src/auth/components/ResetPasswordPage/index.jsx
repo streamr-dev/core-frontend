@@ -7,6 +7,7 @@ import qs from 'query-string'
 import { I18n, Translate } from 'react-redux-i18n'
 import { push } from 'react-router-redux'
 
+import useIsMountedRef from '$shared/utils/useIsMountedRef'
 import AuthFormProvider from '../AuthFormProvider'
 import { userIsNotAuthenticated } from '$mp/utils/auth'
 import AuthFormContext from '$auth/contexts/AuthForm'
@@ -72,6 +73,8 @@ const ResetPasswordPage = ({ location: { search, pathname }, history: { replace 
         }, false, true)
     }, [form])
 
+    const mountedRef = useIsMountedRef()
+
     useEffect(() => {
         const token = qs.parse(search).t || ''
 
@@ -88,11 +91,15 @@ const ResetPasswordPage = ({ location: { search, pathname }, history: { replace 
             })
             .then(
                 () => {
-                    // To make sure that the resetPassword token doesn't stick in the browser history
-                    replace(pathname)
+                    if (mountedRef.current) {
+                        // To make sure that the resetPassword token doesn't stick in the browser history
+                        replace(pathname)
+                    }
                 },
                 ({ message }: yup.ValidationError) => {
-                    setFieldError('password', message)
+                    if (mountedRef.current) {
+                        setFieldError('password', message)
+                    }
                 },
             )
     }, [])
