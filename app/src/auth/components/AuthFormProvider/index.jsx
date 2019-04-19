@@ -3,7 +3,7 @@
 import React, { useState, type Node, useCallback, useMemo } from 'react'
 import { connect } from 'react-redux'
 import { getUserData as getUserDataAction } from '$shared/modules/user/actions'
-import Context from '../../contexts/AuthForm'
+import AuthFormContext from '../../contexts/AuthForm'
 
 type DispatchProps = {
     getUserData: () => void,
@@ -69,9 +69,9 @@ const AuthFormProvider = ({ children, initialForm, getUserData: redirect, initia
     }), [errors, form, isProcessing, next, prev, redirect, setFieldError, setFormField, setIsProcessing, step])
 
     return (
-        <Context.Provider value={value}>
+        <AuthFormContext.Provider value={value}>
             {children}
-        </Context.Provider>
+        </AuthFormContext.Provider>
     )
 }
 

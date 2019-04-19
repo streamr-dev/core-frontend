@@ -5,7 +5,7 @@ import { I18n, Translate } from 'react-redux-i18n'
 import { userIsNotAuthenticated } from '$mp/utils/auth'
 
 import AuthFormProvider from '../AuthFormProvider'
-import Context from '../../contexts/AuthForm'
+import AuthFormContext from '../../contexts/AuthForm'
 import AuthPanel from '../AuthPanel'
 import TextInput from '$shared/components/TextInput'
 import Actions from '../Actions'
@@ -36,7 +36,7 @@ const ForgotPasswordPage = () => {
         setFieldError,
         setFormField,
         step,
-    } = useContext(Context)
+    } = useContext(AuthFormContext)
 
     const onFailure = useCallback(({ message }: Error) => {
         setFieldError('email', message)

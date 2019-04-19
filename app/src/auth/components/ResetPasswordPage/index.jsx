@@ -9,7 +9,7 @@ import { push } from 'react-router-redux'
 
 import AuthFormProvider from '../AuthFormProvider'
 import { userIsNotAuthenticated } from '$mp/utils/auth'
-import Context from '$auth/contexts/AuthForm'
+import AuthFormContext from '$auth/contexts/AuthForm'
 import AuthPanel from '../AuthPanel'
 import TextInput from '$shared/components/TextInput'
 import Actions from '../Actions'
@@ -56,7 +56,7 @@ const ResetPasswordPage = ({ location: { search, pathname }, history: { replace 
         setFieldError,
         setFormField,
         step,
-    } = useContext(Context)
+    } = useContext(AuthFormContext)
 
     const onFailure = useCallback(({ message }: Error) => {
         setFieldError('confirmPassword', message)

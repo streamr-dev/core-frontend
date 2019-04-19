@@ -3,7 +3,7 @@
 import React, { type Node, useContext } from 'react'
 import { Schema } from 'yup'
 
-import Context from '$auth/contexts/AuthForm'
+import AuthFormContext from '$auth/contexts/AuthForm'
 import AuthPanelNav from '../AuthPanelNav'
 import type { FieldErrorSetter } from '$shared/flowtype/auth-types'
 import styles from './authPanel.pcss'
@@ -23,7 +23,7 @@ const AuthPanel = ({ children, onPrev, validationSchemas, onValidationError }: P
         prev,
         setIsProcessing,
         step,
-    } = useContext(Context)
+    } = useContext(AuthFormContext)
     const totalSteps = React.Children.count(children)
     const child = React.Children.toArray(children)[step]
 

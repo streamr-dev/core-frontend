@@ -4,7 +4,7 @@ import React, { useState, useEffect, useContext } from 'react'
 import axios from 'axios'
 import { connect } from 'react-redux'
 
-import Context from '../../contexts/Session'
+import SessionContext from '../../contexts/Session'
 import { logout as logoutAction } from '$shared/modules/user/actions'
 import ErrorPageView from '$mp/components/ErrorPageView'
 import routes from '$routes'
@@ -17,7 +17,7 @@ type Props = DispatchProps & {}
 
 const LogoutPage = ({ logout }: Props) => {
     const [error, setError] = useState(null)
-    const { setSessionToken } = useContext(Context)
+    const { setSessionToken } = useContext(SessionContext)
 
     useEffect(() => {
         axios
