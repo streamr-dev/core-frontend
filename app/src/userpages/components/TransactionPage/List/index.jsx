@@ -96,23 +96,23 @@ class TransactionList extends Component<Props> {
                                     return (
                                         <tr key={transaction.id}>
                                             <Table.Th title={productTitle} noWrap>{productTitle}</Table.Th>
-                                            <td>
+                                            <Table.Td title={transaction.type} noWrap>
                                                 {!!transaction.type && (
                                                     <Translate value={`userpages.transactions.type.${transaction.type}`} />
                                                 )}
-                                            </td>
+                                            </Table.Td>
                                             <Table.Td title={transaction.hash} noWrap>{transaction.hash}</Table.Td>
-                                            <td>{transaction.timestamp ? moment.unix(transaction.timestamp).fromNow() : '-'}</td>
-                                            <td>
+                                            <Table.Td noWrap>{transaction.timestamp ? moment.unix(transaction.timestamp).fromNow() : '-'}</Table.Td>
+                                            <Table.Td noWrap>
                                                 {price.isGreaterThanOrEqualTo(0) ? '+' : ''}{mapPriceFromContract(price)} DATA
-                                            </td>
-                                            <td>{transaction.gasUsed} / {transaction.gasPrice}</td>
-                                            <td>
+                                            </Table.Td>
+                                            <Table.Td noWrap>{transaction.gasUsed} / {transaction.gasPrice}</Table.Td>
+                                            <Table.Td noWrap>
                                                 {!!transaction.state && (
                                                     <Translate value={`userpages.transactions.status.${transaction.state}`} />
                                                 )}
-                                            </td>
-                                            <td>
+                                            </Table.Td>
+                                            <Table.Td>
                                                 <DropdownActions
                                                     title={<Meatball alt={I18n.t('userpages.transactions.actions.title')} />}
                                                     noCaret
@@ -124,7 +124,7 @@ class TransactionList extends Component<Props> {
                                                         <Translate value="userpages.transactions.actions.copyTxHash" />
                                                     </DropdownActions.Item>
                                                 </DropdownActions>
-                                            </td>
+                                            </Table.Td>
                                         </tr>
                                     )
                                 })}

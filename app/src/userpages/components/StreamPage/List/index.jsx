@@ -35,6 +35,8 @@ import ShareDialog from '$userpages/components/ShareDialog'
 import SnippetDialog from '$userpages/components/SnippetDialog/index'
 import { ProgrammingLanguages } from '$shared/utils/constants'
 
+import styles from './streamList.pcss'
+
 export const CreateStreamButton = () => (
     <Button color="primary" id="streamlist-create-stream">
         <Link to={links.userpages.streamCreate}>
@@ -282,19 +284,19 @@ class StreamList extends Component<Props, State> {
                                     <th><Translate value="userpages.streams.list.description" /></th>
                                     <th><Translate value="userpages.streams.list.updated" /></th>
                                     <th><Translate value="userpages.streams.list.lastData" /></th>
-                                    <th><Translate value="userpages.streams.list.status" /></th>
+                                    <th className={styles.status}><Translate value="userpages.streams.list.status" /></th>
                                     <th />
                                 </tr>
                             </thead>
                             <tbody>
                                 {streams.map((stream) => (
                                     <tr key={stream.id}>
-                                        <th>{stream.name}</th>
-                                        <td title={stream.description}>{stream.description}</td>
-                                        <td>{moment(stream.lastUpdated).fromNow()}</td>
-                                        <td>-</td>
-                                        <td><StatusIcon /></td>
-                                        <td>
+                                        <Table.Th noWrap title={stream.name}>{stream.name}</Table.Th>
+                                        <Table.Td noWrap title={stream.description}>{stream.description}</Table.Td>
+                                        <Table.Td noWrap>{moment(stream.lastUpdated).fromNow()}</Table.Td>
+                                        <Table.Td>-</Table.Td>
+                                        <Table.Td className={styles.status}><StatusIcon /></Table.Td>
+                                        <Table.Td>
                                             <DropdownActions
                                                 title={<Meatball alt={I18n.t('userpages.streams.actions')} />}
                                                 noCaret
@@ -329,7 +331,7 @@ class StreamList extends Component<Props, State> {
                                                     <Translate value="userpages.streams.actions.delete" />
                                                 </DropdownActions.Item>
                                             </DropdownActions>
-                                        </td>
+                                        </Table.Td>
                                     </tr>
                                 ))}
                             </tbody>
