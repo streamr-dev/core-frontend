@@ -2,52 +2,81 @@
 
 import React, { useState, useCallback, useMemo, useEffect } from 'react'
 import { type CommonProps } from '..'
-import MapEntry from './MapEntry'
+import MapEntry, { type Sender } from './MapEntry'
 import styles from './map.pcss'
 
 type Props = CommonProps & {
     port: any,
 }
 
-const Map = ({ disabled, onChange, value }: Props) => {
-    const [entries, setEntries] = useState(Object.entries(value))
+const Map = ({ disabled, onChange, value: valueProp }: Props) => {
+    const [value, setValue] = useState(valueProp)
 
-    const commit = useCallback((newEntries) => {
-        const newValue = newEntries
-            // Filter out entries with empty `name`.
-            .filter(([key = '']) => key.trim())
-            // Turn it into an Object.
-            .reduce((memo, [key, val = '']) => {
-                const v: any = val
+    const [keys, setKeys] = useState(Object.keys(valueProp))
 
+    const commit = useCallback((keys, values) => {
+        const trimmedKeys = keys.map((k) => k.trim()).filter(Boolean)
+
+        // Throw away unused keys…
+        const value = Object.keys(values).reduce((memo, k) => {
+            if (trimmedKeys.includes(k)) {
                 return {
                     ...memo,
-                    [key.trim()]: v.trim(),
+                    [k]: values[k].trim() || '',
                 }
-            }, {})
+            }
+            return memo
+        }, {})
 
-        onChange(newValue)
+        onChange(value)
     }, [onChange])
 
     const onRemoveClick = useCallback((index: number) => {
-        const newEntries = [...entries]
-        newEntries.splice(index, 1)
-        setEntries(newEntries)
-        commit(newEntries)
-    }, [entries, commit])
+        const newKeys = [...keys]
+        newKeys.splice(index, 1)
+        setKeys(newKeys)
 
-    const onEntryChange = useCallback((index: number, name: string, value: string) => {
-        const newEntries = [...entries]
-        newEntries.splice(index, 1, [name, value])
-        setEntries(newEntries)
-        commit(newEntries)
-    }, [entries, commit])
+        commit(newKeys, value)
+    }, [keys, commit, value])
 
-    const finalEntries = useMemo(() => [...entries, ['', '']], [entries])
+    const onEntryChange = useCallback((index: number, entryKey: string, entryValue: string, sender: Sender) => {
+        const newKeys = [...keys]
+        newKeys[index] = entryKey
+        setKeys(newKeys)
+
+        const key = entryKey.trim()
+        const newValue = {
+            ...value,
+            [key]: (
+                entryValue || sender === 'value' ? entryValue : (value[key] || '')
+            ),
+        }
+        setValue(newValue)
+
+        commit(newKeys, newValue)
+    }, [value, keys, commit])
+
+    const finalEntries = useMemo(() => [
+        ...keys.map((k) => [k, value[k.trim()]]),
+        // Append an extra entry at the end…
+        ['', ''],
+    ], [value, keys])
 
     useEffect(() => {
-        setEntries(Object.entries(value))
-    }, [value])
+        setValue(valueProp)
+
+        setKeys((keys) => {
+            const trimmedKeys = keys.map((k) => k.trim()).filter(Boolean)
+            const incomingKeys = Object.keys(valueProp)
+
+            return [
+                // Keep the ones that still exist in valueProp.
+                ...trimmedKeys.filter((k) => incomingKeys.includes(k)),
+                // Append the ones that are new.
+                ...incomingKeys.filter((k) => !trimmedKeys.includes(k)),
+            ]
+        })
+    }, [valueProp])
 
     return (
         <div className={styles.root}>

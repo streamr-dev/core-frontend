@@ -10,12 +10,14 @@ type Name = string
 
 type Value = string
 
+export type Sender = 'name' | 'value'
+
 type Props = {
     disabled?: boolean,
     index: Index,
     name: Name,
     onAddClick?: ?(Index) => void,
-    onChange: (Index, Name, Value) => void,
+    onChange: (Index, Name, Value, Sender) => void,
     onRemoveClick?: ?(Index) => void,
     removable?: boolean,
     value: Value,
@@ -31,11 +33,11 @@ const MapEntry = ({
     value,
 }: Props) => {
     const onNameChange = useCallback((newName) => {
-        onChangeProp(index, newName, value)
+        onChangeProp(index, newName, value, 'name')
     }, [index, value, onChangeProp])
 
     const onValueChange = useCallback((newValue) => {
-        onChangeProp(index, name, newValue)
+        onChangeProp(index, name, newValue, 'value')
     }, [index, name, onChangeProp])
 
     const onRemoveClick = useCallback(() => {
