@@ -1,10 +1,10 @@
 // @flow
 
-import React, { useCallback, useContext, useRef, useEffect } from 'react'
+import React, { useCallback, useContext } from 'react'
 import { Link } from 'react-router-dom'
 import { I18n, Translate } from 'react-redux-i18n'
 
-import { type Ref } from '$shared/flowtype/common-types'
+import useIsMountedRef from '$shared/utils/useIsMountedRef'
 import AuthFormProvider from '../AuthFormProvider'
 import AuthFormContext from '../../contexts/AuthForm'
 import SessionContext from '../../contexts/Session'
@@ -54,11 +54,7 @@ const UsernamePasswordLogin = ({ onEthereumClick }: Props) => {
 
     const { setSessionToken } = useContext(SessionContext)
 
-    const mountedRef: Ref<boolean> = useRef(true)
-
-    useEffect(() => () => {
-        mountedRef.current = false
-    }, [])
+    const mountedRef = useIsMountedRef()
 
     const submit = useCallback(() => {
         const { email: username, password } = form

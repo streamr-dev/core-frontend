@@ -1,12 +1,12 @@
 // @flow
 
-import React, { useCallback, useContext, useEffect, useRef } from 'react'
+import React, { useCallback, useContext, useEffect } from 'react'
 import qs from 'query-string'
 import * as yup from 'yup'
 import { I18n, Translate } from 'react-redux-i18n'
 import { userIsNotAuthenticated } from '$mp/utils/auth'
-import { type Ref } from '$shared/flowtype/common-types'
 
+import useIsMountedRef from '$shared/utils/useIsMountedRef'
 import AuthFormProvider from '../AuthFormProvider'
 import SessionProvider from '../SessionProvider'
 import AuthFormContext from '../../contexts/AuthForm'
@@ -54,7 +54,8 @@ const initialForm: Form = {
 }
 
 const RegisterPage = ({ location: { search, pathname }, history: { replace } }: Props) => {
-    const mountedRef: Ref<boolean> = useRef(true)
+    const mountedRef = useIsMountedRef()
+
     const {
         errors,
         form,
@@ -64,11 +65,6 @@ const RegisterPage = ({ location: { search, pathname }, history: { replace } }: 
         setFormField,
         step,
     } = useContext(AuthFormContext)
-
-    useEffect(() => () => {
-        // Mark as unmounted on clean-up.
-        mountedRef.current = false
-    }, [])
 
     useEffect(() => {
         const invite = qs.parse(search).invite || ''

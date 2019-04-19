@@ -1,9 +1,9 @@
 // @flow
 
-import React, { useContext, useRef, useEffect, useCallback } from 'react'
+import React, { useContext, useCallback } from 'react'
 import { I18n } from 'react-redux-i18n'
 
-import { type Ref } from '$shared/flowtype/common-types'
+import useIsMountedRef from '$shared/utils/useIsMountedRef'
 import AuthFormProvider from '../AuthFormProvider'
 import AuthFormContext from '../../contexts/AuthForm'
 import SessionContext from '../../contexts/Session'
@@ -34,11 +34,7 @@ const EthereumLogin = ({ onBackClick }: Props) => {
         step,
     } = useContext(AuthFormContext)
 
-    const mountedRef: Ref<boolean> = useRef(true)
-
-    useEffect(() => () => {
-        mountedRef.current = false
-    }, [])
+    const mountedRef = useIsMountedRef()
 
     const { setSessionToken } = useContext(SessionContext)
 
