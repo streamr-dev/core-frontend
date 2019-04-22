@@ -89,6 +89,15 @@ class DashboardList extends Component<Props> {
         }
     }
 
+    resetFilter = () => {
+        const { updateFilter, getDashboards } = this.props
+        updateFilter({
+            ...this.defaultFilter,
+            search: '',
+        })
+        getDashboards()
+    }
+
     render() {
         const { fetching, dashboards, filter } = this.props
 
@@ -122,7 +131,11 @@ class DashboardList extends Component<Props> {
                 </Helmet>
                 <Container>
                     {!fetching && dashboards && dashboards.length <= 0 && (
-                        <NoDashboardsView />
+                        <NoDashboardsView
+                            hasFilter={!!filter && (!!filter.search || !!filter.key)}
+                            filter={filter}
+                            onResetFilter={this.resetFilter}
+                        />
                     )}
                     {dashboards && dashboards.length > 0 && (
                         <Row>

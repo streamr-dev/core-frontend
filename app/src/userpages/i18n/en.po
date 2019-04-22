@@ -368,11 +368,20 @@ msgstr "Create dashboard"
 msgid "userpages##dashboards##filterDashboards"
 msgstr "Filter dashboards"
 
-msgid "userpages##dashboards##noDashboards##title"
+msgid "userpages##dashboards##noCreatedDashboards##title"
 msgstr "You haven’t created any dashboards yet."
 
-msgid "userpages##dashboards##noDashboards##message"
+msgid "userpages##dashboards##noCreatedDashboards##message"
 msgstr "Click the button above to create one."
+
+msgid "userpages##dashboards##noDashboardsResult##title"
+msgstr "No results."
+
+msgid "userpages##dashboards##noDashboardsResult##message"
+msgstr "We couldn't find any matching dashboards."
+
+msgid "userpages##dashboards##noDashboardsResult##clearFilters"
+msgstr "Clear filters"
 
 msgid "userpages##transactions##list##name"
 msgstr "Name"
