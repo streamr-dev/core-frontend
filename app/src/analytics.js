@@ -11,10 +11,14 @@ type ErrorService = {
     getMiddleware?: Function,
 }
 
-class Analytics {
+export class Analytics {
     services = {}
 
     register = ({ id, init, reportError, getMiddleware }: ErrorService) => {
+        if (!id) {
+            throw new Error('Service has no id!')
+        }
+
         if (this.services[id]) {
             throw new Error(`Service ${id} already exists!`)
         }
