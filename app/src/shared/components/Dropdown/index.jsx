@@ -15,7 +15,7 @@ import styles from './dropdown.pcss'
 
 type Props = {
     title: Node,
-    defaultSelectedItem?: ?string,
+    selectedItem?: ?string,
     children: ChildrenArray<Element<typeof DropdownItem>>,
     className?: string,
     onChange: (string) => void,
@@ -68,11 +68,11 @@ export default class Dropdown extends Component<Props, State> {
     }
 
     render() {
-        const { title, children, className, defaultSelectedItem } = this.props
+        const { title, children, className, selectedItem } = this.props
         const { isOpen } = this.state
         const childrenArray = React.Children.toArray(children)
-        const selectedIndex = childrenArray.findIndex((child) => child.props.value === defaultSelectedItem)
-        const selectedItem = (selectedIndex >= 0 && childrenArray[selectedIndex].props.children) || null
+        const selectedIndex = childrenArray.findIndex((child) => child.props.value === selectedItem)
+        const currentItem = (selectedIndex >= 0 && childrenArray[selectedIndex].props.children) || null
 
         return (
             <RsDropdown
@@ -84,12 +84,12 @@ export default class Dropdown extends Component<Props, State> {
                 })}
             >
                 <RsDropdownToggle className={cx(styles.toggle)}>
-                    {selectedItem || title}
+                    {currentItem || title}
                     <SvgIcon name="caretUp" className={styles.caret} />
                 </RsDropdownToggle>
                 <RsDropdownMenu>
                     {React.Children.map(children, (child, index) => React.cloneElement(child, {
-                        active: child.props.value === defaultSelectedItem,
+                        active: child.props.value === selectedItem,
                         onClick: this.getOnItemClick(index),
                     }))}
                 </RsDropdownMenu>

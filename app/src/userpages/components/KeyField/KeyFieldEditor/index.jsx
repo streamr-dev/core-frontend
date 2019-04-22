@@ -115,7 +115,7 @@ class KeyFieldEditor extends React.Component<Props, State> {
                             <Dropdown
                                 title=""
                                 onChange={this.onPermissionChange}
-                                defaultSelectedItem={permission}
+                                selectedItem={permission}
                                 className={styles.permissionDropdown}
                             >
                                 <Dropdown.Item key="read" value="read">

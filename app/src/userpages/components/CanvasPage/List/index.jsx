@@ -21,9 +21,6 @@ import { defaultColumns, getFilters } from '$userpages/utils/constants'
 import Tile from '$shared/components/Tile'
 import DropdownActions from '$shared/components/DropdownActions'
 import { formatExternalUrl } from '$shared/utils/url'
-import EmptyState from '$shared/components/EmptyState'
-import emptyStateIcon from '$shared/assets/images/empty_state_icon.png'
-import emptyStateIcon2x from '$shared/assets/images/empty_state_icon@2x.png'
 import Search from '$shared/components/Search'
 import Dropdown from '$shared/components/Dropdown'
 import ShareDialog from '$userpages/components/ShareDialog'
@@ -33,6 +30,7 @@ import { selectFetchingPermissions, selectCanvasPermissions } from '$userpages/m
 import type { Permission, ResourceId } from '$userpages/flowtype/permission-types'
 import type { User } from '$shared/flowtype/user-types'
 import { selectUserData } from '$shared/modules/user/selectors'
+import NoCanvasesView from './NoCanvases'
 
 export type StateProps = {
     user: ?User,
@@ -202,6 +200,15 @@ class CanvasList extends Component<Props, State> {
         }
     }
 
+    resetFilter = () => {
+        const { updateFilter, getCanvases } = this.props
+        updateFilter({
+            ...this.defaultFilter,
+            search: '',
+        })
+        getCanvases()
+    }
+
     render() {
         const { canvases, filter, fetching } = this.props
         const { shareDialogCanvas } = this.state
@@ -220,7 +227,7 @@ class CanvasList extends Component<Props, State> {
                     <Dropdown
                         title={I18n.t('userpages.filter.sortBy')}
                         onChange={this.onSortChange}
-                        defaultSelectedItem={(filter && filter.id) || this.defaultFilter.id}
+                        selectedItem={(filter && filter.id) || this.defaultFilter.id}
                     >
                         {getSortOptions().map((s) => (
                             <Dropdown.Item key={s.filter.id} value={s.filter.id}>
@@ -244,18 +251,11 @@ class CanvasList extends Component<Props, State> {
                         <title>{I18n.t('userpages.canvases.title')}</title>
                     </Helmet>
                     {!fetching && canvases && !canvases.length && (
-                        <EmptyState
-                            image={(
-                                <img
-                                    src={emptyStateIcon}
-                                    srcSet={`${emptyStateIcon2x} 2x`}
-                                    alt={I18n.t('error.notFound')}
-                                />
-                            )}
-                        >
-                            <Translate value="userpages.canvases.noCanvases.title" />
-                            <Translate value="userpages.canvases.noCanvases.message" tag="small" />
-                        </EmptyState>
+                        <NoCanvasesView
+                            hasFilter={!!filter && (!!filter.search || !!filter.key)}
+                            filter={filter}
+                            onResetFilter={this.resetFilter}
+                        />
                     )}
                     <Row>
                         {canvases.map((canvas) => (

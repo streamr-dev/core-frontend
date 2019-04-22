@@ -14,11 +14,20 @@ msgstr "Create canvas"
 msgid "userpages##canvases##filterCanvases"
 msgstr "Filter canvases"
 
-msgid "userpages##canvases##noCanvases##title"
+msgid "userpages##canvases##noCreatedCanvases##title"
 msgstr "You haven't created any canvases yet."
 
-msgid "userpages##canvases##noCanvases##message"
+msgid "userpages##canvases##noCreatedCanvases##message"
 msgstr "Click the button above to create one."
+
+msgid "userpages##canvases##noCanvasesResult##title"
+msgstr "No results."
+
+msgid "userpages##canvases##noCanvasesResult##message"
+msgstr "We couldn't find any matching canvases."
+
+msgid "userpages##canvases##noCanvasesResult##clearFilters"
+msgstr "Clear filters"
 
 msgid "userpages##canvases##title"
 msgstr "My Canvases"

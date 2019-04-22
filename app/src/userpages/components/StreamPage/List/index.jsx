@@ -256,7 +256,7 @@ class StreamList extends Component<Props, State> {
                     <Dropdown
                         title={I18n.t('userpages.filter.sortBy')}
                         onChange={this.onSortChange}
-                        defaultSelectedItem={(filter && filter.id) || this.defaultFilter.id}
+                        selectedItem={(filter && filter.id) || this.defaultFilter.id}
                     >
                         {getSortOptions().map((s) => (
                             <Dropdown.Item key={s.filter.id} value={s.filter.id}>
