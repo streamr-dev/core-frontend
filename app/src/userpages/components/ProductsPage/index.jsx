@@ -16,13 +16,11 @@ import { getMyProducts, updateFilter } from '$mp/modules/myProductList/actions'
 import { selectMyProductList, selectFilter, selectFetching } from '$mp/modules/myProductList/selectors'
 import { productStates } from '$shared/utils/constants'
 import Tile from '$shared/components/Tile'
-import EmptyState from '$shared/components/EmptyState'
-import emptyStateIcon from '$shared/assets/images/empty_state_icon.png'
-import emptyStateIcon2x from '$shared/assets/images/empty_state_icon@2x.png'
 import Search from '$shared/components/Search'
 import Dropdown from '$shared/components/Dropdown'
 import { formatPath, formatExternalUrl } from '$shared/utils/url'
 import DropdownActions from '$shared/components/DropdownActions'
+import NoProductsView from './NoProducts'
 
 import type { ProductList, ProductId, Product } from '$mp/flowtype/product-types'
 import type { Filter, SortOption } from '$userpages/flowtype/common-types'
@@ -100,6 +98,15 @@ class ProductsPage extends Component<Props> {
         }
     }
 
+    resetFilter = () => {
+        const { updateFilter, getMyProducts } = this.props
+        updateFilter({
+            ...this.defaultFilter,
+            search: '',
+        })
+        getMyProducts()
+    }
+
     getActions = ({ id, state }: Product) => {
         const { redirectToEditProduct, redirectToPublishProduct, copyUrl } = this.props
 
@@ -165,18 +172,11 @@ class ProductsPage extends Component<Props> {
                 </Helmet>
                 <Container>
                     {!fetching && products && !products.length && (
-                        <EmptyState
-                            image={(
-                                <img
-                                    src={emptyStateIcon}
-                                    srcSet={`${emptyStateIcon2x} 2x`}
-                                    alt={I18n.t('error.notFound')}
-                                />
-                            )}
-                        >
-                            <Translate value="userpages.products.noProducts.title" />
-                            <Translate value="userpages.products.noProducts.message" tag="small" />
-                        </EmptyState>
+                        <NoProductsView
+                            hasFilter={!!filter && (!!filter.search || !!filter.key)}
+                            filter={filter}
+                            onResetFilter={this.resetFilter}
+                        />
                     )}
                     <Row>
                         {products.map((product) => (
