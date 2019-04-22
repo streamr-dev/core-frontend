@@ -40,10 +40,12 @@ class Search extends React.Component<Props, State> {
     }
 
     componentWillReceiveProps(newProps: Props) {
-        this.setState({
-            isOpen: newProps.value !== '',
-            text: newProps.value || '',
-        })
+        if (this.state.isOpen && this.state.text !== newProps.value) {
+            this.setState({
+                isOpen: newProps.value !== '',
+                text: newProps.value || '',
+            })
+        }
     }
 
     componentWillUnmount() {
@@ -70,22 +72,21 @@ class Search extends React.Component<Props, State> {
     mounted = false
     inputRef: Ref<HTMLInputElement> = React.createRef()
 
-    handleClick = () => {
-        const { current } = this.inputRef
-
+    handleFocus = (e: SyntheticInputEvent<EventTarget>) => {
         if (!this.state.isOpen) {
             this.setState({
                 isOpen: true,
             })
-        }
-
-        if (current) {
-            current.focus()
+            const { current } = this.inputRef
+            if (current) {
+                current.focus()
+            }
+            e.preventDefault()
         }
     }
 
     handleBlur = () => {
-        if (this.state.text === '') {
+        if (this.state.isOpen && this.state.text === '') {
             this.setState({
                 isOpen: false,
             })
@@ -111,11 +112,11 @@ class Search extends React.Component<Props, State> {
                 className={cx(styles.search, {
                     [styles.open]: isOpen,
                 })}
-                onClick={this.handleClick}
                 onBlur={this.handleBlur}
+                onFocus={this.handleFocus}
                 role="searchbox"
             >
-                <span role="button">
+                <span role="button" onMouseDown={this.handleFocus}>
                     <SvgIcon name="search" className={styles.searchIcon} />
                 </span>
                 <input

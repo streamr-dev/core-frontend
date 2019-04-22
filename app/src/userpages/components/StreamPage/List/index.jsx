@@ -162,10 +162,12 @@ class StreamList extends Component<Props, State> {
     }
 
     resetFilter = () => {
-        this.props.updateFilter({
+        const { updateFilter, getStreams } = this.props
+        updateFilter({
             ...this.defaultFilter,
             search: '',
         })
+        getStreams()
     }
 
     confirmDeleteStream = async (stream: Stream) => {

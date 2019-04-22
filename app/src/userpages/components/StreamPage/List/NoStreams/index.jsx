@@ -7,6 +7,9 @@ import EmptyState from '$shared/components/EmptyState'
 import emptyStateIcon from '$shared/assets/images/empty_state_icon.png'
 import emptyStateIcon2x from '$shared/assets/images/empty_state_icon@2x.png'
 import type { Filter } from '$userpages/flowtype/common-types'
+import SvgIcon from '$shared/components/SvgIcon'
+
+import styles from './noStreams.pcss'
 
 type NoResultsViewProps = {
     onResetFilter: Function,
@@ -34,11 +37,7 @@ const NoCreatedStreamsView = () => (
 const NoResultsView = ({ onResetFilter }: NoResultsViewProps) => (
     <EmptyState
         image={(
-            <img
-                src={emptyStateIcon}
-                srcSet={`${emptyStateIcon2x} 2x`}
-                alt={I18n.t('error.notFound')}
-            />
+            <SvgIcon name="search" className={styles.searchIcon} />
         )}
         link={(
             <button

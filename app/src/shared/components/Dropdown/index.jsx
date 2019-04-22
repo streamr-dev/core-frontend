@@ -23,7 +23,6 @@ type Props = {
 
 type State = {
     isOpen: boolean,
-    selectedValue: ?string,
 }
 
 export default class Dropdown extends Component<Props, State> {
@@ -31,7 +30,6 @@ export default class Dropdown extends Component<Props, State> {
 
     state = {
         isOpen: false,
-        selectedValue: this.props.defaultSelectedItem,
     }
 
     onClick = (e: SyntheticInputEvent<EventTarget>) => {
@@ -41,9 +39,6 @@ export default class Dropdown extends Component<Props, State> {
     onItemClick = (index: number) => {
         const { children } = this.props
         const { value } = React.Children.toArray(children)[index].props
-        this.setState({
-            selectedValue: value,
-        })
         this.props.onChange(value)
     }
 
@@ -73,10 +68,10 @@ export default class Dropdown extends Component<Props, State> {
     }
 
     render() {
-        const { title, children, className } = this.props
-        const { isOpen, selectedValue } = this.state
+        const { title, children, className, defaultSelectedItem } = this.props
+        const { isOpen } = this.state
         const childrenArray = React.Children.toArray(children)
-        const selectedIndex = childrenArray.findIndex((child) => child.props.value === selectedValue)
+        const selectedIndex = childrenArray.findIndex((child) => child.props.value === defaultSelectedItem)
         const selectedItem = (selectedIndex >= 0 && childrenArray[selectedIndex].props.children) || null
 
         return (
@@ -94,7 +89,7 @@ export default class Dropdown extends Component<Props, State> {
                 </RsDropdownToggle>
                 <RsDropdownMenu>
                     {React.Children.map(children, (child, index) => React.cloneElement(child, {
-                        active: child.props.value === selectedValue,
+                        active: child.props.value === defaultSelectedItem,
                         onClick: this.getOnItemClick(index),
                     }))}
                 </RsDropdownMenu>
