@@ -5,7 +5,6 @@ import { connect } from 'react-redux'
 import { Container, Row, Col } from 'reactstrap'
 import { Translate, I18n } from 'react-redux-i18n'
 import cx from 'classnames'
-import { Link } from 'react-router-dom'
 import Helmet from 'react-helmet'
 
 import Layout from '../Layout'
@@ -14,13 +13,10 @@ import { defaultColumns, getFilters } from '../../utils/constants'
 import { getMyPurchases, updateFilter, applyFilter } from '$mp/modules/myPurchaseList/actions'
 import { selectMyPurchaseList, selectSubscriptions, selectFilter, selectFetchingMyPurchaseList } from '$mp/modules/myPurchaseList/selectors'
 import Tile from '$shared/components/Tile'
-import EmptyState from '$shared/components/EmptyState'
-import emptyStateIcon from '$shared/assets/images/empty_state_icon.png'
-import emptyStateIcon2x from '$shared/assets/images/empty_state_icon@2x.png'
 import { isActive } from '$mp/utils/time'
-import routes from '$routes'
 import Search from '$shared/components/Search'
 import Dropdown from '$shared/components/Dropdown'
+import NoPurchasesView from './NoPurchases'
 
 import type { ProductList, ProductSubscription } from '$mp/flowtype/product-types'
 import type { Filter, SortOption } from '$userpages/flowtype/common-types'
@@ -92,6 +88,14 @@ class PurchasesPage extends Component<Props> {
         }
     }
 
+    resetFilter = () => {
+        const { updateFilter } = this.props
+        updateFilter({
+            ...this.defaultFilter,
+            search: '',
+        })
+    }
+
     render() {
         const { purchases, subscriptions, filter, fetching } = this.props
 
@@ -125,23 +129,11 @@ class PurchasesPage extends Component<Props> {
                 </Helmet>
                 <Container>
                     {!fetching && purchases && !purchases.length && (
-                        <EmptyState
-                            image={(
-                                <img
-                                    src={emptyStateIcon}
-                                    srcSet={`${emptyStateIcon2x} 2x`}
-                                    alt={I18n.t('error.notFound')}
-                                />
-                            )}
-                            link={(
-                                <Link to={routes.marketplace()} className="btn btn-special">
-                                    <Translate value="userpages.purchases.noPurchases.hint" />
-                                </Link>
-                            )}
-                        >
-                            <Translate value="userpages.purchases.noPurchases.title" />
-                            <Translate value="userpages.purchases.noPurchases.message" tag="small" />
-                        </EmptyState>
+                        <NoPurchasesView
+                            hasFilter={!!filter && (!!filter.search || !!filter.key)}
+                            filter={filter}
+                            onResetFilter={this.resetFilter}
+                        />
                     )}
                     <Row>
                         {purchases.map((product) => {
