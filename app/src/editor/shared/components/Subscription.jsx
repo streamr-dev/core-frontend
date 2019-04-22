@@ -4,10 +4,12 @@
 
 /* eslint-disable react/no-unused-state */
 
-import React, { Component } from 'react'
+import React, { Component, useContext } from 'react'
+import uniqueId from 'lodash/uniqueId'
 import t from 'prop-types'
 
 import { ClientContext } from './Client'
+import { SubscriptionStatusContext } from './SubscriptionStatus'
 
 const MessageTypes = {
     Done: 'D',
@@ -38,15 +40,26 @@ class Subscription extends Component {
         onNoResend: t.func.isRequired,
     }
 
+    uid = uniqueId('sub')
+
     componentDidMount() {
+        this.props.subscriptionStatus.register(this.uid)
         this.autosubscribe()
     }
 
-    componentDidUpdate() {
-        this.autosubscribe()
+    componentDidUpdate(prevProps) {
+        // unsubscribe if switching to active
+        if (this.props.isActive && !prevProps.isActive) {
+            this.autosubscribe()
+        } else if (!this.props.isActive && prevProps.isActive) {
+            // unsubscribe if switching to inactive
+            this.unsubscribe()
+        }
     }
 
     componentWillUnmount() {
+        this.unmounted = true
+        this.props.subscriptionStatus.unregister(this.uid)
         this.unsubscribe()
     }
 
@@ -116,13 +129,11 @@ class Subscription extends Component {
             subscription.off('resent', this.onResent)
             subscription.off('no_resend', this.onNoResend)
             subscription.off('error', this.onError)
+            subscription.off('unsubscribed', this.onUnsubscribed)
         }
         this.subscription = undefined
         this.client = undefined
         this.isSubscribed = false
-        subscription.once('unsubscribed', () => {
-            subscription.off('unsubscribed', this.onUnsubscribed)
-        })
         client.unsubscribe(subscription)
     }
 
@@ -133,7 +144,7 @@ class Subscription extends Component {
 
         if (message.type === MessageTypes.Done) {
             // unsubscribe when done
-            this.unsubscribe()
+            // this.unsubscribe()
         }
     }
 
@@ -142,10 +153,12 @@ class Subscription extends Component {
      */
 
     onSubscribed = (...args) => {
+        this.props.subscriptionStatus.subscribed(this.uid)
         this.props.onSubscribed(...args)
     }
 
     onUnsubscribed = (...args) => {
+        this.props.subscriptionStatus.unsubscribed(this.uid)
         this.props.onUnsubscribed(...args)
     }
 
@@ -171,10 +184,15 @@ class Subscription extends Component {
 }
 
 export default (props) => {
+    const subscriptionStatus = useContext(SubscriptionStatusContext)
     const { uiChannel, resendAll } = props
     // create new subscription if uiChannel or resendAll changes
     const subscriptionKey = (uiChannel && uiChannel.id) + resendAll
     return (
-        <Subscription key={subscriptionKey} {...props} />
+        <Subscription
+            {...props}
+            key={subscriptionKey}
+            subscriptionStatus={subscriptionStatus}
+        />
     )
 }

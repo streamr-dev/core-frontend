@@ -7,7 +7,7 @@ import Autosave from '$editor/shared/utils/autosave'
 import { nextUniqueName, nextUniqueCopyName } from '$editor/shared/utils/uniqueName'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
-import { emptyCanvas, isRunning, RunStates, RunTabs } from './state'
+import { emptyCanvas, isRunning, RunStates, isHistoricalModeSelected } from './state'
 
 const getData = ({ data }) => data
 
@@ -138,8 +138,7 @@ export async function createAdhocCanvas(canvas) {
 }
 
 export async function start(canvas, options = {}) {
-    const savedCanvas = await saveNow(canvas)
-    return startCanvas(savedCanvas, options)
+    return startCanvas(canvas, options)
 }
 
 export async function stop(canvas) {
@@ -159,9 +158,7 @@ export async function stop(canvas) {
  */
 
 export async function startOrCreateAdhocCanvas(canvas, options) {
-    const { settings = {} } = canvas
-    const { editorState = {} } = settings
-    const isHistorical = editorState.runTab === RunTabs.historical
+    const isHistorical = isHistoricalModeSelected(canvas)
     if (isHistorical && !canvas.adhoc) {
         return createAdhocCanvas(canvas)
     }
