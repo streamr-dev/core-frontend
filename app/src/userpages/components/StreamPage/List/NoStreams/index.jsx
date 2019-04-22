@@ -6,8 +6,17 @@ import { Translate, I18n } from 'react-redux-i18n'
 import EmptyState from '$shared/components/EmptyState'
 import emptyStateIcon from '$shared/assets/images/empty_state_icon.png'
 import emptyStateIcon2x from '$shared/assets/images/empty_state_icon@2x.png'
+import type { Filter } from '$userpages/flowtype/common-types'
 
-const NoStreamsView = () => (
+type NoResultsViewProps = {
+    onResetFilter: Function,
+    filter: ?Filter,
+}
+type Props = NoResultsViewProps & {
+    hasFilter: boolean,
+}
+
+const NoCreatedStreamsView = () => (
     <EmptyState
         image={(
             <img
@@ -17,9 +26,43 @@ const NoStreamsView = () => (
             />
         )}
     >
-        <Translate value="userpages.streams.noStreams.title" />
-        <Translate value="userpages.streams.noStreams.message" tag="small" />
+        <Translate value="userpages.streams.noCreatedStreams.title" />
+        <Translate value="userpages.streams.noCreatedStreams.message" tag="small" />
     </EmptyState>
 )
+
+const NoResultsView = ({ onResetFilter }: NoResultsViewProps) => (
+    <EmptyState
+        image={(
+            <img
+                src={emptyStateIcon}
+                srcSet={`${emptyStateIcon2x} 2x`}
+                alt={I18n.t('error.notFound')}
+            />
+        )}
+        link={(
+            <button
+                type="button"
+                className="btn btn-special"
+                onClick={onResetFilter}
+            >
+                <Translate value="userpages.streams.noStreamsResult.clearFilters" />
+            </button>
+        )}
+    >
+        <Translate value="userpages.streams.noStreamsResult.title" />
+        <Translate value="userpages.streams.noStreamsResult.message" tag="small" />
+    </EmptyState>
+)
+
+const NoStreamsView = ({ hasFilter, ...rest }: Props) => {
+    if (hasFilter) {
+        return (
+            <NoResultsView {...rest} />
+        )
+    }
+
+    return <NoCreatedStreamsView />
+}
 
 export default NoStreamsView

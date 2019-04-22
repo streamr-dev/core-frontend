@@ -4,8 +4,7 @@ import React from 'react'
 import cx from 'classnames'
 import debounce from 'lodash/debounce'
 
-import SearchIcon from '$shared/components/SearchIcon'
-import ClearIcon from '$shared/components/ClearIcon'
+import SvgIcon from '$shared/components/SvgIcon'
 import { type Ref } from '$shared/flowtype/common-types'
 
 import styles from './search.pcss'
@@ -38,6 +37,13 @@ class Search extends React.Component<Props, State> {
 
     componentDidMount() {
         this.mounted = true
+    }
+
+    componentWillReceiveProps(newProps: Props) {
+        this.setState({
+            isOpen: newProps.value !== '',
+            text: newProps.value || '',
+        })
     }
 
     componentWillUnmount() {
@@ -110,7 +116,7 @@ class Search extends React.Component<Props, State> {
                 role="searchbox"
             >
                 <span role="button">
-                    <SearchIcon className={styles.searchIcon} />
+                    <SvgIcon name="search" className={styles.searchIcon} />
                 </span>
                 <input
                     type="search"
@@ -121,7 +127,7 @@ class Search extends React.Component<Props, State> {
                     onChange={this.onTextChange}
                 />
                 <span onClick={this.clear} role="button">
-                    <ClearIcon className={styles.clearIcon} />
+                    <SvgIcon name="crossMedium" className={styles.clearIcon} />
                 </span>
             </div>
         )

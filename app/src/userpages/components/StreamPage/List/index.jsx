@@ -161,6 +161,13 @@ class StreamList extends Component<Props, State> {
         }
     }
 
+    resetFilter = () => {
+        this.props.updateFilter({
+            ...this.defaultFilter,
+            search: '',
+        })
+    }
+
     confirmDeleteStream = async (stream: Stream) => {
         const confirmed = await confirmDialog({
             title: I18n.t('userpages.streams.delete.confirmTitle', {
@@ -278,7 +285,11 @@ class StreamList extends Component<Props, State> {
                 )}
                 <div className="container">
                     {!fetching && streams && streams.length <= 0 && (
-                        <NoStreamsView />
+                        <NoStreamsView
+                            hasFilter={!!filter && (!!filter.search || !!filter.key)}
+                            filter={filter}
+                            onResetFilter={this.resetFilter}
+                        />
                     )}
                     {streams && streams.length > 0 && (
                         <Table className={styles.streamTable}>
@@ -297,28 +308,19 @@ class StreamList extends Component<Props, State> {
                                     <tr
                                         key={stream.id}
                                         className={styles.streamRow}
+                                        onClick={() => this.onStreamRowClick(stream.id)}
                                     >
-                                        <th onClick={() => this.onStreamRowClick(stream.id)}>{stream.name}</th>
+                                        <th>{stream.name}</th>
+                                        <td title={stream.description}>{stream.description}</td>
+                                        <td>{moment(stream.lastUpdated).fromNow()}</td>
+                                        <td>-</td>
+                                        <td><StatusIcon /></td>
                                         {/* eslint-disable-next-line max-len */}
                                         {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */}
                                         <td
-                                            onClick={() => this.onStreamRowClick(stream.id)}
-                                            title={stream.description}
+                                            onClick={(event) => event.stopPropagation()}
+                                            className={styles.streamActions}
                                         >
-                                            {stream.description}
-                                        </td>
-                                        {/* eslint-disable-next-line max-len */}
-                                        {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */}
-                                        <td onClick={() => this.onStreamRowClick(stream.id)}>
-                                            {moment(stream.lastUpdated).fromNow()}
-                                        </td>
-                                        {/* eslint-disable-next-line max-len */}
-                                        {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */}
-                                        <td onClick={() => this.onStreamRowClick(stream.id)}>-</td>
-                                        {/* eslint-disable-next-line max-len */}
-                                        {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */}
-                                        <td onClick={() => this.onStreamRowClick(stream.id)}><StatusIcon /></td>
-                                        <td className={styles.streamActions}>
                                             <DropdownActions
                                                 title={<Meatball alt={I18n.t('userpages.streams.actions')} />}
                                                 noCaret

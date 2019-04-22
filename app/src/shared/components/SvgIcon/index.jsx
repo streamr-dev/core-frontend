@@ -71,6 +71,18 @@ const sources = {
             />
         </svg>
     ),
+    crossMedium: (
+        <svg viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg">
+            <path
+                d="M.757.757l8.486 8.486m0-8.486L.757 9.243"
+                strokeWidth="1.5"
+                stroke="currentColor"
+                fill="none"
+                fillRule="evenodd"
+                strokeLinecap="round"
+            />
+        </svg>
+    ),
     crossHeavy: (
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 8">
             <g stroke="currentColor" strokeWidth="1.5" fill="none" fillRule="evenodd" strokeLinecap="round">
@@ -227,6 +239,22 @@ const sources = {
             <g transform="translate(1 1)" stroke="#D8D8D8" strokeWidth="1.5" fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M13.817 10.489A11.927 11.927 0 0 0 27.11 13.16" /><circle cx="20" cy="14.13" r="7.174" />
                 <path d="M.435 10.871V3.043A2.609 2.609 0 0 1 3.043.435h7.827M39.565 10.871V3.043A2.609 2.609 0 0 0 36.957.435H29.13M.435 29.13v7.827a2.609 2.609 0 0 0 2.608 2.608h7.827M39.565 29.13v7.827a2.609 2.609 0 0 1-2.608 2.608H29.13M31.02 31.74a11.673 11.673 0 0 0-22.04 0" />
+            </g>
+        </svg>
+    ),
+    search: (
+        <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+            <g
+                stroke="currentColor"
+                transform="translate(-1 -1)"
+                strokeWidth="1.5"
+                fill="none"
+                fillRule="evenodd"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            >
+                <circle transform="rotate(-23.025 7.593 7.592)" cx="7.593" cy="7.592" r="5.371" />
+                <path d="M11.39 11.39l4.166 4.166" />
             </g>
         </svg>
     ),

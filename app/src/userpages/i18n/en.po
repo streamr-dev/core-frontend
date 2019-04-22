@@ -197,11 +197,20 @@ msgstr "Refresh"
 msgid "userpages##streams##actions##delete"
 msgstr "Delete"
 
-msgid "userpages##streams##noStreams##title"
+msgid "userpages##streams##noCreatedStreams##title"
 msgstr "You haven't created any streams yet."
 
-msgid "userpages##streams##noStreams##message"
+msgid "userpages##streams##noCreatedStreams##message"
 msgstr "Click the button above to create one."
+
+msgid "userpages##streams##noStreamsResult##title"
+msgstr "No results."
+
+msgid "userpages##streams##noStreamsResult##message"
+msgstr "We couldn't find any matching streams."
+
+msgid "userpages##streams##noStreamsResult##clearFilters"
+msgstr "Clear filters"
 
 msgid "userpages##streams##edit##details##name"
 msgstr "Name"
