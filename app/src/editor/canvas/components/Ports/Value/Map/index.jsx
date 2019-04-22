@@ -22,7 +22,7 @@ const Map = ({ disabled, onChange, value: valueProp }: Props) => {
             if (trimmedKeys.includes(k)) {
                 return {
                     ...memo,
-                    [k]: values[k].trim() || '',
+                    [k]: values[k].trim(),
                 }
             }
             return memo
