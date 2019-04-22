@@ -123,6 +123,7 @@ class CanvasModule extends React.PureComponent {
                 ref={this.el}
                 {...props}
             >
+                <div className={ModuleStyles.selectionDecorator} />
                 <ModuleHeader
                     className={cx(styles.header, ModuleStyles.dragHandle)}
                     editable={!isRunning}
@@ -136,10 +137,9 @@ class CanvasModule extends React.PureComponent {
                     />
                 </ModuleHeader>
                 <Ports
-                    className={styles.ports}
                     api={api}
-                    module={module}
                     canvas={canvas}
+                    module={module}
                     onPort={onPort}
                     onValueChange={this.onPortValueChange}
                 />

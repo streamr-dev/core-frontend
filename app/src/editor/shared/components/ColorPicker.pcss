@@ -1,11 +1,15 @@
-.input {
-  width: 32px !important;
-  color: transparent !important;
-  text-shadow: 0 0 0 white !important;
-  cursor: pointer !important;
+.root {
+  border-radius: calc(0.125 * var(--um));
+  cursor: pointer;
+  height: var(--um);
+  outline: 0;
+  position: relative;
+  width: calc(1.5 * var(--um));
 }
 
-.popover {
+.root > div {
+  line-height: normal;
   position: absolute;
+  top: 100%;
   z-index: 2;
 }
