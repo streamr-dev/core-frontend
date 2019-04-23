@@ -16,7 +16,7 @@ import WithCalendar from '$shared/components/WithCalendar'
 import dateFormatter from '$utils/dateFormatter'
 import EditableText from '$shared/components/EditableText'
 import UseState from '$shared/components/UseState'
-import { RunTabs, RunStates } from '../state'
+import { RunTabs } from '../state'
 import Toolbar from '$editor/shared/components/Toolbar'
 
 import ShareDialog from './ShareDialog'
@@ -84,8 +84,8 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
         if (!canvas) { return null }
         const runController = this.context
         const { runButtonDropdownOpen, canvasSearchIsOpen } = this.state
-        const isRunning = canvas.state === RunStates.Running
-        const canEdit = !runController.isActive && !canvas.adhoc
+        const { isRunning, isActive, isPending } = runController
+        const canEdit = !isActive && !canvas.adhoc
         const { settings = {} } = canvas
         const { editorState = {} } = settings
         return (
@@ -165,7 +165,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                     })}
                                 >
                                     <R.Button
-                                        disabled={runController.isPending}
+                                        disabled={isPending}
                                         onClick={() => {
                                             if (isRunning) {
                                                 return canvasStop()
@@ -178,8 +178,8 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                         className={styles.RunButton}
                                     >
                                         {((() => {
-                                            if (isRunning) { return 'Stop' }
-                                            if (canvas.adhoc && !runController.isActive) { return 'Clear' }
+                                            if (isActive) { return 'Stop' }
+                                            if (canvas.adhoc && !isActive) { return 'Clear' }
                                             if (editorState.runTab === RunTabs.realtime) { return 'Start' }
                                             return 'Run'
                                         })())}

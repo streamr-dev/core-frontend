@@ -1,8 +1,6 @@
 /**
- * Provides a shared streamr-client instance.
+ * Enables waiting for all registered subscriptions to be subscribed.
  */
-
-/* eslint-disable react/no-unused-state */
 
 import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react'
 
