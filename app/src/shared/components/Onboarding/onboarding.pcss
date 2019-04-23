@@ -5,6 +5,7 @@
   display: flex;
   flex-direction: column;
   font-size: 16px;
+  pointer-events: none;
   position: fixed;
   right: 1.5em;
 }
@@ -24,6 +25,7 @@
   display: block;
   height: 1.5em;
   padding: 0.5em;
+  pointer-events: all;
   width: 1.5em;
 
   &:--enter {
@@ -42,6 +44,10 @@
   transition: 200ms linear;
   transition-property: visibility, opacity;
   transition-delay: 200ms, 0s;
+}
+
+.root:focus-within {
+  pointer-events: all;
 }
 
 .root:focus-within .children {
