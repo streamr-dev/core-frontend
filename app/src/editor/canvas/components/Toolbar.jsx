@@ -177,7 +177,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                     >
                                         {((() => {
                                             if (isRunning) { return 'Stop' }
-                                            if (canvas.adhoc && !isWaiting) { return 'Exit' }
+                                            if (canvas.adhoc && !isWaiting) { return 'Clear' }
                                             if (editorState.runTab === RunTabs.realtime) { return 'Start' }
                                             return 'Run'
                                         })())}
