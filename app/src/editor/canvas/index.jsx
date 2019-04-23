@@ -354,10 +354,8 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         ))
     }
 
-    onChangeSubscriptionStatus(subscriptionsReady) {
-        this.setState({
-            subscriptionsReady,
-        })
+    onDoneMessage = () => {
+        this.loadSelf()
     }
 
     render() {
@@ -377,6 +375,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                     resendFrom={canvas.adhoc ? resendFrom : undefined}
                     resendTo={canvas.adhoc ? resendTo : undefined}
                     isActive={runController.isActive}
+                    onDoneMessage={this.onDoneMessage}
                 />
                 <Canvas
                     className={styles.Canvas}

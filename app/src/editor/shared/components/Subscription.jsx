@@ -11,11 +11,11 @@ import t from 'prop-types'
 import { ClientContext } from './Client'
 import { SubscriptionStatusContext } from './SubscriptionStatus'
 
-const MessageTypes = {
+const Message = {
     Done: 'D',
     Error: 'E',
     Notification: 'N',
-    ModuleWarning: 'MW',
+    Warning: 'MW',
 }
 
 class Subscription extends Component {
@@ -23,21 +23,31 @@ class Subscription extends Component {
 
     static defaultProps = {
         onMessage: Function.prototype,
+        onDoneMessage: Function.prototype,
+        onErrorMessage: Function.prototype,
+        onWarningMessage: Function.prototype,
+        onNotificationMessage: Function.prototype,
         onSubscribed: Function.prototype,
         onUnsubscribed: Function.prototype,
         onResending: Function.prototype,
         onResent: Function.prototype,
         onNoResend: Function.prototype,
+        onError: Function.prototype,
         resendFrom: 0,
     }
 
     static propTypes = {
         onMessage: t.func.isRequired,
+        onDoneMessage: t.func.isRequired,
+        onErrorMessage: t.func.isRequired,
+        onWarningMessage: t.func.isRequired,
+        onNotificationMessage: t.func.isRequired,
         onSubscribed: t.func.isRequired,
         onUnsubscribed: t.func.isRequired,
         onResending: t.func.isRequired,
         onResent: t.func.isRequired,
         onNoResend: t.func.isRequired,
+        onError: t.func.isRequired,
     }
 
     uid = uniqueId('sub')
@@ -137,15 +147,32 @@ class Subscription extends Component {
         client.unsubscribe(subscription)
     }
 
+    handleKnownMessageTypes = (message, ...args) => {
+        switch (message.type) {
+            case Message.Done: {
+                this.props.onDoneMessage(message, ...args)
+                break
+            }
+            case Message.Error: {
+                this.props.onErrorMessage(message, ...args)
+                break
+            }
+            case Message.Warning: {
+                this.props.onWarningMessage(message, ...args)
+                break
+            }
+            case Message.Notification: {
+                this.props.onNotificationMessage(message, ...args)
+                break
+            }
+            default: // continue
+        }
+    }
+
     onMessage = (message, ...args) => {
         if (!this.isSubscribed) { return }
-
+        this.handleKnownMessageTypes(message, ...args)
         this.props.onMessage(message, ...args)
-
-        if (message.type === MessageTypes.Done) {
-            // unsubscribe when done
-            // this.unsubscribe()
-        }
     }
 
     /**
