@@ -1,47 +1,36 @@
-import assert from 'assert-diff'
-import sinon from 'sinon'
-
 import { Analytics } from '$shared/../analytics'
 
 describe('analytics', () => {
     let analytics
-    let sandbox
 
     beforeEach(() => {
-        sandbox = sinon.createSandbox()
         analytics = new Analytics()
     })
 
     afterEach(() => {
-        analytics = null
-        sandbox.reset()
-        sandbox.restore()
+        analytics = undefined
     })
 
     it('throws an error if id is not defined', () => {
-        try {
+        expect(() => (
             analytics.register({})
-        } catch (e) {
-            assert(/no id/.test(e.message))
-        }
+        )).toThrowError(/no id/)
     })
 
     it('throws an error if there is a duplicate service', () => {
-        try {
+        expect(() => {
             analytics.register({
                 id: 'test',
             })
             analytics.register({
                 id: 'test',
             })
-        } catch (e) {
-            assert(/already exists/.test(e.message))
-        }
+        }).toThrowError(/already exists/)
     })
 
     it('calls init after register', () => {
-        const initSpy1 = sandbox.spy()
-        const initSpy2 = sandbox.spy()
+        const initSpy1 = jest.fn()
+        const initSpy2 = jest.fn()
 
         analytics.register({
             id: 'test1',
@@ -52,13 +41,13 @@ describe('analytics', () => {
             init: initSpy2,
         })
 
-        assert(initSpy1.calledOnce)
-        assert(initSpy2.calledOnce)
+        expect(initSpy1).toHaveBeenCalledTimes(1)
+        expect(initSpy2).toHaveBeenCalledTimes(1)
     })
 
     it('calls reportError', () => {
-        const reportSpy1 = sandbox.spy()
-        const reportSpy2 = sandbox.spy()
+        const reportSpy1 = jest.fn()
+        const reportSpy2 = jest.fn()
 
         analytics.register({
             id: 'test1',
@@ -77,15 +66,15 @@ describe('analytics', () => {
 
         analytics.reportError(error, extra)
 
-        assert(reportSpy1.calledOnce)
-        assert(reportSpy1.calledWith(error, extra))
-        assert(reportSpy2.calledOnce)
-        assert(reportSpy2.calledWith(error, extra))
+        expect(reportSpy1).toHaveBeenCalledTimes(1)
+        expect(reportSpy1).toHaveBeenCalledWith(error, extra)
+        expect(reportSpy2).toHaveBeenCalledTimes(1)
+        expect(reportSpy2).toHaveBeenCalledWith(error, extra)
     })
 
     it('gets middleware', () => {
-        const middlewareStub1 = sinon.stub().callsFake(() => 'md1')
-        const middlewareStub2 = sinon.stub().callsFake(() => 'md2')
+        const middlewareStub1 = jest.fn(() => 'md1')
+        const middlewareStub2 = jest.fn(() => 'md2')
 
         analytics.register({
             id: 'test1',
@@ -96,6 +85,6 @@ describe('analytics', () => {
             getMiddleware: middlewareStub2,
         })
 
-        assert.deepEqual(analytics.getMiddlewares(), ['md1', 'md2'])
+        expect(analytics.getMiddlewares()).toEqual(['md1', 'md2'])
     })
 })
