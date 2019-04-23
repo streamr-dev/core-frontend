@@ -12,7 +12,7 @@ import * as SubscriptionStatus from '$editor/shared/components/SubscriptionStatu
 import * as services from '../services'
 import * as CanvasState from '../state'
 
-function useRunMachine(canvas) {
+function useRunController(canvas) {
     const subscriptionStatus = useContext(SubscriptionStatus.Context)
     const isMountedRef = useRef(true)
 
@@ -28,30 +28,37 @@ function useRunMachine(canvas) {
             return services.createAdhocCanvas(canvas)
         }
         setState({
-            isStarting: true,
+            isPending: true,
         })
         if (isHistorical) {
             await subscriptionStatus.onAllReady()
         }
         if (!isMountedRef.current) { return canvas }
-        return services.start(canvas, {
+        const started = services.start(canvas, {
             clearState: !!options.clearState || isHistorical,
         })
+        started.finally(() => (
+            setState({
+                isPending: false,
+            })
+        ))
+        return started
     }, [state, setState, subscriptionStatus, canvas])
 
-    useEffect(() => {
-        if (canvas.state === CanvasState.RunStates.Running) {
+    const stop = useCallback((canvas) => {
+        setState({
+            isPending: true,
+        })
+        const stopped = services.stop(canvas)
+        stopped.finally(() => (
             setState({
-                isStarting: false,
+                isPending: false,
             })
-        }
-    }, canvas && canvas.state)
+        ))
+        return stopped
+    }, [])
 
-    const stop = useCallback((canvas) => (
-        services.stop(canvas)
-    ), [])
-
-    const isActive = !!(canvas && (state.isStarting || canvas.state === CanvasState.RunStates.Running))
+    const isActive = !!(canvas && (state.isPending || canvas.state === CanvasState.RunStates.Running))
 
     return useMemo(() => ({
         ...state,
@@ -64,7 +71,7 @@ function useRunMachine(canvas) {
 
 export default function RunControllerProvider({ children, canvas }) {
     return (
-        <RunControllerContext.Provider value={useRunMachine(canvas)}>
+        <RunControllerContext.Provider value={useRunController(canvas)}>
             {children || null}
         </RunControllerContext.Provider>
     )

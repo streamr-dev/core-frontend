@@ -51,7 +51,6 @@ function canvasUpdater(fn) {
 
 const CanvasEditComponent = class CanvasEdit extends Component {
     state = {
-        isWaiting: false,
         moduleSearchIsOpen: false,
         moduleSidebarIsOpen: false,
         keyboardShortcutIsOpen: false,
@@ -313,12 +312,10 @@ const CanvasEditComponent = class CanvasEdit extends Component {
 
     /**
      * Loads new canvas via async fn
-     * Sets appropriate isWaiting state
      * Loads parent canvas on failure/no canvas response
      */
 
     getNewCanvas = async (fn) => {
-        this.setState({ isWaiting: true })
         let newCanvas
         try {
             newCanvas = await fn()
@@ -327,10 +324,6 @@ const CanvasEditComponent = class CanvasEdit extends Component {
             console.error({ error }) // eslint-disable-line no-console
             if (this.unmounted) { return }
             return this.loadParent()
-        } finally {
-            if (!this.unmounted) {
-                this.setState({ isWaiting: false })
-            }
         }
         if (this.unmounted) { return }
         if (!newCanvas) {
@@ -390,11 +383,10 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                     loadNewDefinition={this.loadNewDefinition}
                     pushNewDefinition={this.pushNewDefinition}
                 >
-                    <CanvasStatus updated={this.state.updated} isWaiting={this.state.isWaiting} />
+                    <CanvasStatus updated={this.state.updated} />
                 </Canvas>
                 <ModalProvider>
                     <CanvasToolbar
-                        isWaiting={this.state.isWaiting}
                         className={styles.CanvasToolbar}
                         canvas={canvas}
                         setCanvas={this.setCanvas}
