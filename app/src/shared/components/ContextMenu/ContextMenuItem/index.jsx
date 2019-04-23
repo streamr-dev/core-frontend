@@ -8,7 +8,7 @@ import styles from './contextMenuItem.pcss'
 export type Props = {
     text: string,
     onClick: () => void,
-    className: string,
+    className?: ?string,
 }
 
 class ContextMenuItem extends React.Component<Props> {

@@ -9,6 +9,7 @@ import ModalContext from '$shared/contexts/Modal'
 import { type Ref } from '$shared/flowtype/common-types'
 import Notification from '$shared/utils/Notification'
 import styles from './notificationStyles'
+import wrapperStyles from './Notifications.pcss'
 
 type System = {
     addNotification: (any) => void,
@@ -120,7 +121,11 @@ class Notifications extends React.Component<Props, State> {
     system: Ref<NotificationSystem> = React.createRef()
 
     render() {
-        return <NotificationSystem style={styles} ref={this.system} />
+        return (
+            <div className={wrapperStyles.wrapper}>
+                <NotificationSystem style={styles} ref={this.system} />
+            </div>
+        )
     }
 }
 

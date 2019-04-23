@@ -1,6 +1,6 @@
 // @flow
 
-import React, { type ElementType } from 'react'
+import React, { type Element } from 'react'
 import { Popover } from 'reactstrap'
 import cx from 'classnames'
 
@@ -8,11 +8,11 @@ import ContextMenuItem from './ContextMenuItem'
 import styles from './contextMenu.pcss'
 
 export type Props = {
-    target: ElementType,
+    target: ?HTMLDivElement,
     placement: string,
     isOpen: boolean,
-    children: Array<ContextMenuItem>,
-    className: string,
+    children: Array<Element<typeof ContextMenuItem>>,
+    className?: ?string,
 }
 
 class ContextMenu extends React.Component<Props> {

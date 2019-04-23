@@ -13,9 +13,11 @@ import LabelModule from './modules/Label'
 import CanvasModule from './modules/Canvas'
 import StreamrSwitcher from './modules/Switcher'
 import MapModule from './modules/Map'
+import HeatmapModule from './modules/Heatmap'
 import ModuleLoader from './ModuleLoader'
 import ExportCSVModule from './modules/ExportCSV'
 import SchedulerModule from './modules/Scheduler'
+import CustomModule from './modules/Custom'
 
 // Set by module.jsModule
 const Modules = {
@@ -28,6 +30,8 @@ const Modules = {
     SchedulerModule,
     MapModule,
     ImageMapModule: MapModule,
+    HeatmapModule,
+    CustomModule,
 }
 
 // Set by module.widget

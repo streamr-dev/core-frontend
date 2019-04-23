@@ -14,12 +14,12 @@ import Products from '$mp/containers/Products'
 
 // Auth
 import SessionProvider from '$auth/components/SessionProvider'
-import LoginPage from '$auth/containers/LoginPage'
-import LogoutPage from '$auth/containers/LogoutPage'
-import SignupPage from '$auth/containers/SignupPage'
-import ForgotPasswordPage from '$auth/containers/ForgotPasswordPage'
-import ResetPasswordPage from '$auth/containers/ResetPasswordPage'
-import RegisterPage from '$auth/containers/RegisterPage'
+import LoginPage from '$auth/components/LoginPage'
+import LogoutPage from '$auth/components/LogoutPage'
+import SignupPage from '$auth/components/SignupPage'
+import ForgotPasswordPage from '$auth/components/ForgotPasswordPage'
+import ResetPasswordPage from '$auth/components/ResetPasswordPage'
+import RegisterPage from '$auth/components/RegisterPage'
 
 // Userpages
 import DashboardList from '$userpages/components/DashboardPage/List'
