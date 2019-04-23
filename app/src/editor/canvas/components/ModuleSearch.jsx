@@ -254,14 +254,14 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
                     /* TODO: follow the disabled jsx-a11y recommendations below to add keyboard support */
                     /* eslint-disable-next-line jsx-a11y/click-events-have-key-events */
                     <div
-                        className={styles.ModuleItem}
+                        className={cx(styles.ModuleItem, styles.WithCategory)}
                         role="option"
                         aria-selected="false"
                         key={m.id}
                         onClick={() => this.onSelect(m.id)}
                         tabIndex="0"
                     >
-                        {startCase(m.name)}
+                        <span className={styles.ModuleName}>{startCase(m.name)}</span>
                         <span className={styles.ModuleCategory}>{m.path}</span>
                     </div>
                 ))}
