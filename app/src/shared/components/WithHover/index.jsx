@@ -22,9 +22,6 @@ export function withHover(WrappedComponent) {
         render() {
             return (
                 <div
-                    style={{
-                        height: '100%',
-                    }}
                     onMouseEnter={this.onMouseEnter}
                     onMouseLeave={this.onMouseLeave}
                 >
