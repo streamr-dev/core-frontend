@@ -105,7 +105,7 @@ export default function SubscriptionStatusProvider({ children }) {
         unregister,
         subscribed,
         unsubscribed,
-    }), [allReady, register, unregister, subscribed, unsubscribed])
+    }), [onAllReady, allReady, register, unregister, subscribed, unsubscribed])
 
     return (
         <SubscriptionStatusContext.Provider value={subscriptionStatus}>

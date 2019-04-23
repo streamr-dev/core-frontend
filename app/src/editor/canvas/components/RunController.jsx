@@ -20,58 +20,66 @@ function useRunController(canvas) {
         isMountedRef.current = false
     }, [])
 
-    const [state, setState] = useState({})
+    const [state, setState] = useState({
+        isStarting: false,
+        isPending: false,
+    })
+
+    const setPending = useCallback((isPending) => setState((state) => ({
+        ...state,
+        isPending,
+    })), [setState])
+
+    useEffect(() => () => {
+        if (canvas.state === CanvasState.RunStates.Running) {
+            setState({
+                isStarting: false,
+            })
+        }
+    }, [canvas && canvas.state, setState, setPending])
 
     const start = useCallback(async (canvas, options) => {
-        setState({
-            isPending: true,
-        })
         const isHistorical = CanvasState.isHistoricalModeSelected(canvas)
         if (isHistorical && !canvas.adhoc) {
+            setPending(true)
             return services.createAdhocCanvas(canvas)
         }
+
+        setState({
+            isPending: true,
+            isStarting: true,
+        })
+
         if (isHistorical) {
             await subscriptionStatus.onAllReady()
         }
+
         if (!isMountedRef.current) { return canvas }
-        const started = services.start(canvas, {
+        return services.start(canvas, {
             clearState: !!options.clearState || isHistorical,
         })
-        started.finally(() => (
-            setState({
-                isPending: false,
+            .catch((err) => {
+                setState({
+                    isStarting: false,
+                })
+                throw err
             })
-        ))
-        return started
-    }, [state, setState, subscriptionStatus, canvas])
+            .finally(() => setPending(false))
+    }, [setState, subscriptionStatus, setPending])
 
     const stop = useCallback((canvas) => {
-        setState({
-            isPending: true,
-        })
-        const stopped = services.stop(canvas)
-        stopped.finally(() => (
-            setState({
-                isPending: false,
-            })
-        ))
-        return stopped
-    }, [])
+        setPending(true)
+        return services.stop(canvas)
+            .finally(() => setPending(false))
+    }, [setPending])
 
     const exit = useCallback((canvas) => {
-        setState({
-            isPending: true,
-        })
-        const exited = services.exitAdhocCanvas(canvas)
-        exited.finally(() => (
-            setState({
-                isPending: false,
-            })
-        ))
-        return exited
-    }, [])
+        setPending(true)
+        return services.exitAdhocCanvas(canvas)
+            .finally(() => setPending(false))
+    }, [setPending])
 
-    const isActive = !!(canvas && (state.isPending || canvas.state === CanvasState.RunStates.Running))
+    const isActive = !!(canvas && (state.isStarting || canvas.state === CanvasState.RunStates.Running))
 
     return useMemo(() => ({
         ...state,
@@ -80,7 +88,7 @@ function useRunController(canvas) {
         start,
         stop,
         exit,
-    }), [canvas && canvas.id, isActive, state, start, stop, exit])
+    }), [canvas, isActive, state, start, stop, exit])
 }
 
 export default function RunControllerProvider({ children, canvas }) {

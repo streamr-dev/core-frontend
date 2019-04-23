@@ -154,7 +154,7 @@ class CanvasModule extends React.PureComponent {
                     moduleHash={module.hash}
                     canvasId={canvas.id}
                     isActive={isRunning}
-                    isSubscriptionActive={this.context.isActive}
+                    isSubscriptionActive={this.context.isStarting || this.context.isActive}
                 />
                 {isResizable && (
                     <Resizer
