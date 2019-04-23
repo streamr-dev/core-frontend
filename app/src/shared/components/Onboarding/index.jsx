@@ -5,7 +5,7 @@ import Link from '$shared/components/Link'
 import styles from './onboarding.pcss'
 
 type Props = {
-    children: ChildrenArray<Element<typeof Link> | null>, // – can be a Link or a `null` for a separator
+    children: ChildrenArray<Element<typeof Link> | null>, // – can be a Link (`null` for a separator)
     title?: ?string,
 }
 
