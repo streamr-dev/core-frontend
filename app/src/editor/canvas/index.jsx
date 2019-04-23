@@ -25,6 +25,8 @@ import CanvasToolbar from './components/Toolbar'
 import CanvasStatus from './components/Status'
 import ModuleSearch from './components/ModuleSearch'
 
+import useCanvasNotifications from './utils/useCanvasNotifications'
+
 import * as services from './services'
 import * as CanvasState from './state'
 
@@ -483,11 +485,14 @@ const CanvasLoader = withRouter(withErrorBoundary(ErrorComponentView)(class Canv
     }
 }))
 
-const CanvasEdit = withRouter((props) => {
+const CanvasEdit = withRouter(({ canvas, ...props }) => {
     const runController = useContext(RunController.Context)
+    useCanvasNotifications(canvas)
+
     return (
         <CanvasEditComponent
             {...props}
+            canvas={canvas}
             runController={runController}
         />
     )
