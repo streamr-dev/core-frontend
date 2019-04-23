@@ -17,13 +17,16 @@ function useAutosaveNotification(autosave, canvas = EMPTY) {
         })
     }, [canvas])
 
+    const lastCallback = useRef(onAutosaveFail)
+
     useEffect(() => {
-        autosave.off('fail', onAutosaveFail)
+        autosave.off('fail', lastCallback.current)
+        lastCallback.current = onAutosaveFail
         autosave.on('fail', onAutosaveFail)
         return () => {
-            autosave.off('fail', onAutosaveFail)
+            autosave.off('fail', lastCallback.current)
         }
-    }, [onAutosaveFail, autosave])
+    }, [onAutosaveFail, autosave, lastCallback])
 }
 
 function useCanvasRunNotification(canvas = EMPTY) {
