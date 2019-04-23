@@ -2,8 +2,9 @@
  * Handles starting & stopping a canvas.
  */
 
-import React, { useContext, useState, useCallback, useMemo, useEffect, useRef } from 'react'
+import React, { useContext, useState, useCallback, useMemo, useEffect } from 'react'
 
+import useIsMountedRef from '$shared/utils/useIsMountedRef'
 import * as SubscriptionStatus from '$editor/shared/components/SubscriptionStatus'
 import * as services from '../services'
 import * as CanvasState from '../state'
@@ -12,11 +13,7 @@ export const RunControllerContext = React.createContext()
 
 function useRunController(canvas) {
     const subscriptionStatus = useContext(SubscriptionStatus.Context)
-    const isMountedRef = useRef(true)
-
-    useEffect(() => () => {
-        isMountedRef.current = false
-    }, [])
+    const isMountedRef = useIsMountedRef()
 
     const [state, setState] = useState({
         isStarting: false, // true immediately before starting a canvas
@@ -74,7 +71,7 @@ function useRunController(canvas) {
                 throw err
             })
             .finally(() => setPending(false))
-    }, [subscriptionStatus, setState, setPending, isHistorical])
+    }, [subscriptionStatus, setState, setPending, isHistorical, isMountedRef])
 
     const stop = useCallback((canvas) => {
         setPending(true)

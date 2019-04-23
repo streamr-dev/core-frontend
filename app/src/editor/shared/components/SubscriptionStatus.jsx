@@ -2,9 +2,14 @@
  * Enables waiting for all registered subscriptions to be subscribed.
  */
 
-import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react'
+import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react'
+import useIsMountedRef from '$shared/utils/useIsMountedRef'
 
 export const SubscriptionStatusContext = React.createContext({})
+
+/**
+ * Returns a promise + its resolve/reject functions
+ */
 
 function getPromiseResolver() {
     let resolver
@@ -20,53 +25,12 @@ function getPromiseResolver() {
     }
 }
 
-export default function SubscriptionStatusProvider({ children }) {
-    const [subscriptions, setSubscriptions] = useState({})
+/**
+ * Creates an async callback which resolves when all subscriptions are ready
+ */
 
-    const isMountedRef = useRef(true)
-
-    useEffect(() => () => {
-        isMountedRef.current = false
-    }, [])
-
-    const unregister = useCallback((uid) => {
-        if (!isMountedRef.current) { return }
-        if (subscriptions[uid] == null) { return }
-        const nextState = { ...subscriptions }
-        delete nextState[uid]
-        setSubscriptions(nextState)
-    }, [subscriptions, setSubscriptions])
-
-    const register = useCallback((uid) => {
-        if (!isMountedRef.current) { return }
-        // noop if already have subscription
-        if (subscriptions[uid] != null) { return }
-        setSubscriptions({
-            ...subscriptions,
-            [uid]: false,
-        })
-    }, [subscriptions, setSubscriptions])
-
-    const unsubscribed = useCallback((uid) => {
-        if (!isMountedRef.current) { return }
-        // noop if don't have subscription or already unsubscribed
-        if (!subscriptions[uid]) { return }
-        setSubscriptions({
-            ...subscriptions,
-            [uid]: false,
-        })
-    }, [subscriptions, setSubscriptions])
-
-    const subscribed = useCallback((uid) => {
-        if (!isMountedRef.current) { return }
-        // noop if already subscribed
-        if (subscriptions[uid]) { return }
-        setSubscriptions({
-            ...subscriptions,
-            [uid]: true,
-        })
-    }, [subscriptions, setSubscriptions])
-
+function useAllReady(subscriptions) {
+    const isMountedRef = useIsMountedRef()
     const subscriptionIds = Object.keys(subscriptions)
     const allReady = !!(subscriptionIds.length && subscriptionIds.every((key) => subscriptions[key]))
 
@@ -85,18 +49,62 @@ export default function SubscriptionStatusProvider({ children }) {
         }
     }, [allReady])
 
-    const onAllReady = useCallback(() => {
+    const onAllReady = useCallback(async () => {
         if (allReady || !isMountedRef.current) {
-            return Promise.resolve()
+            return // resolve immediately
         }
 
         if (!onAllReadyRef.current) {
-            onAllReadyRef.current = getPromiseResolver() // reset
+            // reset
+            onAllReadyRef.current = getPromiseResolver()
         }
+        // wait for resolve
         return onAllReadyRef.current.promise
-    }, [allReady])
+    }, [allReady, isMountedRef])
 
-    const subscriptionStatus = useMemo(() => ({
+    return [onAllReady, allReady]
+}
+
+function useSubscriptionStatus() {
+    const [subscriptions, setSubscriptions] = useState({})
+
+    const [onAllReady, allReady] = useAllReady(subscriptions)
+
+    const unregister = useCallback((uid) => {
+        if (subscriptions[uid] == null) { return }
+        const nextState = { ...subscriptions }
+        delete nextState[uid]
+        setSubscriptions(nextState)
+    }, [subscriptions, setSubscriptions])
+
+    const register = useCallback((uid) => {
+        // noop if already have subscription
+        if (subscriptions[uid] != null) { return }
+        setSubscriptions({
+            ...subscriptions,
+            [uid]: false,
+        })
+    }, [subscriptions, setSubscriptions])
+
+    const unsubscribed = useCallback((uid) => {
+        // noop if don't have subscription or already unsubscribed
+        if (!subscriptions[uid]) { return }
+        setSubscriptions({
+            ...subscriptions,
+            [uid]: false,
+        })
+    }, [subscriptions, setSubscriptions])
+
+    const subscribed = useCallback((uid) => {
+        // noop if already subscribed
+        if (subscriptions[uid]) { return }
+        setSubscriptions({
+            ...subscriptions,
+            [uid]: true,
+        })
+    }, [subscriptions, setSubscriptions])
+
+    return useMemo(() => ({
         onAllReady,
         allReady,
         register,
@@ -104,9 +112,11 @@ export default function SubscriptionStatusProvider({ children }) {
         subscribed,
         unsubscribed,
     }), [onAllReady, allReady, register, unregister, subscribed, unsubscribed])
+}
 
+export default function SubscriptionStatusProvider({ children }) {
     return (
-        <SubscriptionStatusContext.Provider value={subscriptionStatus}>
+        <SubscriptionStatusContext.Provider value={useSubscriptionStatus()}>
             {children || null}
         </SubscriptionStatusContext.Provider>
     )
