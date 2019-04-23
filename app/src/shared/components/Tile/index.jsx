@@ -33,8 +33,18 @@ const Tile = ({
             <DropdownActions
                 className={styles.menu}
                 title={<Meatball alt="Select" white />}
+                direction="down"
                 noCaret
                 onMenuToggle={onMenuToggle}
+                menuProps={{
+                    modifiers: {
+                        offset: {
+                            // Make menu aligned to the right.
+                            // See https://popper.js.org/popper-documentation.html#modifiers..offset
+                            offset: '-100%p + 100%',
+                        },
+                    },
+                }}
             >
                 {dropdownActions}
             </DropdownActions>
