@@ -306,7 +306,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
     canvasExit = async () => {
         const { canvas } = this.props
         return this.getNewCanvas(() => (
-            services.exitAdhocCanvas(canvas)
+            this.props.runController.exit(canvas)
         ))
     }
 

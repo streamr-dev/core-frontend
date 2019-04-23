@@ -23,13 +23,13 @@ function useRunController(canvas) {
     const [state, setState] = useState({})
 
     const start = useCallback(async (canvas, options) => {
+        setState({
+            isPending: true,
+        })
         const isHistorical = CanvasState.isHistoricalModeSelected(canvas)
         if (isHistorical && !canvas.adhoc) {
             return services.createAdhocCanvas(canvas)
         }
-        setState({
-            isPending: true,
-        })
         if (isHistorical) {
             await subscriptionStatus.onAllReady()
         }
@@ -58,6 +58,19 @@ function useRunController(canvas) {
         return stopped
     }, [])
 
+    const exit = useCallback((canvas) => {
+        setState({
+            isPending: true,
+        })
+        const exited = services.exitAdhocCanvas(canvas)
+        exited.finally(() => (
+            setState({
+                isPending: false,
+            })
+        ))
+        return exited
+    }, [])
+
     const isActive = !!(canvas && (state.isPending || canvas.state === CanvasState.RunStates.Running))
 
     return useMemo(() => ({
@@ -66,7 +79,8 @@ function useRunController(canvas) {
         isActive,
         start,
         stop,
-    }), [canvas && canvas.id, isActive, state, start, stop])
+        exit,
+    }), [canvas && canvas.id, isActive, state, start, stop, exit])
 }
 
 export default function RunControllerProvider({ children, canvas }) {
