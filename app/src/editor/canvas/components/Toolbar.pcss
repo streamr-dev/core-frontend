@@ -197,7 +197,9 @@
   & :global(.dropdown-item):hover {
     outline: none;
   }
+}
 
+.HistoricalRunButtonMenu {
   & :global(.dropdown-item):active,
   & :global(.dropdown-item):hover,
   & :global(.dropdown-item):global(.active) {
@@ -243,12 +245,16 @@
   margin: 0 16px;
   white-space: nowrap;
   position: relative;
-  display: flex;
+}
+
+.CanvasToolbar .runTabToggle,
+.CanvasToolbar .runTabValueToggle {
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-column-gap: 1px;
 }
 
 .CanvasToolbar .runTabValueToggle {
-  display: flex;
-  justify-content: flex-start;
   position: relative;
 }
 
@@ -277,7 +283,6 @@
 .ToolbarSolidButton.lastButton {
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
-  margin-left: 1px;
 }
 
 .ToolbarSolidButton:hover,
@@ -351,4 +356,12 @@
   bottom: 50px;
   left: 50%;
   transform: translate(-50%, 0);
+}
+
+.DashboardEntityName {
+  max-width: 47vw;
+}
+
+.DashboardButtons {
+  justify-content: flex-end;
 }

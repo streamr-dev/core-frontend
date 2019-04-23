@@ -36,7 +36,7 @@
     "collectCoverage": true,
     "coverageThreshold": {
       "global": {
-        "lines": 38
+        "lines": 35
       },
       "./src/userpages/": {
         "lines": 10
@@ -120,7 +120,7 @@
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jsx-a11y": "^6.0.3",
     "eslint-plugin-react": "^7.7.0",
-    "eslint-plugin-react-hooks": "^1.0.0",
+    "eslint-plugin-react-hooks": "^1.6.0",
     "events": "^3.0.0",
     "expect": "^23.5.0",
     "file-loader": "^1.1.9",
@@ -143,6 +143,7 @@
     "leaflet-rotatedmarker": "^0.2.0",
     "lint-staged": "^8.0.3",
     "lodash": "^4.17.5",
+    "logrocket": "^0.6.20",
     "mini-css-extract-plugin": "^0.4.0",
     "moment": "^2.22.0",
     "moment-timezone": "^0.5.16",
@@ -179,6 +180,7 @@
     "react-helmet": "^5.2.0",
     "react-image": "^1.4.0",
     "react-leaflet": "^2.2.0",
+    "react-leaflet-heatmap-layer": "^2.0.0",
     "react-loading-skeleton": "^0.5.0",
     "react-modal2": "^5.0.0",
     "react-notification-system": "^0.2.17",

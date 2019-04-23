@@ -73,6 +73,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
             renameCanvas,
             canvasStart,
             canvasStop,
+            canvasExit,
             newCanvas,
             setSpeed,
             isWaiting,
@@ -82,7 +83,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
 
         const { runButtonDropdownOpen, canvasSearchIsOpen } = this.state
         const isRunning = canvas.state === RunStates.Running
-        const canEdit = !isWaiting && !isRunning
+        const canEdit = !isWaiting && !isRunning && !canvas.adhoc
         const { settings = {} } = canvas
         const { editorState = {} } = settings
         return (
@@ -112,6 +113,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                                     </R.Button>
                                                 }
                                                 noCaret
+                                                disabled={!canEdit}
                                                 className={styles.DropdownMenu}
                                                 menuProps={{
                                                     className: styles.DropdownMenuMenu,
@@ -156,18 +158,31 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                             <div>
                                 <R.ButtonGroup
                                     className={cx(styles.RunButtonGroup, {
-                                        [styles.RunButtonStopped]: !isRunning,
-                                        [styles.RunButtonRunning]: !!isRunning,
+                                        [styles.RunButtonStopped]: !isRunning && !canvas.adhoc,
+                                        [styles.RunButtonRunning]: !!isRunning || canvas.adhoc,
                                     })}
                                 >
                                     <R.Button
                                         disabled={isWaiting}
-                                        onClick={() => (isRunning ? canvasStop() : canvasStart())}
+                                        onClick={() => {
+                                            if (isRunning) {
+                                                return canvasStop()
+                                            }
+                                            if (canvas.adhoc) {
+                                                return canvasExit()
+                                            }
+                                            return canvasStart()
+                                        }}
                                         className={styles.RunButton}
                                     >
-                                        {isRunning ? 'Stop' : 'Run'}
+                                        {((() => {
+                                            if (isRunning) { return 'Stop' }
+                                            if (canvas.adhoc && !isWaiting) { return 'Exit' }
+                                            if (editorState.runTab === RunTabs.realtime) { return 'Start' }
+                                            return 'Run'
+                                        })())}
                                     </R.Button>
-                                    {editorState.runTab !== RunTabs.realtime ? (
+                                    {editorState.runTab === RunTabs.historical ? (
                                         <R.ButtonDropdown
                                             isOpen={runButtonDropdownOpen}
                                             toggle={this.onToggleRunButtonMenu}
@@ -181,7 +196,10 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                                     <SvgIcon name="caretDown" />
                                                 )}
                                             </R.DropdownToggle>
-                                            <R.DropdownMenu className={styles.RunButtonMenu} right>
+                                            <R.DropdownMenu
+                                                className={cx(styles.RunButtonMenu, styles.HistoricalRunButtonMenu)}
+                                                right
+                                            >
                                                 <R.DropdownItem
                                                     onClick={() => setSpeed('0')}
                                                     active={!settings.speed || settings.speed === '0'}
@@ -249,7 +267,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                                 onClick={() => setRunTab(RunTabs.realtime)}
                                                 disabled={!canEdit}
                                                 className={cx(styles.ToolbarSolidButton, styles.firstButton, {
-                                                    [styles.StateSelectorActive]: editorState.runTab === RunTabs.realtime,
+                                                    [styles.StateSelectorActive]: editorState.runTab !== RunTabs.historical,
                                                 })}
                                             >
                                                 Realtime
@@ -259,13 +277,13 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                                 onClick={() => setRunTab(RunTabs.historical)}
                                                 disabled={!canEdit}
                                                 className={cx(styles.ToolbarSolidButton, styles.lastButton, {
-                                                    [styles.StateSelectorActive]: editorState.runTab !== RunTabs.realtime,
+                                                    [styles.StateSelectorActive]: editorState.runTab === RunTabs.historical,
                                                 })}
                                             >
                                                 Historical
                                             </button>
                                         </div>
-                                        {editorState.runTab !== RunTabs.realtime ? (
+                                        {editorState.runTab === RunTabs.historical ? (
                                             <div className={styles.runTabValueToggle}>
                                                 <WithCalendar
                                                     date={!!settings.beginDate && new Date(settings.beginDate)}

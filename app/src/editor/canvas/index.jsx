@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, useContext } from 'react'
 import { withRouter } from 'react-router-dom'
 import { Helmet } from 'react-helmet'
 
@@ -28,7 +28,7 @@ import * as CanvasState from './state'
 
 import styles from './index.pcss'
 
-const { RunTabs, RunStates } = CanvasState
+const { RunStates } = CanvasState
 
 const UpdatedTime = new Map()
 
@@ -113,6 +113,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
     componentDidMount() {
         window.addEventListener('keydown', this.onKeyDown)
         this.autosave()
+        this.autostart()
     }
 
     componentWillUnmount() {
@@ -124,6 +125,14 @@ const CanvasEditComponent = class CanvasEdit extends Component {
     componentDidUpdate(prevProps) {
         if (this.props.canvas !== prevProps.canvas) {
             this.autosave()
+        }
+    }
+
+    async autostart() {
+        const { canvas } = this.props
+        if (canvas.adhoc && canvas.state !== RunStates.Running) {
+            // do not autostart running/non-adhoc canvases
+            return this.canvasStart()
         }
     }
 
@@ -198,33 +207,10 @@ const CanvasEditComponent = class CanvasEdit extends Component {
     loadNewDefinition = async (hash) => {
         const module = CanvasState.getModule(this.props.canvas, hash)
 
-        // Stream module needs configuration for the getModule call
-        let configuration = null
-        if (module.id === 147) {
-            const streamPort = CanvasState.findModulePort(this.props.canvas, hash, (port) => port.type === 'Stream')
-            if (streamPort) {
-                configuration = {
-                    params: [
-                        {
-                            name: 'stream',
-                            value: streamPort.value,
-                        },
-                    ],
-                }
-            }
-        }
-
         const newModule = await sharedServices.getModule({
             id: module.id,
-            configuration,
+            configuration: module,
         })
-
-        // If we load new definition for the Stream module
-        // we still need to preserve current module layout etc.
-        if (module.id === 147) {
-            newModule.layout = module.layout
-            newModule.hash = hash
-        }
 
         if (this.unmounted) { return }
         this.replaceCanvas((canvas) => (
@@ -303,15 +289,8 @@ const CanvasEditComponent = class CanvasEdit extends Component {
 
     canvasStart = async (options = {}) => {
         const { canvas } = this.props
-        const { settings = {} } = canvas
-        const { editorState = {} } = settings
-        const isHistorical = editorState.runTab === RunTabs.historical
-        if (this.unmounted) { return }
         return this.getNewCanvas(() => (
-            services.start(canvas, {
-                clearState: !!options.clearState || isHistorical,
-                adhoc: isHistorical,
-            })
+            services.startOrCreateAdhocCanvas(canvas, options)
         ))
     }
 
@@ -319,6 +298,13 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         const { canvas } = this.props
         return this.getNewCanvas(() => (
             services.stop(canvas)
+        ))
+    }
+
+    canvasExit = async () => {
+        const { canvas } = this.props
+        return this.getNewCanvas(() => (
+            services.exitAdhocCanvas(canvas)
         ))
     }
 
@@ -343,7 +329,9 @@ const CanvasEditComponent = class CanvasEdit extends Component {
             }
         }
         if (this.unmounted) { return }
-        if (!newCanvas) { return this.loadParent() }
+        if (!newCanvas) {
+            return this.loadSelf()
+        }
         this.replaceCanvas(() => newCanvas)
     }
 
@@ -353,6 +341,13 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         const newCanvas = await services.loadCanvas({ id: nextId })
         if (this.unmounted) { return }
         this.replaceCanvas(() => newCanvas)
+    }
+
+    loadSelf = async () => {
+        const { canvas } = this.props
+        return this.getNewCanvas(() => (
+            services.loadCanvas(canvas)
+        ))
     }
 
     render() {
@@ -371,7 +366,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                     resendFrom={canvas.adhoc ? resendFrom : undefined}
                     resendTo={canvas.adhoc ? resendTo : undefined}
                     isActive={canvas.state === RunStates.Running}
-                    onUnsubscribed={this.loadParent}
+                    onUnsubscribed={this.loadSelf}
                 />
                 <Canvas
                     className={styles.Canvas}
@@ -407,6 +402,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                         canvasStart={this.canvasStart}
                         canvasStop={this.canvasStop}
                         keyboardShortcutOpen={this.keyboardShortcutOpen}
+                        canvasExit={this.canvasExit}
                     />
                 </ModalProvider>
                 <Sidebar
@@ -465,9 +461,9 @@ const CanvasLoader = withRouter(withErrorBoundary(ErrorComponentView)(class Canv
         }
 
         const canvas = this.context.state
-        const currentId = canvas && canvas.id
-        const canvasId = currentId || this.props.match.params.id
-        if (canvasId && currentId !== canvasId && this.state.isLoading !== canvasId) {
+        const rootId = canvas && CanvasState.getRootCanvasId(canvas)
+        const canvasId = rootId || this.props.match.params.id
+        if (canvasId && rootId !== canvasId && this.state.isLoading !== canvasId) {
             // load canvas if needed and not already loading
             this.load(canvasId)
         }
@@ -475,12 +471,12 @@ const CanvasLoader = withRouter(withErrorBoundary(ErrorComponentView)(class Canv
 
     load = async (canvasId) => {
         this.setState({ isLoading: canvasId })
-        let newCanvas = await services.loadCanvas({ id: canvasId })
+        let canvas = await services.loadRelevantCanvas({ id: canvasId })
         // ignore result if unmounted or canvas changed
         if (this.unmounted || this.state.isLoading !== canvasId) { return }
-        newCanvas = CanvasState.updateCanvas(newCanvas)
+        canvas = CanvasState.updateCanvas(canvas)
         // replace/init top of undo stack with loaded canvas
-        this.context.replace(() => newCanvas)
+        this.context.replace(() => canvas)
         this.setState({ isLoading: false })
     }
 
@@ -494,18 +490,17 @@ function isDisabled({ state: canvas }) {
     return !canvas || (canvas.state === RunStates.Running || canvas.adhoc)
 }
 
-const CanvasEditWrap = () => (
-    <UndoContainer.Consumer>
-        {({ state: canvas, push, replace }) => (
-            <CanvasEdit
-                key={canvas && canvas.id}
-                push={push}
-                replace={replace}
-                canvas={canvas}
-            />
-        )}
-    </UndoContainer.Consumer>
-)
+const CanvasEditWrap = () => {
+    const { state: canvas, push, replace } = useContext(UndoContainer.Context)
+    return (
+        <CanvasEdit
+            key={canvas && canvas.id}
+            push={push}
+            replace={replace}
+            canvas={canvas}
+        />
+    )
+}
 
 export default withRouter((props) => (
     <Layout className={styles.layout} footer={false}>

@@ -2,6 +2,7 @@ import React from 'react'
 import cx from 'classnames'
 
 import { Header, Content, Section } from '$editor/shared/components/Sidebar'
+import { isWindows } from '$shared/utils/platform'
 
 import styles from './keyboardShortcutsSidebar.pcss'
 
@@ -51,7 +52,7 @@ const generalCombos = [
         title: 'Undo',
     },
     {
-        keys: [['meta', 'r']],
+        keys: [['meta', 'shift', 'z']],
         title: 'Redo',
     },
 ]
@@ -81,7 +82,7 @@ const moduleCombos = [
 
 const keyLabels = {
     escape: 'esc',
-    meta: 'CMD', // TODO: detect platform?
+    meta: isWindows() ? 'WIN' : 'CMD',
 }
 
 const getKeyLabel = (key) => {

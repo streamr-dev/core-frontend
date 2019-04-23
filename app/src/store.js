@@ -34,9 +34,10 @@ import transactionsReducer from './marketplace/modules/transactions/reducer'
 import userpagesReducers from './userpages/reducers'
 
 import history from './history'
+import analytics from './analytics'
 import translations from './marketplace/i18n'
 
-const middleware = [thunk, routerMiddleware(history)]
+const middleware = [thunk, routerMiddleware(history), ...analytics.getMiddlewares()]
 const toBeComposed = [applyMiddleware(...middleware)]
 
 if (!isProduction()) {

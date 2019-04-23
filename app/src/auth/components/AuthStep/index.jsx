@@ -95,8 +95,10 @@ class AuthStep extends React.Component<Props> {
         const { setIsProcessing } = this.props
 
         if (setIsProcessing) {
-            setIsProcessing(value, callback)
-        } else if (callback) {
+            setIsProcessing(value)
+        }
+
+        if (callback) {
             callback()
         }
     }

@@ -1,8 +1,12 @@
 // @flow
 
+// FIXME(Mariusz): Current approach makes focusing R/G/B inputs within
+//                 the picker closes the component. `onBlur` should be called when
+//                 the outer <div> isn't neither :focus nor :focus-within.
+
 import React from 'react'
 import { SketchPicker } from 'react-color'
-import cx from 'classnames'
+import { type Ref } from '$shared/flowtype/common-types'
 
 import styles from './ColorPicker.pcss'
 
@@ -27,11 +31,12 @@ const convertObjectToRgba = (rgbObj: Object) => (
 )
 
 type Props = {
-    className: string,
+    className?: ?string,
     value: string,
     onChange: (value: string) => void,
-    onFocus: (event: any) => void,
-    onBlur: (event: any) => void,
+    onFocus?: ?(event: any) => void,
+    onBlur?: ?(event: any) => void,
+    onClose?: ?() => void,
 }
 
 type State = {
@@ -43,6 +48,8 @@ export default class ColorPicker extends React.Component<Props, State> {
         isOpen: false,
     }
 
+    ref: Ref<HTMLDivElement> = React.createRef()
+
     componentDidMount() {
         window.addEventListener('keydown', this.onKeyDown)
     }
@@ -52,8 +59,9 @@ export default class ColorPicker extends React.Component<Props, State> {
     }
 
     onKeyDown = (event: KeyboardEvent) => {
-        if (this.state.isOpen && event.key === 'Escape') {
-            this.close()
+        const { current: root } = this.ref
+        if (this.state.isOpen && event.key === 'Escape' && root) {
+            root.blur()
         }
     }
 
@@ -85,34 +93,43 @@ export default class ColorPicker extends React.Component<Props, State> {
     }
 
     close = () => {
+        const { onClose } = this.props
+
         this.setState({
             isOpen: false,
         })
+
+        if (onClose) {
+            onClose()
+        }
     }
 
     render() {
-        const { className, value } = this.props
         const { isOpen } = this.state
-        const color = convertRgbaToObject(value)
+        const { value: backgroundColor } = this.props
+        const color = convertRgbaToObject(backgroundColor)
+
         return (
-            <div>
-                <input
-                    className={cx(className, styles.input)}
-                    onFocus={this.onFocus}
-                    onBlur={this.onBlur}
-                    style={{
-                        background: value,
-                    }}
-                />
+            /* eslint-disable-next-line jsx-a11y/no-static-element-interactions */
+            <div
+                className={styles.root}
+                onBlur={this.onBlur}
+                onFocus={this.onFocus}
+                onKeyDown={this.onKeyDown}
+                ref={this.ref}
+                style={{
+                    backgroundColor,
+                }}
+                /* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */
+                tabIndex={0}
+            >
                 {isOpen && (
-                    <div className={styles.popover}>
-                        <SketchPicker
-                            color={color}
-                            presetColors={[]}
-                            width={220}
-                            onChange={this.onChange}
-                        />
-                    </div>
+                    <SketchPicker
+                        color={color}
+                        presetColors={[]}
+                        width={220}
+                        onChange={this.onChange}
+                    />
                 )}
             </div>
         )
