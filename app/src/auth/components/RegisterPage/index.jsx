@@ -1,12 +1,13 @@
 // @flow
 
-import React, { useCallback, useContext, useEffect } from 'react'
+import React, { useCallback, useContext } from 'react'
 import qs from 'query-string'
 import * as yup from 'yup'
 import { I18n, Translate } from 'react-redux-i18n'
 import { userIsNotAuthenticated } from '$mp/utils/auth'
 
 import useIsMountedRef from '$shared/utils/useIsMountedRef'
+import useOnMount from '$shared/utils/useOnMount'
 import AuthFormProvider from '../AuthFormProvider'
 import SessionProvider from '../SessionProvider'
 import AuthFormContext from '../../contexts/AuthForm'
@@ -66,7 +67,7 @@ const RegisterPage = ({ location: { search, pathname }, history: { replace } }: 
         step,
     } = useContext(AuthFormContext)
 
-    useEffect(() => {
+    useOnMount(() => {
         const invite = qs.parse(search).invite || ''
 
         // Set and validate `invite` on mount.
@@ -89,7 +90,7 @@ const RegisterPage = ({ location: { search, pathname }, history: { replace } }: 
                 }
             },
         )
-    }, [])
+    })
 
     const onFailure = useCallback(({ message }: Error) => {
         setFieldError('toc', message)

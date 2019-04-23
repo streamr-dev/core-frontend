@@ -1,10 +1,11 @@
 // @flow
 
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useContext } from 'react'
 import axios from 'axios'
 import { connect } from 'react-redux'
 
 import useIsMountedRef from '$shared/utils/useIsMountedRef'
+import useOnMount from '$shared/utils/useOnMount'
 import SessionContext from '../../contexts/Session'
 import { logout as logoutAction } from '$shared/modules/user/actions'
 import ErrorPageView from '$mp/components/ErrorPageView'
@@ -22,7 +23,7 @@ const LogoutPage = ({ logout }: Props) => {
 
     const mountedRef = useIsMountedRef()
 
-    useEffect(() => {
+    useOnMount(() => {
         axios
             .post(routes.externalLogout())
             .then(
@@ -38,7 +39,7 @@ const LogoutPage = ({ logout }: Props) => {
                     }
                 },
             )
-    }, [])
+    })
 
     return !!error && (
         <ErrorPageView />

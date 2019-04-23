@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useContext, useCallback, useEffect } from 'react'
+import React, { useContext, useCallback } from 'react'
 import { connect } from 'react-redux'
 import * as yup from 'yup'
 import qs from 'query-string'
@@ -8,6 +8,7 @@ import { I18n, Translate } from 'react-redux-i18n'
 import { push } from 'react-router-redux'
 
 import useIsMountedRef from '$shared/utils/useIsMountedRef'
+import useOnMount from '$shared/utils/useOnMount'
 import AuthFormProvider from '../AuthFormProvider'
 import { userIsNotAuthenticated } from '$mp/utils/auth'
 import AuthFormContext from '$auth/contexts/AuthForm'
@@ -75,7 +76,7 @@ const ResetPasswordPage = ({ location: { search, pathname }, history: { replace 
 
     const mountedRef = useIsMountedRef()
 
-    useEffect(() => {
+    useOnMount(() => {
         const token = qs.parse(search).t || ''
 
         // Set and validate token on mount.
@@ -102,7 +103,7 @@ const ResetPasswordPage = ({ location: { search, pathname }, history: { replace 
                     }
                 },
             )
-    }, [])
+    })
 
     return (
         <AuthLayout>
