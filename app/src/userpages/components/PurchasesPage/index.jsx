@@ -43,10 +43,10 @@ const isSubscriptionActive = (subscription?: ProductSubscription): boolean => is
 const getSortOptions = (): Array<SortOption> => {
     const filters = getFilters()
     return [
-        filters.ACTIVE,
-        filters.EXPIRED,
         filters.NAME_ASC,
         filters.NAME_DESC,
+        filters.ACTIVE,
+        filters.EXPIRED,
     ]
 }
 

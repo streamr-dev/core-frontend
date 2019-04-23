@@ -54,10 +54,10 @@ const CreateProductButton = () => (
 const getSortOptions = (): Array<SortOption> => {
     const filters = getFilters()
     return [
-        filters.PUBLISHED,
-        filters.DRAFT,
         filters.NAME_ASC,
         filters.NAME_DESC,
+        filters.PUBLISHED,
+        filters.DRAFT,
     ]
 }
 
