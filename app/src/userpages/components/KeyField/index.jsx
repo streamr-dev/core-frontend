@@ -10,7 +10,7 @@ import type { ResourcePermission } from '$shared/flowtype/resource-key-types'
 import TextInput from '$shared/components/TextInput'
 import Meatball from '$shared/components/Meatball'
 import DropdownActions from '$shared/components/DropdownActions'
-import { leftColumn, rightColumn } from '$userpages/components/StreamPage/constants'
+import Dropdown from '$shared/components/Dropdown'
 
 import KeyFieldEditor from './KeyFieldEditor'
 import styles from './keyField.pcss'
@@ -66,15 +66,6 @@ class KeyField extends React.Component<Props, State> {
         copy(this.props.value)
     }
 
-    onEdit = () => {
-        if (this.props.allowEdit) {
-            this.setState({
-                editing: true,
-                menuOpen: false,
-            })
-        }
-    }
-
     onCancel = () => {
         this.setState({
             editing: false,
@@ -125,14 +116,33 @@ class KeyField extends React.Component<Props, State> {
         })
     }
 
+    onEdit = () => {
+        this.setState({
+            editing: true,
+        })
+    }
+
+    onPermissionChange = (permissionValue: any) => {
+        const { value, keyName } = this.props
+        // Value needs to be checked to satisfy Flow
+        const permission: ?ResourcePermission = ['read', 'write', 'share'].find((p) => p === permissionValue)
+        if (permission) {
+            this.setState({
+                permission,
+            }, () => {
+                this.onSave(keyName, value, permission)
+            })
+        }
+    }
+
     render = () => {
         const {
             hideValue,
             keyName,
             value,
             className,
-            allowEdit,
             allowDelete,
+            allowEdit,
             disableDelete,
             showPermissionType,
         } = this.props
@@ -143,11 +153,10 @@ class KeyField extends React.Component<Props, State> {
             error,
             permission,
         } = this.state
-        const leftCol = showPermissionType ? leftColumn : { xs: 12 }
 
         return !editing ? (
             <Row>
-                <Col {...leftCol}>
+                <Col md={12} lg={11}>
                     <div
                         className={cx(styles.container, className, {
                             [styles.withMenu]: menuOpen,
@@ -181,14 +190,25 @@ class KeyField extends React.Component<Props, State> {
                             </DropdownActions>
                         </div>
                     </div>
-                </Col>
-                {!showPermissionType && (
-                    <Col {...rightColumn}>
-                        <div className={styles.permissionDropdown}>
-                            {permission}
+                    {showPermissionType && (
+                        <div className={styles.permissionDropdownContainer}>
+                            <Dropdown
+                                title=""
+                                onChange={this.onPermissionChange}
+                                className={styles.permissionDropdown}
+                                defaultSelectedItem={permission}
+                            >
+                                <Dropdown.Item key="read" value="read" onClick={(val) => this.onPermissionChange(val)}>
+                                    Read
+                                </Dropdown.Item>
+                                <Dropdown.Item key="write" value="write" onClick={(val) => this.onPermissionChange(val)}>
+                                    Write
+                                </Dropdown.Item>
+                            </Dropdown>
                         </div>
-                    </Col>
-                )}
+                    )}
+                </Col>
+                <Col md={12} lg={1} />
             </Row>
         ) : (
             <KeyFieldEditor

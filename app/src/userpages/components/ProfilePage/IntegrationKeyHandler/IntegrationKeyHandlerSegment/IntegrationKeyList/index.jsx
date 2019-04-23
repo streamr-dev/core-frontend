@@ -9,12 +9,13 @@ import styles from './integrationKeyList.pcss'
 export type Props = {
     integrationKeys: IntegrationKeyListType,
     hideValues?: boolean,
-    onDelete: (IntegrationKeyId) => void,
+    onDelete: (IntegrationKeyId: IntegrationKeyId) => void,
+    onEdit: (IntegrationKeyId: IntegrationKeyId, keyName: string) => void,
 }
 
 export default class IntegrationKeyList extends Component<Props> {
     render() {
-        const { integrationKeys, hideValues, onDelete } = this.props
+        const { integrationKeys, hideValues, onDelete, onEdit } = this.props
         return (
             <div className={styles.keyList}>
                 {integrationKeys.map((key: IntegrationKey) => (
@@ -25,8 +26,15 @@ export default class IntegrationKeyList extends Component<Props> {
                         // $FlowFixMe
                         value={(key.json || {}).address || ''}
                         allowDelete
+                        allowEdit
                         hideValue={hideValues}
                         onDelete={() => onDelete(key.id)}
+                        onSave={(keyName) => {
+                            if (onEdit && keyName) {
+                                onEdit(key.id, keyName)
+                            }
+                            return Promise.resolve()
+                        }}
                     />
                 ))}
             </div>

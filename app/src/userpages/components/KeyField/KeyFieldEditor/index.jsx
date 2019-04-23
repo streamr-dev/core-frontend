@@ -19,7 +19,7 @@ type Props = {
     createNew?: boolean,
     editValue?: boolean,
     onCancel?: () => void,
-    onSave: (string, string, ?ResourcePermission) => void,
+    onSave: (keyName: string, value: string, keyPermission: ?ResourcePermission) => void,
     waiting?: boolean,
     error?: ?string,
     showPermissionType?: boolean,
@@ -28,14 +28,14 @@ type Props = {
 
 type State = {
     keyName: string,
-    value: string,
+    keyId: string,
     permission: ?ResourcePermission,
 }
 
 class KeyFieldEditor extends React.Component<Props, State> {
     state = {
         keyName: this.props.keyName || '',
-        value: this.props.value || '',
+        keyId: this.props.value || '',
         permission: this.props.permission || 'read',
     }
 
@@ -47,7 +47,7 @@ class KeyFieldEditor extends React.Component<Props, State> {
 
     onValueChange = (e: SyntheticInputEvent<EventTarget>) => {
         this.setState({
-            value: e.target.value,
+            keyId: e.target.value,
         })
     }
 
@@ -62,14 +62,14 @@ class KeyFieldEditor extends React.Component<Props, State> {
     }
 
     onSave = () => {
-        const { keyName, value, permission } = this.state
+        const { keyName, keyId, permission } = this.state
         const { onSave } = this.props
 
-        onSave(keyName, value, permission)
+        onSave(keyName, keyId, permission)
     }
 
     render = () => {
-        const { keyName, value, permission } = this.state
+        const { keyName, keyId, permission } = this.state
         const {
             onCancel,
             createNew,
@@ -78,7 +78,7 @@ class KeyFieldEditor extends React.Component<Props, State> {
             error,
             showPermissionType,
         } = this.props
-        const filled = !!keyName && (createNew || !!value)
+        const filled = !!keyName && (createNew || !!keyId)
         const leftCol = showPermissionType ? leftColumn : { xs: 12 }
 
         return (
@@ -101,7 +101,7 @@ class KeyFieldEditor extends React.Component<Props, State> {
                             <div className={styles.keyValue}>
                                 <TextInput
                                     label={I18n.t('userpages.keyFieldEditor.apiKey')}
-                                    value={value}
+                                    value={keyId}
                                     onChange={this.onValueChange}
                                     preserveLabelSpace
                                     readOnly={!editValue}

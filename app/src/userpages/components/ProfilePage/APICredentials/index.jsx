@@ -4,10 +4,17 @@ import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 
-import { getMyResourceKeys, addMyResourceKey, removeMyResourceKey } from '$shared/modules/resourceKey/actions'
+import {
+    getMyResourceKeys,
+    addMyResourceKey,
+    editMyResourceKey,
+    removeMyResourceKey,
+    editStreamResourceKey,
+} from '$shared/modules/resourceKey/actions'
 import { selectMyResourceKeys } from '$shared/modules/resourceKey/selectors'
 import type { StoreState } from '$shared/flowtype/store-state'
-import type { ResourceKeyList, ResourceKeyId } from '$shared/flowtype/resource-key-types'
+import type { ResourceKeyList, ResourceKeyId, ResourcePermission } from '$shared/flowtype/resource-key-types'
+import type { StreamId } from '$shared/flowtype/stream-types'
 
 import CredentialsControl from './CredentialsControl'
 import styles from './apiCredentials.pcss'
@@ -18,7 +25,9 @@ type StateProps = {
 
 type DispatchProps = {
     getKeys: () => void,
-    addKey: (key: string) => Promise<void>,
+    addKey: (keyName: string) => Promise<void>,
+    editMyResourceKey?: (keyId: ResourceKeyId, keyname: string) => Promise<void>,
+    editStreamResourceKey?: (streamId: StreamId, keyId: ResourceKeyId, keyname: string, keyPermission: ResourcePermission) => Promise<void>,
     removeKey: (keyId: ResourceKeyId) => void
 }
 
@@ -30,7 +39,7 @@ export class APICredentials extends Component<Props> {
     }
 
     render() {
-        const { addKey, removeKey } = this.props
+        const { addKey, editStreamResourceKey, editMyResourceKey, removeKey } = this.props
         const keys = this.props.keys.sort((a, b) => a.name.localeCompare(b.name))
         return (
             <Fragment>
@@ -40,6 +49,8 @@ export class APICredentials extends Component<Props> {
                 <CredentialsControl
                     keys={keys}
                     addKey={addKey}
+                    editMyResourceKey={editMyResourceKey}
+                    editStreamResourceKey={editStreamResourceKey}
                     removeKey={removeKey}
                     disableDelete={keys.length <= 1}
                     showPermissionType={false}
@@ -55,7 +66,10 @@ const mapStateToProps = (state: StoreState): StateProps => ({
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getKeys: () => dispatch(getMyResourceKeys()),
-    addKey: (key: string) => dispatch(addMyResourceKey(key)),
+    addKey: (keyName: string) => dispatch(addMyResourceKey(keyName)),
+    editMyResourceKey: (keyId: ResourceKeyId, keyName: string) => dispatch(editMyResourceKey(keyId, keyName)),
+    editStreamResourceKey: (streamId: StreamId, keyId: ResourceKeyId, keyname: string, keyPermission: ResourcePermission) =>
+        dispatch(editStreamResourceKey(streamId, keyId, keyname, keyPermission)),
     removeKey: (keyId: ResourceKeyId) => dispatch(removeMyResourceKey(keyId)),
 })
 

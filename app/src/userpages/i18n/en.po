@@ -242,6 +242,9 @@ msgstr "Field name"
 msgid "userpages##streams##edit##configure##dataType"
 msgstr "Data type"
 
+msgid "userpages##streams##edit##configure##permission"
+msgstr "Permission"
+
 msgid "userpages##streams##edit##configure##delete"
 msgstr "Delete"
 

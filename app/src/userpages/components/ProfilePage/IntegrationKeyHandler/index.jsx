@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 import styles from '../profilePage.pcss'
 
 import type { IntegrationKeyId, IntegrationKeyList } from '$shared/flowtype/integration-key-types'
-import { createIntegrationKey, deleteIntegrationKey, fetchIntegrationKeys } from '$shared/modules/integrationKey/actions'
+import { createIntegrationKey, deleteIntegrationKey, fetchIntegrationKeys, editIntegrationKey } from '$shared/modules/integrationKey/actions'
 import type { StoreState } from '$shared/flowtype/store-state'
 import IntegrationKeyHandlerSegment from './IntegrationKeyHandlerSegment'
 import { selectPrivateKeys, selectIntegrationKeysError } from '$shared/modules/integrationKey/selectors'
@@ -21,6 +21,7 @@ type StateProps = {
 type DispatchProps = {
     deleteIntegrationKey: (id: IntegrationKeyId) => void,
     createIntegrationKey: (name: string, privateKey: Address) => Promise<void>,
+    editIntegrationKey: (id: IntegrationKeyId, name: string) => Promise<void>,
     getIntegrationKeys: () => void
 }
 
@@ -38,6 +39,9 @@ export class IntegrationKeyHandler extends Component<Props> {
         this.props.deleteIntegrationKey(id)
     }
 
+    // $FlowFixMe
+    onEdit = (keyId: IntegrationKeyId, keyName: string) => this.props.editIntegrationKey(keyId, keyName)
+
     render() {
         return (
             <Fragment>
@@ -46,6 +50,7 @@ export class IntegrationKeyHandler extends Component<Props> {
                     integrationKeys={this.props.integrationKeys}
                     onNew={this.onNew}
                     onDelete={this.onDelete}
+                    onEdit={this.onEdit}
                     hideValues
                     createWithValue
                 />
@@ -78,6 +83,7 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getIntegrationKeys() {
         dispatch(fetchIntegrationKeys())
     },
+    editIntegrationKey: (keyId: IntegrationKeyId, keyName: string): Promise<void> => dispatch(editIntegrationKey(keyId, keyName)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(IntegrationKeyHandler)
