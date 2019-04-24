@@ -84,4 +84,20 @@ describe('user - services', () => {
             assert.deepStrictEqual(result, data)
         })
     })
+
+    describe('deleteCurrentUser', () => {
+        it('deletes the current user account', async () => {
+            moxios.wait(() => {
+                const request = moxios.requests.mostRecent()
+                request.respondWith({
+                    status: 204,
+                })
+
+                assert.equal(request.config.method, 'delete')
+                assert.equal(request.config.url, '/users/me')
+            })
+
+            await services.deleteUserAccount()
+        })
+    })
 })

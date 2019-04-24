@@ -1,7 +1,7 @@
 // @flow
 
 import zxcvbn from '$utils/zxcvbn'
-import { get, post, put } from '$shared/utils/api'
+import { get, post, put, del } from '$shared/utils/api'
 import { formatApiUrl } from '$shared/utils/url'
 import type { ApiResult } from '$shared/flowtype/common-types'
 import type { User, PasswordUpdate } from '$shared/flowtype/user-types'
@@ -50,10 +50,4 @@ export const uploadProfileAvatar = (): Promise<void> => (
     })
 )
 
-export const deleteUserAccount = (): Promise<null> => (
-    new Promise((resolve, reject) => {
-        setTimeout(() => {
-            reject(new Error('Deleting user account is not supported yet!'))
-        }, 1000)
-    })
-)
+export const deleteUserAccount = (): ApiResult<null> => del(formatApiUrl('users/me'))
