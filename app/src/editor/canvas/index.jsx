@@ -360,9 +360,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         const resendTo = settings.endDate
         return (
             <div className={styles.CanvasEdit}>
-                <Helmet>
-                    <title>{canvas.name}</title>
-                </Helmet>
+                <Helmet title={canvas.name} />
                 <Subscription
                     uiChannel={canvas.uiChannel}
                     resendFrom={canvas.adhoc ? resendFrom : undefined}
