@@ -2,27 +2,18 @@
  * Handles starting & stopping a canvas.
  */
 
-import React, { useContext, useState, useCallback, useMemo, useRef, useEffect } from 'react'
+import React, { useContext, useState, useCallback, useMemo } from 'react'
 
 import useIsMountedRef from '$shared/utils/useIsMountedRef'
 import * as SubscriptionStatus from '$editor/shared/components/SubscriptionStatus'
 import * as services from '../services'
 import * as CanvasState from '../state'
 
+import useCanvasStateChangeEffect from '../hooks/useCanvasStateChangeEffect'
+
 export const RunControllerContext = React.createContext()
 
 const EMPTY = {}
-
-function useCanvasStateChangeEffect(canvas = EMPTY, onChange) {
-    const canvasIsRunning = CanvasState.isRunning(canvas)
-    const prevIsRunning = useRef(canvasIsRunning)
-
-    useEffect(() => {
-        if (canvasIsRunning === prevIsRunning.current) { return }
-        prevIsRunning.current = canvasIsRunning
-        onChange()
-    }, [canvasIsRunning, prevIsRunning, onChange, canvas])
-}
 
 function useRunController(canvas = EMPTY) {
     const subscriptionStatus = useContext(SubscriptionStatus.Context)

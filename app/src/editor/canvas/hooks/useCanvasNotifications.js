@@ -3,7 +3,8 @@ import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 
 import * as services from '../services'
-import { isRunning } from '../state'
+
+import useCanvasStateChangeEffect from './useCanvasStateChangeEffect'
 
 const EMPTY = {}
 
@@ -44,18 +45,13 @@ function useCanvasRunNotification(canvas = EMPTY) {
         })
     }, [])
 
-    const canvasIsRunning = isRunning(canvas)
-    const prevIsRunning = useRef(canvasIsRunning)
-
-    useEffect(() => {
-        if (canvasIsRunning === prevIsRunning.current) { return }
-        prevIsRunning.current = canvasIsRunning
+    useCanvasStateChangeEffect(canvas, useCallback((canvasIsRunning) => {
         if (canvasIsRunning) {
             onStart()
         } else {
             onStop()
         }
-    }, [canvasIsRunning, prevIsRunning, onStart, onStop])
+    }, [onStart, onStop]))
 }
 
 export default function useCanvasNotifications(canvas = {}) {

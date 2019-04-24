@@ -25,7 +25,7 @@ import CanvasToolbar from './components/Toolbar'
 import CanvasStatus from './components/Status'
 import ModuleSearch from './components/ModuleSearch'
 
-import useCanvasNotifications from './utils/useCanvasNotifications'
+import useCanvasNotifications from './hooks/useCanvasNotifications'
 
 import * as services from './services'
 import * as CanvasState from './state'
