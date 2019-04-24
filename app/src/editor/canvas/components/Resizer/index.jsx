@@ -2,9 +2,9 @@
 
 import React from 'react'
 import cx from 'classnames'
-import styles from './Resizer.pcss'
+import styles from './resizer.pcss'
 
-export class Resizer extends React.Component {
+class Resizer extends React.Component {
     attached = false
 
     initialState = {
@@ -183,3 +183,5 @@ export class Resizer extends React.Component {
         )
     }
 }
+
+export default Resizer

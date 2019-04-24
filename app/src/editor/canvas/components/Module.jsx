@@ -17,7 +17,7 @@ import * as RunController from './RunController'
 
 import ModuleStyles from '$editor/shared/components/Module.pcss'
 import styles from './Module.pcss'
-import { Resizer } from './Resizer'
+import Resizer from './Resizer'
 import isModuleResizable from '$editor/canvas/utils/isModuleResizable'
 
 class CanvasModule extends React.PureComponent {
