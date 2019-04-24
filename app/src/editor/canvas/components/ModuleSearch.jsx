@@ -4,6 +4,7 @@ import React from 'react'
 import startCase from 'lodash/startCase'
 import cx from 'classnames'
 import Draggable from 'react-draggable'
+import { ResizableBox } from 'react-resizable'
 
 import type { Stream } from '$shared/flowtype/stream-types'
 import SvgIcon from '$shared/components/SvgIcon'
@@ -295,27 +296,43 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
                 <div className={styles.Overlay} onClick={() => open(false)} hidden={!isOpen} />
                 <Draggable
                     handle={`.${styles.dragHandle}`}
+                    bounds="parent"
                 >
-                    <div className={styles.ModuleSearch} hidden={!isOpen}>
-                        <div className={cx(styles.Header, styles.dragHandle)}>
-                            <button className={styles.minimize} onClick={() => this.toggleMinimize()}>
-                                {isExpanded ?
-                                    <SvgIcon name="caretUp" /> :
-                                    <SvgIcon name="caretDown" />
-                                }
-                            </button>
-                            <button className={styles.close} onClick={() => open(false)}>
-                                <SvgIcon name="crossHeavy" />
-                            </button>
-                        </div>
-                        <div className={styles.Input}>
-                            <input ref={this.onInputRef} placeholder="Search for modules and streams" value={search} onChange={this.onChange} />
-                        </div>
-                        <div role="listbox" className={styles.Content}>
-                            {(search && search.length > 0) ?
-                                this.renderSearchResults() :
-                                this.renderMenu()}
-                        </div>
+                    <div
+                        className={styles.ModuleSearch}
+                        hidden={!isOpen}
+                    >
+                        <ResizableBox
+                            width={250}
+                            height={450}
+                            minConstraints={[250, 450]}
+                            maxConstraints={[450, 700]}
+                        >
+                            <div className={cx(styles.Header, styles.dragHandle)}>
+                                <button className={styles.minimize} onClick={() => this.toggleMinimize()}>
+                                    {isExpanded ?
+                                        <SvgIcon name="caretUp" /> :
+                                        <SvgIcon name="caretDown" />
+                                    }
+                                </button>
+                                <button className={styles.close} onClick={() => open(false)}>
+                                    <SvgIcon name="crossHeavy" />
+                                </button>
+                            </div>
+                            <div className={styles.Input}>
+                                <input
+                                    ref={this.onInputRef}
+                                    placeholder="Search for modules and streams"
+                                    value={search}
+                                    onChange={this.onChange}
+                                />
+                            </div>
+                            <div role="listbox" className={styles.Content}>
+                                {(search && search.length > 0) ?
+                                    this.renderSearchResults() :
+                                    this.renderMenu()}
+                            </div>
+                        </ResizableBox>
                     </div>
                 </Draggable>
             </React.Fragment>

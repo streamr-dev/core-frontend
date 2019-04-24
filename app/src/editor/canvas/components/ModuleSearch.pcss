@@ -1,13 +1,8 @@
 .ModuleSearch {
   position: absolute;
-  left: 0;
-  right: 0;
-  top: 10vw;
-  margin-left: auto;
-  margin-right: auto;
+  left: 32px;
+  top: 10%;
   background: white;
-  min-width: 248px;
-  max-width: 248px;
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: auto auto 1fr;
@@ -84,8 +79,8 @@
   text-transform: uppercase;
   letter-spacing: 2px;
   line-height: 32px;
-  max-height: 40vh;
   overflow: auto;
+  height: 100%;
 }
 
 .ModuleSearch .Content > * {
@@ -193,5 +188,14 @@
   opacity: 0;
 }
 
-global(.dragHandle) {
+.dragHandle {
+}
+
+:global(.react-resizable-handle) {
+  width: 24px;
+  height: 24px;
+  right: 0;
+  bottom: 0;
+  position: absolute;
+  cursor: nwse-resize;
 }
