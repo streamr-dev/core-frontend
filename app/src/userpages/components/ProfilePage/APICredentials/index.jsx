@@ -27,7 +27,7 @@ type DispatchProps = {
     getKeys: () => void,
     addKey: (keyName: string) => Promise<void>,
     editMyResourceKey?: (keyId: ResourceKeyId, keyname: string) => Promise<void>,
-    editStreamResourceKey?: (streamId: StreamId, keyId: ResourceKeyId, keyname: string, keyPermission: ResourcePermission) => Promise<void>,
+    editStreamResourceKey?: (streamId: StreamId, keyId: ResourceKeyId, keyName: string, keyPermission: ResourcePermission) => Promise<void>,
     removeKey: (keyId: ResourceKeyId) => void
 }
 

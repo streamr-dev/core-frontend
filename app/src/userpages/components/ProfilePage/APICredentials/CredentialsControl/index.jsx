@@ -18,7 +18,7 @@ type Props = {
     disableDelete?: boolean,
     addKey: (key: string, permission: ?ResourcePermission) => Promise<void>,
     editMyResourceKey?: (keyId: ResourceKeyId, keyName: string) => Promise<void>,
-    editStreamResourceKey?: (streamId: StreamId, keyId: ResourceKeyId, keyname: string, keyPermission: ResourcePermission) => Promise<void>,
+    editStreamResourceKey?: (streamId: StreamId, keyId: ResourceKeyId, keyName: string, keyPermission: ResourcePermission) => Promise<void>,
     removeKey: (id: ResourceKeyId) => void,
     showPermissionType?: boolean,
     newStream?: boolean,

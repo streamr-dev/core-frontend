@@ -17,10 +17,10 @@ type StateProps = {
 }
 
 type DispatchProps = {
-    createIdentity: (name: string) => Promise<void>,
-    deleteIntegrationKey: (id: IntegrationKeyId) => void,
+    createIdentity: (keyName: string) => Promise<void>,
+    deleteIntegrationKey: (keyId: IntegrationKeyId) => void,
     getIntegrationKeys: () => void,
-    editIntegrationKey: (id: IntegrationKeyId, name: string) => Promise<void>,
+    editIntegrationKey: (keyId: IntegrationKeyId, keyName: string) => void,
 }
 
 type Props = StateProps & DispatchProps
@@ -31,13 +31,12 @@ export class IdentityHandler extends Component<Props> {
         this.props.getIntegrationKeys()
     }
 
-    onNew = (name: string): Promise<void> => this.props.createIdentity(name)
+    onNew = (keyName: string): Promise<void> => this.props.createIdentity(keyName)
 
-    onDelete = (id: IntegrationKeyId) => {
-        this.props.deleteIntegrationKey(id)
+    onDelete = (keyId: IntegrationKeyId) => {
+        this.props.deleteIntegrationKey(keyId)
     }
 
-    // $FlowFixMe
     onEdit = (keyId: IntegrationKeyId, keyName: string) => this.props.editIntegrationKey(keyId, keyName)
 
     render() {
@@ -65,14 +64,14 @@ export const mapStateToProps = (state: StoreState): StateProps => ({
 })
 
 export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
-    deleteIntegrationKey(id: IntegrationKeyId) {
-        dispatch(deleteIntegrationKey(id))
+    deleteIntegrationKey(keyId: IntegrationKeyId) {
+        dispatch(deleteIntegrationKey(keyId))
     },
-    createIdentity: (name: string) => dispatch(createIdentity(name)),
+    createIdentity: (keyName: string) => dispatch(createIdentity(keyName)),
     getIntegrationKeys() {
         dispatch(fetchIntegrationKeys())
     },
-    editIntegrationKey: (keyId: IntegrationKeyId, keyName: string): Promise<void> => dispatch(editIntegrationKey(keyId, keyName)),
+    editIntegrationKey: (keyId: IntegrationKeyId, keyName: string) => dispatch(editIntegrationKey(keyId, keyName)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(IdentityHandler)

@@ -122,7 +122,7 @@ class KeyField extends React.Component<Props, State> {
         })
     }
 
-    onPermissionChange = (permissionValue: any) => {
+    onPermissionChange = (permissionValue: string) => {
         const { value, keyName } = this.props
         // Value needs to be checked to satisfy Flow
         const permission: ?ResourcePermission = ['read', 'write', 'share'].find((p) => p === permissionValue)
@@ -198,10 +198,10 @@ class KeyField extends React.Component<Props, State> {
                                 className={styles.permissionDropdown}
                                 defaultSelectedItem={permission}
                             >
-                                <Dropdown.Item key="read" value="read" onClick={(val) => this.onPermissionChange(val)}>
+                                <Dropdown.Item key="read" value="read" onClick={(val) => this.onPermissionChange(val.toString())}>
                                     Read
                                 </Dropdown.Item>
-                                <Dropdown.Item key="write" value="write" onClick={(val) => this.onPermissionChange(val)}>
+                                <Dropdown.Item key="write" value="write" onClick={(val) => this.onPermissionChange(val.toString())}>
                                     Write
                                 </Dropdown.Item>
                             </Dropdown>

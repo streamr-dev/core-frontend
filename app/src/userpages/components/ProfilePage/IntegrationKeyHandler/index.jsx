@@ -19,9 +19,9 @@ type StateProps = {
 }
 
 type DispatchProps = {
-    deleteIntegrationKey: (id: IntegrationKeyId) => void,
+    deleteIntegrationKey: (keyId: IntegrationKeyId) => void,
     createIntegrationKey: (name: string, privateKey: Address) => Promise<void>,
-    editIntegrationKey: (id: IntegrationKeyId, name: string) => Promise<void>,
+    editIntegrationKey: (keyId: IntegrationKeyId, keyName: string) => void,
     getIntegrationKeys: () => void
 }
 
@@ -33,14 +33,15 @@ export class IntegrationKeyHandler extends Component<Props> {
         this.props.getIntegrationKeys()
     }
 
-    onNew = (name: string, privateKey: string): Promise<void> => this.props.createIntegrationKey(name, privateKey)
+    onNew = (keyName: string, privateKey: string): Promise<void> => this.props.createIntegrationKey(keyName, privateKey)
 
-    onDelete = (id: IntegrationKeyId) => {
-        this.props.deleteIntegrationKey(id)
+    onDelete = (keyId: IntegrationKeyId) => {
+        this.props.deleteIntegrationKey(keyId)
     }
 
-    // $FlowFixMe
-    onEdit = (keyId: IntegrationKeyId, keyName: string) => this.props.editIntegrationKey(keyId, keyName)
+    onEdit = (keyId: IntegrationKeyId, keyName: string) => {
+        this.props.editIntegrationKey(keyId, keyName)
+    }
 
     render() {
         return (
@@ -76,14 +77,14 @@ export const mapStateToProps = (state: StoreState): StateProps => ({
 })
 
 export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
-    deleteIntegrationKey(id: IntegrationKeyId) {
-        dispatch(deleteIntegrationKey(id))
+    deleteIntegrationKey(keyId: IntegrationKeyId) {
+        dispatch(deleteIntegrationKey(keyId))
     },
-    createIntegrationKey: (name: string, privateKey: Address): Promise<void> => dispatch(createIntegrationKey(name, privateKey)),
+    createIntegrationKey: (keyName: string, privateKey: Address): Promise<void> => dispatch(createIntegrationKey(keyName, privateKey)),
     getIntegrationKeys() {
         dispatch(fetchIntegrationKeys())
     },
-    editIntegrationKey: (keyId: IntegrationKeyId, keyName: string): Promise<void> => dispatch(editIntegrationKey(keyId, keyName)),
+    editIntegrationKey: (keyId: IntegrationKeyId, keyName: string) => dispatch(editIntegrationKey(keyId, keyName)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(IntegrationKeyHandler)
