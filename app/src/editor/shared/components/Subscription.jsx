@@ -53,7 +53,9 @@ class Subscription extends Component {
     uid = uniqueId('sub')
 
     componentDidMount() {
-        this.props.subscriptionStatus.register(this.uid)
+        if (this.props.subscriptionStatus) {
+            this.props.subscriptionStatus.register(this.uid)
+        }
         this.autosubscribe()
     }
 
@@ -69,7 +71,9 @@ class Subscription extends Component {
 
     componentWillUnmount() {
         this.unmounted = true
-        this.props.subscriptionStatus.unregister(this.uid)
+        if (this.props.subscriptionStatus) {
+            this.props.subscriptionStatus.unregister(this.uid)
+        }
         this.unsubscribe()
     }
 
@@ -180,12 +184,16 @@ class Subscription extends Component {
      */
 
     onSubscribed = (...args) => {
-        this.props.subscriptionStatus.subscribed(this.uid)
+        if (this.props.subscriptionStatus) {
+            this.props.subscriptionStatus.subscribed(this.uid)
+        }
         this.props.onSubscribed(...args)
     }
 
     onUnsubscribed = (...args) => {
-        this.props.subscriptionStatus.unsubscribed(this.uid)
+        if (this.props.subscriptionStatus) {
+            this.props.subscriptionStatus.unsubscribed(this.uid)
+        }
         this.props.onUnsubscribed(...args)
     }
 
