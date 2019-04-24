@@ -18,6 +18,7 @@ import ModuleLoader from './ModuleLoader'
 import ExportCSVModule from './modules/ExportCSV'
 import SchedulerModule from './modules/Scheduler'
 import CustomModule from './modules/Custom'
+import SolidityModule from './modules/Solidity'
 
 // Set by module.jsModule
 const Modules = {
@@ -32,6 +33,7 @@ const Modules = {
     ImageMapModule: MapModule,
     HeatmapModule,
     CustomModule,
+    SolidityModule,
 }
 
 // Set by module.widget

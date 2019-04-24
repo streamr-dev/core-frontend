@@ -51,7 +51,7 @@ export default class CustomModule extends React.Component {
                     onMessage={this.onMessage}
                 />
                 <CodeEditor
-                    code={module.code}
+                    code={module.code || ''}
                     readOnly={isActive}
                     onApply={this.onApply}
                     debugMessages={debugMessages}
