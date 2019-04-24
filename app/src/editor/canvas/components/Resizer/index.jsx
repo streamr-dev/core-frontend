@@ -122,6 +122,10 @@ class Resizer extends React.Component {
 
     reset() {
         this.setState(this.initialState)
+
+        const { current: el } = this.props.target
+        el.style.width = ''
+        el.style.height = ''
     }
 
     /**
