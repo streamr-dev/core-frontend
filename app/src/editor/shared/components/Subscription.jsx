@@ -19,8 +19,6 @@ const Message = {
 }
 
 class Subscription extends Component {
-    static contextType = ClientContext
-
     static defaultProps = {
         onMessage: Function.prototype,
         onDoneMessage: Function.prototype,
@@ -59,11 +57,11 @@ class Subscription extends Component {
         this.autosubscribe()
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate() {
         // unsubscribe if switching to active
-        if (this.props.isActive && !prevProps.isActive) {
+        if (this.props.isActive && !this.isSubscribed) {
             this.autosubscribe()
-        } else if (!this.props.isActive && prevProps.isActive) {
+        } else if (!this.props.isActive && !this.isSubscribed) {
             // unsubscribe if switching to inactive
             this.unsubscribe()
         }
@@ -80,7 +78,8 @@ class Subscription extends Component {
     autosubscribe() {
         if (this.isSubscribed) { return }
         const { isActive, uiChannel } = this.props
-        if (!this.context.client) { return }
+        if (!this.props.clientContext.client) { return }
+
         if (isActive && uiChannel) {
             this.subscribe()
         }
@@ -117,7 +116,7 @@ class Subscription extends Component {
         this.unsubscribe()
 
         this.isSubscribed = true
-        this.client = this.context.client
+        this.client = this.props.clientContext.client
 
         const { id } = uiChannel
 
@@ -218,16 +217,19 @@ class Subscription extends Component {
     }
 }
 
-export default (props) => {
+export default React.forwardRef((props, ref) => {
     const subscriptionStatus = useContext(SubscriptionStatusContext)
+    const clientContext = useContext(ClientContext)
     const { uiChannel, resendAll } = props
     // create new subscription if uiChannel or resendAll changes
     const subscriptionKey = (uiChannel && uiChannel.id) + resendAll
     return (
         <Subscription
             {...props}
+            ref={ref}
             key={subscriptionKey}
             subscriptionStatus={subscriptionStatus}
+            clientContext={clientContext}
         />
     )
-}
+})

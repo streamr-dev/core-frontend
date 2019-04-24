@@ -59,7 +59,6 @@ export class ClientProviderComponent extends Component {
 
         client = createClient(apiKey)
         client.once('disconnecting', this.forceSetup)
-
         this.setState({
             client,
         })

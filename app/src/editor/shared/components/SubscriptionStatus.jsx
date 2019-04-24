@@ -5,7 +5,7 @@
 import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react'
 import useIsMountedRef from '$shared/utils/useIsMountedRef'
 
-export const SubscriptionStatusContext = React.createContext({})
+export const SubscriptionStatusContext = React.createContext()
 
 /**
  * Returns a promise + its resolve/reject functions
