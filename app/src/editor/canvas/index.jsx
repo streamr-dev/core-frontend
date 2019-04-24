@@ -212,8 +212,11 @@ const CanvasEditComponent = class CanvasEdit extends Component {
 
         // Update the module info, this will throw if anything went wrong.
         await sharedServices.getModule({
-            ...module,
-            ...value,
+            id: module.id,
+            configuration: {
+                ...module,
+                ...value,
+            },
         })
 
         // Otherwise ignore the result and update the pertinent values only.
