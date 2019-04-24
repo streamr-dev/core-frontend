@@ -2,7 +2,7 @@
  * Handles starting & stopping a canvas.
  */
 
-import React, { useContext, useState, useCallback, useMemo, useEffect } from 'react'
+import React, { useContext, useState, useCallback, useMemo, useRef, useEffect } from 'react'
 
 import useIsMountedRef from '$shared/utils/useIsMountedRef'
 import * as SubscriptionStatus from '$editor/shared/components/SubscriptionStatus'
@@ -11,7 +11,20 @@ import * as CanvasState from '../state'
 
 export const RunControllerContext = React.createContext()
 
-function useRunController(canvas) {
+const EMPTY = {}
+
+function useCanvasStateChangeEffect(canvas = EMPTY, onChange) {
+    const canvasIsRunning = CanvasState.isRunning(canvas)
+    const prevIsRunning = useRef(canvasIsRunning)
+
+    useEffect(() => {
+        if (canvasIsRunning === prevIsRunning.current) { return }
+        prevIsRunning.current = canvasIsRunning
+        onChange()
+    }, [canvasIsRunning, prevIsRunning, onChange, canvas])
+}
+
+function useRunController(canvas = EMPTY) {
     const subscriptionStatus = useContext(SubscriptionStatus.Context)
     const isMountedRef = useIsMountedRef()
 
@@ -21,30 +34,34 @@ function useRunController(canvas) {
     })
 
     // pending state helper
-    const setPending = useCallback((isPending) => setState((state) => ({
-        ...state,
-        isPending,
-    })), [setState])
+    const setPending = useCallback((isPending) => {
+        if (!isMountedRef.current) { return }
+        setState((state) => {
+            if (state.isPending === isPending) { return null } // do nothing if already set
+            return {
+                ...state,
+                isPending,
+            }
+        })
+    }, [setState, isMountedRef])
 
-    const canvasRunState = canvas && canvas.state
+    const endIsStarting = useCallback(() => {
+        if (!isMountedRef.current) { return }
+        if (!state.isStarting) { return }
+        setState((state) => ({
+            ...state,
+            isStarting: false,
+        }))
+    }, [state.isStarting, isMountedRef])
 
-    const isRunning = canvasRunState === CanvasState.RunStates.Running
+    const isRunning = CanvasState.isRunning(canvas)
     const isHistorical = CanvasState.isHistoricalModeSelected(canvas)
     // true if canvas exists and is starting or already running
-    const isActive = !!(canvas && (state.isStarting || isRunning))
-
-    useEffect(() => () => {
-        if (isRunning) {
-            // run in an effect to ensure canvas being rendered is running
-            setState({
-                isStarting: false,
-            })
-        }
-    }, [isRunning, setState])
+    const isActive = canvas !== EMPTY && (state.isStarting || isRunning)
 
     const start = useCallback(async (canvas, options) => {
         if (isHistorical && !canvas.adhoc) {
-            setPending(true)
+            setPending('CREATE ADHOC')
             return services.createAdhocCanvas(canvas)
                 .finally(() => setPending(false))
         }
@@ -52,7 +69,7 @@ function useRunController(canvas) {
         // set both at once to prevent any side effects
         // due to one or other being missing
         setState({
-            isPending: true,
+            isPending: 'START',
             isStarting: true,
         })
 
@@ -65,29 +82,40 @@ function useRunController(canvas) {
             clearState: !!options.clearState || isHistorical,
         })
             .catch((err) => {
-                setState({
-                    isStarting: false,
-                })
+                endIsStarting()
                 throw err
             })
-            .finally(() => setPending(false))
-    }, [subscriptionStatus, setState, setPending, isHistorical, isMountedRef])
+            .finally(() => {
+                setPending(false)
+            })
+    }, [subscriptionStatus, setState, setPending, isHistorical, endIsStarting, isMountedRef])
 
     const stop = useCallback((canvas) => {
-        setPending(true)
+        setPending('STOP')
         return services.stop(canvas)
             .finally(() => setPending(false))
     }, [setPending])
 
     const exit = useCallback((canvas) => {
-        setPending(true)
+        setPending('EXIT')
         return services.exitAdhocCanvas(canvas)
             .finally(() => setPending(false))
     }, [setPending])
 
+    const unlinkOnStop = useCallback(() => {
+        if (isRunning) { return }
+        exit(canvas)
+    }, [exit, isRunning, canvas])
+
+    useCanvasStateChangeEffect(canvas, unlinkOnStop)
+
+    // if state changes starting must have ended
+    useCanvasStateChangeEffect(canvas, endIsStarting)
+
     return useMemo(() => ({
         ...state,
-        canvas: canvas && canvas.id,
+        isPending: !!state.isPending,
+        canvas: canvas.id,
         isActive,
         isRunning,
         isHistorical,
