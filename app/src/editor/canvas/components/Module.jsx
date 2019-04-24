@@ -4,9 +4,10 @@ import cx from 'classnames'
 import React from 'react'
 import { Translate } from 'react-redux-i18n'
 
+import HamburgerButton from '../../shared/components/HamburgerButton'
+import ModuleHeader from '../../shared/components/ModuleHeader'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import ModuleUI from '$editor/shared/components/ModuleUI'
-import RenameInput from '$editor/shared/components/RenameInput'
 
 import { RunStates } from '../state'
 
@@ -78,6 +79,10 @@ class CanvasModule extends React.PureComponent {
         })
     }
 
+    onHamburgerButtonFocus = (e) => {
+        e.stopPropagation()
+    }
+
     render() {
         const {
             api,
@@ -118,29 +123,23 @@ class CanvasModule extends React.PureComponent {
                 ref={this.el}
                 {...props}
             >
-                <div className={cx(ModuleStyles.moduleHeader, ModuleStyles.dragHandle)}>
-                    <RenameInput
-                        className={ModuleStyles.name}
-                        inputClassName={ModuleStyles.dragCancel}
-                        value={module.displayName || module.name}
-                        onChange={this.onChangeModuleName}
-                        disabled={!!isRunning}
-                        required
-                    />
-                    <button
-                        type="button"
-                        className={cx(styles.optionsButton, ModuleStyles.dragCancel)}
-                        onFocus={this.onFocusOptionsButton}
+                <div className={ModuleStyles.selectionDecorator} />
+                <ModuleHeader
+                    className={cx(styles.header, ModuleStyles.dragHandle)}
+                    editable={!isRunning}
+                    label={module.displayName || module.name}
+                    onLabelChange={this.onChangeModuleName}
+                >
+                    <HamburgerButton
+                        className={ModuleStyles.dragCancel}
                         onClick={this.onTriggerOptions}
-                    >
-                        <HamburgerIcon />
-                    </button>
-                </div>
+                        onFocus={this.onHamburgerButtonFocus}
+                    />
+                </ModuleHeader>
                 <Ports
-                    className={styles.ports}
                     api={api}
-                    module={module}
                     canvas={canvas}
+                    module={module}
                     onPort={onPort}
                     onValueChange={this.onPortValueChange}
                 />
@@ -164,16 +163,6 @@ class CanvasModule extends React.PureComponent {
         )
         /* eslint-enable */
     }
-}
-
-function HamburgerIcon(props = {}) {
-    return (
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" {...props}>
-            <g fill="none" fillRule="evenodd" stroke="#CDCDCD" strokeLinecap="round" strokeWidth="1.5">
-                <path d="M7 16h10M7 12h10M7 8h10" />
-            </g>
-        </svg>
-    )
 }
 
 // try render module error in-place

@@ -1,6 +1,7 @@
 import keythereum from 'keythereum'
 import StreamrClient from 'streamr-client'
 import * as Services from '../services'
+import SessionProvider from '$auth/components/SessionProvider'
 
 /**
  * Creates a client for a new, generated user.
@@ -27,18 +28,15 @@ function createNewUserClient() {
  * Add session token
  */
 
-export async function setup(API) {
+export async function setupAuthorizationHeader() {
     const client = await createNewUserClient()
     await client.connect()
     const sessionToken = await client.session.getSessionToken() // returns a Promise that resolves with session token
 
-    const previousAuthHeader = API.defaults.headers.common.Authorization
-    // warning: mutates API's headers
-    API.defaults.headers.common.Authorization = `Bearer ${sessionToken}`
+    SessionProvider.storeToken(sessionToken)
 
     return async () => {
-        // restore previous auth header
-        API.defaults.headers.common.Authorization = previousAuthHeader
+        SessionProvider.storeToken(null)
 
         if (client && client.connection) {
             await client.disconnect()

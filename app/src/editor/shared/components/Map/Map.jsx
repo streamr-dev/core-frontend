@@ -5,6 +5,7 @@ import cx from 'classnames'
 import 'leaflet/dist/leaflet.css'
 import { Map as LeafletMap, ImageOverlay, TileLayer, Tooltip, Polyline, type LatLngBounds } from 'react-leaflet'
 import L from 'leaflet'
+import HeatmapLayer from 'react-leaflet-heatmap-layer'
 
 import CustomMarker from './Marker'
 
@@ -22,6 +23,7 @@ export type Marker = {
     long: number,
     rotation: number,
     previousPositions?: Array<TracePoint>,
+    value?: number, // used only in Heatmaps
 }
 
 export type Skin = 'default' | 'cartoDark'
@@ -40,9 +42,14 @@ type Props = {
     markerColor: string,
     directionalMarkers: boolean,
     skin: Skin,
+    // ImageMap
     isImageMap: boolean,
     imageBounds: ?LatLngBounds,
     imageUrl?: string,
+    // Heatmap
+    isHeatmap: boolean,
+    radius: number,
+    maxIntensity: number,
 }
 
 export default class Map extends React.Component<Props> {
@@ -64,11 +71,15 @@ export default class Map extends React.Component<Props> {
             isImageMap,
             imageBounds,
             imageUrl,
+            isHeatmap,
+            radius,
+            maxIntensity,
         } = this.props
         const mapCenter = [centerLat, centerLong]
 
-        let tileAttribution = '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors, Streamr'
-        let tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+        /* eslint-disable-next-line max-len */
+        let tileAttribution = '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://cartodb.com/attributions">CartoDB</a>, Streamr'
+        let tileUrl = 'http://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png'
 
         if (skin === 'cartoDark') {
             /* eslint-disable-next-line max-len */
@@ -89,8 +100,20 @@ export default class Map extends React.Component<Props> {
                     className={styles.leafletMap}
                     minZoom={minZoom}
                     maxZoom={maxZoom}
-                    crs={isImageMap ? L.CRS.Simple : null}
+                    crs={isImageMap ? L.CRS.Simple : L.CRS.EPSG3857}
                 >
+                    {isHeatmap && (
+                        <HeatmapLayer
+                            fitBoundsOnLoad={false}
+                            fitBoundsOnUpdate={false}
+                            points={markerArray}
+                            longitudeExtractor={(m: Marker) => m.long}
+                            latitudeExtractor={(m: Marker) => m.lat}
+                            intensityExtractor={(m: Marker) => m.value}
+                            radius={radius}
+                            max={maxIntensity}
+                        />
+                    )}
                     {!isImageMap && (
                         <TileLayer
                             attribution={tileAttribution}
@@ -103,7 +126,7 @@ export default class Map extends React.Component<Props> {
                             bounds={imageBounds}
                         />
                     )}
-                    {markerArray.map((marker) => {
+                    {!isHeatmap && markerArray.map((marker) => {
                         const pos = [marker.lat, marker.long]
                         const tracePoints = marker.previousPositions && marker.previousPositions
                             .map((p) => [p.lat, p.long])

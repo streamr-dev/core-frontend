@@ -41,6 +41,9 @@ type Message = {
     pointList?: Array<string>,
 }
 
+/*
+    MapModule handles following modules: Map, ImageMap
+*/
 export default class MapModule extends React.Component<Props, State> {
     state = {
         markers: {},
@@ -130,7 +133,10 @@ export default class MapModule extends React.Component<Props, State> {
             }
 
             // If tracing is enabled, update last positions
-            if (this.props.module.options.drawTrace.value && msg.tracePointId) {
+            if (this.props.module.options.drawTrace &&
+                this.props.module.options.drawTrace.value &&
+                msg.tracePointId
+            ) {
                 this.addTracePoint(marker.id, marker.lat, marker.long, msg.tracePointId)
                 marker.previousPositions = this.positionHistory[marker.id]
             }
@@ -261,6 +267,7 @@ export default class MapModule extends React.Component<Props, State> {
                     minZoom={this.getModuleOption('minZoom', 2)}
                     maxZoom={this.getModuleOption('maxZoom', 18)}
                     zoom={this.getModuleOption('zoom', 12)}
+                    /* For Map */
                     traceColor={this.getModuleParam('traceColor', '#FFFFFF')}
                     traceWidth={this.getModuleOption('traceWidth', 2)}
                     markerIcon={markerIcon}
@@ -268,6 +275,7 @@ export default class MapModule extends React.Component<Props, State> {
                     markerColor={this.getModuleOption('markerColor', '#FFFFFF')}
                     directionalMarkers={directionalMarkers}
                     skin={this.getModuleOption('skin', 'default')}
+                    /* For ImageMap */
                     isImageMap={imageMap}
                     imageBounds={imageBounds}
                     imageUrl={this.getModuleOption('customImageUrl', null)}

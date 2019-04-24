@@ -70,11 +70,16 @@ export const PortTypes = {
     param: 'param',
 }
 
-export function emptyCanvas() {
+export function emptyCanvas(config = {}) {
     return {
         name: 'Untitled Canvas',
-        settings: {},
+        settings: {
+            runTab: RunTabs.realtime,
+            ...config.settings,
+        },
         modules: [],
+        state: RunStates.Stopped,
+        ...config,
     }
 }
 
@@ -301,13 +306,13 @@ export function updateModule(canvas, moduleHash, fn) {
     return update(modules[moduleHash], fn, canvas)
 }
 
-export function updateModulePosition(canvas, moduleHash, offset) {
+export function updateModulePosition(canvas, moduleHash, newPosition) {
     const { modules } = getIndex(canvas)
     const modulePath = modules[moduleHash]
     return update(modulePath.concat('layout', 'position'), (position) => ({
         ...position,
-        top: `${Number.parseInt(offset.top, 10)}px`,
-        left: `${Number.parseInt(offset.left, 10)}px`,
+        top: `${Number.parseInt(newPosition.top, 10)}px`,
+        left: `${Number.parseInt(newPosition.left, 10)}px`,
     }), canvas)
 }
 
@@ -900,6 +905,34 @@ export function updateVariadic(canvas) {
     return canvas.modules.reduce((nextCanvas, { hash }) => (
         updateVariadicModule(nextCanvas, hash)
     ), canvas)
+}
+
+export function isRunning(canvas) {
+    return canvas.state === RunStates.Running
+}
+
+export function getChildCanvasId(canvas) {
+    return canvas.settings.childCanvasId
+}
+
+export function getParentCanvasId(canvas) {
+    return canvas.settings.parentCanvasId
+}
+
+/**
+ * Gets parent id, or own if no parent
+ */
+
+export function getRootCanvasId(canvas) {
+    return getParentCanvasId(canvas) || canvas.id
+}
+
+/**
+ * Gets child id, or own if no child
+ */
+
+export function getRelevantCanvasId(canvas) {
+    return getChildCanvasId(canvas) || canvas.id
 }
 
 /**

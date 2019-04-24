@@ -1,0 +1,54 @@
+.root {
+  align-items: center;
+  display: flex;
+  height: 1em;
+}
+
+.inner {
+  overflow: hidden;
+  position: relative;
+  white-space: nowrap;
+}
+
+.inner,
+.inner input {
+  color: inherit;
+  font: inherit;
+  line-height: 2em;
+}
+
+.inner input {
+  background: none;
+  border: 0;
+  outline: 0;
+  padding: 0;
+  position: absolute;
+  width: 100%;
+}
+
+.inner input::selection {
+  background-color: #CCE9FD;
+}
+
+.idle {
+  cursor: text;
+}
+
+.idle .inner {
+  text-overflow: ellipsis;
+}
+
+.disabled {
+  cursor: default;
+}
+
+.spaceholder {
+  max-width: 100%;
+  overflow: hidden;
+  visibility: hidden;
+  white-space: pre;
+}
+
+.blank {
+  font-style: italic;
+}

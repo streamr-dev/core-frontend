@@ -2,17 +2,9 @@
  * Dashboard-specific API call wrappers
  */
 
-import axios from 'axios'
-
+import api from '$editor/shared/utils/api'
 import Autosave from '$editor/shared/utils/autosave'
 import { emptyDashboard } from './state'
-
-const API = axios.create({
-    headers: {
-        'Content-Type': 'application/json',
-    },
-    withCredentials: true,
-})
 
 const getData = ({ data }) => data
 
@@ -26,7 +18,7 @@ async function save(dashboard) {
         ...dashboard,
         layout: JSON.stringify(dashboard.layout || {}), // layout needs to be stringified?
     }
-    return API.put(`${dashboardsURL}/${dashboard.id}`, body).then(getData)
+    return api().put(`${dashboardsURL}/${dashboard.id}`, body).then(getData)
 }
 
 export const autosave = Autosave(save, AUTOSAVE_DELAY)
@@ -40,7 +32,7 @@ export async function saveNow(dashboard, ...args) {
 }
 
 async function createDashboard(dashboard) {
-    return API.post(dashboardsURL, dashboard).then(getData)
+    return api().post(dashboardsURL, dashboard).then(getData)
 }
 
 export async function create() {
@@ -58,20 +50,20 @@ export async function getModuleData({ apiKey, dashboard, item: { canvas, module:
     const dashboardPath = (dashboard && !dashboard.new) ? `/dashboards/${dashboard.id}` : ''
     const modulePath = `/canvases/${canvas}/modules/${itemModule}`
     const url = `${process.env.STREAMR_API_URL}${dashboardPath}${modulePath}/request`
-    return API.post(url, { type: 'json' }, {
+    return api().post(url, { type: 'json' }, {
         Authorization: `Token ${apiKey}`,
     }).then(getData).then(({ json }) => json)
 }
 
 export async function deleteDashboard({ id }) {
     await autosave.cancel()
-    return API.delete(`${dashboardsURL}/${id}`).then(getData)
+    return api().delete(`${dashboardsURL}/${id}`).then(getData)
 }
 
 export async function loadDashboard({ id }) {
-    return API.get(`${dashboardsURL}/${id}`).then(getData)
+    return api().get(`${dashboardsURL}/${id}`).then(getData)
 }
 
 export async function getCanvases() {
-    return API.get(canvasesURL).then(getData)
+    return api().get(canvasesURL).then(getData)
 }

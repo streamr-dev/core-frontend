@@ -12,6 +12,7 @@ export type WithCalendarProps = {
     closeOnSelect?: boolean,
     disabled?: boolean,
     openOnFocus?: boolean,
+    className?: string,
     wrapperClassname?: string,
 }
 
@@ -127,10 +128,10 @@ class WithCalendar extends React.Component<Props, State> {
 
     render() {
         const { date, open } = this.state
-        const { disabled, wrapperClassname } = this.props
+        const { disabled, className, wrapperClassname } = this.props
 
         return (
-            <div ref={this.rootRef}>
+            <div ref={this.rootRef} className={cx(styles.root, className)}>
                 {this.children()}
                 {!disabled && open && (
                     <div className={cx(styles.wrapper, wrapperClassname)}>

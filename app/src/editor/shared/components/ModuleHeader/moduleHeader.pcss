@@ -1,0 +1,29 @@
+.root {
+  align-items: center;
+  display: flex;
+  font-size: 12px;
+  font-weight: var(--medium);
+  justify-content: space-between;
+  min-width: 92px; /* 24+40+1.75rem */
+}
+
+.name {
+  flex-grow: 1;
+  position: relative;
+}
+
+.idle {
+  position: absolute;
+  transform: translateY(-50%);
+  width: 100%;
+}
+
+.expandToggle {
+  flex-shrink: 0;
+  height: 40px;
+  width: 24px;
+}
+
+.limitedWidth {
+  max-width: calc(100% - 24px);
+}
