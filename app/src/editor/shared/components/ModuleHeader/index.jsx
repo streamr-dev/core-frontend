@@ -27,7 +27,7 @@ const ModuleHeader = ({
 
     return (
         <div
-            className={cx(styles.root, styles.dragHandle, className)}
+            className={cx(styles.root, className)}
             {...props}
         >
             {/* TODO: Replace the following line with the actual toggle. This here is just a placeholder. */}

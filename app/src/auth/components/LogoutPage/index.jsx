@@ -1,51 +1,55 @@
 // @flow
 
-import React from 'react'
+import React, { useState, useContext } from 'react'
 import axios from 'axios'
+import { connect } from 'react-redux'
 
+import useIsMountedRef from '$shared/utils/useIsMountedRef'
+import useOnMount from '$shared/utils/useOnMount'
+import SessionContext from '../../contexts/Session'
+import { logout as logoutAction } from '$shared/modules/user/actions'
 import ErrorPageView from '$mp/components/ErrorPageView'
-import { type Props as SessionProps } from '$auth/contexts/Session'
-import { type ErrorInUi } from '$shared/flowtype/common-types'
 import routes from '$routes'
 
 export type DispatchProps = {
     logout: () => void,
 }
 
-type Props = DispatchProps & SessionProps & {
-}
+type Props = DispatchProps & {}
 
-type State = {
-    error: ?ErrorInUi,
-}
+const LogoutPage = ({ logout }: Props) => {
+    const [error, setError] = useState(null)
+    const { setSessionToken } = useContext(SessionContext)
 
-class LogoutPage extends React.Component<Props, State> {
-    state = {
-        error: null,
-    }
+    const mountedRef = useIsMountedRef()
 
-    componentDidMount() {
-        const { logout, setSessionToken } = this.props
-
+    useOnMount(() => {
         axios
             .post(routes.externalLogout())
-            .then(() => {
-                if (setSessionToken) {
-                    logout()
-                    setSessionToken(null)
-                }
-            }, (error) => {
-                this.setState({
-                    error,
-                })
-            })
-    }
+            .then(
+                () => {
+                    if (setSessionToken && mountedRef.current) {
+                        logout()
+                        setSessionToken(null)
+                    }
+                },
+                (e) => {
+                    if (mountedRef.current) {
+                        setError(e)
+                    }
+                },
+            )
+    })
 
-    render() {
-        return !!this.state.error && (
-            <ErrorPageView />
-        )
-    }
+    return !!error && (
+        <ErrorPageView />
+    )
 }
 
-export default LogoutPage
+export { LogoutPage }
+
+const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
+    logout: () => dispatch(logoutAction()),
+})
+
+export default connect(null, mapDispatchToProps)(LogoutPage)

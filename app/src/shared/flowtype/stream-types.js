@@ -23,8 +23,18 @@ export type Stream = NewStream & {
     config: {
         fields?: StreamFieldList
     },
+    feed?: {
+        id: number,
+        name: string,
+        module: number,
+    },
     ownPermissions: Array<$ElementType<Permission, 'operation'>>,
     lastUpdated: number,
+    partitions: number,
+    autoConfigure: boolean,
+    requireSignedData: boolean,
+    storageDays: number,
+    uiChannel: boolean,
 }
 
 export type StreamIdList = Array<StreamId>

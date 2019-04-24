@@ -123,23 +123,23 @@ class CanvasModule extends React.PureComponent {
                 ref={this.el}
                 {...props}
             >
+                <div className={ModuleStyles.selectionDecorator} />
                 <ModuleHeader
-                    className={styles.header}
+                    className={cx(styles.header, ModuleStyles.dragHandle)}
                     editable={!isRunning}
                     label={module.displayName || module.name}
                     onLabelChange={this.onChangeModuleName}
                 >
                     <HamburgerButton
-                        className={ModuleHeader.styles.dragCancel}
+                        className={ModuleStyles.dragCancel}
                         onClick={this.onTriggerOptions}
                         onFocus={this.onHamburgerButtonFocus}
                     />
                 </ModuleHeader>
                 <Ports
-                    className={styles.ports}
                     api={api}
-                    module={module}
                     canvas={canvas}
+                    module={module}
                     onPort={onPort}
                     onValueChange={this.onPortValueChange}
                 />

@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+trap "killall background" EXIT # clean up background jobs
+
 ##
 ## Pulls down streamr-docker-dev and starts an engine-and-editor instance + associated services ##
 ##
@@ -21,7 +23,8 @@ RETRY_DELAY=5s;
 
 # wait for E&E to come up
 waitFor $RETRIES $RETRY_DELAY checkHTTP "engine-and-editor" 200 http://localhost:8081/streamr-core/login/auth;
-$streamr_docker_dev log -f &;
+
+$streamr_docker_dev log -f &
 
 # exit if E&E never comes up
 if [ $? -eq 1 ] ; then
