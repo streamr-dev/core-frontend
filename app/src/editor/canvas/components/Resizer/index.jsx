@@ -2,6 +2,7 @@
 
 import React from 'react'
 import cx from 'classnames'
+import ResizerContext from './Context'
 import styles from './resizer.pcss'
 
 class Resizer extends React.Component {
@@ -152,8 +153,10 @@ class Resizer extends React.Component {
         const el = this.props.target.current
         const diffX = this.state.initX - clientX
         const diffY = this.state.initY - clientY
-        el.style.width = `${this.state.initWidth - diffX}px`
-        el.style.height = `${this.state.initHeight - diffY}px`
+        const width = Math.max(this.props.minWidth, this.state.initWidth - diffX)
+        const height = Math.max(this.props.minHeight, this.state.initHeight - diffY)
+        el.style.width = `${width}px`
+        el.style.height = `${height}px`
 
         this.setState({
             diffX,
@@ -171,6 +174,8 @@ class Resizer extends React.Component {
             module,
             api,
             className,
+            minWidth,
+            minHeight,
             ...props
         } = this.props
         return (
@@ -184,4 +189,10 @@ class Resizer extends React.Component {
     }
 }
 
-export default Resizer
+export default (props) => (
+    <ResizerContext.Consumer>
+        {({ minWidth, minHeight }) => (
+            <Resizer {...props} minWidth={minWidth} minHeight={minHeight} />
+        )}
+    </ResizerContext.Consumer>
+)
