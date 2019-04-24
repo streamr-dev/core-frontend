@@ -89,14 +89,16 @@ function useRunController(canvas = EMPTY) {
 
     const exit = useCallback((canvas) => {
         setPending('EXIT')
-        return services.exitAdhocCanvas(canvas)
+        return services.loadParentCanvas(canvas)
             .finally(() => setPending(false))
     }, [setPending])
 
-    const unlinkOnStop = useCallback(() => {
+    const unlinkOnStop = useCallback((isRunning) => {
         if (isRunning) { return }
-        exit(canvas)
-    }, [exit, isRunning, canvas])
+        setPending('UNLINK')
+        return services.unlinkParentCanvas(canvas)
+            .finally(() => setPending(false))
+    }, [canvas, setPending])
 
     useCanvasStateChangeEffect(canvas, unlinkOnStop)
 

@@ -141,11 +141,16 @@ export async function startOrCreateAdhocCanvas(canvas, options) {
     })
 }
 
+export async function loadParentCanvas(canvas) {
+    const { settings = {} } = canvas
+    return loadCanvas({ id: settings.parentCanvasId })
+}
+
 /**
  * Unlinks parent from child.
  */
 
-export async function exitAdhocCanvas(canvas) {
+export async function unlinkParentCanvas(canvas) {
     const { settings = {} } = canvas
     const parent = await loadCanvas({ id: settings.parentCanvasId })
     return saveNow({
