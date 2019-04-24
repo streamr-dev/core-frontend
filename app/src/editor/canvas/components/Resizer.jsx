@@ -4,22 +4,6 @@ import React from 'react'
 import cx from 'classnames'
 import styles from './Resizer.pcss'
 
-const RESIZABLE_MODULES = [
-    'ChartModule',
-    'CommentModule',
-    'CustomModule',
-    'GaugeModule',
-    'HeatmapModule',
-    'MapModule',
-    'LabelModule',
-    'TableModule',
-    'StreamrTextField',
-]
-
-export function isModuleResizable(module) {
-    return RESIZABLE_MODULES.includes(module.jsModule) || RESIZABLE_MODULES.includes(module.widget)
-}
-
 export class Resizer extends React.Component {
     attached = false
 
