@@ -47,19 +47,26 @@ const Widgets = {
 const AutoSizeWrapper = ({ children }) => {
     const { width, height } = useContext(ResizableContext)
     const { minHeight } = useContext(SizeConstraintContext)
+    const extraWidth = 200
     const extraHeight = 150
 
     return (
         <div
             style={{
                 height: (height - minHeight) + extraHeight,
+                // Above calculation doesn't prevent the UI from shrinking via
+                // a non-resize action (adding/removing a param or a variadic port).
+                // One solution, such as the one below, is to enforce `min-width`
+                // and `min-height` on the actual wrapper.
+                minHeight: extraHeight,
+                minWidth: extraWidth,
                 overflow: 'hidden',
                 position: 'relative',
                 width,
             }}
         >
             <Probe group="ModuleHeight" id="UI" height={extraHeight} />
-            <Probe group="UiWidth" id="UI" width={200} />
+            <Probe group="UiWidth" id="UI" width={extraWidth} />
             {children}
         </div>
     )

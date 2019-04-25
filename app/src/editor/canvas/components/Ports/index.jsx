@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import cx from 'classnames'
 
 import Probe from '$editor/canvas/components/Resizable/SizeConstraintProvider/Probe'
@@ -28,6 +28,13 @@ const Ports = ({
     const { outputs } = module
     const inputs = module.params.concat(module.inputs)
     const { refreshProbes } = useContext(SizeConstraintContext)
+    const maxPorts = Math.max(inputs.length, outputs.length)
+
+    useEffect(() => {
+        // Adding/removing variadic ports should trigger Probes
+        // to reestimate space they occupy.
+        refreshProbes()
+    }, [maxPorts, refreshProbes])
 
     return !!(inputs.length || outputs.length) && (
         <div className={cx(styles.root, className)}>
