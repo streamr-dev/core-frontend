@@ -31,7 +31,6 @@ class Subscription extends Component {
         onResent: Function.prototype,
         onNoResend: Function.prototype,
         onError: Function.prototype,
-        resendFrom: 0,
     }
 
     static propTypes = {

@@ -25,6 +25,8 @@ import CanvasToolbar from './components/Toolbar'
 import CanvasStatus from './components/Status'
 import ModuleSearch from './components/ModuleSearch'
 
+import useCanvasNotifications, { pushErrorNotification } from './hooks/useCanvasNotifications'
+
 import * as services from './services'
 import * as CanvasState from './state'
 
@@ -347,8 +349,16 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         ))
     }
 
-    onDoneMessage = () => {
+    onDoneMessage = () => (
         this.loadSelf()
+    )
+
+    onErrorMessage = (error) => {
+        pushErrorNotification({
+            message: error.error,
+            error,
+        })
+        return this.loadSelf()
     }
 
     render() {
@@ -367,6 +377,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                     resendTo={canvas.adhoc ? resendTo : undefined}
                     isActive={runController.isActive}
                     onDoneMessage={this.onDoneMessage}
+                    onErrorMessage={this.onErrorMessage}
                 />
                 <Canvas
                     className={styles.Canvas}
@@ -483,11 +494,14 @@ const CanvasLoader = withRouter(withErrorBoundary(ErrorComponentView)(class Canv
     }
 }))
 
-const CanvasEdit = withRouter((props) => {
+const CanvasEdit = withRouter(({ canvas, ...props }) => {
     const runController = useContext(RunController.Context)
+    useCanvasNotifications(canvas)
+
     return (
         <CanvasEditComponent
             {...props}
+            canvas={canvas}
             runController={runController}
         />
     )

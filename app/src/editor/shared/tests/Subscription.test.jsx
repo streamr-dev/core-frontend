@@ -89,6 +89,7 @@ describe('Subscription', () => {
                     <Subscription
                         ref={sub}
                         uiChannel={stream}
+                        resendLast={1}
                         onResent={() => {
                             // don't unmount on subscribed as this
                             // breaks the client
