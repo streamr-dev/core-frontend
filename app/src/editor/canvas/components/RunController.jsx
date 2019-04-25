@@ -38,12 +38,14 @@ function useRunController(canvas = EMPTY) {
 
     const endIsStarting = useCallback(() => {
         if (!isMountedRef.current) { return }
-        if (!state.isStarting) { return }
-        setState((state) => ({
-            ...state,
-            isStarting: false,
-        }))
-    }, [state.isStarting, isMountedRef])
+        setState((state) => {
+            if (!state.isStarting) { return state }
+            return {
+                ...state,
+                isStarting: false,
+            }
+        })
+    }, [isMountedRef])
 
     const isRunning = CanvasState.isRunning(canvas)
     const isHistorical = CanvasState.isHistoricalModeSelected(canvas)
