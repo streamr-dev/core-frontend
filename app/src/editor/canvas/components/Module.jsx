@@ -127,7 +127,6 @@ class CanvasModule extends React.PureComponent {
                 data-modulehash={module.hash}
                 {...props}
             >
-                <div className={ModuleStyles.selectionDecorator} />
                 <div className={styles.body}>
                     <Probe group="ModuleHeight" height="auto" />
                     <ModuleHeader
@@ -160,6 +159,7 @@ class CanvasModule extends React.PureComponent {
                     isActive={isRunning}
                     isSubscriptionActive={this.context.isStarting || this.context.isActive}
                 />
+                <div className={ModuleStyles.selectionDecorator} />
             </Resizable>
         )
     }
