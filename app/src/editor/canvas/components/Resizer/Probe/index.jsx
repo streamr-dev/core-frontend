@@ -15,7 +15,7 @@ type Props = {
 const Probe = ({ group, id: idProp, width, height }: Props) => {
     const id = idProp || group
     const ref: Ref<HTMLDivElement> = useRef(null)
-    const { setWidth, setHeight } = useContext(ResizerContext)
+    const { setWidth, setHeight, probeRefreshCount } = useContext(ResizerContext)
 
     useEffect(() => {
         const { current } = ref
@@ -33,7 +33,16 @@ const Probe = ({ group, id: idProp, width, height }: Props) => {
         if (height != null) {
             setHeight(group, id, height !== 'auto' ? height : h)
         }
-    }, [group, id, width, setWidth, height, setHeight])
+    }, [
+        group,
+        id,
+        width,
+        setWidth,
+        height,
+        setHeight,
+        // We have to recalculate size when the `probeRefreshCount`.
+        probeRefreshCount,
+    ])
 
     return <div ref={ref} className={styles.root} />
 }

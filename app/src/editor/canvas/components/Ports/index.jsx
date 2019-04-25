@@ -1,9 +1,10 @@
 // @flow
 
-import React, { useState, useCallback } from 'react'
+import React, { useContext } from 'react'
 import cx from 'classnames'
 
 import ResizerProbe from '$editor/canvas/components/Resizer/Probe'
+import ResizerContext from '../Resizer/Context'
 import Port from './Port'
 import styles from './ports.pcss'
 
@@ -26,17 +27,13 @@ const Ports = ({
 }: Props) => {
     const { outputs } = module
     const inputs = module.params.concat(module.inputs)
-    const [probeCounter, setProbeCounter] = useState(0)
-    const onPortSizeChange = useCallback(() => {
-        setProbeCounter((probeCounter) => probeCounter + 1)
-    }, [])
+    const { refreshProbes } = useContext(ResizerContext)
 
     return !!(inputs.length || outputs.length) && (
         <div className={cx(styles.root, className)}>
-            <ResizerProbe key={probeCounter} id="Ports" height="auto" group="ModuleHeight" />
             <div className={styles.inner}>
                 <div className={styles.ports}>
-                    <ResizerProbe key={probeCounter} id="inputs" width="auto" group="Ports" />
+                    <ResizerProbe id="inputs" width="auto" group="Ports" />
                     {inputs.map((port) => (
                         <Port
                             api={api}
@@ -44,17 +41,17 @@ const Ports = ({
                             key={port.id}
                             onPort={onPort}
                             onValueChange={onValueChange}
-                            onSizeChange={onPortSizeChange}
+                            onSizeChange={refreshProbes}
                             port={port}
                             setOptions={api.port.setPortOptions}
                         />
                     ))}
                 </div>
                 <div className={styles.gutter}>
-                    <ResizerProbe key={probeCounter} id="gutter" width="auto" group="Ports" />
+                    <ResizerProbe id="gutter" width="auto" group="Ports" />
                 </div>
                 <div className={styles.ports}>
-                    <ResizerProbe key={probeCounter} id="outputs" width="auto" group="Ports" />
+                    <ResizerProbe id="outputs" width="auto" group="Ports" />
                     {outputs.map((port) => (
                         <Port
                             api={api}
@@ -62,7 +59,7 @@ const Ports = ({
                             key={port.id}
                             onPort={onPort}
                             onValueChange={onValueChange}
-                            onSizeChange={onPortSizeChange}
+                            onSizeChange={refreshProbes}
                             port={port}
                             setOptions={api.port.setPortOptions}
                         />
