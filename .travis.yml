@@ -127,7 +127,6 @@ jobs:
     - STREAMR_WS_URL=wss://ee-staging.streamr.com/api/v1/ws
     - STREAMR_URL=https://ee-staging.streamr.com
     - PLATFORM_ORIGIN_URL=https://marketplace-staging.streamr.com
-    - PLATFORM_PUBLIC_PATH=https://marketplace-staging.streamr.com
     - GOOGLE_ANALYTICS_ID=55331565-5
     - USERPAGES=on
     - DOCS=on
