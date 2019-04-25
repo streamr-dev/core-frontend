@@ -31,40 +31,38 @@ const Ports = ({
 
     return !!(inputs.length || outputs.length) && (
         <div className={cx(styles.root, className)}>
-            <div className={styles.inner}>
-                <div className={styles.ports}>
-                    <ResizerProbe id="inputs" width="auto" group="Ports" />
-                    {inputs.map((port) => (
-                        <Port
-                            api={api}
-                            canvas={canvas}
-                            key={port.id}
-                            onPort={onPort}
-                            onValueChange={onValueChange}
-                            onSizeChange={refreshProbes}
-                            port={port}
-                            setOptions={api.port.setPortOptions}
-                        />
-                    ))}
-                </div>
-                <div className={styles.gutter}>
-                    <ResizerProbe id="gutter" width="auto" group="Ports" />
-                </div>
-                <div className={styles.ports}>
-                    <ResizerProbe id="outputs" width="auto" group="Ports" />
-                    {outputs.map((port) => (
-                        <Port
-                            api={api}
-                            canvas={canvas}
-                            key={port.id}
-                            onPort={onPort}
-                            onValueChange={onValueChange}
-                            onSizeChange={refreshProbes}
-                            port={port}
-                            setOptions={api.port.setPortOptions}
-                        />
-                    ))}
-                </div>
+            <div className={styles.ports}>
+                <ResizerProbe id="inputs" width="auto" group="Ports" />
+                {inputs.map((port) => (
+                    <Port
+                        api={api}
+                        canvas={canvas}
+                        key={port.id}
+                        onPort={onPort}
+                        onValueChange={onValueChange}
+                        onSizeChange={refreshProbes}
+                        port={port}
+                        setOptions={api.port.setPortOptions}
+                    />
+                ))}
+            </div>
+            <div className={styles.gutter}>
+                <ResizerProbe id="gutter" width="auto" group="Ports" />
+            </div>
+            <div className={styles.ports}>
+                <ResizerProbe id="outputs" width="auto" group="Ports" />
+                {outputs.map((port) => (
+                    <Port
+                        api={api}
+                        canvas={canvas}
+                        key={port.id}
+                        onPort={onPort}
+                        onValueChange={onValueChange}
+                        onSizeChange={refreshProbes}
+                        port={port}
+                        setOptions={api.port.setPortOptions}
+                    />
+                ))}
             </div>
         </div>
     )
