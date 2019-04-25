@@ -29,7 +29,7 @@ export type Marker = {
 export type Skin = 'default' | 'cartoDark'
 
 type Props = {
-    className: string,
+    className?: ?string,
     centerLat: number,
     centerLong: number,
     minZoom: number,
