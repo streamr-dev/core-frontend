@@ -9,6 +9,7 @@ import { push } from 'react-router-redux'
 import copy from 'copy-to-clipboard'
 import { Translate, I18n } from 'react-redux-i18n'
 import { Helmet } from 'react-helmet'
+import moment from 'moment'
 
 import type { Filter, SortOption } from '$userpages/flowtype/common-types'
 import type { Canvas, CanvasId } from '$userpages/flowtype/canvas-types'
@@ -33,6 +34,8 @@ import { selectFetchingPermissions, selectCanvasPermissions } from '$userpages/m
 import type { Permission, ResourceId } from '$userpages/flowtype/permission-types'
 import type { User } from '$shared/flowtype/user-types'
 import { selectUserData } from '$shared/modules/user/selectors'
+
+import styles from './canvasList.pcss'
 
 export type StateProps = {
     user: ?User,
@@ -202,6 +205,8 @@ class CanvasList extends Component<Props, State> {
         }
     }
 
+    generateTimeAgoDescription = (canvasUpdatedDate: Date) => moment(canvasUpdatedDate).fromNow()
+
     render() {
         const { canvases, filter, fetching } = this.props
         const { shareDialogCanvas } = this.state
@@ -270,8 +275,15 @@ class CanvasList extends Component<Props, State> {
                                     }}
                                 >
                                     <Tile.Title>{canvas.name}</Tile.Title>
-                                    <Tile.Description>{new Date(canvas.updated).toLocaleString()}</Tile.Description>
-                                    <Tile.Status>{capital(canvas.state)}</Tile.Status>
+                                    <Tile.Description>
+                                        {canvas.updated === canvas.created ? 'Created ' : 'Updated '}
+                                        {this.generateTimeAgoDescription(new Date(canvas.updated))}
+                                    </Tile.Description>
+                                    <Tile.Status
+                                        className={canvas.state === 'RUNNING' ? styles.running : styles.stopped}
+                                    >
+                                        {capital(canvas.state)}
+                                    </Tile.Status>
                                 </Tile>
                             </Col>
                         ))}
