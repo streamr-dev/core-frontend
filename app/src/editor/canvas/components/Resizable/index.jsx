@@ -1,6 +1,6 @@
 // @flow
 
-import React, { type Context, createContext, type Node, useState, useRef, useCallback, useEffect, useContext } from 'react'
+import React, { type Context, createContext, type Node, useState, useRef, useCallback, useContext } from 'react'
 import cx from 'classnames'
 import { type Ref } from '$shared/flowtype/common-types'
 import Handle from './Handle'
@@ -51,49 +51,53 @@ const Resizable = ({
 
     const [isResizing, setIsResizing] = useState(false)
 
-    const tempSize: Ref<Size> = useRef({
-        height,
-        width,
-    })
+    const tempSize: Ref<Size> = useRef(null)
 
-    const updateSize = useCallback(({ dx, dy }) => {
+    const updateSize = useCallback(({ dx, dy }): Size => {
         const { height, width } = ((tempSize.current: any): Size)
-        setSize({
+        const size = {
             height: Math.max(minHeight, height - dy),
             width: Math.max(minWidth, width - dx),
-        })
+        }
+        setSize(size)
+        return size
     }, [minHeight, minWidth])
 
-    const preview = useCallback((diff) => {
+    const ref: Ref<HTMLDivElement> = useRef(null)
+
+    const prepare = useCallback(() => {
         setIsResizing(true)
+        const { current: root } = ref
+
+        if (root) {
+            const { width, height } = root.getBoundingClientRect()
+            tempSize.current = {
+                height,
+                width,
+            }
+        }
+    }, [])
+
+    const preview = useCallback((diff) => {
         updateSize(diff)
     }, [updateSize])
 
     const commit = useCallback((diff) => {
         setIsResizing(false)
-        updateSize(diff)
-    }, [updateSize])
+        const size: Size = updateSize(diff)
 
-    useEffect(() => {
-        tempSize.current = {
-            height,
-            width,
-        }
-        setSize(tempSize.current)
-    }, [width, height])
-
-    useEffect(() => {
         const { height, width } = ((tempSize.current: any): Size)
-        if (!isResizing && onResize && (size.height !== height || size.width !== width)) {
+        if (onResize && (size.height !== height || size.width !== width)) {
             onResize(size)
         }
-    }, [isResizing, onResize, size])
+    }, [updateSize, onResize])
 
     return (
         <ResizeableContext.Provider value={size}>
             <div
                 {...props}
                 className={cx(styles.root, className)}
+                ref={ref}
                 style={{
                     ...style,
                     ...(isResizing ? {
@@ -106,7 +110,11 @@ const Resizable = ({
                 }}
             >
                 {children}
-                <Handle onDrag={preview} onDrop={commit} />
+                <Handle
+                    beforeDrag={prepare}
+                    onDrag={preview}
+                    onDrop={commit}
+                />
             </div>
         </ResizeableContext.Provider>
     )

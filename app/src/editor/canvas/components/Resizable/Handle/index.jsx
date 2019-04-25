@@ -16,11 +16,12 @@ type Delta = {
 }
 
 type Props = {
+    beforeDrag?: ?() => void,
     onDrop?: ?(Delta) => void,
     onDrag?: ?(Delta) => void,
 }
 
-const Handle = ({ onDrop, onDrag }: Props) => {
+const Handle = ({ beforeDrag, onDrop, onDrag }: Props) => {
     const [isDragged, setIsDragged] = useState(false)
 
     const initialCoords: Ref<Coords> = useRef({
@@ -70,7 +71,11 @@ const Handle = ({ onDrop, onDrag }: Props) => {
             y: e.clientY,
         }
         setIsDragged(true)
-    }, [])
+
+        if (beforeDrag) {
+            beforeDrag()
+        }
+    }, [beforeDrag])
 
     const onMouseMove = useCallback(({ clientX, clientY }: SyntheticMouseEvent<EventTarget>) => {
         if (onDrag) {
