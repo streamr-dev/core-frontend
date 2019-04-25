@@ -41,7 +41,6 @@ class ChangePasswordDialog extends Component<Props, State> {
     }
 
     handlePasswordStrengthChange = (passwordStrength: number) => {
-        console.log('strength: ', this.state.strongEnoughPassword)
         this.setState({
             strongEnoughPassword: passwordStrength > 1,
         })
