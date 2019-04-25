@@ -15,3 +15,10 @@ export const isMetamaskSupported = (userAgent: string = navigator.userAgent): bo
 
     return (name === 'firefox' || name === 'chrome' || name === 'opera') && !isMobile(userAgent)
 }
+
+export const isWindows = (userAgent: string = navigator.userAgent): boolean => {
+    const info = platform.parse(userAgent)
+    const osFamily = (info.os && info.os.family && info.os.family.toLowerCase()) || ''
+
+    return !!osFamily.match(/windows/)
+}
