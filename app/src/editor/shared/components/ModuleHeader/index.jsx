@@ -30,8 +30,6 @@ const ModuleHeader = ({
         <Fragment>
             {/* ModuleHeader's minWidth is always 92px. */}
             <ResizerProbe group="ModuleHeader" width={92} />
-            {/* ModuleHeader's minHeight is always 41px (40px and 1px of border-bottom). */}
-            <ResizerProbe group="ModuleHeight" height={41} id="ModuleHeader" />
             <div
                 className={cx(styles.root, className)}
                 {...props}

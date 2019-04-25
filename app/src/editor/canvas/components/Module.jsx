@@ -15,6 +15,7 @@ import Ports from './Ports'
 import ModuleDragger from './ModuleDragger'
 import * as RunController from './RunController'
 
+import ResizerProbe from './Resizer/Probe'
 import ModuleStyles from '$editor/shared/components/Module.pcss'
 import styles from './Module.pcss'
 import Resizer from './Resizer'
@@ -130,25 +131,28 @@ class CanvasModule extends React.PureComponent {
                     {...props}
                 >
                     <div className={ModuleStyles.selectionDecorator} />
-                    <ModuleHeader
-                        className={cx(styles.header, ModuleStyles.dragHandle)}
-                        editable={!isRunning}
-                        label={module.displayName || module.name}
-                        onLabelChange={this.onChangeModuleName}
-                    >
-                        <HamburgerButton
-                            className={ModuleStyles.dragCancel}
-                            onClick={this.onTriggerOptions}
-                            onFocus={this.onHamburgerButtonFocus}
+                    <div className={styles.body}>
+                        <ResizerProbe group="ModuleHeight" height="auto" />
+                        <ModuleHeader
+                            className={cx(styles.header, ModuleStyles.dragHandle)}
+                            editable={!isRunning}
+                            label={module.displayName || module.name}
+                            onLabelChange={this.onChangeModuleName}
+                        >
+                            <HamburgerButton
+                                className={ModuleStyles.dragCancel}
+                                onClick={this.onTriggerOptions}
+                                onFocus={this.onHamburgerButtonFocus}
+                            />
+                        </ModuleHeader>
+                        <Ports
+                            api={api}
+                            canvas={canvas}
+                            module={module}
+                            onPort={onPort}
+                            onValueChange={this.onPortValueChange}
                         />
-                    </ModuleHeader>
-                    <Ports
-                        api={api}
-                        canvas={canvas}
-                        module={module}
-                        onPort={onPort}
-                        onValueChange={this.onPortValueChange}
-                    />
+                    </div>
                     <ModuleUI
                         className={styles.canvasModuleUI}
                         api={api}
