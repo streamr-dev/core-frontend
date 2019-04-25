@@ -112,6 +112,8 @@ const Resizable = ({
     )
 }
 
+export { ResizeableContext as Context }
+
 export default (props: any) => (
     <SizeConstraintProvider>
         <Resizable {...props} />
