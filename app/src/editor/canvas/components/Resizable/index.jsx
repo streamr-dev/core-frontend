@@ -27,6 +27,7 @@ const ResizeableContext = (createContext(defaultContext): Context<ContextProps>)
 type Props = {
     children?: Node,
     className?: ?string,
+    enabled?: boolean,
     height: number,
     onResize?: ?(Size) => void,
     style?: any,
@@ -36,6 +37,7 @@ type Props = {
 const Resizable = ({
     children,
     className,
+    enabled,
     height,
     onResize,
     style,
@@ -110,19 +112,25 @@ const Resizable = ({
                 }}
             >
                 {children}
-                <Handle
-                    beforeDrag={prepare}
-                    onDrag={preview}
-                    onDrop={commit}
-                />
+                {!!enabled && (
+                    <Handle
+                        beforeDrag={prepare}
+                        onDrag={preview}
+                        onDrop={commit}
+                    />
+                )}
             </div>
         </ResizeableContext.Provider>
     )
 }
 
+Resizable.defaultProps = {
+    enabled: false,
+}
+
 export { ResizeableContext as Context }
 
-export default (props: any) => (
+export default (props: Props) => (
     <SizeConstraintProvider>
         <Resizable {...props} />
     </SizeConstraintProvider>

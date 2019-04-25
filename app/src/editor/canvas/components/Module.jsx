@@ -17,7 +17,7 @@ import Probe from './Resizable/SizeConstraintProvider/Probe'
 import ModuleStyles from '$editor/shared/components/Module.pcss'
 import Resizable from './Resizable'
 import styles from './Module.pcss'
-// import isModuleResizable from '$editor/canvas/utils/isModuleResizable'
+import isModuleResizable from '$editor/canvas/utils/isModuleResizable'
 
 class CanvasModule extends React.PureComponent {
     static contextType = RunController.Context
@@ -110,11 +110,12 @@ class CanvasModule extends React.PureComponent {
         const isRunning = canvas.state === RunStates.Running
 
         const moduleSpecificStyles = [ModuleStyles[module.jsModule], ModuleStyles[module.widget]]
-        // const isResizable = isModuleResizable(module)
+        const isResizable = isModuleResizable(module)
         return (
             /* eslint-disable-next-line max-len */
             /* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-tabindex */
             <Resizable
+                enabled={isResizable}
                 role="rowgroup"
                 tabIndex="0"
                 onFocus={() => api.selectModule({ hash: module.hash })}
