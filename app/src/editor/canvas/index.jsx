@@ -14,12 +14,14 @@ import { ClientProvider } from '$editor/shared/components/Client'
 import { ModalProvider } from '$editor/shared/components/Modal'
 import * as sharedServices from '$editor/shared/services'
 import BodyClass from '$shared/components/BodyClass'
+import Sidebar from '$editor/shared/components/Sidebar'
+import ModuleSidebar from './components/ModuleSidebar'
+import KeyboardShortcutsSidebar from './components/KeyboardShortcutsSidebar'
 
 import Canvas from './components/Canvas'
 import CanvasToolbar from './components/Toolbar'
 import CanvasStatus from './components/Status'
 import ModuleSearch from './components/ModuleSearch'
-import ModuleSidebar from './components/ModuleSidebar'
 
 import * as services from './services'
 import * as CanvasState from './state'
@@ -50,6 +52,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         isWaiting: false,
         moduleSearchIsOpen: false,
         moduleSidebarIsOpen: false,
+        keyboardShortcutIsOpen: false,
     }
 
     static getDerivedStateFromProps(props) {
@@ -77,14 +80,22 @@ const CanvasEditComponent = class CanvasEdit extends Component {
     moduleSidebarOpen = (show = true) => {
         this.setState({
             moduleSidebarIsOpen: !!show,
+            keyboardShortcutIsOpen: false,
+        })
+    }
+
+    keyboardShortcutOpen = (show = true) => {
+        this.setState({
+            moduleSidebarIsOpen: !!show,
+            keyboardShortcutIsOpen: !!show,
         })
     }
 
     selectModule = async ({ hash } = {}) => {
-        this.setState(({ moduleSidebarIsOpen }) => ({
+        this.setState(({ moduleSidebarIsOpen, keyboardShortcutIsOpen }) => ({
             selectedModuleHash: hash,
             // close sidebar if no selection
-            moduleSidebarIsOpen: hash == null ? false : moduleSidebarIsOpen,
+            moduleSidebarIsOpen: hash == null ? keyboardShortcutIsOpen : moduleSidebarIsOpen,
         }))
     }
 
@@ -341,6 +352,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
 
     render() {
         const { canvas } = this.props
+        const { moduleSidebarIsOpen, keyboardShortcutIsOpen } = this.state
         const { settings } = canvas
         const resendFrom = settings.beginDate
         const resendTo = settings.endDate
@@ -364,7 +376,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                     updateModule={this.updateModule}
                     renameModule={this.renameModule}
                     moduleSidebarOpen={this.moduleSidebarOpen}
-                    moduleSidebarIsOpen={this.state.moduleSidebarIsOpen}
+                    moduleSidebarIsOpen={moduleSidebarIsOpen && !keyboardShortcutIsOpen}
                     setCanvas={this.setCanvas}
                     loadNewDefinition={this.loadNewDefinition}
                     pushNewDefinition={this.pushNewDefinition}
@@ -389,17 +401,28 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                         setSaveState={this.setSaveState}
                         canvasStart={this.canvasStart}
                         canvasStop={this.canvasStop}
+                        keyboardShortcutOpen={this.keyboardShortcutOpen}
                         canvasExit={this.canvasExit}
                     />
                 </ModalProvider>
-                <ModuleSidebar
+                <Sidebar
                     className={styles.ModuleSidebar}
-                    isOpen={this.state.moduleSidebarIsOpen}
-                    open={this.moduleSidebarOpen}
-                    canvas={canvas}
-                    selectedModuleHash={this.state.selectedModuleHash}
-                    setModuleOptions={this.setModuleOptions}
-                />
+                    isOpen={moduleSidebarIsOpen}
+                >
+                    {moduleSidebarIsOpen && keyboardShortcutIsOpen && (
+                        <KeyboardShortcutsSidebar
+                            onClose={() => this.keyboardShortcutOpen(false)}
+                        />
+                    )}
+                    {moduleSidebarIsOpen && !keyboardShortcutIsOpen && (
+                        <ModuleSidebar
+                            onClose={() => this.moduleSidebarOpen(false)}
+                            canvas={canvas}
+                            selectedModuleHash={this.state.selectedModuleHash}
+                            setModuleOptions={this.setModuleOptions}
+                        />
+                    )}
+                </Sidebar>
                 <ModuleSearch
                     addModule={this.addModule}
                     isOpen={this.state.moduleSearchIsOpen}
