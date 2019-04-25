@@ -2,7 +2,7 @@
 
 import React, { useRef, useEffect, useContext } from 'react'
 import { type Ref } from '$shared/flowtype/common-types'
-import ResizerContext from '../Context'
+import { Context as SizeConstaintContext } from '..'
 import styles from './probe.pcss'
 
 type Props = {
@@ -15,7 +15,7 @@ type Props = {
 const Probe = ({ group, id: idProp, width, height }: Props) => {
     const id = idProp || group
     const ref: Ref<HTMLDivElement> = useRef(null)
-    const { setWidth, setHeight, probeRefreshCount } = useContext(ResizerContext)
+    const { setWidth, setHeight, probeRefreshCount } = useContext(SizeConstaintContext)
 
     useEffect(() => {
         const { current } = ref

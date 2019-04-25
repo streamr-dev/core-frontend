@@ -1,5 +1,3 @@
-/* eslint-disable react/no-unused-state */
-
 import cx from 'classnames'
 import React from 'react'
 import { Translate } from 'react-redux-i18n'
@@ -15,12 +13,11 @@ import Ports from './Ports'
 import ModuleDragger from './ModuleDragger'
 import * as RunController from './RunController'
 
-import ResizerProbe from './Resizer/Probe'
+import Probe from './Resizable/SizeConstraintProvider/Probe'
 import ModuleStyles from '$editor/shared/components/Module.pcss'
+import Resizable from './Resizable'
 import styles from './Module.pcss'
-import Resizer from './Resizer'
-import ResizerProvider from './Resizer/Provider'
-import isModuleResizable from '$editor/canvas/utils/isModuleResizable'
+// import isModuleResizable from '$editor/canvas/utils/isModuleResizable'
 
 class CanvasModule extends React.PureComponent {
     static contextType = RunController.Context
@@ -89,12 +86,16 @@ class CanvasModule extends React.PureComponent {
         e.stopPropagation()
     }
 
+    onResize = (size) => {
+        const { api: { updateModuleSize }, module: { hash } } = this.props
+        updateModuleSize(hash, size)
+    }
+
     render() {
         const {
             api,
             module,
             canvas,
-            style,
             className,
             selectedModuleHash,
             moduleSidebarIsOpen,
@@ -109,71 +110,58 @@ class CanvasModule extends React.PureComponent {
         const isRunning = canvas.state === RunStates.Running
 
         const moduleSpecificStyles = [ModuleStyles[module.jsModule], ModuleStyles[module.widget]]
-        const isResizable = isModuleResizable(module)
+        // const isResizable = isModuleResizable(module)
         return (
             /* eslint-disable-next-line max-len */
             /* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-tabindex */
-            <ResizerProvider>
-                <div
-                    role="rowgroup"
-                    tabIndex="0"
-                    onFocus={() => api.selectModule({ hash: module.hash })}
-                    className={cx(className, styles.CanvasModule, ModuleStyles.ModuleBase, ...moduleSpecificStyles, {
-                        [ModuleStyles.isSelected]: isSelected,
-                    })}
-                    style={{
-                        ...style,
-                        minWidth: layout.width,
-                        minHeight: layout.height,
-                    }}
-                    data-modulehash={module.hash}
-                    ref={this.el}
-                    {...props}
-                >
-                    <div className={ModuleStyles.selectionDecorator} />
-                    <div className={styles.body}>
-                        <ResizerProbe group="ModuleHeight" height="auto" />
-                        <ModuleHeader
-                            className={cx(styles.header, ModuleStyles.dragHandle)}
-                            editable={!isRunning}
-                            label={module.displayName || module.name}
-                            onLabelChange={this.onChangeModuleName}
-                        >
-                            <HamburgerButton
-                                className={ModuleStyles.dragCancel}
-                                onClick={this.onTriggerOptions}
-                                onFocus={this.onHamburgerButtonFocus}
-                            />
-                        </ModuleHeader>
-                        <Ports
-                            api={api}
-                            canvas={canvas}
-                            module={module}
-                            onPort={onPort}
-                            onValueChange={this.onPortValueChange}
+            <Resizable
+                role="rowgroup"
+                tabIndex="0"
+                onFocus={() => api.selectModule({ hash: module.hash })}
+                className={cx(className, styles.CanvasModule, ModuleStyles.ModuleBase, ...moduleSpecificStyles, {
+                    [ModuleStyles.isSelected]: isSelected,
+                })}
+                width={parseInt(layout.width.replace(/px$/, ''), 10)}
+                height={parseInt(layout.height.replace(/px$/, ''), 10)}
+                onResize={this.onResize}
+                data-modulehash={module.hash}
+                {...props}
+            >
+                <div className={ModuleStyles.selectionDecorator} />
+                <div className={styles.body}>
+                    <Probe group="ModuleHeight" height="auto" />
+                    <ModuleHeader
+                        className={cx(styles.header, ModuleStyles.dragHandle)}
+                        editable={!isRunning}
+                        label={module.displayName || module.name}
+                        onLabelChange={this.onChangeModuleName}
+                    >
+                        <HamburgerButton
+                            className={ModuleStyles.dragCancel}
+                            onClick={this.onTriggerOptions}
+                            onFocus={this.onHamburgerButtonFocus}
                         />
-                    </div>
-                    <ModuleUI
-                        className={styles.canvasModuleUI}
+                    </ModuleHeader>
+                    <Ports
                         api={api}
-                        module={module}
                         canvas={canvas}
-                        moduleHash={module.hash}
-                        canvasId={canvas.id}
-                        isActive={isRunning}
-                        isSubscriptionActive={this.context.isStarting || this.context.isActive}
+                        module={module}
+                        onPort={onPort}
+                        onValueChange={this.onPortValueChange}
                     />
-                    {isResizable && (
-                        <Resizer
-                            api={api}
-                            module={module}
-                            target={this.el}
-                        />
-                    )}
                 </div>
-            </ResizerProvider>
+                <ModuleUI
+                    className={styles.canvasModuleUI}
+                    api={api}
+                    module={module}
+                    canvas={canvas}
+                    moduleHash={module.hash}
+                    canvasId={canvas.id}
+                    isActive={isRunning}
+                    isSubscriptionActive={this.context.isStarting || this.context.isActive}
+                />
+            </Resizable>
         )
-        /* eslint-enable */
     }
 }
 

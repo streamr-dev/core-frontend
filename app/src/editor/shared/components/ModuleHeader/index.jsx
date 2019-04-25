@@ -3,7 +3,7 @@
 import React, { useState, type Node, Fragment } from 'react'
 import cx from 'classnames'
 import EditableText from '$shared/components/EditableText'
-import ResizerProbe from '$editor/canvas/components/Resizer/Probe'
+import Probe from '$editor/canvas/components/Resizable/SizeConstraintProvider/Probe'
 import styles from './moduleHeader.pcss'
 
 type Props = {
@@ -29,7 +29,7 @@ const ModuleHeader = ({
     return (
         <Fragment>
             {/* ModuleHeader's minWidth is always 92px. */}
-            <ResizerProbe group="ModuleHeader" width={92} />
+            <Probe group="ModuleHeader" width={92} />
             <div
                 className={cx(styles.root, className)}
                 {...props}

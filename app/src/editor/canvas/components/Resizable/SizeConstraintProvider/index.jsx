@@ -1,9 +1,34 @@
 // @flow
 
-import React, { useCallback, useState, useMemo } from 'react'
-import ResizerContext from '../Context'
+import React, { type Node, type Context, createContext, useMemo, useState, useCallback } from 'react'
 
-const Provider = (props: {}) => {
+type ContextProps = {
+    minHeight: number,
+    minWidth: number,
+    probeRefreshCount: number,
+    refreshProbes: () => void,
+    setHeight: (string, string, number) => void,
+    setWidth: (string, string, number) => void,
+}
+
+const defaultContext: ContextProps = {
+    minHeight: 0,
+    minWidth: 0,
+    probeRefreshCount: 0,
+    refreshProbes: () => {},
+    setHeight: () => {},
+    setWidth: () => {},
+}
+
+const SizeConstraintContext: Context<ContextProps> = createContext(defaultContext)
+
+export { SizeConstraintContext as Context }
+
+type Props = {
+    children?: Node,
+}
+
+const SizeConstraintProvider = ({ children }: Props) => {
     const [widths, setWidths] = useState({})
     const [heights, setHeights] = useState({})
     const [probeRefreshCount, setProbeRefreshCount] = useState(0)
@@ -57,8 +82,10 @@ const Provider = (props: {}) => {
     ])
 
     return (
-        <ResizerContext.Provider value={value} {...props} />
+        <SizeConstraintContext.Provider value={value}>
+            {children}
+        </SizeConstraintContext.Provider>
     )
 }
 
-export default Provider
+export default SizeConstraintProvider
