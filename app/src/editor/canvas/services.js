@@ -5,9 +5,7 @@
 import api from '$editor/shared/utils/api'
 import Autosave from '$editor/shared/utils/autosave'
 import { nextUniqueName, nextUniqueCopyName } from '$editor/shared/utils/uniqueName'
-import Notification from '$shared/utils/Notification'
-import { NotificationIcon } from '$shared/utils/constants'
-import { emptyCanvas, isRunning, RunStates, RunTabs } from './state'
+import { emptyCanvas, isRunning, RunStates, isHistoricalModeSelected } from './state'
 
 const getData = ({ data }) => data
 
@@ -21,20 +19,7 @@ async function save(canvas) {
     return api().put(`${canvasesUrl}/${canvas.id}`, canvas).then(getData)
 }
 
-function autoSaveWithNotification() {
-    const autosave = Autosave(save, AUTOSAVE_DELAY)
-
-    autosave.on('fail', () => {
-        Notification.push({
-            title: 'Autosave failed.',
-            icon: NotificationIcon.ERROR,
-        })
-    })
-
-    return autosave
-}
-
-export const autosave = autoSaveWithNotification()
+export const autosave = Autosave(save, AUTOSAVE_DELAY)
 
 export async function saveNow(canvas, ...args) {
     if (autosave.pending) {
@@ -103,13 +88,7 @@ async function startCanvas(canvas, { clearState }) {
     const savedCanvas = await saveNow(canvas)
     return api().post(`${canvasesUrl}/${savedCanvas.id}/start`, {
         clearState: !!clearState,
-    }).then((data) => {
-        Notification.push({
-            title: 'Canvas started.',
-            icon: NotificationIcon.CHECKMARK,
-        })
-        return getData(data)
-    })
+    }).then(getData)
 }
 
 /**
@@ -138,19 +117,12 @@ export async function createAdhocCanvas(canvas) {
 }
 
 export async function start(canvas, options = {}) {
-    const savedCanvas = await saveNow(canvas)
-    return startCanvas(savedCanvas, options)
+    return startCanvas(canvas, options)
 }
 
 export async function stop(canvas) {
     return api().post(`${canvasesUrl}/${canvas.id}/stop`)
-        .then((data) => {
-            Notification.push({
-                title: 'Canvas stopped.',
-                icon: NotificationIcon.CHECKMARK,
-            })
-            return getData(data)
-        })
+        .then(getData)
 }
 
 /**
@@ -159,9 +131,7 @@ export async function stop(canvas) {
  */
 
 export async function startOrCreateAdhocCanvas(canvas, options) {
-    const { settings = {} } = canvas
-    const { editorState = {} } = settings
-    const isHistorical = editorState.runTab === RunTabs.historical
+    const isHistorical = isHistoricalModeSelected(canvas)
     if (isHistorical && !canvas.adhoc) {
         return createAdhocCanvas(canvas)
     }
@@ -171,11 +141,16 @@ export async function startOrCreateAdhocCanvas(canvas, options) {
     })
 }
 
+export async function loadParentCanvas(canvas) {
+    const { settings = {} } = canvas
+    return loadCanvas({ id: settings.parentCanvasId })
+}
+
 /**
  * Unlinks parent from child.
  */
 
-export async function exitAdhocCanvas(canvas) {
+export async function unlinkParentCanvas(canvas) {
     const { settings = {} } = canvas
     const parent = await loadCanvas({ id: settings.parentCanvasId })
     return saveNow({

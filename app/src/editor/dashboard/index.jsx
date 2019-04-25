@@ -133,9 +133,7 @@ const DashboardEdit = withRouter(class DashboardEdit extends Component {
         const { dashboard } = this.props
         return (
             <div className={styles.DashboardEdit}>
-                <Helmet>
-                    <title>{dashboard.name}</title>
-                </Helmet>
+                <Helmet title={dashboard.name} />
                 <ModalProvider>
                     <SelectionProvider>
                         <Dashboard
