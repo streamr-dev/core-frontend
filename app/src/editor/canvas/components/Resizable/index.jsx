@@ -1,10 +1,10 @@
 // @flow
 
-import React, { type Context, createContext, type Node, useState, useRef, useCallback, useEffect } from 'react'
+import React, { type Context, createContext, type Node, useState, useRef, useCallback, useEffect, useContext } from 'react'
 import cx from 'classnames'
 import { type Ref } from '$shared/flowtype/common-types'
 import Handle from './Handle'
-import SizeConstraintProvider from './SizeConstraintProvider'
+import SizeConstraintProvider, { Context as SizeConstraintContext } from './SizeConstraintProvider'
 import styles from './resizable.pcss'
 
 type Size = {
@@ -42,6 +42,8 @@ const Resizable = ({
     width,
     ...props
 }: Props) => {
+    const { minWidth, minHeight } = useContext(SizeConstraintContext)
+
     const [size, setSize] = useState({
         height,
         width,
@@ -57,10 +59,10 @@ const Resizable = ({
     const updateSize = useCallback(({ dx, dy }) => {
         const { height, width } = ((tempSize.current: any): Size)
         setSize({
-            height: height - dy,
-            width: width - dx,
+            height: Math.max(minHeight, height - dy),
+            width: Math.max(minWidth, width - dx),
         })
-    }, [])
+    }, [minHeight, minWidth])
 
     const preview = useCallback((diff) => {
         setIsResizing(true)
