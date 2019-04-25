@@ -5,10 +5,10 @@ import { Translate } from 'react-redux-i18n'
 import HamburgerButton from '../../shared/components/HamburgerButton'
 import ModuleHeader from '../../shared/components/ModuleHeader'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
+import ModuleUI from '$editor/shared/components/ModuleUI'
 
 import { RunStates } from '../state'
 
-import Ui from './Ui'
 import Ports from './Ports'
 import ModuleDragger from './ModuleDragger'
 import * as RunController from './RunController'
@@ -149,7 +149,8 @@ class CanvasModule extends React.PureComponent {
                         onValueChange={this.onPortValueChange}
                     />
                 </div>
-                <Ui
+                <ModuleUI
+                    autoSize
                     className={styles.canvasModuleUI}
                     api={api}
                     module={module}

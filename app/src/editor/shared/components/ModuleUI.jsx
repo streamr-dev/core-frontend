@@ -2,8 +2,11 @@
  * Maps module jsModule/widget to UI components.
  */
 
-import React from 'react'
+import React, { useContext } from 'react'
 
+import { Context as ResizableContext } from '$editor/canvas/components/Resizable'
+import { Context as SizeConstraintContext } from '$editor/canvas/components/Resizable/SizeConstraintProvider'
+import Probe from '$editor/canvas/components/Resizable/SizeConstraintProvider/Probe'
 import TableModule from './modules/Table'
 import ChartModule from './modules/Chart'
 import StreamrButton from './modules/Button'
@@ -41,13 +44,45 @@ const Widgets = {
     StreamrSwitcher,
 }
 
-export default (props) => (
+const AutoSizeWrapper = ({ children }) => {
+    const { width, height } = useContext(ResizableContext)
+    const { minHeight } = useContext(SizeConstraintContext)
+    const extraHeight = 150
+
+    return (
+        <div
+            style={{
+                height: (height - minHeight) + extraHeight,
+                overflow: 'hidden',
+                position: 'relative',
+                width,
+            }}
+        >
+            <Probe group="ModuleHeight" id="UI" height={extraHeight} />
+            <Probe group="UiWidth" id="UI" width={200} />
+            {children}
+        </div>
+    )
+}
+
+export default ({ autoSize, ...props }) => (
     <ModuleLoader {...props}>
         {(props) => {
-            const { module } = props
-            if (!module) { return null }
+            const module = props.module || {}
             const Module = module.widget ? Widgets[module.widget] : Modules[module.jsModule]
-            if (!Module) { return null }
+
+            if (!Module) {
+                return null
+            }
+
+            if (autoSize) {
+                return (
+                    <AutoSizeWrapper>
+                        <Module {...props} />
+                    </AutoSizeWrapper>
+                )
+            }
+
             return <Module {...props} />
         }}
     </ModuleLoader>
