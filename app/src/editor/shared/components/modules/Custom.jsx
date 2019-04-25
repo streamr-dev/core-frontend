@@ -56,7 +56,17 @@ export default class CustomModule extends React.Component {
                     onApply={this.onApply}
                     debugMessages={debugMessages}
                     onClearDebug={this.onClearDebug}
-                />
+                >
+                    {(showEditor) => (
+                        <button
+                            type="button"
+                            className={styles.button}
+                            onClick={showEditor}
+                        >
+                            Edit Code
+                        </button>
+                    )}
+                </CodeEditor>
             </div>
         )
     }

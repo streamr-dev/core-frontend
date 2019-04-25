@@ -82,25 +82,48 @@ export default class SolidityModule extends React.Component {
                     onApply={this.onApply}
                     debugMessages={debugMessages}
                     onClearDebug={this.onClearDebug}
-                />
+                >
+                    {(openEditor) => (
+                        <div className={styles.buttonsContainer}>
+                            <button
+                                type="button"
+                                className={styles.button}
+                                onClick={openEditor}
+                            >
+                                Edit code
+                            </button>
+                            <button
+                                type="button"
+                                className={styles.button}
+                                onClick={this.onDeploy}
+                                disabled={contract && (contract.address || deploying)}
+                            >
+                                {(!contract || (contract && !contract.address)) && !deploying && (
+                                    'Deploy'
+                                )}
+                                {(!contract || (contract && !contract.address)) && deploying && (
+                                    <Spinner size="small" className={styles.spinner} />
+                                )}
+                                {contract && contract.address && (
+                                    'Deployed'
+                                )}
+                            </button>
+                        </div>
+                    )}
+                </CodeEditor>
                 {contract && contract.address && (
-                    <div className={styles.address}>
-                        0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10
+                    <div>
+                        <div className={styles.address}>
+                            <div className={styles.addressLabel}>Address</div>
+                            <div
+                                className={styles.addressValue}
+                                data-truncated={contract.address.substring(contract.address.length - 6)}
+                                title={contract.address}
+                            >
+                                <div>{contract.address}</div>
+                            </div>
+                        </div>
                     </div>
-                )}
-                {contract && !contract.address && deploying && (
-                    <div className={styles.spinner}>
-                        <Spinner size="small" />
-                    </div>
-                )}
-                {contract && !contract.address && !deploying && (
-                    <button
-                        type="button"
-                        className={styles.button}
-                        onClick={this.onDeploy}
-                    >
-                        Deploy
-                    </button>
                 )}
             </div>
         )

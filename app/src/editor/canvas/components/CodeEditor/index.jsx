@@ -3,8 +3,6 @@ import React from 'react'
 import CodeEditorWindow from './CodeEditorWindow'
 import DebugWindow from './DebugWindow'
 
-import styles from './CodeEditor.pcss'
-
 export default class CodeEditor extends React.Component {
     state = {
         editorOpen: false,
@@ -68,18 +66,13 @@ export default class CodeEditor extends React.Component {
             debugMessages,
             onApply,
             onClearDebug,
+            children,
         } = this.props
         const { editorOpen, debugOpen, editorPosition, debugPosition } = this.state
 
         return (
             <React.Fragment>
-                <button
-                    type="button"
-                    className={styles.button}
-                    onClick={this.onShowEditor}
-                >
-                    Edit Code
-                </button>
+                {children && children(this.onShowEditor)}
                 {!!editorOpen && (
                     <CodeEditorWindow
                         position={editorPosition}
