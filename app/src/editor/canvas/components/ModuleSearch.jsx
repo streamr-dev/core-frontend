@@ -65,9 +65,25 @@ export class ModuleMenuCategory extends React.PureComponent<MenuCategoryProps, M
     }
 }
 
+const onDragStart = (e: any) => {
+    e.stopPropagation()
+    console.log(e)
+    console.log(e.target)
+    const dragImage = document.querySelector('#dragImage')
+    if (dragImage) {
+        const textElement = dragImage.querySelector('.dragModuleName')
+        if (textElement) {
+            textElement.textContent = e.target.textContent
+        }
+        e.dataTransfer.setDragImage(dragImage, 0, 0)
+    }
+
+    e.dataTransfer.setData('text/plain', 'some_dummy_data')
+}
+
 const ModuleMenuItem = ({ module, onSelect }) => (
     /* eslint-disable-next-line */
-    <div className={styles.ModuleItem} role="option" onClick={() => onSelect(module.id)}>
+    <div draggable onDragStart={onDragStart} className={styles.ModuleItem} role="option" onClick={() => onSelect(module.id)}>
         {startCase(module.name)}
     </div>
 )
@@ -384,6 +400,13 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
                         </ResizableBox>
                     </div>
                 </Draggable>
+                <div className={styles.dragElement} id="dragImage">
+                    <SvgIcon className={styles.dragImage} name="crossHeavy" />
+                    <div>
+                        <span>Drop to create</span>
+                        <span className="dragModuleName" />
+                    </div>
+                </div>
             </React.Fragment>
         )
     }
