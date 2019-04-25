@@ -1,4 +1,4 @@
-import { useCallback, useRef, useEffect } from 'react'
+import React, { useCallback, useRef, useEffect } from 'react'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 
@@ -52,6 +52,17 @@ function useCanvasRunNotification(canvas = EMPTY) {
             onStop()
         }
     }, [onStart, onStop]))
+}
+
+export function pushErrorNotification(error) {
+    console.error(error) // eslint-disable-line no-console
+    // eslint-disable-next-line react/no-danger
+    const title = error.message ? <span dangerouslySetInnerHTML={{ __html: error.message }} /> : 'Error'
+    Notification.push({
+        title,
+        icon: NotificationIcon.ERROR,
+        error,
+    })
 }
 
 export default function useCanvasNotifications(canvas = {}) {
