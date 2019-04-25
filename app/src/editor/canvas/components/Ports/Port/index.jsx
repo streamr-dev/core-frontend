@@ -123,6 +123,12 @@ const Port = ({
         }
     }, [onWindowMouseDown, onGlobalKeyDown, onWindowBlur])
 
+    useEffect(() => {
+        if (onSizeChange) {
+            onSizeChange()
+        }
+    }, [port.value, onSizeChange])
+
     return (
         <div
             className={cx(styles.root, {
