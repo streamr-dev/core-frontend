@@ -18,8 +18,18 @@ streamr_docker_dev='streamr-docker-dev/streamr-docker-dev/bin.sh'
 # start everything except eth watcher
 $streamr_docker_dev start 5
 
-RETRIES=30;
+RETRIES=50;
 RETRY_DELAY=2s;
+
+# wait for cassandra to come up
+waitFor $RETRIES $RETRY_DELAY nc -zv 127.0.0.1 9042;
+
+if [ $? -eq 1 ] ; then
+    echo "cassandra 9042 never up.";
+    $streamr_docker_dev log;
+    $streamr_docker_dev ps;
+    exit 1;
+fi
 
 # wait for E&E to come up
 waitFor $RETRIES $RETRY_DELAY checkHTTP "engine-and-editor" 200 http://localhost:8081/streamr-core/login/auth;
@@ -43,11 +53,7 @@ if [ $? -eq 1 ] ; then
     echo "data-api still not up"
     $streamr_docker_dev ps;
     # try waiting again
-    $streamr_docker_dev restart cassandra;
-    $streamr_docker_dev restart zookeeper;
-    $streamr_docker_dev restart kafka;
-    $streamr_docker_dev restart broker;
-    $streamr_docker_dev restart data-api;
+    $streamr_docker_dev restart --all;
     waitFor $RETRIES $RETRY_DELAY checkHTTP "data-api" 404 http://localhost:8890/;
     # exit if data-api ever came up (ffs)
     if [ $? -eq 1 ] ; then
