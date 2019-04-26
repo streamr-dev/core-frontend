@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-trap "killall background" EXIT # clean up background jobs
+#trap "killall background" EXIT # clean up background jobs
 
 ##
 ## Pulls down streamr-docker-dev and starts an engine-and-editor instance + associated services ##
@@ -19,7 +19,7 @@ streamr_docker_dev='streamr-docker-dev/streamr-docker-dev/bin.sh'
 $streamr_docker_dev start 5
 
 RETRIES=30;
-RETRY_DELAY=5s;
+RETRY_DELAY=2s;
 
 # wait for E&E to come up
 waitFor $RETRIES $RETRY_DELAY checkHTTP "engine-and-editor" 200 http://localhost:8081/streamr-core/login/auth;
@@ -46,14 +46,23 @@ if [ $? -eq 1 ] ; then
     $streamr_docker_dev restart cassandra;
     $streamr_docker_dev restart zookeeper;
     $streamr_docker_dev restart kafka;
+    $streamr_docker_dev restart broker;
     $streamr_docker_dev restart data-api;
     waitFor $RETRIES $RETRY_DELAY checkHTTP "data-api" 404 http://localhost:8890/;
     # exit if data-api ever came up (ffs)
     if [ $? -eq 1 ] ; then
         echo "data-api never up.";
+        $streamr_docker_dev log;
+        $streamr_docker_dev ps;
         exit 1;
     fi
     waitFor $RETRIES $RETRY_DELAY checkHTTP "nginx" 200 http://localhost:80/;
+    if [ $? -eq 1 ] ; then
+        echo "nginx never up.";
+        $streamr_docker_dev log;
+        $streamr_docker_dev ps;
+        exit 1;
+    fi
 fi
 
 $streamr_docker_dev ps;
