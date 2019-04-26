@@ -43,6 +43,9 @@ if [ $? -eq 1 ] ; then
     echo "data-api still not up"
     $streamr_docker_dev ps;
     # try waiting again
+    $streamr_docker_dev restart cassandra;
+    $streamr_docker_dev restart zookeeper;
+    $streamr_docker_dev restart kafka;
     $streamr_docker_dev restart data-api;
     waitFor $RETRIES $RETRY_DELAY checkHTTP "data-api" 404 http://localhost:8890/;
     # exit if data-api ever came up (ffs)
