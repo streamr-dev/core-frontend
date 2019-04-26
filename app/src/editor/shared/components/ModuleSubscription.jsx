@@ -83,7 +83,6 @@ export default class ModuleSubscription extends React.PureComponent {
         return (
             <Subscription
                 {...this.props}
-                isActive={!!this.props.isSubscriptionActive}
                 uiChannel={module.uiChannel}
                 resendLast={options.uiResendLast && options.uiResendLast.value}
                 resendFrom={options.uiResendFrom && options.uiResendFrom.value}

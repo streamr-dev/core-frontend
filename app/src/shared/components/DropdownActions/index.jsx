@@ -15,10 +15,8 @@ type Props = {
     },
     menuProps: {
         className?: string,
-        modifiers?: Object,
     },
     onMenuToggle?: (boolean) => void,
-    direction?: string,
 }
 
 type State = {
@@ -60,7 +58,6 @@ export default class DropdownActions extends Component<Props, State> {
             noCaret,
             toggleProps: { className: toggleClassName, ...toggleProps },
             menuProps: { className: menuClassName, ...menuProps },
-            direction,
         } = this.props
 
         return (
@@ -68,7 +65,6 @@ export default class DropdownActions extends Component<Props, State> {
                 toggle={this.toggle}
                 isOpen={this.state.open}
                 onClick={this.onClick}
-                direction={direction}
                 className={cx(className, styles.dropdown)}
             >
                 <DropdownToggle

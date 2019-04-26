@@ -84,7 +84,7 @@ class TransactionList extends Component<Props> {
                                     <th><Translate value="userpages.transactions.list.value" /></th>
                                     <th><Translate value="userpages.transactions.list.gas" /></th>
                                     <th><Translate value="userpages.transactions.list.status" /></th>
-                                    <th className={styles.menuColumn} />
+                                    <th />
                                 </tr>
                             </thead>
                             <tbody>
@@ -96,35 +96,26 @@ class TransactionList extends Component<Props> {
                                     return (
                                         <tr key={transaction.id}>
                                             <Table.Th title={productTitle} noWrap>{productTitle}</Table.Th>
-                                            <Table.Td title={transaction.type} noWrap>
+                                            <td>
                                                 {!!transaction.type && (
                                                     <Translate value={`userpages.transactions.type.${transaction.type}`} />
                                                 )}
-                                            </Table.Td>
+                                            </td>
                                             <Table.Td title={transaction.hash} noWrap>{transaction.hash}</Table.Td>
-                                            <Table.Td noWrap>{transaction.timestamp ? moment.unix(transaction.timestamp).fromNow() : '-'}</Table.Td>
-                                            <Table.Td noWrap>
+                                            <td>{transaction.timestamp ? moment.unix(transaction.timestamp).fromNow() : '-'}</td>
+                                            <td>
                                                 {price.isGreaterThanOrEqualTo(0) ? '+' : ''}{mapPriceFromContract(price)} DATA
-                                            </Table.Td>
-                                            <Table.Td noWrap>{transaction.gasUsed} / {transaction.gasPrice}</Table.Td>
-                                            <Table.Td noWrap>
+                                            </td>
+                                            <td>{transaction.gasUsed} / {transaction.gasPrice}</td>
+                                            <td>
                                                 {!!transaction.state && (
                                                     <Translate value={`userpages.transactions.status.${transaction.state}`} />
                                                 )}
-                                            </Table.Td>
-                                            <Table.Td className={styles.menuColumn}>
+                                            </td>
+                                            <td>
                                                 <DropdownActions
                                                     title={<Meatball alt={I18n.t('userpages.transactions.actions.title')} />}
                                                     noCaret
-                                                    menuProps={{
-                                                        modifiers: {
-                                                            offset: {
-                                                                // Make menu aligned to the right.
-                                                                // See https://popper.js.org/popper-documentation.html#modifiers..offset
-                                                                offset: '-100%p + 100%',
-                                                            },
-                                                        },
-                                                    }}
                                                 >
                                                     <DropdownActions.Item onClick={() => this.props.openInEtherscan(transaction.hash)}>
                                                         <Translate value="userpages.transactions.actions.viewOnEtherscan" />
@@ -133,7 +124,7 @@ class TransactionList extends Component<Props> {
                                                         <Translate value="userpages.transactions.actions.copyTxHash" />
                                                     </DropdownActions.Item>
                                                 </DropdownActions>
-                                            </Table.Td>
+                                            </td>
                                         </tr>
                                     )
                                 })}

@@ -4,81 +4,56 @@
 
 /* eslint-disable react/no-unused-state */
 
-import React, { Component, useContext } from 'react'
-import uniqueId from 'lodash/uniqueId'
+import React, { Component } from 'react'
 import t from 'prop-types'
 
 import { ClientContext } from './Client'
-import { SubscriptionStatusContext } from './SubscriptionStatus'
 
-const Message = {
+const MessageTypes = {
     Done: 'D',
     Error: 'E',
     Notification: 'N',
-    Warning: 'MW',
+    ModuleWarning: 'MW',
 }
 
 class Subscription extends Component {
+    static contextType = ClientContext
+
     static defaultProps = {
         onMessage: Function.prototype,
-        onDoneMessage: Function.prototype,
-        onErrorMessage: Function.prototype,
-        onWarningMessage: Function.prototype,
-        onNotificationMessage: Function.prototype,
         onSubscribed: Function.prototype,
         onUnsubscribed: Function.prototype,
         onResending: Function.prototype,
         onResent: Function.prototype,
         onNoResend: Function.prototype,
-        onError: Function.prototype,
+        resendFrom: 0,
     }
 
     static propTypes = {
         onMessage: t.func.isRequired,
-        onDoneMessage: t.func.isRequired,
-        onErrorMessage: t.func.isRequired,
-        onWarningMessage: t.func.isRequired,
-        onNotificationMessage: t.func.isRequired,
         onSubscribed: t.func.isRequired,
         onUnsubscribed: t.func.isRequired,
         onResending: t.func.isRequired,
         onResent: t.func.isRequired,
         onNoResend: t.func.isRequired,
-        onError: t.func.isRequired,
     }
 
-    uid = uniqueId('sub')
-
     componentDidMount() {
-        if (this.props.subscriptionStatus) {
-            this.props.subscriptionStatus.register(this.uid)
-        }
         this.autosubscribe()
     }
 
     componentDidUpdate() {
-        // unsubscribe if switching to active
-        if (this.props.isActive && !this.isSubscribed) {
-            this.autosubscribe()
-        } else if (!this.props.isActive && !this.isSubscribed) {
-            // unsubscribe if switching to inactive
-            this.unsubscribe()
-        }
+        this.autosubscribe()
     }
 
     componentWillUnmount() {
-        this.unmounted = true
-        if (this.props.subscriptionStatus) {
-            this.props.subscriptionStatus.unregister(this.uid)
-        }
         this.unsubscribe()
     }
 
     autosubscribe() {
         if (this.isSubscribed) { return }
         const { isActive, uiChannel } = this.props
-        if (!this.props.clientContext.client) { return }
-
+        if (!this.context.client) { return }
         if (isActive && uiChannel) {
             this.subscribe()
         }
@@ -115,7 +90,7 @@ class Subscription extends Component {
         this.unsubscribe()
 
         this.isSubscribed = true
-        this.client = this.props.clientContext.client
+        this.client = this.context.client
 
         const { id } = uiChannel
 
@@ -141,40 +116,25 @@ class Subscription extends Component {
             subscription.off('resent', this.onResent)
             subscription.off('no_resend', this.onNoResend)
             subscription.off('error', this.onError)
-            subscription.off('unsubscribed', this.onUnsubscribed)
         }
         this.subscription = undefined
         this.client = undefined
         this.isSubscribed = false
+        subscription.once('unsubscribed', () => {
+            subscription.off('unsubscribed', this.onUnsubscribed)
+        })
         client.unsubscribe(subscription)
-    }
-
-    handleKnownMessageTypes = (message, ...args) => {
-        switch (message.type) {
-            case Message.Done: {
-                this.props.onDoneMessage(message, ...args)
-                break
-            }
-            case Message.Error: {
-                this.props.onErrorMessage(message, ...args)
-                break
-            }
-            case Message.Warning: {
-                this.props.onWarningMessage(message, ...args)
-                break
-            }
-            case Message.Notification: {
-                this.props.onNotificationMessage(message, ...args)
-                break
-            }
-            default: // continue
-        }
     }
 
     onMessage = (message, ...args) => {
         if (!this.isSubscribed) { return }
-        this.handleKnownMessageTypes(message, ...args)
+
         this.props.onMessage(message, ...args)
+
+        if (message.type === MessageTypes.Done) {
+            // unsubscribe when done
+            this.unsubscribe()
+        }
     }
 
     /**
@@ -182,16 +142,10 @@ class Subscription extends Component {
      */
 
     onSubscribed = (...args) => {
-        if (this.props.subscriptionStatus) {
-            this.props.subscriptionStatus.subscribed(this.uid)
-        }
         this.props.onSubscribed(...args)
     }
 
     onUnsubscribed = (...args) => {
-        if (this.props.subscriptionStatus) {
-            this.props.subscriptionStatus.unsubscribed(this.uid)
-        }
         this.props.onUnsubscribed(...args)
     }
 
@@ -216,19 +170,11 @@ class Subscription extends Component {
     }
 }
 
-export default React.forwardRef((props, ref) => {
-    const subscriptionStatus = useContext(SubscriptionStatusContext)
-    const clientContext = useContext(ClientContext)
+export default (props) => {
     const { uiChannel, resendAll } = props
     // create new subscription if uiChannel or resendAll changes
     const subscriptionKey = (uiChannel && uiChannel.id) + resendAll
     return (
-        <Subscription
-            {...props}
-            ref={ref}
-            key={subscriptionKey}
-            subscriptionStatus={subscriptionStatus}
-            clientContext={clientContext}
-        />
+        <Subscription key={subscriptionKey} {...props} />
     )
-})
+}

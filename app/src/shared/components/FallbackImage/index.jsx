@@ -2,7 +2,6 @@
 
 import React, { type Node } from 'react'
 import ReactImg from 'react-image'
-import cx from 'classnames'
 
 import Logo from '$shared/components/Logo'
 
@@ -10,11 +9,10 @@ import styles from './fallbackImage.pcss'
 
 type PlaceholderProps = {
     alt: string,
-    className?: string,
 }
 
-const DefaultImagePlaceholder = ({ alt, className }: PlaceholderProps) => (
-    <div className={cx(styles.defaultImagePlaceholder, className)}>
+const DefaultImagePlaceholder = ({ alt }: PlaceholderProps) => (
+    <div className={styles.defaultImagePlaceholder}>
         <Logo color="black" opacity="0.15" />
         <img
             src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAMAAAACCAQAA
@@ -36,7 +34,7 @@ const FallbackImage = ({ src, alt, className, placeholder }: Props) => (
         className={className}
         src={src}
         alt={alt}
-        unloader={placeholder || <DefaultImagePlaceholder alt={alt} className={className} />}
+        unloader={placeholder || <DefaultImagePlaceholder alt={alt} />}
     />
 )
 
