@@ -84,7 +84,7 @@ class TransactionList extends Component<Props> {
                                     <th><Translate value="userpages.transactions.list.value" /></th>
                                     <th><Translate value="userpages.transactions.list.gas" /></th>
                                     <th><Translate value="userpages.transactions.list.status" /></th>
-                                    <th />
+                                    <th className={styles.menuColumn} />
                                 </tr>
                             </thead>
                             <tbody>
@@ -112,10 +112,19 @@ class TransactionList extends Component<Props> {
                                                     <Translate value={`userpages.transactions.status.${transaction.state}`} />
                                                 )}
                                             </Table.Td>
-                                            <Table.Td>
+                                            <Table.Td className={styles.menuColumn}>
                                                 <DropdownActions
                                                     title={<Meatball alt={I18n.t('userpages.transactions.actions.title')} />}
                                                     noCaret
+                                                    menuProps={{
+                                                        modifiers: {
+                                                            offset: {
+                                                                // Make menu aligned to the right.
+                                                                // See https://popper.js.org/popper-documentation.html#modifiers..offset
+                                                                offset: '-100%p + 100%',
+                                                            },
+                                                        },
+                                                    }}
                                                 >
                                                     <DropdownActions.Item onClick={() => this.props.openInEtherscan(transaction.hash)}>
                                                         <Translate value="userpages.transactions.actions.viewOnEtherscan" />

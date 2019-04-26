@@ -284,8 +284,8 @@ class StreamList extends Component<Props, State> {
                                     <th><Translate value="userpages.streams.list.description" /></th>
                                     <th><Translate value="userpages.streams.list.updated" /></th>
                                     <th><Translate value="userpages.streams.list.lastData" /></th>
-                                    <th className={styles.status}><Translate value="userpages.streams.list.status" /></th>
-                                    <th />
+                                    <th className={styles.statusColumn}><Translate value="userpages.streams.list.status" /></th>
+                                    <th className={styles.menuColumn} />
                                 </tr>
                             </thead>
                             <tbody>
@@ -295,8 +295,8 @@ class StreamList extends Component<Props, State> {
                                         <Table.Td noWrap title={stream.description}>{stream.description}</Table.Td>
                                         <Table.Td noWrap>{moment(stream.lastUpdated).fromNow()}</Table.Td>
                                         <Table.Td>-</Table.Td>
-                                        <Table.Td className={styles.status}><StatusIcon /></Table.Td>
-                                        <Table.Td>
+                                        <Table.Td className={styles.statusColumn}><StatusIcon /></Table.Td>
+                                        <Table.Td className={styles.menuColumn}>
                                             <DropdownActions
                                                 title={<Meatball alt={I18n.t('userpages.streams.actions')} />}
                                                 noCaret
@@ -304,6 +304,15 @@ class StreamList extends Component<Props, State> {
                                                     if (open) {
                                                         this.loadStreamPermissions(stream.id)
                                                     }
+                                                }}
+                                                menuProps={{
+                                                    modifiers: {
+                                                        offset: {
+                                                            // Make menu aligned to the right.
+                                                            // See https://popper.js.org/popper-documentation.html#modifiers..offset
+                                                            offset: '-100%p + 100%',
+                                                        },
+                                                    },
                                                 }}
                                             >
                                                 <DropdownActions.Item>
