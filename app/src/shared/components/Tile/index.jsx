@@ -33,15 +33,23 @@ const Tile = ({
             <DropdownActions
                 className={styles.menu}
                 title={<Meatball alt="Select" white />}
+                direction="down"
                 noCaret
                 onMenuToggle={onMenuToggle}
+                menuProps={{
+                    modifiers: {
+                        offset: {
+                            // Make menu aligned to the right.
+                            // See https://popper.js.org/popper-documentation.html#modifiers..offset
+                            offset: '-100%p + 100%',
+                        },
+                    },
+                }}
             >
                 {dropdownActions}
             </DropdownActions>
         }
-        <div className={styles.image}>
-            <FallbackImage src={imageUrl || ''} alt="Tile" className={styles.image} />
-        </div>
+        <FallbackImage src={imageUrl || ''} alt="Tile" className={styles.image} />
         <div className={styles.content}>
             {children}
         </div>
