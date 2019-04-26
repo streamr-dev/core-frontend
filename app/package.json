@@ -6,7 +6,7 @@
   "scripts": {
     "start": "webpack-dev-server --hot",
     "build": "node --max_old_space_size=4096 ./node_modules/.bin/webpack",
-    "test": "NODE_ENV=test jest ./test/* ./src/shared/test/* ./src/userpages/tests/* ./src/editor/shared/tests/* ./src/editor/canvas/tests/*",
+    "test": "NODE_ENV=test jest src/editor/shared/tests/Subscription.test.jsx",
     "flow": "flow",
     "flow-stop": "flow stop",
     "eslint": "eslint .",
