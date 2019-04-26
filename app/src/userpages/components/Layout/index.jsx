@@ -1,6 +1,6 @@
 // @flow
 
-import React, { type Node } from 'react'
+import React, { Component, type Node } from 'react'
 
 import Layout from '$mp/components/Layout'
 import LoadingIndicator from '$userpages/components/LoadingIndicator'
@@ -17,24 +17,58 @@ type Props = {
     loading?: boolean,
 }
 
-const UserpagesLayout = (props: Props) => (
-    <Layout footer={false} className={styles.container}>
-        <Header
-            additionalComponent={props.headerAdditionalComponent}
-            searchComponent={props.headerSearchComponent}
-            filterComponent={props.headerFilterComponent}
-            noHeader={props.noHeader}
-        />
-        <LoadingIndicator loading={!!props.loading} className={styles.loadingIndicator} />
-        <div className={styles.content}>
-            {props.children}
-        </div>
-    </Layout>
-)
+type State = {}
 
-UserpagesLayout.defaultProps = {
-    noHeader: false,
-    loading: false,
+class UserpagesLayout extends Component<Props, State> {
+    static defaultProps = {
+        noHeader: false,
+        loading: false,
+    }
+
+    componentDidMount() {
+        this.toggleAlwaysOnScrollbar(true)
+    }
+
+    componentWillUnmount() {
+        this.toggleAlwaysOnScrollbar(false)
+    }
+
+    toggleAlwaysOnScrollbar = (setting: boolean) => {
+        if (document.body) {
+            if (setting) {
+                // $FlowFixMe
+                document.getElementsByTagName('body')[0].style['overflow-y'] = 'scroll'
+            } else {
+                // $FlowFixMe
+                document.getElementsByTagName('body')[0].style['overflow-y'] = null
+            }
+        }
+    }
+
+    render() {
+        const {
+            headerAdditionalComponent,
+            headerSearchComponent,
+            headerFilterComponent,
+            noHeader,
+            loading,
+            children,
+        } = this.props
+        return (
+            <Layout footer={false} className={styles.container}>
+                <Header
+                    additionalComponent={headerAdditionalComponent}
+                    searchComponent={headerSearchComponent}
+                    filterComponent={headerFilterComponent}
+                    noHeader={noHeader}
+                />
+                <LoadingIndicator loading={!!loading} className={styles.loadingIndicator} />
+                <div className={styles.content}>
+                    {children}
+                </div>
+            </Layout>
+        )
+    }
 }
 
 export default UserpagesLayout
