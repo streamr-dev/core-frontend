@@ -86,6 +86,7 @@ describe('Subscription', () => {
         })
 
         it('can create subscription', async (done) => {
+            console.log('can create subscription')
             const msg = { test: uniqueId() }
             const result = mount((
                 <ClientProviderComponent apiKey={apiKey}>
@@ -102,6 +103,7 @@ describe('Subscription', () => {
                             expect(received).toEqual(msg)
                             result.unmount()
                             done()
+                            console.log('can create subscription done')
                         }}
                         isActive
                     />
@@ -110,6 +112,7 @@ describe('Subscription', () => {
         }, TIMEOUT * 2)
 
         it('unsubscribes on unmount', async (done) => {
+            console.log('unsubscribes on unmount')
             const sub = React.createRef()
             const result = mount((
                 <ClientProviderComponent apiKey={apiKey}>
@@ -118,16 +121,13 @@ describe('Subscription', () => {
                         uiChannel={stream}
                         resendLast={1}
                         onError={(error) => {
+                            console.log('unsubscribes on unmount done 2', error)
                             done(error)
-                            result.unmount()
-                        }}
-                        onResent={() => {
-                            // don't unmount on subscribed as this
-                            // breaks the client
                             result.unmount()
                         }}
                         onNoResend={() => {
                             sub.current.subscription.once('unsubscribed', () => {
+                                console.log('unsubscribes on unmount done 1')
                                 done()
                             })
                             // don't care if resent or not, just unmount
@@ -140,6 +140,7 @@ describe('Subscription', () => {
         })
 
         it('onNoResend works', async (done) => {
+            console.log('onNoResend works')
             const messages = []
             const onResending = jest.fn()
             const result = mount((
@@ -148,6 +149,7 @@ describe('Subscription', () => {
                         uiChannel={stream}
                         resendLast={2}
                         onError={(error) => {
+                            console.log('onNoResend works done', error)
                             done(error)
                             result.unmount()
                         }}
@@ -160,6 +162,7 @@ describe('Subscription', () => {
                             expect(messages).toEqual([])
                             result.unmount()
                             done()
+                            console.log('onNoResend works done')
                         }}
                         isActive
                     />
