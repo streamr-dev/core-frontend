@@ -16,7 +16,10 @@ function wait(delay) {
     return new Promise((resolve) => setTimeout(resolve, delay))
 }
 
-describe('Subscription', () => {
+// skip test in CI
+const maybeDescribe = process.env.CI ? describe.skip.bind(describe) : describe
+
+maybeDescribe('Subscription', () => {
     let teardown
     let apiKey
 
