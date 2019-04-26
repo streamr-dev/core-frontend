@@ -33,16 +33,17 @@ if [ $? -eq 1 ] ; then
     exit 1;
 fi
 
-streamr-docker-dev/streamr-docker-dev/bin.sh restart data-api; # let's restart it for good measure (?!)
+$streamr_docker_dev restart data-api; # let's restart it for good measure (?!)
 
 # wait briefly for data-api to come up. it probably needs restarting again.
-waitFor 15 3s checkHTTP "data-api" 401 http://localhost:8890/;
+waitFor 20 3s checkHTTP "data-api" 401 http://localhost:8890/;
 
-# try restarting data-api again if still not up
+# try restarting everything if still not up
 if [ $? -eq 1 ] ; then
     echo "data-api still not up"
     $streamr_docker_dev ps;
     # try waiting again
+    $streamr_docker_dev restart data-api;
     waitFor $RETRIES $RETRY_DELAY checkHTTP "data-api" 404 http://localhost:8890/;
     # exit if data-api ever came up (ffs)
     if [ $? -eq 1 ] ; then
