@@ -16,13 +16,15 @@ function wait(delay) {
     return new Promise((resolve) => setTimeout(resolve, delay))
 }
 
+const TIMEOUT = 30000
+
 describe('Subscription', () => {
     let teardown
     let apiKey
 
     beforeAll(async () => {
         teardown = await setupAuthorizationHeader()
-    }, 60000)
+    }, TIMEOUT * 2)
 
     afterAll(async () => {
         await teardown()
@@ -80,7 +82,7 @@ describe('Subscription', () => {
                     />
                 </ClientProviderComponent>
             ))
-        })
+        }, TIMEOUT)
 
         it('unsubscribes on unmount', async (done) => {
             const sub = React.createRef()
@@ -136,13 +138,15 @@ describe('Subscription', () => {
             const msg1 = { msg: uniqueId() }
             const msg2 = { msg: uniqueId() }
             const msg3 = { msg: uniqueId() }
-            await stream.publish(msg1)
-            await stream.publish(msg2)
-            await stream.publish(msg3)
             const messages = []
             const onResending = jest.fn()
+            await stream.publish(msg1)
+            await wait(TIMEOUT / 10)
+            await stream.publish(msg2)
+            await wait(TIMEOUT / 10)
+            await stream.publish(msg3)
 
-            await wait(10000) // wait for above messages to flush
+            await wait(TIMEOUT / 3) // wait for above messages to flush
 
             const result = mount((
                 <ClientProviderComponent apiKey={apiKey}>
@@ -150,10 +154,12 @@ describe('Subscription', () => {
                         uiChannel={stream}
                         resendLast={2}
                         onMessage={(message) => {
+                            console.log('MESSAGE', message)
                             messages.push(message)
                         }}
                         onResending={onResending}
                         onResent={() => {
+                            console.log('RESENT')
                             // wait for messages to onMessage
                             setTimeout(() => {
                                 expect(onResending).toHaveBeenCalled()
@@ -169,6 +175,6 @@ describe('Subscription', () => {
                     />
                 </ClientProviderComponent>
             ))
-        }, 15000)
+        }, TIMEOUT)
     })
 })
