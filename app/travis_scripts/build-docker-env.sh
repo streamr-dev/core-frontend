@@ -53,6 +53,7 @@ if [ $? -eq 1 ] ; then
         echo "data-api never up.";
         exit 1;
     fi
+    waitFor $RETRIES $RETRY_DELAY checkHTTP "nginx" 200 http://localhost:80/;
 fi
 
 $streamr_docker_dev ps;
