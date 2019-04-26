@@ -53,9 +53,6 @@ describe('Subscription', () => {
                 stream = await client.getOrCreateStream({
                     name: uniqueId(),
                 })
-                stream.once('error', (error) => {
-                    console.error('STREAMERROR', error)
-                })
 
                 client.off('error', reject)
                 resolve()
