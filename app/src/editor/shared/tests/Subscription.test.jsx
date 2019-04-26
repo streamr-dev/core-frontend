@@ -53,6 +53,10 @@ describe('Subscription', () => {
                 stream = await client.getOrCreateStream({
                     name: uniqueId(),
                 })
+                stream.once('error', (error) => {
+                    console.error('STREAMERROR', error)
+                })
+
                 client.off('error', reject)
                 resolve()
             })
@@ -91,9 +95,10 @@ describe('Subscription', () => {
                     <Subscription
                         uiChannel={stream}
                         resendLast={1}
-                        onSubscribed={() => {
+                        onSubscribed={async () => {
                             console.log('onSubscribed1')
-                            stream.publish(msg)
+                            await stream.publish(msg)
+                            console.log('published')
                         }}
                         onMessage={(received) => {
                             console.log('onMessage1')
@@ -105,7 +110,7 @@ describe('Subscription', () => {
                     />
                 </ClientProviderComponent>
             ))
-        }, TIMEOUT)
+        }, TIMEOUT * 2)
 
         it('unsubscribes on unmount', async (done) => {
             const sub = React.createRef()
