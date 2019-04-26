@@ -8,10 +8,6 @@ import * as Services from '../services'
 import { ClientProviderComponent, createClient } from '../components/Client'
 import Subscription from '../components/Subscription'
 
-function throwError(err) {
-    throw err
-}
-
 function wait(delay) {
     return new Promise((resolve) => setTimeout(resolve, delay))
 }
@@ -48,10 +44,17 @@ describe('Subscription', () => {
         async function setup() {
             console.log('setup 1')
             client = await createClient(apiKey)
+            client.once('error', (error) => {
+                console.error('CLIENTERROR', error)
+            })
             console.log('setup 2')
-            client.on('error', throwError)
-            stream = await client.getOrCreateStream({
-                name: uniqueId(),
+            await new Promise(async (resolve, reject) => {
+                client.once('error', reject)
+                stream = await client.getOrCreateStream({
+                    name: uniqueId(),
+                })
+                client.off('error', reject)
+                resolve()
             })
             console.log('setup 3')
         }
@@ -62,7 +65,6 @@ describe('Subscription', () => {
                 console.log('teardown 2')
                 await client.ensureDisconnected()
                 console.log('teardown 3')
-                client.off('error', throwError)
                 client = undefined
             }
             console.log('teardown 4')
