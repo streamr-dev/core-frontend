@@ -124,6 +124,12 @@ class Subscription extends Component {
             resend: this.getResendOptions(),
         }, this.onMessage)
 
+        const e = this.subscription.emit.bind(this.subscription)
+        this.subscription.emit = (...args) => {
+            console.log('emit', args)
+            return e(...args)
+        }
+
         this.subscription.on('subscribed', this.onSubscribed)
         this.subscription.on('unsubscribed', this.onUnsubscribed)
         this.subscription.on('resending', this.onResending)

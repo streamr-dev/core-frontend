@@ -88,6 +88,7 @@ describe('Subscription', () => {
                 <ClientProviderComponent apiKey={apiKey}>
                     <Subscription
                         uiChannel={stream}
+                        resendLast={1}
                         onSubscribed={() => {
                             console.log('onSubscribed1')
                             stream.publish(msg)
@@ -112,6 +113,10 @@ describe('Subscription', () => {
                         ref={sub}
                         uiChannel={stream}
                         resendLast={1}
+                        onError={(error) => {
+                            done(error)
+                            result.unmount()
+                        }}
                         onResent={() => {
                             // don't unmount on subscribed as this
                             // breaks the client
@@ -138,6 +143,10 @@ describe('Subscription', () => {
                     <Subscription
                         uiChannel={stream}
                         resendLast={2}
+                        onError={(error) => {
+                            done(error)
+                            result.unmount()
+                        }}
                         onMessage={(message) => {
                             messages.push(message)
                         }}
@@ -176,6 +185,10 @@ describe('Subscription', () => {
                     <Subscription
                         uiChannel={stream}
                         resendLast={2}
+                        onError={(error) => {
+                            done(error)
+                            result.unmount()
+                        }}
                         onMessage={(message) => {
                             console.log('resend 6', message)
                             messages.push(message)
