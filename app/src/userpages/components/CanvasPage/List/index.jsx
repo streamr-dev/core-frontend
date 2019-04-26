@@ -10,6 +10,7 @@ import copy from 'copy-to-clipboard'
 import { Translate, I18n } from 'react-redux-i18n'
 import { Helmet } from 'react-helmet'
 import moment from 'moment'
+import cx from 'classnames'
 
 import type { Filter, SortOption } from '$userpages/flowtype/common-types'
 import type { Canvas, CanvasId } from '$userpages/flowtype/canvas-types'
@@ -34,6 +35,7 @@ import { selectFetchingPermissions, selectCanvasPermissions } from '$userpages/m
 import type { Permission, ResourceId } from '$userpages/flowtype/permission-types'
 import type { User } from '$shared/flowtype/user-types'
 import { selectUserData } from '$shared/modules/user/selectors'
+import { RunStates } from '$editor/canvas/state'
 
 import styles from './canvasList.pcss'
 
@@ -280,7 +282,11 @@ class CanvasList extends Component<Props, State> {
                                         {this.generateTimeAgoDescription(new Date(canvas.updated))}
                                     </Tile.Description>
                                     <Tile.Status
-                                        className={canvas.state === 'RUNNING' ? styles.running : styles.stopped}
+                                        className={
+                                            cx({
+                                                [styles.running]: canvas.state === RunStates.Running,
+                                                [styles.stopped]: canvas.state === RunStates.Stopped,
+                                            })}
                                     >
                                         {capital(canvas.state)}
                                     </Tile.Status>

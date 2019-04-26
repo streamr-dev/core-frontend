@@ -10,6 +10,7 @@ import links from '../../links'
 
 import UndoContainer, { UndoControls } from '$editor/shared/components/UndoContainer'
 import Subscription from '$editor/shared/components/Subscription'
+import * as SubscriptionStatus from '$editor/shared/components/SubscriptionStatus'
 import { ClientProvider } from '$editor/shared/components/Client'
 import { ModalProvider } from '$editor/shared/components/Modal'
 import * as sharedServices from '$editor/shared/services'
@@ -18,10 +19,13 @@ import Sidebar from '$editor/shared/components/Sidebar'
 import ModuleSidebar from './components/ModuleSidebar'
 import KeyboardShortcutsSidebar from './components/KeyboardShortcutsSidebar'
 
+import * as RunController from './components/RunController'
 import Canvas from './components/Canvas'
 import CanvasToolbar from './components/Toolbar'
 import CanvasStatus from './components/Status'
 import ModuleSearch from './components/ModuleSearch'
+
+import useCanvasNotifications, { pushErrorNotification } from './hooks/useCanvasNotifications'
 
 import * as services from './services'
 import * as CanvasState from './state'
@@ -49,7 +53,6 @@ function canvasUpdater(fn) {
 
 const CanvasEditComponent = class CanvasEdit extends Component {
     state = {
-        isWaiting: false,
         moduleSearchIsOpen: false,
         moduleSidebarIsOpen: false,
         keyboardShortcutIsOpen: false,
@@ -129,16 +132,16 @@ const CanvasEditComponent = class CanvasEdit extends Component {
     }
 
     async autostart() {
-        const { canvas } = this.props
-        if (canvas.adhoc && canvas.state !== RunStates.Running) {
+        const { canvas, runController } = this.props
+        if (canvas.adhoc && !runController.isActive) {
             // do not autostart running/non-adhoc canvases
             return this.canvasStart()
         }
     }
 
     async autosave() {
-        const { canvas } = this.props
-        if (canvas.state === RunStates.Running || canvas.adhoc) {
+        const { canvas, runController } = this.props
+        if (runController.isActive || canvas.adhoc) {
             // do not autosave running/adhoc canvases
             return
         }
@@ -289,32 +292,32 @@ const CanvasEditComponent = class CanvasEdit extends Component {
 
     canvasStart = async (options = {}) => {
         const { canvas } = this.props
+
         return this.getNewCanvas(() => (
-            services.startOrCreateAdhocCanvas(canvas, options)
+            this.props.runController.start(canvas, options)
         ))
     }
 
     canvasStop = async () => {
         const { canvas } = this.props
         return this.getNewCanvas(() => (
-            services.stop(canvas)
+            this.props.runController.stop(canvas)
         ))
     }
 
     canvasExit = async () => {
         const { canvas } = this.props
         return this.getNewCanvas(() => (
-            services.exitAdhocCanvas(canvas)
+            this.props.runController.exit(canvas)
         ))
     }
 
     /**
      * Loads new canvas via async fn
-     * Sets appropriate isWaiting state
      * Loads parent canvas on failure/no canvas response
      */
+
     getNewCanvas = async (fn) => {
-        this.setState({ isWaiting: true })
         let newCanvas
         try {
             newCanvas = await fn()
@@ -323,10 +326,6 @@ const CanvasEditComponent = class CanvasEdit extends Component {
             console.error({ error }) // eslint-disable-line no-console
             if (this.unmounted) { return }
             return this.loadParent()
-        } finally {
-            if (!this.unmounted) {
-                this.setState({ isWaiting: false })
-            }
         }
         if (this.unmounted) { return }
         if (!newCanvas) {
@@ -350,23 +349,35 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         ))
     }
 
+    onDoneMessage = () => (
+        this.loadSelf()
+    )
+
+    onErrorMessage = (error) => {
+        pushErrorNotification({
+            message: error.error,
+            error,
+        })
+        return this.loadSelf()
+    }
+
     render() {
-        const { canvas } = this.props
+        const { canvas, runController } = this.props
+        if (!canvas) { return null }
         const { moduleSidebarIsOpen, keyboardShortcutIsOpen } = this.state
         const { settings } = canvas
         const resendFrom = settings.beginDate
         const resendTo = settings.endDate
         return (
             <div className={styles.CanvasEdit}>
-                <Helmet>
-                    <title>{canvas.name}</title>
-                </Helmet>
+                <Helmet title={canvas.name} />
                 <Subscription
                     uiChannel={canvas.uiChannel}
                     resendFrom={canvas.adhoc ? resendFrom : undefined}
                     resendTo={canvas.adhoc ? resendTo : undefined}
-                    isActive={canvas.state === RunStates.Running}
-                    onUnsubscribed={this.loadSelf}
+                    isActive={runController.isActive}
+                    onDoneMessage={this.onDoneMessage}
+                    onErrorMessage={this.onErrorMessage}
                 />
                 <Canvas
                     className={styles.Canvas}
@@ -381,11 +392,10 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                     loadNewDefinition={this.loadNewDefinition}
                     pushNewDefinition={this.pushNewDefinition}
                 >
-                    <CanvasStatus updated={this.state.updated} isWaiting={this.state.isWaiting} />
+                    <CanvasStatus updated={this.state.updated} />
                 </Canvas>
                 <ModalProvider>
                     <CanvasToolbar
-                        isWaiting={this.state.isWaiting}
                         className={styles.CanvasToolbar}
                         canvas={canvas}
                         setCanvas={this.setCanvas}
@@ -432,8 +442,6 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         )
     }
 }
-
-const CanvasEdit = withRouter(CanvasEditComponent)
 
 const CanvasLoader = withRouter(withErrorBoundary(ErrorComponentView)(class CanvasLoader extends React.PureComponent {
     static contextType = UndoContainer.Context
@@ -486,20 +494,37 @@ const CanvasLoader = withRouter(withErrorBoundary(ErrorComponentView)(class Canv
     }
 }))
 
-function isDisabled({ state: canvas }) {
-    return !canvas || (canvas.state === RunStates.Running || canvas.adhoc)
-}
+const CanvasEdit = withRouter(({ canvas, ...props }) => {
+    const runController = useContext(RunController.Context)
+    useCanvasNotifications(canvas)
+
+    return (
+        <CanvasEditComponent
+            {...props}
+            canvas={canvas}
+            runController={runController}
+        />
+    )
+})
 
 const CanvasEditWrap = () => {
     const { state: canvas, push, replace } = useContext(UndoContainer.Context)
+    const key = !!canvas && canvas.id
     return (
-        <CanvasEdit
-            key={canvas && canvas.id}
-            push={push}
-            replace={replace}
-            canvas={canvas}
-        />
+        <SubscriptionStatus.Provider key={key}>
+            <RunController.Provider canvas={canvas}>
+                <CanvasEdit
+                    push={push}
+                    replace={replace}
+                    canvas={canvas}
+                />
+            </RunController.Provider>
+        </SubscriptionStatus.Provider>
     )
+}
+
+function isDisabled({ state: canvas }) {
+    return !canvas || (canvas.state === RunStates.Running || canvas.adhoc)
 }
 
 export default withRouter((props) => (
