@@ -7,19 +7,19 @@
 ##
 
 source "${BASH_SOURCE%/*}/utils.sh"
+RETRIES=50;
+RETRY_DELAY=2s;
 
-cd $TRAVIS_BUILD_DIR
+cd $TRAVIS_BUILD_DIR || exit 1
+
 sudo /etc/init.d/mysql stop
 sudo sysctl fs.inotify.max_user_watches=524288; sudo sysctl -p
 sudo ifconfig docker0 10.200.10.1/24
 
 git clone https://github.com/streamr-dev/streamr-docker-dev.git
 streamr_docker_dev='streamr-docker-dev/streamr-docker-dev/bin.sh'
-# start everything except eth watcher
-$streamr_docker_dev start 5
 
-RETRIES=50;
-RETRY_DELAY=2s;
+$streamr_docker_dev start cassandra
 
 # wait for cassandra to come up
 waitFor $RETRIES $RETRY_DELAY nc -zv 127.0.0.1 9042;
@@ -30,6 +30,9 @@ if [ $? -eq 1 ] ; then
     $streamr_docker_dev ps;
     exit 1;
 fi
+
+# start everything except eth watcher
+$streamr_docker_dev start 5;
 
 # wait for E&E to come up
 waitFor $RETRIES $RETRY_DELAY checkHTTP "engine-and-editor" 200 http://localhost:8081/streamr-core/login/auth;
