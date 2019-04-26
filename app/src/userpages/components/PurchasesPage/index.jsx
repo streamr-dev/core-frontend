@@ -153,11 +153,11 @@ class PurchasesPage extends Component<Props> {
                                         imageUrl={product.imageUrl}
                                         link={product.id && `${links.marketplace.products}/${product.id}`}
                                     >
-                                        <div className={styles.title}>{product.name}</div>
-                                        <div className={styles.owner}>{product.owner}</div>
-                                        <div
+                                        <Tile.Title>{product.name}</Tile.Title>
+                                        <Tile.Description>{product.owner}</Tile.Description>
+                                        <Tile.Status
                                             className={
-                                                cx(styles.status, {
+                                                cx({
                                                     [styles.active]: isActive,
                                                     [styles.expired]: !isActive,
                                                 })}
@@ -167,7 +167,7 @@ class PurchasesPage extends Component<Props> {
                                                     <Translate value="userpages.purchases.active" /> :
                                                     <Translate value="userpages.purchases.expired" />
                                             }
-                                        </div>
+                                        </Tile.Status>
                                     </Tile>
                                 </Col>
                             )

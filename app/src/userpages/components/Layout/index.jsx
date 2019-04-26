@@ -55,7 +55,7 @@ class UserpagesLayout extends Component<Props, State> {
             children,
         } = this.props
         return (
-            <Layout footer={false}>
+            <Layout footer={false} className={styles.container}>
                 <Header
                     additionalComponent={headerAdditionalComponent}
                     searchComponent={headerSearchComponent}

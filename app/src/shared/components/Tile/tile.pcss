@@ -6,6 +6,7 @@
   font-family: 'IBM Plex Sans', sans-serif;
   font-size: 16px;
   text-align: left;
+  height: 100%;
 
   &,
   &:--idle,
@@ -17,8 +18,10 @@
   .image {
     object-fit: cover;
     width: 100%;
+  }
 
-    &:--enter {
+  &:--enter {
+    .image {
       filter: brightness(70%);
     }
   }
@@ -27,8 +30,8 @@
     position: absolute;
     top: 0;
     right: 0;
-    margin-right: 1.5em;
-    margin-top: 1.5em;
+    margin-right: 16px;
+    margin-top: 16px;
     z-index: 1;
   }
 }
@@ -36,15 +39,17 @@
 .title {
   font-family: 'IBM Plex Sans', sans-serif;
   font-size: 16px;
+  font-weight: var(--medium);
   color: #323232;
   letter-spacing: 0;
   line-height: 20px;
-  margin-top: 4px;
+  margin-top: 8px;
 }
 
 .description {
   font-family: 'IBM Plex Sans', sans-serif;
   font-size: 12px;
+  font-weight: var(--regular);
   color: #A3A3A3;
   letter-spacing: 0;
   line-height: 20px;
@@ -53,6 +58,7 @@
 .status {
   font-family: 'IBM Plex Sans', sans-serif;
   font-size: 12px;
+  font-weight: var(--regular);
   color: #FF5C00;
   letter-spacing: 0;
   line-height: 20px;
