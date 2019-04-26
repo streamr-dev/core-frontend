@@ -38,65 +38,85 @@ class DraggablePort extends React.Component {
     }
 
     connectPorts() {
-        let reloadModuleId
+        const triggeredPorts = []
+        const { data } = this.context
+        const { sourceId, portId, overId } = data
         this.props.api.setCanvas({ type: 'Connect Ports' }, (canvas) => {
             if (!this.canConnectPorts(canvas)) { return null } // noop if incompatible
-            const { data } = this.context
-            const { sourceId, portId, overId } = data
             let nextCanvas = canvas
             if (sourceId) {
-                // TODO:
-                // - disconnect and reload port with sourceId (if ethereum contract)
-                // - connect and reload port with portId (if ethereum contract)
-
                 // if dragging from an already connected input, treat as if dragging output
+                const disconnectedPort = CanvasState.getPort(canvas, sourceId)
+
+                // disconnect and reload port with sourceId (if ethereum contract)
+                if (disconnectedPort.type === 'EthereumContract') {
+                    triggeredPorts.push({
+                        portId,
+                        oldValue: disconnectedPort.value,
+                        newValue: undefined,
+                    })
+                }
+
+                // connect and reload port with portId (if ethereum contract)
+                const connectingPort = CanvasState.getPort(canvas, overId)
                 nextCanvas = CanvasState.movePortConnection(nextCanvas, sourceId, overId, {
                     currentInputId: portId,
                 })
+                const connectedPort = CanvasState.getPort(nextCanvas, overId)
+
+                if (connectingPort.type === 'EthereumContract') {
+                    triggeredPorts.push({
+                        portId: overId,
+                        oldValue: connectingPort.value,
+                        newValue: connectedPort.value,
+                    })
+                }
             } else {
                 // Check if port is ethereum contract and should it reload.
                 const connectingPort = CanvasState.getPort(canvas, overId)
-                const oldValue = connectingPort.value
-
                 nextCanvas = CanvasState.connectPorts(nextCanvas, portId, overId)
+                const connectedPort = CanvasState.getPort(nextCanvas, overId)
 
-                const connectedPort = CanvasState.getPort(nextCanvas, portId)
-
-                if (connectedPort.type === 'EthereumContract' && oldValue !== connectedPort.value) {
-                    const module = CanvasState.getModuleForPort(nextCanvas, portId)
-                    reloadModuleId = module.hash
+                if (connectingPort.type === 'EthereumContract') {
+                    triggeredPorts.push({
+                        portId: overId,
+                        oldValue: connectingPort.value,
+                        newValue: connectedPort.value,
+                    })
                 }
             }
             return nextCanvas
         }, () => {
-            if (reloadModuleId) {
-                console.log(`reload module ${reloadModuleId}`)
+            if (triggeredPorts.length > 0) {
+                triggeredPorts.forEach(({ portId, oldValue, newValue }) => {
+                    this.props.onValueChange(portId, newValue, oldValue)
+                })
             }
         })
     }
 
     disconnectPorts() {
-        let reloadModuleId
         const { data } = this.context
         const { sourceId, portId } = data
         if (!sourceId) { return } // not connected
+        const triggeredPorts = []
         this.props.api.setCanvas({ type: 'Disconnect Ports' }, (canvas) => {
-            const disconnectingPort = CanvasState.getPort(canvas, portId)
-            const oldValue = disconnectingPort.value
-
+            const disconnectedPort = CanvasState.getPort(canvas, portId)
             const nextCanvas = CanvasState.disconnectPorts(canvas, sourceId, portId)
 
-            const disconnectedPort = CanvasState.getPort(nextCanvas, portId)
-
-            if (disconnectedPort.type === 'EthereumContract' && oldValue !== disconnectedPort.value) {
-                const module = CanvasState.getModuleForPort(nextCanvas, portId)
-                reloadModuleId = module.hash
+            if (disconnectedPort.type === 'EthereumContract') {
+                triggeredPorts.push({
+                    portId,
+                    oldValue: disconnectedPort.value,
+                })
             }
 
             return nextCanvas
         }, () => {
-            if (reloadModuleId) {
-                console.log(`reload module ${reloadModuleId}`)
+            if (triggeredPorts.length > 0) {
+                triggeredPorts.forEach(({ portId, oldValue }) => {
+                    this.props.onValueChange(portId, undefined, oldValue)
+                })
             }
         })
     }
@@ -126,9 +146,9 @@ class DraggablePort extends React.Component {
     }
 }
 
-export function DragSource({ api, port, className }) {
+export function DragSource({ api, port, onValueChange, className }) {
     return (
-        <DraggablePort api={api} port={port}>
+        <DraggablePort api={api} port={port} onValueChange={onValueChange}>
             <div
                 className={cx(Dragger.styles.root, Dragger.styles.source, Dragger.styles.dragHandle, className)}
             />

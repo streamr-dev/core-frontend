@@ -16,7 +16,7 @@ type Props = {
     api: any,
     canvas: any,
     onPort: any,
-    onValueChange: (any, any) => void,
+    onValueChange: (any, any, any) => void,
     port: any,
     setOptions: any,
 }
@@ -41,16 +41,6 @@ const Port = ({
         // $FlowFixMe wtf?
         setContextMenuTarget(e.currentTarget)
     }, [setContextMenuTarget])
-
-    const plug = (
-        <Plug
-            api={api}
-            canvas={canvas}
-            onContextMenu={onContextMenu}
-            port={port}
-            register={onPort}
-        />
-    )
 
     const dismiss = useCallback(() => {
         setContextMenuTarget(null)
@@ -93,13 +83,24 @@ const Port = ({
         })
     }, [port, setOptions])
 
-    const onValueChange = useCallback((value: any) => {
-        onValueChangeProp(port.id, value)
+    const onValueChange = useCallback((value: any, oldValue: any) => {
+        onValueChangeProp(port.id, value, oldValue)
     }, [port.id, onValueChangeProp])
 
     const { isDragging, data } = useContext(DragDropContext)
     const { portId } = data || {}
     const dragInProgress = !!isDragging && portId != null
+
+    const plug = (
+        <Plug
+            api={api}
+            canvas={canvas}
+            onContextMenu={onContextMenu}
+            onValueChange={onValueChangeProp}
+            port={port}
+            register={onPort}
+        />
+    )
 
     useEffect(() => {
         window.addEventListener('mousedown', onWindowMouseDown)

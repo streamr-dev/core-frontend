@@ -389,7 +389,8 @@ function disconnectInput(canvas, portId) {
             connected: false,
         }
 
-        if (newPort.value) {
+        // ethereum contract input
+        if (newPort.type === 'EthereumContract' && newPort.value) {
             delete newPort.value
         }
 

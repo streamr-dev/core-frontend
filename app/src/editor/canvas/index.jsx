@@ -202,9 +202,32 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         })
 
         if (this.unmounted) { return }
-        this.replaceCanvas((canvas) => (
-            CanvasState.updateModule(canvas, hash, () => newModule)
-        ))
+        this.replaceCanvas((canvas) => {
+            let nextCanvas = CanvasState.updateModule(canvas, hash, () => newModule)
+
+            // Restore input connections
+            nextCanvas = module.inputs.reduce((nextCanvas, { id, sourceId }) => {
+                const port = newModule.inputs.find((p) => id === p.id)
+
+                if (sourceId && port) {
+                    return CanvasState.connectPorts(nextCanvas, port.id, sourceId)
+                }
+
+                return nextCanvas
+            }, nextCanvas)
+
+            nextCanvas = module.params.reduce((nextCanvas, { id, sourceId }) => {
+                const port = newModule.params.find((p) => id === p.id)
+
+                if (sourceId && port) {
+                    return CanvasState.connectPorts(nextCanvas, port.id, sourceId)
+                }
+
+                return nextCanvas
+            }, nextCanvas)
+
+            return nextCanvas
+        })
     }
 
     pushNewDefinition = async (hash, value) => {
