@@ -22,6 +22,7 @@ function PreviewCables({ canvas, preview }) {
         const key = getModuleKey(m)
         const p = preview.modules.find((m) => m.key === key)
         return {
+            id: m.id,
             left: p.left + (p.width / 2),
             top: p.top + (p.height / 2),
         }
