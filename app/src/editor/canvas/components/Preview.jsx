@@ -51,21 +51,21 @@ function PreviewCables({ canvas, preview }) {
     )
 }
 
-function ModulePreview({
-    x,
-    y,
+export function ModulePreview({
+    x = 0,
+    y = 0,
     height,
     width,
-    titleWidth,
+    um = 16,
+    title = ' ',
 }) {
     x = Math.round(x)
     y = Math.round(y)
     width = Math.round(width)
     height = Math.round(height)
 
-    const um = 16 // pseudo 'grid' unit
     const titleMaxWidth = width - (2 * um)
-    const titleActualWidth = Math.min(titleWidth * um, titleMaxWidth)
+    const titleActualWidth = Math.min(title.length * um, titleMaxWidth)
     return (
         <React.Fragment>
             <g>
@@ -119,7 +119,7 @@ function getPreviewCanvas({ canvas, aspect, screen }) {
         width: Number.parseInt(m.layout.width, 10) || defaultLayout.width,
         isResizable: isModuleResizable(m),
         portRows: getPortRows(m),
-        titleWidth: (m.displayName || m.name).length,
+        title: (m.displayName || m.name),
     }))
         .map((m) => (
             // set sensible min-height on non-resizable modules using number of ports
@@ -203,7 +203,6 @@ export default function Preview({
                 fill="#e7e7e7"
             />
             <svg
-                className={className}
                 preserveAspectRatio="none"
                 viewBox={`0 0 ${preview.width} ${preview.height}`}
             >
@@ -215,7 +214,7 @@ export default function Preview({
                         x={m.left}
                         width={m.width}
                         height={m.height}
-                        titleWidth={m.titleWidth}
+                        title={m.title}
                     />
                 ))}
             </svg>
