@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react'
-import { defaultModuleLayout } from '../state'
+import { defaultModuleLayout, getModuleForPort } from '../state'
 import { isModuleResizable } from './Resizer'
+import { Cable, getCableKey } from './Cables'
 
 function aspectSize({ width, height, minWidth, minHeight }) {
     const ratio = Math.max(minWidth / width, minHeight / height)
@@ -8,6 +9,46 @@ function aspectSize({ width, height, minWidth, minHeight }) {
         width: Math.round(width * ratio * 100) / 100,
         height: Math.round(height * ratio * 100) / 100,
     }
+}
+
+function getModuleKey(m) {
+    return `${m.id}-${m.hash}`
+}
+
+function PreviewCables({ canvas, preview }) {
+    function getPosition(portId) {
+        if (!portId) { return }
+        const m = getModuleForPort(canvas, portId)
+        const key = getModuleKey(m)
+        const p = preview.modules.find((m) => m.key === key)
+        return {
+            left: p.left + (p.width / 2),
+            top: p.top + (p.height / 2),
+        }
+    }
+
+    const cables = canvas.modules
+        .reduce((c, m) => {
+            [].concat(m.params, m.inputs, m.outputs).forEach((port) => {
+                if (!port.connected) { return }
+                c.push([port.sourceId, port.id])
+            })
+            return c
+        }, [])
+        .map(([from, to]) => [getPosition(from), getPosition(to)])
+        .filter(([from, to]) => from && to)
+
+    const uniqueCables = cables.reduce((o, cable) => (
+        Object.assign(o, { [getCableKey(cable)]: cable })
+    ), {})
+
+    return (
+        <React.Fragment>
+            {Object.entries(uniqueCables).map(([key, cable]) => (
+                <Cable cable={cable} key={key} />
+            ))}
+        </React.Fragment>
+    )
 }
 
 function ModulePreview({
@@ -71,7 +112,7 @@ function getPortRows({ inputs = [], outputs = [], params = [] }) {
 function getPreviewCanvas({ canvas, aspect, screen }) {
     // grab basic module dimensions
     const modulePreviews = canvas.modules.map((m) => ({
-        key: `${m.id}-${m.hash}`,
+        key: getModuleKey(m),
         top: Number.parseInt(m.layout.position.top, 10) || 0,
         left: Number.parseInt(m.layout.position.left, 10) || 0,
         height: Number.parseInt(m.layout.height, 10) || defaultLayout.height,
@@ -166,6 +207,7 @@ export default function Preview({
                 preserveAspectRatio="none"
                 viewBox={`0 0 ${preview.width} ${preview.height}`}
             >
+                <PreviewCables canvas={canvas} preview={preview} />
                 {preview.modules.map((m) => (
                     <ModulePreview
                         key={m.key}
@@ -176,7 +218,6 @@ export default function Preview({
                         titleWidth={m.titleWidth}
                     />
                 ))}
-
             </svg>
         </svg>
     )
