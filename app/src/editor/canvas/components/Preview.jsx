@@ -125,7 +125,7 @@ function getPreviewCanvas({ canvas, aspect, screen }) {
         .map((m) => (
             // set sensible min-height on non-resizable modules using number of ports
             Object.assign(m, {
-                height: m.isResizable ? m.height : Math.max(m.height, defaultLayout.height + (m.portRows * 30)),
+                height: m.isResizable ? m.height : Math.max(m.height, defaultLayout.height + (m.portRows * 16)),
             })
         ))
 
