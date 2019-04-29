@@ -25,6 +25,7 @@ import Table from '$shared/components/Table'
 import DropdownActions from '$shared/components/DropdownActions'
 import Meatball from '$shared/components/Meatball'
 import LoadMore from '$mp/components/LoadMore'
+import DocsShortcuts from '$userpages/components/DocsShortcuts'
 
 import styles from './list.pcss'
 
@@ -147,6 +148,7 @@ class TransactionList extends Component<Props> {
                         />
                     )}
                 </div>
+                <DocsShortcuts />
             </Layout>
         )
     }

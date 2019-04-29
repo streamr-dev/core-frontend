@@ -34,6 +34,7 @@ import { selectUserData } from '$shared/modules/user/selectors'
 import ShareDialog from '$userpages/components/ShareDialog'
 import SnippetDialog from '$userpages/components/SnippetDialog/index'
 import { ProgrammingLanguages } from '$shared/utils/constants'
+import DocsShortcuts from '$userpages/components/DocsShortcuts'
 
 import styles from './streamList.pcss'
 
@@ -347,6 +348,7 @@ class StreamList extends Component<Props, State> {
                         </Table>
                     )}
                 </div>
+                <DocsShortcuts />
             </Layout>
         )
     }

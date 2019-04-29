@@ -21,6 +21,7 @@ import { isActive } from '$mp/utils/time'
 import routes from '$routes'
 import Search from '$shared/components/Search'
 import Dropdown from '$shared/components/Dropdown'
+import DocsShortcuts from '$userpages/components/DocsShortcuts'
 
 import type { ProductList, ProductSubscription } from '$mp/flowtype/product-types'
 import type { Filter, SortOption } from '$userpages/flowtype/common-types'
@@ -174,6 +175,7 @@ class PurchasesPage extends Component<Props> {
                         })}
                     </Row>
                 </Container>
+                <DocsShortcuts />
             </Layout>
         )
     }
