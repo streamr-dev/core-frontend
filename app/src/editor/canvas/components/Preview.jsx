@@ -1,11 +1,70 @@
 import React, { useMemo } from 'react'
 import cx from 'classnames'
+import uniqueId from 'lodash/uniqueId'
 
 import { defaultModuleLayout, getModuleForPort } from '../state'
 import isModuleResizable from '../utils/isModuleResizable'
 import { Cable, getCableKey } from './Cables'
 
 import styles from './Preview.pcss'
+
+function ChartPreview(props) {
+    const uid = uniqueId('ChartPreview')
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" viewBox="0 0 97 62" {...props}>
+            <defs>
+                <rect id={`b${uid}`} width="33.83" height="10.29" x="48.85" y="15.21" rx="0.85" />
+                <filter id={`a${uid}`} width="108.9%" height="129.2%" x="-4.4%" y="-14.6%" filterUnits="objectBoundingBox">
+                    <feOffset in="SourceAlpha" result="shadowOffsetOuter1" />
+                    <feGaussianBlur in="shadowOffsetOuter1" result="shadowBlurOuter1" stdDeviation="0.5" />
+                    <feColorMatrix in="shadowBlurOuter1" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.15 0" />
+                </filter>
+                <ellipse id={`d${uid}`} cx="1.69" cy="1.71" rx="1.69" ry="1.71" />
+                <filter id={`c${uid}`} width="188.7%" height="187.5%" x="-44.3%" y="-43.7%" filterUnits="objectBoundingBox">
+                    <feOffset in="SourceAlpha" result="shadowOffsetOuter1" />
+                    <feGaussianBlur in="shadowOffsetOuter1" result="shadowBlurOuter1" stdDeviation="0.5" />
+                    <feColorMatrix in="shadowBlurOuter1" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.2 0" />
+                </filter>
+            </defs>
+            <g fill="none" fillRule="evenodd" transform="translate(1)">
+                <path stroke="#EFEFEF" strokeLinecap="square" d="M.46 51.5h95.01" />
+                {/* eslint-disable-next-line max-len */}
+                <path stroke="#FF5C00" strokeLinejoin="round" strokeWidth="0.63" d="M0 29h3l4.05 1.86 7.61-5.15 3.38 3.43 3.38 5.15 1.48-1.72h5.29l3.6-1.71 3.17 3.43L36.65 36l3.38-3.43 5.08-10.28 1.69 3.42 3.38 5.15h3.17l3.81-1.72 1.9 1.72L62.23 24l3.6-10.29L68.79 0l1.69 3.43h1.9L75.56 12l1.69-3.43 1.9 3.43 1.48 8.57h3.6l3.17-5.14L90.78 12l1.69 1.71L94.31 15H96" />
+                <g opacity="0.96">
+                    <use fill="#000" filter={`url(#a${uid})`} xlinkHref={`#b${uid}`} />
+                    <use fill="#FFF" xlinkHref={`#b${uid}`} />
+                </g>
+                <rect width="24" height="4" x="50.85" y="18.21" fill="#D8D8D8" rx="1" />
+                <g transform="translate(64.5 10.29)">
+                    <use fill="#000" filter={`url(#c${uid})`} xlinkHref={`#d${uid}`} />
+                    <use fill="#FFF" xlinkHref={`#d${uid}`} />
+                    <ellipse cx="1.69" cy="1.71" fill="#FF5C00" rx="1" ry="1" />
+                </g>
+                <rect width="15" height="4" x="11.85" y="55" fill="#D8D8D8" rx="1" />
+                <circle cx="6" cy="57" r="2" fill="#FF5C00" />
+            </g>
+        </svg>
+    )
+}
+
+function TablePreview(props) {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="-3 -3 56 40" {...props}>
+            <g fill="#D8D8D8" fillRule="evenodd" transform="translate(-3 -5)">
+                <rect width="15" height="4" x="3" y="5" rx="1" />
+                <rect width="19" height="4" x="3" y="13" rx="1" />
+                <rect width="19" height="4" x="29" y="5" rx="1" />
+                <rect width="24" height="4" x="29" y="13" rx="1" />
+                <rect width="15" height="4" x="3" y="21" rx="1" />
+                <rect width="19" height="4" x="29" y="21" rx="1" />
+                <rect width="19" height="4" x="3" y="29" rx="1" />
+                <rect width="24" height="4" x="29" y="29" rx="1" />
+                <rect width="15" height="4" x="3" y="37" rx="1" />
+                <rect width="19" height="4" x="29" y="37" rx="1" />
+            </g>
+        </svg>
+    )
+}
 
 function aspectSize({ width, height, minWidth, minHeight }) {
     const ratio = Math.max(minWidth / width, minHeight / height)
@@ -113,6 +172,18 @@ export function ModulePreview({
                 <path
                     className={styles.ModulePreviewBottomBorder}
                     d={`M${x},${portsBottomY} H${x + width}`}
+                />
+            )}
+            {type === 'ChartModule' && (
+                <ChartPreview preserveAspectRatio="xMinYMax slice" width={width} height={height - (portsBottomY - y)} x={x} y={portsBottomY} />
+            )}
+            {type === 'TableModule' && (
+                <TablePreview
+                    preserveAspectRatio="xMinYMin slice"
+                    width={width}
+                    height={height - (portsBottomY - y)}
+                    x={x}
+                    y={portsBottomY}
                 />
             )}
         </g>
