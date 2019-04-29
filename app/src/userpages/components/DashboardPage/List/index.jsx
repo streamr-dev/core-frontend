@@ -20,6 +20,7 @@ import Search from '$shared/components/Search'
 import Dropdown from '$shared/components/Dropdown'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
 import DashboardPreview from '$editor/dashboard/components/Preview'
+import canvasListStyles from '../../CanvasPage/List/canvasList.pcss'
 
 import NoDashboardsView from './NoDashboards'
 
@@ -132,7 +133,7 @@ class DashboardList extends Component<Props> {
                                 <Col {...defaultColumns} key={dashboard.id}>
                                     <Tile
                                         link={`${links.editor.dashboardEditor}/${dashboard.id}`}
-                                        image={<DashboardPreview dashboard={dashboard} />}
+                                        image={<DashboardPreview className={canvasListStyles.PreviewImage} dashboard={dashboard} />}
                                     >
                                         <Tile.Title>{dashboard.name}</Tile.Title>
                                     </Tile>

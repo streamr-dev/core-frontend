@@ -271,7 +271,7 @@ class CanvasList extends Component<Props, State> {
                                 <Tile
                                     link={`${links.editor.canvasEditor}/${canvas.id}`}
                                     dropdownActions={this.getActions(canvas)}
-                                    image={<CanvasPreview className={styles.CanvasPreview} canvas={canvas} />}
+                                    image={<CanvasPreview className={styles.PreviewImage} canvas={canvas} />}
                                     onMenuToggle={(open) => {
                                         if (open) {
                                             this.loadCanvasPermissions(canvas.id)
