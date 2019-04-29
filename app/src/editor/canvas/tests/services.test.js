@@ -43,6 +43,11 @@ describe('Canvas Services', () => {
                 updated: canvasMatcher.updated,
             })
         })
+        it('deduplicates canvas name', async () => {
+            const canvas = await Services.create()
+            const canvas2 = await Services.create()
+            expect(canvas.name).not.toEqual(canvas2.name)
+        })
     })
 
     describe('loadCanvas', () => {
@@ -107,29 +112,29 @@ describe('Canvas Services', () => {
             expect(duplicateCanvas).toMatchObject({
                 ...canvas,
                 ...canvasMatcher,
-                name: `${name} (2)`,
+                name: `${name} Copy`,
             })
             const duplicateCanvas2 = await Services.duplicateCanvas(duplicateCanvas)
             expect(duplicateCanvas2).toMatchObject({
                 ...canvas,
                 ...canvasMatcher,
-                name: `${name} (3)`,
+                name: `${name} Copy 02`,
             })
             // test works with double-digit numbers
             const duplicateCanvas3 = await Services.create({
                 ...canvas,
-                name: `${name} (10)`,
+                name: `${name} Copy 10`,
             })
             expect(duplicateCanvas3).toMatchObject({
                 ...canvas,
                 ...canvasMatcher,
-                name: `${name} (10)`, // should not change
+                name: `${name} Copy 10`, // should not change from what was passed in
             })
             const duplicateCanvas4 = await Services.duplicateCanvas(duplicateCanvas3)
             expect(duplicateCanvas4).toMatchObject({
                 ...canvas,
                 ...canvasMatcher,
-                name: `${name} (11)`,
+                name: `${name} Copy 11`,
             })
         })
 

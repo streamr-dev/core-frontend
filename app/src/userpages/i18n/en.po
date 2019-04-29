@@ -14,6 +14,9 @@ msgstr "Create canvas"
 msgid "userpages##canvases##filterCanvases"
 msgstr "Filter canvases"
 
+msgid "userpages##canvases##updated"
+msgstr "Updated %{since}"
+
 msgid "userpages##canvases##noCreatedCanvases##title"
 msgstr "You haven't created any canvases yet."
 
@@ -24,7 +27,7 @@ msgid "userpages##canvases##noCanvasesResult##title"
 msgstr "No results."
 
 msgid "userpages##canvases##noCanvasesResult##message"
-msgstr "We couldn't find any matching canvases."
+msgstr "We couldn't find any canvases that match your search."
 
 msgid "userpages##canvases##noCanvasesResult##clearFilters"
 msgstr "Clear filters"
@@ -138,7 +141,7 @@ msgid "userpages##products##noProductsResult##title"
 msgstr "No results."
 
 msgid "userpages##products##noProductsResult##message"
-msgstr "We couldn't find any matching products."
+msgstr "We couldn't find any products that match your search."
 
 msgid "userpages##products##noProductsResult##clearFilters"
 msgstr "Clear filters"
@@ -168,7 +171,7 @@ msgid "userpages##purchases##noPurchasesResult##title"
 msgstr "No results."
 
 msgid "userpages##purchases##noPurchasesResult##message"
-msgstr "We couldn't find any matching products."
+msgstr "We couldn't find any products that match your search."
 
 msgid "userpages##purchases##noPurchasesResult##clearFilters"
 msgstr "Clear filters"
@@ -234,7 +237,7 @@ msgid "userpages##streams##noStreamsResult##title"
 msgstr "No results."
 
 msgid "userpages##streams##noStreamsResult##message"
-msgstr "We couldn't find any matching streams."
+msgstr "We couldn't find any streams that match your search."
 
 msgid "userpages##streams##noStreamsResult##clearFilters"
 msgstr "Clear filters"
@@ -396,7 +399,7 @@ msgid "userpages##dashboards##noDashboardsResult##title"
 msgstr "No results."
 
 msgid "userpages##dashboards##noDashboardsResult##message"
-msgstr "We couldn't find any matching dashboards."
+msgstr "We couldn't find any dashboards that match your search."
 
 msgid "userpages##dashboards##noDashboardsResult##clearFilters"
 msgstr "Clear filters"

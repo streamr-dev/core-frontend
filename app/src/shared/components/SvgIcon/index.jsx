@@ -235,10 +235,22 @@ const sources = {
         </svg>
     ),
     profileMan: (
-        <svg width="42" height="42" xmlns="http://www.w3.org/2000/svg">
-            <g transform="translate(1 1)" stroke="#D8D8D8" strokeWidth="1.5" fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M13.817 10.489A11.927 11.927 0 0 0 27.11 13.16" /><circle cx="20" cy="14.13" r="7.174" />
-                <path d="M.435 10.871V3.043A2.609 2.609 0 0 1 3.043.435h7.827M39.565 10.871V3.043A2.609 2.609 0 0 0 36.957.435H29.13M.435 29.13v7.827a2.609 2.609 0 0 0 2.608 2.608h7.827M39.565 29.13v7.827a2.609 2.609 0 0 1-2.608 2.608H29.13M31.02 31.74a11.673 11.673 0 0 0-22.04 0" />
+        <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <circle id="a" cx="40" cy="40" r="40" />
+            </defs>
+            <g fill="none" fillRule="evenodd">
+                <mask id="b" fill="#fff">
+                    <use href="#a" />
+                </mask>
+                <use fill="#EFEFEF" href="#a" />
+                <g opacity=".503" mask="url(#b)" stroke="#525252" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5">
+                    <g transform="translate(20 17)">
+                        <ellipse cx="20.5" cy="11" rx="10.762" ry="10.5" />
+                        <path d="M11.226 5.668c3.367 3.408 8.01 5.333 12.861 5.332 2.433 0 4.84-.483 7.073-1.422M.512 45.5C.512 34.73 9.462 26 20.5 26c11.039 0 19.987 8.73 19.987 19.5" />
+                        <path d="M12.813 27.498V29c0 4.142 3.441 7.5 7.687 7.5s7.688-3.358 7.688-7.5v-1.502" />
+                    </g>
+                </g>
             </g>
         </svg>
     ),
@@ -256,6 +268,14 @@ const sources = {
                 <circle transform="rotate(-23.025 7.593 7.592)" cx="7.593" cy="7.592" r="5.371" />
                 <path d="M11.39 11.39l4.166 4.166" />
             </g>
+        </svg>
+    ),
+    questionMark: (
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path
+                d="M9.1 9.286a.75.75 0 0 1-1.5-.001 4.287 4.287 0 1 1 5.716 4.044 1.018 1.018 0 0 0-.68.96v.744a.75.75 0 0 1-1.5 0v-.744a2.52 2.52 0 0 1 1.68-2.374A2.787 2.787 0 1 0 9.1 9.285zm2.782 10.074a1.19 1.19 0 1 1 0-2.38 1.19 1.19 0 0 1 0 2.38z"
+                fill="#525252"
+            />
         </svg>
     ),
 }

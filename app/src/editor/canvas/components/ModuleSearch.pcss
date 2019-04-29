@@ -1,16 +1,8 @@
 .ModuleSearch {
   position: absolute;
-  left: 0;
-  right: 0;
-  top: 10vw;
-  margin-left: auto;
-  margin-right: auto;
+  left: 32px;
+  top: 10%;
   background: white;
-  min-width: 30vw;
-  max-width: 30vw;
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: auto auto 1fr;
   z-index: 12;
   border: 1px solid #EFEFEF;
   box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.05);
@@ -18,6 +10,22 @@
   overflow: hidden;
   cursor: pointer;
   user-select: none;
+
+  :global(.react-resizable-handle) {
+    width: 24px;
+    height: 24px;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    cursor: nwse-resize;
+  }
+}
+
+.ModuleSearch .Container {
+  height: 100%;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto auto 1fr;
 }
 
 .ModuleSearch .Header {
@@ -84,7 +92,6 @@
   text-transform: uppercase;
   letter-spacing: 2px;
   line-height: 32px;
-  max-height: 40vh;
   overflow: auto;
 }
 
@@ -131,9 +138,18 @@
   text-transform: none;
   letter-spacing: 0;
   line-height: 40px;
+}
+
+.ModuleSearch .Content .ModuleItem.WithCategory {
   display: grid;
   grid-template-columns: 50% 50%;
   grid-gap: 12px;
+}
+
+.ModuleSearch .Content .ModuleItem .ModuleName {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .ModuleSearch .Content .ModuleItem .ModuleCategory {
@@ -142,6 +158,9 @@
   font-weight: 400;
   text-transform: uppercase;
   color: #ADADAD;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .ModuleSearch .Content .StreamItem {
@@ -152,6 +171,9 @@
   text-transform: none;
   letter-spacing: 0;
   line-height: 28px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .ModuleSearch .Content .StreamItem .Description {
@@ -160,6 +182,9 @@
   font-weight: 400;
   color: #ADADAD;
   line-height: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .Overlay {
@@ -175,5 +200,5 @@
   opacity: 0;
 }
 
-global(.dragHandle) {
+.dragHandle {
 }

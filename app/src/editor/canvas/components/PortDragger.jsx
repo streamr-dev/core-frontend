@@ -5,7 +5,8 @@ import cx from 'classnames'
 
 import * as CanvasState from '../state'
 import { DragDropContext, Draggable } from './DragDropContext'
-import styles from './Ports.pcss'
+import Dragger from './Ports/Dragger'
+import Plug from './Ports/Plug'
 
 class DraggablePort extends React.Component {
     static contextType = DragDropContext
@@ -75,9 +76,9 @@ class DraggablePort extends React.Component {
     render() {
         return (
             <Draggable
-                defaultClassNameDragging={styles.isDragging}
-                handle={`.${styles.dragHandle}`}
-                cancel={`.${styles.dragCancel}`}
+                defaultClassNameDragging={Plug.styles.isDragged}
+                handle={`.${Dragger.styles.dragHandle}`}
+                cancel={`.${Dragger.styles.dragCancel}`}
                 onStop={this.onDropPort}
                 onStart={this.onStartDragPort}
                 onDrag={this.onDragPort}
@@ -88,10 +89,12 @@ class DraggablePort extends React.Component {
     }
 }
 
-export function DragSource({ api, port }) {
+export function DragSource({ api, port, className }) {
     return (
         <DraggablePort api={api} port={port}>
-            <div className={cx(styles.portDragger, styles.portDragSource, styles.dragHandle)} />
+            <div
+                className={cx(Dragger.styles.root, Dragger.styles.source, Dragger.styles.dragHandle, className)}
+            />
         </DraggablePort>
     )
 }
@@ -120,7 +123,7 @@ export class DropTarget extends React.PureComponent {
             /* eslint-disable-next-line max-len */
             /* eslint-disable jsx-a11y/no-static-element-interactions, jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/mouse-events-have-key-events, jsx-a11y/no-noninteractive-tabindex */
             <div
-                className={cx(styles.portDragger, styles.portDropTarget)}
+                className={cx(Dragger.styles.root, Dragger.styles.target, this.props.className, this.props.className)}
                 onMouseOver={this.onMouseOverTarget}
                 onMouseOut={this.onMouseOutTarget}
             />

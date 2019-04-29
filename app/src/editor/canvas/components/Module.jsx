@@ -13,12 +13,15 @@ import { RunStates } from '../state'
 
 import Ports from './Ports'
 import ModuleDragger from './ModuleDragger'
+import * as RunController from './RunController'
 
 import ModuleStyles from '$editor/shared/components/Module.pcss'
 import styles from './Module.pcss'
 import { Resizer, isModuleResizable } from './Resizer'
 
 class CanvasModule extends React.PureComponent {
+    static contextType = RunController.Context
+
     state = {}
 
     /**
@@ -123,6 +126,7 @@ class CanvasModule extends React.PureComponent {
                 ref={this.el}
                 {...props}
             >
+                <div className={ModuleStyles.selectionDecorator} />
                 <ModuleHeader
                     className={cx(styles.header, ModuleStyles.dragHandle)}
                     editable={!isRunning}
@@ -136,10 +140,9 @@ class CanvasModule extends React.PureComponent {
                     />
                 </ModuleHeader>
                 <Ports
-                    className={styles.ports}
                     api={api}
-                    module={module}
                     canvas={canvas}
+                    module={module}
                     onPort={onPort}
                     onValueChange={this.onPortValueChange}
                 />
@@ -151,6 +154,7 @@ class CanvasModule extends React.PureComponent {
                     moduleHash={module.hash}
                     canvasId={canvas.id}
                     isActive={isRunning}
+                    isSubscriptionActive={this.context.isStarting || this.context.isActive}
                 />
                 {isResizable && (
                     <Resizer

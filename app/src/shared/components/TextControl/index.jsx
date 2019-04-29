@@ -18,7 +18,7 @@ type Props = {
     revertOnEsc?: boolean,
     selectAllOnFocus?: boolean,
     tag?: 'input' | 'textarea',
-    value?: string,
+    value?: string | number,
 }
 
 const normalize = (value: any): string => (
@@ -45,7 +45,8 @@ const TextControl = ({
     const el = useRef(null)
     const ref = innerRef || el
     const reverted: Ref<boolean> = useRef(false)
-    const [value, setValue] = useState(valueProp || '')
+    const sanitizedValue = valueProp == null ? '' : valueProp
+    const [value, setValue] = useState(sanitizedValue)
     const [blurCount, setBlurCount] = useState(0)
     const normalizedValue = normalize(value)
     const commit = useCallback(() => {
@@ -66,13 +67,13 @@ const TextControl = ({
         }
 
         if (!commitEmpty && !normalizedValue) {
-            setValue(valueProp)
+            setValue(sanitizedValue)
         }
 
         if (onBlurProp) {
             onBlurProp(e)
         }
-    }, [onBlurProp, flushHistoryOnBlur, commit, valueProp, commitEmpty, normalizedValue])
+    }, [onBlurProp, flushHistoryOnBlur, commit, sanitizedValue, commitEmpty, normalizedValue, blurCount, immediateCommit])
 
     const onFocus = useCallback((e: SyntheticInputEvent<EventTarget>) => {
         if (selectAllOnFocus) {
@@ -92,11 +93,7 @@ const TextControl = ({
         if (onChangeProp) {
             onChangeProp(e)
         }
-
-        if (immediateCommit) {
-            commit()
-        }
-    }, [immediateCommit, onChangeProp, commit])
+    }, [onChangeProp])
 
     const onKeyDown = useCallback((e: SyntheticKeyboardEvent<EventTarget>) => {
         const { current: input } = ref
@@ -110,8 +107,15 @@ const TextControl = ({
                     break
                 case 'Escape':
                     if (revertOnEsc) {
-                        setValue(valueProp)
-                        reverted.current = true
+                        if (value === sanitizedValue) {
+                            // No change. Re-render won't happen. We can blur right away!
+                            input.blur()
+                        } else {
+                            // If the value changed then we have to wait with the `blur`
+                            // for another render. `onBlur` has to know current `value`.
+                            setValue(sanitizedValue)
+                            reverted.current = true
+                        }
                     }
                     break
                 default:
@@ -122,7 +126,7 @@ const TextControl = ({
         if (onKeyDownProp) {
             onKeyDownProp(e)
         }
-    }, [onKeyDownProp, revertOnEsc, immediateCommit, valueProp, tag])
+    }, [onKeyDownProp, revertOnEsc, immediateCommit, sanitizedValue, tag, ref, value])
 
     useEffect(() => {
         const { current: input } = ref
@@ -132,6 +136,12 @@ const TextControl = ({
             input.blur()
         }
     })
+
+    useEffect(() => {
+        if (immediateCommit) {
+            commit()
+        }
+    }, [immediateCommit, commit])
 
     return (
         <Tag
@@ -148,8 +158,8 @@ const TextControl = ({
 }
 
 TextControl.defaultProps = {
-    flushHistoryOnBlur: false,
     commitEmpty: false,
+    flushHistoryOnBlur: false,
     immediateCommit: true,
     innerRef: null,
     revertOnEsc: false,

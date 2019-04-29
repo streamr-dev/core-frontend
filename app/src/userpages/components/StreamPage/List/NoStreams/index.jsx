@@ -6,10 +6,9 @@ import { Translate, I18n } from 'react-redux-i18n'
 import EmptyState from '$shared/components/EmptyState'
 import emptyStateIcon from '$shared/assets/images/empty_state_icon.png'
 import emptyStateIcon2x from '$shared/assets/images/empty_state_icon@2x.png'
+import noResultIcon from '$shared/assets/images/search_no_result.png'
+import noResultemptyStateIcon2x from '$shared/assets/images/search_no_result@2x.png'
 import type { Filter } from '$userpages/flowtype/common-types'
-import SvgIcon from '$shared/components/SvgIcon'
-
-import styles from './noStreams.pcss'
 
 type NoResultsViewProps = {
     onResetFilter: Function,
@@ -37,7 +36,11 @@ const NoCreatedStreamsView = () => (
 const NoResultsView = ({ onResetFilter }: NoResultsViewProps) => (
     <EmptyState
         image={(
-            <SvgIcon name="search" className={styles.searchIcon} />
+            <img
+                src={noResultIcon}
+                srcSet={`${noResultemptyStateIcon2x} 2x`}
+                alt={I18n.t('error.notFound')}
+            />
         )}
         link={(
             <button

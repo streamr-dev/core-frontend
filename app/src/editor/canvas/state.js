@@ -70,6 +70,12 @@ export const PortTypes = {
     param: 'param',
 }
 
+export function isHistoricalModeSelected(canvas) {
+    const { settings = {} } = canvas
+    const { editorState = {} } = settings
+    return editorState.runTab === RunTabs.historical
+}
+
 export function emptyCanvas(config = {}) {
     return {
         name: 'Untitled Canvas',
