@@ -295,83 +295,83 @@ class StreamList extends Component<Props, State> {
                         />
                     )}
                     {streams && streams.length > 0 && (
-                        <Table className={styles.streamTable}>
-                            <thead>
-                                <tr>
-                                    <th><Translate value="userpages.streams.list.name" /></th>
-                                    <th><Translate value="userpages.streams.list.description" /></th>
-                                    <th><Translate value="userpages.streams.list.updated" /></th>
-                                    <th className={styles.dataColumn}><Translate value="userpages.streams.list.lastData" /></th>
-                                    <th className={styles.statusColumn}><Translate value="userpages.streams.list.status" /></th>
-                                    <th className={styles.menuColumn} />
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {streams.map((stream) => (
-                                    <tr
-                                        key={stream.id}
-                                        className={styles.streamRow}
-                                        onClick={() => this.onStreamRowClick(stream.id)}
-                                    >
-                                        <Table.Th noWrap title={stream.name}>{stream.name}</Table.Th>
-                                        <Table.Td noWrap title={stream.description}>{stream.description}</Table.Td>
-                                        <Table.Td noWrap>{moment(stream.lastUpdated).fromNow()}</Table.Td>
-                                        <Table.Td>-</Table.Td>
-                                        <Table.Td className={styles.statusColumn}><StatusIcon /></Table.Td>
-                                        {/* eslint-disable-next-line max-len */}
-                                        {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */}
-                                        <Table.Td
-                                            onClick={(event) => event.stopPropagation()}
-                                            className={styles.menuColumn}
-                                        >
-                                            <DropdownActions
-                                                title={<Meatball alt={I18n.t('userpages.streams.actions')} />}
-                                                noCaret
-                                                onMenuToggle={(open) => {
-                                                    if (open) {
-                                                        this.loadStreamPermissions(stream.id)
-                                                    }
-                                                }}
-                                                menuProps={{
-                                                    modifiers: {
-                                                        offset: {
-                                                            // Make menu aligned to the right.
-                                                            // See https://popper.js.org/popper-documentation.html#modifiers..offset
-                                                            offset: '-100%p + 100%',
-                                                        },
-                                                    },
-                                                }}
-                                            >
-                                                <DropdownActions.Item>
-                                                    <Translate value="userpages.streams.actions.addToCanvas" />
-                                                </DropdownActions.Item>
-                                                <DropdownActions.Item onClick={() => showStream(stream.id)}>
-                                                    <Translate value="userpages.streams.actions.editStream" />
-                                                </DropdownActions.Item>
-                                                <DropdownActions.Item onClick={() => copyToClipboard(stream.id)}>
-                                                    <Translate value="userpages.streams.actions.copyId" />
-                                                </DropdownActions.Item>
-                                                <DropdownActions.Item onClick={() => this.onOpenSnippetDialog(stream)}>
-                                                    <Translate value="userpages.streams.actions.copySnippet" />
-                                                </DropdownActions.Item>
-                                                <DropdownActions.Item onClick={() => this.onOpenShareDialog(stream)}>
-                                                    <Translate value="userpages.streams.actions.share" />
-                                                </DropdownActions.Item>
-                                                <DropdownActions.Item>
-                                                    <Translate value="userpages.streams.actions.refresh" />
-                                                </DropdownActions.Item>
-                                                <DropdownActions.Item
-                                                    disabled={!this.hasWritePermission(stream.id)}
-                                                    onClick={() => this.confirmDeleteStream(stream)}
-                                                >
-                                                    <Translate value="userpages.streams.actions.delete" />
-                                                </DropdownActions.Item>
-                                            </DropdownActions>
-                                        </Table.Td>
+                        <div className={styles.streamsTable}>
+                            <Table>
+                                <thead>
+                                    <tr>
+                                        <th><Translate value="userpages.streams.list.name" /></th>
+                                        <th><Translate value="userpages.streams.list.description" /></th>
+                                        <th><Translate value="userpages.streams.list.updated" /></th>
+                                        <th><Translate value="userpages.streams.list.lastData" /></th>
+                                        <th className={styles.statusColumn}><Translate value="userpages.streams.list.status" /></th>
+                                        <th className={styles.menuColumn} />
                                     </tr>
-                                ))}
-                            </tbody>
-                        </Table>
+                                </thead>
+                                <tbody>
+                                    {streams.map((stream) => (
+                                        <tr
+                                            key={stream.id}
+                                            className={styles.streamRow}
+                                            onClick={() => this.onStreamRowClick(stream.id)}
+                                        >
+                                            <Table.Th noWrap title={stream.name}>{stream.name}</Table.Th>
+                                            <Table.Td noWrap title={stream.description}>{stream.description}</Table.Td>
+                                            <Table.Td noWrap>{moment(stream.lastUpdated).fromNow()}</Table.Td>
+                                            <Table.Td>-</Table.Td>
+                                            <Table.Td className={styles.statusColumn}><StatusIcon /></Table.Td>
+                                            <Table.Td
+                                                onClick={(event) => event.stopPropagation()}
+                                                className={styles.menuColumn}
+                                            >
+                                                <DropdownActions
+                                                    title={<Meatball alt={I18n.t('userpages.streams.actions')} />}
+                                                    noCaret
+                                                    onMenuToggle={(open) => {
+                                                        if (open) {
+                                                            this.loadStreamPermissions(stream.id)
+                                                        }
+                                                    }}
+                                                    menuProps={{
+                                                        modifiers: {
+                                                            offset: {
+                                                                // Make menu aligned to the right.
+                                                                // See https://popper.js.org/popper-documentation.html#modifiers..offset
+                                                                offset: '-100%p + 100%',
+                                                            },
+                                                        },
+                                                    }}
+                                                >
+                                                    <DropdownActions.Item>
+                                                        <Translate value="userpages.streams.actions.addToCanvas" />
+                                                    </DropdownActions.Item>
+                                                    <DropdownActions.Item onClick={() => showStream(stream.id)}>
+                                                        <Translate value="userpages.streams.actions.editStream" />
+                                                    </DropdownActions.Item>
+                                                    <DropdownActions.Item onClick={() => copyToClipboard(stream.id)}>
+                                                        <Translate value="userpages.streams.actions.copyId" />
+                                                    </DropdownActions.Item>
+                                                    <DropdownActions.Item onClick={() => this.onOpenSnippetDialog(stream)}>
+                                                        <Translate value="userpages.streams.actions.copySnippet" />
+                                                    </DropdownActions.Item>
+                                                    <DropdownActions.Item onClick={() => this.onOpenShareDialog(stream)}>
+                                                        <Translate value="userpages.streams.actions.share" />
+                                                    </DropdownActions.Item>
+                                                    <DropdownActions.Item>
+                                                        <Translate value="userpages.streams.actions.refresh" />
+                                                    </DropdownActions.Item>
+                                                    <DropdownActions.Item
+                                                        disabled={!this.hasWritePermission(stream.id)}
+                                                        onClick={() => this.confirmDeleteStream(stream)}
+                                                    >
+                                                        <Translate value="userpages.streams.actions.delete" />
+                                                    </DropdownActions.Item>
+                                                </DropdownActions>
+                                            </Table.Td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </Table>
+                        </div>
                     )}
                 </div>
                 <DocsShortcuts />

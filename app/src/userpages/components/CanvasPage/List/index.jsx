@@ -215,6 +215,8 @@ class CanvasList extends Component<Props, State> {
         getCanvases()
     }
 
+    generateTimeAgoDescription = (canvasUpdatedDate: Date) => moment(canvasUpdatedDate).fromNow()
+
     render() {
         const { canvases, filter, fetching } = this.props
         const { shareDialogCanvas } = this.state
@@ -277,7 +279,8 @@ class CanvasList extends Component<Props, State> {
                                 >
                                     <Tile.Title>{canvas.name}</Tile.Title>
                                     <Tile.Description>
-                                        <Translate value="userpages.canvases.updated" since={moment(canvas.updated).fromNow()} />
+                                        {canvas.updated === canvas.created ? 'Created ' : 'Updated '}
+                                        {this.generateTimeAgoDescription(new Date(canvas.updated))}
                                     </Tile.Description>
                                     <Tile.Status
                                         className={

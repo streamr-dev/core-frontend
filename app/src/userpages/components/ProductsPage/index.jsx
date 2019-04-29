@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom'
 import { push } from 'react-router-redux'
 import copy from 'copy-to-clipboard'
 import Helmet from 'react-helmet'
+import moment from 'moment'
 
 import Layout from '../Layout'
 import links from '../../../links'
@@ -140,6 +141,8 @@ class ProductsPage extends Component<Props> {
         )
     }
 
+    generateTimeAgoDescription = (productUpdatedDate: Date) => moment(productUpdatedDate).fromNow()
+
     render() {
         const { products, filter, fetching } = this.props
 
@@ -188,8 +191,12 @@ class ProductsPage extends Component<Props> {
                                     dropdownActions={this.getActions(product)}
                                 >
                                     <Tile.Title>{product.name}</Tile.Title>
+                                    <Tile.Tag >
+                                        {product.updated === product.created ? 'Created ' : 'Updated '}
+                                        {product.updated && this.generateTimeAgoDescription(new Date(product.updated))}
+                                    </Tile.Tag>
                                     <Tile.Tag
-                                        className={product.state === productStates.DEPLOYED ? styles.purple : styles.gray}
+                                        className={product.state === productStates.DEPLOYED ? styles.green : styles.grey}
                                     >
                                         {
                                             product.state === productStates.DEPLOYED ?
