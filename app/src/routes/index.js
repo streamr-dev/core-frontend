@@ -62,5 +62,5 @@ export const buildRoutes = (paths: Paths, getVariables: () => Variables): Routes
 
 export default buildRoutes(definitions, () => ({
     landingPage: 'https://www.streamr.com',
-    streamr: process.env.STREAMR_URL,
+    streamr: process.env.STREAMR_URL || '',
 }))
