@@ -1,7 +1,11 @@
 import React, { useMemo } from 'react'
+import cx from 'classnames'
+
 import { defaultModuleLayout, getModuleForPort } from '../state'
 import { isModuleResizable } from './Resizer'
 import { Cable, getCableKey } from './Cables'
+
+import styles from './Preview.pcss'
 
 function aspectSize({ width, height, minWidth, minHeight }) {
     const ratio = Math.max(minWidth / width, minHeight / height)
@@ -52,6 +56,14 @@ function PreviewCables({ canvas, preview }) {
     )
 }
 
+function getHeaderHeight(um) {
+    return (um * 3.333)
+}
+
+function getPortsHeight(um, portRows) {
+    return (portRows * um * 1.1) + um
+}
+
 export function ModulePreview({
     x = 0,
     y = 0,
@@ -59,6 +71,8 @@ export function ModulePreview({
     width,
     um = 16,
     title = ' ',
+    type = '',
+    portRows = 0,
 }) {
     x = Math.round(x)
     y = Math.round(y)
@@ -67,37 +81,36 @@ export function ModulePreview({
 
     const titleMaxWidth = width - (2 * um)
     const titleActualWidth = Math.min(title.length * um, titleMaxWidth)
+    const headerBottomY = y + getHeaderHeight(um)
+    const portsBottomY = headerBottomY + getPortsHeight(um, portRows)
     return (
-        <React.Fragment>
-            <g>
-                <rect
-                    x={x}
-                    y={y}
-                    height={height}
-                    width={width}
-                    fill="#FCFBF9"
-                    rx="0.2%"
-                    stroke="#EFEFEF"
-                    strokeWidth="0.5px"
-                    vectorEffect="non-scaling-stroke"
-                />
-                <rect
-                    x={x + um}
-                    y={y + um}
-                    width={titleActualWidth}
-                    height={um * 1.3}
-                    fill="#D8D8D8"
-                    rx="0.2%"
-                />
+        <g className={cx(styles.ModulePreview, styles[type])}>
+            <title>{title}</title>
+            <rect
+                className={styles.ModulePreviewBackground}
+                x={x}
+                y={y}
+                height={height}
+                width={width}
+            />
+            <rect
+                className={styles.ModulePreviewHeaderText}
+                x={x + um}
+                y={y + um}
+                width={titleActualWidth}
+                height={um * 1.3}
+            />
+            <path
+                className={styles.ModulePreviewBottomBorder}
+                d={`M${x},${headerBottomY} H${x + width}`}
+            />
+            {type !== 'GenericModule' && portRows && (
                 <path
-                    stroke="#EFEFEF"
-                    strokeLinecap="square"
-                    strokeWidth="0.5px"
-                    vectorEffect="non-scaling-stroke"
-                    d={`M${x},${y + (um * 3.333)} H${x + width}`}
+                    className={styles.ModulePreviewBottomBorder}
+                    d={`M${x},${portsBottomY} H${x + width}`}
                 />
-            </g>
-        </React.Fragment>
+            )}
+        </g>
     )
 }
 
@@ -110,7 +123,7 @@ function getPortRows({ inputs = [], outputs = [], params = [] }) {
     return Math.max(inputs.length + params.length, outputs.length)
 }
 
-function getPreviewCanvas({ canvas, aspect, screen }) {
+function getPreviewCanvas({ canvas, aspect, screen, um = 20 }) {
     // grab basic module dimensions
     const modulePreviews = canvas.modules.map((m) => ({
         key: getModuleKey(m),
@@ -121,11 +134,12 @@ function getPreviewCanvas({ canvas, aspect, screen }) {
         isResizable: isModuleResizable(m),
         portRows: getPortRows(m),
         title: (m.displayName || m.name),
+        type: module.widget || m.jsModule,
     }))
         .map((m) => (
             // set sensible min-height on non-resizable modules using number of ports
             Object.assign(m, {
-                height: m.isResizable ? m.height : Math.max(m.height, defaultLayout.height + (m.portRows * 16)),
+                height: Math.max(m.height, getHeaderHeight(um) + getPortsHeight(um, m.portRows)),
             })
         ))
 
@@ -181,6 +195,7 @@ export default function Preview({
             canvas,
             aspect,
             screen,
+            um: 20,
         })
     ), [canvas, aspect, screen])
 
@@ -216,6 +231,8 @@ export default function Preview({
                         width={m.width}
                         height={m.height}
                         title={m.title}
+                        type={m.type}
+                        portRows={m.portRows}
                     />
                 ))}
             </svg>
