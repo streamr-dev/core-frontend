@@ -1,5 +1,5 @@
 import React from 'react'
-import { ModulePreview } from '$editor/canvas/components/Preview'
+import { ModulePreview, aspectSize } from '$editor/canvas/components/Preview'
 import { normalizeLayout, generateLayout } from './Dashboard'
 
 export default function Preview({
@@ -27,8 +27,14 @@ export default function Preview({
     })
 
     // set a minimum canvas size so a single module doesn't take up entire preview
-    const minWidth = Math.max(bounds.maxX, screen.width || 0)
-    const minHeight = Math.max(bounds.maxY, screen.height || 0)
+    const minWidth = Math.max(bounds.maxX)
+    const minHeight = Math.max(bounds.maxY)
+    const canvasSize = aspectSize({
+        height: aspect.height,
+        width: aspect.width,
+        minHeight,
+        minWidth,
+    })
 
     return (
         <svg
@@ -52,7 +58,7 @@ export default function Preview({
             {!!itemLayout.length && (
                 <svg
                     preserveAspectRatio="none"
-                    viewBox={`0 0 ${minWidth} ${minHeight}`}
+                    viewBox={`0 0 ${canvasSize.width} ${canvasSize.height}`}
                 >
                     {itemLayout.map((m, index) => (
                         <svg
@@ -66,10 +72,11 @@ export default function Preview({
                         >
                             <g transform="scale(0.95)">
                                 <ModulePreview
-                                    um={0.25}
+                                    um={0.2}
                                     title={dashboard.items[index].title}
                                     width={m.w}
                                     height={m.h}
+                                    type={dashboard.items[index].webcomponent}
                                 />
                             </g>
                         </svg>
