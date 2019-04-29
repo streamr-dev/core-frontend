@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom'
 import { push } from 'react-router-redux'
 import copy from 'copy-to-clipboard'
 import Helmet from 'react-helmet'
+import moment from 'moment'
 
 import Layout from '../Layout'
 import links from '../../../links'
@@ -23,6 +24,7 @@ import Search from '$shared/components/Search'
 import Dropdown from '$shared/components/Dropdown'
 import { formatPath, formatExternalUrl } from '$shared/utils/url'
 import DropdownActions from '$shared/components/DropdownActions'
+import DocsShortcuts from '$userpages/components/DocsShortcuts'
 
 import type { ProductList, ProductId, Product } from '$mp/flowtype/product-types'
 import type { Filter, SortOption } from '$userpages/flowtype/common-types'
@@ -132,6 +134,8 @@ class ProductsPage extends Component<Props> {
         )
     }
 
+    generateTimeAgoDescription = (productUpdatedDate: Date) => moment(productUpdatedDate).fromNow()
+
     render() {
         const { products, filter, fetching } = this.props
 
@@ -187,8 +191,12 @@ class ProductsPage extends Component<Props> {
                                     dropdownActions={this.getActions(product)}
                                 >
                                     <Tile.Title>{product.name}</Tile.Title>
+                                    <Tile.Tag >
+                                        {product.updated === product.created ? 'Created ' : 'Updated '}
+                                        {product.updated && this.generateTimeAgoDescription(new Date(product.updated))}
+                                    </Tile.Tag>
                                     <Tile.Tag
-                                        className={product.state === productStates.DEPLOYED ? styles.purple : styles.gray}
+                                        className={product.state === productStates.DEPLOYED ? styles.green : styles.grey}
                                     >
                                         {
                                             product.state === productStates.DEPLOYED ?
@@ -201,6 +209,7 @@ class ProductsPage extends Component<Props> {
                         ))}
                     </Row>
                 </Container>
+                <DocsShortcuts />
             </Layout>
         )
     }

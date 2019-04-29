@@ -1,9 +1,9 @@
 // @flow
 
 import React, { useState, useContext } from 'react'
-import axios from 'axios'
 import { connect } from 'react-redux'
 
+import { post } from '$shared/utils/api'
 import useIsMountedRef from '$shared/utils/useIsMountedRef'
 import useOnMount from '$shared/utils/useOnMount'
 import SessionContext from '../../contexts/Session'
@@ -24,8 +24,7 @@ const LogoutPage = ({ logout }: Props) => {
     const mountedRef = useIsMountedRef()
 
     useOnMount(() => {
-        axios
-            .post(routes.externalLogout())
+        post(routes.externalLogout())
             .then(
                 () => {
                     if (setSessionToken && mountedRef.current) {

@@ -4,11 +4,13 @@ import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import { Container, Row, Col, Button } from 'reactstrap'
 import { capital } from 'case'
-import { Link } from 'react-router-dom'
+import Link from '$shared/components/Link'
 import { push } from 'react-router-redux'
 import copy from 'copy-to-clipboard'
 import { Translate, I18n } from 'react-redux-i18n'
 import { Helmet } from 'react-helmet'
+import moment from 'moment'
+import cx from 'classnames'
 
 import type { Filter, SortOption } from '$userpages/flowtype/common-types'
 import type { Canvas, CanvasId } from '$userpages/flowtype/canvas-types'
@@ -33,6 +35,10 @@ import { selectFetchingPermissions, selectCanvasPermissions } from '$userpages/m
 import type { Permission, ResourceId } from '$userpages/flowtype/permission-types'
 import type { User } from '$shared/flowtype/user-types'
 import { selectUserData } from '$shared/modules/user/selectors'
+import { RunStates } from '$editor/canvas/state'
+import DocsShortcuts from '$userpages/components/DocsShortcuts'
+
+import styles from './canvasList.pcss'
 
 export type StateProps = {
     user: ?User,
@@ -202,6 +208,8 @@ class CanvasList extends Component<Props, State> {
         }
     }
 
+    generateTimeAgoDescription = (canvasUpdatedDate: Date) => moment(canvasUpdatedDate).fromNow()
+
     render() {
         const { canvases, filter, fetching } = this.props
         const { shareDialogCanvas } = this.state
@@ -270,13 +278,25 @@ class CanvasList extends Component<Props, State> {
                                     }}
                                 >
                                     <Tile.Title>{canvas.name}</Tile.Title>
-                                    <Tile.Description>{new Date(canvas.updated).toLocaleString()}</Tile.Description>
-                                    <Tile.Status>{capital(canvas.state)}</Tile.Status>
+                                    <Tile.Description>
+                                        {canvas.updated === canvas.created ? 'Created ' : 'Updated '}
+                                        {this.generateTimeAgoDescription(new Date(canvas.updated))}
+                                    </Tile.Description>
+                                    <Tile.Status
+                                        className={
+                                            cx({
+                                                [styles.running]: canvas.state === RunStates.Running,
+                                                [styles.stopped]: canvas.state === RunStates.Stopped,
+                                            })}
+                                    >
+                                        {capital(canvas.state)}
+                                    </Tile.Status>
                                 </Tile>
                             </Col>
                         ))}
                     </Row>
                 </Container>
+                <DocsShortcuts />
             </Layout>
         )
     }
