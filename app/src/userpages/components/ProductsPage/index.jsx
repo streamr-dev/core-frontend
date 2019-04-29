@@ -21,6 +21,7 @@ import Dropdown from '$shared/components/Dropdown'
 import { formatPath, formatExternalUrl } from '$shared/utils/url'
 import DropdownActions from '$shared/components/DropdownActions'
 import NoProductsView from './NoProducts'
+import DocsShortcuts from '$userpages/components/DocsShortcuts'
 
 import type { ProductList, ProductId, Product } from '$mp/flowtype/product-types'
 import type { Filter, SortOption } from '$userpages/flowtype/common-types'
@@ -201,6 +202,7 @@ class ProductsPage extends Component<Props> {
                         ))}
                     </Row>
                 </Container>
+                <DocsShortcuts />
             </Layout>
         )
     }

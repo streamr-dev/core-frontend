@@ -34,6 +34,7 @@ import ShareDialog from '$userpages/components/ShareDialog'
 import SnippetDialog from '$userpages/components/SnippetDialog/index'
 import { ProgrammingLanguages } from '$shared/utils/constants'
 import NoStreamsView from './NoStreams'
+import DocsShortcuts from '$userpages/components/DocsShortcuts'
 
 import styles from './list.pcss'
 
@@ -373,6 +374,7 @@ class StreamList extends Component<Props, State> {
                         </Table>
                     )}
                 </div>
+                <DocsShortcuts />
             </Layout>
         )
     }

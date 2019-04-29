@@ -18,6 +18,7 @@ import { defaultColumns, getFilters } from '$userpages/utils/constants'
 import Tile from '$shared/components/Tile'
 import Search from '$shared/components/Search'
 import Dropdown from '$shared/components/Dropdown'
+import DocsShortcuts from '$userpages/components/DocsShortcuts'
 
 import NoDashboardsView from './NoDashboards'
 
@@ -149,6 +150,7 @@ class DashboardList extends Component<Props> {
                         </Row>
                     )}
                 </Container>
+                <DocsShortcuts />
             </Layout>
         )
     }

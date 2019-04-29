@@ -14,7 +14,6 @@ import cx from 'classnames'
 
 import type { Filter, SortOption } from '$userpages/flowtype/common-types'
 import type { Canvas, CanvasId } from '$userpages/flowtype/canvas-types'
-import navigationLinks from '$docs/components/DocsLayout/Navigation/navLinks'
 
 import Layout from '$userpages/components/Layout'
 import links from '$app/src/links'
@@ -35,7 +34,7 @@ import type { User } from '$shared/flowtype/user-types'
 import { selectUserData } from '$shared/modules/user/selectors'
 import NoCanvasesView from './NoCanvases'
 import { RunStates } from '$editor/canvas/state'
-import Onboarding from '$shared/components/Onboarding'
+import DocsShortcuts from '$userpages/components/DocsShortcuts'
 
 import styles from './canvasList.pcss'
 
@@ -294,15 +293,7 @@ class CanvasList extends Component<Props, State> {
                         ))}
                     </Row>
                 </Container>
-                <Onboarding title="Docs">
-                    {Object.keys(navigationLinks).map((key) => (
-                        <Link key={key} to={navigationLinks[key]}>
-                            {key}
-                        </Link>
-                    ))}
-                    {null}
-                    <Link href={links.community.telegram}>Telegram Group</Link>
-                </Onboarding>
+                <DocsShortcuts />
             </Layout>
         )
     }
