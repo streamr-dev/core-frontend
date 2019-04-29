@@ -41,7 +41,7 @@ const AccountCircle = ({ className, textDisplay, name, uploadAvatarPlaceholder }
             <div className={styles.profileEmptyIcon} >
                 {uploadAvatarPlaceholder ?
                     <SvgIcon name="emptyAvatarUpload" />
-                    : <SvgIcon name="emptyAvatar" />
+                    : <SvgIcon name="profileMan" />
                 }
             </div>
         )}

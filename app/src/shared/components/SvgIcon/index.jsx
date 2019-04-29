@@ -230,11 +230,17 @@ const sources = {
             </g>
         </svg>
     ),
-    emptyAvatar: (
-        <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80">
+    profileMan: (
+        <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <circle id="a" cx="40" cy="40" r="40" />
+            </defs>
             <g fill="none" fillRule="evenodd">
-                <use fill="#EFEFEF" xlinkHref="#a" />
-                <g stroke="#525252" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" opacity=".503">
+                <mask id="b" fill="#fff">
+                    <use href="#a" />
+                </mask>
+                <use fill="#EFEFEF" href="#a" />
+                <g opacity=".503" mask="url(#b)" stroke="#525252" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5">
                     <g transform="translate(20 17)">
                         <ellipse cx="20.5" cy="11" rx="10.762" ry="10.5" />
                         <path d="M11.226 5.668c3.367 3.408 8.01 5.333 12.861 5.332 2.433 0 4.84-.483 7.073-1.422M.512 45.5C.512 34.73 9.462 26 20.5 26c11.039 0 19.987 8.73 19.987 19.5" />
@@ -242,6 +248,14 @@ const sources = {
                     </g>
                 </g>
             </g>
+        </svg>
+    ),
+    questionMark: (
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path
+                d="M9.1 9.286a.75.75 0 0 1-1.5-.001 4.287 4.287 0 1 1 5.716 4.044 1.018 1.018 0 0 0-.68.96v.744a.75.75 0 0 1-1.5 0v-.744a2.52 2.52 0 0 1 1.68-2.374A2.787 2.787 0 1 0 9.1 9.285zm2.782 10.074a1.19 1.19 0 1 1 0-2.38 1.19 1.19 0 0 1 0 2.38z"
+                fill="#525252"
+            />
         </svg>
     ),
 }

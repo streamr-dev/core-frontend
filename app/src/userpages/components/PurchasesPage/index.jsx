@@ -21,6 +21,7 @@ import { isActive } from '$mp/utils/time'
 import routes from '$routes'
 import Search from '$shared/components/Search'
 import Dropdown from '$shared/components/Dropdown'
+import DocsShortcuts from '$userpages/components/DocsShortcuts'
 
 import type { ProductList, ProductSubscription } from '$mp/flowtype/product-types'
 import type { Filter, SortOption } from '$userpages/flowtype/common-types'
@@ -153,11 +154,11 @@ class PurchasesPage extends Component<Props> {
                                         imageUrl={product.imageUrl}
                                         link={product.id && `${links.marketplace.products}/${product.id}`}
                                     >
-                                        <div className={styles.title}>{product.name}</div>
-                                        <div className={styles.owner}>{product.owner}</div>
-                                        <div
+                                        <Tile.Title>{product.name}</Tile.Title>
+                                        <Tile.Description>{product.owner}</Tile.Description>
+                                        <Tile.Status
                                             className={
-                                                cx(styles.status, {
+                                                cx({
                                                     [styles.active]: isActive,
                                                     [styles.expired]: !isActive,
                                                 })}
@@ -167,13 +168,14 @@ class PurchasesPage extends Component<Props> {
                                                     <Translate value="userpages.purchases.active" /> :
                                                     <Translate value="userpages.purchases.expired" />
                                             }
-                                        </div>
+                                        </Tile.Status>
                                     </Tile>
                                 </Col>
                             )
                         })}
                     </Row>
                 </Container>
+                <DocsShortcuts />
             </Layout>
         )
     }
