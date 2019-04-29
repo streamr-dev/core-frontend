@@ -11,6 +11,7 @@ import SvgIcon from '$shared/components/SvgIcon'
 
 import { getModuleCategories, getStreams } from '../services'
 import { moduleSearch } from '../state'
+import CanvasStyles from '$editor/canvas/components/Canvas.pcss'
 
 import styles from './ModuleSearch.pcss'
 
@@ -65,25 +66,23 @@ export class ModuleMenuCategory extends React.PureComponent<MenuCategoryProps, M
     }
 }
 
-const onDragStart = (e: any) => {
+const onDragStart = (e: any, moduleId: number, moduleName: string) => {
     e.stopPropagation()
-    console.log(e)
-    console.log(e.target)
     const dragImage = document.querySelector('#dragImage')
     if (dragImage) {
         const textElement = dragImage.querySelector('.dragModuleName')
         if (textElement) {
-            textElement.textContent = e.target.textContent
+            textElement.textContent = moduleName
         }
         e.dataTransfer.setDragImage(dragImage, 0, 0)
     }
 
-    e.dataTransfer.setData('text/plain', 'some_dummy_data')
+    e.dataTransfer.setData('streamr/module', moduleId)
 }
 
 const ModuleMenuItem = ({ module, onSelect }) => (
     /* eslint-disable-next-line */
-    <div draggable onDragStart={onDragStart} className={styles.ModuleItem} role="option" onClick={() => onSelect(module.id)}>
+    <div draggable onDragStart={(e) => { onDragStart(e, module.id, module.name) }} className={styles.ModuleItem} role="option" onClick={() => onSelect(module.id)}>
         {startCase(module.name)}
     </div>
 )
@@ -227,6 +226,17 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
         })
     }
 
+    addModule = (id: string, x: number, y: number) => {
+        const position = {
+            x,
+            y,
+        }
+        this.props.addModule({
+            id,
+            position,
+        })
+    }
+
     onKeyDown = (event: any) => {
         if (this.props.isOpen && event.key === 'Escape') {
             this.props.open(false)
@@ -343,13 +353,37 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
         )
     }
 
+    onDrop = (e: any) => {
+        const moduleId = e.dataTransfer.getData('streamr/module')
+
+        if (moduleId) {
+            // Get click position relative to the canvas element
+            const canvasElement = document.querySelector(`.${CanvasStyles.Modules}`)
+            if (!canvasElement) {
+                return
+            }
+            const rect = canvasElement.getBoundingClientRect()
+            const x = e.clientX - rect.left
+            const y = e.clientY - rect.top
+
+            this.addModule(moduleId, x, y)
+            e.preventDefault()
+        }
+    }
+
     render() {
         const { open, isOpen } = this.props
         const { search, isExpanded, width, height } = this.state
         return (
             <React.Fragment>
                 {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
-                <div className={styles.Overlay} onClick={() => open(false)} hidden={!isOpen} />
+                <div
+                    className={styles.Overlay}
+                    onClick={() => open(false)}
+                    hidden={!isOpen}
+                    onDragOver={(e) => { e.preventDefault() }}
+                    onDrop={this.onDrop}
+                />
                 <Draggable
                     handle={`.${styles.dragHandle}`}
                     bounds="parent"
