@@ -91,8 +91,8 @@ type State = {
 
 const MIN_WIDTH = 250
 const MAX_WIDTH = 450
-const MIN_HEIGHT = 450
-const MAX_HEIGHT = 700
+const MIN_HEIGHT = 208
+const MAX_HEIGHT = 352
 const MIN_HEIGHT_MINIMIZED = 90
 const MODULE_ITEM_HEIGHT = 52
 
@@ -104,7 +104,7 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
         matchingStreams: [],
         isExpanded: true,
         width: 250,
-        height: MIN_HEIGHT,
+        height: MAX_HEIGHT,
         /* eslint-disable-next-line react/no-unused-state */
         heightBeforeMinimize: 0,
     }
@@ -134,7 +134,8 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
         const { value } = event.currentTarget
         this.setState({
             search: value,
-        })
+            isExpanded: true,
+        }, () => this.recalculateHeight())
 
         // Search modules
         const matchingModules = this.getMappedModuleTree(value)
@@ -161,10 +162,10 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
     recalculateHeight = () => {
         const { isExpanded, matchingModules, matchingStreams, search } = this.state
 
-        if (isExpanded) {
-            this.setState(({ heightBeforeMinimize, height }) => ({
-                height: heightBeforeMinimize > 0 ? heightBeforeMinimize : height,
-            }))
+        if (!isExpanded) {
+            this.setState({
+                height: MIN_HEIGHT_MINIMIZED,
+            })
             return
         }
 
@@ -174,7 +175,7 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
         let requiredHeight = MIN_HEIGHT_MINIMIZED + (searchResultItemCount * MODULE_ITEM_HEIGHT)
 
         if (search === '') {
-            requiredHeight = 0
+            requiredHeight = MAX_HEIGHT
         }
 
         this.setState({
