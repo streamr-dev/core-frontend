@@ -49,7 +49,7 @@ function ChartPreview(props) {
 
 function TablePreview(props) {
     return (
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="-3 -3 56 40" {...props}>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="-3 -3 56 159" {...props}>
             <g fill="#D8D8D8" fillRule="evenodd" transform="translate(-3 -5)">
                 <rect width="15" height="4" x="3" y="5" rx="1" />
                 <rect width="19" height="4" x="3" y="13" rx="1" />
@@ -61,12 +61,42 @@ function TablePreview(props) {
                 <rect width="24" height="4" x="29" y="29" rx="1" />
                 <rect width="15" height="4" x="3" y="37" rx="1" />
                 <rect width="19" height="4" x="29" y="37" rx="1" />
+                <rect width="15" height="4" x="3" y="45" rx="1" />
+                <rect width="19" height="4" x="3" y="53" rx="1" />
+                <rect width="19" height="4" x="29" y="45" rx="1" />
+                <rect width="24" height="4" x="29" y="53" rx="1" />
+                <rect width="15" height="4" x="3" y="61" rx="1" />
+                <rect width="19" height="4" x="29" y="61" rx="1" />
+                <rect width="19" height="4" x="3" y="69" rx="1" />
+                <rect width="24" height="4" x="29" y="69" rx="1" />
+                <rect width="15" height="4" x="3" y="77" rx="1" />
+                <rect width="19" height="4" x="29" y="77" rx="1" />
+                <rect width="15" height="4" x="3" y="85" rx="1" />
+                <rect width="19" height="4" x="3" y="93" rx="1" />
+                <rect width="19" height="4" x="29" y="85" rx="1" />
+                <rect width="24" height="4" x="29" y="93" rx="1" />
+                <rect width="15" height="4" x="3" y="101" rx="1" />
+                <rect width="19" height="4" x="29" y="101" rx="1" />
+                <rect width="19" height="4" x="3" y="109" rx="1" />
+                <rect width="24" height="4" x="29" y="109" rx="1" />
+                <rect width="15" height="4" x="3" y="117" rx="1" />
+                <rect width="19" height="4" x="29" y="117" rx="1" />
+                <rect width="15" height="4" x="3" y="125" rx="1" />
+                <rect width="19" height="4" x="3" y="133" rx="1" />
+                <rect width="19" height="4" x="29" y="125" rx="1" />
+                <rect width="24" height="4" x="29" y="133" rx="1" />
+                <rect width="15" height="4" x="3" y="141" rx="1" />
+                <rect width="19" height="4" x="29" y="141" rx="1" />
+                <rect width="19" height="4" x="3" y="149" rx="1" />
+                <rect width="24" height="4" x="29" y="149" rx="1" />
+                <rect width="15" height="4" x="3" y="157" rx="1" />
+                <rect width="19" height="4" x="29" y="157" rx="1" />
             </g>
         </svg>
     )
 }
 
-function aspectSize({ width, height, minWidth, minHeight }) {
+export function aspectSize({ width, height, minWidth, minHeight }) {
     const ratio = Math.max(minWidth / width, minHeight / height)
     return {
         width: Math.round(width * ratio * 100) / 100,
@@ -168,17 +198,18 @@ export function ModulePreview({
                 className={styles.ModulePreviewBottomBorder}
                 d={`M${x},${headerBottomY} H${x + width}`}
             />
-            {type !== 'GenericModule' && portRows && (
+            {type && portRows && (
                 <path
                     className={styles.ModulePreviewBottomBorder}
                     d={`M${x},${portsBottomY} H${x + width}`}
                 />
             )}
-            {type === 'ChartModule' && (
-                <ChartPreview preserveAspectRatio="xMinYMax slice" width={width} height={height - (portsBottomY - y)} x={x} y={portsBottomY} />
+            {type === 'streamr-chart' && (
+                <ChartPreview preserveAspectRatio="xMinYMax meet" width={width} height={height - (portsBottomY - y)} x={x} y={portsBottomY} />
             )}
-            {type === 'TableModule' && (
+            {type === 'streamr-table' && (
                 <TablePreview
+                    um={0.25}
                     preserveAspectRatio="xMinYMin slice"
                     width={width}
                     height={height - (portsBottomY - y)}
@@ -210,7 +241,7 @@ function getPreviewCanvas({ canvas, aspect, screen, um = 20 }) {
         isResizable: isModuleResizable(m),
         portRows: getPortRows(m),
         title: (m.displayName || m.name),
-        type: module.widget || m.jsModule,
+        type: m.uiChannel && m.uiChannel.webcomponent,
     }))
         .map((m) => (
             // set sensible min-height on non-resizable modules using number of ports
