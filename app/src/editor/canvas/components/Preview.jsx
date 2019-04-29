@@ -85,7 +85,6 @@ export function ModulePreview({
     const portsBottomY = headerBottomY + getPortsHeight(um, portRows)
     return (
         <g className={cx(styles.ModulePreview, styles[type])}>
-            <title>{title}</title>
             <rect
                 className={styles.ModulePreviewBackground}
                 x={x}
