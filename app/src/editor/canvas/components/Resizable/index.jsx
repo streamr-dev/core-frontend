@@ -94,7 +94,7 @@ const Resizable = ({
         }
     }, [updateSize, onResize])
 
-    return (
+    return enabled ? (
         <ResizeableContext.Provider value={size}>
             <div
                 {...props}
@@ -112,15 +112,21 @@ const Resizable = ({
                 }}
             >
                 {children}
-                {!!enabled && (
-                    <Handle
-                        beforeDrag={prepare}
-                        onDrag={preview}
-                        onDrop={commit}
-                    />
-                )}
+                <Handle
+                    beforeDrag={prepare}
+                    onDrag={preview}
+                    onDrop={commit}
+                />
             </div>
         </ResizeableContext.Provider>
+    ) : (
+        <div
+            {...props}
+            className={cx(styles.root, className)}
+            style={style}
+        >
+            {children}
+        </div>
     )
 }
 
