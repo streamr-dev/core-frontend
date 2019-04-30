@@ -1,9 +1,12 @@
 // @flow
 
 import React, { useRef, useEffect, useContext } from 'react'
+import cx from 'classnames'
 import { type Ref } from '$shared/flowtype/common-types'
 import { Context as SizeConstaintContext } from '..'
 import styles from './probe.pcss'
+
+const DEBUG: boolean = true
 
 type Props = {
     group: string,
@@ -44,7 +47,14 @@ const Probe = ({ group, uid: uidProp, width, height }: Props) => {
         probeRefreshCount,
     ])
 
-    return <div ref={ref} className={styles.root} />
+    return (
+        <div
+            ref={ref}
+            className={cx(styles.root, {
+                [styles.debug]: DEBUG,
+            })}
+        />
+    )
 }
 
 // $FlowFixMe – again, memo's annotation issue
