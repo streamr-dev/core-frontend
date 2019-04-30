@@ -3,6 +3,7 @@ import { withRouter } from 'react-router-dom'
 import { Helmet } from 'react-helmet'
 
 import Layout from '$mp/components/Layout'
+import LoadingIndicator from '$userpages/components/LoadingIndicator'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import ErrorComponentView from '$shared/components/ErrorComponentView'
 
@@ -363,7 +364,13 @@ const CanvasEditComponent = class CanvasEdit extends Component {
 
     render() {
         const { canvas, runController } = this.props
-        if (!canvas) { return null }
+        if (!canvas) {
+            return (
+                <div className={styles.CanvasEdit}>
+                    <CanvasToolbar className={styles.CanvasToolbar} />
+                </div>
+            )
+        }
         const { moduleSidebarIsOpen, keyboardShortcutIsOpen } = this.state
         const { settings } = canvas
         const resendFrom = settings.beginDate
@@ -489,7 +496,13 @@ const CanvasLoader = withRouter(withErrorBoundary(ErrorComponentView)(class Canv
     }
 
     render() {
-        if (!this.context.state) { return null }
+        if (!this.context.state) {
+            return (
+                <div className={styles.CanvasEdit}>
+                    <CanvasToolbar className={styles.CanvasToolbar} />
+                </div>
+            )
+        }
         return this.props.children
     }
 }))
@@ -523,6 +536,13 @@ const CanvasEditWrap = () => {
     )
 }
 
+function CanvasLoadingIndicator() {
+    const { state } = useContext(UndoContainer.Context)
+    return (
+        <LoadingIndicator className={styles.LoadingIndicator} loading={!state} />
+    )
+}
+
 function isDisabled({ state: canvas }) {
     return !canvas || (canvas.state === RunStates.Running || canvas.adhoc)
 }
@@ -533,6 +553,7 @@ export default withRouter((props) => (
         <ClientProvider>
             <UndoContainer key={props.match.params.id}>
                 <UndoControls disabled={isDisabled} />
+                <CanvasLoadingIndicator />
                 <CanvasLoader>
                     <CanvasEditWrap />
                 </CanvasLoader>

@@ -1,6 +1,8 @@
 .layout {
+  position: relative;
   display: flex;
   flex: 1;
+  background: #E7E7E7;
 }
 
 .DashboardEdit {
@@ -15,6 +17,12 @@
   grid-template-rows: 1fr auto;
 }
 
+.LoadingIndicator {
+  position: absolute;
+  top: 2px;
+  z-index: 99;
+}
+
 .Dashboard {
   grid-area: canvas;
   flex: 1;
@@ -23,6 +31,7 @@
 }
 
 .DashboardToolbar {
+  min-height: 80px;
   grid-area: footer;
   width: 100vw;
   z-index: 11;

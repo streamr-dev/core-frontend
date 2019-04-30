@@ -81,7 +81,12 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
             setSpeed,
         } = this.props
 
-        if (!canvas) { return null }
+        if (!canvas) {
+            return (
+                <div className={cx(className, styles.CanvasToolbar)} />
+            )
+        }
+
         const runController = this.context
         const { runButtonDropdownOpen, canvasSearchIsOpen } = this.state
         const { isRunning, isActive, isPending } = runController
