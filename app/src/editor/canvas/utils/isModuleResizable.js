@@ -3,8 +3,6 @@
 const RESIZABLE_MODULES = [
     'ChartModule',
     'CommentModule',
-    'CustomModule',
-    'GaugeModule',
     'HeatmapModule',
     'MapModule',
     'LabelModule',
