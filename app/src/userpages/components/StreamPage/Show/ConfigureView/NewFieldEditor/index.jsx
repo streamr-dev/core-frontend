@@ -100,7 +100,7 @@ export class NewFieldEditor extends Component<Props, State> {
                     <Col {...rightColumn}>
                         <Dropdown
                             title=""
-                            defaultSelectedItem={type}
+                            selectedItem={type}
                             onChange={this.onTypeChange}
                             className={styles.dropdownToggle}
                         >

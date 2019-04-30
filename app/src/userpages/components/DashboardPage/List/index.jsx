@@ -92,6 +92,15 @@ class DashboardList extends Component<Props> {
         }
     }
 
+    resetFilter = () => {
+        const { updateFilter, getDashboards } = this.props
+        updateFilter({
+            ...this.defaultFilter,
+            search: '',
+        })
+        getDashboards()
+    }
+
     render() {
         const { fetching, dashboards, filter } = this.props
 
@@ -109,7 +118,7 @@ class DashboardList extends Component<Props> {
                     <Dropdown
                         title={I18n.t('userpages.filter.sortBy')}
                         onChange={this.onSortChange}
-                        defaultSelectedItem={(filter && filter.id) || this.defaultFilter.id}
+                        selectedItem={(filter && filter.id) || this.defaultFilter.id}
                     >
                         {getSortOptions().map((s) => (
                             <Dropdown.Item key={s.filter.id} value={s.filter.id}>
@@ -125,7 +134,11 @@ class DashboardList extends Component<Props> {
                 </Helmet>
                 <Container>
                     {!fetching && dashboards && dashboards.length <= 0 && (
-                        <NoDashboardsView />
+                        <NoDashboardsView
+                            hasFilter={!!filter && (!!filter.search || !!filter.key)}
+                            filter={filter}
+                            onResetFilter={this.resetFilter}
+                        />
                     )}
                     {dashboards && dashboards.length > 0 && (
                         <Row>

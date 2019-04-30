@@ -2,7 +2,9 @@
 
 import React from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
+import { Link } from 'react-router-dom'
 
+import routes from '$routes'
 import EmptyState from '$shared/components/EmptyState'
 import emptyStateIcon from '$shared/assets/images/empty_state_icon.png'
 import emptyStateIcon2x from '$shared/assets/images/empty_state_icon@2x.png'
@@ -18,7 +20,7 @@ type Props = NoResultsViewProps & {
     hasFilter: boolean,
 }
 
-const NoCreatedDashboardsView = () => (
+const NoAddedPurchasesView = () => (
     <EmptyState
         image={(
             <img
@@ -27,9 +29,14 @@ const NoCreatedDashboardsView = () => (
                 alt={I18n.t('error.notFound')}
             />
         )}
+        link={(
+            <Link to={routes.marketplace()} className="btn btn-special">
+                <Translate value="userpages.purchases.noAddedPurchases.hint" />
+            </Link>
+        )}
     >
-        <Translate value="userpages.dashboards.noCreatedDashboards.title" />
-        <Translate value="userpages.dashboards.noCreatedDashboards.message" tag="small" />
+        <Translate value="userpages.purchases.noAddedPurchases.title" />
+        <Translate value="userpages.purchases.noAddedPurchases.message" tag="small" />
     </EmptyState>
 )
 
@@ -48,23 +55,23 @@ const NoResultsView = ({ onResetFilter }: NoResultsViewProps) => (
                 className="btn btn-special"
                 onClick={onResetFilter}
             >
-                <Translate value="userpages.dashboards.noDashboardsResult.clearFilters" />
+                <Translate value="userpages.purchases.noPurchasesResult.clearFilters" />
             </button>
         )}
     >
-        <Translate value="userpages.dashboards.noDashboardsResult.title" />
-        <Translate value="userpages.dashboards.noDashboardsResult.message" tag="small" />
+        <Translate value="userpages.purchases.noPurchasesResult.title" />
+        <Translate value="userpages.purchases.noPurchasesResult.message" tag="small" />
     </EmptyState>
 )
 
-const NoDashboardsView = ({ hasFilter, ...rest }: Props) => {
+const NoPurchasesView = ({ hasFilter, ...rest }: Props) => {
     if (hasFilter) {
         return (
             <NoResultsView {...rest} />
         )
     }
 
-    return <NoCreatedDashboardsView />
+    return <NoAddedPurchasesView />
 }
 
-export default NoDashboardsView
+export default NoPurchasesView

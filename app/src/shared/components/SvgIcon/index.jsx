@@ -71,6 +71,18 @@ const sources = {
             />
         </svg>
     ),
+    crossMedium: (
+        <svg viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg">
+            <path
+                d="M.757.757l8.486 8.486m0-8.486L.757 9.243"
+                strokeWidth="1.5"
+                stroke="currentColor"
+                fill="none"
+                fillRule="evenodd"
+                strokeLinecap="round"
+            />
+        </svg>
+    ),
     crossHeavy: (
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 8">
             <g stroke="currentColor" strokeWidth="1.5" fill="none" fillRule="evenodd" strokeLinecap="round">
@@ -239,6 +251,22 @@ const sources = {
                         <path d="M12.813 27.498V29c0 4.142 3.441 7.5 7.687 7.5s7.688-3.358 7.688-7.5v-1.502" />
                     </g>
                 </g>
+            </g>
+        </svg>
+    ),
+    search: (
+        <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+            <g
+                stroke="currentColor"
+                transform="translate(-1 -1)"
+                strokeWidth="1.5"
+                fill="none"
+                fillRule="evenodd"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            >
+                <circle transform="rotate(-23.025 7.593 7.592)" cx="7.593" cy="7.592" r="5.371" />
+                <path d="M11.39 11.39l4.166 4.166" />
             </g>
         </svg>
     ),
