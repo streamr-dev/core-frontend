@@ -122,8 +122,8 @@ class CanvasModule extends React.PureComponent {
                 className={cx(className, styles.CanvasModule, ModuleStyles.ModuleBase, ...moduleSpecificStyles, {
                     [ModuleStyles.isSelected]: isSelected,
                 })}
-                width={parseInt(layout.width.replace(/px$/, ''), 10)}
-                height={parseInt(layout.height.replace(/px$/, ''), 10)}
+                width={parseInt(layout.width, 10)}
+                height={parseInt(layout.height, 10)}
                 onResize={this.onResize}
                 data-modulehash={module.hash}
                 {...props}
