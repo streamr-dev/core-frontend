@@ -142,6 +142,11 @@
   text-transform: none;
   letter-spacing: 0;
   line-height: 40px;
+  cursor: grab;
+}
+
+.ModuleSearch .Content .ModuleItem:focus {
+  outline: none;
 }
 
 .ModuleSearch .Content .ModuleItem.WithCategory {
@@ -178,6 +183,11 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
+  cursor: grab;
+}
+
+.ModuleSearch .Content .StreamItem:focus {
+  outline: none;
 }
 
 .ModuleSearch .Content .StreamItem .Description {
@@ -215,10 +225,38 @@
   background-color: #FFFFFF;
   color: #323232;
   border-radius: 4px;
+  max-width: 200px;
+  height: 60px;
+}
+
+.dropText {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-align: center;
+  text-transform: uppercase;
+  padding: 0 16px;
+  margin-top: -16px;
+}
+
+.dragModuleName {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  margin-top: -12px;
 }
 
 .dragImage {
   color: red;
   width: 24px;
   height: 24px;
+  position: relative;
+  top: -12px;
+  left: -12px;
 }

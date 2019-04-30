@@ -27,7 +27,6 @@ const categoryMapping = {
 
 type MenuCategoryProps = {
     category: CategoryType,
-    onItemSelect: (id: string) => void,
 }
 
 type MenuCategoryState = {
@@ -44,7 +43,7 @@ export class ModuleMenuCategory extends React.PureComponent<MenuCategoryProps, M
     }
 
     render() {
-        const { category, onItemSelect } = this.props
+        const { category } = this.props
         const { isExpanded } = this.state
         return (
             <React.Fragment>
@@ -59,18 +58,18 @@ export class ModuleMenuCategory extends React.PureComponent<MenuCategoryProps, M
                     {category.name}
                 </div>
                 {isExpanded && category.modules.map((m) => (
-                    <ModuleMenuItem key={m.id} module={m} onSelect={onItemSelect} />
+                    <ModuleMenuItem key={m.id} module={m} />
                 ))}
             </React.Fragment>
         )
     }
 }
 
-const onDragStart = (e: any, moduleId: number, moduleName: string) => {
+const onDragStart = (e: any, moduleId: number, moduleName: string, streamId?: string) => {
     e.stopPropagation()
     const dragImage = document.querySelector('#dragImage')
     if (dragImage) {
-        const textElement = dragImage.querySelector('.dragModuleName')
+        const textElement = dragImage.querySelector('#dragModuleName')
         if (textElement) {
             textElement.textContent = moduleName
         }
@@ -78,11 +77,35 @@ const onDragStart = (e: any, moduleId: number, moduleName: string) => {
     }
 
     e.dataTransfer.setData('streamr/module', moduleId)
+    if (streamId) {
+        e.dataTransfer.setData('streamr/stream', streamId)
+    }
 }
 
-const ModuleMenuItem = ({ module, onSelect }) => (
-    /* eslint-disable-next-line */
-    <div draggable onDragStart={(e) => { onDragStart(e, module.id, module.name) }} className={styles.ModuleItem} role="option" onClick={() => onSelect(module.id)}>
+const onDrop = (e: any, addModule: (number, number, number, ?string) => void) => {
+    const moduleId = e.dataTransfer.getData('streamr/module')
+    const streamId = e.dataTransfer.getData('streamr/stream')
+
+    if (moduleId) {
+        // Get click position relative to the canvas element
+        const rect = e.target.getBoundingClientRect()
+        const x = e.clientX - rect.left - 20 // TODO: where is this 20px offset coming
+        const y = e.clientY - rect.top - 20 // TODO: where is this 20px offset coming
+
+        addModule(moduleId, x, y, streamId)
+    }
+}
+
+const ModuleMenuItem = ({ module }) => (
+    /* eslint-disable-next-line jsx-a11y/click-events-have-key-events */
+    <div
+        draggable
+        onDragStart={(e) => { onDragStart(e, module.id, module.name) }}
+        className={styles.ModuleItem}
+        role="option"
+        aria-selected="false"
+        tabIndex="0"
+    >
         {startCase(module.name)}
     </div>
 )
@@ -128,12 +151,27 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
 
     componentDidMount() {
         window.addEventListener('keydown', this.onKeyDown)
+        this.addOrRemoveDropListener(true)
         this.load()
     }
 
     componentWillUnmount() {
         this.unmounted = true
+        this.addOrRemoveDropListener(false)
         window.removeEventListener('keydown', this.onKeyDown)
+    }
+
+    addOrRemoveDropListener= (add: boolean) => {
+        const canvasElement = document.querySelector(`.${CanvasStyles.Modules}`)
+        if (canvasElement) {
+            if (add) {
+                canvasElement.addEventListener('dragover', (e: DragEvent) => { e.preventDefault() })
+                canvasElement.addEventListener('drop', (e: DragEvent) => { onDrop(e, this.addModule) })
+            } else {
+                canvasElement.removeEventListener('dragover', (e: DragEvent) => { e.preventDefault() })
+                canvasElement.removeEventListener('drop', (e: DragEvent) => { onDrop(e, this.addModule) })
+            }
+        }
     }
 
     async load() {
@@ -204,36 +242,27 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
         }), () => this.recalculateHeight())
     }
 
-    onSelect = (id: string) => {
-        this.props.open(false)
-        this.props.addModule({ id })
-    }
+    addModule = (id: number, x: number, y: number, streamId: ?string) => {
+        let configuration = {}
 
-    onSelectStream = (id: string) => {
-        this.props.open(false)
-        const configuration = {
-            params: [
-                {
-                    name: 'stream',
-                    value: id,
-                },
-            ],
+        if (streamId) {
+            configuration = {
+                params: [
+                    {
+                        name: 'stream',
+                        value: streamId,
+                    },
+                ],
+            }
         }
-        this.props.addModule({
-            // 147 is the id of Stream module
-            id: 147,
-            configuration,
-        })
-    }
 
-    addModule = (id: string, x: number, y: number) => {
-        const position = {
-            x,
-            y,
-        }
         this.props.addModule({
             id,
-            position,
+            configuration,
+            position: {
+                x,
+                y,
+            },
         })
     }
 
@@ -305,7 +334,7 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
         // $FlowFixMe "Missing type annotation for U"
         return categories.map((category) => (
             <React.Fragment key={category.name}>
-                <ModuleMenuCategory category={category} onItemSelect={this.onSelect} />
+                <ModuleMenuCategory category={category} />
             </React.Fragment>
         ))
     }
@@ -325,8 +354,9 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
                         role="option"
                         aria-selected="false"
                         key={m.id}
-                        onClick={() => this.onSelect(m.id)}
                         tabIndex="0"
+                        draggable
+                        onDragStart={(e) => { onDragStart(e, m.id, m.name) }}
                     >
                         <span className={styles.ModuleName}>{startCase(m.name)}</span>
                         <span className={styles.ModuleCategory}>{m.path}</span>
@@ -342,8 +372,9 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
                         role="option"
                         aria-selected="false"
                         key={stream.id}
-                        onClick={() => this.onSelectStream(stream.id)}
                         tabIndex="0"
+                        draggable
+                        onDragStart={(e) => { onDragStart(e, 147, stream.name, stream.id) }}
                     >
                         {stream.name}
                         <div className={styles.Description}>{stream.description || 'No description'}</div>
@@ -353,37 +384,11 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
         )
     }
 
-    onDrop = (e: any) => {
-        const moduleId = e.dataTransfer.getData('streamr/module')
-
-        if (moduleId) {
-            // Get click position relative to the canvas element
-            const canvasElement = document.querySelector(`.${CanvasStyles.Modules}`)
-            if (!canvasElement) {
-                return
-            }
-            const rect = canvasElement.getBoundingClientRect()
-            const x = e.clientX - rect.left
-            const y = e.clientY - rect.top
-
-            this.addModule(moduleId, x, y)
-            e.preventDefault()
-        }
-    }
-
     render() {
         const { open, isOpen } = this.props
         const { search, isExpanded, width, height } = this.state
         return (
             <React.Fragment>
-                {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
-                <div
-                    className={styles.Overlay}
-                    onClick={() => open(false)}
-                    hidden={!isOpen}
-                    onDragOver={(e) => { e.preventDefault() }}
-                    onDrop={this.onDrop}
-                />
                 <Draggable
                     handle={`.${styles.dragHandle}`}
                     bounds="parent"
@@ -435,11 +440,9 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
                     </div>
                 </Draggable>
                 <div className={styles.dragElement} id="dragImage">
-                    <SvgIcon className={styles.dragImage} name="crossHeavy" />
-                    <div>
-                        <span>Drop to create</span>
-                        <span className="dragModuleName" />
-                    </div>
+                    <SvgIcon className={styles.dragImage} name="dropPlus" />
+                    <div className={styles.dropText}>Drop to create</div>
+                    <div className={styles.dragModuleName} id="dragModuleName" />
                 </div>
             </React.Fragment>
         )
