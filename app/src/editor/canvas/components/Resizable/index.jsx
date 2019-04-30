@@ -1,6 +1,6 @@
 // @flow
 
-import React, { type Context, createContext, type Node, useState, useRef, useCallback, useContext, useMemo } from 'react'
+import React, { type Context, createContext, type Node, useState, useRef, useCallback, useContext, useMemo, useEffect } from 'react'
 import cx from 'classnames'
 import { type Ref } from '$shared/flowtype/common-types'
 import Handle from './Handle'
@@ -100,6 +100,13 @@ const Resizable = ({
         ...size,
         enabled: true,
     }), [size])
+
+    useEffect(() => {
+        setSize({
+            height,
+            width,
+        })
+    }, [width, height])
 
     return enabled ? (
         <ResizeableContext.Provider value={value}>
