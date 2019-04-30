@@ -15,7 +15,7 @@ type Props = {
 const Probe = ({ group, uid: uidProp, width, height }: Props) => {
     const uid = uidProp || group
     const ref: Ref<HTMLDivElement> = useRef(null)
-    const { setWidth, setHeight, probeRefreshCount } = useContext(SizeConstaintContext)
+    const { setDimensions, probeRefreshCount } = useContext(SizeConstaintContext)
 
     useEffect(() => {
         const { current } = ref
@@ -26,20 +26,20 @@ const Probe = ({ group, uid: uidProp, width, height }: Props) => {
 
         const { width: w, height: h } = current.getBoundingClientRect()
 
-        if (width != null) {
-            setWidth(group, uid, width !== 'auto' ? width : w)
-        }
-
-        if (height != null) {
-            setHeight(group, uid, height !== 'auto' ? height : h)
-        }
+        setDimensions({
+            ...(width != null ? {
+                width: [group, uid, width !== 'auto' ? width : w],
+            } : {}),
+            ...(height != null ? {
+                height: [group, uid, height !== 'auto' ? height : h],
+            } : {}),
+        })
     }, [
         group,
+        height,
+        setDimensions,
         uid,
         width,
-        setWidth,
-        height,
-        setHeight,
         // We have to recalculate size when the `probeRefreshCount`.
         probeRefreshCount,
     ])

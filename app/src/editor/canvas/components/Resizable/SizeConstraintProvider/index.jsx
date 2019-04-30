@@ -7,8 +7,10 @@ type ContextProps = {
     minWidth: number,
     probeRefreshCount: number,
     refreshProbes: () => void,
-    setHeight: (string, string, number) => void,
-    setWidth: (string, string, number) => void,
+    setDimensions: ({
+        height?: [string, string, number],
+        width?: [string, string, number],
+    }) => void,
 }
 
 const defaultContext: ContextProps = {
@@ -16,8 +18,7 @@ const defaultContext: ContextProps = {
     minWidth: 0,
     probeRefreshCount: 0,
     refreshProbes: () => {},
-    setHeight: () => {},
-    setWidth: () => {},
+    setDimensions: () => {},
 }
 
 const SizeConstraintContext: Context<ContextProps> = createContext(defaultContext)
@@ -29,56 +30,70 @@ type Props = {
 }
 
 const SizeConstraintProvider = ({ children }: Props) => {
-    const [widths, setWidths] = useState({})
-    const [heights, setHeights] = useState({})
+    const [dim, setDim] = useState({
+        heights: {},
+        widths: {},
+    })
     const [probeRefreshCount, setProbeRefreshCount] = useState(0)
 
-    const setWidth = useCallback((group: string, id: string, width: number) => {
-        setWidths((widths) => ({
-            ...widths,
-            [group]: {
-                ...(widths || {})[group],
-                [id]: width,
+    const setDimensions = useCallback(({ width, height }) => {
+        setDim(({ heights, widths }) => ({
+            heights: {
+                ...heights,
+                ...((() => {
+                    if (height) {
+                        const [group, uid, value] = height
+                        return {
+                            [group]: {
+                                ...heights[group],
+                                [uid]: value,
+                            },
+                        }
+                    }
+                })()),
+            },
+            widths: {
+                ...widths,
+                ...((() => {
+                    if (width) {
+                        const [group, uid, value] = width
+                        return {
+                            [group]: {
+                                ...widths[group],
+                                [uid]: value,
+                            },
+                        }
+                    }
+                })()),
             },
         }))
-    }, [setWidths])
-
-    const setHeight = useCallback((group: string, id: string, height: number) => {
-        setHeights((heights) => ({
-            ...heights,
-            [group]: {
-                ...(heights || {})[group],
-                [id]: height,
-            },
-        }))
-    }, [setHeights])
+    }, [setDim])
 
     const refreshProbes = useCallback(() => {
         setProbeRefreshCount((count) => count + 1)
     }, [])
 
-    const minWidth = useMemo(() => Object.values(widths).reduce((min, group) => (
-        Math.max(Object.values(group).reduce((sum, value) => sum + ((value: any): number), 0), min)
-    ), -1), [widths])
-
-    const minHeight = useMemo(() => Object.values(heights).reduce((min, group) => (
-        Math.max(Object.values(group).reduce((sum, value) => sum + ((value: any): number), 0), min)
-    ), -1), [heights])
+    const { minWidth, minHeight } = useMemo(() => ({
+        minHeight: Object.values(dim.heights).reduce((min, group) => (
+            Math.max(Object.values(group).reduce((sum, value) => sum + ((value: any): number), 0), min)
+        ), 0),
+        minWidth: Object.values(dim.widths).reduce((min, group) => (
+            Math.max(Object.values(group).reduce((sum, value) => sum + ((value: any): number), 0), min)
+        ), 0),
+    }), [dim])
 
     const value = useMemo(() => ({
         minHeight,
         minWidth,
         probeRefreshCount,
         refreshProbes,
-        setHeight,
-        setWidth,
+        setDimensions,
     }), [
         minHeight,
         minWidth,
         probeRefreshCount,
         refreshProbes,
-        setHeight,
-        setWidth,
+        setDimensions,
     ])
 
     return (
