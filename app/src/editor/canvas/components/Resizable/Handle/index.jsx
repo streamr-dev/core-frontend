@@ -104,14 +104,14 @@ const Handle = ({ beforeDrag, onDrop, onDrag }: Props) => {
             {!!isDragged && (
                 <BodyClass className={styles.resizing} />
             )}
-            <button
+            {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
+            <div
                 onMouseDown={onMouseDown}
                 className={styles.root}
-                tabIndex="-1"
-                type="button"
             />
         </Fragment>
     )
 }
 
-export default Handle
+// $FlowFixMe: flow doesn't play cool w/ React.memo.
+export default React.memo(Handle)
