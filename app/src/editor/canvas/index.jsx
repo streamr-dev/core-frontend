@@ -20,6 +20,7 @@ import Sidebar from '$editor/shared/components/Sidebar'
 import ModuleSidebar from './components/ModuleSidebar'
 import KeyboardShortcutsSidebar from './components/KeyboardShortcutsSidebar'
 
+import CanvasController from './components/CanvasController'
 import * as RunController from './components/RunController'
 import Canvas from './components/Canvas'
 import CanvasToolbar from './components/Toolbar'
@@ -497,10 +498,6 @@ const CanvasLoader = withRouter(withErrorBoundary(ErrorComponentView)(class Canv
 
     async init() {
         if (!this.props.match.params.id) {
-            // if no id, create new
-            const newCanvas = await services.create()
-            if (this.unmounted) { return }
-            this.props.history.replace(`${links.editor.canvasEditor}/${newCanvas.id}`)
             return
         }
 
@@ -584,9 +581,11 @@ export default withRouter((props) => (
             <UndoContainer key={props.match.params.id}>
                 <UndoControls disabled={isDisabled} />
                 <CanvasLoadingIndicator />
-                <CanvasLoader>
-                    <CanvasEditWrap />
-                </CanvasLoader>
+                <CanvasController>
+                    <CanvasLoader>
+                        <CanvasEditWrap />
+                    </CanvasLoader>
+                </CanvasController>
             </UndoContainer>
         </ClientProvider>
     </Layout>
