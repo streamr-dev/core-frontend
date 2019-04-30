@@ -28,7 +28,12 @@ const ModuleHeader = ({
 
     return (
         <Fragment>
-            {/* ModuleHeader's minWidth is always 92px. */}
+            {/*
+                ModuleHeader's minWidth is always 92px. The way we calculate the number:
+                - 24px for expand/collapse placeholder
+                - 40px for the hamburger menu button
+                - 1.75um for EditableText (1um = 16px) - makes `Title` display as `T…`
+            */}
             <Probe group="ModuleHeader" width={92} />
             <div
                 className={cx(styles.root, className)}
