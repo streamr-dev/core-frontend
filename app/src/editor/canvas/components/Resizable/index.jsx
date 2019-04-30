@@ -1,6 +1,6 @@
 // @flow
 
-import React, { type Context, createContext, type Node, useState, useRef, useCallback, useContext } from 'react'
+import React, { type Context, createContext, type Node, useState, useRef, useCallback, useContext, useMemo } from 'react'
 import cx from 'classnames'
 import { type Ref } from '$shared/flowtype/common-types'
 import Handle from './Handle'
@@ -13,11 +13,13 @@ type Size = {
 }
 
 type ContextProps = {
+    enabled: boolean,
     height: number,
     width: number,
 }
 
 const defaultContext: ContextProps = {
+    enabled: false,
     height: 0,
     width: 0,
 }
@@ -94,8 +96,13 @@ const Resizable = ({
         }
     }, [updateSize, onResize])
 
+    const value = useMemo(() => ({
+        ...size,
+        enabled: true,
+    }), [size])
+
     return enabled ? (
-        <ResizeableContext.Provider value={size}>
+        <ResizeableContext.Provider value={value}>
             <div
                 {...props}
                 className={cx(styles.root, className)}

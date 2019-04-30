@@ -45,12 +45,12 @@ const Widgets = {
 }
 
 const AutoSizeWrapper = ({ children }) => {
-    const { width, height } = useContext(ResizableContext)
+    const { width, height, enabled } = useContext(ResizableContext)
     const { minHeight } = useContext(SizeConstraintContext)
     const extraWidth = 200
     const extraHeight = 150
 
-    return (
+    return enabled ? (
         <div
             style={{
                 height: (height - minHeight) + extraHeight,
@@ -69,7 +69,7 @@ const AutoSizeWrapper = ({ children }) => {
             <Probe group="UiWidth" id="UI" width={extraWidth} />
             {children}
         </div>
-    )
+    ) : children
 }
 
 export default ({ autoSize, ...props }) => (
