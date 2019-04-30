@@ -20,7 +20,7 @@ import Sidebar from '$editor/shared/components/Sidebar'
 import ModuleSidebar from './components/ModuleSidebar'
 import KeyboardShortcutsSidebar from './components/KeyboardShortcutsSidebar'
 
-import CanvasController from './components/CanvasController'
+import * as CanvasController from './components/CanvasController'
 import * as RunController from './components/RunController'
 import Canvas from './components/Canvas'
 import CanvasToolbar from './components/Toolbar'
@@ -481,7 +481,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
 }
 
 const CanvasLoader = withRouter(withErrorBoundary(ErrorComponentView)(class CanvasLoader extends React.PureComponent {
-    static contextType = UndoContainer.Context
+    static contextType = CanvasController.Context
     state = { isLoading: false }
 
     componentDidMount() {
@@ -501,7 +501,7 @@ const CanvasLoader = withRouter(withErrorBoundary(ErrorComponentView)(class Canv
             return
         }
 
-        const canvas = this.context.state
+        const { canvas } = this.context
         const rootId = canvas && CanvasState.getRootCanvasId(canvas)
         const canvasId = rootId || this.props.match.params.id
         if (canvasId && rootId !== canvasId && this.state.isLoading !== canvasId) {
@@ -512,17 +512,16 @@ const CanvasLoader = withRouter(withErrorBoundary(ErrorComponentView)(class Canv
 
     load = async (canvasId) => {
         this.setState({ isLoading: canvasId })
-        let canvas = await services.loadRelevantCanvas({ id: canvasId })
+        const canvas = await services.loadRelevantCanvas({ id: canvasId })
         // ignore result if unmounted or canvas changed
         if (this.unmounted || this.state.isLoading !== canvasId) { return }
-        canvas = CanvasState.updateCanvas(canvas)
         // replace/init top of undo stack with loaded canvas
-        this.context.replace(() => canvas)
+        this.context.api.replaceCanvas(() => canvas)
         this.setState({ isLoading: false })
     }
 
     render() {
-        if (!this.context.state) {
+        if (!this.context.canvas) {
             return (
                 <div className={styles.CanvasEdit}>
                     <CanvasToolbar className={styles.CanvasToolbar} />
@@ -581,11 +580,11 @@ export default withRouter((props) => (
             <UndoContainer key={props.match.params.id}>
                 <UndoControls disabled={isDisabled} />
                 <CanvasLoadingIndicator />
-                <CanvasController>
+                <CanvasController.Provider>
                     <CanvasLoader>
                         <CanvasEditWrap />
                     </CanvasLoader>
-                </CanvasController>
+                </CanvasController.Provider>
             </UndoContainer>
         </ClientProvider>
     </Layout>
