@@ -89,7 +89,7 @@ export function emptyCanvas(config = {}) {
     }
 }
 
-const DEFAULT_MODULE_LAYOUT = {
+export const defaultModuleLayout = {
     position: {
         top: 0,
         left: 0,
@@ -562,7 +562,7 @@ export function addModule(canvas, moduleData) {
         ...moduleData,
         hash: getHash(canvas), // TODO: better IDs
         layout: {
-            ...DEFAULT_MODULE_LAYOUT, // TODO: read position from mouse
+            ...defaultModuleLayout, // TODO: read position from mouse
         },
     }
 

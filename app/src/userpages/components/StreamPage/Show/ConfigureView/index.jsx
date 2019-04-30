@@ -201,7 +201,7 @@ export class ConfigureView extends Component<Props, State> {
                                                     />
                                                     <Dropdown
                                                         title=""
-                                                        defaultSelectedItem={field.type}
+                                                        selectedItem={field.type}
                                                         onChange={(val) => this.onFieldTypeChange(field.name, val)}
                                                         className={styles.permissionsDropdown}
                                                     >

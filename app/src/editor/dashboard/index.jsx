@@ -1,9 +1,10 @@
-import React, { Component } from 'react'
+import React, { Component, useContext } from 'react'
 import { withRouter } from 'react-router-dom'
 import { Helmet } from 'react-helmet'
 
 import Layout from '$mp/components/Layout'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
+import LoadingIndicator from '$userpages/components/LoadingIndicator'
 import ErrorComponentView from '$shared/components/ErrorComponentView'
 import UndoContainer, { UndoControls } from '$editor/shared/components/UndoContainer'
 import { ClientProvider } from '$editor/shared/components/Client'
@@ -197,7 +198,13 @@ const DashboardLoader = withRouter(withErrorBoundary(ErrorComponentView)(class D
     }
 
     render() {
-        if (!this.context.state) { return null }
+        if (!this.context.state) {
+            return (
+                <div className={styles.DashboardEdit}>
+                    <DashboardToolbar className={styles.DashboardToolbar} />
+                </div>
+            )
+        }
         return this.props.children
     }
 }))
@@ -215,11 +222,19 @@ const DashboardEditWrap = () => (
     </UndoContainer.Consumer>
 )
 
+function DashboardLoadingIndicator() {
+    const { state } = useContext(UndoContainer.Context)
+    return (
+        <LoadingIndicator className={styles.LoadingIndicator} loading={!state} />
+    )
+}
+
 export default withRouter((props) => (
     <Layout className={styles.layout} footer={false}>
         <ClientProvider>
             <UndoContainer key={props.match.params.id}>
                 <UndoControls />
+                <DashboardLoadingIndicator />
                 <DashboardLoader>
                     <DashboardEditWrap />
                 </DashboardLoader>

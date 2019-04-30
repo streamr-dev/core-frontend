@@ -18,7 +18,7 @@ type Props = NoResultsViewProps & {
     hasFilter: boolean,
 }
 
-const NoCreatedDashboardsView = () => (
+const NoCreatedProductsView = () => (
     <EmptyState
         image={(
             <img
@@ -28,8 +28,8 @@ const NoCreatedDashboardsView = () => (
             />
         )}
     >
-        <Translate value="userpages.dashboards.noCreatedDashboards.title" />
-        <Translate value="userpages.dashboards.noCreatedDashboards.message" tag="small" />
+        <Translate value="userpages.products.noCreatedProducts.title" />
+        <Translate value="userpages.products.noCreatedProducts.message" tag="small" />
     </EmptyState>
 )
 
@@ -48,23 +48,23 @@ const NoResultsView = ({ onResetFilter }: NoResultsViewProps) => (
                 className="btn btn-special"
                 onClick={onResetFilter}
             >
-                <Translate value="userpages.dashboards.noDashboardsResult.clearFilters" />
+                <Translate value="userpages.products.noProductsResult.clearFilters" />
             </button>
         )}
     >
-        <Translate value="userpages.dashboards.noDashboardsResult.title" />
-        <Translate value="userpages.dashboards.noDashboardsResult.message" tag="small" />
+        <Translate value="userpages.products.noProductsResult.title" />
+        <Translate value="userpages.products.noProductsResult.message" tag="small" />
     </EmptyState>
 )
 
-const NoDashboardsView = ({ hasFilter, ...rest }: Props) => {
+const NoProductsView = ({ hasFilter, ...rest }: Props) => {
     if (hasFilter) {
         return (
             <NoResultsView {...rest} />
         )
     }
 
-    return <NoCreatedDashboardsView />
+    return <NoCreatedProductsView />
 }
 
-export default NoDashboardsView
+export default NoProductsView

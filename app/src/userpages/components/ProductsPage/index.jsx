@@ -17,13 +17,11 @@ import { getMyProducts, updateFilter } from '$mp/modules/myProductList/actions'
 import { selectMyProductList, selectFilter, selectFetching } from '$mp/modules/myProductList/selectors'
 import { productStates } from '$shared/utils/constants'
 import Tile from '$shared/components/Tile'
-import EmptyState from '$shared/components/EmptyState'
-import emptyStateIcon from '$shared/assets/images/empty_state_icon.png'
-import emptyStateIcon2x from '$shared/assets/images/empty_state_icon@2x.png'
 import Search from '$shared/components/Search'
 import Dropdown from '$shared/components/Dropdown'
 import { formatPath, formatExternalUrl } from '$shared/utils/url'
 import DropdownActions from '$shared/components/DropdownActions'
+import NoProductsView from './NoProducts'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
 
 import type { ProductList, ProductId, Product } from '$mp/flowtype/product-types'
@@ -58,10 +56,10 @@ const CreateProductButton = () => (
 const getSortOptions = (): Array<SortOption> => {
     const filters = getFilters()
     return [
-        filters.PUBLISHED,
-        filters.DRAFT,
         filters.NAME_ASC,
         filters.NAME_DESC,
+        filters.PUBLISHED,
+        filters.DRAFT,
     ]
 }
 
@@ -100,6 +98,15 @@ class ProductsPage extends Component<Props> {
             updateFilter(newFilter)
             getMyProducts()
         }
+    }
+
+    resetFilter = () => {
+        const { updateFilter, getMyProducts } = this.props
+        updateFilter({
+            ...this.defaultFilter,
+            search: '',
+        })
+        getMyProducts()
     }
 
     getActions = ({ id, state }: Product) => {
@@ -153,7 +160,7 @@ class ProductsPage extends Component<Props> {
                     <Dropdown
                         title={I18n.t('userpages.filter.sortBy')}
                         onChange={this.onSortChange}
-                        defaultSelectedItem={(filter && filter.id) || this.defaultFilter.id}
+                        selectedItem={(filter && filter.id) || this.defaultFilter.id}
                     >
                         {getSortOptions().map((s) => (
                             <Dropdown.Item key={s.filter.id} value={s.filter.id}>
@@ -168,19 +175,12 @@ class ProductsPage extends Component<Props> {
                     <title>{I18n.t('userpages.title.products')}</title>
                 </Helmet>
                 <Container>
-                    {!products.length && (
-                        <EmptyState
-                            image={(
-                                <img
-                                    src={emptyStateIcon}
-                                    srcSet={`${emptyStateIcon2x} 2x`}
-                                    alt={I18n.t('error.notFound')}
-                                />
-                            )}
-                        >
-                            <Translate value="userpages.products.noProducts.title" />
-                            <Translate value="userpages.products.noProducts.message" tag="small" />
-                        </EmptyState>
+                    {!fetching && products && !products.length && (
+                        <NoProductsView
+                            hasFilter={!!filter && (!!filter.search || !!filter.key)}
+                            filter={filter}
+                            onResetFilter={this.resetFilter}
+                        />
                     )}
                     <Row>
                         {products.map((product) => (
