@@ -47,5 +47,5 @@ const Probe = ({ group, uid: uidProp, width, height }: Props) => {
     return <div ref={ref} className={styles.root} />
 }
 
-export default Probe
-
+// $FlowFixMe – again, memo's annotation issue
+export default React.memo(Probe)
