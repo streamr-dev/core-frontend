@@ -6,7 +6,7 @@ import { type Ref } from '$shared/flowtype/common-types'
 import { Context as SizeConstaintContext } from '..'
 import styles from './probe.pcss'
 
-const DEBUG: boolean = true
+const DEBUG: boolean = false
 
 type Props = {
     group: string,
