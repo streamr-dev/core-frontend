@@ -55,10 +55,10 @@ const Resizable = ({
 
     const [isResizing, setIsResizing] = useState(false)
 
-    const tempSize: Ref<Size> = useRef(null)
+    const previousSize: Ref<Size> = useRef(null)
 
     const updateSize = useCallback(({ dx, dy }): Size => {
-        const { height, width } = ((tempSize.current: any): Size)
+        const { height, width } = ((previousSize.current: any): Size)
         const size = {
             height: Math.max(minHeight, height - dy),
             width: Math.max(minWidth, width - dx),
@@ -75,12 +75,16 @@ const Resizable = ({
 
         if (root) {
             const { width, height } = root.getBoundingClientRect()
-            tempSize.current = {
+            previousSize.current = {
                 height,
                 width,
             }
+            updateSize({
+                dx: 0,
+                dy: 0,
+            })
         }
-    }, [])
+    }, [updateSize])
 
     const preview = useCallback((diff) => {
         updateSize(diff)
@@ -90,11 +94,20 @@ const Resizable = ({
         setIsResizing(false)
         const size: Size = updateSize(diff)
 
-        const { height, width } = ((tempSize.current: any): Size)
-        if (onResize && (size.height !== height || size.width !== width)) {
-            onResize(size)
+        const { height: prevHeight, width: prevWidth } = ((previousSize.current: any): Size)
+
+        if (size.height !== prevHeight || size.width !== prevWidth) {
+            if (onResize) {
+                onResize(size)
+            }
+        } else {
+            // No changes? Revert to the size from props.
+            setSize({
+                width,
+                height,
+            })
         }
-    }, [updateSize, onResize])
+    }, [updateSize, onResize, width, height])
 
     const value = useMemo(() => ({
         ...size,
