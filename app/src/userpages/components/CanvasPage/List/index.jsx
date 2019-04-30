@@ -37,7 +37,6 @@ import type { User } from '$shared/flowtype/user-types'
 import { selectUserData } from '$shared/modules/user/selectors'
 import { RunStates } from '$editor/canvas/state'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
-import Onboarding from '$shared/components/Onboarding'
 import CanvasPreview from '$editor/canvas/components/Preview'
 
 import styles from './canvasList.pcss'
