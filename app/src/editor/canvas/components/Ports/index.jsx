@@ -39,7 +39,7 @@ const Ports = ({
     return !!(inputs.length || outputs.length) && (
         <div className={cx(styles.root, className)}>
             <div className={styles.ports}>
-                <Probe id="inputs" width="auto" group="Ports" />
+                <Probe uid="inputs" width="auto" group="Ports" />
                 {inputs.map((port) => (
                     <Port
                         api={api}
@@ -54,10 +54,10 @@ const Ports = ({
                 ))}
             </div>
             <div className={styles.gutter}>
-                <Probe id="gutter" width="auto" group="Ports" />
+                <Probe uid="gutter" width="auto" group="Ports" />
             </div>
             <div className={styles.ports}>
-                <Probe id="outputs" width="auto" group="Ports" />
+                <Probe uid="outputs" width="auto" group="Ports" />
                 {outputs.map((port) => (
                     <Port
                         api={api}

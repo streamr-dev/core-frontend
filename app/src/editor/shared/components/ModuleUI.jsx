@@ -65,8 +65,8 @@ const AutoSizeWrapper = ({ children }) => {
                 width,
             }}
         >
-            <Probe group="ModuleHeight" id="UI" height={extraHeight} />
-            <Probe group="UiWidth" id="UI" width={extraWidth} />
+            <Probe group="ModuleHeight" uid="UI" height={extraHeight} />
+            <Probe group="UiWidth" uid="UI" width={extraWidth} />
             {children}
         </div>
     ) : children
