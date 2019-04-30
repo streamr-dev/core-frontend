@@ -50,10 +50,10 @@ describe('Adhoc Canvases', () => {
             })
         })
 
-        it('can "exit" adhoc canvas', async () => {
+        it('can unlink adhoc canvas', async () => {
             const parentCanvas = await Services.create()
             const adhocCanvas = await Services.createAdhocCanvas(parentCanvas)
-            const updatedParentCanvas = await Services.exitAdhocCanvas(adhocCanvas)
+            const updatedParentCanvas = await Services.unlinkParentCanvas(adhocCanvas)
             expect(updatedParentCanvas).toMatchObject({
                 ...parentCanvas,
                 ...canvasMatcher,
@@ -73,7 +73,7 @@ describe('Adhoc Canvases', () => {
                 ...canvasMatcher,
                 id: adhocCanvas.id, // should have loaded adhoc canvas
             })
-            await Services.exitAdhocCanvas(adhocCanvas)
+            await Services.unlinkParentCanvas(adhocCanvas)
             const nextLoadedCanvas = await Services.loadRelevantCanvas(parentCanvas)
             expect(nextLoadedCanvas).toMatchObject({
                 ...parentCanvas,

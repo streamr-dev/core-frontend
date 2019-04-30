@@ -4,6 +4,7 @@ import React from 'react'
 import startCase from 'lodash/startCase'
 import cx from 'classnames'
 import Draggable from 'react-draggable'
+import { ResizableBox } from 'react-resizable'
 
 import type { Stream } from '$shared/flowtype/stream-types'
 import SvgIcon from '$shared/components/SvgIcon'
@@ -83,7 +84,17 @@ type State = {
     matchingModules: Array<Object>,
     matchingStreams: Array<Stream>,
     isExpanded: boolean,
+    height: number,
+    width: number,
+    heightBeforeMinimize: number,
 }
+
+const MIN_WIDTH = 250
+const MAX_WIDTH = 450
+const MIN_HEIGHT = 450
+const MAX_HEIGHT = 700
+const MIN_HEIGHT_MINIMIZED = 90
+const MODULE_ITEM_HEIGHT = 52
 
 export class ModuleSearch extends React.PureComponent<Props, State> {
     state = {
@@ -92,6 +103,10 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
         matchingModules: [],
         matchingStreams: [],
         isExpanded: true,
+        width: 250,
+        height: MIN_HEIGHT,
+        /* eslint-disable-next-line react/no-unused-state */
+        heightBeforeMinimize: 0,
     }
 
     unmounted = false
@@ -136,16 +151,42 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
         const streams = await getStreams(params)
 
         if (this.unmounted) { return }
+
         this.setState({
             matchingModules,
             matchingStreams: streams,
+        }, () => this.recalculateHeight())
+    }
+
+    recalculateHeight = () => {
+        const { isExpanded, matchingModules, matchingStreams, search } = this.state
+
+        if (isExpanded) {
+            this.setState(({ heightBeforeMinimize, height }) => ({
+                height: heightBeforeMinimize > 0 ? heightBeforeMinimize : height,
+            }))
+            return
+        }
+
+        const searchResultItemCount = matchingModules.length + matchingStreams.length +
+            (matchingModules.length > 0 ? 1 : 0) + // take headers into account
+            (matchingStreams.length > 0 ? 1 : 0)
+        let requiredHeight = MIN_HEIGHT_MINIMIZED + (searchResultItemCount * MODULE_ITEM_HEIGHT)
+
+        if (search === '') {
+            requiredHeight = 0
+        }
+
+        this.setState({
+            height: Math.min(Math.max(requiredHeight, MIN_HEIGHT_MINIMIZED), MAX_HEIGHT),
         })
     }
 
     toggleMinimize = () => {
-        this.setState(({ isExpanded }) => ({
+        this.setState(({ isExpanded, height, heightBeforeMinimize }) => ({
             isExpanded: !isExpanded,
-        }))
+            heightBeforeMinimize: isExpanded ? height : heightBeforeMinimize,
+        }), () => this.recalculateHeight())
     }
 
     onSelect = (id: string) => {
@@ -254,14 +295,14 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
                     /* TODO: follow the disabled jsx-a11y recommendations below to add keyboard support */
                     /* eslint-disable-next-line jsx-a11y/click-events-have-key-events */
                     <div
-                        className={styles.ModuleItem}
+                        className={cx(styles.ModuleItem, styles.WithCategory)}
                         role="option"
                         aria-selected="false"
                         key={m.id}
                         onClick={() => this.onSelect(m.id)}
                         tabIndex="0"
                     >
-                        {startCase(m.name)}
+                        <span className={styles.ModuleName}>{startCase(m.name)}</span>
                         <span className={styles.ModuleCategory}>{m.path}</span>
                     </div>
                 ))}
@@ -288,34 +329,59 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
 
     render() {
         const { open, isOpen } = this.props
-        const { search, isExpanded } = this.state
+        const { search, isExpanded, width, height } = this.state
+        const minHeight = isExpanded ? MIN_HEIGHT : MIN_HEIGHT_MINIMIZED
         return (
             <React.Fragment>
                 {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
                 <div className={styles.Overlay} onClick={() => open(false)} hidden={!isOpen} />
                 <Draggable
                     handle={`.${styles.dragHandle}`}
+                    bounds="parent"
                 >
-                    <div className={styles.ModuleSearch} hidden={!isOpen}>
-                        <div className={cx(styles.Header, styles.dragHandle)}>
-                            <button className={styles.minimize} onClick={() => this.toggleMinimize()}>
-                                {isExpanded ?
-                                    <SvgIcon name="caretUp" /> :
-                                    <SvgIcon name="caretDown" />
-                                }
-                            </button>
-                            <button className={styles.close} onClick={() => open(false)}>
-                                <SvgIcon name="crossHeavy" />
-                            </button>
-                        </div>
-                        <div className={styles.Input}>
-                            <input ref={this.onInputRef} placeholder="Search for modules and streams" value={search} onChange={this.onChange} />
-                        </div>
-                        <div role="listbox" className={styles.Content}>
-                            {(search && search.length > 0) ?
-                                this.renderSearchResults() :
-                                this.renderMenu()}
-                        </div>
+                    <div
+                        className={styles.ModuleSearch}
+                        hidden={!isOpen}
+                    >
+                        <ResizableBox
+                            width={width}
+                            height={height}
+                            minConstraints={[MIN_WIDTH, minHeight]}
+                            maxConstraints={[MAX_WIDTH, MAX_HEIGHT]}
+                            onResize={(e, data) => {
+                                this.setState({
+                                    height: data.size.height,
+                                    width: data.size.width,
+                                })
+                            }}
+                        >
+                            <div className={styles.Container}>
+                                <div className={cx(styles.Header, styles.dragHandle)}>
+                                    <button className={styles.minimize} onClick={() => this.toggleMinimize()}>
+                                        {isExpanded ?
+                                            <SvgIcon name="caretUp" /> :
+                                            <SvgIcon name="caretDown" />
+                                        }
+                                    </button>
+                                    <button className={styles.close} onClick={() => open(false)}>
+                                        <SvgIcon name="crossHeavy" />
+                                    </button>
+                                </div>
+                                <div className={styles.Input}>
+                                    <input
+                                        ref={this.onInputRef}
+                                        placeholder="Search for modules and streams"
+                                        value={search}
+                                        onChange={this.onChange}
+                                    />
+                                </div>
+                                <div role="listbox" className={styles.Content}>
+                                    {(search && search.length > 0) ?
+                                        this.renderSearchResults() :
+                                        this.renderMenu()}
+                                </div>
+                            </div>
+                        </ResizableBox>
                     </div>
                 </Draggable>
             </React.Fragment>

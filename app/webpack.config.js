@@ -194,9 +194,9 @@ module.exports = {
                 'src/marketplace/**/*.*',
                 'src/shared/**/*.*',
                 'src/routes/**/*.*',
-                process.env.USERPAGES === 'on' && 'src/userpages/**/*.*',
-                process.env.USERPAGES === 'on' && 'src/editor/**/*.*',
-                process.env.DOCS === 'on' && 'src/docs/**/*.*',
+                'src/userpages/**/*.*',
+                'src/editor/**/*.*',
+                'src/docs/**/*.*',
             ].filter(Boolean),
             globOptions: {
                 ignore: [

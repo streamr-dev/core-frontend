@@ -306,6 +306,9 @@ export default class ChartModule extends React.Component {
                                 backgroundColor: null,
                                 zoomType: 'x',
                                 selectionMarkerFill: 'rgba(0, 0, 0, 0.05)',
+                                style: {
+                                    fontFamily: "'IBM Plex', sans-serif",
+                                },
                             },
                             colors: ['#FF5C00', '#0324FF', '#2AC437', '#6240AF'],
                             time: {
@@ -358,6 +361,16 @@ export default class ChartModule extends React.Component {
                             },
                             scrollbar: {
                                 enabled: false,
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(255, 255, 255, 0.96)',
+                                padding: 10,
+                                borderRadius: 8,
+                                style: {
+                                    boxShadow: '0 0 6px 0 rgba(0, 0, 0, 0.05)',
+                                    color: '#323232',
+                                    lineHeight: 1.6,
+                                },
                             },
                             series: this.state.series.map((s) => ({
                                 ...s,

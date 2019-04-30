@@ -154,7 +154,7 @@ export class ConfirmCsvImportView extends Component<Props, State> {
                                 className={styles.dropdown}
                                 title=""
                                 onChange={this.onTimestampColumnIndexChange}
-                                defaultSelectedItem={timestampColumnIndex.toString()}
+                                selectedItem={timestampColumnIndex.toString()}
                             >
                                 {headers.map((header, index) => (
                                     <Dropdown.Item key={header} value={index.toString()}>
@@ -170,7 +170,7 @@ export class ConfirmCsvImportView extends Component<Props, State> {
                                 className={styles.dropdown}
                                 title=""
                                 onChange={this.onDateFormatChange}
-                                defaultSelectedItem={dateFormat}
+                                selectedItem={dateFormat}
                             >
                                 {Object.keys(dateFormats).map((f) => {
                                     const format = dateFormats[f]

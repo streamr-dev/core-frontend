@@ -36,6 +36,7 @@ jobs:
     - STREAMR_API_URL=http://localhost:8081/streamr-core/api/v1
     - STREAMR_WS_URL=ws://localhost:8890/api/v1/ws
     - STREAMR_URL=http://localhost:8081/streamr-core
+    - PLATFORM_ORIGIN_URL=http://localhost
     script: "travis_retry $TRAVIS_BUILD_DIR/app/travis_scripts/unit-tests.sh"
   - stage: Platform tests
     if: type IN (pull_request)
@@ -44,14 +45,11 @@ jobs:
     - CHROMATIC_APP_CODE=exgpyxh1il5
     - NODE_ENV=production
     - PORT=12345
-    - STREAMR_API_URL=https://ee-staging.streamr.com/api/v1
-    - STREAMR_WS_URL=wss://ee-staging.streamr.com/api/v1/ws
-    - STREAMR_URL=https://ee-staging.streamr.com
-    - PLATFORM_ORIGIN_URL=https://marketplace-staging.streamr.com
-    - PLATFORM_PUBLIC_PATH=https://marketplace-staging.streamr.com
+    - STREAMR_API_URL=https://staging.streamr.com/api/v1
+    - STREAMR_WS_URL=wss://staging.streamr.com/api/v1/ws
+    - STREAMR_URL=https://staging.streamr.com
+    - PLATFORM_ORIGIN_URL=https://staging.streamr.com
     - GOOGLE_ANALYTICS_ID=55331565-5
-    - USERPAGES=on
-    - DOCS=on
     - STORYBOOK_BASE_PATH=storybook
     - MARKETPLACE_CONTRACT_ADDRESS=0xA10151D088f6f2705a05d6c83719e99E079A61C1
     - TOKEN_CONTRACT_ADDRESS=0x0Cf0Ee63788A0849fE5297F3407f701E122cC023
@@ -66,20 +64,18 @@ jobs:
     env:
     - NODE_ENV=production
     - PORT=12345
-    - STREAMR_API_URL=https://ee-staging.streamr.com/api/v1
-    - STREAMR_WS_URL=wss://ee-staging.streamr.com/api/v1/ws
-    - STREAMR_URL=https://ee-staging.streamr.com
-    - PLATFORM_ORIGIN_URL=https://marketplace-staging.streamr.com
+    - STREAMR_API_URL=https://staging.streamr.com/api/v1
+    - STREAMR_WS_URL=wss://staging.streamr.com/api/v1/ws
+    - PLATFORM_ORIGIN_URL=https://staging.streamr.com
+    - STREAMR_URL=https://staging.streamr.com
     - PLATFORM_PUBLIC_PATH=https://marketplace-staging.streamr.com
     - GOOGLE_ANALYTICS_ID=55331565-5
-    - USERPAGES=on
-    - DOCS=on
     - STORYBOOK_BASE_PATH=storybook
     - MARKETPLACE_CONTRACT_ADDRESS=0x62d08a44d6db7821c9556032a437beb4bd050abd
     - TOKEN_CONTRACT_ADDRESS=0x67a9fda28c4df570d1d5350acfa345194f4d4100
     - WEB3_REQUIRED_NETWORK_ID=8995
-    - WEB3_PUBLIC_HTTP_PROVIDER=https://ee-staging.streamr.com:8540
-    - WEB3_PUBLIC_WS_PROVIDER=wss://ee-staging.streamr.com:8540/ws
+    - WEB3_PUBLIC_HTTP_PROVIDER=https://staging.streamr.com:8540
+    - WEB3_PUBLIC_WS_PROVIDER=wss://staging.streamr.com:8540/ws
     - SENTRY_URL=https://e012761929d24baa96ca82772f60b395@sentry.io/1203154
     - LOGROCKET_SLUG=et0uhu/streamr-frontend-local
     script: "$TRAVIS_BUILD_DIR/app/travis_scripts/build-app-stg.sh"
@@ -123,13 +119,11 @@ jobs:
     env:
     - NODE_ENV=production
     - PORT=12345
-    - STREAMR_API_URL=https://ee-staging.streamr.com/api/v1
-    - STREAMR_WS_URL=wss://ee-staging.streamr.com/api/v1/ws
-    - STREAMR_URL=https://ee-staging.streamr.com
-    - PLATFORM_ORIGIN_URL=https://marketplace-staging.streamr.com
+    - STREAMR_API_URL=https://staging.streamr.com/api/v1
+    - STREAMR_WS_URL=wss://staging.streamr.com/api/v1/ws
+    - PLATFORM_ORIGIN_URL=https://staging.streamr.com
+    - STREAMR_URL=https://staging.streamr.com
     - GOOGLE_ANALYTICS_ID=55331565-5
-    - USERPAGES=on
-    - DOCS=on
     - STORYBOOK_BASE_PATH=storybook
     - MARKETPLACE_CONTRACT_ADDRESS=0xA10151D088f6f2705a05d6c83719e99E079A61C1
     - TOKEN_CONTRACT_ADDRESS=0x0Cf0Ee63788A0849fE5297F3407f701E122cC023
@@ -150,13 +144,10 @@ jobs:
     - PORT=12345
     - STREAMR_API_URL=https://www.streamr.com/api/v1
     - STREAMR_WS_URL=wss://www.streamr.com/api/v1/ws
+    - PLATFORM_ORIGIN_URL=https://www.streamr.com
     - STREAMR_URL=https://www.streamr.com
-    - PLATFORM_ORIGIN_URL=https://marketplace.streamr.com
-    - PLATFORM_PUBLIC_PATH=https://marketplace.streamr.com
     - GOOGLE_ANALYTICS_ID=UA-55331565-5
     - VERSION=$TRAVIS_TAG
-    - USERPAGES=off
-    - DOCS=off
     - MARKETPLACE_CONTRACT_ADDRESS=0xA10151D088f6f2705a05d6c83719e99E079A61C1
     - TOKEN_CONTRACT_ADDRESS=0x0Cf0Ee63788A0849fE5297F3407f701E122cC023
     - WEB3_REQUIRED_NETWORK_ID=1
@@ -212,13 +203,10 @@ jobs:
     - PORT=12345
     - STREAMR_API_URL=https://ee-lisboa.streamr.com/api/v1
     - STREAMR_WS_URL=wss://ee-lisboa.streamr.com/api/v1/ws
+    - PLATFORM_ORIGIN_URL=https://ee-lisboa.streamr.com
     - STREAMR_URL=https://ee-lisboa.streamr.com
-    - PLATFORM_ORIGIN_URL=https://marketplace-lisboa.streamr.com
-    - PLATFORM_PUBLIC_PATH=https://marketplace-lisboa.streamr.com
     - GOOGLE_ANALYTICS_ID=UA-55331565-5
     - VERSION=$TRAVIS_TAG
-    - USERPAGES=off
-    - DOCS=off
     - MARKETPLACE_CONTRACT_ADDRESS=0x62d08a44d6db7821c9556032a437beb4bd050abd
     - TOKEN_CONTRACT_ADDRESS=0x67a9fda28c4df570d1d5350acfa345194f4d4100
     - WEB3_REQUIRED_NETWORK_ID=8995
