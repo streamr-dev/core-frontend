@@ -16,7 +16,7 @@ export default function useCanvasCreate() {
         return wrap(async () => {
             const newCanvas = await services.create()
             if (!isMountedRef.current) { return }
-            history.replace(`${links.editor.canvasEditor}/${newCanvas.id}`)
+            history.push(`${links.editor.canvasEditor}/${newCanvas.id}`)
         })
     }, [wrap, isPending, history, isMountedRef])
 }

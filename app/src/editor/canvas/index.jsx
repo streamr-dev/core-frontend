@@ -183,9 +183,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
     }
 
     newCanvas = async () => {
-        const newCanvas = await services.create()
-        if (this.unmounted) { return }
-        this.props.history.push(`${links.editor.canvasEditor}/${newCanvas.id}`)
+        this.props.history.push(links.editor.canvasEditor)
     }
 
     renameCanvas = (name) => {
@@ -469,6 +467,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
 
 const CanvasEdit = withRouter(({ canvas, ...props }) => {
     const runController = useContext(RunController.Context)
+    const canvasController = CanvasController.useController()
     useCanvasNotifications(canvas)
 
     return (
@@ -476,6 +475,7 @@ const CanvasEdit = withRouter(({ canvas, ...props }) => {
             {...props}
             canvas={canvas}
             runController={runController}
+            canvasController={canvasController}
         />
     )
 })

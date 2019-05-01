@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useMemo } from 'react'
 import * as RouterContext from '$editor/shared/components/RouterContext'
 import LoadingIndicator from '$userpages/components/LoadingIndicator'
 
@@ -28,6 +28,15 @@ function useCanvasLoadEffect() {
             load(canvasId)
         }
     }, [urlId, canvasId, currentCanvasRootId, load, canvas, isPending])
+}
+
+export function useController() {
+    const create = useCanvasCreate()
+    const load = useCanvasLoader()
+    return useMemo(() => ({
+        load,
+        create,
+    }), [load, create])
 }
 
 function useCanvasCreateEffect() {
