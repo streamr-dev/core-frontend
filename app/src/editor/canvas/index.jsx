@@ -317,24 +317,17 @@ const CanvasEditComponent = class CanvasEdit extends Component {
 
     canvasStart = async (options = {}) => {
         const { canvas } = this.props
-
-        return this.getNewCanvas(() => (
-            this.props.runController.start(canvas, options)
-        ))
+        return this.props.runController.start(canvas, options)
     }
 
     canvasStop = async () => {
         const { canvas } = this.props
-        return this.getNewCanvas(() => (
-            this.props.runController.stop(canvas)
-        ))
+        return this.props.runController.stop(canvas)
     }
 
     canvasExit = async () => {
         const { canvas } = this.props
-        return this.getNewCanvas(() => (
-            this.props.runController.exit(canvas)
-        ))
+        return this.props.runController.exit(canvas)
     }
 
     /**

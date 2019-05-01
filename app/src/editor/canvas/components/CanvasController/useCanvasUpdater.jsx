@@ -16,7 +16,7 @@ function useMountedCallback(fn, deps) {
 function canvasUpdater(fn) {
     return (canvas) => {
         const nextCanvas = fn(canvas)
-        if (nextCanvas === null || nextCanvas === canvas) { return null }
+        if (nextCanvas === null || nextCanvas === canvas) { return canvas }
         return CanvasState.updateCanvas(nextCanvas)
     }
 }
