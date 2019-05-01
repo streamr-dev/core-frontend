@@ -45,14 +45,6 @@ function setUpdated(canvas) {
     return updated
 }
 
-function canvasUpdater(fn) {
-    return (canvas) => {
-        const nextCanvas = fn(canvas)
-        if (nextCanvas === null || nextCanvas === canvas) { return null }
-        return CanvasState.updateCanvas(nextCanvas)
-    }
-}
-
 const CanvasEditComponent = class CanvasEdit extends Component {
     state = {
         moduleSearchIsOpen: false,
@@ -68,12 +60,12 @@ const CanvasEditComponent = class CanvasEdit extends Component {
 
     setCanvas = (action, fn, done) => {
         if (this.unmounted) { return }
-        this.props.push(action, canvasUpdater(fn), done)
+        this.props.push(action, fn, done)
     }
 
     replaceCanvas = (fn, done) => {
         if (this.unmounted) { return }
-        this.props.replace(canvasUpdater(fn), done)
+        this.props.replace(fn, done)
     }
 
     moduleSearchOpen = (show = true) => {
@@ -546,14 +538,15 @@ const CanvasEdit = withRouter(({ canvas, ...props }) => {
 })
 
 const CanvasEditWrap = () => {
-    const { state: canvas, push, replace, undo } = useContext(UndoContainer.Context)
+    const { undo } = useContext(UndoContainer.Context)
+    const { canvas, api } = useContext(CanvasController.Context)
     const key = !!canvas && canvas.id
     return (
         <SubscriptionStatus.Provider key={key}>
             <RunController.Provider canvas={canvas}>
                 <CanvasEdit
-                    push={push}
-                    replace={replace}
+                    replace={api.replaceCanvas}
+                    push={api.setCanvas}
                     undo={undo}
                     canvas={canvas}
                 />
