@@ -5,6 +5,7 @@ import LoadingIndicator from '$userpages/components/LoadingIndicator'
 import * as CanvasLoadingContext from './LoadingContext'
 import * as CanvasContext from './CanvasContext'
 import CanvasCreator from './Create'
+import CanvasLoader from './Load'
 
 import styles from './CanvasController.pcss'
 
@@ -17,14 +18,17 @@ function CanvasLoadingIndicator() {
     )
 }
 
-export const Provider = ({ children }) => (
+const CanvasControllerProvider = ({ children }) => (
     <RouterContext.Provider>
         <CanvasLoadingContext.Provider>
             <CanvasContext.Provider>
                 <CanvasLoadingIndicator />
                 <CanvasCreator />
+                <CanvasLoader />
                 {children || null}
             </CanvasContext.Provider>
         </CanvasLoadingContext.Provider>
     </RouterContext.Provider>
 )
+
+export { CanvasControllerProvider as Provider }

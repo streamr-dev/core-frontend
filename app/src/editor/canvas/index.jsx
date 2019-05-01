@@ -3,7 +3,6 @@ import { withRouter } from 'react-router-dom'
 import { Helmet } from 'react-helmet'
 
 import Layout from '$mp/components/Layout'
-import LoadingIndicator from '$userpages/components/LoadingIndicator'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import ErrorComponentView from '$shared/components/ErrorComponentView'
 
@@ -472,58 +471,6 @@ const CanvasEditComponent = class CanvasEdit extends Component {
     }
 }
 
-const CanvasLoader = withRouter(withErrorBoundary(ErrorComponentView)(class CanvasLoader extends React.PureComponent {
-    static contextType = CanvasController.Context
-    state = { isLoading: false }
-
-    componentDidMount() {
-        this.init()
-    }
-
-    componentDidUpdate() {
-        this.init()
-    }
-
-    componentWillUnmount() {
-        this.unmounted = true
-    }
-
-    async init() {
-        if (!this.props.match.params.id) {
-            return
-        }
-
-        const { canvas } = this.context
-        const rootId = canvas && CanvasState.getRootCanvasId(canvas)
-        const canvasId = rootId || this.props.match.params.id
-        if (canvasId && rootId !== canvasId && this.state.isLoading !== canvasId) {
-            // load canvas if needed and not already loading
-            this.load(canvasId)
-        }
-    }
-
-    load = async (canvasId) => {
-        this.setState({ isLoading: canvasId })
-        const canvas = await services.loadRelevantCanvas({ id: canvasId })
-        // ignore result if unmounted or canvas changed
-        if (this.unmounted || this.state.isLoading !== canvasId) { return }
-        // replace/init top of undo stack with loaded canvas
-        this.context.api.replaceCanvas(() => canvas)
-        this.setState({ isLoading: false })
-    }
-
-    render() {
-        if (!this.context.canvas) {
-            return (
-                <div className={styles.CanvasEdit}>
-                    <CanvasToolbar className={styles.CanvasToolbar} />
-                </div>
-            )
-        }
-        return this.props.children
-    }
-}))
-
 const CanvasEdit = withRouter(({ canvas, ...props }) => {
     const runController = useContext(RunController.Context)
     useCanvasNotifications(canvas)
@@ -540,7 +487,16 @@ const CanvasEdit = withRouter(({ canvas, ...props }) => {
 const CanvasEditWrap = () => {
     const { undo } = useContext(UndoContainer.Context)
     const { canvas, api } = useContext(CanvasController.Context)
+    if (!canvas) {
+        return (
+            <div className={styles.CanvasEdit}>
+                <CanvasToolbar className={styles.CanvasToolbar} />
+            </div>
+        )
+    }
+
     const key = !!canvas && canvas.id
+
     return (
         <SubscriptionStatus.Provider key={key}>
             <RunController.Provider canvas={canvas}>
@@ -555,30 +511,24 @@ const CanvasEditWrap = () => {
     )
 }
 
-function CanvasLoadingIndicator() {
-    const { state } = useContext(UndoContainer.Context)
-    return (
-        <LoadingIndicator className={styles.LoadingIndicator} loading={!state} />
-    )
-}
-
 function isDisabled({ state: canvas }) {
     return !canvas || (canvas.state === RunStates.Running || canvas.adhoc)
 }
 
-export default withRouter((props) => (
-    <Layout className={styles.layout} footer={false}>
+const CanvasContainer = withRouter(withErrorBoundary(ErrorComponentView)((props) => (
+    <ClientProvider>
+        <UndoContainer key={props.match.params.id}>
+            <UndoControls disabled={isDisabled} />
+            <CanvasController.Provider>
+                <CanvasEditWrap />
+            </CanvasController.Provider>
+        </UndoContainer>
+    </ClientProvider>
+)))
+
+export default () => (
+    <Layout className={styles.layout}>
         <BodyClass className="editor" />
-        <ClientProvider>
-            <UndoContainer key={props.match.params.id}>
-                <UndoControls disabled={isDisabled} />
-                <CanvasLoadingIndicator />
-                <CanvasController.Provider>
-                    <CanvasLoader>
-                        <CanvasEditWrap />
-                    </CanvasLoader>
-                </CanvasController.Provider>
-            </UndoContainer>
-        </ClientProvider>
+        <CanvasContainer />
     </Layout>
-))
+)
