@@ -21,7 +21,7 @@ import Toolbar from '$editor/shared/components/Toolbar'
 
 import ShareDialog from './ShareDialog'
 import CanvasSearch from './CanvasSearch'
-import * as RunController from './RunController'
+import * as RunController from './CanvasController/Run'
 
 import styles from './Toolbar.pcss'
 

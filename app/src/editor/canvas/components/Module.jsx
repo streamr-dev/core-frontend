@@ -12,7 +12,7 @@ import { RunStates, getPort, getModuleForPort } from '../state'
 
 import Ports from './Ports'
 import ModuleDragger from './ModuleDragger'
-import * as RunController from './RunController'
+import * as RunController from './CanvasController/Run'
 
 import Probe from './Resizable/SizeConstraintProvider/Probe'
 import ModuleStyles from '$editor/shared/components/Module.pcss'

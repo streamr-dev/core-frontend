@@ -20,7 +20,8 @@ import ModuleSidebar from './components/ModuleSidebar'
 import KeyboardShortcutsSidebar from './components/KeyboardShortcutsSidebar'
 
 import * as CanvasController from './components/CanvasController'
-import * as RunController from './components/RunController'
+import * as RunController from './components/CanvasController/Run'
+
 import Canvas from './components/Canvas'
 import CanvasToolbar from './components/Toolbar'
 import CanvasStatus from './components/Status'

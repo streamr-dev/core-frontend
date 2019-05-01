@@ -6,10 +6,10 @@ import React, { useContext, useState, useCallback, useMemo } from 'react'
 
 import useIsMountedRef from '$shared/utils/useIsMountedRef'
 import * as SubscriptionStatus from '$editor/shared/components/SubscriptionStatus'
-import * as services from '../services'
-import * as CanvasState from '../state'
+import * as services from '../../services'
+import * as CanvasState from '../../state'
 
-import useCanvasStateChangeEffect from '../hooks/useCanvasStateChangeEffect'
+import useCanvasStateChangeEffect from '../../hooks/useCanvasStateChangeEffect'
 
 export const RunControllerContext = React.createContext()
 
