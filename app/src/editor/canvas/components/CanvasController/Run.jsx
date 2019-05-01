@@ -22,6 +22,12 @@ function useRunController(canvas = EMPTY) {
     const { replaceCanvas } = useCanvasUpdater()
     const isMountedRef = useIsMountedRef()
 
+    const createAdhocPending = usePending('CREATE ADHOC')
+    const startPending = usePending('START')
+    const stopPending = usePending('STOP')
+    const exitPending = usePending('EXIT')
+    const unlinkPending = usePending('UNLINK')
+
     const [isStarting, setIsStarting] = useState(false) // true immediately before starting a canvas
 
     const endIsStarting = useCallback(() => {
@@ -33,12 +39,6 @@ function useRunController(canvas = EMPTY) {
     const isHistorical = CanvasState.isHistoricalModeSelected(canvas)
     // true if canvas exists and is starting or already running
     const isActive = canvas !== EMPTY && (isStarting || isRunning)
-
-    const createAdhocPending = usePending('CREATE ADHOC')
-    const startPending = usePending('START')
-    const stopPending = usePending('STOP')
-    const exitPending = usePending('EXIT')
-    const unlinkPending = usePending('UNLINK')
 
     const start = useCallback(async (canvas, options) => {
         if (isHistorical && !canvas.adhoc) {

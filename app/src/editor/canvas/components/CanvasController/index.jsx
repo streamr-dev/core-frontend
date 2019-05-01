@@ -23,11 +23,6 @@ function useCanvasLoadEffect() {
 
     useEffect(() => {
         if (!urlId) { return } // do nothing if no url id
-        console.log({
-            canvasId,
-            currentCanvasRootId,
-            isPending,
-        })
         if (canvasId && currentCanvasRootId !== canvasId && !isPending) {
             // load canvas if needed and not already loading
             load(canvasId)
