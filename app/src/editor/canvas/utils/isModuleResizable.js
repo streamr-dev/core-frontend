@@ -8,6 +8,7 @@ const RESIZABLE_MODULES = [
     'LabelModule',
     'TableModule',
     'StreamrTextField',
+    'ImageMapModule',
 ]
 
 export default ({ jsModule, widget }: any) => (
