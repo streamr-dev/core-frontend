@@ -16,6 +16,7 @@ type Props = {
     api: any,
     canvas: any,
     onPort: any,
+    onSizeChange: () => void,
     onValueChange: (any, any) => void,
     port: any,
     setOptions: any,
@@ -24,9 +25,10 @@ type Props = {
 const Port = ({
     api,
     canvas,
-    port,
     onPort,
+    onSizeChange,
     onValueChange: onValueChangeProp,
+    port,
     setOptions,
 }: Props) => {
     const isRunning = canvas.state === 'RUNNING'
@@ -85,7 +87,8 @@ const Port = ({
         setOptions(port.id, {
             displayName,
         })
-    }, [port.id, setOptions])
+        onSizeChange()
+    }, [port.id, setOptions, onSizeChange])
 
     const onOptionToggle = useCallback((key) => {
         setOptions(port.id, {
@@ -95,7 +98,8 @@ const Port = ({
 
     const onValueChange = useCallback((value: any) => {
         onValueChangeProp(port.id, value)
-    }, [port.id, onValueChangeProp])
+        onSizeChange()
+    }, [port.id, onValueChangeProp, onSizeChange])
 
     const { isDragging, data } = useContext(DragDropContext)
     const { portId } = data || {}
@@ -112,6 +116,10 @@ const Port = ({
             window.removeEventListener('blur', onWindowBlur)
         }
     }, [onWindowMouseDown, onGlobalKeyDown, onWindowBlur])
+
+    useEffect(() => {
+        onSizeChange()
+    }, [port.value, onSizeChange])
 
     return (
         <div
