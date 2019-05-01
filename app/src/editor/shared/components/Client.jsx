@@ -126,10 +126,9 @@ export const ClientProvider = withAuthApiKey(class ClientProvider extends React.
 
     render() {
         const { loadKey, ...props } = this.props
-        if (!props.apiKey) { return null }
         // new client if apiKey changes
         return (
-            <ClientProviderComponent key={props.apiKey} {...props} />
+            <ClientProviderComponent {...props} />
         )
     }
 })
