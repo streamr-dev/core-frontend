@@ -6,29 +6,32 @@ import * as CanvasState from '../../state'
 import * as services from '../../services'
 
 import * as CanvasLoadingContext from './LoadingContext'
-import * as CanvasContext from './CanvasContext'
+
+import useCanvas from './useCanvas'
+import useCanvasUpdater from './useCanvasUpdater'
 
 export default function CanvasLoader() {
     const { match } = useContext(RouterContext.Context)
-    const { canvas, api: canvasApi } = useContext(CanvasContext.Context)
+    const canvas = useCanvas()
+    const canvasUpdater = useCanvasUpdater()
     const [pending, { start, end }] = useContext(CanvasLoadingContext.Context)
     const isMountedRef = useIsMountedRef()
     const { id: urlId } = match.params
     const currentCanvasRootId = canvas && CanvasState.getRootCanvasId(canvas)
     const canvasId = currentCanvasRootId || urlId
 
-    const load = useCallback(async (canvasId) => { // eslint-disable-line semi-style
+    const load = useCallback(async (canvasId) => {
         if (pending) { return }
         try {
             start()
             const canvas = await services.loadRelevantCanvas({ id: canvasId })
             if (isMountedRef.current) {
-                canvasApi.replaceCanvas(() => canvas)
+                canvasUpdater.replaceCanvas(() => canvas)
             }
         } finally {
             end()
         }
-    }, [pending, start, end, isMountedRef, canvasApi])
+    }, [pending, start, end, isMountedRef, canvasUpdater])
 
     useEffect(() => {
         if (!urlId) { return } // do nothing if no url id

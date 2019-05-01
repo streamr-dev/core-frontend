@@ -1,11 +1,9 @@
-import React, { useMemo, useCallback, useContext } from 'react'
+import { useMemo, useCallback, useContext } from 'react'
 
 import useIsMountedRef from '$shared/utils/useIsMountedRef'
 import UndoContainer from '$editor/shared/components/UndoContainer'
 
 import * as CanvasState from '../../state'
-
-const CanvasContext = React.createContext({})
 
 function useMountedCallback(fn, deps) {
     const isMountedRef = useIsMountedRef()
@@ -23,8 +21,8 @@ function canvasUpdater(fn) {
     }
 }
 
-export function useCanvas() {
-    const { state: canvas, push, replace } = useContext(UndoContainer.Context)
+export default function useCanvasUpdater() {
+    const { push, replace } = useContext(UndoContainer.Context)
 
     const setCanvas = useMountedCallback((action, fn, done) => {
         push(action, canvasUpdater(fn), done)
@@ -34,26 +32,8 @@ export function useCanvas() {
         replace(canvasUpdater(fn), done)
     }, [push, canvasUpdater])
 
-    const api = useMemo(() => ({
+    return useMemo(() => ({
         setCanvas,
         replaceCanvas,
     }), [setCanvas, replaceCanvas])
-
-    return useMemo(() => ({
-        canvas,
-        api,
-    }), [canvas, api])
-}
-
-function CanvasContextProvider({ children }) {
-    return (
-        <CanvasContext.Provider value={useCanvas()}>
-            {children || null}
-        </CanvasContext.Provider>
-    )
-}
-
-export {
-    CanvasContextProvider as Provider,
-    CanvasContext as Context,
 }

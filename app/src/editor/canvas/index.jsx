@@ -21,6 +21,8 @@ import KeyboardShortcutsSidebar from './components/KeyboardShortcutsSidebar'
 
 import * as CanvasController from './components/CanvasController'
 import * as RunController from './components/CanvasController/Run'
+import useCanvas from './components/CanvasController/useCanvas'
+import useCanvasUpdater from './components/CanvasController/useCanvasUpdater'
 
 import Canvas from './components/Canvas'
 import CanvasToolbar from './components/Toolbar'
@@ -486,8 +488,9 @@ const CanvasEdit = withRouter(({ canvas, ...props }) => {
 })
 
 const CanvasEditWrap = () => {
+    const { replaceCanvas, setCanvas } = useCanvasUpdater()
     const { undo } = useContext(UndoContainer.Context)
-    const { canvas, api } = useContext(CanvasController.Context)
+    const canvas = useCanvas()
     if (!canvas) {
         return (
             <div className={styles.CanvasEdit}>
@@ -502,8 +505,8 @@ const CanvasEditWrap = () => {
         <SubscriptionStatus.Provider key={key}>
             <RunController.Provider canvas={canvas}>
                 <CanvasEdit
-                    replace={api.replaceCanvas}
-                    push={api.setCanvas}
+                    replace={replaceCanvas}
+                    push={setCanvas}
                     undo={undo}
                     canvas={canvas}
                 />
