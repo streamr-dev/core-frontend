@@ -15,18 +15,18 @@ type Props = {
 }
 
 const UiSizeConstraint = ({ children, className, minWidth: minWidthProp, minHeight: minHeightProp }: Props) => {
-    const { height, width } = useContext(ResizableContext)
+    const { height, width, enabled } = useContext(ResizableContext)
     const { minHeight } = useContext(SizeConstraintContext)
 
     return (
         <div
             className={cx(styles.root, className)}
-            style={{
+            style={enabled ? {
                 height: (height - minHeight) + minHeightProp,
                 minHeight: minHeightProp,
                 minWidth: minWidthProp,
                 width,
-            }}
+            } : {}}
         >
             <Probe group="ModuleHeight" uid="UI" height={minHeightProp} />
             <Probe group="UiWidth" uid="UI" width={minWidthProp} />
