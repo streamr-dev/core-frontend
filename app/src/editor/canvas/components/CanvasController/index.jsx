@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useMemo } from 'react'
 import * as RouterContext from '$editor/shared/components/RouterContext'
+import { Helmet } from 'react-helmet'
 import LoadingIndicator from '$userpages/components/LoadingIndicator'
 
 import * as CanvasState from '../../state'
@@ -41,20 +42,39 @@ export function useController() {
 
 function useCanvasCreateEffect() {
     const { match } = useContext(RouterContext.Context)
+    const { isPending } = usePending('CREATE')
 
     const create = useCanvasCreate()
     const { id } = match.params
 
     useEffect(() => {
-        if (id) { return }
+        if (id || isPending) { return }
         create()
-    }, [id, create])
+    }, [id, create, isPending])
 }
 
 function CanvasEffects() {
     useCanvasCreateEffect()
     useCanvasLoadEffect()
-    return null
+
+    let newTitle = null
+    const { isPending: isPendingCreate } = usePending('CREATE')
+    const { isPending: isPendingLoad } = usePending('LOAD')
+    if (isPendingCreate) {
+        // set new title if creating new canvas
+        newTitle = <Helmet title="Creating New Canvas..." />
+    }
+
+    if (isPendingLoad) {
+        // set new title if loading canvas
+        newTitle = <Helmet title="Loading Canvas..." />
+    }
+
+    return (
+        <React.Fragment>
+            {newTitle}
+        </React.Fragment>
+    )
 }
 
 function CanvasLoadingIndicator() {
