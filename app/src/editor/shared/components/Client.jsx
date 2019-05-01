@@ -29,8 +29,9 @@ export function createClient(apiKey) {
 }
 
 function useClientProvider({ apiKey }) {
-    const [client, setClient] = useState(apiKey ? createClient(apiKey) : undefined)
+    const [client, setClient] = useState()
     const isMountedRef = useIsMountedRef()
+    const hasClient = !!client
 
     const reset = useCallback(() => {
         if (!client) { return }
@@ -52,9 +53,8 @@ function useClientProvider({ apiKey }) {
         client.connection.once('disconnecting', reset)
         client.connection.once('disconnected', reset)
         client.once('error', reset)
-        return reset
-    }, [reset, client])
-    const hasClient = !!client
+        return reset // reset to cleanup
+    }, [reset, client, apiKey])
 
     // (re)create client if none
     useEffect(() => {
