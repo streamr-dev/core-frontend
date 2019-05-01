@@ -4,7 +4,7 @@
 
 /* eslint-disable react/no-unused-state */
 
-import React, { useState, useEffect, useCallback, useMemo } from 'react'
+import React, { useState, useEffect, useLayoutEffect, useCallback, useMemo } from 'react'
 import { connect } from 'react-redux'
 import t from 'prop-types'
 import StreamrClient from 'streamr-client'
@@ -57,7 +57,7 @@ function useClientProvider({ apiKey }) {
     }, [reset, client, apiKey])
 
     // (re)create client if none
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (!apiKey || hasClient) { return }
         setClient(createClient(apiKey))
     }, [hasClient, setClient, apiKey])
