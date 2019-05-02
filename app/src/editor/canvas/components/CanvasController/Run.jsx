@@ -3,6 +3,7 @@
  */
 
 import React, { useContext, useState, useCallback, useMemo } from 'react'
+import get from 'lodash/get'
 
 import useIsMountedRef from '$shared/utils/useIsMountedRef'
 import * as SubscriptionStatus from '$editor/shared/components/SubscriptionStatus'
@@ -17,6 +18,12 @@ export const RunControllerContext = React.createContext()
 
 const EMPTY = {}
 
+function isStateNotAllowedError(error) {
+    if (!error) { return false }
+    const errorData = get(error, 'response.data')
+    return !!errorData && errorData.code === 'STATE_NOT_ALLOWED'
+}
+
 function useRunController(canvas = EMPTY) {
     const subscriptionStatus = useContext(SubscriptionStatus.Context)
     const { replaceCanvas } = useCanvasUpdater()
@@ -29,11 +36,7 @@ function useRunController(canvas = EMPTY) {
     const unlinkPending = usePending('UNLINK')
 
     const [isStarting, setIsStarting] = useState(false) // true immediately before starting a canvas
-
-    const endIsStarting = useCallback(() => {
-        if (!isMountedRef.current) { return }
-        setIsStarting(false)
-    }, [isMountedRef, setIsStarting])
+    const [isStopping, setIsStopping] = useState(false) // true immediately before stopping a canvas
 
     const isRunning = CanvasState.isRunning(canvas)
     const isHistorical = CanvasState.isHistoricalModeSelected(canvas)
@@ -59,17 +62,30 @@ function useRunController(canvas = EMPTY) {
             clearState: !!options.clearState || isHistorical,
         }))
             .catch((err) => {
-                endIsStarting()
+                if (isStateNotAllowedError(err)) {
+                    return // trying to start an already started canvas, ignore
+                }
+
+                if (isMountedRef.current) { setIsStarting(false) }
                 throw err
             })
 
         if (!isMountedRef.current) { return }
         replaceCanvas(() => newCanvas)
-    }, [subscriptionStatus, startPending, createAdhocPending, isHistorical, endIsStarting, isMountedRef, replaceCanvas])
+    }, [subscriptionStatus, startPending, createAdhocPending, isHistorical, isMountedRef, replaceCanvas])
 
-    const stop = useCallback(async (canvas) => (
-        stopPending.wrap(() => services.stop(canvas))
-    ), [stopPending])
+    const stop = useCallback(async (canvas) => {
+        setIsStopping(true)
+        return stopPending.wrap(() => services.stop(canvas))
+            .catch((err) => {
+                if (isStateNotAllowedError(err)) {
+                    return // trying to stop an already stopped canvas, ignore
+                }
+
+                if (isMountedRef.current) { setIsStopping(false) }
+                throw err
+            })
+    }, [stopPending, setIsStopping, isMountedRef])
 
     const exit = useCallback(async (canvas) => {
         const newCanvas = await exitPending.wrap(() => services.loadParentCanvas(canvas))
@@ -85,9 +101,11 @@ function useRunController(canvas = EMPTY) {
     useCanvasStateChangeEffect(canvas, unlinkAdhocOnStop)
 
     // if state changes starting must have ended
-    useCanvasStateChangeEffect(canvas, endIsStarting)
+    useCanvasStateChangeEffect(canvas, useCallback(() => setIsStarting(false), [setIsStarting]))
+    // if state changes stopping must have ended
+    useCanvasStateChangeEffect(canvas, useCallback(() => setIsStopping(false), [setIsStopping]))
 
-    const isPending = [
+    const isAnyPending = [
         createAdhocPending,
         startPending,
         stopPending,
@@ -95,8 +113,11 @@ function useRunController(canvas = EMPTY) {
         unlinkPending,
     ].some(({ isPending }) => isPending)
 
+    const isPending = !!(isStopping || isStarting || isAnyPending)
+
     return useMemo(() => ({
         isStarting,
+        isStopping,
         isPending,
         canvas: canvas.id,
         isActive,
@@ -105,7 +126,7 @@ function useRunController(canvas = EMPTY) {
         start,
         stop,
         exit,
-    }), [canvas, isPending, isStarting, isActive, isRunning, isHistorical, start, stop, exit])
+    }), [canvas, isPending, isStarting, isActive, isRunning, isHistorical, isStopping, start, stop, exit])
 }
 
 export default function RunControllerProvider({ children, canvas }) {
