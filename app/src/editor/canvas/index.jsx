@@ -310,55 +310,23 @@ const CanvasEditComponent = class CanvasEdit extends Component {
     }
 
     canvasStart = async (options = {}) => {
-        const { canvas } = this.props
-        return this.props.runController.start(canvas, options)
+        const { canvas, runController } = this.props
+        return runController.start(canvas, options)
     }
 
     canvasStop = async () => {
-        const { canvas } = this.props
-        return this.props.runController.stop(canvas)
+        const { canvas, runController } = this.props
+        return runController.stop(canvas)
     }
 
     canvasExit = async () => {
-        const { canvas } = this.props
-        return this.props.runController.exit(canvas)
-    }
-
-    /**
-     * Loads new canvas via async fn
-     * Loads parent canvas on failure/no canvas response
-     */
-
-    getNewCanvas = async (fn) => {
-        let newCanvas
-        try {
-            newCanvas = await fn()
-            if (this.unmounted) { return }
-        } catch (error) {
-            console.error({ error }) // eslint-disable-line no-console
-            if (this.unmounted) { return }
-            return this.loadParent()
-        }
-        if (this.unmounted) { return }
-        if (!newCanvas) {
-            return this.loadSelf()
-        }
-        this.replaceCanvas(() => newCanvas)
-    }
-
-    loadParent = async () => {
-        const { canvas } = this.props
-        const nextId = canvas.settings.parentCanvasId || canvas.id
-        const newCanvas = await services.loadCanvas({ id: nextId })
-        if (this.unmounted) { return }
-        this.replaceCanvas(() => newCanvas)
+        const { canvas, runController } = this.props
+        return runController.exit(canvas)
     }
 
     loadSelf = async () => {
-        const { canvas } = this.props
-        return this.getNewCanvas(() => (
-            services.loadCanvas(canvas)
-        ))
+        const { canvas, canvasController } = this.props
+        await canvasController.load(canvas.id)
     }
 
     onDoneMessage = () => (
