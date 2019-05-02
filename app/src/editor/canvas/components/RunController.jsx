@@ -28,7 +28,7 @@ function useRunController(canvas = EMPTY) {
     const setPending = useCallback((isPending) => {
         if (!isMountedRef.current) { return }
         setState((state) => {
-            if (state.isPending === isPending) { return null } // do nothing if already set
+            if (state.isPending === isPending) { return state } // do nothing if already set
             return {
                 ...state,
                 isPending,
