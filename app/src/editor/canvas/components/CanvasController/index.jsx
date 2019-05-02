@@ -51,10 +51,11 @@ export function useController() {
 }
 
 function useCanvasCreateEffect() {
-    const { match: { id } } = useContext(RouterContext.Context)
+    const { match } = useContext(RouterContext.Context)
     const { isPending } = usePending('CREATE')
 
     const create = useCanvasCreateCallback()
+    const { id } = match.params
 
     useEffect(() => {
         if (id || isPending) { return }
