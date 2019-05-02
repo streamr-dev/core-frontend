@@ -6,17 +6,17 @@ import links from '../../../../links'
 import * as services from '../../services'
 import usePending from './usePending'
 
-export default function useCanvasCreate() {
+export default function useCanvasRemove() {
     const { history } = useContext(RouterContext.Context)
-    const { isPending, wrap } = usePending('CREATE')
+    const { isPending, wrap } = usePending('REMOVE')
     const isMountedRef = useIsMountedRef()
 
-    return useCallback(async () => {
+    return useCallback(async ({ id }) => {
         if (isPending) { return }
         return wrap(async () => {
-            const newCanvas = await services.create()
+            await services.deleteCanvas({ id })
             if (!isMountedRef.current) { return }
-            history.push(`${links.editor.canvasEditor}/${newCanvas.id}`)
+            history.push(links.userpages.canvases)
         })
     }, [wrap, isPending, history, isMountedRef])
 }

@@ -8,6 +8,9 @@ import * as CanvasState from '../../state'
 import useCanvas from './useCanvas'
 import useCanvasLoader from './useCanvasLoader'
 import useCanvasCreate from './useCanvasCreate'
+import useCanvasRemove from './useCanvasRemove'
+import useCanvasDuplicate from './useCanvasDuplicate'
+
 import usePending, { useAnyPending, Provider as PendingProvider } from './usePending'
 
 import styles from './CanvasController.pcss'
@@ -34,10 +37,14 @@ function useCanvasLoadEffect() {
 export function useController() {
     const create = useCanvasCreate()
     const load = useCanvasLoader()
+    const remove = useCanvasRemove()
+    const duplicate = useCanvasDuplicate()
     return useMemo(() => ({
         load,
         create,
-    }), [load, create])
+        remove,
+        duplicate,
+    }), [load, create, remove, duplicate])
 }
 
 function useCanvasCreateEffect() {
@@ -60,6 +67,8 @@ function CanvasEffects() {
     let newTitle = null
     const { isPending: isPendingCreate } = usePending('CREATE')
     const { isPending: isPendingLoad } = usePending('LOAD')
+    const { isPending: isPendingRemove } = usePending('REMOVE')
+
     if (isPendingCreate) {
         // set new title if creating new canvas
         newTitle = <Helmet title="Creating New Canvas..." />
@@ -68,6 +77,11 @@ function CanvasEffects() {
     if (isPendingLoad) {
         // set new title if loading canvas
         newTitle = <Helmet title="Loading Canvas..." />
+    }
+
+    if (isPendingRemove) {
+        // set new title if creating new canvas
+        newTitle = <Helmet title="Removing Canvas..." />
     }
 
     return (
