@@ -488,7 +488,7 @@ const CanvasContainer = withRouter(withErrorBoundary(ErrorComponentView)((props)
 )))
 
 export default () => (
-    <Layout className={styles.layout}>
+    <Layout className={styles.layout} footer={false}>
         <BodyClass className="editor" />
         <CanvasContainer />
     </Layout>
