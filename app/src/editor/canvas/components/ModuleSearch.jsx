@@ -91,7 +91,6 @@ type State = {
 
 const MIN_WIDTH = 250
 const MAX_WIDTH = 450
-const MIN_HEIGHT = 208
 const MAX_HEIGHT = 352
 const MIN_HEIGHT_MINIMIZED = 90
 const MODULE_ITEM_HEIGHT = 52
@@ -331,7 +330,6 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
     render() {
         const { open, isOpen } = this.props
         const { search, isExpanded, width, height } = this.state
-        const minHeight = isExpanded ? MIN_HEIGHT : MIN_HEIGHT_MINIMIZED
         return (
             <React.Fragment>
                 {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
@@ -347,12 +345,13 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
                         <ResizableBox
                             width={width}
                             height={height}
-                            minConstraints={[MIN_WIDTH, minHeight]}
+                            minConstraints={[MIN_WIDTH, MIN_HEIGHT_MINIMIZED]}
                             maxConstraints={[MAX_WIDTH, MAX_HEIGHT]}
                             onResize={(e, data) => {
                                 this.setState({
                                     height: data.size.height,
                                     width: data.size.width,
+                                    isExpanded: data.size.height > MIN_HEIGHT_MINIMIZED,
                                 })
                             }}
                         >
