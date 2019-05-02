@@ -240,6 +240,13 @@ module.exports = {
         port: process.env.PORT || 3333,
         publicPath,
     },
+    // automatically creates a vendor chunk & also
+    // seems to prevent out of memory errors during dev ??
+    optimization: {
+        splitChunks: {
+            chunks: 'all',
+        },
+    },
     resolve: {
         extensions: ['.js', '.jsx', '.json'],
         symlinks: false,

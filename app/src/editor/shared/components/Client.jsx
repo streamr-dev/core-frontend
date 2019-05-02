@@ -4,7 +4,7 @@
 
 /* eslint-disable react/no-unused-state */
 
-import React, { useState, useEffect, useCallback, useMemo } from 'react'
+import React, { useState, useEffect, useLayoutEffect, useCallback, useMemo } from 'react'
 import { connect } from 'react-redux'
 import t from 'prop-types'
 import StreamrClient from 'streamr-client'
@@ -29,8 +29,9 @@ export function createClient(apiKey) {
 }
 
 function useClientProvider({ apiKey }) {
-    const [client, setClient] = useState(apiKey ? createClient(apiKey) : undefined)
+    const [client, setClient] = useState()
     const isMountedRef = useIsMountedRef()
+    const hasClient = !!client
 
     const reset = useCallback(() => {
         if (!client) { return }
@@ -52,12 +53,11 @@ function useClientProvider({ apiKey }) {
         client.connection.once('disconnecting', reset)
         client.connection.once('disconnected', reset)
         client.once('error', reset)
-        return reset
-    }, [reset, client])
-    const hasClient = !!client
+        return reset // reset to cleanup
+    }, [reset, client, apiKey])
 
     // (re)create client if none
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (!apiKey || hasClient) { return }
         setClient(createClient(apiKey))
     }, [hasClient, setClient, apiKey])
@@ -126,10 +126,9 @@ export const ClientProvider = withAuthApiKey(class ClientProvider extends React.
 
     render() {
         const { loadKey, ...props } = this.props
-        if (!props.apiKey) { return null }
         // new client if apiKey changes
         return (
-            <ClientProviderComponent key={props.apiKey} {...props} />
+            <ClientProviderComponent {...props} />
         )
     }
 })

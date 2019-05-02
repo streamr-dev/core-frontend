@@ -41,13 +41,16 @@ const Widgets = {
     StreamrSwitcher,
 }
 
-export default (props) => (
+export default ({ autoSize, ...props }) => (
     <ModuleLoader {...props}>
         {(props) => {
-            const { module } = props
-            if (!module) { return null }
+            const module = props.module || {}
             const Module = module.widget ? Widgets[module.widget] : Modules[module.jsModule]
-            if (!Module) { return null }
+
+            if (!Module) {
+                return null
+            }
+
             return <Module {...props} />
         }}
     </ModuleLoader>
