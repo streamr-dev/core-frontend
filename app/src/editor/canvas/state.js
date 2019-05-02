@@ -557,6 +557,7 @@ export function addModule(canvas, moduleData) {
         hash: getHash(canvas), // TODO: better IDs
         layout: {
             ...defaultModuleLayout, // TODO: read position from mouse
+            ...moduleData.layout,
         },
     }
 

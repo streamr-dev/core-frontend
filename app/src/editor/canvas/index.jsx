@@ -167,6 +167,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
             configuration,
         })
         if (this.unmounted) { return }
+
         this.setCanvas(action, (canvas) => (
             CanvasState.addModule(canvas, moduleData)
         ))
