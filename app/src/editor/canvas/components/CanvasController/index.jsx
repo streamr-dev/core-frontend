@@ -6,10 +6,10 @@ import LoadingIndicator from '$userpages/components/LoadingIndicator'
 import * as CanvasState from '../../state'
 
 import useCanvas from './useCanvas'
-import useCanvasLoader from './useCanvasLoader'
-import useCanvasCreate from './useCanvasCreate'
-import useCanvasRemove from './useCanvasRemove'
-import useCanvasDuplicate from './useCanvasDuplicate'
+import useCanvasLoadCallback from './useCanvasLoadCallback'
+import useCanvasCreateCallback from './useCanvasCreateCallback'
+import useCanvasRemoveCallback from './useCanvasRemoveCallback'
+import useCanvasDuplicateCallback from './useCanvasDuplicateCallback'
 
 import usePending, { useAnyPending, Provider as PendingProvider } from './usePending'
 
@@ -17,7 +17,7 @@ import styles from './CanvasController.pcss'
 
 function useCanvasLoadEffect() {
     const canvas = useCanvas()
-    const load = useCanvasLoader()
+    const load = useCanvasLoadCallback()
     const { match } = useContext(RouterContext.Context)
     const { isPending } = usePending('LOAD')
 
@@ -35,10 +35,10 @@ function useCanvasLoadEffect() {
 }
 
 export function useController() {
-    const create = useCanvasCreate()
-    const load = useCanvasLoader()
-    const remove = useCanvasRemove()
-    const duplicate = useCanvasDuplicate()
+    const create = useCanvasCreateCallback()
+    const load = useCanvasLoadCallback()
+    const remove = useCanvasRemoveCallback()
+    const duplicate = useCanvasDuplicateCallback()
     return useMemo(() => ({
         load,
         create,
@@ -51,7 +51,7 @@ function useCanvasCreateEffect() {
     const { match } = useContext(RouterContext.Context)
     const { isPending } = usePending('CREATE')
 
-    const create = useCanvasCreate()
+    const create = useCanvasCreateCallback()
     const { id } = match.params
 
     useEffect(() => {

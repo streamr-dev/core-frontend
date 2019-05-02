@@ -6,7 +6,7 @@ import * as services from '../../services'
 import usePending from './usePending'
 import useCanvasUpdater from './useCanvasUpdater'
 
-export default function useCanvasLoader() {
+export default function useCanvasLoadCallback() {
     const canvasUpdater = useCanvasUpdater()
     const { wrap } = usePending('LOAD')
     const isMountedRef = useIsMountedRef()
