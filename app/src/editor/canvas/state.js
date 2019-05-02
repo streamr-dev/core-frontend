@@ -522,7 +522,8 @@ export function removeModule(canvas, moduleHash) {
     }
 }
 
-let ID = 0
+// Hash is stored as a Java Integer.
+const HASH_RANGE = ((2 ** 31) - 1) + (2 ** 31)
 
 function getHash(canvas, iterations = 0) {
     if (iterations >= 100) {
@@ -530,14 +531,7 @@ function getHash(canvas, iterations = 0) {
         throw new Error(`could not find unique hash after ${iterations} attempts`)
     }
 
-    ID += 1
-    const hash = Number((
-        String(Date.now() + ID)
-            .slice(-10) // 32 bits
-            .split('')
-            .reverse() // in order (for debugging)
-            .join('')
-    ))
+    const hash = Math.floor((Math.random() * HASH_RANGE) - (HASH_RANGE / 2))
 
     if (canvas.modules.find((m) => m.hash === hash)) {
         // double-check doesn't exist
