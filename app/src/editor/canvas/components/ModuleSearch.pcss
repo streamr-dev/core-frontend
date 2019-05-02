@@ -63,15 +63,22 @@
   color: #A3A3A3;
 }
 
-.ModuleSearch .Input input {
+.ModuleSearch .Input {
   font-size: 14px;
   line-height: 1;
   text-align: left;
   letter-spacing: 0;
-  border: none;
+  padding-right: 16px;
   border-bottom: 1px solid #EFEFEF;
+  width: 100%;
   box-sizing: border-box;
-  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+}
+
+.ModuleSearch .Input input {
+  border: none;
+  padding: 16px 0 16px 24px;
   width: 100%;
 }
 
@@ -81,6 +88,17 @@
 
 .ModuleSearch .Input input::placeholder {
   color: #CDCDCD;
+}
+
+.ModuleSearch .Input .ClearButton {
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.ModuleSearch .Input .ClearButton:focus {
+  outline: none;
 }
 
 .ModuleSearch .Content {

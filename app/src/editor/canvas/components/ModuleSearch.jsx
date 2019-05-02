@@ -224,6 +224,16 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
         }, () => this.recalculateHeight())
     }
 
+    clear = () => {
+        this.setState({
+            search: '',
+        })
+        if (this.input) {
+            this.input.focus()
+        }
+        this.recalculateHeight()
+    }
+
     recalculateHeight = () => {
         const { isExpanded, matchingModules, matchingStreams, search } = this.state
 
@@ -480,6 +490,16 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
                                         value={search}
                                         onChange={this.onChange}
                                     />
+                                    {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events */}
+                                    <span
+                                        role="button"
+                                        className={styles.ClearButton}
+                                        onClick={this.clear}
+                                        tabIndex="0"
+                                        hidden={search === ''}
+                                    >
+                                        <SvgIcon name="clear" />
+                                    </span>
                                 </div>
                                 <div role="listbox" className={styles.Content}>
                                     {(search && search.length > 0) ?
