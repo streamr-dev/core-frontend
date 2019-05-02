@@ -160,26 +160,13 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         ))
     }
 
-    addModule = async ({ id, configuration, position }) => {
+    addModule = async ({ id, configuration }) => {
         const action = { type: 'Add Module' }
         const moduleData = await sharedServices.getModule({
             id,
             configuration,
         })
         if (this.unmounted) { return }
-
-        // Overwrite layout position if it was provided
-        if (position) {
-            const newPosition = {
-                left: `${position.x}px`,
-                top: `${position.y}px`,
-            }
-
-            moduleData.layout = {
-                ...moduleData.layout,
-                position: newPosition,
-            }
-        }
 
         this.setCanvas(action, (canvas) => (
             CanvasState.addModule(canvas, moduleData)
