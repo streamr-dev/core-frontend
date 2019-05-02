@@ -10,6 +10,7 @@ import useCanvasLoadCallback from './useCanvasLoadCallback'
 import useCanvasCreateCallback from './useCanvasCreateCallback'
 import useCanvasRemoveCallback from './useCanvasRemoveCallback'
 import useCanvasDuplicateCallback from './useCanvasDuplicateCallback'
+import useModuleLoadCallback from './useModuleLoadCallback'
 
 import usePending, { useAnyPending, Provider as PendingProvider } from './usePending'
 
@@ -39,12 +40,14 @@ export function useController() {
     const load = useCanvasLoadCallback()
     const remove = useCanvasRemoveCallback()
     const duplicate = useCanvasDuplicateCallback()
+    const loadModule = useModuleLoadCallback()
     return useMemo(() => ({
         load,
         create,
         remove,
         duplicate,
-    }), [load, create, remove, duplicate])
+        loadModule,
+    }), [load, create, remove, duplicate, loadModule])
 }
 
 function useCanvasCreateEffect() {

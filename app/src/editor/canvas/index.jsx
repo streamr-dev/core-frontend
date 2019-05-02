@@ -156,11 +156,13 @@ const CanvasEditComponent = class CanvasEdit extends Component {
     }
 
     addModule = async ({ id, configuration }) => {
+        const { canvas, canvasController } = this.props
         const action = { type: 'Add Module' }
-        const moduleData = await sharedServices.getModule({
+        const moduleData = await canvasController.loadModule(canvas, {
+            ...configuration,
             id,
-            configuration,
         })
+
         if (this.unmounted) { return }
 
         this.setCanvas(action, (canvas) => (
@@ -199,21 +201,16 @@ const CanvasEditComponent = class CanvasEdit extends Component {
     }
 
     loadNewDefinition = async (hash) => {
-        const module = CanvasState.getModule(this.props.canvas, hash)
+        const { canvas, canvasController, replace } = this.props
         try {
-            const newModule = await sharedServices.getModule({
-                id: module.id,
-                configuration: module,
-            })
-
+            const moduleData = await canvasController.loadModule(canvas, { hash })
             if (this.unmounted) { return }
-
-            this.replaceCanvas((canvas) => {
-                let nextCanvas = CanvasState.updateModule(canvas, hash, () => newModule)
+            replace((canvas) => {
+                let nextCanvas = CanvasState.updateModule(canvas, hash, () => moduleData)
 
                 // Restore input connections
                 nextCanvas = module.inputs.reduce((nextCanvas, { id, sourceId }) => {
-                    const port = newModule.inputs.find((p) => id === p.id)
+                    const port = moduleData.inputs.find((p) => id === p.id)
 
                     if (sourceId && port) {
                         return CanvasState.connectPorts(nextCanvas, port.id, sourceId)
@@ -223,7 +220,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                 }, nextCanvas)
 
                 nextCanvas = module.params.reduce((nextCanvas, { id, sourceId }) => {
-                    const port = newModule.params.find((p) => id === p.id)
+                    const port = moduleData.params.find((p) => id === p.id)
 
                     if (sourceId && port) {
                         return CanvasState.connectPorts(nextCanvas, port.id, sourceId)
