@@ -222,38 +222,35 @@
   color: #323232;
   border-radius: calc(0.25 * var(--um));
   max-width: calc(12.5 * var(--um));
-  height: calc(3.75 * var(--um));
+  min-height: calc(3.75 * var(--um));
+  display: grid;
+  padding: 16px 25px 13px;
+  grid-row-gap: 4px;
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1;
+  font-weight: var(--medium);
+  text-align: center;
+  align-items: center;
 }
 
 .dropText {
-  font-family: var(--mono);
-  font-size: 12px;
-  font-weight: var(--medium);
   letter-spacing: 1px;
-  text-align: center;
   text-transform: uppercase;
-  padding: 0 16px;
-  margin-top: -16px;
 }
 
 .dragModuleName {
-  font-family: var(--mono);
-  font-size: 12px;
-  font-weight: var(--medium);
   letter-spacing: 0;
-  padding: 0 16px;
-  text-align: center;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-  margin-top: -12px;
 }
 
 .dragImage {
   color: red;
   width: 24px;
   height: 24px;
-  position: relative;
+  position: absolute;
   top: -12px;
   left: -12px;
 }
