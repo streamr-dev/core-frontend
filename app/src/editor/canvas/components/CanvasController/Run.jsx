@@ -54,7 +54,7 @@ function useRunController(canvas = EMPTY) {
         setIsStarting(true)
 
         if (isHistorical) {
-            subscriptionStatus.onAllReady()
+            await subscriptionStatus.onAllReady()
         }
 
         if (!isMountedRef.current) { return canvas }
