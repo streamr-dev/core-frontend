@@ -144,7 +144,7 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
         matchingModules: [],
         matchingStreams: [],
         isExpanded: true,
-        width: 250,
+        width: MIN_WIDTH,
         height: MAX_HEIGHT,
         /* eslint-disable-next-line react/no-unused-state */
         heightBeforeMinimize: 0,
