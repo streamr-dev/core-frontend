@@ -1,6 +1,7 @@
 // @flow
 
 import React, { Component, type Node } from 'react'
+import cx from 'classnames'
 
 import Layout from '$mp/components/Layout'
 import LoadingIndicator from '$userpages/components/LoadingIndicator'
@@ -55,7 +56,7 @@ class UserpagesLayout extends Component<Props, State> {
             children,
         } = this.props
         return (
-            <Layout footer={false} className={styles.container}>
+            <Layout footer={false} className={cx(styles.container, styles.tabletContainer)}>
                 <Header
                     additionalComponent={headerAdditionalComponent}
                     searchComponent={headerSearchComponent}

@@ -47,7 +47,7 @@ const Header = ({
     location,
     noHeader,
 }: Props) => (
-    <Container className={classNames(className)}>
+    <Container className={classNames(className, styles.containerOverrides)}>
         {!noHeader && user &&
             <div className={styles.profile}>
                 <Avatar
@@ -66,8 +66,8 @@ const Header = ({
                     {searchComponent}
                 </div>
                 <Tabs location={location} navigate={navigate}>
-                    <Tabs.Tab title={I18n.t('userpages.header.canvases')} link={formatPath(userpages.canvases)} />
                     <Tabs.Tab title={I18n.t('userpages.header.streams')} link={formatPath(userpages.streams)} />
+                    <Tabs.Tab title={I18n.t('userpages.header.canvases')} link={formatPath(userpages.canvases)} />
                     <Tabs.Tab title={I18n.t('userpages.header.dashboards')} link={formatPath(userpages.dashboards)} />
                     <Tabs.Tab title={I18n.t('userpages.header.products')} link={formatPath(userpages.products)} />
                     <Tabs.Tab title={I18n.t('userpages.header.purchases')} link={formatPath(userpages.purchases)} />

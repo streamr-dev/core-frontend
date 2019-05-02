@@ -1,19 +1,21 @@
 // @flow
 
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
 import { push } from 'react-router-redux'
 import moment from 'moment'
 import copy from 'copy-to-clipboard'
 import { Translate, I18n } from 'react-redux-i18n'
 import Helmet from 'react-helmet'
+import { Button } from 'reactstrap'
+import MediaQuery from 'react-responsive'
+import cx from 'classnames'
 
 import type { Filter, SortOption } from '$userpages/flowtype/common-types'
 import type { Stream, StreamId } from '$shared/flowtype/stream-types'
 
-import { Button } from 'reactstrap'
-import links from '../../../../links'
+import SvgIcon from '$shared/components/SvgIcon'
+import links from '$shared/../links'
 import { getStreams, updateFilter, deleteStream } from '$userpages/modules/userPageStreams/actions'
 import { selectStreams, selectFetching, selectFilter } from '$userpages/modules/userPageStreams/selectors'
 import { getFilters } from '$userpages/utils/constants'
@@ -35,14 +37,19 @@ import SnippetDialog from '$userpages/components/SnippetDialog/index'
 import { ProgrammingLanguages } from '$shared/utils/constants'
 import NoStreamsView from './NoStreams'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
+import breakpoints from '$app/scripts/breakpoints'
 
-import styles from './list.pcss'
+import styles from './streamsList.pcss'
+
+const { lg } = breakpoints
 
 export const CreateStreamButton = () => (
-    <Button color="primary" id="streamlist-create-stream">
-        <Link to={links.userpages.streamCreate}>
-            <Translate value="userpages.streams.createStream" />
-        </Link>
+    <Button
+        color="primary"
+        href={links.userpages.streamCreate}
+        className={styles.createStreamButton}
+    >
+        <Translate value="userpages.streams.createStream" />
     </Button>
 )
 
@@ -286,7 +293,7 @@ class StreamList extends Component<Props, State> {
                         onClose={this.onCloseDialog}
                     />
                 )}
-                <div className="container">
+                <div className={cx('container', styles.tabletContainer)}>
                     {!fetching && streams && streams.length <= 0 && (
                         <NoStreamsView
                             hasFilter={!!filter && (!!filter.search || !!filter.key)}
@@ -295,83 +302,129 @@ class StreamList extends Component<Props, State> {
                         />
                     )}
                     {streams && streams.length > 0 && (
-                        <div className={styles.streamsTable}>
-                            <Table>
-                                <thead>
-                                    <tr>
-                                        <th><Translate value="userpages.streams.list.name" /></th>
-                                        <th><Translate value="userpages.streams.list.description" /></th>
-                                        <th><Translate value="userpages.streams.list.updated" /></th>
-                                        <th><Translate value="userpages.streams.list.lastData" /></th>
-                                        <th className={styles.statusColumn}><Translate value="userpages.streams.list.status" /></th>
-                                        <th className={styles.menuColumn} />
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {streams.map((stream) => (
-                                        <tr
-                                            key={stream.id}
-                                            className={styles.streamRow}
-                                            onClick={() => this.onStreamRowClick(stream.id)}
-                                        >
-                                            <Table.Th noWrap title={stream.name}>{stream.name}</Table.Th>
-                                            <Table.Td noWrap title={stream.description}>{stream.description}</Table.Td>
-                                            <Table.Td noWrap>{moment(stream.lastUpdated).fromNow()}</Table.Td>
-                                            <Table.Td>-</Table.Td>
-                                            <Table.Td className={styles.statusColumn}><StatusIcon /></Table.Td>
-                                            <Table.Td
-                                                onClick={(event) => event.stopPropagation()}
-                                                className={styles.menuColumn}
-                                            >
-                                                <DropdownActions
-                                                    title={<Meatball alt={I18n.t('userpages.streams.actions')} />}
-                                                    noCaret
-                                                    onMenuToggle={(open) => {
-                                                        if (open) {
-                                                            this.loadStreamPermissions(stream.id)
-                                                        }
-                                                    }}
-                                                    menuProps={{
-                                                        modifiers: {
-                                                            offset: {
-                                                                // Make menu aligned to the right.
-                                                                // See https://popper.js.org/popper-documentation.html#modifiers..offset
-                                                                offset: '-100%p + 100%',
-                                                            },
-                                                        },
-                                                    }}
+                        <Fragment>
+                            <MediaQuery minWidth={lg.min}>
+                                <div className={styles.streamsTable}>
+                                    <Table>
+                                        <thead>
+                                            <tr>
+                                                <th><Translate value="userpages.streams.list.name" /></th>
+                                                <th><Translate value="userpages.streams.list.description" /></th>
+                                                <th><Translate value="userpages.streams.list.updated" /></th>
+                                                <th><Translate value="userpages.streams.list.lastData" /></th>
+                                                <th className={styles.statusColumn}><Translate value="userpages.streams.list.status" /></th>
+                                                <th className={styles.menuColumn} />
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {streams.map((stream) => (
+                                                <tr
+                                                    key={stream.id}
+                                                    className={styles.streamRow}
+                                                    onClick={() => this.onStreamRowClick(stream.id)}
                                                 >
-                                                    <DropdownActions.Item>
-                                                        <Translate value="userpages.streams.actions.addToCanvas" />
-                                                    </DropdownActions.Item>
-                                                    <DropdownActions.Item onClick={() => showStream(stream.id)}>
-                                                        <Translate value="userpages.streams.actions.editStream" />
-                                                    </DropdownActions.Item>
-                                                    <DropdownActions.Item onClick={() => copyToClipboard(stream.id)}>
-                                                        <Translate value="userpages.streams.actions.copyId" />
-                                                    </DropdownActions.Item>
-                                                    <DropdownActions.Item onClick={() => this.onOpenSnippetDialog(stream)}>
-                                                        <Translate value="userpages.streams.actions.copySnippet" />
-                                                    </DropdownActions.Item>
-                                                    <DropdownActions.Item onClick={() => this.onOpenShareDialog(stream)}>
-                                                        <Translate value="userpages.streams.actions.share" />
-                                                    </DropdownActions.Item>
-                                                    <DropdownActions.Item>
-                                                        <Translate value="userpages.streams.actions.refresh" />
-                                                    </DropdownActions.Item>
-                                                    <DropdownActions.Item
-                                                        disabled={!this.hasWritePermission(stream.id)}
-                                                        onClick={() => this.confirmDeleteStream(stream)}
+                                                    <Table.Th noWrap title={stream.name}>{stream.name}</Table.Th>
+                                                    <Table.Td noWrap title={stream.description}>{stream.description}</Table.Td>
+                                                    <Table.Td noWrap>{moment(stream.lastUpdated).fromNow()}</Table.Td>
+                                                    <Table.Td>-</Table.Td>
+                                                    <Table.Td className={styles.statusColumn}><StatusIcon /></Table.Td>
+                                                    <Table.Td
+                                                        onClick={(event) => event.stopPropagation()}
+                                                        className={styles.menuColumn}
                                                     >
-                                                        <Translate value="userpages.streams.actions.delete" />
-                                                    </DropdownActions.Item>
-                                                </DropdownActions>
-                                            </Table.Td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </Table>
-                        </div>
+                                                        <DropdownActions
+                                                            title={<Meatball alt={I18n.t('userpages.streams.actions')} />}
+                                                            noCaret
+                                                            onMenuToggle={(open) => {
+                                                                if (open) {
+                                                                    this.loadStreamPermissions(stream.id)
+                                                                }
+                                                            }}
+                                                            menuProps={{
+                                                                modifiers: {
+                                                                    offset: {
+                                                                        // Make menu aligned to the right.
+                                                                        // See https://popper.js.org/popper-documentation.html#modifiers..offset
+                                                                        offset: '-100%p + 100%',
+                                                                    },
+                                                                },
+                                                            }}
+                                                        >
+                                                            <DropdownActions.Item>
+                                                                <Translate value="userpages.streams.actions.addToCanvas" />
+                                                            </DropdownActions.Item>
+                                                            <DropdownActions.Item onClick={() => showStream(stream.id)}>
+                                                                <Translate value="userpages.streams.actions.editStream" />
+                                                            </DropdownActions.Item>
+                                                            <DropdownActions.Item onClick={() => copyToClipboard(stream.id)}>
+                                                                <Translate value="userpages.streams.actions.copyId" />
+                                                            </DropdownActions.Item>
+                                                            <DropdownActions.Item onClick={() => this.onOpenSnippetDialog(stream)}>
+                                                                <Translate value="userpages.streams.actions.copySnippet" />
+                                                            </DropdownActions.Item>
+                                                            <DropdownActions.Item onClick={() => this.onOpenShareDialog(stream)}>
+                                                                <Translate value="userpages.streams.actions.share" />
+                                                            </DropdownActions.Item>
+                                                            <DropdownActions.Item>
+                                                                <Translate value="userpages.streams.actions.refresh" />
+                                                            </DropdownActions.Item>
+                                                            <DropdownActions.Item
+                                                                disabled={!this.hasWritePermission(stream.id)}
+                                                                onClick={() => this.confirmDeleteStream(stream)}
+                                                            >
+                                                                <Translate value="userpages.streams.actions.delete" />
+                                                            </DropdownActions.Item>
+                                                        </DropdownActions>
+                                                    </Table.Td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </Table>
+                                </div>
+                            </MediaQuery>
+                            <MediaQuery maxWidth={lg.min}>
+                                <div className={styles.streamsTable}>
+                                    <Table>
+                                        <tbody>
+                                            {streams.map((stream) => (
+                                                <tr
+                                                    key={stream.id}
+                                                    className={styles.streamRow}
+                                                    onClick={() => this.onStreamRowClick(stream.id)}
+                                                >
+                                                    <Table.Td title={stream.name} className={styles.tabletStreamRow}>
+                                                        <div className={styles.tabletStreamRowContainer}>
+                                                            <div>
+                                                                <span className={styles.tabletStreamName}>
+                                                                    {stream.name}
+                                                                    {!stream.requireSignedData &&
+                                                                    <SvgIcon
+                                                                        name="signedTick"
+                                                                        className={styles.signedTick}
+                                                                    />}
+                                                                </span>
+                                                                <span className={styles.tabletStreamDescription}>
+                                                                    {stream.description}
+                                                                </span>
+                                                                <span className={styles.lastUpdatedStreamMobile}>
+                                                                    {moment(stream.lastUpdated).fromNow()}
+                                                                </span>
+                                                            </div>
+                                                            <div>
+                                                                <span className={styles.lastUpdatedStreamTablet}>
+                                                                    {moment(stream.lastUpdated).fromNow()}
+                                                                </span>
+                                                                <StatusIcon className={styles.tabletStatusStreamIcon} />
+                                                            </div>
+                                                        </div>
+                                                    </Table.Td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </Table>
+                                </div>
+                            </MediaQuery>
+                        </Fragment>
                     )}
                 </div>
                 <DocsShortcuts />
