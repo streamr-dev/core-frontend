@@ -51,11 +51,10 @@ export function useController() {
 }
 
 function useCanvasCreateEffect() {
-    const { match } = useContext(RouterContext.Context)
+    const { match: { id } } = useContext(RouterContext.Context)
     const { isPending } = usePending('CREATE')
 
     const create = useCanvasCreateCallback()
-    const { id } = match.params
 
     useEffect(() => {
         if (id || isPending) { return }
@@ -67,29 +66,14 @@ function CanvasEffects() {
     useCanvasCreateEffect()
     useCanvasLoadEffect()
 
-    let newTitle = null
     const { isPending: isPendingCreate } = usePending('CREATE')
     const { isPending: isPendingLoad } = usePending('LOAD')
     const { isPending: isPendingRemove } = usePending('REMOVE')
-
-    if (isPendingCreate) {
-        // set new title if creating new canvas
-        newTitle = <Helmet title="Creating New Canvas..." />
-    }
-
-    if (isPendingLoad) {
-        // set new title if loading canvas
-        newTitle = <Helmet title="Loading Canvas..." />
-    }
-
-    if (isPendingRemove) {
-        // set new title if creating new canvas
-        newTitle = <Helmet title="Removing Canvas..." />
-    }
-
     return (
         <React.Fragment>
-            {newTitle}
+            {!!isPendingCreate && <Helmet title="Creating New Canvas..." />}
+            {!!isPendingLoad && <Helmet title="Loading Canvas..." />}
+            {!!isPendingRemove && <Helmet title="Removing Canvas..." />}
         </React.Fragment>
     )
 }
