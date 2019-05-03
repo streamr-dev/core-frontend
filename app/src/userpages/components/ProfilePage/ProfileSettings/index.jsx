@@ -98,6 +98,7 @@ export class ProfileSettings extends Component<Props> {
                         value={options.find(({ value }) => user.timezone === value)}
                         onChange={this.onTimezoneChange}
                         required
+                        className={styles.timezoneInput}
                     />
                 </div>
             </Fragment>

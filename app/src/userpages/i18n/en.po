@@ -464,6 +464,9 @@ msgstr "Cancel"
 msgid "userpages##profilePage##toolbar##saveAndExit"
 msgstr "Save & Exit"
 
+msgid "userpages##profilePage##toolbar##done"
+msgstr "Done"
+
 msgid "userpages##profilePage##toolbar##saveChanges"
 msgstr "Save Changes"
 

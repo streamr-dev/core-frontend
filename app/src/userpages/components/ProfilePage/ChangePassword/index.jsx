@@ -74,6 +74,7 @@ class ChangePasswordDialog extends Component<Props, State> {
         return (
             <Modal>
                 <Dialog
+                    className={styles.dialogContainerOverride}
                     contentClassName={styles.content}
                     title={I18n.t('modal.changePassword.defaultTitle')}
                     onClose={this.props.onToggle}
