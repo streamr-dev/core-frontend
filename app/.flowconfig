@@ -1,6 +1,9 @@
 [ignore]
 .*/node_modules/oboe/.*
-./src/userpages/.*
+
+[untyped]
+.*/node_modules/react-leaflet/.*
+.*/node_modules/react-select/.*
 
 [libs]
 ./src/marketplace/flowtype/global-types.js
@@ -21,3 +24,6 @@ module.name_mapper='\$shared' -> '<PROJECT_ROOT>/src/shared'
 module.name_mapper='\$testUtils' -> '<PROJECT_ROOT>/test/test-utils'
 module.name_mapper='\$utils' -> '<PROJECT_ROOT>/src/utils'
 module.name_mapper='\$editor' -> '<PROJECT_ROOT>/src/editor'
+
+[version]
+0.96.0

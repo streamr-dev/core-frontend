@@ -2,9 +2,11 @@
 
 import type { Permission } from '$userpages/flowtype/permission-types'
 
+// StreamField ID used for the frontend UI only.
 export type StreamField = {
     name: string,
-    type: string
+    type: string,
+    id?: string,
 }
 
 export type StreamFieldList = Array<StreamField>
@@ -21,8 +23,18 @@ export type Stream = NewStream & {
     config: {
         fields?: StreamFieldList
     },
+    feed?: {
+        id: number,
+        name: string,
+        module: number,
+    },
     ownPermissions: Array<$ElementType<Permission, 'operation'>>,
     lastUpdated: number,
+    partitions: number,
+    autoConfigure: boolean,
+    requireSignedData: boolean,
+    storageDays: number,
+    uiChannel: boolean,
 }
 
 export type StreamIdList = Array<StreamId>

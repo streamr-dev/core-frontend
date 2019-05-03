@@ -42,13 +42,14 @@ class AvatarUpload extends React.Component<Props, State> {
         return (
             <div className={styles.upload}>
                 <Button
-                    color="secondary"
+                    color="userpages"
                     type="button"
                     outline
+                    className={styles.updateButton}
                     disabled={modalOpen}
                     onClick={this.onShowModal}
                 >
-                    <Translate value="userpages.profile.settings.upload" />
+                    <Translate value={image ? 'userpages.profile.settings.update' : 'userpages.profile.settings.upload'} />
                 </Button>
                 <div className={styles.uploadHelpText}>
                     <Translate value="userpages.profile.settings.uploadHelpText" />

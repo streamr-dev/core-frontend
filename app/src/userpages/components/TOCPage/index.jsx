@@ -1,8 +1,9 @@
 // @flow
 
-import React, { Fragment, Component, type Node } from 'react'
+import React, { Component, type Node } from 'react'
 import { Col, Row } from 'reactstrap'
 import { withRouter } from 'react-router-dom'
+import cx from 'classnames'
 
 import TOCSection from './TOCSection'
 import styles from './tocPage.pcss'
@@ -21,7 +22,12 @@ class TOCPage extends Component<Props> {
     parseMenu = () => React.Children.map(this.props.children, (child) => {
         if (child.type === TOCSection) {
             return (
-                <li key={child.props.id} className={styles.tocListItem}>
+                <li
+                    key={child.props.id}
+                    className={cx(styles.tocListItem, {
+                        [styles.hideTablet]: child.props.customStyled,
+                    })}
+                >
                     <a
                         href={`#${child.props.id}`}
                         className={this.props.location.hash.substr(1) === child.props.id ? styles.active : ''}
@@ -37,31 +43,17 @@ class TOCPage extends Component<Props> {
         const { title, children } = this.props
 
         return (
-            <Fragment>
-                {!!title && (
-                    <Row>
-                        <Col
-                            xs={12}
-                            sm={{
-                                size: 9,
-                                offset: 3,
-                            }}
-                        >
-                            <h1 className={styles.pageTitle}>{title}</h1>
-                        </Col>
-                    </Row>
-                )}
-                <Row>
-                    <Col xs={12} sm={4} md={3}>
-                        <ul className={styles.tocList}>
-                            {this.parseMenu()}
-                        </ul>
-                    </Col>
-                    <Col xs={12} sm={8} md={9}>
-                        {children}
-                    </Col>
-                </Row>
-            </Fragment>
+            <Row>
+                <Col xs={12} sm={12} md={3} >
+                    <ul className={styles.tocList}>
+                        {this.parseMenu()}
+                    </ul>
+                </Col>
+                <Col xs={12} sm={12} md={9} >
+                    {!!title && (<h1 className={styles.pageTitle}>{title}</h1>)}
+                    {children}
+                </Col>
+            </Row>
         )
     }
 }

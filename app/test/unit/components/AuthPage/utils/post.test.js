@@ -57,10 +57,12 @@ describe('post', () => {
         expect(request.config.withCredentials).toBe(true)
     })
 
-    it('resolves (to nothing) on success', async () => {
+    it('resolves on success with response body', async () => {
         moxios.stubRequest('url', {
             status: 200,
-            response: null,
+            response: {
+                key: 'value',
+            },
         })
 
         const onFulfilled = sinon.spy()
@@ -69,7 +71,7 @@ describe('post', () => {
         await moxios.promiseWait()
 
         sinon.assert.calledOnce(onFulfilled)
-        sinon.assert.calledWith(onFulfilled, undefined)
+        sinon.assert.calledWith(onFulfilled, sinon.match.has('key', 'value'))
     })
 
     it('raises errors attached to a successful response', async () => {

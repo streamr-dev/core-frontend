@@ -1,8 +1,9 @@
-import React, { Component } from 'react'
+import React, { Component, useContext } from 'react'
 import { withRouter } from 'react-router-dom'
 import { Helmet } from 'react-helmet'
 
 import Layout from '$mp/components/Layout'
+import LoadingIndicator from '$userpages/components/LoadingIndicator'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import ErrorComponentView from '$shared/components/ErrorComponentView'
 
@@ -10,22 +11,29 @@ import links from '../../links'
 
 import UndoContainer, { UndoControls } from '$editor/shared/components/UndoContainer'
 import Subscription from '$editor/shared/components/Subscription'
+import * as SubscriptionStatus from '$editor/shared/components/SubscriptionStatus'
 import { ClientProvider } from '$editor/shared/components/Client'
 import { ModalProvider } from '$editor/shared/components/Modal'
 import * as sharedServices from '$editor/shared/services'
+import BodyClass from '$shared/components/BodyClass'
+import Sidebar from '$editor/shared/components/Sidebar'
+import ModuleSidebar from './components/ModuleSidebar'
+import KeyboardShortcutsSidebar from './components/KeyboardShortcutsSidebar'
 
+import * as RunController from './components/RunController'
 import Canvas from './components/Canvas'
 import CanvasToolbar from './components/Toolbar'
 import CanvasStatus from './components/Status'
 import ModuleSearch from './components/ModuleSearch'
-import ModuleSidebar from './components/ModuleSidebar'
+
+import useCanvasNotifications, { pushErrorNotification } from './hooks/useCanvasNotifications'
 
 import * as services from './services'
 import * as CanvasState from './state'
 
 import styles from './index.pcss'
 
-const { RunTabs, RunStates } = CanvasState
+const { RunStates } = CanvasState
 
 const UpdatedTime = new Map()
 
@@ -36,11 +44,19 @@ function setUpdated(canvas) {
     return updated
 }
 
+function canvasUpdater(fn) {
+    return (canvas) => {
+        const nextCanvas = fn(canvas)
+        if (nextCanvas === null || nextCanvas === canvas) { return null }
+        return CanvasState.updateCanvas(nextCanvas)
+    }
+}
+
 const CanvasEditComponent = class CanvasEdit extends Component {
     state = {
-        isWaiting: false,
         moduleSearchIsOpen: false,
         moduleSidebarIsOpen: false,
+        keyboardShortcutIsOpen: false,
     }
 
     static getDerivedStateFromProps(props) {
@@ -51,11 +67,12 @@ const CanvasEditComponent = class CanvasEdit extends Component {
 
     setCanvas = (action, fn, done) => {
         if (this.unmounted) { return }
-        this.props.push(action, (canvas) => {
-            const nextCanvas = fn(canvas)
-            if (nextCanvas === null || nextCanvas === canvas) { return null }
-            return CanvasState.updateCanvas(nextCanvas)
-        }, done)
+        this.props.push(action, canvasUpdater(fn), done)
+    }
+
+    replaceCanvas = (fn, done) => {
+        if (this.unmounted) { return }
+        this.props.replace(canvasUpdater(fn), done)
     }
 
     moduleSearchOpen = (show = true) => {
@@ -67,14 +84,22 @@ const CanvasEditComponent = class CanvasEdit extends Component {
     moduleSidebarOpen = (show = true) => {
         this.setState({
             moduleSidebarIsOpen: !!show,
+            keyboardShortcutIsOpen: false,
+        })
+    }
+
+    keyboardShortcutOpen = (show = true) => {
+        this.setState({
+            moduleSidebarIsOpen: !!show,
+            keyboardShortcutIsOpen: !!show,
         })
     }
 
     selectModule = async ({ hash } = {}) => {
-        this.setState(({ moduleSidebarIsOpen }) => ({
+        this.setState(({ moduleSidebarIsOpen, keyboardShortcutIsOpen }) => ({
             selectedModuleHash: hash,
             // close sidebar if no selection
-            moduleSidebarIsOpen: hash == null ? false : moduleSidebarIsOpen,
+            moduleSidebarIsOpen: hash == null ? keyboardShortcutIsOpen : moduleSidebarIsOpen,
         }))
     }
 
@@ -92,6 +117,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
     componentDidMount() {
         window.addEventListener('keydown', this.onKeyDown)
         this.autosave()
+        this.autostart()
     }
 
     componentWillUnmount() {
@@ -106,9 +132,17 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         }
     }
 
+    async autostart() {
+        const { canvas, runController } = this.props
+        if (canvas.adhoc && !runController.isActive) {
+            // do not autostart running/non-adhoc canvases
+            return this.canvasStart()
+        }
+    }
+
     async autosave() {
-        const { canvas } = this.props
-        if (canvas.state === RunStates.Running || canvas.adhoc) {
+        const { canvas, runController } = this.props
+        if (runController.isActive || canvas.adhoc) {
             // do not autosave running/adhoc canvases
             return
         }
@@ -126,10 +160,14 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         ))
     }
 
-    addModule = async ({ id }) => {
+    addModule = async ({ id, configuration }) => {
         const action = { type: 'Add Module' }
-        const moduleData = await services.addModule({ id })
+        const moduleData = await sharedServices.getModule({
+            id,
+            configuration,
+        })
         if (this.unmounted) { return }
+
         this.setCanvas(action, (canvas) => (
             CanvasState.addModule(canvas, moduleData)
         ))
@@ -187,6 +225,23 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         }
     }
 
+    pushNewDefinition = async (hash, value) => {
+        const module = CanvasState.getModule(this.props.canvas, hash)
+
+        // Update the module info, this will throw if anything went wrong.
+        const newModule = await sharedServices.getModule({
+            id: module.id,
+            configuration: {
+                ...module,
+                ...value,
+            },
+        })
+
+        this.setCanvas({ type: 'Update Module' }, (canvas) => (
+            CanvasState.updateModule(canvas, hash, () => newModule)
+        ))
+    }
+
     renameModule = (hash, displayName) => {
         this.setCanvas({ type: 'Rename Module' }, (canvas) => (
             CanvasState.updateModule(canvas, hash, (module) => ({
@@ -240,32 +295,32 @@ const CanvasEditComponent = class CanvasEdit extends Component {
 
     canvasStart = async (options = {}) => {
         const { canvas } = this.props
-        const { settings = {} } = canvas
-        const { editorState = {} } = settings
-        const isHistorical = editorState.runTab === RunTabs.historical
+
         return this.getNewCanvas(() => (
-            services.start(canvas, {
-                clearState: !!options.clearState || isHistorical,
-                adhoc: isHistorical,
-            })
+            this.props.runController.start(canvas, options)
         ))
     }
 
     canvasStop = async () => {
         const { canvas } = this.props
         return this.getNewCanvas(() => (
-            services.stop(canvas)
+            this.props.runController.stop(canvas)
+        ))
+    }
+
+    canvasExit = async () => {
+        const { canvas } = this.props
+        return this.getNewCanvas(() => (
+            this.props.runController.exit(canvas)
         ))
     }
 
     /**
      * Loads new canvas via async fn
-     * Sets appropriate isWaiting state
      * Loads parent canvas on failure/no canvas response
      */
+
     getNewCanvas = async (fn) => {
-        const { replace } = this.props
-        this.setState({ isWaiting: true })
         let newCanvas
         try {
             newCanvas = await fn()
@@ -274,35 +329,64 @@ const CanvasEditComponent = class CanvasEdit extends Component {
             console.error({ error }) // eslint-disable-line no-console
             if (this.unmounted) { return }
             return this.loadParent()
-        } finally {
-            if (!this.unmounted) {
-                this.setState({ isWaiting: false })
-            }
         }
-        if (!newCanvas) { return this.loadParent() }
-        replace(() => newCanvas)
+        if (this.unmounted) { return }
+        if (!newCanvas) {
+            return this.loadSelf()
+        }
+        this.replaceCanvas(() => newCanvas)
     }
 
     loadParent = async () => {
-        const { canvas, replace } = this.props
+        const { canvas } = this.props
         const nextId = canvas.settings.parentCanvasId || canvas.id
         const newCanvas = await services.loadCanvas({ id: nextId })
         if (this.unmounted) { return }
-        replace(() => newCanvas)
+        this.replaceCanvas(() => newCanvas)
+    }
+
+    loadSelf = async () => {
+        const { canvas } = this.props
+        return this.getNewCanvas(() => (
+            services.loadCanvas(canvas)
+        ))
+    }
+
+    onDoneMessage = () => (
+        this.loadSelf()
+    )
+
+    onErrorMessage = (error) => {
+        pushErrorNotification({
+            message: error.error,
+            error,
+        })
+        return this.loadSelf()
     }
 
     render() {
-        const { canvas } = this.props
+        const { canvas, runController } = this.props
+        if (!canvas) {
+            return (
+                <div className={styles.CanvasEdit}>
+                    <CanvasToolbar className={styles.CanvasToolbar} />
+                </div>
+            )
+        }
+        const { moduleSidebarIsOpen, keyboardShortcutIsOpen } = this.state
+        const { settings } = canvas
+        const resendFrom = settings.beginDate
+        const resendTo = settings.endDate
         return (
             <div className={styles.CanvasEdit}>
-                <Helmet>
-                    <title>{canvas.name}</title>
-                </Helmet>
+                <Helmet title={canvas.name} />
                 <Subscription
                     uiChannel={canvas.uiChannel}
-                    resendAll={canvas.adhoc}
-                    isActive={canvas.state === RunStates.Running}
-                    onUnsubscribe={this.loadParent}
+                    resendFrom={canvas.adhoc ? resendFrom : undefined}
+                    resendTo={canvas.adhoc ? resendTo : undefined}
+                    isActive={runController.isActive}
+                    onDoneMessage={this.onDoneMessage}
+                    onErrorMessage={this.onErrorMessage}
                 />
                 <Canvas
                     className={styles.Canvas}
@@ -312,15 +396,15 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                     updateModule={this.updateModule}
                     renameModule={this.renameModule}
                     moduleSidebarOpen={this.moduleSidebarOpen}
-                    moduleSidebarIsOpen={this.state.moduleSidebarIsOpen}
+                    moduleSidebarIsOpen={moduleSidebarIsOpen && !keyboardShortcutIsOpen}
                     setCanvas={this.setCanvas}
                     loadNewDefinition={this.loadNewDefinition}
+                    pushNewDefinition={this.pushNewDefinition}
                 >
-                    <CanvasStatus updated={this.state.updated} isWaiting={this.state.isWaiting} />
+                    <CanvasStatus updated={this.state.updated} />
                 </Canvas>
                 <ModalProvider>
                     <CanvasToolbar
-                        isWaiting={this.state.isWaiting}
                         className={styles.CanvasToolbar}
                         canvas={canvas}
                         setCanvas={this.setCanvas}
@@ -336,16 +420,28 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                         setSaveState={this.setSaveState}
                         canvasStart={this.canvasStart}
                         canvasStop={this.canvasStop}
+                        keyboardShortcutOpen={this.keyboardShortcutOpen}
+                        canvasExit={this.canvasExit}
                     />
                 </ModalProvider>
-                <ModuleSidebar
+                <Sidebar
                     className={styles.ModuleSidebar}
-                    isOpen={this.state.moduleSidebarIsOpen}
-                    open={this.moduleSidebarOpen}
-                    canvas={canvas}
-                    selectedModuleHash={this.state.selectedModuleHash}
-                    setModuleOptions={this.setModuleOptions}
-                />
+                    isOpen={moduleSidebarIsOpen}
+                >
+                    {moduleSidebarIsOpen && keyboardShortcutIsOpen && (
+                        <KeyboardShortcutsSidebar
+                            onClose={() => this.keyboardShortcutOpen(false)}
+                        />
+                    )}
+                    {moduleSidebarIsOpen && !keyboardShortcutIsOpen && (
+                        <ModuleSidebar
+                            onClose={() => this.moduleSidebarOpen(false)}
+                            canvas={canvas}
+                            selectedModuleHash={this.state.selectedModuleHash}
+                            setModuleOptions={this.setModuleOptions}
+                        />
+                    )}
+                </Sidebar>
                 <ModuleSearch
                     addModule={this.addModule}
                     isOpen={this.state.moduleSearchIsOpen}
@@ -355,8 +451,6 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         )
     }
 }
-
-const CanvasEdit = withRouter(CanvasEditComponent)
 
 const CanvasLoader = withRouter(withErrorBoundary(ErrorComponentView)(class CanvasLoader extends React.PureComponent {
     static contextType = UndoContainer.Context
@@ -374,11 +468,19 @@ const CanvasLoader = withRouter(withErrorBoundary(ErrorComponentView)(class Canv
         this.unmounted = true
     }
 
-    init() {
+    async init() {
+        if (!this.props.match.params.id) {
+            // if no id, create new
+            const newCanvas = await services.create()
+            if (this.unmounted) { return }
+            this.props.history.replace(`${links.editor.canvasEditor}/${newCanvas.id}`)
+            return
+        }
+
         const canvas = this.context.state
-        const currentId = canvas && canvas.id
-        const canvasId = currentId || this.props.match.params.id
-        if (canvasId && currentId !== canvasId && this.state.isLoading !== canvasId) {
+        const rootId = canvas && CanvasState.getRootCanvasId(canvas)
+        const canvasId = rootId || this.props.match.params.id
+        if (canvasId && rootId !== canvasId && this.state.isLoading !== canvasId) {
             // load canvas if needed and not already loading
             this.load(canvasId)
         }
@@ -386,44 +488,75 @@ const CanvasLoader = withRouter(withErrorBoundary(ErrorComponentView)(class Canv
 
     load = async (canvasId) => {
         this.setState({ isLoading: canvasId })
-        let newCanvas = await services.loadCanvas({ id: canvasId })
+        let canvas = await services.loadRelevantCanvas({ id: canvasId })
         // ignore result if unmounted or canvas changed
         if (this.unmounted || this.state.isLoading !== canvasId) { return }
-        newCanvas = CanvasState.updateCanvas(newCanvas)
+        canvas = CanvasState.updateCanvas(canvas)
         // replace/init top of undo stack with loaded canvas
-        this.context.replace(() => newCanvas)
+        this.context.replace(() => canvas)
         this.setState({ isLoading: false })
     }
 
     render() {
-        if (!this.context.state) { return null }
+        if (!this.context.state) {
+            return (
+                <div className={styles.CanvasEdit}>
+                    <CanvasToolbar className={styles.CanvasToolbar} />
+                </div>
+            )
+        }
         return this.props.children
     }
 }))
+
+const CanvasEdit = withRouter(({ canvas, ...props }) => {
+    const runController = useContext(RunController.Context)
+    useCanvasNotifications(canvas)
+
+    return (
+        <CanvasEditComponent
+            {...props}
+            canvas={canvas}
+            runController={runController}
+        />
+    )
+})
+
+const CanvasEditWrap = () => {
+    const { state: canvas, push, replace, undo } = useContext(UndoContainer.Context)
+    const key = !!canvas && canvas.id
+    return (
+        <SubscriptionStatus.Provider key={key}>
+            <RunController.Provider canvas={canvas}>
+                <CanvasEdit
+                    push={push}
+                    replace={replace}
+                    undo={undo}
+                    canvas={canvas}
+                />
+            </RunController.Provider>
+        </SubscriptionStatus.Provider>
+    )
+}
+
+function CanvasLoadingIndicator() {
+    const { state } = useContext(UndoContainer.Context)
+    return (
+        <LoadingIndicator className={styles.LoadingIndicator} loading={!state} />
+    )
+}
 
 function isDisabled({ state: canvas }) {
     return !canvas || (canvas.state === RunStates.Running || canvas.adhoc)
 }
 
-const CanvasEditWrap = () => (
-    <UndoContainer.Consumer>
-        {({ state: canvas, push, replace, undo }) => (
-            <CanvasEdit
-                key={canvas && canvas.id}
-                push={push}
-                replace={replace}
-                undo={undo}
-                canvas={canvas}
-            />
-        )}
-    </UndoContainer.Consumer>
-)
-
 export default withRouter((props) => (
     <Layout className={styles.layout} footer={false}>
+        <BodyClass className="editor" />
         <ClientProvider>
             <UndoContainer key={props.match.params.id}>
                 <UndoControls disabled={isDisabled} />
+                <CanvasLoadingIndicator />
                 <CanvasLoader>
                     <CanvasEditWrap />
                 </CanvasLoader>

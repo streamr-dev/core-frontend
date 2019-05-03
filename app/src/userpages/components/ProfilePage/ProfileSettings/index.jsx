@@ -76,7 +76,7 @@ export class ProfileSettings extends Component<Props> {
                 />
                 <div className={styles.fullname}>
                     <TextInput
-                        label="Your name"
+                        label="Your Name"
                         name="name"
                         value={user.name || ''}
                         onChange={this.onNameChange}

@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { Link, withRouter, type Location } from 'react-router-dom'
+import { NavLink as Link, withRouter, type Location } from 'react-router-dom'
 import { I18n, Translate } from 'react-redux-i18n'
 import FrameNav, { NavLink, NavDivider, NavLabel, NavDropdown } from '$shared/components/Nav'
 
@@ -9,7 +9,6 @@ import links from '../../../links'
 import type { User } from '$shared/flowtype/user-types'
 import { formatPath } from '$shared/utils/url'
 import AvatarCircle from '$shared/components/AvatarCircle'
-import { getLoginUrl } from '../../utils/login'
 import routes from '$routes'
 
 import styles from './nav.pcss'
@@ -31,11 +30,11 @@ const AccountElementMobile = ({ closeNav, currentUser }: { closeNav?: () => void
     </Link>
 )
 
+// TODO: After rebase and merge convert it into a function.
+/* eslint-disable-next-line react/prefer-stateless-function */
 class Nav extends React.Component<Props> {
-    getLoginLink = () => getLoginUrl(this.props.location.pathname)
-
     render() {
-        const { currentUser } = this.props
+        const { currentUser, location } = this.props
 
         return (
             <FrameNav label={I18n.t('general.marketplace')} expand {...this.props}>
@@ -54,18 +53,18 @@ class Nav extends React.Component<Props> {
                     <Translate value="general.browse" />
                 </NavLink>
                 <NavDropdown align="center" label={I18n.t('general.editor')}>
-                    <a href={links.editor.canvasEditor}>
+                    <Link to={formatPath(links.editor.canvasEditor)}>
                         <Translate value="general.newCanvas" />
-                    </a>
-                    <a href={links.userpages.canvases}>
+                    </Link>
+                    <Link to={formatPath(links.userpages.canvases)}>
                         <Translate value="general.canvases" />
-                    </a>
-                    <a href={links.userpages.dashboards}>
+                    </Link>
+                    <Link to={formatPath(links.userpages.dashboards)}>
                         <Translate value="general.dashboards" />
-                    </a>
-                    <a href={links.userpages.streams}>
+                    </Link>
+                    <Link to={formatPath(links.userpages.streams)}>
                         <Translate value="general.streams" />
-                    </a>
+                    </Link>
                 </NavDropdown>
                 <NavDivider />
                 <NavLink mobile to={formatPath(links.userpages.purchases)}>
@@ -89,12 +88,17 @@ class Nav extends React.Component<Props> {
                     </NavLink>
                 )}
                 {!currentUser && (
-                    <NavLink mobile href={this.getLoginLink()}>
+                    <NavLink
+                        mobile
+                        to={routes.login({
+                            redirect: location.pathname,
+                        })}
+                    >
                         <Translate value="general.signIn" />
                     </NavLink>
                 )}
                 {!currentUser && (
-                    <NavLink mobile outline href={routes.oldSignUp()}>
+                    <NavLink mobile outline to={routes.signUp()}>
                         <Translate value="general.signUp" />
                     </NavLink>
                 )}
@@ -132,12 +136,17 @@ class Nav extends React.Component<Props> {
                     </NavDropdown>
                 )}
                 {!currentUser && (
-                    <NavLink desktop href={this.getLoginLink()}>
+                    <NavLink
+                        desktop
+                        to={routes.login({
+                            redirect: location.pathname,
+                        })}
+                    >
                         <Translate value="general.signIn" />
                     </NavLink>
                 )}
                 {!currentUser && (
-                    <NavLink desktop outline href={routes.oldSignUp()}>
+                    <NavLink desktop outline to={routes.signUp()}>
                         <Translate value="general.signUp" />
                     </NavLink>
                 )}

@@ -1,7 +1,9 @@
 import React from 'react'
 import uuid from 'uuid'
 import cx from 'classnames'
+import throttle from 'lodash/throttle'
 
+import UiSizeConstraint from '../UiSizeConstraint'
 import ModuleSubscription from '../ModuleSubscription'
 
 import styles from './Table.pcss'
@@ -27,9 +29,18 @@ function addRow(rows, row, id = uuid(), op = 'prepend') {
         id,
         cells: row.map((cell) => getCellContent(cell)),
     }
+
+    // if already row with id, update that row
+    const oldRowIndex = rows.findIndex((r) => r.id === id)
+    if (oldRowIndex !== -1) {
+        rows[oldRowIndex] = newRow
+        return rows
+    }
+
     if (op === 'append') {
         rows.push(newRow)
     }
+
     if (op === 'prepend') {
         rows.unshift(newRow)
     }
@@ -41,6 +52,7 @@ const parseMessage = (d, options) => (state) => {
     const newState = {
         rows: state.rows,
     }
+
     if (d.nr) {
         // new row message
         newState.rows = addRow(newState.rows, d.nr, d.id)
@@ -79,6 +91,8 @@ const parseMessage = (d, options) => (state) => {
 }
 
 export default class TableModule extends React.Component {
+    subscription = React.createRef()
+
     state = {
         rows: [],
         headers: [],
@@ -87,14 +101,52 @@ export default class TableModule extends React.Component {
         ...(this.props.module.tableConfig || {}),
     }
 
+    pendingState = this.state
+
     componentWillUnmount() {
         this.unmounted = true
     }
 
+    componentDidMount() {
+        this.initIfActive(this.props.isActive)
+    }
+
+    initIfActive = (isActive) => {
+        if (isActive && this.props.canvas && !this.props.canvas.adhoc) {
+            this.init()
+        }
+    }
+
+    init = async () => {
+        const { initRequest } = await this.subscription.current.send({
+            type: 'initRequest',
+        })
+        if (this.unmounted) { return }
+        this.setPendingState(initRequest)
+    }
+
+    setPendingState = (s) => {
+        if (typeof s === 'function') {
+            s = s(this.pendingState)
+        }
+        if (s === null || s === this.pendingState) {
+            return
+        }
+        this.pendingState = {
+            ...this.pendingState,
+            ...s,
+        }
+        this.queueFlushPending()
+    }
+
     onMessage = (d) => {
         const { options = {} } = this.props.module
-        this.setState(parseMessage(d, options))
+        this.setPendingState(parseMessage(d, options))
     }
+
+    queueFlushPending = throttle(() => {
+        this.setState(this.pendingState)
+    }, 250)
 
     render() {
         const { className, module } = this.props
@@ -102,35 +154,39 @@ export default class TableModule extends React.Component {
         const { title, headers, rows } = this.state
 
         return (
-            <div className={cx(styles.tableModule, className)}>
-                <ModuleSubscription
-                    {...this.props}
-                    onMessage={this.onMessage}
-                />
-                {!!(options.displayTitle && options.displayTitle.value && title) && (
-                    <h4>{title}</h4>
-                )}
-                <table className={styles.table}>
-                    <thead>
-                        <tr>
-                            {headers.map((header, index) => (
-                                /* eslint-disable-next-line react/no-array-index-key */
-                                <th key={index}>{header}</th>
-                            ))}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {rows.map((row) => (
-                            <tr key={row.id}>
-                                {row.cells.map((item, index) => (
+            <UiSizeConstraint minWidth={250} minHeight={150}>
+                <div className={cx(styles.tableModule, className)}>
+                    <ModuleSubscription
+                        {...this.props}
+                        ref={this.subscription}
+                        onMessage={this.onMessage}
+                        onActiveChange={this.initIfActive}
+                    />
+                    {!!(options.displayTitle && options.displayTitle.value && title) && (
+                        <h4>{title}</h4>
+                    )}
+                    <table className={styles.table}>
+                        <thead>
+                            <tr>
+                                {headers.map((header, index) => (
                                     /* eslint-disable-next-line react/no-array-index-key */
-                                    <td key={index}>{item}</td>
+                                    <th key={index}>{header}</th>
                                 ))}
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
+                        </thead>
+                        <tbody>
+                            {rows.map((row) => (
+                                <tr key={row.id}>
+                                    {row.cells.map((item, index) => (
+                                        /* eslint-disable-next-line react/no-array-index-key */
+                                        <td key={index}>{item}</td>
+                                    ))}
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </UiSizeConstraint>
         )
     }
 }

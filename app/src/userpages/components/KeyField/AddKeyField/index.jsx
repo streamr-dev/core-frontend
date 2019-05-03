@@ -6,11 +6,14 @@ import { Button } from 'reactstrap'
 import type { ResourcePermission } from '$shared/flowtype/resource-key-types'
 import KeyFieldEditor from '../KeyFieldEditor'
 
+import styles from './addKeyField.pcss'
+
 type Props = {
     label: string,
     createWithValue?: boolean,
     onSave: (keyName: string, value: string, permission: ?ResourcePermission) => Promise<void>,
     showPermissionType?: boolean,
+    addKeyFieldAllowed: boolean,
 }
 
 type State = {
@@ -73,9 +76,18 @@ class AddKeyField extends React.Component<Props, State> {
 
     render = () => {
         const { editing, waiting, error } = this.state
-        const { label, createWithValue, showPermissionType } = this.props
+        const { label, createWithValue, showPermissionType, addKeyFieldAllowed } = this.props
         return !editing ? (
-            <Button type="button" onClick={this.onEdit}>{label}</Button>
+            <Button
+                type="button"
+                color="userpages"
+                className={styles.button}
+                onClick={this.onEdit}
+                outline
+                disabled={!addKeyFieldAllowed}
+            >
+                {label}
+            </Button>
         ) : (
             <KeyFieldEditor
                 createNew

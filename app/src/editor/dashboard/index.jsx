@@ -1,12 +1,14 @@
-import React, { Component } from 'react'
+import React, { Component, useContext } from 'react'
 import { withRouter } from 'react-router-dom'
 import { Helmet } from 'react-helmet'
 
 import Layout from '$mp/components/Layout'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
+import LoadingIndicator from '$userpages/components/LoadingIndicator'
 import ErrorComponentView from '$shared/components/ErrorComponentView'
 import UndoContainer, { UndoControls } from '$editor/shared/components/UndoContainer'
 import { ClientProvider } from '$editor/shared/components/Client'
+import * as sharedServices from '$editor/shared/services'
 
 import links from '../../links'
 
@@ -51,6 +53,7 @@ const DashboardEdit = withRouter(class DashboardEdit extends Component {
     }
 
     componentWillUnmount() {
+        this.unmounted = true
         window.removeEventListener('keydown', this.onKeyDown)
         this.autosave()
     }
@@ -73,9 +76,13 @@ const DashboardEdit = withRouter(class DashboardEdit extends Component {
         ))
     }
 
-    addModule = async ({ id }) => {
+    addModule = async ({ id, configuration }) => {
         const action = { type: 'Add Module' }
-        const moduleData = await services.addModule({ id })
+        const moduleData = await sharedServices.getModule({
+            id,
+            configuration,
+        })
+        if (this.unmounted) { return }
         this.setDashboard(action, (dashboard) => (
             DashboardState.addModule(dashboard, moduleData)
         ))
@@ -84,17 +91,20 @@ const DashboardEdit = withRouter(class DashboardEdit extends Component {
     duplicateDashboard = async () => {
         const { dashboard } = this.props
         const newDashboard = await services.duplicateDashboard(dashboard)
+        if (this.unmounted) { return }
         this.props.history.push(`${links.editor.dashboardEditor}/${newDashboard.id}`)
     }
 
     deleteDashboard = async () => {
         const { dashboard } = this.props
         await services.deleteDashboard(dashboard)
+        if (this.unmounted) { return }
         this.props.history.push(links.userpages.dashboards)
     }
 
     newDashboard = async () => {
         const newDashboard = await services.create()
+        if (this.unmounted) { return }
         this.props.history.push(`${links.editor.dashboardEditor}/${newDashboard.id}`)
     }
 
@@ -124,9 +134,7 @@ const DashboardEdit = withRouter(class DashboardEdit extends Component {
         const { dashboard } = this.props
         return (
             <div className={styles.DashboardEdit}>
-                <Helmet>
-                    <title>{dashboard.name}</title>
-                </Helmet>
+                <Helmet title={dashboard.name} />
                 <ModalProvider>
                     <SelectionProvider>
                         <Dashboard
@@ -190,7 +198,13 @@ const DashboardLoader = withRouter(withErrorBoundary(ErrorComponentView)(class D
     }
 
     render() {
-        if (!this.context.state) { return null }
+        if (!this.context.state) {
+            return (
+                <div className={styles.DashboardEdit}>
+                    <DashboardToolbar className={styles.DashboardToolbar} />
+                </div>
+            )
+        }
         return this.props.children
     }
 }))
@@ -208,11 +222,19 @@ const DashboardEditWrap = () => (
     </UndoContainer.Consumer>
 )
 
+function DashboardLoadingIndicator() {
+    const { state } = useContext(UndoContainer.Context)
+    return (
+        <LoadingIndicator className={styles.LoadingIndicator} loading={!state} />
+    )
+}
+
 export default withRouter((props) => (
     <Layout className={styles.layout} footer={false}>
         <ClientProvider>
             <UndoContainer key={props.match.params.id}>
                 <UndoControls />
+                <DashboardLoadingIndicator />
                 <DashboardLoader>
                     <DashboardEditWrap />
                 </DashboardLoader>

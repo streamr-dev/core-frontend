@@ -1,6 +1,3 @@
-@import 'variables.pcss';
-@import 'selectors.pcss';
-
 :global {
   .notifications-bl {
     width: auto !important;
@@ -30,7 +27,7 @@
 
   .btn.btn-primary {
     color: var(--white);
-    background-color: var(--blue);
+    background-color: var(--streamrBlue);
 
     &:hover {
       background: var(--blueDark6);
@@ -38,7 +35,7 @@
     }
 
     &:focus {
-      background: var(--blue);
+      background: var(--streamrBlue);
     }
 
     &:active {
@@ -56,12 +53,12 @@
   }
 
   .btn.btn-outline-primary {
-    border: 1px solid var(--blue);
-    color: var(--blue);
+    border: 1px solid var(--streamrBlue);
+    color: var(--streamrBlue);
 
     &:focus {
       background: none;
-      border-color: var(--blue);
+      border-color: var(--streamrBlue);
     }
 
     &:active {
@@ -84,8 +81,8 @@
 
   .btn.btn-secondary,
   .btn.btn-outline-secondary {
-    color: var(--blue);
-    border: 1px solid var(--blue);
+    color: var(--streamrBlue);
+    border: 1px solid var(--streamrBlue);
     background: none;
 
     &:focus {
@@ -102,15 +99,17 @@
 
     &:hover,
     &:active {
-      color: var(--blueDark6) !important;
-      border-color: var(--blueDark6) !important;
-      background: none !important;
-      box-shadow: none !important;
+      color: var(--blueDark6);
+      border-color: var(--blueDark6);
+      background: none;
+      box-shadow: none;
     }
 
     &[disabled] {
       opacity: 0.5;
       cursor: not-allowed;
+      border-color: var(--greyDark2) !important;
+      color: var(--greyDark2) !important;
     }
   }
 
@@ -125,8 +124,8 @@
     height: 28px;
 
     &:hover {
-      color: var(--blue);
-      border-color: var(--blue);
+      color: var(--streamrBlue);
+      border-color: var(--streamrBlue);
     }
 
     &:active {
@@ -161,6 +160,7 @@
     }
   }
 
+  .btn-outline-userpages,
   .btn.btn-userpages {
     text-transform: none;
     font-family: 'IBM Plex Sans', sans-serif;
@@ -169,27 +169,30 @@
     letter-spacing: 0;
     font-weight: var(--regular);
     line-height: 20px;
-    height: 32px;
     padding: 0 1em;
+    color: var(--greyDark2);
+    border-color: var(--greyDark2);
+    box-shadow: none !important;
 
-    &,
-    &:--idle {
-      color: var(--greyDark2);
-      border-color: var(--greyDark2);
+    &:hover {
+      color: var(--streamrBlue);
+      border-color: var(--streamrBlue);
       box-shadow: none !important;
+    }
+
+    &:active {
+      color: var(--blueDark6);
+      border-color: var(--blueDark6);
+      box-shadow: none !important;
+    }
+
+    &[disabled] {
+      cursor: not-allowed;
+      border-color: var(--greyDark2) !important;
+      color: var(--greyDark2) !important;
 
       path {
         stroke: var(--greyDark2);
-      }
-    }
-
-    &:--enter {
-      color: var(--blue);
-      border-color: var(--blue);
-      box-shadow: none !important;
-
-      path {
-        stroke: var(--blue);
       }
     }
   }

@@ -1,8 +1,11 @@
 // @flow
 
-import * as React from 'react'
+import React, { useContext, useCallback } from 'react'
 import { I18n, Translate } from 'react-redux-i18n'
+import { userIsNotAuthenticated } from '$mp/utils/auth'
 
+import AuthFormProvider from '../AuthFormProvider'
+import AuthFormContext from '../../contexts/AuthForm'
 import AuthPanel from '../AuthPanel'
 import TextInput from '$shared/components/TextInput'
 import Actions from '../Actions'
@@ -11,92 +14,90 @@ import AuthStep from '../AuthStep'
 import AuthLayout from '../AuthLayout'
 
 import schemas from '../../schemas/forgotPassword'
-import type { AuthFlowProps } from '$shared/flowtype/auth-types'
 import post from '../../utils/post'
 import onInputChange from '../../utils/onInputChange'
 import routes from '$routes'
 
-type Props = AuthFlowProps & {
-    form: {
-        email: string,
-    },
+type Props = {}
+
+type Form = {
+    email: string,
 }
 
-class ForgotPasswordPage extends React.Component<Props> {
-    onFailure = (error: Error) => {
-        const { setFieldError } = this.props
-        setFieldError('email', error.message)
-    }
+const initialForm: Form = {
+    email: '',
+}
 
-    submit = () => {
-        const { email: username } = this.props.form
+const ForgotPasswordPage = () => {
+    const {
+        errors,
+        form,
+        isProcessing,
+        setFieldError,
+        setFormField,
+        step,
+    } = useContext(AuthFormContext)
+
+    const onFailure = useCallback(({ message }: Error) => {
+        setFieldError('email', message)
+    }, [setFieldError])
+
+    const submit = useCallback(() => {
+        const { email: username } = form
 
         return post(routes.externalForgotPassword(), {
             username,
         }, false, true)
-    }
+    }, [form])
 
-    render() {
-        const {
-            setIsProcessing,
-            isProcessing,
-            step,
-            form,
-            errors,
-            setFieldError,
-            next,
-            prev,
-            setFormField,
-        } = this.props
-        return (
-            <AuthLayout>
-                <AuthPanel
-                    currentStep={step}
-                    form={form}
-                    onPrev={prev}
-                    onNext={next}
-                    setIsProcessing={setIsProcessing}
-                    isProcessing={isProcessing}
-                    validationSchemas={schemas}
-                    onValidationError={setFieldError}
+    return (
+        <AuthLayout>
+            <AuthPanel
+                validationSchemas={schemas}
+                onValidationError={setFieldError}
+            >
+                <AuthStep
+                    title={I18n.t('auth.forgotPassword.link.get')}
+                    onSubmit={submit}
+                    onFailure={onFailure}
+                    showSignin
                 >
-                    <AuthStep
-                        title={I18n.t('auth.forgotPassword.link.get')}
-                        onSubmit={this.submit}
-                        onFailure={this.onFailure}
-                        showSignin
-                    >
-                        <TextInput
-                            name="email"
-                            label={I18n.t('auth.labels.email')}
-                            value={form.email}
-                            onChange={onInputChange(setFormField)}
-                            error={errors.email}
-                            processing={step === 0 && isProcessing}
-                            autoComplete="email"
-                            autoFocus
-                            preserveLabelSpace
-                            preserveErrorSpace
-                        />
-                        <Actions>
-                            <Button disabled={isProcessing}>
-                                <Translate value="auth.forgotPassword.link.send" />
-                            </Button>
-                        </Actions>
-                    </AuthStep>
-                    <AuthStep
-                        title={I18n.t('auth.forgotPassword.link.sent')}
-                        showSignin
-                        className={AuthStep.styles.spaceLarge}
-                    >
-                        <p>
-                            <Translate value="auth.forgotPassword.successMessage" />
-                        </p>
-                    </AuthStep>
-                </AuthPanel>
-            </AuthLayout>
-        )
-    }
+                    <TextInput
+                        name="email"
+                        label={I18n.t('auth.labels.email')}
+                        value={form.email}
+                        onChange={onInputChange(setFormField)}
+                        error={errors.email}
+                        processing={step === 0 && isProcessing}
+                        autoComplete="email"
+                        autoFocus
+                        preserveLabelSpace
+                        preserveErrorSpace
+                    />
+                    <Actions>
+                        <Button disabled={isProcessing}>
+                            <Translate value="auth.forgotPassword.link.send" />
+                        </Button>
+                    </Actions>
+                </AuthStep>
+                <AuthStep
+                    title={I18n.t('auth.forgotPassword.link.sent')}
+                    showSignin
+                    className={AuthStep.styles.spaceLarge}
+                >
+                    <p>
+                        <Translate value="auth.forgotPassword.successMessage" />
+                    </p>
+                </AuthStep>
+            </AuthPanel>
+        </AuthLayout>
+    )
 }
 
-export default ForgotPasswordPage
+export { ForgotPasswordPage }
+
+export default userIsNotAuthenticated((props: Props) => (
+    <AuthFormProvider initialStep={0} initialForm={initialForm}>
+        <ForgotPasswordPage {...props} />
+    </AuthFormProvider>
+))

@@ -3,7 +3,7 @@ import cx from 'classnames'
 
 import ModuleSubscription from '../ModuleSubscription'
 
-import portStyles from '$editor/canvas/components/Ports.pcss'
+import portStyles from '$editor/canvas/components/Ports/ports.pcss'
 import canvasStyles from './Canvas.pcss'
 import styles from './ForEach.pcss'
 

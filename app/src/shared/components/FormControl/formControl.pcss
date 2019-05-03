@@ -1,11 +1,9 @@
-@import 'variables.pcss';
-
 .root {
   display: block;
   position: relative;
 
   label {
-    color: var(--greyDark);
+    color: #A3A3A3;
     font-size: 0.75rem;
     left: 0;
     line-height: 1rem;
@@ -33,6 +31,7 @@
 .focused {
   label {
     transform: translate(0, 0) scale(0.75);
+    color: #323232 !important;
   }
 }
 
@@ -55,6 +54,7 @@
 
 .withLabelSpace {
   margin-top: 1rem;
+  max-width: 488px;
 }
 
 @media (--md-up) {

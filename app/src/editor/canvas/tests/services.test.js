@@ -1,10 +1,12 @@
+import uniqueId from 'lodash/uniqueId'
+import { setupAuthorizationHeader, loadModuleDefinition } from '$editor/shared/tests/utils'
+
 import * as Services from '../services'
 import * as State from '../state'
 
-import { setup } from './utils'
-
 const canvasMatcher = {
     id: expect.any(String),
+    name: expect.any(String),
     created: expect.any(String),
     updated: expect.any(String),
     uiChannel: expect.objectContaining({
@@ -16,10 +18,11 @@ describe('Canvas Services', () => {
     let teardown
 
     beforeAll(async () => {
-        teardown = await setup(Services.API)
-    })
+        teardown = await setupAuthorizationHeader()
+    }, 60000) // service can take some time to respond initially
 
     afterAll(async () => {
+        await Services.deleteAllCanvases()
         await teardown()
     })
 
@@ -39,6 +42,11 @@ describe('Canvas Services', () => {
                 created: canvasMatcher.created,
                 updated: canvasMatcher.updated,
             })
+        })
+        it('deduplicates canvas name', async () => {
+            const canvas = await Services.create()
+            const canvas2 = await Services.create()
+            expect(canvas.name).not.toEqual(canvas2.name)
         })
     })
 
@@ -92,6 +100,55 @@ describe('Canvas Services', () => {
                 ...canvas,
                 ...canvasMatcher,
             })
+            expect(duplicateCanvas.name.startsWith(canvas.name))
+        })
+
+        it('deduplicates canvas name', async () => {
+            const name = `test${uniqueId()}`
+            const canvas = await Services.create({
+                name,
+            })
+            const duplicateCanvas = await Services.duplicateCanvas(canvas)
+            expect(duplicateCanvas).toMatchObject({
+                ...canvas,
+                ...canvasMatcher,
+                name: `${name} Copy`,
+            })
+            const duplicateCanvas2 = await Services.duplicateCanvas(duplicateCanvas)
+            expect(duplicateCanvas2).toMatchObject({
+                ...canvas,
+                ...canvasMatcher,
+                name: `${name} Copy 02`,
+            })
+            // test works with double-digit numbers
+            const duplicateCanvas3 = await Services.create({
+                ...canvas,
+                name: `${name} Copy 10`,
+            })
+            expect(duplicateCanvas3).toMatchObject({
+                ...canvas,
+                ...canvasMatcher,
+                name: `${name} Copy 10`, // should not change from what was passed in
+            })
+            const duplicateCanvas4 = await Services.duplicateCanvas(duplicateCanvas3)
+            expect(duplicateCanvas4).toMatchObject({
+                ...canvas,
+                ...canvasMatcher,
+                name: `${name} Copy 11`,
+            })
+        })
+
+        it('can duplicate a running canvas', async () => {
+            const canvas = await Services.create()
+            const startedCanvas = await Services.start(canvas)
+
+            const duplicateCanvas = await Services.duplicateCanvas(startedCanvas)
+            expect(duplicateCanvas).toMatchObject({
+                ...canvas,
+                ...canvasMatcher,
+                state: State.RunStates.Stopped,
+            })
+            await Services.stop(startedCanvas)
         })
     })
 
@@ -107,7 +164,10 @@ describe('Canvas Services', () => {
 
         it('can start & stop a canvas', async () => {
             const canvas = await Services.create()
+            expect(State.isRunning(canvas)).toBeFalsy()
+
             const startedCanvas = await Services.start(canvas)
+            expect(State.isRunning(startedCanvas)).toBeTruthy()
             expect(startedCanvas).toMatchObject({
                 ...canvas,
                 ...canvasMatcher,
@@ -120,6 +180,7 @@ describe('Canvas Services', () => {
             await expect(Services.start(canvas)).rejects.toThrow()
 
             const stoppedCanvas = await Services.stop(canvas)
+            expect(State.isRunning(stoppedCanvas)).toBeFalsy()
             expect(stoppedCanvas).toMatchObject({
                 ...startedCanvas,
                 ...canvasMatcher,
@@ -131,24 +192,33 @@ describe('Canvas Services', () => {
             // can't stop a stopped canvas
             await expect(Services.stop(canvas)).rejects.toThrow()
         })
+    })
 
-        it('can start adhoc canvases', async () => {
-            const canvas = await Services.create()
-            const startedAdhocCanvas = await Services.start(canvas, { adhoc: true })
-            expect(startedAdhocCanvas.id).not.toEqual(canvas.id)
-            expect(startedAdhocCanvas).toMatchObject({
-                ...canvas,
-                ...canvasMatcher,
-                adhoc: true,
-                state: State.RunStates.Running,
-                startedById: expect.any(Number),
-                settings: expect.objectContaining({
-                    parentCanvasId: canvas.id, // captures parent canvas id
-                }),
-            })
+    describe('Adding Modules', () => {
+        it('creates modules with compatible hash values', async () => {
+            // add a clock
+            let canvas = State.emptyCanvas()
+            canvas = State.addModule(canvas, await loadModuleDefinition('Clock'))
+            const clock = canvas.modules.find((m) => m.name === 'Clock')
+            expect(clock).toBeTruthy()
 
-            // adhoc canvas will immediately stop, so this should throw
-            await expect(Services.stop(startedAdhocCanvas)).rejects.toThrow()
+            const savedCanvas = await Services.create(canvas)
+            const savedClock = savedCanvas.modules.find((m) => m.name === 'Clock')
+            expect(savedClock).toBeTruthy()
+            // ensure hash value wasn't messed up by type conversion
+            expect(savedClock.hash).toEqual(clock.hash)
+        })
+
+        it('creates modules with unique hash', async () => {
+            let canvas = State.emptyCanvas()
+            const ClockDefn = await loadModuleDefinition('Clock')
+            // add a few clocks in quick succession
+            canvas = State.addModule(canvas, ClockDefn)
+            canvas = State.addModule(canvas, ClockDefn)
+            canvas = State.addModule(canvas, ClockDefn)
+            const hashes = new Set(canvas.modules.map(({ hash }) => hash))
+            // make sure they all have unique hashes
+            expect(hashes.size).toEqual(3)
         })
     })
 })

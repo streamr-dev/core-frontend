@@ -1,7 +1,8 @@
 import React from 'react'
 import cx from 'classnames'
 
-import TextInput from '../TextInput'
+import UiSizeConstraint from '../UiSizeConstraint'
+import TextControl from '$shared/components/TextControl'
 import styles from './Comment.pcss'
 
 export default class CommentModule extends React.PureComponent {
@@ -40,23 +41,18 @@ export default class CommentModule extends React.PureComponent {
 
     render() {
         return (
-            <div className={cx(this.props.className, styles.Comment)}>
-                <TextInput
-                    value={this.getValue()}
-                    placeholder="Enter comment here"
-                    onChange={this.onChange}
-                    selectOnFocus={false}
-                    blurOnEnterKey={false}
-                >
-                    {({ innerRef, ...props }, { hasFocus }) => (
-                        <textarea
-                            key={hasFocus}
-                            ref={innerRef}
-                            {...props}
-                        />
-                    )}
-                </TextInput>
-            </div>
+            <UiSizeConstraint minWidth={100} minHeight={50}>
+                <div className={cx(this.props.className, styles.Comment)}>
+                    <TextControl
+                        commitEmpty
+                        flushHistoryOnBlur
+                        onCommit={this.onChange}
+                        placeholder="Enter comment here…"
+                        tag="textarea"
+                        value={this.getValue()}
+                    />
+                </div>
+            </UiSizeConstraint>
         )
     }
 }

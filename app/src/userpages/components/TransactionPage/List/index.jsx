@@ -7,6 +7,7 @@ import moment from 'moment'
 import cx from 'classnames'
 import copy from 'copy-to-clipboard'
 import BN from 'bignumber.js'
+import Helmet from 'react-helmet'
 
 import NoTransactionsView from './NoTransactions'
 import Layout from '$userpages/components/Layout'
@@ -24,6 +25,7 @@ import Table from '$shared/components/Table'
 import DropdownActions from '$shared/components/DropdownActions'
 import Meatball from '$shared/components/Meatball'
 import LoadMore from '$mp/components/LoadMore'
+import DocsShortcuts from '$userpages/components/DocsShortcuts'
 
 import styles from './list.pcss'
 
@@ -65,6 +67,9 @@ class TransactionList extends Component<Props> {
             <Layout
                 loading={fetching}
             >
+                <Helmet>
+                    <title>{I18n.t('userpages.title.transactions')}</title>
+                </Helmet>
                 <div className={cx('container', styles.transactionList)}>
                     {!fetching && transactions && transactions.length <= 0 && (
                         <NoTransactionsView />
@@ -80,7 +85,7 @@ class TransactionList extends Component<Props> {
                                     <th><Translate value="userpages.transactions.list.value" /></th>
                                     <th><Translate value="userpages.transactions.list.gas" /></th>
                                     <th><Translate value="userpages.transactions.list.status" /></th>
-                                    <th />
+                                    <th className={styles.menuColumn} />
                                 </tr>
                             </thead>
                             <tbody>
@@ -92,26 +97,35 @@ class TransactionList extends Component<Props> {
                                     return (
                                         <tr key={transaction.id}>
                                             <Table.Th title={productTitle} noWrap>{productTitle}</Table.Th>
-                                            <td>
+                                            <Table.Td title={transaction.type} noWrap>
                                                 {!!transaction.type && (
                                                     <Translate value={`userpages.transactions.type.${transaction.type}`} />
                                                 )}
-                                            </td>
+                                            </Table.Td>
                                             <Table.Td title={transaction.hash} noWrap>{transaction.hash}</Table.Td>
-                                            <td>{transaction.timestamp ? moment.unix(transaction.timestamp).fromNow() : '-'}</td>
-                                            <td>
+                                            <Table.Td noWrap>{transaction.timestamp ? moment.unix(transaction.timestamp).fromNow() : '-'}</Table.Td>
+                                            <Table.Td noWrap>
                                                 {price.isGreaterThanOrEqualTo(0) ? '+' : ''}{mapPriceFromContract(price)} DATA
-                                            </td>
-                                            <td>{transaction.gasUsed} / {transaction.gasPrice}</td>
-                                            <td>
+                                            </Table.Td>
+                                            <Table.Td noWrap>{transaction.gasUsed} / {transaction.gasPrice}</Table.Td>
+                                            <Table.Td noWrap>
                                                 {!!transaction.state && (
                                                     <Translate value={`userpages.transactions.status.${transaction.state}`} />
                                                 )}
-                                            </td>
-                                            <td>
+                                            </Table.Td>
+                                            <Table.Td className={styles.menuColumn}>
                                                 <DropdownActions
                                                     title={<Meatball alt={I18n.t('userpages.transactions.actions.title')} />}
                                                     noCaret
+                                                    menuProps={{
+                                                        modifiers: {
+                                                            offset: {
+                                                                // Make menu aligned to the right.
+                                                                // See https://popper.js.org/popper-documentation.html#modifiers..offset
+                                                                offset: '-100%p + 100%',
+                                                            },
+                                                        },
+                                                    }}
                                                 >
                                                     <DropdownActions.Item onClick={() => this.props.openInEtherscan(transaction.hash)}>
                                                         <Translate value="userpages.transactions.actions.viewOnEtherscan" />
@@ -120,7 +134,7 @@ class TransactionList extends Component<Props> {
                                                         <Translate value="userpages.transactions.actions.copyTxHash" />
                                                     </DropdownActions.Item>
                                                 </DropdownActions>
-                                            </td>
+                                            </Table.Td>
                                         </tr>
                                     )
                                 })}
@@ -134,6 +148,7 @@ class TransactionList extends Component<Props> {
                         />
                     )}
                 </div>
+                <DocsShortcuts />
             </Layout>
         )
     }

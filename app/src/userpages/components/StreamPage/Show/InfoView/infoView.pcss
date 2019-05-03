@@ -1,12 +1,33 @@
-.leftColumn {
-  & > div:not(:first-child) {
-    margin-top: 2rem;
-  }
+.infoView {
+  max-width: 682px;
+}
 
-  padding: 0;
+.textInput {
+  margin-bottom: 2rem;
 }
 
 .copyStreamIdButton {
-  position: absolute;
-  bottom: 0;
+  margin-left: -86px;
+  margin-top: 22px;
+  width: 128px;
+  height: 32px;
+}
+
+@media (max-width: 1199px) {
+  .copyStreamIdButton {
+    margin-top: 18px;
+  }
+}
+
+@media (--lg-down) {
+  .copyStreamIdButton {
+    margin-left: initial;
+  }
+}
+
+@media (--md-down) {
+  .copyStreamIdButton {
+    margin-left: initial;
+    margin-top: 0;
+  }
 }

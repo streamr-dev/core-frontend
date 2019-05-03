@@ -8,6 +8,12 @@ msgstr ""
 "POT-Creation-Date: 2018-09-07T10:13:34.652Z\n"
 "PO-Revision-Date: 2018-09-07T10:13:34.652Z\n"
 
+msgid "general##on"
+msgstr "On"
+
+msgid "general##off"
+msgstr "Off"
+
 msgid "general##aboutUs"
 msgstr "About Us"
 
@@ -122,6 +128,9 @@ msgstr "Telegram"
 msgid "general##terms"
 msgstr "Terms of Use"
 
+msgid "general##title##suffix"
+msgstr "Streamr Marketplace"
+
 msgid "general##trello"
 msgstr "Trello"
 
@@ -172,6 +181,9 @@ msgstr "Connecting..."
 
 msgid "shared##errors##unlockWallet"
 msgstr "Please unlock your wallet"
+
+msgid "shared##errors##networkName"
+msgstr "#%{networkId}"
 
 msgid "shared##errors##incorrectEthereumNetwork"
 msgstr ""

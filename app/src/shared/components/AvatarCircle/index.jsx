@@ -4,24 +4,31 @@ import React from 'react'
 import cx from 'classnames'
 
 import FallbackImage from '$shared/components/FallbackImage'
+import SvgIcon from '$shared/components/SvgIcon'
 
 import styles from './avatarCircle.pcss'
 
 type CircleProps = {
-    name: string,
+    // name: string,
     className?: string,
 }
 
 type AvatarProps = CircleProps & {
+    name: string,
     imageUrl?: ?string,
     className?: string,
 }
 
-const AccountCircle = ({ name, className }: CircleProps) => (
+const AccountCircle = ({ className }: CircleProps) => (
     <div className={cx(styles.accountCircle, className)}>
-        <span className={styles.inner}>
+        <div className={styles.profileEmptyIcon} >
+            <SvgIcon
+                name="profileMan"
+            />
+        </div>
+        {/* <span className={styles.inner}>
             {name && name[0]}
-        </span>
+        </span> */}
     </div>
 )
 

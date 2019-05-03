@@ -1,8 +1,10 @@
 // @flow
 
 import * as React from 'react'
+import cx from 'classnames'
 
 import Calendar from '$shared/components/Calendar'
+import { type Ref } from '$shared/flowtype/common-types'
 import styles from './withCalendar.pcss'
 
 export type WithCalendarProps = {
@@ -10,6 +12,8 @@ export type WithCalendarProps = {
     closeOnSelect?: boolean,
     disabled?: boolean,
     openOnFocus?: boolean,
+    className?: string,
+    wrapperClassname?: string,
 }
 
 type Props = WithCalendarProps & {
@@ -91,7 +95,7 @@ class WithCalendar extends React.Component<Props, State> {
         }
     }
 
-    rootRef = React.createRef()
+    rootRef: Ref<HTMLDivElement> = React.createRef()
 
     toggle = (open?: boolean) => {
         this.setState((state) => ({
@@ -106,6 +110,7 @@ class WithCalendar extends React.Component<Props, State> {
             closeOnSelect,
             disabled,
             onChange,
+            wrapperClassname,
             ...props
         } = this.props
         const { date } = this.state
@@ -123,13 +128,13 @@ class WithCalendar extends React.Component<Props, State> {
 
     render() {
         const { date, open } = this.state
-        const { disabled } = this.props
+        const { disabled, className, wrapperClassname } = this.props
 
         return (
-            <div ref={this.rootRef}>
+            <div ref={this.rootRef} className={cx(styles.root, className)}>
                 {this.children()}
                 {!disabled && open && (
-                    <div className={styles.wrapper}>
+                    <div className={cx(styles.wrapper, wrapperClassname)}>
                         <Calendar
                             value={date}
                             onChange={this.setDate}

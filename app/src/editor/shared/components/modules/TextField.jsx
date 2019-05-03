@@ -2,10 +2,12 @@
 
 import React from 'react'
 import cx from 'classnames'
+import throttle from 'lodash/throttle'
 
+import UiSizeConstraint from '../UiSizeConstraint'
 import ModuleSubscription from '../ModuleSubscription'
 
-import TextInput from '../TextInput'
+import TextControl from '$shared/components/TextControl'
 import styles from './TextField.pcss'
 
 export default class TextFieldModule extends React.Component {
@@ -25,11 +27,11 @@ export default class TextFieldModule extends React.Component {
         }
     }
 
-    onMessage = ({ textFieldValue: value }) => {
+    onMessage = throttle(({ textFieldValue: value }) => {
         this.setState({
             value,
         })
-    }
+    }, 250)
 
     onClick = async () => {
         this.subscription.current.send({
@@ -60,32 +62,27 @@ export default class TextFieldModule extends React.Component {
         const { isActive } = this.props
         const value = this.getValue()
         return (
-            <div className={cx(this.props.className, styles.TextField)}>
-                <ModuleSubscription
-                    {...this.props}
-                    ref={this.subscription}
-                    onMessage={this.onMessage}
-                    onActiveChange={this.onActiveChange}
-                />
-                <TextInput
-                    value={value}
-                    placeholder="Enter your text here"
-                    onChange={this.onChange}
-                    selectOnFocus={false}
-                    blurOnEnterKey={false}
-                >
-                    {({ innerRef, ...props }, { hasFocus }) => (
-                        <textarea
-                            key={hasFocus}
-                            ref={innerRef}
-                            {...props}
-                        />
-                    )}
-                </TextInput>
-                <button type="button" className={styles.button} onClick={this.onClick} disabled={!isActive}>
-                    Send
-                </button>
-            </div>
+            <UiSizeConstraint minWidth={150} minHeight={75}>
+                <div className={cx(this.props.className, styles.TextField)}>
+                    <ModuleSubscription
+                        {...this.props}
+                        ref={this.subscription}
+                        onMessage={this.onMessage}
+                        onActiveChange={this.onActiveChange}
+                    />
+                    <TextControl
+                        commitEmpty
+                        flushHistoryOnBlur
+                        onCommit={this.onChange}
+                        placeholder="Enter your text here"
+                        tag="textarea"
+                        value={value}
+                    />
+                    <button type="button" className={styles.button} onClick={this.onClick} disabled={!isActive}>
+                        Send
+                    </button>
+                </div>
+            </UiSizeConstraint>
         )
     }
 }

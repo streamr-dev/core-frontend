@@ -61,7 +61,7 @@ describe('user - services', () => {
     })
 
     describe('saveCurrentUser', () => {
-        it('should post the user to the api', async () => {
+        it('should PUT the user to the api', async () => {
             const data = {
                 id: '1',
                 name: 'tester',
@@ -75,39 +75,13 @@ describe('user - services', () => {
                     response: data,
                 })
 
-                assert.equal(request.config.method, 'post')
-                assert.equal(request.config.url, '/profile/update')
-                assert.equal(request.headers['Content-Type'], 'application/x-www-form-urlencoded')
+                assert.equal(request.config.method, 'put')
+                assert.equal(request.config.url, '/users/me')
+                assert.equal(request.headers['Content-Type'], 'application/json')
             })
 
-            const result = await services.postUser(data)
+            const result = await services.putUser(data)
             assert.deepStrictEqual(result, data)
-        })
-    })
-
-    describe('logout', () => {
-        // TODO: Change `xit` to `it` when using the local auth pages again. – Mariusz
-        xit('logs the user out', async (done) => {
-            moxios.wait(() => {
-                const request = moxios.requests.mostRecent()
-                request.respondWith({
-                    status: 200,
-                    response: '',
-                })
-
-                assert.equal(request.config.method, 'get')
-                assert.equal(request.config.url, 'streamr/logout')
-                done()
-            })
-
-            const result = await services.logout()
-            assert.deepStrictEqual(result, '')
-        })
-
-        // TODO: Remove the following example when using the local auth pages. – Mariusz
-        it('logs the user out (the old way, kinda)', async () => {
-            const result = await services.logout()
-            assert.deepStrictEqual(result, '')
         })
     })
 })

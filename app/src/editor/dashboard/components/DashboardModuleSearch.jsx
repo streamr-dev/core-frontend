@@ -65,8 +65,20 @@ class DashboardModuleSearch extends React.PureComponent {
         canvases: [],
     }
 
+    constructor(props) {
+        super(props)
+        this.input = React.createRef()
+    }
+
     componentDidMount() {
         this.load()
+        // focus input on open, timeout is needed because React cannot focus to the field
+        // if it's not visible (which it instantly isn't due to the modal loading logic).
+        setTimeout(() => {
+            if (this.input.current) {
+                this.input.current.focus()
+            }
+        }, 100)
     }
 
     componentWillUnmount() {
@@ -76,7 +88,8 @@ class DashboardModuleSearch extends React.PureComponent {
     async load() {
         const canvases = await getCanvases()
         if (this.unmounted) { return }
-        this.setState({ canvases })
+        this.setState({ canvases }, () => {
+        })
     }
 
     onChange = (event) => {
@@ -90,19 +103,6 @@ class DashboardModuleSearch extends React.PureComponent {
             this.props.addModule(canvasId, module)
         } else {
             this.props.removeModule(dashboardItem)
-        }
-    }
-
-    onInputRef = (el) => {
-        this.input = el
-    }
-
-    componentDidUpdate(prevProps) {
-        // focus input on open
-        if (this.props.isOpen && !prevProps.isOpen) {
-            if (this.input) {
-                this.input.focus()
-            }
         }
     }
 
@@ -121,18 +121,18 @@ class DashboardModuleSearch extends React.PureComponent {
     }
 
     render() {
-        const { isOpen, modalApi, dashboard } = this.props
+        const { modalApi, dashboard } = this.props
         if (!dashboard) { return null }
         const availableDashboardModules = groupBy(dashboardModuleSearch(this.state.canvases, this.state.search), 'canvasId')
         return (
             <React.Fragment>
                 {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
-                <div className={styles.ModuleSearch} hidden={!isOpen}>
+                <div className={styles.ModuleSearch}>
                     <div className={styles.Header}>
                         <button onClick={() => modalApi.close()}>X</button>
                     </div>
                     <div className={styles.Input}>
-                        <input ref={this.onInputRef} placeholder="Search or select a module" value={this.state.search} onChange={this.onChange} />
+                        <input ref={this.input} placeholder="Search or select a module" value={this.state.search} onChange={this.onChange} />
                     </div>
                     <div className={styles.Content}>
                         {Object.entries(availableDashboardModules).map(([canvasId, modules]) => {
@@ -157,8 +157,8 @@ class DashboardModuleSearch extends React.PureComponent {
 
 export default (props) => (
     <Modal modalId="DashboardModuleSearch">
-        {({ api, value }) => (
-            <DashboardModuleSearch isOpen={value} modalApi={api} {...props} />
+        {({ api }) => (
+            <DashboardModuleSearch modalApi={api} {...props} />
         )}
     </Modal>
 )

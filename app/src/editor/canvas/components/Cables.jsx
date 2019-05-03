@@ -18,6 +18,26 @@ function curvedHorizontal(x1, y1, x2, y2) {
 const LAYER_0 = 0
 const LAYER_1 = 1
 
+export function Cable({ cable }) {
+    if (!cable) { return null }
+    const [from, to] = cable
+    return (
+        <path
+            className={styles.Connection}
+            d={curvedHorizontal(
+                from.left,
+                from.top,
+                to.left,
+                to.top,
+            )}
+        />
+    )
+}
+
+export function getCableKey([from, to] = []) {
+    return `${from && from.id}-${to && to.id}`
+}
+
 class Cables extends React.PureComponent {
     el = React.createRef()
 
@@ -113,7 +133,7 @@ class Cables extends React.PureComponent {
         return [
             ...cables,
             this.getDragCable(), // append dragging cable
-        ]
+        ].filter(Boolean)
     }
 
     getDragCable() {
@@ -139,24 +159,6 @@ class Cables extends React.PureComponent {
         ]
     }
 
-    // eslint-disable-next-line class-methods-use-this
-    renderPath(cable) {
-        if (!cable) { return null }
-        const [from, to] = cable
-        return (
-            <path
-                key={`${from.id}-${to.id}`}
-                className={styles.Connection}
-                d={curvedHorizontal(
-                    from.left,
-                    from.top,
-                    to.left,
-                    to.top,
-                )}
-            />
-        )
-    }
-
     render() {
         const cables = this.getCables()
         const layer0 = cables.filter(([, , layer]) => !layer)
@@ -169,7 +171,9 @@ class Cables extends React.PureComponent {
                     height="100%"
                     width="100%"
                 >
-                    {layer0.map((cable) => this.renderPath(cable))}
+                    {layer0.filter(Boolean).map((cable) => (
+                        <Cable key={getCableKey(cable)} cable={cable} />
+                    ))}
                 </svg>
                 <svg
                     className={styles.Cables}
@@ -177,7 +181,9 @@ class Cables extends React.PureComponent {
                     height="100%"
                     width="100%"
                 >
-                    {layer1.map((cable) => this.renderPath(cable))}
+                    {layer1.filter(Boolean).map((cable) => (
+                        <Cable key={getCableKey(cable)} cable={cable} />
+                    ))}
                 </svg>
             </React.Fragment>
         )

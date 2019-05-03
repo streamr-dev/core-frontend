@@ -21,6 +21,9 @@ export type Filter = {
     order?: ?SortOrder,
     key?: ?string,
     value?: ?string,
+    adhoc?: boolean,
+    uiChannel?: boolean,
+    public?: boolean,
 }
 
 export type SortOption = {

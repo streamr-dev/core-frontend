@@ -1,7 +1,6 @@
-@import 'variables.pcss';
-
 .root {
   border: 1.4px solid transparent;
+  margin-bottom: 3px;
   border-radius: 2px;
   opacity: 0.5;
   padding: 5px;
@@ -17,13 +16,14 @@
   fill: var(--greyDark);
 }
 
+.root:--enter,
 a:--enter .root {
   opacity: 1;
   transition-duration: 50ms;
 }
 
 .white {
-  border-color: color(var(--white));
+  border-color: rgba(255, 255, 255, 0.5);
   opacity: 1;
 }
 
@@ -31,25 +31,26 @@ a:--enter .root {
   fill: var(--white);
 }
 
-a:--enter .white {
+.white:--enter {
   border-color: var(--white);
 }
 
 .blue {
-  border-color: color(var(--blue) alpha(50%));
+  border-color: rgba(3, 36, 255, 0.5);
   opacity: 1;
 }
 
 .blue circle {
-  fill: var(--blue);
+  fill: var(--streamrBlue);
 }
 
+.blue:--enter,
 a:--enter .blue {
-  border-color: var(--blue);
+  border-color: var(--streamrBlue);
 }
 
 .gray {
-  border-color: color(var(--greyDark) alpha(50%));
+  border-color: rgba(50, 50, 50, 0.5);
   opacity: 1;
 }
 
@@ -57,6 +58,7 @@ a:--enter .blue {
   fill: var(--greyDark);
 }
 
+.gray:--enter,
 a:--enter .gray {
   border-color: var(--greyDark);
 }

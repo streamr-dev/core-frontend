@@ -62,6 +62,7 @@ const ConfirmDialog = (props: Props) => {
         cancel: {
             title: I18n.t('modal.common.cancel'),
             onClick: onReject,
+            color: 'link',
             outline: true,
             ...cancelButtonProps,
         },

@@ -1,18 +1,17 @@
 // @flow
 
 import React from 'react'
+import { Helmet } from 'react-helmet'
 
 import DocsLayout from '../DocsLayout'
-import IntroductionPageContent from './Content.mdx'
-
-const subNav = {
-    'streamr-tech-stack': 'Streamr Tech Stack',
-    'realtime-engine': 'Realtime Engine',
-}
+import IntroductionContent from '$docs/content/introduction.mdx'
 
 const IntroductionPage = () => (
-    <DocsLayout subNav={subNav}>
-        <IntroductionPageContent />
+    <DocsLayout>
+        <Helmet>
+            <title>Introduction - Streamr Docs</title>
+        </Helmet>
+        <IntroductionContent />
     </DocsLayout>
 )
 

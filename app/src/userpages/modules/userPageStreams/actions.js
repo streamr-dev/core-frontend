@@ -260,6 +260,7 @@ export const getStreams = () => (dispatch: Function, getState: Function) => {
 
     const filter = selectFilter(getState())
     const params = getParamsForFilter(filter, {
+        uiChannel: false,
         sortBy: 'lastUpdated',
     })
 
@@ -501,6 +502,11 @@ export const initEditStream = () => (dispatch: Function, getState: Function) => 
             config: cloneDeep(stream.config) || {},
             ownPermissions: cloneDeep(stream.ownPermissions) || [],
             lastUpdated: stream.lastUpdated || 0,
+            autoConfigure: stream.autoConfigure || false,
+            partitions: stream.partitions || 1,
+            requireSignedData: stream.requireSignedData || false,
+            uiChannel: stream.uiChannel || false,
+            storageDays: stream.storageDays !== undefined ? stream.storageDays : 365,
         }))
     }
 }
@@ -513,5 +519,10 @@ export const initNewStream = () => (dispatch: Function) => {
         config: {},
         ownPermissions: [],
         lastUpdated: 0,
+        autoConfigure: false,
+        partitions: 1,
+        requireSignedData: false,
+        storageDays: 365,
+        uiChannel: false,
     }))
 }

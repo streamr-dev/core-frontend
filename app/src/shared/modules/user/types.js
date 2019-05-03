@@ -12,8 +12,3 @@ export type UserErrorAction = PayloadAction<{
     error: ErrorInUi,
 }>
 export type UserErrorActionCreator = (error: ErrorInUi) => UserErrorAction
-
-export type LogoutErrorAction = PayloadAction<{
-    error: ErrorInUi,
-}>
-export type LogoutErrorActionCreator = (error: ErrorInUi) => LogoutErrorAction

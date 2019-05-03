@@ -29,7 +29,7 @@ const gitRevisionPlugin = new GitRevisionPlugin({
 
 // We have to make sure that publicPath ends with a slash. If it
 // doesn't then chunks are not gonna load correctly. #codesplitting
-const publicPath = '/'
+const publicPath = `${process.env.PLATFORM_PUBLIC_PATH || ''}/`
 
 module.exports = {
     mode: isProduction() ? 'production' : 'development',
@@ -166,6 +166,8 @@ module.exports = {
         new webpack.optimize.OccurrenceOrderPlugin(),
         new webpack.EnvironmentPlugin({
             NODE_ENV: 'production',
+            GIT_VERSION: gitRevisionPlugin.version(),
+            GIT_BRANCH: gitRevisionPlugin.branch(),
         }),
         new UglifyJsPlugin({
             uglifyOptions: {
@@ -192,9 +194,9 @@ module.exports = {
                 'src/marketplace/**/*.*',
                 'src/shared/**/*.*',
                 'src/routes/**/*.*',
-                process.env.USERPAGES === 'on' && 'src/userpages/**/*.*',
-                process.env.USERPAGES === 'on' && 'src/editor/**/*.*',
-                process.env.DOCS === 'on' && 'src/docs/**/*.*',
+                'src/userpages/**/*.*',
+                'src/editor/**/*.*',
+                'src/docs/**/*.*',
             ].filter(Boolean),
             globOptions: {
                 ignore: [
@@ -210,6 +212,13 @@ module.exports = {
                     '**/types.js',
                     // skip conditional stubs
                     '**/stub.jsx',
+                    // skip stories
+                    '**/*.stories.js',
+                    '**/*.stories.jsx',
+                    // skip MD documentation
+                    'src/docs/docsEditingGuide.md',
+                    // skip sketch files
+                    '**/*.sketch',
                 ],
             },
         }),
@@ -230,6 +239,13 @@ module.exports = {
         progress: true,
         port: process.env.PORT || 3333,
         publicPath,
+    },
+    // automatically creates a vendor chunk & also
+    // seems to prevent out of memory errors during dev ??
+    optimization: {
+        splitChunks: {
+            chunks: 'all',
+        },
     },
     resolve: {
         extensions: ['.js', '.jsx', '.json'],

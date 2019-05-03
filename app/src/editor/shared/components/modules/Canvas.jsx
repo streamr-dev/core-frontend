@@ -2,7 +2,6 @@ import React from 'react'
 import cx from 'classnames'
 import { Link } from 'react-router-dom'
 
-import ModuleSubscription from '../ModuleSubscription'
 import links from '../../../../links'
 
 import styles from './Canvas.pcss'
@@ -13,16 +12,11 @@ export default class CanvasModule extends React.Component {
     subscription = React.createRef()
 
     render() {
-        const { module, isActive } = this.props
+        const { className, isActive } = this.props
         const currentCanvasPort = getCanvasPort(this.props.module)
 
         return (
-            <div className={cx(this.props.className, styles.SubCanvas)}>
-                <ModuleSubscription
-                    {...this.props}
-                    ref={this.subscription}
-                    module={module}
-                />
+            <div className={cx(className, styles.SubCanvas)}>
                 {isActive && currentCanvasPort && currentCanvasPort.value && (
                     <Link
                         className={styles.link}

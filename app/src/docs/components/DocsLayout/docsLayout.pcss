@@ -1,8 +1,17 @@
-@import 'variables.pcss';
-
 .docsLayout {
   padding: 2.5em 0 5em;
   color: #323232;
+  word-break: break-word;
+
+  .centered {
+    display: block;
+    margin: 2em auto;
+    text-align: center;
+  }
+
+  .verticalSpace {
+    margin: 2em 0;
+  }
 
   img {
     display: block;
@@ -10,19 +19,29 @@
     margin: 2em auto;
   }
 
+  /* Video Styles */
   .playerWrapper {
     position: relative;
     padding-top: 56.25%;
     margin: 2.5em 0;
-  }
 
-  .reactPlayer {
-    position: absolute;
-    top: 0;
-    left: 0;
+    .reactPlayer {
+      position: absolute;
+      top: 0;
+      left: 0;
+
+      > div {
+        background-color: transparent !important;
+      }
+
+      #player {
+        border: 1px solid #D8D8D8;
+      }
+    }
   }
 
   pre {
+    padding: 1em !important;
     margin: 2em 0;
     font-size: inherit;
     background-color: #F8F8F8 !important;
@@ -30,6 +49,17 @@
 
     code {
       font-size: 14px;
+    }
+  }
+
+  p {
+    code {
+      color: #323232;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      background-color: #EFEFEF;
+      padding: 2px 4px;
+      border-radius: 2px;
     }
   }
 
@@ -62,9 +92,8 @@
   }
 
   .mdH1 {
-    font-size: 44px;
-    font-weight: var(--regular);
-    line-height: 48px;
+    font-size: 32px;
+    line-height: 32px;
     margin: 1em 0;
 
     &:first-of-type {
@@ -73,14 +102,14 @@
   }
 
   .mdH2 {
-    font-size: 32px;
+    font-size: 26px;
     line-height: 32px;
     margin: 1em 0;
   }
 
   .mdH3 {
-    font-size: 26px;
-    line-height: 32px;
+    font-size: 20px;
+    line-height: 26px;
     margin: 1em 0;
   }
 
@@ -101,7 +130,7 @@
   .mdP a {
     text-decoration: none;
     font-weight: inherit;
-    color: var(--blue);
+    color: var(--streamrBlue);
 
     &:--enter {
       color: var(--blueDark6);
@@ -111,11 +140,60 @@
   strong {
     font-weight: var(--medium);
   }
+
+  kbd {
+    color: #323232;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    background-color: #EFEFEF;
+    padding: 2px 4px;
+    border-radius: 2px;
+  }
+
+  table {
+    width: 100%;
+    border: 1px solid #E7E7E7;
+    margin: 2em 0;
+
+    th,
+    td {
+      text-align: left;
+      font-size: 14px;
+      line-height: 24px;
+      font-weight: var(--regular);
+      border: 1px solid #E7E7E7;
+      padding: 1em 1.5em;
+    }
+
+    thead {
+      background-color: #F8F8F8;
+      color: #BABABA;
+
+      th {
+        line-height: 28px;
+        border: none;
+        border-left: 1px solid #E7E7E7;
+      }
+    }
+  }
+}
+
+@media (--lg-up) {
+  .docsLayout {
+    :global(.container) {
+      max-width: 1080px;
+    }
+  }
 }
 
 @media (--md-down) {
   .docsLayout {
     padding: 0 0 2.5em;
+
+    :global(.container) {
+      padding-left: 30px;
+      padding-right: 30px;
+    }
 
     .mdH1 {
       font-size: 32px;

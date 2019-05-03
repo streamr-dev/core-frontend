@@ -1,0 +1,44 @@
+.StreamSelector:focus {
+  outline: none;
+}
+
+.searchResults {
+  z-index: 2;
+  position: fixed;
+  background: #FFFFFF;
+  border-radius: 4px 4px 4px 4px;
+  box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.1);
+  max-height: 240px;
+  width: 300px;
+  overflow-y: auto;
+  user-select: none;
+}
+
+.result {
+  font-size: 12px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 400;
+  color: #323232;
+  text-transform: none;
+  letter-spacing: 0;
+  line-height: 28px;
+  padding: 5px 24px;
+  border-bottom: 1px solid #EFEFEF;
+  cursor: pointer;
+}
+
+.result:hover {
+  background: #F8F8F8;
+}
+
+.description {
+  font-size: 10px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 400;
+  color: #ADADAD;
+  line-height: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  padding-bottom: 6px;
+}

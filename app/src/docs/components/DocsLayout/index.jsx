@@ -4,11 +4,12 @@ import React from 'react'
 import { Container, Row, Col } from 'reactstrap'
 import { MDXProvider } from '@mdx-js/tag'
 
-import type { NavigationLink } from '../../flowtype/navigation-types'
+import type { NavigationLink } from '$docs/flowtype/navigation-types'
 import Layout from '$mp/components/Layout'
 import Navigation from './Navigation'
 import mainNav from './Navigation/navLinks'
 import Components from '$docs/mdxConfig'
+import PageTurner from '$docs/components/PageTurner'
 
 import styles from './docsLayout.pcss'
 
@@ -34,6 +35,7 @@ const DocsLayout = ({ subNav, ...props }: Props = {}) => (
                     <MDXProvider components={Components}>
                         <div {...props} />
                     </MDXProvider>
+                    <PageTurner navigationItems={mainNav} />
                 </Col>
             </Row>
         </Container>

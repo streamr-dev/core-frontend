@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import type { Match } from 'react-router-dom'
 import { push, replace } from 'react-router-redux'
 import { I18n } from 'react-redux-i18n'
+import { Helmet } from 'react-helmet'
 
 import ProductPageComponent from '$mp/components/ProductPage'
 import Layout from '$mp/components/Layout'
@@ -20,7 +21,6 @@ import PublishOrUnpublishDialog from '$mp/containers/ProductPage/PublishOrUnpubl
 import { getProductById, getProductSubscription, purchaseProduct, getUserProductPermissions } from '../../modules/product/actions'
 import { getRelatedProducts } from '../../modules/relatedProducts/actions'
 import { isPaidProduct } from '../../utils/product'
-import { doExternalLogin } from '../../utils/auth'
 import BackButton from '$shared/components/BackButton'
 
 import {
@@ -36,6 +36,7 @@ import {
 } from '$mp/modules/product/selectors'
 import { selectUserData } from '$shared/modules/user/selectors'
 import links from '$mp/../links'
+import routes from '$routes'
 import { selectRelatedProductList } from '$mp/modules/relatedProducts/selectors'
 
 export type OwnProps = {
@@ -256,6 +257,9 @@ export class ProductPage extends Component<Props, State> {
 
         return !!product && (
             <Layout>
+                <Helmet>
+                    <title>{`${product.name} - ${I18n.t('general.title.suffix')}`}</title>
+                </Helmet>
                 <ProductPageComponent
                     product={product}
                     streams={streams}
@@ -303,7 +307,11 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
         if (isLoggedIn) {
             dispatch(purchaseProduct())
         } else {
-            doExternalLogin(formatPath(links.marketplace.products, id))
+            dispatch(replace(routes.login({
+                redirect: routes.product({
+                    id,
+                }),
+            })))
         }
     },
     getRelatedProducts: (id: ProductId) => dispatch(getRelatedProducts(id)),

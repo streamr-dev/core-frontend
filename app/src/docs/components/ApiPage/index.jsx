@@ -1,18 +1,18 @@
 // @flow
 
 import React from 'react'
+import { Helmet } from 'react-helmet'
 
 import DocsLayout from '../DocsLayout'
-import ApiPageContent from './Content.mdx'
-
-const subNav = {
-    clientLibraries: 'Client Libraries',
-    authentication: 'Authentication',
-}
+import ApiContent from '$docs/content/api.mdx'
+import { subNav } from '../DocsLayout/Navigation/navLinks'
 
 const ApiPage = () => (
-    <DocsLayout subNav={subNav}>
-        <ApiPageContent />
+    <DocsLayout subNav={subNav.api}>
+        <Helmet>
+            <title>Streamr API - Streamr Docs</title>
+        </Helmet>
+        <ApiContent />
     </DocsLayout>
 )
 

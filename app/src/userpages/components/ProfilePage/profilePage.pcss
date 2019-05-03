@@ -1,15 +1,32 @@
-@import 'variables.pcss';
-
 .profilePage {
-  color: black;
-  padding-bottom: 3em;
-  background-color: white;
-  z-index: 11;
-  top: -4em;
   position: relative;
+  color: var(--greyDark);
   font-size: 14px;
+  padding-bottom: 3em;
 
-  @media (--md-up) {
-    top: -5em;
+  @media (--lg-up) {
+    top: -7.4em;
+    z-index: 11;
+  }
+
+  @media (--xs) {
+    top: auto;
+  }
+}
+
+.longText {
+  line-height: 20px;
+  max-width: 488px;
+}
+
+@media (--md-down) {
+  .containerOverrides {
+    max-width: 900px;
+  }
+}
+
+@media (--sm-down) {
+  .containerOverrides {
+    max-width: 540px;
   }
 }

@@ -1,22 +1,139 @@
+.textInput {
+  font-size: 16px;
+}
+
+.fieldHeaderRow,
+.fieldItem {
+  max-width: 682px;
+}
+
 .helpText {
   font-size: 14px;
   margin-bottom: 2em;
 }
 
 .deleteFieldButton {
+  display: none;
   position: absolute;
-  right: 0;
-  margin-right: 1em;
+  right: -105px;
+  top: 6px;
+  margin: 0;
+  font-weight: var(--regular);
+  font-family: 'IBM Plex Sans', sans-serif;
+  text-transform: capitalize;
+  width: 80px;
+  height: 32px;
+  border: 1px solid #525252;
+  border-radius: 4px;
+  color: #525252;
+  font-size: 14px;
+  letter-spacing: 0;
+  line-height: 20px;
+}
+
+.hoverContainer {
+  width: 100%;
+
+  &:hover,
+  &:focus {
+    .deleteFieldButton {
+      display: flex;
+    }
+  }
 }
 
 .addFieldButton {
   margin-top: 2em;
+  width: 144px;
+  font-size: 16px;
+  font-weight: 400;
+  font-family: 'IBM Plex Sans', sans-serif;
+  text-transform: inherit;
+  letter-spacing: 0;
 }
 
 .settings {
+  max-width: 682px;
   margin-top: 3em;
+
+  label span {
+    font-size: 16px;
+  }
+}
+
+.toggle {
+  label {
+    margin-left: 30px;
+  }
+}
+
+.fieldHeaderRow {
+  .dataTypeHeader {
+    font-size: 12px;
+    margin-left: -28px;
+  }
 }
 
 .storagePeriod {
   margin-top: 1.5em;
+}
+
+.longText {
+  line-height: 20px;
+  max-width: 488px;
+}
+
+.permissionsDropdown {
+  display: flex;
+  justify-content: flex-end;
+  border-radius: 4px;
+
+  :global(.dropdown-menu) {
+    margin-top: 8px;
+  }
+
+  > button[type='button'] {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.4em;
+    padding: 0 1em;
+    background-color: white !important;
+    color: #323232 !important;
+    height: 32px;
+    min-width: 128px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    text-transform: capitalize;
+    font-weight: 400;
+    font-size: 14px;
+    letter-spacing: 0;
+    line-height: 20px;
+
+    &:hover,
+    &:focus,
+    &:active {
+      background-color: white !important;
+    }
+  }
+}
+
+.tabletHeading {
+  display: none;
+}
+
+@media (--md-down) {
+  .fieldHeaderRow {
+    display: none;
+  }
+
+  .tabletHeading {
+    display: flex;
+    margin-top: 1em;
+    font-size: 12px;
+  }
+
+  .permissionsDropdown {
+    button[type='button'] {
+      width: 100%;
+    }
+  }
 }

@@ -6,12 +6,12 @@ import { Row, Col, Button } from 'reactstrap'
 import { Translate, I18n } from 'react-redux-i18n'
 import cx from 'classnames'
 
-import type { StreamId } from '$shared/flowtype/stream-types'
+import type { Stream, StreamId } from '$shared/flowtype/stream-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { StoreState } from '$userpages/flowtype/states/store-state'
 import type { CsvUploadState } from '$userpages/flowtype/states/stream-state'
-import { getRange, deleteDataUpTo, uploadCsvFile, confirmCsvFileUpload } from '$userpages/modules/userPageStreams/actions'
-import { selectDeleteDataError, selectUploadCsvState } from '$userpages/modules/userPageStreams/selectors'
+import { getRange, deleteDataUpTo, uploadCsvFile, confirmCsvFileUpload, updateEditStream } from '$userpages/modules/userPageStreams/actions'
+import { selectDeleteDataError, selectUploadCsvState, selectEditedStream } from '$userpages/modules/userPageStreams/selectors'
 import TextInput from '$shared/components/TextInput'
 import FileUpload from '$shared/components/FileUpload'
 import DatePicker from '$shared/components/DatePicker'
@@ -20,7 +20,6 @@ import ConfirmCsvImportDialog from '$userpages/components/StreamPage/ConfirmCsvI
 import Spinner from '$shared/components/Spinner'
 import CsvSchemaError from '$shared/errors/CsvSchemaError'
 
-import { leftColumn, rightColumn } from '../../constants'
 import styles from './historyView.pcss'
 
 type OwnProps = {
@@ -28,6 +27,7 @@ type OwnProps = {
 }
 
 type StateProps = {
+    stream: ?Stream,
     deleteDataError: ?ErrorInUi,
     csvUploadState: ?CsvUploadState,
 }
@@ -36,7 +36,8 @@ type DispatchProps = {
     deleteDataUpTo: (streamId: StreamId, date: Date) => Promise<any>,
     getRange: (streamId: StreamId) => Promise<any>,
     uploadCsvFile: (streamId: StreamId, file: File) => Promise<any>,
-    confirmCsvUpload: (id: StreamId, fileId: string, dateFormat: string, timestampColumnIndex: number) => Promise<void>
+    confirmCsvUpload: (id: StreamId, fileId: string, dateFormat: string, timestampColumnIndex: number) => Promise<void>,
+    updateEditStream: (data: Stream) => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
@@ -78,6 +79,7 @@ class HistoryView extends Component<Props, State> {
     }
 
     mounted = false
+    fileUploadRef = React.createRef()
 
     componentDidMount() {
         this.mounted = true
@@ -113,6 +115,16 @@ class HistoryView extends Component<Props, State> {
     onDeleteDateChanged = (date) => {
         this.setState({
             deleteDate: date,
+        })
+    }
+
+    onStoragePeriodChange = (e: SyntheticInputEvent<EventTarget>) => {
+        const { updateEditStream, stream } = this.props
+        const days = Number(e.target.value)
+
+        updateEditStream({
+            ...stream,
+            storageDays: days,
         })
     }
 
@@ -203,6 +215,11 @@ class HistoryView extends Component<Props, State> {
         return Promise.resolve()
     }
 
+    handleBrowseFilesClick = () => {
+        // $FlowFixMe
+        this.fileUploadRef.current.dropzoneRef.current.open()
+    }
+
     render() {
         const {
             range,
@@ -211,7 +228,7 @@ class HistoryView extends Component<Props, State> {
             confirmError,
             deleteInProgress,
         } = this.state
-        const { streamId, deleteDataError, csvUploadState } = this.props
+        const { streamId, deleteDataError, csvUploadState, stream } = this.props
         const storedEventsText = (range && range.beginDate && range.endDate) ?
             I18n.t('userpages.streams.edit.history.events', {
                 start: range && new Date(range.beginDate).toLocaleDateString(),
@@ -220,56 +237,76 @@ class HistoryView extends Component<Props, State> {
             I18n.t('userpages.streams.edit.history.noEvents')
 
         return (
-            <Fragment>
+            <div className={styles.historyView}>
                 <Row>
-                    <Col {...leftColumn}>
-                        {streamId && (
-                            <FileUpload
-                                className={styles.row}
-                                component={
-                                    <TextInput
-                                        label={I18n.t('userpages.streams.edit.history.storedEvents')}
-                                        value={storedEventsText}
-                                        readOnly
-                                        preserveLabelSpace
-                                    />
-                                }
-                                dropTargetComponent={<DropTarget mouseOver={false} />}
-                                dragOverComponent={<DropTarget mouseOver />}
-                                onFilesAccepted={this.onDropAccepted}
-                                onError={(error) => console.error(error)}
-                                acceptMime={['text/csv']}
-                                maxFileSizeInMB={5}
-                                multiple={false}
-                                disablePreview
-                            />
-                        )}
-                        {!streamId && (
-                            <Translate value="userpages.streams.edit.history.saveFirst" />
-                        )}
-                    </Col>
+                    {streamId && (
+                        <Fragment>
+                            <Col md={12}>
+                                <Translate value="userpages.streams.edit.history.upload.description" tag="p" className={styles.longText} />
+                            </Col>
+                            <Col md={12} lg={11}>
+                                <FileUpload
+                                    ref={this.fileUploadRef}
+                                    className={styles.fileUpload}
+                                    component={
+                                        <TextInput
+                                            label={I18n.t('userpages.streams.edit.history.storedEvents')}
+                                            value={storedEventsText}
+                                            readOnly
+                                            preserveLabelSpace
+                                        />
+                                    }
+                                    dropTargetComponent={<DropTarget mouseOver={false} />}
+                                    dragOverComponent={<DropTarget mouseOver />}
+                                    onFilesAccepted={this.onDropAccepted}
+                                    onError={(error) => console.error(error)}
+                                    acceptMime={['text/csv']}
+                                    maxFileSizeInMB={5}
+                                    multiple={false}
+                                    disablePreview
+                                />
+                            </Col>
+                            <Col md={12} lg={1}>
+                                <Button
+                                    className={styles.browseFiles}
+                                    color="userpages"
+                                    onClick={() => this.handleBrowseFilesClick()}
+                                >
+                                    <Translate value="userpages.streams.edit.history.browseFiles" />
+                                </Button>
+                            </Col>
+                        </Fragment>
+                    )}
+                    {!streamId && (
+                        <Col md={12}>
+                            <Translate value="userpages.streams.edit.history.saveFirst" tag="p" className={styles.longText} />
+                        </Col>
+                    )}
                 </Row>
                 {streamId && range && (
                     <Row>
-                        <Col {...leftColumn}>
-                            <DatePicker
-                                label={I18n.t('userpages.streams.edit.history.deleteEvents')}
-                                openOnFocus
-                                onChange={this.onDeleteDateChanged}
-                                error={(deleteDataError && deleteDataError.message) || ''}
-                                value={deleteDate}
-                                preserveLabelSpace
-                                preserveErrorSpace
-                            />
+                        <Col md={12} lg={11}>
+                            <div className={styles.storedEventsContainer}>
+                                <DatePicker
+                                    label={I18n.t('userpages.streams.edit.history.deleteEvents')}
+                                    openOnFocus
+                                    onChange={this.onDeleteDateChanged}
+                                    error={(deleteDataError && deleteDataError.message) || ''}
+                                    value={deleteDate || 'No stored events added yet'}
+                                    preserveLabelSpace
+                                    preserveErrorSpace
+                                    className={styles.storedEvents}
+                                />
+                            </div>
                         </Col>
-                        <Col {...rightColumn}>
+                        <Col md={12} lg={1}>
                             <Button
                                 className={styles.deleteButton}
                                 color="userpages"
                                 onClick={() => this.deleteDataUpTo(streamId, deleteDate)}
                                 disabled={deleteDate == null}
                             >
-                                <Translate value="userpages.streams.edit.history.delete" />
+                                <Translate value="userpages.streams.edit.history.deleteRange" />
                                 {deleteInProgress &&
                                     <Fragment>
                                         <span>&nbsp;</span>
@@ -280,6 +317,26 @@ class HistoryView extends Component<Props, State> {
                         </Col>
                     </Row>
                 )}
+                {stream && stream.storageDays !== undefined &&
+                <Row className={styles.storagePeriod}>
+                    <Col xs={12}>
+                        <label htmlFor="storage-period">
+                            <Translate
+                                value="userpages.streams.edit.configure.historicalStoragePeriod.description"
+                                className={cx(styles.longText, styles.historicalStoragePeriod)}
+                                tag="p"
+                            />
+                        </label>
+                        <TextInput
+                            id="storage-period"
+                            type="number"
+                            label={I18n.t('userpages.streams.edit.configure.historicalStoragePeriod.label')}
+                            value={stream.storageDays}
+                            onChange={this.onStoragePeriodChange}
+                            preserveLabelSpace
+                        />
+                    </Col>
+                </Row>}
                 {isModalOpen && (
                     <ConfirmCsvImportDialog
                         streamId={streamId}
@@ -289,7 +346,7 @@ class HistoryView extends Component<Props, State> {
                         errorMessage={confirmError || ''}
                     />
                 )}
-            </Fragment>
+            </div>
         )
     }
 }
@@ -297,6 +354,7 @@ class HistoryView extends Component<Props, State> {
 const mapStateToProps = (state: StoreState): StateProps => ({
     deleteDataError: selectDeleteDataError(state),
     csvUploadState: selectUploadCsvState(state),
+    stream: selectEditedStream(state),
 })
 
 const mapDispatchToProps = (dispatch): DispatchProps => ({
@@ -305,6 +363,7 @@ const mapDispatchToProps = (dispatch): DispatchProps => ({
     uploadCsvFile: (streamId: StreamId, file: File) => dispatch(uploadCsvFile(streamId, file)),
     confirmCsvUpload: (id: StreamId, fileId: string, dateFormat: string, timestampColumnIndex: number) =>
         dispatch(confirmCsvFileUpload(id, fileId, dateFormat, timestampColumnIndex)),
+    updateEditStream: (data: Stream) => dispatch(updateEditStream(data)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(HistoryView)

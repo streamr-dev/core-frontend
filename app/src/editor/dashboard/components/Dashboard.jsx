@@ -5,7 +5,7 @@ import isEqual from 'lodash/isEqual'
 import zipObject from 'lodash/zipObject'
 import { Responsive, WidthProvider } from 'react-grid-layout'
 
-import RenameInput from '$editor/shared/components/RenameInput'
+import ModuleHeader from '$editor/shared/components/ModuleHeader'
 import ModuleUI from '$editor/shared/components/ModuleUI'
 
 import dashboardConfig from '../config'
@@ -47,11 +47,30 @@ const normalizeItemList = (itemList = []) => (
     sortBy(itemList, 'i').map(normalizeLayoutItem)
 )
 
-const normalizeLayout = (targetLayout) => dashboardConfig.layout.sizes.reduce((obj, size) => (
+export const normalizeLayout = (targetLayout) => dashboardConfig.layout.sizes.reduce((obj, size) => (
     Object.assign(obj, {
         [size]: (targetLayout && targetLayout[size]) ? normalizeItemList(targetLayout[size]) : [],
     })
 ), {})
+
+export function generateLayout(dashboard) {
+    return dashboard && zipObject(
+        dashboardConfig.layout.sizes,
+        dashboardConfig.layout.sizes.map((size) => (
+            dashboard.items.map((item) => {
+                if (!item.webcomponent) { return {} }
+                const id = generateItemId(item)
+                const layoutInfo = ((dashboard.layout && dashboard.layout[size]) && dashboard.layout[size].find((l) => l.i === id)) || {}
+                return {
+                    ...dashboardConfig.layout.defaultLayout,
+                    ...dashboardConfig.layout.layoutsBySizeAndModule[size][item.webcomponent],
+                    ...layoutInfo,
+                    i: id,
+                }
+            })
+        )),
+    )
+}
 
 /**
  * Each module on a dashboard is a DashboardItem
@@ -101,16 +120,13 @@ class DashboardItem extends React.Component {
                 onFocus={() => selectItem(item.id)}
                 data-itemid={item.id}
             >
-                <div className={cx(ModuleStyles.moduleHeader, ModuleStyles.dragHandle)}>
-                    <RenameInput
-                        className={ModuleStyles.name}
-                        inputClassName={ModuleStyles.dragCancel}
-                        value={item.title}
-                        onChange={this.renameItem}
-                        disabled={disabled}
-                        required
-                    />
-                </div>
+                <ModuleHeader
+                    className={cx(styles.header, ModuleStyles.dragHandle)}
+                    editable={!disabled}
+                    label={item.title}
+                    limitWidth
+                    onLabelChange={this.renameItem}
+                />
                 <ModuleUI
                     className={cx(styles.dashboardModuleUI, ModuleStyles.dragCancel)}
                     canvasId={item.canvas}
@@ -154,27 +170,6 @@ export default WidthProvider(class DashboardEditor extends React.Component {
         }
     }
 
-    generateLayout = () => {
-        const { dashboard } = this.props
-        const layout = dashboard && zipObject(
-            dashboardConfig.layout.sizes,
-            dashboardConfig.layout.sizes.map((size) => (
-                dashboard.items.map((item) => {
-                    if (!item.webcomponent) { return {} }
-                    const id = generateItemId(item)
-                    const layoutInfo = ((dashboard.layout && dashboard.layout[size]) && dashboard.layout[size].find((l) => l.i === id)) || {}
-                    return {
-                        ...dashboardConfig.layout.defaultLayout,
-                        ...dashboardConfig.layout.layoutsBySizeAndModule[size][item.webcomponent],
-                        ...layoutInfo,
-                        i: id,
-                    }
-                })
-            )),
-        )
-        return layout
-    }
-
     onLayoutChange = (layout, allLayouts) => {
         this.updateLayout(layout)
         this.updateDashboardLayout(allLayouts)
@@ -213,7 +208,7 @@ export default WidthProvider(class DashboardEditor extends React.Component {
 
         const select = this.context
 
-        const layout = dashboard && dashboard.items && this.generateLayout()
+        const layout = dashboard && dashboard.items && generateLayout(dashboard)
         const items = dashboard && dashboard.items ? sortBy(dashboard.items, ['canvas', 'module']) : []
         const locked = editorLocked || this.state.isFullscreen
         const { breakpoints } = dashboardConfig.layout

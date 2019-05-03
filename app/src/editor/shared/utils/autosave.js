@@ -44,7 +44,7 @@ export function CancellableDebounce(fn, waitTime) {
 
                     reset()
                     fn(...args).then((result) => {
-                        emitter.emit('end', result, ...args)
+                        emitter.emit('done', result, ...args)
                         return resolve(result)
                     }, (error) => {
                         // emits fail instead of error as we don't want unhandled error bubbling behaviour
@@ -76,8 +76,8 @@ export function CancellableDebounce(fn, waitTime) {
         cancel: Function.prototype,
         emitter,
         on: emitter.on.bind(emitter),
-        off: emitter.on.bind(emitter),
-        once: emitter.on.bind(emitter),
+        off: emitter.removeListener.bind(emitter),
+        once: emitter.once.bind(emitter),
     })
 }
 

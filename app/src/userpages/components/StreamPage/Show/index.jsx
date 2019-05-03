@@ -4,6 +4,8 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { I18n } from 'react-redux-i18n'
 import { push } from 'react-router-redux'
+import cx from 'classnames'
+import { withRouter } from 'react-router-dom'
 
 import type { Stream, StreamId } from '$shared/flowtype/stream-types'
 import type { StoreState } from '$shared/flowtype/store-state'
@@ -19,12 +21,14 @@ import {
     initNewStream,
     updateEditStream,
 } from '$userpages/modules/userPageStreams/actions'
+import { getMyResourceKeys } from '$shared/modules/resourceKey/actions'
 import { selectEditedStream } from '$userpages/modules/userPageStreams/selectors'
 import { selectUserData } from '$shared/modules/user/selectors'
 import { selectAuthApiKeyId } from '$shared/modules/resourceKey/selectors'
 import TOCPage from '$userpages/components/TOCPage'
 import Toolbar from '$shared/components/Toolbar'
 import routes from '$routes'
+import links from '$shared/../links'
 
 import Layout from '../../Layout'
 import InfoView from './InfoView'
@@ -41,7 +45,12 @@ type StateProps = {
     authApiKeyId: ?ResourceKeyId,
 }
 
+type State = {
+    saving: boolean,
+}
+
 type DispatchProps = {
+    createStream: () => Promise<StreamId>,
     getStream: (id: StreamId) => Promise<void>,
     openStream: (id: StreamId) => void,
     getMyStreamPermissions: (id: StreamId) => void,
@@ -50,6 +59,8 @@ type DispatchProps = {
     updateStream: (stream: Stream) => void,
     initEditStream: () => void,
     initNewStream: () => void,
+    getKeys: () => void,
+    redirectToUserPages: () => void,
 }
 
 type RouterProps = {
@@ -57,101 +68,169 @@ type RouterProps = {
         params: {
             id: string
         }
-    }
+    },
+    history: {
+        replace: (string) => void,
+    },
 }
 
 type Props = StateProps & DispatchProps & RouterProps
 
-export class StreamShowView extends Component<Props> {
-    componentDidMount() {
-        const { id } = this.props.match.params
-        const {
-            getStream,
-            openStream,
-            getMyStreamPermissions,
-            initEditStream,
-            initNewStream,
-        } = this.props
+export class StreamShowView extends Component<Props, State> {
+    state = {
+        saving: false,
+    }
 
-        if (id) {
-            getStream(id).then(() => {
-                openStream(id)
-                initEditStream()
-            })
-            getMyStreamPermissions(id)
+    unmounted: boolean = false
+
+    componentWillUnmount() {
+        this.unmounted = true
+    }
+
+    componentDidMount() {
+        this.initStreamShow()
+    }
+
+    initStreamShow() {
+        if (this.props.match.params.id) {
+            this.initStream(this.props.match.params.id)
         } else {
-            initNewStream()
+            this.createStream()
+        }
+    }
+
+    initStream = async (id: StreamId) => {
+        const { getStream, openStream, getMyStreamPermissions, initEditStream } = this.props
+
+        this.props.getKeys()
+        getStream(id).then(() => {
+            openStream(id)
+            initEditStream()
+        })
+        getMyStreamPermissions(id)
+    }
+
+    createStream = async () => {
+        const newStreamId = await this.props.createStream()
+
+        if (this.unmounted) { return }
+        this.props.history.replace(`${links.userpages.streamShow}/${newStreamId}`)
+        this.initStream(newStreamId)
+    }
+
+    onSave = (editedStream: Stream) => {
+        const { save, redirectToUserPages } = this.props
+
+        this.setState({
+            saving: true,
+        }, async () => {
+            try {
+                await save(this.addTempIdsToStreamFields(editedStream) || editedStream)
+                if (!this.unmounted) {
+                    this.setState({
+                        saving: false,
+                    }, redirectToUserPages)
+                }
+            } catch (e) {
+                console.warn(e)
+
+                if (!this.unmounted) {
+                    this.setState({
+                        saving: false,
+                    })
+                }
+            }
+        })
+    }
+
+    addTempIdsToStreamFields = (editedStream: Stream) => {
+        if (editedStream && editedStream.config && editedStream.config.fields) {
+            editedStream.config.fields.map((field) => {
+                if (field.id) {
+                    delete field.id
+                }
+                return {
+                    ...field,
+                }
+            })
+            return {
+                ...editedStream,
+            }
         }
     }
 
     render() {
-        const {
-            editedStream,
-            cancel,
-            save,
-            currentUser,
-            authApiKeyId,
-        } = this.props
+        const { editedStream, cancel, currentUser, authApiKeyId } = this.props
 
         return (
-            <Layout noHeader>
+            <Layout noHeader noFooter>
                 <div className={styles.streamShowView}>
                     <Toolbar
+                        altMobileLayout
                         actions={{
                             cancel: {
                                 title: I18n.t('userpages.profilePage.toolbar.cancel'),
+                                color: 'link',
                                 outline: true,
                                 onClick: () => {
                                     cancel()
                                 },
                             },
                             saveChanges: {
-                                title: I18n.t('userpages.profilePage.toolbar.saveChanges'),
+                                title: I18n.t('userpages.profilePage.toolbar.saveAndExit'),
                                 color: 'primary',
+                                spinner: this.state.saving,
                                 onClick: () => {
-                                    save(editedStream)
+                                    if (editedStream) {
+                                        this.onSave(editedStream)
+                                    }
                                 },
                             },
                         }}
                     />
-                    <TOCPage title="Set up your Stream">
-                        <TOCPage.Section
-                            id="details"
-                            title="Details"
-                        >
-                            <InfoView />
-                        </TOCPage.Section>
-                        <TOCPage.Section
-                            id="configure"
-                            title="Configure"
-                        >
-                            <ConfigureView />
-                        </TOCPage.Section>
-                        <TOCPage.Section
-                            id="preview"
-                            title="Preview"
-                        >
-                            <PreviewView
-                                stream={editedStream}
-                                currentUser={currentUser}
-                                authApiKeyId={authApiKeyId}
-                            />
-                        </TOCPage.Section>
-                        <TOCPage.Section
-                            id="api-access"
-                            title="API Access"
-                        >
-                            <KeyView />
-                        </TOCPage.Section>
-                        <TOCPage.Section
-                            id="historical-data"
-                            title="Historical Data"
-                        >
-                            <HistoryView
-                                streamId={editedStream && editedStream.id}
-                            />
-                        </TOCPage.Section>
-                    </TOCPage>
+                    <div className={cx('container', styles.containerOverrides)}>
+                        <TOCPage title="Set up your Stream">
+                            <TOCPage.Section
+                                id="details"
+                                title="Details"
+                            >
+                                <InfoView />
+                            </TOCPage.Section>
+                            <TOCPage.Section
+                                id="configure"
+                                title="Configure"
+                                customStyled
+                            >
+                                <ConfigureView />
+                            </TOCPage.Section>
+                            <TOCPage.Section
+                                id="preview"
+                                title="Preview"
+                            >
+                                <PreviewView
+                                    stream={editedStream}
+                                    currentUser={currentUser}
+                                    authApiKeyId={authApiKeyId}
+                                />
+                            </TOCPage.Section>
+                            <TOCPage.Section
+                                id="api-access"
+                                title="API Access"
+                                customStyled
+                            >
+                                <KeyView />
+                            </TOCPage.Section>
+                            <TOCPage.Section
+                                id="historical-data"
+                                title="Historical Data"
+                                customStyled
+                            >
+                                <HistoryView
+                                    streamId={editedStream && editedStream.id}
+                                />
+                            </TOCPage.Section>
+                        </TOCPage>
+                    </div>
                 </div>
             </Layout>
         )
@@ -165,7 +244,12 @@ const mapStateToProps = (state: StoreState): StateProps => ({
 })
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
+    createStream: () => dispatch(createStream({
+        name: 'Untitled Stream',
+        description: '',
+    })),
     getStream: (id: StreamId) => dispatch(getStream(id)),
+    getKeys: () => dispatch(getMyResourceKeys()),
     openStream: (id: StreamId) => dispatch(openStream(id)),
     getMyStreamPermissions: (id: StreamId) => dispatch(getMyStreamPermissions(id)),
     save: (stream: ?Stream) => {
@@ -177,6 +261,7 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
             })
         }
     },
+    redirectToUserPages: () => dispatch(push(routes.userPages())),
     cancel: () => {
         dispatch(openStream(null))
         dispatch(updateEditStream(null))
@@ -187,4 +272,4 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     initNewStream: () => dispatch(initNewStream()),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(StreamShowView)
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter((StreamShowView)))

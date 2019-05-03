@@ -2,28 +2,21 @@
  * Canvas-specific API call wrappers
  */
 
-import axios from 'axios'
-
+import api from '$editor/shared/utils/api'
 import Autosave from '$editor/shared/utils/autosave'
-import { emptyCanvas } from './state'
-
-export const API = axios.create({
-    headers: {
-        'Content-Type': 'application/json',
-    },
-    withCredentials: true,
-})
+import { nextUniqueName, nextUniqueCopyName } from '$editor/shared/utils/uniqueName'
+import { emptyCanvas, isRunning, RunStates, isHistoricalModeSelected } from './state'
 
 const getData = ({ data }) => data
 
 const canvasesUrl = `${process.env.STREAMR_API_URL}/canvases`
-const getModuleURL = `${process.env.STREAMR_URL}/module/jsonGetModule`
-const getModuleTreeURL = `${process.env.STREAMR_URL}/module/jsonGetModuleTree`
+const getModuleCategoriesURL = `${process.env.STREAMR_API_URL}/module_categories`
+const streamsUrl = `${process.env.STREAMR_API_URL}/streams`
 
 const AUTOSAVE_DELAY = 3000
 
 async function save(canvas) {
-    return API.put(`${canvasesUrl}/${canvas.id}`, canvas).then(getData)
+    return api().put(`${canvasesUrl}/${canvas.id}`, canvas).then(getData)
 }
 
 export const autosave = Autosave(save, AUTOSAVE_DELAY)
@@ -36,72 +29,163 @@ export async function saveNow(canvas, ...args) {
     return save(canvas, ...args)
 }
 
+export async function loadCanvas({ id } = {}) {
+    if (id == null) { throw new TypeError(`loadCanvas missing id: ${id}`) }
+    return api().get(`${canvasesUrl}/${id}`).then(getData)
+}
+
+export async function loadCanvases() {
+    return api().get(canvasesUrl).then(getData)
+}
+
+async function getCanvasNames() {
+    const canvases = await loadCanvases()
+    return canvases.map(({ name }) => name)
+}
+
 async function createCanvas(canvas) {
-    return API.post(canvasesUrl, canvas).then(getData)
+    return api().post(canvasesUrl, {
+        ...canvas,
+        state: RunStates.Stopped, // always create stopped canvases
+    }).then(getData)
 }
 
-export async function create() {
-    return createCanvas(emptyCanvas()) // create new empty
-}
-
-export async function moduleHelp({ id }) {
-    return API.get(`${process.env.STREAMR_API_URL}/modules/${id}/help`).then(getData)
+export async function create(config) {
+    const canvas = emptyCanvas(config)
+    return createCanvas({
+        ...canvas,
+        // adhoc canvases should use parent name
+        name: canvas.adhoc ? canvas.name : nextUniqueName(canvas.name, await getCanvasNames()),
+    })
 }
 
 export async function duplicateCanvas(canvas) {
-    const savedCanvas = await saveNow(canvas) // ensure canvas saved before duplicating
-    return createCanvas(savedCanvas)
+    if (!isRunning(canvas) && !canvas.adhoc) {
+        canvas = await saveNow(canvas) // ensure canvas saved before duplicating
+    }
+
+    return createCanvas({
+        ...canvas,
+        adhoc: false, // duplicate canvases are never adhoc
+        name: nextUniqueCopyName(canvas.name, await getCanvasNames()),
+    })
 }
 
 export async function deleteCanvas({ id } = {}) {
     await autosave.cancel()
-    return API.delete(`${canvasesUrl}/${id}`).then(getData)
+    return api().delete(`${canvasesUrl}/${id}`).then(getData)
 }
 
-export async function getModuleTree() {
-    return API.get(getModuleTreeURL).then(getData)
+export async function moduleHelp({ id }) {
+    return api().get(`${process.env.STREAMR_API_URL}/modules/${id}/help`).then(getData)
 }
 
-export async function addModule({ id } = {}) {
-    const form = new FormData()
-    form.append('id', id)
-    return API.post(getModuleURL, form).then(getData)
-}
-
-export async function loadCanvas({ id } = {}) {
-    return API.get(`${canvasesUrl}/${id}`).then(getData)
-}
-
-export async function loadCanvases() {
-    return API.get(canvasesUrl).then(getData)
+export async function getModuleCategories() {
+    return api().get(getModuleCategoriesURL).then(getData)
 }
 
 async function startCanvas(canvas, { clearState }) {
     const savedCanvas = await saveNow(canvas)
-    return API.post(`${canvasesUrl}/${savedCanvas.id}/start`, {
+    return api().post(`${canvasesUrl}/${savedCanvas.id}/start`, {
         clearState: !!clearState,
     }).then(getData)
 }
 
-async function startAdhocCanvas(canvas, options = {}) {
+/**
+ * Duplicates passed in parent canvas as an adhoc child canvas.
+ * Links parent and child canvas.
+ */
+
+export async function createAdhocCanvas(canvas) {
     const savedCanvas = await saveNow(canvas)
-    const adhocCanvas = await createCanvas({
+    const child = await createCanvas({
         ...savedCanvas,
         adhoc: true,
         settings: {
             ...savedCanvas.settings,
-            parentCanvasId: canvas.id, // track parent canvas so can return after end
+            parentCanvasId: savedCanvas.id, // track parent canvas so can return after end
         },
     })
-    return startCanvas(adhocCanvas, options)
+    await saveNow({
+        ...savedCanvas,
+        settings: {
+            ...savedCanvas.settings,
+            childCanvasId: child.id, // track child canvas so can return after end
+        },
+    })
+    return child
 }
 
 export async function start(canvas, options = {}) {
-    const { adhoc } = options
-    if (!adhoc) { return startCanvas(canvas, options) }
-    return startAdhocCanvas(canvas, options)
+    return startCanvas(canvas, options)
 }
 
 export async function stop(canvas) {
-    return API.post(`${canvasesUrl}/${canvas.id}/stop`).then(getData)
+    return api().post(`${canvasesUrl}/${canvas.id}/stop`)
+        .then(getData)
+}
+
+/**
+ * Realtime runs can start immediately.
+ * Historical runs need to create a new adhoc canvas first.
+ */
+
+export async function startOrCreateAdhocCanvas(canvas, options) {
+    const isHistorical = isHistoricalModeSelected(canvas)
+    if (isHistorical && !canvas.adhoc) {
+        return createAdhocCanvas(canvas)
+    }
+
+    return start(canvas, {
+        clearState: !!options.clearState || isHistorical,
+    })
+}
+
+export async function loadParentCanvas(canvas) {
+    const { settings = {} } = canvas
+    return loadCanvas({ id: settings.parentCanvasId })
+}
+
+/**
+ * Unlinks parent from child.
+ */
+
+export async function unlinkParentCanvas(canvas) {
+    const { settings = {} } = canvas
+    const parent = await loadCanvas({ id: settings.parentCanvasId })
+    return saveNow({
+        ...parent,
+        settings: {
+            ...parent.settings,
+            childCanvasId: undefined,
+        },
+    })
+}
+
+/**
+ * Loads child canvas if one is active, otherwise loads passed-in canvas.
+ */
+
+export async function loadRelevantCanvas({ id }) {
+    const canvas = await loadCanvas({ id })
+    if (canvas.settings.childCanvasId) {
+        return loadCanvas({ id: canvas.settings.childCanvasId })
+    }
+    return canvas
+}
+
+export async function getStreams(params) {
+    return api().get(`${streamsUrl}`, { params }).then(getData)
+}
+
+export async function getStream(id) {
+    return api().get(`${streamsUrl}/${id}`).then(getData)
+}
+
+export async function deleteAllCanvases() {
+    // try do some clean up so we don't fill the server with cruft
+    const canvases = await loadCanvases()
+    return Promise.all(canvases.map((canvas) => (
+        deleteCanvas(canvas)
+    )))
 }
