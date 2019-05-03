@@ -227,17 +227,16 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         const module = CanvasState.getModule(this.props.canvas, hash)
 
         // Update the module info, this will throw if anything went wrong.
-        await sharedServices.getModule({
-            ...module,
-            ...value,
-        })
-
-        // Otherwise ignore the result and update the pertinent values only.
-        this.setCanvas({ type: 'Update Module' }, (canvas) => (
-            CanvasState.updateModule(canvas, hash, (module) => ({
+        const newModule = await sharedServices.getModule({
+            id: module.id,
+            configuration: {
                 ...module,
                 ...value,
-            }))
+            },
+        })
+
+        this.setCanvas({ type: 'Update Module' }, (canvas) => (
+            CanvasState.updateModule(canvas, hash, () => newModule)
         ))
     }
 
