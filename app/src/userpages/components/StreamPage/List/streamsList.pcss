@@ -69,7 +69,7 @@
     margin-top: -2px;
   }
 
-  :global(html) .tabletContainer {
+  :global(html) .streamListTabletContainer {
     width: 100%;
     max-width: none;
     padding-right: 16px;
@@ -78,14 +78,14 @@
     margin-left: auto;
   }
 
-  :global(.table-responsive) {
-    min-height: 500px;
-    border-top: 1px solid #CDCDCD;
-  }
-
   .streamsTable {
-    margin-top: 4em;
+    margin-top: 50px;
     margin-bottom: 4em;
+
+    :global(.table-responsive) {
+      min-height: 500px;
+      border-top: 1px solid #CDCDCD;
+    }
   }
 
   .tabletStreamName {
@@ -104,16 +104,9 @@
   }
 }
 
-@media (--md-down) {
-  .streamsTable {
-    .tabletStreamRow {
-      height: 72px;
-      padding: 16px;
-    }
-  }
-
+@media (--sm-down) {
   .tabletStatusStreamIcon {
-    top: -5px;
+    top: 3px;
   }
 
   .lastUpdatedStreamTablet {
@@ -131,19 +124,25 @@
     line-height: 20px;
     margin-bottom: 0;
   }
-}
 
-@media (--sm-down) {
-  :global(html) .tabletContainer {
+  :global(html) .streamListTabletContainer {
     padding: 0;
   }
 
   .streamsTable {
     margin-top: 0;
 
+    :global(.table-responsive) {
+      border-top: none;
+    }
+
     .tabletStreamRow {
       height: 72px;
       padding: 16px 24px;
+
+      > div {
+        line-height: 16px;
+      }
     }
   }
 }

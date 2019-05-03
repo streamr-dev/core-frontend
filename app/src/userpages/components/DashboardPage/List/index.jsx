@@ -38,7 +38,10 @@ type DispatchProps = {
 type Props = StateProps & DispatchProps
 
 const CreateDashboardButton = () => (
-    <Button color="primary">
+    <Button
+        color="primary"
+        className={styles.createDashboardButton}
+    >
         <Link to={links.editor.dashboardEditor}>
             <Translate value="userpages.dashboards.createDashboard" />
         </Link>
@@ -132,7 +135,7 @@ class DashboardList extends Component<Props> {
                 <Helmet>
                     <title>{I18n.t('userpages.title.dashboards')}</title>
                 </Helmet>
-                <Container>
+                <Container className={styles.corepageContentContainer} >
                     {!fetching && dashboards && dashboards.length <= 0 && (
                         <NoDashboardsView
                             hasFilter={!!filter && (!!filter.search || !!filter.key)}

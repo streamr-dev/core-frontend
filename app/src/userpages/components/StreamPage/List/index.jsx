@@ -10,6 +10,7 @@ import Helmet from 'react-helmet'
 import { Button } from 'reactstrap'
 import MediaQuery from 'react-responsive'
 import cx from 'classnames'
+import { Link } from 'react-router-dom'
 
 import type { Filter, SortOption } from '$userpages/flowtype/common-types'
 import type { Stream, StreamId } from '$shared/flowtype/stream-types'
@@ -46,10 +47,11 @@ const { lg } = breakpoints
 export const CreateStreamButton = () => (
     <Button
         color="primary"
-        href={links.userpages.streamCreate}
         className={styles.createStreamButton}
     >
-        <Translate value="userpages.streams.createStream" />
+        <Link to={links.userpages.streamCreate}>
+            <Translate value="userpages.streams.createStream" />
+        </Link>
     </Button>
 )
 
@@ -293,7 +295,7 @@ class StreamList extends Component<Props, State> {
                         onClose={this.onCloseDialog}
                     />
                 )}
-                <div className={cx('container', styles.tabletContainer)}>
+                <div className={cx('container', styles.streamListTabletContainer)}>
                     {!fetching && streams && streams.length <= 0 && (
                         <NoStreamsView
                             hasFilter={!!filter && (!!filter.search || !!filter.key)}
