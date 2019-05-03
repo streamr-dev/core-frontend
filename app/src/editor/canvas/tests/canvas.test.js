@@ -1,85 +1,93 @@
+import { setupAuthorizationHeader, loadModuleDefinition } from '$editor/shared/tests/utils'
+
 import * as State from '../state'
-import * as Mocks from './mocks'
+import * as Services from '../services'
 
 describe('Canvas Module', () => {
-    it('has a port to select canvas', () => {
+    let teardown
+
+    beforeAll(async () => {
+        teardown = await setupAuthorizationHeader()
+    }, 60000)
+
+    afterAll(async () => {
+        await Services.deleteAllCanvases()
+        await teardown()
+    })
+
+    it('has a port to select canvas', async () => {
         let canvas = State.emptyCanvas()
-        canvas = State.addModule(canvas, Mocks.Canvas())
+        canvas = State.addModule(canvas, await loadModuleDefinition('Canvas'))
 
-        const subCanvas = canvas.modules.find((m) => m.name === 'Canvas')
-        expect(subCanvas).toBeTruthy()
+        const canvasModule = canvas.modules.find((m) => m.name === 'Canvas')
+        expect(canvasModule).toBeTruthy()
 
-        const canvasPort = State.findModulePort(canvas, subCanvas.hash, (p) => p.name === 'canvas')
+        const canvasPort = State.findModulePort(canvas, canvasModule.hash, (p) => p.name === 'canvas')
         expect(canvasPort).toBeTruthy()
     })
 
-    it('reloads inputs and outputs from selected canvas', () => {
+    it('shows canvases with exports', async () => {
+        // Create a subcanvas
+        let subcanvas = await Services.create()
+        subcanvas = State.addModule(subcanvas, await loadModuleDefinition('Clock'))
+
+        const clock = subcanvas.modules.find((m) => m.name === 'Clock')
+
+        // export outputs & save
+        subcanvas = clock.outputs.reduce((subcanvas, { id }) => State.setPortOptions(subcanvas, id, {
+            export: true,
+        }), subcanvas)
+        await Services.saveNow(subcanvas)
+
+        // create main canvas and check that the created canvas shows up
         let canvas = State.emptyCanvas()
-        canvas = State.addModule(canvas, Mocks.Canvas())
-        let subCanvas = canvas.modules.find((m) => m.jsModule === 'CanvasModule')
+        canvas = State.addModule(canvas, await loadModuleDefinition('Canvas'))
 
-        const newModule = Mocks.CanvasWithSelected()
-        canvas = State.updateCanvas(State.updateModule(canvas, subCanvas.hash, () => newModule))
-        subCanvas = canvas.modules.find((m) => m.jsModule === 'CanvasModule')
+        const canvasModule = canvas.modules.find((m) => m.name === 'Canvas')
+        expect(canvasModule).toBeTruthy()
 
-        expect(subCanvas.params.length === newModule.params.length).toBeTruthy()
-        expect(subCanvas.inputs.length === newModule.inputs.length).toBeTruthy()
-        expect(subCanvas.outputs.length === newModule.outputs.length).toBeTruthy()
+        const canvasPort = State.findModulePort(canvas, canvasModule.hash, (p) => p.name === 'canvas')
 
-        subCanvas.outputs.forEach((output) => {
-            const exportedOutput = subCanvas.modules.find((m) => m.outputs.find((o) => o.id === output.id))
-            expect(exportedOutput).toBeTruthy()
-        })
-        subCanvas.inputs.forEach((input) => {
-            const exportedInput = subCanvas.modules.find((m) => m.inputs.find((i) => i.id === input.id))
-            expect(exportedInput).toBeTruthy()
-        })
-
-        const newModule2 = Mocks.CanvasWithSelected2()
-        canvas = State.updateCanvas(State.updateModule(canvas, subCanvas.hash, () => newModule2))
-        subCanvas = canvas.modules.find((m) => m.jsModule === 'CanvasModule')
-
-        expect(subCanvas.params.length === newModule2.params.length).toBeTruthy()
-        expect(subCanvas.inputs.length === newModule2.inputs.length).toBeTruthy()
-        expect(subCanvas.outputs.length === newModule2.outputs.length).toBeTruthy()
-
-        subCanvas.outputs.forEach((output) => {
-            const exportedOutput = subCanvas.modules.find((m) => m.outputs.find((o) => o.id === output.id))
-            expect(exportedOutput).toBeTruthy()
-        })
-        subCanvas.inputs.forEach((input) => {
-            const exportedInput = subCanvas.modules.find((m) => m.inputs.find((i) => i.id === input.id))
-            expect(exportedInput).toBeTruthy()
-        })
+        const subCanvasOption = canvasPort.possibleValues.find(({ value }) => value === subcanvas.id)
+        expect(subCanvasOption).toBeTruthy()
+        expect(subCanvasOption.value).toEqual(subcanvas.id)
     })
 
-    it('clears connected ports on reload', () => {
-        let canvas = State.emptyCanvas()
-        canvas = State.addModule(canvas, Mocks.CanvasWithSelected())
-        canvas = State.addModule(canvas, Mocks.Table())
-        let subCanvas = canvas.modules.find((m) => m.jsModule === 'CanvasModule')
-        const table = canvas.modules.find((m) => m.name === 'Table')
-        expect(subCanvas).toBeTruthy()
-        expect(table).toBeTruthy()
-        expect(subCanvas.hash).not.toEqual(table.hash)
-        const fromPort = State.findModulePort(canvas, subCanvas.hash, (p) => p.name === 'timestamp')
-        const toPort = State.findModulePort(canvas, table.hash, (p) => p.variadic.index === 1)
-        expect(fromPort).toBeTruthy()
-        expect(toPort).toBeTruthy()
+    it('reloads inputs and outputs from selected canvas', async () => {
+        // Create a subcanvas
+        let subcanvas = await Services.create()
+        subcanvas = State.addModule(subcanvas, await loadModuleDefinition('Clock'))
 
-        canvas = State.updateCanvas(State.connectPorts(canvas, fromPort.id, toPort.id))
-        expect(State.isPortConnected(canvas, fromPort.id)).toBeTruthy()
-        expect(State.isPortConnected(canvas, toPort.id)).toBeTruthy()
+        const clock = subcanvas.modules.find((m) => m.name === 'Clock')
 
-        const newModule = Mocks.CanvasWithSelected2()
-        canvas = State.updateCanvas(State.updateModule(canvas, subCanvas.hash, () => newModule))
-        subCanvas = canvas.modules.find((m) => m.jsModule === 'CanvasModule')
+        // export inputs, params, outputs & save
+        subcanvas = clock.inputs.reduce((subcanvas, { id }) => State.setPortOptions(subcanvas, id, {
+            export: true,
+        }), subcanvas)
+        subcanvas = clock.params.reduce((subcanvas, { id }) => State.setPortOptions(subcanvas, id, {
+            export: true,
+        }), subcanvas)
+        subcanvas = clock.outputs.reduce((subcanvas, { id }) => State.setPortOptions(subcanvas, id, {
+            export: true,
+        }), subcanvas)
+        await Services.saveNow(subcanvas)
 
-        const fromPort2 = State.findModulePort(canvas, subCanvas.hash, (p) => p.name === 'out')
-        const toPort2 = State.findModulePort(canvas, table.hash, (p) => p.variadic.index === 1)
+        let canvas = await Services.create()
+        canvas = State.addModule(canvas, await loadModuleDefinition('Canvas'))
+        let canvasModule = canvas.modules.find((m) => m.jsModule === 'CanvasModule')
 
-        canvas = State.updateCanvas(State.connectPorts(canvas, fromPort2.id, toPort2.id))
-        expect(State.isPortConnected(canvas, fromPort2.id)).toBeTruthy()
-        expect(State.isPortConnected(canvas, toPort2.id)).toBeTruthy()
+        // select the subcanvas
+        const canvasPort = State.findModulePort(canvas, canvasModule.hash, (p) => p.name === 'canvas')
+
+        canvas = await Services.saveNow(State.updatePort(canvas, canvasPort.id, (port) => ({
+            ...port,
+            value: subcanvas.id,
+        })))
+
+        canvasModule = canvas.modules.find((m) => m.jsModule === 'CanvasModule')
+
+        expect(clock.params.every(({ name }) => !!canvasModule.params.find((p) => p.name === name))).toBeTruthy()
+        expect(clock.inputs.every(({ name }) => !!canvasModule.inputs.find((p) => p.name === name))).toBeTruthy()
+        expect(clock.outputs.every(({ name }) => !!canvasModule.outputs.find((p) => p.name === name))).toBeTruthy()
     })
 })
