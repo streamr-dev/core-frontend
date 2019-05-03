@@ -91,10 +91,16 @@
 }
 
 .ModuleSearch .Input .ClearButton {
-  width: 14px;
-  height: 14px;
-  cursor: pointer;
+  --iconSize: 14px;
+  --iconPadding: 3px; /* give additional hover leeway */
+
+  width: calc(2 * var(--iconPadding) + var(--iconSize));
+  height: calc(2 * var(--iconPadding) + var(--iconSize));
+  padding: var(--iconPadding);
+  line-height: 0;
   flex-shrink: 0;
+  cursor: pointer;
+  z-index: 1; /* ensure over resize control */
 }
 
 .ModuleSearch .Input .ClearButton:focus {
