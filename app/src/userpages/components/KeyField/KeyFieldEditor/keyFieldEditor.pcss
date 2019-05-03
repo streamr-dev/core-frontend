@@ -7,6 +7,12 @@
   max-width: 544px;
 }
 
+@media (--lg-down) {
+  .editor {
+    margin: 2rem -114px 0 -2rem;
+  }
+}
+
 @media (--sm-down) {
   .editor {
     margin: 0;
@@ -34,6 +40,7 @@
   display: flex;
   justify-content: flex-end;
   border-radius: 4px;
+  right: 22px;
 
   :global(.dropdown-menu) {
     margin-top: 8px;
@@ -60,5 +67,11 @@
     &:active {
       background-color: white !important;
     }
+  }
+}
+
+@media (--lg-down) {
+  .permissionDropdown {
+    right: -10px;
   }
 }

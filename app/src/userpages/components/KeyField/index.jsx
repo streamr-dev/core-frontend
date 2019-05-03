@@ -196,7 +196,7 @@ class KeyField extends React.Component<Props, State> {
                                 title=""
                                 onChange={this.onPermissionChange}
                                 className={styles.permissionDropdown}
-                                defaultSelectedItem={permission}
+                                selectedItem={permission}
                             >
                                 <Dropdown.Item key="read" value="read" onClick={(val) => this.onPermissionChange(val.toString())}>
                                     Read
