@@ -4,7 +4,7 @@ import AceEditor from 'react-ace'
 import 'brace/mode/java'
 import 'brace/theme/textmate'
 
-import DraggableCanvasWindow from './DraggableCanvasWindow'
+import DraggableCanvasWindow from '../DraggableCanvasWindow'
 
 import styles from './CodeEditorWindow.pcss'
 

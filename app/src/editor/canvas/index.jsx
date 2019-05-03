@@ -167,6 +167,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
             configuration,
         })
         if (this.unmounted) { return }
+
         this.setCanvas(action, (canvas) => (
             CanvasState.addModule(canvas, moduleData)
         ))
@@ -217,26 +218,48 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         })
 
         if (this.unmounted) { return }
-        this.replaceCanvas((canvas) => (
-            CanvasState.updateModule(canvas, hash, () => newModule)
-        ))
+        this.replaceCanvas((canvas) => {
+            let nextCanvas = CanvasState.updateModule(canvas, hash, () => newModule)
+
+            // Restore input connections
+            nextCanvas = module.inputs.reduce((nextCanvas, { id, sourceId }) => {
+                const port = newModule.inputs.find((p) => id === p.id)
+
+                if (sourceId && port) {
+                    return CanvasState.connectPorts(nextCanvas, port.id, sourceId)
+                }
+
+                return nextCanvas
+            }, nextCanvas)
+
+            nextCanvas = module.params.reduce((nextCanvas, { id, sourceId }) => {
+                const port = newModule.params.find((p) => id === p.id)
+
+                if (sourceId && port) {
+                    return CanvasState.connectPorts(nextCanvas, port.id, sourceId)
+                }
+
+                return nextCanvas
+            }, nextCanvas)
+
+            return nextCanvas
+        })
     }
 
     pushNewDefinition = async (hash, value) => {
         const module = CanvasState.getModule(this.props.canvas, hash)
 
         // Update the module info, this will throw if anything went wrong.
-        await sharedServices.getModule({
-            ...module,
-            ...value,
-        })
-
-        // Otherwise ignore the result and update the pertinent values only.
-        this.setCanvas({ type: 'Update Module' }, (canvas) => (
-            CanvasState.updateModule(canvas, hash, (module) => ({
+        const newModule = await sharedServices.getModule({
+            id: module.id,
+            configuration: {
                 ...module,
                 ...value,
-            }))
+            },
+        })
+
+        this.setCanvas({ type: 'Update Module' }, (canvas) => (
+            CanvasState.updateModule(canvas, hash, () => newModule)
         ))
     }
 

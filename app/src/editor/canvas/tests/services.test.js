@@ -1,5 +1,5 @@
 import uniqueId from 'lodash/uniqueId'
-import { setupAuthorizationHeader } from '$editor/shared/tests/utils'
+import { setupAuthorizationHeader, loadModuleDefinition } from '$editor/shared/tests/utils'
 
 import * as Services from '../services'
 import * as State from '../state'
@@ -191,6 +191,34 @@ describe('Canvas Services', () => {
 
             // can't stop a stopped canvas
             await expect(Services.stop(canvas)).rejects.toThrow()
+        })
+    })
+
+    describe('Adding Modules', () => {
+        it('creates modules with compatible hash values', async () => {
+            // add a clock
+            let canvas = State.emptyCanvas()
+            canvas = State.addModule(canvas, await loadModuleDefinition('Clock'))
+            const clock = canvas.modules.find((m) => m.name === 'Clock')
+            expect(clock).toBeTruthy()
+
+            const savedCanvas = await Services.create(canvas)
+            const savedClock = savedCanvas.modules.find((m) => m.name === 'Clock')
+            expect(savedClock).toBeTruthy()
+            // ensure hash value wasn't messed up by type conversion
+            expect(savedClock.hash).toEqual(clock.hash)
+        })
+
+        it('creates modules with unique hash', async () => {
+            let canvas = State.emptyCanvas()
+            const ClockDefn = await loadModuleDefinition('Clock')
+            // add a few clocks in quick succession
+            canvas = State.addModule(canvas, ClockDefn)
+            canvas = State.addModule(canvas, ClockDefn)
+            canvas = State.addModule(canvas, ClockDefn)
+            const hashes = new Set(canvas.modules.map(({ hash }) => hash))
+            // make sure they all have unique hashes
+            expect(hashes.size).toEqual(3)
         })
     })
 })
