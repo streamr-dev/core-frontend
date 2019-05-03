@@ -1,6 +1,7 @@
 import React, { useContext } from 'react'
 import { mount } from 'enzyme'
 import { setupAuthorizationHeader } from '$editor/shared/tests/utils'
+import { act } from 'react-dom/test-utils'
 import api from '../utils/api'
 
 import * as Services from '../services'
@@ -45,7 +46,63 @@ describe('Client', () => {
         done()
     })
 
-    it('disconnects on unmount', (done) => {
+    it('creates new client after disconnect', async (done) => {
+        let currentContext
+        function Test() {
+            currentContext = useContext(ClientContext)
+            return null
+        }
+
+        const result = mount((
+            <ClientProviderComponent apiKey={apiKey}>
+                <Test />
+            </ClientProviderComponent>
+        ))
+        const { client } = currentContext
+        expect(client).toBeTruthy()
+
+        const prevClient = client
+        await prevClient.ensureConnected()
+        // act required as we're triggering
+        // context update outside a render/mount
+        act(() => {
+            prevClient.ensureDisconnected()
+        })
+        // still want to wait for disconnection
+        await prevClient.ensureDisconnected()
+        expect(currentContext.client).not.toBe(prevClient)
+        result.unmount()
+        await prevClient.ensureDisconnected()
+        await currentContext.client.ensureDisconnected()
+        done()
+    })
+
+    it('creates new client after unmount', async (done) => {
+        let currentContext
+        function Test() {
+            currentContext = useContext(ClientContext)
+            return null
+        }
+
+        const result = mount((
+            <ClientProviderComponent apiKey={apiKey}>
+                <Test />
+            </ClientProviderComponent>
+        ))
+        const { client } = currentContext
+        expect(client).toBeTruthy()
+
+        const prevClient = client
+        result.unmount()
+        result.mount()
+        expect(currentContext.client).not.toBe(prevClient)
+        result.unmount()
+        await prevClient.ensureDisconnected()
+        await currentContext.client.ensureDisconnected()
+        done()
+    })
+
+    it('disconnects on unmount', async (done) => {
         let currentContext
         function Test() {
             currentContext = useContext(ClientContext)
@@ -68,12 +125,7 @@ describe('Client', () => {
             done()
         })
 
-        if (client.isConnected()) {
-            result.unmount()
-        } else {
-            client.once('connected', () => {
-                result.unmount()
-            })
-        }
+        await client.ensureConnected()
+        result.unmount()
     })
 })

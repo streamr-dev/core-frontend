@@ -4,6 +4,7 @@
 
 import api from '$editor/shared/utils/api'
 import Autosave from '$editor/shared/utils/autosave'
+import { nextUniqueName, nextUniqueCopyName } from '$editor/shared/utils/uniqueName'
 import { emptyDashboard } from './state'
 
 const getData = ({ data }) => data
@@ -31,19 +32,6 @@ export async function saveNow(dashboard, ...args) {
     return save(dashboard, ...args)
 }
 
-async function createDashboard(dashboard) {
-    return api().post(dashboardsURL, dashboard).then(getData)
-}
-
-export async function create() {
-    return createDashboard(emptyDashboard()) // create new empty
-}
-
-export async function duplicateDashboard(dashboard) {
-    const savedDashboard = await saveNow(dashboard) // ensure dashboard saved before duplicating
-    return createDashboard(savedDashboard)
-}
-
 export async function getModuleData({ apiKey, dashboard, item: { canvas, module: itemModule } }) {
     // If the db is new the user must have the ownership of the canvas so use url /api/v1/canvases/<canvasId>/modules/<module>
     // Else use the url /api/v1/dashboards/<dashboardId>/canvases/<canvasId>/modules/<module>
@@ -66,4 +54,34 @@ export async function loadDashboard({ id }) {
 
 export async function getCanvases() {
     return api().get(canvasesURL).then(getData)
+}
+
+export async function getDashboards() {
+    return api().get(dashboardsURL).then(getData)
+}
+
+async function getDashboardNames() {
+    const dashboards = await getDashboards()
+    return dashboards.map(({ name }) => name)
+}
+
+async function createDashboard(dashboard) {
+    return api().post(dashboardsURL, dashboard).then(getData)
+}
+
+export async function create() {
+    const dashboard = emptyDashboard()
+    return createDashboard({
+        ...dashboard,
+        name: nextUniqueName(dashboard.name, await getDashboardNames()),
+    })
+}
+
+export async function duplicateDashboard(dashboard) {
+    dashboard = await saveNow(dashboard) // ensure dashboard saved before duplicating
+
+    return createDashboard({
+        ...dashboard,
+        name: nextUniqueCopyName(dashboard.name, await getDashboardNames()),
+    })
 }

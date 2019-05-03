@@ -4,6 +4,7 @@ import React from 'react'
 import cx from 'classnames'
 import throttle from 'lodash/throttle'
 
+import UiSizeConstraint from '../UiSizeConstraint'
 import ModuleSubscription from '../ModuleSubscription'
 
 import TextControl from '$shared/components/TextControl'
@@ -61,25 +62,27 @@ export default class TextFieldModule extends React.Component {
         const { isActive } = this.props
         const value = this.getValue()
         return (
-            <div className={cx(this.props.className, styles.TextField)}>
-                <ModuleSubscription
-                    {...this.props}
-                    ref={this.subscription}
-                    onMessage={this.onMessage}
-                    onActiveChange={this.onActiveChange}
-                />
-                <TextControl
-                    commitEmpty
-                    flushHistoryOnBlur
-                    onCommit={this.onChange}
-                    placeholder="Enter your text here"
-                    tag="textarea"
-                    value={value}
-                />
-                <button type="button" className={styles.button} onClick={this.onClick} disabled={!isActive}>
-                    Send
-                </button>
-            </div>
+            <UiSizeConstraint minWidth={150} minHeight={75}>
+                <div className={cx(this.props.className, styles.TextField)}>
+                    <ModuleSubscription
+                        {...this.props}
+                        ref={this.subscription}
+                        onMessage={this.onMessage}
+                        onActiveChange={this.onActiveChange}
+                    />
+                    <TextControl
+                        commitEmpty
+                        flushHistoryOnBlur
+                        onCommit={this.onChange}
+                        placeholder="Enter your text here"
+                        tag="textarea"
+                        value={value}
+                    />
+                    <button type="button" className={styles.button} onClick={this.onClick} disabled={!isActive}>
+                        Send
+                    </button>
+                </div>
+            </UiSizeConstraint>
         )
     }
 }
