@@ -286,6 +286,14 @@ const sources = {
             </g>
         </svg>
     ),
+    dropPlus: (
+        <svg viewBox="0 0 25 25" xmlns="http://www.w3.org/2000/svg">
+            <g transform="translate(1 1)" fill="none" fillRule="evenodd">
+                <circle fill="#FCFBF9" cx="11.5" cy="11.5" r="11.5" />
+                <path d="M11.5 23C17.851 23 23 17.851 23 11.5S17.851 0 11.5 0 0 5.149 0 11.5C.007 17.848 5.152 22.993 11.5 23zm-6-12.5h4.75a.25.25 0 0 0 .25-.25V5.5a1 1 0 0 1 2 0v4.75c0 .138.112.25.25.25h4.75a1 1 0 0 1 0 2h-4.75a.25.25 0 0 0-.25.25v4.75a1 1 0 0 1-2 0v-4.75a.25.25 0 0 0-.25-.25H5.5a1 1 0 0 1 0-2z" fill="#FF5C00" fillRule="nonzero" />
+            </g>
+        </svg>
+    ),
 }
 
 type Props = {

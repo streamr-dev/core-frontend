@@ -7,6 +7,7 @@ import Highcharts from 'highcharts/highstock'
 import HighchartsReact from 'highcharts-react-official'
 import ModuleSubscription from '$editor/shared/components/ModuleSubscription'
 import SvgIcon from '$shared/components/SvgIcon'
+import UiSizeConstraint from '../UiSizeConstraint'
 
 import styles from './Chart.pcss'
 
@@ -281,107 +282,109 @@ export default class ChartModule extends React.Component {
         const seriesData = this.getSeriesData(this.state.datapoints)
 
         return (
-            <div className={cx(styles.Chart, className)}>
-                <ModuleSubscription
-                    {...this.props}
-                    ref={this.subscription}
-                    onMessage={this.onMessage}
-                    onActiveChange={this.initIfActive}
-                />
-                {!!(options.displayTitle && options.displayTitle.value && title) && (
-                    <h4>{title}</h4>
-                )}
-                <RangeDropdown onChange={this.onChangeRange} value={this.state.range} />
-                {!!this.state.series && (
-                    <HighchartsReact
-                        highcharts={Highcharts}
-                        constructorType="stockChart"
-                        allowChartUpdate={false}
-                        callback={this.onChart}
-                        options={{
-                            chart: {
-                                animation: false,
-                                panning: true,
-                                spacingBottom: 40,
-                                backgroundColor: null,
-                                zoomType: 'x',
-                                selectionMarkerFill: 'rgba(0, 0, 0, 0.05)',
-                                style: {
-                                    fontFamily: "'IBM Plex', sans-serif",
-                                },
-                            },
-                            colors: ['#FF5C00', '#0324FF', '#2AC437', '#6240AF'],
-                            time: {
-                                timezoneOffset: new Date().getTimezoneOffset(),
-                            },
-                            credits: {
-                                enabled: false,
-                            },
-                            xAxis: {
-                                ordinal: false,
-                                events: {
-                                    setExtremes: this.setExtremes,
-                                },
-                            },
-                            legend: {
-                                enabled: true,
-                            },
-                            rangeSelector: {
-                                enabled: false,
-                            },
-                            navigator: {
-                                enabled: true,
-                                maskFill: 'rgba(0, 0, 0, 0.05)',
-                                outlineWidth: 0,
-                                handles: {
-                                    borderWidth: 1,
-                                    borderColor: '#A0A0A0',
-                                    backgroundColor: '#ADADAD',
-                                    height: 16,
-                                    width: 8,
-                                },
-                                series: {
-                                    type: 'line',
-                                    step: true,
-                                    dataGrouping: {
-                                        approximation: approximations.average,
-                                        forced: true,
-                                        groupAll: true,
-                                        groupPixelWidth: 4,
-                                    },
-                                },
-                            },
-                            plotOptions: {
-                                series: {
-                                    animation: false,
-                                    dataGrouping: {
-                                        approximation: approximations[options.dataGrouping],
-                                    },
-                                },
-                            },
-                            scrollbar: {
-                                enabled: false,
-                            },
-                            tooltip: {
-                                backgroundColor: 'rgba(255, 255, 255, 0.96)',
-                                padding: 10,
-                                borderRadius: 8,
-                                style: {
-                                    boxShadow: '0 0 6px 0 rgba(0, 0, 0, 0.05)',
-                                    color: '#323232',
-                                    lineHeight: 1.6,
-                                },
-                            },
-                            series: this.state.series.map((s) => ({
-                                ...s,
-                                ...seriesData[s.idx],
-                                id: `series-${s.idx}`,
-                            })),
-                            ...options,
-                        }}
+            <UiSizeConstraint minWidth={300} minHeight={200}>
+                <div className={cx(styles.Chart, className)}>
+                    <ModuleSubscription
+                        {...this.props}
+                        ref={this.subscription}
+                        onMessage={this.onMessage}
+                        onActiveChange={this.initIfActive}
                     />
-                )}
-            </div>
+                    {!!(options.displayTitle && options.displayTitle.value && title) && (
+                        <h4>{title}</h4>
+                    )}
+                    <RangeDropdown onChange={this.onChangeRange} value={this.state.range} />
+                    {!!this.state.series && (
+                        <HighchartsReact
+                            highcharts={Highcharts}
+                            constructorType="stockChart"
+                            allowChartUpdate={false}
+                            callback={this.onChart}
+                            options={{
+                                chart: {
+                                    animation: false,
+                                    panning: true,
+                                    spacingBottom: 40,
+                                    backgroundColor: null,
+                                    zoomType: 'x',
+                                    selectionMarkerFill: 'rgba(0, 0, 0, 0.05)',
+                                    style: {
+                                        fontFamily: "'IBM Plex', sans-serif",
+                                    },
+                                },
+                                colors: ['#FF5C00', '#0324FF', '#2AC437', '#6240AF'],
+                                time: {
+                                    timezoneOffset: new Date().getTimezoneOffset(),
+                                },
+                                credits: {
+                                    enabled: false,
+                                },
+                                xAxis: {
+                                    ordinal: false,
+                                    events: {
+                                        setExtremes: this.setExtremes,
+                                    },
+                                },
+                                legend: {
+                                    enabled: true,
+                                },
+                                rangeSelector: {
+                                    enabled: false,
+                                },
+                                navigator: {
+                                    enabled: true,
+                                    maskFill: 'rgba(0, 0, 0, 0.05)',
+                                    outlineWidth: 0,
+                                    handles: {
+                                        borderWidth: 1,
+                                        borderColor: '#A0A0A0',
+                                        backgroundColor: '#ADADAD',
+                                        height: 16,
+                                        width: 8,
+                                    },
+                                    series: {
+                                        type: 'line',
+                                        step: true,
+                                        dataGrouping: {
+                                            approximation: approximations.average,
+                                            forced: true,
+                                            groupAll: true,
+                                            groupPixelWidth: 4,
+                                        },
+                                    },
+                                },
+                                plotOptions: {
+                                    series: {
+                                        animation: false,
+                                        dataGrouping: {
+                                            approximation: approximations[options.dataGrouping],
+                                        },
+                                    },
+                                },
+                                scrollbar: {
+                                    enabled: false,
+                                },
+                                tooltip: {
+                                    backgroundColor: 'rgba(255, 255, 255, 0.96)',
+                                    padding: 10,
+                                    borderRadius: 8,
+                                    style: {
+                                        boxShadow: '0 0 6px 0 rgba(0, 0, 0, 0.05)',
+                                        color: '#323232',
+                                        lineHeight: 1.6,
+                                    },
+                                },
+                                series: this.state.series.map((s) => ({
+                                    ...s,
+                                    ...seriesData[s.idx],
+                                    id: `series-${s.idx}`,
+                                })),
+                                ...options,
+                            }}
+                        />
+                    )}
+                </div>
+            </UiSizeConstraint>
         )
     }
 }

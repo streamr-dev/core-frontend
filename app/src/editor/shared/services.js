@@ -1,5 +1,7 @@
 import api from '$editor/shared/utils/api'
 import ModuleError from '$editor/shared/errors/ModuleError'
+import Notification from '$shared/utils/Notification'
+import { NotificationIcon } from '$shared/utils/constants'
 
 const getModulesURL = `${process.env.STREAMR_API_URL}/modules`
 
@@ -35,6 +37,10 @@ export async function getModule({ id, configuration } = {}) {
     return api().post(`${getModulesURL}/${id}`, configuration).then(getData)
         .then((data) => {
             if (data.error) {
+                Notification.push({
+                    title: data.message,
+                    icon: NotificationIcon.ERROR,
+                })
                 throw new ModuleError(data.message || 'Module load failed', data.moduleErrors)
             }
 

@@ -1,5 +1,3 @@
-/* eslint-disable react/no-unused-state */
-
 import cx from 'classnames'
 import React from 'react'
 import { Translate } from 'react-redux-i18n'
@@ -9,15 +7,17 @@ import ModuleHeader from '../../shared/components/ModuleHeader'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import ModuleUI from '$editor/shared/components/ModuleUI'
 
-import { RunStates } from '../state'
+import { RunStates, getPort, getModuleForPort } from '../state'
 
 import Ports from './Ports'
 import ModuleDragger from './ModuleDragger'
 import * as RunController from './RunController'
 
+import Probe from './Resizable/SizeConstraintProvider/Probe'
 import ModuleStyles from '$editor/shared/components/Module.pcss'
+import Resizable from './Resizable'
 import styles from './Module.pcss'
-import { Resizer, isModuleResizable } from './Resizer'
+import isModuleResizable from '$editor/canvas/utils/isModuleResizable'
 
 class CanvasModule extends React.PureComponent {
     static contextType = RunController.Context
@@ -71,13 +71,19 @@ class CanvasModule extends React.PureComponent {
         this.props.api.renameModule(this.props.module.hash, value)
     )
 
-    onPortValueChange = (portId, value) => {
-        this.props.api.port.onChange(portId, value, () => {
-            // Check if reload is needed after the change
-            const port = this.props.module.params.find((p) => p.id === portId)
+    onPortValueChange = (portId, value, oldValue) => {
+        // Check if reload is needed after the change
+        const { canvas, api } = this.props
+        const port = getPort(canvas, portId)
+        const portModule = getModuleForPort(canvas, portId)
 
-            if (!this.unmounted && port && port.updateOnChange && port.value === value) {
-                this.props.api.loadNewDefinition(this.props.module.hash)
+        api.port.onChange(portId, value, () => {
+            if (!this.unmounted &&
+                port &&
+                (port.updateOnChange || port.type === 'EthereumContract') &&
+                oldValue !== value
+            ) {
+                api.loadNewDefinition(portModule.hash)
             }
         })
     }
@@ -86,12 +92,16 @@ class CanvasModule extends React.PureComponent {
         e.stopPropagation()
     }
 
+    onResize = (size) => {
+        const { api: { updateModuleSize }, module: { hash } } = this.props
+        updateModuleSize(hash, size)
+    }
+
     render() {
         const {
             api,
             module,
             canvas,
-            style,
             className,
             selectedModuleHash,
             moduleSidebarIsOpen,
@@ -110,43 +120,44 @@ class CanvasModule extends React.PureComponent {
         return (
             /* eslint-disable-next-line max-len */
             /* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-tabindex */
-            <div
+            <Resizable
+                enabled={isResizable}
                 role="rowgroup"
                 tabIndex="0"
                 onFocus={() => api.selectModule({ hash: module.hash })}
                 className={cx(className, styles.CanvasModule, ModuleStyles.ModuleBase, ...moduleSpecificStyles, {
                     [ModuleStyles.isSelected]: isSelected,
                 })}
-                style={{
-                    ...style,
-                    minWidth: layout.width,
-                    minHeight: layout.height,
-                }}
+                width={parseInt(layout.width, 10)}
+                height={parseInt(layout.height, 10)}
+                onResize={this.onResize}
                 data-modulehash={module.hash}
-                ref={this.el}
                 {...props}
             >
-                <div className={ModuleStyles.selectionDecorator} />
-                <ModuleHeader
-                    className={cx(styles.header, ModuleStyles.dragHandle)}
-                    editable={!isRunning}
-                    label={module.displayName || module.name}
-                    onLabelChange={this.onChangeModuleName}
-                >
-                    <HamburgerButton
-                        className={ModuleStyles.dragCancel}
-                        onClick={this.onTriggerOptions}
-                        onFocus={this.onHamburgerButtonFocus}
+                <div className={styles.body}>
+                    <Probe group="ModuleHeight" height="auto" />
+                    <ModuleHeader
+                        className={cx(styles.header, ModuleStyles.dragHandle)}
+                        editable={!isRunning}
+                        label={module.displayName || module.name}
+                        onLabelChange={this.onChangeModuleName}
+                    >
+                        <HamburgerButton
+                            className={ModuleStyles.dragCancel}
+                            onClick={this.onTriggerOptions}
+                            onFocus={this.onHamburgerButtonFocus}
+                        />
+                    </ModuleHeader>
+                    <Ports
+                        api={api}
+                        canvas={canvas}
+                        module={module}
+                        onPort={onPort}
+                        onValueChange={this.onPortValueChange}
                     />
-                </ModuleHeader>
-                <Ports
-                    api={api}
-                    canvas={canvas}
-                    module={module}
-                    onPort={onPort}
-                    onValueChange={this.onPortValueChange}
-                />
+                </div>
                 <ModuleUI
+                    autoSize
                     className={styles.canvasModuleUI}
                     api={api}
                     module={module}
@@ -156,16 +167,9 @@ class CanvasModule extends React.PureComponent {
                     isActive={isRunning}
                     isSubscriptionActive={this.context.isStarting || this.context.isActive}
                 />
-                {isResizable && (
-                    <Resizer
-                        api={api}
-                        module={module}
-                        target={this.el}
-                    />
-                )}
-            </div>
+                <div className={ModuleStyles.selectionDecorator} />
+            </Resizable>
         )
-        /* eslint-enable */
     }
 }
 

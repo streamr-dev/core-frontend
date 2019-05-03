@@ -17,7 +17,7 @@ import styles from './Map.pcss'
 const UPDATE_INTERVAL_MS = 250
 
 type Props = {
-    className: string,
+    className?: ?string,
     module: Object,
 }
 

@@ -2,7 +2,7 @@ import React, { useMemo } from 'react'
 import cx from 'classnames'
 
 import { defaultModuleLayout, getModuleForPort } from '../state'
-import { isModuleResizable } from './Resizer'
+import isModuleResizable from '../utils/isModuleResizable'
 import { Cable, getCableKey } from './Cables'
 
 import styles from './Preview.pcss'

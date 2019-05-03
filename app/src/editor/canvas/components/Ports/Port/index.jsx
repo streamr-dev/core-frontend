@@ -16,7 +16,8 @@ type Props = {
     api: any,
     canvas: any,
     onPort: any,
-    onValueChange: (any, any) => void,
+    onValueChange: (any, any, any) => void,
+    onSizeChange: () => void,
     port: any,
     setOptions: any,
 }
@@ -24,9 +25,10 @@ type Props = {
 const Port = ({
     api,
     canvas,
-    port,
     onPort,
+    onSizeChange,
     onValueChange: onValueChangeProp,
+    port,
     setOptions,
 }: Props) => {
     const isRunning = canvas.state === 'RUNNING'
@@ -41,16 +43,6 @@ const Port = ({
         // $FlowFixMe wtf?
         setContextMenuTarget(e.currentTarget)
     }, [setContextMenuTarget])
-
-    const plug = (
-        <Plug
-            api={api}
-            canvas={canvas}
-            onContextMenu={onContextMenu}
-            port={port}
-            register={onPort}
-        />
-    )
 
     const dismiss = useCallback(() => {
         setContextMenuTarget(null)
@@ -85,7 +77,8 @@ const Port = ({
         setOptions(port.id, {
             displayName,
         })
-    }, [port.id, setOptions])
+        onSizeChange()
+    }, [port.id, setOptions, onSizeChange])
 
     const onOptionToggle = useCallback((key) => {
         setOptions(port.id, {
@@ -93,13 +86,25 @@ const Port = ({
         })
     }, [port, setOptions])
 
-    const onValueChange = useCallback((value: any) => {
-        onValueChangeProp(port.id, value)
-    }, [port.id, onValueChangeProp])
+    const onValueChange = useCallback((value: any, oldValue: any) => {
+        onValueChangeProp(port.id, value, oldValue)
+        onSizeChange()
+    }, [port.id, onValueChangeProp, onSizeChange])
 
     const { isDragging, data } = useContext(DragDropContext)
     const { portId } = data || {}
     const dragInProgress = !!isDragging && portId != null
+
+    const plug = (
+        <Plug
+            api={api}
+            canvas={canvas}
+            onContextMenu={onContextMenu}
+            onValueChange={onValueChangeProp}
+            port={port}
+            register={onPort}
+        />
+    )
 
     useEffect(() => {
         window.addEventListener('mousedown', onWindowMouseDown)
@@ -112,6 +117,10 @@ const Port = ({
             window.removeEventListener('blur', onWindowBlur)
         }
     }, [onWindowMouseDown, onGlobalKeyDown, onWindowBlur])
+
+    useEffect(() => {
+        onSizeChange()
+    }, [port.value, onSizeChange])
 
     return (
         <div

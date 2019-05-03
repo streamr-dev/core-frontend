@@ -388,11 +388,20 @@ export function arePortsOfSameModule(canvas, portIdA, portIdB) {
 }
 
 function disconnectInput(canvas, portId) {
-    return updatePort(canvas, portId, (port) => ({
-        ...port,
-        sourceId: null,
-        connected: false,
-    }))
+    return updatePort(canvas, portId, (port) => {
+        const newPort = {
+            ...port,
+            sourceId: null,
+            connected: false,
+        }
+
+        // ethereum contract input
+        if (newPort.type === 'EthereumContract' && newPort.value) {
+            delete newPort.value
+        }
+
+        return newPort
+    })
 }
 
 function disconnectOutput(canvas, portId) {
@@ -442,14 +451,26 @@ export function connectPorts(canvas, portIdA, portIdB) {
     }
 
     const displayName = getDisplayNameFromPort(output)
+    const outputModule = getModuleForPort(nextCanvas, output.id)
+    const { contract } = outputModule || {}
+
     // connect input
-    nextCanvas = updatePort(nextCanvas, input.id, (port) => ({
-        ...port,
-        sourceId: output.id,
-        connected: true,
-        // variadic inputs copy display name from output
-        displayName: port.variadic ? displayName : port.displayName,
-    }))
+    nextCanvas = updatePort(nextCanvas, input.id, (port) => {
+        const newPort = {
+            ...port,
+            sourceId: output.id,
+            connected: true,
+            // variadic inputs copy display name from output
+            displayName: port.variadic ? displayName : port.displayName,
+        }
+
+        // ethereum contract input
+        if (newPort.type === 'EthereumContract') {
+            newPort.value = contract
+        }
+
+        return newPort
+    })
 
     // update paired output, if exists
     const linkedOutput = findLinkedVariadicPort(nextCanvas, input.id)
@@ -522,7 +543,8 @@ export function removeModule(canvas, moduleHash) {
     }
 }
 
-let ID = 0
+// Hash is stored as a Java Integer.
+const HASH_RANGE = ((2 ** 31) - 1) + (2 ** 31)
 
 function getHash(canvas, iterations = 0) {
     if (iterations >= 100) {
@@ -530,14 +552,7 @@ function getHash(canvas, iterations = 0) {
         throw new Error(`could not find unique hash after ${iterations} attempts`)
     }
 
-    ID += 1
-    const hash = Number((
-        String(Date.now() + ID)
-            .slice(-10) // 32 bits
-            .split('')
-            .reverse() // in order (for debugging)
-            .join('')
-    ))
+    const hash = Math.floor((Math.random() * HASH_RANGE) - (HASH_RANGE / 2))
 
     if (canvas.modules.find((m) => m.hash === hash)) {
         // double-check doesn't exist
@@ -563,6 +578,7 @@ export function addModule(canvas, moduleData) {
         hash: getHash(canvas), // TODO: better IDs
         layout: {
             ...defaultModuleLayout, // TODO: read position from mouse
+            ...moduleData.layout,
         },
     }
 
