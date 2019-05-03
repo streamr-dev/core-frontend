@@ -557,7 +557,10 @@ msgid "userpages##profile##settings##uploadHelpText"
 msgstr "JPG or PNG, at least 256px"
 
 msgid "modal##avatar##defaultTitle"
-msgstr "Avatar"
+msgstr "Avatar upload"
+
+msgid "modal##avatar##updateTitle"
+msgstr "Avatar update"
 
 msgid "modal##avatar##cropYourImage"
 msgstr "Crop your image"

@@ -30,17 +30,17 @@ const Avatar = ({
     <div className={cx(className, styles.container)}>
         {!!linkToProfile && (
             <Link to={links.userpages.profile} className={styles.avatarLink}>
-                <AvatarCircle name={user.name} imageUrl={user.imageUrlSmall} className={styles.avatarCircle} />
+                <AvatarCircle name={user.name} imageUrl={user.imageUrlLarge} className={styles.avatarCircle} />
             </Link>
         )}
         {!linkToProfile && (
-            <AvatarCircle name={user.name} imageUrl={user.imageUrlSmall} className={styles.avatarCircle} uploadAvatarPlaceholder />
+            <AvatarCircle name={user.name} imageUrl={user.imageUrlLarge} className={styles.avatarCircle} uploadAvatarPlaceholder />
         )}
         {!editable && (
             <NameAndEmail name={user.name} email={user.username} />
         )}
         {editable && onImageChange && (
-            <AvatarUpload onImageChange={onImageChange} image={(user && user.imageUrlSmall) || ''} />
+            <AvatarUpload onImageChange={onImageChange} image={(user && user.imageUrlLarge) || ''} />
         )}
     </div>
 )
