@@ -3,18 +3,34 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding-top: 4px;
+  padding: 8px;
+  color: #525252;
+  font-size: 10px;
+  font-family: var(--sans);
+  font-weight: 400;
+  line-height: var(--um);
 }
 
-.ports {
-  padding: 0;
+.canvasKeys {
+  display: flex;
+  font-family: var(--mono);
+  font-size: calc(0.625 * var(--um));
+  font-weight: var(--medium);
+  justify-content: space-between;
+  line-height: var(--um);
 }
 
-.portValueContainer {
-  width: 100%;
+.canvasKeysLabel {
+  margin-right: 8px;
 }
 
 .button {
-  padding: 8px;
-  padding-top: 4px;
+  margin-top: 8px;
+}
+
+.icon {
+  width: 10px;
+  height: 10px;
+  margin: 0 4px;
+  opacity: 0.4;
 }

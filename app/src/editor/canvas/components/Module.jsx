@@ -2,7 +2,7 @@ import cx from 'classnames'
 import React from 'react'
 import { Translate } from 'react-redux-i18n'
 
-import HamburgerButton from '../../shared/components/HamburgerButton'
+import ModuleHeaderButton from '../../shared/components/ModuleHeaderButton'
 import ModuleHeader from '../../shared/components/ModuleHeader'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import ModuleUI from '$editor/shared/components/ModuleUI'
@@ -18,7 +18,6 @@ import Probe from './Resizable/SizeConstraintProvider/Probe'
 import ModuleStyles from '$editor/shared/components/Module.pcss'
 import Resizable from './Resizable'
 import styles from './Module.pcss'
-import SvgIcon from '$shared/components/SvgIcon'
 import isModuleResizable from '$editor/canvas/utils/isModuleResizable'
 
 class CanvasModule extends React.PureComponent {
@@ -157,16 +156,15 @@ class CanvasModule extends React.PureComponent {
                         onLabelChange={this.onChangeModuleName}
                     >
                         {isRunning && !!module.canRefresh && (
-                            <button
-                                type="button"
-                                className={cx(styles.optionsButton, ModuleStyles.dragCancel)}
+                            <ModuleHeaderButton
+                                icon="refresh"
+                                className={ModuleStyles.dragCancel}
                                 onFocus={this.onFocusOptionsButton}
                                 onClick={this.onRefreshModule}
-                            >
-                                <SvgIcon name="refresh" className={styles.reloadIcon} />
-                            </button>
+                            />
                         )}
-                        <HamburgerButton
+                        <ModuleHeaderButton
+                            icon="hamburger"
                             className={ModuleStyles.dragCancel}
                             onClick={this.onTriggerOptions}
                             onFocus={this.onHamburgerButtonFocus}

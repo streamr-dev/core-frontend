@@ -248,6 +248,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         } catch (error) {
             console.error(error.message)
             // undo value change
+            this.props.undo()
         }
     }
 

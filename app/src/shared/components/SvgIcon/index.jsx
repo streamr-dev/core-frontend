@@ -306,8 +306,10 @@ const sources = {
     ),
 }
 
+export type IconName = $Keys<typeof sources>
+
 type Props = {
-    name: $Keys<typeof sources>,
+    name: IconName,
 }
 
 const SvgIcon = ({ name, ...props }: Props) => React.cloneElement(sources[name], {
