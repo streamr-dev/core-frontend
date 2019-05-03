@@ -210,18 +210,44 @@ const CanvasEditComponent = class CanvasEdit extends Component {
     }
 
     loadNewDefinition = async (hash) => {
-        const { replace, undo } = this.props
         const module = CanvasState.getModule(this.props.canvas, hash)
         try {
-            const newModule = await sharedServices.getModule(module)
+            const newModule = await sharedServices.getModule({
+                id: module.id,
+                configuration: module,
+            })
 
-            if (!this.unmounted) {
-                replace(() => CanvasState.updateModule(this.props.canvas, hash, () => newModule))
-            }
+            if (this.unmounted) { return }
+
+            this.replaceCanvas((canvas) => {
+                let nextCanvas = CanvasState.updateModule(canvas, hash, () => newModule)
+
+                // Restore input connections
+                nextCanvas = module.inputs.reduce((nextCanvas, { id, sourceId }) => {
+                    const port = newModule.inputs.find((p) => id === p.id)
+
+                    if (sourceId && port) {
+                        return CanvasState.connectPorts(nextCanvas, port.id, sourceId)
+                    }
+
+                    return nextCanvas
+                }, nextCanvas)
+
+                nextCanvas = module.params.reduce((nextCanvas, { id, sourceId }) => {
+                    const port = newModule.params.find((p) => id === p.id)
+
+                    if (sourceId && port) {
+                        return CanvasState.connectPorts(nextCanvas, port.id, sourceId)
+                    }
+
+                    return nextCanvas
+                }, nextCanvas)
+
+                return nextCanvas
+            })
         } catch (error) {
             console.error(error.message)
             // undo value change
-            undo()
         }
     }
 
