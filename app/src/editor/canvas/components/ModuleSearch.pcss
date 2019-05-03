@@ -99,8 +99,16 @@
   padding: var(--iconPadding);
   line-height: 0;
   flex-shrink: 0;
-  cursor: pointer;
   z-index: 1; /* ensure over resize control */
+}
+
+.ModuleSearch .Input .ClearButton svg {
+  transition: all 0.2s;
+}
+
+.ModuleSearch .Input .ClearButton:hover svg circle {
+  fill: #525252;
+  stroke: #525252;
 }
 
 .ModuleSearch .Input .ClearButton:focus {
