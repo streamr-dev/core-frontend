@@ -388,11 +388,20 @@ export function arePortsOfSameModule(canvas, portIdA, portIdB) {
 }
 
 function disconnectInput(canvas, portId) {
-    return updatePort(canvas, portId, (port) => ({
-        ...port,
-        sourceId: null,
-        connected: false,
-    }))
+    return updatePort(canvas, portId, (port) => {
+        const newPort = {
+            ...port,
+            sourceId: null,
+            connected: false,
+        }
+
+        // ethereum contract input
+        if (newPort.type === 'EthereumContract' && newPort.value) {
+            delete newPort.value
+        }
+
+        return newPort
+    })
 }
 
 function disconnectOutput(canvas, portId) {
@@ -442,14 +451,26 @@ export function connectPorts(canvas, portIdA, portIdB) {
     }
 
     const displayName = getDisplayNameFromPort(output)
+    const outputModule = getModuleForPort(nextCanvas, output.id)
+    const { contract } = outputModule || {}
+
     // connect input
-    nextCanvas = updatePort(nextCanvas, input.id, (port) => ({
-        ...port,
-        sourceId: output.id,
-        connected: true,
-        // variadic inputs copy display name from output
-        displayName: port.variadic ? displayName : port.displayName,
-    }))
+    nextCanvas = updatePort(nextCanvas, input.id, (port) => {
+        const newPort = {
+            ...port,
+            sourceId: output.id,
+            connected: true,
+            // variadic inputs copy display name from output
+            displayName: port.variadic ? displayName : port.displayName,
+        }
+
+        // ethereum contract input
+        if (newPort.type === 'EthereumContract') {
+            newPort.value = contract
+        }
+
+        return newPort
+    })
 
     // update paired output, if exists
     const linkedOutput = findLinkedVariadicPort(nextCanvas, input.id)
