@@ -2,7 +2,6 @@ import React, { useMemo } from 'react'
 import cx from 'classnames'
 
 import { defaultModuleLayout, getModuleForPort } from '../state'
-import isModuleResizable from '../utils/isModuleResizable'
 import { Cable, getCableKey } from './Cables'
 
 import styles from './Preview.pcss'
@@ -213,20 +212,17 @@ function getPreviewCanvas({ canvas, aspect, screen }) {
         left: Number.parseInt(m.layout.position.left, 10) || 0,
         height: Number.parseInt(m.layout.height, 10) || defaultLayout.height,
         width: Number.parseInt(m.layout.width, 10) || defaultLayout.width,
-        isResizable: isModuleResizable(m),
         title: (m.displayName || m.name),
         type: m.uiChannel && m.uiChannel.webcomponent,
     }))
 
     // find bounds of modules
-    const bounds = modulePreviews.reduce((b, m) => (
-        Object.assign(b, {
-            maxX: Math.max(b.maxX, m.left + m.width),
-            maxY: Math.max(b.maxY, m.top + m.height),
-            minX: Math.min(b.minX, m.left),
-            minY: Math.min(b.minY, m.top),
-        })
-    ), {
+    const bounds = modulePreviews.reduce((b, m) => ({
+        maxX: Math.max(b.maxX, m.left + m.width),
+        maxY: Math.max(b.maxY, m.top + m.height),
+        minX: Math.min(b.minX, m.left),
+        minY: Math.min(b.minY, m.top),
+    }), {
         maxX: -Infinity,
         maxY: -Infinity,
         minX: Infinity,
@@ -251,9 +247,6 @@ function getPreviewCanvas({ canvas, aspect, screen }) {
         width: canvasSize.width,
         height: canvasSize.height,
         modules: modulePreviews,
-        bounds,
-        minWidth,
-        minHeight,
     }
 }
 
@@ -282,6 +275,9 @@ export default function Preview({
             preserveAspectRatio="none"
             viewBox={`0 0 ${Math.round(aspect.width * viewBoxScale)} ${Math.round(aspect.height * viewBoxScale)}`}
             {...props}
+            style={{
+                padding: '8px',
+            }}
         >
             <PreviewCables
                 canvas={canvas}
