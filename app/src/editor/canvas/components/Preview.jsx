@@ -92,6 +92,22 @@ const TablePreview = ({ width, height, ...props }) => (
     </svg>
 )
 
+const CommentPreview = ({ height, ...props }) => (
+    <svg
+        {...props}
+        height={Math.floor((height + 4) / 8) * 8} // 8px per row; we don't wanna cut rows in half.
+        width="75%"
+        x={3}
+    >
+        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+            <g fill="#d8d8d8">
+                <rect height="4" rx="1" width="100%" />
+                <rect height="4" rx="1" width="55%" y="8" />
+            </g>
+        </svg>
+    </svg>
+)
+
 export function aspectSize({ width, height, minWidth, minHeight }) {
     const ratio = Math.max(minWidth / width, minHeight / height)
     return {
@@ -154,50 +170,60 @@ const ModulePreview = ({
     x,
     y,
     ...props
-}) => (
-    <svg
-        height={height}
-        width={width}
-        x={x}
-        y={y}
-        {...props}
-    >
-        <rect
-            fill="white"
-            height="100%"
-            rx="1"
-            width="100%"
-        />
-        <rect
-            fill="#D8D8D8"
-            height="4"
-            rx="1"
-            width={Math.min(width * 0.75, title.length * 3)}
-            x="3"
-            y="3"
-        />
-        <rect
-            fill="#EFEFEF"
-            height="1"
-            width="100%"
-            y="10"
-        />
-        {type === 'streamr-chart' && (
-            <ChartPreview
-                height={height - 14}
-                width={width}
-                y={14}
+}) => {
+    console.log(type)
+    return (
+        <svg
+            height={height}
+            width={width}
+            x={x}
+            y={y}
+            {...props}
+        >
+            <rect
+                fill={type === 'CommentModule' ? '#FAE7DD' : 'white'}
+                height="100%"
+                rx="1"
+                width="100%"
             />
-        )}
-        {type === 'streamr-table' && (
-            <TablePreview
-                height={height - 17}
-                width={width}
-                y={14}
+            <rect
+                fill="#D8D8D8"
+                height="4"
+                rx="1"
+                width={Math.min(width * 0.75, title.length * 3)}
+                x="3"
+                y="3"
             />
-        )}
-    </svg>
-)
+            <rect
+                fill="#EFEFEF"
+                height="1"
+                width="100%"
+                y="10"
+            />
+            {type === 'streamr-chart' && (
+                <ChartPreview
+                    height={height - 14}
+                    width={width}
+                    y={14}
+                />
+            )}
+            {type === 'streamr-table' && (
+                <TablePreview
+                    height={height - 17}
+                    width={width}
+                    y={14}
+                />
+            )}
+            {type === 'CommentModule' && (
+                <CommentPreview
+                    height={height - 17}
+                    width={width}
+                    y={14}
+                />
+            )}
+        </svg>
+    )
+}
 
 const defaultLayout = {
     height: Number.parseInt(defaultModuleLayout.height, 10),
@@ -213,7 +239,7 @@ function getPreviewCanvas({ canvas, aspect, screen }) {
         height: Number.parseInt(m.layout.height, 10) || defaultLayout.height,
         width: Number.parseInt(m.layout.width, 10) || defaultLayout.width,
         title: (m.displayName || m.name),
-        type: m.uiChannel && m.uiChannel.webcomponent,
+        type: (m.uiChannel && m.uiChannel.webcomponent) || m.widgth || m.jsModule,
     }))
 
     // find bounds of modules
