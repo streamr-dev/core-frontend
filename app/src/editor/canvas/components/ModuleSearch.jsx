@@ -473,13 +473,13 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
                         >
                             <div className={styles.Container}>
                                 <div className={cx(styles.Header, styles.dragHandle)}>
-                                    <button className={styles.minimize} onClick={() => this.toggleMinimize()}>
+                                    <button type="button" className={styles.minimize} onClick={() => this.toggleMinimize()}>
                                         {isExpanded ?
                                             <SvgIcon name="caretUp" /> :
                                             <SvgIcon name="caretDown" />
                                         }
                                     </button>
-                                    <button className={styles.close} onClick={() => open(false)}>
+                                    <button type="button" className={styles.close} onClick={() => open(false)}>
                                         <SvgIcon name="crossHeavy" />
                                     </button>
                                 </div>
@@ -490,16 +490,14 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
                                         value={search}
                                         onChange={this.onChange}
                                     />
-                                    {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events */}
-                                    <span
-                                        role="button"
+                                    <button
+                                        type="button"
                                         className={styles.ClearButton}
                                         onClick={this.clear}
-                                        tabIndex="0"
                                         hidden={search === ''}
                                     >
                                         <SvgIcon name="clear" />
-                                    </span>
+                                    </button>
                                 </div>
                                 <div role="listbox" className={styles.Content}>
                                     {(search && search.length > 0) ?

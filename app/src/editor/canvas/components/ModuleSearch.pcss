@@ -103,6 +103,9 @@
   --iconSize: 14px;
   --iconPadding: 3px; /* give additional hover leeway */
 
+  appearance: none;
+  background: none;
+  border: none;
   width: calc(2 * var(--iconPadding) + var(--iconSize));
   height: calc(2 * var(--iconPadding) + var(--iconSize));
   padding: var(--iconPadding);
@@ -112,8 +115,8 @@
   z-index: 1; /* ensure over resize control */
 }
 
-.ModuleSearch .Input .ClearButton svg {
-  transition: all 0.2s;
+.ModuleSearch .Input .ClearButton circle {
+  transition: all 0.1s;
 }
 
 .ModuleSearch .Input .ClearButton:hover circle {
