@@ -65,6 +65,7 @@ jobs:
     env:
     - NODE_ENV=production
     - PORT=12345
+    - ANALYZE=1
     - STREAMR_API_URL=https://staging.streamr.com/api/v1
     - STREAMR_WS_URL=wss://staging.streamr.com/api/v1/ws
     - PLATFORM_ORIGIN_URL=https://staging.streamr.com
@@ -149,6 +150,7 @@ jobs:
     if: type IN (pull_request)
     env:
     - NODE_ENV=production
+    - ANALYZE=1
     - PORT=12345
     - STREAMR_API_URL=https://staging.streamr.com/api/v1
     - STREAMR_WS_URL=wss://staging.streamr.com/api/v1/ws
