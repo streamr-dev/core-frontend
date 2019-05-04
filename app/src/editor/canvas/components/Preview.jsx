@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react'
 import cx from 'classnames'
-import uniqueId from 'lodash/uniqueId'
 
 import { defaultModuleLayout, getModuleForPort } from '../state'
 import isModuleResizable from '../utils/isModuleResizable'
@@ -8,93 +7,91 @@ import { Cable, getCableKey } from './Cables'
 
 import styles from './Preview.pcss'
 
-function ChartPreview(props) {
-    const uid = uniqueId('ChartPreview')
+const ChartPreview = ({ height, width, y }) => {
+    const chartHeight = height - 14
+    const h = Math.floor(0.8 * chartHeight)
+
     return (
-        <svg xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" viewBox="0 0 97 62" {...props}>
-            <defs>
-                <rect id={`b${uid}`} width="33.83" height="10.29" x="48.85" y="15.21" rx="0.85" />
-                <filter id={`a${uid}`} width="108.9%" height="129.2%" x="-4.4%" y="-14.6%" filterUnits="objectBoundingBox">
-                    <feOffset in="SourceAlpha" result="shadowOffsetOuter1" />
-                    <feGaussianBlur in="shadowOffsetOuter1" result="shadowBlurOuter1" stdDeviation="0.5" />
-                    <feColorMatrix in="shadowBlurOuter1" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.15 0" />
-                </filter>
-                <ellipse id={`d${uid}`} cx="1.69" cy="1.71" rx="1.69" ry="1.71" />
-                <filter id={`c${uid}`} width="188.7%" height="187.5%" x="-44.3%" y="-43.7%" filterUnits="objectBoundingBox">
-                    <feOffset in="SourceAlpha" result="shadowOffsetOuter1" />
-                    <feGaussianBlur in="shadowOffsetOuter1" result="shadowBlurOuter1" stdDeviation="0.5" />
-                    <feColorMatrix in="shadowBlurOuter1" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.2 0" />
-                </filter>
-            </defs>
-            <g fill="none" fillRule="evenodd" transform="translate(1)">
-                <path stroke="#EFEFEF" strokeLinecap="square" d="M.46 51.5h95.01" />
-                {/* eslint-disable-next-line max-len */}
-                <path stroke="#FF5C00" strokeLinejoin="round" strokeWidth="0.63" d="M0 29h3l4.05 1.86 7.61-5.15 3.38 3.43 3.38 5.15 1.48-1.72h5.29l3.6-1.71 3.17 3.43L36.65 36l3.38-3.43 5.08-10.28 1.69 3.42 3.38 5.15h3.17l3.81-1.72 1.9 1.72L62.23 24l3.6-10.29L68.79 0l1.69 3.43h1.9L75.56 12l1.69-3.43 1.9 3.43 1.48 8.57h3.6l3.17-5.14L90.78 12l1.69 1.71L94.31 15H96" />
-                <g opacity="0.96">
-                    <use fill="#000" filter={`url(#a${uid})`} xlinkHref={`#b${uid}`} />
-                    <use fill="#FFF" xlinkHref={`#b${uid}`} />
-                </g>
-                <rect width="24" height="4" x="50.85" y="18.21" fill="#D8D8D8" rx="1" />
-                <g transform="translate(64.5 10.29)">
-                    <use fill="#000" filter={`url(#c${uid})`} xlinkHref={`#d${uid}`} />
-                    <use fill="#FFF" xlinkHref={`#d${uid}`} />
-                    <ellipse cx="1.69" cy="1.71" fill="#FF5C00" rx="1" ry="1" />
-                </g>
-                <rect width="15" height="4" x="11.85" y="55" fill="#D8D8D8" rx="1" />
-                <circle cx="6" cy="57" r="2" fill="#FF5C00" />
-            </g>
+        <svg
+            height={height}
+            width={width}
+            y={y}
+        >
+            <svg
+                height={h}
+                width="100%"
+                y={Math.floor((chartHeight - h) / 2)}
+            >
+                <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <pattern
+                            height="66"
+                            id="tile"
+                            patternUnits="userSpaceOnUse"
+                            width="112"
+                        >
+                            <path
+                                // eslint-disable-next-line max-len
+                                d="M0 53.167h3.004l4.05 3.404 7.623-9.428 3.387 6.286 3.388 9.428 1.482-3.143h5.293l3.6-3.143 3.176 6.286L36.697 66l3.387-6.286 5.082-18.857 1.693 6.286 3.388 9.428h3.176l3.811-3.142 1.906 3.142L62.316 44l3.599-18.857L68.879 0l1.694 6.286h1.906L75.654 22l1.694-6.286L79.254 22l1.482 15.714h3.6l3.175-9.428L90.9 22l1.694 3.143L94.43 27.5h1.693l3.306-3.725L102.002 33l2.515 1.841 2.38-5.15 1.736 17.452L112 53.167"
+                                fill="none"
+                                stroke="#FF5C00"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="1"
+                            />
+                        </pattern>
+                    </defs>
+                    <svg viewBox="0 0 11200 66" preserveAspectRatio="xMinYMid slice">
+                        <rect width="100%" height="100%" fill="url(#tile)" />
+                    </svg>
+                </svg>
+            </svg>
+            <rect
+                fill="#EFEFEF"
+                height="1"
+                width="100%"
+                y={height - 11}
+            />
+            <circle
+                cx={4.5}
+                cy={height - 5}
+                r={1.5}
+                fill="#FF5C00"
+            />
+            <rect
+                fill="#D8D8D8"
+                height="4"
+                rx="1"
+                width="23%"
+                x="9"
+                y={height - 7}
+            />
         </svg>
     )
 }
 
-function TablePreview(props) {
-    return (
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="-3 -3 56 159" {...props}>
-            <g fill="#D8D8D8" fillRule="evenodd" transform="translate(-3 -5)">
-                <rect width="15" height="4" x="3" y="5" rx="1" />
-                <rect width="19" height="4" x="3" y="13" rx="1" />
-                <rect width="19" height="4" x="29" y="5" rx="1" />
-                <rect width="24" height="4" x="29" y="13" rx="1" />
-                <rect width="15" height="4" x="3" y="21" rx="1" />
-                <rect width="19" height="4" x="29" y="21" rx="1" />
-                <rect width="19" height="4" x="3" y="29" rx="1" />
-                <rect width="24" height="4" x="29" y="29" rx="1" />
-                <rect width="15" height="4" x="3" y="37" rx="1" />
-                <rect width="19" height="4" x="29" y="37" rx="1" />
-                <rect width="15" height="4" x="3" y="45" rx="1" />
-                <rect width="19" height="4" x="3" y="53" rx="1" />
-                <rect width="19" height="4" x="29" y="45" rx="1" />
-                <rect width="24" height="4" x="29" y="53" rx="1" />
-                <rect width="15" height="4" x="3" y="61" rx="1" />
-                <rect width="19" height="4" x="29" y="61" rx="1" />
-                <rect width="19" height="4" x="3" y="69" rx="1" />
-                <rect width="24" height="4" x="29" y="69" rx="1" />
-                <rect width="15" height="4" x="3" y="77" rx="1" />
-                <rect width="19" height="4" x="29" y="77" rx="1" />
-                <rect width="15" height="4" x="3" y="85" rx="1" />
-                <rect width="19" height="4" x="3" y="93" rx="1" />
-                <rect width="19" height="4" x="29" y="85" rx="1" />
-                <rect width="24" height="4" x="29" y="93" rx="1" />
-                <rect width="15" height="4" x="3" y="101" rx="1" />
-                <rect width="19" height="4" x="29" y="101" rx="1" />
-                <rect width="19" height="4" x="3" y="109" rx="1" />
-                <rect width="24" height="4" x="29" y="109" rx="1" />
-                <rect width="15" height="4" x="3" y="117" rx="1" />
-                <rect width="19" height="4" x="29" y="117" rx="1" />
-                <rect width="15" height="4" x="3" y="125" rx="1" />
-                <rect width="19" height="4" x="3" y="133" rx="1" />
-                <rect width="19" height="4" x="29" y="125" rx="1" />
-                <rect width="24" height="4" x="29" y="133" rx="1" />
-                <rect width="15" height="4" x="3" y="141" rx="1" />
-                <rect width="19" height="4" x="29" y="141" rx="1" />
-                <rect width="19" height="4" x="3" y="149" rx="1" />
-                <rect width="24" height="4" x="29" y="149" rx="1" />
-                <rect width="15" height="4" x="3" y="157" rx="1" />
-                <rect width="19" height="4" x="29" y="157" rx="1" />
-            </g>
+const TablePreview = ({ width, height, ...props }) => (
+    <svg
+        {...props}
+        height={Math.floor((height + 4) / 8) * 8} // 8px per row; we don't wanna cut rows in half.
+        width={width - 6}
+        x={3}
+    >
+        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <pattern id="paragraph" width="100%" height="16" patternUnits="userSpaceOnUse">
+                    <g fill="#d8d8d8">
+                        <rect width="15" rx="1" height="4" />
+                        <rect width="19" rx="1" height="4" y="8" />
+                        <rect width="19" rx="1" height="4" x="26" />
+                        <rect width="24" rx="1" height="4" x="26" y="8" />
+                    </g>
+                </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#paragraph)" />
         </svg>
-    )
-}
+    </svg>
+)
 
 export function aspectSize({ width, height, minWidth, minHeight }) {
     const ratio = Math.max(minWidth / width, minHeight / height)
@@ -108,7 +105,7 @@ function getModuleKey(m) {
     return `${m.id}-${m.hash}`
 }
 
-function PreviewCables({ canvas, preview }) {
+function PreviewCables({ canvas, preview, previewScale }) {
     function getPosition(portId) {
         if (!portId) { return }
         let m
@@ -122,115 +119,93 @@ function PreviewCables({ canvas, preview }) {
         const p = preview.modules.find((m) => m.key === key)
         return {
             id: m.id,
-            left: p.left + (p.width / 2),
-            top: p.top + (p.height / 2),
+            left: (p.left + (p.width / 2)) * previewScale,
+            top: (p.top + (p.height / 2)) * previewScale,
         }
     }
 
-    const cables = canvas.modules
-        .reduce((c, m) => {
-            [].concat(m.params, m.inputs, m.outputs).forEach((port) => {
-                if (!port.connected) { return }
-                c.push([port.sourceId, port.id])
-            })
-            return c
-        }, [])
-        .map(([from, to]) => [getPosition(from), getPosition(to)])
-        .filter(([from, to]) => from && to)
+    const cables = canvas.modules.reduce((memo, { params, inputs, outputs }) => ({
+        ...memo,
+        ...(() => [...params, ...inputs, ...outputs].reduce((memo2, { sourceId, id }) => {
+            const from = getPosition(sourceId)
+            const to = getPosition(id)
+            const cable = [from, to]
 
-    const uniqueCables = cables.reduce((o, cable) => (
-        Object.assign(o, { [getCableKey(cable)]: cable })
-    ), {})
+            if (!from || !to) {
+                return memo2
+            }
 
-    return (
-        <React.Fragment>
-            {Object.entries(uniqueCables).map(([key, cable]) => (
-                <Cable cable={cable} key={key} />
-            ))}
-        </React.Fragment>
-    )
+            return {
+                ...memo2,
+                [getCableKey(cable)]: cable,
+            }
+        }, {}))(),
+    }), {})
+
+    return Object.entries(cables).map(([key, cable]) => (
+        <Cable cable={cable} key={key} strokeWidth="0.5" />
+    ))
 }
 
-function getHeaderHeight(um) {
-    return (um * 3.333)
-}
-
-function getPortsHeight(um, portRows) {
-    return (portRows * um * 1.1) + um
-}
-
-export function ModulePreview({
-    x = 0,
-    y = 0,
+const ModulePreview = ({
     height,
+    title,
+    type,
     width,
-    um = 16,
-    title = ' ',
-    type = '',
-    portRows = 0,
-}) {
-    x = Math.round(x)
-    y = Math.round(y)
-    width = Math.round(width)
-    height = Math.round(height)
-
-    const titleMaxWidth = width - (2 * um)
-    const titleActualWidth = Math.min(title.length * um, titleMaxWidth)
-    const headerBottomY = y + getHeaderHeight(um)
-    const portsBottomY = headerBottomY + getPortsHeight(um, portRows)
-    return (
-        <g className={cx(styles.ModulePreview, styles[type])}>
-            <rect
-                className={styles.ModulePreviewBackground}
-                x={x}
-                y={y}
-                height={height}
+    x,
+    y,
+    ...props
+}) => (
+    <svg
+        height={height}
+        width={width}
+        x={x}
+        y={y}
+        {...props}
+    >
+        <rect
+            fill="white"
+            height="100%"
+            rx="1"
+            width="100%"
+        />
+        <rect
+            fill="#D8D8D8"
+            height="4"
+            rx="1"
+            width={Math.min(width * 0.75, title.length * 3)}
+            x="3"
+            y="3"
+        />
+        <rect
+            fill="#EFEFEF"
+            height="1"
+            width="100%"
+            y="10"
+        />
+        {type === 'streamr-chart' && (
+            <ChartPreview
+                height={height - 14}
                 width={width}
+                y={14}
             />
-            <rect
-                className={styles.ModulePreviewHeaderText}
-                x={x + um}
-                y={y + um}
-                width={titleActualWidth}
-                height={um * 1.3}
+        )}
+        {type === 'streamr-table' && (
+            <TablePreview
+                height={height - 17}
+                width={width}
+                y={14}
             />
-            <path
-                className={styles.ModulePreviewBottomBorder}
-                d={`M${x},${headerBottomY} H${x + width}`}
-            />
-            {type && portRows && (
-                <path
-                    className={styles.ModulePreviewBottomBorder}
-                    d={`M${x},${portsBottomY} H${x + width}`}
-                />
-            )}
-            {type === 'streamr-chart' && (
-                <ChartPreview preserveAspectRatio="xMinYMax meet" width={width} height={height - (portsBottomY - y)} x={x} y={portsBottomY} />
-            )}
-            {type === 'streamr-table' && (
-                <TablePreview
-                    um={0.25}
-                    preserveAspectRatio="xMinYMin slice"
-                    width={width}
-                    height={height - (portsBottomY - y)}
-                    x={x}
-                    y={portsBottomY}
-                />
-            )}
-        </g>
-    )
-}
+        )}
+    </svg>
+)
 
 const defaultLayout = {
     height: Number.parseInt(defaultModuleLayout.height, 10),
     width: Number.parseInt(defaultModuleLayout.width, 10),
 }
 
-function getPortRows({ inputs = [], outputs = [], params = [] }) {
-    return Math.max(inputs.length + params.length, outputs.length)
-}
-
-function getPreviewCanvas({ canvas, aspect, screen, um = 20 }) {
+function getPreviewCanvas({ canvas, aspect, screen }) {
     // grab basic module dimensions
     const modulePreviews = canvas.modules.map((m) => ({
         key: getModuleKey(m),
@@ -239,16 +214,9 @@ function getPreviewCanvas({ canvas, aspect, screen, um = 20 }) {
         height: Number.parseInt(m.layout.height, 10) || defaultLayout.height,
         width: Number.parseInt(m.layout.width, 10) || defaultLayout.width,
         isResizable: isModuleResizable(m),
-        portRows: getPortRows(m),
         title: (m.displayName || m.name),
         type: m.uiChannel && m.uiChannel.webcomponent,
     }))
-        .map((m) => (
-            // set sensible min-height on non-resizable modules using number of ports
-            Object.assign(m, {
-                height: Math.max(m.height, getHeaderHeight(um) + getPortsHeight(um, m.portRows)),
-            })
-        ))
 
     // find bounds of modules
     const bounds = modulePreviews.reduce((b, m) => (
@@ -302,47 +270,43 @@ export default function Preview({
             canvas,
             aspect,
             screen,
-            um: 20,
         })
     ), [canvas, aspect, screen])
 
+    const scale = aspect.width / screen.width
+    const viewBoxScale = preview.width / screen.width
+
     return (
         <svg
-            className={className}
+            className={cx(styles.Preview, className)}
             preserveAspectRatio="none"
-            viewBox={`0 0 ${aspect.width} ${aspect.height}`}
-            style={{
-                ...style,
-                background: '#e7e7e7',
-                padding: '8px',
-            }}
+            viewBox={`0 0 ${Math.round(aspect.width * viewBoxScale)} ${Math.round(aspect.height * viewBoxScale)}`}
             {...props}
         >
-            <rect
-                x="0"
-                y="0"
-                height="100%"
-                width="100%"
-                fill="#e7e7e7"
+            <PreviewCables
+                canvas={canvas}
+                preview={preview}
+                previewScale={scale}
             />
-            <svg
-                preserveAspectRatio="none"
-                viewBox={`0 0 ${preview.width} ${preview.height}`}
-            >
-                <PreviewCables canvas={canvas} preview={preview} />
-                {preview.modules.map((m) => (
-                    <ModulePreview
-                        key={m.key}
-                        y={m.top}
-                        x={m.left}
-                        width={m.width}
-                        height={m.height}
-                        title={m.title}
-                        type={m.type}
-                        portRows={m.portRows}
-                    />
-                ))}
-            </svg>
+            {preview.modules.map(({
+                height,
+                key,
+                left: x,
+                title,
+                top: y,
+                type,
+                width,
+            }) => (
+                <ModulePreview
+                    height={height * scale}
+                    key={key}
+                    title={title}
+                    type={type}
+                    width={width * scale}
+                    x={x * scale}
+                    y={y * scale}
+                />
+            ))}
         </svg>
     )
 }
