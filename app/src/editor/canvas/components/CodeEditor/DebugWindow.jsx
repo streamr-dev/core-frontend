@@ -2,7 +2,7 @@ import React from 'react'
 import cx from 'classnames'
 
 import dateFormatter from '$utils/dateFormatter'
-import DraggableCanvasWindow from './DraggableCanvasWindow'
+import DraggableCanvasWindow from '../DraggableCanvasWindow'
 
 import windowStyles from './CodeEditorWindow.pcss'
 import styles from './DebugWindow.pcss'

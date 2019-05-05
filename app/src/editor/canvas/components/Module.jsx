@@ -7,7 +7,7 @@ import ModuleHeader from '../../shared/components/ModuleHeader'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import ModuleUI from '$editor/shared/components/ModuleUI'
 
-import { RunStates } from '../state'
+import { RunStates, getPort, getModuleForPort } from '../state'
 
 import Ports from './Ports'
 import ModuleDragger from './ModuleDragger'
@@ -71,13 +71,19 @@ class CanvasModule extends React.PureComponent {
         this.props.api.renameModule(this.props.module.hash, value)
     )
 
-    onPortValueChange = (portId, value) => {
-        this.props.api.port.onChange(portId, value, () => {
-            // Check if reload is needed after the change
-            const port = this.props.module.params.find((p) => p.id === portId)
+    onPortValueChange = (portId, value, oldValue) => {
+        // Check if reload is needed after the change
+        const { canvas, api } = this.props
+        const port = getPort(canvas, portId)
+        const portModule = getModuleForPort(canvas, portId)
 
-            if (!this.unmounted && port && port.updateOnChange && port.value === value) {
-                this.props.api.loadNewDefinition(this.props.module.hash)
+        api.port.onChange(portId, value, () => {
+            if (!this.unmounted &&
+                port &&
+                (port.updateOnChange || port.type === 'EthereumContract') &&
+                oldValue !== value
+            ) {
+                api.loadNewDefinition(portModule.hash)
             }
         })
     }
