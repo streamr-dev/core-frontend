@@ -124,6 +124,15 @@ class Nav extends React.Component<Props> {
                         )}
                         align="left"
                     >
+                        <div className={styles.userInfo}>
+                            <div className={styles.userName}>
+                                {currentUser.name}
+                            </div>
+                            <div className={styles.userUsername}>
+                                {currentUser.username}
+                            </div>
+                        </div>
+                        {null}
                         <Link to={links.userpages.profile} className={styles.sansLink}>
                             <Translate value="general.profile" />
                         </Link>

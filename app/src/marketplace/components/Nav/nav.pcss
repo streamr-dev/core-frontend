@@ -7,10 +7,11 @@
 a.sansLink {
   cursor: pointer;
   font-family: var(--sans);
-  font-size: 14px; /* TODO: Use `rem`. */
+  font-size: calc(0.875 * var(--um));
   font-weight: var(--regular);
   letter-spacing: 0;
-  line-height: 1em;
+  line-height: 2em;
+  padding: 0 var(--um);
   text-transform: none;
 
   &,
@@ -22,6 +23,21 @@ a.sansLink {
   &:--enter {
     background-color: #F8F8F8;
   }
+}
+
+.userInfo {
+  color: #323232;
+  font-size: calc(0.875 * var(--um));
+  font-family: var(--sans);
+  margin: calc(0.25 * var(--um));
+  padding: 0 var(--um) calc(0.375 * var(--um));
+  text-transform: none;
+}
+
+.userUsername {
+  color: #525252;
+  font-size: calc(0.75 * var(--um));
+  font-weight: var(--regular);
 }
 
 @media (--md-up) {
