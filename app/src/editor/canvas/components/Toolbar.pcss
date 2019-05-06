@@ -220,7 +220,8 @@
 
 .RunButtonStopped :global(.btn):hover,
 .RunButtonStopped :global(.btn):active,
-.RunButtonStopped :global(.btn):focus {
+.RunButtonStopped :global(.btn):focus,
+.RunButtonStopped :global(.btn)[disabled] {
   background: #2BB337 !important;
   color: #FFFFFF !important;
   outline: none !important;
@@ -230,11 +231,13 @@
 .RunButtonRunning :global(.btn-secondary):focus,
 .RunButtonRunning :global(.btn-secondary):hover,
 .RunButtonRunning :global(.btn-secondary):active,
+.RunButtonRunning :global(.btn-secondary)[disabled],
 .RunButtonRunning :global(.btn-secondary):global(.dropdown-toggle):focus,
 .RunButtonRunning :global(.btn-secondary):global(.dropdown-toggle):hover,
 .RunButtonRunning :global(.btn-secondary):global(.dropdown-toggle):active {
   outline: none !important;
   box-shadow: none !important;
+  color: #FFFFFF !important;
 }
 
 .RunButton {
