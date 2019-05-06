@@ -1,15 +1,3 @@
-.accountCircle {
-  background-color: #FFFFFF;
-  border-radius: 50%;
-  color: white;
-  font-size: 16px;
-  font-weight: var(--medium);
-  text-align: center;
-  line-height: 3em;
-  height: 3em;
-  width: 3em;
-}
-
 .profileEmptyIcon {
   display: flex;
   height: 100%;
@@ -21,8 +9,34 @@
   height: 100%;
 }
 
+.accountCircle {
+  background-color: #EFEFEF;
+  border-radius: 50%;
+  color: white;
+  font-size: 16px;
+  font-weight: var(--medium);
+  text-align: center;
+  line-height: 3em;
+  height: 3em;
+  width: 3em;
+  text-transform: uppercase;
+
+  &.textDisplay {
+    background-color: #97BAC0;
+  }
+
+  &.uploadAvatarPlaceholder {
+    background-color: #FFFFFF;
+
+    .profileEmptyIcon svg {
+      height: 42px;
+    }
+  }
+}
+
 .inner {
   font-size: 1.125em;
+  margin-left: 1px;
 }
 
 @media (--md-up) {

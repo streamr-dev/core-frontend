@@ -557,7 +557,10 @@ msgid "userpages##profile##settings##uploadHelpText"
 msgstr "JPG or PNG, at least 256px"
 
 msgid "modal##avatar##defaultTitle"
-msgstr "Avatar"
+msgstr "Avatar upload"
+
+msgid "modal##avatar##updateTitle"
+msgstr "Avatar update"
 
 msgid "modal##avatar##cropYourImage"
 msgstr "Crop your image"
@@ -567,6 +570,9 @@ msgstr "Preview"
 
 msgid "modal##avatar##saveAvatar"
 msgstr "Save avatar"
+
+msgid "modal##avatar##saveAndApplyAvatar"
+msgstr "Save & Apply"
 
 msgid "userpages##keyField##options"
 msgstr "Select"

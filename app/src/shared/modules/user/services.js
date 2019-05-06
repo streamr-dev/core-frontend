@@ -44,11 +44,18 @@ export const postPasswordUpdate = async (passwordUpdate: PasswordUpdate, userInp
     })
 }
 
-export const uploadProfileAvatar = (): Promise<void> => (
-    new Promise((resolve) => {
-        setTimeout(resolve, 1000) // do nothing
-    })
-)
+export const uploadProfileAvatar = (image: File): Promise<void> => {
+    const options = {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    }
+
+    const data = new FormData()
+    data.append('file', image, image.name)
+
+    return post(formatApiUrl('users', 'me', 'image'), data, options)
+}
 
 export const deleteUserAccount = (): Promise<null> => (
     new Promise((resolve, reject) => {

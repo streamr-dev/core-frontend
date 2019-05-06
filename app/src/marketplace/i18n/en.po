@@ -133,6 +133,9 @@ msgstr "Marketplace top"
 msgid "imageUpload##coverImage##replace"
 msgstr "Drag & drop to replace your cover image <br /> or click to browse for one"
 
+msgid "imageUpload##coverImage##tabletUpload"
+msgstr "Tap to take a photo or browse for one"
+
 msgid "imageUpload##coverImage##upload"
 msgstr "Drag & drop to upload a cover image <br /> or click to browse for one"
 
