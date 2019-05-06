@@ -29,7 +29,6 @@ type Props = {
 
 type State = {
     file: ?DropzoneFile,
-    hover: ?boolean,
     imageUploading: ?boolean,
     imageUploaded: ?boolean,
     dragEntered: boolean,
@@ -38,7 +37,6 @@ type State = {
 class ImageUpload extends Component<Props, State> {
     state = {
         file: null,
-        hover: false,
         imageUploading: false,
         imageUploaded: false,
         dragEntered: false,
@@ -110,24 +108,18 @@ class ImageUpload extends Component<Props, State> {
         })
     }
 
-    setDropzoneHover = (hoverState: boolean) => {
-        this.setState({
-            hover: hoverState,
-        })
-    }
-
     getPreviewImage = () => this.state.file && this.state.file.preview
 
     unmounted = false
 
     determineStyles = (hasImage: boolean) => {
-        const { imageUploaded, hover } = this.state
+        const { imageUploaded } = this.state
 
-        if ((hasImage && hover) || (imageUploaded && hover) || (!hasImage && !imageUploaded)) {
+        if ((hasImage) || (imageUploaded)) {
             return styles.dropzoneAdvice
         }
 
-        return styles.dropzoneAdvice.noImage
+        return styles.dropzoneAdviceNoImage
     }
 
     render() {
@@ -136,8 +128,6 @@ class ImageUpload extends Component<Props, State> {
         const srcImage = this.getPreviewImage() || originalImage
         return (
             <div
-                onMouseEnter={() => this.setDropzoneHover(true)}
-                onMouseLeave={() => this.setDropzoneHover(false)}
                 className={styles.container}
             >
                 <Dropzone

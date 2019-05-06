@@ -20,7 +20,8 @@
   overflow: hidden;
   position: relative;
   text-align: center;
-  color: #A6A6A6;
+  color: #323232;
+  font-weight: 500;
 
   &.dragEntered {
     border-radius: 4px;
@@ -29,7 +30,10 @@
 
   &:hover {
     cursor: pointer;
-    color: #303030;
+  }
+
+  img {
+    opacity: 0.5;
   }
 }
 
@@ -70,20 +74,21 @@
   width: 100%;
 
   img {
-    opacity: 0.5;
-  }
-
-  p {
-    display: block;
+    display: none;
   }
 }
 
-.dropzoneAdvice.noImage {
+.dropzoneAdviceNoImage {
   position: absolute;
   top: 55%;
   left: 50%;
   transform: translate(-50%, -50%);
   width: 100%;
+
+  img {
+    display: inline-block;
+    opacity: 1;
+  }
 }
 
 .hide {
