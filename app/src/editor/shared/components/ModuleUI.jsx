@@ -11,10 +11,11 @@ import CommentModule from './modules/Comment'
 import StreamrTextField from './modules/TextField'
 import LabelModule from './modules/Label'
 import CanvasModule from './modules/Canvas'
+import ForEachModule from './modules/ForEach'
 import StreamrSwitcher from './modules/Switcher'
 import MapModule from './modules/Map'
 import HeatmapModule from './modules/Heatmap'
-import ModuleLoader from './ModuleLoader'
+import RunStateLoader from './RunStateLoader'
 import ExportCSVModule from './modules/ExportCSV'
 import SchedulerModule from './modules/Scheduler'
 import CustomModule from './modules/Custom'
@@ -27,6 +28,7 @@ const Modules = {
     CommentModule,
     LabelModule,
     CanvasModule,
+    ForEachModule,
     ExportCSVModule,
     SchedulerModule,
     MapModule,
@@ -44,7 +46,7 @@ const Widgets = {
 }
 
 export default ({ autoSize, ...props }) => (
-    <ModuleLoader {...props}>
+    <RunStateLoader {...props}>
         {(props) => {
             const module = props.module || {}
             const Module = module.widget ? Widgets[module.widget] : Modules[module.jsModule]
@@ -55,5 +57,5 @@ export default ({ autoSize, ...props }) => (
 
             return <Module {...props} />
         }}
-    </ModuleLoader>
+    </RunStateLoader>
 )

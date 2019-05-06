@@ -653,11 +653,11 @@ export function setModuleOptions(canvas, moduleHash, newOptions = {}) {
 
 export function limitLayout(canvas) {
     let nextCanvas = { ...canvas }
-    nextCanvas.modules.forEach((m) => {
-        const top = parseInt(m.layout.position.top, 10) || 0
-        const left = parseInt(m.layout.position.left, 10) || 0
+    nextCanvas.modules.forEach(({ layout, hash }) => {
+        const top = (layout && parseInt(layout.position.top, 10)) || 0
+        const left = (layout && parseInt(layout.position.left, 10)) || 0
         if (!top || !left || top < 0 || left < 0) {
-            nextCanvas = updateModulePosition(nextCanvas, m.hash, {
+            nextCanvas = updateModulePosition(nextCanvas, hash, {
                 top: Math.max(0, top),
                 left: Math.max(0, left),
             })

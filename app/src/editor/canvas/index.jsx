@@ -211,39 +211,45 @@ const CanvasEditComponent = class CanvasEdit extends Component {
 
     loadNewDefinition = async (hash) => {
         const module = CanvasState.getModule(this.props.canvas, hash)
+        try {
+            const newModule = await sharedServices.getModule({
+                id: module.id,
+                configuration: module,
+            })
 
-        const newModule = await sharedServices.getModule({
-            id: module.id,
-            configuration: module,
-        })
+            if (this.unmounted) { return }
 
-        if (this.unmounted) { return }
-        this.replaceCanvas((canvas) => {
-            let nextCanvas = CanvasState.updateModule(canvas, hash, () => newModule)
+            this.replaceCanvas((canvas) => {
+                let nextCanvas = CanvasState.updateModule(canvas, hash, () => newModule)
 
-            // Restore input connections
-            nextCanvas = module.inputs.reduce((nextCanvas, { id, sourceId }) => {
-                const port = newModule.inputs.find((p) => id === p.id)
+                // Restore input connections
+                nextCanvas = module.inputs.reduce((nextCanvas, { id, sourceId }) => {
+                    const port = newModule.inputs.find((p) => id === p.id)
 
-                if (sourceId && port) {
-                    return CanvasState.connectPorts(nextCanvas, port.id, sourceId)
-                }
+                    if (sourceId && port) {
+                        return CanvasState.connectPorts(nextCanvas, port.id, sourceId)
+                    }
+
+                    return nextCanvas
+                }, nextCanvas)
+
+                nextCanvas = module.params.reduce((nextCanvas, { id, sourceId }) => {
+                    const port = newModule.params.find((p) => id === p.id)
+
+                    if (sourceId && port) {
+                        return CanvasState.connectPorts(nextCanvas, port.id, sourceId)
+                    }
+
+                    return nextCanvas
+                }, nextCanvas)
 
                 return nextCanvas
-            }, nextCanvas)
-
-            nextCanvas = module.params.reduce((nextCanvas, { id, sourceId }) => {
-                const port = newModule.params.find((p) => id === p.id)
-
-                if (sourceId && port) {
-                    return CanvasState.connectPorts(nextCanvas, port.id, sourceId)
-                }
-
-                return nextCanvas
-            }, nextCanvas)
-
-            return nextCanvas
-        })
+            })
+        } catch (error) {
+            console.error(error.message)
+            // undo value change
+            this.props.undo()
+        }
     }
 
     pushNewDefinition = async (hash, value) => {
@@ -544,7 +550,7 @@ const CanvasEdit = withRouter(({ canvas, ...props }) => {
 })
 
 const CanvasEditWrap = () => {
-    const { state: canvas, push, replace } = useContext(UndoContainer.Context)
+    const { state: canvas, push, replace, undo } = useContext(UndoContainer.Context)
     const key = !!canvas && canvas.id
     return (
         <SubscriptionStatus.Provider key={key}>
@@ -552,6 +558,7 @@ const CanvasEditWrap = () => {
                 <CanvasEdit
                     push={push}
                     replace={replace}
+                    undo={undo}
                     canvas={canvas}
                 />
             </RunController.Provider>

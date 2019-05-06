@@ -196,6 +196,17 @@ const sources = {
             </g>
         </svg>
     ),
+    refresh: (
+        <svg viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+            <g fill="none" fillRule="evenodd">
+                <path d="M-6-6h24v24H-6z" />
+                <g stroke="currentColor" strokeLinecap="round" strokeWidth="1.5">
+                    <path d="M10.016 3.02a5.001 5.001 0 0 0-8.607.996m.599 4.995a5.001 5.001 0 0 0 8.57-.999" />
+                    <path d="M1 11V8h3M11 1v3H8" strokeLinejoin="round" />
+                </g>
+            </g>
+        </svg>
+    ),
     circle: (
         <MapIcons.CircleIcon />
     ),
@@ -254,6 +265,13 @@ const sources = {
             </g>
         </svg>
     ),
+    hamburger: (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 10">
+            <g stroke="currentColor" strokeWidth="1.5" fill="none" fillRule="evenodd" strokeLinecap="round">
+                <path d="M1 9h10M1 5h10M1 1h10" />
+            </g>
+        </svg>
+    ),
     search: (
         <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
             <g
@@ -288,8 +306,10 @@ const sources = {
     ),
 }
 
+export type IconName = $Keys<typeof sources>
+
 type Props = {
-    name: $Keys<typeof sources>,
+    name: IconName,
 }
 
 const SvgIcon = ({ name, ...props }: Props) => React.cloneElement(sources[name], {

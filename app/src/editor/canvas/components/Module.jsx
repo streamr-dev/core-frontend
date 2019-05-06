@@ -2,10 +2,11 @@ import cx from 'classnames'
 import React from 'react'
 import { Translate } from 'react-redux-i18n'
 
-import HamburgerButton from '../../shared/components/HamburgerButton'
+import ModuleHeaderButton from '../../shared/components/ModuleHeaderButton'
 import ModuleHeader from '../../shared/components/ModuleHeader'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import ModuleUI from '$editor/shared/components/ModuleUI'
+import { UiEmitter } from '$editor/shared/components/RunStateLoader'
 
 import { RunStates, getPort, getModuleForPort } from '../state'
 
@@ -31,6 +32,8 @@ class CanvasModule extends React.PureComponent {
     el = React.createRef()
 
     unmounted = false
+
+    uiEmitter = new UiEmitter()
 
     componentWillUnmount() {
         this.unmounted = true
@@ -60,6 +63,16 @@ class CanvasModule extends React.PureComponent {
         } else {
             // only open if different
             api.moduleSidebarOpen(true)
+        }
+    }
+
+    onRefreshModule = (event) => {
+        event.stopPropagation()
+        const { canvas } = this.props
+        const isRunning = canvas.state === RunStates.Running
+
+        if (isRunning) {
+            this.uiEmitter.reload()
         }
     }
 
@@ -142,7 +155,16 @@ class CanvasModule extends React.PureComponent {
                         label={module.displayName || module.name}
                         onLabelChange={this.onChangeModuleName}
                     >
-                        <HamburgerButton
+                        {isRunning && !!module.canRefresh && (
+                            <ModuleHeaderButton
+                                icon="refresh"
+                                className={ModuleStyles.dragCancel}
+                                onFocus={this.onFocusOptionsButton}
+                                onClick={this.onRefreshModule}
+                            />
+                        )}
+                        <ModuleHeaderButton
+                            icon="hamburger"
                             className={ModuleStyles.dragCancel}
                             onClick={this.onTriggerOptions}
                             onFocus={this.onHamburgerButtonFocus}
@@ -165,6 +187,7 @@ class CanvasModule extends React.PureComponent {
                     moduleHash={module.hash}
                     canvasId={canvas.id}
                     isActive={isRunning}
+                    uiEmitter={this.uiEmitter}
                     isSubscriptionActive={this.context.isStarting || this.context.isActive}
                 />
                 <div className={ModuleStyles.selectionDecorator} />
