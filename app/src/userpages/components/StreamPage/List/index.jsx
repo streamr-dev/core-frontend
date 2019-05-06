@@ -317,8 +317,17 @@ class StreamList extends Component<Props, State> {
                                             <Table.Th noWrap title={stream.name}>{stream.name}</Table.Th>
                                             <Table.Td noWrap title={stream.description}>{stream.description}</Table.Td>
                                             <Table.Td noWrap>{moment(stream.lastUpdated).fromNow()}</Table.Td>
-                                            <Table.Td>-</Table.Td>
-                                            <Table.Td className={styles.statusColumn}><StatusIcon /></Table.Td>
+                                            <Table.Td>
+                                                {Object.prototype.hasOwnProperty.call(stream, 'lastData') && moment(stream.lastData).fromNow()}
+                                            </Table.Td>
+                                            <Table.Td className={styles.statusColumn}>
+                                                {!Object.prototype.hasOwnProperty.call(stream, 'ok') && (
+                                                    <StatusIcon />
+                                                )}
+                                                {Object.prototype.hasOwnProperty.call(stream, 'ok') && (
+                                                    <StatusIcon status={stream.ok ? 'ok' : 'error'} />
+                                                )}
+                                            </Table.Td>
                                             <Table.Td
                                                 onClick={(event) => event.stopPropagation()}
                                                 className={styles.menuColumn}
