@@ -120,30 +120,30 @@ function getModuleKey(m) {
     return `${m.id}-${m.hash}`
 }
 
-function PreviewCables({ canvas, preview, previewScale }) {
-    function getPosition(portId) {
-        if (!portId) { return }
-        let m
-        try {
-            m = getModuleForPort(canvas, portId)
-        } catch (error) {
-            // ignore error if problem with canvas/port
-            return
-        }
-        const key = getModuleKey(m)
-        const p = preview.modules.find((m) => m.key === key)
-        return {
-            id: m.id,
-            left: (p.left + (p.width / 2)) * previewScale,
-            top: (p.top + (p.height / 2)) * previewScale,
-        }
+function getPortPosition(portId, canvas, preview, previewScale) {
+    if (!portId) { return }
+    let m
+    try {
+        m = getModuleForPort(canvas, portId)
+    } catch (error) {
+        // ignore error if problem with canvas/port
+        return
     }
+    const key = getModuleKey(m)
+    const p = preview.modules.find((m) => m.key === key)
+    return {
+        id: m.id,
+        left: (p.left + (p.width / 2)) * previewScale,
+        top: (p.top + (p.height / 2)) * previewScale,
+    }
+}
 
-    const cables = canvas.modules.reduce((memo, { params, inputs, outputs }) => ({
+const PreviewCables = ({ canvas, preview, previewScale }) => (
+    Object.entries(canvas.modules.reduce((memo, { params, inputs, outputs }) => ({
         ...memo,
         ...(() => [...params, ...inputs, ...outputs].reduce((memo2, { sourceId, id }) => {
-            const from = getPosition(sourceId)
-            const to = getPosition(id)
+            const from = getPortPosition(sourceId, canvas, preview, previewScale)
+            const to = getPortPosition(id, canvas, preview, previewScale)
             const cable = [from, to]
 
             if (!from || !to) {
@@ -155,12 +155,10 @@ function PreviewCables({ canvas, preview, previewScale }) {
                 [getCableKey(cable)]: cable,
             }
         }, {}))(),
-    }), {})
-
-    return Object.entries(cables).map(([key, cable]) => (
+    }), {})).map(([key, cable]) => (
         <Cable cable={cable} key={key} strokeWidth="0.5" />
     ))
-}
+)
 
 const ModulePreview = ({
     height,
@@ -170,60 +168,57 @@ const ModulePreview = ({
     x,
     y,
     ...props
-}) => {
-    console.log(type)
-    return (
-        <svg
-            height={height}
-            width={width}
-            x={x}
-            y={y}
-            {...props}
-        >
-            <rect
-                fill={type === 'CommentModule' ? '#FAE7DD' : 'white'}
-                height="100%"
-                rx="1"
-                width="100%"
+}) => (
+    <svg
+        height={height}
+        width={width}
+        x={x}
+        y={y}
+        {...props}
+    >
+        <rect
+            fill={type === 'CommentModule' ? '#FAE7DD' : 'white'}
+            height="100%"
+            rx="1"
+            width="100%"
+        />
+        <rect
+            fill="#D8D8D8"
+            height="4"
+            rx="1"
+            width={Math.min(width * 0.75, title.length * 3)}
+            x="3"
+            y="3"
+        />
+        <rect
+            fill="#EFEFEF"
+            height="1"
+            width="100%"
+            y="10"
+        />
+        {type === 'streamr-chart' && (
+            <ChartPreview
+                height={height - 14}
+                width={width}
+                y={14}
             />
-            <rect
-                fill="#D8D8D8"
-                height="4"
-                rx="1"
-                width={Math.min(width * 0.75, title.length * 3)}
-                x="3"
-                y="3"
+        )}
+        {type === 'streamr-table' && (
+            <TablePreview
+                height={height - 17}
+                width={width}
+                y={14}
             />
-            <rect
-                fill="#EFEFEF"
-                height="1"
-                width="100%"
-                y="10"
+        )}
+        {type === 'CommentModule' && (
+            <CommentPreview
+                height={height - 17}
+                width={width}
+                y={14}
             />
-            {type === 'streamr-chart' && (
-                <ChartPreview
-                    height={height - 14}
-                    width={width}
-                    y={14}
-                />
-            )}
-            {type === 'streamr-table' && (
-                <TablePreview
-                    height={height - 17}
-                    width={width}
-                    y={14}
-                />
-            )}
-            {type === 'CommentModule' && (
-                <CommentPreview
-                    height={height - 17}
-                    width={width}
-                    y={14}
-                />
-            )}
-        </svg>
-    )
-}
+        )}
+    </svg>
+)
 
 const defaultLayout = {
     height: Number.parseInt(defaultModuleLayout.height, 10),
