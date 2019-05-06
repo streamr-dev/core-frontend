@@ -131,6 +131,7 @@ jobs:
     - WEB3_PUBLIC_HTTP_PROVIDER=https://mainnet.infura.io
     - WEB3_PUBLIC_WS_PROVIDER=wss://mainnet.infura.io/ws
     - SENTRY_URL=https://e012761929d24baa96ca82772f60b395@sentry.io/1203154
+    - LOGROCKET_SLUG=et0uhu/streamr-frontend-beta
     script:
     - npm run build
     deploy:
