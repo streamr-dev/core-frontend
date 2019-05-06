@@ -3,6 +3,27 @@
   margin: -4px 15px -4px 0;
 }
 
+/* Using tag name (a) for higher specificity. Not that !important. */
+a.sansLink {
+  cursor: pointer;
+  font-family: var(--sans);
+  font-size: 14px; /* TODO: Use `rem`. */
+  font-weight: var(--regular);
+  letter-spacing: 0;
+  line-height: 1em;
+  text-transform: none;
+
+  &,
+  &:--idle,
+  &:--enter {
+    color: #323232;
+  }
+
+  &:--enter {
+    background-color: #F8F8F8;
+  }
+}
+
 @media (--md-up) {
   .accountCircle {
     float: none;

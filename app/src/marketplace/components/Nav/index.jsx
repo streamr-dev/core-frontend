@@ -39,23 +39,9 @@ class Nav extends React.Component<Props> {
 
         return (
             <FrameNav label={I18n.t('general.marketplace')} expand {...this.props}>
-                <NavDropdown align="center" label={I18n.t('general.marketplace')}>
-                    <Link to={formatPath(links.marketplace.main)}>
-                        <Translate value="general.browse" />
-                    </Link>
-                    <Link to={formatPath(links.userpages.purchases)}>
-                        <Translate value="general.myPurchases" />
-                    </Link>
-                    <Link to={formatPath(links.userpages.products)}>
-                        <Translate value="general.myProducts" />
-                    </Link>
-                </NavDropdown>
-                <NavLink mobile to={formatPath(links.marketplace.main)}>
-                    <Translate value="general.browse" />
-                </NavLink>
-                <NavDropdown align="center" label={I18n.t('general.editor')}>
-                    <Link to={formatPath(links.editor.canvasEditor)}>
-                        <Translate value="general.newCanvas" />
+                <NavDropdown align="center" label={I18n.t('general.core')}>
+                    <Link to={formatPath(links.userpages.streams)}>
+                        <Translate value="general.streams" />
                     </Link>
                     <Link to={formatPath(links.userpages.canvases)}>
                         <Translate value="general.canvases" />
@@ -63,10 +49,19 @@ class Nav extends React.Component<Props> {
                     <Link to={formatPath(links.userpages.dashboards)}>
                         <Translate value="general.dashboards" />
                     </Link>
-                    <Link to={formatPath(links.userpages.streams)}>
-                        <Translate value="general.streams" />
+                    <Link to={formatPath(links.userpages.products)}>
+                        <Translate value="general.products" />
+                    </Link>
+                    <Link to={formatPath(links.userpages.purchases)}>
+                        <Translate value="general.purchases" />
+                    </Link>
+                    <Link to={formatPath(links.userpages.transactions)}>
+                        <Translate value="general.transactions" />
                     </Link>
                 </NavDropdown>
+                <NavLink to={formatPath(links.marketplace.main)}>
+                    <Translate value="general.marketplace" />
+                </NavLink>
                 <NavDivider />
                 <NavLink mobile to={formatPath(links.userpages.purchases)}>
                     <Translate value="general.myPurchases" />
@@ -129,10 +124,20 @@ class Nav extends React.Component<Props> {
                         )}
                         align="left"
                     >
-                        <Link to={links.userpages.profile}>
+                        <Link to={links.userpages.profile} className={styles.sansLink}>
                             <Translate value="general.profile" />
                         </Link>
-                        <Link to={routes.logout()}>
+                        <Link to={`${links.userpages.profile}#api-keys`} className={styles.sansLink}>
+                            <Translate value="userpages.profilePage.apiCredentials.linkTitle" />
+                        </Link>
+                        <Link to={`${links.userpages.profile}#ethereum-accounts`} className={styles.sansLink}>
+                            <Translate value="userpages.profilePage.ethereumAddress.linkTitle" />
+                        </Link>
+                        <Link to={`${links.userpages.profile}#private-keys`} className={styles.sansLink}>
+                            <Translate value="userpages.profilePage.ethereumPrivateKeys.linkTitle" />
+                        </Link>
+                        {null}
+                        <Link to={routes.logout()} className={styles.sansLink}>
                             <Translate value="general.logout" />
                         </Link>
                     </NavDropdown>

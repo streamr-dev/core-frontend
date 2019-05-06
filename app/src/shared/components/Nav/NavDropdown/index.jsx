@@ -45,9 +45,11 @@ const NavDropdown = ({
                     [styles.twoColumns]: !!twoColumns,
                 })}
             >
-                {React.Children.map(children, (child) => (
+                {React.Children.map(children, (child) => (child ? (
                     <li>{child}</li>
-                ))}
+                ) : (
+                    <li className={styles.separator} />
+                )))}
             </ul>
         </div>
     </div>
