@@ -122,11 +122,12 @@ class ImageUpload extends Component<Props, State> {
 
     determineStyles = (hasImage: boolean) => {
         const { imageUploaded, hover } = this.state
+
         if ((hasImage && hover) || (imageUploaded && hover) || (!hasImage && !imageUploaded)) {
             return styles.dropzoneAdvice
         }
 
-        return styles.hide
+        return styles.dropzoneAdvice.noImage
     }
 
     render() {
