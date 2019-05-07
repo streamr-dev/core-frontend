@@ -1,0 +1,29 @@
+.root {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--um);
+}
+
+.root > div {
+  align-items: center;
+  display: flex;
+  height: calc(2 * var(--um));
+}
+
+.root > div > * + * {
+  margin-left: calc(1.5 * var(--um));
+}
+
+.link {
+  font-family: var(--mono);
+  font-size: calc(0.75 * var(--um));
+  font-weight: var(--medium);
+  letter-spacing: calc(0.125 * var(--um));
+  text-transform: uppercase;
+}
+
+@media (--md-up) {
+  .root {
+    padding: calc(1.5 * var(--um));
+  }
+}

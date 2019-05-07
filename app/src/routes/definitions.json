@@ -26,5 +26,11 @@
     "userPageStreamShow": "/u/stream/show/:streamId",
     "userPageStreamPreview": "/u/stream/preview/:streamId",
     "privacy": "https://s3.amazonaws.com/streamr-public/streamr-privacy-policy.pdf",
-    "whitepaper": "<landingPage>/whitepaper"
+    "whitepaper": "<landingPage>/whitepaper",
+    "canvases": "/u/canvases",
+    "dashboards": "/u/dashboards",
+    "products": "/u/products",
+    "purchases": "/u/purchases",
+    "streams": "/u/streams",
+    "transactions": "/u/transactions"
 }
