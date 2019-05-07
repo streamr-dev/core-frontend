@@ -80,8 +80,8 @@ class KeyField extends React.Component<Props, State> {
                 onSave(keyName, value, permission)
                     .then(() => {
                         if (!this.unmounted) {
-                            this.forceUpdate()
                             this.setState({
+                                permission,
                                 editing: false,
                                 menuOpen: false,
                                 error: null,
