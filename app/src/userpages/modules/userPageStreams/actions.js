@@ -260,7 +260,7 @@ export const updateStreamStatuses = (ids: StreamIdList) => (dispatch: Function) 
         services.getStreamStatus(id)
             .then(({ ok, date }: StreamStatus) => ({
                 id,
-                ok,
+                streamStatus: ok ? 'ok' : 'error',
                 lastData: date,
             }))
             .then(handleEntities(streamSchema, dispatch))
@@ -277,13 +277,13 @@ export const getStreams = () => (dispatch: Function, getState: Function) => {
     })
 
     return services.getStreams(params)
+        .then((data) => data.map((stream) => ({
+            ...stream,
+            status: 'inactive',
+        })))
         .then(handleEntities(streamsSchema, dispatch))
         .then((ids) => {
             dispatch(getStreamsSuccess(ids))
-
-            return ids
-        })
-        .then((ids) => {
             dispatch(updateStreamStatuses(ids))
         })
         .catch((e) => {

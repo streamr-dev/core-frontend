@@ -40,7 +40,7 @@ export type Stream = NewStream & {
     requireSignedData: boolean,
     storageDays: number,
     uiChannel: boolean,
-    ok?: boolean,
+    streamStatus?: 'ok' | 'error' | 'inactive',
     lastData?: Date,
 }
 
