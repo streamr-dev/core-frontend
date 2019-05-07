@@ -165,8 +165,8 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                             <div>
                                 <R.ButtonGroup
                                     className={cx(styles.RunButtonGroup, {
-                                        [styles.RunButtonStopped]: !isRunning && !canvas.adhoc,
-                                        [styles.RunButtonRunning]: !!isRunning || canvas.adhoc,
+                                        [styles.RunButtonStopped]: !(isActive || canvas.adhoc),
+                                        [styles.RunButtonRunning]: isActive || canvas.adhoc,
                                     })}
                                 >
                                     <R.Button
