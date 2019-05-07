@@ -231,7 +231,6 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
         if (this.input) {
             this.input.focus()
         }
-        this.recalculateHeight()
     }
 
     recalculateHeight = () => {
@@ -262,7 +261,7 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
         this.setState(({ isExpanded, height, heightBeforeMinimize }) => ({
             isExpanded: !isExpanded,
             heightBeforeMinimize: isExpanded ? height : heightBeforeMinimize,
-        }), () => this.recalculateHeight())
+        }))
     }
 
     addModule = (id: number, x: ?number, y: ?number, streamId: ?string) => {
@@ -321,6 +320,8 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
                 this.input.focus()
             }
         }
+
+        this.recalculateHeight()
     }
 
     getMappedModuleTree = (search: string = '') => {
