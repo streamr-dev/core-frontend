@@ -85,7 +85,7 @@ export async function getModuleCategories() {
 }
 
 export async function getCanvasPermissions({ id }) {
-    return api().get(`${process.env.STREAMR_API_URL}/canvases/${id}/permissions/me`)
+    return api().get(`${process.env.STREAMR_API_URL}/canvases/${id}/permissions/me`).then(getData)
 }
 
 async function startCanvas(canvas, { clearState }) {

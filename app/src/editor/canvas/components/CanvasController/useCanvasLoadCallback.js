@@ -14,8 +14,8 @@ export default function useCanvasLoadCallback() {
         wrap(async () => {
             const canvas = await services.loadRelevantCanvas({ id: canvasId })
             // Get permissions and save them temporarily to canvas
-            const permissions = await services.getCanvasPermissions({ id: canvasId })
-            canvas.permissions = permissions.data
+            const permissions = await services.getCanvasPermissions({ id: canvas.id })
+            canvas.permissions = permissions
             if (!isMountedRef.current) { return }
             canvasUpdater.replaceCanvas(() => canvas)
         })
