@@ -991,7 +991,13 @@ export function moduleSearch(moduleCategories, search) {
     const moduleIndex = getModuleCategoriesIndex(moduleCategories)
     search = search.trim().toLowerCase()
     if (!search) { return moduleIndex }
+
     const terms = search.split(/\s+/)
+    const exactMatches = moduleIndex.filter((m) => {
+        const target = m.name.toLowerCase()
+        return target.split(/\s+/).join(' ') === terms.join(' ')
+    })
+
     const nameMatches = moduleIndex.filter((m) => {
         const target = m.name.toLowerCase()
         return terms.every((searchTerm) => (
@@ -1006,5 +1012,5 @@ export function moduleSearch(moduleCategories, search) {
         ))
     })
 
-    return uniqBy(nameMatches.concat(pathMatches), 'id')
+    return uniqBy([...exactMatches, ...nameMatches, ...pathMatches], 'id')
 }
