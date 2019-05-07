@@ -63,11 +63,23 @@ class Nav extends React.Component<Props> {
                     <Translate value="general.marketplace" />
                 </NavLink>
                 <NavDivider />
-                <NavLink mobile to={formatPath(links.userpages.purchases)}>
-                    <Translate value="general.myPurchases" />
+                <NavLink mobile to={formatPath(links.userpages.streams)}>
+                    <Translate value="general.streams" />
+                </NavLink>
+                <NavLink mobile to={formatPath(links.userpages.canvases)}>
+                    <Translate value="general.canvases" />
+                </NavLink>
+                <NavLink mobile to={formatPath(links.userpages.dashboards)}>
+                    <Translate value="general.dashboards" />
                 </NavLink>
                 <NavLink mobile to={formatPath(links.userpages.products)}>
-                    <Translate value="general.myProducts" />
+                    <Translate value="general.products" />
+                </NavLink>
+                <NavLink mobile to={formatPath(links.userpages.purchases)}>
+                    <Translate value="general.purchases" />
+                </NavLink>
+                <NavLink mobile to={formatPath(links.userpages.transactions)}>
+                    <Translate value="general.transactions" />
                 </NavLink>
                 <NavDivider />
                 {currentUser && (
