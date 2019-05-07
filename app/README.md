@@ -49,6 +49,7 @@ To be able to use the Marketplace, you'll need to configure these variables into
 | WEB3_REQUIRED_NETWORK_ID     | This is used to check that the user has selected the correct network |
 | WEB3_PUBLIC_HTTP_PROVIDER    | A public provider used to query Marketplace methods without Metamask |
 | WEB3_PUBLIC_WS_PROVIDER      | A public websocket prodiver (currently not in use)                   |
+| BUNDLE_ANALYSIS              | Optional, enables generating bundle size analysis report.            |
 
 Development values (set the values in your `.env`):
 
@@ -64,6 +65,7 @@ Development values (set the values in your `.env`):
 | WEB3_REQUIRED_NETWORK_ID     | 4                                            | Rinkeby          |
 | WEB3_PUBLIC_HTTP_PROVIDER    | https://rinkeby.infura.io                    | Infura (Rinkeby) |
 | WEB3_PUBLIC_WS_PROVIDER      | wss://rinkeby.infura.io/ws                   | Infura (Rinkeby) |
+| BUNDLE_ANALYSIS              | 1                                            |                  |
 
 Use `.travis.yml` to set the production values.
 
