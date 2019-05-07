@@ -202,13 +202,15 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
             isExpanded: true,
         })
 
+        const trimmedValue = value.trim()
+
         // Search modules
-        const matchingModules = this.getMappedModuleTree(value)
+        const matchingModules = this.getMappedModuleTree(trimmedValue)
 
         // Search streams
         const params = {
             id: '',
-            search: value,
+            search: trimmedValue,
             sortBy: 'lastUpdated',
             order: 'desc',
             uiChannel: false,
@@ -251,8 +253,8 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
             (matchingStreams.length > 0 ? 1 : 0)
         let requiredHeight = MIN_HEIGHT_MINIMIZED + (searchResultItemCount * MODULE_ITEM_HEIGHT)
 
-        if (search === '') {
-            requiredHeight = height
+        if (search.trim() === '') {
+            requiredHeight = height /* use user-set height if 'browsing' */
         }
 
         return Math.min(Math.max(requiredHeight, MIN_HEIGHT_MINIMIZED), MAX_HEIGHT)
@@ -448,6 +450,7 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
         const { open, isOpen } = this.props
         const { search, isExpanded, width } = this.state
         const height = this.calculateHeight()
+        const isSearching = !!search.trim()
         return (
             <React.Fragment>
                 <Draggable
@@ -462,7 +465,7 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
                         <ResizableBox
                             width={width}
                             height={height}
-                            axis={search !== '' ? 'x' : 'both' /* lock y when searching */}
+                            axis={isSearching ? 'x' : 'both' /* lock y when searching */}
                             minConstraints={[MIN_WIDTH, MIN_HEIGHT_MINIMIZED]}
                             maxConstraints={[MAX_WIDTH, MAX_HEIGHT]}
                             onResize={(e, data) => {
@@ -502,9 +505,10 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
                                     </button>
                                 </div>
                                 <div role="listbox" className={styles.Content}>
-                                    {(search && search.length > 0) ?
+                                    {isSearching ?
                                         this.renderSearchResults() :
-                                        this.renderMenu()}
+                                        this.renderMenu()
+                                    }
                                 </div>
                             </div>
                         </ResizableBox>
