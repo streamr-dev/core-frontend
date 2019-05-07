@@ -209,7 +209,7 @@ class KeyField extends React.Component<Props, State> {
                         </div>
                     )}
                 </Col>
-                <Col md={12} lg={1} />
+                <Col md={12} lg={1} className={styles.offsetColOverride} />
             </Row>
         ) : (
             <KeyFieldEditor
