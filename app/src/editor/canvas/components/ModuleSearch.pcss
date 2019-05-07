@@ -136,10 +136,43 @@
   letter-spacing: 1px;
   line-height: 32px;
   overflow: auto;
+
+  /* standards compliant but only firefox implements */
+  scrollbar-width: thin; /* stylelint-disable-line property-no-unknown */
+
+  /* Firefox doesn't even do this */
+  scrollbar-color: #CDCDCD white; /* stylelint-disable-line property-no-unknown */
 }
+
+/**
+ * Scrollbar Styles
+ */
+
+.ModuleSearch .Content::-webkit-scrollbar {
+  width: 12px;
+  background-color: transparent;
+}
+
+.ModuleSearch .Content::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.ModuleSearch .Content::-webkit-scrollbar-thumb {
+  border: solid 4px white; /* simulate padding */
+  background-color: #CDCDCD;
+  border-radius: 6px; /* uses inside edge as radius */
+}
+
+/**
+ * ModuleSearch Content Items
+ */
 
 .ModuleSearch .Content > * {
   padding: 5px 24px;
+  border-right: 1px solid #EFEFEF;
+}
+
+.ModuleSearch .Content > *:not(:last-child) {
   border-bottom: 1px solid #EFEFEF;
 }
 
