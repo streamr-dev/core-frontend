@@ -7,12 +7,13 @@ import get from 'lodash/get'
 
 import useIsMountedRef from '$shared/utils/useIsMountedRef'
 import * as SubscriptionStatus from '$editor/shared/components/SubscriptionStatus'
+import usePending from '$editor/shared/hooks/usePending'
+
 import * as services from '../../services'
 import * as CanvasState from '../../state'
 
 import useCanvasStateChangeEffect from '../../hooks/useCanvasStateChangeEffect'
 import useCanvasUpdater from './useCanvasUpdater'
-import usePending from './usePending'
 
 export const RunControllerContext = React.createContext()
 

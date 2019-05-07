@@ -1,9 +1,9 @@
 import { useCallback } from 'react'
+
 import useIsMountedRef from '$shared/utils/useIsMountedRef'
+import usePending from '$editor/shared/hooks/usePending'
 
 import * as services from '../../services'
-
-import usePending from './usePending'
 import useCanvasUpdater from './useCanvasUpdater'
 
 export default function useCanvasLoadCallback() {
