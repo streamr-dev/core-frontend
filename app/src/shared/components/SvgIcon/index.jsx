@@ -312,6 +312,14 @@ const sources = {
             </g>
         </svg>
     ),
+    clear: (
+        <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg">
+            <g transform="translate(.25 .25)" fill="none">
+                <circle stroke="#CDCDCD" fill="#CDCDCD" cx="6.75" cy="6.75" r="6.188" />
+                <path d="M4.84 4.84l3.82 3.82m0-3.82L4.84 8.66" stroke="#FFF" />
+            </g>
+        </svg>
+    ),
 }
 
 export type IconName = $Keys<typeof sources>
