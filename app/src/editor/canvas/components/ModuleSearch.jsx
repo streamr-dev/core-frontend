@@ -198,10 +198,12 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
     }
 
     searchStreams = debounce(async (value) => {
-        // Search streams
+        // remove 'stream' term from search
+        // ensures we can pseudo 'filter results to streams' using "stream searchterm"
+        const streamSearchString = value.replace(/(\s+|^)stream(\s+|$)/g, ' ').trim()
         const params = {
             id: '',
-            search: value,
+            search: streamSearchString,
             sortBy: 'lastUpdated',
             order: 'desc',
             uiChannel: false,
@@ -212,7 +214,7 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
 
         if (this.unmounted) { return }
         // throw away results if no longer current
-        if (this.currentSearch !== value) { return }
+        if (this.currentSearch.trim() !== value.trim()) { return }
 
         this.setState({ matchingStreams })
     }, 500)
