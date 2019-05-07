@@ -1,12 +1,3 @@
-.inner {
-  font-size: 0.875em;
-  vertical-align: top;
-
-  > span {
-    vertical-align: inherit;
-  }
-}
-
 .navLink {
   border-radius: 2px;
   display: block;
@@ -57,28 +48,6 @@
   .inner {
     font-size: 0.75em;
     position: relative;
-  }
-
-  .underlined::before {
-    background: #FF5C00;
-    border-radius: 1px;
-    content: '';
-    height: 2px;
-    left: initial;
-    position: absolute;
-    right: 0;
-    bottom: -0.4em;
-    transition: width 0.2s ease-out;
-    width: 0;
-  }
-
-  .navLinkParent,
-  .navLink {
-    &:--enter .underlined::before {
-      left: 0;
-      transition: width 0.2s ease-in, right 0s 0.15s;
-      width: 100%;
-    }
   }
 
   .navLinkParent:--enter {

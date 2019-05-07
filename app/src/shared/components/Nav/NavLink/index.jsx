@@ -13,7 +13,6 @@ type Props = {
     desktop?: boolean,
     mobile?: boolean,
     outline?: boolean,
-    noDecorate?: boolean,
     className?: string,
     closeNav?: () => void,
     onClick?: (SyntheticInputEvent<EventTarget>) => void,
@@ -41,12 +40,10 @@ class NavLink extends React.Component<Props> {
     render() {
         const {
             className,
-            children,
             opaqueNav,
             mobile,
             desktop,
             outline,
-            noDecorate,
             closeNav,
             ...props
         } = this.props
@@ -60,14 +57,6 @@ class NavLink extends React.Component<Props> {
             }, screensToClassNames(!!mobile, !!desktop)),
             onClick: this.onClick,
             ...props,
-            children: (
-                <span className={classNames(styles.inner, {
-                    [styles.underlined]: !outline && !noDecorate,
-                })}
-                >
-                    {children}
-                </span>
-            ),
         })
     }
 }
