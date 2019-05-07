@@ -451,7 +451,7 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
             <React.Fragment>
                 <Draggable
                     handle={`.${styles.dragHandle}`}
-                    bounds="parent"
+                    bounds={`.${CanvasStyles.Modules}`}
                 >
                     <div
                         className={styles.ModuleSearch}
