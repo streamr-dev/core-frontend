@@ -6,19 +6,21 @@ import LinkItem from '../LinkItem'
 import styles from './dropdownItem.pcss'
 
 type Props = {
-    label?: React.Node,
-    toggle?: React.Node,
-    children: React.Node,
     align?: string,
+    children: React.Node,
+    eatPadding?: boolean,
+    label?: React.Node,
     noPointer?: boolean,
+    toggle?: React.Node,
 }
 
 const DropdownItem = ({
-    label,
-    toggle,
-    children,
     align,
+    children,
+    eatPadding,
+    label,
     noPointer,
+    toggle,
     ...props
 }: Props) => (
     <div className={cx(styles.dropdown, LinkItem.styles.parent)}>
@@ -32,6 +34,7 @@ const DropdownItem = ({
                 [styles.centered]: !align || align === 'center',
                 [styles.pullLeft]: align === 'left',
                 [styles.pullRight]: align === 'right',
+                [styles.eatPadding]: eatPadding,
             })}
         >
             <ul
@@ -46,5 +49,9 @@ const DropdownItem = ({
         </div>
     </div>
 )
+
+DropdownItem.defaultProps = {
+    eatPadding: true,
+}
 
 export default DropdownItem

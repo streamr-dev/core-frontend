@@ -1,7 +1,13 @@
 // @flow
 
 import React from 'react'
+import cx from 'classnames'
+import { withRouter, type Location } from 'react-router-dom'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
 import { I18n, Translate } from 'react-redux-i18n'
+import { selectUserData } from '$shared/modules/user/selectors'
+import type { User } from '$shared/flowtype/user-types'
 import Link from '$shared/components/Link'
 import LogoItem from './LogoItem'
 import DropdownItem from './DropdownItem'
@@ -9,9 +15,24 @@ import LinkItem from './LinkItem'
 import AvatarItem from './AvatarItem'
 import routes from '$routes'
 import navigationLinks from '$docs/components/DocsLayout/Navigation/navLinks'
+
 import styles from './nav.pcss'
 
-const Nav = () => (
+type StateProps = {
+    currentUser: ?User,
+}
+type Props = StateProps & {
+    location: Location,
+}
+
+const mapStateToProps = (state): StateProps => ({
+    currentUser: selectUserData(state),
+})
+
+const Nav = compose(
+    connect(mapStateToProps),
+    withRouter,
+)(({ currentUser, location }: Props) => (
     <nav
         className={styles.root}
     >
@@ -73,10 +94,30 @@ const Nav = () => (
                     </Link>
                 ))}
             </DropdownItem>
-            <AvatarItem />
+            {!!currentUser && (
+                <AvatarItem user={currentUser} />
+            )}
+            {!currentUser && (
+                <LinkItem
+                    to={routes.login({
+                        redirect: location.pathname,
+                    })}
+                    className={Nav.styles.link}
+                >
+                    <Translate value="general.signIn" />
+                </LinkItem>
+            )}
+            {!currentUser && (
+                <LinkItem
+                    to={routes.signUp()}
+                    className={cx(Nav.styles.link, Nav.styles.button)}
+                >
+                    <Translate value="general.signUp" />
+                </LinkItem>
+            )}
         </div>
     </nav>
-)
+))
 
 Nav.styles = styles
 

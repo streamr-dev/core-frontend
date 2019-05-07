@@ -14,11 +14,17 @@
 .pullLeft {
   left: auto;
   right: 0;
+}
+
+.pullLeft.eatPadding {
   transform: translateX(var(--um));
 }
 
 .pullRight {
   left: 0;
+}
+
+.pullRight.eatPadding {
   transform: translateX(calc(-1 * var(--um)));
 }
 
@@ -45,10 +51,8 @@
   a {
     background-color: #FFFFFF;
     display: block;
-    letter-spacing: calc(0.125 * var(--um));
-    line-height: calc(1.75 * var(--um));
-    padding: 0 var(--um);
-    transition: 200ms ease-in-out background-color;
+    line-height: calc(2.5 * var(--um));
+    padding: 0 calc(1.5 * var(--um));
     white-space: nowrap;
 
     &,
@@ -60,7 +64,6 @@
 
     &:--enter {
       background-color: #F8F8F8;
-      transition-duration: 50ms;
     }
 
     &.active {
@@ -85,4 +88,11 @@
   background-color: #EFEFEF;
   height: 1px;
   margin: calc(0.25 * var(--um)) 0;
+}
+
+@media (--lg-up) {
+  .dropdownMenu a {
+    line-height: calc(1.75 * var(--um));
+    padding: 0 var(--um);
+  }
 }

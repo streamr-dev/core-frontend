@@ -32,5 +32,6 @@
     "products": "/u/products",
     "purchases": "/u/purchases",
     "streams": "/u/streams",
-    "transactions": "/u/transactions"
+    "transactions": "/u/transactions",
+    "editProfile": "/u/profile/edit"
 }
