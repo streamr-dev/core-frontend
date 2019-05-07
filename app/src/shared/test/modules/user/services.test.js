@@ -85,6 +85,36 @@ describe('user - services', () => {
         })
     })
 
+    describe('postPasswordUpdate', () => {
+        it('should POST password update to the api', async (done) => {
+            const passwordUpdate = {
+                confirmNewPassword: 'Testtesttest234!',
+                currentPassword: 'Testtesttest123!',
+                strongEnoughPassword: true,
+                updating: false,
+            }
+
+            const userInputs = ['tester2@streamr.com', 'Tester Two']
+
+            moxios.wait(() => {
+                const request = moxios.requests.mostRecent()
+                request.respondWith({
+                    status: 204,
+                    response: '',
+                })
+
+                assert.equal(request.config.method, 'post')
+                assert.equal(request.config.url, '/users/me/changePassword')
+                assert.equal(request.headers['Content-Type'], 'application/x-www-form-urlencoded')
+                assert.equal(request.headers['X-Requested-With'], 'XMLHttpRequest')
+                done()
+            })
+
+            const result = await services.postPasswordUpdate(passwordUpdate, userInputs)
+            assert.deepStrictEqual(result, '')
+        })
+    })
+
     describe('updateCurrentUserImage', () => {
         it('should POST the image to the api and PUT the user to the API', async () => {
             const data = {

@@ -1,6 +1,5 @@
 // @flow
 
-import zxcvbn from '$utils/zxcvbn'
 import { get, post, put } from '$shared/utils/api'
 import { formatApiUrl } from '$shared/utils/url'
 import type { ApiResult } from '$shared/flowtype/common-types'
@@ -17,26 +16,14 @@ export const putUser = (user: User): ApiResult<User> => put(formatApiUrl('users'
     ...user,
 })
 
-const MIN_PASSWORD_LENGTH = 8
-const FORBIDDEN_PASSWORDS = ['algocanvas', 'streamr']
-
-export const postPasswordUpdate = async (passwordUpdate: PasswordUpdate, userInputs?: Array<string> = []): ApiResult<null> => {
-    const result = (await zxcvbn())(passwordUpdate.newPassword, [
-        ...FORBIDDEN_PASSWORDS,
-        ...userInputs,
-    ])
-
-    let passwordStrength = result.score
-    if (passwordUpdate.newPassword.length < MIN_PASSWORD_LENGTH) {
-        passwordStrength = 0
-    }
+export const postPasswordUpdate = (passwordUpdate: PasswordUpdate, userInputs?: Array<string> = []): ApiResult<null> => {
     const form = new FormData()
+    form.append('username', userInputs[0])
     form.append('currentpassword', passwordUpdate.currentPassword)
     form.append('password', passwordUpdate.newPassword)
     form.append('password2', passwordUpdate.confirmNewPassword)
-    form.append('pwdStrength', String(passwordStrength))
 
-    return post(formatApiUrl('profile', 'changePwd'), form, {
+    return post(formatApiUrl('users', 'me', 'changePassword'), form, {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
             'X-Requested-With': 'XMLHttpRequest',
