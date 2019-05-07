@@ -49,21 +49,23 @@ To be able to use the Marketplace, you'll need to configure these variables into
 | WEB3_REQUIRED_NETWORK_ID     | This is used to check that the user has selected the correct network |
 | WEB3_PUBLIC_HTTP_PROVIDER    | A public provider used to query Marketplace methods without Metamask |
 | WEB3_PUBLIC_WS_PROVIDER      | A public websocket prodiver (currently not in use)                   |
+| BUNDLE_ANALYSIS              | Optional, enables generating bundle size analysis report.            |
 
 Development values (set the values in your `.env`):
 
-| Variable                     | Value                                        | Description      |
-|------------------------------|----------------------------------------------|------------------|
-| PORT                         | `3333`                                       |                  |
-| PLATFORM_ORIGIN_URL          | `http://localhost`                           |                  |
-| STREAMR_API_URL              | `http://localhost/api/v1`                    |                  |
-| STREAMR_WS_URL               | `ws://localhost:8890/api/v1/ws`              |                  |
-| STREAMR_URL                  | `http://localhost:8081/streamr-core`         |                  |
-| MARKETPLACE_CONTRACT_ADDRESS | `0x0af64558670a3b761B57e465Cb80B62254b39619` |                  |
-| TOKEN_CONTRACT_ADDRESS       | `0x8e3877fe5551f9c14bc9b062bbae9d84bc2f5d4e` |                  |
-| WEB3_REQUIRED_NETWORK_ID     | 4                                            | Rinkeby          |
-| WEB3_PUBLIC_HTTP_PROVIDER    | https://rinkeby.infura.io                    | Infura (Rinkeby) |
-| WEB3_PUBLIC_WS_PROVIDER      | wss://rinkeby.infura.io/ws                   | Infura (Rinkeby) |
+| Variable                     | Value                                        | Description                     |
+|------------------------------|----------------------------------------------|---------------------------------|
+| PORT                         | `3333`                                       |                                 |
+| PLATFORM_ORIGIN_URL          | `http://localhost`                           |                                 |
+| STREAMR_API_URL              | `http://localhost/api/v1`                    |                                 |
+| STREAMR_WS_URL               | `ws://localhost:8890/api/v1/ws`              |                                 |
+| STREAMR_URL                  | `http://localhost:8081/streamr-core`         |                                 |
+| MARKETPLACE_CONTRACT_ADDRESS | `0x0af64558670a3b761B57e465Cb80B62254b39619` |                                 |
+| TOKEN_CONTRACT_ADDRESS       | `0x8e3877fe5551f9c14bc9b062bbae9d84bc2f5d4e` |                                 |
+| WEB3_REQUIRED_NETWORK_ID     | 4                                            | Rinkeby                         |
+| WEB3_PUBLIC_HTTP_PROVIDER    | https://rinkeby.infura.io                    | Infura (Rinkeby)                |
+| WEB3_PUBLIC_WS_PROVIDER      | wss://rinkeby.infura.io/ws                   | Infura (Rinkeby)                |
+| BUNDLE_ANALYSIS              | 1                                            | PLATFORM_ORIGIN_URL/report.html |
 
 Optional config values:
 
