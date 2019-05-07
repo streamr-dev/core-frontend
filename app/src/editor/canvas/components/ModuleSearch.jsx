@@ -132,8 +132,9 @@ type State = {
 }
 
 const MIN_WIDTH = 250
-const MAX_WIDTH = 450
-const MAX_HEIGHT = 352
+const MAX_WIDTH = 600
+const DEFAULT_HEIGHT = 352
+const MAX_HEIGHT = 352 * 2
 const MIN_HEIGHT_MINIMIZED = 90
 const MODULE_ITEM_HEIGHT = 52
 const STREAM_MODULE_ID = 147
@@ -146,7 +147,7 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
         matchingStreams: [],
         isExpanded: true,
         width: MIN_WIDTH,
-        height: MAX_HEIGHT,
+        height: DEFAULT_HEIGHT,
         /* eslint-disable-next-line react/no-unused-state */
         heightBeforeMinimize: 0,
     }
