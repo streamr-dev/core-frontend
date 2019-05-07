@@ -474,6 +474,7 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
                         ref={this.selfRef}
                     >
                         <ResizableBox
+                            className={styles.ResizableBox}
                             width={width}
                             height={height}
                             axis={isSearching ? 'x' : 'both' /* lock y when searching */}
