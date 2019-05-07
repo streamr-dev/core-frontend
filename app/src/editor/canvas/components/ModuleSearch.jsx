@@ -200,7 +200,7 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
         this.setState({
             search: value,
             isExpanded: true,
-        }, () => this.recalculateHeight())
+        })
 
         // Search modules
         const matchingModules = this.getMappedModuleTree(value)
@@ -221,7 +221,7 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
         this.setState({
             matchingModules,
             matchingStreams: streams,
-        }, () => this.recalculateHeight())
+        })
     }
 
     clear = () => {
@@ -233,14 +233,17 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
         }
     }
 
-    recalculateHeight = () => {
-        const { isExpanded, matchingModules, matchingStreams, search } = this.state
+    calculateHeight = () => {
+        const {
+            isExpanded,
+            matchingModules,
+            matchingStreams,
+            search,
+            height,
+        } = this.state
 
         if (!isExpanded) {
-            this.setState({
-                height: MIN_HEIGHT_MINIMIZED,
-            })
-            return
+            return MIN_HEIGHT_MINIMIZED
         }
 
         const searchResultItemCount = matchingModules.length + matchingStreams.length +
@@ -249,12 +252,10 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
         let requiredHeight = MIN_HEIGHT_MINIMIZED + (searchResultItemCount * MODULE_ITEM_HEIGHT)
 
         if (search === '') {
-            requiredHeight = MAX_HEIGHT
+            requiredHeight = height
         }
 
-        this.setState({
-            height: Math.min(Math.max(requiredHeight, MIN_HEIGHT_MINIMIZED), MAX_HEIGHT),
-        })
+        return Math.min(Math.max(requiredHeight, MIN_HEIGHT_MINIMIZED), MAX_HEIGHT)
     }
 
     toggleMinimize = () => {
@@ -320,8 +321,6 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
                 this.input.focus()
             }
         }
-
-        this.recalculateHeight()
     }
 
     getMappedModuleTree = (search: string = '') => {
@@ -447,7 +446,8 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
 
     render() {
         const { open, isOpen } = this.props
-        const { search, isExpanded, width, height } = this.state
+        const { search, isExpanded, width } = this.state
+        const height = this.calculateHeight()
         return (
             <React.Fragment>
                 <Draggable
@@ -462,6 +462,7 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
                         <ResizableBox
                             width={width}
                             height={height}
+                            axis={search !== '' ? 'x' : 'both' /* lock y when searching */}
                             minConstraints={[MIN_WIDTH, MIN_HEIGHT_MINIMIZED]}
                             maxConstraints={[MAX_WIDTH, MAX_HEIGHT]}
                             onResize={(e, data) => {
