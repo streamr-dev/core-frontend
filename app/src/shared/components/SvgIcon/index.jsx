@@ -320,6 +320,18 @@ const sources = {
             </g>
         </svg>
     ),
+    brevetDown: (
+        <svg viewBox="0 0 10 6" xmlns="http://www.w3.org/2000/svg">
+            <path d="M.756 1l4.245 4.245 4.243-4.242" stroke="#CDCDCD" strokeWidth="1.5" fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+    ),
+    x: (
+        <svg viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg">
+            <g stroke="#A3A3A3" strokeWidth="1.5" fill="none" fillRule="evenodd" strokeLinecap="round">
+                <path d="M.757.757l8.486 8.486M9.243.757L.757 9.243" />
+            </g>
+        </svg>
+    ),
 }
 
 export type IconName = $Keys<typeof sources>

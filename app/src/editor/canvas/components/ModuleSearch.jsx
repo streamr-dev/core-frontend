@@ -475,12 +475,12 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
                                 <div className={cx(styles.Header, styles.dragHandle)}>
                                     <button type="button" className={styles.minimize} onClick={() => this.toggleMinimize()}>
                                         {isExpanded ?
-                                            <SvgIcon name="caretUp" /> :
-                                            <SvgIcon name="caretDown" />
+                                            <SvgIcon name="brevetDown" className={styles.flip} /> :
+                                            <SvgIcon name="brevetDown" className={styles.normal} />
                                         }
                                     </button>
                                     <button type="button" className={styles.close} onClick={() => open(false)}>
-                                        <SvgIcon name="crossHeavy" />
+                                        <SvgIcon name="x" />
                                     </button>
                                 </div>
                                 <div className={styles.Input}>
