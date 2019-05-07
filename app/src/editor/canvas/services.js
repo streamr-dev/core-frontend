@@ -84,6 +84,10 @@ export async function getModuleCategories() {
     return api().get(getModuleCategoriesURL).then(getData)
 }
 
+export async function getCanvasPermissions({ id }) {
+    return api().get(`${process.env.STREAMR_API_URL}/canvases/${id}/permissions/me`)
+}
+
 async function startCanvas(canvas, { clearState }) {
     const savedCanvas = await saveNow(canvas)
     return api().post(`${canvasesUrl}/${savedCanvas.id}/start`, {

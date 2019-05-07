@@ -47,9 +47,19 @@ function setUpdated(canvas) {
     return updated
 }
 
+function isEditable(canvas, runController) {
+    const { isActive } = runController
+    const canEdit = !isActive && !canvas.adhoc
+    return canEdit
+}
+
+function isOwn(canvas) {
+    return canvas.permissions && canvas.permissions.some((p) => p.operation === 'share')
+}
+
 const CanvasEditComponent = class CanvasEdit extends Component {
     state = {
-        moduleSearchIsOpen: false,
+        moduleSearchIsOpen: isOwn(this.props.canvas) && isEditable(this.props.canvas, this.props.runController),
         moduleSidebarIsOpen: false,
         keyboardShortcutIsOpen: false,
     }
