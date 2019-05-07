@@ -240,7 +240,9 @@ class StreamList extends Component<Props, State> {
             showStream,
             copyToClipboard,
             filter,
+            user,
         } = this.props
+        const timezone = (user && user.timezone) || moment.tz.guess()
         const { dialogTargetStream, activeDialog } = this.state
 
         return (
@@ -316,9 +318,11 @@ class StreamList extends Component<Props, State> {
                                         >
                                             <Table.Th noWrap title={stream.name}>{stream.name}</Table.Th>
                                             <Table.Td noWrap title={stream.description}>{stream.description}</Table.Td>
-                                            <Table.Td noWrap>{moment(stream.lastUpdated).fromNow()}</Table.Td>
+                                            <Table.Td noWrap>{moment.tz(stream.lastUpdated, timezone).fromNow()}</Table.Td>
                                             <Table.Td>
-                                                {Object.prototype.hasOwnProperty.call(stream, 'lastData') && moment(stream.lastData).fromNow()}
+                                                {Object.prototype.hasOwnProperty.call(stream, 'lastData') && (
+                                                    moment.tz(stream.lastData, timezone).fromNow()
+                                                )}
                                             </Table.Td>
                                             <Table.Td className={styles.statusColumn}>
                                                 <StatusIcon status={stream.streamStatus} />
