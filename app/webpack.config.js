@@ -29,7 +29,7 @@ const gitRevisionPlugin = new GitRevisionPlugin({
 
 // We have to make sure that publicPath ends with a slash. If it
 // doesn't then chunks are not gonna load correctly. #codesplitting
-const publicPath = `${process.env.PLATFORM_ORIGIN_URL || ''}/`
+const publicPath = `${process.env.PLATFORM_PUBLIC_PATH || ''}/`
 
 module.exports = {
     mode: isProduction() ? 'production' : 'development',
@@ -239,6 +239,13 @@ module.exports = {
         progress: true,
         port: process.env.PORT || 3333,
         publicPath,
+    },
+    // automatically creates a vendor chunk & also
+    // seems to prevent out of memory errors during dev ??
+    optimization: {
+        splitChunks: {
+            chunks: 'all',
+        },
     },
     resolve: {
         extensions: ['.js', '.jsx', '.json'],

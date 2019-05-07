@@ -4,11 +4,9 @@
   top: 10%;
   background: white;
   z-index: 12;
-  border: 1px solid #EFEFEF;
   box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.05);
-  border-radius: 4px;
+  border-radius: calc(0.25 * var(--um));
   overflow: hidden;
-  cursor: pointer;
   user-select: none;
 
   :global(.react-resizable-handle) {
@@ -46,6 +44,7 @@
   background: none;
 }
 
+.ModuleSearch .Header button:active,
 .ModuleSearch .Header button:focus {
   outline: none;
 }
@@ -63,18 +62,35 @@
   color: #A3A3A3;
 }
 
-.ModuleSearch .Input input {
+.ModuleSearch .Header .close:hover path {
+  fill: #525252;
+  stroke: #525252;
+}
+
+.ModuleSearch .Header .minimize:hover path {
+  stroke: #525252;
+}
+
+.ModuleSearch .Input {
   font-size: 14px;
   line-height: 1;
   text-align: left;
   letter-spacing: 0;
-  border: none;
+  padding-right: 16px;
   border-bottom: 1px solid #EFEFEF;
+  width: 100%;
   box-sizing: border-box;
-  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+}
+
+.ModuleSearch .Input input {
+  border: none;
+  padding: 16px 0 16px 24px;
   width: 100%;
 }
 
+.ModuleSearch .Input input:active,
 .ModuleSearch .Input input:focus {
   outline: none;
 }
@@ -83,14 +99,41 @@
   color: #CDCDCD;
 }
 
+.ModuleSearch .Input .ClearButton {
+  appearance: none;
+  background: none;
+  border: none;
+  width: 14px;
+  height: 14px;
+  padding: 3px;
+  margin: -3px;
+  box-sizing: content-box;
+  line-height: 0;
+  flex-shrink: 0;
+  z-index: 1; /* ensure over resize control */
+}
+
+.ModuleSearch .Input .ClearButton circle {
+  transition: all 0.1s;
+}
+
+.ModuleSearch .Input .ClearButton:hover circle {
+  fill: #525252;
+  stroke: #525252;
+}
+
+.ModuleSearch .Input .ClearButton:focus {
+  outline: none;
+}
+
 .ModuleSearch .Content {
   color: #525252;
   font-size: 12px;
-  font-family: 'IBM Plex Mono', monospace;
-  font-weight: 500;
+  font-family: var(--sans);
+  font-weight: var(--medium);
   text-align: left;
   text-transform: uppercase;
-  letter-spacing: 2px;
+  letter-spacing: 1px;
   line-height: 32px;
   overflow: auto;
 }
@@ -106,12 +149,13 @@
 
 .ModuleSearch .Content .Category {
   color: #323232;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--sans);
   font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 2px;
+  font-weight: var(--medium);
+  letter-spacing: 1px;
   line-height: 40px;
   text-transform: uppercase;
+  cursor: pointer;
 }
 
 .ModuleSearch .Content .Category.active {
@@ -121,7 +165,7 @@
 
 .ModuleSearch .Content .SearchCategory {
   font-size: 10px;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--sans);
   font-weight: 600;
   color: #323232;
   text-transform: uppercase;
@@ -132,12 +176,18 @@
 
 .ModuleSearch .Content .ModuleItem {
   font-size: 12px;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--sans);
   font-weight: 400;
   color: #323232;
   text-transform: none;
   letter-spacing: 0;
   line-height: 40px;
+  cursor: grab;
+}
+
+.ModuleSearch .Content .ModuleItem:active,
+.ModuleSearch .Content .ModuleItem:focus {
+  outline: none;
 }
 
 .ModuleSearch .Content .ModuleItem.WithCategory {
@@ -154,7 +204,7 @@
 
 .ModuleSearch .Content .ModuleItem .ModuleCategory {
   font-size: 12px;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--sans);
   font-weight: 400;
   text-transform: uppercase;
   color: #ADADAD;
@@ -165,7 +215,7 @@
 
 .ModuleSearch .Content .StreamItem {
   font-size: 12px;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--sans);
   font-weight: 400;
   color: #323232;
   text-transform: none;
@@ -174,11 +224,17 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
+  cursor: grab;
+}
+
+.ModuleSearch .Content .StreamItem:active,
+.ModuleSearch .Content .StreamItem:focus {
+  outline: none;
 }
 
 .ModuleSearch .Content .StreamItem .Description {
   font-size: 10px;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--sans);
   font-weight: 400;
   color: #ADADAD;
   line-height: 12px;
@@ -201,4 +257,46 @@
 }
 
 .dragHandle {
+}
+
+.dragElement {
+  top: 0;
+  left: 0;
+  position: absolute;
+  z-index: -1;
+  background-color: #FFFFFF;
+  color: #323232;
+  border-radius: calc(0.25 * var(--um));
+  max-width: calc(12.5 * var(--um));
+  min-height: calc(3.75 * var(--um));
+  display: grid;
+  padding: 16px 18px 11px;
+  grid-row-gap: 2px;
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1;
+  font-weight: var(--medium);
+  text-align: center;
+  align-items: center;
+}
+
+.dropText {
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.dragModuleName {
+  letter-spacing: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.dragImage {
+  color: red;
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  top: -12px;
+  left: -12px;
 }

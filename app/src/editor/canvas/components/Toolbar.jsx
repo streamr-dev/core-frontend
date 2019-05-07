@@ -21,7 +21,7 @@ import Toolbar from '$editor/shared/components/Toolbar'
 
 import ShareDialog from './ShareDialog'
 import CanvasSearch from './CanvasSearch'
-import * as RunController from './RunController'
+import * as RunController from './CanvasController/Run'
 
 import styles from './Toolbar.pcss'
 
@@ -81,7 +81,12 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
             setSpeed,
         } = this.props
 
-        if (!canvas) { return null }
+        if (!canvas) {
+            return (
+                <div className={cx(className, styles.CanvasToolbar)} />
+            )
+        }
+
         const runController = this.context
         const { runButtonDropdownOpen, canvasSearchIsOpen } = this.state
         const { isRunning, isActive, isPending } = runController
@@ -160,8 +165,8 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                             <div>
                                 <R.ButtonGroup
                                     className={cx(styles.RunButtonGroup, {
-                                        [styles.RunButtonStopped]: !isRunning && !canvas.adhoc,
-                                        [styles.RunButtonRunning]: !!isRunning || canvas.adhoc,
+                                        [styles.RunButtonStopped]: !(isActive || canvas.adhoc),
+                                        [styles.RunButtonRunning]: isActive || canvas.adhoc,
                                     })}
                                 >
                                     <R.Button

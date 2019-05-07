@@ -38,7 +38,9 @@ export default withErrorBoundary(ErrorComponentView)(class DashboardToolbar exte
             newDashboard,
         } = this.props
 
-        if (!dashboard) { return null }
+        if (!dashboard) {
+            return <div className={cx(className, styles.CanvasToolbar)} />
+        }
 
         return (
             <div className={cx(className, styles.CanvasToolbar)}>

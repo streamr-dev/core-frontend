@@ -13,6 +13,7 @@ import styles from './tile.pcss'
 
 type Props = {
     children: Node,
+    image?: ?Node,
     link: string,
     imageUrl?: string,
     isHovered?: boolean,
@@ -23,6 +24,7 @@ type Props = {
 const Tile = ({
     link,
     imageUrl,
+    image,
     children,
     isHovered,
     dropdownActions,
@@ -49,7 +51,9 @@ const Tile = ({
                 {dropdownActions}
             </DropdownActions>
         }
-        <FallbackImage src={imageUrl || ''} alt="Tile" className={styles.image} />
+        {image || (
+            <FallbackImage src={imageUrl || ''} alt="Tile" className={styles.image} />
+        )}
         <div className={styles.content}>
             {children}
         </div>

@@ -3,7 +3,7 @@
 import { get, post, put, del } from '$shared/utils/api'
 import { formatApiUrl } from '$shared/utils/url'
 import type { ApiResult } from '$shared/flowtype/common-types'
-import type { StreamId, Stream, StreamList, NewStream } from '$shared/flowtype/stream-types'
+import type { StreamId, Stream, StreamList, NewStream, StreamStatus } from '$shared/flowtype/stream-types'
 import type { Permission } from '$userpages/flowtype/permission-types'
 
 export const getStream = (id: StreamId): ApiResult<Stream> => get(formatApiUrl('streams', id))
@@ -18,3 +18,5 @@ export const getStreams = (params: any): ApiResult<StreamList> => get(formatApiU
 
 export const getMyStreamPermissions = (id: StreamId): ApiResult<Array<Permission>> =>
     get(formatApiUrl('streams', id, 'permissions', 'me'))
+
+export const getStreamStatus = (id: StreamId): ApiResult<StreamStatus> => get(formatApiUrl('streams', id, 'status'))

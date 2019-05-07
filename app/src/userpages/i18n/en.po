@@ -17,11 +17,20 @@ msgstr "Filter canvases"
 msgid "userpages##canvases##updated"
 msgstr "Updated %{since}"
 
-msgid "userpages##canvases##noCanvases##title"
+msgid "userpages##canvases##noCreatedCanvases##title"
 msgstr "You haven't created any canvases yet."
 
-msgid "userpages##canvases##noCanvases##message"
+msgid "userpages##canvases##noCreatedCanvases##message"
 msgstr "Click the button above to create one."
+
+msgid "userpages##canvases##noCanvasesResult##title"
+msgstr "No results."
+
+msgid "userpages##canvases##noCanvasesResult##message"
+msgstr "We couldn't find any canvases that match your search."
+
+msgid "userpages##canvases##noCanvasesResult##clearFilters"
+msgstr "Clear filters"
 
 msgid "userpages##canvases##title"
 msgstr "My Canvases"
@@ -122,11 +131,20 @@ msgstr "Transactions"
 msgid "userpages##products##filterProducts"
 msgstr "Filter products"
 
-msgid "userpages##products##noProducts##title"
+msgid "userpages##products##noCreatedProducts##title"
 msgstr "You haven’t created any products yet."
 
-msgid "userpages##products##noProducts##message"
+msgid "userpages##products##noCreatedProducts##message"
 msgstr "Click the button above to create one."
+
+msgid "userpages##products##noProductsResult##title"
+msgstr "No results."
+
+msgid "userpages##products##noProductsResult##message"
+msgstr "We couldn't find any products that match your search."
+
+msgid "userpages##products##noProductsResult##clearFilters"
+msgstr "Clear filters"
 
 msgid "userpages##products##draft"
 msgstr "Draft"
@@ -140,14 +158,23 @@ msgstr "Create product"
 msgid "userpages##purchases##filterPurchases"
 msgstr "Filter purchases"
 
-msgid "userpages##purchases##noPurchases##title"
+msgid "userpages##purchases##noAddedPurchases##title"
 msgstr "You haven’t purchased or added any products yet."
 
-msgid "userpages##purchases##noPurchases##message"
+msgid "userpages##purchases##noAddedPurchases##message"
 msgstr "Visit the Marketplace to get started."
 
-msgid "userpages##purchases##noPurchases##hint"
+msgid "userpages##purchases##noAddedPurchases##hint"
 msgstr "Go to the marketplace"
+
+msgid "userpages##purchases##noPurchasesResult##title"
+msgstr "No results."
+
+msgid "userpages##purchases##noPurchasesResult##message"
+msgstr "We couldn't find any products that match your search."
+
+msgid "userpages##purchases##noPurchasesResult##clearFilters"
+msgstr "Clear filters"
 
 msgid "userpages##purchases##active"
 msgstr "Active"
@@ -200,11 +227,20 @@ msgstr "Refresh"
 msgid "userpages##streams##actions##delete"
 msgstr "Delete"
 
-msgid "userpages##streams##noStreams##title"
+msgid "userpages##streams##noCreatedStreams##title"
 msgstr "You haven't created any streams yet."
 
-msgid "userpages##streams##noStreams##message"
+msgid "userpages##streams##noCreatedStreams##message"
 msgstr "Click the button above to create one."
+
+msgid "userpages##streams##noStreamsResult##title"
+msgstr "No results."
+
+msgid "userpages##streams##noStreamsResult##message"
+msgstr "We couldn't find any streams that match your search."
+
+msgid "userpages##streams##noStreamsResult##clearFilters"
+msgstr "Clear filters"
 
 msgid "userpages##streams##edit##details##name"
 msgstr "Name"
@@ -353,11 +389,20 @@ msgstr "Create dashboard"
 msgid "userpages##dashboards##filterDashboards"
 msgstr "Filter dashboards"
 
-msgid "userpages##dashboards##noDashboards##title"
+msgid "userpages##dashboards##noCreatedDashboards##title"
 msgstr "You haven’t created any dashboards yet."
 
-msgid "userpages##dashboards##noDashboards##message"
+msgid "userpages##dashboards##noCreatedDashboards##message"
 msgstr "Click the button above to create one."
+
+msgid "userpages##dashboards##noDashboardsResult##title"
+msgstr "No results."
+
+msgid "userpages##dashboards##noDashboardsResult##message"
+msgstr "We couldn't find any dashboards that match your search."
+
+msgid "userpages##dashboards##noDashboardsResult##clearFilters"
+msgstr "Clear filters"
 
 msgid "userpages##transactions##list##name"
 msgstr "Name"
@@ -512,7 +557,10 @@ msgid "userpages##profile##settings##uploadHelpText"
 msgstr "JPG or PNG, at least 256px"
 
 msgid "modal##avatar##defaultTitle"
-msgstr "Avatar"
+msgstr "Avatar upload"
+
+msgid "modal##avatar##updateTitle"
+msgstr "Avatar update"
 
 msgid "modal##avatar##cropYourImage"
 msgstr "Crop your image"
@@ -522,6 +570,9 @@ msgstr "Preview"
 
 msgid "modal##avatar##saveAvatar"
 msgstr "Save avatar"
+
+msgid "modal##avatar##saveAndApplyAvatar"
+msgstr "Save & Apply"
 
 msgid "userpages##keyField##options"
 msgstr "Select"

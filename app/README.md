@@ -33,7 +33,7 @@ Webpack is configured with live reloading and will be served on http://localhost
 The live documentation can be found at [streamr.com/docs](https://streamr.com/docs). The documentation content files are held in `/src/docs/content` as MDX files (jsx flavoured markdown). Community contributions are encouraged, please see the [Docs Editing Guide](https://github.com/streamr-dev/streamr-platform/app/src/docs/docsEditingGuide.md) for more information.
 
 
-### Smart contract configuration
+### Environment & Smart contract configuration
 
 To be able to use the Marketplace, you'll need to configure these variables into your `.env` file:
 
@@ -64,6 +64,16 @@ Development values (set the values in your `.env`):
 | WEB3_REQUIRED_NETWORK_ID     | 4                                            | Rinkeby          |
 | WEB3_PUBLIC_HTTP_PROVIDER    | https://rinkeby.infura.io                    | Infura (Rinkeby) |
 | WEB3_PUBLIC_WS_PROVIDER      | wss://rinkeby.infura.io/ws                   | Infura (Rinkeby) |
+
+Optional config values:
+
+| Variable             | Description                                                  |
+| -------------------- | ------------------------------------------------------------ |
+| SENTRY_URL           | Identifier for Sentry error reporting service                |
+| LOGROCKET_SLUG       | Identifier for LogRocket error reporting service (used in staging and public beta environment) |
+| GOOGLE_ANALYTICS_ID  | Identifier for Google Analytics                              |
+| STORYBOOK_BASE_PATH  | Build path for Storybook stories                             |
+| PLATFORM_PUBLIC_PATH | Public path for Webpack config. If not defined, relative paths are used. |
 
 Use `.travis.yml` to set the production values.
 

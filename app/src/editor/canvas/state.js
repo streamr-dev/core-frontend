@@ -89,7 +89,7 @@ export function emptyCanvas(config = {}) {
     }
 }
 
-const DEFAULT_MODULE_LAYOUT = {
+export const defaultModuleLayout = {
     position: {
         top: 0,
         left: 0,
@@ -388,11 +388,20 @@ export function arePortsOfSameModule(canvas, portIdA, portIdB) {
 }
 
 function disconnectInput(canvas, portId) {
-    return updatePort(canvas, portId, (port) => ({
-        ...port,
-        sourceId: null,
-        connected: false,
-    }))
+    return updatePort(canvas, portId, (port) => {
+        const newPort = {
+            ...port,
+            sourceId: null,
+            connected: false,
+        }
+
+        // ethereum contract input
+        if (newPort.type === 'EthereumContract' && newPort.value) {
+            delete newPort.value
+        }
+
+        return newPort
+    })
 }
 
 function disconnectOutput(canvas, portId) {
@@ -442,14 +451,26 @@ export function connectPorts(canvas, portIdA, portIdB) {
     }
 
     const displayName = getDisplayNameFromPort(output)
+    const outputModule = getModuleForPort(nextCanvas, output.id)
+    const { contract } = outputModule || {}
+
     // connect input
-    nextCanvas = updatePort(nextCanvas, input.id, (port) => ({
-        ...port,
-        sourceId: output.id,
-        connected: true,
-        // variadic inputs copy display name from output
-        displayName: port.variadic ? displayName : port.displayName,
-    }))
+    nextCanvas = updatePort(nextCanvas, input.id, (port) => {
+        const newPort = {
+            ...port,
+            sourceId: output.id,
+            connected: true,
+            // variadic inputs copy display name from output
+            displayName: port.variadic ? displayName : port.displayName,
+        }
+
+        // ethereum contract input
+        if (newPort.type === 'EthereumContract') {
+            newPort.value = contract
+        }
+
+        return newPort
+    })
 
     // update paired output, if exists
     const linkedOutput = findLinkedVariadicPort(nextCanvas, input.id)
@@ -522,7 +543,8 @@ export function removeModule(canvas, moduleHash) {
     }
 }
 
-let ID = 0
+// Hash is stored as a Java Integer.
+const HASH_RANGE = ((2 ** 31) - 1) + (2 ** 31)
 
 function getHash(canvas, iterations = 0) {
     if (iterations >= 100) {
@@ -530,14 +552,7 @@ function getHash(canvas, iterations = 0) {
         throw new Error(`could not find unique hash after ${iterations} attempts`)
     }
 
-    ID += 1
-    const hash = Number((
-        String(Date.now() + ID)
-            .slice(-10) // 32 bits
-            .split('')
-            .reverse() // in order (for debugging)
-            .join('')
-    ))
+    const hash = Math.floor((Math.random() * HASH_RANGE) - (HASH_RANGE / 2))
 
     if (canvas.modules.find((m) => m.hash === hash)) {
         // double-check doesn't exist
@@ -562,7 +577,8 @@ export function addModule(canvas, moduleData) {
         ...moduleData,
         hash: getHash(canvas), // TODO: better IDs
         layout: {
-            ...DEFAULT_MODULE_LAYOUT, // TODO: read position from mouse
+            ...defaultModuleLayout, // TODO: read position from mouse
+            ...moduleData.layout,
         },
     }
 
@@ -637,11 +653,11 @@ export function setModuleOptions(canvas, moduleHash, newOptions = {}) {
 
 export function limitLayout(canvas) {
     let nextCanvas = { ...canvas }
-    nextCanvas.modules.forEach((m) => {
-        const top = parseInt(m.layout.position.top, 10) || 0
-        const left = parseInt(m.layout.position.left, 10) || 0
+    nextCanvas.modules.forEach(({ layout, hash }) => {
+        const top = (layout && parseInt(layout.position.top, 10)) || 0
+        const left = (layout && parseInt(layout.position.left, 10)) || 0
         if (!top || !left || top < 0 || left < 0) {
-            nextCanvas = updateModulePosition(nextCanvas, m.hash, {
+            nextCanvas = updateModulePosition(nextCanvas, hash, {
                 top: Math.max(0, top),
                 left: Math.max(0, left),
             })
@@ -946,6 +962,9 @@ export function getRelevantCanvasId(canvas) {
  */
 
 export function updateCanvas(canvas, path, fn) {
+    if (!canvas || typeof canvas !== 'object') {
+        throw new Error(`bad canvas (${typeof canvas})`)
+    }
     return limitLayout(updateVariadic(updatePortConnections(update(path, fn, canvas))))
 }
 

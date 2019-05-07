@@ -21,7 +21,6 @@ import Table from '$shared/components/Table'
 import DropdownActions from '$shared/components/DropdownActions'
 import Meatball from '$shared/components/Meatball'
 import StatusIcon from '$shared/components/StatusIcon'
-import NoStreamsView from './NoStreams'
 import Layout from '$userpages/components/Layout'
 import Search from '$shared/components/Search'
 import Dropdown from '$shared/components/Dropdown'
@@ -34,9 +33,10 @@ import { selectUserData } from '$shared/modules/user/selectors'
 import ShareDialog from '$userpages/components/ShareDialog'
 import SnippetDialog from '$userpages/components/SnippetDialog/index'
 import { ProgrammingLanguages } from '$shared/utils/constants'
+import NoStreamsView from './NoStreams'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
 
-import styles from './streamList.pcss'
+import styles from './list.pcss'
 
 export const CreateStreamButton = () => (
     <Button color="primary" id="streamlist-create-stream">
@@ -162,6 +162,15 @@ class StreamList extends Component<Props, State> {
         }
     }
 
+    resetFilter = () => {
+        const { updateFilter, getStreams } = this.props
+        updateFilter({
+            ...this.defaultFilter,
+            search: '',
+        })
+        getStreams()
+    }
+
     confirmDeleteStream = async (stream: Stream) => {
         const confirmed = await confirmDialog({
             title: I18n.t('userpages.streams.delete.confirmTitle', {
@@ -220,6 +229,10 @@ class StreamList extends Component<Props, State> {
         })
     }
 
+    onStreamRowClick = (id: StreamId) => {
+        this.props.showStream(id)
+    }
+
     render() {
         const {
             fetching,
@@ -227,7 +240,9 @@ class StreamList extends Component<Props, State> {
             showStream,
             copyToClipboard,
             filter,
+            user,
         } = this.props
+        const timezone = (user && user.timezone) || moment.tz.guess()
         const { dialogTargetStream, activeDialog } = this.state
 
         return (
@@ -244,7 +259,7 @@ class StreamList extends Component<Props, State> {
                     <Dropdown
                         title={I18n.t('userpages.filter.sortBy')}
                         onChange={this.onSortChange}
-                        defaultSelectedItem={(filter && filter.id) || this.defaultFilter.id}
+                        selectedItem={(filter && filter.id) || this.defaultFilter.id}
                     >
                         {getSortOptions().map((s) => (
                             <Dropdown.Item key={s.filter.id} value={s.filter.id}>
@@ -275,7 +290,11 @@ class StreamList extends Component<Props, State> {
                 )}
                 <div className="container">
                     {!fetching && streams && streams.length <= 0 && (
-                        <NoStreamsView />
+                        <NoStreamsView
+                            hasFilter={!!filter && (!!filter.search || !!filter.key)}
+                            filter={filter}
+                            onResetFilter={this.resetFilter}
+                        />
                     )}
                     {streams && streams.length > 0 && (
                         <div className={styles.streamsTable}>
@@ -292,13 +311,26 @@ class StreamList extends Component<Props, State> {
                                 </thead>
                                 <tbody>
                                     {streams.map((stream) => (
-                                        <tr key={stream.id}>
+                                        <tr
+                                            key={stream.id}
+                                            className={styles.streamRow}
+                                            onClick={() => this.onStreamRowClick(stream.id)}
+                                        >
                                             <Table.Th noWrap title={stream.name}>{stream.name}</Table.Th>
                                             <Table.Td noWrap title={stream.description}>{stream.description}</Table.Td>
-                                            <Table.Td noWrap>{moment(stream.lastUpdated).fromNow()}</Table.Td>
-                                            <Table.Td>-</Table.Td>
-                                            <Table.Td className={styles.statusColumn}><StatusIcon /></Table.Td>
-                                            <Table.Td className={styles.menuColumn}>
+                                            <Table.Td noWrap>{moment.tz(stream.lastUpdated, timezone).fromNow()}</Table.Td>
+                                            <Table.Td>
+                                                {Object.prototype.hasOwnProperty.call(stream, 'lastData') && (
+                                                    moment.tz(stream.lastData, timezone).fromNow()
+                                                )}
+                                            </Table.Td>
+                                            <Table.Td className={styles.statusColumn}>
+                                                <StatusIcon status={stream.streamStatus} />
+                                            </Table.Td>
+                                            <Table.Td
+                                                onClick={(event) => event.stopPropagation()}
+                                                className={styles.menuColumn}
+                                            >
                                                 <DropdownActions
                                                     title={<Meatball alt={I18n.t('userpages.streams.actions')} />}
                                                     noCaret
