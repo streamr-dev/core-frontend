@@ -34,13 +34,10 @@ const NavDropdown = ({
                 [styles.centered]: !align || align === 'center',
                 [styles.pullLeft]: align === 'left',
                 [styles.pullRight]: align === 'right',
-                [styles.withPointerWrapper]: !noPointer,
             })}
         >
             <ul
-                className={classNames(styles.dropdownMenu, {
-                    [styles.withPointer]: !noPointer,
-                })}
+                className={styles.dropdownMenu}
             >
                 {React.Children.map(children, (child) => (child ? (
                     <li>{child}</li>

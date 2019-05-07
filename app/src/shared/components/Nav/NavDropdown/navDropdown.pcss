@@ -11,37 +11,16 @@
   z-index: 3;
 }
 
-.withPointerWrapper {
-  padding-top: 10px;
-  min-width: 100%;
-}
-
-.withPointer::after {
-  /* TODO: Remove `.withPointer`. There's no up arrow in the new designs. #refactor */
-}
-
 .pullLeft {
   transform: translateX(-80%);
-
-  .withPointer::after {
-    left: 80%;
-  }
 }
 
 .pullRight {
   transform: translateX(-20%);
-
-  .withPointer::after {
-    left: 20%;
-  }
 }
 
 .centered {
   transform: translateX(-50%);
-
-  .withPointer::after {
-    left: 50%;
-  }
 }
 
 .dropdownMenu {
@@ -96,10 +75,6 @@
     padding-top: 5px;
     transition-delay: 0s, 0s, 0s;
     visibility: visible;
-  }
-
-  &:--enter .withPointerWrapper {
-    padding-top: 15px;
   }
 }
 
