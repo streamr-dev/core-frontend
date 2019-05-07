@@ -2,6 +2,7 @@
 
 import React from 'react'
 import startCase from 'lodash/startCase'
+import debounce from 'lodash/debounce'
 import cx from 'classnames'
 import Draggable from 'react-draggable'
 import { ResizableBox } from 'react-resizable'
@@ -152,6 +153,7 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
 
     unmounted = false
     input = null
+    currentSearch: string = ''
     selfRef: Ref<HTMLDivElement> = React.createRef()
 
     componentDidMount() {
@@ -195,35 +197,42 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
         })
     }
 
-    onChange = async (event: any) => {
-        const { value } = event.currentTarget
-        this.setState({
-            search: value,
-            isExpanded: true,
-        })
-
-        const trimmedValue = value.trim()
-
-        // Search modules
-        const matchingModules = this.getMappedModuleTree(trimmedValue)
-
+    searchStreams = debounce(async (value) => {
         // Search streams
         const params = {
             id: '',
-            search: trimmedValue,
+            search: value,
             sortBy: 'lastUpdated',
             order: 'desc',
             uiChannel: false,
             public: true,
         }
-        const streams = await getStreams(params)
+
+        const matchingStreams = await getStreams(params)
 
         if (this.unmounted) { return }
+        // throw away results if no longer current
+        if (this.currentSearch !== value) { return }
 
+        this.setState({ matchingStreams })
+    }, 500)
+
+    onChange = async (event: any) => {
+        const { value } = event.currentTarget
+
+        const trimmedValue = value.trim()
+        this.currentSearch = trimmedValue
+
+        // Search modules
+        const matchingModules = this.getMappedModuleTree(trimmedValue)
         this.setState({
+            matchingStreams: [],
             matchingModules,
-            matchingStreams: streams,
+            search: value,
+            isExpanded: true,
         })
+
+        this.searchStreams(trimmedValue)
     }
 
     clear = () => {
