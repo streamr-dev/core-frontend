@@ -16,7 +16,8 @@
 }
 
 .pullRight {
-  transform: translateX(-20%);
+  left: 0;
+  transform: translateX(calc(-1 * var(--um)));
 }
 
 .centered {
@@ -25,28 +26,29 @@
 
 .dropdownMenu {
   background: #FFFFFF;
-  border-radius: 2px;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  border-radius: calc(0.25 * var(--um));
+  box-shadow: 0 0 calc(0.375 * var(--um)) rgba(0, 0, 0, 0.1);
+  font-size: calc(0.75 * var(--um));
+  line-height: 1em;
   list-style: none;
   margin: 0;
   min-width: 9em;
-  padding: calc(0.5 * var(--um)) 0;
+  padding: calc(0.25 * var(--um)) 0;
   position: relative;
 
   li {
     display: block;
-    font-size: 0.75em;
     text-transform: uppercase;
   }
 
   a {
     background-color: #FFFFFF;
     display: block;
-    letter-spacing: 2px;
-    padding: 0.5em 1.5em;
+    letter-spacing: calc(0.125 * var(--um));
+    line-height: calc(1.75 * var(--um));
+    padding: 0 var(--um);
     transition: 200ms ease-in-out background-color;
     white-space: nowrap;
-    line-height: 1em;
 
     &,
     &:--idle,

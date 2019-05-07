@@ -39,7 +39,7 @@ class Nav extends React.Component<Props> {
 
         return (
             <FrameNav label={I18n.t('general.marketplace')} expand {...this.props}>
-                <NavDropdown align="center" label={I18n.t('general.core')}>
+                <NavDropdown align="right" label={I18n.t('general.core')}>
                     <Link to={formatPath(links.userpages.streams)}>
                         <Translate value="general.streams" />
                     </Link>
