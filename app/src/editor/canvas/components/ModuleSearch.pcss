@@ -17,6 +17,12 @@
     position: absolute;
     cursor: nwse-resize;
   }
+
+  &.isSearching {
+    :global(.react-resizable-handle) {
+      cursor: ew-resize;
+    }
+  }
 }
 
 .ModuleSearch .Container {

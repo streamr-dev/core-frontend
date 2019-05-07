@@ -469,7 +469,9 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
                     bounds="parent"
                 >
                     <div
-                        className={styles.ModuleSearch}
+                        className={cx(styles.ModuleSearch, {
+                            [styles.isSearching]: isSearching,
+                        })}
                         hidden={!isOpen}
                         ref={this.selfRef}
                     >
