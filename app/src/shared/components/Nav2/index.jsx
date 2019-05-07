@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { Translate } from 'react-redux-i18n'
+import { I18n, Translate } from 'react-redux-i18n'
 import Link from '$shared/components/Link'
 import LogoItem from './LogoItem'
 import DropdownItem from './DropdownItem'
@@ -19,8 +19,7 @@ const Nav = () => (
             <LogoItem />
         </div>
         <div>
-            {/* i18n! */}
-            <DropdownItem label="Core" to="#" align="right">
+            <DropdownItem label={I18n.t('general.core')} to="#" align="right">
                 <Link
                     className={Nav.styles.link}
                     to={routes.streams()}
@@ -58,8 +57,10 @@ const Nav = () => (
                     <Translate value="general.transactions" />
                 </Link>
             </DropdownItem>
-            <LinkItem to={routes.root()}>Marketplace</LinkItem>
-            <DropdownItem label="Docs" to="#" align="left">
+            <LinkItem to={routes.root()}>
+                <Translate value="general.marketplace" />
+            </LinkItem>
+            <DropdownItem label={I18n.t('general.docs')} to="#" align="left">
                 {Object.keys(navigationLinks).map((key) => (
                     <Link
                         key={key}
