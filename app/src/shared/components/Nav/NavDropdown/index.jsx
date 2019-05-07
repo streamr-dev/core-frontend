@@ -12,7 +12,6 @@ type Props = {
     toggle?: React.Node,
     children: React.Node,
     align?: string,
-    twoColumns?: boolean,
     noPointer?: boolean,
 }
 
@@ -21,7 +20,6 @@ const NavDropdown = ({
     toggle,
     children,
     align,
-    twoColumns,
     noPointer,
     ...props
 }: Props) => (
@@ -42,7 +40,6 @@ const NavDropdown = ({
             <ul
                 className={classNames(styles.dropdownMenu, {
                     [styles.withPointer]: !noPointer,
-                    [styles.twoColumns]: !!twoColumns,
                 })}
             >
                 {React.Children.map(children, (child) => (child ? (
