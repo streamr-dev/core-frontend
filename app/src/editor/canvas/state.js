@@ -962,6 +962,9 @@ export function getRelevantCanvasId(canvas) {
  */
 
 export function updateCanvas(canvas, path, fn) {
+    if (!canvas || typeof canvas !== 'object') {
+        throw new Error(`bad canvas (${typeof canvas})`)
+    }
     return limitLayout(updateVariadic(updatePortConnections(update(path, fn, canvas))))
 }
 
