@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { Translate } from 'react-redux-i18n'
-import AvatarCircle from '$shared/components/AvatarCircle'
+import Avatar from '$shared/components/Avatar'
 import DropdownItem from '../DropdownItem'
 import Link from '$shared/components/Link'
 import routes from '$routes'
@@ -16,9 +16,10 @@ const AvatarItem = ({ user }: Props) => (
     <DropdownItem
         to="#"
         label={(
-            <AvatarCircle
-                name={user.name}
-                imageUrl={user.imageUrl}
+            <Avatar
+                alt={user.name}
+                className={styles.avatar}
+                src={user.imageUrl}
             />
         )}
         align="left"
