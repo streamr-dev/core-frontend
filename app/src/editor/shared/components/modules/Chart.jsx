@@ -231,7 +231,7 @@ export default class ChartModule extends React.Component {
     }, 10)
 
     initIfActive = (isActive) => {
-        if (isActive && !this.props.canvas.adhoc) {
+        if (isActive && (!this.props.canvas || !this.props.canvas.adhoc)) {
             this.init()
         }
     }
