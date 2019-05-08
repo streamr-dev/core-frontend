@@ -80,8 +80,11 @@ export function emptyCanvas(config = {}) {
     return {
         name: 'Untitled Canvas',
         settings: {
-            runTab: RunTabs.realtime,
             ...config.settings,
+            editorState: {
+                runTab: RunTabs.realtime,
+                ...(config.settings || {}).editorState,
+            },
         },
         modules: [],
         state: RunStates.Stopped,
