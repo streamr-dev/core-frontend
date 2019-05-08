@@ -9,7 +9,6 @@
   flex-direction: column;
   font-size: 16px;
   min-height: 100vh;
-  padding-top: 4em;
 }
 
 :global(.page-secondary) .inner {
@@ -24,8 +23,14 @@
   padding-right: 1.5rem;
 }
 
+@media (--sm-down) {
+  .desktopNav {
+    display: none;
+  }
+}
+
 @media (--md-up) {
-  .framed .inner {
-    padding-top: 5em;
+  .mobileNav {
+    display: none;
   }
 }

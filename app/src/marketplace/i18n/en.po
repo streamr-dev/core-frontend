@@ -769,3 +769,9 @@ msgstr "Product state (from free to paid and vise versa) cannot be changed"
 
 msgid "validation##productStreams"
 msgstr "Add at least one stream to your product"
+
+msgid "general##core"
+msgstr "Core"
+
+msgid "general##transactions"
+msgstr "Transactions"
