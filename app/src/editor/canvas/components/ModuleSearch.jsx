@@ -159,7 +159,7 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
         this.addOrRemoveDropListener(true)
         this.load()
 
-        if (this.input) {
+        if (this.input && this.props.isOpen) {
             this.input.focus()
         }
     }
