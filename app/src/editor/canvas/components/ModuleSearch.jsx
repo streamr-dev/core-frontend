@@ -326,6 +326,15 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
 
     onInputRef = (el: any) => {
         this.input = el
+        if (this.props.isOpen && this.input) {
+            this.input.focus()
+        }
+    }
+
+    onInputFocus = () => {
+        if (this.input) {
+            this.input.select()
+        }
     }
 
     componentDidUpdate(prevProps: Props) {
@@ -509,6 +518,7 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
                                         placeholder="Search for modules and streams"
                                         value={search}
                                         onChange={this.onChange}
+                                        onFocus={this.onInputFocus}
                                     />
                                     <button
                                         type="button"
