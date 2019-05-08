@@ -158,6 +158,10 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
         window.addEventListener('keydown', this.onKeyDown)
         this.addOrRemoveDropListener(true)
         this.load()
+
+        if (this.input) {
+            this.input.focus()
+        }
     }
 
     componentWillUnmount() {
