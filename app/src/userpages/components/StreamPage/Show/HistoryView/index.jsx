@@ -6,7 +6,7 @@ import { Row, Col, Button } from 'reactstrap'
 import { Translate, I18n } from 'react-redux-i18n'
 import cx from 'classnames'
 
-import type { Stream, StreamId } from '$shared/flowtype/stream-types'
+import type { Stream, StreamId, Range } from '$shared/flowtype/stream-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { StoreState } from '$userpages/flowtype/states/store-state'
 import type { CsvUploadState } from '$userpages/flowtype/states/stream-state'
@@ -34,7 +34,7 @@ type StateProps = {
 
 type DispatchProps = {
     deleteDataUpTo: (streamId: StreamId, date: Date) => Promise<any>,
-    getRange: (streamId: StreamId) => Promise<any>,
+    getRange: (streamId: StreamId) => Promise<Range>,
     uploadCsvFile: (streamId: StreamId, file: File) => Promise<any>,
     confirmCsvUpload: (id: StreamId, fileId: string, dateFormat: string, timestampColumnIndex: number) => Promise<void>,
     updateEditStream: (data: Stream) => void,
@@ -43,10 +43,7 @@ type DispatchProps = {
 type Props = OwnProps & StateProps & DispatchProps
 
 type State = {
-    range: ?{
-        beginDate: string,
-        endDate: string,
-    },
+    range: ?Range,
     deleteDate: ?Date,
     isModalOpen: boolean,
     csvFile: ?File,

@@ -57,3 +57,13 @@ export type CSVImporterSchema = {
     timeZone: string,
     timestampColumnIndex: ?number
 }
+
+export type CsvUploadResult = {
+    fileId: string,
+    schema: CSVImporterSchema,
+}
+
+export type Range = {
+    beginDate: string,
+    endDate: string,
+}
