@@ -33,5 +33,9 @@
     "purchases": "/u/purchases",
     "streams": "/u/streams",
     "transactions": "/u/transactions",
-    "editProfile": "/u/profile/edit"
+    "editProfile": "/u/profile/edit",
+    "contactGeneral": "mailto:contact@streamr.com",
+    "contactMedia": "mailto:media@streamr.com",
+    "contactJobs": "mailto:jobs@streamr.com",
+    "contactLabs": "mailto:labs@streamr.com"
 }

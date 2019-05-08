@@ -4,7 +4,8 @@ import '../../styles/pcss'
 
 import React from 'react'
 
-import Nav2 from '$shared/components/Nav'
+import MobileNav from '$shared/components/MobileNav2'
+import Nav from '$shared/components/Nav'
 import Footer from '../../containers/Footer'
 import styles from './layout.pcss'
 
@@ -15,7 +16,8 @@ type Props = {
 const Layout = ({ footer = true, ...props }: Props = {}) => (
     <div className={styles.framed}>
         <div className={styles.inner}>
-            <Nav2 />
+            <Nav className={styles.desktopNav} />
+            <MobileNav className={styles.mobileNav} />
             <div {...props} />
         </div>
         {!!footer && <Footer />}

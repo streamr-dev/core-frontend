@@ -22,6 +22,7 @@ type StateProps = {
     currentUser: ?User,
 }
 type Props = StateProps & {
+    className?: ?string,
     location: Location,
 }
 
@@ -32,9 +33,9 @@ const mapStateToProps = (state): StateProps => ({
 const Nav = compose(
     connect(mapStateToProps),
     withRouter,
-)(({ currentUser, location }: Props) => (
+)(({ currentUser, location, className }: Props) => (
     <nav
-        className={styles.root}
+        className={cx(styles.root, className)}
     >
         <div>
             <LogoItem />
