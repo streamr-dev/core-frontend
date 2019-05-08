@@ -61,9 +61,6 @@ export class SearchPanel extends React.PureComponent {
             search: value,
             isExpanded: true,
         })
-        if (this.props.onChange) {
-            this.props.onChange(event)
-        }
     }
 
     clear = () => {
@@ -72,6 +69,19 @@ export class SearchPanel extends React.PureComponent {
         })
         if (this.input) {
             this.input.focus()
+        }
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (this.props.onChange && this.state.search !== prevState.search) {
+            this.props.onChange(this.state.search)
+        }
+
+        // focus input on open
+        if (this.props.isOpen && !prevProps.isOpen) {
+            if (this.input) {
+                this.input.focus()
+            }
         }
     }
 
@@ -117,15 +127,6 @@ export class SearchPanel extends React.PureComponent {
     onInputFocus = () => {
         if (this.input) {
             this.input.select()
-        }
-    }
-
-    componentDidUpdate(prevProps) {
-        // focus input on open
-        if (this.props.isOpen && !prevProps.isOpen) {
-            if (this.input) {
-                this.input.focus()
-            }
         }
     }
 
