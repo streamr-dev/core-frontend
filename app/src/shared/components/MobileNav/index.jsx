@@ -1,116 +1,232 @@
 // @flow
 
-import * as React from 'react'
-import classNames from 'classnames'
-import styles from './nav.pcss'
-import NavLogo from './NavLogo'
-import NavHamburger from './NavHamburger'
-import NavItem from './NavItem'
+import React, { useCallback, useState } from 'react'
+import cx from 'classnames'
+import { withRouter, type Location } from 'react-router-dom'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
+import { selectUserData } from '$shared/modules/user/selectors'
+import type { User } from '$shared/flowtype/user-types'
+import BodyClass, { NO_SCROLL } from '$shared/components/BodyClass'
+import Link from '$shared/components/Link'
+import Bar from './Bar'
+import LogoItem from './LogoItem'
+import Hamburger from './Hamburger'
+import routes from '$routes'
+import styles from './mobileNav.pcss'
 
-type Props = {
-    children: React.Node,
-    expand?: boolean,
-    opaque?: boolean,
-    overlay?: boolean,
-    label?: string,
-    className?: string,
+type StateProps = {
+    currentUser: ?User,
 }
 
-type State = {
-    open: boolean,
+type Props = StateProps & {
+    className?: ?string,
+    location: Location,
 }
 
-const toggleBodyClass = (className, state) => {
-    if (document.body) {
-        const { classList } = document.body
-        if (state) {
-            classList.add(className)
-        } else {
-            classList.remove(className)
-        }
-    }
-}
+const mapStateToProps = (state): StateProps => ({
+    currentUser: selectUserData(state),
+})
 
-class Nav extends React.Component<Props, State> {
-    state = {
-        open: false,
-    }
+const MobileNav = compose(
+    connect(mapStateToProps),
+    withRouter,
+)(({ currentUser, location, className }: Props) => {
+    const [open, setOpen] = useState(false)
 
-    onToggleClick = (e: SyntheticInputEvent<EventTarget>) => {
-        const open = !this.state.open
+    const toggle = useCallback(() => {
+        setOpen((current) => !current)
+    }, [])
 
-        e.preventDefault()
-        this.setState({
-            open,
-        })
-        toggleBodyClass('no-scroll', open)
-    }
-
-    onClose = () => {
-        this.setState({
-            open: false,
-        })
-        toggleBodyClass('no-scroll', false)
-    }
-
-    render() {
-        const { open } = this.state
-        const {
-            children,
-            expand,
-            opaque,
-            overlay,
-            label,
-            className,
-        } = this.props
-
-        return (
-            <nav
-                className={classNames(styles.nav, className, {
-                    [styles.opaque]: opaque,
-                    [styles.open]: open,
-                    [styles.fullWidth]: expand,
-                    [styles.overlay]: overlay,
-                })}
-            >
-                <div className="container">
-                    <div className={styles.inner}>
-                        <NavLogo />
-                        {!!label && (
-                            <div className={classNames(styles.marketplaceLabel, 'd-md-none')}>
-                                {label}
-                            </div>
-                        )}
-                        <NavHamburger onClick={this.onToggleClick} opaqueNav={opaque} />
-                        <div className={styles.navItemsWrapper}>
-                            <div className={styles.toggleWrapper}>
-                                <div className="container">
-                                    <NavHamburger open onClick={this.onToggleClick} />
-                                </div>
-                            </div>
-                            <ul className={styles.navItems}>
-                                {React.Children.map(children, (child) => child && (
-                                    <NavItem opaqueNav={opaque}>
-                                        {React.cloneElement(child, {
-                                            closeNav: this.onClose,
-                                        })}
-                                    </NavItem>
-                                ))}
-                            </ul>
-                        </div>
-                    </div>
+    return (
+        <nav
+            className={cx(styles.root, className, {
+                [styles.open]: open,
+            })}
+        >
+            {!!open && <BodyClass className={NO_SCROLL} />}
+            <Bar
+                left={(
+                    <LogoItem />
+                )}
+                right={(
+                    <Hamburger onClick={toggle} />
+                )}
+            />
+            <div className={styles.menu}>
+                <Bar
+                    right={(
+                        <Hamburger onClick={toggle} open />
+                    )}
+                />
+                <div className={styles.items}>
+                    <ul>
+                        <li>
+                            <Link
+                                className={styles.link}
+                                to={routes.root()}
+                            >
+                                <Translate value="general.marketplace" />
+                            </Link>
+                        </li>
+                    </ul>
+                    <ul>
+                        <li>
+                            <Link
+                                className={styles.link}
+                                to={routes.streams()}
+                            >
+                                <Translate value="general.streams" />
+                            </Link>
+                        </li>
+                        <li>
+                            <Link
+                                className={styles.link}
+                                to={routes.canvases()}
+                            >
+                                <Translate value="general.canvases" />
+                            </Link>
+                        </li>
+                        <li>
+                            <Link
+                                className={styles.link}
+                                to={routes.dashboards()}
+                            >
+                                <Translate value="general.dashboards" />
+                            </Link>
+                        </li>
+                        <li>
+                            <Link
+                                className={styles.link}
+                                to={routes.products()}
+                            >
+                                <Translate value="general.products" />
+                            </Link>
+                        </li>
+                        <li>
+                            <Link
+                                className={styles.link}
+                                to={routes.purchases()}
+                            >
+                                <Translate value="general.purchases" />
+                            </Link>
+                        </li>
+                        <li>
+                            <Link
+                                className={styles.link}
+                                to={routes.transactions()}
+                            >
+                                <Translate value="general.transactions" />
+                            </Link>
+                        </li>
+                    </ul>
+                    {!currentUser && (
+                        <ul>
+                            <li>
+                                <Link
+                                    className={styles.link}
+                                    to={routes.login({
+                                        redirect: location.pathname,
+                                    })}
+                                >
+                                    <Translate value="general.signIn" />
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    className={cx(styles.link, styles.outlined)}
+                                    to={routes.signUp()}
+                                >
+                                    <Translate value="general.signUp" />
+                                </Link>
+                            </li>
+                        </ul>
+                    )}
+                    {!!currentUser && (
+                        <ul>
+                            <li>
+                                <Link
+                                    className={styles.link}
+                                    to={routes.editProfile()}
+                                >
+                                    <Translate value="general.profile" />
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    className={styles.link}
+                                    to={routes.editProfile({}, 'api-keys')}
+                                >
+                                    <Translate value="userpages.profilePage.apiCredentials.linkTitle" />
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    className={styles.link}
+                                    to={routes.editProfile({}, 'ethereum-accounts')}
+                                >
+                                    <Translate value="userpages.profilePage.ethereumAddress.linkTitle" />
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    className={styles.link}
+                                    to={routes.editProfile({}, 'private-keys')}
+                                >
+                                    <Translate value="userpages.profilePage.ethereumPrivateKeys.linkTitle" />
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    className={styles.link}
+                                    to={routes.logout()}
+                                >
+                                    <Translate value="general.logout" />
+                                </Link>
+                            </li>
+                        </ul>
+                    )}
+                    <ul>
+                        <li className={styles.label}>Contact Us</li>
+                        <li />
+                        <li>
+                            <Link
+                                className={styles.link}
+                                to={routes.contactGeneral()}
+                            >
+                                <Translate value="general.general" />
+                            </Link>
+                        </li>
+                        <li>
+                            <Link
+                                className={styles.link}
+                                to={routes.contactMedia()}
+                            >
+                                <Translate value="general.media" />
+                            </Link>
+                        </li>
+                        <li>
+                            <Link
+                                className={styles.link}
+                                to={routes.contactJobs()}
+                            >
+                                <Translate value="general.jobs" />
+                            </Link>
+                        </li>
+                        <li>
+                            <Link
+                                className={styles.link}
+                                to={routes.contactLabs()}
+                            >
+                                <Translate value="general.labs" />
+                            </Link>
+                        </li>
+                    </ul>
                 </div>
-            </nav>
-        )
-    }
-}
+            </div>
+        </nav>
+    )
+})
 
-export { default as NavDivider } from './NavDivider'
-export { default as NavDropdown } from './NavDropdown'
-export { default as NavHamburger } from './NavHamburger'
-export { default as NavItem } from './NavItem'
-export { default as NavLink } from './NavLink'
-export { default as NavLogo } from './NavLogo'
-export { default as NavLabel } from './NavLabel'
-
-export default Nav
+export default MobileNav

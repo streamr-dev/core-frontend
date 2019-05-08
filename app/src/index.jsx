@@ -8,7 +8,6 @@ import App from './app'
 import GlobalInfoWatcher from './marketplace/containers/GlobalInfoWatcher'
 import store from './store'
 import './setup'
-import './layout'
 
 const root = document.getElementById('root')
 

@@ -4,7 +4,7 @@ import '../../styles/pcss'
 
 import React from 'react'
 
-import MobileNav from '$shared/components/MobileNav2'
+import MobileNav from '$shared/components/MobileNav'
 import Nav from '$shared/components/Nav'
 import Footer from '../../containers/Footer'
 import styles from './layout.pcss'

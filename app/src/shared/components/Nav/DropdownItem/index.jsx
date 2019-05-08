@@ -54,4 +54,6 @@ DropdownItem.defaultProps = {
     eatPadding: true,
 }
 
+DropdownItem.styles = styles
+
 export default DropdownItem
