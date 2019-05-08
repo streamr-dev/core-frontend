@@ -173,28 +173,34 @@
  * ModuleSearch Content Items
  */
 
-.ModuleSearch .Content > * {
+.ModuleSearch .Content .SearchRow {
   padding: 5px 24px;
   border-right: 1px solid #EFEFEF;
+  font-family: var(--sans);
+  font-weight: 400;
+  color: #323232;
+  text-transform: none;
+  letter-spacing: 0;
+  line-height: 40px;
 }
 
-.ModuleSearch .Content > *:not(:last-child) {
+.ModuleSearch .Content .SearchRow:active,
+.ModuleSearch .Content .SearchRow:focus {
+  outline: none;
+}
+
+.ModuleSearch .Content > .SearchRow:not(:last-child) {
   border-bottom: 1px solid #EFEFEF;
 }
 
-.ModuleSearch .Content > *:hover {
+.ModuleSearch .Content .SearchRow:hover {
   background: #F8F8F8;
 }
 
 .ModuleSearch .Content .Category {
-  color: #323232;
-  font-family: var(--sans);
-  font-size: 12px;
   font-weight: var(--medium);
   letter-spacing: 1px;
-  line-height: 40px;
   text-transform: uppercase;
-  cursor: pointer;
 }
 
 .ModuleSearch .Content .Category.active {
@@ -210,23 +216,10 @@
   text-transform: uppercase;
   letter-spacing: 1.43px;
   line-height: 40px;
-  cursor: initial;
 }
 
-.ModuleSearch .Content .ModuleItem {
-  font-size: 12px;
-  font-family: var(--sans);
-  font-weight: 400;
-  color: #323232;
-  text-transform: none;
-  letter-spacing: 0;
-  line-height: 40px;
-  cursor: grab;
-}
-
-.ModuleSearch .Content .ModuleItem:active,
-.ModuleSearch .Content .ModuleItem:focus {
-  outline: none;
+.ModuleSearch .Content .SearchCategory:hover {
+  background: transparent;
 }
 
 .ModuleSearch .Content .ModuleItem.WithCategory {
@@ -253,22 +246,15 @@
 }
 
 .ModuleSearch .Content .StreamItem {
-  font-size: 12px;
-  font-family: var(--sans);
-  font-weight: 400;
-  color: #323232;
-  text-transform: none;
-  letter-spacing: 0;
   line-height: 28px;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-  cursor: grab;
 }
 
 .ModuleSearch .Content .StreamItem:active,
-.ModuleSearch .Content .StreamItem:focus {
-  outline: none;
+.ModuleSearch .Content .ModuleItem:active {
+  cursor: grabbing;
 }
 
 .ModuleSearch .Content .StreamItem .Description {

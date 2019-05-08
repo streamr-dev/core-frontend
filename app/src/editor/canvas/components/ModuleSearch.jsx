@@ -52,7 +52,7 @@ export class ModuleMenuCategory extends React.PureComponent<MenuCategoryProps, M
             <React.Fragment>
                 {/* eslint-disable-next-line */}
                 <div
-                    className={cx(styles.Category, {
+                    className={cx(styles.Category, styles.SearchRow, {
                         [styles.active]: !!isExpanded,
                     })}
                     key={category.name}
@@ -105,7 +105,7 @@ const ModuleMenuItem = ({ module, addModule }) => (
         draggable
         onDragStart={(e) => { onDragStart(e, module.id, module.name) }}
         onClick={() => addModule(module.id)}
-        className={styles.ModuleItem}
+        className={cx(styles.ModuleItem, styles.SearchRow)}
         role="option"
         aria-selected="false"
         tabIndex="0"
@@ -416,13 +416,13 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
         return (
             <React.Fragment>
                 {matchingModules.length > 0 && (
-                    <div className={styles.SearchCategory}>Modules</div>
+                    <div className={cx(styles.SearchCategory, styles.SearchRow)}>Modules</div>
                 )}
                 {matchingModules.map((m) => (
                     /* TODO: follow the disabled jsx-a11y recommendations below to add keyboard support */
                     /* eslint-disable-next-line jsx-a11y/click-events-have-key-events */
                     <div
-                        className={cx(styles.ModuleItem, styles.WithCategory)}
+                        className={cx(styles.SearchRow, styles.ModuleItem, styles.WithCategory)}
                         role="option"
                         aria-selected="false"
                         key={m.id}
@@ -436,12 +436,12 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
                     </div>
                 ))}
                 {matchingStreams.length > 0 && (
-                    <div className={styles.SearchCategory}>Streams</div>
+                    <div className={cx(styles.SearchCategory, styles.SearchRow)}>Streams</div>
                 )}
                 {matchingStreams.map((stream) => (
                     /* eslint-disable-next-line jsx-a11y/click-events-have-key-events */
                     <div
-                        className={styles.StreamItem}
+                        className={cx(styles.StreamItem, styles.SearchRow)}
                         role="option"
                         aria-selected="false"
                         key={stream.id}
