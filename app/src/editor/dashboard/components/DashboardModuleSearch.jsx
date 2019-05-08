@@ -78,9 +78,8 @@ class DashboardModuleSearch extends React.PureComponent {
         this.setState({ canvases })
     }
 
-    onChange = (event) => {
-        const { value } = event.currentTarget
-        this.setState({ search: value })
+    onChange = (search) => {
+        this.setState({ search })
     }
 
     onSelect = (canvasId, module) => {
