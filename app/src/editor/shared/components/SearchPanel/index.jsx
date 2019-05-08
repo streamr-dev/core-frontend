@@ -101,7 +101,7 @@ export class SearchPanel extends React.PureComponent {
             requiredHeight = height /* use user-set height if 'browsing' */
         }
 
-        return Math.min(Math.max(requiredHeight, minHeightMinimized), maxHeight)
+        return Math.min(height, Math.min(Math.max(requiredHeight, minHeightMinimized), maxHeight))
     }
 
     toggleMinimize = () => {
