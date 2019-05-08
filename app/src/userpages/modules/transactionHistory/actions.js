@@ -60,6 +60,10 @@ export const clearTransactionList = () => ({
     type: CLEAR_TRANSACTION_LIST,
 })
 
+export const noTransactionResults = () => (dispatch: Function) => {
+    dispatch(getTransactionsSuccess([]))
+}
+
 export const showEvents = () => (dispatch: Function, getState: () => StoreState) => {
     dispatch(getTransactionsRequest())
 

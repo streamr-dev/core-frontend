@@ -36,7 +36,7 @@ const transactionHistory = (state: TransactionHistoryState = initialState, actio
             return {
                 ...state,
                 events: action.events,
-                fetching: false,
+                fetching: action.events.length > 0,
             }
 
         case GET_TRANSACTION_EVENTS_FAILURE:
