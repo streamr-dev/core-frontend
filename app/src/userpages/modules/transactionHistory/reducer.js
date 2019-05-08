@@ -9,19 +9,20 @@ import {
     GET_TRANSACTIONS_REQUEST,
     GET_TRANSACTIONS_SUCCESS,
     GET_TRANSACTIONS_FAILURE,
+    CLEAR_TRANSACTION_LIST,
 } from './actions'
 
 const initialState: TransactionHistoryState = {
     events: [],
     ids: [],
-    fetching: false,
+    fetching: true,
     error: null,
     offset: 0,
-    pageSize: 10,
 }
 
 const transactionHistory = (state: TransactionHistoryState = initialState, action: any): TransactionHistoryState => {
     switch (action.type) {
+        case CLEAR_TRANSACTION_LIST:
         case GET_TRANSACTION_EVENTS_REQUEST:
             return {
                 ...state,
@@ -57,7 +58,7 @@ const transactionHistory = (state: TransactionHistoryState = initialState, actio
             return {
                 ...state,
                 ids: [...ids],
-                offset: state.offset + action.ids.length,
+                offset: Math.min((state.offset + action.ids.length) - 1, 0),
                 fetching: false,
             }
         }
