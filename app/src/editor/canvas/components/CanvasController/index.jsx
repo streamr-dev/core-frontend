@@ -1,7 +1,9 @@
 import React, { useContext, useEffect, useMemo } from 'react'
-import * as RouterContext from '$editor/shared/components/RouterContext'
 import { Helmet } from 'react-helmet'
 import LoadingIndicator from '$userpages/components/LoadingIndicator'
+
+import * as RouterContext from '$editor/shared/components/RouterContext'
+import usePending, { useAnyPending, Provider as PendingProvider } from '$editor/shared/hooks/usePending'
 
 import * as CanvasState from '../../state'
 
@@ -11,8 +13,6 @@ import useCanvasCreateCallback from './useCanvasCreateCallback'
 import useCanvasRemoveCallback from './useCanvasRemoveCallback'
 import useCanvasDuplicateCallback from './useCanvasDuplicateCallback'
 import useModuleLoadCallback from './useModuleLoadCallback'
-
-import usePending, { useAnyPending, Provider as PendingProvider } from './usePending'
 
 import styles from './CanvasController.pcss'
 

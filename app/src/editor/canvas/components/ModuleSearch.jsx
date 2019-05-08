@@ -2,6 +2,7 @@
 
 import React from 'react'
 import startCase from 'lodash/startCase'
+import debounce from 'lodash/debounce'
 import cx from 'classnames'
 import Draggable from 'react-draggable'
 import { ResizableBox } from 'react-resizable'
@@ -51,7 +52,7 @@ export class ModuleMenuCategory extends React.PureComponent<MenuCategoryProps, M
             <React.Fragment>
                 {/* eslint-disable-next-line */}
                 <div
-                    className={cx(styles.Category, {
+                    className={cx(styles.Category, styles.SearchRow, {
                         [styles.active]: !!isExpanded,
                     })}
                     key={category.name}
@@ -104,7 +105,7 @@ const ModuleMenuItem = ({ module, addModule }) => (
         draggable
         onDragStart={(e) => { onDragStart(e, module.id, module.name) }}
         onClick={() => addModule(module.id)}
-        className={styles.ModuleItem}
+        className={cx(styles.ModuleItem, styles.SearchRow)}
         role="option"
         aria-selected="false"
         tabIndex="0"
@@ -131,8 +132,9 @@ type State = {
 }
 
 const MIN_WIDTH = 250
-const MAX_WIDTH = 450
-const MAX_HEIGHT = 352
+const MAX_WIDTH = 600
+const DEFAULT_HEIGHT = 352
+const MAX_HEIGHT = 352 * 2
 const MIN_HEIGHT_MINIMIZED = 90
 const MODULE_ITEM_HEIGHT = 52
 const STREAM_MODULE_ID = 147
@@ -145,13 +147,14 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
         matchingStreams: [],
         isExpanded: true,
         width: MIN_WIDTH,
-        height: MAX_HEIGHT,
+        height: DEFAULT_HEIGHT,
         /* eslint-disable-next-line react/no-unused-state */
         heightBeforeMinimize: 0,
     }
 
     unmounted = false
     input = null
+    currentSearch: string = ''
     selfRef: Ref<HTMLDivElement> = React.createRef()
 
     componentDidMount() {
@@ -195,33 +198,44 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
         })
     }
 
-    onChange = async (event: any) => {
-        const { value } = event.currentTarget
-        this.setState({
-            search: value,
-            isExpanded: true,
-        }, () => this.recalculateHeight())
-
-        // Search modules
-        const matchingModules = this.getMappedModuleTree(value)
-
-        // Search streams
+    searchStreams = debounce(async (value) => {
+        // remove 'stream' term from search
+        // ensures we can pseudo 'filter results to streams' using "stream searchterm"
+        const streamSearchString = value.replace(/(\s+|^)stream(\s+|$)/g, ' ').trim()
         const params = {
             id: '',
-            search: value,
+            search: streamSearchString,
             sortBy: 'lastUpdated',
             order: 'desc',
             uiChannel: false,
             public: true,
         }
-        const streams = await getStreams(params)
+
+        const matchingStreams = await getStreams(params)
 
         if (this.unmounted) { return }
+        // throw away results if no longer current
+        if (this.currentSearch.trim() !== value.trim()) { return }
 
+        this.setState({ matchingStreams })
+    }, 500)
+
+    onChange = async (event: any) => {
+        const { value } = event.currentTarget
+
+        const trimmedValue = value.trim()
+        this.currentSearch = trimmedValue
+
+        // Search modules
+        const matchingModules = this.getMappedModuleTree(trimmedValue)
         this.setState({
+            matchingStreams: [],
             matchingModules,
-            matchingStreams: streams,
-        }, () => this.recalculateHeight())
+            search: value,
+            isExpanded: true,
+        })
+
+        this.searchStreams(trimmedValue)
     }
 
     clear = () => {
@@ -231,17 +245,19 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
         if (this.input) {
             this.input.focus()
         }
-        this.recalculateHeight()
     }
 
-    recalculateHeight = () => {
-        const { isExpanded, matchingModules, matchingStreams, search } = this.state
+    calculateHeight = () => {
+        const {
+            isExpanded,
+            matchingModules,
+            matchingStreams,
+            search,
+            height,
+        } = this.state
 
         if (!isExpanded) {
-            this.setState({
-                height: MIN_HEIGHT_MINIMIZED,
-            })
-            return
+            return MIN_HEIGHT_MINIMIZED
         }
 
         const searchResultItemCount = matchingModules.length + matchingStreams.length +
@@ -249,20 +265,18 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
             (matchingStreams.length > 0 ? 1 : 0)
         let requiredHeight = MIN_HEIGHT_MINIMIZED + (searchResultItemCount * MODULE_ITEM_HEIGHT)
 
-        if (search === '') {
-            requiredHeight = MAX_HEIGHT
+        if (search.trim() === '') {
+            requiredHeight = height /* use user-set height if 'browsing' */
         }
 
-        this.setState({
-            height: Math.min(Math.max(requiredHeight, MIN_HEIGHT_MINIMIZED), MAX_HEIGHT),
-        })
+        return Math.min(Math.max(requiredHeight, MIN_HEIGHT_MINIMIZED), MAX_HEIGHT)
     }
 
     toggleMinimize = () => {
         this.setState(({ isExpanded, height, heightBeforeMinimize }) => ({
             isExpanded: !isExpanded,
             heightBeforeMinimize: isExpanded ? height : heightBeforeMinimize,
-        }), () => this.recalculateHeight())
+        }))
     }
 
     addModule = (id: number, x: ?number, y: ?number, streamId: ?string) => {
@@ -312,6 +326,15 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
 
     onInputRef = (el: any) => {
         this.input = el
+        if (this.props.isOpen && this.input) {
+            this.input.focus()
+        }
+    }
+
+    onInputFocus = () => {
+        if (this.input) {
+            this.input.select()
+        }
     }
 
     componentDidUpdate(prevProps: Props) {
@@ -402,13 +425,13 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
         return (
             <React.Fragment>
                 {matchingModules.length > 0 && (
-                    <div className={styles.SearchCategory}>Modules</div>
+                    <div className={cx(styles.SearchCategory, styles.SearchRow)}>Modules</div>
                 )}
                 {matchingModules.map((m) => (
                     /* TODO: follow the disabled jsx-a11y recommendations below to add keyboard support */
                     /* eslint-disable-next-line jsx-a11y/click-events-have-key-events */
                     <div
-                        className={cx(styles.ModuleItem, styles.WithCategory)}
+                        className={cx(styles.SearchRow, styles.ModuleItem, styles.WithCategory)}
                         role="option"
                         aria-selected="false"
                         key={m.id}
@@ -422,12 +445,12 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
                     </div>
                 ))}
                 {matchingStreams.length > 0 && (
-                    <div className={styles.SearchCategory}>Streams</div>
+                    <div className={cx(styles.SearchCategory, styles.SearchRow)}>Streams</div>
                 )}
                 {matchingStreams.map((stream) => (
                     /* eslint-disable-next-line jsx-a11y/click-events-have-key-events */
                     <div
-                        className={styles.StreamItem}
+                        className={cx(styles.StreamItem, styles.SearchRow)}
                         role="option"
                         aria-selected="false"
                         key={stream.id}
@@ -446,7 +469,9 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
 
     render() {
         const { open, isOpen } = this.props
-        const { search, isExpanded, width, height } = this.state
+        const { search, isExpanded, width } = this.state
+        const height = this.calculateHeight()
+        const isSearching = !!search.trim()
         return (
             <React.Fragment>
                 <Draggable
@@ -454,13 +479,17 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
                     bounds="parent"
                 >
                     <div
-                        className={styles.ModuleSearch}
+                        className={cx(styles.ModuleSearch, {
+                            [styles.isSearching]: isSearching,
+                        })}
                         hidden={!isOpen}
                         ref={this.selfRef}
                     >
                         <ResizableBox
+                            className={styles.ResizableBox}
                             width={width}
                             height={height}
+                            axis={isSearching ? 'x' : 'both' /* lock y when searching */}
                             minConstraints={[MIN_WIDTH, MIN_HEIGHT_MINIMIZED]}
                             maxConstraints={[MAX_WIDTH, MAX_HEIGHT]}
                             onResize={(e, data) => {
@@ -489,6 +518,7 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
                                         placeholder="Search for modules and streams"
                                         value={search}
                                         onChange={this.onChange}
+                                        onFocus={this.onInputFocus}
                                     />
                                     <button
                                         type="button"
@@ -500,9 +530,10 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
                                     </button>
                                 </div>
                                 <div role="listbox" className={styles.Content}>
-                                    {(search && search.length > 0) ?
+                                    {isSearching ?
                                         this.renderSearchResults() :
-                                        this.renderMenu()}
+                                        this.renderMenu()
+                                    }
                                 </div>
                             </div>
                         </ResizableBox>

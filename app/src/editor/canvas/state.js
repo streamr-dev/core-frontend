@@ -2,6 +2,7 @@
 import update from 'lodash/fp/update'
 import get from 'lodash/get'
 import cloneDeep from 'lodash/cloneDeep'
+import uniqBy from 'lodash/uniqBy'
 import uuid from 'uuid'
 
 const MISSING_ENTITY = 'EDITOR/MISSING_ENTITY'
@@ -993,12 +994,26 @@ export function moduleSearch(moduleCategories, search) {
     const moduleIndex = getModuleCategoriesIndex(moduleCategories)
     search = search.trim().toLowerCase()
     if (!search) { return moduleIndex }
-    const nameMatches = moduleIndex.filter((m) => (
-        m.name.toLowerCase().includes(search)
-    ))
-    const found = new Set(nameMatches.map(({ id }) => id))
-    const pathMatches = moduleIndex.filter((m) => (
-        m.path.toLowerCase().includes(search) && !found.has(m.id)
-    ))
-    return nameMatches.concat(pathMatches)
+
+    const terms = search.split(/\s+/)
+    const exactMatches = moduleIndex.filter((m) => {
+        const target = m.name.toLowerCase()
+        return target.split(/\s+/).join(' ') === terms.join(' ')
+    })
+
+    const nameMatches = moduleIndex.filter((m) => {
+        const target = m.name.toLowerCase()
+        return terms.every((searchTerm) => (
+            target.includes(searchTerm)
+        ))
+    })
+
+    const pathMatches = moduleIndex.filter((m) => {
+        const target = m.path.toLowerCase()
+        return terms.every((searchTerm) => (
+            target.includes(searchTerm)
+        ))
+    })
+
+    return uniqBy([...exactMatches, ...nameMatches, ...pathMatches], 'id')
 }
