@@ -167,7 +167,7 @@ export const saveCurrentUser = () => async (dispatch: Function, getState: Functi
         .then((data) => {
             dispatch(saveCurrentUserSuccess(data))
             Notification.push({
-                title: 'Setting has been saved',
+                title: 'Your settings have been saved',
                 icon: NotificationIcon.CHECKMARK,
             })
         })

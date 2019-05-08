@@ -304,6 +304,14 @@ const sources = {
             />
         </svg>
     ),
+    signedTick: (
+        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12">
+            <g fill="none" fillRule="evenodd">
+                <path fill="#0324FF" d="M6 11.16l-1.171.725-.804-1.118-1.358.222-.316-1.34-1.34-.316.222-1.358-1.118-.804L.84 6 .115 4.829l1.118-.804-.222-1.358 1.34-.316.316-1.34 1.358.222.804-1.118L6 .84 7.171.115l.804 1.118 1.358-.222.316 1.34 1.34.316-.222 1.358 1.118.804L11.16 6l.725 1.171-1.118.804.222 1.358-1.34.316-.316 1.34-1.358-.222-.804 1.118z" />
+                <path stroke="#FFF" strokeLinecap="round" strokeLinejoin="round" d="M4.048 6.281l1.1 1.195 2.828-2.829" />
+            </g>
+        </svg>
+    ),
     dropPlus: (
         <svg viewBox="0 0 25 25" xmlns="http://www.w3.org/2000/svg">
             <g transform="translate(1 1)" fill="none" fillRule="evenodd">

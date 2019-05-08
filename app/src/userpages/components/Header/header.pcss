@@ -15,6 +15,7 @@
 .tabBar {
   display: flex;
   line-height: 32px;
+  overflow-x: auto;
 }
 
 .searchBar {
@@ -27,8 +28,36 @@
 .filterBar {
   display: flex;
   margin-left: auto;
+  right: 16px;
+  position: relative;
 }
 
 .filterBar > div {
   bottom: 3px;
+}
+
+.tabContainer {
+  display: flex;
+  position: relative;
+}
+
+@media (--md-down) {
+  .filterBar {
+    display: flex;
+    margin-left: auto;
+    position: absolute;
+    right: 3px;
+    top: 70px;
+  }
+
+  .containerOverrides {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+@media (--sm-down) {
+  .filterBar {
+    display: none;
+  }
 }

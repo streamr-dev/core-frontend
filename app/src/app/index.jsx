@@ -128,7 +128,7 @@ const DocsRouter = () => ([
 ])
 
 const UserpagesRouter = () => ([
-    <Route exact path={userpages.main} component={CanvasListAuth} key="CanvasList" />,
+    <Route exact path={userpages.main} component={StreamListViewAuth} key="RootStreamListView" />,
     <Route exact path={userpages.canvases} component={CanvasListAuth} key="CanvasesCanvasList" />,
     <Route exact path={userpages.profile} component={ProfilePageAuth} key="ProfilePage" />,
     <Route exact path={userpages.dashboards} component={DashboardListAuth} key="DashboardList" />,

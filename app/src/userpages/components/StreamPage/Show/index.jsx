@@ -6,6 +6,7 @@ import { I18n } from 'react-redux-i18n'
 import { push } from 'react-router-redux'
 import cx from 'classnames'
 import { withRouter } from 'react-router-dom'
+import MediaQuery from 'react-responsive'
 
 import type { Stream, StreamId } from '$shared/flowtype/stream-types'
 import type { StoreState } from '$shared/flowtype/store-state'
@@ -29,6 +30,7 @@ import TOCPage from '$userpages/components/TOCPage'
 import Toolbar from '$shared/components/Toolbar'
 import routes from '$routes'
 import links from '$shared/../links'
+import breakpoints from '$app/scripts/breakpoints'
 
 import Layout from '../../Layout'
 import InfoView from './InfoView'
@@ -38,6 +40,8 @@ import PreviewView from './PreviewView'
 import HistoryView from './HistoryView'
 
 import styles from './streamShowView.pcss'
+
+const { lg } = breakpoints
 
 type StateProps = {
     editedStream: ?Stream,
@@ -165,29 +169,56 @@ export class StreamShowView extends Component<Props, State> {
         return (
             <Layout noHeader noFooter>
                 <div className={styles.streamShowView}>
-                    <Toolbar
-                        altMobileLayout
-                        actions={{
-                            cancel: {
-                                title: I18n.t('userpages.profilePage.toolbar.cancel'),
-                                color: 'link',
-                                outline: true,
-                                onClick: () => {
-                                    cancel()
+                    <MediaQuery minWidth={lg.min}>
+                        <Toolbar
+                            altMobileLayout
+                            actions={{
+                                cancel: {
+                                    title: I18n.t('userpages.profilePage.toolbar.cancel'),
+                                    color: 'link',
+                                    outline: true,
+                                    onClick: () => {
+                                        cancel()
+                                    },
                                 },
-                            },
-                            saveChanges: {
-                                title: I18n.t('userpages.profilePage.toolbar.saveAndExit'),
-                                color: 'primary',
-                                spinner: this.state.saving,
-                                onClick: () => {
-                                    if (editedStream) {
-                                        this.onSave(editedStream)
-                                    }
+                                saveChanges: {
+                                    title: I18n.t('userpages.profilePage.toolbar.saveAndExit'),
+                                    color: 'primary',
+                                    spinner: this.state.saving,
+                                    onClick: () => {
+                                        if (editedStream) {
+                                            this.onSave(editedStream)
+                                        }
+                                    },
                                 },
-                            },
-                        }}
-                    />
+                            }}
+                        />
+                    </MediaQuery>
+                    <MediaQuery maxWidth={lg.min}>
+                        <Toolbar
+                            altMobileLayout
+                            actions={{
+                                cancel: {
+                                    title: I18n.t('userpages.profilePage.toolbar.cancel'),
+                                    color: 'link',
+                                    outline: true,
+                                    onClick: () => {
+                                        cancel()
+                                    },
+                                },
+                                saveChanges: {
+                                    title: I18n.t('userpages.profilePage.toolbar.done'),
+                                    color: 'primary',
+                                    spinner: this.state.saving,
+                                    onClick: () => {
+                                        if (editedStream) {
+                                            this.onSave(editedStream)
+                                        }
+                                    },
+                                },
+                            }}
+                        />
+                    </MediaQuery>
                     <div className={cx('container', styles.containerOverrides)}>
                         <TOCPage title="Set up your Stream">
                             <TOCPage.Section
