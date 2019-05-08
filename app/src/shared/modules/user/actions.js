@@ -26,6 +26,9 @@ import {
     UPDATE_PASSWORD_REQUEST,
     UPDATE_PASSWORD_SUCCESS,
     UPDATE_PASSWORD_FAILURE,
+    UPDATE_AVATAR_REQUEST,
+    UPDATE_AVATAR_SUCCESS,
+    UPDATE_AVATAR_FAILURE,
     RESET_USER_DATA,
     DELETE_USER_ACCOUNT_REQUEST,
     DELETE_USER_ACCOUNT_SUCCESS,
@@ -58,6 +61,18 @@ const saveCurrentUserSuccess: UserDataActionCreator = createAction(SAVE_CURRENT_
 const saveCurrentUserFailure: UserErrorActionCreator = createAction(SAVE_CURRENT_USER_FAILURE, (error: ErrorInUi) => ({
     error,
 }))
+
+// Update user avatar
+const updateAvatarRequest = () => ({
+    type: UPDATE_AVATAR_REQUEST,
+})
+const updateAvatarSuccess = () => ({
+    type: UPDATE_AVATAR_SUCCESS,
+})
+const updateAvatarFailure = (error: ErrorInUi) => ({
+    type: UPDATE_AVATAR_FAILURE,
+    error,
+})
 
 // update password
 const updatePasswordRequest = () => ({
@@ -113,14 +128,29 @@ export const updateCurrentUserTimezone = (timezone: string) => (dispatch: Functi
     }))
 }
 
-export const updateCurrentUserImage = (image: ?string) => (dispatch: Function, getState: Function) => {
+export const updateCurrentUserImage = (image: ?File) => (dispatch: Function, getState: Function) => {
+    dispatch(updateAvatarRequest())
     const user = selectUserData(getState())
-    return services.uploadProfileAvatar()
-        .then(() => {
+
+    if (!user || !image) {
+        throw new Error('Invalid user data or uploaded image')
+    }
+
+    return services.uploadProfileAvatar(image)
+        .then((avatar) => {
+            dispatch(updateAvatarSuccess())
             dispatch(updateCurrentUser({
                 ...user,
-                imageUrl: image,
+                ...avatar,
             }))
+        })
+        .catch((e) => {
+            dispatch(updateAvatarFailure(e))
+            Notification.push({
+                title: e.message,
+                icon: NotificationIcon.ERROR,
+            })
+            throw e
         })
 }
 

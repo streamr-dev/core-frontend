@@ -36,8 +36,8 @@ export default class ModuleDragger extends React.Component {
         const { module } = this.props
         const { layout } = module
         const defaultPosition = {
-            x: parseInt(layout.position.left, 10),
-            y: parseInt(layout.position.top, 10),
+            x: (layout && parseInt(layout.position.left, 10)) || 0,
+            y: (layout && parseInt(layout.position.top, 10)) || 0,
         }
 
         return (

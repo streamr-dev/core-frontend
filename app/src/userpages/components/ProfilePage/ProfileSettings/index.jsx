@@ -30,7 +30,7 @@ type DispatchProps = {
     getCurrentUser: () => void,
     updateCurrentUserName: (name: $ElementType<User, 'name'>) => void,
     updateCurrentUserTimezone: (timezone: $ElementType<User, 'timezone'>) => void,
-    updateCurrentUserImage: (image: ?string) => Promise<void>,
+    updateCurrentUserImage: (image: ?File) => Promise<void>,
 }
 
 type Props = StateProps & DispatchProps
@@ -54,7 +54,7 @@ export class ProfileSettings extends Component<Props> {
         this.props.updateCurrentUserTimezone(value)
     }
 
-    onImageChange = (image: ?string) => (
+    onImageChange = (image: ?File) => (
         this.props.updateCurrentUserImage(image)
     )
 
@@ -120,7 +120,7 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     updateCurrentUserTimezone(tz: $ElementType<User, 'timezone'>) {
         dispatch(updateCurrentUserTimezone(tz))
     },
-    updateCurrentUserImage(image: ?string) {
+    updateCurrentUserImage(image: ?File) {
         return dispatch(updateCurrentUserImage(image))
     },
 })

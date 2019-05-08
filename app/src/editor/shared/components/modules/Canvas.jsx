@@ -4,26 +4,27 @@ import { Link } from 'react-router-dom'
 
 import links from '../../../../links'
 
-import ButtonStyles from '$shared/components/Button/button.pcss'
-import styles from './Button.pcss'
+import styles from './Canvas.pcss'
 
 const getCanvasPort = ({ params }) => params.find(({ name }) => name === 'canvas')
 
 export default class CanvasModule extends React.Component {
+    subscription = React.createRef()
+
     render() {
-        const { module, className } = this.props
-        const currentCanvasPort = getCanvasPort(module)
+        const { className, isActive } = this.props
+        const currentCanvasPort = getCanvasPort(this.props.module)
 
         return (
-            <div className={cx(className, styles.Button)}>
-                {currentCanvasPort && currentCanvasPort.value != null && (
+            <div className={cx(className, styles.SubCanvas)}>
+                {isActive && currentCanvasPort && currentCanvasPort.value && (
                     <Link
-                        className={styles.button}
+                        className={styles.link}
                         to={`${links.editor.canvasEditor}/${currentCanvasPort.value}`}
                     >
                         <button
                             type="button"
-                            className={cx(styles.button, ButtonStyles.btn, ButtonStyles.btnPrimary)}
+                            className={styles.button}
                         >
                             View Canvas
                         </button>

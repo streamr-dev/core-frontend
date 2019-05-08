@@ -67,11 +67,29 @@ if (process.env.SENTRY_URL) {
     })
 }
 
+// empty the request body for these paths
+const urlBlackList = [
+    '/api/v1/login/password',
+]
+
 if (process.env.LOGROCKET_SLUG) {
     analytics.register({
         id: 'LogRocket',
         init: () => {
-            LogRocket.init(process.env.LOGROCKET_SLUG)
+            LogRocket.init(process.env.LOGROCKET_SLUG, {
+                network: {
+                    requestSanitizer: (request) => {
+                        const requestUrl = request.url.toLowerCase()
+                        // if the url contains one of the blacklisted paths
+                        if (urlBlackList.some((search) => requestUrl.indexOf(search) !== -1)) {
+                            // scrub out the body
+                            request.body = null
+                        }
+
+                        return request
+                    },
+                },
+            })
         },
         reportError: (error: Error, extra: Object = {}) => {
             LogRocket.captureException(error, {

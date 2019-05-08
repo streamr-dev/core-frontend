@@ -1,15 +1,19 @@
 // @flow
 
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import Dropzone from 'react-dropzone'
 import cx from 'classnames'
 import { Translate, I18n } from 'react-redux-i18n'
+import MediaQuery from 'react-responsive'
 
+import breakpoints from '$app/scripts/breakpoints'
 import { maxFileSizeForImageUpload } from '$shared/utils/constants'
+import PngIcon from '$shared/components/PngIcon'
 
-import SvgIcon from '$shared/components/SvgIcon'
 import Notification from '$shared/utils/Notification'
 import styles from './imageUpload.pcss'
+
+const { lg } = breakpoints
 
 export type OnUploadError = (errorMessage: string) => void
 
@@ -25,7 +29,6 @@ type Props = {
 
 type State = {
     file: ?DropzoneFile,
-    hover: ?boolean,
     imageUploading: ?boolean,
     imageUploaded: ?boolean,
     dragEntered: boolean,
@@ -34,7 +37,6 @@ type State = {
 class ImageUpload extends Component<Props, State> {
     state = {
         file: null,
-        hover: false,
         imageUploading: false,
         imageUploaded: false,
         dragEntered: false,
@@ -106,33 +108,26 @@ class ImageUpload extends Component<Props, State> {
         })
     }
 
-    setDropzoneHover = (hoverState: boolean) => {
-        this.setState({
-            hover: hoverState,
-        })
-    }
-
     getPreviewImage = () => this.state.file && this.state.file.preview
 
     unmounted = false
 
     determineStyles = (hasImage: boolean) => {
-        const { imageUploaded, hover } = this.state
-        if ((hasImage && hover) || (imageUploaded && hover) || (!hasImage && !imageUploaded)) {
+        const { imageUploaded } = this.state
+
+        if ((hasImage) || (imageUploaded)) {
             return styles.dropzoneAdvice
         }
 
-        return styles.hide
+        return styles.dropzoneAdviceNoImage
     }
 
     render() {
         const { originalImage, dropzoneClassname } = this.props
-        const { imageUploading, imageUploaded, hover, dragEntered } = this.state
+        const { imageUploading, imageUploaded, dragEntered } = this.state
         const srcImage = this.getPreviewImage() || originalImage
         return (
             <div
-                onMouseEnter={() => this.setDropzoneHover(true)}
-                onMouseLeave={() => this.setDropzoneHover(false)}
                 className={styles.container}
             >
                 <Dropzone
@@ -157,12 +152,23 @@ class ImageUpload extends Component<Props, State> {
                             : this.determineStyles(!!srcImage)
                         }
                     >
-                        <SvgIcon name="imageUpload" color={hover ? '#303030' : '#A6A6A6'} className={styles.icon} />
+                        <PngIcon
+                            className={styles.icon}
+                            name="imageUpload"
+                            alt={I18n.t('imageUpload.coverImage.upload')}
+                        />
                         <p>
                             {(imageUploaded || !!srcImage) ? (
                                 <Translate value="imageUpload.coverImage.replace" dangerousHTML />
                             ) : (
-                                <Translate value="imageUpload.coverImage.upload" dangerousHTML />
+                                <Fragment>
+                                    <MediaQuery minWidth={lg.min}>
+                                        <Translate value="imageUpload.coverImage.upload" className={styles.uploadAdvice} dangerousHTML />
+                                    </MediaQuery>
+                                    <MediaQuery maxWidth={lg.min}>
+                                        <Translate value="imageUpload.coverImage.tabletUpload" className={styles.uploadAdvice} dangerousHTML />
+                                    </MediaQuery>
+                                </Fragment>
                             )}
                         </p>
                     </div>
