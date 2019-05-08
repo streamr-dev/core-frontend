@@ -121,7 +121,7 @@
 
   /* Firefox doesn't even do this */
   scrollbar-color: #CDCDCD white; /* stylelint-disable-line property-no-unknown */
-  padding-bottom: 32px;
+  padding-bottom: 16px;
 }
 
 /**
@@ -149,7 +149,7 @@
  * SearchPanel Content Items
  */
 
-.SearchPanel .Content .SearchRow {
+.SearchRow {
   padding: 5px 24px;
   font-family: var(--sans);
   font-weight: 400;
@@ -160,26 +160,13 @@
   border-bottom: 1px solid #EFEFEF;
 }
 
-.SearchPanel .Content .SearchRow:active,
-.SearchPanel .Content .SearchRow:focus {
+.SearchRow:active,
+.SearchRow:focus {
   outline: none;
 }
 
-.SearchPanel .Content .SearchRow:hover {
+.SearchRow:hover {
   background: #F8F8F8;
-}
-
-.Overlay {
-  z-index: 12;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: 100vw;
-  height: 100vh;
-  background: salmon;
-  opacity: 0;
 }
 
 .dragHandle {

@@ -138,6 +138,7 @@ export class SearchPanel extends React.PureComponent {
             maxWidth,
             maxHeight,
             children,
+            className,
         } = this.props
         const { search, isExpanded, width } = this.state
         const height = this.calculateHeight()
@@ -149,7 +150,7 @@ export class SearchPanel extends React.PureComponent {
                     bounds="parent"
                 >
                     <div
-                        className={cx(styles.SearchPanel, {
+                        className={cx(styles.SearchPanel, className, {
                             [styles.isSearching]: isSearching,
                         })}
                         hidden={!isOpen}
