@@ -161,6 +161,10 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
         window.addEventListener('keydown', this.onKeyDown)
         this.addOrRemoveDropListener(true)
         this.load()
+
+        if (this.input && this.props.isOpen) {
+            this.input.focus()
+        }
     }
 
     componentWillUnmount() {
@@ -476,7 +480,7 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
             <React.Fragment>
                 <Draggable
                     handle={`.${styles.dragHandle}`}
-                    bounds="parent"
+                    bounds={`.${CanvasStyles.Modules}`}
                 >
                     <div
                         className={cx(styles.ModuleSearch, {
@@ -504,12 +508,12 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
                                 <div className={cx(styles.Header, styles.dragHandle)}>
                                     <button type="button" className={styles.minimize} onClick={() => this.toggleMinimize()}>
                                         {isExpanded ?
-                                            <SvgIcon name="caretUp" /> :
-                                            <SvgIcon name="caretDown" />
+                                            <SvgIcon name="brevetDown" className={styles.flip} /> :
+                                            <SvgIcon name="brevetDown" className={styles.normal} />
                                         }
                                     </button>
                                     <button type="button" className={styles.close} onClick={() => open(false)}>
-                                        <SvgIcon name="crossHeavy" />
+                                        <SvgIcon name="x" />
                                     </button>
                                 </div>
                                 <div className={styles.Input}>

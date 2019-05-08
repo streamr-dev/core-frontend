@@ -49,7 +49,7 @@ function setUpdated(canvas) {
 
 const CanvasEditComponent = class CanvasEdit extends Component {
     state = {
-        moduleSearchIsOpen: false,
+        moduleSearchIsOpen: this.props.runController.isEditable,
         moduleSidebarIsOpen: false,
         keyboardShortcutIsOpen: false,
     }
