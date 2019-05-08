@@ -8,6 +8,9 @@ import groupBy from 'lodash/groupBy'
 import cx from 'classnames'
 
 import Modal from '$editor/shared/components/Modal'
+import SearchPanel, { SearchRow } from '$editor/shared/components/SearchPanel'
+import CanvasStyles from '$editor/canvas/components/Canvas.pcss'
+import CanvasModuleSearchStyles from '$editor/canvas/components/ModuleSearch.pcss'
 
 import { getCanvases } from '../services'
 import { dashboardModuleSearch } from '../state'
@@ -26,35 +29,31 @@ class DashboardModuleSearchItem extends React.PureComponent {
     render() {
         const { canvas, modules } = this.props
         return (
-            <div
-                role="listbox"
-                className={cx(styles.SearchItem, {
-                    [styles.isOnDashboard]: this.props.hasCanvasModulesOnDashboard(canvas),
-                })}
-            >
-                {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
-                <div className={styles.CanvasName} onClick={this.toggle}>
-                    {canvas.name}
-                </div>
-                <div className={styles.CanvasModules} hidden={!this.state.isExpanded}>
-                    {modules.map((m) => {
-                        const isOnDashboard = this.props.isOnDashboard(canvas.id, m)
-                        return (
-                            /* TODO: follow the disabled jsx-a11y recommendations below to add keyboard support */
-                            /* eslint-disable-next-line */
-                            <div
-                                role={'option' /* eslint-disable-line */}
-                                onClick={() => this.props.onSelect(canvas.id, m)}
-                                className={cx(styles.UIModule, { [styles.isOnDashboard]: isOnDashboard })}
-                                key={m.hash}
-                            >
-                                <div className={styles.Circle} />
-                                {startCase(m.name)}
-                            </div>
-                        )
+            <React.Fragment>
+                <SearchRow
+                    className={cx(styles.CanvasName, CanvasModuleSearchStyles.SearchCategory, {
+                        [styles.isOnDashboard]: this.props.hasCanvasModulesOnDashboard(canvas),
                     })}
-                </div>
-            </div>
+                    onClick={this.toggle}
+                >
+                    {canvas.name}
+                </SearchRow>
+                {!!this.state.isExpanded && modules.map((m) => {
+                    const isOnDashboard = this.props.isOnDashboard(canvas.id, m)
+                    return (
+                        /* TODO: follow the disabled jsx-a11y recommendations below to add keyboard support */
+                        /* eslint-disable-next-line */
+                        <SearchRow
+                            key={m.hash}
+                            onClick={() => this.props.onSelect(canvas.id, m)}
+                            className={cx(styles.UIModule, { [styles.isOnDashboard]: isOnDashboard })}
+                        >
+                            <div className={styles.Circle} />
+                            {startCase(m.name)}
+                        </SearchRow>
+                    )
+                })}
+            </React.Fragment>
         )
     }
 }
@@ -65,20 +64,8 @@ class DashboardModuleSearch extends React.PureComponent {
         canvases: [],
     }
 
-    constructor(props) {
-        super(props)
-        this.input = React.createRef()
-    }
-
     componentDidMount() {
         this.load()
-        // focus input on open, timeout is needed because React cannot focus to the field
-        // if it's not visible (which it instantly isn't due to the modal loading logic).
-        setTimeout(() => {
-            if (this.input.current) {
-                this.input.current.focus()
-            }
-        }, 100)
     }
 
     componentWillUnmount() {
@@ -88,8 +75,7 @@ class DashboardModuleSearch extends React.PureComponent {
     async load() {
         const canvases = await getCanvases()
         if (this.unmounted) { return }
-        this.setState({ canvases }, () => {
-        })
+        this.setState({ canvases })
     }
 
     onChange = (event) => {
@@ -125,32 +111,28 @@ class DashboardModuleSearch extends React.PureComponent {
         if (!dashboard) { return null }
         const availableDashboardModules = groupBy(dashboardModuleSearch(this.state.canvases, this.state.search), 'canvasId')
         return (
-            <React.Fragment>
-                {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
-                <div className={styles.ModuleSearch}>
-                    <div className={styles.Header}>
-                        <button onClick={() => modalApi.close()}>X</button>
-                    </div>
-                    <div className={styles.Input}>
-                        <input ref={this.input} placeholder="Search or select a module" value={this.state.search} onChange={this.onChange} />
-                    </div>
-                    <div className={styles.Content}>
-                        {Object.entries(availableDashboardModules).map(([canvasId, modules]) => {
-                            const canvas = this.state.canvases.find(({ id }) => id === canvasId)
-                            return (
-                                <DashboardModuleSearchItem
-                                    key={canvas.id}
-                                    canvas={canvas}
-                                    modules={modules}
-                                    onSelect={this.onSelect}
-                                    isOnDashboard={this.isOnDashboard}
-                                    hasCanvasModulesOnDashboard={this.hasCanvasModulesOnDashboard}
-                                />
-                            )
-                        })}
-                    </div>
-                </div>
-            </React.Fragment>
+            <SearchPanel
+                className={styles.ModuleSearch}
+                bounds={`.${CanvasStyles.CanvasElements}`}
+                placeholder="Search or select a module"
+                onChange={this.onChange}
+                isOpen
+                open={modalApi.open}
+            >
+                {Object.entries(availableDashboardModules).map(([canvasId, modules]) => {
+                    const canvas = this.state.canvases.find(({ id }) => id === canvasId)
+                    return (
+                        <DashboardModuleSearchItem
+                            key={canvas.id}
+                            canvas={canvas}
+                            modules={modules}
+                            onSelect={this.onSelect}
+                            isOnDashboard={this.isOnDashboard}
+                            hasCanvasModulesOnDashboard={this.hasCanvasModulesOnDashboard}
+                        />
+                    )
+                })}
+            </SearchPanel>
         )
     }
 }

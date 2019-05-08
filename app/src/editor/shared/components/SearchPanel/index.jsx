@@ -22,6 +22,7 @@ export function SearchRow({ className, ...props }) {
 
 export class SearchPanel extends React.PureComponent {
     static defaultProps = {
+        bounds: 'parent',
         minWidth: 250,
         defaultWidth: 250,
         maxWidth: 600,
@@ -134,6 +135,7 @@ export class SearchPanel extends React.PureComponent {
         const {
             open,
             isOpen,
+            bounds,
             placeholder,
             minWidth,
             minHeightMinimized,
@@ -149,7 +151,7 @@ export class SearchPanel extends React.PureComponent {
             <React.Fragment>
                 <Draggable
                     handle={`.${styles.dragHandle}`}
-                    bounds="parent"
+                    bounds={bounds}
                 >
                     <div
                         className={cx(styles.SearchPanel, className, {
