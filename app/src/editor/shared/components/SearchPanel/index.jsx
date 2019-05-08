@@ -1,6 +1,7 @@
 import React from 'react'
 import cx from 'classnames'
 import Draggable from 'react-draggable'
+import { toFlatArray } from 'react-children-addons'
 import { ResizableBox } from 'react-resizable'
 import SvgIcon from '$shared/components/SvgIcon'
 
@@ -78,7 +79,7 @@ export class SearchPanel extends React.PureComponent {
         const { children, minHeightMinimized, itemHeight, maxHeight } = this.props
 
         const { isExpanded, search, height } = this.state
-        const numItems = React.Children.count(children)
+        const numItems = toFlatArray(children).length
 
         if (!isExpanded) {
             return minHeightMinimized
