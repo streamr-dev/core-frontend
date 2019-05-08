@@ -31,7 +31,7 @@ const Onboarding = ({ children, title }: Props) => (
             it cover the actual popup toggle. Clicking it "steals" focus from whoever has it within
             `.inner`. This allows us to trick ppl into believing that "?" is a js-driven toggle
             which it is not. Magic. */}
-        <div className={cx(styles.toggle, styles.focusCatcher)} tabIndex="-1" />
+        <div className={cx(styles.toggle, styles.focusCatcher)} />
     </div>
 )
 
