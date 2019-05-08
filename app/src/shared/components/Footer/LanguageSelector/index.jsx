@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 import classNames from 'classnames'
-import dropdownStyles from '$shared/components/Nav/NavDropdown/navDropdown.pcss'
+import dropdownStyles from '$shared/components/MobileNav/NavDropdown/navDropdown.pcss'
 import styles from './languageSelector.pcss'
 
 type Props = {

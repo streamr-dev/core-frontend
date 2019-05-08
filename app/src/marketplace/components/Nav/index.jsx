@@ -3,7 +3,7 @@
 import React from 'react'
 import { NavLink as Link, withRouter, type Location } from 'react-router-dom'
 import { I18n, Translate } from 'react-redux-i18n'
-import FrameNav, { NavLink, NavDivider, NavLabel, NavDropdown } from '$shared/components/Nav'
+import FrameNav, { NavLink, NavDivider, NavLabel, NavDropdown } from '$shared/components/MobileNav'
 
 import links from '../../../links'
 import type { User } from '$shared/flowtype/user-types'
