@@ -327,7 +327,14 @@ class StreamList extends Component<Props, State> {
                                                     className={styles.streamRow}
                                                     onClick={() => this.onStreamRowClick(stream.id)}
                                                 >
-                                                    <Table.Th noWrap title={stream.name}>{stream.name}</Table.Th>
+                                                    <Table.Th noWrap title={stream.requireSignedData ? 'Signed stream' : stream.name}>
+                                                        {stream.name}
+                                                        {stream.requireSignedData &&
+                                                        <SvgIcon
+                                                            name="signedTick"
+                                                            className={styles.signedTick}
+                                                        />}
+                                                    </Table.Th>
                                                     <Table.Td noWrap title={stream.description}>{stream.description}</Table.Td>
                                                     <Table.Td noWrap>{moment.tz(stream.lastUpdated, timezone).fromNow()}</Table.Td>
                                                     <Table.Td>
@@ -402,12 +409,15 @@ class StreamList extends Component<Props, State> {
                                                     className={styles.streamRow}
                                                     onClick={() => this.onStreamRowClick(stream.id)}
                                                 >
-                                                    <Table.Td title={stream.name} className={styles.tabletStreamRow}>
+                                                    <Table.Td
+                                                        title={stream.requireSignedData ? 'Signed stream' : stream.name}
+                                                        className={styles.tabletStreamRow}
+                                                    >
                                                         <div className={styles.tabletStreamRowContainer}>
                                                             <div>
                                                                 <span className={styles.tabletStreamName}>
                                                                     {stream.name}
-                                                                    {!stream.requireSignedData &&
+                                                                    {stream.requireSignedData &&
                                                                     <SvgIcon
                                                                         name="signedTick"
                                                                         className={styles.signedTick}
@@ -417,12 +427,12 @@ class StreamList extends Component<Props, State> {
                                                                     {stream.description}
                                                                 </span>
                                                                 <span className={styles.lastUpdatedStreamMobile}>
-                                                                    {moment(stream.lastUpdated).fromNow()}
+                                                                    {moment.tz(stream.lastUpdated, timezone).fromNow()}
                                                                 </span>
                                                             </div>
                                                             <div>
                                                                 <span className={styles.lastUpdatedStreamTablet}>
-                                                                    {moment(stream.lastUpdated).fromNow()}
+                                                                    {moment.tz(stream.lastUpdated, timezone).fromNow()}
                                                                 </span>
                                                                 <StatusIcon className={styles.tabletStatusStreamIcon} />
                                                             </div>
