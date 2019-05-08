@@ -75,17 +75,17 @@ const MobileNav = compose(
                         <li>
                             <Link
                                 className={styles.link}
-                                to={routes.streams()}
+                                to={routes.canvases()}
                             >
-                                <Translate value="general.streams" />
+                                <Translate value="general.canvases" />
                             </Link>
                         </li>
                         <li>
                             <Link
                                 className={styles.link}
-                                to={routes.canvases()}
+                                to={routes.streams()}
                             >
-                                <Translate value="general.canvases" />
+                                <Translate value="general.streams" />
                             </Link>
                         </li>
                         <li>
