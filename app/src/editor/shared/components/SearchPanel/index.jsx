@@ -45,6 +45,7 @@ export class SearchPanel extends React.PureComponent {
     input = null
     currentSearch = ''
     selfRef = React.createRef()
+    contentRef = React.createRef()
 
     componentDidMount() {
         window.addEventListener('keydown', this.onKeyDown)
@@ -88,15 +89,19 @@ export class SearchPanel extends React.PureComponent {
 
     calculateHeight = () => {
         const { children, minHeightMinimized, itemHeight, maxHeight } = this.props
-
         const { isExpanded, search, height } = this.state
-        const numItems = toFlatArray(children).length
+        const { current: currentContent } = this.contentRef
 
         if (!isExpanded) {
             return minHeightMinimized
         }
 
-        let requiredHeight = minHeightMinimized + (numItems * itemHeight)
+        // use actual height child count may not be accurate if children render fragments
+        const itemsHeight = currentContent
+            ? currentContent.offsetHeight
+            : toFlatArray(children).length * itemHeight
+
+        let requiredHeight = minHeightMinimized + itemsHeight
 
         if (search.trim() === '') {
             requiredHeight = height /* use user-set height if 'browsing' */
@@ -206,7 +211,7 @@ export class SearchPanel extends React.PureComponent {
                                         <SvgIcon name="clear" />
                                     </button>
                                 </div>
-                                <div role="listbox" className={styles.Content}>
+                                <div ref={this.contentRef} role="listbox" className={styles.Content}>
                                     {children}
                                 </div>
                             </div>
