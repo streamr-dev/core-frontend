@@ -183,7 +183,7 @@ class StreamList extends Component<Props, State> {
     }
 
     confirmDeleteStream = async (stream: Stream) => {
-        const confirmed = await confirmDialog({
+        const confirmed = await confirmDialog('stream', {
             title: I18n.t('userpages.streams.delete.confirmTitle', {
                 stream: stream.name,
             }),
@@ -192,7 +192,7 @@ class StreamList extends Component<Props, State> {
                 title: I18n.t('userpages.streams.delete.confirmButton'),
                 color: 'danger',
             },
-            centerButtons: true,
+            dontShowAgain: true,
         })
 
         if (confirmed) {

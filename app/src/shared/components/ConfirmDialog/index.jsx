@@ -1,11 +1,14 @@
 // @flow
 
-import React, { type Node } from 'react'
+import React, { type Node, useState } from 'react'
 import { I18n } from 'react-redux-i18n'
 import cx from 'classnames'
+import { Label, FormGroup } from 'reactstrap'
 
 import Dialog from '$shared/components/Dialog'
 import Modal from '$shared/components/Modal'
+import Buttons from '$shared/components/Buttons'
+import Checkbox from '$shared/components/Checkbox'
 
 import styles from './confirmDialog.pcss'
 
@@ -22,6 +25,7 @@ export type Properties = {
     acceptButton?: Button,
     cancelButton?: Button,
     centerButtons?: boolean,
+    dontShowAgain?: boolean,
 }
 
 type Actions = {
@@ -32,12 +36,14 @@ type Actions = {
 type Props = Properties & Actions
 
 const ConfirmDialog = (props: Props) => {
+    const [checked, setChecked] = useState(false)
     const {
         title,
         message,
         acceptButton,
         cancelButton,
         centerButtons,
+        dontShowAgain,
         onReject,
         onAccept,
     } = props
@@ -77,12 +83,34 @@ const ConfirmDialog = (props: Props) => {
     return (
         <Modal>
             <Dialog
-                actionsClassName={cx({
-                    [styles.centerButtons]: !!centerButtons,
-                })}
                 title={title}
                 onClose={actions.cancel.onClick}
                 actions={actions}
+                renderActions={() => (
+                    <div className={styles.footer}>
+                        {!!dontShowAgain && (
+                            <div className={styles.downShowAgain}>
+                                <FormGroup check className={styles.formGroup}>
+                                    <Label check className={styles.label}>
+                                        <Checkbox
+                                            checked={checked}
+                                            onChange={(e) => {
+                                                setChecked(e.target.checked)
+                                            }}
+                                        />
+                                        Dont show this again
+                                    </Label>
+                                </FormGroup>
+                            </div>
+                        )}
+                        <Buttons
+                            className={cx({
+                                [styles.centerButtons]: !!centerButtons,
+                            })}
+                            actions={actions}
+                        />
+                    </div>
+                )}
             >
                 {message}
             </Dialog>

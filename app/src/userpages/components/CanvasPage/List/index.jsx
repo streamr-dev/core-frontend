@@ -109,7 +109,7 @@ class CanvasList extends Component<Props, State> {
     }
 
     confirmDeleteCanvas = async (canvas: Canvas) => {
-        const confirmed = await confirmDialog({
+        const confirmed = await confirmDialog('canvas', {
             title: I18n.t('userpages.canvases.delete.confirmTitle', {
                 canvas: canvas.name,
             }),
@@ -119,6 +119,7 @@ class CanvasList extends Component<Props, State> {
                 color: 'danger',
             },
             centerButtons: true,
+            dontShowAgain: true,
         })
 
         if (confirmed) {
