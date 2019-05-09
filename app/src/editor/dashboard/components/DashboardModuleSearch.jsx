@@ -49,13 +49,12 @@ function DashboardModuleSearchItem({
                 {canvas.name}
             </SearchRow>
             {/* rows of matching canvas modules */}
-            {!!isExpanded && modules.map((m, index) => (
+            {!!isExpanded && modules.map((m) => (
                 <SearchRow
                     key={m.hash}
                     onClick={() => onSelect(canvas.id, m)}
                     className={cx(styles.UIModule, {
                         [styles.isOnDashboard]: isOnDashboard(canvas.id, m),
-                        [styles.lastChild]: index === modules.length - 1,
                     })}
                 >
                     <div className={styles.Circle} />
