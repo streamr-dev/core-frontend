@@ -219,7 +219,7 @@ export const deleteUserAccount = () => (dispatch: Function) => {
         .then(() => {
             dispatch(deleteUserAccountSuccess())
             Notification.push({
-                title: 'Account deleted!',
+                title: 'Account disabled!',
                 icon: NotificationIcon.CHECKMARK,
             })
             dispatch(logout())
@@ -228,7 +228,7 @@ export const deleteUserAccount = () => (dispatch: Function) => {
                 message: error.message,
             }))
             Notification.push({
-                title: 'Account not deleted',
+                title: 'Account not disabled',
                 icon: NotificationIcon.ERROR,
             })
             throw error
