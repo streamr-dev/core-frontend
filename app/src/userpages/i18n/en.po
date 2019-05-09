@@ -690,7 +690,7 @@ msgid "modal##shareResource##save"
 msgstr "Share"
 
 msgid "modal##copySnippet##defaultTitle"
-msgstr "%{name} Snippet"
+msgstr "Copy Snippet"
 
 msgid "modal##copySnippet##goToLibrary"
 msgstr "Go to Library"
