@@ -30,6 +30,7 @@ type Props = {
 }
 
 type State = {
+    waiting: boolean,
     hidden: boolean,
     editing: boolean,
     menuOpen: boolean,
@@ -42,6 +43,7 @@ class KeyField extends React.Component<Props, State> {
         super(props)
 
         this.state = {
+            waiting: false,
             hidden: !!props.hideValue,
             editing: false,
             menuOpen: false,
@@ -75,13 +77,19 @@ class KeyField extends React.Component<Props, State> {
 
     onSave = (keyName: ?string, value: ?string, permission: ?ResourcePermission) => {
         const { allowEdit, onSave } = this.props
+
         if (allowEdit) {
             if (onSave) {
+                this.setState({
+                    waiting: true,
+                    error: null,
+                })
                 onSave(keyName, value, permission)
                     .then(() => {
                         if (!this.unmounted) {
                             this.setState({
                                 permission,
+                                waiting: false,
                                 editing: false,
                                 menuOpen: false,
                                 error: null,
@@ -91,12 +99,14 @@ class KeyField extends React.Component<Props, State> {
                         if (!this.unmounted) {
                             this.setState({
                                 error: error.message,
+                                waiting: false,
                             })
                         }
                     })
             } else {
                 this.setState({
                     editing: false,
+                    waiting: false,
                     menuOpen: false,
                     error: null,
                 })
@@ -148,6 +158,7 @@ class KeyField extends React.Component<Props, State> {
             showPermissionType,
         } = this.props
         const {
+            waiting,
             hidden,
             editing,
             menuOpen,
@@ -217,6 +228,7 @@ class KeyField extends React.Component<Props, State> {
                 value={value}
                 onCancel={this.onCancel}
                 onSave={this.onSave}
+                waiting={waiting}
                 error={error}
                 showPermissionType={showPermissionType}
                 permission={permission}
