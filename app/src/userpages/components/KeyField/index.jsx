@@ -24,7 +24,7 @@ type Props = {
     onSave?: (?string, ?string, ?ResourcePermission) => Promise<void>,
     allowDelete?: boolean,
     disableDelete?: boolean,
-    onDelete?: () => void,
+    onDelete?: () => Promise<void>,
     showPermissionType?: boolean,
     permission?: ResourcePermission,
 }

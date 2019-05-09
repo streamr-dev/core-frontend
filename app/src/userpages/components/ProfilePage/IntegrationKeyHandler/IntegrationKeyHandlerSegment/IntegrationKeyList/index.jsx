@@ -9,8 +9,8 @@ import styles from './integrationKeyList.pcss'
 export type Props = {
     integrationKeys: IntegrationKeyListType,
     hideValues?: boolean,
-    onDelete: (IntegrationKeyId: IntegrationKeyId) => void,
-    onEdit: (IntegrationKeyId: IntegrationKeyId, keyName: string) => void,
+    onDelete: (IntegrationKeyId: IntegrationKeyId) => Promise<void>,
+    onEdit: (IntegrationKeyId: IntegrationKeyId, keyName: string) => Promise<void>,
 }
 
 export default class IntegrationKeyList extends Component<Props> {
@@ -29,12 +29,7 @@ export default class IntegrationKeyList extends Component<Props> {
                         allowEdit
                         hideValue={hideValues}
                         onDelete={() => onDelete(key.id)}
-                        onSave={(keyName) => {
-                            if (onEdit && keyName) {
-                                onEdit(key.id, keyName)
-                            }
-                            return Promise.resolve()
-                        }}
+                        onSave={(keyName) => onEdit(key.id, keyName || '')}
                     />
                 ))}
             </div>

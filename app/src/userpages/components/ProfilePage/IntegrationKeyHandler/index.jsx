@@ -19,9 +19,9 @@ type StateProps = {
 }
 
 type DispatchProps = {
-    deleteIntegrationKey: (keyId: IntegrationKeyId) => void,
+    deleteIntegrationKey: (keyId: IntegrationKeyId) => Promise<void>,
     createIntegrationKey: (name: string, privateKey: Address) => Promise<void>,
-    editIntegrationKey: (keyId: IntegrationKeyId, keyName: string) => void,
+    editIntegrationKey: (keyId: IntegrationKeyId, keyName: string) => Promise<void>,
     getIntegrationKeys: () => void
 }
 
@@ -35,13 +35,9 @@ export class IntegrationKeyHandler extends Component<Props> {
 
     onNew = (keyName: string, privateKey: string): Promise<void> => this.props.createIntegrationKey(keyName, privateKey)
 
-    onDelete = (keyId: IntegrationKeyId) => {
-        this.props.deleteIntegrationKey(keyId)
-    }
+    onDelete = (keyId: IntegrationKeyId): Promise<void> => this.props.deleteIntegrationKey(keyId)
 
-    onEdit = (keyId: IntegrationKeyId, keyName: string) => {
-        this.props.editIntegrationKey(keyId, keyName)
-    }
+    onEdit = (keyId: IntegrationKeyId, keyName: string): Promise<void> => this.props.editIntegrationKey(keyId, keyName)
 
     render() {
         return (
@@ -77,9 +73,7 @@ export const mapStateToProps = (state: StoreState): StateProps => ({
 })
 
 export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
-    deleteIntegrationKey(keyId: IntegrationKeyId) {
-        dispatch(deleteIntegrationKey(keyId))
-    },
+    deleteIntegrationKey: (keyId: IntegrationKeyId): Promise<void> => dispatch(deleteIntegrationKey(keyId)),
     createIntegrationKey: (keyName: string, privateKey: Address): Promise<void> => dispatch(createIntegrationKey(keyName, privateKey)),
     getIntegrationKeys() {
         dispatch(fetchIntegrationKeys())

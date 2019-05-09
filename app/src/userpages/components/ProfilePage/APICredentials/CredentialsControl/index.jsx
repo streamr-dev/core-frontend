@@ -19,7 +19,7 @@ type Props = {
     addKey: (key: string, permission: ?ResourcePermission) => Promise<void>,
     editMyResourceKey?: (keyId: ResourceKeyId, keyName: string) => Promise<void>,
     editStreamResourceKey?: (streamId: StreamId, keyId: ResourceKeyId, keyName: string, keyPermission: ResourcePermission) => Promise<void>,
-    removeKey: (id: ResourceKeyId) => void,
+    removeKey: (id: ResourceKeyId) => Promise<void>,
     showPermissionType?: boolean,
     newStream?: boolean,
     streamId?: ?StreamId,
@@ -68,20 +68,16 @@ export default class CredentialsControl extends Component<Props> {
                                 allowEdit
                                 onSave={(keyName, value, keyPermission) => {
                                     if (streamId && key.id && keyName && keyPermission && editStreamResourceKey) {
-                                        editStreamResourceKey(streamId, key.id, keyName, keyPermission)
+                                        return editStreamResourceKey(streamId, key.id, keyName, keyPermission)
                                     } else if (key.id && keyName && editMyResourceKey) {
-                                        editMyResourceKey(key.id, keyName)
+                                        return editMyResourceKey(key.id, keyName)
                                     }
                                     return Promise.resolve()
                                 }
                                 }
                                 allowDelete
                                 disableDelete={this.props.disableDelete}
-                                onDelete={() => {
-                                    if (key.id) {
-                                        this.props.removeKey(key.id)
-                                    }
-                                }}
+                                onDelete={() => this.props.removeKey(key.id || '')}
                                 showPermissionType={this.props.showPermissionType}
                                 permission={key.permission}
                             />

@@ -26,7 +26,7 @@ type DispatchProps = {
     getKeys: (streamId: StreamId) => void,
     addKey: (streamId: StreamId, keyName: string, keyPermission: ResourcePermission) => Promise<void>,
     editStreamResourceKey: (streamId: StreamId, keyId: ResourceKeyId, keyName: string, keyPermission: ResourcePermission) => Promise<void>,
-    removeKey: (streamId: StreamId, keyId: ResourceKeyId) => void
+    removeKey: (streamId: StreamId, keyId: ResourceKeyId) => Promise<void>
 }
 
 type Props = StateProps & DispatchProps
@@ -54,21 +54,11 @@ export class KeyView extends Component<Props> {
         }
     })
 
-    editStreamResourceKey = (streamId: StreamId, keyId: ResourceKeyId, keyName: string, keyPermission: ResourcePermission): Promise<void> =>
-        new Promise((resolve, reject) => {
-            if (this.props.streamId && keyPermission) {
-                this.props.editStreamResourceKey(streamId, keyId, keyName, keyPermission)
-                    .then(resolve, reject)
-            } else {
-                resolve()
-            }
-        })
+    editStreamResourceKey = (streamId: StreamId, keyId: ResourceKeyId, keyName: string, keyPermission: ResourcePermission): Promise<void> => (
+        this.props.editStreamResourceKey(streamId, keyId, keyName, keyPermission)
+    )
 
-    removeKey = (keyId: ResourceKeyId) => {
-        if (this.props.streamId) {
-            this.props.removeKey(this.props.streamId, keyId)
-        }
-    }
+    removeKey = (keyId: ResourceKeyId): Promise<void> => this.props.removeKey(this.props.streamId || '', keyId)
 
     render() {
         const keys = this.props.keys || []
@@ -113,9 +103,7 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     editStreamResourceKey(streamId: StreamId, keyId: ResourceKeyId, keyName: string, keyPermission: ResourcePermission) {
         return dispatch(editStreamResourceKey(streamId, keyId, keyName, keyPermission))
     },
-    removeKey(streamId: StreamId, keyId: ResourceKeyId) {
-        dispatch(removeStreamResourceKey(streamId, keyId))
-    },
+    removeKey: (streamId: StreamId, keyId: ResourceKeyId): Promise<void> => dispatch(removeStreamResourceKey(streamId, keyId)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(KeyView)
