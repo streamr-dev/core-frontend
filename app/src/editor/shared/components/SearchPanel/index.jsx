@@ -28,8 +28,9 @@ export class SearchPanel extends React.PureComponent {
         maxWidth: 600,
         defaultHeight: 352,
         maxHeight: 352 * 2,
-        minHeightMinimized: 90,
+        minHeightMinimized: 91,
         itemHeight: 52,
+        scrollPadding: 16,
     }
 
     state = {
@@ -85,10 +86,22 @@ export class SearchPanel extends React.PureComponent {
                 this.input.focus()
             }
         }
+
+        const { current: currentContent } = this.contentRef
+        if (currentContent && this.lastHeight !== currentContent.offsetHeight) {
+            this.lastHeight = currentContent.offsetHeight
+            this.forceUpdate()
+        }
     }
 
     calculateHeight = () => {
-        const { children, minHeightMinimized, itemHeight, maxHeight } = this.props
+        const {
+            children,
+            minHeightMinimized,
+            itemHeight,
+            maxHeight,
+            scrollPadding,
+        } = this.props
         const { isExpanded, search, height } = this.state
         const { current: currentContent } = this.contentRef
 
@@ -101,7 +114,7 @@ export class SearchPanel extends React.PureComponent {
             ? currentContent.offsetHeight
             : toFlatArray(children).length * itemHeight
 
-        let requiredHeight = minHeightMinimized + itemsHeight
+        let requiredHeight = minHeightMinimized + (itemsHeight ? scrollPadding + itemsHeight : 0)
 
         if (search.trim() === '') {
             requiredHeight = height /* use user-set height if 'browsing' */
@@ -150,6 +163,7 @@ export class SearchPanel extends React.PureComponent {
             maxHeight,
             children,
             className,
+            scrollPadding,
         } = this.props
         const { search, isExpanded, width } = this.state
         const height = this.calculateHeight()
@@ -211,8 +225,21 @@ export class SearchPanel extends React.PureComponent {
                                         <SvgIcon name="clear" />
                                     </button>
                                 </div>
-                                <div ref={this.contentRef} role="listbox" className={styles.Content}>
-                                    {children}
+                                {/* eslint-disable-next-line max-len */}
+                                {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */}
+                                <div
+                                    className={styles.ContentContainer}
+                                    style={{
+                                        paddingBottom: `${scrollPadding}px`,
+                                    }}
+                                    onClick={() => {
+                                        // quick hack to force recalculation of height on child expansion/collapse
+                                        this.forceUpdate()
+                                    }}
+                                >
+                                    <div ref={this.contentRef} role="listbox" className={styles.Content}>
+                                        {children}
+                                    </div>
                                 </div>
                             </div>
                         </ResizableBox>

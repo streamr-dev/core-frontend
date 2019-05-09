@@ -33,12 +33,12 @@
 }
 
 .SearchPanel .Header {
-  border-bottom: 1px solid #EFEFEF;
   display: grid;
   grid-template-columns: 1fr 1fr;
   cursor: grab;
   height: 40px;
   padding: 0 12px;
+  border-bottom: 1px solid #EFEFEF;
 }
 
 .SearchPanel .Header button {
@@ -93,7 +93,6 @@
   text-align: left;
   letter-spacing: 0;
   padding-right: 16px;
-  border-bottom: 1px solid #EFEFEF;
   width: 100%;
   box-sizing: border-box;
   display: flex;
@@ -115,7 +114,41 @@
   color: #CDCDCD;
 }
 
+.SearchPanel .ContentContainer {
+  border-top: 1px solid #EFEFEF;
+  transform: translateY(1px);
+  overflow: auto;
+
+  /* standards compliant but only firefox implements */
+  scrollbar-width: thin; /* stylelint-disable-line property-no-unknown */
+
+  /* Firefox doesn't even do this */
+  scrollbar-color: #CDCDCD white; /* stylelint-disable-line property-no-unknown */
+}
+
+/**
+ * Scrollbar Styles
+ */
+
+.SearchPanel .ContentContainer::-webkit-scrollbar {
+  width: 12px;
+  background-color: transparent;
+}
+
+.SearchPanel .ContentContainer::-webkit-scrollbar-track {
+  background-color: transparent;
+  border-left: 1px solid #EFEFEF;
+}
+
+.SearchPanel .ContentContainer::-webkit-scrollbar-thumb {
+  border: solid 4px rgba(255, 255, 255, 0.01); /* simulate padding */
+  background-color: #CDCDCD;
+  background-clip: content-box;
+  border-radius: 6px; /* uses inside edge as radius */
+}
+
 .SearchPanel .Content {
+  height: min-content;
   color: #525252;
   font-size: 12px;
   font-family: var(--sans);
@@ -124,35 +157,6 @@
   text-transform: uppercase;
   letter-spacing: 1px;
   line-height: 32px;
-  overflow: auto;
-
-  /* standards compliant but only firefox implements */
-  scrollbar-width: thin; /* stylelint-disable-line property-no-unknown */
-
-  /* Firefox doesn't even do this */
-  scrollbar-color: #CDCDCD white; /* stylelint-disable-line property-no-unknown */
-  padding-bottom: 16px;
-}
-
-/**
- * Scrollbar Styles
- */
-
-.SearchPanel .Content::-webkit-scrollbar {
-  width: 12px;
-  background-color: transparent;
-}
-
-.SearchPanel .Content::-webkit-scrollbar-track {
-  background-color: transparent;
-  border-left: 1px solid #EFEFEF;
-}
-
-.SearchPanel .Content::-webkit-scrollbar-thumb {
-  border: solid 4px rgba(255, 255, 255, 0.01); /* simulate padding */
-  background-color: #CDCDCD;
-  background-clip: content-box;
-  border-radius: 6px; /* uses inside edge as radius */
 }
 
 /**
