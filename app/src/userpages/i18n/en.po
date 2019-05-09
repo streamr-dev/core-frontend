@@ -529,28 +529,27 @@ msgid "userpages##profilePage##ethereumPrivateKeys##linkTitle"
 msgstr "Private keys"
 
 msgid "userpages##profilePage##deleteAccount##title"
-msgstr "Delete Streamr Account"
+msgstr "Disable Streamr Account"
 
 msgid "userpages##profilePage##deleteAccount##linkTitle"
-msgstr "Delete account"
+msgstr "Disable account"
 
 msgid "userpages##profilePage##deleteAccount##description"
 msgstr ""
-"Unlike other companies that deactivate your account but retain your data, if you delete your Streamr account, "
-"all your data is deleted from our servers and will be unrecoverable. Please proceed with caution."
+"This action will disable your account but may still retain your data. Please contact us directly to"
+"manually delete your data entirely."
 
 msgid "userpages##profilePage##deleteAccount##button"
-msgstr "Delete account"
+msgstr "Disable account"
 
 msgid "modal##deleteAccount##defaultTitle"
-msgstr "Do you really want to delete your account?"
+msgstr "Do you really want to disable your account?"
 
 msgid "modal##deleteAccount##save"
-msgstr "Yes, delete"
+msgstr "Yes, disable"
 
 msgid "modal##deleteAccount##content"
 msgstr ""
-"This is an unrecoverable action! All your data will be wiped from our servers and we cannot recover it for you. "
 "Please make sure this is what you want before you proceed."
 
 msgid "userpages##profile##settings##update"
