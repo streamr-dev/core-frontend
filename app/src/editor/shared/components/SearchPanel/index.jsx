@@ -205,11 +205,10 @@ export class SearchPanel extends React.PureComponent {
                             minConstraints={[minWidth, minHeightMinimized]}
                             maxConstraints={[maxWidth, maxHeight]}
                             onResize={(e, data) => {
-                                this.setState({
-                                    height: data.size.height,
+                                this.setState((state) => ({
+                                    height: isExpanded ? data.size.height : state.height,
                                     width: data.size.width,
-                                    isExpanded: data.size.height > minHeightMinimized,
-                                })
+                                }))
                             }}
                         >
                             <div className={styles.Container}>
