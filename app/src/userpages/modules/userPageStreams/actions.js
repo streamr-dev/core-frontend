@@ -279,7 +279,7 @@ export const getStreams = () => (dispatch: Function, getState: Function) => {
     return services.getStreams(params)
         .then((data) => data.map((stream) => ({
             ...stream,
-            status: 'inactive',
+            streamStatus: 'inactive',
         })))
         .then(handleEntities(streamsSchema, dispatch))
         .then((ids) => {
@@ -294,6 +294,15 @@ export const getStreams = () => (dispatch: Function, getState: Function) => {
             }))
             throw e
         })
+}
+
+export const getStreamStatus = (id: StreamId) => (dispatch: Function) => {
+    handleEntities(streamSchema, dispatch)({
+        id,
+        streamStatus: 'inactive',
+        lastData: null,
+    })
+    dispatch(updateStreamStatuses([id]))
 }
 
 export const getMyStreamPermissions = (id: StreamId) => (dispatch: Function, getState: Function) => {
