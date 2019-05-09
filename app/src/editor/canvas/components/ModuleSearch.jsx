@@ -99,7 +99,6 @@ const onDrop = (e: any, addModule: (number, number, number, ?string) => void) =>
 }
 
 const ModuleMenuItem = ({ module, addModule }) => (
-    /* eslint-disable-next-line jsx-a11y/click-events-have-key-events */
     <SearchRow
         draggable
         onDragStart={(e) => { onDragStart(e, module.id, module.name) }}
@@ -321,9 +320,11 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
 
         // $FlowFixMe "Missing type annotation for U"
         return categories.map((category) => (
-            <React.Fragment key={category.name}>
-                <ModuleMenuCategory category={category} addModule={this.addModule} />
-            </React.Fragment>
+            <ModuleMenuCategory
+                key={category.name}
+                category={category}
+                addModule={this.addModule}
+            />
         ))
     }
 

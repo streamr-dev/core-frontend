@@ -120,9 +120,11 @@ export class SearchPanel extends React.PureComponent {
 
     onInputRef = (el) => {
         this.input = el
-        if (this.props.isOpen && this.input) {
-            this.input.focus()
-        }
+        setTimeout(() => { // temporary workaround for modal timing
+            if (this.props.isOpen && this.input) {
+                this.input.focus()
+            }
+        }, 100)
     }
 
     onInputFocus = () => {
