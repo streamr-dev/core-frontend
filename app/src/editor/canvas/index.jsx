@@ -206,10 +206,11 @@ const CanvasEditComponent = class CanvasEdit extends Component {
             const moduleData = await canvasController.loadModule(canvas, { hash })
             if (this.unmounted) { return }
             replace((canvas) => {
+                const prevModule = CanvasState.getModule(canvas, hash)
                 let nextCanvas = CanvasState.updateModule(canvas, hash, () => moduleData)
 
                 // Restore input connections
-                nextCanvas = moduleData.inputs.reduce((nextCanvas, { id, sourceId }) => {
+                nextCanvas = prevModule.inputs && prevModule.inputs.reduce((nextCanvas, { id, sourceId }) => {
                     const port = moduleData.inputs.find((p) => id === p.id)
 
                     if (sourceId && port) {
@@ -219,7 +220,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                     return nextCanvas
                 }, nextCanvas)
 
-                nextCanvas = moduleData.params.reduce((nextCanvas, { id, sourceId }) => {
+                nextCanvas = prevModule.params && prevModule.params.reduce((nextCanvas, { id, sourceId }) => {
                     const port = moduleData.params.find((p) => id === p.id)
 
                     if (sourceId && port) {
