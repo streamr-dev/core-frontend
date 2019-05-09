@@ -140,7 +140,7 @@ export class SearchPanel extends React.PureComponent {
     }
 
     onKeyDown = (event) => {
-        if (this.props.isOpen && event.key === 'Escape') {
+        if (this.props.isOpen && event.key === 'Escape' && this.state.hasFocus) {
             this.props.open(false)
         }
     }
@@ -158,6 +158,11 @@ export class SearchPanel extends React.PureComponent {
         if (this.input) {
             this.input.select()
         }
+        this.setState({ hasFocus: true })
+    }
+
+    onInputBlur = () => {
+        this.setState({ hasFocus: false })
     }
 
     render() {
@@ -230,6 +235,7 @@ export class SearchPanel extends React.PureComponent {
                                         value={search}
                                         onChange={this.onChange}
                                         onFocus={this.onInputFocus}
+                                        onBlur={this.onInputBlur}
                                     />
                                     <button
                                         type="button"
