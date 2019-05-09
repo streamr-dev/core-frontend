@@ -384,7 +384,7 @@ msgid "userpages##transactions##noTransactions##title"
 msgstr "No transactions."
 
 msgid "userpages##transactions##noTransactions##message"
-msgstr "Couldn't find any transactions."
+msgstr "You haven't made any transactions yet."
 
 msgid "userpages##dashboards##createDashboard"
 msgstr "Create dashboard"
