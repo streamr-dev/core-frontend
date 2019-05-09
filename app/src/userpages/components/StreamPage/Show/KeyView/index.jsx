@@ -12,7 +12,7 @@ import type { StreamId } from '$shared/flowtype/stream-types'
 import type { StoreState } from '$shared/flowtype/store-state'
 import type { ResourceKeyId, ResourceKey, ResourcePermission } from '$shared/flowtype/resource-key-types'
 import CredentialsControl from '../../../ProfilePage/APICredentials/CredentialsControl'
-import { addStreamResourceKey, removeStreamResourceKey, getStreamResourceKeys } from '$shared/modules/resourceKey/actions'
+import { addStreamResourceKey, editStreamResourceKey, removeStreamResourceKey, getStreamResourceKeys } from '$shared/modules/resourceKey/actions'
 import { selectOpenStreamId, selectOpenStreamResourceKeys } from '$userpages/modules/userPageStreams/selectors'
 
 import styles from './keyView.pcss'
@@ -24,8 +24,9 @@ type StateProps = {
 
 type DispatchProps = {
     getKeys: (streamId: StreamId) => void,
-    addKey: (streamId: StreamId, key: string, permission: ResourcePermission) => Promise<void>,
-    removeKey: (streamId: StreamId, keyId: ResourceKeyId) => void
+    addKey: (streamId: StreamId, keyName: string, keyPermission: ResourcePermission) => Promise<void>,
+    editStreamResourceKey: (streamId: StreamId, keyId: ResourceKeyId, keyName: string, keyPermission: ResourcePermission) => Promise<void>,
+    removeKey: (streamId: StreamId, keyId: ResourceKeyId) => Promise<void>
 }
 
 type Props = StateProps & DispatchProps
@@ -53,11 +54,11 @@ export class KeyView extends Component<Props> {
         }
     })
 
-    removeKey = (keyId: ResourceKeyId) => {
-        if (this.props.streamId) {
-            this.props.removeKey(this.props.streamId, keyId)
-        }
-    }
+    editStreamResourceKey = (streamId: StreamId, keyId: ResourceKeyId, keyName: string, keyPermission: ResourcePermission): Promise<void> => (
+        this.props.editStreamResourceKey(streamId, keyId, keyName, keyPermission)
+    )
+
+    removeKey = (keyId: ResourceKeyId): Promise<void> => this.props.removeKey(this.props.streamId || '', keyId)
 
     render() {
         const keys = this.props.keys || []
@@ -74,9 +75,11 @@ export class KeyView extends Component<Props> {
                         <CredentialsControl
                             keys={keys}
                             addKey={this.addKey}
+                            editStreamResourceKey={this.editStreamResourceKey}
                             removeKey={this.removeKey}
                             showPermissionType
                             newStream={!this.props.streamId}
+                            streamId={this.props.streamId}
                         />
                     </Col>
                 </Row>
@@ -94,12 +97,13 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getKeys(streamId: StreamId) {
         dispatch(getStreamResourceKeys(streamId))
     },
-    addKey(streamId: StreamId, key: string, permission: ResourcePermission) {
-        return dispatch(addStreamResourceKey(streamId, key, permission))
+    addKey(streamId: StreamId, keyName: string, keyPermission: ResourcePermission) {
+        return dispatch(addStreamResourceKey(streamId, keyName, keyPermission))
     },
-    removeKey(streamId: StreamId, keyId: ResourceKeyId) {
-        dispatch(removeStreamResourceKey(streamId, keyId))
+    editStreamResourceKey(streamId: StreamId, keyId: ResourceKeyId, keyName: string, keyPermission: ResourcePermission) {
+        return dispatch(editStreamResourceKey(streamId, keyId, keyName, keyPermission))
     },
+    removeKey: (streamId: StreamId, keyId: ResourceKeyId): Promise<void> => dispatch(removeStreamResourceKey(streamId, keyId)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(KeyView)
