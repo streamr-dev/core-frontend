@@ -196,6 +196,17 @@ const sources = {
             </g>
         </svg>
     ),
+    refresh: (
+        <svg viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+            <g fill="none" fillRule="evenodd">
+                <path d="M-6-6h24v24H-6z" />
+                <g stroke="currentColor" strokeLinecap="round" strokeWidth="1.5">
+                    <path d="M10.016 3.02a5.001 5.001 0 0 0-8.607.996m.599 4.995a5.001 5.001 0 0 0 8.57-.999" />
+                    <path d="M1 11V8h3M11 1v3H8" strokeLinejoin="round" />
+                </g>
+            </g>
+        </svg>
+    ),
     circle: (
         <MapIcons.CircleIcon />
     ),
@@ -234,6 +245,14 @@ const sources = {
             </g>
         </svg>
     ),
+    emptyAvatarUpload: (
+        <svg width="42" height="42" xmlns="http://www.w3.org/2000/svg">
+            <g transform="translate(1 1)" stroke="#D8D8D8" strokeWidth="1.5" fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M13.817 10.489A11.927 11.927 0 0 0 27.11 13.16" /><circle cx="20" cy="14.13" r="7.174" />
+                <path d="M.435 10.871V3.043A2.609 2.609 0 0 1 3.043.435h7.827M39.565 10.871V3.043A2.609 2.609 0 0 0 36.957.435H29.13M.435 29.13v7.827a2.609 2.609 0 0 0 2.608 2.608h7.827M39.565 29.13v7.827a2.609 2.609 0 0 1-2.608 2.608H29.13M31.02 31.74a11.673 11.673 0 0 0-22.04 0" />
+            </g>
+        </svg>
+    ),
     profileMan: (
         <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
             <defs>
@@ -251,6 +270,13 @@ const sources = {
                         <path d="M12.813 27.498V29c0 4.142 3.441 7.5 7.687 7.5s7.688-3.358 7.688-7.5v-1.502" />
                     </g>
                 </g>
+            </g>
+        </svg>
+    ),
+    hamburger: (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 10">
+            <g stroke="currentColor" strokeWidth="1.5" fill="none" fillRule="evenodd" strokeLinecap="round">
+                <path d="M1 9h10M1 5h10M1 1h10" />
             </g>
         </svg>
     ),
@@ -278,6 +304,14 @@ const sources = {
             />
         </svg>
     ),
+    signedTick: (
+        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12">
+            <g fill="none" fillRule="evenodd">
+                <path fill="#0324FF" d="M6 11.16l-1.171.725-.804-1.118-1.358.222-.316-1.34-1.34-.316.222-1.358-1.118-.804L.84 6 .115 4.829l1.118-.804-.222-1.358 1.34-.316.316-1.34 1.358.222.804-1.118L6 .84 7.171.115l.804 1.118 1.358-.222.316 1.34 1.34.316-.222 1.358 1.118.804L11.16 6l.725 1.171-1.118.804.222 1.358-1.34.316-.316 1.34-1.358-.222-.804 1.118z" />
+                <path stroke="#FFF" strokeLinecap="round" strokeLinejoin="round" d="M4.048 6.281l1.1 1.195 2.828-2.829" />
+            </g>
+        </svg>
+    ),
     dropPlus: (
         <svg viewBox="0 0 25 25" xmlns="http://www.w3.org/2000/svg">
             <g transform="translate(1 1)" fill="none" fillRule="evenodd">
@@ -286,10 +320,32 @@ const sources = {
             </g>
         </svg>
     ),
+    clear: (
+        <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg">
+            <g transform="translate(.25 .25)" fill="none">
+                <circle stroke="#CDCDCD" fill="#CDCDCD" cx="6.75" cy="6.75" r="6.188" />
+                <path d="M4.84 4.84l3.82 3.82m0-3.82L4.84 8.66" stroke="#FFF" />
+            </g>
+        </svg>
+    ),
+    brevetDown: (
+        <svg viewBox="0 0 10 6" xmlns="http://www.w3.org/2000/svg">
+            <path d="M.756 1l4.245 4.245 4.243-4.242" stroke="#CDCDCD" strokeWidth="1.5" fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+    ),
+    x: (
+        <svg viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg">
+            <g stroke="#A3A3A3" strokeWidth="1.5" fill="none" fillRule="evenodd" strokeLinecap="round">
+                <path d="M.757.757l8.486 8.486M9.243.757L.757 9.243" />
+            </g>
+        </svg>
+    ),
 }
 
+export type IconName = $Keys<typeof sources>
+
 type Props = {
-    name: $Keys<typeof sources>,
+    name: IconName,
 }
 
 const SvgIcon = ({ name, ...props }: Props) => React.cloneElement(sources[name], {

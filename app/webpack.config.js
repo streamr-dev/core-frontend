@@ -17,7 +17,7 @@ const GitRevisionPlugin = require('git-revision-webpack-plugin')
 const dotenv = require('./scripts/dotenv')
 
 const loadedDotenv = !process.env.NO_DOTENV ? dotenv() : []
-const analyze = !!process.env.ANALYZE
+const analyze = !!process.env.BUNDLE_ANALYSIS
 
 const isProduction = require('./scripts/isProduction')
 

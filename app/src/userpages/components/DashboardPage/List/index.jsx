@@ -3,9 +3,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Container, Row, Col, Button } from 'reactstrap'
-import { Link } from 'react-router-dom'
 import { Translate, I18n } from 'react-redux-i18n'
 import Helmet from 'react-helmet'
+import { Link } from 'react-router-dom'
 
 import links from '$userpages/../links'
 import { getDashboards, updateFilter } from '$userpages/modules/dashboard/actions'
@@ -20,7 +20,7 @@ import Search from '$shared/components/Search'
 import Dropdown from '$shared/components/Dropdown'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
 import DashboardPreview from '$editor/dashboard/components/Preview'
-import canvasListStyles from '../../CanvasPage/List/canvasList.pcss'
+import styles from './dashboardList.pcss'
 
 import NoDashboardsView from './NoDashboards'
 
@@ -38,7 +38,10 @@ type DispatchProps = {
 type Props = StateProps & DispatchProps
 
 const CreateDashboardButton = () => (
-    <Button color="primary">
+    <Button
+        color="primary"
+        className={styles.createDashboardButton}
+    >
         <Link to={links.editor.dashboardEditor}>
             <Translate value="userpages.dashboards.createDashboard" />
         </Link>
@@ -132,7 +135,7 @@ class DashboardList extends Component<Props> {
                 <Helmet>
                     <title>{I18n.t('userpages.title.dashboards')}</title>
                 </Helmet>
-                <Container>
+                <Container className={styles.corepageContentContainer} >
                     {!fetching && dashboards && dashboards.length <= 0 && (
                         <NoDashboardsView
                             hasFilter={!!filter && (!!filter.search || !!filter.key)}
@@ -146,7 +149,7 @@ class DashboardList extends Component<Props> {
                                 <Col {...defaultColumns} key={dashboard.id}>
                                     <Tile
                                         link={`${links.editor.dashboardEditor}/${dashboard.id}`}
-                                        image={<DashboardPreview className={canvasListStyles.PreviewImage} dashboard={dashboard} />}
+                                        image={<DashboardPreview className={styles.PreviewImage} dashboard={dashboard} />}
                                     >
                                         <Tile.Title>{dashboard.name}</Tile.Title>
                                     </Tile>

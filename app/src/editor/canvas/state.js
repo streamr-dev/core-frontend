@@ -2,6 +2,7 @@
 import update from 'lodash/fp/update'
 import get from 'lodash/get'
 import cloneDeep from 'lodash/cloneDeep'
+import uniqBy from 'lodash/uniqBy'
 import uuid from 'uuid'
 
 const MISSING_ENTITY = 'EDITOR/MISSING_ENTITY'
@@ -80,8 +81,11 @@ export function emptyCanvas(config = {}) {
     return {
         name: 'Untitled Canvas',
         settings: {
-            runTab: RunTabs.realtime,
             ...config.settings,
+            editorState: {
+                runTab: RunTabs.realtime,
+                ...(config.settings || {}).editorState,
+            },
         },
         modules: [],
         state: RunStates.Stopped,
@@ -517,7 +521,6 @@ export function updatePortConnection(canvas, portId) {
         if (!hasPort(prevCanvas, connectedPortId)) {
             return disconnectPorts(prevCanvas, portId, connectedPortId)
         }
-
         return prevCanvas
     }, canvas)
 }
@@ -653,11 +656,11 @@ export function setModuleOptions(canvas, moduleHash, newOptions = {}) {
 
 export function limitLayout(canvas) {
     let nextCanvas = { ...canvas }
-    nextCanvas.modules.forEach((m) => {
-        const top = parseInt(m.layout.position.top, 10) || 0
-        const left = parseInt(m.layout.position.left, 10) || 0
+    nextCanvas.modules.forEach(({ layout, hash }) => {
+        const top = (layout && parseInt(layout.position.top, 10)) || 0
+        const left = (layout && parseInt(layout.position.left, 10)) || 0
         if (!top || !left || top < 0 || left < 0) {
-            nextCanvas = updateModulePosition(nextCanvas, m.hash, {
+            nextCanvas = updateModulePosition(nextCanvas, hash, {
                 top: Math.max(0, top),
                 left: Math.max(0, left),
             })
@@ -962,6 +965,9 @@ export function getRelevantCanvasId(canvas) {
  */
 
 export function updateCanvas(canvas, path, fn) {
+    if (!canvas || typeof canvas !== 'object') {
+        throw new Error(`bad canvas (${typeof canvas})`)
+    }
     return limitLayout(updateVariadic(updatePortConnections(update(path, fn, canvas))))
 }
 
@@ -987,12 +993,26 @@ export function moduleSearch(moduleCategories, search) {
     const moduleIndex = getModuleCategoriesIndex(moduleCategories)
     search = search.trim().toLowerCase()
     if (!search) { return moduleIndex }
-    const nameMatches = moduleIndex.filter((m) => (
-        m.name.toLowerCase().includes(search)
-    ))
-    const found = new Set(nameMatches.map(({ id }) => id))
-    const pathMatches = moduleIndex.filter((m) => (
-        m.path.toLowerCase().includes(search) && !found.has(m.id)
-    ))
-    return nameMatches.concat(pathMatches)
+
+    const terms = search.split(/\s+/)
+    const exactMatches = moduleIndex.filter((m) => {
+        const target = m.name.toLowerCase()
+        return target.split(/\s+/).join(' ') === terms.join(' ')
+    })
+
+    const nameMatches = moduleIndex.filter((m) => {
+        const target = m.name.toLowerCase()
+        return terms.every((searchTerm) => (
+            target.includes(searchTerm)
+        ))
+    })
+
+    const pathMatches = moduleIndex.filter((m) => {
+        const target = m.path.toLowerCase()
+        return terms.every((searchTerm) => (
+            target.includes(searchTerm)
+        ))
+    })
+
+    return uniqBy([...exactMatches, ...nameMatches, ...pathMatches], 'id')
 }

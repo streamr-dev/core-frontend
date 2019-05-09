@@ -55,7 +55,7 @@ class AvatarUploadDialog extends React.Component<Props, State> {
         return (
             <Dialog
                 contentClassName={styles.content}
-                title={I18n.t('modal.avatar.defaultTitle')}
+                title={originalImage ? I18n.t('modal.avatar.updateTitle') : I18n.t('modal.avatar.defaultTitle')}
                 onClose={onClose}
                 actions={image
                     ? {

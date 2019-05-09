@@ -65,6 +65,7 @@ jobs:
     env:
     - NODE_ENV=production
     - PORT=12345
+    - BUNDLE_ANALYSIS=1
     - STREAMR_API_URL=https://staging.streamr.com/api/v1
     - STREAMR_WS_URL=wss://staging.streamr.com/api/v1/ws
     - PLATFORM_ORIGIN_URL=https://staging.streamr.com
@@ -131,6 +132,7 @@ jobs:
     - WEB3_PUBLIC_HTTP_PROVIDER=https://mainnet.infura.io
     - WEB3_PUBLIC_WS_PROVIDER=wss://mainnet.infura.io/ws
     - SENTRY_URL=https://e012761929d24baa96ca82772f60b395@sentry.io/1203154
+    - LOGROCKET_SLUG=et0uhu/streamr-frontend-beta
     script:
     - npm run build
     deploy:
@@ -149,6 +151,7 @@ jobs:
     if: type IN (pull_request)
     env:
     - NODE_ENV=production
+    - BUNDLE_ANALYSIS=1
     - PORT=12345
     - STREAMR_API_URL=https://staging.streamr.com/api/v1
     - STREAMR_WS_URL=wss://staging.streamr.com/api/v1/ws

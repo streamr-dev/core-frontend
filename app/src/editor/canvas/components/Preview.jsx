@@ -22,7 +22,13 @@ function getModuleKey(m) {
 function PreviewCables({ canvas, preview }) {
     function getPosition(portId) {
         if (!portId) { return }
-        const m = getModuleForPort(canvas, portId)
+        let m
+        try {
+            m = getModuleForPort(canvas, portId)
+        } catch (error) {
+            // ignore error if problem with canvas/port
+            return
+        }
         const key = getModuleKey(m)
         const p = preview.modules.find((m) => m.key === key)
         return {

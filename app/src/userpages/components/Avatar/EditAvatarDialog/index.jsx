@@ -4,12 +4,12 @@ import React from 'react'
 
 import AvatarUploadDialog from '../AvatarUploadDialog'
 import CropAvatarDialog from '../CropAvatarDialog'
-import PreviewAvatarDialog from '../PreviewAvatarDialog'
 
 type Props = {
     originalImage: string,
     onClose: () => void,
-    onSave: (?string) => Promise<void>,
+    onSave: (?File) => Promise<void>,
+
 }
 
 const editorPhases = {
@@ -29,6 +29,8 @@ class EditAvatarDialog extends React.Component<Props, State> {
         uploadedImage: null,
     }
 
+    imageFile: File
+
     componentWillUnmount() {
         this.revokeImage()
     }
@@ -39,12 +41,13 @@ class EditAvatarDialog extends React.Component<Props, State> {
         }
     }
 
-    onSave = () => {
-        const { uploadedImage } = this.state
-        return this.props.onSave(uploadedImage)
-    }
+    onSave = () => this.props.onSave(this.imageFile)
 
     onUpload = (image: ?File) => {
+        if (image) {
+            this.imageFile = image
+        }
+
         this.setState({
             uploadedImage: image ? URL.createObjectURL(image) : null,
             phase: editorPhases.CROP,
@@ -58,6 +61,8 @@ class EditAvatarDialog extends React.Component<Props, State> {
             phase: editorPhases.PREVIEW,
         })
     }
+
+    cropAndSave = (imageFile: File) => this.props.onSave(imageFile)
 
     render() {
         const { onClose, originalImage } = this.props
@@ -77,17 +82,9 @@ class EditAvatarDialog extends React.Component<Props, State> {
                 return (
                     <CropAvatarDialog
                         onClose={onClose}
+                        cropAndSave={this.cropAndSave}
                         onSave={this.onCrop}
                         originalImage={uploadedImage || originalImage}
-                    />
-                )
-
-            case editorPhases.PREVIEW:
-                return (
-                    <PreviewAvatarDialog
-                        onClose={onClose}
-                        onSave={this.onSave}
-                        image={uploadedImage}
                     />
                 )
 

@@ -7,3 +7,23 @@
   color: var(--greyDark);
   background-color: transparent;
 }
+
+@media (--md-down) {
+  .createProductButton {
+    display: none;
+  }
+
+  :global(html) .corepageContentContainer {
+    width: 100%;
+    max-width: none;
+    padding-right: 24px;
+    padding-left: 24px;
+    margin-top: 34px;
+  }
+}
+
+@media (--sm-down) {
+  :global(html) .corepageContentContainer {
+    margin-top: 16px;
+  }
+}

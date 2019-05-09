@@ -1,0 +1,27 @@
+/* TODO: Use rems. */
+
+.root {
+  background: none;
+  border: 0;
+  box-sizing: content-box;
+  flex-shrink: 0;
+  height: 24px;
+  padding: 8px;
+  width: 12px;
+}
+
+.root:--enter,
+.root:--idle {
+  outline: 0;
+}
+
+.root svg {
+  display: block;
+  opacity: 0.2;
+  width: 10px;
+  height: 10px;
+}
+
+.root:--enter svg {
+  opacity: 0.62;
+}

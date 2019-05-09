@@ -28,6 +28,7 @@ export type FormControlProps = {
     preserveErrorSpace?: boolean,
     preserveLabelPosition?: boolean,
     noUnderline?: boolean,
+    passwordStrengthUpdate?: (PasswordStrength: number) => void,
 }
 
 type Props = FormControlProps & {
@@ -81,6 +82,7 @@ class FormControl extends React.Component<Props, State> {
             preserveLabelPosition,
             noUnderline,
             children,
+            passwordStrengthUpdate,
             ...props
         } = this.props
 
@@ -108,12 +110,14 @@ class FormControl extends React.Component<Props, State> {
             noUnderline,
             measureStrength,
             type,
+            passwordStrengthUpdate,
         } = this.props
         const { lastKnownError, focused, autoCompleted } = this.state
 
         return (
             <PasswordStrength
                 value={value}
+                passwordStrengthUpdate={passwordStrengthUpdate}
                 enabled={type === 'password' && measureStrength}
             >
                 {(strength) => (

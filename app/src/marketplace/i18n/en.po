@@ -133,6 +133,9 @@ msgstr "Marketplace top"
 msgid "imageUpload##coverImage##replace"
 msgstr "Drag & drop to replace your cover image <br /> or click to browse for one"
 
+msgid "imageUpload##coverImage##tabletUpload"
+msgstr "Tap to take a photo or browse for one"
+
 msgid "imageUpload##coverImage##upload"
 msgstr "Drag & drop to upload a cover image <br /> or click to browse for one"
 
@@ -766,3 +769,9 @@ msgstr "Product state (from free to paid and vise versa) cannot be changed"
 
 msgid "validation##productStreams"
 msgstr "Add at least one stream to your product"
+
+msgid "general##core"
+msgstr "Core"
+
+msgid "general##transactions"
+msgstr "Transactions"

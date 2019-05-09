@@ -21,7 +21,7 @@ import Toolbar from '$editor/shared/components/Toolbar'
 
 import ShareDialog from './ShareDialog'
 import CanvasSearch from './CanvasSearch'
-import * as RunController from './RunController'
+import * as RunController from './CanvasController/Run'
 
 import styles from './Toolbar.pcss'
 
@@ -165,8 +165,8 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                             <div>
                                 <R.ButtonGroup
                                     className={cx(styles.RunButtonGroup, {
-                                        [styles.RunButtonStopped]: !isRunning && !canvas.adhoc,
-                                        [styles.RunButtonRunning]: !!isRunning || canvas.adhoc,
+                                        [styles.RunButtonStopped]: !(isActive || canvas.adhoc),
+                                        [styles.RunButtonRunning]: isActive || canvas.adhoc,
                                     })}
                                 >
                                     <R.Button
