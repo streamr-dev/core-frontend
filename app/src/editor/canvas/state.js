@@ -521,8 +521,7 @@ export function updatePortConnection(canvas, portId) {
         if (!hasPort(prevCanvas, connectedPortId)) {
             return disconnectPorts(prevCanvas, portId, connectedPortId)
         }
-
-        return prevCanvas
+        return connectPorts(prevCanvas, portId, connectedPortId)
     }, canvas)
 }
 

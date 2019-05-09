@@ -208,10 +208,12 @@ const CanvasEditComponent = class CanvasEdit extends Component {
             replace((canvas) => {
                 const prevModule = CanvasState.getModule(canvas, hash)
                 let nextCanvas = CanvasState.updateModule(canvas, hash, () => moduleData)
+                nextCanvas = CanvasState.updateModulePortConnections(nextCanvas, hash)
+                const newModule = CanvasState.getModule(nextCanvas, hash)
 
                 // Restore input connections
-                nextCanvas = prevModule.inputs && prevModule.inputs.reduce((nextCanvas, { id, sourceId }) => {
-                    const port = moduleData.inputs.find((p) => id === p.id)
+                nextCanvas = newModule.inputs.reduce((nextCanvas, { id, sourceId }) => {
+                    const port = prevModule.inputs.find((p) => id === p.id)
 
                     if (sourceId && port) {
                         return CanvasState.connectPorts(nextCanvas, port.id, sourceId)
@@ -220,8 +222,8 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                     return nextCanvas
                 }, nextCanvas)
 
-                nextCanvas = prevModule.params && prevModule.params.reduce((nextCanvas, { id, sourceId }) => {
-                    const port = moduleData.params.find((p) => id === p.id)
+                nextCanvas = newModule.params.reduce((nextCanvas, { id, sourceId }) => {
+                    const port = prevModule.params.find((p) => id === p.id)
 
                     if (sourceId && port) {
                         return CanvasState.connectPorts(nextCanvas, port.id, sourceId)
