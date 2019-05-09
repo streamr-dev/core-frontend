@@ -209,7 +209,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                 let nextCanvas = CanvasState.updateModule(canvas, hash, () => moduleData)
 
                 // Restore input connections
-                nextCanvas = module.inputs.reduce((nextCanvas, { id, sourceId }) => {
+                nextCanvas = moduleData.inputs.reduce((nextCanvas, { id, sourceId }) => {
                     const port = moduleData.inputs.find((p) => id === p.id)
 
                     if (sourceId && port) {
@@ -219,7 +219,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                     return nextCanvas
                 }, nextCanvas)
 
-                nextCanvas = module.params.reduce((nextCanvas, { id, sourceId }) => {
+                nextCanvas = moduleData.params.reduce((nextCanvas, { id, sourceId }) => {
                     const port = moduleData.params.find((p) => id === p.id)
 
                     if (sourceId && port) {
