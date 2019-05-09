@@ -53,7 +53,6 @@ export class SearchPanel extends React.PureComponent {
 
     unmounted = false
     input = null
-    currentSearch = ''
     selfRef = React.createRef()
     contentRef = React.createRef()
 
