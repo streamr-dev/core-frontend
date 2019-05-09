@@ -39,7 +39,7 @@ export class SearchPanel extends React.PureComponent {
         maxHeight: 352 * 2,
         minHeightMinimized: 91,
         itemHeight: 52,
-        scrollPadding: 16,
+        scrollPadding: 0,
     }
 
     state = {
