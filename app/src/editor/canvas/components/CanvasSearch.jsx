@@ -34,27 +34,31 @@ export default connect((state) => ({
             name.toLowerCase().includes(search)
         )) : this.props.canvases
         return (
-            <SearchPanel
-                placeholder="Search or select a canvas"
-                className={styles.CanvasSearch}
-                onChange={this.onChange}
-                isOpen={this.props.isOpen}
-                open={this.props.open}
-                dragDisabled
-                headerHidden
-                minHeightMinimized={352}
-                maxHeight={352}
-                defaultHeight={352}
-            >
-                {canvases.map((canvas) => (
-                    <SearchRow key={canvas.id} className={styles.CanvasSearchRow}>
-                        <Link to={`${links.editor.canvasEditor}/${canvas.id}`}>
-                            <span className={cx(styles.canvasState, styles[canvas.state.toLowerCase()])} />
-                            {startCase(canvas.name)}
-                        </Link>
-                    </SearchRow>
-                ))}
-            </SearchPanel>
+            <React.Fragment>
+                {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
+                <div className={styles.Overlay} onClick={() => this.props.open(false)} hidden={!this.props.isOpen} />
+                <SearchPanel
+                    placeholder="Search or select a canvas"
+                    className={styles.CanvasSearch}
+                    onChange={this.onChange}
+                    isOpen={this.props.isOpen}
+                    open={this.props.open}
+                    dragDisabled
+                    headerHidden
+                    minHeightMinimized={352}
+                    maxHeight={352}
+                    defaultHeight={352}
+                >
+                    {canvases.map((canvas) => (
+                        <SearchRow key={canvas.id} className={styles.CanvasSearchRow}>
+                            <Link to={`${links.editor.canvasEditor}/${canvas.id}`}>
+                                <span className={cx(styles.canvasState, styles[canvas.state.toLowerCase()])} />
+                                {startCase(canvas.name)}
+                            </Link>
+                        </SearchRow>
+                    ))}
+                </SearchPanel>
+            </React.Fragment>
         )
     }
 })
