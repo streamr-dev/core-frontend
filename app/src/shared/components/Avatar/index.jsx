@@ -23,7 +23,7 @@ const Avatar = ({ className, alt, src }: Props) => {
                 alt={alt || ''}
                 className={styles.inner}
                 src={src || ''}
-                placeholder={!initials ? (
+                placeholder={initials ? (
                     <Initials>
                         {initials}
                     </Initials>
