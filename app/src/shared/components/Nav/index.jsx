@@ -44,15 +44,15 @@ const Nav = compose(
             <DropdownItem label={I18n.t('general.core')} to="#" align="right">
                 <Link
                     className={Nav.styles.link}
-                    to={routes.canvases()}
-                >
-                    <Translate value="general.canvases" />
-                </Link>
-                <Link
-                    className={Nav.styles.link}
                     to={routes.streams()}
                 >
                     <Translate value="general.streams" />
+                </Link>
+                <Link
+                    className={Nav.styles.link}
+                    to={routes.canvases()}
+                >
+                    <Translate value="general.canvases" />
                 </Link>
                 <Link
                     className={Nav.styles.link}
