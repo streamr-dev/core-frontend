@@ -20,6 +20,15 @@ export function SearchRow({ className, ...props }) {
     )
 }
 
+function MaybeDraggable({ disabled, children, ...props }) {
+    if (disabled) { return children || null }
+    return (
+        <Draggable {...props}>
+            {children}
+        </Draggable>
+    )
+}
+
 export class SearchPanel extends React.PureComponent {
     static defaultProps = {
         bounds: 'parent',
@@ -164,13 +173,17 @@ export class SearchPanel extends React.PureComponent {
             children,
             className,
             scrollPadding,
+            dragDisabled,
+            headerHidden,
         } = this.props
         const { search, isExpanded, width } = this.state
         const height = this.calculateHeight()
         const isSearching = !!search.trim()
+
         return (
             <React.Fragment>
-                <Draggable
+                <MaybeDraggable
+                    disabled={dragDisabled}
                     handle={`.${styles.dragHandle}`}
                     bounds={bounds}
                 >
@@ -197,17 +210,19 @@ export class SearchPanel extends React.PureComponent {
                             }}
                         >
                             <div className={styles.Container}>
-                                <div className={cx(styles.Header, styles.dragHandle)}>
-                                    <button type="button" className={styles.minimize} onClick={() => this.toggleMinimize()}>
-                                        {isExpanded ?
-                                            <SvgIcon name="brevetDown" className={styles.flip} /> :
-                                            <SvgIcon name="brevetDown" className={styles.normal} />
-                                        }
-                                    </button>
-                                    <button type="button" className={styles.close} onClick={() => open(false)}>
-                                        <SvgIcon name="x" />
-                                    </button>
-                                </div>
+                                {!headerHidden && (
+                                    <div className={cx(styles.Header, styles.dragHandle)}>
+                                        <button type="button" className={styles.minimize} onClick={() => this.toggleMinimize()}>
+                                            {isExpanded ?
+                                                <SvgIcon name="brevetDown" className={styles.flip} /> :
+                                                <SvgIcon name="brevetDown" className={styles.normal} />
+                                            }
+                                        </button>
+                                        <button type="button" className={styles.close} onClick={() => open(false)}>
+                                            <SvgIcon name="x" />
+                                        </button>
+                                    </div>
+                                )}
                                 <div className={styles.Input}>
                                     <input
                                         ref={this.onInputRef}
@@ -244,7 +259,7 @@ export class SearchPanel extends React.PureComponent {
                             </div>
                         </ResizableBox>
                     </div>
-                </Draggable>
+                </MaybeDraggable>
             </React.Fragment>
         )
     }
