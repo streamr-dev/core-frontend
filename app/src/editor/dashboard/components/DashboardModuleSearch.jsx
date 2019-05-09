@@ -9,12 +9,12 @@ import cx from 'classnames'
 
 import Modal from '$editor/shared/components/Modal'
 import SearchPanel, { SearchRow } from '$editor/shared/components/SearchPanel'
-import CanvasStyles from '$editor/canvas/components/Canvas.pcss'
 import CanvasModuleSearchStyles from '$editor/canvas/components/ModuleSearch.pcss'
 
 import { getCanvases } from '../services'
 import { dashboardModuleSearch } from '../state'
 
+import DashboardStyles from '../index.pcss'
 import styles from './DashboardModuleSearch.pcss'
 
 function DashboardModuleSearchItem({
@@ -121,7 +121,7 @@ class DashboardModuleSearch extends React.PureComponent {
         return (
             <SearchPanel
                 className={styles.ModuleSearch}
-                bounds={`.${CanvasStyles.CanvasElements}`}
+                bounds={`.${DashboardStyles.Dashboard}`}
                 placeholder="Search or select a module"
                 onChange={this.onChange}
                 isOpen

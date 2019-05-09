@@ -382,6 +382,7 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
                     onChange={this.onChange}
                     isOpen={isOpen}
                     open={open}
+                    panelRef={this.selfRef}
                 >
                     {isSearching ?
                         this.renderSearchResults() :

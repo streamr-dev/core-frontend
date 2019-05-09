@@ -53,7 +53,6 @@ export class SearchPanel extends React.PureComponent {
 
     unmounted = false
     input = null
-    selfRef = React.createRef()
     contentRef = React.createRef()
 
     componentDidMount() {
@@ -196,7 +195,7 @@ export class SearchPanel extends React.PureComponent {
                             [styles.isSearching]: isSearching,
                         })}
                         hidden={!isOpen}
-                        ref={this.selfRef}
+                        ref={this.props.panelRef}
                     >
                         <ResizableBox
                             className={styles.ResizableBox}
