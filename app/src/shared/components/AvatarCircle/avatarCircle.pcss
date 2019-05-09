@@ -1,5 +1,16 @@
+.profileEmptyIcon {
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.profileEmptyIcon svg {
+  height: 100%;
+}
+
 .accountCircle {
-  background-color: #FFFFFF;
+  background-color: #EFEFEF;
   border-radius: 50%;
   color: white;
   font-size: 16px;
@@ -8,17 +19,24 @@
   line-height: 3em;
   height: 3em;
   width: 3em;
-}
+  text-transform: uppercase;
 
-.profileEmptyIcon {
-  display: flex;
-  height: 80px;
-  justify-content: center;
-  align-items: center;
+  &.textDisplay {
+    background-color: #97BAC0;
+  }
+
+  &.uploadAvatarPlaceholder {
+    background-color: #FFFFFF;
+
+    .profileEmptyIcon svg {
+      height: 42px;
+    }
+  }
 }
 
 .inner {
   font-size: 1.125em;
+  margin-left: 1px;
 }
 
 @media (--md-up) {

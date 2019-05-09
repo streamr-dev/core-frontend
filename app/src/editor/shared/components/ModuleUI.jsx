@@ -11,13 +11,15 @@ import CommentModule from './modules/Comment'
 import StreamrTextField from './modules/TextField'
 import LabelModule from './modules/Label'
 import CanvasModule from './modules/Canvas'
+import ForEachModule from './modules/ForEach'
 import StreamrSwitcher from './modules/Switcher'
 import MapModule from './modules/Map'
 import HeatmapModule from './modules/Heatmap'
-import ModuleLoader from './ModuleLoader'
+import RunStateLoader from './RunStateLoader'
 import ExportCSVModule from './modules/ExportCSV'
 import SchedulerModule from './modules/Scheduler'
 import CustomModule from './modules/Custom'
+import SolidityModule from './modules/Solidity'
 
 // Set by module.jsModule
 const Modules = {
@@ -26,12 +28,14 @@ const Modules = {
     CommentModule,
     LabelModule,
     CanvasModule,
+    ForEachModule,
     ExportCSVModule,
     SchedulerModule,
     MapModule,
     ImageMapModule: MapModule,
     HeatmapModule,
     CustomModule,
+    SolidityModule,
 }
 
 // Set by module.widget
@@ -41,14 +45,17 @@ const Widgets = {
     StreamrSwitcher,
 }
 
-export default (props) => (
-    <ModuleLoader {...props}>
+export default ({ autoSize, ...props }) => (
+    <RunStateLoader {...props}>
         {(props) => {
-            const { module } = props
-            if (!module) { return null }
+            const module = props.module || {}
             const Module = module.widget ? Widgets[module.widget] : Modules[module.jsModule]
-            if (!Module) { return null }
+
+            if (!Module) {
+                return null
+            }
+
             return <Module {...props} />
         }}
-    </ModuleLoader>
+    </RunStateLoader>
 )

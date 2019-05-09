@@ -20,7 +20,8 @@
   overflow: hidden;
   position: relative;
   text-align: center;
-  color: #A6A6A6;
+  color: #323232;
+  font-weight: 500;
 
   &.dragEntered {
     border-radius: 4px;
@@ -29,13 +30,10 @@
 
   &:hover {
     cursor: pointer;
-    color: #303030;
   }
 
   img {
-    &:hover {
-      opacity: 0.3;
-    }
+    opacity: 0.5;
   }
 }
 
@@ -74,6 +72,23 @@
   left: 50%;
   transform: translate(-50%, -50%);
   width: 100%;
+
+  img {
+    display: none;
+  }
+}
+
+.dropzoneAdviceNoImage {
+  position: absolute;
+  top: 55%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+
+  img {
+    display: inline-block;
+    opacity: 1;
+  }
 }
 
 .hide {
@@ -81,6 +96,12 @@
 }
 
 .icon {
-  width: 52px;
-  height: 52px;
+  margin-bottom: 2em;
+}
+
+.uploadAdvice {
+  font-weight: 500;
+  font-size: 16px;
+  letter-spacing: 0;
+  line-height: 24px;
 }

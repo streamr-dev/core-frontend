@@ -1,6 +1,6 @@
 // @flow
 
-import React, { Fragment, Component } from 'react'
+import React, { Component } from 'react'
 
 import type { IntegrationKey } from '../../../../flowtype/integration-key-types'
 import IntegrationKeyList from './IntegrationKeyList'
@@ -21,16 +21,15 @@ export default class IntegrationKeyHandlerSegment extends Component<Props> {
     }
 
     render() {
-        const { hideValues, integrationKeys, onDelete } = this.props
+        const { hideValues, integrationKeys, onDelete, onEdit } = this.props
 
         return (
-            <Fragment>
-                <IntegrationKeyList
-                    hideValues={hideValues}
-                    integrationKeys={integrationKeys}
-                    onDelete={onDelete}
-                />
-            </Fragment>
+            <IntegrationKeyList
+                hideValues={hideValues}
+                integrationKeys={integrationKeys}
+                onDelete={onDelete}
+                onEdit={onEdit}
+            />
         )
     }
 }

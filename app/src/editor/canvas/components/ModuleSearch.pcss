@@ -1,179 +1,126 @@
 .ModuleSearch {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 10vw;
-  margin-left: auto;
-  margin-right: auto;
-  background: white;
-  min-width: 30vw;
-  max-width: 30vw;
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: auto auto 1fr;
-  z-index: 12;
-  border: 1px solid #EFEFEF;
-  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.05);
-  border-radius: 4px;
-  overflow: hidden;
-  cursor: pointer;
-  user-select: none;
+
 }
 
-.ModuleSearch .Header {
-  border-bottom: 1px solid #EFEFEF;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  cursor: grab;
-  height: 40px;
-  padding: 0 12px;
-}
-
-.ModuleSearch .Header button {
-  appearance: none;
-  display: block;
-  width: 24px;
-  border: none;
-  color: #A3A3A3;
-  background: none;
-}
-
-.ModuleSearch .Header button:focus {
-  outline: none;
-}
-
-.ModuleSearch .Header .minimize {
-  margin-right: auto;
-}
-
-.ModuleSearch .Header .close {
-  margin-left: auto;
-}
-
-.ModuleSearch .Header svg path {
-  stroke: #A3A3A3;
-  color: #A3A3A3;
-}
-
-.ModuleSearch .Input input {
-  font-size: 14px;
-  line-height: 1;
-  text-align: left;
-  letter-spacing: 0;
-  border: none;
-  border-bottom: 1px solid #EFEFEF;
-  box-sizing: border-box;
-  padding: 16px 24px;
-  width: 100%;
-}
-
-.ModuleSearch .Input input:focus {
-  outline: none;
-}
-
-.ModuleSearch .Input input::placeholder {
-  color: #CDCDCD;
-}
-
-.ModuleSearch .Content {
-  color: #525252;
-  font-size: 12px;
-  font-family: 'IBM Plex Mono', monospace;
-  font-weight: 500;
-  text-align: left;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  line-height: 32px;
-  max-height: 40vh;
-  overflow: auto;
-}
-
-.ModuleSearch .Content > * {
-  padding: 5px 24px;
-  border-bottom: 1px solid #EFEFEF;
-}
-
-.ModuleSearch .Content > *:hover {
-  background: #F8F8F8;
-}
-
-.ModuleSearch .Content .Category {
-  color: #323232;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 2px;
-  line-height: 40px;
+body .Category {
+  font-weight: var(--medium);
+  letter-spacing: 1px;
   text-transform: uppercase;
 }
 
-.ModuleSearch .Content .Category.active {
+body .Category.active {
   border-left: 4px solid #0324FF;
   padding-left: 20px;
 }
 
-.ModuleSearch .Content .SearchCategory {
+body .SearchCategory {
   font-size: 10px;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--sans);
   font-weight: 600;
   color: #323232;
   text-transform: uppercase;
   letter-spacing: 1.43px;
   line-height: 40px;
-  cursor: initial;
 }
 
-.ModuleSearch .Content .ModuleItem {
-  font-size: 12px;
-  font-family: 'IBM Plex Mono', monospace;
-  font-weight: 400;
-  color: #323232;
-  text-transform: none;
-  letter-spacing: 0;
-  line-height: 40px;
+body .SearchCategory:hover {
+  background: transparent;
+}
+
+.ModuleSearch .ModuleItem.WithCategory {
   display: grid;
   grid-template-columns: 50% 50%;
   grid-gap: 12px;
 }
 
-.ModuleSearch .Content .ModuleItem .ModuleCategory {
+.ModuleSearch .ModuleItem .ModuleName {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.ModuleSearch .ModuleItem .ModuleCategory {
   font-size: 12px;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--sans);
   font-weight: 400;
   text-transform: uppercase;
   color: #ADADAD;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
-.ModuleSearch .Content .StreamItem {
-  font-size: 12px;
-  font-family: 'IBM Plex Mono', monospace;
-  font-weight: 400;
-  color: #323232;
-  text-transform: none;
-  letter-spacing: 0;
+.ModuleSearch .StreamItem {
   line-height: 28px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
-.ModuleSearch .Content .StreamItem .Description {
+.ModuleSearch .StreamItem:active,
+.ModuleSearch .ModuleItem:active {
+  cursor: grabbing;
+}
+
+.ModuleSearch .StreamItem .Description {
   font-size: 10px;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--sans);
   font-weight: 400;
   color: #ADADAD;
   line-height: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
-.Overlay {
-  z-index: 12;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+.dragHandle {
+}
+
+.dragElement {
   bottom: 0;
-  width: 100vw;
-  height: 100vh;
-  background: salmon;
-  opacity: 0;
+  right: 0;
+  position: absolute;
+  z-index: -1;
+  background-color: #FFFFFF;
+  color: #323232;
+  border-radius: calc(0.25 * var(--um));
+  max-width: calc(12.5 * var(--um));
+  min-height: calc(3.75 * var(--um));
+  display: grid;
+  padding: 16px 18px 11px;
+  grid-row-gap: 2px;
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1;
+  font-weight: var(--medium);
+  text-align: center;
+  align-items: center;
 }
 
-global(.dragHandle) {
+.dropText {
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.dragModuleName {
+  letter-spacing: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.dragImage {
+  color: red;
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  top: -12px;
+  left: -12px;
+}
+
+body:global(:not(.react-draggable-transparent-selection)) {
+  /* don't add transitions when user manually resizing */
+  .ResizableBox {
+    transition: height 300ms cubic-bezier(0.64, 0.04, 0.35, 1), width 300ms cubic-bezier(0.64, 0.04, 0.35, 1);
+  }
 }

@@ -3,6 +3,7 @@ import uuid from 'uuid'
 import cx from 'classnames'
 import throttle from 'lodash/throttle'
 
+import UiSizeConstraint from '../UiSizeConstraint'
 import ModuleSubscription from '../ModuleSubscription'
 
 import styles from './Table.pcss'
@@ -153,37 +154,39 @@ export default class TableModule extends React.Component {
         const { title, headers, rows } = this.state
 
         return (
-            <div className={cx(styles.tableModule, className)}>
-                <ModuleSubscription
-                    {...this.props}
-                    ref={this.subscription}
-                    onMessage={this.onMessage}
-                    onActiveChange={this.initIfActive}
-                />
-                {!!(options.displayTitle && options.displayTitle.value && title) && (
-                    <h4>{title}</h4>
-                )}
-                <table className={styles.table}>
-                    <thead>
-                        <tr>
-                            {headers.map((header, index) => (
-                                /* eslint-disable-next-line react/no-array-index-key */
-                                <th key={index}>{header}</th>
-                            ))}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {rows.map((row) => (
-                            <tr key={row.id}>
-                                {row.cells.map((item, index) => (
+            <UiSizeConstraint minWidth={250} minHeight={150}>
+                <div className={cx(styles.tableModule, className)}>
+                    <ModuleSubscription
+                        {...this.props}
+                        ref={this.subscription}
+                        onMessage={this.onMessage}
+                        onActiveChange={this.initIfActive}
+                    />
+                    {!!(options.displayTitle && options.displayTitle.value && title) && (
+                        <h4>{title}</h4>
+                    )}
+                    <table className={styles.table}>
+                        <thead>
+                            <tr>
+                                {headers.map((header, index) => (
                                     /* eslint-disable-next-line react/no-array-index-key */
-                                    <td key={index}>{item}</td>
+                                    <th key={index}>{header}</th>
                                 ))}
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
+                        </thead>
+                        <tbody>
+                            {rows.map((row) => (
+                                <tr key={row.id}>
+                                    {row.cells.map((item, index) => (
+                                        /* eslint-disable-next-line react/no-array-index-key */
+                                        <td key={index}>{item}</td>
+                                    ))}
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </UiSizeConstraint>
         )
     }
 }

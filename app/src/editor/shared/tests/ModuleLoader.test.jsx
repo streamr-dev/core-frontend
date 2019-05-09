@@ -1,24 +1,24 @@
 import React from 'react'
 import { mount } from 'enzyme'
-import { ModuleLoader } from '../components/ModuleLoader'
+import { RunStateLoader } from '../components/RunStateLoader'
 
 function wait(delay) {
     return new Promise((resolve) => setTimeout(resolve, delay))
 }
 
-describe('ModuleLoader', () => {
+describe('RunStateLoader', () => {
     it('loads on active mount', async () => {
         const moduleResult = {
             moduleHash: 1,
         }
 
-        const loadModule = jest.fn().mockResolvedValueOnce(moduleResult)
+        const loadRunState = jest.fn().mockResolvedValueOnce(moduleResult)
         const render = jest.fn().mockReturnValue(null)
 
         mount((
-            <ModuleLoader isActive loadModule={loadModule}>
+            <RunStateLoader isActive loadRunState={loadRunState}>
                 {render}
-            </ModuleLoader>
+            </RunStateLoader>
         ))
 
         expect(render).toHaveBeenCalled()
@@ -40,20 +40,20 @@ describe('ModuleLoader', () => {
             moduleHash: 1,
         }
 
-        const loadModule = jest.fn()
+        const loadRunState = jest.fn()
         const render = jest.fn().mockReturnValue(null)
 
         mount((
-            <ModuleLoader isActive={false} module={originalModule} loadModule={loadModule}>
+            <RunStateLoader isActive={false} module={originalModule} loadRunState={loadRunState}>
                 {render}
-            </ModuleLoader>
+            </RunStateLoader>
         ))
 
         expect(render.mock.calls[render.mock.calls.length - 1][0]).toMatchObject({
             module: originalModule,
         })
 
-        expect(loadModule).not.toHaveBeenCalled()
+        expect(loadRunState).not.toHaveBeenCalled()
     })
 
     it('loads on active, unloads on not active', async () => {
@@ -67,23 +67,23 @@ describe('ModuleLoader', () => {
             moduleHash: 1,
         }
 
-        const loadModule = jest.fn().mockResolvedValueOnce(moduleResult)
+        const loadRunState = jest.fn().mockResolvedValueOnce(moduleResult)
         const render = jest.fn().mockReturnValue(null)
 
         const wrapper = mount((
-            <ModuleLoader isActive={false} module={originalModule} loadModule={loadModule}>
+            <RunStateLoader isActive={false} module={originalModule} loadRunState={loadRunState}>
                 {render}
-            </ModuleLoader>
+            </RunStateLoader>
         ))
 
-        expect(loadModule).not.toHaveBeenCalled()
+        expect(loadRunState).not.toHaveBeenCalled()
 
         expect(render.mock.calls[0][0]).toMatchObject({
             module: originalModule, // forwards original
         })
 
         wrapper.setProps({ isActive: true })
-        expect(loadModule).toHaveBeenCalledTimes(1)
+        expect(loadRunState).toHaveBeenCalledTimes(1)
 
         await wait(100) // wait for load module to flush
 
@@ -93,7 +93,7 @@ describe('ModuleLoader', () => {
 
         wrapper.setProps({ isActive: false })
 
-        expect(loadModule).toHaveBeenCalledTimes(1) // didn't call load again
+        expect(loadRunState).toHaveBeenCalledTimes(1) // didn't call load again
 
         expect(render.mock.calls[render.mock.calls.length - 1][0]).toMatchObject({
             module: originalModule, // module is now original module

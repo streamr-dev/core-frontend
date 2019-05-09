@@ -7,7 +7,7 @@ import p2r from 'path-to-regexp'
 import definitions from './definitions'
 
 type Routes = {
-    [string]: (?Object) => string,
+    [string]: (?Object, ?string) => string,
 }
 
 type Paths = {
@@ -24,7 +24,7 @@ type Variables = {
  * @param getVariables Variable collection getter.
  * @returns Route function.
  */
-export const define = (pathstr: string, getVariables: () => Variables) => (params: ?Object): string => {
+export const define = (pathstr: string, getVariables: () => Variables) => (params: ?Object, hash?: ?string): string => {
     const route = Object.entries(getVariables()).reduce((acc, [name, value]) => {
         const val: any = value
         return pathstr.replace(new RegExp(`<${name}>`, 'g'), val)
@@ -40,7 +40,7 @@ export const define = (pathstr: string, getVariables: () => Variables) => (param
         const tokenNames = p2r.parse(route).map((t) => t.name).filter(Boolean)
         const queryKeys = Object.keys(params).filter((key) => !tokenNames.includes(key))
 
-        return `${p2r.compile(route)(params)}?${qs.stringify(pick(params, queryKeys))}`.replace(/\?$/, '')
+        return `${p2r.compile(route)(params)}?${qs.stringify(pick(params, queryKeys))}${hash ? `#${hash}` : ''}`.replace(/\?$/, '')
     }
 
     return route

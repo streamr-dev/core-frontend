@@ -3,9 +3,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Container, Row, Col, Button } from 'reactstrap'
-import { Link } from 'react-router-dom'
 import { Translate, I18n } from 'react-redux-i18n'
 import Helmet from 'react-helmet'
+import { Link } from 'react-router-dom'
 
 import links from '$userpages/../links'
 import { getDashboards, updateFilter } from '$userpages/modules/dashboard/actions'
@@ -18,6 +18,9 @@ import { defaultColumns, getFilters } from '$userpages/utils/constants'
 import Tile from '$shared/components/Tile'
 import Search from '$shared/components/Search'
 import Dropdown from '$shared/components/Dropdown'
+import DocsShortcuts from '$userpages/components/DocsShortcuts'
+import DashboardPreview from '$editor/dashboard/components/Preview'
+import styles from './dashboardList.pcss'
 
 import NoDashboardsView from './NoDashboards'
 
@@ -35,7 +38,10 @@ type DispatchProps = {
 type Props = StateProps & DispatchProps
 
 const CreateDashboardButton = () => (
-    <Button color="primary">
+    <Button
+        color="primary"
+        className={styles.createDashboardButton}
+    >
         <Link to={links.editor.dashboardEditor}>
             <Translate value="userpages.dashboards.createDashboard" />
         </Link>
@@ -89,6 +95,15 @@ class DashboardList extends Component<Props> {
         }
     }
 
+    resetFilter = () => {
+        const { updateFilter, getDashboards } = this.props
+        updateFilter({
+            ...this.defaultFilter,
+            search: '',
+        })
+        getDashboards()
+    }
+
     render() {
         const { fetching, dashboards, filter } = this.props
 
@@ -106,7 +121,7 @@ class DashboardList extends Component<Props> {
                     <Dropdown
                         title={I18n.t('userpages.filter.sortBy')}
                         onChange={this.onSortChange}
-                        defaultSelectedItem={(filter && filter.id) || this.defaultFilter.id}
+                        selectedItem={(filter && filter.id) || this.defaultFilter.id}
                     >
                         {getSortOptions().map((s) => (
                             <Dropdown.Item key={s.filter.id} value={s.filter.id}>
@@ -120,15 +135,22 @@ class DashboardList extends Component<Props> {
                 <Helmet>
                     <title>{I18n.t('userpages.title.dashboards')}</title>
                 </Helmet>
-                <Container>
+                <Container className={styles.corepageContentContainer} >
                     {!fetching && dashboards && dashboards.length <= 0 && (
-                        <NoDashboardsView />
+                        <NoDashboardsView
+                            hasFilter={!!filter && (!!filter.search || !!filter.key)}
+                            filter={filter}
+                            onResetFilter={this.resetFilter}
+                        />
                     )}
                     {dashboards && dashboards.length > 0 && (
                         <Row>
                             {dashboards.map((dashboard) => (
                                 <Col {...defaultColumns} key={dashboard.id}>
-                                    <Tile link={`${links.editor.dashboardEditor}/${dashboard.id}`}>
+                                    <Tile
+                                        link={`${links.editor.dashboardEditor}/${dashboard.id}`}
+                                        image={<DashboardPreview className={styles.PreviewImage} dashboard={dashboard} />}
+                                    >
                                         <Tile.Title>{dashboard.name}</Tile.Title>
                                     </Tile>
                                 </Col>
@@ -136,6 +158,7 @@ class DashboardList extends Component<Props> {
                         </Row>
                     )}
                 </Container>
+                <DocsShortcuts />
             </Layout>
         )
     }

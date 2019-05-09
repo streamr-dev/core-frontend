@@ -71,6 +71,18 @@ const sources = {
             />
         </svg>
     ),
+    crossMedium: (
+        <svg viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg">
+            <path
+                d="M.757.757l8.486 8.486m0-8.486L.757 9.243"
+                strokeWidth="1.5"
+                stroke="currentColor"
+                fill="none"
+                fillRule="evenodd"
+                strokeLinecap="round"
+            />
+        </svg>
+    ),
     crossHeavy: (
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 8">
             <g stroke="currentColor" strokeWidth="1.5" fill="none" fillRule="evenodd" strokeLinecap="round">
@@ -184,6 +196,17 @@ const sources = {
             </g>
         </svg>
     ),
+    refresh: (
+        <svg viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+            <g fill="none" fillRule="evenodd">
+                <path d="M-6-6h24v24H-6z" />
+                <g stroke="currentColor" strokeLinecap="round" strokeWidth="1.5">
+                    <path d="M10.016 3.02a5.001 5.001 0 0 0-8.607.996m.599 4.995a5.001 5.001 0 0 0 8.57-.999" />
+                    <path d="M1 11V8h3M11 1v3H8" strokeLinejoin="round" />
+                </g>
+            </g>
+        </svg>
+    ),
     circle: (
         <MapIcons.CircleIcon />
     ),
@@ -222,7 +245,7 @@ const sources = {
             </g>
         </svg>
     ),
-    profileMan: (
+    emptyAvatarUpload: (
         <svg width="42" height="42" xmlns="http://www.w3.org/2000/svg">
             <g transform="translate(1 1)" stroke="#D8D8D8" strokeWidth="1.5" fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M13.817 10.489A11.927 11.927 0 0 0 27.11 13.16" /><circle cx="20" cy="14.13" r="7.174" />
@@ -230,10 +253,99 @@ const sources = {
             </g>
         </svg>
     ),
+    profileMan: (
+        <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <circle id="a" cx="40" cy="40" r="40" />
+            </defs>
+            <g fill="none" fillRule="evenodd">
+                <mask id="b" fill="#fff">
+                    <use href="#a" />
+                </mask>
+                <use fill="#EFEFEF" href="#a" />
+                <g opacity=".503" mask="url(#b)" stroke="#525252" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5">
+                    <g transform="translate(20 17)">
+                        <ellipse cx="20.5" cy="11" rx="10.762" ry="10.5" />
+                        <path d="M11.226 5.668c3.367 3.408 8.01 5.333 12.861 5.332 2.433 0 4.84-.483 7.073-1.422M.512 45.5C.512 34.73 9.462 26 20.5 26c11.039 0 19.987 8.73 19.987 19.5" />
+                        <path d="M12.813 27.498V29c0 4.142 3.441 7.5 7.687 7.5s7.688-3.358 7.688-7.5v-1.502" />
+                    </g>
+                </g>
+            </g>
+        </svg>
+    ),
+    hamburger: (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 10">
+            <g stroke="currentColor" strokeWidth="1.5" fill="none" fillRule="evenodd" strokeLinecap="round">
+                <path d="M1 9h10M1 5h10M1 1h10" />
+            </g>
+        </svg>
+    ),
+    search: (
+        <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+            <g
+                stroke="currentColor"
+                transform="translate(-1 -1)"
+                strokeWidth="1.5"
+                fill="none"
+                fillRule="evenodd"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            >
+                <circle transform="rotate(-23.025 7.593 7.592)" cx="7.593" cy="7.592" r="5.371" />
+                <path d="M11.39 11.39l4.166 4.166" />
+            </g>
+        </svg>
+    ),
+    questionMark: (
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path
+                d="M9.1 9.286a.75.75 0 0 1-1.5-.001 4.287 4.287 0 1 1 5.716 4.044 1.018 1.018 0 0 0-.68.96v.744a.75.75 0 0 1-1.5 0v-.744a2.52 2.52 0 0 1 1.68-2.374A2.787 2.787 0 1 0 9.1 9.285zm2.782 10.074a1.19 1.19 0 1 1 0-2.38 1.19 1.19 0 0 1 0 2.38z"
+                fill="#525252"
+            />
+        </svg>
+    ),
+    signedTick: (
+        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12">
+            <g fill="none" fillRule="evenodd">
+                <path fill="#0324FF" d="M6 11.16l-1.171.725-.804-1.118-1.358.222-.316-1.34-1.34-.316.222-1.358-1.118-.804L.84 6 .115 4.829l1.118-.804-.222-1.358 1.34-.316.316-1.34 1.358.222.804-1.118L6 .84 7.171.115l.804 1.118 1.358-.222.316 1.34 1.34.316-.222 1.358 1.118.804L11.16 6l.725 1.171-1.118.804.222 1.358-1.34.316-.316 1.34-1.358-.222-.804 1.118z" />
+                <path stroke="#FFF" strokeLinecap="round" strokeLinejoin="round" d="M4.048 6.281l1.1 1.195 2.828-2.829" />
+            </g>
+        </svg>
+    ),
+    dropPlus: (
+        <svg viewBox="0 0 25 25" xmlns="http://www.w3.org/2000/svg">
+            <g transform="translate(1 1)" fill="none" fillRule="evenodd">
+                <circle fill="#FCFBF9" cx="11.5" cy="11.5" r="11.5" />
+                <path d="M11.5 23C17.851 23 23 17.851 23 11.5S17.851 0 11.5 0 0 5.149 0 11.5C.007 17.848 5.152 22.993 11.5 23zm-6-12.5h4.75a.25.25 0 0 0 .25-.25V5.5a1 1 0 0 1 2 0v4.75c0 .138.112.25.25.25h4.75a1 1 0 0 1 0 2h-4.75a.25.25 0 0 0-.25.25v4.75a1 1 0 0 1-2 0v-4.75a.25.25 0 0 0-.25-.25H5.5a1 1 0 0 1 0-2z" fill="#FF5C00" fillRule="nonzero" />
+            </g>
+        </svg>
+    ),
+    clear: (
+        <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg">
+            <g transform="translate(.25 .25)" fill="none">
+                <circle stroke="#CDCDCD" fill="#CDCDCD" cx="6.75" cy="6.75" r="6.188" />
+                <path d="M4.84 4.84l3.82 3.82m0-3.82L4.84 8.66" stroke="#FFF" />
+            </g>
+        </svg>
+    ),
+    brevetDown: (
+        <svg viewBox="0 0 10 6" xmlns="http://www.w3.org/2000/svg">
+            <path d="M.756 1l4.245 4.245 4.243-4.242" stroke="#CDCDCD" strokeWidth="1.5" fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+    ),
+    x: (
+        <svg viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg">
+            <g stroke="#A3A3A3" strokeWidth="1.5" fill="none" fillRule="evenodd" strokeLinecap="round">
+                <path d="M.757.757l8.486 8.486M9.243.757L.757 9.243" />
+            </g>
+        </svg>
+    ),
 }
 
+export type IconName = $Keys<typeof sources>
+
 type Props = {
-    name: $Keys<typeof sources>,
+    name: IconName,
 }
 
 const SvgIcon = ({ name, ...props }: Props) => React.cloneElement(sources[name], {

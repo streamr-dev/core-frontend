@@ -9,7 +9,7 @@ import moment from 'moment-timezone'
 import cloneDeep from 'lodash/cloneDeep'
 
 import type { ErrorInUi } from '$shared/flowtype/common-types'
-import type { Stream, StreamId, StreamIdList, StreamFieldList, CSVImporterSchema } from '$shared/flowtype/stream-types'
+import type { Stream, StreamId, StreamIdList, StreamFieldList, CSVImporterSchema, StreamStatus } from '$shared/flowtype/stream-types'
 import type { Permission } from '$userpages/flowtype/permission-types'
 import type { Filter } from '$userpages/flowtype/common-types'
 
@@ -255,6 +255,18 @@ export const getStream = (id: StreamId) => (dispatch: Function) => {
         })
 }
 
+export const updateStreamStatuses = (ids: StreamIdList) => (dispatch: Function) => {
+    ids.forEach((id: StreamId) => (
+        services.getStreamStatus(id)
+            .then(({ ok, date }: StreamStatus) => ({
+                id,
+                streamStatus: ok ? 'ok' : 'error',
+                lastData: date,
+            }))
+            .then(handleEntities(streamSchema, dispatch))
+    ))
+}
+
 export const getStreams = () => (dispatch: Function, getState: Function) => {
     dispatch(getStreamsRequest())
 
@@ -265,9 +277,14 @@ export const getStreams = () => (dispatch: Function, getState: Function) => {
     })
 
     return services.getStreams(params)
+        .then((data) => data.map((stream) => ({
+            ...stream,
+            status: 'inactive',
+        })))
         .then(handleEntities(streamsSchema, dispatch))
         .then((ids) => {
             dispatch(getStreamsSuccess(ids))
+            dispatch(updateStreamStatuses(ids))
         })
         .catch((e) => {
             dispatch(getStreamsFailure(e))

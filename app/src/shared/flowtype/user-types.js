@@ -8,7 +8,8 @@ export type User = {
     name: string,
     username: string,
     timezone: string,
-    imageUrl: ?string,
+    imageUrlSmall: string,
+    imageUrlLarge: string,
 }
 
 export type PasswordUpdate = {

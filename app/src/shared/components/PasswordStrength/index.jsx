@@ -8,6 +8,7 @@ type Props = {
     children?: (number) => Node,
     enabled?: boolean,
     value?: string,
+    passwordStrengthUpdate?: (number) => void,
 }
 
 type State = {
@@ -23,8 +24,13 @@ class PasswordStrength extends PureComponent<Props, State> {
         this.measure()
     }
 
-    componentDidUpdate() {
+    componentDidUpdate(prevProps: Props, prevState: State) {
         this.measure()
+        if (prevState.strength !== this.state.strength) {
+            if (this.props.passwordStrengthUpdate) {
+                this.props.passwordStrengthUpdate(this.state.strength)
+            }
+        }
     }
 
     componentWillUnmount() {

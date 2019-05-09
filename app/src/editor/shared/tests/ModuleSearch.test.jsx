@@ -3,7 +3,7 @@ import { shallow } from 'enzyme'
 
 import ModuleSearch from '$editor/canvas/components/ModuleSearch'
 
-describe('ModuleSearch', () => {
+describe.skip('ModuleSearch', () => {
     it('should render an empty list by default', () => {
         const el = shallow(<ModuleSearch />)
         expect(el.find('ModuleMenuCategory')).toHaveLength(0)

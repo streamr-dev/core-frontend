@@ -15,6 +15,7 @@ import styles from './plug.pcss'
 
 type Props = {
     api: any,
+    onValueChange: any,
     canvas: any,
     className?: ?string,
     port: any,
@@ -27,6 +28,7 @@ const Plug = ({
     className,
     port,
     register,
+    onValueChange,
     ...props
 }: Props) => {
     const ref: Ref<HTMLDivElement> = useRef(null)
@@ -78,6 +80,7 @@ const Plug = ({
             />
             <DragSource
                 api={api}
+                onValueChange={onValueChange}
                 className={cx(styles.dragger, styles.dragSource)}
                 port={port}
             />

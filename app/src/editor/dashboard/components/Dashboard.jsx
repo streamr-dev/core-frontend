@@ -47,11 +47,30 @@ const normalizeItemList = (itemList = []) => (
     sortBy(itemList, 'i').map(normalizeLayoutItem)
 )
 
-const normalizeLayout = (targetLayout) => dashboardConfig.layout.sizes.reduce((obj, size) => (
+export const normalizeLayout = (targetLayout) => dashboardConfig.layout.sizes.reduce((obj, size) => (
     Object.assign(obj, {
         [size]: (targetLayout && targetLayout[size]) ? normalizeItemList(targetLayout[size]) : [],
     })
 ), {})
+
+export function generateLayout(dashboard) {
+    return dashboard && zipObject(
+        dashboardConfig.layout.sizes,
+        dashboardConfig.layout.sizes.map((size) => (
+            dashboard.items.map((item) => {
+                if (!item.webcomponent) { return {} }
+                const id = generateItemId(item)
+                const layoutInfo = ((dashboard.layout && dashboard.layout[size]) && dashboard.layout[size].find((l) => l.i === id)) || {}
+                return {
+                    ...dashboardConfig.layout.defaultLayout,
+                    ...dashboardConfig.layout.layoutsBySizeAndModule[size][item.webcomponent],
+                    ...layoutInfo,
+                    i: id,
+                }
+            })
+        )),
+    )
+}
 
 /**
  * Each module on a dashboard is a DashboardItem
@@ -116,6 +135,7 @@ class DashboardItem extends React.Component {
                     onError={this.onError}
                     onLoad={this.onLoad}
                     isActive
+                    isSubscriptionActive
                 />
             </div>
         )
@@ -149,27 +169,6 @@ export default WidthProvider(class DashboardEditor extends React.Component {
                 layout,
             }))
         }
-    }
-
-    generateLayout = () => {
-        const { dashboard } = this.props
-        const layout = dashboard && zipObject(
-            dashboardConfig.layout.sizes,
-            dashboardConfig.layout.sizes.map((size) => (
-                dashboard.items.map((item) => {
-                    if (!item.webcomponent) { return {} }
-                    const id = generateItemId(item)
-                    const layoutInfo = ((dashboard.layout && dashboard.layout[size]) && dashboard.layout[size].find((l) => l.i === id)) || {}
-                    return {
-                        ...dashboardConfig.layout.defaultLayout,
-                        ...dashboardConfig.layout.layoutsBySizeAndModule[size][item.webcomponent],
-                        ...layoutInfo,
-                        i: id,
-                    }
-                })
-            )),
-        )
-        return layout
     }
 
     onLayoutChange = (layout, allLayouts) => {
@@ -210,7 +209,7 @@ export default WidthProvider(class DashboardEditor extends React.Component {
 
         const select = this.context
 
-        const layout = dashboard && dashboard.items && this.generateLayout()
+        const layout = dashboard && dashboard.items && generateLayout(dashboard)
         const items = dashboard && dashboard.items ? sortBy(dashboard.items, ['canvas', 'module']) : []
         const locked = editorLocked || this.state.isFullscreen
         const { breakpoints } = dashboardConfig.layout

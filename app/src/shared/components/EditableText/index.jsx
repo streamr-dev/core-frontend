@@ -92,6 +92,7 @@ const EditableText = ({
                     <Fragment>
                         <TextControl
                             {...props}
+                            autoComplete="off"
                             autoFocus
                             flushHistoryOnBlur
                             onBlur={onBlur}
@@ -101,6 +102,7 @@ const EditableText = ({
                             placeholder={placeholder}
                             revertOnEsc
                             selectAllOnFocus
+                            spellCheck="false"
                             value={children}
                         />
                         <span className={styles.spaceholder}>

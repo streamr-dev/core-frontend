@@ -5,6 +5,8 @@ import { connect } from 'react-redux'
 import { I18n } from 'react-redux-i18n'
 import { push } from 'react-router-redux'
 import cx from 'classnames'
+import { withRouter } from 'react-router-dom'
+import MediaQuery from 'react-responsive'
 
 import type { Stream, StreamId } from '$shared/flowtype/stream-types'
 import type { StoreState } from '$shared/flowtype/store-state'
@@ -27,6 +29,8 @@ import { selectAuthApiKeyId } from '$shared/modules/resourceKey/selectors'
 import TOCPage from '$userpages/components/TOCPage'
 import Toolbar from '$shared/components/Toolbar'
 import routes from '$routes'
+import links from '$shared/../links'
+import breakpoints from '$app/scripts/breakpoints'
 
 import Layout from '../../Layout'
 import InfoView from './InfoView'
@@ -36,6 +40,8 @@ import PreviewView from './PreviewView'
 import HistoryView from './HistoryView'
 
 import styles from './streamShowView.pcss'
+
+const { lg } = breakpoints
 
 type StateProps = {
     editedStream: ?Stream,
@@ -48,6 +54,7 @@ type State = {
 }
 
 type DispatchProps = {
+    createStream: () => Promise<StreamId>,
     getStream: (id: StreamId) => Promise<void>,
     openStream: (id: StreamId) => void,
     getMyStreamPermissions: (id: StreamId) => void,
@@ -65,7 +72,10 @@ type RouterProps = {
         params: {
             id: string
         }
-    }
+    },
+    history: {
+        replace: (string) => void,
+    },
 }
 
 type Props = StateProps & DispatchProps & RouterProps
@@ -82,25 +92,34 @@ export class StreamShowView extends Component<Props, State> {
     }
 
     componentDidMount() {
-        const { id } = this.props.match.params
-        const {
-            getStream,
-            openStream,
-            getMyStreamPermissions,
-            initEditStream,
-            initNewStream,
-        } = this.props
-        this.props.getKeys()
+        this.initStreamShow()
+    }
 
-        if (id) {
-            getStream(id).then(() => {
-                openStream(id)
-                initEditStream()
-            })
-            getMyStreamPermissions(id)
+    initStreamShow() {
+        if (this.props.match.params.id) {
+            this.initStream(this.props.match.params.id)
         } else {
-            initNewStream()
+            this.createStream()
         }
+    }
+
+    initStream = async (id: StreamId) => {
+        const { getStream, openStream, getMyStreamPermissions, initEditStream } = this.props
+
+        this.props.getKeys()
+        getStream(id).then(() => {
+            openStream(id)
+            initEditStream()
+        })
+        getMyStreamPermissions(id)
+    }
+
+    createStream = async () => {
+        const newStreamId = await this.props.createStream()
+
+        if (this.unmounted) { return }
+        this.props.history.replace(`${links.userpages.streamShow}/${newStreamId}`)
+        this.initStream(newStreamId)
     }
 
     onSave = (editedStream: Stream) => {
@@ -150,29 +169,56 @@ export class StreamShowView extends Component<Props, State> {
         return (
             <Layout noHeader noFooter>
                 <div className={styles.streamShowView}>
-                    <Toolbar
-                        altMobileLayout
-                        actions={{
-                            cancel: {
-                                title: I18n.t('userpages.profilePage.toolbar.cancel'),
-                                color: 'link',
-                                outline: true,
-                                onClick: () => {
-                                    cancel()
+                    <MediaQuery minWidth={lg.min}>
+                        <Toolbar
+                            altMobileLayout
+                            actions={{
+                                cancel: {
+                                    title: I18n.t('userpages.profilePage.toolbar.cancel'),
+                                    color: 'link',
+                                    outline: true,
+                                    onClick: () => {
+                                        cancel()
+                                    },
                                 },
-                            },
-                            saveChanges: {
-                                title: I18n.t('userpages.profilePage.toolbar.saveAndExit'),
-                                color: 'primary',
-                                spinner: this.state.saving,
-                                onClick: () => {
-                                    if (editedStream) {
-                                        this.onSave(editedStream)
-                                    }
+                                saveChanges: {
+                                    title: I18n.t('userpages.profilePage.toolbar.saveAndExit'),
+                                    color: 'primary',
+                                    spinner: this.state.saving,
+                                    onClick: () => {
+                                        if (editedStream) {
+                                            this.onSave(editedStream)
+                                        }
+                                    },
                                 },
-                            },
-                        }}
-                    />
+                            }}
+                        />
+                    </MediaQuery>
+                    <MediaQuery maxWidth={lg.min}>
+                        <Toolbar
+                            altMobileLayout
+                            actions={{
+                                cancel: {
+                                    title: I18n.t('userpages.profilePage.toolbar.cancel'),
+                                    color: 'link',
+                                    outline: true,
+                                    onClick: () => {
+                                        cancel()
+                                    },
+                                },
+                                saveChanges: {
+                                    title: I18n.t('userpages.profilePage.toolbar.done'),
+                                    color: 'primary',
+                                    spinner: this.state.saving,
+                                    onClick: () => {
+                                        if (editedStream) {
+                                            this.onSave(editedStream)
+                                        }
+                                    },
+                                },
+                            }}
+                        />
+                    </MediaQuery>
                     <div className={cx('container', styles.containerOverrides)}>
                         <TOCPage title="Set up your Stream">
                             <TOCPage.Section
@@ -229,6 +275,10 @@ const mapStateToProps = (state: StoreState): StateProps => ({
 })
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
+    createStream: () => dispatch(createStream({
+        name: 'Untitled Stream',
+        description: '',
+    })),
     getStream: (id: StreamId) => dispatch(getStream(id)),
     getKeys: () => dispatch(getMyResourceKeys()),
     openStream: (id: StreamId) => dispatch(openStream(id)),
@@ -253,4 +303,4 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     initNewStream: () => dispatch(initNewStream()),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(StreamShowView)
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter((StreamShowView)))

@@ -7,6 +7,7 @@ import { Map as LeafletMap, ImageOverlay, TileLayer, Tooltip, Polyline, type Lat
 import L from 'leaflet'
 import HeatmapLayer from 'react-leaflet-heatmap-layer'
 
+import UiSizeConstraint from '../UiSizeConstraint'
 import CustomMarker from './Marker'
 
 import styles from './Map.pcss'
@@ -29,7 +30,7 @@ export type Marker = {
 export type Skin = 'default' | 'cartoDark'
 
 type Props = {
-    className: string,
+    className?: ?string,
     centerLat: number,
     centerLong: number,
     minZoom: number,
@@ -79,12 +80,12 @@ export default class Map extends React.Component<Props> {
 
         /* eslint-disable-next-line max-len */
         let tileAttribution = '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://cartodb.com/attributions">CartoDB</a>, Streamr'
-        let tileUrl = 'http://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png'
+        let tileUrl = 'http://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png'
 
         if (skin === 'cartoDark') {
             /* eslint-disable-next-line max-len */
             tileAttribution = '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://cartodb.com/attributions">CartoDB</a>, Streamr'
-            tileUrl = 'http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png'
+            tileUrl = 'http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
         }
 
         // https://github.com/facebook/flow/issues/2221
@@ -93,69 +94,71 @@ export default class Map extends React.Component<Props> {
             .values(markers)
 
         return (
-            <div className={cx(className)}>
-                <LeafletMap
-                    center={mapCenter}
-                    zoom={zoom}
-                    className={styles.leafletMap}
-                    minZoom={minZoom}
-                    maxZoom={maxZoom}
-                    crs={isImageMap ? L.CRS.Simple : L.CRS.EPSG3857}
-                >
-                    {isHeatmap && (
-                        <HeatmapLayer
-                            fitBoundsOnLoad={false}
-                            fitBoundsOnUpdate={false}
-                            points={markerArray}
-                            longitudeExtractor={(m: Marker) => m.long}
-                            latitudeExtractor={(m: Marker) => m.lat}
-                            intensityExtractor={(m: Marker) => m.value}
-                            radius={radius}
-                            max={maxIntensity}
-                        />
-                    )}
-                    {!isImageMap && (
-                        <TileLayer
-                            attribution={tileAttribution}
-                            url={tileUrl}
-                        />
-                    )}
-                    {isImageMap && !!imageUrl && !!imageBounds && (
-                        <ImageOverlay
-                            url={imageUrl}
-                            bounds={imageBounds}
-                        />
-                    )}
-                    {!isHeatmap && markerArray.map((marker) => {
-                        const pos = [marker.lat, marker.long]
-                        const tracePoints = marker.previousPositions && marker.previousPositions
-                            .map((p) => [p.lat, p.long])
+            <UiSizeConstraint minWidth={200} minHeight={200}>
+                <div className={cx(className)}>
+                    <LeafletMap
+                        center={mapCenter}
+                        zoom={zoom}
+                        className={styles.leafletMap}
+                        minZoom={minZoom}
+                        maxZoom={maxZoom}
+                        crs={isImageMap ? L.CRS.Simple : L.CRS.EPSG3857}
+                    >
+                        {isHeatmap && (
+                            <HeatmapLayer
+                                fitBoundsOnLoad={false}
+                                fitBoundsOnUpdate={false}
+                                points={markerArray}
+                                longitudeExtractor={(m: Marker) => m.long}
+                                latitudeExtractor={(m: Marker) => m.lat}
+                                intensityExtractor={(m: Marker) => m.value}
+                                radius={radius}
+                                max={maxIntensity}
+                            />
+                        )}
+                        {!isImageMap && (
+                            <TileLayer
+                                attribution={tileAttribution}
+                                url={tileUrl}
+                            />
+                        )}
+                        {isImageMap && !!imageUrl && !!imageBounds && (
+                            <ImageOverlay
+                                url={imageUrl}
+                                bounds={imageBounds}
+                            />
+                        )}
+                        {!isHeatmap && markerArray.map((marker) => {
+                            const pos = [marker.lat, marker.long]
+                            const tracePoints = marker.previousPositions && marker.previousPositions
+                                .map((p) => [p.lat, p.long])
 
-                        return (
-                            <React.Fragment key={marker.id}>
-                                <CustomMarker
-                                    key={marker.id}
-                                    position={pos}
-                                    rotation={directionalMarkers ? marker.rotation : 0}
-                                    icon={markerIcon}
-                                    color={markerColor}
-                                >
-                                    <Tooltip direction="top">
-                                        {marker.id}
-                                    </Tooltip>
-                                </CustomMarker>
-                                {tracePoints && (
-                                    <Polyline
-                                        positions={tracePoints}
-                                        color={traceColor}
-                                        weigth={traceWidth}
-                                    />
-                                )}
-                            </React.Fragment>
-                        )
-                    })}
-                </LeafletMap>
-            </div>
+                            return (
+                                <React.Fragment key={marker.id}>
+                                    <CustomMarker
+                                        key={marker.id}
+                                        position={pos}
+                                        rotation={directionalMarkers ? marker.rotation : 0}
+                                        icon={markerIcon}
+                                        color={markerColor}
+                                    >
+                                        <Tooltip direction="top">
+                                            {marker.id}
+                                        </Tooltip>
+                                    </CustomMarker>
+                                    {tracePoints && (
+                                        <Polyline
+                                            positions={tracePoints}
+                                            color={traceColor}
+                                            weigth={traceWidth}
+                                        />
+                                    )}
+                                </React.Fragment>
+                            )
+                        })}
+                    </LeafletMap>
+                </div>
+            </UiSizeConstraint>
         )
     }
 }

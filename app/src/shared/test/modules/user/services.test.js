@@ -100,4 +100,64 @@ describe('user - services', () => {
             await services.deleteUserAccount()
         })
     })
+
+    describe('postPasswordUpdate', () => {
+        it('should POST password update to the api', async (done) => {
+            const passwordUpdate = {
+                confirmNewPassword: 'Testtesttest234!',
+                currentPassword: 'Testtesttest123!',
+                strongEnoughPassword: true,
+                updating: false,
+            }
+
+            const userInputs = ['tester2@streamr.com', 'Tester Two']
+
+            moxios.wait(() => {
+                const request = moxios.requests.mostRecent()
+                request.respondWith({
+                    status: 204,
+                })
+
+                assert.equal(request.config.method, 'post')
+                assert.equal(request.config.url, '/users/me/changePassword')
+                assert.equal(request.headers['Content-Type'], 'application/x-www-form-urlencoded')
+                assert.equal(request.headers['X-Requested-With'], 'XMLHttpRequest')
+                done()
+            })
+
+            const result = await services.postPasswordUpdate(passwordUpdate, userInputs)
+            assert.deepStrictEqual(result, '')
+        })
+    })
+
+    describe('updateCurrentUserImage', () => {
+        it('should POST the image to the api and PUT the user to the API', async () => {
+            const data = {
+                id: '1',
+                name: 'tester',
+                email: 'test@tester.test',
+                imageUrlSmall: 'testSmall.jpg',
+                imageUrlLarge: 'testLarge.jpg',
+            }
+
+            const imageToUpload = new Blob(['0101'], {
+                type: 'image/png',
+            })
+
+            moxios.wait(() => {
+                const request = moxios.requests.mostRecent()
+                request.respondWith({
+                    status: 200,
+                    response: data,
+                })
+
+                assert.equal(request.config.method, 'post')
+                assert.equal(request.config.url, '/users/me/image')
+                assert.equal(request.headers['Content-Type'], 'multipart/form-data')
+            })
+
+            const result = await services.uploadProfileAvatar(imageToUpload)
+            assert.deepStrictEqual(result, data)
+        })
+    })
 })

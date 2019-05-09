@@ -12,6 +12,8 @@ import WalletIconPng from '$shared/assets/images/wallet_error.png'
 import WalletIconPng2x from '$shared/assets/images/wallet_error@2x.png'
 import TxFailedPng2x from '$shared/assets/images/tx_failed@2x.png'
 import TxFailedPng from '$shared/assets/images/tx_failed.png'
+import ImageUploadPng from '$shared/assets/images/imgupload.png'
+import ImageUploadPng2x from '$shared/assets/images/imgupload@2x.png'
 
 const sources = {
     wallet: (
@@ -46,6 +48,13 @@ const sources = {
         <img
             src={TxFailedPng}
             srcSet={`${TxFailedPng2x} 2x`}
+            alt=""
+        />
+    ),
+    imageUpload: (
+        <img
+            src={ImageUploadPng}
+            srcSet={`${ImageUploadPng2x} 2x`}
             alt=""
         />
     ),

@@ -2,14 +2,17 @@
 
 import React from 'react'
 import startCase from 'lodash/startCase'
+import debounce from 'lodash/debounce'
 import cx from 'classnames'
-import Draggable from 'react-draggable'
 
 import type { Stream } from '$shared/flowtype/stream-types'
 import SvgIcon from '$shared/components/SvgIcon'
+import { type Ref } from '$shared/flowtype/common-types'
 
 import { getModuleCategories, getStreams } from '../services'
 import { moduleSearch } from '../state'
+import CanvasStyles from '$editor/canvas/components/Canvas.pcss'
+import SearchPanel, { SearchRow } from '$editor/shared/components/SearchPanel'
 
 import styles from './ModuleSearch.pcss'
 
@@ -25,7 +28,7 @@ const categoryMapping = {
 
 type MenuCategoryProps = {
     category: CategoryType,
-    onItemSelect: (id: string) => void,
+    addModule: (id: number, x: ?number, y: ?number, streamId: ?string) => void,
 }
 
 type MenuCategoryState = {
@@ -42,12 +45,12 @@ export class ModuleMenuCategory extends React.PureComponent<MenuCategoryProps, M
     }
 
     render() {
-        const { category, onItemSelect } = this.props
+        const { category, addModule } = this.props
         const { isExpanded } = this.state
         return (
             <React.Fragment>
                 {/* eslint-disable-next-line */}
-                <div
+                <SearchRow
                     className={cx(styles.Category, {
                         [styles.active]: !!isExpanded,
                     })}
@@ -55,20 +58,55 @@ export class ModuleMenuCategory extends React.PureComponent<MenuCategoryProps, M
                     onClick={() => this.toggle()}
                 >
                     {category.name}
-                </div>
+                </SearchRow>
                 {isExpanded && category.modules.map((m) => (
-                    <ModuleMenuItem key={m.id} module={m} onSelect={onItemSelect} />
+                    <ModuleMenuItem key={m.id} module={m} addModule={addModule} />
                 ))}
             </React.Fragment>
         )
     }
 }
 
-const ModuleMenuItem = ({ module, onSelect }) => (
-    /* eslint-disable-next-line */
-    <div className={styles.ModuleItem} role="option" onClick={() => onSelect(module.id)}>
+const onDragStart = (e: any, moduleId: number, moduleName: string, streamId?: string) => {
+    e.stopPropagation()
+    const dragImage = document.querySelector('#dragElement')
+    if (dragImage) {
+        const textElement = dragImage.querySelector('#dragModuleName')
+        if (textElement) {
+            textElement.textContent = moduleName
+        }
+        e.dataTransfer.setDragImage(dragImage, 12, 12)
+    }
+
+    e.dataTransfer.setData('streamr/module', moduleId)
+    if (streamId) {
+        e.dataTransfer.setData('streamr/stream', streamId)
+    }
+}
+
+const onDrop = (e: any, addModule: (number, number, number, ?string) => void) => {
+    const moduleId = e.dataTransfer.getData('streamr/module')
+    const streamId = e.dataTransfer.getData('streamr/stream')
+
+    if (moduleId) {
+        // Get click position relative to the canvas element
+        const rect = e.currentTarget.getBoundingClientRect()
+        const x = e.clientX - rect.left - 20 // TODO: where is this 20px offset coming
+        const y = e.clientY - rect.top - 20 // TODO: where is this 20px offset coming
+
+        addModule(moduleId, x, y, streamId)
+    }
+}
+
+const ModuleMenuItem = ({ module, addModule }) => (
+    <SearchRow
+        draggable
+        onDragStart={(e) => { onDragStart(e, module.id, module.name) }}
+        onClick={() => addModule(module.id)}
+        className={styles.ModuleItem}
+    >
         {startCase(module.name)}
-    </div>
+    </SearchRow>
 )
 
 type Props = {
@@ -82,8 +120,9 @@ type State = {
     allModules: Array<Object>,
     matchingModules: Array<Object>,
     matchingStreams: Array<Stream>,
-    isExpanded: boolean,
 }
+
+const STREAM_MODULE_ID = 147
 
 export class ModuleSearch extends React.PureComponent<Props, State> {
     state = {
@@ -91,20 +130,46 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
         allModules: [],
         matchingModules: [],
         matchingStreams: [],
-        isExpanded: true,
     }
 
     unmounted = false
     input = null
+    currentSearch: string = ''
+    selfRef: Ref<HTMLDivElement> = React.createRef()
 
     componentDidMount() {
-        window.addEventListener('keydown', this.onKeyDown)
+        this.addOrRemoveDropListener(true)
         this.load()
+
+        if (this.input && this.props.isOpen) {
+            this.input.focus()
+        }
     }
 
     componentWillUnmount() {
         this.unmounted = true
-        window.removeEventListener('keydown', this.onKeyDown)
+        this.addOrRemoveDropListener(false)
+    }
+
+    addOrRemoveDropListener= (add: boolean) => {
+        const canvasElement = document.querySelector(`.${CanvasStyles.Modules}`)
+        if (canvasElement) {
+            if (add) {
+                canvasElement.addEventListener('dragover', this.onDragOver)
+                canvasElement.addEventListener('drop', this.onDrop)
+            } else {
+                canvasElement.removeEventListener('dragover', this.onDragOver)
+                canvasElement.removeEventListener('drop', this.onDrop)
+            }
+        }
+    }
+
+    onDragOver = (e: DragEvent) => {
+        e.preventDefault()
+    }
+
+    onDrop = (e: DragEvent) => {
+        onDrop(e, this.addModule)
     }
 
     async load() {
@@ -115,78 +180,80 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
         })
     }
 
-    onChange = async (event: any) => {
-        const { value } = event.currentTarget
-        this.setState({
-            search: value,
-        })
-
-        // Search modules
-        const matchingModules = this.getMappedModuleTree(value)
-
-        // Search streams
+    searchStreams = debounce(async (value) => {
+        // remove 'stream' term from search
+        // ensures we can pseudo 'filter results to streams' using "stream searchterm"
+        const streamSearchString = value.replace(/(\s+|^)stream(\s+|$)/g, ' ').trim()
         const params = {
             id: '',
-            search: value,
+            search: streamSearchString,
             sortBy: 'lastUpdated',
             order: 'desc',
             uiChannel: false,
             public: true,
         }
-        const streams = await getStreams(params)
+
+        const matchingStreams = await getStreams(params)
 
         if (this.unmounted) { return }
+        // throw away results if no longer current
+        if (this.currentSearch.trim() !== value.trim()) { return }
+
+        this.setState({ matchingStreams })
+    }, 500)
+
+    onChange = async (value: string) => {
+        const trimmedValue = value.trim()
+        this.currentSearch = trimmedValue
+
+        // Search modules
+        const matchingModules = this.getMappedModuleTree(trimmedValue)
         this.setState({
+            matchingStreams: [],
             matchingModules,
-            matchingStreams: streams,
+            search: value,
         })
+
+        this.searchStreams(trimmedValue)
     }
 
-    toggleMinimize = () => {
-        this.setState(({ isExpanded }) => ({
-            isExpanded: !isExpanded,
-        }))
-    }
+    addModule = (id: number, x: ?number, y: ?number, streamId: ?string) => {
+        let posX = x
+        let posY = y
 
-    onSelect = (id: string) => {
-        this.props.open(false)
-        this.props.addModule({ id })
-    }
+        // Get default position if not provided
+        if (posX == null || posY == null) {
+            const modulePos = this.getPositionForClickInsert()
+            posX = modulePos.x
+            posY = modulePos.y
+        }
 
-    onSelectStream = (id: string) => {
-        this.props.open(false)
-        const configuration = {
-            params: [
-                {
-                    name: 'stream',
-                    value: id,
+        let configuration = {
+            layout: {
+                position: {
+                    left: `${posX}px`,
+                    top: `${posY}px`,
                 },
-            ],
+            },
         }
-        this.props.addModule({
-            // 147 is the id of Stream module
-            id: 147,
-            configuration,
-        })
-    }
 
-    onKeyDown = (event: any) => {
-        if (this.props.isOpen && event.key === 'Escape') {
-            this.props.open(false)
-        }
-    }
-
-    onInputRef = (el: any) => {
-        this.input = el
-    }
-
-    componentDidUpdate(prevProps: Props) {
-        // focus input on open
-        if (this.props.isOpen && !prevProps.isOpen) {
-            if (this.input) {
-                this.input.focus()
+        // Provide stream id for the Stream module
+        if (streamId) {
+            configuration = {
+                ...configuration,
+                params: [
+                    {
+                        name: 'stream',
+                        value: streamId,
+                    },
+                ],
             }
         }
+
+        this.props.addModule({
+            id,
+            configuration,
+        })
     }
 
     getMappedModuleTree = (search: string = '') => {
@@ -212,11 +279,27 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
         return a.path ? a.path.localeCompare(b.path) : 0
     }
 
-    renderMenu = () => {
-        if (!this.state.isExpanded) {
-            return null
+    getPositionForClickInsert = () => {
+        const canvasElement = document.querySelector(`.${CanvasStyles.Modules}`)
+
+        if (this.selfRef.current == null || canvasElement == null) {
+            return {
+                x: 0,
+                y: 0,
+            }
         }
 
+        const selfRect = this.selfRef.current.getBoundingClientRect()
+        const canvasRect = canvasElement.getBoundingClientRect()
+
+        // Align module to the top right corner of ModuleSearch with a 32px offset
+        return {
+            x: (selfRect.right - canvasRect.left - 20) + 32,
+            y: selfRect.top - canvasRect.top - 20,
+        }
+    }
+
+    renderMenu = () => {
         const modules = this.getMappedModuleTree()
 
         // Form category tree
@@ -237,9 +320,11 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
 
         // $FlowFixMe "Missing type annotation for U"
         return categories.map((category) => (
-            <React.Fragment key={category.name}>
-                <ModuleMenuCategory category={category} onItemSelect={this.onSelect} />
-            </React.Fragment>
+            <ModuleMenuCategory
+                key={category.name}
+                category={category}
+                addModule={this.addModule}
+            />
         ))
     }
 
@@ -248,39 +333,37 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
         return (
             <React.Fragment>
                 {matchingModules.length > 0 && (
-                    <div className={styles.SearchCategory}>Modules</div>
+                    <SearchRow className={styles.SearchCategory}>Modules</SearchRow>
                 )}
                 {matchingModules.map((m) => (
                     /* TODO: follow the disabled jsx-a11y recommendations below to add keyboard support */
                     /* eslint-disable-next-line jsx-a11y/click-events-have-key-events */
-                    <div
-                        className={styles.ModuleItem}
-                        role="option"
-                        aria-selected="false"
+                    <SearchRow
                         key={m.id}
-                        onClick={() => this.onSelect(m.id)}
-                        tabIndex="0"
+                        className={cx(styles.ModuleItem, styles.WithCategory)}
+                        draggable
+                        onDragStart={(e) => { onDragStart(e, m.id, m.name) }}
+                        onClick={() => this.addModule(m.id)}
                     >
-                        {startCase(m.name)}
+                        <span className={styles.ModuleName}>{startCase(m.name)}</span>
                         <span className={styles.ModuleCategory}>{m.path}</span>
-                    </div>
+                    </SearchRow>
                 ))}
                 {matchingStreams.length > 0 && (
-                    <div className={styles.SearchCategory}>Streams</div>
+                    <SearchRow className={styles.SearchCategory}>Streams</SearchRow>
                 )}
                 {matchingStreams.map((stream) => (
                     /* eslint-disable-next-line jsx-a11y/click-events-have-key-events */
-                    <div
-                        className={styles.StreamItem}
-                        role="option"
-                        aria-selected="false"
+                    <SearchRow
                         key={stream.id}
-                        onClick={() => this.onSelectStream(stream.id)}
-                        tabIndex="0"
+                        className={styles.StreamItem}
+                        draggable
+                        onDragStart={(e) => { onDragStart(e, STREAM_MODULE_ID, stream.name, stream.id) }}
+                        onClick={() => this.addModule(STREAM_MODULE_ID, null, null, stream.id)}
                     >
                         {stream.name}
                         <div className={styles.Description}>{stream.description || 'No description'}</div>
-                    </div>
+                    </SearchRow>
                 ))}
             </React.Fragment>
         )
@@ -288,36 +371,29 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
 
     render() {
         const { open, isOpen } = this.props
-        const { search, isExpanded } = this.state
+        const { search } = this.state
+        const isSearching = !!search.trim()
         return (
             <React.Fragment>
-                {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
-                <div className={styles.Overlay} onClick={() => open(false)} hidden={!isOpen} />
-                <Draggable
-                    handle={`.${styles.dragHandle}`}
+                <SearchPanel
+                    placeholder="Search for modules and streams"
+                    className={styles.ModuleSearch}
+                    bounds={`.${CanvasStyles.Modules}`}
+                    onChange={this.onChange}
+                    isOpen={isOpen}
+                    open={open}
+                    panelRef={this.selfRef}
                 >
-                    <div className={styles.ModuleSearch} hidden={!isOpen}>
-                        <div className={cx(styles.Header, styles.dragHandle)}>
-                            <button className={styles.minimize} onClick={() => this.toggleMinimize()}>
-                                {isExpanded ?
-                                    <SvgIcon name="caretUp" /> :
-                                    <SvgIcon name="caretDown" />
-                                }
-                            </button>
-                            <button className={styles.close} onClick={() => open(false)}>
-                                <SvgIcon name="crossHeavy" />
-                            </button>
-                        </div>
-                        <div className={styles.Input}>
-                            <input ref={this.onInputRef} placeholder="Search for modules and streams" value={search} onChange={this.onChange} />
-                        </div>
-                        <div role="listbox" className={styles.Content}>
-                            {(search && search.length > 0) ?
-                                this.renderSearchResults() :
-                                this.renderMenu()}
-                        </div>
-                    </div>
-                </Draggable>
+                    {isSearching ?
+                        this.renderSearchResults() :
+                        this.renderMenu()
+                    }
+                </SearchPanel>
+                <div className={styles.dragElement} id="dragElement">
+                    <SvgIcon className={styles.dragImage} name="dropPlus" />
+                    <div className={styles.dropText}>Drop to create</div>
+                    <div className={styles.dragModuleName} id="dragModuleName" />
+                </div>
             </React.Fragment>
         )
     }

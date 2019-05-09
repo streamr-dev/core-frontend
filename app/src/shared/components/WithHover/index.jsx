@@ -21,7 +21,10 @@ export function withHover(WrappedComponent) {
 
         render() {
             return (
-                <div onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
+                <div
+                    onMouseEnter={this.onMouseEnter}
+                    onMouseLeave={this.onMouseLeave}
+                >
                     <WrappedComponent isHovered={this.state.isHovered} {...this.props} />
                 </div>
             )

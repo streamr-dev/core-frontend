@@ -17,7 +17,7 @@ const GitRevisionPlugin = require('git-revision-webpack-plugin')
 const dotenv = require('./scripts/dotenv')
 
 const loadedDotenv = !process.env.NO_DOTENV ? dotenv() : []
-const analyze = !!process.env.ANALYZE
+const analyze = !!process.env.BUNDLE_ANALYSIS
 
 const isProduction = require('./scripts/isProduction')
 
@@ -194,9 +194,9 @@ module.exports = {
                 'src/marketplace/**/*.*',
                 'src/shared/**/*.*',
                 'src/routes/**/*.*',
-                process.env.USERPAGES === 'on' && 'src/userpages/**/*.*',
-                process.env.USERPAGES === 'on' && 'src/editor/**/*.*',
-                process.env.DOCS === 'on' && 'src/docs/**/*.*',
+                'src/userpages/**/*.*',
+                'src/editor/**/*.*',
+                'src/docs/**/*.*',
             ].filter(Boolean),
             globOptions: {
                 ignore: [
@@ -239,6 +239,13 @@ module.exports = {
         progress: true,
         port: process.env.PORT || 3333,
         publicPath,
+    },
+    // automatically creates a vendor chunk & also
+    // seems to prevent out of memory errors during dev ??
+    optimization: {
+        splitChunks: {
+            chunks: 'all',
+        },
     },
     resolve: {
         extensions: ['.js', '.jsx', '.json'],

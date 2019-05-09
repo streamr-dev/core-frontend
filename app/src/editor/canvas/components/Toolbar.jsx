@@ -16,15 +16,18 @@ import WithCalendar from '$shared/components/WithCalendar'
 import dateFormatter from '$utils/dateFormatter'
 import EditableText from '$shared/components/EditableText'
 import UseState from '$shared/components/UseState'
-import { RunTabs, RunStates } from '../state'
+import { RunTabs } from '../state'
 import Toolbar from '$editor/shared/components/Toolbar'
 
 import ShareDialog from './ShareDialog'
 import CanvasSearch from './CanvasSearch'
+import * as RunController from './CanvasController/Run'
 
 import styles from './Toolbar.pcss'
 
 export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends React.PureComponent {
+    static contextType = RunController.Context
+
     state = {
         canvasSearchIsOpen: false,
         runButtonDropdownOpen: false,
@@ -76,14 +79,18 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
             canvasExit,
             newCanvas,
             setSpeed,
-            isWaiting,
         } = this.props
 
-        if (!canvas) { return null }
+        if (!canvas) {
+            return (
+                <div className={cx(className, styles.CanvasToolbar)} />
+            )
+        }
 
+        const runController = this.context
         const { runButtonDropdownOpen, canvasSearchIsOpen } = this.state
-        const isRunning = canvas.state === RunStates.Running
-        const canEdit = !isWaiting && !isRunning && !canvas.adhoc
+        const { isRunning, isActive, isPending } = runController
+        const canEdit = !isActive && !canvas.adhoc
         const { settings = {} } = canvas
         const { editorState = {} } = settings
         return (
@@ -158,12 +165,12 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                             <div>
                                 <R.ButtonGroup
                                     className={cx(styles.RunButtonGroup, {
-                                        [styles.RunButtonStopped]: !isRunning && !canvas.adhoc,
-                                        [styles.RunButtonRunning]: !!isRunning || canvas.adhoc,
+                                        [styles.RunButtonStopped]: !(isActive || canvas.adhoc),
+                                        [styles.RunButtonRunning]: isActive || canvas.adhoc,
                                     })}
                                 >
                                     <R.Button
-                                        disabled={isWaiting}
+                                        disabled={!!isPending}
                                         onClick={() => {
                                             if (isRunning) {
                                                 return canvasStop()
@@ -176,8 +183,8 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                         className={styles.RunButton}
                                     >
                                         {((() => {
-                                            if (isRunning) { return 'Stop' }
-                                            if (canvas.adhoc && !isWaiting) { return 'Exit' }
+                                            if (isActive) { return 'Stop' }
+                                            if (canvas.adhoc && !isActive) { return 'Clear' }
                                             if (editorState.runTab === RunTabs.realtime) { return 'Start' }
                                             return 'Run'
                                         })())}
