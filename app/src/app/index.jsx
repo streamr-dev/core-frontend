@@ -3,8 +3,9 @@
 import '$shared/assets/stylesheets'
 
 import React from 'react'
-import { Route as RouterRoute, Switch, Redirect } from 'react-router-dom'
+import { Route as RouterRoute, Switch, Redirect, type Location } from 'react-router-dom'
 import { ConnectedRouter } from 'react-router-redux'
+import qs from 'query-string'
 
 // Marketplace
 import ProductPage from '$mp/containers/ProductPage'
@@ -92,6 +93,10 @@ const Route = withErrorBoundary(ErrorPageView)(RouterRoute)
 
 const { marketplace, userpages, docs, editor } = links
 
+const forwardTo = (routeFn: Function) => ({ location: { search } }: Location) => (
+    <Redirect to={routeFn(qs.parse(search))} />
+)
+
 const AuthenticationRouter = () => ([
     <Route exact path={routes.login()} component={LoginPage} key="LoginPage" />,
     <Route exact path={routes.logout()} component={LogoutPage} key="LogoutPage" />,
@@ -100,8 +105,8 @@ const AuthenticationRouter = () => ([
     <Route path={routes.resetPassword()} component={ResetPasswordPage} key="ResetPasswordPage" />,
     <Route exact path={routes.register()} component={RegisterPage} key="RegisterPage" />,
     <Redirect from="/login/auth" to={routes.login()} key="LoginRedirect" />,
-    <Redirect from="/register/register" to={routes.register()} key="RegisterRedirect" />,
-    <Redirect from="/register/resetPassword" to={routes.resetPassword()} key="ResetPasswordRedirect" />,
+    <Route exact path="/register/register" key="RegisterRedirect" render={forwardTo(routes.register)} />,
+    <Route exact path="/register/resetPassword" key="ResetPasswordRedirect" render={forwardTo(routes.resetPassword)} />,
     <Redirect from="/register/forgotPassword" to={routes.forgotPassword()} key="ForgotPasswordRedirect" />,
 ])
 
