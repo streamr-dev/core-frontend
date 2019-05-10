@@ -215,6 +215,9 @@ msgstr "Edit stream"
 msgid "userpages##streams##actions##copyId"
 msgstr "Copy ID"
 
+msgid "userpages##streams##actions##idCopied"
+msgstr "Stream ID copied"
+
 msgid "userpages##streams##actions##copySnippet"
 msgstr "Copy Snippet"
 
@@ -223,6 +226,12 @@ msgstr "Share"
 
 msgid "userpages##streams##actions##refresh"
 msgstr "Refresh"
+
+msgid "userpages##streams##actions##refreshSuccess"
+msgstr "Stream refreshed"
+
+msgid "userpages##streams##actions##refreshError"
+msgstr "Stream refreshed failed"
 
 msgid "userpages##streams##actions##delete"
 msgstr "Delete"

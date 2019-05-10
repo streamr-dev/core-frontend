@@ -255,15 +255,19 @@ export const getStream = (id: StreamId) => (dispatch: Function) => {
         })
 }
 
+export const updateStreamStatus = (id: StreamId) => (dispatch: Function) => (
+    services.getStreamStatus(id)
+        .then(({ ok, date }: StreamStatus) => ({
+            id,
+            streamStatus: ok ? 'ok' : 'error',
+            lastData: date,
+        }))
+        .then(handleEntities(streamSchema, dispatch))
+)
+
 export const updateStreamStatuses = (ids: StreamIdList) => (dispatch: Function) => {
     ids.forEach((id: StreamId) => (
-        services.getStreamStatus(id)
-            .then(({ ok, date }: StreamStatus) => ({
-                id,
-                streamStatus: ok ? 'ok' : 'error',
-                lastData: date,
-            }))
-            .then(handleEntities(streamSchema, dispatch))
+        dispatch(updateStreamStatus(id))
     ))
 }
 
@@ -302,7 +306,7 @@ export const getStreamStatus = (id: StreamId) => (dispatch: Function) => {
         streamStatus: 'inactive',
         lastData: null,
     })
-    dispatch(updateStreamStatuses([id]))
+    return dispatch(updateStreamStatus(id))
 }
 
 export const getMyStreamPermissions = (id: StreamId) => (dispatch: Function, getState: Function) => {
