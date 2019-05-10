@@ -76,7 +76,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                 color: 'danger',
             },
             centerButtons: true,
-            dontShowAgain: true,
+            dontShowAgain: false,
         })
 
         if (confirmed) {

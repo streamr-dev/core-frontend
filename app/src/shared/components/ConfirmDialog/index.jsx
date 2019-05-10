@@ -74,7 +74,7 @@ const ConfirmDialog = (props: Props) => {
         },
         save: {
             title: I18n.t('modal.common.ok'),
-            onClick: onAccept,
+            onClick: (event) => onAccept(event, checked),
             color: 'primary',
             ...acceptButtonProps,
         },

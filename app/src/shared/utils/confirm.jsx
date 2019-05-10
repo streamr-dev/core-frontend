@@ -25,7 +25,7 @@ const confirmDialog = (name: string, props: Properties): Promise<boolean> => new
     const divTarget = document.createElement('div')
 
     render(<ConfirmDialog
-        onAccept={(dontShow) => {
+        onAccept={(event, dontShow) => {
             // Store "Don't show again selection"
             if (dontShowAgain && storage && dontShow) {
                 const dialogPrefs = JSON.parse(storage.getItem(CONFIRM_DIALOG_KEY) || '{}') || {}

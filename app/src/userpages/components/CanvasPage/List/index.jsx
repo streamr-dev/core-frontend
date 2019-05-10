@@ -117,7 +117,7 @@ class CanvasList extends Component<Props, State> {
                 color: 'danger',
             },
             centerButtons: true,
-            dontShowAgain: true,
+            dontShowAgain: false,
         })
 
         if (confirmed) {
