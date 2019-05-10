@@ -105,9 +105,9 @@ const AuthenticationRouter = () => ([
     <Route path={routes.resetPassword()} component={ResetPasswordPage} key="ResetPasswordPage" />,
     <Route exact path={routes.register()} component={RegisterPage} key="RegisterPage" />,
     <Redirect from="/login/auth" to={routes.login()} key="LoginRedirect" />,
-    <Redirect from="/register/forgotPassword" to={routes.forgotPassword()} key="ForgotPasswordRedirect" />,
     <Route exact path="/register/register" key="RegisterRedirect" render={forwardTo(routes.register)} />,
     <Route exact path="/register/resetPassword" key="ResetPasswordRedirect" render={forwardTo(routes.resetPassword)} />,
+    <Redirect from="/register/forgotPassword" to={routes.forgotPassword()} key="ForgotPasswordRedirect" />,
 ])
 
 const MarketplaceRouter = () => ([
