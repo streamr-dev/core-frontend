@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 import styles from '../profilePage.pcss'
 
 import type { IntegrationKeyId, IntegrationKeyList } from '$shared/flowtype/integration-key-types'
-import { createIntegrationKey, deleteIntegrationKey, fetchIntegrationKeys } from '$shared/modules/integrationKey/actions'
+import { createIntegrationKey, deleteIntegrationKey, fetchIntegrationKeys, editIntegrationKey } from '$shared/modules/integrationKey/actions'
 import type { StoreState } from '$shared/flowtype/store-state'
 import IntegrationKeyHandlerSegment from './IntegrationKeyHandlerSegment'
 import { selectPrivateKeys, selectIntegrationKeysError } from '$shared/modules/integrationKey/selectors'
@@ -19,8 +19,9 @@ type StateProps = {
 }
 
 type DispatchProps = {
-    deleteIntegrationKey: (id: IntegrationKeyId) => void,
+    deleteIntegrationKey: (keyId: IntegrationKeyId) => Promise<void>,
     createIntegrationKey: (name: string, privateKey: Address) => Promise<void>,
+    editIntegrationKey: (keyId: IntegrationKeyId, keyName: string) => Promise<void>,
     getIntegrationKeys: () => void
 }
 
@@ -32,11 +33,11 @@ export class IntegrationKeyHandler extends Component<Props> {
         this.props.getIntegrationKeys()
     }
 
-    onNew = (name: string, privateKey: string): Promise<void> => this.props.createIntegrationKey(name, privateKey)
+    onNew = (keyName: string, privateKey: string): Promise<void> => this.props.createIntegrationKey(keyName, privateKey)
 
-    onDelete = (id: IntegrationKeyId) => {
-        this.props.deleteIntegrationKey(id)
-    }
+    onDelete = (keyId: IntegrationKeyId): Promise<void> => this.props.deleteIntegrationKey(keyId)
+
+    onEdit = (keyId: IntegrationKeyId, keyName: string): Promise<void> => this.props.editIntegrationKey(keyId, keyName)
 
     render() {
         return (
@@ -46,6 +47,7 @@ export class IntegrationKeyHandler extends Component<Props> {
                     integrationKeys={this.props.integrationKeys}
                     onNew={this.onNew}
                     onDelete={this.onDelete}
+                    onEdit={this.onEdit}
                     hideValues
                     createWithValue
                 />
@@ -71,13 +73,12 @@ export const mapStateToProps = (state: StoreState): StateProps => ({
 })
 
 export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
-    deleteIntegrationKey(id: IntegrationKeyId) {
-        dispatch(deleteIntegrationKey(id))
-    },
-    createIntegrationKey: (name: string, privateKey: Address): Promise<void> => dispatch(createIntegrationKey(name, privateKey)),
+    deleteIntegrationKey: (keyId: IntegrationKeyId): Promise<void> => dispatch(deleteIntegrationKey(keyId)),
+    createIntegrationKey: (keyName: string, privateKey: Address): Promise<void> => dispatch(createIntegrationKey(keyName, privateKey)),
     getIntegrationKeys() {
         dispatch(fetchIntegrationKeys())
     },
+    editIntegrationKey: (keyId: IntegrationKeyId, keyName: string) => dispatch(editIntegrationKey(keyId, keyName)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(IntegrationKeyHandler)

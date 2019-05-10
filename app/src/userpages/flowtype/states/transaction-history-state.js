@@ -9,5 +9,4 @@ export type TransactionHistoryState = {
     fetching: boolean,
     error: ?ErrorInUi,
     offset: number,
-    pageSize: number,
 }

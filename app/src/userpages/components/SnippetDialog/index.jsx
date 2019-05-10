@@ -17,7 +17,6 @@ import styles from './snippetDialog.pcss'
 type Language = $Values<typeof ProgrammingLanguages>
 
 type GivenProps = {
-    name: string,
     snippets: {
         [Language]: string,
     },
@@ -82,7 +81,7 @@ export class SnippetDialog extends Component<Props, State> {
     }
 
     render() {
-        const { name, snippets, onClose } = this.props
+        const { snippets, onClose } = this.props
         const snippetLanguages = Object.keys(snippets)
         const selectedLanguage = this.state.selectedLanguage || (snippetLanguages.length > 0 && snippetLanguages[0])
 
@@ -90,9 +89,7 @@ export class SnippetDialog extends Component<Props, State> {
             <Modal>
                 <Dialog
                     contentClassName={styles.content}
-                    title={I18n.t('modal.copySnippet.defaultTitle', {
-                        name,
-                    })}
+                    title={I18n.t('modal.copySnippet.defaultTitle')}
                     onClose={onClose}
                     showCloseIcon
                 >

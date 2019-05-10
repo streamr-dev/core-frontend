@@ -10,7 +10,7 @@ import type { ResourcePermission } from '$shared/flowtype/resource-key-types'
 import TextInput from '$shared/components/TextInput'
 import Meatball from '$shared/components/Meatball'
 import DropdownActions from '$shared/components/DropdownActions'
-import { leftColumn, rightColumn } from '$userpages/components/StreamPage/constants'
+import Dropdown from '$shared/components/Dropdown'
 
 import KeyFieldEditor from './KeyFieldEditor'
 import styles from './keyField.pcss'
@@ -24,12 +24,13 @@ type Props = {
     onSave?: (?string, ?string, ?ResourcePermission) => Promise<void>,
     allowDelete?: boolean,
     disableDelete?: boolean,
-    onDelete?: () => void,
+    onDelete?: () => Promise<void>,
     showPermissionType?: boolean,
     permission?: ResourcePermission,
 }
 
 type State = {
+    waiting: boolean,
     hidden: boolean,
     editing: boolean,
     menuOpen: boolean,
@@ -42,6 +43,7 @@ class KeyField extends React.Component<Props, State> {
         super(props)
 
         this.state = {
+            waiting: false,
             hidden: !!props.hideValue,
             editing: false,
             menuOpen: false,
@@ -66,15 +68,6 @@ class KeyField extends React.Component<Props, State> {
         copy(this.props.value)
     }
 
-    onEdit = () => {
-        if (this.props.allowEdit) {
-            this.setState({
-                editing: true,
-                menuOpen: false,
-            })
-        }
-    }
-
     onCancel = () => {
         this.setState({
             editing: false,
@@ -84,12 +77,19 @@ class KeyField extends React.Component<Props, State> {
 
     onSave = (keyName: ?string, value: ?string, permission: ?ResourcePermission) => {
         const { allowEdit, onSave } = this.props
+
         if (allowEdit) {
             if (onSave) {
+                this.setState({
+                    waiting: true,
+                    error: null,
+                })
                 onSave(keyName, value, permission)
                     .then(() => {
                         if (!this.unmounted) {
                             this.setState({
+                                permission,
+                                waiting: false,
                                 editing: false,
                                 menuOpen: false,
                                 error: null,
@@ -99,12 +99,14 @@ class KeyField extends React.Component<Props, State> {
                         if (!this.unmounted) {
                             this.setState({
                                 error: error.message,
+                                waiting: false,
                             })
                         }
                     })
             } else {
                 this.setState({
                     editing: false,
+                    waiting: false,
                     menuOpen: false,
                     error: null,
                 })
@@ -125,29 +127,48 @@ class KeyField extends React.Component<Props, State> {
         })
     }
 
+    onEdit = () => {
+        this.setState({
+            editing: true,
+        })
+    }
+
+    onPermissionChange = (permissionValue: string) => {
+        const { value, keyName } = this.props
+        // Value needs to be checked to satisfy Flow
+        const permission: ?ResourcePermission = ['read', 'write', 'share'].find((p) => p === permissionValue)
+        if (permission) {
+            this.setState({
+                permission,
+            }, () => {
+                this.onSave(keyName, value, permission)
+            })
+        }
+    }
+
     render = () => {
         const {
             hideValue,
             keyName,
             value,
             className,
-            allowEdit,
             allowDelete,
+            allowEdit,
             disableDelete,
             showPermissionType,
         } = this.props
         const {
+            waiting,
             hidden,
             editing,
             menuOpen,
             error,
             permission,
         } = this.state
-        const leftCol = showPermissionType ? leftColumn : { xs: 12 }
 
         return !editing ? (
             <Row>
-                <Col {...leftCol}>
+                <Col md={12} lg={11}>
                     <div
                         className={cx(styles.container, className, {
                             [styles.withMenu]: menuOpen,
@@ -181,14 +202,25 @@ class KeyField extends React.Component<Props, State> {
                             </DropdownActions>
                         </div>
                     </div>
-                </Col>
-                {!showPermissionType && (
-                    <Col {...rightColumn}>
-                        <div className={styles.permissionDropdown}>
-                            {permission}
+                    {showPermissionType && (
+                        <div className={styles.permissionDropdownContainer}>
+                            <Dropdown
+                                title=""
+                                onChange={this.onPermissionChange}
+                                className={styles.permissionDropdown}
+                                selectedItem={permission}
+                            >
+                                <Dropdown.Item key="read" value="read" onClick={(val) => this.onPermissionChange(val.toString())}>
+                                    Read
+                                </Dropdown.Item>
+                                <Dropdown.Item key="write" value="write" onClick={(val) => this.onPermissionChange(val.toString())}>
+                                    Write
+                                </Dropdown.Item>
+                            </Dropdown>
                         </div>
-                    </Col>
-                )}
+                    )}
+                </Col>
+                <Col md={12} lg={1} className={styles.offsetColOverride} />
             </Row>
         ) : (
             <KeyFieldEditor
@@ -196,6 +228,7 @@ class KeyField extends React.Component<Props, State> {
                 value={value}
                 onCancel={this.onCancel}
                 onSave={this.onSave}
+                waiting={waiting}
                 error={error}
                 showPermissionType={showPermissionType}
                 permission={permission}
