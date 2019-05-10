@@ -5,6 +5,7 @@ import '$shared/assets/stylesheets'
 import React from 'react'
 import { Route as RouterRoute, Switch, Redirect, type Location } from 'react-router-dom'
 import { ConnectedRouter } from 'react-router-redux'
+import qs from 'query-string'
 
 // Marketplace
 import ProductPage from '$mp/containers/ProductPage'
@@ -92,7 +93,9 @@ const Route = withErrorBoundary(ErrorPageView)(RouterRoute)
 
 const { marketplace, userpages, docs, editor } = links
 
-const forwardTo = (routeFn: Function) => ({ match: { params } }: Location) => <Redirect to={routeFn(params)} />
+const forwardTo = (routeFn: Function) => ({ location: { search } }: Location) => (
+    <Redirect to={routeFn(qs.parse(search))} />
+)
 
 const AuthenticationRouter = () => ([
     <Route exact path={routes.login()} component={LoginPage} key="LoginPage" />,
