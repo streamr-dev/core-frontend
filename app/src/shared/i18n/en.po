@@ -179,6 +179,9 @@ msgstr "Access your wallet"
 msgid "modal##unlockWallet##waiting"
 msgstr "Connecting..."
 
+msgid "modal##confirm##dontShowAgain"
+msgstr "Don't show this again"
+
 msgid "shared##errors##unlockWallet"
 msgstr "Please unlock your wallet"
 
