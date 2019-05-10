@@ -87,9 +87,15 @@ const ConfirmDialog = (props: Props) => {
                 onClose={actions.cancel.onClick}
                 actions={actions}
                 renderActions={() => (
-                    <div className={styles.footer}>
+                    <div className={cx({
+                        [styles.footer]: !!dontShowAgain,
+                    })}
+                    >
                         {!!dontShowAgain && (
-                            <div className={styles.downShowAgain}>
+                            <div className={cx({
+                                [styles.downShowAgain]: !!dontShowAgain,
+                            })}
+                            >
                                 <FormGroup check className={styles.formGroup}>
                                     <Label check className={styles.label}>
                                         <Checkbox

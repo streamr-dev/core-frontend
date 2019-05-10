@@ -110,9 +110,7 @@ class CanvasList extends Component<Props, State> {
 
     confirmDeleteCanvas = async (canvas: Canvas) => {
         const confirmed = await confirmDialog('canvas', {
-            title: I18n.t('userpages.canvases.delete.confirmTitle', {
-                canvas: canvas.name,
-            }),
+            title: I18n.t('userpages.canvases.delete.confirmTitle'),
             message: I18n.t('userpages.canvases.delete.confirmMessage'),
             acceptButton: {
                 title: I18n.t('userpages.canvases.delete.confirmButton'),
