@@ -201,3 +201,6 @@ msgstr "Create identity failed"
 
 msgid "shared##errors##identityExists"
 msgstr "Identity exists"
+
+msgid "general##docs"
+msgstr "Docs"

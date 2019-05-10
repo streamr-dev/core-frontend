@@ -177,7 +177,15 @@ const DashboardLoader = withRouter(withErrorBoundary(ErrorComponentView)(class D
         this.unmounted = true
     }
 
-    init() {
+    async init() {
+        if (!this.props.match.params.id) {
+            // if no id, create new
+            const newDashboard = await services.create()
+            if (this.unmounted) { return }
+            this.props.history.replace(`${links.editor.dashboardEditor}/${newDashboard.id}`)
+            return
+        }
+
         const dashboard = this.context.state
         const currentId = dashboard && dashboard.id
         const dashboardId = currentId || this.props.match.params.id

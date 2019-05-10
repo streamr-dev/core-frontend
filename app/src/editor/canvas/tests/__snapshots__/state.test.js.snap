@@ -5,7 +5,9 @@ Object {
   "modules": Array [],
   "name": "Untitled Canvas",
   "settings": Object {
-    "runTab": "#tab-realtime",
+    "editorState": Object {
+      "runTab": "#tab-realtime",
+    },
   },
   "state": "STOPPED",
 }

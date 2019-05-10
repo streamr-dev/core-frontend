@@ -21,7 +21,7 @@ type StateProps = {
     deletingUserAccount: boolean,
 }
 type DispatchProps = {
-    deleteAccount: () => Promise<null>,
+    deleteAccount: () => Promise<void>,
 }
 
 type Props = StateProps & DispatchProps
@@ -53,14 +53,7 @@ class DeleteAccount extends React.Component<Props, State> {
         }
     }
 
-    onSave = () => (
-        this.props.deleteAccount()
-            .then(() => {
-                this.onClose()
-            }, (error) => {
-                alert(error.message) // eslint-disable-line no-alert
-            })
-    )
+    onSave = () => this.props.deleteAccount()
 
     render() {
         const { modalOpen } = this.state

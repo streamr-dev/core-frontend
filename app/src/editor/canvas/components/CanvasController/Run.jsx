@@ -7,12 +7,13 @@ import get from 'lodash/get'
 
 import useIsMountedRef from '$shared/utils/useIsMountedRef'
 import * as SubscriptionStatus from '$editor/shared/components/SubscriptionStatus'
+import usePending from '$editor/shared/hooks/usePending'
+
 import * as services from '../../services'
 import * as CanvasState from '../../state'
 
 import useCanvasStateChangeEffect from '../../hooks/useCanvasStateChangeEffect'
 import useCanvasUpdater from './useCanvasUpdater'
-import usePending from './usePending'
 
 export const RunControllerContext = React.createContext()
 
@@ -42,6 +43,11 @@ function useRunController(canvas = EMPTY) {
     const isHistorical = CanvasState.isHistoricalModeSelected(canvas)
     // true if canvas exists and is starting or already running
     const isActive = canvas !== EMPTY && (isStarting || isRunning)
+
+    const isEditable = !isActive &&
+        !canvas.adhoc &&
+        canvas.permissions &&
+        canvas.permissions.some((p) => p.operation === 'share')
 
     const start = useCallback(async (canvas, options) => {
         if (isHistorical && !canvas.adhoc) {
@@ -123,10 +129,11 @@ function useRunController(canvas = EMPTY) {
         isActive,
         isRunning,
         isHistorical,
+        isEditable,
         start,
         stop,
         exit,
-    }), [canvas, isPending, isStarting, isActive, isRunning, isHistorical, isStopping, start, stop, exit])
+    }), [canvas, isPending, isStarting, isActive, isRunning, isHistorical, isEditable, isStopping, start, stop, exit])
 }
 
 export default function RunControllerProvider({ children, canvas }) {

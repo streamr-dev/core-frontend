@@ -10,7 +10,9 @@ Object {
   "name": Any<String>,
   "serialized": false,
   "settings": Object {
-    "runTab": "#tab-realtime",
+    "editorState": Object {
+      "runTab": "#tab-realtime",
+    },
   },
   "startedById": null,
   "state": "STOPPED",

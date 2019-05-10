@@ -80,12 +80,12 @@ export default class Map extends React.Component<Props> {
 
         /* eslint-disable-next-line max-len */
         let tileAttribution = '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://cartodb.com/attributions">CartoDB</a>, Streamr'
-        let tileUrl = 'http://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png'
+        let tileUrl = 'http://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png'
 
         if (skin === 'cartoDark') {
             /* eslint-disable-next-line max-len */
             tileAttribution = '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://cartodb.com/attributions">CartoDB</a>, Streamr'
-            tileUrl = 'http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png'
+            tileUrl = 'http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
         }
 
         // https://github.com/facebook/flow/issues/2221

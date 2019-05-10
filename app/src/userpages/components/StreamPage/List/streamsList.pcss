@@ -1,0 +1,148 @@
+.streamRow {
+  cursor: pointer;
+}
+
+.statusColumn {
+  text-align: center;
+  min-width: initial;
+}
+
+.statusColumn > * {
+  vertical-align: middle;
+}
+
+.menuColumn {
+  min-width: 0 !important;
+  max-width: 36px !important;
+}
+
+.streamsTable {
+  :global(.table-responsive) {
+    min-height: 500px;
+  }
+
+  :global(.table) {
+    margin-top: 0;
+  }
+
+  .tabletStreamRow {
+    height: 80px;
+    vertical-align: top;
+    padding: 16px;
+  }
+}
+
+.tabletStreamRowContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  flex: 1;
+}
+
+.tabletStatusStreamIcon {
+  position: relative;
+  width: 12px;
+  height: 12px;
+  margin-left: 8px;
+  top: 2px;
+}
+
+.lastUpdatedStreamTablet {
+  color: #A3A3A3;
+  font-size: 12px;
+  text-align: right;
+  letter-spacing: 0;
+  position: relative;
+}
+
+.lastUpdatedStreamMobile {
+  display: none;
+}
+
+.signedTick {
+  margin-left: 8px;
+  margin-top: -2px;
+}
+
+@media (--md-down) {
+  .createStreamButton {
+    display: none;
+  }
+
+  :global(html) .streamListTabletContainer {
+    width: 100%;
+    max-width: none;
+    padding-right: 16px;
+    padding-left: 16px;
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  .streamsTable {
+    margin-top: 50px;
+    margin-bottom: 4em;
+
+    :global(.table-responsive) {
+      min-height: 500px;
+      border-top: 1px solid #CDCDCD;
+    }
+  }
+
+  .tabletStreamName {
+    display: block;
+    font-weight: var(--semiBold);
+    font-size: 16px;
+    line-height: 20px;
+  }
+
+  .tabletStreamDescription {
+    display: block;
+    font-size: 12px;
+    color: #525252;
+    line-height: 20px;
+    margin-bottom: 0;
+  }
+}
+
+@media (--sm-down) {
+  .tabletStatusStreamIcon {
+    top: 3px;
+  }
+
+  .lastUpdatedStreamTablet {
+    display: none;
+  }
+
+  .tabletStreamDescription {
+    display: none;
+  }
+
+  .lastUpdatedStreamMobile {
+    display: inline-block;
+    font-size: 12px;
+    color: #525252;
+    line-height: 20px;
+    margin-bottom: 0;
+  }
+
+  :global(html) .streamListTabletContainer {
+    padding: 0;
+  }
+
+  .streamsTable {
+    margin-top: 0;
+
+    :global(.table-responsive) {
+      border-top: none;
+    }
+
+    .tabletStreamRow {
+      height: 72px;
+      padding: 16px 24px;
+
+      > div {
+        line-height: 16px;
+      }
+    }
+  }
+}

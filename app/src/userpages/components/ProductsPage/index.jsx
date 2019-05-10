@@ -46,7 +46,10 @@ export type DispatchProps = {
 type Props = StateProps & DispatchProps
 
 const CreateProductButton = () => (
-    <Button color="primary">
+    <Button
+        color="primary"
+        className={styles.createProductButton}
+    >
         <Link to={links.marketplace.createProduct}>
             <Translate value="userpages.products.createProduct" />
         </Link>
@@ -174,7 +177,7 @@ class ProductsPage extends Component<Props> {
                 <Helmet>
                     <title>{I18n.t('userpages.title.products')}</title>
                 </Helmet>
-                <Container>
+                <Container className={styles.corepageContentContainer}>
                     {!fetching && products && !products.length && (
                         <NoProductsView
                             hasFilter={!!filter && (!!filter.search || !!filter.key)}

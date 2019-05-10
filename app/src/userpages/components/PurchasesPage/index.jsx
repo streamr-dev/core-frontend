@@ -128,7 +128,7 @@ class PurchasesPage extends Component<Props> {
                 <Helmet>
                     <title>{I18n.t('userpages.title.purchases')}</title>
                 </Helmet>
-                <Container>
+                <Container className={styles.corepageContentContainer} >
                     {!fetching && purchases && !purchases.length && (
                         <NoPurchasesView
                             hasFilter={!!filter && (!!filter.search || !!filter.key)}

@@ -1,10 +1,10 @@
 import { useCallback } from 'react'
-
 import merge from 'lodash/merge'
+
 import * as sharedServices from '$editor/shared/services'
+import usePending from '$editor/shared/hooks/usePending'
 
 import * as CanvasState from '../../state'
-import usePending from './usePending'
 
 export default function useModuleLoadCallback() {
     const { wrap } = usePending('LOAD MODULE')

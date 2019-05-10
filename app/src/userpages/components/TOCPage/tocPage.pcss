@@ -40,7 +40,7 @@
 
 @media (--md-down) {
   .tocList {
-    margin: 12px 4em 1em 0;
+    margin: 12px 2em 1em 0;
     top: 1.5em;
   }
 
@@ -57,6 +57,10 @@
 
 @media (--md-down) {
   .hideTablet {
-    display: none;
+    a {
+      color: #C4C4C4 !important;
+      pointer-events: none;
+      cursor: default;
+    }
   }
 }

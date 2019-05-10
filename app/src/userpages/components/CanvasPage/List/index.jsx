@@ -66,7 +66,10 @@ type State = {
 }
 
 const CreateCanvasButton = () => (
-    <Button color="primary">
+    <Button
+        color="primary"
+        className={styles.createCanvasButton}
+    >
         <Link to={links.editor.canvasEditor}>
             <Translate value="userpages.canvases.createCanvas" />
         </Link>
@@ -255,7 +258,7 @@ class CanvasList extends Component<Props, State> {
                         onClose={this.onCloseShareDialog}
                     />
                 )}
-                <Container>
+                <Container className={styles.corepageContentContainer}>
                     <Helmet>
                         <title>{I18n.t('userpages.canvases.title')}</title>
                     </Helmet>

@@ -135,6 +135,7 @@ class DashboardItem extends React.Component {
                     onError={this.onError}
                     onLoad={this.onLoad}
                     isActive
+                    isSubscriptionActive
                 />
             </div>
         )

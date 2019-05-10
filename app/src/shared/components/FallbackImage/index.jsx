@@ -10,7 +10,7 @@ import styles from './fallbackImage.pcss'
 
 type PlaceholderProps = {
     alt: string,
-    className?: string,
+    className?: ?string,
 }
 
 const DefaultImagePlaceholder = ({ alt, className }: PlaceholderProps) => (
@@ -27,7 +27,7 @@ const DefaultImagePlaceholder = ({ alt, className }: PlaceholderProps) => (
 type Props = {
     src: string,
     alt: string,
-    className?: string,
+    className?: ?string,
     placeholder?: Node,
 }
 
