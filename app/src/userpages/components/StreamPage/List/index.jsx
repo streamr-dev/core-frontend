@@ -17,7 +17,7 @@ import type { Stream, StreamId } from '$shared/flowtype/stream-types'
 
 import SvgIcon from '$shared/components/SvgIcon'
 import links from '$shared/../links'
-import { getStreams, updateFilter, deleteStream } from '$userpages/modules/userPageStreams/actions'
+import { getStreams, updateFilter, deleteStream, getStreamStatus } from '$userpages/modules/userPageStreams/actions'
 import { selectStreams, selectFetching, selectFilter } from '$userpages/modules/userPageStreams/selectors'
 import { getFilters } from '$userpages/utils/constants'
 import Table from '$shared/components/Table'
@@ -35,10 +35,11 @@ import type { User } from '$shared/flowtype/user-types'
 import { selectUserData } from '$shared/modules/user/selectors'
 import ShareDialog from '$userpages/components/ShareDialog'
 import SnippetDialog from '$userpages/components/SnippetDialog/index'
-import { ProgrammingLanguages } from '$shared/utils/constants'
+import { ProgrammingLanguages, NotificationIcon } from '$shared/utils/constants'
 import NoStreamsView from './NoStreams'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
 import breakpoints from '$app/scripts/breakpoints'
+import Notification from '$shared/utils/Notification'
 
 import styles from './streamsList.pcss'
 
@@ -73,6 +74,7 @@ export type DispatchProps = {
     deleteStream: (StreamId) => void,
     copyToClipboard: (string) => void,
     getStreamPermissions: (id: StreamId) => void,
+    refreshStreamStatus: (id: StreamId) => Promise<void>,
 }
 
 type Props = StateProps & DispatchProps
@@ -242,12 +244,35 @@ class StreamList extends Component<Props, State> {
         this.props.showStream(id)
     }
 
+    onRefreshStatus = (id: StreamId) => {
+        this.props.refreshStreamStatus(id)
+            .then(() => {
+                Notification.push({
+                    title: I18n.t('userpages.streams.actions.refreshSuccess'),
+                    icon: NotificationIcon.CHECKMARK,
+                })
+            }, () => {
+                Notification.push({
+                    title: I18n.t('userpages.streams.actions.refreshError'),
+                    icon: NotificationIcon.ERROR,
+                })
+            })
+    }
+
+    onCopyId = (id: StreamId) => {
+        this.props.copyToClipboard(id)
+
+        Notification.push({
+            title: I18n.t('userpages.streams.actions.idCopied'),
+            icon: NotificationIcon.CHECKMARK,
+        })
+    }
+
     render() {
         const {
             fetching,
             streams,
             showStream,
-            copyToClipboard,
             filter,
             user,
         } = this.props
@@ -337,7 +362,7 @@ class StreamList extends Component<Props, State> {
                                                     <Table.Td noWrap title={stream.description}>{stream.description}</Table.Td>
                                                     <Table.Td noWrap>{moment.tz(stream.lastUpdated, timezone).fromNow()}</Table.Td>
                                                     <Table.Td>
-                                                        {Object.prototype.hasOwnProperty.call(stream, 'lastData') && (
+                                                        {stream.lastData && (
                                                             moment.tz(stream.lastData, timezone).fromNow()
                                                         )}
                                                     </Table.Td>
@@ -372,7 +397,7 @@ class StreamList extends Component<Props, State> {
                                                             <DropdownActions.Item onClick={() => showStream(stream.id)}>
                                                                 <Translate value="userpages.streams.actions.editStream" />
                                                             </DropdownActions.Item>
-                                                            <DropdownActions.Item onClick={() => copyToClipboard(stream.id)}>
+                                                            <DropdownActions.Item onClick={() => this.onCopyId(stream.id)}>
                                                                 <Translate value="userpages.streams.actions.copyId" />
                                                             </DropdownActions.Item>
                                                             <DropdownActions.Item onClick={() => this.onOpenSnippetDialog(stream)}>
@@ -381,7 +406,7 @@ class StreamList extends Component<Props, State> {
                                                             <DropdownActions.Item onClick={() => this.onOpenShareDialog(stream)}>
                                                                 <Translate value="userpages.streams.actions.share" />
                                                             </DropdownActions.Item>
-                                                            <DropdownActions.Item>
+                                                            <DropdownActions.Item onClick={() => this.onRefreshStatus(stream.id)}>
                                                                 <Translate value="userpages.streams.actions.refresh" />
                                                             </DropdownActions.Item>
                                                             <DropdownActions.Item
@@ -468,6 +493,7 @@ const mapDispatchToProps = (dispatch) => ({
     deleteStream: (id: StreamId) => dispatch(deleteStream(id)),
     copyToClipboard: (text) => copy(text),
     getStreamPermissions: (id: StreamId) => dispatch(getResourcePermissions('STREAM', id)),
+    refreshStreamStatus: (id: StreamId) => dispatch(getStreamStatus(id)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(StreamList)
