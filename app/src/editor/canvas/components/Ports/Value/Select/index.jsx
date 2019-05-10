@@ -25,7 +25,7 @@ const Select = ({
     const optionMap = useMemo(() => (
         options.reduce((memo, { name, value }) => ({
             ...memo,
-            [value]: name,
+            [value || '']: name,
         }), {})
     ), [options])
 
