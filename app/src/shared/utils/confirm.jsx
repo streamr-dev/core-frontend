@@ -14,7 +14,7 @@ const confirmDialog = (name: string, props: Properties): Promise<boolean> => new
     const { dontShowAgain, ...rest } = props
 
     if (!!dontShowAgain && storage) {
-        const dialogPrefs = JSON.parse(storage.getItem(CONFIRM_DIALOG_KEY) || '{}')
+        const dialogPrefs = JSON.parse(storage.getItem(CONFIRM_DIALOG_KEY) || '{}') || {}
         if (dialogPrefs[name]) {
             resolve(true)
             return
@@ -28,7 +28,7 @@ const confirmDialog = (name: string, props: Properties): Promise<boolean> => new
         onAccept={(dontShow) => {
             // Store "Don't show again selection"
             if (dontShowAgain && storage && dontShow) {
-                const dialogPrefs = JSON.parse(storage.getItem(CONFIRM_DIALOG_KEY) || '{}')
+                const dialogPrefs = JSON.parse(storage.getItem(CONFIRM_DIALOG_KEY) || '{}') || {}
                 dialogPrefs[name] = true
                 storage.setItem(CONFIRM_DIALOG_KEY, JSON.stringify(dialogPrefs))
             }
