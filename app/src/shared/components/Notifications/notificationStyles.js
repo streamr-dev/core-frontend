@@ -15,7 +15,7 @@ export default {
         info: {
             width: 'auto',
             borderTop: 0,
-            padding: '16px',
+            padding: '12px 16px',
             backgroundColor: 'white',
             color: '#323232',
             WebkitBoxShadow: '0 0 5px rgba(0, 0, 0, 0.1)',
