@@ -1,7 +1,6 @@
 import React from 'react'
 import cx from 'classnames'
 import Draggable from 'react-draggable'
-import { toFlatArray } from 'react-children-addons'
 import { ResizableBox } from 'react-resizable'
 import SvgIcon from '$shared/components/SvgIcon'
 
@@ -39,8 +38,7 @@ export class SearchPanel extends React.PureComponent {
         maxWidth: 600,
         defaultHeight: DEFAULT_HEIGHT,
         maxHeight: DEFAULT_HEIGHT * 2,
-        minHeightMinimized: 91,
-        itemHeight: 52,
+        minHeight: 91,
         scrollPadding: 0,
         defaultPosX: 32,
         defaultPosY: (window.innerHeight / 2) - (DEFAULT_HEIGHT / 2) - 80, // center vertically (take header into account)
@@ -51,8 +49,6 @@ export class SearchPanel extends React.PureComponent {
         isExpanded: true,
         width: this.props.defaultWidth,
         height: this.props.defaultHeight,
-        /* eslint-disable-next-line react/no-unused-state */
-        heightBeforeMinimize: 0,
         posX: this.props.defaultPosX,
         posY: this.props.defaultPosY,
     }
@@ -75,7 +71,6 @@ export class SearchPanel extends React.PureComponent {
 
         this.setState({
             search: value,
-            isExpanded: true,
         })
     }
 
@@ -108,38 +103,24 @@ export class SearchPanel extends React.PureComponent {
     }
 
     calculateHeight = () => {
-        const {
-            children,
-            minHeightMinimized,
-            itemHeight,
-            maxHeight,
-            scrollPadding,
-        } = this.props
-        const { isExpanded, search, height } = this.state
+        const { minHeight, maxHeight, scrollPadding } = this.props
+        const { search, height, isExpanded } = this.state
         const { current: currentContent } = this.contentRef
 
-        if (!isExpanded) {
-            return minHeightMinimized
-        }
+        const itemsHeight = currentContent ? currentContent.offsetHeight : minHeight
 
-        // use actual height child count may not be accurate if children render fragments
-        const itemsHeight = currentContent
-            ? currentContent.offsetHeight
-            : toFlatArray(children).length * itemHeight
+        let requiredHeight = minHeight + (itemsHeight ? scrollPadding + itemsHeight : 0)
 
-        let requiredHeight = minHeightMinimized + (itemsHeight ? scrollPadding + itemsHeight : 0)
-
-        if (search.trim() === '') {
+        if (isExpanded && search.trim() === '') {
             requiredHeight = height /* use user-set height if 'browsing' */
         }
 
-        return Math.min(height, Math.min(Math.max(requiredHeight, minHeightMinimized), maxHeight))
+        return Math.min(height, Math.min(Math.max(requiredHeight, minHeight), maxHeight))
     }
 
     toggleMinimize = () => {
-        this.setState(({ isExpanded, height, heightBeforeMinimize }) => ({
+        this.setState(({ isExpanded }) => ({
             isExpanded: !isExpanded,
-            heightBeforeMinimize: isExpanded ? height : heightBeforeMinimize,
         }))
     }
 
@@ -176,7 +157,7 @@ export class SearchPanel extends React.PureComponent {
             bounds,
             placeholder,
             minWidth,
-            minHeightMinimized,
+            minHeight,
             maxWidth,
             maxHeight,
             children,
@@ -184,6 +165,7 @@ export class SearchPanel extends React.PureComponent {
             scrollPadding,
             dragDisabled,
             headerHidden,
+            renderDefault,
         } = this.props
         const {
             search,
@@ -222,7 +204,7 @@ export class SearchPanel extends React.PureComponent {
                             width={width}
                             height={height}
                             axis={isSearching ? 'x' : 'both' /* lock y when searching */}
-                            minConstraints={[minWidth, minHeightMinimized]}
+                            minConstraints={[minWidth, minHeight]}
                             maxConstraints={[maxWidth, maxHeight]}
                             onResize={(e, data) => {
                                 this.setState((state) => ({
@@ -276,7 +258,14 @@ export class SearchPanel extends React.PureComponent {
                                     }}
                                 >
                                     <div ref={this.contentRef} role="listbox" className={styles.Content}>
-                                        {children}
+                                        {(() => {
+                                            // empty content if not searching and not expanded
+                                            if (!isSearching && !isExpanded) { return null }
+                                            // show default if not searching and expanded
+                                            if (!isSearching && isExpanded && renderDefault) { return renderDefault() }
+                                            // show children otherwise
+                                            return children
+                                        })()}
                                     </div>
                                 </div>
                             </div>

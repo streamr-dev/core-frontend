@@ -47,7 +47,7 @@ export default connect((state) => ({
                     open={this.props.open}
                     dragDisabled
                     headerHidden
-                    minHeightMinimized={352}
+                    minHeight={352}
                     maxHeight={352}
                     defaultHeight={352}
                 >
