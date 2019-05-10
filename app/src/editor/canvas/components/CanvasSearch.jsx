@@ -8,7 +8,7 @@ import links from '../../../links'
 import { getCanvases } from '$userpages/modules/canvas/actions'
 import { selectCanvases } from '$userpages/modules/canvas/selectors'
 
-import searchStyles from './ModuleSearch.pcss'
+import SearchPanel, { SearchRow } from '$editor/shared/components/SearchPanel'
 import styles from './CanvasSearch.pcss'
 
 export default connect((state) => ({
@@ -22,45 +22,10 @@ export default connect((state) => ({
 
     componentDidMount() {
         this.props.getCanvases()
-        window.addEventListener('keydown', this.onKeyDown)
     }
 
-    componentWillUnmount() {
-        window.removeEventListener('keydown', this.onKeyDown)
-    }
-
-    onKeyDown = (event) => {
-        if (this.props.isOpen && event.key === 'Escape') {
-            this.props.open(false)
-        }
-    }
-
-    onChange = (event) => {
-        const { value } = event.currentTarget
-        this.setState({ search: value })
-    }
-
-    onInputRef = (el) => {
-        this.input = el
-    }
-
-    static getDerivedStateFromProps(props, state) {
-        // clear search on close
-        if (!props.isOpen && state.search) {
-            return {
-                search: '',
-            }
-        }
-        return null
-    }
-
-    componentDidUpdate(prevProps) {
-        // focus input on open
-        if (this.props.isOpen && !prevProps.isOpen) {
-            if (this.input) {
-                this.input.focus()
-            }
-        }
+    onChange = (search) => {
+        this.setState({ search })
     }
 
     render() {
@@ -71,25 +36,28 @@ export default connect((state) => ({
         return (
             <React.Fragment>
                 {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
-                <div className={searchStyles.Overlay} onClick={() => this.props.open(false)} hidden={!this.props.isOpen} />
-                <div className={cx(searchStyles.ModuleSearch, styles.CanvasSearch)} hidden={!this.props.isOpen}>
-                    <div className={searchStyles.Input}>
-                        <input
-                            placeholder="Search or select a canvas"
-                            ref={this.onInputRef}
-                            value={this.state.search}
-                            onChange={this.onChange}
-                        />
-                    </div>
-                    <div role="listbox" className={cx(searchStyles.Content, styles.Content)}>
-                        {canvases.map((canvas) => (
-                            <Link key={canvas.id} to={`${links.editor.canvasEditor}/${canvas.id}`}>
+                <div className={styles.Overlay} onClick={() => this.props.open(false)} hidden={!this.props.isOpen} />
+                <SearchPanel
+                    placeholder="Search or select a canvas"
+                    className={styles.CanvasSearch}
+                    onChange={this.onChange}
+                    isOpen={this.props.isOpen}
+                    open={this.props.open}
+                    dragDisabled
+                    headerHidden
+                    minHeightMinimized={352}
+                    maxHeight={352}
+                    defaultHeight={352}
+                >
+                    {canvases.map((canvas) => (
+                        <SearchRow key={canvas.id} className={styles.CanvasSearchRow}>
+                            <Link to={`${links.editor.canvasEditor}/${canvas.id}`}>
                                 <span className={cx(styles.canvasState, styles[canvas.state.toLowerCase()])} />
                                 {startCase(canvas.name)}
                             </Link>
-                        ))}
-                    </div>
-                </div>
+                        </SearchRow>
+                    ))}
+                </SearchPanel>
             </React.Fragment>
         )
     }

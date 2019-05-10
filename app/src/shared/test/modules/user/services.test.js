@@ -85,6 +85,22 @@ describe('user - services', () => {
         })
     })
 
+    describe('deleteCurrentUser', () => {
+        it('deletes the current user account', async () => {
+            moxios.wait(() => {
+                const request = moxios.requests.mostRecent()
+                request.respondWith({
+                    status: 204,
+                })
+
+                assert.equal(request.config.method, 'delete')
+                assert.equal(request.config.url, '/users/me')
+            })
+
+            await services.deleteUserAccount()
+        })
+    })
+
     describe('postPasswordUpdate', () => {
         it('should POST password update to the api', async (done) => {
             const passwordUpdate = {
@@ -100,7 +116,6 @@ describe('user - services', () => {
                 const request = moxios.requests.mostRecent()
                 request.respondWith({
                     status: 204,
-                    response: '',
                 })
 
                 assert.equal(request.config.method, 'post')

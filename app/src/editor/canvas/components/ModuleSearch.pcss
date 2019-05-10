@@ -1,224 +1,19 @@
 .ModuleSearch {
-  position: absolute;
-  left: 32px;
-  top: calc(50% - 352px + 64px + 80px); /* TODO: make this responsive: center - my height + top header + bottom header */
-  background: white;
-  z-index: 12;
-  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.05);
-  border-radius: calc(0.25 * var(--um));
-  overflow: hidden;
-  user-select: none;
 
-  :global(.react-resizable-handle) {
-    width: 24px;
-    height: 24px;
-    right: 0;
-    bottom: 0;
-    position: absolute;
-    cursor: nwse-resize;
-  }
-
-  &.isSearching {
-    :global(.react-resizable-handle) {
-      cursor: ew-resize;
-    }
-  }
 }
 
-.ModuleSearch .Container {
-  height: 100%;
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: auto auto 1fr;
-}
-
-.ModuleSearch .Header {
-  border-bottom: 1px solid #EFEFEF;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  cursor: grab;
-  height: 40px;
-  padding: 0 12px;
-}
-
-.ModuleSearch .Header button {
-  appearance: none;
-  display: block;
-  width: 24px;
-  border: none;
-  color: #A3A3A3;
-  background: none;
-}
-
-.ModuleSearch .Header button:active,
-.ModuleSearch .Header button:focus {
-  outline: none;
-}
-
-.ModuleSearch .Header .minimize {
-  margin-right: auto;
-}
-
-.ModuleSearch .Header .minimize .normal {
-  transform: rotate(0);
-  transition: all 180ms ease-in-out;
-}
-
-.ModuleSearch .Header .minimize .flip {
-  transform: rotate(180deg);
-  transition: all 180ms ease-in-out;
-}
-
-.ModuleSearch .Header .close {
-  margin-left: auto;
-}
-
-.ModuleSearch .Header svg path {
-  stroke: #CDCDCD;
-  color: #CDCDCD;
-}
-
-.ModuleSearch .Header .close:hover path {
-  fill: #525252;
-  stroke: #525252;
-}
-
-.ModuleSearch .Header .minimize:hover path {
-  stroke: #525252;
-}
-
-.ModuleSearch .Input {
-  font-size: 14px;
-  line-height: 1;
-  text-align: left;
-  letter-spacing: 0;
-  padding-right: 16px;
-  border-bottom: 1px solid #EFEFEF;
-  width: 100%;
-  box-sizing: border-box;
-  display: flex;
-  align-items: center;
-}
-
-.ModuleSearch .Input input {
-  border: none;
-  padding: 16px 0 16px 24px;
-  width: 100%;
-}
-
-.ModuleSearch .Input input:active,
-.ModuleSearch .Input input:focus {
-  outline: none;
-}
-
-.ModuleSearch .Input input::placeholder {
-  color: #CDCDCD;
-}
-
-.ModuleSearch .Input .ClearButton {
-  appearance: none;
-  background: none;
-  border: none;
-  width: 14px;
-  height: 14px;
-  padding: 3px;
-  margin: -3px;
-  box-sizing: content-box;
-  line-height: 0;
-  flex-shrink: 0;
-  z-index: 1; /* ensure over resize control */
-}
-
-.ModuleSearch .Input .ClearButton circle {
-  transition: all 0.1s;
-}
-
-.ModuleSearch .Input .ClearButton:hover circle {
-  fill: #525252;
-  stroke: #525252;
-}
-
-.ModuleSearch .Input .ClearButton:focus {
-  outline: none;
-}
-
-.ModuleSearch .Content {
-  color: #525252;
-  font-size: 12px;
-  font-family: var(--sans);
-  font-weight: var(--medium);
-  text-align: left;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  line-height: 32px;
-  overflow: auto;
-
-  /* standards compliant but only firefox implements */
-  scrollbar-width: thin; /* stylelint-disable-line property-no-unknown */
-
-  /* Firefox doesn't even do this */
-  scrollbar-color: #CDCDCD white; /* stylelint-disable-line property-no-unknown */
-}
-
-/**
- * Scrollbar Styles
- */
-
-.ModuleSearch .Content::-webkit-scrollbar {
-  width: 12px;
-  background-color: transparent;
-}
-
-.ModuleSearch .Content::-webkit-scrollbar-track {
-  background-color: transparent;
-}
-
-.ModuleSearch .Content::-webkit-scrollbar-thumb {
-  border: solid 4px white; /* simulate padding */
-  background-color: #CDCDCD;
-  border-radius: 6px; /* uses inside edge as radius */
-}
-
-/**
- * ModuleSearch Content Items
- */
-
-.ModuleSearch .Content .SearchRow {
-  padding: 5px 24px;
-  border-right: 1px solid #EFEFEF;
-  font-family: var(--sans);
-  font-weight: 400;
-  color: #323232;
-  text-transform: none;
-  letter-spacing: 0;
-  line-height: 40px;
-}
-
-.ModuleSearch .Content .SearchRow:active,
-.ModuleSearch .Content .SearchRow:focus {
-  outline: none;
-}
-
-.ModuleSearch .Content > .SearchRow:not(:last-child) {
-  border-bottom: 1px solid #EFEFEF;
-}
-
-.ModuleSearch .Content .SearchRow:hover {
-  background: #F8F8F8;
-}
-
-.ModuleSearch .Content .Category {
+body .Category {
   font-weight: var(--medium);
   letter-spacing: 1px;
   text-transform: uppercase;
 }
 
-.ModuleSearch .Content .Category.active {
+body .Category.active {
   border-left: 4px solid #0324FF;
   padding-left: 20px;
 }
 
-.ModuleSearch .Content .SearchCategory {
+body .SearchCategory {
   font-size: 10px;
   font-family: var(--sans);
   font-weight: 600;
@@ -228,23 +23,23 @@
   line-height: 40px;
 }
 
-.ModuleSearch .Content .SearchCategory:hover {
+body .SearchCategory:hover {
   background: transparent;
 }
 
-.ModuleSearch .Content .ModuleItem.WithCategory {
+.ModuleSearch .ModuleItem.WithCategory {
   display: grid;
   grid-template-columns: 50% 50%;
   grid-gap: 12px;
 }
 
-.ModuleSearch .Content .ModuleItem .ModuleName {
+.ModuleSearch .ModuleItem .ModuleName {
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
 }
 
-.ModuleSearch .Content .ModuleItem .ModuleCategory {
+.ModuleSearch .ModuleItem .ModuleCategory {
   font-size: 12px;
   font-family: var(--sans);
   font-weight: 400;
@@ -255,19 +50,19 @@
   overflow: hidden;
 }
 
-.ModuleSearch .Content .StreamItem {
+.ModuleSearch .StreamItem {
   line-height: 28px;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
 }
 
-.ModuleSearch .Content .StreamItem:active,
-.ModuleSearch .Content .ModuleItem:active {
+.ModuleSearch .StreamItem:active,
+.ModuleSearch .ModuleItem:active {
   cursor: grabbing;
 }
 
-.ModuleSearch .Content .StreamItem .Description {
+.ModuleSearch .StreamItem .Description {
   font-size: 10px;
   font-family: var(--sans);
   font-weight: 400;
@@ -278,25 +73,12 @@
   overflow: hidden;
 }
 
-.Overlay {
-  z-index: 12;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: 100vw;
-  height: 100vh;
-  background: salmon;
-  opacity: 0;
-}
-
 .dragHandle {
 }
 
 .dragElement {
-  top: 0;
-  left: 0;
+  bottom: 0;
+  right: 0;
   position: absolute;
   z-index: -1;
   background-color: #FFFFFF;

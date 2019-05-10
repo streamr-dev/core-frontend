@@ -14,3 +14,11 @@ export const REMOVE_RESOURCE_KEY_REQUEST: string = 'shared/resourceKey/REMOVE_RE
 export const REMOVE_MY_RESOURCE_KEY_SUCCESS: string = 'shared/resourceKey/REMOVE_STREAM_MY_KEY_SUCCESS'
 export const REMOVE_STREAM_RESOURCE_KEY_SUCCESS: string = 'shared/resourceKey/REMOVE_STREAM_RESOURCE_KEY_SUCCESS'
 export const REMOVE_RESOURCE_KEY_FAILURE: string = 'shared/resourceKey/REMOVE_RESOURCE_KEY_FAILURE'
+
+export const EDIT_STREAM_RESOURCE_KEY_REQUEST: string = 'shared/resourceKey/EDIT_STREAM_RESOURCE_KEY_REQUEST'
+export const EDIT_STREAM_RESOURCE_KEY_SUCCESS: string = 'shared/resourceKey/EDIT_STREAM_RESOURCE_KEY_SUCCESS'
+export const EDIT_STREAM_RESOURCE_KEY_FAILURE: string = 'shared/resourceKey/EDIT_STREAM_RESOURCE_KEY_FAILURE'
+
+export const EDIT_MY_RESOURCE_KEY_REQUEST: string = 'shared/resourceKey/EDIT_MY_RESOURCE_KEY_REQUEST'
+export const EDIT_MY_RESOURCE_KEY_SUCCESS: string = 'shared/resourceKey/EDIT_MY_RESOURCE_KEY_SUCCESS'
+export const EDIT_MY_RESOURCE_KEY_FAILURE: string = 'shared/resourceKey/EDIT_MY_RESOURCE_KEY_FAILURE'

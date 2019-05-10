@@ -50,13 +50,13 @@ describe('KeyFieldEditor', () => {
 
             el.setState({
                 keyName: null,
-                value: 'value',
+                keyId: 'value',
             })
             assert(el.find('Buttons').prop('actions').save.disabled === true)
 
             el.setState({
                 keyName: 'name',
-                value: 'value',
+                keyId: 'value',
             })
             assert(el.find('Buttons').prop('actions').save.disabled !== true)
         })

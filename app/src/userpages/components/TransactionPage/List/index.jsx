@@ -17,7 +17,7 @@ import type { TransactionEntityList } from '$shared/flowtype/web3-types'
 import type { IntegrationKeyList } from '$shared/flowtype/integration-key-types'
 import type { ProductEntities } from '$mp/flowtype/product-types'
 import { fetchIntegrationKeys } from '$shared/modules/integrationKey/actions'
-import { getTransactionEvents, showEvents } from '$userpages/modules/transactionHistory/actions'
+import { getTransactionEvents, showEvents, clearTransactionList, noTransactionResults } from '$userpages/modules/transactionHistory/actions'
 import { selectVisibleTransactions, selectTransactionEvents, selectOffset, selectFetching } from '$userpages/modules/transactionHistory/selectors'
 import { selectEntities } from '$shared/modules/entities/selectors'
 import { mapPriceFromContract } from '$mp/utils/product'
@@ -38,6 +38,8 @@ type StateProps = {
 }
 
 type DispatchProps = {
+    clearTransactionList: () => void,
+    noTransactionResults: () => void,
     getWeb3Accounts: () => void,
     getTransactionEvents: () => void,
     showEvents: () => void,
@@ -49,14 +51,19 @@ type Props = StateProps & DispatchProps
 
 class TransactionList extends Component<Props> {
     async componentDidMount() {
+        this.props.clearTransactionList()
         await this.props.getWeb3Accounts()
         await this.startSubscription()
     }
 
     startSubscription = () => {
-        const { web3Accounts, getTransactionEvents } = this.props
-        if (!!web3Accounts && web3Accounts.length > 0) {
-            getTransactionEvents()
+        const { web3Accounts, getTransactionEvents, noTransactionResults } = this.props
+        if (web3Accounts) {
+            if (web3Accounts.length > 0) {
+                getTransactionEvents()
+            } else {
+                noTransactionResults()
+            }
         }
     }
 
@@ -163,11 +170,13 @@ const mapStateToProps = (state: StoreState) => {
         fetching: selectFetching(state),
         web3Accounts: selectEthereumIdentities(state),
         products: selectEntities(state).contractProducts,
-        hasMoreResults: events.length > (offset + 10),
+        hasMoreResults: events.length >= (offset + 10),
     }
 }
 
 const mapDispatchToProps = (dispatch: Function) => ({
+    noTransactionResults: () => dispatch(noTransactionResults()),
+    clearTransactionList: () => dispatch(clearTransactionList()),
     getWeb3Accounts: () => dispatch(fetchIntegrationKeys()),
     getTransactionEvents: () => dispatch(getTransactionEvents()),
     showEvents: () => dispatch(showEvents()),

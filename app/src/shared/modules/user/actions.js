@@ -218,11 +218,19 @@ export const deleteUserAccount = () => (dispatch: Function) => {
     return services.deleteUserAccount()
         .then(() => {
             dispatch(deleteUserAccountSuccess())
+            Notification.push({
+                title: 'Account disabled!',
+                icon: NotificationIcon.CHECKMARK,
+            })
             dispatch(logout())
         }, (error) => {
             dispatch(deleteUserAccountFailure({
                 message: error.message,
             }))
+            Notification.push({
+                title: 'Account not disabled',
+                icon: NotificationIcon.ERROR,
+            })
             throw error
         })
 }

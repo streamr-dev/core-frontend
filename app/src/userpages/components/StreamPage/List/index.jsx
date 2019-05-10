@@ -292,7 +292,6 @@ class StreamList extends Component<Props, State> {
                 )}
                 {!!dialogTargetStream && activeDialog === Dialogs.SNIPPET && (
                     <SnippetDialog
-                        name={dialogTargetStream.name}
                         snippets={getSnippets(dialogTargetStream.id)}
                         onClose={this.onCloseDialog}
                     />

@@ -116,7 +116,7 @@ describe('KeyField', () => {
             const onSaveStub = sinon.stub().callsFake(() => onSavePromise)
             const el = shallow(<KeyField
                 keyName="myKey"
-                value="testValue"
+                keyId="testValue"
                 allowEdit
                 onSave={onSaveStub}
             />)
@@ -127,7 +127,7 @@ describe('KeyField', () => {
             const editor = el.find(KeyFieldEditor).shallow().instance()
             editor.setState({
                 keyName: 'newKey',
-                value: 'newName',
+                keyId: 'newName',
             })
             editor.onSave()
 

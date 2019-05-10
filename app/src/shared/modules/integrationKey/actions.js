@@ -21,10 +21,13 @@ import {
     INTEGRATION_KEYS_FAILURE,
     CREATE_INTEGRATION_KEY_REQUEST,
     DELETE_INTEGRATION_KEY_REQUEST,
+    EDIT_INTEGRATION_KEY_REQUEST,
     CREATE_INTEGRATION_KEY_SUCCESS,
     DELETE_INTEGRATION_KEY_SUCCESS,
+    EDIT_INTEGRATION_KEY_SUCCESS,
     CREATE_INTEGRATION_KEY_FAILURE,
     DELETE_INTEGRATION_KEY_FAILURE,
+    EDIT_INTEGRATION_KEY_FAILURE,
     CREATE_IDENTITY_REQUEST,
     CREATE_IDENTITY_SUCCESS,
     CREATE_IDENTITY_FAILURE,
@@ -73,6 +76,21 @@ const createIntegrationKeyFailure: IntegrationKeysErrorActionCreator = createAct
     }),
 )
 
+// edit integration key
+const editIntegrationKeyRequest: ReduxActionCreator = createAction(EDIT_INTEGRATION_KEY_REQUEST)
+const editIntegrationKeySuccess: IntegrationKeyIdActionCreator = createAction(
+    EDIT_INTEGRATION_KEY_SUCCESS,
+    (keyName: string) => ({
+        name: keyName,
+    }),
+)
+const editIntegrationKeyFailure: IntegrationKeysErrorActionCreator = createAction(
+    EDIT_INTEGRATION_KEY_FAILURE,
+    (error: ErrorInUi) => ({
+        error,
+    }),
+)
+
 // create identity
 const createIdentityRequest: ReduxActionCreator = createAction(CREATE_IDENTITY_REQUEST)
 const createIdentitySuccess: IntegrationKeyIdActionCreator = createAction(
@@ -87,6 +105,36 @@ const createIdentityFailure: IntegrationKeysErrorActionCreator = createAction(
         error,
     }),
 )
+
+// Fetch linked web3 accounts from integration keys
+export const fetchIntegrationKeys = () => (dispatch: Function) => {
+    dispatch(integrationKeysRequest())
+
+    return services.getIntegrationKeys()
+        .then((result) => {
+            handleEntities(integrationKeysSchema, dispatch)(result)
+
+            const ethereumIdentities: IntegrationKeyIdList = []
+            const privateKeys: IntegrationKeyIdList = []
+
+            result.forEach((key) => {
+                if (key.service === integrationKeyServices.ETHEREREUM_IDENTITY && key.id) {
+                    ethereumIdentities.push(key.id)
+                }
+
+                if (key.service === integrationKeyServices.PRIVATE_KEY && key.id) {
+                    privateKeys.push(key.id)
+                }
+            })
+
+            dispatch(integrationKeysSuccess(ethereumIdentities, privateKeys))
+        }, (error) => {
+            dispatch(integrationKeysError({
+                message: error.message,
+            }))
+            throw error
+        })
+}
 
 export const createIntegrationKey = (name: string, privateKey: Address) => (dispatch: Function) => {
     dispatch(createIntegrationKeyRequest())
@@ -116,6 +164,24 @@ export const deleteIntegrationKey = (id: IntegrationKeyId) => (dispatch: Functio
         })
 }
 
+export const editIntegrationKey = (id: IntegrationKeyId, keyName: string) => (dispatch: Function) => {
+    if (!id) {
+        throw new Error('No id!')
+    }
+    dispatch(editIntegrationKeyRequest())
+    return services.editIntegrationKey(id, keyName)
+        .then(() => {
+            dispatch(editIntegrationKeySuccess(keyName))
+            dispatch(fetchIntegrationKeys())
+        })
+        .catch((error) => {
+            dispatch(editIntegrationKeyFailure({
+                message: error.message,
+            }))
+            throw error
+        })
+}
+
 export const createIdentity = (name: string) => (dispatch: Function) => {
     dispatch(createIdentityRequest())
     return services.createIdentity(name)
@@ -127,36 +193,6 @@ export const createIdentity = (name: string) => (dispatch: Function) => {
             dispatch(createIdentityFailure({
                 message: error.message,
                 code: error.code,
-            }))
-            throw error
-        })
-}
-
-// Fetch linked web3 accounts from integration keys
-export const fetchIntegrationKeys = () => (dispatch: Function) => {
-    dispatch(integrationKeysRequest())
-
-    return services.getIntegrationKeys()
-        .then((result) => {
-            handleEntities(integrationKeysSchema, dispatch)(result)
-
-            const ethereumIdentities: IntegrationKeyIdList = []
-            const privateKeys: IntegrationKeyIdList = []
-
-            result.forEach((key) => {
-                if (key.service === integrationKeyServices.ETHEREREUM_IDENTITY && key.id) {
-                    ethereumIdentities.push(key.id)
-                }
-
-                if (key.service === integrationKeyServices.PRIVATE_KEY && key.id) {
-                    privateKeys.push(key.id)
-                }
-            })
-
-            dispatch(integrationKeysSuccess(ethereumIdentities, privateKeys))
-        }, (error) => {
-            dispatch(integrationKeysError({
-                message: error.message,
             }))
             throw error
         })
