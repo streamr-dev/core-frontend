@@ -36,6 +36,8 @@ import NoCanvasesView from './NoCanvases'
 import { RunStates } from '$editor/canvas/state'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
 import CanvasPreview from '$editor/canvas/components/Preview'
+import Notification from '$shared/utils/Notification'
+import { NotificationIcon } from '$shared/utils/constants'
 
 import styles from './canvasList.pcss'
 
@@ -155,8 +157,17 @@ class CanvasList extends Component<Props, State> {
         })
     }
 
+    onCopyUrl = (url: string) => {
+        this.props.copyToClipboard(url)
+
+        Notification.push({
+            title: I18n.t('userpages.canvases.menu.copyUrlNotification'),
+            icon: NotificationIcon.CHECKMARK,
+        })
+    }
+
     getActions = (canvas) => {
-        const { navigate, copyToClipboard } = this.props
+        const { navigate } = this.props
 
         const editUrl = formatExternalUrl(
             process.env.PLATFORM_ORIGIN_URL,
@@ -173,7 +184,7 @@ class CanvasList extends Component<Props, State> {
                 >
                     <Translate value="userpages.canvases.menu.share" />
                 </DropdownActions.Item>
-                <DropdownActions.Item onClick={() => copyToClipboard(editUrl)}>
+                <DropdownActions.Item onClick={() => this.onCopyUrl(editUrl)}>
                     <Translate value="userpages.canvases.menu.copyUrl" />
                 </DropdownActions.Item>
                 <DropdownActions.Item
