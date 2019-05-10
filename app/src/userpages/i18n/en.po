@@ -45,7 +45,7 @@ msgid "userpages##canvases##menu##copyUrl"
 msgstr "Copy URL"
 
 msgid "userpages##canvases##menu##copyUrlNotification"
-msgstr "Copied"
+msgstr "Canvas URL copied"
 
 msgid "userpages##canvases##menu##share"
 msgstr "Share"
