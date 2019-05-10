@@ -116,6 +116,7 @@ describe('user - services', () => {
                 const request = moxios.requests.mostRecent()
                 request.respondWith({
                     status: 204,
+                    response: '',
                 })
 
                 assert.equal(request.config.method, 'post')
