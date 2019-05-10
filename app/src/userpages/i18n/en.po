@@ -548,7 +548,7 @@ msgstr "Disable account"
 
 msgid "userpages##profilePage##deleteAccount##description"
 msgstr ""
-"This action will disable your account but may still retain your data. Please contact us directly to"
+"This action will disable your account but may still retain your data. Please contact us directly to "
 "manually delete your data entirely."
 
 msgid "userpages##profilePage##deleteAccount##button"
