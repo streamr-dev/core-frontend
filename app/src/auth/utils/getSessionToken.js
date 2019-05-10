@@ -2,13 +2,16 @@
 
 import StreamrClient from 'streamr-client'
 
-const parseError = async (error) => {
-    try {
-        return new Error(JSON.parse(error.body).message)
-    } catch (e) {
-        // Noop. Will rethrow.
-    }
-    return error
+const parseError = ({ body }) => {
+    const message = ((defaultMessage) => {
+        try {
+            return JSON.parse(body).message || defaultMessage
+        } catch (e) {
+            return defaultMessage
+        }
+    })('Something went wrong.')
+
+    return new Error(message)
 }
 
 export default async (auth: Object): Promise<?string> => {
@@ -18,6 +21,6 @@ export default async (auth: Object): Promise<?string> => {
             auth,
         }).session.getSessionToken()
     } catch (e) {
-        throw await parseError(e)
+        throw parseError(e)
     }
 }
