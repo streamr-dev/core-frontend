@@ -11,6 +11,7 @@ export default {
         DefaultStyle: { // Applied to every notification, regardless of the notification level
             width: 'auto',
             borderRadius: '4px',
+            overflow: 'hidden', // prevent notification content from falling outside notification
         },
         info: {
             width: 'auto',

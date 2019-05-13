@@ -41,6 +41,7 @@ import Notification from '$shared/utils/Notification'
 import CodeSnippet from '$shared/components/CodeSnippet'
 import Tooltip from '$shared/components/Tooltip'
 import ContextMenu from '$shared/components/ContextMenu'
+import { NotificationIcon } from '$shared/utils/constants'
 
 import sharedStyles from './shared.pcss'
 
@@ -483,6 +484,14 @@ story('SvgIcon')
                     </div>
                 </Col>
             ))}
+            <Col xs="4">
+                <div className={sharedStyles.iconWrapper}>
+                    <div className={sharedStyles.iconInner}>
+                        <SvgIcon name="checkmark" size="large" className={sharedStyles.svgIcon} />
+                    </div>
+                    <span>checkmark size=large</span>
+                </div>
+            </Col>
         </Row>
     ))
 
@@ -598,6 +607,20 @@ story('Notifications')
                     >
                         Add notification
                     </button>
+                    {Object.values(NotificationIcon).map((icon) => (
+                        <button
+                            key={icon}
+                            type="button"
+                            onClick={() => {
+                                Notification.push({
+                                    title,
+                                    icon,
+                                })
+                            }}
+                        >
+                            Add {icon} notification
+                        </button>
+                    ))}
                     <Notifications />
                     {boolean('Show dialog', false) && (
                         <Modal>

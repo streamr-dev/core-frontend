@@ -153,12 +153,11 @@ const sources = {
         <CheckmarkIcon />
     ),
     error: (
-        <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-            <path
-                d="M8 13.795a1.001 1.001 0 0 1 0-2.004 1.001 1.001 0 0 1 0 2.004zm-.8-7.416h1.6v4.81H7.2V6.38zm8.716 8.46L8.716.409c-.271-.544-1.16-.544-1.432 0L.084 14.84A.802.802 0 0 0 .8 16h14.4a.802.802 0 0 0 .716-1.16z" // eslint-disable-line max-len
-                fill="#6240AF"
-                fillRule="evenodd"
-            />
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+            <g fill="none" fillRule="evenodd">
+                <circle cx="10" cy="10" r="10" fill="#FF5C00" fillRule="nonzero" />
+                <path stroke="#FFF" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M10 11.562V5M10 14.562v-.052" />
+            </g>
         </svg>
     ),
     csvUpload: (
