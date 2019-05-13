@@ -38,6 +38,7 @@ type Props = {
     minZoom: number,
     maxZoom: number,
     zoom: number,
+    autoZoom: boolean,
     traceColor: string,
     traceWidth: number,
     markers: { [string]: Marker },
@@ -74,6 +75,7 @@ export default class Map extends React.Component<Props> {
             minZoom,
             maxZoom,
             zoom,
+            autoZoom,
             traceColor,
             traceWidth,
             markers,
@@ -105,6 +107,12 @@ export default class Map extends React.Component<Props> {
         const markerArray: Array<Marker> = Object
             .values(markers)
 
+        let bounds = null
+        if (autoZoom && markerArray.length > 0) {
+            const positions = markerArray.map((m) => [m.lat, m.long])
+            bounds = L.latLngBounds(positions)
+        }
+
         return (
             <UiSizeConstraint minWidth={368} minHeight={224}>
                 <div className={cx(className)}>
@@ -117,6 +125,7 @@ export default class Map extends React.Component<Props> {
                         maxZoom={maxZoom}
                         crs={isImageMap ? L.CRS.Simple : L.CRS.EPSG3857}
                         preferCanvas
+                        bounds={bounds}
                     >
                         <ResizeWatcher onResize={this.onResize} />
                         {isHeatmap && (
