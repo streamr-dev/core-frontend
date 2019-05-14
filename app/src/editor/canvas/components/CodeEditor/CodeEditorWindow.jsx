@@ -106,7 +106,7 @@ class CodeEditorWindow extends React.Component {
                                 }}
                                 annotations={errors}
                                 editorProps={{ $blockScrolling: true }}
-                                readOnly={readOnly}
+                                readOnly={readOnly || sending}
                             />
                         </div>
                         <DraggableCanvasWindow.Toolbar>
