@@ -44,14 +44,17 @@ msgstr "Delete"
 msgid "userpages##canvases##menu##copyUrl"
 msgstr "Copy URL"
 
+msgid "userpages##canvases##menu##copyUrlNotification"
+msgstr "Canvas URL copied"
+
 msgid "userpages##canvases##menu##share"
 msgstr "Share"
 
 msgid "userpages##canvases##delete##confirmTitle"
-msgstr "Delete %{canvas}?"
+msgstr "Delete this canvas?"
 
 msgid "userpages##canvases##delete##confirmMessage"
-msgstr "This is an unrecoverable action. Please make sure this is what you want before you proceed."
+msgstr "This is an unrecoverable action. Please confirm this is what you want before you proceed."
 
 msgid "userpages##canvases##delete##confirmButton"
 msgstr "Yes, delete"
@@ -215,6 +218,9 @@ msgstr "Edit stream"
 msgid "userpages##streams##actions##copyId"
 msgstr "Copy ID"
 
+msgid "userpages##streams##actions##idCopied"
+msgstr "Stream ID copied"
+
 msgid "userpages##streams##actions##copySnippet"
 msgstr "Copy Snippet"
 
@@ -223,6 +229,12 @@ msgstr "Share"
 
 msgid "userpages##streams##actions##refresh"
 msgstr "Refresh"
+
+msgid "userpages##streams##actions##refreshSuccess"
+msgstr "Stream refreshed"
+
+msgid "userpages##streams##actions##refreshError"
+msgstr "Stream refresh failed"
 
 msgid "userpages##streams##actions##delete"
 msgstr "Delete"
@@ -318,10 +330,10 @@ msgid "userpages##streams##edit##preview##inspect"
 msgstr "Inspect"
 
 msgid "userpages##streams##delete##confirmTitle"
-msgstr "Delete %{stream}?"
+msgstr "Delete this stream?"
 
 msgid "userpages##streams##delete##confirmMessage"
-msgstr "This is an unrecoverable action. Please make sure this is what you want before you proceed."
+msgstr "This is an unrecoverable action. Please confirm this is what you want before you proceed."
 
 msgid "userpages##streams##delete##confirmButton"
 msgstr "Yes, delete"
@@ -390,7 +402,7 @@ msgid "userpages##transactions##noTransactions##title"
 msgstr "No transactions."
 
 msgid "userpages##transactions##noTransactions##message"
-msgstr "Couldn't find any transactions."
+msgstr "You haven't made any transactions yet."
 
 msgid "userpages##dashboards##createDashboard"
 msgstr "Create dashboard"
@@ -542,7 +554,7 @@ msgstr "Disable account"
 
 msgid "userpages##profilePage##deleteAccount##description"
 msgstr ""
-"This action will disable your account but may still retain your data. Please contact us directly to"
+"This action will disable your account but may still retain your data. Please contact us directly to "
 "manually delete your data entirely."
 
 msgid "userpages##profilePage##deleteAccount##button"
@@ -698,7 +710,7 @@ msgid "modal##shareResource##save"
 msgstr "Share"
 
 msgid "modal##copySnippet##defaultTitle"
-msgstr "%{name} Snippet"
+msgstr "Copy Snippet"
 
 msgid "modal##copySnippet##goToLibrary"
 msgstr "Go to Library"

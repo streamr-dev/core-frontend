@@ -3,7 +3,7 @@
 import React, { Component, type Node } from 'react'
 import classNames from 'classnames'
 
-import Buttons, { type Props as ButtonsProps } from '$shared/components/Buttons'
+import Buttons, { type Props as ButtonsProps, type ButtonActions } from '$shared/components/Buttons'
 import ModalDialog, { type Props as ModalDialogProps } from '$shared/components/ModalDialog'
 import { dialogAutoCloseTimeout } from '$shared/utils/constants'
 import Spinner from '$shared/components/Spinner'
@@ -28,6 +28,7 @@ export type Props = {
     showCloseIcon?: boolean,
     autoCloseAfter?: number, // in milliseconds, use this to close the dialog after a custom timeout
     autoClose?: boolean, // use this to close the dialog after default timeout
+    renderActions?: (ButtonActions) => Node,
 } & ButtonsProps & ModalDialogProps
 
 type State = {
@@ -88,6 +89,7 @@ class Dialog extends Component<Props, State> {
             actionsClassName,
             onClose,
             showCloseIcon,
+            renderActions,
             ...otherProps
         } = this.props
         const { isHelpOpen } = this.state
@@ -110,9 +112,10 @@ class Dialog extends Component<Props, State> {
                         ))}
                         {(!!helpText && isHelpOpen) && helpText}
                     </ContentArea>
-                    {!waiting && (!helpText || !this.state.isHelpOpen) && (
+                    {!waiting && (!helpText || !this.state.isHelpOpen) && !renderActions && (
                         <Buttons className={classNames(styles.buttons, actionsClassName)} actions={actions} />
                     )}
+                    {!waiting && (!helpText || !this.state.isHelpOpen) && renderActions && renderActions(actions || {})}
                 </Container>
             </ModalDialog>
         )

@@ -271,15 +271,26 @@ export const getStream = (id: StreamId) => (dispatch: Function) => {
         })
 }
 
+export const updateStreamStatus = (id: StreamId) => (dispatch: Function) => (
+    services.getStreamStatus(id)
+        .then(({ ok, date }: StreamStatus) => ({
+            id,
+            streamStatus: ok ? 'ok' : 'error',
+            lastData: date,
+        }))
+        .then(handleEntities(streamSchema, dispatch))
+        .catch((e) => {
+            // not sure if we want to spam the user with errors, for now, console log
+            /* eslint-disable no-console */
+            console.log('stream status issue: ', id)
+            console.log(e)
+            throw e
+        })
+)
+
 export const updateStreamStatuses = (ids: StreamIdList) => (dispatch: Function) => {
     ids.forEach((id: StreamId) => (
-        services.getStreamStatus(id)
-            .then(({ ok, date }: StreamStatus) => ({
-                id,
-                streamStatus: ok ? 'ok' : 'error',
-                lastData: date,
-            }))
-            .then(handleEntities(streamSchema, dispatch))
+        dispatch(updateStreamStatus(id))
     ))
 }
 
@@ -295,7 +306,7 @@ export const getStreams = () => (dispatch: Function, getState: Function) => {
     return services.getStreams(params)
         .then((data) => data.map((stream) => ({
             ...stream,
-            status: 'inactive',
+            streamStatus: 'inactive',
         })))
         .then(handleEntities(streamsSchema, dispatch))
         .then((ids) => {
@@ -310,6 +321,15 @@ export const getStreams = () => (dispatch: Function, getState: Function) => {
             })
             throw e
         })
+}
+
+export const getStreamStatus = (id: StreamId) => (dispatch: Function) => {
+    handleEntities(streamSchema, dispatch)({
+        id,
+        streamStatus: 'inactive',
+        lastData: null,
+    })
+    return dispatch(updateStreamStatus(id))
 }
 
 export const getMyStreamPermissions = (id: StreamId) => (dispatch: Function, getState: Function) => {
