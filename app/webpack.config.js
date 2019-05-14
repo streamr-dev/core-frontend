@@ -7,6 +7,7 @@ const WebpackNotifierPlugin = require('webpack-notifier')
 const FlowBabelWebpackPlugin = require('flow-babel-webpack-plugin')
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const ImageminPlugin = require('imagemin-webpack-plugin').default
 const StyleLintPlugin = require('stylelint-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const { UnusedFilesWebpackPlugin } = require('unused-files-webpack-plugin')
@@ -186,6 +187,12 @@ module.exports = {
                 },
             },
             canPrint: true,
+        }),
+        new ImageminPlugin({
+            disable: !isProduction(), // Disable during development
+            pngquant: {
+                quality: '30-50',
+            },
         }),
     ] : [
         // Dev plugins
