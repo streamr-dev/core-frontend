@@ -2,6 +2,7 @@
 import React from 'react'
 import * as R from 'reactstrap'
 import cx from 'classnames'
+import { I18n } from 'react-redux-i18n'
 
 import Meatball from '$shared/components/Meatball'
 import Toggle from '$shared/components/Toggle'
@@ -18,6 +19,7 @@ import EditableText from '$shared/components/EditableText'
 import UseState from '$shared/components/UseState'
 import { RunTabs } from '../state'
 import Toolbar from '$editor/shared/components/Toolbar'
+import confirmDialog from '$shared/utils/confirm'
 
 import ShareDialog from './ShareDialog'
 import CanvasSearch from './CanvasSearch'
@@ -65,12 +67,28 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
         }))
     }
 
+    onDeleteCanvas = async () => {
+        const confirmed = await confirmDialog('canvas', {
+            title: I18n.t('userpages.canvases.delete.confirmTitle'),
+            message: I18n.t('userpages.canvases.delete.confirmMessage'),
+            acceptButton: {
+                title: I18n.t('userpages.canvases.delete.confirmButton'),
+                color: 'danger',
+            },
+            centerButtons: true,
+            dontShowAgain: false,
+        })
+
+        if (confirmed) {
+            this.props.deleteCanvas()
+        }
+    }
+
     render() {
         const {
             canvas,
             className,
             duplicateCanvas,
-            deleteCanvas,
             setSaveState,
             setRunTab,
             renameCanvas,
@@ -135,7 +153,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                                     Rename
                                                 </DropdownActions.Item>
                                                 <DropdownActions.Item onClick={() => duplicateCanvas()}>Duplicate</DropdownActions.Item>
-                                                <DropdownActions.Item onClick={() => deleteCanvas()} disabled={!canEdit}>Delete</DropdownActions.Item>
+                                                <DropdownActions.Item onClick={this.onDeleteCanvas} disabled={!canEdit}>Delete</DropdownActions.Item>
                                             </DropdownActions>
                                         </div>
                                     )}

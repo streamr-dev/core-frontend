@@ -51,10 +51,10 @@ msgid "userpages##canvases##menu##share"
 msgstr "Share"
 
 msgid "userpages##canvases##delete##confirmTitle"
-msgstr "Delete %{canvas}?"
+msgstr "Delete this canvas?"
 
 msgid "userpages##canvases##delete##confirmMessage"
-msgstr "This is an unrecoverable action. Please make sure this is what you want before you proceed."
+msgstr "This is an unrecoverable action. Please confirm this is what you want before you proceed."
 
 msgid "userpages##canvases##delete##confirmButton"
 msgstr "Yes, delete"
@@ -324,10 +324,10 @@ msgid "userpages##streams##edit##preview##inspect"
 msgstr "Inspect"
 
 msgid "userpages##streams##delete##confirmTitle"
-msgstr "Delete %{stream}?"
+msgstr "Delete this stream?"
 
 msgid "userpages##streams##delete##confirmMessage"
-msgstr "This is an unrecoverable action. Please make sure this is what you want before you proceed."
+msgstr "This is an unrecoverable action. Please confirm this is what you want before you proceed."
 
 msgid "userpages##streams##delete##confirmButton"
 msgstr "Yes, delete"
