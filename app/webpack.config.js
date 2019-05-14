@@ -42,8 +42,8 @@ module.exports = {
     ],
     output: {
         path: dist,
-        filename: 'bundle_[hash:6].js',
-        chunkFilename: '[name].bundle_[hash:6].js',
+        filename: 'bundle_[hash:8].js',
+        chunkFilename: '[name].bundle_[contenthash:8].js',
         sourceMapFilename: '[file].map',
         publicPath,
     },
@@ -80,7 +80,7 @@ module.exports = {
                 test: /\.(png|jpg|jpeg|svg)$/,
                 loader: 'file-loader',
                 options: {
-                    name: 'images/[name].[ext]',
+                    name: 'images/[name]_[hash:8].[ext]',
                     publicPath,
                 },
             },
@@ -89,7 +89,7 @@ module.exports = {
                 test: /\.(woff|woff2|eot|ttf)$/,
                 loader: 'file-loader',
                 options: {
-                    name: 'fonts/[name].[ext]',
+                    name: 'fonts/[name]_[hash:8].[ext]',
                     publicPath,
                 },
             },
@@ -104,7 +104,7 @@ module.exports = {
                             modules: true,
                             importLoaders: 1,
                             localIdentRegExp: /app\/src\/([^/]+)/i,
-                            localIdentName: isProduction() ? '[local]_[hash:base64:6]' : '[1]_[name]_[local]',
+                            localIdentName: isProduction() ? '[local]_[hash:base64:8]' : '[1]_[name]_[local]',
                         },
                     },
                     'postcss-loader',
@@ -145,8 +145,8 @@ module.exports = {
         new MiniCssExtractPlugin({
             // Options similar to the same options in webpackOptions.output
             // both options are optional
-            filename: isProduction() ? '[name].css' : '[name].[hash].css',
-            chunkFilename: isProduction() ? '[id].css' : '[id].[hash].css',
+            filename: !isProduction() ? '[name].css' : '[name].[contenthash:8].css',
+            chunkFilename: !isProduction() ? '[id].css' : '[id].[contenthash:8].css',
         }),
         new StyleLintPlugin({
             files: [
