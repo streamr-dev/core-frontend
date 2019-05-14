@@ -29,17 +29,21 @@ function MaybeDraggable({ disabled, children, ...props }) {
     )
 }
 
+const DEFAULT_HEIGHT = 352
+
 export class SearchPanel extends React.PureComponent {
     static defaultProps = {
         bounds: 'parent',
         minWidth: 250,
         defaultWidth: 250,
         maxWidth: 600,
-        defaultHeight: 352,
-        maxHeight: 352 * 2,
+        defaultHeight: DEFAULT_HEIGHT,
+        maxHeight: DEFAULT_HEIGHT * 2,
         minHeightMinimized: 91,
         itemHeight: 52,
         scrollPadding: 0,
+        defaultPosX: 32,
+        defaultPosY: (window.innerHeight / 2) - (DEFAULT_HEIGHT / 2) - 80, // center vertically (take header into account)
     }
 
     state = {
@@ -49,6 +53,8 @@ export class SearchPanel extends React.PureComponent {
         height: this.props.defaultHeight,
         /* eslint-disable-next-line react/no-unused-state */
         heightBeforeMinimize: 0,
+        posX: this.props.defaultPosX,
+        posY: this.props.defaultPosY,
     }
 
     unmounted = false
@@ -179,7 +185,13 @@ export class SearchPanel extends React.PureComponent {
             dragDisabled,
             headerHidden,
         } = this.props
-        const { search, isExpanded, width } = this.state
+        const {
+            search,
+            isExpanded,
+            width,
+            posX,
+            posY,
+        } = this.state
         const height = this.calculateHeight()
         const isSearching = !!search.trim()
 
@@ -189,6 +201,14 @@ export class SearchPanel extends React.PureComponent {
                     disabled={dragDisabled}
                     handle={`.${styles.dragHandle}`}
                     bounds={bounds}
+                    position={{
+                        x: posX,
+                        y: posY,
+                    }}
+                    onStop={(e, data) => this.setState({
+                        posX: data.x,
+                        posY: data.y,
+                    })}
                 >
                     <div
                         className={cx(styles.SearchPanel, className, {
