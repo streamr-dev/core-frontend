@@ -91,8 +91,8 @@ export default class StreamSelector extends React.Component<Props, State> {
     }, 500)
 
     search = async (search: string) => {
-        search = search.trim()
         this.currentSearch = search
+        search = search.trim()
         this.setState({
             search,
             matchingStreams: [],
@@ -105,19 +105,20 @@ export default class StreamSelector extends React.Component<Props, State> {
         const { onChange } = this.props
         this.setState({
             isOpen: false,
+            matchingStreams: [],
         })
         onChange(id)
     }
 
     toggleSearch = (isOpen: boolean) => {
-        const { search: value } = this.state
+        const { search } = this.state
 
         this.setState({
             isOpen,
         })
 
         if (isOpen) {
-            this.search(value)
+            this.search(search)
         }
     }
 
