@@ -1,6 +1,6 @@
 // @flow
 
-import React from 'react'
+import { useLayoutEffect } from 'react'
 
 type Props = {
     className: string,
@@ -9,20 +9,50 @@ type Props = {
 export const NO_SCROLL = 'overflow-hidden'
 export const PAGE_SECONDARY = 'page-secondary'
 
-class BodyClass extends React.Component<Props> {
-    componentDidMount() {
-        if (document.body) {
-            document.body.classList.add(...this.props.className.split(/\s+/))
-        }
-    }
+// tracks how many times a class is added
+// only removes class once no more components reference it
+// i.e. counter = 0
+const classCounters = {}
 
-    componentWillUnmount() {
-        if (document.body) {
-            document.body.classList.remove(...this.props.className.split(/\s+/))
-        }
-    }
+function addClass(className) {
+    const classNames = className.split(/\s+/)
+    classNames.forEach((name) => {
+        // increment counter for each name
+        classCounters[name] = (classCounters[name] + 1) || 1
+    })
+    if (!document.body) { return }
+    document.body.classList.add(...classNames)
+}
 
-    render = () => null
+function removeClass(className) {
+    const classNames = className.split(/\s+/)
+    classNames.forEach((name) => {
+        // decrement counter for each name
+        classCounters[name] = Math.max((classCounters[name] - 1) || 0, 0)
+    })
+
+    // find items that no longer have any referencing components
+    const toRemove = Object.keys(classCounters).filter((name) => (
+        !classCounters[name]
+    ))
+
+    toRemove.forEach((name) => {
+        delete classCounters[name] // remove from index
+    })
+
+    if (document.body) {
+        document.body.classList.remove(...toRemove) // remove from body
+    }
+}
+
+function BodyClass({ className }: Props) {
+    useLayoutEffect(() => {
+        addClass(className)
+        return () => { // eslint-disable-line consistent-return
+            removeClass(className)
+        }
+    }, [className])
+    return null
 }
 
 export default BodyClass
