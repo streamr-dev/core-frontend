@@ -171,6 +171,38 @@ jobs:
     - secure: DTaSLAdOFG57aSb9IjP3N2NlrWPKh+8Z2oDl20zlVsLSm0tAXqiGudTg6rkcxHShM/J2XPsYvVMe/r/0qBEihvWq/bEuJvnrLHZ4ssXfOpN0nk2Ds/N9RReOD4MgSa5DE4KPTiXiVY/jrcRPcpGum0N7d91jFoiBFsazAcjO5KoyErTfZG4QtM3BXR7eVivL8JmsPLgAQGtuSLqpw53ilyl62xXzjiXs0akfMBc6a31XMPFWqyFUELn0oWDjvfeJI3vNXct56cPJ1aqod/LPhgKZMbjD8CdhgVxETkh5iZGV5NiTNF0skwB0uHDMYOD4+qE6jFEGKzZXCPk/1DHFDMN//3LoLw9OS5TC34/wW5E0ZCXhPLqMWEMvr0cm2oTJgyzZY7w+4PXuomfYocqm4VgZiCVS5UUi+7rcYnsFPJv73KBTy2DLvh902kzuGcMf7EaC5imxDFjql4X8o0ceQFqXGi6v2riBM8Fhb/sENOB55MicFG5MuI4TKR9BGyBTg4KkgyJEZswQ2xG8yPRuARqchblI/+avexuxROJ/m++y3ZuPkH3KGSw+yECkG7bZ7TBPLaL7VO87XinLIPO+fRtzm6nNId7KoA+jcrxlAljzsCxVsPVVHsL5+7B8jT0VvLNcH89FHxEuTh/axYdAmAix4Od17wg0pg3ZdJSAnuM=
     - secure: DVAbGPA0dx5I02puqZpkFplRsMTys7OLisIfQKkspA9t+ECLVXM/gsAH/cha4B3Ic9EwBBahKHiaVK6zjuguowjoSQpDpIL+r+frWFXyzV+WfMCEYXdvPcnrpRruP7+QzURgO+s2FLraOSAovXL4fyePfQwLNnDQFWhu4dtl1Ncfe1Kqd6mHi40DKeNv1wR8mmJz4SBDaWcbhkfrDutF6P9LF4lnpOaNHEhHYLsMd7ICIRJ2+w4ZQTVtFqQcI/WT1m7eWhBT6FrQba911AjogFrtRLWrK5YZYCC98m7VMIz2vNt+bnULwPOjJC69VyHW75uJcQvE+woUL6U4xHrVsD5HVdh3tj/nN9swFFc95pEs9GQbGzvKvNBO0chhdwmCTWgyx4Z4sNNiop/WmKQVHswZ1wxOSBeRVOsDYYiDILOojSQh+bSIzIH9Ows57ro9HVpMLL0M/pptNUw6hrqyGE896JAXPWu87Vh7Wqq0H2vfTWdFxmCqv7ncIRngkCbjLZ04MFWENlNpdnhGkrc6WFmh2NMMSua5nsAH8judr2Pbr3s4WeWu1Bwc8uTu8BJ7JU5I6FsrTFOVUO/yIwmAeLA6NCCg7bFNq2ajWVl5exuZOZv0bWWfjvJ9BAIbS6nGQwMUKzjmNLtoEbk4EqLJDKxI2uGoFk6hAlW7GHEaQ2A=
     script: "$TRAVIS_BUILD_DIR/app/travis_scripts/deploy-pr.sh"
+  - stage: Platform Deploy CDN # Will be new production
+    if: NOT type IN (pull_request)
+    env:
+    - NODE_ENV=production
+    - PORT=12345
+    - STREAMR_API_URL=https://www.streamr.com/api/v1
+    - STREAMR_WS_URL=wss://www.streamr.com/api/v1/ws
+    - PLATFORM_ORIGIN_URL=https://cdn.streamr.com
+    - STREAMR_URL=https://www.streamr.com
+    - GOOGLE_ANALYTICS_ID=55331565-5
+    - MARKETPLACE_CONTRACT_ADDRESS=0xA10151D088f6f2705a05d6c83719e99E079A61C1
+    - TOKEN_CONTRACT_ADDRESS=0x0Cf0Ee63788A0849fE5297F3407f701E122cC023
+    - WEB3_REQUIRED_NETWORK_ID=1
+    - WEB3_PUBLIC_HTTP_PROVIDER=https://mainnet.infura.io
+    - WEB3_PUBLIC_WS_PROVIDER=wss://mainnet.infura.io/ws
+    - SENTRY_URL=https://e012761929d24baa96ca82772f60b395@sentry.io/1203154
+    - LOGROCKET_SLUG=et0uhu/streamr-frontend-beta
+    script:
+    - npm run build
+    deploy:
+    - provider: s3 # test for production deployment
+      access_key_id: AKIAISTYQBVHXK5LXXIQ
+      secret_access_key:
+        secure: SmtMYr1JhqzneGtg4sx10/Z7e5TsvlwPl05kkpx2dsGUuWX1gb+kWidNDpC8fWvkREg38o3yOtPza/FOyRtLwdIe1N1lZyYFvIhac7lATroMNyCWmTuYAZMbLtVUEsI43LNhQAC+F/N48TwM+0EJEWUIddc0ANbYEH8cReqDcngL7ZPtFEqtx9Qc/ZVY7/a83munHnd9dXga+4m8xVGo/u6UIn0hSVKt/LLHOAYw4chNXvUgyP2hNmmxHn2cdKocqM4dmEochqe8THSK3F37xlPfaHKzLQfEKfWgWdSQ+lDXonGfDz5ZSs8Owwnd8R/OmOmMKdAs6i96Kj3u4amOANMj1tixtrN4BiFuTM89iTPwKy49xOTSiLjS6XGvyZ1+GIYXuwmsLJbEef19qxpPUz41N8Kmue7Vf2ijy3c6Q0jpFJTKOAZe7m0hONyQi+SG6GYDAxRmuvghIrlZ71zydSn6FYLv3R5cI17tbCZAK9kZdzSXkr4K8W4LJbbZzmJk+X2IYT+Y9WLganeWk9RhmSz5GG84Y33AtsJXiNkBRrV32VtkYkwOa+FtqqLkLnJ7czqez1RyoNGXuhM2djY0pibhabsj7Z9o6ZyLKnm+2FTNdRFpJnkfl2Opv9R5ghOmTLjPSY+Dxjw/1PJoBfzzIEe4tnzpEsC9gqDxJ79KW6k=
+      bucket: eu-west-1-streamr-cdn
+      local-dir: "$TRAVIS_BUILD_DIR/build"
+      acl: private
+      region: eu-west-1
+      skip_cleanup: true
+      on:
+        branch: beta
+
   - stage: Platform Build Production
     if: NOT type IN (pull_request)
     env:
