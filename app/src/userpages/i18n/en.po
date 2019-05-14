@@ -296,6 +296,12 @@ msgstr "You can configure your stream’s fields and data types here. If you’r
 msgid "userpages##streams##edit##configure##autoConfigure"
 msgstr "Always try to autoconfigure field names and types"
 
+msgid "userpages##streams##edit##configure##autodetect"
+msgstr "Autodetect fields"
+
+msgid "userpages##streams##edit##configure##waiting"
+msgstr "Waiting..."
+
 msgid "userpages##streams##edit##configure##requireSignedData"
 msgstr "Require all messages in this stream to be signed"
 
