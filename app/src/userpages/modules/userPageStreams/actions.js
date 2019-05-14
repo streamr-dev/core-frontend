@@ -263,6 +263,13 @@ export const updateStreamStatus = (id: StreamId) => (dispatch: Function) => (
             lastData: date,
         }))
         .then(handleEntities(streamSchema, dispatch))
+        .catch((e) => {
+            // not sure if we want to spam the user with errors, for now, console log
+            /* eslint-disable no-console */
+            console.log('stream status issue: ', id)
+            console.log(e)
+            throw e
+        })
 )
 
 export const updateStreamStatuses = (ids: StreamIdList) => (dispatch: Function) => {
