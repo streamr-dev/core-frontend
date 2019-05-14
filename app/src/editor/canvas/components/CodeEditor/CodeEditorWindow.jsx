@@ -10,7 +10,7 @@ import styles from './CodeEditorWindow.pcss'
 
 class CodeEditorWindow extends React.Component {
     state = {
-        code: this.props.code,
+        code: undefined,
         errors: [],
         sending: false,
     }
@@ -43,6 +43,7 @@ class CodeEditorWindow extends React.Component {
                 if (this.unmounted) { return }
 
                 this.setState({
+                    code: undefined,
                     sending: false,
                 })
             } catch (e) {
@@ -64,7 +65,7 @@ class CodeEditorWindow extends React.Component {
     }
 
     render() {
-        const { code, errors, sending } = this.state
+        const { errors, sending } = this.state
         const {
             onClose,
             onShowDebug,
@@ -72,6 +73,8 @@ class CodeEditorWindow extends React.Component {
             position,
             onPositionUpdate,
         } = this.props
+
+        const code = this.state.code != null ? this.state.code : this.props.code
 
         return (
             <DraggableCanvasWindow
