@@ -2,6 +2,7 @@
 
 import React from 'react'
 import Text from '$editor/canvas/components/Ports/Value/Text'
+import debounce from 'lodash/debounce'
 
 import { getStreams, getStream } from '../../canvas/services'
 
@@ -24,6 +25,8 @@ type State = {
 }
 
 export default class StreamSelector extends React.Component<Props, State> {
+    currentSearch: string
+
     state = {
         loadedStream: undefined,
         isOpen: false,
@@ -68,12 +71,7 @@ export default class StreamSelector extends React.Component<Props, State> {
         this.search(value)
     }
 
-    search = async (search: string) => {
-        search = search.trim()
-        this.setState({
-            search,
-        })
-
+    searchStreams = debounce(async (search) => {
         const params = {
             id: '',
             search,
@@ -85,11 +83,22 @@ export default class StreamSelector extends React.Component<Props, State> {
 
         const streams = await getStreams(params)
 
-        if (this.unmounted || this.state.search !== search) { return }
+        if (this.unmounted || this.currentSearch !== search) { return }
 
         this.setState({
             matchingStreams: streams,
         })
+    }, 500)
+
+    search = async (search: string) => {
+        search = search.trim()
+        this.currentSearch = search
+        this.setState({
+            search,
+            matchingStreams: [],
+        })
+
+        this.searchStreams(search)
     }
 
     onStreamClick = (id: string) => {
