@@ -31,10 +31,25 @@ export default class StreamSelector extends React.Component<Props, State> {
 
     unmounted = false
 
-    async componentDidMount() {
-        const stream = await getStream(this.props.value)
+    componentDidMount() {
+        this.loadStream()
+    }
 
-        if (this.unmounted) { return }
+    componentWillUnmount() {
+        this.unmounted = true
+    }
+
+    componentDidUpdate(prevProps: Props) {
+        if (prevProps.value !== this.props.value) {
+            this.loadStream()
+        }
+    }
+
+    loadStream = async () => {
+        const { value } = this.props
+        const stream = await getStream(value)
+
+        if (this.unmounted || this.props.value !== value) { return }
 
         /* eslint-disable-next-line react/no-did-mount-set-state */
         this.setState({
@@ -42,15 +57,12 @@ export default class StreamSelector extends React.Component<Props, State> {
         })
     }
 
-    componentWillUnmount() {
-        this.unmounted = true
-    }
-
     onChange = (value: string) => {
         this.search(value)
     }
 
     search = async (search: string) => {
+        search = search.trim()
         this.setState({
             search,
         })
@@ -63,9 +75,10 @@ export default class StreamSelector extends React.Component<Props, State> {
             uiChannel: false,
             public: true,
         }
+
         const streams = await getStreams(params)
 
-        if (this.unmounted) { return }
+        if (this.unmounted || this.state.search !== search) { return }
 
         this.setState({
             matchingStreams: streams,
