@@ -268,15 +268,7 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
             }
         })
 
-        return modules.sort(this.compareModules)
-    }
-
-    // Used for sorting module list. Sorts first by path and then by name.
-    compareModules = (a: any, b: any) => {
-        if (a.path === b.path) {
-            return a.name.localeCompare(b.name)
-        }
-        return a.path ? a.path.localeCompare(b.path) : 0
+        return modules
     }
 
     getPositionForClickInsert = () => {
