@@ -17,6 +17,7 @@ type Props = {
 }
 
 type State = {
+    loadedStream: any,
     isOpen: boolean,
     search: string,
     matchingStreams: Array<Object>,
@@ -24,6 +25,7 @@ type State = {
 
 export default class StreamSelector extends React.Component<Props, State> {
     state = {
+        loadedStream: undefined,
         isOpen: false,
         search: '',
         matchingStreams: [],
@@ -47,12 +49,17 @@ export default class StreamSelector extends React.Component<Props, State> {
 
     loadStream = async () => {
         const { value } = this.props
+        const { loadedStream } = this.state
+        // do nothing if stream already loaded
+        if (loadedStream === value) { return }
+
         const stream = await getStream(value)
 
         if (this.unmounted || this.props.value !== value) { return }
 
         /* eslint-disable-next-line react/no-did-mount-set-state */
         this.setState({
+            loadedStream: value,
             search: stream.name,
         })
     }
