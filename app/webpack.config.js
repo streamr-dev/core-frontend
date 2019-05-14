@@ -191,7 +191,7 @@ module.exports = {
         new ImageminPlugin({
             disable: !isProduction(), // Disable during development
             pngquant: {
-                quality: '30-50',
+                quality: '50-75',
             },
         }),
     ] : [
