@@ -120,14 +120,6 @@ export const updateCurrentUserName = (name: string) => (dispatch: Function, getS
     }))
 }
 
-export const updateCurrentUserTimezone = (timezone: string) => (dispatch: Function, getState: Function) => {
-    const user = selectUserData(getState())
-    dispatch(updateCurrentUser({
-        ...user,
-        timezone,
-    }))
-}
-
 export const updateCurrentUserImage = (image: ?File) => (dispatch: Function, getState: Function) => {
     dispatch(updateAvatarRequest())
     const user = selectUserData(getState())

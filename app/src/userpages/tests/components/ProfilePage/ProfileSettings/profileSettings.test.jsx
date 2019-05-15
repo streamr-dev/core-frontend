@@ -2,7 +2,6 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import assert from 'assert-diff'
 import sinon from 'sinon'
-import moment from 'moment-timezone'
 
 import * as userActions from '$shared/modules/user/actions'
 
@@ -13,8 +12,6 @@ describe('ProfileSettings', () => {
 
     beforeEach(() => {
         sandbox = sinon.createSandbox()
-        sandbox.stub(moment.tz, 'names')
-            .callsFake(() => ['a', 'b', 'c'])
     })
 
     afterEach(() => {
@@ -28,7 +25,6 @@ describe('ProfileSettings', () => {
                 user={{}}
                 getCurrentUser={spy}
                 updateCurrentUserName={() => {}}
-                updateCurrentUserTimezone={() => {}}
                 saveCurrentUser={() => {}}
             />)
             assert(spy.calledOnce)
@@ -42,31 +38,12 @@ describe('ProfileSettings', () => {
                 user={{}}
                 getCurrentUser={() => {}}
                 updateCurrentUserName={spy}
-                updateCurrentUserTimezone={() => {}}
                 saveCurrentUser={() => {}}
             />)
             el.instance().onNameChange({
                 target: {
                     value: 'testtest',
                 },
-            })
-            assert(spy.calledOnce)
-            assert(spy.calledWith('testtest'))
-        })
-    })
-
-    describe('onTimezoneChange', () => {
-        it('must call props.updateCurrentUserTimezone', () => {
-            const spy = sinon.spy()
-            const el = shallow(<ProfileSettings
-                user={{}}
-                getCurrentUser={() => {}}
-                updateCurrentUserName={() => {}}
-                updateCurrentUserTimezone={spy}
-                saveCurrentUser={() => {}}
-            />)
-            el.instance().onTimezoneChange({
-                value: 'testtest',
             })
             assert(spy.calledOnce)
             assert(spy.calledWith('testtest'))
@@ -93,7 +70,6 @@ describe('ProfileSettings', () => {
             assert.equal(typeof mapDispatchToProps(), 'object')
             assert.equal(typeof mapDispatchToProps().getCurrentUser, 'function')
             assert.equal(typeof mapDispatchToProps().updateCurrentUserName, 'function')
-            assert.equal(typeof mapDispatchToProps().updateCurrentUserTimezone, 'function')
         })
 
         describe('getCurrentUser', () => {

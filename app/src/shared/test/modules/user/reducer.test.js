@@ -25,7 +25,6 @@ describe('user - reducer', () => {
             const user = {
                 name: 'Tester1',
                 username: 'tester1@streamr.com',
-                timezone: 'Zulu',
             }
 
             const expectedState = {
@@ -74,7 +73,6 @@ describe('user - reducer', () => {
                 payload: {
                     user: {
                         email: 'test3',
-                        timezone: 'test4',
                     },
                 },
             }), {
@@ -83,7 +81,6 @@ describe('user - reducer', () => {
                 user: {
                     name: 'test',
                     email: 'test3',
-                    timezone: 'test4',
                 },
             })
         })
@@ -97,7 +94,6 @@ describe('user - reducer', () => {
                     user: {
                         name: 'test',
                         email: 'test3',
-                        timezone: 'test4',
                     },
                 },
             }), {
@@ -106,7 +102,6 @@ describe('user - reducer', () => {
                 user: {
                     name: 'test',
                     email: 'test3',
-                    timezone: 'test4',
                 },
             })
         })

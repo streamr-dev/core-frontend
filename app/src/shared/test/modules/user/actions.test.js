@@ -27,7 +27,6 @@ describe('user - actions', () => {
             const data = {
                 name: 'Tester1',
                 username: 'tester1@streamr.com',
-                timezone: 'Zulu',
             }
 
             const serviceStub = sandbox.stub(services, 'getUserData').callsFake(() => Promise.resolve(data))
@@ -80,7 +79,6 @@ describe('user - actions', () => {
                         id: 'test',
                         email: 'test2',
                         name: 'test3',
-                        timezone: 'test4',
                     },
                 },
             })
@@ -92,7 +90,6 @@ describe('user - actions', () => {
                         id: 'test',
                         email: 'test2',
                         name: 'test5',
-                        timezone: 'test4',
                     },
                 },
             }]
@@ -100,33 +97,6 @@ describe('user - actions', () => {
         })
     })
 
-    describe('updateCurrentUserTimezone', () => {
-        it('creates UPDATE_CURRENT_USER', async () => {
-            const store = mockStore({
-                user: {
-                    user: {
-                        id: 'test',
-                        email: 'test2',
-                        name: 'test3',
-                        timezone: 'test4',
-                    },
-                },
-            })
-            await store.dispatch(actions.updateCurrentUserTimezone('test5'))
-            const expectedActions = [{
-                type: constants.UPDATE_CURRENT_USER,
-                payload: {
-                    user: {
-                        id: 'test',
-                        email: 'test2',
-                        name: 'test3',
-                        timezone: 'test5',
-                    },
-                },
-            }]
-            assert.deepStrictEqual(store.getActions(), expectedActions)
-        })
-    })
     describe('logout', () => {
         it('calls services.logout and handles error', async () => {
             const store = mockStore()

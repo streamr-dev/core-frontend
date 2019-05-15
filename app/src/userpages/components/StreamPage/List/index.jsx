@@ -268,14 +268,8 @@ class StreamList extends Component<Props, State> {
     }
 
     render() {
-        const {
-            fetching,
-            streams,
-            showStream,
-            filter,
-            user,
-        } = this.props
-        const timezone = (user && user.timezone) || moment.tz.guess()
+        const { fetching, streams, showStream, filter } = this.props
+        const timezone = moment.tz.guess()
         const { dialogTargetStream, activeDialog } = this.state
 
         return (
