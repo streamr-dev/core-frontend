@@ -65,3 +65,4 @@ export const deleteDataUpTo = (id: StreamId, date: Date): ApiResult<any> => (
         date: moment(date).format('YYYY-MM-DD'),
     })
 )
+export const autodetectStreamfields = (id: StreamId): ApiResult<Stream> => get(formatApiUrl('streams', id, 'detectFields'))

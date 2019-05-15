@@ -20,7 +20,7 @@ export type NewStream = {
 
 export type StreamStatus = {
     ok: boolean,
-    date: Date,
+    date?: Date,
 }
 
 export type Stream = NewStream & {

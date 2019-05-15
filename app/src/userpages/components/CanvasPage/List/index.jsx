@@ -36,6 +36,8 @@ import NoCanvasesView from './NoCanvases'
 import { RunStates } from '$editor/canvas/state'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
 import CanvasPreview from '$editor/canvas/components/Preview'
+import Notification from '$shared/utils/Notification'
+import { NotificationIcon } from '$shared/utils/constants'
 
 import styles from './canvasList.pcss'
 
@@ -107,16 +109,15 @@ class CanvasList extends Component<Props, State> {
     }
 
     confirmDeleteCanvas = async (canvas: Canvas) => {
-        const confirmed = await confirmDialog({
-            title: I18n.t('userpages.canvases.delete.confirmTitle', {
-                canvas: canvas.name,
-            }),
+        const confirmed = await confirmDialog('canvas', {
+            title: I18n.t('userpages.canvases.delete.confirmTitle'),
             message: I18n.t('userpages.canvases.delete.confirmMessage'),
             acceptButton: {
                 title: I18n.t('userpages.canvases.delete.confirmButton'),
                 color: 'danger',
             },
             centerButtons: true,
+            dontShowAgain: false,
         })
 
         if (confirmed) {
@@ -155,8 +156,17 @@ class CanvasList extends Component<Props, State> {
         })
     }
 
+    onCopyUrl = (url: string) => {
+        this.props.copyToClipboard(url)
+
+        Notification.push({
+            title: I18n.t('userpages.canvases.menu.copyUrlNotification'),
+            icon: NotificationIcon.CHECKMARK,
+        })
+    }
+
     getActions = (canvas) => {
-        const { navigate, copyToClipboard } = this.props
+        const { navigate } = this.props
 
         const editUrl = formatExternalUrl(
             process.env.PLATFORM_ORIGIN_URL,
@@ -173,7 +183,7 @@ class CanvasList extends Component<Props, State> {
                 >
                     <Translate value="userpages.canvases.menu.share" />
                 </DropdownActions.Item>
-                <DropdownActions.Item onClick={() => copyToClipboard(editUrl)}>
+                <DropdownActions.Item onClick={() => this.onCopyUrl(editUrl)}>
                     <Translate value="userpages.canvases.menu.copyUrl" />
                 </DropdownActions.Item>
                 <DropdownActions.Item
