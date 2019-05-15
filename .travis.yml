@@ -178,7 +178,8 @@ jobs:
     - PORT=12345
     - STREAMR_API_URL=https://www.streamr.com/api/v1
     - STREAMR_WS_URL=wss://www.streamr.com/api/v1/ws
-    - PLATFORM_ORIGIN_URL=https://cdn.streamr.com
+    - PLATFORM_ORIGIN_URL=https://www.streamr.com
+    - PLATFORM_PUBLIC_PATH=https://cdn.streamr.com
     - STREAMR_URL=https://www.streamr.com
     - GOOGLE_ANALYTICS_ID=55331565-5
     - MARKETPLACE_CONTRACT_ADDRESS=0xA10151D088f6f2705a05d6c83719e99E079A61C1
