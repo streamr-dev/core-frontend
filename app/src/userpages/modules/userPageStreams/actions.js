@@ -589,21 +589,20 @@ export const streamFieldsAutodetect = (id: StreamId) => (dispatch: Function) => 
                 fields: data.config.fields,
             },
         }))
-        .then(({ config: { fields } }) => {
-            if (!fields) {
-                throw new Error('No fields!')
+        .then(({ config: { fields } }, err) => {
+            if (fields) {
+                dispatch(getStreamFieldAutodetectSuccess(fields))
+                Notification.push({
+                    title: 'Fields autodetected!',
+                    icon: NotificationIcon.CHECKMARK,
+                })
             }
-            dispatch(getStreamFieldAutodetectSuccess(fields))
-            Notification.push({
-                title: 'Fields autodetected!',
-                icon: NotificationIcon.CHECKMARK,
-            })
-        })
-        .catch((e) => {
-            dispatch(getStreamFieldAutodetectFailure(e))
-            Notification.push({
-                title: e.message,
-                icon: NotificationIcon.ERROR,
-            })
+            if (err) {
+                dispatch(getStreamFieldAutodetectFailure(err))
+                Notification.push({
+                    title: err.message,
+                    icon: NotificationIcon.ERROR,
+                })
+            }
         })
 }

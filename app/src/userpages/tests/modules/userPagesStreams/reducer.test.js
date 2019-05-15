@@ -16,6 +16,8 @@ describe('Stream reducer', () => {
             filter: null,
             editedStream: null,
             deleteDataError: null,
+            autodetectFetching: false,
+            streamFieldAutodetectError: null,
         })
     })
 
