@@ -1,6 +1,6 @@
 import React from 'react'
 import AceEditor from 'react-ace'
-
+import uniqueId from 'lodash/uniqueId'
 import 'brace/mode/java'
 import 'brace/theme/textmate'
 
@@ -10,7 +10,7 @@ import styles from './CodeEditorWindow.pcss'
 
 class CodeEditorWindow extends React.Component {
     state = {
-        editorResetKey: 0,
+        editorResetKey: uniqueId('CodeEditorWindow'),
         code: undefined,
         errors: [],
         sending: false,
@@ -37,9 +37,9 @@ class CodeEditorWindow extends React.Component {
         if (code != null && code !== this.props.code) {
             this.props.onChange(code)
         }
-        this.setState(({ editorResetKey }) => ({
+        this.setState(() => ({
             code: undefined,
-            editorResetKey: editorResetKey + 1,
+            editorResetKey: uniqueId('CodeEditorWindow'),
         }))
     }
 
