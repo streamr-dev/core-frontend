@@ -680,10 +680,10 @@ msgid "modal##shareResource##anonymousAccess"
 msgstr "Who can access this?"
 
 msgid "modal##shareResource##onlyInvited"
-msgstr "Only people you've invited"
+msgstr "Private — only people you’ve invited"
 
 msgid "modal##shareResource##withLink"
-msgstr "Anyone with the link and people you've invited"
+msgstr "Public — viewable by anyone with the link or via the API"
 
 msgid "modal##shareResource##enterEmailAddress"
 msgstr "Enter email address"
