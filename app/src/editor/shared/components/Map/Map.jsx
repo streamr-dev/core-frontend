@@ -94,7 +94,7 @@ export default class Map extends React.Component<Props> {
             .values(markers)
 
         return (
-            <UiSizeConstraint minWidth={200} minHeight={200}>
+            <UiSizeConstraint minWidth={368} minHeight={224}>
                 <div className={cx(className)}>
                     <LeafletMap
                         center={mapCenter}

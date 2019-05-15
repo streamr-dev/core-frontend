@@ -2,3 +2,21 @@
   height: 100%;
   width: 100%;
 }
+
+/* Custom zoom in/out controls. `:global` is never pretty. */
+
+:global(.leaflet-control-zoom) {
+  border: 0 !important;
+  box-shadow: 0 0 calc(0.3125 * var(--um)) rgba(0, 0, 0, 0.15) !important;
+}
+
+:global(.leaflet-control-zoom-in) {
+  border-bottom-color: #DCDCDC !important;
+}
+
+:global(.leaflet-control-zoom > a) {
+  font-size: var(--um) !important;
+  height: 1.5em !important;
+  line-height: 1.25em !important;
+  width: 1.5em !important;
+}
