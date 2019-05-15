@@ -1,10 +1,6 @@
 // @flow
 
 import axios from 'axios'
-import {
-    error as errorNotification,
-    success as successNotification,
-} from 'react-notification-system-redux'
 import moment from 'moment-timezone'
 import cloneDeep from 'lodash/cloneDeep'
 
@@ -13,6 +9,8 @@ import type { Stream, StreamId, StreamIdList, StreamFieldList, CSVImporterSchema
 import type { Permission } from '$userpages/flowtype/permission-types'
 import type { Filter } from '$userpages/flowtype/common-types'
 
+import Notification from '$shared/utils/Notification'
+import { NotificationIcon } from '$shared/utils/constants'
 import { streamsSchema, streamSchema } from '$shared/modules/entities/schema'
 import { handleEntities } from '$shared/utils/entities'
 import * as api from '$shared/utils/api'
@@ -74,9 +72,27 @@ export const UPDATE_EDIT_STREAM = 'userpages/streams/UPDATE_EDIT_STREAM'
 export const UPDATE_EDIT_STREAM_FIELD = 'userpages/streams/UPDATE_EDIT_STREAM_FIELD'
 export const GET_STREAM_RANGE_REQUEST = 'userpages/streams/GET_STREAM_RANGE_REQUEST'
 
+export const STREAM_FIELD_AUTODETECT_REQUEST = 'userpages/streams/STREAM_FIELD_AUTODETECT_REQUEST'
+export const STREAM_FIELD_AUTODETECT_SUCCESS = 'userpages/streams/STREAM_FIELD_AUTODETECT_SUCCESS'
+export const STREAM_FIELD_AUTODETECT_FAILURE = 'userpages/streams/STREAM_FIELD_AUTODETECT_FAILURE'
+
 export const openStream = (id: ?StreamId) => ({
     type: OPEN_STREAM,
     id,
+})
+
+const getStreamFieldAutodetectRequest = () => ({
+    type: STREAM_FIELD_AUTODETECT_REQUEST,
+})
+
+const getStreamFieldAutodetectSuccess = (fields: StreamFieldList) => ({
+    type: STREAM_FIELD_AUTODETECT_SUCCESS,
+    fields,
+})
+
+const getStreamFieldAutodetectFailure = (error: ErrorInUi) => ({
+    type: STREAM_FIELD_AUTODETECT_FAILURE,
+    error,
 })
 
 const getStreamRequest = () => ({
@@ -247,10 +263,10 @@ export const getStream = (id: StreamId) => (dispatch: Function) => {
         .then((id) => dispatch(getStreamSuccess(id)))
         .catch((e) => {
             dispatch(getStreamFailure(e))
-            dispatch(errorNotification({
-                title: 'Error!',
-                message: e.message,
-            }))
+            Notification.push({
+                title: e.message,
+                icon: NotificationIcon.ERROR,
+            })
             throw e
         })
 }
@@ -299,10 +315,10 @@ export const getStreams = () => (dispatch: Function, getState: Function) => {
         })
         .catch((e) => {
             dispatch(getStreamsFailure(e))
-            dispatch(errorNotification({
-                title: 'Error!',
-                message: e.message,
-            }))
+            Notification.push({
+                title: e.message,
+                icon: NotificationIcon.ERROR,
+            })
             throw e
         })
 }
@@ -330,10 +346,10 @@ export const getMyStreamPermissions = (id: StreamId) => (dispatch: Function, get
         })
         .catch((e) => {
             dispatch(getMyStreamPermissionsFailure(e))
-            dispatch(errorNotification({
-                title: 'Error!',
-                message: e.message,
-            }))
+            Notification.push({
+                title: e.message,
+                icon: NotificationIcon.ERROR,
+            })
             throw e
         })
 }
@@ -343,10 +359,10 @@ export const createStream = (options: { name: string, description: ?string }) =>
     return new Promise((resolve, reject) => {
         services.postStream(options)
             .then((data: Stream) => {
-                dispatch(successNotification({
-                    title: 'Success!',
-                    message: `Stream ${data.name} created successfully!`,
-                }))
+                Notification.push({
+                    title: `Stream ${data.name} created successfully!`,
+                    icon: NotificationIcon.CHECKMARK,
+                })
                 return data
             })
             .then(handleEntities(streamSchema, dispatch))
@@ -356,10 +372,10 @@ export const createStream = (options: { name: string, description: ?string }) =>
             })
             .catch((e) => {
                 dispatch(createStreamFailure(e))
-                dispatch(errorNotification({
-                    title: 'Error!',
-                    message: e.message,
-                }))
+                Notification.push({
+                    title: e.message,
+                    icon: NotificationIcon.ERROR,
+                })
                 reject(e)
             })
     })
@@ -371,17 +387,17 @@ export const updateStream = (stream: Stream) => (dispatch: Function) => {
         .then(() => handleEntities(streamSchema, dispatch)(stream))
         .then(() => {
             dispatch(updateStreamSuccess(stream.id))
-            dispatch(successNotification({
-                title: 'Success!',
-                message: 'Stream saved successfully',
-            }))
+            Notification.push({
+                title: 'Stream saved successfully',
+                icon: NotificationIcon.CHECKMARK,
+            })
         })
         .catch((e) => {
             dispatch(updateStreamFailure(e))
-            dispatch(errorNotification({
-                title: 'Error!',
-                message: e.message,
-            }))
+            Notification.push({
+                title: e.message,
+                icon: NotificationIcon.ERROR,
+            })
             throw e
         })
 }
@@ -391,17 +407,17 @@ export const deleteStream = (id: StreamId) => (dispatch: Function): Promise<void
     return services.deleteStream(id)
         .then(() => {
             dispatch(deleteStreamSuccess(id))
-            dispatch(successNotification({
-                title: 'Success!',
-                message: 'Stream deleted successfully',
-            }))
+            Notification.push({
+                title: 'Stream deleted successfully',
+                icon: NotificationIcon.CHECKMARK,
+            })
         })
         .catch((e) => {
             dispatch(deleteStreamFailure(e))
-            dispatch(errorNotification({
-                title: 'Error!',
-                message: e.message,
-            }))
+            Notification.push({
+                title: e.message,
+                icon: NotificationIcon.ERROR,
+            })
             throw e
         })
 }
@@ -418,17 +434,17 @@ export const saveFields = (id: StreamId, fields: StreamFieldList) => (dispatch: 
         .then(handleEntities(streamSchema, dispatch))
         .then((id) => {
             dispatch(saveFieldsSuccess(id))
-            dispatch(successNotification({
-                title: 'Success!',
-                message: 'Fields saved successfully',
-            }))
+            Notification.push({
+                title: 'Fields saved successfully',
+                icon: NotificationIcon.CHECKMARK,
+            })
         })
         .catch((e) => {
             dispatch(saveFieldsFailure(e))
-            dispatch(errorNotification({
-                title: 'Error!',
-                message: e.message,
-            }))
+            Notification.push({
+                title: e.message,
+                icon: NotificationIcon.ERROR,
+            })
             throw e
         })
 }
@@ -449,18 +465,18 @@ export const uploadCsvFile = (id: StreamId, file: File) => (dispatch: Function) 
                 throw new CsvSchemaError('Could not parse timestamp column!')
             }
             dispatch(uploadCsvFileSuccess(id, response.data.fileId, response.data.schema))
-            dispatch(successNotification({
-                title: 'Success!',
-                message: 'CSV file imported successfully',
-            }))
+            Notification.push({
+                title: 'CSV file imported successfully',
+                icon: NotificationIcon.CHECKMARK,
+            })
         })
         .catch((error) => {
             const e = getError(error)
             dispatch(uploadCsvFileFailure(e))
-            dispatch(errorNotification({
-                title: 'Error!',
-                message: e.message,
-            }))
+            Notification.push({
+                title: e.message,
+                icon: NotificationIcon.ERROR,
+            })
             throw error
         })
 }
@@ -474,17 +490,17 @@ export const confirmCsvFileUpload = (id: StreamId, fileUrl: string, dateFormat: 
     })
         .then(() => {
             dispatch(confirmCsvFileUploadSuccess())
-            dispatch(successNotification({
-                title: 'Success!',
-                message: 'CSV file imported successfully',
-            }))
+            Notification.push({
+                title: 'CSV file imported successfully',
+                icon: NotificationIcon.CHECKMARK,
+            })
         })
         .catch((e) => {
             dispatch(confirmCsvFileUploadFailure(e))
-            dispatch(errorNotification({
-                title: 'Error!',
-                message: e.message,
-            }))
+            Notification.push({
+                title: e.message,
+                icon: NotificationIcon.ERROR,
+            })
             throw e
         })
 }
@@ -499,18 +515,18 @@ export const deleteDataUpTo = (id: StreamId, date: Date) => (dispatch: Function)
     return axios.get(`${process.env.STREAMR_URL}/stream/deleteDataUpTo?id=${id}&date=${moment(date).format('YYYY-MM-DD')}`)
         .then(() => {
             dispatch(deleteDataUpToSuccess())
-            dispatch(successNotification({
-                title: 'Success!',
-                message: 'Data deleted succesfully',
-            }))
+            Notification.push({
+                title: 'Data deleted succesfully',
+                icon: NotificationIcon.CHECKMARK,
+            })
         })
         .catch((error) => {
             const e = getError(error)
             dispatch(deleteDataUpToFailure(e))
-            dispatch(errorNotification({
-                title: 'Error!',
-                message: e.message,
-            }))
+            Notification.push({
+                title: e.message,
+                icon: NotificationIcon.ERROR,
+            })
         })
 }
 
@@ -562,4 +578,31 @@ export const initNewStream = () => (dispatch: Function) => {
         storageDays: 365,
         uiChannel: false,
     }))
+}
+
+export const streamFieldsAutodetect = (id: StreamId) => (dispatch: Function) => {
+    dispatch(getStreamFieldAutodetectRequest())
+    return services.autodetectStreamfields(id)
+        .then((data) => ({
+            id,
+            config: {
+                fields: data.config.fields,
+            },
+        }))
+        .then(({ config: { fields } }, err) => {
+            if (fields) {
+                dispatch(getStreamFieldAutodetectSuccess(fields))
+                Notification.push({
+                    title: 'Fields autodetected!',
+                    icon: NotificationIcon.CHECKMARK,
+                })
+            }
+            if (err) {
+                dispatch(getStreamFieldAutodetectFailure(err))
+                Notification.push({
+                    title: err.message,
+                    icon: NotificationIcon.ERROR,
+                })
+            }
+        })
 }

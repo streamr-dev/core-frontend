@@ -23,4 +23,5 @@ export type UserPageStreamsState = {
     filter: ?Filter,
     editedStream: ?Stream,
     deleteDataError?: ?ErrorInUi,
+    autodetectFetching: boolean,
 }

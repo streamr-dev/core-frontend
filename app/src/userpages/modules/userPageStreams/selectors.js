@@ -75,3 +75,8 @@ export const selectUploadCsvState: (StoreState) => ?CsvUploadState = createSelec
     selectUserPageStreamsState,
     (subState: UserPageStreamsState): ?CsvUploadState => subState.csvUpload,
 )
+
+export const selectFieldsAutodetectFetching: (StoreState) => boolean = createSelector(
+    selectUserPageStreamsState,
+    (subState: UserPageStreamsState): boolean => subState.autodetectFetching,
+)

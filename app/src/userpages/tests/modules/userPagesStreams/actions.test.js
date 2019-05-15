@@ -53,9 +53,6 @@ describe('Stream actions', () => {
             const expectedActions = [{
                 type: actions.CREATE_STREAM_REQUEST,
             }, {
-                type: 'successNotification',
-                level: 'success',
-            }, {
                 type: 'updateEntities',
             }, {
                 type: actions.CREATE_STREAM_SUCCESS,
@@ -86,8 +83,6 @@ describe('Stream actions', () => {
                     code: 'TEST',
                     statusCode: 500,
                 },
-            }, {
-                level: 'error',
             }]
 
             try {
@@ -95,7 +90,6 @@ describe('Stream actions', () => {
                 assert(false, 'Did not fail!')
             } catch (e) {
                 assert.deepStrictEqual(store.getActions().slice(0, 2), expectedActions.slice(0, 2))
-                assert.equal(store.getActions()[2].level, expectedActions[2].level)
             }
         })
     })
@@ -177,13 +171,10 @@ describe('Stream actions', () => {
             }, {
                 type: actions.UPDATE_STREAM_SUCCESS,
                 stream,
-            }, {
-                level: 'success',
             }]
 
             await store.dispatch(actions.updateStream(stream))
             assert.deepStrictEqual(store.getActions().slice(0, 2), expectedActions.slice(0, 2))
-            assert.equal(store.getActions()[2].level, expectedActions[2].level)
         })
         it('creates UPDATE_STREAM_FAILURE and CREATE_NOTIFICATION when updating a stream has failed', async () => {
             const id = 'test'
@@ -208,15 +199,12 @@ describe('Stream actions', () => {
                     code: 'TEST',
                     statusCode: 500,
                 },
-            }, {
-                level: 'error',
             }]
 
             try {
                 await store.dispatch(actions.updateStream(db))
             } catch (e) {
                 assert.deepStrictEqual(store.getActions().slice(0, 2), expectedActions.slice(0, 2))
-                assert.equal(store.getActions()[2].level, expectedActions[2].level)
             }
         })
         it('uses PUT request', async () => {
@@ -256,13 +244,10 @@ describe('Stream actions', () => {
             }, {
                 type: actions.DELETE_STREAM_SUCCESS,
                 id: stream.id,
-            }, {
-                level: 'success',
             }]
 
             await store.dispatch(actions.deleteStream(stream.id))
             assert.deepStrictEqual(store.getActions().slice(0, 2), expectedActions.slice(0, 2))
-            assert.equal(store.getActions()[2].level, expectedActions[2].level)
         })
         it('creates DELETE_STREAM_FAILURE when deleting stream has failed', async () => {
             const stream = {
@@ -285,15 +270,12 @@ describe('Stream actions', () => {
                     code: 'TEST',
                     statusCode: 500,
                 },
-            }, {
-                level: 'error',
             }]
             try {
                 await store.dispatch(actions.deleteStream(stream.id))
                 assert(false, 'Did not fail!')
             } catch (e) {
                 assert.deepStrictEqual(store.getActions().slice(0, 2), expectedActions.slice(0, 2))
-                assert.equal(store.getActions()[2].level, expectedActions[2].level)
             }
         })
     })
@@ -341,13 +323,10 @@ describe('Stream actions', () => {
                 type: actions.SAVE_STREAM_FIELDS_SUCCESS,
                 id,
                 fields,
-            }, {
-                level: 'success',
             }]
 
             await store.dispatch(actions.saveFields(id, fields))
             assert.deepStrictEqual(store.getActions().slice(0, 2), expectedActions.slice(0, 2))
-            assert.equal(store.getActions()[2].level, expectedActions[2].level)
         })
         it('creates SAVE_STREAM_FIELDS_FAILURE when saving fields has failed', async () => {
             const id = 'sfasldkfjsaldkfj'
@@ -375,8 +354,6 @@ describe('Stream actions', () => {
                     code: 'TEST',
                     statusCode: 500,
                 },
-            }, {
-                level: 'error',
             }]
 
             try {
@@ -384,7 +361,6 @@ describe('Stream actions', () => {
                 assert(false, 'Did not fail!')
             } catch (e) {
                 assert.deepStrictEqual(store.getActions().slice(0, 2), expectedActions.slice(0, 2))
-                assert.deepStrictEqual(store.getActions()[2].level, expectedActions[2].level)
             }
         })
     })

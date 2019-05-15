@@ -8,13 +8,14 @@ import { arrayMove } from 'react-sortable-hoc'
 import { Translate } from 'react-redux-i18n'
 import uuid from 'uuid'
 
-import type { Stream } from '$shared/flowtype/stream-types'
+import Spinner from '$shared/components/Spinner'
+import type { Stream, StreamId } from '$shared/flowtype/stream-types'
 import type { StoreState } from '$shared/flowtype/store-state'
 import FieldList from '$shared/components/FieldList'
 import FieldItem from '$shared/components/FieldList/FieldItem'
 import Dropdown from '$shared/components/Dropdown'
-import { updateEditStreamField, updateEditStream } from '$userpages/modules/userPageStreams/actions'
-import { selectEditedStream } from '$userpages/modules/userPageStreams/selectors'
+import { updateEditStreamField, updateEditStream, streamFieldsAutodetect } from '$userpages/modules/userPageStreams/actions'
+import { selectEditedStream, selectFieldsAutodetectFetching } from '$userpages/modules/userPageStreams/selectors'
 import TextInput from '$shared/components/TextInput'
 import Toggle from '$shared/components/Toggle'
 
@@ -25,12 +26,14 @@ import NewFieldEditor from './NewFieldEditor'
 
 type StateProps = {
     stream: ?Stream,
+    fieldsAutodetectFetching: boolean,
 }
 
 type DispatchProps = {
     copyStreamId: (string) => void,
     editField: (string, any) => void,
     updateEditStream: (data: Stream) => void,
+    streamFieldsAutodetect: (id: StreamId) => Promise<void>,
 }
 
 type Props = StateProps & DispatchProps
@@ -152,6 +155,12 @@ export class ConfigureView extends Component<Props, State> {
         })
     }
 
+    autodetectFields = () => {
+        if (this.props.stream && this.props.stream.id) {
+            return this.props.streamFieldsAutodetect(this.props.stream.id)
+        }
+    }
+
     render() {
         const { stream } = this.props
         const { isAddingField } = this.state
@@ -159,8 +168,27 @@ export class ConfigureView extends Component<Props, State> {
         return (
             <div>
                 <Row className={styles.helpText}>
-                    <Col xs={12}>
+                    <Col sm={12} md={9}>
                         <Translate value="userpages.streams.edit.configure.help" tag="p" className={styles.longText} />
+                    </Col>
+                    <Col sm={12} md={3}>
+                        <Button
+                            color="userpages"
+                            className={styles.autodetect}
+                            outline
+                            onClick={this.autodetectFields}
+                            disabled={this.props.fieldsAutodetectFetching}
+                        >
+                            {!this.props.fieldsAutodetectFetching && (
+                                <Translate value="userpages.streams.edit.configure.autodetect" />
+                            )}
+                            {this.props.fieldsAutodetectFetching && (
+                                <Fragment>
+                                    <Translate value="userpages.streams.edit.configure.waiting" />
+                                    <Spinner size="small" className={styles.spinner} color="white" />
+                                </Fragment>
+                            )}
+                        </Button>
                     </Col>
                 </Row>
                 {stream && stream.config && stream.config.fields && !!stream.config.fields.length &&
@@ -278,12 +306,14 @@ export class ConfigureView extends Component<Props, State> {
 
 const mapStateToProps = (state: StoreState): StateProps => ({
     stream: selectEditedStream(state),
+    fieldsAutodetectFetching: selectFieldsAutodetectFetching(state),
 })
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     copyStreamId: (id) => dispatch(copy(id)),
     editField: (field: string, data: any) => dispatch(updateEditStreamField(field, data)),
     updateEditStream: (data: Stream) => dispatch(updateEditStream(data)),
+    streamFieldsAutodetect: (id: StreamId) => dispatch(streamFieldsAutodetect(id)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ConfigureView)

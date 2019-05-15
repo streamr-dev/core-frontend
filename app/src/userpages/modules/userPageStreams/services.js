@@ -20,3 +20,5 @@ export const getMyStreamPermissions = (id: StreamId): ApiResult<Array<Permission
     get(formatApiUrl('streams', id, 'permissions', 'me'))
 
 export const getStreamStatus = (id: StreamId): ApiResult<StreamStatus> => get(formatApiUrl('streams', id, 'status'))
+
+export const autodetectStreamfields = (id: StreamId): ApiResult<Stream> => get(formatApiUrl('streams', id, 'detectFields'))

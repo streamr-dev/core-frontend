@@ -41,6 +41,9 @@ import {
     DELETE_DATA_UP_TO_REQUEST,
     DELETE_DATA_UP_TO_SUCCESS,
     DELETE_DATA_UP_TO_FAILURE,
+    STREAM_FIELD_AUTODETECT_REQUEST,
+    STREAM_FIELD_AUTODETECT_SUCCESS,
+    STREAM_FIELD_AUTODETECT_FAILURE,
 } from './actions'
 
 const initialState = {
@@ -55,6 +58,8 @@ const initialState = {
     filter: null,
     editedStream: null,
     deleteDataError: null,
+    autodetectFetching: false,
+    streamFieldAutodetectError: null,
 }
 
 export default function (state: UserPageStreamsState = initialState, action: StreamAction): UserPageStreamsState {
@@ -268,6 +273,34 @@ export default function (state: UserPageStreamsState = initialState, action: Str
                 ...state,
                 fetching: false,
                 deleteDataError: action.error,
+            }
+        }
+
+        case STREAM_FIELD_AUTODETECT_REQUEST: {
+            return {
+                ...state,
+                autodetectFetching: true,
+            }
+        }
+
+        case STREAM_FIELD_AUTODETECT_SUCCESS: {
+            return {
+                ...state,
+                editedStream: {
+                    ...state.editedStream,
+                    config: {
+                        fields: action.fields,
+                    },
+                },
+                autodetectFetching: false,
+            }
+        }
+
+        case STREAM_FIELD_AUTODETECT_FAILURE: {
+            return {
+                ...state,
+                autodetectFetching: false,
+                streamFieldAutodetectError: action.error,
             }
         }
 
