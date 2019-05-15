@@ -10,6 +10,7 @@ import styles from './CodeEditorWindow.pcss'
 
 class CodeEditorWindow extends React.Component {
     state = {
+        editorResetKey: 0,
         code: undefined,
         errors: [],
         sending: false,
@@ -25,10 +26,21 @@ class CodeEditorWindow extends React.Component {
         this.unmounted = true
     }
 
-    onChange = (newValue) => {
+    onChange = (code) => {
         this.setState({
-            code: newValue,
+            code,
         })
+    }
+
+    onBlur = () => {
+        const { code } = this.state
+        if (code != null && code !== this.props.code) {
+            this.props.onChange(code)
+        }
+        this.setState(({ editorResetKey }) => ({
+            code: undefined,
+            editorResetKey: editorResetKey + 1,
+        }))
     }
 
     onApply = () => {
@@ -37,8 +49,9 @@ class CodeEditorWindow extends React.Component {
             sending: true,
         }, async () => {
             if (this.unmounted) { return }
+            const code = this.state.code != null ? this.state.code : this.props.code
             try {
-                await this.props.onApply(this.state.code)
+                await this.props.onApply(code)
 
                 if (this.unmounted) { return }
 
@@ -65,7 +78,7 @@ class CodeEditorWindow extends React.Component {
     }
 
     render() {
-        const { errors, sending } = this.state
+        const { editorResetKey, errors, sending } = this.state
         const {
             onClose,
             onShowDebug,
@@ -89,11 +102,13 @@ class CodeEditorWindow extends React.Component {
                         <div className={styles.editorContainer}>
                             <AceEditor
                                 ref={this.editor}
+                                name={editorResetKey}
                                 value={code}
                                 className={styles.editor}
                                 mode="java"
                                 theme="textmate"
                                 onChange={this.onChange}
+                                onBlur={this.onBlur}
                                 width="100%"
                                 height="100%"
                                 maxLines={20}

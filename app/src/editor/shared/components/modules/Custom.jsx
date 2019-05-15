@@ -19,6 +19,10 @@ export default class CustomModule extends React.Component {
         })
     )
 
+    onChange = (code) => {
+        this.props.api.updateModule(this.props.moduleHash, { code })
+    }
+
     onMessage = (d) => {
         if (d.type === 'debug') {
             this.setState(({ debugMessages }) => ({
@@ -54,6 +58,7 @@ export default class CustomModule extends React.Component {
                     code={module.code || ''}
                     readOnly={isActive}
                     onApply={this.onApply}
+                    onChange={this.onChange}
                     debugMessages={debugMessages}
                     onClearDebug={this.onClearDebug}
                 >

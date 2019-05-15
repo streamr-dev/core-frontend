@@ -65,6 +65,7 @@ export default class CodeEditor extends React.Component {
             code,
             debugMessages,
             onApply,
+            onChange,
             onClearDebug,
             children,
         } = this.props
@@ -81,6 +82,7 @@ export default class CodeEditor extends React.Component {
                         readOnly={readOnly}
                         onClose={this.onCloseEditor}
                         onApply={onApply}
+                        onChange={onChange}
                         onShowDebug={this.onShowDebug}
                     />
                 )}

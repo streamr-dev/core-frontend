@@ -243,12 +243,6 @@ const CanvasEditComponent = class CanvasEdit extends Component {
 
     pushNewDefinition = async (hash, value) => {
         const module = CanvasState.getModule(this.props.canvas, hash)
-        this.replaceCanvas((canvas) => (
-            CanvasState.updateModule(canvas, hash, (current = {}) => ({
-                ...current,
-                ...value,
-            }))
-        ))
 
         // Update the module info, this will throw if anything went wrong.
         const newModule = await sharedServices.getModule({
@@ -261,7 +255,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
 
         if (this.unmounted) { return }
 
-        this.setCanvas({ type: 'Update Module' }, (canvas) => (
+        this.replaceCanvas((canvas) => (
             CanvasState.updateModule(canvas, hash, () => newModule)
         ))
     }
