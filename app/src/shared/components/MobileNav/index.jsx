@@ -32,7 +32,7 @@ const mapStateToProps = (state): StateProps => ({
 const MobileNav = compose(
     connect(mapStateToProps),
     withRouter,
-)(({ currentUser, location, className }: Props) => {
+)(({ currentUser, location: { pathname: redirect }, className }: Props) => {
     const [open, setOpen] = useState(false)
 
     const toggle = useCallback(() => {
@@ -126,9 +126,9 @@ const MobileNav = compose(
                             <li>
                                 <Link
                                     className={styles.link}
-                                    to={routes.login({
-                                        redirect: location.pathname,
-                                    })}
+                                    to={routes.login(redirect !== '/' ? {
+                                        redirect,
+                                    } : {})}
                                 >
                                     <Translate value="general.signIn" />
                                 </Link>
