@@ -196,7 +196,7 @@ jobs:
       secret_access_key:
         secure: SmtMYr1JhqzneGtg4sx10/Z7e5TsvlwPl05kkpx2dsGUuWX1gb+kWidNDpC8fWvkREg38o3yOtPza/FOyRtLwdIe1N1lZyYFvIhac7lATroMNyCWmTuYAZMbLtVUEsI43LNhQAC+F/N48TwM+0EJEWUIddc0ANbYEH8cReqDcngL7ZPtFEqtx9Qc/ZVY7/a83munHnd9dXga+4m8xVGo/u6UIn0hSVKt/LLHOAYw4chNXvUgyP2hNmmxHn2cdKocqM4dmEochqe8THSK3F37xlPfaHKzLQfEKfWgWdSQ+lDXonGfDz5ZSs8Owwnd8R/OmOmMKdAs6i96Kj3u4amOANMj1tixtrN4BiFuTM89iTPwKy49xOTSiLjS6XGvyZ1+GIYXuwmsLJbEef19qxpPUz41N8Kmue7Vf2ijy3c6Q0jpFJTKOAZe7m0hONyQi+SG6GYDAxRmuvghIrlZ71zydSn6FYLv3R5cI17tbCZAK9kZdzSXkr4K8W4LJbbZzmJk+X2IYT+Y9WLganeWk9RhmSz5GG84Y33AtsJXiNkBRrV32VtkYkwOa+FtqqLkLnJ7czqez1RyoNGXuhM2djY0pibhabsj7Z9o6ZyLKnm+2FTNdRFpJnkfl2Opv9R5ghOmTLjPSY+Dxjw/1PJoBfzzIEe4tnzpEsC9gqDxJ79KW6k=
       bucket: eu-west-1-streamr-cdn
-      local-dir: "$TRAVIS_BUILD_DIR/build"
+      local-dir: "$TRAVIS_BUILD_DIR/app/dist"
       acl: private
       region: eu-west-1
       skip_cleanup: true
