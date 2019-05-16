@@ -10,7 +10,6 @@ const state = {
         user: {
             name: 'Tester1',
             username: 'tester1@streamr.com',
-            timezone: 'Zulu',
         },
         fetchingUserData: false,
         userDataError: null,

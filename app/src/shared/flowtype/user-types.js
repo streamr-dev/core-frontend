@@ -7,7 +7,6 @@ export type User = {
     email: string,
     name: string,
     username: string,
-    timezone: string,
     imageUrlSmall: string,
     imageUrlLarge: string,
 }

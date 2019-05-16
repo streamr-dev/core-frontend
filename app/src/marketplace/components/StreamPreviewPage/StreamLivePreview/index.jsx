@@ -14,7 +14,6 @@ import { sm } from '$app/scripts/breakpoints'
 
 import { formatDateTime } from '../../../utils/time'
 import type { StreamId } from '$shared/flowtype/stream-types'
-import type { User } from '$shared/flowtype/user-types'
 import type { ResourceKeyId } from '$shared/flowtype/resource-key-types'
 
 import styles from './streamLivePreview.pcss'
@@ -30,7 +29,6 @@ export type DataPoint = {
 
 type Props = {
     streamId: ?StreamId,
-    currentUser: ?User,
     authApiKeyId: ?ResourceKeyId,
     selectedDataPoint: ?DataPoint,
     onSelectDataPoint: (DataPoint, ?boolean) => void,
@@ -180,7 +178,7 @@ export class StreamLivePreview extends Component<Props, State> {
 
     render() {
         const { userpagesPreview } = this.props
-        const tz = (this.props.currentUser && this.props.currentUser.timezone) || moment.tz.guess()
+        const tz = moment.tz.guess()
         const { visibleData, mobileTableColumnIndex } = this.state
         return (
             <MediaQuery maxWidth={sm.max}>

@@ -41,7 +41,6 @@ describe('user - services', () => {
             const data = {
                 name: 'Tester1',
                 username: 'tester1@streamr.com',
-                timezone: 'Zulu',
             }
 
             moxios.wait(() => {

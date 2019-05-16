@@ -2,14 +2,11 @@
 
 import React, { Fragment, Component } from 'react'
 import { connect } from 'react-redux'
-import moment from 'moment-timezone'
 
 import TextInput from '$shared/components/TextInput'
-import SelectInput from '$shared/components/SelectInput'
 
 import {
     updateCurrentUserName,
-    updateCurrentUserTimezone,
     updateCurrentUserImage,
     getUserData,
 } from '$shared/modules/user/actions'
@@ -29,16 +26,10 @@ type StateProps = {
 type DispatchProps = {
     getCurrentUser: () => void,
     updateCurrentUserName: (name: $ElementType<User, 'name'>) => void,
-    updateCurrentUserTimezone: (timezone: $ElementType<User, 'timezone'>) => void,
     updateCurrentUserImage: (image: ?File) => Promise<void>,
 }
 
 type Props = StateProps & DispatchProps
-
-const options = moment.tz.names().map((tz) => ({
-    value: tz,
-    label: `(UTC${moment.tz(tz).format('Z')}) ${tz}`.replace(/\//g, ', ').replace(/_/g, ' '),
-}))
 
 export class ProfileSettings extends Component<Props> {
     componentDidMount() {
@@ -50,10 +41,6 @@ export class ProfileSettings extends Component<Props> {
         this.props.updateCurrentUserName(target.value)
     }
 
-    onTimezoneChange = ({ value }: { value: $ElementType<User, 'timezone'> }) => {
-        this.props.updateCurrentUserTimezone(value)
-    }
-
     onImageChange = (image: ?File) => (
         this.props.updateCurrentUserImage(image)
     )
@@ -63,7 +50,6 @@ export class ProfileSettings extends Component<Props> {
             email: '',
             name: '',
             username: null,
-            timezone: null,
         }
         return (
             <Fragment>
@@ -90,17 +76,6 @@ export class ProfileSettings extends Component<Props> {
                 <div className={styles.password}>
                     <ChangePassword.Button />
                 </div>
-                <div className={styles.timezone}>
-                    <SelectInput
-                        label="Timezone"
-                        name="name"
-                        options={options}
-                        value={options.find(({ value }) => user.timezone === value)}
-                        onChange={this.onTimezoneChange}
-                        required
-                        className={styles.timezoneInput}
-                    />
-                </div>
             </Fragment>
         )
     }
@@ -116,9 +91,6 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     },
     updateCurrentUserName(name: $ElementType<User, 'name'>) {
         dispatch(updateCurrentUserName(name))
-    },
-    updateCurrentUserTimezone(tz: $ElementType<User, 'timezone'>) {
-        dispatch(updateCurrentUserTimezone(tz))
     },
     updateCurrentUserImage(image: ?File) {
         return dispatch(updateCurrentUserImage(image))

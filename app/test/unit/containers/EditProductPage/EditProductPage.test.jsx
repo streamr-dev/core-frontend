@@ -79,7 +79,6 @@ describe('EditProductPage', () => {
             user: {
                 name: 'bob',
                 username: 'bobcat69',
-                timezone: 'HEL',
             },
         }
         sandbox.stub(I18n, 't').callsFake(String)
