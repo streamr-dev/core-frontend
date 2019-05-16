@@ -1,5 +1,6 @@
 // @flow
 
+import { useEffect } from 'react'
 import { connectedRouterRedirect } from 'redux-auth-wrapper/history4/redirect'
 import locationHelperBuilder from 'redux-auth-wrapper/history4/locationHelper'
 
@@ -7,6 +8,18 @@ import { selectUserData, isAuthenticating as authenticatingSelector } from '$sha
 import routes from '$routes'
 
 const locationHelper = locationHelperBuilder({})
+
+type Props = {
+    redirect: Function,
+    redirectPath: string,
+}
+
+const FailureComponent = (props: Props) => {
+    useEffect(() => {
+        props.redirect(props, props.redirectPath)
+    }, [props])
+    return null
+}
 
 export const userIsAuthenticated = connectedRouterRedirect({
     authenticatingSelector,
@@ -31,4 +44,5 @@ export const userIsNotAuthenticated = connectedRouterRedirect({
     authenticatedSelector: (state) => !selectUserData(state),
     // A nice display name for this check
     wrapperDisplayName: 'UserIsNotAuthenticated',
+    FailureComponent,
 })
