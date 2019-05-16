@@ -183,7 +183,7 @@
     letter-spacing: 2px;
     text-transform: uppercase;
     line-height: 1.2;
-    transition: background-color 0.1s;
+    transition: color 0.1s;
 
     &:not(:disabled) {
       color: #525252;
@@ -196,18 +196,27 @@
   }
 }
 
-body .RealtimeRunButtonMenu {
-  padding: 0;
+/* stylelint-disable no-descending-specificity */
 
-  /* stylelint-disable-next-line no-descending-specificity */
-  & :global(.dropdown-item) {
-    padding: 12px 0.5rem;
+body .RealtimeRunButtonMenu {
+  & :global(.dropdown-item),
+  & :global(.dropdown-item):not(:disabled) {
+    background: none;
     text-align: center;
+    color: #A3A3A3;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  & :global(.dropdown-item):active,
+  & :global(.dropdown-item):hover,
+  & :global(.dropdown-item):focus {
+    background: none;
+    color: #525252;
   }
 }
 
 .HistoricalRunButtonMenu {
-  /* stylelint-disable-next-line no-descending-specificity */
   & :global(.dropdown-item) {
     padding: 0.25rem 16px;
   }
@@ -251,6 +260,8 @@ body .RealtimeRunButtonMenu {
   box-shadow: none !important;
   color: #FFFFFF !important;
 }
+
+/* stylelint-enable no-descending-specificity */
 
 .RunButton {
   min-width: 111px;
