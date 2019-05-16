@@ -203,18 +203,18 @@ jobs:
       skip_cleanup: true
       on:
         branch: beta
-
   - stage: Platform Build Production
     if: NOT type IN (pull_request)
     env:
     - NODE_ENV=production
+    - VERSION=$TRAVIS_TAG
     - PORT=12345
     - STREAMR_API_URL=https://www.streamr.com/api/v1
     - STREAMR_WS_URL=wss://www.streamr.com/api/v1/ws
     - PLATFORM_ORIGIN_URL=https://www.streamr.com
+    - PLATFORM_PUBLIC_PATH=https://cdn.streamr.com
     - STREAMR_URL=https://www.streamr.com
     - GOOGLE_ANALYTICS_ID=UA-55331565-5
-    - VERSION=$TRAVIS_TAG
     - MARKETPLACE_CONTRACT_ADDRESS=0xA10151D088f6f2705a05d6c83719e99E079A61C1
     - TOKEN_CONTRACT_ADDRESS=0x0Cf0Ee63788A0849fE5297F3407f701E122cC023
     - WEB3_REQUIRED_NETWORK_ID=1
@@ -232,8 +232,8 @@ jobs:
       access_key_id: AKIAISTYQBVHXK5LXXIQ
       secret_access_key:
         secure: SmtMYr1JhqzneGtg4sx10/Z7e5TsvlwPl05kkpx2dsGUuWX1gb+kWidNDpC8fWvkREg38o3yOtPza/FOyRtLwdIe1N1lZyYFvIhac7lATroMNyCWmTuYAZMbLtVUEsI43LNhQAC+F/N48TwM+0EJEWUIddc0ANbYEH8cReqDcngL7ZPtFEqtx9Qc/ZVY7/a83munHnd9dXga+4m8xVGo/u6UIn0hSVKt/LLHOAYw4chNXvUgyP2hNmmxHn2cdKocqM4dmEochqe8THSK3F37xlPfaHKzLQfEKfWgWdSQ+lDXonGfDz5ZSs8Owwnd8R/OmOmMKdAs6i96Kj3u4amOANMj1tixtrN4BiFuTM89iTPwKy49xOTSiLjS6XGvyZ1+GIYXuwmsLJbEef19qxpPUz41N8Kmue7Vf2ijy3c6Q0jpFJTKOAZe7m0hONyQi+SG6GYDAxRmuvghIrlZ71zydSn6FYLv3R5cI17tbCZAK9kZdzSXkr4K8W4LJbbZzmJk+X2IYT+Y9WLganeWk9RhmSz5GG84Y33AtsJXiNkBRrV32VtkYkwOa+FtqqLkLnJ7czqez1RyoNGXuhM2djY0pibhabsj7Z9o6ZyLKnm+2FTNdRFpJnkfl2Opv9R5ghOmTLjPSY+Dxjw/1PJoBfzzIEe4tnzpEsC9gqDxJ79KW6k=
-      bucket: eu-west-1-streamr-marketplace-public
-      local-dir: dist
+      bucket: eu-west-1-streamr-cdn
+      local-dir: "$TRAVIS_BUILD_DIR/app/dist"
       acl: private
       region: eu-west-1
       skip_cleanup: true
