@@ -8,6 +8,7 @@ import cx from 'classnames'
 import { withRouter } from 'react-router-dom'
 import MediaQuery from 'react-responsive'
 
+import ConfigureAnchorOffset from '$shared/components/ConfigureAnchorOffset'
 import type { Stream, StreamId } from '$shared/flowtype/stream-types'
 import type { StoreState } from '$shared/flowtype/store-state'
 import type { User } from '$shared/flowtype/user-types'
@@ -170,6 +171,7 @@ export class StreamShowView extends Component<Props, State> {
             <Layout noHeader noFooter>
                 <div className={styles.streamShowView}>
                     <MediaQuery minWidth={lg.min}>
+                        <ConfigureAnchorOffset value={-80} />
                         <Toolbar
                             altMobileLayout
                             actions={{

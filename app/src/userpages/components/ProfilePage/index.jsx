@@ -6,10 +6,13 @@ import { I18n } from 'react-redux-i18n'
 import { push } from 'react-router-redux'
 import cx from 'classnames'
 import Helmet from 'react-helmet'
+import MediaQuery from 'react-responsive'
 
 import { saveCurrentUser } from '$shared/modules/user/actions'
 import Toolbar from '$shared/components/Toolbar'
 import TOCPage from '$userpages/components/TOCPage'
+import ConfigureAnchorOffset from '$shared/components/ConfigureAnchorOffset'
+import { lg } from '$app/scripts/breakpoints'
 
 import Layout from '../Layout'
 import ProfileSettings from './ProfileSettings'
@@ -77,6 +80,9 @@ export class ProfilePage extends Component<Props, State> {
                     <title>{I18n.t('userpages.title.profile')}</title>
                 </Helmet>
                 <div className={styles.profilePage}>
+                    <MediaQuery minWidth={lg.min}>
+                        <ConfigureAnchorOffset value={-80} />
+                    </MediaQuery>
                     <Toolbar
                         altMobileLayout
                         actions={{
