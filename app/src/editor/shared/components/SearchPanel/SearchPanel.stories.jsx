@@ -8,6 +8,9 @@ import SearchPanel, { SearchRow } from './'
 const stories =
     storiesOf('Editor/SearchPanel', module)
         .addDecorator(styles({
+            height: '100vh',
+            width: '100%',
+            backgroundColor: '#E7E7E7',
             color: '#323232',
             padding: '5rem',
         }))

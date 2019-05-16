@@ -56,6 +56,7 @@ export class SearchPanel extends React.PureComponent {
     unmounted = false
     input = null
     contentRef = React.createRef()
+    scrollContainerRef = React.createRef()
 
     componentDidMount() {
         window.addEventListener('keydown', this.onKeyDown)
@@ -150,6 +151,12 @@ export class SearchPanel extends React.PureComponent {
         this.setState({ hasFocus: false })
     }
 
+    getDoesOverflow() {
+        const { current: scrollContainer } = this.scrollContainerRef
+        if (!scrollContainer) { return false }
+        return scrollContainer && scrollContainer.scrollHeight && scrollContainer.offsetHeight !== scrollContainer.scrollHeight
+    }
+
     render() {
         const {
             open,
@@ -176,6 +183,8 @@ export class SearchPanel extends React.PureComponent {
         } = this.state
         const height = this.calculateHeight()
         const isSearching = !!search.trim()
+        const doesOverflow = this.getDoesOverflow()
+        const canOnlyResizeX = !doesOverflow
 
         return (
             <React.Fragment>
@@ -195,6 +204,8 @@ export class SearchPanel extends React.PureComponent {
                     <div
                         className={cx(styles.SearchPanel, className, {
                             [styles.isSearching]: isSearching,
+                            [styles.isExpanded]: isExpanded,
+                            [styles.canOnlyResizeX]: canOnlyResizeX,
                         })}
                         hidden={!isOpen}
                         ref={this.props.panelRef}
@@ -203,12 +214,12 @@ export class SearchPanel extends React.PureComponent {
                             className={styles.ResizableBox}
                             width={width}
                             height={height}
-                            axis={isSearching ? 'x' : 'both' /* lock y when searching */}
+                            axis={canOnlyResizeX ? 'x' : 'both' /* lock y when searching */}
                             minConstraints={[minWidth, minHeight]}
                             maxConstraints={[maxWidth, maxHeight]}
                             onResize={(e, data) => {
                                 this.setState((state) => ({
-                                    height: isExpanded ? data.size.height : state.height,
+                                    height: !canOnlyResizeX ? data.size.height : state.height,
                                     width: data.size.width,
                                 }))
                             }}
@@ -256,6 +267,7 @@ export class SearchPanel extends React.PureComponent {
                                         // quick hack to force recalculation of height on child expansion/collapse
                                         this.forceUpdate()
                                     }}
+                                    ref={this.scrollContainerRef}
                                 >
                                     <div ref={this.contentRef} role="listbox" className={styles.Content}>
                                         {(() => {
