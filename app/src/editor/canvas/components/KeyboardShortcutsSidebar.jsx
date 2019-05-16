@@ -21,6 +21,10 @@ const generalCombos = [
         title: 'Drop selection',
     },
     {
+        keys: [['tab']],
+        title: 'Focus next input',
+    },
+    {
         keys: [['space']],
         title: 'Start / stop canvas',
         hidden: true,
