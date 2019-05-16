@@ -984,7 +984,15 @@ export function moduleCategoriesIndex(modules = [], path = [], index = []) {
             moduleCategoriesIndex(m.children, path.concat(m.data), index)
         }
     })
-    return index
+    return index.sort(compareModules)
+}
+
+// sorts module index. Sorts first by path and then by name.
+function compareModules(a, b) {
+    if (a.path === b.path) {
+        return a.name.localeCompare(b.name)
+    }
+    return a.path ? a.path.localeCompare(b.path) : 0
 }
 
 const getModuleCategoriesIndex = memoize(moduleCategoriesIndex)
@@ -998,6 +1006,11 @@ export function moduleSearch(moduleCategories, search) {
     const exactMatches = moduleIndex.filter((m) => {
         const target = m.name.toLowerCase()
         return target.split(/\s+/).join(' ') === terms.join(' ')
+    })
+
+    const startsWith = moduleIndex.filter((m) => {
+        const target = m.name.toLowerCase()
+        return target.split(/\s+/).join(' ').startsWith(terms.join(' '))
     })
 
     const nameMatches = moduleIndex.filter((m) => {
@@ -1014,5 +1027,5 @@ export function moduleSearch(moduleCategories, search) {
         ))
     })
 
-    return uniqBy([...exactMatches, ...nameMatches, ...pathMatches], 'id')
+    return uniqBy([...exactMatches, ...startsWith, ...nameMatches, ...pathMatches], 'id')
 }
