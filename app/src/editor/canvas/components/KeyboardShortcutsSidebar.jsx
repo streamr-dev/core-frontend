@@ -10,6 +10,7 @@ const generalCombos = [
     {
         keys: [['m'], ['+']],
         title: 'Modules panel',
+        hidden: true,
     },
     {
         keys: [['delete']],
@@ -20,32 +21,34 @@ const generalCombos = [
         title: 'Drop selection',
     },
     {
-        keys: [['tab']],
-        title: 'Focus next input',
-    },
-    {
         keys: [['space']],
         title: 'Start / stop canvas',
+        hidden: true,
     },
     {
         keys: [['s']],
         title: 'Speed control',
+        hidden: true,
     },
     {
         keys: [['r']],
         title: 'Realtime mode',
+        hidden: true,
     },
     {
         keys: [['h']],
         title: 'Historical mode',
+        hidden: true,
     },
     {
         keys: [['o']],
         title: 'Open canvas',
+        hidden: true,
     },
     {
         keys: [['.']],
         title: 'Canvas functions',
+        hidden: true,
     },
     {
         keys: [['meta', 'z']],
@@ -61,22 +64,27 @@ const moduleCombos = [
     {
         keys: [['1']],
         title: 'Add stream',
+        hidden: true,
     },
     {
         keys: [['2']],
         title: 'Table',
+        hidden: true,
     },
     {
         keys: [['3']],
         title: 'Chart',
+        hidden: true,
     },
     {
         keys: [['4']],
         title: 'Map',
+        hidden: true,
     },
     {
         keys: [['5']],
         title: 'Comment',
+        hidden: true,
     },
 ]
 
@@ -266,6 +274,8 @@ class KeyboardShortcuts extends React.Component {
 
     render() {
         const { onClose } = this.props
+        const visibleGeneralCombos = generalCombos.filter(({ hidden }) => !hidden)
+        const visibleModuleCombos = moduleCombos.filter(({ hidden }) => !hidden)
         return (
             <React.Fragment>
                 <Header
@@ -273,12 +283,16 @@ class KeyboardShortcuts extends React.Component {
                     onClose={onClose}
                 />
                 <Content>
-                    <Section label="General" initialIsOpen>
-                        {this.renderComboList(generalCombos)}
-                    </Section>
-                    <Section label="Regularly used  modules">
-                        {this.renderComboList(moduleCombos)}
-                    </Section>
+                    {!!visibleGeneralCombos.length && (
+                        <Section label="General" initialIsOpen>
+                            {this.renderComboList(visibleGeneralCombos)}
+                        </Section>
+                    )}
+                    {!!visibleModuleCombos.length && (
+                        <Section label="Regularly used modules" initialIsOpen>
+                            {this.renderComboList(visibleModuleCombos)}
+                        </Section>
+                    )}
                 </Content>
             </React.Fragment>
         )
