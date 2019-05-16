@@ -105,16 +105,12 @@ export class SearchPanel extends React.PureComponent {
 
     calculateHeight = () => {
         const { minHeight, maxHeight, scrollPadding } = this.props
-        const { search, height, isExpanded } = this.state
+        const { height } = this.state
         const { current: currentContent } = this.contentRef
 
         const itemsHeight = currentContent ? currentContent.offsetHeight : minHeight
 
-        let requiredHeight = minHeight + (itemsHeight ? scrollPadding + itemsHeight : 0)
-
-        if (isExpanded && search.trim() === '') {
-            requiredHeight = height /* use user-set height if 'browsing' */
-        }
+        const requiredHeight = minHeight + (itemsHeight ? scrollPadding + itemsHeight : 0)
 
         return Math.min(height, Math.min(Math.max(requiredHeight, minHeight), maxHeight))
     }
@@ -156,7 +152,7 @@ export class SearchPanel extends React.PureComponent {
     getDoesOverflow() {
         const { current: scrollContainer } = this.scrollContainerRef
         if (!scrollContainer) { return false }
-        return scrollContainer && scrollContainer.scrollHeight && scrollContainer.offsetHeight !== scrollContainer.scrollHeight
+        return scrollContainer && scrollContainer.scrollHeight && Math.abs(scrollContainer.offsetHeight - scrollContainer.scrollHeight) > 1
     }
 
     render() {
@@ -215,13 +211,13 @@ export class SearchPanel extends React.PureComponent {
                         <ResizableBox
                             className={styles.ResizableBox}
                             width={width}
-                            height={height}
+                            height={isExpanded || doesOverflow ? height : minHeight}
                             axis={canOnlyResizeX ? 'x' : 'both' /* lock y when searching */}
                             minConstraints={[minWidth, minHeight]}
                             maxConstraints={[maxWidth, maxHeight]}
                             onResize={(e, data) => {
-                                this.setState((state) => ({
-                                    height: !canOnlyResizeX ? data.size.height : state.height,
+                                this.setState(({ height }) => ({
+                                    height: !canOnlyResizeX ? data.size.height : height,
                                     width: data.size.width,
                                 }))
                             }}
