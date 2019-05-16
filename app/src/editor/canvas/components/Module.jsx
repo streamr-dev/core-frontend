@@ -198,30 +198,50 @@ class CanvasModule extends React.PureComponent {
 
 // try render module error in-place
 function ModuleError(props) {
-    const { module } = props
-    const { layout } = module
+    const {
+        api,
+        module,
+        canvas,
+        className,
+        selectedModuleHash,
+        moduleSidebarIsOpen,
+        onPort,
+        layout,
+        ...restProps
+    } = props
+
+    const isSelected = module.hash === selectedModuleHash
+
     return (
         <div
-            className={cx(styles.Module)}
-            style={{
-                top: layout.position.top,
-                left: layout.position.left,
-                minHeight: layout.height,
-                minWidth: layout.width,
-            }}
+            onFocus={() => api.selectModule({ hash: module.hash })}
+            className={cx(className, styles.CanvasModule, ModuleStyles.ModuleBase, ModuleStyles.dragHandle, styles.ModuleError, {
+                [ModuleStyles.isSelected]: isSelected,
+            })}
+            role="rowgroup"
+            tabIndex="0"
+            data-modulehash={module.hash}
+            {...restProps}
         >
-            <div className={styles.moduleHeader}>
-                {module.displayName || module.name}
+            <div className={styles.body}>
+                <ModuleHeader
+                    className={cx(styles.header, styles.hasError)}
+                    editable={false}
+                    label={module.displayName || module.name}
+                />
             </div>
-            <div className={styles.ports}>
+            <div className={cx(styles.canvasModuleUI, styles.ModuleErrorContent)}>
                 <Translate value="error.general" />
             </div>
+            <div className={ModuleStyles.selectionDecorator} />
         </div>
     )
 }
 
+const CanvasModuleWithErrorBoundary = withErrorBoundary(ModuleError)(CanvasModule)
+
 export default withErrorBoundary(ModuleError)((props) => (
     <ModuleDragger module={props.module} api={props.api}>
-        <CanvasModule {...props} />
+        <CanvasModuleWithErrorBoundary {...props} />
     </ModuleDragger>
 ))
