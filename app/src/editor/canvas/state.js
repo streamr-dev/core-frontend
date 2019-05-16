@@ -961,6 +961,23 @@ export function getRelevantCanvasId(canvas) {
 }
 
 /**
+ * Fixes erroneous initialValue of {} back to null.
+ * See https://streamr.atlassian.net/browse/CORE-1718
+ */
+
+export function workaroundInitialValueWeirdness(canvas) {
+    let nextCanvas = canvas
+    canvas.modules.forEach((canvasModule) => {
+        canvasModule.inputs.forEach((port) => {
+            if (port.initialValue !== null && typeof port.initialValue === 'object') {
+                nextCanvas = setPortUserValue(nextCanvas, port.id, null)
+            }
+        })
+    })
+    return nextCanvas
+}
+
+/**
  * Cleanup
  */
 
@@ -968,7 +985,7 @@ export function updateCanvas(canvas, path, fn) {
     if (!canvas || typeof canvas !== 'object') {
         throw new Error(`bad canvas (${typeof canvas})`)
     }
-    return limitLayout(updateVariadic(updatePortConnections(update(path, fn, canvas))))
+    return limitLayout(updateVariadic(updatePortConnections(workaroundInitialValueWeirdness(update(path, fn, canvas)))))
 }
 
 export function moduleCategoriesIndex(modules = [], path = [], index = []) {
