@@ -120,8 +120,10 @@ export class SearchPanel extends React.PureComponent {
     }
 
     toggleMinimize = () => {
-        this.setState(({ isExpanded }) => ({
+        const { defaultHeight } = this.props
+        this.setState(({ height, isExpanded }) => ({
             isExpanded: !isExpanded,
+            height: !isExpanded ? Math.max(height, defaultHeight) : height,
         }))
     }
 
