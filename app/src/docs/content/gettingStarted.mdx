@@ -31,19 +31,30 @@ In Streamr, each data point belongs to a Stream.
 `{
   "temperature": 65.4,
   "humidity": 82,
-  "sensorID": "sauna"
+  "sensorID": KRF29283,
+  "sensorLabel": "Rooftop Solar Panel"
 }`
 }</CodeSnippet>
 
-Streamr ingests this sort of data via an <Link to={formatPath(links.docs.api)}>API</Link>. The easiest way to interact with the API from your own software is by using a [Streamr client library](https://github.com/streamr-dev/streamr-client-javascript). Currently one is available for JavaScript, and other programming languages will follow.
+Streamr ingests this sort of data via an <Link to={formatPath(links.docs.api)}>API</Link>. The easiest way to interact with the API from your own software is by using a Streamr client library. Currently we have stable client for [JavaScript](https://github.com/streamr-dev/streamr-client-javascript), while there are two MVP clients, in progress, in [Java](https://github.com/streamr-dev/streamr-client-java) and [Python](https://github.com/streamr-dev/streamr-client-python) suggested for development environment. Other programming languages like Go, C++, C# and more will follow.
 
 If a library isn’t available for your language, you can call the [API endpoints](https://api-explorer.streamr.com) using any HTTP library.
+
+Example using python + requests:
+
+<CodeSnippet language='python'>{PythonRequests}</CodeSnippet>
+
+Example using `curl`:
+
+<CodeSnippet language='bash'>
+    {`curl -i -X POST -H "Authorization: Bearer MY-SESSION-TOKEN" -d "{\"foo\":\"hello\",\"bar\":24.5}" https://www.streamr.com/api/v1/streams/MY-STREAM-ID/data`}
+</CodeSnippet>
 
 <ScrollableAnchor id="create-a-stream"><div>
 
 ## Create a stream
 
-If you’re already signed in, click Home in the top navigation. If you’re not, sign in and you will be taken to your User Page. From here, go to the Streams tab, and you will see a view something like this one.
+If you’re already signed in, click Core in the top navigation. If you’re not, sign in and you will be taken to your User Page. From here, go to the Streams tab, and you will see a view something like this one.
 
 <div className={docsStyles.centered}>
   <img src={CreateStream} />
