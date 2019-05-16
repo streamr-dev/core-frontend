@@ -71,7 +71,7 @@ export default class StreamSelector extends React.Component<Props, State> {
         this.search(value)
     }
 
-    searchStreams = debounce(async (search) => {
+    searchStreams = debounce(async (search = '') => {
         const params = {
             id: '',
             search,
@@ -90,7 +90,7 @@ export default class StreamSelector extends React.Component<Props, State> {
         })
     }, 500)
 
-    search = async (search: string) => {
+    search = async (search: string = '') => {
         this.currentSearch = search
         search = search.trim()
         this.setState({
