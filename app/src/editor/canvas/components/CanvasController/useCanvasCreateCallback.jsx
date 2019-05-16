@@ -12,12 +12,17 @@ export default function useCanvasCreateCallback() {
     const { isPending, wrap } = usePending('CREATE')
     const isMountedRef = useIsMountedRef()
 
-    return useCallback(async () => {
+    return useCallback(async ({ replace = true } = {}) => {
         if (isPending) { return }
         return wrap(async () => {
             const newCanvas = await services.create()
             if (!isMountedRef.current) { return }
-            history.push(`${links.editor.canvasEditor}/${newCanvas.id}`)
+            const dest = `${links.editor.canvasEditor}/${newCanvas.id}`
+            if (replace) {
+                history.replace(dest)
+            } else {
+                history.push(dest)
+            }
         })
     }, [wrap, isPending, history, isMountedRef])
 }
