@@ -274,7 +274,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                             <R.DropdownMenu className={cx(styles.RunButtonMenu, styles.RealtimeRunButtonMenu)} right>
                                                 <R.DropdownItem
                                                     onClick={() => canvasStart({ clearState: true })}
-                                                    disabled={!canvas.serialized || !canEdit}
+                                                    disabled={!canEdit}
                                                 >
                                                     Reset &amp; Start
                                                 </R.DropdownItem>
