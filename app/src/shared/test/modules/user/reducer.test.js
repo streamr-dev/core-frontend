@@ -5,7 +5,10 @@ import * as constants from '$shared/modules/user/constants'
 
 describe('user - reducer', () => {
     it('has initial state', () => {
-        assert.deepStrictEqual(reducer(undefined, {}), initialState)
+        assert.deepStrictEqual(reducer(undefined, {}), {
+            ...initialState,
+            fetchingUserData: true,
+        })
     })
 
     describe('USER_DATA', () => {
