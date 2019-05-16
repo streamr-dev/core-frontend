@@ -98,6 +98,13 @@ const reducer: (UserState) => UserState = handleActions({
         deleteUserAccountError: action.payload.error,
     }),
 
-}, initialState)
+}, {
+    ...initialState,
+    // Loading the site always triggers fetching the user. `userIsAuthenticated` gets
+    // called almost at a routing level (before any `getUserData` calls) which will
+    // cause the login page to flash for a split second. In order to prevent that we
+    // start off with `fetchingUserData` set to `true`.
+    fetchingUserData: true,
+})
 
 export default reducer

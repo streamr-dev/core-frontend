@@ -133,7 +133,6 @@ const DocsRouter = () => ([
 ])
 
 const UserpagesRouter = () => ([
-    <Route exact path={userpages.main} component={StreamListViewAuth} key="RootStreamListView" />,
     <Route exact path={userpages.canvases} component={CanvasListAuth} key="CanvasesCanvasList" />,
     <Route exact path={userpages.profile} component={ProfilePageAuth} key="ProfilePage" />,
     <Route exact path={userpages.dashboards} component={DashboardListAuth} key="DashboardList" />,
@@ -143,6 +142,7 @@ const UserpagesRouter = () => ([
     <Route exact path={userpages.transactions} component={TransactionListAuth} key="TransactionList" />,
     <Route exact path={userpages.purchases} component={PurchasesPageAuth} key="PurchasesPage" />,
     <Route exact path={userpages.products} component={ProductsPageAuth} key="ProductsPage" />,
+    <Redirect from={userpages.main} to={userpages.streams} component={StreamListViewAuth} key="StreamListViewRedirect" />,
 ])
 
 const EditorRouter = () => ([

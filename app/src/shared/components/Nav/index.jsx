@@ -33,7 +33,7 @@ const mapStateToProps = (state): StateProps => ({
 const Nav = compose(
     connect(mapStateToProps),
     withRouter,
-)(({ currentUser, location, className }: Props) => (
+)(({ currentUser, location: { pathname: redirect }, className }: Props) => (
     <nav
         className={cx(styles.root, className)}
     >
@@ -100,9 +100,9 @@ const Nav = compose(
             )}
             {!currentUser && (
                 <LinkItem
-                    to={routes.login({
-                        redirect: location.pathname,
-                    })}
+                    to={routes.login(redirect !== '/' ? {
+                        redirect,
+                    } : {})}
                     className={Nav.styles.link}
                 >
                     <Translate value="general.signIn" />
