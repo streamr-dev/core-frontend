@@ -3,7 +3,7 @@
 import React from 'react'
 import Link from '$shared/components/Link'
 import Onboarding from '$shared/components/Onboarding'
-import links from '$app/src/links'
+import routes from '$routes'
 import navigationLinks from '$docs/components/DocsLayout/Navigation/navLinks'
 
 const DocsShortcuts = () => (
@@ -14,7 +14,8 @@ const DocsShortcuts = () => (
             </Link>
         ))}
         {null}
-        <Link href={links.community.telegram} target="_blank" rel="noopener noreferrer">Telegram Group</Link>
+        <Link href={routes.communityTelegram()} target="_blank" rel="noopener noreferrer">Telegram Group</Link>
+        <Link href={routes.giveFeedback()} target="_blank" rel="noopener noreferrer">Give feedback</Link>
     </Onboarding>
 )
 

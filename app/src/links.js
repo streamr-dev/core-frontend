@@ -1,6 +1,7 @@
 // @flow
 
 import { formatExternalUrl } from '$shared/utils/url'
+import routes from '$routes'
 
 const streamrRoot = process.env.STREAMR_URL || ''
 
@@ -58,14 +59,14 @@ module.exports = {
         dashboardEditor: '/dashboard/editor',
     },
     community: {
-        trello: 'https://trello.com/b/j24hxvjg/streamr-milestone-1',
-        telegram: 'https://t.me/streamrdata',
-        reddit: 'https://reddit.com/r/streamr',
-        twitter: 'https://twitter.com/streamr',
-        linkedin: 'https://www.linkedin.com/company/streamr-ltd-/',
-        youtube: 'https://www.youtube.com/channel/UCGWEA61RueG-9DV53s-ZyJQ',
-        medium: 'https://medium.com/streamrblog',
-        github: 'https://github.com/streamr-dev',
+        trello: routes.communityTrello(),
+        telegram: routes.communityTelegram(),
+        reddit: routes.communityReddit(),
+        twitter: routes.communityTwitter(),
+        linkedin: routes.communityLinkedin(),
+        youtube: routes.communityYoutube(),
+        medium: routes.communityMedium(),
+        github: routes.communityGithub(),
     },
     contact: {
         general: 'mailto:contact@streamr.com',
