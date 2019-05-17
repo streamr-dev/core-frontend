@@ -15,6 +15,7 @@ const DocsShortcuts = () => (
         ))}
         {null}
         <Link href={routes.communityTelegram()} target="_blank" rel="noopener noreferrer">Telegram Group</Link>
+        <Link href={routes.giveFeedback()} target="_blank" rel="noopener noreferrer">Give feedback</Link>
     </Onboarding>
 )
 

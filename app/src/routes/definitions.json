@@ -24,6 +24,7 @@
     "externalResetPassword": "<streamr>/api/v1/passwords",
     "externalSignUp": "<streamr>/api/v1/signups",
     "forgotPassword": "/forgotPassword",
+    "giveFeedback": "https://github.com/streamr-dev/streamr-platform/issues",
     "login": "/login",
     "logout": "/logout",
     "marketplace": "/marketplace",
