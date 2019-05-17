@@ -2,6 +2,7 @@
 
 import React from 'react'
 import Text from '$editor/canvas/components/Ports/Value/Text'
+import debounce from 'lodash/debounce'
 
 import { getStreams, getStream } from '../../canvas/services'
 
@@ -12,18 +13,20 @@ type Props = {
     value: any,
     disabled: boolean,
     onChange: (value: string, done: any) => void,
-    onBlur?: ?(event: any) => void,
-    onFocus?: ?(event: any) => void,
 }
 
 type State = {
+    loadedStream: any,
     isOpen: boolean,
     search: string,
     matchingStreams: Array<Object>,
 }
 
 export default class StreamSelector extends React.Component<Props, State> {
+    currentSearch: string
+
     state = {
+        loadedStream: undefined,
         isOpen: false,
         search: '',
         matchingStreams: [],
@@ -31,30 +34,42 @@ export default class StreamSelector extends React.Component<Props, State> {
 
     unmounted = false
 
-    async componentDidMount() {
-        const stream = await getStream(this.props.value)
-
-        if (this.unmounted) { return }
-
-        /* eslint-disable-next-line react/no-did-mount-set-state */
-        this.setState({
-            search: stream.name,
-        })
+    componentDidMount() {
+        this.loadStream()
     }
 
     componentWillUnmount() {
         this.unmounted = true
     }
 
+    componentDidUpdate(prevProps: Props) {
+        if (prevProps.value !== this.props.value) {
+            this.loadStream()
+        }
+    }
+
+    loadStream = async () => {
+        const { value } = this.props
+        const { loadedStream } = this.state
+        if (!value) { return }
+        // do nothing if stream already loaded
+        if (loadedStream && loadedStream.id === value) { return }
+        const stream = await getStream(value)
+
+        if (this.unmounted || this.props.value !== value) { return }
+
+        /* eslint-disable-next-line react/no-did-mount-set-state */
+        this.setState({
+            loadedStream: stream,
+            search: stream.name,
+        })
+    }
+
     onChange = (value: string) => {
         this.search(value)
     }
 
-    search = async (search: string) => {
-        this.setState({
-            search,
-        })
-
+    searchStreams = debounce(async (search = '') => {
         const params = {
             id: '',
             search,
@@ -63,41 +78,60 @@ export default class StreamSelector extends React.Component<Props, State> {
             uiChannel: false,
             public: true,
         }
+
         const streams = await getStreams(params)
 
-        if (this.unmounted) { return }
+        if (this.unmounted || this.currentSearch !== search) { return }
 
         this.setState({
             matchingStreams: streams,
         })
+    }, 500)
+
+    search = async (search: string = '') => {
+        this.currentSearch = search
+        search = search.trim()
+        this.setState({
+            search,
+            matchingStreams: [],
+        })
+
+        this.searchStreams(search)
     }
 
     onStreamClick = (id: string) => {
         const { onChange } = this.props
         this.setState({
             isOpen: false,
+            matchingStreams: [],
         })
         onChange(id)
     }
 
     toggleSearch = (isOpen: boolean) => {
-        const { search: value } = this.state
+        this.setState(({ search, loadedStream }) => {
+            if (!isOpen && loadedStream) {
+                // set search text to stream name on close
+                search = loadedStream.name
+            }
 
-        this.setState({
-            isOpen,
+            return {
+                isOpen,
+                search,
+            }
+        }, () => {
+            if (this.state.isOpen) {
+                this.search(this.state.search)
+            }
         })
-
-        if (isOpen) {
-            this.search(value)
-        }
     }
 
     render() {
-        const { disabled } = this.props
+        const { disabled, className } = this.props
         const { isOpen, search, matchingStreams } = this.state
 
         return (
-            <div>
+            <div className={className}>
                 <Text
                     disabled={!!disabled}
                     immediateCommit
