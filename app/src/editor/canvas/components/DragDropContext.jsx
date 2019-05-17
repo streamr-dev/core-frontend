@@ -7,6 +7,8 @@ const DragDropContext = React.createContext({})
 export { DragDropContext }
 
 export class DragDropProvider extends React.PureComponent {
+    moveListeners = new Set()
+
     initialState = {
         isDragging: false,
         isCancelled: undefined,
@@ -33,11 +35,22 @@ export class DragDropProvider extends React.PureComponent {
         if (this.state.isCancelled) { return false }
         // don't setState to avoid rerendering entire context on each mouse move
         this.diff = diff
+        this.moveListeners.forEach((fn) => {
+            fn(diff)
+        })
     }
 
     getDiff = () => (
         this.diff
     )
+
+    onMove = (fn) => {
+        this.moveListeners.add(fn)
+    }
+
+    offMove = (fn) => {
+        this.moveListeners.delete(fn)
+    }
 
     onStart = (data) => {
         if (this.unmounted) { return }
@@ -82,6 +95,8 @@ export class DragDropProvider extends React.PureComponent {
     state = {
         ...this.initialState,
         onStart: this.onStart,
+        onMove: this.onMove,
+        offMove: this.offMove,
         onDrag: this.onDrag,
         onStop: this.onStop,
         getDiff: this.getDiff,

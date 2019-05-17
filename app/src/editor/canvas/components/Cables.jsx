@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unused-state */
-import React from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { getModulePorts } from '../state'
 import styles from './Canvas.pcss'
 import { DragDropContext } from './DragDropContext'
@@ -190,57 +190,32 @@ class Cables extends React.PureComponent {
     }
 }
 
-export default class CablesContainer extends React.PureComponent {
-    static contextType = DragDropContext
-    initialState = {
-        diff: {
+export default function CablesContainer(props) {
+    const dragDrop = useContext(DragDropContext)
+    const [diff, setDiff] = useState(dragDrop.getDiff())
+    const { onMove, offMove, isDragging, data } = dragDrop
+    useEffect(() => {
+        onMove(setDiff)
+        return () => {
+            offMove(setDiff)
+        }
+    }, [onMove, offMove, setDiff])
+
+    useEffect(() => {
+        if (isDragging) { return }
+        // reset
+        setDiff({
             x: 0,
             y: 0,
-        },
-    }
-
-    state = {
-        ...this.initialState,
-    }
-
-    onUpdate = () => {
-        if (!this.context.isDragging) { return }
-        this.setState(({ diff }) => {
-            const newDiff = this.context.getDiff()
-            if (diff.x === newDiff.x && diff.y === newDiff.y) {
-                return null
-            }
-
-            return {
-                diff: newDiff,
-            }
-        }, () => {
-            requestAnimationFrame(this.onUpdate)
         })
-    }
+    }, [isDragging])
 
-    reset() {
-        this.setState(this.initialState)
-    }
-
-    componentDidUpdate(prev) {
-        if (this.context.isDragging && !prev.isDragging) {
-            requestAnimationFrame(this.onUpdate)
-        }
-
-        if (!this.context.isDragging && prev.isDragging) {
-            this.reset()
-        }
-    }
-
-    render() {
-        return (
-            <Cables
-                isDragging={this.context.isDragging}
-                data={this.context.data}
-                diff={this.state.diff}
-                {...this.props}
-            />
-        )
-    }
+    return (
+        <Cables
+            isDragging={isDragging}
+            data={data}
+            diff={diff}
+            {...props}
+        />
+    )
 }
