@@ -61,17 +61,15 @@ class CodeEditorWindow extends React.Component {
                 })
             } catch (e) {
                 if (this.unmounted) { return }
+                if (!e.moduleErrors) { throw e } // unexpected error
                 this.setState({
                     sending: false,
-                    errors: e.moduleErrors.reduce((allErrors, o) => ([
-                        ...allErrors,
-                        ...o.payload.errors.map(({ line, msg }) => ({
-                            row: line - 1,
-                            column: 1,
-                            text: msg,
-                            type: 'error',
-                        })),
-                    ]), []),
+                    errors: e.moduleErrors.map(({ line, message }) => ({
+                        row: line - 1,
+                        column: 1,
+                        text: message,
+                        type: 'error',
+                    })),
                 })
             }
         })
