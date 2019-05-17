@@ -1,6 +1,6 @@
 import React from 'react'
 import AceEditor from 'react-ace'
-
+import uniqueId from 'lodash/uniqueId'
 import 'brace/mode/java'
 import 'brace/theme/textmate'
 
@@ -10,7 +10,8 @@ import styles from './CodeEditorWindow.pcss'
 
 class CodeEditorWindow extends React.Component {
     state = {
-        code: this.props.code,
+        editorResetKey: uniqueId('CodeEditorWindow'),
+        code: undefined,
         errors: [],
         sending: false,
     }
@@ -25,10 +26,21 @@ class CodeEditorWindow extends React.Component {
         this.unmounted = true
     }
 
-    onChange = (newValue) => {
+    onChange = (code) => {
         this.setState({
-            code: newValue,
+            code,
         })
+    }
+
+    onBlur = () => {
+        const { code } = this.state
+        if (code != null && code !== this.props.code) {
+            this.props.onChange(code)
+        }
+        this.setState(() => ({
+            code: undefined,
+            editorResetKey: uniqueId('CodeEditorWindow'),
+        }))
     }
 
     onApply = () => {
@@ -37,34 +49,34 @@ class CodeEditorWindow extends React.Component {
             sending: true,
         }, async () => {
             if (this.unmounted) { return }
+            const code = this.state.code != null ? this.state.code : this.props.code
             try {
-                await this.props.onApply(this.state.code)
+                await this.props.onApply(code)
 
                 if (this.unmounted) { return }
 
                 this.setState({
+                    code: undefined,
                     sending: false,
                 })
             } catch (e) {
                 if (this.unmounted) { return }
+                if (!e.moduleErrors) { throw e } // unexpected error
                 this.setState({
                     sending: false,
-                    errors: e.moduleErrors.reduce((allErrors, o) => ([
-                        ...allErrors,
-                        ...o.payload.errors.map(({ line, msg }) => ({
-                            row: line - 1,
-                            column: 1,
-                            text: msg,
-                            type: 'error',
-                        })),
-                    ]), []),
+                    errors: e.moduleErrors.map(({ line, message }) => ({
+                        row: line - 1,
+                        column: 1,
+                        text: message,
+                        type: 'error',
+                    })),
                 })
             }
         })
     }
 
     render() {
-        const { code, errors, sending } = this.state
+        const { editorResetKey, errors, sending } = this.state
         const {
             onClose,
             onShowDebug,
@@ -72,6 +84,8 @@ class CodeEditorWindow extends React.Component {
             position,
             onPositionUpdate,
         } = this.props
+
+        const code = this.state.code != null ? this.state.code : this.props.code
 
         return (
             <DraggableCanvasWindow
@@ -86,11 +100,13 @@ class CodeEditorWindow extends React.Component {
                         <div className={styles.editorContainer}>
                             <AceEditor
                                 ref={this.editor}
+                                name={editorResetKey}
                                 value={code}
                                 className={styles.editor}
                                 mode="java"
                                 theme="textmate"
                                 onChange={this.onChange}
+                                onBlur={this.onBlur}
                                 width="100%"
                                 height="100%"
                                 maxLines={20}
@@ -103,7 +119,7 @@ class CodeEditorWindow extends React.Component {
                                 }}
                                 annotations={errors}
                                 editorProps={{ $blockScrolling: true }}
-                                readOnly={readOnly}
+                                readOnly={readOnly || sending}
                             />
                         </div>
                         <DraggableCanvasWindow.Toolbar>

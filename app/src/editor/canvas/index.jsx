@@ -253,7 +253,9 @@ const CanvasEditComponent = class CanvasEdit extends Component {
             },
         })
 
-        this.setCanvas({ type: 'Update Module' }, (canvas) => (
+        if (this.unmounted) { return }
+
+        this.replaceCanvas((canvas) => (
             CanvasState.updateModule(canvas, hash, () => newModule)
         ))
     }
