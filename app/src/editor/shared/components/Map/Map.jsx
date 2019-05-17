@@ -116,6 +116,7 @@ export default class Map extends React.Component<Props> {
                         minZoom={minZoom}
                         maxZoom={maxZoom}
                         crs={isImageMap ? L.CRS.Simple : L.CRS.EPSG3857}
+                        preferCanvas
                     >
                         <ResizeWatcher onResize={this.onResize} />
                         {isHeatmap && (

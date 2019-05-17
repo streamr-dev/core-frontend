@@ -4,7 +4,7 @@ import React from 'react'
 import cx from 'classnames'
 import isEqual from 'lodash/isEqual'
 import throttle from 'lodash/throttle'
-import merge from 'lodash/merge'
+// import merge from 'lodash/fp/merge'
 import remove from 'lodash/remove'
 import L from 'leaflet'
 import type { LatLngBounds } from 'react-leaflet'
@@ -14,7 +14,7 @@ import ModuleSubscription from '../ModuleSubscription'
 
 import styles from './Map.pcss'
 
-const UPDATE_INTERVAL_MS = 250
+const UPDATE_INTERVAL_MS = 50
 
 type Props = {
     className?: ?string,
@@ -44,7 +44,7 @@ type Message = {
 /*
     MapModule handles following modules: Map, ImageMap
 */
-export default class MapModule extends React.Component<Props, State> {
+export default class MapModule extends React.PureComponent<Props, State> {
     state = {
         markers: {},
         imageMap: !!('customImageUrl' in this.props.module.options),
@@ -142,10 +142,7 @@ export default class MapModule extends React.Component<Props, State> {
             }
 
             // Update marker data
-            this.queuedMarkers = {
-                ...this.queuedMarkers,
-                [marker.id]: marker,
-            }
+            this.queuedMarkers[marker.id] = marker
             this.flushMarkerData()
         } else if (msg.t === 'd') {
             if (msg.pointList && msg.pointList.length > 0) {
@@ -238,9 +235,16 @@ export default class MapModule extends React.Component<Props, State> {
         const { queuedMarkers } = this
         this.queuedMarkers = {}
 
-        this.setState((state) => ({
-            markers: merge(state.markers, queuedMarkers),
-        }))
+        this.setState((state) => {
+            const markers = { ...state.markers }
+            // $FlowFixMe Object.values() returns mixed[]
+            Object.values(queuedMarkers).forEach((m: Marker) => {
+                markers[m.id] = m
+            })
+            return {
+                markers,
+            }
+        })
     }, UPDATE_INTERVAL_MS)
 
     render() {
