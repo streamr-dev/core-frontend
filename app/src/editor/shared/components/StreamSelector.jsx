@@ -51,6 +51,7 @@ export default class StreamSelector extends React.Component<Props, State> {
     loadStream = async () => {
         const { value } = this.props
         const { loadedStream } = this.state
+        if (!value) { return }
         // do nothing if stream already loaded
         if (loadedStream && loadedStream.id === value) { return }
         const stream = await getStream(value)
