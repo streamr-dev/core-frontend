@@ -13,8 +13,6 @@ type Props = {
     value: any,
     disabled: boolean,
     onChange: (value: string, done: any) => void,
-    onBlur?: ?(event: any) => void,
-    onFocus?: ?(event: any) => void,
 }
 
 type State = {
@@ -54,15 +52,14 @@ export default class StreamSelector extends React.Component<Props, State> {
         const { value } = this.props
         const { loadedStream } = this.state
         // do nothing if stream already loaded
-        if (loadedStream === value) { return }
-
+        if (loadedStream && loadedStream.id === value) { return }
         const stream = await getStream(value)
 
         if (this.unmounted || this.props.value !== value) { return }
 
         /* eslint-disable-next-line react/no-did-mount-set-state */
         this.setState({
-            loadedStream: value,
+            loadedStream: stream,
             search: stream.name,
         })
     }
@@ -111,23 +108,29 @@ export default class StreamSelector extends React.Component<Props, State> {
     }
 
     toggleSearch = (isOpen: boolean) => {
-        const { search } = this.state
+        this.setState(({ search, loadedStream }) => {
+            if (!isOpen && loadedStream) {
+                // set search text to stream name on close
+                search = loadedStream.name
+            }
 
-        this.setState({
-            isOpen,
+            return {
+                isOpen,
+                search,
+            }
+        }, () => {
+            if (this.state.isOpen) {
+                this.search(this.state.search)
+            }
         })
-
-        if (isOpen) {
-            this.search(search)
-        }
     }
 
     render() {
-        const { disabled } = this.props
+        const { disabled, className } = this.props
         const { isOpen, search, matchingStreams } = this.state
 
         return (
-            <div>
+            <div className={className}>
                 <Text
                     disabled={!!disabled}
                     immediateCommit
