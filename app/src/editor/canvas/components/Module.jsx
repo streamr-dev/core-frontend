@@ -205,12 +205,17 @@ function ModuleError(props) {
         className,
         selectedModuleHash,
         moduleSidebarIsOpen,
-        onPort,
         layout,
+        onPort,
+        error,
+        style,
         ...restProps
     } = props
 
     const isSelected = module.hash === selectedModuleHash
+    const errorObj = (error && error.error) ? error.error : error
+    const moduleLayout = layout || module.layout
+    const errorMessage = (errorObj.stack || errorObj.message || '').trim()
 
     return (
         <div
@@ -218,6 +223,11 @@ function ModuleError(props) {
             className={cx(className, styles.CanvasModule, ModuleStyles.ModuleBase, ModuleStyles.dragHandle, styles.ModuleError, {
                 [ModuleStyles.isSelected]: isSelected,
             })}
+            style={{
+                width: moduleLayout.width,
+                minHeight: moduleLayout.height,
+                ...style,
+            }}
             role="rowgroup"
             tabIndex="0"
             data-modulehash={module.hash}
@@ -227,11 +237,18 @@ function ModuleError(props) {
                 <ModuleHeader
                     className={cx(styles.header, styles.hasError)}
                     editable={false}
-                    label={module.displayName || module.name}
+                    label={`${module.displayName || module.name} Error`}
                 />
             </div>
             <div className={cx(styles.canvasModuleUI, styles.ModuleErrorContent)}>
-                <Translate value="error.general" />
+                <div>
+                    <Translate value="editor.module.error" />
+                </div>
+                {!!errorMessage && (
+                    <div className={styles.errorMessage}>
+                        {errorMessage}
+                    </div>
+                )}
             </div>
             <div className={ModuleStyles.selectionDecorator} />
         </div>

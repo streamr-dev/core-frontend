@@ -58,6 +58,29 @@
   position: relative;
 }
 
+.ModuleError {
+  overflow: hidden;
+}
+
 .ModuleErrorContent {
-  padding: 8px;
+  min-width: 248px;
+  font-size: 10px;
+  color: #323232;
+  line-height: 2;
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+.ModuleErrorContent > * {
+  padding: 10px 24px;
+}
+
+.errorMessage {
+  color: #525252;
+  background: #F8F8F8;
+  max-height: 15vh;
+  overflow: auto;
+  white-space: pre-wrap;
+  text-overflow: ellipsis;
+  font-family: var(--mono);
+  font-size: 8px;
 }

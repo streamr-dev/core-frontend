@@ -19,3 +19,6 @@ msgstr "No Repeat"
 
 msgid "editor##module##portOption##noRepeat##abbr"
 msgstr "NR"
+
+msgid "editor##module##error"
+msgstr "Whoops. Something has broken down. Please delete the module and try again."
