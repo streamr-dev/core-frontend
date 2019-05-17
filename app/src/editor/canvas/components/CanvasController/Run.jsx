@@ -49,6 +49,12 @@ function useRunController(canvas = EMPTY) {
         canvas.permissions &&
         canvas.permissions.some((p) => p.operation === 'share')
 
+    const isShareable = canvas.permissions &&
+        canvas.permissions.some((p) => p.operation === 'share')
+
+    const isWritable = canvas.permissions &&
+        canvas.permissions.some((p) => p.operation === 'write')
+
     const start = useCallback(async (canvas, options) => {
         if (isHistorical && !canvas.adhoc) {
             const newCanvas = await createAdhocPending.wrap(() => services.createAdhocCanvas(canvas))
@@ -130,10 +136,12 @@ function useRunController(canvas = EMPTY) {
         isRunning,
         isHistorical,
         isEditable,
+        isShareable,
+        isWritable,
         start,
         stop,
         exit,
-    }), [canvas, isPending, isStarting, isActive, isRunning, isHistorical, isEditable, isStopping, start, stop, exit])
+    }), [canvas, isPending, isStarting, isActive, isRunning, isHistorical, isEditable, isShareable, isWritable, isStopping, start, stop, exit])
 }
 
 export default function RunControllerProvider({ children, canvas }) {
