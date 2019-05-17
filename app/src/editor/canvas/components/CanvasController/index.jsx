@@ -59,7 +59,7 @@ function useCanvasCreateEffect() {
 
     useEffect(() => {
         if (id || isPending) { return }
-        create()
+        create({ replace: true })
     }, [id, create, isPending])
 }
 

@@ -178,17 +178,18 @@ const DashboardLoader = withRouter(withErrorBoundary(ErrorComponentView)(class D
     }
 
     async init() {
-        if (!this.props.match.params.id) {
+        const { match, history } = this.props
+        if (!match.params.id) {
             // if no id, create new
             const newDashboard = await services.create()
             if (this.unmounted) { return }
-            this.props.history.replace(`${links.editor.dashboardEditor}/${newDashboard.id}`)
+            history.replace(`${links.editor.dashboardEditor}/${newDashboard.id}`)
             return
         }
 
         const dashboard = this.context.state
         const currentId = dashboard && dashboard.id
-        const dashboardId = currentId || this.props.match.params.id
+        const dashboardId = currentId || match.params.id
         if (dashboardId && currentId !== dashboardId && this.state.isLoading !== dashboardId) {
             // load dashboard if needed and not already loading
             this.load(dashboardId)
@@ -197,7 +198,13 @@ const DashboardLoader = withRouter(withErrorBoundary(ErrorComponentView)(class D
 
     load = async (dashboardId) => {
         this.setState({ isLoading: dashboardId })
-        const newDashboard = await services.loadDashboard({ id: dashboardId })
+        let newDashboard
+        try {
+            newDashboard = await services.loadDashboard({ id: dashboardId })
+        } catch (error) {
+            if (this.unmounted || this.state.isLoading !== dashboardId) { return }
+            this.props.history.replace('/404')
+        }
         // ignore result if unmounted or dashboard changed
         if (this.unmounted || this.state.isLoading !== dashboardId) { return }
         // replace/init top of undo stack with loaded dashboard
