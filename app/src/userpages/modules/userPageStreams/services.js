@@ -62,7 +62,8 @@ export const getRange = (id: StreamId): ApiResult<Range> => get(formatApiUrl('st
 export const deleteDataUpTo = (id: StreamId, date: Date): ApiResult<any> => (
     del(formatApiUrl('stream', id, 'deleteDataUpTo'), {
         id,
-        date: moment(date).format('YYYY-MM-DD'),
+        date: moment(date).valueOf(),
     })
 )
+
 export const autodetectStreamfields = (id: StreamId): ApiResult<Stream> => get(formatApiUrl('streams', id, 'detectFields'))

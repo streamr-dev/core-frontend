@@ -106,7 +106,7 @@ export class StreamShowView extends Component<Props, State> {
     initStream = async (id: StreamId) => {
         const { getStream, openStream, getMyStreamPermissions, initEditStream } = this.props
 
-        this.props.getKeys()
+        await this.props.getKeys()
         getStream(id).then(() => {
             openStream(id)
             initEditStream()
