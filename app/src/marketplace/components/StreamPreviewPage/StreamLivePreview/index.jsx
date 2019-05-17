@@ -219,9 +219,10 @@ export class StreamLivePreview extends Component<Props, State> {
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {data.map((d) => (
+                                                    {data.map((d, index) => (
                                                         <tr
-                                                            key={d.metadata.messageId.timestamp}
+                                                            // eslint-disable-next-line react/no-array-index-key
+                                                            key={`${d.metadata.messageId.timestamp}-${index}`}
                                                             onClick={() => this.props.onSelectDataPoint(d)}
                                                         >
                                                             <td className={styles.timestampColumn}>
@@ -251,9 +252,10 @@ export class StreamLivePreview extends Component<Props, State> {
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {data.map((d) => (
+                                                    {data.map((d, index) => (
                                                         <tr
-                                                            key={d.metadata.messageId.timestamp}
+                                                            // eslint-disable-next-line react/no-array-index-key
+                                                            key={`${d.metadata.messageId.timestamp}-${index}`}
                                                             onClick={() => this.props.onSelectDataPoint(d)}
                                                         >
                                                             <td className={styles.messageColumn}>
@@ -304,8 +306,12 @@ export class StreamLivePreview extends Component<Props, State> {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {data.map((d) => (
-                                            <tr key={d.metadata.messageId.timestamp} onClick={() => this.props.onSelectDataPoint(d)}>
+                                        {data.map((d, index) => (
+                                            <tr
+                                                // eslint-disable-next-line react/no-array-index-key
+                                                key={`${d.metadata.messageId.timestamp}-${index}`}
+                                                onClick={() => this.props.onSelectDataPoint(d)}
+                                            >
                                                 <td className={styles.timestampColumn}>
                                                     {formatDateTime(d.metadata && d.metadata.messageId && d.metadata.messageId.timestamp, tz)}
                                                 </td>
