@@ -1,7 +1,5 @@
 // @flow
 
-import axios from 'axios'
-import moment from 'moment-timezone'
 import cloneDeep from 'lodash/cloneDeep'
 
 import type { ErrorInUi } from '$shared/flowtype/common-types'
@@ -450,21 +448,14 @@ export const saveFields = (id: StreamId, fields: StreamFieldList) => (dispatch: 
 }
 
 export const uploadCsvFile = (id: StreamId, file: File) => (dispatch: Function) => {
-    const formData = new FormData()
-    formData.append('file', file)
     dispatch(uploadCsvFileRequest())
-    return axios.post(`${process.env.STREAMR_API_URL}/streams/${id}/uploadCsvFile`, formData, {
-        headers: {
-            'Content-Type': 'multipart/form-data',
-        },
-        withCredentials: true,
-    })
-        .then((response) => {
-            if (response.data.schema.timestampColumnIndex == null) {
-                dispatch(uploadCsvFileUnknownSchema(id, response.data.fileId, response.data.schema))
+    return services.uploadCsvFile(id, file)
+        .then(({ fileId, schema }) => {
+            if (schema.timestampColumnIndex == null) {
+                dispatch(uploadCsvFileUnknownSchema(id, fileId, schema))
                 throw new CsvSchemaError('Could not parse timestamp column!')
             }
-            dispatch(uploadCsvFileSuccess(id, response.data.fileId, response.data.schema))
+            dispatch(uploadCsvFileSuccess(id, fileId, schema))
             Notification.push({
                 title: 'CSV file imported successfully',
                 icon: NotificationIcon.CHECKMARK,
@@ -483,11 +474,7 @@ export const uploadCsvFile = (id: StreamId, file: File) => (dispatch: Function) 
 
 export const confirmCsvFileUpload = (id: StreamId, fileUrl: string, dateFormat: string, timestampColumnIndex: number) => (dispatch: Function) => {
     dispatch(confirmCsvFileUploadRequest())
-    return api.post(`${process.env.STREAMR_API_URL}/streams/${id}/confirmCsvFileUpload`, {
-        fileId: fileUrl,
-        dateFormat,
-        timestampColumnIndex,
-    })
+    return services.confirmCsvFileUpload(id, fileUrl, dateFormat, timestampColumnIndex)
         .then(() => {
             dispatch(confirmCsvFileUploadSuccess())
             Notification.push({
@@ -507,12 +494,12 @@ export const confirmCsvFileUpload = (id: StreamId, fileUrl: string, dateFormat: 
 
 export const getRange = (id: StreamId) => (dispatch: Function) => {
     dispatch(getStreamRangeRequest())
-    return api.get(`${process.env.STREAMR_API_URL}/streams/${id}/range`)
+    return services.getRange(id)
 }
 
 export const deleteDataUpTo = (id: StreamId, date: Date) => (dispatch: Function) => {
     dispatch(deleteDataUpToRequest())
-    return axios.get(`${process.env.STREAMR_URL}/stream/deleteDataUpTo?id=${id}&date=${moment(date).format('YYYY-MM-DD')}`)
+    return services.deleteDataUpTo(id, date)
         .then(() => {
             dispatch(deleteDataUpToSuccess())
             Notification.push({
