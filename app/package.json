@@ -1,7 +1,7 @@
 {
   "name": "marketplace",
   "version": "2.0.5",
-  "description": "The UI of Streamr Marketplace",
+  "description": "The Streamr Core App",
   "main": "src/index.jsx",
   "scripts": {
     "start": "webpack-dev-server --hot",

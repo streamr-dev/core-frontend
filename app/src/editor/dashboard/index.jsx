@@ -134,7 +134,7 @@ const DashboardEdit = withRouter(class DashboardEdit extends Component {
         const { dashboard } = this.props
         return (
             <div className={styles.DashboardEdit}>
-                <Helmet title={dashboard.name} />
+                <Helmet title={`${dashboard.name} | Streamr Core`} />
                 <ModalProvider>
                     <SelectionProvider>
                         <Dashboard

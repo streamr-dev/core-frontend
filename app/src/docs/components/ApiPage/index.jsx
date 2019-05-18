@@ -10,7 +10,7 @@ import { subNav } from '../DocsLayout/Navigation/navLinks'
 const ApiPage = () => (
     <DocsLayout subNav={subNav.api}>
         <Helmet>
-            <title>Streamr API - Streamr Docs</title>
+            <title>Streamr Docs | Streamr API</title>
         </Helmet>
         <ApiContent />
     </DocsLayout>

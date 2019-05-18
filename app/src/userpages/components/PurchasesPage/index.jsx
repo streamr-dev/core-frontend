@@ -125,9 +125,7 @@ class PurchasesPage extends Component<Props> {
                 }
                 loading={fetching}
             >
-                <Helmet>
-                    <title>{I18n.t('userpages.title.purchases')}</title>
-                </Helmet>
+                <Helmet title={`Streamr Core | ${I18n.t('userpages.title.purchases')}`} />
                 <Container className={styles.corepageContentContainer} >
                     {!fetching && purchases && !purchases.length && (
                         <NoPurchasesView

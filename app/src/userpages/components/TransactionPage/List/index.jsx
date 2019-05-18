@@ -74,9 +74,7 @@ class TransactionList extends Component<Props> {
             <Layout
                 loading={fetching}
             >
-                <Helmet>
-                    <title>{I18n.t('userpages.title.transactions')}</title>
-                </Helmet>
+                <Helmet title={`Streamr Core | ${I18n.t('userpages.title.transactions')}`} />
                 <div className={cx('container', styles.transactionList)}>
                     {!fetching && transactions && transactions.length <= 0 && (
                         <NoTransactionsView />

@@ -39,7 +39,7 @@ const ErrorPageView = () => (
                             to={links.userpages.products}
                             className="btn btn-special d-none d-md-inline-block"
                         >
-                            <Translate value="general.myProducts" />
+                            <Translate value="general.products" />
                         </Link>
                     </React.Fragment>
                 )}

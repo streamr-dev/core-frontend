@@ -83,7 +83,7 @@ Use `.travis.yml` to set the production values.
 
 Marketplace: [/](/)
 
-User Pages:  [/u/](/u)
+Core Pages:  [/core/](/core)
 
 Docs: [/docs](/docs)
 

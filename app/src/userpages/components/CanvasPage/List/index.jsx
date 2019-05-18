@@ -269,9 +269,7 @@ class CanvasList extends Component<Props, State> {
                     />
                 )}
                 <Container className={styles.corepageContentContainer}>
-                    <Helmet>
-                        <title>{I18n.t('userpages.canvases.title')}</title>
-                    </Helmet>
+                    <Helmet title={`Streamr Core | ${I18n.t('userpages.canvases.title')}`} />
                     {!fetching && canvases && !canvases.length && (
                         <NoCanvasesView
                             hasFilter={!!filter && (!!filter.search || !!filter.key)}

@@ -258,7 +258,7 @@ export class ProductPage extends Component<Props, State> {
         return !!product && (
             <Layout>
                 <Helmet>
-                    <title>{`${product.name} - ${I18n.t('general.title.suffix')}`}</title>
+                    <title>{`${product.name} | ${I18n.t('general.title.suffix')}`}</title>
                 </Helmet>
                 <ProductPageComponent
                     product={product}

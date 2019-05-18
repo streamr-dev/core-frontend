@@ -33,7 +33,7 @@ msgid "userpages##canvases##noCanvasesResult##clearFilters"
 msgstr "Clear filters"
 
 msgid "userpages##canvases##title"
-msgstr "My Canvases"
+msgstr "Canvases"
 
 msgid "userpages##canvases##menu##edit"
 msgstr "Edit"
@@ -105,22 +105,22 @@ msgid "userpages##header##dashboards"
 msgstr "Dashboards"
 
 msgid "userpages##title##dashboards"
-msgstr "My Dashboards"
+msgstr "Dashboards"
 
 msgid "userpages##title##products"
-msgstr "My Products"
+msgstr "Products"
 
 msgid "userpages##title##purchases"
-msgstr "My Purchases"
+msgstr "Purchases"
 
 msgid "userpages##title##streams"
-msgstr "My Streams"
+msgstr "Streams"
 
 msgid "userpages##title##transactions"
-msgstr "My Transactions"
+msgstr "Transactions"
 
 msgid "userpages##title##profile"
-msgstr "Streamr Profile"
+msgstr "Profile"
 
 msgid "userpages##header##products"
 msgstr "Products"

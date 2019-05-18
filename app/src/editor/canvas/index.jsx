@@ -358,7 +358,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         const resendTo = settings.endDate
         return (
             <div className={styles.CanvasEdit}>
-                <Helmet title={canvas.name} />
+                <Helmet title={`${canvas.name} | Streamr Core`} />
                 <Subscription
                     uiChannel={canvas.uiChannel}
                     resendFrom={canvas.adhoc ? resendFrom : undefined}

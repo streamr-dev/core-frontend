@@ -13,6 +13,7 @@ import Toolbar from '$shared/components/Toolbar'
 import TOCPage from '$userpages/components/TOCPage'
 import ConfigureAnchorOffset from '$shared/components/ConfigureAnchorOffset'
 import { lg } from '$app/scripts/breakpoints'
+import links from '$shared/../links'
 
 import Layout from '../Layout'
 import ProfileSettings from './ProfileSettings'
@@ -76,9 +77,7 @@ export class ProfilePage extends Component<Props, State> {
         const { saving } = this.state
         return (
             <Layout noHeader noFooter>
-                <Helmet>
-                    <title>{I18n.t('userpages.title.profile')}</title>
-                </Helmet>
+                <Helmet title={`Streamr Core | ${I18n.t('userpages.title.profile')}`} />
                 <div className={styles.profilePage}>
                     <MediaQuery minWidth={lg.min}>
                         <ConfigureAnchorOffset value={-80} />
@@ -89,7 +88,7 @@ export class ProfilePage extends Component<Props, State> {
                             cancel: {
                                 title: I18n.t('userpages.profilePage.toolbar.cancel'),
                                 color: 'link',
-                                linkTo: '/u',
+                                linkTo: links.userpages.main,
                             },
                             saveChanges: {
                                 title: I18n.t('userpages.profilePage.toolbar.saveAndExit'),
