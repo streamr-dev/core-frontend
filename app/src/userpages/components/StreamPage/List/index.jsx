@@ -297,9 +297,7 @@ class StreamList extends Component<Props, State> {
                 }
                 loading={fetching}
             >
-                <Helmet>
-                    <title>{I18n.t('userpages.title.streams')}</title>
-                </Helmet>
+                <Helmet title={`Streamr Core | ${I18n.t('userpages.title.streams')}`} />
                 {!!dialogTargetStream && activeDialog === Dialogs.SHARE && (
                     <ShareDialog
                         resourceTitle={dialogTargetStream.name}

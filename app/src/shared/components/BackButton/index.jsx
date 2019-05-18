@@ -43,14 +43,14 @@ const BackButton = ({ className, ...props }: Props) => (
                 <Link
                     to={links.userpages.products}
                 >
-                    <Translate value="general.myProducts" />
+                    <Translate value="general.products" />
                 </Link>
             </li>
             <li>
                 <Link
                     to={links.userpages.purchases}
                 >
-                    <Translate value="general.myPurchases" />
+                    <Translate value="general.purchases" />
                 </Link>
             </li>
         </List>

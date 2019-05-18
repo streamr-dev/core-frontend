@@ -9,7 +9,7 @@ import IntroductionContent from '$docs/content/introduction.mdx'
 const IntroductionPage = () => (
     <DocsLayout>
         <Helmet>
-            <title>Introduction - Streamr Docs</title>
+            <title>Streamr Docs | Introduction</title>
         </Helmet>
         <IntroductionContent />
     </DocsLayout>

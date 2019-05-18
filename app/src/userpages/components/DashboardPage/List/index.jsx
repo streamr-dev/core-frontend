@@ -132,9 +132,7 @@ class DashboardList extends Component<Props> {
                 }
                 loading={fetching}
             >
-                <Helmet>
-                    <title>{I18n.t('userpages.title.dashboards')}</title>
-                </Helmet>
+                <Helmet title={`Streamr Core | ${I18n.t('userpages.title.dashboards')}`} />
                 <Container className={styles.corepageContentContainer} >
                     {!fetching && dashboards && dashboards.length <= 0 && (
                         <NoDashboardsView

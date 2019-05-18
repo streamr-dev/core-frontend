@@ -10,7 +10,7 @@ import { subNav } from '../DocsLayout/Navigation/navLinks'
 const MarketplacePage = () => (
     <DocsLayout subNav={subNav.marketplace}>
         <Helmet>
-            <title>Marketplace - Streamr Docs</title>
+            <title>Streamr Docs | Marketplace</title>
         </Helmet>
         <MarketplacePageContent />
     </DocsLayout>
