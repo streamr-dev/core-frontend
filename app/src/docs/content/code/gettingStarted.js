@@ -104,3 +104,13 @@ client.getOrCreateStream({
 }).catch((err) => {
     console.log(err)
 })`
+
+export const PythonRequests =
+`import requests
+
+msg = {
+    'foo': 'hello',
+    'bar': 24.5
+}
+
+requests.post('https://www.streamr.com/api/v1/streams/MY-STREAM-ID/data', json=msg, headers={'Authorization': 'Bearer MY-SESSION-TOKEN'})`
