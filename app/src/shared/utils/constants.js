@@ -77,6 +77,8 @@ export const integrationKeyServices = {
 export const NotificationIcon = {
     CHECKMARK: 'checkmark',
     ERROR: 'error',
+    WARNING: 'warning',
+    INFO: 'info',
     SPINNER: 'spinner',
 }
 

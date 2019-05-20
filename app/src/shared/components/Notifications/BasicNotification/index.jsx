@@ -23,6 +23,13 @@ const BasicNotification = ({ title, icon }: Props) => (
         {icon && icon === NotificationIcon.ERROR &&
             <SvgIcon name="error" className={styles.error} />
         }
+        {icon && icon === NotificationIcon.WARNING && (
+            <SvgIcon name="warning" className={styles.icon} />
+        )}
+        {icon && icon === NotificationIcon.INFO &&
+            /* warning icon for now */
+            <SvgIcon name="warning" className={styles.icon} />
+        }
         <span className={styles.title}>{title}</span>
     </div>
 )
