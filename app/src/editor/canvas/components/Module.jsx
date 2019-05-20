@@ -202,30 +202,67 @@ class CanvasModule extends React.PureComponent {
 
 // try render module error in-place
 function ModuleError(props) {
-    const { module } = props
-    const { layout } = module
+    const {
+        api,
+        module,
+        canvas,
+        className,
+        selectedModuleHash,
+        moduleSidebarIsOpen,
+        layout,
+        onPort,
+        error,
+        style,
+        ...restProps
+    } = props
+
+    const isSelected = module.hash === selectedModuleHash
+    const errorObj = (error && error.error) ? error.error : error
+    const moduleLayout = layout || module.layout
+    const errorMessage = (errorObj.stack || errorObj.message || '').trim()
+
     return (
         <div
-            className={cx(styles.Module)}
+            onFocus={() => api.selectModule({ hash: module.hash })}
+            className={cx(className, styles.CanvasModule, ModuleStyles.ModuleBase, ModuleStyles.dragHandle, styles.ModuleError, {
+                [ModuleStyles.isSelected]: isSelected,
+            })}
             style={{
-                top: layout.position.top,
-                left: layout.position.left,
-                minHeight: layout.height,
-                minWidth: layout.width,
+                width: moduleLayout.width,
+                minHeight: moduleLayout.height,
+                ...style,
             }}
+            role="rowgroup"
+            tabIndex="0"
+            data-modulehash={module.hash}
+            {...restProps}
         >
-            <div className={styles.moduleHeader}>
-                {module.displayName || module.name}
+            <div className={styles.body}>
+                <ModuleHeader
+                    className={cx(styles.header, styles.hasError)}
+                    editable={false}
+                    label={`${module.displayName || module.name} Error`}
+                />
             </div>
-            <div className={styles.ports}>
-                <Translate value="error.general" />
+            <div className={cx(styles.canvasModuleUI, styles.ModuleErrorContent)}>
+                <div>
+                    <Translate value="editor.module.error" />
+                </div>
+                {!!errorMessage && (
+                    <div className={styles.errorMessage}>
+                        {errorMessage}
+                    </div>
+                )}
             </div>
+            <div className={ModuleStyles.selectionDecorator} />
         </div>
     )
 }
 
+const CanvasModuleWithErrorBoundary = withErrorBoundary(ModuleError)(CanvasModule)
+
 export default withErrorBoundary(ModuleError)((props) => (
     <ModuleDragger module={props.module} api={props.api}>
-        <CanvasModule {...props} />
+        <CanvasModuleWithErrorBoundary {...props} />
     </ModuleDragger>
 ))

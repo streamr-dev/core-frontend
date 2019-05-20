@@ -50,6 +50,37 @@
   border-bottom: 1px solid #EFEFEF;
 }
 
+.header.hasError {
+  border-bottom: 1px solid #FF0F2D;
+}
+
 .body {
   position: relative;
+}
+
+.ModuleError {
+  overflow: hidden;
+}
+
+.ModuleErrorContent {
+  min-width: 248px;
+  font-size: 10px;
+  color: #323232;
+  line-height: 2;
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+.ModuleErrorContent > * {
+  padding: 10px 24px;
+}
+
+.errorMessage {
+  color: #525252;
+  background: #F8F8F8;
+  max-height: 15vh;
+  overflow: auto;
+  white-space: pre-wrap;
+  text-overflow: ellipsis;
+  font-family: var(--mono);
+  font-size: 8px;
 }
