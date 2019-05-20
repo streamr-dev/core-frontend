@@ -47,12 +47,12 @@ function useRunController(canvas = EMPTY) {
     const isEditable = !isActive &&
         !canvas.adhoc &&
         canvas.permissions &&
+        canvas.permissions.some((p) => p.operation === 'write')
+
+    const hasSharePermission = canvas.permissions &&
         canvas.permissions.some((p) => p.operation === 'share')
 
-    const isShareable = canvas.permissions &&
-        canvas.permissions.some((p) => p.operation === 'share')
-
-    const isWritable = canvas.permissions &&
+    const hasWritePermission = canvas.permissions &&
         canvas.permissions.some((p) => p.operation === 'write')
 
     const start = useCallback(async (canvas, options) => {
@@ -136,12 +136,13 @@ function useRunController(canvas = EMPTY) {
         isRunning,
         isHistorical,
         isEditable,
-        isShareable,
-        isWritable,
+        hasSharePermission,
+        hasWritePermission,
         start,
         stop,
         exit,
-    }), [canvas, isPending, isStarting, isActive, isRunning, isHistorical, isEditable, isShareable, isWritable, isStopping, start, stop, exit])
+    }), [canvas, isPending, isStarting, isActive, isRunning, isHistorical, isEditable,
+        hasSharePermission, hasWritePermission, isStopping, start, stop, exit])
 }
 
 export default function RunControllerProvider({ children, canvas }) {

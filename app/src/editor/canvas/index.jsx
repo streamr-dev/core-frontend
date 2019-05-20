@@ -26,7 +26,7 @@ import useCanvasUpdater from './components/CanvasController/useCanvasUpdater'
 
 import Canvas from './components/Canvas'
 import CanvasToolbar from './components/Toolbar'
-import CanvasStatus, { NotEditableStatus } from './components/Status'
+import CanvasStatus, { CannotSaveStatus } from './components/Status'
 import ModuleSearch from './components/ModuleSearch'
 
 import useCanvasNotifications, { pushErrorNotification } from './hooks/useCanvasNotifications'
@@ -137,7 +137,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
 
     async autosave() {
         const { canvas, runController } = this.props
-        if (runController.isActive || canvas.adhoc || !runController.isWritable) {
+        if (!runController.isEditable) {
             // do not autosave running/adhoc canvases or if we have no write permission
             return
         }
@@ -380,10 +380,10 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                     loadNewDefinition={this.loadNewDefinition}
                     pushNewDefinition={this.pushNewDefinition}
                 >
-                    {runController.isEditable ? (
+                    {runController.hasWritePermission ? (
                         <CanvasStatus updated={this.state.updated} />
                     ) : (
-                        <NotEditableStatus />
+                        <CannotSaveStatus />
                     )}
                 </Canvas>
                 <ModalProvider>

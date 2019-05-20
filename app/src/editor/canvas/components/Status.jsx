@@ -90,8 +90,8 @@ export default class Status extends React.Component {
     }
 }
 
-export const NotEditableStatus = () => (
+export const CannotSaveStatus = () => (
     <div className={styles.status}>
-        Can&#39;t save shared canvas
+        No write permission
     </div>
 )

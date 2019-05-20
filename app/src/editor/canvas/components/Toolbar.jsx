@@ -107,17 +107,15 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
 
         const runController = this.context
         const { runButtonDropdownOpen, canvasSearchIsOpen } = this.state
-        const { isRunning, isActive, isPending } = runController
+        const { isRunning, isActive, isPending, hasWritePermission } = runController
         const canEdit = runController.isEditable
-        const canShare = runController.isShareable
+        const canShare = runController.hasSharePermission
         const { settings = {} } = canvas
         const { editorState = {} } = settings
-        // TODO: Where to get user's name?
-        const ownerName = 'User Name'
         return (
             <div
                 className={cx(className, styles.CanvasToolbar, {
-                    [styles.notEditable]: !canEdit,
+                    [styles.notEditable]: !hasWritePermission,
                 })}
             >
                 <ModalContainer modalId="ShareDialog">
@@ -138,9 +136,9 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                             >
                                                 {canvas.name}
                                             </EditableText>
-                                            {!canEdit && (
-                                                <span className={styles.ownerName}>by {ownerName}</span>
-                                            )}
+                                            {/* !canEdit && (
+                                                <span className={styles.ownerName}>by TODO: get owner name</span>
+                                            ) */}
                                             <DropdownActions
                                                 title={
                                                     <R.Button className={cx(styles.MeatballContainer, styles.ToolbarButton)}>
