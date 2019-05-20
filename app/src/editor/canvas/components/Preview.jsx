@@ -141,7 +141,7 @@ function getPortPosition(portId, canvas, preview, previewScale) {
 const PreviewCables = ({ canvas, preview, previewScale }) => (
     Object.entries(canvas.modules.reduce((memo, { params, inputs, outputs }) => ({
         ...memo,
-        ...(() => [...params, ...inputs, ...outputs].reduce((memo2, { sourceId, id }) => {
+        ...[...params, ...inputs, ...outputs].reduce((memo2, { sourceId, id }) => {
             const from = getPortPosition(sourceId, canvas, preview, previewScale)
             const to = getPortPosition(id, canvas, preview, previewScale)
             const cable = [from, to]
@@ -154,7 +154,7 @@ const PreviewCables = ({ canvas, preview, previewScale }) => (
                 ...memo2,
                 [getCableKey(cable)]: cable,
             }
-        }, {}))(),
+        }, []),
     }), {})).map(([key, cable]) => (
         <Cable cable={cable} key={key} strokeWidth="0.5" />
     ))
@@ -234,7 +234,7 @@ function getPreviewCanvas({ canvas, aspect, screen }) {
         height: Number.parseInt(m.layout.height, 10) || defaultLayout.height,
         width: Number.parseInt(m.layout.width, 10) || defaultLayout.width,
         title: (m.displayName || m.name),
-        type: (m.uiChannel && m.uiChannel.webcomponent) || m.widgth || m.jsModule,
+        type: (m.uiChannel && m.uiChannel.webcomponent) || m.widget || m.jsModule,
     }))
 
     // find bounds of modules
