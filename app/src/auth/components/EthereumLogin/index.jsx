@@ -11,7 +11,7 @@ import AuthPanel from '$auth/components/AuthPanel'
 import AuthStep from '$auth/components/AuthStep'
 import TextInput from '$shared/components/TextInput'
 import getSessionToken from '$auth/utils/getSessionToken'
-import { getWeb3 } from '$shared/web3/web3Provider'
+import { validateWeb3, getWeb3 } from '$shared/web3/web3Provider'
 
 type Props = {
     onBackClick: () => void,
@@ -39,21 +39,16 @@ const EthereumLogin = ({ onBackClick }: Props) => {
     const { setSessionToken } = useContext(SessionContext)
 
     const submit = useCallback(async () => {
-        const web3 = getWeb3()
-        const accounts = await (async () => {
+        const web3 = await (async () => {
             try {
-                return await web3.eth.getAccounts()
+                return await validateWeb3(getWeb3())
             } catch (e) {
+                setFieldError('ethereum', e.message)
                 return null
             }
         })()
 
-        if (!mountedRef.current) {
-            return
-        }
-
-        if (!Array.isArray(accounts) || accounts.length === 0) {
-            setFieldError('ethereum', 'MetaMask browser extension is locked')
+        if (!web3 || !mountedRef.current) {
             return
         }
 
