@@ -167,6 +167,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                     Open
                                 </R.Button>
                                 <CanvasSearch
+                                    canvas={canvas}
                                     isOpen={canvasSearchIsOpen}
                                     open={this.canvasSearchOpen}
                                 />

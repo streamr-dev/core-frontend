@@ -30,9 +30,11 @@ export default connect((state) => ({
 
     render() {
         const search = this.state.search.trim().toLowerCase()
-        const canvases = search ? this.props.canvases.filter(({ name }) => (
+        const otherCanvases = this.props.canvases.filter(({ id }) => id !== this.props.canvas.id)
+
+        const canvases = search ? otherCanvases.filter(({ name }) => (
             name.toLowerCase().includes(search)
-        )) : this.props.canvases
+        )) : otherCanvases
         return (
             <React.Fragment>
                 {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
