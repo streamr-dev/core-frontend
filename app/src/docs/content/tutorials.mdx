@@ -1,4 +1,5 @@
 import ScrollableAnchor from 'react-scrollable-anchor'
+import ReactPlayer from 'react-player'
 
 import CodeSnippet from '$shared/components/CodeSnippet'
 
@@ -13,6 +14,8 @@ import GoogleAuth from './images/tutorials/google-auth.png'
 import OauthPlay from './images/tutorials/oauth-play.png'
 import DataStream from './images/tutorials/data-stream.png'
 import Canvas from './images/tutorials/canvas.png'
+
+import styles from '$docs/components/DocsLayout/docsLayout.pcss'
 
 # Tutorials
 
@@ -70,8 +73,15 @@ This demo is built around the pattern of a transportation company carrying refri
 
 Below is a video tutorial to walk you through this demo:
 
-!!!! REPLACE WITH REACT PLAYER
-https://youtu.be/GfHQmVg-Elw
+<div className={styles.playerWrapper}>
+    <ReactPlayer
+        controls
+        className={styles.reactPlayer}
+        url="https://youtu.be/GfHQmVg-Elw"
+        width="100%"
+        height="100%"
+    />
+</div>
 
 Before starting, below are few important links:
 
