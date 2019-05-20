@@ -21,9 +21,10 @@ import styles from './streamLivePreview.pcss'
 export type DataPoint = {
     data: any,
     metadata: {
-        offset: number,
-        timestamp: number,
-        streamId: StreamId,
+        messageId: {
+            streamId: StreamId,
+            timestamp: number,
+        },
     }
 }
 
@@ -220,14 +221,14 @@ export class StreamLivePreview extends Component<Props, State> {
                                                 <tbody>
                                                     {data.map((d) => (
                                                         <tr
-                                                            key={d.metadata.offset}
+                                                            key={JSON.stringify(d.metadata.messageId)}
                                                             onClick={() => this.props.onSelectDataPoint(d)}
                                                         >
                                                             <td className={styles.timestampColumn}>
-                                                                {formatDateTime(d.metadata && d.metadata.timestamp, tz)}
+                                                                {formatDateTime(d.metadata
+                                                                    && d.metadata.messageId && d.metadata.messageId.timestamp, tz)}
                                                             </td>
-                                                        </tr>
-                                                    ))}
+                                                        </tr>))}
                                                 </tbody>
                                             </Table>
                                             <Table className={classnames(
@@ -252,7 +253,7 @@ export class StreamLivePreview extends Component<Props, State> {
                                                 <tbody>
                                                     {data.map((d) => (
                                                         <tr
-                                                            key={d.metadata.offset}
+                                                            key={JSON.stringify(d.metadata.messageId)}
                                                             onClick={() => this.props.onSelectDataPoint(d)}
                                                         >
                                                             <td className={styles.messageColumn}>
@@ -304,9 +305,12 @@ export class StreamLivePreview extends Component<Props, State> {
                                     </thead>
                                     <tbody>
                                         {data.map((d) => (
-                                            <tr key={d.metadata.offset} onClick={() => this.props.onSelectDataPoint(d)}>
+                                            <tr
+                                                key={JSON.stringify(d.metadata.messageId)}
+                                                onClick={() => this.props.onSelectDataPoint(d)}
+                                            >
                                                 <td className={styles.timestampColumn}>
-                                                    {formatDateTime(d.metadata && d.metadata.timestamp, tz)}
+                                                    {formatDateTime(d.metadata && d.metadata.messageId && d.metadata.messageId.timestamp, tz)}
                                                 </td>
                                                 <td className={styles.messageColumn}>
                                                     <div className={styles.messagePreview}>

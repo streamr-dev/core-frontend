@@ -48,11 +48,11 @@ const InspectorSidebar = ({ streamId, dataPoint, onStreamIdCopy }: Props) => {
                         <Fragment>
                             <tr>
                                 <th><Translate value="modal.streamLiveData.inspectorSidebar.streamId" /></th>
-                                <td>{dataPoint && dataPoint.metadata.streamId}</td>
+                                <td>{dataPoint && dataPoint.metadata.messageId.streamId}</td>
                             </tr>
                             <tr>
                                 <th><Translate value="modal.streamLiveData.inspectorSidebar.timestamp" /></th>
-                                <td>{dataPoint && formatDateTime(dataPoint.metadata.timestamp, tz)}</td>
+                                <td>{dataPoint && formatDateTime(dataPoint.metadata.messageId.timestamp, tz)}</td>
                             </tr>
                             {/* In theory the data doesn't have to be object. Then we just skip it */}
                             {dataPoint && dataPoint.data && typeof dataPoint.data === 'object' && Object.entries(dataPoint.data).map(([k, v]) => {
