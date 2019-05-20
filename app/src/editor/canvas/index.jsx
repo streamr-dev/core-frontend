@@ -83,6 +83,10 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         })
     }
 
+    moduleSidebarClose = () => {
+        this.moduleSidebarOpen(false)
+    }
+
     keyboardShortcutOpen = (show = true) => {
         this.setState({
             moduleSidebarIsOpen: !!show,
@@ -414,7 +418,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                     )}
                     {moduleSidebarIsOpen && !keyboardShortcutIsOpen && (
                         <ModuleSidebar
-                            onClose={() => this.moduleSidebarOpen(false)}
+                            onClose={this.moduleSidebarClose}
                             canvas={canvas}
                             selectedModuleHash={this.state.selectedModuleHash}
                             setModuleOptions={this.setModuleOptions}

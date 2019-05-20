@@ -168,6 +168,10 @@ class CanvasModule extends React.PureComponent {
                             className={ModuleStyles.dragCancel}
                             onClick={this.onTriggerOptions}
                             onFocus={this.onHamburgerButtonFocus}
+                            data-modulehash={(
+                                /* hacky. allows delete to work when this focussed */
+                                module.hash
+                            )}
                         />
                     </ModuleHeader>
                     <Ports
