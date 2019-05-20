@@ -24,6 +24,10 @@ import { leftColumn, rightColumn, fieldTypes } from '../../constants'
 import styles from './configureView.pcss'
 import NewFieldEditor from './NewFieldEditor'
 
+type OwnProps = {
+    disabled: boolean,
+}
+
 type StateProps = {
     stream: ?Stream,
     fieldsAutodetectFetching: boolean,
@@ -36,7 +40,7 @@ type DispatchProps = {
     streamFieldsAutodetect: (id: StreamId) => Promise<void>,
 }
 
-type Props = StateProps & DispatchProps
+type Props = OwnProps & StateProps & DispatchProps
 
 type State = {
     isAddingField: boolean,
@@ -162,7 +166,7 @@ export class ConfigureView extends Component<Props, State> {
     }
 
     render() {
-        const { stream } = this.props
+        const { stream, disabled } = this.props
         const { isAddingField } = this.state
 
         return (
@@ -177,7 +181,7 @@ export class ConfigureView extends Component<Props, State> {
                             className={styles.autodetect}
                             outline
                             onClick={this.autodetectFields}
-                            disabled={this.props.fieldsAutodetectFetching}
+                            disabled={this.props.fieldsAutodetectFetching || disabled}
                         >
                             {!this.props.fieldsAutodetectFetching && (
                                 <Translate value="userpages.streams.edit.configure.autodetect" />
@@ -219,6 +223,7 @@ export class ConfigureView extends Component<Props, State> {
                                                         label=""
                                                         value={field.name}
                                                         onChange={(e) => this.onFieldNameChange(field.name, e.target.value)}
+                                                        disabled={disabled}
                                                     />
                                                 </Col>
                                                 <Col {...rightColumn}>
@@ -232,6 +237,7 @@ export class ConfigureView extends Component<Props, State> {
                                                         selectedItem={field.type}
                                                         onChange={(val) => this.onFieldTypeChange(field.name, val)}
                                                         className={styles.permissionsDropdown}
+                                                        disabled={disabled}
                                                     >
                                                         {fieldTypes.map((t) => (
                                                             <Dropdown.Item
@@ -247,6 +253,7 @@ export class ConfigureView extends Component<Props, State> {
                                                         color="userpages"
                                                         className={styles.deleteFieldButton}
                                                         onClick={() => this.deleteField(field.name)}
+                                                        disabled={disabled}
                                                     >
                                                         <Translate value="userpages.streams.edit.configure.delete" />
                                                     </Button>
@@ -259,7 +266,13 @@ export class ConfigureView extends Component<Props, State> {
                         </FieldList>
                     </Fragment>}
                 {!isAddingField &&
-                    <Button color="userpages" className={styles.addFieldButton} outline onClick={this.addNewField}>
+                    <Button
+                        color="userpages"
+                        className={styles.addFieldButton}
+                        outline
+                        onClick={this.addNewField}
+                        disabled={disabled}
+                    >
                         <Translate value="userpages.streams.edit.configure.addField" />
                     </Button>
                 }
@@ -281,7 +294,12 @@ export class ConfigureView extends Component<Props, State> {
                                     </label>
                                 </Col>
                                 <Col sm={12} md={3} className={styles.toggle}>
-                                    <Toggle id="auto-configure" value={stream.autoConfigure} onChange={this.onAutoConfigureChange} />
+                                    <Toggle
+                                        id="auto-configure"
+                                        value={stream.autoConfigure}
+                                        onChange={this.onAutoConfigureChange}
+                                        disabled={disabled}
+                                    />
                                 </Col>
                             </Row>
                         </Fragment>}
@@ -294,7 +312,12 @@ export class ConfigureView extends Component<Props, State> {
                                     </label>
                                 </Col>
                                 <Col sm={12} md={3} className={styles.toggle}>
-                                    <Toggle id="require-signed" value={stream.requireSignedData} onChange={this.onRequireSignedChange} />
+                                    <Toggle
+                                        id="require-signed"
+                                        value={stream.requireSignedData}
+                                        onChange={this.onRequireSignedChange}
+                                        disabled={disabled}
+                                    />
                                 </Col>
                             </Fragment>}
                     </Row>

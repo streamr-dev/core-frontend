@@ -24,6 +24,7 @@ import styles from './historyView.pcss'
 
 type OwnProps = {
     streamId: ?StreamId,
+    disabled: boolean,
 }
 
 type StateProps = {
@@ -225,7 +226,13 @@ class HistoryView extends Component<Props, State> {
             confirmError,
             deleteInProgress,
         } = this.state
-        const { streamId, deleteDataError, csvUploadState, stream } = this.props
+        const {
+            streamId,
+            deleteDataError,
+            csvUploadState,
+            stream,
+            disabled,
+        } = this.props
         const storedEventsText = (range && range.beginDate && range.endDate) ?
             I18n.t('userpages.streams.edit.history.events', {
                 start: range && new Date(range.beginDate).toLocaleDateString(),
@@ -261,6 +268,7 @@ class HistoryView extends Component<Props, State> {
                                     maxFileSizeInMB={5}
                                     multiple={false}
                                     disablePreview
+                                    disabled={disabled}
                                 />
                             </Col>
                             <Col md={12} lg={1}>
@@ -268,6 +276,7 @@ class HistoryView extends Component<Props, State> {
                                     className={styles.browseFiles}
                                     color="userpages"
                                     onClick={() => this.handleBrowseFilesClick()}
+                                    disabled={disabled}
                                 >
                                     <Translate value="userpages.streams.edit.history.browseFiles" />
                                 </Button>
@@ -293,6 +302,7 @@ class HistoryView extends Component<Props, State> {
                                     preserveLabelSpace
                                     preserveErrorSpace
                                     className={styles.storedEvents}
+                                    disabled={disabled}
                                 />
                             </div>
                         </Col>
@@ -301,7 +311,7 @@ class HistoryView extends Component<Props, State> {
                                 className={styles.deleteButton}
                                 color="userpages"
                                 onClick={() => this.deleteDataUpTo(streamId, deleteDate)}
-                                disabled={deleteDate == null}
+                                disabled={deleteDate == null || disabled}
                             >
                                 <Translate value="userpages.streams.edit.history.deleteRange" />
                                 {deleteInProgress &&
@@ -331,6 +341,7 @@ class HistoryView extends Component<Props, State> {
                             value={stream.storageDays}
                             onChange={this.onStoragePeriodChange}
                             preserveLabelSpace
+                            disabled={disabled}
                         />
                     </Col>
                 </Row>}

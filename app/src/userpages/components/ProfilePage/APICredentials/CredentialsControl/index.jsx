@@ -23,6 +23,7 @@ type Props = {
     showPermissionType?: boolean,
     newStream?: boolean,
     streamId?: ?StreamId,
+    disabled?: boolean,
 }
 
 export default class CredentialsControl extends Component<Props> {
@@ -30,14 +31,20 @@ export default class CredentialsControl extends Component<Props> {
         this.props.addKey(keyName, permission)
 
     isAddKeyFieldAllowed = () => {
-        if (this.props.newStream) {
+        if (this.props.disabled || this.props.newStream) {
             return false
         }
         return true
     }
 
     render() {
-        const { streamId, editStreamResourceKey, editMyResourceKey, showPermissionType } = this.props
+        const {
+            streamId,
+            editStreamResourceKey,
+            editMyResourceKey,
+            showPermissionType,
+            disabled,
+        } = this.props
 
         return (
             <div>
@@ -65,7 +72,7 @@ export default class CredentialsControl extends Component<Props> {
                                 keyName={key.name}
                                 value={key.id}
                                 hideValue
-                                allowEdit
+                                allowEdit={!disabled}
                                 onSave={(keyName, value, keyPermission) => {
                                     if (streamId && key.id && keyName && keyPermission && editStreamResourceKey) {
                                         return editStreamResourceKey(streamId, key.id, keyName, keyPermission)
@@ -75,7 +82,7 @@ export default class CredentialsControl extends Component<Props> {
                                     return Promise.resolve()
                                 }
                                 }
-                                allowDelete
+                                allowDelete={!disabled}
                                 disableDelete={this.props.disableDelete}
                                 onDelete={() => this.props.removeKey(key.id || '')}
                                 showPermissionType={this.props.showPermissionType}

@@ -4,7 +4,7 @@ import cloneDeep from 'lodash/cloneDeep'
 
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { Stream, StreamId, StreamIdList, StreamFieldList, CSVImporterSchema, StreamStatus } from '$shared/flowtype/stream-types'
-import type { Permission } from '$userpages/flowtype/permission-types'
+import type { Operation } from '$userpages/flowtype/permission-types'
 import type { Filter } from '$userpages/flowtype/common-types'
 
 import Notification from '$shared/utils/Notification'
@@ -19,8 +19,6 @@ import CsvSchemaError from '$shared/errors/CsvSchemaError'
 
 import * as services from './services'
 import { selectFilter, selectOpenStream } from './selectors'
-
-type PermissionOperation = Array<$ElementType<Permission, 'operation'>>
 
 export const GET_STREAM_REQUEST = 'userpages/streams/GET_STREAM_REQUEST'
 export const GET_STREAM_SUCCESS = 'userpages/streams/GET_STREAM_SUCCESS'
@@ -125,7 +123,7 @@ const getMyStreamPermissionsRequest = () => ({
     type: GET_MY_STREAM_PERMISSIONS_REQUEST,
 })
 
-const getMyStreamPermissionsSuccess = (id: StreamId, permissions: PermissionOperation) => ({
+const getMyStreamPermissionsSuccess = (id: StreamId, permissions: Array<Operation>) => ({
     type: GET_MY_STREAM_PERMISSIONS_SUCCESS,
     id,
     permissions,
