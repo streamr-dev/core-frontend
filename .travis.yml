@@ -181,14 +181,13 @@ jobs:
     - PLATFORM_ORIGIN_URL=https://www.streamr.com
     - PLATFORM_PUBLIC_PATH=https://cdn.streamr.com
     - STREAMR_URL=https://www.streamr.com
-    - GOOGLE_ANALYTICS_ID=55331565-5
+    - GOOGLE_ANALYTICS_ID=UA-55331565-5
     - MARKETPLACE_CONTRACT_ADDRESS=0xA10151D088f6f2705a05d6c83719e99E079A61C1
     - TOKEN_CONTRACT_ADDRESS=0x0Cf0Ee63788A0849fE5297F3407f701E122cC023
     - WEB3_REQUIRED_NETWORK_ID=1
     - WEB3_PUBLIC_HTTP_PROVIDER=https://mainnet.infura.io
     - WEB3_PUBLIC_WS_PROVIDER=wss://mainnet.infura.io/ws
     - SENTRY_URL=https://e012761929d24baa96ca82772f60b395@sentry.io/1203154
-    - LOGROCKET_SLUG=et0uhu/streamr-frontend-beta
     script:
     - npm run build
     deploy:
