@@ -60,6 +60,7 @@ const initialState = {
     deleteDataError: null,
     autodetectFetching: false,
     streamFieldAutodetectError: null,
+    permissions: null,
 }
 
 export default function (state: UserPageStreamsState = initialState, action: StreamAction): UserPageStreamsState {
@@ -156,6 +157,7 @@ export default function (state: UserPageStreamsState = initialState, action: Str
         case GET_MY_STREAM_PERMISSIONS_SUCCESS:
             return {
                 ...state,
+                permissions: action.permissions,
                 error: null,
                 fetching: false,
             }

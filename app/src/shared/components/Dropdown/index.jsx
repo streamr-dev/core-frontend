@@ -19,6 +19,7 @@ type Props = {
     children: ChildrenArray<Element<typeof DropdownItem>>,
     className?: string,
     onChange: (string) => void,
+    disabled?: boolean,
 }
 
 type State = {
@@ -68,7 +69,13 @@ export default class Dropdown extends Component<Props, State> {
     }
 
     render() {
-        const { title, children, className, selectedItem } = this.props
+        const {
+            title,
+            children,
+            className,
+            selectedItem,
+            disabled,
+        } = this.props
         const { isOpen } = this.state
         const childrenArray = React.Children.toArray(children)
         const selectedIndex = childrenArray.findIndex((child) => child.props.value === selectedItem)
@@ -82,8 +89,9 @@ export default class Dropdown extends Component<Props, State> {
                 className={cx(className, styles.dropdown, {
                     [styles.open]: isOpen,
                 })}
+                disabled={disabled}
             >
-                <RsDropdownToggle className={cx(styles.toggle)}>
+                <RsDropdownToggle className={cx(styles.toggle)} disabled={disabled}>
                     {currentItem || title}
                     <SvgIcon name="caretUp" className={styles.caret} />
                 </RsDropdownToggle>

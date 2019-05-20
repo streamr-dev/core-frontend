@@ -10,6 +10,7 @@ import MediaQuery from 'react-responsive'
 
 import ConfigureAnchorOffset from '$shared/components/ConfigureAnchorOffset'
 import type { Stream, StreamId } from '$shared/flowtype/stream-types'
+import type { Operation } from '$userpages/flowtype/permission-types'
 import type { StoreState } from '$shared/flowtype/store-state'
 import type { User } from '$shared/flowtype/user-types'
 import type { ResourceKeyId } from '$shared/flowtype/resource-key-types'
@@ -24,7 +25,7 @@ import {
     updateEditStream,
 } from '$userpages/modules/userPageStreams/actions'
 import { getMyResourceKeys } from '$shared/modules/resourceKey/actions'
-import { selectEditedStream } from '$userpages/modules/userPageStreams/selectors'
+import { selectEditedStream, selectPermissions } from '$userpages/modules/userPageStreams/selectors'
 import { selectUserData } from '$shared/modules/user/selectors'
 import { selectAuthApiKeyId } from '$shared/modules/resourceKey/selectors'
 import TOCPage from '$userpages/components/TOCPage'
@@ -46,6 +47,7 @@ const { lg } = breakpoints
 
 type StateProps = {
     editedStream: ?Stream,
+    permissions: ?Array<Operation>,
     currentUser: ?User,
     authApiKeyId: ?ResourceKeyId,
 }
@@ -165,7 +167,14 @@ export class StreamShowView extends Component<Props, State> {
     }
 
     render() {
-        const { editedStream, cancel, currentUser, authApiKeyId } = this.props
+        const {
+            editedStream,
+            cancel,
+            currentUser,
+            authApiKeyId,
+            permissions,
+        } = this.props
+        const hasWritePermission = (permissions && permissions.some((p) => p === 'write')) || false
 
         return (
             <Layout noHeader noFooter>
@@ -192,6 +201,7 @@ export class StreamShowView extends Component<Props, State> {
                                             this.onSave(editedStream)
                                         }
                                     },
+                                    disabled: !hasWritePermission,
                                 },
                             }}
                         />
@@ -217,6 +227,7 @@ export class StreamShowView extends Component<Props, State> {
                                             this.onSave(editedStream)
                                         }
                                     },
+                                    disabled: !hasWritePermission,
                                 },
                             }}
                         />
@@ -227,14 +238,14 @@ export class StreamShowView extends Component<Props, State> {
                                 id="details"
                                 title="Details"
                             >
-                                <InfoView />
+                                <InfoView disabled={!hasWritePermission} />
                             </TOCPage.Section>
                             <TOCPage.Section
                                 id="configure"
                                 title="Configure"
                                 customStyled
                             >
-                                <ConfigureView />
+                                <ConfigureView disabled={!hasWritePermission} />
                             </TOCPage.Section>
                             <TOCPage.Section
                                 id="preview"
@@ -251,7 +262,7 @@ export class StreamShowView extends Component<Props, State> {
                                 title="API Access"
                                 customStyled
                             >
-                                <KeyView />
+                                <KeyView disabled={!hasWritePermission} />
                             </TOCPage.Section>
                             <TOCPage.Section
                                 id="historical-data"
@@ -260,6 +271,7 @@ export class StreamShowView extends Component<Props, State> {
                             >
                                 <HistoryView
                                     streamId={editedStream && editedStream.id}
+                                    disabled={!hasWritePermission}
                                 />
                             </TOCPage.Section>
                         </TOCPage>
@@ -272,6 +284,7 @@ export class StreamShowView extends Component<Props, State> {
 
 const mapStateToProps = (state: StoreState): StateProps => ({
     editedStream: selectEditedStream(state),
+    permissions: selectPermissions(state),
     currentUser: selectUserData(state),
     authApiKeyId: selectAuthApiKeyId(state),
 })

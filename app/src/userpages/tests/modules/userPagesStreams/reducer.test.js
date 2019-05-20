@@ -18,6 +18,7 @@ describe('Stream reducer', () => {
             deleteDataError: null,
             autodetectFetching: false,
             streamFieldAutodetectError: null,
+            permissions: null,
         })
     })
 
@@ -47,8 +48,6 @@ describe('Stream reducer', () => {
                     actions.CREATE_STREAM_SUCCESS,
                     actions.GET_STREAM_SUCCESS,
                     actions.SAVE_STREAM_FIELDS_SUCCESS,
-                    actions.GET_MY_STREAM_PERMISSIONS_SUCCESS,
-                    actions.GET_MY_STREAM_PERMISSIONS_SUCCESS,
                     actions.UPDATE_STREAM_SUCCESS,
                     actions.CREATE_STREAM_SUCCESS,
                     actions.GET_STREAM_SUCCESS,

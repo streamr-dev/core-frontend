@@ -16,6 +16,10 @@ import { NotificationIcon } from '$shared/utils/constants'
 
 import styles from './infoView.pcss'
 
+type OwnProps = {
+    disabled: boolean,
+}
+
 type StateProps = {
     stream: ?Stream,
 }
@@ -24,7 +28,7 @@ type DispatchProps = {
     editField: (string, any) => void,
 }
 
-type Props = StateProps & DispatchProps
+type Props = OwnProps & StateProps & DispatchProps
 
 type State = {
     contentChanged: boolean,
@@ -91,7 +95,7 @@ export class InfoView extends Component<Props, State> {
     }
 
     render() {
-        const { stream } = this.props
+        const { stream, disabled } = this.props
         const { idCopied } = this.state
 
         return (
@@ -106,6 +110,7 @@ export class InfoView extends Component<Props, State> {
                                 value={(stream && stream.name) || ''}
                                 onChange={this.onNameChange}
                                 preserveLabelSpace
+                                disabled={disabled}
                             />
                         </div>
                     </Col>
@@ -120,6 +125,7 @@ export class InfoView extends Component<Props, State> {
                                 value={(stream && stream.description) || ''}
                                 onChange={this.onDescriptionChange}
                                 preserveLabelSpace
+                                disabled={disabled}
                             />
                         </div>
                     </Col>
@@ -135,6 +141,7 @@ export class InfoView extends Component<Props, State> {
                                     value={(stream && stream.id) || ''}
                                     preserveLabelSpace
                                     readOnly
+                                    disabled={disabled}
                                 />
                             </div>
                         </Col>

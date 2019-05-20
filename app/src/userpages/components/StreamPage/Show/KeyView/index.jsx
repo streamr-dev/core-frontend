@@ -17,6 +17,10 @@ import { selectOpenStreamId, selectOpenStreamResourceKeys } from '$userpages/mod
 
 import styles from './keyView.pcss'
 
+type OwnProps = {
+    disabled: boolean,
+}
+
 type StateProps = {
     streamId: ?StreamId,
     keys: Array<ResourceKey>
@@ -29,17 +33,17 @@ type DispatchProps = {
     removeKey: (streamId: StreamId, keyId: ResourceKeyId) => Promise<void>
 }
 
-type Props = StateProps & DispatchProps
+type Props = OwnProps & StateProps & DispatchProps
 
 export class KeyView extends Component<Props> {
     componentDidMount() {
-        if (this.props.streamId) {
+        if (!this.props.disabled && this.props.streamId) {
             this.props.getKeys(this.props.streamId)
         }
     }
 
     componentWillReceiveProps(props: Props) {
-        if (props.streamId && props.streamId !== this.props.streamId) {
+        if (!this.props.disabled && props.streamId && props.streamId !== this.props.streamId) {
             this.props.getKeys(props.streamId)
         }
     }
@@ -61,6 +65,7 @@ export class KeyView extends Component<Props> {
     removeKey = (keyId: ResourceKeyId): Promise<void> => this.props.removeKey(this.props.streamId || '', keyId)
 
     render() {
+        const { disabled } = this.props
         const keys = this.props.keys || []
         return (
             <Fragment>
@@ -80,6 +85,7 @@ export class KeyView extends Component<Props> {
                             showPermissionType
                             newStream={!this.props.streamId}
                             streamId={this.props.streamId}
+                            disabled={disabled}
                         />
                     </Col>
                 </Row>
