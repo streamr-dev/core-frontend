@@ -382,9 +382,6 @@ class StreamList extends Component<Props, State> {
                                                                 },
                                                             }}
                                                         >
-                                                            <DropdownActions.Item>
-                                                                <Translate value="userpages.streams.actions.addToCanvas" />
-                                                            </DropdownActions.Item>
                                                             <DropdownActions.Item onClick={() => showStream(stream.id)}>
                                                                 <Translate value="userpages.streams.actions.editStream" />
                                                             </DropdownActions.Item>
