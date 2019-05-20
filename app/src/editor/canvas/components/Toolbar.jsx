@@ -201,7 +201,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                     })}
                                 >
                                     <R.Button
-                                        disabled={!!isPending || !canEdit}
+                                        disabled={!!isPending || !hasWritePermission}
                                         onClick={() => {
                                             if (isRunning) {
                                                 return canvasStop()

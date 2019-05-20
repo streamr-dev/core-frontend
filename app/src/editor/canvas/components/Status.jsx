@@ -92,6 +92,6 @@ export default class Status extends React.Component {
 
 export const CannotSaveStatus = () => (
     <div className={styles.status}>
-        No write permission
+        Canvas is read-only
     </div>
 )

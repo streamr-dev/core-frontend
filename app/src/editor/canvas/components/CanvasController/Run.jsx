@@ -7,6 +7,7 @@ import get from 'lodash/get'
 
 import useIsMountedRef from '$shared/utils/useIsMountedRef'
 import * as SubscriptionStatus from '$editor/shared/components/SubscriptionStatus'
+import { Context as PermissionContext } from '$editor/canvas/hooks/useCanvasPermissions'
 import usePending from '$editor/shared/hooks/usePending'
 
 import * as services from '../../services'
@@ -27,6 +28,7 @@ function isStateNotAllowedError(error) {
 
 function useRunController(canvas = EMPTY) {
     const subscriptionStatus = useContext(SubscriptionStatus.Context)
+    const { permissions } = useContext(PermissionContext)
     const { replaceCanvas } = useCanvasUpdater()
     const isMountedRef = useIsMountedRef()
 
@@ -44,16 +46,15 @@ function useRunController(canvas = EMPTY) {
     // true if canvas exists and is starting or already running
     const isActive = canvas !== EMPTY && (isStarting || isRunning)
 
+    const hasSharePermission = permissions &&
+        permissions.some((p) => p.operation === 'share')
+
+    const hasWritePermission = permissions &&
+        permissions.some((p) => p.operation === 'write')
+
     const isEditable = !isActive &&
         !canvas.adhoc &&
-        canvas.permissions &&
-        canvas.permissions.some((p) => p.operation === 'write')
-
-    const hasSharePermission = canvas.permissions &&
-        canvas.permissions.some((p) => p.operation === 'share')
-
-    const hasWritePermission = canvas.permissions &&
-        canvas.permissions.some((p) => p.operation === 'write')
+        hasWritePermission
 
     const start = useCallback(async (canvas, options) => {
         if (isHistorical && !canvas.adhoc) {
