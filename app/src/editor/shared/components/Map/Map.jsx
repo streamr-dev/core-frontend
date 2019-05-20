@@ -6,8 +6,10 @@ import 'leaflet/dist/leaflet.css'
 import { Map as LeafletMap, ImageOverlay, TileLayer, Tooltip, Polyline, type LatLngBounds } from 'react-leaflet'
 import L from 'leaflet'
 import HeatmapLayer from 'react-leaflet-heatmap-layer'
+import { type Ref } from '$shared/flowtype/common-types'
 
 import UiSizeConstraint from '../UiSizeConstraint'
+import ResizeWatcher from '$editor/canvas/components/Resizable/ResizeWatcher'
 import CustomMarker from './Marker'
 
 import styles from './Map.pcss'
@@ -54,6 +56,16 @@ type Props = {
 }
 
 export default class Map extends React.Component<Props> {
+    ref: Ref<LeafletMap> = React.createRef()
+
+    onResize = () => {
+        const { current: map } = this.ref
+
+        if (map) {
+            map.leafletElement.invalidateSize(false)
+        }
+    }
+
     render() {
         const {
             className,
@@ -97,6 +109,7 @@ export default class Map extends React.Component<Props> {
             <UiSizeConstraint minWidth={368} minHeight={224}>
                 <div className={cx(className)}>
                     <LeafletMap
+                        ref={this.ref}
                         center={mapCenter}
                         zoom={zoom}
                         className={styles.leafletMap}
@@ -104,6 +117,7 @@ export default class Map extends React.Component<Props> {
                         maxZoom={maxZoom}
                         crs={isImageMap ? L.CRS.Simple : L.CRS.EPSG3857}
                     >
+                        <ResizeWatcher onResize={this.onResize} />
                         {isHeatmap && (
                             <HeatmapLayer
                                 fitBoundsOnLoad={false}
