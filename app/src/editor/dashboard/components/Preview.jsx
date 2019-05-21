@@ -33,8 +33,6 @@ export default function Preview({
         }))
     }, [dashboard])
 
-    console.log(modulePreviews)
-
     const preview = useMemo(() => (
         getPreviewData({
             modulePreviews,

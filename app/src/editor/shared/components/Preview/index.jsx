@@ -27,36 +27,36 @@ const Preview = ({
     viewBoxScale,
     ...props
 }: Props) => (
-    <svg
-        className={cx(styles.Preview, className)}
-        preserveAspectRatio="none"
-        viewBox={`0 0 ${Math.round(aspect.width * viewBoxScale)} ${Math.round(aspect.height * viewBoxScale)}`}
-        {...props}
-        style={{
-            padding: '8px',
-        }}
+    <div
+        className={cx(styles.root, className)}
     >
-        {children}
-        {preview.modules.map(({
-            height,
-            key,
-            left: x,
-            title,
-            top: y,
-            type,
-            width,
-        }) => (
-            <ModulePreview
-                height={height * scale}
-                key={key}
-                title={title || ''}
-                type={type}
-                width={width * scale}
-                x={x * scale}
-                y={y * scale}
-            />
-        ))}
-    </svg>
+        <svg
+            preserveAspectRatio="none"
+            viewBox={`0 0 ${Math.round(aspect.width * viewBoxScale)} ${Math.round(aspect.height * viewBoxScale)}`}
+            {...props}
+        >
+            {children}
+            {preview.modules.map(({
+                height,
+                key,
+                left: x,
+                title,
+                top: y,
+                type,
+                width,
+            }) => (
+                <ModulePreview
+                    height={height * scale}
+                    key={key}
+                    title={title || ''}
+                    type={type}
+                    width={width * scale}
+                    x={x * scale}
+                    y={y * scale}
+                />
+            ))}
+        </svg>
+    </div>
 )
 
 export default Preview

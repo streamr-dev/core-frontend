@@ -1,12 +1,9 @@
 import React, { useMemo } from 'react'
-import cx from 'classnames'
 import SharedPreview from '$editor/shared/components/Preview'
 import getPreviewData from '$editor/shared/components/ModulePreview/utils/getPreviewData'
 
 import { defaultModuleLayout, getModuleForPort } from '../state'
 import { Cable, getCableKey } from './Cables'
-
-import styles from './Preview.pcss'
 
 function getModuleKey(m) {
     return `${m.id}-${m.hash}`
@@ -92,7 +89,6 @@ export default function Preview({
     return (
         <SharedPreview
             aspect={aspect}
-            className={cx(styles.Preview, className)}
             preview={preview}
             scale={scale}
             viewBoxScale={viewBoxScale}
