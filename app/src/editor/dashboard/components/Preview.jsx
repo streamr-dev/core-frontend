@@ -1,5 +1,6 @@
-import React from 'react'
-import { ModulePreview, aspectSize } from '$editor/canvas/components/Preview'
+import React, { useMemo } from 'react'
+import SharedPreview from '$editor/shared/components/Preview'
+import getPreviewData from '$editor/shared/components/ModulePreview/utils/getPreviewData'
 import { normalizeLayout, generateLayout } from './Dashboard'
 
 export default function Preview({
@@ -10,80 +11,51 @@ export default function Preview({
     screen,
     ...props
 }) {
-    const layout = normalizeLayout(generateLayout(dashboard))
-    const itemLayout = layout.lg || layout[Object.keys(layout)[0]] || []
-    const bounds = itemLayout.reduce((b, m) => (
-        Object.assign(b, {
-            maxX: Math.max(b.maxX, m.x + m.w),
-            maxY: Math.max(b.maxY, m.y + m.h),
-            minX: Math.min(b.minX, m.x),
-            minY: Math.min(b.minY, m.y),
-        })
-    ), {
-        maxX: -Infinity,
-        maxY: -Infinity,
-        minX: Infinity,
-        minY: Infinity,
-    })
+    const modulePreviews = useMemo(() => {
+        const layout = normalizeLayout(generateLayout(dashboard))
+        const items = layout.lg || layout[Object.keys(layout)[0]] || []
+        return items.map(({
+            h,
+            i: key,
+            title,
+            type,
+            w,
+            x: left,
+            y: top,
+        }) => ({
+            height: h - 0.15,
+            key,
+            left,
+            title,
+            top,
+            type,
+            width: w - 0.15,
+        }))
+    }, [dashboard])
 
-    // set a minimum canvas size so a single module doesn't take up entire preview
-    const minWidth = Math.max(bounds.maxX)
-    const minHeight = Math.max(bounds.maxY)
-    const canvasSize = aspectSize({
-        height: aspect.height,
-        width: aspect.width,
-        minHeight,
-        minWidth,
-    })
+    console.log(modulePreviews)
+
+    const preview = useMemo(() => (
+        getPreviewData({
+            modulePreviews,
+            aspect,
+            screen,
+        })
+    ), [modulePreviews, aspect, screen])
+
+    const scale = aspect.width / screen.width
+
+    const viewBoxScale = preview.width / screen.width
 
     return (
-        <svg
+        <SharedPreview
+            aspect={aspect}
             className={className}
-            preserveAspectRatio="none"
-            viewBox={`0 0 ${aspect.width} ${aspect.height}`}
-            style={{
-                ...style,
-                background: '#e7e7e7',
-                padding: '8px',
-            }}
+            preview={preview}
+            scale={scale}
+            viewBoxScale={viewBoxScale}
             {...props}
-        >
-            <rect
-                x="0"
-                y="0"
-                height="100%"
-                width="100%"
-                fill="#e7e7e7"
-            />
-            {!!itemLayout.length && (
-                <svg
-                    preserveAspectRatio="none"
-                    viewBox={`0 0 ${canvasSize.width} ${canvasSize.height}`}
-                >
-                    {itemLayout.map((m, index) => (
-                        <svg
-                            key={m.i}
-                            preserveAspectRatio="none"
-                            viewBox={`0 0 ${m.w} ${m.h}`}
-                            y={m.y}
-                            x={m.x}
-                            width={m.w}
-                            height={m.h}
-                        >
-                            <g transform="scale(0.95)">
-                                <ModulePreview
-                                    um={0.2}
-                                    title={dashboard.items[index].title}
-                                    width={m.w}
-                                    height={m.h}
-                                    type={dashboard.items[index].webcomponent}
-                                />
-                            </g>
-                        </svg>
-                    ))}
-                </svg>
-            )}
-        </svg>
+        />
     )
 }
 
