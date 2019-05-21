@@ -67,7 +67,6 @@ export function pushErrorNotification(error) {
 
 export function pushWarningNotification(warning) {
     console.warn(warning) // eslint-disable-line no-console
-    // eslint-disable-next-line react/no-danger
     Notification.push({
         title: warning.message || 'Warning',
         icon: NotificationIcon.WARNING,
@@ -77,7 +76,6 @@ export function pushWarningNotification(warning) {
 
 export function pushInfoNotification(info) {
     console.info(info) // eslint-disable-line no-console
-    // eslint-disable-next-line react/no-danger
     Notification.push({
         title: info.message || 'Info',
         icon: NotificationIcon.INFO,
