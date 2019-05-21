@@ -1,6 +1,6 @@
 // @flow
 
-import Raven from 'raven-js'
+import * as Sentry from '@sentry/browser'
 import LogRocket from 'logrocket'
 
 type ErrorServiceId = string
@@ -54,13 +54,15 @@ const analytics = new Analytics()
 if (process.env.SENTRY_URL) {
     analytics.register({
         id: 'Sentry',
-        init: () => {
-            Raven.config(process.env.SENTRY_URL, {
+        init: () => (
+            Sentry.init({
+                dsn: process.env.SENTRY_URL,
                 release: process.env.VERSION || 'development',
-            }).install()
-        },
+                debug: true,
+            })
+        ),
         reportError: (error: Error, extra: Object = {}) => {
-            Raven.captureException(error, {
+            Sentry.captureException(error, {
                 extra,
             })
         },
