@@ -65,6 +65,24 @@ export function pushErrorNotification(error) {
     })
 }
 
+export function pushWarningNotification(warning) {
+    console.warn(warning) // eslint-disable-line no-console
+    Notification.push({
+        title: warning.message || 'Warning',
+        icon: NotificationIcon.WARNING,
+        warning,
+    })
+}
+
+export function pushInfoNotification(info) {
+    console.info(info) // eslint-disable-line no-console
+    Notification.push({
+        title: info.message || 'Info',
+        icon: NotificationIcon.INFO,
+        info,
+    })
+}
+
 export default function useCanvasNotifications(canvas = {}) {
     useAutosaveNotification(services.autosave, canvas)
     useCanvasRunNotification(canvas)

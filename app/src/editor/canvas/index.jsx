@@ -29,7 +29,7 @@ import CanvasToolbar from './components/Toolbar'
 import CanvasStatus, { CannotSaveStatus } from './components/Status'
 import ModuleSearch from './components/ModuleSearch'
 
-import useCanvasNotifications, { pushErrorNotification } from './hooks/useCanvasNotifications'
+import useCanvasNotifications, { pushErrorNotification, pushWarningNotification } from './hooks/useCanvasNotifications'
 
 import * as services from './services'
 import * as CanvasState from './state'
@@ -347,6 +347,21 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         return this.loadSelf()
     }
 
+    onWarningMessage = ({ msg = '', hash, ...opts } = {}) => {
+        if (hash != null) {
+            const module = CanvasState.getModule(this.props.canvas, hash)
+            if (module) {
+                const moduleName = module.displayName || module.name
+                msg = `${moduleName}: ${msg}`
+            }
+        }
+        pushWarningNotification({
+            message: msg,
+            hash,
+            ...opts,
+        })
+    }
+
     render() {
         const { canvas, runController } = this.props
         if (!canvas) {
@@ -369,6 +384,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                     resendTo={canvas.adhoc ? resendTo : undefined}
                     isActive={runController.isActive}
                     onDoneMessage={this.onDoneMessage}
+                    onWarningMessage={this.onWarningMessage}
                     onErrorMessage={this.onErrorMessage}
                 />
                 <Canvas
