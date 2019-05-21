@@ -158,7 +158,7 @@ const EditorRouter = () => ([
 ])
 
 const MiscRouter = () => ([
-    <Route path={links.root} key="root" component={() => resolveEnvironmentRoot()} />,
+    <Route exact path={links.root} key="root" component={() => resolveEnvironmentRoot()} />,
     <Route exact path="/error" component={ErrorPageView} key="ErrorPageView" />,
     <Route component={NotFoundPage} key="NotFoundPage" />,
 ])
