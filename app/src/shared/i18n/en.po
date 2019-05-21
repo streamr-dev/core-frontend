@@ -51,7 +51,7 @@ msgid "general##faq"
 msgstr "FAQ"
 
 msgid "general##footnote"
-msgstr "Made with ❤️ & ☕ by Streamr Network AG in 2018"
+msgstr "Made with ❤️ & ☕ by Streamr contributors in 2019"
 
 msgid "general##general"
 msgstr "General"
