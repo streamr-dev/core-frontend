@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useEffect } from 'react'
+import React, { useState, useRef, useCallback, useEffect, useLayoutEffect } from 'react'
 import cx from 'classnames'
 import Draggable from 'react-draggable'
 import { ResizableBox } from 'react-resizable'
@@ -37,7 +37,6 @@ export function SearchPanel(props) {
         minWidth,
         minHeight,
         maxWidth,
-        maxHeight,
         children,
         className,
         scrollPadding,
@@ -50,6 +49,7 @@ export function SearchPanel(props) {
     const [isExpanded, setExpanded] = useState(true)
     const [hasFocus, setHasFocus] = useState(false)
     const [layout, setLayoutState] = useState({
+        maxHeight: props.maxHeight,
         width: props.defaultWidth,
         height: props.defaultHeight,
         posX: props.defaultPosX,
@@ -122,7 +122,13 @@ export function SearchPanel(props) {
         setHasFocus(false)
     }, [setHasFocus])
 
-    const { width, height, posX, posY } = layout
+    const {
+        width,
+        height,
+        posX,
+        posY,
+        maxHeight,
+    } = layout
 
     const isSearching = !!search.trim()
     const canOnlyResizeX = false
@@ -146,6 +152,31 @@ export function SearchPanel(props) {
             width: data.size.width,
         })
     }, [setLayout])
+    const maxHeightProp = props.maxHeight
+
+    const offsetHeight = (contentRef.current && contentRef.current.offsetHeight) || 0
+
+    useLayoutEffect(() => {
+        const { current: currentContent } = contentRef
+
+        const itemsHeight = currentContent ? currentContent.offsetHeight : minHeight
+
+        const requiredHeight = minHeight + (itemsHeight ? scrollPadding + itemsHeight : 0)
+
+        setLayoutState((layout) => {
+            let maxHeight = maxHeightProp
+            if (!isExpanded) {
+                maxHeight = minHeight
+            }
+            if (search) {
+                maxHeight = Math.min(Math.max(minHeight, requiredHeight), maxHeightProp)
+            }
+            return {
+                ...layout,
+                maxHeight,
+            }
+        })
+    }, [offsetHeight, maxHeightProp, contentRef, setLayoutState, children, search, minHeight, scrollPadding, isExpanded])
 
     return (
         <React.Fragment>
@@ -169,8 +200,8 @@ export function SearchPanel(props) {
                 >
                     <ResizableBox
                         className={styles.ResizableBox}
-                        width={width}
-                        height={height}
+                        width={Math.min(width, minWidth)}
+                        height={Math.min(height, maxHeight)}
                         axis={canOnlyResizeX ? 'x' : 'both' /* lock y when searching */}
                         minConstraints={[minWidth, minHeight]}
                         maxConstraints={[maxWidth, maxHeight]}
