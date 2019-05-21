@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useRef, useCallback, useEffect } from 'react'
 import cx from 'classnames'
 import Draggable from 'react-draggable'
 import { ResizableBox } from 'react-resizable'
@@ -28,264 +28,231 @@ function MaybeDraggable({ disabled, children, ...props }) {
     )
 }
 
-const DEFAULT_HEIGHT = 352
+export function SearchPanel(props) {
+    const {
+        open,
+        isOpen,
+        bounds,
+        placeholder,
+        minWidth,
+        minHeight,
+        maxWidth,
+        maxHeight,
+        children,
+        className,
+        scrollPadding,
+        dragDisabled,
+        headerHidden,
+        renderDefault,
+    } = props
 
-export class SearchPanel extends React.PureComponent {
-    static defaultProps = {
-        bounds: 'parent',
-        minWidth: 250,
-        defaultWidth: 250,
-        maxWidth: 600,
-        defaultHeight: DEFAULT_HEIGHT,
-        maxHeight: DEFAULT_HEIGHT * 2,
-        minHeight: 91,
-        scrollPadding: 0,
-        defaultPosX: 32,
-        defaultPosY: (window.innerHeight / 2) - (DEFAULT_HEIGHT / 2) - 80, // center vertically (take header into account)
-    }
+    const [search, setSearch] = useState('')
+    const [isExpanded, setExpanded] = useState(true)
+    const [hasFocus, setHasFocus] = useState(false)
+    const [layout, setLayoutState] = useState({
+        width: props.defaultWidth,
+        height: props.defaultHeight,
+        posX: props.defaultPosX,
+        posY: props.defaultPosY,
+    })
 
-    state = {
-        search: '',
-        isExpanded: true,
-        width: this.props.defaultWidth,
-        height: this.props.defaultHeight,
-        posX: this.props.defaultPosX,
-        posY: this.props.defaultPosY,
-    }
+    const setLayout = useCallback((next = {}) => {
+        setLayoutState((prev) => Object.assign({}, prev, next))
+    }, [setLayoutState])
 
-    unmounted = false
-    input = null
-    contentRef = React.createRef()
-    scrollContainerRef = React.createRef()
+    const contentRef = useRef()
+    const inputRef = useRef()
+    const scrollContainerRef = useRef()
 
-    componentDidMount() {
-        window.addEventListener('keydown', this.onKeyDown)
-    }
+    const onKeyDown = useCallback((event) => {
+        if (isOpen && event.key === 'Escape' && hasFocus) {
+            open(false)
+        }
+    }, [isOpen, hasFocus, open])
 
-    componentWillUnmount() {
-        this.unmounted = true
-        window.removeEventListener('keydown', this.onKeyDown)
-    }
+    useEffect(() => {
+        window.addEventListener('keydown', onKeyDown)
+        return () => {
+            window.removeEventListener('keydown', onKeyDown)
+        }
+    }, [onKeyDown])
 
-    onChange = async (event) => {
+    const onChange = (event) => {
         const { value } = event.currentTarget
-
-        this.setState({
-            search: value,
-        })
+        setSearch(value)
     }
 
-    clear = () => {
-        this.setState({
-            search: '',
-        })
-        if (this.input) {
-            this.input.focus()
+    const clear = () => {
+        setSearch('')
+        if (inputRef.current) {
+            inputRef.current.focus()
         }
     }
 
-    componentDidUpdate(prevProps, prevState) {
-        if (this.props.onChange && this.state.search !== prevState.search) {
-            this.props.onChange(this.state.search)
-        }
+    const prevSearch = useRef(search)
+    const onChangeProp = props.onChange
 
+    useEffect(() => {
+        if (onChangeProp && search !== prevSearch.current) {
+            onChangeProp(search)
+        }
+        prevSearch.current = search
+    }, [onChangeProp, search])
+
+    useEffect(() => {
         // focus input on open
-        if (this.props.isOpen && !prevProps.isOpen) {
-            if (this.input) {
-                this.input.focus()
+        if (isOpen) {
+            if (inputRef.current) {
+                inputRef.current.focus()
             }
         }
+    }, [isOpen, inputRef])
 
-        const { current: currentContent } = this.contentRef
-        if (currentContent && this.lastHeight !== currentContent.offsetHeight) {
-            this.lastHeight = currentContent.offsetHeight
-            this.forceUpdate()
-        }
-    }
+    const toggleMinimize = () => (
+        setExpanded((isExpanded) => !isExpanded)
+    )
 
-    calculateHeight = () => {
-        const { minHeight, maxHeight, scrollPadding } = this.props
-        const { height } = this.state
-        const { current: currentContent } = this.contentRef
+    const onInputFocus = useCallback((event) => {
+        // select input text on focus
+        event.currentTarget.select()
+        setHasFocus(true)
+    }, [setHasFocus])
 
-        const itemsHeight = currentContent ? currentContent.offsetHeight : minHeight
+    const onInputBlur = useCallback(() => {
+        setHasFocus(false)
+    }, [setHasFocus])
 
-        const requiredHeight = minHeight + (itemsHeight ? scrollPadding + itemsHeight : 0)
+    const { width, height, posX, posY } = layout
 
-        return Math.min(height, Math.min(Math.max(requiredHeight, minHeight), maxHeight))
-    }
+    const isSearching = !!search.trim()
+    const canOnlyResizeX = false
 
-    toggleMinimize = () => {
-        const { defaultHeight } = this.props
-        this.setState(({ height, isExpanded }) => ({
-            isExpanded: !isExpanded,
-            height: !isExpanded ? Math.max(height, defaultHeight) : height,
-        }))
-    }
-
-    onKeyDown = (event) => {
-        if (this.props.isOpen && event.key === 'Escape' && this.state.hasFocus) {
-            this.props.open(false)
-        }
-    }
-
-    onInputRef = (el) => {
-        this.input = el
-        setTimeout(() => { // temporary workaround for modal timing
-            if (this.props.isOpen && this.input) {
-                this.input.focus()
+    const onDragStop = useCallback((e, data) => {
+        setLayoutState((layout) => {
+            if (data.x === layout.posX && data.y === layout.posY) {
+                return layout // do nothing if identical
             }
-        }, 100)
-    }
+            return {
+                ...layout,
+                posX: data.x,
+                posY: data.y,
+            }
+        })
+    }, [setLayoutState])
 
-    onInputFocus = () => {
-        if (this.input) {
-            this.input.select()
-        }
-        this.setState({ hasFocus: true })
-    }
+    const onResize = useCallback((e, data) => {
+        setLayout({
+            height: data.size.height,
+            width: data.size.width,
+        })
+    }, [setLayout])
 
-    onInputBlur = () => {
-        this.setState({ hasFocus: false })
-    }
-
-    getDoesOverflow() {
-        const { current: scrollContainer } = this.scrollContainerRef
-        if (!scrollContainer) { return false }
-        return scrollContainer && scrollContainer.scrollHeight && Math.abs(scrollContainer.offsetHeight - scrollContainer.scrollHeight) > 1
-    }
-
-    render() {
-        const {
-            open,
-            isOpen,
-            bounds,
-            placeholder,
-            minWidth,
-            minHeight,
-            maxWidth,
-            maxHeight,
-            children,
-            className,
-            scrollPadding,
-            dragDisabled,
-            headerHidden,
-            renderDefault,
-        } = this.props
-        const {
-            search,
-            isExpanded,
-            width,
-            posX,
-            posY,
-        } = this.state
-        const height = this.calculateHeight()
-        const isSearching = !!search.trim()
-        const doesOverflow = this.getDoesOverflow()
-        const canOnlyResizeX = !doesOverflow
-
-        return (
-            <React.Fragment>
-                <MaybeDraggable
-                    disabled={dragDisabled}
-                    handle={`.${styles.dragHandle}`}
-                    bounds={bounds}
-                    position={{
-                        x: posX,
-                        y: posY,
-                    }}
-                    onStop={(e, data) => this.setState({
-                        posX: data.x,
-                        posY: data.y,
+    return (
+        <React.Fragment>
+            <MaybeDraggable
+                disabled={dragDisabled}
+                handle={`.${styles.dragHandle}`}
+                bounds={bounds}
+                position={{
+                    x: posX,
+                    y: posY,
+                }}
+                onStop={onDragStop}
+            >
+                <div
+                    className={cx(styles.SearchPanel, className, {
+                        [styles.isSearching]: isSearching,
+                        [styles.isExpanded]: isExpanded,
                     })}
+                    hidden={!isOpen}
+                    ref={props.panelRef}
                 >
-                    <div
-                        className={cx(styles.SearchPanel, className, {
-                            [styles.isSearching]: isSearching,
-                            [styles.isExpanded]: isExpanded,
-                            [styles.canOnlyResizeX]: canOnlyResizeX,
-                        })}
-                        hidden={!isOpen}
-                        ref={this.props.panelRef}
+                    <ResizableBox
+                        className={styles.ResizableBox}
+                        width={width}
+                        height={height}
+                        axis={canOnlyResizeX ? 'x' : 'both' /* lock y when searching */}
+                        minConstraints={[minWidth, minHeight]}
+                        maxConstraints={[maxWidth, maxHeight]}
+                        onResize={onResize}
                     >
-                        <ResizableBox
-                            className={styles.ResizableBox}
-                            width={width}
-                            height={isExpanded || doesOverflow ? height : minHeight}
-                            axis={canOnlyResizeX ? 'x' : 'both' /* lock y when searching */}
-                            minConstraints={[minWidth, minHeight]}
-                            maxConstraints={[maxWidth, maxHeight]}
-                            onResize={(e, data) => {
-                                this.setState(({ height }) => ({
-                                    height: !canOnlyResizeX ? data.size.height : height,
-                                    width: data.size.width,
-                                }))
-                            }}
-                        >
-                            <div className={styles.Container}>
-                                {!headerHidden && (
-                                    <div className={cx(styles.Header, styles.dragHandle)}>
-                                        <button type="button" className={styles.minimize} onClick={() => this.toggleMinimize()}>
-                                            {isExpanded ?
-                                                <SvgIcon name="brevetDown" className={styles.flip} /> :
-                                                <SvgIcon name="brevetDown" className={styles.normal} />
-                                            }
-                                        </button>
-                                        <button type="button" className={styles.close} onClick={() => open(false)}>
-                                            <SvgIcon name="x" />
-                                        </button>
-                                    </div>
-                                )}
-                                <div className={styles.Input}>
-                                    <input
-                                        ref={this.onInputRef}
-                                        placeholder={placeholder}
-                                        value={search}
-                                        onChange={this.onChange}
-                                        onFocus={this.onInputFocus}
-                                        onBlur={this.onInputBlur}
-                                    />
-                                    <button
-                                        type="button"
-                                        className={styles.ClearButton}
-                                        onClick={this.clear}
-                                        hidden={search === ''}
-                                    >
-                                        <SvgIcon name="clear" />
+                        <div className={styles.Container}>
+                            {!headerHidden && (
+                                <div className={cx(styles.Header, styles.dragHandle)}>
+                                    <button type="button" className={styles.minimize} onClick={toggleMinimize}>
+                                        {isExpanded ?
+                                            <SvgIcon name="brevetDown" className={styles.flip} /> :
+                                            <SvgIcon name="brevetDown" className={styles.normal} />
+                                        }
+                                    </button>
+                                    <button type="button" className={styles.close} onClick={() => open(false)}>
+                                        <SvgIcon name="x" />
                                     </button>
                                 </div>
-                                {/* eslint-disable-next-line max-len */}
-                                {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */}
-                                <div
-                                    className={styles.ContentContainer}
-                                    style={{
-                                        paddingBottom: `${scrollPadding}px`,
-                                    }}
-                                    onClick={() => {
-                                        // quick hack to force recalculation of height on child expansion/collapse
-                                        this.forceUpdate()
-                                    }}
-                                    ref={this.scrollContainerRef}
+                            )}
+                            <div className={styles.Input}>
+                                <input
+                                    ref={inputRef}
+                                    placeholder={placeholder}
+                                    value={search}
+                                    onChange={onChange}
+                                    onFocus={onInputFocus}
+                                    onBlur={onInputBlur}
+                                />
+                                <button
+                                    type="button"
+                                    className={styles.ClearButton}
+                                    onClick={clear}
+                                    hidden={search === ''}
                                 >
-                                    <div ref={this.contentRef} role="listbox" className={styles.Content}>
-                                        {(() => {
-                                            // empty content if not searching and not expanded
-                                            if (!isSearching && !isExpanded) { return null }
-                                            // show default if not searching and expanded
-                                            if (!isSearching && isExpanded && renderDefault) { return renderDefault() }
-                                            // show children otherwise
-                                            return children
-                                        })()}
-                                    </div>
+                                    <SvgIcon name="clear" />
+                                </button>
+                            </div>
+                            {/* eslint-disable-next-line max-len */}
+                            {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */}
+                            <div
+                                className={styles.ContentContainer}
+                                style={{
+                                    paddingBottom: `${scrollPadding}px`,
+                                }}
+                                onClick={() => {
+                                    // quick hack to force recalculation of height on child expansion/collapse
+                                    setLayout({})
+                                }}
+                                ref={scrollContainerRef}
+                            >
+                                <div ref={contentRef} role="listbox" className={styles.Content}>
+                                    {(() => {
+                                        // empty content if not searching and not expanded
+                                        if (!isSearching && !isExpanded) { return null }
+                                        // show default if not searching and expanded
+                                        if (!isSearching && isExpanded && renderDefault) { return renderDefault() }
+                                        // show children otherwise
+                                        return children
+                                    })()}
                                 </div>
                             </div>
-                        </ResizableBox>
-                    </div>
-                </MaybeDraggable>
-            </React.Fragment>
-        )
-    }
+                        </div>
+                    </ResizableBox>
+                </div>
+            </MaybeDraggable>
+        </React.Fragment>
+    )
+}
+
+const DEFAULT_HEIGHT = 352
+
+SearchPanel.defaultProps = {
+    bounds: 'parent',
+    minWidth: 250,
+    defaultWidth: 250,
+    maxWidth: 600,
+    defaultHeight: DEFAULT_HEIGHT,
+    maxHeight: DEFAULT_HEIGHT * 2,
+    minHeight: 91,
+    scrollPadding: 0,
+    defaultPosX: 32,
+    defaultPosY: (window.innerHeight / 2) - (DEFAULT_HEIGHT / 2) - 80, // center vertically (take header into account)
 }
 
 export default SearchPanel
-
