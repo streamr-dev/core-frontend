@@ -65,7 +65,7 @@ const MobileNav = compose(
                         <li>
                             <Link
                                 className={styles.link}
-                                to={routes.root()}
+                                to={routes.marketplace()}
                             >
                                 <Translate value="general.marketplace" />
                             </Link>

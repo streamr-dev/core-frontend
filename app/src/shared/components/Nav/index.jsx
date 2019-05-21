@@ -79,7 +79,7 @@ const Nav = compose(
                     <Translate value="general.transactions" />
                 </Link>
             </DropdownItem>
-            <LinkItem to={routes.root()}>
+            <LinkItem to={routes.marketplace()}>
                 <Translate value="general.marketplace" />
             </LinkItem>
             <DropdownItem label={I18n.t('general.docs')} to="#" align="left">
