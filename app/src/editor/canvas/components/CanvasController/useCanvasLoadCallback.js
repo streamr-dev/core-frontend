@@ -23,6 +23,7 @@ export default function useCanvasLoadCallback() {
                 if (!isMountedRef.current) { return }
                 if (!err.response) { throw err } // unexpected error
                 history.replace('/404') // 404
+                return
             }
             const permissions = await services.getCanvasPermissions({ id: canvas.id })
             setPermissions(permissions)
