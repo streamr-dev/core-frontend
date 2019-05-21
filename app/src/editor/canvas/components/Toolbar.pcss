@@ -8,6 +8,10 @@
   font-size: 12px;
 }
 
+.CanvasToolbar.notEditable {
+  border-top: 1px solid #FF0F2D;
+}
+
 .CanvasToolbar > * {
   display: flex;
   align-items: center;
@@ -366,6 +370,17 @@ body .RealtimeRunButtonMenu {
   height: 16px;
 }
 
+.CanvasToolbar .ownerName {
+  color: #A3A3A3;
+  font-size: 14px;
+  font-weight: var(--medium);
+  margin-left: 8px;
+  max-width: 200px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
 .ModalButtons {
   white-space: nowrap;
 }
@@ -386,6 +401,7 @@ body .RealtimeRunButtonMenu {
 
 .DashboardEntityName {
   max-width: 47vw;
+  margin-right: 24px;
 }
 
 .DashboardButtons {

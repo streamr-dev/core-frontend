@@ -4,6 +4,7 @@ import LoadingIndicator from '$userpages/components/LoadingIndicator'
 
 import * as RouterContext from '$editor/shared/components/RouterContext'
 import usePending, { useAnyPending, Provider as PendingProvider } from '$editor/shared/hooks/usePending'
+import { Provider as PermissionsProvider } from '$editor/canvas/hooks/useCanvasPermissions'
 
 import * as CanvasState from '../../state'
 
@@ -89,9 +90,11 @@ function CanvasLoadingIndicator() {
 const CanvasControllerProvider = ({ children }) => (
     <RouterContext.Provider>
         <PendingProvider>
-            <CanvasLoadingIndicator />
-            <CanvasEffects />
-            {children || null}
+            <PermissionsProvider>
+                <CanvasLoadingIndicator />
+                <CanvasEffects />
+                {children || null}
+            </PermissionsProvider>
         </PendingProvider>
     </RouterContext.Provider>
 )

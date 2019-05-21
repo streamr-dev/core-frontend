@@ -107,12 +107,17 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
 
         const runController = this.context
         const { runButtonDropdownOpen, canvasSearchIsOpen } = this.state
-        const { isRunning, isActive, isPending } = runController
-        const canEdit = !isActive && !canvas.adhoc
+        const { isRunning, isActive, isPending, hasWritePermission } = runController
+        const canEdit = runController.isEditable
+        const canShare = runController.hasSharePermission
         const { settings = {} } = canvas
         const { editorState = {} } = settings
         return (
-            <div className={cx(className, styles.CanvasToolbar)}>
+            <div
+                className={cx(className, styles.CanvasToolbar, {
+                    [styles.notEditable]: !hasWritePermission,
+                })}
+            >
                 <ModalContainer modalId="ShareDialog">
                     {({ api: shareDialog }) => (
                         <React.Fragment>
@@ -131,6 +136,9 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                             >
                                                 {canvas.name}
                                             </EditableText>
+                                            {/* !canEdit && (
+                                                <span className={styles.ownerName}>by TODO: get owner name</span>
+                                            ) */}
                                             <DropdownActions
                                                 title={
                                                     <R.Button className={cx(styles.MeatballContainer, styles.ToolbarButton)}>
@@ -145,7 +153,12 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                                 }}
                                             >
                                                 <DropdownActions.Item onClick={newCanvas}>New Canvas</DropdownActions.Item>
-                                                <DropdownActions.Item onClick={() => shareDialog.open()}>Share</DropdownActions.Item>
+                                                <DropdownActions.Item
+                                                    onClick={() => shareDialog.open()}
+                                                    disabled={!canShare}
+                                                >
+                                                    Share
+                                                </DropdownActions.Item>
                                                 <DropdownActions.Item
                                                     onClick={() => setEditing(true)}
                                                     disabled={!canEdit}
@@ -189,7 +202,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                     })}
                                 >
                                     <R.Button
-                                        disabled={!!isPending}
+                                        disabled={!!isPending || !hasWritePermission}
                                         onClick={() => {
                                             if (isRunning) {
                                                 return canvasStop()
@@ -385,6 +398,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                         <R.Button
                                             className={cx(styles.ToolbarButton, styles.ShareButton)}
                                             onClick={() => shareDialog.open()}
+                                            disabled={!canShare}
                                         >
                                             <SvgIcon name="share" />
                                         </R.Button>
