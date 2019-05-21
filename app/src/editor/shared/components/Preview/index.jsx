@@ -2,7 +2,7 @@
 
 import React, { type Node } from 'react'
 import cx from 'classnames'
-import ModulePreview from '$editor/shared/components/ModulePreview'
+import ModulePreview from './ModulePreview'
 
 import styles from './preview.pcss'
 
