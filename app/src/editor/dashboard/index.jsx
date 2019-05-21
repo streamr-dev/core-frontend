@@ -204,6 +204,7 @@ const DashboardLoader = withRouter(withErrorBoundary(ErrorComponentView)(class D
         } catch (error) {
             if (this.unmounted || this.state.isLoading !== dashboardId) { return }
             this.props.history.replace('/404')
+            return
         }
         // ignore result if unmounted or dashboard changed
         if (this.unmounted || this.state.isLoading !== dashboardId) { return }
