@@ -97,8 +97,11 @@ const forwardTo = (routeFn: Function) => ({ location: { search } }: Location) =>
     <Redirect to={routeFn(qs.parse(search))} />
 )
 
-const gotoLandingPage = () => {
-    window.location.href = 'https://streamr.com'
+const resolveEnvironmentRoot = () => {
+    if (isProduction) {
+        window.location.href = process.env.PLATFORM_ORIGIN_URL
+    }
+    window.location.href = marketplace.main
     return null
 }
 
@@ -155,7 +158,7 @@ const EditorRouter = () => ([
 ])
 
 const MiscRouter = () => ([
-    <Route path={links.root} key="LandingPage" component={() => gotoLandingPage()} />,
+    <Route path={links.root} key="root" component={() => resolveEnvironmentRoot()} />,
     <Route exact path="/error" component={ErrorPageView} key="ErrorPageView" />,
     <Route component={NotFoundPage} key="NotFoundPage" />,
 ])
