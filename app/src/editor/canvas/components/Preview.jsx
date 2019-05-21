@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import SharedPreview from '$editor/shared/components/Preview'
-import getPreviewData from '$editor/shared/components/ModulePreview/utils/getPreviewData'
+import getPreviewData from '$editor/shared/components/Preview/utils/getPreviewData'
 
 import { defaultModuleLayout, getModuleForPort } from '../state'
 import { Cable, getCableKey } from './Cables'
