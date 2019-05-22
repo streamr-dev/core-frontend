@@ -219,3 +219,9 @@ msgstr "Engine"
 
 msgid "general##streamrApi"
 msgstr "Streamr API"
+
+msgid "general##telegramGroup"
+msgstr "Telegram Group"
+
+msgid "general##giveFeedback"
+msgstr "Give feedback"
