@@ -14,7 +14,6 @@ import DropdownItem from './DropdownItem'
 import LinkItem from './LinkItem'
 import AvatarItem from './AvatarItem'
 import routes from '$routes'
-import navigationLinks from '$docs/components/DocsLayout/Navigation/navLinks'
 
 import styles from './nav.pcss'
 
@@ -82,18 +81,29 @@ const Nav = compose(
             <LinkItem to={routes.marketplace()}>
                 <Translate value="general.marketplace" />
             </LinkItem>
-            <DropdownItem label={I18n.t('general.docs')} to="#" align="left">
-                {Object.keys(navigationLinks).map((key) => (
-                    <Link
-                        key={key}
-                        to={navigationLinks[key]}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={Nav.styles.link}
-                    >
-                        {key}
-                    </Link>
-                ))}
+            <DropdownItem
+                align="left"
+                label={I18n.t('general.docs')}
+                to={routes.docsIntroduction()}
+            >
+                <Link to={routes.docsIntroduction()} rel="noopener noreferrer" target="_blank">
+                    <Translate value="general.introduction" />
+                </Link>
+                <Link to={routes.docsTutorials()} rel="noopener noreferrer" target="_blank">
+                    <Translate value="general.getStarted" />
+                </Link>
+                <Link to={routes.docsVisualEditor()} rel="noopener noreferrer" target="_blank">
+                    <Translate value="general.editor" />
+                </Link>
+                <Link to={routes.docsStreamrEngine()} rel="noopener noreferrer" target="_blank">
+                    <Translate value="general.engine" />
+                </Link>
+                <Link to={routes.docsDataMarketplace()} rel="noopener noreferrer" target="_blank">
+                    <Translate value="general.marketplace" />
+                </Link>
+                <Link to={routes.docsApi()} rel="noopener noreferrer" target="_blank">
+                    <Translate value="general.streamrApi" />
+                </Link>
             </DropdownItem>
             {!!currentUser && (
                 <AvatarItem user={currentUser} />
