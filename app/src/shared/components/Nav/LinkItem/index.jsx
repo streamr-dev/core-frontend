@@ -1,6 +1,6 @@
 // @flow
 
-import React, { type Node } from 'react'
+import React, { type Node, useMemo } from 'react'
 import cx from 'classnames'
 import { withRouter, type Location } from 'react-router-dom'
 import Link from '$shared/components/Link'
@@ -16,6 +16,13 @@ type Props = {
     underlined?: boolean,
 }
 
+const getCurrentLocation = (pathname: string): string => {
+    if (/^\/(canvas|dashboard)\//.test(pathname)) {
+        return 'core'
+    }
+    return pathname.split(/\//).filter(Boolean)[0] || 'core'
+}
+
 const LinkItem = withRouter(({
     children,
     className,
@@ -27,7 +34,7 @@ const LinkItem = withRouter(({
     underlined,
     ...props
 }: Props) => {
-    const [currentLocation] = pathname.split(/\//).filter(Boolean)
+    const currentLocation = useMemo(() => getCurrentLocation(pathname), [pathname])
 
     return (
         <Link
