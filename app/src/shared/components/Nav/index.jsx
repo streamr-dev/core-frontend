@@ -40,41 +40,27 @@ const Nav = compose(
             <LogoItem />
         </div>
         <div>
-            <DropdownItem label={I18n.t('general.core')} to="#" align="right">
-                <Link
-                    className={Nav.styles.link}
-                    to={routes.streams()}
-                >
+            <DropdownItem
+                align="right"
+                label={I18n.t('general.core')}
+                to={routes.streams()}
+            >
+                <Link to={routes.streams()}>
                     <Translate value="general.streams" />
                 </Link>
-                <Link
-                    className={Nav.styles.link}
-                    to={routes.canvases()}
-                >
+                <Link to={routes.canvases()}>
                     <Translate value="general.canvases" />
                 </Link>
-                <Link
-                    className={Nav.styles.link}
-                    to={routes.dashboards()}
-                >
+                <Link to={routes.dashboards()}>
                     <Translate value="general.dashboards" />
                 </Link>
-                <Link
-                    className={Nav.styles.link}
-                    to={routes.products()}
-                >
+                <Link to={routes.products()}>
                     <Translate value="general.products" />
                 </Link>
-                <Link
-                    className={Nav.styles.link}
-                    to={routes.purchases()}
-                >
+                <Link to={routes.purchases()}>
                     <Translate value="general.purchases" />
                 </Link>
-                <Link
-                    className={Nav.styles.link}
-                    to={routes.transactions()}
-                >
+                <Link to={routes.transactions()}>
                     <Translate value="general.transactions" />
                 </Link>
             </DropdownItem>
@@ -110,10 +96,10 @@ const Nav = compose(
             )}
             {!currentUser && (
                 <LinkItem
+                    className={Nav.styles.link}
                     to={routes.login(redirect !== '/' ? {
                         redirect,
                     } : {})}
-                    className={Nav.styles.link}
                 >
                     <Translate value="general.signIn" />
                 </LinkItem>
