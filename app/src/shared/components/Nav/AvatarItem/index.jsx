@@ -14,7 +14,7 @@ type Props = {
 
 const AvatarItem = ({ user }: Props) => (
     <DropdownItem
-        to="#"
+        to={routes.editProfile()}
         label={(
             <Avatar
                 alt={user.name}
