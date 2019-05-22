@@ -99,7 +99,6 @@ const Nav = compose(
             )}
             {!currentUser && (
                 <LinkItem
-                    className={Nav.styles.link}
                     to={routes.login(redirect !== '/' ? {
                         redirect,
                     } : {})}
@@ -110,9 +109,8 @@ const Nav = compose(
             )}
             {!currentUser && (
                 <LinkItem
-                    className={cx(Nav.styles.link, Nav.styles.button)}
+                    className={Nav.styles.button}
                     to={routes.signUp()}
-                    underlined
                 >
                     <Translate value="general.signUp" />
                 </LinkItem>
