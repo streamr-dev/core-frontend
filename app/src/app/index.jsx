@@ -98,7 +98,7 @@ const forwardTo = (routeFn: Function) => ({ location: { search } }: Location) =>
 )
 
 const resolveEnvironmentRoot = () => {
-    if (isProduction) {
+    if (isProduction()) {
         window.location.href = process.env.PLATFORM_ORIGIN_URL
     }
     window.location.href = marketplace.main
