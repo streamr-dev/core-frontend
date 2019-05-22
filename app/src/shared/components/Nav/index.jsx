@@ -72,22 +72,22 @@ const Nav = compose(
                 label={I18n.t('general.docs')}
                 to={routes.docsIntroduction()}
             >
-                <Link to={routes.docsIntroduction()} rel="noopener noreferrer" target="_blank">
+                <Link to={routes.docsIntroduction()}>
                     <Translate value="general.introduction" />
                 </Link>
-                <Link to={routes.docsTutorials()} rel="noopener noreferrer" target="_blank">
+                <Link to={routes.docsTutorials()}>
                     <Translate value="general.getStarted" />
                 </Link>
-                <Link to={routes.docsVisualEditor()} rel="noopener noreferrer" target="_blank">
+                <Link to={routes.docsVisualEditor()}>
                     <Translate value="general.editor" />
                 </Link>
-                <Link to={routes.docsStreamrEngine()} rel="noopener noreferrer" target="_blank">
+                <Link to={routes.docsStreamrEngine()}>
                     <Translate value="general.engine" />
                 </Link>
-                <Link to={routes.docsDataMarketplace()} rel="noopener noreferrer" target="_blank">
+                <Link to={routes.docsDataMarketplace()}>
                     <Translate value="general.marketplace" />
                 </Link>
-                <Link to={routes.docsApi()} rel="noopener noreferrer" target="_blank">
+                <Link to={routes.docsApi()}>
                     <Translate value="general.streamrApi" />
                 </Link>
             </DropdownItem>
