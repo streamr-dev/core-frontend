@@ -37,6 +37,7 @@ export function SearchPanel(props) {
         minWidth,
         minHeight,
         maxWidth,
+        maxHeight,
         children,
         className,
         scrollPadding,
@@ -49,7 +50,7 @@ export function SearchPanel(props) {
     const [isExpanded, setExpanded] = useState(true)
     const [hasFocus, setHasFocus] = useState(false)
     const [layout, setLayoutState] = useState({
-        maxHeight: props.maxHeight,
+        preferredHeight: props.defaultHeight,
         width: props.defaultWidth,
         height: props.defaultHeight,
         posX: props.defaultPosX,
@@ -90,8 +91,10 @@ export function SearchPanel(props) {
     }
 
     const prevSearch = useRef(search)
-    const onChangeProp = props.onChange
+    const { width, height, posX, posY } = layout
+    const isSearching = !!search.trim()
 
+    const onChangeProp = props.onChange
     useEffect(() => {
         if (onChangeProp && search !== prevSearch.current) {
             onChangeProp(search)
@@ -122,17 +125,6 @@ export function SearchPanel(props) {
         setHasFocus(false)
     }, [setHasFocus])
 
-    const {
-        width,
-        height,
-        posX,
-        posY,
-        maxHeight,
-    } = layout
-
-    const isSearching = !!search.trim()
-    const canOnlyResizeX = false
-
     const onDragStop = useCallback((e, data) => {
         setLayoutState((layout) => {
             if (data.x === layout.posX && data.y === layout.posY) {
@@ -146,37 +138,49 @@ export function SearchPanel(props) {
         })
     }, [setLayoutState])
 
-    const onResize = useCallback((e, data) => {
+    const onResizeStart = useCallback(() => {
         setLayout({
-            height: data.size.height,
-            width: data.size.width,
+            resizing: true,
         })
     }, [setLayout])
-    const maxHeightProp = props.maxHeight
 
-    const offsetHeight = (contentRef.current && contentRef.current.offsetHeight) || 0
+    const onResizeStop = useCallback((e, data) => {
+        setLayout({
+            resizing: false,
+            height: data.size.height, // needs to be set otherwise height won't reset to autosize on stop
+            width: data.size.width,
+            preferredHeight: data.size.height,
+        })
+    }, [setLayout])
 
     useLayoutEffect(() => {
+        if (layout.resizing) { return } // do nothing while resizing
+
         const { current: currentContent } = contentRef
-
         const itemsHeight = currentContent ? currentContent.offsetHeight : minHeight
-
         const requiredHeight = minHeight + (itemsHeight ? scrollPadding + itemsHeight : 0)
 
         setLayoutState((layout) => {
-            let maxHeight = maxHeightProp
-            if (!isExpanded) {
-                maxHeight = minHeight
+            const { preferredHeight } = layout
+            let { height } = layout
+            if (!isSearching) {
+                // when no search show at either min or preferredHeight height
+                height = isExpanded ? layout.preferredHeight : minHeight
+            } else {
+                // autosize search
+                height = Math.min(Math.max(minHeight, requiredHeight), preferredHeight)
             }
-            if (search) {
-                maxHeight = Math.min(Math.max(minHeight, requiredHeight), maxHeightProp)
+
+            if (height === layout.height) {
+                return layout // noop if same
             }
+
             return {
                 ...layout,
-                maxHeight,
+                height,
             }
         })
-    }, [offsetHeight, maxHeightProp, contentRef, setLayoutState, children, search, minHeight, scrollPadding, isExpanded])
+    }, [layout, contentRef, setLayoutState, children, isSearching, minHeight, scrollPadding, isExpanded])
 
     return (
         <React.Fragment>
@@ -200,12 +204,12 @@ export function SearchPanel(props) {
                 >
                     <ResizableBox
                         className={styles.ResizableBox}
-                        width={Math.min(width, minWidth)}
-                        height={Math.min(height, maxHeight)}
-                        axis={canOnlyResizeX ? 'x' : 'both' /* lock y when searching */}
+                        width={Math.min(width, maxWidth)}
+                        height={height}
                         minConstraints={[minWidth, minHeight]}
                         maxConstraints={[maxWidth, maxHeight]}
-                        onResize={onResize}
+                        onResizeStop={onResizeStop}
+                        onResizeStart={onResizeStart}
                     >
                         <div className={styles.Container}>
                             {!headerHidden && (
