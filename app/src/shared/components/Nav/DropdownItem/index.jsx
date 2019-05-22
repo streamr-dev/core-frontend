@@ -11,7 +11,7 @@ type Props = {
     eatPadding?: boolean,
     label?: React.Node,
     noPointer?: boolean,
-    to: string,
+    to?: string,
     toggle?: React.Node,
 }
 
@@ -27,7 +27,11 @@ const DropdownItem = ({
 }: Props) => (
     <div className={cx(styles.dropdown, LinkItem.styles.parent)}>
         {toggle || (
-            <LinkItem to={to} {...props}>
+            <LinkItem
+                to={to || '#'}
+                underlined
+                {...props}
+            >
                 {label || null}
             </LinkItem>
         )}

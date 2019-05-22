@@ -64,7 +64,10 @@ const Nav = compose(
                     <Translate value="general.transactions" />
                 </Link>
             </DropdownItem>
-            <LinkItem to={routes.marketplace()}>
+            <LinkItem
+                to={routes.marketplace()}
+                underlined
+            >
                 <Translate value="general.marketplace" />
             </LinkItem>
             <DropdownItem
@@ -100,14 +103,16 @@ const Nav = compose(
                     to={routes.login(redirect !== '/' ? {
                         redirect,
                     } : {})}
+                    underlined
                 >
                     <Translate value="general.signIn" />
                 </LinkItem>
             )}
             {!currentUser && (
                 <LinkItem
-                    to={routes.signUp()}
                     className={cx(Nav.styles.link, Nav.styles.button)}
+                    to={routes.signUp()}
+                    underlined
                 >
                     <Translate value="general.signUp" />
                 </LinkItem>
