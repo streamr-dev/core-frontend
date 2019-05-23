@@ -97,14 +97,6 @@ const forwardTo = (routeFn: Function) => ({ location: { search } }: Location) =>
     <Redirect to={routeFn(qs.parse(search))} />
 )
 
-const resolveEnvironmentRoot = () => {
-    if (isProduction()) {
-        window.location.href = process.env.PLATFORM_ORIGIN_URL
-    }
-    window.location.href = marketplace.main
-    return null
-}
-
 const AuthenticationRouter = () => ([
     <Route exact path={routes.login()} component={LoginPage} key="LoginPage" />,
     <Route exact path={routes.logout()} component={LogoutPage} key="LogoutPage" />,
@@ -153,12 +145,12 @@ const UserpagesRouter = () => ([
 ])
 
 const EditorRouter = () => ([
+    <Route exact path="/" component={Products} key="root" />, // edge case for localhost
     <Route exact path={formatPath(editor.canvasEditor, ':id?')} component={CanvasEditorAuth} key="CanvasEditor" />,
     <Route exact path={formatPath(editor.dashboardEditor, ':id?')} component={DashboardEditorAuth} key="DashboardEditor" />,
 ])
 
 const MiscRouter = () => ([
-    <Route exact path={links.root} key="root" component={() => resolveEnvironmentRoot()} />,
     <Route exact path="/error" component={ErrorPageView} key="ErrorPageView" />,
     <Route component={NotFoundPage} key="NotFoundPage" />,
 ])

@@ -1,18 +1,16 @@
 // @flow
 
 import React from 'react'
-import Link from '$shared/components/Link'
 import Logo from '$shared/components/Logo'
-import routes from '$routes'
 import styles from './logoItem2.pcss'
 
 const LogoItem = () => (
-    <Link
-        to={routes.root()}
+    <a
+        href={process.env.PLATFORM_ORIGIN_URL}
         className={styles.root}
     >
         <Logo />
-    </Link>
+    </a>
 )
 
 export default LogoItem
