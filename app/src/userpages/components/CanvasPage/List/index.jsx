@@ -84,8 +84,6 @@ const getSortOptions = (): Array<SortOption> => {
         filters.RECENT,
         filters.RUNNING,
         filters.STOPPED,
-        filters.SHARED,
-        filters.MINE,
         filters.NAME_ASC,
         filters.NAME_DESC,
     ]
