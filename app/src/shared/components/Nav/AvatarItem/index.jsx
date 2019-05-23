@@ -5,6 +5,7 @@ import { Translate } from 'react-redux-i18n'
 import Avatar from '$shared/components/Avatar'
 import DropdownItem from '../DropdownItem'
 import Link from '$shared/components/Link'
+import LinkItem from '../LinkItem'
 import routes from '$routes'
 import styles from './avatarItem.pcss'
 
@@ -14,13 +15,16 @@ type Props = {
 
 const AvatarItem = ({ user }: Props) => (
     <DropdownItem
-        to="#"
-        label={(
-            <Avatar
-                alt={user.name}
-                className={styles.avatar}
-                src={user.imageUrl}
-            />
+        toggle={(
+            <LinkItem
+                to={routes.editProfile()}
+            >
+                <Avatar
+                    alt={user.name}
+                    className={styles.avatar}
+                    src={user.imageUrl}
+                />
+            </LinkItem>
         )}
         align="left"
         eatPadding={false}

@@ -1,35 +1,21 @@
 .root {
   color: #323232;
-  font-family: var(--sans);
-}
-
-.link,
-.user {
-  font-size: calc(0.875 * var(--um));
-}
-
-a.link {
-  padding-left: calc(1.5 * var(--um));
-  padding-right: calc(1.75 * var(--um));
 }
 
 .user {
   color: #323232;
-  font-size: calc(0.875 * var(--um));
-  font-family: var(--sans);
-  padding: calc(0.875 * var(--um)) calc(1.5 * var(--um));
-  text-transform: none;
+  min-width: calc(11 * var(--um));
+  padding: calc(0.75 * var(--um)) var(--um) calc(0.625 * var(--um));
 }
 
 .name {
   font-weight: var(--medium);
+  line-height: calc(1.25 * var(--um));
 }
 
 .username {
   color: #A3A3A3;
   font-size: calc(0.75 * var(--um));
-  font-weight: var(--regular);
-  margin-top: calc(0.25 * var(--um));
 }
 
 .avatar {
@@ -41,10 +27,8 @@ a.link {
 
 @media (--lg-up) {
   .user {
-    padding: calc(0.75 * var(--um)) var(--um);
-  }
-
-  a.link {
-    padding-left: var(--um);
+    min-width: calc(10.5 * var(--um));
+    padding-bottom: calc(0.5 * var(--um));
+    padding-top: calc(0.375 * var(--um));
   }
 }

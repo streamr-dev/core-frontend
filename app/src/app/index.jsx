@@ -121,7 +121,7 @@ const MarketplaceRouter = () => ([
 ])
 
 const DocsRouter = () => ([
-    <Route exact path={docs.main} component={GettingStartedPage} key="GettingStartedPage" />,
+    <Route exact path={docs.gettingStarted} component={GettingStartedPage} key="GettingStartedPage" />,
     <Route exact path={docs.introduction} component={IntroductionPage} key="IntroductionPage" />,
     <Route exact path={docs.tutorials} component={TutorialsPage} key="TutorialsPage" />,
     <Route exact path={docs.visualEditor} component={VisualEditorPage} key="VisualEditorPage" />,
@@ -129,6 +129,7 @@ const DocsRouter = () => ([
     <Route exact path={docs.dataMarketplace} component={MarketplacePage} key="MarketplacePage" />,
     <Route exact path={docs.userPage} component={UserPage} key="UserPage" />,
     <Route exact path={docs.api} component={ApiPage} key="ApiPage" />,
+    <Redirect from={docs.main} to={docs.introduction} key="DocsRoot" />,
 ])
 
 const UserpagesRouter = () => ([

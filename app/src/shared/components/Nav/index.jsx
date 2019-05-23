@@ -14,7 +14,6 @@ import DropdownItem from './DropdownItem'
 import LinkItem from './LinkItem'
 import AvatarItem from './AvatarItem'
 import routes from '$routes'
-import navigationLinks from '$docs/components/DocsLayout/Navigation/navLinks'
 
 import styles from './nav.pcss'
 
@@ -41,59 +40,59 @@ const Nav = compose(
             <LogoItem />
         </div>
         <div>
-            <DropdownItem label={I18n.t('general.core')} to="#" align="right">
-                <Link
-                    className={Nav.styles.link}
-                    to={routes.streams()}
-                >
+            <DropdownItem
+                align="right"
+                label={I18n.t('general.core')}
+                to={routes.streams()}
+            >
+                <Link to={routes.streams()}>
                     <Translate value="general.streams" />
                 </Link>
-                <Link
-                    className={Nav.styles.link}
-                    to={routes.canvases()}
-                >
+                <Link to={routes.canvases()}>
                     <Translate value="general.canvases" />
                 </Link>
-                <Link
-                    className={Nav.styles.link}
-                    to={routes.dashboards()}
-                >
+                <Link to={routes.dashboards()}>
                     <Translate value="general.dashboards" />
                 </Link>
-                <Link
-                    className={Nav.styles.link}
-                    to={routes.products()}
-                >
+                <Link to={routes.products()}>
                     <Translate value="general.products" />
                 </Link>
-                <Link
-                    className={Nav.styles.link}
-                    to={routes.purchases()}
-                >
+                <Link to={routes.purchases()}>
                     <Translate value="general.purchases" />
                 </Link>
-                <Link
-                    className={Nav.styles.link}
-                    to={routes.transactions()}
-                >
+                <Link to={routes.transactions()}>
                     <Translate value="general.transactions" />
                 </Link>
             </DropdownItem>
-            <LinkItem to={routes.marketplace()}>
+            <LinkItem
+                to={routes.marketplace()}
+                underlined
+            >
                 <Translate value="general.marketplace" />
             </LinkItem>
-            <DropdownItem label={I18n.t('general.docs')} to="#" align="left">
-                {Object.keys(navigationLinks).map((key) => (
-                    <Link
-                        key={key}
-                        to={navigationLinks[key]}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={Nav.styles.link}
-                    >
-                        {key}
-                    </Link>
-                ))}
+            <DropdownItem
+                align="left"
+                label={I18n.t('general.docs')}
+                to={routes.docs()}
+            >
+                <Link to={routes.docsIntroduction()}>
+                    <Translate value="general.introduction" />
+                </Link>
+                <Link to={routes.docsGettingStarted()}>
+                    <Translate value="general.gettingStarted" />
+                </Link>
+                <Link to={routes.docsVisualEditor()}>
+                    <Translate value="general.editor" />
+                </Link>
+                <Link to={routes.docsStreamrEngine()}>
+                    <Translate value="general.engine" />
+                </Link>
+                <Link to={routes.docsDataMarketplace()}>
+                    <Translate value="general.marketplace" />
+                </Link>
+                <Link to={routes.docsApi()}>
+                    <Translate value="general.streamrApi" />
+                </Link>
             </DropdownItem>
             {!!currentUser && (
                 <AvatarItem user={currentUser} />
@@ -103,15 +102,15 @@ const Nav = compose(
                     to={routes.login(redirect !== '/' ? {
                         redirect,
                     } : {})}
-                    className={Nav.styles.link}
+                    underlined
                 >
                     <Translate value="general.signIn" />
                 </LinkItem>
             )}
             {!currentUser && (
                 <LinkItem
+                    className={Nav.styles.button}
                     to={routes.signUp()}
-                    className={cx(Nav.styles.link, Nav.styles.button)}
                 >
                     <Translate value="general.signUp" />
                 </LinkItem>
