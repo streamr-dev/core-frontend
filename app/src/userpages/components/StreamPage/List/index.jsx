@@ -83,8 +83,6 @@ const getSortOptions = (): Array<SortOption> => {
     const filters = getFilters()
     return [
         filters.RECENT,
-        filters.SHARED,
-        filters.MINE,
         filters.NAME_ASC,
         filters.NAME_DESC,
     ]
