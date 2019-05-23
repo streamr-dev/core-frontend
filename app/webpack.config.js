@@ -213,6 +213,8 @@ module.exports = {
                     '**/tests/**/*.*',
                     '**/test/*.*',
                     '**/test/**/*.*',
+                    '**/*.test.js',
+                    '**/*.test.jsx',
                     // skip flowtype
                     '**/flowtype/**/*.*',
                     '**/flowtype/*.*',
