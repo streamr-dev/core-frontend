@@ -56,8 +56,8 @@ module.exports = {
         settings: '/core/settings',
     },
     editor: {
-        canvasEditor: '/canvas/editor',
-        dashboardEditor: '/dashboard/editor',
+        canvasEditor: routes.canvasEditor(),
+        dashboardEditor: routes.dashboardEditor(),
     },
     community: {
         trello: routes.communityTrello(),
