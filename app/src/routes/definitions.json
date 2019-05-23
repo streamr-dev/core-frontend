@@ -1,4 +1,5 @@
 {
+    "canvasEditor": "/canvas/editor",
     "canvases": "/core/canvases",
     "communityGithub": "https://github.com/streamr-dev",
     "communityLinkedin": "https://www.linkedin.com/company/streamr-ltd-/",
@@ -13,6 +14,7 @@
     "contactLabs": "mailto:labs@streamr.com",
     "contactMedia": "mailto:media@streamr.com",
     "createProduct": "/marketplace/products/create",
+    "dashboardEditor": "/dashboard/editor",
     "dashboards": "/core/dashboards",
     "docs": "/docs",
     "docsApi": "/docs/streamr-api",
