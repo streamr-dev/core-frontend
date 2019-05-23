@@ -40,6 +40,8 @@ function normalizeLayoutItem(item) {
         w: item.w || 0,
         x: item.x || 0,
         y: item.y || 0,
+        title: item.title,
+        type: item.type,
     }
 }
 
@@ -66,6 +68,8 @@ export function generateLayout(dashboard) {
                     ...dashboardConfig.layout.layoutsBySizeAndModule[size][item.webcomponent],
                     ...layoutInfo,
                     i: id,
+                    title: item.title,
+                    type: item.webcomponent,
                 }
             })
         )),

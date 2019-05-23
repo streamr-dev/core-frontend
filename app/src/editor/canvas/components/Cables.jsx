@@ -18,7 +18,7 @@ function curvedHorizontal(x1, y1, x2, y2) {
 const LAYER_0 = 0
 const LAYER_1 = 1
 
-export function Cable({ cable }) {
+export function Cable({ cable, ...props }) {
     if (!cable) { return null }
     const [from, to] = cable
     return (
@@ -30,6 +30,10 @@ export function Cable({ cable }) {
                 to.left,
                 to.top,
             )}
+            stroke="#525252"
+            fill="none"
+            strokeWidth="1"
+            {...props}
         />
     )
 }
