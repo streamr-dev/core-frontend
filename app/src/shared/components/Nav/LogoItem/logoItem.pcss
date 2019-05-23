@@ -1,14 +1,21 @@
 .root {
   display: block;
   font-size: var(--um);
-  height: 2em;
-  width: 2em;
+  height: 1.5em;
+  width: 1.5em;
 }
 
 .root svg {
   display: block;
   height: 100%;
   width: 100%;
+}
+
+@media (--md-up) {
+  .root {
+    height: 2em;
+    width: 2em;
+  }
 }
 
 @media (--lg-up) {
