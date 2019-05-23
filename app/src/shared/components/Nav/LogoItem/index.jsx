@@ -11,17 +11,22 @@ type Props = {
     location: Location,
 }
 
-const LogoItem = withRouter(({ location: { pathname } }: Props) => {
-    const location = /^\/canvas\/editor\//.test(pathname) ? routes.canvases() : process.env.PLATFORM_ORIGIN_URL
-
-    return (
+const LogoItem = withRouter(({ location: { pathname } }: Props) => (
+    /^\/canvas\/editor\//.test(pathname) ? (
         <Link
-            to={location}
             className={styles.root}
+            to={routes.canvases()}
         >
             <Logo />
         </Link>
+    ) : (
+        <a
+            className={styles.root}
+            href={process.env.PLATFORM_ORIGIN_URL}
+        >
+            <Logo />
+        </a>
     )
-})
+))
 
 export default LogoItem
