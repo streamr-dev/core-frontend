@@ -73,13 +73,13 @@ const Nav = compose(
             <DropdownItem
                 align="left"
                 label={I18n.t('general.docs')}
-                to={routes.docsIntroduction()}
+                to={routes.docs()}
             >
                 <Link to={routes.docsIntroduction()}>
                     <Translate value="general.introduction" />
                 </Link>
-                <Link to={routes.docsTutorials()}>
-                    <Translate value="general.getStarted" />
+                <Link to={routes.docsGettingStarted()}>
+                    <Translate value="general.gettingStarted" />
                 </Link>
                 <Link to={routes.docsVisualEditor()}>
                     <Translate value="general.editor" />

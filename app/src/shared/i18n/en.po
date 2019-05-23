@@ -211,8 +211,8 @@ msgstr "Docs"
 msgid "general##introduction"
 msgstr "Introduction"
 
-msgid "general##getStarted"
-msgstr "Get started"
+msgid "general##gettingStarted"
+msgstr "Getting started"
 
 msgid "general##engine"
 msgstr "Engine"

@@ -33,6 +33,7 @@ module.exports = {
     docs: {
         api: routes.docsApi(),
         dataMarketplace: routes.docsDataMarketplace(),
+        gettingStarted: routes.docsGettingStarted(),
         introduction: routes.docsIntroduction(),
         main: routes.docs(),
         streamrEngine: routes.docsStreamrEngine(),

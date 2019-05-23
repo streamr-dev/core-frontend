@@ -11,8 +11,8 @@ const DocsShortcuts = () => (
         <Link to={routes.docsIntroduction()} target="_blank" rel="noopener noreferrer">
             <Translate value="general.introduction" />
         </Link>
-        <Link to={routes.docsTutorials()} target="_blank" rel="noopener noreferrer">
-            <Translate value="general.getStarted" />
+        <Link to={routes.docsGettingStarted()} target="_blank" rel="noopener noreferrer">
+            <Translate value="general.gettingStarted" />
         </Link>
         <Link to={routes.docsVisualEditor()} target="_blank" rel="noopener noreferrer">
             <Translate value="general.editor" />
