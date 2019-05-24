@@ -182,7 +182,7 @@ module.exports = {
                     'travis_scripts',
                     'webpack.config.js',
                 ],
-                release: process.env.VERSION || 'development',
+                release: process.env.VERSION,
             }),
         ] : []),
     ].concat(isProduction() ? [

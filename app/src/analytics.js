@@ -57,7 +57,8 @@ if (process.env.SENTRY_DSN) {
         init: () => (
             Sentry.init({
                 dsn: process.env.SENTRY_DSN,
-                release: process.env.VERSION || 'development',
+                release: process.env.VERSION,
+                environment: process.env.SENTRY_ENVIRONMENT,
             })
         ),
         reportError: (error: Error, extra: Object = {}) => {
