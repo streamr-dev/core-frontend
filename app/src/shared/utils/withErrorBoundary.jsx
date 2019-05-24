@@ -1,7 +1,6 @@
 // @flow
 
 import React, { Component, type ComponentType, type Node } from 'react'
-import { Helmet } from 'react-helmet'
 
 import analytics from '../../analytics'
 
@@ -40,13 +39,8 @@ const withErrorBoundary = (ErrorComponent: ComponentType<any>) => (
             render() {
                 const { error } = this.state
                 const { children, ...props } = this.props
-                const errorMessage = 'Error – '
-                const title = document.title.startsWith(errorMessage) ? document.title : `${errorMessage}${document.title}`
                 return error ? (
-                    <React.Fragment>
-                        <Helmet title={title} />
-                        <ErrorComponent {...props} error={this.state} />
-                    </React.Fragment>
+                    <ErrorComponent {...props} error={this.state} />
                 ) : (
                     <OriginalComponent {...props}>
                         {children}
