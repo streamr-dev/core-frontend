@@ -58,6 +58,10 @@ export class PreviewView extends Component<Props, State> {
                     </Row>
                     <Row>
                         <Col xs={12}>
+                            <p className={!hasData && styles.hasData}>
+                                This Stream has no data yet.
+                                Checkout the <Link to={routes.docsGettingStarted()}>Docs</Link> for a guide to push data to your Stream.
+                            </p>
                             <div
                                 className={cx(styles.previewContainer, {
                                     [styles.hasData]: hasData,

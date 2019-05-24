@@ -22,7 +22,7 @@ export type SubscriptionOptions = {
     stream?: StreamId,
     apiKey?: string,
     partition?: number,
-    resend_all?: boolean,
+    resend_all?: boolean, // TODO: Update these to new streamr client spec
     resend_last?: number,
     resend_from?: number,
     resend_from_time?: number | Date,

@@ -123,7 +123,9 @@ export class StreamLivePreview extends Component<Props, State> {
         try {
             this.subscription = this.client.subscribe({
                 stream: streamId,
-                resend_last: LOCAL_DATA_LIST_LENGTH,
+                resend: {
+                    last: LOCAL_DATA_LIST_LENGTH,
+                },
             }, (data, metadata) => this.onData({
                 data,
                 metadata,
