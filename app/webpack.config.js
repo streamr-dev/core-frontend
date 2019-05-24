@@ -46,7 +46,7 @@ module.exports = {
         path: dist,
         filename: 'bundle_[hash:8].js',
         chunkFilename: '[name].bundle_[contenthash:8].js',
-        sourceMapFilename: '[file].map',
+        sourceMapFilename: '[name]_[hash:8].[ext].map',
         publicPath,
     },
     module: {
