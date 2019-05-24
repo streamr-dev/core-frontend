@@ -51,12 +51,12 @@ export class Analytics {
 
 const analytics = new Analytics()
 
-if (process.env.SENTRY_URL) {
+if (process.env.SENTRY_DSN) {
     analytics.register({
         id: 'Sentry',
         init: () => (
             Sentry.init({
-                dsn: process.env.SENTRY_URL,
+                dsn: process.env.SENTRY_DSN,
                 release: process.env.VERSION || 'development',
             })
         ),

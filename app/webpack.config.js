@@ -164,12 +164,14 @@ module.exports = {
                 openAnalyzer: false,
             }),
         ] : []),
-        ...(process.env.SENTRY_URL ? [
+        ...(process.env.SENTRY_DSN ? [
             new SentryPlugin({
-                dsn: process.env.SENTRY_URL,
-                include: '.',
+                include: 'src',
+                validate: true,
                 ignore: [
                     '.cache',
+                    '.DS_STORE',
+                    '.env',
                     '.storybook',
                     'bin',
                     'coverage',
