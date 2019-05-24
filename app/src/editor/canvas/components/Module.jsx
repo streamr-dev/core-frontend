@@ -19,7 +19,6 @@ import ModuleStyles from '$editor/shared/components/Module.pcss'
 import Resizable from './Resizable'
 import styles from './Module.pcss'
 import isModuleResizable from '$editor/canvas/utils/isModuleResizable'
-import SvgIcon from '$shared/components/SvgIcon'
 
 class CanvasModule extends React.PureComponent {
     static contextType = RunController.Context
@@ -162,7 +161,10 @@ class CanvasModule extends React.PureComponent {
                                 onFocus={this.onFocusOptionsButton}
                                 onClick={this.onRefreshModule}
                             >
-                                <SvgIcon name="refresh" />
+                                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    {/* eslint-disable-next-line max-len */}
+                                    <path d="M8.76 14.75a4.25 4.25 0 0 0 7.133-1.04.75.75 0 0 1 1.372.605 5.75 5.75 0 0 1-9.515 1.558V17a.75.75 0 1 1-1.5 0v-3a.75.75 0 0 1 .75-.75h3a.75.75 0 1 1 0 1.5H8.76zm7.49-6.623V7a.75.75 0 1 1 1.5 0v3a.75.75 0 0 1-.75.75h-3a.75.75 0 1 1 0-1.5h1.24a4.25 4.25 0 0 0-7.143 1.064.75.75 0 1 1-1.376-.596 5.75 5.75 0 0 1 9.529-1.591z" />
+                                </svg>
                             </ModuleHeaderButton>
                         )}
                         <ModuleHeaderButton

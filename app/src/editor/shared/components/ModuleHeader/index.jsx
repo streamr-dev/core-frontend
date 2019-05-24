@@ -64,7 +64,11 @@ const ModuleHeader = ({
                         </EditableText>
                     </div>
                 </div>
-                {children}
+                {!!children && (
+                    <div className={styles.buttons}>
+                        {children}
+                    </div>
+                )}
             </div>
         </Fragment>
     )

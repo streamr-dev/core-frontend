@@ -27,3 +27,23 @@
 .limitedWidth {
   max-width: calc(100% - 24px);
 }
+
+.buttons {
+  display: flex;
+  opacity: 0;
+  padding: calc(0.5 * var(--um));
+  transition: 200ms linear;
+  transition-delay: 200s, 0s;
+  transition-property: visibility, opacity;
+  visibility: hidden;
+}
+
+.root:--enter .buttons {
+  opacity: 1;
+  transition-delay: 0s, 0s;
+  visibility: visible;
+}
+
+.buttons button {
+  display: block;
+}
