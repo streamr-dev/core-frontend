@@ -15,6 +15,7 @@ const cssProcessor = require('cssnano')
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const GitRevisionPlugin = require('git-revision-webpack-plugin')
+const SentryPlugin = require('@sentry/webpack-plugin')
 
 const dotenv = require('./scripts/dotenv')
 
@@ -161,6 +162,27 @@ module.exports = {
             new BundleAnalyzerPlugin({
                 analyzerMode: 'static',
                 openAnalyzer: false,
+            }),
+        ] : []),
+        ...(process.env.SENTRY_DSN ? [
+            new SentryPlugin({
+                include: 'src',
+                validate: true,
+                ignore: [
+                    '.cache',
+                    '.DS_STORE',
+                    '.env',
+                    '.storybook',
+                    'bin',
+                    'coverage',
+                    'node_modules',
+                    'scripts',
+                    'stories',
+                    'test',
+                    'travis_scripts',
+                    'webpack.config.js',
+                ],
+                release: process.env.VERSION,
             }),
         ] : []),
     ].concat(isProduction() ? [
