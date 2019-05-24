@@ -174,7 +174,11 @@ class CanvasModule extends React.PureComponent {
                                 module.hash
                             )}
                         >
-                            <SvgIcon name="hamburger" />
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <g fill="none" fillRule="evenodd" stroke="#000000" strokeLinecap="round" strokeWidth="1.5">
+                                    <path d="M7 16h10M7 12h10M7 8h10" />
+                                </g>
+                            </svg>
                         </ModuleHeaderButton>
                     </ModuleHeader>
                     <Ports
