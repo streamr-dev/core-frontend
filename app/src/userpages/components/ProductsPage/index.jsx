@@ -49,10 +49,10 @@ const CreateProductButton = () => (
     <Button
         color="primary"
         className={styles.createProductButton}
+        tag={Link}
+        to={links.marketplace.createProduct}
     >
-        <Link to={links.marketplace.createProduct}>
-            <Translate value="userpages.products.createProduct" />
-        </Link>
+        <Translate value="userpages.products.createProduct" />
     </Button>
 )
 

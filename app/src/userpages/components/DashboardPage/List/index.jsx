@@ -41,10 +41,10 @@ const CreateDashboardButton = () => (
     <Button
         color="primary"
         className={styles.createDashboardButton}
+        tag={Link}
+        to={links.editor.dashboardEditor}
     >
-        <Link to={links.editor.dashboardEditor}>
-            <Translate value="userpages.dashboards.createDashboard" />
-        </Link>
+        <Translate value="userpages.dashboards.createDashboard" />
     </Button>
 )
 

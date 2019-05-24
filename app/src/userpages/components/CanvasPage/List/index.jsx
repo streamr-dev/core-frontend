@@ -71,10 +71,10 @@ const CreateCanvasButton = () => (
     <Button
         color="primary"
         className={styles.createCanvasButton}
+        tag={Link}
+        to={links.editor.canvasEditor}
     >
-        <Link to={links.editor.canvasEditor}>
-            <Translate value="userpages.canvases.createCanvas" />
-        </Link>
+        <Translate value="userpages.canvases.createCanvas" />
     </Button>
 )
 
