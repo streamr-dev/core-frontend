@@ -470,6 +470,9 @@ msgstr "Next"
 msgid "modal##streamLiveData##previous"
 msgstr "Previous"
 
+msgid "modal##streamLiveData##noLiveData"
+msgstr "0 Messages Received"
+
 msgid "modal##web3##installmetamask##message"
 msgstr ""
 "We couldn't find your wallet. Please install <br /> MetaMask or another "
