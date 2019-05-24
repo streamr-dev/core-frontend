@@ -790,11 +790,12 @@ function updateVariadics(canvas, moduleHash, type) {
 function addVariadic(canvas, moduleHash, type, config = {}) {
     if (!type) { throw new Error('type missing') }
     const variadics = getVariadicPorts(canvas, moduleHash, type)
-    const port = variadics[variadics.length - 1]
     const canvasModule = getModule(canvas, moduleHash)
     if (canvasModule.moduleClosed) { return canvas } // do nothing if module closed
 
     const id = uuid.v4()
+
+    const port = variadics[variadics.length - 1] // previous variadic (may be none)
     const index = variadics.length + 1
 
     let resetMask = {
@@ -805,9 +806,8 @@ function addVariadic(canvas, moduleHash, type, config = {}) {
         name: `endpoint-${id}`,
         connected: false,
         export: false,
-        variadic: {
-            ...port.variadic, // index/isLast updated later
-        },
+        // index/isLast updated later
+        variadic: port ? Object.assign({}, port.variadic) : { disableGrow: true },
     }
 
     if (type === 'inputs') {
@@ -818,7 +818,7 @@ function addVariadic(canvas, moduleHash, type, config = {}) {
             displayName: `in${index}`,
             requiresConnection: false,
         }
-        if (port.variadic.linkedOutput) {
+        if (resetMask.variadic.linkedOutput) {
             resetMask.variadic.linkedOutput = `endpoint-${uuid.v4()}`
         }
     } else {
@@ -828,7 +828,7 @@ function addVariadic(canvas, moduleHash, type, config = {}) {
         }
     }
 
-    const newPort = Object.assign(cloneDeep(port), resetMask, config)
+    const newPort = Object.assign(port ? cloneDeep(port) : {}, resetMask, config)
 
     // append new port
     const newCanvas = updateModule(canvas, moduleHash, (canvasModule) => ({
@@ -869,6 +869,11 @@ function handleVariadicPairs(canvas, moduleHash) {
         if (!linkedOutputPort) {
             newCanvas = addVariadic(newCanvas, moduleHash, 'outputs', {
                 name: inputPort.variadic.linkedOutput,
+                canConnect: true,
+                connected: false,
+                export: false,
+                jsClass: 'VariadicOutput',
+                type: 'Object',
             })
             linkedOutputPort = findLinkedVariadicPort(newCanvas, inputPort.id)
         }
