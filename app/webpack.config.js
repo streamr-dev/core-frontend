@@ -158,6 +158,13 @@ module.exports = {
             ],
         }),
         new webpack.EnvironmentPlugin(loadedDotenv),
+        new webpack.EnvironmentPlugin({
+            GIT_VERSION: gitRevisionPlugin.version(),
+            GIT_BRANCH: gitRevisionPlugin.branch(),
+            SENTRY_ENVIRONMENT: process.env.SENTRY_ENVIRONMENT,
+            SENTRY_DSN: process.env.SENTRY_DSN,
+            VERSION: process.env.VERSION,
+        }),
         ...(analyze ? [
             new BundleAnalyzerPlugin({
                 analyzerMode: 'static',
@@ -190,8 +197,6 @@ module.exports = {
         new webpack.optimize.OccurrenceOrderPlugin(),
         new webpack.EnvironmentPlugin({
             NODE_ENV: 'production',
-            GIT_VERSION: gitRevisionPlugin.version(),
-            GIT_BRANCH: gitRevisionPlugin.branch(),
         }),
         new UglifyJsPlugin({
             uglifyOptions: {
@@ -256,10 +261,6 @@ module.exports = {
         }),
         new FlowBabelWebpackPlugin(),
         new WebpackNotifierPlugin(),
-        new webpack.EnvironmentPlugin({
-            GIT_VERSION: gitRevisionPlugin.version(),
-            GIT_BRANCH: gitRevisionPlugin.branch(),
-        }),
     ]),
     devtool: isProduction() ? 'source-map' : 'eval-source-map',
     devServer: {
