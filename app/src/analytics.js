@@ -62,8 +62,12 @@ if (process.env.SENTRY_DSN) {
             })
         ),
         reportError: (error: Error, extra: Object = {}) => {
-            Sentry.captureException(error, {
-                extra,
+            Sentry.withScope((scope) => {
+                if (extra) {
+                    scope.setExtras(extra)
+                }
+
+                Sentry.captureException(error)
             })
         },
     })

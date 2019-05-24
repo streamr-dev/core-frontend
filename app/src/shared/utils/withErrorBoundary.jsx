@@ -28,9 +28,7 @@ const withErrorBoundary = (ErrorComponent: ComponentType<any>) => (
 
             componentDidCatch(error: Error, extra: any) {
                 console.error(error)
-                analytics.reportError(error, {
-                    extra,
-                })
+                analytics.reportError(error, extra)
                 this.setState({
                     error,
                 })
