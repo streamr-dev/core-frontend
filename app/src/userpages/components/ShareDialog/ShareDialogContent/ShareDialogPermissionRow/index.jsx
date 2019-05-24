@@ -27,14 +27,16 @@ export class ShareDialogPermissionRow extends Component<Props> {
             <div className={styles.container}>
                 {_.chain(this.props.permissions)
                     .groupBy((p) => p.user) // Arrays of permissions with users as keys
-                    .mapValues((permissions) => (
-                        <ShareDialogPermission
-                            resourceType={this.props.resourceType}
-                            resourceId={this.props.resourceId}
-                            key={`${permissions[0].user}`}
-                            permissions={permissions}
-                        />
-                    ))
+                    .mapValues((permissions) => {
+                        if (permissions[0].user) {
+                            return (<ShareDialogPermission
+                                resourceType={this.props.resourceType}
+                                resourceId={this.props.resourceId}
+                                key={`${permissions[0].user}`}
+                                permissions={permissions}
+                            />)
+                        }
+                    })
                     .values() // Take only the components
                     .value() // Output the array
                 }
