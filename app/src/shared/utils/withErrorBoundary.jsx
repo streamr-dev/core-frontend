@@ -1,10 +1,13 @@
 // @flow
 
-import React, { Component, type ComponentType } from 'react'
+import React, { Component, type ComponentType, type Node } from 'react'
+import { Helmet } from 'react-helmet'
+
 import analytics from '../../analytics'
 
 type Props = {
     path?: string,
+    children?: ?Node,
 }
 type State = {
     error: ?Error,
@@ -36,10 +39,18 @@ const withErrorBoundary = (ErrorComponent: ComponentType<any>) => (
 
             render() {
                 const { error } = this.state
+                const { children, ...props } = this.props
+                const errorMessage = 'Error – '
+                const title = document.title.startsWith(errorMessage) ? document.title : `${errorMessage}${document.title}`
                 return error ? (
-                    <ErrorComponent {...this.props} error={this.state} />
+                    <React.Fragment>
+                        <Helmet title={title} />
+                        <ErrorComponent {...props} error={this.state} />
+                    </React.Fragment>
                 ) : (
-                    <OriginalComponent {...this.props} />
+                    <OriginalComponent {...props}>
+                        {children}
+                    </OriginalComponent>
                 )
             }
         }
