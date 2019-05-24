@@ -46,6 +46,8 @@ jobs:
     - CHROMATIC_APP_CODE=exgpyxh1il5
     - NODE_ENV=production
     - PORT=12345
+    - VERSION=$TRAVIS_PULL_REQUEST_BRANCH
+    - SENTRY_ENVIRONMENT=pr
     - STREAMR_API_URL=https://staging.streamr.com/api/v1
     - STREAMR_WS_URL=wss://staging.streamr.com/api/v1/ws
     - STREAMR_URL=https://staging.streamr.com
@@ -65,6 +67,8 @@ jobs:
     env:
     - NODE_ENV=production
     - PORT=12345
+    - VERSION=$TRAVIS_BRANCH
+    - SENTRY_ENVIRONMENT=staging
     - BUNDLE_ANALYSIS=1
     - STREAMR_API_URL=https://staging.streamr.com/api/v1
     - STREAMR_WS_URL=wss://staging.streamr.com/api/v1/ws
@@ -122,6 +126,8 @@ jobs:
     - NODE_ENV=production
     - BUNDLE_ANALYSIS=1
     - PORT=12345
+    - VERSION=$TRAVIS_PULL_REQUEST_BRANCH
+    - SENTRY_ENVIRONMENT=pr
     - STREAMR_API_URL=https://staging.streamr.com/api/v1
     - STREAMR_WS_URL=wss://staging.streamr.com/api/v1/ws
     - PLATFORM_ORIGIN_URL=https://staging.streamr.com
@@ -145,6 +151,8 @@ jobs:
     env:
     - NODE_ENV=production
     - PORT=12345
+    - VERSION=$TRAVIS_BRANCH
+    - SENTRY_ENVIRONMENT=production
     - STREAMR_API_URL=https://www.streamr.com/api/v1
     - STREAMR_WS_URL=wss://www.streamr.com/api/v1/ws
     - PLATFORM_ORIGIN_URL=https://www.streamr.com
@@ -176,6 +184,8 @@ jobs:
     env:
     - NODE_ENV=production
     - PORT=12345
+    - VERSION=$TRAVIS_TAG
+    - SENTRY_ENVIRONMENT=production
     - STREAMR_API_URL=https://www.streamr.com/api/v1
     - STREAMR_WS_URL=wss://www.streamr.com/api/v1/ws
     - PLATFORM_ORIGIN_URL=https://www.streamr.com
@@ -235,12 +245,13 @@ jobs:
     env:
     - NODE_ENV=production
     - PORT=12345
+    - VERSION=$TRAVIS_TAG
+    - SENTRY_ENVIRONMENT=lisboa
     - STREAMR_API_URL=https://ee-lisboa.streamr.com/api/v1
     - STREAMR_WS_URL=wss://ee-lisboa.streamr.com/api/v1/ws
     - PLATFORM_ORIGIN_URL=https://ee-lisboa.streamr.com
     - STREAMR_URL=https://ee-lisboa.streamr.com
     - GOOGLE_ANALYTICS_ID=UA-55331565-5
-    - VERSION=$TRAVIS_TAG
     - MARKETPLACE_CONTRACT_ADDRESS=0x62d08a44d6db7821c9556032a437beb4bd050abd
     - TOKEN_CONTRACT_ADDRESS=0x67a9fda28c4df570d1d5350acfa345194f4d4100
     - WEB3_REQUIRED_NETWORK_ID=8995
