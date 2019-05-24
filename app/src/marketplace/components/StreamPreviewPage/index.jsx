@@ -114,16 +114,16 @@ class StreamPreviewPage extends React.Component<Props, State> {
         streamId,
     }) : '#')
 
+    setHasData = () => {
+        this.setState(() => ({
+            hasData: true,
+        }))
+    }
+
     toggleSidebar = () => {
         this.setState({
             sidebarVisible: !this.state.sidebarVisible,
         })
-    }
-
-    hasData = () => {
-        this.setState(() => ({
-            hasData: true,
-        }))
     }
 
     render() {
@@ -199,7 +199,7 @@ class StreamPreviewPage extends React.Component<Props, State> {
                                     authApiKeyId={authApiKeyId}
                                     onSelectDataPoint={this.onSelectDataPoint}
                                     selectedDataPoint={this.state.selectedDataPoint}
-                                    hasData={this.hasData}
+                                    hasData={this.setHasData}
                                 />
                             )}
                         </div>
