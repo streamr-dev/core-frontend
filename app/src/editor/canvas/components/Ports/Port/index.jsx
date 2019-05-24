@@ -50,13 +50,13 @@ const Port = ({
         setContextMenuTarget(null)
     }, [])
 
-    useGlobalEventWithin('mousedown', {
+    useGlobalEventWithin('mousedown', useMemo(() => ({
         current: contextMenuTarget,
-    }, (within: boolean) => {
+    }), [contextMenuTarget]), useCallback((within: boolean) => {
         if (!within) {
             dismiss()
         }
-    }, Menu.styles.noAutoDismiss)
+    }, [dismiss]), Menu.styles.noAutoDismiss)
 
     useKeyDown(useMemo(() => ({
         Escape: () => {
