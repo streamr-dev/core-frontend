@@ -49,7 +49,7 @@ jobs:
     - CHROMATIC_APP_CODE=exgpyxh1il5
     - NODE_ENV=production
     - PORT=12345
-    - VERSION=$TRAVIS_PULL_REQUEST_BRANCH
+    - VERSION="$TRAVIS_PULL_REQUEST_BRANCH"
     - SENTRY_ENVIRONMENT=pr
     - STREAMR_API_URL=https://staging.streamr.com/api/v1
     - STREAMR_WS_URL=wss://staging.streamr.com/api/v1/ws
@@ -70,7 +70,7 @@ jobs:
     env:
     - NODE_ENV=production
     - PORT=12345
-    - VERSION=$TRAVIS_BRANCH
+    - VERSION="$TRAVIS_BRANCH"
     - SENTRY_ENVIRONMENT=staging
     - BUNDLE_ANALYSIS=1
     - STREAMR_API_URL=https://staging.streamr.com/api/v1
@@ -129,7 +129,7 @@ jobs:
     - NODE_ENV=production
     - BUNDLE_ANALYSIS=1
     - PORT=12345
-    - VERSION=$TRAVIS_PULL_REQUEST_BRANCH
+    - VERSION="$TRAVIS_PULL_REQUEST_BRANCH"
     - SENTRY_ENVIRONMENT=pr
     - STREAMR_API_URL=https://staging.streamr.com/api/v1
     - STREAMR_WS_URL=wss://staging.streamr.com/api/v1/ws
@@ -154,7 +154,7 @@ jobs:
     env:
     - NODE_ENV=production
     - PORT=12345
-    - VERSION=$TRAVIS_BRANCH
+    - VERSION="$TRAVIS_BRANCH"
     - SENTRY_ENVIRONMENT=production
     - STREAMR_API_URL=https://www.streamr.com/api/v1
     - STREAMR_WS_URL=wss://www.streamr.com/api/v1/ws
@@ -187,7 +187,7 @@ jobs:
     env:
     - NODE_ENV=production
     - PORT=12345
-    - VERSION=$TRAVIS_TAG
+    - VERSION="$TRAVIS_TAG"
     - SENTRY_ENVIRONMENT=production
     - STREAMR_API_URL=https://www.streamr.com/api/v1
     - STREAMR_WS_URL=wss://www.streamr.com/api/v1/ws
@@ -248,7 +248,7 @@ jobs:
     env:
     - NODE_ENV=production
     - PORT=12345
-    - VERSION=$TRAVIS_TAG
+    - VERSION="$TRAVIS_TAG"
     - SENTRY_ENVIRONMENT=lisboa
     - STREAMR_API_URL=https://ee-lisboa.streamr.com/api/v1
     - STREAMR_WS_URL=wss://ee-lisboa.streamr.com/api/v1/ws
