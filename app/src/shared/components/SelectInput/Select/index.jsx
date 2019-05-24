@@ -14,6 +14,7 @@ export type Props = {
     onChange?: Function,
     required?: boolean,
     clearable?: boolean,
+    isDisabled?: boolean,
 }
 
 const customStyles = {

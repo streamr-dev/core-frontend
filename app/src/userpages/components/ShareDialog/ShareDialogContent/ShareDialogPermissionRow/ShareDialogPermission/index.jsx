@@ -56,7 +56,7 @@ export class ShareDialogPermission extends Component<Props> {
                     <SvgIcon name="user" className={styles.avatarIcon} />
                     <div className={styles.user}>
                         <div className={cx(styles.title, {
-                            [styles.meLabel]: !!(user === this.props.username),
+                            [styles.meLabel]: user === this.props.username,
                         })}
                         >
                             <Translate value="modal.shareResource.user.defaultTitle" />
@@ -71,11 +71,13 @@ export class ShareDialogPermission extends Component<Props> {
                         options={options}
                         value={options[highestOperationIndex]}
                         onChange={this.onSelect}
+                        isDisabled={user === this.props.username}
                     />
                     <button
                         type="button"
                         onClick={this.onRemove}
                         className={cx(styles.button, buttonStyles.btn, buttonStyles.btnOutline)}
+                        disabled={user === this.props.username}
                     >
                         <SvgIcon name="crossHeavy" />
                     </button>
