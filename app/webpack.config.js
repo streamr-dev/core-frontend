@@ -173,7 +173,10 @@ module.exports = {
         ] : []),
         ...(process.env.SENTRY_DSN ? [
             new SentryPlugin({
-                include: 'src',
+                include: [
+                    'src',
+                    dist,
+                ],
                 validate: true,
                 ignore: [
                     '.cache',
