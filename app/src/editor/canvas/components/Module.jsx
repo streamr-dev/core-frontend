@@ -19,6 +19,7 @@ import ModuleStyles from '$editor/shared/components/Module.pcss'
 import Resizable from './Resizable'
 import styles from './Module.pcss'
 import isModuleResizable from '$editor/canvas/utils/isModuleResizable'
+import SvgIcon from '$shared/components/SvgIcon'
 
 class CanvasModule extends React.PureComponent {
     static contextType = RunController.Context
@@ -157,14 +158,14 @@ class CanvasModule extends React.PureComponent {
                     >
                         {isRunning && !!module.canRefresh && (
                             <ModuleHeaderButton
-                                icon="refresh"
                                 className={ModuleStyles.dragCancel}
                                 onFocus={this.onFocusOptionsButton}
                                 onClick={this.onRefreshModule}
-                            />
+                            >
+                                <SvgIcon name="refresh" />
+                            </ModuleHeaderButton>
                         )}
                         <ModuleHeaderButton
-                            icon="hamburger"
                             className={ModuleStyles.dragCancel}
                             onClick={this.onTriggerOptions}
                             onFocus={this.onHamburgerButtonFocus}
@@ -172,7 +173,9 @@ class CanvasModule extends React.PureComponent {
                                 /* hacky. allows delete to work when this focussed */
                                 module.hash
                             )}
-                        />
+                        >
+                            <SvgIcon name="hamburger" />
+                        </ModuleHeaderButton>
                     </ModuleHeader>
                     <Ports
                         api={api}
