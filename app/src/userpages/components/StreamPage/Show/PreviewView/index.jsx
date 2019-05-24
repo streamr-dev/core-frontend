@@ -38,7 +38,7 @@ export class PreviewView extends Component<Props, State> {
         }))
     }
 
-    hasData = () => {
+    setHasData = () => {
         this.setState(() => ({
             hasData: true,
         }))
@@ -60,7 +60,7 @@ export class PreviewView extends Component<Props, State> {
                         <Col xs={12}>
                             <p className={!hasData && styles.hasData}>
                                 This Stream has no data yet.
-                                Checkout the <Link to={routes.docsGettingStarted()}>Docs</Link> for a guide to push data to your Stream.
+                                Check out the <Link to={routes.docsGettingStarted()}>Docs</Link> for a guide to push data to your stream.
                             </p>
                             <div
                                 className={cx(styles.previewContainer, {
@@ -96,7 +96,7 @@ export class PreviewView extends Component<Props, State> {
                                     selectedDataPoint={null}
                                     run={isRunning}
                                     userpagesPreview
-                                    hasData={this.hasData}
+                                    hasData={this.setHasData}
                                 />
                             </div>
                         </Col>
