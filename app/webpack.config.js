@@ -166,6 +166,7 @@ module.exports = {
         ] : []),
         ...(process.env.SENTRY_URL ? [
             new SentryPlugin({
+                dsn: process.env.SENTRY_URL,
                 include: '.',
                 ignore: [
                     '.cache',

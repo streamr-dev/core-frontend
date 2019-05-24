@@ -58,7 +58,6 @@ if (process.env.SENTRY_URL) {
             Sentry.init({
                 dsn: process.env.SENTRY_URL,
                 release: process.env.VERSION || 'development',
-                debug: true,
             })
         ),
         reportError: (error: Error, extra: Object = {}) => {
