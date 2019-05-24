@@ -1,7 +1,8 @@
 // @flow
 
-import React, { type Element as ReactElement, type ChildrenArray, useState, useCallback, useRef } from 'react'
+import React, { type Element as ReactElement, type ChildrenArray, useState, useCallback, useRef, useMemo } from 'react'
 import useGlobalEventWithin from '$shared/hooks/useGlobalEventWithin'
+import useKeyDown from '$shared/hooks/useKeyDown'
 import cx from 'classnames'
 import { type Ref } from '$shared/flowtype/common-types'
 import Link from '$shared/components/Link'
@@ -35,6 +36,14 @@ const Onboarding = ({ children, title }: Props) => {
             setOpen(false)
         }
     }, [setOpen]))
+
+    useKeyDown(useMemo(() => ({
+        Escape: () => {
+            if (open) {
+                setOpen(false)
+            }
+        },
+    }), [open, setOpen]))
 
     return (
         <div
