@@ -991,7 +991,13 @@ export function updateCanvas(canvas, path, fn) {
     if (!canvas || typeof canvas !== 'object') {
         throw new Error(`bad canvas (${typeof canvas})`)
     }
-    return limitLayout(updateVariadic(updatePortConnections(workaroundInitialValueWeirdness(update(path, fn, canvas)))))
+
+    if (fn && path) { // path & fn optional
+        // if we call update without a path + fn
+        // so let's skip update call altogether
+        canvas = update(path, fn, canvas)
+    }
+    return limitLayout(updateVariadic(updatePortConnections(workaroundInitialValueWeirdness(canvas))))
 }
 
 export function moduleCategoriesIndex(modules = [], path = [], index = []) {
