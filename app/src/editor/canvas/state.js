@@ -95,8 +95,8 @@ export function emptyCanvas(config = {}) {
 
 export const defaultModuleLayout = {
     position: {
-        top: 0,
-        left: 0,
+        top: '0px',
+        left: '0px',
     },
     width: '250px',
     height: '150px',
