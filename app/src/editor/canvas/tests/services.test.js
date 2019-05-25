@@ -3,16 +3,7 @@ import { setupAuthorizationHeader, loadModuleDefinition } from '$editor/shared/t
 
 import * as Services from '../services'
 import * as State from '../state'
-
-const canvasMatcher = {
-    id: expect.any(String),
-    name: expect.any(String),
-    created: expect.any(String),
-    updated: expect.any(String),
-    uiChannel: expect.objectContaining({
-        id: expect.any(String),
-    }),
-}
+import { canvasMatcher } from './utils'
 
 describe('Canvas Services', () => {
     let teardown

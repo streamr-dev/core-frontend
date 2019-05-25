@@ -3,6 +3,8 @@ import { setupAuthorizationHeader, loadModuleDefinition } from '$editor/shared/t
 import * as State from '../state'
 import * as Services from '../services'
 
+import './utils'
+
 describe('Variadic Port Handling', () => {
     let teardown
 
@@ -84,6 +86,10 @@ describe('Variadic Port Handling', () => {
 
             // first is now last
             expect(firstVariadicPort.variadic.isLast).toBeTruthy()
+
+            // test server accepts state
+            const savedCanvas = State.updateCanvas(await Services.create(canvas))
+            expect(savedCanvas).toMatchCanvas(canvas)
         })
 
         it('can move connections', async () => {
@@ -118,6 +124,9 @@ describe('Variadic Port Handling', () => {
             expect(State.isPortConnected(canvas, tableIn2.id)).toBeTruthy()
             // table.in2 should still exist, and be connected
             expect(State.isPortConnected(canvas, tableIn1.id)).not.toBeTruthy()
+
+            // test server accepts state
+            expect(State.updateCanvas(await Services.create(canvas))).toMatchCanvas(canvas)
         })
 
         it('updates index/displayName based on initial config index', async () => {
@@ -142,6 +151,9 @@ describe('Variadic Port Handling', () => {
             const addIn4 = State.findModulePort(canvas, add.hash, (p) => p.variadic && p.variadic.index === 4)
             expect(addIn4).toBeTruthy()
             expect(addIn4.displayName).toBe('in4')
+
+            // test server accepts state
+            expect(State.updateCanvas(State.updateCanvas(await Services.create(canvas)))).toMatchCanvas(canvas)
         })
     })
 
@@ -187,6 +199,9 @@ describe('Variadic Port Handling', () => {
 
             // first is now last
             expect(firstVariadicPort.variadic.isLast).toBeTruthy()
+
+            // test server accepts state
+            expect(State.updateCanvas(await Services.create(canvas))).toMatchCanvas(canvas)
         })
     })
 
@@ -231,6 +246,9 @@ describe('Variadic Port Handling', () => {
 
             // check new output is gone
             expect(State.getPortIfExists(canvas, passThroughOut2.id)).toBeUndefined()
+
+            // test server accepts state
+            expect(State.updateCanvas(await Services.create(canvas))).toMatchCanvas(canvas)
         })
 
         it('disconnects output when input is disconnected', async () => {
@@ -260,6 +278,9 @@ describe('Variadic Port Handling', () => {
             expect(State.isPortConnected(canvas, passThroughOut1.id)).not.toBeTruthy()
             // valueText.in should be disconnected
             expect(State.isPortConnected(canvas, valueTextIn.id)).not.toBeTruthy()
+
+            // test server accepts state
+            expect(State.updateCanvas(await Services.create(canvas))).toMatchCanvas(canvas)
         })
 
         it('updates downstream connection status as output ports removed', async () => {
@@ -294,6 +315,9 @@ describe('Variadic Port Handling', () => {
             canvas = State.updateCanvas(State.disconnectPorts(canvas, constantOut.id, passThroughIn1.id))
             // table in1 should be disconnected
             expect(State.isPortConnected(canvas, tableIn1.id)).not.toBeTruthy()
+
+            // test server accepts state
+            expect(State.updateCanvas(await Services.create(canvas))).toMatchCanvas(canvas)
         })
 
         it('updates downstream connection status as output ports removed in special order', async () => {
@@ -337,6 +361,9 @@ describe('Variadic Port Handling', () => {
             expect(State.isPortConnected(canvas, tableIn1.id)).not.toBeTruthy()
             expect(State.getPortIfExists(canvas, tableIn2.id)).toBeUndefined()
             expect(State.getPortIfExists(canvas, tableIn3.id)).toBeUndefined()
+
+            // test server accepts state
+            expect(State.updateCanvas(await Services.create(canvas))).toMatchCanvas(canvas)
         })
 
         it('uses input type as output type when trying to connect linked output', async () => {
@@ -371,6 +398,9 @@ describe('Variadic Port Handling', () => {
             expect(() => {
                 State.updateCanvas(State.connectPorts(canvas, passThroughOut2.id, addIn2.id))
             }).toThrow()
+
+            // test server accepts state
+            expect(State.updateCanvas(await Services.create(canvas))).toMatchCanvas(canvas)
         })
     })
 })

@@ -2,6 +2,7 @@ import { setupAuthorizationHeader, loadModuleDefinition } from '$editor/shared/t
 
 import * as State from '../state'
 import * as Services from '../services'
+import './utils'
 
 describe('Connecting Modules', () => {
     let teardown
@@ -26,6 +27,9 @@ describe('Connecting Modules', () => {
         expect(() => {
             State.updateCanvas(State.connectPorts(canvas, constantTextOut.id, 'missingportid'))
         }).toThrow()
+
+        // test server accepts state
+        expect(State.updateCanvas(await Services.create(canvas))).toMatchCanvas(canvas)
     })
 
     it('will not error if disconnecting from missing port (assumes port removed)', async () => {
@@ -49,6 +53,9 @@ describe('Connecting Modules', () => {
         expect(State.isPortConnected(canvas, constantTextOut.id)).toBeTruthy()
         expect(State.isPortConnected(canvas, toLowerCaseIn.id)).toBeTruthy()
         expect(canvas).toEqual(canvasBefore)
+
+        // test server accepts state
+        expect(State.updateCanvas(await Services.create(canvas))).toMatchCanvas(canvas)
     })
 
     it('will not error if disconnecting ports that are not connected', async () => {
@@ -82,6 +89,9 @@ describe('Connecting Modules', () => {
         canvas = State.updateCanvas(State.disconnectPorts(canvas, constantTextOut.id, toUpperCaseIn.id))
         expect(State.isPortConnected(canvas, toLowerCaseIn.id)).toBeTruthy()
         expect(State.isPortConnected(canvas, toUpperCaseIn.id)).not.toBeTruthy()
+
+        // test server accepts state
+        expect(State.updateCanvas(await Services.create(canvas))).toMatchCanvas(canvas)
     })
 
     it('can connect & disconnect compatible modules', async () => {
@@ -109,6 +119,9 @@ describe('Connecting Modules', () => {
         canvas = State.updateCanvas(State.disconnectPorts(canvas, constantTextOut.id, toLowerCaseIn.id))
         expect(State.isPortConnected(canvas, constantTextOut.id)).not.toBeTruthy()
         expect(State.isPortConnected(canvas, toLowerCaseIn.id)).not.toBeTruthy()
+
+        // test server accepts state
+        expect(State.updateCanvas(await Services.create(canvas))).toMatchCanvas(canvas)
     })
 
     it('can not connect incompatible modules', async () => {
@@ -131,6 +144,8 @@ describe('Connecting Modules', () => {
         expect(() => {
             State.updateCanvas(State.connectPorts(canvas, randomNumberOut.id, toLowerCaseIn.id))
         }).toThrow()
+        // test server accepts state
+        expect(State.updateCanvas(await Services.create(canvas))).toMatchCanvas(canvas)
     })
 
     it('can connect ports to self', async () => {
@@ -155,5 +170,8 @@ describe('Connecting Modules', () => {
         canvas = State.updateCanvas(State.disconnectPorts(canvas, constantTextOut.id, constantTextIn.id))
         expect(State.isPortConnected(canvas, constantTextOut.id)).not.toBeTruthy()
         expect(State.isPortConnected(canvas, constantTextIn.id)).not.toBeTruthy()
+
+        // test server accepts state
+        expect(State.updateCanvas(await Services.create(canvas))).toMatchCanvas(canvas)
     })
 })
