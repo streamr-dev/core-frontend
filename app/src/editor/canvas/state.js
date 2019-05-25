@@ -818,8 +818,9 @@ function addVariadic(canvas, moduleHash, type, config = {}) {
             displayName: `in${index}`,
             requiresConnection: false,
         }
+        // linkedOutput name is same as input name
         if (resetMask.variadic.linkedOutput) {
-            resetMask.variadic.linkedOutput = `endpoint-${uuid.v4()}`
+            resetMask.variadic.linkedOutput = resetMask.name
         }
     } else {
         resetMask = {

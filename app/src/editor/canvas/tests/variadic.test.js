@@ -211,13 +211,21 @@ describe('Variadic Port Handling', () => {
             expect(State.isPortConnected(canvas, constantOut.id)).toBeTruthy()
             expect(State.isPortConnected(canvas, passThroughIn1.id)).toBeTruthy()
 
-            // check a new output is created
+            // check a new input & output is created
+            const passThroughIn2 = State.findModulePort(canvas, passThrough.hash, (p) => p.displayName === 'in2')
+            expect(passThroughIn2).toBeTruthy()
             const passThroughOut2 = State.findModulePort(canvas, passThrough.hash, (p) => p.displayName === 'out2')
             expect(passThroughOut2).toBeTruthy()
+
             // new output is last
             expect(passThroughOut2.variadic.isLast).toBeTruthy()
             // new output is not connected
             expect(State.isPortConnected(canvas, passThroughOut2.id)).not.toBeTruthy()
+            // output name is same as input name
+            // (not sure if this is necessary but it matches old editor behaviour)
+            expect(passThroughOut2.name).toBe(passThroughIn2.name)
+            // input variadic.linkedOutput is output name
+            expect(passThroughIn2.variadic.linkedOutput).toBe(passThroughOut2.name)
             // disconnecting should remove new output
             canvas = State.updateCanvas(State.disconnectPorts(canvas, constantOut.id, passThroughIn1.id))
 
