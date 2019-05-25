@@ -132,4 +132,28 @@ describe('Connecting Modules', () => {
             State.updateCanvas(State.connectPorts(canvas, randomNumberOut.id, toLowerCaseIn.id))
         }).toThrow()
     })
+
+    it('can connect ports to self', async () => {
+        // connect ConstantText out to ToLowerCase
+        let canvas = State.emptyCanvas()
+        canvas = State.addModule(canvas, await loadModuleDefinition('ConstantText'))
+        const constantText = canvas.modules.find((m) => m.name === 'ConstantText')
+        expect(constantText).toBeTruthy()
+        const constantTextOut = State.findModulePort(canvas, constantText.hash, (p) => p.name === 'out')
+        const constantTextIn = State.findModulePort(canvas, constantText.hash, (p) => p.name === 'str')
+        expect(constantTextOut).toBeTruthy()
+        expect(constantTextIn).toBeTruthy()
+
+        // canConnect should be true
+        expect(State.canConnectPorts(canvas, constantTextOut.id, constantTextIn.id)).toBeTruthy()
+
+        // connectPorts should connect
+        canvas = State.updateCanvas(State.connectPorts(canvas, constantTextOut.id, constantTextIn.id))
+        expect(State.isPortConnected(canvas, constantTextOut.id)).toBeTruthy()
+        expect(State.isPortConnected(canvas, constantTextIn.id)).toBeTruthy()
+
+        canvas = State.updateCanvas(State.disconnectPorts(canvas, constantTextOut.id, constantTextIn.id))
+        expect(State.isPortConnected(canvas, constantTextOut.id)).not.toBeTruthy()
+        expect(State.isPortConnected(canvas, constantTextIn.id)).not.toBeTruthy()
+    })
 })
