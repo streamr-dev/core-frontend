@@ -395,7 +395,7 @@ function disconnectInput(canvas, portId) {
     return updatePort(canvas, portId, (port) => {
         const newPort = {
             ...port,
-            sourceId: null,
+            sourceId: undefined,
             connected: false,
         }
 
