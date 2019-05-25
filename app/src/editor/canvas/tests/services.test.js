@@ -48,6 +48,21 @@ describe('Canvas Services', () => {
             const canvas2 = await Services.create()
             expect(canvas.name).not.toEqual(canvas2.name)
         })
+
+        it('can take canvas name', async () => {
+            const name1 = `test${uniqueId()}`
+            const name2 = `test${uniqueId()}`
+            const canvas1 = await Services.create({ name: name1 })
+            await Services.create({ name: name1 })
+            const canvas3 = await Services.create({ name: name2 })
+            expect(canvas1).toMatchObject({
+                name: name1,
+            })
+
+            expect(canvas3).toMatchObject({
+                name: name2,
+            })
+        })
     })
 
     describe('loadCanvas', () => {
