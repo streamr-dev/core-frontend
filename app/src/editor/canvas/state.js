@@ -880,11 +880,6 @@ function handleVariadicPairs(canvas, moduleHash) {
         if (!linkedOutputPort) {
             newCanvas = addVariadic(newCanvas, moduleHash, 'outputs', {
                 name: inputPort.variadic.linkedOutput,
-                canConnect: true,
-                connected: false,
-                export: false,
-                jsClass: 'VariadicOutput',
-                type: 'Object',
             })
             linkedOutputPort = findLinkedVariadicPort(newCanvas, inputPort.id)
         }
