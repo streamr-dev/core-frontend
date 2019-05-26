@@ -161,7 +161,6 @@ describe('Canvas Module', () => {
             export: true,
         }), subcanvas)
         await Services.saveNow(State.updateCanvas(subcanvas))
-
         let canvas = await Services.create()
         canvas = State.addModule(canvas, await loadModuleDefinition('Canvas'))
         let canvasModule = canvas.modules.find((m) => m.jsModule === 'CanvasModule')
@@ -169,14 +168,18 @@ describe('Canvas Module', () => {
         // select the subcanvas
         const canvasPort = State.findModulePort(canvas, canvasModule.hash, (p) => p.name === 'canvas')
 
-        canvas = State.updateCanvas(await Services.saveNow(State.updateCanvas(State.updatePort(canvas, canvasPort.id, (port) => ({
+        canvas = await Services.saveNow(State.updateCanvas(State.updatePort(canvas, canvasPort.id, (port) => ({
             ...port,
             value: subcanvas.id,
-        })))))
+        }))))
 
+        canvas = State.updateCanvas(canvas)
         canvasModule = canvas.modules.find((m) => m.jsModule === 'CanvasModule')
 
         expect(passThrough.inputs.every(({ name }) => !!canvasModule.inputs.find((p) => p.name === name))).toBeTruthy()
+
+        // should not create any outputs
+        expect(canvasModule.outputs).toEqual([])
     })
 
     it('works when exported inputs are variadic & connected', async () => {

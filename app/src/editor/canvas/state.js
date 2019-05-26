@@ -678,10 +678,12 @@ export function limitLayout(canvas) {
 function hasVariadicPort(canvas, moduleHash, type) {
     if (!type) { throw new Error('type missing') }
     const canvasModule = getModule(canvas, moduleHash)
+    if (isSubCanvasModule(canvasModule)) { return false } // no variadic behaviour for subcanvas
     return canvasModule[type].some(({ variadic }) => variadic)
 }
 
 function getVariadicPorts(canvas, moduleHash, type) {
+    if (!hasVariadicPort(canvas, moduleHash, type)) { return [] }
     if (!type) { throw new Error('type missing') }
     const canvasModule = getModule(canvas, moduleHash)
     return canvasModule[type].filter(({ variadic }) => variadic)
@@ -795,6 +797,10 @@ function updateVariadics(canvas, moduleHash, type) {
         })
     })
     return nextCanvas
+}
+
+function isSubCanvasModule(moduleData) {
+    return moduleData.jsModule === 'CanvasModule'
 }
 
 function addVariadic(canvas, moduleHash, type, config = {}) {
