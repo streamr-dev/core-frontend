@@ -306,6 +306,11 @@ export function isPortConnected(canvas, portId) {
     return !!conn.length
 }
 
+export function isPortExported(canvas, portId) {
+    if (!hasPort(canvas, portId)) { return false }
+    return !!getPort(canvas, portId).export
+}
+
 export function updatePort(canvas, portId, fn) {
     const { ports } = getIndex(canvas)
     return update(ports[portId], fn, canvas)
@@ -722,7 +727,7 @@ function removeAdditionalVariadics(canvas, moduleHash, type) {
         // do nothing
     } else {
         const lastConnected = variadics.slice().reverse().find(({ id }) => (
-            isPortConnected(canvas, id)
+            isPortConnected(canvas, id) || isPortExported(canvas, id)
         ))
 
         // remove all variadics after last connected variadic + 1 placeholder
@@ -922,8 +927,8 @@ function updateVariadicModuleForType(canvas, moduleHash, type) {
         throw new Error('no last variadic port') // should not happen
     }
 
-    if (isPortConnected(canvas, lastVariadicPort.id)) {
-        // add new port if last variadic port is connected
+    if (isPortConnected(canvas, lastVariadicPort.id) || isPortExported(canvas, lastVariadicPort.id)) {
+        // add new port if last variadic port is connected or exported
         return addVariadic(canvas, moduleHash, type)
     }
 

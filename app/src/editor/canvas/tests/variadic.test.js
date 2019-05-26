@@ -92,6 +92,29 @@ describe('Variadic Port Handling', () => {
             expect(savedCanvas).toMatchCanvas(canvas)
         })
 
+        it('can add/remove variadic inputs on export', async () => {
+            let canvas = State.emptyCanvas()
+            canvas = State.addModule(canvas, await loadModuleDefinition('Table'))
+            let table = canvas.modules.find((m) => m.name === 'Table')
+            expect(table.inputs.length).toBe(1)
+
+            // export input
+            canvas = State.updateCanvas(State.setPortOptions(canvas, table.inputs[0].id, {
+                export: true,
+            }))
+            table = canvas.modules.find((m) => m.name === 'Table')
+            // exporting input should add new variadic
+            expect(table.inputs.length).toBe(2)
+
+            // de-export input
+            canvas = State.updateCanvas(State.setPortOptions(canvas, table.inputs[0].id, {
+                export: false,
+            }))
+            table = canvas.modules.find((m) => m.name === 'Table')
+            // de-exporting input should remove variadic
+            expect(table.inputs.length).toBe(1)
+        })
+
         it('can move connections', async () => {
             // connect constant to a table (table has variadic inputs)
             let canvas = State.emptyCanvas()
