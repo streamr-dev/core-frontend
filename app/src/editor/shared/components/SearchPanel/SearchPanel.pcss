@@ -18,7 +18,7 @@
     cursor: nwse-resize;
   }
 
-  &.isSearching {
+  &.canOnlyResizeX {
     :global(.react-resizable-handle) {
       cursor: ew-resize;
     }
@@ -57,10 +57,6 @@
 
 .SearchPanel .Header .minimize {
   margin-right: auto;
-
-  /* disable temporarily */
-  visibility: hidden;
-  pointer-events: none;
 }
 
 .SearchPanel .Header .minimize .normal {

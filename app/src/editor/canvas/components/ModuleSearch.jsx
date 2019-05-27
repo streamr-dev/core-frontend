@@ -375,11 +375,9 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
                     isOpen={isOpen}
                     open={open}
                     panelRef={this.selfRef}
+                    renderDefault={() => this.renderMenu()}
                 >
-                    {isSearching ?
-                        this.renderSearchResults() :
-                        this.renderMenu()
-                    }
+                    {!!isSearching && this.renderSearchResults()}
                 </SearchPanel>
                 <div className={styles.dragElement} id="dragElement">
                     <SvgIcon className={styles.dragImage} name="dropPlus" />
