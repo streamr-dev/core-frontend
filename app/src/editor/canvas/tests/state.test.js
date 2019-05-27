@@ -37,6 +37,13 @@ describe('Canvas State', () => {
         })
     })
 
+    describe('updateCanvas', () => {
+        it('does not add "undefined" the string as a key', () => {
+            const canvas = State.updateCanvas(State.emptyCanvas())
+            expect('undefined' in canvas).not.toBeTruthy()
+        })
+    })
+
     describe('getModule/findModule', () => {
         let canvas
 

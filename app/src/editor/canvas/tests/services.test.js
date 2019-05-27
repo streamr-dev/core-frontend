@@ -3,16 +3,7 @@ import { setupAuthorizationHeader, loadModuleDefinition } from '$editor/shared/t
 
 import * as Services from '../services'
 import * as State from '../state'
-
-const canvasMatcher = {
-    id: expect.any(String),
-    name: expect.any(String),
-    created: expect.any(String),
-    updated: expect.any(String),
-    uiChannel: expect.objectContaining({
-        id: expect.any(String),
-    }),
-}
+import { canvasMatcher } from './utils'
 
 describe('Canvas Services', () => {
     let teardown
@@ -47,6 +38,21 @@ describe('Canvas Services', () => {
             const canvas = await Services.create()
             const canvas2 = await Services.create()
             expect(canvas.name).not.toEqual(canvas2.name)
+        })
+
+        it('can take canvas name', async () => {
+            const name1 = `test${uniqueId()}`
+            const name2 = `test${uniqueId()}`
+            const canvas1 = await Services.create({ name: name1 })
+            await Services.create({ name: name1 })
+            const canvas3 = await Services.create({ name: name2 })
+            expect(canvas1).toMatchObject({
+                name: name1,
+            })
+
+            expect(canvas3).toMatchObject({
+                name: name2,
+            })
         })
     })
 
