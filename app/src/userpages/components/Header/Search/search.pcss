@@ -1,0 +1,46 @@
+.root {
+  align-items: center;
+  display: flex;
+  overflow: hidden;
+  position: relative;
+  transition: 300ms ease width;
+  width: var(--um);
+}
+
+.open {
+  width: calc(10 * var(--um));
+}
+
+.inner {
+  flex-grow: 1;
+  position: relative;
+}
+
+.loupe {
+  color: #A3A3A3;
+  height: var(--um);
+  pointer-events: none;
+  position: absolute;
+  width: var(--um);
+  top: 50%;
+  transform: translateY(-50%);
+  transition: 100ms ease color;
+}
+
+.open .loupe {
+  color: #FF5C00;
+}
+
+.root input {
+  border: 0;
+  height: 2em;
+  line-height: 1em;
+  min-width: calc(2 * var(--um));
+  outline: 0;
+  padding: 0 0 0 calc(2 * var(--um));
+  width: 100%;
+}
+
+.root input::placeholder {
+  color: #A3A3A3;
+}

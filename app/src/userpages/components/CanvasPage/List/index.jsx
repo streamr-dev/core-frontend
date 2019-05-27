@@ -23,7 +23,8 @@ import { defaultColumns, getFilters } from '$userpages/utils/constants'
 import Tile from '$shared/components/Tile'
 import DropdownActions from '$shared/components/DropdownActions'
 import { formatExternalUrl } from '$shared/utils/url'
-import Search from '$shared/components/Search'
+// import Search from '$shared/components/Search'
+import Search2 from '../../Header/Search'
 import Dropdown from '$shared/components/Dropdown'
 import ShareDialog from '$userpages/components/ShareDialog'
 import confirmDialog from '$shared/utils/confirm'
@@ -237,7 +238,7 @@ class CanvasList extends Component<Props, State> {
             <Layout
                 headerAdditionalComponent={<CreateCanvasButton />}
                 headerSearchComponent={
-                    <Search
+                    <Search2
                         placeholder={I18n.t('userpages.canvases.filterCanvases')}
                         value={(filter && filter.search) || ''}
                         onChange={this.onSearchChange}
