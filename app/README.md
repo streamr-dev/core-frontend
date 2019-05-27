@@ -71,7 +71,7 @@ Optional config values:
 
 | Variable             | Description                                                  |
 | -------------------- | ------------------------------------------------------------ |
-| SENTRY_URL           | Identifier for Sentry error reporting service                |
+| SENTRY_DSN           | Identifier for Sentry error reporting service                |
 | LOGROCKET_SLUG       | Identifier for LogRocket error reporting service (used in staging and public beta environment) |
 | GOOGLE_ANALYTICS_ID  | Identifier for Google Analytics                              |
 | STORYBOOK_BASE_PATH  | Build path for Storybook stories                             |

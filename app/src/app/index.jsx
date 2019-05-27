@@ -62,6 +62,7 @@ import GoogleAnalyticsTracker from '$mp/components/GoogleAnalyticsTracker'
 import isProduction from '$mp/utils/isProduction'
 import ErrorPageView from '$mp/components/ErrorPageView'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
+import Analytics from '$shared/utils/Analytics'
 import routes from '$routes'
 
 // Wrap authenticated components here instead of render() method
@@ -162,6 +163,7 @@ const App = () => (
             <ModalRoot>
                 <LocaleSetter />
                 <AutoScroll />
+                <Analytics />
                 <Switch>
                     {AuthenticationRouter()}
                     {MarketplaceRouter()}

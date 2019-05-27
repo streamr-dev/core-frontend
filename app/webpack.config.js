@@ -15,6 +15,8 @@ const cssProcessor = require('cssnano')
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const GitRevisionPlugin = require('git-revision-webpack-plugin')
+const SentryPlugin = require('@sentry/webpack-plugin')
+
 const dotenv = require('./scripts/dotenv')
 
 const loadedDotenv = !process.env.NO_DOTENV ? dotenv() : []
@@ -45,7 +47,7 @@ module.exports = {
         path: dist,
         filename: 'bundle_[hash:8].js',
         chunkFilename: '[name].bundle_[contenthash:8].js',
-        sourceMapFilename: '[file].map',
+        sourceMapFilename: '[name]_[hash:8].map',
         publicPath,
     },
     module: {
@@ -156,10 +158,38 @@ module.exports = {
             ],
         }),
         new webpack.EnvironmentPlugin(loadedDotenv),
+        new webpack.EnvironmentPlugin({
+            GIT_VERSION: gitRevisionPlugin.version(),
+            GIT_BRANCH: gitRevisionPlugin.branch(),
+            SENTRY_ENVIRONMENT: process.env.SENTRY_ENVIRONMENT,
+            SENTRY_DSN: process.env.SENTRY_DSN,
+            VERSION: process.env.VERSION,
+        }),
         ...(analyze ? [
             new BundleAnalyzerPlugin({
                 analyzerMode: 'static',
                 openAnalyzer: false,
+            }),
+        ] : []),
+        ...(process.env.SENTRY_DSN ? [
+            new SentryPlugin({
+                include: dist,
+                validate: true,
+                ignore: [
+                    '.cache',
+                    '.DS_STORE',
+                    '.env',
+                    '.storybook',
+                    'bin',
+                    'coverage',
+                    'node_modules',
+                    'scripts',
+                    'stories',
+                    'test',
+                    'travis_scripts',
+                    'webpack.config.js',
+                ],
+                release: process.env.VERSION,
             }),
         ] : []),
     ].concat(isProduction() ? [
@@ -167,8 +197,6 @@ module.exports = {
         new webpack.optimize.OccurrenceOrderPlugin(),
         new webpack.EnvironmentPlugin({
             NODE_ENV: 'production',
-            GIT_VERSION: gitRevisionPlugin.version(),
-            GIT_BRANCH: gitRevisionPlugin.branch(),
         }),
         new UglifyJsPlugin({
             uglifyOptions: {
@@ -233,10 +261,6 @@ module.exports = {
         }),
         new FlowBabelWebpackPlugin(),
         new WebpackNotifierPlugin(),
-        new webpack.EnvironmentPlugin({
-            GIT_VERSION: gitRevisionPlugin.version(),
-            GIT_BRANCH: gitRevisionPlugin.branch(),
-        }),
     ]),
     devtool: isProduction() ? 'source-map' : 'eval-source-map',
     devServer: {

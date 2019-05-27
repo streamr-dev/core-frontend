@@ -23,6 +23,9 @@ env:
   global:
   - secure: g/km642SU0HZoBmYIkt3gsWoXonuXYN4rdYfXm2ynavMKyojbDLHM+EYLB1uk1vsGR8SITHTQaE1lBoSlgD9aTXzyhtnDp3VkWJAm3/sxQIE8HEoKRT+4odrV/DCoidMLmeIL0xqLSYc2u+fLKm6dMnEdOVwBRPMPSdx6EMfusEbv2fPBMbWNTSEk5Jd8ppR1QwpbJQomeSp9uhxIH8pQWYUD3/zmhl26xYZ93wJMDQXoNyCQhlfpL7IcTljWPI+LP/U7GgSjBON/NHQ7Ka0Pq2UIA9B0QfrMPMrqOHb8AG2P/RaUyBqu0Jay6sdpyrJxJpANv7OAPE4RhLgjJx9fK4qzBvV6dwqxFt+1sNQRZCHc3AL5P7QiE4uVahbfy7i0xq1/aoJPLkIUEwnGn1HD1TBYE4LDnukkkFqN/GCuMBor2rqJLobRYlOY6g+EFfaCrG1gKfqVFr98XxJbBbTV8fRdyiqiJzpXtTLVpxJL2KDNdnhrTI+l5+/wRsiROu3rv2d5V0W25qOhhE02IxHAyfDb63dhddBopxO0TyjE5v7yew6HbpukixSDap7dq+w/P6m0Z7MjrAc+tMUOW/36TGVcLdK1pdEl1heVhNA9KVfzFT3nUP9nua/9weScISusQdhw6+GZrRyFQSfAJqaUemyJbyl0VFuxcVIt+fVNLQ=
   - secure: hu5cpsMinQEpoNgnJv1XQ+509/57gM4dHg+mRXaAkZ7ha6k0AK1AmNgsCKYfs2G8Qe3eFGM3DTuJA0JV9vOcUeHNURGQKW+ukciSN1dT8dmLC6DAjgd89LIV5jsgAMBtNNCeIDwdpSEhe39nD4P1ligVpxxtY9kbOfK+F/cNbgj9ZpC/MZ55rniMa1JkZpfWwP3bdOcko56E+dB3/Dh8L0QF1hiDA1AwpGXQcO2jQ22HvTyUIezcgIYGGSUJ0N9gPhe7f0UQ4iCdMbq2rKv2wi4vzKQPFOkK8eYAUfhbv1iHy/bP2VX8tR7ac9XJuAznaHJ3tng8iEnvF5ForiaAVhtUNOUi1Hw0i2qdaoash0hJh3Aq8IwyFZiZYAQYmIC29VuoPQJgTPVECEDkzqs8fbC0nqwjG9aVP6OkGUgSmR9LChUVsF8ZfLAp/R4bY0XJh6vuqG00qfl90f2zooTA/HPQa7D2VJBEDretZLR0u1ufPHEPkl++o5MeaeNn98KYKOD66fqK+lHf1fmyBogRRefXFZFOi1zNgZTe+xA6nNHk9eAMvYf9CfIsRM7AVnBviTWBkx3S5KDcbof8rdyUymwu5T/7Hly6JZmYKLZ5esQHoV2J5LYOxeaZoXXLARgQkxdpf/9sxNVkkB8TW6llnk+Bd7o7Qn9to80m60X2zsQ=
+  - secure: "dD7Qx3V2Emwc00/cxAmQzjR85NQ9k+ViHqABGLf8W0CzfOOekCjSTfZbqZoaodeTXkPExKgxT3C3eFa2k0RUMlo2eA7jGheDeDVybtcSYfNlbzEvu8qlAF+0qvlrSRpOFvOoUo1ItjeXmnbkRbe2460Vw/dgPWz7Km6tTiApxg52+fncCgctC3VsyqBMZ9ojYea1iK7hBUN0oa/+cy6OFcAzN9OkDjgWtsymushuQSRl0ePQMHOR+HxbOsUKlaYh0Dd2aoX5oeq1SWvSipEcvwyJs5O7aCySn/WQ73FVkuilB3E/BPyGBMovIx+s7qMvGoBPlQVurgR2/MJPoWVmDe62OiziMf6f8nx/AXDD720JODWVJSIli/rZu/Z2yWD+jZ2JZMLoxsya/j5DmjjoCWj+qpAMdZCFLANKBCMbuF9xZxWOzlFbHjIa9hEeU9DqlCRJKsXzt1keNxEn3YRQKWnT5S8ICCC6aBSNAtqI4ZaVYSeJaS8fxnms4GzdNF7cDGHW1it+cuq1FpGS4yRcxAz7xo+Ql1zTnaFeWNO1bneONx5o4fg/4kZ+njPCEFXo0FSU09SW83dX0L0+VD5k2afWVO/AhlLZ2EI5F6WyZreIUGFyMeTPs6AR82UnMSjLY1z3TEMl5eAUYLJOvry94QpjqoND8JCOVGXF60dq/tA="
+  - SENTRY_ORG=streamr
+  - SENTRY_PROJECT=marketplace
 jobs:
   include:
   - stage: Platform Tests
@@ -46,6 +49,8 @@ jobs:
     - CHROMATIC_APP_CODE=exgpyxh1il5
     - NODE_ENV=production
     - PORT=12345
+    - VERSION=$TRAVIS_PULL_REQUEST_BRANCH
+    - SENTRY_ENVIRONMENT=pr
     - STREAMR_API_URL=https://staging.streamr.com/api/v1
     - STREAMR_WS_URL=wss://staging.streamr.com/api/v1/ws
     - STREAMR_URL=https://staging.streamr.com
@@ -57,7 +62,7 @@ jobs:
     - WEB3_REQUIRED_NETWORK_ID=1
     - WEB3_PUBLIC_HTTP_PROVIDER=https://mainnet.infura.io
     - WEB3_PUBLIC_WS_PROVIDER=wss://mainnet.infura.io/ws
-    - SENTRY_URL=https://e012761929d24baa96ca82772f60b395@sentry.io/1203154
+    - SENTRY_DSN=https://e012761929d24baa96ca82772f60b395@sentry.io/1203154
     - LOGROCKET_SLUG=et0uhu/streamr-frontend-local
     script: "$TRAVIS_BUILD_DIR/app/travis_scripts/visual-tests.sh"
   - stage: Platform Build Staging
@@ -65,6 +70,8 @@ jobs:
     env:
     - NODE_ENV=production
     - PORT=12345
+    - VERSION=$TRAVIS_BRANCH
+    - SENTRY_ENVIRONMENT=staging
     - BUNDLE_ANALYSIS=1
     - STREAMR_API_URL=https://staging.streamr.com/api/v1
     - STREAMR_WS_URL=wss://staging.streamr.com/api/v1/ws
@@ -78,7 +85,7 @@ jobs:
     - WEB3_REQUIRED_NETWORK_ID=8995
     - WEB3_PUBLIC_HTTP_PROVIDER=https://staging.streamr.com:8540
     - WEB3_PUBLIC_WS_PROVIDER=wss://staging.streamr.com:8540/ws
-    - SENTRY_URL=https://e012761929d24baa96ca82772f60b395@sentry.io/1203154
+    - SENTRY_DSN=https://e012761929d24baa96ca82772f60b395@sentry.io/1203154
     - LOGROCKET_SLUG=et0uhu/streamr-frontend-local
     script: "$TRAVIS_BUILD_DIR/app/travis_scripts/build-app-stg.sh"
     deploy:
@@ -122,6 +129,8 @@ jobs:
     - NODE_ENV=production
     - BUNDLE_ANALYSIS=1
     - PORT=12345
+    - VERSION=$TRAVIS_PULL_REQUEST_BRANCH
+    - SENTRY_ENVIRONMENT=pr
     - STREAMR_API_URL=https://staging.streamr.com/api/v1
     - STREAMR_WS_URL=wss://staging.streamr.com/api/v1/ws
     - PLATFORM_ORIGIN_URL=https://staging.streamr.com
@@ -133,7 +142,7 @@ jobs:
     - WEB3_REQUIRED_NETWORK_ID=1
     - WEB3_PUBLIC_HTTP_PROVIDER=https://mainnet.infura.io
     - WEB3_PUBLIC_WS_PROVIDER=wss://mainnet.infura.io/ws
-    - SENTRY_URL=https://e012761929d24baa96ca82772f60b395@sentry.io/1203154
+    - SENTRY_DSN=https://e012761929d24baa96ca82772f60b395@sentry.io/1203154
     - LOGROCKET_SLUG=et0uhu/streamr-frontend-local
     - secure: H4xOzWwc5rnx8XxEumkrHqYdMhfIYVoqdTp4OwqBNjScn0FuB2Zbud+sU5cQmox/L631Cni2lGyjUa1Z/BwavSo/paYBv8ufeabMI8cnLyKe878Yqstk5hwgYVOHfmbhIBRUVcWNIRZeFZORPFFIZP84Dn3Gg9hCgtbjrmT/yqyyoaftJY1ppwAo1xyxv0yUE/uNUbZGQuYkVY9yEh8gBc5N3SpQ4FyDekAAS425cYXzgaAMmdBjNw5Xp9brqyKGEPLFHDtXi5r1J3xUlzk48AgEq+1B627ckWjCkxP71ko28Kp92vPjYjV3BjPLBsHYtZX0HGZokwwFNZHl/eg2H9uIyUL1DY3+OkuzTanW4aq9NmMbxMmQ4pvfzEokk2LH89VFp09ev832NcSpCLQdSYMcxpm6NedZWWteL2e2Qzc1RZRlJpdAYDZunQYsqnV9812YAiqG9Mud2GGOIn24PO71abGnlTT6FqLP5mdxqQ+A40+Yky5ETQRq86e3vxcwASGaNcp5ICbAALndmwCD/GwDYHZ7LTniZB7kpDX9MBluzwD67mhQ1+lcNSiVTQ0tf0oi65MUPFJchs++iFYiapIt7bnxrnvxiMDdNHLjm0iPWZthKeLWQnm/opU7D9tVvWbc+zGPNfmRBN9ePI98Lts60OELNKwwoIo5PZ9HtS8=
     - secure: T3thsbASJalYo5IhRb5gahvrcso+JUgHFIJeWcVtzkaFt+NPQ7EOnpMjgsdAtSiiwzoEx+Rxz90+oUYb4A+Z7dImQqAVpBr6NwA4W2TQnw0VOoqnzE17anSqRKPzOjH1UczvBP64EINvQvWE1bBycq61t3mJ7fTm1gaWq3FDVr5uOUD/OnJkq4caIs8W52Yt/AaATcQ5kpWDGFAYgE0sbaaob8gQJxJ3SyEtUo10y5NJNPsX8jz0Ar4JxTL48WUtWGsBJ/yCuQDKO+eaB4oNQhO32y44PM7YP+7v0UD7BM3/7fLl/KJA144ATPraCFDin2D1XQ+niWZSENTkpC6sRwoBJawvL95gXSIsUTr0BZ3LeXm2l4u5Hhpsz7Qib/vNsGTLQXcP9RK8QbUU5mrrMtw6hJ/iNo54JiW785BSR94X/MHyMliMiUZQbKlFxLmpHs2n+WsmfT95aWDOS2YI4N1ny0p08BhuA/UAzPq/jegP6DhqztNcavpBfMW1joAm2V5D8KwY0KCm39b5jB0RqBmY7OhI7GMH6SIcPLz2TexkFcKpAmj9Vb15x8gHWtbUb1dTJk9uXnLFarmD95Ox3mTGdCHlKr8wHeyNClXyDoMmcEpL7MOmkLIR7uHFtW4EDMQc8xQTKPll+sQQxDLNeUPtHK9pthPOHmvUgf4O1e4=
@@ -145,6 +154,8 @@ jobs:
     env:
     - NODE_ENV=production
     - PORT=12345
+    - VERSION=$TRAVIS_BRANCH
+    - SENTRY_ENVIRONMENT=production
     - STREAMR_API_URL=https://www.streamr.com/api/v1
     - STREAMR_WS_URL=wss://www.streamr.com/api/v1/ws
     - PLATFORM_ORIGIN_URL=https://www.streamr.com
@@ -156,7 +167,7 @@ jobs:
     - WEB3_REQUIRED_NETWORK_ID=1
     - WEB3_PUBLIC_HTTP_PROVIDER=https://mainnet.infura.io
     - WEB3_PUBLIC_WS_PROVIDER=wss://mainnet.infura.io/ws
-    - SENTRY_URL=https://e012761929d24baa96ca82772f60b395@sentry.io/1203154
+    - SENTRY_DSN=https://e012761929d24baa96ca82772f60b395@sentry.io/1203154
     script:
     - npm run build
     deploy:
@@ -176,6 +187,8 @@ jobs:
     env:
     - NODE_ENV=production
     - PORT=12345
+    - VERSION=$TRAVIS_TAG
+    - SENTRY_ENVIRONMENT=production
     - STREAMR_API_URL=https://www.streamr.com/api/v1
     - STREAMR_WS_URL=wss://www.streamr.com/api/v1/ws
     - PLATFORM_ORIGIN_URL=https://www.streamr.com
@@ -187,7 +200,7 @@ jobs:
     - WEB3_REQUIRED_NETWORK_ID=1
     - WEB3_PUBLIC_HTTP_PROVIDER=https://mainnet.infura.io
     - WEB3_PUBLIC_WS_PROVIDER=wss://mainnet.infura.io/ws
-    - SENTRY_URL=https://e012761929d24baa96ca82772f60b395@sentry.io/1203154
+    - SENTRY_DSN=https://e012761929d24baa96ca82772f60b395@sentry.io/1203154
     script: "$TRAVIS_BUILD_DIR/app/travis_scripts/build-app.sh"
     deploy:
     - provider: script
@@ -235,18 +248,19 @@ jobs:
     env:
     - NODE_ENV=production
     - PORT=12345
+    - VERSION=$TRAVIS_TAG
+    - SENTRY_ENVIRONMENT=lisboa
     - STREAMR_API_URL=https://ee-lisboa.streamr.com/api/v1
     - STREAMR_WS_URL=wss://ee-lisboa.streamr.com/api/v1/ws
     - PLATFORM_ORIGIN_URL=https://ee-lisboa.streamr.com
     - STREAMR_URL=https://ee-lisboa.streamr.com
     - GOOGLE_ANALYTICS_ID=UA-55331565-5
-    - VERSION=$TRAVIS_TAG
     - MARKETPLACE_CONTRACT_ADDRESS=0x62d08a44d6db7821c9556032a437beb4bd050abd
     - TOKEN_CONTRACT_ADDRESS=0x67a9fda28c4df570d1d5350acfa345194f4d4100
     - WEB3_REQUIRED_NETWORK_ID=8995
     - WEB3_PUBLIC_HTTP_PROVIDER=https://ee-lisboa.streamr.com:8540
     - WEB3_PUBLIC_WS_PROVIDER=wss://ee-lisboa.streamr.com:8540/ws
-    - SENTRY_URL=https://e012761929d24baa96ca82772f60b395@sentry.io/1203154
+    - SENTRY_DSN=https://e012761929d24baa96ca82772f60b395@sentry.io/1203154
     script: "$TRAVIS_BUILD_DIR/app/travis_scripts/build-app.sh"
     deploy:
     - provider: s3

@@ -51,19 +51,23 @@ export class Analytics {
 
 const analytics = new Analytics()
 
-if (process.env.SENTRY_URL) {
+if (process.env.SENTRY_DSN) {
     analytics.register({
         id: 'Sentry',
         init: () => (
             Sentry.init({
-                dsn: process.env.SENTRY_URL,
-                release: process.env.VERSION || 'development',
-                debug: true,
+                dsn: process.env.SENTRY_DSN,
+                release: process.env.VERSION,
+                environment: process.env.SENTRY_ENVIRONMENT,
             })
         ),
         reportError: (error: Error, extra: Object = {}) => {
-            Sentry.captureException(error, {
-                extra,
+            Sentry.withScope((scope) => {
+                if (extra) {
+                    scope.setExtras(extra)
+                }
+
+                Sentry.captureException(error)
             })
         },
     })
