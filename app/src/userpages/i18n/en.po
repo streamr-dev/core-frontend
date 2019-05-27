@@ -23,6 +23,9 @@ msgstr "You haven't created any canvases yet."
 msgid "userpages##canvases##noCreatedCanvases##message"
 msgstr "Click the button above to create one."
 
+msgid "userpages##canvases##noCreatedCanvases##messageMobile"
+msgstr "Use the desktop app to make one."
+
 msgid "userpages##canvases##noCanvasesResult##title"
 msgstr "No results."
 
@@ -140,6 +143,9 @@ msgstr "You haven’t created any products yet."
 msgid "userpages##products##noCreatedProducts##message"
 msgstr "Click the button above to create one."
 
+msgid "userpages##products##noCreatedProducts##messageMobile"
+msgstr "Use the desktop app to make one."
+
 msgid "userpages##products##noProductsResult##title"
 msgstr "No results."
 
@@ -244,6 +250,9 @@ msgstr "You haven't created any streams yet."
 
 msgid "userpages##streams##noCreatedStreams##message"
 msgstr "Click the button above to create one."
+
+msgid "userpages##streams##noCreatedStreams##messageMobile"
+msgstr "Use the desktop app to make one."
 
 msgid "userpages##streams##noStreamsResult##title"
 msgstr "No results."
@@ -415,6 +424,9 @@ msgstr "You haven’t created any dashboards yet."
 
 msgid "userpages##dashboards##noCreatedDashboards##message"
 msgstr "Click the button above to create one."
+
+msgid "userpages##dashboards##noCreatedDashboards##messageMobile"
+msgstr "Use the desktop app to make one."
 
 msgid "userpages##dashboards##noDashboardsResult##title"
 msgstr "No results."
