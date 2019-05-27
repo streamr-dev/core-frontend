@@ -1,5 +1,8 @@
-/* Attach global diagnostic object */
+// You should init the Sentry browser SDK as soon as possible during your application load up, before initializing React
+// https://docs.sentry.io/platforms/javascript/react/
+import '../../analytics'
 
+/* Attach global diagnostic object */
 const navigator = global.navigator || {}
 
 global.streamr = Object.assign(global.streamr || {}, {
