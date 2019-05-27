@@ -11,7 +11,6 @@ import { Row, Col } from 'reactstrap'
 import Toggle from '$shared/components/Toggle'
 import Table from '$shared/components/Table'
 import FileUpload from '$shared/components/FileUpload'
-import Tabs from '$shared/components/Tabs'
 import Checkbox from '$shared/components/Checkbox'
 import DropdownActions from '$shared/components/DropdownActions'
 import Meatball from '$shared/components/Meatball'
@@ -169,15 +168,6 @@ story('FileUpload')
             multiple={false}
             disablePreview
         />
-    ))
-
-story('Tabs')
-    .addWithJSX('basic', () => (
-        <Tabs defaultActiveIndex={1}>
-            <Tabs.Tab title={text('tab1Title', 'Tab 1')}><span>Content of tab 1</span></Tabs.Tab>
-            <Tabs.Tab title={text('tab2Title', 'Tab 2')}><span>Content of tab 2</span></Tabs.Tab>
-            <Tabs.Tab title={text('tab3Title', 'Tab 3 with longer name')}><span>Content of tab 3</span></Tabs.Tab>
-        </Tabs>
     ))
 
 class CheckboxContainer extends React.Component {
