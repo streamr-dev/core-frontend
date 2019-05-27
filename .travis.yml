@@ -203,11 +203,6 @@ jobs:
     - SENTRY_DSN=https://e012761929d24baa96ca82772f60b395@sentry.io/1203154
     script: "$TRAVIS_BUILD_DIR/app/travis_scripts/build-app.sh"
     deploy:
-    - provider: script
-      script: bash $TRAVIS_BUILD_DIR/app/travis_scripts/sentry-release.sh
-      skip_cleanup: true
-      on:
-        tags: true
     - provider: s3
       access_key_id: AKIAISTYQBVHXK5LXXIQ
       secret_access_key:
