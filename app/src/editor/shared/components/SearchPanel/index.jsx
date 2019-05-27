@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useEffect, useLayoutEffect } from 'react'
+import React, { useState, useRef, useCallback, useMemo, useEffect, useLayoutEffect } from 'react'
 import cx from 'classnames'
 import Draggable from 'react-draggable'
 import { ResizableBox } from 'react-resizable'
@@ -78,17 +78,17 @@ export function SearchPanel(props) {
         }
     }, [onKeyDown])
 
-    const onChange = (event) => {
+    const onChange = useCallback((event) => {
         const { value } = event.currentTarget
         setSearch(value)
-    }
+    }, [setSearch])
 
-    const clear = () => {
+    const clear = useCallback(() => {
         setSearch('')
         if (inputRef.current) {
             inputRef.current.focus()
         }
-    }
+    }, [setSearch, inputRef])
 
     const prevSearch = useRef(search)
     const { width, height, posX, posY } = layout
@@ -111,9 +111,9 @@ export function SearchPanel(props) {
         }
     }, [isOpen, inputRef])
 
-    const toggleMinimize = () => (
+    const toggleMinimize = useCallback(() => (
         setExpanded((isExpanded) => !isExpanded)
-    )
+    ), [setExpanded])
 
     const onInputFocus = useCallback((event) => {
         // select input text on focus
@@ -182,96 +182,96 @@ export function SearchPanel(props) {
         })
     }, [layout, contentRef, setLayoutState, children, isSearching, minHeight, scrollPadding, isExpanded])
 
+    const internalContent = useMemo(() => {
+        // empty content if not searching and not expanded
+        if (!isSearching && !isExpanded) { return null }
+        // show default if not searching and expanded
+        if (!isSearching && isExpanded && renderDefault) { return renderDefault() }
+        // show children otherwise
+        return children
+    }, [children, isSearching, isExpanded, renderDefault])
+
     return (
-        <React.Fragment>
-            <MaybeDraggable
-                disabled={dragDisabled}
-                handle={`.${styles.dragHandle}`}
-                bounds={bounds}
-                position={{
-                    x: posX,
-                    y: posY,
-                }}
-                onStop={onDragStop}
+        <MaybeDraggable
+            disabled={dragDisabled}
+            handle={`.${styles.dragHandle}`}
+            bounds={bounds}
+            position={{
+                x: posX,
+                y: posY,
+            }}
+            onStop={onDragStop}
+        >
+            <div
+                className={cx(styles.SearchPanel, className, {
+                    [styles.isSearching]: isSearching,
+                    [styles.isExpanded]: isExpanded,
+                })}
+                hidden={!isOpen}
+                ref={props.panelRef}
             >
-                <div
-                    className={cx(styles.SearchPanel, className, {
-                        [styles.isSearching]: isSearching,
-                        [styles.isExpanded]: isExpanded,
-                    })}
-                    hidden={!isOpen}
-                    ref={props.panelRef}
+                <ResizableBox
+                    className={styles.ResizableBox}
+                    width={Math.min(width, maxWidth)}
+                    height={height}
+                    minConstraints={[minWidth, minHeight]}
+                    maxConstraints={[maxWidth, maxHeight]}
+                    onResizeStop={onResizeStop}
+                    onResizeStart={onResizeStart}
                 >
-                    <ResizableBox
-                        className={styles.ResizableBox}
-                        width={Math.min(width, maxWidth)}
-                        height={height}
-                        minConstraints={[minWidth, minHeight]}
-                        maxConstraints={[maxWidth, maxHeight]}
-                        onResizeStop={onResizeStop}
-                        onResizeStart={onResizeStart}
-                    >
-                        <div className={styles.Container}>
-                            {!headerHidden && (
-                                <div className={cx(styles.Header, styles.dragHandle)}>
-                                    <button type="button" className={styles.minimize} onClick={toggleMinimize}>
-                                        {isExpanded ?
-                                            <SvgIcon name="brevetDown" className={styles.flip} /> :
-                                            <SvgIcon name="brevetDown" className={styles.normal} />
-                                        }
-                                    </button>
-                                    <button type="button" className={styles.close} onClick={() => open(false)}>
-                                        <SvgIcon name="x" />
-                                    </button>
-                                </div>
-                            )}
-                            <div className={styles.Input}>
-                                <input
-                                    ref={inputRef}
-                                    placeholder={placeholder}
-                                    value={search}
-                                    onChange={onChange}
-                                    onFocus={onInputFocus}
-                                    onBlur={onInputBlur}
-                                />
-                                <button
-                                    type="button"
-                                    className={styles.ClearButton}
-                                    onClick={clear}
-                                    hidden={search === ''}
-                                >
-                                    <SvgIcon name="clear" />
+                    <div className={styles.Container}>
+                        {!headerHidden && (
+                            <div className={cx(styles.Header, styles.dragHandle)}>
+                                <button type="button" className={styles.minimize} onClick={toggleMinimize}>
+                                    {isExpanded ?
+                                        <SvgIcon name="brevetDown" className={styles.flip} /> :
+                                        <SvgIcon name="brevetDown" className={styles.normal} />
+                                    }
+                                </button>
+                                <button type="button" className={styles.close} onClick={() => open(false)}>
+                                    <SvgIcon name="x" />
                                 </button>
                             </div>
-                            {/* eslint-disable-next-line max-len */}
-                            {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */}
-                            <div
-                                className={styles.ContentContainer}
-                                style={{
-                                    paddingBottom: `${scrollPadding}px`,
-                                }}
-                                onClick={() => {
-                                    // quick hack to force recalculation of height on child expansion/collapse
-                                    setLayout({})
-                                }}
-                                ref={scrollContainerRef}
+                        )}
+                        <div className={styles.Input}>
+                            <input
+                                ref={inputRef}
+                                placeholder={placeholder}
+                                value={search}
+                                onChange={onChange}
+                                onFocus={onInputFocus}
+                                onBlur={onInputBlur}
+                            />
+                            <button
+                                type="button"
+                                className={styles.ClearButton}
+                                onClick={clear}
+                                hidden={search === ''}
                             >
-                                <div ref={contentRef} role="listbox" className={styles.Content}>
-                                    {(() => {
-                                        // empty content if not searching and not expanded
-                                        if (!isSearching && !isExpanded) { return null }
-                                        // show default if not searching and expanded
-                                        if (!isSearching && isExpanded && renderDefault) { return renderDefault() }
-                                        // show children otherwise
-                                        return children
-                                    })()}
-                                </div>
+                                <SvgIcon name="clear" />
+                            </button>
+                        </div>
+                        {/* eslint-disable-next-line max-len */}
+                        {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */}
+                        <div
+                            className={styles.ContentContainer}
+                            style={{
+                                paddingBottom: `${scrollPadding}px`,
+                            }}
+                            onClick={() => {
+                                // quick hack to force recalculation of height on child expansion/collapse
+                                setLayout({})
+                            }}
+                            ref={scrollContainerRef}
+                        >
+                            <div ref={contentRef} role="listbox" className={styles.Content}>
+                                {internalContent}
                             </div>
                         </div>
-                    </ResizableBox>
-                </div>
-            </MaybeDraggable>
-        </React.Fragment>
+                    </div>
+                </ResizableBox>
+            </div>
+        </MaybeDraggable>
     )
 }
 
