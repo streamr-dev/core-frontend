@@ -1,5 +1,7 @@
 /* Attach global diagnostic object */
 
+import '../../analytics'
+
 const navigator = global.navigator || {}
 
 global.streamr = Object.assign(global.streamr || {}, {
