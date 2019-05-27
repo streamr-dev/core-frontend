@@ -204,7 +204,7 @@ jobs:
     script: "$TRAVIS_BUILD_DIR/app/travis_scripts/build-app.sh"
     deploy:
     - provider: script
-      script: bash travis_scripts/sentry-release.sh
+      script: bash $TRAVIS_BUILD_DIR/app/travis_scripts/sentry-release.sh
       skip_cleanup: true
       on:
         tags: true
