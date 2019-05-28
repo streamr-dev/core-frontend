@@ -22,6 +22,8 @@ import * as services from './services'
 
 import styles from './index.pcss'
 
+const DELETED = Symbol('deleted')
+
 const DashboardEdit = withRouter(class DashboardEdit extends Component {
     setDashboard = (action, fn, done) => {
         this.props.push(action, (dashboard) => {
@@ -66,6 +68,7 @@ const DashboardEdit = withRouter(class DashboardEdit extends Component {
 
     async autosave() {
         const { dashboard } = this.props
+        if (dashboard[DELETED]) { return } // do not autosave deleted dashboards
         await services.autosave(dashboard)
     }
 
@@ -97,6 +100,7 @@ const DashboardEdit = withRouter(class DashboardEdit extends Component {
 
     deleteDashboard = async () => {
         const { dashboard } = this.props
+        dashboard[DELETED] = true
         await services.deleteDashboard(dashboard)
         if (this.unmounted) { return }
         this.props.history.push(links.userpages.dashboards)
