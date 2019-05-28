@@ -255,14 +255,14 @@ const sources = {
     profileMan: (
         <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
             <defs>
-                <circle id="a" cx="40" cy="40" r="40" />
+                <circle id="profileMan-a" cx="40" cy="40" r="40" />
             </defs>
             <g fill="none" fillRule="evenodd">
-                <mask id="b" fill="#fff">
-                    <use href="#a" />
+                <mask id="profileMan-b" fill="#fff">
+                    <use href="#profileMan-a" />
                 </mask>
-                <use fill="#EFEFEF" href="#a" />
-                <g opacity=".503" mask="url(#b)" stroke="#525252" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5">
+                <use fill="#EFEFEF" href="#profileMan-a" />
+                <g opacity=".503" mask="url(#profileMan-b)" stroke="#525252" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5">
                     <g transform="translate(20 17)">
                         <ellipse cx="20.5" cy="11" rx="10.762" ry="10.5" />
                         <path d="M11.226 5.668c3.367 3.408 8.01 5.333 12.861 5.332 2.433 0 4.84-.483 7.073-1.422M.512 45.5C.512 34.73 9.462 26 20.5 26c11.039 0 19.987 8.73 19.987 19.5" />
