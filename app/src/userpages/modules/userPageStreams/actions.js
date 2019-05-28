@@ -574,7 +574,7 @@ export const streamFieldsAutodetect = (id: StreamId) => (dispatch: Function) => 
                 fields: data.config.fields,
             },
         }))
-        .then(({ config: { fields } }, err) => {
+        .then(({ config: { fields } }) => {
             if (fields) {
                 dispatch(getStreamFieldAutodetectSuccess(fields))
                 Notification.push({
@@ -582,6 +582,7 @@ export const streamFieldsAutodetect = (id: StreamId) => (dispatch: Function) => 
                     icon: NotificationIcon.CHECKMARK,
                 })
             }
+        }, (err) => {
             if (err) {
                 dispatch(getStreamFieldAutodetectFailure(err))
                 Notification.push({
