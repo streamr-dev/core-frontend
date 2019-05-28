@@ -36,8 +36,6 @@ import * as CanvasState from './state'
 
 import styles from './index.pcss'
 
-const DELETED = Symbol('deleted')
-
 const { RunStates } = CanvasState
 
 const UpdatedTime = new Map()
@@ -135,7 +133,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
 
     async autostart() {
         const { canvas, runController } = this.props
-        if (canvas[DELETED]) { return } // do not autostart deleted canvases
+        if (this.isDeleted) { return } // do not autostart deleted canvases
         if (canvas.adhoc && !runController.isActive) {
             // do not autostart running/non-adhoc canvases
             return this.canvasStart()
@@ -144,7 +142,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
 
     async autosave() {
         const { canvas, runController } = this.props
-        if (canvas[DELETED]) { return } // do not autosave deleted canvases
+        if (this.isDeleted) { return } // do not autosave deleted canvases
         if (!runController.isEditable) {
             // do not autosave running/adhoc canvases or if we have no write permission
             return
@@ -185,7 +183,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
 
     deleteCanvas = async () => {
         const { canvas, canvasController } = this.props
-        canvas[DELETED] = true
+        this.isDeleted = true
         await canvasController.remove(canvas)
     }
 
