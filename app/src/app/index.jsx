@@ -1,11 +1,13 @@
+/* eslint-disable class-methods-use-this */
 // @flow
 
 import '$shared/assets/stylesheets'
 
-import React from 'react'
+import React, { Component } from 'react'
 import { Route as RouterRoute, Switch, Redirect, type Location } from 'react-router-dom'
 import { ConnectedRouter } from 'react-router-redux'
 import qs from 'query-string'
+import * as Sentry from '@sentry/browser'
 
 // Marketplace
 import ProductPage from '$mp/containers/ProductPage'
@@ -62,7 +64,7 @@ import GoogleAnalyticsTracker from '$mp/components/GoogleAnalyticsTracker'
 import isProduction from '$mp/utils/isProduction'
 import ErrorPageView from '$mp/components/ErrorPageView'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
-import Analytics from '$shared/utils/Analytics'
+// import Analytics from '$shared/utils/Analytics'
 import routes from '$routes'
 
 // Wrap authenticated components here instead of render() method
@@ -157,24 +159,59 @@ const MiscRouter = () => ([
     <Route component={NotFoundPage} key="NotFoundPage" />,
 ])
 
+type Props = {
+    children: any,
+}
+
+type State = {}
+
+// This is a way to handle all errors in the app.
+class ErrorBoundary extends Component<Props, State> {
+    componentDidMount() {
+        if (isProduction()) {
+            console.log('prodigy')
+            Sentry.init({
+                dsn: process.env.SENTRY_DSN,
+                release: process.env.VERSION,
+                environment: process.env.SENTRY_ENVIRONMENT,
+                debug: true,
+            })
+        }
+    }
+
+    componentDidCatch(error, errorInfo) {
+        if (isProduction()) {
+            Sentry.captureException(error, {
+                extra: errorInfo,
+            })
+        }
+    }
+
+    render() {
+        const { children } = this.props
+        return children
+    }
+}
+
 const App = () => (
     <ConnectedRouter history={history}>
         <SessionProvider>
-            <ModalRoot>
-                <LocaleSetter />
-                <AutoScroll />
-                <Analytics />
-                <Switch>
-                    {AuthenticationRouter()}
-                    {MarketplaceRouter()}
-                    {DocsRouter()}
-                    {UserpagesRouter()}
-                    {EditorRouter()}
-                    {MiscRouter()}
-                </Switch>
-                <Notifications />
-                {isProduction() && <GoogleAnalyticsTracker />}
-            </ModalRoot>
+            <ErrorBoundary>
+                <ModalRoot>
+                    <LocaleSetter />
+                    <AutoScroll />
+                    <Switch>
+                        {AuthenticationRouter()}
+                        {MarketplaceRouter()}
+                        {DocsRouter()}
+                        {UserpagesRouter()}
+                        {EditorRouter()}
+                        {MiscRouter()}
+                    </Switch>
+                    <Notifications />
+                    {isProduction() && <GoogleAnalyticsTracker />}
+                </ModalRoot>
+            </ErrorBoundary>
         </SessionProvider>
     </ConnectedRouter>
 )
