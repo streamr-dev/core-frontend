@@ -21,7 +21,6 @@ import Calendar from '$shared/components/Calendar'
 import WithCalendar from '$shared/components/WithCalendar'
 import DatePicker from '$shared/components/DatePicker'
 import dateFormatter from '$utils/dateFormatter'
-import Search from '$shared/components/Search'
 import { arrayMove } from 'react-sortable-hoc'
 import SortableList from '$shared/components/SortableList'
 import FieldList from '$shared/components/FieldList'
@@ -343,14 +342,6 @@ story('Date Picker')
             date={new Date(2018, 12, 31)}
             error="Errored!"
             preserveLabelSpace
-        />
-    ))
-
-story('Search')
-    .addWithJSX('basic', () => (
-        <Search
-            placeholder="Placeholder"
-            onChange={action('onChange')}
         />
     ))
 
