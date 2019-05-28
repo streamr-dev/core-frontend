@@ -1,18 +1,17 @@
 // @flow
 
-import { Component } from 'react'
+import { Component, type Node } from 'react'
 import * as Sentry from '@sentry/browser'
 
-// import isProduction from '$mp/utils/isProduction'
-
 type Props = {
-    children: any,
+    children: Node,
 }
 
 type State = {}
 
 class ErrorBoundary extends Component<Props, State> {
-    static componentDidCatch(error: Error, extra: Object = {}) {
+    // eslint-disable-next-line class-methods-use-this
+    componentDidCatch(error: Error, extra: Object = {}) {
         Sentry.withScope((scope) => {
             if (extra) {
                 scope.setExtras(extra)
