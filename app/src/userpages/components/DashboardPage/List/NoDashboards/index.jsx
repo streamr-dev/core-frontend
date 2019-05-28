@@ -2,6 +2,7 @@
 
 import React from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
+import MediaQuery from 'react-responsive'
 
 import EmptyState from '$shared/components/EmptyState'
 import emptyStateIcon from '$shared/assets/images/empty_state_icon.png'
@@ -9,6 +10,7 @@ import emptyStateIcon2x from '$shared/assets/images/empty_state_icon@2x.png'
 import noResultIcon from '$shared/assets/images/search_no_result.png'
 import noResultemptyStateIcon2x from '$shared/assets/images/search_no_result@2x.png'
 import type { Filter } from '$userpages/flowtype/common-types'
+import breakpoints from '$app/scripts/breakpoints'
 
 type NoResultsViewProps = {
     onResetFilter: Function,
@@ -29,7 +31,12 @@ const NoCreatedDashboardsView = () => (
         )}
     >
         <Translate value="userpages.dashboards.noCreatedDashboards.title" />
-        <Translate value="userpages.dashboards.noCreatedDashboards.message" tag="small" />
+        <MediaQuery minWidth={breakpoints.lg.min}>
+            <Translate value="userpages.dashboards.noCreatedDashboards.message" tag="small" />
+        </MediaQuery>
+        <MediaQuery maxWidth={breakpoints.lg.min}>
+            <Translate value="userpages.dashboards.noCreatedDashboards.messageMobile" tag="small" />
+        </MediaQuery>
     </EmptyState>
 )
 
