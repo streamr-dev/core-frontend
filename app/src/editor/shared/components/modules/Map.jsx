@@ -239,7 +239,14 @@ export default class MapModule extends React.PureComponent<Props, State> {
             const markers = { ...state.markers }
             // $FlowFixMe Object.values() returns mixed[]
             Object.values(queuedMarkers).forEach((m: Marker) => {
-                markers[m.id] = m
+                const marker = markers[m.id]
+                if (marker) {
+                    marker.lat = m.lat
+                    marker.long = m.long
+                    marker.rotation = m.rotation
+                } else {
+                    markers[m.id] = m
+                }
             })
             return {
                 markers,

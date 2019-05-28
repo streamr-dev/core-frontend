@@ -161,7 +161,7 @@ export default class Map extends React.Component<Props> {
                                             {marker.id}
                                         </Tooltip>
                                     </CustomMarker>
-                                    {tracePoints && (
+                                    {tracePoints && tracePoints.length > 0 && (
                                         <Polyline
                                             positions={tracePoints}
                                             color={traceColor}
