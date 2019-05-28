@@ -1,7 +1,5 @@
 // @flow
 
-/* eslint-disable */
-
 import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { type Ref } from '$shared/flowtype/common-types'
 import debounce from 'lodash/debounce'
