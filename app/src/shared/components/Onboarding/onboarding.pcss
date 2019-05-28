@@ -48,11 +48,11 @@
   visibility: hidden;
 }
 
-.inner:focus-within {
+.open .inner {
   pointer-events: all;
 }
 
-.inner:focus-within .children {
+.open .children {
   opacity: 1;
   transition-delay: 0s, 0s;
   visibility: visible;
@@ -84,21 +84,4 @@
   line-height: calc(1.5 * var(--um));
   padding-left: var(--um);
   text-transform: uppercase;
-}
-
-.focusCatcher {
-  bottom: 0;
-  cursor: pointer;
-  opacity: 0;
-  pointer-events: all;
-  position: absolute;
-  right: 0;
-}
-
-.root .focusCatcher {
-  display: none;
-}
-
-.inner:focus-within + .focusCatcher {
-  display: block;
 }
