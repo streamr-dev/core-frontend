@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useCallback, useMemo } from 'react'
 import cx from 'classnames'
 import { DraggableCore } from 'react-draggable'
 
@@ -35,74 +35,72 @@ export const Toolbar = ({ children, className }) => (
     </div>
 )
 
-class DraggableCanvasWindow extends React.Component {
-    static Dialog = Dialog
-    static Title = Title
-    static Toolbar = Toolbar
-
-    static defaultProps = {
-        start: {
-            x: 0,
-            y: 0,
-        },
-    }
-
-    state = {
-        // Whether or not we are currently dragging.
+export const DraggableCanvasWindow = (props) => {
+    const [layout, setLayoutState] = useState({
         dragging: false,
         // Current transform x and y.
-        clientX: this.props.start.x,
-        clientY: this.props.start.y,
-    }
+        clientX: props.start.x,
+        clientY: props.start.y,
+    })
 
-    onDragStart = () => {
-        this.setState({
+    const onDragStart = useCallback(() => {
+        setLayoutState((layout) => ({
+            ...layout,
             dragging: true,
+        }))
+    }, [setLayoutState])
+
+    const onDrag = useCallback((e, coreEvent) => {
+        setLayoutState((layout) => {
+            if (!layout.dragging) { return layout }
+
+            return {
+                ...layout,
+                clientX: layout.clientX + coreEvent.deltaX,
+                clientY: layout.clientY + coreEvent.deltaY,
+            }
         })
-    }
+    }, [setLayoutState])
 
-    onDrag = (e, coreEvent) => {
-        if (!this.state.dragging) { return false }
+    const onPositionUpdateProp = props.onPositionUpdate
+    const onDragStop = useCallback(() => {
+        setLayoutState((layout) => {
+            if (!layout.dragging) { return layout }
 
-        this.setState({
-            clientX: this.state.clientX + coreEvent.deltaX,
-            clientY: this.state.clientY + coreEvent.deltaY,
+            if (onPositionUpdateProp) {
+                onPositionUpdateProp(layout.clientX, layout.clientY)
+            }
+
+            return {
+                ...layout,
+                dragging: false,
+            }
         })
-    }
+    }, [setLayoutState, onPositionUpdateProp])
 
-    onDragStop = () => {
-        if (!this.state.dragging) { return false }
+    const style = useMemo(() => ({
+        left: layout.clientX,
+        top: layout.clientY,
+    }), [layout])
 
-        this.setState({
-            dragging: false,
-        })
-
-        if (this.props.onPositionUpdate) {
-            this.props.onPositionUpdate(this.state.clientX, this.state.clientY)
-        }
-    }
-
-    render() {
-        const style = {
-            left: this.state.clientX,
-            top: this.state.clientY,
-        }
-
-        return (
-            <CanvasWindow>
-                <DraggableCore
-                    handle={`.${styles.titleContainer}`}
-                    onStart={this.onDragStart}
-                    onDrag={this.onDrag}
-                    onStop={this.onDragStop}
-                >
-                    {React.cloneElement(React.Children.only(this.props.children), {
-                        style,
-                    })}
-                </DraggableCore>
-            </CanvasWindow>
-        )
-    }
+    return (
+        <CanvasWindow>
+            <DraggableCore
+                handle={`.${styles.titleContainer}`}
+                onStart={onDragStart}
+                onDrag={onDrag}
+                onStop={onDragStop}
+            >
+                {React.cloneElement(React.Children.only(props.children), {
+                    style,
+                })}
+            </DraggableCore>
+        </CanvasWindow>
+    )
 }
+
+DraggableCanvasWindow.Title = Title
+DraggableCanvasWindow.Dialog = Dialog
+DraggableCanvasWindow.Toolbar = Toolbar
 
 export default DraggableCanvasWindow
