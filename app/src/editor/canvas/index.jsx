@@ -23,6 +23,7 @@ import * as CanvasController from './components/CanvasController'
 import * as RunController from './components/CanvasController/Run'
 import useCanvas from './components/CanvasController/useCanvas'
 import useCanvasUpdater from './components/CanvasController/useCanvasUpdater'
+import useUpdatedTime from './components/CanvasController/useUpdatedTime'
 
 import Canvas from './components/Canvas'
 import CanvasToolbar from './components/Toolbar'
@@ -38,26 +39,11 @@ import styles from './index.pcss'
 
 const { RunStates } = CanvasState
 
-const UpdatedTime = new Map()
-
-function setUpdated(canvas) {
-    const canvasUpdated = new Date(canvas.updated)
-    const updated = Math.max(UpdatedTime.get(canvas.id) || canvasUpdated, canvasUpdated)
-    UpdatedTime.set(canvas.id, updated)
-    return updated
-}
-
 const CanvasEditComponent = class CanvasEdit extends Component {
     state = {
         moduleSearchIsOpen: this.props.runController.isEditable,
         moduleSidebarIsOpen: false,
         keyboardShortcutIsOpen: false,
-    }
-
-    static getDerivedStateFromProps(props) {
-        return {
-            updated: setUpdated(props.canvas),
-        }
     }
 
     setCanvas = (action, fn, done) => {
@@ -133,6 +119,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
 
     async autostart() {
         const { canvas, runController } = this.props
+        if (this.isDeleted) { return } // do not autostart deleted canvases
         if (canvas.adhoc && !runController.isActive) {
             // do not autostart running/non-adhoc canvases
             return this.canvasStart()
@@ -141,6 +128,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
 
     async autosave() {
         const { canvas, runController } = this.props
+        if (this.isDeleted) { return } // do not autosave deleted canvases
         if (!runController.isEditable) {
             // do not autosave running/adhoc canvases or if we have no write permission
             return
@@ -149,7 +137,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         const newCanvas = await services.autosave(canvas)
         if (this.unmounted) { return }
         // ignore new canvas, just extract updated time from it
-        this.setState({ updated: setUpdated(newCanvas) }) // call setState to trigger rerender, but actual updated value comes from gDSFP
+        this.props.setUpdated(newCanvas.updated)
     }
 
     removeModule = async ({ hash }) => {
@@ -181,6 +169,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
 
     deleteCanvas = async () => {
         const { canvas, canvasController } = this.props
+        this.isDeleted = true
         await canvasController.remove(canvas)
     }
 
@@ -401,7 +390,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                     pushNewDefinition={this.pushNewDefinition}
                 >
                     {runController.hasWritePermission ? (
-                        <CanvasStatus updated={this.state.updated} />
+                        <CanvasStatus updated={this.props.updated} />
                     ) : (
                         <CannotSaveStatus />
                     )}
@@ -458,6 +447,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
 const CanvasEdit = withRouter(({ canvas, ...props }) => {
     const runController = useContext(RunController.Context)
     const canvasController = CanvasController.useController()
+    const [updated, setUpdated] = useUpdatedTime(canvas.updated)
     useCanvasNotifications(canvas)
 
     return (
@@ -466,6 +456,8 @@ const CanvasEdit = withRouter(({ canvas, ...props }) => {
             canvas={canvas}
             runController={runController}
             canvasController={canvasController}
+            updated={updated}
+            setUpdated={setUpdated}
         />
     )
 })

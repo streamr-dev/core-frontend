@@ -66,6 +66,7 @@ const DashboardEdit = withRouter(class DashboardEdit extends Component {
 
     async autosave() {
         const { dashboard } = this.props
+        if (this.isDeleted) { return } // do not autosave deleted dashboards
         await services.autosave(dashboard)
     }
 
@@ -97,6 +98,7 @@ const DashboardEdit = withRouter(class DashboardEdit extends Component {
 
     deleteDashboard = async () => {
         const { dashboard } = this.props
+        this.isDeleted = true
         await services.deleteDashboard(dashboard)
         if (this.unmounted) { return }
         this.props.history.push(links.userpages.dashboards)
