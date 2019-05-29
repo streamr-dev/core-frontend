@@ -64,19 +64,17 @@ export const DraggableCanvasWindow = (props) => {
 
     const onPositionUpdateProp = props.onPositionUpdate
     const onDragStop = useCallback(() => {
-        setLayoutState((layout) => {
-            if (!layout.dragging) { return layout }
+        if (!layout.dragging) { return layout }
 
-            if (onPositionUpdateProp) {
-                onPositionUpdateProp(layout.clientX, layout.clientY)
-            }
-
-            return {
-                ...layout,
-                dragging: false,
-            }
+        setLayoutState({
+            ...layout,
+            dragging: false,
         })
-    }, [setLayoutState, onPositionUpdateProp])
+
+        if (onPositionUpdateProp) {
+            onPositionUpdateProp(layout.clientX, layout.clientY)
+        }
+    }, [layout, setLayoutState, onPositionUpdateProp])
 
     const style = useMemo(() => ({
         left: layout.clientX,
