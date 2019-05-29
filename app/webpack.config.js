@@ -157,11 +157,39 @@ module.exports = {
                 'src/**/*.(p|s)css',
             ],
         }),
+        new webpack.EnvironmentPlugin({
+            GIT_VERSION: gitRevisionPlugin.version(),
+            GIT_BRANCH: gitRevisionPlugin.branch(),
+            SENTRY_ENVIRONMENT: process.env.SENTRY_ENVIRONMENT || '',
+            SENTRY_DSN: process.env.SENTRY_DSN || '',
+            VERSION: process.env.VERSION || '',
+        }),
         new webpack.EnvironmentPlugin(loadedDotenv),
         ...(analyze ? [
             new BundleAnalyzerPlugin({
                 analyzerMode: 'static',
                 openAnalyzer: false,
+            }),
+        ] : []),
+        ...(process.env.SENTRY_DSN ? [
+            new SentryPlugin({
+                include: dist,
+                validate: true,
+                ignore: [
+                    '.cache',
+                    '.DS_STORE',
+                    '.env',
+                    '.storybook',
+                    'bin',
+                    'coverage',
+                    'node_modules',
+                    'scripts',
+                    'stories',
+                    'test',
+                    'travis_scripts',
+                    'webpack.config.js',
+                ],
+                release: process.env.VERSION,
             }),
         ] : []),
     ].concat(isProduction() ? [
@@ -194,34 +222,6 @@ module.exports = {
                 quality: '50-75',
             },
         }),
-        new webpack.EnvironmentPlugin({
-            GIT_VERSION: gitRevisionPlugin.version(),
-            GIT_BRANCH: gitRevisionPlugin.branch(),
-            SENTRY_ENVIRONMENT: process.env.SENTRY_ENVIRONMENT || '',
-            SENTRY_DSN: process.env.SENTRY_DSN || '',
-            VERSION: process.env.VERSION || '',
-        }),
-        ...(process.env.SENTRY_DSN ? [
-            new SentryPlugin({
-                include: dist,
-                validate: true,
-                ignore: [
-                    '.cache',
-                    '.DS_STORE',
-                    '.env',
-                    '.storybook',
-                    'bin',
-                    'coverage',
-                    'node_modules',
-                    'scripts',
-                    'stories',
-                    'test',
-                    'travis_scripts',
-                    'webpack.config.js',
-                ],
-                release: process.env.VERSION,
-            }),
-        ] : []),
     ] : [
         // Dev plugins
         new UnusedFilesWebpackPlugin({
