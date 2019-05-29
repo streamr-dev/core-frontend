@@ -25,7 +25,7 @@
     "docsTutorials": "/docs/tutorials",
     "docsUserPage": "/docs/userpage",
     "docsVisualEditor": "/docs/visual-editor",
-    "downloadCsv": "<streamr>/canvas/downloadCsv?filename=:file",
+    "downloadCsv": "<streamr>/api/v1/canvases/downloadCsv?filename=:file",
     "editProduct": "/marketplace/products/:id/edit",
     "editProfile": "/core/profile/edit",
     "error": "/error",
