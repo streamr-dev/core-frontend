@@ -63,6 +63,12 @@ if (process.env.SENTRY_DSN) {
                 dsn: process.env.SENTRY_DSN,
                 release: process.env.VERSION,
                 environment: process.env.SENTRY_ENVIRONMENT,
+                whitelistUrls: [
+                    window.location.origin,
+                    process.env.PLATFORM_PUBLIC_PATH,
+                    process.env.PLATFORM_ORIGIN_URL,
+                    process.env.STREAMR_URL,
+                ].filter(Boolean),
                 debug: true,
             })
         ),
