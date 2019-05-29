@@ -157,6 +157,13 @@ module.exports = {
                 'src/**/*.(p|s)css',
             ],
         }),
+        new webpack.EnvironmentPlugin({
+            GIT_VERSION: gitRevisionPlugin.version(),
+            GIT_BRANCH: gitRevisionPlugin.branch(),
+            SENTRY_ENVIRONMENT: process.env.SENTRY_ENVIRONMENT || '',
+            SENTRY_DSN: process.env.SENTRY_DSN || '',
+            VERSION: process.env.VERSION || '',
+        }),
         new webpack.EnvironmentPlugin(loadedDotenv),
         ...(analyze ? [
             new BundleAnalyzerPlugin({
@@ -214,13 +221,6 @@ module.exports = {
             pngquant: {
                 quality: '50-75',
             },
-        }),
-        new webpack.EnvironmentPlugin({
-            GIT_VERSION: gitRevisionPlugin.version(),
-            GIT_BRANCH: gitRevisionPlugin.branch(),
-            SENTRY_ENVIRONMENT: process.env.SENTRY_ENVIRONMENT || '',
-            SENTRY_DSN: process.env.SENTRY_DSN || '',
-            VERSION: process.env.VERSION || '',
         }),
     ] : [
         // Dev plugins
