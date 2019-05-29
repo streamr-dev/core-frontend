@@ -164,6 +164,27 @@ module.exports = {
                 openAnalyzer: false,
             }),
         ] : []),
+        ...(process.env.SENTRY_DSN ? [
+            new SentryPlugin({
+                include: dist,
+                validate: true,
+                ignore: [
+                    '.cache',
+                    '.DS_STORE',
+                    '.env',
+                    '.storybook',
+                    'bin',
+                    'coverage',
+                    'node_modules',
+                    'scripts',
+                    'stories',
+                    'test',
+                    'travis_scripts',
+                    'webpack.config.js',
+                ],
+                release: process.env.VERSION,
+            }),
+        ] : []),
     ].concat(isProduction() ? [
         // Production plugins
         new webpack.optimize.OccurrenceOrderPlugin(),
@@ -201,27 +222,6 @@ module.exports = {
             SENTRY_DSN: process.env.SENTRY_DSN || '',
             VERSION: process.env.VERSION || '',
         }),
-        ...(process.env.SENTRY_DSN ? [
-            new SentryPlugin({
-                include: dist,
-                validate: true,
-                ignore: [
-                    '.cache',
-                    '.DS_STORE',
-                    '.env',
-                    '.storybook',
-                    'bin',
-                    'coverage',
-                    'node_modules',
-                    'scripts',
-                    'stories',
-                    'test',
-                    'travis_scripts',
-                    'webpack.config.js',
-                ],
-                release: process.env.VERSION,
-            }),
-        ] : []),
     ] : [
         // Dev plugins
         new UnusedFilesWebpackPlugin({

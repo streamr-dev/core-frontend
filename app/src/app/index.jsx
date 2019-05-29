@@ -64,7 +64,6 @@ import ErrorPageView from '$mp/components/ErrorPageView'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import Analytics from '$shared/utils/Analytics'
 import routes from '$routes'
-import ErrorBoundary from '$shared/components/ErrorBoundary'
 
 // Wrap authenticated components here instead of render() method
 // Marketplace Auth
@@ -161,23 +160,21 @@ const MiscRouter = () => ([
 const App = () => (
     <ConnectedRouter history={history}>
         <SessionProvider>
-            <ErrorBoundary>
-                <ModalRoot>
-                    <LocaleSetter />
-                    <AutoScroll />
-                    <Analytics />
-                    <Switch>
-                        {AuthenticationRouter()}
-                        {MarketplaceRouter()}
-                        {DocsRouter()}
-                        {UserpagesRouter()}
-                        {EditorRouter()}
-                        {MiscRouter()}
-                    </Switch>
-                    <Notifications />
-                    {isProduction() && <GoogleAnalyticsTracker />}
-                </ModalRoot>
-            </ErrorBoundary>
+            <ModalRoot>
+                <LocaleSetter />
+                <AutoScroll />
+                <Analytics />
+                <Switch>
+                    {AuthenticationRouter()}
+                    {MarketplaceRouter()}
+                    {DocsRouter()}
+                    {UserpagesRouter()}
+                    {EditorRouter()}
+                    {MiscRouter()}
+                </Switch>
+                <Notifications />
+                {isProduction() && <GoogleAnalyticsTracker />}
+            </ModalRoot>
         </SessionProvider>
     </ConnectedRouter>
 )
