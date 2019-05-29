@@ -43,6 +43,10 @@ export class Analytics {
         Object.keys(this.services).forEach((id) => this.services[id].reportError && this.services[id].reportError(error, extra))
     }
 
+    reportWarning = (error: Error, extra: Object = {}) => {
+        Object.keys(this.services).forEach((id) => this.services[id].reportWarning && this.services[id].reportWarning(error, extra))
+    }
+
     getMiddlewares = () => Object.keys(this.services).reduce((result, id) => ([
         ...result,
         ...(this.services[id].getMiddleware ? [this.services[id].getMiddleware()] : []),
@@ -67,6 +71,21 @@ if (process.env.SENTRY_DSN) {
                 if (extra) {
                     scope.setExtras(extra)
                 }
+
+                Sentry.captureException(error)
+            })
+        },
+
+        reportWarning: (error: Error, extra: Object = {}) => {
+            console.warn({
+                error,
+                extra,
+            }) // eslint-disable-line no-console
+            Sentry.withScope((scope) => {
+                if (extra) {
+                    scope.setExtras(extra)
+                }
+                scope.setLevel('warning')
 
                 Sentry.captureException(error)
             })

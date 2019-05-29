@@ -19,7 +19,7 @@ function matchPorts(ports) {
 }
 
 expect.extend({
-    toMatchCanvas(targetCanvas, sourceCanvas) {
+    toMatchCanvas(targetCanvas, sourceCanvas, additional = {}) {
         expect(targetCanvas).toMatchObject({
             ...sourceCanvas,
             ...canvasMatcher,
@@ -51,6 +51,7 @@ expect.extend({
 
                 return expect.objectContaining(matcher)
             })),
+            ...additional,
         })
 
         return {

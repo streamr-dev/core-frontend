@@ -2,15 +2,7 @@ import { setupAuthorizationHeader } from '$editor/shared/tests/utils'
 
 import * as Services from '../services'
 
-const canvasMatcher = {
-    id: expect.any(String),
-    name: expect.any(String),
-    created: expect.any(String),
-    updated: expect.any(String),
-    uiChannel: expect.objectContaining({
-        id: expect.any(String),
-    }),
-}
+import { canvasMatcher } from './utils'
 
 describe('Adhoc Canvases', () => {
     let teardown
@@ -78,7 +70,26 @@ describe('Adhoc Canvases', () => {
             expect(nextLoadedCanvas).toMatchObject({
                 ...parentCanvas,
                 ...canvasMatcher,
+                id: parentCanvas.id, // should have loaded parent canvas
+            })
+        })
+
+        it('will load parent canvas as the "relevant" canvas if adhoc canvas is missing', async () => {
+            const parentCanvas = await Services.create()
+            const adhocCanvas = await Services.createAdhocCanvas(parentCanvas)
+            await Services.deleteCanvas({ id: adhocCanvas.id })
+
+            const loadedCanvas = await Services.loadRelevantCanvas(parentCanvas)
+            expect(loadedCanvas).toMatchCanvas(parentCanvas, {
                 id: parentCanvas.id, // should have loaded adhoc canvas
+            })
+
+            expect(loadedCanvas).not.toHaveProperty('settings.childCanvasId')
+
+            await Services.unlinkParentCanvas(adhocCanvas)
+            const nextLoadedCanvas = await Services.loadRelevantCanvas(parentCanvas)
+            expect(nextLoadedCanvas).toMatchCanvas(parentCanvas, {
+                id: parentCanvas.id, // should still have loaded parent canvas
             })
         })
     })
