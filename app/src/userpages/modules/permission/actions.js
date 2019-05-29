@@ -2,8 +2,10 @@
 
 import path from 'path'
 import settle from 'promise-settle'
-import { error as errorNotification, success as successNotification } from 'react-notification-system-redux'
+
 import * as api from '$shared/utils/api'
+import Notification from '$shared/utils/Notification'
+import { NotificationIcon } from '$shared/utils/constants'
 
 export const GET_RESOURCE_PERMISSIONS_REQUEST = 'GET_RESOURCE_PERMISSIONS_REQUEST'
 export const GET_RESOURCE_PERMISSIONS_SUCCESS = 'GET_RESOURCE_PERMISSIONS_SUCCESS'
@@ -113,15 +115,13 @@ const saveRemovedResourcePermissionFailure = (resourceType: ResourceType, resour
 export const getResourcePermissions = (resourceType: ResourceType, resourceId: ResourceId) => (dispatch: Function) => {
     dispatch(getResourcePermissionsRequest())
     return api.get(`${getApiUrl(resourceType, resourceId)}/permissions`)
-        .then((data) => dispatch(getResourcePermissionsSuccess(resourceType, resourceId, data)))
-        .catch((e) => {
-            dispatch(getResourcePermissionsFailure(e))
-            dispatch(errorNotification({
-                title: 'Error',
-                message: e.message,
-            }))
-            throw e
-        })
+        .then(
+            (data) => dispatch(getResourcePermissionsSuccess(resourceType, resourceId, data)),
+            (e) => {
+                dispatch(getResourcePermissionsFailure(e))
+                throw e
+            },
+        )
 }
 
 export const setResourceHighestOperationForUser = (
@@ -240,16 +240,17 @@ export const saveUpdatedResourcePermissions = (
                 }
                 if (message) {
                     const e = new Error(message)
-                    dispatch(errorNotification({
-                        title: 'Error!',
-                        message,
-                    }))
+                    Notification.push({
+                        title: message,
+                        icon: NotificationIcon.ERROR,
+                    })
                     reject(e)
                 } else {
                     resolve()
-                    dispatch(successNotification({
+                    Notification.push({
                         title: 'Permissions saved successfully!',
-                    }))
+                        icon: NotificationIcon.CHECKMARK,
+                    })
                 }
             })
     })
