@@ -5,6 +5,7 @@ import { type Ref } from '$shared/flowtype/common-types'
 import debounce from 'lodash/debounce'
 import cx from 'classnames'
 import SvgIcon from '$shared/components/SvgIcon'
+import useIsMounted from '$shared/hooks/useIsMounted'
 import styles from './search.pcss'
 
 type Props = {
@@ -14,6 +15,8 @@ type Props = {
 }
 
 const Search = ({ value: valueProp, onChange: onChangeProp, placeholder }: Props) => {
+    const isMounted = useIsMounted()
+
     const [value, setValue] = useState(valueProp || '')
 
     const [focused, setFocused] = useState(false)
@@ -32,17 +35,36 @@ const Search = ({ value: valueProp, onChange: onChangeProp, placeholder }: Props
         setFocused(false)
     }, [])
 
-    const debouncedOnChange = useCallback(debounce((value: string) => {
-        if (onChangeProp) {
-            onChangeProp(value)
+    const defineDebouncedOnChange = useCallback((onChange: ?(string) => void) => (
+        debounce((value: string) => {
+            if (isMounted() && onChange) {
+                onChange(value)
+            }
+        }, 500)
+    ), [isMounted])
+
+    const debouncedOnChangeRef: Ref<Function> = useRef(defineDebouncedOnChange(onChangeProp))
+
+    useEffect(() => {
+        const { current: debouncedOnChange } = debouncedOnChangeRef
+
+        // We have to cancel all pending `debouncedOnChange` every time `onChangeProp` changes.
+        if (debouncedOnChange) {
+            debouncedOnChange.cancel()
         }
-    }, 500), [onChangeProp])
+
+        debouncedOnChangeRef.current = defineDebouncedOnChange(onChangeProp)
+    }, [onChangeProp, defineDebouncedOnChange])
 
     const onChange = useCallback((e: SyntheticInputEvent<EventTarget>) => {
         const { value } = e.target
         setValue(value)
-        debouncedOnChange(value)
-    }, [debouncedOnChange])
+        const { current: debouncedOnChange } = debouncedOnChangeRef
+
+        if (debouncedOnChange) {
+            debouncedOnChange(value)
+        }
+    }, [])
 
     const inputRef: Ref<HTMLInputElement> = useRef(null)
 
