@@ -29,8 +29,8 @@ export type Props = {
 
 const KeylockIconSvg = () => (
     <svg width="9px" height="12px" viewBox="0 0 9 12">
-        <g id="Product-Detail-Views" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-            <g id="Product-Detail-Page-/-Purchases" transform="translate(-221.000000, -682.000000)" fill="#525252" fillRule="nonzero">
+        <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+            <g transform="translate(-221.000000, -682.000000)" fill="#525252" fillRule="nonzero">
                 <path
                     d="M229.5,686 L229,686 L229,685.5 C229,683.57 227.43,682 225.5,682 C223.57,682
                 222,683.57 222,685.5 L222,686 L221.5,686 C221.224,686 221,686.224 221,686.5 L221,693.5
@@ -40,7 +40,6 @@ const KeylockIconSvg = () => (
                 225.775,692.001 225.499,692.001 C225.223,692.001 225,691.777 225,691.501 L225,689.847 C224.706,689.672
                 224.5,689.365 224.5,689 C224.5,688.448 224.948,688 225.5,688 C226.052,688 226.5,688.448 226.5,689
                 C226.5,689.365 226.293,689.672 226,689.847 Z"
-                    id="Keylock-icon"
                 />
             </g>
         </g>

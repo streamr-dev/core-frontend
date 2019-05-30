@@ -16,7 +16,7 @@ const Table = ({ width, height, ...props }: Props) => (
     >
         <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
             <defs>
-                <pattern id="paragraph" width="100%" height="16" patternUnits="userSpaceOnUse">
+                <pattern id="Table-paragraph" width="100%" height="16" patternUnits="userSpaceOnUse">
                     <g fill="#d8d8d8">
                         <rect width="15" rx="1" height="4" />
                         <rect width="19" rx="1" height="4" y="8" />
@@ -25,7 +25,7 @@ const Table = ({ width, height, ...props }: Props) => (
                     </g>
                 </pattern>
             </defs>
-            <rect width="100%" height="100%" fill="url(#paragraph)" />
+            <rect width="100%" height="100%" fill="url(#Table-paragraph)" />
         </svg>
     </svg>
 )
