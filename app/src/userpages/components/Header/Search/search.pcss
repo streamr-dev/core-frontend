@@ -114,15 +114,18 @@
 }
 
 .closeButton {
-  appearance: none !important;
   background-color: transparent;
   border: 0;
   display: block;
   height: calc(1.5 * var(--um));
-  outline: 0 !important;
+  outline: 0;
   padding: calc(0.4375 * var(--um));
   transform: translate(calc(-0.4375 * var(--um)), calc(-0.4375 * var(--um)));
   width: calc(1.5 * var(--um));
+}
+
+.root .closeButton {
+  appearance: none;
 }
 
 .closeButton svg {
