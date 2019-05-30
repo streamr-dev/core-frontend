@@ -9,19 +9,10 @@ import styles from './DebugWindow.pcss'
 
 class DebugWindow extends React.Component {
     render() {
-        const {
-            onClose,
-            onClear,
-            messages,
-            position,
-            onPositionUpdate,
-        } = this.props
+        const { onClose, onClear, messages, ...canvasWindowProps } = this.props
 
         return (
-            <DraggableCanvasWindow
-                start={position}
-                onPositionUpdate={onPositionUpdate}
-            >
+            <DraggableCanvasWindow {...canvasWindowProps}>
                 <div className={windowStyles.editorDialog}>
                     <DraggableCanvasWindow.Dialog
                         title="Debug Messages"

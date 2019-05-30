@@ -2,6 +2,15 @@
   position: absolute;
   z-index: 1;
   transform: none;
+
+  :global(.react-resizable-handle) {
+    width: 24px;
+    height: 24px;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    cursor: nwse-resize;
+  }
 }
 
 .editorContainer {

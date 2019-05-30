@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useMemo } from 'react'
 import cx from 'classnames'
 import { DraggableCore } from 'react-draggable'
+import { Resizable } from 'react-resizable'
 
 import SvgIcon from '$shared/components/SvgIcon'
 import CanvasWindow from './CanvasWindow'
@@ -38,9 +39,12 @@ export const Toolbar = ({ children, className }) => (
 export const DraggableCanvasWindow = (props) => {
     const [layout, setLayoutState] = useState({
         dragging: false,
+        resizing: false,
         // Current transform x and y.
-        clientX: props.start.x,
-        clientY: props.start.y,
+        clientX: props.position.x,
+        clientY: props.position.y,
+        width: props.size.width,
+        height: props.size.height,
     })
 
     const onDragStart = useCallback(() => {
@@ -64,7 +68,7 @@ export const DraggableCanvasWindow = (props) => {
 
     const onPositionUpdateProp = props.onPositionUpdate
     const onDragStop = useCallback(() => {
-        if (!layout.dragging) { return layout }
+        if (!layout.dragging) { return }
 
         setLayoutState({
             ...layout,
@@ -79,7 +83,40 @@ export const DraggableCanvasWindow = (props) => {
     const style = useMemo(() => ({
         left: layout.clientX,
         top: layout.clientY,
+        width: layout.width,
+        height: layout.height,
     }), [layout])
+
+    const { width, height } = layout
+
+    const onResizeStart = useCallback(() => {
+        setLayoutState((layout) => ({
+            ...layout,
+            resizing: true,
+        }))
+    }, [setLayoutState])
+
+    const onResize = useCallback((e, data) => {
+        setLayoutState((layout) => ({
+            ...layout,
+            height: data.size.height,
+            width: data.size.width,
+        }))
+    }, [setLayoutState])
+
+    const onSizeUpdateProp = props.onSizeUpdate
+    const onResizeStop = useCallback(() => {
+        if (!layout.resizing) { return }
+
+        setLayoutState({
+            ...layout,
+            resizing: false,
+        })
+
+        if (onSizeUpdateProp) {
+            onSizeUpdateProp(layout.width, layout.height)
+        }
+    }, [layout, setLayoutState, onSizeUpdateProp])
 
     return (
         <CanvasWindow>
@@ -89,12 +126,33 @@ export const DraggableCanvasWindow = (props) => {
                 onDrag={onDrag}
                 onStop={onDragStop}
             >
-                {React.cloneElement(React.Children.only(props.children), {
-                    style,
-                })}
+                <Resizable
+                    className={styles.ResizableBox}
+                    width={width}
+                    height={height}
+                    minConstraints={[200, 100]}
+                    onResizeStop={onResizeStop}
+                    onResize={onResize}
+                    onResizeStart={onResizeStart}
+                >
+                    {React.cloneElement(React.Children.only(props.children), {
+                        style,
+                    })}
+                </Resizable>
             </DraggableCore>
         </CanvasWindow>
     )
+}
+
+DraggableCanvasWindow.defaultProps = {
+    position: {
+        x: 0,
+        y: 0,
+    },
+    size: {
+        width: 600,
+        height: 400,
+    },
 }
 
 DraggableCanvasWindow.Title = Title
