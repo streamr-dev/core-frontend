@@ -49,16 +49,18 @@ const Search = ({ value: valueProp, onChange: onChangeProp, placeholder }: Props
     const reset = useCallback(() => {
         const { current: input } = inputRef
 
-        setValue('')
+        if (value !== '') {
+            setValue('')
 
-        if (onChangeProp) {
-            onChangeProp('')
+            if (onChangeProp) {
+                onChangeProp('')
+            }
         }
 
         if (input) {
             input.blur()
         }
-    }, [onChangeProp])
+    }, [value, onChangeProp])
 
     return (
         <div
