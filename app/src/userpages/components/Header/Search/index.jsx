@@ -103,6 +103,7 @@ const Search = ({ value: valueProp, onChange: onChangeProp, placeholder }: Props
                     />
                 </div>
                 <SvgIcon name="search" className={styles.loupe} />
+                <div className={styles.cursorHolder} />
             </div>
             <div className={styles.closeButtonWrapper}>
                 <button

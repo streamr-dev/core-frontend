@@ -30,21 +30,37 @@
 .inner {
   flex-grow: 1;
   position: relative;
+  width: 100%;
+}
+
+.loupe,
+.cursorHolder {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .loupe {
   color: #A3A3A3;
   height: var(--um);
   pointer-events: none;
-  position: absolute;
   width: var(--um);
-  top: 50%;
-  transform: translateY(-50%);
   transition: 100ms ease color;
 }
 
 .open .loupe {
   color: #FF5C00;
+}
+
+.cursorHolder {
+  display: none;
+  cursor: default;
+  height: calc(2 * var(--um));
+  width: calc(2 * var(--um));
+}
+
+.open .cursorHolder {
+  display: block;
 }
 
 .inputWrapper {
@@ -54,14 +70,19 @@
 
 .root input {
   border: 0;
+  cursor: pointer;
   display: block;
   height: 2em;
   line-height: 2em;
-  min-width: calc(2 * var(--um));
+  min-width: var(--um);
   outline: 0;
   padding: 0 0 0 calc(2 * var(--um));
   transform: translateY(-2px);
   width: 100%;
+}
+
+.open input {
+  cursor: text;
 }
 
 .root input::placeholder {
