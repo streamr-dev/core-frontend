@@ -1,7 +1,6 @@
 import assert from 'assert-diff'
 import sinon from 'sinon'
 import mockStore from '$testUtils/mockStoreProvider'
-import { CALL_HISTORY_METHOD } from 'react-router-redux'
 
 import * as actions from '$shared/modules/user/actions'
 import * as constants from '$shared/modules/user/constants'
@@ -106,15 +105,6 @@ describe('user - actions', () => {
             const expectedActions = [
                 {
                     type: constants.RESET_USER_DATA,
-                },
-                {
-                    type: CALL_HISTORY_METHOD,
-                    payload: {
-                        method: 'replace',
-                        args: [
-                            '/',
-                        ],
-                    },
                 },
             ]
             assert.deepStrictEqual(store.getActions(), expectedActions)
