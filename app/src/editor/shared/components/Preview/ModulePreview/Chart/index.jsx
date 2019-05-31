@@ -27,7 +27,7 @@ const Chart = ({ height, width, y }: Props) => {
                     <defs>
                         <pattern
                             height="66"
-                            id="tile"
+                            id="Chart-tile"
                             patternUnits="userSpaceOnUse"
                             width="112"
                         >
@@ -43,7 +43,7 @@ const Chart = ({ height, width, y }: Props) => {
                         </pattern>
                     </defs>
                     <svg viewBox="0 0 11200 66" preserveAspectRatio="xMinYMid slice">
-                        <rect width="100%" height="100%" fill="url(#tile)" />
+                        <rect width="100%" height="100%" fill="url(#Chart-tile)" />
                     </svg>
                 </svg>
             </svg>

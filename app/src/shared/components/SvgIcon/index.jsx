@@ -185,12 +185,11 @@ const sources = {
                 <g transform="translate(-505.000000, -2598.000000)" stroke="#0324FF" strokeWidth="1.5">
                     <path
                         d="M517,2614.5 C516.792893,2614.5 516.625,2614.66789 516.625,2614.875 C516.625,2615.08211 516.792893,2615.25 517,2615.25 C517.207107,2615.25 517.375,2615.08211 517.375,2614.875 C517.375,2614.66789 517.207107,2614.5 517,2614.5"
-                        id="Path"
                         strokeLinecap="round"
                         strokeLinejoin="round"
                     />
-                    <path d="M517,2611.5 L517,2603.25" id="Path" strokeLinecap="round" />
-                    <circle id="Oval" cx="517" cy="2610" r="11.25" />
+                    <path d="M517,2611.5 L517,2603.25" strokeLinecap="round" />
+                    <circle cx="517" cy="2610" r="11.25" />
                 </g>
             </g>
         </svg>
@@ -254,20 +253,12 @@ const sources = {
     ),
     profileMan: (
         <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-                <circle id="a" cx="40" cy="40" r="40" />
-            </defs>
             <g fill="none" fillRule="evenodd">
-                <mask id="b" fill="#fff">
-                    <use href="#a" />
-                </mask>
-                <use fill="#EFEFEF" href="#a" />
-                <g opacity=".503" mask="url(#b)" stroke="#525252" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5">
-                    <g transform="translate(20 17)">
-                        <ellipse cx="20.5" cy="11" rx="10.762" ry="10.5" />
-                        <path d="M11.226 5.668c3.367 3.408 8.01 5.333 12.861 5.332 2.433 0 4.84-.483 7.073-1.422M.512 45.5C.512 34.73 9.462 26 20.5 26c11.039 0 19.987 8.73 19.987 19.5" />
-                        <path d="M12.813 27.498V29c0 4.142 3.441 7.5 7.687 7.5s7.688-3.358 7.688-7.5v-1.502" />
-                    </g>
+                <circle fill="#EFEFEF" fillRule="nonzero" cx="40" cy="40" r="40" />
+                <g opacity="0.5">
+                    <ellipse stroke="#525252" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" cx="40.5" cy="28" rx="10.762" ry="10.5" />
+                    <path d="M32.813 44.498V46c0 4.142 3.441 7.5 7.687 7.5s7.688-3.358 7.688-7.5v-1.502" stroke="#525252" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M31.226 22.668c3.367 3.408 8.01 5.333 12.861 5.332 2.433 0 4.84-.483 7.073-1.422M20.512 62.5c0-10.77 8.95-19.5 19.988-19.5 11.039 0 19.987 8.73 19.987 19.5" stroke="#525252" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                 </g>
             </g>
         </svg>
