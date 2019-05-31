@@ -35,11 +35,13 @@ import {
     DELETE_USER_ACCOUNT_FAILURE,
 } from './constants'
 import routes from '$routes'
+import { clearStorage } from '$shared/utils/storage'
 
 // Logout
 export const resetUserData: ReduxActionCreator = createAction(RESET_USER_DATA)
 
 export const logout = () => (dispatch: Function) => {
+    clearStorage()
     dispatch(resetUserData())
     dispatch(replace(routes.root()))
 }

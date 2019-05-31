@@ -33,3 +33,13 @@ const storageAvailable = (type: string): boolean => {
 export const isLocalStorageAvailable = () => storageAvailable('localStorage')
 
 export const isSessionStorageAvailable = () => storageAvailable('sessionStorage')
+
+export const clearStorage = () => {
+    if (isLocalStorageAvailable()) {
+        localStorage.clear()
+    }
+
+    if (isSessionStorageAvailable()) {
+        sessionStorage.clear()
+    }
+}
