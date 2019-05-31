@@ -45,6 +45,7 @@ import ApiPage from '$docs/components/ApiPage'
 
 // Editor
 import CanvasEditor from '$editor/canvas'
+import CanvasEmbed from '$editor/canvas/components/Embed'
 import DashboardEditor from '$editor/dashboard'
 
 import ModalRoot from '$shared/components/ModalRoot'
@@ -149,7 +150,7 @@ const UserpagesRouter = () => ([
 const EditorRouter = () => ([
     <Route exact path="/" component={Products} key="root" />, // edge case for localhost
     <Route exact path={formatPath(editor.canvasEditor, ':id?')} component={CanvasEditorAuth} key="CanvasEditor" />,
-    <Route exact path={formatPath(editor.canvasEmbed, ':id?')} component={CanvasEditorAuth} key="CanvasEmbed" />,
+    <Route exact path={formatPath(editor.canvasEmbed, ':id?')} component={CanvasEmbed} key="CanvasEmbed" />,
     <Route exact path={formatPath(editor.dashboardEditor, ':id?')} component={DashboardEditorAuth} key="DashboardEditor" />,
 ])
 
