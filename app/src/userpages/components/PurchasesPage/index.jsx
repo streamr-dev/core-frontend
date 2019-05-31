@@ -14,7 +14,7 @@ import { getMyPurchases, updateFilter, applyFilter } from '$mp/modules/myPurchas
 import { selectMyPurchaseList, selectSubscriptions, selectFilter, selectFetchingMyPurchaseList } from '$mp/modules/myPurchaseList/selectors'
 import Tile from '$shared/components/Tile'
 import { isActive } from '$mp/utils/time'
-import Search from '$shared/components/Search'
+import Search from '../Header/Search'
 import Dropdown from '$shared/components/Dropdown'
 import NoPurchasesView from './NoPurchases'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
