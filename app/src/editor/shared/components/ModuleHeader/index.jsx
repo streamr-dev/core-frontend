@@ -57,7 +57,7 @@ const ModuleHeader = ({
                             })}
                             disabled={!editable}
                             editing={editing}
-                            onChange={onLabelChange}
+                            onCommit={onLabelChange}
                             setEditing={setEditing}
                         >
                             {label}

@@ -149,7 +149,7 @@ const Port = ({
                 <EditableText
                     disabled={!!isRunning}
                     editing={editingName}
-                    onChange={onNameChange}
+                    onCommit={onNameChange}
                     setEditing={setEditingName}
                 >
                     {port.displayName || startCase(port.name)}

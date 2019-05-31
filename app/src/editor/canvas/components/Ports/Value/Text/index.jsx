@@ -30,7 +30,7 @@ const Text = ({
             disabled={disabled}
             editing={editing}
             editOnFocus
-            onChange={onChange}
+            onCommit={onChange}
             setEditing={setEditing}
         >
             {value}

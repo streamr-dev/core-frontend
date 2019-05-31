@@ -14,7 +14,7 @@ type Props = {
     disabled?: boolean,
     editing?: boolean,
     editOnFocus?: boolean,
-    onChange?: (string) => void,
+    onCommit: (string) => void,
     onModeChange?: ?(boolean) => void,
     placeholder?: ?string,
     setEditing: (boolean) => void,
@@ -27,7 +27,7 @@ const EditableText = ({
     disabled,
     editing,
     editOnFocus,
-    onChange: onChangeProp,
+    onCommit,
     onModeChange,
     placeholder,
     setEditing,
@@ -49,6 +49,7 @@ const EditableText = ({
     const onFocus = useCallback(() => {
         setHasFocus(true)
     }, [setHasFocus])
+
     const onChange = useCallback((e: SyntheticInputEvent<EventTarget>) => {
         setValue(e.target.value)
     }, [setValue])
@@ -97,7 +98,7 @@ const EditableText = ({
                             flushHistoryOnBlur
                             onBlur={onBlur}
                             onChange={onChange}
-                            onCommit={onChangeProp}
+                            onCommit={onCommit}
                             onFocus={onFocus}
                             placeholder={placeholder}
                             revertOnEsc
