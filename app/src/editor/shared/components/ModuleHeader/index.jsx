@@ -28,29 +28,20 @@ const ModuleHeader = ({
 
     return (
         <Fragment>
-            {/*
-                ModuleHeader's minWidth is always 92px. The way we calculate the number:
-                - 24px for expand/collapse placeholder
-                - 40px for the hamburger menu button
-                - 1.75um for EditableText (1um = 16px) - makes `Title` display as `T…`
-            */}
-            <Probe group="ModuleHeader" width={92} />
             <div
                 className={cx(styles.root, className)}
                 {...props}
             >
                 {/* TODO: Replace the following line with the actual toggle. This here is just a placeholder. */}
-                <div className={styles.expandToggle} />
+                <div className={styles.expandToggle}>
+                    <Probe uid="toggle" group="ModuleHeader" width="auto" />
+                </div>
                 <div
                     className={cx(styles.name, {
                         [styles.limitedWidth]: !!(limitWidth && editing),
                     })}
                 >
-                    <div
-                        className={cx({
-                            [styles.idle]: !editing,
-                        })}
-                    >
+                    <div className={styles.inner}>
                         <EditableText
                             className={cx({
                                 [styles.limitedWidth]: !!limitWidth,
@@ -58,6 +49,9 @@ const ModuleHeader = ({
                             disabled={!editable}
                             editing={editing}
                             onCommit={onLabelChange}
+                            probe={(
+                                <Probe uid="name" group="ModuleHeader" width="auto" />
+                            )}
                             setEditing={setEditing}
                         >
                             {label}
@@ -66,6 +60,7 @@ const ModuleHeader = ({
                 </div>
                 {!!children && (
                     <div className={styles.buttons}>
+                        <Probe uid="buttons" group="ModuleHeader" width="auto" />
                         {children}
                     </div>
                 )}

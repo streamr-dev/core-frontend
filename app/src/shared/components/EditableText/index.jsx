@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useState, useCallback, Fragment, useEffect, useRef } from 'react'
+import React, { useState, useCallback, Fragment, useEffect, useRef, type Node } from 'react'
 import cx from 'classnames'
 import { type Ref } from '$shared/flowtype/common-types'
 import ModuleHeader from '$editor/shared/components/ModuleHeader'
@@ -17,6 +17,7 @@ type Props = {
     onCommit: (string) => void,
     onModeChange?: ?(boolean) => void,
     placeholder?: ?string,
+    probe?: Node,
     setEditing: (boolean) => void,
 }
 
@@ -30,6 +31,7 @@ const EditableText = ({
     onCommit,
     onModeChange,
     placeholder,
+    probe,
     setEditing,
     ...props
 }: Props) => {
@@ -89,6 +91,7 @@ const EditableText = ({
             } : {})}
         >
             <span className={styles.inner}>
+                {probe}
                 {editing && !disabled ? (
                     <Fragment>
                         <TextControl
