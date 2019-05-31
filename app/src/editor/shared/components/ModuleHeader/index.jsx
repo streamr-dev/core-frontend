@@ -36,10 +36,11 @@ const ModuleHeader = ({
 
     const { toggleHandle } = useContext(ResizableContext)
 
-    // Hide resize handle during editing.
     useEffect(() => {
+        refreshProbes()
+        // Hide resize handle during editing.
         toggleHandle(!editing)
-    }, [editing, toggleHandle])
+    }, [editing, toggleHandle, refreshProbes])
 
     return (
         <Fragment>

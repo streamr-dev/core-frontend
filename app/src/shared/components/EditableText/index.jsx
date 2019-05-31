@@ -54,11 +54,8 @@ const EditableText = ({
         setHasFocus(true)
     }, [setHasFocus])
 
-    const onChange = useCallback((e: SyntheticInputEvent<EventTarget>) => {
-        setValue(e.target.value)
-    }, [])
-
-    const onValueChange = useCallback((val: string) => {
+    const onChange = useCallback(({ target: { value: val } }: SyntheticInputEvent<EventTarget>) => {
+        setValue(val)
         if (onChangeProp) {
             onChangeProp(val)
         }
@@ -111,7 +108,6 @@ const EditableText = ({
                             onChange={onChange}
                             onCommit={onCommit}
                             onFocus={onFocus}
-                            onValueChange={onValueChange}
                             placeholder={placeholder}
                             revertOnEsc
                             selectAllOnFocus
