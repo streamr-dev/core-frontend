@@ -154,7 +154,7 @@ const Resizable = ({
             dx: 0,
             dy: 0,
         })
-    }, [minWidth, minHeight, updatePreviousSize])
+    }, [minWidth, minHeight])
 
     return enabled ? (
         <ResizeableContext.Provider value={value}>
