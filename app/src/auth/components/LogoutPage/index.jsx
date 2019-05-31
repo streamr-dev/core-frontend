@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import { connect } from 'react-redux'
 
 import { post } from '$shared/utils/api'
-import useIsMountedRef from '$shared/utils/useIsMountedRef'
+import useIsMounted from '$shared/hooks/useIsMounted'
 import useOnMount from '$shared/utils/useOnMount'
 import { logout as logoutAction } from '$shared/modules/user/actions'
 import ErrorPageView from '$mp/components/ErrorPageView'
@@ -19,18 +19,18 @@ type Props = DispatchProps & {}
 const LogoutPage = ({ logout }: Props) => {
     const [error, setError] = useState(null)
 
-    const mountedRef = useIsMountedRef()
+    const isMounted = useIsMounted()
 
     useOnMount(() => {
         post(routes.externalLogout())
             .then(
                 () => {
-                    if (mountedRef.current) {
+                    if (isMounted()) {
                         logout()
                     }
                 },
                 (e) => {
-                    if (mountedRef.current) {
+                    if (isMounted()) {
                         setError(e)
                     }
                 },
