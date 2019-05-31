@@ -15,12 +15,14 @@ type Size = {
 type ContextProps = {
     enabled: boolean,
     height: number,
+    toggleHandle: (?boolean) => void,
     width: number,
 }
 
 const defaultContext: ContextProps = {
     enabled: false,
     height: 0,
+    toggleHandle: () => {},
     width: 0,
 }
 
@@ -47,6 +49,8 @@ const Resizable = ({
     ...props
 }: Props) => {
     const { minWidth, minHeight } = useContext(SizeConstraintContext)
+
+    const [showHandle, setShowHandle] = useState(true)
 
     const [size, setSize] = useState({
         height,
@@ -112,6 +116,7 @@ const Resizable = ({
     const value = useMemo(() => ({
         ...size,
         enabled: true,
+        toggleHandle: setShowHandle,
     }), [size])
 
     useEffect(() => {
@@ -169,11 +174,13 @@ const Resizable = ({
                 }}
             >
                 {children}
-                <Handle
-                    beforeDrag={prepare}
-                    onDrag={preview}
-                    onDrop={commit}
-                />
+                {!!showHandle && (
+                    <Handle
+                        beforeDrag={prepare}
+                        onDrag={preview}
+                        onDrop={commit}
+                    />
+                )}
             </div>
         </ResizeableContext.Provider>
     ) : (

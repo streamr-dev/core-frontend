@@ -1,10 +1,11 @@
 // @flow
 
-import React, { useState, type Node, Fragment, useContext, useCallback } from 'react'
+import React, { useState, type Node, Fragment, useContext, useCallback, useEffect } from 'react'
 import cx from 'classnames'
 import EditableText from '$shared/components/EditableText'
 import Probe from '$editor/canvas/components/Resizable/SizeConstraintProvider/Probe'
 import { Context as SizeConstraintContext } from '$editor/canvas/components/Resizable/SizeConstraintProvider'
+import { Context as ResizableContext } from '$editor/canvas/components/Resizable'
 import styles from './moduleHeader.pcss'
 
 type Props = {
@@ -32,6 +33,13 @@ const ModuleHeader = ({
     const onChange = useCallback(() => {
         refreshProbes()
     }, [refreshProbes])
+
+    const { toggleHandle } = useContext(ResizableContext)
+
+    // Hide resize handle during editing.
+    useEffect(() => {
+        toggleHandle(!editing)
+    }, [editing, toggleHandle])
 
     return (
         <Fragment>
