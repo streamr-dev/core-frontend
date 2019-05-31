@@ -1,9 +1,10 @@
 // @flow
 
-import React, { useState, type Node, Fragment } from 'react'
+import React, { useState, type Node, Fragment, useContext, useCallback } from 'react'
 import cx from 'classnames'
 import EditableText from '$shared/components/EditableText'
 import Probe from '$editor/canvas/components/Resizable/SizeConstraintProvider/Probe'
+import { Context as SizeConstraintContext } from '$editor/canvas/components/Resizable/SizeConstraintProvider'
 import styles from './moduleHeader.pcss'
 
 type Props = {
@@ -25,6 +26,12 @@ const ModuleHeader = ({
     ...props
 }: Props) => {
     const [editing, setEditing] = useState(false)
+
+    const { refreshProbes } = useContext(SizeConstraintContext)
+
+    const onChange = useCallback(() => {
+        refreshProbes()
+    }, [refreshProbes])
 
     return (
         <Fragment>
@@ -49,6 +56,7 @@ const ModuleHeader = ({
                             disabled={!editable}
                             editing={editing}
                             onCommit={onLabelChange}
+                            onChange={onChange}
                             probe={(
                                 <Probe uid="name" group="ModuleHeader" width="auto" />
                             )}

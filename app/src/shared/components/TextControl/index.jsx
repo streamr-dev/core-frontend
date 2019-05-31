@@ -15,6 +15,7 @@ type Props = {
     onCommit?: ?(string) => void,
     onFocus?: ?(SyntheticInputEvent<EventTarget>) => void,
     onKeyDown?: ?(SyntheticKeyboardEvent<EventTarget>) => void,
+    onValueChange?: ?(string) => void,
     revertOnEsc?: boolean,
     selectAllOnFocus?: boolean,
     tag?: 'input' | 'textarea',
@@ -35,6 +36,7 @@ const TextControl = ({
     onCommit,
     onFocus: onFocusProp,
     onKeyDown: onKeyDownProp,
+    onValueChange,
     revertOnEsc,
     selectAllOnFocus,
     tag,
@@ -142,6 +144,12 @@ const TextControl = ({
             commit()
         }
     }, [immediateCommit, commit])
+
+    useEffect(() => {
+        if (onValueChange) {
+            onValueChange(String(value))
+        }
+    }, [value, onValueChange])
 
     return (
         <Tag
