@@ -127,6 +127,7 @@
     "events": "^3.0.0",
     "expect": "^23.5.0",
     "file-loader": "^1.1.9",
+    "file-saver": "^2.0.2",
     "flow-babel-webpack-plugin": "^1.1.1",
     "flow-bin": "^0.96.0",
     "form-serialize": "^0.7.2",

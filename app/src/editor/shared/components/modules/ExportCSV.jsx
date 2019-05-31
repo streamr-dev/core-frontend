@@ -3,8 +3,10 @@
 import React from 'react'
 import cx from 'classnames'
 import throttle from 'lodash/throttle'
+import { saveAs } from 'file-saver'
 
-import routes from '$routes'
+import api from '$editor/shared/utils/api'
+import { formatApiUrl } from '$shared/utils/url'
 import ModuleSubscription from '../ModuleSubscription'
 
 import styles from './ExportCSV.pcss'
@@ -36,6 +38,12 @@ export default class ExportCSVModule extends React.Component<Props, State> {
         link: undefined,
     }
 
+    unmounted = false
+
+    componentWillUnmount() {
+        this.unmounted = true
+    }
+
     onMessage = throttle((msg: CsvMessage) => {
         if (msg && msg.type === 'csvUpdate') {
             this.setState({
@@ -46,11 +54,27 @@ export default class ExportCSVModule extends React.Component<Props, State> {
         }
     }, 250)
 
+    downloadFile = async (filename: string) => {
+        const url = formatApiUrl(`canvases/downloadCsv?filename=${filename}`)
+        const result = await api().get(url, {
+            responseType: 'blob',
+            timeout: 30000,
+        })
+        await saveAs(result.data, filename)
+
+        if (this.unmounted) {
+            return
+        }
+
+        // We need to clear the download link since the file will
+        // be deleted on the server after a succesful download
+        this.setState({
+            link: undefined,
+        })
+    }
+
     render() {
         const { rows, size, link } = this.state
-        const downloadUrl = link && routes.downloadCsv({
-            file: link,
-        })
         return (
             <div className={cx(this.props.className, styles.container)}>
                 <ModuleSubscription
@@ -64,9 +88,16 @@ export default class ExportCSVModule extends React.Component<Props, State> {
                 {size != null && (
                     <div className={styles.text}>Size: {size} kb</div>
                 )}
-                {downloadUrl && (
+                {link && (
                     <div className={styles.text}>
-                        <a href={downloadUrl}>Download CSV</a>
+                        <a
+                            href="#"
+                            onClick={() => {
+                                this.downloadFile(link)
+                            }}
+                        >
+                            Download CSV
+                        </a>
                     </div>
                 )}
             </div>
