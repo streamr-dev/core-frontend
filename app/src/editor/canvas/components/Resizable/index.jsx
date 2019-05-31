@@ -121,6 +121,36 @@ const Resizable = ({
         })
     }, [width, height])
 
+    const updatePreviousSize = useCallback(() => {
+        previousSize.current = {
+            height,
+            width,
+        }
+    }, [width, height])
+
+    const updatePreviousSizeRef: Ref<Function> = useRef(updatePreviousSize)
+
+    useEffect(() => {
+        updatePreviousSizeRef.current = updatePreviousSize
+    }, [updatePreviousSize])
+
+    const commitRef: Ref<Function> = useRef(commit)
+
+    useEffect(() => {
+        commitRef.current = commit
+    }, [commit])
+
+    useEffect(() => {
+        const commit: (any) => void = (commitRef.current: any)
+        const updatePreviousSize: () => void = (updatePreviousSizeRef.current: any)
+
+        updatePreviousSize()
+        commit({
+            dx: 0,
+            dy: 0,
+        })
+    }, [minWidth, minHeight, updatePreviousSize])
+
     return enabled ? (
         <ResizeableContext.Provider value={value}>
             <div
