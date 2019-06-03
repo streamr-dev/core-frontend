@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react'
 
 import CodeEditorWindow from './CodeEditorWindow'
 import DebugWindow from './DebugWindow'
+import useLayoutState from '$editor/shared/hooks/useLayoutState'
 
 export const CodeEditor = ({
     children,
@@ -14,74 +15,31 @@ export const CodeEditor = ({
 }) => {
     const [editorOpen, setEditorOpen] = useState(false)
     const [debugOpen, setDebugOpen] = useState(false)
-    const [editorLayout, setEditorLayout] = useState({
-        x: 0,
-        y: 0,
-        width: 600,
-        height: 400,
-    })
-    const [debugLayout, setDebugLayout] = useState({
-        x: 0,
-        y: 0,
-        width: 600,
-        height: 400,
-    })
+    const [editorLayout, setEditorSize, setEditorPosition] = useLayoutState()
+    const [debugLayout, setDebugSize, setDebugPosition] = useLayoutState()
+
     const onShowEditor = useCallback(() => {
         setEditorOpen(true)
-    }, [setEditorOpen])
+    }, [])
     const onCloseEditor = useCallback(() => {
         setEditorOpen(false)
-    }, [setEditorOpen])
+    }, [])
     const onShowDebug = useCallback(() => {
         setDebugOpen(true)
-    }, [setDebugOpen])
+    }, [])
     const onCloseDebug = useCallback(() => {
         setDebugOpen(false)
-    }, [setDebugOpen])
-    const onEditorPositionUpdate = useCallback((x, y) => {
-        setEditorLayout((layout) => ({
-            ...layout,
-            x,
-            y,
-        }))
-    }, [setEditorLayout])
-    const onEditorSizeUpdate = useCallback((width, height) => {
-        setEditorLayout((layout) => ({
-            ...layout,
-            width,
-            height,
-        }))
-    }, [setEditorLayout])
-    const onDebugPositionUpdate = useCallback((x, y) => {
-        setDebugLayout((layout) => ({
-            ...layout,
-            x,
-            y,
-        }))
-    }, [setDebugLayout])
-    const onDebugSizeUpdate = useCallback((width, height) => {
-        setDebugLayout((layout) => ({
-            ...layout,
-            width,
-            height,
-        }))
-    }, [setDebugLayout])
+    }, [])
 
     return (
         <React.Fragment>
-            {children && children(onShowEditor)}
+            {children && (typeof children === 'function') && children(onShowEditor)}
             {!!editorOpen && (
                 <CodeEditorWindow
-                    position={{
-                        x: editorLayout.x,
-                        y: editorLayout.y,
-                    }}
-                    onPositionUpdate={onEditorPositionUpdate}
-                    size={{
-                        width: editorLayout.width,
-                        height: editorLayout.height,
-                    }}
-                    onSizeUpdate={onEditorSizeUpdate}
+                    position={editorLayout}
+                    onPositionUpdate={setEditorPosition}
+                    size={editorLayout}
+                    onSizeUpdate={setEditorSize}
                     code={code}
                     readOnly={readOnly}
                     onClose={onCloseEditor}
@@ -92,16 +50,10 @@ export const CodeEditor = ({
             )}
             {!!debugOpen && (
                 <DebugWindow
-                    onPositionUpdate={onDebugPositionUpdate}
-                    position={{
-                        x: debugLayout.x,
-                        y: debugLayout.y,
-                    }}
-                    onSizeUpdate={onDebugSizeUpdate}
-                    size={{
-                        width: debugLayout.width,
-                        height: debugLayout.height,
-                    }}
+                    onPositionUpdate={setDebugPosition}
+                    position={debugLayout}
+                    onSizeUpdate={setDebugSize}
+                    size={debugLayout}
                     messages={debugMessages}
                     onClear={onClearDebug}
                     onClose={onCloseDebug}

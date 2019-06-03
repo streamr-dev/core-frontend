@@ -1,9 +1,11 @@
-import React, { useState, useCallback, useMemo } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import cx from 'classnames'
 import { DraggableCore } from 'react-draggable'
 import { Resizable } from 'react-resizable'
 
 import SvgIcon from '$shared/components/SvgIcon'
+import useLayoutState from '$editor/shared/hooks/useLayoutState'
+
 import CanvasWindow from './CanvasWindow'
 
 import styles from './DraggableCanvasWindow.pcss'
@@ -36,87 +38,66 @@ export const Toolbar = ({ children, className }) => (
     </div>
 )
 
-export const DraggableCanvasWindow = (props) => {
-    const [layout, setLayoutState] = useState({
-        dragging: false,
-        resizing: false,
-        // Current transform x and y.
-        clientX: props.position.x,
-        clientY: props.position.y,
-        width: props.size.width,
-        height: props.size.height,
-    })
+export const DraggableCanvasWindow = ({
+    position,
+    size,
+    onPositionUpdate,
+    onSizeUpdate,
+    children,
+}) => {
+    const [layout, updateSize, updatePosition, setDragging, setResizing] = useLayoutState()
 
     const onDragStart = useCallback(() => {
-        setLayoutState((layout) => ({
-            ...layout,
-            dragging: true,
-        }))
-    }, [setLayoutState])
+        updatePosition(position.x, position.y)
+        setDragging()
+    }, [updatePosition, setDragging, position])
 
     const onDrag = useCallback((e, coreEvent) => {
-        setLayoutState((layout) => {
-            if (!layout.dragging) { return layout }
+        updatePosition(layout.x + coreEvent.deltaX, layout.y + coreEvent.deltaY)
+    }, [layout, updatePosition])
 
-            return {
-                ...layout,
-                clientX: layout.clientX + coreEvent.deltaX,
-                clientY: layout.clientY + coreEvent.deltaY,
-            }
-        })
-    }, [setLayoutState])
-
-    const onPositionUpdateProp = props.onPositionUpdate
     const onDragStop = useCallback(() => {
         if (!layout.dragging) { return }
 
-        setLayoutState({
-            ...layout,
-            dragging: false,
-        })
+        setDragging(false)
 
-        if (onPositionUpdateProp) {
-            onPositionUpdateProp(layout.clientX, layout.clientY)
+        if (onPositionUpdate) {
+            onPositionUpdate(layout.x, layout.y)
         }
-    }, [layout, setLayoutState, onPositionUpdateProp])
+    }, [layout, setDragging, onPositionUpdate])
+
+    const pos = useMemo(() => ({
+        left: layout.dragging ? layout.x : position.x,
+        top: layout.dragging ? layout.y : position.y,
+    }), [layout, position])
+    const dim = useMemo(() => ({
+        width: layout.resizing ? layout.width : size.width,
+        height: layout.resizing ? layout.height : size.height,
+    }), [layout, size])
 
     const style = useMemo(() => ({
-        left: layout.clientX,
-        top: layout.clientY,
-        width: layout.width,
-        height: layout.height,
-    }), [layout])
-
-    const { width, height } = layout
+        ...pos,
+        ...dim,
+    }), [pos, dim])
 
     const onResizeStart = useCallback(() => {
-        setLayoutState((layout) => ({
-            ...layout,
-            resizing: true,
-        }))
-    }, [setLayoutState])
+        updateSize(size.width, size.height)
+        setResizing()
+    }, [size, updateSize, setResizing])
 
     const onResize = useCallback((e, data) => {
-        setLayoutState((layout) => ({
-            ...layout,
-            height: data.size.height,
-            width: data.size.width,
-        }))
-    }, [setLayoutState])
+        updateSize(data.size.width, data.size.height)
+    }, [updateSize])
 
-    const onSizeUpdateProp = props.onSizeUpdate
     const onResizeStop = useCallback(() => {
         if (!layout.resizing) { return }
 
-        setLayoutState({
-            ...layout,
-            resizing: false,
-        })
+        setResizing(false)
 
-        if (onSizeUpdateProp) {
-            onSizeUpdateProp(layout.width, layout.height)
+        if (onSizeUpdate) {
+            onSizeUpdate(layout.width, layout.height)
         }
-    }, [layout, setLayoutState, onSizeUpdateProp])
+    }, [layout, setResizing, onSizeUpdate])
 
     return (
         <CanvasWindow>
@@ -128,14 +109,14 @@ export const DraggableCanvasWindow = (props) => {
             >
                 <Resizable
                     className={styles.ResizableBox}
-                    width={width}
-                    height={height}
-                    minConstraints={[200, 100]}
+                    width={dim.width}
+                    height={dim.height}
+                    minConstraints={[200, 200]}
                     onResizeStop={onResizeStop}
                     onResize={onResize}
                     onResizeStart={onResizeStart}
                 >
-                    {React.cloneElement(React.Children.only(props.children), {
+                    {React.cloneElement(React.Children.only(children), {
                         style,
                     })}
                 </Resizable>
