@@ -179,7 +179,11 @@ export default class TableModule extends React.Component {
                                 <tr key={row.id}>
                                     {row.cells.map((item, index) => (
                                         /* eslint-disable-next-line react/no-array-index-key */
-                                        <td key={index}>{item}</td>
+                                        <td key={index}>
+                                            <div className={styles.cell}>
+                                                {item}
+                                            </div>
+                                        </td>
                                     ))}
                                 </tr>
                             ))}
