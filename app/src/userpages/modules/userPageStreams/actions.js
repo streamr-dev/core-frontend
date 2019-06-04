@@ -285,9 +285,14 @@ export const updateStreamStatus = (id: StreamId) => (dispatch: Function) => (
 )
 
 export const updateStreamStatuses = (ids: StreamIdList) => (dispatch: Function) => {
-    ids.forEach((id: StreamId) => (
-        dispatch(updateStreamStatus(id))
-    ))
+    ids.reduce(async (previous, id) => {
+        try {
+            await previous
+        } catch (e) {
+            // do nothing
+        }
+        return dispatch(updateStreamStatus(id))
+    }, Promise.resolve())
 }
 
 export const getStreams = () => (dispatch: Function, getState: Function) => {
