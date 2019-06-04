@@ -140,6 +140,9 @@ const Resizable = ({
     commitRef.current = commit
 
     useEffect(() => {
+        // We're using refs because we only want this effect to run when either
+        // minWidth or minHeight change.
+
         const commit: (any) => void = (commitRef.current: any)
         const updatePreviousSize: () => void = (updatePreviousSizeRef.current: any)
 
