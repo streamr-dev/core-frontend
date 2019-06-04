@@ -15,12 +15,14 @@ type Size = {
 type ContextProps = {
     enabled: boolean,
     height: number,
+    setShowHandle: (?boolean) => void,
     width: number,
 }
 
 const defaultContext: ContextProps = {
     enabled: false,
     height: 0,
+    setShowHandle: () => {},
     width: 0,
 }
 
@@ -47,6 +49,8 @@ const Resizable = ({
     ...props
 }: Props) => {
     const { minWidth, minHeight } = useContext(SizeConstraintContext)
+
+    const [showHandle, setShowHandle] = useState(true)
 
     const [size, setSize] = useState({
         height,
@@ -112,6 +116,7 @@ const Resizable = ({
     const value = useMemo(() => ({
         ...size,
         enabled: true,
+        setShowHandle,
     }), [size])
 
     useEffect(() => {
@@ -120,6 +125,33 @@ const Resizable = ({
             width,
         })
     }, [width, height])
+
+    const updatePreviousSize = useCallback(() => {
+        previousSize.current = {
+            height,
+            width,
+        }
+    }, [width, height])
+
+    const updatePreviousSizeRef: Ref<Function> = useRef()
+    updatePreviousSizeRef.current = updatePreviousSize
+
+    const commitRef: Ref<Function> = useRef()
+    commitRef.current = commit
+
+    useEffect(() => {
+        // We're using refs because we only want this effect to run when either
+        // minWidth or minHeight change.
+
+        const commit: (any) => void = (commitRef.current: any)
+        const updatePreviousSize: () => void = (updatePreviousSizeRef.current: any)
+
+        updatePreviousSize()
+        commit({
+            dx: 0,
+            dy: 0,
+        })
+    }, [minWidth, minHeight])
 
     return enabled ? (
         <ResizeableContext.Provider value={value}>
@@ -139,11 +171,13 @@ const Resizable = ({
                 }}
             >
                 {children}
-                <Handle
-                    beforeDrag={prepare}
-                    onDrag={preview}
-                    onDrop={commit}
-                />
+                {!!showHandle && (
+                    <Handle
+                        beforeDrag={prepare}
+                        onDrag={preview}
+                        onDrop={commit}
+                    />
+                )}
             </div>
         </ResizeableContext.Provider>
     ) : (

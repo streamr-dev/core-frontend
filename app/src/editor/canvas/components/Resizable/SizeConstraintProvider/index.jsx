@@ -1,6 +1,7 @@
 // @flow
 
 import React, { type Node, type Context, createContext, useMemo, useState, useCallback } from 'react'
+import debounce from 'lodash/debounce'
 
 type ContextProps = {
     minHeight: number,
@@ -69,9 +70,9 @@ const SizeConstraintProvider = ({ children }: Props) => {
         }))
     }, [setDim])
 
-    const refreshProbes = useCallback(() => {
+    const refreshProbes = useCallback(debounce(() => {
         setProbeRefreshCount((count) => count + 1)
-    }, [])
+    }, 200), [])
 
     const { minWidth, minHeight } = useMemo(() => ({
         minHeight: Object.values(dim.heights).reduce((min, group) => (
