@@ -5,7 +5,7 @@
 import React, { type Node } from 'react'
 
 import Context, { type Props as State } from '$auth/contexts/Session'
-import { isSessionStorageAvailable } from '$shared/utils/storage'
+import { isLocalStorageAvailable } from '$shared/utils/storage'
 
 const SESSION_TOKEN_KEY = 'session.token'
 
@@ -13,7 +13,7 @@ type Props = {
     children: Node,
 }
 
-const storage = isSessionStorageAvailable() ? sessionStorage : null
+const storage = isLocalStorageAvailable() ? window.localStorage : null
 
 class SessionProvider extends React.Component<Props, State> {
     static token(): ?string {
