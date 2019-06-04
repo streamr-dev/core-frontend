@@ -15,14 +15,14 @@ type Size = {
 type ContextProps = {
     enabled: boolean,
     height: number,
-    toggleHandle: (?boolean) => void,
+    setShowHandle: (?boolean) => void,
     width: number,
 }
 
 const defaultContext: ContextProps = {
     enabled: false,
     height: 0,
-    toggleHandle: () => {},
+    setShowHandle: () => {},
     width: 0,
 }
 
@@ -116,7 +116,7 @@ const Resizable = ({
     const value = useMemo(() => ({
         ...size,
         enabled: true,
-        toggleHandle: setShowHandle,
+        setShowHandle,
     }), [size])
 
     useEffect(() => {
