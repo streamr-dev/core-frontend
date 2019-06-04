@@ -1,16 +1,24 @@
-import React, { useCallback, useMemo } from 'react'
+// @flow
+
+import React, { useState, useCallback, useMemo, type Node } from 'react'
 import cx from 'classnames'
 import { DraggableCore } from 'react-draggable'
 import { Resizable } from 'react-resizable'
 
 import SvgIcon from '$shared/components/SvgIcon'
-import useLayoutState from '$editor/shared/hooks/useLayoutState'
 
 import CanvasWindow from './CanvasWindow'
 
 import styles from './DraggableCanvasWindow.pcss'
 
-export const Title = ({ children, onClose }) => (
+type BaseProps = {
+    title?: string,
+    onClose: Function,
+    className?: string,
+    children?: Node,
+}
+
+export const Title = ({ children, onClose }: BaseProps) => (
     <div className={styles.titleContainer}>
         <div className={styles.title}>{children}</div>
         <button
@@ -23,7 +31,7 @@ export const Title = ({ children, onClose }) => (
     </div>
 )
 
-export const Dialog = ({ children, className, onClose, title }) => (
+export const Dialog = ({ children, className, onClose, title }: BaseProps) => (
     <div className={cx(styles.dialog, className)}>
         {!!title && (
             <Title onClose={onClose}>{title}</Title>
@@ -32,11 +40,75 @@ export const Dialog = ({ children, className, onClose, title }) => (
     </div>
 )
 
-export const Toolbar = ({ children, className }) => (
+export const Toolbar = ({ children, className }: BaseProps) => (
     <div className={cx(styles.toolbar, className)}>
         {children}
     </div>
 )
+
+export type Layout = {
+    dragging: boolean,
+    resizing: boolean,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+}
+
+export const useLayoutState = (initialState: Layout = {}) => {
+    const [layout, setLayout] = useState({
+        dragging: false,
+        resizing: false,
+        x: 0,
+        y: 0,
+        width: 600,
+        height: 400,
+        ...initialState,
+    })
+    const updatePosition = useCallback((x: number, y: number) => {
+        setLayout((state) => ({
+            ...state,
+            x,
+            y,
+        }))
+    }, [setLayout])
+    const updateSize = useCallback((width: number, height: number) => {
+        setLayout((state) => ({
+            ...state,
+            width,
+            height,
+        }))
+    }, [setLayout])
+    const setDragging = useCallback((dragging: boolean = true) => {
+        setLayout((state) => ({
+            ...state,
+            dragging,
+        }))
+    }, [setLayout])
+    const setResizing = useCallback((resizing: boolean = true) => {
+        setLayout((state) => ({
+            ...state,
+            resizing,
+        }))
+    }, [setLayout])
+    return useMemo(() => (
+        [layout, updateSize, updatePosition, setDragging, setResizing]
+    ), [layout, updateSize, updatePosition, setDragging, setResizing])
+}
+
+type CanvasWindowProps = {
+    position: {
+        x: number,
+        y: number,
+    },
+    size: {
+        width: number,
+        height: number,
+    },
+    onPositionUpdate: Function,
+    onSizeUpdate: Function,
+    children?: Node,
+}
 
 export const DraggableCanvasWindow = ({
     position,
@@ -44,7 +116,7 @@ export const DraggableCanvasWindow = ({
     onPositionUpdate,
     onSizeUpdate,
     children,
-}) => {
+}: CanvasWindowProps) => {
     const [layout, updateSize, updatePosition, setDragging, setResizing] = useLayoutState()
 
     const onDragStart = useCallback(() => {

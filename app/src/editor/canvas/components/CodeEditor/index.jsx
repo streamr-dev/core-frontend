@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react'
 
 import CodeEditorWindow from './CodeEditorWindow'
 import DebugWindow from './DebugWindow'
-import useLayoutState from '$editor/shared/hooks/useLayoutState'
+import { useLayoutState } from '$editor/canvas/components/DraggableCanvasWindow'
 
 export const CodeEditor = ({
     children,
@@ -20,16 +20,16 @@ export const CodeEditor = ({
 
     const onShowEditor = useCallback(() => {
         setEditorOpen(true)
-    }, [])
+    }, [setEditorOpen])
     const onCloseEditor = useCallback(() => {
         setEditorOpen(false)
-    }, [])
+    }, [setEditorOpen])
     const onShowDebug = useCallback(() => {
         setDebugOpen(true)
-    }, [])
+    }, [setDebugOpen])
     const onCloseDebug = useCallback(() => {
         setDebugOpen(false)
-    }, [])
+    }, [setDebugOpen])
 
     return (
         <React.Fragment>
