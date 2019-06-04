@@ -1,12 +1,11 @@
 // @flow
 
-import React, { useState, useContext } from 'react'
+import React, { useState } from 'react'
 import { connect } from 'react-redux'
 
 import { post } from '$shared/utils/api'
-import useIsMountedRef from '$shared/utils/useIsMountedRef'
+import useIsMounted from '$shared/hooks/useIsMounted'
 import useOnMount from '$shared/utils/useOnMount'
-import SessionContext from '../../contexts/Session'
 import { logout as logoutAction } from '$shared/modules/user/actions'
 import ErrorPageView from '$mp/components/ErrorPageView'
 import routes from '$routes'
@@ -19,21 +18,19 @@ type Props = DispatchProps & {}
 
 const LogoutPage = ({ logout }: Props) => {
     const [error, setError] = useState(null)
-    const { setSessionToken } = useContext(SessionContext)
 
-    const mountedRef = useIsMountedRef()
+    const isMounted = useIsMounted()
 
     useOnMount(() => {
         post(routes.externalLogout())
             .then(
                 () => {
-                    if (setSessionToken && mountedRef.current) {
+                    if (isMounted()) {
                         logout()
-                        setSessionToken(null)
                     }
                 },
                 (e) => {
-                    if (mountedRef.current) {
+                    if (isMounted()) {
                         setError(e)
                     }
                 },
