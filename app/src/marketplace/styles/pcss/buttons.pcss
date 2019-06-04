@@ -142,9 +142,8 @@
 
   .btn.btn-special {
     font-size: 12px;
-    background-color: #FCFBF9;
+    background-color: rgba(255, 255, 255, 0.9);
     display: inline-block;
-    box-shadow: 0 0 3px rgba(0, 0, 0, 0.15);
     border-radius: 20px;
     padding: 0 1.5em;
     color: var(--greyDark);
@@ -154,15 +153,21 @@
     font-family: 'IBM Plex Sans', sans-serif;
     font-weight: var(--medium);
     letter-spacing: 1px;
+    will-change: transform;
 
     &:--enter {
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
       color: var(--greyDark);
+      background-color: rgba(255, 255, 255, 1);
       text-decoration: none;
+      transform: scale(1.05);
     }
 
     &:active {
       background-color: var(--white);
+    }
+
+    &[disabled] {
+      opacity: 0.5;
     }
   }
 

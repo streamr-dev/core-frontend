@@ -57,6 +57,7 @@ module.exports = {
     },
     editor: {
         canvasEditor: routes.canvasEditor(),
+        canvasEmbed: routes.canvasEmbed(),
         dashboardEditor: routes.dashboardEditor(),
     },
     community: {
