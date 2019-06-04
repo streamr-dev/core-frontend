@@ -97,6 +97,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
             canvasExit,
             newCanvas,
             setSpeed,
+            moduleSearchIsOpen,
         } = this.props
 
         if (!canvas) {
@@ -184,10 +185,18 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                     isOpen={canvasSearchIsOpen}
                                     open={this.canvasSearchOpen}
                                 />
-                                <Tooltip value="Add module">
+                                <Tooltip
+                                    value={moduleSearchIsOpen ? (
+                                        'Hide module panel'
+                                    ) : (
+                                        'Show module panel'
+                                    )}
+                                >
                                     <R.Button
-                                        className={styles.ToolbarButton}
-                                        onClick={() => this.props.moduleSearchOpen(!this.props.moduleSearchIsOpen)}
+                                        className={cx(styles.ToolbarButton, styles.AddButton, {
+                                            [styles.active]: !!moduleSearchIsOpen,
+                                        })}
+                                        onClick={() => this.props.moduleSearchOpen(!moduleSearchIsOpen)}
                                         disabled={!canEdit}
                                     >
                                         <SvgIcon name="plus" className={styles.icon} />
