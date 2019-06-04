@@ -312,7 +312,7 @@ msgid "userpages##streams##edit##configure##addField"
 msgstr "+ Add field"
 
 msgid "userpages##streams##edit##configure##help"
-msgstr "You can configure your stream’s fields and data types here. If you’re planning to add historical data, you can choose to have Streamr try to autoconfigure fields or you can edit them yourself."
+msgstr "You can configure your stream’s fields and data types here. This affects how this stream appears on canvases. You can choose to have Streamr try to autoconfigure fields, or you can edit them yourself."
 
 msgid "userpages##streams##edit##configure##autoConfigure"
 msgstr "Always try to autoconfigure field names and types"
@@ -333,7 +333,7 @@ msgid "userpages##streams##edit##configure##historicalStoragePeriod##label"
 msgstr "Historical data storage period (days)"
 
 msgid "userpages##streams##edit##preview##description"
-msgstr "You can configure your stream’s fields and preview the live data here. Streamr will attempt to autoconfigure fields or you can manually edit them yourself. Use the Inspector to view details."
+msgstr "This stream's most recent data is shown here live. Use the Inspector to view the full details of messages."
 
 msgid "userpages##streams##edit##preview##inspect"
 msgstr "Inspect"
@@ -348,31 +348,31 @@ msgid "userpages##streams##delete##confirmButton"
 msgstr "Yes, delete"
 
 msgid "userpages##streams##edit##apiCredentials##description"
-msgstr "If you want to share access to just this stream you can create anonymous keys to do so here. You can assign read only or read + write powers. If you want to grant API access to all your streams, you can do so in "
+msgstr "You can create API keys here that grant access to this stream only. You can assign read only or read + write permissions to these keys. Note that these are different from your user API keys, which you can manage in "
 
-msgid "userpages##streams##edit##history##browseFiles"
-msgstr "Browse files"
+msgid "userpages##streams##edit##history##uploadCsvButton"
+msgstr "Upload CSV"
 
 msgid "userpages##streams##edit##history##upload##description"
-msgstr "If you want to add historical events to this stream, you can do so by uploading a .CSV file, which will be read and stored events will be added to the stream."
+msgstr "If you want to add historical data to this stream, you can do so by uploading a .CSV file, which will be read and the data will be added to the stream."
 
 msgid "userpages##streams##edit##history##storedEvents"
-msgstr "Stored events"
+msgstr "Stored data"
 
 msgid "userpages##streams##edit##history##noEvents"
-msgstr "No stored events. Drop a CSV file here to load some"
+msgstr "No stored data. Drop a CSV file here to load some."
 
 msgid "userpages##streams##edit##history##events"
-msgstr "This stream has stored events between %{start} and %{end}."
+msgstr "This stream has stored data between %{start} and %{end}."
 
 msgid "userpages##streams##edit##history##delete"
 msgstr "Delete"
 
 msgid "userpages##streams##edit##history##deleteRange"
-msgstr "Delete range"
+msgstr "Delete data"
 
 msgid "userpages##streams##edit##history##deleteEvents"
-msgstr "Delete events up to and including"
+msgstr "Delete data up to and including"
 
 msgid "userpages##streams##edit##history##uploadCsv"
 msgstr "Drop your .CSV file here to upload"
@@ -531,8 +531,8 @@ msgstr "Ethereum accounts"
 
 msgid "userpages##profilePage##ethereumAddress##description"
 msgstr ""
-"In addition to your primary Ethereum account, you can connect more accounts to your Streamr user. "
-"You might like to do this to have one account for paying gas fees, and one to receive marketplace payments."
+"You can connect any number of Ethereum accounts to your Streamr identity. "
+"You might use them for the Ethereum one-click login feature or for buying and selling products on the Marketplace."
 
 msgid "userpages##profilePage##ethereumAddress##addAddress"
 msgstr "+ Add address"

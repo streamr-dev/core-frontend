@@ -1,10 +1,9 @@
-# Streamr Frontend App
+# Streamr Core frontend
 
-The frontend app is being built on top of the existing Data Marketplace code and as such, some things will look unfinished while a more consolidated app is being built.
+This is the Streamr Core application frontend, which includes tooling for creating and editing Streamr resources 
+(streams, canvases, dashboards, products), the data marketplace, and related documentation.
 
-**Notes**
-
-* Routes for the Editor and Userpage are temporarily added as part of the Marketplace app (however, these routes are disabled for production builds for now to keep the releasable bundle size smaller)
+The Core frontend runs against an API backend and Ethereum smart contracts. For more information see [Backend](#backend).
 
 ## Folder structure
 
@@ -15,7 +14,7 @@ Although the frontend consists of a single app, the code is structured into diff
 * `editor` is the visual programming environment for canvases
 * `marketplace` contains the data marketplace
 * `shared` has shared code and utilities
-* `userpages` are the user's profile pages
+* `userpages` contains the views for managing a user's Streamr resources
 
 ## Getting Started
 
@@ -26,12 +25,13 @@ npm install
 npm start
 ```
 
-Webpack is configured with live reloading and will be served on http://localhost once the backend docker instance is running (see [Backend](#backend)).
+Webpack is configured with live reloading and will be served on http://localhost once the backend stack is running on Docker (see [Backend](#backend)).
 
 ### Documentation
 
-The live documentation can be found at [streamr.com/docs](https://streamr.com/docs). The documentation content files are held in `/src/docs/content` as MDX files (jsx flavoured markdown). Community contributions are encouraged, please see the [Docs Editing Guide](https://github.com/streamr-dev/streamr-platform/app/src/docs/docsEditingGuide.md) for more information.
-
+The live documentation can be found at [streamr.com/docs](https://streamr.com/docs). 
+The documentation content files are held in `/src/docs/content` as MDX files (jsx flavoured markdown). 
+Community contributions are encouraged, please see the [Docs Editing Guide](https://github.com/streamr-dev/streamr-platform/app/src/docs/docsEditingGuide.md) for more information.
 
 ### Environment & Smart contract configuration
 
@@ -81,7 +81,7 @@ Use `.travis.yml` to set the production values.
 
 #### Routes
 
-Marketplace: [/](/)
+Marketplace: [/marketplace](/marketplace)
 
 Core Pages:  [/core/](/core)
 
@@ -89,9 +89,14 @@ Docs: [/docs](/docs)
 
 ### Backend
 
-To run the app locally, you must install the docker environment to match what is in production. Follow the instructions here: https://github.com/streamr-dev/streamr-docker-dev
+To run the app locally, you must install and start the development environment running on Docker. 
+Follow the instructions [https://github.com/streamr-dev/streamr-docker-dev](here) to start the
+full stack:
+
+`streamr-docker-dev start --all`
 
 Note that the instructions also include login credentials for the local app. 
+
 
 ### Git Branches
 

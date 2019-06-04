@@ -51,8 +51,8 @@ class DatePicker extends React.Component<Props> {
                             <React.Fragment>
                                 <TextField
                                     type={isMobile ? 'date' : 'text'}
-                                    value={value === 'No stored events added yet' ?
-                                        'No stored events added yet' :
+                                    value={value === 'Select date' ?
+                                        'Select date' :
                                         dateFormatter(isMobile ? ISO_DATE_FORMAT : (format || ISO_DATE_FORMAT))(value) || ''}
                                     onBlur={onFocusChange}
                                     onFocus={onFocusChange}

@@ -24,9 +24,10 @@ export const productStates = {
 }
 
 export const ethereumNetworks = {
-    '1': 'Main',
+    '1': 'Mainnet',
     '3': 'Ropsten',
     '4': 'Rinkeby',
+    '5': 'Görli',
     '42': 'Kovan',
 }
 
