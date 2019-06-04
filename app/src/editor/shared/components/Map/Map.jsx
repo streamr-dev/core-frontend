@@ -58,6 +58,7 @@ type Props = {
 
 export default class Map extends React.Component<Props> {
     ref: Ref<LeafletMap> = React.createRef()
+    touched: boolean = false
 
     onResize = () => {
         const { current: map } = this.ref
@@ -65,6 +66,10 @@ export default class Map extends React.Component<Props> {
         if (map) {
             map.leafletElement.invalidateSize(false)
         }
+    }
+
+    markTouched = () => {
+        this.touched = true
     }
 
     render() {
@@ -108,14 +113,20 @@ export default class Map extends React.Component<Props> {
             .values(markers)
 
         let bounds = null
-        if (autoZoom && markerArray.length > 0) {
+        if (autoZoom && markerArray.length > 0 && !this.touched) {
             const positions = markerArray.map((m) => [m.lat, m.long])
             bounds = L.latLngBounds(positions)
         }
 
         return (
             <UiSizeConstraint minWidth={368} minHeight={224}>
-                <div className={cx(className)}>
+                <div
+                    className={cx(className)}
+                    onMouseDown={this.markTouched}
+                    onKeyDown={this.markTouched}
+                    onWheel={this.markTouched}
+                    role="presentation"
+                >
                     <LeafletMap
                         ref={this.ref}
                         center={mapCenter}
