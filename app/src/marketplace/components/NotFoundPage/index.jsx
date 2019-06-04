@@ -31,7 +31,7 @@ const NotFoundPage = () => (
                             to={links.userpages.main}
                             className="btn btn-special"
                         >
-                            <Translate value="notFoundPage.coreaApp" />
+                            <Translate value="notFoundPage.coreApp" />
                         </Link>
                         <Link
                             to={links.marketplace.main}
