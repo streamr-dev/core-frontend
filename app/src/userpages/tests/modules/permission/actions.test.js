@@ -114,7 +114,6 @@ describe('Permission actions', () => {
                 await store.dispatch(actions.getResourcePermissions(resourceType, resourceId))
             } catch (e) {
                 assert.deepStrictEqual(store.getActions().slice(0, 2), expectedActions)
-                assert.equal(store.getActions()[2].level, 'error')
                 done()
             }
         })
