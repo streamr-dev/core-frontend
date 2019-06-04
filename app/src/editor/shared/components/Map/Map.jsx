@@ -139,7 +139,7 @@ export default class Map extends React.Component<Props> {
                         bounds={bounds}
                     >
                         <ResizeWatcher onResize={this.onResize} />
-                        {isHeatmap && (
+                        {isHeatmap && markerArray.length > 0 && (
                             <HeatmapLayer
                                 fitBoundsOnLoad={false}
                                 fitBoundsOnUpdate={false}
