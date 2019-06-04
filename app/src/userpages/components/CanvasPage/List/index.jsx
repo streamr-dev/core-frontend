@@ -185,7 +185,6 @@ class CanvasList extends Component<Props, State> {
                     <Translate value="userpages.canvases.menu.copyUrl" />
                 </DropdownActions.Item>
                 <DropdownActions.Item
-                    disabled={!this.hasWritePermission(canvas.id)}
                     onClick={() => this.confirmDeleteCanvas(canvas)}
                 >
                     <Translate value="userpages.canvases.menu.delete" />
@@ -282,11 +281,6 @@ class CanvasList extends Component<Props, State> {
                                     link={`${links.editor.canvasEditor}/${canvas.id}`}
                                     dropdownActions={this.getActions(canvas)}
                                     image={<CanvasPreview className={styles.PreviewImage} canvas={canvas} />}
-                                    onMenuToggle={(open) => {
-                                        if (open) {
-                                            this.loadCanvasPermissions(canvas.id)
-                                        }
-                                    }}
                                 >
                                     <Tile.Title>{canvas.name}</Tile.Title>
                                     <Tile.Description>

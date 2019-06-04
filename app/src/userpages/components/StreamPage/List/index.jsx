@@ -365,11 +365,6 @@ class StreamList extends Component<Props, State> {
                                                         <DropdownActions
                                                             title={<Meatball alt={I18n.t('userpages.streams.actions')} />}
                                                             noCaret
-                                                            onMenuToggle={(open) => {
-                                                                if (open) {
-                                                                    this.loadStreamPermissions(stream.id)
-                                                                }
-                                                            }}
                                                             menuProps={{
                                                                 modifiers: {
                                                                     offset: {
@@ -389,14 +384,15 @@ class StreamList extends Component<Props, State> {
                                                             <DropdownActions.Item onClick={() => this.onOpenSnippetDialog(stream)}>
                                                                 <Translate value="userpages.streams.actions.copySnippet" />
                                                             </DropdownActions.Item>
-                                                            <DropdownActions.Item onClick={() => this.onOpenShareDialog(stream)}>
+                                                            <DropdownActions.Item
+                                                                onClick={() => this.onOpenShareDialog(stream)}
+                                                            >
                                                                 <Translate value="userpages.streams.actions.share" />
                                                             </DropdownActions.Item>
                                                             <DropdownActions.Item onClick={() => this.onRefreshStatus(stream.id)}>
                                                                 <Translate value="userpages.streams.actions.refresh" />
                                                             </DropdownActions.Item>
                                                             <DropdownActions.Item
-                                                                disabled={!this.hasWritePermission(stream.id)}
                                                                 onClick={() => this.confirmDeleteStream(stream)}
                                                             >
                                                                 <Translate value="userpages.streams.actions.delete" />

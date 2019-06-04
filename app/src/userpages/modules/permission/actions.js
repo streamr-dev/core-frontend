@@ -112,16 +112,18 @@ const saveRemovedResourcePermissionFailure = (resourceType: ResourceType, resour
     permission,
 })
 
-export const getResourcePermissions = (resourceType: ResourceType, resourceId: ResourceId) => (dispatch: Function) => {
+export const getResourcePermissions = (resourceType: ResourceType, resourceId: ResourceId) => async (dispatch: Function) => {
     dispatch(getResourcePermissionsRequest())
-    return api.get(`${getApiUrl(resourceType, resourceId)}/permissions`)
-        .then(
-            (data) => dispatch(getResourcePermissionsSuccess(resourceType, resourceId, data)),
-            (e) => {
-                dispatch(getResourcePermissionsFailure(e))
-                throw e
-            },
-        )
+    const resourcePermissions = await api.get(`${getApiUrl(resourceType, resourceId)}/permissions`)
+        .catch((error) => {
+            dispatch(getResourcePermissionsFailure(error))
+            Notification.push({
+                title: error.message,
+                icon: NotificationIcon.ERROR,
+            })
+            throw error
+        })
+    dispatch(getResourcePermissionsSuccess(resourceType, resourceId, resourcePermissions))
 }
 
 export const setResourceHighestOperationForUser = (
