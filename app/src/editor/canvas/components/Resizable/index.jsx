@@ -133,17 +133,11 @@ const Resizable = ({
         }
     }, [width, height])
 
-    const updatePreviousSizeRef: Ref<Function> = useRef(updatePreviousSize)
+    const updatePreviousSizeRef: Ref<Function> = useRef()
+    updatePreviousSizeRef.current = updatePreviousSize
 
-    useEffect(() => {
-        updatePreviousSizeRef.current = updatePreviousSize
-    }, [updatePreviousSize])
-
-    const commitRef: Ref<Function> = useRef(commit)
-
-    useEffect(() => {
-        commitRef.current = commit
-    }, [commit])
+    const commitRef: Ref<Function> = useRef()
+    commitRef.current = commit
 
     useEffect(() => {
         const commit: (any) => void = (commitRef.current: any)
