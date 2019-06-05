@@ -333,7 +333,7 @@ msgid "userpages##streams##edit##configure##historicalStoragePeriod##label"
 msgstr "Historical data storage period (days)"
 
 msgid "userpages##streams##edit##preview##description"
-msgstr "This stream's most recent data is shown here live. Use the Inspector to view the full details of messages."
+msgstr "This stream's most recent data is shown here live. Use the Inspector to view the full details of the messages."
 
 msgid "userpages##streams##edit##preview##inspect"
 msgstr "Inspect"
@@ -406,6 +406,9 @@ msgstr "Seconds since January 1st 1970 UTC"
 
 msgid "userpages##streams##edit##history##confirmCsv##dateFormats##custom##name"
 msgstr "Custom Java SimpleDateFormat"
+
+msgid "userpages##streams##edit##history##datePicker##selectDate"
+msgstr "Select date"
 
 msgid "userpages##transactions##noTransactions##title"
 msgstr "No transactions."
@@ -669,7 +672,7 @@ msgid "modal##newIdentity##defaultTitle"
 msgstr "Add a name to this Ethereum address"
 
 msgid "modal##newIdentity##placeholder"
-msgstr "eg. Main Eth Address"
+msgstr "eg. Mainnet Eth Address"
 
 msgid "modal##duplicateIdentity##defaultTitle"
 msgstr "Account already connected"
