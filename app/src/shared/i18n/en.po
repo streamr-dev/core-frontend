@@ -190,8 +190,8 @@ msgstr "#%{networkId}"
 
 msgid "shared##errors##incorrectEthereumNetwork"
 msgstr ""
-"Please make sure your wallet is set to use Ethereum %{requiredNetworkName} "
-"net, not %{currentNetworkName} net."
+"Please switch to the %{requiredNetworkName} network in your Ethereum wallet. "
+"It's currently %{currentNetworkName}."
 
 msgid "shared##errors##web3NotEnabled"
 msgstr "Please unlock your wallet or enable access to your account"

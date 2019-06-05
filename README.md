@@ -1,10 +1,7 @@
-# Streamr Frontend App
+# Streamr Core frontend
 
-Consolidated React application for Streamr, containing:
-
-* **Data Marketplace**, a storefront for the world’s data streams. It categorises, bundles, sorts and showcases all publicly available data on the underlying Streamr Network.
-* **Editor**, a visual programming environment for creating Canvases: integrations, oracles, analytics, and other processes that run on the Streamr Engine.
-* **User Pages and User Profile,** a place for users to manage their Streamr resources such as Streams, Canvases, and Dashboards, as well as view and edit their user information.
+This is the Streamr Core application frontend, which includes tooling for creating and editing Streamr resources 
+(streams, canvases, dashboards, products), the data marketplace, and related documentation.
 
 ## Running the app
 

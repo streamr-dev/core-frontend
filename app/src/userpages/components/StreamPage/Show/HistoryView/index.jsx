@@ -278,7 +278,7 @@ class HistoryView extends Component<Props, State> {
                                     onClick={() => this.handleBrowseFilesClick()}
                                     disabled={disabled}
                                 >
-                                    <Translate value="userpages.streams.edit.history.browseFiles" />
+                                    <Translate value="userpages.streams.edit.history.uploadCsvButton" />
                                 </Button>
                             </Col>
                         </Fragment>
@@ -298,7 +298,7 @@ class HistoryView extends Component<Props, State> {
                                     openOnFocus
                                     onChange={this.onDeleteDateChanged}
                                     error={(deleteDataError && deleteDataError.message) || ''}
-                                    value={deleteDate || 'No stored events added yet'}
+                                    value={deleteDate || 'Select date'}
                                     preserveLabelSpace
                                     preserveErrorSpace
                                     className={styles.storedEvents}
