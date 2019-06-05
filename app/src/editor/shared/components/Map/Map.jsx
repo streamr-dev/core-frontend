@@ -6,6 +6,7 @@ import 'leaflet/dist/leaflet.css'
 import { Map as LeafletMap, ImageOverlay, TileLayer, Tooltip, Polyline, type LatLngBounds } from 'react-leaflet'
 import L from 'leaflet'
 import HeatmapLayer from 'react-leaflet-heatmap-layer'
+import throttle from 'lodash/throttle'
 import { type Ref } from '$shared/flowtype/common-types'
 
 import UiSizeConstraint from '../UiSizeConstraint'
@@ -56,9 +57,18 @@ type Props = {
     maxIntensity: number,
 }
 
-export default class Map extends React.Component<Props> {
+type State = {
+    touched: boolean,
+    bounds: ?LatLngBounds,
+}
+
+export default class Map extends React.Component<Props, State> {
     ref: Ref<LeafletMap> = React.createRef()
-    touched: boolean = false
+
+    state = {
+        touched: false,
+        bounds: null,
+    }
 
     onResize = () => {
         const { current: map } = this.ref
@@ -69,8 +79,23 @@ export default class Map extends React.Component<Props> {
     }
 
     markTouched = () => {
-        this.touched = true
+        this.setState({
+            touched: true,
+        })
     }
+
+    calculateBounds = throttle((markers: Array<Marker>, autoZoom: boolean, touched: boolean) => {
+        let bounds = null
+
+        if (autoZoom && markers.length > 0 && !touched) {
+            const positions = markers.map((m) => [m.lat, m.long])
+            bounds = L.latLngBounds(positions)
+        }
+
+        this.setState({
+            bounds,
+        })
+    }, 1000)
 
     render() {
         const {
@@ -95,6 +120,7 @@ export default class Map extends React.Component<Props> {
             radius,
             maxIntensity,
         } = this.props
+        const { touched, bounds } = this.state
         const mapCenter = [centerLat, centerLong]
 
         /* eslint-disable-next-line max-len */
@@ -112,11 +138,7 @@ export default class Map extends React.Component<Props> {
         const markerArray: Array<Marker> = Object
             .values(markers)
 
-        let bounds = null
-        if (autoZoom && markerArray.length > 0 && !this.touched) {
-            const positions = markerArray.map((m) => [m.lat, m.long])
-            bounds = L.latLngBounds(positions)
-        }
+        this.calculateBounds(markerArray, autoZoom, touched)
 
         return (
             <UiSizeConstraint minWidth={368} minHeight={224}>
