@@ -197,14 +197,6 @@ class StreamList extends Component<Props, State> {
         }
     }
 
-    loadStreamPermissions = (id: StreamId) => {
-        const { permissions, getStreamPermissions, fetchingPermissions } = this.props
-
-        if (!fetchingPermissions && !permissions[id]) {
-            getStreamPermissions(id)
-        }
-    }
-
     hasWritePermission = (id: StreamId) => {
         const { fetchingPermissions, permissions, user } = this.props
 

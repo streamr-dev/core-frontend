@@ -45,28 +45,30 @@ export class ShareDialog extends Component<Props, State> {
 
     unmounted: boolean = false
 
-    async componentDidMount() {
+    componentDidMount() {
+        this.loadPermissions()
+    }
+
+    componentWillUnmount() {
+        this.unmounted = true
+    }
+
+    async loadPermissions() {
         try {
             await this.props.getResourcePermissions()
             if (!this.unmounted) {
-                // eslint-disable-next-line react/no-did-mount-set-state
                 this.setState({
                     fetching: false,
                 })
             }
         } catch (error) {
             if (!this.unmounted) {
-                // eslint-disable-next-line react/no-did-mount-set-state
                 this.setState({
                     fetching: false,
                     error,
                 })
             }
         }
-    }
-
-    componentWillUnmount() {
-        this.unmounted = true
     }
 
     save = () => {
