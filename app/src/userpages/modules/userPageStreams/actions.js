@@ -285,14 +285,26 @@ export const updateStreamStatus = (id: StreamId) => (dispatch: Function) => (
 )
 
 export const updateStreamStatuses = (ids: StreamIdList) => (dispatch: Function) => {
-    ids.reduce(async (previous, id) => {
-        try {
-            await previous
-        } catch (e) {
-            // do nothing
+    let cancelled = false
+
+    const fetchStatuses = async () => {
+        for (let index = 0; index < ids.length && !cancelled; index += 1) {
+            // eslint-disable-next-line no-await-in-loop
+            await dispatch(updateStreamStatus(ids[index]))
         }
-        return dispatch(updateStreamStatus(id))
-    }, Promise.resolve())
+    }
+
+    fetchStatuses()
+
+    return () => {
+        cancelled = true
+    }
+}
+
+let streamStatusCancel = () => null
+
+export const cancelStreamStatusFetch = () => {
+    streamStatusCancel()
 }
 
 export const getStreams = () => (dispatch: Function, getState: Function) => {
@@ -304,6 +316,8 @@ export const getStreams = () => (dispatch: Function, getState: Function) => {
         sortBy: 'lastUpdated',
     })
 
+    streamStatusCancel()
+
     return services.getStreams(params)
         .then((data) => data.map((stream) => ({
             ...stream,
@@ -312,7 +326,7 @@ export const getStreams = () => (dispatch: Function, getState: Function) => {
         .then(handleEntities(streamsSchema, dispatch))
         .then((ids) => {
             dispatch(getStreamsSuccess(ids))
-            dispatch(updateStreamStatuses(ids))
+            streamStatusCancel = dispatch(updateStreamStatuses(ids))
         })
         .catch((e) => {
             dispatch(getStreamsFailure(e))
