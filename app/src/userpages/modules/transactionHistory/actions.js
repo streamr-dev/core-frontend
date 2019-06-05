@@ -52,7 +52,15 @@ const getTransactionsFailure = (error: ErrorInUi) => ({
 
 export const fetchProducts = (ids: ProductIdList) => (dispatch: Function) => {
     (ids || []).forEach((id) => {
-        getProductFromContract(id).then(handleEntities(contractProductSchema, dispatch))
+        try {
+            getProductFromContract(id, true)
+                .then(handleEntities(contractProductSchema, dispatch))
+                .catch((e) => {
+                    console.warn(e)
+                })
+        } catch (e) {
+            console.warn(e)
+        }
     })
 }
 
@@ -78,8 +86,7 @@ export const showEvents = () => (dispatch: Function, getState: () => StoreState)
     return services.getTransactionsFromEvents(eventsToFetch)
         .then((data: TransactionEntityList) => {
             const productsToFetch: ProductIdList = data
-                .filter((transaction: TransactionEntity) => !(
-                    transaction.productId &&
+                .filter((transaction: TransactionEntity) => transaction.productId && transaction.productId !== '0x0' && !(
                     entities.contractProducts &&
                     entities.contractProducts[transaction.productId]
                 ))

@@ -1,7 +1,7 @@
 // @flow
 
 import merge from 'lodash/merge'
-import web3Utils from 'web3-utils'
+import { isAddress } from 'web3-utils'
 
 import { searchCharMax } from './constants'
 
@@ -18,7 +18,7 @@ const defaultOptions: Options = {
 
 export const isValidSearchQuery = (value: string) => value.length <= searchCharMax
 
-export const isEthereumAddress = (value: string) => web3Utils.isAddress(value)
+export const isEthereumAddress = (value: string) => isAddress(value)
 
 export const validate = (schema: any, item: any, options?: Options) => schema.validate(item, merge({}, defaultOptions, options))
     .catch((ValidationError) => {
