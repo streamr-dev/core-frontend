@@ -64,10 +64,15 @@ type State = {
 
 export default class Map extends React.Component<Props, State> {
     ref: Ref<LeafletMap> = React.createRef()
+    unmounted: boolean = false
 
     state = {
         touched: false,
         bounds: null,
+    }
+
+    componentWillUnmount() {
+        this.unmounted = true
     }
 
     onResize = () => {
@@ -92,6 +97,9 @@ export default class Map extends React.Component<Props, State> {
             bounds = L.latLngBounds(positions)
         }
 
+        if (this.unmounted) {
+            return
+        }
         this.setState({
             bounds,
         })
