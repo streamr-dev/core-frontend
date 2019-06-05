@@ -697,14 +697,12 @@ export function setHistoricalRange(canvas, update = {}) {
         }
     }
 
-    if (beginDate === settings.beginDate && endDate === settings.endDate) { return canvas }
-
     return updateCanvas({
         ...canvas,
         settings: {
             ...canvas.settings,
-            beginDate: new Date(beginDate).toISOString(),
-            endDate: new Date(endDate).toISOString(),
+            beginDate: beginDate ? new Date(beginDate).toISOString() : canvas.settings.beginDate,
+            endDate: endDate ? new Date(endDate).toISOString() : canvas.settings.endDate,
         },
     })
 }
