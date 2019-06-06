@@ -22,8 +22,11 @@ describe('web3 utils', () => {
 
     describe('getEthBalance', () => {
         it('gets ethereum balance', async () => {
-            sandbox.stub(web3.eth, 'getAccounts').callsFake(() => Promise.resolve(['0xTEST']))
-            sandbox.stub(web3.eth, 'getBalance').callsFake(() => Promise.resolve(123450000000000000))
+            sandbox.stub(web3, 'eth').value({
+                getAccounts: sandbox.stub().callsFake(() => Promise.resolve(['0xTEST'])),
+                getBalance: sandbox.stub().callsFake(() => Promise.resolve(123450000000000000)),
+            })
+
             const balance = await all.getEthBalance(web3)
             assert.deepStrictEqual(balance, '0.12345')
         })
