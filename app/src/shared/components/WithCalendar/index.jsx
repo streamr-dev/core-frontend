@@ -102,7 +102,7 @@ class WithCalendar extends React.Component<Props, State> {
             const isOpen = typeof open === 'boolean' ? open : !state.open
             let date = isOpen ? state.date : undefined
             if (!state.open && isOpen) {
-                date = this.props.date // eslint-disable-line prefer-destructuring
+                date = this.props.date || new Date() // eslint-disable-line prefer-destructuring
             }
             return {
                 open: isOpen,
@@ -136,8 +136,9 @@ class WithCalendar extends React.Component<Props, State> {
     }
 
     render() {
-        const { date, open } = this.state
+        const { open } = this.state
         const { disabled, className, wrapperClassname } = this.props
+        const date = open ? this.state.date : this.props.date
 
         return (
             <div ref={this.rootRef} className={cx(styles.root, className)}>
