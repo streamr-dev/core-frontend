@@ -74,7 +74,7 @@ export const mapProductToApi = (product: Product | EditProduct) => {
 }
 
 export const getValidId = (id: string, prefix: boolean = true): string => {
-    if (!isValidHexString(id)) {
+    if (!isValidHexString(id) || parseInt(id, 16) === 0) {
         throw new Error(`${id} is not valid hex string`)
     }
     return prefix ? getPrefixedHexString(id) : getUnprefixedHexString(id)
