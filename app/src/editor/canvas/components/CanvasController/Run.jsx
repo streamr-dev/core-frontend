@@ -136,7 +136,20 @@ function useRunController(canvas = EMPTY) {
 
     const isPending = !!(isStopping || isStarting || isAnyPending)
 
+    // controls whether user can currently start/stop canvas
+    const canChangeRunState = (
+        !isPending && // no pending
+        hasWritePermission && ( // has write perms
+            // check historical settings ok if historical
+            !isHistorical ||
+            // don't prevent stopping running canvas if not valid
+            isRunning ||
+            CanvasState.isHistoricalRunValid(canvas)
+        )
+    )
+
     return useMemo(() => ({
+        canChangeRunState,
         isStarting,
         isStopping,
         isPending,
@@ -151,7 +164,7 @@ function useRunController(canvas = EMPTY) {
         stop,
         exit,
     }), [canvas, isPending, isStarting, isActive, isRunning, isHistorical, isEditable,
-        hasSharePermission, hasWritePermission, isStopping, start, stop, exit])
+        hasSharePermission, hasWritePermission, isStopping, start, stop, exit, canChangeRunState])
 }
 
 export default function RunControllerProvider({ children, canvas }) {

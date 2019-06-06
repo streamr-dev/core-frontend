@@ -677,7 +677,7 @@ export function limitLayout(canvas) {
 }
 
 /**
- * Ensures historical 'beingDate' is before 'endDate'
+ * Ensures historical 'beginDate' is before 'endDate'
  */
 
 export function setHistoricalRange(canvas, update = {}) {
@@ -705,6 +705,12 @@ export function setHistoricalRange(canvas, update = {}) {
             endDate: endDate ? new Date(endDate).toISOString() : canvas.settings.endDate,
         },
     })
+}
+
+export function isHistoricalRunValid(canvas = {}) {
+    const { settings = {} } = canvas
+    const { beginDate, endDate } = settings
+    return !!(beginDate && endDate && Date.parse(beginDate) <= Date.parse(endDate))
 }
 
 /**
