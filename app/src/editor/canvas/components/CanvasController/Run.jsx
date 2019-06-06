@@ -94,7 +94,11 @@ function useRunController(canvas = EMPTY) {
     const stop = useCallback(async (canvas) => {
         setIsStopping(true)
         return stopPending.wrap(() => services.stop(canvas))
-            .catch(async (err) => {
+            .then((canvas) => {
+                if (!isMountedRef.current) { return }
+                setIsStopping(false)
+                return canvas
+            }, async (err) => {
                 if (isStateNotAllowedError(err)) {
                     if (!canvas.adhoc) { return } // trying to stop an already stopped canvas, ignore
                     const parent = await unlinkParent(canvas) // ensure adhoc canvas gets unlinked
