@@ -36,9 +36,8 @@ const publicPath = `${process.env.PLATFORM_PUBLIC_PATH || ''}/`
 
 module.exports = {
     mode: isProduction() ? 'production' : 'development',
-    // babel-polyfill is required to get async-await to work
     entry: [
-        'babel-polyfill',
+        '@babel/polyfill',
         // forcibly print diagnostics upfront
         path.resolve(root, 'src', 'shared', 'utils', 'diagnostics.js'),
         path.resolve(root, 'src', 'index.jsx'),
@@ -51,11 +50,19 @@ module.exports = {
         publicPath,
     },
     module: {
+        strictExportPresence: true,
         rules: [
             {
                 test: /\.mdx?$/,
                 use: [
-                    'babel-loader',
+                    {
+                        loader: 'babel-loader',
+                        options: {
+                            rootMode: 'upward',
+                            cacheDirectory: !isProduction(),
+                            compact: isProduction(),
+                        },
+                    },
                     '@mdx-js/loader',
                 ],
             },
@@ -73,9 +80,11 @@ module.exports = {
             {
                 test: /.jsx?$/,
                 loader: 'babel-loader',
-                include: [path.resolve(root, 'src'), path.resolve(root, 'scripts'), /node_modules\/stringify-object/, /node_modules\/query-string/],
+                include: [path.resolve(root, 'src'), path.resolve(root, 'scripts'), /node_modules\/stringify-object/],
                 options: {
+                    rootMode: 'upward',
                     cacheDirectory: !isProduction(),
+                    compact: isProduction(),
                 },
             },
             // Images are put to <BASE_URL>/images
@@ -138,7 +147,6 @@ module.exports = {
     },
     plugins: [
         // Common plugins between prod and dev
-        new CleanWebpackPlugin([dist]),
         new HtmlWebpackPlugin({
             template: 'src/index.html',
             templateParameters: {
@@ -193,6 +201,7 @@ module.exports = {
             }),
         ] : []),
     ].concat(isProduction() ? [
+        new CleanWebpackPlugin([dist]),
         // Production plugins
         new webpack.optimize.OccurrenceOrderPlugin(),
         new webpack.EnvironmentPlugin({
