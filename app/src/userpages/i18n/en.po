@@ -416,6 +416,21 @@ msgstr "No transactions."
 msgid "userpages##transactions##noTransactions##message"
 msgstr "You haven't made any transactions yet."
 
+msgid "userpages##transactions##noAccountsLinked##linkAccount"
+msgstr "Link account"
+
+msgid "userpages##transactions##noAccountsLinked##title"
+msgstr "Account not linked."
+
+msgid "userpages##transactions##noAccountsLinked##message"
+msgstr "You need to link an Ethereum account to see your transaction history."
+
+msgid "userpages##transactions##currentAccountNotLinked##title"
+msgstr "Account not linked."
+
+msgid "userpages##transactions##currentAccountNotLinked##message"
+msgstr "You need to link the current Ethereum account to see your transaction history."
+
 msgid "userpages##dashboards##createDashboard"
 msgstr "Create dashboard"
 
