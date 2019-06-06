@@ -12,7 +12,7 @@ type Props = {
 const Chart = ({ className }: Props) => (
     <div className={cx(styles.root, className)}>
         <div className={styles.toolbar}>
-            <RangeSelect />
+            <RangeSelect onChange={() => {}} />
         </div>
     </div>
 )

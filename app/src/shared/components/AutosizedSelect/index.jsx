@@ -8,8 +8,8 @@ import styles from './autosizedSelect.pcss'
 
 type Props = {
     className?: ?string,
-    value: string,
-    onChange: (string) => void,
+    value: any,
+    onChange: (any) => void,
     children: ChildrenArray<Element<'option'>>,
 }
 

@@ -1,15 +1,11 @@
 // @flow
 
-import React from 'react'
+import React, { useCallback } from 'react'
 import cx from 'classnames'
 import { I18n } from 'react-redux-i18n'
 import SvgIcon from '$shared/components/SvgIcon'
 import AutosizedSelect from '$shared/components/AutosizedSelect'
 import styles from './rangeSelect.pcss'
-
-type Props = {
-    className?: ?string,
-}
 
 const ranges = [
     // All
@@ -42,25 +38,44 @@ const ranges = [
     1000,
 ]
 
-const RangeSelect = ({ className }: Props) => (
-    <div className={cx(styles.root, className)}>
-        <AutosizedSelect
-            className={styles.select}
-            onChange={() => {}}
-            value="all"
-        >
-            {ranges.map((range) => (
-                <option key={range} value={range}>
-                    {/* AutosizedSelect's children have to be strings. */}
-                    {I18n.t(`editor.timeRange.${range}`)}
+type Range = number | 'all'
+
+type Props = {
+    className?: ?string,
+    onChange?: ?(Range) => void,
+    value?: Range,
+}
+
+const RangeSelect = ({ className, value, onChange: onChangeProp }: Props) => {
+    const onChange = useCallback((value: string) => {
+        if (onChangeProp) {
+            onChangeProp(value === 'all' ? value : Number.parseInt(value, 10))
+        }
+    }, [onChangeProp])
+
+    return (
+        <div className={cx(styles.root, className)}>
+            <AutosizedSelect
+                className={styles.select}
+                onChange={onChange}
+                value={value}
+            >
+                <option disabled value="">
+                    Range
                 </option>
-            ))}
-        </AutosizedSelect>
-        <SvgIcon
-            name="caretDown"
-            className={styles.caret}
-        />
-    </div>
-)
+                {ranges.map((range) => (
+                    <option key={range} value={range}>
+                        {/* AutosizedSelect's children have to be strings. */}
+                        {I18n.t(`editor.timeRange.${range}`)}
+                    </option>
+                ))}
+            </AutosizedSelect>
+            <SvgIcon
+                name="caretDown"
+                className={styles.caret}
+            />
+        </div>
+    )
+}
 
 export default RangeSelect
