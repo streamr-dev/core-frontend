@@ -677,6 +677,43 @@ export function limitLayout(canvas) {
 }
 
 /**
+ * Ensures historical 'beginDate' is before 'endDate'
+ */
+
+export function setHistoricalRange(canvas, update = {}) {
+    const { settings = {} } = canvas
+    let { beginDate, endDate } = settings
+    if (update.beginDate) {
+        beginDate = update.beginDate // eslint-disable-line prefer-destructuring
+        if (endDate && Date.parse(update.beginDate) > Date.parse(endDate)) {
+            endDate = beginDate
+        }
+    }
+
+    if (update.endDate) {
+        endDate = update.endDate // eslint-disable-line prefer-destructuring
+        if (beginDate && Date.parse(beginDate) > Date.parse(update.endDate)) {
+            beginDate = endDate
+        }
+    }
+
+    return updateCanvas({
+        ...canvas,
+        settings: {
+            ...canvas.settings,
+            beginDate: beginDate ? new Date(beginDate).toISOString() : canvas.settings.beginDate,
+            endDate: endDate ? new Date(endDate).toISOString() : canvas.settings.endDate,
+        },
+    })
+}
+
+export function isHistoricalRunValid(canvas = {}) {
+    const { settings = {} } = canvas
+    const { beginDate, endDate } = settings
+    return !!(beginDate && endDate && Date.parse(beginDate) <= Date.parse(endDate))
+}
+
+/**
  * Variadic Port Handling
  */
 

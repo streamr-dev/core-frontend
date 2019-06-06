@@ -279,10 +279,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
 
     setHistorical = (update = {}) => {
         this.setCanvas({ type: 'Set Historical Range' }, (canvas) => (
-            CanvasState.updateCanvas(canvas, 'settings', (settings = {}) => ({
-                ...settings,
-                ...update,
-            }))
+            CanvasState.setHistoricalRange(canvas, update)
         ))
     }
 

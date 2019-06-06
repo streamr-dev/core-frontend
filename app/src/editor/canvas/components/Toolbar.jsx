@@ -108,7 +108,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
 
         const runController = this.context
         const { runButtonDropdownOpen, canvasSearchIsOpen } = this.state
-        const { isRunning, isActive, isPending, hasWritePermission } = runController
+        const { isRunning, isActive, hasWritePermission, canChangeRunState } = runController
         const canEdit = runController.isEditable
         const canShare = runController.hasSharePermission
         const { settings = {} } = canvas
@@ -211,7 +211,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                     })}
                                 >
                                     <R.Button
-                                        disabled={!!isPending || !hasWritePermission}
+                                        disabled={!canChangeRunState}
                                         onClick={() => {
                                             if (isRunning) {
                                                 return canvasStop()
@@ -236,7 +236,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                             toggle={this.onToggleRunButtonMenu}
                                             className={styles.RunDropdownButton}
                                         >
-                                            <R.DropdownToggle disabled={!canEdit} caret>
+                                            <R.DropdownToggle disabled={!canChangeRunState} caret>
                                                 {!runButtonDropdownOpen && (
                                                     <SvgIcon name="caretUp" />
                                                 )}
@@ -246,6 +246,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                             </R.DropdownToggle>
                                             <R.DropdownMenu
                                                 className={cx(styles.RunButtonMenu, styles.HistoricalRunButtonMenu)}
+                                                disabled={!canChangeRunState}
                                                 right
                                             >
                                                 <R.DropdownItem

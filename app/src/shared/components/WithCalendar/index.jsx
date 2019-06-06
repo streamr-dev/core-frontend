@@ -26,7 +26,7 @@ type Props = WithCalendarProps & {
 
 type State = {
     open: boolean,
-    date: Date,
+    date: ?Date,
 }
 
 class WithCalendar extends React.Component<Props, State> {
@@ -38,7 +38,7 @@ class WithCalendar extends React.Component<Props, State> {
 
     state = {
         open: false,
-        date: this.props.date || new Date(),
+        date: undefined,
     }
 
     componentDidMount() {
@@ -98,9 +98,17 @@ class WithCalendar extends React.Component<Props, State> {
     rootRef: Ref<HTMLDivElement> = React.createRef()
 
     toggle = (open?: boolean) => {
-        this.setState((state) => ({
-            open: typeof open === 'boolean' ? open : !state.open,
-        }))
+        this.setState((state) => {
+            const isOpen = typeof open === 'boolean' ? open : !state.open
+            let date = isOpen ? state.date : undefined
+            if (!state.open && isOpen) {
+                date = this.props.date || new Date() // eslint-disable-line prefer-destructuring
+            }
+            return {
+                open: isOpen,
+                date,
+            }
+        })
     }
 
     children(): React.Node {
@@ -113,7 +121,8 @@ class WithCalendar extends React.Component<Props, State> {
             wrapperClassname,
             ...props
         } = this.props
-        const { date } = this.state
+
+        const date = this.state.open ? this.state.date : this.props.date
 
         if (typeof children === 'function') {
             return children({
@@ -127,8 +136,9 @@ class WithCalendar extends React.Component<Props, State> {
     }
 
     render() {
-        const { date, open } = this.state
+        const { open } = this.state
         const { disabled, className, wrapperClassname } = this.props
+        const date = open ? this.state.date : this.props.date
 
         return (
             <div ref={this.rootRef} className={cx(styles.root, className)}>

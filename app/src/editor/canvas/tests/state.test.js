@@ -202,6 +202,52 @@ describe('Canvas State', () => {
                     expect(() => State.arePortsOfSameModule(canvasWithTwoModules, 'missing', port.id)).toThrowError(State.MissingEntityError)
                 })
             })
+
+            describe('setHistoricalRange', () => {
+                const earlyDate = new Date(Date.now() - 9999999).toISOString()
+                const lateDate = new Date().toISOString()
+                it('should set endDate to beginDate when beginDate < endDate', () => {
+                    let canvas = State.emptyCanvas()
+                    const beginDate = earlyDate
+                    const endDate = lateDate
+                    canvas = State.setHistoricalRange(canvas, {
+                        beginDate,
+                    })
+                    canvas = State.setHistoricalRange(canvas, {
+                        endDate,
+                    })
+                    expect(canvas.settings.beginDate).toEqual(beginDate)
+                    expect(canvas.settings.endDate).toEqual(endDate)
+                })
+
+                it('should set beginDate to endDate when beginDate < endDate & beginDate last set', () => {
+                    const endDate = earlyDate
+                    const beginDate = lateDate
+                    let canvas = State.emptyCanvas()
+                    canvas = State.setHistoricalRange(canvas, {
+                        beginDate,
+                    })
+                    canvas = State.setHistoricalRange(canvas, {
+                        endDate,
+                    })
+                    expect(canvas.settings.beginDate).toEqual(endDate)
+                    expect(canvas.settings.endDate).toEqual(endDate)
+                })
+
+                it('should set endDate to beginDate when beginDate < endDate & endDate last set', () => {
+                    const endDate = earlyDate
+                    const beginDate = lateDate
+                    let canvas = State.emptyCanvas()
+                    canvas = State.setHistoricalRange(canvas, {
+                        endDate,
+                    })
+                    canvas = State.setHistoricalRange(canvas, {
+                        beginDate,
+                    })
+                    expect(canvas.settings.beginDate).toEqual(beginDate)
+                    expect(canvas.settings.endDate).toEqual(beginDate)
+                })
+            })
         })
     })
 })
