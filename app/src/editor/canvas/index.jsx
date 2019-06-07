@@ -383,7 +383,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                 </Sidebar>
                 <ModuleSearch
                     addModule={this.addAndSelectModule}
-                    isOpen={this.state.moduleSearchIsOpen}
+                    isOpen={runController.isEditable && this.state.moduleSearchIsOpen}
                     open={this.moduleSearchOpen}
                     canvas={canvas}
                 />
