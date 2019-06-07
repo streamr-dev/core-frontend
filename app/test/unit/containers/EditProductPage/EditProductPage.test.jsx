@@ -128,7 +128,7 @@ describe('EditProductPage', () => {
             }
             delete alteredProps.editProduct
             wrapper = shallow(<EditProductPage {...alteredProps} />)
-            wrapper.setProps(...props)
+            wrapper.setProps(props)
             expect(props.initEditProductProp.callCount).toEqual(1)
         })
     })
