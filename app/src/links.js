@@ -37,6 +37,7 @@ module.exports = {
         introduction: routes.docsIntroduction(),
         main: routes.docs(),
         streamrEngine: routes.docsStreamrEngine(),
+        streams: routes.docsStreams(),
         tutorials: routes.docsTutorials(),
         userPage: routes.docsUserPage(),
         visualEditor: routes.docsVisualEditor(),
