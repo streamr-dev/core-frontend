@@ -37,7 +37,6 @@ const publicPath = `${process.env.PLATFORM_PUBLIC_PATH || ''}/`
 module.exports = {
     mode: isProduction() ? 'production' : 'development',
     entry: [
-        '@babel/polyfill',
         // forcibly print diagnostics upfront
         path.resolve(root, 'src', 'shared', 'utils', 'diagnostics.js'),
         path.resolve(root, 'src', 'index.jsx'),
@@ -80,7 +79,7 @@ module.exports = {
             {
                 test: /.jsx?$/,
                 loader: 'babel-loader',
-                include: [path.resolve(root, 'src'), path.resolve(root, 'scripts'), /node_modules\/stringify-object/],
+                include: [path.resolve(root, 'src'), path.resolve(root, 'scripts')],
                 options: {
                     rootMode: 'upward',
                     cacheDirectory: !isProduction(),
