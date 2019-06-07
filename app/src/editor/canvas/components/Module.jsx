@@ -159,6 +159,7 @@ class CanvasModule extends React.PureComponent {
                 onFocus={() => api.selectModule({ hash: module.hash })}
                 className={cx(className, styles.CanvasModule, ModuleStyles.ModuleBase, ...moduleSpecificStyles, {
                     [ModuleStyles.isSelected]: isSelected,
+                    [ModuleStyles.disabled]: this.context.isPending, // disable edits while loading
                 })}
                 width={parseInt(layout.width, 10)}
                 height={parseInt(layout.height, 10)}
