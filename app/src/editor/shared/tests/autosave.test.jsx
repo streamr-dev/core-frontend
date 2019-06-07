@@ -26,7 +26,7 @@ describe('CancellableDebounce', () => {
         const startedAt = Date.now()
         expect(await debouncedFn(value)).toBe(value)
         // at least wait ms elapsed
-        expect(Date.now() - startedAt).toBeGreaterThan(wait)
+        expect(Date.now() - startedAt).toBeGreaterThanOrEqual(wait)
         expect(saveFn).toHaveBeenCalledTimes(1)
         expect(saveFn).toHaveBeenCalledWith(value)
     })
