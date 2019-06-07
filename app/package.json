@@ -63,7 +63,9 @@
       "\\$editor/(.*)$": "<rootDir>/src/editor/$1",
       "\\$docs/(.*)$": "<rootDir>/src/docs/$1"
     },
-    "setupFilesAfterEnv": ["<rootDir>/test/test-utils/setupTests.js"]
+    "setupFilesAfterEnv": [
+      "<rootDir>/test/test-utils/setupTests.js"
+    ]
   },
   "dependencies": {
     "@babel/core": "^7.4.5",
@@ -117,7 +119,7 @@
     "dotenv": "^6.0.0",
     "dotenv-safe": "^6.0.0",
     "empty": "^0.10.1",
-    "enzyme": "^3.3.0",
+    "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.1.1",
     "eslint": "^4.18.1",
     "eslint-config-airbnb": "^16.1.0",

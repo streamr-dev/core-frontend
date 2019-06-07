@@ -10,6 +10,8 @@ module.exports = function BabelConfig(api) {
             ['@babel/preset-env',
                 api.env('test')
                     ? {
+                        useBuiltIns: 'usage',
+                        corejs: 3,
                         targets: {
                             node: 'current',
                         },
