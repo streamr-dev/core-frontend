@@ -10,6 +10,7 @@ import type { LatLngBounds } from 'react-leaflet'
 
 import Map, { type Marker, type TracePoint } from '../Map/Map'
 import ModuleSubscription from '../ModuleSubscription'
+import { isRunning } from '$editor/canvas/state'
 
 import styles from './Map.pcss'
 
@@ -18,6 +19,7 @@ const UPDATE_INTERVAL_MS = 50
 type Props = {
     className?: ?string,
     module: Object,
+    canvas: Object,
 }
 
 type State = {
@@ -78,6 +80,14 @@ export default class MapModule extends React.PureComponent<Props, State> {
 
         if (this.state.imageMap && customImageUrl !== prevProps.module.options.customImageUrl.value) {
             this.loadImage(customImageUrl)
+        }
+
+        if (this.props.canvas && isRunning(this.props.canvas) !== isRunning(prevProps.canvas) && isRunning(this.props.canvas)) {
+            // Clear markers when canvas is started
+            /* eslint-disable-next-line react/no-did-update-set-state */
+            this.setState({
+                markers: {},
+            })
         }
     }
 
