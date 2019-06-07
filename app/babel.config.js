@@ -9,12 +9,15 @@ module.exports = function BabelConfig(api) {
                             node: 'current',
                         },
                     } : {
-                        useBuiltIns: 'entry',
+                        useBuiltIns: 'usage',
                         modules: false,
                         corejs: 3,
                         exclude: ['transform-typeof-symbol'],
                         targets: [
                             '> 1.5%',
+                            'Opera >= 58',
+                            'Safari >= 12',
+                            'Edge >= 75',
                             'Firefox ESR',
                             'not dead',
                             'not ie <= 11',
