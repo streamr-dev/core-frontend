@@ -36,7 +36,8 @@ const Chart = ({ className, series, datapoints }: Props) => {
         return Object.entries(data).map(([key, data]) => ({
             id: `series-${key}`,
             ...series[key],
-            type: 'line',
+            type: 'spline',
+            step: undefined,
             data,
         }))
     }, [series, datapoints])
