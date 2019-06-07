@@ -53,10 +53,6 @@ function useRunController(canvas = EMPTY) {
     const hasWritePermission = permissions &&
         permissions.some((p) => p.operation === 'write')
 
-    const isEditable = !isActive &&
-        !canvas.adhoc &&
-        hasWritePermission
-
     const start = useCallback(async (canvas, options) => {
         if (isHistorical && !canvas.adhoc) {
             const newCanvas = await createAdhocPending.wrap(() => services.createAdhocCanvas(canvas))
@@ -144,6 +140,17 @@ function useRunController(canvas = EMPTY) {
 
     const isPending = !!(isStopping || isStarting || isAnyPending)
 
+    // e.g. move/resize but not commit
+    const isAdjustable = !isPending
+
+    // write commits
+    const isEditable = (
+        !isActive &&
+        isAdjustable &&
+        !canvas.adhoc &&
+        hasWritePermission
+    )
+
     // controls whether user can currently start/stop canvas
     const canChangeRunState = (
         !isPending && // no pending
@@ -165,13 +172,14 @@ function useRunController(canvas = EMPTY) {
         isActive,
         isRunning,
         isHistorical,
+        isAdjustable,
         isEditable,
         hasSharePermission,
         hasWritePermission,
         start,
         stop,
         exit,
-    }), [canvas, isPending, isStarting, isActive, isRunning, isHistorical, isEditable,
+    }), [canvas, isPending, isStarting, isActive, isRunning, isHistorical, isEditable, isAdjustable,
         hasSharePermission, hasWritePermission, isStopping, start, stop, exit, canChangeRunState])
 }
 

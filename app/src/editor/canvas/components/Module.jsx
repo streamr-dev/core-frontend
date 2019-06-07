@@ -142,6 +142,7 @@ class CanvasModule extends React.PureComponent {
         } = this.props
 
         const { layout } = this.state
+        const { isAdjustable, isEditable } = this.context
 
         const isSelected = module.hash === this.props.selectedModuleHash
 
@@ -159,7 +160,7 @@ class CanvasModule extends React.PureComponent {
                 onFocus={() => api.selectModule({ hash: module.hash })}
                 className={cx(className, styles.CanvasModule, ModuleStyles.ModuleBase, ...moduleSpecificStyles, {
                     [ModuleStyles.isSelected]: isSelected,
-                    [ModuleStyles.disabled]: this.context.isPending, // disable edits while loading
+                    [ModuleStyles.disabled]: !isAdjustable, // disable edits while loading
                 })}
                 width={parseInt(layout.width, 10)}
                 height={parseInt(layout.height, 10)}
@@ -171,11 +172,11 @@ class CanvasModule extends React.PureComponent {
                     <Probe group="ModuleHeight" height="auto" />
                     <ModuleHeader
                         className={cx(styles.header, ModuleStyles.dragHandle)}
-                        editable={!isRunning}
+                        editable={isEditable}
                         label={module.displayName || module.name}
                         onLabelChange={this.onChangeModuleName}
                     >
-                        {isRunning && !!module.canRefresh && (
+                        {!!isRunning && !!module.canRefresh && (
                             <ModuleHeaderButton
                                 className={ModuleStyles.dragCancel}
                                 onFocus={this.onFocusOptionsButton}
