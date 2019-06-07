@@ -63,7 +63,7 @@
       "\\$editor/(.*)$": "<rootDir>/src/editor/$1",
       "\\$docs/(.*)$": "<rootDir>/src/docs/$1"
     },
-    "setupTestFrameworkScriptFile": "<rootDir>/test/test-utils/setupTests.js"
+    "setupFilesAfterEnv": ["<rootDir>/test/test-utils/setupTests.js"]
   },
   "dependencies": {
     "@babel/core": "^7.4.5",
@@ -98,7 +98,7 @@
     "axios": "^0.18.0",
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.2.2",
-    "babel-jest": "^23.6.0",
+    "babel-jest": "^24.8.0",
     "babel-loader": "^8.0.6",
     "babel-plugin-dynamic-import-node": "^2.2.0",
     "bignumber.js": "^7.0.1",
@@ -131,6 +131,7 @@
     "eslint-plugin-react-hooks": "^1.6.0",
     "events": "^3.0.0",
     "expect": "^23.5.0",
+    "extract-text-webpack-plugin": "^3.0.2",
     "file-loader": "^1.1.9",
     "file-saver": "^2.0.2",
     "flow-babel-webpack-plugin": "^1.1.1",
@@ -146,7 +147,7 @@
     "i18next-conv": "^6.0.0",
     "identity-obj-proxy": "^3.0.0",
     "imagemin-webpack-plugin": "^2.4.2",
-    "jest": "^23.1.0",
+    "jest": "^24.8.0",
     "jest-localstorage-mock": "^2.1.0",
     "keythereum": "^1.0.4",
     "leaflet": "^1.4.0",
