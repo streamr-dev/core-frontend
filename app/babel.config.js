@@ -1,5 +1,10 @@
 // adapted from create-react-app
 module.exports = function BabelConfig(api) {
+    if (api.caller(({ name }) => name === 'babel-jest')) {
+        // magic NODE_ENV to test when using babel-jest
+        // e.g. calling jest via npx on command-line
+        process.env.NODE_ENV = 'test'
+    }
     return {
         presets: [
             ['@babel/preset-env',
