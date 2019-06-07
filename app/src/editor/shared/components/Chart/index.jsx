@@ -18,10 +18,11 @@ type Datapoint = {
 type Props = {
     className?: ?string,
     datapoints: Array<Datapoint>,
+    options: any,
     series: any,
 }
 
-const Chart = ({ className, series, datapoints }: Props) => {
+const Chart = ({ className, series, datapoints, options }: Props) => {
     const [chart, setChart] = useState(null)
 
     const seriesData = useMemo(() => {
@@ -48,6 +49,35 @@ const Chart = ({ className, series, datapoints }: Props) => {
         }
     }, [chart])
 
+    const [range, setRange] = useState(undefined)
+
+    const setExtremes = useCallback((range: any) => {
+        setRange(range)
+
+        if (chart) {
+            const [xAxis] = chart.xAxis
+            const { dataMin, dataMax, max } = xAxis.getExtremes()
+
+            if (typeof range !== 'number') {
+                xAxis.setExtremes(dataMin, dataMax, true, false)
+            } else {
+                xAxis.setExtremes(Math.max(max - range, dataMin), max, true, false)
+            }
+        }
+    }, [chart])
+
+    const onSetExtremes = useCallback((e: any) => {
+        if (e.trigger !== 'zoom' && e.trigger !== 'navigator') {
+            return
+        }
+
+        if (e.min != null && e.max != null) {
+            setRange(e.max - e.min)
+        } else {
+            setRange(undefined)
+        }
+    }, [])
+
     useEffect(() => {
         if (chart) {
             chart.redraw()
@@ -59,7 +89,10 @@ const Chart = ({ className, series, datapoints }: Props) => {
     return (
         <div className={cx(styles.root, className)}>
             <div className={styles.toolbar}>
-                <RangeSelect onChange={() => {}} />
+                <RangeSelect
+                    onChange={setExtremes}
+                    value={range}
+                />
             </div>
             <ResizeWatcher onResize={onResize} />
             <HighchartsReact
@@ -69,14 +102,52 @@ const Chart = ({ className, series, datapoints }: Props) => {
                 callback={setChart}
                 options={{
                     chart: {
+                        animation: false,
+                        backgroundColor: null,
                         height: height > 40 ? (height - 40) : null, // 40px = RangeSelect toolbar height
                         reflow: false,
+                        selectionMarkerFill: 'rgba(0, 0, 0, 0.05)',
+                        style: {
+                            fontFamily: "'IBM Plex Sans', sans-serif",
+                        },
+                        zoomType: 'x',
                     },
+                    colors: ['#FF5C00', '#0324FF', '#2AC437', '#6240AF'],
                     credits: {
                         enabled: false,
                     },
                     legend: {
                         enabled: true,
+                    },
+                    navigator: {
+                        enabled: true,
+                        maskFill: 'rgba(0, 0, 0, 0.05)',
+                        outlineWidth: 0,
+                        handles: {
+                            borderWidth: 1,
+                            borderColor: '#A0A0A0',
+                            backgroundColor: '#ADADAD',
+                            height: 16,
+                            width: 8,
+                        },
+                        series: {
+                            type: 'line',
+                            // step: true,
+                            // dataGrouping: {
+                            //     approximation: approximations.average,
+                            //     forced: true,
+                            //     groupAll: true,
+                            //     groupPixelWidth: 4,
+                            // },
+                        },
+                    },
+                    plotOptions: {
+                        series: {
+                            animation: false,
+                            // dataGrouping: {
+                            //     approximation: approximations[options.dataGrouping],
+                            // },
+                        },
                     },
                     rangeSelector: {
                         enabled: false,
@@ -92,6 +163,24 @@ const Chart = ({ className, series, datapoints }: Props) => {
                     time: {
                         timezoneOffset: new Date().getTimezoneOffset(),
                     },
+                    tooltip: {
+                        backgroundColor: 'rgba(255, 255, 255, 0.96)',
+                        padding: 10,
+                        borderRadius: 8,
+                        style: {
+                            boxShadow: '0 0 6px 0 rgba(0, 0, 0, 0.05)',
+                            color: '#323232',
+                            lineHeight: 1.6,
+                        },
+                    },
+                    xAxis: {
+                        ordinal: false,
+                        events: {
+                            afterSetExtremes: onSetExtremes,
+                        },
+                        range: typeof range === 'number' ? range : undefined,
+                    },
+                    ...options,
                 }}
             />
         </div>

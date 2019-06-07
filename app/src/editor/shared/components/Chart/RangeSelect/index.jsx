@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useCallback } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import cx from 'classnames'
 import { I18n } from 'react-redux-i18n'
 import SvgIcon from '$shared/components/SvgIcon'
@@ -53,6 +53,8 @@ const RangeSelect = ({ className, value, onChange: onChangeProp }: Props) => {
         }
     }, [onChangeProp])
 
+    const isCustomRange: boolean = useMemo(() => !!value && !ranges.includes(value), [value])
+
     return (
         <div className={cx(styles.root, className)}>
             <AutosizedSelect
@@ -63,6 +65,11 @@ const RangeSelect = ({ className, value, onChange: onChangeProp }: Props) => {
                 <option disabled value="">
                     Range
                 </option>
+                {isCustomRange && (
+                    <option disabled value={value}>
+                        Custom
+                    </option>
+                )}
                 {ranges.map((range) => (
                     <option key={range} value={range}>
                         {/* AutosizedSelect's children have to be strings. */}

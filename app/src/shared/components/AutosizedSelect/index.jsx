@@ -10,7 +10,7 @@ type Props = {
     className?: ?string,
     value: any,
     onChange: (any) => void,
-    children: ChildrenArray<Element<'option'>>,
+    children: ChildrenArray<Element<'option'> | boolean>,
 }
 
 const AutosizedSelect = ({
@@ -33,8 +33,10 @@ const AutosizedSelect = ({
     }, [valueProp])
 
     const currentLabel = useMemo(() => {
-        const currentOption = React.Children.toArray(children).find((child) => String(value) === (String(child.props.value) || ''))
-        return currentOption ? currentOption.props.children : null
+        const currentOption = React.Children.toArray(children).find((child) => (
+            typeof child !== 'boolean' && String(value) === (String(child.props.value) || '')
+        ))
+        return currentOption && typeof currentOption !== 'boolean' ? currentOption.props.children : null
     }, [value, children])
 
     return (
