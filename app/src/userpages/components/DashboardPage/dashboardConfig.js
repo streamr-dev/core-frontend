@@ -60,7 +60,7 @@ const overridesByModule = {
 }
 const overridesBySizeAndModule = {}
 
-module.exports = {
+export default {
     layout: {
         sizes,
         breakpoints: {

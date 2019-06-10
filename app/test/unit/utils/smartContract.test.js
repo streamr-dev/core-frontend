@@ -89,10 +89,9 @@ describe('smartContract utils', () => {
             const contractAddress = '0x123456789'
             const abi = [{}]
 
-            class Test {
-            }
+            class Test {}
 
-            const contractSpy = sandbox.spy((() => sandbox.createStubInstance(Test)))
+            const contractSpy = sandbox.spy(Test)
             sandbox.stub(getWeb3, 'default').callsFake(() => ({
                 eth: {
                     Contract: contractSpy,

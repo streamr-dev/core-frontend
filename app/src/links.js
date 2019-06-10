@@ -1,7 +1,7 @@
 // @flow
 
-import { formatExternalUrl } from '$shared/utils/url'
-import routes from '$routes'
+const { formatExternalUrl } = require('$shared/utils/url')
+const routes = require('$routes').default
 
 const streamrRoot = process.env.STREAMR_URL || ''
 

@@ -1,8 +1,8 @@
 {
-  "ignoreFiles": [
-    "**/*.jsx"
-  ],
-  "extends": [
-    "stylelint-config-streamr"
-  ]
+    "ignoreFiles": [
+        "**/*.jsx"
+    ],
+    "extends": [
+        "stylelint-config-streamr"
+    ]
 }
