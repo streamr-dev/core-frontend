@@ -34,12 +34,11 @@ const Chart = ({ className, series, datapoints, options }: Props) => {
             ],
         }), {})
 
-        return Object.entries(data).map(([key, data]) => ({
-            id: `series-${key}`,
-            ...series[key],
+        return Object.values(series).map((payload: any) => ({
+            ...payload,
             type: 'spline',
             step: undefined,
-            data,
+            data: data[payload.idx] || [],
         }))
     }, [series, datapoints])
 
@@ -80,11 +79,108 @@ const Chart = ({ className, series, datapoints, options }: Props) => {
 
     useEffect(() => {
         if (chart) {
+            seriesData.forEach((data) => {
+                const series = chart.get(data.id)
+                if (series) {
+                    series.update(data)
+                } else {
+                    chart.addSeries(data)
+                }
+            })
             chart.redraw()
         }
     }, [chart, seriesData])
 
     const { height } = useContext(UiSizeContext)
+
+    useEffect(() => {
+        if (chart) {
+            // 40px = RangeSelect toolbar height
+            chart.setSize(undefined, height > 40 ? (height - 40) : null, false)
+        }
+    }, [height, chart])
+
+    const opts = useMemo(() => ({
+        chart: {
+            animation: false,
+            backgroundColor: null,
+            reflow: false,
+            selectionMarkerFill: 'rgba(0, 0, 0, 0.05)',
+            style: {
+                fontFamily: "'IBM Plex Sans', sans-serif",
+            },
+            zoomType: 'x',
+        },
+        colors: ['#FF5C00', '#0324FF', '#2AC437', '#6240AF'],
+        credits: {
+            enabled: false,
+        },
+        legend: {
+            enabled: true,
+        },
+        navigator: {
+            enabled: true,
+            maskFill: 'rgba(0, 0, 0, 0.05)',
+            outlineWidth: 0,
+            handles: {
+                borderWidth: 1,
+                borderColor: '#A0A0A0',
+                backgroundColor: '#ADADAD',
+                height: 16,
+                width: 8,
+            },
+            series: {
+                type: 'line',
+                // step: true,
+                // dataGrouping: {
+                //     approximation: approximations.average,
+                //     forced: true,
+                //     groupAll: true,
+                //     groupPixelWidth: 4,
+                // },
+            },
+        },
+        plotOptions: {
+            series: {
+                animation: false,
+                // dataGrouping: {
+                //     approximation: approximations[options.dataGrouping],
+                // },
+            },
+        },
+        rangeSelector: {
+            enabled: false,
+        },
+        scrollbar: {
+            enabled: false,
+        },
+        series: [],
+        // series: series.map((s) => ({
+        //     ...s,
+        //     ...seriesData[s.idx],
+        //     id: `series-${s.idx}`,
+        // })),
+        time: {
+            timezoneOffset: new Date().getTimezoneOffset(),
+        },
+        tooltip: {
+            backgroundColor: 'rgba(255, 255, 255, 0.96)',
+            padding: 10,
+            borderRadius: 8,
+            style: {
+                boxShadow: '0 0 6px 0 rgba(0, 0, 0, 0.05)',
+                color: '#323232',
+                lineHeight: 1.6,
+            },
+        },
+        xAxis: {
+            ordinal: false,
+            events: {
+                afterSetExtremes: onSetExtremes,
+            },
+        },
+        ...options,
+    }), [onSetExtremes, options])
 
     return (
         <div className={cx(styles.root, className)}>
@@ -100,88 +196,7 @@ const Chart = ({ className, series, datapoints, options }: Props) => {
                 constructorType="stockChart"
                 allowChartUpdate
                 callback={setChart}
-                options={{
-                    chart: {
-                        animation: false,
-                        backgroundColor: null,
-                        height: height > 40 ? (height - 40) : null, // 40px = RangeSelect toolbar height
-                        reflow: false,
-                        selectionMarkerFill: 'rgba(0, 0, 0, 0.05)',
-                        style: {
-                            fontFamily: "'IBM Plex Sans', sans-serif",
-                        },
-                        zoomType: 'x',
-                    },
-                    colors: ['#FF5C00', '#0324FF', '#2AC437', '#6240AF'],
-                    credits: {
-                        enabled: false,
-                    },
-                    legend: {
-                        enabled: true,
-                    },
-                    navigator: {
-                        enabled: true,
-                        maskFill: 'rgba(0, 0, 0, 0.05)',
-                        outlineWidth: 0,
-                        handles: {
-                            borderWidth: 1,
-                            borderColor: '#A0A0A0',
-                            backgroundColor: '#ADADAD',
-                            height: 16,
-                            width: 8,
-                        },
-                        series: {
-                            type: 'line',
-                            // step: true,
-                            // dataGrouping: {
-                            //     approximation: approximations.average,
-                            //     forced: true,
-                            //     groupAll: true,
-                            //     groupPixelWidth: 4,
-                            // },
-                        },
-                    },
-                    plotOptions: {
-                        series: {
-                            animation: false,
-                            // dataGrouping: {
-                            //     approximation: approximations[options.dataGrouping],
-                            // },
-                        },
-                    },
-                    rangeSelector: {
-                        enabled: false,
-                    },
-                    scrollbar: {
-                        enabled: false,
-                    },
-                    series: series.map((s) => ({
-                        ...s,
-                        ...seriesData[s.idx],
-                        id: `series-${s.idx}`,
-                    })),
-                    time: {
-                        timezoneOffset: new Date().getTimezoneOffset(),
-                    },
-                    tooltip: {
-                        backgroundColor: 'rgba(255, 255, 255, 0.96)',
-                        padding: 10,
-                        borderRadius: 8,
-                        style: {
-                            boxShadow: '0 0 6px 0 rgba(0, 0, 0, 0.05)',
-                            color: '#323232',
-                            lineHeight: 1.6,
-                        },
-                    },
-                    xAxis: {
-                        ordinal: false,
-                        events: {
-                            afterSetExtremes: onSetExtremes,
-                        },
-                        range: typeof range === 'number' ? range : undefined,
-                    },
-                    ...options,
-                }}
+                options={opts}
             />
         </div>
     )

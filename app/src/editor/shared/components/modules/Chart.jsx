@@ -1,11 +1,12 @@
 /* eslint-disable */
 
-import React from 'react'
+import React, { useRef, useCallback, useState, useEffect } from 'react'
 import cx from 'classnames'
 import throttle from 'lodash/throttle'
 import debounce from 'lodash/debounce'
 import Highcharts from 'highcharts/highstock'
 
+import useIsMounted from '$shared/hooks/useIsMounted'
 import Chart from '$editor/shared/components/Chart'
 import HighchartsReact from 'highcharts-react-official'
 import ModuleSubscription from '$editor/shared/components/ModuleSubscription'
@@ -30,43 +31,6 @@ const rangeConfig = {
     '1 minute': 1 * 60 * 1000,
     '15 seconds': 15 * 1000,
     '1 second': 1 * 1000,
-}
-
-function RangeDropdown(props) {
-    let { value } = props
-    const selected = Object.keys(rangeConfig).find((name) => rangeConfig[name] === props.value)
-    if (!selected) {
-        value = 'Range'
-    }
-
-    return (
-        <div className={styles.RangeDropdown}>
-            <select
-                title="Range"
-                value={value}
-                onChange={(event) => {
-                    let { value } = event.target
-                    if (value !== 'all') {
-                        value = parseInt(value, 10)
-                    }
-
-                    props.onChange(value)
-                }}
-            >
-                {value === 'Range' && (
-                    <option value="Range" disabled>
-                        Range
-                    </option>
-                )}
-                {Object.entries(rangeConfig).map(([name, range]) => (
-                    <option value={range} key={name}>
-                        {name}
-                    </option>
-                ))}
-            </select>
-            <SvgIcon name="caretDown" className={styles.caret} />
-        </div>
-    )
 }
 
 const approximations = {
@@ -116,7 +80,107 @@ class MinMax {
     }
 }
 
-export default class ChartModule extends React.Component {
+const ChartModule2 = (props) => {
+    const { isActive, canvas, module } = props
+    
+    const subscriptionRef = useRef(null)
+
+    const queuedDatapointsRef = useRef([])
+
+    const [datapoints, setDatapoints] = useState([])
+
+    const [series, setSeries] = useState({})
+
+    const onSeries = useCallback((payload) => {
+        const id = `series-${payload.idx}`
+
+        setSeries((series) => ({
+            ...series,
+            [id]: {
+                ...(series[id] || {}),
+                ...payload,
+                id,
+            },
+        }))
+    }, [])
+
+    const isMounted = useIsMounted()
+
+    const flushDatapoints = useCallback(throttle(() => {
+        if (!isMounted()) {
+            return
+        }
+
+        const queued = queuedDatapointsRef.current || []
+        queuedDatapointsRef.current = []
+
+        setDatapoints((datapoints) => [
+            ...datapoints,
+            ...queued,
+        ])
+    }, 250), [])
+
+    const onDatapoint = useCallback((payload) => {
+        queuedDatapointsRef.current.push(payload)
+        flushDatapoints()
+    }, [])
+
+    const onMessage = useCallback((payload) => {
+        switch (payload.type) {
+            case 'p':
+                onDatapoint(payload)
+                break
+            case 's':
+                onSeries(payload)
+                break
+            default:
+                // noop
+        }
+    }, [])
+
+    const init = useCallback(async () => {
+        const { current: subscription } = subscriptionRef
+
+        if (!subscription || !isActive || (canvas && canvas.adhoc)) {
+            return
+        }
+
+        const { initRequest: { series } } = await subscription.send({
+            type: 'initRequest',
+        })
+
+        if (isMounted()) {
+            series.forEach(onSeries)
+        }
+    }, [isActive, canvas])
+
+    const initRef = useRef()
+    initRef.current = init
+
+    useEffect(() => {
+        // Run init onMount. Ignore further updates.
+        initRef.current()
+    }, [])
+
+    return (
+        <UiSizeConstraint minWidth={300} minHeight={200}>
+                <ModuleSubscription
+                    {...props}
+                    onActiveChange={init}
+                    onMessage={onMessage}
+                    ref={subscriptionRef}
+                />
+                <Chart
+                    className={styles.chart}
+                    datapoints={datapoints}
+                    options={module.options || {}}
+                    series={series}
+                />
+        </UiSizeConstraint>
+    )
+}
+
+class ChartModule extends React.Component {
     subscription = React.createRef()
 
     queuedDatapoints = []
@@ -130,54 +194,8 @@ export default class ChartModule extends React.Component {
     timeRange = new MinMax()
     seriesRanges = {}
 
-    updateRanges(d) {
-        this.timeRange.update(d.x)
-        this.seriesRanges[d.s] = this.seriesRanges[d.s] || new MinMax()
-        this.seriesRanges[d.s].update(d.x)
-    }
-
-    onDataPoint = (d) => {
-        this.updateRanges(d)
-        this.queuedDatapoints.push(d)
-        this.flushDataPoints()
-    }
-
-    flushDataPoints = throttle(() => {
-        if (this.unmounted) { return }
-        const { queuedDatapoints } = this
-        this.queuedDatapoints = []
-        this.setState(({ datapoints }) => ({
-            datapoints: datapoints.concat(queuedDatapoints),
-        }))
-    }, 250)
-
-    onSeries = (d) => {
-        if (!this.chart) { return null }
-        const id = `series-${d.idx}`
-        const series = this.chart.get(id)
-        const seriesData = {
-            ...d,
-            id,
-        }
-
-        if (!series) {
-            this.chart.addSeries(seriesData)
-        } else {
-            series.update(seriesData)
-        }
-    }
-
-    onMessage = (d) => {
-        if (d.type === 'p') {
-            this.onDataPoint(d)
-        }
-        if (d.type === 's') {
-            this.onSeries(d)
-        }
-    }
-
-    componentDidMount() {
-        this.initIfActive(this.props.isActive)
+    onMessage = (m) => {
+        console.log(m)
     }
 
     componentWillUnmount() {
@@ -196,66 +214,12 @@ export default class ChartModule extends React.Component {
                 }
             })
         }
-        const { module } = this.props
-        if (this.chart && JSON.stringify(module.layout) !== JSON.stringify(prevProps.module.layout)) {
-            this.resize()
-        } else {
-            this.redraw()
-        }
-    }
-
-    onContainerResize = () => {
-        if (this.chart) {
-            this.resize()
-        }
-    }
-
-    redraw = () => {
-        if (!this.chart) { return }
-        let max
-        let min
-        if (this.state.range === 'all' || !this.state.range) {
-            max = this.timeRange.max // eslint-disable-line prefer-destructuring
-            min = this.timeRange.min // eslint-disable-line prefer-destructuring
-        } else {
-            if (!this.rangeMax || this.rangeMax >= this.lastTime) {
-                this.rangeMax = this.timeRange.max
-            }
-            max = this.rangeMax
-
-            min = this.rangeMin === this.timeRange.min
-                ? this.timeRange.min
-                : Math.max(max - this.state.range, this.timeRange.min)
-        }
-
-        this.lastTime = this.timeRange.max
-        this.chart.xAxis[0].setExtremes(min, max, false, false)
-        this.chart.redraw()
-    }
-
-    resize = debounce(() => {
-        if (this.unmounted) { return }
-        if (this.chart) {
-            this.chart.reflow()
-        }
-    }, 10)
-
-    initIfActive = (isActive) => {
-        if (isActive && (!this.props.canvas || !this.props.canvas.adhoc)) {
-            this.init()
-        }
-    }
-
-    init = async () => {
-        const { initRequest } = await this.subscription.current.send({
-            type: 'initRequest',
-        })
-        if (this.unmounted) { return }
-        this.setState(initRequest)
-    }
-
-    onChart = (chart) => {
-        this.chart = chart
+        // const { module } = this.props
+        // if (this.chart && JSON.stringify(module.layout) !== JSON.stringify(prevProps.module.layout)) {
+        //     this.resize()
+        // } else {
+        //     this.redraw()
+        // }
     }
 
     getSeriesData(datapoints) {
@@ -272,24 +236,10 @@ export default class ChartModule extends React.Component {
         }))
     }
 
-    onChangeRange = (range) => {
-        this.setState({ range })
-    }
-
-    setExtremes = (e) => {
-        if (this.unmounted) { return }
-        if (e.trigger === 'navigator' || e.trigger === 'zoom') {
-            this.rangeMin = e.min
-            this.rangeMax = e.max
-            this.setState({ range: e.max - e.min })
-        }
-    }
-
     render() {
         const { className, module } = this.props
         const { options = {} } = module
         const { title, series, datapoints } = this.state
-        const seriesData = this.getSeriesData(this.state.datapoints)
 
         return (
             <UiSizeConstraint minWidth={300} minHeight={200}>
@@ -313,3 +263,4 @@ export default class ChartModule extends React.Component {
     }
 }
 
+export default ChartModule2
