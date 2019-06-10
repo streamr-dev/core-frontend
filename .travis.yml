@@ -186,6 +186,7 @@ jobs:
     if: NOT type IN (pull_request)
     env:
     - NODE_ENV=production
+    - VERSION=$TRAVIS_TAG
     - PORT=12345
     - VERSION=$TRAVIS_TAG
     - SENTRY_ENVIRONMENT=production
