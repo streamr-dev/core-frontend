@@ -21,6 +21,7 @@ import { ModalProvider } from '$editor/shared/components/Modal'
 import * as sharedServices from '$editor/shared/services'
 import BodyClass from '$shared/components/BodyClass'
 import Sidebar from '$editor/shared/components/Sidebar'
+import { useSelectionContext, SelectionProvider } from '$editor/shared/hooks/useSelection'
 import ModuleSidebar from './components/ModuleSidebar'
 import KeyboardShortcutsSidebar from './components/KeyboardShortcutsSidebar'
 
@@ -86,10 +87,10 @@ const CanvasEditComponent = class CanvasEdit extends Component {
 
     selectModule = async ({ hash } = {}) => {
         this.setState(({ moduleSidebarIsOpen, keyboardShortcutIsOpen }) => ({
-            selectedModuleHash: hash,
             // close sidebar if no selection
             moduleSidebarIsOpen: hash == null ? keyboardShortcutIsOpen : moduleSidebarIsOpen,
         }))
+        this.props.selection.only(hash)
     }
 
     onKeyDown = (event) => {
@@ -375,7 +376,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                 <Canvas
                     className={styles.Canvas}
                     canvas={canvas}
-                    selectedModuleHash={this.state.selectedModuleHash}
+                    selectedModuleHash={this.props.selection.last()}
                     selectModule={this.selectModule}
                     updateModule={this.updateModule}
                     renameModule={this.renameModule}
@@ -426,7 +427,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                                 <ModuleSidebar
                                     onClose={this.moduleSidebarClose}
                                     canvas={canvas}
-                                    selectedModuleHash={this.state.selectedModuleHash}
+                                    selectedModuleHash={this.props.selection.last()}
                                     setModuleOptions={this.setModuleOptions}
                                 />
                             )}
@@ -451,6 +452,7 @@ const CanvasEdit = withRouter(({ canvas, ...props }) => {
     const isEmbedMode = CanvasController.useEmbedMode()
     useCanvasNotifications(canvas)
     useAutosaveEffect()
+    const selection = useSelectionContext()
 
     return (
         <React.Fragment>
@@ -463,6 +465,7 @@ const CanvasEdit = withRouter(({ canvas, ...props }) => {
                 canvasController={canvasController}
                 updated={updated}
                 setUpdated={setUpdated}
+                selection={selection}
             />
         </React.Fragment>
     )
@@ -500,7 +503,9 @@ const CanvasContainer = withRouter(withErrorBoundary(ErrorComponentView)((props)
     <ClientProvider>
         <UndoContext.Provider key={props.match.params.id}>
             <CanvasController.Provider embed={!!props.embed}>
-                <CanvasEditWrap />
+                <SelectionProvider>
+                    <CanvasEditWrap />
+                </SelectionProvider>
             </CanvasController.Provider>
         </UndoContext.Provider>
     </ClientProvider>
