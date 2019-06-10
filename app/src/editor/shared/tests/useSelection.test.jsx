@@ -48,6 +48,45 @@ describe('useSelection', () => {
         expect(selection.has(2)).toBeTruthy()
     })
 
+    it('sets last after add/remove', () => {
+        let selection
+        const selectionInstances = new Set()
+
+        const Render = jest.fn(() => {
+            selection = useSelection()
+            selectionInstances.add(selection)
+            return null
+        })
+
+        mount(<Render />)
+        expect(selection.last()).toEqual(undefined)
+
+        // adding item reRenders
+        act(() => {
+            selection.add(1)
+        })
+        expect(selection.last()).toEqual(1)
+        act(() => {
+            selection.remove(1)
+        })
+
+        expect(selection.last()).toEqual(undefined)
+        act(() => {
+            selection.add(1)
+            selection.add(2)
+        })
+        expect(selection.last()).toEqual(2)
+
+        act(() => {
+            selection.add(1)
+        })
+        expect(selection.last()).toEqual(1)
+        act(() => {
+            selection.remove(1)
+        })
+        expect(selection.last()).toEqual(2)
+    })
+
     it('does not change state on adding same again', () => {
         let selection
         const selectionInstances = new Set()

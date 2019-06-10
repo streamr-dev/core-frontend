@@ -17,8 +17,10 @@ export default function useSelection() {
 
     const add = useCallback((id) => (
         setSelection((selection) => {
-            if (selection.has(id)) { return selection }
-            return new Set([...selection, id])
+            if (selection.has(id) && [...selection][0] === id) {
+                return selection
+            }
+            return new Set([id, ...selection])
         })
     ), [setSelection])
 
@@ -54,16 +56,21 @@ export default function useSelection() {
         selectionRef.current.has(id)
     ), [selectionRef])
 
+    const last = useCallback(() => (
+        [...selectionRef.current][0]
+    ), [selectionRef])
+
     return useMemo(() => ({
         isEmpty,
         selection,
+        last,
         add,
         remove,
         only,
         none,
         current,
         has,
-    }), [add, remove, only, none, current, has, selection, isEmpty])
+    }), [add, remove, only, none, current, has, selection, last, isEmpty])
 }
 
 export function useSelectionContext() {
