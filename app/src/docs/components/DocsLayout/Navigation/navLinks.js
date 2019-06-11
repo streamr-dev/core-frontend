@@ -13,7 +13,6 @@ const navigationLinks: NavigationLink = {
     Tutorials: links.docs.tutorials,
     'Visual Editor': links.docs.visualEditor,
     'Streamr Engine': links.docs.streamrEngine,
-    Streams: links.docs.streams,
     Marketplace: links.docs.dataMarketplace,
     'User Pages': links.docs.userPage,
     'Streamr API': links.docs.api,
@@ -44,14 +43,6 @@ export const subNav = {
         extensions: 'Extensions',
     },
     streamrEngine: {},
-    streams: {
-        'intro-to-streams': 'Intro to streams',
-        'work-with-streams-in-core': 'Work with streams in Core',
-        'work-with-streams-via-api': 'Work with streams via API',
-        'using-mqtt': 'Using MQTT',
-        'data-signing-and-verification': 'Data signing and verification',
-        'end-to-end-encryption': 'End-to-end encryption',
-    },
     marketplace: {
         'create-a-product': 'Create a Product',
     },

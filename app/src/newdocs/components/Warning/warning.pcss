@@ -1,0 +1,34 @@
+.root {
+  display: flex;
+  border-radius: 4px;
+  padding: 1.5em;
+  margin: 2em 0;
+  background: rgba(3, 36, 255, 0.05);
+  border: 1px solid var(--streamrBlue);
+
+  .warningIcon {
+    position: relative;
+    top: 5px;
+    width: 24px;
+    height: 24px;
+  }
+
+  p {
+    flex: 1;
+    margin-left: 30px;
+
+    &:last-of-type {
+      margin-bottom: 0;
+    }
+  }
+}
+
+@media (--md-down) {
+  .root {
+    flex-direction: column;
+
+    p {
+      margin: 15px 0;
+    }
+  }
+}
