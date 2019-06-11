@@ -16,59 +16,6 @@ import ResizeWatcher from '$editor/canvas/components/Resizable/ResizeWatcher'
 
 import styles from './Chart.pcss'
 
-const rangeConfig = {
-    All: 'all',
-    '1 month': 30 * 24 * 60 * 60 * 1000,
-    '1 week': 7 * 24 * 60 * 60 * 1000,
-    '1 day': 24 * 60 * 60 * 1000,
-    '12 hours': 12 * 60 * 60 * 1000,
-    '8 hours': 8 * 60 * 60 * 1000,
-    '4 hours': 4 * 60 * 60 * 1000,
-    '2 hours': 2 * 60 * 60 * 1000,
-    '1 hour': 1 * 60 * 60 * 1000,
-    '30 minutes': 30 * 60 * 1000,
-    '15 minutes': 15 * 60 * 1000,
-    '1 minute': 1 * 60 * 1000,
-    '15 seconds': 15 * 1000,
-    '1 second': 1 * 1000,
-}
-
-const approximations = {
-    'min/max': (points) => {
-        // Smarter data grouping: for all-positive values choose max, for all-negative choose min, for neither choose avg
-        let sum = 0
-        let min = Number.POSITIVE_INFINITY
-        let max = Number.NEGATIVE_INFINITY
-
-        points.forEach((it) => {
-            sum += it
-            min = Math.min(it, min)
-            max = Math.max(it, max)
-        })
-
-        if (!points.length && points.hasNulls) {
-            // If original had only nulls, Highcharts expects null
-            return null
-        } else if (!points.length) {
-            // "Ordinary" empty group, Highcharts expects undefined
-            return undefined
-        } else if (min >= 0) {
-            // All positive
-            return max
-        } else if (max <= 0) {
-            // All negative
-            return min
-        }
-        // Mixed positive and negative
-        return sum / points.length
-    },
-    average: 'average',
-    open: 'open',
-    high: 'high',
-    low: 'low',
-    close: 'close',
-}
-
 class MinMax {
     min = Number.POSITIVE_INFINITY
     max = Number.NEGATIVE_INFINITY

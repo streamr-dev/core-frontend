@@ -7,6 +7,7 @@ import HighchartsReact from 'highcharts-react-official'
 import ResizeWatcher from '$editor/canvas/components/Resizable/ResizeWatcher'
 import { Context as UiSizeContext } from '$editor/shared/components/UiSizeConstraint'
 import RangeSelect from './RangeSelect'
+import approximations from './approx'
 import styles from './chart.pcss'
 
 type Datapoint = {
@@ -131,21 +132,21 @@ const Chart = ({ className, series, datapoints, options }: Props) => {
             },
             series: {
                 type: 'line',
-                // step: true,
-                // dataGrouping: {
-                //     approximation: approximations.average,
-                //     forced: true,
-                //     groupAll: true,
-                //     groupPixelWidth: 4,
-                // },
+                step: true,
+                dataGrouping: {
+                    approximation: approximations.average,
+                    forced: true,
+                    groupAll: true,
+                    groupPixelWidth: 4,
+                },
             },
         },
         plotOptions: {
             series: {
                 animation: false,
-                // dataGrouping: {
-                //     approximation: approximations[options.dataGrouping],
-                // },
+                dataGrouping: {
+                    approximation: approximations[options.dataGrouping],
+                },
             },
         },
         rangeSelector: {
@@ -155,11 +156,6 @@ const Chart = ({ className, series, datapoints, options }: Props) => {
             enabled: false,
         },
         series: [],
-        // series: series.map((s) => ({
-        //     ...s,
-        //     ...seriesData[s.idx],
-        //     id: `series-${s.idx}`,
-        // })),
         time: {
             timezoneOffset: new Date().getTimezoneOffset(),
         },
