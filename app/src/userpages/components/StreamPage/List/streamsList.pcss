@@ -17,10 +17,6 @@
 }
 
 .streamsTable {
-  :global(.table-responsive) {
-    min-height: 500px;
-  }
-
   :global(.table) {
     margin-top: 0;
   }
@@ -29,6 +25,12 @@
     height: 80px;
     vertical-align: top;
     padding: 16px;
+  }
+}
+
+.streamsTableLoadingMore {
+  :global(.table) {
+    margin-bottom: calc(5em + 80px);
   }
 }
 
@@ -83,7 +85,6 @@
     margin-bottom: 4em;
 
     :global(.table-responsive) {
-      min-height: 500px;
       border-top: 1px solid #CDCDCD;
     }
   }
