@@ -30,7 +30,7 @@ module.exports = {
         createProduct: '/marketplace/products/create',
         createProductPreview: '/marketplace/products/preview',
     },
-    docs: { // (depreciated in Aug/Sept 2019)
+    docs: { // (deprecated in Aug/Sept 2019)
         api: routes.docsApi(),
         dataMarketplace: routes.docsDataMarketplace(),
         gettingStarted: routes.docsGettingStarted(),

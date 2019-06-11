@@ -33,7 +33,7 @@ import ProfilePage from '$userpages/components/ProfilePage'
 import PurchasesPage from '$userpages/components/PurchasesPage'
 import ProductsPage from '$userpages/components/ProductsPage'
 
-// Docs (depreciated in Aug/Sept 2019)
+// Docs (deprecated in Aug/Sept 2019)
 import IntroductionPage from '$docs/components/IntroductionPage'
 import GettingStartedPage from '$docs/components/GettingStartedPage'
 import TutorialsPage from '$docs/components/TutorialsPage'
@@ -144,7 +144,7 @@ const MarketplaceRouter = () => ([
     <Route exact path={routes.editProduct()} component={EditProductAuth} key="EditProduct" />,
 ])
 
-const DocsRouter = () => ([ // (depreciated in Aug/Sept 2019)
+const DocsRouter = () => ([ // (deprecated in Aug/Sept 2019)
     <Route exact path={docs.gettingStarted} component={GettingStartedPage} key="GettingStartedPage" />,
     <Route exact path={docs.introduction} component={IntroductionPage} key="IntroductionPage" />,
     <Route exact path={docs.tutorials} component={TutorialsPage} key="TutorialsPage" />,
