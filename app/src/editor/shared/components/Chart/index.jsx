@@ -37,8 +37,6 @@ const Chart = ({ className, series, datapoints, options }: Props) => {
 
         return Object.values(series).map((payload: any) => ({
             ...payload,
-            type: 'spline',
-            step: undefined,
             data: data[payload.idx] || [],
         }))
     }, [series, datapoints])
