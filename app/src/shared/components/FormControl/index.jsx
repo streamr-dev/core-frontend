@@ -41,7 +41,7 @@ type State = {
     lastKnownError: string,
 }
 
-class FormControl extends React.Component<Props, State> {
+class FormControl extends React.PureComponent<Props, State> {
     state = {
         focused: false,
         autoCompleted: false,
