@@ -63,6 +63,7 @@ if (process.env.SENTRY_DSN) {
                 dsn: process.env.SENTRY_DSN,
                 release: process.env.VERSION,
                 environment: process.env.SENTRY_ENVIRONMENT,
+                integrations: [new Sentry.Integrations.RewriteFrames()],
                 whitelistUrls: [
                     window.location.origin,
                     process.env.PLATFORM_PUBLIC_PATH,

@@ -178,27 +178,6 @@ module.exports = {
                 openAnalyzer: false,
             }),
         ] : []),
-        ...(process.env.SENTRY_DSN ? [
-            new SentryPlugin({
-                include: dist,
-                validate: true,
-                ignore: [
-                    '.cache',
-                    '.DS_STORE',
-                    '.env',
-                    '.storybook',
-                    'bin',
-                    'coverage',
-                    'node_modules',
-                    'scripts',
-                    'stories',
-                    'test',
-                    'travis_scripts',
-                    'webpack.config.js',
-                ],
-                release: process.env.VERSION,
-            }),
-        ] : []),
     ].concat(isProduction() ? [
         new CleanWebpackPlugin([dist]),
         // Production plugins
@@ -269,7 +248,27 @@ module.exports = {
         }),
         new FlowBabelWebpackPlugin(),
         new WebpackNotifierPlugin(),
-    ]),
+    ]).concat(process.env.SENTRY_DSN ? [
+        new SentryPlugin({
+            include: dist,
+            validate: true,
+            ignore: [
+                '.cache',
+                '.DS_STORE',
+                '.env',
+                '.storybook',
+                'bin',
+                'coverage',
+                'node_modules',
+                'scripts',
+                'stories',
+                'test',
+                'travis_scripts',
+                'webpack.config.js',
+            ],
+            release: process.env.VERSION,
+        }),
+    ] : []),
     devtool: isProduction() ? 'source-map' : 'eval-source-map',
     devServer: {
         historyApiFallback: {
