@@ -75,6 +75,7 @@ if (process.env.SENTRY_DSN) {
         ),
         reportError: (error: Error, extra: Object = {}) => {
             Sentry.withScope((scope) => {
+                scope.setTag('error_boundary', true)
                 if (extra) {
                     scope.setExtras(extra)
                 }
@@ -89,6 +90,7 @@ if (process.env.SENTRY_DSN) {
                 extra,
             }) // eslint-disable-line no-console
             Sentry.withScope((scope) => {
+                scope.setTag('error_boundary', true)
                 if (extra) {
                     scope.setExtras(extra)
                 }
