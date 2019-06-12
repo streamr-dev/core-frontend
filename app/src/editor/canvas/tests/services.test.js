@@ -1,5 +1,6 @@
 import uniqueId from 'lodash/uniqueId'
 import { setupAuthorizationHeader, loadModuleDefinition } from '$editor/shared/tests/utils'
+import * as sharedServices from '$editor/shared/services'
 
 import * as Services from '../services'
 import * as State from '../state'
@@ -225,6 +226,40 @@ describe('Canvas Services', () => {
             const hashes = new Set(canvas.modules.map(({ hash }) => hash))
             // make sure they all have unique hashes
             expect(hashes.size).toEqual(3)
+        })
+    })
+
+    describe('Replacing Module Definition', () => {
+        it('maintains connections after loading new definition for http request', async () => {
+            // connect something to http request's body input
+            let canvas = State.emptyCanvas()
+            canvas = State.addModule(canvas, await loadModuleDefinition('HTTP Request'))
+            canvas = State.addModule(canvas, await loadModuleDefinition('ConstantText'))
+            const httpRequest = canvas.modules.find((m) => m.name === 'HTTP Request')
+            const text = canvas.modules.find((m) => m.name === 'ConstantText')
+            const httpRequestBodyIn = State.findModulePort(canvas, httpRequest.hash, (p) => p.name === 'body')
+            const textOut = State.findModulePort(canvas, text.hash, (p) => p.name === 'out')
+
+            const savedCanvas = State.updateCanvas(await Services.create(canvas))
+            canvas = State.updateCanvas(State.connectPorts(canvas, textOut.id, httpRequestBodyIn.id))
+            expect(State.arePortsConnected(canvas, textOut.id, httpRequestBodyIn.id)).toBeTruthy()
+            const httpRequestVerb = State.findModulePort(savedCanvas, httpRequest.hash, (p) => p.name === 'verb')
+
+            // change verb to something else
+            canvas = State.updateCanvas(State.setPortUserValue(canvas, httpRequestVerb.id, 'PUT'))
+            const updatedHttpRequest = canvas.modules.find((m) => m.name === 'HTTP Request')
+            const updatedHttpRequestFromServer = await sharedServices.getModule({
+                id: updatedHttpRequest.id,
+                configuration: updatedHttpRequest,
+            })
+
+            // replace with new definition after changing verb
+            canvas = State.updateCanvas(State.replaceModule(canvas, updatedHttpRequestFromServer))
+
+            // ensure connections maintained
+            const newHttpRequestBodyIn = State.findModulePort(canvas, httpRequest.hash, (p) => p.name === 'body')
+            const newTextOut = State.findModulePort(canvas, text.hash, (p) => p.name === 'out')
+            expect(State.arePortsConnected(canvas, newTextOut.id, newHttpRequestBodyIn.id)).toBeTruthy()
         })
     })
 })

@@ -198,35 +198,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         try {
             const moduleData = await canvasController.loadModule(canvas, { hash })
             if (this.unmounted) { return }
-            replace((canvas) => {
-                const prevModule = CanvasState.getModule(canvas, hash)
-                let nextCanvas = CanvasState.updateModule(canvas, hash, () => moduleData)
-                nextCanvas = CanvasState.updateModulePortConnections(nextCanvas, hash)
-                const newModule = CanvasState.getModule(nextCanvas, hash)
-
-                // Restore input connections
-                nextCanvas = newModule.inputs.reduce((nextCanvas, { id, sourceId }) => {
-                    const port = prevModule.inputs.find((p) => id === p.id)
-
-                    if (sourceId && port) {
-                        return CanvasState.connectPorts(nextCanvas, port.id, sourceId)
-                    }
-
-                    return nextCanvas
-                }, nextCanvas)
-
-                nextCanvas = newModule.params.reduce((nextCanvas, { id, sourceId }) => {
-                    const port = prevModule.params.find((p) => id === p.id)
-
-                    if (sourceId && port) {
-                        return CanvasState.connectPorts(nextCanvas, port.id, sourceId)
-                    }
-
-                    return nextCanvas
-                }, nextCanvas)
-
-                return nextCanvas
-            })
+            replace((canvas) => CanvasState.replaceModule(canvas, moduleData))
         } catch (error) {
             console.error(error.message)
             // undo value change

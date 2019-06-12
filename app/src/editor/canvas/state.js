@@ -1117,3 +1117,51 @@ export function moduleSearch(moduleCategories, search) {
 
     return uniqBy([...exactMatches, ...startsWith, ...nameMatches, ...pathMatches], 'id')
 }
+
+/**
+ * Tries to find a port from one canvas in another canvas.
+ * If failing to match by id, it will match against all of
+ * - the module
+ * - the port name and
+ * - the port type
+ */
+
+function matchPortInOtherCanvas(canvas, prevCanvas, portId) {
+    const prevPort = getPort(prevCanvas, portId)
+    const exactMatch = getPortIfExists(canvas, portId)
+    if (exactMatch) { return exactMatch }
+    const prevPortType = getPortType(prevCanvas, portId)
+    const prevModule = getModuleForPort(prevCanvas, portId)
+    const nextModule = getModuleIfExists(canvas, prevModule.hash)
+    if (!nextModule) { return }
+    return findModulePort(canvas, nextModule.hash, (p) => {
+        if (p.name === prevPort.name) {
+            return getPortType(canvas, p.id) === prevPortType
+        }
+    })
+}
+
+/**
+ *  Replaces module definition. Tries to maintain module connections.
+ */
+
+export function replaceModule(canvas, moduleData) {
+    const { hash } = moduleData
+    const prevCanvas = canvas
+    let nextCanvas = updateModule(prevCanvas, hash, () => moduleData)
+
+    const prevPorts = getAllPorts(prevCanvas, hash)
+    prevPorts.forEach((prevPort) => {
+        const connectedIds = getConnectedPortIds(prevCanvas, prevPort.id)
+        if (!connectedIds.length) { return } // nothing to do if no connections
+        const matchedPort = matchPortInOtherCanvas(nextCanvas, prevCanvas, prevPort.id)
+        if (!matchedPort) { return } // nothing to do if port no longer exists
+        connectedIds.forEach((connectedId) => {
+            const matchedConnectedPort = matchPortInOtherCanvas(nextCanvas, prevCanvas, connectedId)
+            if (!matchedConnectedPort || !canConnectPorts(nextCanvas, matchedPort.id, matchedConnectedPort.id)) { return }
+            // re-connect if possible
+            nextCanvas = connectPorts(nextCanvas, matchedPort.id, matchedConnectedPort.id)
+        })
+    })
+    return nextCanvas
+}
