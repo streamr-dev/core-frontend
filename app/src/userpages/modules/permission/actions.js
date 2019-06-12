@@ -2,6 +2,7 @@
 
 import path from 'path'
 import settle from 'promise-settle'
+import { I18n } from 'react-redux-i18n'
 
 import * as api from '$shared/utils/api'
 import Notification from '$shared/utils/Notification'
@@ -236,9 +237,9 @@ export const saveUpdatedResourcePermissions = (
             .then(([added, removed]) => {
                 let message
                 if (added.filter((p) => !p.isFulfilled()).length) {
-                    message = 'Something went wrong while adding some of the permission(s)'
+                    message = I18n.t('userpages.permissions.error')
                 } else if (removed.filter((p) => !p.isFulfilled()).length) {
-                    message = 'Something went wrong while revoking some of the permission(s)'
+                    message = I18n.t('userpages.permissions.error')
                 }
                 if (message) {
                     const e = new Error(message)
@@ -250,7 +251,7 @@ export const saveUpdatedResourcePermissions = (
                 } else {
                     resolve()
                     Notification.push({
-                        title: 'Permissions saved successfully!',
+                        title: I18n.t('userpages.permissions.saved'),
                         icon: NotificationIcon.CHECKMARK,
                     })
                 }

@@ -1,5 +1,7 @@
 // @flow
 
+import { I18n } from 'react-redux-i18n'
+
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { Filter } from '../../flowtype/common-types'
 import type { Canvas, CanvasId } from '../../flowtype/canvas-types'
@@ -125,7 +127,7 @@ export const deleteCanvas = (id: CanvasId) => async (dispatch: Function): Promis
         const deleteCanvas = await api.del(`${apiUrl}/${id}`)
         dispatch(deleteCanvasSuccess(id))
         Notification.push({
-            title: 'Canvas deleted successfully',
+            title: I18n.t('userpages.canvases.deleteCanvas'),
             icon: NotificationIcon.CHECKMARK,
         })
         return deleteCanvas

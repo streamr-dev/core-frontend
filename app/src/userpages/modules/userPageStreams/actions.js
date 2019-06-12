@@ -1,6 +1,7 @@
 // @flow
 
 import cloneDeep from 'lodash/cloneDeep'
+import { I18n } from 'react-redux-i18n'
 
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { Stream, StreamId, StreamIdList, StreamFieldList, CSVImporterSchema, StreamStatus } from '$shared/flowtype/stream-types'
@@ -404,7 +405,7 @@ export const updateStream = (stream: Stream) => (dispatch: Function) => {
         .then(() => {
             dispatch(updateStreamSuccess(stream.id))
             Notification.push({
-                title: 'Stream saved successfully',
+                title: I18n.t('userpages.streams.actions.saveStreamSuccess'),
                 icon: NotificationIcon.CHECKMARK,
             })
         })
@@ -424,7 +425,7 @@ export const deleteStream = (id: StreamId) => async (dispatch: Function): Promis
         const deleteStream = await api.del(formatApiUrl('streams', id))
         dispatch(deleteStreamSuccess(id))
         Notification.push({
-            title: 'Stream deleted successfully',
+            title: I18n.t('userpages.streams.actions.deleteStreamSuccess'),
             icon: NotificationIcon.CHECKMARK,
         })
         return deleteStream
