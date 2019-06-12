@@ -233,7 +233,7 @@ const Chart = ({ className, series, datapoints, options }: Props) => {
             <HighchartsReact
                 highcharts={Highcharts}
                 constructorType="stockChart"
-                allowChartUpdate
+                allowChartUpdate={false}
                 callback={setChart}
                 options={opts}
             />
