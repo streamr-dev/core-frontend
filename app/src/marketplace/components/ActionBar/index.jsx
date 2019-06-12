@@ -65,6 +65,13 @@ class ActionBar extends Component<Props> {
         (BN(this.props.filter.maxPrice).isEqualTo('0') && dropdownValue === 'free')
     )
 
+    clearSearch = () => {
+        this.props.onSearchChange({
+            ...this.props.filter,
+            search: '',
+        })
+    }
+
     currentCategoryFilter = (): string => {
         const { filter: { categories: category }, categories } = this.props
         const categoryFilter = categories ? categories.find((c) => c.id === category) : null
@@ -83,7 +90,7 @@ class ActionBar extends Component<Props> {
         const { filter: { search, categories: category, sortBy, maxPrice }, categories } = this.props
         return (
             <div className={styles.actionBar}>
-                <SearchInput value={search} onChange={this.onSearchChange} />
+                <SearchInput value={search} onChange={this.onSearchChange} onClear={this.clearSearch} />
                 <div className={styles.searchFilter}>
                     <Container fluid className={styles.actionBarContainer}>
                         <ul>
