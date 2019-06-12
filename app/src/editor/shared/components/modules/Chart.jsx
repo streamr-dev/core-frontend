@@ -40,6 +40,8 @@ const ChartModule2 = (props) => {
                 },
                 showInNavigator: true,
                 id,
+                xAxis: 0,
+                yAxis: 0,
             },
         }))
     }, [])
