@@ -34,9 +34,9 @@ const ChartModule2 = (props) => {
 
     const queuedDatapointsRef = useRef([])
 
-    const [datapoints, setDatapoints] = useState([])
-
     const [series, setSeries] = useState({})
+
+    const [seriesData, setSeriesData] = useState({})
 
     const onSeries = useCallback((payload) => {
         const id = `series-${payload.idx}`
@@ -61,10 +61,13 @@ const ChartModule2 = (props) => {
         const queued = queuedDatapointsRef.current || []
         queuedDatapointsRef.current = []
 
-        setDatapoints((datapoints) => [
-            ...datapoints,
-            ...queued,
-        ])
+        setSeriesData((seriesData) => queued.reduce((memo, { s, x, y }) => ({
+            ...memo,
+            [s]: [
+                ...(memo[s] || []),
+                [x, y],
+            ],
+        }), seriesData))
     }, 250), [])
 
     const onDatapoint = useCallback((payload) => {
@@ -119,7 +122,7 @@ const ChartModule2 = (props) => {
                 />
                 <Chart
                     className={styles.chart}
-                    datapoints={datapoints}
+                    datapoints={seriesData}
                     options={module.options || {}}
                     series={series}
                 />

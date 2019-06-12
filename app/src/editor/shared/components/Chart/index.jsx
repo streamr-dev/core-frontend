@@ -26,20 +26,12 @@ type Props = {
 const Chart = ({ className, series, datapoints, options }: Props) => {
     const [chart, setChart] = useState(null)
 
-    const seriesData = useMemo(() => {
-        const data = datapoints.reduce((memo, { s, x, y }) => ({
-            ...memo,
-            [s]: [
-                ...(memo[s] || []),
-                [x, y],
-            ],
-        }), {})
-
-        return Object.values(series).map((payload: any) => ({
+    const seriesData = useMemo(() => (
+        Object.values(series).map((payload: any) => ({
             ...payload,
-            data: data[payload.idx] || [],
+            data: datapoints[payload.idx] || [],
         }))
-    }, [series, datapoints])
+    ), [series, datapoints])
 
     const onResize = useCallback(() => {
         if (chart) {
