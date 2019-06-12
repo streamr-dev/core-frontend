@@ -13,7 +13,7 @@ import moment from 'moment'
 import cx from 'classnames'
 
 import type { Filter, SortOption } from '$userpages/flowtype/common-types'
-import type { Canvas, CanvasId } from '$userpages/flowtype/canvas-types'
+import type { Canvas } from '$userpages/flowtype/canvas-types'
 
 import Layout from '$userpages/components/Layout'
 import links from '$app/src/links'
@@ -27,9 +27,6 @@ import Search from '../../Header/Search'
 import Dropdown from '$shared/components/Dropdown'
 import ShareDialog from '$userpages/components/ShareDialog'
 import confirmDialog from '$shared/utils/confirm'
-import { getResourcePermissions } from '$userpages/modules/permission/actions'
-import { selectFetchingPermissions, selectCanvasPermissions } from '$userpages/modules/permission/selectors'
-import type { Permission, ResourceId } from '$userpages/flowtype/permission-types'
 import type { User } from '$shared/flowtype/user-types'
 import { selectUserData } from '$shared/modules/user/selectors'
 import NoCanvasesView from './NoCanvases'
@@ -45,10 +42,6 @@ export type StateProps = {
     user: ?User,
     canvases: Array<Canvas>,
     filter: ?Filter,
-    fetchingPermissions: boolean,
-    permissions: {
-        [ResourceId]: Array<Permission>,
-    },
     fetching: boolean,
 }
 
@@ -58,7 +51,6 @@ export type DispatchProps = {
     updateFilter: (filter: Filter) => void,
     navigate: (to: string) => void,
     copyToClipboard: (text: string) => void,
-    getCanvasPermissions: (id: CanvasId) => void,
 }
 
 type Props = StateProps & DispatchProps
@@ -123,25 +115,6 @@ class CanvasList extends Component<Props, State> {
         }
     }
 
-    loadCanvasPermissions = (id: CanvasId) => {
-        const { permissions, getCanvasPermissions, fetchingPermissions } = this.props
-
-        if (!fetchingPermissions && !permissions[id]) {
-            getCanvasPermissions(id)
-        }
-    }
-
-    hasWritePermission = (id: CanvasId) => {
-        const { fetchingPermissions, permissions, user } = this.props
-
-        return (
-            !fetchingPermissions &&
-            !!user &&
-            permissions[id] &&
-            permissions[id].find((p: Permission) => p.user === user.username && p.operation === 'write') !== undefined
-        )
-    }
-
     onOpenShareDialog = (canvas: Canvas) => {
         this.setState({
             shareDialogCanvas: canvas,
@@ -185,7 +158,6 @@ class CanvasList extends Component<Props, State> {
                     <Translate value="userpages.canvases.menu.copyUrl" />
                 </DropdownActions.Item>
                 <DropdownActions.Item
-                    disabled={!this.hasWritePermission(canvas.id)}
                     onClick={() => this.confirmDeleteCanvas(canvas)}
                 >
                     <Translate value="userpages.canvases.menu.delete" />
@@ -282,11 +254,6 @@ class CanvasList extends Component<Props, State> {
                                     link={`${links.editor.canvasEditor}/${canvas.id}`}
                                     dropdownActions={this.getActions(canvas)}
                                     image={<CanvasPreview className={styles.PreviewImage} canvas={canvas} />}
-                                    onMenuToggle={(open) => {
-                                        if (open) {
-                                            this.loadCanvasPermissions(canvas.id)
-                                        }
-                                    }}
                                 >
                                     <Tile.Title>{canvas.name}</Tile.Title>
                                     <Tile.Description>
@@ -317,8 +284,6 @@ export const mapStateToProps = (state: any): StateProps => ({
     user: selectUserData(state),
     canvases: selectCanvases(state),
     filter: selectFilter(state),
-    fetchingPermissions: selectFetchingPermissions(state),
-    permissions: selectCanvasPermissions(state),
     fetching: selectFetching(state),
 })
 
@@ -328,7 +293,6 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     updateFilter: (filter) => dispatch(updateFilter(filter)),
     navigate: (to) => dispatch(push(to)),
     copyToClipboard: (text) => copy(text),
-    getCanvasPermissions: (id: CanvasId) => dispatch(getResourcePermissions('CANVAS', id)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(CanvasList)

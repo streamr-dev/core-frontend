@@ -2,8 +2,11 @@
 
 import path from 'path'
 import settle from 'promise-settle'
-import { error as errorNotification, success as successNotification } from 'react-notification-system-redux'
+import { I18n } from 'react-redux-i18n'
+
 import * as api from '$shared/utils/api'
+import Notification from '$shared/utils/Notification'
+import { NotificationIcon } from '$shared/utils/constants'
 
 export const GET_RESOURCE_PERMISSIONS_REQUEST = 'GET_RESOURCE_PERMISSIONS_REQUEST'
 export const GET_RESOURCE_PERMISSIONS_SUCCESS = 'GET_RESOURCE_PERMISSIONS_SUCCESS'
@@ -110,18 +113,18 @@ const saveRemovedResourcePermissionFailure = (resourceType: ResourceType, resour
     permission,
 })
 
-export const getResourcePermissions = (resourceType: ResourceType, resourceId: ResourceId) => (dispatch: Function) => {
+export const getResourcePermissions = (resourceType: ResourceType, resourceId: ResourceId) => async (dispatch: Function) => {
     dispatch(getResourcePermissionsRequest())
-    return api.get(`${getApiUrl(resourceType, resourceId)}/permissions`)
-        .then((data) => dispatch(getResourcePermissionsSuccess(resourceType, resourceId, data)))
-        .catch((e) => {
-            dispatch(getResourcePermissionsFailure(e))
-            dispatch(errorNotification({
-                title: 'Error',
-                message: e.message,
-            }))
-            throw e
+    const resourcePermissions = await api.get(`${getApiUrl(resourceType, resourceId)}/permissions`)
+        .catch((error) => {
+            dispatch(getResourcePermissionsFailure(error))
+            Notification.push({
+                title: error.message,
+                icon: NotificationIcon.ERROR,
+            })
+            throw error
         })
+    dispatch(getResourcePermissionsSuccess(resourceType, resourceId, resourcePermissions))
 }
 
 export const setResourceHighestOperationForUser = (
@@ -234,22 +237,23 @@ export const saveUpdatedResourcePermissions = (
             .then(([added, removed]) => {
                 let message
                 if (added.filter((p) => !p.isFulfilled()).length) {
-                    message = 'Something went wrong while adding some of the permission(s)'
+                    message = I18n.t('userpages.permissions.error')
                 } else if (removed.filter((p) => !p.isFulfilled()).length) {
-                    message = 'Something went wrong while revoking some of the permission(s)'
+                    message = I18n.t('userpages.permissions.error')
                 }
                 if (message) {
                     const e = new Error(message)
-                    dispatch(errorNotification({
-                        title: 'Error!',
-                        message,
-                    }))
+                    Notification.push({
+                        title: message,
+                        icon: NotificationIcon.ERROR,
+                    })
                     reject(e)
                 } else {
                     resolve()
-                    dispatch(successNotification({
-                        title: 'Permissions saved successfully!',
-                    }))
+                    Notification.push({
+                        title: I18n.t('userpages.permissions.saved'),
+                        icon: NotificationIcon.CHECKMARK,
+                    })
                 }
             })
     })
