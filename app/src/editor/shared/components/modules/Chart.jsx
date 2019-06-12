@@ -14,8 +14,6 @@ import SvgIcon from '$shared/components/SvgIcon'
 import UiSizeConstraint from '../UiSizeConstraint'
 import ResizeWatcher from '$editor/canvas/components/Resizable/ResizeWatcher'
 
-import styles from './Chart.pcss'
-
 const ChartModule2 = (props) => {
     const { isActive, canvas, module } = props
     
@@ -108,7 +106,7 @@ const ChartModule2 = (props) => {
     }, [])
 
     return (
-        <UiSizeConstraint minWidth={300} minHeight={200}>
+        <UiSizeConstraint minWidth={300} minHeight={240}>
                 <ModuleSubscription
                     {...props}
                     onActiveChange={init}
@@ -116,7 +114,6 @@ const ChartModule2 = (props) => {
                     ref={subscriptionRef}
                 />
                 <Chart
-                    className={styles.chart}
                     datapoints={seriesData}
                     options={module.options || {}}
                     series={series}
