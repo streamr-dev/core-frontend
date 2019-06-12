@@ -306,6 +306,12 @@ export function isPortConnected(canvas, portId) {
     return !!conn.length
 }
 
+export function arePortsConnected(canvas, portIdA, portIdB) {
+    const connA = getConnectedPortIds(canvas, portIdA)
+    const connB = getConnectedPortIds(canvas, portIdB)
+    return connA.includes(portIdB) && connB.includes(portIdA)
+}
+
 export function isPortExported(canvas, portId) {
     if (!hasPort(canvas, portId)) { return false }
     return !!getPort(canvas, portId).export
