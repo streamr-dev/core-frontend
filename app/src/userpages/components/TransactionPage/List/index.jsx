@@ -73,6 +73,9 @@ class TransactionList extends Component<Props> {
         return (
             <Layout
                 loading={fetching}
+                headerSearchComponent={
+                    <div className={styles.searchPlaceholder} />
+                }
             >
                 <Helmet title={`Streamr Core | ${I18n.t('userpages.title.transactions')}`} />
                 <div className={cx('container', styles.transactionList)}>

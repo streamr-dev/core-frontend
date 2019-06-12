@@ -1,6 +1,7 @@
 .emptyState {
   color: var(--greyDark);
   font-size: 16px;
+  font-weight: var(--regular);
   padding: 6em 0;
   text-align: center;
 
@@ -28,10 +29,27 @@
 }
 
 .linkWrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
   margin-top: 1.25em;
 
   a + a {
-    margin-left: 3.25em;
+    margin-left: calc(2 * var(--um));
+  }
+}
+
+@media (--sm-down) {
+  .emptyState {
+    .linkWrapper {
+      flex-direction: column;
+      align-items: center;
+
+      a + a {
+        margin-left: 0;
+        margin-top: var(--um);
+      }
+    }
   }
 }
 

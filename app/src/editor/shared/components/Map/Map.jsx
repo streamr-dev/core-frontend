@@ -6,6 +6,7 @@ import 'leaflet/dist/leaflet.css'
 import { Map as LeafletMap, ImageOverlay, TileLayer, Tooltip, Polyline, type LatLngBounds } from 'react-leaflet'
 import L from 'leaflet'
 import HeatmapLayer from 'react-leaflet-heatmap-layer'
+import throttle from 'lodash/throttle'
 import { type Ref } from '$shared/flowtype/common-types'
 
 import UiSizeConstraint from '../UiSizeConstraint'
@@ -38,6 +39,7 @@ type Props = {
     minZoom: number,
     maxZoom: number,
     zoom: number,
+    autoZoom: boolean,
     traceColor: string,
     traceWidth: number,
     markers: { [string]: Marker },
@@ -55,8 +57,23 @@ type Props = {
     maxIntensity: number,
 }
 
-export default class Map extends React.Component<Props> {
+type State = {
+    touched: boolean,
+    bounds: ?LatLngBounds,
+}
+
+export default class Map extends React.Component<Props, State> {
     ref: Ref<LeafletMap> = React.createRef()
+    unmounted: boolean = false
+
+    state = {
+        touched: false,
+        bounds: null,
+    }
+
+    componentWillUnmount() {
+        this.unmounted = true
+    }
 
     onResize = () => {
         const { current: map } = this.ref
@@ -66,6 +83,28 @@ export default class Map extends React.Component<Props> {
         }
     }
 
+    markTouched = () => {
+        this.setState({
+            touched: true,
+        })
+    }
+
+    calculateBounds = throttle((markers: Array<Marker>, autoZoom: boolean, touched: boolean) => {
+        let bounds = null
+
+        if (autoZoom && markers.length > 0 && !touched) {
+            const positions = markers.map((m) => [m.lat, m.long])
+            bounds = L.latLngBounds(positions)
+        }
+
+        if (this.unmounted) {
+            return
+        }
+        this.setState({
+            bounds,
+        })
+    }, 1000)
+
     render() {
         const {
             className,
@@ -74,6 +113,7 @@ export default class Map extends React.Component<Props> {
             minZoom,
             maxZoom,
             zoom,
+            autoZoom,
             traceColor,
             traceWidth,
             markers,
@@ -88,6 +128,7 @@ export default class Map extends React.Component<Props> {
             radius,
             maxIntensity,
         } = this.props
+        const { touched, bounds } = this.state
         const mapCenter = [centerLat, centerLong]
 
         /* eslint-disable-next-line max-len */
@@ -105,9 +146,17 @@ export default class Map extends React.Component<Props> {
         const markerArray: Array<Marker> = Object
             .values(markers)
 
+        this.calculateBounds(markerArray, autoZoom, touched)
+
         return (
             <UiSizeConstraint minWidth={368} minHeight={224}>
-                <div className={cx(className)}>
+                <div
+                    className={cx(className)}
+                    onMouseDown={this.markTouched}
+                    onKeyDown={this.markTouched}
+                    onWheel={this.markTouched}
+                    role="presentation"
+                >
                     <LeafletMap
                         ref={this.ref}
                         center={mapCenter}
@@ -116,9 +165,11 @@ export default class Map extends React.Component<Props> {
                         minZoom={minZoom}
                         maxZoom={maxZoom}
                         crs={isImageMap ? L.CRS.Simple : L.CRS.EPSG3857}
+                        preferCanvas
+                        bounds={bounds}
                     >
                         <ResizeWatcher onResize={this.onResize} />
-                        {isHeatmap && (
+                        {isHeatmap && markerArray.length > 0 && (
                             <HeatmapLayer
                                 fitBoundsOnLoad={false}
                                 fitBoundsOnUpdate={false}
@@ -160,7 +211,7 @@ export default class Map extends React.Component<Props> {
                                             {marker.id}
                                         </Tooltip>
                                     </CustomMarker>
-                                    {tracePoints && (
+                                    {tracePoints && tracePoints.length > 0 && (
                                         <Polyline
                                             positions={tracePoints}
                                             color={traceColor}

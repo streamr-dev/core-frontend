@@ -29,13 +29,10 @@ const Icon = () => (
         viewBox="0 0 16 16"
         xmlns="http://www.w3.org/2000/svg"
     >
-        <g id="Create-product-+-Publish-flows" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-            <g id="Set-Price-01" transform="translate(-615.000000, -552.000000)" fill="#C3C3C3" fillRule="nonzero">
-                <g id="Question-icon" transform="translate(615.000000, 552.000000)">
-                    <path
-                        d={path}
-                        id="Shape-Copy-3"
-                    />
+        <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+            <g transform="translate(-615.000000, -552.000000)" fill="#C3C3C3" fillRule="nonzero">
+                <g transform="translate(615.000000, 552.000000)">
+                    <path d={path} />
                 </g>
             </g>
         </g>

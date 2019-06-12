@@ -4,7 +4,6 @@
   font-size: 12px;
   font-weight: var(--medium);
   justify-content: space-between;
-  min-width: 92px; /* 24px + 40px + 1.75um (um = 16px)  */
 }
 
 .name {
@@ -12,15 +11,14 @@
   position: relative;
 }
 
-.idle {
-  position: absolute;
-  transform: translateY(-50%);
-  width: 100%;
+.inner {
+  max-width: calc(32 * var(--um));
 }
 
 .expandToggle {
   flex-shrink: 0;
   height: 40px;
+  position: relative;
   width: 24px;
 }
 
@@ -32,6 +30,7 @@
   display: flex;
   opacity: 0;
   padding: calc(0.5 * var(--um));
+  position: relative;
   transition: 200ms linear;
   transition-delay: 200s, 0s;
   transition-property: visibility, opacity;

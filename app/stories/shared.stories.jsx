@@ -11,7 +11,6 @@ import { Row, Col } from 'reactstrap'
 import Toggle from '$shared/components/Toggle'
 import Table from '$shared/components/Table'
 import FileUpload from '$shared/components/FileUpload'
-import Tabs from '$shared/components/Tabs'
 import Checkbox from '$shared/components/Checkbox'
 import DropdownActions from '$shared/components/DropdownActions'
 import Meatball from '$shared/components/Meatball'
@@ -22,7 +21,6 @@ import Calendar from '$shared/components/Calendar'
 import WithCalendar from '$shared/components/WithCalendar'
 import DatePicker from '$shared/components/DatePicker'
 import dateFormatter from '$utils/dateFormatter'
-import Search from '$shared/components/Search'
 import { arrayMove } from 'react-sortable-hoc'
 import SortableList from '$shared/components/SortableList'
 import FieldList from '$shared/components/FieldList'
@@ -169,15 +167,6 @@ story('FileUpload')
             multiple={false}
             disablePreview
         />
-    ))
-
-story('Tabs')
-    .addWithJSX('basic', () => (
-        <Tabs defaultActiveIndex={1}>
-            <Tabs.Tab title={text('tab1Title', 'Tab 1')}><span>Content of tab 1</span></Tabs.Tab>
-            <Tabs.Tab title={text('tab2Title', 'Tab 2')}><span>Content of tab 2</span></Tabs.Tab>
-            <Tabs.Tab title={text('tab3Title', 'Tab 3 with longer name')}><span>Content of tab 3</span></Tabs.Tab>
-        </Tabs>
     ))
 
 class CheckboxContainer extends React.Component {
@@ -353,14 +342,6 @@ story('Date Picker')
             date={new Date(2018, 12, 31)}
             error="Errored!"
             preserveLabelSpace
-        />
-    ))
-
-story('Search')
-    .addWithJSX('basic', () => (
-        <Search
-            placeholder="Placeholder"
-            onChange={action('onChange')}
         />
     ))
 

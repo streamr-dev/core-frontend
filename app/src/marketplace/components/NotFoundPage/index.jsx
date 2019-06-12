@@ -26,12 +26,26 @@ const NotFoundPage = () => (
                     />
                 )}
                 link={(
-                    <Link
-                        to={links.marketplace.main}
-                        className="btn btn-special"
-                    >
-                        <Translate value="notFoundPage.top" />
-                    </Link>
+                    <React.Fragment>
+                        <Link
+                            to={links.userpages.main}
+                            className="btn btn-special"
+                        >
+                            <Translate value="notFoundPage.coreApp" />
+                        </Link>
+                        <Link
+                            to={links.marketplace.main}
+                            className="btn btn-special"
+                        >
+                            <Translate value="notFoundPage.top" />
+                        </Link>
+                        <Link
+                            to={links.root}
+                            className="btn btn-special"
+                        >
+                            <Translate value="notFoundPage.publicSite" />
+                        </Link>
+                    </React.Fragment>
                 )}
                 linkOnMobile
             >

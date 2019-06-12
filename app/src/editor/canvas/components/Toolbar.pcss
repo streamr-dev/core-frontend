@@ -396,6 +396,7 @@ body .RealtimeRunButtonMenu {
 .CalendarWrapper {
   bottom: 50px;
   left: 50%;
+  min-height: 361px; /* Height of 6 rows/weeks. */
   transform: translate(-50%, 0);
 }
 
@@ -406,4 +407,10 @@ body .RealtimeRunButtonMenu {
 
 .DashboardButtons {
   justify-content: flex-end;
+}
+
+.AddButton.active,
+.AddButton.active:global(.btn) {
+  /* TODO: Refactor to get rid of !important. */
+  color: #323232 !important;
 }

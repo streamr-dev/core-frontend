@@ -17,7 +17,7 @@ import type { Stream, StreamId } from '$shared/flowtype/stream-types'
 
 import SvgIcon from '$shared/components/SvgIcon'
 import links from '$shared/../links'
-import { getStreams, updateFilter, deleteStream, getStreamStatus } from '$userpages/modules/userPageStreams/actions'
+import { getStreams, updateFilter, deleteStream, getStreamStatus, cancelStreamStatusFetch } from '$userpages/modules/userPageStreams/actions'
 import { selectStreams, selectFetching, selectFilter } from '$userpages/modules/userPageStreams/selectors'
 import { getFilters } from '$userpages/utils/constants'
 import Table from '$shared/components/Table'
@@ -25,7 +25,7 @@ import DropdownActions from '$shared/components/DropdownActions'
 import Meatball from '$shared/components/Meatball'
 import StatusIcon from '$shared/components/StatusIcon'
 import Layout from '$userpages/components/Layout'
-import Search from '$shared/components/Search'
+import Search from '../../Header/Search'
 import Dropdown from '$shared/components/Dropdown'
 import confirmDialog from '$shared/utils/confirm'
 import { getResourcePermissions } from '$userpages/modules/permission/actions'
@@ -75,6 +75,7 @@ export type DispatchProps = {
     copyToClipboard: (string) => void,
     getStreamPermissions: (id: StreamId) => void,
     refreshStreamStatus: (id: StreamId) => Promise<void>,
+    cancelStreamStatusFetch: () => void,
 }
 
 type Props = StateProps & DispatchProps
@@ -145,6 +146,10 @@ class StreamList extends Component<Props, State> {
             updateFilter(this.defaultFilter)
         }
         getStreams()
+    }
+
+    componentWillUnmount() {
+        this.props.cancelStreamStatusFetch()
     }
 
     onSearchChange = (value: string) => {
@@ -468,6 +473,7 @@ const mapDispatchToProps = (dispatch) => ({
     copyToClipboard: (text) => copy(text),
     getStreamPermissions: (id: StreamId) => dispatch(getResourcePermissions('STREAM', id)),
     refreshStreamStatus: (id: StreamId) => dispatch(getStreamStatus(id)),
+    cancelStreamStatusFetch,
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(StreamList)

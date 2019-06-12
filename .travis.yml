@@ -23,7 +23,7 @@ env:
   global:
   - secure: g/km642SU0HZoBmYIkt3gsWoXonuXYN4rdYfXm2ynavMKyojbDLHM+EYLB1uk1vsGR8SITHTQaE1lBoSlgD9aTXzyhtnDp3VkWJAm3/sxQIE8HEoKRT+4odrV/DCoidMLmeIL0xqLSYc2u+fLKm6dMnEdOVwBRPMPSdx6EMfusEbv2fPBMbWNTSEk5Jd8ppR1QwpbJQomeSp9uhxIH8pQWYUD3/zmhl26xYZ93wJMDQXoNyCQhlfpL7IcTljWPI+LP/U7GgSjBON/NHQ7Ka0Pq2UIA9B0QfrMPMrqOHb8AG2P/RaUyBqu0Jay6sdpyrJxJpANv7OAPE4RhLgjJx9fK4qzBvV6dwqxFt+1sNQRZCHc3AL5P7QiE4uVahbfy7i0xq1/aoJPLkIUEwnGn1HD1TBYE4LDnukkkFqN/GCuMBor2rqJLobRYlOY6g+EFfaCrG1gKfqVFr98XxJbBbTV8fRdyiqiJzpXtTLVpxJL2KDNdnhrTI+l5+/wRsiROu3rv2d5V0W25qOhhE02IxHAyfDb63dhddBopxO0TyjE5v7yew6HbpukixSDap7dq+w/P6m0Z7MjrAc+tMUOW/36TGVcLdK1pdEl1heVhNA9KVfzFT3nUP9nua/9weScISusQdhw6+GZrRyFQSfAJqaUemyJbyl0VFuxcVIt+fVNLQ=
   - secure: hu5cpsMinQEpoNgnJv1XQ+509/57gM4dHg+mRXaAkZ7ha6k0AK1AmNgsCKYfs2G8Qe3eFGM3DTuJA0JV9vOcUeHNURGQKW+ukciSN1dT8dmLC6DAjgd89LIV5jsgAMBtNNCeIDwdpSEhe39nD4P1ligVpxxtY9kbOfK+F/cNbgj9ZpC/MZ55rniMa1JkZpfWwP3bdOcko56E+dB3/Dh8L0QF1hiDA1AwpGXQcO2jQ22HvTyUIezcgIYGGSUJ0N9gPhe7f0UQ4iCdMbq2rKv2wi4vzKQPFOkK8eYAUfhbv1iHy/bP2VX8tR7ac9XJuAznaHJ3tng8iEnvF5ForiaAVhtUNOUi1Hw0i2qdaoash0hJh3Aq8IwyFZiZYAQYmIC29VuoPQJgTPVECEDkzqs8fbC0nqwjG9aVP6OkGUgSmR9LChUVsF8ZfLAp/R4bY0XJh6vuqG00qfl90f2zooTA/HPQa7D2VJBEDretZLR0u1ufPHEPkl++o5MeaeNn98KYKOD66fqK+lHf1fmyBogRRefXFZFOi1zNgZTe+xA6nNHk9eAMvYf9CfIsRM7AVnBviTWBkx3S5KDcbof8rdyUymwu5T/7Hly6JZmYKLZ5esQHoV2J5LYOxeaZoXXLARgQkxdpf/9sxNVkkB8TW6llnk+Bd7o7Qn9to80m60X2zsQ=
-  - secure: "dD7Qx3V2Emwc00/cxAmQzjR85NQ9k+ViHqABGLf8W0CzfOOekCjSTfZbqZoaodeTXkPExKgxT3C3eFa2k0RUMlo2eA7jGheDeDVybtcSYfNlbzEvu8qlAF+0qvlrSRpOFvOoUo1ItjeXmnbkRbe2460Vw/dgPWz7Km6tTiApxg52+fncCgctC3VsyqBMZ9ojYea1iK7hBUN0oa/+cy6OFcAzN9OkDjgWtsymushuQSRl0ePQMHOR+HxbOsUKlaYh0Dd2aoX5oeq1SWvSipEcvwyJs5O7aCySn/WQ73FVkuilB3E/BPyGBMovIx+s7qMvGoBPlQVurgR2/MJPoWVmDe62OiziMf6f8nx/AXDD720JODWVJSIli/rZu/Z2yWD+jZ2JZMLoxsya/j5DmjjoCWj+qpAMdZCFLANKBCMbuF9xZxWOzlFbHjIa9hEeU9DqlCRJKsXzt1keNxEn3YRQKWnT5S8ICCC6aBSNAtqI4ZaVYSeJaS8fxnms4GzdNF7cDGHW1it+cuq1FpGS4yRcxAz7xo+Ql1zTnaFeWNO1bneONx5o4fg/4kZ+njPCEFXo0FSU09SW83dX0L0+VD5k2afWVO/AhlLZ2EI5F6WyZreIUGFyMeTPs6AR82UnMSjLY1z3TEMl5eAUYLJOvry94QpjqoND8JCOVGXF60dq/tA="
+  - secure: "nHD48tYG5jDsFdgE5h7ZLxEYmIeXmjlcB+lswQqTzBOAgPSPmf89OCH1AYXQz2Bf9DhynIspPIQxuM/peeaPNLiuvBKubVtmSTMLrM3dyy2x9XUUKnGDEQPS0lOWA6k/Nyx2k4tqyx8Jvlzfgy3ayWyQQOxm8Rfmn4oyNz4ePCOxKwVIaeNwvdLzg5MqU9oDgxsSL2CGuHRJ7zgyDxxm7rKQcNgFEifUtB3+U0t5WfElWvhyAkgzhTZlfcHhEPqnoDxuQmlHMFl5f6PSvJXSaWaF+Q+co5Apw1KKJOAhfT6e3Pe1dsxTrQzFzzJCKPbjoHfknUBmX4wV0YDTz5VsR/L4L4PqVlZgP8Y8MdbeBwqfZY624wa/x3V4kOtfucEJDVO/n8rAqm3SREdSTN6HwgV6mdr870PUZhG512ZMT7J9IfyeigtQt6OYYDWtCqMb4rYNDsZQeepzWKegdKCByuyxchJZ+1/yg30ql+qeYkdVWV8npjEFU10PGgpo1m21Sqjq6mfjMi7IWT+DSh0oFPj7ua6A/5VTw/5OjqrBHbFmRcCM2cKvuS5dyTG0ETdBDfstgdqINiwW1cYzq9yqu+KDwwOFbeiELAZoQVERDYPu1RbX6ccIi4bYbd09nknxAAcGl1XEegEKouQxBDb6XexOdDnbtaxTFMUa9BsAZyI="
   - SENTRY_ORG=streamr
   - SENTRY_PROJECT=marketplace
 jobs:
@@ -186,6 +186,7 @@ jobs:
     if: NOT type IN (pull_request)
     env:
     - NODE_ENV=production
+    - VERSION=$TRAVIS_TAG
     - PORT=12345
     - VERSION=$TRAVIS_TAG
     - SENTRY_ENVIRONMENT=production
@@ -232,61 +233,6 @@ jobs:
         secure: SmtMYr1JhqzneGtg4sx10/Z7e5TsvlwPl05kkpx2dsGUuWX1gb+kWidNDpC8fWvkREg38o3yOtPza/FOyRtLwdIe1N1lZyYFvIhac7lATroMNyCWmTuYAZMbLtVUEsI43LNhQAC+F/N48TwM+0EJEWUIddc0ANbYEH8cReqDcngL7ZPtFEqtx9Qc/ZVY7/a83munHnd9dXga+4m8xVGo/u6UIn0hSVKt/LLHOAYw4chNXvUgyP2hNmmxHn2cdKocqM4dmEochqe8THSK3F37xlPfaHKzLQfEKfWgWdSQ+lDXonGfDz5ZSs8Owwnd8R/OmOmMKdAs6i96Kj3u4amOANMj1tixtrN4BiFuTM89iTPwKy49xOTSiLjS6XGvyZ1+GIYXuwmsLJbEef19qxpPUz41N8Kmue7Vf2ijy3c6Q0jpFJTKOAZe7m0hONyQi+SG6GYDAxRmuvghIrlZ71zydSn6FYLv3R5cI17tbCZAK9kZdzSXkr4K8W4LJbbZzmJk+X2IYT+Y9WLganeWk9RhmSz5GG84Y33AtsJXiNkBRrV32VtkYkwOa+FtqqLkLnJ7czqez1RyoNGXuhM2djY0pibhabsj7Z9o6ZyLKnm+2FTNdRFpJnkfl2Opv9R5ghOmTLjPSY+Dxjw/1PJoBfzzIEe4tnzpEsC9gqDxJ79KW6k=
       bucket: eu-west-1-streamr-vault
       local-dir: "$TRAVIS_BUILD_DIR/app/dist"
-      upload-dir: marketplace/releases/$TRAVIS_TAG
-      acl: private
-      region: eu-west-1
-      skip_cleanup: true
-      on:
-        tags: true
-  - stage: Platform Build Lisboa Production
-    if: NOT type IN (pull_request)
-    env:
-    - NODE_ENV=production
-    - PORT=12345
-    - VERSION=$TRAVIS_TAG
-    - SENTRY_ENVIRONMENT=lisboa
-    - STREAMR_API_URL=https://ee-lisboa.streamr.com/api/v1
-    - STREAMR_WS_URL=wss://ee-lisboa.streamr.com/api/v1/ws
-    - PLATFORM_ORIGIN_URL=https://ee-lisboa.streamr.com
-    - STREAMR_URL=https://ee-lisboa.streamr.com
-    - GOOGLE_ANALYTICS_ID=UA-55331565-5
-    - MARKETPLACE_CONTRACT_ADDRESS=0x62d08a44d6db7821c9556032a437beb4bd050abd
-    - TOKEN_CONTRACT_ADDRESS=0x67a9fda28c4df570d1d5350acfa345194f4d4100
-    - WEB3_REQUIRED_NETWORK_ID=8995
-    - WEB3_PUBLIC_HTTP_PROVIDER=https://ee-lisboa.streamr.com:8540
-    - WEB3_PUBLIC_WS_PROVIDER=wss://ee-lisboa.streamr.com:8540/ws
-    - SENTRY_DSN=https://e012761929d24baa96ca82772f60b395@sentry.io/1203154
-    script: "$TRAVIS_BUILD_DIR/app/travis_scripts/build-app.sh"
-    deploy:
-    - provider: s3
-      access_key_id: AKIAJBAGP3WA5UXQ3AZQ
-      secret_access_key:
-        secure: K0oYY9l2dLEiGnB0ZzRWwlPIgKO0v11usTbrWJD2nWFa4lwgBVw+jHLIjbQMdQcsY4QoUq5BNK25DLsq8yNrQhW0cX0XbmI5L+j5ZFFfgBxFhI7Q0UAtwzJvBzSs6+k4cF/twwsuSt6uOZbtA4E/7hw9rTPkdeWx6bahwuVnU7/tTw9z2mt1pqGFQaCcy2MZh+6pCxcGonBTl1bh8VLCf7g9SXsU8+jz2ec6BjKmonJKdMiMxf2rbCKOudlrBjjjrP/5q/38rzzr9hx0TkkQ0fnZoFIeYhFJvKTxXXBujOqZBMAKh7R1MvVZf3JY+ADKqOD9t3C4XGW98s7D/v2J3HTxoQf2bWCzkGGto8KqbnqEm61YIhzTp6bHKadeLkhh3wTnxjiS6NnSGTNqybUO9ic2YcMtp6zY4nYW2mMPaxgiyZb869EkRWFOtgeECHmXmrZXv+8dnpyzVC4QPp53blxYErPwhAs/cQzcwDaj6v4mcU0Nem8DN0g0lzXCP11pFxLvqa/9TzIGs/1N2+OB8STrxEQi9wPpDUJ7gcC+1ovBXCDWfQX+yn7MDIauTRPOQlQrOSuoSzSZsamAFTOfvL7257myQlo8vdGT6WqFKXwZ+yTh3Lif/hUruQmDzDHAifJeY8tXRu51RNM1UEDtOj26I1yUOmiD4wjMwGJdzng=
-      bucket: eu-west-1-lx-streamr-marketplace
-      local-dir: dist
-      acl: private
-      region: eu-west-1
-      skip_cleanup: true
-      on:
-        tags: true
-    - provider: s3
-      access_key_id: AKIAJBAGP3WA5UXQ3AZQ
-      secret_access_key:
-        secure: K0oYY9l2dLEiGnB0ZzRWwlPIgKO0v11usTbrWJD2nWFa4lwgBVw+jHLIjbQMdQcsY4QoUq5BNK25DLsq8yNrQhW0cX0XbmI5L+j5ZFFfgBxFhI7Q0UAtwzJvBzSs6+k4cF/twwsuSt6uOZbtA4E/7hw9rTPkdeWx6bahwuVnU7/tTw9z2mt1pqGFQaCcy2MZh+6pCxcGonBTl1bh8VLCf7g9SXsU8+jz2ec6BjKmonJKdMiMxf2rbCKOudlrBjjjrP/5q/38rzzr9hx0TkkQ0fnZoFIeYhFJvKTxXXBujOqZBMAKh7R1MvVZf3JY+ADKqOD9t3C4XGW98s7D/v2J3HTxoQf2bWCzkGGto8KqbnqEm61YIhzTp6bHKadeLkhh3wTnxjiS6NnSGTNqybUO9ic2YcMtp6zY4nYW2mMPaxgiyZb869EkRWFOtgeECHmXmrZXv+8dnpyzVC4QPp53blxYErPwhAs/cQzcwDaj6v4mcU0Nem8DN0g0lzXCP11pFxLvqa/9TzIGs/1N2+OB8STrxEQi9wPpDUJ7gcC+1ovBXCDWfQX+yn7MDIauTRPOQlQrOSuoSzSZsamAFTOfvL7257myQlo8vdGT6WqFKXwZ+yTh3Lif/hUruQmDzDHAifJeY8tXRu51RNM1UEDtOj26I1yUOmiD4wjMwGJdzng=
-      bucket: eu-west-1-lx-streamr-vault
-      local-dir: dist
-      upload-dir: marketplace/releases/latest
-      acl: private
-      region: eu-west-1
-      skip_cleanup: true
-      on:
-        tags: true
-    - provider: s3
-      access_key_id: AKIAJBAGP3WA5UXQ3AZQ
-      secret_access_key:
-          secure: K0oYY9l2dLEiGnB0ZzRWwlPIgKO0v11usTbrWJD2nWFa4lwgBVw+jHLIjbQMdQcsY4QoUq5BNK25DLsq8yNrQhW0cX0XbmI5L+j5ZFFfgBxFhI7Q0UAtwzJvBzSs6+k4cF/twwsuSt6uOZbtA4E/7hw9rTPkdeWx6bahwuVnU7/tTw9z2mt1pqGFQaCcy2MZh+6pCxcGonBTl1bh8VLCf7g9SXsU8+jz2ec6BjKmonJKdMiMxf2rbCKOudlrBjjjrP/5q/38rzzr9hx0TkkQ0fnZoFIeYhFJvKTxXXBujOqZBMAKh7R1MvVZf3JY+ADKqOD9t3C4XGW98s7D/v2J3HTxoQf2bWCzkGGto8KqbnqEm61YIhzTp6bHKadeLkhh3wTnxjiS6NnSGTNqybUO9ic2YcMtp6zY4nYW2mMPaxgiyZb869EkRWFOtgeECHmXmrZXv+8dnpyzVC4QPp53blxYErPwhAs/cQzcwDaj6v4mcU0Nem8DN0g0lzXCP11pFxLvqa/9TzIGs/1N2+OB8STrxEQi9wPpDUJ7gcC+1ovBXCDWfQX+yn7MDIauTRPOQlQrOSuoSzSZsamAFTOfvL7257myQlo8vdGT6WqFKXwZ+yTh3Lif/hUruQmDzDHAifJeY8tXRu51RNM1UEDtOj26I1yUOmiD4wjMwGJdzng=
-      bucket: eu-west-1-lx-streamr-vault
-      local-dir: dist
       upload-dir: marketplace/releases/$TRAVIS_TAG
       acl: private
       region: eu-west-1

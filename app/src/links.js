@@ -1,7 +1,7 @@
 // @flow
 
-import { formatExternalUrl } from '$shared/utils/url'
-import routes from '$routes'
+const { formatExternalUrl } = require('$shared/utils/url')
+const routes = require('$routes').default
 
 const streamrRoot = process.env.STREAMR_URL || ''
 
@@ -30,7 +30,7 @@ module.exports = {
         createProduct: '/marketplace/products/create',
         createProductPreview: '/marketplace/products/preview',
     },
-    docs: {
+    docs: { // (deprecated in Aug/Sept 2019)
         api: routes.docsApi(),
         dataMarketplace: routes.docsDataMarketplace(),
         gettingStarted: routes.docsGettingStarted(),
@@ -40,6 +40,23 @@ module.exports = {
         tutorials: routes.docsTutorials(),
         userPage: routes.docsUserPage(),
         visualEditor: routes.docsVisualEditor(),
+    },
+    newdocs: { // (temporary)
+        api: routes.newdocsApi(),
+        canvases: routes.newdocsCanvases(),
+        core: routes.newdocsCore(),
+        dashboards: routes.newdocsDashboards(),
+        dataToken: routes.newdocsDataToken(),
+        gettingStarted: routes.newdocsGettingStarted(),
+        introduction: routes.newdocsIntroduction(),
+        main: routes.newdocs(),
+        marketplace: routes.newdocsMarketplace(),
+        products: routes.newdocsProducts(),
+        // runningNode: routes.newdocsRunningNode(),
+        SDKs: routes.newdocsSDKs(),
+        streams: routes.newdocsStreams(),
+        technicalNotes: routes.newdocsTechnicalNotes(),
+        tutorials: routes.newdocsTutorials(),
     },
     userpages: {
         main: '/core',
@@ -57,6 +74,7 @@ module.exports = {
     },
     editor: {
         canvasEditor: routes.canvasEditor(),
+        canvasEmbed: routes.canvasEmbed(),
         dashboardEditor: routes.dashboardEditor(),
     },
     community: {

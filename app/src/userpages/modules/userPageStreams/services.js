@@ -60,7 +60,7 @@ export const confirmCsvFileUpload = (
 export const getRange = (id: StreamId): ApiResult<Range> => get(formatApiUrl('streams', id, 'range'))
 
 export const deleteDataUpTo = (id: StreamId, date: Date): ApiResult<any> => (
-    del(formatApiUrl('stream', id, 'deleteDataUpTo'), {
+    del(formatApiUrl('streams', id, 'deleteDataUpTo'), {
         id,
         date: moment(date).valueOf(),
     })

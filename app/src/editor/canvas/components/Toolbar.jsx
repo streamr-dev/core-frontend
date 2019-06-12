@@ -97,6 +97,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
             canvasExit,
             newCanvas,
             setSpeed,
+            moduleSearchIsOpen,
         } = this.props
 
         if (!canvas) {
@@ -107,7 +108,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
 
         const runController = this.context
         const { runButtonDropdownOpen, canvasSearchIsOpen } = this.state
-        const { isRunning, isActive, isPending, hasWritePermission } = runController
+        const { isRunning, isActive, hasWritePermission, canChangeRunState } = runController
         const canEdit = runController.isEditable
         const canShare = runController.hasSharePermission
         const { settings = {} } = canvas
@@ -184,10 +185,18 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                     isOpen={canvasSearchIsOpen}
                                     open={this.canvasSearchOpen}
                                 />
-                                <Tooltip value="Add module">
+                                <Tooltip
+                                    value={moduleSearchIsOpen ? (
+                                        'Hide module panel'
+                                    ) : (
+                                        'Show module panel'
+                                    )}
+                                >
                                     <R.Button
-                                        className={styles.ToolbarButton}
-                                        onClick={() => this.props.moduleSearchOpen(!this.props.moduleSearchIsOpen)}
+                                        className={cx(styles.ToolbarButton, styles.AddButton, {
+                                            [styles.active]: !!moduleSearchIsOpen,
+                                        })}
+                                        onClick={() => this.props.moduleSearchOpen(!moduleSearchIsOpen)}
                                         disabled={!canEdit}
                                     >
                                         <SvgIcon name="plus" className={styles.icon} />
@@ -202,7 +211,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                     })}
                                 >
                                     <R.Button
-                                        disabled={!!isPending || !hasWritePermission}
+                                        disabled={!canChangeRunState}
                                         onClick={() => {
                                             if (isRunning) {
                                                 return canvasStop()
@@ -227,7 +236,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                             toggle={this.onToggleRunButtonMenu}
                                             className={styles.RunDropdownButton}
                                         >
-                                            <R.DropdownToggle disabled={!canEdit} caret>
+                                            <R.DropdownToggle disabled={!canChangeRunState} caret>
                                                 {!runButtonDropdownOpen && (
                                                     <SvgIcon name="caretUp" />
                                                 )}
@@ -237,6 +246,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                             </R.DropdownToggle>
                                             <R.DropdownMenu
                                                 className={cx(styles.RunButtonMenu, styles.HistoricalRunButtonMenu)}
+                                                disabled={!canChangeRunState}
                                                 right
                                             >
                                                 <R.DropdownItem

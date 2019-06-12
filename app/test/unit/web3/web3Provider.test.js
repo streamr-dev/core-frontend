@@ -34,24 +34,28 @@ describe('web3Provider', () => {
                 web3 = null
             })
             it('must resolve with getAccounts()[0]', async () => {
-                const getAccSpy = sandbox.stub(web3.eth, 'getAccounts').callsFake(() => Promise.resolve(['testAccount']))
+                const getAccSpy = sandbox.stub().callsFake(() => Promise.resolve(['testAccount']))
+                sandbox.stub(web3, 'eth').value({
+                    getAccounts: getAccSpy,
+                })
                 const acc = await web3.getDefaultAccount()
                 assert.equal(acc, 'testAccount')
                 assert(getAccSpy.calledOnce)
             })
             it('must throw error if getAccounts gives undefined/null', async (done) => {
                 try {
-                    web3.setProvider(new FakeProvider())
-                    await web3.getDefaultAccount()
+                    const anotherWeb3 = new StreamrWeb3(new FakeProvider())
+                    await anotherWeb3.getDefaultAccount()
                 } catch (e) {
                     assert(e.message.match('is locked'))
                     done()
                 }
             })
             it('must throw error if getAccounts gives empty list', async (done) => {
-                sandbox.stub(web3.eth, 'getAccounts').callsFake(() => Promise.resolve([]))
+                sandbox.stub(web3, 'eth').value({
+                    getAccounts: sandbox.stub().callsFake(() => Promise.resolve([])),
+                })
                 try {
-                    web3.setProvider(new FakeProvider())
                     await web3.getDefaultAccount()
                 } catch (e) {
                     assert(e.message.match('is locked'))
@@ -63,7 +67,12 @@ describe('web3Provider', () => {
         describe('getEthereumNetwork', () => {
             it('must return the network', async () => {
                 const web3 = new StreamrWeb3()
-                const getNetStub = sandbox.stub(web3.eth.net, 'getId').callsFake(() => Promise.resolve(6))
+                const getNetStub = sandbox.stub().callsFake(() => Promise.resolve(6))
+                sandbox.stub(web3, 'eth').value({
+                    net: {
+                        getId: getNetStub,
+                    },
+                })
                 const net = await web3.getEthereumNetwork()
                 assert.equal(net, 6)
                 assert(getNetStub.calledOnce)
@@ -74,8 +83,8 @@ describe('web3Provider', () => {
             it('must return correct value', () => {
                 const web3 = new StreamrWeb3()
                 assert(!web3.isEnabled())
-                web3.setProvider(new FakeProvider())
-                assert(web3.isEnabled())
+                const anotherWeb3 = new StreamrWeb3(new FakeProvider())
+                assert(anotherWeb3.isEnabled())
             })
         })
     })
@@ -86,7 +95,7 @@ describe('web3Provider', () => {
         })
         it('must return the web3 object without a provider when metamask does not provide it', () => {
             const web3 = getWeb3()
-            expect(web3.currentProvider).toEqual(null)
+            expect(web3.currentProvider).toEqual(false)
         })
         it('must return the web3 object with the window.web3.currentProvider provider if it is available/defined', () => {
             // 'legacy' metamask web3 injection scenario

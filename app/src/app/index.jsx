@@ -33,7 +33,7 @@ import ProfilePage from '$userpages/components/ProfilePage'
 import PurchasesPage from '$userpages/components/PurchasesPage'
 import ProductsPage from '$userpages/components/ProductsPage'
 
-// Docs
+// Docs (deprecated in Aug/Sept 2019)
 import IntroductionPage from '$docs/components/IntroductionPage'
 import GettingStartedPage from '$docs/components/GettingStartedPage'
 import TutorialsPage from '$docs/components/TutorialsPage'
@@ -43,8 +43,25 @@ import MarketplacePage from '$docs/components/MarketplacePage'
 import UserPage from '$docs/components/UserPage'
 import ApiPage from '$docs/components/ApiPage'
 
+// New Docs (temporary)
+import IntroductionDocsPage from '$newdocs/components/DocsPages/Introduction'
+import GettingStartedDocsPage from '$newdocs/components/DocsPages/GettingStarted'
+import StreamsDocsPage from '$newdocs/components/DocsPages/Streams'
+import CanvasesDocsPage from '$newdocs/components/DocsPages/Canvases'
+import DashboardsDocsPage from '$newdocs/components/DocsPages/Dashboards'
+import ProductsDocsPage from '$newdocs/components/DocsPages/Products'
+import TutorialsDocsPage from '$newdocs/components/DocsPages/Tutorials'
+import DataTokenDocsPage from '$newdocs/components/DocsPages/DataToken'
+import CoreDocsPage from '$newdocs/components/DocsPages/Core'
+import MarketplaceDocsPage from '$newdocs/components/DocsPages/Marketplace'
+// import RunningNodeDocsPage from '$newdocs/components/DocsPages/RunningNode'
+import SDKsDocsPage from '$newdocs/components/DocsPages/SDKs'
+import APIDocsPage from '$newdocs/components/DocsPages/API'
+import TechnicalNotesDocsPage from '$newdocs/components/DocsPages/TechnicalNotes'
+
 // Editor
 import CanvasEditor from '$editor/canvas'
+import CanvasEmbed from '$editor/canvas/components/Embed'
 import DashboardEditor from '$editor/dashboard'
 
 import ModalRoot from '$shared/components/ModalRoot'
@@ -92,7 +109,13 @@ const ProductPublishPage = (props) => <ProductPage overlayPublishDialog {...prop
 // Wrap each Route to an ErrorBoundary
 const Route = withErrorBoundary(ErrorPageView)(RouterRoute)
 
-const { marketplace, userpages, docs, editor } = links
+const {
+    marketplace,
+    userpages,
+    docs,
+    editor,
+    newdocs,
+} = links
 
 const forwardTo = (routeFn: Function) => ({ location: { search } }: Location) => (
     <Redirect to={routeFn(qs.parse(search))} />
@@ -121,7 +144,7 @@ const MarketplaceRouter = () => ([
     <Route exact path={routes.editProduct()} component={EditProductAuth} key="EditProduct" />,
 ])
 
-const DocsRouter = () => ([
+const DocsRouter = () => ([ // (deprecated in Aug/Sept 2019)
     <Route exact path={docs.gettingStarted} component={GettingStartedPage} key="GettingStartedPage" />,
     <Route exact path={docs.introduction} component={IntroductionPage} key="IntroductionPage" />,
     <Route exact path={docs.tutorials} component={TutorialsPage} key="TutorialsPage" />,
@@ -131,6 +154,24 @@ const DocsRouter = () => ([
     <Route exact path={docs.userPage} component={UserPage} key="UserPage" />,
     <Route exact path={docs.api} component={ApiPage} key="ApiPage" />,
     <Redirect from={docs.main} to={docs.introduction} key="DocsRoot" />,
+])
+
+const NewDocsRouter = () => ([ // (temporary)
+    <Route exact path={newdocs.introduction} component={IntroductionDocsPage} key="IntroductionPage" />,
+    <Route exact path={newdocs.gettingStarted} component={GettingStartedDocsPage} key="GettingStartedPage" />,
+    <Route exact path={newdocs.streams} component={StreamsDocsPage} key="StreamsPage" />,
+    <Route exact path={newdocs.canvases} component={CanvasesDocsPage} key="CanvasesPage" />,
+    <Route exact path={newdocs.dashboards} component={DashboardsDocsPage} key="DashboardsPage" />,
+    <Route exact path={newdocs.products} component={ProductsDocsPage} key="ProductsPage" />,
+    <Route exact path={newdocs.tutorials} component={TutorialsDocsPage} key="TutorialsPage" />,
+    <Route exact path={newdocs.dataToken} component={DataTokenDocsPage} key="DataTokenPage" />,
+    <Route exact path={newdocs.core} component={CoreDocsPage} key="CorePage" />,
+    <Route exact path={newdocs.marketplace} component={MarketplaceDocsPage} key="MarketplacePage" />,
+    // <Route exact path={newdocs.runningNode} component={RunningNodeDocsPage} key="RunningNodePage" />,
+    <Route exact path={newdocs.SDKs} component={SDKsDocsPage} key="SDKsPage" />,
+    <Route exact path={newdocs.api} component={APIDocsPage} key="ApiPage" />,
+    <Route exact path={newdocs.technicalNotes} component={TechnicalNotesDocsPage} key="technicalNotes" />,
+    <Redirect from={newdocs.main} to={newdocs.introduction} key="DocsRoot" />,
 ])
 
 const UserpagesRouter = () => ([
@@ -149,6 +190,7 @@ const UserpagesRouter = () => ([
 const EditorRouter = () => ([
     <Route exact path="/" component={Products} key="root" />, // edge case for localhost
     <Route exact path={formatPath(editor.canvasEditor, ':id?')} component={CanvasEditorAuth} key="CanvasEditor" />,
+    <Route exact path={formatPath(editor.canvasEmbed, ':id?')} component={CanvasEmbed} key="CanvasEmbed" />,
     <Route exact path={formatPath(editor.dashboardEditor, ':id?')} component={DashboardEditorAuth} key="DashboardEditor" />,
 ])
 
@@ -168,6 +210,7 @@ const App = () => (
                     {AuthenticationRouter()}
                     {MarketplaceRouter()}
                     {DocsRouter()}
+                    {NewDocsRouter()}
                     {UserpagesRouter()}
                     {EditorRouter()}
                     {MiscRouter()}

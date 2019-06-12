@@ -1,6 +1,7 @@
 // @flow
 
 import * as Sentry from '@sentry/browser'
+import { RewriteFrames } from '@sentry/integrations'
 import LogRocket from 'logrocket'
 
 type ErrorServiceId = string
@@ -63,11 +64,19 @@ if (process.env.SENTRY_DSN) {
                 dsn: process.env.SENTRY_DSN,
                 release: process.env.VERSION,
                 environment: process.env.SENTRY_ENVIRONMENT,
+                integrations: [new RewriteFrames()],
+                whitelistUrls: [
+                    window.location.origin,
+                    process.env.PLATFORM_PUBLIC_PATH,
+                    process.env.PLATFORM_ORIGIN_URL,
+                    process.env.STREAMR_URL,
+                ].filter(Boolean),
                 debug: true,
             })
         ),
         reportError: (error: Error, extra: Object = {}) => {
             Sentry.withScope((scope) => {
+                scope.setTag('error_boundary', true)
                 if (extra) {
                     scope.setExtras(extra)
                 }
@@ -82,6 +91,7 @@ if (process.env.SENTRY_DSN) {
                 extra,
             }) // eslint-disable-line no-console
             Sentry.withScope((scope) => {
+                scope.setTag('error_boundary', true)
                 if (extra) {
                     scope.setExtras(extra)
                 }

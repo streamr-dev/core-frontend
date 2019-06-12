@@ -21,33 +21,32 @@
 .searchBar {
   display: flex;
   margin-right: 36px;
-  height: 45px;
-  max-width: 190px;
 }
 
 .filterBar {
-  display: flex;
-  margin-left: auto;
+  /* 40px - height of the dropdown toggle. */
+  height: 40px;
   right: 16px;
-  position: relative;
-}
-
-.filterBar > div {
-  bottom: 3px;
 }
 
 .tabContainer {
+  align-items: center;
   display: flex;
+  height: calc(3.25 * var(--um));
+  justify-content: space-between;
   position: relative;
+}
+
+.tabs {
+  display: flex;
 }
 
 @media (--md-down) {
   .filterBar {
     display: flex;
-    margin-left: auto;
     position: absolute;
-    right: 3px;
-    top: 70px;
+    right: 4px;
+    top: 72px;
   }
 
   .containerOverrides {

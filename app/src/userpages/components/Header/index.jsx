@@ -2,17 +2,15 @@
 
 import React, { type Node } from 'react'
 import { connect } from 'react-redux'
-import { push, getLocation } from 'react-router-redux'
-import type { Location } from 'react-router-dom'
-import classNames from 'classnames'
+import cx from 'classnames'
 import { Container } from 'reactstrap'
-import { I18n } from 'react-redux-i18n'
+import { Translate } from 'react-redux-i18n'
 
 import type { User } from '$shared/flowtype/user-types'
 import type { StoreState } from '$shared/flowtype/store-state'
 import { selectUserData } from '$shared/modules/user/selectors'
-import Tabs from '$shared/components/Tabs'
 import { userpages } from '../../../links'
+import Tab from './Tab'
 import { formatPath } from '$shared/utils/url'
 import Avatar from '$userpages/components/Avatar'
 
@@ -28,14 +26,9 @@ type OwnProps = {
 
 type StateProps = {
     user: ?User,
-    location: Location,
 }
 
-type DispatchProps = {
-    navigate: (string) => void,
-}
-
-type Props = StateProps & DispatchProps & OwnProps
+type Props = StateProps & OwnProps
 
 const Header = ({
     className,
@@ -43,11 +36,9 @@ const Header = ({
     searchComponent,
     filterComponent,
     user,
-    navigate,
-    location,
     noHeader,
 }: Props) => (
-    <Container className={classNames(className, styles.containerOverrides)}>
+    <Container className={cx(className, styles.containerOverrides)}>
         {!noHeader && user &&
             <div className={styles.profile}>
                 <Avatar
@@ -66,14 +57,26 @@ const Header = ({
                     <div className={styles.searchBar}>
                         {searchComponent}
                     </div>
-                    <Tabs location={location} navigate={navigate}>
-                        <Tabs.Tab title={I18n.t('userpages.header.streams')} link={formatPath(userpages.streams)} />
-                        <Tabs.Tab title={I18n.t('userpages.header.canvases')} link={formatPath(userpages.canvases)} />
-                        <Tabs.Tab title={I18n.t('userpages.header.dashboards')} link={formatPath(userpages.dashboards)} />
-                        <Tabs.Tab title={I18n.t('userpages.header.products')} link={formatPath(userpages.products)} />
-                        <Tabs.Tab title={I18n.t('userpages.header.purchases')} link={formatPath(userpages.purchases)} />
-                        <Tabs.Tab title={I18n.t('userpages.header.transactions')} link={formatPath(userpages.transactions)} />
-                    </Tabs>
+                    <div className={styles.tabs}>
+                        <Tab to={formatPath(userpages.streams)}>
+                            <Translate value="userpages.header.streams" />
+                        </Tab>
+                        <Tab to={formatPath(userpages.canvases)}>
+                            <Translate value="userpages.header.canvases" />
+                        </Tab>
+                        <Tab to={formatPath(userpages.dashboards)}>
+                            <Translate value="userpages.header.dashboards" />
+                        </Tab>
+                        <Tab to={formatPath(userpages.products)}>
+                            <Translate value="userpages.header.products" />
+                        </Tab>
+                        <Tab to={formatPath(userpages.purchases)}>
+                            <Translate value="userpages.header.purchases" />
+                        </Tab>
+                        <Tab to={formatPath(userpages.transactions)}>
+                            <Translate value="userpages.header.transactions" />
+                        </Tab>
+                    </div>
                 </div>
                 <div className={styles.filterBar}>
                     {filterComponent}
@@ -89,11 +92,6 @@ Header.defaultProps = {
 
 export const mapStateToProps = (state: StoreState): StateProps => ({
     user: selectUserData(state),
-    location: getLocation(state),
 })
 
-export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
-    navigate: (to: string) => dispatch(push(to)),
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(Header)
+export default connect(mapStateToProps)(Header)
