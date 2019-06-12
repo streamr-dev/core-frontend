@@ -16,17 +16,6 @@ import ResizeWatcher from '$editor/canvas/components/Resizable/ResizeWatcher'
 
 import styles from './Chart.pcss'
 
-class MinMax {
-    min = Number.POSITIVE_INFINITY
-    max = Number.NEGATIVE_INFINITY
-
-    update(v) {
-        if (v == null) { return }
-        this.min = Math.min(v, this.min)
-        this.max = Math.max(v, this.max)
-    }
-}
-
 const ChartModule2 = (props) => {
     const { isActive, canvas, module } = props
     
@@ -46,6 +35,12 @@ const ChartModule2 = (props) => {
             [id]: {
                 ...(series[id] || {}),
                 ...payload,
+                lineWidth: 1,
+                marker: {
+                    lineColor: undefined,
+                    symbol: 'circle',
+                },
+                showInNavigator: true,
                 id,
             },
         }))
@@ -128,89 +123,6 @@ const ChartModule2 = (props) => {
                 />
         </UiSizeConstraint>
     )
-}
-
-class ChartModule extends React.Component {
-    subscription = React.createRef()
-
-    queuedDatapoints = []
-    state = {
-        title: 'My Chart',
-        datapoints: [],
-        series: [],
-        range: 'all',
-    }
-
-    timeRange = new MinMax()
-    seriesRanges = {}
-
-    onMessage = (m) => {
-        console.log(m)
-    }
-
-    componentWillUnmount() {
-        this.unmounted = true
-    }
-
-    componentDidUpdate(prevProps, prevState) {
-        if (this.chart && prevState.datapoints !== this.state.datapoints) {
-            const seriesData = this.getSeriesData(this.state.datapoints)
-            seriesData.forEach((s) => {
-                const series = this.chart.get(s.id)
-                if (!series) {
-                    this.chart.addSeries(s)
-                } else {
-                    series.setData(s.data, true, true, true)
-                }
-            })
-        }
-        // const { module } = this.props
-        // if (this.chart && JSON.stringify(module.layout) !== JSON.stringify(prevProps.module.layout)) {
-        //     this.resize()
-        // } else {
-        //     this.redraw()
-        // }
-    }
-
-    getSeriesData(datapoints) {
-        const seriesData = {}
-        datapoints.forEach((point) => {
-            seriesData[point.s] = seriesData[point.s] || []
-            seriesData[point.s].push([point.x, point.y])
-        })
-        return Object.entries(seriesData).map(([key, data]) => ({
-            id: `series-${key}`,
-            ...this.state.series[key],
-            type: 'line',
-            data,
-        }))
-    }
-
-    render() {
-        const { className, module } = this.props
-        const { options = {} } = module
-        const { title, series, datapoints } = this.state
-
-        return (
-            <UiSizeConstraint minWidth={300} minHeight={200}>
-                <ModuleSubscription
-                    {...this.props}
-                    ref={this.subscription}
-                    onMessage={this.onMessage}
-                    onActiveChange={this.initIfActive}
-                />
-                {!!(options.displayTitle && options.displayTitle.value && title) && (
-                    <h4>{title}</h4>
-                )}
-                <Chart
-                    className={styles.chart}
-                    datapoints={datapoints}
-                    options={options}
-                    series={series}
-                />
-            </UiSizeConstraint>
-        )
-    }
 }
 
 export default ChartModule2

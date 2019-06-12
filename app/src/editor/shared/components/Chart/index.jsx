@@ -107,7 +107,13 @@ const Chart = ({ className, series, datapoints, options }: Props) => {
             enabled: false,
         },
         legend: {
+            align: 'left',
             enabled: true,
+            itemStyle: {
+                color: '#323232',
+                fontSize: '10px',
+                fontWeight: '500',
+            },
         },
         navigator: {
             enabled: true,
@@ -120,6 +126,7 @@ const Chart = ({ className, series, datapoints, options }: Props) => {
                 height: 16,
                 width: 8,
             },
+            margin: 12,
             series: {
                 type: 'line',
                 step: true,
@@ -137,6 +144,20 @@ const Chart = ({ className, series, datapoints, options }: Props) => {
                 dataGrouping: {
                     approximation: approximations[options.dataGrouping],
                 },
+                states: {
+                    hover: {
+                        halo: {
+                            attributes: {
+                                fill: 'white',
+                                'fill-opacity': 1,
+                                stroke: 'black',
+                                'stroke-width': 1,
+                                'stroke-opacity': 0.1,
+                            },
+                            size: 8,
+                        },
+                    },
+                },
             },
         },
         rangeSelector: {
@@ -150,19 +171,51 @@ const Chart = ({ className, series, datapoints, options }: Props) => {
             timezoneOffset: new Date().getTimezoneOffset(),
         },
         tooltip: {
+            borderWidth: 0,
             backgroundColor: 'rgba(255, 255, 255, 0.96)',
             padding: 10,
-            borderRadius: 8,
+            borderRadius: 4,
             style: {
                 boxShadow: '0 0 6px 0 rgba(0, 0, 0, 0.05)',
                 color: '#323232',
                 lineHeight: 1.6,
+                fontSize: '10px',
             },
+            useHTML: true,
+            // eslint-disable-next-line func-names, object-shorthand
+            formatter: function () {
+                return this.points.reduce((s, point) => (
+                    `${s}<br/><span style="font-weight: 500;">${point.series.name}</span> ${point.y}`
+                ), `${Highcharts.dateFormat('%A, %b %e, %H:%M:%S', this.x)}`)
+            },
+            outside: true,
         },
         xAxis: {
-            ordinal: false,
+            crosshair: {
+                color: '#EFEFEF',
+            },
             events: {
                 afterSetExtremes: onSetExtremes,
+            },
+            gridLineColor: '#EFEFEF',
+            labels: {
+                style: {
+                    color: '#ADADAD',
+                    fontSize: '10px',
+                },
+                y: 24,
+            },
+            lineColor: '#EFEFEF',
+            ordinal: false,
+            tickWidth: 0,
+        },
+        yAxis: {
+            gridLineColor: '#EFEFEF',
+            labels: {
+                style: {
+                    color: '#ADADAD',
+                    fontSize: '10px',
+                },
             },
         },
         ...options,
