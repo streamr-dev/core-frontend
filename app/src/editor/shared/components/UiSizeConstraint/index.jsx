@@ -34,7 +34,7 @@ const UiSizeConstraint = ({ children, className, minWidth: minWidthProp, minHeig
     const { minHeight } = useContext(SizeConstraintContext)
 
     const value = useMemo(() => ({
-        height: (height - minHeight) + minHeightProp,
+        height: Math.max((height - minHeight), 0) + minHeightProp,
         width,
     }), [height, minHeight, minHeightProp, width])
 
