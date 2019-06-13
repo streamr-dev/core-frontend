@@ -1136,7 +1136,7 @@ export function moduleSearch(moduleCategories, search) {
  * - the port type
  */
 
-function matchPortInOtherCanvas(canvas, prevCanvas, portId) {
+function matchPortInPreviousCanvas(canvas, prevCanvas, portId) {
     const prevPort = getPort(prevCanvas, portId)
     const exactMatch = getPortIfExists(canvas, portId)
     if (exactMatch) { return exactMatch }
@@ -1164,10 +1164,10 @@ export function replaceModule(canvas, moduleData) {
     prevPorts.forEach((prevPort) => {
         const connectedIds = getConnectedPortIds(prevCanvas, prevPort.id)
         if (!connectedIds.length) { return } // nothing to do if no connections
-        const matchedPort = matchPortInOtherCanvas(nextCanvas, prevCanvas, prevPort.id)
+        const matchedPort = matchPortInPreviousCanvas(nextCanvas, prevCanvas, prevPort.id)
         if (!matchedPort) { return } // nothing to do if port no longer exists
         connectedIds.forEach((connectedId) => {
-            const matchedConnectedPort = matchPortInOtherCanvas(nextCanvas, prevCanvas, connectedId)
+            const matchedConnectedPort = matchPortInPreviousCanvas(nextCanvas, prevCanvas, connectedId)
             if (!matchedConnectedPort || !canConnectPorts(nextCanvas, matchedPort.id, matchedConnectedPort.id)) { return }
             // re-connect if possible
             nextCanvas = connectPorts(nextCanvas, matchedPort.id, matchedConnectedPort.id)
