@@ -141,7 +141,7 @@ export default class Web3Poller {
     fetchChosenEthereumNetwork = () => (
         this.web3.getEthereumNetwork()
             .then((network) => {
-                this.handleNetwork(network.toString())
+                this.handleNetwork((network && network.toString()) || '')
             }, () => {
                 this.web3.getDefaultAccount()
                     .catch((err) => {
