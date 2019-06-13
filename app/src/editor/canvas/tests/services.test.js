@@ -261,5 +261,74 @@ describe('Canvas Services', () => {
             const newTextOut = State.findModulePort(canvas, text.hash, (p) => p.name === 'out')
             expect(State.arePortsConnected(canvas, newTextOut.id, newHttpRequestBodyIn.id)).toBeTruthy()
         })
+
+        it('maintains connections after loading new definition for canvas module', async () => {
+            let subcanvas1 = State.emptyCanvas()
+            subcanvas1 = State.addModule(subcanvas1, await loadModuleDefinition('ConstantText'))
+            const text1 = subcanvas1.modules.find((m) => m.name === 'ConstantText')
+            const text1Out = State.findModulePort(subcanvas1, text1.hash, (p) => p.name === 'out')
+            const text1In = State.findModulePort(subcanvas1, text1.hash, (p) => p.name === 'str')
+
+            subcanvas1 = State.setPortOptions(subcanvas1, text1Out.id, {
+                export: true,
+            })
+
+            subcanvas1 = State.setPortOptions(subcanvas1, text1In.id, {
+                export: true,
+            })
+
+            subcanvas1 = State.updateCanvas(await Services.create(subcanvas1))
+
+            const subcanvas2 = State.updateCanvas(await Services.duplicateCanvas(subcanvas1))
+
+            // connect something to http request's body input
+            let canvas = State.emptyCanvas()
+            canvas = State.addModule(canvas, await loadModuleDefinition('Table'))
+            canvas = State.addModule(canvas, await loadModuleDefinition('Canvas'))
+
+            const table = canvas.modules.find((m) => m.name === 'Table')
+            const canvasModule = canvas.modules.find((m) => m.jsModule === 'CanvasModule')
+
+            // select the subcanvas
+            const canvasPort = State.findModulePort(canvas, canvasModule.hash, (p) => p.name === 'canvas')
+
+            canvas = State.updatePort(canvas, canvasPort.id, (port) => ({
+                ...port,
+                value: subcanvas1.id,
+            }))
+
+            canvas = State.updateCanvas(await Services.create(canvas))
+
+            const canvasModuleOut1 = State.findModulePort(canvas, canvasModule.hash, (p) => p.name === 'out')
+            const tableIn1 = State.findModulePort(canvas, table.hash, (p) => p.variadic.index === 1)
+            // connect canvas module out to table in1 (creates table in2)
+            canvas = State.updateCanvas(State.connectPorts(canvas, canvasModuleOut1.id, tableIn1.id))
+            const tableIn2 = State.findModulePort(canvas, table.hash, (p) => p.variadic.index === 2)
+            // connect canvas module out to table in2
+            canvas = State.updateCanvas(State.connectPorts(canvas, canvasModuleOut1.id, tableIn2.id))
+            // disconnect canvas module out from table in1, leaves first port empty
+            canvas = State.updateCanvas(State.disconnectPorts(canvas, canvasModuleOut1.id, tableIn1.id))
+
+            // change subcanvas
+            canvas = State.updateCanvas(State.updatePort(canvas, canvasPort.id, (port) => ({
+                ...port,
+                value: subcanvas2.id,
+            })))
+
+            const updatedCanvasModule = canvas.modules.find((m) => m.jsModule === 'CanvasModule')
+            const updatedCanvasModuleFromServer = await sharedServices.getModule({
+                id: updatedCanvasModule.id,
+                configuration: updatedCanvasModule,
+            })
+
+            // replace with new definition
+            canvas = State.replaceModule(canvas, updatedCanvasModuleFromServer)
+            canvas = State.updateCanvas(canvas)
+
+            // ensure connections maintained
+            const newTableIn2 = State.findModulePort(canvas, table.hash, (p) => p.variadic.index === 2)
+            const newCanvasModuleOut1 = State.findModulePort(canvas, canvasModule.hash, (p) => p.name === 'out')
+            expect(State.arePortsConnected(canvas, newCanvasModuleOut1.id, newTableIn2.id)).toBeTruthy()
+        })
     })
 })

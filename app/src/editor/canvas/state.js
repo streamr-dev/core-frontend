@@ -456,8 +456,11 @@ export function connectPorts(canvas, portIdA, portIdB) {
 
     let nextCanvas = canvas
 
-    if (input.sourceId) {
-        // disconnect existing input connection
+    // disconnect existing input connection
+    // if variadic, delay disconnecting until end
+    // as disconnecting may lead to input we're trying
+    // to connect to being removed before we can connect to it
+    if (input.sourceId && !input.variadic) {
         nextCanvas = disconnectPorts(nextCanvas, input.sourceId, input.id)
     }
 
@@ -498,10 +501,17 @@ export function connectPorts(canvas, portIdA, portIdB) {
     }
 
     // connect output
-    return updatePort(nextCanvas, output.id, (port) => ({
+    nextCanvas = updatePort(nextCanvas, output.id, (port) => ({
         ...port,
         connected: isPortConnected(nextCanvas, output.id),
     }))
+
+    // delayed disconnect output original if input variadic, see above
+    if (input.sourceId && input.variadic && input.sourceId !== output.id) {
+        nextCanvas = disconnectPorts(nextCanvas, input.sourceId, input.id)
+    }
+
+    return nextCanvas
 }
 
 export function movePortConnection(canvas, outputPortId, newInputId, { currentInputId }) {
