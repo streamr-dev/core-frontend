@@ -55,7 +55,7 @@ const EthereumLogin = ({ onBackClick }: Props) => {
         const token: ?string = await (async () => {
             try {
                 return await getSessionToken({
-                    provider: web3.currentProvider,
+                    provider: window.web3.currentProvider,
                 })
             } catch (e) {
                 if (mountedRef.current) {
