@@ -1,14 +1,12 @@
 // @flow
 
 import React from 'react'
-import { Container } from 'reactstrap'
 import { I18n } from 'react-redux-i18n'
-import AutosizeInput from 'react-input-autosize'
 
 import SvgIcon from '$shared/components/SvgIcon'
+import EditableText from '$shared/components/EditableText'
+import UseState from '$shared/components/UseState'
 import type { SearchFilter } from '../../../flowtype/product-types'
-
-import { searchCharMax } from '../../../utils/constants'
 
 import styles from './searchInput.pcss'
 
@@ -20,26 +18,31 @@ type Props = {
 
 const SearchInput = ({ value, onChange, onClear }: Props) => (
     <div className={styles.searchInput}>
-        <Container>
-            <AutosizeInput
-                type="text"
-                placeholder={I18n.t('actionBar.searchInput.placeholder')}
-                maxLength={searchCharMax}
-                value={value}
-                onChange={(e: SyntheticInputEvent<EventTarget>) => onChange(e.target.value)}
-                style={{
-                    height: '100%',
-                }}
-            />
-            <button
-                type="button"
-                className={styles.clearButton}
-                onClick={onClear}
-                hidden={value === ''}
-            >
-                <SvgIcon name="cross" />
-            </button>
-        </Container>
+        <UseState initialValue={false}>
+            {(editing, setEditing) => (
+                <EditableText
+                    className={styles.input}
+                    placeholder={I18n.t('actionBar.searchInput.placeholder')}
+                    value={value}
+                    onChange={onChange}
+                    editOnFocus
+                    selectAllOnFocus={false}
+                    commitEmpty
+                    editing={editing}
+                    setEditing={setEditing}
+                >
+                    {value || ''}
+                </EditableText>
+            )}
+        </UseState>
+        <button
+            type="button"
+            className={styles.clearButton}
+            onClick={onClear}
+            hidden={value === ''}
+        >
+            <SvgIcon name="cross" />
+        </button>
     </div>
 )
 
