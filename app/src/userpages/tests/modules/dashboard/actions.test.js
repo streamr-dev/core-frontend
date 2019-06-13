@@ -162,7 +162,7 @@ describe('Dashboard actions', () => {
     })
 
     describe('updateAndSaveDashboard', () => {
-        it('creates UPDATE_AND_SAVE_DASHBOARD_SUCCESS and creates notification when fetching a dashboard has succeeded', async () => {
+        it('creates UPDATE_AND_SAVE_DASHBOARD_SUCCESS when fetching a dashboard has succeeded', async () => {
             const id = 'test'
             const db = {
                 id,
@@ -184,9 +184,6 @@ describe('Dashboard actions', () => {
                 type: actions.UPDATE_AND_SAVE_DASHBOARD_REQUEST,
             }, {
                 type: 'updateEntities',
-            }, {
-                type: 'successNotification',
-                level: 'success',
             }, {
                 type: actions.UPDATE_AND_SAVE_DASHBOARD_SUCCESS,
             }]
@@ -219,9 +216,6 @@ describe('Dashboard actions', () => {
             }, {
                 type: 'updateEntities',
             }, {
-                type: 'successNotification',
-                level: 'success',
-            }, {
                 type: 'updateEntities',
             }, {
                 type: actions.CHANGE_DASHBOARD_ID,
@@ -233,7 +227,7 @@ describe('Dashboard actions', () => {
             await store.dispatch(actions.updateAndSaveDashboard(db))
             assert.deepStrictEqual(store.getActions(), expectedActions)
         })
-        it('creates UPDATE_AND_SAVE_DASHBOARD_FAILURE and creates notification when fetching a dashboard has failed', async (done) => {
+        it('creates UPDATE_AND_SAVE_DASHBOARD_FAILURE when fetching a dashboard has failed', async (done) => {
             const id = 'test'
             const db = {
                 id,
@@ -253,8 +247,6 @@ describe('Dashboard actions', () => {
             const expectedActions = [{
                 type: actions.UPDATE_AND_SAVE_DASHBOARD_REQUEST,
             }, {
-                level: 'error',
-            }, {
                 type: actions.UPDATE_AND_SAVE_DASHBOARD_FAILURE,
                 error: {
                     message: 'test',
@@ -267,8 +259,7 @@ describe('Dashboard actions', () => {
                 await store.dispatch(actions.updateAndSaveDashboard(db))
             } catch (e) {
                 assert.deepStrictEqual(store.getActions()[0], expectedActions[0])
-                assert.equal(store.getActions()[1].level, expectedActions[1].level)
-                assert.deepStrictEqual(store.getActions()[2], expectedActions[2])
+                assert.deepStrictEqual(store.getActions()[1], expectedActions[1])
                 done()
             }
         })
