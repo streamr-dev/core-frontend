@@ -3,7 +3,12 @@
 }
 
 body .Category {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  font-family: var(--sans);
   font-weight: var(--medium);
+  line-height: 12px;
   letter-spacing: 1px;
   text-transform: uppercase;
 }
@@ -14,23 +19,30 @@ body .Category.active {
 }
 
 body .SearchCategory {
-  font-size: 10px;
+  display: flex;
+  align-items: center;
+  font-size: 12px;
   font-family: var(--sans);
-  font-weight: 600;
+  font-weight: var(--medium);
   color: #323232;
   text-transform: uppercase;
-  letter-spacing: 1.43px;
-  line-height: 40px;
+  letter-spacing: 1px;
 }
 
 body .SearchCategory:hover {
   background: transparent;
 }
 
+.ModuleSearch .ModuleItem {
+  display: flex;
+  align-items: center;
+}
+
 .ModuleSearch .ModuleItem.WithCategory {
   display: grid;
   grid-template-columns: 50% 50%;
   grid-gap: 12px;
+  align-items: center;
 }
 
 .ModuleSearch .ModuleItem .ModuleName {
@@ -40,21 +52,28 @@ body .SearchCategory:hover {
 }
 
 .ModuleSearch .ModuleItem .ModuleCategory {
-  font-size: 12px;
+  font-size: 10px;
   font-family: var(--sans);
-  font-weight: 400;
+  font-weight: var(--medium);
+  line-height: 10px;
+  letter-spacing: 1px;
   text-transform: uppercase;
   color: #ADADAD;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
+  display: flex;
+  align-items: center;
 }
 
 .ModuleSearch .StreamItem {
-  line-height: 28px;
+  display: grid;
+  grid-template-rows: 50% 50%;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
+  font-size: 12px;
+  line-height: 24px;
 }
 
 .ModuleSearch .StreamItem:active,
@@ -64,10 +83,10 @@ body .SearchCategory:hover {
 
 .ModuleSearch .StreamItem .Description {
   font-size: 10px;
+  line-height: 16px;
   font-family: var(--sans);
   font-weight: 400;
   color: #ADADAD;
-  line-height: 12px;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
