@@ -4,5 +4,15 @@
     ],
     "extends": [
         "stylelint-config-streamr"
-    ]
+    ],
+    "rules": {
+        "unit-no-unknown": [
+            true,
+            {
+                "ignoreUnits": [
+                    "um"
+                ]
+            }
+        ]
+    }
 }
