@@ -152,6 +152,43 @@ describe('Variadic Port Handling', () => {
             expect(State.updateCanvas(await Services.create(canvas))).toMatchCanvas(canvas)
         })
 
+        it('can connect instead of moving connections', async () => {
+            // connect constant to a table (table has variadic inputs)
+            let canvas = State.emptyCanvas()
+            canvas = State.addModule(canvas, await loadModuleDefinition('Constant'))
+            canvas = State.addModule(canvas, await loadModuleDefinition('Table'))
+            const constant = canvas.modules.find((m) => m.name === 'Constant')
+            const table = canvas.modules.find((m) => m.name === 'Table')
+            expect(constant).toBeTruthy()
+            expect(table).toBeTruthy()
+            const constantOut = State.findModulePort(canvas, constant.hash, (p) => p.name === 'out')
+            const tableIn1 = State.findModulePort(canvas, table.hash, (p) => p.variadic.index === 1)
+            expect(constantOut).toBeTruthy()
+            expect(tableIn1).toBeTruthy()
+
+            // connect constant.out to table.in1
+            canvas = State.updateCanvas(State.connectPorts(canvas, constantOut.id, tableIn1.id))
+            expect(State.isPortConnected(canvas, constantOut.id)).toBeTruthy()
+            expect(State.isPortConnected(canvas, tableIn1.id)).toBeTruthy()
+
+            const tableIn2 = State.findModulePort(canvas, table.hash, (p) => p.variadic.index === 2)
+            expect(tableIn2).toBeTruthy()
+            expect(tableIn2.displayName).toBe('in2')
+
+            // "move" constant.out connection from table.in1 to table.in2
+            canvas = State.updateCanvas(State.connectPorts(canvas, constantOut.id, tableIn2.id))
+            canvas = State.updateCanvas(State.disconnectPorts(canvas, constantOut.id, tableIn1.id))
+            canvas = State.updateCanvas(State.connectPorts(canvas, constantOut.id, tableIn2.id))
+
+            // table.in1 should still exist, but not be connected
+            expect(State.isPortConnected(canvas, tableIn2.id)).toBeTruthy()
+            // table.in2 should still exist, and be connected
+            expect(State.isPortConnected(canvas, tableIn1.id)).not.toBeTruthy()
+
+            // test server accepts state
+            expect(State.updateCanvas(await Services.create(canvas))).toMatchCanvas(canvas)
+        })
+
         it('updates index/displayName based on initial config index', async () => {
             // connect constant to a table (table has variadic inputs)
             let canvas = State.emptyCanvas()
