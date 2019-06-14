@@ -8,6 +8,7 @@ import cx from 'classnames'
 import type { Stream } from '$shared/flowtype/stream-types'
 import SvgIcon from '$shared/components/SvgIcon'
 import { type Ref } from '$shared/flowtype/common-types'
+import { getModuleBoundingBox } from '$editor/shared/utils/boundingBox'
 
 import { getModuleCategories, getStreams } from '../services'
 import { moduleSearch } from '../state'
@@ -113,6 +114,7 @@ type Props = {
     isOpen: boolean,
     open: (open: boolean) => void,
     addModule: (module: Object) => void,
+    canvas: any,
 }
 
 type State = {
@@ -271,6 +273,24 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
         return modules
     }
 
+    findNonOverlappingPosition = (myBB: any, stackOffset: number) => {
+        this.props.canvas.modules.forEach((m) => {
+            const otherBB = getModuleBoundingBox(m)
+            const xDiff = myBB.x - otherBB.x
+            const yDiff = myBB.y - otherBB.y
+            if ((xDiff < stackOffset && yDiff < stackOffset)) {
+                myBB.x += (stackOffset - xDiff) // align to offset "grid"
+                myBB.y += (stackOffset - yDiff) // align to offset "grid"
+                return this.findNonOverlappingPosition(myBB, stackOffset)
+            }
+        })
+
+        return {
+            x: myBB.x,
+            y: myBB.y,
+        }
+    }
+
     getPositionForClickInsert = () => {
         const canvasElement = document.querySelector(`.${CanvasStyles.Modules}`)
 
@@ -285,10 +305,24 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
         const canvasRect = canvasElement.getBoundingClientRect()
 
         // Align module to the top right corner of ModuleSearch with a 32px offset
-        return {
+        const position = {
             x: (selfRect.right - canvasRect.left - 20) + 32,
             y: selfRect.top - canvasRect.top - 20,
         }
+
+        const myBB = {
+            x: position.x,
+            y: position.y,
+            // TODO: It would be nice to use actual module size here but we know
+            //       it only after the module has been added to the canvas
+            width: 100,
+            height: 50,
+        }
+
+        const stackOffset = 16 // pixels
+
+        const pos = this.findNonOverlappingPosition(myBB, stackOffset)
+        return pos
     }
 
     renderMenu = () => {
