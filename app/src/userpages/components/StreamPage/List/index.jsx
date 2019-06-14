@@ -266,6 +266,7 @@ class StreamList extends Component<Props, State> {
         const { fetching, streams, showStream, filter } = this.props
         const timezone = moment.tz.guess()
         const { dialogTargetStream, activeDialog } = this.state
+        const nowTime = moment.tz(Date.now(), timezone)
 
         return (
             <Layout
@@ -349,7 +350,7 @@ class StreamList extends Component<Props, State> {
                                                     <Table.Td noWrap>{moment.tz(stream.lastUpdated, timezone).fromNow()}</Table.Td>
                                                     <Table.Td>
                                                         {stream.lastData && (
-                                                            moment.tz(stream.lastData, timezone).fromNow()
+                                                            moment.min(moment.tz(stream.lastData, timezone), nowTime).fromNow()
                                                         )}
                                                     </Table.Td>
                                                     <Table.Td className={styles.statusColumn}>
