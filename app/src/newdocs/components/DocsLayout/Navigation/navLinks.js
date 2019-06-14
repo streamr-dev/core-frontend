@@ -15,7 +15,7 @@ const navigationLinks: NavigationLink = {
     Dashboards: links.newdocs.dashboards,
     Products: links.newdocs.products,
     Tutorials: links.newdocs.tutorials,
-    'Data Token': links.newdocs.dataToken,
+    'DATA Token': links.newdocs.dataToken,
     Core: links.newdocs.core,
     Marketplace: links.newdocs.marketplace,
     // RunningNode: links.newdocs.runningNode,
@@ -36,25 +36,23 @@ export const subNav = {
         'work-with-streams-in-core': 'Work with streams in Core',
         'work-with-streams-via-sdks': 'Work with streams via SDKs',
         'work-with-streams-via-api': 'Work with streams via API',
-        'work-with-streams-via-mqtt': 'Work with streams via MQTT',
         'data-signing-and-verification': 'Data signing and verification',
         'end-to-end-encryption': 'End-to-end encryption',
+        partitioning: 'Partitioning',
     },
     canvases: {
         'intro-to-canvases': 'Intro to canvases',
         'work-with-canvases-in-core': 'Work with canvases in Core',
-        'work-with-canvases-via-api': 'Work with canvases via API',
         'building-integrations': 'Building integrations',
         'ethereum-modules': 'Ethereum modules',
     },
     dashboards: {
         'intro-to-dashboards': 'Intro to dashboards',
         'work-with-dashboards-in-core': 'Work with dashboards in Core',
-        'work-with-dashboards-via-api': 'Work with dashboards via API',
     },
     products: {
         'intro-to-products': 'Intro to products',
-        'regular-products': 'Regular products',
+        'work-with-products-in-core': 'Work with products in Core',
         'community-products': 'Community products',
     },
     tutorials: {
@@ -66,9 +64,13 @@ export const subNav = {
         'work-with-streams-in-core': 'Work with streams in Core',
         'work-with-canvases-in-core': 'Work with canvases in Core',
         'work-with-dashboards-in-core': 'Work with dashboards in Core',
+        'work-with-products-in-core': 'Work with products in Core',
     },
-    marketplace: {},
-    // runningNode: {},
+    marketplace: {
+        'introduction-marketplace': 'Introduction to the Marketplace',
+        'buying-data-marketplace': 'Buying data on the Marketplace',
+        'selling-data-marketplace': 'Selling data on the Marketplace',
+    },
     SDKs: {
         'sdks-overview': 'Overview',
         'javascript-sdk': 'Javascript SDK',
@@ -78,9 +80,8 @@ export const subNav = {
     },
     api: {
         'api-overview': 'API overview',
+        authentication: 'Authentication',
         'work-with-streams-via-api': 'Work with streams via API',
-        'work-with-canvases-via-api': 'Work with canvases via API',
-        'work-with-dashboards-via-api': 'Work with dashboards via API',
         'api-explorer': 'API Explorer',
     },
     technicalNotes: {
