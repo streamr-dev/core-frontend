@@ -2,6 +2,7 @@
 
 import React from 'react'
 import { I18n } from 'react-redux-i18n'
+import cx from 'classnames'
 
 import SvgIcon from '$shared/components/SvgIcon'
 import EditableText from '$shared/components/EditableText'
@@ -21,7 +22,9 @@ const SearchInput = ({ value, onChange, onClear }: Props) => (
         <UseState initialValue={false}>
             {(editing, setEditing) => (
                 <EditableText
-                    className={styles.input}
+                    className={cx(styles.input, {
+                        [styles.editing]: editing,
+                    })}
                     placeholder={I18n.t('actionBar.searchInput.placeholder')}
                     value={value}
                     onChange={onChange}
