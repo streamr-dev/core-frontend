@@ -14,6 +14,7 @@ type Props = {
     disabled?: boolean,
     editing?: boolean,
     editOnFocus?: boolean,
+    selectAllOnFocus?: boolean,
     onChange?: (string) => void,
     onCommit?: (string) => void,
     onModeChange?: ?(boolean) => void,
@@ -29,6 +30,7 @@ const EditableText = ({
     disabled,
     editing,
     editOnFocus,
+    selectAllOnFocus,
     onChange: onChangeProp,
     onCommit,
     onModeChange,
@@ -110,7 +112,7 @@ const EditableText = ({
                             onFocus={onFocus}
                             placeholder={placeholder}
                             revertOnEsc
-                            selectAllOnFocus
+                            selectAllOnFocus={selectAllOnFocus}
                             spellCheck="false"
                             value={children}
                         />
@@ -128,6 +130,7 @@ EditableText.defaultProps = {
     children: '',
     className: null,
     editOnFocus: false,
+    selectAllOnFocus: true,
     immediateCommit: false,
     onChange: () => {},
 }
