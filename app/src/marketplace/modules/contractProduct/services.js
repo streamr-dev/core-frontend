@@ -8,12 +8,12 @@ import type { SmartContractProduct, ProductId } from '$mp/flowtype/product-types
 import type { SmartContractCall } from '$shared/flowtype/web3-types'
 import { getValidId, mapProductFromContract } from '$mp/utils/product'
 
-const contractMethods = () => getContract(getConfig().marketplace).methods
+const contractMethods = (usePublicNode: boolean = false) => getContract(getConfig().marketplace, usePublicNode).methods
 
-export const getProductFromContract = async (id: ProductId): SmartContractCall<SmartContractProduct> => (
-    call(contractMethods().getProduct(getValidId(id)))
+export const getProductFromContract = async (id: ProductId, usePublicNode: boolean = false): SmartContractCall<SmartContractProduct> => (
+    call(contractMethods(usePublicNode).getProduct(getValidId(id)))
         .then((result) => {
-            if (hexEqualsZero(result.owner)) {
+            if (!result || hexEqualsZero(result.owner)) {
                 throw new Error(I18n.t('error.productNotFound', {
                     id,
                 }))

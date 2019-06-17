@@ -38,3 +38,7 @@ export type ApiResult<T> = Promise<T>
 export type TransactionState = $Values<typeof transactionStates>
 
 export type TransactionType = $Values<typeof transactionTypes>
+
+export type Ref<T> = {
+    current: null | T,
+}

@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react'
+import { I18n } from 'react-redux-i18n'
 
 import { isMobile as checkMobile } from '$shared/utils/platform'
 import FormControl, { type FormControlProps, type InputProps } from '../FormControl'
@@ -51,7 +52,9 @@ class DatePicker extends React.Component<Props> {
                             <React.Fragment>
                                 <TextField
                                     type={isMobile ? 'date' : 'text'}
-                                    value={dateFormatter(isMobile ? ISO_DATE_FORMAT : (format || ISO_DATE_FORMAT))(value) || ''}
+                                    value={value === I18n.t('userpages.streams.edit.history.datePicker.selectDate') ?
+                                        I18n.t('userpages.streams.edit.history.datePicker.selectDate') :
+                                        dateFormatter(isMobile ? ISO_DATE_FORMAT : (format || ISO_DATE_FORMAT))(value) || ''}
                                     onBlur={onFocusChange}
                                     onFocus={onFocusChange}
                                     onAutoComplete={setAutoCompleted}

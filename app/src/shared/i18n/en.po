@@ -8,6 +8,12 @@ msgstr ""
 "POT-Creation-Date: 2018-09-07T10:13:34.652Z\n"
 "PO-Revision-Date: 2018-09-07T10:13:34.652Z\n"
 
+msgid "general##on"
+msgstr "On"
+
+msgid "general##off"
+msgstr "Off"
+
 msgid "general##aboutUs"
 msgstr "About Us"
 
@@ -45,7 +51,7 @@ msgid "general##faq"
 msgstr "FAQ"
 
 msgid "general##footnote"
-msgstr "Made with ❤️ & ☕ by Streamr Network AG in 2018"
+msgstr "Made with ❤️ & ☕ by Streamr contributors in 2019"
 
 msgid "general##general"
 msgstr "General"
@@ -122,6 +128,9 @@ msgstr "Telegram"
 msgid "general##terms"
 msgstr "Terms of Use"
 
+msgid "general##title##suffix"
+msgstr "Streamr Marketplace"
+
 msgid "general##trello"
 msgstr "Trello"
 
@@ -170,13 +179,19 @@ msgstr "Access your wallet"
 msgid "modal##unlockWallet##waiting"
 msgstr "Connecting..."
 
+msgid "modal##confirm##dontShowAgain"
+msgstr "Don't show this again"
+
 msgid "shared##errors##unlockWallet"
 msgstr "Please unlock your wallet"
 
+msgid "shared##errors##networkName"
+msgstr "#%{networkId}"
+
 msgid "shared##errors##incorrectEthereumNetwork"
 msgstr ""
-"Please make sure your wallet is set to use Ethereum %{requiredNetworkName} "
-"net, not %{currentNetworkName} net."
+"Please switch to the %{requiredNetworkName} network in your Ethereum wallet. "
+"It's currently %{currentNetworkName}."
 
 msgid "shared##errors##web3NotEnabled"
 msgstr "Please unlock your wallet or enable access to your account"
@@ -189,3 +204,24 @@ msgstr "Create identity failed"
 
 msgid "shared##errors##identityExists"
 msgstr "Identity exists"
+
+msgid "general##docs"
+msgstr "Docs"
+
+msgid "general##introduction"
+msgstr "Introduction"
+
+msgid "general##gettingStarted"
+msgstr "Getting started"
+
+msgid "general##engine"
+msgstr "Engine"
+
+msgid "general##streamrApi"
+msgstr "Streamr API"
+
+msgid "general##telegramGroup"
+msgstr "Telegram Group"
+
+msgid "general##giveFeedback"
+msgstr "Give feedback"

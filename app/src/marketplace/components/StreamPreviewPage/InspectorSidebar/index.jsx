@@ -10,7 +10,6 @@ import { Translate } from 'react-redux-i18n'
 import CopyStreamIdButton from '../CopyStreamIdButton'
 import type { DataPoint } from '../StreamLivePreview'
 import { formatDateTime } from '$mp/utils/time'
-import type { User } from '$shared/flowtype/user-types'
 import type { StreamId } from '$shared/flowtype/stream-types'
 
 import styles from './inspectorSidebar.pcss'
@@ -18,7 +17,6 @@ import styles from './inspectorSidebar.pcss'
 type Props = {
     streamId: ?StreamId,
     dataPoint: ?DataPoint,
-    currentUser: ?User,
     onStreamIdCopy: () => void,
 }
 
@@ -31,8 +29,8 @@ const formatValue = (data: any): string => {
     return data.toString()
 }
 
-const InspectorSidebar = ({ streamId, dataPoint, currentUser, onStreamIdCopy }: Props) => {
-    const tz = (currentUser && currentUser.timezone) || moment.tz.guess()
+const InspectorSidebar = ({ streamId, dataPoint, onStreamIdCopy }: Props) => {
+    const tz = moment.tz.guess()
     return (
         <div className={styles.inspectorSidebar}>
             <div className={styles.titleRow}>
@@ -50,11 +48,11 @@ const InspectorSidebar = ({ streamId, dataPoint, currentUser, onStreamIdCopy }: 
                         <Fragment>
                             <tr>
                                 <th><Translate value="modal.streamLiveData.inspectorSidebar.streamId" /></th>
-                                <td>{dataPoint && dataPoint.metadata.streamId}</td>
+                                <td>{dataPoint && dataPoint.metadata.messageId.streamId}</td>
                             </tr>
                             <tr>
                                 <th><Translate value="modal.streamLiveData.inspectorSidebar.timestamp" /></th>
-                                <td>{dataPoint && formatDateTime(dataPoint.metadata.timestamp, tz)}</td>
+                                <td>{dataPoint && formatDateTime(dataPoint.metadata.messageId.timestamp, tz)}</td>
                             </tr>
                             {/* In theory the data doesn't have to be object. Then we just skip it */}
                             {dataPoint && dataPoint.data && typeof dataPoint.data === 'object' && Object.entries(dataPoint.data).map(([k, v]) => {

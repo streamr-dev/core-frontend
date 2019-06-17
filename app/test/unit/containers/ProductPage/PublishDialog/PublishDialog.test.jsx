@@ -12,6 +12,7 @@ import ReadyToPublishDialog from '$mp/components/Modal/ReadyToPublishDialog'
 import CompletePublishDialog from '$mp/components/Modal/CompletePublishDialog'
 import CompleteContractProductPublishDialog from '$mp/components/Modal/CompleteContractProductPublishDialog'
 import NoStreamsWarningDialog from '$mp/components/Modal/NoStreamsWarningDialog'
+import links from '$shared/../links'
 
 describe('PublishDialog', () => {
     let wrapper
@@ -115,7 +116,7 @@ describe('PublishDialog', () => {
         expect(dispatchStub.callCount).toEqual(2)
         expect(publishOrCreateProductStub.calledOnce).toEqual(true)
         expect(formatPathStub.calledOnce).toEqual(true)
-        expect(formatPathStub.calledWith('/products', product.id)).toEqual(true)
+        expect(formatPathStub.calledWith(links.marketplace.products, product.id)).toEqual(true)
     })
 
     it('renders null when no step is set', () => {

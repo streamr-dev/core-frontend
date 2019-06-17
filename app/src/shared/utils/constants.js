@@ -24,9 +24,10 @@ export const productStates = {
 }
 
 export const ethereumNetworks = {
-    '1': 'Main',
+    '1': 'Mainnet',
     '3': 'Ropsten',
     '4': 'Rinkeby',
+    '5': 'Görli',
     '42': 'Kovan',
 }
 
@@ -77,5 +78,17 @@ export const integrationKeyServices = {
 export const NotificationIcon = {
     CHECKMARK: 'checkmark',
     ERROR: 'error',
+    WARNING: 'warning',
+    INFO: 'info',
     SPINNER: 'spinner',
+}
+
+export const ProgrammingLanguages = {
+    JAVASCRIPT: 'Javascript',
+    JAVA: 'Java',
+}
+
+export const StreamrClientRepositories = {
+    [ProgrammingLanguages.JAVASCRIPT]: 'https://github.com/streamr-dev/streamr-client-javascript',
+    [ProgrammingLanguages.JAVA]: 'https://github.com/streamr-dev/streamr-client-java',
 }

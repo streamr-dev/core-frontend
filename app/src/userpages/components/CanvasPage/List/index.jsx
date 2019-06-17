@@ -4,11 +4,13 @@ import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import { Container, Row, Col, Button } from 'reactstrap'
 import { capital } from 'case'
-import { Link } from 'react-router-dom'
+import Link from '$shared/components/Link'
 import { push } from 'react-router-redux'
 import copy from 'copy-to-clipboard'
 import { Translate, I18n } from 'react-redux-i18n'
 import { Helmet } from 'react-helmet'
+import moment from 'moment'
+import cx from 'classnames'
 
 import type { Filter, SortOption } from '$userpages/flowtype/common-types'
 import type { Canvas } from '$userpages/flowtype/canvas-types'
@@ -16,21 +18,31 @@ import type { Canvas } from '$userpages/flowtype/canvas-types'
 import Layout from '$userpages/components/Layout'
 import links from '$app/src/links'
 import { getCanvases, deleteCanvas, updateFilter } from '$userpages/modules/canvas/actions'
-import { selectCanvases, selectFilter } from '$userpages/modules/canvas/selectors'
+import { selectCanvases, selectFilter, selectFetching } from '$userpages/modules/canvas/selectors'
 import { defaultColumns, getFilters } from '$userpages/utils/constants'
 import Tile from '$shared/components/Tile'
 import DropdownActions from '$shared/components/DropdownActions'
 import { formatExternalUrl } from '$shared/utils/url'
-import EmptyState from '$shared/components/EmptyState'
-import emptyStateIcon from '$shared/assets/images/empty_state_icon.png'
-import emptyStateIcon2x from '$shared/assets/images/empty_state_icon@2x.png'
-import Search from '$shared/components/Search'
+import Search from '../../Header/Search'
 import Dropdown from '$shared/components/Dropdown'
 import ShareDialog from '$userpages/components/ShareDialog'
+import confirmDialog from '$shared/utils/confirm'
+import type { User } from '$shared/flowtype/user-types'
+import { selectUserData } from '$shared/modules/user/selectors'
+import NoCanvasesView from './NoCanvases'
+import { RunStates } from '$editor/canvas/state'
+import DocsShortcuts from '$userpages/components/DocsShortcuts'
+import CanvasPreview from '$editor/canvas/components/Preview'
+import Notification from '$shared/utils/Notification'
+import { NotificationIcon } from '$shared/utils/constants'
+
+import styles from './canvasList.pcss'
 
 export type StateProps = {
+    user: ?User,
     canvases: Array<Canvas>,
     filter: ?Filter,
+    fetching: boolean,
 }
 
 export type DispatchProps = {
@@ -43,11 +55,18 @@ export type DispatchProps = {
 
 type Props = StateProps & DispatchProps
 
+type State = {
+    shareDialogCanvas: ?Canvas,
+}
+
 const CreateCanvasButton = () => (
-    <Button>
-        <Link to={links.userpages.canvasEditor}>
-            <Translate value="userpages.canvases.createCanvas" />
-        </Link>
+    <Button
+        color="primary"
+        className={styles.createCanvasButton}
+        tag={Link}
+        to={links.editor.canvasEditor}
+    >
+        <Translate value="userpages.canvases.createCanvas" />
     </Button>
 )
 
@@ -57,15 +76,17 @@ const getSortOptions = (): Array<SortOption> => {
         filters.RECENT,
         filters.RUNNING,
         filters.STOPPED,
-        filters.SHARED,
-        filters.MINE,
         filters.NAME_ASC,
         filters.NAME_DESC,
     ]
 }
 
-class CanvasList extends Component<Props, StateProps> {
+class CanvasList extends Component<Props, State> {
     defaultFilter = getSortOptions()[0].filter
+
+    state = {
+        shareDialogCanvas: undefined,
+    }
 
     componentDidMount() {
         const { filter, updateFilter, getCanvases } = this.props
@@ -77,29 +98,68 @@ class CanvasList extends Component<Props, StateProps> {
         getCanvases()
     }
 
+    confirmDeleteCanvas = async (canvas: Canvas) => {
+        const confirmed = await confirmDialog('canvas', {
+            title: I18n.t('userpages.canvases.delete.confirmTitle'),
+            message: I18n.t('userpages.canvases.delete.confirmMessage'),
+            acceptButton: {
+                title: I18n.t('userpages.canvases.delete.confirmButton'),
+                color: 'danger',
+            },
+            centerButtons: true,
+            dontShowAgain: false,
+        })
+
+        if (confirmed) {
+            this.props.deleteCanvas(canvas.id)
+        }
+    }
+
+    onOpenShareDialog = (canvas: Canvas) => {
+        this.setState({
+            shareDialogCanvas: canvas,
+        })
+    }
+
+    onCloseShareDialog = () => {
+        this.setState({
+            shareDialogCanvas: null,
+        })
+    }
+
+    onCopyUrl = (url: string) => {
+        this.props.copyToClipboard(url)
+
+        Notification.push({
+            title: I18n.t('userpages.canvases.menu.copyUrlNotification'),
+            icon: NotificationIcon.CHECKMARK,
+        })
+    }
+
     getActions = (canvas) => {
-        const { navigate, deleteCanvas, copyToClipboard } = this.props
+        const { navigate } = this.props
 
         const editUrl = formatExternalUrl(
             process.env.PLATFORM_ORIGIN_URL,
-            process.env.PLATFORM_BASE_PATH,
-            `${links.userpages.canvasEditor}/${canvas.id}`,
+            `${links.editor.canvasEditor}/${canvas.id}`,
         )
 
         return (
             <Fragment>
-                <DropdownActions.Item onClick={() => navigate(`${links.userpages.canvasEditor}/${canvas.id}`)}>
+                <DropdownActions.Item onClick={() => navigate(`${links.editor.canvasEditor}/${canvas.id}`)}>
                     <Translate value="userpages.canvases.menu.edit" />
                 </DropdownActions.Item>
                 <DropdownActions.Item
-                    onClick={() => console.error('Not implemented')}
+                    onClick={() => this.onOpenShareDialog(canvas)}
                 >
                     <Translate value="userpages.canvases.menu.share" />
                 </DropdownActions.Item>
-                <DropdownActions.Item onClick={() => copyToClipboard(editUrl)}>
+                <DropdownActions.Item onClick={() => this.onCopyUrl(editUrl)}>
                     <Translate value="userpages.canvases.menu.copyUrl" />
                 </DropdownActions.Item>
-                <DropdownActions.Item onClick={() => deleteCanvas(canvas.id)}>
+                <DropdownActions.Item
+                    onClick={() => this.confirmDeleteCanvas(canvas)}
+                >
                     <Translate value="userpages.canvases.menu.delete" />
                 </DropdownActions.Item>
             </Fragment>
@@ -130,8 +190,20 @@ class CanvasList extends Component<Props, StateProps> {
         }
     }
 
+    resetFilter = () => {
+        const { updateFilter, getCanvases } = this.props
+        updateFilter({
+            ...this.defaultFilter,
+            search: '',
+        })
+        getCanvases()
+    }
+
+    generateTimeAgoDescription = (canvasUpdatedDate: Date) => moment(canvasUpdatedDate).fromNow()
+
     render() {
-        const { canvases, filter } = this.props
+        const { canvases, filter, fetching } = this.props
+        const { shareDialogCanvas } = this.state
 
         return (
             <Layout
@@ -147,7 +219,7 @@ class CanvasList extends Component<Props, StateProps> {
                     <Dropdown
                         title={I18n.t('userpages.filter.sortBy')}
                         onChange={this.onSortChange}
-                        defaultSelectedItem={(filter && filter.id) || this.defaultFilter.id}
+                        selectedItem={(filter && filter.id) || this.defaultFilter.id}
                     >
                         {getSortOptions().map((s) => (
                             <Dropdown.Item key={s.filter.id} value={s.filter.id}>
@@ -156,54 +228,63 @@ class CanvasList extends Component<Props, StateProps> {
                         ))}
                     </Dropdown>
                 }
+                loading={fetching}
             >
-                <ShareDialog
-                    isOpen
-                    resourceType="STREAM"
-                    resourceTitle="Stream"
-                    resourceId=""
-                />
-                <Container>
-                    <Helmet>
-                        <title>{I18n.t('userpages.canvases.title')}</title>
-                    </Helmet>
-                    {!canvases.length && (
-                        <EmptyState
-                            image={(
-                                <img
-                                    src={emptyStateIcon}
-                                    srcSet={`${emptyStateIcon2x} 2x`}
-                                    alt={I18n.t('error.notFound')}
-                                />
-                            )}
-                        >
-                            <Translate value="userpages.canvases.noCanvases.title" />
-                            <Translate value="userpages.canvases.noCanvases.message" tag="small" />
-                        </EmptyState>
+                {!!shareDialogCanvas && (
+                    <ShareDialog
+                        resourceTitle={shareDialogCanvas.name}
+                        resourceType="CANVAS"
+                        resourceId={shareDialogCanvas.id}
+                        onClose={this.onCloseShareDialog}
+                    />
+                )}
+                <Container className={styles.corepageContentContainer}>
+                    <Helmet title={`Streamr Core | ${I18n.t('userpages.canvases.title')}`} />
+                    {!fetching && canvases && !canvases.length && (
+                        <NoCanvasesView
+                            hasFilter={!!filter && (!!filter.search || !!filter.key)}
+                            filter={filter}
+                            onResetFilter={this.resetFilter}
+                        />
                     )}
                     <Row>
                         {canvases.map((canvas) => (
                             <Col {...defaultColumns} key={canvas.id}>
                                 <Tile
-                                    link={`${links.userpages.canvasEditor}/${canvas.id}`}
+                                    link={`${links.editor.canvasEditor}/${canvas.id}`}
                                     dropdownActions={this.getActions(canvas)}
+                                    image={<CanvasPreview className={styles.PreviewImage} canvas={canvas} />}
                                 >
                                     <Tile.Title>{canvas.name}</Tile.Title>
-                                    <Tile.Description>{new Date(canvas.updated).toLocaleString()}</Tile.Description>
-                                    <Tile.Status>{capital(canvas.state)}</Tile.Status>
+                                    <Tile.Description>
+                                        {canvas.updated === canvas.created ? 'Created ' : 'Updated '}
+                                        {this.generateTimeAgoDescription(new Date(canvas.updated))}
+                                    </Tile.Description>
+                                    <Tile.Status
+                                        className={
+                                            cx({
+                                                [styles.running]: canvas.state === RunStates.Running,
+                                                [styles.stopped]: canvas.state === RunStates.Stopped,
+                                            })}
+                                    >
+                                        {capital(canvas.state)}
+                                    </Tile.Status>
                                 </Tile>
                             </Col>
                         ))}
                     </Row>
                 </Container>
+                <DocsShortcuts />
             </Layout>
         )
     }
 }
 
 export const mapStateToProps = (state: any): StateProps => ({
+    user: selectUserData(state),
     canvases: selectCanvases(state),
     filter: selectFilter(state),
+    fetching: selectFetching(state),
 })
 
 export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({

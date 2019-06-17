@@ -1,29 +1,26 @@
 // @flow
 
-import axios from 'axios'
-import {
-    error as errorNotification,
-    success as successNotification,
-} from 'react-notification-system-redux'
-import moment from 'moment-timezone'
 import cloneDeep from 'lodash/cloneDeep'
+import { I18n } from 'react-redux-i18n'
 
 import type { ErrorInUi } from '$shared/flowtype/common-types'
-import type { Stream, StreamId, StreamIdList, StreamFieldList, CSVImporterSchema } from '$shared/flowtype/stream-types'
-import type { Permission } from '$userpages/flowtype/permission-types'
+import type { Stream, StreamId, StreamIdList, StreamFieldList, CSVImporterSchema, StreamStatus } from '$shared/flowtype/stream-types'
+import type { Operation } from '$userpages/flowtype/permission-types'
 import type { Filter } from '$userpages/flowtype/common-types'
 
+import Notification from '$shared/utils/Notification'
+import { NotificationIcon } from '$shared/utils/constants'
 import { streamsSchema, streamSchema } from '$shared/modules/entities/schema'
 import { handleEntities } from '$shared/utils/entities'
 import * as api from '$shared/utils/api'
 import { getError } from '$shared/utils/request'
 import { selectUserData } from '$shared/modules/user/selectors'
 import { getParamsForFilter } from '$userpages/utils/filters'
+import CsvSchemaError from '$shared/errors/CsvSchemaError'
+import { formatApiUrl } from '$shared/utils/url'
 
 import * as services from './services'
 import { selectFilter, selectOpenStream } from './selectors'
-
-type PermissionOperation = Array<$ElementType<Permission, 'operation'>>
 
 export const GET_STREAM_REQUEST = 'userpages/streams/GET_STREAM_REQUEST'
 export const GET_STREAM_SUCCESS = 'userpages/streams/GET_STREAM_SUCCESS'
@@ -71,10 +68,29 @@ export const OPEN_STREAM = 'userpages/streams/OPEN_STREAM'
 export const UPDATE_FILTER = 'userpages/streams/UPDATE_FILTER'
 export const UPDATE_EDIT_STREAM = 'userpages/streams/UPDATE_EDIT_STREAM'
 export const UPDATE_EDIT_STREAM_FIELD = 'userpages/streams/UPDATE_EDIT_STREAM_FIELD'
+export const GET_STREAM_RANGE_REQUEST = 'userpages/streams/GET_STREAM_RANGE_REQUEST'
+
+export const STREAM_FIELD_AUTODETECT_REQUEST = 'userpages/streams/STREAM_FIELD_AUTODETECT_REQUEST'
+export const STREAM_FIELD_AUTODETECT_SUCCESS = 'userpages/streams/STREAM_FIELD_AUTODETECT_SUCCESS'
+export const STREAM_FIELD_AUTODETECT_FAILURE = 'userpages/streams/STREAM_FIELD_AUTODETECT_FAILURE'
 
 export const openStream = (id: ?StreamId) => ({
     type: OPEN_STREAM,
     id,
+})
+
+const getStreamFieldAutodetectRequest = () => ({
+    type: STREAM_FIELD_AUTODETECT_REQUEST,
+})
+
+const getStreamFieldAutodetectSuccess = (fields: StreamFieldList) => ({
+    type: STREAM_FIELD_AUTODETECT_SUCCESS,
+    fields,
+})
+
+const getStreamFieldAutodetectFailure = (error: ErrorInUi) => ({
+    type: STREAM_FIELD_AUTODETECT_FAILURE,
+    error,
 })
 
 const getStreamRequest = () => ({
@@ -109,7 +125,7 @@ const getMyStreamPermissionsRequest = () => ({
     type: GET_MY_STREAM_PERMISSIONS_REQUEST,
 })
 
-const getMyStreamPermissionsSuccess = (id: StreamId, permissions: PermissionOperation) => ({
+const getMyStreamPermissionsSuccess = (id: StreamId, permissions: Array<Operation>) => ({
     type: GET_MY_STREAM_PERMISSIONS_SUCCESS,
     id,
     permissions,
@@ -184,8 +200,11 @@ const uploadCsvFileRequest = () => ({
     type: UPLOAD_CSV_FILE_REQUEST,
 })
 
-const uploadCsvFileSuccess = () => ({
+const uploadCsvFileSuccess = (id: StreamId, fileUrl: string, schema: CSVImporterSchema) => ({
     type: UPLOAD_CSV_FILE_SUCCESS,
+    streamId: id,
+    fileUrl,
+    schema,
 })
 
 const uploadCsvFileFailure = (error: ErrorInUi) => ({
@@ -231,6 +250,10 @@ const updateFilterAction = (filter: Filter) => ({
     filter,
 })
 
+const getStreamRangeRequest = () => ({
+    type: GET_STREAM_RANGE_REQUEST,
+})
+
 export const getStream = (id: StreamId) => (dispatch: Function) => {
     dispatch(getStreamRequest())
     return services.getStream(id)
@@ -238,12 +261,52 @@ export const getStream = (id: StreamId) => (dispatch: Function) => {
         .then((id) => dispatch(getStreamSuccess(id)))
         .catch((e) => {
             dispatch(getStreamFailure(e))
-            dispatch(errorNotification({
-                title: 'Error!',
-                message: e.message,
-            }))
+            Notification.push({
+                title: e.message,
+                icon: NotificationIcon.ERROR,
+            })
             throw e
         })
+}
+
+export const updateStreamStatus = (id: StreamId) => (dispatch: Function) => (
+    services.getStreamStatus(id)
+        .then(({ ok, date }: StreamStatus) => ({
+            id,
+            streamStatus: ok ? 'ok' : 'error',
+            lastData: date,
+        }))
+        .then(handleEntities(streamSchema, dispatch))
+        .catch((e) => {
+            // not sure if we want to spam the user with errors, for now, console log
+            /* eslint-disable no-console */
+            console.log('stream status issue: ', id)
+            console.log(e)
+            throw e
+        })
+)
+
+export const updateStreamStatuses = (ids: StreamIdList) => (dispatch: Function) => {
+    let cancelled = false
+
+    const fetchStatuses = async () => {
+        for (let index = 0; index < ids.length && !cancelled; index += 1) {
+            // eslint-disable-next-line no-await-in-loop
+            await dispatch(updateStreamStatus(ids[index]))
+        }
+    }
+
+    fetchStatuses()
+
+    return () => {
+        cancelled = true
+    }
+}
+
+let streamStatusCancel = () => null
+
+export const cancelStreamStatusFetch = () => {
+    streamStatusCancel()
 }
 
 export const getStreams = () => (dispatch: Function, getState: Function) => {
@@ -251,22 +314,39 @@ export const getStreams = () => (dispatch: Function, getState: Function) => {
 
     const filter = selectFilter(getState())
     const params = getParamsForFilter(filter, {
+        uiChannel: false,
         sortBy: 'lastUpdated',
     })
 
+    streamStatusCancel()
+
     return services.getStreams(params)
+        .then((data) => data.map((stream) => ({
+            ...stream,
+            streamStatus: 'inactive',
+        })))
         .then(handleEntities(streamsSchema, dispatch))
         .then((ids) => {
             dispatch(getStreamsSuccess(ids))
+            streamStatusCancel = dispatch(updateStreamStatuses(ids))
         })
         .catch((e) => {
             dispatch(getStreamsFailure(e))
-            dispatch(errorNotification({
-                title: 'Error!',
-                message: e.message,
-            }))
+            Notification.push({
+                title: e.message,
+                icon: NotificationIcon.ERROR,
+            })
             throw e
         })
+}
+
+export const getStreamStatus = (id: StreamId) => (dispatch: Function) => {
+    handleEntities(streamSchema, dispatch)({
+        id,
+        streamStatus: 'inactive',
+        lastData: null,
+    })
+    return dispatch(updateStreamStatus(id))
 }
 
 export const getMyStreamPermissions = (id: StreamId) => (dispatch: Function, getState: Function) => {
@@ -283,10 +363,10 @@ export const getMyStreamPermissions = (id: StreamId) => (dispatch: Function, get
         })
         .catch((e) => {
             dispatch(getMyStreamPermissionsFailure(e))
-            dispatch(errorNotification({
-                title: 'Error!',
-                message: e.message,
-            }))
+            Notification.push({
+                title: e.message,
+                icon: NotificationIcon.ERROR,
+            })
             throw e
         })
 }
@@ -296,10 +376,10 @@ export const createStream = (options: { name: string, description: ?string }) =>
     return new Promise((resolve, reject) => {
         services.postStream(options)
             .then((data: Stream) => {
-                dispatch(successNotification({
-                    title: 'Success!',
-                    message: `Stream ${data.name} created successfully!`,
-                }))
+                Notification.push({
+                    title: `Stream ${data.name} created successfully!`,
+                    icon: NotificationIcon.CHECKMARK,
+                })
                 return data
             })
             .then(handleEntities(streamSchema, dispatch))
@@ -309,10 +389,10 @@ export const createStream = (options: { name: string, description: ?string }) =>
             })
             .catch((e) => {
                 dispatch(createStreamFailure(e))
-                dispatch(errorNotification({
-                    title: 'Error!',
-                    message: e.message,
-                }))
+                Notification.push({
+                    title: e.message,
+                    icon: NotificationIcon.ERROR,
+                })
                 reject(e)
             })
     })
@@ -324,39 +404,38 @@ export const updateStream = (stream: Stream) => (dispatch: Function) => {
         .then(() => handleEntities(streamSchema, dispatch)(stream))
         .then(() => {
             dispatch(updateStreamSuccess(stream.id))
-            dispatch(successNotification({
-                title: 'Success!',
-                message: 'Stream saved successfully',
-            }))
+            Notification.push({
+                title: I18n.t('userpages.streams.actions.saveStreamSuccess'),
+                icon: NotificationIcon.CHECKMARK,
+            })
         })
         .catch((e) => {
             dispatch(updateStreamFailure(e))
-            dispatch(errorNotification({
-                title: 'Error!',
-                message: e.message,
-            }))
+            Notification.push({
+                title: e.message,
+                icon: NotificationIcon.ERROR,
+            })
             throw e
         })
 }
 
-export const deleteStream = (stream: Stream) => (dispatch: Function): Promise<void> => {
+export const deleteStream = (id: StreamId) => async (dispatch: Function): Promise<void> => {
     dispatch(deleteStreamRequest())
-    return services.deleteStream(stream.id)
-        .then(() => {
-            dispatch(deleteStreamSuccess(stream.id))
-            dispatch(successNotification({
-                title: 'Success!',
-                message: 'Stream deleted successfully',
-            }))
+    try {
+        const deleteStream = await api.del(formatApiUrl('streams', id))
+        dispatch(deleteStreamSuccess(id))
+        Notification.push({
+            title: I18n.t('userpages.streams.actions.deleteStreamSuccess'),
+            icon: NotificationIcon.CHECKMARK,
         })
-        .catch((e) => {
-            dispatch(deleteStreamFailure(e))
-            dispatch(errorNotification({
-                title: 'Error!',
-                message: e.message,
-            }))
-            throw e
+        return deleteStream
+    } catch (e) {
+        dispatch(deleteStreamFailure(e))
+        Notification.push({
+            title: e.message,
+            icon: NotificationIcon.ERROR,
         })
+    }
 }
 
 export const saveFields = (id: StreamId, fields: StreamFieldList) => (dispatch: Function) => {
@@ -371,98 +450,88 @@ export const saveFields = (id: StreamId, fields: StreamFieldList) => (dispatch: 
         .then(handleEntities(streamSchema, dispatch))
         .then((id) => {
             dispatch(saveFieldsSuccess(id))
-            dispatch(successNotification({
-                title: 'Success!',
-                message: 'Fields saved successfully',
-            }))
+            Notification.push({
+                title: 'Fields saved successfully',
+                icon: NotificationIcon.CHECKMARK,
+            })
         })
         .catch((e) => {
             dispatch(saveFieldsFailure(e))
-            dispatch(errorNotification({
-                title: 'Error!',
-                message: e.message,
-            }))
+            Notification.push({
+                title: e.message,
+                icon: NotificationIcon.ERROR,
+            })
             throw e
         })
 }
 
 export const uploadCsvFile = (id: StreamId, file: File) => (dispatch: Function) => {
-    const formData = new FormData()
-    formData.append('file', file)
     dispatch(uploadCsvFileRequest())
-    return axios.post(`${process.env.STREAMR_API_URL}/streams/${id}/uploadCsvFile`, formData, {
-        headers: {
-            'Content-Type': 'multipart/form-data',
-        },
-        withCredentials: true,
-    })
-        .then(() => {
-            dispatch(uploadCsvFileSuccess())
-            dispatch(successNotification({
-                title: 'Success!',
-                message: 'CSV file imported successfully',
-            }))
+    return services.uploadCsvFile(id, file)
+        .then(({ fileId, schema }) => {
+            if (schema.timestampColumnIndex == null) {
+                dispatch(uploadCsvFileUnknownSchema(id, fileId, schema))
+                throw new CsvSchemaError('Could not parse timestamp column!')
+            }
+            dispatch(uploadCsvFileSuccess(id, fileId, schema))
+            Notification.push({
+                title: 'CSV file imported successfully',
+                icon: NotificationIcon.CHECKMARK,
+            })
         })
         .catch((error) => {
             const e = getError(error)
-            if (error.response.data.code === 'CSV_PARSE_UNKNOWN_SCHEMA') {
-                dispatch(uploadCsvFileUnknownSchema(id, error.response.data.fileUrl, error.response.data.schema))
-            } else {
-                dispatch(uploadCsvFileFailure(e))
-                dispatch(errorNotification({
-                    title: 'Error!',
-                    message: e.message,
-                }))
-            }
-            throw e
+            dispatch(uploadCsvFileFailure(e))
+            Notification.push({
+                title: e.message,
+                icon: NotificationIcon.ERROR,
+            })
+            throw error
         })
 }
 
 export const confirmCsvFileUpload = (id: StreamId, fileUrl: string, dateFormat: string, timestampColumnIndex: number) => (dispatch: Function) => {
     dispatch(confirmCsvFileUploadRequest())
-    return api.post(`${process.env.STREAMR_API_URL}/streams/${id}/confirmCsvFileUpload`, {
-        fileUrl,
-        dateFormat,
-        timestampColumnIndex,
-    })
+    return services.confirmCsvFileUpload(id, fileUrl, dateFormat, timestampColumnIndex)
         .then(() => {
             dispatch(confirmCsvFileUploadSuccess())
-            dispatch(successNotification({
-                title: 'Success!',
-                message: 'CSV file imported successfully',
-            }))
+            Notification.push({
+                title: 'CSV file imported successfully',
+                icon: NotificationIcon.CHECKMARK,
+            })
         })
         .catch((e) => {
             dispatch(confirmCsvFileUploadFailure(e))
-            dispatch(errorNotification({
-                title: 'Error!',
-                message: e.message,
-            }))
+            Notification.push({
+                title: e.message,
+                icon: NotificationIcon.ERROR,
+            })
             throw e
         })
 }
 
-export const getRange = (id: StreamId) => (
-    api.get(`${process.env.STREAMR_API_URL}/streams/${id}/range`)
-)
+export const getRange = (id: StreamId) => (dispatch: Function) => {
+    dispatch(getStreamRangeRequest())
+    return services.getRange(id)
+}
 
 export const deleteDataUpTo = (id: StreamId, date: Date) => (dispatch: Function) => {
     dispatch(deleteDataUpToRequest())
-    return axios.get(`${process.env.STREAMR_URL}/stream/deleteDataUpTo?id=${id}&date=${moment(date).format('YYYY-MM-DD')}`)
+    return services.deleteDataUpTo(id, date)
         .then(() => {
             dispatch(deleteDataUpToSuccess())
-            dispatch(successNotification({
-                title: 'Success!',
-                message: 'Data deleted succesfully',
-            }))
+            Notification.push({
+                title: 'Data deleted succesfully',
+                icon: NotificationIcon.CHECKMARK,
+            })
         })
         .catch((error) => {
             const e = getError(error)
             dispatch(deleteDataUpToFailure(e))
-            dispatch(errorNotification({
-                title: 'Error!',
-                message: e.message,
-            }))
+            Notification.push({
+                title: e.message,
+                icon: NotificationIcon.ERROR,
+            })
         })
 }
 
@@ -491,6 +560,11 @@ export const initEditStream = () => (dispatch: Function, getState: Function) => 
             config: cloneDeep(stream.config) || {},
             ownPermissions: cloneDeep(stream.ownPermissions) || [],
             lastUpdated: stream.lastUpdated || 0,
+            autoConfigure: stream.autoConfigure || false,
+            partitions: stream.partitions || 1,
+            requireSignedData: stream.requireSignedData || false,
+            uiChannel: stream.uiChannel || false,
+            storageDays: stream.storageDays !== undefined ? stream.storageDays : 365,
         }))
     }
 }
@@ -503,5 +577,38 @@ export const initNewStream = () => (dispatch: Function) => {
         config: {},
         ownPermissions: [],
         lastUpdated: 0,
+        autoConfigure: false,
+        partitions: 1,
+        requireSignedData: false,
+        storageDays: 365,
+        uiChannel: false,
     }))
+}
+
+export const streamFieldsAutodetect = (id: StreamId) => (dispatch: Function) => {
+    dispatch(getStreamFieldAutodetectRequest())
+    return services.autodetectStreamfields(id)
+        .then((data) => ({
+            id,
+            config: {
+                fields: data.config.fields,
+            },
+        }))
+        .then(({ config: { fields } }) => {
+            if (fields) {
+                dispatch(getStreamFieldAutodetectSuccess(fields))
+                Notification.push({
+                    title: 'Fields autodetected!',
+                    icon: NotificationIcon.CHECKMARK,
+                })
+            }
+        }, (err) => {
+            if (err) {
+                dispatch(getStreamFieldAutodetectFailure(err))
+                Notification.push({
+                    title: err.message,
+                    icon: NotificationIcon.ERROR,
+                })
+            }
+        })
 }

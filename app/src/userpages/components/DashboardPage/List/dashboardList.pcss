@@ -1,0 +1,32 @@
+.running {
+  color: var(--greenGoLive);
+}
+
+.stopped {
+  color: #323232;
+}
+
+.PreviewImage {
+  width: 100%;
+  height: auto;
+}
+
+@media (--md-down) {
+  .createDashboardButton {
+    display: none;
+  }
+
+  :global(html) .corepageContentContainer {
+    width: 100%;
+    max-width: none;
+    padding-right: 24px;
+    padding-left: 24px;
+    margin-top: 34px;
+  }
+}
+
+@media (--sm-down) {
+  :global(html) .corepageContentContainer {
+    margin-top: 16px;
+  }
+}

@@ -11,14 +11,32 @@ msgstr ""
 msgid "userpages##canvases##createCanvas"
 msgstr "Create canvas"
 
+msgid "userpages##canvases##deleteCanvas"
+msgstr "Canvas deleted successfully"
+
 msgid "userpages##canvases##filterCanvases"
 msgstr "Filter canvases"
 
-msgid "userpages##canvases##noCanvases##title"
+msgid "userpages##canvases##updated"
+msgstr "Updated %{since}"
+
+msgid "userpages##canvases##noCreatedCanvases##title"
 msgstr "You haven't created any canvases yet."
 
-msgid "userpages##canvases##noCanvases##message"
+msgid "userpages##canvases##noCreatedCanvases##message"
 msgstr "Click the button above to create one."
+
+msgid "userpages##canvases##noCreatedCanvases##messageMobile"
+msgstr "Use the desktop app to make one."
+
+msgid "userpages##canvases##noCanvasesResult##title"
+msgstr "No results."
+
+msgid "userpages##canvases##noCanvasesResult##message"
+msgstr "We couldn't find any canvases that match your search."
+
+msgid "userpages##canvases##noCanvasesResult##clearFilters"
+msgstr "Clear filters"
 
 msgid "userpages##canvases##title"
 msgstr "Canvases"
@@ -32,8 +50,20 @@ msgstr "Delete"
 msgid "userpages##canvases##menu##copyUrl"
 msgstr "Copy URL"
 
+msgid "userpages##canvases##menu##copyUrlNotification"
+msgstr "Canvas URL copied"
+
 msgid "userpages##canvases##menu##share"
 msgstr "Share"
+
+msgid "userpages##canvases##delete##confirmTitle"
+msgstr "Delete this canvas?"
+
+msgid "userpages##canvases##delete##confirmMessage"
+msgstr "This is an unrecoverable action. Please confirm this is what you want before you proceed."
+
+msgid "userpages##canvases##delete##confirmButton"
+msgstr "Yes, delete"
 
 msgid "userpages##filter##sortBy"
 msgstr "Sort by"
@@ -80,6 +110,24 @@ msgstr "Streams"
 msgid "userpages##header##dashboards"
 msgstr "Dashboards"
 
+msgid "userpages##title##dashboards"
+msgstr "Dashboards"
+
+msgid "userpages##title##products"
+msgstr "Products"
+
+msgid "userpages##title##purchases"
+msgstr "Purchases"
+
+msgid "userpages##title##streams"
+msgstr "Streams"
+
+msgid "userpages##title##transactions"
+msgstr "Transactions"
+
+msgid "userpages##title##profile"
+msgstr "Profile"
+
 msgid "userpages##header##products"
 msgstr "Products"
 
@@ -89,14 +137,32 @@ msgstr "Purchases"
 msgid "userpages##header##transactions"
 msgstr "Transactions"
 
+msgid "userpages##permissions##error"
+msgstr "Something went wrong while adding some of the permission(s)"
+
+msgid "userpages##permissions##saved"
+msgstr "Permissions saved successfully!"
+
 msgid "userpages##products##filterProducts"
 msgstr "Filter products"
 
-msgid "userpages##products##noProducts##title"
+msgid "userpages##products##noCreatedProducts##title"
 msgstr "You haven’t created any products yet."
 
-msgid "userpages##products##noProducts##message"
+msgid "userpages##products##noCreatedProducts##message"
 msgstr "Click the button above to create one."
+
+msgid "userpages##products##noCreatedProducts##messageMobile"
+msgstr "Use the desktop app to make one."
+
+msgid "userpages##products##noProductsResult##title"
+msgstr "No results."
+
+msgid "userpages##products##noProductsResult##message"
+msgstr "We couldn't find any products that match your search."
+
+msgid "userpages##products##noProductsResult##clearFilters"
+msgstr "Clear filters"
 
 msgid "userpages##products##draft"
 msgstr "Draft"
@@ -110,14 +176,23 @@ msgstr "Create product"
 msgid "userpages##purchases##filterPurchases"
 msgstr "Filter purchases"
 
-msgid "userpages##purchases##noPurchases##title"
+msgid "userpages##purchases##noAddedPurchases##title"
 msgstr "You haven’t purchased or added any products yet."
 
-msgid "userpages##purchases##noPurchases##message"
+msgid "userpages##purchases##noAddedPurchases##message"
 msgstr "Visit the Marketplace to get started."
 
-msgid "userpages##purchases##noPurchases##hint"
+msgid "userpages##purchases##noAddedPurchases##hint"
 msgstr "Go to the marketplace"
+
+msgid "userpages##purchases##noPurchasesResult##title"
+msgstr "No results."
+
+msgid "userpages##purchases##noPurchasesResult##message"
+msgstr "We couldn't find any products that match your search."
+
+msgid "userpages##purchases##noPurchasesResult##clearFilters"
+msgstr "Clear filters"
 
 msgid "userpages##purchases##active"
 msgstr "Active"
@@ -152,14 +227,23 @@ msgstr "Select"
 msgid "userpages##streams##actions##addToCanvas"
 msgstr "Add to canvas"
 
+msgid "userpages##streams##actions##deleteStreamSuccess"
+msgstr "Stream deleted successfully"
+
 msgid "userpages##streams##actions##editStream"
 msgstr "Edit stream"
 
 msgid "userpages##streams##actions##copyId"
 msgstr "Copy ID"
 
+msgid "userpages##streams##actions##idCopied"
+msgstr "Stream ID copied"
+
 msgid "userpages##streams##actions##copySnippet"
 msgstr "Copy Snippet"
+
+msgid "userpages##streams##actions##saveStreamSuccess"
+msgstr "Stream saved successfully"
 
 msgid "userpages##streams##actions##share"
 msgstr "Share"
@@ -167,14 +251,32 @@ msgstr "Share"
 msgid "userpages##streams##actions##refresh"
 msgstr "Refresh"
 
+msgid "userpages##streams##actions##refreshSuccess"
+msgstr "Stream refreshed"
+
+msgid "userpages##streams##actions##refreshError"
+msgstr "Stream refresh failed"
+
 msgid "userpages##streams##actions##delete"
 msgstr "Delete"
 
-msgid "userpages##streams##noStreams##title"
+msgid "userpages##streams##noCreatedStreams##title"
 msgstr "You haven't created any streams yet."
 
-msgid "userpages##streams##noStreams##message"
+msgid "userpages##streams##noCreatedStreams##message"
 msgstr "Click the button above to create one."
+
+msgid "userpages##streams##noCreatedStreams##messageMobile"
+msgstr "Use the desktop app to make one."
+
+msgid "userpages##streams##noStreamsResult##title"
+msgstr "No results."
+
+msgid "userpages##streams##noStreamsResult##message"
+msgstr "We couldn't find any streams that match your search."
+
+msgid "userpages##streams##noStreamsResult##clearFilters"
+msgstr "Clear filters"
 
 msgid "userpages##streams##edit##details##name"
 msgstr "Name"
@@ -187,6 +289,9 @@ msgstr "Stream ID"
 
 msgid "userpages##streams##edit##details##copyStreamId"
 msgstr "Copy Stream ID"
+
+msgid "userpages##streams##edit##details##copied"
+msgstr "Copied"
 
 msgid "userpages##streams##edit##details##unsavedChanges"
 msgstr "You have unsaved changes in the details section. Are you sure you want to leave?"
@@ -212,19 +317,28 @@ msgstr "Field name"
 msgid "userpages##streams##edit##configure##dataType"
 msgstr "Data type"
 
+msgid "userpages##streams##edit##configure##permission"
+msgstr "Permission"
+
 msgid "userpages##streams##edit##configure##delete"
 msgstr "Delete"
 
 msgid "userpages##streams##edit##configure##addField"
-msgstr "Add field"
+msgstr "+ Add field"
 
 msgid "userpages##streams##edit##configure##help"
-msgstr "You can configure your stream’s fields and data types here. If you’re planning to add historical data, you can choose to have Streamr try to autoconfigure fields or you can edit them yourself."
+msgstr "You can configure your stream’s fields and data types here. This affects how this stream appears on canvases. You can choose to have Streamr try to autoconfigure fields, or you can edit them yourself."
 
 msgid "userpages##streams##edit##configure##autoConfigure"
 msgstr "Always try to autoconfigure field names and types"
 
-msgid "userpages##streams##edit##configure##requireSignedMessages"
+msgid "userpages##streams##edit##configure##autodetect"
+msgstr "Autodetect fields"
+
+msgid "userpages##streams##edit##configure##waiting"
+msgstr "Waiting..."
+
+msgid "userpages##streams##edit##configure##requireSignedData"
 msgstr "Require all messages in this stream to be signed"
 
 msgid "userpages##streams##edit##configure##historicalStoragePeriod##description"
@@ -233,26 +347,119 @@ msgstr "Please select how long your historical data is retained before it is aut
 msgid "userpages##streams##edit##configure##historicalStoragePeriod##label"
 msgstr "Historical data storage period (days)"
 
+msgid "userpages##streams##edit##preview##description"
+msgstr "This stream's most recent data is shown here live. Use the Inspector to view the full details of the messages."
+
 msgid "userpages##streams##edit##preview##inspect"
 msgstr "Inspect"
+
+msgid "userpages##streams##delete##confirmTitle"
+msgstr "Delete this stream?"
+
+msgid "userpages##streams##delete##confirmMessage"
+msgstr "This is an unrecoverable action. Please confirm this is what you want before you proceed."
+
+msgid "userpages##streams##delete##confirmButton"
+msgstr "Yes, delete"
+
+msgid "userpages##streams##edit##apiCredentials##description"
+msgstr "You can create API keys here that grant access to this stream only. You can assign read only or read + write permissions to these keys. Note that these are different from your user API keys, which you can manage in "
+
+msgid "userpages##streams##edit##history##uploadCsvButton"
+msgstr "Upload CSV"
+
+msgid "userpages##streams##edit##history##upload##description"
+msgstr "If you want to add historical data to this stream, you can do so by uploading a .CSV file, which will be read and the data will be added to the stream."
+
+msgid "userpages##streams##edit##history##storedEvents"
+msgstr "Stored data"
+
+msgid "userpages##streams##edit##history##noEvents"
+msgstr "No stored data. Drop a CSV file here to load some."
+
+msgid "userpages##streams##edit##history##events"
+msgstr "This stream has stored data between %{start} and %{end}."
+
+msgid "userpages##streams##edit##history##delete"
+msgstr "Delete"
+
+msgid "userpages##streams##edit##history##deleteRange"
+msgstr "Delete data"
+
+msgid "userpages##streams##edit##history##deleteEvents"
+msgstr "Delete data up to and including"
+
+msgid "userpages##streams##edit##history##uploadCsv"
+msgstr "Drop your .CSV file here to upload"
+
+msgid "userpages##streams##edit##history##saveFirst"
+msgstr "Cannot add historical data to a stream that has not been saved yet. Please save your changes and try again."
+
+msgid "userpages##streams##edit##history##confirmCsv##title"
+msgstr "Clarify the CSV file fields"
+
+msgid "userpages##streams##edit##history##confirmCsv##customFormat"
+msgstr "Enter custom format"
+
+msgid "userpages##streams##edit##history##confirmCsv##selectTimestamp"
+msgstr "Select the Timestamp column"
+
+msgid "userpages##streams##edit##history##confirmCsv##dateFormat"
+msgstr "Date format"
+
+msgid "userpages##streams##edit##history##confirmCsv##dateFormats##java##name"
+msgstr "Java timestamp"
+
+msgid "userpages##streams##edit##history##confirmCsv##dateFormats##java##help"
+msgstr "Milliseconds since January 1st 1970 UTC"
+
+msgid "userpages##streams##edit##history##confirmCsv##dateFormats##unix##name"
+msgstr "Unix timestamp"
+
+msgid "userpages##streams##edit##history##confirmCsv##dateFormats##unix##help"
+msgstr "Seconds since January 1st 1970 UTC"
+
+msgid "userpages##streams##edit##history##confirmCsv##dateFormats##custom##name"
+msgstr "Custom Java SimpleDateFormat"
+
+msgid "userpages##streams##edit##history##datePicker##selectDate"
+msgstr "Select date"
 
 msgid "userpages##transactions##noTransactions##title"
 msgstr "No transactions."
 
 msgid "userpages##transactions##noTransactions##message"
-msgstr "Couldn't find any transactions."
+msgstr "You haven't made any transactions yet."
 
 msgid "userpages##dashboards##createDashboard"
 msgstr "Create dashboard"
 
+msgid "userpages##dashboards##deletedDashboard"
+msgstr "Dashboard deleted successfully!"
+
 msgid "userpages##dashboards##filterDashboards"
 msgstr "Filter dashboards"
 
-msgid "userpages##dashboards##noDashboards##title"
+msgid "userpages##dashboards##noCreatedDashboards##title"
 msgstr "You haven’t created any dashboards yet."
 
-msgid "userpages##dashboards##noDashboards##message"
+msgid "userpages##dashboards##noCreatedDashboards##message"
 msgstr "Click the button above to create one."
+
+msgid "userpages##dashboards##noCreatedDashboards##messageMobile"
+msgstr "Use the desktop app to make one."
+
+msgid "userpages##dashboards##noDashboardsResult##title"
+msgstr "No results."
+
+msgid "userpages##dashboards##noDashboardsResult##message"
+msgstr "We couldn't find any dashboards that match your search."
+
+msgid "userpages##dashboards##noDashboardsResult##clearFilters"
+msgstr "Clear filters"
+
+msgid "userpages##dashboards##savedDashboard"
+msgstr "Dashboard saved successfully!"
 
 msgid "userpages##transactions##list##name"
 msgstr "Name"
@@ -311,6 +518,12 @@ msgstr "Confirmed"
 msgid "userpages##profilePage##toolbar##cancel"
 msgstr "Cancel"
 
+msgid "userpages##profilePage##toolbar##saveAndExit"
+msgstr "Save & Exit"
+
+msgid "userpages##profilePage##toolbar##done"
+msgstr "Done"
+
 msgid "userpages##profilePage##toolbar##saveChanges"
 msgstr "Save Changes"
 
@@ -331,8 +544,8 @@ msgstr ""
 "Your API keys allow you to share access to your canvases and streams with others. "
 "As they give the holder complete power over your account, please be cautious when sharing these keys."
 
-msgid "userpages##profilePage##apiCredentials##addNewKey"
-msgstr "Add new key"
+msgid "userpages##profilePage##apiCredentials##addAPIKey"
+msgstr "+ Add new key"
 
 msgid "userpages##profilePage##ethereumAddress##title"
 msgstr "Ethereum Address"
@@ -342,11 +555,14 @@ msgstr "Ethereum accounts"
 
 msgid "userpages##profilePage##ethereumAddress##description"
 msgstr ""
-"In addition to your primary Ethereum account, you can connect more accounts to your Streamr user. "
-"You might like to do this to have one account for paying gas fees, and one to receive marketplace payments."
+"You can connect any number of Ethereum accounts to your Streamr identity. "
+"You might use them for the Ethereum one-click login feature or for buying and selling products on the Marketplace."
+
+msgid "userpages##profilePage##ethereumAddress##addAddress"
+msgstr "+ Add address"
 
 msgid "userpages##profilePage##ethereumAddress##addNewAddress"
-msgstr "Add new address"
+msgstr "+ Add new address"
 
 msgid "userpages##profilePage##ethereumAddress##notMetamaskEnabledBrowser"
 msgstr ""
@@ -367,29 +583,31 @@ msgid "userpages##profilePage##ethereumPrivateKeys##linkTitle"
 msgstr "Private keys"
 
 msgid "userpages##profilePage##deleteAccount##title"
-msgstr "Delete Streamr Account"
+msgstr "Disable Streamr Account"
 
 msgid "userpages##profilePage##deleteAccount##linkTitle"
-msgstr "Delete account"
+msgstr "Disable account"
 
 msgid "userpages##profilePage##deleteAccount##description"
 msgstr ""
-"Unlike other companies that deactivate your account but retain your data, if you delete your Streamr account, "
-"all your data is deleted from our servers and will be unrecoverable. Please proceed with caution."
+"This action will disable your account but may still retain your data. Please contact us directly to "
+"manually delete your data entirely."
 
 msgid "userpages##profilePage##deleteAccount##button"
-msgstr "Delete account"
+msgstr "Disable account"
 
 msgid "modal##deleteAccount##defaultTitle"
-msgstr "Do you really want to delete your account?"
+msgstr "Do you really want to disable your account?"
 
 msgid "modal##deleteAccount##save"
-msgstr "Yes, delete"
+msgstr "Yes, disable"
 
 msgid "modal##deleteAccount##content"
 msgstr ""
-"This is an unrecoverable action! All your data will be wiped from our servers and we cannot recover it for you. "
 "Please make sure this is what you want before you proceed."
+
+msgid "userpages##profile##settings##update"
+msgstr "Update"
 
 msgid "userpages##profile##settings##upload"
 msgstr "Upload"
@@ -398,7 +616,10 @@ msgid "userpages##profile##settings##uploadHelpText"
 msgstr "JPG or PNG, at least 256px"
 
 msgid "modal##avatar##defaultTitle"
-msgstr "Avatar"
+msgstr "Avatar upload"
+
+msgid "modal##avatar##updateTitle"
+msgstr "Avatar update"
 
 msgid "modal##avatar##cropYourImage"
 msgstr "Crop your image"
@@ -408,6 +629,9 @@ msgstr "Preview"
 
 msgid "modal##avatar##saveAvatar"
 msgstr "Save avatar"
+
+msgid "modal##avatar##saveAndApplyAvatar"
+msgstr "Save & Apply"
 
 msgid "userpages##keyField##options"
 msgstr "Select"
@@ -469,7 +693,7 @@ msgid "modal##newIdentity##defaultTitle"
 msgstr "Add a name to this Ethereum address"
 
 msgid "modal##newIdentity##placeholder"
-msgstr "eg. Main Eth Address"
+msgstr "eg. Mainnet Eth Address"
 
 msgid "modal##duplicateIdentity##defaultTitle"
 msgstr "Account already connected"
@@ -490,3 +714,45 @@ msgstr "Success"
 
 msgid "modal##newIdentitySuccess##description"
 msgstr "You have connected an Ethereum address to your account"
+
+msgid "modal##shareResource##defaultTitle"
+msgstr "Share %{resourceTitle}"
+
+msgid "modal##shareResource##anonymousAccess"
+msgstr "Who can access this?"
+
+msgid "modal##shareResource##onlyInvited"
+msgstr "Private — only people you’ve invited"
+
+msgid "modal##shareResource##withLink"
+msgstr "Public — viewable by anyone with the link or via the API"
+
+msgid "modal##shareResource##enterEmailAddress"
+msgstr "Enter email address"
+
+msgid "modal##shareResource##permissions##read"
+msgstr "View only"
+
+msgid "modal##shareResource##permissions##write"
+msgstr "Can edit"
+
+msgid "modal##shareResource##permissions##share"
+msgstr "Can share"
+
+msgid "modal##shareResource##user##defaultTitle"
+msgstr "Streamr user"
+
+msgid "modal##shareResource##save"
+msgstr "Share"
+
+msgid "modal##copySnippet##defaultTitle"
+msgstr "Copy Snippet"
+
+msgid "modal##copySnippet##goToLibrary"
+msgstr "Go to Library"
+
+msgid "modal##copySnippet##copy"
+msgstr "Copy"
+
+msgid "modal##copySnippet##copied"
+msgstr "Copied"

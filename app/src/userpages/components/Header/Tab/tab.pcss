@@ -1,0 +1,45 @@
+.root {
+  font-family: var(--mono);
+  font-size: 0.75um;
+  font-weight: var(--medium);
+  letter-spacing: 2px;
+  line-height: 1em;
+  outline: 0;
+  padding: 1.25um 0;
+  position: relative;
+  text-decoration: none !important;
+  text-transform: uppercase;
+}
+
+.root,
+.root > span {
+  display: block;
+}
+
+.root::after {
+  bottom: 0;
+  content: '';
+  display: block;
+  height: 2px;
+  left: 0;
+  position: absolute;
+  width: 100%;
+}
+
+.root,
+.root:--idle {
+  color: #989898;
+}
+
+.active,
+.root:--enter {
+  color: #323232;
+}
+
+.active::after {
+  background-color: #323232;
+}
+
+.root + .root {
+  margin-left: 1.75um;
+}

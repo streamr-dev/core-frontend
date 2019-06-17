@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
-npm test
 
+$(dirname $0)/build-docker-env.sh
+npm test

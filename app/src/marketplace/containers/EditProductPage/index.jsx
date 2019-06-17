@@ -172,7 +172,7 @@ export class EditProductPage extends Component<Props, State> {
                 toolbarActions.saveAndExit = {
                     title: this.getUpdateButtonTitle(editProduct),
                     disabled: this.isUpdateButtonDisabled(editProduct),
-                    onClick: () => this.validateProductBeforeSaving(() => redirect(links.myProducts)),
+                    onClick: () => this.validateProductBeforeSaving(() => redirect(links.userpages.products)),
                 }
             }
 
@@ -181,7 +181,7 @@ export class EditProductPage extends Component<Props, State> {
                     title: this.getPublishButtonTitle(editProduct),
                     disabled: this.isPublishButtonDisabled(editProduct),
                     color: 'primary',
-                    onClick: () => this.validateProductBeforeSaving((id) => noHistoryRedirect(links.products, id, 'publish')),
+                    onClick: () => this.validateProductBeforeSaving((id) => noHistoryRedirect(links.marketplace.products, id, 'publish')),
                     className: 'd-none d-sm-inline-block',
                 }
             }
@@ -292,7 +292,7 @@ export class EditProductPage extends Component<Props, State> {
 
         const { onConfirmNoCoverImage, onSave } = this.state
 
-        return editProduct && (
+        return !!editProduct && (
             <Layout>
                 <ProductPageEditorComponent
                     isPriceEditable={!this.isEdit() || isPaidProduct(editProduct)}
@@ -360,8 +360,8 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getStreams: () => dispatch(getStreams()),
     redirect: (...params) => dispatch(push(formatPath(...params))),
     noHistoryRedirect: (...params) => dispatch(replace(formatPath(...params))),
-    onPublish: () => dispatch(createProductAndRedirect((id) => formatPath(links.products, id, 'publish'))),
-    onSaveAndExit: () => dispatch(createProductAndRedirect((id) => formatPath(links.products, id))),
+    onPublish: () => dispatch(createProductAndRedirect((id) => formatPath(links.marketplace.products, id, 'publish'))),
+    onSaveAndExit: () => dispatch(createProductAndRedirect((id) => formatPath(links.marketplace.products, id))),
     onReset: () => dispatch(resetEditProduct()),
 })
 

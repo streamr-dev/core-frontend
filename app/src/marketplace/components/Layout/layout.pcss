@@ -1,5 +1,3 @@
-@import 'variables.pcss';
-
 .inner {
   position: relative;
   z-index: 1;
@@ -11,14 +9,10 @@
   flex-direction: column;
   font-size: 16px;
   min-height: 100vh;
-  padding-top: 4em;
 }
 
 :global(.page-secondary) .inner {
-  align-items: center;
   background-color: #EFEFEF;
-  display: flex;
-  flex-direction: row;
 }
 
 :global(.container) {
@@ -26,8 +20,14 @@
   padding-right: 1.5rem;
 }
 
+@media (--sm-down) {
+  .desktopNav {
+    display: none;
+  }
+}
+
 @media (--md-up) {
-  .framed .inner {
-    padding-top: 5em;
+  .mobileNav {
+    display: none;
   }
 }

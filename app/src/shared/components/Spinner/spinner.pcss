@@ -7,9 +7,10 @@
 
   &,
   &::after {
-    border-radius: 50%;
-    width: 10em;
-    height: 10em;
+    border-radius: 100%;
+    min-width: 16px;
+    min-height: 16px;
+    line-height: 1;
   }
 }
 
@@ -19,15 +20,21 @@
 
 .large {
   font-size: 4px;
+
+  &,
+  &::after {
+    min-width: 40px;
+    min-height: 40px;
+  }
 }
 
 .white {
-  border: 1.1em solid rgba(255, 255, 255, 1);
+  border: 2px solid rgba(255, 255, 255, 1);
   border-left-color: rgba(173, 173, 173, 0.5);
 }
 
 .green {
-  border: 1.1em solid rgba(41, 194, 54, 1);
+  border: 2px solid rgba(41, 194, 54, 1);
   border-left-color: rgba(173, 173, 173, 0.5);
 }
 

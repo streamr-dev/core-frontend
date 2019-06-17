@@ -5,12 +5,13 @@ import { connect } from 'react-redux'
 import { Translate, I18n } from 'react-redux-i18n'
 import { Button } from 'reactstrap'
 
+import profileStyles from '../profilePage.pcss'
+import styles from './deleteAccount.pcss'
+
 import DeleteAccountDialog from './DeleteAccountDialog'
 import { deleteUserAccount } from '$shared/modules/user/actions'
 import { selectDeletingUserAccount } from '$shared/modules/user/selectors'
 import type { StoreState } from '$shared/flowtype/store-state'
-
-import styles from './deleteAccount.pcss'
 
 type State = {
     modalOpen: boolean,
@@ -20,7 +21,7 @@ type StateProps = {
     deletingUserAccount: boolean,
 }
 type DispatchProps = {
-    deleteAccount: () => Promise<null>,
+    deleteAccount: () => Promise<void>,
 }
 
 type Props = StateProps & DispatchProps
@@ -52,14 +53,7 @@ class DeleteAccount extends React.Component<Props, State> {
         }
     }
 
-    onSave = () => (
-        this.props.deleteAccount()
-            .then(() => {
-                this.onClose()
-            }, (error) => {
-                alert(error.message) // eslint-disable-line no-alert
-            })
-    )
+    onSave = () => this.props.deleteAccount()
 
     render() {
         const { modalOpen } = this.state
@@ -67,12 +61,13 @@ class DeleteAccount extends React.Component<Props, State> {
 
         return (
             <div>
-                <Translate value="userpages.profilePage.deleteAccount.description" tag="div" />
+                <Translate value="userpages.profilePage.deleteAccount.description" tag="p" className={profileStyles.longText} />
                 <div className={styles.button}>
                     <Button
                         outline
                         type="button"
-                        color="secondary"
+                        color="userpages"
+                        className={styles.button}
                         onClick={this.openModal}
                         disabled={modalOpen}
                         aria-label={I18n.t('userpages.profilePage.deleteAccount.button')}

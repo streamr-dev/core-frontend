@@ -13,32 +13,47 @@ import styles from './tile.pcss'
 
 type Props = {
     children: Node,
+    image?: ?Node,
     link: string,
     imageUrl?: string,
     isHovered?: boolean,
     dropdownActions?: Array<typeof DropdownActions.Item> | Node,
+    onMenuToggle?: (boolean) => void,
 }
 
 const Tile = ({
     link,
     imageUrl,
+    image,
     children,
     isHovered,
     dropdownActions,
+    onMenuToggle,
 }: Props) => (
     <Link className={styles.tile} to={link}>
         {isHovered && dropdownActions &&
             <DropdownActions
                 className={styles.menu}
                 title={<Meatball alt="Select" white />}
+                direction="down"
                 noCaret
+                onMenuToggle={onMenuToggle}
+                menuProps={{
+                    modifiers: {
+                        offset: {
+                            // Make menu aligned to the right.
+                            // See https://popper.js.org/popper-documentation.html#modifiers..offset
+                            offset: '-100%p + 100%',
+                        },
+                    },
+                }}
             >
                 {dropdownActions}
             </DropdownActions>
         }
-        <div className={styles.image}>
+        {image || (
             <FallbackImage src={imageUrl || ''} alt="Tile" className={styles.image} />
-        </div>
+        )}
         <div className={styles.content}>
             {children}
         </div>

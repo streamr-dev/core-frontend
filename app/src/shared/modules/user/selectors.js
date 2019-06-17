@@ -18,14 +18,9 @@ export const selectUserData: ((state: StoreState) => ?User) = createSelector(
     (subState: UserState): ?User => subState.user,
 )
 
-export const selectFetchingExternalLogin: (StoreState) => boolean = createSelector(
+export const selectUserDataError: (StoreState) => ?ErrorInUi = createSelector(
     selectUserState,
-    (subState: UserState): boolean => subState.fetchingExternalLogin,
-)
-
-export const selectLogoutError: (StoreState) => ?ErrorInUi = createSelector(
-    selectUserState,
-    (subState: UserState): ?ErrorInUi => subState.logoutError,
+    (subState: UserState): ?ErrorInUi => subState.userDataError,
 )
 
 export const selectDeletingUserAccount: (StoreState) => boolean = createSelector(
@@ -36,4 +31,15 @@ export const selectDeletingUserAccount: (StoreState) => boolean = createSelector
 export const selectDeleteUserAccountError: (StoreState) => ?ErrorInUi = createSelector(
     selectUserState,
     (subState: UserState): ?ErrorInUi => subState.deleteUserAccountError,
+)
+
+export const isAuthenticating: (StoreState) => boolean = createSelector(
+    selectFetchingUserData,
+    selectUserData,
+    selectUserDataError,
+    (isFetchingUserData, userData, userDataError) => (
+        // Should not redirect until fetching of user data (if started) fails or succeeds.
+        // Note that logging out dumps user data and does NOT schedule any fetching.
+        !userData && !userDataError && !!isFetchingUserData
+    ),
 )

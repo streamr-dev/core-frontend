@@ -6,7 +6,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const WebpackNotifierPlugin = require('webpack-notifier')
 const FlowBabelWebpackPlugin = require('flow-babel-webpack-plugin')
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const ImageminPlugin = require('imagemin-webpack-plugin').default
 const StyleLintPlugin = require('stylelint-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const { UnusedFilesWebpackPlugin } = require('unused-files-webpack-plugin')
@@ -14,10 +14,12 @@ const cssProcessor = require('cssnano')
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const GitRevisionPlugin = require('git-revision-webpack-plugin')
+const SentryPlugin = require('@sentry/webpack-plugin')
+
 const dotenv = require('./scripts/dotenv')
 
 const loadedDotenv = !process.env.NO_DOTENV ? dotenv() : []
-const analyze = !!process.env.ANALYZE
+const analyze = !!process.env.BUNDLE_ANALYSIS
 
 const isProduction = require('./scripts/isProduction')
 
@@ -29,30 +31,36 @@ const gitRevisionPlugin = new GitRevisionPlugin({
 
 // We have to make sure that publicPath ends with a slash. If it
 // doesn't then chunks are not gonna load correctly. #codesplitting
-const publicPath = `${process.env.PLATFORM_BASE_PATH || ''}/`.replace(/\/+$/, '/')
+const publicPath = `${process.env.PLATFORM_PUBLIC_PATH || ''}/`
 
 module.exports = {
     mode: isProduction() ? 'production' : 'development',
-    // babel-polyfill is required to get async-await to work
     entry: [
-        'babel-polyfill',
         // forcibly print diagnostics upfront
         path.resolve(root, 'src', 'shared', 'utils', 'diagnostics.js'),
         path.resolve(root, 'src', 'index.jsx'),
     ],
     output: {
         path: dist,
-        filename: 'bundle_[hash:6].js',
-        chunkFilename: '[name].bundle_[hash:6].js',
-        sourceMapFilename: '[file].map',
+        filename: 'bundle_[hash:8].js',
+        chunkFilename: '[name].bundle_[contenthash:8].js',
+        sourceMapFilename: '[name]_[hash:8].map',
         publicPath,
     },
     module: {
+        strictExportPresence: true,
         rules: [
             {
                 test: /\.mdx?$/,
                 use: [
-                    'babel-loader',
+                    {
+                        loader: 'babel-loader',
+                        options: {
+                            rootMode: 'upward',
+                            cacheDirectory: !isProduction(),
+                            compact: isProduction(),
+                        },
+                    },
                     '@mdx-js/loader',
                 ],
             },
@@ -70,9 +78,11 @@ module.exports = {
             {
                 test: /.jsx?$/,
                 loader: 'babel-loader',
-                include: [path.resolve(root, 'src'), path.resolve(root, 'scripts'), /node_modules\/stringify-object/, /node_modules\/query-string/],
+                include: [path.resolve(root, 'src'), path.resolve(root, 'scripts')],
                 options: {
+                    rootMode: 'upward',
                     cacheDirectory: !isProduction(),
+                    compact: isProduction(),
                 },
             },
             // Images are put to <BASE_URL>/images
@@ -80,7 +90,7 @@ module.exports = {
                 test: /\.(png|jpg|jpeg|svg)$/,
                 loader: 'file-loader',
                 options: {
-                    name: 'images/[name].[ext]',
+                    name: 'images/[name]_[hash:8].[ext]',
                     publicPath,
                 },
             },
@@ -89,7 +99,7 @@ module.exports = {
                 test: /\.(woff|woff2|eot|ttf)$/,
                 loader: 'file-loader',
                 options: {
-                    name: 'fonts/[name].[ext]',
+                    name: 'fonts/[name]_[hash:8].[ext]',
                     publicPath,
                 },
             },
@@ -104,7 +114,7 @@ module.exports = {
                             modules: true,
                             importLoaders: 1,
                             localIdentRegExp: /app\/src\/([^/]+)/i,
-                            localIdentName: isProduction() ? '[local]_[hash:base64:6]' : '[1]_[name]_[local]',
+                            localIdentName: isProduction() ? '[local]_[hash:base64:8]' : '[1]_[name]_[local]',
                         },
                     },
                     'postcss-loader',
@@ -135,7 +145,6 @@ module.exports = {
     },
     plugins: [
         // Common plugins between prod and dev
-        new CleanWebpackPlugin([dist]),
         new HtmlWebpackPlugin({
             template: 'src/index.html',
             templateParameters: {
@@ -145,14 +154,21 @@ module.exports = {
         new MiniCssExtractPlugin({
             // Options similar to the same options in webpackOptions.output
             // both options are optional
-            filename: isProduction() ? '[name].css' : '[name].[hash].css',
-            chunkFilename: isProduction() ? '[id].css' : '[id].[hash].css',
+            filename: !isProduction() ? '[name].css' : '[name].[contenthash:8].css',
+            chunkFilename: !isProduction() ? '[id].css' : '[id].[contenthash:8].css',
         }),
         new StyleLintPlugin({
             files: [
                 'src/**/*.css',
                 'src/**/*.(p|s)css',
             ],
+        }),
+        new webpack.EnvironmentPlugin({
+            GIT_VERSION: gitRevisionPlugin.version(),
+            GIT_BRANCH: gitRevisionPlugin.branch(),
+            SENTRY_ENVIRONMENT: process.env.SENTRY_ENVIRONMENT || '',
+            SENTRY_DSN: process.env.SENTRY_DSN || '',
+            VERSION: process.env.VERSION || '',
         }),
         new webpack.EnvironmentPlugin(loadedDotenv),
         ...(analyze ? [
@@ -162,19 +178,11 @@ module.exports = {
             }),
         ] : []),
     ].concat(isProduction() ? [
+        new CleanWebpackPlugin([dist]),
         // Production plugins
         new webpack.optimize.OccurrenceOrderPlugin(),
         new webpack.EnvironmentPlugin({
             NODE_ENV: 'production',
-        }),
-        new UglifyJsPlugin({
-            uglifyOptions: {
-                parallel: true,
-                compressor: {
-                    warnings: false,
-                },
-            },
-            sourceMap: true,
         }),
         new OptimizeCssAssetsPlugin({
             cssProcessor,
@@ -185,6 +193,12 @@ module.exports = {
             },
             canPrint: true,
         }),
+        new ImageminPlugin({
+            disable: !isProduction(), // Disable during development
+            pngquant: {
+                quality: '50-75',
+            },
+        }),
     ] : [
         // Dev plugins
         new UnusedFilesWebpackPlugin({
@@ -192,9 +206,9 @@ module.exports = {
                 'src/marketplace/**/*.*',
                 'src/shared/**/*.*',
                 'src/routes/**/*.*',
-                process.env.USERPAGES === 'on' && 'src/userpages/**/*.*',
-                process.env.USERPAGES === 'on' && 'src/editor/**/*.*',
-                process.env.DOCS === 'on' && 'src/docs/**/*.*',
+                'src/userpages/**/*.*',
+                'src/editor/**/*.*',
+                'src/docs/**/*.*',
             ].filter(Boolean),
             globOptions: {
                 ignore: [
@@ -204,22 +218,47 @@ module.exports = {
                     '**/tests/**/*.*',
                     '**/test/*.*',
                     '**/test/**/*.*',
+                    '**/*.test.js',
+                    '**/*.test.jsx',
                     // skip flowtype
                     '**/flowtype/**/*.*',
                     '**/flowtype/*.*',
                     '**/types.js',
                     // skip conditional stubs
                     '**/stub.jsx',
+                    // skip stories
+                    '**/*.stories.js',
+                    '**/*.stories.jsx',
+                    // skip MD documentation
+                    'src/docs/docsEditingGuide.md',
+                    // skip sketch files
+                    '**/*.sketch',
                 ],
             },
         }),
         new FlowBabelWebpackPlugin(),
         new WebpackNotifierPlugin(),
-        new webpack.EnvironmentPlugin({
-            GIT_VERSION: gitRevisionPlugin.version(),
-            GIT_BRANCH: gitRevisionPlugin.branch(),
+    ]).concat(process.env.SENTRY_DSN ? [
+        new SentryPlugin({
+            include: dist,
+            validate: true,
+            ignore: [
+                '.cache',
+                '.DS_STORE',
+                '.env',
+                '.storybook',
+                'bin',
+                'coverage',
+                'node_modules',
+                'scripts',
+                'stories',
+                'test',
+                'travis_scripts',
+                'webpack.config.js',
+            ],
+            release: process.env.VERSION,
         }),
-    ]),
+    ] : []),
     devtool: isProduction() ? 'source-map' : 'eval-source-map',
     devServer: {
         historyApiFallback: {
@@ -231,6 +270,13 @@ module.exports = {
         port: process.env.PORT || 3333,
         publicPath,
     },
+    // automatically creates a vendor chunk & also
+    // seems to prevent out of memory errors during dev ??
+    optimization: {
+        splitChunks: {
+            chunks: 'all',
+        },
+    },
     resolve: {
         extensions: ['.js', '.jsx', '.json'],
         symlinks: false,
@@ -238,9 +284,12 @@ module.exports = {
             // Make sure you set up aliases in flow and jest configs.
             $app: __dirname,
             $auth: path.resolve(__dirname, 'src/auth/'),
+            $docs: path.resolve(__dirname, 'src/docs/'),
             $mp: path.resolve(__dirname, 'src/marketplace/'),
+            $newdocs: path.resolve(__dirname, 'src/newdocs/'),
             $userpages: path.resolve(__dirname, 'src/userpages/'),
             $shared: path.resolve(__dirname, 'src/shared/'),
+            $editor: path.resolve(__dirname, 'src/editor/'),
             $testUtils: path.resolve(__dirname, 'test/test-utils/'),
             $routes: path.resolve(__dirname, 'src/routes'),
             $utils: path.resolve(__dirname, 'src/utils/'),

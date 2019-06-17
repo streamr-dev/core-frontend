@@ -6,32 +6,28 @@ import AvatarEditor from 'react-avatar-editor'
 
 import Dialog from '$shared/components/Dialog'
 import Slider from '$shared/components/Slider'
+import { type Ref } from '$shared/flowtype/common-types'
 
 import styles from './cropAvatarDialog.pcss'
 
 type Props = {
     originalImage: string,
     onClose: () => void,
-    onSave: (string) => void,
+    cropAndSave: (File) => Promise<void>,
 }
 
 type State = {
     sliderValue: number,
+    saving: boolean,
 }
-
-type Editor = {
-    getImage: () => HTMLCanvasElement,
-    getImageScaledToCanvas: () => HTMLCanvasElement,
-}
-
-type Ref = { current: null | Editor }
 
 class CropAvatarDialog extends React.Component<Props, State> {
     state = {
         sliderValue: 1,
+        saving: false,
     }
 
-    editor: Ref = React.createRef()
+    editor: Ref<AvatarEditor> = React.createRef()
 
     onSliderChange = (value: number) => {
         this.setState({
@@ -40,14 +36,39 @@ class CropAvatarDialog extends React.Component<Props, State> {
     }
 
     onSave = () => {
-        if (this.editor.current) {
-            this.props.onSave(this.editor.current.getImageScaledToCanvas().toDataURL())
-        }
+        const { onClose } = this.props
+
+        this.setState({
+            saving: true,
+        }, () => {
+            if (this.editor.current) {
+                const canvas = this.editor.current.getImageScaledToCanvas()
+                const dataURL = canvas.toDataURL()
+
+                fetch(dataURL)
+                    .then((res) => res.blob())
+                    .then((blob) => {
+                        const file = new File([blob], 'avatar.png')
+
+                        this.props.cropAndSave(file)
+                            .then(() => {
+                                this.setState({
+                                    saving: false,
+                                })
+                                onClose()
+                            }, () => {
+                                this.setState({
+                                    saving: false,
+                                })
+                            })
+                    })
+            }
+        })
     }
 
     render() {
         const { originalImage, onClose } = this.props
-        const { sliderValue } = this.state
+        const { sliderValue, saving } = this.state
         return (
             <Dialog
                 title={I18n.t('modal.avatar.cropYourImage')}
@@ -56,12 +77,15 @@ class CropAvatarDialog extends React.Component<Props, State> {
                     cancel: {
                         title: I18n.t('modal.common.cancel'),
                         outline: true,
+                        color: 'link',
                         onClick: onClose,
                     },
                     save: {
-                        title: I18n.t('modal.common.apply'),
+                        title: I18n.t('modal.avatar.saveAndApplyAvatar'),
                         color: 'primary',
                         onClick: this.onSave,
+                        disabled: saving,
+                        spinner: saving,
                     },
                 }}
             >

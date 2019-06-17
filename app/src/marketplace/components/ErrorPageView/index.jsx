@@ -30,16 +30,16 @@ const ErrorPageView = () => (
                 link={(
                     <React.Fragment>
                         <Link
-                            to={links.main}
+                            to={links.marketplace.main}
                             className="btn btn-special"
                         >
                             <Translate value="errorPageView.top" />
                         </Link>
                         <Link
-                            to={links.myProducts}
+                            to={links.userpages.products}
                             className="btn btn-special d-none d-md-inline-block"
                         >
-                            <Translate value="general.myProducts" />
+                            <Translate value="general.products" />
                         </Link>
                     </React.Fragment>
                 )}

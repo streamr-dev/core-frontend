@@ -2,12 +2,14 @@
 
 import { createAction } from 'redux-actions'
 
+import Notification from '$shared/utils/Notification'
+import { NotificationIcon } from '$shared/utils/constants'
+
 import type { ErrorInUi, ReduxActionCreator } from '$shared/flowtype/common-types'
 import type { User, PasswordUpdate } from '$shared/flowtype/user-types'
 import type {
     UserErrorActionCreator,
     UserDataActionCreator,
-    LogoutErrorActionCreator,
 } from './types'
 import { selectUserData } from '$shared/modules/user/selectors'
 
@@ -16,8 +18,6 @@ import {
     USER_DATA_REQUEST,
     USER_DATA_SUCCESS,
     USER_DATA_FAILURE,
-    EXTERNAL_LOGIN_START,
-    EXTERNAL_LOGIN_END,
     SAVE_CURRENT_USER_REQUEST,
     SAVE_CURRENT_USER_SUCCESS,
     SAVE_CURRENT_USER_FAILURE,
@@ -25,35 +25,24 @@ import {
     UPDATE_PASSWORD_REQUEST,
     UPDATE_PASSWORD_SUCCESS,
     UPDATE_PASSWORD_FAILURE,
-    LOGOUT_REQUEST,
-    LOGOUT_SUCCESS,
-    LOGOUT_FAILURE,
+    UPDATE_AVATAR_REQUEST,
+    UPDATE_AVATAR_SUCCESS,
+    UPDATE_AVATAR_FAILURE,
+    RESET_USER_DATA,
     DELETE_USER_ACCOUNT_REQUEST,
     DELETE_USER_ACCOUNT_SUCCESS,
     DELETE_USER_ACCOUNT_FAILURE,
 } from './constants'
-import routes from '$routes'
+import { clearStorage } from '$shared/utils/storage'
 
 // Logout
-export const logoutRequest: ReduxActionCreator = createAction(LOGOUT_REQUEST)
-export const logoutSuccess: ReduxActionCreator = createAction(LOGOUT_SUCCESS)
-export const logoutFailure: LogoutErrorActionCreator = createAction(LOGOUT_FAILURE, (error: ErrorInUi) => ({
-    error,
-}))
+export const resetUserData: ReduxActionCreator = createAction(RESET_USER_DATA)
 
 export const logout = () => (dispatch: Function) => {
-    dispatch(logoutRequest())
-    return services
-        .logout()
-        .then(() => {
-            dispatch(logoutSuccess())
-            window.location.replace(routes.externalLogout())
-            // NOTE: Replace the above line with the following when the backend
-            //       auth stuff is fixed. — Mariusz
-            // dispatch(replace(routes.root()))
-        }, (error) => {
-            dispatch(logoutFailure(error))
-        })
+    clearStorage()
+    dispatch(resetUserData())
+
+    window.location.href = process.env.PLATFORM_ORIGIN_URL
 }
 
 // Fetching user data
@@ -73,6 +62,18 @@ const saveCurrentUserSuccess: UserDataActionCreator = createAction(SAVE_CURRENT_
 const saveCurrentUserFailure: UserErrorActionCreator = createAction(SAVE_CURRENT_USER_FAILURE, (error: ErrorInUi) => ({
     error,
 }))
+
+// Update user avatar
+const updateAvatarRequest = () => ({
+    type: UPDATE_AVATAR_REQUEST,
+})
+const updateAvatarSuccess = () => ({
+    type: UPDATE_AVATAR_SUCCESS,
+})
+const updateAvatarFailure = (error: ErrorInUi) => ({
+    type: UPDATE_AVATAR_FAILURE,
+    error,
+})
 
 // update password
 const updatePasswordRequest = () => ({
@@ -108,9 +109,6 @@ export const getUserData = () => (dispatch: Function) => {
         })
 }
 
-export const startExternalLogin: ReduxActionCreator = createAction(EXTERNAL_LOGIN_START)
-export const endExternalLogin: ReduxActionCreator = createAction(EXTERNAL_LOGIN_END)
-
 const updateCurrentUser: UserDataActionCreator = createAction(UPDATE_CURRENT_USER, (user: User) => ({
     user,
 }))
@@ -123,22 +121,29 @@ export const updateCurrentUserName = (name: string) => (dispatch: Function, getS
     }))
 }
 
-export const updateCurrentUserTimezone = (timezone: string) => (dispatch: Function, getState: Function) => {
+export const updateCurrentUserImage = (image: ?File) => (dispatch: Function, getState: Function) => {
+    dispatch(updateAvatarRequest())
     const user = selectUserData(getState())
-    dispatch(updateCurrentUser({
-        ...user,
-        timezone,
-    }))
-}
 
-export const updateCurrentUserImage = (image: ?string) => (dispatch: Function, getState: Function) => {
-    const user = selectUserData(getState())
-    return services.uploadProfileAvatar()
-        .then(() => {
+    if (!user || !image) {
+        throw new Error('Invalid user data or uploaded image')
+    }
+
+    return services.uploadProfileAvatar(image)
+        .then((avatar) => {
+            dispatch(updateAvatarSuccess())
             dispatch(updateCurrentUser({
                 ...user,
-                imageUrl: image,
+                ...avatar,
             }))
+        })
+        .catch((e) => {
+            dispatch(updateAvatarFailure(e))
+            Notification.push({
+                title: e.message,
+                icon: NotificationIcon.ERROR,
+            })
+            throw e
         })
 }
 
@@ -151,20 +156,20 @@ export const saveCurrentUser = () => async (dispatch: Function, getState: Functi
         throw new Error('Invalid user data')
     }
 
-    return services.postUser(user)
+    return services.putUser(user)
         .then((data) => {
             dispatch(saveCurrentUserSuccess(data))
-            /* dispatch(successNotification({
-                title: 'Success!',
-                message: 'Profile saved',
-            })) */
+            Notification.push({
+                title: 'Your settings have been saved',
+                icon: NotificationIcon.CHECKMARK,
+            })
         })
         .catch((e) => {
             dispatch(saveCurrentUserFailure(e))
-            /* dispatch(errorNotification({
-                title: 'Error',
-                message: e.message,
-            })) */
+            Notification.push({
+                title: e.message,
+                icon: NotificationIcon.ERROR,
+            })
             throw e
         })
 }
@@ -186,16 +191,16 @@ export const updatePassword = (passwordUpdate: PasswordUpdate) => (dispatch: Fun
         })
         .then(() => {
             dispatch(updatePasswordSuccess())
-            /* dispatch(successNotification({
-                title: 'Success!',
-                message: 'Password Changed',
-            })) */
+            Notification.push({
+                title: 'Password changed',
+                icon: NotificationIcon.CHECKMARK,
+            })
         }, (e) => {
             dispatch(updatePasswordFailure(e))
-            /* dispatch(errorNotification({
-                title: 'Password Not Changed',
-                message: e.message,
-            })) */
+            Notification.push({
+                title: 'Password not changed',
+                icon: NotificationIcon.ERROR,
+            })
             throw e
         })
 }
@@ -206,11 +211,19 @@ export const deleteUserAccount = () => (dispatch: Function) => {
     return services.deleteUserAccount()
         .then(() => {
             dispatch(deleteUserAccountSuccess())
+            Notification.push({
+                title: 'Account disabled!',
+                icon: NotificationIcon.CHECKMARK,
+            })
             dispatch(logout())
         }, (error) => {
             dispatch(deleteUserAccountFailure({
                 message: error.message,
             }))
+            Notification.push({
+                title: 'Account not disabled',
+                icon: NotificationIcon.ERROR,
+            })
             throw error
         })
 }

@@ -107,7 +107,7 @@ class ProductTile extends Component<Props, State> {
                     />
                 }
                 <Link
-                    to={formatPath(links.products, id || '')}
+                    to={formatPath(links.marketplace.products, id || '')}
                     className={classnames({
                         [styles.loading]: !this.state.loaded,
                     })}

@@ -8,8 +8,9 @@ import TextField from '../TextField'
 type Props = FormControlProps & {
 }
 
-const TextInput = ({ label, className, ...props }: Props) => (
+const TextInput = ({ label, className, passwordStrengthUpdate, ...props }: Props) => (
     <FormControl
+        passwordStrengthUpdate={passwordStrengthUpdate}
         {...props}
         label={label}
     >

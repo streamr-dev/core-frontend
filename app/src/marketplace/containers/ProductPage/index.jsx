@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import type { Match } from 'react-router-dom'
 import { push, replace } from 'react-router-redux'
 import { I18n } from 'react-redux-i18n'
+import { Helmet } from 'react-helmet'
 
 import ProductPageComponent from '$mp/components/ProductPage'
 import Layout from '$mp/components/Layout'
@@ -20,7 +21,6 @@ import PublishOrUnpublishDialog from '$mp/containers/ProductPage/PublishOrUnpubl
 import { getProductById, getProductSubscription, purchaseProduct, getUserProductPermissions } from '../../modules/product/actions'
 import { getRelatedProducts } from '../../modules/relatedProducts/actions'
 import { isPaidProduct } from '../../utils/product'
-import { doExternalLogin } from '../../utils/auth'
 import BackButton from '$shared/components/BackButton'
 
 import {
@@ -36,6 +36,7 @@ import {
 } from '$mp/modules/product/selectors'
 import { selectUserData } from '$shared/modules/user/selectors'
 import links from '$mp/../links'
+import routes from '$routes'
 import { selectRelatedProductList } from '$mp/modules/relatedProducts/selectors'
 
 export type OwnProps = {
@@ -240,7 +241,7 @@ export class ProductPage extends Component<Props, State> {
         if (product && editPermission) {
             toolbarActions.edit = {
                 title: I18n.t('editProductPage.edit'),
-                linkTo: formatPath(links.products, product.id || '', 'edit'),
+                linkTo: formatPath(links.marketplace.products, product.id || '', 'edit'),
             }
         }
 
@@ -249,13 +250,16 @@ export class ProductPage extends Component<Props, State> {
                 title: this.getPublishButtonTitle(product),
                 disabled: this.getPublishButtonDisabled(product),
                 color: 'primary',
-                onClick: () => noHistoryRedirect(links.products, product.id || '', 'publish'),
+                onClick: () => noHistoryRedirect(links.marketplace.products, product.id || '', 'publish'),
                 className: 'd-none d-sm-inline-block',
             }
         }
 
         return !!product && (
             <Layout>
+                <Helmet>
+                    <title>{`${product.name} | ${I18n.t('general.title.suffix')}`}</title>
+                </Helmet>
                 <ProductPageComponent
                     product={product}
                     streams={streams}
@@ -272,7 +276,7 @@ export class ProductPage extends Component<Props, State> {
                     truncateState={this.state.truncated}
                     truncationRequired={this.state.truncationRequired}
                     productDetailsRef={(c) => { this.productDetails = c }}
-                    showStreamLiveDataDialog={(streamId) => noHistoryRedirect(links.products, product.id, 'streamPreview', streamId)}
+                    showStreamLiveDataDialog={(streamId) => noHistoryRedirect(links.marketplace.products, product.id, 'streamPreview', streamId)}
                 />
                 {this.overlay()}
             </Layout>
@@ -298,12 +302,16 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getProductById: (id: ProductId) => dispatch(getProductById(id)),
     getProductSubscription: (id: ProductId) => dispatch(getProductSubscription(id)),
     getUserProductPermissions: (id: ProductId) => dispatch(getUserProductPermissions(id)),
-    deniedRedirect: (id: ProductId) => dispatch(push(formatPath(links.products, id))),
+    deniedRedirect: (id: ProductId) => dispatch(push(formatPath(links.marketplace.products, id))),
     onPurchase: (id: ProductId, isLoggedIn: boolean) => {
         if (isLoggedIn) {
             dispatch(purchaseProduct())
         } else {
-            doExternalLogin(formatPath(links.products, id))
+            dispatch(replace(routes.login({
+                redirect: routes.product({
+                    id,
+                }),
+            })))
         }
     },
     getRelatedProducts: (id: ProductId) => dispatch(getRelatedProducts(id)),

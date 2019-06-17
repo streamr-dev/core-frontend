@@ -20,6 +20,8 @@ export const GET_TRANSACTIONS_REQUEST = 'GET_TRANSACTIONS_REQUEST'
 export const GET_TRANSACTIONS_SUCCESS = 'GET_TRANSACTIONS_SUCCESS'
 export const GET_TRANSACTIONS_FAILURE = 'GET_TRANSACTIONS_FAILURE'
 
+export const CLEAR_TRANSACTION_LIST = 'CLEAR_TRANSACTION_LIST'
+
 const getTransactionEventsRequest = () => ({
     type: GET_TRANSACTION_EVENTS_REQUEST,
 })
@@ -50,8 +52,24 @@ const getTransactionsFailure = (error: ErrorInUi) => ({
 
 export const fetchProducts = (ids: ProductIdList) => (dispatch: Function) => {
     (ids || []).forEach((id) => {
-        getProductFromContract(id).then(handleEntities(contractProductSchema, dispatch))
+        try {
+            getProductFromContract(id, true)
+                .then(handleEntities(contractProductSchema, dispatch))
+                .catch((e) => {
+                    console.warn(e)
+                })
+        } catch (e) {
+            console.warn(e)
+        }
     })
+}
+
+export const clearTransactionList = () => ({
+    type: CLEAR_TRANSACTION_LIST,
+})
+
+export const noTransactionResults = () => (dispatch: Function) => {
+    dispatch(getTransactionsSuccess([]))
 }
 
 export const showEvents = () => (dispatch: Function, getState: () => StoreState) => {
@@ -68,8 +86,7 @@ export const showEvents = () => (dispatch: Function, getState: () => StoreState)
     return services.getTransactionsFromEvents(eventsToFetch)
         .then((data: TransactionEntityList) => {
             const productsToFetch: ProductIdList = data
-                .filter((transaction: TransactionEntity) => !(
-                    transaction.productId &&
+                .filter((transaction: TransactionEntity) => transaction.productId && transaction.productId !== '0x0' && !(
                     entities.contractProducts &&
                     entities.contractProducts[transaction.productId]
                 ))

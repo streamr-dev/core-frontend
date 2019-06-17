@@ -4,6 +4,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Button } from 'reactstrap'
 import { I18n, Translate } from 'react-redux-i18n'
+import { Link } from 'react-router-dom'
 
 import { updatePassword } from '$shared/modules/user/actions'
 import Modal from '$shared/components/Modal'
@@ -27,6 +28,7 @@ type Props = StateProps & DispatchProps & {
 
 type State = PasswordUpdate & {
     updating: boolean,
+    strongEnoughPassword: boolean,
 }
 
 class ChangePasswordDialog extends Component<Props, State> {
@@ -35,6 +37,13 @@ class ChangePasswordDialog extends Component<Props, State> {
         newPassword: '',
         confirmNewPassword: '',
         updating: false,
+        strongEnoughPassword: false,
+    }
+
+    handlePasswordStrengthChange = (passwordStrength: number) => {
+        this.setState({
+            strongEnoughPassword: passwordStrength > 1,
+        })
     }
 
     onSubmit = () => {
@@ -65,7 +74,13 @@ class ChangePasswordDialog extends Component<Props, State> {
     }
 
     render() {
-        const { currentPassword, newPassword, confirmNewPassword, updating } = this.state
+        const {
+            currentPassword,
+            newPassword,
+            confirmNewPassword,
+            updating,
+            strongEnoughPassword,
+        } = this.state
         const newPasswordGiven = !!newPassword && !!confirmNewPassword
         const passWordsMatch = newPassword === confirmNewPassword
         const allPasswordsGiven = !!currentPassword && !!newPassword && !!confirmNewPassword
@@ -73,6 +88,7 @@ class ChangePasswordDialog extends Component<Props, State> {
         return (
             <Modal>
                 <Dialog
+                    className={styles.dialogContainerOverride}
                     contentClassName={styles.content}
                     title={I18n.t('modal.changePassword.defaultTitle')}
                     onClose={this.props.onToggle}
@@ -80,20 +96,21 @@ class ChangePasswordDialog extends Component<Props, State> {
                         cancel: {
                             title: I18n.t('modal.common.cancel'),
                             outline: true,
+                            color: 'link',
                             onClick: this.props.onToggle,
                         },
                         save: {
                             title: I18n.t('modal.common.save'),
                             color: 'primary',
                             onClick: this.onSubmit,
-                            disabled: !allPasswordsGiven || !passWordsMatch || updating,
+                            disabled: !allPasswordsGiven || !passWordsMatch || !strongEnoughPassword || updating,
                             spinner: updating,
                         },
                     }}
                 >
-                    <a href={routes.oldForgotPassword()} className={styles.forgotLink}>
+                    <Link to={routes.forgotPassword()} className={styles.forgotLink}>
                         <Translate value="modal.changePassword.forgotPassword" />
-                    </a>
+                    </Link>
                     <div className={styles.currentPassword}>
                         <TextInput
                             label={I18n.t('modal.changePassword.currentPassword')}
@@ -113,6 +130,7 @@ class ChangePasswordDialog extends Component<Props, State> {
                             onChange={this.onChange('newPassword')}
                             measureStrength
                             required
+                            passwordStrengthUpdate={this.handlePasswordStrengthChange}
                         />
                     </div>
                     <div className={styles.confirmNewPassword}>
@@ -186,7 +204,8 @@ class ChangePasswordButton extends React.Component<TriggerProps, TriggerState> {
                 <Button
                     outline
                     type="button"
-                    color="secondary"
+                    color="userpages"
+                    className={styles.changePassword}
                     onClick={this.onToggle}
                     aria-label="Change Password"
                 >

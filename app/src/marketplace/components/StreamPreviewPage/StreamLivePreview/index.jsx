@@ -14,7 +14,6 @@ import { sm } from '$app/scripts/breakpoints'
 
 import { formatDateTime } from '../../../utils/time'
 import type { StreamId } from '$shared/flowtype/stream-types'
-import type { User } from '$shared/flowtype/user-types'
 import type { ResourceKeyId } from '$shared/flowtype/resource-key-types'
 
 import styles from './streamLivePreview.pcss'
@@ -22,19 +21,21 @@ import styles from './streamLivePreview.pcss'
 export type DataPoint = {
     data: any,
     metadata: {
-        offset: number,
-        timestamp: number,
-        streamId: StreamId,
+        messageId: {
+            streamId: StreamId,
+            timestamp: number,
+        },
     }
 }
 
 type Props = {
     streamId: ?StreamId,
-    currentUser: ?User,
     authApiKeyId: ?ResourceKeyId,
     selectedDataPoint: ?DataPoint,
     onSelectDataPoint: (DataPoint, ?boolean) => void,
     run?: boolean,
+    userpagesPreview?: boolean,
+    hasData?: () => void,
 }
 
 type State = {
@@ -70,6 +71,10 @@ export class StreamLivePreview extends Component<Props, State> {
     }
 
     onData = (dataPoint: DataPoint) => {
+        if (this.props.hasData && this.state.visibleData.length === 0) {
+            this.props.hasData()
+        }
+
         if (this.props.run) {
             this.data.unshift(dataPoint)
             this.data.length = Math.min(this.data.length, LOCAL_DATA_LIST_LENGTH)
@@ -97,7 +102,10 @@ export class StreamLivePreview extends Component<Props, State> {
         if (!cachedClient || (authApiKeyId && cachedClient.options.apiKey !== authApiKeyId)) {
             cachedClient = new StreamrClient({
                 url: process.env.STREAMR_WS_URL,
-                apiKey: authApiKeyId || undefined,
+                restUrl: process.env.STREAMR_API_URL,
+                auth: {
+                    apiKey: authApiKeyId || undefined,
+                },
                 autoConnect: true,
                 autoDisconnect: false,
             })
@@ -115,7 +123,9 @@ export class StreamLivePreview extends Component<Props, State> {
         try {
             this.subscription = this.client.subscribe({
                 stream: streamId,
-                resend_last: LOCAL_DATA_LIST_LENGTH,
+                resend: {
+                    last: LOCAL_DATA_LIST_LENGTH,
+                },
             }, (data, metadata) => this.onData({
                 data,
                 metadata,
@@ -170,7 +180,8 @@ export class StreamLivePreview extends Component<Props, State> {
     }
 
     render() {
-        const tz = (this.props.currentUser && this.props.currentUser.timezone) || moment.tz.guess()
+        const { userpagesPreview } = this.props
+        const tz = moment.tz.guess()
         const { visibleData, mobileTableColumnIndex } = this.state
         return (
             <MediaQuery maxWidth={sm.max}>
@@ -195,7 +206,13 @@ export class StreamLivePreview extends Component<Props, State> {
                                                 height: '100%',
                                             }}
                                         >
-                                            <Table className={styles.dataTable}>
+                                            <Table className={classnames(
+                                                styles.dataTable,
+                                                {
+                                                    [styles.userpagesPreview]: userpagesPreview,
+                                                },
+                                            )}
+                                            >
                                                 <thead>
                                                     <tr>
                                                         <th className={styles.timestampColumn}>
@@ -206,17 +223,24 @@ export class StreamLivePreview extends Component<Props, State> {
                                                 <tbody>
                                                     {data.map((d) => (
                                                         <tr
-                                                            key={d.metadata.offset}
+                                                            key={JSON.stringify(d.metadata.messageId)}
                                                             onClick={() => this.props.onSelectDataPoint(d)}
                                                         >
                                                             <td className={styles.timestampColumn}>
-                                                                {formatDateTime(d.metadata && d.metadata.timestamp, tz)}
+                                                                {formatDateTime(d.metadata
+                                                                    && d.metadata.messageId && d.metadata.messageId.timestamp, tz)}
                                                             </td>
-                                                        </tr>
-                                                    ))}
+                                                        </tr>))}
                                                 </tbody>
                                             </Table>
-                                            <Table className={classnames(styles.dataTable, styles.dataContentTable)}>
+                                            <Table className={classnames(
+                                                styles.dataTable,
+                                                styles.dataContentTable,
+                                                {
+                                                    [styles.userpagesPreview]: userpagesPreview,
+                                                },
+                                            )}
+                                            >
                                                 <thead>
                                                     <tr>
                                                         <th
@@ -231,7 +255,7 @@ export class StreamLivePreview extends Component<Props, State> {
                                                 <tbody>
                                                     {data.map((d) => (
                                                         <tr
-                                                            key={d.metadata.offset}
+                                                            key={JSON.stringify(d.metadata.messageId)}
                                                             onClick={() => this.props.onSelectDataPoint(d)}
                                                         >
                                                             <td className={styles.messageColumn}>
@@ -260,7 +284,13 @@ export class StreamLivePreview extends Component<Props, State> {
                                     </div>
                                 </Fragment>
                             ) : (
-                                <Table className={styles.dataTable}>
+                                <Table className={classnames(
+                                    styles.dataTable,
+                                    {
+                                        [styles.userpagesPreview]: userpagesPreview,
+                                    },
+                                )}
+                                >
                                     <thead>
                                         <tr>
                                             <th className={styles.timestampColumn}>
@@ -277,9 +307,12 @@ export class StreamLivePreview extends Component<Props, State> {
                                     </thead>
                                     <tbody>
                                         {data.map((d) => (
-                                            <tr key={d.metadata.offset} onClick={() => this.props.onSelectDataPoint(d)}>
+                                            <tr
+                                                key={JSON.stringify(d.metadata.messageId)}
+                                                onClick={() => this.props.onSelectDataPoint(d)}
+                                            >
                                                 <td className={styles.timestampColumn}>
-                                                    {formatDateTime(d.metadata && d.metadata.timestamp, tz)}
+                                                    {formatDateTime(d.metadata && d.metadata.messageId && d.metadata.messageId.timestamp, tz)}
                                                 </td>
                                                 <td className={styles.messageColumn}>
                                                     <div className={styles.messagePreview}>

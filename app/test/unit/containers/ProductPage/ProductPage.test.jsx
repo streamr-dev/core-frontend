@@ -11,7 +11,7 @@ import { ProductPage, mapStateToProps, mapDispatchToProps } from '$mp/containers
 import * as productActions from '$mp/modules/product/actions'
 import * as relatedProductsActions from '$mp/modules/relatedProducts/actions'
 import * as urlUtils from '$shared/utils/url'
-import * as authUtils from '$mp/utils/auth'
+import links from '$shared/../links'
 
 import ProductPageComponent from '$mp/components/ProductPage'
 import NotFoundPage from '$mp/components/NotFoundPage'
@@ -111,7 +111,6 @@ describe('ProductPage', () => {
                 privateKeys: null,
                 fetchingIntegrationKeys: false,
                 integrationKeysError: null,
-                fetchingExternalLogin: false,
             },
             web3: {
                 accountId: null,
@@ -149,7 +148,6 @@ describe('ProductPage', () => {
     it('maps actions to props', () => {
         const dispatchStub = sandbox.stub().callsFake((action) => action)
         const formatPathStub = sandbox.stub(urlUtils, 'formatPath')
-        const doExternalLoginStub = sandbox.stub(authUtils, 'doExternalLogin')
         const getProductByIdStub = sandbox.stub(productActions, 'getProductById')
         const getProductSubscriptionStub = sandbox.stub(productActions, 'getProductSubscription')
         const purchaseProductStub = sandbox.stub(productActions, 'purchaseProduct')
@@ -166,7 +164,7 @@ describe('ProductPage', () => {
         actions.onPurchase(product.id, true)
         actions.getRelatedProducts(product.id)
 
-        expect(dispatchStub.callCount).toEqual(6)
+        expect(dispatchStub.callCount).toEqual(7)
 
         expect(getProductByIdStub.calledOnce).toEqual(true)
         expect(getProductByIdStub.calledWith(product.id)).toEqual(true)
@@ -177,11 +175,10 @@ describe('ProductPage', () => {
         expect(getProductSubscriptionStub.calledOnce).toEqual(true)
         expect(getProductSubscriptionStub.calledWith(product.id)).toEqual(true)
 
-        expect(formatPathStub.callCount).toEqual(2)
-        expect(formatPathStub.calledWith('/products', product.id)).toEqual(true)
+        expect(formatPathStub.callCount).toEqual(1)
+        expect(formatPathStub.calledWith(links.marketplace.products, product.id)).toEqual(true)
 
         expect(purchaseProductStub.calledOnce).toEqual(true)
-        sinon.assert.calledOnce(doExternalLoginStub)
 
         expect(getRelatedProductsStub.callCount).toEqual(1)
         expect(getRelatedProductsStub.calledWith(product.id)).toEqual(true)

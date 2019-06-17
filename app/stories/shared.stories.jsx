@@ -11,7 +11,6 @@ import { Row, Col } from 'reactstrap'
 import Toggle from '$shared/components/Toggle'
 import Table from '$shared/components/Table'
 import FileUpload from '$shared/components/FileUpload'
-import Tabs from '$shared/components/Tabs'
 import Checkbox from '$shared/components/Checkbox'
 import DropdownActions from '$shared/components/DropdownActions'
 import Meatball from '$shared/components/Meatball'
@@ -22,7 +21,6 @@ import Calendar from '$shared/components/Calendar'
 import WithCalendar from '$shared/components/WithCalendar'
 import DatePicker from '$shared/components/DatePicker'
 import dateFormatter from '$utils/dateFormatter'
-import Search from '$shared/components/Search'
 import { arrayMove } from 'react-sortable-hoc'
 import SortableList from '$shared/components/SortableList'
 import FieldList from '$shared/components/FieldList'
@@ -38,6 +36,10 @@ import ModalRoot from '$shared/components/ModalRoot'
 import ErrorDialog from '$mp/components/Modal/ErrorDialog'
 import Notifications from '$shared/components/Notifications'
 import Notification from '$shared/utils/Notification'
+import CodeSnippet from '$shared/components/CodeSnippet'
+import Tooltip from '$shared/components/Tooltip'
+import ContextMenu from '$shared/components/ContextMenu'
+import { NotificationIcon } from '$shared/utils/constants'
 
 import sharedStyles from './shared.pcss'
 
@@ -48,8 +50,29 @@ const story = (name) => storiesOf(`Shared/${name}`, module)
     }))
     .addDecorator(withKnobs)
 
+class ToggleContainer extends React.Component {
+    state = {
+        value: false,
+    }
+
+    render() {
+        return (
+            <Toggle
+                value={this.state.value}
+                onChange={(value) => {
+                    this.setState({
+                        value,
+                    })
+                    action('onChange')(value)
+                }}
+            />
+        )
+    }
+}
 story('Toggle')
-    .addWithJSX('basic', () => <Toggle onChange={action('onChange')} />)
+    .addWithJSX('changeable', () => <ToggleContainer />)
+    .addWithJSX('off', () => <Toggle value={boolean('value', false)} onChange={action('onChange')} />)
+    .addWithJSX('on', () => <Toggle value={boolean('value', true)} onChange={action('onChange')} />)
 
 story('Popover actions')
     .addWithJSX('basic', () => (
@@ -144,15 +167,6 @@ story('FileUpload')
             multiple={false}
             disablePreview
         />
-    ))
-
-story('Tabs')
-    .addWithJSX('basic', () => (
-        <Tabs defaultActiveIndex={1}>
-            <Tabs.Tab title={text('tab1Title', 'Tab 1')}><span>Content of tab 1</span></Tabs.Tab>
-            <Tabs.Tab title={text('tab2Title', 'Tab 2')}><span>Content of tab 2</span></Tabs.Tab>
-            <Tabs.Tab title={text('tab3Title', 'Tab 3 with longer name')}><span>Content of tab 3</span></Tabs.Tab>
-        </Tabs>
     ))
 
 class CheckboxContainer extends React.Component {
@@ -331,14 +345,6 @@ story('Date Picker')
         />
     ))
 
-story('Search')
-    .addWithJSX('basic', () => (
-        <Search
-            placeholder="Placeholder"
-            onChange={action('onChange')}
-        />
-    ))
-
 class SortableListContainer extends React.Component {
     state = {
         items: Array(5).fill(true).map((v, i) => `Item #${i}${i === 0 ? ' (Drag me!)' : ''}`),
@@ -427,6 +433,7 @@ story('Dialog')
 
         return (
             <Dialog
+                showCloseIcon={boolean('showCloseIcon')}
                 waiting={boolean('waiting', false)}
                 title={text('title', 'Dialog Title')}
                 actions={actions}
@@ -458,6 +465,14 @@ story('SvgIcon')
                     </div>
                 </Col>
             ))}
+            <Col xs="4">
+                <div className={sharedStyles.iconWrapper}>
+                    <div className={sharedStyles.iconInner}>
+                        <SvgIcon name="checkmark" size="large" className={sharedStyles.svgIcon} />
+                    </div>
+                    <span>checkmark size=large</span>
+                </div>
+            </Col>
         </Row>
     ))
 
@@ -573,6 +588,20 @@ story('Notifications')
                     >
                         Add notification
                     </button>
+                    {Object.values(NotificationIcon).map((icon) => (
+                        <button
+                            key={icon}
+                            type="button"
+                            onClick={() => {
+                                Notification.push({
+                                    title,
+                                    icon,
+                                })
+                            }}
+                        >
+                            Add {icon} notification
+                        </button>
+                    ))}
                     <Notifications />
                     {boolean('Show dialog', false) && (
                         <Modal>
@@ -587,3 +616,67 @@ story('Notifications')
             </React.Fragment>
         )
     })
+
+story('CodeSnippet')
+    .addWithJSX('basic', () => (
+        <CodeSnippet
+            language={text('Language', 'javascript')}
+            showLineNumbers={boolean('Show line numbers', true)}
+            wrapLines={boolean('wrapLines')}
+        >{String.raw`const StreamrClient = require('streamr-client')
+
+const streamr = new StreamrClient({
+    auth: {
+        apiKey: 'YOUR-API-KEY',
+    },
+})
+
+// Subscribe to a stream
+streamr.subscribe({
+    stream: 'stream-id'
+},
+(message, metadata) => {
+    // Do something with the message here!
+    console.log(message)
+}`}
+        </CodeSnippet>
+    ))
+
+class ContextMenuContainer extends React.Component {
+    state = {
+        isOpen: false,
+    }
+
+    targetRef = React.createRef()
+
+    toggleMenu = () => {
+        this.setState((state) => ({
+            isOpen: !state.isOpen,
+        }))
+    }
+
+    render() {
+        return (
+            <React.Fragment>
+                <button ref={this.targetRef} onClick={this.toggleMenu}>Click me</button>
+                <ContextMenu isOpen={this.state.isOpen} target={this.targetRef} placement="bottom">
+                    <ContextMenu.Item text="Item" onClick={action('1')} />
+                    <ContextMenu.Item text="Another item" onClick={action('2')} />
+                    <ContextMenu.Item text="I'm the last item" onClick={action('3')} />
+                </ContextMenu>
+            </React.Fragment>
+        )
+    }
+}
+
+story('ContextMenu')
+    .addWithJSX('basic', () => (
+        <ContextMenuContainer />
+    ))
+
+story('Tooltip')
+    .addWithJSX('basic', () => (
+        <Tooltip value="This is a tooltip">
+            Hover to show tooltip
+        </Tooltip>
+    ))

@@ -1,5 +1,3 @@
-@import 'variables.pcss';
-
 :global {
   .btn {
     background: rgba(0, 0, 0, 0);
@@ -32,7 +30,7 @@
       box-sizing: border-box;
       box-shadow: none !important;
       color: var(--white);
-      background-color: var(--blue);
+      background-color: var(--streamrBlue);
 
       &:hover {
         background: #001BD0;
@@ -57,7 +55,10 @@
       &:active,
       &:focus,
       &:visited {
-        background: #848484;
+        border-color: #09006D !important;
+        color: #09006D !important;
+        box-shadow: none !important;
+        background-color: transparent !important;
       }
     }
 
@@ -110,6 +111,7 @@
 
     &.btn-link {
       border: 0;
+      letter-spacing: 0;
       padding-left: 0;
       padding-right: 0;
       min-width: 100px;
@@ -117,6 +119,8 @@
       text-decoration: none;
       color: var(--greyDark2);
       font-family: 'IBM Plex Mono', sans-serif;
+      text-transform: capitalize;
+      font-weight: var(--regular);
 
       &:--enter {
         background-color: var(--greyLight3);
@@ -124,8 +128,47 @@
       }
     }
 
+    &.btn-outline-link {
+      background-color: transparent;
+      color: var(--greyDark2);
+      letter-spacing: 0;
+      text-transform: capitalize;
+      font-weight: var(--regular);
+
+      &:--enter {
+        background-color: var(--greyLight3);
+        color: var(--greyDark);
+      }
+    }
+
+    &.btn-outline-link.grey-container {
+      background-color: transparent;
+
+      &:--enter {
+        background-color: transparent;
+      }
+    }
+
     &.btn-sm {
       height: 32px;
+    }
+
+    &.btn-danger {
+      background-color: #FF0F2D;
+
+      &:hover,
+      &:focus {
+        background-color: #EA112C;
+      }
+
+      &:active {
+        background-color: #D50F28 !important;
+      }
+
+      &[disabled] {
+        background-color: #FF0F2D !important;
+        color: #FFFFFF !important;
+      }
     }
   }
 }

@@ -1,5 +1,3 @@
-@import 'variables.pcss';
-
 .btn {
   border: 1px solid;
   border-radius: 2px;
@@ -21,6 +19,11 @@
 
   &:--enter {
     transition-duration: 50ms;
+  }
+
+  &[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 }
 
@@ -48,5 +51,19 @@
   &:--enter {
     background-color: white;
     color: #0D009A;
+  }
+}
+
+.btnOutline {
+  background-color: rgba(0, 0, 0, 0);
+  border-color: #525252;
+  color: #525252;
+
+  &:active,
+  &:hover,
+  &:--enter {
+    background-color: white;
+    color: #0324FF;
+    border-color: #0324FF;
   }
 }

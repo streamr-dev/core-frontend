@@ -1,7 +1,7 @@
 // @flow
 
 import getWeb3 from '$shared/web3/web3Provider'
-import { get, post, del } from '$shared/utils/api'
+import { get, post, del, put } from '$shared/utils/api'
 import { formatApiUrl } from '$shared/utils/url'
 import type { ApiResult } from '$shared/flowtype/common-types'
 import type { IntegrationKeyId, IntegrationKey, Challenge } from '$shared/flowtype/integration-key-types'
@@ -23,6 +23,11 @@ export const createPrivateKey = (name: string, privateKey: Address): ApiResult<I
         json: {
             privateKey,
         },
+    })
+
+export const editIntegrationKey = (keyId: IntegrationKeyId, name: string): ApiResult<IntegrationKey> =>
+    put(formatApiUrl('integration_keys', keyId), {
+        name,
     })
 
 export const createChallenge = (account: Address): ApiResult<Challenge> => post(formatApiUrl('login', 'challenge', account))
@@ -56,7 +61,11 @@ export const createIdentity = async (name: string): ApiResult<IntegrationKey> =>
         account = await ownWeb3.getDefaultAccount()
         response = await createChallenge(account)
         challenge = response && response.challenge
-        signature = await ownWeb3.eth.personal.sign(challenge, account)
+        signature = await ownWeb3.eth.personal.sign(
+            challenge,
+            account,
+            '', // required, but MetaMask will ignore the password argument here
+        )
     } catch (error) {
         console.warn(error)
         throw new ChallengeFailedError()

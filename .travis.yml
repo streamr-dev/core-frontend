@@ -6,47 +6,87 @@ branches:
   only:
   - master
   - development
+  - beta
   - "/^v\\d+\\.\\d+(\\.\\d+)?(-\\S*)?$/"
 before_install:
 - pip install awscli --upgrade --user
-- rm -f ${TRAVIS_BUILD_DIR}/yarn.lock
 - npm config set //registry.npmjs.org/:_authToken=$NPM_TOKEN
+- npm i -g npm@^6.9.0
 - cd app
-- npm i -g npm@6.4.0
 install:
 - npm ci
 - true
+cache:
+  directories:
+  - "$HOME/.npm"
 env:
   global:
   - secure: g/km642SU0HZoBmYIkt3gsWoXonuXYN4rdYfXm2ynavMKyojbDLHM+EYLB1uk1vsGR8SITHTQaE1lBoSlgD9aTXzyhtnDp3VkWJAm3/sxQIE8HEoKRT+4odrV/DCoidMLmeIL0xqLSYc2u+fLKm6dMnEdOVwBRPMPSdx6EMfusEbv2fPBMbWNTSEk5Jd8ppR1QwpbJQomeSp9uhxIH8pQWYUD3/zmhl26xYZ93wJMDQXoNyCQhlfpL7IcTljWPI+LP/U7GgSjBON/NHQ7Ka0Pq2UIA9B0QfrMPMrqOHb8AG2P/RaUyBqu0Jay6sdpyrJxJpANv7OAPE4RhLgjJx9fK4qzBvV6dwqxFt+1sNQRZCHc3AL5P7QiE4uVahbfy7i0xq1/aoJPLkIUEwnGn1HD1TBYE4LDnukkkFqN/GCuMBor2rqJLobRYlOY6g+EFfaCrG1gKfqVFr98XxJbBbTV8fRdyiqiJzpXtTLVpxJL2KDNdnhrTI+l5+/wRsiROu3rv2d5V0W25qOhhE02IxHAyfDb63dhddBopxO0TyjE5v7yew6HbpukixSDap7dq+w/P6m0Z7MjrAc+tMUOW/36TGVcLdK1pdEl1heVhNA9KVfzFT3nUP9nua/9weScISusQdhw6+GZrRyFQSfAJqaUemyJbyl0VFuxcVIt+fVNLQ=
   - secure: hu5cpsMinQEpoNgnJv1XQ+509/57gM4dHg+mRXaAkZ7ha6k0AK1AmNgsCKYfs2G8Qe3eFGM3DTuJA0JV9vOcUeHNURGQKW+ukciSN1dT8dmLC6DAjgd89LIV5jsgAMBtNNCeIDwdpSEhe39nD4P1ligVpxxtY9kbOfK+F/cNbgj9ZpC/MZ55rniMa1JkZpfWwP3bdOcko56E+dB3/Dh8L0QF1hiDA1AwpGXQcO2jQ22HvTyUIezcgIYGGSUJ0N9gPhe7f0UQ4iCdMbq2rKv2wi4vzKQPFOkK8eYAUfhbv1iHy/bP2VX8tR7ac9XJuAznaHJ3tng8iEnvF5ForiaAVhtUNOUi1Hw0i2qdaoash0hJh3Aq8IwyFZiZYAQYmIC29VuoPQJgTPVECEDkzqs8fbC0nqwjG9aVP6OkGUgSmR9LChUVsF8ZfLAp/R4bY0XJh6vuqG00qfl90f2zooTA/HPQa7D2VJBEDretZLR0u1ufPHEPkl++o5MeaeNn98KYKOD66fqK+lHf1fmyBogRRefXFZFOi1zNgZTe+xA6nNHk9eAMvYf9CfIsRM7AVnBviTWBkx3S5KDcbof8rdyUymwu5T/7Hly6JZmYKLZ5esQHoV2J5LYOxeaZoXXLARgQkxdpf/9sxNVkkB8TW6llnk+Bd7o7Qn9to80m60X2zsQ=
+  - secure: "nHD48tYG5jDsFdgE5h7ZLxEYmIeXmjlcB+lswQqTzBOAgPSPmf89OCH1AYXQz2Bf9DhynIspPIQxuM/peeaPNLiuvBKubVtmSTMLrM3dyy2x9XUUKnGDEQPS0lOWA6k/Nyx2k4tqyx8Jvlzfgy3ayWyQQOxm8Rfmn4oyNz4ePCOxKwVIaeNwvdLzg5MqU9oDgxsSL2CGuHRJ7zgyDxxm7rKQcNgFEifUtB3+U0t5WfElWvhyAkgzhTZlfcHhEPqnoDxuQmlHMFl5f6PSvJXSaWaF+Q+co5Apw1KKJOAhfT6e3Pe1dsxTrQzFzzJCKPbjoHfknUBmX4wV0YDTz5VsR/L4L4PqVlZgP8Y8MdbeBwqfZY624wa/x3V4kOtfucEJDVO/n8rAqm3SREdSTN6HwgV6mdr870PUZhG512ZMT7J9IfyeigtQt6OYYDWtCqMb4rYNDsZQeepzWKegdKCByuyxchJZ+1/yg30ql+qeYkdVWV8npjEFU10PGgpo1m21Sqjq6mfjMi7IWT+DSh0oFPj7ua6A/5VTw/5OjqrBHbFmRcCM2cKvuS5dyTG0ETdBDfstgdqINiwW1cYzq9yqu+KDwwOFbeiELAZoQVERDYPu1RbX6ccIi4bYbd09nknxAAcGl1XEegEKouQxBDb6XexOdDnbtaxTFMUa9BsAZyI="
+  - SENTRY_ORG=streamr
+  - SENTRY_PROJECT=marketplace
 jobs:
   include:
-  - stage: Marketplace Unit tests
+  - stage: Platform Tests
+    if: type IN (pull_request)
     env:
     - DESCRIPTION=LINTER
     script: "$TRAVIS_BUILD_DIR/app/travis_scripts/linter.sh"
-  - env:
-    - DESCRIPTION=UNIT_TEST
-    script: "$TRAVIS_BUILD_DIR/app/travis_scripts/unit-tests.sh"
-  - stage: Platform Build Staging
+  - stage: Platform Tests
+    if: type IN (pull_request)
     env:
+    - DESCRIPTION=UNIT_TEST
+    - STREAMR_API_URL=http://localhost:8081/streamr-core/api/v1
+    - STREAMR_WS_URL=ws://localhost:8890/api/v1/ws
+    - STREAMR_URL=http://localhost:8081/streamr-core
+    - PLATFORM_ORIGIN_URL=http://localhost
+    script: "travis_retry $TRAVIS_BUILD_DIR/app/travis_scripts/unit-tests.sh"
+  - stage: Platform tests
+    if: type IN (pull_request)
+    env:
+    - DESCRIPTION=VISUAL_TEST
+    - CHROMATIC_APP_CODE=exgpyxh1il5
     - NODE_ENV=production
     - PORT=12345
-    - STREAMR_API_URL=https://ee-staging.streamr.com/api/v1/
-    - STREAMR_WS_URL=wss://ee-staging.streamr.com/api/v1/ws
-    - STREAMR_URL=https://ee-staging.streamr.com
-    - PLATFORM_ORIGIN_URL=https://marketplace-staging.streamr.com
-    - PLATFORM_BASE_PATH=/
+    - VERSION=$TRAVIS_PULL_REQUEST_BRANCH
+    - SENTRY_ENVIRONMENT=pr
+    - STREAMR_API_URL=https://staging.streamr.com/api/v1
+    - STREAMR_WS_URL=wss://staging.streamr.com/api/v1/ws
+    - STREAMR_URL=https://staging.streamr.com
+    - PLATFORM_ORIGIN_URL=https://staging.streamr.com
     - GOOGLE_ANALYTICS_ID=55331565-5
-    - USERPAGES=off
-    - DOCS=on
     - STORYBOOK_BASE_PATH=storybook
     - MARKETPLACE_CONTRACT_ADDRESS=0xA10151D088f6f2705a05d6c83719e99E079A61C1
     - TOKEN_CONTRACT_ADDRESS=0x0Cf0Ee63788A0849fE5297F3407f701E122cC023
     - WEB3_REQUIRED_NETWORK_ID=1
     - WEB3_PUBLIC_HTTP_PROVIDER=https://mainnet.infura.io
     - WEB3_PUBLIC_WS_PROVIDER=wss://mainnet.infura.io/ws
+    - SENTRY_DSN=https://e012761929d24baa96ca82772f60b395@sentry.io/1203154
+    - LOGROCKET_SLUG=et0uhu/streamr-frontend-local
+    script: "$TRAVIS_BUILD_DIR/app/travis_scripts/visual-tests.sh"
+  - stage: Platform Build Staging
+    if: NOT type IN (pull_request)
+    env:
+    - NODE_ENV=production
+    - PORT=12345
+    - VERSION=$TRAVIS_BRANCH
+    - SENTRY_ENVIRONMENT=staging
+    - BUNDLE_ANALYSIS=1
+    - STREAMR_API_URL=https://staging.streamr.com/api/v1
+    - STREAMR_WS_URL=wss://staging.streamr.com/api/v1/ws
+    - PLATFORM_ORIGIN_URL=https://staging.streamr.com
+    - STREAMR_URL=https://staging.streamr.com
+    - PLATFORM_PUBLIC_PATH=https://marketplace-staging.streamr.com
+    - GOOGLE_ANALYTICS_ID=55331565-5
+    - STORYBOOK_BASE_PATH=storybook
+    - MARKETPLACE_CONTRACT_ADDRESS=0x62d08a44d6db7821c9556032a437beb4bd050abd
+    - TOKEN_CONTRACT_ADDRESS=0x67a9fda28c4df570d1d5350acfa345194f4d4100
+    - WEB3_REQUIRED_NETWORK_ID=8995
+    - WEB3_PUBLIC_HTTP_PROVIDER=https://staging.streamr.com:8540
+    - WEB3_PUBLIC_WS_PROVIDER=wss://staging.streamr.com:8540/ws
+    - SENTRY_DSN=https://e012761929d24baa96ca82772f60b395@sentry.io/1203154
+    - LOGROCKET_SLUG=et0uhu/streamr-frontend-local
     script: "$TRAVIS_BUILD_DIR/app/travis_scripts/build-app-stg.sh"
     deploy:
     - provider: s3
@@ -60,83 +100,116 @@ jobs:
       skip_cleanup: true
       on:
         branch: development
-  - stage: Visual Test Pull Request
-    if: type IN (pull_request)
-    env:
-    - CHROMATIC_APP_CODE=exgpyxh1il5
-    - NODE_ENV=production
-    - PORT=12345
-    - STREAMR_API_URL=https://ee-staging.streamr.com/api/v1/
-    - STREAMR_WS_URL=wss://ee-staging.streamr.com/api/v1/ws
-    - STREAMR_URL=https://ee-staging.streamr.com
-    - PLATFORM_ORIGIN_URL=https://marketplace-staging.streamr.com
-    - PLATFORM_BASE_PATH=/
-    - GOOGLE_ANALYTICS_ID=55331565-5
-    - USERPAGES=off
-    - DOCS=on
-    - STORYBOOK_BASE_PATH=storybook
-    - MARKETPLACE_CONTRACT_ADDRESS=0xA10151D088f6f2705a05d6c83719e99E079A61C1
-    - TOKEN_CONTRACT_ADDRESS=0x0Cf0Ee63788A0849fE5297F3407f701E122cC023
-    - WEB3_REQUIRED_NETWORK_ID=1
-    - WEB3_PUBLIC_HTTP_PROVIDER=https://mainnet.infura.io
-    - WEB3_PUBLIC_WS_PROVIDER=wss://mainnet.infura.io/ws
-    script: "$TRAVIS_BUILD_DIR/app/travis_scripts/visual-tests.sh"
+    - provider: s3
+      access_key_id: AKIAI3FGPGMK3EREJJTQ
+      secret_access_key:
+        secure: ZLCC1RIDEb619rNRSeamkYoLaqJhwJYQKxKnlar2uZZjm+QQBaoqxX0VqD/vwdqN+eW7XsIZJIzQgxjjZpcD6uZnRbVFO2RzZHIAY1xHxQ+72zHUXhPi0YmCUiCoUUWcxD/S52rOHgK9k8Dse8db/CTSEkEqvjP2Z90cDbs9m0jv6BoQr6zUBiYnsd2cklW7bnpDaKpE0Lv6HotevJwQd7oCUN8fAMWdYtnTvff7id2q/YO9JnM0ZLQfAC9k+UEOBd61QzSZAIQedGktmSa1xrM/KwJ5zyoVsYwII0e23EitnV3Vcu/2LAwCjRCr42XZdU/6MXbnLAuEcWfmS1qYVWIOU16JVc6cruIz69yTnZADSl/guuozZwGbXajMhUM9LrxobnlNo/SZKhqZodmec+h5RlI0Z4DtG9E1hh8AVICOA2KH2TYJG3eKkuqIvh0KSvuiN82eZ7fke1kzIJvQDn0/XSJzKG3kc0TpwBFR5T4y/UYDTkgEErCPwjZtxRpw9yh201qudCcV/8pJWca8vIlnTF8kAf3JFr8Lpn19zXSqrxNEXkvkbVbfs+pfzYx/DB4IFzr1o7H3pzt3ajDuaZboYcyvJIqF6YR2sMnti6fmxsZVKMtTtA2f7pEAtyQcyy0zjY2wIDBwshjbCqLl2kGQTtKBROWPU57PuuOIGK4=
+      bucket: eu-west-1-stg-streamr-vault
+      local-dir: "$TRAVIS_BUILD_DIR/build"
+      upload-dir: marketplace/releases
+      acl: private
+      region: eu-west-1
+      skip_cleanup: true
+      on:
+        branch: development
+    - provider: codedeploy
+      access_key_id: AKIAI3FGPGMK3EREJJTQ
+      secret_access_key:
+        secure: ZLCC1RIDEb619rNRSeamkYoLaqJhwJYQKxKnlar2uZZjm+QQBaoqxX0VqD/vwdqN+eW7XsIZJIzQgxjjZpcD6uZnRbVFO2RzZHIAY1xHxQ+72zHUXhPi0YmCUiCoUUWcxD/S52rOHgK9k8Dse8db/CTSEkEqvjP2Z90cDbs9m0jv6BoQr6zUBiYnsd2cklW7bnpDaKpE0Lv6HotevJwQd7oCUN8fAMWdYtnTvff7id2q/YO9JnM0ZLQfAC9k+UEOBd61QzSZAIQedGktmSa1xrM/KwJ5zyoVsYwII0e23EitnV3Vcu/2LAwCjRCr42XZdU/6MXbnLAuEcWfmS1qYVWIOU16JVc6cruIz69yTnZADSl/guuozZwGbXajMhUM9LrxobnlNo/SZKhqZodmec+h5RlI0Z4DtG9E1hh8AVICOA2KH2TYJG3eKkuqIvh0KSvuiN82eZ7fke1kzIJvQDn0/XSJzKG3kc0TpwBFR5T4y/UYDTkgEErCPwjZtxRpw9yh201qudCcV/8pJWca8vIlnTF8kAf3JFr8Lpn19zXSqrxNEXkvkbVbfs+pfzYx/DB4IFzr1o7H3pzt3ajDuaZboYcyvJIqF6YR2sMnti6fmxsZVKMtTtA2f7pEAtyQcyy0zjY2wIDBwshjbCqLl2kGQTtKBROWPU57PuuOIGK4=
+      bucket: eu-west-1-stg-streamr-vault
+      key: marketplace/releases/marketplace.tar
+      application: eu-west-1-stg-marketplace-codedeploy
+      deployment_group: eu-west-1-stg-marketplace-deployment-group
+      region: eu-west-1
+      on:
+        branch: development
   - stage: Deploy Pull Request
     if: type IN (pull_request)
     env:
     - NODE_ENV=production
+    - BUNDLE_ANALYSIS=1
     - PORT=12345
-    - STREAMR_API_URL=https://ee-staging.streamr.com/api/v1/
-    - STREAMR_WS_URL=wss://ee-staging.streamr.com/api/v1/ws
-    - STREAMR_URL=https://ee-staging.streamr.com
-    - PLATFORM_ORIGIN_URL=https://marketplace-staging.streamr.com
-    - PLATFORM_BASE_PATH=/
+    - VERSION=$TRAVIS_PULL_REQUEST_BRANCH
+    - SENTRY_ENVIRONMENT=pr
+    - STREAMR_API_URL=https://staging.streamr.com/api/v1
+    - STREAMR_WS_URL=wss://staging.streamr.com/api/v1/ws
+    - PLATFORM_ORIGIN_URL=https://staging.streamr.com
+    - STREAMR_URL=https://staging.streamr.com
     - GOOGLE_ANALYTICS_ID=55331565-5
-    - USERPAGES=on
-    - DOCS=on
     - STORYBOOK_BASE_PATH=storybook
     - MARKETPLACE_CONTRACT_ADDRESS=0xA10151D088f6f2705a05d6c83719e99E079A61C1
     - TOKEN_CONTRACT_ADDRESS=0x0Cf0Ee63788A0849fE5297F3407f701E122cC023
     - WEB3_REQUIRED_NETWORK_ID=1
     - WEB3_PUBLIC_HTTP_PROVIDER=https://mainnet.infura.io
     - WEB3_PUBLIC_WS_PROVIDER=wss://mainnet.infura.io/ws
+    - SENTRY_DSN=https://e012761929d24baa96ca82772f60b395@sentry.io/1203154
+    - LOGROCKET_SLUG=et0uhu/streamr-frontend-local
     - secure: H4xOzWwc5rnx8XxEumkrHqYdMhfIYVoqdTp4OwqBNjScn0FuB2Zbud+sU5cQmox/L631Cni2lGyjUa1Z/BwavSo/paYBv8ufeabMI8cnLyKe878Yqstk5hwgYVOHfmbhIBRUVcWNIRZeFZORPFFIZP84Dn3Gg9hCgtbjrmT/yqyyoaftJY1ppwAo1xyxv0yUE/uNUbZGQuYkVY9yEh8gBc5N3SpQ4FyDekAAS425cYXzgaAMmdBjNw5Xp9brqyKGEPLFHDtXi5r1J3xUlzk48AgEq+1B627ckWjCkxP71ko28Kp92vPjYjV3BjPLBsHYtZX0HGZokwwFNZHl/eg2H9uIyUL1DY3+OkuzTanW4aq9NmMbxMmQ4pvfzEokk2LH89VFp09ev832NcSpCLQdSYMcxpm6NedZWWteL2e2Qzc1RZRlJpdAYDZunQYsqnV9812YAiqG9Mud2GGOIn24PO71abGnlTT6FqLP5mdxqQ+A40+Yky5ETQRq86e3vxcwASGaNcp5ICbAALndmwCD/GwDYHZ7LTniZB7kpDX9MBluzwD67mhQ1+lcNSiVTQ0tf0oi65MUPFJchs++iFYiapIt7bnxrnvxiMDdNHLjm0iPWZthKeLWQnm/opU7D9tVvWbc+zGPNfmRBN9ePI98Lts60OELNKwwoIo5PZ9HtS8=
     - secure: T3thsbASJalYo5IhRb5gahvrcso+JUgHFIJeWcVtzkaFt+NPQ7EOnpMjgsdAtSiiwzoEx+Rxz90+oUYb4A+Z7dImQqAVpBr6NwA4W2TQnw0VOoqnzE17anSqRKPzOjH1UczvBP64EINvQvWE1bBycq61t3mJ7fTm1gaWq3FDVr5uOUD/OnJkq4caIs8W52Yt/AaATcQ5kpWDGFAYgE0sbaaob8gQJxJ3SyEtUo10y5NJNPsX8jz0Ar4JxTL48WUtWGsBJ/yCuQDKO+eaB4oNQhO32y44PM7YP+7v0UD7BM3/7fLl/KJA144ATPraCFDin2D1XQ+niWZSENTkpC6sRwoBJawvL95gXSIsUTr0BZ3LeXm2l4u5Hhpsz7Qib/vNsGTLQXcP9RK8QbUU5mrrMtw6hJ/iNo54JiW785BSR94X/MHyMliMiUZQbKlFxLmpHs2n+WsmfT95aWDOS2YI4N1ny0p08BhuA/UAzPq/jegP6DhqztNcavpBfMW1joAm2V5D8KwY0KCm39b5jB0RqBmY7OhI7GMH6SIcPLz2TexkFcKpAmj9Vb15x8gHWtbUb1dTJk9uXnLFarmD95Ox3mTGdCHlKr8wHeyNClXyDoMmcEpL7MOmkLIR7uHFtW4EDMQc8xQTKPll+sQQxDLNeUPtHK9pthPOHmvUgf4O1e4=
     - secure: DTaSLAdOFG57aSb9IjP3N2NlrWPKh+8Z2oDl20zlVsLSm0tAXqiGudTg6rkcxHShM/J2XPsYvVMe/r/0qBEihvWq/bEuJvnrLHZ4ssXfOpN0nk2Ds/N9RReOD4MgSa5DE4KPTiXiVY/jrcRPcpGum0N7d91jFoiBFsazAcjO5KoyErTfZG4QtM3BXR7eVivL8JmsPLgAQGtuSLqpw53ilyl62xXzjiXs0akfMBc6a31XMPFWqyFUELn0oWDjvfeJI3vNXct56cPJ1aqod/LPhgKZMbjD8CdhgVxETkh5iZGV5NiTNF0skwB0uHDMYOD4+qE6jFEGKzZXCPk/1DHFDMN//3LoLw9OS5TC34/wW5E0ZCXhPLqMWEMvr0cm2oTJgyzZY7w+4PXuomfYocqm4VgZiCVS5UUi+7rcYnsFPJv73KBTy2DLvh902kzuGcMf7EaC5imxDFjql4X8o0ceQFqXGi6v2riBM8Fhb/sENOB55MicFG5MuI4TKR9BGyBTg4KkgyJEZswQ2xG8yPRuARqchblI/+avexuxROJ/m++y3ZuPkH3KGSw+yECkG7bZ7TBPLaL7VO87XinLIPO+fRtzm6nNId7KoA+jcrxlAljzsCxVsPVVHsL5+7B8jT0VvLNcH89FHxEuTh/axYdAmAix4Od17wg0pg3ZdJSAnuM=
     - secure: DVAbGPA0dx5I02puqZpkFplRsMTys7OLisIfQKkspA9t+ECLVXM/gsAH/cha4B3Ic9EwBBahKHiaVK6zjuguowjoSQpDpIL+r+frWFXyzV+WfMCEYXdvPcnrpRruP7+QzURgO+s2FLraOSAovXL4fyePfQwLNnDQFWhu4dtl1Ncfe1Kqd6mHi40DKeNv1wR8mmJz4SBDaWcbhkfrDutF6P9LF4lnpOaNHEhHYLsMd7ICIRJ2+w4ZQTVtFqQcI/WT1m7eWhBT6FrQba911AjogFrtRLWrK5YZYCC98m7VMIz2vNt+bnULwPOjJC69VyHW75uJcQvE+woUL6U4xHrVsD5HVdh3tj/nN9swFFc95pEs9GQbGzvKvNBO0chhdwmCTWgyx4Z4sNNiop/WmKQVHswZ1wxOSBeRVOsDYYiDILOojSQh+bSIzIH9Ows57ro9HVpMLL0M/pptNUw6hrqyGE896JAXPWu87Vh7Wqq0H2vfTWdFxmCqv7ncIRngkCbjLZ04MFWENlNpdnhGkrc6WFmh2NMMSua5nsAH8judr2Pbr3s4WeWu1Bwc8uTu8BJ7JU5I6FsrTFOVUO/yIwmAeLA6NCCg7bFNq2ajWVl5exuZOZv0bWWfjvJ9BAIbS6nGQwMUKzjmNLtoEbk4EqLJDKxI2uGoFk6hAlW7GHEaQ2A=
     script: "$TRAVIS_BUILD_DIR/app/travis_scripts/deploy-pr.sh"
+  - stage: Platform Deploy CDN # Will be new production
+    if: NOT type IN (pull_request)
+    env:
+    - NODE_ENV=production
+    - PORT=12345
+    - VERSION=$TRAVIS_BRANCH
+    - SENTRY_ENVIRONMENT=production
+    - STREAMR_API_URL=https://www.streamr.com/api/v1
+    - STREAMR_WS_URL=wss://www.streamr.com/api/v1/ws
+    - PLATFORM_ORIGIN_URL=https://www.streamr.com
+    - PLATFORM_PUBLIC_PATH=https://cdn.streamr.com
+    - STREAMR_URL=https://www.streamr.com
+    - GOOGLE_ANALYTICS_ID=UA-55331565-5
+    - MARKETPLACE_CONTRACT_ADDRESS=0xA10151D088f6f2705a05d6c83719e99E079A61C1
+    - TOKEN_CONTRACT_ADDRESS=0x0Cf0Ee63788A0849fE5297F3407f701E122cC023
+    - WEB3_REQUIRED_NETWORK_ID=1
+    - WEB3_PUBLIC_HTTP_PROVIDER=https://mainnet.infura.io
+    - WEB3_PUBLIC_WS_PROVIDER=wss://mainnet.infura.io/ws
+    - SENTRY_DSN=https://e012761929d24baa96ca82772f60b395@sentry.io/1203154
+    script:
+    - npm run build
+    deploy:
+    - provider: s3 # test for production deployment
+      access_key_id: AKIAISTYQBVHXK5LXXIQ
+      secret_access_key:
+        secure: SmtMYr1JhqzneGtg4sx10/Z7e5TsvlwPl05kkpx2dsGUuWX1gb+kWidNDpC8fWvkREg38o3yOtPza/FOyRtLwdIe1N1lZyYFvIhac7lATroMNyCWmTuYAZMbLtVUEsI43LNhQAC+F/N48TwM+0EJEWUIddc0ANbYEH8cReqDcngL7ZPtFEqtx9Qc/ZVY7/a83munHnd9dXga+4m8xVGo/u6UIn0hSVKt/LLHOAYw4chNXvUgyP2hNmmxHn2cdKocqM4dmEochqe8THSK3F37xlPfaHKzLQfEKfWgWdSQ+lDXonGfDz5ZSs8Owwnd8R/OmOmMKdAs6i96Kj3u4amOANMj1tixtrN4BiFuTM89iTPwKy49xOTSiLjS6XGvyZ1+GIYXuwmsLJbEef19qxpPUz41N8Kmue7Vf2ijy3c6Q0jpFJTKOAZe7m0hONyQi+SG6GYDAxRmuvghIrlZ71zydSn6FYLv3R5cI17tbCZAK9kZdzSXkr4K8W4LJbbZzmJk+X2IYT+Y9WLganeWk9RhmSz5GG84Y33AtsJXiNkBRrV32VtkYkwOa+FtqqLkLnJ7czqez1RyoNGXuhM2djY0pibhabsj7Z9o6ZyLKnm+2FTNdRFpJnkfl2Opv9R5ghOmTLjPSY+Dxjw/1PJoBfzzIEe4tnzpEsC9gqDxJ79KW6k=
+      bucket: eu-west-1-streamr-cdn
+      local-dir: "$TRAVIS_BUILD_DIR/app/dist"
+      acl: private
+      region: eu-west-1
+      skip_cleanup: true
+      on:
+        branch: beta
   - stage: Platform Build Production
     if: NOT type IN (pull_request)
     env:
     - NODE_ENV=production
+    - VERSION=$TRAVIS_TAG
     - PORT=12345
+    - VERSION=$TRAVIS_TAG
+    - SENTRY_ENVIRONMENT=production
     - STREAMR_API_URL=https://www.streamr.com/api/v1
     - STREAMR_WS_URL=wss://www.streamr.com/api/v1/ws
+    - PLATFORM_ORIGIN_URL=https://www.streamr.com
+    - PLATFORM_PUBLIC_PATH=https://cdn.streamr.com
     - STREAMR_URL=https://www.streamr.com
-    - PLATFORM_ORIGIN_URL=https://marketplace.streamr.com
-    - PLATFORM_BASE_PATH=/
     - GOOGLE_ANALYTICS_ID=UA-55331565-5
-    - VERSION=$TRAVIS_TAG
-    - USERPAGES=off
-    - DOCS=off
     - MARKETPLACE_CONTRACT_ADDRESS=0xA10151D088f6f2705a05d6c83719e99E079A61C1
     - TOKEN_CONTRACT_ADDRESS=0x0Cf0Ee63788A0849fE5297F3407f701E122cC023
     - WEB3_REQUIRED_NETWORK_ID=1
     - WEB3_PUBLIC_HTTP_PROVIDER=https://mainnet.infura.io
     - WEB3_PUBLIC_WS_PROVIDER=wss://mainnet.infura.io/ws
+    - SENTRY_DSN=https://e012761929d24baa96ca82772f60b395@sentry.io/1203154
     script: "$TRAVIS_BUILD_DIR/app/travis_scripts/build-app.sh"
     deploy:
-    - provider: script
-      script: bash travis_scripts/sentry-release.sh
-      skip_cleanup: true
-      on:
-        tags: true
     - provider: s3
       access_key_id: AKIAISTYQBVHXK5LXXIQ
       secret_access_key:
         secure: SmtMYr1JhqzneGtg4sx10/Z7e5TsvlwPl05kkpx2dsGUuWX1gb+kWidNDpC8fWvkREg38o3yOtPza/FOyRtLwdIe1N1lZyYFvIhac7lATroMNyCWmTuYAZMbLtVUEsI43LNhQAC+F/N48TwM+0EJEWUIddc0ANbYEH8cReqDcngL7ZPtFEqtx9Qc/ZVY7/a83munHnd9dXga+4m8xVGo/u6UIn0hSVKt/LLHOAYw4chNXvUgyP2hNmmxHn2cdKocqM4dmEochqe8THSK3F37xlPfaHKzLQfEKfWgWdSQ+lDXonGfDz5ZSs8Owwnd8R/OmOmMKdAs6i96Kj3u4amOANMj1tixtrN4BiFuTM89iTPwKy49xOTSiLjS6XGvyZ1+GIYXuwmsLJbEef19qxpPUz41N8Kmue7Vf2ijy3c6Q0jpFJTKOAZe7m0hONyQi+SG6GYDAxRmuvghIrlZ71zydSn6FYLv3R5cI17tbCZAK9kZdzSXkr4K8W4LJbbZzmJk+X2IYT+Y9WLganeWk9RhmSz5GG84Y33AtsJXiNkBRrV32VtkYkwOa+FtqqLkLnJ7czqez1RyoNGXuhM2djY0pibhabsj7Z9o6ZyLKnm+2FTNdRFpJnkfl2Opv9R5ghOmTLjPSY+Dxjw/1PJoBfzzIEe4tnzpEsC9gqDxJ79KW6k=
-      bucket: eu-west-1-streamr-marketplace-public
-      local-dir: dist
+      bucket: eu-west-1-streamr-cdn
+      local-dir: "$TRAVIS_BUILD_DIR/app/dist"
       acl: private
       region: eu-west-1
       skip_cleanup: true
@@ -147,7 +220,7 @@ jobs:
       secret_access_key:
         secure: SmtMYr1JhqzneGtg4sx10/Z7e5TsvlwPl05kkpx2dsGUuWX1gb+kWidNDpC8fWvkREg38o3yOtPza/FOyRtLwdIe1N1lZyYFvIhac7lATroMNyCWmTuYAZMbLtVUEsI43LNhQAC+F/N48TwM+0EJEWUIddc0ANbYEH8cReqDcngL7ZPtFEqtx9Qc/ZVY7/a83munHnd9dXga+4m8xVGo/u6UIn0hSVKt/LLHOAYw4chNXvUgyP2hNmmxHn2cdKocqM4dmEochqe8THSK3F37xlPfaHKzLQfEKfWgWdSQ+lDXonGfDz5ZSs8Owwnd8R/OmOmMKdAs6i96Kj3u4amOANMj1tixtrN4BiFuTM89iTPwKy49xOTSiLjS6XGvyZ1+GIYXuwmsLJbEef19qxpPUz41N8Kmue7Vf2ijy3c6Q0jpFJTKOAZe7m0hONyQi+SG6GYDAxRmuvghIrlZ71zydSn6FYLv3R5cI17tbCZAK9kZdzSXkr4K8W4LJbbZzmJk+X2IYT+Y9WLganeWk9RhmSz5GG84Y33AtsJXiNkBRrV32VtkYkwOa+FtqqLkLnJ7czqez1RyoNGXuhM2djY0pibhabsj7Z9o6ZyLKnm+2FTNdRFpJnkfl2Opv9R5ghOmTLjPSY+Dxjw/1PJoBfzzIEe4tnzpEsC9gqDxJ79KW6k=
       bucket: eu-west-1-streamr-vault
-      local-dir: dist
+      local-dir: "$TRAVIS_BUILD_DIR/app/dist"
       upload-dir: marketplace/releases/latest
       acl: private
       region: eu-west-1
@@ -159,64 +232,7 @@ jobs:
       secret_access_key:
         secure: SmtMYr1JhqzneGtg4sx10/Z7e5TsvlwPl05kkpx2dsGUuWX1gb+kWidNDpC8fWvkREg38o3yOtPza/FOyRtLwdIe1N1lZyYFvIhac7lATroMNyCWmTuYAZMbLtVUEsI43LNhQAC+F/N48TwM+0EJEWUIddc0ANbYEH8cReqDcngL7ZPtFEqtx9Qc/ZVY7/a83munHnd9dXga+4m8xVGo/u6UIn0hSVKt/LLHOAYw4chNXvUgyP2hNmmxHn2cdKocqM4dmEochqe8THSK3F37xlPfaHKzLQfEKfWgWdSQ+lDXonGfDz5ZSs8Owwnd8R/OmOmMKdAs6i96Kj3u4amOANMj1tixtrN4BiFuTM89iTPwKy49xOTSiLjS6XGvyZ1+GIYXuwmsLJbEef19qxpPUz41N8Kmue7Vf2ijy3c6Q0jpFJTKOAZe7m0hONyQi+SG6GYDAxRmuvghIrlZ71zydSn6FYLv3R5cI17tbCZAK9kZdzSXkr4K8W4LJbbZzmJk+X2IYT+Y9WLganeWk9RhmSz5GG84Y33AtsJXiNkBRrV32VtkYkwOa+FtqqLkLnJ7czqez1RyoNGXuhM2djY0pibhabsj7Z9o6ZyLKnm+2FTNdRFpJnkfl2Opv9R5ghOmTLjPSY+Dxjw/1PJoBfzzIEe4tnzpEsC9gqDxJ79KW6k=
       bucket: eu-west-1-streamr-vault
-      local-dir: dist
-      upload-dir: marketplace/releases/$TRAVIS_TAG
-      acl: private
-      region: eu-west-1
-      skip_cleanup: true
-      on:
-        tags: true
-  - stage: Platform Build Lisboa Production
-    if: NOT type IN (pull_request)
-    env:
-    - NODE_ENV=production
-    - PORT=12345
-    - STREAMR_API_URL=https://ee-lisboa.streamr.com/api/v1/
-    - STREAMR_WS_URL=wss://ee-lisboa.streamr.com/api/v1/ws
-    - STREAMR_URL=https://ee-lisboa.streamr.com
-    - PLATFORM_ORIGIN_URL=https://marketplace-lisboa.streamr.com
-    - PLATFORM_BASE_PATH=/
-    - PLATFORM_BASE_PATH=/
-    - GOOGLE_ANALYTICS_ID=UA-55331565-5
-    - VERSION=$TRAVIS_TAG
-    - USERPAGES=off
-    - DOCS=off
-    - MARKETPLACE_CONTRACT_ADDRESS=0xA10151D088f6f2705a05d6c83719e99E079A61C1
-    - TOKEN_CONTRACT_ADDRESS=0x0Cf0Ee63788A0849fE5297F3407f701E122cC023
-    - WEB3_REQUIRED_NETWORK_ID=1
-    - WEB3_PUBLIC_HTTP_PROVIDER=https://mainnet.infura.io
-    - WEB3_PUBLIC_WS_PROVIDER=wss://mainnet.infura.io/ws
-    script: "$TRAVIS_BUILD_DIR/app/travis_scripts/build-app.sh"
-    deploy:
-    - provider: s3
-      access_key_id: AKIAJBAGP3WA5UXQ3AZQ
-      secret_access_key:
-        secure: K0oYY9l2dLEiGnB0ZzRWwlPIgKO0v11usTbrWJD2nWFa4lwgBVw+jHLIjbQMdQcsY4QoUq5BNK25DLsq8yNrQhW0cX0XbmI5L+j5ZFFfgBxFhI7Q0UAtwzJvBzSs6+k4cF/twwsuSt6uOZbtA4E/7hw9rTPkdeWx6bahwuVnU7/tTw9z2mt1pqGFQaCcy2MZh+6pCxcGonBTl1bh8VLCf7g9SXsU8+jz2ec6BjKmonJKdMiMxf2rbCKOudlrBjjjrP/5q/38rzzr9hx0TkkQ0fnZoFIeYhFJvKTxXXBujOqZBMAKh7R1MvVZf3JY+ADKqOD9t3C4XGW98s7D/v2J3HTxoQf2bWCzkGGto8KqbnqEm61YIhzTp6bHKadeLkhh3wTnxjiS6NnSGTNqybUO9ic2YcMtp6zY4nYW2mMPaxgiyZb869EkRWFOtgeECHmXmrZXv+8dnpyzVC4QPp53blxYErPwhAs/cQzcwDaj6v4mcU0Nem8DN0g0lzXCP11pFxLvqa/9TzIGs/1N2+OB8STrxEQi9wPpDUJ7gcC+1ovBXCDWfQX+yn7MDIauTRPOQlQrOSuoSzSZsamAFTOfvL7257myQlo8vdGT6WqFKXwZ+yTh3Lif/hUruQmDzDHAifJeY8tXRu51RNM1UEDtOj26I1yUOmiD4wjMwGJdzng=
-      bucket: eu-west-1-lx-streamr-marketplace
-      local-dir: dist
-      acl: private
-      region: eu-west-1
-      skip_cleanup: true
-      on:
-        tags: true
-    - provider: s3
-      access_key_id: AKIAJBAGP3WA5UXQ3AZQ
-      secret_access_key:
-        secure: K0oYY9l2dLEiGnB0ZzRWwlPIgKO0v11usTbrWJD2nWFa4lwgBVw+jHLIjbQMdQcsY4QoUq5BNK25DLsq8yNrQhW0cX0XbmI5L+j5ZFFfgBxFhI7Q0UAtwzJvBzSs6+k4cF/twwsuSt6uOZbtA4E/7hw9rTPkdeWx6bahwuVnU7/tTw9z2mt1pqGFQaCcy2MZh+6pCxcGonBTl1bh8VLCf7g9SXsU8+jz2ec6BjKmonJKdMiMxf2rbCKOudlrBjjjrP/5q/38rzzr9hx0TkkQ0fnZoFIeYhFJvKTxXXBujOqZBMAKh7R1MvVZf3JY+ADKqOD9t3C4XGW98s7D/v2J3HTxoQf2bWCzkGGto8KqbnqEm61YIhzTp6bHKadeLkhh3wTnxjiS6NnSGTNqybUO9ic2YcMtp6zY4nYW2mMPaxgiyZb869EkRWFOtgeECHmXmrZXv+8dnpyzVC4QPp53blxYErPwhAs/cQzcwDaj6v4mcU0Nem8DN0g0lzXCP11pFxLvqa/9TzIGs/1N2+OB8STrxEQi9wPpDUJ7gcC+1ovBXCDWfQX+yn7MDIauTRPOQlQrOSuoSzSZsamAFTOfvL7257myQlo8vdGT6WqFKXwZ+yTh3Lif/hUruQmDzDHAifJeY8tXRu51RNM1UEDtOj26I1yUOmiD4wjMwGJdzng=
-      bucket: eu-west-1-lx-streamr-vault
-      local-dir: dist
-      upload-dir: marketplace/releases/latest
-      acl: private
-      region: eu-west-1
-      skip_cleanup: true
-      on:
-        tags: false
-    - provider: s3
-      access_key_id: AKIAJBAGP3WA5UXQ3AZQ
-      secret_access_key:
-          secure: K0oYY9l2dLEiGnB0ZzRWwlPIgKO0v11usTbrWJD2nWFa4lwgBVw+jHLIjbQMdQcsY4QoUq5BNK25DLsq8yNrQhW0cX0XbmI5L+j5ZFFfgBxFhI7Q0UAtwzJvBzSs6+k4cF/twwsuSt6uOZbtA4E/7hw9rTPkdeWx6bahwuVnU7/tTw9z2mt1pqGFQaCcy2MZh+6pCxcGonBTl1bh8VLCf7g9SXsU8+jz2ec6BjKmonJKdMiMxf2rbCKOudlrBjjjrP/5q/38rzzr9hx0TkkQ0fnZoFIeYhFJvKTxXXBujOqZBMAKh7R1MvVZf3JY+ADKqOD9t3C4XGW98s7D/v2J3HTxoQf2bWCzkGGto8KqbnqEm61YIhzTp6bHKadeLkhh3wTnxjiS6NnSGTNqybUO9ic2YcMtp6zY4nYW2mMPaxgiyZb869EkRWFOtgeECHmXmrZXv+8dnpyzVC4QPp53blxYErPwhAs/cQzcwDaj6v4mcU0Nem8DN0g0lzXCP11pFxLvqa/9TzIGs/1N2+OB8STrxEQi9wPpDUJ7gcC+1ovBXCDWfQX+yn7MDIauTRPOQlQrOSuoSzSZsamAFTOfvL7257myQlo8vdGT6WqFKXwZ+yTh3Lif/hUruQmDzDHAifJeY8tXRu51RNM1UEDtOj26I1yUOmiD4wjMwGJdzng=
-      bucket: eu-west-1-lx-streamr-vault
-      local-dir: dist
+      local-dir: "$TRAVIS_BUILD_DIR/app/dist"
       upload-dir: marketplace/releases/$TRAVIS_TAG
       acl: private
       region: eu-west-1

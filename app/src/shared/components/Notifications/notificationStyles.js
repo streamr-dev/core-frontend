@@ -1,19 +1,27 @@
 // @flow
 
 export default {
+    Containers: {
+        DefaultStyle: {
+            padding: '0 20px 20px 20px',
+        },
+    },
+
     NotificationItem: {
         DefaultStyle: { // Applied to every notification, regardless of the notification level
             width: 'auto',
+            borderRadius: '4px',
+            overflow: 'hidden', // prevent notification content from falling outside notification
         },
         info: {
             width: 'auto',
             borderTop: 0,
             padding: '16px',
             backgroundColor: 'white',
-            color: 'black',
-            WebkitBoxShadow: '0 0 10px rgba(0, 0, 0, 0.2)',
-            MozBoxShadow: '0 0 10px rgba(0, 0, 0, 0.2)',
-            boxShadow: '0 0 10px rgba(0, 0, 0, 0.2)',
+            color: '#323232',
+            WebkitBoxShadow: '0 0 5px rgba(0, 0, 0, 0.1)',
+            MozBoxShadow: '0 0 5px rgba(0, 0, 0, 0.1)',
+            boxShadow: '0 0 5px rgba(0, 0, 0, 0.1)',
         },
     },
     Title: {

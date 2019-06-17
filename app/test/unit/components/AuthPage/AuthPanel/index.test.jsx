@@ -1,10 +1,10 @@
 import React from 'react'
 import { mount } from 'enzyme'
-import noop from 'empty/function'
 
 import AuthPanel from '$auth/components/AuthPanel'
 import AuthStep from '$auth/components/AuthStep'
 import AuthPanelNav from '$auth/components/AuthPanelNav'
+import AuthFormContext from '$auth/contexts/AuthForm'
 import * as yup from 'yup'
 
 describe(AuthPanel.name, () => {
@@ -15,35 +15,43 @@ describe(AuthPanel.name, () => {
     const onNext = () => {}
     const form = {}
     const isProcessing = false
+    const onEthClick = () => {}
 
     const el = (currentStep) => mount((
-        <AuthPanel
-            currentStep={currentStep}
-            validationSchemas={[
-                validationSchema,
-            ]}
-            onPrev={onPrev}
-            onValidationError={onValidationError}
-            setIsProcessing={setIsProcessing}
-            onNext={onNext}
-            form={form}
-            isProcessing={isProcessing}
+        <AuthFormContext.Provider
+            value={{
+                errors: {},
+                form,
+                isProcessing,
+                next: onNext,
+                prev: onPrev,
+                redirect: () => {},
+                setFieldError: () => {},
+                setFormField: () => {},
+                setIsProcessing,
+                step: currentStep,
+            }}
         >
-            <AuthStep
-                showSignin
-                showSignup
-                showEth
-                showBack
-                title="Step #0"
+            <AuthPanel
+                validationSchemas={[validationSchema]}
+                onValidationError={onValidationError}
             >
-                #0
-            </AuthStep>
-            <AuthStep
-                title="Step #1"
-            >
-                #1
-            </AuthStep>
-        </AuthPanel>
+                <AuthStep
+                    showSignin
+                    showSignup
+                    showBack
+                    onEthereumClick={onEthClick}
+                    title="Step #0"
+                >
+                    #0
+                </AuthStep>
+                <AuthStep
+                    title="Step #1"
+                >
+                    #1
+                </AuthStep>
+            </AuthPanel>
+        </AuthFormContext.Provider>
     ))
 
     it('renders children', () => {
@@ -71,9 +79,9 @@ describe(AuthPanel.name, () => {
                 expect(nav.prop('signup')).toBe(false)
             })
 
-            it('passes a noop to nav#onUseEth if step#showEth is set', () => {
-                expect(step.prop('showEth')).not.toBeDefined()
-                expect(nav.prop('onUseEth')).toBeNull()
+            it('passes (undefined) onEthereumClick to nav#onUseEth', () => {
+                expect(step.prop('onEthereumClick')).toBeUndefined()
+                expect(nav.prop('onUseEth')).toBeUndefined()
             })
 
             it('passes step\'s onPrev prop as to nav#onGoBack if step#showBack is set', () => {
@@ -97,9 +105,9 @@ describe(AuthPanel.name, () => {
                 expect(nav.prop('signup')).toBe(true)
             })
 
-            it('passes a noop to nav#onUseEth if step#showEth is set', () => {
-                expect(step.prop('showEth')).toBe(true)
-                expect(nav.prop('onUseEth')).toBe(noop)
+            it('passes given onEthereumClick to nav#onUseEth', () => {
+                expect(step.prop('onEthereumClick')).toBe(onEthClick)
+                expect(nav.prop('onUseEth')).toBe(onEthClick)
             })
 
             it('passes step\'s onPrev prop as to nav#onGoBack if step#showBack is set', () => {

@@ -15,16 +15,48 @@
 .tabBar {
   display: flex;
   line-height: 32px;
+  overflow-x: auto;
 }
 
 .searchBar {
   display: flex;
   margin-right: 36px;
-  height: 39px;
-  max-width: 190px;
 }
 
 .filterBar {
+  /* 40px - height of the dropdown toggle. */
+  height: 40px;
+  right: 16px;
+}
+
+.tabContainer {
+  align-items: center;
   display: flex;
-  margin-left: auto;
+  height: calc(3.25 * var(--um));
+  justify-content: space-between;
+  position: relative;
+}
+
+.tabs {
+  display: flex;
+}
+
+@media (--md-down) {
+  .filterBar {
+    display: flex;
+    position: absolute;
+    right: 4px;
+    top: 72px;
+  }
+
+  .containerOverrides {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+@media (--sm-down) {
+  .filterBar {
+    display: none;
+  }
 }

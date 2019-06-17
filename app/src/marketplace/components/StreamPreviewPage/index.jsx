@@ -38,6 +38,7 @@ type Props = {
 type State = {
     selectedDataPoint: ?DataPoint,
     sidebarVisible: boolean,
+    hasData: boolean,
 }
 
 const addStreamIdCopiedNotification = () => {
@@ -58,6 +59,7 @@ class StreamPreviewPage extends React.Component<Props, State> {
     state = {
         selectedDataPoint: null,
         sidebarVisible: false,
+        hasData: false,
     }
 
     componentDidMount() {
@@ -112,6 +114,12 @@ class StreamPreviewPage extends React.Component<Props, State> {
         streamId,
     }) : '#')
 
+    setHasData = () => {
+        this.setState(() => ({
+            hasData: true,
+        }))
+    }
+
     toggleSidebar = () => {
         this.setState({
             sidebarVisible: !this.state.sidebarVisible,
@@ -123,6 +131,7 @@ class StreamPreviewPage extends React.Component<Props, State> {
             streams, productId, match: { params: { streamId } }, currentUser,
             authApiKeyId, onClose,
         } = this.props
+        const { hasData } = this.state
         const currentStream = streams && streams.find((s) => s.id === streamId)
         const prevStreamId = this.getPrevStreamId()
         const nextStreamId = this.getNextStreamId()
@@ -174,7 +183,11 @@ class StreamPreviewPage extends React.Component<Props, State> {
                         <h2 className={styles.title}>
                             {currentStream && currentStream.name}
                             <p className={styles.subtitle}>
-                                <Translate value="modal.streamLiveData.liveData" />
+                                {hasData ? (
+                                    <Translate value="modal.streamLiveData.liveData" />
+                                ) :
+                                    <Translate value="modal.streamLiveData.noLiveData" />
+                                }
                             </p>
                         </h2>
                         <div className={styles.body}>
@@ -186,6 +199,7 @@ class StreamPreviewPage extends React.Component<Props, State> {
                                     authApiKeyId={authApiKeyId}
                                     onSelectDataPoint={this.onSelectDataPoint}
                                     selectedDataPoint={this.state.selectedDataPoint}
+                                    hasData={this.setHasData}
                                 />
                             )}
                         </div>

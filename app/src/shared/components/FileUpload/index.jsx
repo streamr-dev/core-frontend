@@ -3,6 +3,7 @@
 import React, { Component, type Element } from 'react'
 import Dropzone from 'react-dropzone'
 
+import { type Ref } from '$shared/flowtype/common-types'
 import styles from './fileUpload.pcss'
 
 export type DropzoneFile = File & {
@@ -51,7 +52,6 @@ class FileUpload extends Component<Props, State> {
 
     onDrop = (files: Array<DropzoneFile>) => {
         const { onFilesAccepted } = this.props
-
         if (files && files.length > 0) {
             onFilesAccepted(files)
         }
@@ -61,7 +61,7 @@ class FileUpload extends Component<Props, State> {
         const { onError, acceptMime, maxFileSizeInMB } = this.props
 
         if (onError) {
-            if (file.size > maxFileSizeInMB) {
+            if (file.size > this.megabytesToBytes(maxFileSizeInMB)) {
                 onError(fileUploadErrors.FILE_TOO_LARGE)
             }
 
@@ -106,7 +106,11 @@ class FileUpload extends Component<Props, State> {
         })
     }
 
+    dropzoneRef: Ref<Dropzone> = React.createRef()
+
     lastTarget = null
+
+    megabytesToBytes = (mb: number) => mb * 1024 * 1024
 
     renderChildren() {
         const { component, dropTargetComponent, dragOverComponent } = this.props
@@ -135,13 +139,14 @@ class FileUpload extends Component<Props, State> {
 
         return (
             <Dropzone
+                ref={this.dropzoneRef}
                 className={styles.dropzone}
                 onDrop={this.onDrop}
                 onDropRejected={this.onDropRejected}
                 onDragOver={this.onDragOver}
                 onDragLeave={this.onDragLeave}
                 accept={acceptMime.join(', ')}
-                maxSize={maxFileSizeInMB * 1024 * 1024}
+                maxSize={this.megabytesToBytes(maxFileSizeInMB)}
                 {...rest}
             >
                 {this.renderChildren()}

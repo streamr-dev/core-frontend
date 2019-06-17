@@ -2,7 +2,6 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Row, Col } from 'reactstrap'
 import _ from 'lodash'
 
 import type { PermissionState } from '../../../../flowtype/states/permission-state'
@@ -25,23 +24,23 @@ type Props = StateProps & GivenProps
 export class ShareDialogPermissionRow extends Component<Props> {
     render() {
         return (
-            <Row>
-                <Col xs={12} className={styles.permissionRow}>
-                    {_.chain(this.props.permissions)
-                        .groupBy((p) => p.user) // Arrays of permissions with users as keys
-                        .mapValues((permissions) => (
-                            <ShareDialogPermission
+            <div className={styles.container}>
+                {_.chain(this.props.permissions)
+                    .groupBy((p) => p.user) // Arrays of permissions with users as keys
+                    .mapValues((permissions) => {
+                        if (permissions[0].user) {
+                            return (<ShareDialogPermission
                                 resourceType={this.props.resourceType}
                                 resourceId={this.props.resourceId}
                                 key={`${permissions[0].user}`}
                                 permissions={permissions}
-                            />
-                        ))
-                        .values() // Take only the components
-                        .value() // Output the array
-                    }
-                </Col>
-            </Row>
+                            />)
+                        }
+                    })
+                    .values() // Take only the components
+                    .value() // Output the array
+                }
+            </div>
         )
     }
 }

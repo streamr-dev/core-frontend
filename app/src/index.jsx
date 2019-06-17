@@ -4,11 +4,10 @@ import React from 'react'
 import { render } from 'react-dom'
 import { Provider } from 'react-redux'
 
-import App from './marketplace/components/App'
+import App from './app'
 import GlobalInfoWatcher from './marketplace/containers/GlobalInfoWatcher'
 import store from './store'
 import './setup'
-import './layout'
 
 const root = document.getElementById('root')
 

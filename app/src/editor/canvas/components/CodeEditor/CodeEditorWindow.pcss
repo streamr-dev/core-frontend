@@ -1,0 +1,47 @@
+.editorDialog {
+  position: absolute;
+  z-index: 1;
+  transform: none;
+
+  :global(.react-resizable-handle) {
+    width: 24px;
+    height: 24px;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    cursor: nwse-resize;
+  }
+}
+
+.editorContainer {
+  padding: 24px;
+  position: relative;
+  overflow: auto;
+  flex: 1;
+}
+
+.editor {
+  color: #2AC437;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 1px;
+  line-height: 16px;
+
+  & :global(.ace_gutter) {
+    background: none !important;
+    color: #ADADAD !important;
+  }
+
+  & :global(.ace_tooltip) {
+    padding: 6px 8px;
+    background: #323232;
+    border-radius: 2px;
+    color: #EFEFEF;
+    box-shadow: none;
+    border: none;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0;
+    line-height: 14px;
+  }
+}

@@ -8,9 +8,6 @@ msgstr ""
 "POT-Creation-Date: 2018-09-26T12:51:00.805Z\n"
 "PO-Revision-Date: 2018-09-26T12:51:00.805Z\n"
 
-msgid "accountPage##createProductButton"
-msgstr "Create A Product"
-
 msgid "actionBar##category"
 msgstr "Category"
 
@@ -136,6 +133,9 @@ msgstr "Marketplace top"
 msgid "imageUpload##coverImage##replace"
 msgstr "Drag & drop to replace your cover image <br /> or click to browse for one"
 
+msgid "imageUpload##coverImage##tabletUpload"
+msgstr "Tap to take a photo or browse for one"
+
 msgid "imageUpload##coverImage##upload"
 msgstr "Drag & drop to upload a cover image <br /> or click to browse for one"
 
@@ -209,9 +209,10 @@ msgid "modal##completePublish##started##title"
 msgstr "Publish Confirmation"
 
 msgid "modal##completePurchase##confirmed##message"
-msgstr ""
-"You need to connect your Ethereum identity to your Streamr account. Connect "
-"it <a href=%{profileLink}>here</a>."
+msgstr "You need to connect your Ethereum identity to your Streamr account."
+
+msgid "modal##completePurchase##confirmed##link"
+msgstr "Connect it here."
 
 msgid "modal##completePurchase##confirmed##title"
 msgstr "Transaction complete"
@@ -469,6 +470,9 @@ msgstr "Next"
 msgid "modal##streamLiveData##previous"
 msgstr "Previous"
 
+msgid "modal##streamLiveData##noLiveData"
+msgstr "0 Messages Received"
+
 msgid "modal##web3##installmetamask##message"
 msgstr ""
 "We couldn't find your wallet. Please install <br /> MetaMask or another "
@@ -535,11 +539,17 @@ msgstr "We couldn’t find anything to match your search"
 
 msgid "notFoundPage##message"
 msgstr ""
-"Woops! We don’t seem to be able to <br />find your data. Something might have "
-"been moved around or changed."
+"Whoops! We don’t seem to be able to find your data.</br>"
+"<small>Something might have been moved around or changed.<small>"
 
 msgid "notFoundPage##top"
-msgstr "Go to the marketplace top"
+msgstr "Go to marketplace"
+
+msgid "notFoundPage##coreApp"
+msgstr "Go to core app"
+
+msgid "notFoundPage##publicSite"
+msgstr "Go to public site"
 
 msgid "notifications##productPublished"
 msgstr "Your product has been published"
@@ -768,3 +778,9 @@ msgstr "Product state (from free to paid and vise versa) cannot be changed"
 
 msgid "validation##productStreams"
 msgstr "Add at least one stream to your product"
+
+msgid "general##core"
+msgstr "Core"
+
+msgid "general##transactions"
+msgstr "Transactions"

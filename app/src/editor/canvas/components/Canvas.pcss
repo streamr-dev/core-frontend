@@ -1,0 +1,39 @@
+.Canvas {
+  background: #E7E7E7;
+  position: relative;
+}
+
+.CanvasElements {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  overflow: auto;
+}
+
+.Modules,
+.Cables {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+.Modules {
+  z-index: 1;
+}
+
+.Modules:focus {
+  outline: none;
+}
+
+.Cables {
+  fill: none;
+  pointer-events: none;
+}
+
+svg.Cables {
+  overflow: visible;
+}

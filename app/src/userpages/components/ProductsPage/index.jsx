@@ -7,21 +7,22 @@ import { Translate, I18n } from 'react-redux-i18n'
 import { Link } from 'react-router-dom'
 import { push } from 'react-router-redux'
 import copy from 'copy-to-clipboard'
+import Helmet from 'react-helmet'
+import moment from 'moment'
 
 import Layout from '../Layout'
 import links from '../../../links'
 import { defaultColumns, getFilters } from '../../utils/constants'
 import { getMyProducts, updateFilter } from '$mp/modules/myProductList/actions'
-import { selectMyProductList, selectFilter } from '$mp/modules/myProductList/selectors'
+import { selectMyProductList, selectFilter, selectFetching } from '$mp/modules/myProductList/selectors'
 import { productStates } from '$shared/utils/constants'
 import Tile from '$shared/components/Tile'
-import EmptyState from '$shared/components/EmptyState'
-import emptyStateIcon from '$shared/assets/images/empty_state_icon.png'
-import emptyStateIcon2x from '$shared/assets/images/empty_state_icon@2x.png'
-import Search from '$shared/components/Search'
+import Search from '../Header/Search'
 import Dropdown from '$shared/components/Dropdown'
 import { formatPath, formatExternalUrl } from '$shared/utils/url'
 import DropdownActions from '$shared/components/DropdownActions'
+import NoProductsView from './NoProducts'
+import DocsShortcuts from '$userpages/components/DocsShortcuts'
 
 import type { ProductList, ProductId, Product } from '$mp/flowtype/product-types'
 import type { Filter, SortOption } from '$userpages/flowtype/common-types'
@@ -31,6 +32,7 @@ import styles from './products.pcss'
 export type StateProps = {
     products: ProductList,
     filter: ?Filter,
+    fetching: boolean,
 }
 
 export type DispatchProps = {
@@ -44,20 +46,23 @@ export type DispatchProps = {
 type Props = StateProps & DispatchProps
 
 const CreateProductButton = () => (
-    <Button>
-        <Link to={links.createProduct}>
-            <Translate value="userpages.products.createProduct" />
-        </Link>
+    <Button
+        color="primary"
+        className={styles.createProductButton}
+        tag={Link}
+        to={links.marketplace.createProduct}
+    >
+        <Translate value="userpages.products.createProduct" />
     </Button>
 )
 
 const getSortOptions = (): Array<SortOption> => {
     const filters = getFilters()
     return [
-        filters.PUBLISHED,
-        filters.DRAFT,
         filters.NAME_ASC,
         filters.NAME_DESC,
+        filters.PUBLISHED,
+        filters.DRAFT,
     ]
 }
 
@@ -98,6 +103,15 @@ class ProductsPage extends Component<Props> {
         }
     }
 
+    resetFilter = () => {
+        const { updateFilter, getMyProducts } = this.props
+        updateFilter({
+            ...this.defaultFilter,
+            search: '',
+        })
+        getMyProducts()
+    }
+
     getActions = ({ id, state }: Product) => {
         const { redirectToEditProduct, redirectToPublishProduct, copyUrl } = this.props
 
@@ -130,8 +144,10 @@ class ProductsPage extends Component<Props> {
         )
     }
 
+    generateTimeAgoDescription = (productUpdatedDate: Date) => moment(productUpdatedDate).fromNow()
+
     render() {
-        const { products, filter } = this.props
+        const { products, filter, fetching } = this.props
 
         return (
             <Layout
@@ -147,7 +163,7 @@ class ProductsPage extends Component<Props> {
                     <Dropdown
                         title={I18n.t('userpages.filter.sortBy')}
                         onChange={this.onSortChange}
-                        defaultSelectedItem={(filter && filter.id) || this.defaultFilter.id}
+                        selectedItem={(filter && filter.id) || this.defaultFilter.id}
                     >
                         {getSortOptions().map((s) => (
                             <Dropdown.Item key={s.filter.id} value={s.filter.id}>
@@ -156,33 +172,32 @@ class ProductsPage extends Component<Props> {
                         ))}
                     </Dropdown>
                 }
+                loading={fetching}
             >
-                <Container>
-                    {!products.length && (
-                        <EmptyState
-                            image={(
-                                <img
-                                    src={emptyStateIcon}
-                                    srcSet={`${emptyStateIcon2x} 2x`}
-                                    alt={I18n.t('error.notFound')}
-                                />
-                            )}
-                        >
-                            <Translate value="userpages.products.noProducts.title" />
-                            <Translate value="userpages.products.noProducts.message" tag="small" />
-                        </EmptyState>
+                <Helmet title={`Streamr Core | ${I18n.t('userpages.title.products')}`} />
+                <Container className={styles.corepageContentContainer}>
+                    {!fetching && products && !products.length && (
+                        <NoProductsView
+                            hasFilter={!!filter && (!!filter.search || !!filter.key)}
+                            filter={filter}
+                            onResetFilter={this.resetFilter}
+                        />
                     )}
                     <Row>
                         {products.map((product) => (
                             <Col {...defaultColumns} key={product.id}>
                                 <Tile
                                     imageUrl={product.imageUrl}
-                                    link={product.id && `${links.products}/${product.id}`}
+                                    link={product.id && `${links.marketplace.products}/${product.id}`}
                                     dropdownActions={this.getActions(product)}
                                 >
                                     <Tile.Title>{product.name}</Tile.Title>
+                                    <Tile.Tag >
+                                        {product.updated === product.created ? 'Created ' : 'Updated '}
+                                        {product.updated && this.generateTimeAgoDescription(new Date(product.updated))}
+                                    </Tile.Tag>
                                     <Tile.Tag
-                                        className={product.state === productStates.DEPLOYED ? styles.purple : styles.gray}
+                                        className={product.state === productStates.DEPLOYED ? styles.green : styles.grey}
                                     >
                                         {
                                             product.state === productStates.DEPLOYED ?
@@ -195,6 +210,7 @@ class ProductsPage extends Component<Props> {
                         ))}
                     </Row>
                 </Container>
+                <DocsShortcuts />
             </Layout>
         )
     }
@@ -203,17 +219,17 @@ class ProductsPage extends Component<Props> {
 export const mapStateToProps = (state: any): StateProps => ({
     products: selectMyProductList(state),
     filter: selectFilter(state),
+    fetching: selectFetching(state),
 })
 
 export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getMyProducts: () => dispatch(getMyProducts()),
     updateFilter: (filter: Filter) => dispatch(updateFilter(filter)),
-    redirectToEditProduct: (id: ProductId) => dispatch(push(formatPath(links.products, id, 'edit'))),
-    redirectToPublishProduct: (id: ProductId) => dispatch(push(formatPath(links.products, id, 'publish'))),
+    redirectToEditProduct: (id: ProductId) => dispatch(push(formatPath(links.marketplace.products, id, 'edit'))),
+    redirectToPublishProduct: (id: ProductId) => dispatch(push(formatPath(links.marketplace.products, id, 'publish'))),
     copyUrl: (id: ProductId) => copy(formatExternalUrl(
         process.env.PLATFORM_ORIGIN_URL,
-        process.env.PLATFORM_BASE_PATH,
-        links.products,
+        links.marketplace.products,
         id,
     )),
 })

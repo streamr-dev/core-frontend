@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 import classNames from 'classnames'
-import dropdownStyles from '$shared/components/Nav/NavDropdown/navDropdown.pcss'
+import Dropdown from '$shared/components/Nav/DropdownItem'
 import styles from './languageSelector.pcss'
 
 type Props = {
@@ -22,7 +22,7 @@ const icon = (className: string) => (
 
 const LanguageSelector = ({ children, selected }: Props) => (
     <div
-        className={classNames(dropdownStyles.dropdown, styles.selector, {
+        className={classNames(Dropdown.styles.dropdown, styles.selector, {
             [styles.enabled]: React.Children.count(children) > 1,
         })}
     >
@@ -33,8 +33,8 @@ const LanguageSelector = ({ children, selected }: Props) => (
                 {icon(styles.arrowDown)}
             </div>
         </a>
-        <div className={classNames(dropdownStyles.dropdownMenuWrapper, styles.dropdownMenuWrapper, dropdownStyles.centered)}>
-            <ul className={classNames(dropdownStyles.dropdownMenu, styles.dropdownMenu)}>
+        <div className={classNames(Dropdown.styles.dropdownMenuWrapper, styles.dropdownMenuWrapper, Dropdown.styles.centered)}>
+            <ul className={classNames(Dropdown.styles.dropdownMenu, styles.dropdownMenu)}>
                 {React.Children.map(children, (child) => (
                     <li>{child}</li>
                 ))}

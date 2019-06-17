@@ -65,10 +65,10 @@ class ActionBar extends Component<Props> {
         (BN(this.props.filter.maxPrice).isEqualTo('0') && dropdownValue === 'free')
     )
 
-    currentCategoryFilter = () => {
+    currentCategoryFilter = (): string => {
         const { filter: { categories: category }, categories } = this.props
         const categoryFilter = categories ? categories.find((c) => c.id === category) : null
-        return categoryFilter && categoryFilter.name
+        return (categoryFilter || {}).name || ''
     }
 
     currentSortByFilter = () => {
@@ -126,7 +126,7 @@ class ActionBar extends Component<Props> {
                                 </FilterSelector>
                             </li>
                             <li className={classNames('d-none d-md-block', styles.createProduct)}>
-                                <Link to={links.createProduct}>
+                                <Link to={links.marketplace.createProduct}>
                                     <Button className={styles.createProductButton} color="secondary" outline>
                                         <Translate value="actionBar.create" />
                                     </Button>

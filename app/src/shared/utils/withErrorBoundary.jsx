@@ -1,10 +1,12 @@
 // @flow
 
-import React, { Component, type ComponentType } from 'react'
-import Raven from 'raven-js'
+import React, { Component, type ComponentType, type Node } from 'react'
+
+import analytics from '../../analytics'
 
 type Props = {
     path?: string,
+    children?: ?Node,
 }
 type State = {
     error: ?Error,
@@ -26,11 +28,9 @@ const withErrorBoundary = (ErrorComponent: ComponentType<any>) => (
                 }
             }
 
-            componentDidCatch(error: Error, errorInfo: string) {
+            componentDidCatch(error: Error, extra: any) {
                 console.error(error)
-                Raven.captureException(error, {
-                    extra: errorInfo,
-                })
+                analytics.reportError(error, extra)
                 this.setState({
                     error,
                 })
@@ -38,10 +38,13 @@ const withErrorBoundary = (ErrorComponent: ComponentType<any>) => (
 
             render() {
                 const { error } = this.state
+                const { children, ...props } = this.props
                 return error ? (
-                    <ErrorComponent {...this.props} error={this.state} />
+                    <ErrorComponent {...props} error={this.state} />
                 ) : (
-                    <OriginalComponent {...this.props} />
+                    <OriginalComponent {...props}>
+                        {children}
+                    </OriginalComponent>
                 )
             }
         }

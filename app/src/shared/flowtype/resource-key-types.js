@@ -4,11 +4,13 @@ export type ResourceKeyId = string
 
 export type ResourceType = 'STREAM' | 'USER'
 
+export type ResourcePermission = 'read' | 'write' | 'share'
+
 export type ResourceKey = {
     id?: ResourceKeyId,
     name: string,
     user?: ?string,
-    permission?: 'read' | 'write' | 'share',
+    permission?: ResourcePermission,
     type: ResourceType,
 }
 

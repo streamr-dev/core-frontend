@@ -1,7 +1,8 @@
 import assert from 'assert-diff'
 import BN from 'bignumber.js'
-
+import set from 'lodash/fp/set'
 import * as all from '$shared/modules/user/selectors'
+import { initialState } from '$shared/modules/user/reducer'
 
 const state = {
     test: true,
@@ -9,7 +10,6 @@ const state = {
         user: {
             name: 'Tester1',
             username: 'tester1@streamr.com',
-            timezone: 'Zulu',
         },
         fetchingUserData: false,
         userDataError: null,
@@ -31,7 +31,6 @@ const state = {
         ],
         fetchingIntegrationKeys: false,
         integrationKeysError: null,
-        fetchingExternalLogin: false,
         logoutError: null,
         fetchingLogout: false,
     },
@@ -67,6 +66,13 @@ const state = {
 }
 
 describe('user - selectors', () => {
+    it('selects user data error', () => {
+        assert.deepStrictEqual(all.selectUserDataError(state), null)
+        const err = new Error()
+        const errorState = set('user.userDataError', err, state)
+        assert.strictEqual(all.selectUserDataError(errorState), err)
+    })
+
     it('selects user data fetching status', () => {
         assert.deepStrictEqual(all.selectFetchingUserData(state), false)
     })
@@ -75,11 +81,28 @@ describe('user - selectors', () => {
         assert.deepStrictEqual(all.selectUserData(state), state.user.user)
     })
 
-    it('selects external login fetcing status', () => {
-        assert.deepStrictEqual(all.selectFetchingExternalLogin(state), false)
-    })
+    describe('isAuthenticating', () => {
+        it('gives false on init', () => {
+            expect(all.isAuthenticating({
+                user: initialState,
+            })).toEqual(false)
+        })
 
-    it('selects logout error', () => {
-        assert.deepStrictEqual(all.selectLogoutError(state), null)
+        it('gives false on success', () => {
+            expect(all.isAuthenticating(state)).toEqual(false)
+        })
+
+        it('gives false on failure', () => {
+            let errorState = set('user.user', null, state)
+            errorState = set('user.userDataError', new Error(), errorState)
+            expect(all.isAuthenticating(errorState)).toEqual(false)
+        })
+
+        it('gives true when user data and user data error are blank and fetching is in progress', () => {
+            let errorState = set('user.user', null, state)
+            errorState = set('user.userDataError', null, errorState)
+            errorState = set('user.fetchingUserData', true, errorState)
+            expect(all.isAuthenticating(errorState)).toEqual(true)
+        })
     })
 })

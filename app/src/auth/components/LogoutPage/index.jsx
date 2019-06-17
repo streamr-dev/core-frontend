@@ -1,31 +1,51 @@
 // @flow
 
-import React from 'react'
+import React, { useState } from 'react'
+import { connect } from 'react-redux'
 
+import { post } from '$shared/utils/api'
+import useIsMounted from '$shared/hooks/useIsMounted'
+import useOnMount from '$shared/utils/useOnMount'
+import { logout as logoutAction } from '$shared/modules/user/actions'
 import ErrorPageView from '$mp/components/ErrorPageView'
-import type { ErrorInUi } from '$shared/flowtype/common-types'
-
-export type StateProps = {
-    error: ?ErrorInUi,
-}
+import routes from '$routes'
 
 export type DispatchProps = {
     logout: () => void,
 }
 
-type Props = DispatchProps & StateProps & {
+type Props = DispatchProps & {}
+
+const LogoutPage = ({ logout }: Props) => {
+    const [error, setError] = useState(null)
+
+    const isMounted = useIsMounted()
+
+    useOnMount(() => {
+        post(routes.externalLogout())
+            .then(
+                () => {
+                    if (isMounted()) {
+                        logout()
+                    }
+                },
+                (e) => {
+                    if (isMounted()) {
+                        setError(e)
+                    }
+                },
+            )
+    })
+
+    return !!error && (
+        <ErrorPageView />
+    )
 }
 
-class LogoutPage extends React.Component<Props> {
-    componentDidMount() {
-        this.props.logout()
-    }
+export { LogoutPage }
 
-    render() {
-        return !!this.props.error && (
-            <ErrorPageView />
-        )
-    }
-}
+const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
+    logout: () => dispatch(logoutAction()),
+})
 
-export default LogoutPage
+export default connect(null, mapDispatchToProps)(LogoutPage)

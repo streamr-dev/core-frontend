@@ -186,7 +186,7 @@ export const purchaseProduct = () => (dispatch: Function, getState: () => StoreS
     if (product) {
         if (isPaidProduct(product)) {
             // Paid product has to be bought with Metamask
-            dispatch(replace(formatPath(links.products, product.id || '', 'purchase')))
+            dispatch(replace(formatPath(links.marketplace.products, product.id || '', 'purchase')))
         } else {
             // Free product can be bought directly
             dispatch(addFreeProduct(product.id || ''))

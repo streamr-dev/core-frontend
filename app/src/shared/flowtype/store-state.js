@@ -38,9 +38,6 @@ export type UserState = {
     user: ?User,
     fetchingUserData: boolean,
     userDataError: ?ErrorInUi,
-    fetchingExternalLogin: boolean,
-    logoutError: ?ErrorInUi,
-    fetchingLogout: boolean,
     deletingUserAccount: boolean,
     deleteUserAccountError: ?ErrorInUi,
 }

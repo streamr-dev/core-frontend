@@ -1,17 +1,55 @@
-.buttonContainer {
-  text-align: right;
+.longText {
+  margin-bottom: 36px;
+  margin-bottom: 2.25rem;
+  line-height: 20px;
+  max-width: 488px;
+}
 
-  & > button:not(:first-child) {
-    margin-left: 1rem;
+.previewControls {
+  position: absolute;
+  height: 32px;
+  right: 0;
+  top: 8px;
+}
+
+@media (--md-down) {
+  .previewControls {
+    bottom: -50px;
+    top: auto;
   }
+}
 
-  .toggleButton {
-    padding: 0 !important;
-    margin: 0;
+.previewContainer {
+  display: none;
+  position: relative;
+  max-width: 682px;
+  margin: 2em 0;
 
-    .icon {
+  .previewControls {
+    .inspectButton {
+      height: 32px;
+      width: 80px;
+      margin-left: 1rem;
+    }
+
+    .playPauseButton {
+      margin: 0;
+      padding: 0 !important;
       width: 32px;
       height: 32px;
+
+      .icon {
+        width: 32px;
+        height: 32px;
+      }
     }
+  }
+}
+
+.hasData {
+  display: block;
+
+  a {
+    text-decoration: none;
   }
 }

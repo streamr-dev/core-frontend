@@ -5,48 +5,9 @@ import * as constants from '$shared/modules/user/constants'
 
 describe('user - reducer', () => {
     it('has initial state', () => {
-        assert.deepStrictEqual(reducer(undefined, {}), initialState)
-    })
-
-    describe('LOGOUT_*', () => {
-        it('handles request', () => {
-            const expectedState = {
-                ...initialState,
-                fetchingLogout: true,
-            }
-
-            assert.deepStrictEqual(reducer(undefined, {
-                type: constants.LOGOUT_REQUEST,
-                payload: {},
-            }), expectedState)
-        })
-
-        it('handles success', () => {
-            const expectedState = {
-                ...initialState,
-                fetchingLogout: false,
-            }
-
-            assert.deepStrictEqual(reducer(undefined, {
-                type: constants.LOGOUT_SUCCESS,
-                payload: {},
-            }), expectedState)
-        })
-
-        it('handles failure', () => {
-            const error = new Error('logout error')
-            const expectedState = {
-                ...initialState,
-                logoutError: error,
-                fetchingLogout: false,
-            }
-
-            assert.deepStrictEqual(reducer(undefined, {
-                type: constants.LOGOUT_FAILURE,
-                payload: {
-                    error,
-                },
-            }), expectedState)
+        assert.deepStrictEqual(reducer(undefined, {}), {
+            ...initialState,
+            fetchingUserData: true,
         })
     })
 
@@ -67,7 +28,6 @@ describe('user - reducer', () => {
             const user = {
                 name: 'Tester1',
                 username: 'tester1@streamr.com',
-                timezone: 'Zulu',
             }
 
             const expectedState = {
@@ -116,7 +76,6 @@ describe('user - reducer', () => {
                 payload: {
                     user: {
                         email: 'test3',
-                        timezone: 'test4',
                     },
                 },
             }), {
@@ -125,7 +84,6 @@ describe('user - reducer', () => {
                 user: {
                     name: 'test',
                     email: 'test3',
-                    timezone: 'test4',
                 },
             })
         })
@@ -139,7 +97,6 @@ describe('user - reducer', () => {
                     user: {
                         name: 'test',
                         email: 'test3',
-                        timezone: 'test4',
                     },
                 },
             }), {
@@ -148,7 +105,6 @@ describe('user - reducer', () => {
                 user: {
                     name: 'test',
                     email: 'test3',
-                    timezone: 'test4',
                 },
             })
         })

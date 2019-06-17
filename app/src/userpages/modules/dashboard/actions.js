@@ -1,8 +1,10 @@
 // @flow
 
 import _ from 'lodash'
+import { I18n } from 'react-redux-i18n'
 
-import { success as successNotification, error as errorNotification } from 'react-notification-system-redux'
+import Notification from '$shared/utils/Notification'
+import { NotificationIcon } from '$shared/utils/constants'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { Filter } from '../../flowtype/common-types'
 import type { StoreState } from '$shared/flowtype/store-state'
@@ -248,10 +250,10 @@ export const getDashboards = () => (dispatch: Function, getState: () => StoreSta
         })
         .catch((e) => {
             dispatch(getDashboardsFailure(e))
-            dispatch(errorNotification({
-                title: 'Error!',
-                message: e.message,
-            }))
+            Notification.push({
+                title: e.message,
+                icon: NotificationIcon.ERROR,
+            })
             throw e
         })
 }
@@ -269,10 +271,10 @@ export const getDashboard = (id: DashboardId) => (dispatch: Function) => {
         .then(() => dispatch(getDashboardSuccess()))
         .catch((e) => {
             dispatch(getDashboardFailure(e))
-            dispatch(errorNotification({
-                title: 'Error!',
-                message: e.message,
-            }))
+            Notification.push({
+                title: e.message,
+                icon: NotificationIcon.ERROR,
+            })
             throw e
         })
 }
@@ -293,10 +295,10 @@ export const updateAndSaveDashboard = (dashboard: Dashboard) => (dispatch: Funct
         }))
         .then(handleEntities(dashboardSchema, dispatch))
         .then((result) => {
-            dispatch(successNotification({
-                title: 'Success!',
-                message: 'Dashboard saved successfully!',
-            }))
+            Notification.push({
+                title: I18n.t('userpages.dashboards.savedDashboard'),
+                icon: NotificationIcon.CHECKMARK,
+            })
 
             if (dashboard.id !== result) {
                 dispatch(changeDashboardId(dashboard.id, result))
@@ -305,10 +307,10 @@ export const updateAndSaveDashboard = (dashboard: Dashboard) => (dispatch: Funct
             dispatch(updateAndSaveDashboardSuccess())
         })
         .catch((e) => {
-            dispatch(errorNotification({
-                title: 'Error!',
-                message: e.message,
-            }))
+            Notification.push({
+                title: e.message,
+                icon: NotificationIcon.ERROR,
+            })
             dispatch(updateAndSaveDashboardFailure(e))
 
             throw e
@@ -325,13 +327,20 @@ export const updateAndSaveCurrentDashboard = () => (dispatch: Function, getState
 export const deleteDashboard = (id: DashboardId) => (dispatch: Function) => {
     dispatch(deleteDashboardRequest(id))
     return services.deleteDashboard(id)
-        .then(() => dispatch(deleteDashboardSuccess(id)))
+        .then(() => {
+            Notification.push({
+                title: I18n.t('userpages.dashboards.deletedDashboard'),
+                icon: NotificationIcon.CHECKMARK,
+            })
+
+            dispatch(deleteDashboardSuccess(id))
+        })
         .catch((e) => {
             dispatch(deleteDashboardFailure(e))
-            dispatch(errorNotification({
-                title: 'Error!',
-                message: e.message,
-            }))
+            Notification.push({
+                title: e.message,
+                icon: NotificationIcon.ERROR,
+            })
             throw e
         })
 }
@@ -354,10 +363,10 @@ export const getMyDashboardPermissions = (id: DashboardId) => (dispatch: Functio
         })
         .catch((e) => {
             dispatch(getMyDashboardPermissionsFailure(id, e))
-            dispatch(errorNotification({
-                title: 'Error!',
-                message: e.message,
-            }))
+            Notification.push({
+                title: e.message,
+                icon: NotificationIcon.ERROR,
+            })
             throw e
         })
 }

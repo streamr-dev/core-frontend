@@ -15,3 +15,7 @@ export const DELETE_INTEGRATION_KEY_FAILURE = 'shared/integrationKey/DELETE_INTE
 export const CREATE_IDENTITY_REQUEST = 'shared/integrationKey/CREATE_IDENTITY_REQUEST'
 export const CREATE_IDENTITY_SUCCESS = 'shared/integrationKey/CREATE_IDENTITY_SUCCESS'
 export const CREATE_IDENTITY_FAILURE = 'shared/integrationKey/CREATE_IDENTITY_FAILURE'
+
+export const EDIT_INTEGRATION_KEY_REQUEST = 'shared/integrationKey/EDIT_INTEGRATION_KEY_REQUEST'
+export const EDIT_INTEGRATION_KEY_SUCCESS = 'shared/integrationKey/EDIT_INTEGRATION_KEY_SUCCESS'
+export const EDIT_INTEGRATION_KEY_FAILURE = 'shared/integrationKey/EDIT_INTEGRATION_KEY_FAILURE'

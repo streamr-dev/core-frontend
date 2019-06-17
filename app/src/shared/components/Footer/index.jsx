@@ -2,8 +2,6 @@
 
 import * as React from 'react'
 import { I18n } from 'react-redux-i18n'
-import handleViewport from 'react-in-viewport'
-import cx from 'classnames'
 
 import { localize } from '../../utils/locale'
 import Copyright from './Copyright'
@@ -35,8 +33,6 @@ type Language = {
 type Props = {
     children: React.Node,
     onSelectLanguage: (string) => void,
-    inViewport?: boolean,
-    innerRef?: any,
     currentLanguage: string,
     languages: Array<Language>,
     localeUrlFormatter: (?string, string, Array<string>) => string,
@@ -54,47 +50,36 @@ const Footer = ({
     languages,
     currentLanguage,
     onSelectLanguage,
-    inViewport,
-    innerRef,
     localeUrlFormatter,
 }: Props) => {
     const locales = languages.map((l) => l.lang)
 
     return (
-        <div
-            ref={innerRef}
-            className={styles.root}
-        >
-            <div
-                className={cx(styles.inner, {
-                    [styles.inViewport]: !!inViewport,
-                })}
-            >
-                <Directory>
-                    <FooterColumn title={I18n.t('general.language')}>
-                        <LanguageSelector selected={currentLanguage}>
-                            {languages.map(({ lang, name }) => (
-                                <LanguageLink
-                                    key={lang}
-                                    href={localeUrlFormatter(pathname(), lang, locales)}
-                                    value={lang}
-                                    onClick={onSelectLanguage}
-                                >
-                                    {name}
-                                </LanguageLink>
-                            ))}
-                        </LanguageSelector>
-                    </FooterColumn>
-                    <Wedge />
-                    {children}
-                </Directory>
-                <Badges perRow={4}>
-                    {badges.map((badge) => (
-                        <Badge key={badge} id={badge} />
-                    ))}
-                </Badges>
-                <Copyright />
-            </div>
+        <div className={styles.root}>
+            <Directory>
+                <FooterColumn title={I18n.t('general.language')}>
+                    <LanguageSelector selected={currentLanguage}>
+                        {languages.map(({ lang, name }) => (
+                            <LanguageLink
+                                key={lang}
+                                href={localeUrlFormatter(pathname(), lang, locales)}
+                                value={lang}
+                                onClick={onSelectLanguage}
+                            >
+                                {name}
+                            </LanguageLink>
+                        ))}
+                    </LanguageSelector>
+                </FooterColumn>
+                <Wedge />
+                {children}
+            </Directory>
+            <Badges perRow={4}>
+                {badges.map((badge) => (
+                    <Badge key={badge} id={badge} />
+                ))}
+            </Badges>
+            <Copyright />
         </div>
     )
 }
@@ -105,4 +90,4 @@ Footer.defaultProps = {
 
 export { default as FooterColumn } from './FooterColumn'
 
-export default handleViewport(Footer)
+export default Footer

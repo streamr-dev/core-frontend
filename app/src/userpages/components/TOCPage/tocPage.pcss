@@ -1,26 +1,24 @@
-@import 'variables.pcss';
-
 .pageTitle {
   color: var(--greyDark);
   font-size: 2.2rem;
   font-weight: var(--medium);
   letter-spacing: 0;
   line-height: 1.5rem;
-  margin: 6rem 0 4.7rem 0;
+  margin: 96px 0 48px;
 }
 
 .tocList {
   list-style-type: none;
-  margin: 1.2rem 4rem 0 0;
+  margin: 182px 4em 1em 0;
   padding: 0;
   text-align: right;
   position: sticky;
-  top: 1rem;
+  top: 7em;
 }
 
 .tocListItem {
   color: var(--greyDark);
-  font-size: 1rem;
+  font-size: 16px;
   letter-spacing: 0;
   margin-bottom: 0.8rem;
   line-height: 1.5rem;
@@ -31,12 +29,38 @@
 
     &:hover,
     &:active {
-      color: var(--blue);
+      color: var(--streamrBlue);
     }
 
     &.active {
-      color: var(--blue);
-      font-weight: var(--medium);
+      color: var(--streamrBlue);
+    }
+  }
+}
+
+@media (--md-down) {
+  .tocList {
+    margin: 12px 2em 1em 0;
+    top: 1.5em;
+  }
+
+  .pageTitle {
+    display: none;
+  }
+}
+
+@media (--sm-down) {
+  .tocList {
+    display: none;
+  }
+}
+
+@media (--md-down) {
+  .hideTablet {
+    a {
+      color: #C4C4C4 !important;
+      pointer-events: none;
+      cursor: default;
     }
   }
 }

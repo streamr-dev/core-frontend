@@ -79,7 +79,6 @@ describe('EditProductPage', () => {
             user: {
                 name: 'bob',
                 username: 'bobcat69',
-                timezone: 'HEL',
             },
         }
         sandbox.stub(I18n, 't').callsFake(String)
@@ -129,7 +128,7 @@ describe('EditProductPage', () => {
             }
             delete alteredProps.editProduct
             wrapper = shallow(<EditProductPage {...alteredProps} />)
-            wrapper.setProps(...props)
+            wrapper.setProps(props)
             expect(props.initEditProductProp.callCount).toEqual(1)
         })
     })

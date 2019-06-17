@@ -4,10 +4,16 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { I18n } from 'react-redux-i18n'
 import { push } from 'react-router-redux'
+import cx from 'classnames'
+import Helmet from 'react-helmet'
+import MediaQuery from 'react-responsive'
 
 import { saveCurrentUser } from '$shared/modules/user/actions'
 import Toolbar from '$shared/components/Toolbar'
 import TOCPage from '$userpages/components/TOCPage'
+import ConfigureAnchorOffset from '$shared/components/ConfigureAnchorOffset'
+import { lg } from '$app/scripts/breakpoints'
+import links from '$shared/../links'
 
 import Layout from '../Layout'
 import ProfileSettings from './ProfileSettings'
@@ -18,8 +24,7 @@ import DeleteAccount from './DeleteAccount'
 import styles from './profilePage.pcss'
 import routes from '$routes'
 
-type StateProps = {
-}
+type StateProps = {}
 
 type DispatchProps = {
     saveCurrentUser: () => Promise<void>,
@@ -67,27 +72,34 @@ export class ProfilePage extends Component<Props, State> {
             }
         })
     }
+
     render() {
         const { saving } = this.state
         return (
-            <Layout noHeader>
+            <Layout noHeader noFooter>
+                <Helmet title={`Streamr Core | ${I18n.t('userpages.title.profile')}`} />
                 <div className={styles.profilePage}>
-                    <Toolbar actions={{
-                        cancel: {
-                            title: I18n.t('userpages.profilePage.toolbar.cancel'),
-                            outline: true,
-                            linkTo: '/u',
-                        },
-                        saveChanges: {
-                            title: I18n.t('userpages.profilePage.toolbar.saveChanges'),
-                            color: 'primary',
-                            onClick: this.onSave,
-                            disabled: saving,
-                            spinner: saving,
-                        },
-                    }}
+                    <MediaQuery minWidth={lg.min}>
+                        <ConfigureAnchorOffset value={-80} />
+                    </MediaQuery>
+                    <Toolbar
+                        altMobileLayout
+                        actions={{
+                            cancel: {
+                                title: I18n.t('userpages.profilePage.toolbar.cancel'),
+                                color: 'link',
+                                linkTo: links.userpages.main,
+                            },
+                            saveChanges: {
+                                title: I18n.t('userpages.profilePage.toolbar.saveAndExit'),
+                                color: 'primary',
+                                onClick: this.onSave,
+                                disabled: saving,
+                                spinner: saving,
+                            },
+                        }}
                     />
-                    <div className="container">
+                    <div className={cx('container', styles.containerOverrides)}>
                         <TOCPage title={I18n.t('userpages.profilePage.pageTitle')}>
                             <TOCPage.Section id="profile" title={I18n.t('userpages.profilePage.profile.title')}>
                                 <ProfileSettings />
