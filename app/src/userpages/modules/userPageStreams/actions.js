@@ -1,6 +1,7 @@
 // @flow
 
 import cloneDeep from 'lodash/cloneDeep'
+import { I18n } from 'react-redux-i18n'
 
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { Stream, StreamId, StreamIdList, StreamFieldList, CSVImporterSchema, StreamStatus } from '$shared/flowtype/stream-types'
@@ -16,6 +17,7 @@ import { getError } from '$shared/utils/request'
 import { selectUserData } from '$shared/modules/user/selectors'
 import { getParamsForFilter } from '$userpages/utils/filters'
 import CsvSchemaError from '$shared/errors/CsvSchemaError'
+import { formatApiUrl } from '$shared/utils/url'
 
 import * as services from './services'
 import { selectFilter, selectOpenStream } from './selectors'
@@ -403,7 +405,7 @@ export const updateStream = (stream: Stream) => (dispatch: Function) => {
         .then(() => {
             dispatch(updateStreamSuccess(stream.id))
             Notification.push({
-                title: 'Stream saved successfully',
+                title: I18n.t('userpages.streams.actions.saveStreamSuccess'),
                 icon: NotificationIcon.CHECKMARK,
             })
         })
@@ -417,24 +419,23 @@ export const updateStream = (stream: Stream) => (dispatch: Function) => {
         })
 }
 
-export const deleteStream = (id: StreamId) => (dispatch: Function): Promise<void> => {
+export const deleteStream = (id: StreamId) => async (dispatch: Function): Promise<void> => {
     dispatch(deleteStreamRequest())
-    return services.deleteStream(id)
-        .then(() => {
-            dispatch(deleteStreamSuccess(id))
-            Notification.push({
-                title: 'Stream deleted successfully',
-                icon: NotificationIcon.CHECKMARK,
-            })
+    try {
+        const deleteStream = await api.del(formatApiUrl('streams', id))
+        dispatch(deleteStreamSuccess(id))
+        Notification.push({
+            title: I18n.t('userpages.streams.actions.deleteStreamSuccess'),
+            icon: NotificationIcon.CHECKMARK,
         })
-        .catch((e) => {
-            dispatch(deleteStreamFailure(e))
-            Notification.push({
-                title: e.message,
-                icon: NotificationIcon.ERROR,
-            })
-            throw e
+        return deleteStream
+    } catch (e) {
+        dispatch(deleteStreamFailure(e))
+        Notification.push({
+            title: e.message,
+            icon: NotificationIcon.ERROR,
         })
+    }
 }
 
 export const saveFields = (id: StreamId, fields: StreamFieldList) => (dispatch: Function) => {

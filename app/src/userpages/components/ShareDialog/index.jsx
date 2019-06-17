@@ -46,25 +46,29 @@ export class ShareDialog extends Component<Props, State> {
     unmounted: boolean = false
 
     componentDidMount() {
-        this.props.getResourcePermissions()
-            .then(() => {
-                if (!this.unmounted) {
-                    this.setState({
-                        fetching: false,
-                    })
-                }
-            }, (error) => {
-                if (!this.unmounted) {
-                    this.setState({
-                        fetching: false,
-                        error,
-                    })
-                }
-            })
+        this.loadPermissions()
     }
 
     componentWillUnmount() {
         this.unmounted = true
+    }
+
+    async loadPermissions() {
+        try {
+            await this.props.getResourcePermissions()
+            if (!this.unmounted) {
+                this.setState({
+                    fetching: false,
+                })
+            }
+        } catch (error) {
+            if (!this.unmounted) {
+                this.setState({
+                    fetching: false,
+                    error,
+                })
+            }
+        }
     }
 
     save = () => {

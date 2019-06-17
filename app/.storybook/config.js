@@ -1,4 +1,4 @@
-import 'babel-polyfill'
+import '@babel/polyfill'
 import 'storybook-chromatic'
 import { setAddon, configure } from '@storybook/react'
 import { setOptions } from '@storybook/addon-options'

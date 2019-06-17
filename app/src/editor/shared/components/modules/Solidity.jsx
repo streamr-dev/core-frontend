@@ -26,6 +26,10 @@ export default class SolidityModule extends React.Component {
         })
     )
 
+    onChange = (code) => {
+        this.props.api.updateModule(this.props.moduleHash, { code })
+    }
+
     onDeploy = () => {
         if (!this.state.deploying) {
             this.setState({
@@ -80,6 +84,7 @@ export default class SolidityModule extends React.Component {
                     code={module.code || ''}
                     readOnly={isActive}
                     onApply={this.onApply}
+                    onChange={this.onChange}
                     debugMessages={debugMessages}
                     onClearDebug={this.onClearDebug}
                 >

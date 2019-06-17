@@ -34,13 +34,13 @@ class CodeEditorWindow extends React.Component {
 
     onBlur = () => {
         const { code } = this.state
-        if (code != null && code !== this.props.code) {
+        if (code != null && code !== this.props.code && this.props.onChange) {
             this.props.onChange(code)
         }
-        this.setState(() => ({
+        this.setState({
             code: undefined,
             editorResetKey: uniqueId('CodeEditorWindow'),
-        }))
+        })
     }
 
     onApply = () => {
@@ -51,7 +51,9 @@ class CodeEditorWindow extends React.Component {
             if (this.unmounted) { return }
             const code = this.state.code != null ? this.state.code : this.props.code
             try {
-                await this.props.onApply(code)
+                if (this.props.onApply) {
+                    await this.props.onApply(code)
+                }
 
                 if (this.unmounted) { return }
 

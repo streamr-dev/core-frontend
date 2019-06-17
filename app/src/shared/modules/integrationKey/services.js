@@ -61,7 +61,11 @@ export const createIdentity = async (name: string): ApiResult<IntegrationKey> =>
         account = await ownWeb3.getDefaultAccount()
         response = await createChallenge(account)
         challenge = response && response.challenge
-        signature = await ownWeb3.eth.personal.sign(challenge, account)
+        signature = await ownWeb3.eth.personal.sign(
+            challenge,
+            account,
+            '', // required, but MetaMask will ignore the password argument here
+        )
     } catch (error) {
         console.warn(error)
         throw new ChallengeFailedError()

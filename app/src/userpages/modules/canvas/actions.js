@@ -1,16 +1,18 @@
 // @flow
 
-import { error as errorNotification } from 'react-notification-system-redux'
+import { I18n } from 'react-redux-i18n'
 
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { Filter } from '../../flowtype/common-types'
 import type { Canvas, CanvasId } from '../../flowtype/canvas-types'
 import type { StoreState } from '../../flowtype/states/store-state'
 import { selectFilter } from './selectors'
-import { get, del } from '$shared/utils/api'
 import { canvasSchema, canvasesSchema } from '$shared/modules/entities/schema'
 import { handleEntities } from '$shared/utils/entities'
 import { getParamsForFilter } from '$userpages/utils/filters'
+import Notification from '$shared/utils/Notification'
+import { NotificationIcon } from '$shared/utils/constants'
+import * as api from '$shared/utils/api'
 
 const apiUrl = `${process.env.STREAMR_API_URL}/canvases`
 
@@ -89,7 +91,7 @@ export const getCanvases = () => (dispatch: Function, getState: () => StoreState
         sortBy: 'lastUpdated',
     })
 
-    return get(apiUrl, { params })
+    return api.get(apiUrl, { params })
         .then((data) => (
             // filter out adhoc canvases which should be filtered by server
             data.filter(({ adhoc }) => !adhoc)
@@ -106,31 +108,36 @@ export const getCanvases = () => (dispatch: Function, getState: () => StoreState
 
 export const getCanvas = (id: CanvasId) => (dispatch: Function) => {
     dispatch(getCanvasRequest(id))
-    return get(`${apiUrl}/${id}`)
+    return api.get(`${apiUrl}/${id}`)
         .then(handleEntities(canvasSchema, dispatch))
         .then((data) => dispatch(getCanvasSuccess(data)))
         .catch((e) => {
             dispatch(getCanvasFailure(e))
-            dispatch(errorNotification({
-                title: 'Error!',
-                message: e.message,
-            }))
+            Notification.push({
+                title: e.message,
+                icon: NotificationIcon.ERROR,
+            })
             throw e
         })
 }
 
-export const deleteCanvas = (id: CanvasId) => (dispatch: Function) => {
+export const deleteCanvas = (id: CanvasId) => async (dispatch: Function): Promise<void> => {
     dispatch(deleteCanvasRequest(id))
-    return del(`${apiUrl}/${id}`)
-        .then(() => dispatch(deleteCanvasSuccess(id)))
-        .catch((e) => {
-            dispatch(deleteCanvasFailure(e))
-            dispatch(errorNotification({
-                title: 'Error!',
-                message: e.message,
-            }))
-            throw e
+    try {
+        const deleteCanvas = await api.del(`${apiUrl}/${id}`)
+        dispatch(deleteCanvasSuccess(id))
+        Notification.push({
+            title: I18n.t('userpages.canvases.deleteCanvas'),
+            icon: NotificationIcon.CHECKMARK,
         })
+        return deleteCanvas
+    } catch (e) {
+        dispatch(deleteCanvasFailure(e))
+        Notification.push({
+            title: e.message,
+            icon: NotificationIcon.ERROR,
+        })
+    }
 }
 
 export const openCanvas = (id: CanvasId) => (dispatch: Function) => {

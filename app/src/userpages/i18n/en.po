@@ -11,6 +11,9 @@ msgstr ""
 msgid "userpages##canvases##createCanvas"
 msgstr "Create canvas"
 
+msgid "userpages##canvases##deleteCanvas"
+msgstr "Canvas deleted successfully"
+
 msgid "userpages##canvases##filterCanvases"
 msgstr "Filter canvases"
 
@@ -134,6 +137,12 @@ msgstr "Purchases"
 msgid "userpages##header##transactions"
 msgstr "Transactions"
 
+msgid "userpages##permissions##error"
+msgstr "Something went wrong while adding some of the permission(s)"
+
+msgid "userpages##permissions##saved"
+msgstr "Permissions saved successfully!"
+
 msgid "userpages##products##filterProducts"
 msgstr "Filter products"
 
@@ -218,6 +227,9 @@ msgstr "Select"
 msgid "userpages##streams##actions##addToCanvas"
 msgstr "Add to canvas"
 
+msgid "userpages##streams##actions##deleteStreamSuccess"
+msgstr "Stream deleted successfully"
+
 msgid "userpages##streams##actions##editStream"
 msgstr "Edit stream"
 
@@ -229,6 +241,9 @@ msgstr "Stream ID copied"
 
 msgid "userpages##streams##actions##copySnippet"
 msgstr "Copy Snippet"
+
+msgid "userpages##streams##actions##saveStreamSuccess"
+msgstr "Stream saved successfully"
 
 msgid "userpages##streams##actions##share"
 msgstr "Share"
@@ -419,6 +434,9 @@ msgstr "You haven't made any transactions yet."
 msgid "userpages##dashboards##createDashboard"
 msgstr "Create dashboard"
 
+msgid "userpages##dashboards##deletedDashboard"
+msgstr "Dashboard deleted successfully!"
+
 msgid "userpages##dashboards##filterDashboards"
 msgstr "Filter dashboards"
 
@@ -439,6 +457,9 @@ msgstr "We couldn't find any dashboards that match your search."
 
 msgid "userpages##dashboards##noDashboardsResult##clearFilters"
 msgstr "Clear filters"
+
+msgid "userpages##dashboards##savedDashboard"
+msgstr "Dashboard saved successfully!"
 
 msgid "userpages##transactions##list##name"
 msgstr "Name"

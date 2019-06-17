@@ -89,6 +89,7 @@
 
 .SearchPanel .Input {
   font-size: 14px;
+  font-weight: var(--regular);
   line-height: 1;
   text-align: left;
   letter-spacing: 0;
@@ -117,7 +118,7 @@
 .SearchPanel .ContentContainer {
   border-top: 1px solid #EFEFEF;
   transform: translateY(1px);
-  overflow: auto;
+  overflow: overlay; /* deprecated, but does what we want */
 
   /* standards compliant but only firefox implements */
   scrollbar-width: thin; /* stylelint-disable-line property-no-unknown */
@@ -166,11 +167,11 @@
 .SearchRow {
   padding: 5px 24px;
   font-family: var(--sans);
-  font-weight: 400;
+  font-weight: var(--regular);
+  height: 48px;
   color: #323232;
   text-transform: none;
   letter-spacing: 0;
-  line-height: 40px;
   border-bottom: 1px solid #EFEFEF;
   transition: background 0.1s, color 0.1s;
 }

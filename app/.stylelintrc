@@ -1,8 +1,18 @@
 {
-  "ignoreFiles": [
-    "**/*.jsx"
-  ],
-  "extends": [
-    "stylelint-config-streamr"
-  ]
+    "ignoreFiles": [
+        "**/*.jsx"
+    ],
+    "extends": [
+        "stylelint-config-streamr"
+    ],
+    "rules": {
+        "unit-no-unknown": [
+            true,
+            {
+                "ignoreUnits": [
+                    "um"
+                ]
+            }
+        ]
+    }
 }

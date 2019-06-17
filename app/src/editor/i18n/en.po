@@ -22,3 +22,45 @@ msgstr "NR"
 
 msgid "editor##module##error"
 msgstr "Whoops. Something has broken down. Please delete the module and try again."
+
+msgid "editor##timeRange##all"
+msgstr "All"
+
+msgid "editor##timeRange##2592000000"
+msgstr "1 month"
+
+msgid "editor##timeRange##604800000"
+msgstr "1 week"
+
+msgid "editor##timeRange##86400000"
+msgstr "1 day"
+
+msgid "editor##timeRange##43200000"
+msgstr "12 hours"
+
+msgid "editor##timeRange##28800000"
+msgstr "8 hours"
+
+msgid "editor##timeRange##14400000"
+msgstr "4 hours"
+
+msgid "editor##timeRange##7200000"
+msgstr "2 hours"
+
+msgid "editor##timeRange##3600000"
+msgstr "1 hour"
+
+msgid "editor##timeRange##1800000"
+msgstr "30 minutes"
+
+msgid "editor##timeRange##900000"
+msgstr "15 minutes"
+
+msgid "editor##timeRange##60000"
+msgstr "1 minute"
+
+msgid "editor##timeRange##15000"
+msgstr "15 seconds"
+
+msgid "editor##timeRange##1000"
+msgstr "1 second"

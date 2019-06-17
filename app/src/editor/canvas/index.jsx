@@ -435,6 +435,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                     addModule={this.addModule}
                     isOpen={this.state.moduleSearchIsOpen}
                     open={this.moduleSearchOpen}
+                    canvas={canvas}
                 />
             </div>
         )

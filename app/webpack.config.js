@@ -6,7 +6,6 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const WebpackNotifierPlugin = require('webpack-notifier')
 const FlowBabelWebpackPlugin = require('flow-babel-webpack-plugin')
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const ImageminPlugin = require('imagemin-webpack-plugin').default
 const StyleLintPlugin = require('stylelint-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
@@ -36,9 +35,7 @@ const publicPath = `${process.env.PLATFORM_PUBLIC_PATH || ''}/`
 
 module.exports = {
     mode: isProduction() ? 'production' : 'development',
-    // babel-polyfill is required to get async-await to work
     entry: [
-        'babel-polyfill',
         // forcibly print diagnostics upfront
         path.resolve(root, 'src', 'shared', 'utils', 'diagnostics.js'),
         path.resolve(root, 'src', 'index.jsx'),
@@ -51,11 +48,19 @@ module.exports = {
         publicPath,
     },
     module: {
+        strictExportPresence: true,
         rules: [
             {
                 test: /\.mdx?$/,
                 use: [
-                    'babel-loader',
+                    {
+                        loader: 'babel-loader',
+                        options: {
+                            rootMode: 'upward',
+                            cacheDirectory: !isProduction(),
+                            compact: isProduction(),
+                        },
+                    },
                     '@mdx-js/loader',
                 ],
             },
@@ -73,9 +78,11 @@ module.exports = {
             {
                 test: /.jsx?$/,
                 loader: 'babel-loader',
-                include: [path.resolve(root, 'src'), path.resolve(root, 'scripts'), /node_modules\/stringify-object/, /node_modules\/query-string/],
+                include: [path.resolve(root, 'src'), path.resolve(root, 'scripts')],
                 options: {
+                    rootMode: 'upward',
                     cacheDirectory: !isProduction(),
+                    compact: isProduction(),
                 },
             },
             // Images are put to <BASE_URL>/images
@@ -138,7 +145,6 @@ module.exports = {
     },
     plugins: [
         // Common plugins between prod and dev
-        new CleanWebpackPlugin([dist]),
         new HtmlWebpackPlugin({
             template: 'src/index.html',
             templateParameters: {
@@ -171,41 +177,12 @@ module.exports = {
                 openAnalyzer: false,
             }),
         ] : []),
-        ...(process.env.SENTRY_DSN ? [
-            new SentryPlugin({
-                include: dist,
-                validate: true,
-                ignore: [
-                    '.cache',
-                    '.DS_STORE',
-                    '.env',
-                    '.storybook',
-                    'bin',
-                    'coverage',
-                    'node_modules',
-                    'scripts',
-                    'stories',
-                    'test',
-                    'travis_scripts',
-                    'webpack.config.js',
-                ],
-                release: process.env.VERSION,
-            }),
-        ] : []),
     ].concat(isProduction() ? [
+        new CleanWebpackPlugin([dist]),
         // Production plugins
         new webpack.optimize.OccurrenceOrderPlugin(),
         new webpack.EnvironmentPlugin({
             NODE_ENV: 'production',
-        }),
-        new UglifyJsPlugin({
-            uglifyOptions: {
-                parallel: true,
-                compressor: {
-                    warnings: false,
-                },
-            },
-            sourceMap: true,
         }),
         new OptimizeCssAssetsPlugin({
             cssProcessor,
@@ -261,7 +238,27 @@ module.exports = {
         }),
         new FlowBabelWebpackPlugin(),
         new WebpackNotifierPlugin(),
-    ]),
+    ]).concat(process.env.SENTRY_DSN ? [
+        new SentryPlugin({
+            include: dist,
+            validate: true,
+            ignore: [
+                '.cache',
+                '.DS_STORE',
+                '.env',
+                '.storybook',
+                'bin',
+                'coverage',
+                'node_modules',
+                'scripts',
+                'stories',
+                'test',
+                'travis_scripts',
+                'webpack.config.js',
+            ],
+            release: process.env.VERSION,
+        }),
+    ] : []),
     devtool: isProduction() ? 'source-map' : 'eval-source-map',
     devServer: {
         historyApiFallback: {
@@ -289,6 +286,7 @@ module.exports = {
             $auth: path.resolve(__dirname, 'src/auth/'),
             $docs: path.resolve(__dirname, 'src/docs/'),
             $mp: path.resolve(__dirname, 'src/marketplace/'),
+            $newdocs: path.resolve(__dirname, 'src/newdocs/'),
             $userpages: path.resolve(__dirname, 'src/userpages/'),
             $shared: path.resolve(__dirname, 'src/shared/'),
             $editor: path.resolve(__dirname, 'src/editor/'),

@@ -287,6 +287,7 @@ export default class MapModule extends React.PureComponent<Props, State> {
                     minZoom={this.getModuleOption('minZoom', 2)}
                     maxZoom={this.getModuleOption('maxZoom', 18)}
                     zoom={this.getModuleOption('zoom', 12)}
+                    autoZoom={this.getModuleOption('autoZoom', false)}
                     /* For Map */
                     traceColor={this.getModuleParam('traceColor', '#FFFFFF')}
                     traceWidth={this.getModuleOption('traceWidth', 2)}
