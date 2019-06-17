@@ -20,6 +20,7 @@ type Props = {
     className?: ?string,
     module: Object,
     canvas: Object,
+    api: any,
 }
 
 type State = {
@@ -236,6 +237,29 @@ export default class MapModule extends React.PureComponent<Props, State> {
         return value
     }
 
+    onViewportChanged = (centerLat: number, centerLong: number, zoom: number) => {
+        const { module, api } = this.props
+        const nextModule = {
+            ...module,
+            options: {
+                ...module.options,
+                centerLat: {
+                    ...module.options.centerLat,
+                    value: centerLat,
+                },
+                centerLng: {
+                    ...module.options.centerLng,
+                    value: centerLong,
+                },
+                zoom: {
+                    ...module.options.zoom,
+                    value: zoom,
+                },
+            },
+        }
+        api.updateModule(module.hash, nextModule)
+    }
+
     flushMarkerData = throttle(() => {
         if (this.unmounted) {
             return
@@ -300,6 +324,8 @@ export default class MapModule extends React.PureComponent<Props, State> {
                     isImageMap={imageMap}
                     imageBounds={imageBounds}
                     imageUrl={this.getModuleOption('customImageUrl', null)}
+                    /* Events */
+                    onViewportChanged={this.onViewportChanged}
                 />
             </div>
         )
