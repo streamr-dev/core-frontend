@@ -1,5 +1,9 @@
 import ScrollableAnchor from 'react-scrollable-anchor'
+import { Link } from 'react-router-dom'
+import { formatPath } from '$shared/utils/url'
 
+import links from '$shared/../links'
+import routes from '$routes'
 import docsStyles from '$newdocs/components/DocsLayout/docsLayout.pcss'
 
 <ScrollableAnchor id="sdks-overview"><div>
@@ -19,8 +23,39 @@ import docsStyles from '$newdocs/components/DocsLayout/docsLayout.pcss'
 <ScrollableAnchor id="java-sdk"><div>
 
 ## Java SDK
---content--
 
+The Java client library is available on [Maven Central](https://search.maven.org/search?q=g:com.streamr%20AND%20a:client&core=gav) which means it can be easily imported in your Java or Scala project. A comprehensive documentation and the code are available on [GitHub](https://github.com/streamr-dev/streamr-client-java).
+
+Here is an example of how to create an authenticated client, publish and subscribe data using the Java library.
+
+```
+// create the client using an Ethereum account.
+String myEthereumPrivateKey = "0x..."
+StreamrClient client = new StreamrClient(new EthereumAuthenticationMethod(myEthereumPrivateKey));
+
+//Get the stream by its id (can also get it by name).
+Stream stream = client.getStream("id-of-the-stream");
+
+// Create the message payload, which is represented as a Map.
+Map<String, Object> msg = new LinkedHashMap<>();
+msg.put("foo", "bar");
+msg.put("random", Math.random());
+
+// Then publish it!
+client.publish(stream, msg);
+
+// Or subscribe to receive messages published by other clients
+Subscription sub = client.subscribe(stream, new MessageHandler() {
+    @Override
+    void onMessage(Subscription s, StreamMessage message) {
+        // Here you can react to the latest message
+        System.out.println(message.getContent().toString());
+    }
+})
+
+// Unsubscribe when you don't want to receive messages anymore.
+client.unsubscribe(sub);
+```
 </div></ScrollableAnchor>
 
 <ScrollableAnchor id="python-sdk"><div>
