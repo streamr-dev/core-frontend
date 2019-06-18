@@ -1,6 +1,7 @@
 import { setupAuthorizationHeader } from '$editor/shared/tests/utils'
 
 import * as Services from '../services'
+import * as Linking from '../state/linking'
 
 import { canvasMatcher } from './utils'
 
@@ -31,28 +32,19 @@ describe('Adhoc Canvases', () => {
                 }),
             })
 
-            // check parent canvas updated
-            const updatedParentCanvas = await Services.loadCanvas(parentCanvas)
-            expect(updatedParentCanvas).toMatchObject({
-                ...parentCanvas,
-                ...canvasMatcher,
-                settings: expect.objectContaining({
-                    childCanvasId: adhocCanvas.id, // captures child canvas id
-                }),
-            })
+            // check parent canvas linked
+            expect(Linking.getLink(parentCanvas.id)).toEqual(adhocCanvas.id)
         })
 
         it('can unlink adhoc canvas', async () => {
             const parentCanvas = await Services.create()
             const adhocCanvas = await Services.createAdhocCanvas(parentCanvas)
             const updatedParentCanvas = await Services.unlinkParentCanvas(adhocCanvas)
+            // check canvases unlinked
+            expect(Linking.getLink(parentCanvas.id)).not.toBeTruthy()
             expect(updatedParentCanvas).toMatchObject({
                 ...parentCanvas,
                 ...canvasMatcher,
-                id: parentCanvas.id, // should have loaded parent canvas
-                settings: expect.not.objectContaining({
-                    childCanvasId: expect.anything(), // child canvas id unset
-                }),
             })
         })
 

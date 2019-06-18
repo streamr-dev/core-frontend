@@ -7,6 +7,7 @@ import api from '$editor/shared/utils/api'
 import Autosave from '$editor/shared/utils/autosave'
 import { nextUniqueName, nextUniqueCopyName } from '$editor/shared/utils/uniqueName'
 import { emptyCanvas, isRunning, RunStates, isHistoricalModeSelected } from './state'
+import { link, unlink, getLink } from './state/linking'
 
 const getData = ({ data }) => data
 
@@ -102,6 +103,7 @@ async function startCanvas(canvas, { clearState }) {
  */
 
 export async function createAdhocCanvas(canvas) {
+    unlink(canvas.id) // remove existing link
     const savedCanvas = await saveNow(canvas)
     const child = await createCanvas({
         ...savedCanvas,
@@ -111,13 +113,7 @@ export async function createAdhocCanvas(canvas) {
             parentCanvasId: savedCanvas.id, // track parent canvas so can return after end
         },
     })
-    await saveNow({
-        ...savedCanvas,
-        settings: {
-            ...savedCanvas.settings,
-            childCanvasId: child.id, // track child canvas so can return after end
-        },
-    })
+    link(savedCanvas.id, child.id)
     return child
 }
 
@@ -151,28 +147,15 @@ export async function loadParentCanvas(canvas) {
     return loadCanvas({ id: settings.parentCanvasId })
 }
 
-export async function unlinkCanvas(canvas) {
-    if (!(canvas && canvas.settings && canvas.settings.childCanvasId)) {
-        return canvas // do nothing if no child canvas set
-    }
-
-    return saveNow({
-        ...canvas,
-        settings: {
-            ...canvas.settings,
-            childCanvasId: undefined,
-        },
-    })
-}
-
 /**
  * Unlinks parent from child.
  */
 
-export async function unlinkParentCanvas(canvas) {
+export async function unlinkAndLoadParentCanvas(canvas) {
     const { settings = {} } = canvas
     const parent = await loadCanvas({ id: settings.parentCanvasId })
-    return unlinkCanvas(parent)
+    unlink(parent.id)
+    return parent
 }
 
 /**
@@ -180,19 +163,22 @@ export async function unlinkParentCanvas(canvas) {
  */
 
 export async function loadRelevantCanvas({ id }) {
-    const canvas = await loadCanvas({ id })
-    if (canvas.settings.childCanvasId != null) {
-        const childCanvas = await loadCanvas({ id: canvas.settings.childCanvasId }).catch((error) => {
-            analytics.reportWarning(error, {
-                message: 'error loading child canvas',
-                parentCanvas: canvas.id,
-                childCanvas: canvas.settings.childCanvasId,
-            })
-            return unlinkCanvas(canvas)
-        })
-        return childCanvas
+    const childCanvasId = getLink(id)
+    if (childCanvasId == null) {
+        return loadCanvas({ id }) // load canvas if no child
     }
-    return canvas
+
+    // load linked child
+    return loadCanvas({ id: childCanvasId }).catch((error) => {
+        analytics.reportWarning(error, {
+            message: 'error loading child canvas',
+            parentCanvasId: id,
+            childCanvasId,
+        })
+        // unlink & load parent if loading child broken
+        unlink(id)
+        return loadCanvas({ id })
+    })
 }
 
 export async function getStreams(params) {
