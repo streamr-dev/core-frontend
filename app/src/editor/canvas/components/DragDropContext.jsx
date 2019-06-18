@@ -149,6 +149,7 @@ class EditorDraggable extends React.PureComponent {
     }
 
     onStart = (event, data) => {
+        if (this.unmounted) { return }
         this.setState({
             initialPosition: data,
         })
@@ -182,6 +183,8 @@ class EditorDraggable extends React.PureComponent {
             }, this.reset)
         }
 
+        if (this.unmounted) { return }
+
         this.setState({
             // ensure this happens after props.onStop
             // so reset can file in onStop
@@ -192,6 +195,7 @@ class EditorDraggable extends React.PureComponent {
     }
 
     onDrag = (event, data) => {
+        if (this.unmounted) { return false }
         // do nothing if cancelled
         if (this.context.isCancelled) {
             return false
@@ -223,11 +227,13 @@ class EditorDraggable extends React.PureComponent {
     }
 
     reset = () => {
+        if (this.unmounted) { return }
         if (!this.state.initialPosition) { return }
         // pump initial position to reset draggable
         this.setState({
             position: this.state.initialPosition,
         }, () => {
+            if (this.unmounted) { return }
             this.setState({
                 position: undefined,
             })
