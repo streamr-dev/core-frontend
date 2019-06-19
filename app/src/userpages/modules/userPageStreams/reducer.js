@@ -1,8 +1,10 @@
 // @flow
 
 import set from 'lodash/set'
-import type { UserPageStreamsState } from '../../flowtype/states/stream-state'
-import type { StreamAction } from '../../flowtype/actions/stream-actions'
+
+import type { UserPageStreamsState } from '$userpages/flowtype/states/stream-state'
+import type { StreamAction } from '$userpages/flowtype/actions/stream-actions'
+import { streamListPageSize } from '$userpages/utils/constants'
 
 import {
     GET_STREAM_REQUEST,
@@ -11,6 +13,7 @@ import {
     GET_STREAMS_REQUEST,
     GET_STREAMS_SUCCESS,
     GET_STREAMS_FAILURE,
+    CLEAR_STREAM_LIST,
     CREATE_STREAM_REQUEST,
     CREATE_STREAM_SUCCESS,
     CREATE_STREAM_FAILURE,
@@ -61,6 +64,9 @@ const initialState = {
     autodetectFetching: false,
     streamFieldAutodetectError: null,
     permissions: null,
+    pageSize: streamListPageSize,
+    offset: 0,
+    hasMoreSearchResults: null,
 }
 
 export default function (state: UserPageStreamsState = initialState, action: StreamAction): UserPageStreamsState {
@@ -132,9 +138,20 @@ export default function (state: UserPageStreamsState = initialState, action: Str
         case GET_STREAMS_SUCCESS:
             return {
                 ...state,
-                ids: action.streams,
                 fetching: false,
                 error: null,
+                ids: state.ids.concat(action.streams),
+                offset: state.offset + action.streams.length,
+                hasMoreSearchResults: action.hasMoreResults,
+            }
+
+        case CLEAR_STREAM_LIST:
+            return {
+                ...state,
+                error: null,
+                ids: [],
+                offset: 0,
+                hasMoreSearchResults: null,
             }
 
         case UPDATE_STREAM_SUCCESS:
