@@ -111,12 +111,15 @@ export default class Map extends React.PureComponent<Props, State> {
     }, 1000)
 
     onViewportChanged = () => {
-        const { onViewportChanged } = this.props
+        const { onViewportChanged, zoom, centerLat, centerLong } = this.props
         const { current: map } = this.ref
         if (map) {
-            const zoom = map.leafletElement.getZoom()
-            const center = map.leafletElement.getCenter()
-            onViewportChanged(center.lat, center.lng, zoom)
+            const newZoom = map.leafletElement.getZoom()
+            const newCenter = map.leafletElement.getCenter()
+
+            if (newZoom !== zoom || newCenter.lat !== centerLat || newCenter.lng !== centerLong) {
+                onViewportChanged(newCenter.lat, newCenter.lng, newZoom)
+            }
         }
     }
 
