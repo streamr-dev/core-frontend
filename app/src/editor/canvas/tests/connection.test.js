@@ -115,10 +115,13 @@ describe('Connecting Modules', () => {
         canvas = State.updateCanvas(State.connectPorts(canvas, constantTextOut.id, toLowerCaseIn.id))
         expect(State.isPortConnected(canvas, constantTextOut.id)).toBeTruthy()
         expect(State.isPortConnected(canvas, toLowerCaseIn.id)).toBeTruthy()
+        expect(State.arePortsConnected(canvas, constantTextOut.id, toLowerCaseIn.id)).toBeTruthy()
+        expect(State.arePortsConnected(canvas, toLowerCaseIn.id, constantTextOut.id)).toBeTruthy()
 
         canvas = State.updateCanvas(State.disconnectPorts(canvas, constantTextOut.id, toLowerCaseIn.id))
         expect(State.isPortConnected(canvas, constantTextOut.id)).not.toBeTruthy()
         expect(State.isPortConnected(canvas, toLowerCaseIn.id)).not.toBeTruthy()
+        expect(State.arePortsConnected(canvas, constantTextOut.id, toLowerCaseIn.id)).not.toBeTruthy()
 
         // test server accepts state
         expect(State.updateCanvas(await Services.create(canvas))).toMatchCanvas(canvas)
@@ -166,10 +169,12 @@ describe('Connecting Modules', () => {
         canvas = State.updateCanvas(State.connectPorts(canvas, constantTextOut.id, constantTextIn.id))
         expect(State.isPortConnected(canvas, constantTextOut.id)).toBeTruthy()
         expect(State.isPortConnected(canvas, constantTextIn.id)).toBeTruthy()
+        expect(State.arePortsConnected(canvas, constantTextIn.id, constantTextOut.id)).toBeTruthy()
 
         canvas = State.updateCanvas(State.disconnectPorts(canvas, constantTextOut.id, constantTextIn.id))
         expect(State.isPortConnected(canvas, constantTextOut.id)).not.toBeTruthy()
         expect(State.isPortConnected(canvas, constantTextIn.id)).not.toBeTruthy()
+        expect(State.arePortsConnected(canvas, constantTextIn.id, constantTextOut.id)).not.toBeTruthy()
 
         // test server accepts state
         expect(State.updateCanvas(await Services.create(canvas))).toMatchCanvas(canvas)
