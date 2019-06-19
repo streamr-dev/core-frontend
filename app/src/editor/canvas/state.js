@@ -666,9 +666,12 @@ export function setModuleOptions(canvas, moduleHash, newOptions = {}) {
     const { modules } = getIndex(canvas)
     const modulePath = modules[moduleHash]
     return update(modulePath.concat('options'), (options = {}) => (
-        Object.keys(newOptions).reduce((options, key) => (
-            update([key].concat('value'), () => newOptions[key], options)
-        ), options)
+        Object.keys(newOptions).reduce((options, key) => {
+            if (get(options, [key].concat('value')) === newOptions[key]) {
+                return options
+            }
+            return update([key].concat('value'), () => newOptions[key], options)
+        }, options)
     ), canvas)
 }
 

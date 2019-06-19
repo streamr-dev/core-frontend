@@ -127,17 +127,20 @@ const CanvasEditComponent = class CanvasEdit extends Component {
     }
 
     async autosave() {
-        const { canvas, runController } = this.props
+        const { canvas, runController, canvasController } = this.props
         if (this.isDeleted) { return } // do not autosave deleted canvases
         if (!runController.isEditable) {
             // do not autosave running/adhoc canvases or if we have no write permission
             return
         }
 
+        const changed = canvasController.changedLoader.resetChanged()
+
         const newCanvas = await services.autosave(canvas)
         if (this.unmounted) { return }
         // ignore new canvas, just extract updated time from it
         this.props.setUpdated(newCanvas.updated)
+        this.props.replace((canvas) => this.props.canvasController.changedLoader.loadChanged(changed, canvas, newCanvas))
     }
 
     removeModule = async ({ hash }) => {
@@ -238,6 +241,8 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         this.setCanvas({ type: 'Set Module Options' }, (canvas) => (
             CanvasState.setModuleOptions(canvas, hash, options)
         ))
+
+        this.props.canvasController.changedLoader.markChanged(hash)
     }
 
     setRunTab = (runTab) => {
