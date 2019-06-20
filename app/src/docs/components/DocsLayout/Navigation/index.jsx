@@ -4,6 +4,7 @@ import React from 'react'
 import { Link, withRouter, type Location } from 'react-router-dom'
 import { formatPath } from '$shared/utils/url'
 import cx from 'classnames'
+import { SectionLink } from 'react-scroll-section'
 
 import SvgIcon from '$shared/components/SvgIcon'
 
@@ -75,12 +76,17 @@ class Navigation extends React.Component<Props, State> {
 
         return Object.entries(subNavigationItems).map((subNavigationItem) => (
             <li key={`item-${subNavigationItem[0]}`} className={styles.navListItem}>
-                <a
-                    href={`#${subNavigationItem[0]}`}
-                    className={this.props.location.hash.substr(1) === subNavigationItem[0] ? styles.active : ''}
-                >
-                    {String(subNavigationItem[1])}
-                </a>
+                <SectionLink section={subNavigationItem[0]}>
+                    {({ onClick, isSelected }) => (
+                        // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
+                        <a
+                            onClick={onClick}
+                            className={isSelected ? styles.active : ''}
+                        >
+                            {String(subNavigationItem[1])}
+                        </a>
+                    )}
+                </SectionLink>
             </li>
         ))
     }

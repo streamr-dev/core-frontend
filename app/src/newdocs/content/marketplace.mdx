@@ -1,24 +1,25 @@
-import ScrollableAnchor from 'react-scrollable-anchor'
+import { Section } from 'react-scroll-section'
+import { Link } from 'react-router-dom'
 
+import links from '$shared/../links'
+import { subNav } from '../components/DocsLayout/Navigation/navLinks'
 import docsStyles from '$newdocs/components/DocsLayout/docsLayout.pcss'
 
-<ScrollableAnchor id="introduction-marketplace"><div>
+<Section id="introduction-marketplace">
 
 ## Introduction to the Marketplace
 --content--
 
-</div></ScrollableAnchor>
-
-<ScrollableAnchor id="buying-data-marketplace"><div>
+</Section>
+<Section id="buying-data-marketplace">
 
 ## Buying data on the Marketplace
---content--
+Here is an example of how to create an authenticated client, publish and subscribe data using the Java library. Note that passing your private 
 
-</div></ScrollableAnchor>
-
-<ScrollableAnchor id="selling-data-marketplace"><div>
+</Section>
+<Section id="selling-data-marketplace">
 
 ## Selling data on the Marketplace
 --content--
 
-</div></ScrollableAnchor>
+</Section>
