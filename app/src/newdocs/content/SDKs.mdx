@@ -1,7 +1,12 @@
 import ScrollableAnchor from 'react-scrollable-anchor'
+import { Link } from 'react-router-dom'
+import { formatPath } from '$shared/utils/url'
 
+import links from '$shared/../links'
+import routes from '$routes'
 import docsStyles from '$newdocs/components/DocsLayout/docsLayout.pcss'
 import CodeSnippet from '$shared/components/CodeSnippet'
+import { JavaExample } from './code/api.js'
 import { JavascriptExample } from './code/api.js'
 
 <ScrollableAnchor id="sdks-overview"><div>
@@ -26,7 +31,14 @@ Here is an example of how to create an authenticated client, publish and subscri
 <ScrollableAnchor id="java-sdk"><div>
 
 ## Java SDK
---content--
+
+The Java client library is available on [Maven Central](https://search.maven.org/search?q=g:com.streamr%20AND%20a:client&core=gav) which means it can be easily imported in your Java or Scala project. A comprehensive documentation and the code are available on [GitHub](https://github.com/streamr-dev/streamr-client-java).
+
+Here is an example of how to create an authenticated client, publish and subscribe data using the Java library.
+
+<CodeSnippet language='java'>
+{JavaExample}
+</CodeSnippet>
 
 </div></ScrollableAnchor>
 
