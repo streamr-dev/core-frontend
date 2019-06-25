@@ -1,3 +1,8 @@
+/**
+ * Store links between objects (e.g. canvases) in local storage.
+ *
+ */
+
 const LINK_PREFIX = 'Link'
 function validateId(id) {
     if ((typeof id !== 'string' && typeof id !== 'number') || id === '') {

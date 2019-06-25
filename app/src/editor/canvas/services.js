@@ -90,9 +90,27 @@ export async function getCanvasPermissions({ id }) {
     return api().get(`${process.env.STREAMR_API_URL}/canvases/${id}/permissions/me`).then(getData)
 }
 
-async function startCanvas(canvas, { clearState }) {
-    const savedCanvas = await saveNow(canvas)
-    return api().post(`${canvasesUrl}/${savedCanvas.id}/start`, {
+export async function getStreams(params) {
+    return api().get(`${streamsUrl}`, { params }).then(getData)
+}
+
+export async function getStream(id) {
+    return api().get(`${streamsUrl}/${id}`).then(getData)
+}
+
+export async function deleteAllCanvases() {
+    // try do some clean up so we don't fill the server with cruft
+    const canvases = await loadCanvases()
+    return Promise.all(canvases.map((canvas) => (
+        deleteCanvas(canvas)
+    )))
+}
+
+/**
+ * Starts whatever canvasId is passed in
+ */
+async function startCanvasId(canvasId, { clearState }) {
+    return api().post(`${canvasesUrl}/${canvasId}/start`, {
         clearState: !!clearState,
     }).then(getData)
 }
@@ -100,11 +118,13 @@ async function startCanvas(canvas, { clearState }) {
 /**
  * Duplicates passed in parent canvas as an adhoc child canvas.
  * Links parent and child canvas.
+ * When parent is re-loaded, the child (historical canvas) will be loaded in its place until unlinked.
  */
 
 export async function createAdhocCanvas(canvas) {
     unlink(canvas.id) // remove existing link
-    const savedCanvas = await saveNow(canvas)
+    const savedCanvas = await saveNow(canvas) // ensure state is saved
+    // create adhoc version of passed-in canvas
     const child = await createCanvas({
         ...savedCanvas,
         adhoc: true,
@@ -113,12 +133,14 @@ export async function createAdhocCanvas(canvas) {
             parentCanvasId: savedCanvas.id, // track parent canvas so can return after end
         },
     })
+    // if page reloaded before this point, child canvas is effectively lost
     link(savedCanvas.id, child.id)
     return child
 }
 
 export async function start(canvas, options = {}) {
-    return startCanvas(canvas, options)
+    await saveNow(canvas)
+    return startCanvasId(canvas.id, options)
 }
 
 export async function stop(canvas) {
@@ -142,13 +164,9 @@ export async function startOrCreateAdhocCanvas(canvas, options) {
     })
 }
 
-export async function loadParentCanvas(canvas) {
-    const { settings = {} } = canvas
-    return loadCanvas({ id: settings.parentCanvasId })
-}
-
 /**
- * Unlinks parent from child.
+ * Unlinks parent from child, loads parent.
+ * i.e. return to parent canvas
  */
 
 export async function unlinkAndLoadParentCanvas(canvas) {
@@ -160,6 +178,7 @@ export async function unlinkAndLoadParentCanvas(canvas) {
 
 /**
  * Loads child canvas if one is active, otherwise loads passed-in canvas.
+ * i.e. show same historical canvas on refresh until exited.
  */
 
 export async function loadRelevantCanvas({ id }) {
@@ -179,20 +198,4 @@ export async function loadRelevantCanvas({ id }) {
         unlink(id)
         return loadCanvas({ id })
     })
-}
-
-export async function getStreams(params) {
-    return api().get(`${streamsUrl}`, { params }).then(getData)
-}
-
-export async function getStream(id) {
-    return api().get(`${streamsUrl}/${id}`).then(getData)
-}
-
-export async function deleteAllCanvases() {
-    // try do some clean up so we don't fill the server with cruft
-    const canvases = await loadCanvases()
-    return Promise.all(canvases.map((canvas) => (
-        deleteCanvas(canvas)
-    )))
 }
