@@ -347,7 +347,11 @@ class StreamList extends Component<Props, State> {
                                                         />}
                                                     </Table.Th>
                                                     <Table.Td noWrap title={stream.description}>{stream.description}</Table.Td>
-                                                    <Table.Td noWrap>{moment.tz(stream.lastUpdated, timezone).fromNow()}</Table.Td>
+                                                    <Table.Td noWrap>
+                                                        {stream.lastUpdated && (
+                                                            moment.min(moment.tz(stream.lastUpdated, timezone), nowTime).fromNow()
+                                                        )}
+                                                    </Table.Td>
                                                     <Table.Td>
                                                         {stream.lastData && (
                                                             moment.min(moment.tz(stream.lastData, timezone), nowTime).fromNow()
@@ -431,12 +435,16 @@ class StreamList extends Component<Props, State> {
                                                                     {stream.description}
                                                                 </span>
                                                                 <span className={styles.lastUpdatedStreamMobile}>
-                                                                    {moment.tz(stream.lastUpdated, timezone).fromNow()}
+                                                                    {stream.lastUpdated && (
+                                                                        moment.min(moment.tz(stream.lastUpdated, timezone), nowTime).fromNow()
+                                                                    )}
                                                                 </span>
                                                             </div>
                                                             <div>
                                                                 <span className={styles.lastUpdatedStreamTablet}>
-                                                                    {moment.tz(stream.lastUpdated, timezone).fromNow()}
+                                                                    {stream.lastUpdated && (
+                                                                        moment.min(moment.tz(stream.lastUpdated, timezone), nowTime).fromNow()
+                                                                    )}
                                                                 </span>
                                                                 <StatusIcon className={styles.tabletStatusStreamIcon} />
                                                             </div>
