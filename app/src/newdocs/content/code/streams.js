@@ -1,6 +1,5 @@
 export const CreateJavascriptClient =
 `const client = new StreamrClient({
-    // See below for more options
     auth: {
         apiKey: 'your-api-key'
     }
@@ -19,15 +18,13 @@ export const AuthJavaClient = 'StreamrClient client = new StreamrClient(new Ethe
 
 export const SubscribeJavascriptClient =
 `// Subscribe to a stream
-const subscription = client.subscribe(
-    {
-        stream: 'MY-STREAM-ID',
-    },
-    function(message) {
-        // This function will be called when new messages occur
-        console.log(JSON.stringify(message))
-    }
-)`
+const subscription = client.subscribe({
+    stream: 'MY-STREAM-ID',
+},
+(message) => {
+    // This function will be called when new messages occur
+    console.log(JSON.stringify(message))
+})`
 
 export const SubscribeJavaClient =
 `Subscription sub = client.subscribe(stream, new MessageHandler() {
@@ -47,8 +44,7 @@ const msg = {
 
 // Publish the event to the Stream
 client.publish('MY-STREAM-ID', msg)
-    .then(() => console.log('Sent successfully: ', msg))
-    .catch((err) => console.error(err))`
+    .then(() => console.log('Sent successfully: ', msg))`
 
 export const PublishJavaClient =
 `// Create the message payload, which is represented as a Map
@@ -57,6 +53,4 @@ msg.put("foo", "bar");
 msg.put("random", Math.random());
 
 // Then publish it!
-client.publish(stream, msg);
-All events are timestamped. The above example assigns the current timestamp to the new event, but you can also provide a timestamp explicitly:
-client.publish(stream, msg, new Date());`
+client.publish(stream, msg);`

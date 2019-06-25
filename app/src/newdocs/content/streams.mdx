@@ -39,9 +39,9 @@ The easiest way to work with streams is to use the JavaScript client, which work
 - **JavaScript** client works in the browser as well as node.js.
 - **Java** client is work-in-progress but already implements the most important set of functionality.
 
-Client libraries for other languages are on the <a href={links.community.trello} target="_blank" rel="nofollow noopener noreferrer">roadmap</a>. If there isn't a client library available for your language, you can dive into the details of the [websocket protocol](https://github.com/streamr-dev/streamr-client-protocol-js/blob/master/PROTOCOL.md) 
+Client libraries for other languages are on the <a href={links.community.trello} target="_blank" rel="nofollow noopener noreferrer">roadmap</a>. If a client library isn't available for your language, you can dive into the details of the [websocket protocol](https://github.com/streamr-dev/streamr-client-protocol-js/blob/bb2f0168bcff454b5c458e275e9c2de0dee342f9/PROTOCOL.md).
 
-If you'd like to contribute a client library and get it listed here, please get in touch on [Telegram](https://t.me/streamrdata), [Reddit](https://www.reddit.com/r/streamr/) or [email](mailto:contact@streamr.com)!
+If you'd like to contribute a client library and get it listed here, please get in touch on <a href={links.community.telegram} target="_blank" rel="nofollow noopener noreferrer">Telegram</a>, <a href={links.community.reddit} target="_blank" rel="nofollow noopener noreferrer">Reddit</a> or <a href={links.contact.general} rel="nofollow noopener noreferrer">email</a>!
 
 ### Authentication
 
@@ -53,17 +53,9 @@ When reading from or writing to Streams, you need to provide a session token or 
 
 <CodeSnippet language='javascript'>{CreateJavascriptClient}</CodeSnippet>
 
-Authenticating with an Ethereum private key contained in an Ethereum (web3) provider:
-
-<CodeSnippet language='javascript'>{AuthJavascriptClient}</CodeSnippet>
-
 **Java**
 
 <CodeSnippet language='java'>{CreateJavaClient}</CodeSnippet>
-
-To authenticate with an Ethereum account, a private key must be provided. The library will automatically initiate a challenge-response protocol to allow you to prove that you own the Ethereum private key without revealing it. You will be identified with the associated Ethereum public address.
-
-<CodeSnippet language='java'>{AuthJavaClient}</CodeSnippet>
 
 ### Subscribing to real-time events in a stream
 
