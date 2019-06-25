@@ -1,6 +1,9 @@
 import ScrollableAnchor from 'react-scrollable-anchor'
 import { Link } from 'react-router-dom'
 
+import streamListing from './images/streams/stream-listing.png'
+import streamSettings from './images/streams/setup-your-stream.png'
+
 import docsStyles from '$newdocs/components/DocsLayout/docsLayout.pcss'
 import links from '$shared/../links'
 import CodeSnippet from '$shared/components/CodeSnippet'
@@ -26,7 +29,55 @@ import {
 <ScrollableAnchor id="work-with-streams-in-core"><div>
 
 ## Work with streams in Core
---content--
+Core provides you an easy way to manage your streams. Streams can be created, edited and deleted through our intuitive UI.
+
+### Overview of your streams
+Head out to Streams section to see an overview of your streams.
+
+<img src={streamListing} />
+
+Stream listing shows statuses of your streams at a glance.
+Last received event timestamp will be shown per stream as well as traffic light for your stream status.
+
+| Color        | Status                           |
+| ------------ | -------------------------------- |
+| Green        | Stream is receiving data         |
+| Red          | Stream is not receiving data     |
+
+You can click the stream name to open the edit view. By clicking the three dots in the last column of the table a stream can be e.g. shared.
+Also a new stream can be created by clicking the blue button in the top right section of the page.
+
+### Editing a stream
+Stream editor provides basic tools for setting up your stream.
+
+<img src={streamSettings} />
+
+#### Details
+Details section is for providing basic information about your stream. Name is used to identify your stream all over the core app.
+Description can be used to tell people more about your stream and what kind of data it contains. Stream ID is an unique identifier for your stream
+and it is used e.g. with SDKs to subscribe and publish data into it.
+
+#### Configure
+In this section you can configure stream fields and their data types. All fields have a name and a data type.
+Autodetect feature can be used to automatically deduce fields from the stream data.
+It is possible to manually correct the data types if automatic detection is not perfect.
+
+| Setting                                             | Explanation                                                                                                  |
+| ----------------------------------------------------| ------------------------------------------------------------------------------------------------------------ |
+| Always try to autoconfigure field names and types   | Streamr will try to automatically configure field names and types as data is published to the stream         |
+| Require all messages in this stream to be signed    | Streamr will not accept messages that are not signed                                                         |
+
+#### Preview
+This section is used to preview data flowing into the stream. Use the live inspector to make sure your stream is receiving data and it is correctly formatted.
+
+#### API Access
+Here you can manage API keys for your streams. An API key which grants access only to this stream can created here with either read or write access.
+Keys can also be deleted which is useful in cases where your key has e.g. leaked.
+
+#### Historical Data
+In this section historical data for you stream can be managed. You can either add new data to the stream by uploading a CSV file or delete existing data
+by date. Also historical data storage period can be controlled here. It determines how many days your data is retained before it will be removed
+automatically from the system.
 
 </div></ScrollableAnchor>
 
