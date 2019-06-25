@@ -3,7 +3,7 @@
 import React, { useState, useCallback, Fragment, useEffect, useRef, type Node } from 'react'
 import cx from 'classnames'
 import { type Ref } from '$shared/flowtype/common-types'
-import ModuleHeader from '$editor/shared/components/ModuleHeader'
+import ModuleStyles from '$editor/shared/components/Module.pcss'
 import TextControl from '../TextControl'
 import styles from './editableText.pcss'
 
@@ -14,6 +14,7 @@ type Props = {
     disabled?: boolean,
     editing?: boolean,
     editOnFocus?: boolean,
+    selectAllOnFocus?: boolean,
     onChange?: (string) => void,
     onCommit?: (string) => void,
     onModeChange?: ?(boolean) => void,
@@ -29,6 +30,7 @@ const EditableText = ({
     disabled,
     editing,
     editOnFocus,
+    selectAllOnFocus,
     onChange: onChangeProp,
     onCommit,
     onModeChange,
@@ -85,7 +87,7 @@ const EditableText = ({
                 [styles.idle]: !editing,
                 [styles.disabled]: disabled,
                 [styles.blank]: (editing && !value) || (!editing && !children),
-                [ModuleHeader.styles.dragCancel]: !!editing,
+                [ModuleStyles.dragCancel]: !!editing,
             })}
             onDoubleClick={startEditing}
             {...((editOnFocus && !disabled) ? {
@@ -110,7 +112,7 @@ const EditableText = ({
                             onFocus={onFocus}
                             placeholder={placeholder}
                             revertOnEsc
-                            selectAllOnFocus
+                            selectAllOnFocus={selectAllOnFocus}
                             spellCheck="false"
                             value={children}
                         />
@@ -128,6 +130,7 @@ EditableText.defaultProps = {
     children: '',
     className: null,
     editOnFocus: false,
+    selectAllOnFocus: true,
     immediateCommit: false,
     onChange: () => {},
 }

@@ -6,8 +6,8 @@ import links from '$shared/../links'
 import routes from '$routes'
 import docsStyles from '$newdocs/components/DocsLayout/docsLayout.pcss'
 import CodeSnippet from '$shared/components/CodeSnippet'
-
 import { JavaExample } from './code/api.js'
+import { JavascriptExample } from './code/api.js'
 
 <ScrollableAnchor id="sdks-overview"><div>
 
@@ -19,7 +19,12 @@ import { JavaExample } from './code/api.js'
 <ScrollableAnchor id="javascript-sdk"><div>
 
 ## Javascript SDK
---content--
+
+The Javascript client library is available on [npm](https://www.npmjs.com/package/streamr-client) to be integrated in your applications to interact with the Streamr API. The code and a comprehensive documentation are available on [GitHub](https://github.com/streamr-dev/streamr-client-javascript).
+
+Here is an example of how to create an authenticated client, publish and subscribe data using the Javascript library.
+
+<CodeSnippet language='javascript'>{JavascriptExample}</CodeSnippet>
 
 </div></ScrollableAnchor>
 

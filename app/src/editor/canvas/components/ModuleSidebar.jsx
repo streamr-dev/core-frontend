@@ -112,6 +112,7 @@ export default function ModuleSidebar({ canvas, selectedModuleHash, setModuleOpt
                                                     id={id}
                                                     onCommit={onChange(name)}
                                                     value={option.value}
+                                                    immediateCommit={false}
                                                 />
                                             )
                                         )}
