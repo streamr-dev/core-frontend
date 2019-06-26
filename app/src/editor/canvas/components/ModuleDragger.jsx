@@ -3,11 +3,11 @@ import React, { useCallback } from 'react'
 import { updateModulePosition } from '../state'
 import { Draggable } from './DragDropContext'
 import ModuleStyles from '$editor/shared/components/Module.pcss'
-import * as CanvasController from './CanvasController'
+import { useController } from './CanvasController'
 import styles from './Module.pcss'
 
 export default function (props) {
-    const canvasController = CanvasController.useController()
+    const canvasController = useController()
     const onStartDragModule = useCallback((hash) => {
         canvasController.changedLoader.markChanged(hash)
     }, [canvasController])
