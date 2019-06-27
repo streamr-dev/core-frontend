@@ -4,7 +4,7 @@ import React from 'react'
 import { Link, withRouter, type Location } from 'react-router-dom'
 import { formatPath } from '$shared/utils/url'
 import cx from 'classnames'
-import { SectionLink } from 'react-scroll-section'
+import Scrollspy from 'react-scrollspy'
 
 import SvgIcon from '$shared/components/SvgIcon'
 
@@ -74,21 +74,19 @@ class Navigation extends React.Component<Props, State> {
     parseSubNavigation() {
         const { subNavigationItems } = this.props
 
-        return Object.entries(subNavigationItems).map((subNavigationItem) => (
-            <li key={`item-${subNavigationItem[0]}`} className={styles.navListItem}>
-                <SectionLink section={subNavigationItem[0]}>
-                    {({ onClick, isSelected }) => (
-                        // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
+        return (
+            <Scrollspy items={subNavigationItems && Object.keys(subNavigationItems)} currentClassName={styles.active}>
+                {Object.entries(subNavigationItems).map((subNavigationItem) => (
+                    <li key={`item-${subNavigationItem[0]}`} className={styles.navListItem}>
                         <a
-                            onClick={onClick}
-                            className={isSelected ? styles.active : ''}
+                            href={`#${subNavigationItem[0]}`}
                         >
                             {String(subNavigationItem[1])}
                         </a>
-                    )}
-                </SectionLink>
-            </li>
-        ))
+                    </li>
+                ))}
+            </Scrollspy>
+        )
     }
 
     parseCurrentPage() {
