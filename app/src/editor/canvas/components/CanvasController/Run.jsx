@@ -12,6 +12,7 @@ import usePending from '$editor/shared/hooks/usePending'
 
 import * as services from '../../services'
 import * as CanvasState from '../../state'
+import * as CanvasLinking from '../../state/linking'
 
 import useCanvasStateChangeEffect from '../../hooks/useCanvasStateChangeEffect'
 import useCanvasUpdater from './useCanvasUpdater'
@@ -88,11 +89,14 @@ function useRunController(canvas = EMPTY) {
     }, [subscriptionStatus, startPending, createAdhocPending, isHistorical, isMountedRef, replaceCanvas])
 
     const unlinkParent = useCallback((canvas) => (
-        unlinkPending.wrap(() => services.unlinkParentCanvas(canvas))
+        unlinkPending.wrap(() => services.unlinkAndLoadParentCanvas(canvas))
     ), [unlinkPending])
 
     const stop = useCallback(async (canvas) => {
         setIsStopping(true)
+        if (canvas.settings.parentCanvasId != null) {
+            CanvasLinking.unlink(canvas.settings.parentCanvasId) // remove link if exists
+        }
         return stopPending.wrap(() => services.stop(canvas))
             .then((canvas) => {
                 if (!isMountedRef.current) { return }
@@ -113,15 +117,15 @@ function useRunController(canvas = EMPTY) {
     }, [stopPending, setIsStopping, isMountedRef, unlinkParent, replaceCanvas])
 
     const exit = useCallback(async (canvas) => {
-        const newCanvas = await exitPending.wrap(() => services.loadParentCanvas(canvas))
+        const newCanvas = await exitPending.wrap(() => unlinkParent(canvas))
         if (!isMountedRef.current) { return }
         replaceCanvas(() => newCanvas)
-    }, [exitPending, replaceCanvas, isMountedRef])
+    }, [exitPending, replaceCanvas, unlinkParent, isMountedRef])
 
     const unlinkAdhocOnStop = useCallback(async (isRunning) => {
-        if (isRunning || !canvas.adhoc) { return }
-        await unlinkParent(canvas)
-    }, [canvas, unlinkParent])
+        if (isRunning || !canvas.adhoc || canvas.settings.parentCanvasId == null) { return }
+        CanvasLinking.unlink(canvas.settings.parentCanvasId) // remove link on auto-stop
+    }, [canvas])
 
     useCanvasStateChangeEffect(canvas, unlinkAdhocOnStop)
 

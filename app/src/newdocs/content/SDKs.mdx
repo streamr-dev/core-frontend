@@ -1,6 +1,10 @@
 
-
+import links from '$shared/../links'
+import routes from '$routes'
 import docsStyles from '$newdocs/components/DocsLayout/docsLayout.pcss'
+import CodeSnippet from '$shared/components/CodeSnippet'
+import { JavaExample } from './code/api.js'
+import { JavascriptExample } from './code/api.js'
 
 <section id="sdks-overview">
 
@@ -11,13 +15,25 @@ import docsStyles from '$newdocs/components/DocsLayout/docsLayout.pcss'
 <section id="javascript-sdk">
 
 ## Javascript SDK
---content--
+
+The Javascript client library is available on [npm](https://www.npmjs.com/package/streamr-client) to be integrated in your applications to interact with the Streamr API. The code and a comprehensive documentation are available on [GitHub](https://github.com/streamr-dev/streamr-client-javascript).
+
+Here is an example of how to create an authenticated client, publish and subscribe data using the Javascript library.
+
+<CodeSnippet language='javascript'>{JavascriptExample}</CodeSnippet>
 
 </section>
 <section id="java-sdk">
 
 ## Java SDK
---content--
+
+The Java client library is available on [Maven Central](https://search.maven.org/search?q=g:com.streamr%20AND%20a:client&core=gav) which means it can be easily imported in your Java or Scala project. A comprehensive documentation and the code are available on [GitHub](https://github.com/streamr-dev/streamr-client-java).
+
+Here is an example of how to create an authenticated client, publish and subscribe data using the Java library.
+
+<CodeSnippet language='java'>
+{JavaExample}
+</CodeSnippet>
 
 </section>
 <section id="python-sdk">
