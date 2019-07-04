@@ -18,7 +18,9 @@ import { ClientSub, Example1, Example2a, Example3a, PythonRequests } from './cod
 
 import docsStyles from '$docs/components/DocsLayout/docsLayout.pcss'
 
-# First Tutorial
+<ScrollableAnchor id="building-a-simple-pub-sub-system"><div>
+
+## Building a simple pub/sub system
 
 The aim of this tutorial is to provide an overview of Streamr basic data flows:
 
@@ -28,7 +30,7 @@ The aim of this tutorial is to provide an overview of Streamr basic data flows:
 
 By the end of this tutorial, you will learn how to create a stream and publish data to it, and how you can obtain/visualize data by subscribing to a stream. In the near future, we will be providing additional tutorials that will go further in depth about specific topics or use-cases.
 
-## About Streams
+### About Streams
 
 In Streamr, each data point belongs to a Stream.  
 
@@ -59,8 +61,6 @@ Example using `curl`:
 <CodeSnippet language='bash'>
     {`curl -i -X POST -H "Authorization: Bearer MY-SESSION-TOKEN" -d "{\"foo\":\"hello\",\"bar\":24.5}" https://www.streamr.com/api/v1/streams/MY-STREAM-ID/data`}
 </CodeSnippet>
-
-<ScrollableAnchor id="create-a-stream"><div>
 
 ### Create a stream
 
@@ -97,10 +97,7 @@ From **Settings > API Keys**, click to add a new key, and give it a name like Tu
   <img src={SettingsAPICredentials} />
 </div>
 
-</div></ScrollableAnchor>
-<ScrollableAnchor id="publish-to-a-stream"><div>
-
-## Publish to a stream
+### Publish to a stream
 
 The easiest way to push data to a stream is to use the [JavaScript client](https://github.com/streamr-dev/streamr-client-javascript), which works in node.js as well as the browser. Client libraries for other languages are on the roadmap. 
 
@@ -125,10 +122,7 @@ This is how a test request would look in the fabulous [Postman](https://www.getp
 
 All the different authorization options are explained in the: <Link to={formatPath(links.docs.api)}>API docs</Link>
 
-</div></ScrollableAnchor>
-<ScrollableAnchor id="subscribe-to-data"><div>
-
-## Subscribe to data
+### Subscribe to data
 
 Along with Publishing data to a stream, this is best done with the [JavaScript client](https://github.com/streamr-dev/streamr-client-javascript) as mentioned above. 
 
@@ -136,10 +130,7 @@ Here is the given example from the Streamr Javascript client [readme](https://gi
 
 <CodeSnippet language='javascript' wrapLines showLineNumbers >{ClientSub}</CodeSnippet> 
 
-</div></ScrollableAnchor>
-<ScrollableAnchor id="patterns-for-data-integration"><div>
-
-## Patterns for data integration
+### Patterns for data integration
 
 There are three distinct patterns for connecting data to Streamr, each with their own pros and cons:
 
@@ -236,4 +227,3 @@ As before, using a Canvas is a potential alternative to a self-hosted script suc
 Here, the Clock module ticks every 15 minutes and triggers the HTTP Request to get the data from OpenWeatherMap. The fields in the data are delivered to the Stream by the **SendToStream** module.
 
 </div></ScrollableAnchor>
-
