@@ -1,6 +1,20 @@
 import ScrollableAnchor from 'react-scrollable-anchor'
+import { Link } from 'react-router-dom'
 
 import docsStyles from '$newdocs/components/DocsLayout/docsLayout.pcss'
+import links from '$shared/../links'
+import CodeSnippet from '$shared/components/CodeSnippet'
+
+import {
+    CreateJavascriptClient,
+    CreateJavaClient,
+    AuthJavascriptClient,
+    AuthJavaClient,
+    SubscribeJavascriptClient,
+    SubscribeJavaClient,
+    PublishJavascriptClient,
+    PublishJavaClient,
+} from './code/streams.js'
 
 <ScrollableAnchor id="intro-to-streams"><div>
 
@@ -19,7 +33,53 @@ import docsStyles from '$newdocs/components/DocsLayout/docsLayout.pcss'
 <ScrollableAnchor id="work-with-streams-via-sdks"><div>
 
 ## Work with streams via SDKs
---content--
+
+The easiest way to work with streams is to use the JavaScript client, which works in `node.js` as well as the browser. See the <Link to={links.newdocs.SDKs}>SDKs section</Link> for the official and community-maintained client libraries available for various languages:
+
+- **JavaScript** client works in the browser as well as node.js.
+- **Java** client is work-in-progress but already implements the most important set of functionality.
+
+Client libraries for other languages are on the <a href={links.community.trello} target="_blank" rel="nofollow noopener noreferrer">roadmap</a>. If a client library isn't available for your language, you can dive into the details of the [websocket protocol](https://github.com/streamr-dev/streamr-client-protocol-js/blob/bb2f0168bcff454b5c458e275e9c2de0dee342f9/PROTOCOL.md).
+
+If you'd like to contribute a client library and get it listed here, please get in touch on <a href={links.community.telegram} target="_blank" rel="nofollow noopener noreferrer">Telegram</a>, <a href={links.community.reddit} target="_blank" rel="nofollow noopener noreferrer">Reddit</a> or <a href={links.contact.general} rel="nofollow noopener noreferrer">email</a>!
+
+### Authentication
+
+When reading from or writing to Streams, you need to provide a session token or an API key, or login with an Ethereum account. To read more about API keys or obtaining a session token, refer to the <Link to={links.newdocs.api}>Authentication section of the API documentation</Link>.
+
+### Creating a client instance with API key
+
+**Javascript**
+
+<CodeSnippet language='javascript'>{CreateJavascriptClient}</CodeSnippet>
+
+**Java**
+
+<CodeSnippet language='java'>{CreateJavaClient}</CodeSnippet>
+
+### Subscribing to real-time events in a stream
+
+By subscribing to Streams, your application gets immediately notified about new events in the Stream. 
+
+**JavaScript**
+
+<CodeSnippet language='javascript'>{SubscribeJavascriptClient}</CodeSnippet>
+
+**Java**
+
+<CodeSnippet language='java'>{SubscribeJavaClient}</CodeSnippet>
+
+### Publishing events to Streams
+
+JavaScript:
+
+<CodeSnippet language='javascript'>{PublishJavascriptClient}</CodeSnippet>
+
+Java:
+
+Events in Streams are key-value pairs, represented in Java as Map objects. Below is an example of creating an event payload and publishing it into a Stream:
+
+<CodeSnippet language='java'>{PublishJavaClient}</CodeSnippet>
 
 </div></ScrollableAnchor>
 
