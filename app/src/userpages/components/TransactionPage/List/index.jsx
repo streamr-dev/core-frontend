@@ -101,7 +101,10 @@ class TransactionList extends Component<Props> {
                         />
                     )}
                     {transactions && transactions.length > 0 && (
-                        <Table>
+                        <Table className={cx({
+                            [styles.loadingMore]: !!(hasMoreResults && fetching),
+                        })}
+                        >
                             <thead>
                                 <tr>
                                     <th><Translate value="userpages.transactions.list.name" /></th>
@@ -190,7 +193,7 @@ const mapStateToProps = (state: StoreState) => {
         fetching: selectFetching(state),
         web3Accounts: selectEthereumIdentities(state),
         products: selectEntities(state).contractProducts,
-        hasMoreResults: events.length >= (offset + 10),
+        hasMoreResults: events.length > 0 && events.length > (offset + 10),
     }
 }
 
