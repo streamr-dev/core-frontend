@@ -11,6 +11,9 @@ module.exports = {
     signup: formatExternalUrl(streamrRoot, 'register/signup'),
     whitepaper: formatExternalUrl(streamrRoot, 'whitepaper'),
     logout: formatExternalUrl(streamrRoot, 'logout'),
+    site: {
+        network: formatExternalUrl(streamrRoot, 'network'),
+    },
     faq: 'https://www.streamr.com/faq',
     aboutUs: 'https://www.streamr.com/about',
     howItWorks: 'https://www.streamr.com#howItWorks',
@@ -92,5 +95,9 @@ module.exports = {
         media: 'mailto:media@streamr.com',
         jobs: 'mailto:jobs@streamr.com',
         labs: 'mailto:labs@streamr.com',
+    },
+    external: {
+        ethereum: 'https://www.ethereum.org',
+        decentralizedWeb: 'https://blockchainhub.net/web3-decentralized-web/',
     },
 }
