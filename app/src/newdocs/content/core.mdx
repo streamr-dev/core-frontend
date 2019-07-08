@@ -1,11 +1,19 @@
 import ScrollableAnchor from 'react-scrollable-anchor'
+import { Link } from 'react-router-dom'
+
+import links from '$shared/../links'
 
 import docsStyles from '$newdocs/components/DocsLayout/docsLayout.pcss'
 
 <ScrollableAnchor id="intro-to-core"><div>
 
 ## Intro to Core
---content--
+
+<Link to={links.userpages.main}>Core</Link> is the collection of [open source](https://github.com/streamr-dev/streamr-platform), Streamr developed and supported applications that help you create, process, visualise and sell your realtime data. 
+
+Essentially, Core contains the UI toolkits for working with Streams, Canvases, Dashboards, and Products on the Streamr Platform.
+
+All you need to get started using <Link to={links.userpages.main}>Core</Link> is a <Link to={links.internalLogin}>Streamr Account</Link>.
 
 </div></ScrollableAnchor>
 
