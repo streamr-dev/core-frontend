@@ -12,7 +12,7 @@ module.exports = {
     whitepaper: formatExternalUrl(streamrRoot, 'whitepaper'),
     logout: formatExternalUrl(streamrRoot, 'logout'),
     site: {
-        network: formatExternalUrl(streamrRoot, 'network'),
+        network: formatExternalUrl(streamrRoot, 'learn/network'),
     },
     faq: 'https://www.streamr.com/faq',
     aboutUs: 'https://www.streamr.com/about',
@@ -25,6 +25,10 @@ module.exports = {
     resetAllowanceInfo: 'https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729',
     // ---->
     blog: 'https://medium.com/streamrblog',
+    blogPosts: {
+        nodered: 'https://medium.com/streamrblog/streamr-node-red-integration-tutorial-b0b410496354', // referred to from docs
+        spark: 'https://medium.com/streamrblog/integrating-streamr-with-apache-spark-4c049f2688a1', // referred to from docs
+    },
     root: '/',
     internalLogin: '/login',
     marketplace: {
@@ -89,6 +93,7 @@ module.exports = {
         youtube: routes.communityYoutube(),
         medium: routes.communityMedium(),
         github: routes.communityGithub(),
+        devForum: 'https://forum.streamr.dev/',
     },
     contact: {
         general: 'mailto:contact@streamr.com',
