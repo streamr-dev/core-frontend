@@ -463,6 +463,35 @@ describe('Variadic Port Handling', () => {
             expect(State.updateCanvas(await Services.create(canvas))).toMatchCanvas(canvas)
         })
 
+        it('updates downstream connection status as input type changes', async () => {
+            let canvas = State.emptyCanvas()
+            canvas = State.addModule(canvas, await loadModuleDefinition('ConstantText'))
+            canvas = State.addModule(canvas, await loadModuleDefinition('Constant'))
+            canvas = State.addModule(canvas, await loadModuleDefinition('PassThrough'))
+            canvas = State.addModule(canvas, await loadModuleDefinition('ConstantText'))
+            const [
+                constantText1,
+                constantNumber,
+                passThrough,
+                constantText2,
+            ] = canvas.modules
+
+            // connect constantText1.out to passThrough.in1
+            canvas = State.updateCanvas(State.connectPorts(canvas, constantText1.outputs[0].id, passThrough.inputs[0].id))
+            expect(State.arePortsConnected(canvas, constantText1.outputs[0].id, passThrough.inputs[0].id)).toBeTruthy()
+            // connect passThrough.out1 to constantText2.in
+            canvas = State.updateCanvas(State.connectPorts(canvas, passThrough.outputs[0].id, constantText2.params[0].id))
+            expect(State.arePortsConnected(canvas, passThrough.outputs[0].id, constantText2.params[0].id)).toBeTruthy()
+
+            // change passthrough.in1/out1 type to number by connecting constantNumber.out to passthrough.in1
+            expect(State.canConnectPorts(canvas, constantNumber.outputs[0].id, passThrough.inputs[0].id)).toBeTruthy()
+            canvas = State.updateCanvas(State.connectPorts(canvas, constantNumber.outputs[0].id, passThrough.inputs[0].id))
+            expect(State.arePortsConnected(canvas, constantNumber.outputs[0].id, passThrough.inputs[0].id)).toBeTruthy()
+            // verify previous (incompatible) connections were dropped
+            expect(State.arePortsConnected(canvas, constantText1.outputs[0].id, passThrough.inputs[0].id)).not.toBeTruthy()
+            expect(State.arePortsConnected(canvas, passThrough.outputs[0].id, constantText2.params[0].id)).not.toBeTruthy()
+        })
+
         it('can connect linked output when input exported', async () => {
             let canvas = State.emptyCanvas()
             canvas = State.addModule(canvas, await loadModuleDefinition('PassThrough'))

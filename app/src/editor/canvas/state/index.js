@@ -387,6 +387,9 @@ function linkedOutputConnectionsDisabled(canvas, outputPortId) {
 
 export function canConnectPorts(canvas, portIdA, portIdB) {
     if (portIdA === portIdB) { return false } // cannot connect port to self
+    if (!hasPort(canvas, portIdA) || !hasPort(canvas, portIdB)) {
+        return false // cannot connect non-existent ports
+    }
     if (getIsOutput(canvas, portIdA) === getIsOutput(canvas, portIdB)) {
         // if both inputs or both outputs, cannot connect
         return false
@@ -471,14 +474,6 @@ export function connectPorts(canvas, portIdA, portIdB) {
 
     let nextCanvas = canvas
 
-    // disconnect existing input connection
-    // if variadic, delay disconnecting until end
-    // as disconnecting may lead to input we're trying
-    // to connect to being removed before we can connect to it
-    if (input.sourceId && !input.variadic) {
-        nextCanvas = disconnectPorts(nextCanvas, input.sourceId, input.id)
-    }
-
     const displayName = getDisplayNameFromPort(output)
     const outputModule = getModuleForPort(nextCanvas, output.id)
     const { contract } = outputModule || {}
@@ -521,11 +516,6 @@ export function connectPorts(canvas, portIdA, portIdB) {
         connected: isPortConnected(nextCanvas, output.id),
     }))
 
-    // delayed disconnect output original if input variadic, see above
-    if (input.sourceId && input.variadic && input.sourceId !== output.id) {
-        nextCanvas = disconnectPorts(nextCanvas, input.sourceId, input.id)
-    }
-
     return nextCanvas
 }
 
@@ -554,12 +544,20 @@ export function updatePortConnection(canvas, portId) {
     if (!hasPort(canvas, portId)) { return canvas }
     const portIds = getConnectedPortIds(canvas, portId)
 
-    return portIds.reduce((prevCanvas, connectedPortId) => {
-        if (!hasPort(prevCanvas, connectedPortId)) {
+    const nextCanvas = portIds.reduce((prevCanvas, connectedPortId) => {
+        // disconnect ports that can't be connected
+        if (!canConnectPorts(prevCanvas, portId, connectedPortId)) {
             return disconnectPorts(prevCanvas, portId, connectedPortId)
         }
         return prevCanvas
     }, canvas)
+
+    const connected = isPortConnected(nextCanvas, portId)
+    if (connected === getPort(nextCanvas, portId).connected) { return nextCanvas }
+    return updatePort(nextCanvas, portId, (port) => ({
+        ...port,
+        connected,
+    }))
 }
 
 export function updateModulePortConnections(canvas, moduleHash) {
