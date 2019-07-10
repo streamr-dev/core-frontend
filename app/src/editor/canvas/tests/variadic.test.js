@@ -467,19 +467,23 @@ describe('Variadic Port Handling', () => {
             let canvas = State.emptyCanvas()
             canvas = State.addModule(canvas, await loadModuleDefinition('PassThrough'))
             canvas = State.addModule(canvas, await loadModuleDefinition('Label'))
-            let passthrough = canvas.modules.find((m) => m.name === 'PassThrough')
-            let label = canvas.modules.find((m) => m.name === 'Label')
+            const passthrough = canvas.modules.find((m) => m.name === 'PassThrough')
+            const label = canvas.modules.find((m) => m.name === 'Label')
+            // refuses to connect linked output when input is not connected
+            expect(State.canConnectPorts(canvas, passthrough.outputs[0].id, label.inputs[0].id)).not.toBeTruthy()
 
             // export input
             canvas = State.updateCanvas(State.setPortOptions(canvas, passthrough.inputs[0].id, {
                 export: true,
             }))
 
+            // permits connecting linked output when exported input is not connected
+            expect(State.canConnectPorts(canvas, passthrough.outputs[0].id, label.inputs[0].id)).toBeTruthy()
+
+            // connect passthrough out to label in
             canvas = State.updateCanvas(State.connectPorts(canvas, passthrough.outputs[0].id, label.inputs[0].id))
 
-            passthrough = canvas.modules.find((m) => m.name === 'PassThrough')
-            label = canvas.modules.find((m) => m.name === 'Label')
-
+            // linked output is connected even though exported input is not connected
             expect(State.arePortsConnected(canvas, passthrough.outputs[0].id, label.inputs[0].id)).toBeTruthy()
 
             // de-export input
@@ -487,7 +491,13 @@ describe('Variadic Port Handling', () => {
                 export: false,
             }))
 
+            // can no longer connect
+            expect(State.canConnectPorts(canvas, passthrough.outputs[0].id, label.inputs[0].id)).not.toBeTruthy()
+            // connection was automatically removed
             expect(State.arePortsConnected(canvas, passthrough.outputs[0].id, label.inputs[0].id)).not.toBeTruthy()
+
+            // test server accepts state
+            expect(State.updateCanvas(await Services.create(canvas))).toMatchCanvas(canvas)
         })
     })
 })
