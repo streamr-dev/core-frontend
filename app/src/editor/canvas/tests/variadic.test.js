@@ -490,6 +490,9 @@ describe('Variadic Port Handling', () => {
             // verify previous (incompatible) connections were dropped
             expect(State.arePortsConnected(canvas, constantText1.outputs[0].id, passThrough.inputs[0].id)).not.toBeTruthy()
             expect(State.arePortsConnected(canvas, passThrough.outputs[0].id, constantText2.params[0].id)).not.toBeTruthy()
+
+            // test server accepts state
+            expect(State.updateCanvas(await Services.create(canvas))).toMatchCanvas(canvas)
         })
 
         it('can connect linked output when input exported', async () => {
@@ -524,6 +527,56 @@ describe('Variadic Port Handling', () => {
             expect(State.canConnectPorts(canvas, passthrough.outputs[0].id, label.inputs[0].id)).not.toBeTruthy()
             // connection was automatically removed
             expect(State.arePortsConnected(canvas, passthrough.outputs[0].id, label.inputs[0].id)).not.toBeTruthy()
+
+            // test server accepts state
+            expect(State.updateCanvas(await Services.create(canvas))).toMatchCanvas(canvas)
+        })
+
+        it('handles nested connection changes', async () => {
+            let canvas = State.emptyCanvas()
+            canvas = State.addModule(canvas, await loadModuleDefinition('ConstantText'))
+            canvas = State.addModule(canvas, await loadModuleDefinition('Constant'))
+            canvas = State.addModule(canvas, await loadModuleDefinition('PassThrough'))
+            canvas = State.addModule(canvas, await loadModuleDefinition('PassThrough'))
+            canvas = State.addModule(canvas, await loadModuleDefinition('ConstantText'))
+            let [
+                constantText1,
+                constantNumber,
+                passThrough1,
+                passThrough2,
+                constantText2,
+            ] = canvas.modules
+
+            // connect constantText1.out to passThrough1.in1
+            canvas = State.updateCanvas(State.connectPorts(canvas, constantText1.outputs[0].id, passThrough1.inputs[0].id))
+            // connect passThrough1.out1 to passThrough2.in1
+            canvas = State.updateCanvas(State.connectPorts(canvas, passThrough1.outputs[0].id, passThrough2.inputs[0].id))
+
+            // update variables
+            ;[ // eslint-disable-line semi-style
+                constantText1,
+                constantNumber,
+                passThrough1,
+                passThrough2,
+                constantText2,
+            ] = canvas.modules
+
+            // connect passThrough2.out1 to passThrough1.in2
+            canvas = State.updateCanvas(State.connectPorts(canvas, passThrough2.outputs[0].id, passThrough1.inputs[1].id))
+            expect(State.arePortsConnected(canvas, passThrough1.outputs[0].id, passThrough2.inputs[0].id)).toBeTruthy()
+
+            // connect passThrough1.out2 to constantText2.in
+            canvas = State.updateCanvas(State.connectPorts(canvas, passThrough1.outputs[1].id, constantText2.params[0].id))
+
+            // change passthrough1.in1/out1 type to number by connecting constantNumber.out to passthrough1.in1
+            canvas = State.updateCanvas(State.connectPorts(canvas, constantNumber.outputs[0].id, passThrough1.inputs[0].id))
+
+            // check valid connections maintained
+            expect(State.arePortsConnected(canvas, constantNumber.outputs[0].id, passThrough1.inputs[0].id)).toBeTruthy()
+            expect(State.arePortsConnected(canvas, passThrough1.outputs[0].id, passThrough2.inputs[0].id)).toBeTruthy()
+            expect(State.arePortsConnected(canvas, passThrough2.outputs[0].id, passThrough1.inputs[1].id)).toBeTruthy()
+            // verify previous (incompatible) connections were dropped
+            expect(State.arePortsConnected(canvas, constantNumber.outputs[0].id, constantText2.params[0].id)).not.toBeTruthy()
 
             // test server accepts state
             expect(State.updateCanvas(await Services.create(canvas))).toMatchCanvas(canvas)
