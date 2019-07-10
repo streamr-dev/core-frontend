@@ -462,5 +462,32 @@ describe('Variadic Port Handling', () => {
             // test server accepts state
             expect(State.updateCanvas(await Services.create(canvas))).toMatchCanvas(canvas)
         })
+
+        it('can connect linked output when input exported', async () => {
+            let canvas = State.emptyCanvas()
+            canvas = State.addModule(canvas, await loadModuleDefinition('PassThrough'))
+            canvas = State.addModule(canvas, await loadModuleDefinition('Label'))
+            let passthrough = canvas.modules.find((m) => m.name === 'PassThrough')
+            let label = canvas.modules.find((m) => m.name === 'Label')
+
+            // export input
+            canvas = State.updateCanvas(State.setPortOptions(canvas, passthrough.inputs[0].id, {
+                export: true,
+            }))
+
+            canvas = State.updateCanvas(State.connectPorts(canvas, passthrough.outputs[0].id, label.inputs[0].id))
+
+            passthrough = canvas.modules.find((m) => m.name === 'PassThrough')
+            label = canvas.modules.find((m) => m.name === 'Label')
+
+            expect(State.arePortsConnected(canvas, passthrough.outputs[0].id, label.inputs[0].id)).toBeTruthy()
+
+            // de-export input
+            canvas = State.updateCanvas(State.setPortOptions(canvas, passthrough.inputs[0].id, {
+                export: false,
+            }))
+
+            expect(State.arePortsConnected(canvas, passthrough.outputs[0].id, label.inputs[0].id)).not.toBeTruthy()
+        })
     })
 })

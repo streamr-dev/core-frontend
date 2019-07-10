@@ -951,7 +951,8 @@ function handleVariadicPairs(canvas, moduleHash) {
             linkedOutputPort = findLinkedVariadicPort(newCanvas, inputPort.id)
         }
         // if input is not connected, neither should the output
-        if (!isPortConnected(newCanvas, inputPort.id)) {
+        // can't know if input is connected for exported ports, so ignore this check when input is exported
+        if (!isPortConnected(newCanvas, inputPort.id) && !isPortExported(newCanvas, inputPort.id)) {
             newCanvas = disconnectAllFromPort(newCanvas, linkedOutputPort.id)
         }
     })
