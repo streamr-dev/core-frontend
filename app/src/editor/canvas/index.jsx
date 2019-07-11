@@ -165,6 +165,19 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         ))
     }
 
+    addAndSelectModule = async (...args) => {
+        this.latestAdd = ((this.latestAdd + 1) || 0)
+        const currentAdd = this.latestAdd
+        await this.addModule(...args)
+        if (this.unmounted) { return }
+        const { canvas } = this.props
+        // assume last module is most recently added
+        const newModule = canvas.modules[canvas.modules.length - 1]
+        // only select if still latest
+        if (this.latestAdd !== currentAdd || !newModule) { return }
+        this.selectModule(newModule)
+    }
+
     duplicateCanvas = async () => {
         const { canvas, canvasController } = this.props
         await canvasController.duplicate(canvas)
@@ -409,7 +422,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                     )}
                 </Sidebar>
                 <ModuleSearch
-                    addModule={this.addModule}
+                    addModule={this.addAndSelectModule}
                     isOpen={this.state.moduleSearchIsOpen}
                     open={this.moduleSearchOpen}
                     canvas={canvas}
