@@ -286,25 +286,20 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
         const selfRect = this.selfRef.current.getBoundingClientRect()
         const canvasRect = canvasElement.getBoundingClientRect()
 
-        // Align module to the top right corner of ModuleSearch with a 32px offset
-        const position = {
+        const myBB = {
+            // Align module to the top right corner of ModuleSearch with a 32px offset
             x: (selfRect.right - canvasRect.left - 20) + 32,
             y: selfRect.top - canvasRect.top - 20,
-        }
-
-        const myBB = {
-            x: position.x,
-            y: position.y,
             // TODO: It would be nice to use actual module size here but we know
             //       it only after the module has been added to the canvas
             width: 100,
             height: 50,
         }
 
-        const stackOffset = 16 // pixels
         const boundingBoxes = this.props.canvas.modules.map((m) => getModuleBoundingBox(m))
-        const pos = findNonOverlappingPosition(myBB, boundingBoxes, stackOffset)
-        return pos
+
+        const stackOffset = 16 // pixels
+        return findNonOverlappingPosition(myBB, boundingBoxes, stackOffset)
     }
 
     renderMenu = () => {
