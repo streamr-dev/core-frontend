@@ -8,7 +8,7 @@ import cx from 'classnames'
 import type { Stream } from '$shared/flowtype/stream-types'
 import SvgIcon from '$shared/components/SvgIcon'
 import { type Ref } from '$shared/flowtype/common-types'
-import { getModuleBoundingBox } from '$editor/shared/utils/boundingBox'
+import { getModuleBoundingBox, findNonOverlappingPosition } from '$editor/shared/utils/boundingBox'
 
 import { getModuleCategories, getStreams } from '../services'
 import { moduleSearch } from '../state'
@@ -273,24 +273,6 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
         return modules
     }
 
-    findNonOverlappingPosition = (myBB: any, stackOffset: number) => {
-        this.props.canvas.modules.forEach((m) => {
-            const otherBB = getModuleBoundingBox(m)
-            const xDiff = myBB.x - otherBB.x
-            const yDiff = myBB.y - otherBB.y
-            if ((xDiff < stackOffset && yDiff < stackOffset)) {
-                myBB.x += (stackOffset - xDiff) // align to offset "grid"
-                myBB.y += (stackOffset - yDiff) // align to offset "grid"
-                return this.findNonOverlappingPosition(myBB, stackOffset)
-            }
-        })
-
-        return {
-            x: myBB.x,
-            y: myBB.y,
-        }
-    }
-
     getPositionForClickInsert = () => {
         const canvasElement = document.querySelector(`.${CanvasStyles.Modules}`)
 
@@ -320,8 +302,8 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
         }
 
         const stackOffset = 16 // pixels
-
-        const pos = this.findNonOverlappingPosition(myBB, stackOffset)
+        const boundingBoxes = this.props.canvas.modules.map((m) => getModuleBoundingBox(m))
+        const pos = findNonOverlappingPosition(myBB, boundingBoxes, stackOffset)
         return pos
     }
 
