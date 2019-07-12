@@ -1,6 +1,7 @@
 import ScrollableAnchor from 'react-scrollable-anchor'
 import { Link } from 'react-router-dom'
 
+import links from '$shared/../links'
 import streamListing from './images/streams/stream-listing.png'
 import streamSettings from './images/streams/setup-your-stream.png'
 
@@ -54,29 +55,27 @@ Stream editor provides basic tools for setting up, inspecting and editing your s
 <img src={streamSettings} />
 
 #### Details section
-The details section provides basic information about your stream. The stream name is used to identify your stream in the Core app. 
-
-The stream description can be used to offer more information about your stream and the kind of data it contains. 
-
+The details section provides basic information about your stream. The stream name is used to identify your stream in the Core app.
+The stream description can be used to offer more information about your stream and the kind of data it contains.
 The stream ID is the unique identifier for your stream
 and is needed when interacting with the <Link to={links.newdocs.SDKs}>Streamr SDKs</Link>.
 
 #### Configure section
 In this section you can configure stream fields and their data types. All fields have a name and a data type.
-The Autodetect feature can be used to automatically deduce fields from the stream's last received message. It is possible to manually correct the data types if automatic detection is not suitable for your stream.
-It is possible to manually correct the data types if automatic detection is not perfect.
+The Autodetect feature can be used to automatically deduce fields from the stream's last received message.
+It is possible to manually correct the data types if automatic detection is not suitable for your stream.
 
-| Setting                                             | Explanation                                                                                                  |
-| ----------------------------------------------------| ------------------------------------------------------------------------------------------------------------ |
-| Always try to autoconfigure field names and types   | Streamr will try to automatically configure field names and types on the very first message the stream receives         |
-| Require all messages in this stream to be signed    | Streamr will not accept messages that are not signed                                                         |
+| Setting                                             | Explanation                                                                                                     |
+| ----------------------------------------------------| --------------------------------------------------------------------------------------------------------------- |
+| Always try to autoconfigure field names and types   | Streamr will try to automatically configure field names and types on the very first message the stream receives |
+| Require all messages in this stream to be signed    | Streamr will not accept messages that are not signed                                                            |
 
 #### Preview section
 This section is used to preview data flowing into the stream. Use the live inspector to make sure your stream is receiving data and it is correctly formatted.
 
 #### API Access section
-Here you can manage API keys for your stream. Keys generated here grant access to only this stream and can have either read or write access. These keys can also be removed if for example, the key has been compromised.
-Keys can also be deleted which is useful in cases where your key has e.g. leaked.
+Here you can manage API keys for your stream. Keys generated here grant access to only this stream and can have either read or write access.
+These keys can also be removed if for example, the key has been compromised.
 
 #### Historical Data section
 This section contains the stream's historical data storage settings and includes tools to add or remove historical data from the stream. 
@@ -84,8 +83,6 @@ This section contains the stream's historical data storage settings and includes
 You can add new data to the stream by uploading a CSV file and you can delete existing historical data from the stream by choosing an inclusive date range. 
 
 The historical data storage period determines how many days your data is retained before it will be removed automatically from the Streamr network. The default period is 365 days.
-by date. Also historical data storage period can be controlled here. It determines how many days your data is retained before it will be removed
-automatically from the system.
 
 </div></ScrollableAnchor>
 
