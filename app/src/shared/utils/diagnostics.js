@@ -10,8 +10,8 @@ global.streamr = Object.assign(global.streamr || {}, {
         return {
             userAgent: navigator.userAgent,
             environment: process.env.NODE_ENV,
-            version: process.env.GIT_VERSION,
-            branch: process.env.GIT_BRANCH,
+            version: process.env.GIT_VERSION || process.env.TRAVIS_TAG,
+            branch: process.env.GIT_BRANCH || process.env.TRAVIS_BRANCH,
         }
     },
 })
