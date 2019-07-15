@@ -39,7 +39,14 @@ export const findNonOverlappingPosition = (
         return distA - distB
     })
 
-    const closest = boundingBoxes[0]
+    // only consider boxes to the right/bottom of first box,
+    // within an allowance of stackOffset
+    const possibleBoxes = initial ? boundingBoxes.filter((bb) => (
+        currentBB.x - bb.x <= stackOffset &&
+        currentBB.y - bb.y <= stackOffset
+    )) : boundingBoxes
+
+    const closest = possibleBoxes[0]
 
     // no items
     if (!closest) { return currentBB }
