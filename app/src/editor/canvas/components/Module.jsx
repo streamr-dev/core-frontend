@@ -39,6 +39,19 @@ class CanvasModule extends React.PureComponent {
         this.unmounted = true
     }
 
+    componentDidUpdate(prevProps) {
+        const { module, selectedModuleHash } = this.props
+        const isSelected = module.hash === selectedModuleHash
+        // scroll into view if selection status changed
+        if (this.el.current && isSelected && module.hash !== prevProps.selectedModuleHash) {
+            this.el.current.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start',
+                inline: 'nearest',
+            })
+        }
+    }
+
     static getDerivedStateFromProps(props) {
         if (!props.module) {
             return null
@@ -147,7 +160,7 @@ class CanvasModule extends React.PureComponent {
                 data-modulehash={module.hash}
                 {...props}
             >
-                <div className={styles.body}>
+                <div className={styles.body} ref={this.el}>
                     <Probe group="ModuleHeight" height="auto" />
                     <ModuleHeader
                         className={cx(styles.header, ModuleStyles.dragHandle)}
