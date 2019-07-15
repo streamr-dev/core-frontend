@@ -371,7 +371,11 @@ function getPortValueType(canvas, portId) {
     return getPortValueType(canvas, connectedOutId)
 }
 
-function linkedOutputConnectionsDisabled(canvas, outputPortId) {
+export function isPortInvisible(canvas, portId) {
+    return linkedOutputConnectionsDisabled(canvas, portId)
+}
+
+export function linkedOutputConnectionsDisabled(canvas, outputPortId) {
     if (!getIsOutput(canvas, outputPortId)) { return false }
     const outputPort = getPort(canvas, outputPortId)
     if (!isVariadicPort(outputPort)) { return false }
