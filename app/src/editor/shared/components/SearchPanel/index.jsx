@@ -6,14 +6,25 @@ import SvgIcon from '$shared/components/SvgIcon'
 
 import styles from './SearchPanel.pcss'
 
-export function SearchRow({ className, ...props }) {
+// onKeyDown handler fire callback on Enter/Spacebar
+function useOnKeyDownConfirm(onClick) {
+    return useCallback((event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault()
+            onClick(event)
+        }
+    }, [onClick])
+}
+
+export function SearchRow({ className, onClick, ...props }) {
     return (
-        /* eslint-disable-next-line jsx-a11y/click-events-have-key-events */
         <div
             className={cx(styles.SearchRow, className)}
             role="option"
             aria-selected="false"
             tabIndex="0"
+            onClick={onClick}
+            onKeyDown={useOnKeyDownConfirm(onClick) /* treat enter/spacebar as onClick */}
             {...props}
         />
     )
