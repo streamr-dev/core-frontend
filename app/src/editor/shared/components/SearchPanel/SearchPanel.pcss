@@ -115,9 +115,10 @@
 }
 
 .SearchPanel .ContentContainer {
+  flex: 1;
   border-top: 1px solid #EFEFEF;
   overflow: overlay; /* deprecated, but does what we want */
-  flex: 1;
+  scroll-behavior: smooth;
 
   /* standards compliant but only firefox implements */
   scrollbar-width: thin; /* stylelint-disable-line property-no-unknown */
