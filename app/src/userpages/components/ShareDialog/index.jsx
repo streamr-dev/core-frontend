@@ -15,6 +15,7 @@ import Buttons from '$shared/components/Buttons'
 
 import ShareDialogContent from './ShareDialogContent'
 import ShareDialogTabs, { type Tab } from './ShareDialogTabs'
+import CopyLink from './CopyLink'
 
 import styles from './shareDialog.pcss'
 
@@ -166,7 +167,7 @@ export class ShareDialog extends Component<Props, State> {
                         <div className={styles.footer}>
                             <div className={styles.copyLink}>
                                 {!error && activeTab === ShareDialogTabs.SHARE && (
-                                    <p>sd</p>
+                                    <CopyLink />
                                 )}
                             </div>
                             <Buttons
