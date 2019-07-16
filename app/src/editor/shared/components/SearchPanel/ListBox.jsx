@@ -20,9 +20,11 @@ function useId(prefix) {
     return idRef.current
 }
 
+export const OPTION_SELECTOR = '[role=option]:not([aria-disabled])'
+
 const ListContext = React.createContext()
 
-export function ListOption({ onClick, ...props }) {
+export function ListOption({ onClick, disabled, ...props }) {
     const listContext = useContext(ListContext)
     const parentId = listContext.id
     const id = useId([parentId, 'ListOption'].join('.'))
@@ -31,15 +33,30 @@ export function ListOption({ onClick, ...props }) {
         setSelected(id)
     }, [id, setSelected])
 
+    // focus on mousemove
+    // mouseover no good as items can move
+    const onMouseMove = useCallback((event) => {
+        if (event.currentTarget !== event.target) { return } // ignore bubbled
+        event.currentTarget.focus()
+    }, [])
+
+    /* treat enter/spacebar as onClick */
+    const onKeyDown = useOnKeyDownConfirm(onClick)
+
     return (
         <div
             id={id}
             role="option"
+            aria-disabled={disabled || undefined}
             aria-selected={String(listContext.isSelected(id))}
-            tabIndex="0"
-            onClick={onClick}
-            onKeyDown={useOnKeyDownConfirm(onClick) /* treat enter/spacebar as onClick */}
-            onFocus={onFocus}
+            {...(disabled ? {} : {
+                // only enable interaction if not disabled
+                tabIndex: -1,
+                onClick,
+                onKeyDown,
+                onFocus,
+                onMouseMove,
+            })}
             {...props}
         />
     )
@@ -54,7 +71,7 @@ export const ListBox = React.forwardRef((props, ref) => {
     ), [selection])
 
     const selectNext = useCallback(() => {
-        const options = Array.from(ref.current.querySelectorAll('[role=option]'))
+        const options = Array.from(ref.current.querySelectorAll(OPTION_SELECTOR))
         const ids = options.map((el) => el.id)
         const currentIndex = ids.indexOf(selection)
         const nextIndex = (currentIndex + 1) % ids.length
@@ -64,7 +81,7 @@ export const ListBox = React.forwardRef((props, ref) => {
     }, [ref, selection])
 
     const selectPrev = useCallback(() => {
-        const options = Array.from(ref.current.querySelectorAll('[role=option]'))
+        const options = Array.from(ref.current.querySelectorAll(OPTION_SELECTOR))
         const ids = options.map((el) => el.id)
         const currentIndex = ids.indexOf(selection)
         const prevIndex = (ids.length + (currentIndex - 1)) % ids.length
@@ -98,7 +115,7 @@ export const ListBox = React.forwardRef((props, ref) => {
         if (event.currentTarget !== event.target) { return } // ignore bubbled
         event.preventDefault()
         event.stopPropagation()
-        const item = ref.current.querySelector('[role=option]')
+        const item = ref.current.querySelector(OPTION_SELECTOR)
         if (!item) { return }
         item.focus()
     }, [ref])

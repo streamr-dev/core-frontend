@@ -30,6 +30,7 @@ const categoryMapping = {
 type MenuCategoryProps = {
     category: CategoryType,
     addModule: (id: number, x: ?number, y: ?number, streamId: ?string) => void,
+    disabled?: boolean,
 }
 
 type MenuCategoryState = {
@@ -46,8 +47,9 @@ export class ModuleMenuCategory extends React.PureComponent<MenuCategoryProps, M
     }
 
     render() {
-        const { category, addModule } = this.props
+        const { category, addModule, disabled } = this.props
         const { isExpanded } = this.state
+        const isDisabled = disabled || !category.modules.length // disable if no modules
         return (
             <React.Fragment>
                 {/* eslint-disable-next-line */}
@@ -56,7 +58,8 @@ export class ModuleMenuCategory extends React.PureComponent<MenuCategoryProps, M
                         [styles.active]: !!isExpanded,
                     })}
                     key={category.name}
-                    onClick={() => this.toggle()}
+                    onClick={() => !isDisabled && this.toggle()}
+                    disabled={isDisabled}
                 >
                     {category.name}
                 </SearchRow>
@@ -336,7 +339,7 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
         return (
             <React.Fragment>
                 {matchingModules.length > 0 && (
-                    <SearchRow className={styles.SearchCategory}>Modules</SearchRow>
+                    <SearchRow className={styles.SearchCategory} disabled>Modules</SearchRow>
                 )}
                 {matchingModules.map((m) => (
                     /* TODO: follow the disabled jsx-a11y recommendations below to add keyboard support */
@@ -353,7 +356,7 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
                     </SearchRow>
                 ))}
                 {matchingStreams.length > 0 && (
-                    <SearchRow className={styles.SearchCategory}>Streams</SearchRow>
+                    <SearchRow className={styles.SearchCategory} disabled>Streams</SearchRow>
                 )}
                 {matchingStreams.map((stream) => (
                     /* eslint-disable-next-line jsx-a11y/click-events-have-key-events */

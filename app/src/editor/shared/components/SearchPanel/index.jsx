@@ -6,7 +6,7 @@ import SvgIcon from '$shared/components/SvgIcon'
 
 import styles from './SearchPanel.pcss'
 
-import { ListBox, ListOption } from './ListBox'
+import { ListBox, ListOption, OPTION_SELECTOR } from './ListBox'
 
 export function SearchRow({ className, ...props }) {
     return (
@@ -129,12 +129,6 @@ export function SearchPanel(props) {
             if (event.key === 'Escape') {
                 open(false)
             }
-            // select result list on arrow down
-            if (event.key === 'ArrowDown' && contentRef.current) {
-                event.preventDefault()
-                event.stopPropagation()
-                contentRef.current.focus()
-            }
         }
     }, [isOpen, hasFocus, open])
 
@@ -210,6 +204,30 @@ export function SearchPanel(props) {
         return children
     }, [children, isSearching, isExpanded, renderDefault])
 
+    const onInputKeyDown = useCallback((event) => {
+        if (event.currentTarget !== event.target) { return } // ignore bubbled
+        // select first item on arrow down
+        if (event.key === 'ArrowDown' && contentRef.current) {
+            event.preventDefault()
+            event.stopPropagation()
+            const [firstItem] = contentRef.current.querySelectorAll(OPTION_SELECTOR)
+            if (firstItem) {
+                firstItem.focus()
+            }
+        }
+
+        // select last item on arrow up
+        if (event.key === 'ArrowUp' && contentRef.current) {
+            event.preventDefault()
+            event.stopPropagation()
+            const items = contentRef.current.querySelectorAll(OPTION_SELECTOR)
+            const lastItem = items.pop()
+            if (lastItem) {
+                lastItem.focus()
+            }
+        }
+    }, [contentRef])
+
     const { width, height, posX, posY } = layout
 
     return (
@@ -262,6 +280,7 @@ export function SearchPanel(props) {
                                 onChange={onChange}
                                 onFocus={onInputFocus}
                                 onBlur={onInputBlur}
+                                onKeyDown={onInputKeyDown}
                             />
                             <button
                                 type="button"

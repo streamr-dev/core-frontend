@@ -180,10 +180,11 @@
   border-bottom: none;
 }
 
-.SearchRow:active,
-.SearchRow:focus,
-.SearchRow:hover {
+.SearchRow:focus {
   outline: none;
+}
+
+.SearchRow[aria-selected=true] {
   background: #F8F8F8;
 }
 
