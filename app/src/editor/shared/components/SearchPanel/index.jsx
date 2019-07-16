@@ -228,6 +228,15 @@ export function SearchPanel(props) {
         }
     }, [contentRef])
 
+    const onFocusCapture = useCallback((event) => {
+        event.persist()
+        // bounce focus back up to input if container gets focus from an internal item
+        if (event.target === contentRef.current && event.relatedTarget !== inputRef.current) {
+            event.stopPropagation()
+            inputRef.current.focus()
+        }
+    }, [inputRef, contentRef])
+
     const { width, height, posX, posY } = layout
 
     return (
@@ -285,6 +294,7 @@ export function SearchPanel(props) {
                             <button
                                 type="button"
                                 className={styles.ClearButton}
+                                tabIndex="-1"
                                 onClick={clear}
                                 hidden={search === ''}
                             >
@@ -303,7 +313,7 @@ export function SearchPanel(props) {
                                 setLayout({})
                             }}
                         >
-                            <ListBox ref={contentRef} className={styles.Content}>
+                            <ListBox ref={contentRef} className={styles.Content} onFocusCapture={onFocusCapture}>
                                 {internalContent}
                             </ListBox>
                         </div>

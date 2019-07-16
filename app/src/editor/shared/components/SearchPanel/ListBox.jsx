@@ -110,15 +110,19 @@ export const ListBox = React.forwardRef((props, ref) => {
         }
     }, [selectNext, selectPrev])
 
-    // select first item when container focussed
+    // select current/first item when container focussed
     const onFocus = useCallback((event) => {
         if (event.currentTarget !== event.target) { return } // ignore bubbled
+        const options = Array.from(ref.current.querySelectorAll(OPTION_SELECTOR))
+        const ids = options.map((el) => el.id)
+        // selected item or first if no selection
+        const currentIndex = Math.max(0, ids.indexOf(selection))
+        const current = options[currentIndex]
+        if (!current) { return }
         event.preventDefault()
         event.stopPropagation()
-        const item = ref.current.querySelector(OPTION_SELECTOR)
-        if (!item) { return }
-        item.focus()
-    }, [ref])
+        current.focus()
+    }, [ref, selection])
 
     return (
         <ListContext.Provider value={listContext}>
