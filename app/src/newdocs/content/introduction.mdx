@@ -61,9 +61,10 @@ To start using Streamr right away, check out the <Link to={links.newdocs.getting
 
 The big difference to comparable data frameworks is that Streamr aims to be *decentralized* and *peer-to-peer*. There are plenty of advantages to decentralization:
 
-- You don't need to set up any servers to use the service
-- You don't need to trust any third party with your data
-- You benefit from the network effects of everyone participating in the same network, instead of having to operate in an isolated silo
+- Similar to cloud services, you get on-demand scalability, minimal up-front investment, and benefit from economies of scale
+- Unlike cloud services, there's no vendor lock-in, no monopolies, no proprietary code, and no need to trust a third party with your data
+- Security: resilience to attacks and disruptions due to distributed and peer-to-peer nature
+- Network effects: as adoption grows, the above points become stronger, a shared standard is formed across industries, and a lot of useful content becomes available from a single source
 
 Instead of a centralized party, the Network is run by its community of users, and it heavily relies on cryptography to remove the need for trust. This creates a permissionless and neutral network for realtime data, which is highly suitable for use cases such as data sharing, data monetisation, and the <a target="_blank" href={links.external.decentralizedWeb}>decentralised web</a>, extending the capabilities of the underlying internet without compromising its open and decentralised nature.
 
@@ -75,7 +76,7 @@ While Streamr already works today, it is not yet feature-complete or fully decen
 
 ## Key Concepts
 
-Learn about the primitives used in Streamr:
+Learn about the most important concepts in Streamr:
 
 <div className={styles.panels}>
     <Panel>
@@ -97,14 +98,6 @@ Learn about the primitives used in Streamr:
 </div>
 
 <div className={styles.panels}>
-    <Panel>
-        <h5>Dashboards</h5>
-        <p>Dashboards are collections of realtime visualisations, cherry-picked from your canvases, presented nicely without all the wiring.</p>
-        <Link className={styles.link} to={formatPath(links.newdocs.dashboards)}>
-            Learn more
-            <SvgIcon name="back" className={styles.forwardArrow} />
-        </Link>
-    </Panel>
     <Panel >
         <h5>Products</h5>
         <p>Products are collections of streams which can be published onto the Marketplace and purchased by other Streamr users.</p>
@@ -113,6 +106,15 @@ Learn about the primitives used in Streamr:
             <SvgIcon name="back" className={styles.forwardArrow} />
         </Link>
     </Panel>
+    <Panel>
+        <h5>DATA Token</h5>
+        <p>DATA is the cryptocurrency which powers the Streamr ecosystem in various ways. It is an ERC-20 token on the Ethereum blockchain.</p>
+        <Link className={styles.link} to={formatPath(links.newdocs.dataToken)}>
+            Learn more
+            <SvgIcon name="back" className={styles.forwardArrow} />
+        </Link>
+    </Panel>
+
 </div>
 
 ## Getting Help
