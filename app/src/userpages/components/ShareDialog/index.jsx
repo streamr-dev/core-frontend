@@ -7,13 +7,20 @@ import { I18n } from 'react-redux-i18n'
 import Modal from '$shared/components/Modal'
 import Dialog from '$shared/components/Dialog'
 import { getResourcePermissions, saveUpdatedResourcePermissions } from '$userpages/modules/permission/actions'
-import type { ResourceType, ResourceId } from '../../flowtype/permission-types'
+import type { Permission, ResourceType, ResourceId } from '$userpages/flowtype/permission-types'
+import type { PermissionState } from '$userpages/flowtype/states/permission-state'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import SvgIcon from '$shared/components/SvgIcon'
+import Buttons from '$shared/components/Buttons'
 
 import ShareDialogContent from './ShareDialogContent'
+import ShareDialogTabs, { type Tab } from './ShareDialogTabs'
 
 import styles from './shareDialog.pcss'
+
+type StateProps = {
+    anonymousPermission: ?Permission,
+}
 
 type DispatchProps = {
     getResourcePermissions: () => Promise<void>,
@@ -26,14 +33,17 @@ type GivenProps = {
     resourceTitle: string,
     children?: Node,
     onClose: () => void,
+    allowEmbed?: boolean,
 }
 
-type Props = DispatchProps & GivenProps
+type Props = StateProps & DispatchProps & GivenProps
 
 type State = {
     fetching: boolean,
     error: ?ErrorInUi,
     saving: boolean,
+    activeTab: Tab,
+    showEmbedInactiveWarning: boolean,
 }
 
 export class ShareDialog extends Component<Props, State> {
@@ -41,6 +51,8 @@ export class ShareDialog extends Component<Props, State> {
         fetching: true,
         error: undefined,
         saving: false,
+        activeTab: ShareDialogTabs.SHARE,
+        showEmbedInactiveWarning: false,
     }
 
     unmounted: boolean = false
@@ -95,18 +107,45 @@ export class ShareDialog extends Component<Props, State> {
         })
     }
 
+    setActiveTab = (activeTab: Tab) => {
+        const { anonymousPermission } = this.props
+
+        if (activeTab === ShareDialogTabs.EMBED && !anonymousPermission) {
+            this.setState({
+                showEmbedInactiveWarning: true,
+            })
+        } else {
+            this.setState({
+                activeTab,
+                showEmbedInactiveWarning: false,
+            })
+        }
+    }
+
+    clearShowEmbedInactiveWarning = () => {
+        this.setState({
+            showEmbedInactiveWarning: false,
+        })
+    }
+
     render() {
-        const { resourceTitle, onClose } = this.props
-        const { fetching, error, saving } = this.state
+        const { resourceTitle, onClose, allowEmbed, anonymousPermission } = this.props
+        const {
+            fetching,
+            error,
+            saving,
+            activeTab,
+            showEmbedInactiveWarning,
+        } = this.state
 
         return (
             <Modal>
                 <Dialog
                     containerClassname={styles.dialog}
                     contentClassName={styles.content}
-                    title={I18n.t('modal.shareResource.defaultTitle', {
+                    title={!allowEmbed ? I18n.t('modal.shareResource.defaultTitle', {
                         resourceTitle,
-                    })}
+                    }) : ''}
                     onClose={onClose}
                     actions={(fetching || !error) ? {
                         cancel: {
@@ -123,12 +162,33 @@ export class ShareDialog extends Component<Props, State> {
                         },
                     } : {}}
                     waiting={fetching}
+                    renderActions={(actions) => (
+                        <div className={styles.footer}>
+                            <div className={styles.copyLink}>
+                                {!error && activeTab === ShareDialogTabs.SHARE && (
+                                    <p>sd</p>
+                                )}
+                            </div>
+                            <Buttons
+                                actions={actions}
+                            />
+                        </div>
+                    )}
                 >
-                    {!error && (
+                    {!error && !!allowEmbed && (
+                        <ShareDialogTabs
+                            active={activeTab}
+                            onChange={this.setActiveTab}
+                            allowEmbed={!!anonymousPermission}
+                        />
+                    )}
+                    {!error && activeTab === ShareDialogTabs.SHARE && (
                         <ShareDialogContent
                             resourceTitle={this.props.resourceTitle}
                             resourceType={this.props.resourceType}
                             resourceId={this.props.resourceId}
+                            showEmbedInactiveWarning={showEmbedInactiveWarning}
+                            clearShowEmbedInactiveWarning={this.clearShowEmbedInactiveWarning}
                         />
                     )}
                     {!!error && (
@@ -143,6 +203,14 @@ export class ShareDialog extends Component<Props, State> {
     }
 }
 
+export const mapStateToProps = ({ permission: { byTypeAndId } }: { permission: PermissionState }, ownProps: Props): StateProps => {
+    const byType = byTypeAndId[ownProps.resourceType] || {}
+    const permissions = (byType[ownProps.resourceId] || []).filter((p) => !p.removed)
+    return {
+        anonymousPermission: permissions.find((p) => p.anonymous),
+    }
+}
+
 export const mapDispatchToProps = (dispatch: Function, ownProps: GivenProps): DispatchProps => ({
     getResourcePermissions() {
         return dispatch(getResourcePermissions(ownProps.resourceType, ownProps.resourceId))
@@ -152,4 +220,4 @@ export const mapDispatchToProps = (dispatch: Function, ownProps: GivenProps): Di
     },
 })
 
-export default connect(null, mapDispatchToProps)(ShareDialog)
+export default connect(mapStateToProps, mapDispatchToProps)(ShareDialog)

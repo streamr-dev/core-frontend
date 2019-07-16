@@ -1,0 +1,50 @@
+.root {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-bottom: 1px solid #EFEFEF;
+  height: 79px;
+  width: 100%;
+  text-align: left;
+}
+
+.tab {
+  opacity: 0.5;
+  position: relative;
+  background: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.active {
+  opacity: 1;
+}
+
+.disabled {
+  opacity: 0.2;
+  cursor: not-allowed;
+}
+
+.label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 80px;
+  font-size: 1.25rem;
+  letter-spacing: 0;
+  line-height: 2rem;
+  font-weight: var(--regular);
+  font-family: 'IBM Plex Sans', sans-serif;
+  display: flex;
+  align-items: center;
+  border: 1px solid transparent;
+}
+
+.active > .label {
+  border-bottom: 1px solid rgb(50, 50, 50);
+}

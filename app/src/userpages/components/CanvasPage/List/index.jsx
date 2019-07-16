@@ -236,6 +236,7 @@ class CanvasList extends Component<Props, State> {
                         resourceType="CANVAS"
                         resourceId={shareDialogCanvas.id}
                         onClose={this.onCloseShareDialog}
+                        allowEmbed
                     />
                 )}
                 <Container className={styles.corepageContentContainer}>

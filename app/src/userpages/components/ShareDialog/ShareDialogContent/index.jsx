@@ -1,10 +1,10 @@
 // @flow
 
-import React, { Component } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 
-import type { Permission, ResourceType, ResourceId } from '../../../flowtype/permission-types'
-import { addResourcePermission } from '../../../modules/permission/actions'
+import type { Permission, ResourceType, ResourceId } from '$userpages/flowtype/permission-types'
+import { addResourcePermission } from '$userpages/modules/permission/actions'
 import ShareDialogInputRow from './ShareDialogInputRow'
 import ShareDialogPermissionRow from './ShareDialogPermissionRow'
 import ShareDialogAnonymousAccessRow from './ShareDialogAnonymousAccessRow'
@@ -19,31 +19,43 @@ type GivenProps = {
     resourceType: ResourceType,
     resourceId: ResourceId,
     addPermission: (permission: Permission) => {},
+    showEmbedInactiveWarning?: boolean,
+    clearShowEmbedInactiveWarning: Function,
 }
 
 type Props = DispatchProps & GivenProps
 
-export class ShareDialogContent extends Component<Props> {
-    render() {
-        return (
-            <div className={styles.container}>
+export const ShareDialogContent = (props: Props) => {
+    const {
+        resourceType,
+        resourceId,
+        addPermission,
+        showEmbedInactiveWarning,
+        clearShowEmbedInactiveWarning,
+    } = props
+
+    return (
+        <div className={styles.container}>
+            <div className={styles.content}>
                 <ShareDialogAnonymousAccessRow
-                    resourceType={this.props.resourceType}
-                    resourceId={this.props.resourceId}
+                    resourceType={resourceType}
+                    resourceId={resourceId}
+                    showEmbedInactiveWarning={showEmbedInactiveWarning}
+                    clearShowEmbedInactiveWarning={clearShowEmbedInactiveWarning}
                 />
                 <ShareDialogInputRow
-                    onAdd={(email: string) => this.props.addPermission({
+                    onAdd={(email: string) => addPermission({
                         user: email,
                         operation: 'read',
                     })}
                 />
                 <ShareDialogPermissionRow
-                    resourceType={this.props.resourceType}
-                    resourceId={this.props.resourceId}
+                    resourceType={resourceType}
+                    resourceId={resourceId}
                 />
             </div>
-        )
-    }
+        </div>
+    )
 }
 
 export const mapDispatchToProps = (dispatch: Function, ownProps: Props): DispatchProps => ({
