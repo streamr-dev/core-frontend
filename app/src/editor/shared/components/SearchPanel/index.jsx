@@ -6,25 +6,12 @@ import SvgIcon from '$shared/components/SvgIcon'
 
 import styles from './SearchPanel.pcss'
 
-// onKeyDown handler fire callback on Enter/Spacebar
-function useOnKeyDownConfirm(onClick) {
-    return useCallback((event) => {
-        if (event.key === 'Enter' || event.key === ' ') {
-            event.preventDefault()
-            onClick(event)
-        }
-    }, [onClick])
-}
+import { ListBox, ListOption } from './ListBox'
 
-export function SearchRow({ className, onClick, ...props }) {
+export function SearchRow({ className, ...props }) {
     return (
-        <div
+        <ListOption
             className={cx(styles.SearchRow, className)}
-            role="option"
-            aria-selected="false"
-            tabIndex="0"
-            onClick={onClick}
-            onKeyDown={useOnKeyDownConfirm(onClick) /* treat enter/spacebar as onClick */}
             {...props}
         />
     )
@@ -288,9 +275,9 @@ export function SearchPanel(props) {
                                 setLayout({})
                             }}
                         >
-                            <div ref={contentRef} role="listbox" className={styles.Content}>
+                            <ListBox ref={contentRef} className={styles.Content}>
                                 {internalContent}
-                            </div>
+                            </ListBox>
                         </div>
                     </div>
                 </ResizableBox>
