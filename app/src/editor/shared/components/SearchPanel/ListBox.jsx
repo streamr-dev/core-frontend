@@ -93,6 +93,16 @@ export const ListBox = React.forwardRef((props, ref) => {
         }
     }, [selectNext, selectPrev])
 
+    // select first item when container focussed
+    const onFocus = useCallback((event) => {
+        if (event.currentTarget !== event.target) { return } // ignore bubbled
+        event.preventDefault()
+        event.stopPropagation()
+        const item = ref.current.querySelector('[role=option]')
+        if (!item) { return }
+        item.focus()
+    }, [ref])
+
     return (
         <ListContext.Provider value={listContext}>
             <div
@@ -100,6 +110,7 @@ export const ListBox = React.forwardRef((props, ref) => {
                 tabIndex="0"
                 role="listbox"
                 ref={ref}
+                onFocus={onFocus}
                 aria-activedescendant={selection}
                 onKeyDown={onKeyDown}
                 {...props}

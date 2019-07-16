@@ -124,8 +124,17 @@ export function SearchPanel(props) {
     /* Minimise/Focus Handling */
 
     const onKeyDown = useCallback((event) => {
-        if (isOpen && event.key === 'Escape' && hasFocus) {
-            open(false)
+        if (isOpen && hasFocus) {
+            // close on esc
+            if (event.key === 'Escape') {
+                open(false)
+            }
+            // select result list on arrow down
+            if (event.key === 'ArrowDown' && contentRef.current) {
+                event.preventDefault()
+                event.stopPropagation()
+                contentRef.current.focus()
+            }
         }
     }, [isOpen, hasFocus, open])
 
