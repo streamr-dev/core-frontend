@@ -46,9 +46,41 @@ export function SearchPanel(props) {
         renderDefault,
     } = props
 
-    const [search, setSearch] = useState('')
+    const contentRef = useRef()
+    const inputRef = useRef()
+
     const [isExpanded, setExpanded] = useState(true)
     const [hasFocus, setHasFocus] = useState(false)
+
+    /* Search Text Handling */
+
+    const [search, setSearch] = useState('')
+    const isSearching = !!search.trim()
+
+    const clear = useCallback(() => {
+        setSearch('')
+        if (inputRef.current) {
+            inputRef.current.focus()
+        }
+    }, [setSearch, inputRef])
+
+    const onChange = useCallback((event) => {
+        const { value } = event.currentTarget
+        setSearch(value)
+    }, [setSearch])
+
+    // fire onChange prop when search changes
+    const prevSearch = useRef(search)
+    const onChangeProp = props.onChange
+    useEffect(() => {
+        if (onChangeProp && search !== prevSearch.current) {
+            onChangeProp(search)
+        }
+        prevSearch.current = search
+    }, [onChangeProp, search])
+
+    /* Layout Handling */
+
     const [layout, setLayoutState] = useState({
         preferredHeight: props.defaultHeight,
         width: props.defaultWidth,
@@ -61,98 +93,7 @@ export function SearchPanel(props) {
         setLayoutState((prev) => Object.assign({}, prev, next))
     }, [setLayoutState])
 
-    const contentRef = useRef()
-    const inputRef = useRef()
-    const scrollContainerRef = useRef()
-
-    const onKeyDown = useCallback((event) => {
-        if (isOpen && event.key === 'Escape' && hasFocus) {
-            open(false)
-        }
-    }, [isOpen, hasFocus, open])
-
-    useEffect(() => {
-        window.addEventListener('keydown', onKeyDown)
-        return () => {
-            window.removeEventListener('keydown', onKeyDown)
-        }
-    }, [onKeyDown])
-
-    const onChange = useCallback((event) => {
-        const { value } = event.currentTarget
-        setSearch(value)
-    }, [setSearch])
-
-    const clear = useCallback(() => {
-        setSearch('')
-        if (inputRef.current) {
-            inputRef.current.focus()
-        }
-    }, [setSearch, inputRef])
-
-    const prevSearch = useRef(search)
-    const { width, height, posX, posY } = layout
-    const isSearching = !!search.trim()
-
-    const onChangeProp = props.onChange
-    useEffect(() => {
-        if (onChangeProp && search !== prevSearch.current) {
-            onChangeProp(search)
-        }
-        prevSearch.current = search
-    }, [onChangeProp, search])
-
-    useEffect(() => {
-        // focus input on open
-        if (isOpen) {
-            if (inputRef.current) {
-                inputRef.current.focus()
-            }
-        }
-    }, [isOpen, inputRef])
-
-    const toggleMinimize = useCallback(() => (
-        setExpanded((isExpanded) => !isExpanded)
-    ), [setExpanded])
-
-    const onInputFocus = useCallback((event) => {
-        // select input text on focus
-        event.currentTarget.select()
-        setHasFocus(true)
-    }, [setHasFocus])
-
-    const onInputBlur = useCallback(() => {
-        setHasFocus(false)
-    }, [setHasFocus])
-
-    const onDragStop = useCallback((e, data) => {
-        setLayoutState((layout) => {
-            if (data.x === layout.posX && data.y === layout.posY) {
-                return layout // do nothing if identical
-            }
-            return {
-                ...layout,
-                posX: data.x,
-                posY: data.y,
-            }
-        })
-    }, [setLayoutState])
-
-    const onResizeStart = useCallback(() => {
-        setLayout({
-            resizing: true,
-        })
-    }, [setLayout])
-
-    const onResizeStop = useCallback((e, data) => {
-        setLayout({
-            resizing: false,
-            height: data.size.height, // needs to be set otherwise height won't reset to autosize on stop
-            width: data.size.width,
-            preferredHeight: data.size.height,
-        })
-    }, [setLayout])
-
+    // Update size when things change
     useLayoutEffect(() => {
         if (layout.resizing) { return } // do nothing while resizing
 
@@ -182,6 +123,77 @@ export function SearchPanel(props) {
         })
     }, [layout, contentRef, setLayoutState, children, isSearching, minHeight, scrollPadding, isExpanded])
 
+    /* Minimise/Focus Handling */
+
+    const onKeyDown = useCallback((event) => {
+        if (isOpen && event.key === 'Escape' && hasFocus) {
+            open(false)
+        }
+    }, [isOpen, hasFocus, open])
+
+    useEffect(() => {
+        window.addEventListener('keydown', onKeyDown)
+        return () => {
+            window.removeEventListener('keydown', onKeyDown)
+        }
+    }, [onKeyDown])
+
+    // focus input on open
+    useEffect(() => {
+        if (isOpen) {
+            if (inputRef.current) {
+                inputRef.current.focus()
+            }
+        }
+    }, [isOpen, inputRef])
+
+    const toggleMinimize = useCallback(() => (
+        setExpanded((isExpanded) => !isExpanded)
+    ), [setExpanded])
+
+    const onInputFocus = useCallback((event) => {
+        // select input text on focus
+        event.currentTarget.select()
+        setHasFocus(true)
+    }, [setHasFocus])
+
+    const onInputBlur = useCallback(() => {
+        setHasFocus(false)
+    }, [setHasFocus])
+
+    /* Drag/Drop Handling */
+
+    const onDragStop = useCallback((e, data) => {
+        // update layout after dragging
+        setLayoutState((layout) => {
+            if (data.x === layout.posX && data.y === layout.posY) {
+                return layout // do nothing if identical
+            }
+            return {
+                ...layout,
+                posX: data.x,
+                posY: data.y,
+            }
+        })
+    }, [setLayoutState])
+
+    /* Resize Handling */
+
+    const onResizeStart = useCallback(() => {
+        setLayout({
+            resizing: true,
+        })
+    }, [setLayout])
+
+    const onResizeStop = useCallback((e, data) => {
+        setLayout({
+            resizing: false,
+            height: data.size.height, // needs to be set otherwise height won't reset to autosize on stop
+            width: data.size.width,
+            preferredHeight: data.size.height,
+        })
+    }, [setLayout])
+
     const internalContent = useMemo(() => {
         // empty content if not searching and not expanded
         if (!isSearching && !isExpanded) { return null }
@@ -190,6 +202,8 @@ export function SearchPanel(props) {
         // show children otherwise
         return children
     }, [children, isSearching, isExpanded, renderDefault])
+
+    const { width, height, posX, posY } = layout
 
     return (
         <MaybeDraggable
@@ -262,7 +276,6 @@ export function SearchPanel(props) {
                                 // quick hack to force recalculation of height on child expansion/collapse
                                 setLayout({})
                             }}
-                            ref={scrollContainerRef}
                         >
                             <div ref={contentRef} role="listbox" className={styles.Content}>
                                 {internalContent}
