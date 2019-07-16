@@ -160,6 +160,12 @@ export class ShareDialog extends Component<Props, State> {
                             onClick: this.save,
                             disabled: saving,
                             spinner: saving,
+                            visible: activeTab === ShareDialogTabs.SHARE,
+                        },
+                        copy: {
+                            title: I18n.t('modal.shareResource.copy'),
+                            color: 'primary',
+                            visible: activeTab === ShareDialogTabs.EMBED,
                         },
                     } : {}}
                     waiting={fetching}

@@ -3,7 +3,7 @@
 import React from 'react'
 import cx from 'classnames'
 
-import useCopy from '$userpages/hooks/useCopy'
+import useCopy from '$shared/hooks/useCopy'
 
 import styles from './copyLink.pcss'
 
