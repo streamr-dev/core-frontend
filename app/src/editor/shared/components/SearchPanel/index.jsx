@@ -220,7 +220,7 @@ export function SearchPanel(props) {
         if (event.key === 'ArrowUp' && contentRef.current) {
             event.preventDefault()
             event.stopPropagation()
-            const items = contentRef.current.querySelectorAll(OPTION_SELECTOR)
+            const items = Array.from(contentRef.current.querySelectorAll(OPTION_SELECTOR))
             const lastItem = items.pop()
             if (lastItem) {
                 lastItem.focus()
