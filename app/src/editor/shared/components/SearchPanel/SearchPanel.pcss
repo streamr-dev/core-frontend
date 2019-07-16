@@ -27,9 +27,8 @@
 
 .SearchPanel .Container {
   height: 100%;
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: auto auto 1fr;
+  display: flex;
+  flex-direction: column;
 }
 
 .SearchPanel .Header {
@@ -117,8 +116,8 @@
 
 .SearchPanel .ContentContainer {
   border-top: 1px solid #EFEFEF;
-  transform: translateY(1px);
   overflow: overlay; /* deprecated, but does what we want */
+  flex: 1;
 
   /* standards compliant but only firefox implements */
   scrollbar-width: thin; /* stylelint-disable-line property-no-unknown */

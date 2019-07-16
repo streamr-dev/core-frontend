@@ -306,6 +306,12 @@ export function isPortConnected(canvas, portId) {
     return !!conn.length
 }
 
+export function arePortsConnected(canvas, portIdA, portIdB) {
+    const connA = getConnectedPortIds(canvas, portIdA)
+    const connB = getConnectedPortIds(canvas, portIdB)
+    return connA.includes(portIdB) && connB.includes(portIdA)
+}
+
 export function isPortExported(canvas, portId) {
     if (!hasPort(canvas, portId)) { return false }
     return !!getPort(canvas, portId).export
@@ -450,8 +456,11 @@ export function connectPorts(canvas, portIdA, portIdB) {
 
     let nextCanvas = canvas
 
-    if (input.sourceId) {
-        // disconnect existing input connection
+    // disconnect existing input connection
+    // if variadic, delay disconnecting until end
+    // as disconnecting may lead to input we're trying
+    // to connect to being removed before we can connect to it
+    if (input.sourceId && !input.variadic) {
         nextCanvas = disconnectPorts(nextCanvas, input.sourceId, input.id)
     }
 
@@ -492,10 +501,17 @@ export function connectPorts(canvas, portIdA, portIdB) {
     }
 
     // connect output
-    return updatePort(nextCanvas, output.id, (port) => ({
+    nextCanvas = updatePort(nextCanvas, output.id, (port) => ({
         ...port,
         connected: isPortConnected(nextCanvas, output.id),
     }))
+
+    // delayed disconnect output original if input variadic, see above
+    if (input.sourceId && input.variadic && input.sourceId !== output.id) {
+        nextCanvas = disconnectPorts(nextCanvas, input.sourceId, input.id)
+    }
+
+    return nextCanvas
 }
 
 export function movePortConnection(canvas, outputPortId, newInputId, { currentInputId }) {
@@ -650,9 +666,12 @@ export function setModuleOptions(canvas, moduleHash, newOptions = {}) {
     const { modules } = getIndex(canvas)
     const modulePath = modules[moduleHash]
     return update(modulePath.concat('options'), (options = {}) => (
-        Object.keys(newOptions).reduce((options, key) => (
-            update([key].concat('value'), () => newOptions[key], options)
-        ), options)
+        Object.keys(newOptions).reduce((options, key) => {
+            if (get(options, [key].concat('value')) === newOptions[key]) {
+                return options
+            }
+            return update([key].concat('value'), () => newOptions[key], options)
+        }, options)
     ), canvas)
 }
 
@@ -1110,4 +1129,52 @@ export function moduleSearch(moduleCategories, search) {
     })
 
     return uniqBy([...exactMatches, ...startsWith, ...nameMatches, ...pathMatches], 'id')
+}
+
+/**
+ * Tries to find a port from one canvas in another canvas.
+ * If failing to match by id, it will match against all of
+ * - the module
+ * - the port name and
+ * - the port type
+ */
+
+function matchPortInPreviousCanvas(canvas, prevCanvas, portId) {
+    const prevPort = getPort(prevCanvas, portId)
+    const exactMatch = getPortIfExists(canvas, portId)
+    if (exactMatch) { return exactMatch }
+    const prevPortType = getPortType(prevCanvas, portId)
+    const prevModule = getModuleForPort(prevCanvas, portId)
+    const nextModule = getModuleIfExists(canvas, prevModule.hash)
+    if (!nextModule) { return }
+    return findModulePort(canvas, nextModule.hash, (p) => {
+        if (p.name === prevPort.name) {
+            return getPortType(canvas, p.id) === prevPortType
+        }
+    })
+}
+
+/**
+ *  Replaces module definition. Tries to maintain module connections.
+ */
+
+export function replaceModule(canvas, moduleData) {
+    const { hash } = moduleData
+    const prevCanvas = canvas
+    let nextCanvas = updateModule(prevCanvas, hash, () => moduleData)
+
+    const prevPorts = getAllPorts(prevCanvas, hash)
+    prevPorts.forEach((prevPort) => {
+        const connectedIds = getConnectedPortIds(prevCanvas, prevPort.id)
+        if (!connectedIds.length) { return } // nothing to do if no connections
+        const matchedPort = matchPortInPreviousCanvas(nextCanvas, prevCanvas, prevPort.id)
+        if (!matchedPort) { return } // nothing to do if port no longer exists
+        connectedIds.forEach((connectedId) => {
+            const matchedConnectedPort = matchPortInPreviousCanvas(nextCanvas, prevCanvas, connectedId)
+            if (!matchedConnectedPort || !canConnectPorts(nextCanvas, matchedPort.id, matchedConnectedPort.id)) { return }
+            // re-connect if possible
+            nextCanvas = connectPorts(nextCanvas, matchedPort.id, matchedConnectedPort.id)
+        })
+    })
+    return nextCanvas
 }
