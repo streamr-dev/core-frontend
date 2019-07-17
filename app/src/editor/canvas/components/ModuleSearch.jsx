@@ -1,5 +1,10 @@
 // @flow
 
+// Need to use index-based keys otherwise transitions get messed up.
+// With normal id-based keys and index-based selection higlight,
+// the highlight will flicker when the item at same index changes selection state
+/* eslint-disable react/no-array-index-key */
+
 import React from 'react'
 import startCase from 'lodash/startCase'
 import debounce from 'lodash/debounce'
@@ -57,14 +62,13 @@ export class ModuleMenuCategory extends React.PureComponent<MenuCategoryProps, M
                     className={cx(styles.Category, {
                         [styles.active]: !!isExpanded,
                     })}
-                    key={category.name}
                     onClick={() => !isDisabled && this.toggle()}
                     disabled={isDisabled}
                 >
                     {category.name}
                 </SearchRow>
-                {isExpanded && category.modules.map((m) => (
-                    <ModuleMenuItem key={m.id} module={m} addModule={addModule} />
+                {isExpanded && category.modules.map((m, index) => (
+                    <ModuleMenuItem module={m} key={index} addModule={addModule} />
                 ))}
             </React.Fragment>
         )
@@ -341,11 +345,11 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
                 {matchingModules.length > 0 && (
                     <SearchRow className={styles.SearchCategory} disabled>Modules</SearchRow>
                 )}
-                {matchingModules.map((m) => (
+                {matchingModules.map((m, index) => (
                     /* TODO: follow the disabled jsx-a11y recommendations below to add keyboard support */
                     /* eslint-disable-next-line jsx-a11y/click-events-have-key-events */
                     <SearchRow
-                        key={m.id}
+                        key={index}
                         className={cx(styles.ModuleItem, styles.WithCategory)}
                         draggable
                         onDragStart={(e) => { onDragStart(e, m.id, m.name) }}
@@ -358,10 +362,10 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
                 {matchingStreams.length > 0 && (
                     <SearchRow className={styles.SearchCategory} disabled>Streams</SearchRow>
                 )}
-                {matchingStreams.map((stream) => (
+                {matchingStreams.map((stream, index) => (
                     /* eslint-disable-next-line jsx-a11y/click-events-have-key-events */
                     <SearchRow
-                        key={stream.id}
+                        key={index}
                         className={styles.StreamItem}
                         draggable
                         onDragStart={(e) => { onDragStart(e, STREAM_MODULE_ID, stream.name, stream.id) }}

@@ -6,7 +6,7 @@ import SvgIcon from '$shared/components/SvgIcon'
 
 import styles from './SearchPanel.pcss'
 
-import { ListBox, ListOption, OPTION_SELECTOR } from './ListBox'
+import { ListBox, ListOption } from './ListBox'
 
 export function SearchRow({ className, ...props }) {
     return (
@@ -44,6 +44,7 @@ export function SearchPanel(props) {
         renderDefault,
     } = props
 
+    const listContextRef = useRef()
     const contentRef = useRef()
     const inputRef = useRef()
 
@@ -206,27 +207,27 @@ export function SearchPanel(props) {
 
     const onInputKeyDown = useCallback((event) => {
         if (event.currentTarget !== event.target) { return } // ignore bubbled
-        // select first item on arrow down
-        if (event.key === 'ArrowDown' && contentRef.current) {
+        // select next item on arrow down
+        if (event.key === 'ArrowDown') {
             event.preventDefault()
             event.stopPropagation()
-            const [firstItem] = contentRef.current.querySelectorAll(OPTION_SELECTOR)
-            if (firstItem) {
-                firstItem.focus()
-            }
+            listContextRef.current.selectNext()
         }
 
-        // select last item on arrow up
-        if (event.key === 'ArrowUp' && contentRef.current) {
+        // select prev item on arrow up
+        if (event.key === 'ArrowUp') {
             event.preventDefault()
             event.stopPropagation()
-            const items = Array.from(contentRef.current.querySelectorAll(OPTION_SELECTOR))
-            const lastItem = items.pop()
-            if (lastItem) {
-                lastItem.focus()
+            listContextRef.current.selectPrev()
+        }
+
+        if (event.key === 'Enter') {
+            const el = listContextRef.current.getSelectedEl()
+            if (el) {
+                el.click()
             }
         }
-    }, [contentRef])
+    }, [listContextRef])
 
     const onFocusCapture = useCallback((event) => {
         event.persist()
@@ -313,7 +314,7 @@ export function SearchPanel(props) {
                                 setLayout({})
                             }}
                         >
-                            <ListBox ref={contentRef} className={styles.Content} onFocusCapture={onFocusCapture}>
+                            <ListBox listContextRef={listContextRef} ref={contentRef} className={styles.Content} onFocusCapture={onFocusCapture}>
                                 {internalContent}
                             </ListBox>
                         </div>
