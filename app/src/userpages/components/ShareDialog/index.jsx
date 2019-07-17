@@ -174,7 +174,10 @@ export class ShareDialog extends Component<Props, State> {
                         <div className={styles.footer}>
                             <div className={styles.copyLink}>
                                 {!error && activeTab === ShareDialogTabs.SHARE && (
-                                    <CopyLink />
+                                    <CopyLink
+                                        resourceType={this.props.resourceType}
+                                        resourceId={this.props.resourceId}
+                                    />
                                 )}
                             </div>
                             <Buttons

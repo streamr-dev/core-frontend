@@ -5,12 +5,20 @@ import cx from 'classnames'
 import { Translate } from 'react-redux-i18n'
 
 import useCopy from '$shared/hooks/useCopy'
+import useEmbed from '$userpages/hooks/useEmbed'
 import SvgIcon from '$shared/components/SvgIcon'
+import type { ResourceType, ResourceId } from '$userpages/flowtype/permission-types'
 
 import styles from './copyLink.pcss'
 
-const CopyLink = () => {
+type Props = {
+    resourceType: ResourceType,
+    resourceId: ResourceId,
+}
+
+const CopyLink = ({ resourceType, resourceId }: Props) => {
     const { isCopied, copy } = useCopy()
+    const { link } = useEmbed(resourceType, resourceId)
 
     return (
         <button
@@ -18,7 +26,7 @@ const CopyLink = () => {
             className={cx(styles.root, styles.copyLink, {
                 [styles.copied]: !!isCopied,
             })}
-            onClick={() => copy('plaa')}
+            onClick={() => copy(link)}
         >
             {!isCopied && (
                 <Translate value="modal.shareResource.copyLink" />
