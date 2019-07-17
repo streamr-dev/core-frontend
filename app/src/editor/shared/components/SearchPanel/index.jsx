@@ -6,7 +6,7 @@ import SvgIcon from '$shared/components/SvgIcon'
 
 import styles from './SearchPanel.pcss'
 
-import { ListBox, ListOption } from './ListBox'
+import { ListBox, ListOption, useListBoxOnKeyDownCallback } from './ListBox'
 
 export function SearchRow({ className, ...props }) {
     return (
@@ -205,29 +205,7 @@ export function SearchPanel(props) {
         return children
     }, [children, isSearching, isExpanded, renderDefault])
 
-    const onInputKeyDown = useCallback((event) => {
-        if (event.currentTarget !== event.target) { return } // ignore bubbled
-        // select next item on arrow down
-        if (event.key === 'ArrowDown') {
-            event.preventDefault()
-            event.stopPropagation()
-            listContextRef.current.selectNext()
-        }
-
-        // select prev item on arrow up
-        if (event.key === 'ArrowUp') {
-            event.preventDefault()
-            event.stopPropagation()
-            listContextRef.current.selectPrev()
-        }
-
-        if (event.key === 'Enter') {
-            const el = listContextRef.current.getSelectedEl()
-            if (el) {
-                el.click()
-            }
-        }
-    }, [listContextRef])
+    const onInputKeyDown = useListBoxOnKeyDownCallback(listContextRef.current)
 
     const onFocusCapture = useCallback((event) => {
         event.persist()

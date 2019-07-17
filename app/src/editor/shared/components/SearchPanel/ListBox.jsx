@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo, useRef, useContext, useLayoutEffect } from 'react'
+import React, { useState, useCallback, useMemo, useRef, useContext, useEffect, useLayoutEffect } from 'react'
 import uniqueId from 'lodash/uniqueId'
 
 /*
@@ -30,7 +30,9 @@ export function ListOption({
     ...props
 }) {
     /* eslint-enable object-curly-newline */
-    const elRef = useRef()
+    // allow ref prop to be optional
+    const internalRef = useRef()
+    const elRef = props[refName] || internalRef
     const Component = component
     const listContext = useContext(ListContext)
     const parentId = listContext.id
@@ -66,7 +68,9 @@ export function ListOption({
 
         if (!nextIsSelected) {
             // ensure blurred when selectedIndex leaves element
-            elRef.current.blur()
+            if (document.activeElement === elRef.current) {
+                elRef.current.blur()
+            }
         } else {
             // ensure scrolled into view when selected
             elRef.current.scrollIntoView({
@@ -78,7 +82,7 @@ export function ListOption({
         }
 
         setIsSelected(nextIsSelected)
-    }, [setIsSelected, listContext, isSelected, id])
+    }, [setIsSelected, listContext, isSelected, id, elRef])
 
     const refProp = {
         [refName]: elRef, // dynamic ref
@@ -107,7 +111,35 @@ function clamp(value, min, max) {
     return Math.max(min, Math.min(max, value))
 }
 
-export const ListBox = React.forwardRef(({ listContextRef, ...props }, ref) => {
+export const useListBoxOnKeyDownCallback = (listContext) => (
+    useCallback((event) => {
+        if (!listContext) { return }
+        if (event.currentTarget !== event.target && event.currentTarget !== window) { return } // ignore bubbled
+        if (event.key === 'ArrowDown') {
+            event.preventDefault()
+            listContext.selectNext()
+        }
+        if (event.key === 'ArrowUp') {
+            event.preventDefault()
+            listContext.selectPrev()
+        }
+
+        if (event.key === 'Enter') {
+            const el = listContext.getSelectedEl()
+            event.stopPropagation()
+            event.preventDefault()
+            if (el) {
+                el.click()
+            }
+        }
+    }, [listContext])
+)
+
+function useListBoxContext(externalRef) {
+    // allow ref prop to be optional
+    const internalRef = useRef()
+    const ref = externalRef || internalRef
+
     // ListBox needs unique id so ListOptions can have ListBox-scoped ids
     // So aria-activedescendant={selectedId} is valid
     const id = useId('ListBox')
@@ -172,23 +204,9 @@ export const ListBox = React.forwardRef(({ listContextRef, ...props }, ref) => {
     }, [ref, setSelectedState])
 
     /**
-     * Keyboard handling for when listbox is focused
-     */
-    const onKeyDown = useCallback((event) => {
-        if (event.key === 'ArrowDown') {
-            event.preventDefault()
-            selectNext()
-        }
-        if (event.key === 'ArrowUp') {
-            event.preventDefault()
-            selectPrev()
-        }
-    }, [selectNext, selectPrev])
-
-    /**
      * Build list context API
      */
-    const listContext = useMemo(() => ({
+    return useMemo(() => ({
         id,
         selectedIndex,
         isSelected,
@@ -205,6 +223,10 @@ export const ListBox = React.forwardRef(({ listContextRef, ...props }, ref) => {
         setSelected,
         getSelectedEl,
     ])
+}
+
+export const ListBox = React.forwardRef(({ listContextRef, ...props }, ref) => {
+    const listContext = useListBoxContext(ref)
 
     /**
      * Provide ref to context API for parent to control
@@ -213,15 +235,44 @@ export const ListBox = React.forwardRef(({ listContextRef, ...props }, ref) => {
         listContextRef.current = listContext
     }
 
+    const onKeyDown = useListBoxOnKeyDownCallback(listContext)
+
+    const [isOver, setIsOver] = useState(false)
+
+    /**
+     * Attach keyboard handlers whenever mouse over listbox
+     */
+    const onMouseEnter = useCallback(() => {
+        if (isOver) { return }
+        setIsOver(true)
+    }, [setIsOver, isOver])
+
+    const onMouseLeave = useCallback(() => {
+        if (!isOver) { return }
+        setIsOver(false)
+    }, [setIsOver, isOver])
+
+    useEffect(() => {
+        if (!isOver) { return }
+        window.addEventListener('keydown', onKeyDown)
+        return () => {
+            window.removeEventListener('keydown', onKeyDown)
+        }
+    }, [isOver, onKeyDown])
+
+    const selectedEl = listContext.getSelectedEl()
+
     return (
         <ListContext.Provider value={listContext}>
             <div
-                id={id}
+                id={listContext.id}
                 tabIndex="0"
                 role="listbox"
                 ref={ref}
                 aria-activedescendant={selectedEl && selectedEl.id}
                 onKeyDown={onKeyDown}
+                onMouseEnter={onMouseEnter}
+                onMouseLeave={onMouseLeave}
                 {...props}
             />
         </ListContext.Provider>
