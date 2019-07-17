@@ -116,18 +116,20 @@ export const useListBoxOnKeyDownCallback = (listContext) => (
         if (!listContext) { return }
         if (event.currentTarget !== event.target && event.currentTarget !== window) { return } // ignore bubbled
         if (event.key === 'ArrowDown') {
+            event.stopPropagation()
             event.preventDefault()
             listContext.selectNext()
         }
         if (event.key === 'ArrowUp') {
+            event.stopPropagation()
             event.preventDefault()
             listContext.selectPrev()
         }
 
         if (event.key === 'Enter') {
-            const el = listContext.getSelectedEl()
             event.stopPropagation()
             event.preventDefault()
+            const el = listContext.getSelectedEl()
             if (el) {
                 el.click()
             }
