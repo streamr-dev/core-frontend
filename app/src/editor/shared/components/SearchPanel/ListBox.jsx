@@ -22,8 +22,16 @@ export const OPTION_SELECTOR = '[role=option]:not([aria-disabled])'
 
 const ListContext = React.createContext()
 
-export function ListOption({ disabled, ...props }) {
-    const el = useRef()
+/* eslint-disable object-curly-newline */
+export function ListOption({
+    disabled = false,
+    refName = 'ref', // support alternative ref props, e.g. innerRef
+    component = 'div', // support dynamic component e.g. a, Link
+    ...props
+}) {
+    /* eslint-enable object-curly-newline */
+    const elRef = useRef()
+    const Component = component
     const listContext = useContext(ListContext)
     const parentId = listContext.id
     const id = useId(parentId, 'ListOption')
@@ -41,33 +49,48 @@ export function ListOption({ disabled, ...props }) {
 
     /* treat enter/spacebar as onClick */
     const onKeyDown = useCallback((event) => {
-        if (!el.current) { return }
+        if (!elRef.current) { return }
         if (event.key === 'Enter' || event.key === ' ') {
             event.preventDefault()
-            el.current.click()
+            elRef.current.click()
         }
-    }, [el])
+    }, [elRef])
 
     const [isSelected, setIsSelected] = useState(listContext.isSelected(id))
     // need to reconfigure isSelected state after render
     // otherwise it will be reading element ordering from the stale list
     useLayoutEffect(() => {
         const nextIsSelected = listContext.isSelected(id)
+        // do nothing if no change
         if (nextIsSelected === isSelected) { return }
+
         if (!nextIsSelected) {
-            // ensure blurred when selection leaves element
-            el.current.blur()
+            // ensure blurred when selectedIndex leaves element
+            elRef.current.blur()
+        } else {
+            // ensure scrolled into view when selected
+            elRef.current.scrollIntoView({
+                behavior: 'smooth',
+                scrollMode: 'if-needed',
+                block: 'nearest',
+                inline: 'nearest',
+            })
         }
+
         setIsSelected(nextIsSelected)
     }, [setIsSelected, listContext, isSelected, id])
 
+    const refProp = {
+        [refName]: elRef, // dynamic ref
+    }
+
     return (
-        <div
-            ref={el}
+        <Component
             id={id}
             role="option"
             aria-disabled={disabled || undefined}
             aria-selected={String(isSelected)}
+            {...refProp}
             {...(disabled ? {} : {
                 // only enable interaction if not disabled
                 tabIndex: -1,
@@ -80,27 +103,53 @@ export function ListOption({ disabled, ...props }) {
     )
 }
 
+function clamp(value, min, max) {
+    return Math.max(min, Math.min(max, value))
+}
+
 export const ListBox = React.forwardRef(({ listContextRef, ...props }, ref) => {
+    // ListBox needs unique id so ListOptions can have ListBox-scoped ids
+    // So aria-activedescendant={selectedId} is valid
     const id = useId('ListBox')
 
-    const [selection, setSelectedState] = useState(0)
+    const [selectedIndex, setSelectedState] = useState(0)
 
-    const adjustSelectedIndex = useCallback((amount) => {
+    /**
+     * Move selectedIndex forward or backwards with wrap around.
+     */
+    const adjustSelectedIndex = useCallback((amount = 0) => {
         if (!ref.current) { return }
         const options = ref.current.querySelectorAll(OPTION_SELECTOR)
-        setSelectedState((index) => (
-            (options.length + index + amount) % options.length
-        ))
+        setSelectedState((index) => {
+            // ensure movement relative to current list bounds
+            index = clamp(index, 0, options.length)
+            // starting at options.length enables backwards wrap around
+            return (options.length + index + amount) % options.length
+        })
     }, [setSelectedState, ref])
+
+    const selectNext = useCallback(() => {
+        adjustSelectedIndex(1)
+    }, [adjustSelectedIndex])
+
+    const selectPrev = useCallback(() => {
+        adjustSelectedIndex(-1)
+    }, [adjustSelectedIndex])
 
     const [selectedEl, setSelectedEl] = useState()
 
+    /**
+     * Finds element matching selected index
+     */
     const getSelectedEl = useCallback(() => {
         if (!ref.current) { return }
-        const options = Array.from(ref.current.querySelectorAll(OPTION_SELECTOR))
-        return options[selection]
-    }, [ref, selection])
+        const options = ref.current.querySelectorAll(OPTION_SELECTOR)
+        return options[clamp(selectedIndex, 0, options.length - 1)]
+    }, [ref, selectedIndex])
 
+    /**
+     * True if id matches selected element
+     */
     const isSelected = useCallback((id) => {
         const el = getSelectedEl()
         const isSelectedEl = !!(el && el.id === id)
@@ -111,31 +160,20 @@ export const ListBox = React.forwardRef(({ listContextRef, ...props }, ref) => {
         return isSelectedEl
     }, [setSelectedEl, selectedEl, getSelectedEl])
 
-    const selectNext = useCallback(() => {
-        adjustSelectedIndex(1)
-    }, [adjustSelectedIndex])
-
-    const selectPrev = useCallback(() => {
-        adjustSelectedIndex(-1)
-    }, [adjustSelectedIndex])
-
+    /**
+     * Maps passed-in id to index in options collection
+     * Sets as selected index, or 0 if not found.
+     */
     const setSelected = useCallback((id) => {
         const options = Array.from(ref.current.querySelectorAll(OPTION_SELECTOR))
         const ids = options.map((el) => el.id)
         const selectedIndex = ids.indexOf(id)
-        setSelectedState(Math.max(0, selectedIndex))
+        setSelectedState(clamp(selectedIndex, 0, ids.length))
     }, [ref, setSelectedState])
 
-    const listContext = useMemo(() => ({
-        id,
-        selection,
-        isSelected,
-        selectPrev,
-        selectNext,
-        setSelected,
-        getSelectedEl,
-    }), [id, selection, isSelected, setSelected, selectNext, selectPrev, getSelectedEl])
-
+    /**
+     * Keyboard handling for when listbox is focused
+     */
     const onKeyDown = useCallback((event) => {
         if (event.key === 'ArrowDown') {
             event.preventDefault()
@@ -147,7 +185,33 @@ export const ListBox = React.forwardRef(({ listContextRef, ...props }, ref) => {
         }
     }, [selectNext, selectPrev])
 
-    listContextRef.current = listContext
+    /**
+     * Build list context API
+     */
+    const listContext = useMemo(() => ({
+        id,
+        selectedIndex,
+        isSelected,
+        selectPrev,
+        selectNext,
+        setSelected,
+        getSelectedEl,
+    }), [
+        id,
+        selectedIndex,
+        isSelected,
+        selectPrev,
+        selectNext,
+        setSelected,
+        getSelectedEl,
+    ])
+
+    /**
+     * Provide ref to context API for parent to control
+     */
+    if (listContextRef) {
+        listContextRef.current = listContext
+    }
 
     return (
         <ListContext.Provider value={listContext}>

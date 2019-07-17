@@ -51,13 +51,20 @@ export default connect((state) => ({
                     maxHeight={352}
                     defaultHeight={352}
                 >
-                    {canvases.map((canvas) => (
-                        <SearchRow key={canvas.id} className={styles.CanvasSearchRow}>
-                            <Link to={`${links.editor.canvasEditor}/${canvas.id}`}>
-                                <span className={cx(styles.canvasState, styles[canvas.state.toLowerCase()])} />
-                                {startCase(canvas.name)}
-                            </Link>
+
+                    {canvases.map((canvas, index) => (
+                        /* eslint-disable react/no-array-index-key */
+                        <SearchRow
+                            key={index}
+                            className={styles.CanvasSearchRow}
+                            component={Link}
+                            refName="innerRef"
+                            to={`${links.editor.canvasEditor}/${canvas.id}`}
+                        >
+                            <span className={cx(styles.canvasState, styles[canvas.state.toLowerCase()])} />
+                            {startCase(canvas.name)}
                         </SearchRow>
+                        /* eslint-enable react/no-array-index-key */
                     ))}
                 </SearchPanel>
             </React.Fragment>
