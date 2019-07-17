@@ -8,6 +8,7 @@ import docsStyles from '$newdocs/components/DocsLayout/docsLayout.pcss'
 import CodeSnippet from '$shared/components/CodeSnippet'
 import { JavaExample } from './code/api.js'
 import { JavascriptExample } from './code/api.js'
+import { PythonExample } from './code/api.js'
 
 <ScrollableAnchor id="sdks-overview"><div>
 
@@ -56,7 +57,15 @@ Here is an example of how to create an authenticated client, publish and subscri
 <ScrollableAnchor id="python-sdk"><div>
 
 ## Python SDK
---content--
+
+The Python client library is available at this [Github repo](https://github.com/streamr-dev/streamr-client-python). Important note: this library is entirely community contributed and still work in progress. Core functionality like authentication via user API key, publish and subscribe data have been implemented. However, there are some other features available in our official libraries mentioned above that are still missing: Ethereum authentication, message verification, end-to-end encryption and historical data request. If you are interested in contributing to this library, feel free to reach out via our [dev forum](https://forum.streamr.dev/) or submit directly a pull request. 
+
+Here is an example of how to create an authenticated client, publish and subscribe data using the Python library.
+
+<CodeSnippet language='python'>
+{PythonExample}
+</CodeSnippet>
+
 
 </div></ScrollableAnchor>
 
