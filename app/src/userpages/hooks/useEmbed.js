@@ -7,6 +7,7 @@ import type { ResourceType, ResourceId } from '$userpages/flowtype/permission-ty
 
 const streamrRoot = process.env.STREAMR_URL || ''
 
+// TODO: fix embed codes
 const getEmbedCodes = (resourceType: ResourceType, resourceId: ResourceId) => ({
     // $FlowFixMe It's alright but Flow doesn't get it
     CANVAS: String.raw`<iframe title="streamr-embed"

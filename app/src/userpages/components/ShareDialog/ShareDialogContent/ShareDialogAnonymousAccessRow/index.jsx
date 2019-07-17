@@ -13,7 +13,6 @@ import styles from './shareDialogAnonymousAccessRow.pcss'
 
 type StateProps = {
     anonymousPermission: ?Permission,
-    owner: ?string
 }
 
 type DispatchProps = {
@@ -79,11 +78,8 @@ export class ShareDialogAnonymousAccessRow extends Component<Props> {
 export const mapStateToProps = ({ permission: { byTypeAndId } }: { permission: PermissionState }, ownProps: Props): StateProps => {
     const byType = byTypeAndId[ownProps.resourceType] || {}
     const permissions = (byType[ownProps.resourceId] || []).filter((p) => !p.removed)
-    const ownerPermission = permissions.find((it) => it.id === null && !it.new) || {}
-    const owner = ownerPermission.user
     return {
         anonymousPermission: permissions.find((p) => p.anonymous),
-        owner,
     }
 }
 

@@ -772,6 +772,12 @@ msgstr "Embed"
 msgid "modal##shareResource##embedCode"
 msgstr "Embed code"
 
+msgid "modal##shareResource##copy"
+msgstr "Copy"
+
+msgid "modal##shareResource##copied"
+msgstr "Copied"
+
 msgid "modal##shareResource##copyLink"
 msgstr "Copy link"
 

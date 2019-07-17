@@ -1,32 +1,23 @@
 // @flow
 
-import React, { Component, Fragment, type Node } from 'react'
+import React, { type Node, useState, useCallback, useEffect } from 'react'
 import { connect } from 'react-redux'
-import { I18n } from 'react-redux-i18n'
 
 import Modal from '$shared/components/Modal'
-import Dialog from '$shared/components/Dialog'
-import { getResourcePermissions, saveUpdatedResourcePermissions } from '$userpages/modules/permission/actions'
-import type { Permission, ResourceType, ResourceId } from '$userpages/flowtype/permission-types'
-import type { PermissionState } from '$userpages/flowtype/states/permission-state'
-import type { ErrorInUi } from '$shared/flowtype/common-types'
+import { getResourcePermissions } from '$userpages/modules/permission/actions'
+import type { ResourceType, ResourceId } from '$userpages/flowtype/permission-types'
 import SvgIcon from '$shared/components/SvgIcon'
-import Buttons from '$shared/components/Buttons'
+import useIsMountedRef from '$shared/utils/useIsMountedRef'
+import Dialog from '$shared/components/Dialog'
 
 import ShareDialogContent from './ShareDialogContent'
-import ShareDialogTabs, { type Tab } from './ShareDialogTabs'
 import EmbedDialogContent from './EmbedDialogContent'
-import CopyLink from './CopyLink'
+import ShareDialogTabs from './ShareDialogTabs'
 
 import styles from './shareDialog.pcss'
 
-type StateProps = {
-    anonymousPermission: ?Permission,
-}
-
 type DispatchProps = {
     getResourcePermissions: () => Promise<void>,
-    save: () => Promise<void>,
 }
 
 type GivenProps = {
@@ -38,203 +29,73 @@ type GivenProps = {
     allowEmbed?: boolean,
 }
 
-type Props = StateProps & DispatchProps & GivenProps
+type Props = DispatchProps & GivenProps
 
-type State = {
-    fetching: boolean,
-    error: ?ErrorInUi,
-    saving: boolean,
-    activeTab: Tab,
-    showEmbedInactiveWarning: boolean,
-}
+export const ShareDialog = (props: Props) => {
+    const [error, setError] = useState(null)
+    const [activeTab, setActiveTab] = useState(ShareDialogTabs.SHARE)
+    const isMountedRef = useIsMountedRef()
 
-export class ShareDialog extends Component<Props, State> {
-    state = {
-        fetching: true,
-        error: undefined,
-        saving: false,
-        activeTab: ShareDialogTabs.SHARE,
-        showEmbedInactiveWarning: false,
-    }
+    const {
+        allowEmbed,
+        resourceTitle,
+        resourceType,
+        resourceId,
+        onClose,
+        getResourcePermissions,
+    } = props
 
-    unmounted: boolean = false
-
-    componentDidMount() {
-        this.loadPermissions()
-    }
-
-    componentWillUnmount() {
-        this.unmounted = true
-    }
-
-    async loadPermissions() {
+    const loadPermissions = useCallback(async () => {
         try {
-            await this.props.getResourcePermissions()
-            if (!this.unmounted) {
-                this.setState({
-                    fetching: false,
-                })
-            }
+            await getResourcePermissions()
         } catch (error) {
-            if (!this.unmounted) {
-                this.setState({
-                    fetching: false,
-                    error,
-                })
-            }
+            if (!isMountedRef.current) { return }
+            setError(error)
         }
-    }
+    }, [getResourcePermissions, isMountedRef])
 
-    save = () => {
-        this.setState({
-            saving: true,
-        }, async () => {
-            try {
-                await this.props.save()
+    // load permissions on mount
+    useEffect(() => {
+        if (!isMountedRef.current) { return }
+        loadPermissions()
+    }, [isMountedRef, loadPermissions])
 
-                if (!this.unmounted) {
-                    this.setState({
-                        saving: false,
-                    }, this.props.onClose)
-                }
-            } catch (e) {
-                console.warn(e)
-
-                if (!this.unmounted) {
-                    this.setState({
-                        saving: false,
-                    })
-                }
-            }
-        })
-    }
-
-    setActiveTab = (activeTab: Tab) => {
-        const { anonymousPermission } = this.props
-
-        if (activeTab === ShareDialogTabs.EMBED && !anonymousPermission) {
-            this.setState({
-                showEmbedInactiveWarning: true,
-            })
-        } else {
-            this.setState({
-                activeTab,
-                showEmbedInactiveWarning: false,
-            })
-        }
-    }
-
-    clearShowEmbedInactiveWarning = () => {
-        this.setState({
-            showEmbedInactiveWarning: false,
-        })
-    }
-
-    render() {
-        const { resourceTitle, onClose, allowEmbed, anonymousPermission } = this.props
-        const {
-            fetching,
-            error,
-            saving,
-            activeTab,
-            showEmbedInactiveWarning,
-        } = this.state
-
-        return (
-            <Modal>
-                <Dialog
-                    containerClassname={styles.dialog}
-                    contentClassName={styles.content}
-                    title={!allowEmbed ? I18n.t('modal.shareResource.defaultTitle', {
-                        resourceTitle,
-                    }) : ''}
+    return (
+        <Modal>
+            {!error && activeTab === ShareDialogTabs.SHARE && (
+                <ShareDialogContent
+                    resourceTitle={resourceTitle}
+                    resourceType={resourceType}
+                    resourceId={resourceId}
+                    allowEmbed={allowEmbed}
                     onClose={onClose}
-                    actions={(fetching || !error) ? {
-                        cancel: {
-                            title: I18n.t('modal.common.cancel'),
-                            outline: true,
-                            onClick: onClose,
-                        },
-                        save: {
-                            title: I18n.t('modal.shareResource.save'),
-                            color: 'primary',
-                            onClick: this.save,
-                            disabled: saving,
-                            spinner: saving,
-                            visible: activeTab === ShareDialogTabs.SHARE,
-                        },
-                        copy: {
-                            title: I18n.t('modal.shareResource.copy'),
-                            color: 'primary',
-                            visible: activeTab === ShareDialogTabs.EMBED,
-                        },
-                    } : {}}
-                    waiting={fetching}
-                    renderActions={(actions) => (
-                        <div className={styles.footer}>
-                            <div className={styles.copyLink}>
-                                {!error && activeTab === ShareDialogTabs.SHARE && (
-                                    <CopyLink
-                                        resourceType={this.props.resourceType}
-                                        resourceId={this.props.resourceId}
-                                    />
-                                )}
-                            </div>
-                            <Buttons
-                                actions={actions}
-                            />
-                        </div>
-                    )}
+                    setActiveTab={setActiveTab}
+                />
+            )}
+            {!error && activeTab === ShareDialogTabs.EMBED && (
+                <EmbedDialogContent
+                    resourceType={resourceType}
+                    resourceId={resourceId}
+                    onClose={onClose}
+                    setActiveTab={setActiveTab}
+                />
+            )}
+            {!!error && (
+                <Dialog
+                    onClose={onClose}
                 >
-                    {!error && !!allowEmbed && (
-                        <ShareDialogTabs
-                            active={activeTab}
-                            onChange={this.setActiveTab}
-                            allowEmbed={!!anonymousPermission}
-                        />
-                    )}
-                    {!error && activeTab === ShareDialogTabs.SHARE && (
-                        <ShareDialogContent
-                            resourceTitle={this.props.resourceTitle}
-                            resourceType={this.props.resourceType}
-                            resourceId={this.props.resourceId}
-                            showEmbedInactiveWarning={showEmbedInactiveWarning}
-                            clearShowEmbedInactiveWarning={this.clearShowEmbedInactiveWarning}
-                        />
-                    )}
-                    {!error && activeTab === ShareDialogTabs.EMBED && (
-                        <EmbedDialogContent
-                            resourceType={this.props.resourceType}
-                            resourceId={this.props.resourceId}
-                        />
-                    )}
-                    {!!error && (
-                        <Fragment>
-                            <SvgIcon name="error" className={styles.errorIcon} />
-                            <p>{error.message}</p>
-                        </Fragment>
-                    )}
+                    <SvgIcon name="error" className={styles.errorIcon} />
+                    <p>{error.message}</p>
                 </Dialog>
-            </Modal>
-        )
-    }
-}
-
-export const mapStateToProps = ({ permission: { byTypeAndId } }: { permission: PermissionState }, ownProps: Props): StateProps => {
-    const byType = byTypeAndId[ownProps.resourceType] || {}
-    const permissions = (byType[ownProps.resourceId] || []).filter((p) => !p.removed)
-    return {
-        anonymousPermission: permissions.find((p) => p.anonymous),
-    }
+            )}
+        </Modal>
+    )
 }
 
 export const mapDispatchToProps = (dispatch: Function, ownProps: GivenProps): DispatchProps => ({
     getResourcePermissions() {
         return dispatch(getResourcePermissions(ownProps.resourceType, ownProps.resourceId))
     },
-    save() {
-        return dispatch(saveUpdatedResourcePermissions(ownProps.resourceType, ownProps.resourceId))
-    },
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(ShareDialog)
+export default connect(null, mapDispatchToProps)(ShareDialog)

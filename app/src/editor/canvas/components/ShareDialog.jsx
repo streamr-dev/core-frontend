@@ -12,6 +12,7 @@ const ShareDialog = (props) => {
             resourceType="CANVAS"
             resourceId={canvas.id}
             onClose={() => modalApi.close()}
+            allowEmbed
         />
     )
 }
