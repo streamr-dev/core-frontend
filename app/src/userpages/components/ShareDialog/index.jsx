@@ -15,6 +15,7 @@ import Buttons from '$shared/components/Buttons'
 
 import ShareDialogContent from './ShareDialogContent'
 import ShareDialogTabs, { type Tab } from './ShareDialogTabs'
+import EmbedDialogContent from './EmbedDialogContent'
 import CopyLink from './CopyLink'
 
 import styles from './shareDialog.pcss'
@@ -196,6 +197,12 @@ export class ShareDialog extends Component<Props, State> {
                             resourceId={this.props.resourceId}
                             showEmbedInactiveWarning={showEmbedInactiveWarning}
                             clearShowEmbedInactiveWarning={this.clearShowEmbedInactiveWarning}
+                        />
+                    )}
+                    {!error && activeTab === ShareDialogTabs.EMBED && (
+                        <EmbedDialogContent
+                            resourceType={this.props.resourceType}
+                            resourceId={this.props.resourceId}
                         />
                     )}
                     {!!error && (

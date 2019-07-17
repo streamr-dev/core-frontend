@@ -764,10 +764,19 @@ msgid "modal##shareResource##save"
 msgstr "Share"
 
 msgid "modal##shareResource##tabs##share"
-msgstr "Share"
+msgstr "Share settings"
 
 msgid "modal##shareResource##tabs##embed"
 msgstr "Embed"
+
+msgid "modal##shareResource##embedCode"
+msgstr "Embed code"
+
+msgid "modal##shareResource##copyLink"
+msgstr "Copy link"
+
+msgid "modal##shareResource##linkCopied"
+msgstr "Link copied"
 
 msgid "modal##copySnippet##defaultTitle"
 msgstr "Copy Snippet"
