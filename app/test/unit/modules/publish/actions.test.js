@@ -260,9 +260,9 @@ describe('publish - actions', () => {
                     location: {
                         pathname: `/product/${id}`,
                     },
+                    action: {},
                 },
             })
-
             store.dispatch(actions.redeployProduct(id))
 
             const expectedActions = [{
@@ -311,6 +311,7 @@ describe('publish - actions', () => {
                     location: {
                         pathname: '/product/notProperId',
                     },
+                    action: {},
                 },
             })
             store.dispatch(actions.redeployProduct(id))

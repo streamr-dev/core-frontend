@@ -2,19 +2,21 @@
 
 import * as React from 'react'
 import cx from 'classnames'
-import { Link } from 'react-router-dom'
 import { Translate, I18n } from 'react-redux-i18n'
 
 import standardProductImage from '$mp/assets/product_standard.png'
 import standardProductImage2x from '$mp/assets/product_standard@2x.png'
 import communityProductImage from '$mp/assets/product_community.png'
 import communityProductImage2x from '$mp/assets/product_community@2x.png'
-
-import links from '../../../links'
+import type { ProductType } from '$mp/flowtype/product-types'
 
 import styles from './productTypeChooser.pcss'
 
-const ProductTypeChooser = () => (
+type Props = {
+    onSelect: (type: ProductType) => void,
+}
+
+const ProductTypeChooser = ({ onSelect }: Props) => (
     <div className={styles.root}>
         <div className={styles.pageTitle}>
             <Translate value="productTypeChooser.title" />
@@ -35,12 +37,13 @@ const ProductTypeChooser = () => (
                     <div className={styles.description}>
                         <Translate value="productTypeChooser.standard.description" />
                     </div>
-                    <Link
-                        to={links.marketplace.createProduct}
+                    <button
+                        type="button"
                         className={cx('btn', 'btn-special', styles.button)}
+                        onClick={() => onSelect('standard')}
                     >
                         <Translate value="productTypeChooser.standard.linkTitle" />
-                    </Link>
+                    </button>
                 </div>
             </div>
             <div className={styles.padding} />
@@ -58,12 +61,13 @@ const ProductTypeChooser = () => (
                     <div className={styles.description}>
                         <Translate value="productTypeChooser.community.description" />
                     </div>
-                    <Link
-                        to={links.marketplace.createProduct}
+                    <button
+                        type="button"
                         className={cx('btn', 'btn-special', styles.button)}
+                        onClick={() => onSelect('community')}
                     >
                         <Translate value="productTypeChooser.community.linkTitle" />
-                    </Link>
+                    </button>
                 </div>
             </div>
             <div className={styles.padding} />

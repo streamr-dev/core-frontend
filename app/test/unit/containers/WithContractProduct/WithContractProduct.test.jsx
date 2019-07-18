@@ -75,7 +75,7 @@ describe('WithContractProduct', () => {
     it('renders the component when web3 is not required', () => {
         const EmptyWithHOC = withContractProduct(EmptyComponent)
         wrapper = shallow(<EmptyWithHOC requireWeb3={false} {...props} />)
-        const withWeb3Component = wrapper.dive()
+        const withWeb3Component = wrapper.dive().dive()
 
         expect(withWeb3Component.dive().find(EmptyComponent).length).toEqual(1)
     })
@@ -86,7 +86,7 @@ describe('WithContractProduct', () => {
 
         const EmptyWithHOC = withContractProduct(EmptyComponent)
         wrapper = shallow(<EmptyWithHOC {...props} />)
-        const withWeb3Component = wrapper.dive()
+        const withWeb3Component = wrapper.dive().dive()
 
         return validatePromise.then(() => {
             expect(withWeb3Component.dive().find(EmptyComponent).length).toEqual(1)
@@ -100,7 +100,7 @@ describe('WithContractProduct', () => {
         const EmptyWithHOC = withContractProduct(EmptyComponent)
         const onClose = () => {}
         wrapper = shallow(<EmptyWithHOC onClose={onClose} {...props} />)
-        const withWeb3Component = wrapper.dive()
+        const withWeb3Component = wrapper.dive().dive()
 
         return validatePromise.then(() => {
             const innerComponent = withWeb3Component.dive()
@@ -133,7 +133,7 @@ describe('WithContractProduct', () => {
         }
 
         wrapper = shallow(<EmptyWithHOC requireInContract {...newProps} />)
-        const withWeb3Component = wrapper.dive()
+        const withWeb3Component = wrapper.dive().dive()
 
         return validatePromise.then(() => {
             const innerComponent = withWeb3Component.dive()
@@ -149,7 +149,7 @@ describe('WithContractProduct', () => {
 
         const EmptyWithHOC = withContractProduct(EmptyComponent)
         wrapper = shallow(<EmptyWithHOC requireOwnerIfDeployed {...props} />)
-        const withWeb3Component = wrapper.dive()
+        const withWeb3Component = wrapper.dive().dive()
 
         return validatePromise.then(() => {
             const innerComponent = withWeb3Component.dive()

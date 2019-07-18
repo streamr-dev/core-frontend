@@ -55,7 +55,7 @@ describe('AddKeyField', () => {
     })
 
     describe('saving', () => {
-        it('hides the editor when saved', () => {
+        it('hides the editor when saved', (done) => {
             const label = 'Add new'
             const onSave = () => Promise.resolve()
             const el = shallow(<AddKeyField
@@ -70,14 +70,18 @@ describe('AddKeyField', () => {
 
             el.find('KeyFieldEditor').prop('onSave')()
 
-            return onSave()
-                .then(() => {
-                    assert(el.find('Button').length === 1)
-                    assert(el.find('KeyFieldEditor').length === 0)
-                })
+            // We need to wait for 2nd setState to happen after onSave was called
+            setTimeout(() => (
+                onSave()
+                    .then(() => {
+                        assert(el.find('Button').length === 1)
+                        assert(el.find('KeyFieldEditor').length === 0)
+                        done()
+                    })
+            ), 0)
         })
 
-        it('shows an error when saving fails', () => {
+        it('shows an error when saving fails', (done) => {
             const label = 'Add new'
             const errorMessage = 'error'
             const error = new Error(errorMessage)
@@ -98,11 +102,15 @@ describe('AddKeyField', () => {
                 assert(e === error)
             }
 
-            return onSave()
-                .catch(() => {
-                    assert(el.find('KeyFieldEditor').length === 1)
-                    assert(el.find('KeyFieldEditor').prop('error') === errorMessage)
-                })
+            // We need to wait for 2nd setState to happen after onSave was called
+            setTimeout(() => (
+                onSave()
+                    .catch(() => {
+                        assert(el.find('KeyFieldEditor').length === 1)
+                        assert(el.find('KeyFieldEditor').prop('error') === errorMessage)
+                        done()
+                    })
+            ), 0)
         })
     })
 })
