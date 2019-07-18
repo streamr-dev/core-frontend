@@ -205,16 +205,7 @@ export function SearchPanel(props) {
         return children
     }, [children, isSearching, isExpanded, renderDefault])
 
-    const onInputKeyDown = useListBoxOnKeyDownCallback(listContextRef.current)
-
-    const onFocusCapture = useCallback((event) => {
-        event.persist()
-        // bounce focus back up to input if container gets focus from an internal item
-        if (event.target === contentRef.current && event.relatedTarget !== inputRef.current) {
-            event.stopPropagation()
-            inputRef.current.focus()
-        }
-    }, [inputRef, contentRef])
+    const onInputKeyDown = useListBoxOnKeyDownCallback(listContextRef)
 
     const { width, height, posX, posY } = layout
 
@@ -292,7 +283,7 @@ export function SearchPanel(props) {
                                 setLayout({})
                             }}
                         >
-                            <ListBox listContextRef={listContextRef} ref={contentRef} className={styles.Content} onFocusCapture={onFocusCapture}>
+                            <ListBox listContextRef={listContextRef} ref={contentRef} className={styles.Content}>
                                 {internalContent}
                             </ListBox>
                         </div>

@@ -111,8 +111,16 @@ function clamp(value, min, max) {
     return Math.max(min, Math.min(max, value))
 }
 
-export const useListBoxOnKeyDownCallback = (listContext) => (
-    useCallback((event) => {
+function useOptionalRef(externalRef) {
+    // allow ref prop to be optional
+    const internalRef = useRef()
+    return externalRef || internalRef
+}
+
+export const useListBoxOnKeyDownCallback = (externalListContextRef) => {
+    const listContextRef = useOptionalRef(externalListContextRef)
+    return useCallback((event) => {
+        const listContext = listContextRef.current
         if (!listContext) { return }
         if (event.currentTarget !== event.target && event.currentTarget !== window) { return } // ignore bubbled
         if (event.key === 'ArrowDown') {
@@ -134,13 +142,12 @@ export const useListBoxOnKeyDownCallback = (listContext) => (
                 el.click()
             }
         }
-    }, [listContext])
-)
+    }, [listContextRef])
+}
 
 function useListBoxContext(externalRef) {
     // allow ref prop to be optional
-    const internalRef = useRef()
-    const ref = externalRef || internalRef
+    const ref = useOptionalRef(externalRef)
 
     // ListBox needs unique id so ListOptions can have ListBox-scoped ids
     // So aria-activedescendant={selectedId} is valid
@@ -237,7 +244,7 @@ export const ListBox = React.forwardRef(({ listContextRef, ...props }, ref) => {
         listContextRef.current = listContext
     }
 
-    const onKeyDown = useListBoxOnKeyDownCallback(listContext)
+    const onKeyDown = useListBoxOnKeyDownCallback(listContextRef)
 
     const [isOver, setIsOver] = useState(false)
 
