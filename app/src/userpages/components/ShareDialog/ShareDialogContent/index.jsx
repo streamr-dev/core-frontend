@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useState, useMemo, useCallback } from 'react'
+import React, { useState, useCallback, useRef } from 'react'
 import { connect } from 'react-redux'
 import { I18n } from 'react-redux-i18n'
 
@@ -8,7 +8,7 @@ import type { Permission, ResourceType, ResourceId } from '$userpages/flowtype/p
 import type { PermissionState } from '$userpages/flowtype/states/permission-state'
 import { addResourcePermission, saveUpdatedResourcePermissions } from '$userpages/modules/permission/actions'
 import Dialog from '$shared/components/Dialog'
-import useIsMountedRef from '$shared/utils/useIsMountedRef'
+import useIsMounted from '$shared/hooks/useIsMounted'
 import Buttons from '$shared/components/Buttons'
 
 import ShareDialogTabs, { type Tab } from '../ShareDialogTabs'
@@ -61,13 +61,11 @@ export const ShareDialogContent = (props: Props) => {
 
     const [saving, setSaving] = useState(false)
     const [showEmbedInactiveWarning, setShowEmbedInactiveWarning] = useState(false)
-    const isMountedRef = useIsMountedRef()
+    const isMounted = useIsMounted()
 
-    const dialogTitle = useMemo(() => (
-        !allowEmbed ? I18n.t('modal.shareResource.defaultTitle', {
-            resourceTitle,
-        }) : ''
-    ), [allowEmbed, resourceTitle])
+    const dialogTitle = !allowEmbed ? I18n.t('modal.shareResource.defaultTitle', {
+        resourceTitle,
+    }) : ''
 
     // set active tab, checks if embedding allowed
     const setTab = useCallback((activeTab: Tab) => {
@@ -79,19 +77,22 @@ export const ShareDialogContent = (props: Props) => {
         }
     }, [anonymousPermission, setActiveTab])
 
+    const onCloseRef = useRef(onClose)
     const saveDialog = useCallback(async () => {
         setSaving(true)
         try {
             await save()
-            if (!isMountedRef.current) { return }
+            if (!isMounted()) { return }
             setSaving(false)
-            onClose()
         } catch (e) {
             console.warn(e)
-            if (!isMountedRef.current) { return }
-            setSaving(false)
+        } finally {
+            if (isMounted()) {
+                setSaving(false)
+            }
         }
-    }, [onClose, save, isMountedRef])
+        onCloseRef.current()
+    }, [save, isMounted])
 
     return (
         <Dialog

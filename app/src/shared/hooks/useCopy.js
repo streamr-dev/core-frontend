@@ -9,7 +9,6 @@ export function useCopy() {
 
     const reset = useCallback(() => {
         clearTimeout(timeOutId.current)
-        timeOutId.current = null
     }, [])
 
     const copy = useCallback((value: string) => {
@@ -17,11 +16,12 @@ export function useCopy() {
             copyToClipboard(value)
             setCopied(true)
 
+            reset()
             timeOutId.current = setTimeout(() => {
                 setCopied(false)
             }, 3000)
         }
-    }, [isCopied])
+    }, [isCopied, reset])
 
     useEffect(() => () => {
         reset()

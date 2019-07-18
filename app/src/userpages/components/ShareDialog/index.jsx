@@ -7,7 +7,7 @@ import Modal from '$shared/components/Modal'
 import { getResourcePermissions } from '$userpages/modules/permission/actions'
 import type { ResourceType, ResourceId } from '$userpages/flowtype/permission-types'
 import SvgIcon from '$shared/components/SvgIcon'
-import useIsMountedRef from '$shared/utils/useIsMountedRef'
+import useIsMounted from '$shared/hooks/useIsMounted'
 import Dialog from '$shared/components/Dialog'
 
 import ShareDialogContent from './ShareDialogContent'
@@ -34,7 +34,7 @@ type Props = DispatchProps & GivenProps
 export const ShareDialog = (props: Props) => {
     const [error, setError] = useState(null)
     const [activeTab, setActiveTab] = useState(ShareDialogTabs.SHARE)
-    const isMountedRef = useIsMountedRef()
+    const isMounted = useIsMounted()
 
     const {
         allowEmbed,
@@ -49,16 +49,16 @@ export const ShareDialog = (props: Props) => {
         try {
             await getResourcePermissions()
         } catch (error) {
-            if (!isMountedRef.current) { return }
+            if (!isMounted()) { return }
             setError(error)
         }
-    }, [getResourcePermissions, isMountedRef])
+    }, [getResourcePermissions, isMounted])
 
     // load permissions on mount
     useEffect(() => {
-        if (!isMountedRef.current) { return }
+        if (!isMounted()) { return }
         loadPermissions()
-    }, [isMountedRef, loadPermissions])
+    }, [isMounted, loadPermissions])
 
     return (
         <Modal>
