@@ -149,7 +149,7 @@
 }
 
 .SearchPanel .Content {
-  height: stretch;
+  height: min-content;
   color: #525252;
   font-size: 12px;
   font-family: var(--sans);
@@ -158,6 +158,14 @@
   text-transform: uppercase;
   letter-spacing: 1px;
   line-height: 32px;
+}
+
+.SearchPanel .Content:focus {
+  outline: none;
+}
+
+.SearchPanel.isExpanded .Content {
+  height: stretch;
 }
 
 /**
