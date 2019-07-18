@@ -154,9 +154,9 @@ function useListBoxContext(externalRef) {
     const adjustSelectedIndex = useCallback((amount = 0) => {
         if (!ref.current) { return }
         const options = ref.current.querySelectorAll(OPTION_SELECTOR)
-        setSelectedState((index) => {
+        setSelectedState((index = 0) => {
             // ensure movement relative to current list bounds
-            index = clamp(index, 0, options.length)
+            index = clamp(index, 0, options.length - 1)
             // starting at options.length enables backwards wrap around
             return (options.length + index + amount) % options.length
         })
@@ -202,7 +202,7 @@ function useListBoxContext(externalRef) {
         const options = Array.from(ref.current.querySelectorAll(OPTION_SELECTOR))
         const ids = options.map((el) => el.id)
         const selectedIndex = ids.indexOf(id)
-        setSelectedState(clamp(selectedIndex, 0, ids.length))
+        setSelectedState(clamp(selectedIndex, 0, ids.length - 1))
     }, [ref, setSelectedState])
 
     /**
