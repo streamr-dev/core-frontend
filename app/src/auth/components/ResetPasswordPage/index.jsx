@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import * as yup from 'yup'
 import qs from 'query-string'
 import { I18n, Translate } from 'react-redux-i18n'
-import { push } from 'react-router-redux'
+import { push } from 'connected-react-router'
 
 import useIsMountedRef from '$shared/utils/useIsMountedRef'
 import useOnMount from '$shared/utils/useOnMount'

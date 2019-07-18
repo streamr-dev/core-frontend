@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { replace } from 'react-router-redux'
+import { replace } from 'connected-react-router'
 import { I18n } from 'react-redux-i18n'
 
 import Modal from '$shared/components/Modal'

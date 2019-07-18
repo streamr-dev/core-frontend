@@ -262,6 +262,7 @@ describe('unpublish - actions', () => {
                     location: {
                         pathname: `/product/${id}`,
                     },
+                    action: {},
                 },
             })
 
@@ -313,6 +314,7 @@ describe('unpublish - actions', () => {
                     location: {
                         pathname: '/product/notProperId',
                     },
+                    action: {},
                 },
             })
             store.dispatch(actions.deleteProduct(id))

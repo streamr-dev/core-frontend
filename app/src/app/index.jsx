@@ -4,7 +4,7 @@ import '$shared/assets/stylesheets'
 
 import React from 'react'
 import { Route as RouterRoute, Switch, Redirect, type Location } from 'react-router-dom'
-import { ConnectedRouter } from 'react-router-redux'
+import { ConnectedRouter } from 'connected-react-router'
 import qs from 'query-string'
 
 // Marketplace

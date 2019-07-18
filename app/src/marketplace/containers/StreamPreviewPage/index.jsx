@@ -2,7 +2,7 @@
 
 // import React from 'react'
 import { connect } from 'react-redux'
-import { push } from 'react-router-redux'
+import { push } from 'connected-react-router'
 
 import StreamPreviewPage from '$mp/components/StreamPreviewPage'
 import type { StoreState } from '$shared/flowtype/store-state'
