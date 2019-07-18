@@ -40,7 +40,7 @@ const Header = ({ title, onClose }: Props) => {
                 </button>
             </div>
             <div className={styles.appInfo}>
-                Streamr App {[versionNumber, displayBranch, displayHash].filter(Boolean).join(' ')}
+                Streamr Core {[versionNumber, displayBranch, displayHash].filter(Boolean).join(' ')}
             </div>
         </div>
     )
