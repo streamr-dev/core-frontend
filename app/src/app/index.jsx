@@ -141,13 +141,13 @@ const AuthenticationRouter = () => ([
 const MarketplaceRouter = () => ([
     <Route exact path={marketplace.main} component={Products} key="Products" />,
     <Route exact path={links.marketplace.createProduct} component={CreateProductAuth} key="CreateProduct" />,
-    <Route exact path={routes.createProduct2()} component={CreateProductAuth2} key="CreateProduct2" />,
+    !isProduction() && <Route exact path={routes.createProduct2()} component={CreateProductAuth2} key="CreateProduct2" />,
     <Route exact path={formatPath(marketplace.products, ':id', 'purchase')} component={ProductPurchasePage} key="ProductPurchasePage" />,
     <Route exact path={formatPath(marketplace.products, ':id', 'publish')} component={ProductPublishPage} key="ProductPublishPage" />,
     <Route exact path={formatPath(marketplace.products, ':id', 'streamPreview', ':streamId')} component={StreamPreviewPage} key="StreamPreview" />,
     <Route exact path={formatPath(marketplace.products, ':id')} component={ProductPage} key="ProductPage" />,
     <Route exact path={routes.editProduct()} component={EditProductAuth} key="EditProduct" />,
-    <Route exact path={routes.editProduct2()} component={EditProductAuth2} key="EditProduct2" />,
+    !isProduction() && <Route exact path={routes.editProduct2()} component={EditProductAuth2} key="EditProduct2" />,
 ])
 
 const DocsRouter = () => ([ // (deprecated in Aug/Sept 2019)
