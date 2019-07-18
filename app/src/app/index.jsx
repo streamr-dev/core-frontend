@@ -10,7 +10,9 @@ import qs from 'query-string'
 // Marketplace
 import ProductPage from '$mp/containers/ProductPage'
 import StreamPreviewPage from '$mp/containers/StreamPreviewPage'
+import CreateProductPage from '$mp/containers/CreateProductPage'
 import EditProductPage from '$mp/containers/EditProductPage'
+import EditProductPage2 from '$mp/containers/EditProductPage2'
 import Products from '$mp/containers/Products'
 
 // Auth
@@ -85,7 +87,9 @@ import routes from '$routes'
 // Wrap authenticated components here instead of render() method
 // Marketplace Auth
 const CreateProductAuth = userIsAuthenticated(EditProductPage)
+const CreateProductAuth2 = userIsAuthenticated(CreateProductPage)
 const EditProductAuth = userIsAuthenticated(EditProductPage)
+const EditProductAuth2 = userIsAuthenticated(EditProductPage2)
 
 // Userpages Auth
 const CanvasListAuth = userIsAuthenticated(CanvasList)
@@ -137,11 +141,13 @@ const AuthenticationRouter = () => ([
 const MarketplaceRouter = () => ([
     <Route exact path={marketplace.main} component={Products} key="Products" />,
     <Route exact path={links.marketplace.createProduct} component={CreateProductAuth} key="CreateProduct" />,
+    <Route exact path={routes.createProduct2()} component={CreateProductAuth2} key="CreateProduct2" />,
     <Route exact path={formatPath(marketplace.products, ':id', 'purchase')} component={ProductPurchasePage} key="ProductPurchasePage" />,
     <Route exact path={formatPath(marketplace.products, ':id', 'publish')} component={ProductPublishPage} key="ProductPublishPage" />,
     <Route exact path={formatPath(marketplace.products, ':id', 'streamPreview', ':streamId')} component={StreamPreviewPage} key="StreamPreview" />,
     <Route exact path={formatPath(marketplace.products, ':id')} component={ProductPage} key="ProductPage" />,
     <Route exact path={routes.editProduct()} component={EditProductAuth} key="EditProduct" />,
+    <Route exact path={routes.editProduct2()} component={EditProductAuth2} key="EditProduct2" />,
 ])
 
 const DocsRouter = () => ([ // (deprecated in Aug/Sept 2019)
