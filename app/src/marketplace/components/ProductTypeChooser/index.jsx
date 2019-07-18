@@ -2,7 +2,6 @@
 
 import * as React from 'react'
 import cx from 'classnames'
-import { Row, Col } from 'reactstrap'
 import { Link } from 'react-router-dom'
 import { Translate, I18n } from 'react-redux-i18n'
 
@@ -20,8 +19,9 @@ const ProductTypeChooser = () => (
         <div className={styles.pageTitle}>
             <Translate value="productTypeChooser.title" />
         </div>
-        <Row className={styles.row}>
-            <Col xs={12} md={6}>
+        <div className={styles.row}>
+            <div className={styles.padding} />
+            <div className={styles.column}>
                 <img
                     className={styles.image}
                     src={standardProductImage}
@@ -42,8 +42,9 @@ const ProductTypeChooser = () => (
                         <Translate value="productTypeChooser.standard.linkTitle" />
                     </Link>
                 </div>
-            </Col>
-            <Col xs={12} md={6}>
+            </div>
+            <div className={styles.padding} />
+            <div className={styles.column}>
                 <img
                     className={styles.image}
                     src={communityProductImage}
@@ -64,8 +65,9 @@ const ProductTypeChooser = () => (
                         <Translate value="productTypeChooser.community.linkTitle" />
                     </Link>
                 </div>
-            </Col>
-        </Row>
+            </div>
+            <div className={styles.padding} />
+        </div>
     </div>
 )
 
