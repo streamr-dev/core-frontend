@@ -8,6 +8,7 @@ import { storiesOf } from '@storybook/react'
 import store from './utils/i18nStore'
 
 import Products from '$mp/components/Products'
+import ProductTypeChooser from '$mp/components/ProductTypeChooser'
 import exampleProductList from './exampleProductList'
 
 const story = (name) => storiesOf(`Marketplace/${name}`, module)
@@ -33,4 +34,9 @@ story('ProductList')
             type="products"
             isFetching
         />
+    ))
+
+story('ProductTypeChooser')
+    .addWithJSX('basic', () => (
+        <ProductTypeChooser />
     ))
