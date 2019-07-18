@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useMemo, useCallback } from 'react'
+import React, { useCallback } from 'react'
 import cx from 'classnames'
 import { Translate, I18n } from 'react-redux-i18n'
 
@@ -32,9 +32,7 @@ const EmbedDialogContent = (props: Props) => {
         }
     }, [isCopied, copy, embedCode])
 
-    const buttonText = useMemo(() => (
-        isCopied ? I18n.t('modal.shareResource.copied') : I18n.t('modal.shareResource.copy')
-    ), [isCopied])
+    const buttonText = isCopied ? I18n.t('modal.shareResource.copied') : I18n.t('modal.shareResource.copy')
 
     return (
         <Dialog

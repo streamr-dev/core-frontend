@@ -57,7 +57,7 @@ export class ShareDialogAnonymousAccessRow extends Component<Props> {
 
         return (
             <div className={styles.container}>
-                {this.props.showEmbedInactiveWarning && (
+                {!!this.props.showEmbedInactiveWarning && (
                     <Translate value="modal.shareResource.embedInactiveWarning" className={styles.embedInactive} />
                 )}
                 <SelectInput
