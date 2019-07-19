@@ -1,16 +1,27 @@
 // @flow
 
-import React from 'react'
+import React, { useContext } from 'react'
 import { Container } from 'reactstrap'
+
+import * as RouterContext from '$shared/components/RouterContextProvider'
 
 import styles from './editProductPage.pcss'
 
-const EditProductPage = () => (
-    <div className={styles.root}>
-        <Container className={styles.container}>
-            New product editor...
-        </Container>
-    </div>
-)
+const EditProductPage = () => {
+    const { match } = useContext(RouterContext.Context)
+    console.log(match)
 
-export default EditProductPage
+    return (
+        <div className={styles.root}>
+            <Container className={styles.container}>
+                New product editor...
+            </Container>
+        </div>
+    )
+}
+
+export default () => (
+    <RouterContext.Provider>
+        <EditProductPage />
+    </RouterContext.Provider>
+)
