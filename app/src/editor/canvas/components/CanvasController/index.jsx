@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useMemo, useCallback, useState } from 're
 import { Helmet } from 'react-helmet'
 import LoadingIndicator from '$userpages/components/LoadingIndicator'
 
-import { RouterContextProvider } from '$shared/components/RouterContextProvider'
+import RouterContextProvider from '$shared/components/RouterContextProvider'
 import RouterContext from '$shared/contexts/Router'
 import usePending, { useAnyPending, Provider as PendingProvider } from '$editor/shared/hooks/usePending'
 import { Provider as PermissionsProvider } from '$editor/canvas/hooks/useCanvasPermissions'

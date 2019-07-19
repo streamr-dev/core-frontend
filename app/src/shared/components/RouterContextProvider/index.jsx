@@ -5,8 +5,6 @@ import { withRouter, type Match, type History } from 'react-router-dom'
 
 import RouterContext from '$shared/contexts/Router'
 
-export { RouterContext }
-
 type Props = {
     children?: Node,
     match: Match,
@@ -30,3 +28,5 @@ export const RouterContextProvider = withRouter(({ children, match, history }) =
         {children}
     </Provider>
 ))
+
+export default RouterContextProvider
