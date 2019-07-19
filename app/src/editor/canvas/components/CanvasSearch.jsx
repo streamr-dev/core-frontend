@@ -36,38 +36,35 @@ export default connect((state) => ({
             name.toLowerCase().includes(search)
         )) : otherCanvases
         return (
-            <React.Fragment>
-                {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
-                <div className={styles.Overlay} onClick={() => this.props.open(false)} hidden={!this.props.isOpen} />
-                <SearchPanel
-                    placeholder="Search or select a canvas"
-                    className={styles.CanvasSearch}
-                    onChange={this.onChange}
-                    isOpen={this.props.isOpen}
-                    open={this.props.open}
-                    dragDisabled
-                    headerHidden
-                    minHeight={352}
-                    maxHeight={352}
-                    defaultHeight={352}
-                >
+            <SearchPanel
+                placeholder="Search or select a canvas"
+                className={styles.CanvasSearch}
+                onChange={this.onChange}
+                isOpen={this.props.isOpen}
+                open={this.props.open}
+                dragDisabled
+                headerHidden
+                minHeight={352}
+                maxHeight={352}
+                defaultHeight={352}
+                closeOnBlur
+            >
 
-                    {canvases.map((canvas, index) => (
-                        /* eslint-disable react/no-array-index-key */
-                        <SearchRow
-                            key={index}
-                            className={styles.CanvasSearchRow}
-                            component={Link}
-                            refName="innerRef"
-                            to={`${links.editor.canvasEditor}/${canvas.id}`}
-                        >
-                            <span className={cx(styles.canvasState, styles[canvas.state.toLowerCase()])} />
-                            {startCase(canvas.name)}
-                        </SearchRow>
-                        /* eslint-enable react/no-array-index-key */
-                    ))}
-                </SearchPanel>
-            </React.Fragment>
+                {canvases.map((canvas, index) => (
+                    /* eslint-disable react/no-array-index-key */
+                    <SearchRow
+                        key={index}
+                        className={styles.CanvasSearchRow}
+                        component={Link}
+                        refName="innerRef"
+                        to={`${links.editor.canvasEditor}/${canvas.id}`}
+                    >
+                        <span className={cx(styles.canvasState, styles[canvas.state.toLowerCase()])} />
+                        {startCase(canvas.name)}
+                    </SearchRow>
+                    /* eslint-enable react/no-array-index-key */
+                ))}
+            </SearchPanel>
         )
     }
 })

@@ -5,7 +5,7 @@
 // the highlight will flicker when the item at same index changes selection state
 /* eslint-disable react/no-array-index-key */
 
-import React from 'react'
+import React, { useState, useCallback } from 'react'
 import startCase from 'lodash/startCase'
 import debounce from 'lodash/debounce'
 import cx from 'classnames'
@@ -38,41 +38,37 @@ type MenuCategoryProps = {
     disabled?: boolean,
 }
 
-type MenuCategoryState = {
-    isExpanded: boolean,
-}
+export function ModuleMenuCategory(props: MenuCategoryProps) {
+    const { category, addModule, disabled } = props
+    const isDisabled = disabled || !category.modules.length // disable if no modules
+    const [isExpanded, setIsExpanded] = useState(false)
 
-export class ModuleMenuCategory extends React.PureComponent<MenuCategoryProps, MenuCategoryState> {
-    state = {
-        isExpanded: false,
-    }
+    const toggle = useCallback(() => {
+        setIsExpanded((isExpanded) => !isExpanded)
+    }, [setIsExpanded])
 
-    toggle = () => {
-        this.setState(({ isExpanded }) => ({ isExpanded: !isExpanded }))
-    }
+    const onClick = useCallback(() => {
+        if (isDisabled) { return }
+        toggle()
+    }, [isDisabled, toggle])
 
-    render() {
-        const { category, addModule, disabled } = this.props
-        const { isExpanded } = this.state
-        const isDisabled = disabled || !category.modules.length // disable if no modules
-        return (
-            <React.Fragment>
-                {/* eslint-disable-next-line */}
-                <SearchRow
-                    className={cx(styles.Category, {
-                        [styles.active]: !!isExpanded,
-                    })}
-                    onClick={() => !isDisabled && this.toggle()}
-                    disabled={isDisabled}
-                >
-                    {category.name}
-                </SearchRow>
-                {isExpanded && category.modules.map((m, index) => (
-                    <ModuleMenuItem module={m} key={index} addModule={addModule} />
-                ))}
-            </React.Fragment>
-        )
-    }
+    return (
+        <React.Fragment>
+            {/* eslint-disable-next-line */}
+            <SearchRow
+                className={cx(styles.Category, {
+                    [styles.active]: !!isExpanded,
+                })}
+                onClick={onClick}
+                disabled={isDisabled}
+            >
+                {category.name}
+            </SearchRow>
+            {isExpanded && category.modules.map((m, index) => (
+                <ModuleMenuItem module={m} key={index} addModule={addModule} />
+            ))}
+        </React.Fragment>
+    )
 }
 
 const onDragStart = (e: any, moduleId: number, moduleName: string, streamId?: string) => {

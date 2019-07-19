@@ -6,7 +6,7 @@ import SvgIcon from '$shared/components/SvgIcon'
 
 import styles from './SearchPanel.pcss'
 
-import { ListBox, ListOption, useListBoxOnKeyDownCallback } from './ListBox'
+import { ListBox, ListOption, useListBoxInteraction, useOptionalRef } from './ListBox'
 
 export function SearchRow({ className, ...props }) {
     return (
@@ -48,6 +48,7 @@ export function SearchPanel(props) {
     const listContextRef = useRef()
     const contentRef = useRef()
     const inputRef = useRef()
+    const panelRef = useOptionalRef(props.panelRef)
 
     const [isExpanded, setExpanded] = useState(true)
     const [hasFocus, setHasFocus] = useState(false)
@@ -213,7 +214,7 @@ export function SearchPanel(props) {
         open(false)
     }, [open, closeOnBlur])
 
-    const onInputKeyDown = useListBoxOnKeyDownCallback(listContextRef)
+    const listBoxInteraction = useListBoxInteraction(listContextRef)
 
     const { width, height, posX, posY } = layout
 
@@ -234,7 +235,9 @@ export function SearchPanel(props) {
                     [styles.isExpanded]: isExpanded,
                 })}
                 hidden={!isOpen}
-                ref={props.panelRef}
+                ref={panelRef}
+                onMouseEnter={() => listBoxInteraction.enable()}
+                onMouseLeave={() => listBoxInteraction.disable()}
                 onBlur={onBlur}
             >
                 <ResizableBox
@@ -262,13 +265,13 @@ export function SearchPanel(props) {
                         )}
                         <div className={styles.Input}>
                             <input
+                                onKeyDown={listBoxInteraction.onKeyDown}
                                 ref={inputRef}
                                 placeholder={placeholder}
                                 value={search}
                                 onChange={onChange}
                                 onFocus={onInputFocus}
                                 onBlur={onInputBlur}
-                                onKeyDown={onInputKeyDown}
                             />
                             <button
                                 type="button"
