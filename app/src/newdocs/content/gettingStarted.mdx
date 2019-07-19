@@ -1,6 +1,49 @@
 import ScrollableAnchor from 'react-scrollable-anchor'
+import { Link } from 'react-router-dom'
 
+import links from '$shared/../links'
 import docsStyles from '$newdocs/components/DocsLayout/docsLayout.pcss'
 
-## Getting started
---content--
+import SignupScreen from './images/gettingStarted/signup-screen.png'
+import ApiCredentials from './images/gettingStarted/api-credentials.png'
+
+## Developer Quickstart
+
+Welcome to Streamr! Depending on what you want to accomplish with Streamr, you may need to complete a few pre-requisite steps below. Whatever you want to do, you'll probably first need to get a Streamr account. Your Streamr account is your identity on the Streamr platform. To create an account you'll either need an E-mail or Web3 Ethereum wallet. <Link to={links.internalLogin}>Signup here</Link>.
+
+<div className={docsStyles.centered}>
+  <img src={SignupScreen} />
+</div>
+
+<ScrollableAnchor id="obtain-api-keys"><div>
+
+## Obtain API keys
+
+After creating your Streamr account, visit your <Link to={links.userpages.profile}>profile settings page</Link> to reveal your API keys.
+
+<div className={docsStyles.centered}>
+  <img src={ApiCredentials} />
+</div>
+
+</div></ScrollableAnchor>
+<ScrollableAnchor id="connecting-ethereum-identity"><div>
+
+## Connecting your Ethereum identity on Streamr
+---content---
+
+</div></ScrollableAnchor>
+<ScrollableAnchor id="get-building"><div>
+
+## Get building
+Once you've created a Streamr account, grabbed your API key and connected your Ethereum identity you're ready to do just about anything on the Streamr platform. If you're looking to get your feet wet, try one of our tutorials:
+- <Link to={links.newdocs.tutorials}>Building a simple pub/sub system</Link>
+
+</div></ScrollableAnchor>
+
+<ScrollableAnchor id="useful-links"><div>
+
+## Useful links
+- <a href="https://github.com/streamr-dev" target="_blank">Streamr git repos</a>
+- <a href="https://github.com/streamr-dev/cli-tools" target="_blank">Streamr command line tools</a>
+
+</div></ScrollableAnchor>
