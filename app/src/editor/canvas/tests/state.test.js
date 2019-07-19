@@ -3,6 +3,8 @@ import { setupAuthorizationHeader, loadModuleDefinition } from '$editor/shared/t
 import * as State from '../state'
 import * as Services from '../services'
 
+import './utils'
+
 const portMatcher = {
     id: expect.any(String),
     name: expect.any(String),
@@ -246,6 +248,20 @@ describe('Canvas State', () => {
                     })
                     expect(canvas.settings.beginDate).toEqual(beginDate)
                     expect(canvas.settings.endDate).toEqual(beginDate)
+                })
+            })
+
+            describe('{set,get}PortUserValue', () => {
+                it('should coerce empty string to undefined for Double type', async () => {
+                    let canvas = State.emptyCanvas()
+                    canvas = State.addModule(canvas, await loadModuleDefinition('Equals'))
+                    const [equalsModule] = canvas.modules
+                    // params[0] is 'tolerance', of Double type
+                    canvas = State.updateCanvas(State.setPortUserValue(canvas, equalsModule.params[0].id, ''))
+                    expect(State.getPortUserValue(canvas, equalsModule.params[0].id)).toBe(undefined)
+
+                    // test server accepts state
+                    expect(State.updateCanvas(await Services.create(canvas))).toMatchCanvas(canvas)
                 })
             })
         })

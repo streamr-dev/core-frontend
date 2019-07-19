@@ -630,20 +630,28 @@ export function addModule(canvas, moduleData) {
     }
 }
 
+const PORT_USER_VALUE_KEYS = {
+    [PortTypes.input]: 'initialValue',
+    [PortTypes.param]: 'value',
+    [PortTypes.output]: 'value', // not really user-configurable but whatever
+}
+
 /**
  * Sets initialValue for inputs
  * Sets value for output/params
  */
 
 export function setPortUserValue(canvas, portId, value) {
-    const portType = getPortType(canvas, portId)
-    const key = {
-        [PortTypes.input]: 'initialValue',
-        [PortTypes.param]: 'value',
-        [PortTypes.output]: 'value', // not really user-configurable but whatever
-    }[portType]
+    const key = PORT_USER_VALUE_KEYS[getPortType(canvas, portId)]
 
-    if (JSON.stringify(getPort(canvas, portId)[key]) === JSON.stringify(value)) {
+    const port = getPort(canvas, portId)
+
+    // coerce empty double to undefined
+    if (value === '' && port.type === 'Double') {
+        value = undefined
+    }
+
+    if (JSON.stringify(port[key]) === JSON.stringify(value)) {
         // noop if no change
         return canvas
     }
@@ -655,6 +663,12 @@ export function setPortUserValue(canvas, portId, value) {
             [key]: value,
         }
     })
+}
+
+export function getPortUserValue(canvas, portId) {
+    const key = PORT_USER_VALUE_KEYS[getPortType(canvas, portId)]
+    const port = getPort(canvas, portId)
+    return port[key]
 }
 
 /**
