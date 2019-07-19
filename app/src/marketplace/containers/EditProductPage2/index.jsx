@@ -3,13 +3,12 @@
 import React, { useContext } from 'react'
 import { Container } from 'reactstrap'
 
-import RouterContextProvider from '$shared/components/RouterContextProvider'
-import RouterContext from '$shared/contexts/Router'
+import * as RouterContext from '$shared/components/RouterContextProvider'
 
 import styles from './editProductPage.pcss'
 
 const EditProductPage = () => {
-    const { match } = useContext(RouterContext)
+    const { match } = useContext(RouterContext.Context)
     console.log(match)
 
     return (
@@ -22,7 +21,7 @@ const EditProductPage = () => {
 }
 
 export default () => (
-    <RouterContextProvider>
+    <RouterContext.Provider>
         <EditProductPage />
-    </RouterContextProvider>
+    </RouterContext.Provider>
 )

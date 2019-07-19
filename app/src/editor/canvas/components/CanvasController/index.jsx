@@ -2,8 +2,7 @@ import React, { useContext, useEffect, useMemo, useCallback, useState } from 're
 import { Helmet } from 'react-helmet'
 import LoadingIndicator from '$userpages/components/LoadingIndicator'
 
-import RouterContextProvider from '$shared/components/RouterContextProvider'
-import RouterContext from '$shared/contexts/Router'
+import * as RouterContext from '$shared/components/RouterContextProvider'
 import usePending, { useAnyPending, Provider as PendingProvider } from '$editor/shared/hooks/usePending'
 import { Provider as PermissionsProvider } from '$editor/canvas/hooks/useCanvasPermissions'
 
@@ -21,7 +20,7 @@ import styles from './CanvasController.pcss'
 function useCanvasLoadEffect() {
     const canvas = useCanvas()
     const load = useCanvasLoadCallback()
-    const { match } = useContext(RouterContext)
+    const { match } = useContext(RouterContext.Context)
     const { isPending } = usePending('LOAD')
 
     const { id: urlId } = match.params
@@ -90,7 +89,7 @@ export function useController() {
 }
 
 function useCanvasCreateEffect() {
-    const { match } = useContext(RouterContext)
+    const { match } = useContext(RouterContext.Context)
     const { isPending } = usePending('CREATE')
 
     const create = useCanvasCreateCallback()
@@ -126,7 +125,7 @@ function CanvasLoadingIndicator() {
 }
 
 const CanvasControllerProvider = ({ children }) => (
-    <RouterContextProvider>
+    <RouterContext.Provider>
         <PendingProvider>
             <PermissionsProvider>
                 <CanvasLoadingIndicator />
@@ -134,7 +133,7 @@ const CanvasControllerProvider = ({ children }) => (
                 {children || null}
             </PermissionsProvider>
         </PendingProvider>
-    </RouterContextProvider>
+    </RouterContext.Provider>
 )
 
 export { CanvasControllerProvider as Provider }

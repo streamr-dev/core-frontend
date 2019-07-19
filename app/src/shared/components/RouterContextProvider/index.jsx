@@ -1,9 +1,15 @@
 // @flow
 
-import React, { useMemo, type Node } from 'react'
+import React, { type Context, useMemo, type Node } from 'react'
 import { withRouter, type Match, type History } from 'react-router-dom'
 
-import RouterContext from '$shared/contexts/Router'
+type ContextProps = {
+    children?: Node,
+    match: Match,
+    history: History,
+}
+
+const RouterContext: Context<ContextProps> = React.createContext({})
 
 type Props = {
     children?: Node,
@@ -23,10 +29,13 @@ function Provider({ children, match, history }: Props) {
     )
 }
 
-export const RouterContextProvider = withRouter(({ children, match, history }) => (
+const RouterContextProvider = withRouter(({ children, match, history }) => (
     <Provider match={match} history={history}>
         {children}
     </Provider>
 ))
 
-export default RouterContextProvider
+export {
+    RouterContextProvider as Provider,
+    RouterContext as Context,
+}
