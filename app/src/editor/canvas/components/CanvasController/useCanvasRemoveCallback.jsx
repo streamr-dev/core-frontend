@@ -1,7 +1,7 @@
 import { useContext, useCallback } from 'react'
 
 import useIsMountedRef from '$shared/utils/useIsMountedRef'
-import { RouterContext } from '$shared/components/RouterContextProvider'
+import RouterContext from '$shared/contexts/Router'
 import usePending from '$editor/shared/hooks/usePending'
 
 import links from '../../../../links'

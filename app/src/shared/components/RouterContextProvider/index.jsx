@@ -1,11 +1,11 @@
 // @flow
 
-import React, { useMemo, type Node, type Context } from 'react'
+import React, { useMemo, type Node } from 'react'
 import { withRouter, type Match, type History } from 'react-router-dom'
 
-type ContextProps = {}
+import RouterContext from '$shared/contexts/Router'
 
-export const RouterContext: Context<ContextProps> = React.createContext({})
+export { RouterContext }
 
 type Props = {
     children?: Node,

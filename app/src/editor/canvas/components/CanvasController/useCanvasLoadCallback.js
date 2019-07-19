@@ -1,6 +1,6 @@
 import { useContext, useCallback } from 'react'
 
-import { RouterContext } from '$shared/components/RouterContextProvider'
+import RouterContext from '$shared/contexts/Router'
 import useIsMountedRef from '$shared/utils/useIsMountedRef'
 import usePending from '$editor/shared/hooks/usePending'
 import { Context as PermissionContext } from '$editor/canvas/hooks/useCanvasPermissions'

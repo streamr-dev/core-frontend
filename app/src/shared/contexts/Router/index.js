@@ -2,4 +2,8 @@
 
 import React, { type Context } from 'react'
 
-export default (React.createContext({}): Context<{}>)
+type ContextProps = {}
+
+const RouterContext: Context<ContextProps> = React.createContext({})
+
+export default RouterContext
