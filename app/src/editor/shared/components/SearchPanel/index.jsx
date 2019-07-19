@@ -42,6 +42,7 @@ export function SearchPanel(props) {
         scrollPadding,
         dragDisabled,
         headerHidden,
+        resetOnDefault, /* if true will reset listbox when switching between default render */
         renderDefault,
     } = props
 
@@ -198,14 +199,16 @@ export function SearchPanel(props) {
         })
     }, [setLayout])
 
+    const shouldRenderDefault = !!(!isSearching && isExpanded && renderDefault)
+
     const internalContent = useMemo(() => {
         // empty content if not searching and not expanded
         if (!isSearching && !isExpanded) { return null }
         // show default if not searching and expanded
-        if (!isSearching && isExpanded && renderDefault) { return renderDefault() }
+        if (shouldRenderDefault) { return renderDefault() }
         // show children otherwise
         return children
-    }, [children, isSearching, isExpanded, renderDefault])
+    }, [children, isSearching, isExpanded, renderDefault, shouldRenderDefault])
 
     // close on blur if prop set
     const onBlur = useCallback((event) => {
@@ -295,7 +298,12 @@ export function SearchPanel(props) {
                                 setLayout({})
                             }}
                         >
-                            <ListBox listContextRef={listContextRef} ref={contentRef} className={styles.Content}>
+                            <ListBox
+                                key={String(!!(shouldRenderDefault && resetOnDefault))}
+                                listContextRef={listContextRef}
+                                ref={contentRef}
+                                className={styles.Content}
+                            >
                                 {internalContent}
                             </ListBox>
                         </div>

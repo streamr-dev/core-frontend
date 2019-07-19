@@ -389,6 +389,7 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
                     isOpen={isOpen}
                     open={open}
                     panelRef={this.selfRef}
+                    resetOnDefault
                     renderDefault={() => this.renderMenu()}
                 >
                     {!!isSearching && this.renderSearchResults()}
