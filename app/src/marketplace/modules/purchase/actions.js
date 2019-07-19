@@ -3,7 +3,7 @@
 import type BN from 'bignumber.js'
 import { createAction } from 'redux-actions'
 import moment from 'moment'
-import { getLocation } from 'react-router-redux'
+import { getLocation } from 'connected-react-router'
 import { I18n } from 'react-redux-i18n'
 
 import Notification from '$shared/utils/Notification'

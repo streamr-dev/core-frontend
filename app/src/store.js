@@ -2,7 +2,7 @@
 
 import thunk from 'redux-thunk'
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux'
-import { routerReducer, routerMiddleware } from 'react-router-redux'
+import { connectRouter, routerMiddleware } from 'connected-react-router'
 import { loadTranslations, syncTranslationWithStore, i18nReducer } from 'react-redux-i18n'
 
 import isProduction from './marketplace/utils/isProduction'
@@ -68,7 +68,7 @@ const store = createStore(
         purchase: purchaseReducer,
         purchaseDialog: purchaseDialogReducer,
         saveProductDialog: saveProductReducer,
-        router: routerReducer,
+        router: connectRouter(history),
         streams: streamsReducer,
         user: userReducer,
         integrationKey: integrationKeyReducer,

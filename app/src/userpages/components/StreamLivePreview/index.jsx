@@ -1,7 +1,7 @@
 // @flow
 
 import { connect } from 'react-redux'
-import { goBack } from 'react-router-redux'
+import { goBack } from 'connected-react-router'
 
 import type { StoreState } from '$shared/flowtype/store-state'
 import type { StreamList, StreamId } from '$shared/flowtype/stream-types'
