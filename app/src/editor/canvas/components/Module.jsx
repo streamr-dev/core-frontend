@@ -1,6 +1,7 @@
 import cx from 'classnames'
 import React from 'react'
 import { Translate } from 'react-redux-i18n'
+import scrollIntoView from 'smooth-scroll-into-view-if-needed'
 
 import ModuleHeaderButton from '../../shared/components/ModuleHeaderButton'
 import ModuleHeader from '../../shared/components/ModuleHeader'
@@ -41,11 +42,13 @@ class CanvasModule extends React.PureComponent {
 
     onSelection() {
         if (!this.el.current) { return }
-        this.el.current.scrollIntoView({
+        scrollIntoView(this.el.current, {
             behavior: 'smooth',
-            block: 'start',
-            inline: 'nearest',
+            scrollMode: 'if-needed',
+            block: 'center',
+            inline: 'center',
         })
+
         // no direct access to normal focus ref, have to go via parentElement
         this.el.current.parentElement.focus()
     }

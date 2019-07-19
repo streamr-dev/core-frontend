@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react'
+import scrollIntoView from 'smooth-scroll-into-view-if-needed'
 
 import RouteWatcher from '$shared/containers/RouteWatcher'
 import ModalContext from '$shared/contexts/Modal'
@@ -17,7 +18,7 @@ class AutoScroll extends React.Component<{}> {
         if (root && !isModalOpen && window.pageYOffset > 2000) {
             window.scrollTo(0, 0)
         } else if (root && !isModalOpen) {
-            root.scrollIntoView({
+            scrollIntoView(root, {
                 behavior: 'smooth',
                 block: 'start',
                 inline: 'nearest',

@@ -6,6 +6,7 @@ import type { Match } from 'react-router-dom'
 import { push, replace } from 'connected-react-router'
 import { I18n } from 'react-redux-i18n'
 import { Helmet } from 'react-helmet'
+import scrollIntoView from 'smooth-scroll-into-view-if-needed'
 
 import ProductPageComponent from '$mp/components/ProductPage'
 import Layout from '$shared/components/Layout'
@@ -162,7 +163,7 @@ export class ProductPage extends Component<Props, State> {
             })
 
             if (this.productDetails) {
-                this.productDetails.scrollIntoView({
+                scrollIntoView(this.productDetails, {
                     behavior: 'smooth',
                     block: 'start',
                     inline: 'nearest',

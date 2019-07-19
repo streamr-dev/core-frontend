@@ -2,6 +2,7 @@
 
 import React from 'react'
 import { Link, withRouter, type Location } from 'react-router-dom'
+import scrollIntoView from 'smooth-scroll-into-view-if-needed'
 import { formatPath } from '$shared/utils/url'
 import cx from 'classnames'
 import Scrollspy from 'react-scrollspy'
@@ -45,7 +46,7 @@ class Navigation extends React.Component<Props, State> {
         if (root && window.pageYOffset > 2000) {
             window.scrollTo(0, 0)
         } else if (root) {
-            root.scrollIntoView({
+            scrollIntoView(root, {
                 behavior: 'smooth',
                 block: 'start',
                 inline: 'nearest',

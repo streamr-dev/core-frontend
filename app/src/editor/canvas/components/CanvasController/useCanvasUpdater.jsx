@@ -6,6 +6,9 @@ import { Context as UndoContext } from '$shared/components/UndoContextProvider'
 import * as CanvasState from '../../state'
 
 function canvasUpdater(fn) {
+    if (typeof fn !== 'function') {
+        throw new Error(`canvasUpdater requires a function, given: ${typeof fn}`)
+    }
     return (canvas) => {
         const nextCanvas = fn(canvas)
         if (nextCanvas === null || nextCanvas === canvas) { return canvas }
