@@ -30,6 +30,7 @@ export function SearchPanel(props) {
     const {
         open,
         isOpen,
+        closeOnBlur,
         bounds,
         placeholder,
         minWidth,
@@ -205,6 +206,13 @@ export function SearchPanel(props) {
         return children
     }, [children, isSearching, isExpanded, renderDefault])
 
+    // close on blur if prop set
+    const onBlur = useCallback((event) => {
+        if (event.currentTarget.contains(event.relatedTarget)) { return }
+        if (!closeOnBlur || !open) { return }
+        open(false)
+    }, [open, closeOnBlur])
+
     const onInputKeyDown = useListBoxOnKeyDownCallback(listContextRef)
 
     const { width, height, posX, posY } = layout
@@ -227,6 +235,7 @@ export function SearchPanel(props) {
                 })}
                 hidden={!isOpen}
                 ref={props.panelRef}
+                onBlur={onBlur}
             >
                 <ResizableBox
                     className={styles.ResizableBox}
