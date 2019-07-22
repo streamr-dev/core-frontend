@@ -1,8 +1,8 @@
 import { useContext } from 'react'
 
-import UndoContainer from '$editor/shared/components/UndoContainer'
+import { Context as UndoContext } from '$shared/components/UndoContextProvider'
 
 export default function useCanvas() {
-    const { state } = useContext(UndoContainer.Context)
+    const { state } = useContext(UndoContext)
     return state
 }

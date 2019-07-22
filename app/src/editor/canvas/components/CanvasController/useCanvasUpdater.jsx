@@ -1,7 +1,7 @@
 import { useMemo, useCallback, useContext } from 'react'
 
 import useIsMountedRef from '$shared/utils/useIsMountedRef'
-import UndoContainer from '$editor/shared/components/UndoContainer'
+import { Context as UndoContext } from '$shared/components/UndoContextProvider'
 
 import * as CanvasState from '../../state'
 
@@ -22,7 +22,7 @@ function canvasUpdater(fn) {
 }
 
 export default function useCanvasUpdater() {
-    const { push, replace } = useContext(UndoContainer.Context)
+    const { push, replace } = useContext(UndoContext)
 
     const setCanvas = useMountedCallback((action, fn, done) => {
         push(action, canvasUpdater(fn), done)
