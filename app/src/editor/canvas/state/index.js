@@ -488,15 +488,16 @@ export function connectPorts(canvas, portIdA, portIdB) {
             ...port,
             sourceId: output.id,
             connected: true,
-            // variadic inputs copy display name from output
         }
 
+        // variadic inputs copy display name from output
         const portDisplayName = port.variadic ? displayName : port.displayName
         if (portDisplayName) {
             newPort.displayName = portDisplayName
         } else {
             delete newPort.displayName
         }
+
         // ethereum contract input
         if (newPort.type === 'EthereumContract') {
             newPort.value = contract
