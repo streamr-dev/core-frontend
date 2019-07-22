@@ -6,6 +6,11 @@ import docsStyles from '$newdocs/components/DocsLayout/docsLayout.pcss'
 
 import SignupScreen from './images/gettingStarted/signup-screen.png'
 import ApiCredentials from './images/gettingStarted/api-credentials.png'
+import EthereumLogin from './images/gettingStarted/ethereum_login.png'
+import Metamask from './images/gettingStarted/metamask.png'
+import NameEthereum from './images/gettingStarted/name_ethereum_acct.png'
+import EthereumAccts from './images/gettingStarted/profile_ethereum_accounts.png'
+import EthereumSign from './images/gettingStarted/profile_ethereum_sign.png'
 
 ## Before you start... 
 
@@ -32,7 +37,7 @@ After creating your Streamr account, visit your <Link to={links.userpages.profil
 </div></ScrollableAnchor>
 <ScrollableAnchor id="hello-streamr"><div>
 
-## Hello Streamr
+### Hello Streamr
 
 Writing "Hello World" to a stream you've created on the Streamr Platform is a good test that everything is working as it should.
 
@@ -40,7 +45,67 @@ Writing "Hello World" to a stream you've created on the Streamr Platform is a go
 <ScrollableAnchor id="connecting-ethereum-identity"><div>
 
 ## Connecting your Ethereum identity on Streamr
----content---
+
+### What is Ethereum?
+
+Ethereum is a global, open-source platform (blockchain) for decentralized applications. On Ethereum, you can write code (smart contract) that controls digital value, runs exactly as programmed, and is accessible anywhere in the world. It follows a distributed architecture, which means there is no central entity having control over it, increasing its resiliency against manipulation, censorship, collusion or forced shutdown. For a more comprehensive overview of Ethereum, please visit its [official website](https://www.ethereum.org)
+
+### Ethereum Account
+
+In the Ethereum platform, each account has a state associated with it and a 20-byte address (i.e “0x561aD41faeb6A06Fb9F80aAd7cb1129318Ef4dC7”). It is important to note that there are two different types of accounts:
+
+* Externally owned accounts, which are controlled by private keys and have no code associated with them.
+* Contract accounts, which are controlled by their contract code and have code associated with them.
+
+An externally owned account can send messages to other externally owned accounts OR to other contract accounts by creating and signing a transaction using its private key. A message between two externally owned accounts is simply a value transfer. But a message from an externally owned account to a contract account activates the contract account’s code, allowing it to perform various actions (e.g. transfer tokens, write to internal storage, mint new tokens, perform some calculations, create new contracts, etc.).
+
+Unlike externally owned accounts, contract accounts can’t initiate new transactions on their own. Therefore, any action that occurs on the Ethereum blockchain is always set in motion by transactions fired from externally controlled accounts. Whenever we mention Ethereum account for authentication use-case across the documentation, we will be referring to the externally owned account, unless explicitly stated otherwise.
+
+### How to Connect your Ethereum Account
+
+The easiest way to get started is using a browser plugin called Metamask. The [official website](https://metamask.io/) has a comprehensive video to get started with the plugin.
+
+<div className={docsStyles.centered}>
+  <img src={Metamask} />
+</div>
+
+Once you have your Ethereum account setup on Metamask, you can now proceed with the next steps in connecting it with Streamr. There are two main ways depending if you have already a Streamr account or not.
+
+1) If you have never created an account on Streamr, you can simply go to the login page and click on the “Sign in with Ethereum” link on the top left corner of login box
+
+<div className={docsStyles.centered}>
+  <img src={SignupScreen} />
+</div>
+
+A popup will appear asking to sign a message with your Ethereum account to prove ownership, click on “Sign”
+
+<div className={docsStyles.centered}>
+  <img src={EthereumLogin} />
+</div>
+
+You should be redirected to your Streamr Core interface, where you can edit your profile page info and try out our Core platform. 
+
+2) In case you already have an existing Streamr account, simply head to your <Link to={links.userpages.profile}>profile page</Link>
+
+Scroll down to the Ethereum Address section where you will see “Add new address” button
+
+<div className={docsStyles.centered}>
+  <img src={EthereumAccts} />
+</div>
+
+After clicking on it, it will ask you to give a human readable name so you can remember and distinguish them in case of multiple addresses
+
+<div className={docsStyles.centered}>
+  <img src={NameEthereum} />
+</div>
+
+It will ask you to sign the message to prove the ownership of the address
+
+<div className={docsStyles.centered}>
+  <img src={EthereumSign} />
+</div>
+
+After the confirmation you should be all set and see the Ethereum account added to your profile page
 
 </div></ScrollableAnchor>
 <ScrollableAnchor id="get-building"><div>
