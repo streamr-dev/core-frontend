@@ -2,18 +2,17 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { I18n } from 'react-redux-i18n'
+import { Translate, I18n } from 'react-redux-i18n'
 
-import type { PermissionState } from '../../../../flowtype/states/permission-state'
-import type { Permission, ResourceType, ResourceId } from '../../../../flowtype/permission-types'
-import { addResourcePermission, removeResourcePermission } from '../../../../modules/permission/actions'
+import type { PermissionState } from '$userpages/flowtype/states/permission-state'
+import type { Permission, ResourceType, ResourceId } from '$userpages/flowtype/permission-types'
+import { addResourcePermission, removeResourcePermission } from '$userpages/modules/permission/actions'
 import SelectInput from '$shared/components/SelectInput'
 
 import styles from './shareDialogAnonymousAccessRow.pcss'
 
 type StateProps = {
     anonymousPermission: ?Permission,
-    owner: ?string
 }
 
 type DispatchProps = {
@@ -23,7 +22,9 @@ type DispatchProps = {
 
 type GivenProps = {
     resourceType: ResourceType,
-    resourceId: ResourceId
+    resourceId: ResourceId,
+    showEmbedInactiveWarning?: boolean,
+    clearShowEmbedInactiveWarning: Function,
 }
 
 type Props = StateProps & DispatchProps & GivenProps
@@ -39,6 +40,14 @@ export class ShareDialogAnonymousAccessRow extends Component<Props> {
         }
     }
 
+    clearWarning = () => {
+        const { showEmbedInactiveWarning, clearShowEmbedInactiveWarning } = this.props
+
+        if (!!showEmbedInactiveWarning && (typeof clearShowEmbedInactiveWarning === 'function')) {
+            clearShowEmbedInactiveWarning()
+        }
+    }
+
     render() {
         const opts = options.map((o) => ({
             label: I18n.t(`modal.shareResource.${o}`),
@@ -48,13 +57,18 @@ export class ShareDialogAnonymousAccessRow extends Component<Props> {
 
         return (
             <div className={styles.container}>
+                {!!this.props.showEmbedInactiveWarning && (
+                    <Translate value="modal.shareResource.embedInactiveWarning" className={styles.embedInactive} />
+                )}
                 <SelectInput
                     label={I18n.t('modal.shareResource.anonymousAccess')}
                     name="name"
                     options={opts}
                     value={selected || opts[0]}
                     onChange={this.onAnonymousAccessChange}
+                    onFocus={this.clearWarning}
                     required
+                    isSearchable={false}
                 />
             </div>
         )
@@ -64,11 +78,8 @@ export class ShareDialogAnonymousAccessRow extends Component<Props> {
 export const mapStateToProps = ({ permission: { byTypeAndId } }: { permission: PermissionState }, ownProps: Props): StateProps => {
     const byType = byTypeAndId[ownProps.resourceType] || {}
     const permissions = (byType[ownProps.resourceId] || []).filter((p) => !p.removed)
-    const ownerPermission = permissions.find((it) => it.id === null && !it.new) || {}
-    const owner = ownerPermission.user
     return {
         anonymousPermission: permissions.find((p) => p.anonymous),
-        owner,
     }
 }
 

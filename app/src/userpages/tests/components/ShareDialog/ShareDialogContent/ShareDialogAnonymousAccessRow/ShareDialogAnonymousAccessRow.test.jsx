@@ -60,51 +60,6 @@ describe('ShareDialogOwnerRow', () => {
     })
 
     describe('mapStateToProps', () => {
-        describe('owner field', () => {
-            it('should find the owner from the permissions by the null id', () => {
-                const byTypeAndId = {
-                    type: {
-                        id: [{
-                            id: 'asdfasdf',
-                            user: 'test1',
-                        }, {
-                            id: null,
-                            user: 'test2',
-                        }],
-                    },
-                }
-                assert.equal(mapStateToProps({
-                    permission: {
-                        byTypeAndId,
-                    },
-                }, {
-                    resourceType: 'type',
-                    resourceId: 'id',
-                }).owner, 'test2')
-            })
-            it('should not accept a permission with new: true as owner', () => {
-                const byTypeAndId = {
-                    type: {
-                        id: [{
-                            id: null,
-                            new: true,
-                            user: 'test1',
-                        }, {
-                            id: null,
-                            user: 'test2',
-                        }],
-                    },
-                }
-                assert.equal(mapStateToProps({
-                    permission: {
-                        byTypeAndId,
-                    },
-                }, {
-                    resourceType: 'type',
-                    resourceId: 'id',
-                }).owner, 'test2')
-            })
-        })
         describe('anonymousPermission field', () => {
             it('should find the anonymousPermission from the permissions by anonymous: true', () => {
                 const byTypeAndId = {
@@ -195,7 +150,6 @@ describe('ShareDialogOwnerRow', () => {
                     resourceId: 'anotherId',
                 }), {
                     anonymousPermission: undefined,
-                    owner: undefined,
                 })
             })
             it('should just return undefineds if invalid type', () => {
@@ -213,7 +167,6 @@ describe('ShareDialogOwnerRow', () => {
                     resourceId: 'anotherId',
                 }), {
                     anonymousPermission: undefined,
-                    owner: undefined,
                 })
             })
         })
