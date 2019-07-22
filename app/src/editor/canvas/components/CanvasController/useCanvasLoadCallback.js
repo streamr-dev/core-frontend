@@ -2,7 +2,7 @@ import { useContext, useCallback } from 'react'
 
 import { Context as RouterContext } from '$shared/components/RouterContextProvider'
 import useIsMountedRef from '$shared/utils/useIsMountedRef'
-import usePending from '$editor/shared/hooks/usePending'
+import usePending from '$shared/hooks/usePending'
 import { Context as PermissionContext } from '$editor/canvas/hooks/useCanvasPermissions'
 
 import * as services from '../../services'
@@ -12,7 +12,7 @@ export default function useCanvasLoadCallback() {
     const { history } = useContext(RouterContext)
     const { setPermissions } = useContext(PermissionContext)
     const canvasUpdater = useCanvasUpdater()
-    const { wrap } = usePending('LOAD')
+    const { wrap } = usePending('canvas.LOAD')
     const isMountedRef = useIsMountedRef()
     return useCallback(async (canvasId) => (
         wrap(async () => {

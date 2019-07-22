@@ -3,7 +3,8 @@ import { Helmet } from 'react-helmet'
 import LoadingIndicator from '$userpages/components/LoadingIndicator'
 
 import * as RouterContext from '$shared/components/RouterContextProvider'
-import usePending, { useAnyPending, Provider as PendingProvider } from '$editor/shared/hooks/usePending'
+import { Provider as PendingProvider } from '$shared/components/PendingContextProvider'
+import { usePending, useAnyPending } from '$shared/hooks/usePending'
 import { Provider as PermissionsProvider } from '$editor/canvas/hooks/useCanvasPermissions'
 
 import * as CanvasState from '../../state'
@@ -21,7 +22,7 @@ function useCanvasLoadEffect() {
     const canvas = useCanvas()
     const load = useCanvasLoadCallback()
     const { match } = useContext(RouterContext.Context)
-    const { isPending } = usePending('LOAD')
+    const { isPending } = usePending('canvas.LOAD')
 
     const { id: urlId } = match.params
     const currentCanvasRootId = canvas && CanvasState.getRootCanvasId(canvas)
@@ -90,7 +91,7 @@ export function useController() {
 
 function useCanvasCreateEffect() {
     const { match } = useContext(RouterContext.Context)
-    const { isPending } = usePending('CREATE')
+    const { isPending } = usePending('canvas.CREATE')
 
     const create = useCanvasCreateCallback()
     const { id } = match.params
@@ -105,9 +106,9 @@ function CanvasEffects() {
     useCanvasCreateEffect()
     useCanvasLoadEffect()
 
-    const { isPending: isPendingCreate } = usePending('CREATE')
-    const { isPending: isPendingLoad } = usePending('LOAD')
-    const { isPending: isPendingRemove } = usePending('REMOVE')
+    const { isPending: isPendingCreate } = usePending('canvas.CREATE')
+    const { isPending: isPendingLoad } = usePending('canvas.LOAD')
+    const { isPending: isPendingRemove } = usePending('canvas.REMOVE')
     return (
         <React.Fragment>
             {!!isPendingCreate && <Helmet title="Creating New Canvas..." />}

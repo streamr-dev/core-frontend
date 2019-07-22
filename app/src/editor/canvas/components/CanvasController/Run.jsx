@@ -8,7 +8,7 @@ import get from 'lodash/get'
 import useIsMountedRef from '$shared/utils/useIsMountedRef'
 import * as SubscriptionStatus from '$editor/shared/components/SubscriptionStatus'
 import { Context as PermissionContext } from '$editor/canvas/hooks/useCanvasPermissions'
-import usePending from '$editor/shared/hooks/usePending'
+import usePending from '$shared/hooks/usePending'
 
 import * as services from '../../services'
 import * as CanvasState from '../../state'
@@ -33,11 +33,11 @@ function useRunController(canvas = EMPTY) {
     const { replaceCanvas } = useCanvasUpdater()
     const isMountedRef = useIsMountedRef()
 
-    const createAdhocPending = usePending('CREATE ADHOC')
-    const startPending = usePending('START')
-    const stopPending = usePending('STOP')
-    const exitPending = usePending('EXIT')
-    const unlinkPending = usePending('UNLINK')
+    const createAdhocPending = usePending('canvas.CREATE ADHOC')
+    const startPending = usePending('canvas.START')
+    const stopPending = usePending('canvas.STOP')
+    const exitPending = usePending('canvas.EXIT')
+    const unlinkPending = usePending('canvas.UNLINK')
 
     const [isStarting, setIsStarting] = useState(false) // true immediately before starting a canvas
     const [isStopping, setIsStopping] = useState(false) // true immediately before stopping a canvas
