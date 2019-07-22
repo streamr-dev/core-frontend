@@ -7,9 +7,13 @@ import docsStyles from '$newdocs/components/DocsLayout/docsLayout.pcss'
 import SignupScreen from './images/gettingStarted/signup-screen.png'
 import ApiCredentials from './images/gettingStarted/api-credentials.png'
 
-## Developer Quickstart
+## Before you start... 
 
-Welcome to Streamr! Depending on what you want to accomplish with Streamr, you may need to complete a few pre-requisite steps below. Whatever you want to do, you'll probably first need to get a Streamr account. Your Streamr account is your identity on the Streamr platform. To create an account you'll either need an E-mail or Web3 Ethereum wallet. <Link to={links.internalLogin}>Signup here</Link>.
+Welcome to Streamr!
+
+Here's everything you'll need to get up and running on the platform. 
+
+The first thing you'll probably want to do is get a Streamr account. You can do that <Link to={links.internalLogin}>here</Link>. Creating an account requires either an E-mail address or a Web3 Ethereum wallet, e.g. <a href="https://metamask.io">Metamask</a>.
 
 <div className={docsStyles.centered}>
   <img src={SignupScreen} />
@@ -19,11 +23,18 @@ Welcome to Streamr! Depending on what you want to accomplish with Streamr, you m
 
 ## Obtain API keys
 
-After creating your Streamr account, visit your <Link to={links.userpages.profile}>profile settings page</Link> to reveal your API keys.
+After creating your Streamr account, visit your <Link to={links.userpages.profile}>profile settings page</Link> to reveal your API keys. These keys grant you access to read and write to the Streams you create and <Link to={links.newdocs.api}>lots more</Link>.
 
 <div className={docsStyles.centered}>
   <img src={ApiCredentials} />
 </div>
+
+</div></ScrollableAnchor>
+<ScrollableAnchor id="hello-streamr"><div>
+
+## Hello Streamr
+
+Writing "Hello World" to a stream you've created on the Streamr Platform is a good test that everything is working as it should.
 
 </div></ScrollableAnchor>
 <ScrollableAnchor id="connecting-ethereum-identity"><div>
@@ -35,8 +46,23 @@ After creating your Streamr account, visit your <Link to={links.userpages.profil
 <ScrollableAnchor id="get-building"><div>
 
 ## Get building
-Once you've created a Streamr account, grabbed your API key and connected your Ethereum identity you're ready to do just about anything on the Streamr platform. If you're looking to get your feet wet, try one of our tutorials:
+
+Once you've created a Streamr account, grabbed your API key and connected your Ethereum identity, you're ready to do just about anything on the Streamr platform. Here's some ideas on what to do first:
+
+#### Get your feet wet with one of our tutorials
 - <Link to={links.newdocs.tutorials}>Building a simple pub/sub system</Link>
+
+#### Check out the Core App to create, process, visualise and sell your realtime data
+- <Link to={links.newdocs.core}>Intro to Core</Link>
+
+#### Create a product on the Data Marketplace
+- <Link to={links.newdocs.marketplace}>Intro to Marketplace</Link>
+
+#### Leverage a Streamr SDKs and build apps powered by Streamr
+- <Link to={links.newdocs.SDKs}>Intro to Marketplace</Link>
+
+#### Get to know the Streamr API 
+- <Link to={links.newdocs.api}>Intro to Marketplace</Link>
 
 </div></ScrollableAnchor>
 
