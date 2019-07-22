@@ -581,5 +581,49 @@ describe('Variadic Port Handling', () => {
             // test server accepts state
             expect(State.updateCanvas(await Services.create(canvas))).toMatchCanvas(canvas)
         })
+
+        it('permits renaming outputs', async () => {
+            let canvas = State.emptyCanvas()
+            canvas = State.addModule(canvas, await loadModuleDefinition('ConstantText'))
+            canvas = State.addModule(canvas, await loadModuleDefinition('PassThrough'))
+            let [
+                constantText1,
+                passThrough1,
+            ] = canvas.modules
+
+            // connect constantText1.out to passThrough.in1
+            canvas = State.updateCanvas(State.connectPorts(canvas, constantText1.outputs[0].id, passThrough1.inputs[0].id))
+
+            // update variables
+            ;[ // eslint-disable-line semi-style
+                constantText1,
+                passThrough1,
+            ] = canvas.modules
+
+            // adopts input displayName
+            expect(passThrough1.outputs[0].displayName).toBe(passThrough1.inputs[0].displayName)
+
+            // perform rename
+            const newName = 'custom name'
+            canvas = State.updateCanvas(State.setPortOptions(canvas, passThrough1.outputs[0].id, {
+                displayName: newName,
+            }))
+
+            ;[ // eslint-disable-line semi-style
+                constantText1,
+                passThrough1,
+            ] = canvas.modules
+
+            expect(passThrough1.outputs[0].displayName).toBe(newName)
+
+            // test server accepts state
+            const serverCanvas = State.updateCanvas(await Services.create(canvas))
+            expect(serverCanvas).toMatchCanvas(canvas)
+            ;[ // eslint-disable-line semi-style
+                constantText1,
+                passThrough1,
+            ] = serverCanvas.modules
+            expect(passThrough1.outputs[0].displayName).toBe(newName)
+        })
     })
 })
