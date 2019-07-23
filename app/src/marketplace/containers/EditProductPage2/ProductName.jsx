@@ -12,7 +12,7 @@ const ProductName = () => {
     const { status } = useValidation('name')
 
     const onChange = (name) => {
-        updateProduct('name', (p) => ({
+        updateProduct('Update name', (p) => ({
             ...p,
             name,
         }))

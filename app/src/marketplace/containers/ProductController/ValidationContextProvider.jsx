@@ -3,8 +3,10 @@
 import React, { useMemo, useCallback, useState, type Node, type Context } from 'react'
 import useIsMountedRef from '$shared/utils/useIsMountedRef'
 
+import { type Status } from './useValidation'
+
 type ContextProps = {
-    setStatus: (string, string) => {},
+    setStatus: (string, Status) => {},
     status: Object,
 }
 
@@ -13,7 +15,7 @@ const ValidationContext: Context<ContextProps> = React.createContext({})
 function useValidationContext(): ContextProps {
     const [status, setStatusState] = useState({})
     const isMountedRef = useIsMountedRef()
-    const setStatus: (string, string) => Object = useCallback((name, s) => {
+    const setStatus = useCallback((name: string, newStatus: Status): Object => {
         if (!isMountedRef.current) { return }
         if (!name) {
             throw new Error('validation needs a name')
@@ -21,7 +23,7 @@ function useValidationContext(): ContextProps {
 
         setStatusState((state) => ({
             ...state,
-            [name]: s,
+            [name]: newStatus,
         }))
     }, [setStatusState, isMountedRef])
 

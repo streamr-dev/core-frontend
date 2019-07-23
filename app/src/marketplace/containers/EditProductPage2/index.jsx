@@ -14,6 +14,10 @@ import useProduct from '../ProductController/useProduct'
 
 import EditorNav from './EditorNav'
 import ProductName from './ProductName'
+import CoverImage from './CoverImage'
+import ProductDescription from './ProductDescription'
+import StreamSelector from './StreamSelector'
+import PriceSelector from './PriceSelector'
 
 import styles from './editProductPage.pcss'
 
@@ -26,24 +30,10 @@ const EditProductPage = () => (
                 </div>
                 <div className={styles.info}>
                     <ProductName />
-                    <h1>Add a cover image</h1>
-                    <p>This image will be shown as the tile image in the Marketplace browse view,
-                        and also as the main image on your product page. For best quality,
-                        an image size of around 1000 x 800px is recommended. PNG or JPEG format.
-                        Need images? See the docs.
-                    </p>
-                    <h1>Write a product description</h1>
-                    <p>Sell your product — make sure you include details about the contents of
-                        your streams, historical data, and any other relevant details.
-                        Generally around a maximum of around 300 words fits best on a product
-                        detail page. Markdown formatting is ok.
-                    </p>
-                    <h1>Add streams</h1>
-                    <p>Products can contain a range of streams, or a single &quot;firehose&quot; type stream, it&apos;s up to you.
-                        If you haven&apos;t made any streams yet, you can create one here. For help creating streams, see the docs.
-                    </p>
-                    <h1>Set a price</h1>
-                    <h1>Give us some more details</h1>
+                    <CoverImage />
+                    <ProductDescription />
+                    <StreamSelector />
+                    <PriceSelector />
                 </div>
             </div>
         </Container>
