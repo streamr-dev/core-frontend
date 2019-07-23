@@ -4,11 +4,13 @@ import React, { type Node, useContext, useEffect } from 'react'
 
 import * as RouterContext from '$shared/components/RouterContextProvider'
 import { Provider as PendingProvider } from '$shared/components/PendingContextProvider'
+import { Provider as ValidationContextProvider } from './ValidationContextProvider'
 import { usePending } from '$shared/hooks/usePending'
 import LoadingIndicator from '$userpages/components/LoadingIndicator'
 
 import useProduct from './useProduct'
 import useProductLoadCallback from './useProductLoadCallback'
+import useValidationCallback from './useValidationCallback'
 
 function useProductLoadEffect() {
     const product = useProduct()
@@ -27,8 +29,20 @@ function useProductLoadEffect() {
     }, [urlId, productId, load, isPending])
 }
 
+function useProductValidationEffect() {
+    const product = useProduct()
+    const validate = useValidationCallback()
+
+    useEffect(() => {
+        if (product) {
+            validate(product)
+        }
+    }, [product, validate])
+}
+
 function ProductEffects() {
     useProductLoadEffect()
+    useProductValidationEffect()
 
     return null
 }
@@ -47,9 +61,11 @@ type ControllerProps = {
 const ProductController = ({ children }: ControllerProps) => (
     <RouterContext.Provider>
         <PendingProvider>
-            <ProductLoadingIndicator />
-            <ProductEffects />
-            {children || null}
+            <ValidationContextProvider>
+                <ProductLoadingIndicator />
+                <ProductEffects />
+                {children || null}
+            </ValidationContextProvider>
         </PendingProvider>
     </RouterContext.Provider>
 )
