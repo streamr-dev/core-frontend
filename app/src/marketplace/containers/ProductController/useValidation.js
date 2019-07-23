@@ -10,7 +10,7 @@ export const ERROR = 'error'
 
 export type Status = 'ok' | 'warning' | 'error'
 
-export function usePending(name: string) {
+export function useValidation(name: string) {
     const { status: statusState, setStatus: setStatusState } = useContext(ValidationContext)
 
     const setStatus = useCallback((status: Status) => {
@@ -25,4 +25,4 @@ export function usePending(name: string) {
     }), [status, setStatus])
 }
 
-export default usePending
+export default useValidation
