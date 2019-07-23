@@ -1,0 +1,45 @@
+### FilterMap
+
+Filter incoming maps by retaining entries with specified keys.
+
+**Inputs**
+**in**
+map to be filtered
+
+
+**Outputs**
+**out**
+filtered map
+
+
+**Parameters**
+**keys**
+if empty, keep all entries. otherwise filter by given keys.
+
+
+export const moduleConfig = {
+  "id": 525,
+  "name": "FilterMap",
+  "path": "Map",
+  "help": {
+    "params": {
+      "keys": "if empty, keep all entries. otherwise filter by given keys."
+    },
+    "paramNames": [
+      "keys"
+    ],
+    "inputs": {
+      "in": "map to be filtered"
+    },
+    "inputNames": [
+      "in"
+    ],
+    "outputs": {
+      "out": "filtered map"
+    },
+    "outputNames": [
+      "out"
+    ],
+    "helpText": "<p>Filter incoming maps by retaining entries with specified keys.</p>"
+  }
+}

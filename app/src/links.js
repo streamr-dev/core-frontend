@@ -44,6 +44,7 @@ module.exports = {
     newdocs: { // (temporary)
         api: routes.newdocsApi(),
         canvases: routes.newdocsCanvases(),
+        canvasModules: routes.newdocsCanvasModules(),
         core: routes.newdocsCore(),
         dashboards: routes.newdocsDashboards(),
         dataToken: routes.newdocsDataToken(),

@@ -1,0 +1,53 @@
+### Kurtosis
+
+Calculates the kurtosis (or fourth standardized moment) of a distribution of values in a sliding window. Kurtosis is a measure of the "peakedness" of a distribution.
+  
+
+
+Note that at least 4 samples is required to calculate kurtosis.
+
+**Inputs**
+**in**
+Input random variable
+
+
+**Outputs**
+**out**
+Kurtosis
+
+
+**Parameters**
+**minSamples**
+Number of samples required to produce output. At least 4 samples are required to calculate kurtosis
+**windowLength**
+Length of the sliding window of values
+
+
+export const moduleConfig = {
+  "id": 152,
+  "name": "Kurtosis",
+  "path": "Time Series: Statistics",
+  "help": {
+    "outputNames": [
+      "out"
+    ],
+    "inputs": {
+      "in": "Input random variable"
+    },
+    "helpText": "<p>Calculates the kurtosis (or fourth standardized moment) of a distribution of values in a sliding window. Kurtosis is a measure of the \"peakedness\" of a distribution.\n</p><p>\nNote that at least 4 samples is required to calculate kurtosis.\n</p>",
+    "inputNames": [
+      "in"
+    ],
+    "params": {
+      "minSamples": "Number of samples required to produce output. At least 4 samples are required to calculate kurtosis",
+      "windowLength": "Length of the sliding window of values"
+    },
+    "outputs": {
+      "out": "Kurtosis"
+    },
+    "paramNames": [
+      "windowLength",
+      "minSamples"
+    ]
+  }
+}

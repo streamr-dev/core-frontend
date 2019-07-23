@@ -1,0 +1,43 @@
+### JsonParser
+
+JSON string should fulfill the [JSON specification](http://json.org/).
+
+**Inputs**
+**json**
+JSON string to parse
+
+
+**Outputs**
+**errors**
+List of error strings
+**result**
+Map, List or value that the JSON string represents
+
+
+
+
+
+export const moduleConfig = {
+  "id": 1016,
+  "name": "JsonParser",
+  "path": "Text",
+  "help": {
+    "params": {},
+    "paramNames": [],
+    "inputs": {
+      "json": "JSON string to parse"
+    },
+    "inputNames": [
+      "json"
+    ],
+    "outputs": {
+      "errors": "List of error strings",
+      "result": "Map, List or value that the JSON string represents"
+    },
+    "outputNames": [
+      "errors",
+      "result"
+    ],
+    "helpText": "<p>JSON string should fulfill the <a href='http://json.org/' target='_blank'>JSON specification</a>.</p>"
+  }
+}

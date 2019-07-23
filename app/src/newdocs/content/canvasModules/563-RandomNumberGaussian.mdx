@@ -1,0 +1,49 @@
+### RandomNumberGaussian
+
+Generate random numbers from normal (Gaussian) distribution with mean *mean* and standard deviation *sd*.
+
+**Inputs**
+**trigger**
+when value is received, activates module
+
+
+**Outputs**
+**out**
+the random number
+
+
+**Parameters**
+**mean**
+mean of normal distribution
+**sd**
+standard deviation of normal distribution
+
+
+export const moduleConfig = {
+  "id": 563,
+  "name": "RandomNumberGaussian",
+  "path": "Time Series: Random",
+  "help": {
+    "params": {
+      "mean": "mean of normal distribution",
+      "sd": "standard deviation of normal distribution"
+    },
+    "paramNames": [
+      "mean",
+      "sd"
+    ],
+    "inputs": {
+      "trigger": "when value is received, activates module"
+    },
+    "inputNames": [
+      "trigger"
+    ],
+    "outputs": {
+      "out": "the random number"
+    },
+    "outputNames": [
+      "out"
+    ],
+    "helpText": "<p>Generate random numbers from normal (Gaussian) distribution with mean&nbsp;<em>mean</em>&nbsp;and standard deviation&nbsp;<em>sd</em>.</p>"
+  }
+}

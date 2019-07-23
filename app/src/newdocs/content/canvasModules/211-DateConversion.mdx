@@ -1,0 +1,103 @@
+### DateConversion
+
+Takes a date as an input in either in [Date](https://docs.oracle.com/javase/8/docs/api/java/util/Date.html) object, timestamp(ms) or in string notation. If the input is in text form, is the given format used.  
+
+
+
+Example:  
+
+
+
+Parameters:  
+
+
+
+
+
+	- Format <- "yyyy-MM-dd HH:mm:ss"
+	- Timezone <- Europe/Helsinki
+
+
+
+  
+
+Inputs:  
+
+
+
+
+
+	- Date in <- "2015-07-15 13:06:13" or 1436954773474
+
+
+
+Outputs:   
+
+
+
+
+
+	- Date out -> 2015-07-15 13:06:13
+	- ts -> 1436954773474
+	- dayOfWeek -> "Wed"
+	- years -> 2015
+	- months -> 7
+	- days -> 15
+	- hours -> 13
+	- minutes -> 6
+	- seconds -> 13
+	- milliseconds -> 0
+
+**Inputs**
+**date**
+Timestamp, string or Date
+
+
+**Outputs**
+**date**
+String notation
+**ts**
+Timestamp(ms)
+**dayOfWeek**
+In shortened form, e.g. "Mon"
+
+
+**Parameters**
+**timezone**
+Timezone of the outputs
+**format**
+Format of the input and output string notations
+
+
+export const moduleConfig = {
+  "id": 211,
+  "name": "DateConversion",
+  "path": "Time & Date",
+  "help": {
+    "params": {
+      "timezone": "Timezone of the outputs",
+      "format": "Format of the input and output string notations"
+    },
+    "paramNames": [
+      "timezone",
+      "format"
+    ],
+    "inputs": {
+      "date": "Timestamp, string or Date"
+    },
+    "inputNames": [
+      "date"
+    ],
+    "outputs": {
+      "date": "String notation",
+      "ts": "Timestamp(ms)",
+      "dayOfWeek": "In shortened form, e.g. \"Mon\""
+    },
+    "outputNames": [
+      "date",
+      "ts",
+      "dayOfWeek"
+    ],
+    "helpText": "<p>Takes a date as an input in either in <a href=\"https://docs.oracle.com/javase/8/docs/api/java/util/Date.html\" target=\"_blank\">Date</a> object, timestamp(ms) or in string notation. If the input is in text form, is the given format used.</p>\n\n<p>Example:</p>\n\n<p>Parameters:</p>\n\n<ul>\n\t<li>Format &lt;- &quot;yyyy-MM-dd HH:mm:ss&quot;</li>\n\t<li>Timezone &lt;- Europe/Helsinki</li>\n</ul>\n\n<p><br />\nInputs:</p>\n\n<ul>\n\t<li>Date in &lt;- &quot;2015-07-15&nbsp;13:06:13&quot; or&nbsp;1436954773474</li>\n</ul>\n\n<p>Outputs:&nbsp;</p>\n\n<ul>\n\t<li>Date out -&gt;&nbsp;2015-07-15&nbsp;13:06:13</li>\n\t<li>ts -&gt;&nbsp;1436954773474</li>\n\t<li>dayOfWeek -&gt; &quot;Wed&quot;</li>\n\t<li>years -&gt; 2015</li>\n\t<li>months -&gt; 7</li>\n\t<li>days -&gt; 15</li>\n\t<li>hours -&gt; 13</li>\n\t<li>minutes -&gt; 6</li>\n\t<li>seconds -&gt; 13</li>\n\t<li>milliseconds -&gt; 0</li>\n</ul>\n"
+  }
+}

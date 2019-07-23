@@ -1,0 +1,49 @@
+### RandomNumber
+
+Generate random numbers between [*min*, *max*] with uniform probability.
+
+**Inputs**
+**trigger**
+when value is received, activates module
+
+
+**Outputs**
+**out**
+the random number
+
+
+**Parameters**
+**min**
+lower bound of interval to sample from
+**max**
+upper bound of interval to sample from
+
+
+export const moduleConfig = {
+  "id": 562,
+  "name": "RandomNumber",
+  "path": "Time Series: Random",
+  "help": {
+    "params": {
+      "min": "lower bound of interval to sample from",
+      "max": "upper bound of interval to sample from"
+    },
+    "paramNames": [
+      "min",
+      "max"
+    ],
+    "inputs": {
+      "trigger": "when value is received, activates module"
+    },
+    "inputNames": [
+      "trigger"
+    ],
+    "outputs": {
+      "out": "the random number"
+    },
+    "outputNames": [
+      "out"
+    ],
+    "helpText": "<p>Generate random numbers between [<em>min</em>, <em>max</em>] with uniform probability.</p>"
+  }
+}
