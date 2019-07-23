@@ -23,13 +23,11 @@ export default function useCanvasLoadCallback() {
                 product = await getProductById(productId)
             } catch (err) {
                 if (!isMountedRef.current) { return }
-                if (!err.response) { throw err } // unexpected error
                 history.replace('/404') // 404
                 return
             }
             if (!isMountedRef.current) { return }
             productUpdater.replaceProduct(() => product)
-            console.log('product loaded', product)
         })
     ), [wrap, productUpdater, history, isMountedRef])
 }

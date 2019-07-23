@@ -1,42 +1,37 @@
 // @flow
 
-import React, { useContext } from 'react'
+import React from 'react'
 import { Container } from 'reactstrap'
 import { withRouter } from 'react-router-dom'
 
 import Layout from '$mp/components/Layout'
+import type { Product } from '$mp/flowtype/product-types'
 import * as UndoContext from '$shared/components/UndoContextProvider'
 
-import * as RouterContext from '$shared/components/RouterContextProvider'
 import ProductController from '../ProductController'
 import useProductUpdater from '../ProductController/useProductUpdater'
 import useProduct from '../ProductController/useProduct'
 
 import styles from './editProductPage.pcss'
 
-const EditProductPage = () => {
-    const { match } = useContext(RouterContext.Context)
-    console.log(match)
-
-    return (
-        <div className={styles.root}>
-            <Container className={styles.container}>
-                New product editor...
-            </Container>
-        </div>
-    )
+type Props = {
+    product: Product,
 }
+
+const EditProductPage = ({ product }: Props) => (
+    <div className={styles.root}>
+        <Container className={styles.container}>
+            <h1>{product.name}</h1>
+        </Container>
+    </div>
+)
 
 const EditWrap = () => {
     const { replaceProduct, updateProduct } = useProductUpdater()
     const product = useProduct()
 
     if (!product) {
-        return (
-            <div>
-                no product!
-            </div>
-        )
+        return null
     }
 
     const key = (!!product && product.id) || ''
