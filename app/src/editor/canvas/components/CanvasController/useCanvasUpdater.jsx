@@ -1,17 +1,9 @@
-import { useMemo, useCallback, useContext } from 'react'
+import { useMemo, useContext } from 'react'
 
-import useIsMountedRef from '$shared/utils/useIsMountedRef'
+import useMountedCallback from '$shared/utils/useMountedCallback'
 import { Context as UndoContext } from '$shared/components/UndoContextProvider'
 
 import * as CanvasState from '../../state'
-
-function useMountedCallback(fn, deps) {
-    const isMountedRef = useIsMountedRef()
-    return useCallback((...args) => {
-        if (!isMountedRef.current) { return }
-        return fn(...args)
-    }, [fn, isMountedRef, ...deps]) // eslint-disable-line react-hooks/exhaustive-deps
-}
 
 function canvasUpdater(fn) {
     return (canvas) => {
