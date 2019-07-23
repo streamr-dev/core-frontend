@@ -106,4 +106,4 @@ export type ProductPermissions = {
     permissionsError: ?ErrorInUi,
 }
 
-export type ProductType = 'standard' | 'community'
+export type ProductType = 'NORMAL' | 'COMMUNITY'
