@@ -9,9 +9,7 @@
 
 // const RunningNode = () => (
 //     <DocsLayout subNav={subNav.runningNode}>
-//         <Helmet>
-//             <title>Streamr Docs | Running a Node</title>
-//         </Helmet>
+//         <Helmet title="Streamr Docs | Running a Node" />
 //         <RunningNodeContent />
 //     </DocsLayout>
 // )

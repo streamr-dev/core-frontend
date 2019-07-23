@@ -80,9 +80,7 @@ export class Products extends Component<Props, State> {
 
         return (
             <Layout>
-                <Helmet>
-                    <title>{I18n.t('general.title.suffix')}</title>
-                </Helmet>
+                <Helmet title={I18n.t('general.title.suffix')} />
                 <ActionBar
                     filter={filter}
                     categories={categories}

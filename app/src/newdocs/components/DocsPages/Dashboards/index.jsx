@@ -9,9 +9,7 @@ import DashboardsContent from '$newdocs/content/dashboards.mdx'
 
 const Dashboards = () => (
     <DocsLayout subNav={subNav.dashboards}>
-        <Helmet>
-            <title>Streamr Docs | Dashboards</title>
-        </Helmet>
+        <Helmet title="Streamr Docs | Dashboards" />
         <DashboardsContent />
     </DocsLayout>
 )
