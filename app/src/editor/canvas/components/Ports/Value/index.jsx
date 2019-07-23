@@ -44,6 +44,7 @@ const Value = ({ canvas, port, onChange }: Props) => {
     const disabled = isRunning || (!port.canHaveInitialValue && port.connected)
     const type = getPortType(port)
     const isParam = 'defaultValue' in port
+
     // TODO: Ignore when editing.
     const value = (isParam ? (port.value || port.defaultValue) : port.initialValue) || ''
     const commonProps: CommonProps = {
