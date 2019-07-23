@@ -38,6 +38,7 @@
   height: 40px;
   padding: 0 12px;
   border-bottom: 1px solid #EFEFEF;
+  flex-shrink: 0;
 }
 
 .SearchPanel .Header button {
@@ -89,7 +90,7 @@
 .SearchPanel .Input {
   font-size: 14px;
   font-weight: var(--regular);
-  line-height: 1;
+  line-height: normal;
   text-align: left;
   letter-spacing: 0;
   padding-right: 16px;
@@ -117,6 +118,7 @@
 .SearchPanel .ContentContainer {
   flex: 1;
   border-top: 1px solid #EFEFEF;
+  overflow: auto; /* fallback for firefox */
   overflow: overlay; /* deprecated, but does what we want */
   scroll-behavior: smooth;
 
@@ -184,6 +186,10 @@
   transition: background 0.1s, color 0.1s;
 }
 
+.SearchRow:first-child {
+  border-top: none;
+}
+
 .SearchRow:last-child {
   border-bottom: none;
 }
@@ -214,7 +220,7 @@
   grid-row-gap: 2px;
   font-family: var(--mono);
   font-size: 12px;
-  line-height: 1;
+  line-height: normal;
   font-weight: var(--medium);
   text-align: center;
   align-items: center;
