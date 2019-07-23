@@ -356,19 +356,35 @@ function getOutputInputPorts(canvas, portIdA, portIdB) {
     return ports
 }
 
-function getPortValueType(canvas, portId) {
+function getPortValueType(canvas, portId, seen = new Map()) {
+    if (seen.has(portId)) { return seen.get(portId) }
+
     const port = getPort(canvas, portId)
-    if (port.type !== 'Object') { return port.type }
+    seen.set(portId, port.type)
+    if (port.type !== 'Object') {
+        return port.type
+    }
+
     const isOutput = getIsOutput(canvas, portId)
     if (isOutput) {
         const linkedInput = findLinkedVariadicPort(canvas, portId)
-        if (!linkedInput) { return port.type }
-        if (!isPortConnected(canvas, linkedInput.id)) { return port.type }
-        return getPortValueType(canvas, linkedInput.id)
+        if (!linkedInput || !isPortConnected(canvas, linkedInput.id)) {
+            seen.set(portId, port.type)
+            return port.type
+        }
+        const type = getPortValueType(canvas, linkedInput.id, seen)
+        seen.set(portId, type)
+        return type
     }
     const [connectedOutId] = getConnectedPortIds(canvas, portId)
-    if (!connectedOutId) { return port.type }
-    return getPortValueType(canvas, connectedOutId)
+    if (!connectedOutId) {
+        seen.set(portId, port.type)
+        return port.type
+    }
+
+    const type = getPortValueType(canvas, connectedOutId, seen)
+    seen.set(portId, type)
+    return type
 }
 
 export function isPortInvisible(canvas, portId) {
