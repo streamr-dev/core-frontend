@@ -29,16 +29,20 @@ function getRedirect() {
     return redirect
 }
 
-// add global axios interceptor
-// redirect to login page on 401 response
-axios.interceptors.response.use((response) => response, (error) => {
-    if (shouldRedirect(error)) {
-        const redirect = getRedirect()
-        window.location = routes.login(redirect ? {
-            redirect,
-        } : {})
-    }
-    // always throw error anyway
-    // caller shouldn't succeed
-    throw error
-})
+export default function installInterceptor(instance = axios) {
+    // add global axios interceptor
+    // redirect to login page on 401 response
+    instance.interceptors.response.use((response) => response, (error) => {
+        if (shouldRedirect(error)) {
+            const redirect = getRedirect()
+            window.location = routes.login(redirect ? {
+                redirect,
+            } : {})
+        }
+        // always throw error anyway
+        // caller shouldn't succeed
+        throw error
+    })
+
+    return instance
+}
