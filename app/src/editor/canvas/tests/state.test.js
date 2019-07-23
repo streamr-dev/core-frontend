@@ -279,7 +279,7 @@ describe('Canvas State', () => {
                     canvas = State.updateCanvas(State.setPortUserValue(canvas, equalsModule.params[0].id, '2,3  '))
                     expect(State.getPortUserValue(canvas, equalsModule.params[0].id)).toBe('2.3')
                     canvas = State.updateCanvas(State.setPortUserValue(canvas, equalsModule.params[0].id, '  -2.3  '))
-                    expect(State.getPortUserValue(canvas, equalsModule.params[0].id)).toBe('2.3')
+                    expect(State.getPortUserValue(canvas, equalsModule.params[0].id)).toBe('-2.3')
                     // tries to parse a number
                     canvas = State.updateCanvas(State.setPortUserValue(canvas, equalsModule.params[0].id, '2dasd'))
                     expect(State.getPortUserValue(canvas, equalsModule.params[0].id)).toBe('2')
