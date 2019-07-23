@@ -8,13 +8,16 @@ import routes from '$routes'
 const meURL = `${process.env.STREAMR_API_URL}/users/me`
 
 function shouldRedirect(error) {
+    // ignore redirect to login logic for login route
+    if (window.location.pathname === routes.login()) { return false }
     if (error.response && error.response.status === 401) {
         const url = new window.URL(error.config.url)
         const me = new window.URL(meURL)
         // shouldn't redirect if hitting /users/me api, 401 normal, signals logged out
-        if (me.pathname === url.pathname && me.origin === url.origin && error.config.method === 'get') { return false }
-        // ignore redirect to login logic for login route
-        return window.location.pathname !== routes.login()
+        if (me.pathname === url.pathname && me.origin === url.origin && error.config.method === 'get') {
+            return false
+        }
+        return true
     }
     return false
 }
