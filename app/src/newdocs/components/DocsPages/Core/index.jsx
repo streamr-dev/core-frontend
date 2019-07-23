@@ -9,7 +9,7 @@ import CoreContent from '$newdocs/content/core.mdx'
 
 const Core = () => (
     <DocsLayout subNav={subNav.core}>
-        <Helmet title="Streamr Docs | Core" />
+        <Helmet title="Core | Streamr Docs" />
         <CoreContent />
     </DocsLayout>
 )

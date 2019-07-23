@@ -10,7 +10,7 @@ import TechnicalNotesContent from '$newdocs/content/technical.mdx'
 
 const TechnicalNotes = () => (
     <DocsLayout subNav={subNav.technicalNotes}>
-        <Helmet title="Streamr Docs | Technical Notes" />
+        <Helmet title="Technical Notes | Streamr Docs" />
         <TechnicalNotesContent />
     </DocsLayout>
 )

@@ -9,7 +9,7 @@ import CanvasesContent from '$newdocs/content/canvases.mdx'
 
 const Canvases = () => (
     <DocsLayout subNav={subNav.canvases}>
-        <Helmet title="Streamr Docs | Canvases" />
+        <Helmet title="Canvases | Streamr Docs" />
         <CanvasesContent />
     </DocsLayout>
 )

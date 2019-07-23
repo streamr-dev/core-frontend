@@ -9,7 +9,7 @@ import DataTokenContent from '$newdocs/content/dataToken.mdx'
 
 const DataToken = () => (
     <DocsLayout subNav={subNav.dataToken}>
-        <Helmet title="Streamr Docs | DATA Token" />
+        <Helmet title="DATA Token | Streamr Docs" />
         <DataTokenContent />
     </DocsLayout>
 )

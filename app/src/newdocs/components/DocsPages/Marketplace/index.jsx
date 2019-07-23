@@ -9,7 +9,7 @@ import MarketplacePageContent from '$newdocs/content/marketplace.mdx'
 
 const Marketplace = () => (
     <DocsLayout subNav={subNav.marketplace}>
-        <Helmet title="Streamr Docs | Marketplace" />
+        <Helmet title="Marketplace | Streamr Docs" />
         <MarketplacePageContent />
     </DocsLayout>
 )

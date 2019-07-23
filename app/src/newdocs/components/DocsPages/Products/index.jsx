@@ -9,7 +9,7 @@ import ProductsContent from '$newdocs/content/products.mdx'
 
 const Products = () => (
     <DocsLayout subNav={subNav.products}>
-        <Helmet title="Streamr Docs | Products" />
+        <Helmet title="Products | Streamr Docs" />
         <ProductsContent />
     </DocsLayout>
 )
