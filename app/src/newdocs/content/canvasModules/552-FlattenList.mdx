@@ -1,0 +1,49 @@
+### FlattenList
+
+Flattens lists inside a list, e.g. [1, [2,3], [4, 5], 6, [7, 8], 9] -> [1, 2, 3, 4, 5, 6, 7, 8, 9].  
+
+   
+
+If *deep = true*, flattening will be done recursively. E.g. [1, [2, [3, [4, 5, [6]]], 7], 8, 9] -> [1, 2, 3, 4, 5, 6, 7, 8, 9]. Otherwise only one level of flattening will be perfomed.
+
+**Inputs**
+**in**
+input list
+
+
+**Outputs**
+**out**
+flattened list
+
+
+**Parameters**
+**deep**
+whether to flatten recursively
+
+
+export const moduleConfig = {
+  "id": 552,
+  "name": "FlattenList",
+  "path": "List",
+  "help": {
+    "params": {
+      "deep": "whether to flatten recursively"
+    },
+    "paramNames": [
+      "deep"
+    ],
+    "inputs": {
+      "in": "input list"
+    },
+    "inputNames": [
+      "in"
+    ],
+    "outputs": {
+      "out": "flattened list"
+    },
+    "outputNames": [
+      "out"
+    ],
+    "helpText": "<p>Flattens lists inside a list, e.g. [1, [2,3], [4, 5], 6, [7, 8], 9] -&gt; [1, 2, 3, 4, 5, 6, 7, 8, 9].</p><p>&nbsp;</p><p>If <em>deep&nbsp;= true</em>, flattening will be done recursively. E.g. [1, [2, [3, [4, 5, [6]]], 7], 8, 9] -&gt;&nbsp;[1, 2, 3, 4, 5, 6, 7, 8, 9]. Otherwise only one level of flattening will be perfomed.</p>"
+  }
+}

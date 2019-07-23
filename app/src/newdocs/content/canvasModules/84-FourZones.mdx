@@ -1,0 +1,65 @@
+### FourZones
+
+This module waits for the input signal to reach either the <span class="highlight">highTrigger</span> or <span class="highlight">lowTrigger</span> level. Either 1 or -1 is output respectively. The triggered value is kept until it is set back to 0 at the corresponding release level.
+  
+
+
+If you set <span class="highlight">mode</span> to <span class="highlight">exit</span>, the output will trigger when exiting the trigger level instead of entering it.
+
+**Inputs**
+**in**
+Input values
+
+
+**Outputs**
+**out**
+1 on high trigger, -1 on low trigger, 0 on release
+
+
+**Parameters**
+**lowRelease**
+Low release level
+**highTrigger**
+High trigger level
+**lowTrigger**
+Low trigger level
+**highRelease**
+High release level
+**mode**
+Trigger on entering/exiting the high/low trigger level
+
+
+export const moduleConfig = {
+  "id": 84,
+  "name": "FourZones",
+  "path": "Time Series: Triggers",
+  "help": {
+    "outputNames": [
+      "out"
+    ],
+    "inputs": {
+      "in": "Input values"
+    },
+    "helpText": "<p>This module waits for the input signal to reach either the <span class='highlight'>highTrigger</span> or <span class='highlight'>lowTrigger</span> level. Either 1 or -1 is output respectively. The triggered value is kept until it is set back to 0 at the corresponding release level.\n</p><p>\nIf you set <span class='highlight'>mode</span> to <span class='highlight'>exit</span>, the output will trigger when exiting the trigger level instead of entering it.</p>",
+    "inputNames": [
+      "in"
+    ],
+    "params": {
+      "lowRelease": "Low release level",
+      "highTrigger": "High trigger level",
+      "lowTrigger": "Low trigger level",
+      "highRelease": "High release level",
+      "mode": "Trigger on entering/exiting the high/low trigger level"
+    },
+    "outputs": {
+      "out": "1 on high trigger, -1 on low trigger, 0 on release"
+    },
+    "paramNames": [
+      "mode",
+      "highTrigger",
+      "highRelease",
+      "lowRelease",
+      "lowTrigger"
+    ]
+  }
+}

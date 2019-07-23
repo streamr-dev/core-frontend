@@ -1,0 +1,55 @@
+### Range
+
+Generates a sequence of numbers increasing/decreasing according to a specified *step*.  
+
+   
+
+When *from < to* a growing sequence is produced. Otherwise (*from > to)* a decreasing sequence is produced. The sign of parameter *step* is ignored, and is automatically determined by the inequality relation between *from *and *to*.  
+
+   
+
+Parameter *to* acts as an upper bound which means that if sequence generation goes over *to*, the exceeding values are not included in the sequence. E.g., from=1, to=2, seq=0.3 results in [1, 1.3, 1.6, 1.9], with 2.1 notably not included.
+
+
+
+
+**Outputs**
+**out**
+the generated sequence
+
+
+**Parameters**
+**from**
+start of sequence; included in sequence.
+**step**
+step size to add/subtract; sign is ignored; an empty sequence is produced if set to 0
+**to**
+upper bound of sequence; not necessarily included in sequence
+
+
+export const moduleConfig = {
+  "id": 545,
+  "name": "Range",
+  "path": "List",
+  "help": {
+    "params": {
+      "from": "start of sequence; included in sequence.",
+      "step": "step size to add/subtract; sign is ignored; an empty sequence is produced if set to 0",
+      "to": "upper bound of sequence; not necessarily included in sequence"
+    },
+    "paramNames": [
+      "from",
+      "step",
+      "to"
+    ],
+    "inputs": {},
+    "inputNames": [],
+    "outputs": {
+      "out": "the generated sequence"
+    },
+    "outputNames": [
+      "out"
+    ],
+    "helpText": "<p>Generates a sequence&nbsp;of numbers increasing/decreasing according to a specified <em>step</em>.</p><p>&nbsp;</p><p>When&nbsp;<em>from &lt; to</em>&nbsp;a growing sequence is produced.&nbsp;Otherwise (<em>from &gt; to)</em>&nbsp;a decreasing sequence is produced. The sign of parameter&nbsp;<em>step</em>&nbsp;is ignored, and&nbsp;is automatically determined&nbsp;by the inequality relation between&nbsp;<em>from&nbsp;</em>and&nbsp;<em>to</em>.</p><p>&nbsp;</p><p>Parameter&nbsp;<em>to</em>&nbsp;acts as an upper bound which means that if sequence generation goes over&nbsp;<em>to</em>, the exceeding values are not included in the sequence. E.g., from=1, to=2, seq=0.3 results in [1, 1.3, 1.6, 1.9], with&nbsp;2.1 notably not included.</p>"
+  }
+}

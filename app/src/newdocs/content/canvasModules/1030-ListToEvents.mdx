@@ -1,0 +1,41 @@
+### ListToEvents
+
+Split input list into separate events. They will be sent out as separate events, one item at a time.  
+
+Each event causes activation of all modules where the output item is sent to.
+
+**Inputs**
+**list**
+input list
+
+
+**Outputs**
+**item**
+input list items one by one as separate events
+
+
+
+
+
+export const moduleConfig = {
+  "id": 1030,
+  "name": "ListToEvents",
+  "path": "List",
+  "help": {
+    "params": {},
+    "paramNames": [],
+    "inputs": {
+      "list": "input list"
+    },
+    "inputNames": [
+      "list"
+    ],
+    "outputs": {
+      "item": "input list items one by one as separate events"
+    },
+    "outputNames": [
+      "item"
+    ],
+    "helpText": "<p>Split input list into separate events. They will be sent out as separate events, one item at a time.</p><p>Each event causes activation of all modules where the output item is sent to.</p>"
+  }
+}

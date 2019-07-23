@@ -1,0 +1,49 @@
+### ForEach
+
+This module allows you to reuse a Canvas saved into the Archive as a module in your current Canvas.  
+
+A separate Canvas instance will be created for each distinct key, which enables ForEach-like behavior to be implemented. The canvas instances will also retain state as expected.  
+
+Any parameters, inputs or outputs you export will be visible on the module. You can export endpoints by right-clicking on them and selecting "Toggle export".
+
+**Inputs**
+**key**
+Differentiate between canvas
+
+
+**Outputs**
+**map**
+The state of outputs of all distinct Canvases by key.
+
+
+**Parameters**
+**canvas**
+The "sub" canvas that implements the ForEach-loop "body"
+
+
+export const moduleConfig = {
+  "id": 223,
+  "name": "ForEach",
+  "path": "Map",
+  "help": {
+    "params": {
+      "canvas": "The \"sub\" canvas that implements the ForEach-loop \"body\""
+    },
+    "paramNames": [
+      "canvas"
+    ],
+    "inputs": {
+      "key": "Differentiate between canvas"
+    },
+    "inputNames": [
+      "key"
+    ],
+    "outputs": {
+      "map": "The state of outputs of all distinct Canvases by key."
+    },
+    "outputNames": [
+      "map"
+    ],
+    "helpText": "<p>This module allows you to reuse a Canvas saved into the Archive as a module in your current Canvas.</p><p>A separate Canvas instance will be created for each distinct key, which enables ForEach-like behavior to be implemented. The canvas instances will also retain state as expected.</p><p>Any parameters, inputs or outputs you export will be visible on the module. You can export endpoints by right-clicking on them and selecting \"Toggle export\".</p>"
+  }
+}

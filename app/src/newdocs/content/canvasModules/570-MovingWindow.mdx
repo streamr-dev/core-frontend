@@ -1,0 +1,53 @@
+### MovingWindow
+
+Provides a moving window (list) for any types of values. Window size and behavior can be set via parameters.
+
+**Inputs**
+**in**
+values of any type
+
+
+**Outputs**
+**list**
+the window's current state as a list
+
+
+**Parameters**
+**windowLength**
+Length of the sliding window, ie. the number of most recent input values to include in calculation
+**windowType**
+behavior of window
+**minSamples**
+Minimum number of input values received before a value is output
+
+
+export const moduleConfig = {
+  "id": 570,
+  "name": "MovingWindow",
+  "path": "Utils",
+  "help": {
+    "params": {
+      "windowLength": "Length of the sliding window, ie. the number of most recent input values to include in calculation",
+      "windowType": "behavior of window",
+      "minSamples": "Minimum number of input values received before a value is output"
+    },
+    "paramNames": [
+      "windowLength",
+      "windowType",
+      "minSamples"
+    ],
+    "inputs": {
+      "in": "values of any type"
+    },
+    "inputNames": [
+      "in"
+    ],
+    "outputs": {
+      "list": "the window's current state as a list"
+    },
+    "outputNames": [
+      "list"
+    ],
+    "helpText": "<p>Provides&nbsp;a moving window (list)&nbsp;for any types of values. Window size and behavior&nbsp;can be set via parameters.</p>"
+  }
+}
