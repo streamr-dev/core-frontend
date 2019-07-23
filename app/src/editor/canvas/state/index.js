@@ -646,9 +646,22 @@ export function setPortUserValue(canvas, portId, value) {
 
     const port = getPort(canvas, portId)
 
-    // coerce empty double to undefined
-    if (value === '' && port.type === 'Double') {
-        value = undefined
+    // coerce double to number or undefined if empty or invalid
+    if (port.type === 'Double') {
+        value = value != null ? String(value).trim() : undefined
+        if (value == null || value === '') {
+            value = undefined
+        } else {
+            // swap , for .
+            value = String(value).replace(/,/gm, '.')
+            const num = Number.parseFloat(value)
+            // infinite/NaN = undefined
+            if (Number.isNaN(num) || !Number.isFinite(num)) {
+                value = undefined
+            } else {
+                value = String(num)
+            }
+        }
     }
 
     if (JSON.stringify(port[key]) === JSON.stringify(value)) {
