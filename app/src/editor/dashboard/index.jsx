@@ -6,7 +6,8 @@ import Layout from '$mp/components/Layout'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import LoadingIndicator from '$userpages/components/LoadingIndicator'
 import ErrorComponentView from '$shared/components/ErrorComponentView'
-import UndoContainer, { UndoControls } from '$editor/shared/components/UndoContainer'
+import UndoControls from '$editor/shared/components/UndoControls'
+import { Context as UndoContext, Provider as UndoContextProvider } from '$shared/components/UndoContextProvider'
 import { ClientProvider } from '$editor/shared/components/Client'
 import * as sharedServices from '$editor/shared/services'
 
@@ -164,7 +165,7 @@ const DashboardEdit = withRouter(class DashboardEdit extends Component {
 })
 
 const DashboardLoader = withRouter(withErrorBoundary(ErrorComponentView)(class DashboardLoader extends React.PureComponent {
-    static contextType = UndoContainer.Context
+    static contextType = UndoContext
     state = { isLoading: false }
 
     componentDidMount() {
@@ -228,7 +229,7 @@ const DashboardLoader = withRouter(withErrorBoundary(ErrorComponentView)(class D
 }))
 
 const DashboardEditWrap = () => (
-    <UndoContainer.Consumer>
+    <UndoContext.Consumer>
         {({ state: dashboard, push, replace }) => (
             <DashboardEdit
                 key={dashboard.id}
@@ -237,11 +238,11 @@ const DashboardEditWrap = () => (
                 dashboard={dashboard}
             />
         )}
-    </UndoContainer.Consumer>
+    </UndoContext.Consumer>
 )
 
 function DashboardLoadingIndicator() {
-    const { state } = useContext(UndoContainer.Context)
+    const { state } = useContext(UndoContext)
     return (
         <LoadingIndicator className={styles.LoadingIndicator} loading={!state} />
     )
@@ -250,13 +251,13 @@ function DashboardLoadingIndicator() {
 export default withRouter((props) => (
     <Layout className={styles.layout} footer={false}>
         <ClientProvider>
-            <UndoContainer key={props.match.params.id}>
+            <UndoContextProvider key={props.match.params.id}>
                 <UndoControls />
                 <DashboardLoadingIndicator />
                 <DashboardLoader>
                     <DashboardEditWrap />
                 </DashboardLoader>
-            </UndoContainer>
+            </UndoContextProvider>
         </ClientProvider>
     </Layout>
 ))

@@ -1,7 +1,7 @@
 // @flow
 
 import { createAction } from 'redux-actions'
-import { getLocation } from 'react-router-redux'
+import { getLocation } from 'connected-react-router'
 
 import { setProductDeploying } from '$mp/modules/publish/actions'
 import { getProductById } from '$mp/modules/product/actions'

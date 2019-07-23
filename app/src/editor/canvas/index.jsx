@@ -8,7 +8,8 @@ import ErrorComponentView from '$shared/components/ErrorComponentView'
 
 import links from '../../links'
 
-import UndoContainer, { UndoControls } from '$editor/shared/components/UndoContainer'
+import UndoControls from '$editor/shared/components/UndoControls'
+import * as UndoContext from '$shared/components/UndoContextProvider'
 import Subscription from '$editor/shared/components/Subscription'
 import * as SubscriptionStatus from '$editor/shared/components/SubscriptionStatus'
 import { ClientProvider } from '$editor/shared/components/Client'
@@ -163,6 +164,19 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         this.setCanvas(action, (canvas) => (
             CanvasState.addModule(canvas, moduleData)
         ))
+    }
+
+    addAndSelectModule = async (...args) => {
+        this.latestAdd = ((this.latestAdd + 1) || 0)
+        const currentAdd = this.latestAdd
+        await this.addModule(...args)
+        if (this.unmounted) { return }
+        const { canvas } = this.props
+        // assume last module is most recently added
+        const newModule = canvas.modules[canvas.modules.length - 1]
+        // only select if still latest
+        if (this.latestAdd !== currentAdd || !newModule) { return }
+        this.selectModule(newModule)
     }
 
     duplicateCanvas = async () => {
@@ -409,7 +423,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                     )}
                 </Sidebar>
                 <ModuleSearch
-                    addModule={this.addModule}
+                    addModule={this.addAndSelectModule}
                     isOpen={this.state.moduleSearchIsOpen}
                     open={this.moduleSearchOpen}
                     canvas={canvas}
@@ -439,7 +453,7 @@ const CanvasEdit = withRouter(({ canvas, ...props }) => {
 
 const CanvasEditWrap = () => {
     const { replaceCanvas, setCanvas } = useCanvasUpdater()
-    const { undo } = useContext(UndoContainer.Context)
+    const { undo } = useContext(UndoContext.Context)
     const canvas = useCanvas()
     if (!canvas) {
         return (
@@ -471,12 +485,12 @@ function isDisabled({ state: canvas }) {
 
 const CanvasContainer = withRouter(withErrorBoundary(ErrorComponentView)((props) => (
     <ClientProvider>
-        <UndoContainer key={props.match.params.id}>
+        <UndoContext.Provider key={props.match.params.id}>
             <UndoControls disabled={isDisabled} />
             <CanvasController.Provider>
                 <CanvasEditWrap />
             </CanvasController.Provider>
-        </UndoContainer>
+        </UndoContext.Provider>
     </ClientProvider>
 )))
 

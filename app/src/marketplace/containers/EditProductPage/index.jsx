@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { push, replace } from 'react-router-redux'
+import { push, replace } from 'connected-react-router'
 import type { Match } from 'react-router-dom'
 import { I18n } from 'react-redux-i18n'
 

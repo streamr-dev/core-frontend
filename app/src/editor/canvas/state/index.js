@@ -371,8 +371,29 @@ function getPortValueType(canvas, portId) {
     return getPortValueType(canvas, connectedOutId)
 }
 
+export function isPortInvisible(canvas, portId) {
+    return linkedOutputConnectionsDisabled(canvas, portId)
+}
+
+export function linkedOutputConnectionsDisabled(canvas, outputPortId) {
+    if (!getIsOutput(canvas, outputPortId)) { return false }
+    const outputPort = getPort(canvas, outputPortId)
+    if (!isVariadicPort(outputPort)) { return false }
+    const inputPort = findLinkedVariadicPort(canvas, outputPortId)
+    if (!inputPort) { return false }
+    // if input is not connected, neither should the output
+    // can't know if input is connected for exported ports, so ignore this check when input is exported
+    return (
+        !isPortConnected(canvas, inputPort.id)
+        && !isPortExported(canvas, inputPort.id)
+    )
+}
+
 export function canConnectPorts(canvas, portIdA, portIdB) {
     if (portIdA === portIdB) { return false } // cannot connect port to self
+    if (!hasPort(canvas, portIdA) || !hasPort(canvas, portIdB)) {
+        return false // cannot connect non-existent ports
+    }
     if (getIsOutput(canvas, portIdA) === getIsOutput(canvas, portIdB)) {
         // if both inputs or both outputs, cannot connect
         return false
@@ -381,6 +402,7 @@ export function canConnectPorts(canvas, portIdA, portIdB) {
     const [output, input] = getOutputInputPorts(canvas, portIdA, portIdB)
 
     if (!input.canConnect || !output.canConnect) { return false }
+    if (linkedOutputConnectionsDisabled(canvas, output.id)) { return false }
 
     // verify compatible types
     const inputTypes = new Set(input.acceptedTypes)
@@ -456,14 +478,6 @@ export function connectPorts(canvas, portIdA, portIdB) {
 
     let nextCanvas = canvas
 
-    // disconnect existing input connection
-    // if variadic, delay disconnecting until end
-    // as disconnecting may lead to input we're trying
-    // to connect to being removed before we can connect to it
-    if (input.sourceId && !input.variadic) {
-        nextCanvas = disconnectPorts(nextCanvas, input.sourceId, input.id)
-    }
-
     const displayName = getDisplayNameFromPort(output)
     const outputModule = getModuleForPort(nextCanvas, output.id)
     const { contract } = outputModule || {}
@@ -506,11 +520,6 @@ export function connectPorts(canvas, portIdA, portIdB) {
         connected: isPortConnected(nextCanvas, output.id),
     }))
 
-    // delayed disconnect output original if input variadic, see above
-    if (input.sourceId && input.variadic && input.sourceId !== output.id) {
-        nextCanvas = disconnectPorts(nextCanvas, input.sourceId, input.id)
-    }
-
     return nextCanvas
 }
 
@@ -539,12 +548,20 @@ export function updatePortConnection(canvas, portId) {
     if (!hasPort(canvas, portId)) { return canvas }
     const portIds = getConnectedPortIds(canvas, portId)
 
-    return portIds.reduce((prevCanvas, connectedPortId) => {
-        if (!hasPort(prevCanvas, connectedPortId)) {
+    const nextCanvas = portIds.reduce((prevCanvas, connectedPortId) => {
+        // disconnect ports that can't be connected
+        if (!canConnectPorts(prevCanvas, portId, connectedPortId)) {
             return disconnectPorts(prevCanvas, portId, connectedPortId)
         }
         return prevCanvas
     }, canvas)
+
+    const connected = isPortConnected(nextCanvas, portId)
+    if (connected === getPort(nextCanvas, portId).connected) { return nextCanvas }
+    return updatePort(nextCanvas, portId, (port) => ({
+        ...port,
+        connected,
+    }))
 }
 
 export function updateModulePortConnections(canvas, moduleHash) {
@@ -736,18 +753,22 @@ export function isHistoricalRunValid(canvas = {}) {
  * Variadic Port Handling
  */
 
+function isVariadicPort(port = {}) {
+    return !!port.variadic
+}
+
 function hasVariadicPort(canvas, moduleHash, type) {
     if (!type) { throw new Error('type missing') }
     const canvasModule = getModule(canvas, moduleHash)
     if (isSubCanvasModule(canvasModule)) { return false } // no variadic behaviour for subcanvas
-    return canvasModule[type].some(({ variadic }) => variadic)
+    return canvasModule[type].some(isVariadicPort)
 }
 
 function getVariadicPorts(canvas, moduleHash, type) {
     if (!hasVariadicPort(canvas, moduleHash, type)) { return [] }
     if (!type) { throw new Error('type missing') }
     const canvasModule = getModule(canvas, moduleHash)
-    return canvasModule[type].filter(({ variadic }) => variadic)
+    return canvasModule[type].filter(isVariadicPort)
 }
 
 function findLastVariadicPort(canvas, moduleHash, type) {
@@ -759,7 +780,7 @@ function findLastVariadicPort(canvas, moduleHash, type) {
 function removeVariadicPort(canvas, portId) {
     const port = getPortIfExists(canvas, portId)
     if (!port) { return canvas }
-    if (!port.variadic) {
+    if (!isVariadicPort(port)) {
         throw createError(`trying to remove non-variadic port: ${portId}`, {
             canvas,
             port,
@@ -950,8 +971,9 @@ function handleVariadicPairs(canvas, moduleHash) {
             })
             linkedOutputPort = findLinkedVariadicPort(newCanvas, inputPort.id)
         }
-        // if input is not connected, neither should the output
-        if (!isPortConnected(newCanvas, inputPort.id)) {
+
+        // disconnect output if input is not connected or not exported
+        if (linkedOutputConnectionsDisabled(newCanvas, linkedOutputPort.id)) {
             newCanvas = disconnectAllFromPort(newCanvas, linkedOutputPort.id)
         }
     })

@@ -6,6 +6,8 @@ import startCase from 'lodash/startCase'
 import EditableText from '$shared/components/EditableText'
 import useGlobalEventWithin from '$shared/hooks/useGlobalEventWithin'
 import useKeyDown from '$shared/hooks/useKeyDown'
+
+import { isPortInvisible } from '../../../state'
 import { DragDropContext } from '../../DragDropContext'
 import Option from '../Option'
 import Plug from '../Plug'
@@ -118,10 +120,14 @@ const Port = ({
         onSizeChange()
     }, [port.value, onSizeChange])
 
+    const isInvisible = isPortInvisible(canvas, port.id)
+
     return (
         <div
             className={cx(styles.root, {
                 [styles.dragInProgress]: !!dragInProgress,
+                [styles.dragInProgress]: !!dragInProgress,
+                [styles.isInvisible]: isInvisible,
             })}
         >
             {!!contextMenuTarget && (

@@ -3,7 +3,7 @@
 import { createAction } from 'redux-actions'
 import { normalize } from 'normalizr'
 import BN from 'bignumber.js'
-import { push } from 'react-router-redux'
+import { push } from 'connected-react-router'
 import { I18n } from 'react-redux-i18n'
 
 import Notification from '$shared/utils/Notification'

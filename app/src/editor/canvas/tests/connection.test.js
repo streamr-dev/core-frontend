@@ -127,6 +127,32 @@ describe('Connecting Modules', () => {
         expect(State.updateCanvas(await Services.create(canvas))).toMatchCanvas(canvas)
     })
 
+    it('disconnects previous after connecting new', async () => {
+        // connect ConstantText out to ToLowerCase
+        let canvas = State.emptyCanvas()
+        canvas = State.addModule(canvas, await loadModuleDefinition('ConstantText'))
+        canvas = State.addModule(canvas, await loadModuleDefinition('ConstantText'))
+        canvas = State.addModule(canvas, await loadModuleDefinition('ToLowerCase'))
+        const [
+            constantText1,
+            constantText2,
+            toLowerCase,
+        ] = canvas.modules
+
+        canvas = State.updateCanvas(State.connectPorts(canvas, constantText1.outputs[0].id, toLowerCase.inputs[0].id))
+        expect(State.arePortsConnected(canvas, constantText1.outputs[0].id, toLowerCase.inputs[0].id)).toBeTruthy()
+        canvas = State.updateCanvas(State.connectPorts(canvas, constantText2.outputs[0].id, toLowerCase.inputs[0].id))
+        // new connection is connected
+        expect(State.arePortsConnected(canvas, constantText2.outputs[0].id, toLowerCase.inputs[0].id)).toBeTruthy()
+        expect(State.isPortConnected(canvas, toLowerCase.inputs[0].id)).toBeTruthy()
+        // old is disconnected
+        expect(State.arePortsConnected(canvas, constantText1.outputs[0].id, toLowerCase.inputs[0].id)).not.toBeTruthy()
+        expect(State.isPortConnected(canvas, constantText1.outputs[0].id)).not.toBeTruthy()
+
+        // test server accepts state
+        expect(State.updateCanvas(await Services.create(canvas))).toMatchCanvas(canvas)
+    })
+
     it('can not connect incompatible modules', async () => {
         // connect ConstantText out to ToLowerCase
         let canvas = State.emptyCanvas()

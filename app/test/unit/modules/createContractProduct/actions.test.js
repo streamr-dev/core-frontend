@@ -125,6 +125,7 @@ describe('createContractProduct - actions', () => {
                     location: {
                         pathname: `/product/${id}`,
                     },
+                    action: {},
                 },
             })
             store.dispatch(actions.createContractProduct(id, product))
@@ -177,6 +178,7 @@ describe('createContractProduct - actions', () => {
                     location: {
                         pathname: '/product/notProperId',
                     },
+                    action: {},
                 },
             })
             store.dispatch(actions.createContractProduct(id, product))

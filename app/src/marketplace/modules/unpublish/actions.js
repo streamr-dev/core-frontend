@@ -2,7 +2,7 @@
 
 import { createAction } from 'redux-actions'
 import { normalize } from 'normalizr'
-import { getLocation } from 'react-router-redux'
+import { getLocation } from 'connected-react-router'
 import { I18n } from 'react-redux-i18n'
 
 import Notification from '$shared/utils/Notification'

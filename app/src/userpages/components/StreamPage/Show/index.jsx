@@ -3,7 +3,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { I18n } from 'react-redux-i18n'
-import { push } from 'react-router-redux'
+import { push } from 'connected-react-router'
 import cx from 'classnames'
 import { withRouter } from 'react-router-dom'
 import MediaQuery from 'react-responsive'
