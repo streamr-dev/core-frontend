@@ -3,7 +3,7 @@
  */
 
 import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react'
-import useIsMountedRef from '$shared/utils/useIsMountedRef'
+import useIsMountedRef from '$shared/hooks/useIsMountedRef'
 
 export const SubscriptionStatusContext = React.createContext()
 

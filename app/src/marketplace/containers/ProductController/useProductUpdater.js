@@ -1,6 +1,6 @@
 import { useMemo, useContext } from 'react'
 
-import useMountedCallback from '$shared/utils/useMountedCallback'
+import useOnlyIfMountedCallback from '$shared/hooks/useOnlyIfMountedCallback'
 import { Context as UndoContext } from '$shared/components/UndoContextProvider'
 
 function productUpdater(fn) {
@@ -16,11 +16,11 @@ function productUpdater(fn) {
 export default function useProductUpdater() {
     const { push, replace } = useContext(UndoContext)
 
-    const updateProduct = useMountedCallback((action, fn, done) => {
+    const updateProduct = useOnlyIfMountedCallback((action, fn, done) => {
         push(action, productUpdater(fn), done)
     }, [push, productUpdater])
 
-    const replaceProduct = useMountedCallback((fn, done) => {
+    const replaceProduct = useOnlyIfMountedCallback((fn, done) => {
         replace(productUpdater(fn), done)
     }, [push, productUpdater])
 

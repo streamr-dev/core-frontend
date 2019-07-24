@@ -1,8 +1,8 @@
 import { useCallback } from 'react'
 
-import useIsMountedRef from '$shared/utils/useIsMountedRef'
+import useIsMountedRef from '$shared/hooks/useIsMountedRef'
 
-export function useMountedCallback(fn, deps) {
+export function useOnlyIfMountedCallback(fn, deps) {
     const isMountedRef = useIsMountedRef()
     return useCallback((...args) => {
         if (!isMountedRef.current) { return undefined }
@@ -10,4 +10,4 @@ export function useMountedCallback(fn, deps) {
     }, [fn, isMountedRef, ...deps]) // eslint-disable-line react-hooks/exhaustive-deps
 }
 
-export default useMountedCallback
+export default useOnlyIfMountedCallback

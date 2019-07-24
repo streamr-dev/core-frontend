@@ -1,5 +1,5 @@
 import React, { useMemo, useCallback, useState } from 'react'
-import useIsMountedRef from '$shared/utils/useIsMountedRef'
+import useIsMountedRef from '$shared/hooks/useIsMountedRef'
 
 const PermissionContext = React.createContext({
     permissions: [],

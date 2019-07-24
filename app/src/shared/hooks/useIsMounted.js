@@ -1,7 +1,7 @@
 // @flow
 
 import { useCallback } from 'react'
-import useIsMountedRef from '$shared/utils/useIsMountedRef'
+import useIsMountedRef from '$shared/hooks/useIsMountedRef'
 
 export default (): (() => boolean) => {
     const isMountedRef = useIsMountedRef()
