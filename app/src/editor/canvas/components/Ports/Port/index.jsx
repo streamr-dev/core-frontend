@@ -7,7 +7,7 @@ import EditableText from '$shared/components/EditableText'
 import useGlobalEventWithin from '$shared/hooks/useGlobalEventWithin'
 import useKeyDown from '$shared/hooks/useKeyDown'
 
-import { isPortInvisible } from '../../../state'
+import { isPortInvisible, isPortRenameDisabled } from '../../../state'
 import { DragDropContext } from '../../DragDropContext'
 import Option from '../Option'
 import Plug from '../Plug'
@@ -121,6 +121,7 @@ const Port = ({
     }, [port.value, onSizeChange])
 
     const isInvisible = isPortInvisible(canvas, port.id)
+    const isRenameDisabled = isPortRenameDisabled(canvas, port.id)
 
     return (
         <div
@@ -153,7 +154,7 @@ const Port = ({
             ) : plug}
             <Cell>
                 <EditableText
-                    disabled={!!isRunning}
+                    disabled={!!isRenameDisabled}
                     editing={editingName}
                     onCommit={onNameChange}
                     setEditing={setEditingName}
