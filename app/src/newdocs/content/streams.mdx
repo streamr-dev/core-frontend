@@ -123,7 +123,7 @@ Partitions also enable subscribers to scale horizontally: a user consuming data 
 
 Partitions are identified by a number which starts from zero. For example, a stream with only one partition contains the partition `0` and all of the stream's data flows through this partition. A stream with 5 partitions has partitions `0` through `4` - here the stream's data is distributed across these 5 partitions. The data publisher is free to choose the target partition for each message. If no partition is specified, the data goes to partition 0.
 
-Although the partition for a message can be chosen arbitrarily, a popular logic is to utilize a *partition key* - a value chosen from the data which is used to determine the partition of the message. For example, a customer id could be used as a partition key in an application that publishes customer interactions to a stream. This way, all the messages for a particular customer always go to the same partition, which is useful, as it keeps all the events related to a particular customer in a single, known partition instead of spreading them over all partitions.
+While the data publisher is free to choose a target partition for a message arbitrarily, a common approach is to utilize a *partition key*. A partition key is a value chosen from the data which is used to determine the partition of the message. For example, a customer ID could be used as a partition key in an application that publishes customer interactions to a stream. This way, all messages from a particular customer always go to the same partition. This is useful because it keeps all the events related to a particular customer in a single and known partition instead of spreading them over all partitions.
 
 <img src={MessagePartitioningImage} />
 
