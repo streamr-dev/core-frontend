@@ -1,18 +1,18 @@
-import ScrollableAnchor from 'react-scrollable-anchor'
+
 
 import docsStyles from '$newdocs/components/DocsLayout/docsLayout.pcss'
 import styles from '$newdocs/components/DocsPages/API/apiPage.pcss'
 
 import ApiExplorerImg from './images/api/api-explorer.png'
 
-<ScrollableAnchor id="api-overview"><div>
+<section id="api-overview">
 
 ## API overview
 --content--
 
-</div></ScrollableAnchor>
+</section>
 
-<ScrollableAnchor id="authentication"><div>
+<section id="authentication">
 
 ## Authentication
 
@@ -101,16 +101,16 @@ You can now use this session token to make authenticated requests by including a
 
 The session token's expiration will be reset on every request to prevent you from getting logged out while using the API. If the token expires, you can obtain a new one exactly as before.
 
-</div></ScrollableAnchor>
+</section>
 
-<ScrollableAnchor id="work-with-streams-via-api"><div>
+<section id="work-with-streams-via-api">
 
 ## Work with streams via API
 --Duplicate section - Point to streams page--
 
-</div></ScrollableAnchor>
+</section>
 
-<ScrollableAnchor id="api-explorer"><div>
+<section id="api-explorer">
 
 ## API Explorer
 The API Explorer is a tool to investigate and test various endpoints on the Streamr API. You can read more about the tool [here](https://medium.com/streamrblog/the-new-api-explorer-for-streamr-developers-e6af28c2c808). 
@@ -123,4 +123,4 @@ Click the tile below to launch the API explorer in a new tab.
     </a>
 </div>
 
-</div></ScrollableAnchor>
+</section>

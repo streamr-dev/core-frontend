@@ -52,9 +52,9 @@ The navigation that powers the sidebar, mobile and page turner controls is found
 E.G.
 
 ```
-<ScrollableAnchor id="publish-to-a-stream"><div>
+<section id="publish-to-a-stream">
 
 ... content ... 
 
-</div></ScrollableAnchor>
+</section>
 ```
