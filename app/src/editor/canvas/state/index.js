@@ -422,6 +422,18 @@ export function isPortInvisible(canvas, portId) {
     return linkedOutputConnectionsDisabled(canvas, portId)
 }
 
+export function isPortRenameDisabled(canvas, portId) {
+    if (isRunning(canvas)) { return true }
+    if (!isVariadicPort(getPort(canvas, portId))) { return false }
+
+    if (getIsOutput(canvas, portId)) {
+        const linkedPort = findLinkedVariadicPort(canvas, portId)
+        return !!linkedPort && !isPortUsed(canvas, linkedPort.id)
+    }
+
+    return !isPortUsed(canvas, portId)
+}
+
 export function linkedOutputConnectionsDisabled(canvas, outputPortId) {
     if (!getIsOutput(canvas, outputPortId)) { return false }
     const outputPort = getPort(canvas, outputPortId)
