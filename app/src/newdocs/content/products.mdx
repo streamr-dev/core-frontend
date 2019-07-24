@@ -1,7 +1,10 @@
 import ScrollableAnchor from 'react-scrollable-anchor'
 import { Link } from 'react-router-dom'
+import { Button } from 'reactstrap'
+import { Translate } from 'react-redux-i18n'
 
 import docsStyles from '$newdocs/components/DocsLayout/docsLayout.pcss'
+import productsStyles from '../components/DocsPages/Products/products.pcss'
 import links from '$shared/../links'
 
 import ProductsOverview from './images/products/products-overview.png'
@@ -42,13 +45,25 @@ If you want to change the product price, this requires re-writing the product to
 <ScrollableAnchor id="work-with-products-in-core"><div>
 
 ## Work with products in Core
---content--
+
+Creating and editing marketplace products (paid and free) can be done anytime through the Core app. To create a product, click the creation button below or find it inside <Link to={links.userpages.products}>Core</Link>, once you've logged in.
+
+<Link to={links.marketplace.createProduct}>
+    <Button className={productsStyles.createProductButton} color="primary" >
+        <Translate value="actionBar.create" />
+    </Button>
+</Link>
+
+To edit a product, make sure you're logged in as the user that created the product. Then, simply visit the product page where you'll find the **Edit** button available in the toolbar. Please remember if you intend to edit a paid product then you must have your Ethereum wallet connected to your logged in account and available for authentication, to prove ownership of the product. Checkout our <Link to={links.newdocs.gettingStarted}>getting started guide</Link>, for more information about that.
+
+Editing free products can be done at any time but if you need to adjust a paid product's price or beneficiary address, then that action needs to go through the marketplace smart contract. Ethereum Gas will be required for this transaction.
 
 </div></ScrollableAnchor>
 
 <ScrollableAnchor id="community-products"><div>
 
 ## Community products
---content--
+
+Documentation for Community products is coming soon.
 
 </div></ScrollableAnchor>
