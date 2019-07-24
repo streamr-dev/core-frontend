@@ -8,7 +8,6 @@ import routes from '$routes'
 const meURL = `${process.env.STREAMR_API_URL}/users/me`
 
 function shouldRedirect(error) {
-    if (window.location.pathname === routes.logout()) { return true }
     // ignore redirect to login logic for login route
     if (window.location.pathname === routes.login()) { return false }
     if (error.response && error.response.status === 401) {
@@ -42,10 +41,16 @@ export default function installInterceptor(instance = axios) {
     // redirect to login page on 401 response
     instance.interceptors.response.use((response) => response, async (error) => {
         if (shouldRedirect(error)) {
-            const redirect = getRedirect()
-            window.location = routes.login(redirect ? {
-                redirect,
-            } : {})
+            const redirectPath = window.location.pathname
+            if (redirectPath === routes.logout()) {
+                // if user is on logout route, just redirect to root
+                window.location = routes.root()
+            } else {
+                const redirect = getRedirect()
+                window.location = routes.login(redirect ? {
+                    redirect,
+                } : {})
+            }
             await wait(3000) // stall a moment to let redirect happen
         }
         // always throw error anyway
