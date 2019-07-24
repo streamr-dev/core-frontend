@@ -18,7 +18,6 @@ const initialState = {
     streamFieldAutodetectError: null,
     permissions: null,
     pageSize: 20,
-    offset: 0,
     hasMoreSearchResults: null,
 }
 
@@ -79,14 +78,12 @@ describe('Stream reducer', () => {
                     ...initialState,
                     error: null,
                     ids: [1, 2, 3, 4, 5],
-                    offset: 4,
                     hasMoreSearchResults: true,
                 }
 
                 const mockState = {
                     ...initialState,
                     ids: [1, 2, 3],
-                    offset: 2,
                     hasMoreSearchResults: true,
                 }
 
@@ -104,7 +101,6 @@ describe('Stream reducer', () => {
                     ...initialState,
                     error: null,
                     ids: [],
-                    offset: 0,
                     hasMoreSearchResults: null,
                 }
 
@@ -112,7 +108,6 @@ describe('Stream reducer', () => {
                     ...initialState,
                     error: {},
                     ids: [1, 2, 3],
-                    offset: 2,
                     hasMoreSearchResults: true,
                 }
 
