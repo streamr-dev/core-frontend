@@ -648,9 +648,11 @@ describe('Variadic Port Handling', () => {
                 passThrough1,
                 passThrough2,
             ] = canvas.modules
-
+            // constant out1 -> passthrough1 in1
             canvas = State.updateCanvas(State.connectPorts(canvas, constantText1.outputs[0].id, passThrough1.inputs[0].id))
+            // passthrough1 out1 -> passthrough2 in1
             canvas = State.updateCanvas(State.connectPorts(canvas, passThrough1.outputs[0].id, passThrough2.inputs[0].id))
+            // passthrough2 out1 -> passthrough1 in1
             canvas = State.updateCanvas(State.connectPorts(canvas, passThrough2.outputs[0].id, passThrough1.inputs[0].id))
         })
     })

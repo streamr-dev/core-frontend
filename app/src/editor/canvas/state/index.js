@@ -399,10 +399,7 @@ export function linkedOutputConnectionsDisabled(canvas, outputPortId) {
     if (!inputPort) { return false }
     // if input is not connected, neither should the output
     // can't know if input is connected for exported ports, so ignore this check when input is exported
-    return (
-        !isPortConnected(canvas, inputPort.id)
-        && !isPortExported(canvas, inputPort.id)
-    )
+    return !isPortUsed(canvas, inputPort.id)
 }
 
 export function canConnectPorts(canvas, portIdA, portIdB) {
@@ -767,6 +764,15 @@ export function isHistoricalRunValid(canvas = {}) {
 }
 
 /**
+ * True if port is currently being used for something e.g. is connected or exported
+ * Unused variadic ports are candidates for removal.
+ */
+
+function isPortUsed(canvas, portId) {
+    return isPortConnected(canvas, portId) || isPortExported(canvas, portId)
+}
+
+/**
  * Variadic Port Handling
  */
 
@@ -820,12 +826,12 @@ function removeAdditionalVariadics(canvas, moduleHash, type) {
     if (type === 'outputs' && variadics[0].variadic.disableGrow) {
         // do nothing
     } else {
-        const lastConnected = variadics.slice().reverse().find(({ id }) => (
-            isPortConnected(canvas, id) || isPortExported(canvas, id)
+        const lastUsed = variadics.slice().reverse().find(({ id }) => (
+            isPortUsed(canvas, id)
         ))
 
-        // remove all variadics after last connected variadic + 1 placeholder
-        variadicsToRemove = variadics.slice(variadics.indexOf(lastConnected) + 2)
+        // remove all variadics after last used variadic + 1 placeholder
+        variadicsToRemove = variadics.slice(variadics.indexOf(lastUsed) + 2)
     }
 
     let nextCanvas = canvas
@@ -1022,7 +1028,7 @@ function updateVariadicModuleForType(canvas, moduleHash, type) {
         throw new Error('no last variadic port') // should not happen
     }
 
-    if (isPortConnected(canvas, lastVariadicPort.id) || isPortExported(canvas, lastVariadicPort.id)) {
+    if (isPortUsed(canvas, lastVariadicPort.id)) {
         // add new port if last variadic port is connected or exported
         return addVariadic(canvas, moduleHash, type)
     }
