@@ -33,15 +33,20 @@ function getRedirect() {
     return redirect
 }
 
+function wait(delay) {
+    return new Promise((resolve) => setTimeout(resolve, delay))
+}
+
 export default function installInterceptor(instance = axios) {
     // add global axios interceptor
     // redirect to login page on 401 response
-    instance.interceptors.response.use((response) => response, (error) => {
+    instance.interceptors.response.use((response) => response, async (error) => {
         if (shouldRedirect(error)) {
             const redirect = getRedirect()
             window.location = routes.login(redirect ? {
                 redirect,
             } : {})
+            await wait(3000) // stall a moment to let redirect happen
         }
         // always throw error anyway
         // caller shouldn't succeed
