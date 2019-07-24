@@ -13,7 +13,8 @@ export type Props = {
 }
 
 const Header = ({ title, onClose }: Props) => {
-    const { version, branch } = global.streamr.info()
+    const info = global.streamr.info()
+    const { version, branch } = info
     const isMaster = branch === 'master'
     // version e.g. v2.0.5-926-g7e20dd2eb
     const [versionNumber, , hash] = version.split('-')
@@ -41,6 +42,9 @@ const Header = ({ title, onClose }: Props) => {
             </div>
             <div className={styles.appInfo}>
                 Streamr Core {[versionNumber, displayBranch, displayHash].filter(Boolean).join(' ')}
+                {['travisTag', 'travisPrBranch', 'travisBranch', 'travisCommit', 'travisSha'].map((key) => (
+                    <div key={key}><strong>{key}:</strong> {info[key]}</div>
+                ))}
             </div>
         </div>
     )

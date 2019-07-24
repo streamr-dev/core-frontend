@@ -12,6 +12,12 @@ global.streamr = Object.assign(global.streamr || {}, {
             environment: process.env.NODE_ENV,
             version: process.env.TRAVIS_TAG || process.env.GIT_VERSION,
             branch: process.env.TRAVIS_BRANCH || process.env.GIT_BRANCH,
+            // todo (remove): for testing in PR build
+            travisTag: process.env.TRAVIS_TAG || 'travisTag',
+            travisPrBranch: process.env.TRAVIS_PULL_REQUEST_BRANCH || 'travisPrBranch',
+            travisBranch: process.env.TRAVIS_BRANCH || 'travisBranch',
+            travisCommit: process.env.TRAVIS_COMMIT || 'travisCommit',
+            travisSha: process.env.TRAVIS_PULL_REQUEST_SHA || 'travisSha',
         }
     },
 })
