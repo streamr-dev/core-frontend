@@ -2,6 +2,8 @@
  * Popup canvas/module searcher for adding new items to a dashboard.
  */
 
+/* eslint-disable react/no-array-index-key */
+
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import startCase from 'lodash/startCase'
 import groupBy from 'lodash/groupBy'
@@ -49,9 +51,9 @@ function DashboardModuleSearchItem({
                 {canvas.name}
             </SearchRow>
             {/* rows of matching canvas modules */}
-            {!!isExpanded && modules.map((m) => (
+            {!!isExpanded && modules.map((m, index) => (
                 <SearchRow
-                    key={m.hash}
+                    key={index}
                     onClick={() => onSelect(canvas.id, m)}
                     className={cx(styles.UIModule, {
                         [styles.isOnDashboard]: isOnDashboard(canvas.id, m),
@@ -126,11 +128,11 @@ class DashboardModuleSearch extends React.PureComponent {
                 isOpen
                 open={modalApi.open}
             >
-                {Object.entries(availableDashboardModules).map(([canvasId, modules]) => {
+                {Object.entries(availableDashboardModules).map(([canvasId, modules], index) => {
                     const canvas = canvases.find(({ id }) => id === canvasId)
                     return (
                         <DashboardModuleSearchItem
-                            key={canvas.id}
+                            key={index}
                             canvas={canvas}
                             modules={modules}
                             onSelect={this.onSelect}

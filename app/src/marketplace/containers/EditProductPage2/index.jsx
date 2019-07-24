@@ -11,6 +11,7 @@ import * as UndoContext from '$shared/components/UndoContextProvider'
 import ProductController from '../ProductController'
 import useProductUpdater from '../ProductController/useProductUpdater'
 import useProduct from '../ProductController/useProduct'
+import MarkdownEditor from '$mp/components/MarkdownEditor'
 
 import styles from './editProductPage.pcss'
 
@@ -22,6 +23,7 @@ const EditProductPage = ({ product }: Props) => (
     <div className={styles.root}>
         <Container className={styles.container}>
             <h1>{product.name}</h1>
+            <MarkdownEditor placeholder="Type something great about your product" />
         </Container>
     </div>
 )

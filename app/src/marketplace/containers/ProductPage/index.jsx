@@ -257,9 +257,7 @@ export class ProductPage extends Component<Props, State> {
 
         return !!product && (
             <Layout>
-                <Helmet>
-                    <title>{`${product.name} | ${I18n.t('general.title.suffix')}`}</title>
-                </Helmet>
+                <Helmet title={`${product.name} | ${I18n.t('general.title.suffix')}`} />
                 <ProductPageComponent
                     product={product}
                     streams={streams}

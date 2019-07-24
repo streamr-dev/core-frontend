@@ -9,9 +9,7 @@ import GettingStartedContent from '$newdocs/content/gettingStarted.mdx'
 
 const GettingStarted = () => (
     <DocsLayout subNav={subNav.gettingStarted}>
-        <Helmet>
-            <title>Streamr Docs | Getting Started</title>
-        </Helmet>
+        <Helmet title="Getting Started | Streamr Docs" />
         <GettingStartedContent />
     </DocsLayout>
 )

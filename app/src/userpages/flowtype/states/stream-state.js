@@ -27,6 +27,5 @@ export type UserPageStreamsState = {
     autodetectFetching: boolean,
     permissions: ?Array<Operation>,
     pageSize: number,
-    offset: number,
     hasMoreSearchResults: ?boolean,
 }
