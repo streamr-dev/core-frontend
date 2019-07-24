@@ -4,8 +4,9 @@
 
 import axios from 'axios'
 import routes from '$routes'
+import { formatApiUrl } from '$shared/utils/url'
 
-const meURL = `${process.env.STREAMR_API_URL}/users/me`
+const meURL = formatApiUrl('users', 'me')
 
 function shouldRedirect(error) {
     // ignore redirect to login logic for login route
