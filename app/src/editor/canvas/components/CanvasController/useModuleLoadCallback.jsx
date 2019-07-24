@@ -2,12 +2,12 @@ import { useCallback } from 'react'
 import merge from 'lodash/merge'
 
 import * as sharedServices from '$editor/shared/services'
-import usePending from '$editor/shared/hooks/usePending'
+import usePending from '$shared/hooks/usePending'
 
 import * as CanvasState from '../../state'
 
 export default function useModuleLoadCallback() {
-    const { wrap } = usePending('LOAD MODULE')
+    const { wrap } = usePending('canvas.LOAD MODULE')
     return useCallback(async (canvas, module = {}) => (
         wrap(async () => {
             if (module.hash) {

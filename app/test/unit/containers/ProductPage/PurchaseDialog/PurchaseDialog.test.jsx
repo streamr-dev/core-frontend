@@ -2,7 +2,7 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import assert from 'assert-diff'
-import { replace } from 'react-router-redux'
+import { replace } from 'connected-react-router'
 import { I18n } from 'react-redux-i18n'
 
 import { mapStateToProps, mapDispatchToProps, PurchaseDialog } from '$mp/containers/ProductPage/PurchaseDialog'

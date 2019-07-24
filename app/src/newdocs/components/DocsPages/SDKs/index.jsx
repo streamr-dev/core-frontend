@@ -9,9 +9,7 @@ import SDKsContent from '$newdocs/content/SDKs.mdx'
 
 const SDKs = () => (
     <DocsLayout subNav={subNav.SDKs}>
-        <Helmet>
-            <title>Streamr Docs | SDKs</title>
-        </Helmet>
+        <Helmet title="SDKs | Streamr Docs" />
         <SDKsContent />
     </DocsLayout>
 )

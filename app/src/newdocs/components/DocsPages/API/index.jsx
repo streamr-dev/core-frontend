@@ -9,9 +9,7 @@ import ApiContent from '$newdocs/content/api.mdx'
 
 const API = () => (
     <DocsLayout subNav={subNav.api}>
-        <Helmet>
-            <title>Streamr Docs | Streamr API</title>
-        </Helmet>
+        <Helmet title="Streamr API | Streamr Docs" />
         <ApiContent />
     </DocsLayout>
 )

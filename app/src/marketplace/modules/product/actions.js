@@ -1,7 +1,7 @@
 // @flow
 
 import { createAction } from 'redux-actions'
-import { replace } from 'react-router-redux'
+import { replace } from 'connected-react-router'
 
 import { productSchema, streamsSchema } from '$shared/modules/entities/schema'
 import { handleEntities } from '$shared/utils/entities'

@@ -1,7 +1,7 @@
 // @flow
 
 import { createAction } from 'redux-actions'
-import { getLocation } from 'react-router-redux'
+import { getLocation } from 'connected-react-router'
 import { I18n } from 'react-redux-i18n'
 
 import Notification from '$shared/utils/Notification'

@@ -9,9 +9,7 @@ import TutorialsContent from '$newdocs/content/tutorials.mdx'
 
 const Tutorials = () => (
     <DocsLayout subNav={subNav.tutorials}>
-        <Helmet>
-            <title>Streamr Docs | Tutorials</title>
-        </Helmet>
+        <Helmet title="Tutorials | Streamr Docs" />
         <TutorialsContent />
     </DocsLayout>
 )

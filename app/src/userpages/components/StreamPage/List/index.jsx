@@ -2,7 +2,7 @@
 
 import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
-import { push } from 'react-router-redux'
+import { push } from 'connected-react-router'
 import moment from 'moment'
 import copy from 'copy-to-clipboard'
 import { Translate, I18n } from 'react-redux-i18n'
@@ -17,7 +17,14 @@ import type { Stream, StreamId } from '$shared/flowtype/stream-types'
 
 import SvgIcon from '$shared/components/SvgIcon'
 import links from '$shared/../links'
-import { getStreams, updateFilter, deleteStream, getStreamStatus, cancelStreamStatusFetch } from '$userpages/modules/userPageStreams/actions'
+import {
+    getStreams,
+    updateFilter,
+    deleteStream,
+    getStreamStatus,
+    cancelStreamStatusFetch,
+    clearStreamsList,
+} from '$userpages/modules/userPageStreams/actions'
 import { selectStreams, selectFetching, selectFilter, selectHasMoreSearchResults } from '$userpages/modules/userPageStreams/selectors'
 import { getFilters } from '$userpages/utils/constants'
 import Table from '$shared/components/Table'
@@ -71,6 +78,7 @@ export type StateProps = {
 
 export type DispatchProps = {
     getStreams: (replace?: boolean) => void,
+    clearStreamsList: () => void,
     updateFilter: (filter: Filter) => void,
     showStream: (StreamId) => void,
     deleteStream: (StreamId) => void,
@@ -147,11 +155,12 @@ class StreamList extends Component<Props, State> {
         if (!filter) {
             updateFilter(this.defaultFilter)
         }
-        getStreams()
+        getStreams(true)
     }
 
     componentWillUnmount() {
         this.props.cancelStreamStatusFetch()
+        this.props.clearStreamsList()
     }
 
     onSearchChange = (value: string) => {
@@ -499,6 +508,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
+    clearStreamsList: () => dispatch(clearStreamsList()),
     getStreams: (replace: boolean = false) => dispatch(getStreams(replace)),
     updateFilter: (filter) => dispatch(updateFilter(filter)),
     showStream: (id: StreamId) => dispatch(push(`${links.userpages.streamShow}/${id}`)),

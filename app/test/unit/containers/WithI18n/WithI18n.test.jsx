@@ -38,14 +38,14 @@ describe('WithI18n', () => {
     it('renders the component', () => {
         const EmptyWithHOC = withI18n(EmptyComponent)
         wrapper = shallow(<EmptyWithHOC {...props} />)
-        expect(wrapper.dive().find(EmptyComponent).length).toEqual(1)
+        expect(wrapper.dive().dive().find(EmptyComponent).length).toEqual(1)
     })
 
     it('augments the target component with right props', () => {
         const EmptyWithHOC = withI18n(EmptyComponent)
         wrapper = shallow(<EmptyWithHOC {...props} />)
 
-        const innerComponent = wrapper.dive()
+        const innerComponent = wrapper.dive().dive()
         expect(innerComponent.find(EmptyComponent).length).toEqual(1)
         expect(innerComponent.prop('locale')).toEqual('en')
     })

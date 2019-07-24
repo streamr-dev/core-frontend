@@ -1,15 +1,15 @@
 import { useContext, useCallback } from 'react'
 
 import useIsMountedRef from '$shared/utils/useIsMountedRef'
-import * as RouterContext from '$editor/shared/components/RouterContext'
-import usePending from '$editor/shared/hooks/usePending'
+import { Context as RouterContext } from '$shared/components/RouterContextProvider'
+import usePending from '$shared/hooks/usePending'
 
 import links from '../../../../links'
 import * as services from '../../services'
 
 export default function useCanvasRemoveCallback() {
-    const { history } = useContext(RouterContext.Context)
-    const { isPending, wrap } = usePending('REMOVE')
+    const { history } = useContext(RouterContext)
+    const { isPending, wrap } = usePending('canvas.REMOVE')
     const isMountedRef = useIsMountedRef()
 
     return useCallback(async ({ id }) => {
