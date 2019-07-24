@@ -140,7 +140,9 @@ partition = hash(partitionKey) % numberOfPartitions
 ```
 
 <Warning>
+
 At the time of writing, there are some limitations with multi-partition streams: The number of partitions can only be set when creating streams via the API, and the number cannot be changed afterwards. When using multi-partition streams on canvases, the canvases always subscribe to all partitions in a stream.
+
 </Warning>
 
 Currently partitions don’t have well-defined rate limits, but future versions of the P2P network may enforce limits. For now, we recommend not exceeding around 100 msg/sec/partition.
