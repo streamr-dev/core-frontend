@@ -871,21 +871,23 @@ function removeAdditionalVariadics(canvas, moduleHash, type) {
     return nextCanvas
 }
 
-function getVariadicDisplayName(canvas, portId, portIndex) {
+function generateVariadicDisplayName(canvas, portId, portIndex) {
     // note portIndex starts at 1
-    const port = getPort(canvas, portId)
     const type = getPortType(canvas, portId)
-    let { displayName } = port
+    if (type === 'input') {
+        return `in${portIndex}`
+    }
+    return `out${portIndex}`
+}
+
+function getVariadicDisplayName(canvas, portId, portIndex) {
+    const { displayName } = getPort(canvas, portId)
     // reset display names of disconnected ports
-    if (!isPortConnected(canvas, port.id)) {
-        if (type === 'input') {
-            displayName = `in${portIndex}`
-        } else {
-            const linkedInput = findLinkedVariadicPort(canvas, port.id)
-            // reset outputs with no linked input or only when linked input not connected
-            if (!linkedInput || (linkedInput && !isPortConnected(canvas, linkedInput.id))) {
-                displayName = `out${portIndex}`
-            }
+    if (!isPortConnected(canvas, portId)) {
+        const linkedInput = findLinkedVariadicPort(canvas, portId)
+        // reset outputs with no linked input or only when linked input not connected
+        if (!linkedInput || (linkedInput && !isPortConnected(canvas, linkedInput.id))) {
+            return generateVariadicDisplayName(canvas, portId, portIndex)
         }
     }
     return displayName
@@ -893,15 +895,11 @@ function getVariadicDisplayName(canvas, portId, portIndex) {
 
 function getVariadicLongName(canvas, portId, portIndex) {
     // note portIndex starts at 1
-    const type = getPortType(canvas, portId)
     const m = getModuleForPort(canvas, portId)
 
     const port = getPort(canvas, portId)
     if (!isPortConnected(canvas, port.id)) {
-        if (type === 'input') {
-            return `${m.name}.in${portIndex}`
-        }
-        return `${m.name}.out${portIndex}`
+        return `${m.name}.${generateVariadicDisplayName(canvas, portId, portIndex)}`
     }
 
     const sourcePort = getPort(canvas, portId)
