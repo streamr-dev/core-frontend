@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import cx from 'classnames'
 
 import styles from './markdownEditor.pcss'
@@ -18,13 +18,16 @@ const MarkdownEditor = ({ placeholder, onChange, className }: Props) => {
     const onTextChange = useCallback((e: SyntheticInputEvent<EventTarget>) => {
         const { value } = e.target
         setText(value)
-        const trimmedValue = value.trim()
-        setWordCount(trimmedValue.length > 0 ? trimmedValue.split(/\s+/g).length : 0)
 
         if (onChange != null) {
             onChange(value)
         }
     }, [onChange])
+
+    useEffect(() => {
+        const trimmedValue = text.trim()
+        setWordCount(trimmedValue.length > 0 ? trimmedValue.split(/\s+/g).length : 0)
+    }, [text])
 
     return (
         <div className={styles.root}>
