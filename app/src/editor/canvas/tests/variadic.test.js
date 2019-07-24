@@ -655,5 +655,107 @@ describe('Variadic Port Handling', () => {
             // passthrough2 out1 -> passthrough1 in1
             canvas = State.updateCanvas(State.connectPorts(canvas, passThrough2.outputs[0].id, passThrough1.inputs[0].id))
         })
+
+        it('propagates disconnections', async () => {
+            let canvas = State.emptyCanvas()
+            canvas = State.addModule(canvas, await loadModuleDefinition('ConstantText'))
+            canvas = State.addModule(canvas, await loadModuleDefinition('PassThrough'))
+            canvas = State.addModule(canvas, await loadModuleDefinition('PassThrough'))
+            let [
+                constantText1,
+                passThrough1,
+                passThrough2,
+            ] = canvas.modules
+
+            // constant out1 -> passthrough1 in1
+            canvas = State.updateCanvas(State.connectPorts(canvas, constantText1.outputs[0].id, passThrough1.inputs[0].id))
+            // passthrough1 out1 -> passthrough2 in1
+            canvas = State.updateCanvas(State.connectPorts(canvas, passThrough1.outputs[0].id, passThrough2.inputs[0].id))
+
+            ;[ // eslint-disable-line semi-style
+                constantText1,
+                passThrough1,
+                passThrough2,
+            ] = canvas.modules
+
+            // passthrough2 out1 -> passthrough1 in2
+            canvas = State.updateCanvas(State.connectPorts(canvas, passThrough2.outputs[0].id, passThrough1.inputs[1].id))
+
+            // disconnect input should remove chained outputs
+            canvas = State.updateCanvas(State.disconnectPorts(canvas, constantText1.outputs[0].id, passThrough1.inputs[0].id))
+
+            ;[ // eslint-disable-line semi-style
+                constantText1,
+                passThrough1,
+                passThrough2,
+            ] = canvas.modules
+
+            // all superfluous ports removed
+            expect(passThrough1.outputs.length).toBe(1)
+            expect(passThrough1.inputs.length).toBe(1)
+            expect(passThrough2.outputs.length).toBe(1)
+            expect(passThrough2.inputs.length).toBe(1)
+
+            // nothing connected
+            expect(passThrough1.outputs.every((p) => !State.isPortConnected(canvas, p.id))).toBeTruthy()
+            expect(passThrough1.inputs.every((p) => !State.isPortConnected(canvas, p.id))).toBeTruthy()
+            expect(passThrough2.outputs.every((p) => !State.isPortConnected(canvas, p.id))).toBeTruthy()
+            expect(passThrough2.inputs.every((p) => !State.isPortConnected(canvas, p.id))).toBeTruthy()
+        })
+
+        it('propagates disconnections through multiple levels', async () => {
+            let canvas = State.emptyCanvas()
+            canvas = State.addModule(canvas, await loadModuleDefinition('ConstantText'))
+            canvas = State.addModule(canvas, await loadModuleDefinition('PassThrough'))
+            canvas = State.addModule(canvas, await loadModuleDefinition('PassThrough'))
+            let [
+                constantText1,
+                passThrough1,
+                passThrough2,
+            ] = canvas.modules
+
+            // constant out1 -> passthrough1 in1
+            canvas = State.updateCanvas(State.connectPorts(canvas, constantText1.outputs[0].id, passThrough1.inputs[0].id))
+
+            // passthrough1 out1 -> passthrough2 in1
+            canvas = State.updateCanvas(State.connectPorts(canvas, passThrough1.outputs[0].id, passThrough2.inputs[0].id))
+
+            ;[ // eslint-disable-line semi-style
+                constantText1,
+                passThrough1,
+                passThrough2,
+            ] = canvas.modules
+
+            // passthrough2 out1 -> passthrough1 in2
+            canvas = State.updateCanvas(State.connectPorts(canvas, passThrough2.outputs[0].id, passThrough1.inputs[1].id))
+
+            ;[ // eslint-disable-line semi-style
+                constantText1,
+                passThrough1,
+                passThrough2,
+            ] = canvas.modules
+            // passthrough1 out2 -> passthrough2 in2
+            canvas = State.updateCanvas(State.connectPorts(canvas, passThrough1.outputs[1].id, passThrough2.inputs[1].id))
+
+            // disconnect input should remove chained outputs
+            canvas = State.updateCanvas(State.disconnectPorts(canvas, constantText1.outputs[0].id, passThrough1.inputs[0].id))
+
+            ;[ // eslint-disable-line semi-style
+                constantText1,
+                passThrough1,
+                passThrough2,
+            ] = canvas.modules
+
+            // all superfluous ports removed
+            expect(passThrough1.outputs.length).toBe(1)
+            expect(passThrough1.inputs.length).toBe(1)
+            expect(passThrough2.outputs.length).toBe(1)
+            expect(passThrough2.inputs.length).toBe(1)
+            // nothing connected
+            expect(passThrough1.outputs.every((p) => !State.isPortConnected(canvas, p.id))).toBeTruthy()
+            expect(passThrough1.inputs.every((p) => !State.isPortConnected(canvas, p.id))).toBeTruthy()
+            expect(passThrough2.outputs.every((p) => !State.isPortConnected(canvas, p.id))).toBeTruthy()
+            expect(passThrough2.inputs.every((p) => !State.isPortConnected(canvas, p.id))).toBeTruthy()
+        })
     })
 })
