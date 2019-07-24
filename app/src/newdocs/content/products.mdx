@@ -1,4 +1,4 @@
-import ScrollableAnchor from 'react-scrollable-anchor'
+
 import { Link } from 'react-router-dom'
 import { Button } from 'reactstrap'
 import { Translate } from 'react-redux-i18n'
@@ -10,7 +10,7 @@ import links from '$shared/../links'
 import ProductsOverview from './images/products/products-overview.png'
 import ProductsList from './images/products/products-list.png'
 
-<ScrollableAnchor id="intro-to-products"><div>
+<section id="intro-to-products">
 
 ## Intro to products
 
@@ -40,9 +40,9 @@ Once you’ve created a product, you don’t need to publish it right away, it i
 
 If you want to change the product price, this requires re-writing the product to the blockchain, so you’ll need your Ethereum wallet and a small amount of Ether to pay for gas in order to update the price of a published product.
 
-</div></ScrollableAnchor>
+</section>
 
-<ScrollableAnchor id="work-with-products-in-core"><div>
+<section id="work-with-products-in-core">
 
 ## Work with products in Core
 
@@ -58,12 +58,12 @@ To edit a product, make sure you're logged in as the user that created the produ
 
 Editing free products can be done at any time but if you need to adjust a paid product's price or beneficiary address, then that action needs to go through the marketplace smart contract. Ethereum Gas will be required for this transaction.
 
-</div></ScrollableAnchor>
+</section>
 
-<ScrollableAnchor id="community-products"><div>
+<section id="community-products">
 
 ## Community products
 
 Documentation for Community products is coming soon.
 
-</div></ScrollableAnchor>
+</section>

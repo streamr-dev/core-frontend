@@ -31,7 +31,7 @@ const navigationLinks: NavigationLink = {
 export const subNav = {
     introduction: {},
     gettingStarted: {
-        'obtain-api-keys': 'Obtain API keys',
+        'get-api-keys': 'Get your API keys',
         'connecting-ethereum-identity': 'Connecting your Ethereum identity',
         'get-building': 'Get building',
         'useful-links': 'Useful links',

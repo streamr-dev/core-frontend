@@ -1,4 +1,4 @@
-import ScrollableAnchor from 'react-scrollable-anchor'
+
 import { Link } from 'react-router-dom'
 
 import streamListing from './images/streams/stream-listing.png'
@@ -24,7 +24,7 @@ import {
     PublishJavaClient,
 } from './code/streams.js'
 
-<ScrollableAnchor id="intro-to-streams"><div>
+<section id="intro-to-streams">
 
 ## Intro to streams
 
@@ -113,9 +113,9 @@ There’s a number of built-in data types that can be used in a stream. These ar
 
 Field types can be freely mixed in a single data point. And you can freely add new fields to an existing stream; you don’t have to know what fields you might eventually need. A single data point can be of any size within reason, and a stream can grow indefinitely when extended by new data points.
 
-</div></ScrollableAnchor>
+</section>
 
-<ScrollableAnchor id="work-with-streams-in-core"><div>
+<section id="work-with-streams-in-core">
 
 ## Work with streams in Core
 Streamr Core provides you with the tools to create, edit, share and delete your streams as well as view and inspect the streams you have purchased on the Marketplace.
@@ -172,9 +172,9 @@ You can add new data to the stream by uploading a CSV file and you can delete ex
 
 The historical data storage period determines how many days your data is retained before it will be removed automatically from the Streamr network. The default period is 365 days.
 
-</div></ScrollableAnchor>
+</section>
 
-<ScrollableAnchor id="work-with-streams-via-sdks"><div>
+<section id="work-with-streams-via-sdks">
 
 ## Work with streams via SDKs
 
@@ -225,16 +225,16 @@ Events in Streams are key-value pairs, represented in Java as Map objects. Below
 
 <CodeSnippet language='java'>{PublishJavaClient}</CodeSnippet>
 
-</div></ScrollableAnchor>
+</section>
 
-<ScrollableAnchor id="work-with-streams-via-api"><div>
+<section id="work-with-streams-via-api">
 
 ## Work with streams via API
 --content--
 
-</div></ScrollableAnchor>
+</section>
 
-<ScrollableAnchor id="data-signing-and-verification"><div>
+<section id="data-signing-and-verification">
 
 ## Data signing and verification
 
@@ -273,16 +273,16 @@ The signature verification is done in three steps:
 
 Both signature computation and verification are implemented in the Javascript and Java SDKs.
 
-</div></ScrollableAnchor>
+</section>
 
-<ScrollableAnchor id="end-to-end-encryption"><div>
+<section id="end-to-end-encryption">
 
 ## End-to-end encryption
 --content--
 
-</div></ScrollableAnchor>
+</section>
 
-<ScrollableAnchor id="partitioning"><div>
+<section id="partitioning">
 
 ## Partitioning
 
@@ -320,4 +320,4 @@ At the time of writing, there are some limitations with multi-partition streams:
 
 Currently partitions don’t have well-defined rate limits, but future versions of the P2P network may enforce limits. For now, we recommend not exceeding around 100 msg/sec/partition.
 
-</div></ScrollableAnchor>
+</section>
