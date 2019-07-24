@@ -1,0 +1,26 @@
+.root {
+  width: 100%;
+  font-family: var(--sans);
+  font-size: 20px;
+  letter-spacing: 0;
+  line-height: 48px;
+  text-align: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  background-color: #F1F1F1;
+  padding: 1em;
+}
+
+.option {
+  color: #A3A3A3;
+  background-color: #F1F1F1;
+  outline: none;
+  cursor: pointer;
+  user-select: none;
+  transition: all 250ms ease-in;
+}
+
+.selected {
+  color: #0324FF;
+  background-color: white;
+}

@@ -40,6 +40,7 @@ import CodeSnippet from '$shared/components/CodeSnippet'
 import Tooltip from '$shared/components/Tooltip'
 import ContextMenu from '$shared/components/ContextMenu'
 import { NotificationIcon } from '$shared/utils/constants'
+import ButtonToggle from '$shared/components/ButtonToggle'
 
 import sharedStyles from './shared.pcss'
 
@@ -679,4 +680,13 @@ story('Tooltip')
         <Tooltip value="This is a tooltip">
             Hover to show tooltip
         </Tooltip>
+    ))
+
+story('ButtonToggle')
+    .addWithJSX('basic', () => (
+        <ButtonToggle
+            options={['value 1', 'value 2', 'value 3']}
+            defaultSelectedOption="value 2"
+            onChange={action('selected')}
+        />
     ))
