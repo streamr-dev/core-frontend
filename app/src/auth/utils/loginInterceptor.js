@@ -8,6 +8,7 @@ import routes from '$routes'
 const meURL = `${process.env.STREAMR_API_URL}/users/me`
 
 function shouldRedirect(error) {
+    if (window.location.pathname === routes.logout()) { return true }
     // ignore redirect to login logic for login route
     if (window.location.pathname === routes.login()) { return false }
     if (error.response && error.response.status === 401) {
@@ -24,8 +25,11 @@ function shouldRedirect(error) {
 
 function getRedirect() {
     let redirect = window.location.href.slice(window.location.origin.length)
+    const redirectPath = window.location.pathname
     // never redirect back to login after logging in
-    redirect = (redirect && redirect !== routes.login()) ? redirect : undefined
+    redirect = (redirect && redirectPath !== routes.login()) ? redirect : undefined
+    // never redirect to logout after logging in
+    redirect = (redirect && redirectPath !== routes.logout()) ? redirect : undefined
     return redirect
 }
 
