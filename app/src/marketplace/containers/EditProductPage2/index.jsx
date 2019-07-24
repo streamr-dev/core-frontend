@@ -3,6 +3,7 @@
 import React, { useContext } from 'react'
 import { Container } from 'reactstrap'
 
+import MarkdownEditor from '$mp/components/MarkdownEditor'
 import * as RouterContext from '$shared/components/RouterContextProvider'
 
 import styles from './editProductPage.pcss'
@@ -15,6 +16,7 @@ const EditProductPage = () => {
         <div className={styles.root}>
             <Container className={styles.container}>
                 New product editor...
+                <MarkdownEditor placeholder="Type something great about your product" />
             </Container>
         </div>
     )
