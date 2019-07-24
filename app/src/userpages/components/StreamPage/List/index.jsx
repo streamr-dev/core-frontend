@@ -2,7 +2,7 @@
 
 import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
-import { push } from 'react-router-redux'
+import { push } from 'connected-react-router'
 import moment from 'moment'
 import copy from 'copy-to-clipboard'
 import { Translate, I18n } from 'react-redux-i18n'
@@ -17,7 +17,14 @@ import type { Stream, StreamId } from '$shared/flowtype/stream-types'
 
 import SvgIcon from '$shared/components/SvgIcon'
 import links from '$shared/../links'
-import { getStreams, updateFilter, deleteStream, getStreamStatus, cancelStreamStatusFetch } from '$userpages/modules/userPageStreams/actions'
+import {
+    getStreams,
+    updateFilter,
+    deleteStream,
+    getStreamStatus,
+    cancelStreamStatusFetch,
+    clearStreamsList,
+} from '$userpages/modules/userPageStreams/actions'
 import { selectStreams, selectFetching, selectFilter, selectHasMoreSearchResults } from '$userpages/modules/userPageStreams/selectors'
 import { getFilters } from '$userpages/utils/constants'
 import Table from '$shared/components/Table'
@@ -71,6 +78,7 @@ export type StateProps = {
 
 export type DispatchProps = {
     getStreams: (replace?: boolean) => void,
+    clearStreamsList: () => void,
     updateFilter: (filter: Filter) => void,
     showStream: (StreamId) => void,
     deleteStream: (StreamId) => void,
@@ -147,11 +155,12 @@ class StreamList extends Component<Props, State> {
         if (!filter) {
             updateFilter(this.defaultFilter)
         }
-        getStreams()
+        getStreams(true)
     }
 
     componentWillUnmount() {
         this.props.cancelStreamStatusFetch()
+        this.props.clearStreamsList()
     }
 
     onSearchChange = (value: string) => {
@@ -275,6 +284,7 @@ class StreamList extends Component<Props, State> {
         } = this.props
         const timezone = moment.tz.guess()
         const { dialogTargetStream, activeDialog } = this.state
+        const nowTime = moment.tz(Date.now(), timezone)
 
         return (
             <Layout
@@ -358,10 +368,14 @@ class StreamList extends Component<Props, State> {
                                                         />}
                                                     </Table.Th>
                                                     <Table.Td noWrap title={stream.description}>{stream.description}</Table.Td>
-                                                    <Table.Td noWrap>{moment.tz(stream.lastUpdated, timezone).fromNow()}</Table.Td>
+                                                    <Table.Td noWrap>
+                                                        {stream.lastUpdated && (
+                                                            moment.min(moment.tz(stream.lastUpdated, timezone), nowTime).fromNow()
+                                                        )}
+                                                    </Table.Td>
                                                     <Table.Td>
                                                         {stream.lastData && (
-                                                            moment.tz(stream.lastData, timezone).fromNow()
+                                                            moment.min(moment.tz(stream.lastData, timezone), nowTime).fromNow()
                                                         )}
                                                     </Table.Td>
                                                     <Table.Td className={styles.statusColumn}>
@@ -449,12 +463,16 @@ class StreamList extends Component<Props, State> {
                                                                     {stream.description}
                                                                 </span>
                                                                 <span className={styles.lastUpdatedStreamMobile}>
-                                                                    {moment.tz(stream.lastUpdated, timezone).fromNow()}
+                                                                    {stream.lastUpdated && (
+                                                                        moment.min(moment.tz(stream.lastUpdated, timezone), nowTime).fromNow()
+                                                                    )}
                                                                 </span>
                                                             </div>
                                                             <div>
                                                                 <span className={styles.lastUpdatedStreamTablet}>
-                                                                    {moment.tz(stream.lastUpdated, timezone).fromNow()}
+                                                                    {stream.lastUpdated && (
+                                                                        moment.min(moment.tz(stream.lastUpdated, timezone), nowTime).fromNow()
+                                                                    )}
                                                                 </span>
                                                                 <StatusIcon status={stream.streamStatus} className={styles.tabletStatusStreamIcon} />
                                                             </div>
@@ -490,6 +508,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
+    clearStreamsList: () => dispatch(clearStreamsList()),
     getStreams: (replace: boolean = false) => dispatch(getStreams(replace)),
     updateFilter: (filter) => dispatch(updateFilter(filter)),
     showStream: (id: StreamId) => dispatch(push(`${links.userpages.streamShow}/${id}`)),

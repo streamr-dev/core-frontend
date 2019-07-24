@@ -1,6 +1,7 @@
 .root {
   align-items: flex-start;
   display: flex;
+  transition: opacity 0.05s;
 }
 
 .root:not(.dragInProgress):hover .portOption {
@@ -10,4 +11,9 @@
 
 .spaceholder {
   flex-grow: 1;
+}
+
+.isInvisible {
+  opacity: 0;
+  pointer-events: none;
 }

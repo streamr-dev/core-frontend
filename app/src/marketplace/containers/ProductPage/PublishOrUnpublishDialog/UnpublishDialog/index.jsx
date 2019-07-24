@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { replace } from 'react-router-redux'
+import { replace } from 'connected-react-router'
 
 import type { StoreState, PublishStep } from '$mp/flowtype/store-state'
 import type { Product, ProductId } from '$mp/flowtype/product-types'

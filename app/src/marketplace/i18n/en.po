@@ -590,6 +590,27 @@ msgstr "Waiting for the blockchain..."
 msgid "notifications##streamIdCopied"
 msgstr "Stream ID copied"
 
+msgid "productTypeChooser##title"
+msgstr "Choose your product type"
+
+msgid "productTypeChooser##standard##title"
+msgstr "Standard Product"
+
+msgid "productTypeChooser##standard##description"
+msgstr "Add your own data stream or group of streams to a product and publish it on the Marketplace. For help creating streams, see the docs."
+
+msgid "productTypeChooser##standard##linkTitle"
+msgstr "Create standard product"
+
+msgid "productTypeChooser##community##title"
+msgstr "Community Product"
+
+msgid "productTypeChooser##community##description"
+msgstr "Gather members via your own app and crowdsell the data they provide. You take a cut, and the rest is distributed to members."
+
+msgid "productTypeChooser##community##linkTitle"
+msgstr "Create community product"
+
 msgid "productDetailsEditor##category"
 msgstr "Set product category"
 

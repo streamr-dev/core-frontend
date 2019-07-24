@@ -39,6 +39,35 @@ class CanvasModule extends React.PureComponent {
         this.unmounted = true
     }
 
+    onSelection() {
+        if (!this.el.current) { return }
+        this.el.current.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+            inline: 'nearest',
+        })
+        // no direct access to normal focus ref, have to go via parentElement
+        this.el.current.parentElement.focus()
+    }
+
+    componentDidMount() {
+        const { module, selectedModuleHash } = this.props
+        const isSelected = module.hash === selectedModuleHash
+        // scroll into view on mount if selected
+        if (isSelected) {
+            this.onSelection()
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        const { module, selectedModuleHash } = this.props
+        const isSelected = module.hash === selectedModuleHash
+        // scroll into view if selection status changed
+        if (isSelected && module.hash !== prevProps.selectedModuleHash) {
+            this.onSelection()
+        }
+    }
+
     static getDerivedStateFromProps(props) {
         if (!props.module) {
             return null
@@ -147,7 +176,7 @@ class CanvasModule extends React.PureComponent {
                 data-modulehash={module.hash}
                 {...props}
             >
-                <div className={styles.body}>
+                <div className={styles.body} ref={this.el}>
                     <Probe group="ModuleHeight" height="auto" />
                     <ModuleHeader
                         className={cx(styles.header, ModuleStyles.dragHandle)}

@@ -26,7 +26,12 @@ export class DragDropProvider extends React.PureComponent {
     }
 
     onKeyDown = (event) => {
-        if (this.state.isDragging && event.key === 'Escape') {
+        if (!this.state.isDragging) { return }
+        // all keyboard events should be swallowed while dragging
+        event.preventDefault()
+        event.stopPropagation()
+        event.stopImmediatePropagation()
+        if (event.key === 'Escape') {
             this.onCancel()
         }
     }
@@ -183,7 +188,10 @@ class EditorDraggable extends React.PureComponent {
             }, this.reset)
         }
 
-        if (this.unmounted) { return }
+        if (this.unmounted) {
+            this.context.onStop()
+            return
+        }
 
         this.setState({
             // ensure this happens after props.onStop

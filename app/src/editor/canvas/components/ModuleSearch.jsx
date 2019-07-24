@@ -1,6 +1,11 @@
 // @flow
 
-import React from 'react'
+// Need to use index-based keys otherwise transitions get messed up.
+// With normal id-based keys and index-based selection higlight,
+// the highlight will flicker when the item at same index changes selection state
+/* eslint-disable react/no-array-index-key */
+
+import React, { useState, useCallback } from 'react'
 import startCase from 'lodash/startCase'
 import debounce from 'lodash/debounce'
 import cx from 'classnames'
@@ -8,7 +13,7 @@ import cx from 'classnames'
 import type { Stream } from '$shared/flowtype/stream-types'
 import SvgIcon from '$shared/components/SvgIcon'
 import { type Ref } from '$shared/flowtype/common-types'
-import { getModuleBoundingBox } from '$editor/shared/utils/boundingBox'
+import { getModuleBoundingBox, findNonOverlappingPosition } from '$editor/shared/utils/boundingBox'
 
 import { getModuleCategories, getStreams } from '../services'
 import { moduleSearch } from '../state'
@@ -30,42 +35,40 @@ const categoryMapping = {
 type MenuCategoryProps = {
     category: CategoryType,
     addModule: (id: number, x: ?number, y: ?number, streamId: ?string) => void,
+    disabled?: boolean,
 }
 
-type MenuCategoryState = {
-    isExpanded: boolean,
-}
+export function ModuleMenuCategory(props: MenuCategoryProps) {
+    const { category, addModule, disabled } = props
+    const isDisabled = disabled || !category.modules.length // disable if no modules
+    const [isExpanded, setIsExpanded] = useState(false)
 
-export class ModuleMenuCategory extends React.PureComponent<MenuCategoryProps, MenuCategoryState> {
-    state = {
-        isExpanded: false,
-    }
+    const toggle = useCallback(() => {
+        setIsExpanded((isExpanded) => !isExpanded)
+    }, [setIsExpanded])
 
-    toggle = () => {
-        this.setState(({ isExpanded }) => ({ isExpanded: !isExpanded }))
-    }
+    const onClick = useCallback(() => {
+        if (isDisabled) { return }
+        toggle()
+    }, [isDisabled, toggle])
 
-    render() {
-        const { category, addModule } = this.props
-        const { isExpanded } = this.state
-        return (
-            <React.Fragment>
-                {/* eslint-disable-next-line */}
-                <SearchRow
-                    className={cx(styles.Category, {
-                        [styles.active]: !!isExpanded,
-                    })}
-                    key={category.name}
-                    onClick={() => this.toggle()}
-                >
-                    {category.name}
-                </SearchRow>
-                {isExpanded && category.modules.map((m) => (
-                    <ModuleMenuItem key={m.id} module={m} addModule={addModule} />
-                ))}
-            </React.Fragment>
-        )
-    }
+    return (
+        <React.Fragment>
+            {/* eslint-disable-next-line */}
+            <SearchRow
+                className={cx(styles.Category, {
+                    [styles.active]: !!isExpanded,
+                })}
+                onClick={onClick}
+                disabled={isDisabled}
+            >
+                {category.name}
+            </SearchRow>
+            {isExpanded && category.modules.map((m, index) => (
+                <ModuleMenuItem module={m} key={index} addModule={addModule} />
+            ))}
+        </React.Fragment>
+    )
 }
 
 const onDragStart = (e: any, moduleId: number, moduleName: string, streamId?: string) => {
@@ -185,7 +188,7 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
     searchStreams = debounce(async (value) => {
         // remove 'stream' term from search
         // ensures we can pseudo 'filter results to streams' using "stream searchterm"
-        const streamSearchString = value.replace(/(\s+|^)stream(\s+|$)/g, ' ').trim()
+        const streamSearchString = value.replace(/^streams?\s/g, ' ').trim()
         const params = {
             id: '',
             search: streamSearchString,
@@ -199,13 +202,13 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
 
         if (this.unmounted) { return }
         // throw away results if no longer current
-        if (this.currentSearch.trim() !== value.trim()) { return }
+        if (this.currentSearch !== value) { return }
 
         this.setState({ matchingStreams })
     }, 500)
 
     onChange = async (value: string) => {
-        const trimmedValue = value.trim()
+        const trimmedValue = value.trim().replace(/\s+/g, ' ') // trim & collapse whitespace
         this.currentSearch = trimmedValue
 
         // Search modules
@@ -273,24 +276,6 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
         return modules
     }
 
-    findNonOverlappingPosition = (myBB: any, stackOffset: number) => {
-        this.props.canvas.modules.forEach((m) => {
-            const otherBB = getModuleBoundingBox(m)
-            const xDiff = myBB.x - otherBB.x
-            const yDiff = myBB.y - otherBB.y
-            if ((xDiff < stackOffset && yDiff < stackOffset)) {
-                myBB.x += (stackOffset - xDiff) // align to offset "grid"
-                myBB.y += (stackOffset - yDiff) // align to offset "grid"
-                return this.findNonOverlappingPosition(myBB, stackOffset)
-            }
-        })
-
-        return {
-            x: myBB.x,
-            y: myBB.y,
-        }
-    }
-
     getPositionForClickInsert = () => {
         const canvasElement = document.querySelector(`.${CanvasStyles.Modules}`)
 
@@ -304,25 +289,20 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
         const selfRect = this.selfRef.current.getBoundingClientRect()
         const canvasRect = canvasElement.getBoundingClientRect()
 
-        // Align module to the top right corner of ModuleSearch with a 32px offset
-        const position = {
+        const myBB = {
+            // Align module to the top right corner of ModuleSearch with a 32px offset
             x: (selfRect.right - canvasRect.left - 20) + 32,
             y: selfRect.top - canvasRect.top - 20,
-        }
-
-        const myBB = {
-            x: position.x,
-            y: position.y,
             // TODO: It would be nice to use actual module size here but we know
             //       it only after the module has been added to the canvas
             width: 100,
             height: 50,
         }
 
-        const stackOffset = 16 // pixels
+        const boundingBoxes = this.props.canvas.modules.map((m) => getModuleBoundingBox(m))
 
-        const pos = this.findNonOverlappingPosition(myBB, stackOffset)
-        return pos
+        const stackOffset = 16 // pixels
+        return findNonOverlappingPosition(myBB, boundingBoxes, stackOffset)
     }
 
     renderMenu = () => {
@@ -359,13 +339,13 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
         return (
             <React.Fragment>
                 {matchingModules.length > 0 && (
-                    <SearchRow className={styles.SearchCategory}>Modules</SearchRow>
+                    <SearchRow className={styles.SearchCategory} disabled>Modules</SearchRow>
                 )}
-                {matchingModules.map((m) => (
+                {matchingModules.map((m, index) => (
                     /* TODO: follow the disabled jsx-a11y recommendations below to add keyboard support */
                     /* eslint-disable-next-line jsx-a11y/click-events-have-key-events */
                     <SearchRow
-                        key={m.id}
+                        key={index}
                         className={cx(styles.ModuleItem, styles.WithCategory)}
                         draggable
                         onDragStart={(e) => { onDragStart(e, m.id, m.name) }}
@@ -376,12 +356,12 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
                     </SearchRow>
                 ))}
                 {matchingStreams.length > 0 && (
-                    <SearchRow className={styles.SearchCategory}>Streams</SearchRow>
+                    <SearchRow className={styles.SearchCategory} disabled>Streams</SearchRow>
                 )}
-                {matchingStreams.map((stream) => (
+                {matchingStreams.map((stream, index) => (
                     /* eslint-disable-next-line jsx-a11y/click-events-have-key-events */
                     <SearchRow
-                        key={stream.id}
+                        key={index}
                         className={styles.StreamItem}
                         draggable
                         onDragStart={(e) => { onDragStart(e, STREAM_MODULE_ID, stream.name, stream.id) }}
@@ -409,6 +389,7 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
                     isOpen={isOpen}
                     open={open}
                     panelRef={this.selfRef}
+                    resetOnDefault
                     renderDefault={() => this.renderMenu()}
                 >
                     {!!isSearching && this.renderSearchResults()}

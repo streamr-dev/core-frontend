@@ -6,6 +6,8 @@ import startCase from 'lodash/startCase'
 import EditableText from '$shared/components/EditableText'
 import useGlobalEventWithin from '$shared/hooks/useGlobalEventWithin'
 import useKeyDown from '$shared/hooks/useKeyDown'
+
+import { isPortInvisible, isPortRenameDisabled } from '../../../state'
 import { DragDropContext } from '../../DragDropContext'
 import Option from '../Option'
 import Plug from '../Plug'
@@ -118,10 +120,15 @@ const Port = ({
         onSizeChange()
     }, [port.value, onSizeChange])
 
+    const isInvisible = isPortInvisible(canvas, port.id)
+    const isRenameDisabled = isPortRenameDisabled(canvas, port.id)
+
     return (
         <div
             className={cx(styles.root, {
                 [styles.dragInProgress]: !!dragInProgress,
+                [styles.dragInProgress]: !!dragInProgress,
+                [styles.isInvisible]: isInvisible,
             })}
         >
             {!!contextMenuTarget && (
@@ -147,7 +154,7 @@ const Port = ({
             ) : plug}
             <Cell>
                 <EditableText
-                    disabled={!!isRunning}
+                    disabled={!!isRenameDisabled}
                     editing={editingName}
                     onCommit={onNameChange}
                     setEditing={setEditingName}

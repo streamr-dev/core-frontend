@@ -93,8 +93,8 @@ export const selectPageSize: (StoreState) => number = createSelector(
 )
 
 export const selectOffset: (StoreState) => number = createSelector(
-    selectUserPageStreamsState,
-    (subState: UserPageStreamsState): number => subState.offset,
+    selectStreamIds,
+    (subState: StreamIdList): number => subState.length,
 )
 
 export const selectHasMoreSearchResults: (StoreState) => boolean = createSelector(

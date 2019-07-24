@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { Container, Row, Col, Button } from 'reactstrap'
 import { capital } from 'case'
 import Link from '$shared/components/Link'
-import { push } from 'react-router-redux'
+import { push } from 'connected-react-router'
 import copy from 'copy-to-clipboard'
 import { Translate, I18n } from 'react-redux-i18n'
 import { Helmet } from 'react-helmet'
@@ -236,6 +236,7 @@ class CanvasList extends Component<Props, State> {
                         resourceType="CANVAS"
                         resourceId={shareDialogCanvas.id}
                         onClose={this.onCloseShareDialog}
+                        allowEmbed={!!process.env.CANVAS_EMBED} // TODO: remove when embed is ready
                     />
                 )}
                 <Container className={styles.corepageContentContainer}>

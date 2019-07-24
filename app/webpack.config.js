@@ -38,6 +38,8 @@ module.exports = {
     entry: [
         // forcibly print diagnostics upfront
         path.resolve(root, 'src', 'shared', 'utils', 'diagnostics.js'),
+        // always load setup first
+        path.resolve(root, 'src', 'setup.js'),
         path.resolve(root, 'src', 'index.jsx'),
     ],
     output: {

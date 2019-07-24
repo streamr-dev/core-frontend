@@ -116,6 +116,7 @@ describe('purchase - actions', () => {
                     location: {
                         pathname: `/product/${id}`,
                     },
+                    action: {},
                 },
             })
 
@@ -171,6 +172,7 @@ describe('purchase - actions', () => {
                     location: {
                         pathname: '/product/notProperId',
                     },
+                    action: {},
                 },
             })
             store.dispatch(actions.buyProduct(id, subscriptionInSeconds))
