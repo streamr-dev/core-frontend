@@ -1,12 +1,229 @@
 import ScrollableAnchor from 'react-scrollable-anchor'
+import { Link } from 'react-router-dom'
 
-import docsStyles from '$newdocs/components/DocsLayout/docsLayout.pcss'
+import Warning from '$docs/components/Warning'
+import CodeSnippet from '$shared/components/CodeSnippet'
+import links from '$shared/../links'
+import { formatPath } from '$shared/utils/url'
 
-## Tutorials
+import CreateStream from './images/tutorials/createStream.png'
+import StreamSetup from './images/tutorials/streamSetup.png'
+import GetYourAPIKey from './images/tutorials/getYourAPIKey.png'
+import SettingsAPICredentials from './images/tutorials/settingsAPICredentials.png'
+import Postman from './images/tutorials/postman.png'
+import Example2b from './images/tutorials/example2b.png'
+import Example3b from './images/tutorials/example3b.png'
 
-<ScrollableAnchor id="placeholder"><div>
+import { ClientSub, Example1, Example2a, Example3a, PythonRequests } from './code/tutorials.js'
 
-## First tutorial placeholder
---content--
+import docsStyles from '$docs/components/DocsLayout/docsLayout.pcss'
+
+<ScrollableAnchor id="building-a-simple-pub-sub-system"><div>
+
+## Building a simple pub/sub system
+
+The aim of this tutorial is to provide an overview of Streamr basic data flows:
+
+- What a data stream is within the context of Streamr
+- How to create a simple pub/sub demo
+- Common data integration patterns
+
+By the end of this tutorial, you will learn how to create a stream and publish data to it, and how you can obtain/visualize data by subscribing to a stream. In the near future, we will be providing additional tutorials that will go further in depth about specific topics or use-cases.
+
+### About Streams
+
+In Streamr, each data point belongs to a Stream.  
+
+**Streams** (akin to topics) are an ordered sequence of events (timestamped data points). Depending on the use case, a single Stream could contain data from a single source, or it could be a “firehose” of data from multiple sources.
+
+**Data points** (also called events or messages) are timestamped pieces of information, such as measurements from a sensor, or messages in a chat. 
+
+**Event payloads** are JSON objects, or in other words, a set of key-value pairs. Here’s an example event of a sensor reading:
+<CodeSnippet language='json' wrapLines>{
+`{
+  "temperature": 65.4,
+  "humidity": 82,
+  "sensorID": KRF29283,
+  "sensorLabel": "Rooftop Solar Panel"
+}`
+}</CodeSnippet>
+
+Streamr ingests this sort of data via an <Link to={formatPath(links.docs.api)}>API</Link>. The easiest way to interact with the API from your own software is by using a Streamr client library. Currently we have a stable client for [JavaScript](https://github.com/streamr-dev/streamr-client-javascript), while there are two more MVP clients, in progress, for [Java](https://github.com/streamr-dev/streamr-client-java) and [Python](https://github.com/streamr-dev/streamr-client-python) suggested for development environment. Other programming languages like Go, C++, C# and more will follow.
+
+If a library isn’t available for your language, you can call the [API endpoints](https://api-explorer.streamr.com) using any HTTP library.
+
+Example using python + requests:
+
+<CodeSnippet language='python'>{PythonRequests}</CodeSnippet>
+
+Example using `curl`:
+
+<CodeSnippet language='bash'>
+    {`curl -i -X POST -H "Authorization: Bearer MY-SESSION-TOKEN" -d "{\"foo\":\"hello\",\"bar\":24.5}" https://www.streamr.com/api/v1/streams/MY-STREAM-ID/data`}
+</CodeSnippet>
+
+### Create a stream
+
+If you’re already signed in, click Core in the top navigation. If you’re not, sign in and you will be taken to your User Page. From here, go to the Streams tab, and you will see a view something like this one.
+
+<div className={docsStyles.centered}>
+  <img src={CreateStream} />
+</div>
+
+### Get your Stream ID
+From here, click Create Stream. You will be taken to the stream Setup view. First you need to name your stream and write a basic description. The Stream ID will be created for you. Click to copy the ID to clipboard. You’ll need this in order to produce events to your stream via the API. Click Save and Exit to return to your User Page.
+
+<div className={docsStyles.centered}>
+  <img src={StreamSetup} />
+</div>
+
+### Get your API key
+
+Here you’ll notice the new, but empty stream you’ve created. From your profile menu (top right), choose API Keys. You need this to authenticate to the API.
+
+<div className={docsStyles.centered}>
+  <img src={GetYourAPIKey} />
+</div>
+
+From **Settings > API Keys**, click to add a new key, and give it a name like Tutorial.  Click the meatball menu to copy the new key and click Save Changes to return to your User Page.
+
+<Warning>
+
+**Only use your tutorial API keys for testing and development.** This ensures you don't accidentally modify a live stream or canvas.
+
+</Warning>
+
+<div className={docsStyles.centered}>
+  <img src={SettingsAPICredentials} />
+</div>
+
+### Publish to a stream
+
+The easiest way to push data to a stream is to use the [JavaScript client](https://github.com/streamr-dev/streamr-client-javascript), which works in node.js as well as the browser. Client libraries for other languages are on the roadmap. 
+
+You can also try it locally in your browser. Just open this [JS Bin](https://jsbin.com/muqarukubu/edit?js,output), and replace <kbd>MY-STREAM-ID</kbd> and <kbd>MY-API-KEY</kbd> with your Stream ID and API key. Your browser will start producing data to your Stream!
+
+You can also interact with the Streamr API using any HTTP library of your choice. You will find all the details in the <Link to={formatPath(links.docs.api)}>API docs</Link>, but here’s a brief rundown:
+
+You’ll be making <kbd>HTTP POST</kbd> requests to a URL, which contains your Stream ID:
+<CodeSnippet language='json' wrapLines >{`https://www.streamr.com/api/v1/streams/MY-STREAM-ID/data`}</CodeSnippet>
+
+The body of the request will be your data payload in JSON.
+
+Add your API key to the HTTP headers as follows:
+
+<CodeSnippet language='json' wrapLines >{`Authorization: token MY-API-KEY`}</CodeSnippet>
+
+This is how a test request would look in the fabulous [Postman](https://www.getpostman.com/) app, with the URL and Authorization header set:
+
+<div className={docsStyles.centered}>
+  <img src={Postman} />
+</div>
+
+All the different authorization options are explained in the: <Link to={formatPath(links.docs.api)}>API docs</Link>
+
+### Subscribe to data
+
+Along with Publishing data to a stream, this is best done with the [JavaScript client](https://github.com/streamr-dev/streamr-client-javascript) as mentioned above. 
+
+Here is the given example from the Streamr Javascript client [readme](https://github.com/streamr-dev/streamr-client-javascript):
+
+<CodeSnippet language='javascript' wrapLines showLineNumbers >{ClientSub}</CodeSnippet> 
+
+### Patterns for data integration
+
+There are three distinct patterns for connecting data to Streamr, each with their own pros and cons:
+
+**1.** Pushing from the source (ideal)
+
+**2.** Bridging from a streaming source
+
+**3.** Bridging by polling a source
+
+### 1. Pushing from the source
+
+- Simplicity: **Good**
+- Latency: **Good**
+- Applicability: **Medium**
+
+In this pattern, the data points are sent directly to Streamr by the source as soon as new data becomes available (for example, a sensor produces a new measurement).
+
+**This is the recommended pattern**. However, depending on the circumstances, it may not always be available. It requires that you have control over the system that produces the data and can decide where it gets sent.
+
+For example, if you are an IoT device manufacturer, you could add support for Streamr directly into your devices or gateways, enabling all your end users to easily connect their data to Streamr.
+
+Various industrial data sources usually have good configurability for connecting the data anywhere you need to. However, consumer grade devices such as connected cars, phones, Fitbits, and others often force you to send your data to the manufacturer’s cloud, from where they might serve it back to you via an API. In these cases, you can use one of the bridging patterns in this post (see options two and three).
+
+For a real-world example, here’s how to connect measurements from any number of [Ruuvi](http://ruuvi.com/) IoT tags to Streamr. The devices transmit data over Bluetooth Low Energy to a gateway computer which runs this node.js script. A separate Stream is created for each found Ruuvi device, and the measurements are produced to the appropriate Stream as they occur.
+
+**Example 1: Push from the source example using the JS client**
+
+<CodeSnippet language='javascript' wrapLines showLineNumbers >{Example1}</CodeSnippet>
+
+For a more advanced example, see [this post](https://medium.com/streamrblog/cold-chain-monitoring-with-streamr-ruuvi-and-ethereum-952dacfc47f2) on how to set up a cold chain monitoring demo using Ruuvi tags, Streamr, and Ethereum smart contracts.
+
+If your app is not in JavaScript, you can interact with the API directly using any HTTP library. See the <Link to={formatPath(links.docs.api)}>API docs</Link> for more information and examples.
+
+### 2. Bridging from a streaming source
+
+- Simplicity: **Medium**
+- Latency: **Good**
+- Applicability: **Medium**
+
+This pattern is useful when you don’t have direct control over the source, but a streaming API or some other kind of listener hook is available for the data. These allow you to be notified whenever new data occurs, enabling you to immediately forward the event to Streamr. Data that is typically available via these kinds of APIs are news feeds, financial market data and social media feeds.
+
+**Example 2a: Streaming bridge example using the JS client**
+
+Here’s an example demonstrating how to bridge DATA/USD market data from the [Bitfinex](https://www.bitfinex.com/) exchange with a node.js script using a Bitfinex client library as well as the Streamr client library:
+
+<CodeSnippet language='javascript' wrapLines showLineNumbers >{Example2a}</CodeSnippet>
+
+**Example 2b: Streaming bridge example using MQTT module on Canvas**
+
+Instead of a program such as the one above, a Canvas process built in the <Link to={formatPath(links.editor.canvasEditor)}>Streamr Editor</Link> can be used to build bridges. This might work for you even if you’re not a programmer, although creating integrations usually still requires some technical understanding of APIs and protocols.
+
+Below is a process which listens to real-time positions of trams from the MQTT API maintained by the Helsinki public transport authority. Incoming events are produced to a Stream in real time.
+
+<div className={docsStyles.centered}>
+  <img src={Example2b} />
+</div>
+
+In this example the MQTT module parameters are:
+
+<CodeSnippet language='javascript' wrapLines >{`URL: mqtt://mqtt.hsl.fi`}</CodeSnippet>
+
+<CodeSnippet language='javascript' wrapLines >{`Topic: /hfp/v1/journey/ongoing/tram/#`}</CodeSnippet>
+
+The MQTT module outputs JSON strings, which the JsonParser module parses to objects. From the data we extract the <kbd>“VP”</kbd> field, which itself is an object. We read the fields <kbd>“desi”</kbd>, <kbd>“lat”</kbd>, <kbd>“long”</kbd>, and <kbd>“veh”</kbd> and produce those values to a Stream using the SendToStream module.
+
+### 3. Bridging by polling a source
+
+- Simplicity: **Medium**
+- Latency: **Medium**
+- Applicability: **Good**
+
+Most cloud services handing out data at least offer a request-response-based API, which can be used if neither of the above push-based options are available. In this case there is no way to get notified when new data is available, which means that the API needs to be repeatedly queried. This is called polling.
+
+It’s not an optimal way to serve real-time data, because:
+
+Data can be missed: multiple value changes in between subsequent requests are not observed.
+It places an unnecessary load on the API server, as requests are made “just in case” regardless of whether the data has actually changed or not.
+An average latency of half the polling interval is introduced.
+
+For the below examples, we’ll query the weather in Zug, Switzerland from [OpenWeatherMap](https://openweathermap.org/) every 15 minutes. For this data, source polling is an acceptable solution for most use cases, since the weather usually doesn’t change rapidly.
+
+**Example 3a: Polling bridge example using the JS client**
+
+<CodeSnippet language='javascript' wrapLines showLineNumbers >{Example3a}</CodeSnippet>
+
+**Example 3b: Polling bridge example using the HTTP module**
+
+As before, using a Canvas is a potential alternative to a self-hosted script such as the one above. Let’s see what an equivalent Canvas would look like:
+
+<div className={docsStyles.centered}>
+  <img src={Example3b} />
+</div>
+
+Here, the Clock module ticks every 15 minutes and triggers the HTTP Request to get the data from OpenWeatherMap. The fields in the data are delivered to the Stream by the **SendToStream** module.
 
 </div></ScrollableAnchor>

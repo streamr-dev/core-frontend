@@ -61,7 +61,7 @@ export const subNav = {
         'community-products': 'Community products',
     },
     tutorials: {
-        placeholder: 'First tutorial placeholder',
+        'building-a-simple-pub-sub-system': 'Building a simple pub/sub system',
     },
     dataToken: {},
     core: {
