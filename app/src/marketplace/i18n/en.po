@@ -747,10 +747,10 @@ msgid "streamSelector##selectNone"
 msgstr "Select none"
 
 msgid "streamSelector##selectedStream"
-msgstr "%{streamCount} stream Selected"
+msgstr "%{streamCount} stream selected"
 
 msgid "streamSelector##selectedStreams"
-msgstr "%{streamCount} streams Selected"
+msgstr "%{streamCount} streams selected"
 
 msgid "streamSelector##sort"
 msgstr "Sort by"
