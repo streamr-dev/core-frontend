@@ -882,11 +882,11 @@ function generateVariadicDisplayName(canvas, portId, portIndex) {
 
 function getVariadicDisplayName(canvas, portId, portIndex) {
     const { displayName } = getPort(canvas, portId)
-    // reset display names of disconnected ports
-    if (!isPortConnected(canvas, portId)) {
+    // reset display names of unused ports
+    if (!isPortUsed(canvas, portId)) {
         const linkedInput = findLinkedVariadicPort(canvas, portId)
         // reset outputs with no linked input or only when linked input not connected
-        if (!linkedInput || (linkedInput && !isPortConnected(canvas, linkedInput.id))) {
+        if (!linkedInput || (linkedInput && !isPortUsed(canvas, linkedInput.id))) {
             return generateVariadicDisplayName(canvas, portId, portIndex)
         }
     }

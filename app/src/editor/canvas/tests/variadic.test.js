@@ -638,6 +638,38 @@ describe('Variadic Port Handling', () => {
             expect(passThrough1.outputs[0].displayName).toBe(passThrough1.inputs[0].displayName)
         })
 
+        it('permits renaming outputs if input is exported', async () => {
+            let canvas = State.emptyCanvas()
+            canvas = State.addModule(canvas, await loadModuleDefinition('PassThrough'))
+            let [
+                passThrough1,
+            ] = canvas.modules
+
+            canvas = State.updateCanvas(State.setPortOptions(canvas, passThrough1.inputs[0].id, {
+                export: true,
+            }))
+
+            // perform rename
+            const newName = 'custom name'
+            canvas = State.updateCanvas(State.setPortOptions(canvas, passThrough1.outputs[0].id, {
+                displayName: newName,
+            }))
+
+            ;[ // eslint-disable-line semi-style
+                passThrough1,
+            ] = canvas.modules
+
+            expect(passThrough1.outputs[0].displayName).toBe(newName)
+
+            // test server accepts state
+            const serverCanvas = State.updateCanvas(await Services.create(canvas))
+            expect(serverCanvas).toMatchCanvas(canvas)
+            ;[ // eslint-disable-line semi-style
+                passThrough1,
+            ] = serverCanvas.modules
+            expect(passThrough1.outputs[0].displayName).toBe(newName)
+        })
+
         it('supports loops', async () => {
             let canvas = State.emptyCanvas()
             canvas = State.addModule(canvas, await loadModuleDefinition('ConstantText'))
