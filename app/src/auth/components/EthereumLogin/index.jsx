@@ -3,7 +3,7 @@
 import React, { useContext, useCallback } from 'react'
 import { I18n } from 'react-redux-i18n'
 
-import useIsMountedRef from '$shared/utils/useIsMountedRef'
+import useIsMountedRef from '$shared/hooks/useIsMountedRef'
 import AuthFormProvider from '../AuthFormProvider'
 import AuthFormContext from '../../contexts/AuthForm'
 import SessionContext from '../../contexts/Session'

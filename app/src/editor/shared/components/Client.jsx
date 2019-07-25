@@ -10,7 +10,7 @@ import t from 'prop-types'
 import StreamrClient from 'streamr-client'
 import { selectAuthApiKeyId } from '$shared/modules/resourceKey/selectors'
 import { getMyResourceKeys } from '$shared/modules/resourceKey/actions'
-import useIsMountedRef from '$shared/utils/useIsMountedRef'
+import useIsMountedRef from '$shared/hooks/useIsMountedRef'
 
 import * as services from '../services'
 
