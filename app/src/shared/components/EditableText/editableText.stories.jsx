@@ -31,6 +31,24 @@ stories.add('default', () => (
     </UseState>
 ))
 
+stories.add('zero', () => (
+    <UseState initialValue={false}>
+        {(editing, setEditing) => (
+            <UseState initialValue={0}>
+                {(text, setText) => (
+                    <EditableText
+                        editing={editing}
+                        onChange={setText}
+                        setEditing={setEditing}
+                    >
+                        {text}
+                    </EditableText>
+                )}
+            </UseState>
+        )}
+    </UseState>
+))
+
 stories.add('edit on focus', () => (
     <div>
         <button
