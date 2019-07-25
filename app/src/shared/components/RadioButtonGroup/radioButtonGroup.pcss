@@ -11,16 +11,23 @@
   padding: 1em;
 }
 
-.option {
+.radio {
+  display: none;
+}
+
+.radio:checked + label {
+  color: #0324FF;
+  background-color: white;
+}
+
+.label {
   color: #A3A3A3;
   background-color: #F1F1F1;
   outline: none;
   cursor: pointer;
   user-select: none;
   transition: all 250ms ease-in;
-}
-
-.selected {
-  color: #0324FF;
-  background-color: white;
+  margin: 0;
+  padding: 0;
+  width: 100%;
 }
