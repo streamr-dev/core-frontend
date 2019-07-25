@@ -256,9 +256,13 @@ const getStreamRangeRequest = () => ({
     type: GET_STREAM_RANGE_REQUEST,
 })
 
-const clearStreamList = () => ({
+const clearStreamsListAction = () => ({
     type: CLEAR_STREAM_LIST,
 })
+
+export const clearStreamsList = () => (dispatch: Function) => (
+    dispatch(clearStreamsListAction())
+)
 
 export const getStream = (id: StreamId) => (dispatch: Function) => {
     dispatch(getStreamRequest())
@@ -341,7 +345,7 @@ export const getStreams = (replace: ?boolean = false) => (dispatch: Function, ge
                 streamStatus: 'inactive',
             })))
             if (replace) {
-                dispatch(clearStreamList())
+                dispatch(clearStreamsListAction())
             }
             dispatch(getStreamsSuccess(ids, hasMoreResults))
             streamStatusCancel = dispatch(updateStreamStatuses(ids))

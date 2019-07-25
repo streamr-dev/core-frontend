@@ -9,9 +9,7 @@ import { subNav } from '../DocsLayout/Navigation/navLinks'
 
 const UserPages = () => (
     <DocsLayout subNav={subNav.userPages}>
-        <Helmet>
-            <title>Streamr Docs | User Pages</title>
-        </Helmet>
+        <Helmet title="Streamr Docs | User Pages" />
         <UserPageContent />
     </DocsLayout>
 )

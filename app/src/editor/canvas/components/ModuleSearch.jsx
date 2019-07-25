@@ -1,6 +1,11 @@
 // @flow
 
-import React from 'react'
+// Need to use index-based keys otherwise transitions get messed up.
+// With normal id-based keys and index-based selection higlight,
+// the highlight will flicker when the item at same index changes selection state
+/* eslint-disable react/no-array-index-key */
+
+import React, { useState, useCallback } from 'react'
 import startCase from 'lodash/startCase'
 import debounce from 'lodash/debounce'
 import cx from 'classnames'
@@ -30,42 +35,40 @@ const categoryMapping = {
 type MenuCategoryProps = {
     category: CategoryType,
     addModule: (id: number, x: ?number, y: ?number, streamId: ?string) => void,
+    disabled?: boolean,
 }
 
-type MenuCategoryState = {
-    isExpanded: boolean,
-}
+export function ModuleMenuCategory(props: MenuCategoryProps) {
+    const { category, addModule, disabled } = props
+    const isDisabled = disabled || !category.modules.length // disable if no modules
+    const [isExpanded, setIsExpanded] = useState(false)
 
-export class ModuleMenuCategory extends React.PureComponent<MenuCategoryProps, MenuCategoryState> {
-    state = {
-        isExpanded: false,
-    }
+    const toggle = useCallback(() => {
+        setIsExpanded((isExpanded) => !isExpanded)
+    }, [setIsExpanded])
 
-    toggle = () => {
-        this.setState(({ isExpanded }) => ({ isExpanded: !isExpanded }))
-    }
+    const onClick = useCallback(() => {
+        if (isDisabled) { return }
+        toggle()
+    }, [isDisabled, toggle])
 
-    render() {
-        const { category, addModule } = this.props
-        const { isExpanded } = this.state
-        return (
-            <React.Fragment>
-                {/* eslint-disable-next-line */}
-                <SearchRow
-                    className={cx(styles.Category, {
-                        [styles.active]: !!isExpanded,
-                    })}
-                    key={category.name}
-                    onClick={() => this.toggle()}
-                >
-                    {category.name}
-                </SearchRow>
-                {isExpanded && category.modules.map((m) => (
-                    <ModuleMenuItem key={m.id} module={m} addModule={addModule} />
-                ))}
-            </React.Fragment>
-        )
-    }
+    return (
+        <React.Fragment>
+            {/* eslint-disable-next-line */}
+            <SearchRow
+                className={cx(styles.Category, {
+                    [styles.active]: !!isExpanded,
+                })}
+                onClick={onClick}
+                disabled={isDisabled}
+            >
+                {category.name}
+            </SearchRow>
+            {isExpanded && category.modules.map((m, index) => (
+                <ModuleMenuItem module={m} key={index} addModule={addModule} />
+            ))}
+        </React.Fragment>
+    )
 }
 
 const onDragStart = (e: any, moduleId: number, moduleName: string, streamId?: string) => {
@@ -336,13 +339,13 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
         return (
             <React.Fragment>
                 {matchingModules.length > 0 && (
-                    <SearchRow className={styles.SearchCategory}>Modules</SearchRow>
+                    <SearchRow className={styles.SearchCategory} disabled>Modules</SearchRow>
                 )}
-                {matchingModules.map((m) => (
+                {matchingModules.map((m, index) => (
                     /* TODO: follow the disabled jsx-a11y recommendations below to add keyboard support */
                     /* eslint-disable-next-line jsx-a11y/click-events-have-key-events */
                     <SearchRow
-                        key={m.id}
+                        key={index}
                         className={cx(styles.ModuleItem, styles.WithCategory)}
                         draggable
                         onDragStart={(e) => { onDragStart(e, m.id, m.name) }}
@@ -353,12 +356,12 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
                     </SearchRow>
                 ))}
                 {matchingStreams.length > 0 && (
-                    <SearchRow className={styles.SearchCategory}>Streams</SearchRow>
+                    <SearchRow className={styles.SearchCategory} disabled>Streams</SearchRow>
                 )}
-                {matchingStreams.map((stream) => (
+                {matchingStreams.map((stream, index) => (
                     /* eslint-disable-next-line jsx-a11y/click-events-have-key-events */
                     <SearchRow
-                        key={stream.id}
+                        key={index}
                         className={styles.StreamItem}
                         draggable
                         onDragStart={(e) => { onDragStart(e, STREAM_MODULE_ID, stream.name, stream.id) }}
@@ -386,6 +389,7 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
                     isOpen={isOpen}
                     open={open}
                     panelRef={this.selfRef}
+                    resetOnDefault
                     renderDefault={() => this.renderMenu()}
                 >
                     {!!isSearching && this.renderSearchResults()}

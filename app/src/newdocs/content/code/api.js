@@ -63,3 +63,34 @@ const sub = client.subscribe(
 
 // Unsubscribe when you don't want to receive messages anymore.
 client.unsubscribe(sub)`
+export const PythonExample =
+`# Create the client using Streamr account API key
+option = Option.get_default_option()
+option.auto_disconnect = False
+option.auto_connect = False
+option.api_key = 'your-api-key'
+client = Client(my_option)
+
+# Look up or create the stream. Can also get it by id using client.get_stream_by_id
+stream = client.get_or_create_stream('stream-test')
+
+# Create the event to publish
+msg = {
+  'temperature': 25.4,
+  'humidity': 10,
+  'happy': true
+}
+
+# Get stream id
+stream_id = stream[0]['id']
+
+# Publish it using the stream's id
+client.publish(stream_id, msg)
+
+# If we want to subscribe to a stream to receive messages instead
+# Define a callback function to react to latest message's content
+def callback(msg,_):
+  print('message received . The Cotent is : %s'%(msg))
+
+# Subscribe to receive messages published by other clients
+client.subscribe(stream_id, callback)`

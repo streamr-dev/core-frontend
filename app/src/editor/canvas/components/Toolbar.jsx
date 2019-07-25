@@ -41,24 +41,10 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
         })
     }
 
-    onKeyDown = (event) => {
-        if (this.state.canvasSearchIsOpen && event.code === 'Escape') {
-            this.canvasSearchOpen(false)
-        }
-    }
-
     getOnChangeHistorical = (key) => (value) => {
         this.props.setHistorical({
             [key]: value,
         })
-    }
-
-    componentDidMount() {
-        window.addEventListener('keydown', this.onKeyDown)
-    }
-
-    componentWillUnmount() {
-        window.removeEventListener('keydown', this.onKeyDown)
     }
 
     onToggleRunButtonMenu = () => {

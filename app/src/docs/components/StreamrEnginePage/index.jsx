@@ -8,9 +8,7 @@ import StreamrEngineContent from '$docs/content/streamrEngine.mdx'
 
 const StreamrEnginePage = () => (
     <DocsLayout>
-        <Helmet>
-            <title>Streamr Docs | Streamr Engine</title>
-        </Helmet>
+        <Helmet title="Streamr Docs | Streamr Engine" />
         <StreamrEngineContent />
     </DocsLayout>
 )

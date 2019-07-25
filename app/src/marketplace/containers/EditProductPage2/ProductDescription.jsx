@@ -5,6 +5,7 @@ import React from 'react'
 import useProduct from '../ProductController/useProduct'
 import useValidation from '../ProductController/useValidation'
 import useProductUpdater from '../ProductController/useProductUpdater'
+import MarkdownEditor from '$mp/components/MarkdownEditor'
 
 const ProductDescription = () => {
     const product = useProduct()
@@ -26,6 +27,7 @@ const ProductDescription = () => {
                 Generally around a maximum of around 300 words fits best on a product
                 detail page. Markdown formatting is ok.
             </p>
+            <MarkdownEditor placeholder="Type something great about your product" />
             <p>
                 <textarea
                     value={product.description}
