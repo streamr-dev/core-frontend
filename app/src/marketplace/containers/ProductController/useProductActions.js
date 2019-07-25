@@ -6,6 +6,7 @@ import { Context as UndoContext } from '$shared/components/UndoContextProvider'
 import useProductUpdater from '../ProductController/useProductUpdater'
 
 import type { Product } from '$mp/flowtype/product-types'
+import type { StreamIdList } from '$shared/flowtype/stream-types'
 
 export function useProductActions() {
     const { updateProduct } = useProductUpdater()
@@ -29,13 +30,20 @@ export function useProductActions() {
             imageUrl: image,
         }))
     }, [updateProduct])
+    const updateStreams = useCallback((streams: StreamIdList) => {
+        updateProduct('Update streams', (p) => ({
+            ...p,
+            streams,
+        }))
+    }, [updateProduct])
 
     return useMemo(() => ({
         undo,
         updateName,
         updateDescription,
         updateImageUrl,
-    }), [undo, updateName, updateDescription, updateImageUrl])
+        updateStreams,
+    }), [undo, updateName, updateDescription, updateImageUrl, updateStreams])
 }
 
 export default useProductActions

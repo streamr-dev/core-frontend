@@ -4,11 +4,15 @@ import React from 'react'
 
 import StreamSelectorComponent from '$mp/components/StreamSelector'
 import useProduct from '../ProductController/useProduct'
+import useValidation from '../ProductController/useValidation'
+import useProductActions from '../ProductController/useProductActions'
 
 import AvailableStreams from '../AvailableStreams'
 
 const StreamSelector = () => {
     const product = useProduct()
+    const { isValid, level, message } = useValidation('streams')
+    const { updateStreams } = useProductActions()
 
     return (
         <div>
@@ -21,11 +25,14 @@ const StreamSelector = () => {
                     <StreamSelectorComponent
                         availableStreams={streams}
                         fetchingStreams={fetching}
-                        onEdit={() => {}}
+                        onEdit={updateStreams}
                         streams={product.streams}
                     />
                 )}
             </AvailableStreams>
+            {!isValid && (
+                <p>{level}: {message}</p>
+            )}
         </div>
     )
 }

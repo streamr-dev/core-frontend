@@ -20,6 +20,7 @@ type Props = {
     streams: StreamIdList,
     availableStreams: StreamList,
     className?: string,
+    onEdit: (StreamIdList) => void,
 }
 
 type State = {
@@ -81,7 +82,7 @@ export class StreamSelector extends React.Component<Props, State> {
         })
     }
 
-    onChange = (event: SyntheticInputEvent<EventTarget>) => {
+    onSearchChange = (event: SyntheticInputEvent<EventTarget>) => {
         this.setState({
             search: event.target.value,
         })
@@ -93,40 +94,46 @@ export class StreamSelector extends React.Component<Props, State> {
             selectedStreams: selectedStreams.includes(id)
                 ? selectedStreams.filter((sid) => sid !== id) // remove if selected
                 : selectedStreams.concat(id), // add if not selected
-        })
+        }, this.onAdd)
     }
 
     onSelectAll = (ids: StreamIdList) => {
         const { selectedStreams } = this.state
         this.setState({
             selectedStreams: uniq(selectedStreams.concat(ids)),
-        })
+        }, this.onAdd)
     }
 
     onSelectNone = (ids: StreamIdList) => {
         const { selectedStreams } = this.state
         this.setState({
             selectedStreams: uniq(selectedStreams.filter((id) => !ids.includes(id))),
-        })
-    }
-
-    onClearAll = () => {
-        this.setState({
-            selectedStreams: [],
-            removedStreams: [...this.props.streams],
-        })
+        }, this.onAdd)
     }
 
     onRemove = (id: StreamId) => {
         this.setState({
             removedStreams: [...this.state.removedStreams, id],
-        })
+        }, this.onAdd)
     }
 
     onChangeSort = (sort: string) => {
         this.setState({
             sort,
         })
+    }
+
+    onAdd = () => {
+        const { selectedStreams, removedStreams } = this.state
+
+        let nextStreams = uniq(this.state.nextStreams.concat(selectedStreams))
+        if (this.state.removedStreams.length > 0) {
+            // Prioritize adds over removes if we have both removed a stream and added it again
+            const actuallyRemoved = removedStreams.filter((sid) => !selectedStreams.includes(sid))
+            nextStreams = uniq(nextStreams.filter((sid) => !actuallyRemoved.includes(sid)))
+        }
+
+        this.props.onEdit(nextStreams)
     }
 
     render() {
@@ -156,7 +163,7 @@ export class StreamSelector extends React.Component<Props, State> {
                         <SvgIcon name="search" className={styles.SearchIcon} />
                         <Input
                             className={styles.input}
-                            onChange={this.onChange}
+                            onChange={this.onSearchChange}
                             value={this.state.search}
                             placeholder={I18n.t('streamSelector.typeToSearch')}
                         />
