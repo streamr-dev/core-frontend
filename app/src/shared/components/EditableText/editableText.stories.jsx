@@ -49,6 +49,44 @@ stories.add('zero', () => (
     </UseState>
 ))
 
+stories.add('placeholder', () => (
+    <UseState initialValue={false}>
+        {(editing, setEditing) => (
+            <UseState initialValue="">
+                {(text, setText) => (
+                    <EditableText
+                        placeholder="Placeholder Text"
+                        editing={editing}
+                        onChange={setText}
+                        setEditing={setEditing}
+                    >
+                        {text}
+                    </EditableText>
+                )}
+            </UseState>
+        )}
+    </UseState>
+))
+
+stories.add('short placeholder', () => (
+    <UseState initialValue={false}>
+        {(editing, setEditing) => (
+            <UseState initialValue="">
+                {(text, setText) => (
+                    <EditableText
+                        placeholder="M"
+                        editing={editing}
+                        onChange={setText}
+                        setEditing={setEditing}
+                    >
+                        {text}
+                    </EditableText>
+                )}
+            </UseState>
+        )}
+    </UseState>
+))
+
 stories.add('edit on focus', () => (
     <div>
         <button
