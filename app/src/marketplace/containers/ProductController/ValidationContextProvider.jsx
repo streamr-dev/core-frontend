@@ -1,36 +1,72 @@
 // @flow
 
 import React, { useMemo, useCallback, useState, type Node, type Context } from 'react'
-import useIsMountedRef from '$shared/utils/useIsMountedRef'
+import useIsMounted from '$shared/hooks/useIsMounted'
 
-import { type Status } from './useValidation'
+export const INFO = 'info'
+export const WARNING = 'warning'
+export const ERROR = 'error'
+
+export type Level = 'info' | 'warning' | 'error'
 
 type ContextProps = {
-    setStatus: (string, Status) => {},
+    setStatus: (string, Level, string) => void,
+    clearStatus: (string) => void,
     status: Object,
+    validate: (Object) => void,
 }
 
 const ValidationContext: Context<ContextProps> = React.createContext({})
 
 function useValidationContext(): ContextProps {
     const [status, setStatusState] = useState({})
-    const isMountedRef = useIsMountedRef()
-    const setStatus = useCallback((name: string, newStatus: Status): Object => {
-        if (!isMountedRef.current) { return }
+    const isMounted = useIsMounted()
+
+    const setStatus = useCallback((name: string, level: Level, message: string): Object => {
+        if (!isMounted()) { return }
         if (!name) {
             throw new Error('validation needs a name')
         }
 
         setStatusState((state) => ({
             ...state,
-            [name]: newStatus,
+            [name]: {
+                level,
+                message,
+            },
         }))
-    }, [setStatusState, isMountedRef])
+    }, [setStatusState, isMounted])
+
+    const clearStatus = useCallback((name: string): Object => {
+        if (!isMounted()) { return }
+        if (!name) {
+            throw new Error('validation needs a name')
+        }
+
+        setStatusState((state) => ({
+            ...state,
+            [name]: undefined,
+        }))
+    }, [setStatusState, isMounted])
+
+    const validate = useCallback((product) => {
+        if (!isMounted() || !product) { return }
+
+        ['name', 'description', 'imageUrl'].forEach((field) => {
+            if (String(product[field]).length <= 0) {
+                setStatus(field, ERROR, `Product ${field} cannot be empty`)
+            } else {
+                clearStatus(field)
+            }
+        })
+    }, [setStatus, clearStatus, isMounted])
 
     return useMemo(() => ({
         setStatus,
+        clearStatus,
         status,
-    }), [status, setStatus])
+        validate,
+    }), [status, setStatus, clearStatus, validate])
 }
 
 type Props = {

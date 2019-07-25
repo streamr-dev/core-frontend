@@ -1,7 +1,7 @@
 // @flow
 
 import React, { useMemo, useCallback, useState, type Node, type Context } from 'react'
-import useIsMountedRef from '$shared/utils/useIsMountedRef'
+import useIsMountedRef from '$shared/hooks/useIsMountedRef'
 
 type ContextProps = {
     setPending: (string, number) => {},

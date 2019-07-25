@@ -10,7 +10,7 @@ import LoadingIndicator from '$userpages/components/LoadingIndicator'
 
 import useProduct from './useProduct'
 import useProductLoadCallback from './useProductLoadCallback'
-import useValidationCallback from './useValidationCallback'
+import useProductValidationEffect from './useProductValidationEffect'
 
 function useProductLoadEffect() {
     const product = useProduct()
@@ -27,17 +27,6 @@ function useProductLoadEffect() {
             load(urlId)
         }
     }, [urlId, productId, load, isPending])
-}
-
-function useProductValidationEffect() {
-    const product = useProduct()
-    const validate = useValidationCallback()
-
-    useEffect(() => {
-        if (product) {
-            validate(product)
-        }
-    }, [product, validate])
 }
 
 function ProductEffects() {

@@ -4,19 +4,12 @@ import React from 'react'
 
 import useProduct from '../ProductController/useProduct'
 import useValidation from '../ProductController/useValidation'
-import useProductUpdater from '../ProductController/useProductUpdater'
+import useProductActions from '../ProductController/useProductActions'
 
 const ProductName = () => {
     const product = useProduct()
-    const { updateProduct } = useProductUpdater()
-    const { status } = useValidation('name')
-
-    const onChange = (name) => {
-        updateProduct('Update name', (p) => ({
-            ...p,
-            name,
-        }))
-    }
+    const { isValid, level, message } = useValidation('name')
+    const { updateName } = useProductActions()
 
     return (
         <div>
@@ -25,11 +18,12 @@ const ProductName = () => {
                 <input
                     type="text"
                     value={product.name}
-                    onChange={(e: SyntheticInputEvent<EventTarget>) => onChange(e.target.value)}
+                    onChange={(e: SyntheticInputEvent<EventTarget>) => updateName(e.target.value)}
                 />
-                <br />
-                status: {status}
             </p>
+            {!isValid && (
+                <p>{level}: {message}</p>
+            )}
         </div>
     )
 }

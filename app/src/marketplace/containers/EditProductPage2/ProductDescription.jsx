@@ -4,20 +4,13 @@ import React from 'react'
 
 import useProduct from '../ProductController/useProduct'
 import useValidation from '../ProductController/useValidation'
-import useProductUpdater from '../ProductController/useProductUpdater'
+import useProductActions from '../ProductController/useProductActions'
 import MarkdownEditor from '$mp/components/MarkdownEditor'
 
 const ProductDescription = () => {
     const product = useProduct()
-    const { updateProduct } = useProductUpdater()
-    const { status } = useValidation('description')
-
-    const onChange = (description) => {
-        updateProduct('Update description', (p) => ({
-            ...p,
-            description,
-        }))
-    }
+    const { isValid, level, message } = useValidation('description')
+    const { updateDescription } = useProductActions()
 
     return (
         <div>
@@ -27,15 +20,14 @@ const ProductDescription = () => {
                 Generally around a maximum of around 300 words fits best on a product
                 detail page. Markdown formatting is ok.
             </p>
-            <MarkdownEditor placeholder="Type something great about your product" />
-            <p>
-                <textarea
-                    value={product.description}
-                    onChange={(e: SyntheticInputEvent<EventTarget>) => onChange(e.target.value)}
-                />
-                <br />
-                status: {status}
-            </p>
+            <MarkdownEditor
+                placeholder="Type something great about your product"
+                value={product.description}
+                onChange={updateDescription}
+            />
+            {!isValid && (
+                <p>{level}: {message}</p>
+            )}
         </div>
     )
 }

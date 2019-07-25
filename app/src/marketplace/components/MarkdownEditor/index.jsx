@@ -6,21 +6,22 @@ import cx from 'classnames'
 import styles from './markdownEditor.pcss'
 
 type Props = {
+    value?: string,
     placeholder?: string,
     onChange?: (string) => void,
     className?: string,
 }
 
-const MarkdownEditor = ({ placeholder, onChange, className }: Props) => {
-    const [text, setText] = useState('')
+const MarkdownEditor = ({ value, placeholder, onChange, className }: Props) => {
+    const [text, setText] = useState(value || '')
     const [wordCount, setWordCount] = useState(0)
 
     const onTextChange = useCallback((e: SyntheticInputEvent<EventTarget>) => {
-        const { value } = e.target
-        setText(value)
+        const { value: newValue } = e.target
+        setText(newValue)
 
         if (onChange != null) {
-            onChange(value)
+            onChange(newValue)
         }
     }, [onChange])
 

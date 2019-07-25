@@ -9,7 +9,6 @@ import Layout from '$mp/components/Layout'
 import * as UndoContext from '$shared/components/UndoContextProvider'
 
 import ProductController from '../ProductController'
-import useProductUpdater from '../ProductController/useProductUpdater'
 import useProduct from '../ProductController/useProduct'
 
 import EditorNav from './EditorNav'
@@ -41,7 +40,6 @@ const EditProductPage = () => (
 )
 
 const EditWrap = () => {
-    const { replaceProduct, updateProduct } = useProductUpdater()
     const product = useProduct()
 
     if (!product) {
@@ -53,8 +51,6 @@ const EditWrap = () => {
     return (
         <EditProductPage
             key={key}
-            replace={replaceProduct}
-            push={updateProduct}
             product={product}
         />
     )

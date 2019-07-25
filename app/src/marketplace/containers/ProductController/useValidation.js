@@ -2,27 +2,32 @@
 
 import { useContext, useMemo, useCallback } from 'react'
 
-import { Context as ValidationContext } from './ValidationContextProvider'
-
-export const OK = 'ok'
-export const WARNING = 'warning'
-export const ERROR = 'error'
-
-export type Status = 'ok' | 'warning' | 'error'
+import { Context as ValidationContext, type Level } from './ValidationContextProvider'
 
 export function useValidation(name: string) {
-    const { status: statusState, setStatus: setStatusState } = useContext(ValidationContext)
+    const { status, setStatus: setStatusState, clearStatus: clearStatusState } = useContext(ValidationContext)
 
-    const setStatus = useCallback((status: Status) => {
-        setStatusState(name, status)
+    const setStatus = useCallback((level: Level, message: string) => {
+        setStatusState(name, level, message)
     }, [setStatusState, name])
 
-    const status = statusState[name] || ERROR
+    const clearStatus = useCallback(() => {
+        clearStatusState(name)
+    }, [clearStatusState, name])
+
+    const result = status[name]
+
+    const isValid = useMemo(() => !result, [result])
+    const level = useMemo(() => result && result.level, [result])
+    const message = useMemo(() => result && result.message, [result])
 
     return useMemo(() => ({
-        status,
+        isValid,
+        level,
+        message,
         setStatus,
-    }), [status, setStatus])
+        clearStatus,
+    }), [isValid, level, message, setStatus, clearStatus])
 }
 
 export default useValidation

@@ -4,20 +4,13 @@ import React from 'react'
 
 import useProduct from '../ProductController/useProduct'
 import useValidation from '../ProductController/useValidation'
-import useProductUpdater from '../ProductController/useProductUpdater'
+import useProductActions from '../ProductController/useProductActions'
 import ImageUpload from '$shared/components/ImageUpload'
 
 const CoverImage = () => {
     const product = useProduct()
-    const { updateProduct } = useProductUpdater()
-    const { status } = useValidation('coverImage')
-
-    const setImageToUpload = (image: File) => {
-        updateProduct('Update cover image', (p) => ({
-            ...p,
-            imageUrl: image,
-        }))
-    }
+    const { updateImageUrl } = useProductActions()
+    const { isValid, level, message } = useValidation('coverImage')
 
     return (
         <div>
@@ -28,10 +21,12 @@ const CoverImage = () => {
                 Need images? See the docs.
             </p>
             <ImageUpload
-                setImageToUpload={setImageToUpload}
+                setImageToUpload={updateImageUrl}
                 originalImage={product.imageUrl}
             />
-            <p>status: {status}</p>
+            {!isValid && (
+                <p>{level}: {message}</p>
+            )}
         </div>
     )
 }

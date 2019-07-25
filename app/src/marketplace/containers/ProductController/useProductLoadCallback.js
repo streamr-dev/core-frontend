@@ -3,7 +3,7 @@
 import { useContext, useCallback } from 'react'
 
 import { Context as RouterContext } from '$shared/components/RouterContextProvider'
-import useIsMountedRef from '$shared/utils/useIsMountedRef'
+import useIsMountedRef from '$shared/hooks/useIsMountedRef'
 import usePending from '$shared/hooks/usePending'
 
 import type { ProductId } from '$mp/flowtype/product-types'
@@ -11,7 +11,7 @@ import { getProductById } from '$mp/modules/product/services'
 
 import useProductUpdater from './useProductUpdater'
 
-export default function useCanvasLoadCallback() {
+export default function useProductLoadCallback() {
     const { history } = useContext(RouterContext)
     const productUpdater = useProductUpdater()
     const { wrap } = usePending('product.LOAD')
