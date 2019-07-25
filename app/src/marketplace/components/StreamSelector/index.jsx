@@ -15,16 +15,9 @@ import type { Stream, StreamList, StreamIdList, StreamId } from '$shared/flowtyp
 
 import styles from './streamSelector.pcss'
 
-export type StateProps = {
-    fetchingStreams: boolean,
-    streams: StreamList,
-    availableStreams: StreamList,
-    className?: string,
-}
-
 type Props = {
     fetchingStreams: boolean,
-    streams: StreamList,
+    streams: StreamIdList,
     availableStreams: StreamList,
     className?: string,
 }
@@ -77,14 +70,14 @@ export class StreamSelector extends React.Component<Props, State> {
     state = {
         search: '',
         sort: SORT_BY_NAME,
-        nextStreams: this.props.streams.filter(Boolean).map((s) => s.id),
+        nextStreams: [...this.props.streams],
         selectedStreams: [],
         removedStreams: [],
     }
 
     componentWillReceiveProps({ streams }: Props) {
         this.setState({
-            nextStreams: streams.filter(Boolean).map((s) => s.id),
+            nextStreams: [...streams],
         })
     }
 
@@ -120,7 +113,7 @@ export class StreamSelector extends React.Component<Props, State> {
     onClearAll = () => {
         this.setState({
             selectedStreams: [],
-            removedStreams: this.props.streams.filter(Boolean).map((s) => s.id),
+            removedStreams: [...this.props.streams],
         })
     }
 
