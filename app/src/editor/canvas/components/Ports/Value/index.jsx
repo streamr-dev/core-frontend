@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { RunStates } from '../../../state'
+import { RunStates, getPortUserValueOrDefault } from '../../../state'
 import Color from './Color'
 import Map from './Map'
 import Select from './Select'
@@ -43,10 +43,8 @@ const Value = ({ canvas, port, onChange }: Props) => {
     // Enable non-running input whether connected or not if port.canHaveInitialValue
     const disabled = isRunning || (!port.canHaveInitialValue && port.connected)
     const type = getPortType(port)
-    const isParam = 'defaultValue' in port
-
     // TODO: Ignore when editing.
-    const value = (isParam ? (port.value || port.defaultValue) : port.initialValue) || ''
+    const value = getPortUserValueOrDefault(canvas, port.id)
     const commonProps: CommonProps = {
         disabled,
         onChange,

@@ -701,10 +701,14 @@ export function setPortUserValue(canvas, portId, value) {
 
     const port = getPort(canvas, portId)
 
-    // coerce double to number or undefined if empty or invalid
+    const defaultValue = getPortDefaultValue(canvas, portId)
+    if (isBlank(value)) {
+        value = defaultValue
+    }
+
+    // coerce double to number if invalid
     if (port.type === 'Double') {
-        value = value != null ? String(value).trim() : undefined
-        if (value == null || value === '') {
+        if (isBlank(value)) {
             value = undefined
         } else {
             // swap , for .
@@ -712,9 +716,9 @@ export function setPortUserValue(canvas, portId, value) {
             const num = Number.parseFloat(value)
             // infinite/NaN = undefined
             if (Number.isNaN(num) || !Number.isFinite(num)) {
-                value = undefined
+                value = defaultValue
             } else {
-                value = String(num)
+                value = num
             }
         }
     }
@@ -737,6 +741,23 @@ export function getPortUserValue(canvas, portId) {
     const key = PORT_USER_VALUE_KEYS[getPortType(canvas, portId)]
     const port = getPort(canvas, portId)
     return port[key]
+}
+
+function isBlank(value) {
+    return value == null || String(value).trim() === ''
+}
+
+export function getPortDefaultValue(canvas, portId) {
+    const port = getPort(canvas, portId)
+    const defaultValue = 'defaultValue' in port
+        ? port.defaultValue
+        : port.initialValue
+    return !isBlank(defaultValue) ? defaultValue : undefined
+}
+
+export function getPortUserValueOrDefault(canvas, portId) {
+    const value = getPortUserValue(canvas, portId)
+    return !isBlank(value) ? value : getPortDefaultValue(canvas, portId)
 }
 
 /**
