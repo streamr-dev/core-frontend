@@ -1,0 +1,14 @@
+{
+  "id": 96,
+  "name": "MovingAverageExp",
+  "path": "Time Series: Filtering",
+  "help": {
+    "params": {},
+    "paramNames": [],
+    "inputs": {},
+    "inputNames": [],
+    "outputs": {},
+    "outputNames": [],
+    "helpText": "Smooths the incoming time series by calculating an exponential moving average (EMA)  \n\n\n\n\n\n\t- **EMA(t) = a x <strong>in</strong>(t) + (1-a) x EMA(t-1)\n\t- **a = <span class=\"math-tex\">\\(2 \\over \\text{length} + 1\\)"
+  }
+}

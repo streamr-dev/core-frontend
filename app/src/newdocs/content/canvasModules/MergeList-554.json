@@ -1,0 +1,24 @@
+{
+  "id": 554,
+  "name": "MergeList",
+  "path": "List",
+  "help": {
+    "params": {},
+    "paramNames": [],
+    "inputs": {
+      "head": "the first items of the merged list",
+      "tail": "the last items of the merged list"
+    },
+    "inputNames": [
+      "head",
+      "tail"
+    ],
+    "outputs": {
+      "out": "merged list"
+    },
+    "outputNames": [
+      "out"
+    ],
+    "helpText": "Merge two lists (*head + tail)* together to form a singe list. Merging is simply done by adding items of *tail *to the end of *head *to form a single list."
+  }
+}

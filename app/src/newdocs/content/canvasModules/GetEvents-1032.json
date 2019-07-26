@@ -1,0 +1,8 @@
+{
+  "id": 1032,
+  "name": "GetEvents",
+  "path": "Integrations: Ethereum",
+  "help": {
+    "helpText": "Get events sent out by given contract in the given transaction"
+  }
+}

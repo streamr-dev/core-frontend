@@ -1,0 +1,22 @@
+{
+  "id": 29,
+  "name": "Invert",
+  "path": "Time Series: Simple Math",
+  "help": {
+    "params": {},
+    "paramNames": [],
+    "inputs": {
+      "in": ""
+    },
+    "inputNames": [
+      "in"
+    ],
+    "outputs": {
+      "out": ""
+    },
+    "outputNames": [
+      "out"
+    ],
+    "helpText": "Outputs the multiplicative inverse (reciprocal) of the input (1/in, in^-1)."
+  }
+}

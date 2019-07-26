@@ -1,0 +1,14 @@
+{
+  "id": 220,
+  "name": "TextField",
+  "path": "Input",
+  "help": {
+    "params": {},
+    "paramNames": [],
+    "inputs": {},
+    "inputNames": [],
+    "outputs": {},
+    "outputNames": [],
+    "helpText": "The module outputs the value of the text field every time 'send' is pressed."
+  }
+}

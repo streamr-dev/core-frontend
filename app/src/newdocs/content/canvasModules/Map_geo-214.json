@@ -1,0 +1,22 @@
+{
+  "id": 214,
+  "name": "Map (geo)",
+  "path": "Visualizations",
+  "help": {
+    "params": {},
+    "paramNames": [],
+    "inputs": {
+      "id": "Id of the marker to place. Will also be displayed on hover over the marker.",
+      "latitude": "Latitude coordinate for the marker",
+      "longitude": "Longitude coordinate for the marker"
+    },
+    "inputNames": [
+      "id",
+      "latitude",
+      "longitude"
+    ],
+    "outputs": {},
+    "outputNames": [],
+    "helpText": "This module displays a world map. Markers can be drawn on the map at WGS84 coordinates given to the inputs **latitude** and **longitude** as decimal numbers (degrees). Markers also have an **id**. To draw multiple markers, connect the **id** input. Coordinates for the same id will move the marker, and coordinates for a new id will create a new marker.  \n\nIn module options, you can enable directional markers to expose an additional **heading** input, which controls marker heading (e.g. vehicles on the street or ships at sea). Other options include marker coloring, autozoom behavior etc."
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "id": 4,
+  "name": "Subtract",
+  "path": "Time Series: Simple Math",
+  "help": {
+    "outputNames": [
+      "A-B"
+    ],
+    "inputs": {
+      "A": "Value to subtract from",
+      "B": "Value to be subtracted"
+    },
+    "helpText": "This module calculates the difference of its two input values.",
+    "inputNames": [
+      "A",
+      "B"
+    ],
+    "params": {},
+    "outputs": {
+      "A-B": "The difference"
+    },
+    "paramNames": []
+  }
+}

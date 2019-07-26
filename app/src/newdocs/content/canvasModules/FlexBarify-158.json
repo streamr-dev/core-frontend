@@ -1,0 +1,36 @@
+{
+  "id": 158,
+  "name": "FlexBarify",
+  "path": "Time Series: Utils",
+  "help": {
+    "outputNames": [
+      "open",
+      "high",
+      "low",
+      "close",
+      "avg"
+    ],
+    "inputs": {
+      "value": "Value to be sampled into the bar",
+      "valueLength": "Length of each event, contributes to **barLength**"
+    },
+    "helpText": "Similar to the **Barify** module, which creates open-high-low-close bars equally long in **time**, this module creates bars equally long in an arbitrary variable passed into the **valueLength** input.\n  \n\n\nIncoming **valueLength** is summed for the current bar until **barLength** is reached, at which point the outputs are sent and the bar is reset.\n  \n\n\nNote that if multiple bars would be filled on the same event, only one is output. To avoid this situation you may want to keep **barLength** substantially larger than incoming **valueLength**.",
+    "inputNames": [
+      "valueLength",
+      "value"
+    ],
+    "params": {
+      "barLength": "Length of each bar (in **valueLength** units)"
+    },
+    "outputs": {
+      "open": "Value at start of period",
+      "high": "Maximum value during period",
+      "avg": "Average of values received during the period, weighted by **valueLength**",
+      "low": "Minimum value during period",
+      "close": "Value at end of period (the most recent value)"
+    },
+    "paramNames": [
+      "barLength"
+    ]
+  }
+}

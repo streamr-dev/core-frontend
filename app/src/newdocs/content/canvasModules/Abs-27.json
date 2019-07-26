@@ -1,0 +1,22 @@
+{
+  "id": 27,
+  "name": "Abs",
+  "path": "Time Series: Simple Math",
+  "help": {
+    "params": {},
+    "paramNames": [],
+    "inputs": {
+      "in": "The original value"
+    },
+    "inputNames": [
+      "in"
+    ],
+    "outputs": {
+      "out": "The absolute value of the original value"
+    },
+    "outputNames": [
+      "out"
+    ],
+    "helpText": "Outputs the absolute value (positive value with original sign stripped) of the input."
+  }
+}

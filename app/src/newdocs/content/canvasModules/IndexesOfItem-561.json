@@ -1,0 +1,24 @@
+{
+  "id": 561,
+  "name": "IndexesOfItem",
+  "path": "List",
+  "help": {
+    "params": {},
+    "paramNames": [],
+    "inputs": {
+      "item": "item to look for",
+      "list": "item to look for"
+    },
+    "inputNames": [
+      "item",
+      "list"
+    ],
+    "outputs": {
+      "indexes": "list of indexes of occurrences; empty list if none"
+    },
+    "outputNames": [
+      "indexes"
+    ],
+    "helpText": "Finds indexes of all occurrences of an item in a list."
+  }
+}

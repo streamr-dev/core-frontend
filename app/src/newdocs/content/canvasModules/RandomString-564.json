@@ -1,0 +1,26 @@
+{
+  "id": 564,
+  "name": "RandomString",
+  "path": "Text",
+  "help": {
+    "params": {
+      "length": "length of strings to generate"
+    },
+    "paramNames": [
+      "length"
+    ],
+    "inputs": {
+      "trigger": "when value is received, activates module"
+    },
+    "inputNames": [
+      "trigger"
+    ],
+    "outputs": {
+      "out": "the random string"
+    },
+    "outputNames": [
+      "out"
+    ],
+    "helpText": "Generate fixed-length random strings from an equiprobable symbol pool. Allowed symbols can be configured from module settings."
+  }
+}

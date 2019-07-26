@@ -1,0 +1,14 @@
+{
+  "id": 54,
+  "name": "Correlation",
+  "path": "Time Series: Statistics",
+  "help": {
+    "outputNames": [],
+    "inputs": {},
+    "helpText": "Calculates (Pearson's) correlation between two input variables in a sliding window of length **windowLength**.",
+    "inputNames": [],
+    "params": {},
+    "outputs": {},
+    "paramNames": []
+  }
+}

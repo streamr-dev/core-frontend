@@ -1,0 +1,24 @@
+{
+  "id": 528,
+  "name": "SearchStream",
+  "path": "Streams",
+  "help": {
+    "params": {},
+    "paramNames": [],
+    "inputs": {
+      "name": "stream to search for by name, must be exact"
+    },
+    "inputNames": [
+      "name"
+    ],
+    "outputs": {
+      "found": "true if stream was found",
+      "stream": "id of stream if found"
+    },
+    "outputNames": [
+      "found",
+      "stream"
+    ],
+    "helpText": "Search for a stream by name"
+  }
+}

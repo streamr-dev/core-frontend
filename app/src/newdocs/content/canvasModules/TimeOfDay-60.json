@@ -1,0 +1,24 @@
+{
+  "id": 60,
+  "name": "TimeOfDay",
+  "path": "Time & Date",
+  "help": {
+    "outputNames": [
+      "out"
+    ],
+    "inputs": {},
+    "helpText": "Outputs 1 if the current time of day (in the time zone your user account is set to) is between **startTime** and **endTime** (both inclusive). At other times outputs 0.",
+    "inputNames": [],
+    "params": {
+      "startTime": "24 hour format HH:MM:SS",
+      "endTime": "24 hour format HH:MM:SS"
+    },
+    "outputs": {
+      "out": "1 between the given times, otherwise 0"
+    },
+    "paramNames": [
+      "startTime",
+      "endTime"
+    ]
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "id": 233,
+  "name": "MergeMap",
+  "path": "Map",
+  "help": {
+    "params": {},
+    "paramNames": [],
+    "inputs": {
+      "leftMap": "a map to merge onto",
+      "rightMap": "a map to be merged"
+    },
+    "inputNames": [
+      "leftMap",
+      "rightMap"
+    ],
+    "outputs": {
+      "out": "the resulting merged map"
+    },
+    "outputNames": [
+      "out"
+    ],
+    "helpText": "Merge **rightMap** onto **leftMap** resulting in a single map. In case of conflicting keys, entries of **rightMap** will replace those of **leftMap**."
+  }
+}

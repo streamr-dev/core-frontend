@@ -1,0 +1,18 @@
+{
+  "id": 208,
+  "name": "ValueAsText",
+  "path": "Text",
+  "help": {
+    "params": {},
+    "paramNames": [],
+    "inputs": {
+      "in": "Any Object"
+    },
+    "inputNames": [
+      "in"
+    ],
+    "outputs": {},
+    "outputNames": [],
+    "helpText": "Transforms the input value (which can be any value) into text."
+  }
+}

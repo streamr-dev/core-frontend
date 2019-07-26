@@ -1,0 +1,30 @@
+{
+  "id": 49,
+  "name": "Peak",
+  "path": "Time Series: Triggers",
+  "help": {
+    "outputNames": [
+      "out"
+    ],
+    "inputs": {
+      "in": "Input time series"
+    },
+    "helpText": "Attempts to detect upward turns below **lowZone** (outputs 1) and downward turns below **highZone** (outputs -1).\n  \n\n\nFor an upward turn to be registered, the change between subsequent input values must be larger than **threshold**. For a downward turn the change must be less than **-threshold**.",
+    "inputNames": [
+      "in"
+    ],
+    "params": {
+      "highZone": "The level above which a downward turn can occur",
+      "lowZone": "The level below which an upward turn can occur",
+      "threshold": "The minimum change in the correct direction between subsequent input values that is allowed to trigger a turn"
+    },
+    "outputs": {
+      "out": "1 for upward turn and -1 for downward turn"
+    },
+    "paramNames": [
+      "highZone",
+      "lowZone",
+      "threshold"
+    ]
+  }
+}

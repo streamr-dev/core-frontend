@@ -1,0 +1,28 @@
+{
+  "id": 138,
+  "name": "StandardDeviation",
+  "path": "Time Series: Statistics",
+  "help": {
+    "outputNames": [
+      "out"
+    ],
+    "inputs": {
+      "in": "Input time series"
+    },
+    "helpText": "Calculates the standard deviation in a sliding window of the input time series.",
+    "inputNames": [
+      "in"
+    ],
+    "params": {
+      "minSamples": "Minimum number of observations for producing output",
+      "windowLength": "Length of the sliding window (number of observations)"
+    },
+    "outputs": {
+      "out": "Standard deviation"
+    },
+    "paramNames": [
+      "windowLength",
+      "minSamples"
+    ]
+  }
+}

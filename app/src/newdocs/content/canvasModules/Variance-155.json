@@ -1,0 +1,14 @@
+{
+  "id": 155,
+  "name": "Variance",
+  "path": "Time Series: Statistics",
+  "help": {
+    "outputNames": [],
+    "inputs": {},
+    "helpText": "Calculates the bias-corrected sample variance (with N-1 in the denominator). Use the **PopulationVariance** module for the non-bias-corrected population variance.",
+    "inputNames": [],
+    "params": {},
+    "outputs": {},
+    "paramNames": []
+  }
+}

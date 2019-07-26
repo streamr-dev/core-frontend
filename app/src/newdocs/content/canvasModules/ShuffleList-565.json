@@ -1,0 +1,22 @@
+{
+  "id": 565,
+  "name": "ShuffleList",
+  "path": "List",
+  "help": {
+    "params": {},
+    "paramNames": [],
+    "inputs": {
+      "in": "input list"
+    },
+    "inputNames": [
+      "in"
+    ],
+    "outputs": {
+      "out": "input list randomly ordered"
+    },
+    "outputNames": [
+      "out"
+    ],
+    "helpText": "Shuffle the items of a list."
+  }
+}

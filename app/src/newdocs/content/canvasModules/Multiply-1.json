@@ -1,0 +1,24 @@
+{
+  "id": 1,
+  "name": "Multiply",
+  "path": "Time Series: Simple Math",
+  "help": {
+    "outputNames": [
+      "A*B"
+    ],
+    "inputs": {
+      "A": "The first value to be multiplied",
+      "B": "The second value to be multiplied"
+    },
+    "helpText": "This module calculates the product of two numeric input values.",
+    "inputNames": [
+      "A",
+      "B"
+    ],
+    "params": {},
+    "outputs": {
+      "A*B": "The product of the inputs"
+    },
+    "paramNames": []
+  }
+}

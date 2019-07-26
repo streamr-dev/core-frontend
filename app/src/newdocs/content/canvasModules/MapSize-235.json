@@ -1,0 +1,22 @@
+{
+  "id": 235,
+  "name": "MapSize",
+  "path": "Map",
+  "help": {
+    "params": {},
+    "paramNames": [],
+    "inputs": {
+      "in": "a map"
+    },
+    "inputNames": [
+      "in"
+    ],
+    "outputs": {
+      "size": "the number of entries"
+    },
+    "outputNames": [
+      "size"
+    ],
+    "helpText": "Determine the number of entries in a map."
+  }
+}

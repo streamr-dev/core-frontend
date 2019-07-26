@@ -1,0 +1,14 @@
+{
+  "id": 55,
+  "name": "SpearmansRankCorrelation",
+  "path": "Time Series: Statistics",
+  "help": {
+    "outputNames": [],
+    "inputs": {},
+    "helpText": "Calculates Spearman's Rank correlation between two input variables in a sliding window of length **windowLength**.",
+    "inputNames": [],
+    "params": {},
+    "outputs": {},
+    "paramNames": []
+  }
+}

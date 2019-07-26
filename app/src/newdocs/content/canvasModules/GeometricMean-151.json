@@ -1,0 +1,14 @@
+{
+  "id": 151,
+  "name": "GeometricMean",
+  "path": "Time Series: Statistics",
+  "help": {
+    "outputNames": [],
+    "inputs": {},
+    "helpText": "Calculates the geometric mean of incoming values in a sliding window of length **windowLength**. At least minSamples values must be received before an output is produced.",
+    "inputNames": [],
+    "params": {},
+    "outputs": {},
+    "paramNames": []
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "id": 61,
+  "name": "Min",
+  "path": "Time Series: Simple Math",
+  "help": {
+    "outputNames": [],
+    "inputs": {},
+    "helpText": "Outputs the lesser one of the two input values. For finding the minimum in a window of values, see the **Min (window)** module.",
+    "inputNames": [],
+    "params": {},
+    "outputs": {},
+    "paramNames": []
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "id": 46,
+  "name": "GreaterThan",
+  "path": "Boolean",
+  "help": {
+    "outputNames": [],
+    "inputs": {},
+    "helpText": "Outputs 1 if **A** is greater than **B** (A>B). If **equality** is set to true, outputs 1 if A≥B. Otherwise outputs 0.",
+    "inputNames": [],
+    "params": {},
+    "outputs": {},
+    "paramNames": []
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "id": 98,
+  "name": "ARIMA",
+  "path": "Time Series: Prediction",
+  "help": {
+    "outputNames": [
+      "pred"
+    ],
+    "inputs": {
+      "in": "Incoming time series"
+    },
+    "helpText": "Evaluates an ARIMA prediction model with given parameters. Check the module options to set the number of autoregressive and moving average parameters. Model fitting is not (yet) implemented.",
+    "inputNames": [
+      "in"
+    ],
+    "params": {},
+    "outputs": {
+      "pred": "ARIMA prediction"
+    },
+    "paramNames": []
+  }
+}

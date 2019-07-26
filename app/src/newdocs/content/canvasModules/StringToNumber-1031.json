@@ -1,0 +1,24 @@
+{
+  "id": 1031,
+  "name": "StringToNumber",
+  "path": "Text",
+  "help": {
+    "params": {},
+    "paramNames": [],
+    "inputs": {
+      "in": "input string"
+    },
+    "inputNames": [
+      "in"
+    ],
+    "outputs": {
+      "out": "number parsed from input string",
+      "error": "Error if input can't be parsed"
+    },
+    "outputNames": [
+      "out",
+      "error"
+    ],
+    "helpText": "Parse a number from the input string.  \n\nExamples of valid floating-point numbers:  \n\n\n- \"1\"- \"3.14159\"- \"-.234e4\" (outputs -2340)- \"+3.e1\" (outputs 30)"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "id": 546,
+  "name": "SubList",
+  "path": "List",
+  "help": {
+    "params": {
+      "from": "start position (included)",
+      "to": "end position (not included)"
+    },
+    "paramNames": [
+      "from",
+      "to"
+    ],
+    "inputs": {
+      "in": "input list"
+    },
+    "inputNames": [
+      "in"
+    ],
+    "outputs": {
+      "error": "error string in case error occurred",
+      "out": "extracted sub list if successful"
+    },
+    "outputNames": [
+      "error",
+      "out"
+    ],
+    "helpText": "Extract a sub list from a list.  \n\n   \n\nThis module is strict about correct indexing. If given incorrect indices, instead of a sub list being produced, an error will be produced in output *error*."
+  }
+}

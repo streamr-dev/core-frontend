@@ -1,0 +1,24 @@
+{
+  "id": 549,
+  "name": "AppendToList",
+  "path": "List",
+  "help": {
+    "params": {},
+    "paramNames": [],
+    "inputs": {
+      "item": "item to append",
+      "list": "list to append to"
+    },
+    "inputNames": [
+      "item",
+      "list"
+    ],
+    "outputs": {
+      "list": "resulting list"
+    },
+    "outputNames": [
+      "list"
+    ],
+    "helpText": "Append an item to the end of a List."
+  }
+}

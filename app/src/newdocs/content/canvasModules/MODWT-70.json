@@ -1,0 +1,32 @@
+{
+  "id": 70,
+  "name": "MODWT",
+  "path": "Time Series: Filtering",
+  "help": {
+    "params": {
+      "wavelet": "Chosen wavelet filter**",
+      "level": "Transform level (1..N)"
+    },
+    "paramNames": [
+      "wavelet",
+      "level"
+    ],
+    "inputs": {
+      "in": "Input time series"
+    },
+    "inputNames": [
+      "in"
+    ],
+    "outputs": {
+      "details": "The wavelet detail",
+      "energy": "Energy at this level",
+      "smooth": "The wavelet smooth"
+    },
+    "outputNames": [
+      "details",
+      "energy",
+      "smooth"
+    ],
+    "helpText": "This module implements a realtime maximal overlap discrete wavelet transform (MODWT). A number of different wavelets are available.\n  \n\n\nNote that, like all filters, the MODWT introduces increasing amounts of delay with higher levels of smoothing. No additional delay is added to any level - this means that a multi-level decomposition is not aligned at a given time. Reconstructing the original signal would require adding delay to all but the last level."
+  }
+}

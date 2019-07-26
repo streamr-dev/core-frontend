@@ -1,0 +1,28 @@
+{
+  "id": 25,
+  "name": "ThreeZones",
+  "path": "Time Series: Triggers",
+  "help": {
+    "outputNames": [
+      "out"
+    ],
+    "inputs": {
+      "in": "Incoming value"
+    },
+    "helpText": "This module outputs -1, 0 or +1 depending on whether the input value is below **lowZone**, between **lowZone** and **highZone**, or above **highZone** respectively.",
+    "inputNames": [
+      "in"
+    ],
+    "params": {
+      "highZone": "The high limit",
+      "lowZone": "The low limit"
+    },
+    "outputs": {
+      "out": "-1, 0 or +1 depending on which zone the input value is in"
+    },
+    "paramNames": [
+      "highZone",
+      "lowZone"
+    ]
+  }
+}

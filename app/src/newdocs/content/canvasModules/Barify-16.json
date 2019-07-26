@@ -1,0 +1,34 @@
+{
+  "id": 16,
+  "name": "Barify",
+  "path": "Time Series: Utils",
+  "help": {
+    "outputNames": [
+      "open",
+      "high",
+      "low",
+      "close",
+      "avg"
+    ],
+    "inputs": {
+      "in": "Input values"
+    },
+    "helpText": "This is a utility for moving from event time to wall-clock time. This module outputs new values every **barLength** seconds. You would use this module to sample a time series every 60 seconds, for example.",
+    "inputNames": [
+      "in"
+    ],
+    "params": {
+      "barLength": "Length of the bar (time interval) in seconds"
+    },
+    "outputs": {
+      "open": "Value at start of period",
+      "high": "Maximum value during period",
+      "avg": "Simple average of values received during the period",
+      "low": "Minimum value during period",
+      "close": "Value at end of period (the most recent value)"
+    },
+    "paramNames": [
+      "barLength"
+    ]
+  }
+}

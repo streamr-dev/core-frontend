@@ -1,0 +1,14 @@
+{
+  "id": 550,
+  "name": "BuildList",
+  "path": "List",
+  "help": {
+    "params": {},
+    "paramNames": [],
+    "inputs": {},
+    "inputNames": [],
+    "outputs": {},
+    "outputNames": [],
+    "helpText": "Build a fixed-sized list from values at inputs."
+  }
+}

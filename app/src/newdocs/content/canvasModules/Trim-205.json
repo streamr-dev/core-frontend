@@ -1,0 +1,14 @@
+{
+  "id": 205,
+  "name": "Trim",
+  "path": "Text",
+  "help": {
+    "params": {},
+    "paramNames": [],
+    "inputs": {},
+    "inputNames": [],
+    "outputs": {},
+    "outputNames": [],
+    "helpText": "Removes the whitespace in front of and behind the input text.  \n\n\n\nE.g.  \"         example with a space       \" -> \"example with a space\""
+  }
+}

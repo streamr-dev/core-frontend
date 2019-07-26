@@ -1,0 +1,14 @@
+{
+  "id": 28,
+  "name": "Negate",
+  "path": "Time Series: Simple Math",
+  "help": {
+    "outputNames": [],
+    "inputs": {},
+    "helpText": "Outputs the negated input value **-1 * in**.",
+    "inputNames": [],
+    "params": {},
+    "outputs": {},
+    "paramNames": []
+  }
+}
