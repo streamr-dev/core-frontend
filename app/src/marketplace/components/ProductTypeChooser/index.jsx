@@ -40,7 +40,7 @@ const ProductTypeChooser = ({ onSelect }: Props) => (
                     <button
                         type="button"
                         className={cx('btn', 'btn-special', styles.button)}
-                        onClick={() => onSelect('standard')}
+                        onClick={() => onSelect('NORMAL')}
                     >
                         <Translate value="productTypeChooser.standard.linkTitle" />
                     </button>
@@ -64,7 +64,7 @@ const ProductTypeChooser = ({ onSelect }: Props) => (
                     <button
                         type="button"
                         className={cx('btn', 'btn-special', styles.button)}
-                        onClick={() => onSelect('community')}
+                        onClick={() => onSelect('COMMUNITY')}
                     >
                         <Translate value="productTypeChooser.community.linkTitle" />
                     </button>

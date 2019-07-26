@@ -1,27 +1,63 @@
 // @flow
 
-import React, { useContext } from 'react'
+import React from 'react'
 import { Container } from 'reactstrap'
+import { withRouter } from 'react-router-dom'
 
-import * as RouterContext from '$shared/components/RouterContextProvider'
+import Layout from '$mp/components/Layout'
+import type { Product } from '$mp/flowtype/product-types'
+import * as UndoContext from '$shared/components/UndoContextProvider'
+
+import ProductController from '../ProductController'
+import useProductUpdater from '../ProductController/useProductUpdater'
+import useProduct from '../ProductController/useProduct'
+import MarkdownEditor from '$mp/components/MarkdownEditor'
 
 import styles from './editProductPage.pcss'
 
-const EditProductPage = () => {
-    const { match } = useContext(RouterContext.Context)
-    console.log(match)
+type Props = {
+    product: Product,
+}
+
+const EditProductPage = ({ product }: Props) => (
+    <div className={styles.root}>
+        <Container className={styles.container}>
+            <h1>{product.name}</h1>
+            <MarkdownEditor placeholder="Type something great about your product" />
+        </Container>
+    </div>
+)
+
+const EditWrap = () => {
+    const { replaceProduct, updateProduct } = useProductUpdater()
+    const product = useProduct()
+
+    if (!product) {
+        return null
+    }
+
+    const key = (!!product && product.id) || ''
 
     return (
-        <div className={styles.root}>
-            <Container className={styles.container}>
-                New product editor...
-            </Container>
-        </div>
+        <EditProductPage
+            key={key}
+            replace={replaceProduct}
+            push={updateProduct}
+            product={product}
+        />
     )
 }
 
+const ProductContainer = withRouter((props) => (
+    <UndoContext.Provider key={props.match.params.id}>
+        <ProductController>
+            <EditWrap />
+        </ProductController>
+    </UndoContext.Provider>
+))
+
 export default () => (
-    <RouterContext.Provider>
-        <EditProductPage />
-    </RouterContext.Provider>
+    <Layout>
+        <ProductContainer />
+    </Layout>
 )

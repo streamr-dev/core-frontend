@@ -78,6 +78,10 @@
     margin: 3em 0;
   }
 
+  section {
+    padding: 0;
+  }
+
   .mdH1,
   .mdH2,
   .mdH3,
@@ -88,6 +92,8 @@
     font-weight: var(--regular);
     font-family: 'IBM Plex Sans', sans-serif;
     letter-spacing: 0;
+    text-align: initial;
+    padding: 0;
   }
 
   .mdH1,
@@ -132,7 +138,6 @@
     line-height: 30px;
   }
 
-  a,
   ul a,
   ol a,
   .mdP a {
@@ -142,6 +147,7 @@
 
     &:--enter {
       color: var(--blueDark6);
+      cursor: pointer;
     }
   }
 

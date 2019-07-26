@@ -65,7 +65,6 @@ const initialState = {
     streamFieldAutodetectError: null,
     permissions: null,
     pageSize: streamListPageSize,
-    offset: 0,
     hasMoreSearchResults: null,
 }
 
@@ -128,6 +127,11 @@ export default function (state: UserPageStreamsState = initialState, action: Str
             }
 
         case GET_STREAM_SUCCESS:
+            return {
+                ...state,
+                fetching: false,
+                error: null,
+            }
         case CREATE_STREAM_SUCCESS:
             return {
                 ...state,
@@ -135,22 +139,28 @@ export default function (state: UserPageStreamsState = initialState, action: Str
                 error: null,
             }
 
-        case GET_STREAMS_SUCCESS:
+        case GET_STREAMS_SUCCESS: {
+            const ids = [
+                ...new Set(( // ensure no duplicates in ids list
+                    state.ids
+                        .concat(action.streams)
+                        .reverse() // reverse before new Set to remove earlier id
+                )),
+            ].reverse() // then re-reverse results to restore original ordering
             return {
                 ...state,
                 fetching: false,
                 error: null,
-                ids: state.ids.concat(action.streams),
-                offset: state.offset + action.streams.length,
+                ids,
                 hasMoreSearchResults: action.hasMoreResults,
             }
+        }
 
         case CLEAR_STREAM_LIST:
             return {
                 ...state,
                 error: null,
                 ids: [],
-                offset: 0,
                 hasMoreSearchResults: null,
             }
 
@@ -163,9 +173,10 @@ export default function (state: UserPageStreamsState = initialState, action: Str
 
         case DELETE_STREAM_SUCCESS: {
             const removedId = action.id // flow complains about using action.id directly ¯\_(ツ)_/¯
+            const ids = state.ids.filter((id) => (id !== removedId))
             return {
                 ...state,
-                ids: state.ids.filter((id) => (id !== removedId)),
+                ids,
                 fetching: false,
                 error: null,
             }

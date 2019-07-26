@@ -49,23 +49,27 @@ ul.subNavList li.navListItem {
     &:active {
       color: var(--streamrBlue);
     }
+  }
 
-    &.active {
-      color: var(--streamrBlue);
-    }
+  &.active {
+    color: var(--streamrBlue);
+  }
+
+  ul.subNavList ul {
+    padding: 0;
+    list-style: none;
   }
 
   ul.subNavList li a {
     color: #A3A3A3;
 
-    &:hover,
-    &:active {
+    &:hover {
       color: var(--streamrBlue);
     }
+  }
 
-    &.active {
-      color: var(--streamrBlue);
-    }
+  ul.subNavList li.active a {
+    color: var(--streamrBlue);
   }
 }
 

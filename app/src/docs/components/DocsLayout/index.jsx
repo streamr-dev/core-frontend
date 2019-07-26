@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { Container, Row, Col } from 'reactstrap'
-import { MDXProvider } from '@mdx-js/tag'
+import { MDXProvider } from '@mdx-js/react'
 
 import type { NavigationLink } from '$docs/flowtype/navigation-types'
 import Layout from '$mp/components/Layout'

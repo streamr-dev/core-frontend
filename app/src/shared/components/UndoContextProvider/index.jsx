@@ -1,9 +1,26 @@
+// @flow
+
 /* eslint-disable react/no-unused-state */
 
-import React from 'react'
+import React, { Component, type Node, type Context } from 'react'
 import t from 'prop-types'
 
-const UndoContext = React.createContext({
+type HistoryItem = {
+    action?: string,
+    state: any,
+}
+
+type ContextProps = {
+    history: Array<HistoryItem>,
+    pointer: number,
+    undo: Function,
+    redo: Function,
+    push: Function,
+    replace: Function,
+    reset: Function,
+}
+
+const UndoContext: Context<ContextProps> = React.createContext({
     history: [],
     pointer: 0,
     undo: Function.prototype,
@@ -19,7 +36,14 @@ const UndoContext = React.createContext({
  * Undo/redo does nothing but move pointer forward and backward.
  */
 
-export default class UndoContainer extends React.Component {
+type Props = {
+    children?: Node,
+    initialState?: any,
+}
+
+type State = ContextProps & HistoryItem
+
+class UndoContextProvider extends Component<Props, State> {
     static Context = UndoContext
     static Consumer = UndoContext.Consumer
 
@@ -28,12 +52,16 @@ export default class UndoContainer extends React.Component {
         initialState: t.object, // eslint-disable-line react/forbid-prop-types
     }
 
-    static getDerivedStateFromProps(props, state) {
-        const nextState = { ...state }
+    static getDerivedStateFromProps(props: Props, state: State) {
+        const nextState = {
+            ...state,
+        }
         if (!state.history.length && props.initialState) {
             // initialise with first 'initialState'
             Object.assign(nextState, {
-                history: [{ state: props.initialState }],
+                history: [{
+                    state: props.initialState,
+                }],
                 pointer: 0,
             })
         }
@@ -43,12 +71,18 @@ export default class UndoContainer extends React.Component {
         })
     }
 
+    componentWillUnmount() {
+        this.unmounted = true
+    }
+
+    unmounted = false
+
     /*
      * Move history pointer back.
      */
 
-    undo = (done) => {
-        const p = new Promise((resolve) => (
+    undo = (done: Function) => {
+        const p: Promise<Object | null> = new Promise((resolve) => (
             this.setState(({ history, pointer }) => {
                 if (this.unmounted) { return null }
                 const nextPointer = pointer - 1
@@ -66,8 +100,8 @@ export default class UndoContainer extends React.Component {
      * Move history pointer forward.
      */
 
-    redo = (done) => {
-        const p = new Promise((resolve) => (
+    redo = (done: Function) => {
+        const p: Promise<Object | null> = new Promise((resolve) => (
             this.setState(({ history, pointer }) => {
                 if (this.unmounted) { return null }
                 const nextPointer = pointer + 1
@@ -87,8 +121,8 @@ export default class UndoContainer extends React.Component {
      * Noops if next state is strict equal to prev or null.
      */
 
-    push = (action, fn, done) => {
-        const p = new Promise((resolve) => (
+    push = (action: string, fn: Function, done: Function) => {
+        const p: Promise<Object | null> = new Promise((resolve) => (
             this.setState(({ history, pointer }) => {
                 if (this.unmounted) { return null }
                 const prevHistory = history[pointer]
@@ -119,8 +153,8 @@ export default class UndoContainer extends React.Component {
      * No merge, only replace ala React.Component#replaceState.
      */
 
-    replace = (fn, done) => {
-        const p = new Promise((resolve) => (
+    replace = (fn: Function, done: Function) => {
+        const p: Promise<Object | null> = new Promise((resolve) => (
             this.setState(({ history, pointer }) => {
                 if (this.unmounted) { return null }
                 const prevHistory = history[pointer]
@@ -148,8 +182,8 @@ export default class UndoContainer extends React.Component {
      * Reset to initialState
      */
 
-    reset = (done) => {
-        const p = new Promise((resolve) => (
+    reset = (done: Function) => {
+        const p: Promise<void> = new Promise((resolve) => (
             this.setState({
                 history: [{
                     state: this.props.initialState,
@@ -162,6 +196,7 @@ export default class UndoContainer extends React.Component {
         return p
     }
 
+    // eslint-disable-next-line react/sort-comp
     state = {
         history: [],
         pointer: 0,
@@ -170,10 +205,7 @@ export default class UndoContainer extends React.Component {
         push: this.push,
         replace: this.replace,
         reset: this.reset,
-    }
-
-    componentWillUnmount() {
-        this.unmounted = true
+        state: undefined,
     }
 
     render() {
@@ -183,53 +215,7 @@ export default class UndoContainer extends React.Component {
     }
 }
 
-export class UndoControls extends React.Component {
-    static contextType = UndoContext
-
-    onKeyDown = (event) => {
-        let { disabled } = this.props
-        if (typeof disabled === 'function') {
-            disabled = disabled(this.context)
-        }
-        if (disabled) { return } // noop if disabled
-
-        // ignore if focus is in an input, select, textarea, etc
-        if (document.activeElement) {
-            const tagName = document.activeElement.tagName.toLowerCase()
-            if (tagName === 'input'
-                || tagName === 'select'
-                || tagName === 'textarea'
-                || document.activeElement.isContentEditable
-            ) {
-                return
-            }
-        }
-
-        const metaKey = event.ctrlKey || event.metaKey
-        if (!metaKey) { return } // all shortcuts require meta key
-
-        if (event.code === 'KeyZ') {
-            if (!event.shiftKey) { // Meta+Z – Undo
-                this.context.undo()
-            } else { // Meta+Shift+Z – Redo
-                this.context.redo()
-            }
-        }
-
-        if (event.code === 'KeyY') { // Meta+Y – Redo (windows style)
-            this.context.redo()
-        }
-    }
-
-    componentDidMount() {
-        window.addEventListener('keydown', this.onKeyDown)
-    }
-
-    componentWillUnmount() {
-        window.removeEventListener('keydown', this.onKeyDown)
-    }
-
-    render() {
-        return this.props.children || null
-    }
+export {
+    UndoContextProvider as Provider,
+    UndoContext as Context,
 }

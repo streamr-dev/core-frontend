@@ -1,4 +1,4 @@
-import ScrollableAnchor from 'react-scrollable-anchor'
+
 import { Link } from 'react-router-dom'
 import { formatPath } from '$shared/utils/url'
 
@@ -8,15 +8,27 @@ import docsStyles from '$newdocs/components/DocsLayout/docsLayout.pcss'
 import CodeSnippet from '$shared/components/CodeSnippet'
 import { JavaExample } from './code/api.js'
 import { JavascriptExample } from './code/api.js'
+import { PythonExample } from './code/api.js'
 
-<ScrollableAnchor id="sdks-overview"><div>
+<section id="sdks-overview">
 
 ## Overview
---content--
+There are both official and unofficial Software Development Kits (SDKs) available for building software that interacts
+with the Streamr platform. Using an SDK provides an effortless and reliable way to use Streamr from your software
+projects. The SDKs take care of the small details required to interact with Streamr through intuitive API libraries, allowing a
+developer to focus on their task at hand.
 
-</div></ScrollableAnchor>
 
-<ScrollableAnchor id="javascript-sdk"><div>
+Currently, we provide official SDKs for JavaScript (browser and Node.js) and Java. There is also a community-built SDK for
+Python in the works. The range of features each of these SDKs provide may vary; be sure to check the documentation of
+the specific SDK for more information.
+
+If your programming language or software environment of choice does not have an SDK available, you can still interact
+with Streamr using our <Link to={links.newdocs.api}>JSON-based HTTP API</Link> .
+
+</section>
+
+<section id="javascript-sdk">
 
 ## Javascript SDK
 
@@ -26,9 +38,9 @@ Here is an example of how to create an authenticated client, publish and subscri
 
 <CodeSnippet language='javascript'>{JavascriptExample}</CodeSnippet>
 
-</div></ScrollableAnchor>
+</section>
 
-<ScrollableAnchor id="java-sdk"><div>
+<section id="java-sdk">
 
 ## Java SDK
 
@@ -40,18 +52,26 @@ Here is an example of how to create an authenticated client, publish and subscri
 {JavaExample}
 </CodeSnippet>
 
-</div></ScrollableAnchor>
+</section>
 
-<ScrollableAnchor id="python-sdk"><div>
+<section id="python-sdk">
 
 ## Python SDK
---content--
 
-</div></ScrollableAnchor>
+The Python client library is available at this [Github repo](https://github.com/streamr-dev/streamr-client-python). Important note: this library is entirely community contributed and still work in progress. Core functionality like authentication via user API key, publish and subscribe data have been implemented. However, there are some other features available in our official libraries mentioned above that are still missing: Ethereum authentication, message verification, end-to-end encryption and historical data request. If you are interested in contributing to this library, feel free to reach out via our [dev forum](https://forum.streamr.dev/) or submit directly a pull request. 
 
-<ScrollableAnchor id="contribute-sdk"><div>
+Here is an example of how to create an authenticated client, publish and subscribe data using the Python library.
+
+<CodeSnippet language='python'>
+{PythonExample}
+</CodeSnippet>
+
+
+</section>
+
+<section id="contribute-sdk">
 
 ## Contribute an SDK?
 --content--
 
-</div></ScrollableAnchor>
+</section>

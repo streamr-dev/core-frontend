@@ -8,7 +8,8 @@ import ErrorComponentView from '$shared/components/ErrorComponentView'
 
 import links from '../../links'
 
-import UndoContainer, { UndoControls } from '$editor/shared/components/UndoContainer'
+import UndoControls from '$editor/shared/components/UndoControls'
+import * as UndoContext from '$shared/components/UndoContextProvider'
 import Subscription from '$editor/shared/components/Subscription'
 import * as SubscriptionStatus from '$editor/shared/components/SubscriptionStatus'
 import { ClientProvider } from '$editor/shared/components/Client'
@@ -452,7 +453,7 @@ const CanvasEdit = withRouter(({ canvas, ...props }) => {
 
 const CanvasEditWrap = () => {
     const { replaceCanvas, setCanvas } = useCanvasUpdater()
-    const { undo } = useContext(UndoContainer.Context)
+    const { undo } = useContext(UndoContext.Context)
     const canvas = useCanvas()
     if (!canvas) {
         return (
@@ -484,12 +485,12 @@ function isDisabled({ state: canvas }) {
 
 const CanvasContainer = withRouter(withErrorBoundary(ErrorComponentView)((props) => (
     <ClientProvider>
-        <UndoContainer key={props.match.params.id}>
+        <UndoContext.Provider key={props.match.params.id}>
             <UndoControls disabled={isDisabled} />
             <CanvasController.Provider>
                 <CanvasEditWrap />
             </CanvasController.Provider>
-        </UndoContainer>
+        </UndoContext.Provider>
     </ClientProvider>
 )))
 

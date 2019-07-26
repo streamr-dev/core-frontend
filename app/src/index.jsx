@@ -7,7 +7,6 @@ import { Provider } from 'react-redux'
 import App from './app'
 import GlobalInfoWatcher from './marketplace/containers/GlobalInfoWatcher'
 import store from './store'
-import './setup'
 
 const root = document.getElementById('root')
 

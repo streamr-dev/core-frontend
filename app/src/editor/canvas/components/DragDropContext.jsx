@@ -188,7 +188,10 @@ class EditorDraggable extends React.PureComponent {
             }, this.reset)
         }
 
-        if (this.unmounted) { return }
+        if (this.unmounted) {
+            this.context.onStop()
+            return
+        }
 
         this.setState({
             // ensure this happens after props.onStop

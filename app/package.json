@@ -15,7 +15,9 @@
     "stylelint-fix": "stylelint src/**/*.css src/**/*.[ps]css --fix",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
-    "chromatic": "CHROMATIC_APP_CODE=exgpyxh1il5 chromatic test --exit-zero-on-changes"
+    "chromatic": "CHROMATIC_APP_CODE=exgpyxh1il5 chromatic test --exit-zero-on-changes",
+    "clear-cache": "npm run clean-cache",
+    "clean-cache": "rm -rf node_modules/.cache; rm -rf .cache; rm -rf dist; jest --clearCache; killall flow; rm -rf /tmp/flow"
   },
   "husky": {
     "hooks": {
@@ -79,9 +81,8 @@
     "@babel/preset-env": "^7.4.5",
     "@babel/preset-react": "^7.0.0",
     "@babel/runtime": "^7.4.5",
-    "@mdx-js/loader": "^0.15.5",
-    "@mdx-js/mdx": "^0.15.5",
-    "@mdx-js/tag": "^0.15.0",
+    "@mdx-js/loader": "^1.1.0",
+    "@mdx-js/react": "^1.0.27",
     "@sambego/storybook-styles": "^1.0.0",
     "@sentry/browser": "^5.3.0",
     "@sentry/integrations": "^5.4.1",
@@ -208,6 +209,7 @@
     "react-responsive": "^4.1.0",
     "react-router-dom": "^5.0.1",
     "react-scrollable-anchor": "^0.6.1",
+    "react-scrollspy": "^3.4.0",
     "react-select": "^2.0.0",
     "react-shortcuts": "^1.6.2",
     "react-sortable-hoc": "^0.8.3",
