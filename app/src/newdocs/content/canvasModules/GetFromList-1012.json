@@ -1,0 +1,28 @@
+{
+  "id": 1012,
+  "name": "GetFromList",
+  "path": "List",
+  "help": {
+    "params": {
+      "index": "Index in the list for the item to be fetched. Negative index counts from end of list."
+    },
+    "paramNames": [
+      "index"
+    ],
+    "inputs": {
+      "in": "List to be indexed"
+    },
+    "inputNames": [
+      "in"
+    ],
+    "outputs": {
+      "out": "Item found at given index",
+      "error": "Error message, e.g. *List is empty*"
+    },
+    "outputNames": [
+      "out",
+      "error"
+    ],
+    "helpText": "Fetch item from a list by index.  \n\nIndexing starts from zero, so the first item has index 0, second has index 1 etc.  \n\nNegative index counts from end of list, so that last item in the list has index -1, second-to-last has index -2 etc."
+  }
+}

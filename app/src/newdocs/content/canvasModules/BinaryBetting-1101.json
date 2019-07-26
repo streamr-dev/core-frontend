@@ -1,0 +1,8 @@
+{
+  "id": 1101,
+  "name": "BinaryBetting",
+  "path": "Integrations: Ethereum",
+  "help": {
+    "helpText": "BinaryBetting Ethereum contract"
+  }
+}

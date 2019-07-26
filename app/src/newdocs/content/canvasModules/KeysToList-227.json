@@ -1,0 +1,26 @@
+{
+  "id": 227,
+  "name": "KeysToList",
+  "path": "Map",
+  "help": {
+    "params": {
+      "limit": "the number of entries to fetch"
+    },
+    "paramNames": [
+      "limit"
+    ],
+    "inputs": {
+      "in": "a map"
+    },
+    "inputNames": [
+      "in"
+    ],
+    "outputs": {
+      "out": "a submap of the first entries of map"
+    },
+    "outputNames": [
+      "out"
+    ],
+    "helpText": "Retrieve first (n=limit) entries of a map."
+  }
+}

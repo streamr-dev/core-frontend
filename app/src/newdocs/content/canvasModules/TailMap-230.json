@@ -1,0 +1,26 @@
+{
+  "id": 230,
+  "name": "TailMap",
+  "path": "Map",
+  "help": {
+    "params": {
+      "limit": "the number of entries to fetch"
+    },
+    "paramNames": [
+      "limit"
+    ],
+    "inputs": {
+      "in": "a map"
+    },
+    "inputNames": [
+      "in"
+    ],
+    "outputs": {
+      "out": "a submap of the last entries of map"
+    },
+    "outputNames": [
+      "out"
+    ],
+    "helpText": "Retrieve last (n=limit) entries of a map."
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "id": 11,
+  "name": "ChangeAbsolute",
+  "path": "Time Series: Simple Math",
+  "help": {
+    "outputNames": [],
+    "inputs": {},
+    "helpText": "Outputs the difference between the received value and the previous received value, or **in(t) - in(t-1)**.",
+    "inputNames": [],
+    "params": {},
+    "outputs": {},
+    "paramNames": []
+  }
+}

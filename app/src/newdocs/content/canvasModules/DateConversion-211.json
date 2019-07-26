@@ -1,0 +1,32 @@
+{
+  "id": 211,
+  "name": "DateConversion",
+  "path": "Time & Date",
+  "help": {
+    "params": {
+      "timezone": "Timezone of the outputs",
+      "format": "Format of the input and output string notations"
+    },
+    "paramNames": [
+      "timezone",
+      "format"
+    ],
+    "inputs": {
+      "date": "Timestamp, string or Date"
+    },
+    "inputNames": [
+      "date"
+    ],
+    "outputs": {
+      "date": "String notation",
+      "ts": "Timestamp(ms)",
+      "dayOfWeek": "In shortened form, e.g. \"Mon\""
+    },
+    "outputNames": [
+      "date",
+      "ts",
+      "dayOfWeek"
+    ],
+    "helpText": "Takes a date as an input in either in [Date](https://docs.oracle.com/javase/8/docs/api/java/util/Date.html) object, timestamp(ms) or in string notation. If the input is in text form, is the given format used.  \n\n\n\nExample:  \n\n\n\nParameters:  \n\n\n\n\n\n\t- Format <- \"yyyy-MM-dd HH:mm:ss\"\n\t- Timezone <- Europe/Helsinki\n\n\n\n  \n\nInputs:  \n\n\n\n\n\n\t- Date in <- \"2015-07-15 13:06:13\" or 1436954773474\n\n\n\nOutputs:   \n\n\n\n\n\n\t- Date out -> 2015-07-15 13:06:13\n\t- ts -> 1436954773474\n\t- dayOfWeek -> \"Wed\"\n\t- years -> 2015\n\t- months -> 7\n\t- days -> 15\n\t- hours -> 13\n\t- minutes -> 6\n\t- seconds -> 13\n\t- milliseconds -> 0"
+  }
+}

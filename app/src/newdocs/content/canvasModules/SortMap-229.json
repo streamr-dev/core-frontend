@@ -1,0 +1,26 @@
+{
+  "id": 229,
+  "name": "SortMap",
+  "path": "Map",
+  "help": {
+    "params": {
+      "byValue": "when false (default), sorts by key. when true, sorts by value"
+    },
+    "paramNames": [
+      "byValue"
+    ],
+    "inputs": {
+      "in": "a map"
+    },
+    "inputNames": [
+      "in"
+    ],
+    "outputs": {
+      "out": "a sorted map"
+    },
+    "outputNames": [
+      "out"
+    ],
+    "helpText": "Sorts a map."
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "id": 136,
+  "name": "JavaModule",
+  "path": "Custom Modules",
+  "help": {
+    "params": {},
+    "paramNames": [],
+    "inputs": {},
+    "inputNames": [],
+    "outputs": {},
+    "outputNames": [],
+    "helpText": "This module allows you to implement custom functionality by writing code in the Java programming language directly in your browser.\n  \n\n\nClick the **Edit code** button to open the code editor. The code you write will be dynamically compiled and executed.\n  \n\n\nSee the User Guide for more information on programmable modules."
+  }
+}

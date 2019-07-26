@@ -1,0 +1,22 @@
+{
+  "id": 203,
+  "name": "Split",
+  "path": "Text",
+  "help": {
+    "params": {},
+    "paramNames": [],
+    "inputs": {
+      "text": "The text to be splitted"
+    },
+    "inputNames": [
+      "text"
+    ],
+    "outputs": {
+      "list": "Splitted output as list"
+    },
+    "outputNames": [
+      "list"
+    ],
+    "helpText": "Splits the text by a given separator and outputs a list with the results  \n\n\n\nExamples:  \n\n\n\n\n\n\t- Separator: \" \"(empty space),Text: \"Two Words\"\n\t\n\n\t\t   - Output: Two, Words"
+  }
+}

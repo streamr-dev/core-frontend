@@ -1,0 +1,18 @@
+{
+  "id": 236,
+  "name": "MapAsTable",
+  "path": "Utils",
+  "help": {
+    "params": {},
+    "paramNames": [],
+    "inputs": {
+      "map": "a map"
+    },
+    "inputNames": [
+      "map"
+    ],
+    "outputs": {},
+    "outputNames": [],
+    "helpText": "Display the entries of a map as a table."
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "id": 544,
+  "name": "ListSize",
+  "path": "List",
+  "help": {
+    "params": {},
+    "paramNames": [],
+    "inputs": {
+      "in": "input list"
+    },
+    "inputNames": [
+      "in"
+    ],
+    "outputs": {
+      "size": "number of items in list"
+    },
+    "outputNames": [
+      "size"
+    ],
+    "helpText": "Determine size of list."
+  }
+}

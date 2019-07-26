@@ -1,0 +1,28 @@
+{
+  "id": 225,
+  "name": "GetFromMap",
+  "path": "Map",
+  "help": {
+    "params": {
+      "key": "a key"
+    },
+    "paramNames": [
+      "key"
+    ],
+    "inputs": {
+      "in": "a map"
+    },
+    "inputNames": [
+      "in"
+    ],
+    "outputs": {
+      "found": "1.0 if key was present in map, 0.0 otherwise.",
+      "out": "the corresponding value if key was found."
+    },
+    "outputNames": [
+      "found",
+      "out"
+    ],
+    "helpText": "Retrieve a value from a map by key."
+  }
+}

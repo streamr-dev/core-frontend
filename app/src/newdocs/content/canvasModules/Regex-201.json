@@ -1,0 +1,30 @@
+{
+  "id": 201,
+  "name": "Regex",
+  "path": "Text",
+  "help": {
+    "params": {
+      "pattern": "Regex pattern"
+    },
+    "paramNames": [
+      "pattern"
+    ],
+    "inputs": {
+      "text": "Text to be analyzed."
+    },
+    "inputNames": [
+      "text"
+    ],
+    "outputs": {
+      "match?": "1 if in the text is something that matches with the pattern. Else 0.",
+      "matchCount": "How many matches there are in the text.",
+      "matchList": "A list of the matches. An empty list if there aren't any."
+    },
+    "outputNames": [
+      "match?",
+      "matchCount",
+      "matchList"
+    ],
+    "helpText": "Module for analyzing text with a Regular Expression (Regex) pattern. [Pattern](http://docs.oracle.com/javase/7/docs/api/java/util/regex/Pattern.html) is given in java format, without the starting and ending slashes."
+  }
+}

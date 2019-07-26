@@ -1,0 +1,14 @@
+{
+  "id": 573,
+  "name": "Xor",
+  "path": "Boolean",
+  "help": {
+    "params": {},
+    "paramNames": [],
+    "inputs": {},
+    "inputNames": [],
+    "outputs": {},
+    "outputNames": [],
+    "helpText": "Implements the boolean XOR operation: outputs true if **one** of the inputs equal true, otherwise outputs false."
+  }
+}

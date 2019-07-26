@@ -1,0 +1,41 @@
+{
+  "id": 1001,
+  "name": "HTTP Request",
+  "path": "Integrations",
+  "help": {
+    "outputNames": [
+      "errors",
+      "data",
+      "status code",
+      "ping(ms)",
+      "headers"
+    ],
+    "inputs": {
+      "trigger": "Send request when input arrives",
+      "body":"Request body"
+    },
+    "helpText": "HTTP Request module sends inputs as HTTP request to given URL, and returns server response.  Headers, query params and body should be Maps. Body can also be List or String.  \n\nRequest body format can be changed in options (wrench icon). Default is JSON. Server is expected to return JSON formatted documents.  \n\nHTTP Request is asynchronous by default. Synchronized requests block the execution of the whole canvas until they receive the server response, but otherwise they work just like any other module; asynchronous requests on the other hand work like streams in that they activate modules they're connected to only when they receive data from the server.   \n\n\n- If a data path branches, and one branch passes through the HTTP Request module and another around it, if they also converge in a module, that latter module may experience multiple activations due to asynchronicity.- Asynchronicity also means that server responses may arrive in different order than they were sent.- If this kind of behaviour causes problems, you can try to fix it by changing sync mode to *synchronized* in options (wrench icon). \n   - Caveat: data throughput WILL be lower, and external servers may freeze your canvas simply by responding very slowly (or not at all).\n- For simple data paths and somewhat stable response times, the two sync modes will yield precisely the same results.",
+    "inputNames": [
+      "body",
+      "trigger"
+    ],
+    "params": {
+      "verb": "HTTP verb (e.g. GET, POST)",
+      "URL": "URL to send the request to",
+      "params": "Query parameters added to URL (?name=value)",
+      "headers": "HTTP Request headers"}
+    },
+    "outputs": {
+      "errors": "Empty list if all went correctly",
+      "data": "Server response payload",
+      "status code": "200..299 means all went correctly",
+      "ping(ms)": "Round-trip response time in milliseconds",
+      "headers": "HTTP Response headers"
+    },
+    "paramNames": [
+      "verb",
+      "URL",
+      "params",
+      "headers"
+    ]
+}

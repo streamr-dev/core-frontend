@@ -1,0 +1,22 @@
+{
+  "id": 559,
+  "name": "Unique",
+  "path": "List",
+  "help": {
+    "params": {},
+    "paramNames": [],
+    "inputs": {
+      "list": "list with possible duplicates"
+    },
+    "inputNames": [
+      "list"
+    ],
+    "outputs": {
+      "list": "list without duplicates"
+    },
+    "outputNames": [
+      "list"
+    ],
+    "helpText": "Removes duplicate items from a list resulting in a list of unique items. The first occurrence of an item is kept and subsequent occurrences removed."
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "id": 154,
+  "name": "PopulationVariance",
+  "path": "Time Series: Statistics",
+  "help": {
+    "outputNames": [],
+    "inputs": {},
+    "helpText": "Calculates the non-bias-corrected population variance. See the **Variance** module or bias-corrected variance.",
+    "inputNames": [],
+    "params": {},
+    "outputs": {},
+    "paramNames": []
+  }
+}
