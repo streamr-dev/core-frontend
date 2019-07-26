@@ -210,7 +210,7 @@ class Cables extends React.PureComponent {
         return (
             <React.Fragment>
                 <svg
-                    className={styles.Cables}
+                    className={cx(styles.Cables, styles.layer0)}
                     preserveAspectRatio="xMidYMid meet"
                     height="100%"
                     width="100%"
@@ -227,7 +227,7 @@ class Cables extends React.PureComponent {
                     ))}
                 </svg>
                 <svg
-                    className={styles.Cables}
+                    className={cx(styles.Cables, styles.layer1)}
                     preserveAspectRatio="xMidYMid meet"
                     height="100%"
                     width="100%"
