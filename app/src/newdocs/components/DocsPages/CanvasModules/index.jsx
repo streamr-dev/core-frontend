@@ -208,7 +208,7 @@ const CanvasModules = () => (
         <Helmet title="Canvas Modules | Streamr Docs" />
 
         <section id="boolean" className={docsStyles.canvasModule}>
-            <h1>Boolean modules</h1>
+            <h2>Boolean modules</h2>
             <And />
             <BooleanConstant />
             <BooleanToNumber />
@@ -224,19 +224,19 @@ const CanvasModules = () => (
         </section>
 
         <section id="custom-modules" className={docsStyles.canvasModule}>
-            <h1>Custom modules</h1>
+            <h2>Custom modules</h2>
             <JavaModule />
         </section>
 
         <section id="input" className={docsStyles.canvasModule}>
-            <h1>Input Modules</h1>
+            <h2>Input Modules</h2>
             <Button />
             <Switcher />
             <TextField />
         </section>
 
         <section id="integrations" className={docsStyles.canvasModule}>
-            <h1>Integrations modules</h1>
+            <h2>Integrations modules</h2>
             <HTTPRequest />
             <MQTT />
             <SimpleHTTP />
@@ -251,7 +251,7 @@ const CanvasModules = () => (
         </section>
 
         <section id="list" className={docsStyles.canvasModule}>
-            <h1>List modules</h1>
+            <h2>List modules</h2>
             <AddToList />
             <AppendToList />
             <BuildList />
@@ -279,7 +279,7 @@ const CanvasModules = () => (
         </section>
 
         <section id="map" className={docsStyles.canvasModule}>
-            <h1>Map modules</h1>
+            <h2>Map modules</h2>
             <BuildMap />
             <CollectFromMaps />
             <ConstantMap />
@@ -303,14 +303,14 @@ const CanvasModules = () => (
         </section>
 
         <section id="streams" className={docsStyles.canvasModule}>
-            <h1>Streams modules</h1>
+            <h2>Streams modules</h2>
             <CreateStream />
             <GetOrCreateStream />
             <SearchStream />
         </section>
 
         <section id="text" className={docsStyles.canvasModule}>
-            <h1>Text modules</h1>
+            <h2>Text modules</h2>
             <Concatenate />
             <ConstantText />
             <Contains />
@@ -333,7 +333,7 @@ const CanvasModules = () => (
         </section>
 
         <section id="time-and-date" className={docsStyles.canvasModule}>
-            <h1>Time & date modules</h1>
+            <h2>Time & date modules</h2>
             <Clock />
             <DateConversion />
             <Scheduler />
@@ -343,7 +343,7 @@ const CanvasModules = () => (
         </section>
 
         <section id="time-series" className={docsStyles.canvasModule}>
-            <h1>Time series modules</h1>
+            <h2>Time series modules</h2>
             <MODWT />
             <MovingAverage />
             <MovingAverageExp />
@@ -398,7 +398,7 @@ const CanvasModules = () => (
         </section>
 
         <section id="utils" className={docsStyles.canvasModule}>
-            <h1>Utility modules</h1>
+            <h2>Utility modules</h2>
             <Canvas />
             <Comment />
             <Constant />
@@ -419,7 +419,7 @@ const CanvasModules = () => (
         </section>
 
         <section id="visualizations" className={docsStyles.canvasModule}>
-            <h1>Visualization modules</h1>
+            <h2>Visualization modules</h2>
             <Chart />
             <Heatmap />
             <Map_geo />
