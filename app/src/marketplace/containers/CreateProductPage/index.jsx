@@ -28,7 +28,7 @@ const CreateProductPage = () => {
 
     const onTypeSelect = useCallback((type: ProductType) => {
         createProduct(type)
-    }, [])
+    }, [createProduct])
 
     return (
         <div className={styles.root}>
