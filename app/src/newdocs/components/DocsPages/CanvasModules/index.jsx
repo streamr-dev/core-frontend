@@ -201,13 +201,14 @@ import Map_image from '$newdocs/content/canvasModules/Map_image-583'
 
 import DocsLayout from '../../DocsLayout'
 import { subNav } from '../../DocsLayout/Navigation/navLinks'
+import docsStyles from '$newdocs/components/DocsLayout/docsLayout.pcss'
 
 const CanvasModules = () => (
     <DocsLayout subNav={subNav.canvasModules}>
         <Helmet title="Canvas Modules | Streamr Docs" />
 
-        <section id="boolean">
-            <h1>Boolean Modules</h1>
+        <section id="boolean" className={docsStyles.canvasModule}>
+            <h1>Boolean modules</h1>
             <And />
             <BooleanConstant />
             <BooleanToNumber />
@@ -222,20 +223,20 @@ const CanvasModules = () => (
             <Xor />
         </section>
 
-        <section id="custom-modules">
-            <h1>Custom Modules</h1>
+        <section id="custom-modules" className={docsStyles.canvasModule}>
+            <h1>Custom modules</h1>
             <JavaModule />
         </section>
 
-        <section id="input">
+        <section id="input" className={docsStyles.canvasModule}>
             <h1>Input Modules</h1>
             <Button />
             <Switcher />
             <TextField />
         </section>
 
-        <section id="integrations">
-            <h1>Integrations Modules</h1>
+        <section id="integrations" className={docsStyles.canvasModule}>
+            <h1>Integrations modules</h1>
             <HTTPRequest />
             <MQTT />
             <SimpleHTTP />
@@ -249,8 +250,8 @@ const CanvasModules = () => (
             <VerifySignature />
         </section>
 
-        <section id="list">
-            <h1>List Modules</h1>
+        <section id="list" className={docsStyles.canvasModule}>
+            <h1>List modules</h1>
             <AddToList />
             <AppendToList />
             <BuildList />
@@ -277,8 +278,8 @@ const CanvasModules = () => (
             <Unique />
         </section>
 
-        <section id="map">
-            <h1>Map Modules</h1>
+        <section id="map" className={docsStyles.canvasModule}>
+            <h1>Map modules</h1>
             <BuildMap />
             <CollectFromMaps />
             <ConstantMap />
@@ -301,15 +302,15 @@ const CanvasModules = () => (
             <ValuesToList />
         </section>
 
-        <section id="streams">
-            <h1>Streams Modules</h1>
+        <section id="streams" className={docsStyles.canvasModule}>
+            <h1>Streams modules</h1>
             <CreateStream />
             <GetOrCreateStream />
             <SearchStream />
         </section>
 
-        <section id="text">
-            <h1>Text Modules</h1>
+        <section id="text" className={docsStyles.canvasModule}>
+            <h1>Text modules</h1>
             <Concatenate />
             <ConstantText />
             <Contains />
@@ -331,8 +332,8 @@ const CanvasModules = () => (
             <ValueAsText />
         </section>
 
-        <section id="time-and-date">
-            <h1>Time & date Modules</h1>
+        <section id="time-and-date" className={docsStyles.canvasModule}>
+            <h1>Time & date modules</h1>
             <Clock />
             <DateConversion />
             <Scheduler />
@@ -341,8 +342,8 @@ const CanvasModules = () => (
             <TimeOfEvent />
         </section>
 
-        <section id="time-series">
-            <h1>Time series Modules</h1>
+        <section id="time-series" className={docsStyles.canvasModule}>
+            <h1>Time series modules</h1>
             <MODWT />
             <MovingAverage />
             <MovingAverageExp />
@@ -396,8 +397,8 @@ const CanvasModules = () => (
             <ZeroCross />
         </section>
 
-        <section id="utils">
-            <h1>Utility Modules</h1>
+        <section id="utils" className={docsStyles.canvasModule}>
+            <h1>Utility modules</h1>
             <Canvas />
             <Comment />
             <Constant />
@@ -417,8 +418,8 @@ const CanvasModules = () => (
             <Gradient />
         </section>
 
-        <section id="visualizations">
-            <h1>Visualization Modules</h1>
+        <section id="visualizations" className={docsStyles.canvasModule}>
+            <h1>Visualization modules</h1>
             <Chart />
             <Heatmap />
             <Map_geo />

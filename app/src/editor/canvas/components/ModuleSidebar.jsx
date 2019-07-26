@@ -123,7 +123,7 @@ export default function ModuleSidebar({ canvas, selectedModuleHash, setModuleOpt
                     </Section>
                 )}
                 <Section label="About">
-                    <ModuleHelp moduleId={module.id} />
+                    <ModuleHelp moduleId={module.id} moduleName={module.name} />
                 </Section>
             </Content>
         </React.Fragment>
