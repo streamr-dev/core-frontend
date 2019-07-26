@@ -1,36 +1,14 @@
 /* eslint-disable default-case */
 import React from 'react'
 import cx from 'classnames'
+import ReactMarkdown from 'react-markdown'
+import isEmpty from 'lodash/isEmpty'
+
 import * as services from '../services'
-import { MDXProvider } from '@mdx-js/tag'
-import Components from '$newdocs/mdxConfig'
-// Dynamic import of correct module :P
-
-// async function getComponent() {
-//     const {default} = await import('./my-module')
-//     return React.createElement(default.view)
-// })
-
-// async function import(moduleId) {
-//     try {
-//        const module = await import(`$newdocs/content/canvasModules/${moduleId}.mdx`);
-//     } catch (error) {
-//        console.error('import failed');
-//     }
-//  }
-
-// async function pageLoader(moduleId) {
-//     switch (moduleId) {
-//         case '209':
-//             // return import(`$newdocs/content/canvasModules/${moduleId}.mdx`)
-//             return import('./boop.jsx')
-//     }
-// }
+import { createMdSnippet } from '$newdocs/components/utils'
 
 export default class ModuleHelp extends React.Component {
     state = {}
-    // OtherComponent = (React.lazy(() => import(`./${this.props.moduleId}.mdx`)))
-    OtherComponent = (React.lazy(() => import(`$newdocs/content/canvasModules/${this.props.moduleId}.mdx`)))
 
     componentDidMount() {
         this.load()
@@ -50,32 +28,73 @@ export default class ModuleHelp extends React.Component {
 
     async load() {
         const { moduleId } = this.props
+        const { moduleName } = this.props
+
         const help = await services.moduleHelp({
             id: moduleId,
         })
+
+        const cleanedName = moduleName.replace(/\s/g, '').replace(/\(/g, '_').replace(/\)/g, '')
+        // eslint-disable-next-line global-require, import/no-dynamic-require
+        const helpJson = await require(`$newdocs/content/canvasModules/${cleanedName}-${moduleId}.json`)
+        const { helpText } = helpJson.help
+
+        const inputs = !isEmpty(helpJson.help.inputs)
+            ? createMdSnippet(helpJson.help.inputs)
+            : false
+
+        const outputs = !isEmpty(helpJson.help.outputs)
+            ? createMdSnippet(helpJson.help.outputs)
+            : false
+
+        const params = !isEmpty(helpJson.help.params)
+            ? createMdSnippet(helpJson.help.params)
+            : false
 
         if (this.unmounted) { return }
 
         this.setState({
             [moduleId]: help,
+            helpText,
+            inputs,
+            outputs,
+            params,
         })
     }
 
     render() {
         const { className } = this.props
-        // const help = this.state[moduleId] || {}
+        const { inputs, outputs, params } = this.state
         return (
             <div className={cx(className)}>
-                {/* eslint-disable react/no-danger */}
-                {/* <div dangerouslySetInnerHTML={{ __html: help.helpText }} /> */}
-                <React.Suspense fallback={<div>Loading...</div>}>
-                    <MDXProvider components={Components}>
-                        <div>
-                            <this.OtherComponent />
-                        </div>
-                    </MDXProvider>
-                </React.Suspense>
+                <ReactMarkdown source={this.state.helpText} />
 
+                {inputs ? (
+                    <React.Fragment>
+                        <strong>
+                            Inputs
+                        </strong>
+                        <ReactMarkdown source={inputs} />
+                    </React.Fragment>
+                ) : ''}
+
+                {outputs ? (
+                    <React.Fragment>
+                        <strong>
+                            Outputs
+                        </strong>
+                        <ReactMarkdown source={outputs} />
+                    </React.Fragment>
+                ) : ''}
+
+                {params ? (
+                    <React.Fragment>
+                        <strong>
+                            Parameters
+                        </strong>
+                        <ReactMarkdown source={params} />
+                    </React.Fragment>
+                ) : ''}
             </div>
         )
     }
