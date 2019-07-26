@@ -1,6 +1,6 @@
 // @flow
 
-import React from 'react'
+import React, { useState, useMemo, useCallback } from 'react'
 import classNames from 'classnames'
 import uniq from 'lodash/uniq'
 import sortBy from 'lodash/sortBy'
@@ -23,248 +23,158 @@ type Props = {
     onEdit: (StreamIdList) => void,
 }
 
-type State = {
-    search: string,
-    sort: string,
-    selectedStreams: StreamIdList,
-    nextStreams: StreamIdList,
-    removedStreams: StreamIdList,
-}
-
-const RemoveIcon = () => (
-    <svg className={styles.RemoveIcon} xmlns="http://www.w3.org/2000/svg" width="16" height="16">
-        <path
-            fill="white"
-            d="M9 11.333H5.333a.667.667 0 1 1 0-1.333H9c.92 0 1.667-.748
-            1.667-1.667 0-.918-.748-1.666-1.667-1.666H7.333v1a.335.335 0
-            0 1-.51.282L4.157 6.283a.333.333 0 0 1 0-.566l2.666-1.666a.333.333
-            0 0 1 .51.282v1H9c1.654 0 3 1.346 3 3s-1.346 3-3 3M8 0a8 8 0 1 0 0
-            16A8 8 0 0 0 8 0"
-        />
-    </svg>
-)
-
 const SORT_BY_NAME = 'name'
 const SORT_BY_RECENT = 'recent'
 const SORT_BY_ADDED = 'added'
 
-function getSortedStreams({ sort, matchingStreams, nextStreams }) {
-    let sortOptions
-    if (sort === SORT_BY_ADDED) {
-        sortOptions = ['isAdded', 'lowerName']
-    }
-    if (sort === SORT_BY_NAME) {
-        sortOptions = ['lowerName']
-    }
-    if (sort === SORT_BY_RECENT) {
-        sortOptions = ['lastUpdated']
-    }
+export const StreamSelector = ({
+    className,
+    streams,
+    onEdit,
+    availableStreams,
+    fetchingStreams,
+}: Props) => {
+    const [sort, setSort] = useState(SORT_BY_NAME)
+    const [search, setSearch] = useState('')
 
-    return sortBy(matchingStreams.map((s) => ({
-        ...s,
-        lowerName: s.name.toLowerCase(),
-        isAdded: -Number(nextStreams.has(s.id)),
-    })), sortOptions)
-}
-
-export class StreamSelector extends React.Component<Props, State> {
-    state = {
-        search: '',
-        sort: SORT_BY_NAME,
-        nextStreams: [...this.props.streams],
-        selectedStreams: [],
-        removedStreams: [],
+    const onSearchChange = (event: SyntheticInputEvent<EventTarget>) => {
+        setSearch(event.target.value)
     }
 
-    componentWillReceiveProps({ streams }: Props) {
-        this.setState({
-            nextStreams: [...streams],
-        })
-    }
+    const matchingStreams: StreamList = useMemo(() => availableStreams.filter((stream) => (
+        stream.name.toLowerCase().includes(search.toLowerCase())
+    )), [availableStreams, search])
 
-    onSearchChange = (event: SyntheticInputEvent<EventTarget>) => {
-        this.setState({
-            search: event.target.value,
-        })
-    }
+    const streamSet = useMemo(() => new Set(streams), [streams])
 
-    onToggle = (id: StreamId) => {
-        const { selectedStreams } = this.state
-        this.setState({
-            selectedStreams: selectedStreams.includes(id)
-                ? selectedStreams.filter((sid) => sid !== id) // remove if selected
-                : selectedStreams.concat(id), // add if not selected
-        }, this.onAdd)
-    }
-
-    onSelectAll = (ids: StreamIdList) => {
-        const { selectedStreams } = this.state
-        this.setState({
-            selectedStreams: uniq(selectedStreams.concat(ids)),
-        }, this.onAdd)
-    }
-
-    onSelectNone = (ids: StreamIdList) => {
-        const { selectedStreams } = this.state
-        this.setState({
-            selectedStreams: uniq(selectedStreams.filter((id) => !ids.includes(id))),
-        }, this.onAdd)
-    }
-
-    onRemove = (id: StreamId) => {
-        this.setState({
-            removedStreams: [...this.state.removedStreams, id],
-        }, this.onAdd)
-    }
-
-    onChangeSort = (sort: string) => {
-        this.setState({
-            sort,
-        })
-    }
-
-    onAdd = () => {
-        const { selectedStreams, removedStreams } = this.state
-
-        let nextStreams = uniq(this.state.nextStreams.concat(selectedStreams))
-        if (this.state.removedStreams.length > 0) {
-            // Prioritize adds over removes if we have both removed a stream and added it again
-            const actuallyRemoved = removedStreams.filter((sid) => !selectedStreams.includes(sid))
-            nextStreams = uniq(nextStreams.filter((sid) => !actuallyRemoved.includes(sid)))
+    const sortedStreams = useMemo(() => {
+        let sortOptions
+        if (sort === SORT_BY_ADDED) {
+            sortOptions = ['isAdded', 'lowerName']
+        }
+        if (sort === SORT_BY_NAME) {
+            sortOptions = ['lowerName']
+        }
+        if (sort === SORT_BY_RECENT) {
+            sortOptions = ['lastUpdated']
         }
 
-        this.props.onEdit(nextStreams)
-    }
+        return sortBy(matchingStreams.map((s) => ({
+            ...s,
+            lowerName: s.name.toLowerCase(),
+            isAdded: -Number(streamSet.has(s.id)),
+        })), sortOptions)
+    }, [sort, streamSet, matchingStreams])
 
-    render() {
-        const { availableStreams, fetchingStreams, className } = this.props
-        const { search, sort } = this.state
-        const matchingStreams: StreamList = availableStreams.filter((stream) => (
-            stream.name.toLowerCase().includes(search.toLowerCase())
-        ))
+    const onToggle = useCallback((id: StreamId) => {
+        onEdit(streams.includes(id) ? streams.filter((sid) => sid !== id) : uniq(streams.concat(id)))
+    }, [streams, onEdit])
 
-        // coerce arrays to Set as we are checking existence in a loop
-        const nextStreams = new Set(this.state.nextStreams.filter((id) => !this.state.removedStreams.includes(id)))
-        const selectedStreams = new Set(this.state.selectedStreams)
-        const matchingNextStreams = new Set(matchingStreams.filter((x) => nextStreams.has(x.id)))
-        const allVisibleStreamsSelected = (selectedStreams.size + matchingNextStreams.size) === matchingStreams.length
+    const matchingNextStreams = useMemo(
+        () => new Set(matchingStreams.filter((x) => streamSet.has(x.id))),
+        [matchingStreams, streamSet],
+    )
+    const allVisibleStreamsSelected = useMemo(
+        () => (matchingNextStreams.size === matchingStreams.length),
+        [matchingNextStreams, matchingStreams],
+    )
 
-        const sortedStreams = getSortedStreams({
-            sort,
-            nextStreams,
-            matchingStreams,
-        })
+    const onSelectAll = useCallback((ids: StreamIdList) => {
+        onEdit(uniq(streams.concat(ids)))
+    }, [onEdit, streams])
 
-        return (
-            <div className={className}>
-                <div className={styles.root}>
-                    {!!fetchingStreams && <Translate value="streamSelector.loading" />}
-                    <div className={styles.inputContainer}>
-                        <SvgIcon name="search" className={styles.SearchIcon} />
-                        <Input
-                            className={styles.input}
-                            onChange={this.onSearchChange}
-                            value={this.state.search}
-                            placeholder={I18n.t('streamSelector.typeToSearch')}
-                        />
-                        <DropdownActions
-                            className={classNames(styles.sortDropdown, styles.dropdown)}
-                            title={
-                                <span className={styles.sortDropdownTitle}>
-                                    <Translate value="streamSelector.sort" />
-                                    &nbsp;
-                                    {sort}
-                                </span>
-                            }
-                        >
-                            <DropdownActions.Item onClick={() => this.onChangeSort(SORT_BY_NAME)}>
-                                <Translate value="streamSelector.sortByName" />
-                            </DropdownActions.Item>
-                            <DropdownActions.Item onClick={() => this.onChangeSort(SORT_BY_RECENT)}>
-                                <Translate value="streamSelector.sortByRecent" />
-                            </DropdownActions.Item>
-                            <DropdownActions.Item onClick={() => this.onChangeSort(SORT_BY_ADDED)}>
-                                <Translate value="streamSelector.sortByAdded" />
-                            </DropdownActions.Item>
-                        </DropdownActions>
-                    </div>
-                    <div className={styles.streams}>
-                        {!availableStreams.length && (
-                            <div className={styles.noAvailableStreams}>
-                                <p><Translate value="streamSelector.noStreams" /></p>
-                                <a href={links.userpages.streamCreate} className={styles.streamCreateButton}>
-                                    <Translate value="streamSelector.create" />
-                                </a>
-                            </div>
-                        )}
-                        {sortedStreams.map((stream: Stream) => (
-                            <div
-                                key={stream.id}
-                                className={classNames(styles.stream, {
-                                    [styles.added]: nextStreams.has(stream.id),
-                                    [styles.selected]: selectedStreams.has(stream.id),
-                                })}
-                            >
-                                {nextStreams.has(stream.id) && (
-                                    <a
-                                        className={styles.removeButton}
-                                        href="#"
-                                        title={I18n.t('streamSelector.remove')}
-                                        onClick={(event: SyntheticInputEvent<EventTarget>) => {
-                                            event.preventDefault()
-                                            event.stopPropagation()
-                                            this.onRemove(stream.id)
-                                        }}
-                                    >
-                                        <RemoveIcon />
-                                    </a>
-                                )}
-                                <button
-                                    type="button"
-                                    className={styles.addButton}
-                                    onClick={() => {
-                                        if (nextStreams.has(stream.id)) {
-                                            return
-                                        }
-                                        this.onToggle(stream.id)
-                                    }}
-                                >
-                                    {stream.name}
-                                </button>
-                            </div>
-                        ))}
-                    </div>
-                    <div className={styles.footer}>
-                        <div className={styles.selectedCount}>
-                            {selectedStreams.size !== 1 ?
-                                <Translate value="streamSelector.selectedStreams" streamCount={selectedStreams.size} /> :
-                                <Translate value="streamSelector.selectedStream" streamCount={selectedStreams.size} />
-                            }
+    const onSelectNone = useCallback((ids: StreamIdList) => {
+        onEdit(uniq(streams.filter((id) => !ids.includes(id))))
+    }, [streams, onEdit])
+
+    return (
+        <div className={className}>
+            <div className={styles.root}>
+                {!!fetchingStreams && <Translate value="streamSelector.loading" />}
+                <div className={styles.inputContainer}>
+                    <SvgIcon name="search" className={styles.SearchIcon} />
+                    <Input
+                        className={styles.input}
+                        onChange={onSearchChange}
+                        value={search}
+                        placeholder={I18n.t('streamSelector.typeToSearch')}
+                    />
+                    <DropdownActions
+                        className={classNames(styles.sortDropdown, styles.dropdown)}
+                        title={
+                            <span className={styles.sortDropdownTitle}>
+                                <Translate value="streamSelector.sort" />
+                                &nbsp;
+                                {sort}
+                            </span>
+                        }
+                    >
+                        <DropdownActions.Item onClick={() => setSort(SORT_BY_NAME)}>
+                            <Translate value="streamSelector.sortByName" />
+                        </DropdownActions.Item>
+                        <DropdownActions.Item onClick={() => setSort(SORT_BY_RECENT)}>
+                            <Translate value="streamSelector.sortByRecent" />
+                        </DropdownActions.Item>
+                        <DropdownActions.Item onClick={() => setSort(SORT_BY_ADDED)}>
+                            <Translate value="streamSelector.sortByAdded" />
+                        </DropdownActions.Item>
+                    </DropdownActions>
+                </div>
+                <div className={styles.streams}>
+                    {!availableStreams.length && (
+                        <div className={styles.noAvailableStreams}>
+                            <p><Translate value="streamSelector.noStreams" /></p>
+                            <a href={links.userpages.streamCreate} className={styles.streamCreateButton}>
+                                <Translate value="streamSelector.create" />
+                            </a>
                         </div>
-                        <Button
-                            onClick={() => {
-                                const toSelect = matchingStreams
-                                    .map((s) => s.id)
-                                    .filter((id) => !nextStreams.has(id))
-
-                                if (allVisibleStreamsSelected) {
-                                    this.onSelectNone(toSelect)
-                                } else {
-                                    this.onSelectAll(toSelect)
-                                }
-                            }}
-                            disabled={allVisibleStreamsSelected && matchingNextStreams.size === matchingStreams.length}
+                    )}
+                    {sortedStreams.map((stream: Stream) => (
+                        <div
+                            key={stream.id}
+                            className={classNames(styles.stream, {
+                                [styles.selected]: streamSet.has(stream.id),
+                            })}
                         >
-                            {!allVisibleStreamsSelected
-                                ? <Translate value="streamSelector.selectAll" />
-                                : <Translate value="streamSelector.selectNone" />
-                            }
-                        </Button>
+                            <button
+                                type="button"
+                                className={styles.addButton}
+                                onClick={() => {
+                                    onToggle(stream.id)
+                                }}
+                            >
+                                {stream.name}
+                            </button>
+                        </div>
+                    ))}
+                </div>
+                <div className={styles.footer}>
+                    <div className={styles.selectedCount}>
+                        {streamSet.size !== 1 ?
+                            <Translate value="streamSelector.selectedStreams" streamCount={streamSet.size} /> :
+                            <Translate value="streamSelector.selectedStream" streamCount={streamSet.size} />
+                        }
                     </div>
+                    <Button
+                        onClick={() => {
+                            const toSelect = matchingStreams.map((s) => s.id)
+
+                            if (allVisibleStreamsSelected) {
+                                onSelectNone(toSelect)
+                            } else {
+                                onSelectAll(toSelect)
+                            }
+                        }}
+                    >
+                        {!allVisibleStreamsSelected
+                            ? <Translate value="streamSelector.selectAll" />
+                            : <Translate value="streamSelector.selectNone" />
+                        }
+                    </Button>
                 </div>
             </div>
-        )
-    }
+        </div>
+    )
 }
 
 export default StreamSelector
