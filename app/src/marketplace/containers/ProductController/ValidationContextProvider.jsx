@@ -52,7 +52,7 @@ function useValidationContext(): ContextProps {
     const validate = useCallback((product) => {
         if (!isMounted() || !product) { return }
 
-        ['name', 'description', 'imageUrl'].forEach((field) => {
+        ['name', 'description', 'imageUrl', 'category'].forEach((field) => {
             if (String(product[field]).length <= 0) {
                 setStatus(field, ERROR, `Product ${field} cannot be empty`)
             } else {
@@ -64,6 +64,13 @@ function useValidationContext(): ContextProps {
             setStatus('streams', ERROR, 'No streams selected')
         } else {
             clearStatus('streams')
+        }
+
+        // TODO: applies only to community product
+        if (!product.adminFee || (product.adminFee < 10 && product.adminFee > 90)) {
+            setStatus('adminFee', ERROR, 'Admin fee cannot be empty')
+        } else {
+            clearStatus('adminFee')
         }
     }, [setStatus, clearStatus, isMounted])
 

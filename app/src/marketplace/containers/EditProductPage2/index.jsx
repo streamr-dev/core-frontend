@@ -18,6 +18,8 @@ import CoverImage from './CoverImage'
 import ProductDescription from './ProductDescription'
 import StreamSelector from './StreamSelector'
 import PriceSelector from './PriceSelector'
+import ProductDetails from './ProductDetails'
+
 import styles from './editProductPage.pcss'
 
 const EditProductPage = () => (
@@ -33,6 +35,7 @@ const EditProductPage = () => (
                     <ProductDescription />
                     <StreamSelector />
                     <PriceSelector />
+                    <ProductDetails />
                 </div>
             </div>
         </DetailsContainer>

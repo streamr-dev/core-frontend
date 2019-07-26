@@ -36,6 +36,18 @@ export function useProductActions() {
             streams,
         }))
     }, [updateProduct])
+    const updateCategory = useCallback((category: $ElementType<Product, 'category'>) => {
+        updateProduct('Update category', (p) => ({
+            ...p,
+            category,
+        }))
+    }, [updateProduct])
+    const updateAdminFee = useCallback((adminFee: number) => {
+        updateProduct('Update admin fee', (p) => ({
+            ...p,
+            adminFee,
+        }))
+    }, [updateProduct])
 
     return useMemo(() => ({
         undo,
@@ -43,7 +55,17 @@ export function useProductActions() {
         updateDescription,
         updateImageUrl,
         updateStreams,
-    }), [undo, updateName, updateDescription, updateImageUrl, updateStreams])
+        updateCategory,
+        updateAdminFee,
+    }), [
+        undo,
+        updateName,
+        updateDescription,
+        updateImageUrl,
+        updateStreams,
+        updateCategory,
+        updateAdminFee,
+    ])
 }
 
 export default useProductActions
