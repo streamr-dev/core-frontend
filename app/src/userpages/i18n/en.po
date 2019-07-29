@@ -425,6 +425,24 @@ msgstr "Custom Java SimpleDateFormat"
 msgid "userpages##streams##edit##history##datePicker##selectDate"
 msgstr "Select date"
 
+msgid "userpages##streams##fieldTypes##number"
+msgstr "Number"
+
+msgid "userpages##streams##fieldTypes##boolean"
+msgstr "Boolean"
+
+msgid "userpages##streams##fieldTypes##map"
+msgstr "Object"
+
+msgid "userpages##streams##fieldTypes##list"
+msgstr "List"
+
+msgid "userpages##streams##fieldTypes##string"
+msgstr "String"
+
+msgid "userpages##streams##fieldTypes##timestamp"
+msgstr "Timestamp"
+
 msgid "userpages##transactions##noTransactions##title"
 msgstr "No transactions."
 

@@ -109,7 +109,7 @@ export class NewFieldEditor extends Component<Props, State> {
                                     key={t}
                                     value={t}
                                 >
-                                    {t}
+                                    <Translate value={`userpages.streams.fieldTypes.${t}`} />
                                 </Dropdown.Item>
                             ))}
                         </Dropdown>
