@@ -12,6 +12,8 @@ import Warning from '$newdocs/components/Warning'
 
 import MessagePartitioningImage from './images/streams/message-partitioning.png'
 import StreamAndPartitionsImage from './images/streams/stream-and-partitions.png'
+import DataPatternImg2 from './images/streams/data-pattern2.png'
+import DataPatternImg3 from './images/streams/data-pattern3.png'
 
 import {
     CreateJavascriptClient,
@@ -22,6 +24,9 @@ import {
     SubscribeJavaClient,
     PublishJavascriptClient,
     PublishJavaClient,
+    DataPattern1,
+    DataPattern2,
+    DataPattern3
 } from './code/streams.js'
 
 <section id="intro-to-streams">
@@ -319,5 +324,106 @@ At the time of writing, there are some limitations with multi-partition streams:
 </Warning>
 
 Currently partitions don’t have well-defined rate limits, but future versions of the P2P network may enforce limits. For now, we recommend not exceeding around 100 msg/sec/partition.
+
+
+</section>
+
+<section id="integration-patterns">
+
+## Patterns for data integration
+
+There are three distinct patterns for connecting data to Streamr, each with their own pros and cons:
+
+**1.** Pushing from the source (ideal)
+
+**2.** Bridging from a streaming source
+
+**3.** Bridging by polling a source
+
+### 1. Pushing from the source
+
+- Simplicity: **Good**
+- Latency: **Good**
+- Applicability: **Medium**
+
+In this pattern, the data points are sent directly to Streamr by the source as soon as new data becomes available (for example, a sensor produces a new measurement).
+
+**This is the recommended pattern**. However, depending on the circumstances, it may not always be available. It requires that you have control over the system that produces the data and can decide where it gets sent.
+
+For example, if you are an IoT device manufacturer, you could add support for Streamr directly into your devices or gateways, enabling all your end users to easily connect their data to Streamr.
+
+Various industrial data sources usually have good configurability for connecting the data anywhere you need to. However, consumer grade devices such as connected cars, phones, Fitbits, and others often force you to send your data to the manufacturer’s cloud, from where they might serve it back to you via an API. In these cases, you can use one of the bridging patterns in this post (see options two and three).
+
+For a real-world example, here’s how to connect measurements from any number of [Ruuvi](http://ruuvi.com/) IoT tags to Streamr. The devices transmit data over Bluetooth Low Energy to a gateway computer which runs this node.js script. A separate Stream is created for each found Ruuvi device, and the measurements are produced to the appropriate Stream as they occur.
+
+**Example 1: Push from the source example using the JS client**
+
+<CodeSnippet language='javascript' wrapLines showLineNumbers >{DataPattern1}</CodeSnippet>
+
+For a more advanced example, see [this post](https://medium.com/streamrblog/cold-chain-monitoring-with-streamr-ruuvi-and-ethereum-952dacfc47f2) on how to set up a cold chain monitoring demo using Ruuvi tags, Streamr, and Ethereum smart contracts.
+
+If your app is not in JavaScript, you can interact with the API directly using any HTTP library. See the <Link to={links.newdocs.api}>API docs</Link> for more information and examples.
+
+### 2. Bridging from a streaming source
+
+- Simplicity: **Medium**
+- Latency: **Good**
+- Applicability: **Medium**
+
+This pattern is useful when you don’t have direct control over the source, but a streaming API or some other kind of listener hook is available for the data. These allow you to be notified whenever new data occurs, enabling you to immediately forward the event to Streamr. Data that is typically available via these kinds of APIs are news feeds, financial market data and social media feeds.
+
+**Example 2a: Streaming bridge example using the JS client**
+
+Here’s an example demonstrating how to bridge DATA/USD market data from the [Bitfinex](https://www.bitfinex.com/) exchange with a node.js script using a Bitfinex client library as well as the Streamr client library:
+
+<CodeSnippet language='javascript' wrapLines showLineNumbers >{DataPattern2}</CodeSnippet>
+
+**Example 2b: Streaming bridge example using MQTT module on Canvas**
+
+Instead of a program such as the one above, a Canvas process built in the <Link to={links.editor.canvasEditor}>Streamr Editor</Link> can be used to build bridges. This might work for you even if you’re not a programmer, although creating integrations usually still requires some technical understanding of APIs and protocols.
+
+Below is a process which listens to real-time positions of trams from the MQTT API maintained by the Helsinki public transport authority. Incoming events are produced to a Stream in real time.
+
+<div className={docsStyles.centered}>
+  <img src={DataPatternImg2} />
+</div>
+
+In this example the MQTT module parameters are:
+
+<CodeSnippet language='javascript' wrapLines >{`URL: mqtt://mqtt.hsl.fi`}</CodeSnippet>
+
+<CodeSnippet language='javascript' wrapLines >{`Topic: /hfp/v1/journey/ongoing/tram/#`}</CodeSnippet>
+
+The MQTT module outputs JSON strings, which the JsonParser module parses to objects. From the data we extract the <kbd>“VP”</kbd> field, which itself is an object. We read the fields <kbd>“desi”</kbd>, <kbd>“lat”</kbd>, <kbd>“long”</kbd>, and <kbd>“veh”</kbd> and produce those values to a Stream using the SendToStream module.
+
+### 3. Bridging by polling a source
+
+- Simplicity: **Medium**
+- Latency: **Medium**
+- Applicability: **Good**
+
+Most cloud services handing out data at least offer a request-response-based API, which can be used if neither of the above push-based options are available. In this case there is no way to get notified when new data is available, which means that the API needs to be repeatedly queried. This is called polling.
+
+It’s not an optimal way to serve real-time data, because:
+
+Data can be missed: multiple value changes in between subsequent requests are not observed.
+It places an unnecessary load on the API server, as requests are made “just in case” regardless of whether the data has actually changed or not.
+An average latency of half the polling interval is introduced.
+
+For the below examples, we’ll query the weather in Zug, Switzerland from [OpenWeatherMap](https://openweathermap.org/) every 15 minutes. For this data, source polling is an acceptable solution for most use cases, since the weather usually doesn’t change rapidly.
+
+**Example 3a: Polling bridge example using the JS client**
+
+<CodeSnippet language='javascript' wrapLines showLineNumbers >{DataPattern3}</CodeSnippet>
+
+**Example 3b: Polling bridge example using the HTTP module**
+
+As before, using a Canvas is a potential alternative to a self-hosted script such as the one above. Let’s see what an equivalent Canvas would look like:
+
+<div className={docsStyles.centered}>
+  <img src={DataPatternImg3} />
+</div>
+
+Here, the Clock module ticks every 15 minutes and triggers the HTTP Request to get the data from OpenWeatherMap. The fields in the data are delivered to the Stream by the **SendToStream** module.
 
 </section>
