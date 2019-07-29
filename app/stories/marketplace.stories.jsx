@@ -5,6 +5,7 @@ import { Provider } from 'react-redux'
 import StoryRouter from 'storybook-react-router'
 import { storiesOf } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
+import styles from '@sambego/storybook-styles'
 
 import store from './utils/i18nStore'
 
@@ -50,6 +51,10 @@ story('MarkdownEditor')
     ))
 
 story('SetPrice')
+    .addDecorator(styles({
+        backgroundColor: '#F8F8F8',
+        padding: '15px',
+    }))
     .addWithJSX('basic', () => (
         <SetPrice dataPerUsd={0.5} onChange={action('onChange')} />
     ))

@@ -78,7 +78,7 @@ const SetPrice = ({ dataPerUsd, onChange, className }: Props) => {
                 onChange={onPriceTypeChange}
             />
             <div
-                className={cx({
+                className={cx(styles.inner, {
                     [styles.hidden]: isFreeProduct,
                 })}
             >
