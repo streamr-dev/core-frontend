@@ -3,33 +3,43 @@
 import React from 'react'
 import { Container } from 'reactstrap'
 import { withRouter } from 'react-router-dom'
+import cx from 'classnames'
 
 import Layout from '$mp/components/Layout'
-import type { Product } from '$mp/flowtype/product-types'
 import * as UndoContext from '$shared/components/UndoContextProvider'
 
 import ProductController from '../ProductController'
-import useProductUpdater from '../ProductController/useProductUpdater'
 import useProduct from '../ProductController/useProduct'
-import MarkdownEditor from '$mp/components/MarkdownEditor'
+
+import EditorNav from './EditorNav'
+import ProductName from './ProductName'
+import CoverImage from './CoverImage'
+import ProductDescription from './ProductDescription'
+import StreamSelector from './StreamSelector'
+import PriceSelector from './PriceSelector'
 
 import styles from './editProductPage.pcss'
 
-type Props = {
-    product: Product,
-}
-
-const EditProductPage = ({ product }: Props) => (
-    <div className={styles.root}>
+const EditProductPage = () => (
+    <div className={cx(styles.root, styles.EditProductPage)}>
         <Container className={styles.container}>
-            <h1>{product.name}</h1>
-            <MarkdownEditor placeholder="Type something great about your product" />
+            <div className={styles.editor}>
+                <div className={styles.nav}>
+                    <EditorNav />
+                </div>
+                <div className={styles.info}>
+                    <ProductName />
+                    <CoverImage />
+                    <ProductDescription />
+                    <StreamSelector />
+                    <PriceSelector />
+                </div>
+            </div>
         </Container>
     </div>
 )
 
 const EditWrap = () => {
-    const { replaceProduct, updateProduct } = useProductUpdater()
     const product = useProduct()
 
     if (!product) {
@@ -41,8 +51,6 @@ const EditWrap = () => {
     return (
         <EditProductPage
             key={key}
-            replace={replaceProduct}
-            push={updateProduct}
             product={product}
         />
     )
@@ -57,7 +65,7 @@ const ProductContainer = withRouter((props) => (
 ))
 
 export default () => (
-    <Layout>
+    <Layout className={styles.layout}>
         <ProductContainer />
     </Layout>
 )
