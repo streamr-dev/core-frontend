@@ -205,4 +205,84 @@ describe('Connecting Modules', () => {
         // test server accepts state
         expect(State.updateCanvas(await Services.create(canvas))).toMatchCanvas(canvas)
     })
+
+    it('resets param value to default on connect/disconnect', async () => {
+        let canvas = State.emptyCanvas()
+        canvas = State.addModule(canvas, await loadModuleDefinition('Constant'))
+        canvas = State.addModule(canvas, await loadModuleDefinition('Constant'))
+        let [constant1, constant2] = canvas.modules
+
+        const val1 = 5
+        const val2 = 6
+        const originalDefault = State.getPortDefaultValue(canvas, constant2.params[0].id)
+        canvas = State.updateCanvas(State.setPortUserValue(canvas, constant1.params[0].id, val1))
+        canvas = State.updateCanvas(State.setPortUserValue(canvas, constant2.params[0].id, val2))
+        canvas = State.updateCanvas(await Services.create(canvas))
+        expect(State.getPortValue(canvas, constant2.params[0].id)).toBe(val2)
+        canvas = State.updateCanvas(State.connectPorts(canvas, constant1.outputs[0].id, constant2.params[0].id))
+        canvas = State.updateCanvas(await Services.saveNow(canvas))
+        ;[constant1, constant2] = canvas.modules // eslint-disable-line semi-style
+        // server set default to prev value (?!)
+        expect(State.getPortDefaultValue(canvas, constant2.params[0].id)).toBe(val2)
+        // server updated output and connected param value to input value (Constant module behaviour)
+        expect(State.getPortValue(canvas, constant1.params[0].id)).toBe(val1)
+        expect(State.getPortValue(canvas, constant1.outputs[0].id)).toBe(val1)
+        expect(State.getPortValue(canvas, constant2.params[0].id)).toBe(val1)
+        canvas = State.updateCanvas(State.disconnectPorts(canvas, constant1.outputs[0].id, constant2.params[0].id))
+        ;[constant1, constant2] = canvas.modules // eslint-disable-line semi-style
+        // value should be same as default
+        expect(State.getPortValue(canvas, constant2.params[0].id)).toBe(State.getPortDefaultValue(canvas, constant2.params[0].id))
+        canvas = State.updateCanvas(await Services.saveNow(canvas))
+        // server reset defaultValue to original default (?!)
+        expect(State.getPortDefaultValue(canvas, constant2.params[0].id)).toBe(originalDefault)
+        // output unchanged
+        expect(State.getPortValue(canvas, constant1.params[0].id)).toBe(val1)
+    })
+
+    it('resets input value to default on connect/disconnect', async () => {
+        let canvas = State.emptyCanvas()
+        canvas = State.addModule(canvas, await loadModuleDefinition('Constant'))
+        canvas = State.addModule(canvas, await loadModuleDefinition('MovingAverage'))
+        let [constant1, movingAverage] = canvas.modules
+
+        const val1 = 5
+        const val2 = 6
+        canvas = State.updateCanvas(State.setPortUserValue(canvas, constant1.params[0].id, val1))
+        canvas = State.updateCanvas(State.setPortUserValue(canvas, movingAverage.inputs[0].id, val2))
+        canvas = State.updateCanvas(await Services.create(canvas))
+        expect(State.getPortUserValue(canvas, movingAverage.inputs[0].id)).toBe(val2)
+        canvas = State.updateCanvas(State.connectPorts(canvas, constant1.outputs[0].id, movingAverage.inputs[0].id))
+        canvas = State.updateCanvas(await Services.saveNow(canvas))
+        ;[constant1, movingAverage] = canvas.modules // eslint-disable-line semi-style
+        // server updated output and connected param value to input value (Constant module behaviour)
+        expect(State.getPortValue(canvas, constant1.params[0].id)).toBe(val1)
+        expect(State.getPortValue(canvas, constant1.outputs[0].id)).toBe(val1)
+
+        // for inputs initial value continues to show
+        expect(State.getPortValue(canvas, movingAverage.inputs[0].id)).toBe(val2)
+
+        // starting canvas uses port.value
+        canvas = State.updateCanvas(await Services.start(canvas))
+        expect(State.getPortValue(canvas, movingAverage.inputs[0].id)).toBe(val1)
+
+        canvas = State.updateCanvas(await Services.stop(canvas))
+        // shows initialValue after stop
+        expect(State.getPortValue(canvas, movingAverage.inputs[0].id)).toBe(val2)
+        expect(State.getPortValue(canvas, movingAverage.inputs[0].id)).toBe(State.getPortDefaultValue(canvas, movingAverage.inputs[0].id))
+
+        canvas = State.updateCanvas(State.disconnectPorts(canvas, constant1.outputs[0].id, movingAverage.inputs[0].id))
+        ;[constant1, movingAverage] = canvas.modules // eslint-disable-line semi-style
+        // disconnect doesn't change value
+        expect(State.getPortValue(canvas, movingAverage.inputs[0].id)).toBe(val2)
+        expect(State.getPortValue(canvas, movingAverage.inputs[0].id)).toBe(State.getPortDefaultValue(canvas, movingAverage.inputs[0].id))
+        canvas = State.updateCanvas(await Services.saveNow(canvas))
+        // server value should be same
+        expect(State.getPortValue(canvas, movingAverage.inputs[0].id)).toBe(val2)
+        expect(State.getPortValue(canvas, movingAverage.inputs[0].id)).toBe(State.getPortDefaultValue(canvas, movingAverage.inputs[0].id))
+        // value should be same as default
+        expect(State.getPortValue(canvas, movingAverage.inputs[0].id)).toBe(val2)
+        expect(State.getPortDefaultValue(canvas, movingAverage.inputs[0].id)).toBe(val2)
+        // output unchanged
+        expect(State.getPortValue(canvas, constant1.params[0].id)).toBe(val1)
+    })
 })

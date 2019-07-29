@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { RunStates, getPortUserValueOrDefault } from '../../../state'
+import * as State from '../../../state'
 import Color from './Color'
 import Map from './Map'
 import Select from './Select'
@@ -39,12 +39,10 @@ export type CommonProps = {
 }
 
 const Value = ({ canvas, port, onChange }: Props) => {
-    const isRunning = canvas.state === RunStates.Running
     // Enable non-running input whether connected or not if port.canHaveInitialValue
-    const disabled = isRunning || (!port.canHaveInitialValue && port.connected)
+    const disabled = State.isPortValueEditDisabled(canvas, port.id)
     const type = getPortType(port)
-    // TODO: Ignore when editing.
-    const value = getPortUserValueOrDefault(canvas, port.id)
+    const value = State.getPortValue(canvas, port.id)
     const commonProps: CommonProps = {
         disabled,
         onChange,

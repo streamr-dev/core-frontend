@@ -484,11 +484,6 @@ function disconnectInput(canvas, portId) {
 
         delete newPort.sourceId
 
-        // ethereum contract input
-        if (newPort.type === 'EthereumContract' && newPort.value) {
-            delete newPort.value
-        }
-
         return newPort
     })
 }
@@ -513,6 +508,7 @@ export function disconnectPorts(canvas, portIdA, portIdB) {
         dependentConnections.forEach(([outputPortId, inputPortId]) => {
             if (inputPortId != null) {
                 nextCanvas = disconnectInput(nextCanvas, inputPortId)
+                nextCanvas = resetPortUserValue(nextCanvas, inputPortId)
             }
             if (outputPortId != null) {
                 nextCanvas = disconnectOutput(nextCanvas, outputPortId)
@@ -692,6 +688,13 @@ const PORT_USER_VALUE_KEYS = {
 }
 
 /**
+ * Resets value to default
+ */
+function resetPortUserValue(canvas, portId) {
+    return setPortUserValue(canvas, portId)
+}
+
+/**
  * Sets initialValue for inputs
  * Sets value for output/params
  */
@@ -737,6 +740,36 @@ export function setPortUserValue(canvas, portId, value) {
     })
 }
 
+export function isPortValueEditDisabled(canvas, portId) {
+    if (isRunning(canvas)) { return true }
+    const portType = getPortType(canvas, portId)
+    const port = getPort(canvas, portId)
+    if (portType === 'output') { return true }
+    if (portType === 'input' && port.canHaveInitialValue) {
+        // inputs can be edited as long as canHaveInitialValue
+        return false
+    }
+    if (portType === 'param') {
+        // disable param edits when port connected
+        return isPortUsed(canvas, portId)
+    }
+    return false
+}
+
+export function getPortValue(canvas, portId) {
+    const port = getPort(canvas, portId)
+    const portType = getPortType(canvas, portId)
+    if (isRunning(canvas) || portType === 'output') {
+        return port.value
+    }
+
+    if (portType === 'param' && isPortUsed(canvas, portId)) {
+        return port.value
+    }
+
+    return getPortUserValueOrDefault(canvas, portId)
+}
+
 export function getPortUserValue(canvas, portId) {
     const key = PORT_USER_VALUE_KEYS[getPortType(canvas, portId)]
     const port = getPort(canvas, portId)
@@ -749,10 +782,9 @@ function isBlank(value) {
 
 export function getPortDefaultValue(canvas, portId) {
     const port = getPort(canvas, portId)
-    const defaultValue = 'defaultValue' in port
+    return 'defaultValue' in port
         ? port.defaultValue
         : port.initialValue
-    return !isBlank(defaultValue) ? defaultValue : undefined
 }
 
 export function getPortUserValueOrDefault(canvas, portId) {
