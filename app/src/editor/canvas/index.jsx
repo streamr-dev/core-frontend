@@ -230,8 +230,6 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         this.setCanvas({ type: 'Set Module Options' }, (canvas) => (
             CanvasState.setModuleOptions(canvas, hash, options)
         ))
-
-        this.props.canvasController.changedLoader.markChanged(hash)
     }
 
     setRunTab = (runTab) => {
