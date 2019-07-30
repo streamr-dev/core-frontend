@@ -129,6 +129,8 @@ const CanvasEditComponent = class CanvasEdit extends Component {
 
     async autosave() {
         const { canvas, runController, canvasController } = this.props
+        this.autosaveId = this.autosaveId + 1 || 0
+        const { autosaveId } = this
         if (this.isDeleted) { return } // do not autosave deleted canvases
         if (!runController.isEditable) {
             // do not autosave running/adhoc canvases or if we have no write permission
@@ -139,6 +141,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
 
         const newCanvas = await services.autosave(canvas)
         if (this.unmounted) { return }
+        if (this.autosaveId !== autosaveId) { return } // do nothing if autosave called again
         // ignore new canvas, just extract updated time from it
         this.props.setUpdated(newCanvas.updated)
         this.props.replace((canvas) => this.props.canvasController.changedLoader.loadChanged(changed, canvas, newCanvas))
