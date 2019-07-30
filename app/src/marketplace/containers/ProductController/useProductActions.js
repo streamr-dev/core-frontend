@@ -7,64 +7,81 @@ import useProductUpdater from '../ProductController/useProductUpdater'
 
 import type { Product } from '$mp/flowtype/product-types'
 import type { StreamIdList } from '$shared/flowtype/stream-types'
+import type { NumberString } from '$shared/flowtype/common-types'
 
 export function useProductActions() {
-    const { updateProduct } = useProductUpdater()
+    const { updateProduct: commit } = useProductUpdater()
     const { undo } = useContext(UndoContext)
 
+    const updateProduct = useCallback((product: Object, msg: string = 'Update product') => {
+        commit(msg, (p) => ({
+            ...p,
+            ...product,
+        }))
+    }, [commit])
     const updateName = useCallback((name: $ElementType<Product, 'name'>) => {
-        updateProduct('Update name', (p) => ({
+        commit('Update name', (p) => ({
             ...p,
             name,
         }))
-    }, [updateProduct])
+    }, [commit])
     const updateDescription = useCallback((description: $ElementType<Product, 'description'>) => {
-        updateProduct('Update description', (p) => ({
+        commit('Update description', (p) => ({
             ...p,
             description,
         }))
-    }, [updateProduct])
+    }, [commit])
     const updateImageUrl = useCallback((image: File | $ElementType<Product, 'imageUrl'>) => {
-        updateProduct('Update image url', (p) => ({
+        commit('Update image url', (p) => ({
             ...p,
             imageUrl: image,
         }))
-    }, [updateProduct])
+    }, [commit])
     const updateStreams = useCallback((streams: StreamIdList) => {
-        updateProduct('Update streams', (p) => ({
+        commit('Update streams', (p) => ({
             ...p,
             streams,
         }))
-    }, [updateProduct])
+    }, [commit])
     const updateCategory = useCallback((category: $ElementType<Product, 'category'>) => {
-        updateProduct('Update category', (p) => ({
+        commit('Update category', (p) => ({
             ...p,
             category,
         }))
-    }, [updateProduct])
+    }, [commit])
     const updateAdminFee = useCallback((adminFee: number) => {
-        updateProduct('Update admin fee', (p) => ({
+        commit('Update admin fee', (p) => ({
             ...p,
             adminFee,
         }))
-    }, [updateProduct])
+    }, [commit])
+    const updatePricePerSecond = useCallback((pricePerSecond: NumberString) => {
+        commit('Update price per second', (p) => ({
+            ...p,
+            pricePerSecond,
+        }))
+    }, [commit])
 
     return useMemo(() => ({
         undo,
+        updateProduct,
         updateName,
         updateDescription,
         updateImageUrl,
         updateStreams,
         updateCategory,
         updateAdminFee,
+        updatePricePerSecond,
     }), [
         undo,
+        updateProduct,
         updateName,
         updateDescription,
         updateImageUrl,
         updateStreams,
         updateCategory,
         updateAdminFee,
+        updatePricePerSecond,
     ])
 }
 

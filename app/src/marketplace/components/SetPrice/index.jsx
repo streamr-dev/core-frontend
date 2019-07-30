@@ -7,17 +7,20 @@ import BN from 'bignumber.js'
 import type { NumberString, TimeUnit, Currency } from '$shared/flowtype/common-types'
 import { timeUnits, currencies, DEFAULT_CURRENCY } from '$shared/utils/constants'
 import { convert } from '$mp/utils/price'
-
-import RadioButtonGroup from '$shared/components/RadioButtonGroup'
-import Toggle from '$shared/components/Toggle'
 import Dropdown from '$shared/components/Dropdown'
 import SvgIcon from '$shared/components/SvgIcon'
 
 import styles from './setPrice.pcss'
 
 type Props = {
+    price: NumberString,
+    onPriceChange: (NumberString) => void,
+    timeUnit: TimeUnit,
+    onTimeUnitChange: (TimeUnit) => void,
+    currency: Currency,
+    onCurrencyChange: (Currency) => void,
     dataPerUsd: NumberString,
-    onChange: (isFree: boolean, amount: NumberString, currency: string, timeUnit: TimeUnit, fixInFiat: boolean) => void,
+    disabled: boolean,
     className?: string,
 }
 
@@ -25,69 +28,46 @@ const getQuoteCurrencyFor = (currency: Currency) => (
     currency === currencies.DATA ? currencies.USD : currencies.DATA
 )
 
-const SetPrice = ({ dataPerUsd, onChange, className }: Props) => {
-    const [timeUnit, setTimeUnit] = useState(timeUnits.hour)
-    const [priceCurrency, setPriceCurrency] = useState(DEFAULT_CURRENCY)
-    const [basePrice, setBasePrice] = useState(BN(0))
+const SetPrice = ({
+    price,
+    onPriceChange: onPriceChangeProp,
+    timeUnit,
+    onTimeUnitChange,
+    currency,
+    onCurrencyChange: onCurrencyChangeProp,
+    dataPerUsd,
+    disabled,
+    className,
+}: Props) => {
     const [quotePrice, setQuotePrice] = useState(BN(0))
-    const [isFreeProduct, setIsFreeProduct] = useState(false)
-    const [fixInFiat, setFixInFiat] = useState(false)
 
-    const onBasePriceChange = useCallback((e: SyntheticInputEvent<EventTarget>) => {
+    const onPriceChange = useCallback((e: SyntheticInputEvent<EventTarget>) => {
         const newPrice = e.target.value
-        setBasePrice(newPrice)
-    }, [])
+        onPriceChangeProp(newPrice)
+    }, [onPriceChangeProp])
 
     const onCurrencyChange = useCallback(() => {
-        setPriceCurrency(getQuoteCurrencyFor(priceCurrency))
-    }, [priceCurrency])
-
-    const onTimeUnitChange = useCallback((unit) => {
-        setTimeUnit(unit)
-    }, [setTimeUnit])
-
-    const onPriceTypeChange = useCallback((type) => {
-        setIsFreeProduct(type === 'Free')
-    }, [setIsFreeProduct])
-
-    const onFixPriceChange = useCallback((value) => {
-        setFixInFiat(value)
-    }, [setFixInFiat])
+        onCurrencyChangeProp(getQuoteCurrencyFor(currency))
+    }, [onCurrencyChangeProp, currency])
 
     useEffect(() => {
-        const quoteAmount = convert(basePrice || '0', dataPerUsd, priceCurrency, getQuoteCurrencyFor(priceCurrency))
+        const quoteAmount = convert(price || '0', dataPerUsd, currency, getQuoteCurrencyFor(currency))
         setQuotePrice(quoteAmount)
-    }, [basePrice, dataPerUsd, priceCurrency])
-
-    useEffect(() => {
-        if (onChange) {
-            if (isFreeProduct) {
-                onChange(isFreeProduct, 'N/A', 'N/A', 'N/A', false)
-            } else {
-                onChange(isFreeProduct, basePrice.toString(), priceCurrency, timeUnit, fixInFiat)
-            }
-        }
-    }, [onChange, isFreeProduct, basePrice, timeUnit, priceCurrency, fixInFiat])
+    }, [price, dataPerUsd, currency])
 
     return (
         <div className={cx(styles.root, className)}>
-            <RadioButtonGroup
-                name="productPriceType"
-                options={['Paid', 'Free']}
-                selectedOption={isFreeProduct ? 'Free' : 'Paid'}
-                onChange={onPriceTypeChange}
-            />
             <div
-                className={cx(styles.inner, {
-                    [styles.hidden]: isFreeProduct,
+                className={cx({
+                    [styles.hidden]: disabled,
                 })}
             >
                 <div className={styles.priceControls}>
-                    <input className={styles.input} placeholder="Price" value={basePrice.toString()} onChange={onBasePriceChange} />
-                    <span className={styles.currency}>{priceCurrency}</span>
+                    <input className={styles.input} placeholder="Price" value={price.toString()} onChange={onPriceChange} />
+                    <span className={styles.currency}>{currency}</span>
                     <SvgIcon name="transfer" className={styles.icon} onClick={onCurrencyChange} />
                     <input className={styles.input} placeholder="Price" value={quotePrice.toString()} disabled />
-                    <span className={styles.currency}>{getQuoteCurrencyFor(priceCurrency)}</span>
+                    <span className={styles.currency}>{getQuoteCurrencyFor(currency)}</span>
                     <span className={styles.per}>per</span>
                     <Dropdown title="" selectedItem={timeUnit} onChange={onTimeUnitChange}>
                         {[timeUnits.hour, timeUnits.day, timeUnits.week, timeUnits.month].map((unit: TimeUnit) => (
@@ -97,14 +77,19 @@ const SetPrice = ({ dataPerUsd, onChange, className }: Props) => {
                         ))}
                     </Dropdown>
                 </div>
-
-                <div className={styles.fixPrice}>
-                    <label htmlFor="fixPrice">Fix price in fiat for protection against shifts in the DATA price</label>
-                    <Toggle id="fixPrice" className={styles.toggle} value={fixInFiat} onChange={onFixPriceChange} />
-                </div>
             </div>
         </div>
     )
+}
+
+SetPrice.defaultProps = {
+    price: BN(0),
+    onPriceChange: () => {},
+    timeUnit: timeUnits.hour,
+    onTimeUnitChange: () => {},
+    currency: DEFAULT_CURRENCY,
+    onCurrencyChange: () => {},
+    disabled: false,
 }
 
 export default SetPrice
