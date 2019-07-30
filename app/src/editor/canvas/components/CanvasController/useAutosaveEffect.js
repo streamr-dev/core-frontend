@@ -20,10 +20,13 @@ export default function useAutosaveEffect() {
     currCanvasRef.current = canvas
 
     const savingCanvasRef = useRef()
+    const lastServerStateRef = useRef()
 
     const onAutosaveComplete = useCallback((serverCanvas) => {
         const currentCanvas = currCanvasRef.current
         const savingCanvas = savingCanvasRef.current
+        lastServerStateRef.current = serverCanvas
+
         if (isEqualCanvas(currentCanvas, savingCanvas)) {
             // if no changes replace with state from server
             canvasUpdater.replaceCanvas(() => serverCanvas)
@@ -58,8 +61,12 @@ export default function useAutosaveEffect() {
     useEffect(() => {
         if (!isEditable || !canvasChanged) { return }
         const currentCanvas = currCanvasRef.current
+        // no autosave if already saving canvas
         if (savingCanvasRef.current === currentCanvas) { return }
+        // no autosave if current is equivalent to what we're already saving
         if (isEqualCanvas(savingCanvasRef.current, currentCanvas)) { return }
+        // no autosave if last seen server state is equivalent
+        if (isEqualCanvas(lastServerStateRef.current, currentCanvas)) { return }
         savingCanvasRef.current = currentCanvas
         autosavePendingWrap(() => services.autosave(currentCanvas))
             .then((...args) => {
