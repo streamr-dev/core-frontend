@@ -60,7 +60,7 @@ const SetPrice = ({
         <div className={cx(styles.root, className)}>
             <div
                 className={cx({
-                    [styles.hidden]: disabled,
+                    [styles.disabled]: disabled,
                 })}
             >
                 <div className={styles.priceControls}>

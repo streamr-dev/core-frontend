@@ -3,24 +3,25 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react'
 import BN from 'bignumber.js'
 import { useSelector } from 'react-redux'
+import cx from 'classnames'
 
 import useProduct from '../ProductController/useProduct'
 
 import { type Ref } from '$shared/flowtype/common-types'
 import { isPaidProduct } from '$mp/utils/product'
-import RadioButtonGroup from '$shared/components/RadioButtonGroup'
-import SetPrice from '$mp/components/SetPrice'
-import Toggle from '$shared/components/Toggle'
 import useProductActions from '../ProductController/useProductActions'
 import { timeUnits, currencies, DEFAULT_CURRENCY } from '$shared/utils/constants'
 import { priceForTimeUnits, pricePerSecondFromTimeUnit, convert } from '$mp/utils/price'
 import { selectDataPerUsd } from '$mp/modules/global/selectors'
-
+import RadioButtonGroup from '$shared/components/RadioButtonGroup'
+import SetPrice from '$mp/components/SetPrice'
+import Toggle from '$shared/components/Toggle'
+import BeneficiaryAddress from './BeneficiaryAddress'
 import styles from './PriceSelector.pcss'
 
 const PriceSelector = () => {
     const product = useProduct()
-    const { updatePricePerSecond, updatePriceCurrency } = useProductActions()
+    const { updatePricePerSecond, updatePriceCurrency, updateBeneficiaryAddress } = useProductActions()
     const dataPerUsd = useSelector(selectDataPerUsd)
 
     const [isPaid, setIsPaid] = useState(isPaidProduct(product))
@@ -55,7 +56,7 @@ const PriceSelector = () => {
     }, [updatePriceCurrency])
 
     return (
-        <div>
+        <div className={cx(styles.root, styles.PriceSelector)}>
             <h1>Set a price</h1>
             <RadioButtonGroup
                 name="productPriceType"
@@ -63,20 +64,37 @@ const PriceSelector = () => {
                 selectedOption={!isPaid ? 'Free' : 'Paid'}
                 onChange={onPriceTypeChange}
             />
-            <SetPrice
-                className={styles.priceSelector}
-                disabled={!isPaid}
-                price={price}
-                onPriceChange={setPrice}
-                currency={currency}
-                onCurrencyChange={setCurrency}
-                timeUnit={timeUnit}
-                onTimeUnitChange={setTimeUnit}
-                dataPerUsd={dataPerUsd}
-            />
-            <div className={styles.fixPrice}>
-                <label htmlFor="fixPrice">Fix price in fiat for protection against shifts in the DATA price</label>
-                <Toggle id="fixPrice" className={styles.toggle} value={fixInFiat} onChange={onFixPriceChange} />
+            <div className={cx(styles.inner, {
+                [styles.disabled]: !isPaid,
+            })}
+            >
+                <SetPrice
+                    className={styles.priceSelector}
+                    disabled={!isPaid}
+                    price={price}
+                    onPriceChange={setPrice}
+                    currency={currency}
+                    onCurrencyChange={setCurrency}
+                    timeUnit={timeUnit}
+                    onTimeUnitChange={setTimeUnit}
+                    dataPerUsd={dataPerUsd}
+                />
+                <BeneficiaryAddress
+                    className={styles.beneficiaryAddress}
+                    address={product.beneficiaryAddress}
+                    onChange={updateBeneficiaryAddress}
+                    disabled={!isPaid}
+                />
+                <div className={styles.fixPrice}>
+                    <label htmlFor="fixPrice">Fix price in fiat for protection against shifts in the DATA price</label>
+                    <Toggle
+                        id="fixPrice"
+                        className={styles.toggle}
+                        value={fixInFiat}
+                        onChange={onFixPriceChange}
+                        disabled={!isPaid}
+                    />
+                </div>
             </div>
         </div>
     )

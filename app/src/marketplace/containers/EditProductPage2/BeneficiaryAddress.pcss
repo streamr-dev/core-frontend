@@ -1,0 +1,31 @@
+.root {
+  display: grid;
+  grid-template-columns: 14rem 1fr;
+  grid-column-gap: 1rem;
+  line-height: 2rem;
+  color: var(--greyDark);
+  letter-spacing: 0;
+  align-items: center;
+
+  strong {
+    font-weight: var(--medium);
+  }
+
+  input {
+    width: 100%;
+    padding: 0 1rem;
+    background: white;
+    border-radius: 4px;
+    border: 1px solid #EFEFEF;
+    height: 2.5rem;
+
+    &:focus {
+      outline: none;
+      box-shadow: none;
+    }
+
+    &::placeholder {
+      color: #CDCDCD;
+    }
+  }
+}

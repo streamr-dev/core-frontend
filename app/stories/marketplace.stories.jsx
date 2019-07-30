@@ -1,11 +1,11 @@
 // $flow
 
-import React from 'react'
+import React, { useState } from 'react'
 import { Provider } from 'react-redux'
 import StoryRouter from 'storybook-react-router'
 import { storiesOf } from '@storybook/react'
-import { action } from '@storybook/addon-actions'
 import styles from '@sambego/storybook-styles'
+import { withKnobs, boolean, number } from '@storybook/addon-knobs'
 
 import store from './utils/i18nStore'
 
@@ -50,11 +50,31 @@ story('MarkdownEditor')
         <MarkdownEditor placeholder="Type here" />
     ))
 
+const SetPriceController = () => {
+    const [price, setPrice] = useState(0)
+    const [currency, setCurrency] = useState('DATA')
+    const [timeUnit, setTimeUnit] = useState('hour')
+
+    return (
+        <SetPrice
+            disabled={boolean('disabled', false)}
+            price={price}
+            onPriceChange={setPrice}
+            currency={currency}
+            onCurrencyChange={setCurrency}
+            timeUnit={timeUnit}
+            onTimeUnitChange={setTimeUnit}
+            dataPerUsd={number('dataPerUsd', 0.5)}
+        />
+    )
+}
+
 story('SetPrice')
     .addDecorator(styles({
         backgroundColor: '#F8F8F8',
         padding: '15px',
     }))
+    .addDecorator(withKnobs)
     .addWithJSX('basic', () => (
-        <SetPrice dataPerUsd={0.5} onChange={action('onChange')} />
+        <SetPriceController />
     ))
