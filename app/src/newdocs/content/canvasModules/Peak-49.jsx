@@ -1,55 +1,33 @@
-import React from 'react'
-import isEmpty from 'lodash/isEmpty'
-import ReactMarkdown from 'react-markdown'
+/* eslint-disable quotes, quote-props, indent, comma-dangle, max-len */
+import moduleDescription from './Peak-49.mdx'
 
-import { createMdSnippet } from '$newdocs/components/utils'
-import moduleConfig from './Peak-49.json'
-
-const inputs = !isEmpty(moduleConfig.help.inputs)
-    ? createMdSnippet(moduleConfig.help.inputs)
-    : false
-
-const outputs = !isEmpty(moduleConfig.help.outputs)
-    ? createMdSnippet(moduleConfig.help.outputs)
-    : false
-
-const params = !isEmpty(moduleConfig.help.params)
-    ? createMdSnippet(moduleConfig.help.params)
-    : false
-
-export default () => (
-    <section>
-        <h3>
-            {moduleConfig.name}
-        </h3>
-
-        <ReactMarkdown source={moduleConfig.help.helpText} />
-
-        {inputs ? (
-            <React.Fragment>
-                <strong>
-                    Inputs
-                </strong>
-                <ReactMarkdown source={inputs} />
-            </React.Fragment>
-        ) : ''}
-
-        {outputs ? (
-            <React.Fragment>
-                <strong>
-                    Outputs
-                </strong>
-                <ReactMarkdown source={outputs} />
-            </React.Fragment>
-        ) : ''}
-
-        {params ? (
-            <React.Fragment>
-                <strong>
-                    Parameters
-                </strong>
-                <ReactMarkdown source={params} />
-            </React.Fragment>
-        ) : ''}
-    </section>
-)
+export default {
+  "id": 49,
+  "name": "Peak",
+  "path": "Time Series: Triggers",
+  "help": {
+    "outputNames": [
+      "out"
+    ],
+    "inputs": {
+      "in": "Input time series"
+    },
+    "helpText": moduleDescription,
+    "inputNames": [
+      "in"
+    ],
+    "params": {
+      "highZone": "The level above which a downward turn can occur",
+      "lowZone": "The level below which an upward turn can occur",
+      "threshold": "The minimum change in the correct direction between subsequent input values that is allowed to trigger a turn"
+    },
+    "outputs": {
+      "out": "1 for upward turn and -1 for downward turn"
+    },
+    "paramNames": [
+      "highZone",
+      "lowZone",
+      "threshold"
+    ]
+  }
+}

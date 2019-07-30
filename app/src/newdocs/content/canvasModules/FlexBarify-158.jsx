@@ -1,55 +1,39 @@
-import React from 'react'
-import isEmpty from 'lodash/isEmpty'
-import ReactMarkdown from 'react-markdown'
+/* eslint-disable quotes, quote-props, indent, comma-dangle, max-len */
+import moduleDescription from './FlexBarify-158.mdx'
 
-import { createMdSnippet } from '$newdocs/components/utils'
-import moduleConfig from './FlexBarify-158.json'
-
-const inputs = !isEmpty(moduleConfig.help.inputs)
-    ? createMdSnippet(moduleConfig.help.inputs)
-    : false
-
-const outputs = !isEmpty(moduleConfig.help.outputs)
-    ? createMdSnippet(moduleConfig.help.outputs)
-    : false
-
-const params = !isEmpty(moduleConfig.help.params)
-    ? createMdSnippet(moduleConfig.help.params)
-    : false
-
-export default () => (
-    <section>
-        <h3>
-            {moduleConfig.name}
-        </h3>
-
-        <ReactMarkdown source={moduleConfig.help.helpText} />
-
-        {inputs ? (
-            <React.Fragment>
-                <strong>
-                    Inputs
-                </strong>
-                <ReactMarkdown source={inputs} />
-            </React.Fragment>
-        ) : ''}
-
-        {outputs ? (
-            <React.Fragment>
-                <strong>
-                    Outputs
-                </strong>
-                <ReactMarkdown source={outputs} />
-            </React.Fragment>
-        ) : ''}
-
-        {params ? (
-            <React.Fragment>
-                <strong>
-                    Parameters
-                </strong>
-                <ReactMarkdown source={params} />
-            </React.Fragment>
-        ) : ''}
-    </section>
-)
+export default {
+  "id": 158,
+  "name": "FlexBarify",
+  "path": "Time Series: Utils",
+  "help": {
+    "outputNames": [
+      "open",
+      "high",
+      "low",
+      "close",
+      "avg"
+    ],
+    "inputs": {
+      "value": "Value to be sampled into the bar",
+      "valueLength": "Length of each event, contributes to <span class='highlight'>barLength</span>"
+    },
+    "helpText": moduleDescription,
+    "inputNames": [
+      "valueLength",
+      "value"
+    ],
+    "params": {
+      "barLength": "Length of each bar (in <span class='highlight'>valueLength</span> units)"
+    },
+    "outputs": {
+      "open": "Value at start of period",
+      "high": "Maximum value during period",
+      "avg": "Average of values received during the period, weighted by <span class='highlight'>valueLength</span>",
+      "low": "Minimum value during period",
+      "close": "Value at end of period (the most recent value)"
+    },
+    "paramNames": [
+      "barLength"
+    ]
+  }
+}

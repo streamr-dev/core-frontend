@@ -1,55 +1,27 @@
-import React from 'react'
-import isEmpty from 'lodash/isEmpty'
-import ReactMarkdown from 'react-markdown'
+/* eslint-disable quotes, quote-props, indent, comma-dangle, max-len */
+import moduleDescription from './Indices-541.mdx'
 
-import { createMdSnippet } from '$newdocs/components/utils'
-import moduleConfig from './Indices-541.json'
-
-const inputs = !isEmpty(moduleConfig.help.inputs)
-    ? createMdSnippet(moduleConfig.help.inputs)
-    : false
-
-const outputs = !isEmpty(moduleConfig.help.outputs)
-    ? createMdSnippet(moduleConfig.help.outputs)
-    : false
-
-const params = !isEmpty(moduleConfig.help.params)
-    ? createMdSnippet(moduleConfig.help.params)
-    : false
-
-export default () => (
-    <section>
-        <h3>
-            {moduleConfig.name}
-        </h3>
-
-        <ReactMarkdown source={moduleConfig.help.helpText} />
-
-        {inputs ? (
-            <React.Fragment>
-                <strong>
-                    Inputs
-                </strong>
-                <ReactMarkdown source={inputs} />
-            </React.Fragment>
-        ) : ''}
-
-        {outputs ? (
-            <React.Fragment>
-                <strong>
-                    Outputs
-                </strong>
-                <ReactMarkdown source={outputs} />
-            </React.Fragment>
-        ) : ''}
-
-        {params ? (
-            <React.Fragment>
-                <strong>
-                    Parameters
-                </strong>
-                <ReactMarkdown source={params} />
-            </React.Fragment>
-        ) : ''}
-    </section>
-)
+export default {
+  "id": 541,
+  "name": "Indices",
+  "path": "List",
+  "help": {
+    "params": {},
+    "paramNames": [],
+    "inputs": {
+      "list": "an input list"
+    },
+    "inputNames": [
+      "list"
+    ],
+    "outputs": {
+      "indices": "a list of indices for the input list",
+      "list": "the original input list"
+    },
+    "outputNames": [
+      "indices",
+      "list"
+    ],
+    "helpText": moduleDescription
+  }
+}

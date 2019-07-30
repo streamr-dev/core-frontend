@@ -1,55 +1,33 @@
-import React from 'react'
-import isEmpty from 'lodash/isEmpty'
-import ReactMarkdown from 'react-markdown'
+/* eslint-disable quotes, quote-props, indent, comma-dangle, max-len */
+import moduleDescription from './GetOrCreateStream-1033.mdx'
 
-import { createMdSnippet } from '$newdocs/components/utils'
-import moduleConfig from './GetOrCreateStream-1033.json'
-
-const inputs = !isEmpty(moduleConfig.help.inputs)
-    ? createMdSnippet(moduleConfig.help.inputs)
-    : false
-
-const outputs = !isEmpty(moduleConfig.help.outputs)
-    ? createMdSnippet(moduleConfig.help.outputs)
-    : false
-
-const params = !isEmpty(moduleConfig.help.params)
-    ? createMdSnippet(moduleConfig.help.params)
-    : false
-
-export default () => (
-    <section>
-        <h3>
-            {moduleConfig.name}
-        </h3>
-
-        <ReactMarkdown source={moduleConfig.help.helpText} />
-
-        {inputs ? (
-            <React.Fragment>
-                <strong>
-                    Inputs
-                </strong>
-                <ReactMarkdown source={inputs} />
-            </React.Fragment>
-        ) : ''}
-
-        {outputs ? (
-            <React.Fragment>
-                <strong>
-                    Outputs
-                </strong>
-                <ReactMarkdown source={outputs} />
-            </React.Fragment>
-        ) : ''}
-
-        {params ? (
-            <React.Fragment>
-                <strong>
-                    Parameters
-                </strong>
-                <ReactMarkdown source={params} />
-            </React.Fragment>
-        ) : ''}
-    </section>
-)
+export default {
+  "id": 1033,
+  "name": "GetOrCreateStream",
+  "path": "Streams",
+  "help": {
+    "params": {
+      "fields": "the fields to be assigned to the stream if a new stream is created"
+    },
+    "paramNames": [
+      "fields"
+    ],
+    "inputs": {
+      "name": "name of the stream",
+      "description": "human-readable description if a new stream is created"
+    },
+    "inputNames": [
+      "name",
+      "description"
+    ],
+    "outputs": {
+      "created": "true if stream was created, false if existing stream was found",
+      "stream": "the id of the found or created stream"
+    },
+    "outputNames": [
+      "created",
+      "stream"
+    ],
+    "helpText": moduleDescription
+  }
+}

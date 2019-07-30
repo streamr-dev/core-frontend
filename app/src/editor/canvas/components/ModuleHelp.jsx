@@ -1,11 +1,12 @@
+/* eslint-disable no-undef */
+/* eslint-disable no-unused-vars */
 /* eslint-disable default-case */
 import React from 'react'
 import cx from 'classnames'
-import ReactMarkdown from 'react-markdown'
-import isEmpty from 'lodash/isEmpty'
+import { MDXProvider } from '@mdx-js/react'
+import Components from '$newdocs/mdxConfig'
 
-import * as services from '../services'
-import { createMdSnippet } from '$newdocs/components/utils'
+import CanvasModuleConfig from '$newdocs/components/CanvasModuleConfig'
 
 export default class ModuleHelp extends React.Component {
     state = {}
@@ -30,35 +31,20 @@ export default class ModuleHelp extends React.Component {
         const { moduleId } = this.props
         const { moduleName } = this.props
 
-        const help = await services.moduleHelp({
-            id: moduleId,
-        })
-
         const cleanedName = moduleName.replace(/\s/g, '').replace(/\(/g, '_').replace(/\)/g, '')
         // eslint-disable-next-line global-require, import/no-dynamic-require
-        const helpJson = await require(`$newdocs/content/canvasModules/${cleanedName}-${moduleId}.json`)
-        const { helpText } = helpJson.help
-
-        const inputs = !isEmpty(helpJson.help.inputs)
-            ? createMdSnippet(helpJson.help.inputs)
-            : false
-
-        const outputs = !isEmpty(helpJson.help.outputs)
-            ? createMdSnippet(helpJson.help.outputs)
-            : false
-
-        const params = !isEmpty(helpJson.help.params)
-            ? createMdSnippet(helpJson.help.params)
-            : false
+        // const helpText = await require(`$newdocs/content/canvasModules/${cleanedName}-${moduleId}.mdx`)
+        const OtherComponent = (React.lazy(() => import(`$newdocs/content/canvasModules/${cleanedName}-${moduleId}.mdx`)))
+        // eslint-disable-next-line global-require, import/no-dynamic-require
+        const helpJson = await require(`$newdocs/content/canvasModules/${cleanedName}-${moduleId}.jsx`)
+        const { help } = helpJson.default
 
         if (this.unmounted) { return }
-
+        debugger
         this.setState({
-            [moduleId]: help,
-            helpText,
-            inputs,
-            outputs,
-            params,
+            inputs: help.inputs,
+            outputs: help.outputs,
+            params: help.params,
         })
     }
 
@@ -67,34 +53,19 @@ export default class ModuleHelp extends React.Component {
         const { inputs, outputs, params } = this.state
         return (
             <div className={cx(className)}>
-                <ReactMarkdown source={this.state.helpText} />
-
-                {inputs ? (
-                    <React.Fragment>
-                        <strong>
-                            Inputs
-                        </strong>
-                        <ReactMarkdown source={inputs} />
-                    </React.Fragment>
-                ) : ''}
-
-                {outputs ? (
-                    <React.Fragment>
-                        <strong>
-                            Outputs
-                        </strong>
-                        <ReactMarkdown source={outputs} />
-                    </React.Fragment>
-                ) : ''}
-
-                {params ? (
-                    <React.Fragment>
-                        <strong>
-                            Parameters
-                        </strong>
-                        <ReactMarkdown source={params} />
-                    </React.Fragment>
-                ) : ''}
+                {/* <ReactMarkdown source={this.state.helpText} /> */}
+                <MDXProvider components={Components}>
+                    <React.Suspense fallback={<div>Loading...</div>}>
+                        <MDXProvider components={Components}>
+                            {this.OtherComponent}
+                        </MDXProvider>
+                    </React.Suspense>
+                </MDXProvider>
+                <CanvasModuleConfig
+                    moduleInputs={inputs || {}}
+                    moduleOutputs={outputs || {}}
+                    moduleParams={params || {}}
+                />
             </div>
         )
     }

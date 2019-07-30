@@ -1,55 +1,31 @@
-import React from 'react'
-import isEmpty from 'lodash/isEmpty'
-import ReactMarkdown from 'react-markdown'
+/* eslint-disable quotes, quote-props, indent, comma-dangle, max-len */
+import moduleDescription from './RandomNumber-562.mdx'
 
-import { createMdSnippet } from '$newdocs/components/utils'
-import moduleConfig from './RandomNumber-562.json'
-
-const inputs = !isEmpty(moduleConfig.help.inputs)
-    ? createMdSnippet(moduleConfig.help.inputs)
-    : false
-
-const outputs = !isEmpty(moduleConfig.help.outputs)
-    ? createMdSnippet(moduleConfig.help.outputs)
-    : false
-
-const params = !isEmpty(moduleConfig.help.params)
-    ? createMdSnippet(moduleConfig.help.params)
-    : false
-
-export default () => (
-    <section>
-        <h3>
-            {moduleConfig.name}
-        </h3>
-
-        <ReactMarkdown source={moduleConfig.help.helpText} />
-
-        {inputs ? (
-            <React.Fragment>
-                <strong>
-                    Inputs
-                </strong>
-                <ReactMarkdown source={inputs} />
-            </React.Fragment>
-        ) : ''}
-
-        {outputs ? (
-            <React.Fragment>
-                <strong>
-                    Outputs
-                </strong>
-                <ReactMarkdown source={outputs} />
-            </React.Fragment>
-        ) : ''}
-
-        {params ? (
-            <React.Fragment>
-                <strong>
-                    Parameters
-                </strong>
-                <ReactMarkdown source={params} />
-            </React.Fragment>
-        ) : ''}
-    </section>
-)
+export default {
+  "id": 562,
+  "name": "RandomNumber",
+  "path": "Time Series: Random",
+  "help": {
+    "params": {
+      "min": "lower bound of interval to sample from",
+      "max": "upper bound of interval to sample from"
+    },
+    "paramNames": [
+      "min",
+      "max"
+    ],
+    "inputs": {
+      "trigger": "when value is received, activates module"
+    },
+    "inputNames": [
+      "trigger"
+    ],
+    "outputs": {
+      "out": "the random number"
+    },
+    "outputNames": [
+      "out"
+    ],
+    "helpText": moduleDescription
+  }
+}
