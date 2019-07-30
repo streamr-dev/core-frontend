@@ -185,19 +185,6 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         ))
     }
 
-    loadNewDefinition = async (hash) => {
-        const { canvas, canvasController, replace } = this.props
-        try {
-            const moduleData = await canvasController.loadModule(canvas, { hash })
-            if (this.unmounted) { return }
-            replace((canvas) => CanvasState.replaceModule(canvas, moduleData))
-        } catch (error) {
-            console.error(error.message)
-            // undo value change
-            this.props.undo()
-        }
-    }
-
     pushNewDefinition = async (hash, value) => {
         const module = CanvasState.getModule(this.props.canvas, hash)
 
@@ -347,7 +334,6 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                     moduleSidebarOpen={this.moduleSidebarOpen}
                     moduleSidebarIsOpen={moduleSidebarIsOpen && !keyboardShortcutIsOpen}
                     setCanvas={this.setCanvas}
-                    loadNewDefinition={this.loadNewDefinition}
                     pushNewDefinition={this.pushNewDefinition}
                 >
                     {runController.hasWritePermission ? (
