@@ -1,7 +1,7 @@
 import { setupAuthorizationHeader, loadModuleDefinition } from '$editor/shared/tests/utils'
 
 import * as State from '../state'
-import { changedModules } from '../state/diff'
+import { changedModules, isEqualCanvas } from '../state/diff'
 import * as Services from '../services'
 
 import './utils'
@@ -17,6 +17,33 @@ describe('Canvas Diff', () => {
         await Services.deleteAllCanvases()
         await teardown()
     })
+    describe('isEqualCanvas', () => {
+        it('true for identical canvases', async () => {
+            const canvas = State.emptyCanvas()
+            expect(isEqualCanvas(canvas, canvas)).toBe(true)
+            expect(isEqualCanvas(State.emptyCanvas(), State.emptyCanvas())).toBe(true)
+        })
+
+        it('false for changed canvas name', async () => {
+            expect(isEqualCanvas(State.emptyCanvas({
+                name: 'something',
+            }), State.emptyCanvas())).toBe(false)
+        })
+
+        it('false for changed canvas modules', async () => {
+            const canvasBefore = State.emptyCanvas()
+            const canvasAfter = State.addModule(canvasBefore, await loadModuleDefinition('ConstantText'))
+
+            expect(isEqualCanvas(canvasBefore, canvasAfter)).toBe(false)
+        })
+
+        it('true for saved canvas with different updated/created time', async () => {
+            const savedCanvas1 = State.updateCanvas(await Services.create(State.emptyCanvas()))
+            const savedCanvas2 = State.updateCanvas(await Services.saveNow(savedCanvas1))
+            expect(isEqualCanvas(savedCanvas1, savedCanvas2)).toBe(true)
+        })
+    })
+
     describe('changedModules', () => {
         it('reports no change for identical canvases', async () => {
             const canvas = State.emptyCanvas()

@@ -15,14 +15,19 @@ export function changedModules(canvasA, canvasB) {
 
 export function isEqualCanvas(canvasA, canvasB) {
     if (canvasA === canvasB) { return true }
+    if (!canvasA || !canvasB) { return false }
     const hasChangedModules = changedModules(canvasA, canvasB)
-    if (hasChangedModules) { return false }
-    // don't re-check modules
+    if (hasChangedModules.length) { return false }
+    // don't re-check modules, ignore updated time
     return isEqual({
         ...canvasA,
+        updated: '',
+        created: '',
         modules: [],
     }, {
         ...canvasB,
+        updated: '',
+        created: '',
         modules: [],
     })
 }
