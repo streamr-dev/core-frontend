@@ -354,23 +354,6 @@ export function updateModuleSize(canvas, moduleHash, size) {
     }), canvas)
 }
 
-function clearValuesOnUsedModulePorts(canvas, hash) {
-    const ports = getAllPorts(canvas, hash)
-    const usedPortIds = ports.map(({ id }) => id).filter((id) => isPortUsed(canvas, id))
-    return usedPortIds.reduce((nextCanvas, id) => (
-        updatePort(nextCanvas, id, (p) => ({
-            ...p,
-            value: undefined,
-        }))
-    ), canvas)
-}
-
-export function clearValuesOnUsedPorts(canvas) {
-    return canvas.modules.reduce((nextCanvas, { hash }) => (
-        clearValuesOnUsedModulePorts(nextCanvas, hash)
-    ), canvas)
-}
-
 function getOutputInputPorts(canvas, portIdA, portIdB) {
     const ports = [getPortIfExists(canvas, portIdA), getPortIfExists(canvas, portIdB)]
     if (getIsOutput(canvas, portIdB) || !getIsOutput(canvas, portIdA)) {

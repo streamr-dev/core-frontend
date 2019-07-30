@@ -6,7 +6,7 @@ import analytics from '$shared/../analytics'
 import api from '$editor/shared/utils/api'
 import Autosave from '$editor/shared/utils/autosave'
 import { nextUniqueName, nextUniqueCopyName } from '$editor/shared/utils/uniqueName'
-import { emptyCanvas, isRunning, RunStates, isHistoricalModeSelected, clearValuesOnUsedPorts } from './state'
+import { emptyCanvas, isRunning, RunStates, isHistoricalModeSelected } from './state'
 import { link, unlink, getLink } from './state/linking'
 
 const getData = ({ data }) => data
@@ -18,7 +18,6 @@ const streamsUrl = `${process.env.STREAMR_API_URL}/streams`
 const AUTOSAVE_DELAY = 3000
 
 async function save(canvas) {
-    canvas = clearValuesOnUsedPorts(canvas)
     return api().put(`${canvasesUrl}/${canvas.id}`, canvas).then(getData)
 }
 
