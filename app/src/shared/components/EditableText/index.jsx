@@ -23,6 +23,10 @@ type Props = {
     setEditing: (boolean) => void,
 }
 
+function isBlank(str) {
+    return str == null || str === ''
+}
+
 const EditableText = ({
     autoFocus,
     children: childrenProp,
@@ -81,12 +85,16 @@ const EditableText = ({
         }
     }, [])
 
+    const renderValue = useCallback((val) => (
+        !isBlank(val) ? val : (placeholder || '')
+    ), [placeholder])
+
     return (
         <div
             className={cx(styles.root, className, {
                 [styles.idle]: !editing,
                 [styles.disabled]: disabled,
-                [styles.blank]: (editing && !value) || (!editing && !children),
+                [styles.blank]: isBlank(editing ? value : children),
                 [ModuleStyles.dragCancel]: !!editing,
             })}
             onDoubleClick={startEditing}
@@ -117,10 +125,10 @@ const EditableText = ({
                             value={children}
                         />
                         <span className={styles.spaceholder}>
-                            {value || placeholder || ''}
+                            {renderValue(value)}
                         </span>
                     </Fragment>
-                ) : (children || placeholder)}
+                ) : renderValue(children)}
             </span>
         </div>
     )

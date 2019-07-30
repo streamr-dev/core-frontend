@@ -257,38 +257,58 @@ describe('Canvas State', () => {
                     canvas = State.addModule(canvas, await loadModuleDefinition('Equals'))
                     const [equalsModule] = canvas.modules
                     // params[0] is 'tolerance', of Double type
-                    // coerce empty string to undefined
+                    // coerce empty string to default
                     canvas = State.updateCanvas(State.setPortUserValue(canvas, equalsModule.params[0].id, ''))
-                    expect(State.getPortUserValue(canvas, equalsModule.params[0].id)).toBe(undefined)
+                    const defaultValue = State.getPortDefaultValue(canvas, equalsModule.params[0].id)
+                    expect(State.getPortUserValue(canvas, equalsModule.params[0].id)).toBe(defaultValue)
                     // handles commas
                     canvas = State.updateCanvas(State.setPortUserValue(canvas, equalsModule.params[0].id, '2,3'))
-                    expect(State.getPortUserValue(canvas, equalsModule.params[0].id)).toBe('2.3')
+                    expect(State.getPortUserValue(canvas, equalsModule.params[0].id)).toBe(2.3)
                     // handles zero
                     canvas = State.updateCanvas(State.setPortUserValue(canvas, equalsModule.params[0].id, '0'))
-                    expect(State.getPortUserValue(canvas, equalsModule.params[0].id)).toBe('0')
+                    expect(State.getPortUserValue(canvas, equalsModule.params[0].id)).toBe(0)
                     canvas = State.updateCanvas(State.setPortUserValue(canvas, equalsModule.params[0].id, '0.0'))
-                    expect(State.getPortUserValue(canvas, equalsModule.params[0].id)).toBe('0')
+                    expect(State.getPortUserValue(canvas, equalsModule.params[0].id)).toBe(0)
                     canvas = State.updateCanvas(State.setPortUserValue(canvas, equalsModule.params[0].id, 0))
-                    expect(State.getPortUserValue(canvas, equalsModule.params[0].id)).toBe('0')
+                    expect(State.getPortUserValue(canvas, equalsModule.params[0].id)).toBe(0)
                     // handles negative numbers
                     canvas = State.updateCanvas(State.setPortUserValue(canvas, equalsModule.params[0].id, '-2.3'))
-                    expect(State.getPortUserValue(canvas, equalsModule.params[0].id)).toBe('-2.3')
+                    expect(State.getPortUserValue(canvas, equalsModule.params[0].id)).toBe(-2.3)
                     // ignores whitespace
                     canvas = State.updateCanvas(State.setPortUserValue(canvas, equalsModule.params[0].id, '2.3 '))
-                    expect(State.getPortUserValue(canvas, equalsModule.params[0].id)).toBe('2.3')
+                    expect(State.getPortUserValue(canvas, equalsModule.params[0].id)).toBe(2.3)
                     canvas = State.updateCanvas(State.setPortUserValue(canvas, equalsModule.params[0].id, '2,3  '))
-                    expect(State.getPortUserValue(canvas, equalsModule.params[0].id)).toBe('2.3')
+                    expect(State.getPortUserValue(canvas, equalsModule.params[0].id)).toBe(2.3)
                     canvas = State.updateCanvas(State.setPortUserValue(canvas, equalsModule.params[0].id, '  -2.3  '))
-                    expect(State.getPortUserValue(canvas, equalsModule.params[0].id)).toBe('-2.3')
+                    expect(State.getPortUserValue(canvas, equalsModule.params[0].id)).toBe(-2.3)
                     // tries to parse a number
                     canvas = State.updateCanvas(State.setPortUserValue(canvas, equalsModule.params[0].id, '2dasd'))
-                    expect(State.getPortUserValue(canvas, equalsModule.params[0].id)).toBe('2')
+                    expect(State.getPortUserValue(canvas, equalsModule.params[0].id)).toBe(2)
                     // Falls back to undefined if it cannot
                     canvas = State.updateCanvas(State.setPortUserValue(canvas, equalsModule.params[0].id, 'dasd'))
-                    expect(State.getPortUserValue(canvas, equalsModule.params[0].id)).toBe(undefined)
+                    expect(State.getPortUserValue(canvas, equalsModule.params[0].id)).toBe(defaultValue)
 
-                    // test server accepts state with undefined value
+                    // test server accepts state
                     expect(State.updateCanvas(await Services.create(canvas))).toMatchCanvas(canvas)
+                })
+            })
+
+            describe('getPortUserValueOrDefault', () => {
+                it('gets value or default if value not set', async () => {
+                    let canvas = State.emptyCanvas()
+                    canvas = State.addModule(canvas, await loadModuleDefinition('MovingAverage'))
+                    const [movingAverage] = canvas.modules
+                    // gets value if set
+                    canvas = State.updateCanvas(State.setPortUserValue(canvas, movingAverage.params[0].id, 3))
+                    expect(State.getPortUserValueOrDefault(canvas, movingAverage.params[0].id)).toBe(3)
+                    // gets default if undefined
+                    canvas = State.updateCanvas(State.setPortUserValue(canvas, movingAverage.params[0].id, undefined))
+                    expect(State.getPortUserValue(canvas, movingAverage.params[0].id)).toBe(0)
+                    expect(State.getPortUserValueOrDefault(canvas, movingAverage.params[0].id)).toBe(0)
+                    // gets default if empty string
+                    canvas = State.updateCanvas(State.setPortUserValue(canvas, movingAverage.params[0].id, ''))
+                    expect(State.getPortUserValue(canvas, movingAverage.params[0].id)).toBe(0)
+                    expect(State.getPortUserValueOrDefault(canvas, movingAverage.params[0].id)).toBe(0)
                 })
             })
         })
