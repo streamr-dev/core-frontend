@@ -18,6 +18,8 @@ import useModuleLoadCallback from './useModuleLoadCallback'
 
 import styles from './CanvasController.pcss'
 
+const CanvasControllerContext = React.createContext()
+
 function useCanvasLoadEffect() {
     const canvas = useCanvas()
     const load = useCanvasLoadCallback()
@@ -72,23 +74,6 @@ export function useChangedModuleLoader() {
     }), [resetChanged, markChanged, loadChanged])
 }
 
-export function useController() {
-    const create = useCanvasCreateCallback()
-    const load = useCanvasLoadCallback()
-    const remove = useCanvasRemoveCallback()
-    const duplicate = useCanvasDuplicateCallback()
-    const loadModule = useModuleLoadCallback()
-    const changedLoader = useChangedModuleLoader()
-    return useMemo(() => ({
-        load,
-        create,
-        remove,
-        duplicate,
-        loadModule,
-        changedLoader,
-    }), [load, create, remove, duplicate, loadModule, changedLoader])
-}
-
 function useCanvasCreateEffect() {
     const { match } = useContext(RouterContext.Context)
     const { isPending } = usePending('canvas.CREATE')
@@ -125,13 +110,44 @@ function CanvasLoadingIndicator() {
     )
 }
 
+export function useController() {
+    return useContext(CanvasControllerContext)
+}
+
+function useCanvasController() {
+    const create = useCanvasCreateCallback()
+    const load = useCanvasLoadCallback()
+    const remove = useCanvasRemoveCallback()
+    const duplicate = useCanvasDuplicateCallback()
+    const loadModule = useModuleLoadCallback()
+    const changedLoader = useChangedModuleLoader()
+    return useMemo(() => ({
+        load,
+        create,
+        remove,
+        duplicate,
+        loadModule,
+        changedLoader,
+    }), [load, create, remove, duplicate, loadModule, changedLoader])
+}
+
+function ControllerProvider({ children }) {
+    return (
+        <CanvasControllerContext.Provider value={useCanvasController()}>
+            {children}
+        </CanvasControllerContext.Provider>
+    )
+}
+
 const CanvasControllerProvider = ({ children }) => (
     <RouterContext.Provider>
         <PendingProvider>
             <PermissionsProvider>
-                <CanvasLoadingIndicator />
-                <CanvasEffects />
-                {children || null}
+                <ControllerProvider>
+                    <CanvasLoadingIndicator />
+                    <CanvasEffects />
+                    {children || null}
+                </ControllerProvider>
             </PermissionsProvider>
         </PendingProvider>
     </RouterContext.Provider>
