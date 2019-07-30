@@ -7,7 +7,6 @@ import useProductUpdater from '../ProductController/useProductUpdater'
 
 import type { Product } from '$mp/flowtype/product-types'
 import type { StreamIdList } from '$shared/flowtype/stream-types'
-import type { NumberString } from '$shared/flowtype/common-types'
 
 export function useProductActions() {
     const { updateProduct: commit } = useProductUpdater()
@@ -55,10 +54,16 @@ export function useProductActions() {
             adminFee,
         }))
     }, [commit])
-    const updatePricePerSecond = useCallback((pricePerSecond: NumberString) => {
+    const updatePricePerSecond = useCallback((pricePerSecond: $ElementType<Product, 'pricePerSecond'>) => {
         commit('Update price per second', (p) => ({
             ...p,
             pricePerSecond,
+        }))
+    }, [commit])
+    const updatePriceCurrency = useCallback((priceCurrency: $ElementType<Product, 'priceCurrency'>) => {
+        commit('Update price currency', (p) => ({
+            ...p,
+            priceCurrency,
         }))
     }, [commit])
 
@@ -72,6 +77,7 @@ export function useProductActions() {
         updateCategory,
         updateAdminFee,
         updatePricePerSecond,
+        updatePriceCurrency,
     }), [
         undo,
         updateProduct,
@@ -82,6 +88,7 @@ export function useProductActions() {
         updateCategory,
         updateAdminFee,
         updatePricePerSecond,
+        updatePriceCurrency,
     ])
 }
 

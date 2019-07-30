@@ -47,8 +47,9 @@ const SetPrice = ({
     }, [onPriceChangeProp])
 
     const onCurrencyChange = useCallback(() => {
+        if (disabled) { return }
         onCurrencyChangeProp(getQuoteCurrencyFor(currency))
-    }, [onCurrencyChangeProp, currency])
+    }, [onCurrencyChangeProp, currency, disabled])
 
     useEffect(() => {
         const quoteAmount = convert(price || '0', dataPerUsd, currency, getQuoteCurrencyFor(currency))
@@ -63,13 +64,30 @@ const SetPrice = ({
                 })}
             >
                 <div className={styles.priceControls}>
-                    <input className={styles.input} placeholder="Price" value={price.toString()} onChange={onPriceChange} />
+                    <input
+                        className={styles.input}
+                        placeholder="Price"
+                        value={price.toString()}
+                        onChange={onPriceChange}
+                        disabled={disabled}
+                    />
                     <span className={styles.currency}>{currency}</span>
                     <SvgIcon name="transfer" className={styles.icon} onClick={onCurrencyChange} />
-                    <input className={styles.input} placeholder="Price" value={quotePrice.toString()} disabled />
+                    <input
+                        className={styles.input}
+                        placeholder="Price"
+                        value={quotePrice.toString()}
+                        onChange={() => {}}
+                        disabled={disabled}
+                    />
                     <span className={styles.currency}>{getQuoteCurrencyFor(currency)}</span>
                     <span className={styles.per}>per</span>
-                    <Dropdown title="" selectedItem={timeUnit} onChange={onTimeUnitChange}>
+                    <Dropdown
+                        title=""
+                        selectedItem={timeUnit}
+                        onChange={onTimeUnitChange}
+                        disabled={disabled}
+                    >
                         {[timeUnits.hour, timeUnits.day, timeUnits.week, timeUnits.month].map((unit: TimeUnit) => (
                             <Dropdown.Item key={unit} value={unit}>
                                 {unit}

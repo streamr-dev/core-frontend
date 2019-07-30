@@ -15,11 +15,12 @@ import useProductActions from '../ProductController/useProductActions'
 import { timeUnits, currencies, DEFAULT_CURRENCY } from '$shared/utils/constants'
 import { priceForTimeUnits, pricePerSecondFromTimeUnit, convert } from '$mp/utils/price'
 import { selectDataPerUsd } from '$mp/modules/global/selectors'
+
 import styles from './PriceSelector.pcss'
 
 const PriceSelector = () => {
     const product = useProduct()
-    const { updatePricePerSecond } = useProductActions()
+    const { updatePricePerSecond, updatePriceCurrency } = useProductActions()
     const dataPerUsd = useSelector(selectDataPerUsd)
 
     const [isPaid, setIsPaid] = useState(isPaidProduct(product))
@@ -39,24 +40,23 @@ const PriceSelector = () => {
             let pricePerSecond
             if (!isPaid) {
                 pricePerSecond = BN(0)
-            } else if (currency !== currencies.DATA) {
-                pricePerSecond = pricePerSecondFromTimeUnit(convert(price || BN(0), dataPerUsd, currency, currencies.DATA), timeUnit)
             } else {
-                pricePerSecond = pricePerSecondFromTimeUnit(price || BN(0), timeUnit)
+                const newPrice = (currency !== currencies.DATA) ?
+                    convert(price || '0', dataPerUsd, currency, currencies.DATA) : price
+                pricePerSecond = pricePerSecondFromTimeUnit(newPrice || BN(0), timeUnit)
             }
             updateRef.current(pricePerSecond)
         }
     }, [isPaid, price, currency, timeUnit, dataPerUsd])
 
-    const [fixInFiat, setFixInFiat] = useState(false)
-    const onFixPriceChange = useCallback((value) => {
-        setFixInFiat(value)
-    }, [setFixInFiat])
+    const fixInFiat = product.priceCurrency === currencies.USD
+    const onFixPriceChange = useCallback((checked) => {
+        updatePriceCurrency(checked ? currencies.USD : currencies.DATA)
+    }, [updatePriceCurrency])
 
     return (
         <div>
             <h1>Set a price</h1>
-
             <RadioButtonGroup
                 name="productPriceType"
                 options={['Paid', 'Free']}
@@ -64,6 +64,7 @@ const PriceSelector = () => {
                 onChange={onPriceTypeChange}
             />
             <SetPrice
+                className={styles.priceSelector}
                 disabled={!isPaid}
                 price={price}
                 onPriceChange={setPrice}
