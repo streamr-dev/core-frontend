@@ -1,55 +1,39 @@
-import React from 'react'
-import isEmpty from 'lodash/isEmpty'
-import ReactMarkdown from 'react-markdown'
+/* eslint-disable quotes, quote-props, indent, comma-dangle, max-len */
+import moduleDescription from './SQL-1010.mdx'
 
-import { createMdSnippet } from '$newdocs/components/utils'
-import moduleConfig from './SQL-1010.json'
-
-const inputs = !isEmpty(moduleConfig.help.inputs)
-    ? createMdSnippet(moduleConfig.help.inputs)
-    : false
-
-const outputs = !isEmpty(moduleConfig.help.outputs)
-    ? createMdSnippet(moduleConfig.help.outputs)
-    : false
-
-const params = !isEmpty(moduleConfig.help.params)
-    ? createMdSnippet(moduleConfig.help.params)
-    : false
-
-export default () => (
-    <section>
-        <h3>
-            {moduleConfig.name}
-        </h3>
-
-        <ReactMarkdown source={moduleConfig.help.helpText} />
-
-        {inputs ? (
-            <React.Fragment>
-                <strong>
-                    Inputs
-                </strong>
-                <ReactMarkdown source={inputs} />
-            </React.Fragment>
-        ) : ''}
-
-        {outputs ? (
-            <React.Fragment>
-                <strong>
-                    Outputs
-                </strong>
-                <ReactMarkdown source={outputs} />
-            </React.Fragment>
-        ) : ''}
-
-        {params ? (
-            <React.Fragment>
-                <strong>
-                    Parameters
-                </strong>
-                <ReactMarkdown source={params} />
-            </React.Fragment>
-        ) : ''}
-    </section>
-)
+export default {
+  "id": 1010,
+  "name": "SQL",
+  "path": "Integrations",
+  "help": {
+    "params": {
+      "engine": "Database engine, e.g. MySQL",
+      "host": "Database server to connect",
+      "database": "Name of the database",
+      "username": "Login username",
+      "password": "Login password"
+    },
+    "paramNames": [
+      "engine",
+      "host",
+      "database",
+      "username",
+      "password"
+    ],
+    "inputs": {
+      "sql": "SQL command to be executed"
+    },
+    "inputNames": [
+      "sql"
+    ],
+    "outputs": {
+      "errors": "List of error strings",
+      "result": "List of rows returned by the database"
+    },
+    "outputNames": [
+      "errors",
+      "result"
+    ],
+    "helpText": moduleDescription
+  }
+}

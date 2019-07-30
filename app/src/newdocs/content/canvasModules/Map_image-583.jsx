@@ -1,55 +1,25 @@
-import React from 'react'
-import isEmpty from 'lodash/isEmpty'
-import ReactMarkdown from 'react-markdown'
+/* eslint-disable quotes, quote-props, indent, comma-dangle, max-len */
+import moduleDescription from './Map_image-583.mdx'
 
-import { createMdSnippet } from '$newdocs/components/utils'
-import moduleConfig from './Map_image-583.json'
-
-const inputs = !isEmpty(moduleConfig.help.inputs)
-    ? createMdSnippet(moduleConfig.help.inputs)
-    : false
-
-const outputs = !isEmpty(moduleConfig.help.outputs)
-    ? createMdSnippet(moduleConfig.help.outputs)
-    : false
-
-const params = !isEmpty(moduleConfig.help.params)
-    ? createMdSnippet(moduleConfig.help.params)
-    : false
-
-export default () => (
-    <section>
-        <h3>
-            {moduleConfig.name}
-        </h3>
-
-        <ReactMarkdown source={moduleConfig.help.helpText} />
-
-        {inputs ? (
-            <React.Fragment>
-                <strong>
-                    Inputs
-                </strong>
-                <ReactMarkdown source={inputs} />
-            </React.Fragment>
-        ) : ''}
-
-        {outputs ? (
-            <React.Fragment>
-                <strong>
-                    Outputs
-                </strong>
-                <ReactMarkdown source={outputs} />
-            </React.Fragment>
-        ) : ''}
-
-        {params ? (
-            <React.Fragment>
-                <strong>
-                    Parameters
-                </strong>
-                <ReactMarkdown source={params} />
-            </React.Fragment>
-        ) : ''}
-    </section>
-)
+export default {
+  "id": 583,
+  "name": "Map (image)",
+  "path": "Visualizations",
+  "help": {
+    "params": {},
+    "paramNames": [],
+    "inputs": {
+      "id": "Id of the marker to draw",
+      "x": "Horizontal coordinate of the marker between 0 and 1",
+      "y": "Vertical coordinate of the marker between 0 and 1"
+    },
+    "inputNames": [
+      "id",
+      "x",
+      "y"
+    ],
+    "outputs": {},
+    "outputNames": [],
+    "helpText": moduleDescription
+  }
+}

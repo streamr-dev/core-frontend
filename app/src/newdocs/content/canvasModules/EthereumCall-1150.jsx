@@ -1,55 +1,35 @@
-import React from 'react'
-import isEmpty from 'lodash/isEmpty'
-import ReactMarkdown from 'react-markdown'
+/* eslint-disable quotes, quote-props, indent, comma-dangle, max-len */
+import moduleDescription from './EthereumCall-1150.mdx'
 
-import { createMdSnippet } from '$newdocs/components/utils'
-import moduleConfig from './EthereumCall-1150.json'
-
-const inputs = !isEmpty(moduleConfig.help.inputs)
-    ? createMdSnippet(moduleConfig.help.inputs)
-    : false
-
-const outputs = !isEmpty(moduleConfig.help.outputs)
-    ? createMdSnippet(moduleConfig.help.outputs)
-    : false
-
-const params = !isEmpty(moduleConfig.help.params)
-    ? createMdSnippet(moduleConfig.help.params)
-    : false
-
-export default () => (
-    <section>
-        <h3>
-            {moduleConfig.name}
-        </h3>
-
-        <ReactMarkdown source={moduleConfig.help.helpText} />
-
-        {inputs ? (
-            <React.Fragment>
-                <strong>
-                    Inputs
-                </strong>
-                <ReactMarkdown source={inputs} />
-            </React.Fragment>
-        ) : ''}
-
-        {outputs ? (
-            <React.Fragment>
-                <strong>
-                    Outputs
-                </strong>
-                <ReactMarkdown source={outputs} />
-            </React.Fragment>
-        ) : ''}
-
-        {params ? (
-            <React.Fragment>
-                <strong>
-                    Parameters
-                </strong>
-                <ReactMarkdown source={params} />
-            </React.Fragment>
-        ) : ''}
-    </section>
-)
+export default {
+  "id": 1150,
+  "name": "EthereumCall",
+  "path": "Integrations: Ethereum",
+  "help": {
+    "params": {
+      "ethAccount": "The account used to make transaction or call",
+      "function": "The contract function to invoke"
+    },
+    "paramNames": [
+      "ethAccount",
+      "function"
+    ],
+    "inputs": {
+      "contract": "Ethereum contract",
+      "trigger": "Send call (for functions that have no inputs)",
+      "ether": "ETH to send with the function call (for <i>payable</i> functions)"
+    },
+    "inputNames": [
+      "contract",
+      "trigger",
+      "ether"
+    ],
+    "outputs": {
+      "errors": "List of error messages"
+    },
+    "outputNames": [
+      "errors"
+    ],
+    "helpText": moduleDescription
+  }
+}

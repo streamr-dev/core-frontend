@@ -1,55 +1,27 @@
-import React from 'react'
-import isEmpty from 'lodash/isEmpty'
-import ReactMarkdown from 'react-markdown'
+/* eslint-disable quotes, quote-props, indent, comma-dangle, max-len */
+import moduleDescription from './GetMultiFromMap-523.mdx'
 
-import { createMdSnippet } from '$newdocs/components/utils'
-import moduleConfig from './GetMultiFromMap-523.json'
-
-const inputs = !isEmpty(moduleConfig.help.inputs)
-    ? createMdSnippet(moduleConfig.help.inputs)
-    : false
-
-const outputs = !isEmpty(moduleConfig.help.outputs)
-    ? createMdSnippet(moduleConfig.help.outputs)
-    : false
-
-const params = !isEmpty(moduleConfig.help.params)
-    ? createMdSnippet(moduleConfig.help.params)
-    : false
-
-export default () => (
-    <section>
-        <h3>
-            {moduleConfig.name}
-        </h3>
-
-        <ReactMarkdown source={moduleConfig.help.helpText} />
-
-        {inputs ? (
-            <React.Fragment>
-                <strong>
-                    Inputs
-                </strong>
-                <ReactMarkdown source={inputs} />
-            </React.Fragment>
-        ) : ''}
-
-        {outputs ? (
-            <React.Fragment>
-                <strong>
-                    Outputs
-                </strong>
-                <ReactMarkdown source={outputs} />
-            </React.Fragment>
-        ) : ''}
-
-        {params ? (
-            <React.Fragment>
-                <strong>
-                    Parameters
-                </strong>
-                <ReactMarkdown source={params} />
-            </React.Fragment>
-        ) : ''}
-    </section>
-)
+export default {
+  "id": 523,
+  "name": "GetMultiFromMap",
+  "path": "Map",
+  "help": {
+    "params": {},
+    "paramNames": [],
+    "inputs": {
+      "in": "input map"
+    },
+    "inputNames": [
+      "in"
+    ],
+    "outputs": {
+      "founds": "an array indicating for each output with 0 (false) and (1) whether a value was found",
+      "out-1": "a (default) value from map, output name is used as key"
+    },
+    "outputNames": [
+      "founds",
+      "out-1"
+    ],
+    "helpText": moduleDescription
+  }
+}

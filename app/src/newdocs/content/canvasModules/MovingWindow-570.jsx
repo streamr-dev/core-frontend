@@ -1,55 +1,33 @@
-import React from 'react'
-import isEmpty from 'lodash/isEmpty'
-import ReactMarkdown from 'react-markdown'
+/* eslint-disable quotes, quote-props, indent, comma-dangle, max-len */
+import moduleDescription from './MovingWindow-570.mdx'
 
-import { createMdSnippet } from '$newdocs/components/utils'
-import moduleConfig from './MovingWindow-570.json'
-
-const inputs = !isEmpty(moduleConfig.help.inputs)
-    ? createMdSnippet(moduleConfig.help.inputs)
-    : false
-
-const outputs = !isEmpty(moduleConfig.help.outputs)
-    ? createMdSnippet(moduleConfig.help.outputs)
-    : false
-
-const params = !isEmpty(moduleConfig.help.params)
-    ? createMdSnippet(moduleConfig.help.params)
-    : false
-
-export default () => (
-    <section>
-        <h3>
-            {moduleConfig.name}
-        </h3>
-
-        <ReactMarkdown source={moduleConfig.help.helpText} />
-
-        {inputs ? (
-            <React.Fragment>
-                <strong>
-                    Inputs
-                </strong>
-                <ReactMarkdown source={inputs} />
-            </React.Fragment>
-        ) : ''}
-
-        {outputs ? (
-            <React.Fragment>
-                <strong>
-                    Outputs
-                </strong>
-                <ReactMarkdown source={outputs} />
-            </React.Fragment>
-        ) : ''}
-
-        {params ? (
-            <React.Fragment>
-                <strong>
-                    Parameters
-                </strong>
-                <ReactMarkdown source={params} />
-            </React.Fragment>
-        ) : ''}
-    </section>
-)
+export default {
+  "id": 570,
+  "name": "MovingWindow",
+  "path": "Utils",
+  "help": {
+    "params": {
+      "windowLength": "Length of the sliding window, ie. the number of most recent input values to include in calculation",
+      "windowType": "behavior of window",
+      "minSamples": "Minimum number of input values received before a value is output"
+    },
+    "paramNames": [
+      "windowLength",
+      "windowType",
+      "minSamples"
+    ],
+    "inputs": {
+      "in": "values of any type"
+    },
+    "inputNames": [
+      "in"
+    ],
+    "outputs": {
+      "list": "the window's current state as a list"
+    },
+    "outputNames": [
+      "list"
+    ],
+    "helpText": moduleDescription
+  }
+}

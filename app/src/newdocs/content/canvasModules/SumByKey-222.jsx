@@ -1,55 +1,37 @@
-import React from 'react'
-import isEmpty from 'lodash/isEmpty'
-import ReactMarkdown from 'react-markdown'
+/* eslint-disable quotes, quote-props, indent, comma-dangle, max-len */
+import moduleDescription from './SumByKey-222.mdx'
 
-import { createMdSnippet } from '$newdocs/components/utils'
-import moduleConfig from './SumByKey-222.json'
-
-const inputs = !isEmpty(moduleConfig.help.inputs)
-    ? createMdSnippet(moduleConfig.help.inputs)
-    : false
-
-const outputs = !isEmpty(moduleConfig.help.outputs)
-    ? createMdSnippet(moduleConfig.help.outputs)
-    : false
-
-const params = !isEmpty(moduleConfig.help.params)
-    ? createMdSnippet(moduleConfig.help.params)
-    : false
-
-export default () => (
-    <section>
-        <h3>
-            {moduleConfig.name}
-        </h3>
-
-        <ReactMarkdown source={moduleConfig.help.helpText} />
-
-        {inputs ? (
-            <React.Fragment>
-                <strong>
-                    Inputs
-                </strong>
-                <ReactMarkdown source={inputs} />
-            </React.Fragment>
-        ) : ''}
-
-        {outputs ? (
-            <React.Fragment>
-                <strong>
-                    Outputs
-                </strong>
-                <ReactMarkdown source={outputs} />
-            </React.Fragment>
-        ) : ''}
-
-        {params ? (
-            <React.Fragment>
-                <strong>
-                    Parameters
-                </strong>
-                <ReactMarkdown source={params} />
-            </React.Fragment>
-        ) : ''}
-    </section>
-)
+export default {
+  "id": 222,
+  "name": "SumByKey",
+  "path": "Map",
+  "help": {
+    "params": {
+      "windowLength": "Limit moving window size of sum.",
+      "sort": "Whether key-sum pairs should be order by sums",
+      "maxKeyCount": "Maximum number of (sorted) key-sum pairs to keep. Everything else will be dropped."
+    },
+    "paramNames": [
+      "windowLength",
+      "sort",
+      "maxKeyCount"
+    ],
+    "inputs": {
+      "value": "The value to be added to aggregated sum.",
+      "key": "The (string) key"
+    },
+    "inputNames": [
+      "value",
+      "key"
+    ],
+    "outputs": {
+      "map": "Key-sum pairs",
+      "valueOfCurrentKey": "The aggregated sum of the last key received. "
+    },
+    "outputNames": [
+      "map",
+      "valueOfCurrentKey"
+    ],
+    "helpText": moduleDescription
+  }
+}

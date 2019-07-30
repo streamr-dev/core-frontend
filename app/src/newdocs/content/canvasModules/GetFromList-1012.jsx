@@ -1,55 +1,31 @@
-import React from 'react'
-import isEmpty from 'lodash/isEmpty'
-import ReactMarkdown from 'react-markdown'
+/* eslint-disable quotes, quote-props, indent, comma-dangle, max-len */
+import moduleDescription from './GetFromList-1012.mdx'
 
-import { createMdSnippet } from '$newdocs/components/utils'
-import moduleConfig from './GetFromList-1012.json'
-
-const inputs = !isEmpty(moduleConfig.help.inputs)
-    ? createMdSnippet(moduleConfig.help.inputs)
-    : false
-
-const outputs = !isEmpty(moduleConfig.help.outputs)
-    ? createMdSnippet(moduleConfig.help.outputs)
-    : false
-
-const params = !isEmpty(moduleConfig.help.params)
-    ? createMdSnippet(moduleConfig.help.params)
-    : false
-
-export default () => (
-    <section>
-        <h3>
-            {moduleConfig.name}
-        </h3>
-
-        <ReactMarkdown source={moduleConfig.help.helpText} />
-
-        {inputs ? (
-            <React.Fragment>
-                <strong>
-                    Inputs
-                </strong>
-                <ReactMarkdown source={inputs} />
-            </React.Fragment>
-        ) : ''}
-
-        {outputs ? (
-            <React.Fragment>
-                <strong>
-                    Outputs
-                </strong>
-                <ReactMarkdown source={outputs} />
-            </React.Fragment>
-        ) : ''}
-
-        {params ? (
-            <React.Fragment>
-                <strong>
-                    Parameters
-                </strong>
-                <ReactMarkdown source={params} />
-            </React.Fragment>
-        ) : ''}
-    </section>
-)
+export default {
+  "id": 1012,
+  "name": "GetFromList",
+  "path": "List",
+  "help": {
+    "params": {
+      "index": "Index in the list for the item to be fetched. Negative index counts from end of list."
+    },
+    "paramNames": [
+      "index"
+    ],
+    "inputs": {
+      "in": "List to be indexed"
+    },
+    "inputNames": [
+      "in"
+    ],
+    "outputs": {
+      "out": "Item found at given index",
+      "error": "Error message, e.g. <i>List is empty</i>"
+    },
+    "outputNames": [
+      "out",
+      "error"
+    ],
+    "helpText": moduleDescription
+  }
+}

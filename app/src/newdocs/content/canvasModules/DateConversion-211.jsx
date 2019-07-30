@@ -1,55 +1,35 @@
-import React from 'react'
-import isEmpty from 'lodash/isEmpty'
-import ReactMarkdown from 'react-markdown'
+/* eslint-disable quotes, quote-props, indent, comma-dangle, max-len */
+import moduleDescription from './DateConversion-211.mdx'
 
-import { createMdSnippet } from '$newdocs/components/utils'
-import moduleConfig from './DateConversion-211.json'
-
-const inputs = !isEmpty(moduleConfig.help.inputs)
-    ? createMdSnippet(moduleConfig.help.inputs)
-    : false
-
-const outputs = !isEmpty(moduleConfig.help.outputs)
-    ? createMdSnippet(moduleConfig.help.outputs)
-    : false
-
-const params = !isEmpty(moduleConfig.help.params)
-    ? createMdSnippet(moduleConfig.help.params)
-    : false
-
-export default () => (
-    <section>
-        <h3>
-            {moduleConfig.name}
-        </h3>
-
-        <ReactMarkdown source={moduleConfig.help.helpText} />
-
-        {inputs ? (
-            <React.Fragment>
-                <strong>
-                    Inputs
-                </strong>
-                <ReactMarkdown source={inputs} />
-            </React.Fragment>
-        ) : ''}
-
-        {outputs ? (
-            <React.Fragment>
-                <strong>
-                    Outputs
-                </strong>
-                <ReactMarkdown source={outputs} />
-            </React.Fragment>
-        ) : ''}
-
-        {params ? (
-            <React.Fragment>
-                <strong>
-                    Parameters
-                </strong>
-                <ReactMarkdown source={params} />
-            </React.Fragment>
-        ) : ''}
-    </section>
-)
+export default {
+  "id": 211,
+  "name": "DateConversion",
+  "path": "Time & Date",
+  "help": {
+    "params": {
+      "timezone": "Timezone of the outputs",
+      "format": "Format of the input and output string notations"
+    },
+    "paramNames": [
+      "timezone",
+      "format"
+    ],
+    "inputs": {
+      "date": "Timestamp, string or Date"
+    },
+    "inputNames": [
+      "date"
+    ],
+    "outputs": {
+      "date": "String notation",
+      "ts": "Timestamp(ms)",
+      "dayOfWeek": "In shortened form, e.g. \"Mon\""
+    },
+    "outputNames": [
+      "date",
+      "ts",
+      "dayOfWeek"
+    ],
+    "helpText": moduleDescription
+  }
+}
