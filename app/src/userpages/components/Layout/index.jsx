@@ -2,12 +2,11 @@
 
 import React, { Component, type Node } from 'react'
 
-import Layout from '$shared/components/Layout'
-import LoadingIndicator from '$userpages/components/LoadingIndicator'
+import CoreLayout from '$shared/components/Layout/Core'
 import BodyClass from '$shared/components/BodyClass'
 import Header from '../Header'
 
-import styles from './layout.pcss'
+import './layout.pcss'
 
 type Props = {
     children: Node,
@@ -32,23 +31,24 @@ class UserpagesLayout extends Component<Props, State> {
             headerSearchComponent,
             headerFilterComponent,
             noHeader,
-            loading,
-            children,
+            ...props
         } = this.props
         return (
-            <Layout footer={false} className={styles.container}>
-                <BodyClass className="core" />
-                <Header
-                    additionalComponent={headerAdditionalComponent}
-                    searchComponent={headerSearchComponent}
-                    filterComponent={headerFilterComponent}
-                    noHeader={noHeader}
-                />
-                <LoadingIndicator loading={!!loading} className={styles.loadingIndicator} />
-                <div className={styles.content}>
-                    {children}
-                </div>
-            </Layout>
+            <CoreLayout
+                footer={false}
+                navComponent={(
+                    <React.Fragment>
+                        <BodyClass className="core" />
+                        <Header
+                            additionalComponent={headerAdditionalComponent}
+                            searchComponent={headerSearchComponent}
+                            filterComponent={headerFilterComponent}
+                            noHeader={noHeader}
+                        />
+                    </React.Fragment>
+                )}
+                {...props}
+            />
         )
     }
 }
