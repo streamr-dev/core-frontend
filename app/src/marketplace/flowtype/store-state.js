@@ -193,24 +193,6 @@ export type TransactionsState = {
     completed: HashList,
 }
 
-// i18n
-export type Locale = string
-
-export type Translations = {
-    [Locale]: string | {
-        language: {
-            name: string,
-            [string]: string,
-        },
-        [string]: string | {},
-    },
-}
-
-export type I18nState = {
-    translations: Translations,
-    locale: Locale,
-}
-
 // all combined
 export type StoreState = {
     allowance: AllowanceState,
@@ -219,7 +201,6 @@ export type StoreState = {
     createContractProduct: ModifyContractProductState,
     editProduct: EditProductState,
     global: GlobalState,
-    i18n: I18nState,
     myProductList: MyProductListState,
     myPurchaseList: MyPurchaseListState,
     product: ProductState,
