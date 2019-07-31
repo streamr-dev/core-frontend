@@ -14,19 +14,7 @@ export type Props = {
 
 const Header = ({ title, onClose }: Props) => {
     const info = global.streamr.info()
-    const { version, branch } = info
-    const isMaster = branch === 'master'
-    // version e.g. v2.0.5-926-g7e20dd2eb
-    const [versionNumber, , hash] = version.split('-')
-
-    // hash minus leading 'g', not shown on master
-    const displayHash = isMaster ? '' : hash.slice(1)
-
-    // don't show branch if master
-    let displayBranch = branch === 'master' ? '' : branch
-
-    // replace hyphen in branch name with non-breaking hyphen
-    displayBranch = branch.replace(/-/g, '‑')
+    const { version, branch, hash } = info
 
     return (
         <div className={cx(styles.header)}>
@@ -41,10 +29,7 @@ const Header = ({ title, onClose }: Props) => {
                 </button>
             </div>
             <div className={styles.appInfo}>
-                Streamr Core {[versionNumber, displayBranch, displayHash].filter(Boolean).join(' ')}
-                {['travisTag', 'travisPrBranch', 'travisBranch', 'travisCommit', 'travisSha'].map((key) => (
-                    <div key={key}><strong>{key}:</strong> {info[key]}</div>
-                ))}
+                Streamr Core {[version, branch, hash].filter(Boolean).join(' ')}
             </div>
         </div>
     )
