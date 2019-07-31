@@ -79,4 +79,59 @@ describe('Canvas Diff', () => {
             expect(changedModules(canvas2, canvas)).toEqual([])
         })
     })
+
+    it('ignores change in internals of subcanvas', async () => {
+        let subcanvas = await Services.create()
+        subcanvas = State.addModule(subcanvas, await loadModuleDefinition('Constant'))
+        const [constant] = subcanvas.modules
+
+        // export subcanvas output & save
+        subcanvas = State.setPortOptions(subcanvas, constant.outputs[0].id, {
+            export: true,
+        })
+        subcanvas = State.updateCanvas(await Services.saveNow(subcanvas))
+
+        // create new canvas to add subcanvas into
+        let canvas = await Services.create()
+        canvas = State.addModule(canvas, await loadModuleDefinition('Canvas'))
+        const [canvasModule] = canvas.modules
+
+        // select subcanvas
+        canvas = State.updatePort(canvas, canvasModule.params[0].id, (port) => ({
+            ...port,
+            value: subcanvas.id,
+        }))
+
+        canvas = State.updateCanvas(await Services.saveNow(State.updateCanvas(canvas)))
+        // save state of canvas after original
+        const canvasBefore = canvas
+
+        // change some internals that shouldn't affect diff
+        subcanvas = State.updateModulePosition(subcanvas, constant.hash, {
+            top: Number.parseInt(constant.layout.position.top, 10) + 333,
+            left: Number.parseInt(constant.layout.position.left, 10) + 333,
+        })
+        subcanvas = State.updateCanvas(await Services.saveNow(subcanvas))
+
+        // reload canvas to get updated subcanvas
+        canvas = State.updateCanvas(await Services.saveNow(canvas))
+        const [canvasModuleUpdated] = canvas.modules
+        // verify internals did change
+        expect(canvasModuleUpdated.modules[0]).not.toEqual(canvasModule.modules[0])
+        // but diff does not report change
+        expect(changedModules(canvas, canvasBefore)).toEqual([])
+        expect(isEqualCanvas(canvas, canvasBefore)).toBe(true)
+
+        // check diff does report change if exported interface changes
+        subcanvas = State.setPortOptions(subcanvas, constant.params[0].id, {
+            export: true, // export another subscanvas property
+        })
+
+        subcanvas = State.updateCanvas(await Services.saveNow(subcanvas))
+        // reload canvas to get updated subcanvas
+        canvas = State.updateCanvas(await Services.saveNow(canvas))
+        // canvas module should have changed
+        expect(changedModules(canvas, canvasBefore)).toEqual([canvasModule.hash])
+        expect(isEqualCanvas(canvas, canvasBefore)).toBe(true)
+    })
 })
