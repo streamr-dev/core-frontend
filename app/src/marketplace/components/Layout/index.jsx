@@ -6,7 +6,7 @@ import React from 'react'
 
 import MobileNav from '$shared/components/MobileNav'
 import Nav from '$shared/components/Nav'
-import Footer from '../../containers/Footer'
+import Footer from './Footer'
 import styles from './layout.pcss'
 
 type Props = {

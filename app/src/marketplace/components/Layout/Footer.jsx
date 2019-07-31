@@ -3,12 +3,18 @@
 import React from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
 import FrameFooter, { FooterColumn } from '$shared/components/Footer'
+import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
+import { push } from 'connected-react-router'
 
-import type { DispatchProps } from '../../containers/Footer'
-import type { I18nProps } from '../../containers/WithI18n'
+import withI18n, { type I18nProps } from '$mp/containers/WithI18n'
 import { formatPath } from '$shared/utils/url'
 import routes from '$routes'
 import links from '../../../links'
+
+export type DispatchProps = {
+    pushLocation: (string) => void,
+}
 
 type Props = I18nProps & DispatchProps & {
     location: {
@@ -98,4 +104,10 @@ class Footer extends React.Component<Props> {
     }
 }
 
-export default Footer
+const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
+    pushLocation: (location: string) => (
+        dispatch(push(location))
+    ),
+})
+
+export default connect(null, mapDispatchToProps)(withRouter(withI18n(Footer)))

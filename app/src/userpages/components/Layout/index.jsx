@@ -4,6 +4,7 @@ import React, { Component, type Node } from 'react'
 
 import Layout from '$mp/components/Layout'
 import LoadingIndicator from '$userpages/components/LoadingIndicator'
+import BodyClass from '$shared/components/BodyClass'
 import Header from '../Header'
 
 import styles from './layout.pcss'
@@ -25,26 +26,6 @@ class UserpagesLayout extends Component<Props, State> {
         loading: false,
     }
 
-    componentDidMount() {
-        this.toggleAlwaysOnScrollbar(true)
-    }
-
-    componentWillUnmount() {
-        this.toggleAlwaysOnScrollbar(false)
-    }
-
-    toggleAlwaysOnScrollbar = (setting: boolean) => {
-        if (document.body) {
-            if (setting) {
-                // $FlowFixMe
-                document.getElementsByTagName('body')[0].style['overflow-y'] = 'scroll'
-            } else {
-                // $FlowFixMe
-                document.getElementsByTagName('body')[0].style['overflow-y'] = null
-            }
-        }
-    }
-
     render() {
         const {
             headerAdditionalComponent,
@@ -56,6 +37,7 @@ class UserpagesLayout extends Component<Props, State> {
         } = this.props
         return (
             <Layout footer={false} className={styles.container}>
+                <BodyClass className="core" />
                 <Header
                     additionalComponent={headerAdditionalComponent}
                     searchComponent={headerSearchComponent}
