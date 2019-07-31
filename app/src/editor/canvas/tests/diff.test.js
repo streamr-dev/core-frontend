@@ -132,6 +132,6 @@ describe('Canvas Diff', () => {
         canvas = State.updateCanvas(await Services.saveNow(canvas))
         // canvas module should have changed
         expect(changedModules(canvas, canvasBefore)).toEqual([canvasModule.hash])
-        expect(isEqualCanvas(canvas, canvasBefore)).toBe(true)
+        expect(isEqualCanvas(canvas, canvasBefore)).toBe(false)
     })
 })
