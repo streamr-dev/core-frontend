@@ -59,7 +59,7 @@ const TextControl = ({
         if (flushHistoryOnBlur) {
             // `blurCount` is used as `key` of the actual control. Changing it replaces the control
             // with a new instance thus the old instance along with its change history gets forgotten.
-            setBlurCount(blurCount + 1)
+            setBlurCount((count) => count + 1)
         }
 
         if (!immediateCommit) {
@@ -73,7 +73,7 @@ const TextControl = ({
         if (onBlurProp) {
             onBlurProp(e)
         }
-    }, [onBlurProp, flushHistoryOnBlur, commit, sanitizedValue, commitEmpty, normalizedValue, blurCount, immediateCommit])
+    }, [onBlurProp, flushHistoryOnBlur, commit, sanitizedValue, commitEmpty, normalizedValue, immediateCommit])
 
     const onFocus = useCallback((e: SyntheticInputEvent<EventTarget>) => {
         if (selectAllOnFocus) {
