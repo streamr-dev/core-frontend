@@ -5,7 +5,7 @@ import { Container, Row, Col } from 'reactstrap'
 import { MDXProvider } from '@mdx-js/react'
 
 import type { NavigationLink } from '$newdocs/flowtype/navigation-types'
-import Layout from '$mp/components/Layout'
+import Layout from '$shared/components/Layout'
 import Navigation from './Navigation'
 import mainNav from './Navigation/navLinks'
 import Components from '$newdocs/mdxConfig'

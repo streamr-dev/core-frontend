@@ -1,6 +1,6 @@
 // @flow
 
-import '../../styles/pcss'
+import '$shared/styles/pcss'
 
 import React from 'react'
 

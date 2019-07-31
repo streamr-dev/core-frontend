@@ -2,7 +2,7 @@
 
 import React, { Component, type Node } from 'react'
 
-import Layout from '$mp/components/Layout'
+import Layout from '$shared/components/Layout'
 import LoadingIndicator from '$userpages/components/LoadingIndicator'
 import BodyClass from '$shared/components/BodyClass'
 import Header from '../Header'

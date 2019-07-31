@@ -10,7 +10,7 @@ import { push } from 'connected-react-router'
 import withI18n, { type I18nProps } from '$mp/containers/WithI18n'
 import { formatPath } from '$shared/utils/url'
 import routes from '$routes'
-import links from '../../../links'
+import links from '$shared/../links'
 
 export type DispatchProps = {
     pushLocation: (string) => void,

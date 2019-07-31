@@ -8,7 +8,7 @@ import { I18n } from 'react-redux-i18n'
 import { Helmet } from 'react-helmet'
 
 import ProductPageComponent from '$mp/components/ProductPage'
-import Layout from '$mp/components/Layout'
+import Layout from '$shared/components/Layout'
 import { formatPath } from '$shared/utils/url'
 import type { StoreState } from '$shared/flowtype/store-state'
 import type { ProductId, Product } from '$mp/flowtype/product-types'
