@@ -4,6 +4,7 @@ import get from 'lodash/get'
 import cloneDeep from 'lodash/cloneDeep'
 import uniqBy from 'lodash/uniqBy'
 import uuid from 'uuid'
+import * as diff from './diff'
 
 const MISSING_ENTITY = 'EDITOR/MISSING_ENTITY'
 
@@ -1352,6 +1353,27 @@ export function replaceModule(canvas, moduleData) {
             // re-connect if possible
             nextCanvas = connectPorts(nextCanvas, matchedPort.id, matchedConnectedPort.id)
         })
+    })
+    return nextCanvas
+}
+
+export function applyChanges({ sent, received, current }) {
+    if (diff.isEqualCanvas(current, sent)) {
+        // if no changes use state from server
+        return received
+    }
+
+    let nextCanvas = current
+    const changed = new Set(diff.changedModules(sent, current))
+    // apply changes from server if local state hasn't changed
+    received.modules.forEach((m) => {
+        // item changed again, don't update this round
+        if (changed.has(m.hash)) { return }
+        // ignore changes to modules not in serverCanvas
+        if (!getModuleIfExists(received, m.hash)) { return }
+        nextCanvas = updateModule(nextCanvas, m.hash, () => (
+            getModule(received, m.hash)
+        ))
     })
     return nextCanvas
 }
