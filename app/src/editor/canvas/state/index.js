@@ -189,9 +189,21 @@ function getIsOutput(canvas, portId) {
     return type === PortTypes.output
 }
 
-export function getModuleIfExists(canvas, moduleHash) {
+function getModulePath(canvas, moduleHash) {
     const { modules } = getIndex(canvas)
-    return get(canvas, modules[moduleHash])
+    return modules[moduleHash]
+}
+
+function validateModuleExists(canvas, moduleHash) {
+    const m = getModuleIfExists(canvas, moduleHash)
+    return validateModule(m, {
+        canvas,
+        moduleHash,
+    })
+}
+
+export function getModuleIfExists(canvas, moduleHash) {
+    return get(canvas, getModulePath(canvas, moduleHash))
 }
 
 export function getModule(canvas, moduleHash) {
@@ -330,13 +342,14 @@ export function updatePort(canvas, portId, fn) {
 }
 
 export function updateModule(canvas, moduleHash, fn) {
-    const { modules } = getIndex(canvas)
-    return update(modules[moduleHash], fn, canvas)
+    validateModuleExists(canvas, moduleHash)
+    const modulePath = getModulePath(canvas, moduleHash)
+    return update(modulePath, fn, canvas)
 }
 
 export function updateModulePosition(canvas, moduleHash, newPosition) {
-    const { modules } = getIndex(canvas)
-    const modulePath = modules[moduleHash]
+    validateModuleExists(canvas, moduleHash)
+    const modulePath = getModulePath(canvas, moduleHash)
     return update(modulePath.concat('layout', 'position'), (position) => ({
         ...position,
         top: `${Number.parseInt(newPosition.top, 10)}px`,
@@ -345,8 +358,8 @@ export function updateModulePosition(canvas, moduleHash, newPosition) {
 }
 
 export function updateModuleSize(canvas, moduleHash, size) {
-    const { modules } = getIndex(canvas)
-    const modulePath = modules[moduleHash]
+    validateModuleExists(canvas, moduleHash)
+    const modulePath = getModulePath(canvas, moduleHash)
     return update(modulePath.concat('layout'), (layout) => ({
         ...layout,
         height: `${size.height}px`,
@@ -815,8 +828,8 @@ export function setPortOptions(canvas, portId, options = {}) {
  */
 
 export function setModuleOptions(canvas, moduleHash, newOptions = {}) {
-    const { modules } = getIndex(canvas)
-    const modulePath = modules[moduleHash]
+    validateModuleExists(canvas, moduleHash)
+    const modulePath = getModulePath(canvas, moduleHash)
     return update(modulePath.concat('options'), (options = {}) => (
         Object.keys(newOptions).reduce((options, key) => {
             if (get(options, [key].concat('value')) === newOptions[key]) {

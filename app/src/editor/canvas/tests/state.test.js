@@ -251,6 +251,60 @@ describe('Canvas State', () => {
                 })
             })
 
+            describe('updateModulePosition', () => {
+                it('updates position', async () => {
+                    let canvas = State.emptyCanvas()
+                    canvas = State.addModule(canvas, await loadModuleDefinition('Equals'))
+                    const [equals] = canvas.modules
+                    const newPosition = {
+                        top: Number.parseInt(equals.layout.position.top, 10) + 333,
+                        left: Number.parseInt(equals.layout.position.left, 10) + 333,
+                    }
+                    canvas = State.updateModulePosition(canvas, equals.hash, newPosition)
+                    const [equalsUpdated] = canvas.modules
+                    expect(equalsUpdated.layout.position).toMatchObject({
+                        top: `${newPosition.top}px`,
+                        left: `${newPosition.left}px`,
+                    })
+                })
+                it('throws on bad module hash', () => {
+                    let canvas = State.emptyCanvas()
+                    expect(() => {
+                        canvas = State.updateModulePosition(canvas, 'not found', {
+                            top: 0,
+                            left: 0,
+                        })
+                    }).toThrow(State.MissingEntityError)
+                })
+            })
+
+            describe('updateModuleSize', () => {
+                it('updates size', async () => {
+                    let canvas = State.emptyCanvas()
+                    canvas = State.addModule(canvas, await loadModuleDefinition('Equals'))
+                    const [equals] = canvas.modules
+                    const newSize = {
+                        width: Number.parseInt(equals.layout.width, 10) + 333,
+                        height: Number.parseInt(equals.layout.height, 10) + 333,
+                    }
+                    canvas = State.updateModuleSize(canvas, equals.hash, newSize)
+                    const [equalsUpdated] = canvas.modules
+                    expect(equalsUpdated.layout).toMatchObject({
+                        width: `${newSize.width}px`,
+                        height: `${newSize.height}px`,
+                    })
+                })
+                it('throws on bad module hash', () => {
+                    let canvas = State.emptyCanvas()
+                    expect(() => {
+                        canvas = State.updateModuleSize(canvas, 'not found', {
+                            width: 100,
+                            height: 100,
+                        })
+                    }).toThrow(State.MissingEntityError)
+                })
+            })
+
             describe('{set,get}PortUserValue', () => {
                 it('should coerce numberish values to numbers for Double type', async () => {
                     let canvas = State.emptyCanvas()
