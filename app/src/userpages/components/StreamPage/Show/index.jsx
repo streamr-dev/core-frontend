@@ -34,7 +34,7 @@ import routes from '$routes'
 import links from '$shared/../links'
 import breakpoints from '$app/scripts/breakpoints'
 
-import Layout from '../../Layout'
+import CoreLayout from '$shared/components/Layout/Core'
 import InfoView from './InfoView'
 import KeyView from './KeyView'
 import ConfigureView from './ConfigureView'
@@ -177,7 +177,7 @@ export class StreamShowView extends Component<Props, State> {
         const hasWritePermission = (permissions && permissions.some((p) => p === 'write')) || false
 
         return (
-            <Layout noHeader noFooter>
+            <CoreLayout noFooter>
                 <div className={styles.streamShowView}>
                     <MediaQuery minWidth={lg.min}>
                         <ConfigureAnchorOffset value={-80} />
@@ -277,7 +277,7 @@ export class StreamShowView extends Component<Props, State> {
                         </TOCPage>
                     </div>
                 </div>
-            </Layout>
+            </CoreLayout>
         )
     }
 }

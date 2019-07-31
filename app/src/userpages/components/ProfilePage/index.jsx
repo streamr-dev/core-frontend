@@ -15,7 +15,7 @@ import ConfigureAnchorOffset from '$shared/components/ConfigureAnchorOffset'
 import { lg } from '$app/scripts/breakpoints'
 import links from '$shared/../links'
 
-import Layout from '../Layout'
+import CoreLayout from '$shared/components/Layout/Core'
 import ProfileSettings from './ProfileSettings'
 import APICredentials from './APICredentials'
 import IntegrationKeyHandler from './IntegrationKeyHandler'
@@ -76,7 +76,7 @@ export class ProfilePage extends Component<Props, State> {
     render() {
         const { saving } = this.state
         return (
-            <Layout noHeader noFooter>
+            <CoreLayout noFooter>
                 <Helmet title={`Streamr Core | ${I18n.t('userpages.title.profile')}`} />
                 <div className={styles.profilePage}>
                     <MediaQuery minWidth={lg.min}>
@@ -135,7 +135,7 @@ export class ProfilePage extends Component<Props, State> {
                         </TOCPage>
                     </div>
                 </div>
-            </Layout>
+            </CoreLayout>
         )
     }
 }
