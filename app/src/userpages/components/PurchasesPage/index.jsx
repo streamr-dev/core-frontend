@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Container, Row, Col } from 'reactstrap'
+import { Row, Col } from 'reactstrap'
 import { Translate, I18n } from 'react-redux-i18n'
 import cx from 'classnames'
 import Helmet from 'react-helmet'
@@ -18,6 +18,7 @@ import Search from '../Header/Search'
 import Dropdown from '$shared/components/Dropdown'
 import NoPurchasesView from './NoPurchases'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
+import ListContainer from '$shared/components/Container/List'
 
 import type { ProductList, ProductSubscription } from '$mp/flowtype/product-types'
 import type { Filter, SortOption } from '$userpages/flowtype/common-types'
@@ -126,7 +127,7 @@ class PurchasesPage extends Component<Props> {
                 loading={fetching}
             >
                 <Helmet title={`Streamr Core | ${I18n.t('userpages.title.purchases')}`} />
-                <Container className={styles.corepageContentContainer} >
+                <ListContainer className={styles.corepageContentContainer} >
                     {!fetching && purchases && !purchases.length && (
                         <NoPurchasesView
                             hasFilter={!!filter && (!!filter.search || !!filter.key)}
@@ -164,7 +165,7 @@ class PurchasesPage extends Component<Props> {
                             )
                         })}
                     </Row>
-                </Container>
+                </ListContainer>
                 <DocsShortcuts />
             </Layout>
         )

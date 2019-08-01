@@ -2,7 +2,7 @@
 
 import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
-import { Container, Row, Col, Button } from 'reactstrap'
+import { Row, Col, Button } from 'reactstrap'
 import { capital } from 'case'
 import Link from '$shared/components/Link'
 import { push } from 'connected-react-router'
@@ -35,6 +35,7 @@ import DocsShortcuts from '$userpages/components/DocsShortcuts'
 import CanvasPreview from '$editor/canvas/components/Preview'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
+import ListContainer from '$shared/components/Container/List'
 
 import styles from './canvasList.pcss'
 
@@ -239,7 +240,7 @@ class CanvasList extends Component<Props, State> {
                         allowEmbed={!!process.env.CANVAS_EMBED} // TODO: remove when embed is ready
                     />
                 )}
-                <Container className={styles.corepageContentContainer}>
+                <ListContainer className={styles.corepageContentContainer}>
                     <Helmet title={`Streamr Core | ${I18n.t('userpages.canvases.title')}`} />
                     {!fetching && canvases && !canvases.length && (
                         <NoCanvasesView
@@ -274,7 +275,7 @@ class CanvasList extends Component<Props, State> {
                             </Col>
                         ))}
                     </Row>
-                </Container>
+                </ListContainer>
                 <DocsShortcuts />
             </Layout>
         )

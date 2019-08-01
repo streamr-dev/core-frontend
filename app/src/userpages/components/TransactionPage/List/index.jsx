@@ -26,6 +26,7 @@ import DropdownActions from '$shared/components/DropdownActions'
 import Meatball from '$shared/components/Meatball'
 import LoadMore from '$mp/components/LoadMore'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
+import ListContainer from '$shared/components/Container/List'
 import { selectAccountId } from '$mp/modules/web3/selectors'
 import { areAddressesEqual } from '$mp/utils/smartContract'
 
@@ -93,7 +94,7 @@ class TransactionList extends Component<Props> {
                 }
             >
                 <Helmet title={`Streamr Core | ${I18n.t('userpages.title.transactions')}`} />
-                <div className={cx('container', styles.transactionList)}>
+                <ListContainer className={styles.transactionList}>
                     {!fetching && transactions && transactions.length <= 0 && (
                         <NoTransactionsView
                             accountsExist={accountsExist}
@@ -176,7 +177,7 @@ class TransactionList extends Component<Props> {
                             onClick={this.props.showEvents}
                         />
                     )}
-                </div>
+                </ListContainer>
                 <DocsShortcuts />
             </Layout>
         )

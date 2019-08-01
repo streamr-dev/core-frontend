@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Container, Row, Col, Button } from 'reactstrap'
+import { Row, Col, Button } from 'reactstrap'
 import { Translate, I18n } from 'react-redux-i18n'
 import Helmet from 'react-helmet'
 import { Link } from 'react-router-dom'
@@ -21,6 +21,7 @@ import Dropdown from '$shared/components/Dropdown'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
 import DashboardPreview from '$editor/dashboard/components/Preview'
 import styles from './dashboardList.pcss'
+import ListContainer from '$shared/components/Container/List'
 
 import NoDashboardsView from './NoDashboards'
 
@@ -131,7 +132,7 @@ class DashboardList extends Component<Props> {
                 loading={fetching}
             >
                 <Helmet title={`Streamr Core | ${I18n.t('userpages.title.dashboards')}`} />
-                <Container className={styles.corepageContentContainer} >
+                <ListContainer className={styles.corepageContentContainer} >
                     {!fetching && dashboards && dashboards.length <= 0 && (
                         <NoDashboardsView
                             hasFilter={!!filter && (!!filter.search || !!filter.key)}
@@ -153,7 +154,7 @@ class DashboardList extends Component<Props> {
                             ))}
                         </Row>
                     )}
-                </Container>
+                </ListContainer>
                 <DocsShortcuts />
             </Layout>
         )

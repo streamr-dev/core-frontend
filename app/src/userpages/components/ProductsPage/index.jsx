@@ -2,7 +2,7 @@
 
 import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
-import { Container, Row, Col, Button } from 'reactstrap'
+import { Row, Col, Button } from 'reactstrap'
 import { Translate, I18n } from 'react-redux-i18n'
 import { Link } from 'react-router-dom'
 import { push } from 'connected-react-router'
@@ -23,6 +23,7 @@ import { formatPath, formatExternalUrl } from '$shared/utils/url'
 import DropdownActions from '$shared/components/DropdownActions'
 import NoProductsView from './NoProducts'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
+import ListContainer from '$shared/components/Container/List'
 
 import type { ProductList, ProductId, Product } from '$mp/flowtype/product-types'
 import type { Filter, SortOption } from '$userpages/flowtype/common-types'
@@ -175,7 +176,7 @@ class ProductsPage extends Component<Props> {
                 loading={fetching}
             >
                 <Helmet title={`Streamr Core | ${I18n.t('userpages.title.products')}`} />
-                <Container className={styles.corepageContentContainer}>
+                <ListContainer className={styles.corepageContentContainer}>
                     {!fetching && products && !products.length && (
                         <NoProductsView
                             hasFilter={!!filter && (!!filter.search || !!filter.key)}
@@ -209,7 +210,7 @@ class ProductsPage extends Component<Props> {
                             </Col>
                         ))}
                     </Row>
-                </Container>
+                </ListContainer>
                 <DocsShortcuts />
             </Layout>
         )
