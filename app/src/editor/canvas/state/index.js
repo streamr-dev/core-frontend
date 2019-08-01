@@ -783,15 +783,19 @@ export function getPortPlaceholder(canvas, portId) {
 export function getPortValue(canvas, portId) {
     const port = getPort(canvas, portId)
     const portType = getPortType(canvas, portId)
-    if (isRunning(canvas) || portType === 'output') {
+    if (portType === 'output') {
         return port.value
     }
+
+    if (portType === 'param' && portType.canHaveInitialValue) {
+        return port.initialValue
+    }
+
     if (isPortConnected(canvas, portId)) {
         const [connectedId] = getConnectedPortIds(canvas, portId)
         return getPortValue(canvas, connectedId)
     }
-
-    if (portType === 'param' && isPortExported(canvas, portId)) {
+    if (isPortExported(canvas, portId)) {
         return port.value
     }
 
