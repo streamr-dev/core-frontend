@@ -13,10 +13,21 @@ type Props = {
     loading?: boolean,
     className?: string,
     navComponent?: Node,
+    hideNavOnDesktop?: boolean,
 }
 
-const CoreLayout = ({ loading, children, className, navComponent }: Props) => (
-    <Layout footer={false} className={cx(styles.container, className)}>
+const CoreLayout = ({
+    loading,
+    children,
+    className,
+    navComponent,
+    hideNavOnDesktop,
+}: Props) => (
+    <Layout
+        footer={false}
+        className={cx(styles.container, className)}
+        hideNavOnDesktop={hideNavOnDesktop}
+    >
         {navComponent || null}
         <LoadingIndicator loading={!!loading} className={styles.loadingIndicator} />
         <div className={styles.content}>

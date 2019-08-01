@@ -1,47 +1,5 @@
 .streamShowView {
-  position: relative;
-  color: var(--greyDark);
-  font-size: 14px;
   padding-bottom: 3em;
-  min-height: calc(100vh - 152px);
-
-  @media (--lg-up) {
-    top: -7.4em;
-
-    /* 80px of navbar + 2.5 of top padding at the layout level. */
-    top: calc(-2.5rem - 80px);
-    z-index: 11;
-  }
-
-  @media (--xs) {
-    top: auto;
-  }
-}
-
-/* Some extra media queries due to the 'delete' btn hover state of the field editor */
-
-@media (max-width: 1100px) {
-  .containerOverrides {
-    max-width: 900px;
-  }
-}
-
-@media (--lg-down) {
-  .containerOverrides {
-    max-width: 790px;
-  }
-}
-
-@media (--md-down) {
-  .containerOverrides {
-    max-width: 900px;
-  }
-}
-
-@media (--sm-down) {
-  .containerOverrides {
-    max-width: 540px;
-  }
 }
 
 .longText {

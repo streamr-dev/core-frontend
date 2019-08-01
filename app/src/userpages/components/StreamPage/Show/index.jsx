@@ -4,7 +4,6 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { I18n } from 'react-redux-i18n'
 import { push } from 'connected-react-router'
-import cx from 'classnames'
 import { withRouter } from 'react-router-dom'
 import MediaQuery from 'react-responsive'
 
@@ -28,6 +27,7 @@ import { getMyResourceKeys } from '$shared/modules/resourceKey/actions'
 import { selectEditedStream, selectPermissions } from '$userpages/modules/userPageStreams/selectors'
 import { selectUserData } from '$shared/modules/user/selectors'
 import { selectAuthApiKeyId } from '$shared/modules/resourceKey/selectors'
+import DetailsContainer from '$shared/components/Container/Details'
 import TOCPage from '$userpages/components/TOCPage'
 import Toolbar from '$shared/components/Toolbar'
 import routes from '$routes'
@@ -179,6 +179,7 @@ export class StreamShowView extends Component<Props, State> {
         return (
             <CoreLayout
                 className={styles.streamShowView}
+                hideNavOnDesktop
                 navComponent={(
                     <MediaQuery minWidth={lg.min}>
                         {(isDesktop) => (
@@ -215,7 +216,7 @@ export class StreamShowView extends Component<Props, State> {
                 <MediaQuery minWidth={lg.min}>
                     <ConfigureAnchorOffset value={-80} />
                 </MediaQuery>
-                <div className={cx('container', styles.containerOverrides)}>
+                <DetailsContainer className={styles.streamShowView}>
                     <TOCPage title="Set up your Stream">
                         <TOCPage.Section
                             id="details"
@@ -258,7 +259,7 @@ export class StreamShowView extends Component<Props, State> {
                             />
                         </TOCPage.Section>
                     </TOCPage>
-                </div>
+                </DetailsContainer>
             </CoreLayout>
         )
     }

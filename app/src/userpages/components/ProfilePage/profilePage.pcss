@@ -1,35 +1,8 @@
 .profilePage {
-  position: relative;
-  color: var(--greyDark);
-  font-size: 14px;
-  padding-bottom: 3em;
-
-  @media (--lg-up) {
-    top: -7.4em;
-
-    /* 80px of navbar + 2.5 of top padding at the layout level. */
-    top: calc(-2.5rem - 80px);
-    z-index: 11;
-  }
-
-  @media (--xs) {
-    top: auto;
-  }
+  padding-bottom: 3rem;
 }
 
 .longText {
   line-height: 20px;
   max-width: 488px;
-}
-
-@media (--md-down) {
-  .containerOverrides {
-    max-width: 900px;
-  }
-}
-
-@media (--sm-down) {
-  .containerOverrides {
-    max-width: 540px;
-  }
 }
