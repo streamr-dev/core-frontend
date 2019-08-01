@@ -2,7 +2,7 @@
 
 import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
-import { Row, Col, Button } from 'reactstrap'
+import { Button } from 'reactstrap'
 import { capital } from 'case'
 import Link from '$shared/components/Link'
 import { push } from 'connected-react-router'
@@ -19,7 +19,7 @@ import Layout from '$userpages/components/Layout'
 import links from '$app/src/links'
 import { getCanvases, deleteCanvas, updateFilter } from '$userpages/modules/canvas/actions'
 import { selectCanvases, selectFilter, selectFetching } from '$userpages/modules/canvas/selectors'
-import { defaultColumns, getFilters } from '$userpages/utils/constants'
+import { getFilters } from '$userpages/utils/constants'
 import Tile from '$shared/components/Tile'
 import DropdownActions from '$shared/components/DropdownActions'
 import { formatExternalUrl } from '$shared/utils/url'
@@ -36,6 +36,7 @@ import CanvasPreview from '$editor/canvas/components/Preview'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import ListContainer from '$shared/components/Container/List'
+import TileGrid from '$shared/components/TileGrid'
 
 import styles from './canvasList.pcss'
 
@@ -249,32 +250,31 @@ class CanvasList extends Component<Props, State> {
                             onResetFilter={this.resetFilter}
                         />
                     )}
-                    <Row>
+                    <TileGrid>
                         {canvases.map((canvas) => (
-                            <Col {...defaultColumns} key={canvas.id}>
-                                <Tile
-                                    link={`${links.editor.canvasEditor}/${canvas.id}`}
-                                    dropdownActions={this.getActions(canvas)}
-                                    image={<CanvasPreview className={styles.PreviewImage} canvas={canvas} />}
+                            <Tile
+                                key={canvas.id}
+                                link={`${links.editor.canvasEditor}/${canvas.id}`}
+                                dropdownActions={this.getActions(canvas)}
+                                image={<CanvasPreview className={styles.PreviewImage} canvas={canvas} />}
+                            >
+                                <Tile.Title>{canvas.name}</Tile.Title>
+                                <Tile.Description>
+                                    {canvas.updated === canvas.created ? 'Created ' : 'Updated '}
+                                    {this.generateTimeAgoDescription(new Date(canvas.updated))}
+                                </Tile.Description>
+                                <Tile.Status
+                                    className={
+                                        cx({
+                                            [styles.running]: canvas.state === RunStates.Running,
+                                            [styles.stopped]: canvas.state === RunStates.Stopped,
+                                        })}
                                 >
-                                    <Tile.Title>{canvas.name}</Tile.Title>
-                                    <Tile.Description>
-                                        {canvas.updated === canvas.created ? 'Created ' : 'Updated '}
-                                        {this.generateTimeAgoDescription(new Date(canvas.updated))}
-                                    </Tile.Description>
-                                    <Tile.Status
-                                        className={
-                                            cx({
-                                                [styles.running]: canvas.state === RunStates.Running,
-                                                [styles.stopped]: canvas.state === RunStates.Stopped,
-                                            })}
-                                    >
-                                        {capital(canvas.state)}
-                                    </Tile.Status>
-                                </Tile>
-                            </Col>
+                                    {capital(canvas.state)}
+                                </Tile.Status>
+                            </Tile>
                         ))}
-                    </Row>
+                    </TileGrid>
                 </ListContainer>
                 <DocsShortcuts />
             </Layout>
