@@ -769,6 +769,17 @@ export function isPortValueEditDisabled(canvas, portId) {
     return false
 }
 
+export function getPortPlaceholder(canvas, portId) {
+    if (isPortConnected(canvas, portId)) {
+        const [connectedId] = getConnectedPortIds(canvas, portId)
+        const connectedPort = getPort(canvas, connectedId)
+        return connectedPort.longName || connectedPort.displayName || connectedPort.name
+    }
+
+    const port = getPort(canvas, portId)
+    return getDisplayNameFromPort(port)
+}
+
 export function getPortValue(canvas, portId) {
     const port = getPort(canvas, portId)
     const portType = getPortType(canvas, portId)

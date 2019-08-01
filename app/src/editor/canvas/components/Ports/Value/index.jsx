@@ -36,6 +36,7 @@ export type CommonProps = {
     disabled: boolean,
     onChange: (any) => void,
     value: any,
+    placeholder: any,
 }
 
 const Value = ({ canvas, port, onChange }: Props) => {
@@ -43,10 +44,12 @@ const Value = ({ canvas, port, onChange }: Props) => {
     const disabled = State.isPortValueEditDisabled(canvas, port.id)
     const type = getPortType(port)
     const value = State.getPortValue(canvas, port.id)
+    const placeholder = State.getPortPlaceholder(canvas, port.id)
     const commonProps: CommonProps = {
         disabled,
         onChange,
         value,
+        placeholder,
     }
 
     return (
@@ -71,7 +74,6 @@ const Value = ({ canvas, port, onChange }: Props) => {
             {type === 'text' && (
                 <Text
                     {...commonProps}
-                    placeholder={port.displayName || port.name}
                 />
             )}
             {type === 'stream' && (
