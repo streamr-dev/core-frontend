@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react'
+import cx from 'classnames'
 import * as State from '../../../state'
 import Color from './Color'
 import Map from './Map'
@@ -53,7 +54,11 @@ const Value = ({ canvas, port, onChange }: Props) => {
     }
 
     return (
-        <div className={styles.root}>
+        <div
+            className={cx(styles.root, {
+                [styles.disabled]: disabled,
+            })}
+        >
             {type === 'map' && (
                 <Map
                     {...commonProps}
