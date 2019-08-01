@@ -502,6 +502,10 @@ function disconnectInput(canvas, portId) {
             newPort.defaultValue = undefined
         }
 
+        if (newPort.type === 'EthereumContract' && newPort.value) {
+            delete newPort.value
+        }
+
         return newPort
     })
 }
