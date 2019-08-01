@@ -497,6 +497,10 @@ function disconnectInput(canvas, portId) {
         }
 
         delete newPort.sourceId
+        if ('defaultValue' in newPort) {
+            newPort.value = newPort.defaultValue
+            newPort.defaultValue = undefined
+        }
 
         return newPort
     })
@@ -522,7 +526,6 @@ export function disconnectPorts(canvas, portIdA, portIdB) {
         dependentConnections.forEach(([outputPortId, inputPortId]) => {
             if (inputPortId != null) {
                 nextCanvas = disconnectInput(nextCanvas, inputPortId)
-                nextCanvas = resetPortUserValue(nextCanvas, inputPortId)
             }
             if (outputPortId != null) {
                 nextCanvas = disconnectOutput(nextCanvas, outputPortId)
@@ -565,6 +568,9 @@ export function connectPorts(canvas, portIdA, portIdB) {
         // ethereum contract input
         if (newPort.type === 'EthereumContract') {
             newPort.value = contract
+        } else if ('defaultValue' in newPort && !isPortUsed(canvas, input.id)) {
+            // copy value to defaultValue on new connection
+            newPort.defaultValue = newPort.value
         }
 
         return newPort
@@ -702,13 +708,6 @@ const PORT_USER_VALUE_KEYS = {
 }
 
 /**
- * Resets value to default
- */
-function resetPortUserValue(canvas, portId) {
-    return setPortUserValue(canvas, portId)
-}
-
-/**
  * Sets initialValue for inputs
  * Sets value for output/params
  */
@@ -776,8 +775,12 @@ export function getPortValue(canvas, portId) {
     if (isRunning(canvas) || portType === 'output') {
         return port.value
     }
+    if (isPortConnected(canvas, portId)) {
+        const [connectedId] = getConnectedPortIds(canvas, portId)
+        return getPortValue(canvas, connectedId)
+    }
 
-    if (portType === 'param' && isPortUsed(canvas, portId)) {
+    if (portType === 'param' && isPortExported(canvas, portId)) {
         return port.value
     }
 
