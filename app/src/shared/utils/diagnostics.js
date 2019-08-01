@@ -20,7 +20,7 @@ global.streamr = Object.assign(global.streamr || {}, {
                 ...info,
                 branch: '',
                 version: process.env.TRAVIS_TAG,
-                hash: process.env.TRAVIS_COMMIT,
+                hash: String(process.env.TRAVIS_COMMIT).substr(0, 8),
             }
         } else if (process.env.TRAVIS_PULL_REQUEST_BRANCH) {
             // if the current job is a pull request:
@@ -30,7 +30,7 @@ global.streamr = Object.assign(global.streamr || {}, {
                 ...info,
                 branch: process.env.TRAVIS_PULL_REQUEST_BRANCH,
                 version: '',
-                hash: process.env.TRAVIS_PULL_REQUEST_SHA,
+                hash: String(process.env.TRAVIS_PULL_REQUEST_SHA).substr(0, 8),
             }
         } else if (process.env.TRAVIS_BRANCH) {
             // for push builds, or builds not triggered by a pull request
@@ -40,7 +40,7 @@ global.streamr = Object.assign(global.streamr || {}, {
                 ...info,
                 branch: process.env.TRAVIS_BRANCH,
                 version: '',
-                hash: process.env.TRAVIS_COMMIT,
+                hash: String(process.env.TRAVIS_COMMIT).substr(0, 8),
             }
         }
 
