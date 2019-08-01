@@ -1,7 +1,7 @@
 // @flow
 
 import React, { Component, Fragment } from 'react'
-import { Col, Row, Button } from 'reactstrap'
+import { Button } from 'reactstrap'
 import { Link } from 'react-router-dom'
 import { Translate } from 'react-redux-i18n'
 import cx from 'classnames'
@@ -51,56 +51,48 @@ export class PreviewView extends Component<Props, State> {
         if (stream) {
             return (
                 <Fragment>
-                    <Row>
-                        <Col xs={12}>
-                            <Translate value="userpages.streams.edit.preview.description" className={styles.longText} tag="p" />
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col xs={12}>
-                            <p className={!hasData && styles.hasData}>
-                                This Stream has no data yet.
-                                Check out the <Link to={routes.docsGettingStarted()}>Docs</Link> for a guide to push data to your stream.
-                            </p>
-                            <div
-                                className={cx(styles.previewContainer, {
-                                    [styles.hasData]: hasData,
-                                })}
-                            >
-                                <div className={styles.previewControls}>
-                                    <Button color="userpages" className={styles.playPauseButton} onClick={this.onToggleRun}>
-                                        {!isRunning ?
-                                            <SvgIcon name="play" className={styles.icon} /> :
-                                            <SvgIcon name="pause" className={styles.icon} />
-                                        }
-                                    </Button>
-                                    {stream && stream.id && (
-                                        <Button
-                                            className={styles.inspectButton}
-                                            color="userpages"
-                                            tag={Link}
-                                            to={routes.userPageStreamPreview({
-                                                streamId: stream.id,
-                                            })}
-                                        >
-                                            <Translate value="userpages.streams.edit.preview.inspect" />
-                                        </Button>
-                                    )}
-                                </div>
-                                <StreamLivePreview
-                                    key={stream.id}
-                                    streamId={stream.id}
-                                    currentUser={currentUser}
-                                    authApiKeyId={authApiKeyId}
-                                    onSelectDataPoint={() => {}}
-                                    selectedDataPoint={null}
-                                    run={isRunning}
-                                    userpagesPreview
-                                    hasData={this.setHasData}
-                                />
-                            </div>
-                        </Col>
-                    </Row>
+                    <Translate value="userpages.streams.edit.preview.description" className={styles.longText} tag="p" />
+                    <p className={!hasData && styles.hasData}>
+                        This Stream has no data yet.
+                        Check out the <Link to={routes.docsGettingStarted()}>Docs</Link> for a guide to push data to your stream.
+                    </p>
+                    <div
+                        className={cx(styles.previewContainer, {
+                            [styles.hasData]: hasData,
+                        })}
+                    >
+                        <div className={styles.previewControls}>
+                            <Button color="userpages" className={styles.playPauseButton} onClick={this.onToggleRun}>
+                                {!isRunning ?
+                                    <SvgIcon name="play" className={styles.icon} /> :
+                                    <SvgIcon name="pause" className={styles.icon} />
+                                }
+                            </Button>
+                            {stream && stream.id && (
+                                <Button
+                                    className={styles.inspectButton}
+                                    color="userpages"
+                                    tag={Link}
+                                    to={routes.userPageStreamPreview({
+                                        streamId: stream.id,
+                                    })}
+                                >
+                                    <Translate value="userpages.streams.edit.preview.inspect" />
+                                </Button>
+                            )}
+                        </div>
+                        <StreamLivePreview
+                            key={stream.id}
+                            streamId={stream.id}
+                            currentUser={currentUser}
+                            authApiKeyId={authApiKeyId}
+                            onSelectDataPoint={() => {}}
+                            selectedDataPoint={null}
+                            run={isRunning}
+                            userpagesPreview
+                            hasData={this.setHasData}
+                        />
+                    </div>
                 </Fragment>
             )
         }

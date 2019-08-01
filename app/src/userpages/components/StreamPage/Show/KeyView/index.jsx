@@ -3,7 +3,6 @@
 import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { Row, Col } from 'reactstrap'
 import { formatPath } from '$shared/utils/url'
 import { Link } from 'react-router-dom'
 
@@ -69,26 +68,20 @@ export class KeyView extends Component<Props> {
         const keys = this.props.keys || []
         return (
             <Fragment>
-                <Row>
-                    <Col xs={12}>
-                        <p className={styles.longText}>
-                            <Translate value="userpages.streams.edit.apiCredentials.description" />
-                            <Link to={formatPath(links.userpages.profile)}>Settings</Link>.
-                        </p>
-                    </Col>
-                    <Col xs={12}>
-                        <CredentialsControl
-                            keys={keys}
-                            addKey={this.addKey}
-                            editStreamResourceKey={this.editStreamResourceKey}
-                            removeKey={this.removeKey}
-                            showPermissionType
-                            newStream={!this.props.streamId}
-                            streamId={this.props.streamId}
-                            disabled={disabled}
-                        />
-                    </Col>
-                </Row>
+                <p className={styles.longText}>
+                    <Translate value="userpages.streams.edit.apiCredentials.description" />
+                    <Link to={formatPath(links.userpages.profile)}>Settings</Link>.
+                </p>
+                <CredentialsControl
+                    keys={keys}
+                    addKey={this.addKey}
+                    editStreamResourceKey={this.editStreamResourceKey}
+                    removeKey={this.removeKey}
+                    showPermissionType
+                    newStream={!this.props.streamId}
+                    streamId={this.props.streamId}
+                    disabled={disabled}
+                />
             </Fragment>
         )
     }
