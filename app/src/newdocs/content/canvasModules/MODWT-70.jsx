@@ -1,35 +1,35 @@
-/* eslint-disable quotes, quote-props, indent, comma-dangle, max-len */
-import moduleDescription from './MODWT-70.mdx'
+/* eslint-disable max-len */
+import moduleDescription from './MODWT-70.md'
 
 export default {
-  "id": 70,
-  "name": "MODWT",
-  "path": "Time Series: Filtering",
-  "help": {
-    "params": {
-      "wavelet": "<span>Chosen wavelet filter</span>",
-      "level": "<span>Transform level (1..N)</span>"
+    id: 70,
+    name: 'MODWT',
+    path: 'Time Series: Filtering',
+    help: {
+        params: {
+            wavelet: 'Chosen wavelet filter',
+            level: 'Transform level (1..N)',
+        },
+        paramNames: [
+            'wavelet',
+            'level',
+        ],
+        inputs: {
+            in: 'Input time series**',
+        },
+        inputNames: [
+            'in',
+        ],
+        outputs: {
+            details: 'The wavelet detail',
+            energy: 'Energy at this level',
+            smooth: 'The wavelet smooth',
+        },
+        outputNames: [
+            'details',
+            'energy',
+            'smooth',
+        ],
+        helpText: moduleDescription,
     },
-    "paramNames": [
-      "wavelet",
-      "level"
-    ],
-    "inputs": {
-      "in": "<span>Input time series</span>"
-    },
-    "inputNames": [
-      "in"
-    ],
-    "outputs": {
-      "details": "<span>The wavelet detail</span>",
-      "energy": "<span>Energy at this level</span>",
-      "smooth": "<span>The wavelet smooth</span>"
-    },
-    "outputNames": [
-      "details",
-      "energy",
-      "smooth"
-    ],
-    "helpText": moduleDescription
-  }
 }

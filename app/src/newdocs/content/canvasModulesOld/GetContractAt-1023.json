@@ -1,8 +1,0 @@
-{
-  "id": 1023,
-  "name": "GetContractAt",
-  "path": "Integrations: Ethereum",
-  "help": {
-    "helpText": "Ethereum contract that has been deployed in the blockchain"
-  }
-}
