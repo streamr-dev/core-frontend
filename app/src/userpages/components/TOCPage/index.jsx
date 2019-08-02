@@ -24,29 +24,31 @@ const TOCPage = withRouter(({ children, location: { hash }, title, className }: 
                 <h1 className={styles.pageTitle}>{title}</h1>
             </React.Fragment>
         )}
-        <ul className={styles.tocList}>
-            {React.Children.map(children, (child) => {
-                if (child.type === TOCSection) {
-                    return (
-                        <li
-                            key={child.props.id}
-                            className={cx(styles.tocListItem, {
-                                [styles.hideTablet]: child.props.customStyled,
-                            })}
-                        >
-                            <a
-                                href={`#${child.props.id}`}
-                                className={cx({
-                                    [styles.active]: hash.substr(1) === child.props.id,
+        <div>
+            <ul className={styles.tocList}>
+                {React.Children.map(children, (child) => {
+                    if (child.type === TOCSection) {
+                        return (
+                            <li
+                                key={child.props.id}
+                                className={cx(styles.tocListItem, {
+                                    [styles.hideTablet]: child.props.customStyled,
                                 })}
                             >
-                                {child.props.linkTitle || child.props.title}
-                            </a>
-                        </li>
-                    )
-                }
-            })}
-        </ul>
+                                <a
+                                    href={`#${child.props.id}`}
+                                    className={cx({
+                                        [styles.active]: hash.substr(1) === child.props.id,
+                                    })}
+                                >
+                                    {child.props.linkTitle || child.props.title}
+                                </a>
+                            </li>
+                        )
+                    }
+                })}
+            </ul>
+        </div>
         <div>
             {children}
         </div>

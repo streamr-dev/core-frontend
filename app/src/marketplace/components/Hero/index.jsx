@@ -1,7 +1,7 @@
 // @flow
 
 import * as React from 'react'
-import { Container, Row, Col } from 'reactstrap'
+import ProductContainer from '$shared/components/Container/Product'
 
 import styles from './hero.pcss'
 
@@ -12,16 +12,14 @@ type Props = {
 
 const Hero = ({ leftContent, rightContent }: Props) => (
     <div className={styles.hero}>
-        <Container className={styles.heroContainer}>
-            <Row className={styles.heroRow}>
-                <Col xs={12} md={5} className={styles.heroColumn}>
-                    {leftContent}
-                </Col>
-                <Col xs={12} md={7} className={styles.heroColumn}>
-                    {rightContent}
-                </Col>
-            </Row>
-        </Container>
+        <ProductContainer className={styles.container}>
+            <div className={styles.leftColumn}>
+                {leftContent}
+            </div>
+            <div className={styles.rightColumn}>
+                {rightContent}
+            </div>
+        </ProductContainer>
     </div>
 )
 

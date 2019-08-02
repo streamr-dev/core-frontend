@@ -10,8 +10,8 @@ type Props = {
     children?: Node,
 }
 
-const Details = ({ className, children }: Props) => (
-    <div className={cx(styles.root, className)}>
+const Details = ({ className, children, ...props }: Props) => (
+    <div className={cx(styles.root, styles.DetailsContainer, className)} {...props}>
         {children}
     </div>
 )
