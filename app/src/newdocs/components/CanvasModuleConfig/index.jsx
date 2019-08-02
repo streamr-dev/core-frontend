@@ -7,56 +7,62 @@ import createMdSnippet from '$newdocs/utils/createMdSnippet'
 import styles from './canvasModuleConfig.pcss'
 
 const inputs = (moduleInputs, moduleInputsRaw) => {
-    const typeArray = []
+    const types = []
+    const defaultValues = []
 
     if (moduleInputs && moduleInputsRaw) {
         Object.entries(moduleInputs).map(([key]) =>
             moduleInputsRaw.map((ins) => {
                 if (ins.name === key) {
-                    typeArray.push(ins.type)
+                    types.push(ins.type)
+                    defaultValues.push(ins.defaultValue)
                 }
                 return false
             }))
     }
 
     return !isEmpty(moduleInputs)
-        ? createMdSnippet(moduleInputs, typeArray)
+        ? createMdSnippet(moduleInputs, types, defaultValues)
         : false
 }
 
 const outputs = (moduleOutputs, moduleOutputsRaw) => {
-    const typeArray = []
+    const types = []
+    const defaultValues = []
 
     if (moduleOutputs && moduleOutputsRaw) {
         Object.entries(moduleOutputs).map(([key]) =>
             moduleOutputsRaw.map((outs) => {
                 if (outs.name === key) {
-                    typeArray.push(outs.type)
+                    types.push(outs.type)
+                    defaultValues.push(outs.defaultValue)
                 }
                 return false
             }))
     }
 
     return !isEmpty(moduleOutputs)
-        ? createMdSnippet(moduleOutputs, typeArray)
+        ? createMdSnippet(moduleOutputs, types, defaultValues)
         : false
 }
 
 const params = (moduleParams, moduleParamsRaw) => {
-    const typeArray = []
+    const types = []
+    const defaultValues = []
 
     if (moduleParams && moduleParamsRaw) {
         Object.entries(moduleParams).map(([key]) =>
             moduleParamsRaw.map((pms) => {
                 if (pms.name === key) {
-                    typeArray.push(pms.type)
+                    types.push(pms.type)
+                    defaultValues.push(pms.defaultValue)
                 }
                 return false
             }))
     }
 
     return !isEmpty(moduleParams)
-        ? createMdSnippet(moduleParams, typeArray)
+        ? createMdSnippet(moduleParams, types, defaultValues)
         : false
 }
 
