@@ -89,7 +89,7 @@ class Steps extends Component<Props, State> {
             {this.tabs()}
             {this.contents()}
             <Buttons
-                className={classNames({
+                className={classNames(styles.buttons, {
                     [styles.withErrors]: !!this.props.errors,
                 })}
                 actions={{
