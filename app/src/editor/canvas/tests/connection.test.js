@@ -180,30 +180,32 @@ describe('Connecting Modules', () => {
     it('can connect ports to self', async () => {
         // connect ConstantText out to ToLowerCase
         let canvas = State.emptyCanvas()
-        canvas = State.addModule(canvas, await loadModuleDefinition('ConstantText'))
-        const constantText = canvas.modules.find((m) => m.name === 'ConstantText')
-        expect(constantText).toBeTruthy()
-        const constantTextOut = State.findModulePort(canvas, constantText.hash, (p) => p.name === 'out')
-        const constantTextIn = State.findModulePort(canvas, constantText.hash, (p) => p.name === 'str')
-        expect(constantTextOut).toBeTruthy()
-        expect(constantTextIn).toBeTruthy()
-
+        canvas = State.addModule(canvas, await loadModuleDefinition('Constant'))
+        canvas = State.addModule(canvas, await loadModuleDefinition('PassThrough'))
+        const constant = canvas.modules.find((m) => m.name === 'Constant')
+        let passThrough = canvas.modules.find((m) => m.name === 'PassThrough')
+        canvas = State.updateCanvas(State.connectPorts(canvas, constant.outputs[0].id, passThrough.inputs[0].id))
+        passThrough = canvas.modules.find((m) => m.name === 'PassThrough')
         // canConnect should be true
-        expect(State.canConnectPorts(canvas, constantTextOut.id, constantTextIn.id)).toBeTruthy()
-
+        expect(State.canConnectPorts(canvas, passThrough.outputs[0].id, passThrough.inputs[1].id)).toBeTruthy()
         // connectPorts should connect
-        canvas = State.updateCanvas(State.connectPorts(canvas, constantTextOut.id, constantTextIn.id))
-        expect(State.isPortConnected(canvas, constantTextOut.id)).toBeTruthy()
-        expect(State.isPortConnected(canvas, constantTextIn.id)).toBeTruthy()
-        expect(State.arePortsConnected(canvas, constantTextIn.id, constantTextOut.id)).toBeTruthy()
-
-        canvas = State.updateCanvas(State.disconnectPorts(canvas, constantTextOut.id, constantTextIn.id))
-        expect(State.isPortConnected(canvas, constantTextOut.id)).not.toBeTruthy()
-        expect(State.isPortConnected(canvas, constantTextIn.id)).not.toBeTruthy()
-        expect(State.arePortsConnected(canvas, constantTextIn.id, constantTextOut.id)).not.toBeTruthy()
+        canvas = State.updateCanvas(State.connectPorts(canvas, passThrough.outputs[0].id, passThrough.inputs[1].id))
+        expect(State.isPortConnected(canvas, passThrough.outputs[0].id)).toBeTruthy()
+        expect(State.isPortConnected(canvas, passThrough.inputs[1].id)).toBeTruthy()
+        expect(State.arePortsConnected(canvas, passThrough.inputs[1].id, passThrough.outputs[0].id)).toBeTruthy()
 
         // test server accepts state
-        expect(State.updateCanvas(await Services.create(canvas))).toMatchCanvas(canvas)
+        const serverCanvas = State.updateCanvas(await Services.create(canvas))
+        expect(serverCanvas).toMatchCanvas(canvas)
+        canvas = serverCanvas
+        // disconnect works
+        canvas = State.updateCanvas(State.disconnectPorts(canvas, passThrough.outputs[0].id, passThrough.inputs[1].id))
+        expect(State.isPortConnected(canvas, passThrough.outputs[0].id)).not.toBeTruthy()
+        expect(State.isPortConnected(canvas, passThrough.inputs[1].id)).not.toBeTruthy()
+        expect(State.arePortsConnected(canvas, passThrough.inputs[1].id, passThrough.outputs[0].id)).not.toBeTruthy()
+
+        // test server accepts state
+        expect(State.updateCanvas(await Services.saveNow(canvas))).toMatchCanvas(canvas)
     })
 
     it('resets param value to default on connect/disconnect', async () => {
