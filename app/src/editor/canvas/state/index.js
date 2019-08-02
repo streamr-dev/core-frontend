@@ -791,7 +791,7 @@ export function getPortValue(canvas, portId) {
         return port.value
     }
 
-    if (portType === 'param' && portType.canHaveInitialValue) {
+    if (portType === 'input' && port.canHaveInitialValue) {
         return port.initialValue
     }
 
