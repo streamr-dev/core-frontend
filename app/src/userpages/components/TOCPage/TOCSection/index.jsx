@@ -1,7 +1,6 @@
 // @flow
 
 import React, { type Node } from 'react'
-import { Col, Row } from 'reactstrap'
 import ScrollableAnchor from 'react-scrollable-anchor'
 import cx from 'classnames'
 
@@ -22,16 +21,8 @@ export const TOCSection = ({ id, title, children, customStyled }: Props) => (
                 [styles.hideTablet]: customStyled,
             })}
         >
-            <Row>
-                <Col xs={12}>
-                    <h3 className={styles.title}>{title}</h3>
-                </Col>
-            </Row>
-            <Row>
-                <Col xs={12}>
-                    {children}
-                </Col>
-            </Row>
+            <h3 className={styles.title}>{title}</h3>
+            {children}
         </div>
     </ScrollableAnchor>
 )
