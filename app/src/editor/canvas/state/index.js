@@ -722,7 +722,7 @@ export function setPortUserValue(canvas, portId, value) {
     const port = getPort(canvas, portId)
 
     const defaultValue = getPortDefaultValue(canvas, portId)
-    if (isBlank(value)) {
+    if (isBlank(value) && defaultValue != null) {
         value = defaultValue
     }
 
@@ -796,8 +796,7 @@ export function getPortValue(canvas, portId) {
     }
 
     if (isPortConnected(canvas, portId)) {
-        const [connectedId] = getConnectedPortIds(canvas, portId)
-        return getPortValue(canvas, connectedId)
+        return undefined
     }
     if (isPortExported(canvas, portId)) {
         return port.value
@@ -818,9 +817,7 @@ function isBlank(value) {
 
 export function getPortDefaultValue(canvas, portId) {
     const port = getPort(canvas, portId)
-    return 'defaultValue' in port
-        ? port.defaultValue
-        : port.initialValue
+    return port.defaultValue
 }
 
 export function getPortUserValueOrDefault(canvas, portId) {
