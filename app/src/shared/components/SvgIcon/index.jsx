@@ -333,7 +333,7 @@ const sources = {
     transfer: (
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <g fill="none" fillRule="evenodd">
-                <rect fill="#A3A3A3" width="24" height="24" rx="3" />
+                <rect fill="currentColor" width="24" height="24" rx="3" />
                 <path d="M8.8 8h8.8M14.4 4.8L17.6 8l-3.2 3.2M15.2 16H6.4M9.6 19.2L6.4 16l3.2-3.2" stroke="#FDFDFD" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </g>
         </svg>
