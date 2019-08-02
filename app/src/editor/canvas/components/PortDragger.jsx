@@ -32,7 +32,6 @@ class DraggablePort extends React.Component {
     canConnectPorts(canvas) {
         const { data } = this.context
         const { sourceId, portId, overId } = data
-        if (portId === overId) { return false } // cannot re-connect to self
         const fromId = sourceId || portId // treat as if dragging sourceId
         return CanvasState.canConnectPorts(canvas, fromId, overId)
     }
