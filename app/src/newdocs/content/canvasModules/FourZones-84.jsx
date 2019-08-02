@@ -1,37 +1,166 @@
-/* eslint-disable quotes, quote-props, indent, comma-dangle, max-len */
-import moduleDescription from './FourZones-84.mdx'
+/* eslint-disable max-len */
+import moduleDescription from './FourZones-84.md'
 
 export default {
-  "id": 84,
-  "name": "FourZones",
-  "path": "Time Series: Triggers",
-  "help": {
-    "outputNames": [
-      "out"
+    id: 84,
+    name: 'FourZones',
+    path: 'Time Series: Triggers',
+    help: {
+        outputNames: [
+            'out',
+        ],
+        inputs: {
+            in: 'Input values',
+        },
+        helpText: moduleDescription,
+        inputNames: [
+            'in',
+        ],
+        params: {
+            lowRelease: 'Low release level',
+            highTrigger: 'High trigger level',
+            lowTrigger: 'Low trigger level',
+            highRelease: 'High release level',
+            mode: 'Trigger on entering/exiting the high/low trigger level',
+        },
+        outputs: {
+            out: '1 on high trigger, -1 on low trigger, 0 on release',
+        },
+        paramNames: [
+            'mode',
+            'highTrigger',
+            'highRelease',
+            'lowRelease',
+            'lowTrigger',
+        ],
+    },
+    inputs: [
+        {
+            id: 'ep_sGYDGcLBSGOXNG1cT7mN0g',
+            name: 'in',
+            longName: 'FourZones.in',
+            type: 'Double',
+            connected: false,
+            canConnect: true,
+            export: false,
+            drivingInput: true,
+            canToggleDrivingInput: true,
+            acceptedTypes: [
+                'Double',
+            ],
+            requiresConnection: true,
+            canHaveInitialValue: true,
+            initialValue: null,
+        },
     ],
-    "inputs": {
-      "in": "Input values"
-    },
-    "helpText": moduleDescription,
-    "inputNames": [
-      "in"
+    outputs: [
+        {
+            id: 'ep_GHI9CP3eQpWeH9e2v8wrYg',
+            name: 'out',
+            longName: 'FourZones.out',
+            type: 'Double',
+            connected: false,
+            canConnect: true,
+            export: false,
+            noRepeat: false,
+            canBeNoRepeat: true,
+        },
     ],
-    "params": {
-      "lowRelease": "Low release level",
-      "highTrigger": "High trigger level",
-      "lowTrigger": "Low trigger level",
-      "highRelease": "High release level",
-      "mode": "Trigger on entering/exiting the high/low trigger level"
-    },
-    "outputs": {
-      "out": "1 on high trigger, -1 on low trigger, 0 on release"
-    },
-    "paramNames": [
-      "mode",
-      "highTrigger",
-      "highRelease",
-      "lowRelease",
-      "lowTrigger"
-    ]
-  }
+    params: [
+        {
+            id: 'ep_AfQtDRY7Q1qSnPON4BhsEw',
+            name: 'mode',
+            longName: 'FourZones.mode',
+            type: 'Double',
+            connected: false,
+            canConnect: true,
+            export: false,
+            value: 1,
+            drivingInput: false,
+            canToggleDrivingInput: false,
+            acceptedTypes: [
+                'Double',
+            ],
+            requiresConnection: false,
+            defaultValue: 1,
+            possibleValues: [
+                {
+                    name: 'enter',
+                    value: 1,
+                },
+                {
+                    name: 'exit',
+                    value: 2,
+                },
+            ],
+        },
+        {
+            id: 'ep_TFkZotooS2urwhUKGfHOJw',
+            name: 'highTrigger',
+            longName: 'FourZones.highTrigger',
+            type: 'Double',
+            connected: false,
+            canConnect: true,
+            export: false,
+            value: 0.8,
+            drivingInput: false,
+            canToggleDrivingInput: true,
+            acceptedTypes: [
+                'Double',
+            ],
+            requiresConnection: false,
+            defaultValue: 0.8,
+        },
+        {
+            id: 'ep_4tx_NSIhQj6-Tew7jM5YKA',
+            name: 'highRelease',
+            longName: 'FourZones.highRelease',
+            type: 'Double',
+            connected: false,
+            canConnect: true,
+            export: false,
+            value: 0.2,
+            drivingInput: false,
+            canToggleDrivingInput: true,
+            acceptedTypes: [
+                'Double',
+            ],
+            requiresConnection: false,
+            defaultValue: 0.2,
+        },
+        {
+            id: 'ep_3JzF35FPTLeajlZaB-D0vA',
+            name: 'lowRelease',
+            longName: 'FourZones.lowRelease',
+            type: 'Double',
+            connected: false,
+            canConnect: true,
+            export: false,
+            value: -0.2,
+            drivingInput: false,
+            canToggleDrivingInput: true,
+            acceptedTypes: [
+                'Double',
+            ],
+            requiresConnection: false,
+            defaultValue: -0.2,
+        },
+        {
+            id: 'ep_MRr5XifARVOPRozpLX2P_g',
+            name: 'lowTrigger',
+            longName: 'FourZones.lowTrigger',
+            type: 'Double',
+            connected: false,
+            canConnect: true,
+            export: false,
+            value: -0.8,
+            drivingInput: false,
+            canToggleDrivingInput: true,
+            acceptedTypes: [
+                'Double',
+            ],
+            requiresConnection: false,
+            defaultValue: -0.8,
+        },
+    ],
 }

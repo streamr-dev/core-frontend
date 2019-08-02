@@ -1,8 +1,0 @@
-{
-  "id": 574,
-  "name": "VerifySignature",
-  "path": "Integrations: Ethereum",
-  "help": {
-    "helpText": "Given message and signature get Ethereum address of signee."
-  }
-}

@@ -1,17 +1,125 @@
-/* eslint-disable quotes, quote-props, indent, comma-dangle, max-len */
-import moduleDescription from './PopulationVariance-154.mdx'
+/* eslint-disable max-len */
+import moduleDescription from './PopulationVariance-154.md'
 
 export default {
-  "id": 154,
-  "name": "PopulationVariance",
-  "path": "Time Series: Statistics",
-  "help": {
-    "outputNames": [],
-    "inputs": {},
-    "helpText": moduleDescription,
-    "inputNames": [],
-    "params": {},
-    "outputs": {},
-    "paramNames": []
-  }
+    id: 154,
+    name: 'PopulationVariance',
+    path: 'Time Series: Statistics',
+    help: {
+        outputNames: [],
+        inputs: {},
+        helpText: moduleDescription,
+        inputNames: [],
+        params: {},
+        outputs: {},
+        paramNames: [],
+    },
+    inputs: [
+        {
+            id: 'ep_pAkBxNllTLyyJu08EoBDsg',
+            name: 'in',
+            longName: 'PopulationVariance.in',
+            type: 'Double',
+            connected: false,
+            canConnect: true,
+            export: false,
+            drivingInput: true,
+            canToggleDrivingInput: true,
+            acceptedTypes: [
+                'Double',
+            ],
+            requiresConnection: true,
+            canHaveInitialValue: true,
+            initialValue: null,
+        },
+    ],
+    outputs: [
+        {
+            id: 'ep_eA8ri1ujSfSVHHoJlYJS7Q',
+            name: 'out',
+            longName: 'PopulationVariance.out',
+            type: 'Double',
+            connected: false,
+            canConnect: true,
+            export: false,
+            noRepeat: false,
+            canBeNoRepeat: true,
+        },
+    ],
+    params: [
+        {
+            id: 'ep_3gSaCg4ARumvUCqc0Dr7zA',
+            name: 'windowLength',
+            longName: 'PopulationVariance.windowLength',
+            type: 'Double',
+            connected: false,
+            canConnect: true,
+            export: false,
+            value: 0,
+            drivingInput: false,
+            canToggleDrivingInput: true,
+            acceptedTypes: [
+                'Double',
+            ],
+            requiresConnection: false,
+            defaultValue: 0,
+        },
+        {
+            id: 'ep_10QkMj3PQ_S8YiQriQeQhg',
+            name: 'windowType',
+            longName: 'PopulationVariance.windowType',
+            type: 'String',
+            connected: false,
+            canConnect: true,
+            export: false,
+            value: 'events',
+            drivingInput: false,
+            canToggleDrivingInput: true,
+            acceptedTypes: [
+                'String',
+            ],
+            requiresConnection: false,
+            defaultValue: 'events',
+            isTextArea: false,
+            possibleValues: [
+                {
+                    name: 'events',
+                    value: 'EVENTS',
+                },
+                {
+                    name: 'seconds',
+                    value: 'SECONDS',
+                },
+                {
+                    name: 'minutes',
+                    value: 'MINUTES',
+                },
+                {
+                    name: 'hours',
+                    value: 'HOURS',
+                },
+                {
+                    name: 'days',
+                    value: 'DAYS',
+                },
+            ],
+        },
+        {
+            id: 'ep_CfvRoNmSTYmjP31QDw_rVA',
+            name: 'minSamples',
+            longName: 'PopulationVariance.minSamples',
+            type: 'Double',
+            connected: false,
+            canConnect: true,
+            export: false,
+            value: 0,
+            drivingInput: false,
+            canToggleDrivingInput: true,
+            acceptedTypes: [
+                'Double',
+            ],
+            requiresConnection: false,
+            defaultValue: 0,
+        },
+    ],
 }

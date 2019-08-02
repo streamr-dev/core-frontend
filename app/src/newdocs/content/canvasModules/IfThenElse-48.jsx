@@ -1,17 +1,84 @@
-/* eslint-disable quotes, quote-props, indent, comma-dangle, max-len */
-import moduleDescription from './IfThenElse-48.mdx'
+/* eslint-disable max-len */
+import moduleDescription from './IfThenElse-48.md'
 
 export default {
-  "id": 48,
-  "name": "IfThenElse",
-  "path": "Boolean",
-  "help": {
-    "outputNames": [],
-    "inputs": {},
-    "helpText": moduleDescription,
-    "inputNames": [],
-    "params": {},
-    "outputs": {},
-    "paramNames": []
-  }
+    id: 48,
+    name: 'IfThenElse',
+    path: 'Boolean',
+    help: {
+        outputNames: [],
+        inputs: {},
+        helpText: moduleDescription,
+        inputNames: [],
+        params: {},
+        outputs: {},
+        paramNames: [],
+    },
+    inputs: [
+        {
+            id: 'ep_Ss2mqXGDT82Bb8PM2Yowkg',
+            name: 'if',
+            longName: 'IfThenElse.if',
+            type: 'Object',
+            connected: false,
+            canConnect: true,
+            export: false,
+            drivingInput: true,
+            canToggleDrivingInput: true,
+            acceptedTypes: [
+                'Object',
+            ],
+            requiresConnection: true,
+            canHaveInitialValue: true,
+            initialValue: null,
+        },
+        {
+            id: 'ep_Ng4NbQYMTSSpyXWL97Uh1Q',
+            name: 'then',
+            longName: 'IfThenElse.then',
+            type: 'Double',
+            connected: false,
+            canConnect: true,
+            export: false,
+            drivingInput: true,
+            canToggleDrivingInput: true,
+            acceptedTypes: [
+                'Double',
+            ],
+            requiresConnection: true,
+            canHaveInitialValue: true,
+            initialValue: null,
+        },
+        {
+            id: 'ep_PvStKrmzRgSG466OdEdsXA',
+            name: 'else',
+            longName: 'IfThenElse.else',
+            type: 'Double',
+            connected: false,
+            canConnect: true,
+            export: false,
+            drivingInput: true,
+            canToggleDrivingInput: true,
+            acceptedTypes: [
+                'Double',
+            ],
+            requiresConnection: true,
+            canHaveInitialValue: true,
+            initialValue: null,
+        },
+    ],
+    outputs: [
+        {
+            id: 'ep_K8vL1CfASBu6fW8Tmuc9xg',
+            name: 'out',
+            longName: 'IfThenElse.out',
+            type: 'Double',
+            connected: false,
+            canConnect: true,
+            export: false,
+            noRepeat: false,
+            canBeNoRepeat: true,
+        },
+    ],
+    params: [],
 }

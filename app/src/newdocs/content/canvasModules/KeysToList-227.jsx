@@ -1,29 +1,58 @@
-/* eslint-disable quotes, quote-props, indent, comma-dangle, max-len */
-import moduleDescription from './KeysToList-227.mdx'
+/* eslint-disable max-len */
+import moduleDescription from './KeysToList-227.md'
 
 export default {
-  "id": 227,
-  "name": "KeysToList",
-  "path": "Map",
-  "help": {
-    "params": {
-      "limit": "the number of entries to fetch"
+    id: 227,
+    name: 'KeysToList',
+    path: 'Map',
+    help: {
+        params: {
+            limit: 'the number of entries to fetch',
+        },
+        paramNames: [
+            'limit',
+        ],
+        inputs: {
+            in: 'a map',
+        },
+        inputNames: [
+            'in',
+        ],
+        outputs: {
+            out: 'a submap of the first entries of map',
+        },
+        outputNames: [
+            'out',
+        ],
+        helpText: moduleDescription,
     },
-    "paramNames": [
-      "limit"
+    inputs: [
+        {
+            id: 'ep_lteMCiLRQJapoloTO_jSBg',
+            name: 'in',
+            longName: 'KeysToList.in',
+            type: 'Map',
+            connected: false,
+            canConnect: true,
+            export: false,
+            drivingInput: true,
+            canToggleDrivingInput: true,
+            acceptedTypes: [
+                'Map',
+            ],
+            requiresConnection: true,
+        },
     ],
-    "inputs": {
-      "in": "a map"
-    },
-    "inputNames": [
-      "in"
+    outputs: [
+        {
+            id: 'ep_2Kn-K5p2Qx-2zBQvITvkGA',
+            name: 'keys',
+            longName: 'KeysToList.keys',
+            type: 'List',
+            connected: false,
+            canConnect: true,
+            export: false,
+        },
     ],
-    "outputs": {
-      "out": "a submap of the first entries of map"
-    },
-    "outputNames": [
-      "out"
-    ],
-    "helpText": moduleDescription
-  }
+    params: [],
 }

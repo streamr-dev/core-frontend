@@ -1,25 +1,54 @@
-/* eslint-disable quotes, quote-props, indent, comma-dangle, max-len */
-import moduleDescription from './ShuffleList-565.mdx'
+/* eslint-disable max-len */
+import moduleDescription from './ShuffleList-565.md'
 
 export default {
-  "id": 565,
-  "name": "ShuffleList",
-  "path": "List",
-  "help": {
-    "params": {},
-    "paramNames": [],
-    "inputs": {
-      "in": "input list"
+    id: 565,
+    name: 'ShuffleList',
+    path: 'List',
+    help: {
+        params: {},
+        paramNames: [],
+        inputs: {
+            in: 'input list',
+        },
+        inputNames: [
+            'in',
+        ],
+        outputs: {
+            out: 'input list randomly ordered',
+        },
+        outputNames: [
+            'out',
+        ],
+        helpText: moduleDescription,
     },
-    "inputNames": [
-      "in"
+    inputs: [
+        {
+            id: 'ep_stwbeBLlT7WxJ5FGHwdxpQ',
+            name: 'in',
+            longName: 'ShuffleList.in',
+            type: 'List',
+            connected: false,
+            canConnect: true,
+            export: false,
+            drivingInput: true,
+            canToggleDrivingInput: true,
+            acceptedTypes: [
+                'List',
+            ],
+            requiresConnection: true,
+        },
     ],
-    "outputs": {
-      "out": "input list randomly ordered"
-    },
-    "outputNames": [
-      "out"
+    outputs: [
+        {
+            id: 'ep_Erve-cxRTB6nxqVl0FuVPw',
+            name: 'out',
+            longName: 'ShuffleList.out',
+            type: 'List',
+            connected: false,
+            canConnect: true,
+            export: false,
+        },
     ],
-    "helpText": moduleDescription
-  }
+    params: [],
 }

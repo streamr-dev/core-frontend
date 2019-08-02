@@ -1,17 +1,78 @@
-/* eslint-disable quotes, quote-props, indent, comma-dangle, max-len */
-import moduleDescription from './SameSign-33.mdx'
+/* eslint-disable max-len */
+import moduleDescription from './SameSign-33.md'
 
 export default {
-  "id": 33,
-  "name": "SameSign",
-  "path": "Boolean",
-  "help": {
-    "outputNames": [],
-    "inputs": {},
-    "helpText": moduleDescription,
-    "inputNames": [],
-    "params": {},
-    "outputs": {},
-    "paramNames": []
-  }
+    id: 33,
+    name: 'SameSign',
+    path: 'Boolean',
+    help: {
+        outputNames: [],
+        inputs: {},
+        helpText: moduleDescription,
+        inputNames: [],
+        params: {},
+        outputs: {},
+        paramNames: [],
+    },
+    inputs: [
+        {
+            id: 'ep_UeqOwZpjSr-5-lxs8b0bnA',
+            name: 'A',
+            longName: 'SameSign.A',
+            type: 'Double',
+            connected: false,
+            canConnect: true,
+            export: false,
+            drivingInput: true,
+            canToggleDrivingInput: true,
+            acceptedTypes: [
+                'Double',
+            ],
+            requiresConnection: true,
+            canHaveInitialValue: true,
+            initialValue: null,
+        },
+        {
+            id: 'ep_rTClNkQGSd2ZTa0cRHYsoQ',
+            name: 'B',
+            longName: 'SameSign.B',
+            type: 'Double',
+            connected: false,
+            canConnect: true,
+            export: false,
+            drivingInput: true,
+            canToggleDrivingInput: true,
+            acceptedTypes: [
+                'Double',
+            ],
+            requiresConnection: true,
+            canHaveInitialValue: true,
+            initialValue: null,
+        },
+    ],
+    outputs: [
+        {
+            id: 'ep_pW9yhlV6TjOQ3VbNKomSXg',
+            name: 'sameSign',
+            longName: 'SameSign.sameSign',
+            type: 'Boolean',
+            connected: false,
+            canConnect: true,
+            export: false,
+            noRepeat: false,
+            canBeNoRepeat: true,
+        },
+        {
+            id: 'ep_oTZhkEedRNGBscQNjobu0Q',
+            name: 'sign',
+            longName: 'SameSign.sign',
+            type: 'Double',
+            connected: false,
+            canConnect: true,
+            export: false,
+            noRepeat: false,
+            canBeNoRepeat: true,
+        },
+    ],
+    params: [],
 }

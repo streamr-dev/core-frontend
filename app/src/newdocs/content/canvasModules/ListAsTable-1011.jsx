@@ -1,21 +1,40 @@
-/* eslint-disable quotes, quote-props, indent, comma-dangle, max-len */
-import moduleDescription from './ListAsTable-1011.mdx'
+/* eslint-disable max-len */
+import moduleDescription from './ListAsTable-1011.md'
 
 export default {
-  "id": 1011,
-  "name": "ListAsTable",
-  "path": "Utils",
-  "help": {
-    "params": {},
-    "paramNames": [],
-    "inputs": {
-      "list": "List to be shown"
+    id: 1011,
+    name: 'ListAsTable',
+    path: 'Utils',
+    help: {
+        params: {},
+        paramNames: [],
+        inputs: {
+            list: 'List to be shown',
+        },
+        inputNames: [
+            'list',
+        ],
+        outputs: {},
+        outputNames: [],
+        helpText: moduleDescription,
     },
-    "inputNames": [
-      "list"
+    inputs: [
+        {
+            id: 'ep_UvgKz1imRfKBfLt3JgC-jQ',
+            name: 'list',
+            longName: 'ListAsTable.list',
+            type: 'List',
+            connected: false,
+            canConnect: true,
+            export: false,
+            drivingInput: true,
+            canToggleDrivingInput: true,
+            acceptedTypes: [
+                'List',
+            ],
+            requiresConnection: true,
+        },
     ],
-    "outputs": {},
-    "outputNames": [],
-    "helpText": moduleDescription
-  }
+    outputs: [],
+    params: [],
 }

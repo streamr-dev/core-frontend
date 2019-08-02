@@ -1,8 +1,0 @@
-{
-  "id": 1100,
-  "name": "PayByUse",
-  "path": "Integrations: Ethereum",
-  "help": {
-    "helpText": "PayByUse Ethereum contract"
-  }
-}

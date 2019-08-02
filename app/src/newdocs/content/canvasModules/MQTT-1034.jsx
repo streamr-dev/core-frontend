@@ -1,33 +1,150 @@
-/* eslint-disable quotes, quote-props, indent, comma-dangle, max-len */
-import moduleDescription from './MQTT-1034.mdx'
+/* eslint-disable max-len */
+import moduleDescription from './MQTT-1034.md'
 
 export default {
-  "id": 1034,
-  "name": "MQTT",
-  "path": "Integrations",
-  "help": {
-    "params": {
-      "URL": "URL of MQTT broker to listen to",
-      "topic": "MQTT topic",
-      "username": "MQTT username (optional)",
-      "password": "MQTT password (optional)",
-      "certType": "MQTT certificate type"
+    id: 1034,
+    name: 'MQTT',
+    path: 'Integrations',
+    help: {
+        params: {
+            URL: 'URL of MQTT broker to listen to',
+            topic: 'MQTT topic',
+            username: 'MQTT username (optional)',
+            password: 'MQTT password (optional)',
+            certType: 'MQTT certificate type',
+        },
+        paramNames: [
+            'URL',
+            'topic',
+            'username',
+            'password',
+            'certType',
+        ],
+        inputs: {},
+        inputNames: [],
+        outputs: {
+            message: 'MQTT message string',
+        },
+        outputNames: [
+            'message',
+        ],
+        helpText: moduleDescription,
     },
-    "paramNames": [
-      "URL",
-      "topic",
-      "username",
-      "password",
-      "certType"
+    inputs: [],
+    outputs: [
+        {
+            id: 'ep_ypuLtwtkQMK2dh8EX6sXXw',
+            name: 'message',
+            longName: 'MQTT.message',
+            type: 'String',
+            connected: false,
+            canConnect: true,
+            export: false,
+            noRepeat: false,
+            canBeNoRepeat: true,
+        },
     ],
-    "inputs": {},
-    "inputNames": [],
-    "outputs": {
-      "message": "MQTT message string"
-    },
-    "outputNames": [
-      "message"
+    params: [
+        {
+            id: 'ep_uaalpmMFRja29kHdyjqkqA',
+            name: 'URL',
+            longName: 'MQTT.URL',
+            type: 'String',
+            connected: false,
+            canConnect: false,
+            export: false,
+            value: '',
+            drivingInput: false,
+            canToggleDrivingInput: true,
+            acceptedTypes: [
+                'String',
+            ],
+            requiresConnection: false,
+            defaultValue: '',
+            isTextArea: false,
+        },
+        {
+            id: 'ep_RZJnx8AcSFK9h4uOhaSwtA',
+            name: 'topic',
+            longName: 'MQTT.topic',
+            type: 'String',
+            connected: false,
+            canConnect: false,
+            export: false,
+            value: '',
+            drivingInput: false,
+            canToggleDrivingInput: true,
+            acceptedTypes: [
+                'String',
+            ],
+            requiresConnection: false,
+            defaultValue: '',
+            isTextArea: false,
+        },
+        {
+            id: 'ep_us07XB6XQsyP1zmG-LKKIg',
+            name: 'username',
+            longName: 'MQTT.username',
+            type: 'String',
+            connected: false,
+            canConnect: false,
+            export: false,
+            value: '',
+            drivingInput: false,
+            canToggleDrivingInput: true,
+            acceptedTypes: [
+                'String',
+            ],
+            requiresConnection: false,
+            defaultValue: '',
+            isTextArea: false,
+        },
+        {
+            id: 'ep_tGmf1GiqQLeBkpwAmiFTyQ',
+            name: 'password',
+            longName: 'MQTT.password',
+            type: 'String',
+            connected: false,
+            canConnect: false,
+            export: false,
+            value: '',
+            drivingInput: false,
+            canToggleDrivingInput: true,
+            acceptedTypes: [
+                'String',
+            ],
+            requiresConnection: false,
+            defaultValue: '',
+            isTextArea: false,
+        },
+        {
+            id: 'ep_L-Hjp9AYR-mAL_DerljCaA',
+            name: 'certType',
+            longName: 'MQTT.certType',
+            type: 'String',
+            connected: false,
+            canConnect: true,
+            export: false,
+            value: 'none',
+            drivingInput: false,
+            canToggleDrivingInput: true,
+            acceptedTypes: [
+                'String',
+            ],
+            requiresConnection: false,
+            possibleValues: [
+                {
+                    name: 'none',
+                    value: 'none',
+                },
+                {
+                    name: '.crt',
+                    value: '.crt',
+                },
+            ],
+            defaultValue: 'none',
+            updateOnChange: true,
+            isTextArea: false,
+        },
     ],
-    "helpText": moduleDescription
-  }
 }

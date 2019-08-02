@@ -1,17 +1,142 @@
-/* eslint-disable quotes, quote-props, indent, comma-dangle, max-len */
-import moduleDescription from './Correlation-54.mdx'
+/* eslint-disable max-len */
+import moduleDescription from './Correlation-54.md'
 
 export default {
-  "id": 54,
-  "name": "Correlation",
-  "path": "Time Series: Statistics",
-  "help": {
-    "outputNames": [],
-    "inputs": {},
-    "helpText": moduleDescription,
-    "inputNames": [],
-    "params": {},
-    "outputs": {},
-    "paramNames": []
-  }
+    id: 54,
+    name: 'Correlation',
+    path: 'Time Series: Statistics',
+    help: {
+        outputNames: [],
+        inputs: {},
+        helpText: moduleDescription,
+        inputNames: [],
+        params: {},
+        outputs: {},
+        paramNames: [],
+    },
+    inputs: [
+        {
+            id: 'ep_KmK1FnxbTHydrC6euvCFrQ',
+            name: 'inX',
+            longName: 'Correlation.inX',
+            type: 'Double',
+            connected: false,
+            canConnect: true,
+            export: false,
+            drivingInput: true,
+            canToggleDrivingInput: true,
+            acceptedTypes: [
+                'Double',
+            ],
+            requiresConnection: true,
+            canHaveInitialValue: true,
+            initialValue: null,
+        },
+        {
+            id: 'ep_PS6TstubShizvW2Ib6THpA',
+            name: 'inY',
+            longName: 'Correlation.inY',
+            type: 'Double',
+            connected: false,
+            canConnect: true,
+            export: false,
+            drivingInput: true,
+            canToggleDrivingInput: true,
+            acceptedTypes: [
+                'Double',
+            ],
+            requiresConnection: true,
+            canHaveInitialValue: true,
+            initialValue: null,
+        },
+    ],
+    outputs: [
+        {
+            id: 'ep_Rfp3ASxMSMaKBO7NIXpIEw',
+            name: 'corr',
+            longName: 'Correlation.corr',
+            type: 'Double',
+            connected: false,
+            canConnect: true,
+            export: false,
+            noRepeat: false,
+            canBeNoRepeat: true,
+        },
+    ],
+    params: [
+        {
+            id: 'ep_HYSmY89PQQO9O350ppJyMg',
+            name: 'windowLength',
+            longName: 'Correlation.windowLength',
+            type: 'Double',
+            connected: false,
+            canConnect: true,
+            export: false,
+            value: 0,
+            drivingInput: false,
+            canToggleDrivingInput: true,
+            acceptedTypes: [
+                'Double',
+            ],
+            requiresConnection: false,
+            defaultValue: 0,
+        },
+        {
+            id: 'ep_oxibUSzbSDK80IRWyyhM1w',
+            name: 'windowType',
+            longName: 'Correlation.windowType',
+            type: 'String',
+            connected: false,
+            canConnect: true,
+            export: false,
+            value: 'events',
+            drivingInput: false,
+            canToggleDrivingInput: true,
+            acceptedTypes: [
+                'String',
+            ],
+            requiresConnection: false,
+            defaultValue: 'events',
+            isTextArea: false,
+            possibleValues: [
+                {
+                    name: 'events',
+                    value: 'EVENTS',
+                },
+                {
+                    name: 'seconds',
+                    value: 'SECONDS',
+                },
+                {
+                    name: 'minutes',
+                    value: 'MINUTES',
+                },
+                {
+                    name: 'hours',
+                    value: 'HOURS',
+                },
+                {
+                    name: 'days',
+                    value: 'DAYS',
+                },
+            ],
+        },
+        {
+            id: 'ep_kqM1c2fzSzKqUaprjtij4w',
+            name: 'minSamples',
+            longName: 'Correlation.minSamples',
+            type: 'Double',
+            connected: false,
+            canConnect: true,
+            export: false,
+            value: 2,
+            drivingInput: false,
+            canToggleDrivingInput: true,
+            acceptedTypes: [
+                'Double',
+            ],
+            requiresConnection: false,
+            defaultValue: 2,
+        },
+    ],
 }
