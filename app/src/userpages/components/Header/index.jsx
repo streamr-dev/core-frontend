@@ -37,54 +37,52 @@ const Header = ({
     user,
     noHeader,
 }: Props) => (
-    <React.Fragment>
-        <ListContainer className={cx(styles.listTemp, className)}>
-            {!noHeader && user &&
-                <div className={styles.profile}>
-                    <Avatar
-                        className={styles.avatar}
-                        user={user}
-                        linkToProfile
-                    />
-                    <div className={styles.additionalComponent}>
-                        {additionalComponent}
+    <ListContainer className={cx(styles.listTemp, className)}>
+        {!noHeader && user &&
+            <div className={styles.profile}>
+                <Avatar
+                    className={styles.avatar}
+                    user={user}
+                    linkToProfile
+                />
+                <div className={styles.additionalComponent}>
+                    {additionalComponent}
+                </div>
+            </div>
+        }
+        {!noHeader && (
+            <div className={styles.tabContainer} >
+                <div className={styles.tabBar}>
+                    <div className={styles.searchBar}>
+                        {searchComponent}
+                    </div>
+                    <div className={styles.tabs}>
+                        <Tab to={formatPath(userpages.streams)}>
+                            <Translate value="userpages.header.streams" />
+                        </Tab>
+                        <Tab to={formatPath(userpages.canvases)}>
+                            <Translate value="userpages.header.canvases" />
+                        </Tab>
+                        <Tab to={formatPath(userpages.dashboards)}>
+                            <Translate value="userpages.header.dashboards" />
+                        </Tab>
+                        <Tab to={formatPath(userpages.products)}>
+                            <Translate value="userpages.header.products" />
+                        </Tab>
+                        <Tab to={formatPath(userpages.purchases)}>
+                            <Translate value="userpages.header.purchases" />
+                        </Tab>
+                        <Tab to={formatPath(userpages.transactions)}>
+                            <Translate value="userpages.header.transactions" />
+                        </Tab>
                     </div>
                 </div>
-            }
-            {!noHeader && (
-                <div className={styles.tabContainer} >
-                    <div className={styles.tabBar}>
-                        <div className={styles.searchBar}>
-                            {searchComponent}
-                        </div>
-                        <div className={styles.tabs}>
-                            <Tab to={formatPath(userpages.streams)}>
-                                <Translate value="userpages.header.streams" />
-                            </Tab>
-                            <Tab to={formatPath(userpages.canvases)}>
-                                <Translate value="userpages.header.canvases" />
-                            </Tab>
-                            <Tab to={formatPath(userpages.dashboards)}>
-                                <Translate value="userpages.header.dashboards" />
-                            </Tab>
-                            <Tab to={formatPath(userpages.products)}>
-                                <Translate value="userpages.header.products" />
-                            </Tab>
-                            <Tab to={formatPath(userpages.purchases)}>
-                                <Translate value="userpages.header.purchases" />
-                            </Tab>
-                            <Tab to={formatPath(userpages.transactions)}>
-                                <Translate value="userpages.header.transactions" />
-                            </Tab>
-                        </div>
-                    </div>
-                    <div className={styles.filterBar}>
-                        {filterComponent}
-                    </div>
+                <div className={styles.filterBar}>
+                    {filterComponent}
                 </div>
-            )}
-        </ListContainer>
-    </React.Fragment>
+            </div>
+        )}
+    </ListContainer>
 )
 
 Header.defaultProps = {
