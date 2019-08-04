@@ -178,7 +178,6 @@ export class StreamShowView extends Component<Props, State> {
 
         return (
             <CoreLayout
-                noFooter
                 className={styles.streamShowView}
                 navComponent={(
                     <MediaQuery minWidth={lg.min}>

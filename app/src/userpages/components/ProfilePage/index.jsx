@@ -77,7 +77,6 @@ export class ProfilePage extends Component<Props, State> {
         const { saving } = this.state
         return (
             <CoreLayout
-                noFooter
                 className={styles.profilePage}
                 navComponent={(
                     <Toolbar
