@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Container, Row, Col, Button } from 'reactstrap'
+import { Button } from 'reactstrap'
 import { Translate, I18n } from 'react-redux-i18n'
 import Helmet from 'react-helmet'
 import { Link } from 'react-router-dom'
@@ -14,13 +14,15 @@ import type { StoreState } from '$userpages/flowtype/states/store-state'
 import type { DashboardList as DashboardListType } from '$userpages/flowtype/dashboard-types'
 import type { Filter, SortOption } from '$userpages/flowtype/common-types'
 import Layout from '$userpages/components/Layout'
-import { defaultColumns, getFilters } from '$userpages/utils/constants'
+import { getFilters } from '$userpages/utils/constants'
 import Tile from '$shared/components/Tile'
 import Search from '../../Header/Search'
 import Dropdown from '$shared/components/Dropdown'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
 import DashboardPreview from '$editor/dashboard/components/Preview'
 import styles from './dashboardList.pcss'
+import ListContainer from '$shared/components/Container/List'
+import TileGrid from '$shared/components/TileGrid'
 
 import NoDashboardsView from './NoDashboards'
 
@@ -131,7 +133,7 @@ class DashboardList extends Component<Props> {
                 loading={fetching}
             >
                 <Helmet title={`Streamr Core | ${I18n.t('userpages.title.dashboards')}`} />
-                <Container className={styles.corepageContentContainer} >
+                <ListContainer className={styles.corepageContentContainer} >
                     {!fetching && dashboards && dashboards.length <= 0 && (
                         <NoDashboardsView
                             hasFilter={!!filter && (!!filter.search || !!filter.key)}
@@ -140,20 +142,19 @@ class DashboardList extends Component<Props> {
                         />
                     )}
                     {dashboards && dashboards.length > 0 && (
-                        <Row>
+                        <TileGrid>
                             {dashboards.map((dashboard) => (
-                                <Col {...defaultColumns} key={dashboard.id}>
-                                    <Tile
-                                        link={`${links.editor.dashboardEditor}/${dashboard.id}`}
-                                        image={<DashboardPreview className={styles.PreviewImage} dashboard={dashboard} />}
-                                    >
-                                        <Tile.Title>{dashboard.name}</Tile.Title>
-                                    </Tile>
-                                </Col>
+                                <Tile
+                                    key={dashboard.id}
+                                    link={`${links.editor.dashboardEditor}/${dashboard.id}`}
+                                    image={<DashboardPreview className={styles.PreviewImage} dashboard={dashboard} />}
+                                >
+                                    <Tile.Title>{dashboard.name}</Tile.Title>
+                                </Tile>
                             ))}
-                        </Row>
+                        </TileGrid>
                     )}
-                </Container>
+                </ListContainer>
                 <DocsShortcuts />
             </Layout>
         )

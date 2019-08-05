@@ -3,7 +3,6 @@
 import React, { type Node } from 'react'
 import { connect } from 'react-redux'
 import cx from 'classnames'
-import { Container } from 'reactstrap'
 import { Translate } from 'react-redux-i18n'
 
 import type { User } from '$shared/flowtype/user-types'
@@ -13,7 +12,7 @@ import { userpages } from '../../../links'
 import Tab from './Tab'
 import { formatPath } from '$shared/utils/url'
 import Avatar from '$userpages/components/Avatar'
-
+import ListContainer from '$shared/components/Container/List'
 import styles from './header.pcss'
 
 type OwnProps = {
@@ -38,7 +37,7 @@ const Header = ({
     user,
     noHeader,
 }: Props) => (
-    <Container className={cx(className, styles.containerOverrides)}>
+    <ListContainer className={cx(styles.listTemp, className)}>
         {!noHeader && user &&
             <div className={styles.profile}>
                 <Avatar
@@ -83,7 +82,7 @@ const Header = ({
                 </div>
             </div>
         )}
-    </Container>
+    </ListContainer>
 )
 
 Header.defaultProps = {

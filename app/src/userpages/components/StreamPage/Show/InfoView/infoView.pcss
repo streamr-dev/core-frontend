@@ -3,31 +3,29 @@
 }
 
 .textInput {
-  margin-bottom: 2rem;
+  margin-bottom: 3rem;
 }
 
 .copyStreamIdButton {
-  margin-left: -86px;
-  margin-top: 22px;
   width: 128px;
   height: 32px;
+  margin-top: 24px;
 }
 
-@media (max-width: 1199px) {
+@media (--md-up) {
   .copyStreamIdButton {
-    margin-top: 18px;
+    margin-top: 10px;
   }
 }
 
-@media (--lg-down) {
+@media (--lg-up) {
   .copyStreamIdButton {
-    margin-left: initial;
+    margin-top: 16px;
   }
 }
 
-@media (--md-down) {
+@media (--xl) {
   .copyStreamIdButton {
-    margin-left: initial;
-    margin-top: 0;
+    margin-top: 24px;
   }
 }

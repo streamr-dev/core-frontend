@@ -2,7 +2,7 @@
 
 import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
-import { Container, Row, Col, Button } from 'reactstrap'
+import { Button } from 'reactstrap'
 import { Translate, I18n } from 'react-redux-i18n'
 import { Link } from 'react-router-dom'
 import { push } from 'connected-react-router'
@@ -12,7 +12,7 @@ import moment from 'moment'
 
 import Layout from '../Layout'
 import links from '../../../links'
-import { defaultColumns, getFilters } from '../../utils/constants'
+import { getFilters } from '../../utils/constants'
 import { getMyProducts, updateFilter } from '$mp/modules/myProductList/actions'
 import { selectMyProductList, selectFilter, selectFetching } from '$mp/modules/myProductList/selectors'
 import { productStates } from '$shared/utils/constants'
@@ -23,6 +23,8 @@ import { formatPath, formatExternalUrl } from '$shared/utils/url'
 import DropdownActions from '$shared/components/DropdownActions'
 import NoProductsView from './NoProducts'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
+import ListContainer from '$shared/components/Container/List'
+import TileGrid from '$shared/components/TileGrid'
 
 import type { ProductList, ProductId, Product } from '$mp/flowtype/product-types'
 import type { Filter, SortOption } from '$userpages/flowtype/common-types'
@@ -175,7 +177,7 @@ class ProductsPage extends Component<Props> {
                 loading={fetching}
             >
                 <Helmet title={`Streamr Core | ${I18n.t('userpages.title.products')}`} />
-                <Container className={styles.corepageContentContainer}>
+                <ListContainer className={styles.corepageContentContainer}>
                     {!fetching && products && !products.length && (
                         <NoProductsView
                             hasFilter={!!filter && (!!filter.search || !!filter.key)}
@@ -183,33 +185,32 @@ class ProductsPage extends Component<Props> {
                             onResetFilter={this.resetFilter}
                         />
                     )}
-                    <Row>
+                    <TileGrid>
                         {products.map((product) => (
-                            <Col {...defaultColumns} key={product.id}>
-                                <Tile
-                                    imageUrl={product.imageUrl}
-                                    link={product.id && `${links.marketplace.products}/${product.id}`}
-                                    dropdownActions={this.getActions(product)}
+                            <Tile
+                                key={product.id}
+                                imageUrl={product.imageUrl}
+                                link={product.id && `${links.marketplace.products}/${product.id}`}
+                                dropdownActions={this.getActions(product)}
+                            >
+                                <Tile.Title>{product.name}</Tile.Title>
+                                <Tile.Tag >
+                                    {product.updated === product.created ? 'Created ' : 'Updated '}
+                                    {product.updated && this.generateTimeAgoDescription(new Date(product.updated))}
+                                </Tile.Tag>
+                                <Tile.Tag
+                                    className={product.state === productStates.DEPLOYED ? styles.green : styles.grey}
                                 >
-                                    <Tile.Title>{product.name}</Tile.Title>
-                                    <Tile.Tag >
-                                        {product.updated === product.created ? 'Created ' : 'Updated '}
-                                        {product.updated && this.generateTimeAgoDescription(new Date(product.updated))}
-                                    </Tile.Tag>
-                                    <Tile.Tag
-                                        className={product.state === productStates.DEPLOYED ? styles.green : styles.grey}
-                                    >
-                                        {
-                                            product.state === productStates.DEPLOYED ?
-                                                <Translate value="userpages.products.published" /> :
-                                                <Translate value="userpages.products.draft" />
-                                        }
-                                    </Tile.Tag>
-                                </Tile>
-                            </Col>
+                                    {
+                                        product.state === productStates.DEPLOYED ?
+                                            <Translate value="userpages.products.published" /> :
+                                            <Translate value="userpages.products.draft" />
+                                    }
+                                </Tile.Tag>
+                            </Tile>
                         ))}
-                    </Row>
-                </Container>
+                    </TileGrid>
+                </ListContainer>
                 <DocsShortcuts />
             </Layout>
         )

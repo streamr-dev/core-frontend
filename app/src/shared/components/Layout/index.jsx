@@ -3,6 +3,7 @@
 import '$shared/styles/pcss'
 
 import React from 'react'
+import cx from 'classnames'
 
 import MobileNav from '$shared/components/MobileNav'
 import Nav from '$shared/components/Nav'
@@ -11,12 +12,16 @@ import styles from './layout.pcss'
 
 type Props = {
     footer?: boolean,
+    hideNavOnDesktop?: boolean,
 }
 
-const Layout = ({ footer = true, ...props }: Props = {}) => (
+const Layout = ({ footer = true, hideNavOnDesktop = false, ...props }: Props = {}) => (
     <div className={styles.framed}>
         <div className={styles.inner}>
-            <Nav className={styles.desktopNav} />
+            <Nav className={cx(styles.desktopNav, {
+                [styles.hideNavOnDesktop]: !!hideNavOnDesktop,
+            })}
+            />
             <MobileNav className={styles.mobileNav} />
             <div {...props} />
         </div>

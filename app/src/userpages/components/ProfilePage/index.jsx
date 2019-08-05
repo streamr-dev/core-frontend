@@ -4,13 +4,13 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { I18n } from 'react-redux-i18n'
 import { push } from 'connected-react-router'
-import cx from 'classnames'
 import Helmet from 'react-helmet'
 import MediaQuery from 'react-responsive'
 
 import { saveCurrentUser } from '$shared/modules/user/actions'
 import Toolbar from '$shared/components/Toolbar'
 import TOCPage from '$userpages/components/TOCPage'
+import DetailsContainer from '$shared/components/Container/Details'
 import ConfigureAnchorOffset from '$shared/components/ConfigureAnchorOffset'
 import { lg } from '$app/scripts/breakpoints'
 import links from '$shared/../links'
@@ -78,6 +78,7 @@ export class ProfilePage extends Component<Props, State> {
         return (
             <CoreLayout
                 className={styles.profilePage}
+                hideNavOnDesktop
                 navComponent={(
                     <Toolbar
                         altMobileLayout
@@ -102,7 +103,7 @@ export class ProfilePage extends Component<Props, State> {
                 <MediaQuery minWidth={lg.min}>
                     <ConfigureAnchorOffset value={-80} />
                 </MediaQuery>
-                <div className={cx('container', styles.containerOverrides)}>
+                <DetailsContainer className={styles.profilePage}>
                     <TOCPage title={I18n.t('userpages.profilePage.pageTitle')}>
                         <TOCPage.Section id="profile" title={I18n.t('userpages.profilePage.profile.title')}>
                             <ProfileSettings />
@@ -136,7 +137,7 @@ export class ProfilePage extends Component<Props, State> {
                             <DeleteAccount />
                         </TOCPage.Section>
                     </TOCPage>
-                </div>
+                </DetailsContainer>
             </CoreLayout>
         )
     }

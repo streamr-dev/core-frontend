@@ -1,3 +1,9 @@
+.root {
+  display: grid;
+  grid-template-columns: 11.25rem 1fr;
+  grid-column-gap: 4rem;
+}
+
 .pageTitle {
   color: var(--greyDark);
   font-size: 2.2rem;
@@ -9,11 +15,12 @@
 
 .tocList {
   list-style-type: none;
-  margin: 182px 4em 1em 0;
+  margin: 1rem 4rem 1rem 0;
   padding: 0;
   text-align: right;
   position: sticky;
   top: 7em;
+  width: 100%;
 }
 
 .tocListItem {
@@ -50,6 +57,10 @@
 }
 
 @media (--sm-down) {
+  .root {
+    display: block;
+  }
+
   .tocList {
     display: none;
   }
