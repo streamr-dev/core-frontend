@@ -17,7 +17,7 @@ echo "                      _____   ______      _     _  ______                 
 echo " ___ ___ ___ ___ ___ |_____] |_____/      |     | |_____/ |      ___ ___ ___ ___ ___";
 echo "                     |       |    \_      |_____| |    \_ |_____                    ";
 echo "                                                                                    ";
-aws cloudfront list-distributions | jq '[.DistributionList.Items[]  | {bucket: .Origins.Items[0].DomainName, url: .DomainName}]' | jq -r --arg S3_TRAVIS_PULL_REQUEST_SHA "$S3_TRAVIS_PULL_REQUEST_SHA" '.[] | select(.bucket==$S3_TRAVIS_PULL_REQUEST_SHA)'
+echo " http://streamr-marketplace-pr-$TRAVIS_PULL_REQUEST_SHA.s3-website-eu-west-1.amazonaws.com"
 echo "                      _____   ______      _     _  ______                           ";
 echo " ___ ___ ___ ___ ___ |_____] |_____/      |     | |_____/ |      ___ ___ ___ ___ ___";
 echo "                     |       |    \_      |_____| |    \_ |_____                    ";
