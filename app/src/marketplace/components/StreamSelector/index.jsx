@@ -135,6 +135,7 @@ export const StreamSelector = ({
                             className={classNames(styles.stream, {
                                 [styles.selected]: streamSet.has(stream.id),
                             })}
+                            title={[stream.name, stream.description].filter(Boolean).join('\n\n')}
                         >
                             <button
                                 type="button"
