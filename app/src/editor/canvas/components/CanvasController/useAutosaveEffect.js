@@ -40,7 +40,7 @@ export default function useAutosaveEffect() {
     }, [savingCanvasRef, currCanvasRef, canvasUpdater])
 
     const { isEditable } = runController
-    const { wrap: autosavePendingWrap } = usePending('canvas.AUTOSAVE')
+    const { start: autosaveStart, end: autosaveEnd } = usePending('canvas.AUTOSAVE')
 
     const canvasChanged = useMemo(() => (
         !isEqualCanvas(prevCanvas, canvas)
@@ -56,12 +56,16 @@ export default function useAutosaveEffect() {
         // no autosave if last seen server state is equivalent
         if (isEqualCanvas(lastServerStateRef.current, currentCanvas)) { return }
         savingCanvasRef.current = currentCanvas
-        autosavePendingWrap(() => services.autosave(currentCanvas))
+        services.autosave.once('run', autosaveStart)
+        services.autosave(currentCanvas)
             .then((...args) => {
+                autosaveEnd()
                 if (!isMounted()) { return }
                 if (savingCanvasRef.current !== currentCanvas) { return } // ignore if canvas to be saved changed
                 onAutosaveComplete(...args)
                 savingCanvasRef.current = undefined
+            }, () => {
+                autosaveEnd()
             })
-    }, [canvasChanged, autosavePendingWrap, savingCanvasRef, isEditable, isMounted, onAutosaveComplete])
+    }, [canvasChanged, autosaveStart, autosaveEnd, savingCanvasRef, isEditable, isMounted, onAutosaveComplete])
 }

@@ -41,6 +41,7 @@ export function CancellableDebounce(fn, waitTime) {
                 // capture debounced function
                 function run(...args) {
                     if (!canRun) { return } // noop if cancelled
+                    emitter.emit('run', ...args)
 
                     reset()
                     fn(...args).then((result) => {
@@ -96,6 +97,9 @@ export default function Autosave(saveFn, waitTime) {
         })
         .on('fail', (err, canvas = {}) => {
             console.warn('Autosave failed', canvas.id, err) // eslint-disable-line no-console
+        })
+        .on('run', (_, canvas = {}) => {
+            console.info('Autosaving...', canvas.id) // eslint-disable-line no-console
         })
         .on('start', () => {
             window.addEventListener('beforeunload', unsavedUnloadWarning)
