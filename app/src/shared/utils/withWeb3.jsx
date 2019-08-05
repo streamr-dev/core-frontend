@@ -65,7 +65,9 @@ export function withWeb3(WrappedComponent: ComponentType<any>) {
                 checkingWeb3: true,
                 web3Error: null,
             }, () => {
-                validateWeb3(getWeb3())
+                validateWeb3({
+                    web3: getWeb3(),
+                })
                     .then(() => {
                         if (!this.unmounted) {
                             this.setState({

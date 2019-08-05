@@ -41,7 +41,10 @@ const EthereumLogin = ({ onBackClick }: Props) => {
     const submit = useCallback(async () => {
         const web3 = await (async () => {
             try {
-                return await validateWeb3(getWeb3())
+                return await validateWeb3({
+                    web3: getWeb3(),
+                    checkNetwork: false,
+                })
             } catch (e) {
                 setFieldError('ethereum', e.message)
                 return null

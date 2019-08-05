@@ -63,7 +63,12 @@ export const getWeb3 = (): StreamrWeb3 => {
     })
 }
 
-export const validateWeb3 = async (_web3: Web3): Web3 => {
+type ValidateParams = {
+    web3: Web3,
+    checkNetwork?: boolean,
+}
+
+export const validateWeb3 = async ({ web3: _web3, checkNetwork = true }: ValidateParams): Web3 => {
     if ((_web3.isLegacy && !window.web3) ||
         (!_web3.isLegacy && !window.ethereum)) {
         throw new Web3NotSupportedError()
@@ -96,7 +101,9 @@ export const validateWeb3 = async (_web3: Web3): Web3 => {
     }
 
     // Validate correct network
-    await checkEthereumNetworkIsCorrect(_web3)
+    if (checkNetwork) {
+        await checkEthereumNetworkIsCorrect(_web3)
+    }
 
     return _web3
 }
