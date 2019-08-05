@@ -108,6 +108,7 @@ const ModuleMenuItem = ({ module, addModule }) => (
         onDragStart={(e) => { onDragStart(e, module.id, module.name) }}
         onClick={() => addModule(module.id)}
         className={styles.ModuleItem}
+        title={startCase(module.name)}
     >
         {startCase(module.name)}
     </SearchRow>
@@ -350,6 +351,7 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
                         draggable
                         onDragStart={(e) => { onDragStart(e, m.id, m.name) }}
                         onClick={() => this.addModule(m.id)}
+                        title={startCase(m.name)}
                     >
                         <span className={styles.ModuleName}>{startCase(m.name)}</span>
                         <span className={styles.ModuleCategory}>{m.path}</span>
@@ -366,8 +368,9 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
                         draggable
                         onDragStart={(e) => { onDragStart(e, STREAM_MODULE_ID, stream.name, stream.id) }}
                         onClick={() => this.addModule(STREAM_MODULE_ID, null, null, stream.id)}
+                        title={[stream.name, stream.description].filter(Boolean).join('\n\n')}
                     >
-                        {stream.name}
+                        <span className={styles.StreamName}>{stream.name}</span>
                         <div className={styles.Description}>{stream.description || 'No description'}</div>
                     </SearchRow>
                 ))}
