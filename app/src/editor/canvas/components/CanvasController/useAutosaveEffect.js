@@ -1,6 +1,5 @@
 import { useContext, useEffect, useRef, useCallback, useMemo } from 'react'
 import useIsMounted from '$shared/hooks/useIsMounted'
-import usePending from '$shared/hooks/usePending'
 
 import * as services from '../../services'
 import * as CanvasState from '../../state'
@@ -40,7 +39,6 @@ export default function useAutosaveEffect() {
     }, [savingCanvasRef, currCanvasRef, canvasUpdater])
 
     const { isEditable } = runController
-    const { start: autosaveStart, end: autosaveEnd } = usePending('canvas.AUTOSAVE')
 
     const canvasChanged = useMemo(() => (
         !isEqualCanvas(prevCanvas, canvas)
@@ -56,16 +54,12 @@ export default function useAutosaveEffect() {
         // no autosave if last seen server state is equivalent
         if (isEqualCanvas(lastServerStateRef.current, currentCanvas)) { return }
         savingCanvasRef.current = currentCanvas
-        services.autosave.once('run', autosaveStart)
         services.autosave(currentCanvas)
             .then((...args) => {
-                autosaveEnd()
                 if (!isMounted()) { return }
                 if (savingCanvasRef.current !== currentCanvas) { return } // ignore if canvas to be saved changed
                 onAutosaveComplete(...args)
                 savingCanvasRef.current = undefined
-            }, () => {
-                autosaveEnd()
             })
-    }, [canvasChanged, autosaveStart, autosaveEnd, savingCanvasRef, isEditable, isMounted, onAutosaveComplete])
+    }, [canvasChanged, savingCanvasRef, isEditable, isMounted, onAutosaveComplete])
 }
