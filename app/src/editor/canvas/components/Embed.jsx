@@ -7,7 +7,7 @@ import { Translate, I18n } from 'react-redux-i18n'
 
 import BodyClass, { PAGE_SECONDARY } from '$shared/components/BodyClass'
 import EmptyState from '$shared/components/EmptyState'
-import Layout from '$mp/components/Layout'
+import Layout from '$shared/components/Layout'
 import links from '../../../links'
 import pageNotFoundPic from '$shared/assets/images/404_blocks.png'
 import pageNotFoundPic2x from '$shared/assets/images/404_blocks@2x.png'

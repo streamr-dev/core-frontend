@@ -8,7 +8,7 @@ import { I18n } from 'react-redux-i18n'
 
 import ProductsComponent from '../../components/Products'
 import ActionBar from '../../components/ActionBar'
-import Layout from '../../components/Layout'
+import Layout from '$shared/components/Layout'
 
 import type { StoreState } from '../../flowtype/store-state'
 import type { ProductList, Filter } from '../../flowtype/product-types'

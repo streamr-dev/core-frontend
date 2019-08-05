@@ -71,9 +71,28 @@ export type ResourceKeyState = {
     fetching: boolean
 }
 
+// i18n
+export type Locale = string
+
+export type Translations = {
+    [Locale]: string | {
+        language: {
+            name: string,
+            [string]: string,
+        },
+        [string]: string | {},
+    },
+}
+
+export type I18nState = {
+    translations: Translations,
+    locale: Locale,
+}
+
 export type StoreState = MarketplaceStoreState & UserPagesStoreState & {
     entities: EntitiesState,
     user: UserState,
     integrationKey: IntegrationKeyState,
     resourceKey: ResourceKeyState,
+    i18n: I18nState,
 }

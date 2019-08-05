@@ -16,7 +16,7 @@ import type { User } from '$shared/flowtype/user-types'
 import ConfirmNoCoverImageDialog from '$mp/components/Modal/ConfirmNoCoverImageDialog'
 import SaveProductDialog from '$mp/containers/EditProductPage/SaveProductDialog'
 import ProductPageEditorComponent from '$mp/components/ProductPageEditor'
-import Layout from '$mp/components/Layout'
+import Layout from '$shared/components/Layout'
 import links from '$mp/../links'
 
 import { selectContractProduct } from '$mp/modules/contractProduct/selectors'

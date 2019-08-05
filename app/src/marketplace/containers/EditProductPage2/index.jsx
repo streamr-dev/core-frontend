@@ -5,7 +5,7 @@ import { Container } from 'reactstrap'
 import { withRouter } from 'react-router-dom'
 import cx from 'classnames'
 
-import Layout from '$mp/components/Layout'
+import Layout from '$shared/components/Layout'
 import * as UndoContext from '$shared/components/UndoContextProvider'
 
 import ProductController from '../ProductController'

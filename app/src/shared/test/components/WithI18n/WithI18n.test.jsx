@@ -2,7 +2,7 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
 
-import { withI18n } from '$mp/containers/WithI18n'
+import { withI18n } from '$shared/containers/WithI18n'
 import mockStore from '$testUtils/mockStoreProvider'
 
 /* eslint-disable react/prefer-stateless-function */

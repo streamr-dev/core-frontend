@@ -4,7 +4,7 @@ import React, { type ComponentType } from 'react'
 import { connect } from 'react-redux'
 import { createSelector } from 'reselect'
 
-import type { StoreState, I18nState, Translations, Locale } from '../../flowtype/store-state'
+import type { StoreState, I18nState, Translations, Locale } from '$shared/flowtype/store-state'
 
 type StateProps = {
     locale: Locale,
