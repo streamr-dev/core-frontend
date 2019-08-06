@@ -1,16 +1,37 @@
 // @flow
 
 import React from 'react'
+import cx from 'classnames'
 
 import useValidation from '../ProductController/useValidation'
+import SvgIcon from '$shared/components/SvgIcon'
+import styles from './editorNav.pcss'
 
 const Error = () => (
-    <strong style={{
-        color: 'red',
-    }}
-    >
-        !
-    </strong>
+    <div className={styles.errorMarker}>
+        <SvgIcon name="crossHeavy" className={styles.icon} />
+    </div>
+)
+
+const Ok = () => (
+    <div className={styles.okMarker}>
+        <SvgIcon name="tick" className={styles.icon} />
+    </div>
+)
+
+type NavSectioProps = {
+    title: string,
+    hasError?: boolean,
+}
+
+const NavSection = ({ title, hasError = false }: NavSectioProps) => (
+    <div className={styles.navSection}>
+        <div className={styles.title}>{title}</div>
+        <div className={styles.status}>
+            <div className={styles.marker} />
+            {hasError ? <Error /> : <Ok />}
+        </div>
+    </div>
 )
 
 const EditorNav = () => {
@@ -22,14 +43,15 @@ const EditorNav = () => {
     const { isValid: isAdminFeeValid } = useValidation('adminFee')
 
     return (
-        <ul>
-            <li>Name {!isNameValid && (<Error />)}</li>
-            <li>Cover image {!isCoverImageValid && (<Error />)}</li>
-            <li>Description {!isDescriptionValid && (<Error />)}</li>
-            <li>Streams {!areStreamsValid && (<Error />)}</li>
-            <li>Set price</li>
-            <li>Details {(!isCategoryValid || !isAdminFeeValid) && (<Error />)}</li>
-        </ul>
+        <div className={cx(styles.root, styles.EditorNav)}>
+            <div className={styles.track} />
+            <NavSection title="Name" hasError={!isNameValid} />
+            <NavSection title="Cover image" hasError={!isCoverImageValid} />
+            <NavSection title="Description" hasError={!isDescriptionValid} />
+            <NavSection title="Streams" hasError={!areStreamsValid} />
+            <NavSection title="Set price" />
+            <NavSection title="Details" hasError={(!isCategoryValid || !isAdminFeeValid)} />
+        </div>
     )
 }
 

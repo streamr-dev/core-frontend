@@ -1,0 +1,79 @@
+.root {
+  position: relative;
+  font-size: 1rem;
+  font-weight: var(--medium);
+  letter-spacing: 0;
+  line-height: 2rem;
+}
+
+.EditorNav {}
+
+.track {
+  position: absolute;
+  width: 1px;
+  background-color: #E7E7E7;
+  right: 10px;
+  top: 15px;
+  bottom: 15px;
+}
+
+.navSection {
+  display: grid;
+  grid-template-columns: 1fr 20px;
+  grid-column-gap: 1rem;
+}
+
+.title {
+  position: relative;
+  text-align: right;
+}
+
+.status {
+  position: relative;
+}
+
+.marker {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 4.5px;
+  width: 9px;
+  height: 9px;
+  background-color: #E7E7E7;
+}
+
+.errorMarker {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #F8F8F8;
+  border: 1.5px solid #FF5C00;
+  height: 16px;
+  width: 16px;
+  border-radius: 8px;
+  color: #FF5C00;
+}
+
+.okMarker {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #F8F8F8;
+  border: 1.5px solid #0324FF;
+  height: 16px;
+  width: 16px;
+  border-radius: 8px;
+  color: #0324FF;
+}
+
+.icon {
+  width: 6px;
+  height: 6px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
