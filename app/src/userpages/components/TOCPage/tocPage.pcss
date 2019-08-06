@@ -1,6 +1,6 @@
 .root {
   display: grid;
-  grid-template-columns: 11.25rem 1fr;
+  grid-template-columns: 160px 1fr;
   grid-column-gap: 4rem;
 }
 
@@ -73,5 +73,11 @@
       pointer-events: none;
       cursor: default;
     }
+  }
+}
+
+@media (--xl) {
+  .root {
+    grid-template-columns: 190px 1fr;
   }
 }
