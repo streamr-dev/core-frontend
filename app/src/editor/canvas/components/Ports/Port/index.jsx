@@ -9,6 +9,7 @@ import useKeyDown from '$shared/hooks/useKeyDown'
 
 import { isPortInvisible, isPortRenameDisabled } from '../../../state'
 import { DragDropContext } from '../../DragDropContext'
+import * as RunController from '../../CanvasController/Run'
 import Option from '../Option'
 import Plug from '../Plug'
 import Menu from '../Menu'
@@ -35,7 +36,7 @@ const Port = ({
     port,
     setOptions,
 }: Props) => {
-    const isRunning = canvas.state === 'RUNNING'
+    const { isEditable } = useContext(RunController.Context)
     const isInput = !!port.acceptedTypes
     const isParam = 'defaultValue' in port
     const hasInputField = isParam || port.canHaveInitialValue
@@ -121,7 +122,7 @@ const Port = ({
     }, [port.value, onSizeChange])
 
     const isInvisible = isPortInvisible(canvas, port.id)
-    const isRenameDisabled = isPortRenameDisabled(canvas, port.id)
+    const isRenameDisabled = !isEditable || isPortRenameDisabled(canvas, port.id)
 
     return (
         <div
@@ -144,7 +145,7 @@ const Port = ({
                 <Option
                     activated={!!port.drivingInput}
                     className={styles.portOption}
-                    disabled={!!isRunning}
+                    disabled={!isEditable}
                     name="drivingInput"
                     onToggle={onOptionToggle}
                 />
@@ -168,6 +169,7 @@ const Port = ({
                         canvas={canvas}
                         port={port}
                         onChange={onValueChange}
+                        disabled={!isEditable}
                     />
                 </Cell>
             )}
@@ -176,7 +178,7 @@ const Port = ({
                 <Option
                     activated={!!port.noRepeat}
                     className={styles.portOption}
-                    disabled={!!isRunning}
+                    disabled={!isEditable}
                     name="noRepeat"
                     onToggle={onOptionToggle}
                 />
