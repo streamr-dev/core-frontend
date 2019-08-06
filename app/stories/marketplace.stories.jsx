@@ -13,6 +13,7 @@ import Products from '$mp/components/Products'
 import ProductTypeChooser from '$mp/components/ProductTypeChooser'
 import MarkdownEditor from '$mp/components/MarkdownEditor'
 import SetPrice from '$mp/components/SetPrice'
+import BeneficiaryAddress from '$mp/containers/EditProductPage2/BeneficiaryAddress'
 import exampleProductList from './exampleProductList'
 
 const story = (name) => storiesOf(`Marketplace/${name}`, module)
@@ -77,4 +78,21 @@ story('SetPrice')
     .addDecorator(withKnobs)
     .addWithJSX('basic', () => (
         <SetPriceController />
+    ))
+
+const BeneficiaryAddressController = () => {
+    const [address, setAddress] = useState('0x1234')
+
+    return (
+        <BeneficiaryAddress
+            address={address}
+            onChange={setAddress}
+            disabled={boolean('disabled', false)}
+        />
+    )
+}
+
+story('BeneficiaryAddress')
+    .addWithJSX('basic', () => (
+        <BeneficiaryAddressController />
     ))
