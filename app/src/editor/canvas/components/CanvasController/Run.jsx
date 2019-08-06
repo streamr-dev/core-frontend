@@ -38,6 +38,7 @@ function useRunController(canvas = EMPTY) {
     const stopPending = usePending('canvas.STOP')
     const exitPending = usePending('canvas.EXIT')
     const unlinkPending = usePending('canvas.UNLINK')
+    const loadPending = usePending('canvas.LOAD')
 
     const [isStarting, setIsStarting] = useState(false) // true immediately before starting a canvas
     const [isStopping, setIsStopping] = useState(false) // true immediately before stopping a canvas
@@ -131,6 +132,7 @@ function useRunController(canvas = EMPTY) {
     useCanvasStateChangeEffect(canvas, useCallback(() => setIsStopping(false), [setIsStopping]))
 
     const isAnyPending = [
+        loadPending,
         createAdhocPending,
         startPending,
         stopPending,
