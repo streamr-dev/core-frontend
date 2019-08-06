@@ -22,14 +22,19 @@ const Ok = () => (
 type NavSectioProps = {
     title: string,
     hasError?: boolean,
+    touched?: boolean,
+    connectToPrevious?: boolean,
 }
 
-const NavSection = ({ title, hasError = false }: NavSectioProps) => (
+const NavSection = ({ title, hasError = false, touched = false, connectToPrevious = false }: NavSectioProps) => (
     <div className={styles.navSection}>
         <div className={styles.title}>{title}</div>
         <div className={styles.status}>
+            {!!touched && !!connectToPrevious && (
+                <div className={styles.connectTrack} />
+            )}
             <div className={styles.marker} />
-            {hasError ? <Error /> : <Ok />}
+            {!!touched && (hasError ? <Error /> : <Ok />)}
         </div>
     </div>
 )
@@ -45,8 +50,17 @@ const EditorNav = () => {
     return (
         <div className={cx(styles.root, styles.EditorNav)}>
             <div className={styles.track} />
-            <NavSection title="Name" hasError={!isNameValid} />
-            <NavSection title="Cover image" hasError={!isCoverImageValid} />
+            <NavSection
+                title="Name"
+                hasError={!isNameValid}
+                touched
+            />
+            <NavSection
+                title="Cover image"
+                hasError={!isCoverImageValid}
+                touched
+                connectToPrevious
+            />
             <NavSection title="Description" hasError={!isDescriptionValid} />
             <NavSection title="Streams" hasError={!areStreamsValid} />
             <NavSection title="Set price" />

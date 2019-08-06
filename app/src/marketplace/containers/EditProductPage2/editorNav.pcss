@@ -1,9 +1,10 @@
 .root {
-  position: relative;
   font-size: 1rem;
   font-weight: var(--medium);
   letter-spacing: 0;
   line-height: 2rem;
+  position: sticky;
+  top: 7rem;
 }
 
 .EditorNav {}
@@ -15,6 +16,18 @@
   right: 10px;
   top: 15px;
   bottom: 15px;
+  z-index: 0;
+}
+
+.connectTrack {
+  position: absolute;
+  width: 1.5px;
+  background-color: #0324FF;
+  left: 50%;
+  bottom: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+  height: 40px;
 }
 
 .navSection {
@@ -41,6 +54,7 @@
   width: 9px;
   height: 9px;
   background-color: #E7E7E7;
+  z-index: 2;
 }
 
 .errorMarker {
@@ -54,6 +68,7 @@
   width: 16px;
   border-radius: 8px;
   color: #FF5C00;
+  z-index: 3;
 }
 
 .okMarker {
@@ -67,6 +82,7 @@
   width: 16px;
   border-radius: 8px;
   color: #0324FF;
+  z-index: 3;
 }
 
 .icon {
@@ -76,4 +92,5 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  z-index: 4;
 }
