@@ -86,3 +86,18 @@ export const selectPermissions: (StoreState) => ?Array<Operation> = createSelect
     selectUserPageStreamsState,
     (subState: UserPageStreamsState): ?Array<Operation> => subState.permissions,
 )
+
+export const selectPageSize: (StoreState) => number = createSelector(
+    selectUserPageStreamsState,
+    (subState: UserPageStreamsState): number => subState.pageSize,
+)
+
+export const selectOffset: (StoreState) => number = createSelector(
+    selectStreamIds,
+    (subState: StreamIdList): number => subState.length,
+)
+
+export const selectHasMoreSearchResults: (StoreState) => boolean = createSelector(
+    selectUserPageStreamsState,
+    (subState: UserPageStreamsState): boolean => !!subState.hasMoreSearchResults,
+)

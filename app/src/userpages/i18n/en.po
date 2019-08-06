@@ -431,6 +431,21 @@ msgstr "No transactions."
 msgid "userpages##transactions##noTransactions##message"
 msgstr "You haven't made any transactions yet."
 
+msgid "userpages##transactions##noAccountsLinked##linkAccount"
+msgstr "Link account"
+
+msgid "userpages##transactions##noAccountsLinked##title"
+msgstr "Account not linked."
+
+msgid "userpages##transactions##noAccountsLinked##message"
+msgstr "You need to link an Ethereum account to see your transaction history."
+
+msgid "userpages##transactions##currentAccountNotLinked##title"
+msgstr "Account not linked."
+
+msgid "userpages##transactions##currentAccountNotLinked##message"
+msgstr "You need to link the current Ethereum account to see your transaction history."
+
 msgid "userpages##dashboards##createDashboard"
 msgstr "Create dashboard"
 
@@ -718,6 +733,9 @@ msgstr "You have connected an Ethereum address to your account"
 msgid "modal##shareResource##defaultTitle"
 msgstr "Share %{resourceTitle}"
 
+msgid "modal##shareResource##embedInactiveWarning"
+msgstr "Make your canvas public to enable embedding"
+
 msgid "modal##shareResource##anonymousAccess"
 msgstr "Who can access this?"
 
@@ -744,6 +762,27 @@ msgstr "Streamr user"
 
 msgid "modal##shareResource##save"
 msgstr "Share"
+
+msgid "modal##shareResource##tabs##share"
+msgstr "Share settings"
+
+msgid "modal##shareResource##tabs##embed"
+msgstr "Embed"
+
+msgid "modal##shareResource##embedCode"
+msgstr "Embed code"
+
+msgid "modal##shareResource##copy"
+msgstr "Copy"
+
+msgid "modal##shareResource##copied"
+msgstr "Copied"
+
+msgid "modal##shareResource##copyLink"
+msgstr "Copy link"
+
+msgid "modal##shareResource##linkCopied"
+msgstr "Link copied"
 
 msgid "modal##copySnippet##defaultTitle"
 msgstr "Copy Snippet"

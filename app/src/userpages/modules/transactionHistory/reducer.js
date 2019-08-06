@@ -58,7 +58,7 @@ const transactionHistory = (state: TransactionHistoryState = initialState, actio
             return {
                 ...state,
                 ids: [...ids],
-                offset: Math.min((state.offset + action.ids.length) - 1, 0),
+                offset: Math.max((state.offset + action.ids.length) - 1, 0),
                 fetching: false,
             }
         }

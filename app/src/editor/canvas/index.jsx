@@ -8,7 +8,8 @@ import ErrorComponentView from '$shared/components/ErrorComponentView'
 
 import links from '../../links'
 
-import UndoContainer, { UndoControls } from '$editor/shared/components/UndoContainer'
+import UndoControls from '$editor/shared/components/UndoControls'
+import * as UndoContext from '$shared/components/UndoContextProvider'
 import Subscription from '$editor/shared/components/Subscription'
 import * as SubscriptionStatus from '$editor/shared/components/SubscriptionStatus'
 import { ClientProvider } from '$editor/shared/components/Client'
@@ -127,17 +128,20 @@ const CanvasEditComponent = class CanvasEdit extends Component {
     }
 
     async autosave() {
-        const { canvas, runController } = this.props
+        const { canvas, runController, canvasController } = this.props
         if (this.isDeleted) { return } // do not autosave deleted canvases
         if (!runController.isEditable) {
             // do not autosave running/adhoc canvases or if we have no write permission
             return
         }
 
+        const changed = canvasController.changedLoader.resetChanged()
+
         const newCanvas = await services.autosave(canvas)
         if (this.unmounted) { return }
         // ignore new canvas, just extract updated time from it
         this.props.setUpdated(newCanvas.updated)
+        this.props.replace((canvas) => this.props.canvasController.changedLoader.loadChanged(changed, canvas, newCanvas))
     }
 
     removeModule = async ({ hash }) => {
@@ -160,6 +164,19 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         this.setCanvas(action, (canvas) => (
             CanvasState.addModule(canvas, moduleData)
         ))
+    }
+
+    addAndSelectModule = async (...args) => {
+        this.latestAdd = ((this.latestAdd + 1) || 0)
+        const currentAdd = this.latestAdd
+        await this.addModule(...args)
+        if (this.unmounted) { return }
+        const { canvas } = this.props
+        // assume last module is most recently added
+        const newModule = canvas.modules[canvas.modules.length - 1]
+        // only select if still latest
+        if (this.latestAdd !== currentAdd || !newModule) { return }
+        this.selectModule(newModule)
     }
 
     duplicateCanvas = async () => {
@@ -198,35 +215,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         try {
             const moduleData = await canvasController.loadModule(canvas, { hash })
             if (this.unmounted) { return }
-            replace((canvas) => {
-                const prevModule = CanvasState.getModule(canvas, hash)
-                let nextCanvas = CanvasState.updateModule(canvas, hash, () => moduleData)
-                nextCanvas = CanvasState.updateModulePortConnections(nextCanvas, hash)
-                const newModule = CanvasState.getModule(nextCanvas, hash)
-
-                // Restore input connections
-                nextCanvas = newModule.inputs.reduce((nextCanvas, { id, sourceId }) => {
-                    const port = prevModule.inputs.find((p) => id === p.id)
-
-                    if (sourceId && port) {
-                        return CanvasState.connectPorts(nextCanvas, port.id, sourceId)
-                    }
-
-                    return nextCanvas
-                }, nextCanvas)
-
-                nextCanvas = newModule.params.reduce((nextCanvas, { id, sourceId }) => {
-                    const port = prevModule.params.find((p) => id === p.id)
-
-                    if (sourceId && port) {
-                        return CanvasState.connectPorts(nextCanvas, port.id, sourceId)
-                    }
-
-                    return nextCanvas
-                }, nextCanvas)
-
-                return nextCanvas
-            })
+            replace((canvas) => CanvasState.replaceModule(canvas, moduleData))
         } catch (error) {
             console.error(error.message)
             // undo value change
@@ -266,6 +255,8 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         this.setCanvas({ type: 'Set Module Options' }, (canvas) => (
             CanvasState.setModuleOptions(canvas, hash, options)
         ))
+
+        this.props.canvasController.changedLoader.markChanged(hash)
     }
 
     setRunTab = (runTab) => {
@@ -432,7 +423,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                     )}
                 </Sidebar>
                 <ModuleSearch
-                    addModule={this.addModule}
+                    addModule={this.addAndSelectModule}
                     isOpen={this.state.moduleSearchIsOpen}
                     open={this.moduleSearchOpen}
                     canvas={canvas}
@@ -462,7 +453,7 @@ const CanvasEdit = withRouter(({ canvas, ...props }) => {
 
 const CanvasEditWrap = () => {
     const { replaceCanvas, setCanvas } = useCanvasUpdater()
-    const { undo } = useContext(UndoContainer.Context)
+    const { undo } = useContext(UndoContext.Context)
     const canvas = useCanvas()
     if (!canvas) {
         return (
@@ -494,12 +485,12 @@ function isDisabled({ state: canvas }) {
 
 const CanvasContainer = withRouter(withErrorBoundary(ErrorComponentView)((props) => (
     <ClientProvider>
-        <UndoContainer key={props.match.params.id}>
+        <UndoContext.Provider key={props.match.params.id}>
             <UndoControls disabled={isDisabled} />
             <CanvasController.Provider>
                 <CanvasEditWrap />
             </CanvasController.Provider>
-        </UndoContainer>
+        </UndoContext.Provider>
     </ClientProvider>
 )))
 

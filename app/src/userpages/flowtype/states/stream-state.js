@@ -26,4 +26,6 @@ export type UserPageStreamsState = {
     deleteDataError?: ?ErrorInUi,
     autodetectFetching: boolean,
     permissions: ?Array<Operation>,
+    pageSize: number,
+    hasMoreSearchResults: ?boolean,
 }

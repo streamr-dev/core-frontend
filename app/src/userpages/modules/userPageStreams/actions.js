@@ -20,7 +20,7 @@ import CsvSchemaError from '$shared/errors/CsvSchemaError'
 import { formatApiUrl } from '$shared/utils/url'
 
 import * as services from './services'
-import { selectFilter, selectOpenStream } from './selectors'
+import { selectFilter, selectOpenStream, selectPageSize, selectOffset } from './selectors'
 
 export const GET_STREAM_REQUEST = 'userpages/streams/GET_STREAM_REQUEST'
 export const GET_STREAM_SUCCESS = 'userpages/streams/GET_STREAM_SUCCESS'
@@ -29,6 +29,7 @@ export const GET_STREAM_FAILURE = 'userpages/streams/GET_STREAM_FAILURE'
 export const GET_STREAMS_REQUEST = 'userpages/streams/GET_STREAMS_REQUEST'
 export const GET_STREAMS_SUCCESS = 'userpages/streams/GET_STREAMS_SUCCESS'
 export const GET_STREAMS_FAILURE = 'userpages/streams/GET_STREAMS_FAILURE'
+export const CLEAR_STREAM_LIST = 'userpages/streams/CLEAR_STREAM_LIST'
 
 export const GET_MY_STREAM_PERMISSIONS_REQUEST = 'userpages/streams/GET_MY_STREAM_PERMISSIONS_REQUEST'
 export const GET_MY_STREAM_PERMISSIONS_SUCCESS = 'userpages/streams/GET_MY_STREAM_PERMISSIONS_SUCCESS'
@@ -108,12 +109,13 @@ const getStreamFailure = (error: ErrorInUi) => ({
 })
 
 const getStreamsRequest = () => ({
-    type: GET_STREAM_REQUEST,
+    type: GET_STREAMS_REQUEST,
 })
 
-const getStreamsSuccess = (streams: StreamIdList) => ({
+const getStreamsSuccess = (streams: StreamIdList, hasMoreResults: boolean) => ({
     type: GET_STREAMS_SUCCESS,
     streams,
+    hasMoreResults,
 })
 
 const getStreamsFailure = (error: ErrorInUi) => ({
@@ -254,6 +256,14 @@ const getStreamRangeRequest = () => ({
     type: GET_STREAM_RANGE_REQUEST,
 })
 
+const clearStreamsListAction = () => ({
+    type: CLEAR_STREAM_LIST,
+})
+
+export const clearStreamsList = () => (dispatch: Function) => (
+    dispatch(clearStreamsListAction())
+)
+
 export const getStream = (id: StreamId) => (dispatch: Function) => {
     dispatch(getStreamRequest())
     return services.getStream(id)
@@ -309,25 +319,35 @@ export const cancelStreamStatusFetch = () => {
     streamStatusCancel()
 }
 
-export const getStreams = () => (dispatch: Function, getState: Function) => {
+export const getStreams = (replace: ?boolean = false) => (dispatch: Function, getState: Function) => {
     dispatch(getStreamsRequest())
 
-    const filter = selectFilter(getState())
+    const state = getState()
+    const filter = selectFilter(state)
     const params = getParamsForFilter(filter, {
         uiChannel: false,
         sortBy: 'lastUpdated',
     })
+    const pageSize = selectPageSize(state)
+    let offset = selectOffset(state)
+
+    // If we are replacing, reset the offset before API call
+    if (replace) {
+        offset = 0
+    }
 
     streamStatusCancel()
 
-    return services.getStreams(params)
-        .then((data) => data.map((stream) => ({
-            ...stream,
-            streamStatus: 'inactive',
-        })))
-        .then(handleEntities(streamsSchema, dispatch))
-        .then((ids) => {
-            dispatch(getStreamsSuccess(ids))
+    return services.getStreams(params, pageSize, offset)
+        .then(({ streams, hasMoreResults }) => {
+            const ids = handleEntities(streamsSchema, dispatch)(streams.map((stream) => ({
+                ...stream,
+                streamStatus: 'inactive',
+            })))
+            if (replace) {
+                dispatch(clearStreamsListAction())
+            }
+            dispatch(getStreamsSuccess(ids, hasMoreResults))
             streamStatusCancel = dispatch(updateStreamStatuses(ids))
         })
         .catch((e) => {

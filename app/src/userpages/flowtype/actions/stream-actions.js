@@ -43,6 +43,7 @@ export type StreamAction = {
 } | {
     type: typeof GET_STREAMS_SUCCESS,
     streams: StreamIdList,
+    hasMoreResults: boolean,
 } | {
     type: typeof GET_MY_STREAM_PERMISSIONS_SUCCESS,
     id: StreamId,

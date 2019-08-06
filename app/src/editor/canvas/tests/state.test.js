@@ -3,6 +3,8 @@ import { setupAuthorizationHeader, loadModuleDefinition } from '$editor/shared/t
 import * as State from '../state'
 import * as Services from '../services'
 
+import './utils'
+
 const portMatcher = {
     id: expect.any(String),
     name: expect.any(String),
@@ -246,6 +248,47 @@ describe('Canvas State', () => {
                     })
                     expect(canvas.settings.beginDate).toEqual(beginDate)
                     expect(canvas.settings.endDate).toEqual(beginDate)
+                })
+            })
+
+            describe('{set,get}PortUserValue', () => {
+                it('should coerce numberish values to numbers for Double type', async () => {
+                    let canvas = State.emptyCanvas()
+                    canvas = State.addModule(canvas, await loadModuleDefinition('Equals'))
+                    const [equalsModule] = canvas.modules
+                    // params[0] is 'tolerance', of Double type
+                    // coerce empty string to undefined
+                    canvas = State.updateCanvas(State.setPortUserValue(canvas, equalsModule.params[0].id, ''))
+                    expect(State.getPortUserValue(canvas, equalsModule.params[0].id)).toBe(undefined)
+                    // handles commas
+                    canvas = State.updateCanvas(State.setPortUserValue(canvas, equalsModule.params[0].id, '2,3'))
+                    expect(State.getPortUserValue(canvas, equalsModule.params[0].id)).toBe('2.3')
+                    // handles zero
+                    canvas = State.updateCanvas(State.setPortUserValue(canvas, equalsModule.params[0].id, '0'))
+                    expect(State.getPortUserValue(canvas, equalsModule.params[0].id)).toBe('0')
+                    canvas = State.updateCanvas(State.setPortUserValue(canvas, equalsModule.params[0].id, '0.0'))
+                    expect(State.getPortUserValue(canvas, equalsModule.params[0].id)).toBe('0')
+                    canvas = State.updateCanvas(State.setPortUserValue(canvas, equalsModule.params[0].id, 0))
+                    expect(State.getPortUserValue(canvas, equalsModule.params[0].id)).toBe('0')
+                    // handles negative numbers
+                    canvas = State.updateCanvas(State.setPortUserValue(canvas, equalsModule.params[0].id, '-2.3'))
+                    expect(State.getPortUserValue(canvas, equalsModule.params[0].id)).toBe('-2.3')
+                    // ignores whitespace
+                    canvas = State.updateCanvas(State.setPortUserValue(canvas, equalsModule.params[0].id, '2.3 '))
+                    expect(State.getPortUserValue(canvas, equalsModule.params[0].id)).toBe('2.3')
+                    canvas = State.updateCanvas(State.setPortUserValue(canvas, equalsModule.params[0].id, '2,3  '))
+                    expect(State.getPortUserValue(canvas, equalsModule.params[0].id)).toBe('2.3')
+                    canvas = State.updateCanvas(State.setPortUserValue(canvas, equalsModule.params[0].id, '  -2.3  '))
+                    expect(State.getPortUserValue(canvas, equalsModule.params[0].id)).toBe('-2.3')
+                    // tries to parse a number
+                    canvas = State.updateCanvas(State.setPortUserValue(canvas, equalsModule.params[0].id, '2dasd'))
+                    expect(State.getPortUserValue(canvas, equalsModule.params[0].id)).toBe('2')
+                    // Falls back to undefined if it cannot
+                    canvas = State.updateCanvas(State.setPortUserValue(canvas, equalsModule.params[0].id, 'dasd'))
+                    expect(State.getPortUserValue(canvas, equalsModule.params[0].id)).toBe(undefined)
+
+                    // test server accepts state with undefined value
+                    expect(State.updateCanvas(await Services.create(canvas))).toMatchCanvas(canvas)
                 })
             })
         })

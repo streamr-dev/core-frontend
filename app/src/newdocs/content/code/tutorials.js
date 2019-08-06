@@ -14,6 +14,20 @@ export const ClientSub =
     }
 )`
 
+export const ClientPub =
+`// Here's our example data point
+const msg = {
+    temperature: 25.4,
+    humidity: 10,
+    happy: true
+}
+
+// Publish using the Stream id only
+client.publish('my-stream-id', msg)
+
+// Or alternatively, via the Stream object (from e.g. getOrCreateStream)
+stream.publish(msg)`
+
 export const Example1 =
 `const StreamrClient = require('streamr-client')
 const ruuvi = require('node-ruuvitag')

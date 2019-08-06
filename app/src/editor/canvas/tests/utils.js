@@ -24,7 +24,7 @@ expect.extend({
             ...sourceCanvas,
             ...canvasMatcher,
             modules: expect.objectContaining(sourceCanvas.modules.map((m, i) => {
-                const source = sourceCanvas.modules[i]
+                const source = { ...sourceCanvas.modules[i] }
                 let matcher = source
                 if (source.uiChannel) {
                     matcher = {

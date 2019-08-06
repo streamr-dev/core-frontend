@@ -60,8 +60,8 @@ jobs:
     - MARKETPLACE_CONTRACT_ADDRESS=0xA10151D088f6f2705a05d6c83719e99E079A61C1
     - TOKEN_CONTRACT_ADDRESS=0x0Cf0Ee63788A0849fE5297F3407f701E122cC023
     - WEB3_REQUIRED_NETWORK_ID=1
-    - WEB3_PUBLIC_HTTP_PROVIDER=https://mainnet.infura.io
-    - WEB3_PUBLIC_WS_PROVIDER=wss://mainnet.infura.io/ws
+    - WEB3_PUBLIC_HTTP_PROVIDER=https://mainnet.infura.io/v3/17c3985baecb4c4d94a1edc2c4d23206
+    - WEB3_PUBLIC_WS_PROVIDER=wss://mainnet.infura.io/ws/v3/17c3985baecb4c4d94a1edc2c4d23206
     - SENTRY_DSN=https://e012761929d24baa96ca82772f60b395@sentry.io/1203154
     - LOGROCKET_SLUG=et0uhu/streamr-frontend-local
     script: "$TRAVIS_BUILD_DIR/app/travis_scripts/visual-tests.sh"
@@ -140,8 +140,8 @@ jobs:
     - MARKETPLACE_CONTRACT_ADDRESS=0xA10151D088f6f2705a05d6c83719e99E079A61C1
     - TOKEN_CONTRACT_ADDRESS=0x0Cf0Ee63788A0849fE5297F3407f701E122cC023
     - WEB3_REQUIRED_NETWORK_ID=1
-    - WEB3_PUBLIC_HTTP_PROVIDER=https://mainnet.infura.io
-    - WEB3_PUBLIC_WS_PROVIDER=wss://mainnet.infura.io/ws
+    - WEB3_PUBLIC_HTTP_PROVIDER=https://mainnet.infura.io/v3/17c3985baecb4c4d94a1edc2c4d23206
+    - WEB3_PUBLIC_WS_PROVIDER=wss://mainnet.infura.io/ws/v3/17c3985baecb4c4d94a1edc2c4d23206
     - SENTRY_DSN=https://e012761929d24baa96ca82772f60b395@sentry.io/1203154
     - LOGROCKET_SLUG=et0uhu/streamr-frontend-local
     - secure: H4xOzWwc5rnx8XxEumkrHqYdMhfIYVoqdTp4OwqBNjScn0FuB2Zbud+sU5cQmox/L631Cni2lGyjUa1Z/BwavSo/paYBv8ufeabMI8cnLyKe878Yqstk5hwgYVOHfmbhIBRUVcWNIRZeFZORPFFIZP84Dn3Gg9hCgtbjrmT/yqyyoaftJY1ppwAo1xyxv0yUE/uNUbZGQuYkVY9yEh8gBc5N3SpQ4FyDekAAS425cYXzgaAMmdBjNw5Xp9brqyKGEPLFHDtXi5r1J3xUlzk48AgEq+1B627ckWjCkxP71ko28Kp92vPjYjV3BjPLBsHYtZX0HGZokwwFNZHl/eg2H9uIyUL1DY3+OkuzTanW4aq9NmMbxMmQ4pvfzEokk2LH89VFp09ev832NcSpCLQdSYMcxpm6NedZWWteL2e2Qzc1RZRlJpdAYDZunQYsqnV9812YAiqG9Mud2GGOIn24PO71abGnlTT6FqLP5mdxqQ+A40+Yky5ETQRq86e3vxcwASGaNcp5ICbAALndmwCD/GwDYHZ7LTniZB7kpDX9MBluzwD67mhQ1+lcNSiVTQ0tf0oi65MUPFJchs++iFYiapIt7bnxrnvxiMDdNHLjm0iPWZthKeLWQnm/opU7D9tVvWbc+zGPNfmRBN9ePI98Lts60OELNKwwoIo5PZ9HtS8=
@@ -165,8 +165,8 @@ jobs:
     - MARKETPLACE_CONTRACT_ADDRESS=0xA10151D088f6f2705a05d6c83719e99E079A61C1
     - TOKEN_CONTRACT_ADDRESS=0x0Cf0Ee63788A0849fE5297F3407f701E122cC023
     - WEB3_REQUIRED_NETWORK_ID=1
-    - WEB3_PUBLIC_HTTP_PROVIDER=https://mainnet.infura.io
-    - WEB3_PUBLIC_WS_PROVIDER=wss://mainnet.infura.io/ws
+    - WEB3_PUBLIC_HTTP_PROVIDER=https://mainnet.infura.io/v3/17c3985baecb4c4d94a1edc2c4d23206
+    - WEB3_PUBLIC_WS_PROVIDER=wss://mainnet.infura.io/ws/v3/17c3985baecb4c4d94a1edc2c4d23206
     - SENTRY_DSN=https://e012761929d24baa96ca82772f60b395@sentry.io/1203154
     script:
     - npm run build
@@ -199,8 +199,8 @@ jobs:
     - MARKETPLACE_CONTRACT_ADDRESS=0xA10151D088f6f2705a05d6c83719e99E079A61C1
     - TOKEN_CONTRACT_ADDRESS=0x0Cf0Ee63788A0849fE5297F3407f701E122cC023
     - WEB3_REQUIRED_NETWORK_ID=1
-    - WEB3_PUBLIC_HTTP_PROVIDER=https://mainnet.infura.io
-    - WEB3_PUBLIC_WS_PROVIDER=wss://mainnet.infura.io/ws
+    - WEB3_PUBLIC_HTTP_PROVIDER=https://mainnet.infura.io/v3/17c3985baecb4c4d94a1edc2c4d23206
+    - WEB3_PUBLIC_WS_PROVIDER=wss://mainnet.infura.io/ws/v3/17c3985baecb4c4d94a1edc2c4d23206
     - SENTRY_DSN=https://e012761929d24baa96ca82772f60b395@sentry.io/1203154
     script: "$TRAVIS_BUILD_DIR/app/travis_scripts/build-app.sh"
     deploy:

@@ -24,7 +24,21 @@ export const putStream = (id: StreamId, stream: Stream): ApiResult<null> => put(
 
 export const deleteStream = (id: StreamId): ApiResult<null> => del(formatApiUrl('streams', id))
 
-export const getStreams = (params: any): ApiResult<StreamList> => get(formatApiUrl('streams'), { params })
+export type StreamListWrapper = {
+    streams: StreamList,
+    hasMoreResults: boolean,
+}
+
+export const getStreams = (params: any, pageSize: number, offset: number): ApiResult<StreamListWrapper> =>
+    get(formatApiUrl('streams', {
+        ...params,
+        max: pageSize + 1, // query 1 extra element to determine if we should show "load more" button
+        offset,
+    }))
+        .then((streams) => ({
+            streams: streams.splice(0, pageSize),
+            hasMoreResults: streams.length > 0,
+        }))
 
 export const getMyStreamPermissions = (id: StreamId): ApiResult<Array<Permission>> =>
     get(formatApiUrl('streams', id, 'permissions', 'me'))

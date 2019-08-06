@@ -1,23 +1,23 @@
 // @flow
 
-import React, { Component, Fragment, type Node } from 'react'
+import React, { type Node, useState, useCallback, useEffect } from 'react'
 import { connect } from 'react-redux'
-import { I18n } from 'react-redux-i18n'
 
 import Modal from '$shared/components/Modal'
-import Dialog from '$shared/components/Dialog'
-import { getResourcePermissions, saveUpdatedResourcePermissions } from '$userpages/modules/permission/actions'
-import type { ResourceType, ResourceId } from '../../flowtype/permission-types'
-import type { ErrorInUi } from '$shared/flowtype/common-types'
+import { getResourcePermissions } from '$userpages/modules/permission/actions'
+import type { ResourceType, ResourceId } from '$userpages/flowtype/permission-types'
 import SvgIcon from '$shared/components/SvgIcon'
+import useIsMounted from '$shared/hooks/useIsMounted'
+import Dialog from '$shared/components/Dialog'
 
 import ShareDialogContent from './ShareDialogContent'
+import EmbedDialogContent from './EmbedDialogContent'
+import ShareDialogTabs from './ShareDialogTabs'
 
 import styles from './shareDialog.pcss'
 
 type DispatchProps = {
     getResourcePermissions: () => Promise<void>,
-    save: () => Promise<void>,
 }
 
 type GivenProps = {
@@ -26,129 +26,75 @@ type GivenProps = {
     resourceTitle: string,
     children?: Node,
     onClose: () => void,
+    allowEmbed?: boolean,
 }
 
 type Props = DispatchProps & GivenProps
 
-type State = {
-    fetching: boolean,
-    error: ?ErrorInUi,
-    saving: boolean,
-}
+export const ShareDialog = (props: Props) => {
+    const [error, setError] = useState(null)
+    const [activeTab, setActiveTab] = useState(ShareDialogTabs.SHARE)
+    const isMounted = useIsMounted()
 
-export class ShareDialog extends Component<Props, State> {
-    state = {
-        fetching: true,
-        error: undefined,
-        saving: false,
-    }
+    const {
+        allowEmbed,
+        resourceTitle,
+        resourceType,
+        resourceId,
+        onClose,
+        getResourcePermissions,
+    } = props
 
-    unmounted: boolean = false
-
-    componentDidMount() {
-        this.loadPermissions()
-    }
-
-    componentWillUnmount() {
-        this.unmounted = true
-    }
-
-    async loadPermissions() {
+    const loadPermissions = useCallback(async () => {
         try {
-            await this.props.getResourcePermissions()
-            if (!this.unmounted) {
-                this.setState({
-                    fetching: false,
-                })
-            }
+            await getResourcePermissions()
         } catch (error) {
-            if (!this.unmounted) {
-                this.setState({
-                    fetching: false,
-                    error,
-                })
-            }
+            if (!isMounted()) { return }
+            setError(error)
         }
-    }
+    }, [getResourcePermissions, isMounted])
 
-    save = () => {
-        this.setState({
-            saving: true,
-        }, async () => {
-            try {
-                await this.props.save()
+    // load permissions on mount
+    useEffect(() => {
+        if (!isMounted()) { return }
+        loadPermissions()
+    }, [isMounted, loadPermissions])
 
-                if (!this.unmounted) {
-                    this.setState({
-                        saving: false,
-                    }, this.props.onClose)
-                }
-            } catch (e) {
-                console.warn(e)
-
-                if (!this.unmounted) {
-                    this.setState({
-                        saving: false,
-                    })
-                }
-            }
-        })
-    }
-
-    render() {
-        const { resourceTitle, onClose } = this.props
-        const { fetching, error, saving } = this.state
-
-        return (
-            <Modal>
-                <Dialog
-                    containerClassname={styles.dialog}
-                    contentClassName={styles.content}
-                    title={I18n.t('modal.shareResource.defaultTitle', {
-                        resourceTitle,
-                    })}
+    return (
+        <Modal>
+            {!error && activeTab === ShareDialogTabs.SHARE && (
+                <ShareDialogContent
+                    resourceTitle={resourceTitle}
+                    resourceType={resourceType}
+                    resourceId={resourceId}
+                    allowEmbed={allowEmbed}
                     onClose={onClose}
-                    actions={(fetching || !error) ? {
-                        cancel: {
-                            title: I18n.t('modal.common.cancel'),
-                            outline: true,
-                            onClick: onClose,
-                        },
-                        save: {
-                            title: I18n.t('modal.shareResource.save'),
-                            color: 'primary',
-                            onClick: this.save,
-                            disabled: saving,
-                            spinner: saving,
-                        },
-                    } : {}}
-                    waiting={fetching}
+                    setActiveTab={setActiveTab}
+                />
+            )}
+            {!error && activeTab === ShareDialogTabs.EMBED && (
+                <EmbedDialogContent
+                    resourceType={resourceType}
+                    resourceId={resourceId}
+                    onClose={onClose}
+                    setActiveTab={setActiveTab}
+                />
+            )}
+            {!!error && (
+                <Dialog
+                    onClose={onClose}
                 >
-                    {!error && (
-                        <ShareDialogContent
-                            resourceTitle={this.props.resourceTitle}
-                            resourceType={this.props.resourceType}
-                            resourceId={this.props.resourceId}
-                        />
-                    )}
-                    {!!error && (
-                        <Fragment>
-                            <SvgIcon name="error" className={styles.errorIcon} />
-                            <p>{error.message}</p>
-                        </Fragment>
-                    )}
+                    <SvgIcon name="error" className={styles.errorIcon} />
+                    <p>{error.message}</p>
                 </Dialog>
-            </Modal>
-        )
-    }
+            )}
+        </Modal>
+    )
 }
 
 export const mapDispatchToProps = (dispatch: Function, ownProps: GivenProps): DispatchProps => ({
     getResourcePermissions() {
         return dispatch(getResourcePermissions(ownProps.resourceType, ownProps.resourceId))
-    },
-    save() {
-        return dispatch(saveUpdatedResourcePermissions(ownProps.resourceType, ownProps.resourceId))
     },
 })
 

@@ -4,7 +4,7 @@ import React, { useCallback, useContext } from 'react'
 import { Link } from 'react-router-dom'
 import { I18n, Translate } from 'react-redux-i18n'
 
-import useIsMountedRef from '$shared/utils/useIsMountedRef'
+import useIsMountedRef from '$shared/hooks/useIsMountedRef'
 import AuthFormProvider from '../AuthFormProvider'
 import AuthFormContext from '../../contexts/AuthForm'
 import SessionContext from '../../contexts/Session'

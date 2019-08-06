@@ -111,3 +111,5 @@ export const getFilters = (): { [string]: SortOption } => {
         },
     }
 }
+
+export const streamListPageSize = 20

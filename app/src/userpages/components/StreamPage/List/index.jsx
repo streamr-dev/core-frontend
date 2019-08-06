@@ -2,7 +2,7 @@
 
 import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
-import { push } from 'react-router-redux'
+import { push } from 'connected-react-router'
 import moment from 'moment'
 import copy from 'copy-to-clipboard'
 import { Translate, I18n } from 'react-redux-i18n'
@@ -17,8 +17,15 @@ import type { Stream, StreamId } from '$shared/flowtype/stream-types'
 
 import SvgIcon from '$shared/components/SvgIcon'
 import links from '$shared/../links'
-import { getStreams, updateFilter, deleteStream, getStreamStatus, cancelStreamStatusFetch } from '$userpages/modules/userPageStreams/actions'
-import { selectStreams, selectFetching, selectFilter } from '$userpages/modules/userPageStreams/selectors'
+import {
+    getStreams,
+    updateFilter,
+    deleteStream,
+    getStreamStatus,
+    cancelStreamStatusFetch,
+    clearStreamsList,
+} from '$userpages/modules/userPageStreams/actions'
+import { selectStreams, selectFetching, selectFilter, selectHasMoreSearchResults } from '$userpages/modules/userPageStreams/selectors'
 import { getFilters } from '$userpages/utils/constants'
 import Table from '$shared/components/Table'
 import DropdownActions from '$shared/components/DropdownActions'
@@ -40,6 +47,7 @@ import NoStreamsView from './NoStreams'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
 import breakpoints from '$app/scripts/breakpoints'
 import Notification from '$shared/utils/Notification'
+import LoadMore from '$mp/components/LoadMore'
 
 import styles from './streamsList.pcss'
 
@@ -65,10 +73,12 @@ export type StateProps = {
     permissions: {
         [ResourceId]: Array<Permission>,
     },
+    hasMoreResults: boolean,
 }
 
 export type DispatchProps = {
-    getStreams: () => void,
+    getStreams: (replace?: boolean) => void,
+    clearStreamsList: () => void,
     updateFilter: (filter: Filter) => void,
     showStream: (StreamId) => void,
     deleteStream: (StreamId) => void,
@@ -145,11 +155,12 @@ class StreamList extends Component<Props, State> {
         if (!filter) {
             updateFilter(this.defaultFilter)
         }
-        getStreams()
+        getStreams(true)
     }
 
     componentWillUnmount() {
         this.props.cancelStreamStatusFetch()
+        this.props.clearStreamsList()
     }
 
     onSearchChange = (value: string) => {
@@ -159,7 +170,7 @@ class StreamList extends Component<Props, State> {
             search: value,
         }
         updateFilter(newFilter)
-        getStreams()
+        getStreams(true)
     }
 
     onSortChange = (sortOptionId) => {
@@ -172,7 +183,7 @@ class StreamList extends Component<Props, State> {
                 ...sortOption.filter,
             }
             updateFilter(newFilter)
-            getStreams()
+            getStreams(true)
         }
     }
 
@@ -182,7 +193,7 @@ class StreamList extends Component<Props, State> {
             ...this.defaultFilter,
             search: '',
         })
-        getStreams()
+        getStreams(true)
     }
 
     confirmDeleteStream = async (stream: Stream) => {
@@ -263,9 +274,17 @@ class StreamList extends Component<Props, State> {
     }
 
     render() {
-        const { fetching, streams, showStream, filter } = this.props
+        const {
+            fetching,
+            streams,
+            showStream,
+            filter,
+            hasMoreResults,
+            getStreams,
+        } = this.props
         const timezone = moment.tz.guess()
         const { dialogTargetStream, activeDialog } = this.state
+        const nowTime = moment.tz(Date.now(), timezone)
 
         return (
             <Layout
@@ -318,7 +337,10 @@ class StreamList extends Component<Props, State> {
                     {streams && streams.length > 0 && (
                         <Fragment>
                             <MediaQuery minWidth={lg.min}>
-                                <div className={styles.streamsTable}>
+                                <div className={cx(styles.streamsTable, {
+                                    [styles.streamsTableLoadingMore]: !!(fetching && hasMoreResults),
+                                })}
+                                >
                                     <Table>
                                         <thead>
                                             <tr>
@@ -346,10 +368,14 @@ class StreamList extends Component<Props, State> {
                                                         />}
                                                     </Table.Th>
                                                     <Table.Td noWrap title={stream.description}>{stream.description}</Table.Td>
-                                                    <Table.Td noWrap>{moment.tz(stream.lastUpdated, timezone).fromNow()}</Table.Td>
+                                                    <Table.Td noWrap>
+                                                        {stream.lastUpdated && (
+                                                            moment.min(moment.tz(stream.lastUpdated, timezone), nowTime).fromNow()
+                                                        )}
+                                                    </Table.Td>
                                                     <Table.Td>
                                                         {stream.lastData && (
-                                                            moment.tz(stream.lastData, timezone).fromNow()
+                                                            moment.min(moment.tz(stream.lastData, timezone), nowTime).fromNow()
                                                         )}
                                                     </Table.Td>
                                                     <Table.Td className={styles.statusColumn}>
@@ -400,10 +426,17 @@ class StreamList extends Component<Props, State> {
                                             ))}
                                         </tbody>
                                     </Table>
+                                    <LoadMore
+                                        hasMoreSearchResults={!fetching && hasMoreResults}
+                                        onClick={() => getStreams()}
+                                    />
                                 </div>
                             </MediaQuery>
                             <MediaQuery maxWidth={lg.min}>
-                                <div className={styles.streamsTable}>
+                                <div className={cx(styles.streamsTable, {
+                                    [styles.streamsTableLoadingMore]: !!(fetching && hasMoreResults),
+                                })}
+                                >
                                     <Table>
                                         <tbody>
                                             {streams.map((stream) => (
@@ -430,14 +463,18 @@ class StreamList extends Component<Props, State> {
                                                                     {stream.description}
                                                                 </span>
                                                                 <span className={styles.lastUpdatedStreamMobile}>
-                                                                    {moment.tz(stream.lastUpdated, timezone).fromNow()}
+                                                                    {stream.lastUpdated && (
+                                                                        moment.min(moment.tz(stream.lastUpdated, timezone), nowTime).fromNow()
+                                                                    )}
                                                                 </span>
                                                             </div>
                                                             <div>
                                                                 <span className={styles.lastUpdatedStreamTablet}>
-                                                                    {moment.tz(stream.lastUpdated, timezone).fromNow()}
+                                                                    {stream.lastUpdated && (
+                                                                        moment.min(moment.tz(stream.lastUpdated, timezone), nowTime).fromNow()
+                                                                    )}
                                                                 </span>
-                                                                <StatusIcon className={styles.tabletStatusStreamIcon} />
+                                                                <StatusIcon status={stream.streamStatus} className={styles.tabletStatusStreamIcon} />
                                                             </div>
                                                         </div>
                                                     </Table.Td>
@@ -445,6 +482,10 @@ class StreamList extends Component<Props, State> {
                                             ))}
                                         </tbody>
                                     </Table>
+                                    <LoadMore
+                                        hasMoreSearchResults={!fetching && hasMoreResults}
+                                        onClick={() => getStreams()}
+                                    />
                                 </div>
                             </MediaQuery>
                         </Fragment>
@@ -463,10 +504,12 @@ const mapStateToProps = (state) => ({
     filter: selectFilter(state),
     fetchingPermissions: selectFetchingPermissions(state),
     permissions: selectStreamPermissions(state),
+    hasMoreResults: selectHasMoreSearchResults(state),
 })
 
 const mapDispatchToProps = (dispatch) => ({
-    getStreams: () => dispatch(getStreams()),
+    clearStreamsList: () => dispatch(clearStreamsList()),
+    getStreams: (replace: boolean = false) => dispatch(getStreams(replace)),
     updateFilter: (filter) => dispatch(updateFilter(filter)),
     showStream: (id: StreamId) => dispatch(push(`${links.userpages.streamShow}/${id}`)),
     deleteStream: (id: StreamId) => dispatch(deleteStream(id)),

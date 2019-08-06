@@ -30,7 +30,12 @@ const navigationLinks: NavigationLink = {
 
 export const subNav = {
     introduction: {},
-    gettingStarted: {},
+    gettingStarted: {
+        'get-api-keys': 'Get your API keys',
+        'connecting-ethereum-identity': 'Connecting your Ethereum identity',
+        'get-building': 'Get building',
+        'useful-links': 'Useful links',
+    },
     streams: {
         'intro-to-streams': 'Intro to streams',
         'work-with-streams-in-core': 'Work with streams in Core',

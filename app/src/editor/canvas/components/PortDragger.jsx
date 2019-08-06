@@ -38,6 +38,7 @@ class DraggablePort extends React.Component {
     }
 
     connectPorts() {
+        if (this.unmounted) { return }
         const triggeredPorts = []
         const { data } = this.context
         const { sourceId, portId, overId } = data
@@ -96,6 +97,7 @@ class DraggablePort extends React.Component {
     }
 
     disconnectPorts() {
+        if (this.unmounted) { return }
         const { data } = this.context
         const { sourceId, portId } = data
         if (!sourceId) { return } // not connected
@@ -122,6 +124,7 @@ class DraggablePort extends React.Component {
     }
 
     onStartDragPort = () => {
+        if (this.unmounted) { return }
         const { port } = this.props
 
         return {
@@ -158,8 +161,12 @@ export function DragSource({ api, port, onValueChange, className }) {
 
 export class DropTarget extends React.PureComponent {
     static contextType = DragDropContext
+    componentWillUnmount() {
+        this.unmounted = true
+    }
 
     onMouseOverTarget = () => {
+        if (this.unmounted) { return }
         const dragPortInProgress = this.context.isDragging && this.context.data.portId != null
         if (!dragPortInProgress) { return }
         this.context.updateData({
@@ -168,6 +175,7 @@ export class DropTarget extends React.PureComponent {
     }
 
     onMouseOutTarget = () => {
+        if (this.unmounted) { return }
         const dragPortInProgress = this.context.isDragging && this.context.data.portId != null
         if (!dragPortInProgress) { return }
         this.context.updateData({

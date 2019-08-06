@@ -10,6 +10,7 @@ import {
     WalletLockedError,
 } from '$shared/errors/Web3/index'
 import { checkEthereumNetworkIsCorrect } from '$shared/utils/web3'
+import FakeProvider from 'web3-fake-provider'
 
 declare var ethereum: Web3
 declare var web3: Web3
@@ -57,7 +58,7 @@ export const getWeb3 = (): StreamrWeb3 => {
             isLegacy: true,
         })
     }
-    return new StreamrWeb3(false, {
+    return new StreamrWeb3(new FakeProvider(), {
         isLegacy: true,
     })
 }

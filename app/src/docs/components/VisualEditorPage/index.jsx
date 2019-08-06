@@ -9,9 +9,7 @@ import { subNav } from '../DocsLayout/Navigation/navLinks'
 
 const VisualEditorPage = () => (
     <DocsLayout subNav={subNav.visualEditor}>
-        <Helmet>
-            <title>Streamr Docs | Visual Editor</title>
-        </Helmet>
+        <Helmet title="Streamr Docs | Visual Editor" />
         <VisualEditorContent />
     </DocsLayout>
 )

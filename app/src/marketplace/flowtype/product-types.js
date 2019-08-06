@@ -105,3 +105,5 @@ export type ProductPermissions = {
     fetchingPermissions: boolean,
     permissionsError: ?ErrorInUi,
 }
+
+export type ProductType = 'NORMAL' | 'COMMUNITY'

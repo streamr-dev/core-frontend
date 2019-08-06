@@ -1,4 +1,4 @@
-import ScrollableAnchor from 'react-scrollable-anchor'
+
 import { Link } from 'react-router-dom'
 
 import Warning from '$docs/components/Warning'
@@ -50,7 +50,7 @@ Example using `curl`:
     {`curl -i -X POST -H "Authorization: Bearer MY-SESSION-TOKEN" -d "{\"foo\":\"hello\",\"bar\":24.5}" https://www.streamr.com/api/v1/streams/MY-STREAM-ID/data`}
 </CodeSnippet>
 
-<ScrollableAnchor id="create-a-stream"><div>
+<section id="create-a-stream">
 
 ## Create a stream
 
@@ -87,8 +87,8 @@ From **Settings > API Keys**, click to add a new key, and give it a name like Tu
   <img src={SettingsAPICredentials} />
 </div>
 
-</div></ScrollableAnchor>
-<ScrollableAnchor id="publish-to-a-stream"><div>
+</section>
+<section id="publish-to-a-stream">
 
 ### Publish to a stream
 
@@ -115,8 +115,8 @@ This is how a test request would look in the fabulous [Postman](https://www.getp
 
 All the different authorization options are explained in the: <Link to={formatPath(links.docs.api)}>API docs</Link>
 
-</div></ScrollableAnchor>
-<ScrollableAnchor id="subscribe-to-data"><div>
+</section>
+<section id="subscribe-to-data">
 
 ## Subscribe to data
 
@@ -126,8 +126,8 @@ Here is the given example from the Streamr Javascript client [readme](https://gi
 
 <CodeSnippet language='javascript' wrapLines showLineNumbers >{ClientSub}</CodeSnippet> 
 
-</div></ScrollableAnchor>
-<ScrollableAnchor id="patterns-for-data-integration"><div>
+</section>
+<section id="patterns-for-data-integration">
 
 ## Patterns for data integration
 
@@ -225,4 +225,4 @@ As before, using a Canvas is a potential alternative to a self-hosted script suc
 
 Here, the Clock module ticks every 15 minutes and triggers the HTTP Request to get the data from OpenWeatherMap. The fields in the data are delivered to the Stream by the **SendToStream** module.
 
-</div></ScrollableAnchor>
+</section>

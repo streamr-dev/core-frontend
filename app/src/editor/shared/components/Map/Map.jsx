@@ -7,10 +7,11 @@ import { Map as LeafletMap, ImageOverlay, TileLayer, Tooltip, Polyline, type Lat
 import L from 'leaflet'
 import HeatmapLayer from 'react-leaflet-heatmap-layer'
 import throttle from 'lodash/throttle'
+
 import { type Ref } from '$shared/flowtype/common-types'
+import ResizeWatcher from '$editor/canvas/components/Resizable/ResizeWatcher'
 
 import UiSizeConstraint from '../UiSizeConstraint'
-import ResizeWatcher from '$editor/canvas/components/Resizable/ResizeWatcher'
 import CustomMarker from './Marker'
 
 import styles from './Map.pcss'
@@ -55,6 +56,8 @@ type Props = {
     isHeatmap: boolean,
     radius: number,
     maxIntensity: number,
+    // Events
+    onViewportChanged: (centerLat: number, centerLong: number, zoom: number) => void,
 }
 
 type State = {
@@ -62,7 +65,7 @@ type State = {
     bounds: ?LatLngBounds,
 }
 
-export default class Map extends React.Component<Props, State> {
+export default class Map extends React.PureComponent<Props, State> {
     ref: Ref<LeafletMap> = React.createRef()
     unmounted: boolean = false
 
@@ -100,10 +103,25 @@ export default class Map extends React.Component<Props, State> {
         if (this.unmounted) {
             return
         }
-        this.setState({
-            bounds,
-        })
+        if (this.state.bounds !== bounds) {
+            this.setState({
+                bounds,
+            })
+        }
     }, 1000)
+
+    onViewportChanged = () => {
+        const { onViewportChanged, zoom, centerLat, centerLong } = this.props
+        const { current: map } = this.ref
+        if (map) {
+            const newZoom = map.leafletElement.getZoom()
+            const newCenter = map.leafletElement.getCenter()
+
+            if (newZoom !== zoom || newCenter.lat !== centerLat || newCenter.lng !== centerLong) {
+                onViewportChanged(newCenter.lat, newCenter.lng, newZoom)
+            }
+        }
+    }
 
     render() {
         const {
@@ -167,6 +185,8 @@ export default class Map extends React.Component<Props, State> {
                         crs={isImageMap ? L.CRS.Simple : L.CRS.EPSG3857}
                         preferCanvas
                         bounds={bounds}
+                        onMoveEnd={this.onViewportChanged}
+                        onZoomEnd={this.onViewportChanged}
                     >
                         <ResizeWatcher onResize={this.onResize} />
                         {isHeatmap && markerArray.length > 0 && (

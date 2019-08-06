@@ -13,7 +13,7 @@ import NoTransactionsView from './NoTransactions'
 import Layout from '$userpages/components/Layout'
 import { selectEthereumIdentities } from '$shared/modules/integrationKey/selectors'
 import type { StoreState } from '$shared/flowtype/store-state'
-import type { TransactionEntityList } from '$shared/flowtype/web3-types'
+import type { TransactionEntityList, Address } from '$shared/flowtype/web3-types'
 import type { IntegrationKeyList } from '$shared/flowtype/integration-key-types'
 import type { ProductEntities } from '$mp/flowtype/product-types'
 import { fetchIntegrationKeys } from '$shared/modules/integrationKey/actions'
@@ -26,6 +26,8 @@ import DropdownActions from '$shared/components/DropdownActions'
 import Meatball from '$shared/components/Meatball'
 import LoadMore from '$mp/components/LoadMore'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
+import { selectAccountId } from '$mp/modules/web3/selectors'
+import { areAddressesEqual } from '$mp/utils/smartContract'
 
 import styles from './list.pcss'
 
@@ -35,6 +37,7 @@ type StateProps = {
     transactions: ?TransactionEntityList,
     products: ProductEntities,
     hasMoreResults: boolean,
+    accountId: ?Address,
 }
 
 type DispatchProps = {
@@ -68,7 +71,19 @@ class TransactionList extends Component<Props> {
     }
 
     render() {
-        const { fetching, transactions, hasMoreResults } = this.props
+        const {
+            fetching,
+            transactions,
+            hasMoreResults,
+            web3Accounts,
+            accountId,
+        } = this.props
+        const accountsExist = !!(web3Accounts && web3Accounts.length)
+        const accountLinked = !!(web3Accounts &&
+            accountId &&
+            web3Accounts.find((account) =>
+                account.json && account.json.address && areAddressesEqual(account.json.address, accountId))
+        )
 
         return (
             <Layout
@@ -80,10 +95,16 @@ class TransactionList extends Component<Props> {
                 <Helmet title={`Streamr Core | ${I18n.t('userpages.title.transactions')}`} />
                 <div className={cx('container', styles.transactionList)}>
                     {!fetching && transactions && transactions.length <= 0 && (
-                        <NoTransactionsView />
+                        <NoTransactionsView
+                            accountsExist={accountsExist}
+                            accountLinked={accountLinked}
+                        />
                     )}
                     {transactions && transactions.length > 0 && (
-                        <Table>
+                        <Table className={cx({
+                            [styles.loadingMore]: !!(hasMoreResults && fetching),
+                        })}
+                        >
                             <thead>
                                 <tr>
                                     <th><Translate value="userpages.transactions.list.name" /></th>
@@ -167,11 +188,12 @@ const mapStateToProps = (state: StoreState) => {
     const events = selectTransactionEvents(state) || []
 
     return {
+        accountId: selectAccountId(state),
         transactions: selectVisibleTransactions(state),
         fetching: selectFetching(state),
         web3Accounts: selectEthereumIdentities(state),
         products: selectEntities(state).contractProducts,
-        hasMoreResults: events.length >= (offset + 10),
+        hasMoreResults: events.length > 0 && events.length > (offset + 10),
     }
 }
 

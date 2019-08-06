@@ -2,24 +2,28 @@ import assert from 'assert-diff'
 import reducer from '$userpages/modules/userPageStreams/reducer'
 import * as actions from '$userpages/modules/userPageStreams/actions'
 
+const initialState = {
+    ids: [],
+    openStream: {
+        id: null,
+    },
+    savingStreamFields: false,
+    fetching: false,
+    error: null,
+    csvUpload: null,
+    filter: null,
+    editedStream: null,
+    deleteDataError: null,
+    autodetectFetching: false,
+    streamFieldAutodetectError: null,
+    permissions: null,
+    pageSize: 20,
+    hasMoreSearchResults: null,
+}
+
 describe('Stream reducer', () => {
     it('should return the initial state', () => {
-        assert.deepStrictEqual(reducer(undefined, {}), {
-            ids: [],
-            openStream: {
-                id: null,
-            },
-            savingStreamFields: false,
-            fetching: false,
-            error: null,
-            csvUpload: null,
-            filter: null,
-            editedStream: null,
-            deleteDataError: null,
-            autodetectFetching: false,
-            streamFieldAutodetectError: null,
-            permissions: null,
-        })
+        assert.deepStrictEqual(reducer(undefined, {}), initialState)
     })
 
     describe('REQUEST actions', () => {
@@ -67,6 +71,51 @@ describe('Stream reducer', () => {
                         error: null,
                     })
                 })
+            })
+
+            it('must add the stream to existing streams list', () => {
+                const expectedState = {
+                    ...initialState,
+                    error: null,
+                    ids: [1, 2, 3, 4, 5],
+                    hasMoreSearchResults: true,
+                }
+
+                const mockState = {
+                    ...initialState,
+                    ids: [1, 2, 3],
+                    hasMoreSearchResults: true,
+                }
+
+                const reducerState = reducer(mockState, {
+                    type: actions.GET_STREAMS_SUCCESS,
+                    streams: [4, 5],
+                    hasMoreResults: true,
+                })
+
+                assert.deepStrictEqual(reducerState, expectedState)
+            })
+
+            it('clears product list', () => {
+                const expectedState = {
+                    ...initialState,
+                    error: null,
+                    ids: [],
+                    hasMoreSearchResults: null,
+                }
+
+                const mockState = {
+                    ...initialState,
+                    error: {},
+                    ids: [1, 2, 3],
+                    hasMoreSearchResults: true,
+                }
+
+                const reducerState = reducer(mockState, {
+                    type: actions.CLEAR_STREAM_LIST,
+                })
+
+                assert.deepStrictEqual(reducerState, expectedState)
             })
         })
 
