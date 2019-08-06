@@ -178,7 +178,6 @@ export class StreamShowView extends Component<Props, State> {
 
         return (
             <CoreLayout
-                className={styles.streamShowView}
                 hideNavOnDesktop
                 navComponent={(
                     <MediaQuery minWidth={lg.min}>
