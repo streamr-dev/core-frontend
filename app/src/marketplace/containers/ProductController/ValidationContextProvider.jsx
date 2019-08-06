@@ -59,6 +59,12 @@ function useValidationContext(): ContextProps {
                 clearStatus(field)
             }
         })
+
+        if (!product.streams || product.streams.length <= 0) {
+            setStatus('streams', ERROR, 'No streams selected')
+        } else {
+            clearStatus('streams')
+        }
     }, [setStatus, clearStatus, isMounted])
 
     return useMemo(() => ({
