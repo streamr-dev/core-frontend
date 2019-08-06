@@ -2,6 +2,7 @@
 
 import React from 'react'
 import Select, { components } from 'react-select'
+import cx from 'classnames'
 
 import SvgIcon from '$shared/components/SvgIcon'
 import styles from './selectInput.pcss'
@@ -15,6 +16,7 @@ export type Props = {
     required?: boolean,
     clearable?: boolean,
     isDisabled?: boolean,
+    className?: string,
 }
 
 const customStyles = {
@@ -88,9 +90,9 @@ const DropdownIndicator = (props) => (
     )
 )
 
-const SelectInput = (props: Props) => (
+const SelectInput = ({ className, ...props }: Props) => (
     <Select
-        className={styles.select}
+        className={cx(styles.select, className)}
         styles={customStyles}
         components={{
             IndicatorSeparator: null,
