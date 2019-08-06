@@ -9,6 +9,8 @@ import type { Address } from '$shared/flowtype/web3-types'
 export type ProductId = string
 export type ProductState = $Keys<typeof productStates>
 
+export type ProductType = 'NORMAL' | 'COMMUNITY'
+
 export type Product = {
     key?: string,
     id: ?ProductId,
@@ -31,6 +33,7 @@ export type Product = {
     priceCurrency: Currency,
     timeUnit?: ?TimeUnit,
     isFree?: boolean,
+    type?: ProductType,
 }
 
 export type ProductSubscription = {
@@ -105,5 +108,3 @@ export type ProductPermissions = {
     fetchingPermissions: boolean,
     permissionsError: ?ErrorInUi,
 }
-
-export type ProductType = 'NORMAL' | 'COMMUNITY'

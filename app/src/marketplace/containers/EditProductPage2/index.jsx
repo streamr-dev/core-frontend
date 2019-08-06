@@ -19,6 +19,7 @@ import ProductDescription from './ProductDescription'
 import StreamSelector from './StreamSelector'
 import PriceSelector from './PriceSelector'
 import ProductDetails from './ProductDetails'
+import ProductTypeSelectorForTesting from './ProductTypeSelectorForTesting'
 
 import styles from './editProductPage.pcss'
 
@@ -30,6 +31,7 @@ const EditProductPage = () => (
                     <EditorNav />
                 </div>
                 <div className={styles.info}>
+                    <ProductTypeSelectorForTesting />
                     <ProductName />
                     <CoverImage />
                     <ProductDescription />
