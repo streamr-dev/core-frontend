@@ -170,7 +170,7 @@ const UserpagesRouter = () => ([
 const EditorRouter = () => ([
     <Route exact path="/" component={Products} key="root" />, // edge case for localhost
     <Route exact path={formatPath(editor.canvasEditor, ':id?')} component={CanvasEditorAuth} key="CanvasEditor" />,
-    <Route exact path={formatPath(editor.canvasEmbed, ':id?')} component={CanvasEmbed} key="CanvasEmbed" />,
+    <Route exact path={formatPath(editor.canvasEmbed)} component={CanvasEmbed} key="CanvasEmbed" />,
     <Route exact path={formatPath(editor.dashboardEditor, ':id?')} component={DashboardEditorAuth} key="DashboardEditor" />,
 ])
 
