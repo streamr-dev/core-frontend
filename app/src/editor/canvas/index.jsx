@@ -42,7 +42,7 @@ const { RunStates } = CanvasState
 
 const CanvasEditComponent = class CanvasEdit extends Component {
     state = {
-        moduleSearchIsOpen: this.props.runController.isEditable,
+        moduleSearchIsOpen: true,
         moduleSidebarIsOpen: false,
         keyboardShortcutIsOpen: false,
     }
