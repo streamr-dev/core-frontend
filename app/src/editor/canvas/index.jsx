@@ -94,8 +94,9 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         if (Number.isNaN(hash)) {
             return
         }
+        const { runController } = this.props
 
-        if (event.code === 'Backspace' || event.code === 'Delete') {
+        if ((event.code === 'Backspace' || event.code === 'Delete') && runController.isEditable) {
             this.removeModule({ hash })
         }
     }
