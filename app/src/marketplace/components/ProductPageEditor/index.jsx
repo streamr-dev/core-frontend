@@ -56,7 +56,7 @@ export default class ProductPage extends Component<Props> {
 
         return !!product && (
             <div className={styles.productPage}>
-                <Toolbar actions={toolbarActions} status={<BackButton />} />
+                <Toolbar actions={toolbarActions} left={<BackButton />} />
                 <Hero
                     product={product}
                     leftContent={<ImageUpload

@@ -87,13 +87,13 @@ const ConfirmDialog = (props: Props) => {
                 onClose={actions.cancel.onClick}
                 actions={actions}
                 renderActions={() => (
-                    <div className={cx({
-                        [styles.footer]: !!dontShowAgain,
+                    <div className={cx(styles.footer, {
+                        [styles.dontShowAgainFooter]: !!dontShowAgain,
                     })}
                     >
                         {!!dontShowAgain && (
                             <div className={cx({
-                                [styles.downShowAgain]: !!dontShowAgain,
+                                [styles.dontShowAgain]: !!dontShowAgain,
                             })}
                             >
                                 <FormGroup check className={styles.formGroup}>
