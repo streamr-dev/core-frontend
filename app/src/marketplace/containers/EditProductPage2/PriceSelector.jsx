@@ -4,6 +4,7 @@ import React, { useState, useCallback, useEffect, useRef } from 'react'
 import BN from 'bignumber.js'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
+import { Translate } from 'react-redux-i18n'
 
 import useProduct from '../ProductController/useProduct'
 
@@ -18,6 +19,19 @@ import SetPrice from '$mp/components/SetPrice'
 import Toggle from '$shared/components/Toggle'
 import BeneficiaryAddress from './BeneficiaryAddress'
 import styles from './PriceSelector.pcss'
+
+const getPricePerSecond = (isPaid, price, currency, timeUnit, dataPerUsd) => {
+    let pricePerSecond
+    if (!isPaid) {
+        pricePerSecond = BN(0)
+    } else {
+        const newPrice = (currency !== currencies.DATA) ?
+            convert(price || '0', dataPerUsd, currency, currencies.DATA) : price
+        pricePerSecond = pricePerSecondFromTimeUnit(newPrice || BN(0), timeUnit)
+    }
+
+    return pricePerSecond
+}
 
 const PriceSelector = () => {
     const product = useProduct()
@@ -37,16 +51,9 @@ const PriceSelector = () => {
     }, [setIsPaid])
 
     useEffect(() => {
-        if (updateRef.current) {
-            let pricePerSecond
-            if (!isPaid) {
-                pricePerSecond = BN(0)
-            } else {
-                const newPrice = (currency !== currencies.DATA) ?
-                    convert(price || '0', dataPerUsd, currency, currencies.DATA) : price
-                pricePerSecond = pricePerSecondFromTimeUnit(newPrice || BN(0), timeUnit)
-            }
-            updateRef.current(pricePerSecond)
+        const { current: updatePrice } = updateRef
+        if (updatePrice) {
+            updatePrice(getPricePerSecond(isPaid, price, currency, timeUnit, dataPerUsd))
         }
     }, [isPaid, price, currency, timeUnit, dataPerUsd])
 
@@ -57,7 +64,10 @@ const PriceSelector = () => {
 
     return (
         <div className={cx(styles.root, styles.PriceSelector)}>
-            <h1>Set a price</h1>
+            <Translate
+                tag="h1"
+                value="editProductPage.setPrice.title"
+            />
             <RadioButtonGroup
                 name="productPriceType"
                 options={['Paid', 'Free']}
@@ -79,14 +89,18 @@ const PriceSelector = () => {
                     onTimeUnitChange={setTimeUnit}
                     dataPerUsd={dataPerUsd}
                 />
-                <BeneficiaryAddress
-                    className={styles.beneficiaryAddress}
-                    address={product.beneficiaryAddress}
-                    onChange={updateBeneficiaryAddress}
-                    disabled={!isPaid}
-                />
+                {product.type !== 'COMMUNITY' && (
+                    <BeneficiaryAddress
+                        className={styles.beneficiaryAddress}
+                        address={product.beneficiaryAddress}
+                        onChange={updateBeneficiaryAddress}
+                        disabled={!isPaid}
+                    />
+                )}
                 <div className={styles.fixPrice}>
-                    <label htmlFor="fixPrice">Fix price in fiat for protection against shifts in the DATA price</label>
+                    <label htmlFor="fixPrice">
+                        <Translate value="editProductPage.setPrice.fixPrice" />
+                    </label>
                     <Toggle
                         id="fixPrice"
                         className={styles.toggle}

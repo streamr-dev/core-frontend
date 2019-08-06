@@ -2,8 +2,9 @@
 
 import React, { useCallback } from 'react'
 import cx from 'classnames'
+import { Translate, I18n } from 'react-redux-i18n'
 
-import styles from './BeneficiaryAddress.pcss'
+import styles from './beneficiaryAddress.pcss'
 
 type Props = {
     address?: string,
@@ -20,12 +21,14 @@ const BeneficiaryAddress = ({ address, onChange, disabled, className }: Props) =
     return (
         <form autoComplete="off">
             <label className={cx(styles.root, className)}>
-                <strong>Set recipient ETH address</strong>
+                <strong>
+                    <Translate value="editProductPage.setPrice.setRecipientEthAddress" />
+                </strong>
                 <div>
                     <input
                         autoComplete="off"
                         className={styles.input}
-                        placeholder="Enter ETH address"
+                        placeholder={I18n.t('editProductPage.setPrice.placeholder.enterEthAddress')}
                         value={address}
                         onChange={onAddressChange}
                         disabled={disabled}

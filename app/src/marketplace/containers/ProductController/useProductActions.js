@@ -72,6 +72,12 @@ export function useProductActions() {
             beneficiaryAddress,
         }))
     }, [commit])
+    const updateType = useCallback((type: $ElementType<Product, 'type'>) => {
+        commit('Update type', (p) => ({
+            ...p,
+            type,
+        }))
+    }, [commit])
 
     return useMemo(() => ({
         undo,
@@ -85,6 +91,7 @@ export function useProductActions() {
         updatePricePerSecond,
         updatePriceCurrency,
         updateBeneficiaryAddress,
+        updateType,
     }), [
         undo,
         updateProduct,
@@ -97,6 +104,7 @@ export function useProductActions() {
         updatePricePerSecond,
         updatePriceCurrency,
         updateBeneficiaryAddress,
+        updateType,
     ])
 }
 
