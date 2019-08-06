@@ -24,6 +24,7 @@ import * as CanvasController from './components/CanvasController'
 import * as RunController from './components/CanvasController/Run'
 import useCanvas from './components/CanvasController/useCanvas'
 import useCanvasUpdater from './components/CanvasController/useCanvasUpdater'
+import useAutosaveEffect from './components/CanvasController/useAutosaveEffect'
 import useUpdatedTime from './components/CanvasController/useUpdatedTime'
 
 import Canvas from './components/Canvas'
@@ -33,7 +34,6 @@ import ModuleSearch from './components/ModuleSearch'
 
 import useCanvasNotifications, { pushErrorNotification, pushWarningNotification } from './hooks/useCanvasNotifications'
 
-import * as services from './services'
 import * as CanvasState from './state'
 
 import styles from './index.pcss'
@@ -102,20 +102,12 @@ const CanvasEditComponent = class CanvasEdit extends Component {
 
     componentDidMount() {
         window.addEventListener('keydown', this.onKeyDown)
-        this.autosave()
         this.autostart()
     }
 
     componentWillUnmount() {
         this.unmounted = true
         window.removeEventListener('keydown', this.onKeyDown)
-        this.autosave()
-    }
-
-    componentDidUpdate(prevProps) {
-        if (this.props.canvas !== prevProps.canvas) {
-            this.autosave()
-        }
     }
 
     async autostart() {
@@ -125,23 +117,6 @@ const CanvasEditComponent = class CanvasEdit extends Component {
             // do not autostart running/non-adhoc canvases
             return this.canvasStart()
         }
-    }
-
-    async autosave() {
-        const { canvas, runController, canvasController } = this.props
-        if (this.isDeleted) { return } // do not autosave deleted canvases
-        if (!runController.isEditable) {
-            // do not autosave running/adhoc canvases or if we have no write permission
-            return
-        }
-
-        const changed = canvasController.changedLoader.resetChanged()
-
-        const newCanvas = await services.autosave(canvas)
-        if (this.unmounted) { return }
-        // ignore new canvas, just extract updated time from it
-        this.props.setUpdated(newCanvas.updated)
-        this.props.replace((canvas) => this.props.canvasController.changedLoader.loadChanged(changed, canvas, newCanvas))
     }
 
     removeModule = async ({ hash }) => {
@@ -210,19 +185,6 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         ))
     }
 
-    loadNewDefinition = async (hash) => {
-        const { canvas, canvasController, replace } = this.props
-        try {
-            const moduleData = await canvasController.loadModule(canvas, { hash })
-            if (this.unmounted) { return }
-            replace((canvas) => CanvasState.replaceModule(canvas, moduleData))
-        } catch (error) {
-            console.error(error.message)
-            // undo value change
-            this.props.undo()
-        }
-    }
-
     pushNewDefinition = async (hash, value) => {
         const module = CanvasState.getModule(this.props.canvas, hash)
 
@@ -255,8 +217,6 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         this.setCanvas({ type: 'Set Module Options' }, (canvas) => (
             CanvasState.setModuleOptions(canvas, hash, options)
         ))
-
-        this.props.canvasController.changedLoader.markChanged(hash)
     }
 
     setRunTab = (runTab) => {
@@ -374,7 +334,6 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                     moduleSidebarOpen={this.moduleSidebarOpen}
                     moduleSidebarIsOpen={moduleSidebarIsOpen && !keyboardShortcutIsOpen}
                     setCanvas={this.setCanvas}
-                    loadNewDefinition={this.loadNewDefinition}
                     pushNewDefinition={this.pushNewDefinition}
                 >
                     {runController.hasWritePermission ? (
@@ -438,6 +397,7 @@ const CanvasEdit = withRouter(({ canvas, ...props }) => {
     const canvasController = CanvasController.useController()
     const [updated, setUpdated] = useUpdatedTime(canvas.updated)
     useCanvasNotifications(canvas)
+    useAutosaveEffect()
 
     return (
         <CanvasEditComponent

@@ -28,8 +28,10 @@ export function usePending(name: string) {
 
     return useMemo(() => ({
         isPending: isCurrentPending,
+        start,
+        end,
         wrap,
-    }), [isCurrentPending, wrap])
+    }), [isCurrentPending, start, end, wrap])
 }
 
 export function useAnyPending() {

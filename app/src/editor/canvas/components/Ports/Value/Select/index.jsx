@@ -22,11 +22,14 @@ const Select = ({
         onChangeProp(e.target.value)
     }, [onChangeProp])
 
+    if (value == null) { value = undefined } // select doesn't want null value
+
     const optionMap = useMemo(() => (
-        options.reduce((memo, { name, value }) => ({
-            ...memo,
-            [value || '']: name,
-        }), {})
+        options.reduce((memo, { name, value }) => {
+            if (value == null) { value = undefined }
+            memo.set(value, name)
+            return memo
+        }, new Map())
     ), [options])
 
     return (
@@ -46,7 +49,7 @@ const Select = ({
                 {/* `select` holding a currently selected value. This hidden (`visibility: hidden`) control
                     dictates the width of the actual (visible) control above. */}
                 <select className={styles.spaceholder}>
-                    <option>{optionMap[value]}</option>
+                    <option>{optionMap.get(value)}</option>
                 </select>
             </div>
         </div>

@@ -4,6 +4,7 @@ import get from 'lodash/get'
 import cloneDeep from 'lodash/cloneDeep'
 import uniqBy from 'lodash/uniqBy'
 import uuid from 'uuid'
+import * as diff from './diff'
 
 const MISSING_ENTITY = 'EDITOR/MISSING_ENTITY'
 
@@ -189,9 +190,21 @@ function getIsOutput(canvas, portId) {
     return type === PortTypes.output
 }
 
-export function getModuleIfExists(canvas, moduleHash) {
+function getModulePath(canvas, moduleHash) {
     const { modules } = getIndex(canvas)
-    return get(canvas, modules[moduleHash])
+    return modules[moduleHash]
+}
+
+function validateModuleExists(canvas, moduleHash) {
+    const m = getModuleIfExists(canvas, moduleHash)
+    return validateModule(m, {
+        canvas,
+        moduleHash,
+    })
+}
+
+export function getModuleIfExists(canvas, moduleHash) {
+    return get(canvas, getModulePath(canvas, moduleHash))
 }
 
 export function getModule(canvas, moduleHash) {
@@ -330,13 +343,14 @@ export function updatePort(canvas, portId, fn) {
 }
 
 export function updateModule(canvas, moduleHash, fn) {
-    const { modules } = getIndex(canvas)
-    return update(modules[moduleHash], fn, canvas)
+    validateModuleExists(canvas, moduleHash)
+    const modulePath = getModulePath(canvas, moduleHash)
+    return update(modulePath, fn, canvas)
 }
 
 export function updateModulePosition(canvas, moduleHash, newPosition) {
-    const { modules } = getIndex(canvas)
-    const modulePath = modules[moduleHash]
+    validateModuleExists(canvas, moduleHash)
+    const modulePath = getModulePath(canvas, moduleHash)
     return update(modulePath.concat('layout', 'position'), (position) => ({
         ...position,
         top: `${Number.parseInt(newPosition.top, 10)}px`,
@@ -345,8 +359,8 @@ export function updateModulePosition(canvas, moduleHash, newPosition) {
 }
 
 export function updateModuleSize(canvas, moduleHash, size) {
-    const { modules } = getIndex(canvas)
-    const modulePath = modules[moduleHash]
+    validateModuleExists(canvas, moduleHash)
+    const modulePath = getModulePath(canvas, moduleHash)
     return update(modulePath.concat('layout'), (layout) => ({
         ...layout,
         height: `${size.height}px`,
@@ -483,8 +497,11 @@ function disconnectInput(canvas, portId) {
         }
 
         delete newPort.sourceId
+        if ('defaultValue' in newPort) {
+            newPort.value = newPort.defaultValue
+            newPort.defaultValue = undefined
+        }
 
-        // ethereum contract input
         if (newPort.type === 'EthereumContract' && newPort.value) {
             delete newPort.value
         }
@@ -555,6 +572,9 @@ export function connectPorts(canvas, portIdA, portIdB) {
         // ethereum contract input
         if (newPort.type === 'EthereumContract') {
             newPort.value = contract
+        } else if ('defaultValue' in newPort && !isPortUsed(canvas, input.id)) {
+            // copy value to defaultValue on new connection
+            newPort.defaultValue = newPort.value
         }
 
         return newPort
@@ -702,7 +722,7 @@ export function setPortUserValue(canvas, portId, value) {
     const port = getPort(canvas, portId)
 
     const defaultValue = getPortDefaultValue(canvas, portId)
-    if (isBlank(value)) {
+    if (isBlank(value) && defaultValue != null) {
         value = defaultValue
     }
 
@@ -737,6 +757,54 @@ export function setPortUserValue(canvas, portId, value) {
     })
 }
 
+export function isPortValueEditDisabled(canvas, portId) {
+    if (isRunning(canvas)) { return true }
+    const portType = getPortType(canvas, portId)
+    const port = getPort(canvas, portId)
+    if (portType === 'output') { return true }
+    if (portType === 'input' && port.canHaveInitialValue) {
+        // inputs can be edited as long as canHaveInitialValue
+        return false
+    }
+    if (portType === 'param') {
+        // disable param edits when port connected
+        return isPortUsed(canvas, portId)
+    }
+    return false
+}
+
+export function getPortPlaceholder(canvas, portId) {
+    if (isPortConnected(canvas, portId)) {
+        const [connectedId] = getConnectedPortIds(canvas, portId)
+        const connectedPort = getPort(canvas, connectedId)
+        return connectedPort.longName || connectedPort.displayName || connectedPort.name
+    }
+
+    const port = getPort(canvas, portId)
+    return getDisplayNameFromPort(port)
+}
+
+export function getPortValue(canvas, portId) {
+    const port = getPort(canvas, portId)
+    const portType = getPortType(canvas, portId)
+    if (portType === 'output') {
+        return port.value
+    }
+
+    if (portType === 'input' && port.canHaveInitialValue) {
+        return port.initialValue
+    }
+
+    if (isPortConnected(canvas, portId)) {
+        return undefined
+    }
+    if (isPortExported(canvas, portId)) {
+        return port.value
+    }
+
+    return getPortUserValueOrDefault(canvas, portId)
+}
+
 export function getPortUserValue(canvas, portId) {
     const key = PORT_USER_VALUE_KEYS[getPortType(canvas, portId)]
     const port = getPort(canvas, portId)
@@ -749,10 +817,7 @@ function isBlank(value) {
 
 export function getPortDefaultValue(canvas, portId) {
     const port = getPort(canvas, portId)
-    const defaultValue = 'defaultValue' in port
-        ? port.defaultValue
-        : port.initialValue
-    return !isBlank(defaultValue) ? defaultValue : undefined
+    return port.defaultValue
 }
 
 export function getPortUserValueOrDefault(canvas, portId) {
@@ -783,8 +848,8 @@ export function setPortOptions(canvas, portId, options = {}) {
  */
 
 export function setModuleOptions(canvas, moduleHash, newOptions = {}) {
-    const { modules } = getIndex(canvas)
-    const modulePath = modules[moduleHash]
+    validateModuleExists(canvas, moduleHash)
+    const modulePath = getModulePath(canvas, moduleHash)
     return update(modulePath.concat('options'), (options = {}) => (
         Object.keys(newOptions).reduce((options, key) => {
             if (get(options, [key].concat('value')) === newOptions[key]) {
@@ -1307,6 +1372,27 @@ export function replaceModule(canvas, moduleData) {
             // re-connect if possible
             nextCanvas = connectPorts(nextCanvas, matchedPort.id, matchedConnectedPort.id)
         })
+    })
+    return nextCanvas
+}
+
+export function applyChanges({ sent, received, current }) {
+    if (diff.isEqualCanvas(current, sent)) {
+        // if no changes use state from server
+        return received
+    }
+
+    let nextCanvas = current
+    const changed = new Set(diff.changedModules(sent, current))
+    // apply changes from server if local state hasn't changed
+    received.modules.forEach((m) => {
+        // item changed again, don't update this round
+        if (changed.has(m.hash)) { return }
+        // ignore changes to modules not in serverCanvas
+        if (!getModuleIfExists(received, m.hash)) { return }
+        nextCanvas = updateModule(nextCanvas, m.hash, () => (
+            getModule(received, m.hash)
+        ))
     })
     return nextCanvas
 }

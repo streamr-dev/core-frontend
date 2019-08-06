@@ -1,7 +1,8 @@
 // @flow
 
 import React from 'react'
-import { RunStates, getPortUserValueOrDefault } from '../../../state'
+import cx from 'classnames'
+import * as State from '../../../state'
 import Color from './Color'
 import Map from './Map'
 import Select from './Select'
@@ -36,23 +37,28 @@ export type CommonProps = {
     disabled: boolean,
     onChange: (any) => void,
     value: any,
+    placeholder: any,
 }
 
 const Value = ({ canvas, port, onChange }: Props) => {
-    const isRunning = canvas.state === RunStates.Running
     // Enable non-running input whether connected or not if port.canHaveInitialValue
-    const disabled = isRunning || (!port.canHaveInitialValue && port.connected)
+    const disabled = State.isPortValueEditDisabled(canvas, port.id)
     const type = getPortType(port)
-    // TODO: Ignore when editing.
-    const value = getPortUserValueOrDefault(canvas, port.id)
+    const value = State.getPortValue(canvas, port.id)
+    const placeholder = State.getPortPlaceholder(canvas, port.id)
     const commonProps: CommonProps = {
         disabled,
         onChange,
         value,
+        placeholder,
     }
 
     return (
-        <div className={styles.root}>
+        <div
+            className={cx(styles.root, {
+                [styles.disabled]: disabled,
+            })}
+        >
             {type === 'map' && (
                 <Map
                     {...commonProps}
@@ -73,7 +79,6 @@ const Value = ({ canvas, port, onChange }: Props) => {
             {type === 'text' && (
                 <Text
                     {...commonProps}
-                    placeholder={port.displayName || port.name}
                 />
             )}
             {type === 'stream' && (
