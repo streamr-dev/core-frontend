@@ -94,6 +94,18 @@ const Port = ({
         onSizeChange()
     }, [port.id, onValueChangeProp, onSizeChange])
 
+    useEffect(() => {
+        window.addEventListener('blur', onWindowBlur)
+
+        return () => {
+            window.removeEventListener('blur', onWindowBlur)
+        }
+    }, [onWindowBlur])
+
+    useEffect(() => {
+        onSizeChange()
+    }, [port.value, onSizeChange])
+
     const { isDragging, data } = useContext(DragDropContext)
     const { portId } = data || {}
     const dragInProgress = !!isDragging && portId != null
@@ -106,20 +118,9 @@ const Port = ({
             onValueChange={onValueChangeProp}
             port={port}
             register={onPort}
+            disabled={!isEditable}
         />
     )
-
-    useEffect(() => {
-        window.addEventListener('blur', onWindowBlur)
-
-        return () => {
-            window.removeEventListener('blur', onWindowBlur)
-        }
-    }, [onWindowBlur])
-
-    useEffect(() => {
-        onSizeChange()
-    }, [port.value, onSizeChange])
 
     const isInvisible = isPortInvisible(canvas, port.id)
     const isRenameDisabled = !isEditable || isPortRenameDisabled(canvas, port.id)

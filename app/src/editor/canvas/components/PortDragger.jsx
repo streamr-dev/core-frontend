@@ -141,6 +141,7 @@ class DraggablePort extends React.Component {
                 onStop={this.onDropPort}
                 onStart={this.onStartDragPort}
                 onDrag={this.onDragPort}
+                disabled={this.props.disabled}
             >
                 {this.props.children}
             </Draggable>
@@ -148,11 +149,19 @@ class DraggablePort extends React.Component {
     }
 }
 
-export function DragSource({ api, port, onValueChange, className }) {
+export function DragSource({
+    api,
+    port,
+    onValueChange,
+    className,
+    disabled,
+}) {
     return (
-        <DraggablePort api={api} port={port} onValueChange={onValueChange}>
+        <DraggablePort api={api} port={port} onValueChange={onValueChange} disabled={disabled}>
             <div
-                className={cx(Dragger.styles.root, Dragger.styles.source, Dragger.styles.dragHandle, className)}
+                className={cx(Dragger.styles.root, Dragger.styles.source, Dragger.styles.dragHandle, className, {
+                    [Dragger.styles.disabled]: disabled,
+                })}
             />
         </DraggablePort>
     )
@@ -187,7 +196,9 @@ export class DropTarget extends React.PureComponent {
             /* eslint-disable-next-line max-len */
             /* eslint-disable jsx-a11y/no-static-element-interactions, jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/mouse-events-have-key-events, jsx-a11y/no-noninteractive-tabindex */
             <div
-                className={cx(Dragger.styles.root, Dragger.styles.target, this.props.className, this.props.className)}
+                className={cx(Dragger.styles.root, Dragger.styles.target, this.props.className, this.props.className, {
+                    [Dragger.styles.disabled]: this.props.disabled,
+                })}
                 onMouseOver={this.onMouseOverTarget}
                 onMouseOut={this.onMouseOutTarget}
             />
