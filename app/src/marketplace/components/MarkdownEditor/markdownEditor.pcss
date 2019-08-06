@@ -1,5 +1,7 @@
 .root {
   background-color: #FDFDFD;
+  border: 1px solid #EBEBEB;
+  border-radius: 4px;
 }
 
 .input {
@@ -14,6 +16,7 @@
   font-size: 16px;
   letter-spacing: 0;
   line-height: 24px;
+  border-radius: 4px;
 }
 
 .input::placeholder {
@@ -23,13 +26,14 @@
 .footer {
   display: grid;
   grid-template-columns: auto 200px;
-  padding: 0.5em 1.5em;
+  padding: 1.5em;
   border-top: #EBEBEB 1px solid;
   color: #A3A3A3;
   font-family: var(--sans);
   font-size: 12px;
   letter-spacing: 0;
   line-height: 24px;
+  user-select: none;
 
   span {
     display: inline-block;
