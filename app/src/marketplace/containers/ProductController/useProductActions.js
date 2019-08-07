@@ -53,14 +53,14 @@ export function useProductActions() {
             ...p,
             category,
         }))
-        touch('category')
+        touch('details')
     }, [commit, touch])
     const updateAdminFee = useCallback((adminFee: number) => {
         commit('Update admin fee', (p) => ({
             ...p,
             adminFee,
         }))
-        touch('adminFee')
+        touch('details')
     }, [commit, touch])
     const updatePricePerSecond = useCallback((pricePerSecond: $ElementType<Product, 'pricePerSecond'>) => {
         commit('Update price per second', (p) => ({

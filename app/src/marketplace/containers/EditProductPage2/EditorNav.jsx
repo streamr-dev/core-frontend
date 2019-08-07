@@ -3,6 +3,8 @@
 import React, { useContext } from 'react'
 import cx from 'classnames'
 import findLastIndex from 'lodash/findLastIndex'
+import { withRouter } from 'react-router-dom'
+import { Translate } from 'react-redux-i18n'
 
 import SvgIcon from '$shared/components/SvgIcon'
 
@@ -11,14 +13,31 @@ import useValidation from '../ProductController/useValidation'
 import styles from './editorNav.pcss'
 
 type NavSectioProps = {
-    title: string,
+    id: string,
+    anchorId: string,
     hasError?: boolean,
     touched?: boolean,
+    location: {
+        hash: string,
+    },
 }
 
-const NavSection = ({ title, hasError = false, touched = false }: NavSectioProps) => (
-    <div className={styles.navSection}>
-        <div className={styles.title}>{title}</div>
+const NavSection = withRouter(({
+    id,
+    anchorId,
+    hasError = false,
+    touched = false,
+    location: { hash },
+}: NavSectioProps) => (
+    <div className={cx(styles.navSection, {
+        [styles.active]: !!(anchorId === hash.substr(1)),
+    })}
+    >
+        <div className={styles.title}>
+            <a href={`#${anchorId}`}>
+                <Translate value={`editProductPage.navigation.${id}`} />
+            </a>
+        </div>
         <div className={styles.status}>
             <div className={cx(styles.marker, {
                 [styles.markerComplete]: !!touched && !hasError,
@@ -30,9 +49,27 @@ const NavSection = ({ title, hasError = false, touched = false }: NavSectioProps
             </div>
         </div>
     </div>
-)
+))
 
-const sections = ['name', 'coverImage', 'description', 'streams', 'price', 'category']
+const sections = [{
+    id: 'name',
+    anchorId: 'product-name',
+}, {
+    id: 'coverImage',
+    anchorId: 'cover-image',
+}, {
+    id: 'description',
+    anchorId: 'description',
+}, {
+    id: 'streams',
+    anchorId: 'streams',
+}, {
+    id: 'price',
+    anchorId: 'price',
+}, {
+    id: 'details',
+    anchorId: 'details',
+}]
 
 const EditorNav = () => {
     const { isTouched } = useContext(ValidationContext)
@@ -43,7 +80,15 @@ const EditorNav = () => {
     const { isValid: isCategoryValid } = useValidation('category')
     const { isValid: isAdminFeeValid } = useValidation('adminFee')
 
-    const lastIndex = findLastIndex(sections, (name) => isTouched(name))
+    const validSections = {
+        name: isNameValid,
+        coverImage: isCoverImageValid,
+        description: isDescriptionValid,
+        streams: areStreamsValid,
+        price: false,
+        details: isCategoryValid && isAdminFeeValid,
+    }
+    const lastIndex = findLastIndex(sections, ({ id }) => isTouched(id))
 
     return (
         <div className={cx(styles.root, styles.EditorNav)}>
@@ -56,35 +101,15 @@ const EditorNav = () => {
                     }}
                 />
             </div>
-            <NavSection
-                title="Name"
-                hasError={!isNameValid}
-                touched={lastIndex >= 0}
-            />
-            <NavSection
-                title="Cover image"
-                hasError={!isCoverImageValid}
-                touched={lastIndex >= 1}
-            />
-            <NavSection
-                title="Description"
-                hasError={!isDescriptionValid}
-                touched={lastIndex >= 2}
-            />
-            <NavSection
-                title="Streams"
-                hasError={!areStreamsValid}
-                touched={lastIndex >= 3}
-            />
-            <NavSection
-                title="Set price"
-                touched={lastIndex >= 4}
-            />
-            <NavSection
-                title="Details"
-                touched={lastIndex >= 5}
-                hasError={(!isCategoryValid || !isAdminFeeValid)}
-            />
+            {sections.map(({ id, anchorId }, index) => (
+                <NavSection
+                    key={id}
+                    id={id}
+                    anchorId={anchorId}
+                    hasError={!validSections[id]}
+                    touched={lastIndex >= index}
+                />
+            ))}
         </div>
     )
 }
