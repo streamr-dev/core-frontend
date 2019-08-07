@@ -39,25 +39,29 @@ export function useProductActions() {
             ...p,
             imageUrl: image,
         }))
-    }, [commit])
+        touch('coverImage')
+    }, [commit, touch])
     const updateStreams = useCallback((streams: StreamIdList) => {
         commit('Update streams', (p) => ({
             ...p,
             streams,
         }))
-    }, [commit])
+        touch('streams')
+    }, [commit, touch])
     const updateCategory = useCallback((category: $ElementType<Product, 'category'>) => {
         commit('Update category', (p) => ({
             ...p,
             category,
         }))
-    }, [commit])
+        touch('category')
+    }, [commit, touch])
     const updateAdminFee = useCallback((adminFee: number) => {
         commit('Update admin fee', (p) => ({
             ...p,
             adminFee,
         }))
-    }, [commit])
+        touch('adminFee')
+    }, [commit, touch])
     const updatePricePerSecond = useCallback((pricePerSecond: $ElementType<Product, 'pricePerSecond'>) => {
         commit('Update price per second', (p) => ({
             ...p,
@@ -69,19 +73,22 @@ export function useProductActions() {
             ...p,
             priceCurrency,
         }))
-    }, [commit])
+        touch('price')
+    }, [commit, touch])
     const updateBeneficiaryAddress = useCallback((beneficiaryAddress: $ElementType<Product, 'beneficiaryAddress'>) => {
         commit('Update beneficiary address', (p) => ({
             ...p,
             beneficiaryAddress,
         }))
-    }, [commit])
+        touch('beneficiaryAddress')
+    }, [commit, touch])
     const updateType = useCallback((type: $ElementType<Product, 'type'>) => {
         commit('Update type', (p) => ({
             ...p,
             type,
         }))
-    }, [commit])
+        touch('type')
+    }, [commit, touch])
 
     return useMemo(() => ({
         undo,

@@ -62,6 +62,19 @@ const sources = {
             />
         </svg>
     ),
+    exclamation: (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2 8">
+            <g
+                stroke="currentColor"
+                strokeWidth="1.5"
+                fill="none"
+                fillRule="evenodd"
+                strokeLinecap="round"
+            >
+                <path d="M1 1v3.918M.986 6.904L1 6.918" />
+            </g>
+        </svg>
+    ),
     cross: (
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 15">
             <path
