@@ -14,12 +14,25 @@ type ContextProps = {
     clearStatus: (string) => void,
     status: Object,
     validate: (Object) => void,
+    touched: Object,
+    touch: (string) => void,
+    isTouched: (string) => boolean,
 }
 
 const ValidationContext: Context<ContextProps> = React.createContext({})
 
 function useValidationContext(): ContextProps {
     const [status, setStatusState] = useState({})
+    const [touched, setTouched] = useState({})
+
+    const touch = useCallback((name: string) => {
+        setTouched((existing) => ({
+            ...existing,
+            [name]: true,
+        }))
+    }, [setTouched])
+    const isTouched = useCallback((name: string) => !!touched[name], [touched])
+
     const isMounted = useIsMounted()
 
     const setStatus = useCallback((name: string, level: Level, message: string): Object => {
@@ -77,9 +90,12 @@ function useValidationContext(): ContextProps {
     return useMemo(() => ({
         setStatus,
         clearStatus,
+        touched,
+        touch,
+        isTouched,
         status,
         validate,
-    }), [status, setStatus, clearStatus, validate])
+    }), [status, setStatus, touched, touch, isTouched, clearStatus, validate])
 }
 
 type Props = {

@@ -3,6 +3,7 @@
 import { useMemo, useCallback, useContext } from 'react'
 
 import { Context as UndoContext } from '$shared/components/UndoContextProvider'
+import { Context as ValidationContext } from './ValidationContextProvider'
 import useProductUpdater from '../ProductController/useProductUpdater'
 
 import type { Product } from '$mp/flowtype/product-types'
@@ -11,6 +12,7 @@ import type { StreamIdList } from '$shared/flowtype/stream-types'
 export function useProductActions() {
     const { updateProduct: commit } = useProductUpdater()
     const { undo } = useContext(UndoContext)
+    const { touch } = useContext(ValidationContext)
 
     const updateProduct = useCallback((product: Object, msg: string = 'Update product') => {
         commit(msg, (p) => ({
@@ -23,13 +25,15 @@ export function useProductActions() {
             ...p,
             name,
         }))
-    }, [commit])
+        touch('name')
+    }, [commit, touch])
     const updateDescription = useCallback((description: $ElementType<Product, 'description'>) => {
         commit('Update description', (p) => ({
             ...p,
             description,
         }))
-    }, [commit])
+        touch('description')
+    }, [commit, touch])
     const updateImageUrl = useCallback((image: File | $ElementType<Product, 'imageUrl'>) => {
         commit('Update image url', (p) => ({
             ...p,
