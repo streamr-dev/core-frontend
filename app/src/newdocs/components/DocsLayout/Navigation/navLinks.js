@@ -2,6 +2,7 @@
 
 import type { NavigationLink } from '../../../flowtype/navigation-types'
 import links from '$shared/../links'
+import { canvasModulesCategorised, toAnchor } from '../../DocsPages/CanvasModules/data'
 
 // navigationLinks Schema:
 // 'rendered title': 'URL Address',
@@ -52,20 +53,9 @@ export const subNav = {
         'building-integrations': 'Building integrations',
         'ethereum-modules': 'Ethereum modules',
     },
-    canvasModules: {
-        boolean: 'Boolean',
-        'custom-modules': 'Custom',
-        input: 'Input',
-        integrations: 'Integrations',
-        list: 'List',
-        map: 'Map',
-        streams: 'Streams',
-        text: 'Text',
-        'time-and-date': 'Time & Date',
-        'time-series': 'Time Series',
-        utils: 'Utils',
-        visualizations: 'Visualizations',
-    },
+    canvasModules: Object.keys(canvasModulesCategorised).reduce((o, category) => Object.assign(o, {
+        [toAnchor(category)]: category,
+    }), {}),
     dashboards: {
         'intro-to-dashboards': 'Intro to dashboards',
         'work-with-dashboards-in-core': 'Work with dashboards in Core',

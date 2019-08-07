@@ -89,10 +89,7 @@ module.exports = {
             },
             {
                 test: /\.md$/,
-                loader: 'file-loader',
-                options: {
-                    name: '[name].[ext]',
-                },
+                loader: 'raw-loader',
             },
             // Images are put to <BASE_URL>/images
             {

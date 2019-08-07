@@ -2,134 +2,75 @@
 import React from 'react'
 import isEmpty from 'lodash/isEmpty'
 import ReactMarkdown from 'react-markdown'
+import get from 'lodash/get'
 
-import createMdSnippet from '$newdocs/utils/createMdSnippet'
 import styles from './canvasModuleConfig.pcss'
 
-const inputs = (moduleInputs, moduleInputsRaw) => {
-    const types = []
-    const defaultValues = []
-
-    if (moduleInputs && moduleInputsRaw) {
-        Object.entries(moduleInputs).map(([key]) =>
-            moduleInputsRaw.map((ins) => {
-                if (ins.name === key) {
-                    types.push(ins.type)
-                    defaultValues.push(ins.defaultValue)
-                }
-                return false
-            }))
-    }
-
-    return !isEmpty(moduleInputs)
-        ? createMdSnippet(moduleInputs, types, defaultValues)
-        : false
+type PortHelpProps = {
+    module: any,
+    port: any,
+    portsKey: string,
 }
 
-const outputs = (moduleOutputs, moduleOutputsRaw) => {
-    const types = []
-    const defaultValues = []
-
-    if (moduleOutputs && moduleOutputsRaw) {
-        Object.entries(moduleOutputs).map(([key]) =>
-            moduleOutputsRaw.map((outs) => {
-                if (outs.name === key) {
-                    types.push(outs.type)
-                    defaultValues.push(outs.defaultValue)
-                }
-                return false
-            }))
-    }
-
-    return !isEmpty(moduleOutputs)
-        ? createMdSnippet(moduleOutputs, types, defaultValues)
-        : false
+function PortHelp({ module, port, portsKey }: PortHelpProps) {
+    return (
+        <div className={styles.portHelp}>
+            <div className={styles.portHelpHeader}>
+                <h5 className={styles.portName} title={port.name}>{port.displayName || port.name}</h5>
+                <div className={styles.portTypes}>
+                    {port.type.split(/\s+/).map((type) => (
+                        <span>{type}</span>
+                    ))}
+                </div>
+            </div>
+            {isEmpty(port.defaultValue) ? null : (
+                <p>Default value: ${port.defaultValue}</p>
+            )}
+            <div className={styles.portHelpContent}>
+                <ReactMarkdown source={get(module, ['help', portsKey, port.name], '')} />
+            </div>
+        </div>
+    )
 }
 
-const params = (moduleParams, moduleParamsRaw) => {
-    const types = []
-    const defaultValues = []
+type PortsHelpProps = {
+    module: any,
+    heading: string,
+    portsKey: string,
+}
 
-    if (moduleParams && moduleParamsRaw) {
-        Object.entries(moduleParams).map(([key]) =>
-            moduleParamsRaw.map((pms) => {
-                if (pms.name === key) {
-                    types.push(pms.type)
-                    defaultValues.push(pms.defaultValue)
-                }
-                return false
-            }))
-    }
-
-    return !isEmpty(moduleParams)
-        ? createMdSnippet(moduleParams, types, defaultValues)
-        : false
+function PortsHelp({ module, heading, portsKey }: PortsHelpProps) {
+    const ports = module[portsKey] || []
+    return (
+        <div className={styles.portsHelp}>
+            <h4 className={styles.portTypesHeading}>{heading}</h4>
+            <div className={styles.portsContent}>
+                {ports.length ? (
+                    ports.map((port) => (
+                        <PortHelp key={port.id} module={module} portsKey={portsKey} port={port} />
+                    ))
+                ) : (
+                    <div className={styles.portHelp}>
+                        <em>None</em>
+                    </div>
+                )}
+            </div>
+        </div>
+    )
 }
 
 type Props = {
-    moduleInputs: any,
-    moduleInputsRaw: any,
-    moduleOutputs: any,
-    moduleOutputsRaw: any,
-    moduleParams: any,
-    moduleParamsRaw: any,
-    moduleHelpAvailable: boolean,
+    module: any,
 }
 
-const CanvasModuleConfig = ({
-    moduleInputs,
-    moduleInputsRaw,
-    moduleOutputs,
-    moduleOutputsRaw,
-    moduleParams,
-    moduleParamsRaw,
-    moduleHelpAvailable,
-}: Props) => (
-    (moduleHelpAvailable ? (
-        <React.Fragment>
-            <strong>
-                Inputs
-            </strong>
-
-            {!isEmpty(moduleInputs) ? (
-                <div className={styles.inOutParamsContent}>
-                    <ReactMarkdown source={inputs(moduleInputs, moduleInputsRaw)} />
-                </div>
-            ) : (
-                <p>
-                    - None
-                </p>
-            )}
-
-            <strong>
-                Parameters
-            </strong>
-
-            {!isEmpty(moduleParams) ? (
-                <div className={styles.inOutParamsContent}>
-                    <ReactMarkdown source={params(moduleParams, moduleParamsRaw)} />
-                </div>
-            ) : (
-                <p>
-                    - None
-                </p>
-            )}
-
-            <strong>
-                Outputs
-            </strong>
-
-            {!isEmpty(moduleOutputs) ? (
-                <div className={styles.inOutParamsContent}>
-                    <ReactMarkdown source={outputs(moduleOutputs, moduleOutputsRaw)} />
-                </div>
-            ) : (
-                <p>
-                    - None
-                </p>
-            )}
-        </React.Fragment>
-    ) : null)
-)
+function CanvasModuleConfig({ module }: Props) {
+    return (
+        <div className={styles.root}>
+            <PortsHelp module={module} heading="Inputs" portsKey="inputs" />
+            <PortsHelp module={module} heading="Parameters" portsKey="params" />
+            <PortsHelp module={module} heading="Outputs" portsKey="outputs" />
+        </div>
+    )
+}
 
 export default CanvasModuleConfig
