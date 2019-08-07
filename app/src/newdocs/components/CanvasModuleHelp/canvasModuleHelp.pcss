@@ -1,9 +1,8 @@
-.root {
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-row-gap: 1um;
+section.root {
   font-size: 0.875um;
   color: var(--greyDark2);
+  padding: 0;
+  margin: 20px 0;
 
   h4,
   h5,
@@ -16,16 +15,24 @@
   }
 }
 
+.ports {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-row-gap: 1um;
+}
+
 .portHelpContent::first-letter,
 .portHelpContent *::first-letter {
   text-transform: uppercase;
 }
 
 .portHelpHeader {
-  display: grid;
-  grid-template-rows: 1fr;
-  grid-column-gap: 0.5um;
-  align-items: center;
+  display: flex;
+  align-items: baseline;
+}
+
+.portHelpHeader > * + * {
+  margin-left: 0.5um;
 }
 
 .portsContent {
@@ -60,7 +67,11 @@
 }
 
 .portName {
+  font-size: 0.875um;
   font-family: var(--mono);
   letter-spacing: 0;
-  font-size: 1um;
+}
+
+.defaultValue span {
+  font-family: var(--mono);
 }

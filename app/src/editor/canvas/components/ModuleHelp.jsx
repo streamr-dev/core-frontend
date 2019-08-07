@@ -1,10 +1,5 @@
 import React from 'react'
-import cx from 'classnames'
-import ReactMarkdown from 'react-markdown'
-
-import CanvasModuleConfig from '$newdocs/components/CanvasModuleConfig'
-
-const noHelpTxt = 'There is no documentation for this module at this time.'
+import CanvasModuleHelp from '$newdocs/components/CanvasModuleHelp'
 
 export default class ModuleHelp extends React.Component {
     state = {}
@@ -26,53 +21,31 @@ export default class ModuleHelp extends React.Component {
     }
 
     async load() {
-        const { moduleId, moduleName } = this.props
+        const { module: m } = this.props
 
-        const cleanedName = moduleName.replace(/\s/g, '').replace(/\(/g, '_').replace(/\)/g, '')
-
-        // eslint-disable-next-line global-require, import/no-dynamic-require
-        const helpJson = await require(`$newdocs/content/canvasModules/${cleanedName}-${moduleId}.jsx`)
-        const { help } = helpJson.default
+        const cleanedName = m.name.replace(/\s/g, '').replace(/\(/g, '_').replace(/\)/g, '')
 
         // eslint-disable-next-line global-require, import/no-dynamic-require
-        const helpMdPath = await require(`$newdocs/content/canvasModules/${cleanedName}-${moduleId}.md`)
-        const helpMdText = await fetch(helpMdPath).then((res) => res.text())
+        const help = await import(`$newdocs/content/canvasModules/${cleanedName}-${m.id}.jsx`)
 
         if (this.unmounted) { return }
         this.setState({
-            inputs: help.inputs,
-            inputsRaw: helpJson.default.inputs,
-            outputs: help.outputs,
-            outputsRaw: helpJson.default.outputs,
-            params: help.params,
-            paramsRaw: helpJson.default.params,
-            helpMdText,
+            [m.id]: help.default,
         })
     }
 
     render() {
-        const { className } = this.props
-        const {
-            inputs,
-            inputsRaw,
-            outputs,
-            outputsRaw,
-            params,
-            paramsRaw,
-            helpMdText,
-        } = this.state
+        const { className, module: m } = this.props
+        if (!m) { return null }
+        const moduleData = {
+            ...this.state[m.id],
+            ...m,
+        }
         return (
-            <div className={cx(className)}>
-                <ReactMarkdown source={helpMdText} />
-                <CanvasModuleConfig
-                    moduleInputs={inputs || {}}
-                    moduleInputsRaw={inputsRaw || []}
-                    moduleOutputs={outputs || {}}
-                    moduleOutputsRaw={outputsRaw || []}
-                    moduleParams={params || {}}
-                    moduleParamsRaw={paramsRaw || []}
-                    moduleHelpAvailable={helpMdText && !helpMdText.includes(noHelpTxt)}
-                />
+            <div className={className}>
+                {!!moduleData && (
+                    <CanvasModuleHelp module={moduleData} hideName />
+                )}
             </div>
         )
     }

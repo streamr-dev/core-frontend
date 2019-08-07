@@ -1,10 +1,10 @@
 /* eslint-disable flowtype/no-types-missing-file-annotation */
 import React from 'react'
-import isEmpty from 'lodash/isEmpty'
 import ReactMarkdown from 'react-markdown'
+import isEmpty from 'lodash/isEmpty'
 import get from 'lodash/get'
 
-import styles from './canvasModuleConfig.pcss'
+import styles from './canvasModuleHelp.pcss'
 
 type PortHelpProps = {
     module: any,
@@ -19,12 +19,14 @@ function PortHelp({ module, port, portsKey }: PortHelpProps) {
                 <h5 className={styles.portName} title={port.name}>{port.displayName || port.name}</h5>
                 <div className={styles.portTypes}>
                     {port.type.split(/\s+/).map((type) => (
-                        <span>{type}</span>
+                        <span key={type}>{type}</span>
                     ))}
                 </div>
             </div>
             {isEmpty(port.defaultValue) ? null : (
-                <p>Default value: ${port.defaultValue}</p>
+                <div className={styles.defaultValue}>
+                    Default Value: <span>${port.defaultValue}</span>
+                </div>
             )}
             <div className={styles.portHelpContent}>
                 <ReactMarkdown source={get(module, ['help', portsKey, port.name], '')} />
@@ -61,16 +63,19 @@ function PortsHelp({ module, heading, portsKey }: PortsHelpProps) {
 
 type Props = {
     module: any,
+    hideName?: boolean,
 }
 
-function CanvasModuleConfig({ module }: Props) {
+export default function CanvasModuleHelp({ module: m, hideName }: Props) {
     return (
-        <div className={styles.root}>
-            <PortsHelp module={module} heading="Inputs" portsKey="inputs" />
-            <PortsHelp module={module} heading="Parameters" portsKey="params" />
-            <PortsHelp module={module} heading="Outputs" portsKey="outputs" />
-        </div>
+        <section key={m.id} className={styles.root}>
+            {hideName ? null : <h3>{m.name}</h3>}
+            <ReactMarkdown source={m.help && m.help.helpText} />
+            <div className={styles.ports}>
+                <PortsHelp module={m} heading="Inputs" portsKey="inputs" />
+                <PortsHelp module={m} heading="Parameters" portsKey="params" />
+                <PortsHelp module={m} heading="Outputs" portsKey="outputs" />
+            </div>
+        </section>
     )
 }
-
-export default CanvasModuleConfig
