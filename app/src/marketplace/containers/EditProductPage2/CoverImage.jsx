@@ -2,11 +2,14 @@
 
 import React from 'react'
 import ScrollableAnchor from 'react-scrollable-anchor'
+import cx from 'classnames'
 
 import useProduct from '../ProductController/useProduct'
 import useValidation from '../ProductController/useValidation'
 import useProductActions from '../ProductController/useProductActions'
 import ImageUpload from '$shared/components/ImageUpload'
+
+import styles from './coverImage.pcss'
 
 const CoverImage = () => {
     const product = useProduct()
@@ -25,6 +28,7 @@ const CoverImage = () => {
                 <ImageUpload
                     setImageToUpload={updateImageUrl}
                     originalImage={product.imageUrl}
+                    className={styles.imageUpload}
                 />
                 {!isValid && (
                     <p>{level}: {message}</p>
