@@ -41,9 +41,18 @@ A Streamr canvas is a microservice which consumes and acts upon realtime data. A
   <img src={CanvasDemo} />
 </div>
 
-Streamr offers hundreds of built-in modules which can perform a wide variety of tasks inside your canvas. You'll be able to integrate with Etheruem, connect to external APIs, perform data transformation, push data through logical operation circuits, and much more. By stacking and combining these modules you'll be able to build complex logic such as streaming analytics and data visualisation dashboards.
+Here's a few examples of specific things you can do.
 
-If required, you can also create a service programmatically through the canvas endpoints of the <Link to={links.newdocs.api}>API</Link>.
+- **Refine real-time data** by routing it through different modules. The built-in module library includes arithmetic and logical operations. There are also functions for smoothing, sampling, and aggregating streaming data.
+- **Chain modules together** so that the output from one operation flows as an input to another. This is one way to build arbitrarily complex streaming analytics. If you want to keep things tidy, you can encapsulate the complexity and reuse the abstracted result.
+- **Visualise the data** by directing it to a charting module. The chart shows the new data in real-time as new events arrive or streaming analytics are computed.
+- **Communicate with the outside world** by sending text messages or emails when specific conditions are satisfied. You can embed real-time data, refined data, or natural language in the messages.
+- **Save refined data in another stream.** When you do that, the saved data are instantly accessible as new events. The refined data can be streamed from the platform to external data consumers.
+- **Post events in HTTP format to external RESTful services.** There's a wide range of popular and useful services out there, and you can use any one of them easily from Streamr. 
+- **Control external devices.** As an example, you can override manual controls and make a remotely operated drone return to base when it's about to go out of range or running low on battery. Because the control interface is likely to be machine specific, this is one case where you'd be looking at coding a custom module in Java.
+- **Subscribe to a stream in external web pages and applications.** You'll receive every event as soon as it’s available.
+
+There is an extensive collection of built-in modules as a source of building blocks. You can abstract modules and re-use them later, and you can code custom modules in Java.
 
 ### Building a canvas
 
@@ -71,7 +80,7 @@ Many modules have parameters which control their operation.  Module parameters c
 
 As an example, the **RoundToStep** module has three inputs, two parameters, and one output.  The first two inputs correspond to the module’s parameters, i.e. precision and mode.  The last input is a numeric value which will be rounded with the specified precision in the direction specified by the mode.  The module output is equal to the rounded input.
 
-<div className={docsStyles.centered}>
+<div className={cx(docsStyles.centered, canvasesStyles.roundToStep)}>
   <img src={RoundToStep} />
 </div>
 
@@ -81,7 +90,7 @@ Inputs, outputs, and parameters can be renamed by double clicking on them and ty
 
 When you place a stream on the canvas, you effectively *subscribe* to a realtime data source. To add a stream, just start typing its name in module browser search. The stream name will autocomplete as you type. Realtime events are now available at the output endpoints.
 
-<div className={cx(docsStyles.centered, canvasesStyles.AddTramStream)}>
+<div className={cx(docsStyles.centered, canvasesStyles.addTramStream)}>
   <img src={AddTramStream} />
 </div>
 
@@ -104,10 +113,6 @@ Use the **SendToStream** module if you want to send data that has been generated
 ### Connecting modules
 
 A data flow between two modules — or a data flow between a stream and a module — is created by drawing a connection from an outgoing endpoint (port) to an incoming endpoint. You can create as many outgoing connections as you wish. You can only have one incoming connection per an endpoint.
-
-<div className={cx(docsStyles.centered, canvasesStyles.inputOutputTypes)}>
-  <img src={InputTypes} />
-</div>
 
 Along with **inputs** and **outputs**, there are also **parameters**. **Parameters are just inputs with default values.** Because a parameter has a default value, there is no need for an incoming connection in the corresponding endpoint.
 
@@ -140,6 +145,10 @@ All connections are unidirectional, i.e. the data always flows from an output to
 </Warning>
 
 You can alter the endpoint of an existing connection by dragging it to another input endpoint. If you instead drop the endpoint in an empty area in the workspace, the connection is cleared. Right clicking on top of a module port will bring up a pop-up menu with the option to disconnect all incoming connections to the module.
+
+<div className={cx(docsStyles.centered, canvasesStyles.inputOutputTypes)}>
+  <img src={InputTypes} />
+</div>
 
 The topology of a service can be arbitrarily complex. You can of course design a simple sequential work flow, and in many cases it will be perfectly adequate. In other cases the flow of data may involve merging data pathways, branches and even loops. Go ahead, be adventurous, but also bear in mind Streamr's abstraction capabilities. Reusing existing canvases will help you manage the development process and keep things tidy and neat.
 
@@ -226,7 +235,7 @@ To create a new canvas, click on 'Create Canvas' on the <Link to={links.userpage
   <img src={CreateCanvasButton} />
 </div>
 
-You'll see all of your canvases (and their running state) on the <Link to={links.userpages.canvases}>canvases page</Link> inside the Core app. Click on a canvas to open it in the editor. You can then stop it (if it is live) or launch it live (if it is stopped). You can also search and sort your canvases by its name, when it was modified, or from it's running state. 
+You'll see all of your canvases along with their running state on the <Link to={links.userpages.canvases}>canvases page</Link>, inside the Core app. Click on a canvas to open it in the editor. You can also search and sort your canvases by its name, when it was modified, or from it's running state. 
 
 <div className={docsStyles.centered}>
   <img src={CoreListing} />
