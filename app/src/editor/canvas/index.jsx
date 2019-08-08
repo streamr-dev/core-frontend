@@ -459,7 +459,7 @@ const CanvasContainer = withRouter(withErrorBoundary(ErrorComponentView)((props)
 )))
 
 export default ({ embed }) => (
-    <Layout className={styles.layout} footer={false} nav={!embed} hideNavOnDesktop>
+    <Layout className={styles.layout} footer={false} nav={!embed}>
         <BodyClass className="editor" />
         <CanvasContainer embed={embed} />
     </Layout>
