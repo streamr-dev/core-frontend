@@ -1,18 +1,51 @@
+import cx from 'classnames'
+import { Link } from 'react-router-dom'
+import links from '$shared/../links'
 
+import DashboardModules from './images/dashboards/dashboardModules.png'
+import DashboardBrowser from './images/dashboards/dashboardBrowser.png'
+import DashboardListing from './images/dashboards/dashboardListing.png'
+import CreateDashboard from './images/dashboards/createDashboard.png'
 
 import docsStyles from '$newdocs/components/DocsLayout/docsLayout.pcss'
+import dashboardStyles from '$newdocs/components/DocsPages/Dashboards/dashboardStyles.pcss'
 
 <section id="intro-to-dashboards">
 
 ## Intro to dashboards
-***Documentation coming soon***
+
+Dashboards are a window into your running canvases. They provide a unique workspace for visualisation of the the live data sourced from any of your running <Link to={links.newdocs.streams}>canvases</Link>. 
+
+<div className={cx(docsStyles.centered, dashboardStyles.dashboardModules)}>
+  <img src={DashboardModules} />
+</div>
+
+To build a dashboard you need to first have a running canvas that uses a **Chart**, **Table** or **Geo Map** module. These modules (and their data flow) will be made available to you inside any dashboard you create. You can add the visualisation modules to the dashboard through the **module browser** at any time (even when your canvases are not running). They will 'activate' once the canvas is running and data flows through those visualisation modules.
+
+<div className={cx(docsStyles.centered, dashboardStyles.dashboardBrowser)}>
+  <img src={DashboardBrowser} />
+</div>
+
+You can combine data from different canvases inside the same dashboard. For example, you may want to have a split screen of weather data and traffic information, sourced from different canvases.
 
 </section>
 
 <section id="work-with-dashboards-in-core">
 
 ## Work with dashboards in Core
-***Documentation coming soon***
+
+To create a new dashboard, click on 'Create Dashboard' inside the <Link to={links.userpages.dashboards}>dashboard listing Core page</Link>.
+
+<div className={cx(docsStyles.centered, dashboardStyles.createDashboard)}>
+  <img src={CreateDashboard} />
+</div>
+
+You'll see preview tiles of your dashboards on the <Link to={links.userpages.dashboards}>dashboards page</Link> inside the Core app. You can search and sort your dashboards by their name and you can click on any dashboard tile to open it. Dashboards don't have a running state- the modules inside the dashboard will reflect the realtime data flow of the canvas modules inside it. When there is no realtime data, the dashboard modules will appear empty.
+
+<div className={cx(docsStyles.centered, dashboardStyles.dashboardListing)}>
+  <img src={DashboardListing} />
+</div>
+
+When you're happy with your dashboard, you can embed live visualisation elements in external web pages.
 
 </section>
-
