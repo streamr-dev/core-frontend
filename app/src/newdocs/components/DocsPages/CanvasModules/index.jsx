@@ -21,7 +21,7 @@ export default function CanvasModules() {
                     <section key={category} id={toAnchor(category)} className={docsStyles.canvasModule}>
                         <h2>{category}</h2>
                         {helps.map((m) => (
-                            <CanvasModuleHelp key={m.id} module={m} />
+                            <CanvasModuleHelp key={m.id} module={m} help={m.help} />
                         ))}
                     </section>
                 ))
