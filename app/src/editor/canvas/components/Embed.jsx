@@ -3,8 +3,6 @@
 import React from 'react'
 import CanvasContainer from '../'
 
-const CanvasEmbedPage = () => (
-    <CanvasContainer embed />
-)
-
-export default CanvasEmbedPage
+export default function CanvasEmbedPage() {
+    return <CanvasContainer embed />
+}
