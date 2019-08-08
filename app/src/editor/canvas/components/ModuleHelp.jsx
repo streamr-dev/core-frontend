@@ -2,7 +2,7 @@ import React, { useEffect, useCallback, useState } from 'react'
 import CanvasModuleHelp from '$newdocs/components/CanvasModuleHelp'
 import useIsMounted from '$shared/hooks/useIsMounted'
 
-export default function ModuleHelp({ className, module: m }) {
+function ModuleHelp({ module: m }) {
     const moduleId = m.id
     const cleanedName = m.name.replace(/\s/g, '').replace(/\(/g, '_').replace(/\)/g, '')
     const isMounted = useIsMounted()
@@ -28,8 +28,12 @@ export default function ModuleHelp({ className, module: m }) {
     if (!m) { return null }
 
     return (
-        <div className={className}>
-            <CanvasModuleHelp module={m} help={currentHelpContent} hideName />
-        </div>
+        <CanvasModuleHelp module={m} help={currentHelpContent} hideName />
     )
+}
+
+// ModuleHelp wrapper that returns empty if no module
+export default function ({ module: m, ...props }) {
+    if (!m) { return null }
+    return <ModuleHelp module={m} {...props} />
 }
