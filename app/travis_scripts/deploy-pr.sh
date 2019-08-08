@@ -1,4 +1,24 @@
 #!/usr/bin/env bash
+echo "Config Env Variables:"
+echo $NODE_ENV
+echo $PORT
+echo $VERSION
+echo $SENTRY_ENVIRONMENT
+echo $BUNDLE_ANALYSIS
+echo $STREAMR_API_URL
+echo $STREAMR_WS_URL
+echo $PLATFORM_ORIGIN_URL
+echo $STREAMR_URL
+echo $PLATFORM_PUBLIC_PATH
+echo $GOOGLE_ANALYTICS_ID
+echo $STORYBOOK_BASE_PATH
+echo $MARKETPLACE_CONTRACT_ADDRESS
+echo $TOKEN_CONTRACT_ADDRESS
+echo $WEB3_REQUIRED_NETWORK_ID
+echo $WEB3_PUBLIC_HTTP_PROVIDER
+echo $WEB3_PUBLIC_WS_PROVIDER
+echo $SENTRY_DSN
+echo $LOGROCKET_SLUG
 docker login -u "${DOCKER_USER}" -p "${DOCKER_PASS}"
 WEB_ACL_ID=$(aws waf list-web-acls --region eu-west-1  --query "WebACLs[].WebACLId" --output text)
 echo $WEB_ACL_ID
