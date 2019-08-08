@@ -1,14 +1,17 @@
 .root {
+  position: relative;
   display: flex;
+  flex-direction: column;
   border-radius: 4px;
   padding: 1.5em;
-  margin: 2em 0;
+  margin: 2em 0 1em;
   background: rgba(3, 36, 255, 0.05);
   border: 1px solid var(--streamrBlue);
 
   .warningIcon {
-    position: relative;
-    top: 5px;
+    position: absolute;
+    top: 27px;
+    left: 15px;
     width: 24px;
     height: 24px;
   }
@@ -26,6 +29,12 @@
 @media (--md-down) {
   .root {
     flex-direction: column;
+
+    .warningIcon {
+      position: relative;
+      top: 5px;
+      left: auto;
+    }
 
     p {
       margin: 15px 0;

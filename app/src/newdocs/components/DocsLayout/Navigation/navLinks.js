@@ -62,6 +62,7 @@ export const subNav = {
     },
     tutorials: {
         'building-a-simple-pub-sub-system': 'Building a simple pub/sub system',
+        'building-custom-canvas-module': 'Building a custom canvas module',
     },
     dataToken: {},
     core: {

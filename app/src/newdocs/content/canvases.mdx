@@ -1,31 +1,264 @@
 
+import cx from 'classnames'
+import { Link } from 'react-router-dom'
+
+import Warning from '$newdocs/components/Warning'
+import CodeSnippet from '$shared/components/CodeSnippet'
+import { formatPath } from '$shared/utils/url'
+import links from '$shared/../links'
+
+import CanvasDemo from './images/canvases/canvasDemo.png'
+import RoundToStep from './images/canvases/roundToStep.png'
+import SendToStream from './images/canvases/sendToStream.png'
+import AndModule from './images/canvases/andModule.png'
+import BasicCanvas from './images/canvases/basicCanvas.png'
+import HistoricalRealtime from './images/canvases/historicalRealtime.png'
+import AddTramStream from './images/canvases/addTramStream.png'
+import ModuleBrowser from './images/canvases/moduleBrowser.png'
+import ConnectingTypes from './images/canvases/connectingTypes.png'
+import ConnectingTypes2 from './images/canvases/connectingTypes2.png'
+import InputTypes from './images/canvases/inputTypes.png'
+import ConnectingStreamToModule from './images/canvases/connectingStreamToModule.png'
+import StartHistoricalRun from './images/canvases/startHistoricalRun.png'
+import PlaybackOptions from './images/canvases/playbackOptions.png'
+import StartRealtimeRun from './images/canvases/startRealtimeRun.png'
+import StopRealtimeRun from './images/canvases/stopRealtimeRun.png'
+import CreateCanvasButton from './images/canvases/createCanvasButton.png'
+import CoreListing from './images/canvases/coreListing.png'
+import CanvasTile from './images/canvases/canvasTile.png'
+import NoRepeat from './images/canvases/noRepeat.png'
 
 import docsStyles from '$newdocs/components/DocsLayout/docsLayout.pcss'
+import canvasesStyles from '$newdocs/components/DocsPages/Canvases/canvasesStyles.pcss'
 
 <section id="intro-to-canvases">
 
 ## Intro to canvases
---content--
+
+A Streamr canvas is a microservice which consumes and acts upon realtime data. A canvas contains one or more <Link to={links.newdocs.streams}>streams</Link> (these provide the data) and one or more modules (these do the processing). Streams and modules are connected in the configuration that you'll design. The connections determine how the data flows through the canvas.
+
+<div className={cx(docsStyles.centered, canvasesStyles.canvasDemo)}>
+  <img src={CanvasDemo} />
+</div>
+
+Here's a few examples of specific things you can do.
+
+- **Refine real-time data** by routing it through different modules. The built-in module library includes arithmetic and logical operations. There are also functions for smoothing, sampling, and aggregating streaming data.
+- **Chain modules together** so that the output from one operation flows as an input to another. This is one way to build arbitrarily complex streaming analytics. If you want to keep things tidy, you can encapsulate the complexity and reuse the abstracted result.
+- **Visualise the data** by directing it to a charting module. The chart shows the new data in real-time as new events arrive or streaming analytics are computed.
+- **Communicate with the outside world** by sending text messages or emails when specific conditions are satisfied. You can embed real-time data, refined data, or natural language in the messages.
+- **Save refined data in another stream.** When you do that, the saved data are instantly accessible as new events. The refined data can be streamed from the platform to external data consumers.
+- **Post events in HTTP format to external RESTful services.** There's a wide range of popular and useful services out there, and you can use any one of them easily from Streamr. 
+- **Control external devices.** As an example, you can override manual controls and make a remotely operated drone return to base when it's about to go out of range or running low on battery. Because the control interface is likely to be machine specific, this is one case where you'd be looking at coding a custom module in Java.
+- **Subscribe to a stream in external web pages and applications.** You'll receive every event as soon as it’s available.
+
+There is an extensive collection of built-in modules as a source of building blocks. You can abstract modules and re-use them later, and you can code custom modules in Java.
+
+### Building a canvas
+
+When you're ready to build a canvas, you’ll typically start by adding one or more data <Link to={links.newdocs.streams}>streams</Link> to the canvas workspace. You’ll then create the processing logic by adding modules to the canvas and connecting the streams and modules together. You can do all this interactively by dragging and dropping streams and modules from the module browser to the workspace and then drawing connections between them.
+
+### Making use of modules
+
+A module is close akin to what you'd call a function, subroutine, procedure, or a method in various programming languages. In Streamr, modules are specialised computation units for handling streaming real-time data. A module processes its inputs as soon as it is activated by the arrival of a new event. The module may have one or more outputs, or it may take care of some side effect instead. 
+
+A module has an internal state, and it can and typically will update that state when it is executed. How this is done depends on the particular module. The statefulness is an important feature and one the key ingredients in real-time stream processing.
+
+You'll find all the built-in components in the **module browser**. If you already know the name of the module you need, type its name in the search box, then select the right module or stream, or drag it into your workspace.
+
+<div className={cx(docsStyles.centered, canvasesStyles.moduleBrowser)}>
+  <img src={ModuleBrowser} />
+</div>
+
+### Inputs, outputs, and parameters
+
+A module can have inputs, outputs, and parameters.  Whilst a module does not need to have any inputs or outputs, useful modules will typically allow for either incoming or outgoing data (and usually both).
+
+When placed on a canvas, the inputs are shown as circular connectors along the left-hand side of the module.  The outputs are shown as connectors along the right-hand side.
+
+Many modules have parameters which control their operation.  Module parameters can be hardcoded, but their values are typically not immutable.  If a parameter can be modified at run-time, there is an associated parameter editable input inside the module.
+
+As an example, the **RoundToStep** module has three inputs, two parameters, and one output.  The first two inputs correspond to the module’s parameters, i.e. precision and mode.  The last input is a numeric value which will be rounded with the specified precision in the direction specified by the mode.  The module output is equal to the rounded input.
+
+<div className={cx(docsStyles.centered, canvasesStyles.roundToStep)}>
+  <img src={RoundToStep} />
+</div>
+
+Inputs, outputs, and parameters can be renamed by double clicking on them and typing new text.  Renaming has no bearing on functionality.
+
+### Adding streams
+
+When you place a stream on the canvas, you effectively *subscribe* to a realtime data source. To add a stream, just start typing its name in module browser search. The stream name will autocomplete as you type. Realtime events are now available at the output endpoints.
+
+<div className={cx(docsStyles.centered, canvasesStyles.addTramStream)}>
+  <img src={AddTramStream} />
+</div>
+
+You can move modules around on the workspace as you wish, the placement of a module has no impact on functionality. For clarity, you may want to design the canvas so that module placement reflects the data flow from the input streams through the modules.
+
+As a simple example, here's a canvas consisting of one stream and a chart module connected together. When you run the canvas, the events flow from the stream to the chart, and the chart draws the data points as they arrive.
+
+<div className={docsStyles.centered}>
+  <img src={BasicCanvas} />
+</div>
+
+### Sending data to a stream
+
+Use the **SendToStream** module if you want to send data that has been generated inside the canvas, into a stream. Inside the module, start typing the name of your stream and it will autocomplete for you. Remember to configure the fields of your stream before using this module as the module's inputs are defined by it's fields. Learn more about fields in the <Link to={links.newdocs.streams}>streams docs</Link>.
+
+<div className={cx(docsStyles.centered, canvasesStyles.sendToStream)}>
+  <img src={SendToStream} />
+</div>
+
+### Connecting modules
+
+A data flow between two modules — or a data flow between a stream and a module — is created by drawing a connection from an outgoing endpoint (port) to an incoming endpoint. You can create as many outgoing connections as you wish. You can only have one incoming connection per an endpoint.
+
+Along with **inputs** and **outputs**, there are also **parameters**. **Parameters are just inputs with default values.** Because a parameter has a default value, there is no need for an incoming connection in the corresponding endpoint.
+
+<div className={docsStyles.centered}>
+  <img src={ConnectingStreamToModule} />
+</div>
+
+You can only connect endpoints with compatible data types. As you hold your mouse down, compatible connections will glow green and incompatible connections glow red. For instance, you cannot create a connection which feeds string events to an endpoint where numerical events are expected. There are conversion modules such as **StringToNumber** which can help when you get stuck with the wrong data type.
+
+<div className={docsStyles.centered}>
+  <img src={ConnectingTypes} />
+</div>
+
+<div className={docsStyles.centered}>
+  <img src={ConnectingTypes2} />
+</div>
+
+All connections are unidirectional, i.e. the data always flows from an output to one or more inputs in one direction only. The modules form a directed graph. Feedback loops are discouraged, but you can create them if you really want.
+
+<Warning>
+
+**Module logic rules**
+
+- Any non-boolean events are automatically converted to logical truth values if a boolean input is required. 
+- Numbers exactly equal to zero are deemed to be False, and any non-zero values True.
+- An empty string ("") is False, a non-empty string is True. 
+- An empty list is False, a non-empty list is True. 
+- An empty Map is False, and anything else is True.
+
+</Warning>
+
+You can alter the endpoint of an existing connection by dragging it to another input endpoint. If you instead drop the endpoint in an empty area in the workspace, the connection is cleared. Right clicking on top of a module port will bring up a pop-up menu with the option to disconnect all incoming connections to the module.
+
+<div className={cx(docsStyles.centered, canvasesStyles.inputOutputTypes)}>
+  <img src={InputTypes} />
+</div>
+
+The topology of a service can be arbitrarily complex. You can of course design a simple sequential work flow, and in many cases it will be perfectly adequate. In other cases the flow of data may involve merging data pathways, branches and even loops. Go ahead, be adventurous, but also bear in mind Streamr's abstraction capabilities. Reusing existing canvases will help you manage the development process and keep things tidy and neat.
+
+### Module activation
+
+Computation in Streamr is entirely event-based. **Any module will execute immediately when activated by incoming events.** When new events arrive in the input stream, the data automatically flows through the canvas. This inherently asynchronous process allows for fast and continuous in-memory processing of large volumes of realtime data.
+
+A module processes its inputs as soon as it is activated.  This happens when the following conditions are both satisfied.
+
+1. Every input has a value.
+2. An event arrives at one of the driving inputs.
+
+<div className={cx(docsStyles.centered, canvasesStyles.andModule)}>
+  <img src={AndModule} />
+</div>
+
+At least one endpoint in any module is designated as a driving input by default.  To change the default settings, hover on top of a module and you’ll see a number of additional controls.  You can make any input a driver by clicking on the associated **DR** icon (a toggle button) next to an input connector.  A module with no driving inputs will never activate.
+
+Lastly, note the **NR** icon next to each output connector.  This is a non-repeat button, and if it’s on, the module suppresses any output that would be an exact replica of the last outgoing event.  This covers the use case where you’re only interested in events that represent something new.
+
+<div className={cx(docsStyles.centered, canvasesStyles.noRepeat)}>
+  <img src={NoRepeat} />
+</div>
+
+### How to run your canvas
+
+You can run your canvas in one of two ways - **historical** or **realtime** mode.
+
+<div className={cx(docsStyles.centered, canvasesStyles.realOrHistorical)}>
+  <img src={HistoricalRealtime} />
+</div>
+
+**Realtime mode** (default) is used in production where you want to react to data points as they arrive. Realtime data can flow from streams or can be generated from modules connected to the outside world, e.g. a HTTP API GET request.
+
+**Historical mode** is a playback of what has happened in a past date range. A playback can be extremely useful when you’re testing, refining, or demonstrating the functionality of a canvas.
+
+There's a natural iterative workflow where you first build a perhaps rudimentary version of a canvas, test it with historical data where possible, refine the design based on the test findings, and repeat until you're happy.
+
+### Realtime mode
+
+When you run a canvas in *realtime mode*, it will listen to realtime events arriving in the subscribed streams, and process them as soon as they're available. When the canvas is running you won't be able to edit it, if you need to make changes, you'll need to stop the canvas and then restart it.
+
+<div className={cx(docsStyles.centered, canvasesStyles.startRealtimeRun)}>
+  <img src={StartRealtimeRun} />
+</div>
+
+A live canvas keeps running until you explictly tell it to stop. When you stop a canvas, its internal state is saved on the disk. If you later restart the canvas, it will gracefully resume from the point where it stopped. It will not, however, process any events that occurred when it was not running.
+
+<div className={cx(docsStyles.centered, canvasesStyles.stopRealtimeRun)}>
+  <img src={StopRealtimeRun} />
+</div>
+
+### Historical mode
+
+<div className={cx(docsStyles.centered, canvasesStyles.startHistoricalRun)}>
+  <img src={StartHistoricalRun} />
+</div>
+
+A canvas run in historical mode consumes a playback of past events stored in the subscribed streams. The playback is a simulation of what has happened in the past. You may run the canvas in historical mode provided the streams inside the canvas contain some historical data.
+
+You can specify the time period (the start date and the end date) for the historical playback period as well as the speed of playback. By default, playback events are processed sequentially but at a much faster pace compared to the actual history. You can easily change the playback speed for the historical run. Click on the arrow menu icon, connected to the **Run** button to choose your desired playback speed.
+
+The playback starts when you press the **Run** button.
+
+<div className={cx(docsStyles.centered, canvasesStyles.playbackOptions)}>
+  <img src={PlaybackOptions} />
+</div>
+
+### Reusing canvases as modules
+
+You can easily reuse a canvas as a component of another canvas. This is done via *abstraction*, where you encapsulate a canvas as a module. You can then use the new module when you build additional canvases.
+
+To create an abstraction, you'll need to expose — or export — inputs and outputs. The exported endpoints will show up as endpoints of the abstracted canvas.
 
 </section>
 
 <section id="work-with-canvases-in-core">
 
 ## Work with canvases in Core
---content--
+
+To create a new canvas, click on 'Create Canvas' on the <Link to={links.userpages.canvases}>canvases core page</Link>.
+
+<div className={cx(docsStyles.centered, canvasesStyles.createCanvasButton)}>
+  <img src={CreateCanvasButton} />
+</div>
+
+You'll see all of your canvases along with their running state on the <Link to={links.userpages.canvases}>canvases page</Link>, inside the Core app. Click on a canvas to open it in the editor. You can also search and sort your canvases by its name, when it was modified, or from it's running state. 
+
+<div className={docsStyles.centered}>
+  <img src={CoreListing} />
+</div>
+
+Hover your mouse over the canvas preview tile to discover extra things you can do with your canvas such as sharing it with friends or the public.
+
+<div className={docsStyles.centered}>
+  <img src={CanvasTile} />
+</div>
 
 </section>
 
 <section id="building-integrations">
 
 ## Building integrations
---content--
+***Documentation coming soon***
 
 </section>
 
 <section id="ethereum-modules">
 
 ## Ethereum modules
---content--
+***Documentation coming soon***
 
 </section>
