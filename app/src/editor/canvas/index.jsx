@@ -38,8 +38,6 @@ import * as CanvasState from './state'
 
 import styles from './index.pcss'
 
-const { RunStates } = CanvasState
-
 const CanvasEditComponent = class CanvasEdit extends Component {
     state = {
         moduleSearchIsOpen: true,
@@ -401,14 +399,17 @@ const CanvasEdit = withRouter(({ canvas, ...props }) => {
     useAutosaveEffect()
 
     return (
-        <CanvasEditComponent
-            {...props}
-            canvas={canvas}
-            runController={runController}
-            canvasController={canvasController}
-            updated={updated}
-            setUpdated={setUpdated}
-        />
+        <React.Fragment>
+            <UndoControls disabled={!runController.isEditable} />
+            <CanvasEditComponent
+                {...props}
+                canvas={canvas}
+                runController={runController}
+                canvasController={canvasController}
+                updated={updated}
+                setUpdated={setUpdated}
+            />
+        </React.Fragment>
     )
 })
 
@@ -440,14 +441,9 @@ const CanvasEditWrap = () => {
     )
 }
 
-function isDisabled({ state: canvas }) {
-    return !canvas || (canvas.state === RunStates.Running || canvas.adhoc)
-}
-
 const CanvasContainer = withRouter(withErrorBoundary(ErrorComponentView)((props) => (
     <ClientProvider>
         <UndoContext.Provider key={props.match.params.id}>
-            <UndoControls disabled={isDisabled} />
             <CanvasController.Provider>
                 <CanvasEditWrap />
             </CanvasController.Provider>
