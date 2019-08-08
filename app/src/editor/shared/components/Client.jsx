@@ -20,7 +20,7 @@ export function createClient(apiKey) {
     return new StreamrClient({
         url: process.env.STREAMR_WS_URL,
         restUrl: process.env.STREAMR_API_URL,
-        auth: {
+        auth: apiKey == null ? {} : {
             apiKey, // assume this won't change for now
         },
         autoConnect: true,
@@ -58,7 +58,7 @@ function useClientProvider({ apiKey }) {
 
     // (re)create client if none
     useLayoutEffect(() => {
-        if (!apiKey || hasClient) { return }
+        if (hasClient) { return }
         setClient(createClient(apiKey))
     }, [hasClient, setClient, apiKey])
 
@@ -101,27 +101,40 @@ const withAuthApiKey = connect((state) => ({
     loadKeys: getMyResourceKeys,
 })
 
-export const ClientProvider = withAuthApiKey(class ClientProvider extends React.Component {
+class ClientProviderInner extends React.Component {
     state = {
         isLoading: false,
-    }
-
-    async loadIfNoKey() {
-        if (this.state.isLoading || this.props.apiKey) { return }
-        this.setState({ isLoading: true })
-        try {
-            await this.props.loadKeys()
-        } finally {
-            this.setState({ isLoading: false })
-        }
-    }
-
-    componentDidUpdate() {
-        return this.loadIfNoKey()
+        error: undefined,
     }
 
     componentDidMount() {
-        return this.loadIfNoKey()
+        this.loadIfNoKey()
+    }
+
+    componentWillUnmount() {
+        this.unmounted = true
+    }
+
+    async loadIfNoKey() {
+        if (this.state.isLoading || this.state.error || this.props.apiKey) { return }
+        this.setState({
+            isLoading: true,
+            error: undefined,
+        })
+
+        let error
+        try {
+            await this.props.loadKeys()
+        } catch (err) {
+            error = err
+        } finally {
+            if (!this.unmounted) {
+                this.setState({
+                    isLoading: false,
+                    error,
+                })
+            }
+        }
     }
 
     render() {
@@ -131,4 +144,9 @@ export const ClientProvider = withAuthApiKey(class ClientProvider extends React.
             <ClientProviderComponent {...props} />
         )
     }
-})
+}
+
+export const ClientProvider = withAuthApiKey(({ apiKey, ...props }) => (
+    <ClientProviderInner key={apiKey} apiKey={apiKey} {...props} />
+))
+
