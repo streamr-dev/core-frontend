@@ -50,6 +50,7 @@ import IntroductionDocsPage from '$newdocs/components/DocsPages/Introduction'
 import GettingStartedDocsPage from '$newdocs/components/DocsPages/GettingStarted'
 import StreamsDocsPage from '$newdocs/components/DocsPages/Streams'
 import CanvasesDocsPage from '$newdocs/components/DocsPages/Canvases'
+import CanvasModulesDocsPage from '$newdocs/components/DocsPages/CanvasModules'
 import DashboardsDocsPage from '$newdocs/components/DocsPages/Dashboards'
 import ProductsDocsPage from '$newdocs/components/DocsPages/Products'
 import TutorialsDocsPage from '$newdocs/components/DocsPages/Tutorials'
@@ -167,6 +168,7 @@ const NewDocsRouter = () => ([ // (temporary)
     <Route exact path={newdocs.gettingStarted} component={GettingStartedDocsPage} key="GettingStartedPage" />,
     <Route exact path={newdocs.streams} component={StreamsDocsPage} key="StreamsPage" />,
     <Route exact path={newdocs.canvases} component={CanvasesDocsPage} key="CanvasesPage" />,
+    <Route exact path={newdocs.canvasModules} component={CanvasModulesDocsPage} key="CanvasModulesPage" />,
     <Route exact path={newdocs.dashboards} component={DashboardsDocsPage} key="DashboardsPage" />,
     <Route exact path={newdocs.products} component={ProductsDocsPage} key="ProductsPage" />,
     <Route exact path={newdocs.tutorials} component={TutorialsDocsPage} key="TutorialsPage" />,

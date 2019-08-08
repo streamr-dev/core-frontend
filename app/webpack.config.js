@@ -53,7 +53,7 @@ module.exports = {
         strictExportPresence: true,
         rules: [
             {
-                test: /\.mdx?$/,
+                test: /\.mdx$/,
                 use: [
                     {
                         loader: 'babel-loader',
@@ -86,6 +86,10 @@ module.exports = {
                     cacheDirectory: !isProduction(),
                     compact: isProduction(),
                 },
+            },
+            {
+                test: /\.md$/,
+                loader: 'raw-loader',
             },
             // Images are put to <BASE_URL>/images
             {

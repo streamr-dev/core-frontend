@@ -45,6 +45,7 @@
     "newdocsApi": "/newdocs/api",
     "newdocsCore": "/newdocs/core",
     "newdocsCanvases": "/newdocs/canvases",
+    "newdocsCanvasModules": "/newdocs/canvas-modules",
     "newdocsDashboards": "/newdocs/dashboards",
     "newdocsDataToken": "/newdocs/data-token",
     "newdocsGettingStarted": "/newdocs/getting-started",

@@ -1,45 +1,39 @@
-import React from 'react'
-import cx from 'classnames'
-import * as services from '../services'
+import React, { useEffect, useCallback, useState } from 'react'
+import CanvasModuleHelp from '$newdocs/components/CanvasModuleHelp'
+import useIsMounted from '$shared/hooks/useIsMounted'
 
-export default class ModuleHelp extends React.Component {
-    state = {}
+function ModuleHelp({ module: m }) {
+    const moduleId = m.id
+    const cleanedName = m.name.replace(/\s/g, '').replace(/\(/g, '_').replace(/\)/g, '')
+    const isMounted = useIsMounted()
+    const [helpContent, setHelpContent] = useState({})
+    const currentHelpContent = helpContent[moduleId]
+    const hasCurrentContent = currentHelpContent != null
 
-    componentDidMount() {
-        this.load()
-    }
-
-    componentWillUnmount() {
-        this.unmounted = true
-    }
-
-    componentDidUpdate(prevProps) {
-        const { moduleId } = this.props
-        // load if no help already (empty string allowed) and module changed.
-        if (this.state[moduleId] == null && prevProps.moduleId !== moduleId) {
-            this.load()
-        }
-    }
-
-    async load() {
-        const { moduleId } = this.props
-        const help = await services.moduleHelp({
-            id: moduleId,
+    const loadHelp = useCallback(() => {
+        import(`$newdocs/content/canvasModules/${cleanedName}-${moduleId}.jsx`).then((result) => {
+            if (!isMounted()) { return }
+            setHelpContent((state) => ({
+                ...state,
+                [moduleId]: result.default.help,
+            }))
         })
-        if (this.unmounted) { return }
-        this.setState({
-            [moduleId]: help,
-        })
-    }
+    }, [moduleId, cleanedName, setHelpContent, isMounted])
 
-    render() {
-        const { className, moduleId } = this.props
-        const help = this.state[moduleId] || {}
-        return (
-            <div className={cx(className)}>
-                {/* eslint-disable react/no-danger */}
-                <div dangerouslySetInnerHTML={{ __html: help.helpText }} />
-            </div>
-        )
-    }
+    useEffect(() => {
+        if (hasCurrentContent) { return } // do nothing if already loaded help
+        loadHelp()
+    }, [loadHelp, hasCurrentContent])
+
+    if (!m) { return null }
+
+    return (
+        <CanvasModuleHelp module={m} help={currentHelpContent} hideName />
+    )
+}
+
+// ModuleHelp wrapper that returns empty if no module
+export default function ({ module: m, ...props }) {
+    if (!m) { return null }
+    return <ModuleHelp module={m} {...props} />
 }

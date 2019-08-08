@@ -1,0 +1,125 @@
+/* eslint-disable max-len */
+import moduleDescription from './Variance-155.md'
+
+export default {
+    id: 155,
+    name: 'Variance',
+    path: 'Time Series: Statistics',
+    help: {
+        outputNames: [],
+        inputs: {},
+        helpText: moduleDescription,
+        inputNames: [],
+        params: {},
+        outputs: {},
+        paramNames: [],
+    },
+    inputs: [
+        {
+            id: 'ep_ytqfiaQVQgeQFtnAkRSTiQ',
+            name: 'in',
+            longName: 'Variance.in',
+            type: 'Double',
+            connected: false,
+            canConnect: true,
+            export: false,
+            drivingInput: true,
+            canToggleDrivingInput: true,
+            acceptedTypes: [
+                'Double',
+            ],
+            requiresConnection: true,
+            canHaveInitialValue: true,
+            initialValue: null,
+        },
+    ],
+    outputs: [
+        {
+            id: 'ep_NIyvDhZ_TwCy4HufLVGK1A',
+            name: 'out',
+            longName: 'Variance.out',
+            type: 'Double',
+            connected: false,
+            canConnect: true,
+            export: false,
+            noRepeat: false,
+            canBeNoRepeat: true,
+        },
+    ],
+    params: [
+        {
+            id: 'ep_q1-yRwi8RvyAC4p78OpGMQ',
+            name: 'windowLength',
+            longName: 'Variance.windowLength',
+            type: 'Double',
+            connected: false,
+            canConnect: true,
+            export: false,
+            value: 0,
+            drivingInput: false,
+            canToggleDrivingInput: true,
+            acceptedTypes: [
+                'Double',
+            ],
+            requiresConnection: false,
+            defaultValue: 0,
+        },
+        {
+            id: 'ep_uvGI3GpsRUeEBxzZDDfX0g',
+            name: 'windowType',
+            longName: 'Variance.windowType',
+            type: 'String',
+            connected: false,
+            canConnect: true,
+            export: false,
+            value: 'events',
+            drivingInput: false,
+            canToggleDrivingInput: true,
+            acceptedTypes: [
+                'String',
+            ],
+            requiresConnection: false,
+            defaultValue: 'events',
+            isTextArea: false,
+            possibleValues: [
+                {
+                    name: 'events',
+                    value: 'EVENTS',
+                },
+                {
+                    name: 'seconds',
+                    value: 'SECONDS',
+                },
+                {
+                    name: 'minutes',
+                    value: 'MINUTES',
+                },
+                {
+                    name: 'hours',
+                    value: 'HOURS',
+                },
+                {
+                    name: 'days',
+                    value: 'DAYS',
+                },
+            ],
+        },
+        {
+            id: 'ep_DU2bp3QyR1KMz89R1B23hw',
+            name: 'minSamples',
+            longName: 'Variance.minSamples',
+            type: 'Double',
+            connected: false,
+            canConnect: true,
+            export: false,
+            value: 0,
+            drivingInput: false,
+            canToggleDrivingInput: true,
+            acceptedTypes: [
+                'Double',
+            ],
+            requiresConnection: false,
+            defaultValue: 0,
+        },
+    ],
+}
