@@ -53,7 +53,7 @@ export const subNav = {
         'building-integrations': 'Building integrations',
         'ethereum-modules': 'Ethereum modules',
     },
-    canvasModules: Object.keys(canvasModulesCategorised).reduce((o, category) => Object.assign(o, {
+    canvasModules: Object.keys(canvasModulesCategorised).sort().reduce((o, category) => Object.assign(o, {
         [toAnchor(category)]: category,
     }), {}),
     dashboards: {
