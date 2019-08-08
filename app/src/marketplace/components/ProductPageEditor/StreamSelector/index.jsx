@@ -16,7 +16,7 @@ import type { Stream, StreamList, StreamIdList, StreamId } from '$shared/flowtyp
 import type { PropertySetter } from '$shared/flowtype/common-types'
 import type { Product } from '../../../flowtype/product-types'
 
-import styles from './streamSelector.pcss'
+import styles from './productPageStreamSelector.pcss'
 
 export type StateProps = {
     product: ?Product,
