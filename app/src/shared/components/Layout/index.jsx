@@ -12,17 +12,22 @@ import styles from './layout.pcss'
 
 type Props = {
     footer?: boolean,
+    nav?: boolean,
     hideNavOnDesktop?: boolean,
 }
 
-const Layout = ({ footer = true, hideNavOnDesktop = false, ...props }: Props = {}) => (
+const Layout = ({ footer = true, nav = true, hideNavOnDesktop = false, ...props }: Props = {}) => (
     <div className={styles.framed}>
         <div className={styles.inner}>
-            <Nav className={cx(styles.desktopNav, {
-                [styles.hideNavOnDesktop]: !!hideNavOnDesktop,
-            })}
-            />
-            <MobileNav className={styles.mobileNav} />
+            {!!nav && (
+                <React.Fragment>
+                    <Nav className={cx(styles.desktopNav, {
+                        [styles.hideNavOnDesktop]: !!hideNavOnDesktop,
+                    })}
+                    />
+                    <MobileNav className={styles.mobileNav} />
+                </React.Fragment>
+            )}
             <div {...props} />
         </div>
         {!!footer && <Footer />}
