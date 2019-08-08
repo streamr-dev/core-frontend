@@ -299,7 +299,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
     }
 
     render() {
-        const { canvas, runController } = this.props
+        const { canvas, runController, isEmbedMode } = this.props
         if (!canvas) {
             return (
                 <div className={styles.CanvasEdit}>
@@ -342,51 +342,55 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                         <CannotSaveStatus />
                     )}
                 </Canvas>
-                <ModalProvider>
-                    <CanvasToolbar
-                        className={styles.CanvasToolbar}
-                        canvas={canvas}
-                        setCanvas={this.setCanvas}
-                        renameCanvas={this.renameCanvas}
-                        deleteCanvas={this.deleteCanvas}
-                        newCanvas={this.newCanvas}
-                        duplicateCanvas={this.duplicateCanvas}
-                        moduleSearchIsOpen={this.state.moduleSearchIsOpen}
-                        moduleSearchOpen={this.moduleSearchOpen}
-                        setRunTab={this.setRunTab}
-                        setHistorical={this.setHistorical}
-                        setSpeed={this.setSpeed}
-                        setSaveState={this.setSaveState}
-                        canvasStart={this.canvasStart}
-                        canvasStop={this.canvasStop}
-                        keyboardShortcutOpen={this.keyboardShortcutOpen}
-                        canvasExit={this.canvasExit}
-                    />
-                </ModalProvider>
-                <Sidebar
-                    className={styles.ModuleSidebar}
-                    isOpen={isEditable && moduleSidebarIsOpen}
-                >
-                    {isEditable && moduleSidebarIsOpen && keyboardShortcutIsOpen && (
-                        <KeyboardShortcutsSidebar
-                            onClose={() => this.keyboardShortcutOpen(false)}
-                        />
-                    )}
-                    {isEditable && moduleSidebarIsOpen && !keyboardShortcutIsOpen && (
-                        <ModuleSidebar
-                            onClose={this.moduleSidebarClose}
+                {isEmbedMode ? null : (
+                    <React.Fragment>
+                        <ModalProvider>
+                            <CanvasToolbar
+                                className={styles.CanvasToolbar}
+                                canvas={canvas}
+                                setCanvas={this.setCanvas}
+                                renameCanvas={this.renameCanvas}
+                                deleteCanvas={this.deleteCanvas}
+                                newCanvas={this.newCanvas}
+                                duplicateCanvas={this.duplicateCanvas}
+                                moduleSearchIsOpen={this.state.moduleSearchIsOpen}
+                                moduleSearchOpen={this.moduleSearchOpen}
+                                setRunTab={this.setRunTab}
+                                setHistorical={this.setHistorical}
+                                setSpeed={this.setSpeed}
+                                setSaveState={this.setSaveState}
+                                canvasStart={this.canvasStart}
+                                canvasStop={this.canvasStop}
+                                keyboardShortcutOpen={this.keyboardShortcutOpen}
+                                canvasExit={this.canvasExit}
+                            />
+                        </ModalProvider>
+                        <Sidebar
+                            className={styles.ModuleSidebar}
+                            isOpen={isEditable && moduleSidebarIsOpen}
+                        >
+                            {isEditable && moduleSidebarIsOpen && keyboardShortcutIsOpen && (
+                                <KeyboardShortcutsSidebar
+                                    onClose={() => this.keyboardShortcutOpen(false)}
+                                />
+                            )}
+                            {isEditable && moduleSidebarIsOpen && !keyboardShortcutIsOpen && (
+                                <ModuleSidebar
+                                    onClose={this.moduleSidebarClose}
+                                    canvas={canvas}
+                                    selectedModuleHash={this.state.selectedModuleHash}
+                                    setModuleOptions={this.setModuleOptions}
+                                />
+                            )}
+                        </Sidebar>
+                        <ModuleSearch
+                            addModule={this.addAndSelectModule}
+                            isOpen={isEditable && this.state.moduleSearchIsOpen}
+                            open={this.moduleSearchOpen}
                             canvas={canvas}
-                            selectedModuleHash={this.state.selectedModuleHash}
-                            setModuleOptions={this.setModuleOptions}
                         />
-                    )}
-                </Sidebar>
-                <ModuleSearch
-                    addModule={this.addAndSelectModule}
-                    isOpen={isEditable && this.state.moduleSearchIsOpen}
-                    open={this.moduleSearchOpen}
-                    canvas={canvas}
-                />
+                    </React.Fragment>
+                )}
             </div>
         )
     }
@@ -396,6 +400,7 @@ const CanvasEdit = withRouter(({ canvas, ...props }) => {
     const runController = useContext(RunController.Context)
     const canvasController = CanvasController.useController()
     const [updated, setUpdated] = useUpdatedTime(canvas.updated)
+    const isEmbedMode = CanvasController.useEmbedMode()
     useCanvasNotifications(canvas)
     useAutosaveEffect()
 
@@ -404,6 +409,7 @@ const CanvasEdit = withRouter(({ canvas, ...props }) => {
             <UndoControls disabled={!runController.isEditable} />
             <CanvasEditComponent
                 {...props}
+                isEmbedMode={isEmbedMode}
                 canvas={canvas}
                 runController={runController}
                 canvasController={canvasController}
@@ -445,16 +451,16 @@ const CanvasEditWrap = () => {
 const CanvasContainer = withRouter(withErrorBoundary(ErrorComponentView)((props) => (
     <ClientProvider>
         <UndoContext.Provider key={props.match.params.id}>
-            <CanvasController.Provider>
+            <CanvasController.Provider embed={!!props.embed}>
                 <CanvasEditWrap />
             </CanvasController.Provider>
         </UndoContext.Provider>
     </ClientProvider>
 )))
 
-export default () => (
-    <Layout className={styles.layout} footer={false}>
+export default ({ embed }) => (
+    <Layout className={styles.layout} footer={false} hideNavOnDesktop={!!embed}>
         <BodyClass className="editor" />
-        <CanvasContainer />
+        <CanvasContainer embed={embed} />
     </Layout>
 )
