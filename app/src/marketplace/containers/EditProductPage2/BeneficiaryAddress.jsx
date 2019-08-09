@@ -4,6 +4,8 @@ import React, { useCallback } from 'react'
 import cx from 'classnames'
 import { Translate, I18n } from 'react-redux-i18n'
 
+import useValidation from '../ProductController/useValidation'
+
 import styles from './beneficiaryAddress.pcss'
 
 type Props = {
@@ -17,6 +19,8 @@ const BeneficiaryAddress = ({ address, onChange, disabled, className }: Props) =
     const onAddressChange = useCallback((e: SyntheticInputEvent<EventTarget>) => {
         onChange(e.target.value)
     }, [onChange])
+
+    const { isValid, level, message } = useValidation('beneficiaryAddress')
 
     return (
         <form autoComplete="off">
@@ -35,6 +39,9 @@ const BeneficiaryAddress = ({ address, onChange, disabled, className }: Props) =
                     />
                 </div>
             </label>
+            {!isValid && (
+                <p>{level}: {message}</p>
+            )}
         </form>
     )
 }

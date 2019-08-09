@@ -7,6 +7,7 @@ import { Translate } from 'react-redux-i18n'
 import ScrollableAnchor from 'react-scrollable-anchor'
 
 import useProduct from '../ProductController/useProduct'
+import useValidation from '../ProductController/useValidation'
 
 import useProductActions from '../ProductController/useProductActions'
 import { currencies, DEFAULT_CURRENCY } from '$shared/utils/constants'
@@ -48,6 +49,8 @@ const PriceSelector = () => {
 
     const isFreeProduct = !!product.isFree
 
+    const { isValid, level, message } = useValidation('price')
+
     return (
         <ScrollableAnchor id="price">
             <div className={cx(styles.root, styles.PriceSelector)}>
@@ -76,6 +79,9 @@ const PriceSelector = () => {
                         onTimeUnitChange={onTimeUnitChange}
                         dataPerUsd={dataPerUsd}
                     />
+                    {!isValid && (
+                        <p>{level}: {message}</p>
+                    )}
                     {product.type !== 'COMMUNITY' && (
                         <BeneficiaryAddress
                             className={styles.beneficiaryAddress}
