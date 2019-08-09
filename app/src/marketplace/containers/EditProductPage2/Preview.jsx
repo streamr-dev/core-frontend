@@ -26,7 +26,7 @@ const Preview = () => {
                 leftContent={
                     <FallbackImage
                         className={styles.productImage}
-                        src={product.imageUrl || ''}
+                        src={(product.imageUrl && product.imageUrl.preview) || product.imageUrl}
                         alt={product.name}
                     />
                 }

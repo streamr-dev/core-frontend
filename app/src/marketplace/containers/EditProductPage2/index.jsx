@@ -18,7 +18,7 @@ import ProductEditorDebug from './ProductEditorDebug'
 import styles from './editProductPage.pcss'
 
 const EditProductPage = () => {
-    const { isPreview, setIsPreview } = useContext(EditControllerContext)
+    const { isPreview, setIsPreview, save } = useContext(EditControllerContext)
 
     const actions = useMemo(() => {
         const buttons = {
@@ -26,7 +26,7 @@ const EditProductPage = () => {
                 title: 'Save & Exit',
                 color: 'link',
                 outline: true,
-                onClick: () => {},
+                onClick: save,
             },
             preview: {
                 title: 'Preview',
@@ -50,7 +50,7 @@ const EditProductPage = () => {
         }
 
         return buttons
-    }, [isPreview, setIsPreview])
+    }, [isPreview, setIsPreview, save])
 
     return (
         <CoreLayout
