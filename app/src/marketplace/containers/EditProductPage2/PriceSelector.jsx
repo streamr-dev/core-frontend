@@ -1,7 +1,6 @@
 // @flow
 
-import React, { useState, useCallback, useEffect, useRef } from 'react'
-import BN from 'bignumber.js'
+import React, { useState, useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { Translate } from 'react-redux-i18n'
@@ -9,11 +8,8 @@ import ScrollableAnchor from 'react-scrollable-anchor'
 
 import useProduct from '../ProductController/useProduct'
 
-import { type Ref } from '$shared/flowtype/common-types'
-import { isPaidProduct } from '$mp/utils/product'
 import useProductActions from '../ProductController/useProductActions'
-import { timeUnits, currencies, DEFAULT_CURRENCY } from '$shared/utils/constants'
-import { priceForTimeUnits, pricePerSecondFromTimeUnit, convert } from '$mp/utils/price'
+import { currencies, DEFAULT_CURRENCY } from '$shared/utils/constants'
 import { selectDataPerUsd } from '$mp/modules/global/selectors'
 import RadioButtonGroup from '$shared/components/RadioButtonGroup'
 import SetPrice from '$mp/components/SetPrice'
@@ -21,47 +17,36 @@ import Toggle from '$shared/components/Toggle'
 import BeneficiaryAddress from './BeneficiaryAddress'
 import styles from './PriceSelector.pcss'
 
-const getPricePerSecond = (isPaid, price, currency, timeUnit, dataPerUsd) => {
-    let pricePerSecond
-    if (!isPaid) {
-        pricePerSecond = BN(0)
-    } else {
-        const newPrice = (currency !== currencies.DATA) ?
-            convert(price || '0', dataPerUsd, currency, currencies.DATA) : price
-        pricePerSecond = pricePerSecondFromTimeUnit(newPrice || BN(0), timeUnit)
-    }
-
-    return pricePerSecond
-}
-
 const PriceSelector = () => {
     const product = useProduct()
-    const { updatePricePerSecond, updatePriceCurrency, updateBeneficiaryAddress } = useProductActions()
+    const {
+        updateIsFree,
+        updatePrice,
+        updatePriceCurrency,
+        updateTimeUnit,
+        updateBeneficiaryAddress,
+    } = useProductActions()
     const dataPerUsd = useSelector(selectDataPerUsd)
 
-    const [isPaid, setIsPaid] = useState(isPaidProduct(product))
-    const [timeUnit, setTimeUnit] = useState(timeUnits.hour)
-    const [currency, setCurrency] = useState(DEFAULT_CURRENCY)
-    const [price, setPrice] = useState(priceForTimeUnits(product.pricePerSecond || '0', 1, timeUnits.hour).toString())
-
-    const updateRef: Ref<Function> = useRef()
-    updateRef.current = updatePricePerSecond
+    const [currency, setCurrency] = useState(product.priceCurrency || DEFAULT_CURRENCY)
 
     const onPriceTypeChange = useCallback((type) => {
-        setIsPaid(type !== 'Free')
-    }, [setIsPaid])
+        updateIsFree(type === 'Free')
+    }, [updateIsFree])
 
-    useEffect(() => {
-        const { current: updatePrice } = updateRef
-        if (updatePrice) {
-            updatePrice(getPricePerSecond(isPaid, price, currency, timeUnit, dataPerUsd))
-        }
-    }, [isPaid, price, currency, timeUnit, dataPerUsd])
+    const onPriceChange = useCallback((p) => {
+        updatePrice(p)
+    }, [updatePrice])
+    const onTimeUnitChange = useCallback((t) => {
+        updateTimeUnit(t)
+    }, [updateTimeUnit])
 
     const fixInFiat = product.priceCurrency === currencies.USD
     const onFixPriceChange = useCallback((checked) => {
         updatePriceCurrency(checked ? currencies.USD : currencies.DATA)
     }, [updatePriceCurrency])
+
+    const isFreeProduct = !!product.isFree
 
     return (
         <ScrollableAnchor id="price">
@@ -73,22 +58,22 @@ const PriceSelector = () => {
                 <RadioButtonGroup
                     name="productPriceType"
                     options={['Paid', 'Free']}
-                    selectedOption={!isPaid ? 'Free' : 'Paid'}
+                    selectedOption={isFreeProduct ? 'Free' : 'Paid'}
                     onChange={onPriceTypeChange}
                 />
                 <div className={cx(styles.inner, {
-                    [styles.disabled]: !isPaid,
+                    [styles.disabled]: isFreeProduct,
                 })}
                 >
                     <SetPrice
                         className={styles.priceSelector}
-                        disabled={!isPaid}
-                        price={price}
-                        onPriceChange={setPrice}
+                        disabled={!!product.isFree}
+                        price={product.price}
+                        onPriceChange={onPriceChange}
                         currency={currency}
                         onCurrencyChange={setCurrency}
-                        timeUnit={timeUnit}
-                        onTimeUnitChange={setTimeUnit}
+                        timeUnit={product.timeUnit}
+                        onTimeUnitChange={onTimeUnitChange}
                         dataPerUsd={dataPerUsd}
                     />
                     {product.type !== 'COMMUNITY' && (
@@ -96,7 +81,7 @@ const PriceSelector = () => {
                             className={styles.beneficiaryAddress}
                             address={product.beneficiaryAddress}
                             onChange={updateBeneficiaryAddress}
-                            disabled={!isPaid}
+                            disabled={isFreeProduct}
                         />
                     )}
                     <div className={styles.fixPrice}>
@@ -108,7 +93,7 @@ const PriceSelector = () => {
                             className={styles.toggle}
                             value={fixInFiat}
                             onChange={onFixPriceChange}
-                            disabled={!isPaid}
+                            disabled={isFreeProduct}
                         />
                     </div>
                 </div>

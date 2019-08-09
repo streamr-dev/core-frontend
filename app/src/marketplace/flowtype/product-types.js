@@ -32,6 +32,7 @@ export type Product = {
     pricePerSecond: NumberString,
     priceCurrency: Currency,
     timeUnit?: ?TimeUnit,
+    price?: NumberString,
     isFree?: boolean,
     type?: ProductType,
 }

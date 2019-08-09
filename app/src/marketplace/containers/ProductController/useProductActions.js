@@ -1,18 +1,37 @@
 // @flow
 
 import { useMemo, useCallback, useContext } from 'react'
+import { useSelector } from 'react-redux'
+import BN from 'bignumber.js'
 
 import { Context as UndoContext } from '$shared/components/UndoContextProvider'
 import { Context as ValidationContext } from './ValidationContextProvider'
 import useProductUpdater from '../ProductController/useProductUpdater'
+import { pricePerSecondFromTimeUnit, convert } from '$mp/utils/price'
+import { currencies, timeUnits } from '$shared/utils/constants'
+import { selectDataPerUsd } from '$mp/modules/global/selectors'
 
 import type { Product } from '$mp/flowtype/product-types'
 import type { StreamIdList } from '$shared/flowtype/stream-types'
+
+const getPricePerSecond = (isPaid, price, currency, timeUnit, dataPerUsd) => {
+    let pricePerSecond
+    if (!isPaid) {
+        pricePerSecond = BN(0)
+    } else {
+        const newPrice = (currency !== currencies.DATA) ?
+            convert(price || '0', dataPerUsd, currency, currencies.DATA) : price
+        pricePerSecond = pricePerSecondFromTimeUnit(newPrice || BN(0), timeUnit || timeUnits.hour)
+    }
+
+    return pricePerSecond
+}
 
 export function useProductActions() {
     const { updateProduct: commit } = useProductUpdater()
     const { undo } = useContext(UndoContext)
     const { touch } = useContext(ValidationContext)
+    const dataPerUsd = useSelector(selectDataPerUsd)
 
     const updateProduct = useCallback((product: Object, msg: string = 'Update product') => {
         commit(msg, (p) => ({
@@ -62,19 +81,38 @@ export function useProductActions() {
         }))
         touch('details')
     }, [commit, touch])
-    const updatePricePerSecond = useCallback((pricePerSecond: $ElementType<Product, 'pricePerSecond'>) => {
-        commit('Update price per second', (p) => ({
+    const updateIsFree = useCallback((isFree: $ElementType<Product, 'isFree'>) => {
+        commit('Update is free', (p) => ({
             ...p,
-            pricePerSecond,
+            isFree,
+            pricePerSecond: getPricePerSecond(p.isFree, p.price, p.priceCurrency, p.timeUnit, dataPerUsd),
         }))
-    }, [commit])
+        touch('price')
+    }, [commit, touch, dataPerUsd])
+    const updatePrice = useCallback((price: $ElementType<Product, 'price'>) => {
+        commit('Update price', (p) => ({
+            ...p,
+            price,
+            pricePerSecond: getPricePerSecond(p.isFree, price, p.priceCurrency, p.timeUnit, dataPerUsd),
+        }))
+        touch('price')
+    }, [commit, touch, dataPerUsd])
+    const updateTimeUnit = useCallback((timeUnit: $ElementType<Product, 'timeUnit'>) => {
+        commit('Update time unit', (p) => ({
+            ...p,
+            timeUnit,
+            pricePerSecond: getPricePerSecond(p.isFree, p.price, p.priceCurrency, timeUnit, dataPerUsd),
+        }))
+        touch('price')
+    }, [commit, touch, dataPerUsd])
     const updatePriceCurrency = useCallback((priceCurrency: $ElementType<Product, 'priceCurrency'>) => {
         commit('Update price currency', (p) => ({
             ...p,
             priceCurrency,
+            pricePerSecond: getPricePerSecond(p.isFree, p.price, priceCurrency, p.timeUnit, dataPerUsd),
         }))
         touch('price')
-    }, [commit, touch])
+    }, [commit, touch, dataPerUsd])
     const updateBeneficiaryAddress = useCallback((beneficiaryAddress: $ElementType<Product, 'beneficiaryAddress'>) => {
         commit('Update beneficiary address', (p) => ({
             ...p,
@@ -99,7 +137,9 @@ export function useProductActions() {
         updateStreams,
         updateCategory,
         updateAdminFee,
-        updatePricePerSecond,
+        updateIsFree,
+        updatePrice,
+        updateTimeUnit,
         updatePriceCurrency,
         updateBeneficiaryAddress,
         updateType,
@@ -112,7 +152,9 @@ export function useProductActions() {
         updateStreams,
         updateCategory,
         updateAdminFee,
-        updatePricePerSecond,
+        updateIsFree,
+        updatePrice,
+        updateTimeUnit,
         updatePriceCurrency,
         updateBeneficiaryAddress,
         updateType,

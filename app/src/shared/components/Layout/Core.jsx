@@ -9,7 +9,7 @@ import LoadingIndicator from '$userpages/components/LoadingIndicator'
 import styles from './core.pcss'
 
 type Props = {
-    children: Node,
+    children?: Node,
     loading?: boolean,
     className?: string,
     navComponent?: Node,
