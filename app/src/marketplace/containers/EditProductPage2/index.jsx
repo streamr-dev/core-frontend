@@ -12,6 +12,7 @@ import useProduct from '../ProductController/useProduct'
 
 import { Provider as EditControllerProvider, Context as EditControllerContext } from './EditControllerProvider'
 import Editor from './Editor'
+import Preview from './Preview'
 import ProductEditorDebug from './ProductEditorDebug'
 
 import styles from './editProductPage.pcss'
@@ -64,7 +65,7 @@ const EditProductPage = () => {
         >
             <ProductEditorDebug />
             {isPreview && (
-                <p>sd</p>
+                <Preview />
             )}
             {!isPreview && (
                 <Editor />

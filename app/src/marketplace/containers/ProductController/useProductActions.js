@@ -14,9 +14,9 @@ import { selectDataPerUsd } from '$mp/modules/global/selectors'
 import type { Product } from '$mp/flowtype/product-types'
 import type { StreamIdList } from '$shared/flowtype/stream-types'
 
-const getPricePerSecond = (isPaid, price, currency, timeUnit, dataPerUsd) => {
+const getPricePerSecond = (isFree, price, currency, timeUnit, dataPerUsd) => {
     let pricePerSecond
-    if (!isPaid) {
+    if (isFree) {
         pricePerSecond = BN(0)
     } else {
         const newPrice = (currency !== currencies.DATA) ?
@@ -85,7 +85,7 @@ export function useProductActions() {
         commit('Update is free', (p) => ({
             ...p,
             isFree,
-            pricePerSecond: getPricePerSecond(p.isFree, p.price, p.priceCurrency, p.timeUnit, dataPerUsd),
+            pricePerSecond: getPricePerSecond(isFree, p.price, p.priceCurrency, p.timeUnit, dataPerUsd),
         }))
         touch('price')
     }, [commit, touch, dataPerUsd])
