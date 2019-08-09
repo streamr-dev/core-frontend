@@ -38,6 +38,7 @@ function useRunController(canvas = EMPTY) {
     const stopPending = usePending('canvas.STOP')
     const exitPending = usePending('canvas.EXIT')
     const unlinkPending = usePending('canvas.UNLINK')
+    const loadPending = usePending('canvas.LOAD')
 
     const [isStarting, setIsStarting] = useState(false) // true immediately before starting a canvas
     const [isStopping, setIsStopping] = useState(false) // true immediately before stopping a canvas
@@ -52,10 +53,6 @@ function useRunController(canvas = EMPTY) {
 
     const hasWritePermission = permissions &&
         permissions.some((p) => p.operation === 'write')
-
-    const isEditable = !isActive &&
-        !canvas.adhoc &&
-        hasWritePermission
 
     const start = useCallback(async (canvas, options) => {
         if (isHistorical && !canvas.adhoc) {
@@ -135,6 +132,7 @@ function useRunController(canvas = EMPTY) {
     useCanvasStateChangeEffect(canvas, useCallback(() => setIsStopping(false), [setIsStopping]))
 
     const isAnyPending = [
+        loadPending,
         createAdhocPending,
         startPending,
         stopPending,
@@ -143,6 +141,17 @@ function useRunController(canvas = EMPTY) {
     ].some(({ isPending }) => isPending)
 
     const isPending = !!(isStopping || isStarting || isAnyPending)
+
+    // e.g. move/resize but not commit
+    const isAdjustable = !isPending
+
+    // write commits
+    const isEditable = (
+        !isActive &&
+        isAdjustable &&
+        !canvas.adhoc &&
+        hasWritePermission
+    )
 
     // controls whether user can currently start/stop canvas
     const canChangeRunState = (
@@ -165,13 +174,14 @@ function useRunController(canvas = EMPTY) {
         isActive,
         isRunning,
         isHistorical,
+        isAdjustable,
         isEditable,
         hasSharePermission,
         hasWritePermission,
         start,
         stop,
         exit,
-    }), [canvas, isPending, isStarting, isActive, isRunning, isHistorical, isEditable,
+    }), [canvas, isPending, isStarting, isActive, isRunning, isHistorical, isEditable, isAdjustable,
         hasSharePermission, hasWritePermission, isStopping, start, stop, exit, canChangeRunState])
 }
 

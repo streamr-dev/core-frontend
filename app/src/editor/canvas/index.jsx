@@ -38,11 +38,9 @@ import * as CanvasState from './state'
 
 import styles from './index.pcss'
 
-const { RunStates } = CanvasState
-
 const CanvasEditComponent = class CanvasEdit extends Component {
     state = {
-        moduleSearchIsOpen: this.props.runController.isEditable,
+        moduleSearchIsOpen: true,
         moduleSidebarIsOpen: false,
         keyboardShortcutIsOpen: false,
     }
@@ -94,8 +92,9 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         if (Number.isNaN(hash)) {
             return
         }
+        const { runController } = this.props
 
-        if (event.code === 'Backspace' || event.code === 'Delete') {
+        if ((event.code === 'Backspace' || event.code === 'Delete') && runController.isEditable) {
             this.removeModule({ hash })
         }
     }
@@ -308,6 +307,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                 </div>
             )
         }
+        const { isEditable } = runController
         const { moduleSidebarIsOpen, keyboardShortcutIsOpen } = this.state
         const { settings } = canvas
         const resendFrom = settings.beginDate
@@ -332,7 +332,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                     updateModule={this.updateModule}
                     renameModule={this.renameModule}
                     moduleSidebarOpen={this.moduleSidebarOpen}
-                    moduleSidebarIsOpen={moduleSidebarIsOpen && !keyboardShortcutIsOpen}
+                    moduleSidebarIsOpen={isEditable && moduleSidebarIsOpen && !keyboardShortcutIsOpen}
                     setCanvas={this.setCanvas}
                     pushNewDefinition={this.pushNewDefinition}
                 >
@@ -365,14 +365,14 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                 </ModalProvider>
                 <Sidebar
                     className={styles.ModuleSidebar}
-                    isOpen={moduleSidebarIsOpen}
+                    isOpen={isEditable && moduleSidebarIsOpen}
                 >
-                    {moduleSidebarIsOpen && keyboardShortcutIsOpen && (
+                    {isEditable && moduleSidebarIsOpen && keyboardShortcutIsOpen && (
                         <KeyboardShortcutsSidebar
                             onClose={() => this.keyboardShortcutOpen(false)}
                         />
                     )}
-                    {moduleSidebarIsOpen && !keyboardShortcutIsOpen && (
+                    {isEditable && moduleSidebarIsOpen && !keyboardShortcutIsOpen && (
                         <ModuleSidebar
                             onClose={this.moduleSidebarClose}
                             canvas={canvas}
@@ -383,7 +383,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                 </Sidebar>
                 <ModuleSearch
                     addModule={this.addAndSelectModule}
-                    isOpen={this.state.moduleSearchIsOpen}
+                    isOpen={isEditable && this.state.moduleSearchIsOpen}
                     open={this.moduleSearchOpen}
                     canvas={canvas}
                 />
@@ -400,14 +400,17 @@ const CanvasEdit = withRouter(({ canvas, ...props }) => {
     useAutosaveEffect()
 
     return (
-        <CanvasEditComponent
-            {...props}
-            canvas={canvas}
-            runController={runController}
-            canvasController={canvasController}
-            updated={updated}
-            setUpdated={setUpdated}
-        />
+        <React.Fragment>
+            <UndoControls disabled={!runController.isEditable} />
+            <CanvasEditComponent
+                {...props}
+                canvas={canvas}
+                runController={runController}
+                canvasController={canvasController}
+                updated={updated}
+                setUpdated={setUpdated}
+            />
+        </React.Fragment>
     )
 })
 
@@ -439,14 +442,9 @@ const CanvasEditWrap = () => {
     )
 }
 
-function isDisabled({ state: canvas }) {
-    return !canvas || (canvas.state === RunStates.Running || canvas.adhoc)
-}
-
 const CanvasContainer = withRouter(withErrorBoundary(ErrorComponentView)((props) => (
     <ClientProvider>
         <UndoContext.Provider key={props.match.params.id}>
-            <UndoControls disabled={isDisabled} />
             <CanvasController.Provider>
                 <CanvasEditWrap />
             </CanvasController.Provider>

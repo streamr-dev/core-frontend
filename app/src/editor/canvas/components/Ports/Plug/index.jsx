@@ -15,6 +15,7 @@ type Props = {
     canvas: any,
     className?: ?string,
     port: any,
+    disabled?: boolean,
     register?: ?(any, ?HTMLDivElement) => void,
 }
 
@@ -23,6 +24,7 @@ const Plug = ({
     canvas,
     className,
     port,
+    disabled,
     register,
     onValueChange,
     ...props
@@ -56,6 +58,7 @@ const Plug = ({
                 [styles.idle]: !dragInProgress,
                 [styles.ignoreDrop]: draggingFromSamePort,
                 [styles.rejectDrop]: dragInProgress && !draggingFromSamePort && !canDrop,
+                [styles.disabled]: disabled,
             })}
         >
             <div
@@ -72,12 +75,14 @@ const Plug = ({
             <DropTarget
                 className={cx(styles.dragger, styles.dropTarget)}
                 port={port}
+                disabled={disabled}
             />
             <DragSource
                 api={api}
                 onValueChange={onValueChange}
                 className={cx(styles.dragger, styles.dragSource)}
                 port={port}
+                disabled={disabled}
             />
         </div>
     )

@@ -10,6 +10,10 @@
   position: relative;
 }
 
+.disabled {
+  pointer-events: none;
+}
+
 .inner {
   border: 1px solid #ADADAD;
   box-sizing: border-box;
@@ -89,7 +93,7 @@
   transform: scale(1.5);
 }
 
-.idle:hover .inner {
+.idle:not(.disabled):hover .inner {
   box-shadow: 0 0 0 calc(0.125 * var(--um)) #ADF5FF;
 }
 
