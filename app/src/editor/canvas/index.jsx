@@ -307,6 +307,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                 </div>
             )
         }
+        const { isEditable } = runController
         const { moduleSidebarIsOpen, keyboardShortcutIsOpen } = this.state
         const { settings } = canvas
         const resendFrom = settings.beginDate
@@ -331,7 +332,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                     updateModule={this.updateModule}
                     renameModule={this.renameModule}
                     moduleSidebarOpen={this.moduleSidebarOpen}
-                    moduleSidebarIsOpen={moduleSidebarIsOpen && !keyboardShortcutIsOpen}
+                    moduleSidebarIsOpen={isEditable && moduleSidebarIsOpen && !keyboardShortcutIsOpen}
                     setCanvas={this.setCanvas}
                     pushNewDefinition={this.pushNewDefinition}
                 >
@@ -364,14 +365,14 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                 </ModalProvider>
                 <Sidebar
                     className={styles.ModuleSidebar}
-                    isOpen={moduleSidebarIsOpen}
+                    isOpen={isEditable && moduleSidebarIsOpen}
                 >
-                    {moduleSidebarIsOpen && keyboardShortcutIsOpen && (
+                    {isEditable && moduleSidebarIsOpen && keyboardShortcutIsOpen && (
                         <KeyboardShortcutsSidebar
                             onClose={() => this.keyboardShortcutOpen(false)}
                         />
                     )}
-                    {moduleSidebarIsOpen && !keyboardShortcutIsOpen && (
+                    {isEditable && moduleSidebarIsOpen && !keyboardShortcutIsOpen && (
                         <ModuleSidebar
                             onClose={this.moduleSidebarClose}
                             canvas={canvas}
@@ -382,7 +383,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                 </Sidebar>
                 <ModuleSearch
                     addModule={this.addAndSelectModule}
-                    isOpen={runController.isEditable && this.state.moduleSearchIsOpen}
+                    isOpen={isEditable && this.state.moduleSearchIsOpen}
                     open={this.moduleSearchOpen}
                     canvas={canvas}
                 />
