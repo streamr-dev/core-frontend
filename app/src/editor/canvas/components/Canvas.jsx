@@ -10,6 +10,7 @@ import { CanvasWindowProvider } from './CanvasWindow'
 import Cables from './Cables'
 
 import styles from './Canvas.pcss'
+import Zoom from './Zoom'
 
 export default class Canvas extends React.PureComponent {
     setPortUserValue = (portId, value, done) => {
@@ -155,7 +156,7 @@ function CanvasElements(props) {
     if (!canvas) { return null }
 
     return (
-        <div className={styles.CanvasElements}>
+        <Zoom canvas={canvas} className={styles.CanvasElements}>
             <DragDropProvider>
                 <div
                     className={styles.Modules}
@@ -183,6 +184,6 @@ function CanvasElements(props) {
                     selectedModuleHash={selectedModuleHash}
                 />
             </DragDropProvider>
-        </div>
+        </Zoom>
     )
 }
