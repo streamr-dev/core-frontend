@@ -1,6 +1,7 @@
 
 import { Link } from 'react-router-dom'
 import { formatPath } from '$shared/utils/url'
+import Warning from '$newdocs/components/Warning'
 
 import links from '$shared/../links'
 import routes from '$routes'
@@ -30,11 +31,11 @@ with Streamr using our <Link to={links.newdocs.api}>JSON-based HTTP API</Link> .
 
 <section id="javascript-sdk">
 
-## Javascript SDK
+## JavaScript SDK
 
-The Javascript client library is available on [npm](https://www.npmjs.com/package/streamr-client) to be integrated in your applications to interact with the Streamr API. The code and a comprehensive documentation are available on [GitHub](https://github.com/streamr-dev/streamr-client-javascript).
+The JavaScript client library is available on <a href="https://www.npmjs.com/package/streamr-client" target="_blank">npm</a> to be integrated in your applications to interact with the Streamr API. The code and a comprehensive documentation are available on <a href="https://github.com/streamr-dev/streamr-client-javascript" target="_blank">GitHub</a>.
 
-Here is an example of how to create an authenticated client, publish and subscribe data using the Javascript library.
+Here is an example of how to create an authenticated client, publish and subscribe data using the JavaScript library.
 
 <CodeSnippet language='javascript'>{JavascriptExample}</CodeSnippet>
 
@@ -44,7 +45,7 @@ Here is an example of how to create an authenticated client, publish and subscri
 
 ## Java SDK
 
-The Java client library is available on [Maven Central](https://search.maven.org/search?q=g:com.streamr%20AND%20a:client&core=gav) which means it can be easily imported in your Java or Scala project. A comprehensive documentation and the code are available on [GitHub](https://github.com/streamr-dev/streamr-client-java).
+The Java client library is available on <a href="https://search.maven.org/search?q=g:com.streamr%20AND%20a:client&core=gav" target="_blank">Maven Central</a> which means it can be easily imported in your Java or Scala project. A comprehensive documentation and the code are available on <a href="https://github.com/streamr-dev/streamr-client-java" target="_blank">GitHub</a>.
 
 Here is an example of how to create an authenticated client, publish and subscribe data using the Java library.
 
@@ -58,7 +59,15 @@ Here is an example of how to create an authenticated client, publish and subscri
 
 ## Python SDK
 
-The Python client library is available at this [Github repo](https://github.com/streamr-dev/streamr-client-python). Important note: this library is entirely community contributed and still work in progress. Core functionality like authentication via user API key, publish and subscribe data have been implemented. However, there are some other features available in our official libraries mentioned above that are still missing: Ethereum authentication, message verification, end-to-end encryption and historical data request. If you are interested in contributing to this library, feel free to reach out via our [dev forum](https://forum.streamr.dev/) or submit directly a pull request. 
+The Python client library is available at this <a href="https://github.com/streamr-dev/streamr-client-python" target="_blank">GitHub repo</a>. 
+
+<Warning>
+
+This library is entirely community contributed and still work in progress. Core functionality like authentication via user API key, publish and subscribe data have been implemented. However, there are some other features available in our official libraries mentioned above that are still missing: Ethereum authentication, message verification, end-to-end encryption and historical data request. 
+
+</Warning>
+
+If you are interested in contributing to this library, feel free to reach out via our <a target="_blank" href={links.community.devForum}>community dev forum</a> or submit directly a pull request. 
 
 Here is an example of how to create an authenticated client, publish and subscribe data using the Python library.
 

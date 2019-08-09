@@ -1,4 +1,3 @@
-
 import cx from 'classnames'
 import { Link } from 'react-router-dom'
 
@@ -43,10 +42,10 @@ A Streamr canvas is a microservice which consumes and acts upon realtime data. A
 
 Here's a few examples of specific things you can do.
 
-- **Refine real-time data** by routing it through different modules. The built-in module library includes arithmetic and logical operations. There are also functions for smoothing, sampling, and aggregating streaming data.
+- **Refine realtime data** by routing it through different modules. The built-in module library includes arithmetic and logical operations. There are also functions for smoothing, sampling, and aggregating streaming data.
 - **Chain modules together** so that the output from one operation flows as an input to another. This is one way to build arbitrarily complex streaming analytics. If you want to keep things tidy, you can encapsulate the complexity and reuse the abstracted result.
-- **Visualise the data** by directing it to a charting module. The chart shows the new data in real-time as new events arrive or streaming analytics are computed.
-- **Communicate with the outside world** by sending text messages or emails when specific conditions are satisfied. You can embed real-time data, refined data, or natural language in the messages.
+- **Visualise the data** by directing it to a charting module. The chart shows the new data in realtime as new events arrive or streaming analytics are computed.
+- **Communicate with the outside world** by sending text messages or emails when specific conditions are satisfied. You can embed realtime data, refined data, or natural language in the messages.
 - **Save refined data in another stream.** When you do that, the saved data are instantly accessible as new events. The refined data can be streamed from the platform to external data consumers.
 - **Post events in HTTP format to external RESTful services.** There's a wide range of popular and useful services out there, and you can use any one of them easily from Streamr. 
 - **Control external devices.** As an example, you can override manual controls and make a remotely operated drone return to base when it's about to go out of range or running low on battery. Because the control interface is likely to be machine specific, this is one case where you'd be looking at coding a custom module in Java.
@@ -60,9 +59,9 @@ When you're ready to build a canvas, you’ll typically start by adding one or m
 
 ### Making use of modules
 
-A module is close akin to what you'd call a function, subroutine, procedure, or a method in various programming languages. In Streamr, modules are specialised computation units for handling streaming real-time data. A module processes its inputs as soon as it is activated by the arrival of a new event. The module may have one or more outputs, or it may take care of some side effect instead. 
+A module is close akin to what you'd call a function, subroutine, procedure, or a method in various programming languages. In Streamr, modules are specialised computation units for handling streaming realtime data. A module processes its inputs as soon as it is activated by the arrival of a new event. The module may have one or more outputs, or it may take care of some side effect instead. 
 
-A module has an internal state, and it can and typically will update that state when it is executed. How this is done depends on the particular module. The statefulness is an important feature and one the key ingredients in real-time stream processing.
+A module has an internal state, and it can and typically will update that state when it is executed. How this is done depends on the particular module. The statefulness is an important feature and one the key ingredients in realtime stream processing.
 
 You'll find all the built-in components in the **module browser**. If you already know the name of the module you need, type its name in the search box, then select the right module or stream, or drag it into your workspace.
 
@@ -104,7 +103,7 @@ As a simple example, here's a canvas consisting of one stream and a chart module
 
 ### Sending data to a stream
 
-Use the **SendToStream** module if you want to send data that has been generated inside the canvas, into a stream. Inside the module, start typing the name of your stream and it will autocomplete for you. Remember to configure the fields of your stream before using this module as the module's inputs are defined by it's fields. Learn more about fields in the <Link to={links.newdocs.streams}>streams docs</Link>.
+Use the **SendToStream** module if you want to send data that has been generated inside the canvas, into a stream. Inside the module, start typing the name of your stream and it will autocomplete for you. Remember to configure the fields of your stream before using this module as the module's inputs are defined by it's fields. Learn more about fields in the <Link to={`${links.newdocs.streams}#stream-data-fields`}>streams docs</Link>.
 
 <div className={cx(docsStyles.centered, canvasesStyles.sendToStream)}>
   <img src={SendToStream} />
@@ -203,11 +202,11 @@ A live canvas keeps running until you explictly tell it to stop. When you stop a
 
 ### Historical mode
 
+A canvas run in historical mode consumes a playback of past events stored in the subscribed streams. The playback is a simulation of what has happened in the past. You may run the canvas in historical mode provided the streams inside the canvas contain some historical data.
+
 <div className={cx(docsStyles.centered, canvasesStyles.startHistoricalRun)}>
   <img src={StartHistoricalRun} />
 </div>
-
-A canvas run in historical mode consumes a playback of past events stored in the subscribed streams. The playback is a simulation of what has happened in the past. You may run the canvas in historical mode provided the streams inside the canvas contain some historical data.
 
 You can specify the time period (the start date and the end date) for the historical playback period as well as the speed of playback. By default, playback events are processed sequentially but at a much faster pace compared to the actual history. You can easily change the playback speed for the historical run. Click on the arrow menu icon, connected to the **Run** button to choose your desired playback speed.
 
@@ -229,13 +228,13 @@ To create an abstraction, you'll need to expose — or export — inputs and out
 
 ## Work with canvases in Core
 
-To create a new canvas, click on 'Create Canvas' on the <Link to={links.userpages.canvases}>canvases core page</Link>.
+To create a new canvas, click on **Create Canvas** on the <Link to={links.userpages.canvases}>canvas listing</Link> page.
 
 <div className={cx(docsStyles.centered, canvasesStyles.createCanvasButton)}>
   <img src={CreateCanvasButton} />
 </div>
 
-You'll see all of your canvases along with their running state on the <Link to={links.userpages.canvases}>canvases page</Link>, inside the Core app. Click on a canvas to open it in the editor. You can also search and sort your canvases by its name, when it was modified, or from it's running state. 
+You'll see all of your canvases along with their running state on the canvases listing page - click on a canvas preview tile to open it in the editor. You can also search and sort your canvases by their name, when they were modified, or from their running state. 
 
 <div className={docsStyles.centered}>
   <img src={CoreListing} />
