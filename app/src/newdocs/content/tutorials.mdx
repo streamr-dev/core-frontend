@@ -196,7 +196,7 @@ Here’s an example demonstrating how to bridge DATA/USD market data from the [B
 
 Instead of a program such as the one above, a Canvas process built in the <Link to={formatPath(links.editor.canvasEditor)}>Streamr Editor</Link> can be used to build bridges. This might work for you even if you’re not a programmer, although creating integrations usually still requires some technical understanding of APIs and protocols.
 
-Below is a process which listens to real-time positions of trams from the MQTT API maintained by the Helsinki public transport authority. Incoming events are produced to a Stream in real time.
+Below is a process which listens to realtime positions of trams from the MQTT API maintained by the Helsinki public transport authority. Incoming events are produced to a Stream in real time.
 
 <div className={docsStyles.centered}>
   <img src={Example2b} />
@@ -218,7 +218,7 @@ The MQTT module outputs JSON strings, which the JsonParser module parses to obje
 
 Most cloud services handing out data at least offer a request-response-based API, which can be used if neither of the above push-based options are available. In this case there is no way to get notified when new data is available, which means that the API needs to be repeatedly queried. This is called polling.
 
-It’s not an optimal way to serve real-time data, because:
+It’s not an optimal way to serve realtime data, because:
 
 Data can be missed: multiple value changes in between subsequent requests are not observed.
 It places an unnecessary load on the API server, as requests are made “just in case” regardless of whether the data has actually changed or not.
