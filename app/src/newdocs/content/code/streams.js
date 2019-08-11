@@ -60,7 +60,9 @@ export const DataPattern1 =
 const ruuvi = require('node-ruuvitag')
 const API_KEY = 'MY-API-KEY'
 const client = new StreamrClient({
-    apiKey: API_KEY
+    auth: {
+        apiKey: API_KEY
+    }
 })
 const streams = {}
 console.log('Listening for RuuviTags...')
@@ -92,7 +94,9 @@ const bws = new BFX('', '', {
     transform: true
 }).ws
 const client = new StreamrClient({
-    apiKey: API_KEY
+    auth: {
+        apiKey: API_KEY
+    }
 })
 bws.on('open', () => {
     bws.subscribeTicker('DATUSD')
@@ -112,7 +116,9 @@ const STREAMR_API_KEY = 'MY-STREAMR-KEY'
 const POLL_INTERVAL = 15 * 60 * 1000 // 5 minutes
 const location = 'Zug,Switzerland'
 const client = new StreamrClient({
-    apiKey: STREAMR_API_KEY
+    auth: {
+        apiKey: API_KEY
+    }
 })
 // Query data from OWM and produce the result to Streamr
 function pollAndProduce(stream) {
