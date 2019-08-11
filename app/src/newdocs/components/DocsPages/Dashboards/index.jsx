@@ -5,12 +5,19 @@ import { Helmet } from 'react-helmet'
 
 import DocsLayout from '../../DocsLayout'
 import { subNav } from '../../DocsLayout/Navigation/navLinks'
-import DashboardsContent from '$newdocs/content/dashboards.mdx'
+
+import IntroToDashboards from '$newdocs/content/dashboards/introToDashboards.mdx'
+import WorkWithDashboardsInCore from '$newdocs/content/dashboards/workWithDashboardsInCore.mdx'
 
 const Dashboards = () => (
     <DocsLayout subNav={subNav.dashboards}>
         <Helmet title="Dashboards | Streamr Docs" />
-        <DashboardsContent />
+        <section id="intro-to-dashboards">
+            <IntroToDashboards />
+        </section>
+        <section id="work-with-dashboards-in-core">
+            <WorkWithDashboardsInCore />
+        </section>
     </DocsLayout>
 )
 
