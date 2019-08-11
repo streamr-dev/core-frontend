@@ -46,6 +46,7 @@ export const subNav = {
         'data-signing-and-verification': 'Data signing and verification',
         'end-to-end-encryption': 'End-to-end encryption',
         partitioning: 'Partitioning',
+        'integration-patterns': 'Integration Patterns',
     },
     canvases: {
         'intro-to-canvases': 'Intro to canvases',
