@@ -30,6 +30,8 @@ import NoRepeat from './images/canvases/noRepeat.png'
 import docsStyles from '$newdocs/components/DocsLayout/docsLayout.pcss'
 import canvasesStyles from '$newdocs/components/DocsPages/Canvases/canvasesStyles.pcss'
 
+import { JavaModuleDeclarations } from './code/canvases.js'
+
 <section id="intro-to-canvases">
 
 ## Intro to canvases
@@ -171,6 +173,22 @@ Lastly, note the **NR** icon next to each output connector.  This is a non-repea
 <div className={cx(docsStyles.centered, canvasesStyles.noRepeat)}>
   <img src={NoRepeat} />
 </div>
+
+### State and methods
+
+Every Streamr module can have a state. If present, the state persists between module activations and even when a live service is stopped and later restarted. Whilst a module does not need to have a state, there are many streaming data operations which simply cannot be implemented without one.
+
+The state of a module is kept in its *instance variables* (aka *member variables* or *member fields*). Each instance of JavaModule has its own variables, and these are visible and acccessible in that one instance only. You can use any of the valid Java data types for the instance variables. Here's some examples of valid declarations:
+
+<CodeSnippet language='java' showLineNumbers wrapLines>{JavaModuleDeclarations}</CodeSnippet>
+
+Any manipulation of the module state and the generation of module output is handled by JavaModule's methods. There are three methods that you need to override and implement. They are the following:
+
+`initialize()`: This method is called once when a specific JavaModule is activated. This is where you define and initialise the instance variables (i.e. the module state).
+
+`sendOutput()`: This is where you read the incoming events, perform arbitrary calculations, and send events downstream. You can see and alter the module state here.
+
+`clearState()`: This is where you reset the module state. Any module **must** be able to reset itself to its initial state on request. This is typically done by reinitialising the instance variables.
 
 ### How to run your canvas
 
