@@ -1,14 +1,15 @@
 // @flow
 
 import React, { Component } from 'react'
-import { Col, Row, Button } from 'reactstrap'
+import { Button } from 'reactstrap'
 import { I18n, Translate } from 'react-redux-i18n'
 
 import Dropdown from '$shared/components/Dropdown'
 import TextInput from '$shared/components/TextInput'
 import type { StreamField } from '$shared/flowtype/stream-types'
+import SplitControl from '$userpages/components/SplitControl'
 
-import { leftColumn, rightColumn, fieldTypes } from '../../../constants'
+import { fieldTypes } from '../../../constants'
 import styles from './newFieldEditor.pcss'
 
 type Props = {
@@ -86,35 +87,31 @@ export class NewFieldEditor extends Component<Props, State> {
 
         return (
             <div className={styles.container}>
-                <Row>
-                    <Col {...leftColumn}>
-                        <TextInput
-                            value={name}
-                            label={I18n.t('userpages.streams.edit.configure.newFieldEditor.namePlaceholder')}
-                            onChange={(e) => this.onNameChange(e.target.value)}
-                            error={nameError || ''}
-                            autoFocus
-                            onKeyPress={(e) => this.handleKeyPress(e.key)}
-                        />
-                    </Col>
-                    <Col {...rightColumn}>
-                        <Dropdown
-                            title=""
-                            selectedItem={type}
-                            onChange={this.onTypeChange}
-                            className={styles.dropdownToggle}
-                        >
-                            {fieldTypes.map((t) => (
-                                <Dropdown.Item
-                                    key={t}
-                                    value={t}
-                                >
-                                    {t}
-                                </Dropdown.Item>
-                            ))}
-                        </Dropdown>
-                    </Col>
-                </Row>
+                <SplitControl>
+                    <TextInput
+                        value={name}
+                        label={I18n.t('userpages.streams.edit.configure.newFieldEditor.namePlaceholder')}
+                        onChange={(e) => this.onNameChange(e.target.value)}
+                        error={nameError || ''}
+                        autoFocus
+                        onKeyPress={(e) => this.handleKeyPress(e.key)}
+                    />
+                    <Dropdown
+                        title=""
+                        selectedItem={type}
+                        onChange={this.onTypeChange}
+                        className={styles.dropdownToggle}
+                    >
+                        {fieldTypes.map((t) => (
+                            <Dropdown.Item
+                                key={t}
+                                value={t}
+                            >
+                                <Translate value={`userpages.streams.fieldTypes.${t}`} />
+                            </Dropdown.Item>
+                        ))}
+                    </Dropdown>
+                </SplitControl>
                 <Button
                     disabled={nameError !== null}
                     className={styles.addButton}

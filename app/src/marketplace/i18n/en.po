@@ -89,6 +89,18 @@ msgstr "Unpublishing"
 msgid "editProductPage##update"
 msgstr "Update"
 
+msgid "editProductPage##setPrice##title"
+msgstr "Set a price"
+
+msgid "editProductPage##setPrice##setRecipientEthAddress"
+msgstr "Set recipient ETH address"
+
+msgid "editProductPage##setPrice##placeholder##enterEthAddress"
+msgstr "Enter ETH address"
+
+msgid "editProductPage##setPrice##fixPrice"
+msgstr "Fix price in fiat for protection against shifts in the DATA price"
+
 msgid "error##general"
 msgstr "Oops. Something has broken down here."
 
@@ -747,10 +759,10 @@ msgid "streamSelector##selectNone"
 msgstr "Select none"
 
 msgid "streamSelector##selectedStream"
-msgstr "%{streamCount} stream Selected"
+msgstr "%{streamCount} stream selected"
 
 msgid "streamSelector##selectedStreams"
-msgstr "%{streamCount} streams Selected"
+msgstr "%{streamCount} streams selected"
 
 msgid "streamSelector##sort"
 msgstr "Sort by"

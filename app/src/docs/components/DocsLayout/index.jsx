@@ -1,15 +1,15 @@
 // @flow
 
 import React from 'react'
-import { Container, Row, Col } from 'reactstrap'
 import { MDXProvider } from '@mdx-js/react'
 
 import type { NavigationLink } from '$docs/flowtype/navigation-types'
-import Layout from '$mp/components/Layout'
+import Layout from '$shared/components/Layout'
 import Navigation from './Navigation'
 import mainNav from './Navigation/navLinks'
 import Components from '$docs/mdxConfig'
 import PageTurner from '$docs/components/PageTurner'
+import DocsContainer from '$shared/components/Container/Docs'
 
 import styles from './docsLayout.pcss'
 
@@ -23,22 +23,22 @@ const DocsLayout = ({ subNav, ...props }: Props = {}) => (
             responsive
             navigationItems={mainNav}
         />
-        <Container>
-            <Row>
-                <Col md={12} lg={3}>
+        <DocsContainer>
+            <div className={styles.grid}>
+                <div>
                     <Navigation
                         navigationItems={mainNav}
                         subNavigationItems={subNav}
                     />
-                </Col>
-                <Col md={12} lg={9}>
+                </div>
+                <div className={styles.content}>
                     <MDXProvider components={Components}>
                         <div {...props} />
                     </MDXProvider>
                     <PageTurner navigationItems={mainNav} />
-                </Col>
-            </Row>
-        </Container>
+                </div>
+            </div>
+        </DocsContainer>
     </Layout>
 )
 

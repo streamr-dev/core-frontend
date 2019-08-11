@@ -24,10 +24,15 @@
   padding: 0;
   position: absolute;
   width: 100%;
+  overflow: visible;
 }
 
 .inner input::selection {
   background-color: #CCE9FD;
+}
+
+.inner input::placeholder {
+  overflow: visible;
 }
 
 .idle {
@@ -47,8 +52,14 @@
   overflow: hidden;
   visibility: hidden;
   white-space: pre;
+  padding-right: 0.05em; /* also balance extra width added by input when editing */
 }
 
 .blank {
   font-style: italic;
+}
+
+.idle.blank .inner {
+  /* ensures right-hand side of italic spaceholder text is not cut off */
+  padding-right: 0.25em; /* also balance extra width added by input when editing */
 }

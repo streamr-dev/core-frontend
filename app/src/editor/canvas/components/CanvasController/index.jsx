@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useCallback, useState } from 'react'
+import React, { useContext, useEffect, useMemo } from 'react'
 import { Helmet } from 'react-helmet'
 import LoadingIndicator from '$userpages/components/LoadingIndicator'
 
@@ -18,6 +18,8 @@ import useModuleLoadCallback from './useModuleLoadCallback'
 
 import styles from './CanvasController.pcss'
 
+const CanvasControllerContext = React.createContext()
+
 function useCanvasLoadEffect() {
     const canvas = useCanvas()
     const load = useCanvasLoadCallback()
@@ -35,58 +37,6 @@ function useCanvasLoadEffect() {
             load(canvasId)
         }
     }, [urlId, canvasId, currentCanvasRootId, load, canvas, isPending])
-}
-
-export function useChangedModuleLoader() {
-    const [changed, setChanged] = useState(new Set())
-    const markChanged = useCallback((id) => {
-        setChanged((changed) => {
-            if (changed.has(id)) { return changed }
-            return new Set([...changed, id])
-        })
-    }, [setChanged])
-
-    const loadChanged = useCallback((prevChanged, canvas, updatedCanvas) => {
-        prevChanged.forEach((hash) => {
-            if (changed.has(hash)) {
-                // item changed again, don't update this round
-                return
-            }
-            canvas = CanvasState.updateModule(canvas, hash, () => (
-                CanvasState.getModule(updatedCanvas, hash)
-            ))
-        })
-        return canvas
-    }, [changed])
-
-    const resetChanged = useCallback(() => {
-        const prev = changed
-        setChanged(new Set())
-        return prev
-    }, [changed])
-
-    return useMemo(() => ({
-        resetChanged,
-        markChanged,
-        loadChanged,
-    }), [resetChanged, markChanged, loadChanged])
-}
-
-export function useController() {
-    const create = useCanvasCreateCallback()
-    const load = useCanvasLoadCallback()
-    const remove = useCanvasRemoveCallback()
-    const duplicate = useCanvasDuplicateCallback()
-    const loadModule = useModuleLoadCallback()
-    const changedLoader = useChangedModuleLoader()
-    return useMemo(() => ({
-        load,
-        create,
-        remove,
-        duplicate,
-        loadModule,
-        changedLoader,
-    }), [load, create, remove, duplicate, loadModule, changedLoader])
 }
 
 function useCanvasCreateEffect() {
@@ -125,13 +75,42 @@ function CanvasLoadingIndicator() {
     )
 }
 
+export function useController() {
+    return useContext(CanvasControllerContext)
+}
+
+function useCanvasController() {
+    const create = useCanvasCreateCallback()
+    const load = useCanvasLoadCallback()
+    const remove = useCanvasRemoveCallback()
+    const duplicate = useCanvasDuplicateCallback()
+    const loadModule = useModuleLoadCallback()
+    return useMemo(() => ({
+        load,
+        create,
+        remove,
+        duplicate,
+        loadModule,
+    }), [load, create, remove, duplicate, loadModule])
+}
+
+function ControllerProvider({ children }) {
+    return (
+        <CanvasControllerContext.Provider value={useCanvasController()}>
+            {children}
+        </CanvasControllerContext.Provider>
+    )
+}
+
 const CanvasControllerProvider = ({ children }) => (
     <RouterContext.Provider>
         <PendingProvider>
             <PermissionsProvider>
-                <CanvasLoadingIndicator />
-                <CanvasEffects />
-                {children || null}
+                <ControllerProvider>
+                    <CanvasLoadingIndicator />
+                    <CanvasEffects />
+                    {children || null}
+                </ControllerProvider>
             </PermissionsProvider>
         </PendingProvider>
     </RouterContext.Provider>

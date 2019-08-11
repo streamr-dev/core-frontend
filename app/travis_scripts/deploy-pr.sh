@@ -1,4 +1,24 @@
 #!/usr/bin/env bash
+echo "Config Env Variables:"
+echo $NODE_ENV
+echo $PORT
+echo $VERSION
+echo $SENTRY_ENVIRONMENT
+echo $BUNDLE_ANALYSIS
+echo $STREAMR_API_URL
+echo $STREAMR_WS_URL
+echo $PLATFORM_ORIGIN_URL
+echo $STREAMR_URL
+echo $PLATFORM_PUBLIC_PATH
+echo $GOOGLE_ANALYTICS_ID
+echo $STORYBOOK_BASE_PATH
+echo $MARKETPLACE_CONTRACT_ADDRESS
+echo $TOKEN_CONTRACT_ADDRESS
+echo $WEB3_REQUIRED_NETWORK_ID
+echo $WEB3_PUBLIC_HTTP_PROVIDER
+echo $WEB3_PUBLIC_WS_PROVIDER
+echo $SENTRY_DSN
+echo $LOGROCKET_SLUG
 docker login -u "${DOCKER_USER}" -p "${DOCKER_PASS}"
 WEB_ACL_ID=$(aws waf list-web-acls --region eu-west-1  --query "WebACLs[].WebACLId" --output text)
 echo $WEB_ACL_ID
@@ -17,7 +37,7 @@ echo "                      _____   ______      _     _  ______                 
 echo " ___ ___ ___ ___ ___ |_____] |_____/      |     | |_____/ |      ___ ___ ___ ___ ___";
 echo "                     |       |    \_      |_____| |    \_ |_____                    ";
 echo "                                                                                    ";
-aws cloudfront list-distributions | jq '[.DistributionList.Items[]  | {bucket: .Origins.Items[0].DomainName, url: .DomainName}]' | jq -r --arg S3_TRAVIS_PULL_REQUEST_SHA "$S3_TRAVIS_PULL_REQUEST_SHA" '.[] | select(.bucket==$S3_TRAVIS_PULL_REQUEST_SHA)'
+echo " http://streamr-marketplace-pr-$TRAVIS_PULL_REQUEST_SHA.s3-website-eu-west-1.amazonaws.com"
 echo "                      _____   ______      _     _  ______                           ";
 echo " ___ ___ ___ ___ ___ |_____] |_____/      |     | |_____/ |      ___ ___ ___ ___ ___";
 echo "                     |       |    \_      |_____| |    \_ |_____                    ";

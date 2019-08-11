@@ -1,10 +1,11 @@
 // @flow
 
 import React from 'react'
-import { Container, Button } from 'reactstrap'
+import { Button } from 'reactstrap'
 import classNames from 'classnames'
 import MediaQuery from 'react-responsive'
 import { Translate } from 'react-redux-i18n'
+import ProductContainer from '$shared/components/Container/Product'
 
 import routes from '$routes'
 import type { Stream, StreamList, StreamId } from '$shared/flowtype/stream-types'
@@ -121,7 +122,7 @@ const StreamListing = ({
     isProductSubscriptionValid,
     className,
 }: Props) => (
-    <Container id={styles.details} className={classNames(styles.details, className)}>
+    <ProductContainer id={styles.details} className={classNames(styles.details, className)}>
         <div className={classNames(styles.streams)}>
             <HeaderRow title={<TitleStreamCount count={streams.length || 0} />} className={styles.headerRow}>
                 <MediaQuery minWidth={767}>
@@ -180,7 +181,7 @@ const StreamListing = ({
                 </Row>
             )}
         </div>
-    </Container>
+    </ProductContainer>
 )
 
 export default StreamListing

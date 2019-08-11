@@ -2,14 +2,13 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Container, Row, Col } from 'reactstrap'
 import { Translate, I18n } from 'react-redux-i18n'
 import cx from 'classnames'
 import Helmet from 'react-helmet'
 
 import Layout from '../Layout'
 import links from '../../../links'
-import { defaultColumns, getFilters } from '../../utils/constants'
+import { getFilters } from '../../utils/constants'
 import { getMyPurchases, updateFilter, applyFilter } from '$mp/modules/myPurchaseList/actions'
 import { selectMyPurchaseList, selectSubscriptions, selectFilter, selectFetchingMyPurchaseList } from '$mp/modules/myPurchaseList/selectors'
 import Tile from '$shared/components/Tile'
@@ -18,6 +17,8 @@ import Search from '../Header/Search'
 import Dropdown from '$shared/components/Dropdown'
 import NoPurchasesView from './NoPurchases'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
+import ListContainer from '$shared/components/Container/List'
+import TileGrid from '$shared/components/TileGrid'
 
 import type { ProductList, ProductSubscription } from '$mp/flowtype/product-types'
 import type { Filter, SortOption } from '$userpages/flowtype/common-types'
@@ -126,7 +127,7 @@ class PurchasesPage extends Component<Props> {
                 loading={fetching}
             >
                 <Helmet title={`Streamr Core | ${I18n.t('userpages.title.purchases')}`} />
-                <Container className={styles.corepageContentContainer} >
+                <ListContainer className={styles.corepageContentContainer} >
                     {!fetching && purchases && !purchases.length && (
                         <NoPurchasesView
                             hasFilter={!!filter && (!!filter.search || !!filter.key)}
@@ -134,37 +135,36 @@ class PurchasesPage extends Component<Props> {
                             onResetFilter={this.resetFilter}
                         />
                     )}
-                    <Row>
+                    <TileGrid>
                         {purchases.map((product) => {
                             const isActive = subscriptions && isSubscriptionActive(subscriptions.find((s) => s.product.id === product.id))
 
                             return (
-                                <Col {...defaultColumns} key={product.id}>
-                                    <Tile
-                                        imageUrl={product.imageUrl}
-                                        link={product.id && `${links.marketplace.products}/${product.id}`}
+                                <Tile
+                                    key={product.id}
+                                    imageUrl={product.imageUrl}
+                                    link={product.id && `${links.marketplace.products}/${product.id}`}
+                                >
+                                    <Tile.Title>{product.name}</Tile.Title>
+                                    <Tile.Description>{product.owner}</Tile.Description>
+                                    <Tile.Status
+                                        className={
+                                            cx({
+                                                [styles.active]: isActive,
+                                                [styles.expired]: !isActive,
+                                            })}
                                     >
-                                        <Tile.Title>{product.name}</Tile.Title>
-                                        <Tile.Description>{product.owner}</Tile.Description>
-                                        <Tile.Status
-                                            className={
-                                                cx({
-                                                    [styles.active]: isActive,
-                                                    [styles.expired]: !isActive,
-                                                })}
-                                        >
-                                            {
-                                                isActive ?
-                                                    <Translate value="userpages.purchases.active" /> :
-                                                    <Translate value="userpages.purchases.expired" />
-                                            }
-                                        </Tile.Status>
-                                    </Tile>
-                                </Col>
+                                        {
+                                            isActive ?
+                                                <Translate value="userpages.purchases.active" /> :
+                                                <Translate value="userpages.purchases.expired" />
+                                        }
+                                    </Tile.Status>
+                                </Tile>
                             )
                         })}
-                    </Row>
-                </Container>
+                    </TileGrid>
+                </ListContainer>
                 <DocsShortcuts />
             </Layout>
         )

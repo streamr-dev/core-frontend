@@ -2,11 +2,11 @@
 
 import React, { Component, type Node } from 'react'
 
-import Layout from '$mp/components/Layout'
-import LoadingIndicator from '$userpages/components/LoadingIndicator'
+import CoreLayout from '$shared/components/Layout/Core'
+import BodyClass from '$shared/components/BodyClass'
 import Header from '../Header'
 
-import styles from './layout.pcss'
+import './layout.pcss'
 
 type Props = {
     children: Node,
@@ -25,48 +25,30 @@ class UserpagesLayout extends Component<Props, State> {
         loading: false,
     }
 
-    componentDidMount() {
-        this.toggleAlwaysOnScrollbar(true)
-    }
-
-    componentWillUnmount() {
-        this.toggleAlwaysOnScrollbar(false)
-    }
-
-    toggleAlwaysOnScrollbar = (setting: boolean) => {
-        if (document.body) {
-            if (setting) {
-                // $FlowFixMe
-                document.getElementsByTagName('body')[0].style['overflow-y'] = 'scroll'
-            } else {
-                // $FlowFixMe
-                document.getElementsByTagName('body')[0].style['overflow-y'] = null
-            }
-        }
-    }
-
     render() {
         const {
             headerAdditionalComponent,
             headerSearchComponent,
             headerFilterComponent,
             noHeader,
-            loading,
-            children,
+            ...props
         } = this.props
         return (
-            <Layout footer={false} className={styles.container}>
-                <Header
-                    additionalComponent={headerAdditionalComponent}
-                    searchComponent={headerSearchComponent}
-                    filterComponent={headerFilterComponent}
-                    noHeader={noHeader}
-                />
-                <LoadingIndicator loading={!!loading} className={styles.loadingIndicator} />
-                <div className={styles.content}>
-                    {children}
-                </div>
-            </Layout>
+            <CoreLayout
+                footer={false}
+                navComponent={(
+                    <React.Fragment>
+                        <BodyClass className="core" />
+                        <Header
+                            additionalComponent={headerAdditionalComponent}
+                            searchComponent={headerSearchComponent}
+                            filterComponent={headerFilterComponent}
+                            noHeader={noHeader}
+                        />
+                    </React.Fragment>
+                )}
+                {...props}
+            />
         )
     }
 }

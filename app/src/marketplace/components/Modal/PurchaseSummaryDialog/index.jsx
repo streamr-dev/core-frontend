@@ -4,8 +4,8 @@ import React from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
 
 import Dialog from '$shared/components/Dialog'
+import withI18n from '$shared/containers/WithI18n'
 import { toSeconds } from '../../../utils/time'
-import withI18n from '../../../containers/WithI18n'
 import type { Product, SmartContractProduct } from '../../../flowtype/product-types'
 import type { Purchase } from '../../../flowtype/common-types'
 

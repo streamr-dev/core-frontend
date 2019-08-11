@@ -12,15 +12,20 @@ import NameEthereum from './images/gettingStarted/name_ethereum_acct.png'
 import EthereumAccts from './images/gettingStarted/profile_ethereum_accounts.png'
 import EthereumSign from './images/gettingStarted/profile_ethereum_sign.png'
 
-## Before you start... 
+<section>
+
+# Before you start... 
 
 **Welcome to Streamr!**
 
-The first thing you'll want to get is a Streamr account. You can do that <Link to={links.internalLogin}>here</Link>. Creating an account requires either an Email address or a Web3 Ethereum wallet, e.g. <a href="https://metamask.io">Metamask</a>.
+To get a feel for what Streamr is, checkout our <Link to={links.newdocs.introduction}>intro docs</Link>.
 
+The first thing you'll want to get is a Streamr account. You can do that <Link to={links.internalLogin}>here</Link>. Creating an account requires either an Email address or a Web3 Ethereum wallet, e.g. <a href="https://metamask.io" target="blank">Metamask</a>.
+
+</section>
 <section id="get-api-keys">
 
-## Get your API keys
+### Get your API keys
 
 After creating your Streamr account, visit your <Link to={links.userpages.profile}>profile settings page</Link> to reveal your API keys. These keys grant you access to read and write to the streams you create and are your means of authentication when using the <Link to={links.newdocs.api}>Streamr API</Link>.
 
@@ -31,18 +36,17 @@ After creating your Streamr account, visit your <Link to={links.userpages.profil
 </Link>
 
 </section>
-
 <section id="connecting-ethereum-identity">
 
-## Connecting your Ethereum identity on Streamr
+### Connecting your Ethereum identity on Streamr
 
 You will need to have an Ethereum account on Streamr if you want to publish or buy a paid product on the Marketplace. It is optional, but recommended if you want to enjoy the full Streamr experience.
 
 ### How to Connect your Ethereum Account
 
-Checkout our <Link to={links.newdocs.introduction}>Introduction page</Link> if you'd like to understand more about what Ethereum is and what it means to have an account on Ethereum.
+Checkout our <Link to={links.newdocs.introduction}>intro docs</Link> if you'd like to understand more about what Ethereum is and what it means to have an account on Ethereum.
 
-The easiest way to get started is through the free and open source Chrome browser extension, [Metamask](https://metamask.io/). Metamask is also [available](https://mobile.metamask.io/) on Android and Apple mobile devices. The explainer video below will help you understand how to use Metamask.
+The easiest way to get started is through the free and open source Chrome browser extension, <a href="https://metamask.io" target="blank">Metamask</a>. Metamask is also <a href="https://mobile.metamask.io/" target="blank">available on Android and Apple mobile devices</a>. The explainer video below will help you understand how to use Metamask.
 
 <div className={docsStyles.playerWrapper}>
     <ReactPlayer
@@ -82,11 +86,12 @@ There's no need to remember passwords anymore - your Ethereum account doubles up
 
 Checkout some of the suggestions below to get your feet wet inside the Streamr Platform.
 
+
 #### Option 2) You already have a Streamr account
 
-If you already have a Streamr account, go to the **Ethereum Address** section of your <Link to={links.userpages.profile}>profile page</Link>.
+If you already have a Streamr account, go to the *Ethereum accounts* section of your <Link to={`${links.userpages.profile}#ethereum-accounts`}>profile page</Link>.
 
-Click 'Add new address' to attach your address to your Streamr account. 
+Click **Add new address** to attach your address to your Streamr account. 
 
 <Link to={links.userpages.profile}>
   <div className={docsStyles.centered}>
@@ -119,29 +124,29 @@ Checkout some of the suggestions below to get your feet wet inside the Streamr P
 
 ## Get building
 
-Here's some ideas about what you can start building or playing with on the Streamr Platform:
+Here's some ideas about what you can start building on the Streamr Platform:
 
 #### Try one of our tutorials:
-- <Link to={links.newdocs.tutorials}>Building a simple pub/sub system</Link>
+- <Link to={`${links.newdocs.tutorials}#building-a-simple-pub-sub-system`}>Building a simple pub/sub system</Link>
+- <Link to={`${links.newdocs.tutorials}#building-custom-canvas-module`}>Building a custom canvas module</Link>
 
 #### Check out the Core App to create, process, visualise and sell your realtime data:
 - <Link to={links.newdocs.core}>Intro to Core</Link>
 
 #### Create a product on the Data Marketplace:
-- <Link to={links.newdocs.marketplace}>Intro to Marketplace</Link>
+- <Link to={links.newdocs.products}>Intro to Products</Link>
 
 #### Leverage a Streamr SDKs and build apps powered by Streamr:
-- <Link to={links.newdocs.SDKs}>Intro to Marketplace</Link>
+- <Link to={links.newdocs.SDKs}>SDKs overview</Link>
 
 #### Get to know the Streamr API:
-- <Link to={links.newdocs.api}>Intro to Marketplace</Link>
+- <Link to={links.newdocs.api}>API overview</Link>
 
 </section>
-
 <section id="useful-links">
 
 ## Useful links
-- <a href="https://github.com/streamr-dev" target="_blank">Streamr git repos</a>
+- <a href="https://github.com/streamr-dev" target="_blank">Streamr Git repos</a>
 - <a href="https://github.com/streamr-dev/cli-tools" target="_blank">Streamr command line tools</a>
 
 </section>

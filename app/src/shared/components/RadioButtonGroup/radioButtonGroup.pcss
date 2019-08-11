@@ -1,14 +1,16 @@
 .root {
   width: 100%;
   font-family: var(--sans);
-  font-size: 20px;
+  font-size: 1.25rem;
   letter-spacing: 0;
-  line-height: 48px;
+  line-height: 4rem;
   text-align: center;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  grid-column-gap: 0.5rem;
   background-color: #F1F1F1;
-  padding: 1em;
+  padding: 1rem;
+  border-radius: 0.5rem;
 }
 
 .radio {
@@ -18,6 +20,7 @@
 .radio:checked + label {
   color: #0324FF;
   background-color: white;
+  box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.1);
 }
 
 .label {
@@ -30,4 +33,9 @@
   margin: 0;
   padding: 0;
   width: 100%;
+  border-radius: 0.5rem;
+
+  &:hover {
+    color: #323232;
+  }
 }

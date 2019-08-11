@@ -26,5 +26,8 @@ module.name_mapper='\$testUtils' -> '<PROJECT_ROOT>/test/test-utils'
 module.name_mapper='\$utils' -> '<PROJECT_ROOT>/src/utils'
 module.name_mapper='\$editor' -> '<PROJECT_ROOT>/src/editor'
 
+# allow dynamic import()
+module.ignore_non_literal_requires=true
+
 [version]
 0.96.0

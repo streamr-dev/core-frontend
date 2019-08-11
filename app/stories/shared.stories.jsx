@@ -41,6 +41,7 @@ import Tooltip from '$shared/components/Tooltip'
 import ContextMenu from '$shared/components/ContextMenu'
 import { NotificationIcon } from '$shared/utils/constants'
 import RadioButtonGroup from '$shared/components/RadioButtonGroup'
+import Toolbar from '$shared/components/Toolbar'
 
 import sharedStyles from './shared.pcss'
 
@@ -689,5 +690,48 @@ story('RadioButtonGroup')
             options={['value 1', 'value 2', 'value 3']}
             selectedOption="value 2"
             onChange={action('selected')}
+        />
+    ))
+
+const toolbarActions = {
+    cancel: {
+        title: 'Cancel',
+        color: 'link',
+        onClick: action('cancel'),
+    },
+    ok: {
+        title: 'Ok',
+        color: 'primary',
+        onClick: action('ok'),
+        disabled: boolean('disabled'),
+        spinner: boolean('spinner'),
+    },
+}
+
+story('Toolbar')
+    .addDecorator(styles({
+        backgroundColor: '#323232',
+        padding: '15px',
+    }))
+    .addWithJSX('basic', () => (
+        <Toolbar actions={toolbarActions} />
+    ))
+    .addWithJSX('left status text', () => (
+        <Toolbar
+            left={text('status text', 'status')}
+            actions={toolbarActions}
+        />
+    ))
+    .addWithJSX('middle icon', () => (
+        <Toolbar
+            left={text('status text', 'status')}
+            middle={<SvgIcon
+                name="user"
+                style={{
+                    width: '40px',
+                    height: '40px',
+                }}
+            />}
+            actions={toolbarActions}
         />
     ))

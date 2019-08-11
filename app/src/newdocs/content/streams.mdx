@@ -1,17 +1,21 @@
-
+import cx from 'classnames'
 import { Link } from 'react-router-dom'
 
-import streamListing from './images/streams/stream-listing.png'
-import streamSettings from './images/streams/setup-your-stream.png'
-
-import docsStyles from '$newdocs/components/DocsLayout/docsLayout.pcss'
-import links from '$shared/../links'
 import CodeSnippet from '$shared/components/CodeSnippet'
-
 import Warning from '$newdocs/components/Warning'
+import links from '$shared/../links'
 
+import StreamListing from './images/streams/streamListing.png'
+import StreamDetails from './images/streams/streamDetails.png'
+import StreamConfigure from './images/streams/streamConfigure.png'
+import StreamPreview from './images/streams/streamPreview.png'
+import StreamApiAccess from './images/streams/streamApiAccess.png'
+import StreamHistorical from './images/streams/streamHistorical.png'
 import MessagePartitioningImage from './images/streams/message-partitioning.png'
 import StreamAndPartitionsImage from './images/streams/stream-and-partitions.png'
+
+import docsStyles from '$newdocs/components/DocsLayout/docsLayout.pcss'
+import streamsStyles from '$newdocs/components/DocsPages/Streams/streamsStyles.pcss'
 
 import {
     CreateJavascriptClient,
@@ -31,7 +35,7 @@ import {
 All of the data in the Streamr network is contained inside individual streams. A stream is simply a sequence of data points in time. The data may originate, for example from machines on the factory floor, sensors in a smart city, in-house databases or systems, or from commercial streaming data feeds.
 
 Streams have the following properties:
-- Any kind of real-time data can be stored in it.
+- Any kind of realtime data can be stored in it.
 - The data will always be retrieved in the correct order.
 - The data is persisted on the Streamr network and identifiable by unique ID.
 
@@ -47,6 +51,8 @@ These are just a few examples. There is virtually no limit on the kind, format, 
 
 Streams implement a publish-subscribe paradigm, or pub/sub for short. A stream can receive data from many sources (or publishers), and there can be several listeners who subscribe to a stream. There are several variations on the possible pub/sub topologies, such as many-to-one, one-to-many, or many-to-many. Streamr supports all of these.
 
+If you want to try it out already, you can dive into our tutorial on <Link to={`${links.newdocs.tutorials}#building-a-simple-pub-sub-system`}>building a simple pub/sub system</Link> with Streamr.
+
 ### Example stream
 
 Here’s an example of what a small part of a stream could look like. Each row shows one data point, and the columns correspond to the timestamp followed by two data fields, a measurement of the operating temperature and the number of rotations per minute (RPM).
@@ -58,6 +64,8 @@ Here’s an example of what a small part of a stream could look like. Each row s
 | 2019-08-01 11:30:04.105  | 312.42        | 3543 |
 | 2016-02-01 11:30:08.122  | 313.21        | 3565 |
 | 2016-02-01 11:30:11.882  | 317.45        | 3602 |
+
+<section id ="stream-data-fields">
 
 ### Stream data fields
 
@@ -101,6 +109,8 @@ Given the structure of this data point, the stream's fields could be configured 
 | Ask                  | List          |
 | Bid                  | List          |  
 
+</section>
+
 ### Data field types
 
 There’s a number of built-in data types that can be used in a stream. These are:
@@ -114,7 +124,6 @@ There’s a number of built-in data types that can be used in a stream. These ar
 Field types can be freely mixed in a single data point. And you can freely add new fields to an existing stream; you don’t have to know what fields you might eventually need. A single data point can be of any size within reason, and a stream can grow indefinitely when extended by new data points.
 
 </section>
-
 <section id="work-with-streams-in-core">
 
 ## Work with streams in Core
@@ -123,7 +132,9 @@ Streamr Core provides you with the tools to create, edit, share and delete your 
 ### Overview of your streams
 Head over to the <Link to={links.userpages.streams}>Streams page</Link> to see an overview of your subscribed streams. The list includes streams you have created and streams that you have purchased on the Marketplace.
 
-<img src={streamListing} />
+<div className={cx(docsStyles.centered, streamsStyles.streamListing)}>
+  <img src={StreamListing} />
+</div>
 
 This stream listing page gives an indication for when data was last pushed to each stream and uses traffic light indicators show the health of each stream, at a glance.
 
@@ -135,23 +146,30 @@ This stream listing page gives an indication for when data was last pushed to ea
 Clicking on a stream will open the stream editor. You may only edit streams that you have created or have explicit permission to edit.
 
 By clicking on the more options icon you may access advanced features for each stream, such as stream sharing and code snippets.
-A new stream can be created by the clicking the "Create Stream" button on the <Link to={links.userpages.streams}>Streams page</Link>.
+A new stream can be created by the clicking the **Create Stream** button.
 
 ### Editing a stream
-Stream editor provides basic tools for setting up, inspecting and editing your stream.
+The stream editor provides basic tools for setting up, inspecting and editing your stream. Below is a run-down of each stream editor section.
 
-<img src={streamSettings} />
+<div className={cx(docsStyles.centered, streamsStyles.streamDetails)}>
+  <img src={StreamDetails} />
+</div>
 
 #### Details section
-The details section provides basic information about your stream. The stream name is used to identify your stream in the Core app.
-The stream description can be used to offer more information about your stream and the kind of data it contains.
-The stream ID is the unique identifier for your stream
-and is needed when interacting with the <Link to={links.newdocs.SDKs}>Streamr SDKs</Link>.
+The details section provides basic information about your stream. 
+
+- The stream name is used to identify your stream in the Core app.
+- The stream description can be used to offer more information about your stream and the kind of data it contains.
+- The stream ID is the unique identifier for your stream and is needed when interacting with the <Link to={links.newdocs.SDKs}>Streamr SDKs</Link>.
 
 #### Configure section
 In this section you can configure stream fields and their data types. All fields have a name and a data type.
 The Autodetect feature can be used to automatically deduce fields from the stream's last received message.
 It is possible to manually correct the data types if automatic detection is not suitable for your stream.
+
+<div className={cx(docsStyles.centered, streamsStyles.streamConfigure)}>
+  <img src={StreamConfigure} />
+</div>
 
 | Setting                                             | Explanation                                                                                                     |
 | ----------------------------------------------------| --------------------------------------------------------------------------------------------------------------- |
@@ -161,35 +179,39 @@ It is possible to manually correct the data types if automatic detection is not 
 #### Preview section
 This section is used to preview data flowing into the stream. Use the live inspector to make sure your stream is receiving data and it is correctly formatted.
 
+<div className={cx(docsStyles.centered, streamsStyles.streamPreview)}>
+  <img src={StreamPreview} />
+</div>
+
 #### API Access section
 Here you can manage API keys for your stream. Keys generated here grant access to only this stream and can have either read or write access.
 These keys can also be removed if for example, the key has been compromised.
 
+<div className={cx(docsStyles.centered, streamsStyles.streamApiAccess)}>
+  <img src={StreamApiAccess} />
+</div>
+
 #### Historical Data section
 This section contains the stream's historical data storage settings and includes tools to add or remove historical data from the stream. 
+
+<div className={cx(docsStyles.centered, streamsStyles.streamHistorical)}>
+  <img src={StreamHistorical} />
+</div>
 
 You can add new data to the stream by uploading a CSV file and you can delete existing historical data from the stream by choosing an inclusive date range. 
 
 The historical data storage period determines how many days your data is retained before it will be removed automatically from the Streamr network. The default period is 365 days.
 
 </section>
-
 <section id="work-with-streams-via-sdks">
 
 ## Work with streams via SDKs
 
-The easiest way to work with streams is to use the JavaScript client, which works in `node.js` as well as the browser. See the <Link to={links.newdocs.SDKs}>SDKs section</Link> for the official and community-maintained client libraries available for various languages:
-
-- **JavaScript** client works in the browser as well as node.js.
-- **Java** client is work-in-progress but already implements the most important set of functionality.
-
-Client libraries for other languages are on the <a href={links.community.trello} target="_blank" rel="nofollow noopener noreferrer">roadmap</a>. If a client library isn't available for your language, you can dive into the details of the [websocket protocol](https://github.com/streamr-dev/streamr-client-protocol-js/blob/bb2f0168bcff454b5c458e275e9c2de0dee342f9/PROTOCOL.md).
-
-If you'd like to contribute a client library and get it listed here, please get in touch on <a href={links.community.telegram} target="_blank" rel="nofollow noopener noreferrer">Telegram</a>, <a href={links.community.reddit} target="_blank" rel="nofollow noopener noreferrer">Reddit</a> or <a href={links.contact.general} rel="nofollow noopener noreferrer">email</a>!
+The easiest way to work with streams is to use the JavaScript client, which works in **Node.js** as well as the browser. See the <Link to={links.newdocs.SDKs}>SDKs section</Link> for the official and community-maintained client libraries available for various languages.
 
 ### Authentication
 
-When reading from or writing to Streams, you need to provide a session token or an API key, or login with an Ethereum account. To read more about API keys or obtaining a session token, refer to the <Link to={links.newdocs.api}>Authentication section of the API documentation</Link>.
+When reading from or writing to streams, you need to provide a session token or an API key, or login with an Ethereum account. To read more about API keys or obtaining a session token, refer to the <Link to={`${links.newdocs.api}#authentication`}>Authentication section of the API docs</Link>.
 
 ### Creating a client instance with API key
 
@@ -201,9 +223,9 @@ When reading from or writing to Streams, you need to provide a session token or 
 
 <CodeSnippet language='java'>{CreateJavaClient}</CodeSnippet>
 
-### Subscribing to real-time events in a stream
+### Subscribing to realtime events in a stream
 
-By subscribing to Streams, your application gets immediately notified about new events in the Stream.
+By subscribing to Streams, your application gets immediately notified about new events in the stream.
 
 **JavaScript**
 
@@ -215,25 +237,40 @@ By subscribing to Streams, your application gets immediately notified about new 
 
 ### Publishing events to Streams
 
-JavaScript:
+**JavaScript**
 
 <CodeSnippet language='javascript'>{PublishJavascriptClient}</CodeSnippet>
 
-Java:
+**Java**
 
 Events in Streams are key-value pairs, represented in Java as Map objects. Below is an example of creating an event payload and publishing it into a Stream:
 
 <CodeSnippet language='java'>{PublishJavaClient}</CodeSnippet>
 
 </section>
-
 <section id="work-with-streams-via-api">
 
 ## Work with streams via API
---content--
+
+While the Core UI can do just about everything you'd want to do with streams, sometimes the using the API directly is preferred.
+
+### Data output over HTTP
+
+Events in streams can be queried via HTTP. Example using `curl`:
+
+<CodeSnippet language='bash'>
+    {`curl -i -X POST -H "Authorization: Bearer MY-SESSION-TOKEN" -d "{\"foo\":\"hello\",\"bar\":24.5}" https://www.streamr.com/api/v1/streams/MY-STREAM-ID/data`}
+</CodeSnippet>
+
+The following endpoint would return the 5 most recent messages in a stream (or to be more precise, the default partition 0 of a stream):
+
+<CodeSnippet language='json'>{`https://www.streamr.com/api/v1/streams/{id}/data/partitions/0/last?count=5`}</CodeSnippet>
+
+The HTTP API covers session management, data input, data output, and managing Streamr resources such as Canvases, Streams, and Dashboards. The endpoints allow you to list, create, read, update and delete the resources, as well as execute resource-specific actions such as start and stop Canvases.
+
+You best way to view all of streams endpoints is in the <a href="https://api-explorer.streamr.com" target="_blank">API explorer</a>.
 
 </section>
-
 <section id="data-signing-and-verification">
 
 ## Data signing and verification
@@ -249,7 +286,7 @@ Every message published to a stream has six fields that uniquely identify this m
 - `publisherId`
 - `msgChainId`
 
-More details about these fields can be found in the [protocol specification](TODO: insert link once merged). All together they form the message ID. They must be signed along with the actual message `content` to resist against replay attacks.
+More details about these fields can be found in the <a href="https://github.com/streamr-dev/streamr-specs" target="_blank">protocol specification</a>. All together they form the message ID. They must be signed along with the actual message `content` to resist against replay attacks.
 
 So the payload to be signed for every message by every publisher is the following:
 
@@ -257,7 +294,7 @@ So the payload to be signed for every message by every publisher is the followin
 payload = streamId + streamPartition + timestamp + sequenceNumber + publisherId + msgChaindId + content
 ```
 
-The signing algorithm follows the convention described [here](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-712.md). The secp256k1 ECDSA algorithm is applied on the keccak256 hash of a string derived from the challenge text:
+The signing algorithm follows the convention described <a href="https://github.com/ethereum/EIPs/blob/master/EIPS/eip-712.md" target="_blank">here</a>. The secp256k1 ECDSA algorithm is applied on the keccak256 hash of a string derived from the challenge text:
 
 ```
 signature = sign(keccak256("\x19Ethereum Signed Message:\\n" + len(payload) + payload)))
@@ -274,14 +311,12 @@ The signature verification is done in three steps:
 Both signature computation and verification are implemented in the Javascript and Java SDKs.
 
 </section>
-
 <section id="end-to-end-encryption">
 
 ## End-to-end encryption
---content--
+***Documentation coming soon***
 
 </section>
-
 <section id="partitioning">
 
 ## Partitioning

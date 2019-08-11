@@ -1,0 +1,85 @@
+/* eslint-disable max-len */
+import moduleDescription from './MovingAverageExp-96.md'
+
+export default {
+    id: 96,
+    name: 'MovingAverageExp',
+    path: 'Time Series: Filtering',
+    help: {
+        params: {},
+        paramNames: [],
+        inputs: {},
+        inputNames: [],
+        outputs: {},
+        outputNames: [],
+        helpText: moduleDescription,
+    },
+    inputs: [
+        {
+            id: 'ep_0tz7ltwYQu-gxygsj2QmaQ',
+            name: 'in',
+            longName: 'MovingAverageExp.in',
+            type: 'Double',
+            connected: false,
+            canConnect: true,
+            export: false,
+            drivingInput: true,
+            canToggleDrivingInput: true,
+            acceptedTypes: [
+                'Double',
+            ],
+            requiresConnection: true,
+            canHaveInitialValue: true,
+            initialValue: null,
+        },
+    ],
+    outputs: [
+        {
+            id: 'ep_1SjWXqy5T3qESuGMegV_rQ',
+            name: 'out',
+            longName: 'MovingAverageExp.out',
+            type: 'Double',
+            connected: false,
+            canConnect: true,
+            export: false,
+            noRepeat: false,
+            canBeNoRepeat: true,
+        },
+    ],
+    params: [
+        {
+            id: 'ep_zdzc7fKcTYKQ4F2Au6UofA',
+            name: 'length',
+            longName: 'MovingAverageExp.length',
+            type: 'Double',
+            connected: false,
+            canConnect: true,
+            export: false,
+            value: 60,
+            drivingInput: false,
+            canToggleDrivingInput: true,
+            acceptedTypes: [
+                'Double',
+            ],
+            requiresConnection: false,
+            defaultValue: 60,
+        },
+        {
+            id: 'ep_Mjnk6FNgQC2oPqR7YykybQ',
+            name: 'minSamples',
+            longName: 'MovingAverageExp.minSamples',
+            type: 'Double',
+            connected: false,
+            canConnect: true,
+            export: false,
+            value: 1,
+            drivingInput: false,
+            canToggleDrivingInput: true,
+            acceptedTypes: [
+                'Double',
+            ],
+            requiresConnection: false,
+            defaultValue: 1,
+        },
+    ],
+}

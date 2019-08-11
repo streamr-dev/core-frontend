@@ -8,7 +8,7 @@ import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import ModuleUI from '$editor/shared/components/ModuleUI'
 import { UiEmitter } from '$editor/shared/components/RunStateLoader'
 
-import { RunStates, getPort, getModuleForPort } from '../state'
+import { RunStates } from '../state'
 
 import Ports from './Ports'
 import ModuleDragger from './ModuleDragger'
@@ -114,20 +114,10 @@ class CanvasModule extends React.PureComponent {
     )
 
     onPortValueChange = (portId, value, oldValue) => {
+        if (value === oldValue) { return }
         // Check if reload is needed after the change
-        const { canvas, api } = this.props
-        const port = getPort(canvas, portId)
-        const portModule = getModuleForPort(canvas, portId)
-
-        api.port.onChange(portId, value, () => {
-            if (!this.unmounted &&
-                port &&
-                (port.updateOnChange || port.type === 'EthereumContract') &&
-                oldValue !== value
-            ) {
-                api.loadNewDefinition(portModule.hash)
-            }
-        })
+        const { api } = this.props
+        api.port.onChange(portId, value)
     }
 
     onHamburgerButtonFocus = (e) => {
@@ -152,6 +142,7 @@ class CanvasModule extends React.PureComponent {
         } = this.props
 
         const { layout } = this.state
+        const { isAdjustable, isEditable } = this.context
 
         const isSelected = module.hash === this.props.selectedModuleHash
 
@@ -169,6 +160,7 @@ class CanvasModule extends React.PureComponent {
                 onFocus={() => api.selectModule({ hash: module.hash })}
                 className={cx(className, styles.CanvasModule, ModuleStyles.ModuleBase, ...moduleSpecificStyles, {
                     [ModuleStyles.isSelected]: isSelected,
+                    [ModuleStyles.disabled]: !isAdjustable, // disable edits while loading
                 })}
                 width={parseInt(layout.width, 10)}
                 height={parseInt(layout.height, 10)}
@@ -180,11 +172,11 @@ class CanvasModule extends React.PureComponent {
                     <Probe group="ModuleHeight" height="auto" />
                     <ModuleHeader
                         className={cx(styles.header, ModuleStyles.dragHandle)}
-                        editable={!isRunning}
+                        editable={isEditable}
                         label={module.displayName || module.name}
                         onLabelChange={this.onChangeModuleName}
                     >
-                        {isRunning && !!module.canRefresh && (
+                        {!!isRunning && !!module.canRefresh && (
                             <ModuleHeaderButton
                                 className={ModuleStyles.dragCancel}
                                 onFocus={this.onFocusOptionsButton}

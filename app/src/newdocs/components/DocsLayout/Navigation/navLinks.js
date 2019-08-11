@@ -2,6 +2,7 @@
 
 import type { NavigationLink } from '../../../flowtype/navigation-types'
 import links from '$shared/../links'
+import { canvasModulesCategorised, toAnchor } from '../../DocsPages/CanvasModules/data'
 
 // navigationLinks Schema:
 // 'rendered title': 'URL Address',
@@ -12,6 +13,7 @@ const navigationLinks: NavigationLink = {
     'Getting Started': links.newdocs.gettingStarted,
     Streams: links.newdocs.streams,
     Canvases: links.newdocs.canvases,
+    'Canvas Modules': links.newdocs.canvasModules,
     Dashboards: links.newdocs.dashboards,
     Products: links.newdocs.products,
     Tutorials: links.newdocs.tutorials,
@@ -51,6 +53,9 @@ export const subNav = {
         'building-integrations': 'Building integrations',
         'ethereum-modules': 'Ethereum modules',
     },
+    canvasModules: Object.keys(canvasModulesCategorised).sort().reduce((o, category) => Object.assign(o, {
+        [toAnchor(category)]: category,
+    }), {}),
     dashboards: {
         'intro-to-dashboards': 'Intro to dashboards',
         'work-with-dashboards-in-core': 'Work with dashboards in Core',
@@ -62,6 +67,7 @@ export const subNav = {
     },
     tutorials: {
         'building-a-simple-pub-sub-system': 'Building a simple pub/sub system',
+        'building-custom-canvas-module': 'Building a custom canvas module',
     },
     dataToken: {},
     core: {

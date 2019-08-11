@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useContext, useRef } from 'react'
 import cx from 'classnames'
 import startCase from 'lodash/startCase'
 
@@ -7,10 +7,12 @@ import { Header, Content, Section } from '$editor/shared/components/Sidebar'
 import TextControl from '$shared/components/TextControl'
 
 import * as CanvasState from '../state'
+import * as RunController from './CanvasController/Run'
 import styles from './ModuleSidebar.pcss'
 import ModuleHelp from './ModuleHelp'
 
 export default function ModuleSidebar({ canvas, selectedModuleHash, setModuleOptions, onClose }) {
+    const { isEditable } = useContext(RunController.Context)
     const onChange = (name) => (_value) => {
         if (selectedModuleHash == null) { return }
         const module = CanvasState.getModule(canvas, selectedModuleHash)
@@ -61,7 +63,6 @@ export default function ModuleSidebar({ canvas, selectedModuleHash, setModuleOpt
     }
 
     const optionsKeys = Object.keys(module.options || {})
-    const isRunning = canvas.state === CanvasState.RunStates.Running
     return (
         <React.Fragment>
             <Header
@@ -89,7 +90,7 @@ export default function ModuleSidebar({ canvas, selectedModuleHash, setModuleOpt
                                                     <option
                                                         key={value}
                                                         value={value}
-                                                        disabled={!!isRunning}
+                                                        disabled={!isEditable}
                                                     >
                                                         {text}
                                                     </option>
@@ -103,12 +104,12 @@ export default function ModuleSidebar({ canvas, selectedModuleHash, setModuleOpt
                                                     checked={option.value}
                                                     type="checkbox"
                                                     onChange={onChangeChecked(name)}
-                                                    disabled={!!isRunning}
+                                                    disabled={!isEditable}
                                                 />
                                             )) || (
                                                 /* Text */
                                                 <TextControl
-                                                    disabled={!!isRunning}
+                                                    disabled={!isEditable}
                                                     id={id}
                                                     onCommit={onChange(name)}
                                                     value={option.value}
@@ -122,8 +123,8 @@ export default function ModuleSidebar({ canvas, selectedModuleHash, setModuleOpt
                         </div>
                     </Section>
                 )}
-                <Section label="About">
-                    <ModuleHelp moduleId={module.id} />
+                <Section label="About" initialIsOpen>
+                    <ModuleHelp module={module} />
                 </Section>
             </Content>
         </React.Fragment>

@@ -2,14 +2,13 @@
 
 import React from 'react'
 import { I18n } from 'react-redux-i18n'
-import { Row, Col } from 'reactstrap'
 import cx from 'classnames'
 
 import type { ResourcePermission } from '$shared/flowtype/resource-key-types'
 import TextInput from '$shared/components/TextInput'
 import Buttons from '$shared/components/Buttons'
 import Dropdown from '$shared/components/Dropdown'
-import { leftColumn, rightColumn } from '$userpages/components/StreamPage/constants'
+import SplitControl from '$userpages/components/SplitControl'
 
 import styles from './keyFieldEditor.pcss'
 
@@ -79,15 +78,14 @@ class KeyFieldEditor extends React.Component<Props, State> {
             showPermissionType,
         } = this.props
         const filled = !!keyName && (createNew || !!keyId)
-        const leftCol = showPermissionType ? leftColumn : { xs: 12 }
 
         return (
             <div className={cx(styles.editor, {
                 [styles.editorWithPermissions]: showPermissionType,
             })}
             >
-                <Row>
-                    <Col {...leftCol}>
+                {showPermissionType && (
+                    <SplitControl>
                         <div className={styles.keyName}>
                             <TextInput
                                 label={I18n.t('userpages.keyFieldEditor.keyName')}
@@ -97,59 +95,64 @@ class KeyFieldEditor extends React.Component<Props, State> {
                                 error={(createNew && !editValue && error) || undefined}
                             />
                         </div>
-                        {(!createNew || editValue) && (
-                            <div className={styles.keyValue}>
-                                <TextInput
-                                    label={I18n.t('userpages.keyFieldEditor.apiKey')}
-                                    value={keyId}
-                                    onChange={this.onValueChange}
-                                    preserveLabelSpace
-                                    readOnly={!editValue}
-                                    error={error || undefined}
-                                />
-                            </div>
-                        )}
-                    </Col>
-                    {showPermissionType && (
-                        <Col {...rightColumn}>
-                            <Dropdown
-                                title=""
-                                onChange={this.onPermissionChange}
-                                selectedItem={permission}
-                                className={styles.permissionDropdown}
-                            >
-                                <Dropdown.Item key="read" value="read">
-                                    Read
-                                </Dropdown.Item>
-                                <Dropdown.Item key="write" value="write">
-                                    Write
-                                </Dropdown.Item>
-                            </Dropdown>
-                        </Col>
-                    )}
-                    <Col>
-                        <Buttons
-                            className={styles.buttons}
-                            actions={{
-                                save: {
-                                    title: I18n.t(`userpages.keyFieldEditor.${createNew ? 'add' : 'save'}`),
-                                    color: 'primary',
-                                    outline: true,
-                                    onClick: this.onSave,
-                                    disabled: !filled || waiting,
-                                    spinner: waiting,
-                                },
-                                cancel: {
-                                    color: 'link',
-                                    className: 'grey-container',
-                                    title: I18n.t('userpages.keyFieldEditor.cancel'),
-                                    outline: true,
-                                    onClick: onCancel,
-                                },
-                            }}
+                        <Dropdown
+                            title=""
+                            onChange={this.onPermissionChange}
+                            selectedItem={permission}
+                            className={styles.permissionDropdown}
+                        >
+                            <Dropdown.Item key="read" value="read">
+                                Read
+                            </Dropdown.Item>
+                            <Dropdown.Item key="write" value="write">
+                                Write
+                            </Dropdown.Item>
+                        </Dropdown>
+                    </SplitControl>
+                )}
+                {!showPermissionType && (
+                    <div className={styles.keyName}>
+                        <TextInput
+                            label={I18n.t('userpages.keyFieldEditor.keyName')}
+                            value={keyName}
+                            onChange={this.onKeyNameChange}
+                            preserveLabelSpace
+                            error={(createNew && !editValue && error) || undefined}
                         />
-                    </Col>
-                </Row>
+                    </div>
+                )}
+                {(!createNew || editValue) && (
+                    <div className={styles.keyValue}>
+                        <TextInput
+                            label={I18n.t('userpages.keyFieldEditor.apiKey')}
+                            value={keyId}
+                            onChange={this.onValueChange}
+                            preserveLabelSpace
+                            readOnly={!editValue}
+                            error={error || undefined}
+                        />
+                    </div>
+                )}
+                <Buttons
+                    className={styles.buttons}
+                    actions={{
+                        save: {
+                            title: I18n.t(`userpages.keyFieldEditor.${createNew ? 'add' : 'save'}`),
+                            color: 'primary',
+                            outline: true,
+                            onClick: this.onSave,
+                            disabled: !filled || waiting,
+                            spinner: waiting,
+                        },
+                        cancel: {
+                            color: 'link',
+                            className: 'grey-container',
+                            title: I18n.t('userpages.keyFieldEditor.cancel'),
+                            outline: true,
+                            onClick: onCancel,
+                        },
+                    }}
+                />
             </div>
         )
     }

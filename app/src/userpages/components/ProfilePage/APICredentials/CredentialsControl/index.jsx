@@ -2,12 +2,11 @@
 
 import React, { Component, Fragment } from 'react'
 import { I18n, Translate } from 'react-redux-i18n'
-import { Row, Col } from 'reactstrap'
 import cx from 'classnames'
 
 import KeyField from '$userpages/components/KeyField'
 import AddKeyField from '$userpages/components/KeyField/AddKeyField'
-
+import SplitControl from '$userpages/components/SplitControl'
 import type { ResourceKeyId, ResourceKey, ResourcePermission } from '$shared/flowtype/resource-key-types'
 import type { StreamId } from '$shared/flowtype/stream-types'
 
@@ -52,17 +51,15 @@ export default class CredentialsControl extends Component<Props> {
                     {this.props.keys.map((key: ResourceKey, index: number) => (
                         <Fragment key={key.id}>
                             {!index && (
-                                <Row>
-                                    <Col md={12} lg={11} />
-                                    <Col md={12} lg={1}>
-                                        {showPermissionType && (
-                                            <Translate
-                                                value="userpages.streams.edit.configure.permission"
-                                                className={styles.permissionColHeading}
-                                            />
-                                        )}
-                                    </Col>
-                                </Row>
+                                <SplitControl>
+                                    <div />
+                                    {showPermissionType && (
+                                        <Translate
+                                            value="userpages.streams.edit.configure.permission"
+                                            className={styles.permissionColHeading}
+                                        />
+                                    )}
+                                </SplitControl>
                             )}
                             <KeyField
                                 className={cx(styles.singleKey, {

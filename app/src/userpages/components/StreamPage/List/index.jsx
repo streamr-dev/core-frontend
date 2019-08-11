@@ -48,6 +48,7 @@ import DocsShortcuts from '$userpages/components/DocsShortcuts'
 import breakpoints from '$app/scripts/breakpoints'
 import Notification from '$shared/utils/Notification'
 import LoadMore from '$mp/components/LoadMore'
+import ListContainer from '$shared/components/Container/List'
 
 import styles from './streamsList.pcss'
 
@@ -326,7 +327,7 @@ class StreamList extends Component<Props, State> {
                         onClose={this.onCloseDialog}
                     />
                 )}
-                <div className={cx('container', styles.streamListTabletContainer)}>
+                <ListContainer className={styles.streamListTabletContainer}>
                     {!fetching && streams && streams.length <= 0 && (
                         <NoStreamsView
                             hasFilter={!!filter && (!!filter.search || !!filter.key)}
@@ -490,7 +491,7 @@ class StreamList extends Component<Props, State> {
                             </MediaQuery>
                         </Fragment>
                     )}
-                </div>
+                </ListContainer>
                 <DocsShortcuts />
             </Layout>
         )

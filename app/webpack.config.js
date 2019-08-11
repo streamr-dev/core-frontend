@@ -53,7 +53,7 @@ module.exports = {
         strictExportPresence: true,
         rules: [
             {
-                test: /\.mdx?$/,
+                test: /\.mdx$/,
                 use: [
                     {
                         loader: 'babel-loader',
@@ -86,6 +86,10 @@ module.exports = {
                     cacheDirectory: !isProduction(),
                     compact: isProduction(),
                 },
+            },
+            {
+                test: /\.md$/,
+                loader: 'raw-loader',
             },
             // Images are put to <BASE_URL>/images
             {
@@ -171,6 +175,11 @@ module.exports = {
             SENTRY_ENVIRONMENT: process.env.SENTRY_ENVIRONMENT || '',
             SENTRY_DSN: process.env.SENTRY_DSN || '',
             VERSION: process.env.VERSION || '',
+            TRAVIS_TAG: process.env.TRAVIS_TAG || '',
+            TRAVIS_PULL_REQUEST_BRANCH: process.env.TRAVIS_PULL_REQUEST_BRANCH || '',
+            TRAVIS_BRANCH: process.env.TRAVIS_BRANCH || '',
+            TRAVIS_COMMIT: process.env.TRAVIS_COMMIT || '',
+            TRAVIS_PULL_REQUEST_SHA: process.env.TRAVIS_PULL_REQUEST_SHA || '',
         }),
         new webpack.EnvironmentPlugin(loadedDotenv),
         ...(analyze ? [

@@ -1,0 +1,39 @@
+.inner {
+  position: relative;
+  z-index: 1;
+}
+
+.framed .inner {
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  font-size: 16px;
+  min-height: 100vh;
+}
+
+:global(.page-secondary) .inner {
+  background-color: #EFEFEF;
+}
+
+:global(.container) {
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+@media (--sm-down) {
+  .desktopNav {
+    display: none;
+  }
+}
+
+@media (--md-up) {
+  .mobileNav {
+    display: none;
+  }
+}
+
+@media (--lg-up) {
+  .hideNavOnDesktop {
+    display: none;
+  }
+}

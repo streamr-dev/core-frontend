@@ -2,7 +2,7 @@ import React, { Component, useContext } from 'react'
 import { withRouter } from 'react-router-dom'
 import { Helmet } from 'react-helmet'
 
-import Layout from '$mp/components/Layout'
+import Layout from '$shared/components/Layout'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import LoadingIndicator from '$userpages/components/LoadingIndicator'
 import ErrorComponentView from '$shared/components/ErrorComponentView'

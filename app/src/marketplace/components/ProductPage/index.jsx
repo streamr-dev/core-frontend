@@ -69,7 +69,7 @@ class ProductPage extends Component<Props> {
         return !!product && (
             <div className={classNames(styles.productPage, !!showToolbar && styles.withToolbar)}>
                 {showToolbar && (
-                    <Toolbar status={toolbarStatus} actions={toolbarActions} />
+                    <Toolbar left={toolbarStatus} actions={toolbarActions} />
                 )}
                 <Hero
                     product={product}

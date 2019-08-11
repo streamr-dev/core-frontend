@@ -3,11 +3,21 @@
   padding: 2.5em 0;
 }
 
-@media (--md-down) {
-  .heroContainer {
-    width: 100%;
-  }
+.container {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-row-gap: 1.75rem;
+}
 
+@media (--md-up) {
+  .container {
+    grid-template-columns: 380px 1fr;
+    grid-row-gap: 0;
+    grid-column-gap: 3rem;
+  }
+}
+
+@media (--md-down) {
   .heroRow {
     margin-right: 0;
     margin-left: 0;
@@ -22,5 +32,11 @@
 @media (--lg-up) {
   .hero {
     padding: 4em 0;
+  }
+}
+
+@media (--xl) {
+  .container {
+    grid-template-columns: 480px 1fr;
   }
 }

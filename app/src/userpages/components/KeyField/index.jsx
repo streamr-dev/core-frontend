@@ -4,14 +4,13 @@ import React from 'react'
 import copy from 'copy-to-clipboard'
 import cx from 'classnames'
 import { I18n, Translate } from 'react-redux-i18n'
-import { Row, Col } from 'reactstrap'
 
 import type { ResourcePermission } from '$shared/flowtype/resource-key-types'
 import TextInput from '$shared/components/TextInput'
 import Meatball from '$shared/components/Meatball'
 import DropdownActions from '$shared/components/DropdownActions'
 import Dropdown from '$shared/components/Dropdown'
-
+import SplitControl from '$userpages/components/SplitControl'
 import KeyFieldEditor from './KeyFieldEditor'
 import styles from './keyField.pcss'
 
@@ -146,7 +145,7 @@ class KeyField extends React.Component<Props, State> {
         }
     }
 
-    render = () => {
+    renderInput = () => {
         const {
             hideValue,
             keyName,
@@ -155,54 +154,56 @@ class KeyField extends React.Component<Props, State> {
             allowDelete,
             allowEdit,
             disableDelete,
-            showPermissionType,
         } = this.props
-        const {
-            waiting,
-            hidden,
-            editing,
-            menuOpen,
-            error,
-            permission,
-        } = this.state
+        const { hidden, menuOpen } = this.state
+
+        return (
+            <div
+                className={cx(styles.container, className, {
+                    [styles.withMenu]: menuOpen,
+                })}
+            >
+                <TextInput label={keyName} value={value} readOnly type={hidden ? 'password' : 'text'} />
+                <div className={styles.actions}>
+                    <DropdownActions
+                        onMenuToggle={this.onMenuToggle}
+                        title={<Meatball alt={I18n.t('userpages.keyField.options')} blue />}
+                        noCaret
+                    >
+                        {!!hideValue && (
+                            <DropdownActions.Item onClick={this.toggleHidden}>
+                                <Translate value={`userpages.keyField.${hidden ? 'reveal' : 'conceal'}`} />
+                            </DropdownActions.Item>
+                        )}
+                        <DropdownActions.Item onClick={this.onCopy}>
+                            <Translate value="userpages.keyField.copy" />
+                        </DropdownActions.Item>
+                        {!!allowEdit && (
+                            <DropdownActions.Item onClick={this.onEdit}>
+                                <Translate value="userpages.keyField.edit" />
+                            </DropdownActions.Item>
+                        )}
+                        {!!allowDelete && (
+                            <DropdownActions.Item onClick={this.onDelete} disabled={disableDelete}>
+                                <Translate value="userpages.keyField.delete" />
+                            </DropdownActions.Item>
+                        )}
+                    </DropdownActions>
+                </div>
+            </div>
+        )
+    }
+
+    render = () => {
+        const { keyName, value, showPermissionType } = this.props
+        const { waiting, editing, error, permission } = this.state
 
         return !editing ? (
-            <Row>
-                <Col md={12} lg={11}>
-                    <div
-                        className={cx(styles.container, className, {
-                            [styles.withMenu]: menuOpen,
-                        })}
-                    >
-                        <TextInput label={keyName} value={value} readOnly type={hidden ? 'password' : 'text'} />
-                        <div className={styles.actions}>
-                            <DropdownActions
-                                onMenuToggle={this.onMenuToggle}
-                                title={<Meatball alt={I18n.t('userpages.keyField.options')} blue />}
-                                noCaret
-                            >
-                                {!!hideValue && (
-                                    <DropdownActions.Item onClick={this.toggleHidden}>
-                                        <Translate value={`userpages.keyField.${hidden ? 'reveal' : 'conceal'}`} />
-                                    </DropdownActions.Item>
-                                )}
-                                <DropdownActions.Item onClick={this.onCopy}>
-                                    <Translate value="userpages.keyField.copy" />
-                                </DropdownActions.Item>
-                                {!!allowEdit && (
-                                    <DropdownActions.Item onClick={this.onEdit}>
-                                        <Translate value="userpages.keyField.edit" />
-                                    </DropdownActions.Item>
-                                )}
-                                {!!allowDelete && (
-                                    <DropdownActions.Item onClick={this.onDelete} disabled={disableDelete}>
-                                        <Translate value="userpages.keyField.delete" />
-                                    </DropdownActions.Item>
-                                )}
-                            </DropdownActions>
-                        </div>
-                    </div>
-                    {showPermissionType && (
+            <React.Fragment>
+                {!showPermissionType && this.renderInput()}
+                {showPermissionType && (
+                    <SplitControl>
+                        {this.renderInput()}
                         <div className={styles.permissionDropdownContainer}>
                             <Dropdown
                                 title=""
@@ -218,10 +219,9 @@ class KeyField extends React.Component<Props, State> {
                                 </Dropdown.Item>
                             </Dropdown>
                         </div>
-                    )}
-                </Col>
-                <Col md={12} lg={1} className={styles.offsetColOverride} />
-            </Row>
+                    </SplitControl>
+                )}
+            </React.Fragment>
         ) : (
             <KeyFieldEditor
                 keyName={keyName}

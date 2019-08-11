@@ -1,7 +1,8 @@
 // @flow
 
 import React from 'react'
-import { RunStates } from '../../../state'
+import cx from 'classnames'
+import * as State from '../../../state'
 import Color from './Color'
 import Map from './Map'
 import Select from './Select'
@@ -10,6 +11,7 @@ import Text from './Text'
 import styles from './value.pcss'
 
 type Props = {
+    disabled: boolean,
     canvas: any,
     port: any,
     onChange: (any) => void,
@@ -36,25 +38,28 @@ export type CommonProps = {
     disabled: boolean,
     onChange: (any) => void,
     value: any,
+    placeholder: any,
 }
 
-const Value = ({ canvas, port, onChange }: Props) => {
-    const isRunning = canvas.state === RunStates.Running
+const Value = ({ canvas, disabled, port, onChange }: Props) => {
     // Enable non-running input whether connected or not if port.canHaveInitialValue
-    const disabled = isRunning || (!port.canHaveInitialValue && port.connected)
+    const editDisabled = disabled || State.isPortValueEditDisabled(canvas, port.id)
     const type = getPortType(port)
-    const isParam = 'defaultValue' in port
-
-    // TODO: Ignore when editing.
-    const value = (isParam ? (port.value || port.defaultValue) : port.initialValue) || ''
+    const value = State.getPortValue(canvas, port.id)
+    const placeholder = State.getPortPlaceholder(canvas, port.id)
     const commonProps: CommonProps = {
-        disabled,
+        disabled: editDisabled,
         onChange,
         value,
+        placeholder,
     }
 
     return (
-        <div className={styles.root}>
+        <div
+            className={cx(styles.root, {
+                [styles.disabled]: disabled,
+            })}
+        >
             {type === 'map' && (
                 <Map
                     {...commonProps}
@@ -75,7 +80,6 @@ const Value = ({ canvas, port, onChange }: Props) => {
             {type === 'text' && (
                 <Text
                     {...commonProps}
-                    placeholder={port.displayName || port.name}
                 />
             )}
             {type === 'stream' && (

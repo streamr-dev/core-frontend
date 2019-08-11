@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Col, Row, Button } from 'reactstrap'
+import { Button } from 'reactstrap'
 import copy from 'copy-to-clipboard'
 import { I18n, Translate } from 'react-redux-i18n'
 
@@ -13,6 +13,7 @@ import TextInput from '$shared/components/TextInput'
 import { updateEditStreamField } from '$userpages/modules/userPageStreams/actions'
 import { selectEditedStream } from '$userpages/modules/userPageStreams/selectors'
 import { NotificationIcon } from '$shared/utils/constants'
+import SplitControl from '$userpages/components/SplitControl'
 
 import styles from './infoView.pcss'
 
@@ -100,67 +101,52 @@ export class InfoView extends Component<Props, State> {
 
         return (
             <div className={styles.infoView}>
-                <Row>
-                    <Col md={12}>
-                        <div className={styles.textInput}>
-                            <TextInput
-                                label={I18n.t('userpages.streams.edit.details.name')}
-                                type="text"
-                                name="name"
-                                value={(stream && stream.name) || ''}
-                                onChange={this.onNameChange}
-                                preserveLabelSpace
-                                disabled={disabled}
-                            />
-                        </div>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col md={12}>
-                        <div className={styles.textInput}>
-                            <TextInput
-                                label={I18n.t('userpages.streams.edit.details.description')}
-                                type="text"
-                                name="description"
-                                value={(stream && stream.description) || ''}
-                                onChange={this.onDescriptionChange}
-                                preserveLabelSpace
-                                disabled={disabled}
-                            />
-                        </div>
-                    </Col>
-                </Row>
+                <div className={styles.textInput}>
+                    <TextInput
+                        label={I18n.t('userpages.streams.edit.details.name')}
+                        type="text"
+                        name="name"
+                        value={(stream && stream.name) || ''}
+                        onChange={this.onNameChange}
+                        preserveLabelSpace
+                        disabled={disabled}
+                    />
+                </div>
+                <div className={styles.textInput}>
+                    <TextInput
+                        label={I18n.t('userpages.streams.edit.details.description')}
+                        type="text"
+                        name="description"
+                        value={(stream && stream.description) || ''}
+                        onChange={this.onDescriptionChange}
+                        preserveLabelSpace
+                        disabled={disabled}
+                    />
+                </div>
                 {stream && stream.id &&
-                    <Row>
-                        <Col md={12} lg={11}>
-                            <div className={styles.textInput}>
-                                <TextInput
-                                    label={I18n.t('userpages.streams.edit.details.streamId')}
-                                    type="text"
-                                    name="id"
-                                    value={(stream && stream.id) || ''}
-                                    preserveLabelSpace
-                                    readOnly
-                                    disabled={disabled}
-                                />
-                            </div>
-                        </Col>
-                        <Col
-                            md={12}
-                            lg={1}
+                    <SplitControl>
+                        <div className={styles.textInput}>
+                            <TextInput
+                                label={I18n.t('userpages.streams.edit.details.streamId')}
+                                type="text"
+                                name="id"
+                                value={(stream && stream.id) || ''}
+                                preserveLabelSpace
+                                readOnly
+                                disabled={disabled}
+                            />
+                        </div>
+                        <Button
+                            color="userpages"
+                            className={styles.copyStreamIdButton}
+                            onClick={() => this.copyStreamTap(stream.id)}
                         >
-                            <Button
-                                color="userpages"
-                                className={styles.copyStreamIdButton}
-                                onClick={() => this.copyStreamTap(stream.id)}
-                            >
-                                {idCopied ?
-                                    <Translate value="userpages.streams.edit.details.copied" /> :
-                                    <Translate value="userpages.streams.edit.details.copyStreamId" />
-                                }
-                            </Button>
-                        </Col>
-                    </Row>
+                            {idCopied ?
+                                <Translate value="userpages.streams.edit.details.copied" /> :
+                                <Translate value="userpages.streams.edit.details.copyStreamId" />
+                            }
+                        </Button>
+                    </SplitControl>
                 }
             </div>
         )

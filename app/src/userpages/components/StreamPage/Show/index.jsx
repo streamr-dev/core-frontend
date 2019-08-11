@@ -4,7 +4,6 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { I18n } from 'react-redux-i18n'
 import { push } from 'connected-react-router'
-import cx from 'classnames'
 import { withRouter } from 'react-router-dom'
 import MediaQuery from 'react-responsive'
 
@@ -28,13 +27,14 @@ import { getMyResourceKeys } from '$shared/modules/resourceKey/actions'
 import { selectEditedStream, selectPermissions } from '$userpages/modules/userPageStreams/selectors'
 import { selectUserData } from '$shared/modules/user/selectors'
 import { selectAuthApiKeyId } from '$shared/modules/resourceKey/selectors'
+import DetailsContainer from '$shared/components/Container/Details'
 import TOCPage from '$userpages/components/TOCPage'
 import Toolbar from '$shared/components/Toolbar'
 import routes from '$routes'
 import links from '$shared/../links'
 import breakpoints from '$app/scripts/breakpoints'
 
-import Layout from '../../Layout'
+import CoreLayout from '$shared/components/Layout/Core'
 import InfoView from './InfoView'
 import KeyView from './KeyView'
 import ConfigureView from './ConfigureView'
@@ -177,107 +177,89 @@ export class StreamShowView extends Component<Props, State> {
         const hasWritePermission = (permissions && permissions.some((p) => p === 'write')) || false
 
         return (
-            <Layout noHeader noFooter>
-                <div className={styles.streamShowView}>
+            <CoreLayout
+                hideNavOnDesktop
+                navComponent={(
                     <MediaQuery minWidth={lg.min}>
-                        <ConfigureAnchorOffset value={-80} />
-                        <Toolbar
-                            altMobileLayout
-                            actions={{
-                                cancel: {
-                                    title: I18n.t('userpages.profilePage.toolbar.cancel'),
-                                    color: 'link',
-                                    outline: true,
-                                    onClick: () => {
-                                        cancel()
+                        {(isDesktop) => (
+                            <Toolbar
+                                altMobileLayout
+                                actions={{
+                                    cancel: {
+                                        title: I18n.t('userpages.profilePage.toolbar.cancel'),
+                                        color: 'link',
+                                        outline: true,
+                                        onClick: () => {
+                                            cancel()
+                                        },
                                     },
-                                },
-                                saveChanges: {
-                                    title: I18n.t('userpages.profilePage.toolbar.saveAndExit'),
-                                    color: 'primary',
-                                    spinner: this.state.saving,
-                                    onClick: () => {
-                                        if (editedStream) {
-                                            this.onSave(editedStream)
-                                        }
+                                    saveChanges: {
+                                        title: isDesktop ?
+                                            I18n.t('userpages.profilePage.toolbar.saveAndExit') :
+                                            I18n.t('userpages.profilePage.toolbar.done'),
+                                        color: 'primary',
+                                        spinner: this.state.saving,
+                                        onClick: () => {
+                                            if (editedStream) {
+                                                this.onSave(editedStream)
+                                            }
+                                        },
+                                        disabled: !hasWritePermission,
                                     },
-                                    disabled: !hasWritePermission,
-                                },
-                            }}
-                        />
+                                }}
+                            />
+                        )}
                     </MediaQuery>
-                    <MediaQuery maxWidth={lg.min}>
-                        <Toolbar
-                            altMobileLayout
-                            actions={{
-                                cancel: {
-                                    title: I18n.t('userpages.profilePage.toolbar.cancel'),
-                                    color: 'link',
-                                    outline: true,
-                                    onClick: () => {
-                                        cancel()
-                                    },
-                                },
-                                saveChanges: {
-                                    title: I18n.t('userpages.profilePage.toolbar.done'),
-                                    color: 'primary',
-                                    spinner: this.state.saving,
-                                    onClick: () => {
-                                        if (editedStream) {
-                                            this.onSave(editedStream)
-                                        }
-                                    },
-                                    disabled: !hasWritePermission,
-                                },
-                            }}
-                        />
-                    </MediaQuery>
-                    <div className={cx('container', styles.containerOverrides)}>
-                        <TOCPage title="Set up your Stream">
-                            <TOCPage.Section
-                                id="details"
-                                title="Details"
-                            >
-                                <InfoView disabled={!hasWritePermission} />
-                            </TOCPage.Section>
-                            <TOCPage.Section
-                                id="configure"
-                                title="Configure"
-                                customStyled
-                            >
-                                <ConfigureView disabled={!hasWritePermission} />
-                            </TOCPage.Section>
-                            <TOCPage.Section
-                                id="preview"
-                                title="Preview"
-                            >
-                                <PreviewView
-                                    stream={editedStream}
-                                    currentUser={currentUser}
-                                    authApiKeyId={authApiKeyId}
-                                />
-                            </TOCPage.Section>
-                            <TOCPage.Section
-                                id="api-access"
-                                title="API Access"
-                                customStyled
-                            >
-                                <KeyView disabled={!hasWritePermission} />
-                            </TOCPage.Section>
-                            <TOCPage.Section
-                                id="historical-data"
-                                title="Historical Data"
-                                customStyled
-                            >
-                                <HistoryView
-                                    streamId={editedStream && editedStream.id}
-                                    disabled={!hasWritePermission}
-                                />
-                            </TOCPage.Section>
-                        </TOCPage>
-                    </div>
-                </div>
-            </Layout>
+                )}
+            >
+                <MediaQuery minWidth={lg.min}>
+                    <ConfigureAnchorOffset value={-80} />
+                </MediaQuery>
+                <DetailsContainer className={styles.streamShowView}>
+                    <TOCPage title="Set up your Stream">
+                        <TOCPage.Section
+                            id="details"
+                            title="Details"
+                        >
+                            <InfoView disabled={!hasWritePermission} />
+                        </TOCPage.Section>
+                        <TOCPage.Section
+                            id="configure"
+                            title="Configure"
+                            customStyled
+                        >
+                            <ConfigureView disabled={!hasWritePermission} />
+                        </TOCPage.Section>
+                        <TOCPage.Section
+                            id="preview"
+                            title="Preview"
+                        >
+                            <PreviewView
+                                stream={editedStream}
+                                currentUser={currentUser}
+                                authApiKeyId={authApiKeyId}
+                            />
+                        </TOCPage.Section>
+                        <TOCPage.Section
+                            id="api-access"
+                            title="API Access"
+                            customStyled
+                        >
+                            <KeyView disabled={!hasWritePermission} />
+                        </TOCPage.Section>
+                        <TOCPage.Section
+                            id="historical-data"
+                            title="Historical Data"
+                            customStyled
+                        >
+                            <HistoryView
+                                streamId={editedStream && editedStream.id}
+                                disabled={!hasWritePermission}
+                            />
+                        </TOCPage.Section>
+                    </TOCPage>
+                </DetailsContainer>
+            </CoreLayout>
         )
     }
 }
