@@ -1,12 +1,12 @@
 import React, { useRef, useState, useCallback, useEffect } from 'react'
 import cx from 'classnames'
-import styles from './Zoom.pcss'
+import styles from './Camera.pcss'
 
 function clamp(value, min, max) {
     return Math.max(min, Math.min(max, value))
 }
 
-export default function Zoom({ className, children }) {
+export default function Camera({ className, children }) {
     const elRef = useRef()
     const [{
         x,
