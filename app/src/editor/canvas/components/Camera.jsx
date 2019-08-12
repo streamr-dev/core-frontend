@@ -73,7 +73,7 @@ function useCameraApi() {
     }), [x, y, xCenter, yCenter, scale, updateScale])
 }
 
-const CameraContext = React.createContext({})
+export const CameraContext = React.createContext({})
 
 export function useCameraContext() {
     return useContext(CameraContext)
