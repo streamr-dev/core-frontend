@@ -101,6 +101,24 @@ msgstr "Enter ETH address"
 msgid "editProductPage##setPrice##fixPrice"
 msgstr "Fix price in fiat for protection against shifts in the DATA price"
 
+msgid "editProductPage##navigation##name"
+msgstr "Name"
+
+msgid "editProductPage##navigation##coverImage"
+msgstr "Cover image"
+
+msgid "editProductPage##navigation##description"
+msgstr "Description"
+
+msgid "editProductPage##navigation##streams"
+msgstr "Streams"
+
+msgid "editProductPage##navigation##price"
+msgstr "Set price"
+
+msgid "editProductPage##navigation##details"
+msgstr "Details"
+
 msgid "error##general"
 msgstr "Oops. Something has broken down here."
 

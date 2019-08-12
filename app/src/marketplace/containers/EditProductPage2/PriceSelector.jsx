@@ -5,6 +5,7 @@ import BN from 'bignumber.js'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { Translate } from 'react-redux-i18n'
+import ScrollableAnchor from 'react-scrollable-anchor'
 
 import useProduct from '../ProductController/useProduct'
 
@@ -63,54 +64,56 @@ const PriceSelector = () => {
     }, [updatePriceCurrency])
 
     return (
-        <div className={cx(styles.root, styles.PriceSelector)}>
-            <Translate
-                tag="h1"
-                value="editProductPage.setPrice.title"
-            />
-            <RadioButtonGroup
-                name="productPriceType"
-                options={['Paid', 'Free']}
-                selectedOption={!isPaid ? 'Free' : 'Paid'}
-                onChange={onPriceTypeChange}
-            />
-            <div className={cx(styles.inner, {
-                [styles.disabled]: !isPaid,
-            })}
-            >
-                <SetPrice
-                    className={styles.priceSelector}
-                    disabled={!isPaid}
-                    price={price}
-                    onPriceChange={setPrice}
-                    currency={currency}
-                    onCurrencyChange={setCurrency}
-                    timeUnit={timeUnit}
-                    onTimeUnitChange={setTimeUnit}
-                    dataPerUsd={dataPerUsd}
+        <ScrollableAnchor id="price">
+            <div className={cx(styles.root, styles.PriceSelector)}>
+                <Translate
+                    tag="h1"
+                    value="editProductPage.setPrice.title"
                 />
-                {product.type !== 'COMMUNITY' && (
-                    <BeneficiaryAddress
-                        className={styles.beneficiaryAddress}
-                        address={product.beneficiaryAddress}
-                        onChange={updateBeneficiaryAddress}
+                <RadioButtonGroup
+                    name="productPriceType"
+                    options={['Paid', 'Free']}
+                    selectedOption={!isPaid ? 'Free' : 'Paid'}
+                    onChange={onPriceTypeChange}
+                />
+                <div className={cx(styles.inner, {
+                    [styles.disabled]: !isPaid,
+                })}
+                >
+                    <SetPrice
+                        className={styles.priceSelector}
                         disabled={!isPaid}
+                        price={price}
+                        onPriceChange={setPrice}
+                        currency={currency}
+                        onCurrencyChange={setCurrency}
+                        timeUnit={timeUnit}
+                        onTimeUnitChange={setTimeUnit}
+                        dataPerUsd={dataPerUsd}
                     />
-                )}
-                <div className={styles.fixPrice}>
-                    <label htmlFor="fixPrice">
-                        <Translate value="editProductPage.setPrice.fixPrice" />
-                    </label>
-                    <Toggle
-                        id="fixPrice"
-                        className={styles.toggle}
-                        value={fixInFiat}
-                        onChange={onFixPriceChange}
-                        disabled={!isPaid}
-                    />
+                    {product.type !== 'COMMUNITY' && (
+                        <BeneficiaryAddress
+                            className={styles.beneficiaryAddress}
+                            address={product.beneficiaryAddress}
+                            onChange={updateBeneficiaryAddress}
+                            disabled={!isPaid}
+                        />
+                    )}
+                    <div className={styles.fixPrice}>
+                        <label htmlFor="fixPrice">
+                            <Translate value="editProductPage.setPrice.fixPrice" />
+                        </label>
+                        <Toggle
+                            id="fixPrice"
+                            className={styles.toggle}
+                            value={fixInFiat}
+                            onChange={onFixPriceChange}
+                            disabled={!isPaid}
+                        />
+                    </div>
                 </div>
             </div>
-        </div>
+        </ScrollableAnchor>
     )
 }
 

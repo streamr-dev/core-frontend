@@ -31,9 +31,9 @@ const MarkdownEditor = ({ value, placeholder, onChange, className }: Props) => {
     }, [text])
 
     return (
-        <div className={styles.root}>
+        <div className={cx(styles.root, className)}>
             <textarea
-                className={cx(styles.input, className)}
+                className={styles.input}
                 type="text"
                 placeholder={placeholder}
                 value={text}

@@ -4,19 +4,20 @@ import React from 'react'
 import classNames from 'classnames'
 import uniq from 'lodash/uniq'
 import sortBy from 'lodash/sortBy'
-import { Container, Input, Button } from 'reactstrap'
+import { Input, Button } from 'reactstrap'
 import { Translate, I18n } from 'react-redux-i18n'
 
 import StreamListing from '../../ProductPage/StreamListing'
 import DropdownActions from '$shared/components/DropdownActions'
 import SvgIcon from '$shared/components/SvgIcon'
+import ProductContainer from '$shared/components/Container/Product'
 import links from '../../../../links'
 
 import type { Stream, StreamList, StreamIdList, StreamId } from '$shared/flowtype/stream-types'
 import type { PropertySetter } from '$shared/flowtype/common-types'
 import type { Product } from '../../../flowtype/product-types'
 
-import styles from './streamSelector.pcss'
+import styles from './productPageStreamSelector.pcss'
 
 export type StateProps = {
     product: ?Product,
@@ -195,139 +196,135 @@ export class StreamSelector extends React.Component<Props, State> {
 
         if (!isEditing) {
             return (
-                <div className={className}>
-                    <Container>
-                        <div className={styles.root}>
-                            <StreamListing {...this.props} streams={availableStreams.filter(({ id }) => nextStreams.has(id))} />
-                            <div className={styles.footer}>
-                                <Button
-                                    className={styles.editButton}
-                                    onClick={this.onStartEdit}
-                                >
-                                    <Translate value="streamSelector.edit" />
-                                </Button>
-                            </div>
-                        </div>
-                    </Container>
-                </div>
-            )
-        }
-        return (
-            <div className={className}>
-                <Container>
+                <ProductContainer className={className}>
                     <div className={styles.root}>
-                        {!!fetchingStreams && <Translate value="streamSelector.loading" />}
-                        <div className={styles.inputContainer}>
-                            <SvgIcon name="search" className={styles.SearchIcon} />
-                            <Input
-                                className={styles.input}
-                                onChange={this.onChange}
-                                value={this.state.search}
-                                placeholder={I18n.t('streamSelector.typeToSearch')}
-                            />
-                            <DropdownActions
-                                className={classNames(styles.sortDropdown, styles.dropdown)}
-                                title={
-                                    <span className={styles.sortDropdownTitle}>
-                                        <Translate value="streamSelector.sort" />
-                                        &nbsp;
-                                        {sort}
-                                    </span>
-                                }
-                            >
-                                <DropdownActions.Item onClick={() => this.onChangeSort(SORT_BY_NAME)}>
-                                    <Translate value="streamSelector.sortByName" />
-                                </DropdownActions.Item>
-                                <DropdownActions.Item onClick={() => this.onChangeSort(SORT_BY_RECENT)}>
-                                    <Translate value="streamSelector.sortByRecent" />
-                                </DropdownActions.Item>
-                                <DropdownActions.Item onClick={() => this.onChangeSort(SORT_BY_ADDED)}>
-                                    <Translate value="streamSelector.sortByAdded" />
-                                </DropdownActions.Item>
-                            </DropdownActions>
-                        </div>
-                        <div className={styles.streams}>
-                            {!availableStreams.length && (
-                                <div className={styles.noAvailableStreams}>
-                                    <p><Translate value="streamSelector.noStreams" /></p>
-                                    <a href={links.userpages.streamCreate} className={styles.streamCreateButton}>
-                                        <Translate value="streamSelector.create" />
-                                    </a>
-                                </div>
-                            )}
-                            {sortedStreams.map((stream: Stream) => (
-                                <div
-                                    key={stream.id}
-                                    className={classNames(styles.stream, {
-                                        [styles.added]: nextStreams.has(stream.id),
-                                        [styles.selected]: selectedStreams.has(stream.id),
-                                    })}
-                                >
-                                    {nextStreams.has(stream.id) && (
-                                        <a
-                                            className={styles.removeButton}
-                                            href="#"
-                                            title={I18n.t('streamSelector.remove')}
-                                            onClick={(event: SyntheticInputEvent<EventTarget>) => {
-                                                event.preventDefault()
-                                                event.stopPropagation()
-                                                this.onRemove(stream.id)
-                                            }}
-                                        >
-                                            <RemoveIcon />
-                                        </a>
-                                    )}
-                                    <button
-                                        type="button"
-                                        className={styles.addButton}
-                                        onClick={() => {
-                                            if (nextStreams.has(stream.id)) {
-                                                return
-                                            }
-                                            this.onToggle(stream.id)
-                                        }}
-                                    >
-                                        {stream.name}
-                                    </button>
-                                </div>
-                            ))}
-                        </div>
+                        <StreamListing {...this.props} streams={availableStreams.filter(({ id }) => nextStreams.has(id))} />
                         <div className={styles.footer}>
-                            <div className={styles.selectedCount}>
-                                {selectedStreams.size !== 1 ?
-                                    <Translate value="streamSelector.selectedStreams" streamCount={selectedStreams.size} /> :
-                                    <Translate value="streamSelector.selectedStream" streamCount={selectedStreams.size} />
-                                }
-                            </div>
-                            <Button color="link" onClick={() => this.onCancel()}>
-                                <Translate value="modal.common.cancel" />
-                            </Button>
                             <Button
-                                onClick={() => {
-                                    const toSelect = matchingStreams
-                                        .map((s) => s.id)
-                                        .filter((id) => !nextStreams.has(id))
-
-                                    if (allVisibleStreamsSelected) {
-                                        this.onSelectNone(toSelect)
-                                    } else {
-                                        this.onSelectAll(toSelect)
-                                    }
-                                }}
-                                disabled={allVisibleStreamsSelected && matchingNextStreams.size === matchingStreams.length}
+                                className={styles.editButton}
+                                onClick={this.onStartEdit}
                             >
-                                {!allVisibleStreamsSelected
-                                    ? <Translate value="streamSelector.selectAll" />
-                                    : <Translate value="streamSelector.selectNone" />
-                                }
-                            </Button>
-                            <Button onClick={() => this.onAdd()}>
-                                <Translate value="streamSelector.add" />
+                                <Translate value="streamSelector.edit" />
                             </Button>
                         </div>
                     </div>
-                </Container>
-            </div>
+                </ProductContainer>
+            )
+        }
+        return (
+            <ProductContainer className={className}>
+                <div className={styles.root}>
+                    {!!fetchingStreams && <Translate value="streamSelector.loading" />}
+                    <div className={styles.inputContainer}>
+                        <SvgIcon name="search" className={styles.SearchIcon} />
+                        <Input
+                            className={styles.input}
+                            onChange={this.onChange}
+                            value={this.state.search}
+                            placeholder={I18n.t('streamSelector.typeToSearch')}
+                        />
+                        <DropdownActions
+                            className={classNames(styles.sortDropdown, styles.dropdown)}
+                            title={
+                                <span className={styles.sortDropdownTitle}>
+                                    <Translate value="streamSelector.sort" />
+                                    &nbsp;
+                                    {sort}
+                                </span>
+                            }
+                        >
+                            <DropdownActions.Item onClick={() => this.onChangeSort(SORT_BY_NAME)}>
+                                <Translate value="streamSelector.sortByName" />
+                            </DropdownActions.Item>
+                            <DropdownActions.Item onClick={() => this.onChangeSort(SORT_BY_RECENT)}>
+                                <Translate value="streamSelector.sortByRecent" />
+                            </DropdownActions.Item>
+                            <DropdownActions.Item onClick={() => this.onChangeSort(SORT_BY_ADDED)}>
+                                <Translate value="streamSelector.sortByAdded" />
+                            </DropdownActions.Item>
+                        </DropdownActions>
+                    </div>
+                    <div className={styles.streams}>
+                        {!availableStreams.length && (
+                            <div className={styles.noAvailableStreams}>
+                                <p><Translate value="streamSelector.noStreams" /></p>
+                                <a href={links.userpages.streamCreate} className={styles.streamCreateButton}>
+                                    <Translate value="streamSelector.create" />
+                                </a>
+                            </div>
+                        )}
+                        {sortedStreams.map((stream: Stream) => (
+                            <div
+                                key={stream.id}
+                                className={classNames(styles.stream, {
+                                    [styles.added]: nextStreams.has(stream.id),
+                                    [styles.selected]: selectedStreams.has(stream.id),
+                                })}
+                            >
+                                {nextStreams.has(stream.id) && (
+                                    <a
+                                        className={styles.removeButton}
+                                        href="#"
+                                        title={I18n.t('streamSelector.remove')}
+                                        onClick={(event: SyntheticInputEvent<EventTarget>) => {
+                                            event.preventDefault()
+                                            event.stopPropagation()
+                                            this.onRemove(stream.id)
+                                        }}
+                                    >
+                                        <RemoveIcon />
+                                    </a>
+                                )}
+                                <button
+                                    type="button"
+                                    className={styles.addButton}
+                                    onClick={() => {
+                                        if (nextStreams.has(stream.id)) {
+                                            return
+                                        }
+                                        this.onToggle(stream.id)
+                                    }}
+                                >
+                                    {stream.name}
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                    <div className={styles.footer}>
+                        <div className={styles.selectedCount}>
+                            {selectedStreams.size !== 1 ?
+                                <Translate value="streamSelector.selectedStreams" streamCount={selectedStreams.size} /> :
+                                <Translate value="streamSelector.selectedStream" streamCount={selectedStreams.size} />
+                            }
+                        </div>
+                        <Button color="link" onClick={() => this.onCancel()}>
+                            <Translate value="modal.common.cancel" />
+                        </Button>
+                        <Button
+                            onClick={() => {
+                                const toSelect = matchingStreams
+                                    .map((s) => s.id)
+                                    .filter((id) => !nextStreams.has(id))
+
+                                if (allVisibleStreamsSelected) {
+                                    this.onSelectNone(toSelect)
+                                } else {
+                                    this.onSelectAll(toSelect)
+                                }
+                            }}
+                            disabled={allVisibleStreamsSelected && matchingNextStreams.size === matchingStreams.length}
+                        >
+                            {!allVisibleStreamsSelected
+                                ? <Translate value="streamSelector.selectAll" />
+                                : <Translate value="streamSelector.selectNone" />
+                            }
+                        </Button>
+                        <Button onClick={() => this.onAdd()}>
+                            <Translate value="streamSelector.add" />
+                        </Button>
+                    </div>
+                </div>
+            </ProductContainer>
         )
     }
 }

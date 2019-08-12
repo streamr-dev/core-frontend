@@ -16,26 +16,28 @@ import EditorNav from './EditorNav'
 import ProductName from './ProductName'
 import CoverImage from './CoverImage'
 import ProductDescription from './ProductDescription'
-import StreamSelector from './StreamSelector'
+import ProductStreams from './ProductStreams'
 import PriceSelector from './PriceSelector'
 import ProductDetails from './ProductDetails'
-import ProductTypeSelectorForTesting from './ProductTypeSelectorForTesting'
+import ProductEditorDebug from './ProductEditorDebug'
+import ConfigureAnchorOffset from '$shared/components/ConfigureAnchorOffset'
 
 import styles from './editProductPage.pcss'
 
 const EditProductPage = () => (
     <div className={cx(styles.root, styles.EditProductPage)}>
         <DetailsContainer className={styles.container}>
+            <ProductEditorDebug />
+            <ConfigureAnchorOffset value={-100} />
             <div className={styles.editor}>
                 <div className={styles.nav}>
                     <EditorNav />
                 </div>
                 <div className={styles.info}>
-                    <ProductTypeSelectorForTesting />
                     <ProductName />
                     <CoverImage />
                     <ProductDescription />
-                    <StreamSelector />
+                    <ProductStreams />
                     <PriceSelector />
                     <ProductDetails />
                 </div>

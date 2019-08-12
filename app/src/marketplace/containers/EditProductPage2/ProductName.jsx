@@ -1,10 +1,14 @@
 // @flow
 
 import React from 'react'
+import cx from 'classnames'
+import ScrollableAnchor from 'react-scrollable-anchor'
 
 import useProduct from '../ProductController/useProduct'
 import useValidation from '../ProductController/useValidation'
 import useProductActions from '../ProductController/useProductActions'
+
+import styles from './productName.pcss'
 
 const ProductName = () => {
     const product = useProduct()
@@ -12,19 +16,21 @@ const ProductName = () => {
     const { updateName } = useProductActions()
 
     return (
-        <div>
-            <h1>Name your product</h1>
-            <p>
+        <ScrollableAnchor id="product-name">
+            <div className={cx(styles.root, styles.ProductName)}>
+                <h1>Name your product</h1>
                 <input
                     type="text"
                     value={product.name}
                     onChange={(e: SyntheticInputEvent<EventTarget>) => updateName(e.target.value)}
+                    placeholder="Product Name"
+                    className={styles.input}
                 />
-            </p>
-            {!isValid && (
-                <p>{level}: {message}</p>
-            )}
-        </div>
+                {!isValid && (
+                    <p>{level}: {message}</p>
+                )}
+            </div>
+        </ScrollableAnchor>
     )
 }
 
