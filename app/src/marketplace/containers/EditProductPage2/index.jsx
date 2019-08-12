@@ -6,19 +6,27 @@ import { withRouter } from 'react-router-dom'
 import CoreLayout from '$shared/components/Layout/Core'
 import * as UndoContext from '$shared/components/UndoContextProvider'
 import Toolbar from '$shared/components/Toolbar'
+import ConfirmNoCoverImageDialog from '$mp/components/Modal/ConfirmNoCoverImageDialog'
+// import SaveProductDialog from '$mp/containers/EditProductPage/SaveProductDialog'
+import type { Product } from '$mp/flowtype/product-types'
 
 import ProductController from '../ProductController'
 import useProduct from '../ProductController/useProduct'
+import usePending from '$shared/hooks/usePending'
 
-import { Provider as EditControllerProvider, Context as EditControllerContext } from './EditControllerProvider'
+import { Provider as EditControllerProvider, Context as EditControllerContext, editorStates } from './EditControllerProvider'
 import Editor from './Editor'
 import Preview from './Preview'
 import ProductEditorDebug from './ProductEditorDebug'
+import Modal from './Modal'
 
 import styles from './editProductPage.pcss'
 
-const EditProductPage = () => {
-    const { isPreview, setIsPreview, save } = useContext(EditControllerContext)
+const EditProductPage = ({ product }: { product: Product }) => {
+    const { isPreview, setIsPreview, editorState, save } = useContext(EditControllerContext)
+    const { isPending } = usePending('product.SAVE')
+    console.log(product)
+    const disabled = editorState !== editorStates.EDIT
 
     const actions = useMemo(() => {
         const buttons = {
@@ -27,11 +35,13 @@ const EditProductPage = () => {
                 color: 'link',
                 outline: true,
                 onClick: save,
+                disabled,
             },
             preview: {
                 title: 'Preview',
                 outline: true,
                 onClick: () => setIsPreview(true),
+                disabled,
             },
             continue: {
                 title: 'Continue',
@@ -46,11 +56,12 @@ const EditProductPage = () => {
                 title: 'Edit',
                 outline: true,
                 onClick: () => setIsPreview(false),
+                disabled,
             }
         }
 
         return buttons
-    }, [isPreview, setIsPreview, save])
+    }, [isPreview, setIsPreview, save, disabled])
 
     return (
         <CoreLayout
@@ -62,6 +73,7 @@ const EditProductPage = () => {
                     altMobileLayout
                 />
             )}
+            loading={isPending}
         >
             <ProductEditorDebug />
             {isPreview && (
@@ -70,6 +82,21 @@ const EditProductPage = () => {
             {!isPreview && (
                 <Editor />
             )}
+            <Modal>
+                {({ id, save: next, cancel }) => {
+                    if (id === 'confirm') {
+                        return (
+                            <ConfirmNoCoverImageDialog
+                                onContinue={next}
+                                closeOnContinue={false}
+                                onClose={cancel}
+                            />
+                        )
+                    }
+
+                    return null
+                }}
+            </Modal>
         </CoreLayout>
     )
 }
