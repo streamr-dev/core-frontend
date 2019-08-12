@@ -284,15 +284,11 @@ class EditorDraggable extends React.PureComponent {
 }
 
 function EditorDraggableWithScale(props) {
-    const { scale, x, y } = useCameraContext()
+    const { scale } = useCameraContext()
     return (
         <EditorDraggable
             {...props}
             scale={scale}
-            positionOffset={{
-                x,
-                y,
-            }}
         />
     )
 }

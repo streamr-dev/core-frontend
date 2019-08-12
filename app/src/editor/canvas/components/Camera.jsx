@@ -26,10 +26,10 @@ function useCameraApi() {
     const updateScale = useCallback(({ x, y, delta }) => {
         setScale(({
             scale,
-            xCenter,
-            yCenter,
             xLast,
             yLast,
+            xCenter,
+            yCenter,
         }) => {
             // find current location on the image at the current scale
             xCenter += Math.round((x - xLast) / scale)
