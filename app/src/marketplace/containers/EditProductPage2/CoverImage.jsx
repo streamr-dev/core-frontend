@@ -18,7 +18,7 @@ const CoverImage = () => {
 
     return (
         <ScrollableAnchor id="cover-image">
-            <div>
+            <div className={cx(styles.root, styles.CoverImage)}>
                 <h1>Add a cover image</h1>
                 <p>This image will be shown as the tile image in the Marketplace browse view,
                     and also as the main image on your product page. For best quality,

@@ -29,7 +29,7 @@ const BeneficiaryAddress = ({ address, onChange, disabled, className }: Props) =
                         autoComplete="off"
                         className={styles.input}
                         placeholder={I18n.t('editProductPage.setPrice.placeholder.enterEthAddress')}
-                        value={address}
+                        value={address || ''}
                         onChange={onAddressChange}
                         disabled={disabled}
                     />
