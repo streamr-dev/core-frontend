@@ -5,7 +5,8 @@ import { Helmet } from 'react-helmet'
 
 import DocsLayout from '../../DocsLayout'
 import { subNav } from '../../DocsLayout/Navigation/navLinks'
-import DataTokenContent from '$newdocs/content/dataToken.mdx'
+
+import DataTokenContent from '$newdocs/content/dataToken/dataToken.mdx'
 
 const DataToken = () => (
     <DocsLayout subNav={subNav.dataToken}>

@@ -5,7 +5,8 @@ import { Helmet } from 'react-helmet'
 
 import DocsLayout from '../../DocsLayout'
 import { subNav } from '../../DocsLayout/Navigation/navLinks'
-import IntroductionContent from '$newdocs/content/introduction.mdx'
+
+import IntroductionContent from '$newdocs/content/introduction/introduction.mdx'
 
 const Introduction = () => (
     <DocsLayout subNav={subNav.introduction}>

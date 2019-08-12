@@ -1,0 +1,49 @@
+
+## Patterns for data integration
+
+There are three distinct patterns for connecting data to Streamr, each with their own pros and cons:
+
+- **1.** Pushing from the source (ideal)
+- **2.** Bridging from a streaming source
+- **3.** Bridging by polling a source
+
+### 1. Pushing from the source
+
+- Simplicity: **Good**
+- Latency: **Good**
+- Applicability: **Medium**
+
+In this pattern, the data points are sent directly to Streamr by the source as soon as new data becomes available (for example, a sensor produces a new measurement).
+
+**This is the recommended pattern**. However, depending on the circumstances, it may not always be available. It requires that you have control over the system that produces the data and can decide where it gets sent.
+
+For example, if you are an IoT device manufacturer, you could add support for Streamr directly into your devices or gateways, enabling all your end users to easily connect their data to Streamr.
+
+Various industrial data sources usually have good configurability for connecting the data anywhere you need to. However, consumer grade devices such as connected cars, phones, Fitbits, and others often force you to send your data to the manufacturer’s cloud, from where they might serve it back to you via an API. In these cases, you can use one of the bridging patterns in this post (see options two and three).
+
+For a real-world example, here’s how to connect measurements from any number of <a target="_blank" href="https://ruuvi.com">Ruuvi</a> IoT tags to Streamr. The devices transmit data over Bluetooth Low Energy to a gateway computer which runs this node.js script. A separate stream is created for each found Ruuvi device, and the measurements are produced to the appropriate stream as they occur.
+
+### 2. Bridging from a streaming source
+
+- Simplicity: **Medium**
+- Latency: **Good**
+- Applicability: **Medium**
+
+This pattern is useful when you don’t have direct control over the source, but a streaming API or some other kind of listener hook is available for the data. These allow you to be notified whenever new data occurs, enabling you to immediately forward the event to Streamr. Data that is typically available via these kinds of APIs are news feeds, financial market data and social media feeds.
+
+### 3. Bridging by polling a source
+
+- Simplicity: **Medium**
+- Latency: **Medium**
+- Applicability: **Good**
+
+Most cloud services handing out data at least offer a request-response-based API, which can be used if neither of the above push-based options are available. In this case there is no way to get notified when new data is available, which means that the API needs to be repeatedly queried. This is called polling.
+
+It’s not an optimal way to serve real-time data, because:
+
+- Data can be missed: multiple value changes in between subsequent requests are not observed.
+- It places an unnecessary load on the API server, as requests are made “just in case” regardless of whether the data has actually changed or not.
+- An average latency of half the polling interval is introduced.
+
+For more information and examples on using these integration patters, please see this deep dive <a target="_blank" href="https://medium.com/streamrblog/three-patterns-for-integrating-your-data-to-streamr-2-of-3-38027dc91f9e">blog post</a>. Please note that the examples used an older version of `streamr-client` and you should confirm with the <a target="_blank" href="https://github.com/streamr-dev/streamr-client-javascript">official docs</a> on the best practices. 
+

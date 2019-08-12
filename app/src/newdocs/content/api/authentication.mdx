@@ -1,0 +1,91 @@
+## Authentication
+
+A session token is required to make requests to the REST API endpoints or over the websocket protocol. You can obtain a session token by authenticating with either of these three methods:
+- [Signing a cryptographic challenge using an Ethereum private key](#challenge)
+- [Using a permanent secret API key](#api-key)
+- [Using a username and a password](#username-password)
+
+Once you get a session token using one of the above methods, see the section on [using it](#session-token).
+
+<a name="challenge"></a>
+
+### Authenticating with Ethereum
+
+You can use an Ethereum private key to authenticate by signing a challenge with it and providing your Ethereum public address for verification.
+
+Use the `POST` endpoint at `/api/v1/login/challenge/YOUR-PUBLIC-ADDRESS` to generate a random text called a challenge, which looks like the following: 
+
+```
+{
+    "id": "challenge-id"
+    "challenge": "challenge-text-to-be-signed"
+    "expires": "2018-10-22T08:38:59Z"
+}
+```
+
+To authenticate, you must provide a response before the challenge expires. You can do it with a `POST` to `/api/v1/login/response`. It must contain the challenge, the signature and the Ethereum address in the following format:
+
+```
+{
+    "challenge": {
+	    "id": "challenge-id",
+	    "challenge": "challenge-text-that-you-signed"
+    },
+    "signature": "signature-of-the-challenge",
+    "address": "your-public-ethereum-address"
+}
+```
+
+The signature must follow the convention described [here](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-712.md). The secp256k1 ECDSA algorithm is applied on the keccak256 hash of a string derived from the challenge text:
+
+`sign(keccak256("\x19Ethereum Signed Message:\n" + len(challengeText) + challengeText)))`
+
+If the signature is correct, you will receive a [session token](#session-token).
+
+<a name="api-key"></a>
+
+### Authenticating with an API key
+
+Any number of API keys can be attached to your user. You can manage your API keys on your profile page.
+
+When reading from or writing to Streams, you can use a Stream-specific anonymous key instead of your user key to avoid exposing it. Anonymous keys can be managed on the details page of a Stream.
+
+To obtain a [session token](#session-token) using an API key, send a `POST` request to the `/api/v1/login/apikey` endpoint with a JSON body like the one below:
+
+```
+{
+    "apiKey": "YOUR-API-KEY"
+}
+```
+
+<a name="username-password"></a>
+
+### Authenticating with a username and a password
+
+You can manage your username and password from your profile page. To obtain a [session token](#session-token) using your username and your password, send them as a `POST` request to the `/api/v1/login/password` endpoint with a JSON body in the following format:
+
+```
+{
+	"username": "YOUR-USERNAME",
+	"password": "YOUR-PASSWORD"
+}
+```
+
+<a name="session-token"></a>
+
+### Using the session token
+
+By using one of the above authentication methods, you will obtain a session token response in the following format: 
+
+```
+{
+    "token": "YOUR-SESSION-TOKEN"
+    "expires": "2018-10-22T11:38:59Z"
+}
+```
+
+You can now use this session token to make authenticated requests by including an `Authorization` header on every HTTP request with content as follows:
+
+`Authorization: Bearer YOUR-SESSION-TOKEN`
+
+The session token's expiration will be reset on every request to prevent you from getting logged out while using the API. If the token expires, you can obtain a new one exactly as before.

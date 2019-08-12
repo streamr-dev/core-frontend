@@ -1,0 +1,100 @@
+
+import cx from 'classnames'
+import { Link } from 'react-router-dom'
+
+import Warning from '$newdocs/components/Warning'
+import CodeSnippet from '$shared/components/CodeSnippet'
+import links from '$shared/../links'
+
+import ModuleExampleOnCanvas from '../canvases/images/moduleExampleOnCanvas.png'
+import JavaModuleOnCanvas from '../canvases/images/javaModuleOnCanvas.png'
+
+import {
+  JavaModule,
+  InputsAndOutputs,
+  InputsAndOutputsExample,
+  DefiningInputsAndOutputs,
+  ClearState,
+  IncomingEvent 
+} from './code/tutorials.js'
+
+import docsStyles from '$docs/components/DocsLayout/docsLayout.pcss'
+import canvasesStyles from '$newdocs/components/DocsPages/Canvases/canvasesStyles.pcss'
+import tutorialStyles from '$newdocs/components/DocsPages/Tutorials/tutorials.pcss'
+
+## Building a custom canvas module
+
+You can easily extend Streamr by writing custom modules in the Java programming language. When a custom module is activated in a canvas, your code is executed as if the module were a part of the built-in machinery. As an alternative to custom code, you can also do abstraction, i.e. reuse existing canvases as modules. 
+
+The **Java module** is the module to use for custom code. Start by creating a new canvas or by opening an existing canvas in the editor. Then insert a JavaModule on the workspace, click on the **Edit Code** button, and a code editor will open in a resizable pop-up window. This is what you'll see:
+
+<CodeSnippet language='java' showLineNumbers wrapLines>{JavaModule}</CodeSnippet>
+
+The Java editor contains a code template that you need to fill in with the appropriate components. A custom module consists of inputs, parameters, outputs, an optional state, and a few specific methods. For the magic to happen, you'll need to specify the inputs and outputs and override the relevant methods. 
+
+The custom module's inputs correspond to the endpoints that receive incoming events. On the canvas, they are shown as small circles on the left-hand side of a module. The outputs correspond to the endpoints which send out computed values after module activation. The output endpoints are shown as small circles on the right-hand side of a module.
+
+Inputs and outputs are defined in the beginning of the code template. To help you get started, there's two lines of commented code near the top.
+
+<CodeSnippet language='java' showLineNumbers wrapLines>{InputsAndOutputs}</CodeSnippet>
+
+If you uncomment those lines (as we've done above), you will get a module with one numerical input and one numerical output. If you want to see the result on the canvas, first click **Apply**, then **Close**. 
+
+<div className={cx(docsStyles.centered, canvasesStyles.javaModuleOnCanvas)}>
+  <img src={JavaModuleOnCanvas} />
+</div>
+
+In this example, the inputs belong to the `TimeSeriesInput` class and the outputs to the `TimeSeriesOutput` class. The first argument of an input or output constructor is always `this`, a reference to the current module. The second argument is there for the display name, i.e. a visual label for the endpoint. The variable name on the left-hand side of the assignment can be any valid variable name in Java.
+
+The input and output variables must be unique within a module, but the display names are only labels with no deeper meaning. They don’t have to be unique, and an empty string is a valid name. A common convention is to make the display name equal to the variable name, but this is not a requirement.
+
+You're not limited to numerical endpoints. These are the possible choices for an input event:
+
+- **TimeSeriesInput**: Used for numeric floating point data.
+- **BooleanInput**: Used for boolean data.
+- **StringInput**: Used for string data.
+- **ListInput**: Used for lists (or arrays) of data.
+- **MapInput**: Used for key-value pairs.
+
+These are the possible choices for an output event:
+- **TimeSeriesOutput**: Used for numeric floating point data.
+- **BooleanOutput**: Used for boolean data.
+- **StringOutput**: Used for string data.
+- **ListOutput**: Used for lists (or arrays) of data.
+- **MapOutput**: Used for key-value pairs.
+
+**Parameters are just inputs with default values.** Because a parameter has a default value, there is no need for an incoming connection in the corresponding endpoint. If there is a connection, however, the custom module should take any parameter changes into account at run-time. Possible parameter types are listed below.
+
+- **BooleanParameter**: Used for boolean values (displayed as a drop-down selection).
+- **DoubleParameter**: Used for numeric floating point data (displayed as an input).
+- **IntegerParameter**: Used for integers (displayed as an input).
+- **StringParameter**: Used for strings (displayed as an input).
+- **ColorParameter**: Used for RGB colors (displayed as a color selector).
+
+There’s no limitations on the number of incoming and outgoing connections. An an example, the following code would give you three inputs (one of which is a parameter) and two outputs:
+
+<CodeSnippet language='java' showLineNumbers wrapLines>{InputsAndOutputsExample}</CodeSnippet>
+
+### Custom module example
+
+For the sake of illustration, let's create a new JavaModule. It will be similar to the built-in **Sum**, but instead of keeping a running sum, we'll calculate a running product of successive numerical events.
+
+We'll start with the module inputs and outputs. We only need one numerical input and one output here, so we'll just uncomment the relevant lines:
+
+<CodeSnippet language='java' showLineNumbers wrapLines>{DefiningInputsAndOutputs}</CodeSnippet>
+
+In this example the module state is equal to the current value of the cumulative product. We'll call the state `product` and initialise it by the assignment `product = 1` in the `initialize` method. As discussed, we also need to reset the module to its initial state on request. Let's just redo the initial assignment when the `clearState` method is called.
+
+<CodeSnippet language='java' showLineNumbers wrapLines>{ClearState}</CodeSnippet>
+
+All that's left to do is to write the code to multiply the product by the new incoming event, save the state, and submit the output.
+
+<CodeSnippet language='java' showLineNumbers wrapLines>{IncomingEvent}</CodeSnippet>
+
+The code in a JavaModule is compiled and validated when you click the **Apply** button. Unless there's syntax errors in the code, the module is now ready to use. An easy way to generate an input is to connect the **Clock module** to a **Count module**, into a **SendToStream** module. This will input an incrementing number, for every clock tick, 1,2,3 etc. 
+
+This is what the output looks like with sample input data:
+
+<div className={docsStyles.centered}>
+  <img src={ModuleExampleOnCanvas} />
+</div>

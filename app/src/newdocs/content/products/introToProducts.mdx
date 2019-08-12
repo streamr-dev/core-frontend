@@ -1,0 +1,37 @@
+
+import { Link } from 'react-router-dom'
+
+import links from '$shared/../links'
+
+import ProductsOverview from './images/products-overview.png'
+import ProductsList from './images/products-list.png'
+
+import docsStyles from '$newdocs/components/DocsLayout/docsLayout.pcss'
+
+## Intro to products
+
+<img src={ProductsOverview} />
+
+The Marketplace is filled with both paid and free products, offering data producers an opportunity to either monetise their data or make it freely available to everyone. To purchase or create products on the Marketplace, <Link to={links.newdocs.gettingStarted}>you will need a Streamr account, and you will need to be signed in</Link>.
+
+### Free products
+
+To purchase a free product, simply click the "Add to my purchases" button on the product page. You will immediately gain access to the streams inside the product. You don't need any <Link to={links.newdocs.dataToken}>$DATA</Link> or Ether to purchase a free product. 
+
+<img src={ProductsList} />
+
+### Paid products
+
+Interacting with paid products requires an Ethereum wallet address, and a small amount of Ether, in order to pay the gas fees required to purchase or publish the product. Getting access to a paid product requires a payment of <Link to={links.newdocs.dataToken}>$DATA</Link> to the product owner. 
+
+Clicking the “Purchase” button initiates the purchase dialog which guides you through the contract transaction process. Gaining access to the streams inside the product happens automatically once the transaction has been completed which usually takes no longer than a few minutes. 
+
+How much you pay is determined by the price of the product (set by the product owner) and how long you wish to gain access to the data.
+
+While explaining everything around buying Ether and setting up a wallet is beyond the scope of this documentation, <a href="https://metamask.io" target="blank">Metamask</a> is a relatively easy to use wallet that plugs into Chrome, and is the recommended way to interact with the Streamr Marketplace.
+
+### Publishing your product
+
+Once you’ve created a product, you don’t need to publish it right away, it is possible to create several drafts and publish them later. If you make some mistakes, or you need to amend the product description or other details, you can edit the product at any time by opening it from your <Link to={links.userpages.products}>Products</Link> page, inside Core. 
+
+If you want to change the product price, this requires re-writing the product to the blockchain, so you’ll need your Ethereum wallet and a small amount of Ether to pay for gas in order to update the price of a published product.
