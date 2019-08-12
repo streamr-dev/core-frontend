@@ -23,7 +23,7 @@ type Props = {
     series: any,
 }
 
-const Chart = ({ className, series, datapoints, options }: Props) => {
+const Chart = ({ className, series = {}, datapoints = [], options }: Props) => {
     const [chart, setChart] = useState(null)
 
     const seriesData = useMemo(() => (
@@ -69,18 +69,21 @@ const Chart = ({ className, series, datapoints, options }: Props) => {
     }, [])
 
     useEffect(() => {
-        if (chart) {
-            seriesData.forEach((data) => {
-                const series = chart.get(data.id)
-                if (series) {
-                    series.update(data)
-                } else {
-                    chart.addSeries(data)
-                }
-            })
-            chart.redraw()
-        }
-    }, [chart, seriesData])
+        if (!chart) { return }
+        seriesData.forEach((data) => {
+            const series = chart.get(data.id)
+            if (!series) {
+                chart.addSeries(data)
+            } else {
+                const points = datapoints[data.idx] || []
+                // $FlowFixMe
+                points.forEach((p) => {
+                    series.addPoint(p, false)
+                })
+            }
+        })
+        chart.redraw()
+    }, [chart, seriesData, datapoints])
 
     const { height } = useContext(UiSizeContext)
 

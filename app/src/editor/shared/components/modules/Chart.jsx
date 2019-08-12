@@ -48,13 +48,14 @@ const ChartModule2 = (props) => {
         const queued = queuedDatapointsRef.current || []
         queuedDatapointsRef.current = []
 
-        setSeriesData((seriesData) => queued.reduce((memo, { s, x, y }) => ({
-            ...memo,
-            [s]: [
-                ...(memo[s] || []),
-                [x, y],
-            ],
-        }), seriesData))
+        setSeriesData(() => queued.reduce((o, { s, x, y }) => {
+            const series = (o[s] || [])
+            series.push([x, y])
+            return Object.assign(o, {
+                ...o,
+                [s]: series,
+            })
+        }, {}))
     }, 250))
 
     const onDatapoint = useCallback((payload) => {
