@@ -1,4 +1,4 @@
-import React, { useRef, useState, useCallback, useEffect } from 'react'
+import React, { useRef, useState, useCallback, useEffect, useMemo, useContext } from 'react'
 import cx from 'classnames'
 import styles from './Camera.pcss'
 
@@ -6,72 +6,112 @@ function clamp(value, min, max) {
     return Math.max(min, Math.min(max, value))
 }
 
-export default function Camera({ className, children }) {
-    const elRef = useRef()
+function useCameraApi() {
     const [{
         x,
         y,
-        zoom,
-        xImage,
-        yImage,
-    }, setZoom] = useState({
-        zoom: 1,
+        scale,
+        xCenter,
+        yCenter,
+    }, setScale] = useState({
+        scale: 1,
         x: 0,
         y: 0,
         xLast: 0,
         yLast: 0,
-        xImage: 0,
-        yImage: 0,
+        xCenter: 0,
+        yCenter: 0,
     })
 
-    const onWheel = useCallback((event) => {
-        const el = elRef.current
-        event.preventDefault()
-
-        const { left, top } = el.getBoundingClientRect()
-        const { deltaY } = event
-        // find current location on screen
-        const xScreen = Math.round(event.clientX - left)
-        const yScreen = Math.round(event.clientY - top)
-
-        setZoom(({
-            zoom,
-            xImage,
-            yImage,
+    const updateScale = useCallback(({ x, y, delta }) => {
+        setScale(({
+            scale,
+            xCenter,
+            yCenter,
             xLast,
             yLast,
         }) => {
             // find current location on the image at the current scale
-            xImage += Math.round((xScreen - xLast) / zoom)
-            yImage += Math.round((yScreen - yLast) / zoom)
-
-            // determine the new scale
-            if (deltaY < 0) {
-                zoom *= 1.05
-            } else {
-                zoom *= 0.95
-            }
-            zoom = Math.round(clamp(zoom, 0.1, 3) * 100) / 100
-
-            // determine the location on the screen at the new scale
-            const xNew = Math.round((xScreen - xImage) / zoom)
-            const yNew = Math.round((yScreen - yImage) / zoom)
+            xCenter += Math.round((x - xLast) / scale)
+            yCenter += Math.round((y - yLast) / scale)
 
             // save the current screen location
-            xLast = xScreen
-            yLast = yScreen
+            xLast = x
+            yLast = y
+
+            // determine the new scale
+            if (delta < 0) {
+                scale *= 1.05
+            } else {
+                scale *= 0.95
+            }
+            scale = Math.round(clamp(scale, 0.1, 3) * 100) / 100
+
+            // determine the location on the screen at the new scale
+            const xNew = Math.round((x - xCenter) / scale)
+            const yNew = Math.round((y - yCenter) / scale)
 
             return {
-                zoom,
-                xImage,
-                yImage,
+                scale,
+                xCenter,
+                yCenter,
                 x: xNew,
                 y: yNew,
                 xLast,
                 yLast,
             }
         })
-    }, [setZoom])
+    }, [setScale])
+
+    return useMemo(() => ({
+        x,
+        y,
+        xCenter,
+        yCenter,
+        scale,
+        updateScale,
+    }), [x, y, xCenter, yCenter, scale, updateScale])
+}
+
+const CameraContext = React.createContext({})
+
+export function useCameraContext() {
+    return useContext(CameraContext)
+}
+
+function CameraProvider({ children }) {
+    return (
+        <CameraContext.Provider value={useCameraApi()}>
+            {children}
+        </CameraContext.Provider>
+    )
+}
+
+function CameraContainer({ className, children }) {
+    const {
+        x,
+        y,
+        scale,
+        xCenter,
+        yCenter,
+        updateScale,
+    } = useCameraContext()
+
+    const elRef = useRef()
+    const onWheel = useCallback((event) => {
+        const el = elRef.current
+        event.preventDefault()
+        const { left, top } = el.getBoundingClientRect()
+        const { deltaY: delta } = event
+        // find current location on screen
+        const x = Math.round(event.clientX - left)
+        const y = Math.round(event.clientY - top)
+        updateScale({
+            x,
+            y,
+            delta,
+        })
+    }, [elRef, updateScale])
 
     useEffect(() => {
         const el = elRef.current
@@ -87,10 +127,10 @@ export default function Camera({ className, children }) {
             className={cx(className, styles.root)}
         >
             <div
-                className={styles.zoomLayer}
+                className={styles.scaleLayer}
                 style={{
-                    transform: `scale(${zoom}) translate(${x}px, ${y}px)`,
-                    transformOrigin: `${xImage}px ${yImage}px`,
+                    transform: `scale(${scale}) translate(${x}px, ${y}px)`,
+                    transformOrigin: `${xCenter}px ${yCenter}px`,
                 }}
             >
                 {children}
@@ -98,3 +138,14 @@ export default function Camera({ className, children }) {
         </div>
     )
 }
+
+export default function Camera({ className, children }) {
+    return (
+        <CameraProvider>
+            <CameraContainer className={className}>
+                {children}
+            </CameraContainer>
+        </CameraProvider>
+    )
+}
+
