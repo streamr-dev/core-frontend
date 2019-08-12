@@ -52,10 +52,14 @@ export class PreviewView extends Component<Props, State> {
             return (
                 <Fragment>
                     <Translate value="userpages.streams.edit.preview.description" className={styles.longText} tag="p" />
-                    <p className={!hasData && styles.hasData}>
-                        This Stream has no data yet.
-                        Check out the <Link to={routes.docsGettingStarted()}>Docs</Link> for a guide to push data to your stream.
-                    </p>
+                    {!hasData ?
+                        <Fragment>
+                            <Translate value="userpages.streams.edit.preview.noDataPre" />
+                            <Link to={routes.docsGettingStarted()}>Docs</Link>
+                            <Translate value="userpages.streams.edit.preview.noDataEnd" />
+                        </Fragment>
+                        : null
+                    }
                     <div
                         className={cx(styles.previewContainer, {
                             [styles.hasData]: hasData,
