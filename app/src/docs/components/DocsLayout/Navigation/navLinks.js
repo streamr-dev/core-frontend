@@ -2,6 +2,7 @@
 
 import type { NavigationLink } from '../../../flowtype/navigation-types'
 import links from '$shared/../links'
+import { canvasModulesCategorised, toAnchor } from '../../DocsPages/CanvasModules/data'
 
 // navigationLinks Schema:
 // 'rendered title': 'URL Address',
@@ -10,12 +11,19 @@ import links from '$shared/../links'
 const navigationLinks: NavigationLink = {
     Introduction: links.docs.introduction,
     'Getting Started': links.docs.gettingStarted,
+    Streams: links.docs.streams,
+    Canvases: links.docs.canvases,
+    'Canvas Modules': links.docs.canvasModules,
+    Dashboards: links.docs.dashboards,
+    Products: links.docs.products,
     Tutorials: links.docs.tutorials,
-    'Visual Editor': links.docs.visualEditor,
-    'Streamr Engine': links.docs.streamrEngine,
-    Marketplace: links.docs.dataMarketplace,
-    'User Pages': links.docs.userPage,
-    'Streamr API': links.docs.api,
+    // 'DATA Token': links.docs.dataToken,
+    Core: links.docs.core,
+    Marketplace: links.docs.marketplace,
+    // RunningNode: links.docs.runningNode,
+    SDKs: links.docs.SDKs,
+    API: links.docs.api,
+    'Technical Notes': links.docs.technicalNotes,
 }
 
 // subNav Schema:
@@ -25,38 +33,73 @@ const navigationLinks: NavigationLink = {
 export const subNav = {
     introduction: {},
     gettingStarted: {
-        'create-a-stream': 'Create a Stream',
-        'publish-to-a-stream': 'Publish to a Stream',
-        'subscribe-to-data': 'Subscribe to data',
-        'patterns-for-data-integration': 'Patterns for data integration',
+        'get-api-keys': 'Get your API keys',
+        'connecting-ethereum-identity': 'Connecting your Ethereum identity',
+        'get-building': 'Get building',
+        'useful-links': 'Useful links',
+    },
+    streams: {
+        'intro-to-streams': 'Intro to streams',
+        'work-with-streams-in-core': 'Work with streams in Core',
+        'work-with-streams-via-sdks': 'Work with streams via SDKs',
+        'work-with-streams-via-api': 'Work with streams via API',
+        'data-signing-and-verification': 'Data signing and verification',
+        'end-to-end-encryption': 'End-to-end encryption',
+        partitioning: 'Partitioning',
+        'integration-patterns': 'Integration Patterns',
+    },
+    canvases: {
+        'intro-to-canvases': 'Intro to canvases',
+        'work-with-canvases-in-core': 'Work with canvases in Core',
+        'building-integrations': 'Building integrations',
+        'ethereum-modules': 'Ethereum modules',
+    },
+    canvasModules: Object.keys(canvasModulesCategorised).sort().reduce((o, category) => Object.assign(o, {
+        [toAnchor(category)]: category,
+    }), {}),
+    dashboards: {
+        'intro-to-dashboards': 'Intro to dashboards',
+        'work-with-dashboards-in-core': 'Work with dashboards in Core',
+    },
+    products: {
+        'intro-to-products': 'Intro to products',
+        'work-with-products-in-core': 'Work with products in Core',
+        'community-products': 'Community products',
     },
     tutorials: {
-        'weather-station': 'Weather Station with Ruuvi Sensors',
-        'cold-chain-monitoring': 'Cold Chain Monitoring',
-        'integrating-google-fitness': 'Integrating Google Fitness',
+        'building-a-simple-pub-sub-system': 'Building a simple pub/sub system',
+        'building-custom-canvas-module': 'Building a custom canvas module',
     },
-    visualEditor: {
-        introduction: 'Introduction',
-        streams: 'Streams',
-        modules: 'Modules',
-        canvases: 'Canvases',
-        extensions: 'Extensions',
+    dataToken: {},
+    core: {
+        'intro-to-core': 'Intro to Core',
+        'work-with-streams-in-core': 'Work with streams in Core',
+        'work-with-canvases-in-core': 'Work with canvases in Core',
+        'work-with-dashboards-in-core': 'Work with dashboards in Core',
+        'work-with-products-in-core': 'Work with products in Core',
     },
-    streamrEngine: {},
     marketplace: {
-        'create-a-product': 'Create a Product',
+        'introduction-marketplace': 'Introduction to the Marketplace',
+        'buying-data-marketplace': 'Buying data on the Marketplace',
+        'selling-data-marketplace': 'Selling data on the Marketplace',
     },
-    userPages: {
-        'introduction-user-pages': 'Introduction',
-        'main-features': 'Main Features',
-        'page-overview': 'Page Overview',
+    SDKs: {
+        'sdks-overview': 'Overview',
+        'javascript-sdk': 'Javascript SDK',
+        'java-sdk': 'Java SDK',
+        'python-sdk': 'Python SDK',
+        'contribute-sdk': 'Contribute an SDK?',
     },
     api: {
-        'introduction-to-streamr-apis': 'Introduction',
+        'api-overview': 'API overview',
         authentication: 'Authentication',
-        'data-input': 'Data Input',
-        'data-output': 'Data Output',
+        'work-with-streams-via-api': 'Work with streams via API',
         'api-explorer': 'API Explorer',
+    },
+    technicalNotes: {
+        'how-to-contribute': 'How to contribute',
+        'running-private-streamr-stack': 'Running a private Streamr stack',
+        'streamr-protocol-spec': 'Streamr protocol spec',
     },
 }
 

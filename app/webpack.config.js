@@ -244,6 +244,11 @@ module.exports = {
                     'src/docs/docsEditingGuide.md',
                     // skip sketch files
                     '**/*.sketch',
+                    'src/docs/scripts/*.*',
+                    // upcoming docs
+                    'src/docs/components/DocsPages/DataToken/index.jsx',
+                    'src/docs/components/DocsPages/RunningNode/index.jsx',
+                    'src/docs/content/dataToken/dataToken.mdx',
                 ],
             },
         }),

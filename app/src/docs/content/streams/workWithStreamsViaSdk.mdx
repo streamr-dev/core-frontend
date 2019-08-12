@@ -1,0 +1,57 @@
+import { Link } from 'react-router-dom'
+
+import CodeSnippet from '$shared/components/CodeSnippet'
+import links from '$shared/../links'
+
+import {
+    CreateJavascriptClient,
+    CreateJavaClient,
+    AuthJavascriptClient,
+    AuthJavaClient,
+    SubscribeJavascriptClient,
+    SubscribeJavaClient,
+    PublishJavascriptClient,
+    PublishJavaClient,
+} from './code/streams.js'
+
+## Work with streams via SDKs
+
+The easiest way to work with streams is to use the JavaScript client, which works in **Node.js** as well as the browser. See the <Link to={links.docs.SDKs}>SDKs section</Link> for the official and community-maintained client libraries available for various languages.
+
+### Authentication
+
+When reading from or writing to streams, you need to provide a session token or an API key, or login with an Ethereum account. To read more about API keys or obtaining a session token, refer to the <Link to={`${links.docs.api}#authentication`}>Authentication section of the API docs</Link>.
+
+### Creating a client instance with API key
+
+**Javascript**
+
+<CodeSnippet language='javascript'>{CreateJavascriptClient}</CodeSnippet>
+
+**Java**
+
+<CodeSnippet language='java'>{CreateJavaClient}</CodeSnippet>
+
+### Subscribing to realtime events in a stream
+
+By subscribing to Streams, your application gets immediately notified about new events in the stream.
+
+**JavaScript**
+
+<CodeSnippet language='javascript'>{SubscribeJavascriptClient}</CodeSnippet>
+
+**Java**
+
+<CodeSnippet language='java'>{SubscribeJavaClient}</CodeSnippet>
+
+### Publishing events to Streams
+
+**JavaScript**
+
+<CodeSnippet language='javascript'>{PublishJavascriptClient}</CodeSnippet>
+
+**Java**
+
+Events in Streams are key-value pairs, represented in Java as Map objects. Below is an example of creating an event payload and publishing it into a Stream:
+
+<CodeSnippet language='java'>{PublishJavaClient}</CodeSnippet>
