@@ -13,36 +13,23 @@
   width: 100%;
 }
 
-.dropzone {
-  background-color: #EDEDED;
+.dropzoneAdvice {
+  position: absolute;
+  top: 55%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   width: 100%;
-  height: 400px;
-  overflow: hidden;
-  position: relative;
-  text-align: center;
-  color: #323232;
-  font-weight: 500;
-
-  &.dragEntered {
-    border-radius: 4px;
-    border: 2px solid #0324FF;
-  }
-
-  &:hover {
-    cursor: pointer;
-  }
-
-  img {
-    opacity: 0.5;
-  }
 }
 
-@media (--md-down) {
-  .dropzone {
-    height: auto;
-    min-height: 180px;
-    font-size: 14px;
-  }
+.icon {
+  margin-bottom: 2em;
+}
+
+.uploadAdvice {
+  font-weight: var(--medium);
+  font-size: 1rem;
+  letter-spacing: 0;
+  line-height: 1.5rem;
 }
 
 .previewImage {
@@ -52,6 +39,63 @@
   background-position: 50% 50%;
   background-repeat: no-repeat;
   object-fit: cover;
+  display: none;
+}
+
+.imageUploaded {
+  .dropzoneAdvice {
+    display: none;
+  }
+
+  .previewImage {
+    display: block;
+  }
+}
+
+.dropzone {
+  background-color: rgba(255, 255, 255, 0.95);
+  width: 100%;
+  height: 400px;
+  overflow: hidden;
+  position: relative;
+  text-align: center;
+  color: #A3A3A3;
+  font-weight: 500;
+  border-radius: 4px;
+  border: 1px solid #EBEBEB;
+
+  &.dragEntered {
+    border: 1px solid #0324FF;
+    background-color: #EFEFEF;
+
+    .dropzoneAdvice {
+      display: block;
+    }
+
+    .previewImage {
+      display: none;
+    }
+  }
+
+  &:hover {
+    cursor: pointer;
+
+    .dropzoneAdvice {
+      display: block;
+    }
+
+    .previewImage {
+      opacity: 0.05;
+    }
+  }
+}
+
+@media (--md-down) {
+  .dropzone {
+    height: auto;
+    min-height: 180px;
+    font-size: 14px;
+  }
 }
 
 @media (--md-down) {
@@ -64,44 +108,4 @@
   .previewImage {
     height: 100%;
   }
-}
-
-.dropzoneAdvice {
-  position: absolute;
-  top: 55%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 100%;
-
-  img {
-    display: none;
-  }
-}
-
-.dropzoneAdviceNoImage {
-  position: absolute;
-  top: 55%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 100%;
-
-  img {
-    display: inline-block;
-    opacity: 1;
-  }
-}
-
-.hide {
-  display: none;
-}
-
-.icon {
-  margin-bottom: 2em;
-}
-
-.uploadAdvice {
-  font-weight: 500;
-  font-size: 16px;
-  letter-spacing: 0;
-  line-height: 24px;
 }

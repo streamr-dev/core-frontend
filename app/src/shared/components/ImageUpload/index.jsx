@@ -25,6 +25,7 @@ type Props = {
     setImageToUpload?: (File) => void,
     originalImage?: ?string,
     dropzoneClassname?: string,
+    className?: string,
 }
 
 type State = {
@@ -87,6 +88,7 @@ class ImageUpload extends Component<Props, State> {
         this.setState({
             imageUploading: false,
             imageUploaded: true,
+            dragEntered: false,
         })
     }
 
@@ -105,6 +107,7 @@ class ImageUpload extends Component<Props, State> {
         this.setState({
             imageUploading: false,
             imageUploaded: false,
+            dragEntered: false,
         })
     }
 
@@ -112,29 +115,21 @@ class ImageUpload extends Component<Props, State> {
 
     unmounted = false
 
-    determineStyles = (hasImage: boolean) => {
-        const { imageUploaded } = this.state
-
-        if ((hasImage) || (imageUploaded)) {
-            return styles.dropzoneAdvice
-        }
-
-        return styles.dropzoneAdviceNoImage
-    }
-
     render() {
-        const { originalImage, dropzoneClassname } = this.props
+        const { originalImage, dropzoneClassname, className } = this.props
         const { imageUploading, imageUploaded, dragEntered } = this.state
         const srcImage = this.getPreviewImage() || originalImage
         return (
             <div
-                className={styles.container}
+                className={cx(styles.container, className)}
             >
                 <Dropzone
                     multiple={false}
                     className={cx(
                         styles.dropzone,
                         dropzoneClassname, {
+                            [styles.dropzoneAdviceImageLoading]: !!imageUploading,
+                            [styles.imageUploaded]: !imageUploading && (!!srcImage || imageUploaded),
                             [styles.dragEntered]: dragEntered,
                         },
                     )}
@@ -146,12 +141,7 @@ class ImageUpload extends Component<Props, State> {
                     accept="image/jpeg, image/png"
                     maxSize={maxFileSizeForImageUpload}
                 >
-                    <div
-                        className={imageUploading
-                            ? styles.dropzoneAdviceImageLoading
-                            : this.determineStyles(!!srcImage)
-                        }
-                    >
+                    <div className={styles.dropzoneAdvice}>
                         <PngIcon
                             className={styles.icon}
                             name="imageUpload"
