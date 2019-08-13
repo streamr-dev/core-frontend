@@ -43,7 +43,7 @@ module.exports = {
         canvasModules: routes.docsCanvasModules(),
         core: routes.docsCore(),
         dashboards: routes.docsDashboards(),
-        // dataToken: routes.docsDataToken(),
+        dataToken: routes.docsDataToken(),
         gettingStarted: routes.docsGettingStarted(),
         introduction: routes.docsIntroduction(),
         main: routes.docs(),

@@ -17,7 +17,7 @@ const navigationLinks: NavigationLink = {
     Dashboards: links.docs.dashboards,
     Products: links.docs.products,
     Tutorials: links.docs.tutorials,
-    // 'DATA Token': links.docs.dataToken,
+    'DATA Token': links.docs.dataToken,
     Core: links.docs.core,
     Marketplace: links.docs.marketplace,
     // RunningNode: links.docs.runningNode,

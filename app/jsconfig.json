@@ -7,7 +7,6 @@
       "$app/**/*": ["./**/*"],
       "$auth/**/*": ["src/auth/**/*"],
       "$docs/**/*": ["src/docs/**/*"],
-      "$newdocs/**/*": ["src/newdocs/**/*"],
       "$mp/**/*": ["src/marketplace/**/*"],
       "$userpages/**/*": ["src/userpages/**/*"],
       "$routes**/*": ["src/routes/**/*"],

@@ -44,7 +44,7 @@ import CanvasModulesDocsPage from '$docs/components/DocsPages/CanvasModules'
 import DashboardsDocsPage from '$docs/components/DocsPages/Dashboards'
 import ProductsDocsPage from '$docs/components/DocsPages/Products'
 import TutorialsDocsPage from '$docs/components/DocsPages/Tutorials'
-// import DataTokenDocsPage from '$docs/components/DocsPages/DataToken'
+import DataTokenDocsPage from '$docs/components/DocsPages/DataToken'
 import CoreDocsPage from '$docs/components/DocsPages/Core'
 import MarketplaceDocsPage from '$docs/components/DocsPages/Marketplace'
 // import RunningNodeDocsPage from '$docs/components/DocsPages/RunningNode'
@@ -144,7 +144,7 @@ const DocsRouter = () => ([
     <Route exact path={docs.dashboards} component={DashboardsDocsPage} key="DashboardsPage" />,
     <Route exact path={docs.products} component={ProductsDocsPage} key="ProductsPage" />,
     <Route exact path={docs.tutorials} component={TutorialsDocsPage} key="TutorialsPage" />,
-    // <Route exact path={docs.dataToken} component={DataTokenDocsPage} key="DataTokenPage" />,
+    <Route exact path={docs.dataToken} component={DataTokenDocsPage} key="DataTokenPage" />,
     <Route exact path={docs.core} component={CoreDocsPage} key="CorePage" />,
     <Route exact path={docs.marketplace} component={MarketplaceDocsPage} key="MarketplacePage" />,
     // <Route exact path={docs.runningNode} component={RunningNodeDocsPage} key="RunningNodePage" />,
