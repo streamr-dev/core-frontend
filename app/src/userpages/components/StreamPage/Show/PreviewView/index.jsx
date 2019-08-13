@@ -53,11 +53,11 @@ export class PreviewView extends Component<Props, State> {
                 <Fragment>
                     <Translate value="userpages.streams.edit.preview.description" className={styles.longText} tag="p" />
                     {!hasData ?
-                        <Fragment>
+                        <p className={styles.longText}>
                             <Translate value="userpages.streams.edit.preview.noDataPre" />
                             <Link to={routes.docsGettingStarted()}>Docs</Link>
                             <Translate value="userpages.streams.edit.preview.noDataEnd" />
-                        </Fragment>
+                        </p>
                         : null
                     }
                     <div
