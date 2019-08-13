@@ -10,12 +10,12 @@ type Props = {
 
 const Modal = ({ children }: Props) => {
     const { modal } = useContext(EditControllerContext)
-    const { id, save, close } = modal || {}
+    const { id, save, cancel } = modal || {}
 
     return (id && children) ? children({
         id,
         save,
-        close,
+        cancel,
     }) : null
 }
 

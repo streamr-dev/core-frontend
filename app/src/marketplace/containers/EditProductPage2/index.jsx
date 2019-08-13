@@ -14,7 +14,7 @@ import ProductController from '../ProductController'
 import useProduct from '../ProductController/useProduct'
 import usePending from '$shared/hooks/usePending'
 
-import { Provider as EditControllerProvider, Context as EditControllerContext, editorStates } from './EditControllerProvider'
+import { Provider as EditControllerProvider, Context as EditControllerContext } from './EditControllerProvider'
 import Editor from './Editor'
 import Preview from './Preview'
 import ProductEditorDebug from './ProductEditorDebug'
@@ -23,10 +23,9 @@ import Modal from './Modal'
 import styles from './editProductPage.pcss'
 
 const EditProductPage = ({ product }: { product: Product }) => {
-    const { isPreview, setIsPreview, editorState, save } = useContext(EditControllerContext)
+    const { isPreview, setIsPreview, isSaving, save } = useContext(EditControllerContext)
     const { isPending } = usePending('product.SAVE')
     console.log(product)
-    const disabled = editorState !== editorStates.EDIT
 
     const actions = useMemo(() => {
         const buttons = {
@@ -35,13 +34,13 @@ const EditProductPage = ({ product }: { product: Product }) => {
                 color: 'link',
                 outline: true,
                 onClick: save,
-                disabled,
+                disabled: isSaving,
             },
             preview: {
                 title: 'Preview',
                 outline: true,
                 onClick: () => setIsPreview(true),
-                disabled,
+                disabled: isSaving,
             },
             continue: {
                 title: 'Continue',
@@ -56,12 +55,12 @@ const EditProductPage = ({ product }: { product: Product }) => {
                 title: 'Edit',
                 outline: true,
                 onClick: () => setIsPreview(false),
-                disabled,
+                disabled: isSaving,
             }
         }
 
         return buttons
-    }, [isPreview, setIsPreview, save, disabled])
+    }, [isPreview, setIsPreview, save, isSaving])
 
     return (
         <CoreLayout

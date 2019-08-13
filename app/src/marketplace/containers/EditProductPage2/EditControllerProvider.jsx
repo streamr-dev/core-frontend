@@ -3,53 +3,51 @@
 import React, { type Node, type Context, useState, useMemo, useCallback, useContext } from 'react'
 
 import type { Product } from '$mp/flowtype/product-types'
+import Notification from '$shared/utils/Notification'
+import { NotificationIcon } from '$shared/utils/constants'
+import usePending from '$shared/hooks/usePending'
+import { putProduct } from '$mp/modules/editProduct/services'
 
 import { Context as ValidationContext, ERROR } from '../ProductController/ValidationContextProvider'
-
-export const editorStates = {
-    EDIT: 'edit',
-    CONFIRM_NO_COVER_IMAGE: 'confirmNocoverImage',
-    SAVE: 'save',
-}
 
 type ContextProps = {
     isPreview: boolean,
     setIsPreview: (boolean | Function) => void,
-    editorState: $Keys<typeof editorStates>,
+    isSaving: boolean,
     save: () => void | Promise<void>,
-    cancel: () => void,
     modal?: {
         id: string,
         save: () => void | Promise<void>,
-        close: () => void,
+        cancel: () => void,
     } | null,
 }
 
 const EditControllerContext: Context<ContextProps> = React.createContext({})
 
 function useEditController(product: Product) {
-    const [editorState, setEditorState]: [any, (any) => void] = useState(editorStates.EDIT)
+    const [isSaving, setIsSaving] = useState(false)
     const [isPreview, setIsPreview] = useState(false)
     const [modal, setModal] = useState(null)
+    const savePending = usePending('product.SAVE')
 
     const closeModal = useCallback(() => {
         setModal(null)
     }, [setModal])
 
-    const showModal = useCallback(async (id, save) => {
-        await new Promise((resolve) => {
-            setModal({
-                id,
-                save: () => {
-                    save()
-                    resolve()
-                },
-                close: () => {
-                    resolve()
-                    closeModal()
-                },
-            })
-        })
+    const showConfirmModal = useCallback(async () => {
+        const result = await new Promise((resolve) => setModal({
+            id: 'confirm',
+            save: () => {
+                resolve(true)
+                closeModal()
+            },
+            cancel: () => {
+                resolve(false)
+                closeModal()
+            },
+        }))
+
+        return result
     }, [setModal, closeModal])
 
     const { status } = useContext(ValidationContext)
@@ -63,75 +61,51 @@ function useEditController(product: Product) {
             }))
     ), [status])
 
-    /* const saveFn = useMemo(() => {
-        if (editorState === editorStates.EDIT) {
-            return ({ product: p }) => {
-                if (!p.imageUrl) {
-                    setEditorState(editorStates.CONFIRM_NO_COVER_IMAGE)
-                } else {
-                    setEditorState(editorStates.SAVE)
-                }
-            }
-        }
-
-        if (editorState === editorStates.CONFIRM_NO_COVER_IMAGE) {
-            return () => {
-                setEditorState(editorStates.SAVE)
-            }
-        }
-
-        if (editorState === editorStates.SAVE) {
-            return () => {
-                alert('save')
-            }
-        }
-
-        throw new Error('unknow state!')
-    }, [editorState])
-
-    const saveX = useCallback(() => {
-        // $FlowFixMe
-        saveFn({
-            product,
-            errors,
-        })
-    }, [saveFn, product, errors])
-    */
-
     const save = useCallback(async () => {
+        setIsSaving(true)
+
+        // Notify missing fields
         if (errors.length > 0) {
-            console.log(errors)
-        } else if (!product.imageUrl) {
-            /* const x = new Promise((resolve) => {
-                showModal('confirm', async () => {
-                    closeModal()
-                    resolve()
+            errors.forEach(({ message }) => {
+                Notification.push({
+                    title: message,
+                    icon: NotificationIcon.ERROR,
                 })
             })
 
-            await x */
-            await showModal('confirm', () => {
-                closeModal()
-            })
-            alert('moi')
-        }
-    }, [errors, product, closeModal])
+            setIsSaving(false)
+        } else if (!product.imageUrl) {
+            // confirm missing cover image
+            const accepted = await showConfirmModal()
 
-    const cancel = useCallback(() => setEditorState(editorStates.EDIT), [setEditorState])
+            if (accepted) {
+                // do actual asaving
+                savePending.wrap(async () => {
+                    // save product
+                    await putProduct(product, product.id || '')
+
+                    // TODO: upload image
+
+                    // TODO: check contract product for price change (if published)
+                    setIsSaving(false)
+                })
+            } else {
+                setIsSaving(false)
+            }
+        }
+    }, [errors, product, showConfirmModal, savePending])
 
     return useMemo(() => ({
         isPreview,
         setIsPreview,
-        editorState,
+        isSaving,
         save,
-        cancel,
         modal,
     }), [
         isPreview,
         setIsPreview,
-        editorState,
+        isSaving,
         save,
-        cancel,
         modal,
     ])
 }
