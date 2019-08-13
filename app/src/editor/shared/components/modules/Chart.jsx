@@ -1,22 +1,14 @@
-/* eslint-disable */
-
 import React, { useRef, useCallback, useState, useEffect } from 'react'
-import cx from 'classnames'
 import throttle from 'lodash/throttle'
-import debounce from 'lodash/debounce'
-import Highcharts from 'highcharts/highstock'
 
 import useIsMounted from '$shared/hooks/useIsMounted'
 import Chart from '$editor/shared/components/Chart'
-import HighchartsReact from 'highcharts-react-official'
 import ModuleSubscription from '$editor/shared/components/ModuleSubscription'
-import SvgIcon from '$shared/components/SvgIcon'
 import UiSizeConstraint from '../UiSizeConstraint'
-import ResizeWatcher from '$editor/canvas/components/Resizable/ResizeWatcher'
 
 const ChartModule2 = (props) => {
-    const { isActive, canvas, module } = props
-    
+    const { isActive, module } = props
+
     const subscriptionRef = useRef(null)
 
     const queuedDatapointsRef = useRef([])
@@ -44,11 +36,11 @@ const ChartModule2 = (props) => {
                 yAxis: 0,
             },
         }))
-    }, [])
+    }, [setSeries])
 
     const isMounted = useIsMounted()
 
-    const flushDatapoints = useCallback(throttle(() => {
+    const flushDatapointsRef = useRef(throttle(() => {
         if (!isMounted()) {
             return
         }
@@ -63,12 +55,12 @@ const ChartModule2 = (props) => {
                 [x, y],
             ],
         }), seriesData))
-    }, 250), [])
+    }, 250))
 
     const onDatapoint = useCallback((payload) => {
         queuedDatapointsRef.current.push(payload)
-        flushDatapoints()
-    }, [])
+        flushDatapointsRef.current()
+    }, [flushDatapointsRef, queuedDatapointsRef])
 
     const onMessage = useCallback((payload) => {
         switch (payload.type) {
@@ -81,45 +73,44 @@ const ChartModule2 = (props) => {
             default:
                 // noop
         }
-    }, [])
+    }, [onDatapoint, onSeries])
+
+    const onSeriesRef = useRef()
+    onSeriesRef.current = onSeries
 
     const init = useCallback(async () => {
         const { current: subscription } = subscriptionRef
 
-        if (!subscription || !isActive || (canvas && canvas.adhoc)) {
-            return
-        }
+        if (!subscription || !isActive) { return }
 
         const { initRequest: { series } } = await subscription.send({
             type: 'initRequest',
         })
 
-        if (isMounted()) {
-            series.forEach(onSeries)
-        }
-    }, [isActive, canvas])
+        if (!isMounted()) { return }
+        series.forEach(onSeriesRef.current)
+    }, [onSeriesRef, subscriptionRef, isActive, isMounted])
 
     const initRef = useRef()
     initRef.current = init
-
     useEffect(() => {
         // Run init onMount. Ignore further updates.
         initRef.current()
-    }, [])
+    }, [initRef])
 
     return (
         <UiSizeConstraint minWidth={300} minHeight={240}>
-                <ModuleSubscription
-                    {...props}
-                    onActiveChange={init}
-                    onMessage={onMessage}
-                    ref={subscriptionRef}
-                />
-                <Chart
-                    datapoints={seriesData}
-                    options={module.options || {}}
-                    series={series}
-                />
+            <ModuleSubscription
+                {...props}
+                onActiveChange={init}
+                onMessage={onMessage}
+                ref={subscriptionRef}
+            />
+            <Chart
+                datapoints={seriesData}
+                options={module.options || {}}
+                series={series}
+            />
         </UiSizeConstraint>
     )
 }
