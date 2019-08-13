@@ -353,6 +353,12 @@ msgstr "This stream's most recent data is shown here live. Use the Inspector to 
 msgid "userpages##streams##edit##preview##inspect"
 msgstr "Inspect"
 
+msgid "userpages##streams##edit##preview##noDataPre"
+msgstr "This Stream has no data yet. Check out the "
+
+msgid "userpages##streams##edit##preview##noDataEnd"
+msgstr " for a guide to push data to your stream."
+
 msgid "userpages##streams##delete##confirmTitle"
 msgstr "Delete this stream?"
 
