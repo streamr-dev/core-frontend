@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback, useState } from 'react'
-import CanvasModuleHelp from '$newdocs/components/CanvasModuleHelp'
+import CanvasModuleHelp from '$docs/components/CanvasModuleHelp'
 import useIsMounted from '$shared/hooks/useIsMounted'
 
 function ModuleHelp({ module: m }) {
@@ -11,7 +11,7 @@ function ModuleHelp({ module: m }) {
     const hasCurrentContent = currentHelpContent != null
 
     const loadHelp = useCallback(() => {
-        import(`$newdocs/content/canvasModules/${cleanedName}-${moduleId}.jsx`).then((result) => {
+        import(`$docs/content/canvasModules/${cleanedName}-${moduleId}.jsx`).then((result) => {
             if (!isMounted()) { return }
             setHelpContent((state) => ({
                 ...state,

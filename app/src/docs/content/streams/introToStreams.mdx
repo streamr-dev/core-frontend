@@ -1,0 +1,94 @@
+import { Link } from 'react-router-dom'
+
+import links from '$shared/../links'
+
+## Intro to streams
+
+All of the data in the Streamr network is contained inside individual streams. A stream is simply a sequence of data points in time. The data may originate, for example from machines on the factory floor, sensors in a smart city, in-house databases or systems, or from commercial streaming data feeds.
+
+Streams have the following properties:
+- Any kind of realtime data can be stored in it.
+- The data will always be retrieved in the correct order.
+- The data is persisted on the Streamr network and identifiable by unique ID.
+
+Some common use cases for streams:
+- Sensory readings of speed and orientation
+- Geolocation
+- Ambient temperature and humidity 
+- Social media messages
+- Stock market events
+- Mobile ad impressions
+
+These are just a few examples. There is virtually no limit on the kind, format, or quantity of data you can feed into Streamr, even digital images, streaming video, or other domain-specific data could be pushed into a stream.
+
+Streams implement a publish-subscribe paradigm, or pub/sub for short. A stream can receive data from many sources (or publishers), and there can be several listeners who subscribe to a stream. There are several variations on the possible pub/sub topologies, such as many-to-one, one-to-many, or many-to-many. Streamr supports all of these.
+
+If you want to try it out already, you can dive into our tutorial on <Link to={`${links.docs.tutorials}#building-a-simple-pub-sub-system`}>building a simple pub/sub system</Link> with Streamr.
+
+### Example stream
+
+Here’s an example of what a small part of a stream could look like. Each row shows one data point, and the columns correspond to the timestamp followed by two data fields, a measurement of the operating temperature and the number of rotations per minute (RPM).
+
+| Timestamp                | Temperature   | RPM  |
+| ------------------------ |:-------------:| ----:|
+| 2019-08-01 11:30:01.012  | 312.56        | 3550 |
+| 2019-08-01 11:30:02.239  | 312.49        | 3549 |
+| 2019-08-01 11:30:04.105  | 312.42        | 3543 |
+| 2016-02-01 11:30:08.122  | 313.21        | 3565 |
+| 2016-02-01 11:30:11.882  | 317.45        | 3602 |
+
+<section id ="stream-data-fields" />
+
+### Stream data fields
+
+A field is a kind of placeholder for an individual piece of data, from a single data point. Each data point contains at least one data field, but you can have as many fields per data point as required.
+
+For example, here's a data point in a stock market stream.
+
+```
+{
+  "Symbol": "PFFT",
+  "EventType": 1,
+  "OrderId": 6454321,
+  "Direction": "Up",
+  "Trade": {"Price": 118.55, "Size": 100},
+  "Ask": [
+          {"Price": 118.6, "Size": 22500},
+          {"Price": 118.65, "Size": 18000},
+          {"Price": 118.7, "Size": 13000},
+          {"Price": 118.8, "Size": 8000},
+          {"Price": 119, "Size": 45000}
+          ],
+  "Bid": [
+          {"Price": 118.5, "Size": 16500},
+          {"Price": 118.45, "Size": 11000},
+          {"Price": 118.4, "Size": 14200},
+          {"Price": 118.2, "Size": 19000},
+          {"Price": 118, "Size": 50000}
+        ]
+}
+```
+
+Given the structure of this data point, the stream's fields could be configured as follows:
+
+| Field                | Field type    |
+| -------------------- |:-------------:|
+| Symbol               | String        |
+| EventType            | Number        |
+| OrderId              | Number        |
+| Direction            | String        |
+| Trade                | Object        |
+| Ask                  | List          |
+| Bid                  | List          |
+
+### Data field types
+
+There’s a number of built-in data types that can be used in a stream. These are:
+
+- **Number:** A numeric data type internally stored as a double precision (64-bit) float.
+- **Boolean:** A logical data type with two possible values, True and False. In Streamr, a numeric value exactly equal to one represents logical truth. Anything else is interpreted as a logical falsehood.
+- **String:** A sequence of zero or more alphabetical characters.
+- **Object:** A collection of key-value pairs. Each key is a string, and the value can be of any built-in data type (even another object). Object is equivalent to Java's 'Map'.
+- **List:** An ordered collection of zero or more elements. List is equivilent to an array.
+
+Field types can be freely mixed in a single data point. And you can freely add new fields to an existing stream; you don’t have to know what fields you might eventually need. A single data point can be of any size within reason, and a stream can grow indefinitely when extended by new data points.

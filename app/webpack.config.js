@@ -244,6 +244,9 @@ module.exports = {
                     'src/docs/docsEditingGuide.md',
                     // skip sketch files
                     '**/*.sketch',
+                    'src/docs/scripts/*.*',
+                    // upcoming docs
+                    'src/docs/components/DocsPages/RunningNode/index.jsx',
                 ],
             },
         }),
@@ -297,7 +300,6 @@ module.exports = {
             $auth: path.resolve(__dirname, 'src/auth/'),
             $docs: path.resolve(__dirname, 'src/docs/'),
             $mp: path.resolve(__dirname, 'src/marketplace/'),
-            $newdocs: path.resolve(__dirname, 'src/newdocs/'),
             $userpages: path.resolve(__dirname, 'src/userpages/'),
             $shared: path.resolve(__dirname, 'src/shared/'),
             $editor: path.resolve(__dirname, 'src/editor/'),

@@ -75,23 +75,20 @@ const Nav = compose(
                 label={I18n.t('general.docs')}
                 to={routes.docs()}
             >
-                <Link to={routes.docsIntroduction()}>
-                    <Translate value="general.introduction" />
-                </Link>
                 <Link to={routes.docsGettingStarted()}>
                     <Translate value="general.gettingStarted" />
                 </Link>
-                <Link to={routes.docsVisualEditor()}>
-                    <Translate value="general.editor" />
+                <Link to={routes.docsStreams()}>
+                    <Translate value="general.streams" />
                 </Link>
-                <Link to={routes.docsStreamrEngine()}>
-                    <Translate value="general.engine" />
+                <Link to={routes.docsCanvases()}>
+                    <Translate value="general.canvases" />
                 </Link>
-                <Link to={routes.docsDataMarketplace()}>
-                    <Translate value="general.marketplace" />
+                <Link to={routes.docsDashboards()}>
+                    <Translate value="general.dashboards" />
                 </Link>
-                <Link to={routes.docsApi()}>
-                    <Translate value="general.streamrApi" />
+                <Link to={routes.docsProducts()}>
+                    <Translate value="general.products" />
                 </Link>
             </DropdownItem>
             {!!currentUser && (

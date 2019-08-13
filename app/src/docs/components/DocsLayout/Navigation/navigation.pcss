@@ -21,6 +21,15 @@ ul.subNavList {
 
 ul.navList {
   padding-top: 1em;
+  max-height: 100vh;
+  overflow: auto;
+  overflow: scroll;
+  overflow-x: hidden;
+
+  &::-webkit-scrollbar {
+    width: 0;
+    background: transparent;
+  }
 }
 
 ul.subNavList {

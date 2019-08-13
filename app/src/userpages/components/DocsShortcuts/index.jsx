@@ -8,23 +8,20 @@ import routes from '$routes'
 
 const DocsShortcuts = () => (
     <Onboarding title="Docs">
-        <Link to={routes.docsIntroduction()} target="_blank" rel="noopener noreferrer">
-            <Translate value="general.introduction" />
-        </Link>
         <Link to={routes.docsGettingStarted()} target="_blank" rel="noopener noreferrer">
             <Translate value="general.gettingStarted" />
         </Link>
-        <Link to={routes.docsVisualEditor()} target="_blank" rel="noopener noreferrer">
-            <Translate value="general.editor" />
+        <Link to={routes.docsStreams()} target="_blank" rel="noopener noreferrer">
+            <Translate value="general.streams" />
         </Link>
-        <Link to={routes.docsStreamrEngine()} target="_blank" rel="noopener noreferrer">
-            <Translate value="general.engine" />
+        <Link to={routes.docsCanvases()} target="_blank" rel="noopener noreferrer">
+            <Translate value="general.canvases" />
         </Link>
-        <Link to={routes.docsDataMarketplace()} target="_blank" rel="noopener noreferrer">
-            <Translate value="general.marketplace" />
+        <Link to={routes.docsDashboards()} target="_blank" rel="noopener noreferrer">
+            <Translate value="general.dashboards" />
         </Link>
-        <Link to={routes.docsApi()} target="_blank" rel="noopener noreferrer">
-            <Translate value="general.streamrApi" />
+        <Link to={routes.docsProducts()} target="_blank" rel="noopener noreferrer">
+            <Translate value="general.products" />
         </Link>
         {null}
         <Link href={routes.communityTelegram()} target="_blank" rel="noopener noreferrer">
