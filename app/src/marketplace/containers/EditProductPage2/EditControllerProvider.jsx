@@ -64,6 +64,8 @@ function useEditController(product: Product) {
     const save = useCallback(async () => {
         setIsSaving(true)
 
+        let doSave = true
+
         // Notify missing fields
         if (errors.length > 0) {
             errors.forEach(({ message }) => {
@@ -73,25 +75,25 @@ function useEditController(product: Product) {
                 })
             })
 
-            setIsSaving(false)
+            doSave = false
         } else if (!product.imageUrl) {
             // confirm missing cover image
-            const accepted = await showConfirmModal()
+            doSave = await showConfirmModal()
+        }
 
-            if (accepted) {
-                // do actual asaving
-                savePending.wrap(async () => {
-                    // save product
-                    await putProduct(product, product.id || '')
+        if (doSave) {
+            // do actual saving
+            savePending.wrap(async () => {
+                // save product
+                await putProduct(product, product.id || '')
 
-                    // TODO: upload image
+                // TODO: upload image
 
-                    // TODO: check contract product for price change (if published)
-                    setIsSaving(false)
-                })
-            } else {
+                // TODO: check contract product for price change (if published)
                 setIsSaving(false)
-            }
+            })
+        } else {
+            setIsSaving(false)
         }
     }, [errors, product, showConfirmModal, savePending])
 

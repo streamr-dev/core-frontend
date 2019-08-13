@@ -72,6 +72,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
                     altMobileLayout
                 />
             )}
+            loadingClassname={styles.loadingIndicator}
             loading={isPending}
         >
             <ProductEditorDebug />
