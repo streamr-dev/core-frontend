@@ -189,7 +189,7 @@ export default class MapModule extends React.PureComponent<Props, State> {
 
     getMarkerFromMessage = (msg: Message): Marker => ({
         id: msg.id,
-        label: msg.label || msg.id,
+        label: msg.label,
         lat: msg.lat,
         long: msg.lng,
         rotation: msg.dir,
