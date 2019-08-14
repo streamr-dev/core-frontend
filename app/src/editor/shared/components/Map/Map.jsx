@@ -210,8 +210,8 @@ export default class Map extends React.PureComponent<Props, State> {
                                         [styles.disabledControl]: !this.state.touched,
                                     })}
                                     onClick={this.resetTouched}
-                                    aria-label="Recenter"
-                                    title="Recenter"
+                                    aria-label="Restart Autozoom"
+                                    title="Restart Autozoom"
                                 >
                                     &#9678;
                                 </button>
