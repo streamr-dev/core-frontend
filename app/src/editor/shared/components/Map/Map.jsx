@@ -6,7 +6,7 @@ import 'leaflet/dist/leaflet.css'
 import { Map as LeafletMap, ImageOverlay, TileLayer, Tooltip, Polyline, type LatLngBounds } from 'react-leaflet'
 import L from 'leaflet'
 import HeatmapLayer from 'react-leaflet-heatmap-layer'
-import throttle from 'lodash/throttle'
+import debounce from 'lodash/debounce'
 
 import { type Ref } from '$shared/flowtype/common-types'
 import ResizeWatcher from '$editor/canvas/components/Resizable/ResizeWatcher'
@@ -62,20 +62,28 @@ type Props = {
 
 type State = {
     touched: boolean,
-    bounds: ?LatLngBounds,
 }
 
 export default class Map extends React.PureComponent<Props, State> {
     ref: Ref<LeafletMap> = React.createRef()
     unmounted: boolean = false
+    bounds: ?LatLngBounds = null
 
     state = {
         touched: false,
-        bounds: null,
     }
 
     componentWillUnmount() {
         this.unmounted = true
+    }
+
+    componentDidMount() {
+        const { current: map } = this.ref
+        if (!map) { return }
+        // detect clicks on zoom control
+        map.leafletElement.zoomControl.getContainer().addEventListener('click', () => {
+            this.markTouched()
+        }, true)
     }
 
     onResize = () => {
@@ -87,41 +95,37 @@ export default class Map extends React.PureComponent<Props, State> {
     }
 
     markTouched = () => {
-        this.setState({
-            touched: true,
+        this.setState(({ touched }) => {
+            if (touched) { return null }
+            return {
+                touched: true,
+            }
         })
     }
 
-    calculateBounds = throttle((markers: Array<Marker>, autoZoom: boolean, touched: boolean) => {
-        let bounds = null
+    calculateBounds = (markers: Array<Marker>, autoZoom: boolean) => {
+        if (this.unmounted) { return }
+        let { bounds } = this
 
-        if (autoZoom && markers.length > 0 && !touched) {
+        if (autoZoom && markers.length > 0 && !this.state.touched) {
             const positions = markers.map((m) => [m.lat, m.long])
-            bounds = L.latLngBounds(positions)
+            bounds = L.latLngBounds(positions).pad(0.2)
         }
-
-        if (this.unmounted) {
-            return
-        }
-        if (this.state.bounds !== bounds) {
-            this.setState({
-                bounds,
-            })
-        }
-    }, 1000)
-
-    onViewportChanged = () => {
-        const { onViewportChanged, zoom, centerLat, centerLong } = this.props
-        const { current: map } = this.ref
-        if (map) {
-            const newZoom = map.leafletElement.getZoom()
-            const newCenter = map.leafletElement.getCenter()
-
-            if (newZoom !== zoom || newCenter.lat !== centerLat || newCenter.lng !== centerLong) {
-                onViewportChanged(newCenter.lat, newCenter.lng, newZoom)
-            }
-        }
+        return bounds
     }
+
+    onViewportChanged = debounce(() => { // debounce as zoomEnd/moveEnd fire in quick succession
+        if (this.unmounted) { return }
+        const { current: map } = this.ref
+        if (!map) { return }
+        const { onViewportChanged, zoom, centerLat, centerLong } = this.props
+        const newZoom = map.leafletElement.getZoom()
+        const newCenter = map.leafletElement.getCenter()
+
+        if (newZoom !== zoom || newCenter.lat !== centerLat || newCenter.lng !== centerLong) {
+            onViewportChanged(newCenter.lat, newCenter.lng, newZoom)
+        }
+    }, 250)
 
     render() {
         const {
@@ -146,7 +150,6 @@ export default class Map extends React.PureComponent<Props, State> {
             radius,
             maxIntensity,
         } = this.props
-        const { touched, bounds } = this.state
         const mapCenter = [centerLat, centerLong]
 
         /* eslint-disable-next-line max-len */
@@ -164,7 +167,7 @@ export default class Map extends React.PureComponent<Props, State> {
         const markerArray: Array<Marker> = Object
             .values(markers)
 
-        this.calculateBounds(markerArray, autoZoom, touched)
+        const bounds = this.calculateBounds(markerArray, autoZoom)
 
         return (
             <UiSizeConstraint minWidth={368} minHeight={224}>
