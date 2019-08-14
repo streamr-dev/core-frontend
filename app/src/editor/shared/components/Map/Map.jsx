@@ -212,6 +212,7 @@ export default class Map extends React.PureComponent<Props, State> {
                                     onClick={this.resetTouched}
                                     aria-label="Restart Autozoom"
                                     title="Restart Autozoom"
+                                    type="button"
                                 >
                                     &#9678;
                                 </button>
