@@ -5,6 +5,7 @@ import cx from 'classnames'
 import 'leaflet/dist/leaflet.css'
 import { Map as LeafletMap, ImageOverlay, TileLayer, Tooltip, Polyline, type LatLngBounds } from 'react-leaflet'
 import L from 'leaflet'
+import Control from 'react-leaflet-control'
 import HeatmapLayer from 'react-leaflet-heatmap-layer'
 import debounce from 'lodash/debounce'
 
@@ -103,6 +104,10 @@ export default class Map extends React.PureComponent<Props, State> {
         })
     }
 
+    resetTouched = () => {
+        this.setState({ touched: false })
+    }
+
     calculateBounds = (markers: Array<Marker>, autoZoom: boolean) => {
         if (this.unmounted) { return }
         let { bounds } = this
@@ -112,6 +117,13 @@ export default class Map extends React.PureComponent<Props, State> {
             bounds = L.latLngBounds(positions).pad(0.2)
         }
         return bounds
+    }
+
+    onKeyDown = (event: KeyboardEvent) => {
+        if (event.key.startsWith('Arrow') || event.key === '+' || event.key === '-') {
+            // mark changed for leaflet handled keys
+            this.markTouched()
+        }
     }
 
     onViewportChanged = debounce(() => { // debounce as zoomEnd/moveEnd fire in quick succession
@@ -174,7 +186,7 @@ export default class Map extends React.PureComponent<Props, State> {
                 <div
                     className={cx(className)}
                     onMouseDown={this.markTouched}
-                    onKeyDown={this.markTouched}
+                    onKeyDown={this.onKeyDown}
                     onWheel={this.markTouched}
                     role="presentation"
                 >
@@ -191,6 +203,20 @@ export default class Map extends React.PureComponent<Props, State> {
                         onMoveEnd={this.onViewportChanged}
                         onZoomEnd={this.onViewportChanged}
                     >
+                        {this.props.autoZoom && (
+                            <Control position="topleft">
+                                <button
+                                    className={cx(styles.control, {
+                                        [styles.disabledControl]: !this.state.touched,
+                                    })}
+                                    onClick={this.resetTouched}
+                                    aria-label="Recenter"
+                                    title="Recenter"
+                                >
+                                    &#9678;
+                                </button>
+                            </Control>
+                        )}
                         <ResizeWatcher onResize={this.onResize} />
                         {isHeatmap && markerArray.length > 0 && (
                             <HeatmapLayer
