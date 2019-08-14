@@ -228,7 +228,7 @@ export default class Map extends React.PureComponent<Props, State> {
                                         color={markerColor}
                                     >
                                         <Tooltip direction="top">
-                                            {marker.id}
+                                            {marker.label || marker.id}
                                         </Tooltip>
                                     </CustomMarker>
                                     {tracePoints && tracePoints.length > 0 && (
