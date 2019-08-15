@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useRef, useCallback, useEffect, useState } from 'react'
+import React, { useRef, useCallback, useEffect, useState, useMemo } from 'react'
 import cx from 'classnames'
 import 'leaflet/dist/leaflet.css'
 import { Map as LeafletMap, ImageOverlay, TileLayer, Tooltip, Polyline, type LatLngBounds } from 'react-leaflet'
@@ -75,10 +75,21 @@ function getTileUrl(skin) {
     return '//{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png'
 }
 
+function useDebouncedCallback(fn, deps, ...args) {
+    const debouncedFn = useCallback(debounce(fn, ...args))
+
+    const debouncedFnRef = useRef()
+    if (debouncedFnRef.current && debouncedFnRef.current !== debouncedFn) {
+        // cancel existing debounced fn if changing callback
+        debouncedFnRef.current.cancel()
+    }
+    debouncedFnRef.current = debouncedFn
+    return debouncedFn
+}
+
 export default function Map(props: Props) {
     const isMounted = useIsMounted()
     const ref: Ref<LeafletMap> = useRef()
-    const boundsRef: Ref<LatLngBounds> = useRef()
 
     const [touched, setTouched] = useState(false)
     const markTouched = useCallback(() => setTouched(true), [setTouched])
@@ -111,7 +122,8 @@ export default function Map(props: Props) {
 
     const propsRef = useRef(props)
 
-    const onViewportChangedFn = useCallback(() => {
+    // debounce as zoomEnd/moveEnd fire in quick succession
+    const onViewportChanged = useDebouncedCallback(() => {
         if (!isMounted()) { return }
         const { onViewportChanged: onViewportChangedProp, zoom, centerLat, centerLong } = propsRef.current
         const { current: map } = ref
@@ -122,25 +134,7 @@ export default function Map(props: Props) {
         if (newZoom !== zoom || newCenter.lat !== centerLat || newCenter.lng !== centerLong) {
             onViewportChangedProp(newCenter.lat, newCenter.lng, newZoom)
         }
-    }, [propsRef, ref, isMounted])
-
-    // debounce as zoomEnd/moveEnd fire in quick succession
-    const onViewportChanged = useCallback(debounce(onViewportChangedFn), [onViewportChangedFn])
-
-    const onViewportChangedRef = useRef()
-    if (onViewportChangedRef.current && onViewportChangedRef.current !== onViewportChangedFn) {
-        // cancel existing debounced fn if changing callback
-        onViewportChangedRef.current.cancel()
-    }
-    onViewportChangedRef.current = onViewportChanged
-
-    const calculateBounds = useCallback((markers: Array<Marker>, autoZoom: boolean) => {
-        if (autoZoom && markers.length > 0 && !touched) {
-            const positions = markers.map((m) => [m.lat, m.long])
-            boundsRef.current = L.latLngBounds(positions).pad(0.2)
-        }
-        return boundsRef.current
-    }, [touched, boundsRef])
+    }, [propsRef, ref, isMounted], 250)
 
     const {
         className,
@@ -169,14 +163,20 @@ export default function Map(props: Props) {
 
     // https://github.com/facebook/flow/issues/2221
     // $FlowFixMe Object.values() returns mixed[]
-    const markerArray: Array<Marker> = Object.values(markers)
+    const markerArray: Array<Marker> = useMemo(() => Object.values(markers), [markers])
 
-    const bounds = calculateBounds(markerArray, autoZoom)
+    const bounds: ?LatLngBounds = useMemo(() => {
+        if (autoZoom && markerArray.length > 0 && !touched) {
+            const positions = markerArray.map((m) => [m.lat, m.long])
+            return L.latLngBounds(positions).pad(0.2)
+        }
+        return null
+    }, [markerArray, autoZoom, touched])
 
     return (
         <UiSizeConstraint minWidth={368} minHeight={224}>
             <div
-                className={cx(className)}
+                className={className}
                 onMouseDown={markTouched}
                 onKeyDown={onKeyDown}
                 onWheel={markTouched}
