@@ -43,6 +43,8 @@ export function getCableKey([from, to] = []) {
     return `${from && from.id}-${to && to.id}`
 }
 
+const DRAG_CABLE_ID = 'DRAG_CABLE_ID'
+
 class Cables extends React.PureComponent {
     el = React.createRef()
 
@@ -52,6 +54,8 @@ class Cables extends React.PureComponent {
         const { canvas, selectedModuleHash } = this.props
         // no fade if no selection
         if (selectedModuleHash == null) { return false }
+        // no fade if dragging cable
+        if (a.id === DRAG_CABLE_ID || b.id === DRAG_CABLE_ID) { return false }
         // fade if not connected to selection
         return !isConnectedToModule(canvas, selectedModuleHash, a.id, b.id)
     }
@@ -180,7 +184,7 @@ class Cables extends React.PureComponent {
         return [
             positions[sourceId || portId],
             {
-                id: 'drag',
+                id: DRAG_CABLE_ID,
                 top: p.top + diff.y,
                 left: p.left + diff.x,
                 bottom: p.bottom + diff.y,
