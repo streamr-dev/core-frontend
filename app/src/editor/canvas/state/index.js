@@ -319,6 +319,22 @@ export function getConnectedPortIds(canvas, portId) {
         .map(({ id }) => id)
 }
 
+function moduleHasPort(canvas, moduleHash, portId) {
+    if (!hasPort(canvas, portId)) { return false }
+    const m = getModuleForPort(canvas, portId)
+    return m.hash === moduleHash
+}
+
+export function isConnectedToModule(canvas, moduleHash, portIdA, portIdB) {
+    if (moduleHash == null || !getModuleIfExists(canvas, moduleHash)) {
+        return false
+    }
+    return (
+        (moduleHasPort(canvas, moduleHash, portIdA) || moduleHasPort(canvas, moduleHash, portIdB)) &&
+        arePortsConnected(canvas, portIdA, portIdB)
+    )
+}
+
 export function isPortConnected(canvas, portId) {
     if (!hasPort(canvas, portId)) { return false }
     const conn = getConnectedPortIds(canvas, portId)

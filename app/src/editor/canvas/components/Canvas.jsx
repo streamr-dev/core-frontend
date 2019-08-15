@@ -177,6 +177,7 @@ class CanvasElements extends React.PureComponent {
                     <Cables
                         canvas={canvas}
                         positions={this.state.positions}
+                        selectedModuleHash={selectedModuleHash}
                     />
                 </DragDropProvider>
                 <div id="canvas-windows" />
