@@ -195,7 +195,7 @@ export default function Map(props: Props) {
                     onMoveEnd={onViewportChanged}
                     onZoomEnd={onViewportChanged}
                 >
-                    {(
+                    {!!autoZoom && (
                         <Control position="topleft">
                             <button
                                 className={cx(styles.control, {
