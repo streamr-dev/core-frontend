@@ -188,6 +188,9 @@ const Port = ({
     )
 }
 
-Port.styles = styles
-
-export default Port
+// $FlowFixMe
+const PortExport = React.memo(Port)
+// $FlowFixMe
+PortExport.styles = styles
+// $FlowFixMe
+export default PortExport
