@@ -54,14 +54,7 @@ const defaultLayout = {
     width: Number.parseInt(defaultModuleLayout.width, 10),
 }
 
-export default function Preview({
-    className,
-    style,
-    canvas,
-    aspect,
-    screen,
-    ...props
-}) {
+export default function Preview({ canvas, aspect, screen, ...props }) {
     const modulePreviews = useMemo(() => (
         canvas.modules.map((m) => ({
             key: getModuleKey(m),

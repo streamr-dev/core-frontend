@@ -21,6 +21,7 @@ import { getCanvases, deleteCanvas, updateFilter } from '$userpages/modules/canv
 import { selectCanvases, selectFilter, selectFetching } from '$userpages/modules/canvas/selectors'
 import { getFilters } from '$userpages/utils/constants'
 import Tile from '$shared/components/Tile'
+import TileStyles from '$shared/components/Tile/tile.pcss'
 import DropdownActions from '$shared/components/DropdownActions'
 import { formatExternalUrl } from '$shared/utils/url'
 import Search from '../../Header/Search'
@@ -256,7 +257,7 @@ class CanvasList extends Component<Props, State> {
                                 key={canvas.id}
                                 link={`${links.editor.canvasEditor}/${canvas.id}`}
                                 dropdownActions={this.getActions(canvas)}
-                                image={<CanvasPreview className={styles.PreviewImage} canvas={canvas} />}
+                                image={<CanvasPreview className={cx(styles.PreviewImage, TileStyles.image)} canvas={canvas} />}
                             >
                                 <Tile.Title>{canvas.name}</Tile.Title>
                                 <Tile.Description>

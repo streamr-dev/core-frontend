@@ -17,9 +17,10 @@
   .image {
     object-fit: cover;
     width: 100%;
+    transition: filter 0.05s;
   }
 
-  &:--enter {
+  &:hover {
     .image {
       filter: brightness(70%);
     }
