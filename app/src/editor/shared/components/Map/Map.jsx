@@ -1,6 +1,6 @@
 // @flow
 
-import React from 'react'
+import React, { useRef, useCallback, useEffect, useState } from 'react'
 import cx from 'classnames'
 import 'leaflet/dist/leaflet.css'
 import { Map as LeafletMap, ImageOverlay, TileLayer, Tooltip, Polyline, type LatLngBounds } from 'react-leaflet'
@@ -9,6 +9,7 @@ import Control from 'react-leaflet-control'
 import HeatmapLayer from 'react-leaflet-heatmap-layer'
 import debounce from 'lodash/debounce'
 
+import useIsMounted from '$shared/hooks/useIsMounted'
 import { type Ref } from '$shared/flowtype/common-types'
 import ResizeWatcher from '$editor/canvas/components/Resizable/ResizeWatcher'
 
@@ -61,219 +62,209 @@ type Props = {
     onViewportChanged: (centerLat: number, centerLong: number, zoom: number) => void,
 }
 
-type State = {
-    touched: boolean,
+const tileAttribution = `
+    &copy; <a href="//www.openstreetmap.org/copyright">OpenStreetMap</a> contributors,
+    &copy; <a href="https://cartodb.com/attributions">CartoDB</a>,
+    Streamr
+`.trim()
+
+function getTileUrl(skin) {
+    if (skin === 'cartoDark') {
+        return '//{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+    }
+    return '//{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png'
 }
 
-export default class Map extends React.PureComponent<Props, State> {
-    ref: Ref<LeafletMap> = React.createRef()
-    unmounted: boolean = false
-    bounds: ?LatLngBounds = null
+export default function Map(props: Props) {
+    const isMounted = useIsMounted()
+    const ref: Ref<LeafletMap> = useRef()
+    const boundsRef: Ref<LatLngBounds> = useRef()
 
-    state = {
-        touched: false,
-    }
+    const [touched, setTouched] = useState(false)
+    const markTouched = useCallback(() => setTouched(true), [setTouched])
+    const resetTouched = useCallback(() => setTouched(false), [setTouched])
 
-    componentWillUnmount() {
-        this.unmounted = true
-    }
-
-    componentDidMount() {
-        const { current: map } = this.ref
+    useEffect(() => {
+        const { current: map } = ref
         if (!map) { return }
         // detect clicks on zoom control
         map.leafletElement.zoomControl.getContainer().addEventListener('click', () => {
-            this.markTouched()
+            if (!isMounted()) { return }
+            markTouched()
         }, true)
-    }
+    }, [isMounted, markTouched])
 
-    onResize = () => {
-        const { current: map } = this.ref
+    const onResize = useCallback(() => {
+        const { current: map } = ref
 
         if (map) {
             map.leafletElement.invalidateSize(false)
         }
-    }
+    }, [ref])
 
-    markTouched = () => {
-        this.setState(({ touched }) => {
-            if (touched) { return null }
-            return {
-                touched: true,
-            }
-        })
-    }
-
-    resetTouched = () => {
-        this.setState({ touched: false })
-    }
-
-    calculateBounds = (markers: Array<Marker>, autoZoom: boolean) => {
-        if (this.unmounted) { return }
-        let { bounds } = this
-
-        if (autoZoom && markers.length > 0 && !this.state.touched) {
-            const positions = markers.map((m) => [m.lat, m.long])
-            bounds = L.latLngBounds(positions).pad(0.2)
-        }
-        return bounds
-    }
-
-    onKeyDown = (event: KeyboardEvent) => {
+    const onKeyDown = useCallback((event: KeyboardEvent) => {
         if (event.key.startsWith('Arrow') || event.key === '+' || event.key === '-') {
             // mark changed for leaflet handled keys
-            this.markTouched()
+            markTouched()
         }
-    }
+    }, [markTouched])
 
-    onViewportChanged = debounce(() => { // debounce as zoomEnd/moveEnd fire in quick succession
-        if (this.unmounted) { return }
-        const { current: map } = this.ref
+    const propsRef = useRef(props)
+
+    const onViewportChangedFn = useCallback(() => {
+        if (!isMounted()) { return }
+        const { onViewportChanged: onViewportChangedProp, zoom, centerLat, centerLong } = propsRef.current
+        const { current: map } = ref
         if (!map) { return }
-        const { onViewportChanged, zoom, centerLat, centerLong } = this.props
         const newZoom = map.leafletElement.getZoom()
         const newCenter = map.leafletElement.getCenter()
 
         if (newZoom !== zoom || newCenter.lat !== centerLat || newCenter.lng !== centerLong) {
-            onViewportChanged(newCenter.lat, newCenter.lng, newZoom)
+            onViewportChangedProp(newCenter.lat, newCenter.lng, newZoom)
         }
-    }, 250)
+    }, [propsRef, ref, isMounted])
 
-    render() {
-        const {
-            className,
-            centerLat,
-            centerLong,
-            minZoom,
-            maxZoom,
-            zoom,
-            autoZoom,
-            traceColor,
-            traceWidth,
-            markers,
-            markerIcon,
-            markerColor,
-            directionalMarkers,
-            skin,
-            isImageMap,
-            imageBounds,
-            imageUrl,
-            isHeatmap,
-            radius,
-            maxIntensity,
-        } = this.props
-        const mapCenter = [centerLat, centerLong]
+    // debounce as zoomEnd/moveEnd fire in quick succession
+    const onViewportChanged = useCallback(debounce(onViewportChangedFn), [onViewportChangedFn])
 
-        /* eslint-disable-next-line max-len */
-        let tileAttribution = '&copy; <a href="//www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://cartodb.com/attributions">CartoDB</a>, Streamr'
-        let tileUrl = '//{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png'
-
-        if (skin === 'cartoDark') {
-            /* eslint-disable-next-line max-len */
-            tileAttribution = '&copy; <a href="//www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://cartodb.com/attributions">CartoDB</a>, Streamr'
-            tileUrl = '//{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
-        }
-
-        // https://github.com/facebook/flow/issues/2221
-        // $FlowFixMe Object.values() returns mixed[]
-        const markerArray: Array<Marker> = Object
-            .values(markers)
-
-        const bounds = this.calculateBounds(markerArray, autoZoom)
-
-        return (
-            <UiSizeConstraint minWidth={368} minHeight={224}>
-                <div
-                    className={cx(className)}
-                    onMouseDown={this.markTouched}
-                    onKeyDown={this.onKeyDown}
-                    onWheel={this.markTouched}
-                    role="presentation"
-                >
-                    <LeafletMap
-                        ref={this.ref}
-                        center={mapCenter}
-                        zoom={zoom}
-                        className={styles.leafletMap}
-                        minZoom={minZoom}
-                        maxZoom={maxZoom}
-                        crs={isImageMap ? L.CRS.Simple : L.CRS.EPSG3857}
-                        preferCanvas
-                        bounds={bounds}
-                        onMoveEnd={this.onViewportChanged}
-                        onZoomEnd={this.onViewportChanged}
-                    >
-                        {this.props.autoZoom && (
-                            <Control position="topleft">
-                                <button
-                                    className={cx(styles.control, {
-                                        [styles.disabledControl]: !this.state.touched,
-                                    })}
-                                    onClick={this.resetTouched}
-                                    aria-label="Restart Autozoom"
-                                    title="Restart Autozoom"
-                                    type="button"
-                                >
-                                    &#9678;
-                                </button>
-                            </Control>
-                        )}
-                        <ResizeWatcher onResize={this.onResize} />
-                        {isHeatmap && markerArray.length > 0 && (
-                            <HeatmapLayer
-                                fitBoundsOnLoad={false}
-                                fitBoundsOnUpdate={false}
-                                points={markerArray}
-                                longitudeExtractor={(m: Marker) => m.long}
-                                latitudeExtractor={(m: Marker) => m.lat}
-                                intensityExtractor={(m: Marker) => m.value}
-                                radius={radius}
-                                max={maxIntensity}
-                            />
-                        )}
-                        {!isImageMap && (
-                            <TileLayer
-                                attribution={tileAttribution}
-                                url={tileUrl}
-                            />
-                        )}
-                        {isImageMap && !!imageUrl && !!imageBounds && (
-                            <ImageOverlay
-                                url={imageUrl}
-                                bounds={imageBounds}
-                            />
-                        )}
-                        {!isHeatmap && markerArray.map((marker) => {
-                            const pos = [marker.lat, marker.long]
-                            const tracePoints = marker.previousPositions && marker.previousPositions
-                                .map((p) => [p.lat, p.long])
-
-                            return (
-                                <React.Fragment key={marker.id}>
-                                    <CustomMarker
-                                        key={marker.id}
-                                        position={pos}
-                                        rotation={directionalMarkers ? marker.rotation : 0}
-                                        icon={markerIcon}
-                                        color={markerColor}
-                                    >
-                                        <Tooltip direction="top">
-                                            {marker.label || marker.id}
-                                        </Tooltip>
-                                    </CustomMarker>
-                                    {tracePoints && tracePoints.length > 0 && (
-                                        <Polyline
-                                            positions={tracePoints}
-                                            color={traceColor}
-                                            weigth={traceWidth}
-                                        />
-                                    )}
-                                </React.Fragment>
-                            )
-                        })}
-                    </LeafletMap>
-                </div>
-            </UiSizeConstraint>
-        )
+    const onViewportChangedRef = useRef()
+    if (onViewportChangedRef.current && onViewportChangedRef.current !== onViewportChangedFn) {
+        // cancel existing debounced fn if changing callback
+        onViewportChangedRef.current.cancel()
     }
+    onViewportChangedRef.current = onViewportChanged
+
+    const calculateBounds = useCallback((markers: Array<Marker>, autoZoom: boolean) => {
+        if (autoZoom && markers.length > 0 && !touched) {
+            const positions = markers.map((m) => [m.lat, m.long])
+            boundsRef.current = L.latLngBounds(positions).pad(0.2)
+        }
+        return boundsRef.current
+    }, [touched, boundsRef])
+
+    const {
+        className,
+        centerLat,
+        centerLong,
+        minZoom,
+        maxZoom,
+        zoom,
+        autoZoom,
+        traceColor,
+        traceWidth,
+        markers,
+        markerIcon,
+        markerColor,
+        directionalMarkers,
+        skin,
+        isImageMap,
+        imageBounds,
+        imageUrl,
+        isHeatmap,
+        radius,
+        maxIntensity,
+    } = props
+    const mapCenter = [centerLat, centerLong]
+    const tileUrl = getTileUrl(skin)
+
+    // https://github.com/facebook/flow/issues/2221
+    // $FlowFixMe Object.values() returns mixed[]
+    const markerArray: Array<Marker> = Object.values(markers)
+
+    const bounds = calculateBounds(markerArray, autoZoom)
+
+    return (
+        <UiSizeConstraint minWidth={368} minHeight={224}>
+            <div
+                className={cx(className)}
+                onMouseDown={markTouched}
+                onKeyDown={onKeyDown}
+                onWheel={markTouched}
+                role="presentation"
+            >
+                <LeafletMap
+                    ref={ref}
+                    center={mapCenter}
+                    zoom={zoom}
+                    className={styles.leafletMap}
+                    minZoom={minZoom}
+                    maxZoom={maxZoom}
+                    crs={isImageMap ? L.CRS.Simple : L.CRS.EPSG3857}
+                    preferCanvas
+                    bounds={bounds}
+                    onMoveEnd={onViewportChanged}
+                    onZoomEnd={onViewportChanged}
+                >
+                    {(
+                        <Control position="topleft">
+                            <button
+                                className={cx(styles.control, {
+                                    [styles.disabledControl]: !touched,
+                                })}
+                                onClick={resetTouched}
+                                aria-label="Restart Autozoom"
+                                title="Restart Autozoom"
+                                type="button"
+                            >
+                                &#9678;
+                            </button>
+                        </Control>
+                    )}
+                    <ResizeWatcher onResize={onResize} />
+                    {isHeatmap && markerArray.length > 0 && (
+                        <HeatmapLayer
+                            fitBoundsOnLoad={false}
+                            fitBoundsOnUpdate={false}
+                            points={markerArray}
+                            longitudeExtractor={(m: Marker) => m.long}
+                            latitudeExtractor={(m: Marker) => m.lat}
+                            intensityExtractor={(m: Marker) => m.value}
+                            radius={radius}
+                            max={maxIntensity}
+                        />
+                    )}
+                    {!isImageMap && (
+                        <TileLayer
+                            attribution={tileAttribution}
+                            url={tileUrl}
+                        />
+                    )}
+                    {isImageMap && !!imageUrl && !!imageBounds && (
+                        <ImageOverlay
+                            url={imageUrl}
+                            bounds={imageBounds}
+                        />
+                    )}
+                    {!isHeatmap && markerArray.map((marker) => {
+                        const pos = [marker.lat, marker.long]
+                        const tracePoints = marker.previousPositions && marker.previousPositions
+                            .map((p) => [p.lat, p.long])
+
+                        return (
+                            <React.Fragment key={marker.id}>
+                                <CustomMarker
+                                    key={marker.id}
+                                    position={pos}
+                                    rotation={directionalMarkers ? marker.rotation : 0}
+                                    icon={markerIcon}
+                                    color={markerColor}
+                                >
+                                    <Tooltip direction="top">
+                                        {marker.label || marker.id}
+                                    </Tooltip>
+                                </CustomMarker>
+                                {tracePoints && tracePoints.length > 0 && (
+                                    <Polyline
+                                        positions={tracePoints}
+                                        color={traceColor}
+                                        weigth={traceWidth}
+                                    />
+                                )}
+                            </React.Fragment>
+                        )
+                    })}
+                </LeafletMap>
+            </div>
+        </UiSizeConstraint>
+    )
 }
