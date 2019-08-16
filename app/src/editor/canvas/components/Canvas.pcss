@@ -39,10 +39,16 @@ svg.Cables {
 }
 
 svg.Cables path {
-  transition: opacity 0.5s;
+  transition: opacity 0.5s, stroke 0.5s, stroke-width 0.75s;
   opacity: 1;
 }
 
 svg.Cables path.fade {
   opacity: 0.2;
+}
+
+svg.Cables path.highlight {
+  opacity: 1;
+  stroke: #2AC437;
+  stroke-width: 1.5;
 }

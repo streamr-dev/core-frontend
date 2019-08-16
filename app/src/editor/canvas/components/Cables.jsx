@@ -60,6 +60,13 @@ class Cables extends React.PureComponent {
         return !isConnectedToModule(canvas, selectedModuleHash, a.id, b.id)
     }
 
+    shouldHighlight = ([a, b]) => {
+        const { selectedModuleHash } = this.props
+        // no highlight if no selection
+        if (selectedModuleHash == null) { return false }
+        return !this.shouldFade([a, b])
+    }
+
     getCables() {
         const hasMoved = this.props.isDragging && !(this.props.diff.x === 0 && this.props.diff.y === 0)
         if (this.props.isDragging && this.props.data.moduleHash != null && hasMoved) {
@@ -212,6 +219,7 @@ class Cables extends React.PureComponent {
                             cable={cable}
                             className={cx({
                                 [styles.fade]: this.shouldFade(cable),
+                                [styles.highlight]: this.shouldHighlight(cable),
                             })}
                         />
                     ))}
@@ -228,6 +236,7 @@ class Cables extends React.PureComponent {
                             cable={cable}
                             className={cx({
                                 [styles.fade]: this.shouldFade(cable),
+                                [styles.highlight]: this.shouldHighlight(cable),
                             })}
                         />
                     ))}
