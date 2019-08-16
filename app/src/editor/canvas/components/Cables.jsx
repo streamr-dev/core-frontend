@@ -19,19 +19,20 @@ function curvedHorizontal(x1, y1, x2, y2) {
 const LAYER_0 = 0
 const LAYER_1 = 1
 
-// offset cables from edge of port
-const PORT_OFFSET = 4
-
 export function Cable({ className, cable, ...props }) {
     if (!cable) { return null }
     const [from, to] = cable
+    // adjust offset to edge based on curve direction
+    // i.e. connect to left edge if curve going L->R,
+    // connect to right edge if curve going R->L
+    const direction = from.left < to.left ? 1 : -1
     return (
         <path
             className={cx(styles.Connection, className)}
             d={curvedHorizontal(
-                from.left + PORT_OFFSET,
+                from.left + (0.5 * from.width * direction), // connect to edge of from
                 from.top,
-                to.left - PORT_OFFSET,
+                to.left + (0.5 * to.width * -direction), // connect to edge of to
                 to.top,
             )}
             stroke="#525252"
@@ -138,7 +139,7 @@ class Cables extends React.PureComponent {
             let layer = LAYER_0
             if (ports[from.id]) {
                 fromNew = {
-                    id: from.id,
+                    ...from,
                     top: from.top + diff.y,
                     left: from.left + diff.x,
                 }
@@ -146,7 +147,7 @@ class Cables extends React.PureComponent {
             }
             if (ports[to.id]) {
                 toNew = {
-                    id: to.id,
+                    ...to,
                     top: to.top + diff.y,
                     left: to.left + diff.x,
                 }
@@ -196,6 +197,7 @@ class Cables extends React.PureComponent {
         return [
             positions[sourceId || portId],
             {
+                ...p,
                 id: DRAG_CABLE_ID,
                 top: p.top + diff.y,
                 left: p.left + diff.x,
