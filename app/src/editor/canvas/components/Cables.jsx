@@ -19,6 +19,9 @@ function curvedHorizontal(x1, y1, x2, y2) {
 const LAYER_0 = 0
 const LAYER_1 = 1
 
+// offset cables from edge of port
+const PORT_OFFSET = 4
+
 export function Cable({ className, cable, ...props }) {
     if (!cable) { return null }
     const [from, to] = cable
@@ -26,9 +29,9 @@ export function Cable({ className, cable, ...props }) {
         <path
             className={cx(styles.Connection, className)}
             d={curvedHorizontal(
-                from.left,
+                from.left + PORT_OFFSET,
                 from.top,
-                to.left,
+                to.left - PORT_OFFSET,
                 to.top,
             )}
             stroke="#525252"
