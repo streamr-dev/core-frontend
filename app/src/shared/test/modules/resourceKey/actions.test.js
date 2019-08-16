@@ -235,6 +235,8 @@ describe('resourceKey - actions', () => {
                     id: streamId,
                     key,
                 },
+            }, {
+                type: constants.GET_RESOURCE_KEYS_REQUEST,
             }]
 
             const store = mockStore()
