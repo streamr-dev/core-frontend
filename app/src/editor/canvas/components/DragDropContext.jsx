@@ -11,8 +11,8 @@ export class DragDropProvider extends React.PureComponent {
 
     initialState = {
         isDragging: false,
-        isCancelled: undefined,
-        diff: undefined,
+        isCancelled: false,
+        diff: null,
         data: {},
     }
 
@@ -165,6 +165,7 @@ class EditorDraggable extends React.PureComponent {
         }
 
         if (this.context.isCancelled) {
+            this.context.onStop()
             this.setState({
                 initialPosition: undefined,
             })
