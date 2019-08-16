@@ -27,6 +27,8 @@ type Props = {
     setOptions: any,
 }
 
+const EMPTY = {}
+
 const Port = ({
     api,
     canvas,
@@ -36,10 +38,14 @@ const Port = ({
     port,
     setOptions,
 }: Props) => {
-    const { isEditable } = useContext(RunController.Context)
+    const { isDragging, data } = useContext(DragDropContext)
+    const { portId } = data || EMPTY
+    const dragInProgress = !!isDragging && portId != null
+    const { isEditable: isCanvasEditable } = useContext(RunController.Context)
+    const isContentEditable = !dragInProgress && isCanvasEditable
     const isInput = !!port.acceptedTypes
     const isParam = 'defaultValue' in port
-    const hasInputField = isParam || port.canHaveInitialValue
+    const hasInputField = !!(isParam || port.canHaveInitialValue)
     const [contextMenuTarget, setContextMenuTarget] = useState(null)
     const [editingName, setEditingName] = useState(false)
 
@@ -106,10 +112,6 @@ const Port = ({
         onSizeChange()
     }, [port.value, onSizeChange])
 
-    const { isDragging, data } = useContext(DragDropContext)
-    const { portId } = data || {}
-    const dragInProgress = !!isDragging && portId != null
-
     const plug = (
         <Plug
             api={api}
@@ -118,17 +120,16 @@ const Port = ({
             onValueChange={onValueChangeProp}
             port={port}
             register={onPort}
-            disabled={!isEditable}
+            disabled={!isCanvasEditable}
         />
     )
 
     const isInvisible = isPortInvisible(canvas, port.id)
-    const isRenameDisabled = !isEditable || isPortRenameDisabled(canvas, port.id)
+    const isRenameDisabled = !isContentEditable || isPortRenameDisabled(canvas, port.id)
 
     return (
         <div
             className={cx(styles.root, {
-                [styles.dragInProgress]: !!dragInProgress,
                 [styles.dragInProgress]: !!dragInProgress,
                 [styles.isInvisible]: isInvisible,
             })}
@@ -142,11 +143,11 @@ const Port = ({
                     target={contextMenuTarget}
                 />
             )}
-            {!!port.canToggleDrivingInput && (
+            {!dragInProgress && !!port.canToggleDrivingInput && (
                 <Option
                     activated={!!port.drivingInput}
                     className={styles.portOption}
-                    disabled={!isEditable}
+                    disabled={!isContentEditable}
                     name="drivingInput"
                     onToggle={onOptionToggle}
                 />
@@ -170,16 +171,16 @@ const Port = ({
                         canvas={canvas}
                         port={port}
                         onChange={onValueChange}
-                        disabled={!isEditable}
+                        disabled={!isContentEditable}
                     />
                 </Cell>
             )}
             {!isInput && plug}
-            {!!port.canBeNoRepeat && (
+            {!dragInProgress && !!port.canBeNoRepeat && (
                 <Option
                     activated={!!port.noRepeat}
                     className={styles.portOption}
-                    disabled={!isEditable}
+                    disabled={!isContentEditable}
                     name="noRepeat"
                     onToggle={onOptionToggle}
                 />
@@ -188,6 +189,9 @@ const Port = ({
     )
 }
 
-Port.styles = styles
-
-export default Port
+// $FlowFixMe
+const PortExport = React.memo(Port)
+// $FlowFixMe
+PortExport.styles = styles
+// $FlowFixMe
+export default PortExport

@@ -11,8 +11,8 @@ export class DragDropProvider extends React.PureComponent {
 
     initialState = {
         isDragging: false,
-        isCancelled: undefined,
-        diff: undefined,
+        isCancelled: false,
+        diff: null,
         data: {},
     }
 
@@ -133,7 +133,7 @@ class EditorDraggable extends React.PureComponent {
     }
 
     getDiff(data) {
-        const { initialPosition } = this.state
+        const initialPosition = this.initialPosition || this.state.initialPosition
 
         return {
             x: data.x - initialPosition.x,
@@ -155,17 +155,7 @@ class EditorDraggable extends React.PureComponent {
 
     onStart = (event, data) => {
         if (this.unmounted) { return }
-        this.setState({
-            initialPosition: data,
-        })
-
-        if (!this.props.onStart) {
-            return this.context.onStart()
-        }
-
-        // pass on props.onStart to context
-        const startData = this.props.onStart(event, data)
-        return this.context.onStart(startData)
+        this.initialPosition = data
     }
 
     onStop = (event, data) => {
@@ -175,6 +165,7 @@ class EditorDraggable extends React.PureComponent {
         }
 
         if (this.context.isCancelled) {
+            this.context.onStop()
             this.setState({
                 initialPosition: undefined,
             })
@@ -210,6 +201,30 @@ class EditorDraggable extends React.PureComponent {
         }
 
         const diff = this.getDiff(data)
+        // only trigger start after moving
+        if (!this.context.isDragging) {
+            if (diff.x === 0 && diff.y === 0) {
+                return
+            }
+            this.setState({
+                initialPosition: this.initialPosition,
+            }, () => {
+                this.initialPosition = undefined
+            })
+            if (!this.props.onStart) {
+                const shouldContinue = this.context.onStart()
+                if (shouldContinue === false) {
+                    return false
+                }
+            }
+
+            // pass on props.onStart to context
+            const startData = this.props.onStart(event, data)
+            const shouldContinue = this.context.onStart(startData)
+            if (shouldContinue === false) {
+                return false
+            }
+        }
 
         if (!this.props.onDrag) {
             return this.context.onDrag(diff)
@@ -217,7 +232,7 @@ class EditorDraggable extends React.PureComponent {
 
         const shouldContinue = this.props.onDrag(event, data, diff)
 
-        if (!shouldContinue) {
+        if (!shouldContinue === false) {
             return false
         }
 

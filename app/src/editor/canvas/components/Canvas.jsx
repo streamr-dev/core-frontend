@@ -168,7 +168,7 @@ class CanvasElements extends React.PureComponent {
                                 canvas={canvas}
                                 onPort={this.onPort}
                                 api={api}
-                                selectedModuleHash={selectedModuleHash}
+                                isSelected={selectedModuleHash === m.hash}
                                 moduleSidebarIsOpen={moduleSidebarIsOpen}
                                 {...api.module}
                             />
@@ -177,6 +177,7 @@ class CanvasElements extends React.PureComponent {
                     <Cables
                         canvas={canvas}
                         positions={this.state.positions}
+                        selectedModuleHash={selectedModuleHash}
                     />
                 </DragDropProvider>
                 <div id="canvas-windows" />

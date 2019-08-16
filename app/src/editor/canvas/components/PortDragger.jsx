@@ -41,6 +41,7 @@ class DraggablePort extends React.Component {
         const triggeredPorts = []
         const { data } = this.context
         const { sourceId, portId, overId } = data
+        if (overId === portId) { return } // do nothing, already connected
         this.props.api.setCanvas({ type: 'Connect Ports' }, (canvas) => {
             if (!this.canConnectPorts(canvas)) { return null } // noop if incompatible
             let nextCanvas = canvas
