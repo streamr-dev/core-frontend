@@ -41,13 +41,9 @@ class CanvasModule extends React.PureComponent {
 
     onSelection() {
         if (!this.el.current) { return }
-        this.el.current.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start',
-            inline: 'nearest',
-        })
+
         // no direct access to normal focus ref, have to go via parentElement
-        this.el.current.parentElement.focus()
+        this.el.current.parentElement.focus() // focus should scroll element into view
     }
 
     componentDidMount() {
