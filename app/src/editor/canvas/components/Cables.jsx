@@ -64,6 +64,8 @@ class Cables extends React.PureComponent {
         const { selectedModuleHash } = this.props
         // no highlight if no selection
         if (selectedModuleHash == null) { return false }
+        // no highlight if dragging cable
+        if (a.id === DRAG_CABLE_ID || b.id === DRAG_CABLE_ID) { return false }
         return !this.shouldFade([a, b])
     }
 
