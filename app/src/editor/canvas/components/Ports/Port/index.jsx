@@ -142,7 +142,7 @@ const Port = ({
                     target={contextMenuTarget}
                 />
             )}
-            {!!port.canToggleDrivingInput && (
+            {!dragInProgress && !!port.canToggleDrivingInput && (
                 <Option
                     activated={!!port.drivingInput}
                     className={styles.portOption}
@@ -175,7 +175,7 @@ const Port = ({
                 </Cell>
             )}
             {!isInput && plug}
-            {!!port.canBeNoRepeat && (
+            {!dragInProgress && !!port.canBeNoRepeat && (
                 <Option
                     activated={!!port.noRepeat}
                     className={styles.portOption}
