@@ -55,7 +55,22 @@ class Cables extends React.PureComponent {
         if (this.props.isDragging && this.props.data.portId != null) {
             return this.getCablesDraggingPort()
         }
+
         return this.getStaticCables()
+    }
+
+    getPositions() {
+        // cache positions while drag operation is in progress
+        if (this.props.isDragging) {
+            if (!this.positions) {
+                this.positions = this.props.positions
+            }
+            return this.positions
+        }
+        if (this.positions) {
+            this.positions = undefined
+        }
+        return this.props.positions
     }
 
     /**
@@ -63,7 +78,8 @@ class Cables extends React.PureComponent {
      */
 
     getStaticCables() {
-        const { canvas, positions } = this.props
+        const { canvas } = this.props
+        const positions = this.getPositions()
         return canvas.modules
             .reduce((c, m) => {
                 [].concat(m.params, m.inputs, m.outputs).forEach((port) => {
@@ -141,7 +157,8 @@ class Cables extends React.PureComponent {
     }
 
     getDragCable() {
-        const { positions, data, diff, isDragging } = this.props
+        const { data, diff, isDragging } = this.props
+        const positions = this.getPositions()
         const { portId, sourceId } = data
         if (!isDragging || portId == null) {
             return null
