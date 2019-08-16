@@ -6,6 +6,7 @@ import { Button } from 'reactstrap'
 import { Translate, I18n } from 'react-redux-i18n'
 import Helmet from 'react-helmet'
 import { Link } from 'react-router-dom'
+import cx from 'classnames'
 
 import links from '$userpages/../links'
 import { getDashboards, updateFilter } from '$userpages/modules/dashboard/actions'
@@ -16,6 +17,7 @@ import type { Filter, SortOption } from '$userpages/flowtype/common-types'
 import Layout from '$userpages/components/Layout'
 import { getFilters } from '$userpages/utils/constants'
 import Tile from '$shared/components/Tile'
+import TileStyles from '$shared/components/Tile/tile.pcss'
 import Search from '../../Header/Search'
 import Dropdown from '$shared/components/Dropdown'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
@@ -147,7 +149,7 @@ class DashboardList extends Component<Props> {
                                 <Tile
                                     key={dashboard.id}
                                     link={`${links.editor.dashboardEditor}/${dashboard.id}`}
-                                    image={<DashboardPreview className={styles.PreviewImage} dashboard={dashboard} />}
+                                    image={<DashboardPreview className={cx(styles.PreviewImage, TileStyles.image)} dashboard={dashboard} />}
                                 >
                                     <Tile.Title>{dashboard.name}</Tile.Title>
                                 </Tile>
