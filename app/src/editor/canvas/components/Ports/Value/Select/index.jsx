@@ -49,7 +49,7 @@ const Select = ({
                 {/* `select` holding a currently selected value. This hidden (`visibility: hidden`) control
                     dictates the width of the actual (visible) control above. */}
                 <select className={styles.spaceholder}>
-                    <option>{optionMap.get(value)}</option>
+                    <option>{optionMap.get(value) || value}</option>
                 </select>
             </div>
         </div>
