@@ -3,8 +3,8 @@ import cx from 'classnames'
 import startCase from 'lodash/startCase'
 
 import { Header, Content, Section } from '$editor/shared/components/Sidebar'
-
-import TextControl from '$shared/components/TextControl'
+import Toggle from '$shared/components/Toggle'
+import Text from '$editor/canvas/components/Ports/Value/Text'
 
 import * as CanvasState from '../state'
 import * as RunController from './CanvasController/Run'
@@ -41,8 +41,8 @@ export default function ModuleSidebar({ canvas, selectedModuleHash, setModuleOpt
         onChange(name)(event.target.value)
     }
 
-    const onChangeChecked = (name) => (event) => {
-        onChange(name)(event.target.checked)
+    const onChangeChecked = (name) => (value) => {
+        onChange(name)(value)
     }
 
     const module = CanvasState.getModuleIfExists(canvas, selectedModuleHash)
@@ -99,21 +99,19 @@ export default function ModuleSidebar({ canvas, selectedModuleHash, setModuleOpt
                                         ) : (
                                             /* Toggle */
                                             (option.type === 'boolean' && (
-                                                <input
+                                                <Toggle
                                                     id={id}
-                                                    checked={option.value}
-                                                    type="checkbox"
+                                                    value={option.value}
                                                     onChange={onChangeChecked(name)}
                                                     disabled={!isEditable}
                                                 />
                                             )) || (
                                                 /* Text */
-                                                <TextControl
-                                                    disabled={!isEditable}
-                                                    id={id}
-                                                    onCommit={onChange(name)}
+                                                <Text
+                                                    className={styles.input}
                                                     value={option.value}
-                                                    immediateCommit={false}
+                                                    onChange={onChange(name)}
+                                                    disabled={!isEditable}
                                                 />
                                             )
                                         )}

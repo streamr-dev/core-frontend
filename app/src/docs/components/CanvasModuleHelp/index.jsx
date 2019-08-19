@@ -16,11 +16,11 @@ function PortHelp({ help, port }: PortHelpProps) {
         <div className={styles.portHelp}>
             <div className={styles.portHelpHeader}>
                 <h5 className={styles.portName} title={port.name}>{port.displayName || port.name}</h5>
-                <div className={styles.portTypes}>
-                    {port.type.split(/\s+/).map((type) => (
-                        <span key={type}>{type}</span>
-                    ))}
-                </div>
+            </div>
+            <div className={styles.portTypes}>
+                {port.type.split(/\s+/).map((type) => (
+                    <span key={type}>{type}</span>
+                ))}
             </div>
             {isEmpty(port.defaultValue) ? null : (
                 <div className={styles.defaultValue}>

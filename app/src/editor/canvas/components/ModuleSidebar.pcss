@@ -1,21 +1,25 @@
 .optionsFields {
   display: grid;
-  grid-template-columns: auto auto;
+  grid-template-columns: auto 100px;
   align-items: center;
-  grid-row-gap: 12px;
-  grid-column-gap: 10px;
+  grid-column-gap: 40px;
 
   label {
-    font-family: 'IBM Plex Mono', monospace;
+    font-family: var(--sans);
+    font-weight: var(--medium);
     font-size: 14px;
     text-align: left;
     letter-spacing: 0;
-    line-height: 32px;
+    line-height: 40px;
     color: #525252;
     margin: 0;
   }
 
-  input,
+  .input {
+    height: calc(1.5 * var(--um));
+    margin: 0 calc(-0.5 * var(--um));
+  }
+
   select {
     width: auto;
     color: #525252;
@@ -24,11 +28,6 @@
     background: #F5F5F5;
     border-radius: 2px;
     border: none;
-  }
-
-  input {
-    cursor: text;
-    padding: 2px 8px;
   }
 }
 
