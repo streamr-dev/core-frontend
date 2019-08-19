@@ -32,6 +32,8 @@ const Select = ({
         }, new Map())
     ), [options])
 
+    const selectionText = optionMap.get(value)
+
     return (
         <div className={styles.root}>
             <div className={styles.inner}>
@@ -53,7 +55,7 @@ const Select = ({
                         to a value that's not on the list of possible values (casing mismatch
                         such as `events` vs `EVENTS`). In that case we simply display the raw
                         value here instead of nothing. */}
-                    <option>{optionMap.get(value) || value}</option>
+                    <option>{selectionText != null ? selectionText : value}</option>
                 </select>
             </div>
         </div>
