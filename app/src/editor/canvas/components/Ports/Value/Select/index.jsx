@@ -49,6 +49,10 @@ const Select = ({
                 {/* `select` holding a currently selected value. This hidden (`visibility: hidden`) control
                     dictates the width of the actual (visible) control above. */}
                 <select className={styles.spaceholder}>
+                    {/* Some inputs like `windowType` come with a default value set by the server
+                        to a value that's not on the list of possible values (casing mismatch
+                        such as `events` vs `EVENTS`). In that case we simply display the raw
+                        value here instead of nothing. */}
                     <option>{optionMap.get(value) || value}</option>
                 </select>
             </div>
