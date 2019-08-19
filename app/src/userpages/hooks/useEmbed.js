@@ -4,19 +4,25 @@ import { useMemo } from 'react'
 
 import { formatExternalUrl } from '$shared/utils/url'
 import type { ResourceType, ResourceId } from '$userpages/flowtype/permission-types'
+import routes from '$routes'
 
 const streamrRoot = process.env.STREAMR_URL || ''
 
-// TODO: fix embed codes
-const getEmbedCodes = (resourceType: ResourceType, resourceId: ResourceId) => ({
-    // $FlowFixMe It's alright but Flow doesn't get it
-    CANVAS: String.raw`<iframe title="streamr-embed"
-src="http://streamr.com/embed/${resourceType}/${resourceId}"
-width="640" height="360"
-frameborder="0"></iframe>`,
-    DASHBOARD: '',
-    STREAM: '',
-})
+const getEmbedCode = (resourceType: ResourceType, resourceId: ResourceId) => {
+    if (resourceType === 'CANVAS') {
+        const src = formatExternalUrl(process.env.PLATFORM_ORIGIN_URL, routes.canvasEmbed({
+            id: resourceId,
+        }))
+        // $FlowFixMe It's alright but Flow doesn't get it
+        return `
+            <iframe title="streamr-embed"
+            src="${src}"
+            width="640" height="360"
+            frameborder="0"></iframe>
+        `.replace(/\s+/g, ' ').trim()
+    }
+    return ''
+}
 
 const getLinks = (resourceId: ResourceId) => ({
     CANVAS: `canvas/editor/${resourceId}`,
@@ -25,11 +31,7 @@ const getLinks = (resourceId: ResourceId) => ({
 })
 
 export function useEmbed(resourceType: ResourceType, resourceId: ResourceId) {
-    const embedCode = useMemo(() => {
-        const codes = getEmbedCodes(resourceType, resourceId)
-
-        return codes[resourceType] || ''
-    }, [resourceType, resourceId])
+    const embedCode = getEmbedCode(resourceType, resourceId)
 
     const link = useMemo(() => {
         const links = getLinks(resourceId)

@@ -18,6 +18,12 @@ import useModuleLoadCallback from './useModuleLoadCallback'
 
 import styles from './CanvasController.pcss'
 
+const EmbedModeContext = React.createContext(false)
+
+export function useEmbedMode() {
+    return useContext(EmbedModeContext)
+}
+
 const CanvasControllerContext = React.createContext()
 
 function useCanvasLoadEffect() {
@@ -102,17 +108,19 @@ function ControllerProvider({ children }) {
     )
 }
 
-const CanvasControllerProvider = ({ children }) => (
+const CanvasControllerProvider = ({ children, embed }) => (
     <RouterContext.Provider>
-        <PendingProvider>
-            <PermissionsProvider>
-                <ControllerProvider>
-                    <CanvasLoadingIndicator />
-                    <CanvasEffects />
-                    {children || null}
-                </ControllerProvider>
-            </PermissionsProvider>
-        </PendingProvider>
+        <EmbedModeContext.Provider value={!!embed}>
+            <PendingProvider>
+                <PermissionsProvider>
+                    <ControllerProvider embed={embed}>
+                        <CanvasLoadingIndicator />
+                        <CanvasEffects />
+                        {children || null}
+                    </ControllerProvider>
+                </PermissionsProvider>
+            </PendingProvider>
+        </EmbedModeContext.Provider>
     </RouterContext.Provider>
 )
 

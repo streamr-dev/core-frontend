@@ -16,6 +16,7 @@ import * as CanvasLinking from '../../state/linking'
 
 import useCanvasStateChangeEffect from '../../hooks/useCanvasStateChangeEffect'
 import useCanvasUpdater from './useCanvasUpdater'
+import { useEmbedMode } from './index'
 
 export const RunControllerContext = React.createContext()
 
@@ -28,6 +29,7 @@ function isStateNotAllowedError(error) {
 }
 
 function useRunController(canvas = EMPTY) {
+    const isEmbedMode = useEmbedMode()
     const subscriptionStatus = useContext(SubscriptionStatus.Context)
     const { permissions } = useContext(PermissionContext)
     const { replaceCanvas } = useCanvasUpdater()
@@ -51,7 +53,7 @@ function useRunController(canvas = EMPTY) {
     const hasSharePermission = permissions &&
         permissions.some((p) => p.operation === 'share')
 
-    const hasWritePermission = permissions &&
+    const hasWritePermission = !isEmbedMode && permissions &&
         permissions.some((p) => p.operation === 'write')
 
     const start = useCallback(async (canvas, options) => {
@@ -147,6 +149,7 @@ function useRunController(canvas = EMPTY) {
 
     // write commits
     const isEditable = (
+        !isEmbedMode &&
         !isActive &&
         isAdjustable &&
         !canvas.adhoc &&
@@ -155,6 +158,7 @@ function useRunController(canvas = EMPTY) {
 
     // controls whether user can currently start/stop canvas
     const canChangeRunState = (
+        !isEmbedMode && // can't change run state when in embed mode
         !isPending && // no pending
         hasWritePermission && ( // has write perms
             // check historical settings ok if historical
