@@ -32,6 +32,8 @@ const Select = ({
         }, new Map())
     ), [options])
 
+    const selectionText = optionMap.get(value)
+
     return (
         <div className={styles.root}>
             <div className={styles.inner}>
@@ -49,7 +51,11 @@ const Select = ({
                 {/* `select` holding a currently selected value. This hidden (`visibility: hidden`) control
                     dictates the width of the actual (visible) control above. */}
                 <select className={styles.spaceholder}>
-                    <option>{optionMap.get(value)}</option>
+                    {/* Some inputs like `windowType` come with a default value set by the server
+                        to a value that's not on the list of possible values (casing mismatch
+                        such as `events` vs `EVENTS`). In that case we simply display the raw
+                        value here instead of nothing. */}
+                    <option>{selectionText != null ? selectionText : value}</option>
                 </select>
             </div>
         </div>
