@@ -34,12 +34,16 @@ type Props = OwnProps & StateProps & DispatchProps
 type State = {
     contentChanged: boolean,
     idCopied: boolean,
+    name: string,
+    description: string,
 }
 
 export class InfoView extends Component<Props, State> {
     state = {
         contentChanged: false,
         idCopied: false,
+        name: '',
+        description: '',
     }
 
     componentDidMount() {
@@ -66,12 +70,18 @@ export class InfoView extends Component<Props, State> {
 
     onNameChange = (e: SyntheticInputEvent<EventTarget>) => {
         const name = e.target.value
+        this.setState({
+            name,
+        })
         this.props.editField('name', name)
         this.contentChanged()
     }
 
     onDescriptionChange = (e: SyntheticInputEvent<EventTarget>) => {
         const description = e.target.value
+        this.setState({
+            description,
+        })
         this.props.editField('description', description)
         this.contentChanged()
     }
@@ -97,7 +107,7 @@ export class InfoView extends Component<Props, State> {
 
     render() {
         const { stream, disabled } = this.props
-        const { idCopied } = this.state
+        const { idCopied, name, description } = this.state
 
         return (
             <div className={styles.infoView}>
@@ -106,7 +116,7 @@ export class InfoView extends Component<Props, State> {
                         label={I18n.t('userpages.streams.edit.details.name')}
                         type="text"
                         name="name"
-                        value={(stream && stream.name) || ''}
+                        value={name === '' ? (stream && stream.name) : name}
                         onChange={this.onNameChange}
                         preserveLabelSpace
                         disabled={disabled}
@@ -117,7 +127,7 @@ export class InfoView extends Component<Props, State> {
                         label={I18n.t('userpages.streams.edit.details.description')}
                         type="text"
                         name="description"
-                        value={(stream && stream.description) || ''}
+                        value={description === '' ? (stream && stream.description) : description}
                         onChange={this.onDescriptionChange}
                         preserveLabelSpace
                         disabled={disabled}
