@@ -30,9 +30,9 @@ export function Cable({ className, cable, ...props }) {
         <path
             className={cx(styles.Connection, className)}
             d={curvedHorizontal(
-                from.left + (0.5 * from.width * direction), // connect to edge of from
+                from.left + (0.5 * (from.width || 0) * direction), // connect to edge of from
                 from.top,
-                to.left + (0.5 * to.width * -direction), // connect to edge of to
+                to.left + (0.5 * (to.width || 0) * -direction), // connect to edge of to
                 to.top,
             )}
             stroke="#525252"

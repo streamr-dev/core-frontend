@@ -24,6 +24,8 @@ function getPortPosition(portId, canvas, preview, previewScale) {
         id: m.id,
         left: (p.left + (p.width / 2)) * previewScale,
         top: (p.top + (p.height / 2)) * previewScale,
+        width: p.width * previewScale,
+        height: p.height * previewScale,
     }
 }
 
@@ -45,7 +47,7 @@ const PreviewCables = ({ canvas, preview, previewScale }) => (
             }
         }, []),
     }), {})).map(([key, cable]) => (
-        <Cable cable={cable} key={key} strokeWidth="0.5" />
+        <Cable cable={cable} key={key} strokeWidth="0.2" />
     ))
 )
 
