@@ -47,7 +47,7 @@ const PreviewCables = ({ canvas, preview, previewScale }) => (
             }
         }, []),
     }), {})).map(([key, cable]) => (
-        <Cable cable={cable} key={key} strokeWidth="0.5" />
+        <Cable cable={cable} key={key} strokeWidth="0.2" />
     ))
 )
 
