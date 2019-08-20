@@ -94,7 +94,7 @@ const PurchasesPageAuth = userIsAuthenticated(PurchasesPage)
 const ProductsPageAuth = userIsAuthenticated(ProductsPage)
 
 // Editor Auth
-const CanvasEditorAuth = userIsAuthenticated(CanvasEditor)
+const CanvasEditorAuth = CanvasEditor
 const DashboardEditorAuth = userIsAuthenticated(DashboardEditor)
 
 // Other components

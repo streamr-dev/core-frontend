@@ -43,3 +43,25 @@ export const isAuthenticating: (StoreState) => boolean = createSelector(
         !userData && !userDataError && !!isFetchingUserData
     ),
 )
+
+export const isAuthenticated: (StoreState) => boolean = createSelector(
+    selectUserData,
+    selectUserDataError,
+    (userData, userDataError) => (
+        !!(userData && !userDataError)
+    ),
+)
+
+type AuthState = {
+    isAuthenticating: boolean,
+    isAuthenticated: boolean,
+}
+
+export const selectAuthState: (StoreState) => AuthState = createSelector(
+    isAuthenticating,
+    isAuthenticated,
+    (isAuthenticatingState, isAuthenticatedState) => ({
+        isAuthenticating: !!isAuthenticatingState,
+        isAuthenticated: !!isAuthenticatedState,
+    }),
+)

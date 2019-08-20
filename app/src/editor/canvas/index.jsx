@@ -1,6 +1,9 @@
 import React, { Component, useContext } from 'react'
 import { withRouter } from 'react-router-dom'
 import { Helmet } from 'react-helmet'
+import { connect } from 'react-redux'
+import { selectAuthState } from '$shared/modules/user/selectors'
+import SessionContext from '$auth/contexts/Session'
 
 import Layout from '$shared/components/Layout'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
@@ -458,9 +461,15 @@ const CanvasContainer = withRouter(withErrorBoundary(ErrorComponentView)((props)
     </ClientProvider>
 )))
 
-export default ({ embed }) => (
-    <Layout className={styles.layout} footer={false} nav={!embed}>
-        <BodyClass className="editor" />
-        <CanvasContainer embed={embed} />
-    </Layout>
-)
+export default connect(selectAuthState)(({ embed, isAuthenticated }) => {
+    const { token } = useContext(SessionContext)
+    // if there's a token, user is probably just authenticating
+    // don't drop into embed mode unless no token
+    embed = embed || (!isAuthenticated && !token)
+    return (
+        <Layout className={styles.layout} footer={false} nav={!embed}>
+            <BodyClass className="editor" />
+            <CanvasContainer embed={embed} />
+        </Layout>
+    )
+})

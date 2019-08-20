@@ -10,6 +10,7 @@ import t from 'prop-types'
 import StreamrClient from 'streamr-client'
 import { selectAuthApiKeyId } from '$shared/modules/resourceKey/selectors'
 import { getMyResourceKeys } from '$shared/modules/resourceKey/actions'
+import { selectAuthState } from '$shared/modules/user/selectors'
 import useIsMountedRef from '$shared/hooks/useIsMountedRef'
 
 import * as services from '../services'
@@ -107,7 +108,7 @@ class ClientProviderInner extends React.Component {
         error: undefined,
     }
 
-    componentDidMount() {
+    componentDidUpdate() {
         this.loadIfNoKey()
     }
 
@@ -116,7 +117,9 @@ class ClientProviderInner extends React.Component {
     }
 
     async loadIfNoKey() {
-        if (this.state.isLoading || this.state.error || this.props.apiKey) { return }
+        if (this.props.isAuthenticating || !this.state.isAuthenticated) { return }
+        if (this.state.isLoading || this.state.error) { return }
+
         this.setState({
             isLoading: true,
             error: undefined,
@@ -146,7 +149,10 @@ class ClientProviderInner extends React.Component {
     }
 }
 
-export const ClientProvider = withAuthApiKey(({ apiKey, ...props }) => (
-    <ClientProviderInner key={apiKey} apiKey={apiKey} {...props} />
-))
-
+export const ClientProvider = withAuthApiKey(connect(selectAuthState)(({ apiKey, ...props }) => (
+    <ClientProviderInner
+        key={apiKey}
+        apiKey={apiKey}
+        {...props}
+    />
+)))
