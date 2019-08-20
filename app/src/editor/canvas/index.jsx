@@ -34,6 +34,7 @@ import Canvas from './components/Canvas'
 import CanvasToolbar from './components/Toolbar'
 import CanvasStatus, { CannotSaveStatus } from './components/Status'
 import ModuleSearch from './components/ModuleSearch'
+import EmbedToolbar from './components/EmbedToolbar'
 
 import useCanvasNotifications, { pushErrorNotification, pushWarningNotification } from './hooks/useCanvasNotifications'
 
@@ -345,7 +346,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                         <CannotSaveStatus />
                     )}
                 </Canvas>
-                {isEmbedMode ? null : (
+                {isEmbedMode ? <EmbedToolbar canvas={canvas} /> : (
                     <React.Fragment>
                         <ModalProvider>
                             <CanvasToolbar
