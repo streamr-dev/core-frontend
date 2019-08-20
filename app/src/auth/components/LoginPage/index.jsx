@@ -2,7 +2,7 @@
 
 import React, { useState, useCallback } from 'react'
 
-import { userIsNotAuthenticated } from '$mp/utils/auth'
+import { userIsNotAuthenticated } from '$auth/utils/userAuthenticated'
 import SessionProvider from '../SessionProvider'
 import AuthLayout from '../AuthLayout'
 import UsernamePasswordLogin from '../UsernamePasswordLogin'
