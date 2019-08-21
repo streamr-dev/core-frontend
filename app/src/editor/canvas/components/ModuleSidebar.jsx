@@ -83,6 +83,7 @@ export default function ModuleSidebar({ canvas, selectedModuleHash, setModuleOpt
                                             /* Select */
                                             <Select
                                                 id={id}
+                                                className={styles.select}
                                                 value={opts.filter((opt) => opt.value === option.value)}
                                                 onChange={onSelectChange(name)}
                                                 options={opts}
