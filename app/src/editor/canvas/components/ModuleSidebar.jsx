@@ -91,6 +91,7 @@ export default function ModuleSidebar({ canvas, selectedModuleHash, setModuleOpt
                                             (option.type === 'boolean' && (
                                                 <Toggle
                                                     id={id}
+                                                    className={styles.toggle}
                                                     value={option.value}
                                                     onChange={onChange(name)}
                                                     disabled={!isEditable}
