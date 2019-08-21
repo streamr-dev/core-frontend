@@ -1,6 +1,7 @@
 // @flow
 
 import React, { useCallback, useMemo } from 'react'
+import cx from 'classnames'
 import { type CommonProps } from '..'
 import styles from './select.pcss'
 
@@ -13,6 +14,7 @@ type Props = CommonProps & {
 }
 
 const Select = ({
+    className,
     disabled,
     onChange: onChangeProp,
     value,
@@ -35,7 +37,7 @@ const Select = ({
     ), [options])
 
     return (
-        <div className={styles.root}>
+        <div className={cx(styles.root, className)}>
             <div className={styles.inner}>
                 <select
                     {...props}
