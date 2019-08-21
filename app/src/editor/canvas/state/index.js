@@ -153,6 +153,10 @@ function createIndex(canvas) {
     }
 }
 
+/**
+ * super simple memoize. First argument is key.
+ * (i.e. won't work if multiple arguments used)
+ */
 const memoize = (fn) => {
     const cache = new WeakMap()
     return (item, ...args) => {
@@ -266,7 +270,7 @@ export function getModuleForPort(canvas, portId) {
     return m
 }
 
-export function getModulePorts(canvas, moduleHash) {
+export function getModulePortsMap(canvas, moduleHash) {
     const canvasModule = getModule(canvas, moduleHash)
     const ports = {}
     canvasModule.params.forEach((port) => {
@@ -282,6 +286,14 @@ export function getModulePorts(canvas, moduleHash) {
     return ports
 }
 
+export function getModulePorts(canvas, moduleHash) {
+    return Object.values(getModulePortsMap(canvas, moduleHash))
+}
+
+export function getModulePortIds(canvas, moduleHash) {
+    return Object.keys(getModulePortsMap(canvas, moduleHash))
+}
+
 export function findModule(canvas, matchFn) {
     return canvas.modules.find(matchFn)
 }
@@ -292,7 +304,7 @@ export function findModules(canvas, matchFn) {
 
 export function findModulePort(canvas, moduleHash, matchFn) {
     const ports = getModulePorts(canvas, moduleHash)
-    return Object.values(ports).find(matchFn)
+    return ports.find(matchFn)
 }
 
 export function getAllPorts(canvas) {
@@ -319,7 +331,7 @@ export function getConnectedPortIds(canvas, portId) {
         .map(({ id }) => id)
 }
 
-function moduleHasPort(canvas, moduleHash, portId) {
+export function moduleHasPort(canvas, moduleHash, portId) {
     if (!hasPort(canvas, portId)) { return false }
     const m = getModuleForPort(canvas, portId)
     return m.hash === moduleHash
@@ -629,9 +641,9 @@ export function disconnectAllFromPort(canvas, portId) {
 }
 
 export function disconnectAllModulePorts(canvas, moduleHash) {
-    const allPorts = getModulePorts(canvas, moduleHash)
-    return Object.values(allPorts).reduce((prevCanvas, port) => (
-        disconnectAllFromPort(prevCanvas, port.id)
+    const modulePortIds = getModulePortIds(canvas, moduleHash)
+    return modulePortIds.reduce((prevCanvas, portId) => (
+        disconnectAllFromPort(prevCanvas, portId)
     ), canvas)
 }
 
@@ -656,9 +668,9 @@ export function updatePortConnection(canvas, portId) {
 }
 
 export function updateModulePortConnections(canvas, moduleHash) {
-    const allPorts = getModulePorts(canvas, moduleHash)
-    return Object.values(allPorts).reduce((prevCanvas, port) => (
-        updatePortConnection(prevCanvas, port.id)
+    const modulePortIds = getModulePortIds(canvas, moduleHash)
+    return modulePortIds.reduce((prevCanvas, portId) => (
+        updatePortConnection(prevCanvas, portId)
     ), canvas)
 }
 
@@ -1376,11 +1388,11 @@ export function replaceModule(canvas, moduleData) {
     const prevCanvas = canvas
     let nextCanvas = updateModule(prevCanvas, hash, () => moduleData)
 
-    const prevPorts = getAllPorts(prevCanvas, hash)
-    prevPorts.forEach((prevPort) => {
-        const connectedIds = getConnectedPortIds(prevCanvas, prevPort.id)
+    const prevPortIds = getModulePortIds(prevCanvas, hash)
+    prevPortIds.forEach((prevPortId) => {
+        const connectedIds = getConnectedPortIds(prevCanvas, prevPortId)
         if (!connectedIds.length) { return } // nothing to do if no connections
-        const matchedPort = matchPortInPreviousCanvas(nextCanvas, prevCanvas, prevPort.id)
+        const matchedPort = matchPortInPreviousCanvas(nextCanvas, prevCanvas, prevPortId)
         if (!matchedPort) { return } // nothing to do if port no longer exists
         connectedIds.forEach((connectedId) => {
             const matchedConnectedPort = matchPortInPreviousCanvas(nextCanvas, prevCanvas, connectedId)
