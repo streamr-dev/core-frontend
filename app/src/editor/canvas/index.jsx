@@ -8,6 +8,7 @@ import SessionContext from '$auth/contexts/Session'
 import Layout from '$shared/components/Layout'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import ErrorComponentView from '$shared/components/ErrorComponentView'
+import copyToClipboard from 'copy-to-clipboard'
 
 import links from '../../links'
 
@@ -101,6 +102,23 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         if ((event.code === 'Backspace' || event.code === 'Delete') && runController.isEditable) {
             this.removeModule({ hash })
         }
+
+        if (!(event.metaKey || event.ctrlKey)) { return }
+
+        // copy
+        if (event.key === 'c') {
+            event.preventDefault()
+            event.stopPropagation()
+            copyToClipboard(JSON.stringify(CanvasState.getModuleCopy(this.props.canvas, hash)))
+        }
+
+        // cut
+        if (event.key === 'x') {
+            event.preventDefault()
+            event.stopPropagation()
+            copyToClipboard(JSON.stringify(CanvasState.getModuleCopy(this.props.canvas, hash)))
+            this.removeModule({ hash })
+        }
     }
 
     componentDidMount() {
@@ -140,7 +158,10 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         if (this.unmounted) { return }
 
         this.setCanvas(action, (canvas) => (
-            CanvasState.addModule(canvas, moduleData)
+            CanvasState.addModule(canvas, {
+                ...moduleData,
+                layout: configuration.layout,
+            })
         ))
     }
 
@@ -302,6 +323,29 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         })
     }
 
+    onPaste = (event) => {
+        event.preventDefault()
+        event.stopPropagation()
+        const clipboardContent = event.clipboardData.getData('text/plain')
+        let moduleData
+        try {
+            moduleData = JSON.parse(clipboardContent)
+        } catch (error) {
+            // ignore
+        }
+        if (!moduleData || moduleData.id == null) {
+            // doesn't look like a module
+            return
+        }
+        this.addAndSelectModule({
+            id: moduleData.id,
+            configuration: {
+                ...moduleData,
+                hash: undefined, // never use hash
+            },
+        })
+    }
+
     render() {
         const { canvas, runController, isEmbedMode } = this.props
         if (!canvas) {
@@ -317,7 +361,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         const resendFrom = settings.beginDate
         const resendTo = settings.endDate
         return (
-            <div className={styles.CanvasEdit}>
+            <div className={styles.CanvasEdit} onPaste={this.onPaste}>
                 <Helmet title={`${canvas.name} | Streamr Core`} />
                 <Subscription
                     uiChannel={canvas.uiChannel}
