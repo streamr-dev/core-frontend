@@ -347,6 +347,13 @@ export function isConnectedToModule(canvas, moduleHash, portIdA, portIdB) {
     )
 }
 
+export function moduleHasConnections(canvas, moduleHash) {
+    const portIds = getModulePortIds(canvas, moduleHash)
+    return portIds.some((id) => (
+        isPortConnected(canvas, id)
+    ))
+}
+
 export function isPortConnected(canvas, portId) {
     if (!hasPort(canvas, portId)) { return false }
     const conn = getConnectedPortIds(canvas, portId)
@@ -1423,4 +1430,60 @@ export function applyChanges({ sent, received, current }) {
         ))
     })
     return nextCanvas
+}
+
+export function getModuleCopy(canvas, moduleHash) {
+    // apply transformations on temp canvas
+    // ensure all ports disconnected
+    let tempCanvas = disconnectAllModulePorts(canvas, moduleHash)
+    let m = getModule(tempCanvas, moduleHash)
+    // offset new module by 32px
+    const top = ((m.layout && parseInt(m.layout.position.top, 10)) + 32) || 0
+    const left = ((m.layout && parseInt(m.layout.position.left, 10)) + 32) || 0
+    tempCanvas = updateCanvas(updateModulePosition(tempCanvas, moduleHash, {
+        top,
+        left,
+    }))
+    m = getModule(tempCanvas, moduleHash)
+
+    const portIds = getModulePortIds(tempCanvas, moduleHash)
+    const ignore = new Set()
+    // give ports fresh ids
+    portIds.forEach((portId) => {
+        if (ignore.has(portId)) { return }
+        const newId = uuid.v4()
+        const portType = getPortType(tempCanvas, portId)
+        const linkedPort = findLinkedVariadicPort(tempCanvas, portId)
+        if (linkedPort) {
+            if (portType === 'output') { return } // process outputs when processing input
+            const linkedId = uuid.v4()
+            const linkedName = `endpoint-${linkedId}`
+            // update linked output id to match
+            tempCanvas = updatePort(tempCanvas, linkedPort.id, (p) => ({
+                ...p,
+                id: linkedId,
+                name: linkedName,
+            }))
+            ignore.add(linkedPort.id) // don't double-handle output
+            tempCanvas = updatePort(tempCanvas, portId, (p) => ({
+                ...p,
+                id: newId,
+                name: `endpoint-${newId}`,
+                variadic: {
+                    ...p.variadic,
+                    linkedOutput: linkedName,
+                },
+            }))
+        } else {
+            tempCanvas = updatePort(tempCanvas, portId, (p) => ({
+                ...p,
+                id: newId,
+            }))
+        }
+    })
+    m = getModule(tempCanvas, moduleHash)
+    return {
+        ...m,
+        hash: undefined, // remove hash
+    }
 }
