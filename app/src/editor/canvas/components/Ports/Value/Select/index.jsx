@@ -41,7 +41,7 @@ const Select = ({
             <div className={styles.inner}>
                 <select
                     {...props}
-                    title={title != null ? title : value}
+                    title={title != null ? String(title) : String(value)}
                     className={styles.control}
                     value={value}
                     disabled={disabled}
