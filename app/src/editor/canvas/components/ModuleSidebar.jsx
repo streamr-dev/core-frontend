@@ -2,7 +2,7 @@ import React, { useEffect, useContext, useRef } from 'react'
 import cx from 'classnames'
 import startCase from 'lodash/startCase'
 
-import { Header, Content, Section } from '$editor/shared/components/Sidebar'
+import { Header, Content, Section, Select } from '$editor/shared/components/Sidebar'
 import Toggle from '$shared/components/Toggle'
 import Text from '$editor/canvas/components/Ports/Value/Text'
 
@@ -37,11 +37,7 @@ export default function ModuleSidebar({ canvas, selectedModuleHash, setModuleOpt
         })
     }
 
-    const onChangeValue = (name) => (event) => {
-        onChange(name)(event.target.value)
-    }
-
-    const onChangeChecked = (name) => (value) => {
+    const onSelectChange = (name) => ({ value }) => {
         onChange(name)(value)
     }
 
@@ -76,33 +72,27 @@ export default function ModuleSidebar({ canvas, selectedModuleHash, setModuleOpt
                             {optionsKeys.map((name) => {
                                 const option = module.options[name]
                                 const id = `${module.id}.options.${name}`
+                                const opts = option.possibleValues ? option.possibleValues.map(({ text, value }) => ({
+                                    label: text,
+                                    value,
+                                })) : []
                                 return (
                                     <React.Fragment key={id}>
                                         <label htmlFor={id}>{startCase(name)}</label>
                                         {option.possibleValues ? (
                                             /* Select */
-                                            <select
-                                                id={id}
-                                                value={option.value}
-                                                onChange={onChangeValue(name)}
-                                            >
-                                                {option.possibleValues.map(({ text, value }) => (
-                                                    <option
-                                                        key={value}
-                                                        value={value}
-                                                        disabled={!isEditable}
-                                                    >
-                                                        {text}
-                                                    </option>
-                                                ))}
-                                            </select>
+                                            <Select
+                                                value={opts.filter((opt) => opt.value === option.value)}
+                                                onChange={onSelectChange(name)}
+                                                options={opts}
+                                            />
                                         ) : (
                                             /* Toggle */
                                             (option.type === 'boolean' && (
                                                 <Toggle
                                                     id={id}
                                                     value={option.value}
-                                                    onChange={onChangeChecked(name)}
+                                                    onChange={onChange(name)}
                                                     disabled={!isEditable}
                                                 />
                                             )) || (
