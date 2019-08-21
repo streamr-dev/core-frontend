@@ -98,6 +98,7 @@ export default function ModuleSidebar({ canvas, selectedModuleHash, setModuleOpt
                                             )) || (
                                                 /* Text */
                                                 <Text
+                                                    id={id}
                                                     className={styles.input}
                                                     value={option.value}
                                                     onChange={onChange(name)}
