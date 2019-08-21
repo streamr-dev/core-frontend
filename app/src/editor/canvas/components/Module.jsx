@@ -218,7 +218,7 @@ class CanvasModule extends React.PureComponent {
                     canvasId={canvas.id}
                     isActive={isRunning}
                     uiEmitter={this.uiEmitter}
-                    isSubscriptionActive={this.context.isStarting || this.context.isActive}
+                    isSubscriptionActive={this.context.isSubscriptionActive}
                 />
                 <div className={ModuleStyles.selectionDecorator} />
             </Resizable>

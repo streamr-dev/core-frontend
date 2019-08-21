@@ -112,7 +112,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
     async autostart() {
         const { canvas, runController } = this.props
         if (this.isDeleted) { return } // do not autostart deleted canvases
-        if (canvas.adhoc && !runController.isActive) {
+        if (canvas.adhoc && !runController.isActive && !runController.isStopping) {
             // do not autostart running/non-adhoc canvases
             return this.canvasStart()
         }
@@ -271,9 +271,11 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         await canvasController.load(canvas.id)
     }
 
-    onDoneMessage = () => (
-        this.loadSelf()
-    )
+    onDoneMessage = () => {
+        const { runController } = this.props
+        if (runController.isStopping) { return } // don't load if stopping
+        return this.loadSelf()
+    }
 
     onErrorMessage = (error) => {
         pushErrorNotification({
