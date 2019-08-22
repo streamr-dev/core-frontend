@@ -22,7 +22,7 @@ export function createClient(apiKey) {
         url: process.env.STREAMR_WS_URL,
         restUrl: process.env.STREAMR_API_URL,
         auth: apiKey == null ? {} : {
-            apiKey, // assume this won't change for now
+            apiKey,
         },
         autoConnect: true,
         autoDisconnect: false,
@@ -117,7 +117,7 @@ class ClientProviderInner extends React.Component {
     }
 
     async loadIfNoKey() {
-        if (this.props.isAuthenticating || !this.state.isAuthenticated) { return }
+        if ((this.props.isAuthenticating || !this.props.isAuthenticated) && !this.props.authenticationFailed) { return }
         if (this.state.isLoading || this.state.error) { return }
 
         this.setState({
