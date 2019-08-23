@@ -82,6 +82,8 @@ export default function ModuleSidebar({ canvas, selectedModuleHash, setModuleOpt
                                         {option.possibleValues ? (
                                             /* Select */
                                             <Select
+                                                id={id}
+                                                className={styles.select}
                                                 value={opts.filter((opt) => opt.value === option.value)}
                                                 onChange={onSelectChange(name)}
                                                 options={opts}
@@ -91,6 +93,7 @@ export default function ModuleSidebar({ canvas, selectedModuleHash, setModuleOpt
                                             (option.type === 'boolean' && (
                                                 <Toggle
                                                     id={id}
+                                                    className={styles.toggle}
                                                     value={option.value}
                                                     onChange={onChange(name)}
                                                     disabled={!isEditable}
@@ -98,6 +101,7 @@ export default function ModuleSidebar({ canvas, selectedModuleHash, setModuleOpt
                                             )) || (
                                                 /* Text */
                                                 <Text
+                                                    id={id}
                                                     className={styles.input}
                                                     value={option.value}
                                                     onChange={onChange(name)}

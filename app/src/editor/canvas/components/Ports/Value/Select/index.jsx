@@ -1,20 +1,24 @@
 // @flow
 
 import React, { useCallback, useMemo } from 'react'
+import cx from 'classnames'
 import { type CommonProps } from '..'
 import styles from './select.pcss'
 
 type Props = CommonProps & {
     options: Array<{
-        name: string,
+        name?: string,
+        text?: string, // sidebar options use 'text' instead of 'name' :/
         value: any,
     }>,
 }
 
 const Select = ({
+    className,
     disabled,
     onChange: onChangeProp,
     value,
+    title,
     options,
     ...props
 }: Props) => {
@@ -25,25 +29,26 @@ const Select = ({
     if (value == null) { value = undefined } // select doesn't want null value
 
     const optionMap = useMemo(() => (
-        options.reduce((memo, { name, value }) => {
+        options.reduce((memo, { name, text, value }) => {
             if (value == null) { value = undefined }
-            memo.set(value, name)
+            memo.set(value, name != null ? name : text)
             return memo
         }, new Map())
     ), [options])
 
     return (
-        <div className={styles.root}>
+        <div className={cx(styles.root, className)}>
             <div className={styles.inner}>
                 <select
                     {...props}
+                    title={title != null ? String(title) : String(value)}
                     className={styles.control}
                     value={value}
                     disabled={disabled}
                     onChange={onChange}
                 >
-                    {options.map(({ name, value }) => (
-                        <option key={value} value={value}>{name}</option>
+                    {options.map(({ name, text, value }) => (
+                        <option key={value} value={value}>{name != null ? name : text}</option>
                     ))}
                 </select>
                 {/* `select` holding a currently selected value. This hidden (`visibility: hidden`) control
