@@ -239,6 +239,7 @@ export default class MapModule extends React.PureComponent<Props, State> {
 
     onViewportChanged = (centerLat: number, centerLong: number, zoom: number) => {
         const { module, api } = this.props
+        if (!api) { return }
         const nextModule = {
             ...module,
             options: {
