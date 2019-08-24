@@ -208,6 +208,7 @@ class CanvasModule extends React.PureComponent {
                         onValueChange={this.onPortValueChange}
                     />
                 </div>
+                <div className={styles.pasteTrap} />
                 <ModuleUI
                     autoSize
                     className={styles.canvasModuleUI}
