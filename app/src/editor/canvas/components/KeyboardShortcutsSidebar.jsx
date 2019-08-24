@@ -3,6 +3,7 @@ import cx from 'classnames'
 
 import { Header, Content, Section } from '$editor/shared/components/Sidebar'
 import { isWindows } from '$shared/utils/platform'
+import isEditableElement from '../utils/isEditableElement'
 
 import styles from './keyboardShortcutsSidebar.pcss'
 
@@ -151,12 +152,7 @@ class KeyboardShortcuts extends React.Component {
     }
 
     static shouldHandleKeyEvent(event) {
-        const element = event.target || event.srcElement
-        if (!element) { return true }
-
-        const tagName = element.tagName.toLowerCase()
-        // ignore events if user focus is in a form control or contenteditable
-        return !(tagName === 'input' || tagName === 'select' || tagName === 'textarea' || element.isContentEditable)
+        return !isEditableElement(event.target || event.srcElement)
     }
 
     onKeyDown = (event) => {

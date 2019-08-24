@@ -37,6 +37,7 @@ import CanvasToolbar from './components/Toolbar'
 import CanvasStatus, { CannotSaveStatus } from './components/Status'
 import ModuleSearch from './components/ModuleSearch'
 import EmbedToolbar from './components/EmbedToolbar'
+import isEditableElement from './utils/isEditableElement'
 
 import useCanvasNotifications, { pushErrorNotification, pushWarningNotification } from './hooks/useCanvasNotifications'
 
@@ -124,12 +125,14 @@ const CanvasEditComponent = class CanvasEdit extends Component {
 
     componentDidMount() {
         window.addEventListener('keydown', this.onKeyDown)
+        document.body.addEventListener('paste', this.onPaste)
         this.autostart()
     }
 
     componentWillUnmount() {
         this.unmounted = true
         window.removeEventListener('keydown', this.onKeyDown)
+        document.body.removeEventListener('paste', this.onPaste)
     }
 
     async autostart() {
@@ -325,6 +328,8 @@ const CanvasEditComponent = class CanvasEdit extends Component {
     }
 
     onPaste = (event) => {
+        // prevent handling paste in form fields
+        if (isEditableElement(event.target || event.srcElement)) { return }
         event.preventDefault()
         event.stopPropagation()
         const clipboardContent = event.clipboardData.getData('text/plain')
