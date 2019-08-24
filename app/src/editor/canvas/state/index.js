@@ -211,6 +211,10 @@ export function getModuleIfExists(canvas, moduleHash) {
     return get(canvas, getModulePath(canvas, moduleHash))
 }
 
+export function hasModule(canvas, moduleHash) {
+    return !!getModuleIfExists(canvas, moduleHash)
+}
+
 export function getModule(canvas, moduleHash) {
     const m = getModuleIfExists(canvas, moduleHash)
     validateModule(m, {

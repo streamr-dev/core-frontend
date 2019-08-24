@@ -21,7 +21,7 @@ import { ModalProvider } from '$editor/shared/components/Modal'
 import * as sharedServices from '$editor/shared/services'
 import BodyClass from '$shared/components/BodyClass'
 import Sidebar from '$editor/shared/components/Sidebar'
-import { useSelectionContext, SelectionProvider } from '$editor/shared/hooks/useSelection'
+import { useCanvasSelection, SelectionProvider } from './components/CanvasController/useCanvasSelection'
 import ModuleSidebar from './components/ModuleSidebar'
 import KeyboardShortcutsSidebar from './components/KeyboardShortcutsSidebar'
 
@@ -457,7 +457,7 @@ const CanvasEdit = withRouter(({ canvas, ...props }) => {
     const isEmbedMode = CanvasController.useEmbedMode()
     useCanvasNotifications(canvas)
     useAutosaveEffect()
-    const selection = useSelectionContext()
+    const selection = useCanvasSelection()
 
     return (
         <React.Fragment>
