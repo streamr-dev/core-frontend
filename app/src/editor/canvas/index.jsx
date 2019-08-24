@@ -95,6 +95,9 @@ const CanvasEditComponent = class CanvasEdit extends Component {
     }
 
     onKeyDown = (event) => {
+        // ignore if event from form element
+        if (isEditableElement(event.target || event.srcElement)) { return }
+
         const hash = Number(event.target.dataset.modulehash)
         if (Number.isNaN(hash)) {
             return
@@ -104,7 +107,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         if ((event.code === 'Backspace' || event.code === 'Delete') && runController.isEditable) {
             this.removeModule({ hash })
         }
-
+        // ignore if not meta key down
         if (!(event.metaKey || event.ctrlKey)) { return }
 
         // copy
