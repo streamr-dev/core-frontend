@@ -206,6 +206,7 @@ class UndoContextProvider extends Component<Props, State> {
         replace: this.replace,
         reset: this.reset,
         state: undefined,
+        action: undefined,
     }
 
     render() {
