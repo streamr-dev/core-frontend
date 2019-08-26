@@ -5,6 +5,8 @@
 import React, { Component, type Node, type Context } from 'react'
 import t from 'prop-types'
 
+import useUndoBreadcrumbs from './useUndoBreadcrumbs'
+
 type Action = {
     type: string,
     [key: string]: any,
@@ -52,6 +54,7 @@ const UndoContext: Context<ContextProps> = React.createContext({
 type Props = {
     children?: Node,
     initialState?: any,
+    enableBreadcrumbs?: boolean,
 }
 
 type State = ContextProps
@@ -229,10 +232,19 @@ class UndoContextProvider extends Component<Props, State> {
     }
 
     render() {
+        const { enableBreadcrumbs, children, ...props } = this.props
         return (
-            <UndoContext.Provider value={this.state} {...this.props} />
+            <UndoContext.Provider value={this.state} {...props}>
+                <UndoBreadcrumbs enableBreadcrumbs={enableBreadcrumbs} />
+                {children || null}
+            </UndoContext.Provider>
         )
     }
+}
+
+function UndoBreadcrumbs({ enableBreadcrumbs }) {
+    useUndoBreadcrumbs(enableBreadcrumbs)
+    return null
 }
 
 export {
