@@ -17,17 +17,23 @@ type Props = {
     onChange: (any) => void,
 }
 
-type PortType = 'map' | 'color' | 'select' | 'text' | 'stream'
+type PortType = 'map' | 'color' | 'select' | 'text' | 'stream' | 'defactoBoolean'
 
-const getPortType = (port: any): PortType => {
+const getPortValueType = (canvas: any, port: any): PortType => {
+    const { type } = port
+    const portTypes = new Set(type.split(' '))
     switch (true) {
-        case port.type === 'Map':
-            return 'map'
-        case port.type === 'Color':
-            return 'color'
         case !!port.possibleValues:
             return 'select'
-        case port.type === 'Stream':
+        case (typeof port.initialValue === 'boolean'):
+            // Many boolean ports are of type Object
+            // so assume boolean type from type of initialValue
+            return 'defactoBoolean'
+        case portTypes.has('Map'):
+            return 'map'
+        case portTypes.has('Color'):
+            return 'color'
+        case portTypes.has('Stream'):
             return 'stream'
         default:
     }
@@ -43,13 +49,22 @@ export type CommonProps = {
     id?: string,
     className?: string,
 }
+const BooleanPossibleValues = [{
+    name: 'false',
+    value: 'false',
+}, {
+    name: 'true',
+    value: 'true',
+}]
 
 const Value = ({ canvas, disabled, port, onChange }: Props) => {
     // Enable non-running input whether connected or not if port.canHaveInitialValue
-    const editDisabled = disabled || State.isPortValueEditDisabled(canvas, port.id)
-    const type = getPortType(port)
-    const value = State.getPortValue(canvas, port.id)
+    const portValueEditDisabled = State.isPortValueEditDisabled(canvas, port.id)
+    const editDisabled = disabled || portValueEditDisabled
+    const valueType = getPortValueType(canvas, port)
     const placeholder = State.getPortPlaceholder(canvas, port.id)
+    const value = State.getPortValue(canvas, port.id)
+
     const commonProps: CommonProps = {
         disabled: editDisabled,
         onChange,
@@ -63,29 +78,38 @@ const Value = ({ canvas, disabled, port, onChange }: Props) => {
                 [styles.disabled]: disabled,
             })}
         >
-            {type === 'map' && (
+            {valueType === 'map' && (
                 <Map
                     {...commonProps}
                     port={port}
                 />
             )}
-            {type === 'color' && (
+            {valueType === 'color' && (
                 <Color
                     {...commonProps}
                 />
             )}
-            {type === 'select' && (
-                <Select
-                    {...commonProps}
-                    options={port.possibleValues}
-                />
+            {(valueType === 'select' || valueType === 'defactoBoolean') && (
+                (!portValueEditDisabled ? (
+                    <Select
+                        {...commonProps}
+                        value={value == null ? '' : String(value) /* coerce option value to string */}
+                        options={valueType === 'defactoBoolean' ? BooleanPossibleValues : port.possibleValues}
+                    />
+                ) : (
+                    <Text
+                        value={value == null ? '' : String(value) /* coerce option value to string */}
+                        {...commonProps}
+                        disabled
+                    />
+                ))
             )}
-            {type === 'text' && (
+            {valueType === 'text' && (
                 <Text
                     {...commonProps}
                 />
             )}
-            {type === 'stream' && (
+            {valueType === 'stream' && (
                 <Stream
                     {...commonProps}
                 />
