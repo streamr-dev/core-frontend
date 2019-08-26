@@ -12,6 +12,8 @@ import { ClientProvider } from '$editor/shared/components/Client'
 import * as sharedServices from '$editor/shared/services'
 import { ModalProvider } from '$editor/shared/components/Modal'
 import { SelectionProvider } from '$editor/shared/hooks/useSelection'
+import { Provider as PendingProvider } from '$shared/components/PendingContextProvider'
+import { useAnyPending } from '$shared/hooks/usePending'
 
 import links from '../../links'
 
@@ -243,22 +245,25 @@ const DashboardEditWrap = () => (
 
 function DashboardLoadingIndicator() {
     const { state } = useContext(UndoContext)
+    const isPending = useAnyPending()
     return (
-        <LoadingIndicator className={styles.LoadingIndicator} loading={!state} />
+        <LoadingIndicator className={styles.LoadingIndicator} loading={!state || isPending} />
     )
 }
 
 export default withRouter((props) => (
     <Layout className={styles.layout} footer={false}>
-        <ClientProvider>
-            <UndoContextProvider key={props.match.params.id}>
-                <UndoControls />
-                <DashboardLoadingIndicator />
-                <DashboardLoader>
-                    <DashboardEditWrap />
-                </DashboardLoader>
-            </UndoContextProvider>
-        </ClientProvider>
+        <UndoContextProvider key={props.match.params.id}>
+            <PendingProvider>
+                <ClientProvider>
+                    <UndoControls />
+                    <DashboardLoadingIndicator />
+                    <DashboardLoader>
+                        <DashboardEditWrap />
+                    </DashboardLoader>
+                </ClientProvider>
+            </PendingProvider>
+        </UndoContextProvider>
     </Layout>
 ))
 
