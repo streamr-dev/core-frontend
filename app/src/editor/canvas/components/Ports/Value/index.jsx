@@ -39,6 +39,9 @@ export type CommonProps = {
     onChange: (any) => void,
     value: any,
     placeholder: any,
+    title?: string,
+    id?: string,
+    className?: string,
 }
 
 const Value = ({ canvas, disabled, port, onChange }: Props) => {

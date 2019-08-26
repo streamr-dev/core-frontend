@@ -1,34 +1,32 @@
 .optionsFields {
   display: grid;
-  grid-template-columns: auto auto;
+  grid-template-columns: auto 105px;
   align-items: center;
-  grid-row-gap: 12px;
-  grid-column-gap: 10px;
+  grid-row-gap: 20px;
+  grid-column-gap: 20px;
 
   label {
-    font-family: 'IBM Plex Mono', monospace;
+    font-family: var(--sans);
+    font-weight: var(--medium);
     font-size: 14px;
     text-align: left;
     letter-spacing: 0;
-    line-height: 32px;
     color: #525252;
     margin: 0;
   }
 
-  input,
-  select {
-    width: auto;
-    color: #525252;
-    font-size: 12px;
-    font-family: inherit;
-    background: #F5F5F5;
-    border-radius: 2px;
-    border: none;
+  .input {
+    height: calc(1.5 * var(--um));
+    margin: 0 calc(-0.5 * var(--um));
   }
 
-  input {
-    cursor: text;
-    padding: 2px 8px;
+  .select {
+
+  }
+
+  .toggle {
+    display: flex;
+    align-items: center;
   }
 }
 

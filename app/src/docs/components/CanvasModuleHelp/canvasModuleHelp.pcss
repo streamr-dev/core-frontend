@@ -21,6 +21,12 @@ section.root {
   grid-row-gap: 1um;
 }
 
+.portHelpContent {
+  font-family: var(--sans);
+  font-size: 0.875um;
+  line-height: 1.5um;
+}
+
 .portHelpContent::first-letter,
 .portHelpContent *::first-letter {
   text-transform: uppercase;
@@ -38,7 +44,7 @@ section.root {
 .portsContent {
   display: grid;
   grid-template-columns: 1fr;
-  grid-row-gap: 0.5um;
+  grid-row-gap: 1.5um;
 }
 
 .portHelp {
@@ -47,7 +53,7 @@ section.root {
 }
 
 .root h4.portTypesHeading {
-  margin: 1um 0;
+  padding: 1um 0;
   font-size: 1um;
   font-weight: var(--medium);
 }
@@ -59,6 +65,7 @@ section.root {
   padding: 0 0.5um;
   font-family: var(--mono);
   font-size: 0.625um;
+  font-weight: var(--medium);
   line-height: 1.25um;
 }
 
@@ -69,6 +76,8 @@ section.root {
 .portName {
   font-size: 0.875um;
   font-family: var(--mono);
+  font-weight: var(--medium);
+  line-height: 1.5um;
   letter-spacing: 0;
 }
 
