@@ -53,10 +53,17 @@ export function useProductActions() {
         }))
         touch('description')
     }, [commit, touch])
-    const updateImageUrl = useCallback((image: File | $ElementType<Product, 'imageUrl'>) => {
+    const updateImageUrl = useCallback((image: $ElementType<Product, 'imageUrl'>) => {
         commit('Update image url', (p) => ({
             ...p,
             imageUrl: image,
+        }))
+        touch('coverImage')
+    }, [commit, touch])
+    const updateImageFile = useCallback((image: File) => {
+        commit('Update image file', (p) => ({
+            ...p,
+            newImageToUpload: image,
         }))
         touch('coverImage')
     }, [commit, touch])
@@ -134,6 +141,7 @@ export function useProductActions() {
         updateName,
         updateDescription,
         updateImageUrl,
+        updateImageFile,
         updateStreams,
         updateCategory,
         updateAdminFee,
@@ -149,6 +157,7 @@ export function useProductActions() {
         updateName,
         updateDescription,
         updateImageUrl,
+        updateImageFile,
         updateStreams,
         updateCategory,
         updateAdminFee,

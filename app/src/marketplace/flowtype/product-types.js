@@ -18,6 +18,7 @@ export type Product = {
     description: string,
     owner: string,
     imageUrl: ?string,
+    newImageToUpload?: ?File,
     thumbnailUrl: ?string,
     state?: ProductState,
     created?: Date,

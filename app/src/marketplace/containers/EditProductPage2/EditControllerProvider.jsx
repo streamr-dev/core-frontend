@@ -6,8 +6,9 @@ import type { Product } from '$mp/flowtype/product-types'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import usePending from '$shared/hooks/usePending'
-import { putProduct } from '$mp/modules/editProduct/services'
+import { putProduct, postImage } from '$mp/modules/editProduct/services'
 
+import useProductActions from '../ProductController/useProductActions'
 import { Context as ValidationContext, ERROR } from '../ProductController/ValidationContextProvider'
 
 type ContextProps = {
@@ -29,6 +30,7 @@ function useEditController(product: Product) {
     const [isPreview, setIsPreview] = useState(false)
     const [modal, setModal] = useState(null)
     const savePending = usePending('product.SAVE')
+    const { updateImageUrl } = useProductActions()
 
     const closeModal = useCallback(() => {
         setModal(null)
@@ -87,7 +89,15 @@ function useEditController(product: Product) {
                 // save product
                 await putProduct(product, product.id || '')
 
-                // TODO: upload image
+                // upload image
+                if (product.newImageToUpload != null) {
+                    try {
+                        const result = await postImage(product.id || '', product.newImageToUpload)
+                        updateImageUrl(result.imageUrl)
+                    } catch (e) {
+                        console.error('Could not upload image', e)
+                    }
+                }
 
                 // TODO: check contract product for price change (if published)
                 setIsSaving(false)
@@ -95,7 +105,7 @@ function useEditController(product: Product) {
         } else {
             setIsSaving(false)
         }
-    }, [errors, product, showConfirmModal, savePending])
+    }, [errors, product, showConfirmModal, savePending, updateImageUrl])
 
     return useMemo(() => ({
         isPreview,
