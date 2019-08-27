@@ -2,6 +2,7 @@
 
 import React, { type Node, type Context, createContext, useMemo, useState, useCallback } from 'react'
 import debounce from 'lodash/debounce'
+import useIsMounted from '$shared/hooks/useIsMounted'
 
 type ContextProps = {
     minHeight: number,
@@ -31,6 +32,7 @@ type Props = {
 }
 
 const SizeConstraintProvider = ({ children }: Props) => {
+    const isMounted = useIsMounted()
     const [dim, setDim] = useState({
         heights: {},
         widths: {},
@@ -71,8 +73,9 @@ const SizeConstraintProvider = ({ children }: Props) => {
     }, [setDim])
 
     const refreshProbes = useCallback(debounce(() => {
+        if (!isMounted()) { return } // no-op if unmounted
         setProbeRefreshCount((count) => count + 1)
-    }, 200), [])
+    }, 200), [isMounted])
 
     const { minWidth, minHeight } = useMemo(() => ({
         minHeight: Object.values(dim.heights).reduce((min, group) => (

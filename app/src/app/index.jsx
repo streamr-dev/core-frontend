@@ -60,7 +60,7 @@ import DashboardEditor from '$editor/dashboard'
 import ModalRoot from '$shared/components/ModalRoot'
 import Notifications from '$shared/components/Notifications'
 import { formatPath } from '$shared/utils/url'
-import { userIsAuthenticated } from '$mp/utils/auth'
+import { userIsAuthenticated } from '$auth/utils/userAuthenticated'
 import links from '../links'
 import history from '../history'
 import '../analytics'
@@ -94,7 +94,6 @@ const PurchasesPageAuth = userIsAuthenticated(PurchasesPage)
 const ProductsPageAuth = userIsAuthenticated(ProductsPage)
 
 // Editor Auth
-const CanvasEditorAuth = userIsAuthenticated(CanvasEditor)
 const DashboardEditorAuth = userIsAuthenticated(DashboardEditor)
 
 // Other components
@@ -169,7 +168,7 @@ const UserpagesRouter = () => ([
 
 const EditorRouter = () => ([
     <Route exact path="/" component={Products} key="root" />, // edge case for localhost
-    <Route exact path={formatPath(editor.canvasEditor, ':id?')} component={CanvasEditorAuth} key="CanvasEditor" />,
+    <Route exact path={formatPath(editor.canvasEditor, ':id?')} component={CanvasEditor} key="CanvasEditor" />,
     <Route exact path={formatPath(editor.canvasEmbed)} component={CanvasEmbed} key="CanvasEmbed" />,
     <Route exact path={formatPath(editor.dashboardEditor, ':id?')} component={DashboardEditorAuth} key="DashboardEditor" />,
 ])

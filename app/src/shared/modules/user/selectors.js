@@ -43,3 +43,41 @@ export const isAuthenticating: (StoreState) => boolean = createSelector(
         !userData && !userDataError && !!isFetchingUserData
     ),
 )
+
+export const isAuthenticated: (StoreState) => boolean = createSelector(
+    selectUserData,
+    selectUserDataError,
+    (userData, userDataError) => (
+        !!(userData && !userDataError)
+    ),
+)
+
+/**
+ * Auth attempted but failed. Differentiates initial logged out state from
+ * logged out state after checking.
+ */
+
+export const authenticationFailed: (StoreState) => boolean = createSelector(
+    isAuthenticated,
+    selectUserDataError,
+    (isAuthenticatedState, userDataError) => (
+        !isAuthenticated && !!userDataError
+    ),
+)
+
+type AuthState = {
+    isAuthenticating: boolean,
+    isAuthenticated: boolean,
+    isLoggedOut: boolean,
+}
+
+export const selectAuthState: (StoreState) => AuthState = createSelector(
+    isAuthenticating,
+    isAuthenticated,
+    authenticationFailed,
+    (isAuthenticatingState, isAuthenticatedState, authenticationFailedState) => ({
+        isAuthenticating: !!isAuthenticatingState,
+        isAuthenticated: !!isAuthenticatedState,
+        authenticationFailed: !!authenticationFailedState,
+    }),
+)
