@@ -8,7 +8,6 @@ import { NotificationIcon } from '$shared/utils/constants'
 import usePending from '$shared/hooks/usePending'
 import { putProduct, postImage } from '$mp/modules/editProduct/services'
 
-import useProductActions from '../ProductController/useProductActions'
 import { Context as ValidationContext, ERROR } from '../ProductController/ValidationContextProvider'
 
 type ContextProps = {
@@ -30,7 +29,6 @@ function useEditController(product: Product) {
     const [isPreview, setIsPreview] = useState(false)
     const [modal, setModal] = useState(null)
     const savePending = usePending('product.SAVE')
-    const { updateImageUrl } = useProductActions()
 
     const closeModal = useCallback(() => {
         setModal(null)
@@ -92,8 +90,7 @@ function useEditController(product: Product) {
                 // upload image
                 if (product.newImageToUpload != null) {
                     try {
-                        const result = await postImage(product.id || '', product.newImageToUpload)
-                        updateImageUrl(result.imageUrl)
+                        await postImage(product.id || '', product.newImageToUpload)
                     } catch (e) {
                         console.error('Could not upload image', e)
                     }
@@ -105,7 +102,7 @@ function useEditController(product: Product) {
         } else {
             setIsSaving(false)
         }
-    }, [errors, product, showConfirmModal, savePending, updateImageUrl])
+    }, [errors, product, showConfirmModal, savePending])
 
     return useMemo(() => ({
         isPreview,
