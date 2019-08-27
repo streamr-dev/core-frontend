@@ -84,8 +84,8 @@ describe('Canvas State', () => {
         describe('getModulePorts', () => {
             it('should get all module ports', () => {
                 const modulePorts = State.getModulePorts(canvas, clock.hash)
-                Object.values(modulePorts).forEach((port) => {
-                    expect(modulePorts[port.id]).toBe(port)
+                expect(modulePorts.length).toEqual(clock.inputs.length + clock.params.length + clock.outputs.length)
+                modulePorts.forEach((port) => {
                     expect(port).toMatchObject(portMatcher)
                 })
             })
@@ -98,7 +98,7 @@ describe('Canvas State', () => {
         describe('getPort', () => {
             it('should get port', () => {
                 const modulePorts = State.getModulePorts(canvas, clock.hash)
-                Object.values(modulePorts).forEach((port) => {
+                modulePorts.forEach((port) => {
                     expect(State.getPort(canvas, port.id)).toBe(port)
                 })
             })
@@ -119,7 +119,7 @@ describe('Canvas State', () => {
 
             it('should get all ports', () => {
                 // get all expected ports via getModulePorts
-                let expectedPorts = clocks.map((clock) => Object.values(State.getModulePorts(canvasWithTwoModules, clock.hash)))
+                let expectedPorts = clocks.map((clock) => State.getModulePorts(canvasWithTwoModules, clock.hash))
                 expectedPorts = new Set([].concat(...expectedPorts)) // flatten array into Set
 
                 const allPorts = new Set(State.getAllPorts(canvasWithTwoModules))
@@ -136,7 +136,7 @@ describe('Canvas State', () => {
 
             describe('hasPort', () => {
                 it('should be true if has port', () => {
-                    Object.values(modulePorts).forEach((port) => {
+                    modulePorts.forEach((port) => {
                         expect(State.hasPort(canvas, port.id)).toBe(true)
                     })
                 })
@@ -148,7 +148,7 @@ describe('Canvas State', () => {
 
             describe('findModulePort', () => {
                 it('should find ports by matcher', () => {
-                    Object.values(modulePorts).forEach((port) => {
+                    modulePorts.forEach((port) => {
                         expect(State.findModulePort(canvas, clock.hash, ({ id }) => id === port.id)).toBe(port)
                     })
                 })
@@ -184,22 +184,18 @@ describe('Canvas State', () => {
                 })
 
                 it('should be true for same module', () => {
-                    const modulePorts = State.getModulePorts(canvasWithTwoModules, clocks[0].hash)
-                    const [port1, port2] = Object.values(modulePorts)
+                    const [port1, port2] = State.getModulePorts(canvasWithTwoModules, clocks[0].hash)
                     expect(State.arePortsOfSameModule(canvasWithTwoModules, port1.id, port2.id)).toBe(true)
                 })
 
                 it('should be false if not of same module', () => {
-                    const modulePorts1 = State.getModulePorts(canvasWithTwoModules, clocks[0].hash)
-                    const modulePorts2 = State.getModulePorts(canvasWithTwoModules, clocks[1].hash)
-                    const [port1] = Object.values(modulePorts1)
-                    const [port2] = Object.values(modulePorts2)
+                    const [port1] = State.getModulePorts(canvasWithTwoModules, clocks[0].hash)
+                    const [port2] = State.getModulePorts(canvasWithTwoModules, clocks[1].hash)
                     expect(State.arePortsOfSameModule(canvasWithTwoModules, port1.id, port2.id)).toBe(false)
                 })
 
                 it('should error on missing port', () => {
-                    const modulePorts = State.getModulePorts(canvasWithTwoModules, clocks[0].hash)
-                    const port = Object.values(modulePorts)[0]
+                    const [port] = State.getModulePorts(canvasWithTwoModules, clocks[0].hash)
                     expect(() => State.arePortsOfSameModule(canvasWithTwoModules, port.id, 'missing')).toThrowError(State.MissingEntityError)
                     expect(() => State.arePortsOfSameModule(canvasWithTwoModules, 'missing', port.id)).toThrowError(State.MissingEntityError)
                 })

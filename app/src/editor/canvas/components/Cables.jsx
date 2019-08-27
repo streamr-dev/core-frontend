@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unused-state */
 import React, { useEffect, useState, useContext } from 'react'
 import cx from 'classnames'
-import { getModulePorts, isConnectedToModule } from '../state'
+import { moduleHasPort, isConnectedToModule } from '../state'
 import styles from './Canvas.pcss'
 import { DragDropContext } from './DragDropContext'
 
@@ -131,13 +131,12 @@ class Cables extends React.PureComponent {
 
         const { moduleHash } = data
 
-        const ports = getModulePorts(canvas, moduleHash)
         return this.getStaticCables().map(([from, to]) => {
             // update the positions of ports in dragged module
             let fromNew = from
             let toNew = to
             let layer = LAYER_0
-            if (ports[from.id]) {
+            if (moduleHasPort(canvas, moduleHash, from.id)) {
                 fromNew = {
                     ...from,
                     top: from.top + diff.y,
@@ -145,7 +144,7 @@ class Cables extends React.PureComponent {
                 }
                 layer = LAYER_1
             }
-            if (ports[to.id]) {
+            if (moduleHasPort(canvas, moduleHash, to.id)) {
                 toNew = {
                     ...to,
                     top: to.top + diff.y,

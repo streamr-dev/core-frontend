@@ -10,7 +10,7 @@ import ModuleUI from '$editor/shared/components/ModuleUI'
 
 import dashboardConfig from '../config'
 
-import { SelectionContext } from './Selection'
+import { SelectionContext } from '$editor/shared/hooks/useSelection'
 
 import Background from './Background'
 
@@ -261,8 +261,8 @@ export default WidthProvider(class DashboardEditor extends React.Component {
                                         item={item}
                                         dashboard={dashboard}
                                         setDashboard={this.props.setDashboard}
-                                        isSelected={select.selection.has(id)}
-                                        selectItem={() => select.api.only(id)}
+                                        isSelected={select.has(id)}
+                                        selectItem={() => select.only(id)}
                                         currentLayout={this.state.layoutsByItemId[id]}
                                         disabled={locked}
                                     />
