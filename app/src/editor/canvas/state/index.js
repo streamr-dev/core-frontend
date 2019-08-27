@@ -750,7 +750,7 @@ const PORT_USER_VALUE_KEYS = {
     [PortTypes.output]: 'value', // not really user-configurable but whatever
 }
 
-function isPortBoolean(canvas, portId) {
+export function isPortBoolean(canvas, portId) {
     const port = getPort(canvas, portId)
     return (
         port.type.split(' ').includes('Boolean') ||
@@ -760,7 +760,7 @@ function isPortBoolean(canvas, portId) {
     )
 }
 
-function isPortNumeric(canvas, portId) {
+export function isPortNumeric(canvas, portId) {
     const port = getPort(canvas, portId)
     return (
         port.type.split(' ').includes('Double') ||

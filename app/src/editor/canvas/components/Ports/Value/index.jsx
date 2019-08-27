@@ -17,18 +17,22 @@ type Props = {
     onChange: (any) => void,
 }
 
-type PortType = 'map' | 'color' | 'select' | 'text' | 'stream' | 'defactoBoolean'
+type PortType = 'map' | 'color' | 'select' | 'text' | 'stream'
 
 const getPortValueType = (canvas: any, port: any): PortType => {
     const { type } = port
     const portTypes = new Set(type.split(' '))
     switch (true) {
+        // anything with possible values should render as a select
         case !!port.possibleValues:
             return 'select'
-        case (typeof port.initialValue === 'boolean'):
-            // Many boolean ports are of type Object
-            // so assume boolean type from type of initialValue
-            return 'defactoBoolean'
+
+        // Many boolean ports are of type Object
+        // so assume boolean type from type of initialValue
+        case (State.isPortBoolean(canvas, port.id)):
+            return 'select'
+
+        // straight type mapping
         case portTypes.has('Map'):
             return 'map'
         case portTypes.has('Color'):
@@ -36,6 +40,7 @@ const getPortValueType = (canvas: any, port: any): PortType => {
         case portTypes.has('Stream'):
             return 'stream'
         default:
+            // anything else is text
     }
     return 'text'
 }
@@ -49,6 +54,11 @@ export type CommonProps = {
     id?: string,
     className?: string,
 }
+
+/**
+ * Generated options structure for a true/false dropdown.
+ */
+
 const BooleanPossibleValues = [{
     name: 'false',
     value: 'false',
@@ -56,6 +66,46 @@ const BooleanPossibleValues = [{
     name: 'true',
     value: 'true',
 }]
+
+/**
+ * 'Smarter' Select component for ports.
+ * Handles rendering true/false dropdown for inferred 'boolean' ports
+ * Shows small label in dropdown when the select is for setting an initial value
+ * Ensures value passed to select is always a string.
+ */
+
+function PortSelect({ canvas, port, value, ...props }) {
+    const portValueEditDisabled = State.isPortValueEditDisabled(canvas, port.id)
+    value = value == null ? '' : String(value) /* coerce option value to string */
+    if (portValueEditDisabled) {
+        // always render as disabled text box if value editing is disabled
+        return (
+            <Text
+                value={value}
+                {...props}
+                disabled
+            />
+        )
+    }
+
+    let { possibleValues: options } = port
+    if (!options) {
+        // inject boolean dropdown if no options and type appears to be boolean
+        options = State.isPortBoolean(canvas, port.id) ? BooleanPossibleValues : []
+    }
+
+    // show initial value label for initial values
+    const description = port.canHaveInitialValue ? 'Initial Value' : undefined
+
+    return (
+        <Select
+            {...props}
+            value={value}
+            options={options}
+            description={description}
+        />
+    )
+}
 
 const Value = ({ canvas, disabled, port, onChange }: Props) => {
     // Enable non-running input whether connected or not if port.canHaveInitialValue
@@ -78,41 +128,26 @@ const Value = ({ canvas, disabled, port, onChange }: Props) => {
                 [styles.disabled]: disabled,
             })}
         >
+            {valueType === 'text' && (
+                <Text {...commonProps} />
+            )}
+            {valueType === 'color' && (
+                <Color {...commonProps} />
+            )}
+            {valueType === 'stream' && (
+                <Stream {...commonProps} />
+            )}
             {valueType === 'map' && (
                 <Map
                     {...commonProps}
                     port={port}
                 />
             )}
-            {valueType === 'color' && (
-                <Color
+            {(valueType === 'select') && (
+                <PortSelect
                     {...commonProps}
-                />
-            )}
-            {(valueType === 'select' || valueType === 'defactoBoolean') && (
-                (!portValueEditDisabled ? (
-                    <Select
-                        {...commonProps}
-                        value={value == null ? '' : String(value) /* coerce option value to string */}
-                        options={valueType === 'defactoBoolean' ? BooleanPossibleValues : port.possibleValues}
-                        description={port.canHaveInitialValue ? 'Initial Value' : undefined}
-                    />
-                ) : (
-                    <Text
-                        value={value == null ? '' : String(value) /* coerce option value to string */}
-                        {...commonProps}
-                        disabled
-                    />
-                ))
-            )}
-            {valueType === 'text' && (
-                <Text
-                    {...commonProps}
-                />
-            )}
-            {valueType === 'stream' && (
-                <Stream
-                    {...commonProps}
+                    canvas={canvas}
+                    port={port}
                 />
             )}
         </div>
