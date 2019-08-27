@@ -95,6 +95,7 @@ const Value = ({ canvas, disabled, port, onChange }: Props) => {
                         {...commonProps}
                         value={value == null ? '' : String(value) /* coerce option value to string */}
                         options={valueType === 'defactoBoolean' ? BooleanPossibleValues : port.possibleValues}
+                        description={port.canHaveInitialValue ? 'Initial Value' : undefined}
                     />
                 ) : (
                     <Text
