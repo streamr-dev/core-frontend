@@ -50,6 +50,10 @@ function useRunController(canvas = EMPTY) {
     // true if canvas exists and is starting or already running
     const isActive = canvas !== EMPTY && (isStarting || isRunning)
 
+    // historical subscription should start as soon as starting.
+    // realtime subscription starts after canvas is runnning
+    const isSubscriptionActive = canvas.adhoc ? isActive : isRunning
+
     const hasSharePermission = permissions &&
         permissions.some((p) => p.operation === 'share')
 
@@ -93,14 +97,19 @@ function useRunController(canvas = EMPTY) {
 
     const stop = useCallback(async (canvas) => {
         setIsStopping(true)
-        if (canvas.settings.parentCanvasId != null) {
-            CanvasLinking.unlink(canvas.settings.parentCanvasId) // remove link if exists
-        }
         return stopPending.wrap(() => services.stop(canvas))
-            .then((canvas) => {
+            .then(async (result) => {
+                if (!result || !result.id) {
+                    setIsStopping(false)
+                    return
+                }
+
+                if (canvas.settings.parentCanvasId != null) {
+                    CanvasLinking.unlink(canvas.settings.parentCanvasId) // remove link if exists
+                }
                 if (!isMountedRef.current) { return }
                 setIsStopping(false)
-                return canvas
+                replaceCanvas(() => result)
             }, async (err) => {
                 if (isStateNotAllowedError(err)) {
                     if (!canvas.adhoc) { return } // trying to stop an already stopped canvas, ignore
@@ -180,13 +189,14 @@ function useRunController(canvas = EMPTY) {
         isHistorical,
         isAdjustable,
         isEditable,
+        isSubscriptionActive,
         hasSharePermission,
         hasWritePermission,
         start,
         stop,
         exit,
     }), [canvas, isPending, isStarting, isActive, isRunning, isHistorical, isEditable, isAdjustable,
-        hasSharePermission, hasWritePermission, isStopping, start, stop, exit, canChangeRunState])
+        hasSharePermission, hasWritePermission, isStopping, start, stop, exit, canChangeRunState, isSubscriptionActive])
 }
 
 export default function RunControllerProvider({ children, canvas }) {
