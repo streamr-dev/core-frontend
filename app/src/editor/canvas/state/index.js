@@ -750,6 +750,26 @@ const PORT_USER_VALUE_KEYS = {
     [PortTypes.output]: 'value', // not really user-configurable but whatever
 }
 
+function isPortBoolean(canvas, portId) {
+    const port = getPort(canvas, portId)
+    return (
+        port.type.split(' ').includes('Boolean') ||
+        typeof port.value === 'boolean' ||
+        typeof port.initialValue === 'boolean' ||
+        typeof port.defaultValue === 'boolean'
+    )
+}
+
+function isPortNumeric(canvas, portId) {
+    const port = getPort(canvas, portId)
+    return (
+        port.type.split(' ').includes('Double') ||
+        typeof port.value === 'number' ||
+        typeof port.initialValue === 'number' ||
+        typeof port.defaultValue === 'number'
+    )
+}
+
 /**
  * Sets initialValue for inputs
  * Sets value for output/params
@@ -765,8 +785,13 @@ export function setPortUserValue(canvas, portId, value) {
         value = defaultValue
     }
 
+    // coerce string to boolean
+    if (isPortBoolean(canvas, portId)) {
+        value = !!value && value !== 'false'
+    }
+
     // coerce double to number if invalid
-    if (port.type === 'Double') {
+    if (isPortNumeric(canvas, portId)) {
         if (isBlank(value)) {
             value = undefined
         } else {
