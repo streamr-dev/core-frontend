@@ -3,39 +3,9 @@
   background-color: var(--greyLight3);
 }
 
-.root {
-  padding: 3.75rem 0 8.1235rem;
-  min-height: 100vh;
-}
-
-.container {
-}
-
-.editor {
-  display: grid;
-  grid-template-columns: 200px 1fr;
-  grid-column-gap: 2.25rem;
-}
-
-.info {
-  font-size: 1rem;
-  letter-spacing: 0;
-  line-height: 1.5rem;
-
-  h1 {
-    margin: 0;
-    padding: 0;
-    font-size: 1.5rem;
-    letter-spacing: 0;
-    line-height: 1.5rem;
-    color: var(--greyDark);
-    font-weight: var(--medium);
-    border-bottom: 1px solid var(--grey4);
-    padding-bottom: 1.25rem;
-    margin-bottom: 2.5rem;
-  }
-
-  > div + div {
-    margin-top: 7rem;
-  }
+.loadingIndicator {
+  top: 82px;
+  position: sticky;
+  width: 100%;
+  z-index: 1000;
 }

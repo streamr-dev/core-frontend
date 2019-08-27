@@ -6,7 +6,6 @@ import type { Match } from 'react-router-dom'
 import { push, replace } from 'connected-react-router'
 import { I18n } from 'react-redux-i18n'
 import { Helmet } from 'react-helmet'
-import scrollIntoView from 'smooth-scroll-into-view-if-needed'
 
 import ProductPageComponent from '$mp/components/ProductPage'
 import Layout from '$shared/components/Layout'
@@ -71,25 +70,12 @@ export type DispatchProps = {
 
 type Props = OwnProps & StateProps & DispatchProps
 
-type State = {
-    truncated: boolean,
-    truncationRequired: boolean,
-    userTruncated: boolean,
-}
-
-export class ProductPage extends Component<Props, State> {
-    state = {
-        truncated: false,
-        truncationRequired: false,
-        userTruncated: false,
-    }
-
+export class ProductPage extends Component<Props> {
     componentDidMount() {
         this.getProduct(this.props.match.params.id)
     }
 
     componentWillReceiveProps(nextProps: Props) {
-        const { product } = nextProps
         const { isLoggedIn, match: { params: { id } }, getProductSubscription: getSubscription } = this.props
 
         if (id !== nextProps.match.params.id) {
@@ -99,14 +85,6 @@ export class ProductPage extends Component<Props, State> {
         // Fetch subscription on hard load if logged in (initial state is false)
         if (!isLoggedIn && nextProps.isLoggedIn) {
             getSubscription(id)
-        }
-
-        if (!product) {
-            return
-        }
-
-        if (!this.state.userTruncated) {
-            this.initTruncateState(product.description)
         }
     }
 
@@ -150,43 +128,12 @@ export class ProductPage extends Component<Props, State> {
         product.state === productStates.DEPLOYING || product.state === productStates.UNDEPLOYING
     )
 
-    setTruncateState = () => {
-        if (this.state.truncated) {
-            this.setState({
-                truncated: false,
-                userTruncated: true,
-            })
-        } else {
-            this.setState({
-                truncated: true,
-                userTruncated: true,
-            })
-
-            if (this.productDetails) {
-                scrollIntoView(this.productDetails, {
-                    behavior: 'smooth',
-                    block: 'start',
-                    inline: 'nearest',
-                })
-            }
-        }
-    }
-
     isPurchaseAllowed() {
         const { product, isProductSubscriptionValid, isLoggedIn } = this.props
         return !!product && this.getPurchaseAllowed(product, !!isProductSubscriptionValid, !!isLoggedIn)
     }
 
     productDetails = () => null
-
-    initTruncateState = (text: string) => {
-        if (typeof text !== 'undefined') {
-            this.setState({
-                truncationRequired: !(text.length < 400),
-                truncated: !(text.length < 400),
-            })
-        }
-    }
 
     overlay() {
         const { overlayPurchaseDialog, product, overlayPublishDialog } = this.props
@@ -271,10 +218,6 @@ export class ProductPage extends Component<Props, State> {
                     isProductSubscriptionValid={isProductSubscriptionValid}
                     onPurchase={() => onPurchase(product.id || '', !!isLoggedIn)}
                     toolbarStatus={<BackButton />}
-                    setTruncateState={this.setTruncateState}
-                    truncateState={this.state.truncated}
-                    truncationRequired={this.state.truncationRequired}
-                    productDetailsRef={(c) => { this.productDetails = c }}
                     showStreamLiveDataDialog={(streamId) => noHistoryRedirect(links.marketplace.products, product.id, 'streamPreview', streamId)}
                 />
                 {this.overlay()}

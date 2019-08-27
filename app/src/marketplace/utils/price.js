@@ -14,7 +14,7 @@ import { toSeconds, getAbbreviation } from './time'
  */
 export const isPriceValid = (value: string) => {
     const bn = BN(value)
-    return !bn.isNaN() && bn.isPositive()
+    return !bn.isNaN() && bn.isGreaterThan(0)
 }
 
 export const priceForTimeUnits = (pricePerSecond: NumberString | BN, timeAmount: number | NumberString | BN, timeUnit: TimeUnit): BN => {

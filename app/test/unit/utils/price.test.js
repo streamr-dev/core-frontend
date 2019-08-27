@@ -13,10 +13,10 @@ describe('price utils', () => {
         })
 
         it('works with zero', () => {
-            assert.equal(all.isPriceValid(0), true)
-            assert.equal(all.isPriceValid('0'), true)
-            assert.equal(all.isPriceValid(BN(0)), true)
-            assert.equal(all.isPriceValid(BN('0')), true)
+            assert.equal(all.isPriceValid(0), false)
+            assert.equal(all.isPriceValid('0'), false)
+            assert.equal(all.isPriceValid(BN(0)), false)
+            assert.equal(all.isPriceValid(BN('0')), false)
         })
 
         it('works with negative number', () => {

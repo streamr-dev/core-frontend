@@ -10,6 +10,7 @@ import SvgIcon from '$shared/components/SvgIcon'
 
 import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
 import useValidation from '../ProductController/useValidation'
+import useProduct from '../ProductController/useProduct'
 import styles from './editorNav.pcss'
 
 type NavSectioProps = {
@@ -72,21 +73,28 @@ const sections = [{
 }]
 
 const EditorNav = () => {
+    const product = useProduct()
+
     const { isTouched } = useContext(ValidationContext)
+
     const { isValid: isNameValid } = useValidation('name')
     const { isValid: isCoverImageValid } = useValidation('coverImage')
     const { isValid: isDescriptionValid } = useValidation('description')
     const { isValid: areStreamsValid } = useValidation('streams')
+    const { isValid: isPriceValid } = useValidation('price')
+    const { isValid: isBeneficiaryAddressValid } = useValidation('beneficiaryAddress')
     const { isValid: isCategoryValid } = useValidation('category')
     const { isValid: isAdminFeeValid } = useValidation('adminFee')
+
+    const isCommunityProduct = product.type === 'COMMUNITY'
 
     const validSections = {
         name: isNameValid,
         coverImage: isCoverImageValid,
         description: isDescriptionValid,
         streams: areStreamsValid,
-        price: false,
-        details: isCategoryValid && isAdminFeeValid,
+        price: isPriceValid && (isCommunityProduct || isBeneficiaryAddressValid),
+        details: isCategoryValid && (!isCommunityProduct || isAdminFeeValid),
     }
     const lastIndex = findLastIndex(sections, ({ id }) => isTouched(id))
 

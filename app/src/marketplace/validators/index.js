@@ -66,12 +66,6 @@ const editProduct = () => ({
     category: yup.string().nullable().required(I18n.t('validation.productCategory')),
     streams: yup.array().of(yup.string()),
     state: yup.string(),
-    previewStream: yup.string().nullable().when('streams', (streams, schema) => schema.test(
-        'isAvaible',
-        I18n.t('validation.productPreviewStream'),
-        (value) => value === null || value === '' || streams.includes(value),
-    )),
-    previewConfigJson: yup.string(),
     imageUrl: yup.string(),
 })
 

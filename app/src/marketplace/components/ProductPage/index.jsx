@@ -33,10 +33,6 @@ export type Props = {
     isLoggedIn?: boolean,
     isProductSubscriptionValid?: boolean,
     onPurchase?: () => void,
-    truncateState: boolean,
-    setTruncateState: () => void,
-    truncationRequired: boolean,
-    productDetailsRef: Object,
 }
 
 class ProductPage extends Component<Props> {
@@ -59,10 +55,6 @@ class ProductPage extends Component<Props> {
             isProductSubscriptionValid,
             onPurchase,
             toolbarStatus,
-            truncateState,
-            setTruncateState,
-            truncationRequired,
-            productDetailsRef,
         } = this.props
         const isProductFree = (product && BN(product.pricePerSecond).isEqualTo(0)) || false
 
@@ -85,10 +77,6 @@ class ProductPage extends Component<Props> {
                             product={product}
                             isValidSubscription={!!isProductSubscriptionValid}
                             onPurchase={() => onPurchase && onPurchase()}
-                            truncateState={truncateState}
-                            setTruncateState={setTruncateState}
-                            truncationRequired={truncationRequired}
-                            productDetailsRef={productDetailsRef}
                         />
                     }
                 />

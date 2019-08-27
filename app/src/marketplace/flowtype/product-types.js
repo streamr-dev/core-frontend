@@ -18,6 +18,7 @@ export type Product = {
     description: string,
     owner: string,
     imageUrl: ?string,
+    newImageToUpload?: ?File,
     thumbnailUrl: ?string,
     state?: ProductState,
     created?: Date,
@@ -32,6 +33,7 @@ export type Product = {
     pricePerSecond: NumberString,
     priceCurrency: Currency,
     timeUnit?: ?TimeUnit,
+    price?: NumberString,
     isFree?: boolean,
     type?: ProductType,
 }
