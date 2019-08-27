@@ -4,6 +4,7 @@ import React, { useRef, useState, useCallback } from 'react'
 import cx from 'classnames'
 import { Button } from 'reactstrap'
 import { Translate, I18n } from 'react-redux-i18n'
+import scrollIntoView from 'smooth-scroll-into-view-if-needed'
 
 import Link from '$shared/components/Link'
 import { isPaidProduct } from '$mp/utils/product'
@@ -39,7 +40,7 @@ const ProductDetails = ({ product, isValidSubscription, onPurchase }: Props) => 
         setTruncatedState((prev) => !prev)
 
         if (productDetailsRef.current) {
-            productDetailsRef.current.scrollIntoView({
+            scrollIntoView(productDetailsRef.current, {
                 behavior: 'smooth',
                 block: 'start',
                 inline: 'nearest',
