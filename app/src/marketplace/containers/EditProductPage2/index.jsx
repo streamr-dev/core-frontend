@@ -6,8 +6,6 @@ import { withRouter } from 'react-router-dom'
 import CoreLayout from '$shared/components/Layout/Core'
 import * as UndoContext from '$shared/components/UndoContextProvider'
 import Toolbar from '$shared/components/Toolbar'
-import ConfirmNoCoverImageDialog from '$mp/components/Modal/ConfirmNoCoverImageDialog'
-// import SaveProductDialog from '$mp/containers/EditProductPage/SaveProductDialog'
 import type { Product } from '$mp/flowtype/product-types'
 
 import ProductController from '../ProductController'
@@ -19,25 +17,10 @@ import Editor from './Editor'
 import Preview from './Preview'
 import ProductEditorDebug from './ProductEditorDebug'
 import { Provider as ModalProvider } from './Modal'
-import useModal from './useModal'
+import ConfirmNoCoverImageModal from './ConfirmNoCoverImageModal'
+import UpdateContractProductModal from './UpdateContractProductModal'
 
 import styles from './editProductPage.pcss'
-
-const ConfirmModal = () => {
-    const { api, isOpen } = useModal('confirm')
-
-    if (!isOpen) {
-        return null
-    }
-
-    return (
-        <ConfirmNoCoverImageDialog
-            onContinue={() => api.close(true)}
-            closeOnContinue={false}
-            onClose={() => api.close(false)}
-        />
-    )
-}
 
 const EditProductPage = ({ product }: { product: Product }) => {
     const { isPreview, setIsPreview, isSaving, save } = useContext(EditControllerContext)
@@ -99,7 +82,8 @@ const EditProductPage = ({ product }: { product: Product }) => {
             {!isPreview && (
                 <Editor />
             )}
-            <ConfirmModal />
+            <ConfirmNoCoverImageModal />
+            <UpdateContractProductModal />
         </CoreLayout>
     )
 }

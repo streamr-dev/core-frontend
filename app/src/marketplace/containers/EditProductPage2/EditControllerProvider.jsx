@@ -7,8 +7,10 @@ import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import usePending from '$shared/hooks/usePending'
 import { putProduct, postImage } from '$mp/modules/editProduct/services'
+import { isPaidProduct } from '$mp/utils/product'
 
 import { Context as ValidationContext, ERROR } from '../ProductController/ValidationContextProvider'
+import useOriginalProduct from '../ProductController/useOriginalProduct'
 import useModal from './useModal'
 
 type ContextProps = {
@@ -30,7 +32,9 @@ function useEditController(product: Product) {
     const [isPreview, setIsPreview] = useState(false)
     const savePending = usePending('product.SAVE')
 
-    const { api: comfirmModal } = useModal('confirm')
+    const { originalProduct } = useOriginalProduct()
+    const { api: comfirmDialog } = useModal('confirm')
+    const { api: updateContractDialog } = useModal('updateContract')
 
     const { status } = useContext(ValidationContext)
 
@@ -44,6 +48,8 @@ function useEditController(product: Product) {
     ), [status])
 
     const save = useCallback(async () => {
+        if (!originalProduct) { throw new Error('originalProduct is missing') }
+
         setIsSaving(true)
 
         let doSave = true
@@ -60,7 +66,7 @@ function useEditController(product: Product) {
             doSave = false
         } else if (!product.imageUrl) {
             // confirm missing cover image
-            doSave = await comfirmModal.open()
+            doSave = await comfirmDialog.open()
         }
 
         if (doSave) {
@@ -78,13 +84,20 @@ function useEditController(product: Product) {
                     }
                 }
 
+                // use original product to check if it was paid or not
+                if (isPaidProduct(originalProduct)) {
+                    // start contract transaction dialog, this will take care of checking web3
+                    // and fetching/updating the contract product
+                    await updateContractDialog.open()
+                }
+
                 // TODO: check contract product for price change (if published)
                 setIsSaving(false)
             })
         } else {
             setIsSaving(false)
         }
-    }, [errors, product, comfirmModal, savePending])
+    }, [errors, product, comfirmDialog, updateContractDialog, savePending, originalProduct])
 
     return useMemo(() => ({
         isPreview,
