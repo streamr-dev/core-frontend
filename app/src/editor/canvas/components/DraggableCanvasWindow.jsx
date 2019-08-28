@@ -63,7 +63,7 @@ function clamp(value, min, max) {
     return Math.max(min, Math.min(max, value))
 }
 
-export function useLayoutState({ x = 0, y = 0, width = 600, height = 600 }: Layout = {}) {
+export function useLayoutState({ x = 0, y = 0, width = 600, height = 400 }: Layout = {}) {
     // wtf flow. I don't know what it wants.
     // $FlowFixMe
     const [position, setPosition] = useState([x, y])

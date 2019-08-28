@@ -1,53 +1,10 @@
-import React, { useState, useCallback, useContext, useRef, useEffect } from 'react'
-import debounce from 'lodash/debounce'
+import React, { useState, useCallback, useContext, useEffect } from 'react'
 
-import CodeEditorWindow from './CodeEditorWindow'
-import { CanvasWindowContext } from '../CanvasWindow'
-import DebugWindow from './DebugWindow'
 import { useLayoutState } from '$editor/canvas/components/DraggableCanvasWindow'
-
-/**
- * Sets position to center of container once.
- * Will recenter if window is resized.
- */
-
-function useInitToCenter({ containerRef, width, height, setPosition }) {
-    const isInitializedRef = useRef(false)
-    const initToCenter = useCallback(() => {
-        if (isInitializedRef.current) { return }
-        const { current: container } = containerRef
-        if (!container) { return }
-        isInitializedRef.current = true
-        const rect = container.getBoundingClientRect()
-        setPosition([
-            (rect.width / 2) - (width / 2),
-            (rect.height / 2) - (height / 2),
-        ])
-    }, [containerRef, width, height, setPosition, isInitializedRef])
-
-    const onResize = useCallback(debounce(() => {
-        if (!isInitializedRef.current) { return }
-        // reset position to center after resize window
-        isInitializedRef.current = false
-        initToCenter()
-    }, 300), [isInitializedRef, initToCenter])
-
-    const onResizeRef = useRef()
-
-    useEffect(() => {
-        if (onResizeRef.current && onResize !== onResizeRef.current) {
-            onResizeRef.current.cancel()
-        }
-        onResizeRef.current = onResize
-        window.addEventListener('resize', onResize)
-        return () => {
-            onResize.cancel()
-            window.removeEventListener('resize', onResize)
-        }
-    }, [onResize, onResizeRef])
-
-    return initToCenter
-}
+import { CanvasWindowContext } from '../CanvasWindow'
+import CodeEditorWindow from './CodeEditorWindow'
+import DebugWindow from './DebugWindow'
+import { useInitToCenter, useInitToPosition } from './useInitPosition'
 
 export const CodeEditor = ({
     children,
@@ -64,37 +21,45 @@ export const CodeEditor = ({
     const editorLayout = useLayoutState()
     const debugLayout = useLayoutState()
 
-    const initEditorToCenter = useInitToCenter({
+    const initEditorPosition = useInitToCenter({
         containerRef: canvasWindowElRef,
         width: editorLayout.size[0],
         height: editorLayout.size[1],
         setPosition: editorLayout.setPosition,
     })
 
-    const initDebugToCenter = useInitToCenter({
-        containerRef: canvasWindowElRef,
-        width: debugLayout.size[0],
-        height: debugLayout.size[1],
+    const offset = 16
+
+    // set debug default position to editor window + offset
+    const initDebugPosition = useInitToPosition({
+        x: editorLayout.position[0] + offset,
+        y: editorLayout.position[1] + offset,
         setPosition: debugLayout.setPosition,
     })
 
     const onShowEditor = useCallback(() => {
-        initEditorToCenter()
+        initEditorPosition()
         setEditorOpen(true)
-    }, [setEditorOpen, initEditorToCenter])
+    }, [setEditorOpen, initEditorPosition])
 
     const onCloseEditor = useCallback(() => {
         setEditorOpen(false)
     }, [setEditorOpen])
 
     const onShowDebug = useCallback(() => {
-        initDebugToCenter()
+        initEditorPosition() // just in case
+        initDebugPosition()
         setDebugOpen(true)
-    }, [setDebugOpen, initDebugToCenter])
+    }, [setDebugOpen, initEditorPosition, initDebugPosition])
 
     const onCloseDebug = useCallback(() => {
         setDebugOpen(false)
     }, [setDebugOpen])
+
+    useEffect(() => {
+        if (debugOpen) { return }
+        initDebugPosition(true)
+    }, [debugOpen, initDebugPosition])
 
     return (
         <React.Fragment>
