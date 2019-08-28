@@ -1,30 +1,27 @@
-import { useCallback, useRef, useEffect } from 'react'
+import { useCallback, useRef, useLayoutEffect } from 'react'
 import debounce from 'lodash/debounce'
 
 /**
  * Runs debounced onResizeFn on window resize.
  */
 
-function useOnResizeEffect(onResizeFn, timeout = 300) {
-    const onResize = useCallback(debounce(() => {
-        onResizeFn()
-    }, timeout), [onResizeFn])
-
+export function useOnResizeEffect(onResizeFn, timeout = 300) {
     const onResizeRef = useRef()
+    onResizeRef.current = onResizeFn
 
-    useEffect(() => {
-        if (onResizeRef.current && onResize !== onResizeRef.current) {
-            // cancel previous callback
-            onResizeRef.current.cancel()
-        }
-        onResizeRef.current = onResize
-        window.addEventListener('resize', onResize)
+    const onResizeDebouncedRef = useRef(debounce((...args) => {
+        onResizeRef.current(...args)
+    }, timeout))
+
+    useLayoutEffect(() => {
+        const { current: onResizeDebounced } = onResizeDebouncedRef
+        window.addEventListener('resize', onResizeDebounced)
         return () => {
             // cancel if pending
-            onResize.cancel()
-            window.removeEventListener('resize', onResize)
+            onResizeDebounced.cancel()
+            window.removeEventListener('resize', onResizeDebounced)
         }
-    }, [onResize, onResizeRef])
+    }, [onResizeDebouncedRef])
 }
 
 /**
@@ -42,7 +39,7 @@ function useInitPosition(initPosition) {
 
     useOnResizeEffect(useCallback(() => {
         if (!isInitializedRef.current) { return }
-        // reset position to center after resize window
+        // reset position after resize window
         isInitializedRef.current = false
         initPositionCallback()
     }, [isInitializedRef, initPositionCallback]))

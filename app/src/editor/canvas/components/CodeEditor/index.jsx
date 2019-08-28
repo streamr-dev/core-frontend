@@ -1,10 +1,10 @@
-import React, { useState, useCallback, useContext, useEffect } from 'react'
+import React, { useState, useCallback, useContext } from 'react'
 
 import { useLayoutState } from '$editor/canvas/components/DraggableCanvasWindow'
 import { CanvasWindowContext } from '../CanvasWindow'
 import CodeEditorWindow from './CodeEditorWindow'
 import DebugWindow from './DebugWindow'
-import { useInitToCenter, useInitToPosition } from './useInitPosition'
+import { useInitToCenter, useInitToPosition, useOnResizeEffect } from './useInitPosition'
 
 export const CodeEditor = ({
     children,
@@ -56,10 +56,13 @@ export const CodeEditor = ({
         setDebugOpen(false)
     }, [setDebugOpen])
 
-    useEffect(() => {
-        if (debugOpen) { return }
-        initDebugPosition(true)
-    }, [debugOpen, initDebugPosition])
+    useOnResizeEffect(useCallback(() => {
+        // reset position on resize
+        debugLayout.setPosition([
+            editorLayout.position[0] + offset,
+            editorLayout.position[1] + offset,
+        ])
+    }, [editorLayout, debugLayout, offset]))
 
     return (
         <React.Fragment>
