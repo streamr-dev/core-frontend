@@ -8,7 +8,7 @@ import DraggableCanvasWindow from '../DraggableCanvasWindow'
 
 import styles from './CodeEditorWindow.pcss'
 
-class CodeEditorWindow extends React.Component {
+export default class CodeEditorWindow extends React.Component {
     state = {
         editorResetKey: uniqueId('CodeEditorWindow'),
         code: undefined,
@@ -147,5 +147,3 @@ class CodeEditorWindow extends React.Component {
         )
     }
 }
-
-export default CodeEditorWindow

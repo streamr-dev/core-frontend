@@ -1,39 +1,35 @@
-import React from 'react'
+import React, { useRef, useContext, useLayoutEffect } from 'react'
 import { createPortal } from 'react-dom'
+import cx from 'classnames'
 
-class CanvasWindow extends React.Component {
-    constructor(props) {
-        super(props)
-        this.el = document.createElement('div')
-    }
+import styles from './CanvasWindow.pcss'
 
-    componentDidMount() {
-        this.modalRoot = document.getElementById('canvas-windows')
+export const CanvasWindowContext = React.createContext()
 
-        // The portal element is inserted in the DOM tree after
-        // the Modal's children are mounted, meaning that children
-        // will be mounted on a detached DOM node. If a child
-        // component requires to be attached to the DOM tree
-        // immediately when mounted, for example to measure a
-        // DOM node, or uses 'autoFocus' in a descendant, add
-        // state to Modal and only render the children when Modal
-        // is inserted in the DOM tree.
-        if (!this.modalRoot) {
-            throw new Error('Canvas window root not found!')
-        }
-
-        this.modalRoot.appendChild(this.el)
-    }
-
-    componentWillUnmount() {
-        if (this.modalRoot) {
-            this.modalRoot.removeChild(this.el)
-        }
-    }
-
-    render() {
-        return createPortal(this.props.children, this.el)
-    }
+export function CanvasWindowProvider({ className, children }) {
+    const elRef = useRef()
+    return (
+        <CanvasWindowContext.Provider value={elRef}>
+            {children || null}
+            <div className={cx(className, styles.root)} ref={elRef} />
+        </CanvasWindowContext.Provider>
+    )
 }
 
-export default CanvasWindow
+export default function CanvasWindow({ children }) {
+    const containerElRef = useContext(CanvasWindowContext)
+    const elRef = useRef(document.createElement('div'))
+    useLayoutEffect(() => {
+        const { current: containerEl } = containerElRef
+        const { current: el } = elRef
+        if (!containerEl) {
+            throw new Error('Canvas window root not found!')
+        }
+        containerEl.appendChild(el)
+        return () => {
+            containerEl.removeChild(el)
+        }
+    }, [containerElRef, elRef])
+
+    return createPortal(children, elRef.current)
+}

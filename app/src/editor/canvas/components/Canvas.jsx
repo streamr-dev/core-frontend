@@ -6,6 +6,7 @@ import * as CanvasState from '../state'
 
 import Module from './Module'
 import { DragDropProvider } from './DragDropContext'
+import { CanvasWindowProvider } from './CanvasWindow'
 import Cables from './Cables'
 
 import styles from './Canvas.pcss'
@@ -73,17 +74,19 @@ export default class Canvas extends React.PureComponent {
         } = this.props
 
         return (
-            <div className={cx(styles.Canvas, className)}>
-                <CanvasElements
-                    key={canvas.id}
-                    canvas={canvas}
-                    api={this.api}
-                    selectedModuleHash={selectedModuleHash}
-                    moduleSidebarIsOpen={moduleSidebarIsOpen}
-                    {...this.api.module}
-                />
-                {children}
-            </div>
+            <CanvasWindowProvider className={styles.CanvasWindow}>
+                <div className={cx(styles.Canvas, className)}>
+                    <CanvasElements
+                        key={canvas.id}
+                        canvas={canvas}
+                        api={this.api}
+                        selectedModuleHash={selectedModuleHash}
+                        moduleSidebarIsOpen={moduleSidebarIsOpen}
+                        {...this.api.module}
+                    />
+                    {children}
+                </div>
+            </CanvasWindowProvider>
         )
     }
 }
@@ -180,7 +183,6 @@ function CanvasElements(props) {
                     selectedModuleHash={selectedModuleHash}
                 />
             </DragDropProvider>
-            <div id="canvas-windows" />
         </div>
     )
 }
