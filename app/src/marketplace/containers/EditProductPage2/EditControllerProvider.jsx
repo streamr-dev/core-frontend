@@ -9,6 +9,7 @@ import usePending from '$shared/hooks/usePending'
 import { putProduct, postImage } from '$mp/modules/editProduct/services'
 
 import { Context as ValidationContext, ERROR } from '../ProductController/ValidationContextProvider'
+import useModal from './useModal'
 
 type ContextProps = {
     isPreview: boolean,
@@ -27,28 +28,9 @@ const EditControllerContext: Context<ContextProps> = React.createContext({})
 function useEditController(product: Product) {
     const [isSaving, setIsSaving] = useState(false)
     const [isPreview, setIsPreview] = useState(false)
-    const [modal, setModal] = useState(null)
     const savePending = usePending('product.SAVE')
 
-    const closeModal = useCallback(() => {
-        setModal(null)
-    }, [setModal])
-
-    const showConfirmModal = useCallback(async () => {
-        const result = await new Promise((resolve) => setModal({
-            id: 'confirm',
-            save: () => {
-                resolve(true)
-                closeModal()
-            },
-            cancel: () => {
-                resolve(false)
-                closeModal()
-            },
-        }))
-
-        return result
-    }, [setModal, closeModal])
+    const { api: comfirmModal } = useModal('confirm')
 
     const { status } = useContext(ValidationContext)
 
@@ -78,7 +60,7 @@ function useEditController(product: Product) {
             doSave = false
         } else if (!product.imageUrl) {
             // confirm missing cover image
-            doSave = await showConfirmModal()
+            doSave = await comfirmModal.open()
         }
 
         if (doSave) {
@@ -102,20 +84,18 @@ function useEditController(product: Product) {
         } else {
             setIsSaving(false)
         }
-    }, [errors, product, showConfirmModal, savePending])
+    }, [errors, product, comfirmModal, savePending])
 
     return useMemo(() => ({
         isPreview,
         setIsPreview,
         isSaving,
         save,
-        modal,
     }), [
         isPreview,
         setIsPreview,
         isSaving,
         save,
-        modal,
     ])
 }
 

@@ -18,9 +18,26 @@ import { Provider as EditControllerProvider, Context as EditControllerContext } 
 import Editor from './Editor'
 import Preview from './Preview'
 import ProductEditorDebug from './ProductEditorDebug'
-import Modal from './Modal'
+import { Provider as ModalProvider } from './Modal'
+import useModal from './useModal'
 
 import styles from './editProductPage.pcss'
+
+const ConfirmModal = () => {
+    const { api, isOpen } = useModal('confirm')
+
+    if (!isOpen) {
+        return null
+    }
+
+    return (
+        <ConfirmNoCoverImageDialog
+            onContinue={() => api.close(true)}
+            closeOnContinue={false}
+            onClose={() => api.close(false)}
+        />
+    )
+}
 
 const EditProductPage = ({ product }: { product: Product }) => {
     const { isPreview, setIsPreview, isSaving, save } = useContext(EditControllerContext)
@@ -82,21 +99,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
             {!isPreview && (
                 <Editor />
             )}
-            <Modal>
-                {({ id, save: next, cancel }) => {
-                    if (id === 'confirm') {
-                        return (
-                            <ConfirmNoCoverImageDialog
-                                onContinue={next}
-                                closeOnContinue={false}
-                                onClose={cancel}
-                            />
-                        )
-                    }
-
-                    return null
-                }}
-            </Modal>
+            <ConfirmModal />
         </CoreLayout>
     )
 }
@@ -125,12 +128,14 @@ const EditWrap = () => {
     const key = (!!product && product.id) || ''
 
     return (
-        <EditControllerProvider product={product}>
-            <EditProductPage
-                key={key}
-                product={product}
-            />
-        </EditControllerProvider>
+        <ModalProvider>
+            <EditControllerProvider product={product}>
+                <EditProductPage
+                    key={key}
+                    product={product}
+                />
+            </EditControllerProvider>
+        </ModalProvider>
     )
 }
 
