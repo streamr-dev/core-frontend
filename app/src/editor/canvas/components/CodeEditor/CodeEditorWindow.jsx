@@ -77,6 +77,11 @@ export default class CodeEditorWindow extends React.Component {
         })
     }
 
+    onMouseDownTitle = () => {
+        // forward title clicks to editor focus
+        this.editor.current.editor.focus()
+    }
+
     render() {
         const { editorResetKey, errors, sending } = this.state
         const {
@@ -92,10 +97,8 @@ export default class CodeEditorWindow extends React.Component {
         return (
             <DraggableCanvasWindow {...canvasWindowProps}>
                 <div className={styles.editorDialog}>
-                    <DraggableCanvasWindow.Dialog
-                        title="Code Editor"
-                        onClose={onClose}
-                    >
+                    <DraggableCanvasWindow.Dialog onClose={onClose}>
+                        <DraggableCanvasWindow.Title onClose={onClose} onMouseDown={this.onMouseDownTitle}>Code Editor</DraggableCanvasWindow.Title>
                         <div className={styles.editorContainer}>
                             <AceEditor
                                 ref={this.editor}

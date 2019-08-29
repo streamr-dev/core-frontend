@@ -39,7 +39,7 @@ export const CodeEditor = ({
 
     const onShowEditor = useCallback(() => {
         initEditorPosition()
-        setEditorOpen(true)
+        setEditorOpen((v) => !v) // show === toggle
     }, [setEditorOpen, initEditorPosition])
 
     const onCloseEditor = useCallback(() => {
@@ -49,7 +49,7 @@ export const CodeEditor = ({
     const onShowDebug = useCallback(() => {
         initEditorPosition() // just in case
         initDebugPosition()
-        setDebugOpen(true)
+        setDebugOpen((v) => !v) // show === toggle
     }, [setDebugOpen, initEditorPosition, initDebugPosition])
 
     const onCloseDebug = useCallback(() => {

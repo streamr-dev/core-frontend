@@ -18,8 +18,8 @@ type BaseProps = {
     children?: Node,
 }
 
-export const Title = ({ children, onClose }: BaseProps) => (
-    <div className={styles.titleContainer}>
+export const Title = ({ children, className, onClose, ...props }: BaseProps) => (
+    <div className={cx(className, styles.titleContainer)} {...props}>
         <div className={styles.title}>{children}</div>
         <button
             type="button"
@@ -31,8 +31,14 @@ export const Title = ({ children, onClose }: BaseProps) => (
     </div>
 )
 
-export const Dialog = ({ children, className, onClose, title }: BaseProps) => (
-    <div className={cx(styles.dialog, className)}>
+export const Dialog = ({
+    children,
+    className,
+    onClose,
+    title,
+    ...props
+}: BaseProps) => (
+    <div className={cx(styles.dialog, className)} {...props}>
         {!!title && (
             <Title onClose={onClose}>{title}</Title>
         )}
@@ -40,8 +46,8 @@ export const Dialog = ({ children, className, onClose, title }: BaseProps) => (
     </div>
 )
 
-export const Toolbar = ({ children, className }: BaseProps) => (
-    <div className={cx(styles.toolbar, className)}>
+export const Toolbar = ({ children, className, ...props }: BaseProps) => (
+    <div className={cx(styles.toolbar, className)} {...props}>
         {children}
     </div>
 )
@@ -159,7 +165,7 @@ export const DraggableCanvasWindow = ({
     }), [pos, dim])
 
     return (
-        <CanvasWindow>
+        <CanvasWindow className={styles.root}>
             <DraggableCore
                 handle={`.${styles.titleContainer}`}
                 onStart={onDragStart}

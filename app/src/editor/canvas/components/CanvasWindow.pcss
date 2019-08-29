@@ -13,3 +13,9 @@
 .root > * {
   pointer-events: auto;
 }
+
+.CanvasWindow:focus,
+.CanvasWindow:focus-within,
+.CanvasWindow.isSelected:not(:focus):not(:focus-within) {
+  z-index: 2;
+}
