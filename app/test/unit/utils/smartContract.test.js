@@ -352,15 +352,6 @@ describe('smartContract utils', () => {
                 }
                 assert.equal(all.isUpdateContractProductRequired(contractProduct, editProductUpdated), true)
             })
-            it('it must return false if the product is free', () => {
-                const editProductUpdated = {
-                    ...editProduct,
-                    beneficiaryAddress: 'test2',
-                    priceCurrency: 'USD',
-                    pricePerSecond: '0',
-                }
-                assert.equal(all.isUpdateContractProductRequired(contractProduct, editProductUpdated), false)
-            })
         })
     })
 })
