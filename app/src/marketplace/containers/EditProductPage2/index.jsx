@@ -23,8 +23,12 @@ import UpdateContractProductModal from './UpdateContractProductModal'
 import styles from './editProductPage.pcss'
 
 const EditProductPage = ({ product }: { product: Product }) => {
-    const { isPreview, setIsPreview, isSaving, save } = useContext(EditControllerContext)
-    const { isPending } = usePending('product.SAVE')
+    const { isPreview, setIsPreview, save } = useContext(EditControllerContext)
+    const { isPending: savePending } = usePending('product.SAVE')
+    const { isPending: contractSavePending } = usePending('contractProduct.SAVE')
+
+    const isSaving = savePending || contractSavePending
+
     console.log(product)
 
     const actions = useMemo(() => {
@@ -73,7 +77,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
                 />
             )}
             loadingClassname={styles.loadingIndicator}
-            loading={isPending}
+            loading={savePending}
         >
             <ProductEditorDebug />
             {isPreview && (

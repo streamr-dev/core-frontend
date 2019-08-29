@@ -2,12 +2,18 @@
 
 import React, { type Node, type Context, useState, useMemo, useCallback, useContext } from 'react'
 
+import { Context as RouterContext } from '$shared/components/RouterContextProvider'
 import type { Product } from '$mp/flowtype/product-types'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import usePending from '$shared/hooks/usePending'
 import { putProduct, postImage } from '$mp/modules/editProduct/services'
 import { isPaidProduct } from '$mp/utils/product'
+import { getProductFromContract } from '$mp/modules/contractProduct/services'
+import { isUpdateContractProductRequired } from '$mp/utils/smartContract'
+import useIsMounted from '$shared/hooks/useIsMounted'
+import links from '$mp/../links'
+import { formatPath } from '$shared/utils/url'
 
 import { Context as ValidationContext, ERROR } from '../ProductController/ValidationContextProvider'
 import useOriginalProduct from '../ProductController/useOriginalProduct'
@@ -16,21 +22,17 @@ import useModal from './useModal'
 type ContextProps = {
     isPreview: boolean,
     setIsPreview: (boolean | Function) => void,
-    isSaving: boolean,
     save: () => void | Promise<void>,
-    modal?: {
-        id: string,
-        save: () => void | Promise<void>,
-        cancel: () => void,
-    } | null,
 }
 
 const EditControllerContext: Context<ContextProps> = React.createContext({})
 
 function useEditController(product: Product) {
-    const [isSaving, setIsSaving] = useState(false)
+    const { history } = useContext(RouterContext)
     const [isPreview, setIsPreview] = useState(false)
+    const isMounted = useIsMounted()
     const savePending = usePending('product.SAVE')
+    const contractSavePending = usePending('contractProduct.SAVE')
 
     const { originalProduct } = useOriginalProduct()
     const { api: comfirmDialog } = useModal('confirm')
@@ -50,8 +52,6 @@ function useEditController(product: Product) {
     const save = useCallback(async () => {
         if (!originalProduct) { throw new Error('originalProduct is missing') }
 
-        setIsSaving(true)
-
         let doSave = true
 
         // Notify missing fields
@@ -64,14 +64,14 @@ function useEditController(product: Product) {
             })
 
             doSave = false
-        } else if (!product.imageUrl) {
+        } else if (!product.imageUrl && !product.newImageToUpload) {
             // confirm missing cover image
             doSave = await comfirmDialog.open()
         }
 
         if (doSave) {
             // do actual saving
-            savePending.wrap(async () => {
+            let savedSuccessfully = await savePending.wrap(async () => {
                 // save product
                 await putProduct(product, product.id || '')
 
@@ -84,30 +84,64 @@ function useEditController(product: Product) {
                     }
                 }
 
-                // use original product to check if it was paid or not
-                if (isPaidProduct(originalProduct)) {
-                    // start contract transaction dialog, this will take care of checking web3
-                    // and fetching/updating the contract product
-                    await updateContractDialog.open()
-                }
-
-                // TODO: check contract product for price change (if published)
-                setIsSaving(false)
+                // TODO: check errors
+                return true
             })
-        } else {
-            setIsSaving(false)
+
+            // Check update for contract product
+            if (savedSuccessfully) {
+                savedSuccessfully = await contractSavePending.wrap(async () => {
+                    // use original product to check if it was paid or not
+                    // fetch contract product from public node to see if we need to update the contract product
+                    let contractProduct
+
+                    try {
+                        contractProduct = await getProductFromContract(product.id || '', true)
+                    } catch (e) {
+                        console.warn(e)
+                    }
+
+                    if (!!contractProduct && isPaidProduct(originalProduct) && isUpdateContractProductRequired(contractProduct, product)) {
+                        // start contract transaction dialog, this will take care of checking web3
+                        // and fetching/updating the contract product
+                        const contractUpdated = await updateContractDialog.open({
+                            product,
+                            originalProduct,
+                            contractProduct,
+                        })
+
+                        return contractUpdated
+                    }
+
+                    return true
+                })
+            }
+
+            // Everything ok, do a redirect back to product page
+            if (savedSuccessfully) {
+                if (!isMounted()) { return }
+                history.replace(formatPath(links.marketplace.products, product.id)) // 404
+            }
         }
-    }, [errors, product, comfirmDialog, updateContractDialog, savePending, originalProduct])
+    }, [
+        errors,
+        product,
+        comfirmDialog,
+        updateContractDialog,
+        savePending,
+        contractSavePending,
+        originalProduct,
+        isMounted,
+        history,
+    ])
 
     return useMemo(() => ({
         isPreview,
         setIsPreview,
-        isSaving,
         save,
     }), [
         isPreview,
         setIsPreview,
-        isSaving,
         save,
     ])
 }
