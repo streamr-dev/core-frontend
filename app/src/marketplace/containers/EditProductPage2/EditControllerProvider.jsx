@@ -35,7 +35,7 @@ function useEditController(product: Product) {
     const contractSavePending = usePending('contractProduct.SAVE')
 
     const { originalProduct } = useOriginalProduct()
-    const { api: comfirmDialog } = useModal('confirm')
+    const { api: confirmDialog } = useModal('confirm')
     const { api: updateContractDialog } = useModal('updateContract')
 
     const { status } = useContext(ValidationContext)
@@ -66,7 +66,7 @@ function useEditController(product: Product) {
             doSave = false
         } else if (!product.imageUrl && !product.newImageToUpload) {
             // confirm missing cover image
-            doSave = await comfirmDialog.open()
+            doSave = await confirmDialog.open()
         }
 
         if (doSave) {
@@ -91,7 +91,6 @@ function useEditController(product: Product) {
             // Check update for contract product
             if (savedSuccessfully) {
                 savedSuccessfully = await contractSavePending.wrap(async () => {
-                    // use original product to check if it was paid or not
                     // fetch contract product from public node to see if we need to update the contract product
                     let contractProduct
 
@@ -101,6 +100,7 @@ function useEditController(product: Product) {
                         console.warn(e)
                     }
 
+                    // use original product to check if it was paid or not
                     if (!!contractProduct && isPaidProduct(originalProduct) && isUpdateContractProductRequired(contractProduct, product)) {
                         // start contract transaction dialog, this will take care of checking web3
                         // and fetching/updating the contract product
@@ -120,13 +120,13 @@ function useEditController(product: Product) {
             // Everything ok, do a redirect back to product page
             if (savedSuccessfully) {
                 if (!isMounted()) { return }
-                history.replace(formatPath(links.marketplace.products, product.id)) // 404
+                history.replace(formatPath(links.marketplace.products, product.id))
             }
         }
     }, [
         errors,
         product,
-        comfirmDialog,
+        confirmDialog,
         updateContractDialog,
         savePending,
         contractSavePending,
