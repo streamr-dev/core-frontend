@@ -44,7 +44,7 @@ const EditableText = ({
     setEditing,
     ...props
 }: Props) => {
-    const children = childrenProp == null ? EditableText.defaultProps.children : childrenProp
+    const children = (childrenProp == null) ? EditableText.defaultProps.children : childrenProp
     const [value, setValue] = useState(children)
     const [hasFocus, setHasFocus] = useState(false)
     const startEditing = useCallback(() => {

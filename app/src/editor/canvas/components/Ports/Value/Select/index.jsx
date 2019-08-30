@@ -6,6 +6,7 @@ import { type CommonProps } from '..'
 import styles from './select.pcss'
 
 type Props = CommonProps & {
+    description?: string,
     options: Array<{
         name?: string,
         text?: string, // sidebar options use 'text' instead of 'name' :/
@@ -17,6 +18,7 @@ const Select = ({
     className,
     disabled,
     onChange: onChangeProp,
+    description,
     value,
     title,
     options,
@@ -38,6 +40,10 @@ const Select = ({
 
     const selectionText = optionMap.get(value)
 
+    const selectOptions = options.map(({ name, text, value }) => (
+        <option key={value} value={value}>{name != null ? name : text}</option>
+    ))
+
     return (
         <div className={cx(styles.root, className)}>
             <div className={styles.inner}>
@@ -49,9 +55,11 @@ const Select = ({
                     disabled={disabled}
                     onChange={onChange}
                 >
-                    {options.map(({ name, text, value }) => (
-                        <option key={value} value={value}>{name != null ? name : text}</option>
-                    ))}
+                    {description ? (
+                        <optgroup label={description}>
+                            {selectOptions}
+                        </optgroup>
+                    ) : selectOptions}
                 </select>
                 {/* `select` holding a currently selected value. This hidden (`visibility: hidden`) control
                     dictates the width of the actual (visible) control above. */}
