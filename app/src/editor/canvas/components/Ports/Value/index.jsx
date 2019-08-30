@@ -76,7 +76,7 @@ const BooleanPossibleValues = [{
 
 function PortSelect({ canvas, port, value, ...props }) {
     const portValueEditDisabled = State.isPortValueEditDisabled(canvas, port.id)
-    value = value == null ? '' : String(value) /* coerce option value to string */
+    value = value == null ? undefined : String(value) /* coerce option value to string or undefined */
     if (portValueEditDisabled) {
         // always render as disabled text box if value editing is disabled
         return (
