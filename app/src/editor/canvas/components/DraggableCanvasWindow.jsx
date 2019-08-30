@@ -99,9 +99,7 @@ export const DraggableCanvasWindow = ({
         height,
     })
 
-    // $FlowFixMe
     const [dragging, setDragging] = useState(false)
-    // $FlowFixMe
     const [resizing, setResizing] = useState(false)
 
     const canvasWindowElRef = useContext(CanvasWindowContext)
