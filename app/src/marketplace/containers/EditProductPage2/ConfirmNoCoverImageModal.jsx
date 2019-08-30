@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import useModal from './useModal'
+import useModal from '$shared/hooks/useModal'
 
 import ConfirmNoCoverImageDialog from '$mp/components/Modal/ConfirmNoCoverImageDialog'
 

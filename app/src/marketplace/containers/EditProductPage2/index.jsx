@@ -16,7 +16,7 @@ import { Provider as EditControllerProvider, Context as EditControllerContext } 
 import Editor from './Editor'
 import Preview from './Preview'
 import ProductEditorDebug from './ProductEditorDebug'
-import { Provider as ModalProvider } from './Modal'
+import { Provider as ModalProvider } from '$shared/components/ModalContextProvider'
 import ConfirmNoCoverImageModal from './ConfirmNoCoverImageModal'
 import UpdateContractProductModal from './UpdateContractProductModal'
 

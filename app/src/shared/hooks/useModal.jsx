@@ -2,7 +2,7 @@
 
 import { useContext, useMemo } from 'react'
 
-import { Context as ModalContext } from './Modal'
+import { Context as ModalContext } from '$shared/components/ModalContextProvider'
 
 export default function useModal(modalId: string) {
     const { modals, openModal, closeModal } = useContext(ModalContext)

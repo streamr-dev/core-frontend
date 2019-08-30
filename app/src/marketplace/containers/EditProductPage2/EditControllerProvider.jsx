@@ -17,7 +17,7 @@ import { formatPath } from '$shared/utils/url'
 
 import { Context as ValidationContext, ERROR } from '../ProductController/ValidationContextProvider'
 import useOriginalProduct from '../ProductController/useOriginalProduct'
-import useModal from './useModal'
+import useModal from '$shared/hooks/useModal'
 
 type ContextProps = {
     isPreview: boolean,

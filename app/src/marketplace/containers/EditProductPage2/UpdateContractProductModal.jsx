@@ -14,7 +14,7 @@ import UnlockWalletDialog from '$mp/components/Modal/UnlockWalletDialog'
 import { selectAccountId } from '$mp/modules/web3/selectors'
 import { areAddressesEqual } from '$mp/utils/smartContract'
 
-import useModal from './useModal'
+import useModal from '$shared/hooks/useModal'
 
 const SaveDialog = withWeb3(SaveContractProductDialogComponent)
 
