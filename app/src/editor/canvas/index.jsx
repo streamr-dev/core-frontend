@@ -87,10 +87,18 @@ const CanvasEditComponent = class CanvasEdit extends Component {
     }
 
     selectModule = async ({ hash } = {}) => {
-        this.setState(({ moduleSidebarIsOpen, keyboardShortcutIsOpen }) => ({
-            // close sidebar if no selection
-            moduleSidebarIsOpen: hash == null ? keyboardShortcutIsOpen : moduleSidebarIsOpen,
-        }))
+        this.setState(({ moduleSidebarIsOpen, keyboardShortcutIsOpen }) => {
+            // this logic is nonsense, please redo the sidebar code
+            const noSelection = hash == null
+            const keyboardShortcutIsOpenNew = (noSelection && keyboardShortcutIsOpen) ? false : keyboardShortcutIsOpen
+            const moduleSidebarIsOpenNew = noSelection ? keyboardShortcutIsOpenNew : moduleSidebarIsOpen
+            return {
+                selectedModuleHash: hash,
+                // close sidebar if no selection
+                moduleSidebarIsOpen: moduleSidebarIsOpenNew,
+                keyboardShortcutIsOpen: !moduleSidebarIsOpenNew && keyboardShortcutIsOpenNew,
+            }
+        })
         this.props.selection.only(hash)
     }
 

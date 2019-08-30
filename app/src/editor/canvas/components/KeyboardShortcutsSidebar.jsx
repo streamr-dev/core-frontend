@@ -161,6 +161,13 @@ class KeyboardShortcuts extends React.Component {
             return
         }
 
+        // close on esc
+        const { onClose } = this.props
+        if (event.key === 'Escape' && typeof onClose === 'function') {
+            onClose()
+            return
+        }
+
         this.setState(({ pressedKeys, modifiedKeys }) => {
             const key = getEventKey(event)
             const newModifiedKeys = {
