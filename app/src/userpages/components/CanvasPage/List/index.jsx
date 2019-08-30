@@ -84,6 +84,38 @@ const getSortOptions = (): Array<SortOption> => {
     ]
 }
 
+function CanvasActions({
+    canvas,
+    navigate,
+    onOpenShareDialog,
+    onCopyUrl,
+    onDeleteCanvas,
+}) {
+    const editUrl = formatExternalUrl(
+        process.env.PLATFORM_ORIGIN_URL,
+        `${links.editor.canvasEditor}/${canvas.id}`,
+    )
+
+    return (
+        <Fragment>
+            <DropdownActions.Item onClick={() => navigate(`${links.editor.canvasEditor}/${canvas.id}`)}>
+                <Translate value="userpages.canvases.menu.edit" />
+            </DropdownActions.Item>
+            <DropdownActions.Item
+                onClick={() => onOpenShareDialog(canvas)}
+            >
+                <Translate value="userpages.canvases.menu.share" />
+            </DropdownActions.Item>
+            <DropdownActions.Item onClick={() => onCopyUrl(editUrl)}>
+                <Translate value="userpages.canvases.menu.copyUrl" />
+            </DropdownActions.Item>
+            <DropdownActions.Item onClick={onDeleteCanvas}>
+                <Translate value="userpages.canvases.menu.delete" />
+            </DropdownActions.Item>
+        </Fragment>
+    )
+}
+
 class CanvasList extends Component<Props, State> {
     defaultFilter = getSortOptions()[0].filter
 
@@ -101,8 +133,8 @@ class CanvasList extends Component<Props, State> {
         getCanvases()
     }
 
-    confirmDeleteCanvas = async (canvas: Canvas) => {
-        const confirmed = await confirmDialog('canvas', {
+    onDeleteCanvas = async (canvas: Canvas) => {
+        const confirm = await confirmDialog('canvas', {
             title: I18n.t('userpages.canvases.delete.confirmTitle'),
             message: I18n.t('userpages.canvases.delete.confirmMessage'),
             acceptButton: {
@@ -112,8 +144,7 @@ class CanvasList extends Component<Props, State> {
             centerButtons: true,
             dontShowAgain: false,
         })
-
-        if (confirmed) {
+        if (confirm) {
             this.props.deleteCanvas(canvas.id)
         }
     }
@@ -137,36 +168,6 @@ class CanvasList extends Component<Props, State> {
             title: I18n.t('userpages.canvases.menu.copyUrlNotification'),
             icon: NotificationIcon.CHECKMARK,
         })
-    }
-
-    getActions = (canvas) => {
-        const { navigate } = this.props
-
-        const editUrl = formatExternalUrl(
-            process.env.PLATFORM_ORIGIN_URL,
-            `${links.editor.canvasEditor}/${canvas.id}`,
-        )
-
-        return (
-            <Fragment>
-                <DropdownActions.Item onClick={() => navigate(`${links.editor.canvasEditor}/${canvas.id}`)}>
-                    <Translate value="userpages.canvases.menu.edit" />
-                </DropdownActions.Item>
-                <DropdownActions.Item
-                    onClick={() => this.onOpenShareDialog(canvas)}
-                >
-                    <Translate value="userpages.canvases.menu.share" />
-                </DropdownActions.Item>
-                <DropdownActions.Item onClick={() => this.onCopyUrl(editUrl)}>
-                    <Translate value="userpages.canvases.menu.copyUrl" />
-                </DropdownActions.Item>
-                <DropdownActions.Item
-                    onClick={() => this.confirmDeleteCanvas(canvas)}
-                >
-                    <Translate value="userpages.canvases.menu.delete" />
-                </DropdownActions.Item>
-            </Fragment>
-        )
     }
 
     onSearchChange = (value: string) => {
@@ -256,7 +257,15 @@ class CanvasList extends Component<Props, State> {
                             <Tile
                                 key={canvas.id}
                                 link={`${links.editor.canvasEditor}/${canvas.id}`}
-                                dropdownActions={this.getActions(canvas)}
+                                dropdownActions={(
+                                    <CanvasActions
+                                        canvas={canvas}
+                                        navigate={this.props.navigate}
+                                        onDeleteCanvas={this.onDeleteCanvas}
+                                        onOpenShareDialog={this.onOpenShareDialog}
+                                        onCopyUrl={this.onCopyUrl}
+                                    />
+                                )}
                                 image={<CanvasPreview className={cx(styles.PreviewImage, TileStyles.image)} canvas={canvas} />}
                             >
                                 <Tile.Title>{canvas.name}</Tile.Title>
