@@ -45,8 +45,10 @@ function removeClass(className) {
     }
 }
 
-function BodyClass({ className }: Props) {
+function BodyClass({ className: classNameProp }: Props) {
+    const className = classNameProp && classNameProp.trim()
     useLayoutEffect(() => {
+        if (!className) { return }
         addClass(className)
         return () => { // eslint-disable-line consistent-return
             removeClass(className)
