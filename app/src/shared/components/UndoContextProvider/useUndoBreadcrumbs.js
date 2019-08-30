@@ -3,7 +3,7 @@ import * as Sentry from '@sentry/browser'
 import { Context } from './index'
 
 /**
- * Logs changes to undo stack to entry.
+ * Logs changes to undo stack to Sentry.
  * TODO: include state diff.
  */
 
