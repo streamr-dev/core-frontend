@@ -12,6 +12,7 @@ import { selectAuthApiKeyId } from '$shared/modules/resourceKey/selectors'
 import { getMyResourceKeys } from '$shared/modules/resourceKey/actions'
 import { selectAuthState } from '$shared/modules/user/selectors'
 import useIsMountedRef from '$shared/hooks/useIsMountedRef'
+import { usePending } from '$shared/hooks/usePending'
 
 import * as services from '../services'
 
@@ -29,10 +30,34 @@ export function createClient(apiKey) {
     })
 }
 
-function useClientProvider({ apiKey }) {
+function useClientProvider({
+    apiKey,
+    loadKeys,
+    isAuthenticating,
+    isAuthenticated,
+    authenticationFailed,
+}) {
     const [client, setClient] = useState()
     const isMountedRef = useIsMountedRef()
     const hasClient = !!client
+    const loadKeyPending = usePending('client.key')
+    const [hasLoaded, setHasLoaded] = useState(!!apiKey)
+    const endLoad = useCallback(() => {
+        if (!isMountedRef.current) { return }
+        setHasLoaded(true)
+    }, [isMountedRef])
+
+    useEffect(() => {
+        if ((isAuthenticating || !isAuthenticated) && !authenticationFailed) { return } // do nothing if waiting to auth
+        if (hasLoaded || loadKeyPending.isPending) { return }
+        loadKeyPending.wrap(() => (
+            loadKeys().then(endLoad, (error) => {
+                endLoad()
+                if (!isMountedRef.current) { return }
+                throw error
+            })
+        ))
+    }, [loadKeys, loadKeyPending, hasLoaded, endLoad, isMountedRef, authenticationFailed, isAuthenticated, isAuthenticating])
 
     const reset = useCallback(() => {
         if (!client) { return }
@@ -59,9 +84,9 @@ function useClientProvider({ apiKey }) {
 
     // (re)create client if none
     useLayoutEffect(() => {
-        if (hasClient) { return }
+        if (hasClient || !hasLoaded) { return }
         setClient(createClient(apiKey))
-    }, [hasClient, setClient, apiKey])
+    }, [hasClient, setClient, apiKey, hasLoaded])
 
     // disconnect on unmount/client change
     useEffect(() => {
@@ -79,14 +104,19 @@ function useClientProvider({ apiKey }) {
     ), [apiKey])
 
     return useMemo(() => ({
+        hasLoaded,
         client,
         send,
-    }), [client, send])
+    }), [client, send, hasLoaded])
 }
 
-export function ClientProviderComponent({ children, apiKey }) {
+export function ClientProviderComponent({ children, apiKey, loadKeys }) {
+    const clientContext = useClientProvider({
+        apiKey,
+        loadKeys,
+    })
     return (
-        <ClientContext.Provider value={useClientProvider({ apiKey })}>
+        <ClientContext.Provider value={clientContext}>
             {children || null}
         </ClientContext.Provider>
     )
@@ -102,57 +132,4 @@ const withAuthApiKey = connect((state) => ({
     loadKeys: getMyResourceKeys,
 })
 
-class ClientProviderInner extends React.Component {
-    state = {
-        isLoading: false,
-        error: undefined,
-    }
-
-    componentDidUpdate() {
-        this.loadIfNoKey()
-    }
-
-    componentWillUnmount() {
-        this.unmounted = true
-    }
-
-    async loadIfNoKey() {
-        if ((this.props.isAuthenticating || !this.props.isAuthenticated) && !this.props.authenticationFailed) { return }
-        if (this.state.isLoading || this.state.error) { return }
-
-        this.setState({
-            isLoading: true,
-            error: undefined,
-        })
-
-        let error
-        try {
-            await this.props.loadKeys()
-        } catch (err) {
-            error = err
-        } finally {
-            if (!this.unmounted) {
-                this.setState({
-                    isLoading: false,
-                    error,
-                })
-            }
-        }
-    }
-
-    render() {
-        const { loadKey, ...props } = this.props
-        // new client if apiKey changes
-        return (
-            <ClientProviderComponent {...props} />
-        )
-    }
-}
-
-export const ClientProvider = withAuthApiKey(connect(selectAuthState)(({ apiKey, ...props }) => (
-    <ClientProviderInner
-        key={apiKey}
-        apiKey={apiKey}
-        {...props}
-    />
-)))
+export const ClientProvider = withAuthApiKey(connect(selectAuthState)(ClientProviderComponent))

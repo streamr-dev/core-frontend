@@ -1,10 +1,8 @@
 import React, { useContext, useEffect, useMemo } from 'react'
 import { Helmet } from 'react-helmet'
-import LoadingIndicator from '$userpages/components/LoadingIndicator'
 
 import * as RouterContext from '$shared/components/RouterContextProvider'
-import { Provider as PendingProvider } from '$shared/components/PendingContextProvider'
-import { usePending, useAnyPending } from '$shared/hooks/usePending'
+import { usePending } from '$shared/hooks/usePending'
 import { Provider as PermissionsProvider } from '$editor/canvas/hooks/useCanvasPermissions'
 
 import * as CanvasState from '../../state'
@@ -15,8 +13,6 @@ import useCanvasCreateCallback from './useCanvasCreateCallback'
 import useCanvasRemoveCallback from './useCanvasRemoveCallback'
 import useCanvasDuplicateCallback from './useCanvasDuplicateCallback'
 import useModuleLoadCallback from './useModuleLoadCallback'
-
-import styles from './CanvasController.pcss'
 
 const EmbedModeContext = React.createContext(false)
 
@@ -74,13 +70,6 @@ function CanvasEffects() {
     )
 }
 
-function CanvasLoadingIndicator() {
-    const isPending = useAnyPending()
-    return (
-        <LoadingIndicator className={styles.LoadingIndicator} loading={isPending} />
-    )
-}
-
 export function useController() {
     return useContext(CanvasControllerContext)
 }
@@ -111,15 +100,12 @@ function ControllerProvider({ children }) {
 const CanvasControllerProvider = ({ children, embed }) => (
     <RouterContext.Provider>
         <EmbedModeContext.Provider value={!!embed}>
-            <PendingProvider>
-                <PermissionsProvider>
-                    <ControllerProvider embed={embed}>
-                        <CanvasLoadingIndicator />
-                        <CanvasEffects />
-                        {children || null}
-                    </ControllerProvider>
-                </PermissionsProvider>
-            </PendingProvider>
+            <PermissionsProvider>
+                <ControllerProvider embed={embed}>
+                    <CanvasEffects />
+                    {children || null}
+                </ControllerProvider>
+            </PermissionsProvider>
         </EmbedModeContext.Provider>
     </RouterContext.Provider>
 )

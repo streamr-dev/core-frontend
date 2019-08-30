@@ -14,6 +14,7 @@ import links from '../../links'
 
 import UndoControls from '$editor/shared/components/UndoControls'
 import * as UndoContext from '$shared/components/UndoContextProvider'
+import { Provider as PendingProvider } from '$shared/components/PendingContextProvider'
 import Subscription from '$editor/shared/components/Subscription'
 import * as SubscriptionStatus from '$editor/shared/components/SubscriptionStatus'
 import { ClientProvider } from '$editor/shared/components/Client'
@@ -32,6 +33,7 @@ import useCanvasUpdater from './components/CanvasController/useCanvasUpdater'
 import useAutosaveEffect from './components/CanvasController/useAutosaveEffect'
 import useUpdatedTime from './components/CanvasController/useUpdatedTime'
 
+import PendingLoadingIndicator from './components/PendingLoadingIndicator'
 import Canvas from './components/Canvas'
 import CanvasToolbar from './components/Toolbar'
 import CanvasStatus, { CannotSaveStatus } from './components/Status'
@@ -518,15 +520,18 @@ const CanvasEditWrap = () => {
 }
 
 const CanvasContainer = withRouter(withErrorBoundary(ErrorComponentView)((props) => (
-    <ClientProvider>
-        <UndoContext.Provider key={props.match.params.id}>
-            <CanvasController.Provider embed={!!props.embed}>
-                <SelectionProvider>
-                    <CanvasEditWrap />
-                </SelectionProvider>
-            </CanvasController.Provider>
-        </UndoContext.Provider>
-    </ClientProvider>
+    <UndoContext.Provider key={props.match.params.id} enableBreadcrumbs>
+        <PendingProvider>
+            <PendingLoadingIndicator />
+            <ClientProvider>
+                <CanvasController.Provider embed={!!props.embed}>
+                    <SelectionProvider>
+                        <CanvasEditWrap />
+                    </SelectionProvider>
+                </CanvasController.Provider>
+            </ClientProvider>
+        </PendingProvider>
+    </UndoContext.Provider>
 )))
 
 export default connect(selectAuthState)(({ embed, isAuthenticated }) => {
