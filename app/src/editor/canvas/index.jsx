@@ -19,7 +19,7 @@ import { Provider as PendingProvider } from '$shared/components/PendingContextPr
 import Subscription from '$editor/shared/components/Subscription'
 import * as SubscriptionStatus from '$editor/shared/components/SubscriptionStatus'
 import { ClientProvider } from '$editor/shared/components/Client'
-import { ModalProvider } from '$editor/shared/components/Modal'
+import { Provider as ModalProvider } from '$shared/components/ModalContextProvider'
 import * as sharedServices from '$editor/shared/services'
 import BodyClass from '$shared/components/BodyClass'
 import Sidebar from '$editor/shared/components/Sidebar'

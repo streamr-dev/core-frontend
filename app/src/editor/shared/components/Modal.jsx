@@ -5,88 +5,24 @@ import t from 'prop-types'
 import cx from 'classnames'
 
 import StreamrModal from '$shared/components/Modal'
+import useModal from '$shared/hooks/useModal'
+
 import styles from './Modal.pcss'
 
-const ModalContext = React.createContext({})
+export const ModalContainer = ({ modalId, children }) => {
+    const { isOpen, api, value } = useModal(modalId)
 
-export class ModalProvider extends React.Component {
-    componentWillUnmount() {
-        this.unmounted = true
-    }
-
-    setModal = (modalId, value, cb) => {
-        if (this.unmounted) { return }
-        this.setState(({ modals }) => {
-            const nextModals = { ...modals }
-            // if value is a function, call with previous value, set value to result.
-            const nextValue = typeof value === 'function' ? value(modals[modalId]) : value
-            if (!nextValue) {
-                delete nextModals[modalId]
-            } else {
-                nextModals[modalId] = nextValue
-            }
-            return { modals: nextModals }
-        }, typeof cb === 'function' ? cb : undefined)
-    }
-
-    open = (modalId, value = true, cb) => {
-        this.setModal(modalId, value, cb)
-    }
-
-    close = (modalId, cb) => {
-        this.setModal(modalId, false, cb)
-    }
-
-    toggle = (modalId, cb) => {
-        this.setModal(modalId, (v) => !v, cb)
-    }
-
-    /**
-     * Create a modal API specifically for modalId
-     */
-
-    getApi = (modalId) => ({
-        open: this.open.bind(null, modalId),
-        close: this.close.bind(null, modalId),
-        toggle: this.toggle.bind(null, modalId),
+    return children({
+        isOpen,
+        value,
+        api,
+        modalId,
     })
-
-    state = {
-        modals: {},
-        api: {
-            getApi: this.getApi,
-            open: this.open,
-            close: this.close,
-            toggle: this.toggle,
-        },
-    }
-
-    render() {
-        return (
-            <ModalContext.Provider value={this.state}>
-                {this.props.children || null}
-            </ModalContext.Provider>
-        )
-    }
 }
 
-export class ModalContainer extends React.Component {
-    static contextType = ModalContext
-    static propTypes = {
-        modalId: t.string.isRequired,
-        children: t.func,
-    }
-
-    render() {
-        const { modalId, children } = this.props
-        const { modals, api } = this.context
-        const modalValue = modals[modalId]
-        return children({
-            value: modalValue,
-            api: api.getApi(modalId),
-            modalId,
-        })
-    }
+ModalContainer.propTypes = {
+    modalId: t.string.isRequired,
+    children: t.func,
 }
 
 /**
@@ -103,7 +39,6 @@ function getContent({ children, isOpen, data }) {
 }
 
 export class Modal extends React.Component {
-    static contextType = ModalContext
     static propTypes = {
         modalId: t.string.isRequired,
         children: t.oneOfType([t.func, t.node]).isRequired,
@@ -140,8 +75,6 @@ export class Modal extends React.Component {
  */
 
 export default class ModalWithOverlay extends React.Component {
-    static contextType = ModalContext
-
     static propTypes = {
         modalId: t.string.isRequired,
         children: t.oneOfType([t.func, t.node]).isRequired,
