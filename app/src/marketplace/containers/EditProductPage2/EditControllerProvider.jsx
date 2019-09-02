@@ -23,6 +23,7 @@ type ContextProps = {
     isPreview: boolean,
     setIsPreview: (boolean | Function) => void,
     save: () => void | Promise<void>,
+    deployCommunity: () => void | Promise<void>,
 }
 
 const EditControllerContext: Context<ContextProps> = React.createContext({})
@@ -37,6 +38,7 @@ function useEditController(product: Product) {
     const { originalProduct } = useOriginalProduct()
     const { api: confirmDialog } = useModal('confirm')
     const { api: updateContractDialog } = useModal('updateContract')
+    const { api: deployCommunityDialog } = useModal('deployCommunity')
 
     const { status } = useContext(ValidationContext)
 
@@ -135,14 +137,25 @@ function useEditController(product: Product) {
         history,
     ])
 
+    const deployCommunity = useCallback(async () => {
+        if (!isMounted()) { return }
+
+        await deployCommunityDialog.open()
+    }, [
+        deployCommunityDialog,
+        isMounted,
+    ])
+
     return useMemo(() => ({
         isPreview,
         setIsPreview,
         save,
+        deployCommunity,
     }), [
         isPreview,
         setIsPreview,
         save,
+        deployCommunity,
     ])
 }
 
