@@ -9,6 +9,7 @@ import qs from 'query-string'
 
 // Marketplace
 import ProductPage from '$mp/containers/ProductPage'
+import ProductPage2 from '$mp/containers/ProductPage2'
 import StreamPreviewPage from '$mp/containers/StreamPreviewPage'
 import CreateProductPage from '$mp/containers/CreateProductPage'
 import EditProductPage from '$mp/containers/EditProductPage'
@@ -99,6 +100,8 @@ const DashboardEditorAuth = userIsAuthenticated(DashboardEditor)
 // Other components
 const ProductPurchasePage = (props) => <ProductPage overlayPurchaseDialog {...props} />
 const ProductPublishPage = (props) => <ProductPage overlayPublishDialog {...props} />
+const ProductPurchasePage2 = (props) => <ProductPage2 overlayPurchaseDialog {...props} />
+const ProductPublishPage2 = (props) => <ProductPage2 overlayPublishDialog {...props} />
 
 // Wrap each Route to an ErrorBoundary
 const Route = withErrorBoundary(ErrorPageView)(RouterRoute)
@@ -125,13 +128,19 @@ const AuthenticationRouter = () => ([
 const MarketplaceRouter = () => ([
     <Route exact path={marketplace.main} component={Products} key="Products" />,
     <Route exact path={links.marketplace.createProduct} component={CreateProductAuth} key="CreateProduct" />,
-    !isProduction() && <Route exact path={routes.createProduct2()} component={CreateProductAuth2} key="CreateProduct2" />,
     <Route exact path={formatPath(marketplace.products, ':id', 'purchase')} component={ProductPurchasePage} key="ProductPurchasePage" />,
     <Route exact path={formatPath(marketplace.products, ':id', 'publish')} component={ProductPublishPage} key="ProductPublishPage" />,
     <Route exact path={formatPath(marketplace.products, ':id', 'streamPreview', ':streamId')} component={StreamPreviewPage} key="StreamPreview" />,
     <Route exact path={formatPath(marketplace.products, ':id')} component={ProductPage} key="ProductPage" />,
     <Route exact path={routes.editProduct()} component={EditProductAuth} key="EditProduct" />,
-    !isProduction() && <Route exact path={routes.editProduct2()} component={EditProductAuth2} key="EditProduct2" />,
+])
+
+const CommunityProductsRouter = () => ([
+    <Route exact path={routes.createProduct2()} component={CreateProductAuth2} key="CreateProduct2" />,
+    <Route exact path={formatPath(marketplace.products, ':id', 'purchase2')} component={ProductPurchasePage2} key="ProductPurchasePage2" />,
+    <Route exact path={formatPath(marketplace.products, ':id', 'publish2')} component={ProductPublishPage2} key="ProductPublishPage2" />,
+    <Route exact path={formatPath(`${marketplace.products}2`, ':id')} component={ProductPage2} key="ProductPage2" />,
+    <Route exact path={routes.editProduct2()} component={EditProductAuth2} key="EditProduct2" />,
 ])
 
 const DocsRouter = () => ([
@@ -188,6 +197,7 @@ const App = () => (
                 <Switch>
                     {AuthenticationRouter()}
                     {MarketplaceRouter()}
+                    {!isProduction() && CommunityProductsRouter()}
                     {DocsRouter()}
                     {DocsRouter()}
                     {UserpagesRouter()}
