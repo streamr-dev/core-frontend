@@ -1,6 +1,5 @@
 // @flow
 
-import path from 'path'
 import settle from 'promise-settle'
 import { I18n } from 'react-redux-i18n'
 
@@ -27,19 +26,9 @@ import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { Permission, ResourceType, ResourceId, Operation } from '../../flowtype/permission-types'
 import type { User } from '$shared/flowtype/user-types'
 
-const getApiUrl = (resourceType: ResourceType, resourceId: ResourceId) => {
-    const urlPartsByResourceType = {
-        DASHBOARD: 'dashboards',
-        CANVAS: 'canvases',
-        STREAM: 'streams',
-    }
-    const urlPart = urlPartsByResourceType[resourceType]
-    if (!urlPart) {
-        throw new Error(`Invalid resource type: ${resourceType}`)
-    }
+import * as services from './services'
 
-    return `${process.env.STREAMR_API_URL}/${path.join(urlPart, resourceId)}`
-}
+const { getApiUrl } = services
 
 export const addResourcePermission = (resourceType: ResourceType, resourceId: ResourceId, permission: Permission) => ({
     type: ADD_RESOURCE_PERMISSION,
@@ -115,8 +104,10 @@ const saveRemovedResourcePermissionFailure = (resourceType: ResourceType, resour
 
 export const getResourcePermissions = (resourceType: ResourceType, resourceId: ResourceId) => async (dispatch: Function) => {
     dispatch(getResourcePermissionsRequest())
-    const resourcePermissions = await api.get(`${getApiUrl(resourceType, resourceId)}/permissions`)
-        .catch((error) => {
+    services.getResourcePermissions(resourceType, resourceId)
+        .then((resourcePermissions) => {
+            dispatch(getResourcePermissionsSuccess(resourceType, resourceId, resourcePermissions))
+        }, (error) => {
             dispatch(getResourcePermissionsFailure(error))
             Notification.push({
                 title: error.message,
@@ -124,7 +115,6 @@ export const getResourcePermissions = (resourceType: ResourceType, resourceId: R
             })
             throw error
         })
-    dispatch(getResourcePermissionsSuccess(resourceType, resourceId, resourcePermissions))
 }
 
 export const setResourceHighestOperationForUser = (

@@ -14,6 +14,9 @@ msgstr "Create canvas"
 msgid "userpages##canvases##deleteCanvas"
 msgstr "Canvas deleted successfully"
 
+msgid "userpages##canvases##removeCanvas"
+msgstr "Canvas removed successfully"
+
 msgid "userpages##canvases##filterCanvases"
 msgstr "Filter canvases"
 
@@ -47,6 +50,9 @@ msgstr "Edit"
 msgid "userpages##canvases##menu##delete"
 msgstr "Delete"
 
+msgid "userpages##canvases##menu##remove"
+msgstr "Remove"
+
 msgid "userpages##canvases##menu##copyUrl"
 msgstr "Copy URL"
 
@@ -59,11 +65,20 @@ msgstr "Share"
 msgid "userpages##canvases##delete##confirmTitle"
 msgstr "Delete this canvas?"
 
+msgid "userpages##canvases##remove##confirmTitle"
+msgstr "Remove this canvas?"
+
 msgid "userpages##canvases##delete##confirmMessage"
+msgstr "This is an unrecoverable action. Please confirm this is what you want before you proceed."
+
+msgid "userpages##canvases##remove##confirmMessage"
 msgstr "This is an unrecoverable action. Please confirm this is what you want before you proceed."
 
 msgid "userpages##canvases##delete##confirmButton"
 msgstr "Yes, delete"
+
+msgid "userpages##canvases##remove##confirmButton"
+msgstr "Yes, remove"
 
 msgid "userpages##filter##sortBy"
 msgstr "Sort by"

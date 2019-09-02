@@ -1,6 +1,6 @@
 // @flow
 
-import React, { Component, Fragment } from 'react'
+import React, { Component, Fragment, useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { Button } from 'reactstrap'
 import { capital } from 'case'
@@ -15,11 +15,13 @@ import cx from 'classnames'
 import type { Filter, SortOption } from '$userpages/flowtype/common-types'
 import type { Canvas } from '$userpages/flowtype/canvas-types'
 
+import { getMyResourcePermissions, deleteResourcePermissions } from '$userpages/modules/permission/services'
 import Layout from '$userpages/components/Layout'
 import links from '$app/src/links'
 import { getCanvases, deleteCanvas, updateFilter } from '$userpages/modules/canvas/actions'
 import { selectCanvases, selectFilter, selectFetching } from '$userpages/modules/canvas/selectors'
 import { getFilters } from '$userpages/utils/constants'
+import useIsMounted from '$shared/hooks/useIsMounted'
 import Tile from '$shared/components/Tile'
 import TileStyles from '$shared/components/Tile/tile.pcss'
 import DropdownActions from '$shared/components/DropdownActions'
@@ -90,12 +92,24 @@ function CanvasActions({
     onOpenShareDialog,
     onCopyUrl,
     onDeleteCanvas,
+    onRemoveCanvas,
 }) {
+    const canvasId = canvas.id
+    const isMounted = useIsMounted()
+    const [permissions, setPermissions] = useState()
+    useEffect(() => {
+        getMyResourcePermissions('CANVAS', canvasId).then((resourcePermissions) => {
+            if (!isMounted()) { return }
+            setPermissions(resourcePermissions)
+        })
+    }, [canvasId, isMounted])
+
     const editUrl = formatExternalUrl(
         process.env.PLATFORM_ORIGIN_URL,
         `${links.editor.canvasEditor}/${canvas.id}`,
     )
 
+    const canWrite = permissions && permissions.some((p) => p.operation === 'write')
     return (
         <Fragment>
             <DropdownActions.Item onClick={() => navigate(`${links.editor.canvasEditor}/${canvas.id}`)}>
@@ -109,15 +123,22 @@ function CanvasActions({
             <DropdownActions.Item onClick={() => onCopyUrl(editUrl)}>
                 <Translate value="userpages.canvases.menu.copyUrl" />
             </DropdownActions.Item>
-            <DropdownActions.Item onClick={onDeleteCanvas}>
-                <Translate value="userpages.canvases.menu.delete" />
-            </DropdownActions.Item>
+            {!canWrite ? (
+                <DropdownActions.Item disabled={!permissions} onClick={() => onRemoveCanvas(canvas)}>
+                    <Translate value="userpages.canvases.menu.remove" />
+                </DropdownActions.Item>
+            ) : (
+                <DropdownActions.Item disabled={!canWrite} onClick={onDeleteCanvas}>
+                    <Translate value="userpages.canvases.menu.delete" />
+                </DropdownActions.Item>
+            )}
         </Fragment>
     )
 }
 
 class CanvasList extends Component<Props, State> {
     defaultFilter = getSortOptions()[0].filter
+    unmounted: boolean = false
 
     state = {
         shareDialogCanvas: undefined,
@@ -147,6 +168,32 @@ class CanvasList extends Component<Props, State> {
         if (confirm) {
             this.props.deleteCanvas(canvas.id)
         }
+    }
+
+    onRemoveCanvas = async (canvas: Canvas) => {
+        const confirm = await confirmDialog('canvas', {
+            title: I18n.t('userpages.canvases.remove.confirmTitle'),
+            message: I18n.t('userpages.canvases.remove.confirmMessage'),
+            acceptButton: {
+                title: I18n.t('userpages.canvases.remove.confirmButton'),
+                color: 'danger',
+            },
+            centerButtons: true,
+            dontShowAgain: false,
+        })
+        if (confirm) {
+            deleteResourcePermissions('CANVAS', canvas.id).catch((error) => {
+                if (this.unmounted) { return }
+                Notification.push({
+                    title: error.message,
+                    icon: NotificationIcon.ERROR,
+                })
+            })
+        }
+    }
+
+    componentWillUnmount() {
+        this.unmounted = true
     }
 
     onOpenShareDialog = (canvas: Canvas) => {
@@ -262,6 +309,7 @@ class CanvasList extends Component<Props, State> {
                                         canvas={canvas}
                                         navigate={this.props.navigate}
                                         onDeleteCanvas={this.onDeleteCanvas}
+                                        onRemoveCanvas={this.onRemoveCanvas}
                                         onOpenShareDialog={this.onOpenShareDialog}
                                         onCopyUrl={this.onCopyUrl}
                                     />
