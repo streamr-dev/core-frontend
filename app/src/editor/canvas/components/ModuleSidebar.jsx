@@ -2,9 +2,9 @@ import React, { useEffect, useContext, useRef } from 'react'
 import cx from 'classnames'
 import startCase from 'lodash/startCase'
 
-import { Header, Content, Section } from '$editor/shared/components/Sidebar'
-
-import TextControl from '$shared/components/TextControl'
+import { Header, Content, Section, Select } from '$editor/shared/components/Sidebar'
+import Toggle from '$shared/components/Toggle'
+import Text from '$editor/canvas/components/Ports/Value/Text'
 
 import * as CanvasState from '../state'
 import * as RunController from './CanvasController/Run'
@@ -37,12 +37,8 @@ export default function ModuleSidebar({ canvas, selectedModuleHash, setModuleOpt
         })
     }
 
-    const onChangeValue = (name) => (event) => {
-        onChange(name)(event.target.value)
-    }
-
-    const onChangeChecked = (name) => (event) => {
-        onChange(name)(event.target.checked)
+    const onSelectChange = (name) => ({ value }) => {
+        onChange(name)(value)
     }
 
     const module = CanvasState.getModuleIfExists(canvas, selectedModuleHash)
@@ -76,44 +72,40 @@ export default function ModuleSidebar({ canvas, selectedModuleHash, setModuleOpt
                             {optionsKeys.map((name) => {
                                 const option = module.options[name]
                                 const id = `${module.id}.options.${name}`
+                                const opts = option.possibleValues ? option.possibleValues.map(({ text, value }) => ({
+                                    label: text,
+                                    value,
+                                })) : []
                                 return (
                                     <React.Fragment key={id}>
                                         <label htmlFor={id}>{startCase(name)}</label>
                                         {option.possibleValues ? (
                                             /* Select */
-                                            <select
+                                            <Select
                                                 id={id}
-                                                value={option.value}
-                                                onChange={onChangeValue(name)}
-                                            >
-                                                {option.possibleValues.map(({ text, value }) => (
-                                                    <option
-                                                        key={value}
-                                                        value={value}
-                                                        disabled={!isEditable}
-                                                    >
-                                                        {text}
-                                                    </option>
-                                                ))}
-                                            </select>
+                                                className={styles.select}
+                                                value={opts.filter((opt) => opt.value === option.value)}
+                                                onChange={onSelectChange(name)}
+                                                options={opts}
+                                            />
                                         ) : (
                                             /* Toggle */
                                             (option.type === 'boolean' && (
-                                                <input
+                                                <Toggle
                                                     id={id}
-                                                    checked={option.value}
-                                                    type="checkbox"
-                                                    onChange={onChangeChecked(name)}
+                                                    className={styles.toggle}
+                                                    value={option.value}
+                                                    onChange={onChange(name)}
                                                     disabled={!isEditable}
                                                 />
                                             )) || (
                                                 /* Text */
-                                                <TextControl
-                                                    disabled={!isEditable}
+                                                <Text
                                                     id={id}
-                                                    onCommit={onChange(name)}
+                                                    className={styles.input}
                                                     value={option.value}
-                                                    immediateCommit={false}
+                                                    onChange={onChange(name)}
+                                                    disabled={!isEditable}
                                                 />
                                             )
                                         )}

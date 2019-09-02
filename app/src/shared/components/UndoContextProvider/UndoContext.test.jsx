@@ -10,6 +10,7 @@ describe('UndoContext', () => {
                     <UndoContext.Context.Consumer>
                         {(props) => {
                             expect(props.state).toBe(undefined)
+                            expect(props.action).toBe(UndoContext.initialAction)
                             return null
                         }}
                     </UndoContext.Context.Consumer>
@@ -33,6 +34,7 @@ describe('UndoContext', () => {
                 </UndoContext.Provider>
             ))
             expect(props.state).toEqual(initialState)
+            expect(props.action).toBe(UndoContext.initialAction)
         })
 
         describe('undo/redo with initial state', () => {
@@ -154,6 +156,7 @@ describe('UndoContext', () => {
             await props.undo()
             expect(props.state).toEqual(initialState)
             expect(props.pointer).toBe(initialProps.pointer)
+            expect(props.action).toBe(UndoContext.initialAction)
             // redo
             await props.redo()
             const afterRedoProps = props
@@ -170,7 +173,8 @@ describe('UndoContext', () => {
             const action2 = {
                 type: 'action2',
             }
-            await props.push(action2, () => nextState)
+            // also test it converts string to action
+            await props.push(action2.type, () => nextState)
             expect(props.pointer).toBe(initialProps.pointer + 1)
             expect(props.action).toEqual(action2)
             expect(props.state).toEqual(nextState)
@@ -200,6 +204,7 @@ describe('UndoContext', () => {
         await props.replace(() => replaceState)
         expect(props.pointer).toBe(initialProps.pointer)
         expect(props.state).toEqual(replaceState)
+        expect(props.action).toBe(UndoContext.initialAction)
     })
 
     it('can replace top item after push', async () => {

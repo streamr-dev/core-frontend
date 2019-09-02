@@ -33,6 +33,7 @@ type State = {
 type Message = {
     t: string,
     color: string,
+    label?: string,
     id: string,
     lat: number,
     lng: number,
@@ -186,15 +187,14 @@ export default class MapModule extends React.PureComponent<Props, State> {
         }
     }
 
-    getMarkerFromMessage = (msg: Message): Marker => (
-        {
-            id: msg.id,
-            lat: msg.lat,
-            long: msg.lng,
-            rotation: msg.dir,
-            previousPositions: [],
-        }
-    )
+    getMarkerFromMessage = (msg: Message): Marker => ({
+        id: msg.id,
+        label: msg.label,
+        lat: msg.lat,
+        long: msg.lng,
+        rotation: msg.dir,
+        previousPositions: [],
+    })
 
     addTracePoint = (id: string, lat: number, long: number, tracePointId: string) => {
         let posArray = this.positionHistory[id]
@@ -239,6 +239,7 @@ export default class MapModule extends React.PureComponent<Props, State> {
 
     onViewportChanged = (centerLat: number, centerLong: number, zoom: number) => {
         const { module, api } = this.props
+        if (!api) { return }
         const nextModule = {
             ...module,
             options: {

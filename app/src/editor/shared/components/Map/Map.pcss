@@ -19,4 +19,38 @@
   height: 1.5em !important;
   line-height: 1.25em !important;
   width: 1.5em !important;
+  color: #525252;
+}
+
+.control {
+  font-size: var(--um);
+  height: 1.5em;
+  width: 1.5em;
+  border: 0;
+  appearance: none;
+  box-shadow: 0 0 calc(0.3125 * var(--um)) rgba(0, 0, 0, 0.15) !important;
+  background: white;
+  border-radius: 1px;
+  text-align: center;
+  padding: 0;
+  display: block;
+  cursor: pointer;
+  color: #525252;
+  text-decoration: none;
+}
+
+.control:hover {
+  background-color: #F4F4F4;
+  color: #525252;
+}
+
+.control:focus {
+  outline: none;
+}
+
+.disabledControl {
+  background-color: #F4F4F4;
+  color: #BBBBBB;
+  cursor: default;
+  pointer-events: none;
 }

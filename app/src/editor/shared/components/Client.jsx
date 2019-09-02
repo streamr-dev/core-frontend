@@ -10,7 +10,9 @@ import t from 'prop-types'
 import StreamrClient from 'streamr-client'
 import { selectAuthApiKeyId } from '$shared/modules/resourceKey/selectors'
 import { getMyResourceKeys } from '$shared/modules/resourceKey/actions'
+import { selectAuthState } from '$shared/modules/user/selectors'
 import useIsMountedRef from '$shared/hooks/useIsMountedRef'
+import { usePending } from '$shared/hooks/usePending'
 
 import * as services from '../services'
 
@@ -20,18 +22,42 @@ export function createClient(apiKey) {
     return new StreamrClient({
         url: process.env.STREAMR_WS_URL,
         restUrl: process.env.STREAMR_API_URL,
-        auth: {
-            apiKey, // assume this won't change for now
+        auth: apiKey == null ? {} : {
+            apiKey,
         },
         autoConnect: true,
         autoDisconnect: false,
     })
 }
 
-function useClientProvider({ apiKey }) {
+function useClientProvider({
+    apiKey,
+    loadKeys,
+    isAuthenticating,
+    isAuthenticated,
+    authenticationFailed,
+}) {
     const [client, setClient] = useState()
     const isMountedRef = useIsMountedRef()
     const hasClient = !!client
+    const loadKeyPending = usePending('client.key')
+    const [hasLoaded, setHasLoaded] = useState(!!apiKey)
+    const endLoad = useCallback(() => {
+        if (!isMountedRef.current) { return }
+        setHasLoaded(true)
+    }, [isMountedRef])
+
+    useEffect(() => {
+        if ((isAuthenticating || !isAuthenticated) && !authenticationFailed) { return } // do nothing if waiting to auth
+        if (hasLoaded || loadKeyPending.isPending) { return }
+        loadKeyPending.wrap(() => (
+            loadKeys().then(endLoad, (error) => {
+                endLoad()
+                if (!isMountedRef.current) { return }
+                throw error
+            })
+        ))
+    }, [loadKeys, loadKeyPending, hasLoaded, endLoad, isMountedRef, authenticationFailed, isAuthenticated, isAuthenticating])
 
     const reset = useCallback(() => {
         if (!client) { return }
@@ -58,9 +84,9 @@ function useClientProvider({ apiKey }) {
 
     // (re)create client if none
     useLayoutEffect(() => {
-        if (!apiKey || hasClient) { return }
+        if (hasClient || !hasLoaded) { return }
         setClient(createClient(apiKey))
-    }, [hasClient, setClient, apiKey])
+    }, [hasClient, setClient, apiKey, hasLoaded])
 
     // disconnect on unmount/client change
     useEffect(() => {
@@ -78,14 +104,16 @@ function useClientProvider({ apiKey }) {
     ), [apiKey])
 
     return useMemo(() => ({
+        hasLoaded,
         client,
         send,
-    }), [client, send])
+    }), [client, send, hasLoaded])
 }
 
-export function ClientProviderComponent({ children, apiKey }) {
+export function ClientProviderComponent({ children, ...props }) {
+    const clientContext = useClientProvider(props)
     return (
-        <ClientContext.Provider value={useClientProvider({ apiKey })}>
+        <ClientContext.Provider value={clientContext}>
             {children || null}
         </ClientContext.Provider>
     )
@@ -101,34 +129,4 @@ const withAuthApiKey = connect((state) => ({
     loadKeys: getMyResourceKeys,
 })
 
-export const ClientProvider = withAuthApiKey(class ClientProvider extends React.Component {
-    state = {
-        isLoading: false,
-    }
-
-    async loadIfNoKey() {
-        if (this.state.isLoading || this.props.apiKey) { return }
-        this.setState({ isLoading: true })
-        try {
-            await this.props.loadKeys()
-        } finally {
-            this.setState({ isLoading: false })
-        }
-    }
-
-    componentDidUpdate() {
-        return this.loadIfNoKey()
-    }
-
-    componentDidMount() {
-        return this.loadIfNoKey()
-    }
-
-    render() {
-        const { loadKey, ...props } = this.props
-        // new client if apiKey changes
-        return (
-            <ClientProviderComponent {...props} />
-        )
-    }
-})
+export const ClientProvider = withAuthApiKey(connect(selectAuthState)(ClientProviderComponent))

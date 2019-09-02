@@ -1,64 +1,62 @@
-import React from 'react'
+import React, { useCallback, useMemo } from 'react'
 
 import { updateModulePosition } from '../state'
 import { Draggable } from './DragDropContext'
 import ModuleStyles from '$editor/shared/components/Module.pcss'
 import styles from './Module.pcss'
 
-export default class ModuleDragger extends React.Component {
-    onDropModule = (event, data) => {
-        if (this.context.isCancelled) { return }
+const bounds = {
+    top: 0,
+    left: 0,
+}
+
+const EMPTY = {}
+
+export default function ModuleDragger({ api, module, children, onStartDragModule: onStartDragModuleProp }) {
+    const { setCanvas } = api
+    const { hash: moduleHash } = module
+    const onDropModule = useCallback((event, data) => {
         if (data.diff.x === 0 && data.diff.y === 0) {
             return // do nothing if not moved
         }
 
-        const moduleHash = this.props.module.hash
         const newPosition = {
             top: data.y,
             left: data.x,
         }
 
-        this.props.api.setCanvas({ type: 'Move Module' }, (canvas) => (
+        setCanvas({ type: 'Move Module' }, (canvas) => (
             updateModulePosition(canvas, moduleHash, newPosition)
         ))
-    }
+    }, [setCanvas, moduleHash])
 
-    onStartDragModule = () => {
-        const { module, onStartDragModule } = this.props
-        const moduleHash = module.hash
-        if (onStartDragModule) {
-            onStartDragModule(moduleHash)
+    const onStartDragModule = useCallback(() => {
+        if (onStartDragModuleProp) {
+            onStartDragModuleProp(moduleHash)
         }
         return {
             moduleHash,
         }
-    }
+    }, [onStartDragModuleProp, moduleHash])
 
-    bounds = {
-        top: 0,
-        left: 0,
-    }
+    const { layout = EMPTY } = module
+    const { position = EMPTY } = layout
+    const defaultPosition = useMemo(() => ({
+        x: parseInt(position.left, 10) || 0,
+        y: parseInt(position.top, 10) || 0,
+    }), [position.left, position.top])
 
-    render() {
-        const { module } = this.props
-        const { layout } = module
-        const defaultPosition = {
-            x: (layout && parseInt(layout.position.left, 10)) || 0,
-            y: (layout && parseInt(layout.position.top, 10)) || 0,
-        }
-
-        return (
-            <Draggable
-                defaultClassNameDragging={styles.isDragging}
-                cancel={`.${ModuleStyles.dragCancel}`}
-                handle={`.${ModuleStyles.dragHandle}`}
-                bounds={this.bounds}
-                defaultPosition={defaultPosition}
-                onStop={this.onDropModule}
-                onStart={this.onStartDragModule}
-            >
-                {this.props.children}
-            </Draggable>
-        )
-    }
+    return (
+        <Draggable
+            defaultClassNameDragging={styles.isDragging}
+            cancel={`.${ModuleStyles.dragCancel}`}
+            handle={`.${ModuleStyles.dragHandle}`}
+            bounds={bounds}
+            defaultPosition={defaultPosition}
+            onStop={onDropModule}
+            onStart={onStartDragModule}
+        >
+            {children}
+        </Draggable>
+    )
 }

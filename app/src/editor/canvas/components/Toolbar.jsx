@@ -162,7 +162,15 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                             <div className={cx(styles.ToolbarLeft, styles.OpenAddButtons)}>
                                 <R.Button
                                     className={cx(styles.ToolbarButton, styles.OpenCanvasButton)}
-                                    onClick={() => this.canvasSearchOpen(!this.state.canvasSearchIsOpen)}
+                                    onMouseDown={(event) => {
+                                        // required to prevent mouseDown causing open search panel to blur
+                                        // which closes the search panel, only to be opened again on mouseup (click)
+                                        // also somehow strangely affected by realtime/historical button ? nfi.
+                                        event.preventDefault()
+                                    }}
+                                    onClick={() => {
+                                        this.canvasSearchOpen(!this.state.canvasSearchIsOpen)
+                                    }}
                                 >
                                     Open
                                 </R.Button>

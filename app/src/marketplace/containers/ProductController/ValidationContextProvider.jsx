@@ -3,6 +3,10 @@
 import React, { useMemo, useCallback, useState, type Node, type Context } from 'react'
 import useIsMounted from '$shared/hooks/useIsMounted'
 
+import { isEthereumAddress } from '$mp/utils/validate'
+import { isPaidProduct } from '$mp/utils/product'
+import { isPriceValid } from '$mp/utils/price'
+
 export const INFO = 'info'
 export const WARNING = 'warning'
 export const ERROR = 'error'
@@ -79,11 +83,33 @@ function useValidationContext(): ContextProps {
             clearStatus('streams')
         }
 
-        // TODO: applies only to community product
-        if (!product.adminFee || (product.adminFee < 10 && product.adminFee > 90)) {
-            setStatus('adminFee', ERROR, 'Admin fee cannot be empty')
+        const isPaid = isPaidProduct(product)
+
+        // applies only to community product
+        if (product.type === 'COMMUNITY') {
+            if (!product.adminFee || (product.adminFee < 10 && product.adminFee > 90)) {
+                setStatus('adminFee', ERROR, 'Admin fee cannot be empty')
+            } else {
+                clearStatus('adminFee')
+            }
+            clearStatus('beneficiaryAddress')
         } else {
+            if (isPaid && (!product.beneficiaryAddress || !isEthereumAddress(product.beneficiaryAddress))) {
+                setStatus('beneficiaryAddress', ERROR, 'A valid ethereum address is needed')
+            } else {
+                clearStatus('beneficiaryAddress')
+            }
             clearStatus('adminFee')
+        }
+
+        if (isPaid) {
+            if (!isPriceValid(product.pricePerSecond)) {
+                setStatus('price', ERROR, 'Price should be greater or equal to 0')
+            } else {
+                clearStatus('price')
+            }
+        } else {
+            clearStatus('price')
         }
     }, [setStatus, clearStatus, isMounted])
 

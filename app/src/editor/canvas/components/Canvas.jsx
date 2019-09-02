@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useRef, useCallback, useLayoutEffect } from 'react'
 import cx from 'classnames'
 import debounce from 'lodash/debounce'
 
@@ -6,6 +6,7 @@ import * as CanvasState from '../state'
 
 import Module from './Module'
 import { DragDropProvider } from './DragDropContext'
+import { CanvasWindowProvider } from './CanvasWindow'
 import Cables from './Cables'
 
 import styles from './Canvas.pcss'
@@ -73,53 +74,40 @@ export default class Canvas extends React.PureComponent {
         } = this.props
 
         return (
-            <div className={cx(styles.Canvas, className)}>
-                <CanvasElements
-                    key={canvas.id}
-                    canvas={canvas}
-                    api={this.api}
-                    selectedModuleHash={selectedModuleHash}
-                    moduleSidebarIsOpen={moduleSidebarIsOpen}
-                    {...this.api.module}
-                />
-                {children}
-            </div>
+            <CanvasWindowProvider className={styles.CanvasWindow}>
+                <div className={cx(styles.Canvas, className)}>
+                    <CanvasElements
+                        key={canvas.id}
+                        canvas={canvas}
+                        api={this.api}
+                        selectedModuleHash={selectedModuleHash}
+                        moduleSidebarIsOpen={moduleSidebarIsOpen}
+                        {...this.api.module}
+                    />
+                    {children}
+                </div>
+            </CanvasWindowProvider>
         )
     }
 }
 
-class CanvasElements extends React.PureComponent {
-    ports = new Map()
+function CanvasElements(props) {
+    const { canvas, api, selectedModuleHash, moduleSidebarIsOpen } = props
+    const modulesRef = useRef()
+    const portsRef = useRef(new Map())
+    const [positions, setPositions] = useState({})
+    const updatePositionsRef = useRef()
 
-    state = {
-        positions: {},
-    }
-
-    componentDidUpdate(prevProps) {
-        if (prevProps.canvas === this.props.canvas) { return }
-        // force immediate update on canvas change
-        // (prevents flickering cables after drag/drop)
-        this.updatePositionsNow()
-    }
-
-    onFocus = (event) => {
-        // deselect + close when clicking canvas
-        if (event.target !== event.currentTarget) { return }
-        this.props.api.selectModule()
-    }
-
-    onPort = (portId, el) => {
-        this.ports.set(portId, el)
-        this.updatePositions()
-    }
-
-    updatePositionsNow = () => {
-        if (!this.modules) {
-            return
+    const updatePositionsNow = useCallback(() => {
+        if (updatePositionsRef.current) {
+            updatePositionsRef.current.cancel() // cancel any delayed call
         }
 
-        const offset = this.modules.getBoundingClientRect()
-        const positions = [...this.ports.entries()].reduce((r, [id, el]) => {
+        if (!modulesRef.current) { return }
+
+        const offset = modulesRef.current.getBoundingClientRect()
+        const { current: ports } = portsRef
+        const positions = [...ports.entries()].reduce((r, [id, el]) => {
             if (!el) { return r }
             const rect = el.getBoundingClientRect()
             if (rect.width === 0 || rect.height === 0) { return r }
@@ -136,51 +124,65 @@ class CanvasElements extends React.PureComponent {
             })
         }, {})
 
-        this.setState({ positions })
-    }
+        setPositions(positions)
+    }, [setPositions, modulesRef, portsRef, updatePositionsRef])
 
     // debounce as many updates will be triggered in quick succession
     // only needs to be done once at the end
-    updatePositions = debounce(this.updatePositionsNow)
-
-    modulesRef = (el) => {
-        this.modules = el
-        this.updatePositions()
+    const updatePositions = useCallback(debounce(updatePositionsNow), [updatePositionsNow])
+    if (updatePositionsRef.current && updatePositionsRef.current !== updatePositions) {
+        updatePositionsRef.current.cancel()
     }
+    updatePositionsRef.current = updatePositions
 
-    render() {
-        const { canvas, api, selectedModuleHash, moduleSidebarIsOpen } = this.props
-        if (!canvas) { return null }
-        return (
-            <div className={styles.CanvasElements}>
-                <DragDropProvider>
-                    <div
-                        className={styles.Modules}
-                        onFocus={this.onFocus}
-                        ref={this.modulesRef}
-                        tabIndex="0"
-                        role="grid"
-                    >
-                        {canvas.modules.map((m) => (
-                            <Module
-                                key={m.hash}
-                                module={m}
-                                canvas={canvas}
-                                onPort={this.onPort}
-                                api={api}
-                                selectedModuleHash={selectedModuleHash}
-                                moduleSidebarIsOpen={moduleSidebarIsOpen}
-                                {...api.module}
-                            />
-                        ))}
-                    </div>
-                    <Cables
-                        canvas={canvas}
-                        positions={this.state.positions}
-                    />
-                </DragDropProvider>
-                <div id="canvas-windows" />
-            </div>
-        )
-    }
+    // update positions when canvas changes
+    useLayoutEffect(() => {
+        updatePositionsNow()
+    }, [canvas, updatePositionsNow])
+
+    const { selectModule } = api
+    const onFocus = useCallback((event) => {
+        // deselect + close when clicking canvas
+        if (event.target !== event.currentTarget) { return }
+        selectModule()
+    }, [selectModule])
+
+    const onPort = useCallback((portId, el) => {
+        portsRef.current.set(portId, el)
+        updatePositions()
+    }, [portsRef, updatePositions])
+
+    if (!canvas) { return null }
+
+    return (
+        <div className={styles.CanvasElements}>
+            <DragDropProvider>
+                <div
+                    className={styles.Modules}
+                    onFocus={onFocus}
+                    ref={modulesRef}
+                    tabIndex="0"
+                    role="grid"
+                >
+                    {canvas.modules.map((m) => (
+                        <Module
+                            key={m.hash}
+                            module={m}
+                            canvas={canvas}
+                            onPort={onPort}
+                            api={api}
+                            isSelected={selectedModuleHash === m.hash}
+                            moduleSidebarIsOpen={moduleSidebarIsOpen}
+                            {...api.module}
+                        />
+                    ))}
+                </div>
+                <Cables
+                    canvas={canvas}
+                    positions={positions}
+                    selectedModuleHash={selectedModuleHash}
+                />
+            </DragDropProvider>
+        </div>
+    )
 }

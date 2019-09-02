@@ -1,20 +1,26 @@
 // @flow
 
 import React, { useCallback, useMemo } from 'react'
+import cx from 'classnames'
 import { type CommonProps } from '..'
 import styles from './select.pcss'
 
 type Props = CommonProps & {
+    description?: string,
     options: Array<{
-        name: string,
+        name?: string,
+        text?: string, // sidebar options use 'text' instead of 'name' :/
         value: any,
     }>,
 }
 
 const Select = ({
+    className,
     disabled,
     onChange: onChangeProp,
+    description,
     value,
+    title,
     options,
     ...props
 }: Props) => {
@@ -25,31 +31,44 @@ const Select = ({
     if (value == null) { value = undefined } // select doesn't want null value
 
     const optionMap = useMemo(() => (
-        options.reduce((memo, { name, value }) => {
+        options.reduce((memo, { name, text, value }) => {
             if (value == null) { value = undefined }
-            memo.set(value, name)
+            memo.set(value, name != null ? name : text)
             return memo
         }, new Map())
     ), [options])
 
+    const selectionText = optionMap.get(value)
+
+    const selectOptions = options.map(({ name, text, value }) => (
+        <option key={value} value={value}>{name != null ? name : text}</option>
+    ))
+
     return (
-        <div className={styles.root}>
+        <div className={cx(styles.root, className)}>
             <div className={styles.inner}>
                 <select
                     {...props}
+                    title={title != null ? String(title) : String(value)}
                     className={styles.control}
                     value={value}
                     disabled={disabled}
                     onChange={onChange}
                 >
-                    {options.map(({ name, value }) => (
-                        <option key={value} value={value}>{name}</option>
-                    ))}
+                    {description ? (
+                        <optgroup label={description}>
+                            {selectOptions}
+                        </optgroup>
+                    ) : selectOptions}
                 </select>
                 {/* `select` holding a currently selected value. This hidden (`visibility: hidden`) control
                     dictates the width of the actual (visible) control above. */}
                 <select className={styles.spaceholder}>
-                    <option>{optionMap.get(value)}</option>
+                    {/* Some inputs like `windowType` come with a default value set by the server
+                        to a value that's not on the list of possible values (casing mismatch
+                        such as `events` vs `EVENTS`). In that case we simply display the raw
+                        value here instead of nothing. */}
+                    <option>{selectionText != null ? selectionText : value}</option>
                 </select>
             </div>
         </div>

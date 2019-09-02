@@ -10,13 +10,15 @@ import UndoControls from '$editor/shared/components/UndoControls'
 import { Context as UndoContext, Provider as UndoContextProvider } from '$shared/components/UndoContextProvider'
 import { ClientProvider } from '$editor/shared/components/Client'
 import * as sharedServices from '$editor/shared/services'
+import { ModalProvider } from '$editor/shared/components/Modal'
+import { SelectionProvider } from '$editor/shared/hooks/useSelection'
+import { Provider as PendingProvider } from '$shared/components/PendingContextProvider'
+import { useAnyPending } from '$shared/hooks/usePending'
 
 import links from '../../links'
 
 import Dashboard from './components/Dashboard'
 import DashboardToolbar from './components/Toolbar'
-import { ModalProvider } from '$editor/shared/components/Modal'
-import { SelectionProvider } from './components/Selection'
 
 import * as DashboardState from './state'
 import * as services from './services'
@@ -243,22 +245,25 @@ const DashboardEditWrap = () => (
 
 function DashboardLoadingIndicator() {
     const { state } = useContext(UndoContext)
+    const isPending = useAnyPending()
     return (
-        <LoadingIndicator className={styles.LoadingIndicator} loading={!state} />
+        <LoadingIndicator className={styles.LoadingIndicator} loading={!state || isPending} />
     )
 }
 
 export default withRouter((props) => (
     <Layout className={styles.layout} footer={false}>
-        <ClientProvider>
-            <UndoContextProvider key={props.match.params.id}>
-                <UndoControls />
-                <DashboardLoadingIndicator />
-                <DashboardLoader>
-                    <DashboardEditWrap />
-                </DashboardLoader>
-            </UndoContextProvider>
-        </ClientProvider>
+        <UndoContextProvider key={props.match.params.id} enableBreadcrumbs>
+            <PendingProvider>
+                <ClientProvider>
+                    <UndoControls />
+                    <DashboardLoadingIndicator />
+                    <DashboardLoader>
+                        <DashboardEditWrap />
+                    </DashboardLoader>
+                </ClientProvider>
+            </PendingProvider>
+        </UndoContextProvider>
     </Layout>
 ))
 

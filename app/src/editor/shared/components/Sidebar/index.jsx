@@ -9,6 +9,7 @@ import ErrorComponentView from '$shared/components/ErrorComponentView'
 import Header from './Header'
 import Content from './Content'
 import Section from './Section'
+import Select from './Select'
 
 import styles from './sidebar.pcss'
 
@@ -27,6 +28,7 @@ export {
     Header,
     Content,
     Section,
+    Select,
 }
 
 export default withErrorBoundary(ErrorComponentView)(ModuleSidebar)

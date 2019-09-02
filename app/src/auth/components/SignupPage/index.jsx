@@ -2,7 +2,7 @@
 
 import React, { useCallback, useContext } from 'react'
 import { I18n, Translate } from 'react-redux-i18n'
-import { userIsNotAuthenticated } from '$mp/utils/auth'
+import { userIsNotAuthenticated } from '$auth/utils/userAuthenticated'
 
 import AuthFormProvider from '../AuthFormProvider'
 import AuthFormContext from '../../contexts/AuthForm'

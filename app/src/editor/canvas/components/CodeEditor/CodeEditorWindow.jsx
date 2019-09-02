@@ -8,7 +8,7 @@ import DraggableCanvasWindow from '../DraggableCanvasWindow'
 
 import styles from './CodeEditorWindow.pcss'
 
-class CodeEditorWindow extends React.Component {
+export default class CodeEditorWindow extends React.Component {
     state = {
         editorResetKey: uniqueId('CodeEditorWindow'),
         code: undefined,
@@ -77,6 +77,11 @@ class CodeEditorWindow extends React.Component {
         })
     }
 
+    onMouseDownTitle = () => {
+        // forward title clicks to editor focus
+        this.editor.current.editor.focus()
+    }
+
     render() {
         const { editorResetKey, errors, sending } = this.state
         const {
@@ -92,10 +97,8 @@ class CodeEditorWindow extends React.Component {
         return (
             <DraggableCanvasWindow {...canvasWindowProps}>
                 <div className={styles.editorDialog}>
-                    <DraggableCanvasWindow.Dialog
-                        title="Code Editor"
-                        onClose={onClose}
-                    >
+                    <DraggableCanvasWindow.Dialog onClose={onClose}>
+                        <DraggableCanvasWindow.Title onClose={onClose} onMouseDown={this.onMouseDownTitle}>Code Editor</DraggableCanvasWindow.Title>
                         <div className={styles.editorContainer}>
                             <AceEditor
                                 ref={this.editor}
@@ -147,5 +150,3 @@ class CodeEditorWindow extends React.Component {
         )
     }
 }
-
-export default CodeEditorWindow

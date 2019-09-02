@@ -54,16 +54,17 @@ const ProductDetails = () => {
                     {!isCategoryValid && (
                         <p>{categoryLevel}: {categoryMessage}</p>
                     )}
-                    {/* TODO: show only for community product */}
-                    <Details.Row label="Set your admin fee">
-                        <SelectInput
-                            name="adminFee"
-                            options={adminFeeOptions}
-                            value={selectedAdminFee}
-                            onChange={(option) => updateAdminFee(option.value)}
-                            isSearchable={false}
-                        />
-                    </Details.Row>
+                    {product.type === 'COMMUNITY' && (
+                        <Details.Row label="Set your admin fee">
+                            <SelectInput
+                                name="adminFee"
+                                options={adminFeeOptions}
+                                value={selectedAdminFee}
+                                onChange={(option) => updateAdminFee(option.value)}
+                                isSearchable={false}
+                            />
+                        </Details.Row>
+                    )}
                 </Details>
                 {!isAdminFeeValid && (
                     <p>{adminFeeLevel}: {adminFeeMessage}</p>

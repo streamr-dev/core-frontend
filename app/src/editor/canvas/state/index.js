@@ -153,6 +153,10 @@ function createIndex(canvas) {
     }
 }
 
+/**
+ * super simple memoize. First argument is key.
+ * (i.e. won't work if multiple arguments used)
+ */
 const memoize = (fn) => {
     const cache = new WeakMap()
     return (item, ...args) => {
@@ -205,6 +209,10 @@ function validateModuleExists(canvas, moduleHash) {
 
 export function getModuleIfExists(canvas, moduleHash) {
     return get(canvas, getModulePath(canvas, moduleHash))
+}
+
+export function hasModule(canvas, moduleHash) {
+    return !!getModuleIfExists(canvas, moduleHash)
 }
 
 export function getModule(canvas, moduleHash) {
@@ -266,7 +274,7 @@ export function getModuleForPort(canvas, portId) {
     return m
 }
 
-export function getModulePorts(canvas, moduleHash) {
+export function getModulePortsMap(canvas, moduleHash) {
     const canvasModule = getModule(canvas, moduleHash)
     const ports = {}
     canvasModule.params.forEach((port) => {
@@ -282,6 +290,14 @@ export function getModulePorts(canvas, moduleHash) {
     return ports
 }
 
+export function getModulePorts(canvas, moduleHash) {
+    return Object.values(getModulePortsMap(canvas, moduleHash))
+}
+
+export function getModulePortIds(canvas, moduleHash) {
+    return Object.keys(getModulePortsMap(canvas, moduleHash))
+}
+
 export function findModule(canvas, matchFn) {
     return canvas.modules.find(matchFn)
 }
@@ -292,7 +308,7 @@ export function findModules(canvas, matchFn) {
 
 export function findModulePort(canvas, moduleHash, matchFn) {
     const ports = getModulePorts(canvas, moduleHash)
-    return Object.values(ports).find(matchFn)
+    return ports.find(matchFn)
 }
 
 export function getAllPorts(canvas) {
@@ -317,6 +333,29 @@ export function getConnectedPortIds(canvas, portId) {
     ))
         .filter(Boolean)
         .map(({ id }) => id)
+}
+
+export function moduleHasPort(canvas, moduleHash, portId) {
+    if (!hasPort(canvas, portId)) { return false }
+    const m = getModuleForPort(canvas, portId)
+    return m.hash === moduleHash
+}
+
+export function isConnectedToModule(canvas, moduleHash, portIdA, portIdB) {
+    if (moduleHash == null || !getModuleIfExists(canvas, moduleHash)) {
+        return false
+    }
+    return (
+        (moduleHasPort(canvas, moduleHash, portIdA) || moduleHasPort(canvas, moduleHash, portIdB)) &&
+        arePortsConnected(canvas, portIdA, portIdB)
+    )
+}
+
+export function moduleHasConnections(canvas, moduleHash) {
+    const portIds = getModulePortIds(canvas, moduleHash)
+    return portIds.some((id) => (
+        isPortConnected(canvas, id)
+    ))
 }
 
 export function isPortConnected(canvas, portId) {
@@ -613,9 +652,9 @@ export function disconnectAllFromPort(canvas, portId) {
 }
 
 export function disconnectAllModulePorts(canvas, moduleHash) {
-    const allPorts = getModulePorts(canvas, moduleHash)
-    return Object.values(allPorts).reduce((prevCanvas, port) => (
-        disconnectAllFromPort(prevCanvas, port.id)
+    const modulePortIds = getModulePortIds(canvas, moduleHash)
+    return modulePortIds.reduce((prevCanvas, portId) => (
+        disconnectAllFromPort(prevCanvas, portId)
     ), canvas)
 }
 
@@ -640,9 +679,9 @@ export function updatePortConnection(canvas, portId) {
 }
 
 export function updateModulePortConnections(canvas, moduleHash) {
-    const allPorts = getModulePorts(canvas, moduleHash)
-    return Object.values(allPorts).reduce((prevCanvas, port) => (
-        updatePortConnection(prevCanvas, port.id)
+    const modulePortIds = getModulePortIds(canvas, moduleHash)
+    return modulePortIds.reduce((prevCanvas, portId) => (
+        updatePortConnection(prevCanvas, portId)
     ), canvas)
 }
 
@@ -711,6 +750,26 @@ const PORT_USER_VALUE_KEYS = {
     [PortTypes.output]: 'value', // not really user-configurable but whatever
 }
 
+export function isPortBoolean(canvas, portId) {
+    const port = getPort(canvas, portId)
+    return (
+        port.type.split(' ').includes('Boolean') ||
+        typeof port.value === 'boolean' ||
+        typeof port.initialValue === 'boolean' ||
+        typeof port.defaultValue === 'boolean'
+    )
+}
+
+export function isPortNumeric(canvas, portId) {
+    const port = getPort(canvas, portId)
+    return (
+        port.type.split(' ').includes('Double') ||
+        typeof port.value === 'number' ||
+        typeof port.initialValue === 'number' ||
+        typeof port.defaultValue === 'number'
+    )
+}
+
 /**
  * Sets initialValue for inputs
  * Sets value for output/params
@@ -726,8 +785,13 @@ export function setPortUserValue(canvas, portId, value) {
         value = defaultValue
     }
 
+    // coerce string to boolean
+    if (isPortBoolean(canvas, portId)) {
+        value = !!value && value !== 'false'
+    }
+
     // coerce double to number if invalid
-    if (port.type === 'Double') {
+    if (isPortNumeric(canvas, portId)) {
         if (isBlank(value)) {
             value = undefined
         } else {
@@ -1360,11 +1424,11 @@ export function replaceModule(canvas, moduleData) {
     const prevCanvas = canvas
     let nextCanvas = updateModule(prevCanvas, hash, () => moduleData)
 
-    const prevPorts = getAllPorts(prevCanvas, hash)
-    prevPorts.forEach((prevPort) => {
-        const connectedIds = getConnectedPortIds(prevCanvas, prevPort.id)
+    const prevPortIds = getModulePortIds(prevCanvas, hash)
+    prevPortIds.forEach((prevPortId) => {
+        const connectedIds = getConnectedPortIds(prevCanvas, prevPortId)
         if (!connectedIds.length) { return } // nothing to do if no connections
-        const matchedPort = matchPortInPreviousCanvas(nextCanvas, prevCanvas, prevPort.id)
+        const matchedPort = matchPortInPreviousCanvas(nextCanvas, prevCanvas, prevPortId)
         if (!matchedPort) { return } // nothing to do if port no longer exists
         connectedIds.forEach((connectedId) => {
             const matchedConnectedPort = matchPortInPreviousCanvas(nextCanvas, prevCanvas, connectedId)
@@ -1395,4 +1459,69 @@ export function applyChanges({ sent, received, current }) {
         ))
     })
     return nextCanvas
+}
+
+export function getModuleCopy(canvas, moduleHash) {
+    // apply transformations on temp canvas
+    // ensure all ports disconnected
+    let tempCanvas = disconnectAllModulePorts(canvas, moduleHash)
+    let m = getModule(tempCanvas, moduleHash)
+    // offset new module by 32px
+    const top = ((m.layout && parseInt(m.layout.position.top, 10)) + 32) || 0
+    const left = ((m.layout && parseInt(m.layout.position.left, 10)) + 32) || 0
+    tempCanvas = updateCanvas(updateModulePosition(tempCanvas, moduleHash, {
+        top,
+        left,
+    }))
+    m = getModule(tempCanvas, moduleHash)
+
+    const portIds = getModulePortIds(tempCanvas, moduleHash)
+    // give all ports fresh ids
+    portIds.forEach((portId) => {
+        const newId = uuid.v4()
+        tempCanvas = updatePort(tempCanvas, portId, (p) => ({
+            ...p,
+            id: newId,
+        }))
+    })
+
+    const newPortIds = getModulePortIds(tempCanvas, moduleHash)
+    // always unset export
+    newPortIds.forEach((portId) => {
+        if (isPortExported(tempCanvas, portId)) {
+            tempCanvas = setPortOptions(tempCanvas, portId, {
+                export: false,
+            })
+        }
+    })
+
+    // fix variadics
+    newPortIds.forEach((portId) => {
+        const portType = getPortType(tempCanvas, portId)
+        if (portType === 'output') { return } // process outputs when processing input
+        const linkedPort = findLinkedVariadicPort(tempCanvas, portId)
+        if (!linkedPort) { return }
+        const portName = `endpoint-${portId}`
+        const linkedName = `endpoint-${linkedPort.id}`
+        // update linked output name to match id
+        tempCanvas = updatePort(tempCanvas, linkedPort.id, (p) => ({
+            ...p,
+            name: linkedName,
+        }))
+        // update input linkedOutput to match new output name
+        tempCanvas = updatePort(tempCanvas, portId, (p) => ({
+            ...p,
+            name: portName,
+            variadic: {
+                ...p.variadic,
+                linkedOutput: linkedName,
+            },
+        }))
+    })
+
+    m = getModule(tempCanvas, moduleHash)
+    return {
+        ...m,
+        hash: undefined, // always remove hash
+    }
 }

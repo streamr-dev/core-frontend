@@ -32,13 +32,14 @@ type DispatchProps = {
 type Props = OwnProps & StateProps & DispatchProps
 
 type State = {
-    contentChanged: boolean,
     idCopied: boolean,
 }
 
 export class InfoView extends Component<Props, State> {
+    contentChanged: boolean = false
+    unmounted: boolean = false
+
     state = {
-        contentChanged: false,
         idCopied: false,
     }
 
@@ -47,33 +48,30 @@ export class InfoView extends Component<Props, State> {
     }
 
     componentWillUnmount() {
+        this.unmounted = true
         window.removeEventListener('beforeunload', this.onBeforeUnload)
     }
 
     onBeforeUnload = (e: Event & { returnValue: ?string }): ?string => {
-        if (this.state.contentChanged) {
+        if (this.contentChanged) {
             const message = I18n.t('userpages.streams.edit.details.unsavedChanges')
             e.returnValue = message
             return message
         }
     }
 
-    contentChanged = () => {
-        this.setState({
-            contentChanged: true,
-        })
-    }
-
     onNameChange = (e: SyntheticInputEvent<EventTarget>) => {
+        const { stream } = this.props
         const name = e.target.value
+        this.contentChanged = this.contentChanged || name !== (stream && stream.name)
         this.props.editField('name', name)
-        this.contentChanged()
     }
 
     onDescriptionChange = (e: SyntheticInputEvent<EventTarget>) => {
+        const { stream = {} } = this.props
         const description = e.target.value
+        this.contentChanged = this.contentChanged || description !== (stream && stream.description)
         this.props.editField('description', description)
-        this.contentChanged()
     }
 
     copyStreamTap = async (id: string) => {
@@ -82,6 +80,7 @@ export class InfoView extends Component<Props, State> {
         })
         copy(id)
         await new Promise((resolve) => setTimeout(resolve, 1000))
+        if (this.unmounted) { return }
         this.setState({
             idCopied: false,
         })

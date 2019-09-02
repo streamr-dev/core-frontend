@@ -4,11 +4,14 @@ import React, { useMemo, useCallback, useState, type Node, type Context } from '
 import useIsMountedRef from '$shared/hooks/useIsMountedRef'
 
 type ContextProps = {
-    setPending: (string, number) => {},
+    setPending: (string, number) => any,
     pending: Object,
 }
 
-const PendingContext: Context<ContextProps> = React.createContext({})
+const PendingContext: Context<ContextProps> = React.createContext({
+    pending: {},
+    setPending: () => {},
+})
 
 function usePendingContext(): ContextProps {
     const [pending, setPendingState] = useState({})

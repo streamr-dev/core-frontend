@@ -1,6 +1,7 @@
 /* eslint-disable react/no-unused-state */
 import React, { useEffect, useState, useContext } from 'react'
-import { getModulePorts } from '../state'
+import cx from 'classnames'
+import { moduleHasPort, isConnectedToModule } from '../state'
 import styles from './Canvas.pcss'
 import { DragDropContext } from './DragDropContext'
 
@@ -18,16 +19,20 @@ function curvedHorizontal(x1, y1, x2, y2) {
 const LAYER_0 = 0
 const LAYER_1 = 1
 
-export function Cable({ cable, ...props }) {
+export function Cable({ className, cable, ...props }) {
     if (!cable) { return null }
     const [from, to] = cable
+    // adjust offset to edge based on curve direction
+    // i.e. connect to left edge if curve going L->R,
+    // connect to right edge if curve going R->L
+    const direction = from.left < to.left ? 1 : -1
     return (
         <path
-            className={styles.Connection}
+            className={cx(styles.Connection, className)}
             d={curvedHorizontal(
-                from.left,
+                from.left + (0.5 * (from.width || 0) * direction), // connect to edge of from
                 from.top,
-                to.left,
+                to.left + (0.5 * (to.width || 0) * -direction), // connect to edge of to
                 to.top,
             )}
             stroke="#525252"
@@ -42,20 +47,57 @@ export function getCableKey([from, to] = []) {
     return `${from && from.id}-${to && to.id}`
 }
 
+const DRAG_CABLE_ID = 'DRAG_CABLE_ID'
+
 class Cables extends React.PureComponent {
     el = React.createRef()
 
     state = {}
 
+    shouldFade = ([a, b]) => {
+        const { canvas, selectedModuleHash } = this.props
+        // no fade if no selection
+        if (selectedModuleHash == null) { return false }
+        // no fade if dragging cable
+        if (a.id === DRAG_CABLE_ID || b.id === DRAG_CABLE_ID) { return false }
+        // fade if not connected to selection
+        return !isConnectedToModule(canvas, selectedModuleHash, a.id, b.id)
+    }
+
+    shouldHighlight = ([a, b]) => {
+        const { selectedModuleHash } = this.props
+        // no highlight if no selection
+        if (selectedModuleHash == null) { return false }
+        // no highlight if dragging cable
+        if (a.id === DRAG_CABLE_ID || b.id === DRAG_CABLE_ID) { return false }
+        return !this.shouldFade([a, b])
+    }
+
     getCables() {
-        if (this.props.isDragging && this.props.data.moduleHash != null) {
+        const hasMoved = this.props.isDragging && !(this.props.diff.x === 0 && this.props.diff.y === 0)
+        if (this.props.isDragging && this.props.data.moduleHash != null && hasMoved) {
             return this.getCablesDraggingModule()
         }
 
-        if (this.props.isDragging && this.props.data.portId != null) {
+        if (this.props.isDragging && this.props.data.portId != null && hasMoved) {
             return this.getCablesDraggingPort()
         }
+
         return this.getStaticCables()
+    }
+
+    getPositions() {
+        // cache positions while drag operation is in progress
+        if (this.props.isDragging) {
+            if (!this.positions) {
+                this.positions = this.props.positions
+            }
+            return this.positions
+        }
+        if (this.positions) {
+            this.positions = undefined
+        }
+        return this.props.positions
     }
 
     /**
@@ -63,7 +105,8 @@ class Cables extends React.PureComponent {
      */
 
     getStaticCables() {
-        const { canvas, positions } = this.props
+        const { canvas } = this.props
+        const positions = this.getPositions()
         return canvas.modules
             .reduce((c, m) => {
                 [].concat(m.params, m.inputs, m.outputs).forEach((port) => {
@@ -88,23 +131,22 @@ class Cables extends React.PureComponent {
 
         const { moduleHash } = data
 
-        const ports = getModulePorts(canvas, moduleHash)
         return this.getStaticCables().map(([from, to]) => {
             // update the positions of ports in dragged module
             let fromNew = from
             let toNew = to
             let layer = LAYER_0
-            if (ports[from.id]) {
+            if (moduleHasPort(canvas, moduleHash, from.id)) {
                 fromNew = {
-                    id: from.id,
+                    ...from,
                     top: from.top + diff.y,
                     left: from.left + diff.x,
                 }
                 layer = LAYER_1
             }
-            if (ports[to.id]) {
+            if (moduleHasPort(canvas, moduleHash, to.id)) {
                 toNew = {
-                    id: to.id,
+                    ...to,
                     top: to.top + diff.y,
                     left: to.left + diff.x,
                 }
@@ -141,7 +183,8 @@ class Cables extends React.PureComponent {
     }
 
     getDragCable() {
-        const { positions, data, diff, isDragging } = this.props
+        const { data, diff, isDragging } = this.props
+        const positions = this.getPositions()
         const { portId, sourceId } = data
         if (!isDragging || portId == null) {
             return null
@@ -153,7 +196,8 @@ class Cables extends React.PureComponent {
         return [
             positions[sourceId || portId],
             {
-                id: 'drag',
+                ...p,
+                id: DRAG_CABLE_ID,
                 top: p.top + diff.y,
                 left: p.left + diff.x,
                 bottom: p.bottom + diff.y,
@@ -170,23 +214,37 @@ class Cables extends React.PureComponent {
         return (
             <React.Fragment>
                 <svg
-                    className={styles.Cables}
+                    className={cx(styles.Cables, styles.layer0)}
                     preserveAspectRatio="xMidYMid meet"
                     height="100%"
                     width="100%"
                 >
                     {layer0.filter(Boolean).map((cable) => (
-                        <Cable key={getCableKey(cable)} cable={cable} />
+                        <Cable
+                            key={getCableKey(cable)}
+                            cable={cable}
+                            className={cx({
+                                [styles.fade]: this.shouldFade(cable),
+                                [styles.highlight]: this.shouldHighlight(cable),
+                            })}
+                        />
                     ))}
                 </svg>
                 <svg
-                    className={styles.Cables}
+                    className={cx(styles.Cables, styles.layer1)}
                     preserveAspectRatio="xMidYMid meet"
                     height="100%"
                     width="100%"
                 >
                     {layer1.filter(Boolean).map((cable) => (
-                        <Cable key={getCableKey(cable)} cable={cable} />
+                        <Cable
+                            key={getCableKey(cable)}
+                            cable={cable}
+                            className={cx({
+                                [styles.fade]: this.shouldFade(cable),
+                                [styles.highlight]: this.shouldHighlight(cable),
+                            })}
+                        />
                     ))}
                 </svg>
             </React.Fragment>

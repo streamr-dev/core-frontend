@@ -75,4 +75,5 @@ const Ports = ({
     )
 }
 
-export default Ports
+// $FlowFixMe
+export default React.memo(Ports)

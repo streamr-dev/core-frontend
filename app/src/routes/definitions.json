@@ -1,6 +1,6 @@
 {
     "canvasEditor": "/canvas/editor",
-    "canvasEmbed": "/canvas/embed",
+    "canvasEmbed": "/canvas/embed/:id",
     "canvases": "/core/canvases",
     "communityGithub": "https://github.com/streamr-dev",
     "communityLinkedin": "https://www.linkedin.com/company/streamr-ltd-/",

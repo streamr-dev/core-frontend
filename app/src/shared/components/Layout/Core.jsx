@@ -9,9 +9,10 @@ import LoadingIndicator from '$userpages/components/LoadingIndicator'
 import styles from './core.pcss'
 
 type Props = {
-    children: Node,
+    children?: Node,
     loading?: boolean,
     className?: string,
+    loadingClassname?: string,
     navComponent?: Node,
     hideNavOnDesktop?: boolean,
 }
@@ -20,6 +21,7 @@ const CoreLayout = ({
     loading,
     children,
     className,
+    loadingClassname,
     navComponent,
     hideNavOnDesktop,
 }: Props) => (
@@ -29,7 +31,7 @@ const CoreLayout = ({
         hideNavOnDesktop={hideNavOnDesktop}
     >
         {navComponent || null}
-        <LoadingIndicator loading={!!loading} className={styles.loadingIndicator} />
+        <LoadingIndicator loading={!!loading} className={cx(styles.loadingIndicator, loadingClassname)} />
         <div className={styles.content}>
             {children || null}
         </div>

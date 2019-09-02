@@ -1,8 +1,10 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useContext } from 'react'
 
+import { useLayoutState } from '$editor/canvas/components/DraggableCanvasWindow'
+import { CanvasWindowContext } from '../CanvasWindow'
 import CodeEditorWindow from './CodeEditorWindow'
 import DebugWindow from './DebugWindow'
-import { useLayoutState } from '$editor/canvas/components/DraggableCanvasWindow'
+import { useInitToCenter, useInitToPosition, useOnResizeEffect } from './useInitPosition'
 
 export const CodeEditor = ({
     children,
@@ -15,48 +17,83 @@ export const CodeEditor = ({
 }) => {
     const [editorOpen, setEditorOpen] = useState(false)
     const [debugOpen, setDebugOpen] = useState(false)
-    const [editorLayout, setEditorSize, setEditorPosition] = useLayoutState()
-    const [debugLayout, setDebugSize, setDebugPosition] = useLayoutState()
+    const canvasWindowElRef = useContext(CanvasWindowContext)
+    const editorLayout = useLayoutState()
+    const debugLayout = useLayoutState()
+
+    const initEditorPosition = useInitToCenter({
+        containerRef: canvasWindowElRef,
+        width: editorLayout.size[0],
+        height: editorLayout.size[1],
+        setPosition: editorLayout.setPosition,
+    })
+
+    const offset = 16
+
+    // set debug default position to editor window + offset
+    const initDebugPosition = useInitToPosition({
+        x: editorLayout.position[0] + offset,
+        y: editorLayout.position[1] + offset,
+        setPosition: debugLayout.setPosition,
+    })
 
     const onShowEditor = useCallback(() => {
-        setEditorOpen(true)
-    }, [setEditorOpen])
+        initEditorPosition()
+        setEditorOpen((v) => !v) // show === toggle
+    }, [setEditorOpen, initEditorPosition])
+
     const onCloseEditor = useCallback(() => {
         setEditorOpen(false)
     }, [setEditorOpen])
+
     const onShowDebug = useCallback(() => {
-        setDebugOpen(true)
-    }, [setDebugOpen])
+        initEditorPosition() // just in case
+        initDebugPosition()
+        setDebugOpen((v) => !v) // show === toggle
+    }, [setDebugOpen, initEditorPosition, initDebugPosition])
+
     const onCloseDebug = useCallback(() => {
         setDebugOpen(false)
     }, [setDebugOpen])
+
+    useOnResizeEffect(useCallback(() => {
+        // reset position on resize
+        debugLayout.setPosition([
+            editorLayout.position[0] + offset,
+            editorLayout.position[1] + offset,
+        ])
+    }, [editorLayout, debugLayout, offset]))
 
     return (
         <React.Fragment>
             {children && (typeof children === 'function') && children(onShowEditor)}
             {!!editorOpen && (
                 <CodeEditorWindow
-                    position={editorLayout}
-                    onPositionUpdate={setEditorPosition}
-                    size={editorLayout}
-                    onSizeUpdate={setEditorSize}
                     code={code}
                     readOnly={readOnly}
                     onClose={onCloseEditor}
                     onApply={onApply}
                     onChange={onChange}
                     onShowDebug={onShowDebug}
+                    x={editorLayout.position[0]}
+                    y={editorLayout.position[1]}
+                    width={editorLayout.size[0]}
+                    height={editorLayout.size[1]}
+                    onChangePosition={editorLayout.setPosition}
+                    onChangeSize={editorLayout.setSize}
                 />
             )}
             {!!debugOpen && (
                 <DebugWindow
-                    onPositionUpdate={setDebugPosition}
-                    position={debugLayout}
-                    onSizeUpdate={setDebugSize}
-                    size={debugLayout}
                     messages={debugMessages}
                     onClear={onClearDebug}
                     onClose={onCloseDebug}
+                    x={debugLayout.position[0]}
+                    y={debugLayout.position[1]}
+                    width={debugLayout.size[0]}
+                    height={debugLayout.size[1]}
+                    onChangePosition={debugLayout.setPosition}
+                    onChangeSize={debugLayout.setSize}
                 />
             )}
         </React.Fragment>
@@ -64,3 +101,5 @@ export const CodeEditor = ({
 }
 
 export default CodeEditor
+
+export const CodeEditorContainer = () => <div id="canvas-windows" />

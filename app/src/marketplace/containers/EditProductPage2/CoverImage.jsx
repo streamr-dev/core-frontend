@@ -13,7 +13,7 @@ import styles from './coverImage.pcss'
 
 const CoverImage = () => {
     const product = useProduct()
-    const { updateImageUrl } = useProductActions()
+    const { updateImageFile } = useProductActions()
     const { isValid, level, message } = useValidation('coverImage')
 
     return (
@@ -26,8 +26,8 @@ const CoverImage = () => {
                     Need images? See the docs.
                 </p>
                 <ImageUpload
-                    setImageToUpload={updateImageUrl}
-                    originalImage={product.imageUrl}
+                    setImageToUpload={updateImageFile}
+                    originalImage={(product.imageUrl && product.imageUrl.preview) || product.imageUrl}
                     className={styles.imageUpload}
                 />
                 {!isValid && (

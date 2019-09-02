@@ -8,6 +8,7 @@ import TextControl from '../TextControl'
 import styles from './editableText.pcss'
 
 type Props = {
+    id?: string,
     autoFocus?: boolean,
     children?: string | number,
     className?: ?string,
@@ -43,7 +44,7 @@ const EditableText = ({
     setEditing,
     ...props
 }: Props) => {
-    const children = childrenProp == null ? EditableText.defaultProps.children : childrenProp
+    const children = (childrenProp == null) ? EditableText.defaultProps.children : childrenProp
     const [value, setValue] = useState(children)
     const [hasFocus, setHasFocus] = useState(false)
     const startEditing = useCallback(() => {
@@ -128,7 +129,13 @@ const EditableText = ({
                             {renderValue(value)}
                         </span>
                     </Fragment>
-                ) : renderValue(children)}
+                ) : (
+                    <React.Fragment>
+                        {renderValue(children)}
+                        {/* fake input to capture focus from label click */}
+                        <input className={styles.hiddenInput} id={props.id} onFocus={onFocus} />
+                    </React.Fragment>
+                )}
             </span>
         </div>
     )

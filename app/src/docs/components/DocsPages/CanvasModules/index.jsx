@@ -19,7 +19,7 @@ export default function CanvasModules() {
             {(// $FlowFixMe
                 Object.entries(canvasModulesCategorised).map(([category, helps]: [string, any[]]) => (
                     <section key={category} id={toAnchor(category)} className={docsStyles.canvasModule}>
-                        <h2>{category}</h2>
+                        <h1 className={docsStyles.mdH1}>{category}</h1>
                         {helps.map((m) => (
                             <CanvasModuleHelp key={m.id} module={m} help={m.help} />
                         ))}

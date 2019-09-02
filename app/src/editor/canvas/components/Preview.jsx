@@ -24,6 +24,8 @@ function getPortPosition(portId, canvas, preview, previewScale) {
         id: m.id,
         left: (p.left + (p.width / 2)) * previewScale,
         top: (p.top + (p.height / 2)) * previewScale,
+        width: p.width * previewScale,
+        height: p.height * previewScale,
     }
 }
 
@@ -45,7 +47,7 @@ const PreviewCables = ({ canvas, preview, previewScale }) => (
             }
         }, []),
     }), {})).map(([key, cable]) => (
-        <Cable cable={cable} key={key} strokeWidth="0.5" />
+        <Cable cable={cable} key={key} strokeWidth="0.2" />
     ))
 )
 
@@ -54,14 +56,7 @@ const defaultLayout = {
     width: Number.parseInt(defaultModuleLayout.width, 10),
 }
 
-export default function Preview({
-    className,
-    style,
-    canvas,
-    aspect,
-    screen,
-    ...props
-}) {
+export default function Preview({ canvas, aspect, screen, ...props }) {
     const modulePreviews = useMemo(() => (
         canvas.modules.map((m) => ({
             key: getModuleKey(m),

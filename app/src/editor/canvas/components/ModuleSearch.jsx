@@ -394,6 +394,7 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
                     panelRef={this.selfRef}
                     resetOnDefault
                     renderDefault={() => this.renderMenu()}
+                    resetOnClose
                 >
                     {!!isSearching && this.renderSearchResults()}
                 </SearchPanel>

@@ -1,15 +1,20 @@
 import React, { Component, useContext } from 'react'
 import { withRouter } from 'react-router-dom'
 import { Helmet } from 'react-helmet'
+import { connect } from 'react-redux'
+import { selectAuthState } from '$shared/modules/user/selectors'
+import SessionContext from '$auth/contexts/Session'
 
 import Layout from '$shared/components/Layout'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import ErrorComponentView from '$shared/components/ErrorComponentView'
+import copyToClipboard from 'copy-to-clipboard'
 
 import links from '../../links'
 
 import UndoControls from '$editor/shared/components/UndoControls'
 import * as UndoContext from '$shared/components/UndoContextProvider'
+import { Provider as PendingProvider } from '$shared/components/PendingContextProvider'
 import Subscription from '$editor/shared/components/Subscription'
 import * as SubscriptionStatus from '$editor/shared/components/SubscriptionStatus'
 import { ClientProvider } from '$editor/shared/components/Client'
@@ -17,6 +22,7 @@ import { ModalProvider } from '$editor/shared/components/Modal'
 import * as sharedServices from '$editor/shared/services'
 import BodyClass from '$shared/components/BodyClass'
 import Sidebar from '$editor/shared/components/Sidebar'
+import { useCanvasSelection, SelectionProvider } from './components/CanvasController/useCanvasSelection'
 import ModuleSidebar from './components/ModuleSidebar'
 import KeyboardShortcutsSidebar from './components/KeyboardShortcutsSidebar'
 
@@ -27,10 +33,13 @@ import useCanvasUpdater from './components/CanvasController/useCanvasUpdater'
 import useAutosaveEffect from './components/CanvasController/useAutosaveEffect'
 import useUpdatedTime from './components/CanvasController/useUpdatedTime'
 
+import PendingLoadingIndicator from './components/PendingLoadingIndicator'
 import Canvas from './components/Canvas'
 import CanvasToolbar from './components/Toolbar'
 import CanvasStatus, { CannotSaveStatus } from './components/Status'
 import ModuleSearch from './components/ModuleSearch'
+import EmbedToolbar from './components/EmbedToolbar'
+import isEditableElement from './utils/isEditableElement'
 
 import useCanvasNotifications, { pushErrorNotification, pushWarningNotification } from './hooks/useCanvasNotifications'
 
@@ -80,14 +89,25 @@ const CanvasEditComponent = class CanvasEdit extends Component {
     }
 
     selectModule = async ({ hash } = {}) => {
-        this.setState(({ moduleSidebarIsOpen, keyboardShortcutIsOpen }) => ({
-            selectedModuleHash: hash,
-            // close sidebar if no selection
-            moduleSidebarIsOpen: hash == null ? keyboardShortcutIsOpen : moduleSidebarIsOpen,
-        }))
+        this.setState(({ moduleSidebarIsOpen, keyboardShortcutIsOpen }) => {
+            // this logic is nonsense, please redo the sidebar code
+            const noSelection = hash == null
+            const keyboardShortcutIsOpenNew = (noSelection && keyboardShortcutIsOpen) ? false : keyboardShortcutIsOpen
+            const moduleSidebarIsOpenNew = noSelection ? keyboardShortcutIsOpenNew : moduleSidebarIsOpen
+            return {
+                selectedModuleHash: hash,
+                // close sidebar if no selection
+                moduleSidebarIsOpen: moduleSidebarIsOpenNew,
+                keyboardShortcutIsOpen: !moduleSidebarIsOpenNew && keyboardShortcutIsOpenNew,
+            }
+        })
+        this.props.selection.only(hash)
     }
 
     onKeyDown = (event) => {
+        // ignore if event from form element
+        if (isEditableElement(event.target || event.srcElement)) { return }
+
         const hash = Number(event.target.dataset.modulehash)
         if (Number.isNaN(hash)) {
             return
@@ -97,22 +117,41 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         if ((event.code === 'Backspace' || event.code === 'Delete') && runController.isEditable) {
             this.removeModule({ hash })
         }
+        // ignore if not meta key down
+        if (!(event.metaKey || event.ctrlKey)) { return }
+
+        // copy
+        if (event.key === 'c') {
+            event.preventDefault()
+            event.stopPropagation()
+            copyToClipboard(JSON.stringify(CanvasState.getModuleCopy(this.props.canvas, hash)))
+        }
+
+        // cut
+        if (event.key === 'x') {
+            event.preventDefault()
+            event.stopPropagation()
+            copyToClipboard(JSON.stringify(CanvasState.getModuleCopy(this.props.canvas, hash)))
+            this.removeModule({ hash })
+        }
     }
 
     componentDidMount() {
         window.addEventListener('keydown', this.onKeyDown)
+        document.body.addEventListener('paste', this.onPaste)
         this.autostart()
     }
 
     componentWillUnmount() {
         this.unmounted = true
         window.removeEventListener('keydown', this.onKeyDown)
+        document.body.removeEventListener('paste', this.onPaste)
     }
 
     async autostart() {
         const { canvas, runController } = this.props
         if (this.isDeleted) { return } // do not autostart deleted canvases
-        if (canvas.adhoc && !runController.isActive) {
+        if (canvas.adhoc && !runController.isActive && !runController.isStopping) {
             // do not autostart running/non-adhoc canvases
             return this.canvasStart()
         }
@@ -136,7 +175,10 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         if (this.unmounted) { return }
 
         this.setCanvas(action, (canvas) => (
-            CanvasState.addModule(canvas, moduleData)
+            CanvasState.addModule(canvas, {
+                ...moduleData,
+                layout: configuration.layout,
+            })
         ))
     }
 
@@ -271,9 +313,11 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         await canvasController.load(canvas.id)
     }
 
-    onDoneMessage = () => (
-        this.loadSelf()
-    )
+    onDoneMessage = () => {
+        const { runController } = this.props
+        if (runController.isStopping) { return } // don't load if stopping
+        return this.loadSelf()
+    }
 
     onErrorMessage = (error) => {
         pushErrorNotification({
@@ -298,8 +342,33 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         })
     }
 
+    onPaste = (event) => {
+        // prevent handling paste in form fields
+        if (isEditableElement(event.target || event.srcElement)) { return }
+        event.preventDefault()
+        event.stopPropagation()
+        const clipboardContent = event.clipboardData.getData('text/plain')
+        let moduleData
+        try {
+            moduleData = JSON.parse(clipboardContent)
+        } catch (error) {
+            // ignore
+        }
+        if (!moduleData || moduleData.id == null) {
+            // doesn't look like a module
+            return
+        }
+        this.addAndSelectModule({
+            id: moduleData.id,
+            configuration: {
+                ...moduleData,
+                hash: undefined, // never use hash
+            },
+        })
+    }
+
     render() {
-        const { canvas, runController } = this.props
+        const { canvas, runController, isEmbedMode } = this.props
         if (!canvas) {
             return (
                 <div className={styles.CanvasEdit}>
@@ -313,7 +382,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         const resendFrom = settings.beginDate
         const resendTo = settings.endDate
         return (
-            <div className={styles.CanvasEdit}>
+            <div className={styles.CanvasEdit} onPaste={this.onPaste}>
                 <Helmet title={`${canvas.name} | Streamr Core`} />
                 <Subscription
                     uiChannel={canvas.uiChannel}
@@ -327,7 +396,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                 <Canvas
                     className={styles.Canvas}
                     canvas={canvas}
-                    selectedModuleHash={this.state.selectedModuleHash}
+                    selectedModuleHash={this.props.selection.last()}
                     selectModule={this.selectModule}
                     updateModule={this.updateModule}
                     renameModule={this.renameModule}
@@ -342,51 +411,55 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                         <CannotSaveStatus />
                     )}
                 </Canvas>
-                <ModalProvider>
-                    <CanvasToolbar
-                        className={styles.CanvasToolbar}
-                        canvas={canvas}
-                        setCanvas={this.setCanvas}
-                        renameCanvas={this.renameCanvas}
-                        deleteCanvas={this.deleteCanvas}
-                        newCanvas={this.newCanvas}
-                        duplicateCanvas={this.duplicateCanvas}
-                        moduleSearchIsOpen={this.state.moduleSearchIsOpen}
-                        moduleSearchOpen={this.moduleSearchOpen}
-                        setRunTab={this.setRunTab}
-                        setHistorical={this.setHistorical}
-                        setSpeed={this.setSpeed}
-                        setSaveState={this.setSaveState}
-                        canvasStart={this.canvasStart}
-                        canvasStop={this.canvasStop}
-                        keyboardShortcutOpen={this.keyboardShortcutOpen}
-                        canvasExit={this.canvasExit}
-                    />
-                </ModalProvider>
-                <Sidebar
-                    className={styles.ModuleSidebar}
-                    isOpen={isEditable && moduleSidebarIsOpen}
-                >
-                    {isEditable && moduleSidebarIsOpen && keyboardShortcutIsOpen && (
-                        <KeyboardShortcutsSidebar
-                            onClose={() => this.keyboardShortcutOpen(false)}
-                        />
-                    )}
-                    {isEditable && moduleSidebarIsOpen && !keyboardShortcutIsOpen && (
-                        <ModuleSidebar
-                            onClose={this.moduleSidebarClose}
+                {isEmbedMode ? <EmbedToolbar canvas={canvas} /> : (
+                    <React.Fragment>
+                        <ModalProvider>
+                            <CanvasToolbar
+                                className={styles.CanvasToolbar}
+                                canvas={canvas}
+                                setCanvas={this.setCanvas}
+                                renameCanvas={this.renameCanvas}
+                                deleteCanvas={this.deleteCanvas}
+                                newCanvas={this.newCanvas}
+                                duplicateCanvas={this.duplicateCanvas}
+                                moduleSearchIsOpen={this.state.moduleSearchIsOpen}
+                                moduleSearchOpen={this.moduleSearchOpen}
+                                setRunTab={this.setRunTab}
+                                setHistorical={this.setHistorical}
+                                setSpeed={this.setSpeed}
+                                setSaveState={this.setSaveState}
+                                canvasStart={this.canvasStart}
+                                canvasStop={this.canvasStop}
+                                keyboardShortcutOpen={this.keyboardShortcutOpen}
+                                canvasExit={this.canvasExit}
+                            />
+                        </ModalProvider>
+                        <Sidebar
+                            className={styles.ModuleSidebar}
+                            isOpen={isEditable && moduleSidebarIsOpen}
+                        >
+                            {isEditable && moduleSidebarIsOpen && keyboardShortcutIsOpen && (
+                                <KeyboardShortcutsSidebar
+                                    onClose={() => this.keyboardShortcutOpen(false)}
+                                />
+                            )}
+                            {isEditable && moduleSidebarIsOpen && !keyboardShortcutIsOpen && (
+                                <ModuleSidebar
+                                    onClose={this.moduleSidebarClose}
+                                    canvas={canvas}
+                                    selectedModuleHash={this.props.selection.last()}
+                                    setModuleOptions={this.setModuleOptions}
+                                />
+                            )}
+                        </Sidebar>
+                        <ModuleSearch
+                            addModule={this.addAndSelectModule}
+                            isOpen={isEditable && this.state.moduleSearchIsOpen}
+                            open={this.moduleSearchOpen}
                             canvas={canvas}
-                            selectedModuleHash={this.state.selectedModuleHash}
-                            setModuleOptions={this.setModuleOptions}
                         />
-                    )}
-                </Sidebar>
-                <ModuleSearch
-                    addModule={this.addAndSelectModule}
-                    isOpen={isEditable && this.state.moduleSearchIsOpen}
-                    open={this.moduleSearchOpen}
-                    canvas={canvas}
-                />
+                    </React.Fragment>
+                )}
             </div>
         )
     }
@@ -396,19 +469,23 @@ const CanvasEdit = withRouter(({ canvas, ...props }) => {
     const runController = useContext(RunController.Context)
     const canvasController = CanvasController.useController()
     const [updated, setUpdated] = useUpdatedTime(canvas.updated)
+    const isEmbedMode = CanvasController.useEmbedMode()
     useCanvasNotifications(canvas)
     useAutosaveEffect()
+    const selection = useCanvasSelection()
 
     return (
         <React.Fragment>
             <UndoControls disabled={!runController.isEditable} />
             <CanvasEditComponent
                 {...props}
+                isEmbedMode={isEmbedMode}
                 canvas={canvas}
                 runController={runController}
                 canvasController={canvasController}
                 updated={updated}
                 setUpdated={setUpdated}
+                selection={selection}
             />
         </React.Fragment>
     )
@@ -443,18 +520,29 @@ const CanvasEditWrap = () => {
 }
 
 const CanvasContainer = withRouter(withErrorBoundary(ErrorComponentView)((props) => (
-    <ClientProvider>
-        <UndoContext.Provider key={props.match.params.id}>
-            <CanvasController.Provider>
-                <CanvasEditWrap />
-            </CanvasController.Provider>
-        </UndoContext.Provider>
-    </ClientProvider>
+    <UndoContext.Provider key={props.match.params.id} enableBreadcrumbs>
+        <PendingProvider>
+            <PendingLoadingIndicator />
+            <ClientProvider>
+                <CanvasController.Provider embed={!!props.embed}>
+                    <SelectionProvider>
+                        <CanvasEditWrap />
+                    </SelectionProvider>
+                </CanvasController.Provider>
+            </ClientProvider>
+        </PendingProvider>
+    </UndoContext.Provider>
 )))
 
-export default () => (
-    <Layout className={styles.layout} footer={false}>
-        <BodyClass className="editor" />
-        <CanvasContainer />
-    </Layout>
-)
+export default connect(selectAuthState)(({ embed, isAuthenticated }) => {
+    const { token } = useContext(SessionContext)
+    // if there's a token, user is probably just authenticating
+    // don't drop into embed mode unless no token
+    embed = embed || (!isAuthenticated && !token)
+    return (
+        <Layout className={styles.layout} footer={false} nav={!embed}>
+            <BodyClass className="editor" />
+            <CanvasContainer embed={embed} />
+        </Layout>
+    )
+})

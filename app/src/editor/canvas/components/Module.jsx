@@ -41,18 +41,13 @@ class CanvasModule extends React.PureComponent {
 
     onSelection() {
         if (!this.el.current) { return }
-        this.el.current.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start',
-            inline: 'nearest',
-        })
+
         // no direct access to normal focus ref, have to go via parentElement
-        this.el.current.parentElement.focus()
+        this.el.current.parentElement.focus() // focus should scroll element into view
     }
 
     componentDidMount() {
-        const { module, selectedModuleHash } = this.props
-        const isSelected = module.hash === selectedModuleHash
+        const { isSelected } = this.props
         // scroll into view on mount if selected
         if (isSelected) {
             this.onSelection()
@@ -60,10 +55,9 @@ class CanvasModule extends React.PureComponent {
     }
 
     componentDidUpdate(prevProps) {
-        const { module, selectedModuleHash } = this.props
-        const isSelected = module.hash === selectedModuleHash
+        const { isSelected } = this.props
         // scroll into view if selection status changed
-        if (isSelected && module.hash !== prevProps.selectedModuleHash) {
+        if (isSelected && isSelected !== prevProps.isSelected) {
             this.onSelection()
         }
     }
@@ -80,8 +74,7 @@ class CanvasModule extends React.PureComponent {
 
     onTriggerOptions = (event) => {
         event.stopPropagation()
-        const { api, module, moduleSidebarIsOpen, selectedModuleHash } = this.props
-        const isSelected = module.hash === selectedModuleHash
+        const { api, module, moduleSidebarIsOpen, isSelected } = this.props
 
         // need to selectModule here rather than in parent focus handler
         // otherwise selection changes before we can toggle open/close behaviour
@@ -129,13 +122,18 @@ class CanvasModule extends React.PureComponent {
         updateModuleSize(hash, size)
     }
 
+    onFocus = () => {
+        const { api, module } = this.props
+        return api.selectModule({ hash: module.hash })
+    }
+
     render() {
         const {
             api,
             module,
             canvas,
             className,
-            selectedModuleHash,
+            isSelected,
             moduleSidebarIsOpen,
             onPort,
             ...props
@@ -143,8 +141,6 @@ class CanvasModule extends React.PureComponent {
 
         const { layout } = this.state
         const { isAdjustable, isEditable } = this.context
-
-        const isSelected = module.hash === this.props.selectedModuleHash
 
         const isRunning = canvas.state === RunStates.Running
 
@@ -157,7 +153,7 @@ class CanvasModule extends React.PureComponent {
                 enabled={isResizable}
                 role="rowgroup"
                 tabIndex="0"
-                onFocus={() => api.selectModule({ hash: module.hash })}
+                onFocus={this.onFocus}
                 className={cx(className, styles.CanvasModule, ModuleStyles.ModuleBase, ...moduleSpecificStyles, {
                     [ModuleStyles.isSelected]: isSelected,
                     [ModuleStyles.disabled]: !isAdjustable, // disable edits while loading
@@ -212,6 +208,7 @@ class CanvasModule extends React.PureComponent {
                         onValueChange={this.onPortValueChange}
                     />
                 </div>
+                <div className={styles.pasteTrap} />
                 <ModuleUI
                     autoSize
                     className={styles.canvasModuleUI}
@@ -222,7 +219,7 @@ class CanvasModule extends React.PureComponent {
                     canvasId={canvas.id}
                     isActive={isRunning}
                     uiEmitter={this.uiEmitter}
-                    isSubscriptionActive={this.context.isStarting || this.context.isActive}
+                    isSubscriptionActive={this.context.isSubscriptionActive}
                 />
                 <div className={ModuleStyles.selectionDecorator} />
             </Resizable>
@@ -237,7 +234,7 @@ function ModuleError(props) {
         module,
         canvas,
         className,
-        selectedModuleHash,
+        isSelected,
         moduleSidebarIsOpen,
         layout,
         onPort,
@@ -246,7 +243,6 @@ function ModuleError(props) {
         ...restProps
     } = props
 
-    const isSelected = module.hash === selectedModuleHash
     const errorObj = (error && error.error) ? error.error : error
     const moduleLayout = layout || module.layout
     const errorMessage = (errorObj.stack || errorObj.message || '').trim()
@@ -289,10 +285,10 @@ function ModuleError(props) {
     )
 }
 
-const CanvasModuleWithErrorBoundary = withErrorBoundary(ModuleError)(CanvasModule)
+const CanvasModuleWithErrorBoundary = React.memo(withErrorBoundary(ModuleError)(CanvasModule))
 
-export default withErrorBoundary(ModuleError)((props) => (
+export default React.memo(withErrorBoundary(ModuleError)((props) => (
     <ModuleDragger module={props.module} api={props.api}>
         <CanvasModuleWithErrorBoundary {...props} />
     </ModuleDragger>
-))
+)))

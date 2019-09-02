@@ -220,8 +220,10 @@ export const addStreamResourceKey = (id: StreamId, name: string, permission: Res
             type: 'STREAM',
         }))
         .then(handleEntities(resourceKeySchema, dispatch))
-        .then((result) => dispatch(addStreamResourceKeySuccess(id, result)))
-        .catch((e) => {
+        .then((result) => {
+            dispatch(addStreamResourceKeySuccess(id, result))
+            dispatch(getStreamResourceKeys(id))
+        }, (e) => {
             const error = {
                 title: 'Error!',
                 message: e.message,

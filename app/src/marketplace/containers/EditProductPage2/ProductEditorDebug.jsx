@@ -1,6 +1,7 @@
 // @flow
 
-import React, { useCallback, useContext } from 'react'
+import React, { useState, useCallback, useContext } from 'react'
+import cx from 'classnames'
 
 import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
 import Toggle from '$shared/components/Toggle'
@@ -11,6 +12,12 @@ import useProductActions from '../ProductController/useProductActions'
 import styles from './productEditorDebug.pcss'
 
 const ProductEditorDebug = () => {
+    const [minimized, setMinimized] = useState(false)
+
+    const toggle = useCallback(() => {
+        setMinimized((prev) => !prev)
+    }, [setMinimized])
+
     const product = useProduct()
     const { updateType } = useProductActions()
     const { touched } = useContext(ValidationContext)
@@ -22,16 +29,28 @@ const ProductEditorDebug = () => {
 
     return (
         <div className={styles.root}>
-            Is Community Product? <Toggle
-                value={isCommunity}
-                onChange={onFixPriceChange}
-            />
-            <pre className={styles.productData}>
-                {JSON.stringify(product, null, 2)}
-            </pre>
-            <pre className={styles.productData}>
-                {JSON.stringify(touched, null, 2)}
-            </pre>
+            <button
+                type="button"
+                className={styles.title}
+                onClick={toggle}
+            >
+                DEBUG
+            </button>
+            <div className={cx(styles.content, {
+                [styles.minimized]: minimized,
+            })}
+            >
+                Is Community Product? <Toggle
+                    value={isCommunity}
+                    onChange={onFixPriceChange}
+                />
+                <pre className={styles.productData}>
+                    {JSON.stringify(product, null, 2)}
+                </pre>
+                <pre className={styles.productData}>
+                    {JSON.stringify(touched, null, 2)}
+                </pre>
+            </div>
         </div>
     )
 }

@@ -36,26 +36,26 @@ type Props = OwnProps & StateProps & DispatchProps
 
 export class KeyView extends Component<Props> {
     componentDidMount() {
-        if (!this.props.disabled && this.props.streamId) {
-            this.props.getKeys(this.props.streamId)
+        this.getKeys()
+    }
+
+    componentDidUpdate(prevProps: Props) {
+        // get keys if streamId/disabled changes
+        if (prevProps.streamId !== this.props.streamId || prevProps.disabled !== this.props.disabled) {
+            this.getKeys()
         }
     }
 
-    componentWillReceiveProps(props: Props) {
-        if (!this.props.disabled && props.streamId && props.streamId !== this.props.streamId) {
-            this.props.getKeys(props.streamId)
-        }
+    getKeys = () => {
+        if (this.props.disabled || this.props.streamId == null) { return }
+        this.props.getKeys(this.props.streamId)
     }
 
-    addKey = (key: string, permission: ?ResourcePermission): Promise<void> => new Promise((resolve, reject) => {
-        if (this.props.streamId) {
-            const keyPermission = permission || 'read'
-            this.props.addKey(this.props.streamId, key, keyPermission)
-                .then(resolve, reject)
-        } else {
-            resolve()
-        }
-    })
+    addKey = async (key: string, permission: ?ResourcePermission): Promise<void> => {
+        if (this.props.streamId == null) { return }
+        const keyPermission = permission || 'read'
+        return this.props.addKey(this.props.streamId, key, keyPermission)
+    }
 
     editStreamResourceKey = (streamId: StreamId, keyId: ResourceKeyId, keyName: string, keyPermission: ResourcePermission): Promise<void> => (
         this.props.editStreamResourceKey(streamId, keyId, keyName, keyPermission)
