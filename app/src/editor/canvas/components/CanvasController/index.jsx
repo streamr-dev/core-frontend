@@ -6,19 +6,13 @@ import { usePending } from '$shared/hooks/usePending'
 import { Provider as PermissionsProvider } from '$editor/canvas/hooks/useCanvasPermissions'
 
 import * as CanvasState from '../../state'
-
 import useCanvas from './useCanvas'
 import useCanvasLoadCallback from './useCanvasLoadCallback'
 import useCanvasCreateCallback from './useCanvasCreateCallback'
 import useCanvasRemoveCallback from './useCanvasRemoveCallback'
 import useCanvasDuplicateCallback from './useCanvasDuplicateCallback'
 import useModuleLoadCallback from './useModuleLoadCallback'
-
-const EmbedModeContext = React.createContext(false)
-
-export function useEmbedMode() {
-    return useContext(EmbedModeContext)
-}
+import { EmbedModeContext } from './useEmbedMode'
 
 const CanvasControllerContext = React.createContext()
 

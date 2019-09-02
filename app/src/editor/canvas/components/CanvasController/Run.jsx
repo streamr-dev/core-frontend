@@ -16,7 +16,7 @@ import * as CanvasLinking from '../../state/linking'
 
 import useCanvasStateChangeEffect from '../../hooks/useCanvasStateChangeEffect'
 import useCanvasUpdater from './useCanvasUpdater'
-import { useEmbedMode } from './index'
+import useEmbedMode from './useEmbedMode'
 
 export const RunControllerContext = React.createContext()
 
