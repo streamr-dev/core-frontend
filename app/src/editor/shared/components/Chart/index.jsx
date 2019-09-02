@@ -184,9 +184,11 @@ const Chart = ({ className, series, datapoints, options }: Props) => {
             useHTML: true,
             // eslint-disable-next-line func-names, object-shorthand
             formatter: function () {
+                // offset x value by timezone offset
+                const timestamp = this.x - (new Date().getTimezoneOffset() * 60 * 1000)
                 return this.points.reduce((s, point) => (
                     `${s}<br/><span style="font-weight: 500;">${point.series.name}</span> ${point.y}`
-                ), `${Highcharts.dateFormat('%A, %b %e, %H:%M:%S', this.x)}`)
+                ), `${Highcharts.dateFormat('%A, %b %e, %H:%M:%S', timestamp)}`)
             },
             outside: true,
         },
