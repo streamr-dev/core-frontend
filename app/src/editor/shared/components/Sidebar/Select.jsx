@@ -9,6 +9,7 @@ import styles from './sidebar.pcss'
 
 export type Props = {
     placeholder?: string,
+    disabled?: boolean,
     options: Array<any>,
     value: any,
     name?: string,
@@ -26,10 +27,11 @@ const IconOption = (props) => (
 )
 
 const customStyles = {
-    control: (provided) => ({
+    control: (provided, state) => ({
         ...provided,
         border: 'none',
         boxShadow: 'none',
+        backgroundColor: state.isDisabled ? 'transparent' : provided.backgroundColor,
     }),
     valueContainer: (provided) => ({
         ...provided,
@@ -69,11 +71,12 @@ const customStyles = {
     }),
 }
 
-const Select = (props: Props) => (
+const Select = ({ disabled, ...props }: Props) => (
     <ReactSelect
         className={cx(styles.select)}
         classNamePrefix="react-select"
         styles={customStyles}
+        isDisabled={disabled}
         components={{
             IndicatorSeparator: null,
             Option: IconOption,
