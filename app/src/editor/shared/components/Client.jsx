@@ -110,11 +110,8 @@ function useClientProvider({
     }), [client, send, hasLoaded])
 }
 
-export function ClientProviderComponent({ children, apiKey, loadKeys }) {
-    const clientContext = useClientProvider({
-        apiKey,
-        loadKeys,
-    })
+export function ClientProviderComponent({ children, ...props }) {
+    const clientContext = useClientProvider(props)
     return (
         <ClientContext.Provider value={clientContext}>
             {children || null}
