@@ -19,6 +19,7 @@ import links from '../../links'
 
 import Dashboard from './components/Dashboard'
 import DashboardToolbar from './components/Toolbar'
+import DashboardModuleSearch from './components/DashboardModuleSearch'
 
 import * as DashboardState from './state'
 import * as services from './services'
@@ -26,6 +27,10 @@ import * as services from './services'
 import styles from './index.pcss'
 
 const DashboardEdit = withRouter(class DashboardEdit extends Component {
+    state = {
+        moduleSearchIsOpen: false,
+    }
+
     setDashboard = (action, fn, done) => {
         this.props.push(action, (dashboard) => {
             const nextDashboard = fn(dashboard)
@@ -135,6 +140,12 @@ const DashboardEdit = withRouter(class DashboardEdit extends Component {
         ))
     }
 
+    moduleSearchOpen = (show = true) => {
+        this.setState({
+            moduleSearchIsOpen: !!show,
+        })
+    }
+
     render() {
         const { dashboard } = this.props
         return (
@@ -158,6 +169,15 @@ const DashboardEdit = withRouter(class DashboardEdit extends Component {
                             duplicateDashboard={this.duplicateDashboard}
                             addModule={this.addModule}
                             removeModule={this.removeModule}
+                            moduleSearchIsOpen={this.state.moduleSearchIsOpen}
+                            moduleSearchOpen={this.moduleSearchOpen}
+                        />
+                        <DashboardModuleSearch
+                            isOpen={this.state.moduleSearchIsOpen}
+                            open={this.moduleSearchOpen}
+                            removeModule={this.removeModule}
+                            addModule={this.addModule}
+                            dashboard={dashboard}
                         />
                     </SelectionProvider>
                 </ModalProvider>

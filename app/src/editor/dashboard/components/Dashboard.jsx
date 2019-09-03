@@ -228,7 +228,7 @@ export default WidthProvider(class DashboardEditor extends React.Component {
         return (
             <div className={cx(className, CanvasStyles.Canvas)}>
                 <div
-                    className={CanvasStyles.CanvasElements}
+                    className={cx(CanvasStyles.CanvasElements, styles.DashboardElements)}
                     style={{
                         backgroundImage: `url(${Background({
                             width: cellSize,
