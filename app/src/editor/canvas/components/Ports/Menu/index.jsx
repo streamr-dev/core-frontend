@@ -2,8 +2,10 @@
 
 import React, { useCallback } from 'react'
 import ContextMenu from '$shared/components/ContextMenu'
-import { disconnectAllFromPort, isPortConnected } from '../../../state'
+import { disconnectAllFromPort, isPortConnected, getPortValue } from '../../../state'
 import styles from './menu.pcss'
+
+import useCopy from '$shared/hooks/useCopy'
 
 type Props = {
     api: any,
@@ -37,6 +39,21 @@ const Menu = ({
         dismiss()
     }, [setPortOptions, port, dismiss])
 
+    const { copy, isCopied } = useCopy()
+
+    let portValue = getPortValue(canvas, port.id)
+    if (portValue === '' || typeof portValue === 'object') {
+        portValue = undefined
+    }
+
+    const copyDisabled = portValue == null
+
+    const onClickCopy = useCallback(() => {
+        // redundant check here because flow can't figure it out
+        if (copyDisabled || portValue == null) { return }
+        copy(portValue)
+    }, [copy, portValue, copyDisabled])
+
     return (
         <ContextMenu
             isOpen
@@ -53,6 +70,12 @@ const Menu = ({
                 className={styles.noAutoDismiss}
                 onClick={toggleExport}
                 text={port.export ? 'Disable export' : 'Enable export'}
+            />
+            <ContextMenu.Item
+                className={styles.noAutoDismiss}
+                onClick={onClickCopy}
+                text={isCopied ? 'Copied' : 'Copy value'}
+                disabled={copyDisabled}
             />
         </ContextMenu>
     )
