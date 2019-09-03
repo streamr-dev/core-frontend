@@ -138,7 +138,7 @@ export default class StreamSelector extends React.Component<Props, State> {
     }
 
     render() {
-        const { disabled, className } = this.props
+        const { disabled, className, value } = this.props
         const { isOpen, search, matchingStreams } = this.state
 
         return (
@@ -150,6 +150,7 @@ export default class StreamSelector extends React.Component<Props, State> {
                     onModeChange={this.toggleSearch}
                     placeholder="Value"
                     value={search}
+                    title={value}
                 />
                 {isOpen && (
                     <div className={styles.searchResults}>
@@ -160,10 +161,11 @@ export default class StreamSelector extends React.Component<Props, State> {
                                 key={stream.id}
                                 onMouseDown={() => this.onStreamClick(stream.id)}
                                 tabIndex="0"
+                                title={stream.id}
                             >
                                 <div>{stream.name}</div>
                                 {!!stream.description && (
-                                    <div className={styles.description}>{stream.description}</div>
+                                    <div title={stream.description} className={styles.description}>{stream.description}</div>
                                 )}
                             </div>
                         ))}
