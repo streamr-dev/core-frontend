@@ -105,7 +105,15 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                 keyboardShortcutIsOpen: !moduleSidebarIsOpenNew && keyboardShortcutIsOpenNew,
             }
         })
-        this.props.selection.only(hash)
+        if (hash == null) {
+            this.props.selection.none()
+            // remove focus on deselect
+            if (document.activeElement) {
+                document.activeElement.blur()
+            }
+        } else {
+            this.props.selection.only(hash)
+        }
     }
 
     onKeyDown = (event) => {
@@ -121,6 +129,12 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         if ((event.code === 'Backspace' || event.code === 'Delete') && runController.isEditable) {
             this.removeModule({ hash })
         }
+
+        if (event.key === 'Escape') {
+            // select none on escape
+            this.selectModule({ hash: undefined })
+        }
+
         // ignore if not meta key down
         if (!(event.metaKey || event.ctrlKey)) { return }
 
