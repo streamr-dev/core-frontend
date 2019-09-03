@@ -70,6 +70,7 @@ export default class StreamSelector extends React.Component<Props, State> {
     }
 
     searchStreams = debounce(async (search = '') => {
+        search = search.trim()
         const params = {
             id: '',
             search,
@@ -79,12 +80,22 @@ export default class StreamSelector extends React.Component<Props, State> {
             public: true,
         }
 
-        const streams = await getStreams(params)
+        const [exactMatch, matchingStreams] = await Promise.all([
+            // getStream with empty id responds with all streams :O
+            search && getStream(search).catch((err) => {
+                if (err.response && err.response.status === 404) {
+                    // ignore 404, expected.
+                    return
+                }
+                throw err
+            }),
+            getStreams(params),
+        ])
 
         if (this.unmounted || this.currentSearch !== search) { return }
 
         this.setState({
-            matchingStreams: streams,
+            matchingStreams: exactMatch ? [exactMatch] : matchingStreams,
         })
     }, 500)
 
