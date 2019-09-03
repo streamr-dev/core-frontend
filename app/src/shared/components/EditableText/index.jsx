@@ -133,7 +133,13 @@ const EditableText = ({
                     <React.Fragment>
                         {renderValue(children)}
                         {/* fake input to capture focus from label click */}
-                        <input className={styles.hiddenInput} id={props.id} onFocus={onFocus} />
+                        <input
+                            className={styles.hiddenInput}
+                            id={props.id}
+                            onFocus={onFocus}
+                            disabled={disabled}
+                            tabIndex="-1"
+                        />
                     </React.Fragment>
                 )}
             </span>

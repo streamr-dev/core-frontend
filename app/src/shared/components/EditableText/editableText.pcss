@@ -64,10 +64,11 @@
   padding-right: 0.25em; /* also balance extra width added by input when editing */
 }
 
-.hiddenInput {
-  width: 0;
-  height: 0;
-  position: absolute;
-  opacity: 0;
-  pointer-events: none;
+.root input.hiddenInput {
+  /* this must never get into layout flow so setting !important */
+  width: 0 !important;
+  height: 0 !important;
+  position: absolute !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
 }
