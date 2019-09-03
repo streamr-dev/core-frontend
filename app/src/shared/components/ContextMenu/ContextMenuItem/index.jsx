@@ -7,27 +7,31 @@ import styles from './contextMenuItem.pcss'
 
 export type Props = {
     text: string,
-    onClick: () => void,
+    onClick: (e: SyntheticInputEvent<EventTarget>) => void,
     className?: ?string,
+    disabled?: boolean,
 }
 
 class ContextMenuItem extends React.Component<Props> {
     onClick = (e: SyntheticInputEvent<EventTarget>) => {
         e.preventDefault()
         if (this.props.onClick) {
-            this.props.onClick()
+            this.props.onClick(e)
         }
     }
 
     render = () => {
-        const { text, className } = this.props
+        const { text, className, disabled, ...props } = this.props
         return (
             // eslint-disable-next-line jsx-a11y/click-events-have-key-events
             <div
                 role="button"
-                className={cx(styles.item, className)}
+                className={cx(styles.item, className, {
+                    [styles.disabled]: disabled,
+                })}
                 onClick={this.onClick}
                 tabIndex="0"
+                {...props}
             >
                 {text}
             </div>

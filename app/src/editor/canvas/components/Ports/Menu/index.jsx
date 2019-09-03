@@ -2,11 +2,12 @@
 
 import React, { useCallback } from 'react'
 import ContextMenu from '$shared/components/ContextMenu'
-import { disconnectAllFromPort } from '../../../state'
+import { disconnectAllFromPort, isPortConnected } from '../../../state'
 import styles from './menu.pcss'
 
 type Props = {
     api: any,
+    canvas: any,
     dismiss: () => void,
     port: any,
     setPortOptions: (any, Object) => void,
@@ -15,6 +16,7 @@ type Props = {
 
 const Menu = ({
     api,
+    canvas,
     dismiss,
     port,
     setPortOptions,
@@ -45,6 +47,7 @@ const Menu = ({
                 className={styles.noAutoDismiss}
                 onClick={disconnectAll}
                 text="Disconnect all"
+                disabled={!isPortConnected(canvas, port.id)}
             />
             <ContextMenu.Item
                 className={styles.noAutoDismiss}
