@@ -36,6 +36,7 @@ export default withErrorBoundary(ErrorComponentView)(class DashboardToolbar exte
             deleteDashboard,
             newDashboard,
             moduleSearchOpen,
+            keyboardShortcutOpen,
         } = this.props
 
         if (!dashboard) {
@@ -104,6 +105,7 @@ export default withErrorBoundary(ErrorComponentView)(class DashboardToolbar exte
                                     <Tooltip value={<React.Fragment>Keyboard<br />shortcuts</React.Fragment>}>
                                         <R.Button
                                             className={cx(styles.ToolbarButton, styles.KeyboardButton)}
+                                            onClick={() => keyboardShortcutOpen()}
                                         >
                                             <SvgIcon name="keyboard" />
                                         </R.Button>

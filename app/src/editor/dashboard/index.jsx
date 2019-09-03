@@ -14,12 +14,15 @@ import { ModalProvider } from '$editor/shared/components/Modal'
 import { SelectionProvider } from '$editor/shared/hooks/useSelection'
 import { Provider as PendingProvider } from '$shared/components/PendingContextProvider'
 import { useAnyPending } from '$shared/hooks/usePending'
+import CanvasStyles from '$editor/canvas/index.pcss'
+import Sidebar from '$editor/shared/components/Sidebar'
 
 import links from '../../links'
 
 import Dashboard from './components/Dashboard'
 import DashboardToolbar from './components/Toolbar'
 import DashboardModuleSearch from './components/DashboardModuleSearch'
+import KeyboardShortcutsSidebar from './components/KeyboardShortcutsSidebar'
 
 import * as DashboardState from './state'
 import * as services from './services'
@@ -29,6 +32,7 @@ import styles from './index.pcss'
 const DashboardEdit = withRouter(class DashboardEdit extends Component {
     state = {
         moduleSearchIsOpen: false,
+        keyboardShortcutIsOpen: false,
     }
 
     setDashboard = (action, fn, done) => {
@@ -146,40 +150,58 @@ const DashboardEdit = withRouter(class DashboardEdit extends Component {
         })
     }
 
+    keyboardShortcutOpen = (show = true) => {
+        this.setState({
+            keyboardShortcutIsOpen: !!show,
+        })
+    }
+
+    keyboardShortcutClose = () => {
+        this.keyboardShortcutOpen(false)
+    }
+
     render() {
         const { dashboard } = this.props
         return (
             <div className={styles.DashboardEdit}>
                 <Helmet title={`${dashboard.name} | Streamr Core`} />
                 <ModalProvider>
-                    <SelectionProvider>
-                        <Dashboard
-                            className={styles.Dashboard}
-                            dashboard={dashboard}
-                            setDashboard={this.setDashboard}
-                            replaceDashboard={this.replaceDashboard}
+                    <Dashboard
+                        className={styles.Dashboard}
+                        dashboard={dashboard}
+                        setDashboard={this.setDashboard}
+                        replaceDashboard={this.replaceDashboard}
+                    />
+                    <DashboardToolbar
+                        className={styles.DashboardToolbar}
+                        dashboard={dashboard}
+                        setDashboard={this.setDashboard}
+                        renameDashboard={this.renameDashboard}
+                        deleteDashboard={this.deleteDashboard}
+                        newDashboard={this.newDashboard}
+                        duplicateDashboard={this.duplicateDashboard}
+                        addModule={this.addModule}
+                        removeModule={this.removeModule}
+                        moduleSearchIsOpen={this.state.moduleSearchIsOpen}
+                        moduleSearchOpen={this.moduleSearchOpen}
+                        keyboardShortcutOpen={this.keyboardShortcutOpen}
+                    />
+                    <Sidebar
+                        className={CanvasStyles.ModuleSidebar}
+                        isOpen={this.state.keyboardShortcutIsOpen}
+                        onClose={this.keyboardShortcutClose}
+                    >
+                        <KeyboardShortcutsSidebar
+                            onClose={this.keyboardShortcutClose}
                         />
-                        <DashboardToolbar
-                            className={styles.DashboardToolbar}
-                            dashboard={dashboard}
-                            setDashboard={this.setDashboard}
-                            renameDashboard={this.renameDashboard}
-                            deleteDashboard={this.deleteDashboard}
-                            newDashboard={this.newDashboard}
-                            duplicateDashboard={this.duplicateDashboard}
-                            addModule={this.addModule}
-                            removeModule={this.removeModule}
-                            moduleSearchIsOpen={this.state.moduleSearchIsOpen}
-                            moduleSearchOpen={this.moduleSearchOpen}
-                        />
-                        <DashboardModuleSearch
-                            isOpen={this.state.moduleSearchIsOpen}
-                            open={this.moduleSearchOpen}
-                            removeModule={this.removeModule}
-                            addModule={this.addModule}
-                            dashboard={dashboard}
-                        />
-                    </SelectionProvider>
+                    </Sidebar>
+                    <DashboardModuleSearch
+                        isOpen={this.state.moduleSearchIsOpen}
+                        open={this.moduleSearchOpen}
+                        removeModule={this.removeModule}
+                        addModule={this.addModule}
+                        dashboard={dashboard}
+                    />
                 </ModalProvider>
             </div>
         )
@@ -276,10 +298,12 @@ export default withRouter((props) => (
         <UndoContextProvider key={props.match.params.id} enableBreadcrumbs>
             <PendingProvider>
                 <ClientProvider>
-                    <UndoControls />
                     <DashboardLoadingIndicator />
                     <DashboardLoader>
-                        <DashboardEditWrap />
+                        <SelectionProvider>
+                            <UndoControls />
+                            <DashboardEditWrap />
+                        </SelectionProvider>
                     </DashboardLoader>
                 </ClientProvider>
             </PendingProvider>

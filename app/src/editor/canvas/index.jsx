@@ -12,6 +12,7 @@ import copyToClipboard from 'copy-to-clipboard'
 
 import links from '../../links'
 
+import isEditableElement from '$editor/shared/utils/isEditableElement'
 import UndoControls from '$editor/shared/components/UndoControls'
 import * as UndoContext from '$shared/components/UndoContextProvider'
 import { Provider as PendingProvider } from '$shared/components/PendingContextProvider'
@@ -39,7 +40,6 @@ import CanvasToolbar from './components/Toolbar'
 import CanvasStatus, { CannotSaveStatus } from './components/Status'
 import ModuleSearch from './components/ModuleSearch'
 import EmbedToolbar from './components/EmbedToolbar'
-import isEditableElement from './utils/isEditableElement'
 
 import useCanvasNotifications, { pushErrorNotification, pushWarningNotification } from './hooks/useCanvasNotifications'
 
