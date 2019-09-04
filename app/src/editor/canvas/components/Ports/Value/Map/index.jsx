@@ -9,7 +9,10 @@ type Props = CommonProps & {
     port: any,
 }
 
+const EMPTY = {}
+
 const Map = ({ disabled, onChange, value: valueProp }: Props) => {
+    valueProp = valueProp || EMPTY
     const [value, setValue] = useState(valueProp)
 
     const [keys, setKeys] = useState(Object.keys(valueProp))
