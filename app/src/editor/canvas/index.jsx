@@ -12,6 +12,7 @@ import copyToClipboard from 'copy-to-clipboard'
 
 import links from '../../links'
 
+import isEditableElement from '$editor/shared/utils/isEditableElement'
 import UndoControls from '$editor/shared/components/UndoControls'
 import * as UndoContext from '$shared/components/UndoContextProvider'
 import { Provider as PendingProvider } from '$shared/components/PendingContextProvider'
@@ -39,7 +40,6 @@ import CanvasToolbar from './components/Toolbar'
 import CanvasStatus, { CannotSaveStatus } from './components/Status'
 import ModuleSearch from './components/ModuleSearch'
 import EmbedToolbar from './components/EmbedToolbar'
-import isEditableElement from './utils/isEditableElement'
 
 import useCanvasNotifications, { pushErrorNotification, pushWarningNotification } from './hooks/useCanvasNotifications'
 
@@ -88,12 +88,16 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         })
     }
 
+    keyboardShortcutClose = () => {
+        this.keyboardShortcutOpen(false)
+    }
+
     selectModule = async ({ hash } = {}) => {
         this.setState(({ moduleSidebarIsOpen, keyboardShortcutIsOpen }) => {
             // this logic is nonsense, please redo the sidebar code
             const noSelection = hash == null
             const keyboardShortcutIsOpenNew = (noSelection && keyboardShortcutIsOpen) ? false : keyboardShortcutIsOpen
-            const moduleSidebarIsOpenNew = noSelection ? keyboardShortcutIsOpenNew : moduleSidebarIsOpen
+            const moduleSidebarIsOpenNew = noSelection ? false : moduleSidebarIsOpen
             return {
                 selectedModuleHash: hash,
                 // close sidebar if no selection
@@ -101,7 +105,15 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                 keyboardShortcutIsOpen: !moduleSidebarIsOpenNew && keyboardShortcutIsOpenNew,
             }
         })
-        this.props.selection.only(hash)
+        if (hash == null) {
+            this.props.selection.none()
+            // remove focus on deselect
+            if (document.activeElement) {
+                document.activeElement.blur()
+            }
+        } else {
+            this.props.selection.only(hash)
+        }
     }
 
     onKeyDown = (event) => {
@@ -117,6 +129,12 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         if ((event.code === 'Backspace' || event.code === 'Delete') && runController.isEditable) {
             this.removeModule({ hash })
         }
+
+        if (event.key === 'Escape') {
+            // select none on escape
+            this.selectModule({ hash: undefined })
+        }
+
         // ignore if not meta key down
         if (!(event.metaKey || event.ctrlKey)) { return }
 
@@ -401,7 +419,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                     updateModule={this.updateModule}
                     renameModule={this.renameModule}
                     moduleSidebarOpen={this.moduleSidebarOpen}
-                    moduleSidebarIsOpen={isEditable && moduleSidebarIsOpen && !keyboardShortcutIsOpen}
+                    moduleSidebarIsOpen={moduleSidebarIsOpen && !keyboardShortcutIsOpen}
                     setCanvas={this.setCanvas}
                     pushNewDefinition={this.pushNewDefinition}
                 >
@@ -436,14 +454,14 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                         </ModalProvider>
                         <Sidebar
                             className={styles.ModuleSidebar}
-                            isOpen={isEditable && moduleSidebarIsOpen}
+                            isOpen={moduleSidebarIsOpen || keyboardShortcutIsOpen}
                         >
-                            {isEditable && moduleSidebarIsOpen && keyboardShortcutIsOpen && (
+                            {keyboardShortcutIsOpen && (
                                 <KeyboardShortcutsSidebar
-                                    onClose={() => this.keyboardShortcutOpen(false)}
+                                    onClose={this.keyboardShortcutClose}
                                 />
                             )}
-                            {isEditable && moduleSidebarIsOpen && !keyboardShortcutIsOpen && (
+                            {moduleSidebarIsOpen && !keyboardShortcutIsOpen && (
                                 <ModuleSidebar
                                     onClose={this.moduleSidebarClose}
                                     canvas={canvas}

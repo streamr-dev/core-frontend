@@ -199,12 +199,19 @@ export default WidthProvider(class DashboardEditor extends React.Component {
     }
 
     onResize = (layout) => {
+        this.updateLayout(layout)
+    }
+
+    onResizeStop = (layout, oldItem, newItem) => {
+        if (isEqual(oldItem, newItem)) { return } // noop if no change
         this.userChangedLayout = true
         this.updateLayout(layout)
     }
 
-    onDragStop = () => {
+    onDragStop = (layout, oldItem, newItem) => {
+        if (isEqual(oldItem, newItem)) { return } // noop if no change
         this.userChangedLayout = true
+        this.updateLayout(layout)
     }
 
     render() {
@@ -228,7 +235,7 @@ export default WidthProvider(class DashboardEditor extends React.Component {
         return (
             <div className={cx(className, CanvasStyles.Canvas)}>
                 <div
-                    className={CanvasStyles.CanvasElements}
+                    className={cx(CanvasStyles.CanvasElements, styles.DashboardElements)}
                     style={{
                         backgroundImage: `url(${Background({
                             width: cellSize,
@@ -249,6 +256,7 @@ export default WidthProvider(class DashboardEditor extends React.Component {
                         draggableHandle={`.${ModuleStyles.dragHandle}`}
                         onLayoutChange={this.onLayoutChange}
                         onDragStop={this.onDragStop}
+                        onResizeStop={this.onResizeStop}
                         onResize={this.onResize}
                         isDraggable={!locked}
                         isResizable={!locked}

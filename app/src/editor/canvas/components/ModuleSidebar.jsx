@@ -87,6 +87,7 @@ export default function ModuleSidebar({ canvas, selectedModuleHash, setModuleOpt
                                                 value={opts.filter((opt) => opt.value === option.value)}
                                                 onChange={onSelectChange(name)}
                                                 options={opts}
+                                                disabled={!isEditable}
                                             />
                                         ) : (
                                             /* Toggle */
