@@ -6,7 +6,6 @@ import { I18n } from 'react-redux-i18n'
 import { isHex } from 'web3-utils'
 
 import { arePricesEqual } from '../utils/price'
-import { isPaidProduct } from '../utils/product'
 import { checkEthereumNetworkIsCorrect } from '$shared/utils/web3'
 
 import getWeb3, { getPublicWeb3, StreamrWeb3 } from '$shared/web3/web3Provider'
@@ -53,7 +52,6 @@ export const getContract = ({ abi, address }: SmartContractConfig, usePublicNode
 }
 
 export const isUpdateContractProductRequired = (contractProduct: SmartContractProduct, editProduct: EditProduct) => (
-    isPaidProduct(editProduct) &&
     (!arePricesEqual(contractProduct.pricePerSecond, editProduct.pricePerSecond) ||
     !areAddressesEqual(contractProduct.beneficiaryAddress, editProduct.beneficiaryAddress) ||
     contractProduct.priceCurrency !== editProduct.priceCurrency)

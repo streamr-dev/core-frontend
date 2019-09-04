@@ -6,8 +6,6 @@ import { withRouter } from 'react-router-dom'
 import CoreLayout from '$shared/components/Layout/Core'
 import * as UndoContext from '$shared/components/UndoContextProvider'
 import Toolbar from '$shared/components/Toolbar'
-import ConfirmNoCoverImageDialog from '$mp/components/Modal/ConfirmNoCoverImageDialog'
-// import SaveProductDialog from '$mp/containers/EditProductPage/SaveProductDialog'
 import type { Product } from '$mp/flowtype/product-types'
 
 import ProductController from '../ProductController'
@@ -18,13 +16,19 @@ import { Provider as EditControllerProvider, Context as EditControllerContext } 
 import Editor from './Editor'
 import Preview from './Preview'
 import ProductEditorDebug from './ProductEditorDebug'
-import Modal from './Modal'
+import { Provider as ModalProvider } from '$shared/components/ModalContextProvider'
+import ConfirmNoCoverImageModal from './ConfirmNoCoverImageModal'
+import UpdateContractProductModal from './UpdateContractProductModal'
 
 import styles from './editProductPage.pcss'
 
 const EditProductPage = ({ product }: { product: Product }) => {
-    const { isPreview, setIsPreview, isSaving, save } = useContext(EditControllerContext)
-    const { isPending } = usePending('product.SAVE')
+    const { isPreview, setIsPreview, save } = useContext(EditControllerContext)
+    const { isPending: savePending } = usePending('product.SAVE')
+    const { isPending: contractSavePending } = usePending('contractProduct.SAVE')
+
+    const isSaving = savePending || contractSavePending
+
     console.log(product)
 
     const actions = useMemo(() => {
@@ -73,7 +77,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
                 />
             )}
             loadingClassname={styles.loadingIndicator}
-            loading={isPending}
+            loading={savePending}
         >
             <ProductEditorDebug />
             {isPreview && (
@@ -82,21 +86,8 @@ const EditProductPage = ({ product }: { product: Product }) => {
             {!isPreview && (
                 <Editor />
             )}
-            <Modal>
-                {({ id, save: next, cancel }) => {
-                    if (id === 'confirm') {
-                        return (
-                            <ConfirmNoCoverImageDialog
-                                onContinue={next}
-                                closeOnContinue={false}
-                                onClose={cancel}
-                            />
-                        )
-                    }
-
-                    return null
-                }}
-            </Modal>
+            <ConfirmNoCoverImageModal />
+            <UpdateContractProductModal />
         </CoreLayout>
     )
 }
@@ -125,12 +116,14 @@ const EditWrap = () => {
     const key = (!!product && product.id) || ''
 
     return (
-        <EditControllerProvider product={product}>
-            <EditProductPage
-                key={key}
-                product={product}
-            />
-        </EditControllerProvider>
+        <ModalProvider>
+            <EditControllerProvider product={product}>
+                <EditProductPage
+                    key={key}
+                    product={product}
+                />
+            </EditControllerProvider>
+        </ModalProvider>
     )
 }
 

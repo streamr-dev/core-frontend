@@ -27,7 +27,7 @@ const CoverImage = () => {
                 </p>
                 <ImageUpload
                     setImageToUpload={updateImageFile}
-                    originalImage={(product.imageUrl && product.imageUrl.preview) || product.imageUrl}
+                    originalImage={(product.newImageToUpload && product.newImageToUpload.preview) || product.imageUrl}
                     className={styles.imageUpload}
                 />
                 {!isValid && (
