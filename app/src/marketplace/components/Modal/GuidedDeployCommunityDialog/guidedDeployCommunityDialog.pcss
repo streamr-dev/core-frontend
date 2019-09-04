@@ -30,6 +30,14 @@
   }
 }
 
+.previewImage {
+  width: 100%;
+  height: 240px;
+  border-bottom: 1px solid #F2F1F1;
+  background: none no-repeat 50% 50%;
+  background-size: cover;
+}
+
 .previewContainer {
   width: 100%;
   height: 240px;
@@ -37,42 +45,27 @@
   background-color: #FCFBF9;
   overflow: hidden;
   position: relative;
-
-  > * {
-    position: absolute;
-  }
 }
 
 .previewBackground {
   position: absolute;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.1);
-}
-
-.previewMask {
-  position: absolute;
-  width: 100%;
-  height: 240px;
-  background: #FCFBF9;
-  clip-path: circle(72px at center);
-
-  > * {
-    position: absolute;
-  }
+  background: url('../../../assets/cp-overlay.png') no-repeat 50% 50%;
+  background-size: cover;
 }
 
 .textContainer {
   width: 100%;
-  padding: 2rem;
+  padding: 2rem 1rem;
   font-size: 1rem;
   letter-spacing: 0;
   line-height: 1.5rem;
   text-align: center;
+}
 
-  > * {
-    position: absolute;
-  }
+.tabContent {
+  width: 100%;
 }
 
 .tabs {
@@ -92,9 +85,39 @@
   background-color: #0324FF;
 }
 
-.productTile {
-  width: 200px;
-  border: 1px solid #D8D8D8;
+.productCard {
   background-color: white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  width: 400px;
+  border: 1px solid #F5F5F5;
+  position: absolute;
+  border-radius: 4px;
+}
+
+.highlightStatus {
+  bottom: 50%;
+  left: 50%;
+  transform: translate(-30px, 50px);
+}
+
+.highlightMembers {
+  bottom: 50%;
+  right: 50%;
+  transform: translate(60px, 110px);
+}
+
+.highlightStats {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-100px, calc(-50% - 5px));
+}
+
+.productTile {
+  width: 100%;
+}
+
+.status {
+  color: #FF5C00;
 }

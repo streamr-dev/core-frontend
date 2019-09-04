@@ -140,10 +140,13 @@ function useEditController(product: Product) {
     const deployCommunity = useCallback(async () => {
         if (!isMounted()) { return }
 
-        await deployCommunityDialog.open()
+        await deployCommunityDialog.open({
+            product,
+        })
     }, [
         deployCommunityDialog,
         isMounted,
+        product,
     ])
 
     return useMemo(() => ({

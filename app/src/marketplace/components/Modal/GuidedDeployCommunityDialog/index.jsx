@@ -10,6 +10,8 @@ import Dialog from '$shared/components/Dialog'
 import Buttons from '$shared/components/Buttons'
 import Checkbox from '$shared/components/Checkbox'
 import Tile from '$shared/components/Tile'
+import { type Product } from '$mp/flowtype/product-types'
+import cpStats from '$mp/assets/cp-stats.png'
 
 import styles from './guidedDeployCommunityDialog.pcss'
 
@@ -17,13 +19,16 @@ type ChildrenProps = {
     children?: Node,
 }
 
+type ProductCardProps = {
+    name: string,
+    image: string,
+    className?: string,
+}
+
 const PreviewContainer = ({ children }: ChildrenProps) => (
     <div className={styles.previewContainer}>
         {children}
         <div className={styles.previewBackground} />
-        <div className={styles.previewMask}>
-            {children}
-        </div>
     </div>
 )
 
@@ -33,16 +38,34 @@ const TextContainer = ({ children }: ChildrenProps) => (
     </div>
 )
 
+const ProductCard = ({ name, image, className }: ProductCardProps) => (
+    <div className={cx(styles.productCard, className)}>
+        <Tile className={styles.productTile} imageUrl={image}>
+            <Tile.Title>{name}</Tile.Title>
+            <Tile.Description>
+                Updated just now
+            </Tile.Description>
+            <Tile.Status className={styles.status}>
+                Draft
+            </Tile.Status>
+        </Tile>
+    </div>
+)
+
 export type Props = {
+    product: Product,
     onClose: () => void,
     onContinue: (boolean) => void,
 }
 
-const GuidedDeployCommunityDialog = ({ onClose, onContinue: onContinueProp }: Props) => {
+const GuidedDeployCommunityDialog = ({ product, onClose, onContinue: onContinueProp }: Props) => {
     const [skipHelp, setSkipHelp] = useState(false)
     const [step, setStep] = useState(0)
 
     const isLastStep = step === 3
+    const { name } = product
+    // $FlowFixMe
+    const image = String((product.newImageToUpload && product.newImageToUpload.preview) || product.imageUrl)
 
     const onContinue = useCallback(() => {
         if (isLastStep) {
@@ -56,41 +79,73 @@ const GuidedDeployCommunityDialog = ({ onClose, onContinue: onContinueProp }: Pr
         setSkipHelp(checked)
     }, [setSkipHelp])
 
-    const helpContent = useMemo(() => {
-        switch (step) {
-            case 0:
-                return (
-                    <div>
-                        <PreviewContainer>
-                            <Tile className={styles.productTile}>
-                                <Tile.Title>Plaa</Tile.Title>
-                            </Tile>
-                        </PreviewContainer>
-                        <TextContainer>
-                            Deploying your product’s smart contract will allow your users to join the community via your app.
-                        </TextContainer>
-                    </div>
-                )
-
-            case 1:
-                return <p>second</p>
-
-            case 2:
-                return <p>third</p>
-
-            case 3:
-                return <p>last</p>
-
-            default:
-                return null
-        }
-    }, [step])
+    const helpContent = useMemo(() => (
+        <div className={styles.tabContent}>
+            {step === 0 && (
+                <React.Fragment>
+                    <div
+                        className={styles.previewImage}
+                        style={{
+                            backgroundImage: `url('${image}')`,
+                        }}
+                    />
+                    <TextContainer>
+                        Deploying your product’s smart contract will allow your users to join the community via your app.
+                    </TextContainer>
+                </React.Fragment>
+            )}
+            {step === 1 && (
+                <React.Fragment>
+                    <PreviewContainer>
+                        <ProductCard
+                            name={name}
+                            image={image}
+                            className={styles.highlightStatus}
+                        />
+                    </PreviewContainer>
+                    <TextContainer>
+                        Once deployed, your product is not published, but will appear as
+                        <br />
+                        a Draft in Core &gt; Products. Publish when it has enough members.
+                    </TextContainer>
+                </React.Fragment>
+            )}
+            {step === 2 && (
+                <React.Fragment>
+                    <PreviewContainer>
+                        <ProductCard
+                            name={name}
+                            image={image}
+                            className={styles.highlightMembers}
+                        />
+                    </PreviewContainer>
+                    <TextContainer>
+                        A minimum of one member is needed to publish the product.
+                        <br />
+                        In Core, community size is shown on the Members badge.
+                    </TextContainer>
+                </React.Fragment>
+            )}
+            {step === 3 && (
+                <React.Fragment>
+                    <PreviewContainer>
+                        <img src={cpStats} alt="" className={styles.highlightStats} />
+                    </PreviewContainer>
+                    <TextContainer>
+                    View analytics and manually manage your community
+                        <br />
+                        by clicking the Members badge on the product tile.
+                    </TextContainer>
+                </React.Fragment>
+            )}
+        </div>
+    ), [step, name, image])
 
     return (
         <Modal>
             <Dialog
                 className={cx(styles.root, styles.DeployCommunityDialog)}
-                title={I18n.t('modal.confirmNoCoverImage.title')}
+                title={product.name}
                 onClose={onClose}
                 contentClassName={styles.content}
                 renderActions={() => (
