@@ -10,6 +10,7 @@ import styles from './editableText.pcss'
 type Props = {
     id?: string,
     autoFocus?: boolean,
+    title?: string,
     children?: string | number,
     className?: ?string,
     disabled?: boolean,
@@ -42,6 +43,7 @@ const EditableText = ({
     placeholder,
     probe,
     setEditing,
+    title,
     ...props
 }: Props) => {
     const children = (childrenProp == null) ? EditableText.defaultProps.children : childrenProp
@@ -105,6 +107,7 @@ const EditableText = ({
                 // we can't let the span be focusable when the input is.
                 tabIndex: (hasFocus ? -1 : 0),
             } : {})}
+            title={title}
         >
             <span className={styles.inner}>
                 {probe}

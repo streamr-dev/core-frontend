@@ -6,6 +6,13 @@
   line-height: 20px;
   cursor: pointer;
   padding: 2px 16px;
+  transition-duration: 0.1s;
+  transition-property: background-color, color;
+}
+
+.item.disabled {
+  pointer-events: none;
+  opacity: 0.6;
 }
 
 .item:hover {

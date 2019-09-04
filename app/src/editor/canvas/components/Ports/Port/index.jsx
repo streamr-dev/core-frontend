@@ -137,6 +137,7 @@ const Port = ({
             {!!contextMenuTarget && (
                 <Menu
                     api={api}
+                    canvas={canvas}
                     dismiss={dismiss}
                     port={port}
                     setPortOptions={setOptions}
