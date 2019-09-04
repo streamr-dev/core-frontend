@@ -181,7 +181,7 @@ export default class TableModule extends React.Component {
                                         /* eslint-disable-next-line react/no-array-index-key */
                                         <td key={index}>
                                             <div className={styles.cell}>
-                                                {item}
+                                                {item != null ? String(item) : item}
                                             </div>
                                         </td>
                                     ))}
