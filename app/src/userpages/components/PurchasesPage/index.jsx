@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import { Translate, I18n } from 'react-redux-i18n'
 import cx from 'classnames'
 import Helmet from 'react-helmet'
+import { Link } from 'react-router-dom'
 
 import Layout from '../Layout'
 import links from '../../../links'
@@ -140,27 +141,31 @@ class PurchasesPage extends Component<Props> {
                             const isActive = subscriptions && isSubscriptionActive(subscriptions.find((s) => s.product.id === product.id))
 
                             return (
-                                <Tile
+                                <Link
                                     key={product.id}
-                                    imageUrl={product.imageUrl}
-                                    link={product.id && `${links.marketplace.products}/${product.id}`}
+                                    to={product.id && `${links.marketplace.products}/${product.id}`}
                                 >
-                                    <Tile.Title>{product.name}</Tile.Title>
-                                    <Tile.Description>{product.owner}</Tile.Description>
-                                    <Tile.Status
-                                        className={
-                                            cx({
-                                                [styles.active]: isActive,
-                                                [styles.expired]: !isActive,
-                                            })}
+                                    <Tile
+                                        imageUrl={product.imageUrl || ''}
+                                        link={product.id && `${links.marketplace.products}/${product.id}`}
                                     >
-                                        {
-                                            isActive ?
-                                                <Translate value="userpages.purchases.active" /> :
-                                                <Translate value="userpages.purchases.expired" />
-                                        }
-                                    </Tile.Status>
-                                </Tile>
+                                        <Tile.Title>{product.name}</Tile.Title>
+                                        <Tile.Description>{product.owner}</Tile.Description>
+                                        <Tile.Status
+                                            className={
+                                                cx({
+                                                    [styles.active]: isActive,
+                                                    [styles.expired]: !isActive,
+                                                })}
+                                        >
+                                            {
+                                                isActive ?
+                                                    <Translate value="userpages.purchases.active" /> :
+                                                    <Translate value="userpages.purchases.expired" />
+                                            }
+                                        </Tile.Status>
+                                    </Tile>
+                                </Link>
                             )
                         })}
                     </TileGrid>

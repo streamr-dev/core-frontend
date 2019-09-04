@@ -3,7 +3,7 @@
 import React from 'react'
 import useModal from '$shared/hooks/useModal'
 
-import DeployCommunityDialog from '$mp/components/Modal/DeployCommunityDialog'
+import GuidedDeployCommunityDialog from '$mp/components/Modal/GuidedDeployCommunityDialog'
 
 export default () => {
     const { api, isOpen } = useModal('deployCommunity')
@@ -13,7 +13,8 @@ export default () => {
     }
 
     return (
-        <DeployCommunityDialog
+        <GuidedDeployCommunityDialog
+            onContinue={() => {}}
             onClose={() => api.close(false)}
         />
     )
