@@ -1,6 +1,7 @@
 // @flow
 
-import React, { useState, useCallback, useMemo, useEffect } from 'react'
+import isEqual from 'lodash/isEqual'
+import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react'
 import { type CommonProps } from '..'
 import ListEntry from './ListEntry'
 import styles from './list.pcss'
@@ -13,37 +14,44 @@ const EMPTY = []
 
 const List = ({ disabled, onChange, value: valuesProp }: Props) => {
     valuesProp = valuesProp || EMPTY
+    const valuesPropRef = useRef()
+    valuesPropRef.current = valuesProp
     const [values, setValues] = useState(valuesProp)
 
     const commit = useCallback((values) => {
-        onChange(values.map((v) => v.trim()).filter((v) => v != null))
+        onChange(values.filter((v) => v != null).map((v) => v.trim()))
     }, [onChange])
 
     const onRemoveClick = useCallback((index: number) => {
-        const newValues = [...values]
+        const newValues = values.slice()
         newValues.splice(index, 1)
         setValues(newValues)
-
-        commit(newValues)
-    }, [commit, values])
+    }, [values])
 
     const onEntryChange = useCallback((index: number, entryValue: string) => {
-        const newValues = [...values]
+        const newValues = values.slice()
         entryValue = entryValue.trim()
         newValues[index] = entryValue
         setValues(newValues)
-        commit(newValues)
-    }, [values, commit])
+    }, [values])
 
     const finalValues = useMemo(() => [
         ...values,
         // Append an extra entry at the end…
-        undefined,
+        null,
     ], [values])
 
     useEffect(() => {
-        setValues(valuesProp.map((v) => v.trim()).filter((v) => v != null))
+        setValues((values) => {
+            if (isEqual(valuesProp, values)) { return values }
+            return valuesProp
+        })
     }, [valuesProp])
+
+    useEffect(() => {
+        if (isEqual(valuesPropRef.current, values)) { return }
+        commit(values)
+    }, [values, commit])
 
     return (
         <div className={styles.root}>
@@ -59,7 +67,6 @@ const List = ({ disabled, onChange, value: valuesProp }: Props) => {
                         onChange={onEntryChange}
                         onRemoveClick={onRemoveClick}
                         removable={index !== finalValues.length - 1}
-                        addable={index === finalValues.length - 1 && finalValues[index] == null}
                         value={v}
                     />
                 )

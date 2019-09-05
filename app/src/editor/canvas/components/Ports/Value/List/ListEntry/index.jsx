@@ -16,7 +16,6 @@ type Props = {
     onChange: (Index, Value) => void,
     onRemoveClick?: ?(Index) => void,
     removable?: boolean,
-    addable?: boolean,
     value: Value,
 }
 
@@ -28,7 +27,6 @@ const ListEntry = ({
     onChange: onChangeProp,
     onRemoveClick: onRemoveClickProp,
     removable,
-    addable,
     value,
 }: Props) => {
     const onValueChange = useCallback((newValue) => {
@@ -41,13 +39,14 @@ const ListEntry = ({
     }, [index, value, onChangeProp])
 
     const onRemoveClick = useCallback(() => {
-        if (removable && onRemoveClickProp) {
+        if (onRemoveClickProp) {
             onRemoveClickProp(index)
         }
-    }, [index, removable, onRemoveClickProp])
+    }, [index, onRemoveClickProp])
 
     return (
         <Fragment>
+            {/* Use empty text input as 'label' */}
             <Text
                 className={styles.label}
                 disabled
@@ -65,7 +64,6 @@ const ListEntry = ({
             <div>
                 {removable ? (
                     <button
-                        key="remove"
                         className={mapStyles.button}
                         type="button"
                         onClick={onRemoveClick}
@@ -74,9 +72,8 @@ const ListEntry = ({
                             <path d="M11.2 8H4.8" stroke="#323232" fill="none" strokeLinecap="round" />
                         </svg>
                     </button>
-                ) : (!!addable && (
+                ) : (
                     <button
-                        key="add"
                         className={mapStyles.button}
                         type="button"
                         onClick={onAddClick}
@@ -89,7 +86,7 @@ const ListEntry = ({
                             </g>
                         </svg>
                     </button>
-                ))}
+                )}
             </div>
         </Fragment>
     )
