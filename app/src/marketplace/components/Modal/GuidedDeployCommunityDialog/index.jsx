@@ -41,7 +41,13 @@ const TextContainer = ({ children }: ChildrenProps) => (
 
 const ProductCard = ({ name, image, className }: ProductCardProps) => (
     <div className={cx(styles.productCard, className)}>
-        <Tile className={styles.productTile} imageUrl={image}>
+        <Tile
+            className={styles.productTile}
+            imageUrl={image}
+            badges={{
+                members: 15,
+            }}
+        >
             <Tile.Title>{name}</Tile.Title>
             <Tile.Description>
                 Updated just now

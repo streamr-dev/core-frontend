@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 
-// from https://gist.github.com/gragland/cfc4089e2f5d98dde5033adc44da53f8
+// adapted from https://gist.github.com/gragland/cfc4089e2f5d98dde5033adc44da53f8
 function useHover() {
     const [value, setValue] = useState(false)
 
@@ -12,12 +12,12 @@ function useHover() {
         const element = ref && ref.current
 
         if (element) {
-            element.addEventListener('mouseover', handleMouseOver)
-            element.addEventListener('mouseout', handleMouseOut)
+            element.addEventListener('mouseenter', handleMouseOver)
+            element.addEventListener('mouseleave', handleMouseOut)
 
             return () => {
-                element.removeEventListener('mouseover', handleMouseOver)
-                element.removeEventListener('mouseout', handleMouseOut)
+                element.removeEventListener('mouseenter', handleMouseOver)
+                element.removeEventListener('mouseleave', handleMouseOut)
             }
         }
 
