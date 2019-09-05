@@ -484,7 +484,10 @@ const CanvasEditComponent = class CanvasEdit extends Component {
     }
 }
 
-const CanvasEdit = withRouter(({ canvas, ...props }) => {
+const CanvasEdit = withRouter((props) => {
+    const canvas = useCanvas()
+    const { replaceCanvas, setCanvas } = useCanvasUpdater()
+    const { undo } = useContext(UndoContext.Context)
     const runController = useContext(RunController.Context)
     const canvasController = CanvasController.useController()
     const [updated, setUpdated] = useUpdatedTime(canvas.updated)
@@ -498,6 +501,9 @@ const CanvasEdit = withRouter(({ canvas, ...props }) => {
             <UndoControls disabled={!runController.isEditable} />
             <CanvasEditComponent
                 {...props}
+                replace={replaceCanvas}
+                push={setCanvas}
+                undo={undo}
                 isEmbedMode={isEmbedMode}
                 canvas={canvas}
                 runController={runController}
@@ -511,8 +517,6 @@ const CanvasEdit = withRouter(({ canvas, ...props }) => {
 })
 
 const CanvasEditWrap = () => {
-    const { replaceCanvas, setCanvas } = useCanvasUpdater()
-    const { undo } = useContext(UndoContext.Context)
     const canvas = useCanvas()
     if (!canvas) {
         return (
@@ -527,12 +531,7 @@ const CanvasEditWrap = () => {
     return (
         <SubscriptionStatus.Provider key={key}>
             <RunController.Provider canvas={canvas}>
-                <CanvasEdit
-                    replace={replaceCanvas}
-                    push={setCanvas}
-                    undo={undo}
-                    canvas={canvas}
-                />
+                <CanvasEdit />
             </RunController.Provider>
         </SubscriptionStatus.Provider>
     )
