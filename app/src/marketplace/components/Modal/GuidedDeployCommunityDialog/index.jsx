@@ -11,6 +11,7 @@ import Buttons from '$shared/components/Buttons'
 import Checkbox from '$shared/components/Checkbox'
 import Tile from '$shared/components/Tile'
 import { type Product } from '$mp/flowtype/product-types'
+
 import cpStats from '$mp/assets/cp-stats.png'
 
 import styles from './guidedDeployCommunityDialog.pcss'
@@ -144,7 +145,7 @@ const GuidedDeployCommunityDialog = ({ product, onClose, onContinue: onContinueP
     return (
         <Modal>
             <Dialog
-                className={cx(styles.root, styles.DeployCommunityDialog)}
+                className={cx(styles.root, styles.GuidedDeployCommunityDialog)}
                 title={product.name}
                 onClose={onClose}
                 contentClassName={styles.content}
