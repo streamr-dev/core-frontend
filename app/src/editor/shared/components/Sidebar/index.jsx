@@ -15,12 +15,13 @@ import Select from './Select'
 import styles from './sidebar.pcss'
 
 type Props = {
+    className?: string,
     isOpen: boolean,
     children?: Node,
     onClose?: Function,
 }
 
-const Sidebar = ({ isOpen, onClose, children }: Props) => {
+const Sidebar = ({ className, isOpen, onClose, children }: Props) => {
     const elRef = useRef()
 
     // close on esc
@@ -50,7 +51,7 @@ const Sidebar = ({ isOpen, onClose, children }: Props) => {
     }, [onKeyDown, onClick])
 
     return (
-        <div className={cx(styles.sidebar)} ref={elRef} hidden={!isOpen}>
+        <div className={cx(className, styles.sidebar)} ref={elRef} hidden={!isOpen}>
             {children}
         </div>
     )

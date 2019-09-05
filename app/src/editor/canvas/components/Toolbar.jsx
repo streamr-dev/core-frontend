@@ -70,6 +70,8 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
         }
     }
 
+    elRef = React.createRef()
+
     render() {
         const {
             canvas,
@@ -101,6 +103,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
         const { editorState = {} } = settings
         return (
             <div
+                ref={this.elRef}
                 className={cx(className, styles.CanvasToolbar, {
                     [styles.notEditable]: !hasWritePermission,
                 })}
@@ -180,6 +183,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                     open={this.canvasSearchOpen}
                                 />
                                 <Tooltip
+                                    container={this.elRef.current}
                                     value={moduleSearchIsOpen ? (
                                         'Hide module panel'
                                     ) : (
@@ -398,7 +402,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                     </div>
                                 </div>
                                 <div className={styles.ModalButtons}>
-                                    <Tooltip value="Share">
+                                    <Tooltip container={this.elRef.current} value="Share">
                                         <R.Button
                                             className={cx(styles.ToolbarButton, styles.ShareButton)}
                                             onClick={() => shareDialog.open()}
@@ -407,7 +411,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                             <SvgIcon name="share" />
                                         </R.Button>
                                     </Tooltip>
-                                    <Tooltip value={<React.Fragment>Keyboard<br />shortcuts</React.Fragment>}>
+                                    <Tooltip container={this.elRef.current} value={<React.Fragment>Keyboard<br />shortcuts</React.Fragment>}>
                                         <R.Button
                                             className={cx(styles.ToolbarButton, styles.KeyboardButton)}
                                             onClick={() => this.props.keyboardShortcutOpen()}

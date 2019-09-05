@@ -28,6 +28,8 @@ export default withErrorBoundary(ErrorComponentView)(class DashboardToolbar exte
         }))
     }
 
+    elRef = React.createRef()
+
     render() {
         const {
             dashboard,
@@ -44,7 +46,7 @@ export default withErrorBoundary(ErrorComponentView)(class DashboardToolbar exte
         }
 
         return (
-            <div className={cx(className, styles.CanvasToolbar)}>
+            <div className={cx(className, styles.CanvasToolbar)} ref={this.elRef}>
                 <ModalContainer modalId="ShareDialog">
                     {({ api: shareDialog }) => (
                         <React.Fragment>
@@ -94,7 +96,7 @@ export default withErrorBoundary(ErrorComponentView)(class DashboardToolbar exte
                             </div>
                             <div className={cx(styles.ToolbarLeft, styles.DashboardButtons)}>
                                 <div className={styles.ModalButtons}>
-                                    <Tooltip value="Share">
+                                    <Tooltip container={this.elRef.current} value="Share">
                                         <R.Button
                                             className={cx(styles.ToolbarButton, styles.ShareButton)}
                                             onClick={() => shareDialog.open()}
@@ -102,7 +104,7 @@ export default withErrorBoundary(ErrorComponentView)(class DashboardToolbar exte
                                             <SvgIcon name="share" />
                                         </R.Button>
                                     </Tooltip>
-                                    <Tooltip value={<React.Fragment>Keyboard<br />shortcuts</React.Fragment>}>
+                                    <Tooltip container={this.elRef.current} value={<React.Fragment>Keyboard<br />shortcuts</React.Fragment>}>
                                         <R.Button
                                             className={cx(styles.ToolbarButton, styles.KeyboardButton)}
                                             onClick={() => keyboardShortcutOpen()}
