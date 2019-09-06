@@ -26,13 +26,19 @@ const ConfirmDeployCommunityDialog = ({ product, onClose, onContinue, onShowGuid
         <Modal>
             <Dialog
                 className={cx(styles.root, styles.ConfirmDeployCommunityDialog)}
-                title={product.name}
+                title={I18n.t('modal.deployCommunity.confirm.title', {
+                    name: product.name,
+                })}
                 onClose={onClose}
                 contentClassName={styles.content}
                 renderActions={() => (
                     <div className={styles.footer}>
                         <div className={styles.footerText}>
-                            Learn about <a href="#" onClick={onShowGuidedDialog}>deploying drafts</a>
+                            {I18n.t('modal.deployCommunity.confirm.learnAbout')}
+                            &nbsp;
+                            <a href="#" onClick={onShowGuidedDialog}>
+                                {I18n.t('modal.deployCommunity.confirm.deployingDrafts')}
+                            </a>
                         </div>
                         <Buttons
                             actions={{

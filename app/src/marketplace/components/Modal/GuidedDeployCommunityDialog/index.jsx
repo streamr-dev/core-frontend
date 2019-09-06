@@ -63,10 +63,11 @@ export type Props = {
     product: Product,
     onClose: () => void,
     onContinue: (boolean) => void,
+    dontShowAgain?: boolean,
 }
 
-const GuidedDeployCommunityDialog = ({ product, onClose, onContinue: onContinueProp }: Props) => {
-    const [skipHelp, setSkipHelp] = useState(false)
+const GuidedDeployCommunityDialog = ({ product, onClose, onContinue: onContinueProp, dontShowAgain }: Props) => {
+    const [skipHelp, setSkipHelp] = useState(!!dontShowAgain)
     const [step, setStep] = useState(0)
 
     const isLastStep = step === 3
@@ -97,7 +98,7 @@ const GuidedDeployCommunityDialog = ({ product, onClose, onContinue: onContinueP
                         }}
                     />
                     <TextContainer>
-                        Deploying your product’s smart contract will allow your users to join the community via your app.
+                        <Translate value="modal.deployCommunity.guide.step1" dangerousHTML />
                     </TextContainer>
                 </React.Fragment>
             )}
@@ -111,9 +112,7 @@ const GuidedDeployCommunityDialog = ({ product, onClose, onContinue: onContinueP
                         />
                     </PreviewContainer>
                     <TextContainer>
-                        Once deployed, your product is not published, but will appear as
-                        <br />
-                        a Draft in Core &gt; Products. Publish when it has enough members.
+                        <Translate value="modal.deployCommunity.guide.step2" dangerousHTML />
                     </TextContainer>
                 </React.Fragment>
             )}
@@ -127,9 +126,7 @@ const GuidedDeployCommunityDialog = ({ product, onClose, onContinue: onContinueP
                         />
                     </PreviewContainer>
                     <TextContainer>
-                        A minimum of one member is needed to publish the product.
-                        <br />
-                        In Core, community size is shown on the Members badge.
+                        <Translate value="modal.deployCommunity.guide.step3" dangerousHTML />
                     </TextContainer>
                 </React.Fragment>
             )}
@@ -139,9 +136,7 @@ const GuidedDeployCommunityDialog = ({ product, onClose, onContinue: onContinueP
                         <img src={cpStats} alt="" className={styles.highlightStats} />
                     </PreviewContainer>
                     <TextContainer>
-                    View analytics and manually manage your community
-                        <br />
-                        by clicking the Members badge on the product tile.
+                        <Translate value="modal.deployCommunity.guide.step4" dangerousHTML />
                     </TextContainer>
                 </React.Fragment>
             )}
@@ -152,7 +147,9 @@ const GuidedDeployCommunityDialog = ({ product, onClose, onContinue: onContinueP
         <Modal>
             <Dialog
                 className={cx(styles.root, styles.GuidedDeployCommunityDialog)}
-                title={product.name}
+                title={I18n.t('modal.deployCommunity.guide.title', {
+                    name: product.name,
+                })}
                 onClose={onClose}
                 contentClassName={styles.content}
                 renderActions={() => (
@@ -166,7 +163,7 @@ const GuidedDeployCommunityDialog = ({ product, onClose, onContinue: onContinueP
                                             setSkipped(e.target.checked)
                                         }}
                                     />
-                                    <Translate value="modal.confirm.dontShowAgain" />
+                                    <Translate value="modal.deployCommunity.guide.dontShowAgain" />
                                 </Label>
                             </FormGroup>
                         </div>

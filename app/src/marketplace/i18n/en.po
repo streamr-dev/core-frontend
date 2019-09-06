@@ -543,6 +543,54 @@ msgstr ""
 msgid "modal##web3##installsupportedbrowser##title"
 msgstr "Your browser is not supported"
 
+msgid "modal##deployCommunity##confirm##title"
+msgstr "Deploy %{name}"
+
+msgid "modal##deployCommunity##confirm##learnAbout"
+msgstr "Learn about"
+
+msgid "modal##deployCommunity##confirm##deployingDrafts"
+msgstr "deploying drafts"
+
+msgid "modal##deployCommunity##guide##title"
+msgstr "Deploy %{name}"
+
+msgid "modal##deployCommunity##guide##dontShowAgain"
+msgstr "Don't show this guide again"
+
+msgid "modal##deployCommunity##guide##step1"
+msgstr ""
+"Deploying your product’s smart contract will allow"
+"<br />"
+"your users to join the community via your app."
+
+msgid "modal##deployCommunity##guide##step2"
+msgstr ""
+"Once deployed, your product is not published, but will appear as"
+"<br />"
+"a Draft in Core &gt; Products. Publish when it has enough members."
+
+msgid "modal##deployCommunity##guide##step3"
+msgstr ""
+"A minimum of one member is needed to publish the product."
+"<br />"
+"In Core, community size is shown on the Members badge."
+
+msgid "modal##deployCommunity##guide##step4"
+msgstr ""
+"View analytics and manually manage your community"
+"<br />"
+"by clicking the Members badge on the product tile."
+
+msgid "modal##deployCommunity##deploying##title"
+msgstr "Deploying %{name}"
+
+msgid "modal##deployCommunity##deploying##description"
+msgstr ""
+"Estimated deployment time is %{time}. You can wait or close"
+"<br />"
+"this dialogue and get notified when your product is ready."
+
 msgid "noMyProductsView##goToEditor"
 msgstr "Go to the editor"
 
