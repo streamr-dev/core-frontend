@@ -3,6 +3,7 @@ import cx from 'classnames'
 import Draggable from 'react-draggable'
 import { ResizableBox } from 'react-resizable'
 import SvgIcon from '$shared/components/SvgIcon'
+import { useDebounced } from '$shared/hooks/wrapCallback'
 
 import styles from './SearchPanel.pcss'
 
@@ -168,19 +169,24 @@ export function SearchPanel(props) {
 
     /* Drag/Drop Handling */
 
-    const onDragStop = useCallback((e, data) => {
+    const setLayoutPosition = useCallback((posX, posY) => {
         // update layout after dragging
         setLayoutState((layout) => {
-            if (data.x === layout.posX && data.y === layout.posY) {
+            if (posX === layout.posX && posY === layout.posY) {
                 return layout // do nothing if identical
             }
             return {
                 ...layout,
-                posX: data.x,
-                posY: data.y,
+                posX,
+                posY,
             }
         })
     }, [setLayoutState])
+
+    const onDragStop = useCallback((e, data) => {
+        // update layout after dragging
+        setLayoutPosition(data.x, data.y)
+    }, [setLayoutPosition])
 
     /* Resize Handling */
 
@@ -218,6 +224,23 @@ export function SearchPanel(props) {
     }, [open, closeOnBlur])
 
     const listBoxInteraction = useListBoxInteraction(listContextRef)
+
+    // currently no way to force react-draggable to update bounds calculation
+    // this means if container ends up outside bounds after resize, it stays outside bounds
+    // See https://github.com/mzabriskie/react-draggable/pull/392
+    // possible to recalculate position but basically requires reimplementing bounds handling in react-draggable
+    // sub-optimal workaround: reset to default position on window resize
+    const propsRef = useRef(props)
+    const onResizeWindow = useDebounced(useCallback(() => {
+        setLayoutPosition(propsRef.current.defaultPosX, propsRef.current.defaultPosY)
+    }, [propsRef, setLayoutPosition]), 750)
+
+    useEffect(() => {
+        window.addEventListener('resize', onResizeWindow)
+        return () => {
+            window.removeEventListener('resize', onResizeWindow)
+        }
+    }, [onResizeWindow])
 
     const { width, height, posX, posY } = layout
 
