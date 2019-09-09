@@ -11,6 +11,7 @@ import type { Product } from '$mp/flowtype/product-types'
 import ProductController from '../ProductController'
 import useProduct from '../ProductController/useProduct'
 import usePending from '$shared/hooks/usePending'
+import BackButton from '$shared/components/BackButton'
 
 import { Provider as EditControllerProvider, Context as EditControllerContext } from './EditControllerProvider'
 import Editor from './Editor'
@@ -96,6 +97,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
             hideNavOnDesktop
             navComponent={(
                 <Toolbar
+                    left={<BackButton />}
                     actions={actions}
                     altMobileLayout
                 />

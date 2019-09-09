@@ -51,10 +51,10 @@ const ProductCard = ({ name, image, className }: ProductCardProps) => (
         >
             <Tile.Title>{name}</Tile.Title>
             <Tile.Description>
-                Updated just now
+                <Translate value="modal.deployCommunity.guide.preview.updated" />
             </Tile.Description>
             <Tile.Status className={styles.status}>
-                Draft
+                <Translate value="modal.deployCommunity.guide.preview.status" />
             </Tile.Status>
         </Tile>
     </div>
