@@ -30,11 +30,15 @@
   }
 }
 
+.previewImageWrapper {
+  width: 100%;
+  height: 240px;
+}
+
 .previewImage {
   width: 100%;
   height: 240px;
   border-bottom: 1px solid #F2F1F1;
-  background: none no-repeat 50% 50%;
   background-size: cover;
 }
 
@@ -77,12 +81,42 @@
 
 .tab {
   height: 1px;
+  position: relative;
+}
+
+.tabLine {
   background-color: #D8D8D8;
   transition: background-color 0.3s linear;
+  height: 1px;
 }
 
 .activeTab {
   background-color: #0324FF;
+}
+
+.tabButton {
+  display: block;
+  position: absolute;
+  height: 11px;
+  width: 100%;
+  top: -5px;
+  background: transparent;
+  border: none !important;
+  font-size: 0;
+  outline: none;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+
+  &:focus {
+    outline: none;
+  }
+
+  &:hover {
+    .tabLine:not(.activeTab) {
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+  }
 }
 
 .productCard {

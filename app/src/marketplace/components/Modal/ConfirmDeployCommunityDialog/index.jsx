@@ -7,6 +7,7 @@ import cx from 'classnames'
 import Modal from '$shared/components/Modal'
 import Dialog from '$shared/components/Dialog'
 import Buttons from '$shared/components/Buttons'
+import FallbackImage from '$shared/components/FallbackImage'
 import { type Product } from '$mp/flowtype/product-types'
 
 import styles from './confirmDeployCommunityDialog.pcss'
@@ -57,12 +58,9 @@ const ConfirmDeployCommunityDialog = ({ product, onClose, onContinue, onShowGuid
                     </div>
                 )}
             >
-                <div
-                    className={styles.previewImage}
-                    style={{
-                        backgroundImage: `url('${image}')`,
-                    }}
-                />
+                <div className={styles.previewImageWrapper}>
+                    <FallbackImage src={image} alt={product.name} className={styles.previewImage} />
+                </div>
             </Dialog>
         </Modal>
     )

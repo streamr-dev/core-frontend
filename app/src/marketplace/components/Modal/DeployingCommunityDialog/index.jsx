@@ -16,8 +16,12 @@ export type Props = {
     onContinue: () => void,
 }
 
-// $FlowFixMe
-const formatSeconds = (seconds) => new Date(seconds * 1000).toUTCString().match(/\d\d:(\d\d:\d\d)/)[1]
+const formatSeconds = (seconds) => {
+    // $FlowFixMe
+    const timeValue = new Date(seconds * 1000).toUTCString().match(/\d\d:\d\d:\d\d/)[0]
+
+    return timeValue.substr(0, 2) === '00' ? timeValue.substr(3) : timeValue
+}
 
 const DeployingCommunityDialog = ({ product, onClose, onContinue }: Props) => {
     const estimate = 205

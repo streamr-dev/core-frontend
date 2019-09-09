@@ -10,6 +10,7 @@ import Dialog from '$shared/components/Dialog'
 import Buttons from '$shared/components/Buttons'
 import Checkbox from '$shared/components/Checkbox'
 import Tile from '$shared/components/Tile'
+import FallbackImage from '$shared/components/FallbackImage'
 import { type Product } from '$mp/flowtype/product-types'
 
 import cpStats from '$mp/assets/cp-stats.png'
@@ -91,12 +92,9 @@ const GuidedDeployCommunityDialog = ({ product, onClose, onContinue: onContinueP
         <div className={styles.tabContent}>
             {step === 0 && (
                 <React.Fragment>
-                    <div
-                        className={styles.previewImage}
-                        style={{
-                            backgroundImage: `url('${image}')`,
-                        }}
-                    />
+                    <div className={styles.previewImageWrapper}>
+                        <FallbackImage src={image} alt={name} className={styles.previewImage} />
+                    </div>
                     <TextContainer>
                         <Translate value="modal.deployCommunity.guide.step1" dangerousHTML />
                     </TextContainer>
@@ -190,10 +188,19 @@ const GuidedDeployCommunityDialog = ({ product, onClose, onContinue: onContinueP
                     {[0, 1, 2, 3].map((i) => (
                         <div
                             key={i}
-                            className={cx(styles.tab, {
-                                [styles.activeTab]: i === step,
-                            })}
-                        />
+                            className={styles.tab}
+                        >
+                            <button
+                                type="button"
+                                onClick={() => setStep(i)}
+                                className={styles.tabButton}
+                            >
+                                <div className={cx(styles.tabLine, {
+                                    [styles.activeTab]: i === step,
+                                })}
+                                />
+                            </button>
+                        </div>
                     ))}
                 </div>
             </Dialog>
