@@ -66,7 +66,7 @@ const List = ({ disabled, onChange, value: valuesProp }: Props) => {
                         key={index}
                         onChange={onEntryChange}
                         onRemoveClick={onRemoveClick}
-                        removable={index !== finalValues.length - 1}
+                        isLast={index !== finalValues.length - 1}
                         value={v}
                     />
                 )

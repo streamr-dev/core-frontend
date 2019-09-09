@@ -15,7 +15,7 @@ type Props = {
     onAddClick?: ?(Index) => void,
     onChange: (Index, Value) => void,
     onRemoveClick?: ?(Index) => void,
-    removable?: boolean,
+    isLast?: boolean,
     value: Value,
 }
 
@@ -26,7 +26,7 @@ const ListEntry = ({
     index,
     onChange: onChangeProp,
     onRemoveClick: onRemoveClickProp,
-    removable,
+    isLast,
     value,
 }: Props) => {
     const onValueChange = useCallback((newValue) => {
@@ -59,11 +59,19 @@ const ListEntry = ({
                 onChange={onValueChange}
                 placeholder={`Item ${index}`}
                 value={value}
+                autoFocus
             />
             {/* Unnamed possibly empty div. It's the 3rd column in Map's 3-column grid. Keep it. */}
             <div>
-                {removable ? (
+                {/*
+                    Note: Added keys to these buttons.
+                    This prevents a mousedown/blur on the add button triggering the add button to change to a remove button
+                    and then following mouseup then being treated as if it was a click on the remove button
+                    i.e. prevents it from immediately removing rows after adding them.
+                */}
+                {isLast ? (
                     <button
+                        key="remove"
                         className={mapStyles.button}
                         type="button"
                         onClick={onRemoveClick}
@@ -74,6 +82,7 @@ const ListEntry = ({
                     </button>
                 ) : (
                     <button
+                        key="add"
                         className={mapStyles.button}
                         type="button"
                         onClick={onAddClick}
