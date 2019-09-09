@@ -1,6 +1,7 @@
 import React, { useEffect, useCallback, useState } from 'react'
 import CanvasModuleHelp from '$docs/components/CanvasModuleHelp'
 import useIsMounted from '$shared/hooks/useIsMounted'
+import Empty from '$docs/components/CanvasModuleHelp/Empty'
 
 const docs = require.context('$docs/content/canvasModules/', false, /\.jsx$/)
 
@@ -14,7 +15,13 @@ function ModuleHelp({ module: m }) {
     const loadHelp = useCallback(() => {
         // ignore module name, just match on id
         const path = docs.keys().find((d) => d.endsWith(`-${moduleId}.jsx`))
-        if (!path) { return }
+        if (!path) {
+            setHelpContent((state) => ({
+                ...state,
+                [moduleId]: Empty.help,
+            }))
+            return
+        }
         import(`$docs/content/canvasModules/${path.slice(2)}`).then((result) => {
             if (!isMounted()) { return }
             setHelpContent((state) => ({
