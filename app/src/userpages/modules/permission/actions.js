@@ -104,7 +104,7 @@ const saveRemovedResourcePermissionFailure = (resourceType: ResourceType, resour
 
 export const getResourcePermissions = (resourceType: ResourceType, resourceId: ResourceId) => async (dispatch: Function) => {
     dispatch(getResourcePermissionsRequest())
-    services.getResourcePermissions(resourceType, resourceId)
+    return services.getResourcePermissions(resourceType, resourceId)
         .then((resourcePermissions) => {
             dispatch(getResourcePermissionsSuccess(resourceType, resourceId, resourcePermissions))
         }, (error) => {
