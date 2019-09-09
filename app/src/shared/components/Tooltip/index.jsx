@@ -1,6 +1,6 @@
 // @flow
 
-import React, { type Node } from 'react'
+import React, { type Node, useRef, useState, useCallback } from 'react'
 import { Tooltip as RsTooltip } from 'reactstrap'
 
 import styles from './tooltip.pcss'
@@ -11,58 +11,49 @@ type Props = {
     container?: any,
 }
 
-type State = {
-    id: number,
-    open: boolean,
-}
-
 let counter = 0
 
-class Tooltip extends React.Component<Props, State> {
-    constructor(props: Props) {
-        super(props)
-        counter += 1
-
-        this.state = {
-            open: false,
-            id: counter + 1,
-        }
-    }
-
-    toggle = () => {
-        this.setState(({ open }) => ({
-            open: !open,
-        }))
-    }
-
-    render() {
-        const { open, id } = this.state
-        const { value, children, container, ...otherProps } = this.props
-        return (
-            <div id={`tooltip-${id}`} className={styles.tooltipContainer}>
-                {children}
-                <RsTooltip
-                    innerClassName={styles.tooltip}
-                    hideArrow
-                    placement="top"
-                    delay={{
-                        show: 300,
-                        hide: 250,
-                    }}
-                    {...otherProps}
-                    isOpen={open}
-                    target={`tooltip-${id}`}
-                    toggle={this.toggle}
-                    // uninitialised ref.current values are null.
-                    // null crashes this plugin if passed as container
-                    // gloss over this by passing undefined instead
-                    container={container || undefined}
-                >
-                    {value}
-                </RsTooltip>
-            </div>
-        )
-    }
+const DELAY = {
+    show: 300,
+    hide: 250,
 }
 
-export default Tooltip
+export default function Tooltip(props: Props) {
+    const idRef = useRef()
+    // increment global id counter & assign it as an id on component init
+    if (!idRef.current) {
+        counter += 1
+        idRef.current = `tooltip-${counter}`
+    }
+
+    const { current: id } = idRef
+
+    const [isOpen, setIsOpen] = useState(false)
+
+    const toggleIsOpen = useCallback(() => {
+        setIsOpen((isOpenState) => !isOpenState)
+    }, [setIsOpen])
+
+    const { value, children, container, ...otherProps } = props
+    return (
+        <div id={id} className={styles.tooltipContainer}>
+            {children}
+            <RsTooltip
+                innerClassName={styles.tooltip}
+                hideArrow
+                placement="top"
+                delay={DELAY}
+                {...otherProps}
+                isOpen={isOpen}
+                target={id}
+                toggle={toggleIsOpen}
+                // uninitialised ref.current values are null.
+                // null crashes this plugin if passed as container
+                // gloss over this by passing undefined instead
+                container={container || undefined}
+            >
+                {value}
+            </RsTooltip>
+        </div>
+    )
+}
