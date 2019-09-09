@@ -75,11 +75,6 @@ export const STREAM_FIELD_AUTODETECT_REQUEST = 'userpages/streams/STREAM_FIELD_A
 export const STREAM_FIELD_AUTODETECT_SUCCESS = 'userpages/streams/STREAM_FIELD_AUTODETECT_SUCCESS'
 export const STREAM_FIELD_AUTODETECT_FAILURE = 'userpages/streams/STREAM_FIELD_AUTODETECT_FAILURE'
 
-export const openStream = (id: ?StreamId) => ({
-    type: OPEN_STREAM,
-    id,
-})
-
 const getStreamFieldAutodetectRequest = () => ({
     type: STREAM_FIELD_AUTODETECT_REQUEST,
 })
@@ -632,3 +627,10 @@ export const streamFieldsAutodetect = (id: StreamId) => (dispatch: Function) => 
             }
         })
 }
+
+export const openStream = (id: ?StreamId) => ({
+    type: OPEN_STREAM,
+    id,
+})
+
+export const closeStream = () => openStream(null)
