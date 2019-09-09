@@ -3,22 +3,16 @@ import { Helmet } from 'react-helmet'
 
 import * as RouterContext from '$shared/components/RouterContextProvider'
 import { usePending } from '$shared/hooks/usePending'
-import { Provider as PermissionsProvider } from '$editor/canvas/hooks/useCanvasPermissions'
 
 import * as CanvasState from '../../state'
-
 import useCanvas from './useCanvas'
 import useCanvasLoadCallback from './useCanvasLoadCallback'
 import useCanvasCreateCallback from './useCanvasCreateCallback'
 import useCanvasRemoveCallback from './useCanvasRemoveCallback'
 import useCanvasDuplicateCallback from './useCanvasDuplicateCallback'
 import useModuleLoadCallback from './useModuleLoadCallback'
-
-const EmbedModeContext = React.createContext(false)
-
-export function useEmbedMode() {
-    return useContext(EmbedModeContext)
-}
+import { EmbedModeContext } from './useEmbedMode'
+import { Provider as PermissionsProvider } from './useCanvasPermissions'
 
 const CanvasControllerContext = React.createContext()
 
@@ -61,10 +55,11 @@ function CanvasEffects() {
     const { isPending: isPendingCreate } = usePending('canvas.CREATE')
     const { isPending: isPendingLoad } = usePending('canvas.LOAD')
     const { isPending: isPendingRemove } = usePending('canvas.REMOVE')
+    const { isPending: isPendingLoadPermissions } = usePending('canvas.PERMISSIONS')
     return (
         <React.Fragment>
             {!!isPendingCreate && <Helmet title="Creating New Canvas..." />}
-            {!!isPendingLoad && <Helmet title="Loading Canvas..." />}
+            {!!(isPendingLoad || isPendingLoadPermissions) && <Helmet title="Loading Canvas..." />}
             {!!isPendingRemove && <Helmet title="Removing Canvas..." />}
         </React.Fragment>
     )

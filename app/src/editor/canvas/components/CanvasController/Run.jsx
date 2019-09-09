@@ -7,7 +7,6 @@ import get from 'lodash/get'
 
 import useIsMountedRef from '$shared/hooks/useIsMountedRef'
 import * as SubscriptionStatus from '$editor/shared/components/SubscriptionStatus'
-import { Context as PermissionContext } from '$editor/canvas/hooks/useCanvasPermissions'
 import usePending from '$shared/hooks/usePending'
 
 import * as services from '../../services'
@@ -16,7 +15,8 @@ import * as CanvasLinking from '../../state/linking'
 
 import useCanvasStateChangeEffect from '../../hooks/useCanvasStateChangeEffect'
 import useCanvasUpdater from './useCanvasUpdater'
-import { useEmbedMode } from './index'
+import useEmbedMode from './useEmbedMode'
+import useCanvasPermissions from './useCanvasPermissions'
 
 export const RunControllerContext = React.createContext()
 
@@ -31,7 +31,7 @@ function isStateNotAllowedError(error) {
 function useRunController(canvas = EMPTY) {
     const isEmbedMode = useEmbedMode()
     const subscriptionStatus = useContext(SubscriptionStatus.Context)
-    const { permissions } = useContext(PermissionContext)
+    const { hasWritePermission, hasSharePermission } = useCanvasPermissions()
     const { replaceCanvas } = useCanvasUpdater()
     const isMountedRef = useIsMountedRef()
 
@@ -53,12 +53,6 @@ function useRunController(canvas = EMPTY) {
     // historical subscription should start as soon as starting.
     // realtime subscription starts after canvas is runnning
     const isSubscriptionActive = canvas.adhoc ? isActive : isRunning
-
-    const hasSharePermission = permissions &&
-        permissions.some((p) => p.operation === 'share')
-
-    const hasWritePermission = !isEmbedMode && permissions &&
-        permissions.some((p) => p.operation === 'write')
 
     const start = useCallback(async (canvas, options) => {
         if (isHistorical && !canvas.adhoc) {

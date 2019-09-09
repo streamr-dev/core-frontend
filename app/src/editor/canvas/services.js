@@ -6,7 +6,7 @@ import analytics from '$shared/../analytics'
 import api from '$editor/shared/utils/api'
 import Autosave from '$editor/shared/utils/autosave'
 import { nextUniqueName, nextUniqueCopyName } from '$editor/shared/utils/uniqueName'
-import { emptyCanvas, isRunning, RunStates, isHistoricalModeSelected } from './state'
+import { emptyCanvas, RunStates, isHistoricalModeSelected } from './state'
 import { link, unlink, getLink } from './state/linking'
 
 const getData = ({ data }) => data
@@ -62,10 +62,6 @@ export async function create(config) {
 }
 
 export async function duplicateCanvas(canvas) {
-    if (!isRunning(canvas) && !canvas.adhoc) {
-        canvas = await saveNow(canvas) // ensure canvas saved before duplicating
-    }
-
     return createCanvas({
         ...canvas,
         adhoc: false, // duplicate canvases are never adhoc
