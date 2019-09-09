@@ -8,7 +8,9 @@ import styles from './tooltip.pcss'
 type Props = {
     value: Node,
     children?: Node,
+    container?: any,
 }
+
 type State = {
     id: number,
     open: boolean,
@@ -35,7 +37,7 @@ class Tooltip extends React.Component<Props, State> {
 
     render() {
         const { open, id } = this.state
-        const { value, children, ...otherProps } = this.props
+        const { value, children, container, ...otherProps } = this.props
         return (
             <div id={`tooltip-${id}`} className={styles.tooltipContainer}>
                 {children}
@@ -51,6 +53,10 @@ class Tooltip extends React.Component<Props, State> {
                     isOpen={open}
                     target={`tooltip-${id}`}
                     toggle={this.toggle}
+                    // uninitialised ref.current values are null.
+                    // null crashes this plugin if passed as container
+                    // gloss over this by passing undefined instead
+                    container={container || undefined}
                 >
                     {value}
                 </RsTooltip>
