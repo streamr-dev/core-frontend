@@ -11,14 +11,15 @@ import type { Product } from '$mp/flowtype/product-types'
 import ProductController from '../ProductController'
 import useProduct from '../ProductController/useProduct'
 import usePending from '$shared/hooks/usePending'
-import BackButton from '$shared/components/BackButton'
 
 import { Provider as EditControllerProvider, Context as EditControllerContext } from './EditControllerProvider'
+import BackButton from './BackButton'
 import Editor from './Editor'
 import Preview from './Preview'
 import ProductEditorDebug from './ProductEditorDebug'
 import { Provider as ModalProvider } from '$shared/components/ModalContextProvider'
 import ConfirmNoCoverImageModal from './ConfirmNoCoverImageModal'
+import ConfirmSaveModal from './ConfirmSaveModal'
 import UpdateContractProductModal from './UpdateContractProductModal'
 import DeployCommunityModal from './DeployCommunityModal'
 import DeployContractModal from './DeployContractModal'
@@ -113,6 +114,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
             {!isPreview && (
                 <Editor />
             )}
+            <ConfirmSaveModal />
             <ConfirmNoCoverImageModal />
             <UpdateContractProductModal />
             <DeployCommunityModal />
