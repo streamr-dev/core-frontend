@@ -197,7 +197,7 @@ const App = () => (
                 <Switch>
                     {AuthenticationRouter()}
                     {MarketplaceRouter()}
-                    {!isProduction() && CommunityProductsRouter()}
+                    {!!process.env.COMMUNITY_PRODUCTS && CommunityProductsRouter()}
                     {DocsRouter()}
                     {DocsRouter()}
                     {UserpagesRouter()}

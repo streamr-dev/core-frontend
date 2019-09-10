@@ -187,27 +187,30 @@ class ProductsPage extends Component<Props> {
                     )}
                     <TileGrid>
                         {products.map((product) => (
-                            <Tile
+                            <Link
                                 key={product.id}
-                                imageUrl={product.imageUrl}
-                                link={product.id && `${links.marketplace.products}/${product.id}`}
-                                dropdownActions={this.getActions(product)}
+                                to={product.id && `${links.marketplace.products}/${product.id}`}
                             >
-                                <Tile.Title>{product.name}</Tile.Title>
-                                <Tile.Tag >
-                                    {product.updated === product.created ? 'Created ' : 'Updated '}
-                                    {product.updated && this.generateTimeAgoDescription(new Date(product.updated))}
-                                </Tile.Tag>
-                                <Tile.Tag
-                                    className={product.state === productStates.DEPLOYED ? styles.green : styles.grey}
+                                <Tile
+                                    imageUrl={product.imageUrl || ''}
+                                    dropdownActions={this.getActions(product)}
                                 >
-                                    {
-                                        product.state === productStates.DEPLOYED ?
-                                            <Translate value="userpages.products.published" /> :
-                                            <Translate value="userpages.products.draft" />
-                                    }
-                                </Tile.Tag>
-                            </Tile>
+                                    <Tile.Title>{product.name}</Tile.Title>
+                                    <Tile.Tag >
+                                        {product.updated === product.created ? 'Created ' : 'Updated '}
+                                        {product.updated && this.generateTimeAgoDescription(new Date(product.updated))}
+                                    </Tile.Tag>
+                                    <Tile.Tag
+                                        className={product.state === productStates.DEPLOYED ? styles.green : styles.grey}
+                                    >
+                                        {
+                                            product.state === productStates.DEPLOYED ?
+                                                <Translate value="userpages.products.published" /> :
+                                                <Translate value="userpages.products.draft" />
+                                        }
+                                    </Tile.Tag>
+                                </Tile>
+                            </Link>
                         ))}
                     </TileGrid>
                 </ListContainer>

@@ -253,27 +253,30 @@ class CanvasList extends Component<Props, State> {
                     )}
                     <TileGrid>
                         {canvases.map((canvas) => (
-                            <Tile
+                            <Link
                                 key={canvas.id}
-                                link={`${links.editor.canvasEditor}/${canvas.id}`}
-                                dropdownActions={this.getActions(canvas)}
-                                image={<CanvasPreview className={cx(styles.PreviewImage, TileStyles.image)} canvas={canvas} />}
+                                to={`${links.editor.canvasEditor}/${canvas.id}`}
                             >
-                                <Tile.Title>{canvas.name}</Tile.Title>
-                                <Tile.Description>
-                                    {canvas.updated === canvas.created ? 'Created ' : 'Updated '}
-                                    {this.generateTimeAgoDescription(new Date(canvas.updated))}
-                                </Tile.Description>
-                                <Tile.Status
-                                    className={
-                                        cx({
-                                            [styles.running]: canvas.state === RunStates.Running,
-                                            [styles.stopped]: canvas.state === RunStates.Stopped,
-                                        })}
+                                <Tile
+                                    dropdownActions={this.getActions(canvas)}
+                                    image={<CanvasPreview className={cx(styles.PreviewImage, TileStyles.image)} canvas={canvas} />}
                                 >
-                                    {capital(canvas.state)}
-                                </Tile.Status>
-                            </Tile>
+                                    <Tile.Title>{canvas.name}</Tile.Title>
+                                    <Tile.Description>
+                                        {canvas.updated === canvas.created ? 'Created ' : 'Updated '}
+                                        {this.generateTimeAgoDescription(new Date(canvas.updated))}
+                                    </Tile.Description>
+                                    <Tile.Status
+                                        className={
+                                            cx({
+                                                [styles.running]: canvas.state === RunStates.Running,
+                                                [styles.stopped]: canvas.state === RunStates.Stopped,
+                                            })}
+                                    >
+                                        {capital(canvas.state)}
+                                    </Tile.Status>
+                                </Tile>
+                            </Link>
                         ))}
                     </TileGrid>
                 </ListContainer>

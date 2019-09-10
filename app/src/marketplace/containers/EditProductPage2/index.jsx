@@ -11,6 +11,7 @@ import type { Product } from '$mp/flowtype/product-types'
 import ProductController from '../ProductController'
 import useProduct from '../ProductController/useProduct'
 import usePending from '$shared/hooks/usePending'
+import BackButton from '$shared/components/BackButton'
 
 import { Provider as EditControllerProvider, Context as EditControllerContext } from './EditControllerProvider'
 import Editor from './Editor'
@@ -19,20 +20,21 @@ import ProductEditorDebug from './ProductEditorDebug'
 import { Provider as ModalProvider } from '$shared/components/ModalContextProvider'
 import ConfirmNoCoverImageModal from './ConfirmNoCoverImageModal'
 import UpdateContractProductModal from './UpdateContractProductModal'
+import DeployCommunityModal from './DeployCommunityModal'
 
 import styles from './editProductPage.pcss'
 
 const EditProductPage = ({ product }: { product: Product }) => {
-    const { isPreview, setIsPreview, save } = useContext(EditControllerContext)
+    const { isPreview, setIsPreview, save, deployCommunity } = useContext(EditControllerContext)
     const { isPending: savePending } = usePending('product.SAVE')
     const { isPending: contractSavePending } = usePending('contractProduct.SAVE')
 
     const isSaving = savePending || contractSavePending
-
+    const isCommunityProduct = product.type === 'COMMUNITY'
     console.log(product)
 
     const actions = useMemo(() => {
-        const buttons = {
+        let buttons = {
             saveAndExit: {
                 title: 'Save & Exit',
                 color: 'link',
@@ -40,31 +42,54 @@ const EditProductPage = ({ product }: { product: Product }) => {
                 onClick: save,
                 disabled: isSaving,
             },
-            preview: {
-                title: 'Preview',
-                outline: true,
-                onClick: () => setIsPreview(true),
-                disabled: isSaving,
-            },
-            continue: {
-                title: 'Continue',
-                color: 'primary',
-                onClick: () => {},
-                disabled: true,
-            },
         }
 
         if (isPreview) {
-            buttons.preview = {
-                title: 'Edit',
-                outline: true,
-                onClick: () => setIsPreview(false),
-                disabled: isSaving,
+            buttons = {
+                ...buttons,
+                preview: {
+                    title: 'Edit',
+                    outline: true,
+                    onClick: () => setIsPreview(false),
+                    disabled: isSaving,
+                },
+            }
+        } else {
+            buttons = {
+                ...buttons,
+                preview: {
+                    title: 'Preview',
+                    outline: true,
+                    onClick: () => setIsPreview(true),
+                    disabled: isSaving,
+                },
+            }
+        }
+
+        if (isCommunityProduct) {
+            buttons = {
+                ...buttons,
+                continue: {
+                    title: 'Continue',
+                    color: 'primary',
+                    onClick: deployCommunity,
+                    disabled: isSaving,
+                },
+            }
+        } else {
+            buttons = {
+                ...buttons,
+                publish: {
+                    title: 'Publish',
+                    color: 'primary',
+                    onClick: () => {},
+                    disabled: true,
+                },
             }
         }
 
         return buttons
-    }, [isPreview, setIsPreview, save, isSaving])
+    }, [isPreview, setIsPreview, save, deployCommunity, isSaving, isCommunityProduct])
 
     return (
         <CoreLayout
@@ -72,6 +97,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
             hideNavOnDesktop
             navComponent={(
                 <Toolbar
+                    left={<BackButton />}
                     actions={actions}
                     altMobileLayout
                 />
@@ -88,6 +114,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
             )}
             <ConfirmNoCoverImageModal />
             <UpdateContractProductModal />
+            <DeployCommunityModal />
         </CoreLayout>
     )
 }

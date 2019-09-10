@@ -351,6 +351,24 @@ const sources = {
             </g>
         </svg>
     ),
+    community: (
+        <svg viewBox="0 0 16 13" xmlns="http://www.w3.org/2000/svg">
+            <g
+                transform="translate(1)"
+                stroke="currentColor"
+                strokeWidth="1.125"
+                fill="none"
+                fillRule="evenodd"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            >
+                <path d="M2.489 8.93C1.71 7.05 2.33 4.9 4.003 3.676a4.805 4.805 0 0 1 5.655.011c1.668 1.23 2.278 3.382 1.492 5.26" />
+                <path d="M1.314 10.81C-.656 8.111-.216 4.416 2.34 2.22c2.555-2.197 6.413-2.197 8.968 0 2.556 2.197 2.997 5.892 1.026 8.591" />
+                <ellipse cx="6.824" cy="6.978" rx="2.042" ry="1.969" />
+                <path d="M10.111 11.76c-.487-1.348-1.805-2.251-3.286-2.251-1.48 0-2.798.903-3.285 2.25h6.571z" />
+            </g>
+        </svg>
+    ),
 }
 
 export type IconName = $Keys<typeof sources>

@@ -164,6 +164,9 @@ msgstr "Cancel"
 msgid "modal##common##continue"
 msgstr "Continue"
 
+msgid "modal##common##deploy"
+msgstr "Deploy"
+
 msgid "modal##common##next"
 msgstr "Next"
 

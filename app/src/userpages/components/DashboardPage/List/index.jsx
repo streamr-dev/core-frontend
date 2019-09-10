@@ -146,13 +146,16 @@ class DashboardList extends Component<Props> {
                     {dashboards && dashboards.length > 0 && (
                         <TileGrid>
                             {dashboards.map((dashboard) => (
-                                <Tile
+                                <Link
                                     key={dashboard.id}
-                                    link={`${links.editor.dashboardEditor}/${dashboard.id}`}
-                                    image={<DashboardPreview className={cx(styles.PreviewImage, TileStyles.image)} dashboard={dashboard} />}
+                                    to={`${links.editor.dashboardEditor}/${dashboard.id}`}
                                 >
-                                    <Tile.Title>{dashboard.name}</Tile.Title>
-                                </Tile>
+                                    <Tile
+                                        image={<DashboardPreview className={cx(styles.PreviewImage, TileStyles.image)} dashboard={dashboard} />}
+                                    >
+                                        <Tile.Title>{dashboard.name}</Tile.Title>
+                                    </Tile>
+                                </Link>
                             ))}
                         </TileGrid>
                     )}
