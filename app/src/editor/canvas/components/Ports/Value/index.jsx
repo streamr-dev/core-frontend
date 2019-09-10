@@ -8,6 +8,7 @@ import Map from './Map'
 import Select from './Select'
 import Stream from './Stream'
 import Text from './Text'
+import List from './List'
 import styles from './value.pcss'
 
 type Props = {
@@ -17,7 +18,7 @@ type Props = {
     onChange: (any) => void,
 }
 
-type PortType = 'map' | 'color' | 'select' | 'text' | 'stream'
+type PortType = 'map' | 'color' | 'select' | 'text' | 'stream' | 'list'
 
 const getPortValueType = (canvas: any, port: any): PortType => {
     const { type } = port
@@ -35,6 +36,8 @@ const getPortValueType = (canvas: any, port: any): PortType => {
         // straight type mapping
         case portTypes.has('Map'):
             return 'map'
+        case portTypes.has('List'):
+            return 'list'
         case portTypes.has('Color'):
             return 'color'
         case portTypes.has('Stream'):
@@ -49,7 +52,7 @@ export type CommonProps = {
     disabled: boolean,
     onChange: (any) => void,
     value: any,
-    placeholder: any,
+    placeholder?: any,
     title?: string,
     id?: string,
     className?: string,
@@ -139,6 +142,12 @@ const Value = ({ canvas, disabled, port, onChange }: Props) => {
             )}
             {valueType === 'map' && (
                 <Map
+                    {...commonProps}
+                    port={port}
+                />
+            )}
+            {valueType === 'list' && (
+                <List
                     {...commonProps}
                     port={port}
                 />

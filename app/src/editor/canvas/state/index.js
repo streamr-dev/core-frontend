@@ -876,7 +876,7 @@ export function getPortUserValue(canvas, portId) {
 }
 
 function isBlank(value) {
-    return value == null || String(value).trim() === ''
+    return value == null || (!Array.isArray(value) && String(value).trim() === '')
 }
 
 export function getPortDefaultValue(canvas, portId) {
