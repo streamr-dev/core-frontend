@@ -15,7 +15,7 @@ import styles from './confirmDeployCommunityDialog.pcss'
 export type Props = {
     product: Product,
     onClose: () => void,
-    onContinue: () => void,
+    onContinue: () => void | Promise<void>,
     onShowGuidedDialog: () => void,
 }
 

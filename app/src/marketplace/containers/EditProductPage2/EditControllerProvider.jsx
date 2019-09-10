@@ -18,12 +18,15 @@ import { formatPath } from '$shared/utils/url'
 import { Context as ValidationContext, ERROR } from '../ProductController/ValidationContextProvider'
 import useOriginalProduct from '../ProductController/useOriginalProduct'
 import useModal from '$shared/hooks/useModal'
+import { deployContract as deploy, createJoinPartStream } from '$mp/modules/communityProduct/services'
+import useProductActions from '../ProductController/useProductActions'
 
 type ContextProps = {
     isPreview: boolean,
     setIsPreview: (boolean | Function) => void,
     save: () => void | Promise<void>,
     deployCommunity: () => void | Promise<void>,
+    deployContract: () => void | Promise<void>,
 }
 
 const EditControllerContext: Context<ContextProps> = React.createContext({})
@@ -34,6 +37,7 @@ function useEditController(product: Product) {
     const isMounted = useIsMounted()
     const savePending = usePending('product.SAVE')
     const contractSavePending = usePending('contractProduct.SAVE')
+    const { updateBeneficiaryAddress } = useProductActions()
 
     const { originalProduct } = useOriginalProduct()
     const { api: confirmDialog } = useModal('confirm')
@@ -149,16 +153,52 @@ function useEditController(product: Product) {
         product,
     ])
 
+    const deployContract = useCallback(async () => {
+        if (product && product.id) {
+            const joinPartStream = await createJoinPartStream(product.name)
+            if (joinPartStream == null) {
+                console.error('Could not create JoinPartStream for community product')
+                return
+            }
+
+            const tx = await deploy(joinPartStream.id)
+            tx.onTransactionComplete(() => {
+                Notification.push({
+                    title: 'Deploy completed',
+                    icon: NotificationIcon.CHECKMARK,
+                })
+            })
+            tx.onError((err) => {
+                console.error('CP deploy: Error', err)
+                Notification.push({
+                    title: 'Deploy failed',
+                    description: err.message,
+                    icon: NotificationIcon.ERROR,
+                })
+            })
+            tx.onContractAddress((address) => {
+                const updatedProduct = {
+                    ...product,
+                    beneficiaryAddress: address,
+                }
+                putProduct(updatedProduct, updatedProduct.id || '')
+                updateBeneficiaryAddress(address)
+            })
+        }
+    }, [product, updateBeneficiaryAddress])
+
     return useMemo(() => ({
         isPreview,
         setIsPreview,
         save,
         deployCommunity,
+        deployContract,
     }), [
         isPreview,
         setIsPreview,
         save,
         deployCommunity,
+        deployContract,
     ])
 }
 

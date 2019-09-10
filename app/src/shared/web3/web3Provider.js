@@ -25,6 +25,7 @@ export class StreamrWeb3 extends Web3 {
     constructor(provider: any, options: StreamrWeb3Options = {}) {
         super(provider)
         this.isLegacy = options && !!options.isLegacy
+        this.transactionConfirmationBlocks = getConfig().transactionConfirmationBlocks
     }
 
     getDefaultAccount = (): Promise<Address> => this.eth.getAccounts()

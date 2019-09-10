@@ -64,6 +64,7 @@ export const gasLimits = {
     BUY_PRODUCT: 1e5,
     DELETE_PRODUCT: 5e4,
     APPROVE: 5e4,
+    DEPLOY_COMMUNITY_PRODUCT: 3e6,
 }
 
 export const dialogAutoCloseTimeout = 2000 // in milliseconds
