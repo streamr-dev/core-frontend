@@ -128,7 +128,6 @@ export const deploy = (contract: SmartContractMetadata, args: Array<any>, option
             calculateContractAddress(account).then((futureAddress) => {
                 emitter.emit('contractAddress', futureAddress)
             })
-            gasLimits.DEPLOY_COMMUNITY_PRODUCT = 0
 
             const web3Contract = new web3.eth.Contract(contract.abi)
             const deployer = web3Contract.deploy({
