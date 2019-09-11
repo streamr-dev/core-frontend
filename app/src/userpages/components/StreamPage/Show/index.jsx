@@ -1,12 +1,12 @@
 // @flow
 
-import React, { Component } from 'react'
+import React, { Component, useRef, useCallback, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { I18n } from 'react-redux-i18n'
 import { push } from 'connected-react-router'
 import { withRouter } from 'react-router-dom'
 import MediaQuery from 'react-responsive'
-
+import useIsMounted from '$shared/hooks/useIsMounted'
 import ConfigureAnchorOffset from '$shared/components/ConfigureAnchorOffset'
 import type { Stream, StreamId } from '$shared/flowtype/stream-types'
 import type { Operation } from '$userpages/flowtype/permission-types'
@@ -17,6 +17,7 @@ import {
     getMyStreamPermissions,
     getStream,
     openStream,
+    closeStream,
     updateStream,
     createStream,
     initEditStream,
@@ -24,7 +25,7 @@ import {
     updateEditStream,
 } from '$userpages/modules/userPageStreams/actions'
 import { getMyResourceKeys } from '$shared/modules/resourceKey/actions'
-import { selectEditedStream, selectPermissions } from '$userpages/modules/userPageStreams/selectors'
+import { selectEditedStream, selectPermissions, selectFetching } from '$userpages/modules/userPageStreams/selectors'
 import { selectUserData } from '$shared/modules/user/selectors'
 import { selectAuthApiKeyId } from '$shared/modules/resourceKey/selectors'
 import DetailsContainer from '$shared/components/Container/Details'
@@ -50,6 +51,7 @@ type StateProps = {
     permissions: ?Array<Operation>,
     currentUser: ?User,
     authApiKeyId: ?ResourceKeyId,
+    isFetching: ?boolean,
 }
 
 type State = {
@@ -60,6 +62,7 @@ type DispatchProps = {
     createStream: () => Promise<StreamId>,
     getStream: (id: StreamId) => Promise<void>,
     openStream: (id: StreamId) => void,
+    closeStream: () => void,
     getMyStreamPermissions: (id: StreamId) => void,
     save: (stream: ?Stream) => void,
     cancel: () => void,
@@ -91,38 +94,8 @@ export class StreamShowView extends Component<Props, State> {
     unmounted: boolean = false
 
     componentWillUnmount() {
+        this.props.closeStream()
         this.unmounted = true
-    }
-
-    componentDidMount() {
-        this.initStreamShow()
-    }
-
-    initStreamShow() {
-        if (this.props.match.params.id) {
-            this.initStream(this.props.match.params.id)
-        } else {
-            this.createStream()
-        }
-    }
-
-    initStream = async (id: StreamId) => {
-        const { getStream, openStream, getMyStreamPermissions, initEditStream } = this.props
-
-        await this.props.getKeys()
-        getStream(id).then(() => {
-            openStream(id)
-            initEditStream()
-        })
-        getMyStreamPermissions(id)
-    }
-
-    createStream = async () => {
-        const newStreamId = await this.props.createStream()
-
-        if (this.unmounted) { return }
-        this.props.history.replace(`${links.userpages.streamShow}/${newStreamId}`)
-        this.initStream(newStreamId)
     }
 
     onSave = (editedStream: Stream) => {
@@ -173,12 +146,16 @@ export class StreamShowView extends Component<Props, State> {
             currentUser,
             authApiKeyId,
             permissions,
+            isFetching,
         } = this.props
         const hasWritePermission = (permissions && permissions.some((p) => p === 'write')) || false
+        const isLoading = !!(!editedStream || isFetching)
+        const disabled = !!(isLoading || !hasWritePermission)
 
         return (
             <CoreLayout
                 hideNavOnDesktop
+                loading={isLoading}
                 navComponent={(
                     <MediaQuery minWidth={lg.min}>
                         {(isDesktop) => (
@@ -204,7 +181,7 @@ export class StreamShowView extends Component<Props, State> {
                                                 this.onSave(editedStream)
                                             }
                                         },
-                                        disabled: !hasWritePermission,
+                                        disabled,
                                     },
                                 }}
                             />
@@ -221,14 +198,14 @@ export class StreamShowView extends Component<Props, State> {
                             id="details"
                             title="Details"
                         >
-                            <InfoView disabled={!hasWritePermission} />
+                            <InfoView disabled={disabled} />
                         </TOCPage.Section>
                         <TOCPage.Section
                             id="configure"
                             title="Configure"
                             customStyled
                         >
-                            <ConfigureView disabled={!hasWritePermission} />
+                            <ConfigureView disabled={disabled} />
                         </TOCPage.Section>
                         <TOCPage.Section
                             id="preview"
@@ -245,7 +222,7 @@ export class StreamShowView extends Component<Props, State> {
                             title="API Access"
                             customStyled
                         >
-                            <KeyView disabled={!hasWritePermission} />
+                            <KeyView disabled={disabled} />
                         </TOCPage.Section>
                         <TOCPage.Section
                             id="historical-data"
@@ -254,7 +231,7 @@ export class StreamShowView extends Component<Props, State> {
                         >
                             <HistoryView
                                 streamId={editedStream && editedStream.id}
-                                disabled={!hasWritePermission}
+                                disabled={disabled}
                             />
                         </TOCPage.Section>
                     </TOCPage>
@@ -264,11 +241,67 @@ export class StreamShowView extends Component<Props, State> {
     }
 }
 
+function StreamLoader(props: Props) {
+    const isMounted = useIsMounted()
+    const propsRef = useRef(props)
+    propsRef.current = props
+    const { id: streamId } = props.match.params || {}
+
+    const initStream = useCallback(async (id: StreamId) => {
+        let { current: currentProps } = propsRef
+        await propsRef.current.getKeys()
+        if (!isMounted()) { return }
+        currentProps = propsRef.current
+        return Promise.all([
+            currentProps.getStream(id).then(() => {
+                if (!isMounted()) { return }
+                currentProps.openStream(id)
+                currentProps.initEditStream()
+            }),
+            currentProps.getMyStreamPermissions(id),
+        ])
+    }, [isMounted, propsRef])
+
+    const createStream = useCallback(async () => {
+        const { current: currentProps } = propsRef
+        const newStreamId = await currentProps.createStream()
+        if (!isMounted()) { return }
+        currentProps.history.replace(`${links.userpages.streamShow}/${newStreamId}`)
+        initStream(newStreamId)
+    }, [initStream, propsRef, isMounted])
+
+    const initStreamRef = useRef(initStream)
+    initStreamRef.current = initStream
+    const createStreamRef = useRef(createStream)
+    createStreamRef.current = createStream
+
+    useEffect(() => {
+        if (streamId) {
+            initStreamRef.current(streamId)
+        } else {
+            createStreamRef.current()
+        }
+    }, [streamId, createStreamRef, initStreamRef])
+
+    const isCurrent = !!(props.editedStream && props.editedStream.id === streamId)
+
+    useEffect(() => {
+        if (!isCurrent) {
+            // unset stream data if not matching current url's streamId
+            const { current: currentProps } = propsRef
+            currentProps.closeStream()
+        }
+    }, [isCurrent, propsRef])
+
+    return <StreamShowView key={streamId} {...props} editedStream={isCurrent ? props.editedStream : null} />
+}
+
 const mapStateToProps = (state: StoreState): StateProps => ({
     editedStream: selectEditedStream(state),
     permissions: selectPermissions(state),
     currentUser: selectUserData(state),
     authApiKeyId: selectAuthApiKeyId(state),
+    isFetching: selectFetching(state),
 })
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
@@ -279,9 +312,12 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getStream: (id: StreamId) => dispatch(getStream(id)),
     getKeys: () => dispatch(getMyResourceKeys()),
     openStream: (id: StreamId) => dispatch(openStream(id)),
+    closeStream: () => {
+        dispatch(closeStream())
+        dispatch(updateEditStream(null))
+    },
     getMyStreamPermissions: (id: StreamId) => dispatch(getMyStreamPermissions(id)),
     save: (stream: ?Stream) => {
-        dispatch(openStream(null))
         if (stream) {
             const updateOrSave = stream.id ? updateStream : createStream
             return dispatch(updateOrSave(stream)).then(() => {
@@ -291,8 +327,6 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     },
     redirectToUserPages: () => dispatch(push(routes.userPages())),
     cancel: () => {
-        dispatch(openStream(null))
-        dispatch(updateEditStream(null))
         dispatch(push(routes.userPageStreamListing()))
     },
     updateStream: (stream: Stream) => dispatch(updateStream(stream)),
@@ -300,4 +334,4 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     initNewStream: () => dispatch(initNewStream()),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter((StreamShowView)))
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter((StreamLoader)))

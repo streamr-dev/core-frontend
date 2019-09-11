@@ -27,21 +27,29 @@ type State = {
 }
 
 export class PreviewView extends Component<Props, State> {
+    unmounted = false
+
     state = {
         isRunning: true,
         hasData: false,
     }
 
+    componentWillUnmount() {
+        this.unmounted = true
+    }
+
     onToggleRun = () => {
+        if (this.unmounted) { return }
         this.setState(({ isRunning }) => ({
             isRunning: !isRunning,
         }))
     }
 
     setHasData = () => {
-        this.setState(() => ({
+        if (this.unmounted) { return }
+        this.setState({
             hasData: true,
-        }))
+        })
     }
 
     render() {
