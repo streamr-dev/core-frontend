@@ -58,6 +58,18 @@ const generalCombos = [
         keys: [['meta', 'shift', 'z']],
         title: 'Redo',
     },
+    {
+        keys: [['meta', 'x']],
+        title: 'Cut',
+    },
+    {
+        keys: [['meta', 'c']],
+        title: 'Copy',
+    },
+    {
+        keys: [['meta', 'v']],
+        title: 'Paste',
+    },
 ]
 
 const moduleCombos = [

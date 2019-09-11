@@ -9,7 +9,8 @@ import styles from './KeyboardShortcutsSidebar.pcss'
 
 const keyLabels = {
     escape: 'esc',
-    meta: isWindows() ? 'WIN' : 'CMD',
+    meta: isWindows() ? 'win' : 'cmd',
+    control: 'ctrl',
 }
 
 const getKeyLabel = (key) => {
@@ -47,6 +48,7 @@ const INITIAL_PRESSED_KEYS_STATE = {
     modifiedKeys: {
         meta: {},
         shift: {},
+        control: {},
     },
 }
 
@@ -81,6 +83,10 @@ function usePressedKeys(initialState = INITIAL_PRESSED_KEYS_STATE) {
                 newModifiedKeys.shift[key] = true
             }
 
+            if (event.ctrlKey) {
+                newModifiedKeys.control[key] = true
+            }
+
             return {
                 pressedKeys: {
                     ...pressedKeys,
@@ -102,7 +108,7 @@ function usePressedKeys(initialState = INITIAL_PRESSED_KEYS_STATE) {
             let newPressedKeys
             let newModifiedKeys
 
-            if (key === 'meta' || key === 'shift') {
+            if (key === 'meta' || key === 'shift' || key === 'control') {
                 // Clear up all the keys received while holding the meta or shift key
                 newPressedKeys = Object.keys(pressedKeys).reduce((result, k) => ({
                     ...result,
@@ -160,6 +166,12 @@ export function KeyboardShortcutsSidebar({ onClose, children }) {
     )
 }
 
+function getPlatformKey(key) {
+    // transform 'meta' shortcuts to use the 'control' key on windows
+    if (key === 'meta' && isWindows()) { return 'control' }
+    return key
+}
+
 export function ComboList({ combos, ...props }) {
     const { pressedKeys } = usePressedKeys()
     const visibleCombos = combos.filter(({ hidden }) => !hidden)
@@ -168,12 +180,13 @@ export function ComboList({ combos, ...props }) {
         <Section {...props}>
             <div className={styles.keyList}>
                 {visibleCombos.map(({ keys, title }) => {
-                    const keyListId = keys.map((keySet) => keySet.join('')).join('')
+                    keys = keys.map((keySet) => keySet.map((key) => getPlatformKey(key)))
+                    const keyListId = keys.map((keySet) => keySet.join(',')).join('')
                     return (
                         <React.Fragment key={keyListId}>
                             <div>
                                 {keys.map((keySet) => {
-                                    const keySetId = keySet.join('')
+                                    const keySetId = keySet.join(',')
                                     return keySet.map((key) => (
                                         <span
                                             key={`${keyListId}-${keySetId}-${key}`}
