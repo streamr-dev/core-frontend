@@ -10,14 +10,15 @@ import styles from './sidebar.pcss'
 export type Props = {
     onClose: () => void,
     title: string,
+    className?: string,
 }
 
-const Header = ({ title, onClose }: Props) => {
+const Header = ({ title, onClose, className }: Props) => {
     const info = global.streamr.info()
     const { version, branch, hash } = info
 
     return (
-        <div className={cx(styles.header)}>
+        <div className={cx(styles.header, className)}>
             <div className={styles.titleRow}>
                 <h3 className={cx(styles.name)}>{title}</h3>
                 <button

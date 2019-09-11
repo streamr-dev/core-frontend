@@ -7,10 +7,11 @@ import styles from './sidebar.pcss'
 
 type Props = {
     children?: Node,
+    className?: string,
 }
 
-const Content = ({ children }: Props) => (
-    <div className={cx(styles.content)}>
+const Content = ({ children, className }: Props) => (
+    <div className={cx(styles.content, className)}>
         {children}
     </div>
 )

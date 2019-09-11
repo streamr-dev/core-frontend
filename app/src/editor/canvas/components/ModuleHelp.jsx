@@ -5,7 +5,7 @@ import Empty from '$docs/components/CanvasModuleHelp/Empty'
 
 const docs = require.context('$docs/content/canvasModules/', false, /\.jsx$/)
 
-function ModuleHelp({ module: m }) {
+function ModuleHelp({ className, module: m }) {
     const moduleId = m.id
     const isMounted = useIsMounted()
     const [helpContent, setHelpContent] = useState({})
@@ -39,7 +39,7 @@ function ModuleHelp({ module: m }) {
     if (!m) { return null }
 
     return (
-        <CanvasModuleHelp module={m} help={currentHelpContent} hideName />
+        <CanvasModuleHelp className={className} module={m} help={currentHelpContent} hideName />
     )
 }
 
