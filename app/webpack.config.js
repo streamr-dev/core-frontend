@@ -180,6 +180,7 @@ module.exports = {
             TRAVIS_BRANCH: process.env.TRAVIS_BRANCH || '',
             TRAVIS_COMMIT: process.env.TRAVIS_COMMIT || '',
             TRAVIS_PULL_REQUEST_SHA: process.env.TRAVIS_PULL_REQUEST_SHA || '',
+            COMMUNITY_PRODUCTS: process.env.COMMUNITY_PRODUCTS,
         }),
         new webpack.EnvironmentPlugin(loadedDotenv),
         ...(analyze ? [
