@@ -26,6 +26,7 @@ const Text = ({
                 [styles.editing]: editing,
                 [styles.disabled]: disabled,
             })}
+            blankClassName={styles.blank}
             commitEmpty
             disabled={disabled}
             editing={editing}
