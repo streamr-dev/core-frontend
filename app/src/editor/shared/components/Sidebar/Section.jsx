@@ -2,6 +2,7 @@
 
 import React, { type Node } from 'react'
 import { Collapse } from 'reactstrap'
+import cx from 'classnames'
 
 import SvgIcon from '$shared/components/SvgIcon'
 import styles from './sidebar.pcss'
@@ -10,6 +11,7 @@ type Props = {
     label: string,
     initialIsOpen?: boolean,
     children?: Node,
+    className?: string,
 }
 
 type State = {
@@ -29,9 +31,9 @@ class Section extends React.Component<Props, State> {
 
     render() {
         const { isOpen } = this.state
-        const { children, label } = this.props
+        const { children, label, className } = this.props
         return (
-            <div className={styles.sidebarSection}>
+            <div className={cx(styles.sidebarSection, className)}>
                 <button
                     className={styles.accordionToggle}
                     type="button"

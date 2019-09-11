@@ -3,6 +3,7 @@ import React from 'react'
 import ReactMarkdown from 'react-markdown'
 import isEmpty from 'lodash/isEmpty'
 import get from 'lodash/get'
+import cx from 'classnames'
 
 import styles from './canvasModuleHelp.pcss'
 
@@ -65,11 +66,12 @@ type Props = {
     module: any,
     help: any,
     hideName?: boolean,
+    className?: string,
 }
 
-export default function CanvasModuleHelp({ module: m, help, hideName }: Props) {
+export default function CanvasModuleHelp({ module: m, help, hideName, className }: Props) {
     return (
-        <section key={m.id} className={styles.root}>
+        <section key={m.id} className={cx(styles.root, className)}>
             {hideName ? null : <h3>{m.name}</h3>}
             <ReactMarkdown source={help && help.helpText} />
             <div className={styles.ports}>

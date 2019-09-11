@@ -65,7 +65,7 @@ export default function ModuleSidebar({ canvas, selectedModuleHash, setModuleOpt
                 title={module.displayName || module.name}
                 onClose={onClose}
             />
-            <Content>
+            <Content className={styles.content}>
                 {!optionsKeys.length ? null : (
                     <Section label="Options" initialIsOpen>
                         <div className={cx(styles.optionsFields)}>
@@ -117,7 +117,7 @@ export default function ModuleSidebar({ canvas, selectedModuleHash, setModuleOpt
                     </Section>
                 )}
                 <Section label="About" initialIsOpen>
-                    <ModuleHelp module={module} />
+                    <ModuleHelp className={styles.moduleHelp} module={module} />
                 </Section>
             </Content>
         </React.Fragment>

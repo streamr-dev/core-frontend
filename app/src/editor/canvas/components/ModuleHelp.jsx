@@ -1,24 +1,35 @@
 import React, { useEffect, useCallback, useState } from 'react'
 import CanvasModuleHelp from '$docs/components/CanvasModuleHelp'
 import useIsMounted from '$shared/hooks/useIsMounted'
+import Empty from '$docs/components/CanvasModuleHelp/Empty'
 
-function ModuleHelp({ module: m }) {
+const docs = require.context('$docs/content/canvasModules/', false, /\.jsx$/)
+
+function ModuleHelp({ className, module: m }) {
     const moduleId = m.id
-    const cleanedName = m.name.replace(/\s/g, '').replace(/\(/g, '_').replace(/\)/g, '')
     const isMounted = useIsMounted()
     const [helpContent, setHelpContent] = useState({})
     const currentHelpContent = helpContent[moduleId]
     const hasCurrentContent = currentHelpContent != null
 
     const loadHelp = useCallback(() => {
-        import(`$docs/content/canvasModules/${cleanedName}-${moduleId}.jsx`).then((result) => {
+        // ignore module name, just match on id
+        const path = docs.keys().find((d) => d.endsWith(`-${moduleId}.jsx`))
+        if (!path) {
+            setHelpContent((state) => ({
+                ...state,
+                [moduleId]: Empty.help,
+            }))
+            return
+        }
+        import(`$docs/content/canvasModules/${path.slice(2)}`).then((result) => {
             if (!isMounted()) { return }
             setHelpContent((state) => ({
                 ...state,
                 [moduleId]: result.default.help,
             }))
         })
-    }, [moduleId, cleanedName, setHelpContent, isMounted])
+    }, [moduleId, setHelpContent, isMounted])
 
     useEffect(() => {
         if (hasCurrentContent) { return } // do nothing if already loaded help
@@ -28,7 +39,7 @@ function ModuleHelp({ module: m }) {
     if (!m) { return null }
 
     return (
-        <CanvasModuleHelp module={m} help={currentHelpContent} hideName />
+        <CanvasModuleHelp className={className} module={m} help={currentHelpContent} hideName />
     )
 }
 
