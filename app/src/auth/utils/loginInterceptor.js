@@ -18,6 +18,14 @@ function shouldRedirect(error) {
     })) {
         return false
     }
+
+    // no redirects for canvases
+    if (matchPath(window.location.pathname, {
+        path: routes.canvasEditor(),
+    })) {
+        return false
+    }
+
     if (error.response && error.response.status === 401) {
         const url = new window.URL(error.config.url)
         const me = new window.URL(meURL)
