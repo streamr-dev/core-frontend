@@ -6,8 +6,6 @@ import { formatExternalUrl } from '$shared/utils/url'
 import type { ResourceType, ResourceId } from '$userpages/flowtype/permission-types'
 import routes from '$routes'
 
-const streamrRoot = process.env.STREAMR_URL || ''
-
 const getEmbedCode = (resourceType: ResourceType, resourceId: ResourceId) => {
     if (resourceType === 'CANVAS') {
         const src = formatExternalUrl(process.env.PLATFORM_ORIGIN_URL, routes.canvasEmbed({
@@ -36,7 +34,7 @@ export function useEmbed(resourceType: ResourceType, resourceId: ResourceId) {
     const link = useMemo(() => {
         const links = getLinks(resourceId)
 
-        return formatExternalUrl(streamrRoot, links[resourceType] || '')
+        return formatExternalUrl(process.env.PLATFORM_ORIGIN_URL, links[resourceType] || '')
     }, [resourceType, resourceId])
 
     return useMemo(() => ({
