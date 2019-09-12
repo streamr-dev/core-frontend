@@ -23,7 +23,7 @@ const getEmbedCode = (resourceType: ResourceType, resourceId: ResourceId) => {
 }
 
 const getLinks = (resourceId: ResourceId) => ({
-    CANVAS: `canvas/editor/${resourceId}`,
+    CANVAS: `canvas/embed/${resourceId}`,
     DASHBOARD: `dashboard/editor/${resourceId}`,
     STREAM: `core/stream/show/${resourceId}`,
 })
