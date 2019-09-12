@@ -61,7 +61,7 @@ export const authenticationFailed: (StoreState) => boolean = createSelector(
     isAuthenticated,
     selectUserDataError,
     (isAuthenticatedState, userDataError) => (
-        !isAuthenticated && !!userDataError
+        !isAuthenticatedState && !!userDataError
     ),
 )
 
