@@ -14,8 +14,18 @@ export default () => {
 
     return (
         <ConfirmSaveDialog
-            onContinue={() => api.close(true)}
-            onClose={() => api.close(false)}
+            onSave={() => api.close({
+                save: true,
+                redirect: true,
+            })}
+            onContinue={() => api.close({
+                save: false,
+                redirect: true,
+            })}
+            onClose={() => api.close({
+                save: false,
+                redirect: false,
+            })}
         />
     )
 }

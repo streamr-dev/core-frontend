@@ -15,9 +15,10 @@ import styles from './confirmSave.pcss'
 export type Props = {
     onClose: () => void,
     onContinue: () => void,
+    onSave: () => void,
 }
 
-const ConfirmSaveDialog = ({ onClose, onContinue }: Props) => (
+const ConfirmSaveDialog = ({ onSave, onClose, onContinue }: Props) => (
     <Modal>
         <Dialog
             title={I18n.t('modal.confirmSave.title')}
@@ -43,7 +44,7 @@ const ConfirmSaveDialog = ({ onClose, onContinue }: Props) => (
                             continue: {
                                 title: I18n.t('modal.common.save'),
                                 color: 'primary',
-                                onClick: onContinue,
+                                onClick: onSave,
                             },
                         }}
                     />

@@ -6,7 +6,6 @@ import useIsMounted from '$shared/hooks/useIsMounted'
 import { isEthereumAddress } from '$mp/utils/validate'
 import { isPaidProduct } from '$mp/utils/product'
 import { isPriceValid } from '$mp/utils/price'
-import type { Product } from '$mp/flowtype/product-types'
 
 export const INFO = 'info'
 export const WARNING = 'warning'
@@ -22,8 +21,7 @@ type ContextProps = {
     touched: Object,
     touch: (string) => void,
     isTouched: (string) => boolean,
-    originalProduct: ?Product,
-    setOriginalProduct: (Product) => void,
+    isAnyTouched: () => boolean,
 }
 
 const ValidationContext: Context<ContextProps> = React.createContext({})
@@ -31,7 +29,6 @@ const ValidationContext: Context<ContextProps> = React.createContext({})
 function useValidationContext(): ContextProps {
     const [status, setStatusState] = useState({})
     const [touched, setTouched] = useState({})
-    const [originalProduct, setOriginalProduct] = useState({})
 
     const touch = useCallback((name: string) => {
         setTouched((existing) => ({
@@ -40,6 +37,8 @@ function useValidationContext(): ContextProps {
         }))
     }, [setTouched])
     const isTouched = useCallback((name: string) => !!touched[name], [touched])
+
+    const isAnyTouched = useCallback(() => Object.keys(touched).some((key) => !!touched[key]), [touched])
 
     const isMounted = useIsMounted()
 
@@ -123,20 +122,18 @@ function useValidationContext(): ContextProps {
         touched,
         touch,
         isTouched,
+        isAnyTouched,
         status,
         validate,
-        originalProduct,
-        setOriginalProduct,
     }), [
         status,
         setStatus,
         touched,
         touch,
         isTouched,
+        isAnyTouched,
         clearStatus,
         validate,
-        originalProduct,
-        setOriginalProduct,
     ])
 }
 
