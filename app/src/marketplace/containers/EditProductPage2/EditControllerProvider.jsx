@@ -50,6 +50,24 @@ function useEditController(product: Product) {
         }
     }, [isAnyTouched])
 
+    useEffect(() => {
+        const handleBeforeunload = (event) => {
+            if (isAnyTouched()) {
+                const confirmationMessage = 'You have unsaved changes'
+                const evt = (event || window.event)
+                evt.returnValue = confirmationMessage // Gecko + IE
+                return confirmationMessage // Webkit, Safari, Chrome etc.
+            }
+            return ''
+        }
+
+        window.addEventListener('beforeunload', handleBeforeunload)
+
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeunload)
+        }
+    }, [isAnyTouched])
+
     const { api: deployCommunityDialog } = useModal('deployCommunity')
     const { api: deployContractDialog } = useModal('deployContract')
     const { api: confirmSaveDialog } = useModal('confirmSave')
