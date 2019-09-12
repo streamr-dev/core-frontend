@@ -1,6 +1,6 @@
 // @flow
 
-import React, { type Node, type Context, useState, useMemo, useCallback, useContext } from 'react'
+import React, { type Node, type Context, useEffect, useState, useMemo, useCallback, useContext } from 'react'
 
 import { Context as RouterContext } from '$shared/components/RouterContextProvider'
 import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
@@ -31,6 +31,24 @@ function useEditController(product: Product) {
     const isMounted = useIsMounted()
     const savePending = usePending('product.SAVE')
     const { updateBeneficiaryAddress } = useProductActions()
+
+    useEffect(() => {
+        const handleBeforeunload = (event) => {
+            if (isAnyTouched()) {
+                const confirmationMessage = 'You have unsaved changes'
+                const evt = (event || window.event)
+                evt.returnValue = confirmationMessage // Gecko + IE
+                return confirmationMessage // Webkit, Safari, Chrome etc.
+            }
+            return ''
+        }
+
+        window.addEventListener('beforeunload', handleBeforeunload)
+
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeunload)
+        }
+    }, [isAnyTouched])
 
     const { api: deployCommunityDialog } = useModal('deployCommunity')
     const { api: deployContractDialog } = useModal('deployContract')
