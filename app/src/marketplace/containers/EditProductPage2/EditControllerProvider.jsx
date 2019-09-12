@@ -149,6 +149,31 @@ function useEditController(product: Product) {
         redirectToProduct,
     ])
 
+    const back = useCallback(async () => {
+        let doSave = isAnyTouched()
+        let doRedirect = true
+
+        if (doSave) {
+            const { save: saveRequested, redirect: redirectRequested } = await confirmSaveDialog.open()
+
+            doSave = saveRequested
+            doRedirect = redirectRequested
+        }
+
+        if (doSave) {
+            await save()
+        }
+
+        if (doRedirect) {
+            redirectToProduct()
+        }
+    }, [
+        isAnyTouched,
+        confirmSaveDialog,
+        save,
+        redirectToProduct,
+    ])
+
     return useMemo(() => ({
         isPreview,
         setIsPreview,
