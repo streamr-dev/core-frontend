@@ -31,17 +31,71 @@ function shouldRedirect(error) {
 }
 
 function getRedirect() {
-    let redirect = window.location.href.slice(window.location.origin.length)
+    const redirect = window.location.href.slice(window.location.origin.length)
     const redirectPath = window.location.pathname
-    // never redirect back to login after logging in
-    redirect = (redirect && redirectPath !== routes.login()) ? redirect : undefined
-    // never redirect to logout after logging in
-    redirect = (redirect && redirectPath !== routes.logout()) ? redirect : undefined
-    return redirect
+    if (!redirect) { return undefined }
+
+    switch (redirectPath) {
+        // never redirect back to login/logout/error/404 after logging in
+        case routes.login():
+        case routes.logout():
+        case routes.error():
+        case routes.notFound():
+            return undefined
+        default:
+            return redirect
+    }
 }
 
 function wait(delay) {
     return new Promise((resolve) => setTimeout(resolve, delay))
+}
+
+async function loginRedirect() {
+    const redirectPath = window.location.pathname
+    if (redirectPath === routes.logout()) {
+        // if user is on logout route, just redirect to root
+        window.location = routes.root()
+    } else {
+        const redirect = getRedirect()
+        window.location = routes.login(redirect ? {
+            redirect,
+        } : {})
+    }
+    await wait(3000) // stall a moment to let redirect happen
+}
+
+async function notFoundRedirect() {
+    window.location = routes.notFound()
+    await wait(3000) // stall a moment to let redirect happen
+}
+
+function isLoggedInError(err) {
+    if (!err || !err.response || !err.response.data) { return false }
+    return err.response.data.user && err.response.data.user !== '<not authenticated>'
+}
+
+export async function handleLoadError(err) {
+    if (!err.response) { throw err } // unexpected error
+    // server issues
+    if (err.response.status >= 500) {
+        throw err
+    }
+
+    if (err.response.status === 404) {
+        await notFoundRedirect()
+    }
+
+    if (err.response.status === 403) {
+        // if already logged in and no access, do not redirect to login
+        if (isLoggedInError(err)) {
+            await notFoundRedirect() // redirect to not found
+        } else {
+            await loginRedirect()
+        }
+    }
+
+    throw err
 }
 
 export default function installInterceptor(instance = axios) {
@@ -49,17 +103,7 @@ export default function installInterceptor(instance = axios) {
     // redirect to login page on 401 response
     instance.interceptors.response.use((response) => response, async (error) => {
         if (shouldRedirect(error)) {
-            const redirectPath = window.location.pathname
-            if (redirectPath === routes.logout()) {
-                // if user is on logout route, just redirect to root
-                window.location = routes.root()
-            } else {
-                const redirect = getRedirect()
-                window.location = routes.login(redirect ? {
-                    redirect,
-                } : {})
-            }
-            await wait(3000) // stall a moment to let redirect happen
+            await loginRedirect()
         }
         // always throw error anyway
         // caller shouldn't succeed

@@ -16,6 +16,7 @@ import { Provider as PendingProvider } from '$shared/components/PendingContextPr
 import { useAnyPending } from '$shared/hooks/usePending'
 import CanvasStyles from '$editor/canvas/index.pcss'
 import Sidebar from '$editor/shared/components/Sidebar'
+import { handleLoadError } from '$auth/utils/loginInterceptor'
 
 import links from '../../links'
 
@@ -249,15 +250,17 @@ const DashboardLoader = withRouter(withErrorBoundary(ErrorComponentView)(class D
         try {
             newDashboard = await services.loadDashboard({ id: dashboardId })
         } catch (error) {
+            // ignore result if unmounted or dashboard changed
             if (this.unmounted || this.state.isLoading !== dashboardId) { return }
-            this.props.history.replace('/404')
-            return
+            await handleLoadError(error)
+            throw error
+        } finally {
+            if (!this.unmounted && this.state.isLoading === dashboardId) {
+                this.setState({ isLoading: false })
+            }
         }
-        // ignore result if unmounted or dashboard changed
-        if (this.unmounted || this.state.isLoading !== dashboardId) { return }
         // replace/init top of undo stack with loaded dashboard
         this.context.replace(() => newDashboard)
-        this.setState({ isLoading: false })
     }
 
     render() {
