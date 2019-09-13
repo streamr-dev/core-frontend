@@ -66,5 +66,7 @@
     "userPageStreamListing": "/core/streams",
     "userPageStreamPreview": "/core/stream/preview/:streamId",
     "userPageStreamShow": "/core/stream/show/:streamId",
-    "whitepaper": "<landingPage>/whitepaper"
+    "whitepaper": "<landingPage>/whitepaper",
+    "notFound": "/404",
+    "error": "/error"
 }
