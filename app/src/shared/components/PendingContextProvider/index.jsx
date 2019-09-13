@@ -4,11 +4,13 @@ import React, { useMemo, useCallback, useState, type Node, type Context } from '
 import useIsMountedRef from '$shared/hooks/useIsMountedRef'
 
 type ContextProps = {
+    isPending: boolean,
     setPending: (string, number) => any,
     pending: Object,
 }
 
 const PendingContext: Context<ContextProps> = React.createContext({
+    isPending: false,
     pending: {},
     setPending: () => {},
 })
@@ -31,10 +33,13 @@ function usePendingContext(): ContextProps {
         })
     }, [setPendingState, isMountedRef])
 
+    const isPending = Object.values(pending).some(Boolean)
+
     return useMemo(() => ({
         setPending,
+        isPending,
         pending,
-    }), [pending, setPending])
+    }), [pending, setPending, isPending])
 }
 
 type Props = {

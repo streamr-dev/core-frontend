@@ -35,8 +35,8 @@ export function usePending(name: string) {
 }
 
 export function useAnyPending() {
-    const { pending } = useContext(PendingContext)
-    return Object.values(pending).some((isPending) => isPending)
+    const { isPending } = useContext(PendingContext)
+    return isPending
 }
 
 export default usePending
