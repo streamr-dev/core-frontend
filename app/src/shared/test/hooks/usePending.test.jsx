@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react'
+import React, { useEffect, useContext, useState } from 'react'
 import { mount } from 'enzyme'
 import { act } from 'react-dom/test-utils'
 import usePending from '$shared/hooks/usePending'
@@ -6,6 +6,19 @@ import * as PendingContext from '$shared/components/PendingContextProvider'
 
 function wait(timeout) {
     return new Promise((resolve) => setTimeout(resolve, timeout))
+}
+
+function Unmounter({ children, unmountAfter }) {
+    const [shouldUnmount, setShouldUnmount] = useState(false)
+    useEffect(() => {
+        wait(unmountAfter).then(() => {
+            setShouldUnmount(true)
+        })
+    }, [unmountAfter])
+    if (shouldUnmount) {
+        return null
+    }
+    return children
 }
 
 describe('usePending', () => {
@@ -25,7 +38,7 @@ describe('usePending', () => {
 
         await act(async () => {
             const result = mount((
-                <PendingContext.Provider>
+                <PendingContext.Provider name="pending">
                     <Test />
                 </PendingContext.Provider>
             ))
@@ -62,7 +75,7 @@ describe('usePending', () => {
 
         await act(async () => {
             const result = mount((
-                <PendingContext.Provider>
+                <PendingContext.Provider name="pending">
                     <Test />
                 </PendingContext.Provider>
             ))
@@ -100,7 +113,7 @@ describe('usePending', () => {
 
         await act(async () => {
             const result = mount((
-                <PendingContext.Provider>
+                <PendingContext.Provider name="pending">
                     <Test name="test1" timeout={timeout * 0.5} />
                     <Test name="test2" timeout={timeout} />
                     <Inspector />
@@ -112,6 +125,81 @@ describe('usePending', () => {
             await wait(timeout * 0.6)
             expect(currentPendingContext.isPending).toBeTruthy()
             await wait(timeout * 1.1)
+            expect(currentPendingContext.isPending).not.toBeTruthy()
+            result.unmount()
+        })
+        done()
+    })
+
+    it('can handle pending item unmounting', async (done) => {
+        let currentPendingContext
+        const timeout = 100
+        const unmountTime = timeout * 0.5
+        const fn = jest.fn()
+        function Inspect() {
+            currentPendingContext = useContext(PendingContext.Context)
+            return null
+        }
+        function Test() {
+            const { wrap } = usePending('test')
+            useEffect(() => {
+                fn()
+                wrap(() => wait(timeout))
+            }, [wrap])
+            return null
+        }
+
+        await act(async () => {
+            const result = mount((
+                <PendingContext.Provider name="pending">
+                    <Inspect />
+                    <Unmounter unmountAfter={unmountTime}>
+                        <Test />
+                    </Unmounter>
+                </PendingContext.Provider>
+            ))
+            expect(currentPendingContext.isPending).not.toBeTruthy()
+            await wait(timeout * 0.1)
+            expect(currentPendingContext.isPending).toBeTruthy()
+            await wait(unmountTime * 1.5)
+            expect(currentPendingContext.isPending).not.toBeTruthy()
+            result.unmount()
+        })
+        done()
+    })
+
+    it('works with nested contexts', async (done) => {
+        let currentPendingContext
+        const maxTimeout = 100
+        function Test({ name, timeout }) {
+            const { wrap } = usePending(name)
+            useEffect(() => {
+                wrap(() => wait(timeout))
+            }, [wrap, timeout])
+            return null
+        }
+
+        function Inspector() {
+            currentPendingContext = useContext(PendingContext.Context)
+            return null
+        }
+
+        await act(async () => {
+            const result = mount((
+                <PendingContext.Provider name="parent">
+                    <Test name="test1" timeout={maxTimeout * 0.5} />
+                    <PendingContext.Provider name="child">
+                        <Test name="test2" timeout={maxTimeout} />
+                    </PendingContext.Provider>
+                    <Inspector />
+                </PendingContext.Provider>
+            ))
+            expect(currentPendingContext.isPending).not.toBeTruthy()
+            await wait(maxTimeout * 0.1)
+            expect(currentPendingContext.isPending).toBeTruthy()
+            await wait(maxTimeout * 0.6)
+            expect(currentPendingContext.isPending).toBeTruthy()
+            await wait(maxTimeout * 1.1)
             expect(currentPendingContext.isPending).not.toBeTruthy()
             result.unmount()
         })
