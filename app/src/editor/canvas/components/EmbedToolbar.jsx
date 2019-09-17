@@ -20,6 +20,8 @@ export default function EmbedToolbar({ canvas }) {
                 href={routes.login({
                     redirect: `${links.editor.canvasEditor}/${canvas.id}`,
                 })}
+                target="_blank"
+                rel="noopener noreferrer"
             >
                 View on Streamr
             </a>
