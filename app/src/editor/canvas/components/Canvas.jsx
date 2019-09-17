@@ -192,6 +192,7 @@ function CanvasElements(props) {
             ...getCanvasBounds(canvas),
             fitWidth: modulesEl.clientWidth,
             fitHeight: modulesEl.clientHeight,
+            padding: 100,
         })
     }, [canvas])
 
