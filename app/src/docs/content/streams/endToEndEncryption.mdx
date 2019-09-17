@@ -1,6 +1,6 @@
 ## End-to-end encryption
 ***Documentation coming soon***
-Confidentiality of events published on a stream can be guaranteed with end-to-end encryption. The publisher decides on a AES-512 symmetric group key and encrypts the messages in CTR mode before publishing them to the network. The subscribers must know this symmetric group key in order to decrypt the data.
+Confidentiality of events published on a stream can be guaranteed with end-to-end encryption. The publisher decides on a AES-256 symmetric group key and encrypts the messages in CTR mode before publishing them to the network. The subscribers must know this symmetric group key in order to decrypt the data.
 
 Currently, the symmetric key must be shared between the publisher and the subscribers in a secure way outside of the Streamr Network. In both the <a href="https://github.com/streamr-dev/streamr-client-javascript" target="_blank">Javascript</a> and the <a href="https://github.com/streamr-dev/streamr-client-java" target="_blank">Java</a> SDKs, the publisher can pass group keys per stream as parameters and the subscriber can pass group keys per stream and per publisher as parameters. Later it will be possible to use a secure key-exchange protocol directly in the Streamr Network.
 
