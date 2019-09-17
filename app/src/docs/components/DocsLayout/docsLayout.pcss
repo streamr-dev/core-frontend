@@ -141,25 +141,10 @@
     }
   }
 
-  img {
+  img { /* temporary styling during docs design pass */
     display: block;
     max-width: 100%;
-    margin-top: 3.5rem;
-    margin-bottom: 7rem;
-  }
-
-  img + .mdH3,
-  img + .mdP {
-    margin-top: -3.5rem;
-  }
-
-  .mdP + img {
-    margin-top: 3.5rem;
-  }
-
-  .playerWrapper + .mdH3,
-  .playerWrapper + .mdP {
-    margin-top: 3.5rem;
+    margin: 2em auto;
   }
 
   strong {
@@ -220,6 +205,30 @@
   }
 }
 
+/* temporary selector during docs design pass */
+:global(.gettingStartedPage) { /* stylelint-disable-line no-descending-specificity */
+  img {
+    display: block;
+    max-width: 100%;
+    margin-top: 3.5rem;
+    margin-bottom: 7rem;
+  }
+
+  img + .mdH3,
+  img + .mdP {
+    margin-top: -3.5rem;
+  }
+
+  .mdP + img {
+    margin-top: 3.5rem;
+  }
+
+  .playerWrapper + .mdH3,
+  .playerWrapper + .mdP {
+    margin-top: 3.5rem;
+  }
+}
+
 .grid {
   display: grid;
 }
@@ -269,7 +278,7 @@
     overflow: visible;
   }
 
-  .docsLayout {
+  :global(.gettingStartedPage) { /* temporary selector during docs design pass */
     img {
       max-width: 100vw;
       position: relative;

@@ -12,11 +12,13 @@ import GetBuilding from '$docs/content/gettingStarted/getBuilding.mdx'
 const GettingStarted = () => (
     <DocsLayout subNav={subNav.gettingStarted}>
         <Helmet title="Getting Started | Streamr Docs" />
-        <section>
-            <GettingStartedContent />
-        </section>
-        <section id="get-building">
-            <GetBuilding />
+        <section className="gettingStartedPage"> {/* temporary section during design style pass */}
+            <section>
+                <GettingStartedContent />
+            </section>
+            <section id="get-building">
+                <GetBuilding />
+            </section>
         </section>
     </DocsLayout>
 )
