@@ -925,26 +925,6 @@ export function setModuleOptions(canvas, moduleHash, newOptions = {}) {
 }
 
 /**
- * Prevent module positions erroneously going out of bounds.
- */
-
-export function limitLayout(canvas) {
-    let nextCanvas = { ...canvas }
-    nextCanvas.modules.forEach(({ layout, hash }) => {
-        const top = (layout && parseInt(layout.position.top, 10)) || 0
-        const left = (layout && parseInt(layout.position.left, 10)) || 0
-        if (!top || !left || top < 0 || left < 0) {
-            nextCanvas = updateModulePosition(nextCanvas, hash, {
-                top: Math.max(0, top),
-                left: Math.max(0, left),
-            })
-        }
-    })
-
-    return nextCanvas
-}
-
-/**
  * Ensures historical 'beginDate' is before 'endDate'
  */
 
@@ -1345,7 +1325,7 @@ export function updateCanvas(canvas, path, fn) {
         // so let's skip update call altogether
         canvas = update(path, fn, canvas)
     }
-    return convertHistoricalRange(limitLayout(updateVariadic(updatePortConnections(workaroundInitialValueWeirdness(canvas)))))
+    return convertHistoricalRange(updateVariadic(updatePortConnections(workaroundInitialValueWeirdness(canvas))))
 }
 
 export function moduleCategoriesIndex(modules = [], path = [], index = []) {

@@ -162,6 +162,12 @@ function CanvasElements(props) {
     cameraRef.current = camera
 
     const scaledPositions = useMemo(() => {
+        // Always pass positions as if no scaling was performed.
+        // Positions are read from DOM with current scaling applied
+        // but since the cables rendered using these positions are also scaled
+        // we need to unscale the values first.
+        // note: does not update when scale changes, only when positions change
+        // only need to reverse the scaling at time the positions are captured
         const { current: camera } = cameraRef
         return Object.values(positions).reduce((o, p) => Object.assign(o, {
             [p.id]: {

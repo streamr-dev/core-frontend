@@ -5,11 +5,6 @@ import { Draggable } from './DragDropContext'
 import ModuleStyles from '$editor/shared/components/Module.pcss'
 import styles from './Module.pcss'
 
-const bounds = {
-    top: 0,
-    left: 0,
-}
-
 const EMPTY = {}
 
 export default function ModuleDragger({ api, module, children, onStartDragModule: onStartDragModuleProp }) {
@@ -51,7 +46,6 @@ export default function ModuleDragger({ api, module, children, onStartDragModule
             defaultClassNameDragging={styles.isDragging}
             cancel={`.${ModuleStyles.dragCancel}`}
             handle={`.${ModuleStyles.dragHandle}`}
-            bounds={bounds}
             defaultPosition={defaultPosition}
             onStop={onDropModule}
             onStart={onStartDragModule}
