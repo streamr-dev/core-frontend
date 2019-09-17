@@ -44,7 +44,6 @@ export class ShareDialogInputRow extends Component<Props, State> {
             <div className={styles.container}>
                 <input
                     className={styles.input}
-                    type="email"
                     placeholder={I18n.t('modal.shareResource.enterEmailAddress')}
                     name="email"
                     value={email}
