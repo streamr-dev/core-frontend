@@ -21,10 +21,7 @@ function shouldIgnoreEvent(event) {
 }
 
 function updateScaleState(s, { x, y, scaleFactor }) {
-    // find position at the current scale
     const { scale: currentScale } = s
-
-    // update scale
     const newScale = clamp(currentScale * scaleFactor, 0.1, 3)
 
     // adjust for offset created by scale change
@@ -139,6 +136,7 @@ function usePanControls(elRef) {
     const [isPanning, setPanning] = useState(false)
 
     const startPanning = useCallback((event) => {
+        if (event.buttons !== 1) { return }
         if (shouldIgnoreEvent(event)) { return }
         if (isPanning) { return }
         event.stopPropagation()
@@ -161,6 +159,11 @@ function usePanControls(elRef) {
 
     const pan = useCallback((event) => {
         if (!isPanning) { return }
+        if (event.buttons !== 1) {
+            stopPanning(event)
+            return
+        }
+
         const el = elRef.current
         const { left, top } = el.getBoundingClientRect()
         // find current location on screen
@@ -170,7 +173,7 @@ function usePanControls(elRef) {
             x,
             y,
         })
-    }, [isPanning, elRef, updatePosition])
+    }, [isPanning, elRef, stopPanning, updatePosition])
 
     useEffect(() => {
         if (!isPanning) { return }
