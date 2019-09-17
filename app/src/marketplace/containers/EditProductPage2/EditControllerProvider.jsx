@@ -1,13 +1,15 @@
 // @flow
 
-import React, { type Node, type Context, useEffect, useState, useMemo, useCallback, useContext } from 'react'
+import React, { type Node, type Context, useEffect, useState, useMemo, useCallback, useContext, useRef } from 'react'
 
 import { Context as RouterContext } from '$shared/components/RouterContextProvider'
-import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
+import { Context as ValidationContext, ERROR } from '../ProductController/ValidationContextProvider'
 import type { Product } from '$mp/flowtype/product-types'
 import usePending from '$shared/hooks/usePending'
 import { putProduct, postImage } from '$mp/modules/editProduct/services'
 import useIsMounted from '$shared/hooks/useIsMounted'
+import Notification from '$shared/utils/Notification'
+import { NotificationIcon } from '$shared/utils/constants'
 import routes from '$routes'
 
 import useProductActions from '../ProductController/useProductActions'
@@ -18,6 +20,7 @@ type ContextProps = {
     setIsPreview: (boolean | Function) => void,
     back: () => void | Promise<void>,
     save: () => void | Promise<void>,
+    publish: () => void | Promise<void>,
     deployCommunity: () => void | Promise<void>,
     deployContract: () => void | Promise<void>,
 }
@@ -26,7 +29,7 @@ const EditControllerContext: Context<ContextProps> = React.createContext({})
 
 function useEditController(product: Product) {
     const { history } = useContext(RouterContext)
-    const { isAnyTouched } = useContext(ValidationContext)
+    const { isAnyTouched, status } = useContext(ValidationContext)
     const [isPreview, setIsPreview] = useState(false)
     const isMounted = useIsMounted()
     const savePending = usePending('product.SAVE')
@@ -49,6 +52,17 @@ function useEditController(product: Product) {
             window.removeEventListener('beforeunload', handleBeforeunload)
         }
     }, [isAnyTouched])
+    const productRef = useRef(product)
+    productRef.current = product
+
+    const errors = useMemo(() => (
+        Object.keys(status)
+            .filter((key) => status[key] && status[key].level === ERROR)
+            .map((key) => ({
+                key,
+                message: status[key].message,
+            }))
+    ), [status])
 
     useEffect(() => {
         const handleBeforeunload = (event) => {
@@ -71,28 +85,31 @@ function useEditController(product: Product) {
     const { api: deployCommunityDialog } = useModal('deployCommunity')
     const { api: deployContractDialog } = useModal('deployContract')
     const { api: confirmSaveDialog } = useModal('confirmSave')
+    const { api: publishDialog } = useModal('publish')
 
-    const productId = product.id
     const redirectToProduct = useCallback(() => {
         if (!isMounted()) { return }
-        history.push(routes.product({
-            id: productId,
+        history.replace(routes.product({
+            id: productRef.current.id,
         }))
     }, [
-        productId,
         isMounted,
         history,
     ])
 
-    const save = useCallback(async () => {
+    const save = useCallback(async (options = {
+        redirect: true,
+    }) => {
         const savedSuccessfully = await savePending.wrap(async () => {
+            const p = productRef.current
+
             // save product
-            await putProduct(product, product.id || '')
+            await putProduct(p, p.id || '')
 
             // upload image
-            if (product.newImageToUpload != null) {
+            if (p.newImageToUpload != null) {
                 try {
-                    await postImage(product.id || '', product.newImageToUpload)
+                    await postImage(p.id || '', p.newImageToUpload)
                 } catch (e) {
                     console.error('Could not upload image', e)
                 }
@@ -103,11 +120,10 @@ function useEditController(product: Product) {
         })
 
         // Everything ok, do a redirect back to product page
-        if (savedSuccessfully) {
+        if (savedSuccessfully && !!options.redirect) {
             redirectToProduct()
         }
     }, [
-        product,
         savePending,
         redirectToProduct,
     ])
@@ -118,18 +134,45 @@ function useEditController(product: Product) {
         })
     }, [deployContractDialog, product])
 
+    const validate = useCallback(() => {
+        // Notify missing fields
+        if (errors.length > 0) {
+            errors.forEach(({ message }) => {
+                Notification.push({
+                    title: message,
+                    icon: NotificationIcon.ERROR,
+                })
+            })
+
+            return false
+        }
+
+        return true
+    }, [errors])
+
+    const publish = useCallback(async () => {
+        if (validate()) {
+            await save({
+                redirect: false,
+            })
+            await publishDialog.open({
+                product: productRef.current,
+            })
+        }
+    }, [validate, save, publishDialog])
+
     const deployCommunity = useCallback(async () => {
         if (!isMounted()) { return }
 
         const result = await deployCommunityDialog.open({
-            product,
+            product: productRef.current,
         })
 
         if (result && result.success && result.address) {
             updateBeneficiaryAddress(result.address)
             deployContract()
             const updatedProduct = {
-                ...product,
+                ...productRef.current,
                 beneficiaryAddress: result.address,
             }
             await putProduct(updatedProduct, updatedProduct.id || '')
@@ -137,34 +180,8 @@ function useEditController(product: Product) {
     }, [
         deployCommunityDialog,
         isMounted,
-        product,
         updateBeneficiaryAddress,
         deployContract,
-    ])
-
-    const back = useCallback(async () => {
-        let doSave = isAnyTouched()
-        let doRedirect = true
-
-        if (doSave) {
-            const { save: saveRequested, redirect: redirectRequested } = await confirmSaveDialog.open()
-
-            doSave = saveRequested
-            doRedirect = redirectRequested
-        }
-
-        if (doSave) {
-            await save()
-        }
-
-        if (doRedirect) {
-            redirectToProduct()
-        }
-    }, [
-        isAnyTouched,
-        confirmSaveDialog,
-        save,
-        redirectToProduct,
     ])
 
     const back = useCallback(async () => {
@@ -197,6 +214,7 @@ function useEditController(product: Product) {
         setIsPreview,
         back,
         save,
+        publish,
         deployCommunity,
         deployContract,
     }), [
@@ -204,6 +222,7 @@ function useEditController(product: Product) {
         setIsPreview,
         back,
         save,
+        publish,
         deployCommunity,
         deployContract,
     ])
