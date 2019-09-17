@@ -158,6 +158,7 @@ const Port = ({
             ) : plug}
             <Cell>
                 <EditableText
+                    className={styles.name}
                     disabled={!!isRenameDisabled}
                     editing={editingName}
                     onCommit={onNameChange}
