@@ -99,13 +99,23 @@ function CanvasElements(props) {
     const [positions, setPositions] = useState({})
     const updatePositionsRef = useRef()
 
+    const [scale, setScale] = useState(1)
+    const scaleRef = useRef()
+    scaleRef.current = scale
+
+    const onChangeCamera = useCallback(({ scale: newScale }) => {
+        if (scale === newScale) { return }
+        scaleRef.current = scale
+        setScale(newScale)
+    }, [setScale, scale, scaleRef])
+
     const updatePositionsNow = useCallback(() => {
         if (updatePositionsRef.current) {
             updatePositionsRef.current.cancel() // cancel any delayed call
         }
 
         if (!modulesRef.current) { return }
-
+        const scale = scaleRef.current
         const offset = modulesRef.current.getBoundingClientRect()
         const { current: ports } = portsRef
         const positions = [...ports.entries()].reduce((r, [id, el]) => {
@@ -115,18 +125,18 @@ function CanvasElements(props) {
             return Object.assign(r, {
                 [id]: {
                     id,
-                    top: (rect.top - offset.top) + (rect.height / 2),
-                    bottom: (rect.bottom - offset.bottom) + (rect.height / 2),
-                    left: (rect.left - offset.left) + (rect.width / 2),
-                    right: (rect.right - offset.right) + (rect.width / 2),
-                    width: rect.width,
-                    height: rect.height,
+                    top: ((rect.top - offset.top) + (rect.height / 2)) / scale,
+                    bottom: ((rect.bottom - offset.bottom) + (rect.height / 2)) / scale,
+                    left: ((rect.left - offset.left) + (rect.width / 2)) / scale,
+                    right: ((rect.right - offset.right) + (rect.width / 2)) / scale,
+                    width: rect.width / scale,
+                    height: rect.height / scale,
                 },
             })
         }, {})
 
         setPositions(positions)
-    }, [setPositions, modulesRef, portsRef, updatePositionsRef])
+    }, [setPositions, modulesRef, portsRef, updatePositionsRef, scaleRef])
 
     // debounce as many updates will be triggered in quick succession
     // only needs to be done once at the end
@@ -136,10 +146,10 @@ function CanvasElements(props) {
     }
     updatePositionsRef.current = updatePositions
 
-    // update positions when canvas changes
+    // update positions when canvas or scale changes
     useLayoutEffect(() => {
         updatePositionsNow()
-    }, [canvas, updatePositionsNow])
+    }, [canvas, updatePositionsNow, scale])
 
     const { selectModule } = api
     const onFocus = useCallback((event) => {
@@ -156,7 +166,7 @@ function CanvasElements(props) {
     if (!canvas) { return null }
 
     return (
-        <Camera canvas={canvas} className={styles.CanvasElements}>
+        <Camera className={styles.CanvasElements} onChange={onChangeCamera}>
             <DragDropProvider>
                 <div
                     className={styles.Modules}
