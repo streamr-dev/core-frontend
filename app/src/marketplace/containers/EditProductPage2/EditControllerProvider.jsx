@@ -16,10 +16,9 @@ import links from '$mp/../links'
 import { formatPath } from '$shared/utils/url'
 
 import { Context as ValidationContext, ERROR } from '../ProductController/ValidationContextProvider'
+import useProductActions from '../ProductController/useProductActions'
 import useOriginalProduct from '../ProductController/useOriginalProduct'
 import useModal from '$shared/hooks/useModal'
-import { deployContract as deploy, createJoinPartStream } from '$mp/modules/communityProduct/services'
-import useProductActions from '../ProductController/useProductActions'
 
 type ContextProps = {
     isPreview: boolean,
@@ -43,6 +42,7 @@ function useEditController(product: Product) {
     const { api: confirmDialog } = useModal('confirm')
     const { api: updateContractDialog } = useModal('updateContract')
     const { api: deployCommunityDialog } = useModal('deployCommunity')
+    const { api: deployContractDialog } = useModal('deployContract')
 
     const { status } = useContext(ValidationContext)
 
@@ -141,51 +141,35 @@ function useEditController(product: Product) {
         history,
     ])
 
+    const deployContract = useCallback(async () => {
+        await deployContractDialog.open({
+            product,
+        })
+    }, [deployContractDialog, product])
+
     const deployCommunity = useCallback(async () => {
         if (!isMounted()) { return }
 
-        await deployCommunityDialog.open({
+        const result = await deployCommunityDialog.open({
             product,
         })
+
+        if (result && result.success && result.address) {
+            updateBeneficiaryAddress(result.address)
+            deployContract()
+            const updatedProduct = {
+                ...product,
+                beneficiaryAddress: result.address,
+            }
+            await putProduct(updatedProduct, updatedProduct.id || '')
+        }
     }, [
         deployCommunityDialog,
         isMounted,
         product,
+        updateBeneficiaryAddress,
+        deployContract,
     ])
-
-    const deployContract = useCallback(async () => {
-        if (product && product.id) {
-            const joinPartStream = await createJoinPartStream(product.name)
-            if (joinPartStream == null) {
-                console.error('Could not create JoinPartStream for community product')
-                return
-            }
-
-            const tx = await deploy(joinPartStream.id)
-            tx.onTransactionComplete(() => {
-                Notification.push({
-                    title: 'Deploy completed',
-                    icon: NotificationIcon.CHECKMARK,
-                })
-            })
-            tx.onError((err) => {
-                console.error('CP deploy: Error', err)
-                Notification.push({
-                    title: 'Deploy failed',
-                    description: err.message,
-                    icon: NotificationIcon.ERROR,
-                })
-            })
-            tx.onContractAddress((address) => {
-                const updatedProduct = {
-                    ...product,
-                    beneficiaryAddress: address,
-                }
-                putProduct(updatedProduct, updatedProduct.id || '')
-                updateBeneficiaryAddress(address)
-            })
-        }
-    }, [product, updateBeneficiaryAddress])
 
     return useMemo(() => ({
         isPreview,

@@ -1,19 +1,21 @@
 // @flow
 
-import React from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { I18n, Translate } from 'react-redux-i18n'
 import cx from 'classnames'
 
 import Modal from '$shared/components/Modal'
 import Dialog from '$shared/components/Dialog'
+import Notification from '$shared/utils/Notification'
+import { NotificationIcon } from '$shared/utils/constants'
 import { type Product } from '$mp/flowtype/product-types'
+import { deployContract as deploy, createJoinPartStream } from '$mp/modules/communityProduct/services'
 
 import styles from './deployingCommunityDialog.pcss'
 
 export type Props = {
     product: Product,
-    onClose: () => void,
-    onContinue: () => void,
+    api: Object,
 }
 
 const formatSeconds = (seconds) => {
@@ -23,8 +25,38 @@ const formatSeconds = (seconds) => {
     return timeValue.substr(0, 2) === '00' ? timeValue.substr(3) : timeValue
 }
 
-const DeployingCommunityDialog = ({ product, onClose, onContinue }: Props) => {
+const DeployingCommunityDialog = ({ product, api }: Props) => {
     const estimate = 205
+
+    const deployContract = useCallback(async () => {
+        if (product && product.id) {
+            const joinPartStream = await createJoinPartStream(product.name)
+            if (joinPartStream == null) {
+                console.error('Could not create JoinPartStream for community product')
+                return
+            }
+
+            const tx = deploy(joinPartStream.id)
+            tx.onTransactionComplete(() => {
+                Notification.push({
+                    title: 'Deploy completed',
+                    icon: NotificationIcon.CHECKMARK,
+                })
+            })
+            tx.onError((err) => {
+                console.error('CP deploy: Error', err)
+                Notification.push({
+                    title: 'Deploy failed',
+                    description: err.message,
+                    icon: NotificationIcon.ERROR,
+                })
+            })
+        }
+    }, [product])
+
+    useEffect(() => {
+        deployContract()
+    }, [deployContract])
 
     return (
         <Modal>
@@ -33,13 +65,13 @@ const DeployingCommunityDialog = ({ product, onClose, onContinue }: Props) => {
                 title={I18n.t('modal.deployCommunity.deploying.title', {
                     name: product.name,
                 })}
-                onClose={onClose}
+                onClose={() => api.close(false)}
                 contentClassName={styles.content}
                 actions={{
                     continue: {
                         title: I18n.t('modal.common.close'),
                         outline: true,
-                        onClick: onContinue,
+                        onClick: () => api.close(true),
                     },
                 }}
             >

@@ -12,9 +12,10 @@ import type {
 import type { Permission } from '$userpages/flowtype/permission-types'
 import type { ApiResult } from '$shared/flowtype/common-types'
 
-import { post } from '$shared/utils/api'
+import { post, del } from '$shared/utils/api'
 import { formatApiUrl } from '$shared/utils/url'
-import { postStream } from '$userpages/modules/userPageStreams/services'
+import { postStream /* , getMyStreamPermissions */ } from '$userpages/modules/userPageStreams/services'
+import { addStreamResourceKey } from '$shared/modules/resourceKey/services'
 
 export const getStreamrEngineAddresses = (): Array<string> => {
     const addressesString = process.env.STREAMR_ENGINE_NODE_ADDRESSES || ''
@@ -25,8 +26,8 @@ export const getStreamrEngineAddresses = (): Array<string> => {
 export const addPermission = (id: StreamId, permission: Permission): ApiResult<Array<Permission>> =>
     post(formatApiUrl('streams', id, 'permissions'), permission)
 
-export const addKey = (id: StreamId, key: Object): ApiResult<Object> =>
-    post(formatApiUrl('streams', id, 'keys'), key)
+export const deletePermission = (id: StreamId, permissionId: string): ApiResult<Array<Permission>> =>
+    del(formatApiUrl('streams', id, 'permissions', permissionId))
 
 export const createJoinPartStream = async (productName: string): Promise<Stream | null> => {
     const newStream: NewStream = {
@@ -53,15 +54,27 @@ export const createJoinPartStream = async (productName: string): Promise<Stream 
     // Add write permissions for all Streamr Engine nodes
     try {
         const addWriteKeyPromises = getStreamrEngineAddresses().map((address) => (
-            addKey(stream.id, {
-                name: address,
-                permission: 'write',
-            })
+            addStreamResourceKey(stream.id, address, 'write')
         ))
         await Promise.all(addWriteKeyPromises)
     } catch (e) {
         console.error('Could not add write keys to JoinPart stream', e)
     }
+
+    // Remove share permission to prevent deleting the stream
+    // TODO: Backend will throw error because there must at least one 'share' permission.
+    /*
+    try {
+        // $FlowFixMe
+        const myPermissions = await getMyStreamPermissions(stream.id)
+        const sharePermission = myPermissions.find((p) => p.operation === 'share')
+        if (sharePermission) {
+            await deletePermission(stream.id, sharePermission.id)
+        }
+    } catch (e) {
+        console.error('Could not remove share permission from JoinPart stream', e)
+    }
+    */
 
     return stream
 }
@@ -69,7 +82,7 @@ export const createJoinPartStream = async (productName: string): Promise<Stream 
 export const deployContract = (joinPartStreamId: string): SmartContractDeployTransaction => {
     const operatorAddress = process.env.COMMUNITY_PRODUCT_OPERATOR_ADDRESS
     const tokenAddress = process.env.TOKEN_CONTRACT_ADDRESS
-    const blockFreezePeriodSeconds = 1
+    const blockFreezePeriodSeconds = process.env.COMMUNITY_PRODUCT_BLOCK_FREEZE_PERIOD_SECONDS || 1
     const contractArguments = [operatorAddress, joinPartStreamId, tokenAddress, blockFreezePeriodSeconds]
     return deploy(getConfig().communityProduct, contractArguments)
 }

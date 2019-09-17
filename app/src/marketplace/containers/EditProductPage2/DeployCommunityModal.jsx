@@ -1,13 +1,13 @@
 // @flow
 
-import React, { useState, useCallback, useContext } from 'react'
+import React, { useState, useCallback } from 'react'
 import useModal from '$shared/hooks/useModal'
 import { type Product } from '$mp/flowtype/product-types'
 import GuidedDeployCommunityDialog from '$mp/components/Modal/GuidedDeployCommunityDialog'
 import ConfirmDeployCommunityDialog from '$mp/components/Modal/ConfirmDeployCommunityDialog'
-import DeployingCommunityDialog from '$mp/components/Modal/DeployingCommunityDialog'
 import { isLocalStorageAvailable } from '$shared/utils/storage'
-import { Context as EditControllerContext } from '$mp/containers/EditProductPage2/EditControllerProvider'
+import withWeb3 from '$shared/utils/withWeb3'
+import { getFutureContractDeployAddress } from '$mp/utils/smartContract'
 
 type DeployDialogProps = {
     product: Product,
@@ -35,16 +35,21 @@ function setSkipGuide(value) {
 export const DeployDialog = ({ product, api }: DeployDialogProps) => {
     const dontShowAgain = skipGuide()
     const [step, setStep] = useState(dontShowAgain ? steps.CONFIRM : steps.GUIDE)
-    const { deployContract } = useContext(EditControllerContext)
 
     const onClose = useCallback(() => {
-        api.close(false)
+        api.close({
+            success: false,
+        })
     }, [api])
 
     const onDeploy = useCallback(async () => {
-        await deployContract()
         setStep(steps.COMPLETE)
-    }, [deployContract])
+        const address = await getFutureContractDeployAddress()
+        api.close({
+            success: true,
+            address,
+        })
+    }, [api])
 
     const onGuideContinue = useCallback((dontShow) => {
         setSkipGuide(dontShow)
@@ -73,18 +78,14 @@ export const DeployDialog = ({ product, api }: DeployDialogProps) => {
             )
 
         case steps.COMPLETE:
-            return (
-                <DeployingCommunityDialog
-                    product={product}
-                    onContinue={() => api.close(true)}
-                    onClose={onClose}
-                />
-            )
+            return null
 
         default:
             return null
     }
 }
+
+export const DeployDialogWithWeb3 = withWeb3(DeployDialog)
 
 export default () => {
     const { api, isOpen, value } = useModal('deployCommunity')
@@ -96,9 +97,12 @@ export default () => {
     const { product } = value
 
     return (
-        <DeployDialog
+        <DeployDialogWithWeb3
             product={product}
             api={api}
+            onClose={() => api.close({
+                success: false,
+            })}
         />
     )
 }

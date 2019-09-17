@@ -32,7 +32,7 @@ export function withWeb3(WrappedComponent: ComponentType<any>) {
             web3Error: undefined,
         }
 
-        componentDidMount() {
+        componentWillMount() {
             if (this.props.requireWeb3) {
                 Web3Poller.subscribe(Web3Poller.events.ACCOUNT_ERROR, this.setLocked)
                 Web3Poller.subscribe(Web3Poller.events.ACCOUNT, this.validateWeb3)

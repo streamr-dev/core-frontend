@@ -154,3 +154,11 @@ export const deploy = (contract: SmartContractMetadata, args: Array<any>, option
 
     return tx
 }
+
+export const getFutureContractDeployAddress = async (): Promise<Address> => {
+    const web3 = getWeb3()
+    const account = await web3.getDefaultAccount()
+    await checkEthereumNetworkIsCorrect(web3)
+    const address = await calculateContractAddress(account)
+    return address
+}

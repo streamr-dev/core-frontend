@@ -21,6 +21,7 @@ import { Provider as ModalProvider } from '$shared/components/ModalContextProvid
 import ConfirmNoCoverImageModal from './ConfirmNoCoverImageModal'
 import UpdateContractProductModal from './UpdateContractProductModal'
 import DeployCommunityModal from './DeployCommunityModal'
+import DeployContractModal from './DeployContractModal'
 
 import styles from './editProductPage.pcss'
 
@@ -115,6 +116,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
             <ConfirmNoCoverImageModal />
             <UpdateContractProductModal />
             <DeployCommunityModal />
+            <DeployContractModal />
         </CoreLayout>
     )
 }
