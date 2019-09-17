@@ -35,10 +35,13 @@ function fitCamera({
     const width = maxX - minX
     const height = maxY - minY
     const scale = Math.min(maxWidth / width, maxHeight / height)
+    // vertically & horizontally center content
+    const offsetY = (fitHeight - (height * scale)) / 2
+    const offsetX = (fitWidth - (width * scale)) / 2
 
     return {
-        x: -(minX * scale) + padding,
-        y: -((minY - (height / 2)) * scale) + padding,
+        x: -(minX * scale) + offsetX,
+        y: -(minY * scale) + offsetY,
         scale,
     }
 }

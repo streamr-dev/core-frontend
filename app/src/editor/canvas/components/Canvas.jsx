@@ -208,18 +208,16 @@ function CanvasElements(props) {
                     role="grid"
                 >
                     {canvas.modules.map((m) => (
-                        <React.Fragment>
-                            <Module
-                                key={m.hash}
-                                module={m}
-                                canvas={canvas}
-                                onPort={onPort}
-                                api={api}
-                                isSelected={selectedModuleHash === m.hash}
-                                moduleSidebarIsOpen={moduleSidebarIsOpen}
-                                {...api.module}
-                            />
-                        </React.Fragment>
+                        <Module
+                            key={m.hash}
+                            module={m}
+                            canvas={canvas}
+                            onPort={onPort}
+                            api={api}
+                            isSelected={selectedModuleHash === m.hash}
+                            moduleSidebarIsOpen={moduleSidebarIsOpen}
+                            {...api.module}
+                        />
                     ))}
                 </div>
                 <Cables
