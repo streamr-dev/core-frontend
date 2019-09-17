@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useLayoutEffect } from 'react'
+import React, { useState, useRef, useCallback, useLayoutEffect, useMemo } from 'react'
 import cx from 'classnames'
 import debounce from 'lodash/debounce'
 
@@ -99,15 +99,11 @@ function CanvasElements(props) {
     const [positions, setPositions] = useState({})
     const updatePositionsRef = useRef()
 
-    const [scale, setScale] = useState(1)
-    const scaleRef = useRef()
-    scaleRef.current = scale
+    const [camera, setCamera] = useState(1)
 
-    const onChangeCamera = useCallback(({ scale: newScale }) => {
-        if (scale === newScale) { return }
-        scaleRef.current = scale
-        setScale(newScale)
-    }, [setScale, scale, scaleRef])
+    const onChangeCamera = useCallback((camera) => {
+        setCamera(camera)
+    }, [setCamera])
 
     const updatePositionsNow = useCallback(() => {
         if (updatePositionsRef.current) {
@@ -115,7 +111,6 @@ function CanvasElements(props) {
         }
 
         if (!modulesRef.current) { return }
-        const scale = scaleRef.current
         const offset = modulesRef.current.getBoundingClientRect()
         const { current: ports } = portsRef
         const positions = [...ports.entries()].reduce((r, [id, el]) => {
@@ -125,18 +120,18 @@ function CanvasElements(props) {
             return Object.assign(r, {
                 [id]: {
                     id,
-                    top: ((rect.top - offset.top) + (rect.height / 2)) / scale,
-                    bottom: ((rect.bottom - offset.bottom) + (rect.height / 2)) / scale,
-                    left: ((rect.left - offset.left) + (rect.width / 2)) / scale,
-                    right: ((rect.right - offset.right) + (rect.width / 2)) / scale,
-                    width: rect.width / scale,
-                    height: rect.height / scale,
+                    top: ((rect.top - offset.top) + (rect.height / 2)),
+                    bottom: ((rect.bottom - offset.bottom) + (rect.height / 2)),
+                    left: ((rect.left - offset.left) + (rect.width / 2)),
+                    right: ((rect.right - offset.right) + (rect.width / 2)),
+                    width: rect.width,
+                    height: rect.height,
                 },
             })
         }, {})
 
         setPositions(positions)
-    }, [setPositions, modulesRef, portsRef, updatePositionsRef, scaleRef])
+    }, [setPositions, modulesRef, portsRef, updatePositionsRef])
 
     // debounce as many updates will be triggered in quick succession
     // only needs to be done once at the end
@@ -146,10 +141,10 @@ function CanvasElements(props) {
     }
     updatePositionsRef.current = updatePositions
 
-    // update positions when canvas or scale changes
+    // update positions when canvas changes
     useLayoutEffect(() => {
         updatePositionsNow()
-    }, [canvas, updatePositionsNow, scale])
+    }, [canvas, updatePositionsNow])
 
     const { selectModule } = api
     const onFocus = useCallback((event) => {
@@ -162,6 +157,24 @@ function CanvasElements(props) {
         portsRef.current.set(portId, el)
         updatePositions()
     }, [portsRef, updatePositions])
+
+    const cameraRef = useRef()
+    cameraRef.current = camera
+
+    const scaledPositions = useMemo(() => {
+        const { current: camera } = cameraRef
+        return Object.values(positions).reduce((o, p) => Object.assign(o, {
+            [p.id]: {
+                ...p,
+                top: (p.top / camera.scale),
+                bottom: (p.bottom / camera.scale),
+                left: (p.left / camera.scale),
+                right: (p.right / camera.scale),
+                width: (p.width / camera.scale),
+                height: (p.height / camera.scale),
+            },
+        }), {})
+    }, [positions, cameraRef])
 
     if (!canvas) { return null }
 
@@ -190,7 +203,7 @@ function CanvasElements(props) {
                 </div>
                 <Cables
                     canvas={canvas}
-                    positions={positions}
+                    positions={scaledPositions}
                     selectedModuleHash={selectedModuleHash}
                 />
             </DragDropProvider>

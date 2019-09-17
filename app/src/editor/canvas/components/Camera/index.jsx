@@ -6,19 +6,29 @@ function clamp(value, min, max) {
     return Math.max(min, Math.min(max, value))
 }
 
+/**
+ * Allows interaction events to bubble from this element
+ * and be handled by camera controls
+ */
 export const { cameraControl } = styles
 
-export function updateScaleState(s, { x, y, scaleFactor }) {
+function shouldIgnoreEvent(event) {
+    // ignore bubbled, unless has cameraControl style
+    return (
+        event.currentTarget !== event.target &&
+        !event.target.classList.contains(styles.cameraControl)
+    )
+}
+
+function updateScaleState(s, { x, y, scaleFactor }) {
     // find position at the current scale
     const { scale: currentScale } = s
 
     // update scale
     const newScale = clamp(currentScale * scaleFactor, 0.1, 3)
 
-    // find same position at new scale
-    const ratio = (1 - (newScale / currentScale))
-
     // adjust for offset created by scale change
+    const ratio = (1 - (newScale / currentScale))
     const x2 = s.x + ((x - s.x) * ratio)
     const y2 = s.y + ((y - s.y) * ratio)
 
@@ -30,29 +40,26 @@ export function updateScaleState(s, { x, y, scaleFactor }) {
     }
 }
 
-function useCameraApi() {
+function useCameraApi(scaleFactor = 0.1) {
     const [state, setState] = useState({
         scale: 1,
         x: 0,
         y: 0,
     })
-
+    // updates scale of camera, centers scaling on x,y
     const updateScale = useCallback(({ x, y, delta }) => {
         setState((s) => {
-            let scaleFactor = 1
-            if (delta < 0) {
-                scaleFactor = 1.1
-            } else {
-                scaleFactor = 0.9
-            }
+            const factor = Math.abs(scaleFactor * (delta / 120))
+            const actualScaleFactor = delta < 0 ? 1 + factor : 1 - factor
             return updateScaleState(s, {
                 x,
                 y,
-                scaleFactor,
+                scaleFactor: actualScaleFactor,
             })
         })
-    }, [setState])
+    }, [setState, scaleFactor])
 
+    // init needed to reset last values before starting pan
     const initUpdatePosition = useCallback(({ x, y }) => {
         setState((s) => ({
             ...s,
@@ -60,6 +67,8 @@ function useCameraApi() {
             lastY: y,
         }))
     }, [setState])
+
+    // changes current camera offset i.e. pans camera
     const updatePosition = useCallback(({ x, y }) => {
         setState(({ lastX = x, lastY = y, ...s }) => ({
             ...s,
@@ -100,9 +109,9 @@ function CameraProvider({ onChange, children }) {
 
 function useWheelControls(elRef) {
     const { updateScale } = useCameraContext()
-    const onWheel = useCallback((event) => {
-        const el = elRef.current
+    const onChangeScale = useCallback((event) => {
         event.preventDefault()
+        const el = elRef.current
         const { deltaY: delta } = event
         if (delta === 0) { return }
         const { left, top } = el.getBoundingClientRect()
@@ -118,23 +127,20 @@ function useWheelControls(elRef) {
 
     useEffect(() => {
         const el = elRef.current
-        el.addEventListener('wheel', onWheel)
+        el.addEventListener('wheel', onChangeScale)
         return () => {
-            el.removeEventListener('wheel', onWheel)
+            el.removeEventListener('wheel', onChangeScale)
         }
-    }, [elRef, onWheel])
+    }, [elRef, onChangeScale])
 }
 
 function usePanControls(elRef) {
     const { initUpdatePosition, updatePosition } = useCameraContext()
     const [isPanning, setPanning] = useState(false)
 
-    const onMouseDown = useCallback((event) => {
+    const startPanning = useCallback((event) => {
+        if (shouldIgnoreEvent(event)) { return }
         if (isPanning) { return }
-        if (
-            event.currentTarget !== event.target &&
-            !event.target.classList.contains(styles.cameraControl)
-        ) { return } // ignore bubbled, unless has cameraControl style
         event.stopPropagation()
         const el = elRef.current
         const { left, top } = el.getBoundingClientRect()
@@ -148,12 +154,12 @@ function usePanControls(elRef) {
         setPanning(true)
     }, [elRef, isPanning, initUpdatePosition, setPanning])
 
-    const onMouseUp = useCallback(() => {
+    const stopPanning = useCallback(() => {
         if (!isPanning) { return }
         setPanning(false)
     }, [isPanning])
 
-    const onMouseMove = useCallback((event) => {
+    const pan = useCallback((event) => {
         if (!isPanning) { return }
         const el = elRef.current
         const { left, top } = el.getBoundingClientRect()
@@ -168,21 +174,21 @@ function usePanControls(elRef) {
 
     useEffect(() => {
         if (!isPanning) { return }
-        window.addEventListener('mousemove', onMouseMove)
-        window.addEventListener('mouseup', onMouseUp)
+        window.addEventListener('mousemove', pan)
+        window.addEventListener('mouseup', stopPanning)
         return () => {
-            window.removeEventListener('mousemove', onMouseMove)
-            window.removeEventListener('mouseup', onMouseUp)
+            window.removeEventListener('mousemove', pan)
+            window.removeEventListener('mouseup', stopPanning)
         }
-    }, [isPanning, onMouseMove, onMouseUp])
+    }, [isPanning, pan, stopPanning])
 
     useEffect(() => {
         const el = elRef.current
-        el.addEventListener('mousedown', onMouseDown)
+        el.addEventListener('mousedown', startPanning)
         return () => {
-            el.removeEventListener('mousedown', onMouseDown)
+            el.removeEventListener('mousedown', startPanning)
         }
-    }, [elRef, onMouseDown])
+    }, [elRef, startPanning])
 }
 
 function CameraContainer({ className, children }) {
