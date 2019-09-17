@@ -2,6 +2,7 @@ import React, { useState, useRef, useCallback, useLayoutEffect, useMemo } from '
 import cx from 'classnames'
 import debounce from 'lodash/debounce'
 
+import { getCanvasBounds } from '$editor/shared/components/Preview/utils/getPreviewData'
 import * as CanvasState from '../state'
 
 import Module from './Module'
@@ -182,10 +183,22 @@ function CanvasElements(props) {
         }), {})
     }, [positions, cameraRef])
 
+    const [bounds, setBounds] = useState()
+
+    useLayoutEffect(() => {
+        if (!canvas) { return }
+        const { current: modulesEl } = modulesRef
+        setBounds({
+            ...getCanvasBounds(canvas),
+            fitWidth: modulesEl.clientWidth,
+            fitHeight: modulesEl.clientHeight,
+        })
+    }, [canvas])
+
     if (!canvas) { return null }
 
     return (
-        <Camera className={styles.CanvasElements} onChange={onChangeCamera}>
+        <Camera bounds={bounds} className={styles.CanvasElements} onChange={onChangeCamera}>
             <DragDropProvider>
                 <div
                     className={cx(styles.Modules, cameraControl)}
@@ -195,16 +208,18 @@ function CanvasElements(props) {
                     role="grid"
                 >
                     {canvas.modules.map((m) => (
-                        <Module
-                            key={m.hash}
-                            module={m}
-                            canvas={canvas}
-                            onPort={onPort}
-                            api={api}
-                            isSelected={selectedModuleHash === m.hash}
-                            moduleSidebarIsOpen={moduleSidebarIsOpen}
-                            {...api.module}
-                        />
+                        <React.Fragment>
+                            <Module
+                                key={m.hash}
+                                module={m}
+                                canvas={canvas}
+                                onPort={onPort}
+                                api={api}
+                                isSelected={selectedModuleHash === m.hash}
+                                moduleSidebarIsOpen={moduleSidebarIsOpen}
+                                {...api.module}
+                            />
+                        </React.Fragment>
                     ))}
                 </div>
                 <Cables

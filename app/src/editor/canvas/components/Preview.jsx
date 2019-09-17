@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react'
 import SharedPreview from '$editor/shared/components/Preview'
-import getPreviewData from '$editor/shared/components/Preview/utils/getPreviewData'
+import { getModulePreviews, getPreviewData } from '$editor/shared/components/Preview/utils/getPreviewData'
 
-import { defaultModuleLayout, getModuleForPort } from '../state'
+import { getModuleForPort } from '../state'
 import { Cable, getCableKey } from './Cables'
 
 function getModuleKey(m) {
@@ -51,23 +51,8 @@ const PreviewCables = ({ canvas, preview, previewScale }) => (
     ))
 )
 
-const defaultLayout = {
-    height: Number.parseInt(defaultModuleLayout.height, 10),
-    width: Number.parseInt(defaultModuleLayout.width, 10),
-}
-
 export default function Preview({ canvas, aspect, screen, ...props }) {
-    const modulePreviews = useMemo(() => (
-        canvas.modules.map((m) => ({
-            key: getModuleKey(m),
-            top: Number.parseInt(m.layout.position.top, 10) || 0,
-            left: Number.parseInt(m.layout.position.left, 10) || 0,
-            height: Number.parseInt(m.layout.height, 10) || defaultLayout.height,
-            width: Number.parseInt(m.layout.width, 10) || defaultLayout.width,
-            title: (m.displayName || m.name),
-            type: (m.uiChannel && m.uiChannel.webcomponent) || m.widget || m.jsModule,
-        }))
-    ), [canvas])
+    const modulePreviews = useMemo(() => getModulePreviews(canvas), [canvas])
 
     const preview = useMemo(() => (
         getPreviewData({

@@ -20,6 +20,29 @@ function shouldIgnoreEvent(event) {
     )
 }
 
+function fitCamera({
+    minX,
+    minY,
+    maxX,
+    maxY,
+    fitWidth,
+    fitHeight,
+    padding = 20,
+}) {
+    const totalPadding = 2 * padding
+    const maxWidth = fitWidth - totalPadding
+    const maxHeight = fitHeight - totalPadding
+    const width = maxX - minX
+    const height = maxY - minY
+    const scale = Math.min(maxWidth / width, maxHeight / height)
+
+    return {
+        x: -(minX * scale) + padding,
+        y: -((minY - (height / 2)) * scale) + padding,
+        scale,
+    }
+}
+
 function updateScaleState(s, { x, y, scaleFactor }) {
     const { scale: currentScale } = s
     const newScale = clamp(currentScale * scaleFactor, 0.1, 3)
@@ -91,12 +114,21 @@ export function useCameraContext() {
     return useContext(CameraContext)
 }
 
-function CameraProvider({ onChange, children }) {
+function CameraProvider({ bounds, onChange, children }) {
     const camera = useCameraApi()
     useEffect(() => {
         if (typeof onChange !== 'function') { return }
         onChange(camera)
     }, [onChange, camera])
+    const { setState } = camera
+    const [hasInitBounds, setHasInitBounds] = useState(false)
+
+    useEffect(() => {
+        if (hasInitBounds || !bounds) { return }
+        setHasInitBounds(true)
+        setState(fitCamera(bounds))
+    }, [setState, bounds, hasInitBounds, setHasInitBounds])
+
     return (
         <CameraContext.Provider value={camera}>
             {children}
@@ -217,9 +249,9 @@ function CameraContainer({ className, children }) {
     )
 }
 
-export default function Camera({ onChange, ...props }) {
+export default function Camera({ onChange, bounds, ...props }) {
     return (
-        <CameraProvider onChange={onChange}>
+        <CameraProvider onChange={onChange} bounds={bounds}>
             <CameraContainer {...props} />
         </CameraProvider>
     )
