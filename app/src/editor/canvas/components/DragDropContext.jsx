@@ -155,6 +155,7 @@ class EditorDraggable extends React.PureComponent {
     onStart = (event, data) => {
         if (this.unmounted) { return }
         this.initialPosition = data
+        event.stopPropagation()
     }
 
     onStop = (event, data) => {
@@ -194,6 +195,7 @@ class EditorDraggable extends React.PureComponent {
 
     onDrag = (event, data) => {
         if (this.unmounted) { return false }
+        event.stopPropagation()
         // do nothing if cancelled
         if (this.context.isCancelled) {
             return false

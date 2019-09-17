@@ -6,6 +6,8 @@ function clamp(value, min, max) {
     return Math.max(min, Math.min(max, value))
 }
 
+export const { cameraControl } = styles
+
 export function updateScaleState(s, { x, y, scaleFactor }) {
     // find position at the current scale
     const { scale: currentScale } = s
@@ -129,6 +131,10 @@ function usePanControls(elRef) {
 
     const onMouseDown = useCallback((event) => {
         if (isPanning) { return }
+        if (
+            event.currentTarget !== event.target &&
+            !event.target.classList.contains(styles.cameraControl)
+        ) { return } // ignore bubbled, unless has cameraControl style
         event.stopPropagation()
         const el = elRef.current
         const { left, top } = el.getBoundingClientRect()

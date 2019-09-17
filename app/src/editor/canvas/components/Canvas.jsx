@@ -10,7 +10,7 @@ import { CanvasWindowProvider } from './CanvasWindow'
 import Cables from './Cables'
 
 import styles from './Canvas.pcss'
-import Camera from './Camera'
+import Camera, { cameraControl } from './Camera'
 
 export default class Canvas extends React.PureComponent {
     setPortUserValue = (portId, value, done) => {
@@ -169,7 +169,7 @@ function CanvasElements(props) {
         <Camera className={styles.CanvasElements} onChange={onChangeCamera}>
             <DragDropProvider>
                 <div
-                    className={styles.Modules}
+                    className={cx(styles.Modules, cameraControl)}
                     onFocus={onFocus}
                     ref={modulesRef}
                     tabIndex="0"
