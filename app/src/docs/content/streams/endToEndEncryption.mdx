@@ -1,2 +1,17 @@
 ## End-to-end encryption
 ***Documentation coming soon***
+Confidentiality of events published on a stream can be guaranteed with end-to-end encryption. The publisher decides on a AES-512 symmetric group key and encrypts the messages in CTR mode before publishing them to the network. The subscribers must know this symmetric group key in order to decrypt the data.
+
+Currently, the symmetric key must be shared between the publisher and the subscribers in a secure way outside of the Streamr Network. In both the <a href="https://github.com/streamr-dev/streamr-client-javascript" target="_blank">Javascript</a> and the <a href="https://github.com/streamr-dev/streamr-client-java" target="_blank">Java</a> SDKs, the publisher can pass group keys per stream as parameters and the subscriber can pass group keys per stream and per publisher as parameters. Later it will be possible to use a secure key-exchange protocol directly in the Streamr Network.
+
+In order to prevent new subscribers to eavesdrop and then decrypt past messages published before the start of their subscription, the publisher can decide at any time to update the symmetric group key by sending a new key concatenated with an event and encrypted with the current key:
+```
+// normal case when creating a ciphertext of an event 'm1' with a key 'k1'
+c1 = AES_encrypt(m1, k1)
+// when updating the key to 'k2', current subscribers will recover 'k2'
+c2 = AES_encrypt(m2 + k2, k1)
+// the next messages can be encrypted with 'k2', new subscribers obtain 'k2' but not 'k1' so they cannot decrypt m1 and m2
+c3 = AES_encrypt(m3, k2)
+```
+
+Both the Javascript and the Java SDKs support this key update mechanism. It can be triggered by calling the `publish` method with a new symmetric group key as parameter.
