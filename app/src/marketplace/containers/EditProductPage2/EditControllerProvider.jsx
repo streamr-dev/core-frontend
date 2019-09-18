@@ -1,28 +1,22 @@
 // @flow
 
-import React, { type Node, type Context, useState, useMemo, useCallback, useContext } from 'react'
+import React, { type Node, type Context, useEffect, useState, useMemo, useCallback, useContext } from 'react'
 
 import { Context as RouterContext } from '$shared/components/RouterContextProvider'
+import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
 import type { Product } from '$mp/flowtype/product-types'
-import Notification from '$shared/utils/Notification'
-import { NotificationIcon } from '$shared/utils/constants'
 import usePending from '$shared/hooks/usePending'
 import { putProduct, postImage } from '$mp/modules/editProduct/services'
-import { isPaidProduct } from '$mp/utils/product'
-import { getProductFromContract } from '$mp/modules/contractProduct/services'
-import { isUpdateContractProductRequired } from '$mp/utils/smartContract'
 import useIsMounted from '$shared/hooks/useIsMounted'
-import links from '$mp/../links'
-import { formatPath } from '$shared/utils/url'
+import routes from '$routes'
 
-import { Context as ValidationContext, ERROR } from '../ProductController/ValidationContextProvider'
 import useProductActions from '../ProductController/useProductActions'
-import useOriginalProduct from '../ProductController/useOriginalProduct'
 import useModal from '$shared/hooks/useModal'
 
 type ContextProps = {
     isPreview: boolean,
     setIsPreview: (boolean | Function) => void,
+    back: () => void | Promise<void>,
     save: () => void | Promise<void>,
     deployCommunity: () => void | Promise<void>,
     deployContract: () => void | Promise<void>,
@@ -32,113 +26,72 @@ const EditControllerContext: Context<ContextProps> = React.createContext({})
 
 function useEditController(product: Product) {
     const { history } = useContext(RouterContext)
+    const { isAnyTouched } = useContext(ValidationContext)
     const [isPreview, setIsPreview] = useState(false)
     const isMounted = useIsMounted()
     const savePending = usePending('product.SAVE')
-    const contractSavePending = usePending('contractProduct.SAVE')
     const { updateBeneficiaryAddress } = useProductActions()
 
-    const { originalProduct } = useOriginalProduct()
-    const { api: confirmDialog } = useModal('confirm')
-    const { api: updateContractDialog } = useModal('updateContract')
+    useEffect(() => {
+        const handleBeforeunload = (event) => {
+            if (isAnyTouched()) {
+                const confirmationMessage = 'You have unsaved changes'
+                const evt = (event || window.event)
+                evt.returnValue = confirmationMessage // Gecko + IE
+                return confirmationMessage // Webkit, Safari, Chrome etc.
+            }
+            return ''
+        }
+
+        window.addEventListener('beforeunload', handleBeforeunload)
+
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeunload)
+        }
+    }, [isAnyTouched])
+
     const { api: deployCommunityDialog } = useModal('deployCommunity')
     const { api: deployContractDialog } = useModal('deployContract')
+    const { api: confirmSaveDialog } = useModal('confirmSave')
 
-    const { status } = useContext(ValidationContext)
-
-    const errors = useMemo(() => (
-        Object.keys(status)
-            .filter((key) => status[key] && status[key].level === ERROR)
-            .map((key) => ({
-                key,
-                message: status[key].message,
-            }))
-    ), [status])
-
-    const save = useCallback(async () => {
-        if (!originalProduct) { throw new Error('originalProduct is missing') }
-
-        let doSave = true
-
-        // Notify missing fields
-        if (errors.length > 0) {
-            errors.forEach(({ message }) => {
-                Notification.push({
-                    title: message,
-                    icon: NotificationIcon.ERROR,
-                })
-            })
-
-            doSave = false
-        } else if (!product.imageUrl && !product.newImageToUpload) {
-            // confirm missing cover image
-            doSave = await confirmDialog.open()
-        }
-
-        if (doSave) {
-            // do actual saving
-            let savedSuccessfully = await savePending.wrap(async () => {
-                // save product
-                await putProduct(product, product.id || '')
-
-                // upload image
-                if (product.newImageToUpload != null) {
-                    try {
-                        await postImage(product.id || '', product.newImageToUpload)
-                    } catch (e) {
-                        console.error('Could not upload image', e)
-                    }
-                }
-
-                // TODO: check errors
-                return true
-            })
-
-            // Check update for contract product
-            if (savedSuccessfully) {
-                savedSuccessfully = await contractSavePending.wrap(async () => {
-                    // fetch contract product from public node to see if we need to update the contract product
-                    let contractProduct
-
-                    try {
-                        contractProduct = await getProductFromContract(product.id || '', true)
-                    } catch (e) {
-                        console.warn(e)
-                    }
-
-                    // use original product to check if it was paid or not
-                    if (!!contractProduct && isPaidProduct(originalProduct) && isUpdateContractProductRequired(contractProduct, product)) {
-                        // start contract transaction dialog, this will take care of checking web3
-                        // and fetching/updating the contract product
-                        const contractUpdated = await updateContractDialog.open({
-                            product,
-                            originalProduct,
-                            contractProduct,
-                        })
-
-                        return contractUpdated
-                    }
-
-                    return true
-                })
-            }
-
-            // Everything ok, do a redirect back to product page
-            if (savedSuccessfully) {
-                if (!isMounted()) { return }
-                history.replace(formatPath(links.marketplace.products, product.id))
-            }
-        }
+    const productId = product.id
+    const redirectToProduct = useCallback(() => {
+        if (!isMounted()) { return }
+        history.push(routes.product({
+            id: productId,
+        }))
     }, [
-        errors,
-        product,
-        confirmDialog,
-        updateContractDialog,
-        savePending,
-        contractSavePending,
-        originalProduct,
+        productId,
         isMounted,
         history,
+    ])
+
+    const save = useCallback(async () => {
+        const savedSuccessfully = await savePending.wrap(async () => {
+            // save product
+            await putProduct(product, product.id || '')
+
+            // upload image
+            if (product.newImageToUpload != null) {
+                try {
+                    await postImage(product.id || '', product.newImageToUpload)
+                } catch (e) {
+                    console.error('Could not upload image', e)
+                }
+            }
+
+            // TODO: handle saving errors
+            return true
+        })
+
+        // Everything ok, do a redirect back to product page
+        if (savedSuccessfully) {
+            redirectToProduct()
+        }
+    }, [
+        product,
+        savePending,
+        redirectToProduct,
     ])
 
     const deployContract = useCallback(async () => {
@@ -171,15 +124,42 @@ function useEditController(product: Product) {
         deployContract,
     ])
 
+    const back = useCallback(async () => {
+        let doSave = isAnyTouched()
+        let doRedirect = true
+
+        if (doSave) {
+            const { save: saveRequested, redirect: redirectRequested } = await confirmSaveDialog.open()
+
+            doSave = saveRequested
+            doRedirect = redirectRequested
+        }
+
+        if (doSave) {
+            await save()
+        }
+
+        if (doRedirect) {
+            redirectToProduct()
+        }
+    }, [
+        isAnyTouched,
+        confirmSaveDialog,
+        save,
+        redirectToProduct,
+    ])
+
     return useMemo(() => ({
         isPreview,
         setIsPreview,
+        back,
         save,
         deployCommunity,
         deployContract,
     }), [
         isPreview,
         setIsPreview,
+        back,
         save,
         deployCommunity,
         deployContract,
