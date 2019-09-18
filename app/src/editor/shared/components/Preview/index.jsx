@@ -39,9 +39,9 @@ const Preview = ({
             {preview.modules.map(({
                 height,
                 key,
-                left: x,
+                x,
                 title,
-                top: y,
+                y,
                 type,
                 width,
             }) => (

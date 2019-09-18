@@ -13,7 +13,7 @@ import cx from 'classnames'
 import type { Stream } from '$shared/flowtype/stream-types'
 import SvgIcon from '$shared/components/SvgIcon'
 import { type Ref } from '$shared/flowtype/common-types'
-import { getModuleBoundingBox, findNonOverlappingPosition } from '$editor/shared/utils/boundingBox'
+import { getModuleBounds, findNonOverlappingPosition } from '$editor/shared/utils/bounds'
 
 import { getModuleCategories, getStreams } from '../services'
 import { moduleSearch } from '../state'
@@ -300,7 +300,7 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
             height: 50,
         }
 
-        const boundingBoxes = this.props.canvas.modules.map((m) => getModuleBoundingBox(m))
+        const boundingBoxes = this.props.canvas.modules.map((m) => getModuleBounds(m))
 
         const stackOffset = 16 // pixels
         return findNonOverlappingPosition(myBB, boundingBoxes, stackOffset)

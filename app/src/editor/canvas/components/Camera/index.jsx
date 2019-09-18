@@ -20,28 +20,35 @@ function shouldIgnoreEvent(event) {
     )
 }
 
+const defaultFit = {
+    x: 0,
+    y: 0,
+    scale: 1,
+}
+
 function fitCamera({
-    minX,
-    minY,
-    maxX,
-    maxY,
+    x,
+    y,
+    width,
+    height,
     fitWidth,
     fitHeight,
     padding = 20,
-}) {
+} = {}) {
     const totalPadding = 2 * padding
     const maxWidth = fitWidth - totalPadding
     const maxHeight = fitHeight - totalPadding
-    const width = maxX - minX
-    const height = maxY - minY
     const scale = Math.min(maxWidth / width, maxHeight / height)
     // vertically & horizontally center content
     const offsetY = (fitHeight - (height * scale)) / 2
     const offsetX = (fitWidth - (width * scale)) / 2
+    if (!scale) {
+        return defaultFit
+    }
 
     return {
-        x: -(minX * scale) + offsetX,
-        y: -(minY * scale) + offsetY,
+        x: -(x * scale) + offsetX,
+        y: -(y * scale) + offsetY,
         scale,
     }
 }

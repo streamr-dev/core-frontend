@@ -25,15 +25,15 @@ export function Cable({ className, cable, ...props }) {
     // adjust offset to edge based on curve direction
     // i.e. connect to left edge if curve going L->R,
     // connect to right edge if curve going R->L
-    const direction = from.left < to.left ? 1 : -1
+    const direction = from.x < to.x ? 1 : -1
     return (
         <path
             className={cx(styles.Connection, className)}
             d={curvedHorizontal(
-                from.left + (0.5 * (from.width || 0) * direction), // connect to edge of from
-                from.top,
-                to.left + (0.5 * (to.width || 0) * -direction), // connect to edge of to
-                to.top,
+                from.x + (0.5 * (from.width || 0) * direction), // connect to edge of from
+                from.y,
+                to.x + (0.5 * (to.width || 0) * -direction), // connect to edge of to
+                to.y,
             )}
             stroke="#525252"
             fill="none"
@@ -139,16 +139,16 @@ class Cables extends React.PureComponent {
             if (moduleHasPort(canvas, moduleHash, from.id)) {
                 fromNew = {
                     ...from,
-                    top: from.top + diff.y,
-                    left: from.left + diff.x,
+                    y: from.y + diff.y,
+                    x: from.x + diff.x,
                 }
                 layer = LAYER_1
             }
             if (moduleHasPort(canvas, moduleHash, to.id)) {
                 toNew = {
                     ...to,
-                    top: to.top + diff.y,
-                    left: to.left + diff.x,
+                    y: to.y + diff.y,
+                    x: to.x + diff.x,
                 }
                 layer = LAYER_1
             }
@@ -198,10 +198,8 @@ class Cables extends React.PureComponent {
             {
                 ...p,
                 id: DRAG_CABLE_ID,
-                top: p.top + diff.y,
-                left: p.left + diff.x,
-                bottom: p.bottom + diff.y,
-                right: p.right + diff.x,
+                y: p.y + diff.y,
+                x: p.x + diff.x,
             },
             LAYER_1, // drag cable goes on layer 1
         ]

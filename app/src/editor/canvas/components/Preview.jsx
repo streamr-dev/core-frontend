@@ -22,8 +22,8 @@ function getPortPosition(portId, canvas, preview, previewScale) {
     const p = preview.modules.find((m) => m.key === key)
     return {
         id: m.id,
-        left: (p.left + (p.width / 2)) * previewScale,
-        top: (p.top + (p.height / 2)) * previewScale,
+        x: (p.x + (p.width / 2)) * previewScale,
+        y: (p.y + (p.height / 2)) * previewScale,
         width: p.width * previewScale,
         height: p.height * previewScale,
     }

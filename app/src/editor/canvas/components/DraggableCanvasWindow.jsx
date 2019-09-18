@@ -8,6 +8,7 @@ import { Resizable } from 'react-resizable'
 import SvgIcon from '$shared/components/SvgIcon'
 
 import CanvasWindow, { CanvasWindowContext } from './CanvasWindow'
+import { type Bounds } from '$editor/shared/utils/bounds'
 
 import styles from './DraggableCanvasWindow.pcss'
 
@@ -52,14 +53,7 @@ export const Toolbar = ({ children, className, ...props }: BaseProps) => (
     </div>
 )
 
-export type Layout = {
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-}
-
-type CanvasWindowProps = Layout & {
+type CanvasWindowProps = Bounds & {
     onChangePosition: Function,
     onChangeSize: Function,
     children?: Node,
@@ -69,7 +63,7 @@ function clamp(value, min, max) {
     return Math.max(min, Math.min(max, value))
 }
 
-export function useLayoutState({ x = 0, y = 0, width = 600, height = 400 }: Layout = {}) {
+export function useLayoutState({ x = 0, y = 0, width = 600, height = 400 }: Bounds = {}) {
     // wtf flow. I don't know what it wants.
     // $FlowFixMe
     const [position, setPosition] = useState([x, y])

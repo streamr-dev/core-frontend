@@ -2,7 +2,7 @@ import React, { useState, useRef, useCallback, useLayoutEffect, useMemo } from '
 import cx from 'classnames'
 import debounce from 'lodash/debounce'
 
-import { getCanvasBounds } from '$editor/shared/components/Preview/utils/getPreviewData'
+import { getCanvasBounds } from '$editor/shared/utils/bounds'
 import * as CanvasState from '../state'
 
 import Module from './Module'
@@ -121,10 +121,8 @@ function CanvasElements(props) {
             return Object.assign(r, {
                 [id]: {
                     id,
-                    top: ((rect.top - offset.top) + (rect.height / 2)),
-                    bottom: ((rect.bottom - offset.bottom) + (rect.height / 2)),
-                    left: ((rect.left - offset.left) + (rect.width / 2)),
-                    right: ((rect.right - offset.right) + (rect.width / 2)),
+                    x: ((rect.left - offset.left) + (rect.width / 2)),
+                    y: ((rect.top - offset.top) + (rect.height / 2)),
                     width: rect.width,
                     height: rect.height,
                 },
@@ -173,10 +171,8 @@ function CanvasElements(props) {
         return Object.values(positions).reduce((o, p) => Object.assign(o, {
             [p.id]: {
                 ...p,
-                top: (p.top / camera.scale),
-                bottom: (p.bottom / camera.scale),
-                left: (p.left / camera.scale),
-                right: (p.right / camera.scale),
+                x: (p.x / camera.scale),
+                y: (p.y / camera.scale),
                 width: (p.width / camera.scale),
                 height: (p.height / camera.scale),
             },
@@ -187,6 +183,11 @@ function CanvasElements(props) {
 
     useLayoutEffect(() => {
         if (!canvas) { return }
+        if (!canvas.modules.length) {
+            // use default bounds if no modules
+            setBounds({})
+            return
+        }
         const { current: modulesEl } = modulesRef
         setBounds({
             ...getCanvasBounds(canvas),
