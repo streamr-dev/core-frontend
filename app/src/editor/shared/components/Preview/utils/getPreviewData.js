@@ -1,12 +1,28 @@
 // @flow
 
-import aspectSize from './aspectSize'
 import { getModuleBounds, getBoundsOf } from '$editor/shared/utils/bounds'
 
 type Props = {
     aspect: any,
     modulePreviews: any,
     screen: any,
+}
+
+type AspectProps = {
+    width: number,
+    height: number,
+    minHeight: number,
+    minWidth: number,
+}
+
+const aspectSize = ({ width, height, minWidth, minHeight }: AspectProps) => {
+    const ratio = Math.max(minWidth / width, minHeight / height)
+
+    return {
+        width: Math.round(width * ratio * 100) / 100,
+        height: Math.round(height * ratio * 100) / 100,
+        ratio,
+    }
 }
 
 function getModuleKey(m) {
@@ -39,8 +55,8 @@ export function getPreviewData({ modulePreviews, aspect, screen }: Props) {
     })
 
     return {
-        x: bounds.x,
-        y: bounds.y,
+        x: bounds.x / canvasSize.ratio,
+        y: bounds.y / canvasSize.ratio,
         width: canvasSize.width,
         height: canvasSize.height,
         modules: modulePreviews,
