@@ -196,9 +196,8 @@ const App = () => (
                 <Analytics />
                 <Switch>
                     {AuthenticationRouter()}
-                    {MarketplaceRouter()}
                     {!!process.env.COMMUNITY_PRODUCTS && CommunityProductsRouter()}
-                    {DocsRouter()}
+                    {MarketplaceRouter()}
                     {DocsRouter()}
                     {UserpagesRouter()}
                     {EditorRouter()}

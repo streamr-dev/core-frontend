@@ -16,6 +16,7 @@ import links from '$mp/../links'
 import { formatPath } from '$shared/utils/url'
 
 import { Context as ValidationContext, ERROR } from '../ProductController/ValidationContextProvider'
+import useProductActions from '../ProductController/useProductActions'
 import useOriginalProduct from '../ProductController/useOriginalProduct'
 import useModal from '$shared/hooks/useModal'
 
@@ -24,6 +25,7 @@ type ContextProps = {
     setIsPreview: (boolean | Function) => void,
     save: () => void | Promise<void>,
     deployCommunity: () => void | Promise<void>,
+    deployContract: () => void | Promise<void>,
 }
 
 const EditControllerContext: Context<ContextProps> = React.createContext({})
@@ -34,11 +36,13 @@ function useEditController(product: Product) {
     const isMounted = useIsMounted()
     const savePending = usePending('product.SAVE')
     const contractSavePending = usePending('contractProduct.SAVE')
+    const { updateBeneficiaryAddress } = useProductActions()
 
     const { originalProduct } = useOriginalProduct()
     const { api: confirmDialog } = useModal('confirm')
     const { api: updateContractDialog } = useModal('updateContract')
     const { api: deployCommunityDialog } = useModal('deployCommunity')
+    const { api: deployContractDialog } = useModal('deployContract')
 
     const { status } = useContext(ValidationContext)
 
@@ -137,16 +141,34 @@ function useEditController(product: Product) {
         history,
     ])
 
+    const deployContract = useCallback(async () => {
+        await deployContractDialog.open({
+            product,
+        })
+    }, [deployContractDialog, product])
+
     const deployCommunity = useCallback(async () => {
         if (!isMounted()) { return }
 
-        await deployCommunityDialog.open({
+        const result = await deployCommunityDialog.open({
             product,
         })
+
+        if (result && result.success && result.address) {
+            updateBeneficiaryAddress(result.address)
+            deployContract()
+            const updatedProduct = {
+                ...product,
+                beneficiaryAddress: result.address,
+            }
+            await putProduct(updatedProduct, updatedProduct.id || '')
+        }
     }, [
         deployCommunityDialog,
         isMounted,
         product,
+        updateBeneficiaryAddress,
+        deployContract,
     ])
 
     return useMemo(() => ({
@@ -154,11 +176,13 @@ function useEditController(product: Product) {
         setIsPreview,
         save,
         deployCommunity,
+        deployContract,
     }), [
         isPreview,
         setIsPreview,
         save,
         deployCommunity,
+        deployContract,
     ])
 }
 
