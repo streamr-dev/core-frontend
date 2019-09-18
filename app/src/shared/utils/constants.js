@@ -56,6 +56,7 @@ export const transactionTypes = {
     REDEPLOY_PRODUCT: 'redeployProduct',
     UNDEPLOY_PRODUCT: 'undeployProduct',
     PAYMENT: 'payment',
+    DEPLOY_COMMUNITY: 'deployCommunity',
 }
 
 export const gasLimits = {

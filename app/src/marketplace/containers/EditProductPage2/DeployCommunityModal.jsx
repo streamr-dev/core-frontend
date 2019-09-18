@@ -1,6 +1,8 @@
 // @flow
 
 import React, { useState, useCallback, useEffect } from 'react'
+import { useDispatch } from 'react-redux'
+
 import useModal from '$shared/hooks/useModal'
 import { type Product } from '$mp/flowtype/product-types'
 import GuidedDeployCommunityDialog from '$mp/components/Modal/GuidedDeployCommunityDialog'
@@ -12,6 +14,8 @@ import withWeb3 from '$shared/utils/withWeb3'
 import { deployContract, createJoinPartStream } from '$mp/modules/communityProduct/services'
 import { isEthereumAddress } from '$mp/utils/validate'
 import type { Address } from '$shared/flowtype/web3-types'
+import { addTransaction } from '$mp/modules/transactions/actions'
+import { transactionTypes } from '$shared/utils/constants'
 
 type DeployDialogProps = {
     product: Product,
@@ -42,6 +46,7 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
     const dontShowAgain = skipGuide()
     const [step, setStep] = useState(dontShowAgain ? steps.CONFIRM : steps.GUIDE)
     const [address, setAddress] = useState(null)
+    const dispatch = useDispatch()
 
     const onClose = useCallback(() => {
         api.close(!!address && isEthereumAddress(address))
@@ -54,6 +59,7 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
         return new Promise((resolve) => (
             deployContract(joinPartStreamId)
                 .onTransactionHash((hash, communityAddress) => {
+                    dispatch(addTransaction(hash, transactionTypes.DEPLOY_COMMUNITY))
                     setAddress(communityAddress)
                     setStep(steps.COMPLETE)
                     resolve()
@@ -66,7 +72,7 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
                     resolve()
                 })
         ))
-    }, [productId])
+    }, [productId, dispatch])
 
     const onGuideContinue = useCallback((dontShow) => {
         setSkipGuide(dontShow)

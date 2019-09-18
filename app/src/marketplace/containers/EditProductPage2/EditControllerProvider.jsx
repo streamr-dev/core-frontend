@@ -13,6 +13,7 @@ import { NotificationIcon } from '$shared/utils/constants'
 import routes from '$routes'
 import useProductActions from '../ProductController/useProductActions'
 import { isEthereumAddress } from '$mp/utils/validate'
+import { areAddressesEqual } from '$mp/utils/smartContract'
 
 import useModal from '$shared/hooks/useModal'
 
@@ -154,30 +155,30 @@ function useEditController(product: Product) {
         }
     }, [validate, save, publishDialog])
 
+    const updateBeneficiary = useCallback(async (address) => {
+        const { beneficiaryAddress } = productRef.current
+        if (!!address && isEthereumAddress(address) && !areAddressesEqual(beneficiaryAddress, address)) {
+            updateBeneficiaryAddress(address)
+        }
+    }, [updateBeneficiaryAddress])
+
     const deployCommunity = useCallback(async () => {
         await save({
             redirect: false,
         })
         const communityCreated = await deployCommunityDialog.open({
             product: productRef.current,
-            updateAddress: async (address) => {
-                if (!!address && isEthereumAddress(address)) {
-                    updateBeneficiaryAddress(address)
-                    await save({
-                        redirect: false,
-                    })
-                }
-            },
+            updateAddress: updateBeneficiary,
         })
 
+        // TODO: doesn't save unless dialog closed
         if (communityCreated) {
-            redirectToProduct()
+            await save()
         }
     }, [
         deployCommunityDialog,
-        redirectToProduct,
         save,
-        updateBeneficiaryAddress,
+        updateBeneficiary,
     ])
 
     const back = useCallback(async () => {
