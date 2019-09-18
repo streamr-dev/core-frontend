@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useLayoutEffect, useMemo } from 'react'
+import React, { useState, useRef, useCallback, useEffect, useLayoutEffect, useMemo } from 'react'
 import cx from 'classnames'
 import debounce from 'lodash/debounce'
 
@@ -100,11 +100,11 @@ function CanvasElements(props) {
     const [positions, setPositions] = useState({})
     const updatePositionsRef = useRef()
 
-    const [camera, setCamera] = useState(1)
+    const [scale, setScale] = useState(1)
 
-    const onChangeCamera = useCallback((camera) => {
-        setCamera(camera)
-    }, [setCamera])
+    const onChangeCamera = useCallback(({ scale }) => {
+        setScale(scale)
+    }, [setScale])
 
     const updatePositionsNow = useCallback(() => {
         if (updatePositionsRef.current) {
@@ -157,8 +157,10 @@ function CanvasElements(props) {
         updatePositions()
     }, [portsRef, updatePositions])
 
-    const cameraRef = useRef()
-    cameraRef.current = camera
+    const scaleRef = useRef()
+    scaleRef.current = scale
+
+    const animatedScaleRef = useRef()
 
     const scaledPositions = useMemo(() => {
         // Always pass positions as if no scaling was performed.
@@ -167,21 +169,25 @@ function CanvasElements(props) {
         // we need to unscale the values first.
         // note: does not update when scale changes, only when positions change
         // only need to reverse the scaling at time the positions are captured
-        const { current: camera } = cameraRef
+        let { current: scale } = scaleRef
+        if (animatedScaleRef.current) {
+            scale = animatedScaleRef.current.getValue()
+        }
+
         return Object.values(positions).reduce((o, p) => Object.assign(o, {
             [p.id]: {
                 ...p,
-                x: (p.x / camera.scale),
-                y: (p.y / camera.scale),
-                width: (p.width / camera.scale),
-                height: (p.height / camera.scale),
+                x: (p.x / scale),
+                y: (p.y / scale),
+                width: (p.width / scale),
+                height: (p.height / scale),
             },
         }), {})
-    }, [positions, cameraRef])
+    }, [positions, scaleRef])
 
     const [bounds, setBounds] = useState()
 
-    useLayoutEffect(() => {
+    useEffect(() => {
         if (!canvas) { return }
         if (!canvas.modules.length) {
             // use default bounds if no modules
@@ -197,10 +203,15 @@ function CanvasElements(props) {
         })
     }, [canvas])
 
+    const onStart = useCallback((v) => {
+        if (v.key !== 'scale') { return }
+        animatedScaleRef.current = v.animated
+    }, [animatedScaleRef])
+
     if (!canvas) { return null }
 
     return (
-        <Camera bounds={bounds} className={styles.CanvasElements} onChange={onChangeCamera}>
+        <Camera bounds={bounds} className={styles.CanvasElements} onStart={onStart} onChange={onChangeCamera}>
             <DragDropProvider>
                 <div
                     className={cx(styles.Modules, cameraControl)}

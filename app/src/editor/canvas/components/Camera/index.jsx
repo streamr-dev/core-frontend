@@ -1,4 +1,5 @@
 import React, { useRef, useState, useCallback, useEffect, useMemo, useContext } from 'react'
+import { useSpring, animated, interpolate } from 'react-spring'
 import cx from 'classnames'
 import styles from './Camera.pcss'
 
@@ -71,11 +72,25 @@ function updateScaleState(s, { x, y, scaleFactor }) {
 }
 
 function useCameraApi(scaleFactor = 0.1) {
-    const [state, setState] = useState({
+    const [state, setActualState] = useState({
         scale: 1,
         x: 0,
         y: 0,
     })
+
+    // clamps scale, rounds x,y values
+    const setState = useCallback((v) => {
+        setActualState((state) => {
+            const nextState = (typeof v === 'function') ? v(state) : v
+            return {
+                ...nextState,
+                x: Math.round(nextState.x),
+                y: Math.round(nextState.y),
+                scale: clamp(nextState.scale, 0.1, 3),
+            }
+        })
+    }, [setActualState])
+
     // updates scale of camera, centers scaling on x,y
     const updateScale = useCallback(({ x, y, delta }) => {
         setState((s) => {
@@ -236,33 +251,67 @@ function usePanControls(elRef) {
     }, [elRef, startPanning])
 }
 
-function CameraContainer({ className, children }) {
-    const { x, y, scale } = useCameraContext()
+const cameraConfig = {
+    mass: 0.5,
+    clamp: true,
+}
 
+function useCameraSpring({ onRest, onFrame, onStart }) {
+    const camera = useCameraContext()
+    const { x, y, scale } = camera
+    const [spring, set] = useSpring(() => ({
+        x,
+        y,
+        scale,
+        onRest,
+        onFrame,
+        onStart,
+        config: cameraConfig,
+    }))
+
+    set({
+        x,
+        y,
+        scale,
+    })
+    return [spring, set]
+}
+
+function CameraContainer({ className, children, ...props }) {
     const elRef = useRef()
 
     useWheelControls(elRef)
     usePanControls(elRef)
 
+    const [spring] = useCameraSpring(props)
+
     return (
         <div className={cx(className, styles.root)} ref={elRef}>
-            <div
+            <animated.div
                 className={styles.scaleLayer}
                 style={{
-                    transform: `translate(${x}px, ${y}px) scale(${scale}) `,
-                    transformOrigin: '0 0',
+                    transform: interpolate([spring.x, spring.y, spring.scale], (x, y, scale) => (
+                        `translate(${x}px, ${y}px) scale(${scale})`
+                    )),
                 }}
             >
                 {children}
-            </div>
+            </animated.div>
         </div>
     )
 }
 
-export default function Camera({ onChange, bounds, ...props }) {
+export default function Camera({
+    onChange,
+    onRest,
+    onFrame,
+    onStart,
+    bounds,
+    ...props
+}) {
     return (
         <CameraProvider onChange={onChange} bounds={bounds}>
-            <CameraContainer {...props} />
+            <CameraContainer {...props} onStart={onStart} onRest={onRest} onFrame={onFrame} />
         </CameraProvider>
     )
 }
