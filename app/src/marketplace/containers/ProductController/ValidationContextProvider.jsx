@@ -38,7 +38,7 @@ function useValidationContext(): ContextProps {
     }, [setTouched])
     const isTouched = useCallback((name: string) => !!touched[name], [touched])
 
-    const isAnyTouched = useCallback(() => Object.keys(touched).some((key) => !!touched[key]), [touched])
+    const isAnyTouched = useCallback(() => Object.values(touched).some(Boolean), [touched])
 
     const isMounted = useIsMounted()
 

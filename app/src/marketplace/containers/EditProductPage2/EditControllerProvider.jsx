@@ -57,7 +57,7 @@ function useEditController(product: Product) {
     const productId = product.id
     const redirectToProduct = useCallback(() => {
         if (!isMounted()) { return }
-        history.replace(routes.product({
+        history.push(routes.product({
             id: productId,
         }))
     }, [
