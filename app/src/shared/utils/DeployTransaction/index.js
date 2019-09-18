@@ -11,13 +11,8 @@ export default class DeployTransaction {
         this.emitter = emitter
     }
 
-    onTransactionHash = (cb: (Hash) => void) => {
+    onTransactionHash = (cb: (Hash, Address) => void) => {
         this.emitter.on('transactionHash', cb)
-        return this
-    }
-
-    onContractAddress = (cb: (Address) => void) => {
-        this.emitter.on('contractAddress', cb)
         return this
     }
 

@@ -122,13 +122,13 @@ export const deploy = (contract: SmartContractMetadata, args: Array<any>, option
         web3.getDefaultAccount(),
         checkEthereumNetworkIsCorrect(web3),
     ])
-        .then(([account]) => {
-            // Calculate future address of the contract and broadcast it so that we don't have to wait
+        .then(([account]) => Promise.all([
+            Promise.resolve(account),
+            // Calculate future address of the contract so that we don't have to wait
             // for the transaction to be confirmed.
-            calculateContractAddress(account).then((futureAddress) => {
-                emitter.emit('contractAddress', futureAddress)
-            })
-
+            calculateContractAddress(account),
+        ]))
+        .then(([account, futureAddress]) => {
             const web3Contract = new web3.eth.Contract(contract.abi)
             const deployer = web3Contract.deploy({
                 data: contract.bytecode,
@@ -141,7 +141,7 @@ export const deploy = (contract: SmartContractMetadata, args: Array<any>, option
                 })
                 .on('error', errorHandler)
                 .on('transactionHash', (hash) => {
-                    emitter.emit('transactionHash', hash)
+                    emitter.emit('transactionHash', hash, futureAddress)
                 })
                 .on('receipt', (receipt) => {
                     if (parseInt(receipt.status, 16) === 0) {
@@ -153,12 +153,4 @@ export const deploy = (contract: SmartContractMetadata, args: Array<any>, option
         }, errorHandler)
 
     return tx
-}
-
-export const getFutureContractDeployAddress = async (): Promise<Address> => {
-    const web3 = getWeb3()
-    const account = await web3.getDefaultAccount()
-    await checkEthereumNetworkIsCorrect(web3)
-    const address = await calculateContractAddress(account)
-    return address
 }

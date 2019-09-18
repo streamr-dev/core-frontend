@@ -11,8 +11,9 @@ import useIsMounted from '$shared/hooks/useIsMounted'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import routes from '$routes'
-
 import useProductActions from '../ProductController/useProductActions'
+import { isEthereumAddress } from '$mp/utils/validate'
+
 import useModal from '$shared/hooks/useModal'
 
 type ContextProps = {
@@ -22,7 +23,6 @@ type ContextProps = {
     save: () => void | Promise<void>,
     publish: () => void | Promise<void>,
     deployCommunity: () => void | Promise<void>,
-    deployContract: () => void | Promise<void>,
 }
 
 const EditControllerContext: Context<ContextProps> = React.createContext({})
@@ -83,7 +83,6 @@ function useEditController(product: Product) {
     }, [isAnyTouched])
 
     const { api: deployCommunityDialog } = useModal('deployCommunity')
-    const { api: deployContractDialog } = useModal('deployContract')
     const { api: confirmSaveDialog } = useModal('confirmSave')
     const { api: publishDialog } = useModal('publish')
 
@@ -128,12 +127,6 @@ function useEditController(product: Product) {
         redirectToProduct,
     ])
 
-    const deployContract = useCallback(async () => {
-        await deployContractDialog.open({
-            product,
-        })
-    }, [deployContractDialog, product])
-
     const validate = useCallback(() => {
         // Notify missing fields
         if (errors.length > 0) {
@@ -162,26 +155,29 @@ function useEditController(product: Product) {
     }, [validate, save, publishDialog])
 
     const deployCommunity = useCallback(async () => {
-        if (!isMounted()) { return }
-
-        const result = await deployCommunityDialog.open({
+        await save({
+            redirect: false,
+        })
+        const communityCreated = await deployCommunityDialog.open({
             product: productRef.current,
+            updateAddress: async (address) => {
+                if (!!address && isEthereumAddress(address)) {
+                    updateBeneficiaryAddress(address)
+                    await save({
+                        redirect: false,
+                    })
+                }
+            },
         })
 
-        if (result && result.success && result.address) {
-            updateBeneficiaryAddress(result.address)
-            deployContract()
-            const updatedProduct = {
-                ...productRef.current,
-                beneficiaryAddress: result.address,
-            }
-            await putProduct(updatedProduct, updatedProduct.id || '')
+        if (communityCreated) {
+            redirectToProduct()
         }
     }, [
         deployCommunityDialog,
-        isMounted,
+        redirectToProduct,
+        save,
         updateBeneficiaryAddress,
-        deployContract,
     ])
 
     const back = useCallback(async () => {
@@ -196,10 +192,10 @@ function useEditController(product: Product) {
         }
 
         if (doSave) {
-            await save()
-        }
-
-        if (doRedirect) {
+            await save({
+                redirect: doRedirect,
+            })
+        } else if (doRedirect) {
             redirectToProduct()
         }
     }, [
@@ -216,7 +212,6 @@ function useEditController(product: Product) {
         save,
         publish,
         deployCommunity,
-        deployContract,
     }), [
         isPreview,
         setIsPreview,
@@ -224,7 +219,6 @@ function useEditController(product: Product) {
         save,
         publish,
         deployCommunity,
-        deployContract,
     ])
 }
 

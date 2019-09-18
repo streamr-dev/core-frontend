@@ -9,6 +9,7 @@ import type {
     Stream,
     NewStream,
 } from '$shared/flowtype/stream-types'
+import type { ProductId } from '$mp/flowtype/product-types'
 import type { Permission } from '$userpages/flowtype/permission-types'
 import type { ApiResult } from '$shared/flowtype/common-types'
 
@@ -29,15 +30,18 @@ export const addPermission = (id: StreamId, permission: Permission): ApiResult<A
 export const deletePermission = (id: StreamId, permissionId: string): ApiResult<Array<Permission>> =>
     del(formatApiUrl('streams', id, 'permissions', permissionId))
 
-export const createJoinPartStream = async (productName: string): Promise<Stream | null> => {
+export const createJoinPartStream = async (productId: ?ProductId = undefined): Promise<Stream> => {
     const newStream: NewStream = {
-        name: `JoinPart stream for ${productName}`,
+        name: productId ? `JoinPart stream for product ${productId}` : 'JoinPart stream',
         description: 'Automatically created JoinPart stream for community product contract',
     }
-    const stream = await postStream(newStream)
-    if (stream == null) {
-        console.error('Could not create JoinPart stream')
-        return null
+
+    let stream
+    try {
+        stream = await postStream(newStream)
+    } catch (e) {
+        console.error('Could not create JoinPart stream', e)
+        throw e
     }
 
     // Add public read permission
@@ -49,6 +53,7 @@ export const createJoinPartStream = async (productName: string): Promise<Stream 
         })
     } catch (e) {
         console.error('Could not add public read permission for JoinPart stream', e)
+        throw e
     }
 
     // Add write permissions for all Streamr Engine nodes
@@ -59,6 +64,7 @@ export const createJoinPartStream = async (productName: string): Promise<Stream 
         await Promise.all(addWriteKeyPromises)
     } catch (e) {
         console.error('Could not add write keys to JoinPart stream', e)
+        throw e
     }
 
     // Remove share permission to prevent deleting the stream
@@ -79,10 +85,11 @@ export const createJoinPartStream = async (productName: string): Promise<Stream 
     return stream
 }
 
-export const deployContract = (joinPartStreamId: string): SmartContractDeployTransaction => {
+export const deployContract = (joinPartStreamId: StreamId): SmartContractDeployTransaction => {
     const operatorAddress = process.env.COMMUNITY_PRODUCT_OPERATOR_ADDRESS
     const tokenAddress = process.env.TOKEN_CONTRACT_ADDRESS
     const blockFreezePeriodSeconds = process.env.COMMUNITY_PRODUCT_BLOCK_FREEZE_PERIOD_SECONDS || 1
     const contractArguments = [operatorAddress, joinPartStreamId, tokenAddress, blockFreezePeriodSeconds]
+
     return deploy(getConfig().communityProduct, contractArguments)
 }
