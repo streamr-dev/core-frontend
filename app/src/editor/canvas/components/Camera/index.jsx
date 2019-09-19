@@ -78,14 +78,12 @@ function useCameraApi(scaleFactor = 0.1) {
         y: 0,
     })
 
-    // clamps scale, rounds x,y values
+    // clamps scale
     const setState = useCallback((v) => {
         setActualState((state) => {
             const nextState = (typeof v === 'function') ? v(state) : v
             return {
                 ...nextState,
-                x: Math.round(nextState.x),
-                y: Math.round(nextState.y),
                 scale: clamp(nextState.scale, 0.1, 3),
             }
         })
@@ -170,8 +168,8 @@ function useWheelControls(elRef) {
         if (delta === 0) { return }
         const { left, top } = el.getBoundingClientRect()
         // find current location on screen
-        const x = Math.round(event.clientX - left)
-        const y = Math.round(event.clientY - top)
+        const x = event.clientX - left
+        const y = event.clientY - top
         updateScale({
             x,
             y,
@@ -200,8 +198,8 @@ function usePanControls(elRef) {
         const el = elRef.current
         const { left, top } = el.getBoundingClientRect()
         // find current location on screen
-        const x = Math.round(event.clientX - left)
-        const y = Math.round(event.clientY - top)
+        const x = event.clientX - left
+        const y = event.clientY - top
         initUpdatePosition({
             x,
             y,
@@ -224,8 +222,8 @@ function usePanControls(elRef) {
         const el = elRef.current
         const { left, top } = el.getBoundingClientRect()
         // find current location on screen
-        const x = Math.round(event.clientX - left)
-        const y = Math.round(event.clientY - top)
+        const x = event.clientX - left
+        const y = event.clientY - top
         updatePosition({
             x,
             y,
@@ -252,7 +250,9 @@ function usePanControls(elRef) {
 }
 
 const cameraConfig = {
-    mass: 0.5,
+    mass: 1,
+    friction: 14,
+    precision: 0.00001,
     clamp: true,
 }
 
