@@ -11,7 +11,9 @@ import IntroductionContent from '$docs/content/introduction/introduction.mdx'
 const Introduction = () => (
     <DocsLayout subNav={subNav.introduction}>
         <Helmet title="Introduction | Streamr Docs" />
-        <IntroductionContent />
+        <section className="introductionPage"> {/* temporary section during design style pass */}
+            <IntroductionContent />
+        </section>
     </DocsLayout>
 )
 

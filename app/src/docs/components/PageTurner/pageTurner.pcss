@@ -36,11 +36,12 @@
 }
 
 .navButton {
+  font-weight: var(--medium);
   position: relative;
   flex-basis: calc(50% - 8px);
-  max-width: 344px;
+  max-width: 328px;
   background: #FFFFFF;
-  border: 1px solid #EFEFEF;
+  background-color: #F8F8F8;
   border-radius: 4px;
   text-align: center;
 
@@ -77,5 +78,13 @@
     flex-basis: 100%;
     margin: 8px 0;
     max-width: none;
+  }
+}
+
+@media (--xs) {
+  .navButton {
+    &.backward {
+      display: none;
+    }
   }
 }
