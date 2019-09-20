@@ -15,20 +15,23 @@ import ContributeSdk from '$docs/content/technicalNotes/howToContribute.mdx'
 const SDKs = () => (
     <DocsLayout subNav={subNav.SDKs}>
         <Helmet title="SDKs | Streamr Docs" />
-        <section id="sdks-overview">
-            <SdksOverview />
-        </section>
-        <section id="javascript-sdk">
-            <JavascriptSdk />
-        </section>
-        <section id="java-sdk">
-            <JavaSdk />
-        </section>
-        <section id="python-sdk">
-            <PythonSdk />
-        </section>
-        <section id="contribute-sdk">
-            <ContributeSdk />
+        <section className="designUpdateWip"> {/* temporary section during design style pass */}
+            <section id="sdks-overview">
+                <SdksOverview />
+            </section>
+            <section id="javascript-sdk">
+                <JavascriptSdk />
+            </section>
+            <section id="java-sdk">
+                <JavaSdk />
+            </section>
+            <section id="python-sdk">
+                <PythonSdk />
+            </section>
+            <section id="contribute-sdk">
+                <ContributeSdk />
+            </section>
+            <hr />
         </section>
     </DocsLayout>
 )
