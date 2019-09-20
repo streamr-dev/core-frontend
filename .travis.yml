@@ -290,6 +290,8 @@ jobs:
       acl: private
       region: eu-west-1
       skip_cleanup: true
+      on:
+        branch: development
     - provider: s3
       access_key_id: AKIAJBAGP3WA5UXQ3AZQ
       secret_access_key:
@@ -300,6 +302,8 @@ jobs:
       acl: private
       region: eu-west-1
       skip_cleanup: true
+      on:
+        branch: development
     - provider: s3
       access_key_id: AKIAJBAGP3WA5UXQ3AZQ
       secret_access_key:
@@ -310,6 +314,8 @@ jobs:
       acl: private
       region: eu-west-1
       skip_cleanup: true
+      on:
+        branch: development
 notifications:
   slack:
     secure: MZDZjnItLHeXN+rnenRfwQd635zMZWHUExAlo/i8zmcGmrDXMhZbm8Ppf0L2mkEWAXmE0aS8r+HsZW4P9GacYUQBgrhOg2gLp0lthLbT/YJAg/5wOmXkWZbE3G1AMBS+b1O/eEyWMmlH7dmYoMIuLa8tSeY/qGaiENjauTKilska0gurm2F0HWq7TAKuWJ5x0YWOikXT+QK1UlPwdVDyut1L0FHd21JfxftpK0U+yaBiBuJRplRPMmQMWWo5IxMHaWY66eJKPl/Jrk78sKfZrex9PkTjmDKTXl9Aj8WWanJY0LuA6WYIBH5ft5znV5Of1WpnxaR915NXilDz9XL3zyRmHiWcUegSTIeYp2LNARB71iqomctrcd8sC9ti2m3ZBuj7SSli5nV65JwMf+BdJ0ZEhFRXQ9ovkacEs+e45XubsRms8z3gTghwTnfd1KcqJPwxrDzpS3KMsdEkb8GMjlS2o0Kof3OBEbbu3AF4ueF5fPCG/vYZPY995+FNdP9SCvNN+Z96CKWYWPobK6EuSuaSiIjfHj3ixrQcLA+UaXlPZzK3NTdnJXsohKh8YBeiFQCEFiy80n9AKoTMKaarcU6nNevw6url0d6CpF6IQwPoJeEwB3PAM9ITOzKzbtSKrzEAO8u66bt49dWy7VoNbY4m3WMnbgaCpqjI1AqP+SQ=
