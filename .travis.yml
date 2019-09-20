@@ -267,7 +267,7 @@ jobs:
     - STREAMR_API_URL=https://lisboa.streamr.com/api/v1
     - STREAMR_WS_URL=wss://lisboa.streamr.com/api/v1/ws
     - PLATFORM_ORIGIN_URL=https://lisboa.streamr.com
-    - PLATFORM_PUBLIC_PATH=https://lisboa.streamr.com
+    - PLATFORM_PUBLIC_PATH=https://cdn-lisboa.streamr.com
     - STREAMR_URL=https://lisboa.streamr.com
     - GOOGLE_ANALYTICS_ID=UA-55331565-5
     - MARKETPLACE_CONTRACT_ADDRESS=0x62d08a44d6db7821c9556032a437beb4bd050abd
