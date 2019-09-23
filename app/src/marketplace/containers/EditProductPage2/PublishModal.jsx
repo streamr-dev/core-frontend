@@ -1,8 +1,8 @@
 // @flow
 
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
-import EventEmitter from 'events'
 import { useDispatch } from 'react-redux'
+import { validateWeb3, getWeb3 } from '$shared/web3/web3Provider'
 
 import type { Product } from '$mp/flowtype/product-types'
 import { isPaidProduct } from '$mp/utils/product'
@@ -10,7 +10,7 @@ import { productStates, transactionStates, transactionTypes } from '$shared/util
 import useModal from '$shared/hooks/useModal'
 import { getProductById } from '$mp/modules/product/services'
 import { getProductFromContract } from '$mp/modules/contractProduct/services'
-import { getCommunityContract, getAdminFee, setAdminFee } from '$mp/modules/communityProduct/services'
+import { getAdminFee, setAdminFee } from '$mp/modules/communityProduct/services'
 import { isUpdateContractProductRequired } from '$mp/utils/smartContract'
 
 import ErrorDialog from '$mp/components/Modal/ErrorDialog'
@@ -23,9 +23,7 @@ import { addTransaction } from '$mp/modules/transactions/actions'
 import { postSetDeploying, postDeployFree, redeployProduct } from '$mp/modules/publish/services'
 import { postSetUndeploying, postUndeployFree, deleteProduct } from '$mp/modules/unpublish/services'
 
-/* const steps = {
-    INITIAL: 'initial',
-} */
+import PublishQueue, { actionsTypes } from './publishQueue'
 
 type Props = {
     product: Product,
@@ -46,72 +44,8 @@ const steps = {
     COMPLETE: 'complete',
 }
 
-const actionsTypes = {
-    UPDATE_ADMIN_FEE: 'updateAdminFee',
-    UPDATE_CONTRACT_PRODUCT: 'updateContractProduct',
-    CREATE_CONTRACT_PRODUCT: 'createContractProduct',
-    REDEPLOY_PAID: 'publishPaid',
-    PUBLISH_FREE: 'publishFree',
-    UNDEPLOY_CONTRACT_PRODUCT: 'undeployContractProduct',
-    UNPUBLISH_FREE: 'unpublishFree',
-}
-
-class Queue {
-    emitter = new EventEmitter()
-    actions = []
-
-    subscribe(event, handler) {
-        this.emitter.on(event, handler)
-
-        return this
-    }
-
-    unsubscribeAll() {
-        this.emitter.removeAllListeners()
-
-        return this
-    }
-
-    add(action) {
-        this.actions.push(action)
-    }
-
-    startAction(id, nextAction) {
-        return new Promise((resolve) => {
-            const update = (...args) => this.emitter.emit('status', ...args)
-            const done = (...args) => {
-                this.emitter.emit('ready', ...args)
-                resolve()
-            }
-            return nextAction.call(
-                null,
-                update.bind(this, id),
-                done.bind(this, id),
-            )
-        })
-    }
-
-    async start() {
-        for (let i = 0; i < this.actions.length; i += 1) {
-            const { id, handler } = this.actions[i]
-
-            this.emitter.emit('started', id)
-
-            try {
-                // eslint-disable-next-line no-await-in-loop
-                await this.startAction(id, handler)
-            } catch (e) {
-                console.error(e)
-                this.emitter.emit('status', id, transactionStates.FAILED, e)
-            }
-        }
-
-        this.emitter.emit('finish')
-    }
-}
-
 const PublishOrUnpublishModal = ({ product, api }: Props) => {
-    const queueRef = useRef(new Queue())
+    const queueRef = useRef(new PublishQueue())
     const dispatch = useDispatch()
 
     const [mode, setMode] = useState(null)
@@ -131,20 +65,6 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
 
     useEffect(() => {
         const queue = queueRef.current
-        queue
-            .subscribe('started', (id) => {
-                setCurrentAction(id)
-                setActionStatus(id, transactionStates.STARTED)
-            })
-            .subscribe('status', (id, nextStatus) => {
-                setActionStatus(id, nextStatus)
-            })
-            .subscribe('ready', (id) => {
-                setCurrentAction((action) => (action === id ? null : action))
-            })
-            .subscribe('finish', () => {
-                setStep((currentStep) => (currentStep !== steps.COMPLETE ? steps.COMPLETE : currentStep))
-            })
 
         async function fetchProduct() {
             // load product
@@ -162,23 +82,17 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
                 console.log(e)
             }
 
-            let community
             let currentAdminFee
             try {
-                community = await getCommunityContract(p.beneficiaryAddress)
                 currentAdminFee = await getAdminFee(p.beneficiaryAddress)
             } catch (e) {
                 console.log(e)
             }
 
-            console.log(currentAdminFee)
-            if (community) {
-                console.log(community.options)
-            }
             const { state: productState } = p
 
             const { adminFee } = p.pendingChanges || {}
-            const hasAdminFeeChanged = !!community && (community.adminFee !== adminFee)
+            const hasAdminFeeChanged = !!currentAdminFee && adminFee && currentAdminFee !== adminFee
             const hasPriceChanged = !!contractProduct && isUpdateContractProductRequired(contractProduct, p)
             const hasPendingChanges = hasAdminFeeChanged || hasPriceChanged
 
@@ -193,7 +107,7 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
             }
 
             if ([modes.REPUBLISH, modes.REDEPLOY, modes.PUBLISH].includes(nextMode)) {
-                if (community && adminFee && community.adminFee !== adminFee) {
+                if (adminFee && hasAdminFeeChanged) {
                     queue.add({
                         id: actionsTypes.UPDATE_ADMIN_FEE,
                         handler: (update, done) => (
@@ -348,14 +262,37 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
                 }
             }
 
+            if (queue.needsWeb3()) {
+                await validateWeb3({
+                    web3: getWeb3(),
+                })
+            }
+
             setMode(nextMode)
         }
 
-        try {
-            fetchProduct()
-        } catch (e) {
-            setModalError(e)
-        }
+        fetchProduct()
+            .then(
+                () => {
+                    queue
+                        .subscribe('started', (id) => {
+                            setCurrentAction(id)
+                            setActionStatus(id, transactionStates.STARTED)
+                        })
+                        .subscribe('status', (id, nextStatus) => {
+                            setActionStatus(id, nextStatus)
+                        })
+                        .subscribe('ready', (id) => {
+                            setCurrentAction((action) => (action === id ? null : action))
+                        })
+                        .subscribe('finish', () => {
+                            setStep((currentStep) => (currentStep !== steps.COMPLETE ? steps.COMPLETE : currentStep))
+                        })
+                },
+                (e) => {
+                    setModalError(e)
+                },
+            )
 
         return () => {
             queue.unsubscribeAll()
@@ -446,20 +383,6 @@ export default () => {
     }
 
     const { product } = value || {}
-
-    /*
-    const isPaid =
-    const isCommunity =
-    const isPublished =
-    const isDeployed = */
-
-    // if community, check required members
-
-    /* useEffect(() => {
-        await loadProduct
-        await loadContractProduct
-        await loadCommunity
-    }, []) */
 
     return (
         <PublishOrUnpublishModal

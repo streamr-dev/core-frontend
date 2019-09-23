@@ -80,7 +80,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
             title: (productState && I18n.t(`editProductPage.${titles[productState]}`)) || '',
             color: 'primary',
             onClick: publish,
-            disabled: !(productState === productStates.NOT_DEPLOYED || productState === productStates.DEPLOYED),
+            disabled: false && !(productState === productStates.NOT_DEPLOYED || productState === productStates.DEPLOYED),
         }
     }, [productState, publish])
 
