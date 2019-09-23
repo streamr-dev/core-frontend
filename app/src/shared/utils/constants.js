@@ -57,6 +57,7 @@ export const transactionTypes = {
     UNDEPLOY_PRODUCT: 'undeployProduct',
     PAYMENT: 'payment',
     DEPLOY_COMMUNITY: 'deployCommunity',
+    UPDATE_ADMIN_FEE: 'updateAdminFee',
 }
 
 export const gasLimits = {
@@ -66,6 +67,7 @@ export const gasLimits = {
     DELETE_PRODUCT: 5e4,
     APPROVE: 5e4,
     DEPLOY_COMMUNITY_PRODUCT: 3e6,
+    UPDATE_ADMIN_FEE: 3e5,
 }
 
 export const dialogAutoCloseTimeout = 2000 // in milliseconds

@@ -45,7 +45,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
         title: 'Save & Exit',
         color: 'link',
         outline: true,
-        onClick: save,
+        onClick: () => save(),
         disabled: isSaving,
     }), [save, isSaving])
 

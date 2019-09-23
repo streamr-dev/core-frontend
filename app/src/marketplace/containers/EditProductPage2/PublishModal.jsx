@@ -5,11 +5,12 @@ import EventEmitter from 'events'
 import { useDispatch } from 'react-redux'
 
 import type { Product } from '$mp/flowtype/product-types'
-// import { isPaidProduct } from '$mp/utils/product'
+import { isPaidProduct } from '$mp/utils/product'
 import { productStates, transactionStates, transactionTypes } from '$shared/utils/constants'
 import useModal from '$shared/hooks/useModal'
 import { getProductById } from '$mp/modules/product/services'
 import { getProductFromContract } from '$mp/modules/contractProduct/services'
+import { getCommunityContract, getAdminFee, setAdminFee } from '$mp/modules/communityProduct/services'
 import { isUpdateContractProductRequired } from '$mp/utils/smartContract'
 
 import ErrorDialog from '$mp/components/Modal/ErrorDialog'
@@ -17,8 +18,10 @@ import Dialog from '$shared/components/Dialog'
 import ReadyToPublishDialog from '$mp/components/Modal/ReadyToPublishDialog'
 import ReadyToUnpublishDialog from '$mp/components/Modal/ReadyToUnpublishDialog'
 import ConfirmPublishTransaction from '$mp/components/Modal/ConfirmPublishTransaction'
-import { updateContractProduct } from '$mp/modules/createContractProduct/services'
+import { createContractProduct, updateContractProduct } from '$mp/modules/createContractProduct/services'
 import { addTransaction } from '$mp/modules/transactions/actions'
+import { postSetDeploying, postDeployFree, redeployProduct } from '$mp/modules/publish/services'
+import { postSetUndeploying, postUndeployFree, deleteProduct } from '$mp/modules/unpublish/services'
 
 /* const steps = {
     INITIAL: 'initial',
@@ -46,26 +49,11 @@ const steps = {
 const actionsTypes = {
     UPDATE_ADMIN_FEE: 'updateAdminFee',
     UPDATE_CONTRACT_PRODUCT: 'updateContractProduct',
-    PUBLISH_PAID: 'publishPaid',
+    CREATE_CONTRACT_PRODUCT: 'createContractProduct',
+    REDEPLOY_PAID: 'publishPaid',
     PUBLISH_FREE: 'publishFree',
     UNDEPLOY_CONTRACT_PRODUCT: 'undeployContractProduct',
     UNPUBLISH_FREE: 'unpublishFree',
-}
-
-/*
-const delayed = (delay) => (
-    new Promise((resolve) => {
-        setTimeout(() => {
-            resolve()
-        }, delay)
-    })
-)
-*/
-
-function delayed(t) {
-    return new Promise((resolve) => {
-        setTimeout(resolve, t)
-    })
 }
 
 class Queue {
@@ -109,8 +97,13 @@ class Queue {
 
             this.emitter.emit('started', id)
 
-            // eslint-disable-next-line no-await-in-loop
-            await this.startAction(id, handler)
+            try {
+                // eslint-disable-next-line no-await-in-loop
+                await this.startAction(id, handler)
+            } catch (e) {
+                console.error(e)
+                this.emitter.emit('status', id, transactionStates.FAILED, e)
+            }
         }
 
         this.emitter.emit('finish')
@@ -125,6 +118,7 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
     const [step, setStep] = useState(steps.CONFIRM)
     const [currentAction, setCurrentAction] = useState(-1)
     const [status, setStatus] = useState({})
+    const [modalError, setModalError] = useState(null)
 
     const setActionStatus = useCallback((name, s) => {
         setStatus((prevStatus) => ({
@@ -154,11 +148,10 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
 
         async function fetchProduct() {
             // load product
-            // $FlowFixMe
-            const p = await getProductById(productId || '')
+            const p: Product = await getProductById(productId || '')
 
             if (!p) {
-                // throw error
+                throw new Error('no product')
             }
 
             // load contract product
@@ -166,16 +159,26 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
             try {
                 contractProduct = await getProductFromContract(productId || '', true)
             } catch (e) {
-                // no contract product
+                console.log(e)
             }
 
-            const community = null
+            let community
+            let currentAdminFee
+            try {
+                community = await getCommunityContract(p.beneficiaryAddress)
+                currentAdminFee = await getAdminFee(p.beneficiaryAddress)
+            } catch (e) {
+                console.log(e)
+            }
 
+            console.log(currentAdminFee)
+            if (community) {
+                console.log(community.options)
+            }
             const { state: productState } = p
 
             const { adminFee } = p.pendingChanges || {}
             const hasAdminFeeChanged = !!community && (community.adminFee !== adminFee)
-            // $FlowFixMe
             const hasPriceChanged = !!contractProduct && isUpdateContractProductRequired(contractProduct, p)
             const hasPendingChanges = hasAdminFeeChanged || hasPriceChanged
 
@@ -186,84 +189,173 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
             } else if (productState === productStates.NOT_DEPLOYED) {
                 nextMode = contractProduct ? modes.REDEPLOY : modes.PUBLISH
             } else {
-                nextMode = modes.ERROR
+                throw new Error('Invalid product state')
             }
 
-            queue.add({
-                id: actionsTypes.UPDATE_ADMIN_FEE,
-                handler: (update, done) => {
-                    delayed(2000)
-                        .then(() => {
-                            update(transactionStates.CONFIRMED)
-                            done()
-                        })
-                },
-            })
-
-            queue.add({
-                id: actionsTypes.UPDATE_CONTRACT_PRODUCT,
-                handler: (update, done) => (
-                    updateContractProduct({
-                        ...p,
-                    })
-                        .onTransactionHash((hash) => {
-                            update(transactionStates.PENDING)
-                            done()
-                            dispatch(addTransaction(hash, transactionTypes.UPDATE_CONTRACT_PRODUCT))
-                        })
-                        .onTransactionComplete(() => {
-                            update(transactionStates.CONFIRMED)
-                        })
-                        .onError((error) => {
-                            done()
-                            update(transactionStates.FAILED, error)
-                        })
-                ),
-            })
-
-            /*
             if ([modes.REPUBLISH, modes.REDEPLOY, modes.PUBLISH].includes(nextMode)) {
-                if (community && community.adminFee !== adminFee) {
+                if (community && adminFee && community.adminFee !== adminFee) {
                     queue.add({
                         id: actionsTypes.UPDATE_ADMIN_FEE,
-                        handler: (update, done) => {
-                            delayed(200)
-                                .then(() => {
-                                    update(transactionStates.CONFIRMED)
+                        handler: (update, done) => (
+                            setAdminFee(p.beneficiaryAddress, adminFee)
+                                .onTransactionHash((hash) => {
+                                    update(transactionStates.PENDING)
                                     done()
+                                    dispatch(addTransaction(hash, transactionTypes.UPDATE_ADMIN_FEE))
                                 })
-                        },
+                                .onTransactionComplete(() => {
+                                    update(transactionStates.CONFIRMED)
+                                })
+                                .onError((error) => {
+                                    done()
+                                    update(transactionStates.FAILED, error)
+                                })
+                        ),
                     })
                 }
             }
 
             if ([modes.REPUBLISH, modes.REDEPLOY].includes(nextMode)) {
                 if (hasPriceChanged) {
-                    queue.add(actionsTypes.UPDATE_CONTRACT_PRODUCT)
+                    queue.add({
+                        id: actionsTypes.UPDATE_CONTRACT_PRODUCT,
+                        handler: (update, done) => (
+                            updateContractProduct({
+                                ...contractProduct,
+                                pricePerSecond: p.pricePerSecond,
+                                beneficiaryAddress: p.beneficiaryAddress,
+                                priceCurrency: p.priceCurrency,
+                            })
+                                .onTransactionHash((hash) => {
+                                    update(transactionStates.PENDING)
+                                    done()
+                                    dispatch(addTransaction(hash, transactionTypes.UPDATE_CONTRACT_PRODUCT))
+                                })
+                                .onTransactionComplete(() => {
+                                    update(transactionStates.CONFIRMED)
+                                })
+                                .onError((error) => {
+                                    done()
+                                    update(transactionStates.FAILED, error)
+                                })
+                        ),
+                    })
                 }
             }
 
-            if ([modes.REDEPLOY, modes.PUBLISH].includes(nextMode)) {
+            if (nextMode === modes.PUBLISH) {
                 if (isPaidProduct(p)) {
-                    queue.add(actionsTypes.PUBLISH_PAID)
+                    queue.add({
+                        id: actionsTypes.CREATE_CONTRACT_PRODUCT,
+                        handler: (update, done) => (
+                            createContractProduct({
+                                id: p.id || '',
+                                name: p.name,
+                                ownerAddress: p.ownerAddress,
+                                beneficiaryAddress: p.beneficiaryAddress,
+                                pricePerSecond: p.pricePerSecond,
+                                priceCurrency: p.priceCurrency,
+                                minimumSubscriptionInSeconds: p.minimumSubscriptionInSeconds,
+                                state: p.state,
+                            })
+                                .onTransactionHash((hash) => {
+                                    update(transactionStates.PENDING)
+                                    done()
+                                    dispatch(addTransaction(hash, transactionTypes.CREATE_CONTRACT_PRODUCT))
+                                    postSetDeploying(productId || '', hash)
+                                })
+                                .onTransactionComplete(() => {
+                                    update(transactionStates.CONFIRMED)
+                                })
+                                .onError((error) => {
+                                    update(transactionStates.FAILED, error)
+                                    done()
+                                })
+                        ),
+                    })
                 } else {
-                    queue.add(actionsTypes.PUBLISH_FREE)
+                    queue.add({
+                        id: actionsTypes.PUBLISH_FREE,
+                        handler: (update, done) => (
+                            postDeployFree(productId || '').then(() => {
+                                update(transactionStates.CONFIRMED)
+                                done()
+                            }, (error) => {
+                                update(transactionStates.FAILED, error)
+                                done()
+                            })
+                        ),
+                    })
                 }
+            }
+
+            if (nextMode === modes.REDEPLOY) {
+                queue.add({
+                    id: actionsTypes.REDEPLOY_PAID,
+                    handler: (update, done) => (
+                        redeployProduct(productId || '')
+                            .onTransactionHash((hash) => {
+                                update(transactionStates.PENDING)
+                                done()
+                                dispatch(addTransaction(hash, transactionTypes.REDEPLOY_PRODUCT))
+                                postSetDeploying(productId || '', hash)
+                            })
+                            .onTransactionComplete(() => {
+                                update(transactionStates.CONFIRMED)
+                            })
+                            .onError((error) => {
+                                update(transactionStates.FAILED, error)
+                                done()
+                            })
+                    ),
+                })
             }
 
             if (nextMode === modes.UNPUBLISH) {
                 if (contractProduct) {
-                    queue.add(actionsTypes.UNDEPLOY_CONTRACT_PRODUCT)
+                    queue.add({
+                        id: actionsTypes.UNDEPLOY_CONTRACT_PRODUCT,
+                        handler: (update, done) => (
+                            deleteProduct(productId || '')
+                                .onTransactionHash((hash) => {
+                                    update(transactionStates.PENDING)
+                                    done()
+                                    dispatch(addTransaction(hash, transactionTypes.UNDEPLOY_PRODUCT))
+                                    postSetUndeploying(productId || '', hash)
+                                })
+                                .onTransactionComplete(() => {
+                                    update(transactionStates.CONFIRMED)
+                                })
+                                .onError((error) => {
+                                    update(transactionStates.FAILED, error)
+                                    done()
+                                })
+                        ),
+                    })
                 } else {
-                    queue.add(actionsTypes.UNPUBLISH_FREE)
+                    queue.add({
+                        id: actionsTypes.UNPUBLISH_FREE,
+                        handler: (update, done) => (
+                            postUndeployFree(productId || '').then(() => {
+                                update(transactionStates.CONFIRMED)
+                                done()
+                            }, (error) => {
+                                update(transactionStates.FAILED, error)
+                                done()
+                            })
+                        ),
+                    })
                 }
             }
-            */
 
             setMode(nextMode)
         }
 
-        fetchProduct()
+        try {
+            fetchProduct()
+        } catch (e) {
+            setModalError(e)
+        }
 
         return () => {
             queue.unsubscribeAll()
@@ -285,6 +377,15 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
         setStep(steps.ACTIONS)
         queueRef.current.start()
     }, [setStep])
+
+    if (modalError) {
+        return (
+            <ErrorDialog
+                message={modalError.message}
+                onClose={onClose}
+            />
+        )
+    }
 
     if (step === steps.CONFIRM) {
         if (!mode) {

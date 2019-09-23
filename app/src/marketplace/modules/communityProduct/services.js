@@ -1,9 +1,9 @@
 // @flow
 
-import { deploy } from '$mp/utils/smartContract'
+import { deploy, getContract, call, send } from '$mp/utils/smartContract'
 import getConfig from '$shared/web3/config'
 
-import type { SmartContractDeployTransaction } from '$shared/flowtype/web3-types'
+import type { SmartContractDeployTransaction, Address, SmartContractTransaction } from '$shared/flowtype/web3-types'
 import type {
     StreamId,
     Stream,
@@ -12,11 +12,13 @@ import type {
 import type { ProductId } from '$mp/flowtype/product-types'
 import type { Permission } from '$userpages/flowtype/permission-types'
 import type { ApiResult } from '$shared/flowtype/common-types'
+import { gasLimits } from '$shared/utils/constants'
 
 import { post, del } from '$shared/utils/api'
 import { formatApiUrl } from '$shared/utils/url'
 import { postStream /* , getMyStreamPermissions */ } from '$userpages/modules/userPageStreams/services'
 import { addStreamResourceKey } from '$shared/modules/resourceKey/services'
+import { getWeb3, getPublicWeb3 } from '$shared/web3/web3Provider'
 
 export const getStreamrEngineAddresses = (): Array<string> => {
     const addressesString = process.env.STREAMR_ENGINE_NODE_ADDRESSES || ''
@@ -92,4 +94,44 @@ export const deployContract = (joinPartStreamId: StreamId): SmartContractDeployT
     const contractArguments = [operatorAddress, joinPartStreamId, tokenAddress, blockFreezePeriodSeconds]
 
     return deploy(getConfig().communityProduct, contractArguments)
+}
+
+export const getCommunityContract = (address: Address, usePublicNode: boolean = false) => {
+    const { abi } = getConfig().communityProduct
+
+    return getContract({
+        abi,
+        address,
+    }, usePublicNode)
+}
+
+export const isCommunityDeployed = async (address: Address, usePublicNode: boolean = false) => {
+    const contract = getCommunityContract(address, usePublicNode)
+    const operator = await call(contract.methods.operator)
+
+    return !!operator
+}
+
+export const getAdminFee = (address: Address, usePublicNode: boolean = false) => {
+    const web3 = usePublicNode ? getPublicWeb3() : getWeb3()
+
+    return call(getCommunityContract(address, usePublicNode).methods.adminFee())
+        .then((value) => {
+            if (value) {
+                return web3.utils.fromWei(web3.utils.toBN(value), 'ether')
+            }
+            return null
+        })
+}
+
+export const setAdminFee = (address: Address, adminFee: number): SmartContractTransaction => {
+    if (adminFee <= 0 || adminFee > 1) {
+        throw new Error(`${adminFee} is not a valid admin fee`)
+    }
+
+    const web3 = getWeb3()
+    const adminFeeToSend = web3.utils.toWei(`${adminFee}`, 'ether')
+    return send(getCommunityContract(address).methods.setAdminFee(adminFeeToSend), {
+        gas: gasLimits.UPDATE_ADMIN_FEE,
+    })
 }
