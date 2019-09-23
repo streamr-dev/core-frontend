@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { useDispatch } from 'react-redux'
-import { validateWeb3, getWeb3 } from '$shared/web3/web3Provider'
 
 import type { Product } from '$mp/flowtype/product-types'
 import { isPaidProduct } from '$mp/utils/product'
@@ -18,10 +17,12 @@ import Dialog from '$shared/components/Dialog'
 import ReadyToPublishDialog from '$mp/components/Modal/ReadyToPublishDialog'
 import ReadyToUnpublishDialog from '$mp/components/Modal/ReadyToUnpublishDialog'
 import ConfirmPublishTransaction from '$mp/components/Modal/ConfirmPublishTransaction'
+import Web3ErrorDialog from '$shared/components/Web3ErrorDialog'
 import { createContractProduct, updateContractProduct } from '$mp/modules/createContractProduct/services'
 import { addTransaction } from '$mp/modules/transactions/actions'
 import { postSetDeploying, postDeployFree, redeployProduct } from '$mp/modules/publish/services'
 import { postSetUndeploying, postUndeployFree, deleteProduct } from '$mp/modules/unpublish/services'
+import useWeb3Status from '$shared/hooks/useWeb3Status'
 
 import PublishQueue, { actionsTypes } from './publishQueue'
 
@@ -53,6 +54,7 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
     const [currentAction, setCurrentAction] = useState(-1)
     const [status, setStatus] = useState({})
     const [modalError, setModalError] = useState(null)
+    const [requireWeb3, setRequireWeb3] = useState(false)
 
     const setActionStatus = useCallback((name, s) => {
         setStatus((prevStatus) => ({
@@ -62,6 +64,7 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
     }, [setStatus])
 
     const productId = product.id
+    const { web3Error, checkingWeb3 } = useWeb3Status(requireWeb3)
 
     useEffect(() => {
         const queue = queueRef.current
@@ -79,14 +82,15 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
             try {
                 contractProduct = await getProductFromContract(productId || '', true)
             } catch (e) {
-                console.log(e)
+                // don't need to do anything with this error necessarily,
+                // it just means that the product wasn't deployed
             }
 
             let currentAdminFee
             try {
                 currentAdminFee = await getAdminFee(p.beneficiaryAddress)
             } catch (e) {
-                console.log(e)
+                // ignore error, assume contract has not been deployed
             }
 
             const { state: productState } = p
@@ -97,15 +101,18 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
             const hasPendingChanges = hasAdminFeeChanged || hasPriceChanged
 
             let nextMode
+
             // is published and has pending changes?
             if (productState === productStates.DEPLOYED) {
                 nextMode = hasPendingChanges ? modes.REPUBLISH : modes.UNPUBLISH
             } else if (productState === productStates.NOT_DEPLOYED) {
                 nextMode = contractProduct ? modes.REDEPLOY : modes.PUBLISH
             } else {
+                // product is either being deployed to contract or being undeployed
                 throw new Error('Invalid product state')
             }
 
+            // update admin fee if it has changed
             if ([modes.REPUBLISH, modes.REDEPLOY, modes.PUBLISH].includes(nextMode)) {
                 if (adminFee && hasAdminFeeChanged) {
                     queue.add({
@@ -129,6 +136,7 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
                 }
             }
 
+            // update price, currency & beneficiary if changed
             if ([modes.REPUBLISH, modes.REDEPLOY].includes(nextMode)) {
                 if (hasPriceChanged) {
                     queue.add({
@@ -157,6 +165,7 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
                 }
             }
 
+            // do the actual publish action
             if (nextMode === modes.PUBLISH) {
                 if (isPaidProduct(p)) {
                     queue.add({
@@ -203,6 +212,7 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
                 }
             }
 
+            // do republish for products that have been at some point deployed
             if (nextMode === modes.REDEPLOY) {
                 queue.add({
                     id: actionsTypes.REDEPLOY_PAID,
@@ -225,6 +235,7 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
                 })
             }
 
+            // do unpublish
             if (nextMode === modes.UNPUBLISH) {
                 if (contractProduct) {
                     queue.add({
@@ -262,11 +273,8 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
                 }
             }
 
-            if (queue.needsWeb3()) {
-                await validateWeb3({
-                    web3: getWeb3(),
-                })
-            }
+            // validate metamask based on queued actions
+            setRequireWeb3(queue.needsWeb3())
 
             setMode(nextMode)
         }
@@ -315,6 +323,16 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
         queueRef.current.start()
     }, [setStep])
 
+    if (!!requireWeb3 && (checkingWeb3 || web3Error)) {
+        return (
+            <Web3ErrorDialog
+                waiting={checkingWeb3}
+                onClose={onClose}
+                error={web3Error}
+            />
+        )
+    }
+
     if (modalError) {
         return (
             <ErrorDialog
@@ -334,15 +352,11 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
             )
         }
 
-        if (mode === modes.UNPUBLISH) {
-            return (
-                <ReadyToUnpublishDialog onUnpublish={onConfirm} onCancel={onClose} />
-            )
-        }
+        const ConfirmComponent = (mode === modes.UNPUBLISH) ? ReadyToUnpublishDialog : ReadyToPublishDialog
 
         return (
-            <ReadyToPublishDialog
-                onPublish={onConfirm}
+            <ConfirmComponent
+                onContinue={onConfirm}
                 onCancel={onClose}
             />
         )

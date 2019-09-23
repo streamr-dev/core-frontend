@@ -7,10 +7,10 @@ import Dialog from '$shared/components/Dialog'
 
 export type Props = {
     onCancel: () => void,
-    onUnpublish: () => void,
+    onContinue: () => void,
 }
 
-const ReadyToUnpublishDialog = ({ onCancel, onUnpublish }: Props) => (
+const ReadyToUnpublishDialog = ({ onCancel, onContinue }: Props) => (
     <Dialog
         onClose={onCancel}
         title={I18n.t('modal.readyToUnpublish.title')}
@@ -23,7 +23,7 @@ const ReadyToUnpublishDialog = ({ onCancel, onUnpublish }: Props) => (
             unpublish: {
                 title: I18n.t('modal.readyToUnpublish.unpublish'),
                 color: 'primary',
-                onClick: onUnpublish,
+                onClick: onContinue,
             },
         }}
     >

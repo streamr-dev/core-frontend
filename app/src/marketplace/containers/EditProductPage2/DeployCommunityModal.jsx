@@ -144,9 +144,7 @@ export default () => {
         <DeployDialogWithWeb3
             product={product}
             api={api}
-            onClose={() => api.close({
-                success: false,
-            })}
+            onClose={() => api.close(false)}
             updateAddress={updateAddress}
         />
     )
