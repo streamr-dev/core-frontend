@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { I18n, Translate } from 'react-redux-i18n'
 import cx from 'classnames'
 
@@ -10,6 +10,7 @@ import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import { type Product } from '$mp/flowtype/product-types'
 import { deployContract as deploy, createJoinPartStream } from '$mp/modules/communityProduct/services'
+import DeploySpinner from '$shared/components/DeploySpinner'
 
 import styles from './deployingCommunityDialog.pcss'
 
@@ -27,6 +28,7 @@ const formatSeconds = (seconds) => {
 
 const DeployingCommunityDialog = ({ product, api }: Props) => {
     const estimate = 205
+    const [isDeploying, setIsDeploying] = useState(false)
 
     const deployContract = useCallback(async () => {
         if (product && product.id) {
@@ -37,13 +39,18 @@ const DeployingCommunityDialog = ({ product, api }: Props) => {
             }
 
             const tx = deploy(joinPartStream.id)
+            tx.onTransactionHash(() => {
+                setIsDeploying(true)
+            })
             tx.onTransactionComplete(() => {
+                setIsDeploying(false)
                 Notification.push({
                     title: 'Deploy completed',
                     icon: NotificationIcon.CHECKMARK,
                 })
             })
             tx.onError((err) => {
+                setIsDeploying(false)
                 console.error('CP deploy: Error', err)
                 Notification.push({
                     title: 'Deploy failed',
@@ -75,7 +82,9 @@ const DeployingCommunityDialog = ({ product, api }: Props) => {
                     },
                 }}
             >
-                <div className={styles.spinner}>spinner</div>
+                <div className={styles.spinner}>
+                    <DeploySpinner isRunning={isDeploying} showCounter />
+                </div>
                 <div className={styles.description}>
                     <Translate
                         value="modal.deployCommunity.deploying.description"

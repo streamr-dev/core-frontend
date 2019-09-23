@@ -42,6 +42,7 @@ import ContextMenu from '$shared/components/ContextMenu'
 import { NotificationIcon } from '$shared/utils/constants'
 import RadioButtonGroup from '$shared/components/RadioButtonGroup'
 import Toolbar from '$shared/components/Toolbar'
+import DeploySpinner from '$shared/components/DeploySpinner'
 
 import sharedStyles from './shared.pcss'
 
@@ -734,4 +735,15 @@ story('Toolbar')
             />}
             actions={toolbarActions}
         />
+    ))
+
+story('DeploySpinner')
+    .addWithJSX('basic', () => (
+        <DeploySpinner isRunning showCounter />
+    ))
+    .addWithJSX('stopped', () => (
+        <DeploySpinner isRunning={false} showCounter />
+    ))
+    .addWithJSX('without counter', () => (
+        <DeploySpinner isRunning showCounter={false} />
     ))
