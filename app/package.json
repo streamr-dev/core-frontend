@@ -161,7 +161,6 @@
     "lint-staged": "^8.0.3",
     "lodash": "^4.17.5",
     "logrocket": "^0.6.20",
-    "lottie-react-web": "^2.1.4",
     "mini-css-extract-plugin": "^0.4.0",
     "moment": "^2.22.0",
     "moment-timezone": "^0.5.16",
