@@ -1,8 +1,7 @@
-import React, { useState, useRef, useCallback, useEffect, useLayoutEffect, useMemo } from 'react'
+import React, { useState, useRef, useCallback, useLayoutEffect, useMemo } from 'react'
 import cx from 'classnames'
 import debounce from 'lodash/debounce'
 
-import { getCanvasBounds } from '$editor/shared/utils/bounds'
 import * as CanvasState from '../state'
 
 import Module from './Module'
@@ -11,7 +10,7 @@ import { CanvasWindowProvider } from './CanvasWindow'
 import Cables from './Cables'
 
 import styles from './Canvas.pcss'
-import Camera, { cameraControl } from './Camera'
+import Camera, { useCameraContext, cameraControl } from './Camera'
 
 export default class Canvas extends React.PureComponent {
     setPortUserValue = (portId, value, done) => {
@@ -76,19 +75,23 @@ export default class Canvas extends React.PureComponent {
         } = this.props
 
         return (
-            <CanvasWindowProvider className={styles.CanvasWindow}>
-                <div className={cx(styles.Canvas, className)}>
-                    <CanvasElements
-                        key={canvas.id}
-                        canvas={canvas}
-                        api={this.api}
-                        selectedModuleHash={selectedModuleHash}
-                        moduleSidebarIsOpen={moduleSidebarIsOpen}
-                        {...this.api.module}
-                    />
-                    {children}
-                </div>
-            </CanvasWindowProvider>
+            <div className={cx(styles.Canvas, className)}>
+                <DragDropProvider>
+                    <Camera>
+                        <CanvasWindowProvider className={styles.CanvasWindow}>
+                            <CanvasElements
+                                key={canvas.id}
+                                canvas={canvas}
+                                api={this.api}
+                                selectedModuleHash={selectedModuleHash}
+                                moduleSidebarIsOpen={moduleSidebarIsOpen}
+                                {...this.api.module}
+                            />
+                        </CanvasWindowProvider>
+                    </Camera>
+                </DragDropProvider>
+                {children}
+            </div>
         )
     }
 }
@@ -100,11 +103,9 @@ function CanvasElements(props) {
     const [positions, setPositions] = useState({})
     const updatePositionsRef = useRef()
 
+    const camera = useCameraContext()
     const getSpringRef = useRef()
-
-    const onChangeCamera = useCallback(({ getSpring }) => {
-        getSpringRef.current = getSpring
-    }, [getSpringRef])
+    getSpringRef.current = camera.getSpring
 
     const updatePositionsNow = useCallback(() => {
         if (updatePositionsRef.current) {
@@ -178,55 +179,35 @@ function CanvasElements(props) {
         }), {})
     }, [positions, getSpringRef])
 
-    const [bounds, setBounds] = useState()
-
-    useEffect(() => {
-        if (!canvas) { return }
-        if (!canvas.modules.length) {
-            // use default bounds if no modules
-            setBounds({})
-            return
-        }
-        const { current: modulesEl } = modulesRef
-        setBounds({
-            ...getCanvasBounds(canvas),
-            fitWidth: modulesEl.clientWidth,
-            fitHeight: modulesEl.clientHeight,
-            padding: 100,
-        })
-    }, [canvas])
-
     if (!canvas) { return null }
 
     return (
-        <Camera bounds={bounds} className={styles.CanvasElements} onChange={onChangeCamera}>
-            <DragDropProvider>
-                <div
-                    className={cx(styles.Modules, cameraControl)}
-                    onFocus={onFocus}
-                    ref={modulesRef}
-                    tabIndex="0"
-                    role="grid"
-                >
-                    {canvas.modules.map((m) => (
-                        <Module
-                            key={m.hash}
-                            module={m}
-                            canvas={canvas}
-                            onPort={onPort}
-                            api={api}
-                            isSelected={selectedModuleHash === m.hash}
-                            moduleSidebarIsOpen={moduleSidebarIsOpen}
-                            {...api.module}
-                        />
-                    ))}
-                </div>
-                <Cables
-                    canvas={canvas}
-                    positions={scaledPositions}
-                    selectedModuleHash={selectedModuleHash}
-                />
-            </DragDropProvider>
-        </Camera>
+        <div className={styles.CanvasElements}>
+            <div
+                className={cx(styles.Modules, cameraControl)}
+                onFocus={onFocus}
+                ref={modulesRef}
+                tabIndex="0"
+                role="grid"
+            >
+                {canvas.modules.map((m) => (
+                    <Module
+                        key={m.hash}
+                        module={m}
+                        canvas={canvas}
+                        onPort={onPort}
+                        api={api}
+                        isSelected={selectedModuleHash === m.hash}
+                        moduleSidebarIsOpen={moduleSidebarIsOpen}
+                        {...api.module}
+                    />
+                ))}
+            </div>
+            <Cables
+                canvas={canvas}
+                positions={scaledPositions}
+                selectedModuleHash={selectedModuleHash}
+            />
+        </div>
     )
 }

@@ -3,6 +3,8 @@ import { useSpring, animated, interpolate } from 'react-spring'
 import cx from 'classnames'
 import styles from './Camera.pcss'
 
+import isEditableElement from '$editor/shared/utils/isEditableElement'
+
 function clamp(value, min, max) {
     return Math.max(min, Math.min(max, value))
 }
@@ -199,6 +201,7 @@ function CameraProvider({ bounds, onChange, children, ...props }) {
 function useWheelControls(elRef) {
     const { updateScale } = useCameraContext()
     const onChangeScale = useCallback((event) => {
+        if (isEditableElement(event.target)) { return }
         event.preventDefault()
         const el = elRef.current
         const { deltaY: delta } = event
