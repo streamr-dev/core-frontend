@@ -1,40 +1,63 @@
 /* eslint-disable react/no-unused-state */
 import React, { useEffect, useState, useContext } from 'react'
 import cx from 'classnames'
+import { useSpring, animated, interpolate } from 'react-spring'
 import { moduleHasPort, isConnectedToModule } from '../state'
 import styles from './Canvas.pcss'
 import { DragDropContext } from './DragDropContext'
 
-function curvedHorizontal(x1, y1, x2, y2) {
+const CABLE_SPRING_CONFIG = {
+    mass: 1,
+    friction: 32,
+    tension: 700,
+}
+
+function useCurvedHorizontal(x1, y1, x2, y2) {
     const STEEPNESS = 1
-    const line = []
     const mx = ((x2 - x1) / 2) * STEEPNESS
 
-    line.push('M', x1, y1)
-    line.push('C', x1 + mx, y1, x2 - mx, y2, x2, y2)
+    const [c, set] = useSpring(() => ({
+        c1: [x1 + mx, y1],
+        c2: [x2 - mx, y2],
+        config: CABLE_SPRING_CONFIG,
+    }))
+    set({
+        c1: [x1 + mx, y1],
+        c2: [x2 - mx, y2],
+    })
 
-    return line.join(' ')
+    return interpolate([c.c1, c.c2], (c1, c2) => {
+        const l = []
+        l.push('M', x1, y1)
+        l.push('C', ...c1, ...c2, x2, y2)
+        return l.join(' ')
+    })
 }
 
 const LAYER_0 = 0
 const LAYER_1 = 1
 
-export function Cable({ className, cable, ...props }) {
+export function Cable({ cable, ...props }) {
     if (!cable) { return null }
+    return <CableInner cable={cable} {...props} />
+}
+
+function CableInner({ className, cable, ...props }) {
     const [from, to] = cable
     // adjust offset to edge based on curve direction
     // i.e. connect to left edge if curve going L->R,
     // connect to right edge if curve going R->L
     const direction = from.x < to.x ? 1 : -1
+    const d = useCurvedHorizontal(
+        from.x + (0.5 * (from.width || 0) * direction), // connect to edge of from
+        from.y,
+        to.x + (0.5 * (to.width || 0) * -direction), // connect to edge of to
+        to.y,
+    )
     return (
-        <path
+        <animated.path
             className={cx(styles.Connection, className)}
-            d={curvedHorizontal(
-                from.x + (0.5 * (from.width || 0) * direction), // connect to edge of from
-                from.y,
-                to.x + (0.5 * (to.width || 0) * -direction), // connect to edge of to
-                to.y,
-            )}
+            d={d}
             stroke="#525252"
             fill="none"
             strokeWidth="1"
