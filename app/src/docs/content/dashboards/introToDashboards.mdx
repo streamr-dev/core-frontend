@@ -2,24 +2,33 @@ import cx from 'classnames'
 import { Link } from 'react-router-dom'
 import links from '$shared/../links'
 
-import DashboardModules from './images/dashboardModules.png'
-import DashboardBrowser from './images/dashboardBrowser.png'
+import DashboardOutput from './images/dashboardoutput.png'
+import DashboardOutput2x from './images/dashboardoutput@2x.png'
+
+import DashboardBrowser from './images/dashboardbrowser.png'
+import DashboardBrowser2x from './images/dashboardbrowser@2x.png'
 
 import docsStyles from '$docs/components/DocsLayout/docsLayout.pcss'
 import dashboardStyles from '$docs/components/DocsPages/Dashboards/dashboardStyles.pcss'
 
-## Intro to dashboards
+# Introduction to dashboards
 
-Dashboards are a window into your running canvases. They provide a unique workspace for visualisation of the the live data sourced from any of your running <Link to={links.userpages.canvases}>canvases</Link>. 
+Dashboards are a window into your running canvases. They provide a unique workspace for visualisation of the the live data sourced from any of your running <Link to={links.userpages.canvases}>canvases</Link>.
 
-<div className={cx(docsStyles.centered, dashboardStyles.dashboardModules)}>
-  <img src={DashboardModules} />
-</div>
+<img
+  src={DashboardOutput}
+  srcSet={`${DashboardOutput2x} 2x`}
+  alt="Dashboard in action"
+/>
 
-To build a dashboard you need to first have a running canvas that uses a **Chart**, **Table** or **Geo Map** module. These modules (and their data flow) will be made available to you inside any dashboard you create. You can add the visualisation modules to the dashboard through the **module browser** at any time (even when your canvases are not running). They will 'activate' once the canvas is running and data flows through those visualisation modules.
+To build a dashboard you need to first have a running canvas that uses a **Chart**, **Table** or **Geo Map** module. These modules (and their data flow) will be made available to you inside any dashboard you create. You can add the visualisation modules to the dashboard through the **module browser** at any time (even when your canvases are not running). They will activate once the canvas is running and data flows through those visualisation modules.
 
-<div className={cx(docsStyles.centered, dashboardStyles.dashboardBrowser)}>
-  <img src={DashboardBrowser} />
-</div>
+<div className={dashboardStyles.dashboardBrowser}>
+  <img
+    src={DashboardBrowser}
+    srcSet={`${DashboardBrowser2x} 2x`}
+    alt="Dashboard browser"
+  />
+</div> 
 
 You can combine data from different canvases inside the same dashboard. For example, you may want to have a split screen of weather data and traffic information, sourced from different canvases.

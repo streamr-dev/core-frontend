@@ -15,7 +15,7 @@
 
   pre {
     padding: 1rem !important;
-    margin: 2rem 0;
+    margin: 4rem 0;
     font-size: inherit;
     background-color: #F8F8F8 !important;
     line-height: 20px;
@@ -34,6 +34,15 @@
       padding: 2px 4px;
       border-radius: 2px;
     }
+  }
+
+  .streamrHighlight {
+    color: #FFFFFF;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 14px;
+    background-color: #0424FF;
+    padding: 4px;
+    border-radius: 4px;
   }
 
   hr {
@@ -202,8 +211,8 @@
   }
 }
 
-:global(.gettingStartedPage), /* temporary selector during docs design pass */
-:global(.introductionPage) {
+/* temporary selector during docs design pass */
+:global(.designUpdateWip) { /* stylelint-disable-line no-descending-specificity */
   img {
     display: block;
     max-width: 100%;
@@ -279,8 +288,7 @@
     overflow: visible;
   }
 
-  :global(.gettingStartedPage), /* stylelint-disable-line no-descending-specificity */
-  :global(.introductionPage) { /* temporary selector during docs design pass */
+  :global(.designUpdateWip) { /* temporary selector during docs design pass */
     img {
       max-width: 100vw;
       position: relative;

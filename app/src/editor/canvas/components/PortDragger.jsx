@@ -15,6 +15,10 @@ class DraggablePort extends React.Component {
         this.unmounted = true
     }
 
+    state = {
+        key: 0,
+    }
+
     onDropPort = (event, stopData, reset) => {
         if (this.unmounted) { return }
         const { data } = this.context
@@ -27,6 +31,8 @@ class DraggablePort extends React.Component {
         }
 
         reset()
+        // scrub internal state after port drag
+        this.setState(({ key }) => ({ key: key + 1 }))
     }
 
     canConnectPorts(canvas) {
@@ -136,6 +142,7 @@ class DraggablePort extends React.Component {
     render() {
         return (
             <Draggable
+                key={this.state.key}
                 defaultClassNameDragging={Plug.styles.isDragged}
                 handle={`.${Dragger.styles.dragHandle}`}
                 cancel={`.${Dragger.styles.dragCancel}`}

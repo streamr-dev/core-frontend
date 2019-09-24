@@ -12,11 +12,13 @@ import WorkWithDashboardsInCore from '$docs/content/dashboards/workWithDashboard
 const Dashboards = () => (
     <DocsLayout subNav={subNav.dashboards}>
         <Helmet title="Dashboards | Streamr Docs" />
-        <section id="intro-to-dashboards">
-            <IntroToDashboards />
-        </section>
-        <section id="work-with-dashboards-in-core">
-            <WorkWithDashboardsInCore />
+        <section className="designUpdateWip"> {/* temporary section during design style pass */}
+            <section id="intro-to-dashboards">
+                <IntroToDashboards />
+            </section>
+            <section id="work-with-dashboards-in-core">
+                <WorkWithDashboardsInCore />
+            </section>
         </section>
     </DocsLayout>
 )
