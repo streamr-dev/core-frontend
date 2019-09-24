@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { useDispatch } from 'react-redux'
+import { I18n } from 'react-redux-i18n'
 
 import type { Product } from '$mp/flowtype/product-types'
 import { isPaidProduct } from '$mp/utils/product'
@@ -9,8 +10,8 @@ import { productStates, transactionStates, transactionTypes } from '$shared/util
 import useModal from '$shared/hooks/useModal'
 import { getProductById } from '$mp/modules/product/services'
 import { getProductFromContract } from '$mp/modules/contractProduct/services'
-import { getAdminFee, setAdminFee } from '$mp/modules/communityProduct/services'
-import { isUpdateContractProductRequired } from '$mp/utils/smartContract'
+import { getCommunityOwner, getAdminFee, setAdminFee } from '$mp/modules/communityProduct/services'
+import { areAddressesEqual, isUpdateContractProductRequired } from '$mp/utils/smartContract'
 
 import ErrorDialog from '$mp/components/Modal/ErrorDialog'
 import Dialog from '$shared/components/Dialog'
@@ -23,6 +24,7 @@ import { addTransaction } from '$mp/modules/transactions/actions'
 import { postSetDeploying, postDeployFree, redeployProduct } from '$mp/modules/publish/services'
 import { postSetUndeploying, postUndeployFree, deleteProduct } from '$mp/modules/unpublish/services'
 import useWeb3Status from '$shared/hooks/useWeb3Status'
+import UnlockWalletDialog from '$mp/components/Modal/UnlockWalletDialog'
 
 import PublishQueue, { actionsTypes } from './publishQueue'
 
@@ -51,10 +53,12 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
 
     const [mode, setMode] = useState(null)
     const [step, setStep] = useState(steps.CONFIRM)
-    const [currentAction, setCurrentAction] = useState(-1)
+    const [currentAction, setCurrentAction] = useState(null)
     const [status, setStatus] = useState({})
     const [modalError, setModalError] = useState(null)
     const [requireWeb3, setRequireWeb3] = useState(false)
+    const [requiredOwner, setRequiredOwner] = useState(null)
+    const { web3Error, checkingWeb3, account } = useWeb3Status(requireWeb3)
 
     const setActionStatus = useCallback((name, s) => {
         setStatus((prevStatus) => ({
@@ -64,7 +68,6 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
     }, [setStatus])
 
     const productId = product.id
-    const { web3Error, checkingWeb3 } = useWeb3Status(requireWeb3)
 
     useEffect(() => {
         const queue = queueRef.current
@@ -87,8 +90,10 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
             }
 
             let currentAdminFee
+            let communityOwner
             try {
                 currentAdminFee = await getAdminFee(p.beneficiaryAddress)
+                communityOwner = await getCommunityOwner(p.beneficiaryAddress)
             } catch (e) {
                 // ignore error, assume contract has not been deployed
             }
@@ -112,9 +117,13 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
                 throw new Error('Invalid product state')
             }
 
+            let requireOwner = null
+
             // update admin fee if it has changed
             if ([modes.REPUBLISH, modes.REDEPLOY, modes.PUBLISH].includes(nextMode)) {
                 if (adminFee && hasAdminFeeChanged) {
+                    requireOwner = communityOwner
+
                     queue.add({
                         id: actionsTypes.UPDATE_ADMIN_FEE,
                         handler: (update, done) => (
@@ -139,6 +148,8 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
             // update price, currency & beneficiary if changed
             if ([modes.REPUBLISH, modes.REDEPLOY].includes(nextMode)) {
                 if (hasPriceChanged) {
+                    requireOwner = p.ownerAddress
+
                     queue.add({
                         id: actionsTypes.UPDATE_CONTRACT_PRODUCT,
                         handler: (update, done) => (
@@ -168,6 +179,12 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
             // do the actual publish action
             if (nextMode === modes.PUBLISH) {
                 if (isPaidProduct(p)) {
+                    // TODO: figure out a better to detect if deploying community for the first time
+                    // force community product to be published by the same account as the community
+                    if (communityOwner) {
+                        requireOwner = communityOwner
+                    }
+
                     queue.add({
                         id: actionsTypes.CREATE_CONTRACT_PRODUCT,
                         handler: (update, done) => (
@@ -214,6 +231,8 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
 
             // do republish for products that have been at some point deployed
             if (nextMode === modes.REDEPLOY) {
+                requireOwner = p.ownerAddress
+
                 queue.add({
                     id: actionsTypes.REDEPLOY_PAID,
                     handler: (update, done) => (
@@ -238,6 +257,7 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
             // do unpublish
             if (nextMode === modes.UNPUBLISH) {
                 if (contractProduct) {
+                    requireOwner = p.ownerAddress
                     queue.add({
                         id: actionsTypes.UNDEPLOY_CONTRACT_PRODUCT,
                         handler: (update, done) => (
@@ -275,7 +295,7 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
 
             // validate metamask based on queued actions
             setRequireWeb3(queue.needsWeb3())
-
+            setRequiredOwner(requireOwner)
             setMode(nextMode)
         }
 
@@ -312,11 +332,6 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
     }, [api])
 
     const currentStatus = useMemo(() => (currentAction && status[currentAction] ? status[currentAction] : undefined), [status, currentAction])
-    const isApiCall = useMemo(() => [
-        actionsTypes.UPDATE_ADMIN_FEE,
-        actionsTypes.PUBLISH_FREE,
-        actionsTypes.UNPUBLISH_FREE,
-    ].includes(currentAction), [currentAction])
 
     const onConfirm = useCallback(() => {
         setStep(steps.ACTIONS)
@@ -329,6 +344,17 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
                 waiting={checkingWeb3}
                 onClose={onClose}
                 error={web3Error}
+            />
+        )
+    }
+
+    if (!!requireWeb3 && !!requiredOwner && (!account || !areAddressesEqual(account, requiredOwner))) {
+        return (
+            <UnlockWalletDialog
+                onClose={onClose}
+                message={I18n.t('unlockWalletDialog.message', {
+                    address: requiredOwner,
+                })}
             />
         )
     }
@@ -363,7 +389,9 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
     } else if (step === steps.ACTIONS) {
         return (
             <ConfirmPublishTransaction
-                waiting={!currentAction || isApiCall}
+                isUnpublish={mode === modes.UNPUBLISH}
+                action={currentAction}
+                waiting={!currentAction}
                 publishState={currentStatus}
                 onCancel={onClose}
             />
@@ -381,12 +409,7 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
         )
     }
 
-    return (
-        <ErrorDialog
-            message="error.message"
-            onClose={onClose}
-        />
-    )
+    return null
 }
 
 export default () => {

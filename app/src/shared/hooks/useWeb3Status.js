@@ -5,15 +5,18 @@ import { useState, useEffect, useCallback, useMemo } from 'react'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import getWeb3, { validateWeb3 } from '$shared/web3/web3Provider'
 import { WalletLockedError } from '$shared/errors/Web3'
+import type { Address } from '$shared/flowtype/web3-types'
 
 import Web3Poller from '$shared/web3/web3Poller'
 
 import useIsMounted from './useIsMounted'
 
 type Result = {
+    requireWeb3: boolean,
     web3Error: ?ErrorInUi | ?Error,
     checkingWeb3: boolean,
     isLocked: boolean,
+    account: ?Address,
 }
 
 export function useWeb3Status(requireWeb3: boolean = true): Result {
@@ -88,7 +91,8 @@ export function useWeb3Status(requireWeb3: boolean = true): Result {
         web3Error,
         checkingWeb3,
         isLocked: !!checkingWeb3 || !!web3Error,
-    }), [requireWeb3, web3Error, checkingWeb3])
+        account,
+    }), [requireWeb3, web3Error, checkingWeb3, account])
 }
 
 export default useWeb3Status

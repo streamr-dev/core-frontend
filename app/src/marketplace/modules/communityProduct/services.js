@@ -105,12 +105,16 @@ export const getCommunityContract = (address: Address, usePublicNode: boolean = 
     }, usePublicNode)
 }
 
-export const isCommunityDeployed = async (address: Address, usePublicNode: boolean = false) => {
+export const getCommunityOwner = async (address: Address, usePublicNode: boolean = false) => {
     const contract = getCommunityContract(address, usePublicNode)
-    const operator = await call(contract.methods.operator)
+    const owner = await call(contract.methods.owner)
 
-    return !!operator
+    return owner
 }
+
+export const isCommunityDeployed = async (address: Address, usePublicNode: boolean = false) => (
+    !!getCommunityOwner(address, usePublicNode)
+)
 
 export const getAdminFee = (address: Address, usePublicNode: boolean = false) => {
     const web3 = usePublicNode ? getPublicWeb3() : getWeb3()
