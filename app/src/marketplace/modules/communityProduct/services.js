@@ -14,7 +14,7 @@ import type { Permission } from '$userpages/flowtype/permission-types'
 import type { ApiResult } from '$shared/flowtype/common-types'
 import { gasLimits } from '$shared/utils/constants'
 
-import { post, del } from '$shared/utils/api'
+import { post, del, get } from '$shared/utils/api'
 import { formatApiUrl } from '$shared/utils/url'
 import { postStream /* , getMyStreamPermissions */ } from '$userpages/modules/userPageStreams/services'
 import { addStreamResourceKey } from '$shared/modules/resourceKey/services'
@@ -146,3 +146,6 @@ export const setAdminFee = (address: Address, adminFee: number): SmartContractTr
         gas: gasLimits.UPDATE_ADMIN_FEE,
     })
 )
+
+export const getCommunityStats = (id: string): ApiResult<Object> =>
+    get(formatApiUrl('communities', id, 'stats'))

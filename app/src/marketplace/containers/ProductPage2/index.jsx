@@ -31,6 +31,7 @@ import {
     selectContractSubscription,
 } from '$mp/modules/product/selectors'
 import { selectUserData } from '$shared/modules/user/selectors'
+import { selectAuthApiKeyId } from '$shared/modules/resourceKey/selectors'
 import links from '$mp/../links'
 import routes from '$routes'
 import { selectRelatedProductList } from '$mp/modules/relatedProducts/selectors'
@@ -52,6 +53,7 @@ const ProductPage = ({ overlayPurchaseDialog, overlayPublishDialog }: Props) => 
     const editPermission = useSelector(selectProductEditPermission)
     const isProductSubscriptionValid = useSelector(selectSubscriptionIsValid)
     const subscription = useSelector(selectContractSubscription)
+    const authApiKeyId = useSelector(selectAuthApiKeyId)
 
     const { match } = useContext(RouterContext.Context)
 
@@ -188,6 +190,7 @@ const ProductPage = ({ overlayPurchaseDialog, overlayPublishDialog }: Props) => 
                 onPurchase={() => onPurchase(product.id || '')}
                 toolbarStatus={<BackButton />}
                 showStreamLiveDataDialog={(streamId) => noHistoryRedirect(links.marketplace.products, product.id, 'streamPreview', streamId)}
+                authApiKeyId={authApiKeyId}
             />
             {overlay()}
         </Layout>

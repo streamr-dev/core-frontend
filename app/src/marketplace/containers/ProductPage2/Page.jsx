@@ -12,6 +12,7 @@ import Hero from '$mp/components/Hero'
 import type { Product, Subscription } from '../../flowtype/product-types'
 import type { StreamList } from '$shared/flowtype/stream-types'
 import type { ButtonActions } from '$shared/components/Buttons'
+import type { ResourceKeyId } from '$shared/flowtype/resource-key-types'
 import Products from '$mp/components/Products'
 import FallbackImage from '$shared/components/FallbackImage'
 import ProductContainer from '$shared/components/Container/Product'
@@ -21,6 +22,7 @@ import { isCommunityProduct } from '$mp/utils/product'
 import ProductDetails from './ProductDetails'
 import CollapsedText from './CollapsedText'
 import StreamListing from '$mp/components/ProductPage/StreamListing'
+import ProductOverview from '$mp/components/ProductPage/ProductOverview'
 import styles from './page.pcss'
 
 const { md } = breakpoints
@@ -37,6 +39,7 @@ export type Props = {
     isLoggedIn?: boolean,
     isProductSubscriptionValid?: boolean,
     productSubscription?: Subscription,
+    authApiKeyId?: ?ResourceKeyId,
     onPurchase?: () => void,
 }
 
@@ -59,6 +62,7 @@ class ProductDetailsPage extends Component<Props> {
             isLoggedIn,
             isProductSubscriptionValid,
             productSubscription,
+            authApiKeyId,
             onPurchase,
             toolbarStatus,
         } = this.props
@@ -121,6 +125,14 @@ class ProductDetailsPage extends Component<Props> {
                         </div>
                     </ProductContainer>
                 </div>
+                {isCommunityProduct && (
+                    <ProductContainer>
+                        <ProductOverview
+                            product={product}
+                            authApiKeyId={authApiKeyId}
+                        />
+                    </ProductContainer>
+                )}
                 <StreamListing
                     product={product}
                     streams={streams}
