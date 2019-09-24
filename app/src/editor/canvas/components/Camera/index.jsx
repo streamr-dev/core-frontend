@@ -71,7 +71,7 @@ function updateScaleState(s, { x, y, scaleFactor }) {
     }
 }
 
-function useCameraApi(scaleFactor = 0.1) {
+function useCameraSimpleApi(scaleFactor = 0.1) {
     const [state, setActualState] = useState({
         scale: 1,
         x: 0,
@@ -131,14 +131,51 @@ function useCameraApi(scaleFactor = 0.1) {
     }), [state, setState, updateScale, updatePosition, initUpdatePosition])
 }
 
+const cameraConfig = {
+    mass: 1,
+    friction: 14,
+    precision: 0.00001,
+    clamp: true,
+}
+
+function useCameraSpringApi() {
+    const camera = useCameraSimpleApi()
+    const { x, y, scale } = camera
+    const onSpring = useCallback(() => ({
+        x,
+        y,
+        scale,
+        config: cameraConfig,
+    }), [x, y, scale])
+    const [spring, set] = useSpring(onSpring)
+
+    set({
+        x,
+        y,
+        scale,
+    })
+
+    const springRef = useRef()
+    springRef.current = spring
+
+    const getSpring = useCallback(() => (
+        springRef.current
+    ), [springRef])
+
+    return useMemo(() => ({
+        getSpring,
+        ...camera,
+    }), [getSpring, camera])
+}
+
 export const CameraContext = React.createContext({})
 
 export function useCameraContext() {
     return useContext(CameraContext)
 }
 
-function CameraProvider({ bounds, onChange, children }) {
-    const camera = useCameraApi()
+function CameraProvider({ bounds, onChange, children, ...props }) {
+    const camera = useCameraSpringApi(props)
     useEffect(() => {
         if (typeof onChange !== 'function') { return }
         onChange(camera)
@@ -249,41 +286,18 @@ function usePanControls(elRef) {
     }, [elRef, startPanning])
 }
 
-const cameraConfig = {
-    mass: 1,
-    friction: 14,
-    precision: 0.00001,
-    clamp: true,
-}
-
-function useCameraSpring({ onRest, onFrame, onStart }) {
+function useCameraSpring() {
     const camera = useCameraContext()
-    const { x, y, scale } = camera
-    const [spring, set] = useSpring(() => ({
-        x,
-        y,
-        scale,
-        onRest,
-        onFrame,
-        onStart,
-        config: cameraConfig,
-    }))
-
-    set({
-        x,
-        y,
-        scale,
-    })
-    return [spring, set]
+    return camera.getSpring()
 }
 
-function CameraContainer({ className, children, ...props }) {
+function CameraContainer({ className, children }) {
     const elRef = useRef()
 
     useWheelControls(elRef)
     usePanControls(elRef)
 
-    const [spring] = useCameraSpring(props)
+    const spring = useCameraSpring()
 
     return (
         <div className={cx(className, styles.root)} ref={elRef}>
@@ -301,17 +315,10 @@ function CameraContainer({ className, children, ...props }) {
     )
 }
 
-export default function Camera({
-    onChange,
-    onRest,
-    onFrame,
-    onStart,
-    bounds,
-    ...props
-}) {
+export default function Camera({ onChange, bounds, ...props }) {
     return (
         <CameraProvider onChange={onChange} bounds={bounds}>
-            <CameraContainer {...props} onStart={onStart} onRest={onRest} onFrame={onFrame} />
+            <CameraContainer {...props} />
         </CameraProvider>
     )
 }

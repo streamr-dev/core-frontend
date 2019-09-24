@@ -100,11 +100,11 @@ function CanvasElements(props) {
     const [positions, setPositions] = useState({})
     const updatePositionsRef = useRef()
 
-    const [scale, setScale] = useState(1)
+    const getSpringRef = useRef()
 
-    const onChangeCamera = useCallback(({ scale }) => {
-        setScale(scale)
-    }, [setScale])
+    const onChangeCamera = useCallback(({ getSpring }) => {
+        getSpringRef.current = getSpring
+    }, [getSpringRef])
 
     const updatePositionsNow = useCallback(() => {
         if (updatePositionsRef.current) {
@@ -157,11 +157,6 @@ function CanvasElements(props) {
         updatePositions()
     }, [portsRef, updatePositions])
 
-    const scaleRef = useRef()
-    scaleRef.current = scale
-
-    const animatedScaleRef = useRef()
-
     const scaledPositions = useMemo(() => {
         // Always pass positions as if no scaling was performed.
         // Positions are read from DOM with current scaling applied
@@ -169,10 +164,8 @@ function CanvasElements(props) {
         // we need to unscale the values first.
         // note: does not update when scale changes, only when positions change
         // only need to reverse the scaling at time the positions are captured
-        let { current: scale } = scaleRef
-        if (animatedScaleRef.current) {
-            scale = animatedScaleRef.current.getValue()
-        }
+        const spring = getSpringRef.current && getSpringRef.current()
+        const scale = spring ? spring.scale.getValue() : 1
 
         return Object.values(positions).reduce((o, p) => Object.assign(o, {
             [p.id]: {
@@ -183,7 +176,7 @@ function CanvasElements(props) {
                 height: (p.height / scale),
             },
         }), {})
-    }, [positions, scaleRef])
+    }, [positions, getSpringRef])
 
     const [bounds, setBounds] = useState()
 
@@ -203,15 +196,10 @@ function CanvasElements(props) {
         })
     }, [canvas])
 
-    const onStart = useCallback((v) => {
-        if (v.key !== 'scale') { return }
-        animatedScaleRef.current = v.animated
-    }, [animatedScaleRef])
-
     if (!canvas) { return null }
 
     return (
-        <Camera bounds={bounds} className={styles.CanvasElements} onStart={onStart} onChange={onChangeCamera}>
+        <Camera bounds={bounds} className={styles.CanvasElements} onChange={onChangeCamera}>
             <DragDropProvider>
                 <div
                     className={cx(styles.Modules, cameraControl)}
