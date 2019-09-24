@@ -1,0 +1,33 @@
+.statusArray {
+  display: grid;
+  grid-row-gap: 0.5rem;
+}
+
+.statusRow {
+  display: grid;
+  grid-template-columns: 20px 1fr;
+  grid-column-gap: 1rem;
+  text-align: left;
+}
+
+.iconBox {
+  position: relative;
+}
+
+.icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.spinner {
+  position: absolute;
+  top: 6px;
+  left: 0;
+}
+
+.iconSize {
+  width: 20px;
+  height: 20px;
+}

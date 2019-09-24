@@ -18,6 +18,7 @@ import Dialog from '$shared/components/Dialog'
 import ReadyToPublishDialog from '$mp/components/Modal/ReadyToPublishDialog'
 import ReadyToUnpublishDialog from '$mp/components/Modal/ReadyToUnpublishDialog'
 import ConfirmPublishTransaction from '$mp/components/Modal/ConfirmPublishTransaction'
+import CompletePublishTransaction from '$mp/components/Modal/CompletePublishTransaction'
 import Web3ErrorDialog from '$shared/components/Web3ErrorDialog'
 import { createContractProduct, updateContractProduct } from '$mp/modules/createContractProduct/services'
 import { addTransaction } from '$mp/modules/transactions/actions'
@@ -398,14 +399,11 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
         )
     } else if (step === steps.COMPLETE) {
         return (
-            <Dialog
-                title="result"
-                onClose={onClose}
-            >
-                {Object.keys(status).map((key) => (
-                    <div key={key}>{key}: {status[key]}</div>
-                ))}
-            </Dialog>
+            <CompletePublishTransaction
+                isUnpublish={mode === modes.UNPUBLISH}
+                status={status}
+                onCancel={onClose}
+            />
         )
     }
 

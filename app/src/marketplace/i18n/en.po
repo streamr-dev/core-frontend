@@ -235,25 +235,46 @@ msgstr ""
 "You need to confirm the transaction <br /> in your wallet to publish this "
 "product."
 
+msgid "modal##completePublish##updateAdminFee##started##title"
+msgstr "Update admin fee"
+
 msgid "modal##completePublish##updateAdminFee##started##message"
 msgstr ""
 "You need to confirm the transaction in your wallet to update the community admin fee."
+
+msgid "modal##completePublish##updateContractProduct##started##title"
+msgstr "Update price information"
 
 msgid "modal##completePublish##updateContractProduct##started##message"
 msgstr ""
 "You need to confirm the transaction in your wallet to update the product's price."
 
+msgid "modal##completePublish##publishPaid##started##title"
+msgstr "Publish"
+
 msgid "modal##completePublish##publishPaid##started##message"
 msgstr ""
 "You need to confirm the transaction in your wallet to publish the product."
+
+msgid "modal##completePublish##createContractProduct##started##title"
+msgstr "Publish"
 
 msgid "modal##completePublish##createContractProduct##started##message"
 msgstr ""
 "You need to confirm the transaction in your wallet to publish the product."
 
+msgid "modal##completePublish##undeployContractProduct##started##title"
+msgstr "Unpublish"
+
 msgid "modal##completePublish##undeployContractProduct##started##message"
 msgstr ""
 "You need to confirm the transaction in your wallet to unpublish the product."
+
+msgid "modal##completePublish##publishFree##started##title"
+msgstr "Publish"
+
+msgid "modal##completePublish##unpublishFree##started##title"
+msgstr "Unpublish"
 
 msgid "modal##completePublish##started##title"
 msgstr "Publish Confirmation"
