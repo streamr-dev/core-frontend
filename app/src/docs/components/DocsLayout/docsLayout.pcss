@@ -45,12 +45,8 @@
     border-radius: 4px;
   }
 
-  :global(.react-syntax-highlighter-line-number) {
-    color: #ADADAD;
-  }
-
   hr {
-    margin: 3rem 0;
+    margin-top: 4rem;
   }
 
   section {
@@ -120,12 +116,13 @@
   section ul {
     list-style: none;
     margin-bottom: 2rem;
+    padding-left: 1.5rem;
 
     li::before {
+      position: absolute;
       content: '\2022 ';
       color: #A3A3A3;
-      margin-left: -2.5rem;
-      margin-right: 0.5rem;
+      margin-left: -1.5rem;
     }
   }
 
@@ -236,6 +233,10 @@
   .playerWrapper + .mdP {
     margin-top: 3.5rem;
   }
+}
+
+:global(.react-syntax-highlighter-line-number) {
+  color: #ADADAD;
 }
 
 .grid {
