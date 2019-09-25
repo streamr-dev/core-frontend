@@ -103,6 +103,8 @@ function useCameraSimpleApi(opts) {
 
     const elRef = useRef()
 
+    const { scale } = state
+
     // clamps scale
     const setState = useCallback((v) => {
         setActualState((state) => {
@@ -147,33 +149,31 @@ function useCameraSimpleApi(opts) {
         }))
     }, [setState])
 
-    // zoom in to next largest scale level
-    const zoomIn = useCallback(() => {
+    // set scale to value, centered on middle of camera el
+    const setScale = useCallback((value) => {
         setState((s) => {
             const rect = elRef.current.getBoundingClientRect()
-            const currentScale = toPrecision(s.scale, 2)
-            const nextLevel = scaleLevels.find((v) => v > currentScale) || s.scale
             return updateScaleState(s, {
                 x: rect.left + (rect.width / 2),
                 y: rect.top + (rect.height / 2),
-                scale: clamp(toPrecision(nextLevel, 2), minScale, maxScale),
+                scale: clamp(toPrecision(value, 2), minScale, maxScale),
             })
         })
-    }, [setState, scaleLevels, minScale, maxScale])
+    }, [setState, minScale, maxScale])
+
+    // zoom in to next largest scale level
+    const zoomIn = useCallback(() => {
+        const currentScale = toPrecision(scale, 2)
+        const nextLevel = scaleLevels.find((v) => v > currentScale) || scale
+        setScale(nextLevel)
+    }, [setScale, scale, scaleLevels])
 
     // zoom out to next largest scale level
     const zoomOut = useCallback(() => {
-        setState((s) => {
-            const rect = elRef.current.getBoundingClientRect()
-            const currentScale = toPrecision(s.scale, 2)
-            const nextLevel = scaleLevels.slice().reverse().find((v) => v < currentScale) || s.scale
-            return updateScaleState(s, {
-                x: rect.left + (rect.width / 2),
-                y: rect.top + (rect.height / 2),
-                scale: clamp(toPrecision(nextLevel, 2), minScale, maxScale),
-            })
-        })
-    }, [setState, scaleLevels, minScale, maxScale])
+        const currentScale = toPrecision(scale, 2)
+        const nextLevel = scaleLevels.slice().reverse().find((v) => v < currentScale) || scale
+        setScale(nextLevel)
+    }, [setScale, scale, scaleLevels])
 
     return useMemo(() => ({
         ...state,
@@ -184,7 +184,8 @@ function useCameraSimpleApi(opts) {
         setState,
         zoomIn,
         zoomOut,
-    }), [state, setState, updateScale, updatePosition, initUpdatePosition, zoomIn, zoomOut])
+        setScale,
+    }), [state, setState, updateScale, updatePosition, initUpdatePosition, zoomIn, zoomOut, setScale])
 }
 
 const cameraConfig = {
