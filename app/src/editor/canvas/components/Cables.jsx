@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unused-state */
-import React, { useEffect, useState, useContext } from 'react'
+import React, { useMemo, useEffect, useRef, useState, useContext, useCallback } from 'react'
 import cx from 'classnames'
 import { useSpring, animated, interpolate } from 'react-spring'
 import { moduleHasPort, isConnectedToModule } from '../state'
@@ -72,65 +72,54 @@ export function getCableKey([from, to] = []) {
 
 const DRAG_CABLE_ID = 'DRAG_CABLE_ID'
 
-class Cables extends React.PureComponent {
-    el = React.createRef()
+function Cables(props) {
+    const {
+        canvas,
+        selectedModuleHash,
+        diff,
+        isDragging,
+        positions: positionsProp,
+        data,
+    } = props
 
-    state = {}
-
-    shouldFade = ([a, b]) => {
-        const { canvas, selectedModuleHash } = this.props
+    const shouldFade = useCallback(([a, b]) => {
         // no fade if no selection
         if (selectedModuleHash == null) { return false }
         // no fade if dragging cable
         if (a.id === DRAG_CABLE_ID || b.id === DRAG_CABLE_ID) { return false }
         // fade if not connected to selection
         return !isConnectedToModule(canvas, selectedModuleHash, a.id, b.id)
-    }
+    }, [canvas, selectedModuleHash])
 
-    shouldHighlight = ([a, b]) => {
-        const { selectedModuleHash } = this.props
+    const shouldHighlight = useCallback(([a, b]) => {
         // no highlight if no selection
         if (selectedModuleHash == null) { return false }
         // no highlight if dragging cable
         if (a.id === DRAG_CABLE_ID || b.id === DRAG_CABLE_ID) { return false }
-        return !this.shouldFade([a, b])
-    }
+        return !shouldFade([a, b])
+    }, [shouldFade, selectedModuleHash])
 
-    getCables() {
-        const hasMoved = this.props.isDragging && !(this.props.diff.x === 0 && this.props.diff.y === 0)
-        if (this.props.isDragging && this.props.data.moduleHash != null && hasMoved) {
-            return this.getCablesDraggingModule()
-        }
-
-        if (this.props.isDragging && this.props.data.portId != null && hasMoved) {
-            return this.getCablesDraggingPort()
-        }
-
-        return this.getStaticCables()
-    }
-
-    getPositions() {
+    const positionsRef = useRef()
+    const positions = useMemo(() => {
         // cache positions while drag operation is in progress
-        if (this.props.isDragging) {
-            if (!this.positions) {
-                this.positions = this.props.positions
+        if (isDragging) {
+            if (!positionsRef.current) {
+                positionsRef.current = positionsProp
             }
-            return this.positions
+            return positionsRef.current
         }
-        if (this.positions) {
-            this.positions = undefined
+        if (positionsRef.current) {
+            positionsRef.current = undefined
         }
-        return this.props.positions
-    }
+        return positionsProp
+    }, [isDragging, positionsProp, positionsRef])
 
     /**
      * Get static cable positions according to connections & supplied port positions.
      */
 
-    getStaticCables() {
-        const { canvas } = this.props
-        const positions = this.getPositions()
-        return canvas.modules
+    const staticCables = useMemo(() => (
+        canvas.modules
             .reduce((c, m) => {
                 [].concat(m.params, m.inputs, m.outputs).forEach((port) => {
                     if (!port.connected) { return }
@@ -140,21 +129,20 @@ class Cables extends React.PureComponent {
             }, [])
             .map(([from, to]) => [positions[from], positions[to]])
             .filter(([from, to]) => from && to)
-    }
+    ), [positions, canvas])
 
     /**
      * Cable config when dragging a module
      */
 
-    getCablesDraggingModule() {
-        const { canvas, diff, data, isDragging } = this.props
+    const cablesDraggingModule = useMemo(() => {
         if (!isDragging) {
-            return this.getStaticCables()
+            return staticCables
         }
 
         const { moduleHash } = data
 
-        return this.getStaticCables().map(([from, to]) => {
+        return staticCables.map(([from, to]) => {
             // update the positions of ports in dragged module
             let fromNew = from
             let toNew = to
@@ -177,37 +165,9 @@ class Cables extends React.PureComponent {
             }
             return [fromNew, toNew, layer]
         })
-    }
+    }, [staticCables, data, diff, canvas, isDragging])
 
-    /**
-     * Cable config when dragging a port
-     */
-
-    getCablesDraggingPort() {
-        const { data, isDragging } = this.props
-        if (!isDragging) {
-            return this.getStaticCables()
-        }
-
-        const { portId, sourceId } = data
-
-        const cables = this.getStaticCables().filter(([from, to]) => {
-            // remove currently dragged cable
-            if (sourceId) {
-                return !(from.id === sourceId && to.id === portId)
-            }
-            return true
-        })
-
-        return [
-            ...cables,
-            this.getDragCable(), // append dragging cable
-        ].filter(Boolean)
-    }
-
-    getDragCable() {
-        const { data, diff, isDragging } = this.props
-        const positions = this.getPositions()
+    const dragCable = useMemo(() => {
         const { portId, sourceId } = data
         if (!isDragging || portId == null) {
             return null
@@ -226,51 +186,86 @@ class Cables extends React.PureComponent {
             },
             LAYER_1, // drag cable goes on layer 1
         ]
-    }
+    }, [data, diff, isDragging, positions])
 
-    render() {
-        const cables = this.getCables()
-        const layer0 = cables.filter(([, , layer]) => !layer)
-        const layer1 = cables.filter(([, , layer]) => layer === LAYER_1)
-        return (
-            <React.Fragment>
-                <svg
-                    className={cx(styles.Cables, styles.layer0)}
-                    preserveAspectRatio="xMidYMid meet"
-                    height="100%"
-                    width="100%"
-                >
-                    {layer0.filter(Boolean).map((cable) => (
-                        <Cable
-                            key={getCableKey(cable)}
-                            cable={cable}
-                            className={cx({
-                                [styles.fade]: this.shouldFade(cable),
-                                [styles.highlight]: this.shouldHighlight(cable),
-                            })}
-                        />
-                    ))}
-                </svg>
-                <svg
-                    className={cx(styles.Cables, styles.layer1)}
-                    preserveAspectRatio="xMidYMid meet"
-                    height="100%"
-                    width="100%"
-                >
-                    {layer1.filter(Boolean).map((cable) => (
-                        <Cable
-                            key={getCableKey(cable)}
-                            cable={cable}
-                            className={cx({
-                                [styles.fade]: this.shouldFade(cable),
-                                [styles.highlight]: this.shouldHighlight(cable),
-                            })}
-                        />
-                    ))}
-                </svg>
-            </React.Fragment>
-        )
-    }
+    /**
+     * Cable config when dragging a port
+     */
+
+    const cablesDraggingPort = useMemo(() => {
+        if (!isDragging) {
+            return staticCables
+        }
+
+        const { portId, sourceId } = data
+
+        const cables = staticCables.filter(([from, to]) => {
+            // remove currently dragged cable
+            if (sourceId) {
+                return !(from.id === sourceId && to.id === portId)
+            }
+            return true
+        })
+
+        return [
+            ...cables,
+            dragCable, // append dragging cable
+        ].filter(Boolean)
+    }, [staticCables, data, isDragging, dragCable])
+
+    const cables = useMemo(() => {
+        const hasMoved = isDragging && !(diff.x === 0 && diff.y === 0)
+        if (isDragging && data.moduleHash != null && hasMoved) {
+            return cablesDraggingModule
+        }
+
+        if (isDragging && data.portId != null && hasMoved) {
+            return cablesDraggingPort
+        }
+
+        return staticCables
+    }, [isDragging, diff, data, staticCables, cablesDraggingModule, cablesDraggingPort])
+
+    const layer0 = useMemo(() => cables.filter(([, , layer]) => !layer).filter(Boolean), [cables])
+    const layer1 = useMemo(() => cables.filter(([, , layer]) => layer === LAYER_1).filter(Boolean), [cables])
+    return (
+        <React.Fragment>
+            <svg
+                className={cx(styles.Cables, styles.layer0)}
+                preserveAspectRatio="xMidYMid meet"
+                height="100%"
+                width="100%"
+            >
+                {layer0.map((cable) => (
+                    <Cable
+                        key={getCableKey(cable)}
+                        cable={cable}
+                        className={cx({
+                            [styles.fade]: shouldFade(cable),
+                            [styles.highlight]: shouldHighlight(cable),
+                        })}
+                    />
+                ))}
+            </svg>
+            <svg
+                className={cx(styles.Cables, styles.layer1)}
+                preserveAspectRatio="xMidYMid meet"
+                height="100%"
+                width="100%"
+            >
+                {layer1.map((cable) => (
+                    <Cable
+                        key={getCableKey(cable)}
+                        cable={cable}
+                        className={cx({
+                            [styles.fade]: shouldFade(cable),
+                            [styles.highlight]: shouldHighlight(cable),
+                        })}
+                    />
+                ))}
+            </svg>
+        </React.Fragment>
+    )
 }
 
 export default function CablesContainer(props) {
