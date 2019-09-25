@@ -132,6 +132,11 @@ const sources = {
             </g>
         </svg>
     ),
+    minusSmall: (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 2">
+            <path fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="2" d="M1 1h8" />
+        </svg>
+    ),
     plus: (
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 8">
             <g fill="none" fillRule="evenodd">
@@ -139,6 +144,11 @@ const sources = {
                     <path d="M4 .8v6.4M7.2 4H.8" />
                 </g>
             </g>
+        </svg>
+    ),
+    plusSmall: (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10">
+            <path fill="none" fillRule="evenodd" stroke="currentColor" strokeLinecap="round" strokeWidth="2" d="M1 5h8M5 1v8" />
         </svg>
     ),
     user: (

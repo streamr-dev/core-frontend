@@ -176,7 +176,7 @@ export function useCameraContext() {
     return useContext(CameraContext)
 }
 
-function CameraProvider({ bounds, onChange, children, ...props }) {
+export function CameraProvider({ bounds, onChange, children, ...props }) {
     const camera = useCameraSpringApi(props)
     useEffect(() => {
         if (typeof onChange !== 'function') { return }
@@ -294,7 +294,7 @@ function useCameraSpring() {
     return camera.getSpring()
 }
 
-function CameraContainer({ className, children }) {
+export default function Camera({ className, children }) {
     const elRef = useRef()
 
     useWheelControls(elRef)
@@ -317,12 +317,3 @@ function CameraContainer({ className, children }) {
         </div>
     )
 }
-
-export default function Camera({ onChange, bounds, ...props }) {
-    return (
-        <CameraProvider onChange={onChange} bounds={bounds}>
-            <CameraContainer {...props} />
-        </CameraProvider>
-    )
-}
-

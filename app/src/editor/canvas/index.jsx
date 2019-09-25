@@ -26,6 +26,7 @@ import Sidebar from '$editor/shared/components/Sidebar'
 import { useCanvasSelection, SelectionProvider } from './components/CanvasController/useCanvasSelection'
 import ModuleSidebar from './components/ModuleSidebar'
 import KeyboardShortcutsSidebar from './components/KeyboardShortcutsSidebar'
+import { CameraProvider } from './components/Camera'
 
 import * as CanvasController from './components/CanvasController'
 import * as RunController from './components/CanvasController/Run'
@@ -531,7 +532,9 @@ const CanvasEditWrap = () => {
     return (
         <SubscriptionStatus.Provider key={key}>
             <RunController.Provider canvas={canvas}>
-                <CanvasEdit />
+                <CameraProvider>
+                    <CanvasEdit />
+                </CameraProvider>
             </RunController.Provider>
         </SubscriptionStatus.Provider>
     )

@@ -24,8 +24,49 @@ import confirmDialog from '$shared/utils/confirm'
 import ShareDialog from './ShareDialog'
 import CanvasSearch from './CanvasSearch'
 import * as RunController from './CanvasController/Run'
-
+import { useCameraContext } from './Camera'
 import styles from './Toolbar.pcss'
+
+function ZoomButtons() {
+    const { scale } = useCameraContext()
+    return (
+        <div className={styles.ZoomButtons}>
+            <button
+                className={cx(styles.ToolbarButton, styles.ZoomButton)}
+                type="button"
+            >
+                <SvgIcon name="minusSmall" className={styles.icon} />
+            </button>
+            <DropdownActions
+                title={
+                    <button className={cx(styles.ZoomMenuTrigger)} type="button">
+                        {Math.round(scale * 100)}%
+                    </button>
+                }
+                noCaret
+                className={styles.DropdownMenu}
+                menuProps={{
+                    className: styles.DropdownMenuMenu,
+                }}
+            >
+                <DropdownActions.Item>Full Size</DropdownActions.Item>
+                <DropdownActions.Item>Fit Screen</DropdownActions.Item>
+                <DropdownActions.Item>Zoom In</DropdownActions.Item>
+                <DropdownActions.Item>Zoom Out</DropdownActions.Item>
+                <DropdownActions.Item divider />
+                <DropdownActions.Item>25%</DropdownActions.Item>
+                <DropdownActions.Item>50%</DropdownActions.Item>
+                <DropdownActions.Item>100%</DropdownActions.Item>
+            </DropdownActions>
+            <button
+                className={cx(styles.ToolbarButton, styles.ZoomButton)}
+                type="button"
+            >
+                <SvgIcon name="plusSmall" className={styles.icon} />
+            </button>
+        </div>
+    )
+}
 
 export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends React.PureComponent {
     static contextType = RunController.Context
@@ -200,6 +241,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                         <SvgIcon name="plus" className={styles.icon} />
                                     </R.Button>
                                 </Tooltip>
+                                <ZoomButtons />
                             </div>
                             <div>
                                 <R.ButtonGroup
