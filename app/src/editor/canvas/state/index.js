@@ -953,14 +953,14 @@ export function setHistoricalRange(canvas, update = {}) {
     let { beginDate, endDate } = settings
     if (update.beginDate) {
         beginDate = update.beginDate // eslint-disable-line prefer-destructuring
-        if (endDate && Date.parse(update.beginDate) > Date.parse(endDate)) {
+        if (endDate && new Date(beginDate).getTime() > new Date(endDate).getTime()) {
             endDate = beginDate
         }
     }
 
     if (update.endDate) {
         endDate = update.endDate // eslint-disable-line prefer-destructuring
-        if (beginDate && Date.parse(beginDate) > Date.parse(update.endDate)) {
+        if (beginDate && new Date(beginDate).getTime() > new Date(endDate).getTime()) {
             beginDate = endDate
         }
     }
@@ -969,8 +969,8 @@ export function setHistoricalRange(canvas, update = {}) {
         ...canvas,
         settings: {
             ...canvas.settings,
-            beginDate: beginDate ? new Date(beginDate).toISOString() : canvas.settings.beginDate,
-            endDate: endDate ? new Date(endDate).toISOString() : canvas.settings.endDate,
+            beginDate: beginDate ? new Date(beginDate).getTime() : canvas.settings.beginDate,
+            endDate: endDate ? new Date(endDate).getTime() : canvas.settings.endDate,
         },
     })
 }
@@ -978,7 +978,7 @@ export function setHistoricalRange(canvas, update = {}) {
 export function isHistoricalRunValid(canvas = {}) {
     const { settings = {} } = canvas
     const { beginDate, endDate } = settings
-    return !!(beginDate && endDate && Date.parse(beginDate) <= Date.parse(endDate))
+    return !!(beginDate && endDate && new Date(beginDate).getTime() <= new Date(endDate).getTime())
 }
 
 /**
