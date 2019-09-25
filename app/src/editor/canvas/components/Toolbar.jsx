@@ -17,9 +17,11 @@ import WithCalendar from '$shared/components/WithCalendar'
 import dateFormatter from '$utils/dateFormatter'
 import EditableText from '$shared/components/EditableText'
 import UseState from '$shared/components/UseState'
-import { RunTabs } from '../state'
-import Toolbar from '$editor/shared/components/Toolbar'
 import confirmDialog from '$shared/utils/confirm'
+
+import Toolbar from '$editor/shared/components/Toolbar'
+import useCanvasCamera from '../hooks/useCanvasCamera'
+import { RunTabs } from '../state'
 
 import ShareDialog from './ShareDialog'
 import CanvasSearch from './CanvasSearch'
@@ -27,8 +29,9 @@ import * as RunController from './CanvasController/Run'
 import { useCameraContext } from './Camera'
 import styles from './Toolbar.pcss'
 
-function ZoomButtons() {
+function ZoomButtons({ canvas }) {
     const camera = useCameraContext()
+    const canvasCamera = useCanvasCamera({ canvas })
     return (
         <div className={styles.ZoomButtons}>
             <button
@@ -50,13 +53,13 @@ function ZoomButtons() {
                     className: styles.DropdownMenuMenu,
                 }}
             >
-                <DropdownActions.Item>Fit Screen</DropdownActions.Item>
-                <DropdownActions.Item onClick={() => camera.zoomIn()}>Zoom In</DropdownActions.Item>
-                <DropdownActions.Item onClick={() => camera.zoomOut()}>Zoom Out</DropdownActions.Item>
-                <DropdownActions.Item divider />
                 <DropdownActions.Item onClick={() => camera.setScale(0.25)}>25%</DropdownActions.Item>
                 <DropdownActions.Item onClick={() => camera.setScale(0.5)}>50%</DropdownActions.Item>
                 <DropdownActions.Item onClick={() => camera.setScale(1)}>100%</DropdownActions.Item>
+                <DropdownActions.Item divider />
+                <DropdownActions.Item onClick={() => camera.zoomIn()}>Zoom In</DropdownActions.Item>
+                <DropdownActions.Item onClick={() => camera.zoomOut()}>Zoom Out</DropdownActions.Item>
+                <DropdownActions.Item onClick={() => canvasCamera.fitCanvas()}>Fit Screen</DropdownActions.Item>
             </DropdownActions>
             <button
                 className={cx(styles.ToolbarButton, styles.ZoomButton)}
@@ -242,7 +245,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                         <SvgIcon name="plus" className={styles.icon} />
                                     </R.Button>
                                 </Tooltip>
-                                <ZoomButtons />
+                                <ZoomButtons canvas={canvas} />
                             </div>
                             <div>
                                 <R.ButtonGroup

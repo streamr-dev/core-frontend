@@ -36,18 +36,21 @@ function fitCamera({
     height,
     fitWidth,
     fitHeight,
+    maxScale = 1,
     padding = 20,
 } = {}) {
     const totalPadding = 2 * padding
     const maxWidth = fitWidth - totalPadding
     const maxHeight = fitHeight - totalPadding
-    const scale = Math.min(maxWidth / width, maxHeight / height)
-    // vertically & horizontally center content
-    const offsetY = (fitHeight - (height * scale)) / 2
-    const offsetX = (fitWidth - (width * scale)) / 2
+    const scale = Math.min(maxScale, Math.min(maxWidth / width, maxHeight / height))
+
     if (!scale) {
         return defaultFit
     }
+
+    // vertically & horizontally center content
+    const offsetY = (fitHeight - (height * scale)) / 2
+    const offsetX = (fitWidth - (width * scale)) / 2
 
     return {
         x: -(x * scale) + offsetX,
@@ -175,6 +178,13 @@ function useCameraSimpleApi(opts) {
         setScale(nextLevel)
     }, [setScale, scale, scaleLevels])
 
+    const fitBounds = useCallback((bounds) => {
+        setState((s) => ({
+            ...s,
+            ...fitCamera(bounds),
+        }))
+    }, [setState])
+
     return useMemo(() => ({
         ...state,
         elRef,
@@ -185,7 +195,8 @@ function useCameraSimpleApi(opts) {
         zoomIn,
         zoomOut,
         setScale,
-    }), [state, setState, updateScale, updatePosition, initUpdatePosition, zoomIn, zoomOut, setScale])
+        fitBounds,
+    }), [state, setState, updateScale, updatePosition, initUpdatePosition, zoomIn, zoomOut, setScale, fitBounds])
 }
 
 const cameraConfig = {
