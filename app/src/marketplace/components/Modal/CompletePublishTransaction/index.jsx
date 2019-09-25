@@ -22,9 +22,15 @@ export type Props = {
 }
 
 const CompletePublishTransaction = ({ isUnpublish, onCancel, status }: Props) => {
-    const somePending = useMemo(() => (
-        Object.values(status).some((value) => value !== transactionStates.FAILED && value !== transactionStates.CONFIRMED)
-    ), [status])
+    const { somePending, someFailed, allConfirmed } = useMemo(() => {
+        const statuses = Object.values(status)
+        const pending = statuses.some((value) => value !== transactionStates.FAILED && value !== transactionStates.CONFIRMED)
+        return {
+            somePending: pending,
+            someFailed: !pending && statuses.some((value) => value === transactionStates.FAILED),
+            allConfirmed: !pending && statuses.every((value) => value === transactionStates.CONFIRMED),
+        }
+    }, [status])
 
     return (
         <Dialog
@@ -69,6 +75,41 @@ const CompletePublishTransaction = ({ isUnpublish, onCancel, status }: Props) =>
                     </div>
                 ))}
             </div>
+            {!!somePending && (
+                <Translate
+                    value="modal.common.waitingForBlockchain"
+                    tag="p"
+                    dangerousHTML
+                />
+            )}
+            {!!someFailed && !isUnpublish && (
+                <Translate
+                    value="modal.completePublish.failed.message"
+                    tag="p"
+                    dangerousHTML
+                />
+            )}
+            {!!someFailed && isUnpublish && (
+                <Translate
+                    value="modal.completeUnpublish.failed.message"
+                    tag="p"
+                    dangerousHTML
+                />
+            )}
+            {!!allConfirmed && !isUnpublish && (
+                <Translate
+                    value="modal.completePublish.confirmed.title"
+                    tag="p"
+                    dangerousHTML
+                />
+            )}
+            {!!allConfirmed && isUnpublish && (
+                <Translate
+                    value="modal.completeUnpublish.confirmed.title"
+                    tag="p"
+                    dangerousHTML
+                />
+            )}
         </Dialog>
     )
 }

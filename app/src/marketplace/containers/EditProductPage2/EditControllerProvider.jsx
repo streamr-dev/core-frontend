@@ -152,8 +152,11 @@ function useEditController(product: Product) {
             await publishDialog.open({
                 product: productRef.current,
             })
+
+            // TODO: just redirect for now, need to check result for smarter handling
+            redirectToProduct()
         }
-    }, [validate, save, publishDialog])
+    }, [validate, save, publishDialog, redirectToProduct])
 
     const updateBeneficiary = useCallback(async (address) => {
         const { beneficiaryAddress } = productRef.current
