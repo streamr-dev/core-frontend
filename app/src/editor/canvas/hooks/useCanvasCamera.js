@@ -1,16 +1,18 @@
 import { useMemo, useCallback, useEffect, useState, useRef } from 'react'
-import { getCanvasBounds } from '$editor/shared/utils/bounds'
+import { getCanvasBounds, getModuleBounds } from '$editor/shared/utils/bounds'
 
 import { useCameraContext } from '../components/Camera'
 import useCanvas from '../components/CanvasController/useCanvas'
+import { useCanvasSelection } from '../components/CanvasController/useCanvasSelection'
+import { getModuleIfExists } from '../state'
 
 export default function useCanvasCamera() {
     const canvas = useCanvas()
     const camera = useCameraContext()
     const fitCanvas = useCallback(({ padding = 100 } = {}) => {
         if (!canvas) { return }
-        const { current: modulesEl } = camera.elRef
-        const { width: fitWidth, height: fitHeight } = modulesEl.getBoundingClientRect()
+        const { current: cameraEl } = camera.elRef
+        const { width: fitWidth, height: fitHeight } = cameraEl.getBoundingClientRect()
         const boundsWidth = fitWidth - (padding * 2)
         const boundsHeight = fitHeight - (padding * 2)
         const bounds = getCanvasBounds(canvas, {
@@ -26,12 +28,30 @@ export default function useCanvasCamera() {
         })
     }, [camera, canvas])
 
+    const panToModule = useCallback(({ hash } = {}) => {
+        if (!canvas) { return }
+        const m = getModuleIfExists(canvas, hash)
+        if (!m) { return }
+        const bounds = getModuleBounds(m)
+        const padding = 100
+        const { current: cameraEl } = camera.elRef
+        const { width: fitWidth, height: fitHeight } = cameraEl.getBoundingClientRect()
+        return camera.fitBounds({
+            ...bounds,
+            fitWidth,
+            fitHeight,
+            padding,
+        })
+    }, [camera, canvas])
+
     return useMemo(() => ({
         fitCanvas,
-    }), [fitCanvas])
+        panToModule,
+    }), [fitCanvas, panToModule])
 }
 
-function useFitCanvasOnLoad() {
+// fit camera to canvas on initial load
+function useFitCanvasOnLoadEffect() {
     const canvas = useCanvas()
     const canvasCamera = useCanvasCamera()
     const canvasCameraRef = useRef()
@@ -44,13 +64,26 @@ function useFitCanvasOnLoad() {
         canvasCameraRef.current.fitCanvas()
     }, [initCamera])
 
-    // initially fit canvas
     useEffect(() => {
         if (initCamera === canvasId) { return }
         setInitCamera(canvasId)
     }, [canvasId, initCamera, setInitCamera])
 }
 
+function usePanToSelectionEffect() {
+    const canvasSelection = useCanvasSelection()
+    const last = canvasSelection.last()
+    const canvasCamera = useCanvasCamera()
+    const canvasCameraRef = useRef()
+    canvasCameraRef.current = canvasCamera
+
+    useEffect(() => {
+        if (!last) { return }
+        canvasCameraRef.current.panToModule({ hash: last })
+    }, [last, canvasCameraRef])
+}
+
 export function useCanvasCameraEffects() {
-    useFitCanvasOnLoad()
+    useFitCanvasOnLoadEffect()
+    usePanToSelectionEffect()
 }
