@@ -56,9 +56,14 @@ function fitCamera({
     }
 }
 
-function updateScaleState(s, { x, y, scaleFactor }) {
+function toPrecision(v, precision = 0) {
+    if (!precision) { return v }
+    const p = 10 ** precision
+    return Math.round((v * p)) / p
+}
+
+function updateScaleState(s, { x, y, scale: newScale }) {
     const { scale: currentScale } = s
-    const newScale = clamp(currentScale * scaleFactor, 0.1, 3)
 
     // adjust for offset created by scale change
     const ratio = (1 - (newScale / currentScale))
@@ -72,13 +77,31 @@ function updateScaleState(s, { x, y, scaleFactor }) {
         y: y2,
     }
 }
+const defaultCameraOptions = {
+    scaleFactor: 0.1,
+    scaleLevels: [
+        0.1,
+        0.25,
+        0.5,
+        1.0,
+        1.25,
+        1.50,
+        2.0,
+        3.0,
+    ],
+}
 
-function useCameraSimpleApi(scaleFactor = 0.1) {
+function useCameraSimpleApi(opts) {
+    const { scaleFactor, scaleLevels } = Object.assign({}, defaultCameraOptions, opts)
+    const minScale = scaleLevels[0]
+    const maxScale = scaleLevels[scaleLevels.length - 1]
     const [state, setActualState] = useState({
         scale: 1,
         x: 0,
         y: 0,
     })
+
+    const elRef = useRef()
 
     // clamps scale
     const setState = useCallback((v) => {
@@ -86,10 +109,10 @@ function useCameraSimpleApi(scaleFactor = 0.1) {
             const nextState = (typeof v === 'function') ? v(state) : v
             return {
                 ...nextState,
-                scale: clamp(nextState.scale, 0.1, 3),
+                scale: clamp(nextState.scale, minScale, maxScale),
             }
         })
-    }, [setActualState])
+    }, [setActualState, minScale, maxScale])
 
     // updates scale of camera, centers scaling on x,y
     const updateScale = useCallback(({ x, y, delta }) => {
@@ -99,10 +122,10 @@ function useCameraSimpleApi(scaleFactor = 0.1) {
             return updateScaleState(s, {
                 x,
                 y,
-                scaleFactor: actualScaleFactor,
+                scale: clamp(s.scale * actualScaleFactor, minScale, maxScale),
             })
         })
-    }, [setState, scaleFactor])
+    }, [setState, scaleFactor, minScale, maxScale])
 
     // init needed to reset last values before starting pan
     const initUpdatePosition = useCallback(({ x, y }) => {
@@ -124,13 +147,44 @@ function useCameraSimpleApi(scaleFactor = 0.1) {
         }))
     }, [setState])
 
+    // zoom in to next largest scale level
+    const zoomIn = useCallback(() => {
+        setState((s) => {
+            const rect = elRef.current.getBoundingClientRect()
+            const currentScale = toPrecision(s.scale, 2)
+            const nextLevel = scaleLevels.find((v) => v > currentScale) || s.scale
+            return updateScaleState(s, {
+                x: rect.left + (rect.width / 2),
+                y: rect.top + (rect.height / 2),
+                scale: clamp(toPrecision(nextLevel, 2), minScale, maxScale),
+            })
+        })
+    }, [setState, scaleLevels, minScale, maxScale])
+
+    // zoom out to next largest scale level
+    const zoomOut = useCallback(() => {
+        setState((s) => {
+            const rect = elRef.current.getBoundingClientRect()
+            const currentScale = toPrecision(s.scale, 2)
+            const nextLevel = scaleLevels.slice().reverse().find((v) => v < currentScale) || s.scale
+            return updateScaleState(s, {
+                x: rect.left + (rect.width / 2),
+                y: rect.top + (rect.height / 2),
+                scale: clamp(toPrecision(nextLevel, 2), minScale, maxScale),
+            })
+        })
+    }, [setState, scaleLevels, minScale, maxScale])
+
     return useMemo(() => ({
         ...state,
+        elRef,
         updateScale,
         initUpdatePosition,
         updatePosition,
         setState,
-    }), [state, setState, updateScale, updatePosition, initUpdatePosition])
+        zoomIn,
+        zoomOut,
+    }), [state, setState, updateScale, updatePosition, initUpdatePosition, zoomIn, zoomOut])
 }
 
 const cameraConfig = {
@@ -296,6 +350,10 @@ function useCameraSpring() {
 
 export default function Camera({ className, children }) {
     const elRef = useRef()
+    const camera = useCameraContext()
+    useEffect(() => {
+        camera.elRef.current = elRef.current
+    })
 
     useWheelControls(elRef)
     usePanControls(elRef)

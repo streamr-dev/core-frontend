@@ -442,7 +442,8 @@ body .RealtimeRunButtonMenu {
   border-radius: inherit;
   margin: auto 0.5um;
   cursor: pointer;
-  min-width: 40px;
+  min-width: 48px; /* prevent jump when going from 2 to 3 digits e.g. 99% to 100% */
+  text-align: center;
 
   &:--enter {
     outline: none;

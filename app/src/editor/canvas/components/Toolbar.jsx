@@ -28,19 +28,20 @@ import { useCameraContext } from './Camera'
 import styles from './Toolbar.pcss'
 
 function ZoomButtons() {
-    const { scale } = useCameraContext()
+    const camera = useCameraContext()
     return (
         <div className={styles.ZoomButtons}>
             <button
                 className={cx(styles.ToolbarButton, styles.ZoomButton)}
                 type="button"
+                onClick={() => camera.zoomOut()}
             >
                 <SvgIcon name="minusSmall" className={styles.icon} />
             </button>
             <DropdownActions
                 title={
                     <button className={cx(styles.ZoomMenuTrigger)} type="button">
-                        {Math.round(scale * 100)}%
+                        {Math.round(camera.scale * 100)}%
                     </button>
                 }
                 noCaret
@@ -51,8 +52,8 @@ function ZoomButtons() {
             >
                 <DropdownActions.Item>Full Size</DropdownActions.Item>
                 <DropdownActions.Item>Fit Screen</DropdownActions.Item>
-                <DropdownActions.Item>Zoom In</DropdownActions.Item>
-                <DropdownActions.Item>Zoom Out</DropdownActions.Item>
+                <DropdownActions.Item onClick={() => camera.zoomIn()}>Zoom In</DropdownActions.Item>
+                <DropdownActions.Item onClick={() => camera.zoomOut()}>Zoom Out</DropdownActions.Item>
                 <DropdownActions.Item divider />
                 <DropdownActions.Item>25%</DropdownActions.Item>
                 <DropdownActions.Item>50%</DropdownActions.Item>
@@ -61,6 +62,7 @@ function ZoomButtons() {
             <button
                 className={cx(styles.ToolbarButton, styles.ZoomButton)}
                 type="button"
+                onClick={() => camera.zoomIn()}
             >
                 <SvgIcon name="plusSmall" className={styles.icon} />
             </button>
