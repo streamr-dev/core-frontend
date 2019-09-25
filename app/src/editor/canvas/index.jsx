@@ -27,6 +27,7 @@ import { useCanvasSelection, SelectionProvider } from './components/CanvasContro
 import ModuleSidebar from './components/ModuleSidebar'
 import KeyboardShortcutsSidebar from './components/KeyboardShortcutsSidebar'
 import { CameraProvider } from './components/Camera'
+import { useCanvasCameraEffects } from './hooks/useCanvasCamera'
 
 import * as CanvasController from './components/CanvasController'
 import * as RunController from './components/CanvasController/Run'
@@ -495,6 +496,7 @@ const CanvasEdit = withRouter((props) => {
     const isEmbedMode = useEmbedMode()
     useCanvasNotifications(canvas)
     useAutosaveEffect()
+    useCanvasCameraEffects()
     const selection = useCanvasSelection()
 
     return (
