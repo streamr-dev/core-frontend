@@ -975,6 +975,21 @@ export function setHistoricalRange(canvas, update = {}) {
     })
 }
 
+/**
+ * Convert historical range date strings to numeric timestamps
+ */
+
+function convertHistoricalRange(canvas) {
+    return {
+        ...canvas,
+        settings: {
+            ...canvas.settings,
+            beginDate: canvas.settings.beginDate ? new Date(canvas.settings.beginDate).getTime() : canvas.settings.beginDate,
+            endDate: canvas.settings.endDate ? new Date(canvas.settings.endDate).getTime() : canvas.settings.endDate,
+        },
+    }
+}
+
 export function isHistoricalRunValid(canvas = {}) {
     const { settings = {} } = canvas
     const { beginDate, endDate } = settings
@@ -1330,7 +1345,7 @@ export function updateCanvas(canvas, path, fn) {
         // so let's skip update call altogether
         canvas = update(path, fn, canvas)
     }
-    return limitLayout(updateVariadic(updatePortConnections(workaroundInitialValueWeirdness(canvas))))
+    return convertHistoricalRange(limitLayout(updateVariadic(updatePortConnections(workaroundInitialValueWeirdness(canvas)))))
 }
 
 export function moduleCategoriesIndex(modules = [], path = [], index = []) {
