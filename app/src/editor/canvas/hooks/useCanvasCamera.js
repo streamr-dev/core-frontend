@@ -19,15 +19,16 @@ export default function useCanvasCamera({ padding: defaultPadding = 100 } = {}) 
         })
     }, [camera, canvas, defaultPadding])
 
-    // centers camera on module
-    const panToModule = useCallback(({ hash } = {}) => {
+    // pans camera so module is visible
+    const panToModule = useCallback(({ hash, padding = defaultPadding } = {}) => {
         if (!canvas) { return }
         const m = getModuleIfExists(canvas, hash)
         if (!m) { return }
-        return camera.centerBounds({
+        return camera.panIntoViewIfNeeded({
             bounds: getModuleBounds(m),
+            padding,
         })
-    }, [camera, canvas])
+    }, [camera, canvas, defaultPadding])
 
     // true if module is in camera view - padding
     const isModuleInView = useCallback(({ hash, padding = defaultPadding } = {}) => {
@@ -42,12 +43,12 @@ export default function useCanvasCamera({ padding: defaultPadding = 100 } = {}) 
 
     // centers camera on module if not in view
     const panToModuleIfNeeded = useCallback(({ hash } = {}) => {
-        if (isModuleInView({
+        const padding = defaultPadding / 2 // use half padding for scrolling into view
+        return panToModule({
             hash,
-            padding: defaultPadding / 2, // use half padding for scrolling into view
-        })) { return }
-        return panToModule({ hash })
-    }, [isModuleInView, panToModule, defaultPadding])
+            padding,
+        })
+    }, [panToModule, defaultPadding])
 
     return useMemo(() => ({
         fitCanvas,

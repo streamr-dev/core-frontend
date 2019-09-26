@@ -209,6 +209,7 @@ function useCameraSimpleApi(opts) {
         })
     }, [fitBounds, elRef])
 
+    // move bounds into center
     const centerBounds = useCallback(({ bounds }) => {
         const { current: cameraEl } = elRef
         const { width, height } = cameraEl.getBoundingClientRect()
@@ -237,6 +238,34 @@ function useCameraSimpleApi(opts) {
         )
     }, [scale, x, y])
 
+    // minimally move bounds into view, if not already in view
+    const panIntoViewIfNeeded = useCallback(({ bounds, padding }) => {
+        const inView = areBoundsInView({
+            bounds,
+            padding,
+        })
+        if (inView) { return }
+
+        const { current: cameraEl } = elRef
+        const { width, height } = cameraEl.getBoundingClientRect()
+        const [overLeft, overTop, overRight, overBottom] = [
+            padding - ((bounds.x * scale) + x),
+            padding - ((bounds.y * scale) + y),
+            (((bounds.x + bounds.width) * scale) + x) - (width - padding),
+            (((bounds.y + bounds.height) * scale) + y) - (height - padding),
+        ].map((v) => Math.max(0, v))
+
+        // prioritise top & left offsets over right & bottom
+        const offsetX = overLeft > 0 ? overLeft : -overRight
+        const offsetY = overTop > 0 ? overTop : -overBottom
+
+        return setState((s) => ({
+            ...s,
+            x: s.x + offsetX,
+            y: s.y + offsetY,
+        }))
+    }, [setState, scale, x, y, areBoundsInView, elRef])
+
     // convert bounds in px coordinates to camera coordinates
     const viewToCameraBounds = useCallback((bounds) => {
         const canvasX = (bounds.x - x) / scale
@@ -264,6 +293,7 @@ function useCameraSimpleApi(opts) {
         centerBounds,
         areBoundsInView,
         viewToCameraBounds,
+        panIntoViewIfNeeded,
     }), [
         state,
         setState,
@@ -278,6 +308,7 @@ function useCameraSimpleApi(opts) {
         centerBounds,
         areBoundsInView,
         viewToCameraBounds,
+        panIntoViewIfNeeded,
     ])
 }
 
