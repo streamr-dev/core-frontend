@@ -1,5 +1,5 @@
 import React, { useRef, useState, useCallback, useEffect, useMemo, useContext } from 'react'
-import { useSpring, animated, interpolate } from 'react-spring'
+import { useSpring, animated, to } from 'react-spring'
 import cx from 'classnames'
 import styles from './Camera.pcss'
 
@@ -437,7 +437,7 @@ export default function Camera({ className, children }) {
             <animated.div
                 className={styles.scaleLayer}
                 style={{
-                    transform: interpolate([spring.x, spring.y, spring.scale], (x, y, scale) => (
+                    transform: to([spring.x, spring.y, spring.scale], (x, y, scale) => (
                         `translate(${x}px, ${y}px) scale(${scale})`
                     )),
                 }}
