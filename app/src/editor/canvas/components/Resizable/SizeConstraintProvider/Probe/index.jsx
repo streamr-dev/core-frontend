@@ -27,7 +27,9 @@ const Probe = ({ group, uid: uidProp, width, height }: Props) => {
             return
         }
 
-        const { width: w, height: h } = current.getBoundingClientRect()
+        // use client{Width,Height} which ignore css transformation
+        // which we want so it reports original px values rather than camera-scaled px values
+        const { clientWidth: w, clientHeight: h } = current
 
         setDimensions({
             ...(width != null ? {
