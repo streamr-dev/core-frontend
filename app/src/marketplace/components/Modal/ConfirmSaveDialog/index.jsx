@@ -6,8 +6,8 @@ import { Button } from 'reactstrap'
 
 import Modal from '$shared/components/Modal'
 import Dialog from '$shared/components/Dialog'
-import BrowserNotSupportedPng from '$shared/assets/images/browser_not_supported.png'
-import BrowserNotSupportedPng2x from '$shared/assets/images/browser_not_supported@2x.png'
+import DiscardChangesPng from '$mp/assets/discard-changes.png'
+import DiscardChangesPng2x from '$mp/assets/discard-changes@2x.png'
 import Buttons from '$shared/components/Buttons'
 
 import styles from './confirmSave.pcss'
@@ -53,11 +53,15 @@ const ConfirmSaveDialog = ({ onSave, onClose, onContinue }: Props) => (
         >
             <img
                 className={styles.icon}
-                src={BrowserNotSupportedPng}
-                srcSet={`${BrowserNotSupportedPng2x} 2x`}
+                src={DiscardChangesPng}
+                srcSet={`${DiscardChangesPng2x} 2x`}
                 alt={I18n.t('modal.confirmSave.title')}
             />
-            <p><Translate value="modal.confirmSave.message" dangerousHTML /></p>
+            <Translate
+                value="modal.confirmSave.message"
+                tag="p"
+                dangerousHTML
+            />
         </Dialog>
     </Modal>
 )
