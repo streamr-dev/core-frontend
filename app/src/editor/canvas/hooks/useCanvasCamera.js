@@ -155,7 +155,7 @@ function usePanToSelectionEffect() {
 function usePanEdgesOnDragEffect() {
     const dragDrop = useContext(DragDropContext)
     const camera = useCameraContext()
-    const { setCameraConfig, resetCameraConfig } = camera
+    const { setCameraConfig, resetCameraConfig, stopSpring } = camera
     const { isDragging, data, getDiff } = dragDrop
     const canvasCamera = useCanvasCamera()
     const { moduleHash } = data || {}
@@ -180,13 +180,13 @@ function usePanEdgesOnDragEffect() {
             config: {
                 ...s.config,
                 friction: 60,
-                mass: 1,
             },
         }))
         return () => {
             resetCameraConfig()
+            stopSpring()
         }
-    }, [setCameraConfig, resetCameraConfig, isDragging])
+    }, [setCameraConfig, stopSpring, resetCameraConfig, isDragging])
 
     useEffect(() => {
         if (!isDragging) { return }

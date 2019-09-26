@@ -331,7 +331,8 @@ function useCameraSpringApi() {
         scale,
         ...cameraConfig,
     }), [x, y, scale, cameraConfig])
-    const [spring, set] = useSpring(onSpring)
+
+    const [spring, set, stop] = useSpring(onSpring)
 
     set({
         x,
@@ -342,6 +343,9 @@ function useCameraSpringApi() {
 
     const springRef = useRef()
     springRef.current = spring
+
+    const stopRef = useRef()
+    stopRef.current = stop
 
     const getSpring = useCallback(() => (
         springRef.current
@@ -355,14 +359,19 @@ function useCameraSpringApi() {
         setCameraConfig(defaultCameraConfig)
     ), [setCameraConfig])
 
+    const stopSpring = useCallback(() => (
+        stopRef.current()
+    ), [stopRef])
+
     return useMemo(() => ({
         resetCameraConfig,
         defaultCameraConfig,
         setCameraConfig,
         getCurrentScale,
         getSpring,
+        stopSpring,
         ...camera,
-    }), [getSpring, camera, setCameraConfig, getCurrentScale, resetCameraConfig])
+    }), [getSpring, camera, setCameraConfig, getCurrentScale, resetCameraConfig, stopSpring])
 }
 
 export const CameraContext = React.createContext({})
