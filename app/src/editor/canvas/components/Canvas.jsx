@@ -12,88 +12,91 @@ import Cables from './Cables'
 import styles from './Canvas.pcss'
 import Camera, { useCameraContext, cameraControl } from './Camera'
 
-export default class Canvas extends React.PureComponent {
-    setPortUserValue = (portId, value, done) => {
-        this.props.setCanvas({ type: 'Set Port Value' }, (canvas) => (
+export default function Canvas(props) {
+    const propsRef = useRef()
+    propsRef.current = props
+
+    const setPortUserValue = useCallback((portId, value, done) => {
+        const { current: props } = propsRef
+        props.setCanvas({ type: 'Set Port Value' }, (canvas) => (
             CanvasState.setPortUserValue(canvas, portId, value)
         ), done)
-    }
+    }, [propsRef])
 
-    setPortOptions = (portId, options) => {
-        this.props.setCanvas({ type: 'Set Port Options' }, (canvas) => (
+    const setPortOptions = useCallback((portId, options) => {
+        const { current: props } = propsRef
+        props.setCanvas({ type: 'Set Port Options' }, (canvas) => (
             CanvasState.setPortOptions(canvas, portId, options)
         ))
-    }
+    }, [propsRef])
 
-    updateModuleSize = (moduleHash, diff) => {
-        this.props.setCanvas({ type: 'Resize Module' }, (canvas) => (
+    const updateModuleSize = useCallback((moduleHash, diff) => {
+        const { current: props } = propsRef
+        props.setCanvas({ type: 'Resize Module' }, (canvas) => (
             CanvasState.updateModuleSize(canvas, moduleHash, diff)
         ))
-    }
+    }, [propsRef])
 
     /**
      * Module & Port Drag/Drop APIs
      * note: don't add state to this as the api object doesn't change
      */
 
-    api = {
+    const api = useMemo(() => ({
         selectModule: (...args) => (
-            this.props.selectModule(...args)
+            propsRef.current.selectModule(...args)
         ),
         renameModule: (...args) => (
-            this.props.renameModule(...args)
+            propsRef.current.renameModule(...args)
         ),
         moduleSidebarOpen: (...args) => (
-            this.props.moduleSidebarOpen(...args)
+            propsRef.current.moduleSidebarOpen(...args)
         ),
         updateModule: (...args) => (
-            this.props.updateModule(...args)
+            propsRef.current.updateModule(...args)
         ),
         loadNewDefinition: (...args) => (
-            this.props.loadNewDefinition(...args)
+            propsRef.current.loadNewDefinition(...args)
         ),
         pushNewDefinition: (...args) => (
-            this.props.pushNewDefinition(...args)
+            propsRef.current.pushNewDefinition(...args)
         ),
-        updateModuleSize: this.updateModuleSize,
+        updateModuleSize,
         setCanvas: (...args) => (
-            this.props.setCanvas(...args)
+            propsRef.current.setCanvas(...args)
         ),
         port: {
-            onChange: this.setPortUserValue,
-            setPortOptions: this.setPortOptions,
+            onChange: setPortUserValue,
+            setPortOptions,
         },
-    }
+    }), [propsRef, setPortUserValue, setPortOptions, updateModuleSize])
 
-    render() {
-        const {
-            className,
-            canvas,
-            selectedModuleHash,
-            moduleSidebarIsOpen,
-            children,
-        } = this.props
+    const {
+        className,
+        canvas,
+        selectedModuleHash,
+        moduleSidebarIsOpen,
+        children,
+    } = props
 
-        return (
-            <div className={cx(styles.Canvas, className)}>
-                <DragDropProvider>
-                    <Camera>
-                        <CanvasWindowProvider className={styles.CanvasWindow}>
-                            <CanvasElements
-                                key={canvas.id}
-                                canvas={canvas}
-                                api={this.api}
-                                selectedModuleHash={selectedModuleHash}
-                                moduleSidebarIsOpen={moduleSidebarIsOpen}
-                                {...this.api.module}
-                            />
-                        </CanvasWindowProvider>
-                    </Camera>
-                </DragDropProvider>
-                {children}
-            </div>
-        )
-    }
+    return (
+        <div className={cx(styles.Canvas, className)}>
+            <DragDropProvider>
+                <Camera>
+                    <CanvasWindowProvider className={styles.CanvasWindow}>
+                        <CanvasElements
+                            key={canvas.id}
+                            canvas={canvas}
+                            api={api}
+                            selectedModuleHash={selectedModuleHash}
+                            moduleSidebarIsOpen={moduleSidebarIsOpen}
+                        />
+                    </CanvasWindowProvider>
+                </Camera>
+            </DragDropProvider>
+            {children}
+        </div>
+    )
 }
 
 function CanvasElements(props) {
