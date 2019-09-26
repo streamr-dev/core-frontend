@@ -13,6 +13,7 @@ import { RunStates } from '../state'
 import Ports from './Ports'
 import ModuleDragger from './ModuleDragger'
 import * as RunController from './CanvasController/Run'
+import { useCameraContext } from './Camera'
 
 import Probe from './Resizable/SizeConstraintProvider/Probe'
 import ModuleStyles from '$editor/shared/components/Module.pcss'
@@ -136,6 +137,7 @@ class CanvasModule extends React.PureComponent {
             isSelected,
             moduleSidebarIsOpen,
             onPort,
+            scale,
             ...props
         } = this.props
 
@@ -158,6 +160,7 @@ class CanvasModule extends React.PureComponent {
                     [ModuleStyles.isSelected]: isSelected,
                     [ModuleStyles.disabled]: !isAdjustable, // disable edits while loading
                 })}
+                scale={scale}
                 width={parseInt(layout.width, 10)}
                 height={parseInt(layout.height, 10)}
                 onResize={this.onResize}
@@ -287,8 +290,11 @@ function ModuleError(props) {
 
 const CanvasModuleWithErrorBoundary = React.memo(withErrorBoundary(ModuleError)(CanvasModule))
 
-export default React.memo(withErrorBoundary(ModuleError)((props) => (
-    <ModuleDragger module={props.module} api={props.api}>
-        <CanvasModuleWithErrorBoundary {...props} />
-    </ModuleDragger>
-)))
+export default React.memo(withErrorBoundary(ModuleError)((props) => {
+    const { scale } = useCameraContext()
+    return (
+        <ModuleDragger module={props.module} api={props.api}>
+            <CanvasModuleWithErrorBoundary scale={scale} {...props} />
+        </ModuleDragger>
+    )
+}))
