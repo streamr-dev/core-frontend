@@ -116,7 +116,7 @@ function useCameraSimpleApi(opts) {
 
     const elRef = useRef()
 
-    const { scale } = state
+    const { scale, x, y } = state
 
     // clamps scale
     const setState = useCallback((v) => {
@@ -226,6 +226,17 @@ function useCameraSimpleApi(opts) {
         }))
     }, [setState, elRef])
 
+    const areBoundsInView = useCallback(({ bounds, padding = 0 }) => {
+        const { current: cameraEl } = elRef
+        const { width, height } = cameraEl.getBoundingClientRect()
+        return (
+            ((bounds.x * scale) + x) >= padding
+            && ((bounds.y * scale) + y) >= padding
+            && (((bounds.x + bounds.width) * scale) + x) < (width - padding)
+            && (((bounds.y + bounds.height) * scale) + y) < (height - padding)
+        )
+    }, [scale, x, y])
+
     return useMemo(() => ({
         ...state,
         elRef,
@@ -239,6 +250,7 @@ function useCameraSimpleApi(opts) {
         fitBounds,
         fitView,
         centerBounds,
+        areBoundsInView,
     }), [
         state,
         setState,
@@ -251,6 +263,7 @@ function useCameraSimpleApi(opts) {
         fitBounds,
         fitView,
         centerBounds,
+        areBoundsInView,
     ])
 }
 
