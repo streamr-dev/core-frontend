@@ -351,12 +351,18 @@ function useCameraSpringApi() {
         springRef.current.scale.getValue()
     ), [springRef])
 
+    const resetCameraConfig = useCallback(() => (
+        setCameraConfig(defaultCameraConfig)
+    ), [setCameraConfig])
+
     return useMemo(() => ({
+        resetCameraConfig,
+        defaultCameraConfig,
         setCameraConfig,
         getCurrentScale,
         getSpring,
         ...camera,
-    }), [getSpring, camera, setCameraConfig, getCurrentScale])
+    }), [getSpring, camera, setCameraConfig, getCurrentScale, resetCameraConfig])
 }
 
 export const CameraContext = React.createContext({})

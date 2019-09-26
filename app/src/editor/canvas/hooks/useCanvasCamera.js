@@ -1,7 +1,9 @@
-import { useMemo, useCallback, useEffect, useState, useRef } from 'react'
+import { useMemo, useCallback, useEffect, useState, useRef, useContext } from 'react'
 import { getCanvasBounds, getModuleBounds } from '$editor/shared/utils/bounds'
+import { useThrottled } from '$shared/hooks/wrapCallback'
 
 import { useCameraContext } from '../components/Camera'
+import { DragDropContext } from '../components/DragDropContext'
 import useCanvas from '../components/CanvasController/useCanvas'
 import { useCanvasSelection } from '../components/CanvasController/useCanvasSelection'
 import { getModuleIfExists } from '../state'
@@ -20,12 +22,21 @@ export default function useCanvasCamera({ padding: defaultPadding = 100 } = {}) 
     }, [camera, canvas, defaultPadding])
 
     // pans camera so module is visible
-    const panToModule = useCallback(({ hash, padding = defaultPadding } = {}) => {
+    const panToModule = useCallback(({ hash, padding = defaultPadding, offset } = {}) => {
         if (!canvas) { return }
         const m = getModuleIfExists(canvas, hash)
         if (!m) { return }
+        let bounds = getModuleBounds(m)
+        if (offset) {
+            bounds = {
+                ...bounds,
+                x: bounds.x + offset.x,
+                y: bounds.y + offset.y,
+            }
+        }
+
         return camera.panIntoViewIfNeeded({
-            bounds: getModuleBounds(m),
+            bounds,
             padding,
         })
     }, [camera, canvas, defaultPadding])
@@ -41,12 +52,12 @@ export default function useCanvasCamera({ padding: defaultPadding = 100 } = {}) 
         })
     }, [camera, canvas, defaultPadding])
 
-    // centers camera on module if not in view
-    const panToModuleIfNeeded = useCallback(({ hash } = {}) => {
-        const padding = defaultPadding / 2 // use half padding for scrolling into view
-        return panToModule({
+    // by default uses half default padding for scrolling into view
+    const panToModuleIfNeeded = useCallback(({ hash, offset, padding = defaultPadding / 2 } = {}) => {
+        panToModule({
             hash,
             padding,
+            offset,
         })
     }, [panToModule, defaultPadding])
 
@@ -90,7 +101,7 @@ function useFitCanvasOnLoadEffect() {
  * True when mouse button down
  */
 
-function useIsMouseDown(buttons = 1) {
+function useIsMouseDown({ buttons = 1, ref }) {
     const [isMouseDown, setIsMouseDown] = useState(false)
     const onMouseDown = useCallback(() => {
         setIsMouseDown(true)
@@ -103,9 +114,10 @@ function useIsMouseDown(buttons = 1) {
     }, [setIsMouseDown, buttons])
 
     useEffect(() => {
-        window.addEventListener('mousedown', onMouseDown, true)
+        const el = ref.current
+        el.addEventListener('mousedown', onMouseDown, true)
         return () => {
-            window.removeEventListener('mousedown', onMouseDown, true)
+            el.removeEventListener('mousedown', onMouseDown, true)
         }
     })
 
@@ -131,16 +143,65 @@ function usePanToSelectionEffect() {
     const canvasCamera = useCanvasCamera()
     const canvasCameraRef = useRef()
     canvasCameraRef.current = canvasCamera
-    const isMouseDown = useIsMouseDown()
+    const isMouseDown = useIsMouseDown({ ref: useRef(window) })
 
     // pan to selected on mouse up
     useEffect(() => {
-        if (!last || isMouseDown) { return }
+        if (!last) { return }
         canvasCameraRef.current.panToModuleIfNeeded({ hash: last })
     }, [isMouseDown, last, canvasCameraRef])
+}
+
+function usePanEdgesOnDragEffect() {
+    const dragDrop = useContext(DragDropContext)
+    const camera = useCameraContext()
+    const { setCameraConfig, resetCameraConfig } = camera
+    const { isDragging, data, getDiff } = dragDrop
+    const canvasCamera = useCanvasCamera()
+    const { moduleHash } = data || {}
+    const onMouseMove = useThrottled(useCallback(() => {
+        if (moduleHash != null) {
+            const diff = getDiff()
+            canvasCamera.panToModuleIfNeeded({
+                padding: 100,
+                hash: moduleHash,
+                offset: {
+                    x: diff.x,
+                    y: diff.y,
+                },
+            })
+        }
+    }, [canvasCamera, moduleHash, getDiff]), 1000)
+
+    useEffect(() => {
+        if (!isDragging) { return }
+        setCameraConfig((s) => ({
+            ...s,
+            config: {
+                ...s.config,
+                friction: 60,
+                mass: 1,
+            },
+        }))
+        return () => {
+            resetCameraConfig()
+        }
+    }, [setCameraConfig, resetCameraConfig, isDragging])
+
+    useEffect(() => {
+        if (!isDragging) { return }
+        window.addEventListener('mousemove', onMouseMove, true)
+        return () => {
+            window.removeEventListener('mousemove', onMouseMove, true)
+        }
+    }, [isDragging, dragDrop, onMouseMove])
 }
 
 export function useCanvasCameraEffects() {
     useFitCanvasOnLoadEffect()
     usePanToSelectionEffect()
+}
+
+export function useCanvasCameraDragEffects() {
+    usePanEdgesOnDragEffect()
 }

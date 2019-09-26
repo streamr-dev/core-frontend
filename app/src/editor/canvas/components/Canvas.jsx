@@ -3,6 +3,7 @@ import cx from 'classnames'
 import debounce from 'lodash/debounce'
 
 import * as CanvasState from '../state'
+import { useCanvasCameraDragEffects } from '../hooks/useCanvasCamera'
 
 import Module from './Module'
 import { DragDropProvider } from './DragDropContext'
@@ -186,6 +187,8 @@ function CanvasElements(props) {
             },
         }), {})
     }, [positions, getCurrentScaleRef])
+
+    useCanvasCameraDragEffects()
 
     if (!canvas) { return null }
 
