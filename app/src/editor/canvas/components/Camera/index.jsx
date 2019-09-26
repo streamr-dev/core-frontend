@@ -314,10 +314,10 @@ function useCameraSimpleApi(opts) {
 
 const defaultCameraConfig = {
     config: {
-        mass: 0.1,
-        friction: 7,
+        mass: 1,
+        friction: 62,
+        tension: 700,
         precision: 0.00001,
-        tension: 70,
     },
 }
 

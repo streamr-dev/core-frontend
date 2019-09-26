@@ -159,11 +159,12 @@ function usePanEdgesOnDragEffect() {
     const { isDragging, data, getDiff } = dragDrop
     const canvasCamera = useCanvasCamera()
     const { moduleHash } = data || {}
+
     const onMouseMove = useThrottled(useCallback(() => {
         if (moduleHash != null) {
             const diff = getDiff()
             canvasCamera.panToModuleIfNeeded({
-                padding: 100,
+                padding: 20,
                 hash: moduleHash,
                 offset: {
                     x: diff.x,
@@ -179,7 +180,8 @@ function usePanEdgesOnDragEffect() {
             ...s,
             config: {
                 ...s.config,
-                friction: 60,
+                friction: 120,
+                tension: 500,
             },
         }))
         return () => {
