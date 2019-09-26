@@ -62,7 +62,10 @@ export default function useCanvasCamera({ padding: defaultPadding = 100 } = {}) 
     ])
 }
 
-// fit camera to canvas on initial load
+/*
+ * Fit camera to canvas on initial load
+ */
+
 function useFitCanvasOnLoadEffect() {
     const canvas = useCanvas()
     const canvasCamera = useCanvasCamera()
@@ -82,17 +85,58 @@ function useFitCanvasOnLoadEffect() {
     }, [canvasId, initCamera, setInitCamera])
 }
 
+/*
+ * True when mouse button down
+ */
+
+function useIsMouseDown(buttons = 1) {
+    const [isMouseDown, setIsMouseDown] = useState(false)
+    const onMouseDown = useCallback(() => {
+        setIsMouseDown(true)
+    }, [setIsMouseDown])
+
+    const onMouseEvent = useCallback((event) => {
+        if (event.buttons !== buttons) {
+            setIsMouseDown(false)
+        }
+    }, [setIsMouseDown, buttons])
+
+    useEffect(() => {
+        window.addEventListener('mousedown', onMouseDown, true)
+        return () => {
+            window.removeEventListener('mousedown', onMouseDown, true)
+        }
+    })
+
+    useEffect(() => {
+        if (!isMouseDown) { return }
+        window.addEventListener('mousemove', onMouseEvent)
+        window.addEventListener('mouseup', onMouseEvent)
+        return () => {
+            window.removeEventListener('mousemove', onMouseEvent)
+            window.removeEventListener('mouseup', onMouseEvent)
+        }
+    }, [isMouseDown, onMouseEvent])
+    return isMouseDown
+}
+
+/*
+ * When selection changes, an to selected module if needed
+ */
+
 function usePanToSelectionEffect() {
     const canvasSelection = useCanvasSelection()
     const last = canvasSelection.last()
     const canvasCamera = useCanvasCamera()
     const canvasCameraRef = useRef()
     canvasCameraRef.current = canvasCamera
+    const isMouseDown = useIsMouseDown()
 
+    // pan to selected on mouse up
     useEffect(() => {
-        if (!last) { return }
+        if (!last || isMouseDown) { return }
         canvasCameraRef.current.panToModuleIfNeeded({ hash: last })
-    }, [last, canvasCameraRef])
+    }, [isMouseDown, last, canvasCameraRef])
 }
 
 export function useCanvasCameraEffects() {
