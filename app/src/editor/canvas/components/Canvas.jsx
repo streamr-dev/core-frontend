@@ -79,8 +79,21 @@ export default function Canvas(props) {
         children,
     } = props
 
+    const { selectModule } = api
+
+    const onFocus = useCallback((event) => {
+        // deselect + close when clicking canvas
+        if (event.target !== event.currentTarget) { return }
+        selectModule()
+    }, [selectModule])
+
     return (
-        <div className={cx(styles.Canvas, className)}>
+        <div
+            className={cx(styles.Canvas, className)}
+            onFocus={onFocus}
+            tabIndex="0"
+            role="grid"
+        >
             <DragDropProvider>
                 <Camera>
                     <CanvasWindowProvider className={styles.CanvasWindow}>
@@ -149,13 +162,6 @@ function CanvasElements(props) {
         updatePositionsNow()
     }, [canvas, updatePositionsNow])
 
-    const { selectModule } = api
-    const onFocus = useCallback((event) => {
-        // deselect + close when clicking canvas
-        if (event.target !== event.currentTarget) { return }
-        selectModule()
-    }, [selectModule])
-
     const onPort = useCallback((portId, el) => {
         portsRef.current.set(portId, el)
         updatePositions()
@@ -188,9 +194,7 @@ function CanvasElements(props) {
         <div className={styles.CanvasElements}>
             <div
                 className={cx(styles.Modules, cameraControl)}
-                onFocus={onFocus}
                 ref={modulesRef}
-                tabIndex="0"
                 role="grid"
             >
                 {canvas.modules.map((m) => (
