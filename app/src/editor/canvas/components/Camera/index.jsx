@@ -281,28 +281,32 @@ function useCameraSimpleApi(opts) {
     ])
 }
 
-const cameraConfig = {
-    mass: 1,
-    friction: 14,
-    precision: 0.00001,
-    clamp: true,
+const defaultCameraConfig = {
+    config: {
+        mass: 0.1,
+        friction: 7,
+        precision: 0.00001,
+        tension: 70,
+    },
 }
 
 function useCameraSpringApi() {
     const camera = useCameraSimpleApi()
     const { x, y, scale } = camera
+    const [cameraConfig, setCameraConfig] = useState(defaultCameraConfig)
     const onSpring = useCallback(() => ({
         x,
         y,
         scale,
-        config: cameraConfig,
-    }), [x, y, scale])
+        ...cameraConfig,
+    }), [x, y, scale, cameraConfig])
     const [spring, set] = useSpring(onSpring)
 
     set({
         x,
         y,
         scale,
+        ...cameraConfig,
     })
 
     const springRef = useRef()
@@ -312,10 +316,16 @@ function useCameraSpringApi() {
         springRef.current
     ), [springRef])
 
+    const getCurrentScale = useCallback(() => (
+        springRef.current.scale.getValue()
+    ), [springRef])
+
     return useMemo(() => ({
+        setCameraConfig,
+        getCurrentScale,
         getSpring,
         ...camera,
-    }), [getSpring, camera])
+    }), [getSpring, camera, setCameraConfig, getCurrentScale])
 }
 
 export const CameraContext = React.createContext({})
@@ -367,7 +377,7 @@ function useWheelControls(elRef) {
 }
 
 function usePanControls(elRef) {
-    const { initUpdatePosition, updatePosition } = useCameraContext()
+    const { initUpdatePosition, updatePosition, setCameraConfig } = useCameraContext()
     const [isPanning, setPanning] = useState(false)
 
     const startPanning = useCallback((event) => {
@@ -386,6 +396,13 @@ function usePanControls(elRef) {
         })
         setPanning(true)
     }, [elRef, isPanning, initUpdatePosition, setPanning])
+
+    useEffect(() => {
+        setCameraConfig((s) => ({
+            ...s,
+            immediate: isPanning,
+        }))
+    }, [setCameraConfig, isPanning])
 
     const stopPanning = useCallback(() => {
         if (!isPanning) { return }

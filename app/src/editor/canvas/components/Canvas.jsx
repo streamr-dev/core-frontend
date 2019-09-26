@@ -120,8 +120,8 @@ function CanvasElements(props) {
     const updatePositionsRef = useRef()
 
     const camera = useCameraContext()
-    const getSpringRef = useRef()
-    getSpringRef.current = camera.getSpring
+    const getCurrentScaleRef = useRef()
+    getCurrentScaleRef.current = camera.getCurrentScale
 
     const updatePositionsNow = useCallback(() => {
         if (updatePositionsRef.current) {
@@ -174,8 +174,7 @@ function CanvasElements(props) {
         // we need to unscale the values first.
         // note: does not update when scale changes, only when positions change
         // only need to reverse the scaling at time the positions are captured
-        const spring = getSpringRef.current && getSpringRef.current()
-        const scale = spring ? spring.scale.getValue() : 1
+        const scale = getCurrentScaleRef.current()
 
         return Object.values(positions).reduce((o, p) => Object.assign(o, {
             [p.id]: {
@@ -186,7 +185,7 @@ function CanvasElements(props) {
                 height: (p.height / scale),
             },
         }), {})
-    }, [positions, getSpringRef])
+    }, [positions, getCurrentScaleRef])
 
     if (!canvas) { return null }
 
