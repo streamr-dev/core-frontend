@@ -6,43 +6,27 @@ import useCanvas from '../components/CanvasController/useCanvas'
 import { useCanvasSelection } from '../components/CanvasController/useCanvasSelection'
 import { getModuleIfExists } from '../state'
 
-export default function useCanvasCamera() {
+export default function useCanvasCamera({ padding = 100 } = {}) {
     const canvas = useCanvas()
     const camera = useCameraContext()
-    const fitCanvas = useCallback(({ padding = 100 } = {}) => {
+    const fitCanvas = useCallback(() => {
         if (!canvas) { return }
-        const { current: cameraEl } = camera.elRef
-        const { width: fitWidth, height: fitHeight } = cameraEl.getBoundingClientRect()
-        const boundsWidth = fitWidth - (padding * 2)
-        const boundsHeight = fitHeight - (padding * 2)
-        const bounds = getCanvasBounds(canvas, {
-            // defaults if no bounds
-            width: boundsWidth,
-            height: boundsHeight,
-        })
-        return camera.fitBounds({
-            ...bounds,
-            fitWidth,
-            fitHeight,
+        if (!canvas.modules.length) { return }
+        return camera.fitView({
+            bounds: getCanvasBounds(canvas),
             padding,
         })
-    }, [camera, canvas])
+    }, [camera, canvas, padding])
 
     const panToModule = useCallback(({ hash } = {}) => {
         if (!canvas) { return }
         const m = getModuleIfExists(canvas, hash)
         if (!m) { return }
-        const bounds = getModuleBounds(m)
-        const padding = 100
-        const { current: cameraEl } = camera.elRef
-        const { width: fitWidth, height: fitHeight } = cameraEl.getBoundingClientRect()
-        return camera.fitBounds({
-            ...bounds,
-            fitWidth,
-            fitHeight,
+        return camera.fitView({
+            bounds: getModuleBounds(m),
             padding,
         })
-    }, [camera, canvas])
+    }, [camera, canvas, padding])
 
     return useMemo(() => ({
         fitCanvas,

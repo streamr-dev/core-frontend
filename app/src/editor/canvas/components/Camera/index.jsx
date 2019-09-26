@@ -29,32 +29,23 @@ const defaultFit = {
     scale: 1,
 }
 
-function fitCamera({
-    x,
-    y,
-    width,
-    height,
-    fitWidth,
-    fitHeight,
-    maxScale = 1,
-    padding = 20,
-} = {}) {
+function fitCamera({ bounds, fit, maxScale = 1, padding = 20 } = {}) {
     const totalPadding = 2 * padding
-    const maxWidth = fitWidth - totalPadding
-    const maxHeight = fitHeight - totalPadding
-    const scale = Math.min(maxScale, Math.min(maxWidth / width, maxHeight / height))
+    const maxWidth = fit.width - totalPadding
+    const maxHeight = fit.height - totalPadding
+    const scale = Math.min(maxScale, Math.min(maxWidth / bounds.width, maxHeight / bounds.height))
 
     if (!scale) {
         return defaultFit
     }
 
     // vertically & horizontally center content
-    const offsetY = (fitHeight - (height * scale)) / 2
-    const offsetX = (fitWidth - (width * scale)) / 2
+    const offsetY = (fit.height - (bounds.height * scale)) / 2
+    const offsetX = (fit.width - (bounds.width * scale)) / 2
 
     return {
-        x: -(x * scale) + offsetX,
-        y: -(y * scale) + offsetY,
+        x: -(bounds.x * scale) + offsetX,
+        y: -(bounds.y * scale) + offsetY,
         scale,
     }
 }
@@ -178,12 +169,26 @@ function useCameraSimpleApi(opts) {
         setScale(nextLevel)
     }, [setScale, scale, scaleLevels])
 
-    const fitBounds = useCallback((bounds) => {
+    // fit camera to supplied bounds
+    const fitBounds = useCallback((opts) => {
         setState((s) => ({
             ...s,
-            ...fitCamera(bounds),
+            ...fitCamera(opts),
         }))
     }, [setState])
+
+    // fit supplied bounds to camera element bounds
+    const fitView = useCallback((opts) => {
+        const { current: cameraEl } = elRef
+        const { width, height } = cameraEl.getBoundingClientRect()
+        return fitBounds({
+            ...opts,
+            fit: {
+                width,
+                height,
+            },
+        })
+    }, [fitBounds, elRef])
 
     return useMemo(() => ({
         ...state,
@@ -196,7 +201,8 @@ function useCameraSimpleApi(opts) {
         zoomOut,
         setScale,
         fitBounds,
-    }), [state, setState, updateScale, updatePosition, initUpdatePosition, zoomIn, zoomOut, setScale, fitBounds])
+        fitView,
+    }), [state, setState, updateScale, updatePosition, initUpdatePosition, zoomIn, zoomOut, setScale, fitBounds, fitView])
 }
 
 const cameraConfig = {
