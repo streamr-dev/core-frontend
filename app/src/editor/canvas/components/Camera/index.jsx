@@ -190,6 +190,21 @@ function useCameraSimpleApi(opts) {
         })
     }, [fitBounds, elRef])
 
+    const centerBounds = useCallback(({ bounds }) => {
+        const { current: cameraEl } = elRef
+        const { width, height } = cameraEl.getBoundingClientRect()
+
+        // vertically & horizontally center content
+        const offsetY = height / 2
+        const offsetX = width / 2
+
+        return setState((s) => ({
+            ...s,
+            x: -((bounds.x + (bounds.width / 2)) * scale) + offsetX,
+            y: -((bounds.y + (bounds.height / 2)) * scale) + offsetY,
+        }))
+    }, [setState, elRef, scale])
+
     return useMemo(() => ({
         ...state,
         elRef,
@@ -202,7 +217,20 @@ function useCameraSimpleApi(opts) {
         setScale,
         fitBounds,
         fitView,
-    }), [state, setState, updateScale, updatePosition, initUpdatePosition, zoomIn, zoomOut, setScale, fitBounds, fitView])
+        centerBounds,
+    }), [
+        state,
+        setState,
+        updateScale,
+        updatePosition,
+        initUpdatePosition,
+        zoomIn,
+        zoomOut,
+        setScale,
+        fitBounds,
+        fitView,
+        centerBounds,
+    ])
 }
 
 const cameraConfig = {

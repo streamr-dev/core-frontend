@@ -22,7 +22,7 @@ export default function useCanvasCamera({ padding = 100 } = {}) {
         if (!canvas) { return }
         const m = getModuleIfExists(canvas, hash)
         if (!m) { return }
-        return camera.fitView({
+        return camera.centerBounds({
             bounds: getModuleBounds(m),
             padding,
         })
