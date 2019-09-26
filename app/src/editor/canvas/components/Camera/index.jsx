@@ -29,24 +29,21 @@ const defaultFit = {
     scale: 1,
 }
 
-function fitCamera({ bounds, fit, maxScale = 1, padding = 20 } = {}) {
+function scaleToFit({ bounds, fit, maxScale = 1, padding = 20 } = {}) {
     const totalPadding = 2 * padding
     const maxWidth = fit.width - totalPadding
     const maxHeight = fit.height - totalPadding
-    const scale = Math.min(maxScale, Math.min(maxWidth / bounds.width, maxHeight / bounds.height))
+    return Math.min(maxScale, Math.min(maxWidth / bounds.width, maxHeight / bounds.height))
+}
 
-    if (!scale) {
-        return defaultFit
-    }
-
+function centerBoundsTo({ bounds, fit, scale }) {
     // vertically & horizontally center content
-    const offsetY = (fit.height - (bounds.height * scale)) / 2
-    const offsetX = (fit.width - (bounds.width * scale)) / 2
+    const offsetY = fit.height / 2
+    const offsetX = fit.width / 2
 
     return {
-        x: -(bounds.x * scale) + offsetX,
-        y: -(bounds.y * scale) + offsetY,
-        scale,
+        x: -((bounds.x + (bounds.width / 2)) * scale) + offsetX,
+        y: -((bounds.y + (bounds.height / 2)) * scale) + offsetY,
     }
 }
 
@@ -54,6 +51,28 @@ function toPrecision(v, precision = 0) {
     if (!precision) { return v }
     const p = 10 ** precision
     return Math.round((v * p)) / p
+}
+
+function fitBoundsTo({ bounds, fit, padding }) {
+    const scale = scaleToFit({
+        bounds,
+        fit,
+        padding,
+    })
+
+    if (!scale) { return defaultFit }
+
+    const { x, y } = centerBoundsTo({
+        bounds,
+        fit,
+        scale,
+    })
+
+    return {
+        x,
+        y,
+        scale,
+    }
 }
 
 function updateScaleState(s, { x, y, scale: newScale }) {
@@ -173,7 +192,7 @@ function useCameraSimpleApi(opts) {
     const fitBounds = useCallback((opts) => {
         setState((s) => ({
             ...s,
-            ...fitCamera(opts),
+            ...fitBoundsTo(opts),
         }))
     }, [setState])
 
@@ -194,16 +213,18 @@ function useCameraSimpleApi(opts) {
         const { current: cameraEl } = elRef
         const { width, height } = cameraEl.getBoundingClientRect()
 
-        // vertically & horizontally center content
-        const offsetY = height / 2
-        const offsetX = width / 2
-
         return setState((s) => ({
             ...s,
-            x: -((bounds.x + (bounds.width / 2)) * scale) + offsetX,
-            y: -((bounds.y + (bounds.height / 2)) * scale) + offsetY,
+            ...centerBoundsTo({
+                bounds,
+                fit: {
+                    width,
+                    height,
+                },
+                scale: s.scale,
+            }),
         }))
-    }, [setState, elRef, scale])
+    }, [setState, elRef])
 
     return useMemo(() => ({
         ...state,
@@ -276,20 +297,12 @@ export function useCameraContext() {
     return useContext(CameraContext)
 }
 
-export function CameraProvider({ bounds, onChange, children, ...props }) {
+export function CameraProvider({ onChange, children, ...props }) {
     const camera = useCameraSpringApi(props)
     useEffect(() => {
         if (typeof onChange !== 'function') { return }
         onChange(camera)
     }, [onChange, camera])
-    const { setState } = camera
-    const [hasInitBounds, setHasInitBounds] = useState(false)
-
-    useEffect(() => {
-        if (hasInitBounds || !bounds) { return }
-        setHasInitBounds(true)
-        setState(fitCamera(bounds))
-    }, [setState, bounds, hasInitBounds, setHasInitBounds])
 
     return (
         <CameraContext.Provider value={camera}>
