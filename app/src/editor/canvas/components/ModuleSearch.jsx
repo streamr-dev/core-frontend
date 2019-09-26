@@ -19,6 +19,7 @@ import { getModuleCategories, getStreams } from '../services'
 import { moduleSearch } from '../state'
 import CanvasStyles from '$editor/canvas/components/Canvas.pcss'
 import SearchPanel, { SearchRow } from '$editor/shared/components/SearchPanel'
+import { useCameraContext } from './Camera'
 
 import styles from './ModuleSearch.pcss'
 
@@ -119,6 +120,7 @@ type Props = {
     open: (open: boolean) => void,
     addModule: (module: Object) => void,
     canvas: any,
+    camera?: any,
 }
 
 type State = {
@@ -130,7 +132,7 @@ type State = {
 
 const STREAM_MODULE_ID = 147
 
-export class ModuleSearch extends React.PureComponent<Props, State> {
+class ModuleSearch extends React.PureComponent<Props, State> {
     state = {
         search: '',
         allModules: [],
@@ -278,9 +280,7 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
     }
 
     getPositionForClickInsert = () => {
-        const canvasElement = document.querySelector(`.${CanvasStyles.Modules}`)
-
-        if (this.selfRef.current == null || canvasElement == null) {
+        if (this.selfRef.current == null) {
             return {
                 x: 0,
                 y: 0,
@@ -288,17 +288,19 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
         }
 
         const selfRect = this.selfRef.current.getBoundingClientRect()
-        const canvasRect = canvasElement.getBoundingClientRect()
 
-        const myBB = {
+        const { camera = {} } = this.props
+
+        const canvasRect = camera.elRef.current.getBoundingClientRect()
+        const myBB = camera.viewToCameraBounds({
             // Align module to the top right corner of ModuleSearch with a 32px offset
             x: (selfRect.right - canvasRect.left - 20) + 32,
-            y: selfRect.top - canvasRect.top - 20,
+            y: selfRect.top - canvasRect.top,
             // TODO: It would be nice to use actual module size here but we know
             //       it only after the module has been added to the canvas
             width: 100,
             height: 50,
-        }
+        })
 
         const boundingBoxes = this.props.canvas.modules.map((m) => getModuleBounds(m))
 
@@ -408,4 +410,12 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
     }
 }
 
-export default ModuleSearch
+export default function (props: Props) {
+    const camera = useCameraContext()
+    return (
+        <ModuleSearch
+            {...props}
+            camera={camera}
+        />
+    )
+}

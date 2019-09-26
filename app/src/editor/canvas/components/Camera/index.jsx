@@ -237,6 +237,18 @@ function useCameraSimpleApi(opts) {
         )
     }, [scale, x, y])
 
+    // convert bounds in px coordinates to camera coordinates
+    const viewToCameraBounds = useCallback((bounds) => {
+        const canvasX = (bounds.x - x) / scale
+        const canvasY = (bounds.y - y) / scale
+        return {
+            x: canvasX,
+            y: canvasY,
+            width: bounds.width / scale,
+            height: bounds.height / scale,
+        }
+    }, [x, y, scale])
+
     return useMemo(() => ({
         ...state,
         elRef,
@@ -251,6 +263,7 @@ function useCameraSimpleApi(opts) {
         fitView,
         centerBounds,
         areBoundsInView,
+        viewToCameraBounds,
     }), [
         state,
         setState,
@@ -264,6 +277,7 @@ function useCameraSimpleApi(opts) {
         fitView,
         centerBounds,
         areBoundsInView,
+        viewToCameraBounds,
     ])
 }
 
