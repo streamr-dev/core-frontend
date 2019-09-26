@@ -1,4 +1,4 @@
-// $flow
+// @flow
 
 import React, { useState } from 'react'
 import { Provider } from 'react-redux'
@@ -45,7 +45,7 @@ story('ProductList')
 
 story('ProductTypeChooser')
     .addWithJSX('basic', () => (
-        <ProductTypeChooser />
+        <ProductTypeChooser onSelect={() => {}} />
     ))
 
 story('MarkdownEditor')
@@ -54,7 +54,7 @@ story('MarkdownEditor')
     ))
 
 const SetPriceController = () => {
-    const [price, setPrice] = useState(0)
+    const [price, setPrice] = useState('0')
     const [currency, setCurrency] = useState('DATA')
     const [timeUnit, setTimeUnit] = useState('hour')
 
@@ -82,41 +82,57 @@ story('SetPrice')
         <SetPriceController />
     ))
 
-const CompletePublishController = () => {
+type CompletePublishControllerProps = {
+    isUnpublish?: boolean,
+}
+
+const CompletePublishController = ({ isUnpublish = false }: CompletePublishControllerProps) => {
     const options = [
         transactionStates.PENDING,
         transactionStates.CONFIRMED,
         transactionStates.FAILED,
     ]
-    const adminFeeStatus = select('Admin Fee', options, transactionStates.PENDING)
-    const updateContractStatus = select('Edit product price', options, transactionStates.PENDING)
-    const createContractStatus = select('Create contract product', options, transactionStates.PENDING)
-    const redeployPaidStatus = select('Redeploy paid', options, transactionStates.PENDING)
-    const undeployPaidStatus = select('Undeploy paid', options, transactionStates.PENDING)
-    const publishFreeStatus = select('Publish free', options, transactionStates.PENDING)
-    const unpublishFreeStatus = select('Unpublish free', options, transactionStates.PENDING)
 
-    const statuses = {
-        [actionsTypes.UPDATE_ADMIN_FEE]: adminFeeStatus,
-        [actionsTypes.UPDATE_CONTRACT_PRODUCT]: updateContractStatus,
-        [actionsTypes.CREATE_CONTRACT_PRODUCT]: createContractStatus,
-        [actionsTypes.REDEPLOY_PAID]: redeployPaidStatus,
-        [actionsTypes.UNDEPLOY_CONTRACT_PRODUCT]: undeployPaidStatus,
-        [actionsTypes.PUBLISH_FREE]: publishFreeStatus,
-        [actionsTypes.UNPUBLISH_FREE]: unpublishFreeStatus,
+    let statuses = {}
+
+    if (isUnpublish) {
+        const unpublishFreeStatus = select('Unpublish free', options, transactionStates.PENDING)
+        const undeployPaidStatus = select('Undeploy paid', options, transactionStates.PENDING)
+
+        statuses = {
+            [actionsTypes.UNPUBLISH_FREE]: unpublishFreeStatus,
+            [actionsTypes.UNDEPLOY_CONTRACT_PRODUCT]: undeployPaidStatus,
+        }
+    } else {
+        const adminFeeStatus = select('Admin Fee', options, transactionStates.PENDING)
+        const updateContractStatus = select('Edit product price', options, transactionStates.PENDING)
+        const createContractStatus = select('Create contract product', options, transactionStates.PENDING)
+        const redeployPaidStatus = select('Redeploy paid', options, transactionStates.PENDING)
+        const publishFreeStatus = select('Publish free', options, transactionStates.PENDING)
+
+        statuses = {
+            [actionsTypes.UPDATE_ADMIN_FEE]: adminFeeStatus,
+            [actionsTypes.UPDATE_CONTRACT_PRODUCT]: updateContractStatus,
+            [actionsTypes.CREATE_CONTRACT_PRODUCT]: createContractStatus,
+            [actionsTypes.REDEPLOY_PAID]: redeployPaidStatus,
+            [actionsTypes.PUBLISH_FREE]: publishFreeStatus,
+        }
     }
 
     return (
         <CompletePublishTransaction
-            isUnpublish={boolean('Is unpublish', false)}
+            isUnpublish={isUnpublish}
             onCancel={() => {}}
             status={statuses}
         />
     )
 }
 
-story('Publish')
+story('Publish Dialog')
     .addDecorator(withKnobs)
-    .addWithJSX('complete', () => (
+    .addWithJSX('Publish', () => (
         <CompletePublishController />
+    ))
+    .addWithJSX('Unpublish', () => (
+        <CompletePublishController isUnpublish />
     ))
