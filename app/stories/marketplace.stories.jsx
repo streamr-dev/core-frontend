@@ -5,7 +5,7 @@ import { Provider } from 'react-redux'
 import StoryRouter from 'storybook-react-router'
 import { storiesOf } from '@storybook/react'
 import styles from '@sambego/storybook-styles'
-import { withKnobs, boolean, number } from '@storybook/addon-knobs'
+import { withKnobs, boolean, number, select } from '@storybook/addon-knobs'
 
 import store from './utils/i18nStore'
 
@@ -14,6 +14,9 @@ import ProductTypeChooser from '$mp/components/ProductTypeChooser'
 import MarkdownEditor from '$mp/components/MarkdownEditor'
 import SetPrice from '$mp/components/SetPrice'
 import exampleProductList from './exampleProductList'
+import CompletePublishTransaction from '$mp/components/Modal/CompletePublishTransaction'
+import { transactionStates } from '$shared/utils/constants'
+import { actionsTypes } from '$mp/containers/EditProductPage2/publishQueue'
 
 const story = (name) => storiesOf(`Marketplace/${name}`, module)
     .addDecorator(StoryRouter())
@@ -79,3 +82,41 @@ story('SetPrice')
         <SetPriceController />
     ))
 
+const CompletePublishController = () => {
+    const options = [
+        transactionStates.PENDING,
+        transactionStates.CONFIRMED,
+        transactionStates.FAILED,
+    ]
+    const adminFeeStatus = select('Admin Fee', options, transactionStates.PENDING)
+    const updateContractStatus = select('Edit product price', options, transactionStates.PENDING)
+    const createContractStatus = select('Create contract product', options, transactionStates.PENDING)
+    const redeployPaidStatus = select('Redeploy paid', options, transactionStates.PENDING)
+    const undeployPaidStatus = select('Undeploy paid', options, transactionStates.PENDING)
+    const publishFreeStatus = select('Publish free', options, transactionStates.PENDING)
+    const unpublishFreeStatus = select('Unpublish free', options, transactionStates.PENDING)
+
+    const statuses = {
+        [actionsTypes.UPDATE_ADMIN_FEE]: adminFeeStatus,
+        [actionsTypes.UPDATE_CONTRACT_PRODUCT]: updateContractStatus,
+        [actionsTypes.CREATE_CONTRACT_PRODUCT]: createContractStatus,
+        [actionsTypes.REDEPLOY_PAID]: redeployPaidStatus,
+        [actionsTypes.UNDEPLOY_CONTRACT_PRODUCT]: undeployPaidStatus,
+        [actionsTypes.PUBLISH_FREE]: publishFreeStatus,
+        [actionsTypes.UNPUBLISH_FREE]: unpublishFreeStatus,
+    }
+
+    return (
+        <CompletePublishTransaction
+            isUnpublish={boolean('Is unpublish', false)}
+            onCancel={() => {}}
+            status={statuses}
+        />
+    )
+}
+
+story('Publish')
+    .addDecorator(withKnobs)
+    .addWithJSX('complete', () => (
+        <CompletePublishController />
+    ))
