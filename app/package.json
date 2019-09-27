@@ -4,7 +4,7 @@
   "description": "The Streamr Core App",
   "main": "src/index.jsx",
   "scripts": {
-    "start": "webpack-dev-server --hot",
+    "start": "webpack-dev-server --hot --host 0.0.0.0",
     "build": "node --max_old_space_size=4096 ./node_modules/.bin/webpack --progress --profile",
     "test": "NODE_ENV=test jest ./test/* ./src/shared/test/* ./src/userpages/tests/* ./src/editor/shared/tests/* ./src/editor/canvas/tests/*",
     "flow": "flow",
