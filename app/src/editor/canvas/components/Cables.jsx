@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unused-state */
 import React, { useMemo, useEffect, useRef, useState, useContext, useCallback } from 'react'
 import cx from 'classnames'
-import { useSpring, animated, interpolate } from 'react-spring'
+import { useSpring, animated, to } from 'react-spring'
 import { moduleHasPort, isConnectedToModule } from '../state'
 import styles from './Canvas.pcss'
 import { DragDropContext } from './DragDropContext'
@@ -26,7 +26,7 @@ function useCurvedHorizontal(x1, y1, x2, y2) {
         c2: [x2 - mx, y2],
     })
 
-    return interpolate([c.c1, c.c2], (c1, c2) => {
+    return to([c.c1, c.c2], (c1, c2) => {
         const l = []
         l.push('M', x1, y1)
         l.push('C', ...c1, ...c2, x2, y2)
