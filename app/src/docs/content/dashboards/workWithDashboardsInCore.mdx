@@ -2,24 +2,24 @@ import cx from 'classnames'
 import { Link } from 'react-router-dom'
 import links from '$shared/../links'
 
-import DashboardListing from './images/dashboardListing.png'
-import CreateDashboard from './images/createDashboard.png'
+import CreateDashboard from './images/createdashboard.png'
+import CreateDashboard2x from './images/createdashboard@2x.png'
 
 import docsStyles from '$docs/components/DocsLayout/docsLayout.pcss'
 import dashboardStyles from '$docs/components/DocsPages/Dashboards/dashboardStyles.pcss'
 
 ## Work with dashboards in Core
 
-To create a new dashboard, click on **Create Dashboard** inside the <Link to={links.userpages.dashboards}>dashboards page</Link>, inside the Core app.
+To create a new dashboard, click on <span className={docsStyles.streamrHighlight}>Create Dashboard</span> in Core > <Link to={links.userpages.dashboards}>Dashboards</Link>. You’ll be taken to the dashboard editor, which looks a bit similar to the canvas editor.
 
-<div className={cx(docsStyles.centered, dashboardStyles.createDashboard)}>
-  <img src={CreateDashboard} />
-</div>
+<img
+  src={CreateDashboard}
+  srcSet={`${CreateDashboard2x} 2x`}
+  alt="Create dashboard"
+/>
 
-On the <Link to={links.userpages.dashboards}>dashboards page</Link> you'll see preview tiles of your dashboards which you can search and sort by their name. Dashboards don't have a running state- the modules inside the dashboard will reflect the realtime data flow of the canvas modules inside it. When there is no realtime data, the dashboard modules will appear empty.
+On the <Link to={links.userpages.dashboards}>dashboards page</Link> you'll see preview tiles of your dashboards which you can search and sort by their name. Dashboards don't have a running state, the modules inside the dashboard will instead reflect the realtime data flow of the canvas modules inside it.  When there is no realtime data, the dashboard modules will appear empty.
 
-<div className={cx(docsStyles.centered, dashboardStyles.dashboardListing)}>
-  <img src={DashboardListing} />
-</div>
+As with canvases, click the + icon to hide or show the module browser. You can also drag to resize each dashboard module to your liking. Hide or show dashboard modules by clicking them in the module browser. When you're happy with your dashboard, you can embed live dashboard modules in external web pages.
 
-When you're happy with your dashboard, you can embed live visualisation elements in external web pages.
+<hr />

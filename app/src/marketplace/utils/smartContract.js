@@ -4,6 +4,7 @@ import EventEmitter from 'events'
 import type { PromiEvent } from 'web3'
 import { I18n } from 'react-redux-i18n'
 import { isHex } from 'web3-utils'
+import { generateAddress, bufferToHex } from 'ethereumjs-util'
 
 import { arePricesEqual } from '../utils/price'
 import { checkEthereumNetworkIsCorrect } from '$shared/utils/web3'
@@ -15,10 +16,13 @@ import type {
     Address,
     SmartContractConfig,
     SmartContractTransaction,
+    SmartContractDeployTransaction,
+    SmartContractMetadata,
 } from '$shared/flowtype/web3-types'
 import type { EditProduct, SmartContractProduct } from '../flowtype/product-types'
 
 import Transaction from '$shared/utils/Transaction'
+import DeployTransaction from '$shared/utils/DeployTransaction'
 import { gasLimits } from '$shared/utils/constants'
 
 export type Callable = {
@@ -38,6 +42,13 @@ export const hexEqualsZero = (hex: string): boolean => /^(0x)?0+$/.test(hex)
 export const getPrefixedHexString = (hex: string): string => hex.replace(/^0x|^/, '0x')
 
 export const getUnprefixedHexString = (hex: string): string => hex.replace(/^0x|^/, '')
+
+export const calculateContractAddress = async (account: Address): Promise<Address> => {
+    const web3 = getWeb3()
+    const currentNonce = await web3.eth.getTransactionCount(account)
+    const futureAddress = bufferToHex(generateAddress(account, currentNonce))
+    return futureAddress
+}
 
 /**
  * Tells if the given string is valid hex or not.
@@ -96,4 +107,58 @@ export const send = (method: Sendable, options?: {
         }, errorHandler)
 
     return tx
+}
+
+export const deploy = (contract: SmartContractMetadata, args: Array<any>, options?: {
+    gas?: number,
+}): SmartContractDeployTransaction => {
+    const web3 = getWeb3()
+    const emitter = new EventEmitter()
+    const errorHandler = (error: Error) => {
+        emitter.emit('error', error)
+    }
+    const tx = new DeployTransaction(emitter)
+    Promise.all([
+        web3.getDefaultAccount(),
+        checkEthereumNetworkIsCorrect(web3),
+    ])
+        .then(([account]) => {
+            // Calculate future address of the contract and broadcast it so that we don't have to wait
+            // for the transaction to be confirmed.
+            calculateContractAddress(account).then((futureAddress) => {
+                emitter.emit('contractAddress', futureAddress)
+            })
+
+            const web3Contract = new web3.eth.Contract(contract.abi)
+            const deployer = web3Contract.deploy({
+                data: contract.bytecode,
+                arguments: args,
+            })
+            deployer
+                .send({
+                    gas: (options && options.gas) || gasLimits.DEPLOY_COMMUNITY_PRODUCT,
+                    from: account,
+                })
+                .on('error', errorHandler)
+                .on('transactionHash', (hash) => {
+                    emitter.emit('transactionHash', hash)
+                })
+                .on('receipt', (receipt) => {
+                    if (parseInt(receipt.status, 16) === 0) {
+                        errorHandler(new TransactionError(I18n.t('error.txFailed'), receipt))
+                    } else {
+                        emitter.emit('receipt', receipt)
+                    }
+                })
+        }, errorHandler)
+
+    return tx
+}
+
+export const getFutureContractDeployAddress = async (): Promise<Address> => {
+    const web3 = getWeb3()
+    const account = await web3.getDefaultAccount()
+    await checkEthereumNetworkIsCorrect(web3)
+    const address = await calculateContractAddress(account)
+    return address
 }

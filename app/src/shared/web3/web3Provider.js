@@ -25,6 +25,9 @@ export class StreamrWeb3 extends Web3 {
     constructor(provider: any, options: StreamrWeb3Options = {}) {
         super(provider)
         this.isLegacy = options && !!options.isLegacy
+        // Set number of desired confirmations for transactions.
+        // This needs to be 1 for local Ganache chain. Default is 24.
+        this.transactionConfirmationBlocks = getConfig().transactionConfirmationBlocks
     }
 
     getDefaultAccount = (): Promise<Address> => this.eth.getAccounts()

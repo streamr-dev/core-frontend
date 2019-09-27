@@ -34,7 +34,7 @@ export const subNav = {
     introduction: {},
     gettingStarted: {
         'get-api-keys': 'Get your API keys',
-        'connecting-ethereum-identity': 'Connecting your Ethereum identity',
+        'ethereum-identity': 'Ethereum identity',
         'get-building': 'Get building',
         'useful-links': 'Useful links',
     },

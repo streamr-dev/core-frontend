@@ -3,22 +3,22 @@
   display: flex;
   flex-direction: column;
   border-radius: 4px;
-  padding: 1.5em;
-  margin: 2em 0 1em;
+  padding: 2rem;
+  margin: 4rem 0;
   background: rgba(3, 36, 255, 0.05);
   border: 1px solid var(--streamrBlue);
 
   .warningIcon {
     position: absolute;
-    top: 27px;
-    left: 15px;
+    top: 2rem;
+    left: 2rem;
     width: 24px;
     height: 24px;
   }
 
   p {
     flex: 1;
-    margin-left: 30px;
+    margin-left: 4rem;
 
     &:last-of-type {
       margin-bottom: 0;
@@ -26,18 +26,10 @@
   }
 }
 
-@media (--md-down) {
+@media (--xs) {
   .root {
-    flex-direction: column;
-
-    .warningIcon {
-      position: relative;
-      top: 5px;
-      left: auto;
-    }
-
     p {
-      margin: 15px 0;
+      margin-left: 3rem;
     }
   }
 }

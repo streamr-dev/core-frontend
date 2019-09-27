@@ -12,7 +12,6 @@ import { isPaidProduct } from '$mp/utils/product'
 import { timeUnits, DEFAULT_CURRENCY } from '$shared/utils/constants'
 import { priceForTimeUnits } from '$mp/utils/price'
 
-import useOriginalProduct from './useOriginalProduct'
 import useProductUpdater from './useProductUpdater'
 
 export default function useProductLoadCallback() {
@@ -20,7 +19,6 @@ export default function useProductLoadCallback() {
     const productUpdater = useProductUpdater()
     const { wrap } = usePending('product.LOAD')
     const isMountedRef = useIsMountedRef()
-    const { setOriginalProduct } = useOriginalProduct()
 
     return useCallback(async (productId: ProductId) => (
         wrap(async () => {
@@ -42,7 +40,6 @@ export default function useProductLoadCallback() {
             }
 
             productUpdater.replaceProduct(() => nextProduct)
-            setOriginalProduct(nextProduct)
         })
-    ), [wrap, productUpdater, history, setOriginalProduct, isMountedRef])
+    ), [wrap, productUpdater, history, isMountedRef])
 }

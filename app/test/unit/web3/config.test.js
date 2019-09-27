@@ -3,6 +3,10 @@ import getConfig from '$shared/web3/config'
 
 jest.mock('$shared/web3/abis/token', () => (['t_test', 't_values', 't_only']))
 jest.mock('$shared/web3/abis/marketplace', () => (['m_test', 'm_values', 'm_only']))
+jest.mock('$shared/web3/contracts/communityProduct', () => ({
+    abi: ['c_test', 'c_values', 'c_only'],
+    bytecode: '0xdeadbeef',
+}))
 
 describe('config', () => {
     let oldEnv
@@ -25,11 +29,13 @@ describe('config', () => {
             process.env.WEB3_REQUIRED_NETWORK_ID = '1'
             process.env.WEB3_PUBLIC_HTTP_PROVIDER = 'https://dummy'
             process.env.WEB3_PUBLIC_WS_PROVIDER = 'wss://dummy/ws'
+            process.env.WEB3_TRANSACTION_CONFIRMATION_BLOCKS = 1337
 
             assert.deepStrictEqual(getConfig(), {
                 networkId: '1',
                 publicNodeAddress: 'https://dummy',
                 websocketAddress: 'wss://dummy/ws',
+                transactionConfirmationBlocks: 1337,
                 token: {
                     abi: ['t_test', 't_values', 't_only'],
                     address: 'tokenAddress',
@@ -37,6 +43,10 @@ describe('config', () => {
                 marketplace: {
                     abi: ['m_test', 'm_values', 'm_only'],
                     address: 'mpAddress',
+                },
+                communityProduct: {
+                    abi: ['c_test', 'c_values', 'c_only'],
+                    bytecode: '0xdeadbeef',
                 },
             })
         })

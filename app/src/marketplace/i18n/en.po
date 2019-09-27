@@ -288,6 +288,18 @@ msgstr ""
 msgid "modal##confirmNoCoverImage##title"
 msgstr "No cover image"
 
+msgid "modal##confirmSave##title"
+msgstr "You have unsaved changes"
+
+msgid "modal##confirmSave##message"
+msgstr ""
+"You have made changes to this product."
+"<br />"
+"Do you want to save your changes?"
+
+msgid "modal##confirmSave##dontSave"
+msgstr "Don't save"
+
 msgid "modal##noStreams##message"
 msgstr "You need to add at least one stream to your product to be able to publish it."
 
