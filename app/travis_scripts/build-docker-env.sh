@@ -22,7 +22,7 @@ RETRIES=30;
 RETRY_DELAY=5s;
 
 # wait for E&E to come up
-waitFor $RETRIES $RETRY_DELAY checkHTTP "engine-and-editor" 200 http://localhost:8081/streamr-core/login/auth;
+waitFor $RETRIES $RETRY_DELAY checkHTTP "engine-and-editor" 200 http://localhost/api/v1/products;
 
 $streamr_docker_dev log -f &
 
