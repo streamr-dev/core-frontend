@@ -188,6 +188,14 @@ function useCameraSimpleApi(opts) {
         setScale(nextLevel)
     }, [setScale, scale, scaleLevels])
 
+    const pan = useCallback(({ x = 0, y = 0 } = {}) => {
+        setState((s) => ({
+            ...s,
+            x: s.x + x,
+            y: s.y + y,
+        }))
+    }, [setState])
+
     // fit camera to supplied bounds
     const fitBounds = useCallback((opts) => {
         setState((s) => ({
@@ -287,6 +295,7 @@ function useCameraSimpleApi(opts) {
         setState,
         zoomIn,
         zoomOut,
+        pan,
         setScale,
         fitBounds,
         fitView,
@@ -302,6 +311,7 @@ function useCameraSimpleApi(opts) {
         initUpdatePosition,
         zoomIn,
         zoomOut,
+        pan,
         setScale,
         fitBounds,
         fitView,
@@ -492,6 +502,58 @@ function usePanControls(elRef) {
     }, [elRef, startPanning])
 }
 
+function useKeyboardPanControls({ panAmount = 25 } = {}) {
+    const { pan } = useCameraContext()
+    const onKeyDown = useCallback((event) => {
+        if (isEditableElement(event.target)) { return }
+        if (event.key === 'ArrowLeft' || event.key.toLowerCase() === 'a') {
+            event.preventDefault()
+            pan({ x: panAmount })
+        }
+        if (event.key === 'ArrowRight' || event.key.toLowerCase() === 'd') {
+            event.preventDefault()
+            pan({ x: -panAmount })
+        }
+        if (event.key === 'ArrowUp' || event.key.toLowerCase() === 'w') {
+            event.preventDefault()
+            pan({ y: panAmount })
+        }
+
+        if (event.key === 'ArrowDown' || event.key.toLowerCase() === 's') {
+            event.preventDefault()
+            pan({ y: -panAmount })
+        }
+    }, [pan, panAmount])
+    useEffect(() => {
+        window.addEventListener('keydown', onKeyDown)
+        return () => {
+            window.removeEventListener('keydown', onKeyDown)
+        }
+    })
+}
+
+function useKeyboardZoomControls() {
+    const { zoomIn, zoomOut } = useCameraContext()
+    const onKeyDown = useCallback((event) => {
+        if (isEditableElement(event.target)) { return }
+        const meta = (event.metaKey || event.ctrlKey)
+        if (event.key === '=' && meta) {
+            event.preventDefault()
+            zoomIn()
+        }
+        if (event.key === '-' && meta) {
+            event.preventDefault()
+            zoomOut()
+        }
+    }, [zoomIn, zoomOut])
+    useEffect(() => {
+        window.addEventListener('keydown', onKeyDown)
+        return () => {
+            window.removeEventListener('keydown', onKeyDown)
+        }
+    })
+}
+
 function useCameraSpring() {
     const camera = useCameraContext()
     return camera.getSpring()
@@ -506,6 +568,8 @@ export default function Camera({ className, children }) {
 
     useWheelControls(elRef)
     usePanControls(elRef)
+    useKeyboardPanControls()
+    useKeyboardZoomControls()
 
     const spring = useCameraSpring()
 

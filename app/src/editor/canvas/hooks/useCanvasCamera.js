@@ -1,6 +1,7 @@
 import { useMemo, useCallback, useEffect, useState, useRef, useContext } from 'react'
 import { getCanvasBounds, getModuleBounds } from '$editor/shared/utils/bounds'
 import { useThrottled } from '$shared/hooks/wrapCallback'
+import isEditableElement from '$editor/shared/utils/isEditableElement'
 
 import { useCameraContext } from '../components/Camera'
 import { DragDropContext } from '../components/DragDropContext'
@@ -133,6 +134,24 @@ function useIsMouseDown({ buttons = 1, ref }) {
     return isMouseDown
 }
 
+function useKeyboardZoomControls() {
+    const { fitCanvas } = useCanvasCamera()
+    const onKeyDown = useCallback((event) => {
+        if (isEditableElement(event.target)) { return }
+        const meta = (event.metaKey || event.ctrlKey)
+        if (event.key === '0' && meta) {
+            event.preventDefault()
+            fitCanvas()
+        }
+    }, [fitCanvas])
+    useEffect(() => {
+        window.addEventListener('keydown', onKeyDown)
+        return () => {
+            window.removeEventListener('keydown', onKeyDown)
+        }
+    })
+}
+
 /*
  * When selection changes, an to selected module if needed
  */
@@ -202,6 +221,7 @@ function usePanEdgesOnDragEffect() {
 export function useCanvasCameraEffects() {
     useFitCanvasOnLoadEffect()
     usePanToSelectionEffect()
+    useKeyboardZoomControls()
 }
 
 export function useCanvasCameraDragEffects() {
