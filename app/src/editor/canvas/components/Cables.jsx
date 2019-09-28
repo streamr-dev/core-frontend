@@ -135,6 +135,7 @@ function useCableSprings(cables) {
     // create springs for each cable
     const setCableSpring = useCallback((i, offset = [0, 0]) => {
         const cable = cables[i]
+        if (!cable) { return }
         const [x1, y1] = applyOffset(cable[0], offset)
         const [x2, y2] = applyOffset(cable[1], offset)
         return {
@@ -154,13 +155,15 @@ function useCableSprings(cables) {
 
     // provide mapping between CableKey & cable index, so we can find cable spring
     const cableIndex = useMemo(() => (
-        cables.map((cable) => getCableKey(cable))
-    ), [cables])
+        cables.reduce((o, cable, index) => Object.assign(o, {
+            [getCableKey(cable)]: cableSprings[index],
+        }), {})
+    ), [cables, cableSprings])
 
     // get spring for cable
     const getCableSpring = useCallback((cable) => (
-        cableSprings[cableIndex.indexOf(getCableKey(cable))]
-    ), [cableSprings, cableIndex])
+        cableIndex[getCableKey(cable)]
+    ), [cableIndex])
     return getCableSpring
 }
 
@@ -171,6 +174,12 @@ export default function Cables(props) {
 
     const dragDrop = useContext(DragDropContext)
     const { isDragging, data } = dragDrop
+    const { sourceId, portId } = data
+    const shouldHide = useCallback(([a, b]) => {
+        if (a.id === DRAG_CABLE_ID || b.id === DRAG_CABLE_ID) { return false }
+        // remove currently dragged cable
+        return (a.id === sourceId && b.id === portId)
+    }, [sourceId, portId])
 
     const shouldFade = useCallback(([a, b]) => {
         // no fade if no selection
@@ -304,21 +313,11 @@ export default function Cables(props) {
             return staticCables
         }
 
-        const { portId, sourceId } = data
-
-        const cables = staticCables.filter(([from, to]) => {
-            // remove currently dragged cable
-            if (sourceId) {
-                return !(from.id === sourceId && to.id === portId)
-            }
-            return true
-        })
-
         return [
-            ...cables,
+            ...staticCables,
             dragCable, // append dragging cable
         ].filter(Boolean)
-    }, [staticCables, data, isDragging, dragCable])
+    }, [staticCables, isDragging, dragCable])
 
     const cables = useMemo(() => {
         if (isDragging && data.moduleHash != null) {
@@ -351,6 +350,7 @@ export default function Cables(props) {
                         cable={cable}
                         spring={getCableSpring(cable)}
                         className={cx({
+                            [styles.hidden]: shouldHide(cable),
                             [styles.fade]: shouldFade(cable),
                             [styles.highlight]: shouldHighlight(cable),
                         })}
@@ -369,6 +369,7 @@ export default function Cables(props) {
                         cable={cable}
                         spring={getCableSpring(cable)}
                         className={cx({
+                            [styles.hidden]: shouldHide(cable),
                             [styles.fade]: shouldFade(cable),
                             [styles.highlight]: shouldHighlight(cable),
                         })}
