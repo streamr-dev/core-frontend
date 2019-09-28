@@ -1,16 +1,10 @@
 /* eslint-disable react/no-unused-state */
 import React, { useMemo, useState, useLayoutEffect, useContext, useCallback } from 'react'
 import cx from 'classnames'
-import { useSpring, animated, to, useSprings } from 'react-spring'
+import { animated, to, useSprings } from 'react-spring'
 import { moduleHasPort, isConnectedToModule } from '../state'
 import styles from './Canvas.pcss'
 import { DragDropContext } from './DragDropContext'
-
-const CABLE_SPRING_CONFIG = {
-    mass: 1,
-    friction: 32,
-    tension: 700,
-}
 
 function applyOffset({ x, y, useOffset }, [x2 = 0, y2 = 0] = []) {
     if (!useOffset) {
@@ -45,39 +39,7 @@ function useOnDrag(fn) {
     }, [isDragging, setDiffValue])
 }
 
-function useCurvedHorizontal(x1, y1, x2, y2) {
-    const STEEPNESS = 1
-    const mx = ((x2 - x1) / 2) * STEEPNESS
-
-    const [c, set] = useSpring(() => ({
-        c1: [x1 + mx, y1],
-        c2: [x2 - mx, y2],
-        immediate: true,
-        config: CABLE_SPRING_CONFIG,
-    }))
-    set({
-        c1: [x1 + mx, y1],
-        c2: [x2 - mx, y2],
-    })
-
-    return to([c.c1, c.c2], (c1, c2) => {
-        const l = []
-        l.push('M', x1, y1)
-        l.push('C', ...c1, ...c2, x2, y2)
-        return l.join(' ')
-    })
-}
-
-const LAYER_0 = 0
-const LAYER_1 = 1
-
-export function Cable({ cable, spring, ...props }) {
-    if (!cable) { return null }
-    if (spring) { return <CableInnerSpring cable={cable} spring={spring} {...props} /> }
-    return <CableInner cable={cable} {...props} />
-}
-
-function curvedHorizontal(x1, y1, x2, y2) {
+function curvedHorizontalState(x1, y1, x2, y2) {
     const STEEPNESS = 1
     const mx = ((x2 - x1) / 2) * STEEPNESS
 
@@ -89,7 +51,45 @@ function curvedHorizontal(x1, y1, x2, y2) {
     }
 }
 
-function CableInnerSpring({ className, spring, cable, ...props }) {
+function curvedHorizontal(x1, y1, x2, y2) {
+    const STEEPNESS = 1
+    const line = []
+    const mx = ((x2 - x1) / 2) * STEEPNESS
+
+    line.push('M', x1, y1)
+    line.push('C', x1 + mx, y1, x2 - mx, y2, x2, y2)
+
+    return line.join(' ')
+}
+
+/**
+ * Regular static cable e.g. preview
+ */
+function CableStatic({ className, cable, ...props }) {
+    const [src, dest] = cable
+    const d = curvedHorizontal(
+        src.x,
+        src.y,
+        dest.x,
+        dest.y,
+    )
+    return (
+        <path
+            className={cx(styles.Connection, className)}
+            d={d}
+            stroke="#525252"
+            fill="none"
+            strokeWidth="1"
+            {...props}
+        />
+    )
+}
+
+/**
+ * Cable with spring transitions
+ */
+
+function CableSpring({ className, spring, cable, ...props }) {
     return (
         <animated.path
             className={cx(styles.Connection, className)}
@@ -107,31 +107,23 @@ function CableInnerSpring({ className, spring, cable, ...props }) {
     )
 }
 
-function CableInner({ className, cable, ...props }) {
-    const [from, to] = cable
-    const d = useCurvedHorizontal(
-        from.x,
-        from.y,
-        to.x,
-        to.y,
-    )
-    return (
-        <animated.path
-            className={cx(styles.Connection, className)}
-            d={d}
-            stroke="#525252"
-            fill="none"
-            strokeWidth="1"
-            {...props}
-        />
-    )
+export function Cable({ cable, spring, ...props }) {
+    if (!cable) { return null }
+    if (spring) { return <CableSpring cable={cable} spring={spring} {...props} /> }
+    return <CableStatic cable={cable} {...props} />
 }
 
-export function getCableKey([from, to] = []) {
-    return `${from && from.id}-${to && to.id}`
+export function getCableKey([src, dest] = []) {
+    return `${src && src.id}-${dest && dest.id}`
 }
 
-function useCableSprings(cables) {
+const CABLE_SPRING_CONFIG = {
+    mass: 1,
+    friction: 32,
+    tension: 700,
+}
+
+function useCableSprings(cables, config = CABLE_SPRING_CONFIG) {
     // create springs for each cable
     const setCableSpring = useCallback((i, offset = [0, 0]) => {
         const cable = cables[i]
@@ -139,17 +131,17 @@ function useCableSprings(cables) {
         const [x1, y1] = applyOffset(cable[0], offset)
         const [x2, y2] = applyOffset(cable[1], offset)
         return {
-            to: curvedHorizontal(x1, y1, x2, y2),
+            to: curvedHorizontalState(x1, y1, x2, y2),
             // only allow transition on control points
             immediate: (key) => !key.startsWith('c'),
-            config: CABLE_SPRING_CONFIG,
+            config,
         }
-    }, [cables])
+    }, [cables, config])
 
     const [cableSprings, setSprings] = useSprings(cables.length, (i) => setCableSpring(i))
 
+    // update cable offsets on drag
     useOnDrag(useCallback((offset) => {
-        // update offsets on drag
         setSprings((i) => setCableSpring(i, offset))
     }, [setSprings, setCableSpring]))
 
@@ -168,51 +160,16 @@ function useCableSprings(cables) {
 }
 
 const DRAG_CABLE_ID = 'DRAG_CABLE_ID'
+const LAYER_0 = 0
+const LAYER_1 = 1
 
-export default function Cables(props) {
-    const { canvas, selectedModuleHash, positions: positionsProp } = props
-
+/**
+ * Generates cable data based on canvas module ports, position data
+ * and drag/drop state
+ */
+function useCables({ canvas, positions, shouldHighlight }) {
     const dragDrop = useContext(DragDropContext)
     const { isDragging, data } = dragDrop
-    const { sourceId, portId } = data
-    const shouldHide = useCallback(([a, b]) => {
-        if (a.id === DRAG_CABLE_ID || b.id === DRAG_CABLE_ID) { return false }
-        // remove currently dragged cable
-        return (a.id === sourceId && b.id === portId)
-    }, [sourceId, portId])
-
-    const shouldFade = useCallback(([a, b]) => {
-        // no fade if no selection
-        if (selectedModuleHash == null) { return false }
-        // no fade if dragging cable
-        if (a.id === DRAG_CABLE_ID || b.id === DRAG_CABLE_ID) { return false }
-        // fade if not connected to selection
-        return !isConnectedToModule(canvas, selectedModuleHash, a.id, b.id)
-    }, [canvas, selectedModuleHash])
-
-    const shouldHighlight = useCallback(([a, b]) => {
-        // no highlight if no selection
-        if (selectedModuleHash == null) { return false }
-        // no highlight if dragging cable
-        if (a.id === DRAG_CABLE_ID || b.id === DRAG_CABLE_ID) { return false }
-        return !shouldFade([a, b])
-    }, [shouldFade, selectedModuleHash])
-
-    const [positionsState, setPositions] = useState(positionsProp)
-    useLayoutEffect(() => {
-        // cache positions while drag operation is in progress
-        if (isDragging && !positionsState) {
-            setPositions((s) => {
-                if (s) { return s }
-                return positionsProp
-            })
-        }
-        if (!isDragging && positionsState) {
-            setPositions(undefined)
-        }
-    }, [isDragging, positionsProp, positionsState])
-
-    const positions = positionsState || positionsProp
 
     /**
      * Get static cable positions according to connections & supplied port positions.
@@ -227,25 +184,27 @@ export default function Cables(props) {
                 })
                 return c
             }, [])
-            .map(([from, to]) => [positions[from], positions[to]])
-            .filter(([from, to]) => from && to)
-            .map(([from, to]) => {
+            .map(([src, dest]) => [positions[src], positions[dest]])
+            // clean out any bad cables
+            .filter(([src, dest]) => src && dest)
+            .map(([src, dest]) => {
                 // adjust offset to edge based on curve direction
                 // i.e. connect to left edge if curve going L->R,
                 // connect to right edge if curve going R->L
-                const direction = from.x < to.x ? 1 : -1
+                const direction = src.x < dest.x ? 1 : -1
                 return [{
-                    ...from,
-                    x: from.x + (0.5 * (from.width || 0) * direction), // connect to edge of from
-                    y: from.y,
+                    ...src,
+                    x: src.x + (0.5 * (src.width || 0) * direction), // connect to edge of src
+                    y: src.y,
                 }, {
-                    ...to,
-                    x: to.x + (0.5 * (to.width || 0) * -direction), // connect to edge of to
-                    y: to.y,
+                    ...dest,
+                    x: dest.x + (0.5 * (dest.width || 0) * -direction), // connect to edge of dest
+                    y: dest.y,
                 }]
             })
             .map((cable) => {
-                cable[2] = shouldHighlight(cable) ? 1 : 0
+                // use layer 1 if highlighted
+                cable[2] = shouldHighlight(cable) ? LAYER_1 : LAYER_0
                 return cable
             })
     ), [positions, shouldHighlight, canvas])
@@ -261,26 +220,26 @@ export default function Cables(props) {
 
         const { moduleHash } = data
 
-        return staticCables.map(([from, to]) => {
-            // update the positions of ports in dragged module
-            let fromNew = from
-            let toNew = to
+        return staticCables.map(([src, dest]) => {
+            // flag cables using ports from dragged module
+            let srcNew = src
+            let destNew = dest
             let layer = LAYER_0
-            if (moduleHasPort(canvas, moduleHash, from.id)) {
-                fromNew = {
-                    ...from,
+            if (moduleHasPort(canvas, moduleHash, src.id)) {
+                srcNew = {
+                    ...src,
                     useOffset: true,
                 }
                 layer = LAYER_1
             }
-            if (moduleHasPort(canvas, moduleHash, to.id)) {
-                toNew = {
-                    ...to,
+            if (moduleHasPort(canvas, moduleHash, dest.id)) {
+                destNew = {
+                    ...dest,
                     useOffset: true,
                 }
                 layer = LAYER_1
             }
-            return [fromNew, toNew, layer]
+            return [srcNew, destNew, layer]
         })
     }, [staticCables, data, canvas, isDragging])
 
@@ -319,7 +278,8 @@ export default function Cables(props) {
         ].filter(Boolean)
     }, [staticCables, isDragging, dragCable])
 
-    const cables = useMemo(() => {
+    // switch cables based on drag type
+    return useMemo(() => {
         if (isDragging && data.moduleHash != null) {
             return cablesDraggingModule
         }
@@ -330,6 +290,63 @@ export default function Cables(props) {
 
         return staticCables
     }, [isDragging, data, staticCables, cablesDraggingModule, cablesDraggingPort])
+}
+
+/**
+ * Returns cached version of value while preventUpdate is truthy
+ */
+
+function useCachedValue({ value, preventUpdate } = {}) {
+    const [cachedValue, setCachedValue] = useState(value)
+    useLayoutEffect(() => {
+        // cache positions while drag operation is in progress
+        if (preventUpdate && !cachedValue) {
+            setCachedValue((s) => {
+                if (s) { return s }
+                return value
+            })
+        }
+        if (!preventUpdate && cachedValue) {
+            setCachedValue(undefined)
+        }
+    }, [preventUpdate, value, cachedValue])
+
+    return cachedValue !== undefined ? cachedValue : value
+}
+
+export default function Cables({ canvas, selectedModuleHash, positions: positionsProp }) {
+    const dragDrop = useContext(DragDropContext)
+    const { isDragging, data } = dragDrop
+    const { sourceId, portId } = data
+
+    const shouldHide = useCallback(([src, dest]) => {
+        if (src.id === DRAG_CABLE_ID || dest.id === DRAG_CABLE_ID) { return false }
+        return (src.id === sourceId && dest.id === portId) // hide currently dragged cable
+    }, [sourceId, portId])
+
+    const shouldFade = useCallback(([src, dest]) => {
+        if (selectedModuleHash == null) { return false } // no fade if no selection
+        if (src.id === DRAG_CABLE_ID || dest.id === DRAG_CABLE_ID) { return false } // no fade if dragging cable
+        return !isConnectedToModule(canvas, selectedModuleHash, src.id, dest.id) // fade if not connected to selection
+    }, [canvas, selectedModuleHash])
+
+    const shouldHighlight = useCallback(([src, dest]) => {
+        if (selectedModuleHash == null) { return false } // no highlight if no selection
+        if (src.id === DRAG_CABLE_ID || dest.id === DRAG_CABLE_ID) { return false } // no highlight if dragging cable
+        return !shouldFade([src, dest])
+    }, [shouldFade, selectedModuleHash])
+
+    // use cached positions while dragging
+    const positions = useCachedValue({
+        value: positionsProp,
+        preventUpdate: isDragging,
+    })
+
+    const cables = useCables({
+        canvas,
+        positions,
+        shouldHighlight,
+    })
 
     const getCableSpring = useCableSprings(cables)
 
