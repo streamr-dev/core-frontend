@@ -503,9 +503,10 @@ function usePanControls(elRef) {
 }
 
 function useKeyboardPanControls({ panAmount = 25 } = {}) {
-    const { pan } = useCameraContext()
+    const { pan, elRef } = useCameraContext()
     const onKeyDown = useCallback((event) => {
-        if (isEditableElement(event.target)) { return }
+        const { current: el } = elRef
+        if (isEditableElement(event.target) || (!el.contains(event.target) && event.target !== document.body)) { return }
         if (event.key === 'ArrowLeft' || event.key.toLowerCase() === 'a') {
             event.preventDefault()
             pan({ x: panAmount })
@@ -523,19 +524,20 @@ function useKeyboardPanControls({ panAmount = 25 } = {}) {
             event.preventDefault()
             pan({ y: -panAmount })
         }
-    }, [pan, panAmount])
+    }, [pan, panAmount, elRef])
     useEffect(() => {
         window.addEventListener('keydown', onKeyDown)
         return () => {
             window.removeEventListener('keydown', onKeyDown)
         }
-    })
+    }, [onKeyDown])
 }
 
 function useKeyboardZoomControls() {
-    const { zoomIn, zoomOut } = useCameraContext()
+    const { zoomIn, zoomOut, elRef } = useCameraContext()
     const onKeyDown = useCallback((event) => {
-        if (isEditableElement(event.target)) { return }
+        const { current: el } = elRef
+        if (isEditableElement(event.target) || (!el.contains(event.target) && event.target !== document.body)) { return }
         const meta = (event.metaKey || event.ctrlKey)
         if (event.key === '=' && meta) {
             event.preventDefault()
@@ -545,13 +547,13 @@ function useKeyboardZoomControls() {
             event.preventDefault()
             zoomOut()
         }
-    }, [zoomIn, zoomOut])
+    }, [zoomIn, zoomOut, elRef])
     useEffect(() => {
         window.addEventListener('keydown', onKeyDown)
         return () => {
             window.removeEventListener('keydown', onKeyDown)
         }
-    })
+    }, [onKeyDown])
 }
 
 function useCameraSpring() {

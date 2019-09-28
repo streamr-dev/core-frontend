@@ -136,20 +136,23 @@ function useIsMouseDown({ buttons = 1, ref }) {
 
 function useKeyboardZoomControls() {
     const { fitCanvas } = useCanvasCamera()
+    const { elRef } = useCameraContext()
     const onKeyDown = useCallback((event) => {
-        if (isEditableElement(event.target)) { return }
+        const { current: el } = elRef
+        if (isEditableElement(event.target) || (!el.contains(event.target) && event.target !== document.body)) { return }
         const meta = (event.metaKey || event.ctrlKey)
         if (event.key === '0' && meta) {
             event.preventDefault()
             fitCanvas()
         }
-    }, [fitCanvas])
+    }, [fitCanvas, elRef])
+
     useEffect(() => {
         window.addEventListener('keydown', onKeyDown)
         return () => {
             window.removeEventListener('keydown', onKeyDown)
         }
-    })
+    }, [onKeyDown])
 }
 
 /*
