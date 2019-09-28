@@ -143,6 +143,8 @@ function useKeyboardZoomControls() {
         const meta = (event.metaKey || event.ctrlKey)
         if (event.key === '0' && meta) {
             event.preventDefault()
+            event.stopPropagation()
+            event.stopImmediatePropagation()
             fitCanvas()
         }
     }, [fitCanvas, elRef])

@@ -509,19 +509,26 @@ function useKeyboardPanControls({ panAmount = 25 } = {}) {
         if (isEditableElement(event.target) || (!el.contains(event.target) && event.target !== document.body)) { return }
         if (event.key === 'ArrowLeft' || event.key.toLowerCase() === 'a') {
             event.preventDefault()
+            event.stopPropagation()
+            event.stopImmediatePropagation()
             pan({ x: panAmount })
         }
         if (event.key === 'ArrowRight' || event.key.toLowerCase() === 'd') {
             event.preventDefault()
+            event.stopPropagation()
             pan({ x: -panAmount })
         }
-        if (event.key === 'ArrowUp' || event.key.toLowerCase() === 'w') {
+        if ((!event.shiftKey && event.key === 'ArrowUp') || event.key.toLowerCase() === 'w') {
             event.preventDefault()
+            event.stopPropagation()
+            event.stopImmediatePropagation()
             pan({ y: panAmount })
         }
 
-        if (event.key === 'ArrowDown' || event.key.toLowerCase() === 's') {
+        if ((!event.shiftKey && event.key === 'ArrowDown') || event.key.toLowerCase() === 's') {
             event.preventDefault()
+            event.stopPropagation()
+            event.stopImmediatePropagation()
             pan({ y: -panAmount })
         }
     }, [pan, panAmount, elRef])
@@ -539,12 +546,16 @@ function useKeyboardZoomControls() {
         const { current: el } = elRef
         if (isEditableElement(event.target) || (!el.contains(event.target) && event.target !== document.body)) { return }
         const meta = (event.metaKey || event.ctrlKey)
-        if (event.key === '=' && meta) {
+        if ((event.key === '=' && meta) || (event.key === 'ArrowUp' && event.shiftKey)) {
             event.preventDefault()
+            event.stopPropagation()
+            event.stopImmediatePropagation()
             zoomIn()
         }
-        if (event.key === '-' && meta) {
+        if ((event.key === '-' && meta) || (event.key === 'ArrowDown' && event.shiftKey)) {
             event.preventDefault()
+            event.stopPropagation()
+            event.stopImmediatePropagation()
             zoomOut()
         }
     }, [zoomIn, zoomOut, elRef])
