@@ -131,6 +131,39 @@ export function getCableKey([from, to] = []) {
     return `${from && from.id}-${to && to.id}`
 }
 
+function useCableSprings(cables) {
+    // create springs for each cable
+    const setCableSpring = useCallback((i, offset = [0, 0]) => {
+        const cable = cables[i]
+        const [x1, y1] = applyOffset(cable[0], offset)
+        const [x2, y2] = applyOffset(cable[1], offset)
+        return {
+            to: curvedHorizontal(x1, y1, x2, y2),
+            // only allow transition on control points
+            immediate: (key) => !key.startsWith('c'),
+            config: CABLE_SPRING_CONFIG,
+        }
+    }, [cables])
+
+    const [cableSprings, setSprings] = useSprings(cables.length, (i) => setCableSpring(i))
+
+    useOnDrag(useCallback((offset) => {
+        // update offsets on drag
+        setSprings((i) => setCableSpring(i, offset))
+    }, [setSprings, setCableSpring]))
+
+    // provide mapping between CableKey & cable index, so we can find cable spring
+    const cableIndex = useMemo(() => (
+        cables.map((cable) => getCableKey(cable))
+    ), [cables])
+
+    // get spring for cable
+    const getCableSpring = useCallback((cable) => (
+        cableSprings[cableIndex.indexOf(getCableKey(cable))]
+    ), [cableSprings, cableIndex])
+    return getCableSpring
+}
+
 const DRAG_CABLE_ID = 'DRAG_CABLE_ID'
 
 export default function Cables(props) {
@@ -299,28 +332,10 @@ export default function Cables(props) {
         return staticCables
     }, [isDragging, data, staticCables, cablesDraggingModule, cablesDraggingPort])
 
-    // Create a bunch of springs using the helpers above
+    const getCableSpring = useCableSprings(cables)
+
     const layer0 = useMemo(() => cables.filter(([, , layer]) => !layer).filter(Boolean), [cables])
     const layer1 = useMemo(() => cables.filter(([, , layer]) => layer === LAYER_1).filter(Boolean), [cables])
-
-    const setCableSpring = useCallback((i, offset = [0, 0]) => {
-        const cable = cables[i]
-        const [x1, y1] = applyOffset(cable[0], offset)
-        const [x2, y2] = applyOffset(cable[1], offset)
-        return {
-            to: curvedHorizontal(x1, y1, x2, y2),
-            immediate: (key) => !key.startsWith('c'),
-            config: CABLE_SPRING_CONFIG,
-        }
-    }, [cables])
-
-    const [cableSprings, setSprings] = useSprings(cables.length, (i) => setCableSpring(i))
-
-    const cableIndex = cables.map((cable) => getCableKey(cable))
-
-    useOnDrag(useCallback((offset) => {
-        setSprings((i) => setCableSpring(i, offset))
-    }, [setSprings, setCableSpring]))
 
     return (
         <React.Fragment>
@@ -334,7 +349,7 @@ export default function Cables(props) {
                     <Cable
                         key={getCableKey(cable)}
                         cable={cable}
-                        spring={cableSprings[cableIndex.indexOf(getCableKey(cable))]}
+                        spring={getCableSpring(cable)}
                         className={cx({
                             [styles.fade]: shouldFade(cable),
                             [styles.highlight]: shouldHighlight(cable),
@@ -352,7 +367,7 @@ export default function Cables(props) {
                     <Cable
                         key={getCableKey(cable)}
                         cable={cable}
-                        spring={cableSprings[cableIndex.indexOf(getCableKey(cable))]}
+                        spring={getCableSpring(cable)}
                         className={cx({
                             [styles.fade]: shouldFade(cable),
                             [styles.highlight]: shouldHighlight(cable),
