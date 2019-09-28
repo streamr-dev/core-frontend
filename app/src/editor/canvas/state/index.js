@@ -392,8 +392,8 @@ export function updateModulePosition(canvas, moduleHash, newPosition) {
     const modulePath = getModulePath(canvas, moduleHash)
     return update(modulePath.concat('layout', 'position'), (position) => ({
         ...position,
-        top: `${Number.parseInt(newPosition.top, 10)}px`,
-        left: `${Number.parseInt(newPosition.left, 10)}px`,
+        top: `${Number.parseFloat(newPosition.top)}px`,
+        left: `${Number.parseFloat(newPosition.left)}px`,
     }), canvas)
 }
 
@@ -1462,8 +1462,8 @@ export function getModuleCopy(canvas, moduleHash) {
     let tempCanvas = disconnectAllModulePorts(canvas, moduleHash)
     let m = getModule(tempCanvas, moduleHash)
     // offset new module by 32px
-    const top = ((m.layout && parseInt(m.layout.position.top, 10)) + 32) || 0
-    const left = ((m.layout && parseInt(m.layout.position.left, 10)) + 32) || 0
+    const top = ((m.layout && parseFloat(m.layout.position.top)) + 32) || 0
+    const left = ((m.layout && parseFloat(m.layout.position.left)) + 32) || 0
     tempCanvas = updateCanvas(updateModulePosition(tempCanvas, moduleHash, {
         top,
         left,
