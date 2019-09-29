@@ -31,6 +31,7 @@ type Props = {
     moduleSidebarIsOpen?: boolean,
     scale: number,
     interactive?: boolean,
+    isLoading?: boolean,
 }
 
 // $FlowFixMe
@@ -46,6 +47,7 @@ const ModuleRenderer = React.memo(({
     moduleSidebarIsOpen,
     scale,
     interactive,
+    isLoading,
     ...props
 }: Props) => {
     const isRunning = useIsCanvasRunning()
@@ -121,6 +123,7 @@ const ModuleRenderer = React.memo(({
                     editable={isEditable}
                     label={displayName || name}
                     onLabelChange={onRename}
+                    isLoading={isLoading}
                 >
                     {!!isRunning && !!canRefresh && (
                         <ModuleHeaderButton
