@@ -77,7 +77,10 @@ export default class CodeEditorWindow extends React.Component {
         })
     }
 
-    onMouseDownTitle = () => {
+    onMouseDownTitle = (event) => {
+        // need to cancel event otherwise editor focus doesn't stick
+        event.preventDefault()
+        event.stopPropagation()
         // forward title clicks to editor focus
         this.editor.current.editor.focus()
     }
