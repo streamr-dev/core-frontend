@@ -260,7 +260,8 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         if (this.unmounted) { return }
 
         this.replaceCanvas((canvas) => (
-            CanvasState.updateModule(canvas, hash, () => newModule)
+            // use replaceModule to maintain connections & other state as much as possible
+            CanvasState.replaceModule(canvas, newModule)
         ))
     }
 
