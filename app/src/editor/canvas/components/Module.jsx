@@ -1,5 +1,5 @@
 import cx from 'classnames'
-import React from 'react'
+import React, { useContext } from 'react'
 import { Translate } from 'react-redux-i18n'
 
 import ModuleHeader from '../../shared/components/ModuleHeader'
@@ -13,6 +13,7 @@ import { useCameraState } from './Camera'
 import ModuleStyles from '$editor/shared/components/Module.pcss'
 import styles from './Module.pcss'
 import ModuleRenderer from './ModuleRenderer'
+import { AutosaveContext } from './CanvasController/Autosave'
 
 class CanvasModule extends React.PureComponent {
     static contextType = RunController.Context
@@ -97,6 +98,7 @@ class CanvasModule extends React.PureComponent {
             isSelected,
             moduleSidebarIsOpen,
             onPort,
+            isLoading,
             scale,
             ...props
         } = this.props
@@ -116,6 +118,7 @@ class CanvasModule extends React.PureComponent {
                 innerRef={this.el}
                 isSelected={isSelected}
                 isSubscriptionActive={isSubscriptionActive}
+                isLoading={isLoading}
                 layout={layout}
                 module={module}
                 onFocus={this.onFocus}
@@ -192,10 +195,13 @@ function ModuleError(props) {
 const CanvasModuleWithErrorBoundary = React.memo(withErrorBoundary(ModuleError)(CanvasModule))
 
 export default React.memo(withErrorBoundary(ModuleError)((props) => {
+    const { module } = props
     const { scale } = useCameraState()
+    const { moduleNeedsUpdate } = useContext(AutosaveContext)
+    const isLoading = moduleNeedsUpdate(module.hash)
     return (
         <ModuleDragger module={props.module} api={props.api}>
-            <CanvasModuleWithErrorBoundary scale={scale} {...props} />
+            <CanvasModuleWithErrorBoundary isLoading={isLoading} scale={scale} {...props} />
         </ModuleDragger>
     )
 }))

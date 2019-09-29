@@ -36,7 +36,7 @@ import * as CanvasController from './components/CanvasController'
 import * as RunController from './components/CanvasController/Run'
 import useCanvas from './components/CanvasController/useCanvas'
 import useCanvasUpdater from './components/CanvasController/useCanvasUpdater'
-import useAutosaveEffect from './components/CanvasController/useAutosaveEffect'
+import { AutosaveProvider } from './components/CanvasController/Autosave'
 import useUpdatedTime from './components/CanvasController/useUpdatedTime'
 import useEmbedMode from './components/CanvasController/useEmbedMode'
 
@@ -503,12 +503,11 @@ const CanvasEdit = withRouter((props) => {
     const [updated, setUpdated] = useUpdatedTime(canvas.updated)
     const isEmbedMode = useEmbedMode()
     useCanvasNotifications(canvas)
-    useAutosaveEffect()
     useCanvasCameraEffects()
     const selection = useCanvasSelection()
 
     return (
-        <React.Fragment>
+        <AutosaveProvider>
             <UndoControls disabled={!runController.isEditable} />
             <CanvasEditComponent
                 {...props}
@@ -523,7 +522,7 @@ const CanvasEdit = withRouter((props) => {
                 setUpdated={setUpdated}
                 selection={selection}
             />
-        </React.Fragment>
+        </AutosaveProvider>
     )
 })
 

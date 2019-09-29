@@ -4,6 +4,7 @@ import get from 'lodash/get'
 import cloneDeep from 'lodash/cloneDeep'
 import uniqBy from 'lodash/uniqBy'
 import uuid from 'uuid'
+import isEqual from 'lodash/isEqual'
 import * as diff from './diff'
 
 const MISSING_ENTITY = 'EDITOR/MISSING_ENTITY'
@@ -1553,4 +1554,19 @@ export function getModuleCopy(canvas, moduleHash) {
         ...m,
         hash: undefined, // always remove hash
     }
+}
+
+export function moduleNeedsUpdate(canvasA, canvasB, hash) {
+    if (diff.isEqualCanvas(canvasA, canvasB)) { return false }
+    const changed = diff.changedModules(canvasA, canvasB)
+    if (!changed.includes(hash)) { return false }
+    const b = getModule(canvasB, hash)
+    const a = getModuleIfExists(canvasA, hash)
+    if (!isEqual(b.options, a && a.options)) { return true }
+    const bUpdateNeededPorts = [].concat(b.inputs, b.outputs, b.params).filter((p) => p.updateOnChange)
+    return bUpdateNeededPorts.some((bPort) => {
+        const aPort = matchPortInPreviousCanvas(canvasA, canvasB, bPort.id)
+        if (!aPort) { return true }
+        return !isEqual(bPort, aPort)
+    })
 }
