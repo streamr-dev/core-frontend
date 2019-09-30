@@ -44,9 +44,7 @@ describe('UndoContext', () => {
             const newInitialState = {
                 initial: true,
             }
-            await props.reset({
-                initialState: newInitialState,
-            })
+            await props.reset(() => newInitialState)
             expect(props.state).toBe(newInitialState)
             expect(props.initialState).toBe(newInitialState)
             expect(props.action).toBe(UndoContext.initialAction)
@@ -78,14 +76,14 @@ describe('UndoContext', () => {
             const newInitialState = {
                 initial: true,
             }
-            await props.reset({
-                initialState: newInitialState,
-                done: () => {
+            await props.reset(
+                () => newInitialState,
+                () => {
                     expect(props.state).toBe(newInitialState)
                     expect(props.initialState).toBe(newInitialState)
                     expect(props.action).toBe(UndoContext.initialAction)
                 },
-            })
+            )
         })
 
         describe('undo/redo with initial state', () => {
