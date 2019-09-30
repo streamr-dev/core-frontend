@@ -27,6 +27,7 @@ type ContextProps = {
     reset: Function,
     action: Action,
     state: ?Object,
+    initialState?: any,
 }
 
 export const initialAction = {
@@ -35,6 +36,7 @@ export const initialAction = {
 
 const UndoContext: Context<ContextProps> = React.createContext({
     action: initialAction,
+    initialState: undefined,
     state: undefined,
     history: [],
     pointer: 0,
@@ -53,7 +55,6 @@ const UndoContext: Context<ContextProps> = React.createContext({
 
 type Props = {
     children?: Node,
-    initialState?: any,
     enableBreadcrumbs?: boolean,
 }
 
@@ -65,18 +66,18 @@ class UndoContextProvider extends Component<Props, State> {
 
     static propTypes = {
         children: t.node.isRequired,
-        initialState: t.object, // eslint-disable-line react/forbid-prop-types
     }
 
     static getDerivedStateFromProps(props: Props, state: State) {
         const nextState = {
             ...state,
         }
-        if (!state.history.length && props.initialState) {
+
+        if (!state.history.length) {
             // initialise with first 'initialState'
             Object.assign(nextState, {
                 history: [{
-                    state: props.initialState,
+                    state: state.initialState,
                     action: initialAction,
                 }],
                 pointer: 0,
@@ -204,14 +205,18 @@ class UndoContextProvider extends Component<Props, State> {
      * Reset to initialState
      */
 
-    reset = (done: Function) => {
+    reset = (fn: Function, done: Function) => {
         const p: Promise<void> = new Promise((resolve) => (
-            this.setState({
-                history: [{
-                    state: this.props.initialState,
-                    action: initialAction,
-                }],
-                pointer: 0,
+            this.setState(({ initialState }) => {
+                const nextInitialState = (typeof fn === 'function') ? fn(initialState) : initialState
+                return {
+                    history: [{
+                        initialState: nextInitialState,
+                        state: nextInitialState,
+                        action: initialAction,
+                    }],
+                    pointer: 0,
+                }
             }, resolve)
         ))
         p.then(done)
@@ -229,6 +234,7 @@ class UndoContextProvider extends Component<Props, State> {
         reset: this.reset,
         state: undefined,
         action: initialAction,
+        initialState: undefined,
     }
 
     render() {

@@ -15,6 +15,7 @@ import useProductActions from '../ProductController/useProductActions'
 import { isEthereumAddress } from '$mp/utils/validate'
 import { areAddressesEqual } from '$mp/utils/smartContract'
 
+import useOriginalProduct from '../ProductController/useOriginalProduct'
 import useModal from '$shared/hooks/useModal'
 
 type ContextProps = {
@@ -35,6 +36,7 @@ function useEditController(product: Product) {
     const isMounted = useIsMounted()
     const savePending = usePending('product.SAVE')
     const { updateBeneficiaryAddress } = useProductActions()
+    const originalProduct = useOriginalProduct()
 
     useEffect(() => {
         const handleBeforeunload = (event) => {
@@ -103,6 +105,7 @@ function useEditController(product: Product) {
         const savedSuccessfully = await savePending.wrap(async () => {
             const p = productRef.current
 
+            console.log(originalProduct)
             // save product
             await putProduct(p, p.id || '')
 
@@ -126,6 +129,7 @@ function useEditController(product: Product) {
     }, [
         savePending,
         redirectToProduct,
+        originalProduct,
     ])
 
     const validate = useCallback(() => {

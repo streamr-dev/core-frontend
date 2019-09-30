@@ -18,13 +18,10 @@ describe('UndoContext', () => {
             ))
         })
 
-        it('can take a value', () => {
-            const initialState = {
-                initial: true,
-            }
+        it('can modify initial state', async () => {
             let props
             mount((
-                <UndoContext.Provider initialState={initialState}>
+                <UndoContext.Provider>
                     <UndoContext.Context.Consumer>
                         {(containerProps) => {
                             props = containerProps
@@ -33,8 +30,60 @@ describe('UndoContext', () => {
                     </UndoContext.Context.Consumer>
                 </UndoContext.Provider>
             ))
-            expect(props.state).toEqual(initialState)
+            expect(props.initialState).toBe(undefined)
+
+            const action = {
+                type: 'action',
+            }
+            const nextState = {
+                next: true,
+            }
+            await props.push(action, () => nextState)
+            expect(props.state).toBe(nextState)
+            expect(props.initialState).toBe(undefined)
+            const newInitialState = {
+                initial: true,
+            }
+            await props.reset(() => newInitialState)
+            expect(props.state).toBe(newInitialState)
+            expect(props.initialState).toBe(newInitialState)
             expect(props.action).toBe(UndoContext.initialAction)
+        })
+
+        it('can add handler to reset', async () => {
+            let props
+            mount((
+                <UndoContext.Provider>
+                    <UndoContext.Context.Consumer>
+                        {(containerProps) => {
+                            props = containerProps
+                            return null
+                        }}
+                    </UndoContext.Context.Consumer>
+                </UndoContext.Provider>
+            ))
+            expect(props.initialState).toBe(undefined)
+
+            const action = {
+                type: 'action',
+            }
+            const nextState = {
+                next: true,
+            }
+            await props.push(action, () => nextState)
+            expect(props.state).toBe(nextState)
+            expect(props.initialState).toBe(undefined)
+            const newInitialState = {
+                initial: true,
+            }
+            await props.reset(
+                () => newInitialState,
+                () => {
+                    expect(props.state).toBe(newInitialState)
+                    expect(props.initialState).toBe(newInitialState)
+                    expect(props.action).toBe(UndoContext.initialAction)
+                },
+            )
         })
 
         describe('undo/redo with initial state', () => {
@@ -61,15 +110,12 @@ describe('UndoContext', () => {
 
     describe('push/undo/redo', () => {
         it('can push new state', async () => {
-            const initialState = {
-                initial: true,
-            }
             const nextState = {
                 next: true,
             }
             let props
             mount((
-                <UndoContext.Provider initialState={initialState}>
+                <UndoContext.Provider>
                     <UndoContext.Context.Consumer>
                         {(containerProps) => {
                             props = containerProps
@@ -84,7 +130,7 @@ describe('UndoContext', () => {
                 type: 'action',
             }
             await props.push(action, (prevState) => {
-                expect(prevState).toEqual(initialState) // history pointer should not change
+                expect(prevState).toEqual(undefined) // history pointer should not change
                 return nextState
             })
             expect(props.state).toEqual(nextState)
@@ -93,15 +139,12 @@ describe('UndoContext', () => {
         })
 
         it('push/replace does nothing if return null/same', async () => {
-            const initialState = {
-                initial: true,
-            }
             const action = {
                 type: 'action',
             }
             let props
             mount((
-                <UndoContext.Provider initialState={initialState}>
+                <UndoContext.Provider>
                     <UndoContext.Context.Consumer>
                         {(containerProps) => {
                             props = containerProps
@@ -125,15 +168,12 @@ describe('UndoContext', () => {
         })
 
         it('can undo then redo after pushing state', async () => {
-            const initialState = {
-                initial: true,
-            }
             const nextState = {
                 next: true,
             }
             let props
             mount((
-                <UndoContext.Provider initialState={initialState}>
+                <UndoContext.Provider>
                     <UndoContext.Context.Consumer>
                         {(containerProps) => {
                             props = containerProps
@@ -149,12 +189,12 @@ describe('UndoContext', () => {
             }
             // add item
             await props.push(action, (prevState) => {
-                expect(prevState).toEqual(initialState) // history pointer should not change
+                expect(prevState).toEqual(undefined) // history pointer should not change
                 return nextState
             })
             // undo
             await props.undo()
-            expect(props.state).toEqual(initialState)
+            expect(props.state).toEqual(undefined)
             expect(props.pointer).toBe(initialProps.pointer)
             expect(props.action).toBe(UndoContext.initialAction)
             // redo
@@ -182,16 +222,13 @@ describe('UndoContext', () => {
     })
 
     it('can replace initial state', async () => {
-        const initialState = {
-            initial: true,
-        }
         const replaceState = {
             replaced: true,
         }
         let props
         mount((
             <UndoContext.Provider>
-                <UndoContext.Context.Consumer initialState={initialState}>
+                <UndoContext.Context.Consumer>
                     {(containerProps) => {
                         props = containerProps
                         return null
@@ -208,15 +245,12 @@ describe('UndoContext', () => {
     })
 
     it('can replace top item after push', async () => {
-        const initialState = {
-            initial: true,
-        }
         const nextState = {
             next: true,
         }
         let props
         mount((
-            <UndoContext.Provider initialState={initialState}>
+            <UndoContext.Provider>
                 <UndoContext.Context.Consumer>
                     {(containerProps) => {
                         props = containerProps
@@ -242,9 +276,6 @@ describe('UndoContext', () => {
     })
 
     it('can reset history', async () => {
-        const initialState = {
-            initial: true,
-        }
         const nextState = {
             next: true,
         }
@@ -254,7 +285,7 @@ describe('UndoContext', () => {
 
         let props
         mount((
-            <UndoContext.Provider initialState={initialState}>
+            <UndoContext.Provider>
                 <UndoContext.Context.Consumer>
                     {(containerProps) => {
                         props = containerProps

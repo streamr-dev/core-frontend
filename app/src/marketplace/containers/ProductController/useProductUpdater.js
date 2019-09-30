@@ -14,14 +14,14 @@ function productUpdater(fn) {
 }
 
 export default function useProductUpdater() {
-    const { push, replace } = useContext(UndoContext)
+    const { push, reset } = useContext(UndoContext)
 
     const updateProduct = useOnlyIfMountedCallback((action, fn, done) => {
         push(action, productUpdater(fn), done)
     }, [push, productUpdater])
 
     const replaceProduct = useOnlyIfMountedCallback((fn, done) => {
-        replace(productUpdater(fn), done)
+        reset(productUpdater(fn), done)
     }, [push, productUpdater])
 
     return useMemo(() => ({
