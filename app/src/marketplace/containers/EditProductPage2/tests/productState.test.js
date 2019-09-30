@@ -17,6 +17,11 @@ describe('Product State', () => {
                 state: productStates.UNDEPLOYING,
             })).toBe(false)
         })
+
+        it('detects published state for empty product', () => {
+            expect(State.isPublished({})).toBe(false)
+            expect(State.isPublished(undefined)).toBe(false)
+        })
     })
 
     describe('update', () => {
@@ -112,6 +117,40 @@ describe('Product State', () => {
                 name: 'Better Name',
                 description: 'A better description',
             })
+        })
+    })
+
+    describe('hasPendingChange', () => {
+        it('it returns false for unpublished product change', () => {
+            const product = {
+                id: '1',
+                name: 'My Product',
+                description: 'My nice product',
+                state: productStates.NOT_DEPLOYED,
+            }
+            const nextProduct = State.update(product, (p) => ({
+                ...p,
+                name: 'Better Name',
+                description: 'A better description',
+            }))
+            expect(State.hasPendingChange(nextProduct, 'name')).toBe(false)
+            expect(State.hasPendingChange(nextProduct, 'description')).toBe(false)
+        })
+
+        it('it returns true for published product change', () => {
+            const product = {
+                id: '1',
+                name: 'My Product',
+                description: 'My nice product',
+                state: productStates.DEPLOYED,
+            }
+            const nextProduct = State.update(product, (p) => ({
+                ...p,
+                name: 'Better Name',
+                description: 'A better description',
+            }))
+            expect(State.hasPendingChange(nextProduct, 'name')).toBe(true)
+            expect(State.hasPendingChange(nextProduct, 'description')).toBe(true)
         })
     })
 
