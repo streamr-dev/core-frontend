@@ -12,6 +12,7 @@ import { isPaidProduct } from '$mp/utils/product'
 import { timeUnits, DEFAULT_CURRENCY } from '$shared/utils/constants'
 import { priceForTimeUnits } from '$mp/utils/price'
 
+import * as State from '../EditProductPage2/state'
 import useProductUpdater from './useProductUpdater'
 
 export default function useProductLoadCallback() {
@@ -39,7 +40,7 @@ export default function useProductLoadCallback() {
                 price: product.price || priceForTimeUnits(product.pricePerSecond || '0', 1, timeUnits.hour),
             }
 
-            productUpdater.replaceProduct(() => nextProduct)
+            productUpdater.replaceProduct(() => State.withPendingChanges(nextProduct))
         })
     ), [wrap, productUpdater, history, isMountedRef])
 }

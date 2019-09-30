@@ -16,6 +16,8 @@ import { isEthereumAddress } from '$mp/utils/validate'
 import { areAddressesEqual } from '$mp/utils/smartContract'
 
 import useOriginalProduct from '../ProductController/useOriginalProduct'
+
+import * as State from '../EditProductPage2/state'
 import useModal from '$shared/hooks/useModal'
 
 type ContextProps = {
@@ -102,21 +104,27 @@ function useEditController(product: Product) {
     const save = useCallback(async (options = {
         redirect: true,
     }) => {
+        if (!originalProduct) { throw new Error('originalProduct is missing') }
         const savedSuccessfully = await savePending.wrap(async () => {
-            const p = productRef.current
-
-            console.log(originalProduct)
-            // save product
-            await putProduct(p, p.id || '')
+            const nextProduct = {
+                ...productRef.current,
+            }
 
             // upload image
-            if (p.newImageToUpload != null) {
+            if (nextProduct.newImageToUpload != null) {
                 try {
-                    await postImage(p.id || '', p.newImageToUpload)
+                    const { imageUrl: newImageUrl } = await postImage(nextProduct.id || '', nextProduct.newImageToUpload)
+                    nextProduct.imageUrl = newImageUrl
+                    delete nextProduct.newImageToUpload
                 } catch (e) {
                     console.error('Could not upload image', e)
                 }
             }
+
+            // save product
+            await putProduct(State.update(originalProduct, () => ({
+                ...nextProduct,
+            })), nextProduct.id || '')
 
             // TODO: handle saving errors
             return true
