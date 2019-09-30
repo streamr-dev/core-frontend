@@ -89,18 +89,18 @@ const onDragStart = (e: any, moduleId: number, moduleName: string, streamId?: st
     }
 }
 
-const onDrop = (e: any, addModule: (number, number, number, ?string) => void) => {
+const onDrop = (e: any, camera: any, addModule: (number, number, number, ?string) => void) => {
     const moduleId = e.dataTransfer.getData('streamr/module')
     const streamId = e.dataTransfer.getData('streamr/stream')
 
-    if (moduleId) {
-        // Get click position relative to the canvas element
-        const rect = e.currentTarget.getBoundingClientRect()
-        const x = e.clientX - rect.left - 20 // TODO: where is this 20px offset coming
-        const y = e.clientY - rect.top - 20 // TODO: where is this 20px offset coming
+    if (!moduleId) { return }
 
-        addModule(moduleId, x, y, streamId)
-    }
+    const { x, y } = camera.viewToCameraPoint({
+        x: e.offsetX,
+        y: e.offsetY,
+    })
+
+    addModule(moduleId, x, y, streamId)
 }
 
 const ModuleMenuItem = ({ module, addModule }) => (
@@ -146,7 +146,6 @@ class ModuleSearch extends React.PureComponent<Props, State> {
     selfRef: Ref<HTMLDivElement> = React.createRef()
 
     componentDidMount() {
-        this.addOrRemoveDropListener(true)
         this.load()
 
         if (this.input && this.props.isOpen) {
@@ -154,21 +153,29 @@ class ModuleSearch extends React.PureComponent<Props, State> {
         }
     }
 
+    componentDidUpdate() {
+        // due to component hierarchy, camera el won't be set on first render
+        this.addOrRemoveDropListener(true)
+    }
+
     componentWillUnmount() {
         this.unmounted = true
         this.addOrRemoveDropListener(false)
     }
 
-    addOrRemoveDropListener= (add: boolean) => {
-        const canvasElement = document.querySelector(`.${CanvasStyles.Modules}`)
-        if (canvasElement) {
-            if (add) {
-                canvasElement.addEventListener('dragover', this.onDragOver)
-                canvasElement.addEventListener('drop', this.onDrop)
-            } else {
-                canvasElement.removeEventListener('dragover', this.onDragOver)
-                canvasElement.removeEventListener('drop', this.onDrop)
-            }
+    addOrRemoveDropListener = (add: boolean) => {
+        const { camera = {} } = this.props
+        const { current: el } = camera.elRef
+        if (!el) { return }
+        if (add) {
+            // remove first, ensure can't add more than once
+            el.removeEventListener('dragover', this.onDragOver)
+            el.removeEventListener('drop', this.onDrop)
+            el.addEventListener('dragover', this.onDragOver)
+            el.addEventListener('drop', this.onDrop)
+        } else {
+            el.removeEventListener('dragover', this.onDragOver)
+            el.removeEventListener('drop', this.onDrop)
         }
     }
 
@@ -177,7 +184,7 @@ class ModuleSearch extends React.PureComponent<Props, State> {
     }
 
     onDrop = (e: DragEvent) => {
-        onDrop(e, this.addModule)
+        onDrop(e, this.props.camera, this.addModule)
     }
 
     async load() {
