@@ -274,8 +274,8 @@ function useCameraSimpleApi(opts) {
         }))
     }, [setState, scale, x, y, areBoundsInView, elRef])
 
-    // convert bounds in px coordinates to camera's world coordinates
-    const viewToCameraBounds = useCallback((bounds) => {
+    // convert bounds in screen/camera coordinates to world coordinates
+    const cameraToWorldBounds = useCallback((bounds) => {
         const canvasX = (bounds.x - x) / scale
         const canvasY = (bounds.y - y) / scale
         return {
@@ -286,9 +286,9 @@ function useCameraSimpleApi(opts) {
         }
     }, [x, y, scale])
 
-    // convert point in px coordinates to camera's world coordinates
-    const viewToCameraPoint = useCallback((point) => {
-        const { x, y } = viewToCameraBounds({
+    // convert point in screen/camera coordinates to world coordinates
+    const cameraToWorldPoint = useCallback((point) => {
+        const { x, y } = cameraToWorldBounds({
             ...point,
             width: 1,
             height: 1,
@@ -297,7 +297,7 @@ function useCameraSimpleApi(opts) {
             x,
             y,
         }
-    }, [viewToCameraBounds])
+    }, [cameraToWorldBounds])
 
     return useMemo(() => ({
         ...state,
@@ -314,8 +314,8 @@ function useCameraSimpleApi(opts) {
         fitView,
         centerBounds,
         areBoundsInView,
-        viewToCameraBounds,
-        viewToCameraPoint,
+        cameraToWorldBounds,
+        cameraToWorldPoint,
         panIntoViewIfNeeded,
     }), [
         state,
@@ -331,8 +331,8 @@ function useCameraSimpleApi(opts) {
         fitView,
         centerBounds,
         areBoundsInView,
-        viewToCameraBounds,
-        viewToCameraPoint,
+        cameraToWorldBounds,
+        cameraToWorldPoint,
         panIntoViewIfNeeded,
     ])
 }

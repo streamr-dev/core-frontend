@@ -95,7 +95,7 @@ const onDrop = (e: any, camera: any, addModule: (number, number, number, ?string
 
     if (!moduleId) { return }
 
-    const { x, y } = camera.viewToCameraPoint({
+    const { x, y } = camera.cameraToWorldPoint({
         x: e.offsetX,
         y: e.offsetY,
     })
@@ -299,7 +299,7 @@ class ModuleSearch extends React.PureComponent<Props, State> {
         const { camera = {} } = this.props
 
         const canvasRect = camera.elRef.current.getBoundingClientRect()
-        const myBB = camera.viewToCameraBounds({
+        const myBB = camera.cameraToWorldBounds({
             // Align module to the top right corner of ModuleSearch with a 32px offset
             x: (selfRect.right - canvasRect.left - 20) + 32,
             y: selfRect.top - canvasRect.top,
