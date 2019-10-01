@@ -48,7 +48,7 @@ function ZoomButtons({ canvas }) {
                     </button>
                 }
                 noCaret
-                className={styles.DropdownMenu}
+                className={cx(styles.ZoomMenu, styles.DropdownMenu)}
                 menuProps={{
                     className: styles.DropdownMenuMenu,
                 }}
