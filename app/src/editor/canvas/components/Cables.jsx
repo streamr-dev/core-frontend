@@ -6,14 +6,22 @@ import { moduleHasPort, isConnectedToModule } from '../state'
 import styles from './Canvas.pcss'
 import { DragDropContext } from './DragDropContext'
 
-function applyOffset({ x, y, useOffset }, [x2 = 0, y2 = 0] = []) {
-    if (!useOffset) {
-        return [x, y]
+function applyOffset({ x, y, ...rest }, [x2 = 0, y2 = 0] = []) {
+    return {
+        ...rest,
+        x: x + x2,
+        y: y + y2,
     }
-    return [
-        x + x2,
-        y + y2,
-    ]
+}
+
+function applyEdgeOffset([src, dest, ...rest]) {
+    // adjust offset to edge based on curve direction
+    // i.e. connect to left edge if curve going L->R,
+    // connect to right edge if curve going R->L
+    const direction = src.x < dest.x ? 1 : -1
+    src = applyOffset(src, [(0.5 * (src.width || 0) * direction), 0]) // connect to edge of src
+    dest = applyOffset(dest, [(0.5 * (dest.width || 0) * -direction), 0]) // connect to edge of dest
+    return [src, dest, ...rest]
 }
 
 function useOnDrag(fn) {
@@ -66,7 +74,9 @@ function curvedHorizontal(x1, y1, x2, y2) {
  * Regular static cable e.g. preview
  */
 function CableStatic({ className, cable, ...props }) {
-    const [src, dest] = cable
+    let [src, dest] = cable
+    // eslint-disable-next-line semi-style
+    ;[src, dest] = applyEdgeOffset([src, dest])
     const d = curvedHorizontal(
         src.x,
         src.y,
@@ -128,10 +138,15 @@ function useCableSprings(cables, config = CABLE_SPRING_CONFIG) {
     const setCableSpring = useCallback((i, offset = [0, 0]) => {
         const cable = cables[i]
         if (!cable) { return }
-        const [x1, y1] = applyOffset(cable[0], offset)
-        const [x2, y2] = applyOffset(cable[1], offset)
+        let [src, dest] = cable
+        // apply drag offsets, if required
+        src = !src.useOffset ? src : applyOffset(src, offset)
+        dest = !dest.useOffset ? dest : applyOffset(dest, offset)
+        // eslint-disable-next-line semi-style
+        ;[src, dest] = applyEdgeOffset([src, dest])
+
         return {
-            to: curvedHorizontalState(x1, y1, x2, y2),
+            to: curvedHorizontalState(src.x, src.y, dest.x, dest.y),
             // only allow transition on control points
             immediate: (key) => !key.startsWith('c'),
             config,
@@ -187,21 +202,7 @@ function useCables({ canvas, positions, shouldHighlight }) {
             .map(([src, dest]) => [positions[src], positions[dest]])
             // clean out any bad cables
             .filter(([src, dest]) => src && dest)
-            .map(([src, dest]) => {
-                // adjust offset to edge based on curve direction
-                // i.e. connect to left edge if curve going L->R,
-                // connect to right edge if curve going R->L
-                const direction = src.x < dest.x ? 1 : -1
-                return [{
-                    ...src,
-                    x: src.x + (0.5 * (src.width || 0) * direction), // connect to edge of src
-                    y: src.y,
-                }, {
-                    ...dest,
-                    x: dest.x + (0.5 * (dest.width || 0) * -direction), // connect to edge of dest
-                    y: dest.y,
-                }]
-            })
+
             .map((cable) => {
                 // use layer 1 if highlighted
                 cable[2] = shouldHighlight(cable) ? LAYER_1 : LAYER_0
