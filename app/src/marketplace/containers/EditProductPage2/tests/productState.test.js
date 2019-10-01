@@ -24,6 +24,54 @@ describe('Product State', () => {
         })
     })
 
+    describe('getPendingObject', () => {
+        it('returns only the allowed fields', () => {
+            const allowed = Object.fromEntries(State.PENDING_CHANGE_FIELDS.map((key) => [key, key]))
+            const notAllowed = Object.fromEntries(['id', 'newImageToUpload', 'state'].map((key) => [key, key]))
+
+            expect(State.getPendingObject({
+                ...allowed,
+                ...notAllowed,
+            })).toMatchObject(allowed)
+        })
+
+        it('it returns only defined values', () => {
+            expect(State.getPendingObject({
+                id: '1',
+                name: 'new name',
+                description: 'new description',
+                imageUrl: undefined,
+                thumbanilUrl: undefined,
+                streams: [],
+                previewStream: '',
+                updated: '2019-10-01 09:51:00',
+            })).toMatchObject({
+                name: 'new name',
+                description: 'new description',
+                streams: [],
+                previewStream: '',
+            })
+        })
+    })
+
+    describe('getChangeObject', () => {
+        it('returns the changed fields', () => {
+            const product = {
+                id: '1',
+                name: 'My Product',
+                description: 'My nice product',
+                state: productStates.NOT_DEPLOYED,
+            }
+            expect(State.getChangeObject(product, {
+                id: '2',
+                name: 'New Name',
+                state: 'DEPLOYED',
+            })).toMatchObject({
+                name: 'New Name',
+            })
+        })
+    })
+
     describe('update', () => {
         it('updates unpublished product', () => {
             const product = {

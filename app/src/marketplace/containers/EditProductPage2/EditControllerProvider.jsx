@@ -113,8 +113,9 @@ function useEditController(product: Product) {
             // upload image
             if (nextProduct.newImageToUpload != null) {
                 try {
-                    const { imageUrl: newImageUrl } = await postImage(nextProduct.id || '', nextProduct.newImageToUpload)
+                    const { imageUrl: newImageUrl, thumbnailUrl: newThumbnailUrl } = await postImage(nextProduct.id || '', nextProduct.newImageToUpload)
                     nextProduct.imageUrl = newImageUrl
+                    nextProduct.thumbnailUrl = newThumbnailUrl
                     delete nextProduct.newImageToUpload
                 } catch (e) {
                     console.error('Could not upload image', e)
