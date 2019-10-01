@@ -155,8 +155,8 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
             >
                 <ModalContainer modalId="ShareDialog">
                     {({ api: shareDialog }) => (
-                        <React.Fragment>
-                            <div className={styles.ToolbarLeft}>
+                        <div className={styles.ToolbarInner}>
+                            <div className={styles.LeftControls}>
                                 <UseState initialValue={false}>
                                     {(editing, setEditing) => (
                                         <div className={styles.CanvasNameContainer}>
@@ -206,45 +206,47 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                         </div>
                                     )}
                                 </UseState>
-                            </div>
-                            <div className={cx(styles.ToolbarLeft, styles.OpenAddButtons)}>
-                                <R.Button
-                                    className={cx(styles.ToolbarButton, styles.OpenCanvasButton)}
-                                    onMouseDown={(event) => {
-                                        // required to prevent mouseDown causing open search panel to blur
-                                        // which closes the search panel, only to be opened again on mouseup (click)
-                                        // also somehow strangely affected by realtime/historical button ? nfi.
-                                        event.preventDefault()
-                                    }}
-                                    onClick={() => {
-                                        this.canvasSearchOpen(!this.state.canvasSearchIsOpen)
-                                    }}
-                                >
-                                    Open
-                                </R.Button>
-                                <CanvasSearch
-                                    canvas={canvas}
-                                    isOpen={canvasSearchIsOpen}
-                                    open={this.canvasSearchOpen}
-                                />
-                                <Tooltip
-                                    container={this.elRef.current}
-                                    value={moduleSearchIsOpen ? (
-                                        'Hide module panel'
-                                    ) : (
-                                        'Show module panel'
-                                    )}
-                                >
+                                <div className={styles.OpenAddButtons}>
                                     <R.Button
-                                        className={cx(styles.ToolbarButton, styles.AddButton, {
-                                            [styles.active]: !!moduleSearchIsOpen,
-                                        })}
-                                        onClick={() => this.props.moduleSearchOpen(!moduleSearchIsOpen)}
-                                        disabled={!canEdit}
+                                        className={cx(styles.ToolbarButton, styles.OpenCanvasButton)}
+                                        onMouseDown={(event) => {
+                                            // required to prevent mouseDown causing open search panel to blur
+                                            // which closes the search panel, only to be opened again on mouseup (click)
+                                            // also somehow strangely affected by realtime/historical button ? nfi.
+                                            event.preventDefault()
+                                        }}
+                                        onClick={() => {
+                                            this.canvasSearchOpen(!this.state.canvasSearchIsOpen)
+                                        }}
                                     >
-                                        <SvgIcon name="plus" className={styles.icon} />
+                                        Open
                                     </R.Button>
-                                </Tooltip>
+                                    <CanvasSearch
+                                        canvas={canvas}
+                                        isOpen={canvasSearchIsOpen}
+                                        open={this.canvasSearchOpen}
+                                    />
+                                    <Tooltip
+                                        container={this.elRef.current}
+                                        value={moduleSearchIsOpen ? (
+                                            'Hide module panel'
+                                        ) : (
+                                            'Show module panel'
+                                        )}
+                                    >
+                                        <R.Button
+                                            className={cx(styles.ToolbarButton, styles.AddButton, {
+                                                [styles.active]: !!moduleSearchIsOpen,
+                                            })}
+                                            onClick={() => this.props.moduleSearchOpen(!moduleSearchIsOpen)}
+                                            disabled={!canEdit}
+                                        >
+                                            <SvgIcon name="plus" className={styles.icon} />
+                                        </R.Button>
+                                    </Tooltip>
+                                </div>
+                            </div>
+                            <div className={styles.ToolbarZoomButtons}>
                                 <ZoomButtons canvas={canvas} />
                             </div>
                             <div>
@@ -351,123 +353,121 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                     )}
                                 </R.ButtonGroup>
                             </div>
-                            <div className={styles.ToolbarRight}>
-                                <div className={styles.StateSelectorContainer}>
-                                    <div className={styles.StateSelector}>
-                                        <div className={styles.runTabToggle}>
-                                            <button
-                                                type="button"
-                                                onClick={() => setRunTab(RunTabs.realtime)}
-                                                disabled={!canEdit}
-                                                className={cx(styles.ToolbarSolidButton, styles.firstButton, {
-                                                    [styles.StateSelectorActive]: editorState.runTab !== RunTabs.historical,
-                                                })}
-                                            >
-                                                Realtime
-                                            </button>
-                                            <button
-                                                type="button"
-                                                onClick={() => setRunTab(RunTabs.historical)}
-                                                disabled={!canEdit}
-                                                className={cx(styles.ToolbarSolidButton, styles.lastButton, {
-                                                    [styles.StateSelectorActive]: editorState.runTab === RunTabs.historical,
-                                                })}
-                                            >
-                                                Historical
-                                            </button>
-                                        </div>
-                                        {editorState.runTab === RunTabs.historical ? (
-                                            <div className={styles.runTabValueToggle}>
-                                                <WithCalendar
-                                                    date={!!settings.beginDate && new Date(settings.beginDate)}
-                                                    className={styles.CalendarRoot}
-                                                    wrapperClassname={styles.CalendarWrapper}
-                                                    onChange={this.getOnChangeHistorical('beginDate')}
-                                                >
-                                                    {({ toggleCalendar }) => (
-                                                        <button
-                                                            type="button"
-                                                            disabled={!canEdit}
-                                                            onClick={toggleCalendar}
-                                                            className={cx(styles.ToolbarSolidButton, styles.firstButton, {
-                                                                [styles.StateSelectorActive]: !!settings.beginDate,
-                                                            })}
-                                                        >
-                                                            {!settings.beginDate && ('From')}
-                                                            {!!settings.beginDate && dateFormatter('DD/MM/YYYY')(settings.beginDate)}
-                                                        </button>
-                                                    )}
-                                                </WithCalendar>
-                                                <WithCalendar
-                                                    date={!!settings.endDate && new Date(settings.endDate)}
-                                                    className={styles.CalendarRoot}
-                                                    wrapperClassname={styles.CalendarWrapper}
-                                                    onChange={this.getOnChangeHistorical('endDate')}
-                                                >
-                                                    {({ toggleCalendar }) => (
-                                                        <button
-                                                            type="button"
-                                                            disabled={!canEdit}
-                                                            onClick={toggleCalendar}
-                                                            className={cx(styles.ToolbarSolidButton, styles.lastButton, {
-                                                                [styles.StateSelectorActive]: !!settings.endDate,
-                                                            })}
-                                                        >
-                                                            {!settings.endDate && ('To')}
-                                                            {!!settings.endDate && dateFormatter('DD/MM/YYYY')(settings.endDate)}
-                                                        </button>
-                                                    )}
-                                                </WithCalendar>
-                                            </div>
-                                        ) : (
-                                            <div className={styles.runTabValueToggle}>
-                                                <div className={styles.saveStateToggleSection}>
-                                                    {/* eslint-disable react/no-unknown-property */}
-                                                    <R.Label
-                                                        for="saveStateToggle"
-                                                        className={cx(styles.saveStateToggleLabel, {
-                                                            [styles.StateSelectorActive]: settings.serializationEnabled === 'true',
-                                                        })}
-
-                                                    >
-                                                        Save state
-                                                    </R.Label>
-                                                    {/* eslint-enable react/no-unknown-property */}
-                                                    {/* eslint-disable max-len */}
-                                                    <Toggle
-                                                        id="saveStateToggle"
-                                                        className={styles.saveStateToggle}
-                                                        value={settings.serializationEnabled === 'true' /* yes, it's a string. legacy compatibility */}
-                                                        onChange={(value) => setSaveState(value)}
-                                                        disabled={!canEdit}
-                                                    />
-                                                    {/* eslint-enable max-len */}
-                                                </div>
-                                            </div>
-                                        )}
+                            <div className={styles.StateSelectorContainer}>
+                                <div className={styles.StateSelector}>
+                                    <div className={styles.runTabToggle}>
+                                        <button
+                                            type="button"
+                                            onClick={() => setRunTab(RunTabs.realtime)}
+                                            disabled={!canEdit}
+                                            className={cx(styles.ToolbarSolidButton, styles.firstButton, {
+                                                [styles.StateSelectorActive]: editorState.runTab !== RunTabs.historical,
+                                            })}
+                                        >
+                                            Realtime
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => setRunTab(RunTabs.historical)}
+                                            disabled={!canEdit}
+                                            className={cx(styles.ToolbarSolidButton, styles.lastButton, {
+                                                [styles.StateSelectorActive]: editorState.runTab === RunTabs.historical,
+                                            })}
+                                        >
+                                            Historical
+                                        </button>
                                     </div>
-                                </div>
-                                <div className={styles.ModalButtons}>
-                                    <Tooltip container={this.elRef.current} value="Share">
-                                        <R.Button
-                                            className={cx(styles.ToolbarButton, styles.ShareButton)}
-                                            onClick={() => shareDialog.open()}
-                                            disabled={!canShare}
-                                        >
-                                            <SvgIcon name="share" />
-                                        </R.Button>
-                                    </Tooltip>
-                                    <Tooltip container={this.elRef.current} value={<React.Fragment>Keyboard<br />shortcuts</React.Fragment>}>
-                                        <R.Button
-                                            className={cx(styles.ToolbarButton, styles.KeyboardButton)}
-                                            onClick={() => this.props.keyboardShortcutOpen()}
-                                        >
-                                            <SvgIcon name="keyboard" />
-                                        </R.Button>
-                                    </Tooltip>
+                                    {editorState.runTab === RunTabs.historical ? (
+                                        <div className={styles.runTabValueToggle}>
+                                            <WithCalendar
+                                                date={!!settings.beginDate && new Date(settings.beginDate)}
+                                                className={styles.CalendarRoot}
+                                                wrapperClassname={styles.CalendarWrapper}
+                                                onChange={this.getOnChangeHistorical('beginDate')}
+                                            >
+                                                {({ toggleCalendar }) => (
+                                                    <button
+                                                        type="button"
+                                                        disabled={!canEdit}
+                                                        onClick={toggleCalendar}
+                                                        className={cx(styles.ToolbarSolidButton, styles.firstButton, {
+                                                            [styles.StateSelectorActive]: !!settings.beginDate,
+                                                        })}
+                                                    >
+                                                        {!settings.beginDate && ('From')}
+                                                        {!!settings.beginDate && dateFormatter('DD/MM/YYYY')(settings.beginDate)}
+                                                    </button>
+                                                )}
+                                            </WithCalendar>
+                                            <WithCalendar
+                                                date={!!settings.endDate && new Date(settings.endDate)}
+                                                className={styles.CalendarRoot}
+                                                wrapperClassname={styles.CalendarWrapper}
+                                                onChange={this.getOnChangeHistorical('endDate')}
+                                            >
+                                                {({ toggleCalendar }) => (
+                                                    <button
+                                                        type="button"
+                                                        disabled={!canEdit}
+                                                        onClick={toggleCalendar}
+                                                        className={cx(styles.ToolbarSolidButton, styles.lastButton, {
+                                                            [styles.StateSelectorActive]: !!settings.endDate,
+                                                        })}
+                                                    >
+                                                        {!settings.endDate && ('To')}
+                                                        {!!settings.endDate && dateFormatter('DD/MM/YYYY')(settings.endDate)}
+                                                    </button>
+                                                )}
+                                            </WithCalendar>
+                                        </div>
+                                    ) : (
+                                        <div className={styles.runTabValueToggle}>
+                                            <div className={styles.saveStateToggleSection}>
+                                                {/* eslint-disable react/no-unknown-property */}
+                                                <R.Label
+                                                    for="saveStateToggle"
+                                                    className={cx(styles.saveStateToggleLabel, {
+                                                        [styles.StateSelectorActive]: settings.serializationEnabled === 'true',
+                                                    })}
+
+                                                >
+                                                    Save state
+                                                </R.Label>
+                                                {/* eslint-enable react/no-unknown-property */}
+                                                {/* eslint-disable max-len */}
+                                                <Toggle
+                                                    id="saveStateToggle"
+                                                    className={styles.saveStateToggle}
+                                                    value={settings.serializationEnabled === 'true' /* yes, it's a string. legacy compatibility */}
+                                                    onChange={(value) => setSaveState(value)}
+                                                    disabled={!canEdit}
+                                                />
+                                                {/* eslint-enable max-len */}
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
-                        </React.Fragment>
+                            <div className={styles.ModalButtons}>
+                                <Tooltip container={this.elRef.current} value="Share">
+                                    <R.Button
+                                        className={cx(styles.ToolbarButton, styles.ShareButton)}
+                                        onClick={() => shareDialog.open()}
+                                        disabled={!canShare}
+                                    >
+                                        <SvgIcon name="share" />
+                                    </R.Button>
+                                </Tooltip>
+                                <Tooltip container={this.elRef.current} value={<React.Fragment>Keyboard<br />shortcuts</React.Fragment>}>
+                                    <R.Button
+                                        className={cx(styles.ToolbarButton, styles.KeyboardButton)}
+                                        onClick={() => this.props.keyboardShortcutOpen()}
+                                    >
+                                        <SvgIcon name="keyboard" />
+                                    </R.Button>
+                                </Tooltip>
+                            </div>
+                        </div>
                     )}
                 </ModalContainer>
                 <ShareDialog canvas={canvas} />

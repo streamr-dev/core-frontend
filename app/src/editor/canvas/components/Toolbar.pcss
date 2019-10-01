@@ -1,4 +1,8 @@
-.CanvasToolbar {
+.CanvasToolbar.notEditable {
+  border-top: 1px solid #FF0F2D;
+}
+
+.ToolbarInner {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -8,32 +12,23 @@
   font-size: 12px;
 }
 
-.CanvasToolbar.notEditable {
-  border-top: 1px solid #FF0F2D;
-}
-
-.CanvasToolbar > * {
+.ToolbarInner > * {
   display: flex;
   align-items: center;
   flex-wrap: nowrap;
 }
 
-.ToolbarLeft {
-  flex: 1;
-}
-
-.ToolbarRight {
-  flex: 2;
+.LeftControls {
+  display: flex;
+  justify-content: space-between;
 }
 
 .StateSelectorContainer {
-  flex: 1;
   display: flex;
 }
 
 .StateSelector {
   display: flex;
-  flex: 1;
   justify-content: center;
 }
 
@@ -41,7 +36,7 @@
   position: relative;
   display: flex;
   flex-wrap: nowrap;
-  margin: 0 16px;
+  margin: 0 1um;
 }
 
 .ToolbarButton {
