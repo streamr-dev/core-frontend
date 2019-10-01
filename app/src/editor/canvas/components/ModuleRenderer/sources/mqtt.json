@@ -1,0 +1,133 @@
+{
+    "params": [
+        {
+            "id": "d44e82e9-71eb-4879-8198-82f2f14467f5",
+            "name": "URL",
+            "longName": "MQTT.URL",
+            "type": "String",
+            "connected": false,
+            "canConnect": false,
+            "export": false,
+            "value": "",
+            "drivingInput": false,
+            "canToggleDrivingInput": true,
+            "acceptedTypes": [
+                "String"
+            ],
+            "requiresConnection": false,
+            "defaultValue": "",
+            "isTextArea": false
+        },
+        {
+            "id": "d07a84ff-b242-45ac-8bf6-784b3d2bebb6",
+            "name": "topic",
+            "longName": "MQTT.topic",
+            "type": "String",
+            "connected": false,
+            "canConnect": false,
+            "export": false,
+            "value": "",
+            "drivingInput": false,
+            "canToggleDrivingInput": true,
+            "acceptedTypes": [
+                "String"
+            ],
+            "requiresConnection": false,
+            "defaultValue": "",
+            "isTextArea": false
+        },
+        {
+            "id": "7df6a363-d993-492c-844a-7671f8bef7cf",
+            "name": "username",
+            "longName": "MQTT.username",
+            "type": "String",
+            "connected": false,
+            "canConnect": false,
+            "export": false,
+            "value": "",
+            "drivingInput": false,
+            "canToggleDrivingInput": true,
+            "acceptedTypes": [
+                "String"
+            ],
+            "requiresConnection": false,
+            "defaultValue": "",
+            "isTextArea": false
+        },
+        {
+            "id": "0d804711-c466-416c-9dee-b140e29d73c2",
+            "name": "password",
+            "longName": "MQTT.password",
+            "type": "String",
+            "connected": false,
+            "canConnect": false,
+            "export": false,
+            "value": "",
+            "drivingInput": false,
+            "canToggleDrivingInput": true,
+            "acceptedTypes": [
+                "String"
+            ],
+            "requiresConnection": false,
+            "defaultValue": "",
+            "isTextArea": false
+        },
+        {
+            "id": "5948f8a1-c36f-4eb3-8e45-1a59a6d24367",
+            "name": "certType",
+            "longName": "MQTT.certType",
+            "type": "String",
+            "connected": false,
+            "canConnect": true,
+            "export": false,
+            "value": "none",
+            "drivingInput": false,
+            "canToggleDrivingInput": true,
+            "acceptedTypes": [
+                "String"
+            ],
+            "requiresConnection": false,
+            "possibleValues": [
+                {
+                    "name": "none",
+                    "value": "none"
+                },
+                {
+                    "name": ".crt",
+                    "value": ".crt"
+                }
+            ],
+            "defaultValue": "none",
+            "updateOnChange": true,
+            "isTextArea": false
+        }
+    ],
+    "inputs": [],
+    "outputs": [
+        {
+            "id": "71a0e33e-0987-4b3b-a4e3-2a986817f592",
+            "name": "message",
+            "longName": "MQTT.message",
+            "type": "String",
+            "connected": false,
+            "canConnect": true,
+            "export": false,
+            "noRepeat": false,
+            "canBeNoRepeat": true
+        }
+    ],
+    "id": 1034,
+    "jsModule": "GenericModule",
+    "type": "module",
+    "name": "MQTT",
+    "canClearState": true,
+    "canRefresh": false,
+    "layout": {
+        "position": {
+            "left": "988px",
+            "top": "363px"
+        },
+        "width": "250px",
+        "height": "161px"
+    }
+}

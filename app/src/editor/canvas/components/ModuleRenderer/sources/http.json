@@ -1,0 +1,221 @@
+{
+    "params": [
+        {
+            "id": "350475af-a0bd-4937-a1ff-bb661f1a1494",
+            "name": "verb",
+            "longName": "HTTP Request.verb",
+            "type": "String",
+            "connected": false,
+            "canConnect": true,
+            "export": false,
+            "value": "POST",
+            "drivingInput": false,
+            "canToggleDrivingInput": true,
+            "acceptedTypes": [
+                "String"
+            ],
+            "requiresConnection": false,
+            "possibleValues": [
+                {
+                    "name": "GET",
+                    "value": "GET"
+                },
+                {
+                    "name": "POST",
+                    "value": "POST"
+                },
+                {
+                    "name": "PUT",
+                    "value": "PUT"
+                },
+                {
+                    "name": "DELETE",
+                    "value": "DELETE"
+                },
+                {
+                    "name": "PATCH",
+                    "value": "PATCH"
+                }
+            ],
+            "defaultValue": "POST",
+            "updateOnChange": true,
+            "isTextArea": false
+        },
+        {
+            "id": "021c678e-f281-4ae4-a52a-36275f86579d",
+            "name": "URL",
+            "longName": "HTTP Request.URL",
+            "type": "String",
+            "connected": false,
+            "canConnect": true,
+            "export": false,
+            "value": "",
+            "drivingInput": false,
+            "canToggleDrivingInput": true,
+            "acceptedTypes": [
+                "String"
+            ],
+            "requiresConnection": false,
+            "defaultValue": "",
+            "isTextArea": false
+        },
+        {
+            "id": "c57b7c08-8057-4712-b80a-90427d4964f9",
+            "name": "params",
+            "longName": "HTTP Request.params",
+            "type": "Map",
+            "connected": false,
+            "canConnect": true,
+            "export": false,
+            "value": {},
+            "drivingInput": false,
+            "canToggleDrivingInput": true,
+            "acceptedTypes": [
+                "Map"
+            ],
+            "requiresConnection": false,
+            "defaultValue": {}
+        },
+        {
+            "id": "6b92aa42-c3cd-4924-b8ec-37f6e18a15ce",
+            "name": "headers",
+            "longName": "HTTP Request.headers",
+            "type": "Map",
+            "connected": false,
+            "canConnect": true,
+            "export": false,
+            "value": {},
+            "drivingInput": false,
+            "canToggleDrivingInput": true,
+            "acceptedTypes": [
+                "Map"
+            ],
+            "requiresConnection": false,
+            "defaultValue": {}
+        }
+    ],
+    "inputs": [
+        {
+            "id": "c01fa2cc-901c-43a0-85fe-f4e7db0c85f3",
+            "name": "body",
+            "longName": "HTTP Request.body",
+            "type": "Object",
+            "connected": false,
+            "canConnect": true,
+            "export": false,
+            "drivingInput": true,
+            "canToggleDrivingInput": true,
+            "acceptedTypes": [
+                "Object"
+            ],
+            "requiresConnection": true
+        }
+    ],
+    "outputs": [
+        {
+            "id": "37753e3c-0ac6-4b06-9409-a0102825d415",
+            "name": "errors",
+            "longName": "HTTP Request.errors",
+            "type": "List",
+            "connected": false,
+            "canConnect": true,
+            "export": false
+        },
+        {
+            "id": "88f6f0b7-e0a4-40c0-88fc-880d58fc66b1",
+            "name": "data",
+            "longName": "HTTP Request.data",
+            "type": "Object",
+            "connected": false,
+            "canConnect": true,
+            "export": false
+        },
+        {
+            "id": "70514add-03aa-4fea-80d1-e3ddc79e7749",
+            "name": "statusCode",
+            "longName": "HTTP Request.statusCode",
+            "type": "Double",
+            "connected": false,
+            "canConnect": true,
+            "export": false,
+            "noRepeat": false,
+            "canBeNoRepeat": true
+        },
+        {
+            "id": "57d95a78-da9f-42aa-bfc6-a9aab820fa79",
+            "name": "roundtripMillis",
+            "longName": "HTTP Request.roundtripMillis",
+            "type": "Double",
+            "connected": false,
+            "canConnect": true,
+            "export": false,
+            "noRepeat": false,
+            "canBeNoRepeat": true
+        },
+        {
+            "id": "2dfa9343-57b5-434a-84c8-e7537790b301",
+            "name": "headers",
+            "longName": "HTTP Request.headers",
+            "type": "Map",
+            "connected": false,
+            "canConnect": true,
+            "export": false
+        }
+    ],
+    "id": 1001,
+    "jsModule": "GenericModule",
+    "type": "module",
+    "name": "HTTP Request",
+    "canClearState": true,
+    "canRefresh": false,
+    "layout": {
+        "position": {
+            "left": "326px",
+            "top": "316px"
+        },
+        "width": "321.640625px",
+        "height": "161px"
+    },
+    "options": {
+        "activateInHistoricalMode": {
+            "value": false,
+            "type": "boolean"
+        },
+        "bodyContentType": {
+            "value": "application/json",
+            "type": "string",
+            "possibleValues": [
+                {
+                    "text": "application/json",
+                    "value": "application/json"
+                },
+                {
+                    "text": "application/x-www-form-urlencoded",
+                    "value": "application/x-www-form-urlencoded"
+                }
+            ]
+        },
+        "syncMode": {
+            "value": "async",
+            "type": "string",
+            "possibleValues": [
+                {
+                    "text": "asynchronous",
+                    "value": "async"
+                },
+                {
+                    "text": "synchronized",
+                    "value": "sync"
+                }
+            ]
+        },
+        "trustSelfSigned": {
+            "value": false,
+            "type": "boolean"
+        },
+        "timeoutSeconds": {
+            "value": 5,
+            "type": "int"
+        }
+    }
+}

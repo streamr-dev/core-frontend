@@ -2,12 +2,14 @@
 
 import React from 'react'
 import { storiesOf } from '@storybook/react'
-import src from './sources/or'
+import mHttp from './sources/http'
+import mOr from './sources/or'
+import mMqtt from './sources/mqtt'
 import ModuleRenderer from '.'
 
 const stories = storiesOf('Editor/ModuleRenderer', module)
 
-stories.add('Or', () => (
+const Module = ({ src }) => (
     <ModuleRenderer
         canvasEditable
         canvasAdjustable
@@ -26,5 +28,15 @@ stories.add('Or', () => (
             modules: [src],
         }}
         module={src}
+        layout={src.layout}
+        style={{
+            position: 'static',
+        }}
     />
+)
+
+stories.add('all', () => (
+    [mHttp, mOr, mMqtt].map((src) => (
+        <Module key={src.name} src={src} />
+    ))
 ))
