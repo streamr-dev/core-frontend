@@ -15,5 +15,7 @@ module.exports = exports = {
     rules: {
         'react-hooks/rules-of-hooks': 'error',
         'react-hooks/exhaustive-deps': 'warn',
+        'no-unused-vars': 'warn',
+        'no-multiple-empty-lines': 'warn',
     }
 }
