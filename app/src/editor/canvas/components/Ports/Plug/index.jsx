@@ -5,14 +5,13 @@ import cx from 'classnames'
 import { type Ref } from '$shared/flowtype/common-types'
 import { DropTarget, DragSource } from '../../PortDragger'
 import { DragDropContext } from '../../DragDropContext'
+import useCanvas from '../../ModuleRenderer/useCanvas'
 import { canConnectPorts, hasPort } from '../../../state'
 
 import styles from './plug.pcss'
 
 type Props = {
-    api: any,
     onValueChange: any,
-    canvas: any,
     className?: ?string,
     port: any,
     disabled?: boolean,
@@ -20,8 +19,6 @@ type Props = {
 }
 
 const Plug = ({
-    api,
-    canvas,
     className,
     port,
     disabled,
@@ -42,6 +39,8 @@ const Plug = ({
             }
         }
     }, [ref, register, port.id])
+
+    const { canvas } = useCanvas()
 
     const { isDragging, data } = useContext(DragDropContext)
     const { sourceId, portId } = data || {}
@@ -78,7 +77,6 @@ const Plug = ({
                 disabled={disabled}
             />
             <DragSource
-                api={api}
                 onValueChange={onValueChange}
                 className={cx(styles.dragger, styles.dragSource)}
                 port={port}

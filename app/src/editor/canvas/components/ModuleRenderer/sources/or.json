@@ -1,0 +1,66 @@
+{
+    "outputs": [
+        {
+            "connected": false,
+            "canBeNoRepeat": true,
+            "name": "out",
+            "canConnect": true,
+            "noRepeat": false,
+            "id": "69d14355-bcd2-448a-8536-2f2c20d4cd9e",
+            "type": "Boolean",
+            "export": false,
+            "longName": "Or.out"
+        }
+    ],
+    "layout": {
+        "width": "250px",
+        "position": {
+            "top": "268px",
+            "left": "729px"
+        },
+        "height": "150px"
+    },
+    "inputs": [
+        {
+            "canToggleDrivingInput": true,
+            "drivingInput": true,
+            "type": "Object",
+            "connected": false,
+            "requiresConnection": true,
+            "name": "A",
+            "canConnect": true,
+            "id": "3cad265f-f7b4-4206-9cab-5d464f506613",
+            "acceptedTypes": [
+                "Object"
+            ],
+            "canHaveInitialValue": true,
+            "export": false,
+            "initialValue": null,
+            "longName": "Or.A"
+        },
+        {
+            "canToggleDrivingInput": true,
+            "drivingInput": true,
+            "type": "Object",
+            "connected": false,
+            "requiresConnection": true,
+            "name": "B",
+            "canConnect": true,
+            "id": "60e36b12-71ae-46e5-a278-45e32114dd4a",
+            "acceptedTypes": [
+                "Object"
+            ],
+            "canHaveInitialValue": true,
+            "export": false,
+            "initialValue": null,
+            "longName": "Or.B"
+        }
+    ],
+    "name": "Or",
+    "canRefresh": false,
+    "id": 31,
+    "params": [],
+    "jsModule": "GenericModule",
+    "type": "module",
+    "canClearState": true
+}

@@ -17,5 +17,8 @@ module.exports = exports = {
         'react-hooks/exhaustive-deps': 'warn',
         'no-unused-vars': 'warn',
         'no-multiple-empty-lines': 'warn',
+        'jsx-a11y/no-noninteractive-tabindex': 'warn',
+        'react/jsx-indent': 'warn',
+        'max-len': 'warn',
     }
 }
