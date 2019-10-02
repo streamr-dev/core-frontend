@@ -1,3 +1,103 @@
 .root {
 
 }
+
+.SecurityOptions {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+}
+
+.Icon {
+  width: 24px;
+  height: 24px;
+  color: #CDCDCD;
+}
+
+.SecurityOption {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.SecuritySlider {
+  position: absolute;
+  width: 100%;
+  left: 0;
+  right: 0;
+
+}
+
+.SliderTrack.SliderProgress {
+  background: blue;
+  transition: width 0.5s;
+  width: 0%;
+}
+
+.SliderTrack {
+  background: grey;
+  height: 2px;
+  position: absolute;
+  width: 100%;
+}
+
+.SliderStop {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 100%;
+  background-color: #D8D8D8;
+  transform: translate(-50%, -50%);
+
+  &.highlighted {
+    background-color: #0324FF;
+  }
+}
+
+.SliderThumb {
+  position: absolute;
+  right: 0;
+  top: 0;
+  transform: translate(50%, -50%);
+  background: white;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.17);
+  height: 32px;
+  width: 32px;
+  border-radius: 100%;
+
+  .SliderStop {
+    background-color: currentColor;
+    left: 50%;
+    top: 50%;
+  }
+}
+
+.SecurityOptions.basic {
+  .SecurityOption.selected {
+    color: #323232;
+  }
+
+  .SliderThumb .SliderStop {
+    background-color: #323232;
+  }
+}
+
+.SecurityOptions.signed {
+  .SecurityOption.selected {
+    color: #0324FF;
+  }
+
+  .SliderThumb .SliderStop {
+    background-color: #0324FF;
+  }
+}
+
+.SecurityOptions.encrypted {
+  .SecurityOption.selected {
+    color: #2AC437;
+  }
+
+  .SliderThumb .SliderStop {
+    background-color: #2AC437;
+  }
+}
