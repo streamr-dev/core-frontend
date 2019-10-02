@@ -37,9 +37,9 @@ jobs:
     if: type IN (pull_request)
     env:
     - DESCRIPTION=UNIT_TEST
-    - STREAMR_API_URL=http://localhost:8081/streamr-core/api/v1
-    - STREAMR_WS_URL=ws://localhost:8890/api/v1/ws
-    - STREAMR_URL=http://localhost:8081/streamr-core
+    - STREAMR_API_URL=http://localhost/api/v1
+    - STREAMR_WS_URL=ws://localhost/api/v1/ws
+    - STREAMR_URL=http://localhost
     - PLATFORM_ORIGIN_URL=http://localhost
     script: "travis_retry $TRAVIS_BUILD_DIR/app/travis_scripts/unit-tests.sh"
   - stage: Platform tests
