@@ -148,6 +148,7 @@ class PurchasesPage extends Component<Props> {
                                     <Tile
                                         imageUrl={product.imageUrl || ''}
                                         link={product.id && `${links.marketplace.products}/${product.id}`}
+                                        labels={product.type === 'COMMUNITY' ? ['community'] : []}
                                     >
                                         <Tile.Title>{product.name}</Tile.Title>
                                         <Tile.Description>{product.owner}</Tile.Description>

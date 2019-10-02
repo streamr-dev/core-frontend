@@ -194,6 +194,7 @@ class ProductsPage extends Component<Props> {
                                 <Tile
                                     imageUrl={product.imageUrl || ''}
                                     dropdownActions={this.getActions(product)}
+                                    labels={product.type === 'COMMUNITY' ? ['community'] : []}
                                 >
                                     <Tile.Title>{product.name}</Tile.Title>
                                     <Tile.Tag >
