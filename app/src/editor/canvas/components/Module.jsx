@@ -6,8 +6,6 @@ import ModuleHeader from '../../shared/components/ModuleHeader'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import { UiEmitter } from '$editor/shared/components/RunStateLoader'
 
-import { RunStates } from '../state'
-
 import ModuleDragger from './ModuleDragger'
 import * as RunController from './CanvasController/Run'
 import { useCameraContext } from './Camera'
