@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useCallback, useLayoutEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { connect } from 'react-redux'
 import { I18n } from 'react-redux-i18n'
 import cx from 'classnames'
@@ -9,6 +9,7 @@ import type { Stream } from '$shared/flowtype/stream-types'
 import type { StoreState } from '$shared/flowtype/store-state'
 import { updateEditStream } from '$userpages/modules/userPageStreams/actions'
 import { selectEditedStream } from '$userpages/modules/userPageStreams/selectors'
+import { useThrottled } from '$shared/hooks/wrapCallback'
 
 import * as Icons from './Icons'
 
@@ -101,56 +102,94 @@ function getSecurityLevel({ requireSignedData, requireEncryptedData }) {
     }) || 'basic'
 }
 
+/**
+ * Extracts config to be applied to stream for passed in current security level
+ */
+
 function setSecurityLevel(level) {
     const { config } = securityLevels[level]
     return config
 }
 
+/*
+ * Renders nothing while stream not set up.
+ * Prevents needless complication with hooks.
+ */
+
 function SecurityViewMaybe(props: Props) {
     const { stream } = props
-    if (!stream) { return null }
+    // stream initially an empty object
+    if (!stream || !Object.keys(stream).length) { return null }
     return <SecurityView {...props} />
 }
 
-function Slider({ index: selectedIndex = 0 } = {}) {
+// subtract a bounding rect from another bounding rect
+const subtract = (a, b) => ({
+    // can't spread because DOM rect width/height aren't enumerable
+    width: a.width,
+    height: a.height,
+    left: a.left - b.left,
+    top: a.top - b.top,
+})
+
+/**
+ * Finds positions of selector elements (e.g. radio inputs) in its container
+ * and renders a track + stops between them.
+ *
+ * Why reading positions from DOM? The center points of the options we're drawing graphics
+ * between is dependent on the width of the label text, which we can't know without rendering.
+ * Without this, the rendered points wouldn't line up with the text or the text wouldn't align with edges of container.
+ * Simple to just less CSS do its thing and piggypack on top of the layout it produces.
+ */
+
+function Slider({ index: selectedIndex = 0, selector } = {}) {
     const elRef = useRef()
     const [positions, setPositions] = useState()
 
-    useLayoutEffect(() => {
+    const updateLayout = useCallback(() => {
         if (!elRef.current) { return }
         const target = elRef.current.parentElement
-        const inputs = Array.from(target.querySelectorAll('input'))
+        const inputs = Array.from(target.querySelectorAll(selector))
         // $FlowFixMe
         const parent = target.getBoundingClientRect()
-        const subtract = (a, b) => ({
-            width: a.width,
-            height: a.height,
-            left: a.left - b.left,
-            top: a.top - b.top,
-        })
+
         setPositions(() => {
             const rects = inputs.map((input) => input.getBoundingClientRect())
             const positions = rects.map((rect) => subtract(rect, parent))
             const first = positions[0]
             const last = positions[positions.length - 1]
             const left = first.left + (first.width * 0.5)
+            const top = first.top + (first.height * 0.5)
             const width = (last.left + (last.width * 0.5)) - left
 
             return {
                 positions,
+                top,
                 left,
                 width,
             }
         })
-    }, [])
+    }, [selector])
+
+    const onResize = useThrottled(updateLayout, 250)
+
+    useEffect(() => {
+        window.addEventListener('resize', onResize)
+        return () => {
+            window.removeEventListener('resize', onResize)
+        }
+    }, [onResize])
+
+    useLayoutEffect(() => {
+        updateLayout()
+    }, [updateLayout])
 
     if (!positions) {
         // $FlowFixMe
-        return <div className={styles.SliderBackground} ref={elRef} />
+        return <div className={styles.SecuritySlider} ref={elRef} />
     }
 
     const selectedPosition = positions.positions[selectedIndex]
-    console.log({ selectedPosition, positions })
 
     return (
         // $FlowFixMe
@@ -169,6 +208,7 @@ function Slider({ index: selectedIndex = 0 } = {}) {
                             [styles.highlighted]: index <= selectedIndex,
                         })}
                         style={{
+                            top: (p.top + (p.height * 0.5)) - positions.top,
                             left: (p.left + (p.width * 0.5)) - positions.left,
                         }}
                     />
@@ -179,6 +219,7 @@ function Slider({ index: selectedIndex = 0 } = {}) {
                 style={{
                     left: positions.left,
                     width: (selectedPosition.left + (selectedPosition.width * 0.5)) - positions.left,
+                    top: (selectedPosition.top + (selectedPosition.height * 0.5)) - positions.top,
                 }}
             >
                 <div className={styles.SliderThumb}>
@@ -209,13 +250,13 @@ export function SecurityView(props: Props) {
     }, [updateEditStream, stream])
     return (
         <div className={styles.root}>
-            <p>
+            <p className={styles.description}>
                 <strong>{I18n.t(detail.shortDescription)}</strong>&nbsp;
                 {I18n.t(detail.longDescription)}
             </p>
             {/* $FlowFixMe */}
             <div className={cx(styles.SecurityOptions, styles[level])}>
-                <Slider index={levelIndex} />
+                <Slider index={levelIndex} selector="input[type=radio]" />
                 {Object.keys(securityLevels).map((key, index) => (
                     <label
                         key={key}
@@ -230,7 +271,7 @@ export function SecurityView(props: Props) {
                             onChange={(event) => onChange(event, key)}
                         />
                         <Icon level={key} selected={index === levelIndex} />
-                        <span>{I18n.t(securityLevels[key].title)}</span>
+                        <span className={styles.Title}>{I18n.t(securityLevels[key].title)}</span>
                     </label>
                 ))}
             </div>
