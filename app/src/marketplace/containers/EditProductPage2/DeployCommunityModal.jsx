@@ -53,11 +53,13 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
     }, [api, address])
 
     const productId = product.id
+    const { adminFee = 0 } = product.pendingChanges || {}
     const onDeploy = useCallback(async () => {
         const { id: joinPartStreamId } = await createJoinPartStream(productId)
 
         return new Promise((resolve) => (
-            deployContract(joinPartStreamId)
+            // $FlowFixMe
+            deployContract(joinPartStreamId, adminFee)
                 .onTransactionHash((hash, communityAddress) => {
                     dispatch(addTransaction(hash, transactionTypes.DEPLOY_COMMUNITY))
                     setAddress(communityAddress)
@@ -72,7 +74,7 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
                     resolve()
                 })
         ))
-    }, [productId, dispatch])
+    }, [productId, adminFee, dispatch])
 
     const onGuideContinue = useCallback((dontShow) => {
         setSkipGuide(dontShow)

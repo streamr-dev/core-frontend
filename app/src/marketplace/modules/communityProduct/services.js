@@ -87,13 +87,26 @@ export const createJoinPartStream = async (productId: ?ProductId = undefined): P
     return stream
 }
 
-export const deployContract = (joinPartStreamId: StreamId): SmartContractDeployTransaction => {
+export const getAdminFeeInEther = (adminFee: number) => {
+    if (adminFee <= 0 || adminFee > 1) {
+        throw new Error(`${adminFee} is not a valid admin fee`)
+    }
+
+    const web3 = getWeb3()
+    return web3.utils.toWei(`${adminFee}`, 'ether')
+}
+
+export const deployContract = (joinPartStreamId: string, adminFee: number): SmartContractDeployTransaction => {
     const operatorAddress = process.env.COMMUNITY_PRODUCT_OPERATOR_ADDRESS
     const tokenAddress = process.env.TOKEN_CONTRACT_ADDRESS
     const blockFreezePeriodSeconds = process.env.COMMUNITY_PRODUCT_BLOCK_FREEZE_PERIOD_SECONDS || 1
-    const contractArguments = [operatorAddress, joinPartStreamId, tokenAddress, blockFreezePeriodSeconds]
-
-    return deploy(getConfig().communityProduct, contractArguments)
+    return deploy(getConfig().communityProduct, [
+        operatorAddress,
+        joinPartStreamId,
+        tokenAddress,
+        blockFreezePeriodSeconds,
+        getAdminFeeInEther(adminFee),
+    ])
 }
 
 export const getCommunityContract = (address: Address, usePublicNode: boolean = false) => {
@@ -128,14 +141,8 @@ export const getAdminFee = (address: Address, usePublicNode: boolean = false) =>
         })
 }
 
-export const setAdminFee = (address: Address, adminFee: number): SmartContractTransaction => {
-    if (adminFee <= 0 || adminFee > 1) {
-        throw new Error(`${adminFee} is not a valid admin fee`)
-    }
-
-    const web3 = getWeb3()
-    const adminFeeToSend = web3.utils.toWei(`${adminFee}`, 'ether')
-    return send(getCommunityContract(address).methods.setAdminFee(adminFeeToSend), {
+export const setAdminFee = (address: Address, adminFee: number): SmartContractTransaction => (
+    send(getCommunityContract(address).methods.setAdminFee(getAdminFeeInEther(adminFee)), {
         gas: gasLimits.UPDATE_ADMIN_FEE,
     })
-}
+)
