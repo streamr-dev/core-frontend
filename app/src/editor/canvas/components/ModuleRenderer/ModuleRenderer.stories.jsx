@@ -1,10 +1,6 @@
-// @flow
-
 import React from 'react'
 import { storiesOf } from '@storybook/react'
-import mHttp from './sources/http'
-import mOr from './sources/or'
-import mMqtt from './sources/mqtt'
+import * as modules from './modules'
 import ModuleRenderer from '.'
 
 const stories = storiesOf('Editor/ModuleRenderer', module)
@@ -31,12 +27,23 @@ const Module = ({ src }) => (
         layout={src.layout}
         style={{
             position: 'static',
+            width: 'fit-content',
+            pointerEvents: 'none',
         }}
     />
 )
 
 stories.add('all', () => (
-    [mHttp, mOr, mMqtt].map((src) => (
-        <Module key={src.name} src={src} />
+    Object.entries(modules).map(([name, src]) => (
+        <Module
+            key={src.name}
+            src={Object.assign({
+                params: [],
+                inputs: [],
+                outputs: [],
+            }, src, {
+                name: src.name || `<${name}>`,
+            })}
+        />
     ))
 ))
