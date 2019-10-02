@@ -18,14 +18,18 @@ streamr_docker_dev='streamr-docker-dev/streamr-docker-dev/bin.sh'
 
 # start everything except eth watcher
 $streamr_docker_dev start 5
-
 $streamr_docker_dev log -f &
 
+RETRIES=30;
+RETRY_DELAY=5s;
+
 # wait for E&E to come up
-while true; do http_code=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8081/streamr-core/api/v1/users/me); if [ $http_code = 401 ]; then echo "EE up and running"; break; else echo "EE not receiving connections"; sleep 5s; fi; done
+waitFor $RETRIES $RETRY_DELAY checkHTTP "engine-and-editor" 401 http://localhost/api/v1/users/me;
+if [ $? -eq 1 ] ; then
+    echo "engine-and-editor never up";
+    $streamr_docker_dev ps;
+    exit 1;
+fi
 
-# wait for data-api to come up
-while true; do http_code=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8890/); if [ $http_code = 404 ]; then echo "Data-api up and running"; break; else echo "Data API not receiving connections"; sleep 5s; fi; done
-
-# check that nginx is routing /api requests to E&E
-while true; do http_code=$(curl -s -o /dev/null -w "%{http_code}" http://localhost/api/v1/users/me); if [ $http_code = 401 ]; then echo "nginx routing requests to EE"; break; else echo "nginx not routing requests correctly"; sleep 5s; fi; done
+# wait for brokers to come up
+waitFor $RETRIES $RETRY_DELAY checkHTTP "broker-node" 404 http://localhost/api/v1/ws;
