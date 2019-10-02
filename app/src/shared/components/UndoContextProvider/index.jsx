@@ -28,6 +28,7 @@ type ContextProps = {
     action: Action,
     state: ?Object,
     initialState?: any,
+    setInitialState: (fn: Function, done: ?Function) => any,
 }
 
 export const initialAction = {
@@ -45,6 +46,7 @@ const UndoContext: Context<ContextProps> = React.createContext({
     push: () => {},
     replace: () => {},
     reset: () => {},
+    setInitialState: () => {},
 })
 
 /*
@@ -205,19 +207,28 @@ class UndoContextProvider extends Component<Props, State> {
      * Reset to initialState
      */
 
-    reset = (fn: Function, done: Function) => {
+    setInitialState = (fn: Function, done: Function) => {
         const p: Promise<void> = new Promise((resolve) => (
             this.setState(({ initialState }) => {
                 const nextInitialState = (typeof fn === 'function') ? fn(initialState) : initialState
                 return {
-                    history: [{
-                        initialState: nextInitialState,
-                        state: nextInitialState,
-                        action: initialAction,
-                    }],
-                    pointer: 0,
+                    initialState: nextInitialState,
                 }
             }, resolve)
+        ))
+        p.then(done)
+        return p
+    }
+
+    reset = (done: Function) => {
+        const p: Promise<void> = new Promise((resolve) => (
+            this.setState(({ initialState }) => ({
+                history: [{
+                    state: initialState,
+                    action: initialAction,
+                }],
+                pointer: 0,
+            }), resolve)
         ))
         p.then(done)
         return p
@@ -235,6 +246,7 @@ class UndoContextProvider extends Component<Props, State> {
         state: undefined,
         action: initialAction,
         initialState: undefined,
+        setInitialState: this.setInitialState,
     }
 
     render() {

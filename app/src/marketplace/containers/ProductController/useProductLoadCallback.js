@@ -40,6 +40,7 @@ export default function useProductLoadCallback() {
                 price: product.price || priceForTimeUnits(product.pricePerSecond || '0', 1, timeUnits.hour),
             }
 
+            productUpdater.initialize(() => nextProduct)
             productUpdater.replaceProduct(() => State.withPendingChanges(nextProduct))
         })
     ), [wrap, productUpdater, history, isMountedRef])

@@ -18,7 +18,7 @@ describe('UndoContext', () => {
             ))
         })
 
-        it('can modify initial state', async () => {
+        it('can set initial state', async () => {
             let props
             mount((
                 <UndoContext.Provider>
@@ -32,21 +32,37 @@ describe('UndoContext', () => {
             ))
             expect(props.initialState).toBe(undefined)
 
-            const action = {
-                type: 'action',
-            }
-            const nextState = {
-                next: true,
-            }
-            await props.push(action, () => nextState)
-            expect(props.state).toBe(nextState)
-            expect(props.initialState).toBe(undefined)
-            const newInitialState = {
+            const initialState = {
                 initial: true,
             }
-            await props.reset(() => newInitialState)
-            expect(props.state).toBe(newInitialState)
-            expect(props.initialState).toBe(newInitialState)
+            await props.setInitialState(() => initialState)
+            expect(props.initialState).toBe(initialState)
+        })
+
+        it('resets to new initial state', async () => {
+            let props
+            mount((
+                <UndoContext.Provider>
+                    <UndoContext.Context.Consumer>
+                        {(containerProps) => {
+                            props = containerProps
+                            return null
+                        }}
+                    </UndoContext.Context.Consumer>
+                </UndoContext.Provider>
+            ))
+            expect(props.initialState).toBe(undefined)
+            await props.reset()
+            expect(props.state).toBe(undefined)
+
+            const initialState = {
+                initial: true,
+            }
+            await props.setInitialState(() => initialState)
+            expect(props.initialState).toBe(initialState)
+
+            await props.reset()
+            expect(props.state).toBe(initialState)
             expect(props.action).toBe(UndoContext.initialAction)
         })
 
