@@ -67,10 +67,6 @@ export const mapProductFromApi = (product: Product | EditProduct): Product => {
     return {
         ...product,
         pricePerSecond,
-        pendingChanges: {
-            name: 'asdasd',
-            adminFee: 0.7,
-        },
     }
 }
 

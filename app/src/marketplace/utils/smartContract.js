@@ -46,6 +46,11 @@ export const getUnprefixedHexString = (hex: string): string => hex.replace(/^0x|
 export const calculateContractAddress = async (account: Address): Promise<Address> => {
     const web3 = getWeb3()
     const currentNonce = await web3.eth.getTransactionCount(account)
+
+    if (!Number.isInteger(currentNonce)) {
+        throw new Error('Could not calculate address')
+    }
+
     const futureAddress = bufferToHex(generateAddress(account, currentNonce))
     return futureAddress
 }

@@ -160,7 +160,7 @@ function useEditController(product: Product) {
 
     const updateBeneficiary = useCallback(async (address) => {
         const { beneficiaryAddress } = productRef.current
-        if (!!address && isEthereumAddress(address) && !areAddressesEqual(beneficiaryAddress, address)) {
+        if (!!address && isEthereumAddress(address) && (!beneficiaryAddress || !areAddressesEqual(beneficiaryAddress, address))) {
             updateBeneficiaryAddress(address)
         }
     }, [updateBeneficiaryAddress])
