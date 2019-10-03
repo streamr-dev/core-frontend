@@ -21,7 +21,7 @@ const subtract = (a, b) => ({
  * Why reading positions from DOM? The center points of the options we're drawing graphics
  * between is dependent on the width of the label text, which we can't know without rendering.
  * Without this, the rendered points wouldn't line up with the text or the text wouldn't align with edges of container.
- * Simple to just less CSS do its thing and piggypack on top of the layout it produces.
+ * Simple to just let CSS do its thing and piggypack on top of the layout it produces.
  */
 
 export default function Slider({ index: selectedIndex = 0, selector } = {}) {
