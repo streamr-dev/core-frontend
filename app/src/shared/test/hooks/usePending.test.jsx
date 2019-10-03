@@ -1,7 +1,7 @@
 import React, { useEffect, useContext, useState } from 'react'
 import { mount } from 'enzyme'
 import { act } from 'react-dom/test-utils'
-import usePending from '$shared/hooks/usePending'
+import usePending, { useAnyPending } from '$shared/hooks/usePending'
 import * as PendingContext from '$shared/components/PendingContextProvider'
 
 function wait(timeout) {
@@ -26,8 +26,10 @@ describe('usePending', () => {
         let currentPendingState
         const timeout = 50
         const fn = jest.fn()
+        let isAnyPending
         function Test() {
             currentPendingState = usePending('test')
+            isAnyPending = useAnyPending()
             const { wrap } = currentPendingState
             useEffect(() => {
                 fn()
@@ -43,10 +45,13 @@ describe('usePending', () => {
                 </PendingContext.Provider>
             ))
             expect(currentPendingState.isPending).not.toBeTruthy()
+            expect(isAnyPending).not.toBeTruthy()
             await wait(timeout * 0.1)
             expect(currentPendingState.isPending).toBeTruthy()
+            expect(isAnyPending).toBeTruthy()
             await wait(timeout * 1.1)
             expect(currentPendingState.isPending).not.toBeTruthy()
+            expect(isAnyPending).not.toBeTruthy()
             expect(fn).toHaveBeenCalledTimes(1)
             result.unmount()
         })
