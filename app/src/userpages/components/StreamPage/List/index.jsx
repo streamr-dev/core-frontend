@@ -15,7 +15,7 @@ import { Link } from 'react-router-dom'
 import type { Filter, SortOption } from '$userpages/flowtype/common-types'
 import type { Stream, StreamId } from '$shared/flowtype/stream-types'
 
-import SvgIcon from '$shared/components/SvgIcon'
+import { SecurityIcon, getSecurityLevel } from '$userpages/components/StreamPage/Show/SecurityView'
 import links from '$shared/../links'
 import {
     getStreams,
@@ -362,11 +362,12 @@ class StreamList extends Component<Props, State> {
                                                 >
                                                     <Table.Th noWrap title={stream.requireSignedData ? 'Signed stream' : stream.name}>
                                                         {stream.name}
-                                                        {stream.requireSignedData &&
-                                                        <SvgIcon
-                                                            name="signedTick"
-                                                            className={styles.signedTick}
-                                                        />}
+                                                        <SecurityIcon
+                                                            className={styles.SecurityIcon}
+                                                            level={getSecurityLevel(stream)}
+                                                            selected
+                                                            hideBasic
+                                                        />
                                                     </Table.Th>
                                                     <Table.Td noWrap title={stream.description}>{stream.description}</Table.Td>
                                                     <Table.Td noWrap>
@@ -446,19 +447,17 @@ class StreamList extends Component<Props, State> {
                                                     className={styles.streamRow}
                                                     onClick={() => this.onStreamRowClick(stream.id)}
                                                 >
-                                                    <Table.Td
-                                                        title={stream.requireSignedData ? 'Signed stream' : stream.name}
-                                                        className={styles.tabletStreamRow}
-                                                    >
+                                                    <Table.Td className={styles.tabletStreamRow}>
                                                         <div className={styles.tabletStreamRowContainer}>
                                                             <div>
                                                                 <span className={styles.tabletStreamName}>
                                                                     {stream.name}
-                                                                    {stream.requireSignedData &&
-                                                                    <SvgIcon
-                                                                        name="signedTick"
-                                                                        className={styles.signedTick}
-                                                                    />}
+                                                                    <SecurityIcon
+                                                                        className={styles.SecurityIcon}
+                                                                        level={getSecurityLevel(stream)}
+                                                                        selected
+                                                                        hideBasic
+                                                                    />
                                                                 </span>
                                                                 <span className={styles.tabletStreamDescription}>
                                                                     {stream.description}

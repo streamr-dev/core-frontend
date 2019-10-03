@@ -9,8 +9,8 @@ import type { Stream } from '$shared/flowtype/stream-types'
 import type { StoreState } from '$shared/flowtype/store-state'
 import { updateEditStream } from '$userpages/modules/userPageStreams/actions'
 import { selectEditedStream } from '$userpages/modules/userPageStreams/selectors'
+import SvgIcon from '$shared/components/SvgIcon'
 import Slider from './Slider'
-import * as Icons from './Icons'
 
 import styles from './securityView.pcss'
 
@@ -52,8 +52,8 @@ const securityLevels = {
         shortDescription: 'userpages.streams.security.basic.shortDescription',
         longDescription: 'userpages.streams.security.basic.longDescription',
         icons: {
-            normal: Icons.LockOutlineIcon,
-            selected: Icons.LockOutlineIcon,
+            normal: 'lock',
+            selected: 'lockOutline',
         },
         config: {
             requireSignedData: false,
@@ -65,8 +65,8 @@ const securityLevels = {
         shortDescription: 'userpages.streams.security.signed.shortDescription',
         longDescription: 'userpages.streams.security.signed.longDescription',
         icons: {
-            normal: Icons.CheckBadgeOutlineIcon,
-            selected: Icons.CheckBadgeIcon,
+            normal: 'checkBadgeOutline',
+            selected: 'checkBadge',
         },
         config: {
             requireSignedData: true,
@@ -78,8 +78,8 @@ const securityLevels = {
         shortDescription: 'userpages.streams.security.encrypted.shortDescription',
         longDescription: 'userpages.streams.security.encrypted.longDescription',
         icons: {
-            normal: Icons.LockIcon,
-            selected: Icons.LockIcon,
+            normal: 'lock',
+            selected: 'lock',
         },
         config: {
             requireSignedData: true,
@@ -91,7 +91,8 @@ const securityLevels = {
 /**
  * Map stream flags to a security level e.g. basic, signed, etc
  */
-function getSecurityLevel({ requireSignedData, requireEncryptedData }) {
+// $FlowFixMe
+export function getSecurityLevel({ requireSignedData, requireEncryptedData }) {
     return Object.keys(securityLevels).find((level) => {
         const { config } = securityLevels[level]
         if (level === 'encrypted') {
@@ -101,7 +102,7 @@ function getSecurityLevel({ requireSignedData, requireEncryptedData }) {
             config.requireSignedData === requireSignedData
             && config.requireEncryptedData === requireEncryptedData
         )
-    }) || 'basic'
+    })
 }
 
 /**
@@ -113,16 +114,39 @@ function setSecurityLevel(level) {
     return config
 }
 
-function Icon({ level, selected, ...props }) {
+// $FlowFixMe
+type SecurityIconProps = {
+    className?: string,
+    level?: string,
+    selected?: boolean,
+    hideBasic?: boolean,
+}
+
+export function SecurityIcon({
+    className,
+    level,
+    selected,
+    hideBasic = false,
+    ...props
+}: SecurityIconProps = {}) {
+    if (!!hideBasic && level === 'basic') { return null }
+    if (!level) { return null }
     const { icons } = securityLevels[level]
-    const CurrentIcon = selected ? icons.selected : icons.normal
-    return <CurrentIcon className={styles.Icon} {...props} />
+    const name = selected ? icons.selected : icons.normal
+    return (
+        <SvgIcon
+            title={I18n.t(securityLevels[level].title)}
+            className={cx(styles.SecurityIcon, className, styles[level])}
+            name={name}
+            {...props}
+        />
+    )
 }
 
 export function SecurityView(props: Props) {
     const { stream, updateEditStream } = props
     // $FlowFixMe
-    const level = getSecurityLevel(stream)
+    const level = getSecurityLevel(stream) || 'basic'
     const levelIndex = Object.keys(securityLevels).indexOf(level)
     const detail = securityLevels[level]
     const onChange = useCallback((event, newLevel) => {
@@ -153,7 +177,7 @@ export function SecurityView(props: Props) {
                             checked={index === levelIndex}
                             onChange={(event) => onChange(event, key)}
                         />
-                        <Icon level={key} selected={index === levelIndex} />
+                        <SecurityIcon className={styles.SecurityLevelIcon} level={key} selected={index === levelIndex} />
                         <span className={styles.Title}>{I18n.t(securityLevels[key].title)}</span>
                     </label>
                 ))}
