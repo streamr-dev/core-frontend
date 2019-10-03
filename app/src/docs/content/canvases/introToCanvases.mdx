@@ -30,7 +30,7 @@ import { JavaModuleDeclarations } from '../tutorials/code/tutorials.js'
 
 # Intro to canvases
 
-A Streamr canvas is a microservice which consumes and acts upon realtime data. A canvas contains one or more <Link to={links.docs.streams}>streams</Link> (these provide the data) and one or more modules (these do the processing). Streams and modules are connected in the configuration that you'll design. The connections determine how the data flows through the canvas.
+A Streamr canvas is a microservice which consumes and acts upon real-time data. A canvas contains one or more <Link to={links.docs.streams.root}>streams</Link> (these provide the data) and one or more modules (these do the processing). Streams and modules are connected in the configuration that you'll design. The connections determine how the data flows through the canvas.
 
 <div className={cx(docsStyles.centered, canvasesStyles.canvasDemo)}>
   <img src={CanvasDemo} />
@@ -38,10 +38,10 @@ A Streamr canvas is a microservice which consumes and acts upon realtime data. A
 
 Here's a few examples of specific things you can do.
 
-- **Refine realtime data** by routing it through different modules. The built-in module library includes arithmetic and logical operations. There are also functions for smoothing, sampling, and aggregating streaming data.
+- **Refine real-time data** by routing it through different modules. The built-in module library includes arithmetic and logical operations. There are also functions for smoothing, sampling, and aggregating streaming data.
 - **Chain modules together** so that the output from one operation flows as an input to another. This is one way to build arbitrarily complex streaming analytics. If you want to keep things tidy, you can encapsulate the complexity and reuse the abstracted result.
-- **Visualise the data** by directing it to a charting module. The chart shows the new data in realtime as new events arrive or streaming analytics are computed.
-- **Communicate with the outside world** by sending text messages or emails when specific conditions are satisfied. You can embed realtime data, refined data, or natural language in the messages.
+- **Visualise the data** by directing it to a charting module. The chart shows the new data in real-time as new events arrive or streaming analytics are computed.
+- **Communicate with the outside world** by sending text messages or emails when specific conditions are satisfied. You can embed real-time data, refined data, or natural language in the messages.
 - **Save refined data in another stream.** When you do that, the saved data are instantly accessible as new events. The refined data can be streamed from the platform to external data consumers.
 - **Post events in HTTP format to external RESTful services.** There's a wide range of popular and useful services out there, and you can use any one of them easily from Streamr. 
 - **Control external devices.** As an example, you can override manual controls and make a remotely operated drone return to base when it's about to go out of range or running low on battery. Because the control interface is likely to be machine specific, this is one case where you'd be looking at coding a custom module in Java.
@@ -51,13 +51,13 @@ There is an extensive collection of built-in modules as a source of building blo
 
 ### Building a canvas
 
-When you're ready to build a canvas, you’ll typically start by adding one or more data <Link to={links.docs.streams}>streams</Link> to the canvas workspace. You’ll then create the processing logic by adding modules to the canvas and connecting the streams and modules together. You can do all this interactively by dragging and dropping streams and modules from the module browser to the workspace and then drawing connections between them.
+When you're ready to build a canvas, you’ll typically start by adding one or more data <Link to={links.docs.streams.root}>streams</Link> to the canvas workspace. You’ll then create the processing logic by adding modules to the canvas and connecting the streams and modules together. You can do all this interactively by dragging and dropping streams and modules from the module browser to the workspace and then drawing connections between them.
 
 ### Making use of modules
 
-A module is close akin to what you'd call a function, subroutine, procedure, or a method in various programming languages. In Streamr, modules are specialised computation units for handling streaming realtime data. A module processes its inputs as soon as it is activated by the arrival of a new event. The module may have one or more outputs, or it may take care of some side effect instead. 
+A module is close akin to what you'd call a function, subroutine, procedure, or a method in various programming languages. In Streamr, modules are specialised computation units for handling streaming real-time data. A module processes its inputs as soon as it is activated by the arrival of a new event. The module may have one or more outputs, or it may take care of some side effect instead. 
 
-A module has an internal state, and it can and typically will update that state when it is executed. How this is done depends on the particular module. The statefulness is an important feature and one the key ingredients in realtime stream processing.
+A module has an internal state, and it can and typically will update that state when it is executed. How this is done depends on the particular module. The statefulness is an important feature and one the key ingredients in real-time stream processing.
 
 You'll find all the built-in components in the **module browser**. If you already know the name of the module you need, type its name in the search box, then select the right module or stream, or drag it into your workspace.
 
@@ -83,7 +83,7 @@ Inputs, outputs, and parameters can be renamed by double clicking on them and ty
 
 ### Adding streams
 
-When you place a stream on the canvas, you effectively *subscribe* to a realtime data source. To add a stream, just start typing its name in module browser search. The stream name will autocomplete as you type. Realtime events are now available at the output endpoints.
+When you place a stream on the canvas, you effectively *subscribe* to a real-time data source. To add a stream, just start typing its name in module browser search. The stream name will autocomplete as you type. Realtime events are now available at the output endpoints.
 
 <div className={cx(docsStyles.centered, canvasesStyles.addTramStream)}>
   <img src={AddTramStream} />
@@ -99,7 +99,7 @@ As a simple example, here's a canvas consisting of one stream and a chart module
 
 ### Sending data to a stream
 
-Use the **SendToStream** module if you want to send data that has been generated inside the canvas, into a stream. Inside the module, start typing the name of your stream and it will autocomplete for you. Remember to configure the fields of your stream before using this module as the module's inputs are defined by it's fields. Learn more about fields in the <Link to={`${links.docs.streams}#stream-data-fields`}>streams docs</Link>.
+Use the **SendToStream** module if you want to send data that has been generated inside the canvas, into a stream. Inside the module, start typing the name of your stream and it will autocomplete for you. Remember to configure the fields of your stream before using this module as the module's inputs are defined by it's fields. Learn more about fields in the <Link to={`${links.docs.streams.root}#stream-data-fields`}>streams docs</Link>.
 
 <div className={cx(docsStyles.centered, canvasesStyles.sendToStream)}>
   <img src={SendToStream} />
@@ -149,7 +149,7 @@ The topology of a service can be arbitrarily complex. You can of course design a
 
 ### Module activation
 
-Computation in Streamr is entirely event-based. **Any module will execute immediately when activated by incoming events.** When new events arrive in the input stream, the data automatically flows through the canvas. This inherently asynchronous process allows for fast and continuous in-memory processing of large volumes of realtime data.
+Computation in Streamr is entirely event-based. **Any module will execute immediately when activated by incoming events.** When new events arrive in the input stream, the data automatically flows through the canvas. This inherently asynchronous process allows for fast and continuous in-memory processing of large volumes of real-time data.
 
 A module processes its inputs as soon as it is activated.  This happens when the following conditions are both satisfied.
 
@@ -186,21 +186,21 @@ Any manipulation of the module state and the generation of module output is hand
 
 ### How to run your canvas
 
-You can run your canvas in one of two ways - **historical** or **realtime** mode.
+You can run your canvas in one of two ways - **historical** or **real-time** mode.
 
 <div className={cx(docsStyles.centered, canvasesStyles.realOrHistorical)}>
   <img src={HistoricalRealtime} />
 </div>
 
-**Realtime mode** (default) is used in production where you want to react to data points as they arrive. Realtime data can flow from streams or can be generated from modules connected to the outside world, e.g. a HTTP API GET request.
+**Realtime mode** (default) is used in production where you want to react to data points as they arrive. Real-time data can flow from streams or can be generated from modules connected to the outside world, e.g. a HTTP API GET request.
 
 **Historical mode** is a playback of what has happened in a past date range. A playback can be extremely useful when you’re testing, refining, or demonstrating the functionality of a canvas.
 
 There's a natural iterative workflow where you first build a perhaps rudimentary version of a canvas, test it with historical data where possible, refine the design based on the test findings, and repeat until you're happy.
 
-### Realtime mode
+### Real-time mode
 
-When you run a canvas in *realtime mode*, it will listen to realtime events arriving in the subscribed streams, and process them as soon as they're available. When the canvas is running you won't be able to edit it, if you need to make changes, you'll need to stop the canvas and then restart it.
+When you run a canvas in *real-time mode*, it will listen to real-time events arriving in the subscribed streams, and process them as soon as they're available. When the canvas is running you won't be able to edit it, if you need to make changes, you'll need to stop the canvas and then restart it.
 
 <div className={cx(docsStyles.centered, canvasesStyles.startRealtimeRun)}>
   <img src={StartRealtimeRun} />

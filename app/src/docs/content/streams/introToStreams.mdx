@@ -2,12 +2,12 @@ import { Link } from 'react-router-dom'
 
 import links from '$shared/../links'
 
-## Intro to streams
+# Intro to streams
 
 All of the data in the Streamr network is contained inside individual streams. A stream is simply a sequence of data points in time. The data may originate, for example from machines on the factory floor, sensors in a smart city, in-house databases or systems, or from commercial streaming data feeds.
 
 Streams have the following properties:
-- Any kind of realtime data can be stored in it.
+- Any kind of real-time data can be stored in it.
 - The data will always be retrieved in the correct order.
 - The data is persisted on the Streamr network and identifiable by unique ID.
 
@@ -23,7 +23,7 @@ These are just a few examples. There is virtually no limit on the kind, format, 
 
 Streams implement a publish-subscribe paradigm, or pub/sub for short. A stream can receive data from many sources (or publishers), and there can be several listeners who subscribe to a stream. There are several variations on the possible pub/sub topologies, such as many-to-one, one-to-many, or many-to-many. Streamr supports all of these.
 
-If you want to try it out already, you can dive into our tutorial on <Link to={`${links.docs.tutorials}#building-a-simple-pub-sub-system`}>building a simple pub/sub system</Link> with Streamr.
+If you want to try it out already, you can dive into our tutorial on <Link to={`${links.docs.tutorials.root}#building-a-simple-pub-sub-system`}>building a simple pub/sub system</Link> with Streamr.
 
 ### Example stream
 

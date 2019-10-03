@@ -1,106 +1,112 @@
 // @flow
 
-import type { NavigationLink } from '../../../flowtype/navigation-types'
 import links from '$shared/../links'
-import { canvasModulesCategorised, toAnchor } from '../../DocsPages/CanvasModules/data'
+import type { DocsNav } from '$docs/flowtype/navigation-types'
 
-// navigationLinks Schema:
-// 'rendered title': 'URL Address',
-// ...
+const { docs: {
+    streams,
+    canvases,
+    api,
+    moduleReference,
+    core,
+    dashboards,
+    dataToken,
+    gettingStarted,
+    introduction,
+    marketplace,
+    products,
+    SDKs,
+    technicalNotes,
+    tutorials,
+} } = links
 
-const navigationLinks: NavigationLink = {
-    Introduction: links.docs.introduction,
-    'Getting Started': links.docs.gettingStarted,
-    Streams: links.docs.streams,
-    Canvases: links.docs.canvases,
-    'Canvas Modules': links.docs.canvasModules,
-    Dashboards: links.docs.dashboards,
-    Products: links.docs.products,
-    Tutorials: links.docs.tutorials,
-    'DATA Token': links.docs.dataToken,
-    Core: links.docs.core,
-    Marketplace: links.docs.marketplace,
-    // RunningNode: links.docs.runningNode,
-    SDKs: links.docs.SDKs,
-    API: links.docs.api,
-    'Technical Notes': links.docs.technicalNotes,
-}
+// docsNav:
+// - 'root' key is required for all sections.
+// - Key = Rendered navigation title.
+// - Value = Docs route.
 
-// subNav Schema:
-// 'scrollable DOM ID': 'rendered title',
-// ...
-
-export const subNav = {
-    introduction: {},
-    gettingStarted: {
-        'get-api-keys': 'Get your API keys',
-        'ethereum-identity': 'Ethereum identity',
-        'get-building': 'Get building',
-        'useful-links': 'Useful links',
+export const docsNav: DocsNav = {
+    Introduction: {
+        root: introduction.root,
     },
-    streams: {
-        'intro-to-streams': 'Intro to streams',
-        'work-with-streams-in-core': 'Work with streams in Core',
-        'work-with-streams-via-sdks': 'Work with streams via SDKs',
-        'work-with-streams-via-api': 'Work with streams via API',
-        'data-signing-and-verification': 'Data signing and verification',
-        'end-to-end-encryption': 'End-to-end encryption',
-        partitioning: 'Partitioning',
-        'integration-patterns': 'Integration Patterns',
+    'Getting Started': {
+        root: gettingStarted.root,
     },
-    canvases: {
-        'intro-to-canvases': 'Intro to canvases',
-        'work-with-canvases-in-core': 'Work with canvases in Core',
-        'building-integrations': 'Building integrations',
-        'ethereum-modules': 'Ethereum modules',
+    Streams: {
+        root: streams.root,
+        'Intro to streams': streams.introToStreams,
+        'Streams in Core': streams.usingStreamsInCore,
+        'Streams via SDKs': streams.usingStreamsViaSDK,
+        'Streams via API': streams.usingStreamsViaApi,
+        'Data signing & verification': streams.dataSigningAndVerification,
+        'End-to-end encryption': streams.endToEndEncryption,
+        Partitioning: streams.partitioning,
+        'Integration Patterns': streams.integrationPatterns,
     },
-    canvasModules: Object.keys(canvasModulesCategorised).sort().reduce((o, category) => Object.assign(o, {
-        [toAnchor(category)]: category,
-    }), {}),
-    dashboards: {
-        'intro-to-dashboards': 'Intro to dashboards',
-        'work-with-dashboards-in-core': 'Work with dashboards in Core',
+    Canvases: {
+        root: canvases.root,
+        'Intro to canvases': canvases.introToCanvases,
+        'Using Canvases': canvases.usingCanvases,
+        'Modules basics': canvases.modulesBasics,
+        'Modules advanced': canvases.modulesAdvanced,
     },
-    products: {
-        'intro-to-products': 'Intro to products',
-        'work-with-products-in-core': 'Work with products in Core',
-        'community-products': 'Community products',
+    'Module Reference': {
+        root: moduleReference.root,
+        Boolean: moduleReference.boolean,
+        'Custom Modules': moduleReference.customModules,
+        Input: moduleReference.input,
+        Integrations: moduleReference.integrations,
+        List: moduleReference.list,
+        Streams: moduleReference.streams,
+        Text: moduleReference.text,
+        'Time & Date': moduleReference.timeAndDate,
+        'Time Series': moduleReference.timeSeries,
+        Utils: moduleReference.utils,
+        Visualizations: moduleReference.visualizations,
     },
-    tutorials: {
-        'building-a-simple-pub-sub-system': 'Building a simple pub/sub system',
-        'building-custom-canvas-module': 'Building a custom canvas module',
+    Dashboards: {
+        root: dashboards.root,
     },
-    dataToken: {},
-    core: {
-        'intro-to-core': 'Intro to Core',
-        'work-with-streams-in-core': 'Work with streams in Core',
-        'work-with-canvases-in-core': 'Work with canvases in Core',
-        'work-with-dashboards-in-core': 'Work with dashboards in Core',
-        'work-with-products-in-core': 'Work with products in Core',
+    Products: {
+        root: products.root,
+        'Intro to products': products.introToProducts,
+        'Community products': products.communityProducts,
     },
-    marketplace: {
-        'introduction-marketplace': 'Introduction to the Marketplace',
-        'buying-data-marketplace': 'Buying data on the Marketplace',
-        'selling-data-marketplace': 'Selling data on the Marketplace',
+    Tutorials: {
+        root: tutorials.root,
+        'Building a simple pub/sub system': tutorials.buildingPubsub,
+        'Building a custom canvas module': tutorials.buildingCustomModule,
     },
+    'DATA Token': {
+        root: dataToken.root,
+    },
+    Core: {
+        root: core.root,
+        'Intro to Core': core.introToCore,
+        'Streams in Core': core.streamsInCore,
+        'Canvases in Core': core.canvasesInCore,
+        'Dashboards in Core': core.dashboardsInCore,
+        'Products in Core': core.productsInCore,
+    },
+    Marketplace: {
+        root: marketplace.root,
+        'Intro to the Marketplace': marketplace.introToMarketplace,
+        'Community products': marketplace.communityProducts,
+    },
+    // 'Running a Node': {
+    //     root: runningNode.root,
+    // },
     SDKs: {
-        'sdks-overview': 'Overview',
-        'javascript-sdk': 'Javascript SDK',
-        'java-sdk': 'Java SDK',
-        'python-sdk': 'Python SDK',
-        'contribute-sdk': 'Contribute an SDK?',
+        root: SDKs.root,
     },
-    api: {
-        'api-overview': 'API overview',
-        authentication: 'Authentication',
-        'work-with-streams-via-api': 'Work with streams via API',
-        'api-explorer': 'API Explorer',
+    API: {
+        root: api.root,
+        'API overview': api.apiOverview,
+        Authentication: api.authentication,
+        'Streams via API': api.usingStreamsViaApi,
+        'API Explorer': api.apiExplorer,
     },
-    technicalNotes: {
-        'how-to-contribute': 'How to contribute',
-        'running-private-streamr-stack': 'Running a private Streamr stack',
-        'streamr-protocol-spec': 'Streamr protocol spec',
+    'Technical Notes': {
+        root: technicalNotes.root,
     },
 }
-
-export default navigationLinks

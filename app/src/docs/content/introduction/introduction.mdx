@@ -9,20 +9,20 @@ import styles from '$docs/components/DocsPages/Introduction/introduction.pcss'
 
 # Streamr Documentation
 
-Welcome to Streamr, the platform for realtime data on the decentralised web. Explore what you can do with Streamr below.
+Welcome to Streamr, the platform for real-time data on the decentralised web. Explore what you can do with Streamr below.
 
 <div className={styles.streamrBanner}>
     <Logo color="#FF5C00" opacity="1" className={styles.logo} />
 </div>
 
 <div className={styles.panels}>
-    <Link to={links.docs.gettingStarted} className={styles.panelTile}>
+    <Link to={links.docs.gettingStarted.root} className={styles.panelTile}>
         <strong>Getting Started</strong>
         <p className={styles.jumplistText}>
             If you're the type that prefers to jump right in, read this section to get set up for Streamr.
         </p>
     </Link>
-    <Link to={links.docs.tutorials} className={styles.panelTile}>
+    <Link to={links.docs.tutorials.root} className={styles.panelTile}>
         <strong>Tutorials</strong>
         <p className={styles.jumplistText}>
             Follow hands-on tutorials to learn how to use Streamr in practice.
@@ -34,7 +34,7 @@ Welcome to Streamr, the platform for realtime data on the decentralised web. Exp
 
 ## What is Streamr?
 
-Streamr is an open source, crowdfunded, decentralized platform for realtime data. At its heart is the <a target="_blank" href={links.site.network}>Streamr Network</a>, which transports <Link to={links.docs.streams}>streams</Link> of messages from data publishers to subscribers, appearing to the user as a global publish/subscribe messaging service.
+Streamr is an open source, crowdfunded, decentralized platform for real-time data. At its heart is the <a target="_blank" href={links.site.network}>Streamr Network</a>, which transports <Link to={links.docs.streams.root}>streams</Link> of messages from data publishers to subscribers, appearing to the user as a global publish/subscribe messaging service.
 
 It is similar in functionality to message queues, enterprise messaging systems, MQTT brokers, Apache Kafka, or pub/sub cloud messaging services. The key features of such systems, including Streamr, are:
 
@@ -42,12 +42,12 @@ It is similar in functionality to message queues, enterprise messaging systems, 
 - Subscribing to messages in order to process them as they occur
 - Storing messages for later use
 
-You can interact with Streamr using the <Link to={links.docs.core}>Core</Link> user interface, <Link to={links.docs.SDKs}>SDKs</Link>, or directly via the <Link to={links.docs.api}>API</Link>.
-In addition to the Network, the Streamr stack includes a <Link to={links.docs.marketplace}>Marketplace</Link> for data sharing and monetization, and <Link to={links.docs.canvases}>Canvases</Link> for data processing and analytics as part of the Core web app.
+You can interact with Streamr using the <Link to={links.docs.core}>Core</Link> user interface, <Link to={links.docs.SDKs.root}>SDKs</Link>, or directly via the <Link to={links.docs.api.root}>API</Link>.
+In addition to the Network, the Streamr stack includes a <Link to={links.docs.marketplace.root}>Marketplace</Link> for data sharing and monetization, and <Link to={links.docs.canvases.root}>Canvases</Link> for data processing and analytics as part of the Core web app.
 
 Using the built-in tooling is optional, as Streamr also integrates with many popular data frameworks including <a target="_blank" href={links.blogPosts.spark}>Apache Spark</a> and <a target="_blank" href={links.blogPosts.nodered}>Node-RED</a>. To start using Streamr right away, check out the Getting Started section and the Tutorials.
 
-Using the built-in tooling is optional, as Streamr also integrates with many popular data frameworks including Apache Spark and Node-RED. To start using Streamr right away, check out the <Link to={links.docs.gettingStarted}>Getting Started</Link> section and the <Link to={links.docs.tutorials}>Tutorials.</Link>
+Using the built-in tooling is optional, as Streamr also integrates with many popular data frameworks including Apache Spark and Node-RED. To start using Streamr right away, check out the <Link to={links.docs.gettingStarted.root}>Getting Started</Link> section and the <Link to={links.docs.tutorials.root}>Tutorials.</Link>
 
 ## Why use Streamr?
 
@@ -55,9 +55,9 @@ The big difference to comparable data frameworks is that Streamr aims to be dece
 
 Similar to cloud services, you get on-demand scalability, minimal up-front investment, and benefit from economies of scale. Unlike cloud services, there's no vendor lock-in, no monopolies, no proprietary code, and no need to trust a third party with your data. Decentralised networks are also secure by design, more resilient to attacks and disruptions due to their distributed and peer-to-peer nature. They also benefit from network effects— as adoption grows, the above points become stronger, a shared standard is formed across industries, and a lot of useful content becomes available from a single source.
 
-Instead of a centralized party, the Network is run by its community of users, and it heavily relies on cryptography to remove the need for trust. This creates a permissionless and neutral network for realtime data, which is highly suitable for use cases such as data sharing, data monetisation, and the <a target="_blank" href={links.external.decentralizedWeb}>decentralised web</a>, extending the capabilities of the underlying internet without compromising its open and decentralised nature.
+Instead of a centralized party, the Network is run by its community of users, and it heavily relies on cryptography to remove the need for trust. This creates a permissionless and neutral network for real-time data, which is highly suitable for use cases such as data sharing, data monetisation, and the <a target="_blank" href={links.external.decentralizedWeb}>decentralised web</a>, extending the capabilities of the underlying internet without compromising its open and decentralised nature.
 
-Another major difference is that Streamr utilizes a companion blockchain, currently <a target="_blank" href={links.external.ethereum}>Ethereum</a>. The blockchain provides users with secure digital identities, enables direct transfers of value in the form of a Streamr-specific cryptocurrency <Link to={links.docs.dataToken}>DATA</Link>, and provides a shared ground truth for the network nodes.
+Another major difference is that Streamr utilizes a companion blockchain, currently <a target="_blank" href={links.external.ethereum}>Ethereum</a>. The blockchain provides users with secure digital identities, enables direct transfers of value in the form of a Streamr-specific cryptocurrency <Link to={links.docs.dataToken.root}>DATA</Link>, and provides a shared ground truth for the network nodes.
 
 ## Work in Progress
 
@@ -67,16 +67,16 @@ While Streamr already works today, it is not yet feature-complete or fully decen
 
 Learn about the most important concepts in Streamr:
 
-<Link to={links.docs.streams} className={styles.keyComponents}>
+<Link to={links.docs.streams.root} className={styles.keyComponents}>
     <p><strong>Streams</strong> are sequences of timestamped messages, delivered from publishers to subscribers by the Streamr Network.</p>
 </Link>
-<Link to={links.docs.canvases} className={styles.keyComponents}>
+<Link to={links.docs.canvases.root} className={styles.keyComponents}>
     <p><strong>Canvases</strong> are analytics and integration processes built using the visual programming environment included in Streamr Core.</p>
 </Link>
-<Link to={links.docs.products} className={styles.keyComponents}>
+<Link to={links.docs.products.root} className={styles.keyComponents}>
     <p><strong>Products</strong> are collections of streams which can be published onto the Marketplace and purchased by other Streamr users.</p>
 </Link>
-<Link to={links.docs.dataToken} className={styles.keyComponents}>
+<Link to={links.docs.dataToken.root} className={styles.keyComponents}>
     <p><strong>DATA</strong> is the cryptocurrency which powers the Streamr ecosystem in various ways. It is an ERC-20 token on the Ethereum blockchain.</p>
 </Link>
 
@@ -88,4 +88,4 @@ On the below channels, you can find others developing on Streamr, as well as get
 - <a target="_blank" href={links.community.telegram}>Telegram</a>
 - <a target="_blank" href={links.community.reddit}>Reddit</a>
 
-To understand the exact inner workings of Streamr, and perhaps help build it, check the <Link to={links.docs.technicalNotes}>Technical Notes</Link> section and of course the project <a target="_blank" href={links.community.github}>GitHub</a>.
+To understand the exact inner workings of Streamr, and perhaps help build it, check the <Link to={links.docs.technicalNotes.root}>Technical Notes</Link> section and of course the project <a target="_blank" href={links.community.github}>GitHub</a>.

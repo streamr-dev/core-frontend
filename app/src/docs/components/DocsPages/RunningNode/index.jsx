@@ -3,8 +3,8 @@
 // import React from 'react'
 // import { Helmet } from 'react-helmet'
 
-// import DocsLayout from '../../DocsLayout'
-// import { subNav } from '../../DocsLayout/Navigation/navLinks'
+// import DocsLayout from '$docs/components/DocsLayout'
+//
 // import RunningNodeContent from '$docs/content/runningNode.mdx'
 
 // const RunningNode = () => (

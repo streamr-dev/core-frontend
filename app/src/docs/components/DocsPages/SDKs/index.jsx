@@ -2,10 +2,7 @@
 
 import React from 'react'
 import { Helmet } from 'react-helmet'
-
-import DocsLayout from '../../DocsLayout'
-import { subNav } from '../../DocsLayout/Navigation/navLinks'
-
+import DocsLayout from '$docs/components/DocsLayout'
 import SdksOverview from '$docs/content/sdks/sdksOverview.mdx'
 import JavascriptSdk from '$docs/content/sdks/javascriptSdk.mdx'
 import JavaSdk from '$docs/content/sdks/javaSdk.mdx'
@@ -13,7 +10,7 @@ import PythonSdk from '$docs/content/sdks/pythonSdk.mdx'
 import ContributeSdk from '$docs/content/technicalNotes/howToContribute.mdx'
 
 const SDKs = () => (
-    <DocsLayout subNav={subNav.SDKs}>
+    <DocsLayout>
         <Helmet title="SDKs | Streamr Docs" />
         <section className="designUpdateWip"> {/* temporary section during design style pass */}
             <section id="sdks-overview">

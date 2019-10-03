@@ -2,15 +2,12 @@
 
 import React from 'react'
 import { Helmet } from 'react-helmet'
-
-import DocsLayout from '../../DocsLayout'
-import { subNav } from '../../DocsLayout/Navigation/navLinks'
-
+import DocsLayout from '$docs/components/DocsLayout'
 import GettingStartedContent from '$docs/content/gettingStarted/gettingStarted.mdx'
 import GetBuilding from '$docs/content/gettingStarted/getBuilding.mdx'
 
 const GettingStarted = () => (
-    <DocsLayout subNav={subNav.gettingStarted}>
+    <DocsLayout>
         <Helmet title="Getting Started | Streamr Docs" />
         <section className="designUpdateWip"> {/* temporary section during design style pass */}
             <section>

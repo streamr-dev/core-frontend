@@ -36,21 +36,64 @@ import ProfilePage from '$userpages/components/ProfilePage'
 import PurchasesPage from '$userpages/components/PurchasesPage'
 import ProductsPage from '$userpages/components/ProductsPage'
 
-// Docs
+// Docs Pages
 import IntroductionDocsPage from '$docs/components/DocsPages/Introduction'
+// Getting Started Docs
 import GettingStartedDocsPage from '$docs/components/DocsPages/GettingStarted'
-import StreamsDocsPage from '$docs/components/DocsPages/Streams'
-import CanvasesDocsPage from '$docs/components/DocsPages/Canvases'
-import CanvasModulesDocsPage from '$docs/components/DocsPages/CanvasModules'
+// Streams Docs
+import IntroToStreamsDocsPage from '$docs/components/DocsPages/Streams/IntroToStreams'
+import UsingStreamsInCoreDocsPage from '$docs/components/DocsPages/Streams/UsingStreamsInCore'
+import UsingStreamsViaApiDocsPage from '$docs/components/DocsPages/Streams/UsingStreamsViaApi'
+import UsingStreamsViaSDKDocsPage from '$docs/components/DocsPages/Streams/UsingStreamsViaSDK'
+import PartitioningDocsPage from '$docs/components/DocsPages/Streams/Partitioning'
+import IntegrationPatternsDocsPage from '$docs/components/DocsPages/Streams/IntegrationPatterns'
+import EndToEndEncryptionDocsPage from '$docs/components/DocsPages/Streams/EndToEndEncryption'
+import DataSigningAndVerificationDocsPage from '$docs/components/DocsPages/Streams/DataSigningAndVerification'
+// Canvases Docs
+import IntroToCanvasesDocsPage from '$docs/components/DocsPages/Canvases/IntroToCanvases'
+import ModulesBasicsDocsPage from '$docs/components/DocsPages/Canvases/ModulesBasics'
+import ModulesAdvancedDocsPage from '$docs/components/DocsPages/Canvases/ModulesAdvanced'
+// Module Reference Docs
+import ModuleReferenceBooleanDocsPage from '$docs/components/DocsPages/ModuleReference/Boolean'
+import ModuleReferenceCustomModulesDocsPage from '$docs/components/DocsPages/ModuleReference/CustomModules'
+import ModuleReferenceInputDocsPage from '$docs/components/DocsPages/ModuleReference/Input'
+import ModuleReferenceIntegrationsDocsPage from '$docs/components/DocsPages/ModuleReference/Integrations'
+import ModuleReferenceListDocsPage from '$docs/components/DocsPages/ModuleReference/List'
+import ModuleReferenceMapDocsPage from '$docs/components/DocsPages/ModuleReference/Map'
+import ModuleReferenceStreamsDocsPage from '$docs/components/DocsPages/ModuleReference/Streams'
+import ModuleReferenceTextDocsPage from '$docs/components/DocsPages/ModuleReference/Text'
+import ModuleReferenceTimeAndDateDocsPage from '$docs/components/DocsPages/ModuleReference/TimeAndDate'
+import ModuleReferenceTimeSeriesDocsPage from '$docs/components/DocsPages/ModuleReference/TimeSeries'
+import ModuleReferenceUtilsDocsPage from '$docs/components/DocsPages/ModuleReference/Utils'
+import ModuleReferenceVisualizationsDocsPage from '$docs/components/DocsPages/ModuleReference/Visualizations'
+
+// Dashboard Docs
 import DashboardsDocsPage from '$docs/components/DocsPages/Dashboards'
-import ProductsDocsPage from '$docs/components/DocsPages/Products'
-import TutorialsDocsPage from '$docs/components/DocsPages/Tutorials'
+// Products Docs
+import IntroToProductsDocsPage from '$docs/components/DocsPages/Products/IntroToProducts'
+import CommunityProductsDocsPage from '$docs/components/DocsPages/Products/CommunityProducts'
+// Tutorials Docs
+import BuildingPubSubDocsPage from '$docs/components/DocsPages/Tutorials/BuildingPubSub'
+import BuildingCustomModuleDocsPage from '$docs/components/DocsPages/Tutorials/BuildingCustomModule'
+// DATA Token Docs
 import DataTokenDocsPage from '$docs/components/DocsPages/DataToken'
-import CoreDocsPage from '$docs/components/DocsPages/Core'
-import MarketplaceDocsPage from '$docs/components/DocsPages/Marketplace'
+// Core Docs
+import IntroToCoreDocsPage from '$docs/components/DocsPages/Core/IntroToCore'
+import StreamsInCoreDocsPage from '$docs/components/DocsPages/Core/UsingStreamsInCore'
+import UsingCanvasesInCoreDocsPage from '$docs/components/DocsPages/Core/UsingCanvasesInCore'
+import DashboardsInCoreDocsPage from '$docs/components/DocsPages/Core/UsingDashboardsInCore'
+import ProductsInCoreDocsPage from '$docs/components/DocsPages/Core/UsingProductsInCore'
+// Marketplace Docs
+import IntoToMarketplaceDocsPage from '$docs/components/DocsPages/Marketplace/IntroToMarketplace'
+// Running a Node Docs
 // import RunningNodeDocsPage from '$docs/components/DocsPages/RunningNode'
+// SDK Docs
 import SDKsDocsPage from '$docs/components/DocsPages/SDKs'
-import APIDocsPage from '$docs/components/DocsPages/API'
+// API Docs
+import ApiOverviewDocsPage from '$docs/components/DocsPages/Api/ApiOverview'
+import AuthenticationDocsPage from '$docs/components/DocsPages/Api/Authentication'
+import ApiExplorerDocsPage from '$docs/components/DocsPages/Api/ApiExplorer'
+// Technical Notes Docs
 import TechnicalNotesDocsPage from '$docs/components/DocsPages/TechnicalNotes'
 
 // Editor
@@ -144,22 +187,77 @@ const CommunityProductsRouter = () => ([
 ])
 
 const DocsRouter = () => ([
-    <Route exact path={docs.introduction} component={IntroductionDocsPage} key="IntroductionPage" />,
-    <Route exact path={docs.gettingStarted} component={GettingStartedDocsPage} key="GettingStartedPage" />,
-    <Route exact path={docs.streams} component={StreamsDocsPage} key="StreamsPage" />,
-    <Route exact path={docs.canvases} component={CanvasesDocsPage} key="CanvasesPage" />,
-    <Route exact path={docs.canvasModules} component={CanvasModulesDocsPage} key="CanvasModulesPage" />,
-    <Route exact path={docs.dashboards} component={DashboardsDocsPage} key="DashboardsPage" />,
-    <Route exact path={docs.products} component={ProductsDocsPage} key="ProductsPage" />,
-    <Route exact path={docs.tutorials} component={TutorialsDocsPage} key="TutorialsPage" />,
-    <Route exact path={docs.dataToken} component={DataTokenDocsPage} key="DataTokenPage" />,
-    <Route exact path={docs.core} component={CoreDocsPage} key="CorePage" />,
-    <Route exact path={docs.marketplace} component={MarketplaceDocsPage} key="MarketplacePage" />,
+    // Introduction routes
+    <Route exact path={docs.introduction.root} component={IntroductionDocsPage} key="IntroductionPage" />,
+    // Getting Started routes
+    <Route exact path={docs.gettingStarted.root} component={GettingStartedDocsPage} key="GettingStartedPage" />,
+    // Streams routes
+    <Route exact path={docs.streams.introToStreams} component={IntroToStreamsDocsPage} key="IntroToStreamsPage" />,
+    <Redirect exact from={docs.streams.root} to={docs.streams.introToStreams} key="StreamsRoot" />,
+    <Route exact path={docs.streams.usingStreamsInCore} component={UsingStreamsInCoreDocsPage} key="UsingStreamsInCore" />,
+    <Route exact path={docs.streams.usingStreamsViaApi} component={UsingStreamsViaApiDocsPage} key="UsingStreamsViaApi" />,
+    <Route exact path={docs.streams.usingStreamsViaSDK} component={UsingStreamsViaSDKDocsPage} key="UsingStreamsViaSDK" />,
+    <Route exact path={docs.streams.partitioning} component={PartitioningDocsPage} key="Partitioning" />,
+    <Route exact path={docs.streams.integrationPatterns} component={IntegrationPatternsDocsPage} key="IntegrationPatterns" />,
+    <Route exact path={docs.streams.endToEndEncryption} component={EndToEndEncryptionDocsPage} key="EndToEndEncryption" />,
+    <Route exact path={docs.streams.dataSigningAndVerification} component={DataSigningAndVerificationDocsPage} key="DataSigningAndVerification" />,
+    // Canvases routes
+    <Route exact path={docs.canvases.introToCanvases} component={IntroToCanvasesDocsPage} key="IntroToCanvases" />,
+    <Redirect exact from={docs.canvases.root} to={docs.canvases.introToCanvases} key="CanvasesRoot" />,
+    <Route exact path={docs.canvases.usingCanvases} component={UsingCanvasesInCoreDocsPage} key="UsingCanvases" />,
+    <Route exact path={docs.canvases.modulesBasics} component={ModulesBasicsDocsPage} key="ModulesBasics" />,
+    <Route exact path={docs.canvases.modulesAdvanced} component={ModulesAdvancedDocsPage} key="ModulesAdvanced" />,
+    // Dashboard routes
+    <Route exact path={docs.dashboards.root} component={DashboardsDocsPage} key="DashboardsPage" />,
+    // Products routes
+    <Route exact path={docs.products.introToProducts} component={IntroToProductsDocsPage} key="IntroToProducts" />,
+    <Redirect exact from={docs.products.root} to={docs.products.introToProducts} key="ProductsRoot" />,
+    <Route exact path={docs.products.communityProducts} component={CommunityProductsDocsPage} key="CommunityProducts" />,
+    // Module Reference routes
+    <Route exact path={docs.moduleReference.boolean} component={ModuleReferenceBooleanDocsPage} key="BooleanDocsPage" />,
+    <Redirect exact from={docs.moduleReference.root} to={docs.moduleReference.boolean} key="ModuleReferencePage" />,
+    <Route exact path={docs.moduleReference.customModules} component={ModuleReferenceCustomModulesDocsPage} key="CustomModulesDocsPage" />,
+    <Route exact path={docs.moduleReference.input} component={ModuleReferenceInputDocsPage} key="InputDocsPage" />,
+    <Route exact path={docs.moduleReference.integrations} component={ModuleReferenceIntegrationsDocsPage} key="IntegrationsDocsPage" />,
+    <Route exact path={docs.moduleReference.list} component={ModuleReferenceListDocsPage} key="ListDocsPage" />,
+    <Route exact path={docs.moduleReference.map} component={ModuleReferenceMapDocsPage} key="MapDocsPage" />,
+    <Route exact path={docs.moduleReference.streams} component={ModuleReferenceStreamsDocsPage} key="StreamsDocsPage" />,
+    <Route exact path={docs.moduleReference.text} component={ModuleReferenceTextDocsPage} key="TextDocsPage" />,
+    <Route exact path={docs.moduleReference.timeAndDate} component={ModuleReferenceTimeAndDateDocsPage} key="TimeAndDateDocsPage" />,
+    <Route exact path={docs.moduleReference.timeSeries} component={ModuleReferenceTimeSeriesDocsPage} key="TimeSeriesDocsPage" />,
+    <Route exact path={docs.moduleReference.utils} component={ModuleReferenceUtilsDocsPage} key="UtilsDocsPage" />,
+    <Route exact path={docs.moduleReference.visualizations} component={ModuleReferenceVisualizationsDocsPage} key="VisualizationsDocsPage" />,
+    // Tutorials routes
+    <Route exact path={docs.tutorials.buildingPubsub} component={BuildingPubSubDocsPage} key="BuildingPubSub" />,
+    <Redirect exact from={docs.tutorials.root} to={docs.tutorials.buildingPubsub} key="TutorialsRoot" />,
+    <Route exact path={docs.tutorials.buildingCustomModule} component={BuildingCustomModuleDocsPage} key="BuildingCustomModule" />,
+    // DATA Token routes
+    <Route exact path={docs.dataToken.root} component={DataTokenDocsPage} key="DataTokenPage" />,
+    // Core routes
+    <Route exact path={docs.core.introToCore} component={IntroToCoreDocsPage} key="IntroToCore" />,
+    <Redirect exact from={docs.core.root} to={docs.core.introToCore} key="CoreRoot" />,
+    <Route exact path={docs.core.streamsInCore} component={StreamsInCoreDocsPage} key="streamsInCore" />,
+    <Route exact path={docs.core.canvasesInCore} component={UsingCanvasesInCoreDocsPage} key="canvasesInCore" />,
+    <Route exact path={docs.core.dashboardsInCore} component={DashboardsInCoreDocsPage} key="dashboardsInCore" />,
+    <Route exact path={docs.core.productsInCore} component={ProductsInCoreDocsPage} key="productsInCore" />,
+    // Marketplace routes
+    <Route exact path={docs.marketplace.introToMarketplace} component={IntoToMarketplaceDocsPage} key="IntroToMarketplace" />,
+    <Redirect exact from={docs.marketplace.root} to={docs.marketplace.introToMarketplace} key="MarketplaceRoot" />,
+    <Route exact path={docs.marketplace.communityProducts} component={CommunityProductsDocsPage} key="CommunityProducts" />,
+    // SDKs Routes
+    <Route exact path={docs.SDKs.root} component={SDKsDocsPage} key="SDKsPage" />,
+    // Running Node routes
     // <Route exact path={docs.runningNode} component={RunningNodeDocsPage} key="RunningNodePage" />,
-    <Route exact path={docs.SDKs} component={SDKsDocsPage} key="SDKsPage" />,
-    <Route exact path={docs.api} component={APIDocsPage} key="ApiPage" />,
-    <Route exact path={docs.technicalNotes} component={TechnicalNotesDocsPage} key="technicalNotes" />,
-    <Redirect from={docs.main} to={docs.introduction} key="DocsRoot" />,
+    // API routes
+    <Route exact path={docs.api.apiOverview} component={ApiOverviewDocsPage} key="ApiOverview" />,
+    <Redirect exact from={docs.api.root} to={docs.api.apiOverview} key="ApiOverview" />,
+    <Route exact path={docs.api.authentication} component={AuthenticationDocsPage} key="Authentication" />,
+    <Route exact path={docs.api.usingStreamsViaApi} component={UsingStreamsViaApiDocsPage} key="usingStreamsViaApi" />,
+    <Route exact path={docs.api.apiExplorer} component={ApiExplorerDocsPage} key="apiExplorer" />,
+    // Technical Notes routes
+    <Route exact path={docs.technicalNotes.root} component={TechnicalNotesDocsPage} key="technicalNotes" />,
+    // Docs Root
+    <Redirect exact from={docs.main} to={docs.introduction} key="DocsRoot" />,
 ])
 
 const UserpagesRouter = () => ([

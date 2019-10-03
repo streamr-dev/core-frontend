@@ -2,20 +2,12 @@
 
 import React from 'react'
 import { Link, withRouter, type Location } from 'react-router-dom'
-import scrollIntoView from 'smooth-scroll-into-view-if-needed'
-import { formatPath } from '$shared/utils/url'
 import cx from 'classnames'
-import Scrollspy from 'react-scrollspy'
-
 import SvgIcon from '$shared/components/SvgIcon'
-
-import type { NavigationLink } from '../../../flowtype/navigation-types'
-
+import { docsNav } from '$docs/components/DocsLayout/Navigation/navLinks'
 import styles from './navigation.pcss'
 
 type Props = {
-    navigationItems: NavigationLink,
-    subNavigationItems?: NavigationLink,
     className: String,
     responsive?: boolean,
     location: Location,
@@ -31,78 +23,55 @@ class Navigation extends React.Component<Props, State> {
     }
 
     toggleExpand = () => {
-        this.scrollTop()
-
         this.setState({
             compressed: !this.state.compressed,
         })
     }
 
-    scrollTop = () => {
-        const root = document.getElementById('root')
-
-        // Edge case for really long pages
-        // Snap straight to top
-        if (root && window.pageYOffset > 2000) {
-            window.scrollTo(0, 0)
-        } else if (root) {
-            scrollIntoView(root, {
-                behavior: 'smooth',
-                block: 'start',
-                inline: 'nearest',
-            })
-        }
-    }
-
-    parseNavigation() {
-        const { navigationItems, subNavigationItems } = this.props
-
-        return Object.entries(navigationItems).map((navListItem) => (
-            <li key={`item-${navListItem[0]}`} className={styles.navListItem}>
-                <Link
-                    to={formatPath(String(navListItem[1]))}
-                    onClick={() => this.scrollTop()}
-                    className={this.props.location.pathname === navListItem[1] ? styles.active : ''}
-                >
-                    {navListItem[0]}
-                </Link>
-                {this.props.location.pathname === navListItem[1] ?
-                    (!!subNavigationItems && (<ul className={styles.subNavList}> {this.parseSubNavigation()} </ul>)) : ''}
-            </li>
-        ))
-    }
-
-    parseSubNavigation() {
-        const { subNavigationItems } = this.props
+    generateNavigation(topLevelNav, index) {
+        const navItem = docsNav[topLevelNav]
+        const isActiveSection = this.isActiveSection(navItem)
+        const { pathname } = this.props.location
 
         return (
-            <Scrollspy items={subNavigationItems && Object.keys(subNavigationItems)} currentClassName={styles.active}>
-                {Object.entries(subNavigationItems).map((subNavigationItem) => (
-                    <li key={`item-${subNavigationItem[0]}`} className={styles.navListItem}>
-                        <a
-                            href={`#${subNavigationItem[0]}`}
-                        >
-                            {String(subNavigationItem[1])}
-                        </a>
-                    </li>
-                ))}
-            </Scrollspy>
+            <React.Fragment key={index}>
+                <li className={styles.navListItem}>
+                    <Link className={isActiveSection ? styles.active : ''} to={navItem.root}>{topLevelNav}</Link>
+                </li>
+                <ul
+                    className={cx(styles.subNavList, {
+                        [styles.show]: isActiveSection,
+                        [styles.hide]: !isActiveSection,
+                    })}
+                >
+                    {/* Render subNav contents */}
+                    {Object.keys(navItem).map((subKey) => {
+                        if (subKey !== 'root') {
+                            return (
+                                <li key={subKey} className={styles.navListItem}>
+                                    {/* $FlowFixMe */}
+                                    <Link className={pathname.includes(navItem[subKey]) ? styles.active : ''} to={navItem[subKey]}>{subKey}</Link>
+                                </li>)
+                        }
+                        return null
+                    })
+                    }
+                </ul>
+            </React.Fragment>
         )
     }
 
-    parseCurrentPage() {
-        const { navigationItems } = this.props
+    isActiveSection(subNavList) {
+        let match = false
 
-        return Object.entries(navigationItems).map((navListItem) => (
-            this.props.location.pathname === navListItem[1] ?
-                (
-                    <li key={`item-${String(navListItem[1])}`} className={styles.navListItem}>
-                        <Link to={formatPath(String(navListItem[1]))}>
-                            {navListItem[0]}
-                        </Link>
-                    </li>
-                ) : null
-        ))
+        Object.keys(subNavList).forEach((subKey) => {
+            // $FlowFixMe
+            if (this.props.location.pathname.includes(subNavList[subKey])) {
+                match = true
+            }
+        })
+
+        return match
     }
 
     render() {
@@ -122,8 +91,8 @@ class Navigation extends React.Component<Props, State> {
                     container: responsive,
                 })}
                 >
-                    {!!responsive && this.parseCurrentPage()}
-                    {this.parseNavigation()}
+                    {/* {!!responsive && this.parseCurrentPage()} */}
+                    {Object.keys(docsNav).map((topLevelNav, index) => this.generateNavigation(topLevelNav, index))}
                 </ul>
                 <SvgIcon name="back" className={styles.arrowExtender} />
             </div>
