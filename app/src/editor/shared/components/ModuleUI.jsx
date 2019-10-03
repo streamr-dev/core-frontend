@@ -52,7 +52,7 @@ export default ({ autoSize, ...props }) => {
     const isRunning = useIsCanvasRunning()
 
     return (
-        <RunStateLoader {...props}>
+        <RunStateLoader {...props} isActive={isRunning} canvasId={canvasId}>
             {(props) => {
                 const Module = module.widget ? Widgets[module.widget] : Modules[module.jsModule]
 
@@ -63,8 +63,6 @@ export default ({ autoSize, ...props }) => {
                 return (
                     <Module
                         {...props}
-                        canvasId={canvasId}
-                        isActive={isRunning}
                         moduleHash={module.hash}
                     />
                 )
