@@ -136,18 +136,26 @@ function useIsMouseDown({ buttons = 1, ref }) {
 
 function useKeyboardZoomControls() {
     const { fitCanvas } = useCanvasCamera()
-    const { elRef } = useCameraContext()
+    const { elRef, setScale } = useCameraContext()
     const onKeyDown = useCallback((event) => {
         const { current: el } = elRef
         if (isEditableElement(event.target) || (!el.contains(event.target) && event.target !== document.body)) { return }
         const meta = (event.metaKey || event.ctrlKey)
+
         if (event.key === '0' && meta) {
+            event.preventDefault()
+            event.stopPropagation()
+            event.stopImmediatePropagation()
+            setScale(1)
+        }
+
+        if (event.key === '1' && meta) {
             event.preventDefault()
             event.stopPropagation()
             event.stopImmediatePropagation()
             fitCanvas()
         }
-    }, [fitCanvas, elRef])
+    }, [fitCanvas, setScale, elRef])
 
     useEffect(() => {
         window.addEventListener('keydown', onKeyDown)

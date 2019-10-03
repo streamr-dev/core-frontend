@@ -18,6 +18,7 @@ import dateFormatter from '$utils/dateFormatter'
 import EditableText from '$shared/components/EditableText'
 import UseState from '$shared/components/UseState'
 import confirmDialog from '$shared/utils/confirm'
+import { getKeyLabel } from '$editor/shared/components/KeyboardShortcutsSidebar'
 
 import Toolbar from '$editor/shared/components/Toolbar'
 import useCanvasCamera from '../hooks/useCanvasCamera'
@@ -55,11 +56,20 @@ function ZoomButtons({ canvas }) {
             >
                 <DropdownActions.Item onClick={() => camera.setScale(0.25)}>25%</DropdownActions.Item>
                 <DropdownActions.Item onClick={() => camera.setScale(0.5)}>50%</DropdownActions.Item>
-                <DropdownActions.Item onClick={() => camera.setScale(1)}>100%</DropdownActions.Item>
+                <DropdownActions.Item onClick={() => camera.setScale(0.5)}>100%</DropdownActions.Item>
                 <DropdownActions.Item divider />
-                <DropdownActions.Item onClick={() => camera.zoomIn()}>Zoom In</DropdownActions.Item>
-                <DropdownActions.Item onClick={() => camera.zoomOut()}>Zoom Out</DropdownActions.Item>
-                <DropdownActions.Item onClick={() => canvasCamera.fitCanvas()}>Fit Screen</DropdownActions.Item>
+                <DropdownActions.Item onClick={() => camera.zoomIn()}>
+                    Zoom In <span className={styles.menuShortcut}>{getKeyLabel('meta')}=</span>
+                </DropdownActions.Item>
+                <DropdownActions.Item onClick={() => camera.zoomOut()}>
+                    Zoom Out <span className={styles.menuShortcut}>{getKeyLabel('meta')}-</span>
+                </DropdownActions.Item>
+                <DropdownActions.Item onClick={() => camera.setScale(1)}>
+                    Full Size <span className={styles.menuShortcut}>{getKeyLabel('meta')}0</span>
+                </DropdownActions.Item>
+                <DropdownActions.Item onClick={() => canvasCamera.fitCanvas()}>
+                    Fit Screen <span className={styles.menuShortcut}>{getKeyLabel('meta')}1</span>
+                </DropdownActions.Item>
             </DropdownActions>
             <button
                 className={cx(styles.ToolbarButton, styles.ZoomButton)}
