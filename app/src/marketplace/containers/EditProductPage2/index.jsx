@@ -31,7 +31,6 @@ const EditProductPage = ({ product }: { product: Product }) => {
 
     const isSaving = savePending
     const isCommunityProduct = product.type === 'COMMUNITY'
-    console.log(product)
 
     const actions = useMemo(() => {
         let buttons = {

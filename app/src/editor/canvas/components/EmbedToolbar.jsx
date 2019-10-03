@@ -6,6 +6,14 @@ import LogoItem from '$shared/components/Logo'
 import links from '../../../links'
 import routes from '$routes'
 
+function inIframe() {
+    try {
+        return window.self !== window.top
+    } catch (e) {
+        return true
+    }
+}
+
 export default function EmbedToolbar({ canvas }) {
     return (
         <div className={styles.root}>
@@ -20,9 +28,15 @@ export default function EmbedToolbar({ canvas }) {
                 href={routes.login({
                     redirect: `${links.editor.canvasEditor}/${canvas.id}`,
                 })}
+                {...(inIframe() ? {
+                    // open in new tab if in iframe
+                    target: '_blank',
+                    rel: 'noopener noreferrer',
+                } : {})}
             >
                 View on Streamr
             </a>
         </div>
     )
 }
+

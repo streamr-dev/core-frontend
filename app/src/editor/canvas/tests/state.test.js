@@ -202,8 +202,8 @@ describe('Canvas State', () => {
             })
 
             describe('setHistoricalRange', () => {
-                const earlyDate = new Date(Date.now() - 9999999).toISOString()
-                const lateDate = new Date().toISOString()
+                const earlyDate = Date.now() - 9999999
+                const lateDate = Date.now()
                 it('should set endDate to beginDate when beginDate < endDate', () => {
                     let canvas = State.emptyCanvas()
                     const beginDate = earlyDate
@@ -244,6 +244,31 @@ describe('Canvas State', () => {
                     })
                     expect(canvas.settings.beginDate).toEqual(beginDate)
                     expect(canvas.settings.endDate).toEqual(beginDate)
+                })
+
+                it('should convert date strings to timestamps', () => {
+                    let canvas = State.emptyCanvas()
+                    const beginDate = earlyDate
+                    const endDate = lateDate
+                    canvas = State.setHistoricalRange(canvas, {
+                        beginDate: new Date(beginDate).toISOString(),
+                    })
+                    canvas = State.setHistoricalRange(canvas, {
+                        endDate: new Date(endDate).toISOString(),
+                    })
+                    expect(canvas.settings.beginDate).toEqual(beginDate)
+                    expect(canvas.settings.endDate).toEqual(endDate)
+                })
+
+                it('should convert date strings to timestamps in updateCanvas, even without setHistoricalRange', () => {
+                    let canvas = State.emptyCanvas()
+                    const beginDate = earlyDate
+                    const endDate = lateDate
+                    canvas.settings.beginDate = new Date(earlyDate).toISOString()
+                    canvas.settings.endDate = new Date(lateDate).toISOString()
+                    canvas = State.updateCanvas(canvas)
+                    expect(canvas.settings.beginDate).toEqual(beginDate)
+                    expect(canvas.settings.endDate).toEqual(endDate)
                 })
             })
 
