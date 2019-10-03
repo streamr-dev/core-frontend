@@ -18,11 +18,6 @@ const Module = ({ src }) => (
             selectModule: () => {},
             setCanvas: () => {},
         }}
-        canvas={{
-            id: null,
-            state: 'STOPPED',
-            modules: [src],
-        }}
         module={src}
         layout={src.layout}
         style={{

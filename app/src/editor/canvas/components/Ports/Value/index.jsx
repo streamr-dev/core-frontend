@@ -3,7 +3,7 @@
 import React from 'react'
 import cx from 'classnames'
 import * as State from '../../../state'
-import useCanvas from '../../ModuleRenderer/useCanvas'
+import useModule from '../../ModuleRenderer/useModule'
 import Color from './Color'
 import Map from './Map'
 import Select, { useSelectOptions } from './Select'
@@ -116,7 +116,7 @@ function PortSelect({ canvas, port, value, ...props }) {
 }
 
 const Value = ({ disabled, port, onChange }: Props) => {
-    const { canvas } = useCanvas()
+    const { canvas } = useModule()
     // Enable non-running input whether connected or not if port.canHaveInitialValue
     const portValueEditDisabled = State.isPortValueEditDisabled(canvas, port.id)
     const editDisabled = disabled || portValueEditDisabled

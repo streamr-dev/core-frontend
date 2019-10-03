@@ -20,6 +20,8 @@ import ExportCSVModule from './modules/ExportCSV'
 import SchedulerModule from './modules/Scheduler'
 import CustomModule from './modules/Custom'
 import SolidityModule from './modules/Solidity'
+import useModule from '$editor/canvas/components/ModuleRenderer/useModule'
+import useIsCanvasRunning from '$editor/canvas/hooks/useIsCanvasRunning'
 
 // Set by module.jsModule
 const Modules = {
@@ -45,17 +47,28 @@ const Widgets = {
     StreamrSwitcher,
 }
 
-export default ({ autoSize, ...props }) => (
-    <RunStateLoader {...props}>
-        {(props) => {
-            const module = props.module || {}
-            const Module = module.widget ? Widgets[module.widget] : Modules[module.jsModule]
+export default ({ autoSize, ...props }) => {
+    const { module, canvas: { id: canvasId } } = useModule()
+    const isRunning = useIsCanvasRunning()
 
-            if (!Module) {
-                return null
-            }
+    return (
+        <RunStateLoader {...props}>
+            {(props) => {
+                const Module = module.widget ? Widgets[module.widget] : Modules[module.jsModule]
 
-            return <Module {...props} />
-        }}
-    </RunStateLoader>
-)
+                if (!Module) {
+                    return null
+                }
+
+                return (
+                    <Module
+                        {...props}
+                        canvasId={canvasId}
+                        isActive={isRunning}
+                        moduleHash={module.hash}
+                    />
+                )
+            }}
+        </RunStateLoader>
+    )
+}

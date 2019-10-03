@@ -6,7 +6,7 @@ import Resizable from '../Resizable'
 import Probe from '../Resizable/SizeConstraintProvider/Probe'
 import Ports from '../Ports'
 import styles from '../Module.pcss'
-import useCanvas, { CanvasContext } from './useCanvas'
+import useIsCanvasRunning from '../../hooks/useIsCanvasRunning'
 import useModule, { ModuleContext } from './useModule'
 import useModuleApi, { ModuleApiContext } from './useModuleApi'
 import ModuleHeader from '$editor/shared/components/ModuleHeader'
@@ -43,8 +43,14 @@ function ModuleRenderer({
     scale,
     ...props
 }: Props) {
-    const { isRunning, canvas: { id: canvasId }, isAdjustable, isEditable } = useCanvas()
-    const { moduleClassNames, isResizable, module: { hash, displayName, name, canRefresh } } = useModule()
+    const isRunning = useIsCanvasRunning()
+    const {
+        moduleClassNames,
+        isResizable,
+        module: { hash, displayName, name, canRefresh },
+        isCanvasEditable: isEditable,
+        isCanvasAdjustable: isAdjustable,
+    } = useModule()
 
     const stopPropagation = useCallback((e) => {
         e.stopPropagation() /* skip parent focus behaviour */
@@ -145,9 +151,6 @@ function ModuleRenderer({
             <ModuleUI
                 autoSize
                 className={styles.canvasModuleUI}
-                moduleHash={hash}
-                canvasId={canvasId}
-                isActive={isRunning}
                 uiEmitter={uiEmitter}
                 isSubscriptionActive={isSubscriptionActive}
             />
@@ -158,25 +161,22 @@ function ModuleRenderer({
 
 export default ({
     api,
-    canvas,
     module,
-    canvasEditable: isEditable,
-    canvasAdjustable: isAdjustable,
+    canvasEditable: isCanvasEditable,
+    canvasAdjustable: isCanvasAdjustable,
     ...props
 }: any) => {
-    const canvasManifest = useMemo(() => ({
-        canvas,
-        isEditable,
-        isAdjustable,
-    }), [isAdjustable, isEditable, canvas])
+    const moduleManifest = useMemo(() => ({
+        module,
+        isCanvasEditable,
+        isCanvasAdjustable,
+    }), [isCanvasAdjustable, isCanvasEditable, module])
 
     return (
         <ModuleApiContext.Provider value={api}>
-            <CanvasContext.Provider value={canvasManifest}>
-                <ModuleContext.Provider value={module}>
-                    <ModuleRenderer {...props} />
-                </ModuleContext.Provider>
-            </CanvasContext.Provider>
+            <ModuleContext.Provider value={moduleManifest}>
+                <ModuleRenderer {...props} />
+            </ModuleContext.Provider>
         </ModuleApiContext.Provider>
     )
 }

@@ -3,7 +3,7 @@
 import React, { useCallback } from 'react'
 import ContextMenu from '$shared/components/ContextMenu'
 import useModuleApi from '../../ModuleRenderer/useModuleApi'
-import useCanvas from '../../ModuleRenderer/useCanvas'
+import useModule from '../../ModuleRenderer/useModule'
 import { disconnectAllFromPort, isPortConnected, getPortValue } from '../../../state'
 import styles from './menu.pcss'
 
@@ -18,8 +18,7 @@ type Props = {
 
 const Menu = ({ dismiss, port, setPortOptions, target }: Props) => {
     const { setCanvas } = useModuleApi()
-
-    const { canvas } = useCanvas()
+    const { canvas } = useModule()
 
     const disconnectAll = useCallback(() => {
         setCanvas({

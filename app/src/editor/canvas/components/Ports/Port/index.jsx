@@ -3,7 +3,7 @@
 import React, { useCallback, useState, useEffect, useContext, useMemo } from 'react'
 import cx from 'classnames'
 import startCase from 'lodash/startCase'
-import useCanvas from '../../ModuleRenderer/useCanvas'
+import useModule from '$editor/canvas/components/ModuleRenderer/useModule'
 import EditableText from '$shared/components/EditableText'
 import useGlobalEventWithin from '$shared/hooks/useGlobalEventWithin'
 import useKeyDown from '$shared/hooks/useKeyDown'
@@ -37,7 +37,7 @@ const Port = ({
     const { isDragging, data } = useContext(DragDropContext)
     const { portId } = data || EMPTY
     const dragInProgress = !!isDragging && portId != null
-    const { canvas, isEditable: isCanvasEditable } = useCanvas()
+    const { isCanvasEditable, canvas } = useModule()
     const isContentEditable = !dragInProgress && isCanvasEditable
     const isInput = !!port.acceptedTypes
     const isParam = 'defaultValue' in port

@@ -5,7 +5,7 @@ import cx from 'classnames'
 import { type Ref } from '$shared/flowtype/common-types'
 import { DropTarget, DragSource } from '../../PortDragger'
 import { DragDropContext } from '../../DragDropContext'
-import useCanvas from '../../ModuleRenderer/useCanvas'
+import useModule from '../../ModuleRenderer/useModule'
 import { canConnectPorts, hasPort } from '../../../state'
 
 import styles from './plug.pcss'
@@ -40,7 +40,7 @@ const Plug = ({
         }
     }, [ref, register, port.id])
 
-    const { canvas } = useCanvas()
+    const { canvas } = useModule()
 
     const { isDragging, data } = useContext(DragDropContext)
     const { sourceId, portId } = data || {}
