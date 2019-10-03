@@ -105,6 +105,15 @@ export function getSecurityLevel({ requireSignedData, requireEncryptedData }) {
     })
 }
 
+export function getSecurityLevelTitle(stream: Stream) {
+    if (!stream) { return '' }
+    const level = getSecurityLevel(stream)
+    if (!level) { return '' }
+    const config = securityLevels[level]
+    if (!config) { return '' }
+    return I18n.t(config.title)
+}
+
 /**
  * Extracts config to be applied to stream for passed in current security level
  */

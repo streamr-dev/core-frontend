@@ -15,7 +15,12 @@ import { Link } from 'react-router-dom'
 import type { Filter, SortOption } from '$userpages/flowtype/common-types'
 import type { Stream, StreamId } from '$shared/flowtype/stream-types'
 
-import { SecurityIcon, getSecurityLevel } from '$userpages/components/StreamPage/Show/SecurityView'
+import {
+    SecurityIcon,
+    getSecurityLevel,
+    getSecurityLevelTitle,
+} from '$userpages/components/StreamPage/Show/SecurityView'
+
 import links from '$shared/../links'
 import {
     getStreams,
@@ -360,14 +365,16 @@ class StreamList extends Component<Props, State> {
                                                     className={styles.streamRow}
                                                     onClick={() => this.onStreamRowClick(stream.id)}
                                                 >
-                                                    <Table.Th noWrap title={stream.requireSignedData ? 'Signed stream' : stream.name}>
+                                                    <Table.Th noWrap title={stream.name}>
                                                         {stream.name}
-                                                        <SecurityIcon
-                                                            className={styles.SecurityIcon}
-                                                            level={getSecurityLevel(stream)}
-                                                            selected
-                                                            hideBasic
-                                                        />
+                                                        <span title={getSecurityLevelTitle(stream)}>
+                                                            <SecurityIcon
+                                                                className={styles.SecurityIcon}
+                                                                level={getSecurityLevel(stream)}
+                                                                selected
+                                                                hideBasic
+                                                            />
+                                                        </span>
                                                     </Table.Th>
                                                     <Table.Td noWrap title={stream.description}>{stream.description}</Table.Td>
                                                     <Table.Td noWrap>
@@ -450,14 +457,16 @@ class StreamList extends Component<Props, State> {
                                                     <Table.Td className={styles.tabletStreamRow}>
                                                         <div className={styles.tabletStreamRowContainer}>
                                                             <div>
-                                                                <span className={styles.tabletStreamName}>
+                                                                <span className={styles.tabletStreamName} title={stream.name}>
                                                                     {stream.name}
-                                                                    <SecurityIcon
-                                                                        className={styles.SecurityIcon}
-                                                                        level={getSecurityLevel(stream)}
-                                                                        selected
-                                                                        hideBasic
-                                                                    />
+                                                                    <span title={getSecurityLevelTitle(stream)}>
+                                                                        <SecurityIcon
+                                                                            className={styles.SecurityIcon}
+                                                                            level={getSecurityLevel(stream)}
+                                                                            selected
+                                                                            hideBasic
+                                                                        />
+                                                                    </span>
                                                                 </span>
                                                                 <span className={styles.tabletStreamDescription}>
                                                                     {stream.description}
