@@ -5,6 +5,15 @@ export default {
     id: 119,
     name: 'Comment',
     path: 'Utils',
+    jsModule: 'CommentModule',
+    layout: {
+        position: {
+            left: '0px',
+            top: '0px',
+        },
+        width: '250px',
+        height: '150px',
+    },
     help: {
         params: {},
         paramNames: [],
@@ -17,4 +26,5 @@ export default {
     inputs: [],
     outputs: [],
     params: [],
+    text: '',
 }

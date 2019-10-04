@@ -5,6 +5,9 @@ export default {
     id: 219,
     name: 'Switcher',
     path: 'Input',
+    widget: 'StreamrSwitcher',
+    jsModule: 'InputModule',
+    switcherValue: false,
     help: {
         params: {},
         paramNames: [],

@@ -1,7 +1,6 @@
 // @flow
 
 import { createContext, useContext, type Context, useMemo } from 'react'
-import cx from 'classnames'
 import ModuleStyles from '$editor/shared/components/Module.pcss'
 import isModuleResizable from '$editor/canvas/utils/isModuleResizable'
 import useCanvas from '../CanvasController/useCanvas'
@@ -30,7 +29,7 @@ type UseModuleHook = {
     isCanvasEditable?: boolean,
     isResizable?: boolean,
     module: Module,
-    moduleClassNames?: ?string,
+    moduleClassNames?: Array<?string>,
 }
 
 type ModuleManifest = {
@@ -65,7 +64,12 @@ export default (): UseModuleHook => {
 
     const { jsModule, widget } = mod
 
-    const moduleClassNames = cx(ModuleStyles[jsModule], ModuleStyles[widget])
+    const moduleClassNames = useMemo(() => (
+        [
+            ModuleStyles[jsModule],
+            ModuleStyles[widget],
+        ]
+    ), [jsModule, widget])
 
     const isResizable = isModuleResizable({
         jsModule,

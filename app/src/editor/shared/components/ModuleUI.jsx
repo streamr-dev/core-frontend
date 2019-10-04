@@ -22,6 +22,7 @@ import CustomModule from './modules/Custom'
 import SolidityModule from './modules/Solidity'
 import useModule from '$editor/canvas/components/ModuleRenderer/useModule'
 import useIsCanvasRunning from '$editor/canvas/hooks/useIsCanvasRunning'
+import useModuleApi from '$editor/canvas/components/ModuleRenderer/useModuleApi'
 
 // Set by module.jsModule
 const Modules = {
@@ -49,6 +50,7 @@ const Widgets = {
 
 export default ({ autoSize, ...props }) => {
     const { module, canvas: { id: canvasId } } = useModule()
+    const api = useModuleApi()
     const isRunning = useIsCanvasRunning()
 
     return (
@@ -64,6 +66,8 @@ export default ({ autoSize, ...props }) => {
                     <Module
                         {...props}
                         moduleHash={module.hash}
+                        module={module}
+                        api={api}
                     />
                 )
             }}

@@ -9,6 +9,7 @@ type ModuleApi = {
         setPortOptions: () => void,
     },
     selectModule: (any) => void,
+    updateModule: (any, any) => void,
     setCanvas: (any, (any) => void, ?() => void) => void,
     [string]: () => void,
 }
@@ -19,6 +20,7 @@ export const ModuleApiContext = (createContext({
         onChange: () => {},
         setPortOptions: () => {},
     },
+    updateModule: () => {},
     selectModule: () => {},
     setCanvas: () => {},
 }): Context<ModuleApi>)

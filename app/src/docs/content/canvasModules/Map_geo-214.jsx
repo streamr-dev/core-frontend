@@ -5,6 +5,15 @@ export default {
     id: 214,
     name: 'Map (geo)',
     path: 'Visualizations',
+    jsModule: 'MapModule',
+    layout: {
+        position: {
+            left: '0px',
+            top: '0px',
+        },
+        width: '368px',
+        height: '345px',
+    },
     help: {
         params: {},
         paramNames: [],
@@ -74,4 +83,108 @@ export default {
     ],
     outputs: [],
     params: [],
+    options: {
+        uiResendLast: {
+            value: 0,
+            type: 'int',
+        },
+        centerLat: {
+            value: 35,
+            type: 'double',
+        },
+        centerLng: {
+            value: 35,
+            type: 'double',
+        },
+        minZoom: {
+            value: 2,
+            type: 'int',
+        },
+        maxZoom: {
+            value: 18,
+            type: 'int',
+        },
+        zoom: {
+            value: 2,
+            type: 'int',
+        },
+        autoZoom: {
+            value: true,
+            type: 'boolean',
+        },
+        drawTrace: {
+            value: false,
+            type: 'boolean',
+        },
+        traceWidth: {
+            value: 2,
+            type: 'int',
+        },
+        markerLabel: {
+            value: false,
+            type: 'boolean',
+        },
+        directionalMarkers: {
+            value: false,
+            type: 'boolean',
+        },
+        expiringTimeOfMarkerInSecs: {
+            value: 0,
+            type: 'int',
+        },
+        expiringTimeOfTraceInSecs: {
+            value: 0,
+            type: 'int',
+        },
+        markerColor: {
+            value: 'rgba(233, 91, 21, 1.0)',
+            type: 'color',
+        },
+        directionalMarkerIcon: {
+            value: 'arrow',
+            type: 'string',
+            possibleValues: [
+                {
+                    text: 'Arrowhead',
+                    value: 'arrowhead',
+                },
+                {
+                    text: 'Arrow',
+                    value: 'arrow',
+                },
+                {
+                    text: 'Long arrow',
+                    value: 'longArrow',
+                },
+            ],
+        },
+        markerIcon: {
+            value: 'pin',
+            type: 'string',
+            possibleValues: [
+                {
+                    text: 'Pin',
+                    value: 'pin',
+                },
+                {
+                    text: 'Circle',
+                    value: 'circle',
+                },
+            ],
+        },
+        skin: {
+            value: null,
+            type: 'string',
+            possibleValues: [
+                {
+                    text: 'Default',
+                    value: 'default',
+                },
+                {
+                    text: 'Dark',
+                    value: 'cartoDark',
+                },
+            ],
+        },
+    },
 }

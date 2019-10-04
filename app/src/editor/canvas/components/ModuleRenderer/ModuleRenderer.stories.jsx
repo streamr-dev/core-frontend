@@ -15,6 +15,7 @@ const Module = ({ src }) => (
                 onChange: () => {},
                 setPortOptions: () => {},
             },
+            updateModule: () => {},
             selectModule: () => {},
             setCanvas: () => {},
         }}
@@ -29,16 +30,21 @@ const Module = ({ src }) => (
 )
 
 stories.add('all', () => (
-    Object.entries(modules).map(([name, src]) => (
-        <Module
-            key={src.name}
-            src={Object.assign({
-                params: [],
-                inputs: [],
-                outputs: [],
-            }, src, {
-                name: src.name || `<${name}>`,
-            })}
-        />
-    ))
+    <div>
+        {Object.entries(modules).map(([name, src]) => (
+            <div
+                key={src.name}
+            >
+                <Module
+                    src={Object.assign({
+                        params: [],
+                        inputs: [],
+                        outputs: [],
+                    }, src, {
+                        name: src.name || `<${name}>`,
+                    })}
+                />
+            </div>
+        ))}
+    </div>
 ))
