@@ -801,7 +801,9 @@ story('Tile')
         }}
         >
             <Tile
-                labels={['community']}
+                labels={{
+                    community: boolean('Community', true),
+                }}
                 badges={{
                     members: number('Community members', 15),
                 }}

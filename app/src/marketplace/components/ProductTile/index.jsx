@@ -14,6 +14,7 @@ import ErrorComponentView from '$shared/components/ErrorComponentView'
 import PaymentRate from '../PaymentRate'
 import links from '$mp/../links'
 import type { Product, ProductId } from '$mp/flowtype/product-types'
+import Tile from '$shared/components/Tile'
 
 import { isPaidProduct } from '$mp/utils/product'
 
@@ -28,6 +29,7 @@ export type Props = {
     showSubscriptionStatus?: boolean,
     showPublishStatus?: boolean,
     showDropdownMenu?: boolean,
+    showType?: boolean,
     redirectToEditProduct?: (id: ProductId) => void,
     redirectToPublishProduct?: (id: ProductId) => void,
     isActive: boolean,
@@ -45,6 +47,7 @@ class ProductTile extends Component<Props, State> {
         showPrice: true,
         showSubscriptionStatus: true,
         showPublishStatus: true,
+        showType: true,
     }
 
     constructor(props: Props) {
@@ -80,6 +83,7 @@ class ProductTile extends Component<Props, State> {
             showSubscriptionStatus,
             showPublishStatus,
             showDropdownMenu,
+            showType,
             redirectToEditProduct,
             redirectToPublishProduct,
             isActive,
@@ -93,6 +97,7 @@ class ProductTile extends Component<Props, State> {
             pricePerSecond,
             priceCurrency,
             state: productState,
+            type,
         } = source
 
         return (
@@ -131,6 +136,14 @@ class ProductTile extends Component<Props, State> {
                                     }}
                                 />
                                 {this.gs()}
+                                {!!showType && (
+                                    <Tile.Labels
+                                        topLeft
+                                        labels={{
+                                            community: (type === 'COMMUNITY'),
+                                        }}
+                                    />
+                                )}
                             </div>
                         </Fragment>
                     ) : (
@@ -138,6 +151,14 @@ class ProductTile extends Component<Props, State> {
                             <div className={classnames(styles.defaultImagePlaceholder, styles.productImage)}>
                                 <Logo color="black" opacity="0.15" />
                             </div>
+                            {!!showType && (
+                                <Tile.Labels
+                                    topLeft
+                                    labels={{
+                                        community: (type === 'COMMUNITY'),
+                                    }}
+                                />
+                            )}
                         </div>
                     )}
                     <div className={styles.name}>

@@ -14,6 +14,7 @@ import type { StreamList } from '$shared/flowtype/stream-types'
 import type { ButtonActions } from '$shared/components/Buttons'
 import Products from '../Products'
 import FallbackImage from '$shared/components/FallbackImage'
+import Tile from '$shared/components/Tile'
 
 import ProductDetails from './ProductDetails'
 import StreamListing from './StreamListing'
@@ -66,11 +67,19 @@ class ProductPage extends Component<Props> {
                 <Hero
                     product={product}
                     leftContent={
-                        <FallbackImage
-                            className={styles.productImage}
-                            src={product.imageUrl || ''}
-                            alt={product.name}
-                        />
+                        <div className={styles.productImageWrapper}>
+                            <FallbackImage
+                                className={styles.productImage}
+                                src={product.imageUrl || ''}
+                                alt={product.name}
+                            />
+                            <Tile.Labels
+                                topLeft
+                                labels={{
+                                    community: (product.type === 'COMMUNITY'),
+                                }}
+                            />
+                        </div>
                     }
                     rightContent={
                         <ProductDetails

@@ -61,12 +61,8 @@ const Tile = ({
                 {image || (
                     <FallbackImage src={imageUrl || ''} alt="Tile" className={styles.image} />
                 )}
-                {labels.length > 0 && (
-                    <subcomponents.Labels topLeft labels={labels} />
-                )}
-                {Object.keys(badges).length > 0 && (
-                    <subcomponents.Badges bottomRight badges={badges} />
-                )}
+                <subcomponents.Labels topLeft labels={labels} />
+                <subcomponents.Badges bottomRight badges={badges} />
             </div>
             <div className={styles.content}>
                 {children}
@@ -77,7 +73,7 @@ const Tile = ({
 
 Tile.defaultProps = {
     badges: {},
-    labels: [],
+    labels: {},
 }
 
 // Add subcomonents as static properties

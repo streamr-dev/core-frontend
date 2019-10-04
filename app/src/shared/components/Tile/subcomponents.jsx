@@ -36,28 +36,40 @@ type BadgesProps = Props & {
     badges: BadgesType,
 }
 
-export const Badges = ({ badges, ...props }: BadgesProps) => (
-    <Label {...props}>
-        {Object.keys(badges).length > 0 && (
+export const Badges = ({ badges, ...props }: BadgesProps) => {
+    const shownBadges = Object.keys(badges)
+
+    if (!shownBadges.length) { return null }
+
+    return (
+        <Label {...props}>
             <Label bottomRight>
-                {Object.keys(badges).map((badge) => (
+                {shownBadges.map((badge) => (
                     <Label.Badge key={badge} badge={badge} value={badges[badge]} />
                 ))}
             </Label>
-        )}
-    </Label>
-)
+        </Label>
+    )
+}
 
-export type LabelsType = Array<string>
+export type LabelsType = {
+    [string]: boolean,
+}
 
 type LabelsProps = Props & {
     labels: LabelsType,
 }
 
-export const Labels = ({ labels, ...props }: LabelsProps) => (
-    <Label {...props}>
-        {labels.map((label) => (
-            <Label.Badge key={label} tag={label} />
-        ))}
-    </Label>
-)
+export const Labels = ({ labels, ...props }: LabelsProps) => {
+    const shownLabels = Object.keys(labels).filter((key) => !!labels[key])
+
+    if (!shownLabels.length) { return null }
+
+    return (
+        <Label {...props}>
+            {shownLabels.map((label) => (
+                <Label.Badge key={label} tag={label} />
+            ))}
+        </Label>
+    )
+}

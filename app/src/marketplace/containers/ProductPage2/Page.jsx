@@ -15,6 +15,7 @@ import type { ButtonActions } from '$shared/components/Buttons'
 import Products from '$mp/components/Products'
 import FallbackImage from '$shared/components/FallbackImage'
 import ProductContainer from '$shared/components/Container/Product'
+import Tile from '$shared/components/Tile'
 
 import ProductDetails from './ProductDetails'
 import CollapsedText from './CollapsedText'
@@ -70,11 +71,19 @@ class ProductDetailsPage extends Component<Props> {
                     className={styles.hero}
                     product={product}
                     leftContent={
-                        <FallbackImage
-                            className={styles.productImage}
-                            src={product.imageUrl || ''}
-                            alt={product.name}
-                        />
+                        <div className={styles.productImageWrapper}>
+                            <FallbackImage
+                                className={styles.productImage}
+                                src={product.imageUrl || ''}
+                                alt={product.name}
+                            />
+                            <Tile.Labels
+                                topLeft
+                                labels={{
+                                    community: (product.type === 'COMMUNITY'),
+                                }}
+                            />
+                        </div>
                     }
                     rightContent={
                         <ProductDetails
