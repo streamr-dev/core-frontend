@@ -53,7 +53,7 @@ const securityLevels = {
         longDescription: 'userpages.streams.security.basic.longDescription',
         icons: {
             normal: 'lock',
-            selected: 'lockOutline',
+            selected: 'lock',
         },
         config: {
             requireSignedData: false,
@@ -79,7 +79,7 @@ const securityLevels = {
         longDescription: 'userpages.streams.security.encrypted.longDescription',
         icons: {
             normal: 'lock',
-            selected: 'lock',
+            selected: 'lockOutline',
         },
         config: {
             requireSignedData: true,
