@@ -85,6 +85,7 @@ export default function Slider({ index: selectedIndex = 0, selector } = {}) {
                         key={p.left}
                         className={cx(styles.SliderStop, {
                             [styles.highlighted]: index <= selectedIndex,
+                            [styles.selected]: index === selectedIndex,
                         })}
                         style={{
                             top: (p.top + (p.height * 0.5)) - positions.top,

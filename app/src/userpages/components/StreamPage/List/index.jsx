@@ -371,7 +371,7 @@ class StreamList extends Component<Props, State> {
                                                             <SecurityIcon
                                                                 className={styles.SecurityIcon}
                                                                 level={getSecurityLevel(stream)}
-                                                                selected
+                                                                mode="selected"
                                                                 hideBasic
                                                             />
                                                         </span>
@@ -463,7 +463,7 @@ class StreamList extends Component<Props, State> {
                                                                         <SecurityIcon
                                                                             className={styles.SecurityIcon}
                                                                             level={getSecurityLevel(stream)}
-                                                                            selected
+                                                                            mode="selected"
                                                                             hideBasic
                                                                         />
                                                                     </span>

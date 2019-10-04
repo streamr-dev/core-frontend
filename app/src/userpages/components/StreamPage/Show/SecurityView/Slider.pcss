@@ -40,15 +40,16 @@
   position: absolute;
   width: 10px;
   height: 10px;
-  border: 1px solid #D8D8D8;
-  border-radius: 100%;
-  background-color: #D8D8D8;
+  border: 2px solid #D8D8D8;
   transform: translate(-50%, -50%);
   z-index: 1;
+  background-color: white;
+  border-radius: 100%;
+  transition: all 0.3s;
 
   &.highlighted {
-    background-color: white;
     border: 1px solid currentColor;
+    background-color: currentColor;
   }
 }
 
@@ -70,5 +71,6 @@
     left: 50%;
     top: 50%;
     background-color: currentColor;
+    transition: none;
   }
 }

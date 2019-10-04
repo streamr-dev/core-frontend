@@ -54,6 +54,7 @@ const securityLevels = {
         icons: {
             normal: 'lock',
             selected: 'lock',
+            highlighted: 'lock',
         },
         config: {
             requireSignedData: false,
@@ -67,6 +68,7 @@ const securityLevels = {
         icons: {
             normal: 'checkBadgeOutline',
             selected: 'checkBadge',
+            highlighted: 'checkBadge',
         },
         config: {
             requireSignedData: true,
@@ -78,8 +80,9 @@ const securityLevels = {
         shortDescription: 'userpages.streams.security.encrypted.shortDescription',
         longDescription: 'userpages.streams.security.encrypted.longDescription',
         icons: {
-            normal: 'lock',
-            selected: 'lockOutline',
+            normal: 'lockOutline',
+            selected: 'lock',
+            highlighted: 'lock',
         },
         config: {
             requireSignedData: true,
@@ -127,26 +130,25 @@ function setSecurityLevel(level) {
 type SecurityIconProps = {
     className?: string,
     level?: string,
-    selected?: boolean,
+    mode?: 'selected' | 'highlighted' | 'normal',
     hideBasic?: boolean,
 }
 
 export function SecurityIcon({
     className,
     level,
-    selected,
+    mode = 'normal',
     hideBasic = false,
     ...props
 }: SecurityIconProps = {}) {
     if (!!hideBasic && level === 'basic') { return null }
     if (!level) { return null }
     const { icons } = securityLevels[level]
-    const name = selected ? icons.selected : icons.normal
     return (
         <SvgIcon
             title={I18n.t(securityLevels[level].title)}
             className={cx(styles.SecurityIcon, className, styles[level])}
-            name={name}
+            name={icons[mode]}
             {...props}
         />
     )
@@ -173,23 +175,34 @@ export function SecurityView(props: Props) {
             {/* $FlowFixMe */}
             <div className={cx(styles.SecurityOptions, styles[level])}>
                 <Slider index={levelIndex} selector="input[type=radio]" />
-                {Object.keys(securityLevels).map((key, index) => (
-                    <label
-                        key={key}
-                        className={cx(styles.SecurityOption, {
-                            [styles.highlighted]: index <= levelIndex,
-                            [styles.selected]: index === levelIndex,
-                        })}
-                    >
-                        <input
-                            type="radio"
-                            checked={index === levelIndex}
-                            onChange={(event) => onChange(event, key)}
-                        />
-                        <SecurityIcon className={styles.SecurityLevelIcon} level={key} selected={index === levelIndex} />
-                        <span className={styles.Title}>{I18n.t(securityLevels[key].title)}</span>
-                    </label>
-                ))}
+                {Object.keys(securityLevels).map((key, index) => {
+                    const selected = index === levelIndex
+                    const highlighted = index <= levelIndex
+                    let mode = 'normal'
+                    if (highlighted) { mode = 'highlighted' }
+                    if (selected) { mode = 'selected' }
+                    return (
+                        <label
+                            key={key}
+                            className={cx(styles.SecurityOption, {
+                                [styles.highlighted]: highlighted,
+                                [styles.selected]: selected,
+                            })}
+                        >
+                            <input
+                                type="radio"
+                                checked={index === levelIndex}
+                                onChange={(event) => onChange(event, key)}
+                            />
+                            <SecurityIcon
+                                className={styles.SecurityLevelIcon}
+                                level={key}
+                                mode={mode}
+                            />
+                            <span className={styles.Title}>{I18n.t(securityLevels[key].title)}</span>
+                        </label>
+                    )
+                })}
             </div>
         </div>
     )
