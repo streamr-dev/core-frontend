@@ -118,7 +118,7 @@ module.exports = {
         },
         tutorials: {
             root: routes.docsTutorialsRoot(),
-            buildingPubsub: routes.docsTutorialsBuildingPubSub(),
+            buildingPubSub: routes.docsTutorialsBuildingPubSub(),
             buildingCustomModule: routes.docsTutorialsBuildingCustomCanvasModule(),
         },
     },

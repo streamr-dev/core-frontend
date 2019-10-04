@@ -84,15 +84,15 @@ import UsingCanvasesInCoreDocsPage from '$docs/components/DocsPages/Core/UsingCa
 import DashboardsInCoreDocsPage from '$docs/components/DocsPages/Core/UsingDashboardsInCore'
 import ProductsInCoreDocsPage from '$docs/components/DocsPages/Core/UsingProductsInCore'
 // Marketplace Docs
-import IntoToMarketplaceDocsPage from '$docs/components/DocsPages/Marketplace/IntroToMarketplace'
+import IntroToMarketplaceDocsPage from '$docs/components/DocsPages/Marketplace/IntroToMarketplace'
 // Running a Node Docs
 // import RunningNodeDocsPage from '$docs/components/DocsPages/RunningNode'
 // SDK Docs
 import SDKsDocsPage from '$docs/components/DocsPages/SDKs'
 // API Docs
-import ApiOverviewDocsPage from '$docs/components/DocsPages/Api/ApiOverview'
-import AuthenticationDocsPage from '$docs/components/DocsPages/Api/Authentication'
-import ApiExplorerDocsPage from '$docs/components/DocsPages/Api/ApiExplorer'
+import ApiOverviewDocsPage from '$docs/components/DocsPages/API/ApiOverview'
+import AuthenticationDocsPage from '$docs/components/DocsPages/API/Authentication'
+import ApiExplorerDocsPage from '$docs/components/DocsPages/API/ApiExplorer'
 // Technical Notes Docs
 import TechnicalNotesDocsPage from '$docs/components/DocsPages/TechnicalNotes'
 
@@ -189,6 +189,7 @@ const CommunityProductsRouter = () => ([
 const DocsRouter = () => ([
     // Introduction routes
     <Route exact path={docs.introduction.root} component={IntroductionDocsPage} key="IntroductionPage" />,
+    <Redirect exact from={docs.main} to={docs.introduction.root} key="DocsMain" />,
     // Getting Started routes
     <Route exact path={docs.gettingStarted.root} component={GettingStartedDocsPage} key="GettingStartedPage" />,
     // Streams routes
@@ -228,8 +229,8 @@ const DocsRouter = () => ([
     <Route exact path={docs.moduleReference.utils} component={ModuleReferenceUtilsDocsPage} key="UtilsDocsPage" />,
     <Route exact path={docs.moduleReference.visualizations} component={ModuleReferenceVisualizationsDocsPage} key="VisualizationsDocsPage" />,
     // Tutorials routes
-    <Route exact path={docs.tutorials.buildingPubsub} component={BuildingPubSubDocsPage} key="BuildingPubSub" />,
-    <Redirect exact from={docs.tutorials.root} to={docs.tutorials.buildingPubsub} key="TutorialsRoot" />,
+    <Route exact path={docs.tutorials.buildingPubSub} component={BuildingPubSubDocsPage} key="BuildingPubSub" />,
+    <Redirect exact from={docs.tutorials.root} to={docs.tutorials.buildingPubSub} key="TutorialsRoot" />,
     <Route exact path={docs.tutorials.buildingCustomModule} component={BuildingCustomModuleDocsPage} key="BuildingCustomModule" />,
     // DATA Token routes
     <Route exact path={docs.dataToken.root} component={DataTokenDocsPage} key="DataTokenPage" />,
@@ -241,7 +242,7 @@ const DocsRouter = () => ([
     <Route exact path={docs.core.dashboardsInCore} component={DashboardsInCoreDocsPage} key="dashboardsInCore" />,
     <Route exact path={docs.core.productsInCore} component={ProductsInCoreDocsPage} key="productsInCore" />,
     // Marketplace routes
-    <Route exact path={docs.marketplace.introToMarketplace} component={IntoToMarketplaceDocsPage} key="IntroToMarketplace" />,
+    <Route exact path={docs.marketplace.introToMarketplace} component={IntroToMarketplaceDocsPage} key="IntroToMarketplace" />,
     <Redirect exact from={docs.marketplace.root} to={docs.marketplace.introToMarketplace} key="MarketplaceRoot" />,
     <Route exact path={docs.marketplace.communityProducts} component={CommunityProductsDocsPage} key="CommunityProducts" />,
     // SDKs Routes

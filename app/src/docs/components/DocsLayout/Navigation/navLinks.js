@@ -74,7 +74,7 @@ export const docsNav: DocsNav = {
     },
     Tutorials: {
         root: tutorials.root,
-        'Building a simple pub/sub system': tutorials.buildingPubsub,
+        'Building a simple pub/sub system': tutorials.buildingPubSub,
         'Building a custom canvas module': tutorials.buildingCustomModule,
     },
     'DATA Token': {
