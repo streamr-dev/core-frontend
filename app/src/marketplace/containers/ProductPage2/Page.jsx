@@ -16,6 +16,7 @@ import Products from '$mp/components/Products'
 import FallbackImage from '$shared/components/FallbackImage'
 import ProductContainer from '$shared/components/Container/Product'
 import Tile from '$shared/components/Tile'
+import { isCommunityProduct } from '$mp/utils/product'
 
 import ProductDetails from './ProductDetails'
 import CollapsedText from './CollapsedText'
@@ -60,7 +61,7 @@ class ProductDetailsPage extends Component<Props> {
             toolbarStatus,
         } = this.props
         const isProductFree = (product && BN(product.pricePerSecond).isEqualTo(0)) || false
-        const isCommunityProduct = product && product.type === 'COMMUNITY'
+        const isCommunity = !!(product && isCommunityProduct(product))
 
         return !!product && (
             <div className={classNames(styles.productPage, !!showToolbar && styles.withToolbar)}>
@@ -80,7 +81,7 @@ class ProductDetailsPage extends Component<Props> {
                             <Tile.Labels
                                 topLeft
                                 labels={{
-                                    community: (product.type === 'COMMUNITY'),
+                                    community: isCommunity,
                                 }}
                             />
                         </div>
@@ -103,7 +104,7 @@ class ProductDetailsPage extends Component<Props> {
                                     <div className={styles.subheading}>Product category</div>
                                     <div>{product.category}</div>
                                 </div>
-                                {isCommunityProduct && (
+                                {isCommunity && (
                                     <div>
                                         <div className={styles.subheading}>Active subscribers</div>
                                         <div>TODO</div>

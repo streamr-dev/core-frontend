@@ -16,7 +16,7 @@ import links from '$mp/../links'
 import type { Product, ProductId } from '$mp/flowtype/product-types'
 import Tile from '$shared/components/Tile'
 
-import { isPaidProduct } from '$mp/utils/product'
+import { isPaidProduct, isCommunityProduct } from '$mp/utils/product'
 
 import Logo from '$shared/components/Logo'
 import { ActionsDropdown } from './ActionsDropdown'
@@ -140,7 +140,7 @@ class ProductTile extends Component<Props, State> {
                                     <Tile.Labels
                                         topLeft
                                         labels={{
-                                            community: (type === 'COMMUNITY'),
+                                            community: isCommunityProduct(type),
                                         }}
                                     />
                                 )}
@@ -155,7 +155,7 @@ class ProductTile extends Component<Props, State> {
                                 <Tile.Labels
                                     topLeft
                                     labels={{
-                                        community: (type === 'COMMUNITY'),
+                                        community: isCommunityProduct(type),
                                     }}
                                 />
                             )}

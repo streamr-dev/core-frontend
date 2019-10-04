@@ -22,6 +22,35 @@ describe('product utils', () => {
         })
     })
 
+    describe('isCommunityProduct', () => {
+        it('detects community product from object', () => {
+            const product1 = {
+                id: 'text',
+                type: 'COMMUNITY',
+            }
+            assert.equal(all.isCommunityProduct(product1), true)
+            const product2 = {
+                id: 'text',
+                type: 'NORMAL',
+            }
+            assert.equal(all.isCommunityProduct(product2), false)
+        })
+
+        it('detects community product from empty object', () => {
+            assert.equal(all.isCommunityProduct({}), false)
+        })
+
+        it('detects community product from value', () => {
+            assert.equal(all.isCommunityProduct('COMMUNITY'), true)
+            assert.equal(all.isCommunityProduct('NORMAL'), false)
+        })
+
+        it('detects community product from empty value', () => {
+            assert.equal(all.isCommunityProduct(''), false)
+            assert.equal(all.isCommunityProduct(), false)
+        })
+    })
+
     describe('validateProductPriceCurrency', () => {
         it('detects a valid currency', () => {
             assert.doesNotThrow(() => all.validateProductPriceCurrency('DATA'))

@@ -15,6 +15,7 @@ import type { ButtonActions } from '$shared/components/Buttons'
 import Products from '../Products'
 import FallbackImage from '$shared/components/FallbackImage'
 import Tile from '$shared/components/Tile'
+import { isCommunityProduct } from '$mp/utils/product'
 
 import ProductDetails from './ProductDetails'
 import StreamListing from './StreamListing'
@@ -76,7 +77,7 @@ class ProductPage extends Component<Props> {
                             <Tile.Labels
                                 topLeft
                                 labels={{
-                                    community: (product.type === 'COMMUNITY'),
+                                    community: isCommunityProduct(product),
                                 }}
                             />
                         </div>

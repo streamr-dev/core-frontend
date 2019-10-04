@@ -7,6 +7,7 @@ import CoreLayout from '$shared/components/Layout/Core'
 import * as UndoContext from '$shared/components/UndoContextProvider'
 import Toolbar from '$shared/components/Toolbar'
 import type { Product } from '$mp/flowtype/product-types'
+import { isCommunityProduct } from '$mp/utils/product'
 
 import ProductController from '../ProductController'
 import useProduct from '../ProductController/useProduct'
@@ -30,7 +31,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
     const { isPending: savePending } = usePending('product.SAVE')
 
     const isSaving = savePending
-    const isCommunityProduct = product.type === 'COMMUNITY'
+    const isCommunity = isCommunityProduct(product)
 
     const actions = useMemo(() => {
         let buttons = {
@@ -65,7 +66,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
             }
         }
 
-        if (isCommunityProduct) {
+        if (isCommunity) {
             buttons = {
                 ...buttons,
                 continue: {
@@ -88,7 +89,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
         }
 
         return buttons
-    }, [isPreview, setIsPreview, save, deployCommunity, isSaving, isCommunityProduct])
+    }, [isPreview, setIsPreview, save, deployCommunity, isSaving, isCommunity])
 
     return (
         <CoreLayout

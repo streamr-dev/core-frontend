@@ -8,6 +8,7 @@ import ScrollableAnchor from 'react-scrollable-anchor'
 
 import useProduct from '../ProductController/useProduct'
 import useValidation from '../ProductController/useValidation'
+import { isCommunityProduct } from '$mp/utils/product'
 
 import useProductActions from '../ProductController/useProductActions'
 import { currencies, DEFAULT_CURRENCY } from '$shared/utils/constants'
@@ -82,7 +83,7 @@ const PriceSelector = () => {
                     {!isValid && (
                         <p>{level}: {message}</p>
                     )}
-                    {product.type !== 'COMMUNITY' && (
+                    {isCommunityProduct(product) && (
                         <BeneficiaryAddress
                             className={styles.beneficiaryAddress}
                             address={product.beneficiaryAddress}
