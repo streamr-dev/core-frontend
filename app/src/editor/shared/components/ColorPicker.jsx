@@ -37,6 +37,7 @@ type Props = {
     onFocus?: ?(event: any) => void,
     onBlur?: ?(event: any) => void,
     onClose?: ?() => void,
+    disabled?: boolean,
 }
 
 type State = {
@@ -48,7 +49,7 @@ export default class ColorPicker extends React.Component<Props, State> {
         isOpen: false,
     }
 
-    ref: Ref<HTMLDivElement> = React.createRef()
+    ref: Ref<HTMLElement> = React.createRef()
 
     componentDidMount() {
         window.addEventListener('keydown', this.onKeyDown)
@@ -106,12 +107,13 @@ export default class ColorPicker extends React.Component<Props, State> {
 
     render() {
         const { isOpen } = this.state
-        const { value: backgroundColor } = this.props
+        const { disabled, value: backgroundColor } = this.props
         const color = convertRgbaToObject(backgroundColor)
 
         return (
-            /* eslint-disable-next-line jsx-a11y/no-static-element-interactions */
-            <div
+            <button
+                type="button"
+                disabled={disabled}
                 className={styles.root}
                 onBlur={this.onBlur}
                 onFocus={this.onFocus}
@@ -120,8 +122,6 @@ export default class ColorPicker extends React.Component<Props, State> {
                 style={{
                     backgroundColor,
                 }}
-                /* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */
-                tabIndex={0}
             >
                 {isOpen && (
                     <SketchPicker
@@ -131,7 +131,7 @@ export default class ColorPicker extends React.Component<Props, State> {
                         onChange={this.onChange}
                     />
                 )}
-            </div>
+            </button>
         )
     }
 }
