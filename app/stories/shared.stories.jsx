@@ -43,6 +43,8 @@ import { NotificationIcon } from '$shared/utils/constants'
 import RadioButtonGroup from '$shared/components/RadioButtonGroup'
 import Toolbar from '$shared/components/Toolbar'
 import DeploySpinner from '$shared/components/DeploySpinner'
+import Label from '$shared/components/Label'
+import Tile from '$shared/components/Tile'
 
 import sharedStyles from './shared.pcss'
 
@@ -746,4 +748,103 @@ story('DeploySpinner')
     ))
     .addWithJSX('without counter', () => (
         <DeploySpinner isRunning showCounter={false} />
+    ))
+
+story('Label')
+    .addWithJSX('basic', () => (
+        <Label>{text('Label', 'Label')}</Label>
+    ))
+    .addWithJSX('with position', () => (
+        <div style={{
+            width: '350px',
+            height: '200px',
+            border: '1px solid black',
+            position: 'relative',
+        }}
+        >
+            <Label topLeft>{text('First', 'First')}</Label>
+            <Label bottomRight>{text('Second', 'Second')}</Label>
+        </div>
+    ))
+    .addWithJSX('with badge & tag', () => (
+        <div>
+            <Label>
+                <Label.Badge badge="members" value={number('Community members', 15)} />
+            </Label>
+            <br />
+            <Label>
+                <Label.Badge tag="community" />
+            </Label>
+        </div>
+    ))
+
+story('Tile')
+    .addWithJSX('basic', () => (
+        <div style={{
+            width: '350px',
+        }}
+        >
+            <Tile>
+                <Tile.Title>{text('Product name', 'Product name')}</Tile.Title>
+                <Tile.Description>
+                    {text('Description', 'Description')}
+                </Tile.Description>
+                <Tile.Status>
+                    {text('Status', 'Status')}
+                </Tile.Status>
+            </Tile>
+        </div>
+    ))
+    .addWithJSX('with badge & label', () => (
+        <div style={{
+            width: '350px',
+        }}
+        >
+            <Tile
+                labels={{
+                    community: boolean('Community', true),
+                }}
+                badges={{
+                    members: number('Community members', 15),
+                }}
+            >
+                <Tile.Title>{text('Product name', 'Product name')}</Tile.Title>
+                <Tile.Description>
+                    {text('Description', 'Description')}
+                </Tile.Description>
+                <Tile.Status>
+                    {text('Status', 'Status')}
+                </Tile.Status>
+            </Tile>
+        </div>
+    ))
+    .addWithJSX('with dropdown actions', () => (
+        <div style={{
+            width: '350px',
+        }}
+        >
+            <Tile
+                dropdownActions={(
+                    <React.Fragment>
+                        <DropdownActions.Item onClick={action('option 1')}>
+                            Option 1
+                        </DropdownActions.Item>
+                        <DropdownActions.Item onClick={action('option 2')}>
+                            Option 2
+                        </DropdownActions.Item>
+                        <DropdownActions.Item onClick={action('option 3')}>
+                            Option 3
+                        </DropdownActions.Item>
+                    </React.Fragment>
+                )}
+            >
+                <Tile.Title>{text('Product name', 'Product name')}</Tile.Title>
+                <Tile.Description>
+                    {text('Description', 'Description')}
+                </Tile.Description>
+                <Tile.Status>
+                    {text('Status', 'Status')}
+                </Tile.Status>
+            </Tile>
+        </div>
     ))

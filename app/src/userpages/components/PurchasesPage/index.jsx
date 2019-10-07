@@ -20,6 +20,7 @@ import NoPurchasesView from './NoPurchases'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
 import ListContainer from '$shared/components/Container/List'
 import TileGrid from '$shared/components/TileGrid'
+import { isCommunityProduct } from '$mp/utils/product'
 
 import type { ProductList, ProductSubscription } from '$mp/flowtype/product-types'
 import type { Filter, SortOption } from '$userpages/flowtype/common-types'
@@ -148,6 +149,9 @@ class PurchasesPage extends Component<Props> {
                                     <Tile
                                         imageUrl={product.imageUrl || ''}
                                         link={product.id && `${links.marketplace.products}/${product.id}`}
+                                        labels={{
+                                            community: isCommunityProduct(product),
+                                        }}
                                     >
                                         <Tile.Title>{product.name}</Tile.Title>
                                         <Tile.Description>{product.owner}</Tile.Description>

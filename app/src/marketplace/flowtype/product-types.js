@@ -1,6 +1,7 @@
 // @flow
 
 import { productStates } from '$shared/utils/constants'
+import { productTypes } from '$mp/utils/constants'
 import type { CategoryId } from './category-types'
 import type { StreamIdList, StreamId } from '$shared/flowtype/stream-types'
 import type { ErrorInUi, Currency, NumberString, TimeUnit } from '$shared/flowtype/common-types'
@@ -9,7 +10,7 @@ import type { Address } from '$shared/flowtype/web3-types'
 export type ProductId = string
 export type ProductState = $Keys<typeof productStates>
 
-export type ProductType = 'NORMAL' | 'COMMUNITY'
+export type ProductType = $Keys<typeof productTypes>
 
 export type Product = {
     key?: string,

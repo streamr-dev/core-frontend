@@ -43,6 +43,7 @@ const setup = {
             showPublishStatus: false,
             showSubscriptionStatus: false,
             showPrice: true,
+            showType: true,
         },
         errorView: <NoProductsView />,
         cols: {
@@ -57,6 +58,7 @@ const setup = {
             showPrice: true,
             showPublishStatus: false,
             showSubscriptionStatus: false,
+            showType: true,
         },
         errorView: <NoProductsView />,
         cols: {

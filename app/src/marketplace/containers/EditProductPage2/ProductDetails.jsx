@@ -7,6 +7,7 @@ import useProduct from '../ProductController/useProduct'
 import useValidation from '../ProductController/useValidation'
 import useProductActions from '../ProductController/useProductActions'
 import SelectInput from '$shared/components/SelectInput/Select'
+import { isCommunityProduct } from '$mp/utils/product'
 
 import AvailableCategories from '../AvailableCategories'
 import Details from './Details'
@@ -54,7 +55,7 @@ const ProductDetails = () => {
                     {!isCategoryValid && (
                         <p>{categoryLevel}: {categoryMessage}</p>
                     )}
-                    {product.type === 'COMMUNITY' && (
+                    {isCommunityProduct(product) && (
                         <Details.Row label="Set your admin fee">
                             <SelectInput
                                 name="adminFee"

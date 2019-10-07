@@ -228,3 +228,6 @@ msgstr "Telegram Group"
 
 msgid "general##giveFeedback"
 msgstr "Give feedback"
+
+msgid "general##labels##community"
+msgstr "Community Product"

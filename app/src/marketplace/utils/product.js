@@ -3,13 +3,22 @@
 import BN from 'bignumber.js'
 
 import type { NumberString } from '$shared/flowtype/common-types'
-import type { Product, EditProduct, ProductId, SmartContractProduct } from '../flowtype/product-types'
+import type { Product, EditProduct, ProductId, SmartContractProduct, ProductType } from '../flowtype/product-types'
 
 import { currencies, productStates } from '$shared/utils/constants'
+import { productTypes } from './constants'
 import { fromAtto, fromNano, toAtto, toNano } from './math'
 import { getPrefixedHexString, getUnprefixedHexString, isValidHexString } from './smartContract'
 
 export const isPaidProduct = (product: Product) => product.isFree === false || BN(product.pricePerSecond).isGreaterThan(0)
+
+export const isCommunityProduct = (productOrProductType?: Product | ProductType) => {
+    const { type } = (typeof productOrProductType === 'string') ? {
+        type: productOrProductType,
+    } : (productOrProductType || {})
+
+    return type === productTypes.COMMUNITY
+}
 
 export const validateProductPriceCurrency = (priceCurrency: string) => {
     const currencyIndex = Object.keys(currencies).indexOf(priceCurrency)
