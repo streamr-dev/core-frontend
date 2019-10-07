@@ -28,6 +28,7 @@ type Props = {
     uiEmitter: UiEmitter,
     moduleSidebarIsOpen?: boolean,
     scale: number,
+    interactive?: boolean,
 }
 
 function ModuleRenderer({
@@ -41,9 +42,11 @@ function ModuleRenderer({
     uiEmitter = new UiEmitter(),
     moduleSidebarIsOpen,
     scale,
+    interactive,
     ...props
 }: Props) {
     const isRunning = useIsCanvasRunning()
+
     const {
         moduleClassNames,
         isResizable,
@@ -99,6 +102,7 @@ function ModuleRenderer({
             className={cx(className, styles.CanvasModule, ModuleStyles.ModuleBase, ...moduleClassNames, {
                 [ModuleStyles.isSelected]: isSelected,
                 [ModuleStyles.disabled]: !isAdjustable, // disable edits while loading
+                [ModuleStyles.nonInteractive]: !interactive,
             })}
             width={parseInt(layout.width, 10)}
             height={parseInt(layout.height, 10)}

@@ -7,8 +7,8 @@ const stories = storiesOf('Editor/ModuleRenderer', module)
 
 const Module = ({ src }) => (
     <ModuleRenderer
-        canvasEditable
-        canvasAdjustable
+        canvasEditable={false}
+        canvasAdjustable={false}
         api={{
             moduleSidebarOpen: () => {},
             port: {
@@ -24,7 +24,6 @@ const Module = ({ src }) => (
         style={{
             position: 'static',
             width: 'fit-content',
-            pointerEvents: 'none',
         }}
     />
 )

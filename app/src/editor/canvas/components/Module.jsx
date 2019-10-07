@@ -107,6 +107,7 @@ class CanvasModule extends React.PureComponent {
 
         return (
             <ModuleRenderer
+                interactive
                 api={api}
                 canvas={canvas}
                 canvasAdjustable={isAdjustable}
