@@ -59,7 +59,7 @@ export default class TextFieldModule extends React.Component {
     }
 
     render() {
-        const { isActive } = this.props
+        const { isActive, hasWritePermission } = this.props
         const value = this.getValue()
         return (
             <UiSizeConstraint minWidth={150} minHeight={75}>
@@ -78,7 +78,12 @@ export default class TextFieldModule extends React.Component {
                         tag="textarea"
                         value={value}
                     />
-                    <button type="button" className={styles.button} onClick={this.onClick} disabled={!isActive}>
+                    <button
+                        type="button"
+                        className={styles.button}
+                        onClick={this.onClick}
+                        disabled={!hasWritePermission || !isActive}
+                    >
                         Send
                     </button>
                 </div>

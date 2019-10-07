@@ -101,7 +101,7 @@ class CanvasModule extends React.PureComponent {
             ...props
         } = this.props
 
-        const { isEditable, isAdjustable } = this.context
+        const { isEditable, isAdjustable, hasWritePermission } = this.context
 
         const { layout } = this.state
 
@@ -112,6 +112,7 @@ class CanvasModule extends React.PureComponent {
                 canvas={canvas}
                 canvasAdjustable={isAdjustable}
                 canvasEditable={isEditable}
+                hasWritePermission={hasWritePermission}
                 innerRef={this.el}
                 isSelected={isSelected}
                 isSubscriptionActive={this.context.isSubscriptionActive}

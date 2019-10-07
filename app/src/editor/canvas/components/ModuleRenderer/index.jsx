@@ -53,6 +53,7 @@ function ModuleRenderer({
         module: { hash, displayName, name, canRefresh },
         isCanvasEditable: isEditable,
         isCanvasAdjustable: isAdjustable,
+        hasWritePermission,
     } = useModule()
 
     const stopPropagation = useCallback((e) => {
@@ -156,6 +157,7 @@ function ModuleRenderer({
                 autoSize
                 className={styles.canvasModuleUI}
                 uiEmitter={uiEmitter}
+                hasWritePermission={hasWritePermission}
                 isSubscriptionActive={isSubscriptionActive}
             />
             <div className={ModuleStyles.selectionDecorator} />
@@ -168,13 +170,15 @@ export default ({
     module,
     canvasEditable: isCanvasEditable,
     canvasAdjustable: isCanvasAdjustable,
+    hasWritePermission,
     ...props
 }: any) => {
     const moduleManifest = useMemo(() => ({
         module,
         isCanvasEditable,
         isCanvasAdjustable,
-    }), [isCanvasAdjustable, isCanvasEditable, module])
+        hasWritePermission,
+    }), [isCanvasAdjustable, isCanvasEditable, hasWritePermission, module])
 
     return (
         <ModuleApiContext.Provider value={api}>

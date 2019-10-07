@@ -23,24 +23,23 @@ type Canvas = {
     modules: Array<any>,
 }
 
-type UseModuleHook = {
-    canvas: Canvas,
-    isCanvasAdjustable?: boolean,
-    isCanvasEditable?: boolean,
-    isResizable?: boolean,
-    module: Module,
-    moduleClassNames?: Array<?string>,
-}
-
 type ModuleManifest = {
     isCanvasAdjustable?: boolean,
     isCanvasEditable?: boolean,
+    hasWritePermission?: boolean,
     module: Module,
 }
+
+type UseModuleHook = {
+    canvas: Canvas,
+    moduleClassNames?: Array<?string>,
+    isResizable?: boolean,
+} & ModuleManifest
 
 export const ModuleContext = (createContext({
     isCanvasEditable: false,
     isCanvasAdjustable: false,
+    hasWritePermission: false,
     module: {
         canRefresh: false,
         displayName: '',
@@ -55,7 +54,7 @@ export const ModuleContext = (createContext({
 }): Context<ModuleManifest>)
 
 export default (): UseModuleHook => {
-    const { module: mod, isCanvasAdjustable, isCanvasEditable } = useContext(ModuleContext)
+    const { module: mod, isCanvasAdjustable, isCanvasEditable, hasWritePermission } = useContext(ModuleContext)
 
     const canvas = useCanvas() || {
         id: '',
@@ -80,6 +79,7 @@ export default (): UseModuleHook => {
         canvas,
         isCanvasAdjustable,
         isCanvasEditable,
+        hasWritePermission,
         isResizable,
         module: mod,
         moduleClassNames,
@@ -87,6 +87,7 @@ export default (): UseModuleHook => {
         canvas,
         isCanvasAdjustable,
         isCanvasEditable,
+        hasWritePermission,
         isResizable,
         mod,
         moduleClassNames,
