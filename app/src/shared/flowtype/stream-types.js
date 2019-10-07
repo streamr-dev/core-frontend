@@ -42,6 +42,8 @@ export type Stream = NewStream & {
     uiChannel: boolean,
     streamStatus?: 'ok' | 'error' | 'inactive',
     lastData?: Date,
+    requireSignedData: boolean,
+    requireEncryptedData: boolean,
 }
 
 export type StreamIdList = Array<StreamId>

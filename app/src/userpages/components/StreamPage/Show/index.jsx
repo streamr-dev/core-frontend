@@ -41,6 +41,7 @@ import KeyView from './KeyView'
 import ConfigureView from './ConfigureView'
 import PreviewView from './PreviewView'
 import HistoryView from './HistoryView'
+import SecurityView from './SecurityView'
 
 import styles from './streamShowView.pcss'
 
@@ -199,6 +200,13 @@ export class StreamShowView extends Component<Props, State> {
                             title="Details"
                         >
                             <InfoView disabled={disabled} />
+                        </TOCPage.Section>
+                        <TOCPage.Section
+                            id="security"
+                            title="Security"
+                            customStyled
+                        >
+                            <SecurityView disabled={disabled} />
                         </TOCPage.Section>
                         <TOCPage.Section
                             id="configure"
