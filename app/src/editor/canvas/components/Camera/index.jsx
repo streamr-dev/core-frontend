@@ -611,7 +611,7 @@ function useKeyboardZoomControls() {
     const onKeyDown = useCallback((event) => {
         if (shouldIgnoreEvent(event)) { return }
         const meta = (event.metaKey || event.ctrlKey)
-        if ((event.key === '=' && meta) || (event.key === 'ArrowUp' && event.shiftKey)) {
+        if (((event.key === '+' || event.key === '=') && meta) || (event.key === 'ArrowUp' && event.shiftKey)) {
             event.preventDefault()
             event.stopPropagation()
             event.stopImmediatePropagation()

@@ -75,7 +75,7 @@ const generalCombos = [
         title: 'Zoom Out',
     },
     {
-        keys: [['meta', '=']],
+        keys: [['meta', '+']],
         title: 'Zoom In',
     },
     {
