@@ -35,10 +35,18 @@ const groupedModules = Object.values(modules).reduce((memo, mod) => (mod.path ? 
 
 Object.keys(groupedModules).sort().forEach((group) => {
     stories.add(group, () => (
-        <div>
+        <div
+            style={{
+                paddingBottom: '2rem',
+            }}
+        >
             {groupedModules[group].map((mod) => (
                 <div
                     key={mod.name}
+                    style={{
+                        padding: '0 2rem',
+                        marginTop: '2rem',
+                    }}
                 >
                     <Module
                         src={Object.assign({
