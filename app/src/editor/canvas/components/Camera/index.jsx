@@ -1,4 +1,4 @@
-import React, { useRef, useState, useCallback, useEffect, useMemo, useContext } from 'react'
+import React, { useRef, useState, useCallback, useLayoutEffect, useEffect, useMemo, useContext } from 'react'
 import { useSpring, animated, to } from 'react-spring'
 import cx from 'classnames'
 import styles from './Camera.pcss'
@@ -14,14 +14,6 @@ function clamp(value, min, max) {
  * and be handled by camera controls
  */
 export const { cameraControl } = styles
-
-function shouldIgnoreEvent(event) {
-    // ignore bubbled, unless has cameraControl style
-    return (
-        event.currentTarget !== event.target &&
-        !event.target.classList.contains(styles.cameraControl)
-    )
-}
 
 const defaultFit = {
     x: 0,
@@ -337,6 +329,19 @@ function useCameraSimpleApi(opts) {
         }
     }, [cameraToWorldBounds])
 
+    const shouldIgnoreEvent = useCallback((event) => {
+        const { current: el } = elRef
+
+        // has cameraControl class
+        if (event.target.classList.contains(styles.cameraControl)) { return false }
+        // is within parent with cameraControl class
+        if (event.target.matches(`.${styles.cameraControl} *`)) { return false }
+        return (
+            isEditableElement(event.target)
+            || (!el.contains(event.target) && event.target !== document.body)
+        )
+    }, [elRef])
+
     return useMemo(() => ({
         ...state,
         elRef,
@@ -356,6 +361,7 @@ function useCameraSimpleApi(opts) {
         cameraToWorldPoint,
         panIntoViewIfNeeded,
         eventToWorldPoint,
+        shouldIgnoreEvent,
     }), [
         state,
         setState,
@@ -374,6 +380,7 @@ function useCameraSimpleApi(opts) {
         cameraToWorldPoint,
         panIntoViewIfNeeded,
         eventToWorldPoint,
+        shouldIgnoreEvent,
     ])
 }
 
@@ -460,9 +467,9 @@ export function CameraProvider({ onChange, children, ...props }) {
 }
 
 function useWheelControls(elRef) {
-    const { updateScale } = useCameraContext()
+    const { updateScale, shouldIgnoreEvent } = useCameraContext()
     const onChangeScale = useCallback((event) => {
-        if (isEditableElement(event.target)) { return }
+        if (shouldIgnoreEvent(event)) { return }
         event.preventDefault()
         const el = elRef.current
         const { deltaY: delta } = event
@@ -476,7 +483,7 @@ function useWheelControls(elRef) {
             y,
             delta,
         })
-    }, [elRef, updateScale])
+    }, [elRef, updateScale, shouldIgnoreEvent])
 
     useEffect(() => {
         const el = elRef.current
@@ -493,7 +500,12 @@ function usePanControls(elRef) {
 
     const startPanning = useCallback((event) => {
         if (event.buttons !== 1) { return }
-        if (shouldIgnoreEvent(event)) { return }
+        // ignore bubbled, unless has cameraControl style
+        if (
+            event.currentTarget !== event.target &&
+            !event.target.classList.contains(styles.cameraControl)
+        ) { return }
+
         if (isPanning) { return }
         event.stopPropagation()
         const el = elRef.current
@@ -558,10 +570,9 @@ function usePanControls(elRef) {
 }
 
 function useKeyboardPanControls({ panAmount = 25 } = {}) {
-    const { pan, elRef } = useCameraContext()
+    const { pan, shouldIgnoreEvent } = useCameraContext()
     const onKeyDown = useCallback((event) => {
-        const { current: el } = elRef
-        if (isEditableElement(event.target) || (!el.contains(event.target) && event.target !== document.body)) { return }
+        if (shouldIgnoreEvent(event)) { return }
         if (event.key === 'ArrowLeft' || event.key.toLowerCase() === 'a') {
             event.preventDefault()
             event.stopPropagation()
@@ -586,7 +597,7 @@ function useKeyboardPanControls({ panAmount = 25 } = {}) {
             event.stopImmediatePropagation()
             pan({ y: -panAmount })
         }
-    }, [pan, panAmount, elRef])
+    }, [pan, panAmount, shouldIgnoreEvent])
     useEffect(() => {
         window.addEventListener('keydown', onKeyDown)
         return () => {
@@ -596,10 +607,9 @@ function useKeyboardPanControls({ panAmount = 25 } = {}) {
 }
 
 function useKeyboardZoomControls() {
-    const { zoomIn, zoomOut, elRef } = useCameraContext()
+    const { zoomIn, zoomOut, shouldIgnoreEvent } = useCameraContext()
     const onKeyDown = useCallback((event) => {
-        const { current: el } = elRef
-        if (isEditableElement(event.target) || (!el.contains(event.target) && event.target !== document.body)) { return }
+        if (shouldIgnoreEvent(event)) { return }
         const meta = (event.metaKey || event.ctrlKey)
         if ((event.key === '=' && meta) || (event.key === 'ArrowUp' && event.shiftKey)) {
             event.preventDefault()
@@ -613,7 +623,7 @@ function useKeyboardZoomControls() {
             event.stopImmediatePropagation()
             zoomOut()
         }
-    }, [zoomIn, zoomOut, elRef])
+    }, [zoomIn, zoomOut, shouldIgnoreEvent])
     useEffect(() => {
         window.addEventListener('keydown', onKeyDown)
         return () => {
@@ -630,7 +640,7 @@ function useCameraSpring() {
 export default function Camera({ className, children }) {
     const elRef = useRef()
     const camera = useCameraContext()
-    useEffect(() => {
+    useLayoutEffect(() => {
         camera.elRef.current = elRef.current
     })
 

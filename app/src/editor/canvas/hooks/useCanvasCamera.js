@@ -1,7 +1,6 @@
 import { useMemo, useCallback, useEffect, useState, useRef, useContext } from 'react'
 import { getCanvasBounds, getModuleBounds } from '$editor/shared/utils/bounds'
 import { useThrottled } from '$shared/hooks/wrapCallback'
-import isEditableElement from '$editor/shared/utils/isEditableElement'
 
 import { useCameraContext } from '../components/Camera'
 import { DragDropContext } from '../components/DragDropContext'
@@ -136,10 +135,10 @@ function useIsMouseDown({ buttons = 1, ref }) {
 
 function useKeyboardZoomControls() {
     const { fitCanvas } = useCanvasCamera()
-    const { elRef, setScale } = useCameraContext()
+    const { setScale, shouldIgnoreEvent } = useCameraContext()
+
     const onKeyDown = useCallback((event) => {
-        const { current: el } = elRef
-        if (isEditableElement(event.target) || (!el.contains(event.target) && event.target !== document.body)) { return }
+        if (shouldIgnoreEvent(event)) { return }
         const meta = (event.metaKey || event.ctrlKey)
 
         if (event.key === '0' && meta) {
@@ -155,7 +154,7 @@ function useKeyboardZoomControls() {
             event.stopImmediatePropagation()
             fitCanvas()
         }
-    }, [fitCanvas, setScale, elRef])
+    }, [fitCanvas, setScale, shouldIgnoreEvent])
 
     useEffect(() => {
         window.addEventListener('keydown', onKeyDown)
