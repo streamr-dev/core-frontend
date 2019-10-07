@@ -299,6 +299,34 @@ function useCameraSimpleApi(opts) {
         }
     }, [cameraToWorldBounds])
 
+    const eventToWorldPoint = useCallback((event) => {
+        const point = {
+            x: 0,
+            y: 0,
+        }
+
+        if (event.target === elRef.current) {
+            // if target is camera el then we can just use event offsets
+            point.x = event.offsetX
+            point.y = event.offsetY
+        } else {
+            const rect = elRef.current.getBoundingClientRect()
+            // otherwise need to calculate offset
+            point.x = event.clientX - rect.left
+            point.y = event.clientY - rect.top
+        }
+
+        const { x, y } = cameraToWorldBounds({
+            ...point,
+            width: 1,
+            height: 1,
+        })
+        return {
+            x,
+            y,
+        }
+    }, [cameraToWorldBounds])
+
     return useMemo(() => ({
         ...state,
         elRef,
@@ -317,6 +345,7 @@ function useCameraSimpleApi(opts) {
         cameraToWorldBounds,
         cameraToWorldPoint,
         panIntoViewIfNeeded,
+        eventToWorldPoint,
     }), [
         state,
         setState,
@@ -334,6 +363,7 @@ function useCameraSimpleApi(opts) {
         cameraToWorldBounds,
         cameraToWorldPoint,
         panIntoViewIfNeeded,
+        eventToWorldPoint,
     ])
 }
 

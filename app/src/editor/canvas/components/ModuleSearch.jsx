@@ -95,10 +95,7 @@ const onDrop = (e: any, camera: any, addModule: (number, number, number, ?string
 
     if (!moduleId) { return }
 
-    const { x, y } = camera.cameraToWorldPoint({
-        x: e.offsetX,
-        y: e.offsetY,
-    })
+    const { x, y } = camera.eventToWorldPoint(e)
 
     addModule(moduleId, x, y, streamId)
 }
