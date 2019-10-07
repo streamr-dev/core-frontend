@@ -1510,6 +1510,25 @@ export function getModuleCopy(canvas, moduleHash) {
         }
     })
 
+    // always change uiChannel id
+    if (m.uiChannel) {
+        tempCanvas = updateModule(tempCanvas, moduleHash, (m) => ({
+            ...m,
+            uiChannel: {
+                ...m.uiChannel,
+                id: uuid.v4(), // set new uiChannel id
+            },
+        }))
+    }
+
+    newPortIds.forEach((portId) => {
+        if (isPortExported(tempCanvas, portId)) {
+            tempCanvas = setPortOptions(tempCanvas, portId, {
+                export: false,
+            })
+        }
+    })
+
     // fix variadics
     newPortIds.forEach((portId) => {
         const portType = getPortType(tempCanvas, portId)

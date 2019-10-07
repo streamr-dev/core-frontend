@@ -61,6 +61,29 @@ describe('copy/paste with getModuleCopy', () => {
         expect(State.moduleHasConnections(canvas, toLowerCase2.hash)).not.toBeTruthy()
     })
 
+    it('does not copy uiChannel', async () => {
+        let canvas = State.emptyCanvas()
+        canvas = State.addModule(canvas, await loadModuleDefinition('Table'))
+        const [table1] = canvas.modules
+        canvas = State.addModule(canvas, State.getModuleCopy(canvas, table1.hash))
+        const [, table2] = canvas.modules
+        // new uiChannel is set
+        expect(table2.uiChannel.id).toBeTruthy()
+        // no duplicate uiChannel
+        expect(table1.uiChannel.id).not.toEqual(table2.uiChannel.id)
+        const newUiChannelId = table2.uiChannel.id
+        // ensure server accepts state
+        canvas = State.updateCanvas(await Services.create(canvas))
+        const [table1a, table2a] = canvas.modules
+        // uiChannels set after save
+        expect(table1a.uiChannel.id).toBeTruthy()
+        expect(table2a.uiChannel.id).toBeTruthy()
+        // no duplicate uiChannel
+        expect(table1.uiChannel.id).not.toEqual(table2.uiChannel.id)
+        // uses generated id
+        expect(table2.uiChannel.id).toEqual(newUiChannelId)
+    })
+
     it('does not copy export state', async () => {
         let canvas = State.emptyCanvas()
         canvas = State.addModule(canvas, await loadModuleDefinition('ConstantText'))
