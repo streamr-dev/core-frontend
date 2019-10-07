@@ -44,7 +44,7 @@ export default class CustomModule extends React.Component {
     }
 
     render() {
-        const { module, isActive } = this.props
+        const { module, isEditable } = this.props
         const { debugMessages } = this.state
 
         return (
@@ -56,7 +56,7 @@ export default class CustomModule extends React.Component {
                 />
                 <CodeEditor
                     code={module.code || ''}
-                    readOnly={isActive}
+                    readOnly={!isEditable}
                     onApply={this.onApply}
                     onChange={this.onChange}
                     debugMessages={debugMessages}
