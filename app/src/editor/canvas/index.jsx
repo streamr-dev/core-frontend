@@ -154,7 +154,9 @@ const CanvasEditComponent = class CanvasEdit extends Component {
             event.preventDefault()
             event.stopPropagation()
             copyToClipboard(JSON.stringify(CanvasState.getModuleCopy(this.props.canvas, hash)))
-            this.removeModule({ hash })
+            if (runController.isEditable) {
+                this.removeModule({ hash })
+            }
         }
     }
 
@@ -366,6 +368,8 @@ const CanvasEditComponent = class CanvasEdit extends Component {
     }
 
     onPaste = (event) => {
+        const { runController } = this.props
+        if (!runController.isEditable) { return } // ignore if not editable
         // prevent handling paste in form fields
         if (isEditableElement(event.target || event.srcElement)) { return }
         event.preventDefault()
