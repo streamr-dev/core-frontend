@@ -41,7 +41,7 @@ type ControllerProps = {
 
 const ProductController = ({ children }: ControllerProps) => (
     <RouterContext.Provider>
-        <PendingProvider>
+        <PendingProvider name="product">
             <ValidationContextProvider>
                 <ProductEffects />
                 {children || null}

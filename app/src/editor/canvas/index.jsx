@@ -539,7 +539,7 @@ const CanvasEditWrap = () => {
 
 const CanvasContainer = withRouter(withErrorBoundary(ErrorComponentView)((props) => (
     <UndoContext.Provider key={props.match.params.id} enableBreadcrumbs>
-        <PendingProvider>
+        <PendingProvider name="canvas">
             <PendingLoadingIndicator />
             <ClientProvider>
                 <CanvasController.Provider embed={!!props.embed}>
