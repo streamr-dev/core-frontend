@@ -9,7 +9,7 @@ import UsingDashboardsInCore from '$docs/content/dashboards/usingDashboardsInCor
 const Dashboards = () => (
     <DocsLayout>
         <Helmet title="Dashboards | Streamr Docs" />
-        <section className="designUpdateWip"> {/* temporary section during design style pass */}
+        <section>
             <section id="intro-to-dashboards">
                 <IntroToDashboards />
             </section>

@@ -122,6 +122,15 @@ ul.subNavList li.navListItem {
     line-height: 24px;
   }
 
+  ul.navList li.navListItem,
+  ul.subNavList li.navListItem {
+    margin-bottom: 0;
+  }
+
+  ul.navList li.navListItem.mobileHeader {
+    margin-bottom: 1.5rem;
+  }
+
   .arrowExtender {
     display: block;
     width: 16px;
@@ -129,7 +138,7 @@ ul.subNavList li.navListItem {
     position: absolute;
     transform: rotate(90deg);
     top: 28px;
-    right: 34px;
+    right: 28px;
     transition: transform 180ms ease-in-out;
 
     &:hover {
@@ -146,7 +155,7 @@ ul.subNavList li.navListItem {
       height: 72px;
       position: sticky;
       top: 0;
-      z-index: 11;
+      z-index: 9;
       overflow: hidden;
 
       .arrowExtender {

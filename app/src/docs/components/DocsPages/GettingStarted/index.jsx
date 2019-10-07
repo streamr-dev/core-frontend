@@ -9,7 +9,7 @@ import GetBuilding from '$docs/content/gettingStarted/getBuilding.mdx'
 const GettingStarted = () => (
     <DocsLayout>
         <Helmet title="Getting Started | Streamr Docs" />
-        <section className="designUpdateWip"> {/* temporary section during design style pass */}
+        <section>
             <section>
                 <GettingStartedContent />
             </section>

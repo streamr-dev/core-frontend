@@ -15,7 +15,7 @@
 
   pre {
     padding: 1rem !important;
-    margin: 4rem 0;
+    margin: 2rem 0 4rem;
     font-size: inherit;
     background-color: #F8F8F8 !important;
     line-height: 20px;
@@ -84,9 +84,16 @@
     margin: 0;
   }
 
+  .mdH4 {
+    font-size: 18px;
+    line-height: 30px;
+    margin: 0;
+  }
+
   .mdH1,
   .mdH2,
-  .mdH3 {
+  .mdH3,
+  .mdH4 {
     font-weight: var(--medium);
   }
 
@@ -147,10 +154,29 @@
     }
   }
 
-  img { /* temporary styling during docs design pass */
+  img {
     display: block;
     max-width: 100%;
-    margin: 2em auto;
+    margin-top: 3.5rem;
+    margin-bottom: 7rem;
+  }
+
+  img + .mdH3,
+  img + .mdP {
+    margin-top: -3.5rem;
+  }
+
+  .mdH3 + .mdH4 {
+    margin-top: 2rem;
+  }
+
+  .mdP + img {
+    margin-top: 3.5rem;
+  }
+
+  .playerWrapper + .mdH3,
+  .playerWrapper + .mdP {
+    margin-top: 3.5rem;
   }
 
   strong {
@@ -211,30 +237,6 @@
   }
 }
 
-/* temporary selector during docs design pass */
-:global(.designUpdateWip) { /* stylelint-disable-line no-descending-specificity */
-  img {
-    display: block;
-    max-width: 100%;
-    margin-top: 3.5rem;
-    margin-bottom: 7rem;
-  }
-
-  img + .mdH3,
-  img + .mdP {
-    margin-top: -3.5rem;
-  }
-
-  .mdP + img {
-    margin-top: 3.5rem;
-  }
-
-  .playerWrapper + .mdH3,
-  .playerWrapper + .mdP {
-    margin-top: 3.5rem;
-  }
-}
-
 :global(.react-syntax-highlighter-line-number) {
   color: #ADADAD;
 }
@@ -270,6 +272,11 @@
       line-height: 28px;
     }
 
+    .mdH4 {
+      font-size: 16px;
+      line-height: 28px;
+    }
+
     .mdP,
     li {
       font-size: 16px;
@@ -288,20 +295,18 @@
     overflow: visible;
   }
 
-  :global(.designUpdateWip) { /* temporary selector during docs design pass */
-    img {
-      max-width: 100vw;
-      position: relative;
-      margin-left: -1.5rem;
-    }
+  img {
+    max-width: 100vw;
+    position: relative;
+    margin-left: -1.5rem;
+  }
 
-    .playerWrapper {
-      width: 100vw;
-      margin-left: -1.5rem;
+  .playerWrapper {
+    width: 100vw;
+    margin-left: -1.5rem;
 
-      .reactPlayer #player {
-        border: none;
-      }
+    .reactPlayer #player {
+      border: none;
     }
   }
 }

@@ -12,7 +12,7 @@ import ContributeSdk from '$docs/content/technicalNotes/howToContribute.mdx'
 const SDKs = () => (
     <DocsLayout>
         <Helmet title="SDKs | Streamr Docs" />
-        <section className="designUpdateWip"> {/* temporary section during design style pass */}
+        <section>
             <section id="sdks-overview">
                 <SdksOverview />
             </section>

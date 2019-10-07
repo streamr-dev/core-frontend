@@ -3,6 +3,7 @@
 import React from 'react'
 import { Link, withRouter, type Location } from 'react-router-dom'
 import cx from 'classnames'
+import scrollIntoView from 'smooth-scroll-into-view-if-needed'
 import SvgIcon from '$shared/components/SvgIcon'
 import { docsNav } from '$docs/components/DocsLayout/Navigation/navLinks'
 import styles from './navigation.pcss'
@@ -22,7 +23,56 @@ class Navigation extends React.Component<Props, State> {
         compressed: true,
     }
 
+    getTopLevelTitle() {
+        let title = ''
+
+        Object.keys(docsNav).forEach((topLevelNavItem) => {
+            if (this.props.location.pathname.includes(docsNav[topLevelNavItem].root)) {
+                title = topLevelNavItem
+            }
+        })
+
+        return title
+    }
+
+    getSecondLevelTitle() {
+        let title = ''
+
+        Object.keys(docsNav).forEach((topLevelNavItem) => {
+            if (this.props.location.pathname.includes(docsNav[topLevelNavItem].root)) {
+                Object.keys(docsNav[topLevelNavItem]).forEach((secondLevelNavItem) => {
+                    if (this.props.location.pathname.includes(docsNav[topLevelNavItem][secondLevelNavItem])) {
+                        title = secondLevelNavItem
+                    }
+                })
+            }
+        })
+
+        return title
+    }
+
+    scrollTop = () => {
+        const root = document.getElementById('root')
+
+        if (root) {
+            scrollIntoView(root, {
+                behavior: 'smooth',
+                block: 'start',
+                inline: 'nearest',
+            })
+        }
+    }
+
+    generateMobileHeader() {
+        if (this.getSecondLevelTitle() !== 'root') {
+            return `${this.getTopLevelTitle()} > ${this.getSecondLevelTitle()}`
+        }
+        return this.getTopLevelTitle()
+    }
+
     toggleExpand = () => {
+        this.scrollTop()
+
         this.setState({
             compressed: !this.state.compressed,
         })
@@ -49,7 +99,6 @@ class Navigation extends React.Component<Props, State> {
                         if (subKey !== 'root') {
                             return (
                                 <li key={subKey} className={styles.navListItem}>
-                                    {/* $FlowFixMe */}
                                     <Link className={pathname.includes(navItem[subKey]) ? styles.active : ''} to={navItem[subKey]}>{subKey}</Link>
                                 </li>)
                         }
@@ -65,7 +114,6 @@ class Navigation extends React.Component<Props, State> {
         let match = false
 
         Object.keys(subNavList).forEach((subKey) => {
-            // $FlowFixMe
             if (this.props.location.pathname.includes(subNavList[subKey])) {
                 match = true
             }
@@ -91,7 +139,13 @@ class Navigation extends React.Component<Props, State> {
                     container: responsive,
                 })}
                 >
-                    {/* {!!responsive && this.parseCurrentPage()} */}
+                    {responsive && (
+                        <li className={cx(styles.navListItem, styles.mobileHeader)}>
+                            <Link to="#">
+                                {this.generateMobileHeader()}
+                            </Link>
+                        </li>
+                    )}
                     {Object.keys(docsNav).map((topLevelNav, index) => this.generateNavigation(topLevelNav, index))}
                 </ul>
                 <SvgIcon name="back" className={styles.arrowExtender} />

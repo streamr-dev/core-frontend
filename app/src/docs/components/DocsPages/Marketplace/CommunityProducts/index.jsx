@@ -3,7 +3,7 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
 import DocsLayout from '$docs/components/DocsLayout'
-import CommunityProductsContent from '$docs/content/marketplace/communityProducts.mdx'
+import CommunityProductsContent from '$docs/content/products/communityProducts.mdx'
 
 const CommunityProducts = () => (
     <DocsLayout>

@@ -35,12 +35,11 @@
   }
 }
 
-.navButton {
+.pageTurnerContainer .navButton {
   font-weight: var(--medium);
   position: relative;
   flex-basis: calc(50% - 8px);
   max-width: 328px;
-  background: #FFFFFF;
   background-color: #F8F8F8;
   border-radius: 4px;
   text-align: center;
@@ -48,16 +47,16 @@
   a {
     display: block;
     padding: 24px;
+
+    &:--enter {
+      color: var(--streamrBlue);
+    }
   }
 
   &.backward:--enter {
     .arrow {
       transform: translate(-4px, 0);
       transition: all 0.3s ease-out;
-
-      path {
-        stroke: var(--blueDark6);
-      }
     }
   }
 
@@ -65,16 +64,16 @@
     .arrow {
       transform: translate(4px, 0) rotate(180deg);
       transition: all 0.3s ease-out;
-
-      path {
-        stroke: var(--blueDark6);
-      }
     }
+  }
+
+  &:active {
+    background-color: #EFEFEF;
   }
 }
 
 @media (--sm-down) {
-  .navButton {
+  .pageTurnerContainer .navButton {
     flex-basis: 100%;
     margin: 8px 0;
     max-width: none;
@@ -82,7 +81,7 @@
 }
 
 @media (--xs) {
-  .navButton {
+  .pageTurnerContainer .navButton {
     &.backward {
       display: none;
     }
