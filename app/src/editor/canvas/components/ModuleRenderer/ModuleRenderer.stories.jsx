@@ -29,22 +29,29 @@ const Module = ({ src }) => (
     />
 )
 
-stories.add('all', () => (
-    <div>
-        {Object.entries(modules).map(([name, src]) => (
-            <div
-                key={src.name}
-            >
-                <Module
-                    src={Object.assign({
-                        params: [],
-                        inputs: [],
-                        outputs: [],
-                    }, src, {
-                        name: src.name || `<${name}>`,
-                    })}
-                />
-            </div>
-        ))}
-    </div>
-))
+const groupedModules = Object.values(modules).reduce((memo, mod) => (mod.path ? {
+    ...memo,
+    [mod.path]: [...(memo[mod.path] || []), mod],
+} : memo), {})
+
+Object.keys(groupedModules).sort().forEach((group) => {
+    stories.add(group, () => (
+        <div>
+            {groupedModules[group].map((mod) => (
+                <div
+                    key={mod.name}
+                >
+                    <Module
+                        src={Object.assign({
+                            params: [],
+                            inputs: [],
+                            outputs: [],
+                        }, mod, {
+                            name: mod.name || '<Empty>',
+                        })}
+                    />
+                </div>
+            ))}
+        </div>
+    ))
+})
