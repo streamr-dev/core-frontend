@@ -1,8 +1,9 @@
-import React, { useState, useRef, useCallback, useLayoutEffect } from 'react'
+import React, { useState, useRef, useCallback, useLayoutEffect, useMemo } from 'react'
 import cx from 'classnames'
 import debounce from 'lodash/debounce'
 
 import * as CanvasState from '../state'
+import { useCanvasCameraDragEffects } from '../hooks/useCanvasCamera'
 
 import Module from './Module'
 import { DragDropProvider } from './DragDropContext'
@@ -10,85 +11,106 @@ import { CanvasWindowProvider } from './CanvasWindow'
 import Cables from './Cables'
 
 import styles from './Canvas.pcss'
+import Camera, { useCameraContext, cameraControl } from './Camera'
 
-export default class Canvas extends React.PureComponent {
-    setPortUserValue = (portId, value, done) => {
-        this.props.setCanvas({ type: 'Set Port Value' }, (canvas) => (
+export default function Canvas(props) {
+    const propsRef = useRef()
+    propsRef.current = props
+
+    const setPortUserValue = useCallback((portId, value, done) => {
+        const { current: props } = propsRef
+        props.setCanvas({ type: 'Set Port Value' }, (canvas) => (
             CanvasState.setPortUserValue(canvas, portId, value)
         ), done)
-    }
+    }, [propsRef])
 
-    setPortOptions = (portId, options) => {
-        this.props.setCanvas({ type: 'Set Port Options' }, (canvas) => (
+    const setPortOptions = useCallback((portId, options) => {
+        const { current: props } = propsRef
+        props.setCanvas({ type: 'Set Port Options' }, (canvas) => (
             CanvasState.setPortOptions(canvas, portId, options)
         ))
-    }
+    }, [propsRef])
 
-    updateModuleSize = (moduleHash, diff) => {
-        this.props.setCanvas({ type: 'Resize Module' }, (canvas) => (
+    const updateModuleSize = useCallback((moduleHash, diff) => {
+        const { current: props } = propsRef
+        props.setCanvas({ type: 'Resize Module' }, (canvas) => (
             CanvasState.updateModuleSize(canvas, moduleHash, diff)
         ))
-    }
+    }, [propsRef])
 
     /**
      * Module & Port Drag/Drop APIs
      * note: don't add state to this as the api object doesn't change
      */
 
-    api = {
+    const api = useMemo(() => ({
         selectModule: (...args) => (
-            this.props.selectModule(...args)
+            propsRef.current.selectModule(...args)
         ),
         renameModule: (...args) => (
-            this.props.renameModule(...args)
+            propsRef.current.renameModule(...args)
         ),
         moduleSidebarOpen: (...args) => (
-            this.props.moduleSidebarOpen(...args)
+            propsRef.current.moduleSidebarOpen(...args)
         ),
         updateModule: (...args) => (
-            this.props.updateModule(...args)
+            propsRef.current.updateModule(...args)
         ),
         loadNewDefinition: (...args) => (
-            this.props.loadNewDefinition(...args)
+            propsRef.current.loadNewDefinition(...args)
         ),
         pushNewDefinition: (...args) => (
-            this.props.pushNewDefinition(...args)
+            propsRef.current.pushNewDefinition(...args)
         ),
-        updateModuleSize: this.updateModuleSize,
+        updateModuleSize,
         setCanvas: (...args) => (
-            this.props.setCanvas(...args)
+            propsRef.current.setCanvas(...args)
         ),
         port: {
-            onChange: this.setPortUserValue,
-            setPortOptions: this.setPortOptions,
+            onChange: setPortUserValue,
+            setPortOptions,
         },
-    }
+    }), [propsRef, setPortUserValue, setPortOptions, updateModuleSize])
 
-    render() {
-        const {
-            className,
-            canvas,
-            selectedModuleHash,
-            moduleSidebarIsOpen,
-            children,
-        } = this.props
+    const {
+        className,
+        canvas,
+        selectedModuleHash,
+        moduleSidebarIsOpen,
+        children,
+    } = props
 
-        return (
-            <CanvasWindowProvider className={styles.CanvasWindow}>
-                <div className={cx(styles.Canvas, className)}>
-                    <CanvasElements
-                        key={canvas.id}
-                        canvas={canvas}
-                        api={this.api}
-                        selectedModuleHash={selectedModuleHash}
-                        moduleSidebarIsOpen={moduleSidebarIsOpen}
-                        {...this.api.module}
-                    />
-                    {children}
-                </div>
-            </CanvasWindowProvider>
-        )
-    }
+    const { selectModule } = api
+
+    const onFocus = useCallback((event) => {
+        // deselect + close when clicking canvas
+        if (event.target !== event.currentTarget) { return }
+        selectModule()
+    }, [selectModule])
+
+    return (
+        <div
+            className={cx(styles.Canvas, className)}
+            onFocus={onFocus}
+            tabIndex="0"
+            role="grid"
+        >
+            <DragDropProvider>
+                <Camera>
+                    <CanvasWindowProvider className={styles.CanvasWindow}>
+                        <CanvasElements
+                            key={canvas.id}
+                            canvas={canvas}
+                            api={api}
+                            selectedModuleHash={selectedModuleHash}
+                            moduleSidebarIsOpen={moduleSidebarIsOpen}
+                        />
+                    </CanvasWindowProvider>
+                </Camera>
+            </DragDropProvider>
+            {children}
+        </div>
+    )
 }
 
 function CanvasElements(props) {
@@ -98,13 +120,16 @@ function CanvasElements(props) {
     const [positions, setPositions] = useState({})
     const updatePositionsRef = useRef()
 
+    const camera = useCameraContext()
+    const getCurrentScaleRef = useRef()
+    getCurrentScaleRef.current = camera.getCurrentScale
+
     const updatePositionsNow = useCallback(() => {
         if (updatePositionsRef.current) {
             updatePositionsRef.current.cancel() // cancel any delayed call
         }
 
         if (!modulesRef.current) { return }
-
         const offset = modulesRef.current.getBoundingClientRect()
         const { current: ports } = portsRef
         const positions = [...ports.entries()].reduce((r, [id, el]) => {
@@ -114,10 +139,8 @@ function CanvasElements(props) {
             return Object.assign(r, {
                 [id]: {
                     id,
-                    top: (rect.top - offset.top) + (rect.height / 2),
-                    bottom: (rect.bottom - offset.bottom) + (rect.height / 2),
-                    left: (rect.left - offset.left) + (rect.width / 2),
-                    right: (rect.right - offset.right) + (rect.width / 2),
+                    x: ((rect.left - offset.left) + (rect.width / 2)),
+                    y: ((rect.top - offset.top) + (rect.height / 2)),
                     width: rect.width,
                     height: rect.height,
                 },
@@ -140,49 +163,60 @@ function CanvasElements(props) {
         updatePositionsNow()
     }, [canvas, updatePositionsNow])
 
-    const { selectModule } = api
-    const onFocus = useCallback((event) => {
-        // deselect + close when clicking canvas
-        if (event.target !== event.currentTarget) { return }
-        selectModule()
-    }, [selectModule])
-
     const onPort = useCallback((portId, el) => {
         portsRef.current.set(portId, el)
         updatePositions()
     }, [portsRef, updatePositions])
 
+    const scaledPositions = useMemo(() => {
+        // Always pass positions as if no scaling was performed.
+        // Positions are read from DOM with current scaling applied
+        // but since the cables rendered using these positions are also scaled
+        // we need to unscale the values first.
+        // note: does not update when scale changes, only when positions change
+        // only need to reverse the scaling at time the positions are captured
+        const scale = getCurrentScaleRef.current()
+
+        return Object.values(positions).reduce((o, p) => Object.assign(o, {
+            [p.id]: {
+                ...p,
+                x: (p.x / scale),
+                y: (p.y / scale),
+                width: (p.width / scale),
+                height: (p.height / scale),
+            },
+        }), {})
+    }, [positions, getCurrentScaleRef])
+
+    useCanvasCameraDragEffects()
+
     if (!canvas) { return null }
 
     return (
         <div className={styles.CanvasElements}>
-            <DragDropProvider>
-                <div
-                    className={styles.Modules}
-                    onFocus={onFocus}
-                    ref={modulesRef}
-                    tabIndex="0"
-                    role="grid"
-                >
-                    {canvas.modules.map((m) => (
-                        <Module
-                            key={m.hash}
-                            module={m}
-                            canvas={canvas}
-                            onPort={onPort}
-                            api={api}
-                            isSelected={selectedModuleHash === m.hash}
-                            moduleSidebarIsOpen={moduleSidebarIsOpen}
-                            {...api.module}
-                        />
-                    ))}
-                </div>
-                <Cables
-                    canvas={canvas}
-                    positions={positions}
-                    selectedModuleHash={selectedModuleHash}
-                />
-            </DragDropProvider>
+            <div
+                className={cx(styles.Modules, cameraControl)}
+                ref={modulesRef}
+                role="grid"
+            >
+                {canvas.modules.map((m) => (
+                    <Module
+                        key={m.hash}
+                        module={m}
+                        canvas={canvas}
+                        onPort={onPort}
+                        api={api}
+                        isSelected={selectedModuleHash === m.hash}
+                        moduleSidebarIsOpen={moduleSidebarIsOpen}
+                        {...api.module}
+                    />
+                ))}
+            </div>
+            <Cables
+                canvas={canvas}
+                positions={scaledPositions}
+                selectedModuleHash={selectedModuleHash}
+            />
         </div>
     )
 }

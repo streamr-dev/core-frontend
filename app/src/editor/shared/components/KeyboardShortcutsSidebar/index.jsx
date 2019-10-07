@@ -9,11 +9,19 @@ import styles from './KeyboardShortcutsSidebar.pcss'
 
 const keyLabels = {
     escape: 'esc',
-    meta: isWindows() ? 'win' : 'cmd',
-    control: 'ctrl',
+    meta: isWindows() ? 'win' : '⌘',
+    control: '⌃',
+    shift: '⇧',
 }
 
-const getKeyLabel = (key) => {
+function getPlatformKey(key) {
+    // transform 'meta' shortcuts to use the 'control' key on windows
+    if (key === 'meta' && isWindows()) { return 'control' }
+    return key
+}
+
+export const getKeyLabel = (key) => {
+    key = getPlatformKey(key)
     if (keyLabels[key]) {
         return keyLabels[key]
     }
@@ -164,12 +172,6 @@ export function KeyboardShortcutsSidebar({ onClose, children }) {
             </Content>
         </React.Fragment>
     )
-}
-
-function getPlatformKey(key) {
-    // transform 'meta' shortcuts to use the 'control' key on windows
-    if (key === 'meta' && isWindows()) { return 'control' }
-    return key
 }
 
 export function ComboList({ combos, ...props }) {
