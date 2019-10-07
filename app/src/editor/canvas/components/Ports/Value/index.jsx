@@ -5,7 +5,7 @@ import cx from 'classnames'
 import * as State from '../../../state'
 import Color from './Color'
 import Map from './Map'
-import Select from './Select'
+import Select, { useSelectOptions } from './Select'
 import Stream from './Stream'
 import Text from './Text'
 import List from './List'
@@ -79,19 +79,24 @@ const BooleanPossibleValues = [{
 
 function PortSelect({ canvas, port, value, ...props }) {
     const portValueEditDisabled = State.isPortValueEditDisabled(canvas, port.id)
-    value = value == null ? undefined : String(value) /* coerce option value to string or undefined */
+    let { possibleValues: options } = port
+
+    const selectConfig = useSelectOptions({
+        value,
+        options,
+    })
+
     if (portValueEditDisabled) {
         // always render as disabled text box if value editing is disabled
         return (
             <Text
-                value={value}
+                value={selectConfig.name}
                 {...props}
                 disabled
             />
         )
     }
 
-    let { possibleValues: options } = port
     if (!options) {
         // inject boolean dropdown if no options and type appears to be boolean
         options = State.isPortBoolean(canvas, port.id) ? BooleanPossibleValues : []
