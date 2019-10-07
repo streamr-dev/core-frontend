@@ -238,6 +238,7 @@ function useCameraSimpleApi(opts) {
     const areBoundsInView = useCallback(({ bounds, padding = 0 }) => {
         const { current: cameraEl } = elRef
         const { width, height } = cameraEl.getBoundingClientRect()
+
         return (
             ((bounds.x * scale) + x) >= padding
             && ((bounds.y * scale) + y) >= padding
@@ -256,12 +257,21 @@ function useCameraSimpleApi(opts) {
 
         const { current: cameraEl } = elRef
         const { width, height } = cameraEl.getBoundingClientRect()
+
         const [overLeft, overTop, overRight, overBottom] = [
             padding - ((bounds.x * scale) + x),
             padding - ((bounds.y * scale) + y),
             (((bounds.x + bounds.width) * scale) + x) - (width - padding),
             (((bounds.y + bounds.height) * scale) + y) - (height - padding),
         ].map((v) => Math.max(0, v))
+
+        // if too big to fit on screen rescale and center
+        if ((overLeft > 0 && overRight > 0) || (overTop > 0 && overBottom > 0)) {
+            return fitView({
+                bounds,
+                padding,
+            })
+        }
 
         // prioritise top & left offsets over right & bottom
         const offsetX = overLeft > 0 ? overLeft : -overRight
@@ -272,7 +282,7 @@ function useCameraSimpleApi(opts) {
             x: s.x + offsetX,
             y: s.y + offsetY,
         }))
-    }, [setState, scale, x, y, areBoundsInView, elRef])
+    }, [setState, scale, x, y, areBoundsInView, fitView, elRef])
 
     // convert bounds in screen/camera coordinates to world coordinates
     const cameraToWorldBounds = useCallback((bounds) => {
