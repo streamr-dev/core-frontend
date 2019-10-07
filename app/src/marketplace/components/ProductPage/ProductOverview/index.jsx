@@ -64,8 +64,10 @@ const ProductOverview = ({ product, authApiKeyId, className }: Props) => {
     return (
         <div className={cx(styles.root, className)}>
             {isDeploying && (
-                <div className={styles.spinner}>
-                    <DeploySpinner isRunning showCounter={false} />
+                <div className={styles.spinnerContainer}>
+                    <div className={styles.spinner}>
+                        <DeploySpinner isRunning showCounter={false} />
+                    </div>
                 </div>
             )}
             {!isDeploying && stats != null && (
