@@ -77,6 +77,7 @@ export default class TextFieldModule extends React.Component {
                         placeholder="Enter your text here"
                         tag="textarea"
                         value={value}
+                        disabled={!hasWritePermission}
                     />
                     <button
                         type="button"
