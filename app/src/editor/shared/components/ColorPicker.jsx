@@ -93,6 +93,10 @@ export default class ColorPicker extends React.Component<Props, State> {
         })
     }
 
+    toggle = () => {
+        this.setState(({ isOpen }) => ({ isOpen: !isOpen }))
+    }
+
     close = () => {
         const { onClose } = this.props
 
@@ -116,6 +120,7 @@ export default class ColorPicker extends React.Component<Props, State> {
                 disabled={disabled}
                 className={styles.root}
                 onBlur={this.onBlur}
+                onClick={this.toggle}
                 onFocus={this.onFocus}
                 onKeyDown={this.onKeyDown}
                 ref={this.ref}
