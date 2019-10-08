@@ -27,6 +27,7 @@ type Section = {
     id: string,
     title: string,
     onClick?: Function,
+    href?: string,
     status: $Values<typeof statuses>,
     seen?: boolean,
     active?: boolean,
@@ -39,6 +40,7 @@ const isError = (status) => !!status && status === statuses.ERROR
 const NavSection = ({
     title,
     onClick,
+    href,
     status = statuses.EMPTY,
     seen = false,
     active = false,
@@ -62,7 +64,12 @@ const NavSection = ({
         })}
         >
             <div className={styles.title}>
-                <button type="button"onClick={onClick}>{title}</button>
+                {!!href && (
+                    <a href={href} onClick={onClick}>{title}</a>
+                )}
+                {!href && (
+                    <button type="button" onClick={onClick}>{title}</button>
+                )}
             </div>
             <div className={styles.status}>
                 <div className={styles.marker}>

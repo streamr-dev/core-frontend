@@ -107,7 +107,10 @@ const EditorNav = withRouter(({ location: { hash } }: EditorNavProps) => {
         anchorId: 'details',
         title: I18n.t('editProductPage.navigation.details'),
         status: detailsStatus,
-    }], [
+    }].map((section) => ({
+        ...section,
+        href: `#${section.anchorId}`,
+    })), [
         nameStatus,
         coverImageStatus,
         descriptionStatus,
@@ -125,6 +128,7 @@ const EditorNav = withRouter(({ location: { hash } }: EditorNavProps) => {
     return (
         <EditorNavComponent
             className={styles.sticky}
+            // $FlowFixMe
             sections={sections}
             activeSection={activeSectionId}
         />
