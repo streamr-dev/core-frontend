@@ -3,12 +3,18 @@ import { Link } from 'react-router-dom'
 
 import links from '$shared/../links'
 
-import StreamListing from './images/streamListing.png'
-import StreamDetails from './images/streamDetails.png'
-import StreamConfigure from './images/streamConfigure.png'
-import StreamPreview from './images/streamPreview.png'
-import StreamApiAccess from './images/streamApiAccess.png'
-import StreamHistorical from './images/streamHistorical.png'
+import StreamListing from './images/core_streams_01_desktop_border.jpg'
+import StreamListing2x from './images/core_streams_01_desktop_border@2x.jpg'
+import StreamDetails from './images/core_streams_02_desktop.jpg'
+import StreamDetails2x from './images/core_streams_02_desktop@2x.jpg'
+import StreamConfigure from './images/core_streams_03_desktop.jpg'
+import StreamConfigure2x from './images/core_streams_03_desktop@2x.jpg'
+import StreamPreview from './images/core_streams_04_desktop.jpg'
+import StreamPreview2x from './images/core_streams_04_desktop@2x.jpg'
+import StreamApiAccess from './images/core_streams_05_desktop.jpg'
+import StreamApiAccess2x from './images/core_streams_05_desktop@2x.jpg'
+import StreamHistorical from './images/core_streams_06_desktop.jpg'
+import StreamHistorical2x from './images/core_streams_06_desktop@2x.jpg'
 
 import docsStyles from '$docs/components/DocsLayout/docsLayout.pcss'
 import streamsStyles from '$docs/components/DocsPages/Streams/streamsStyles.pcss'
@@ -19,9 +25,11 @@ Streamr Core provides you with the tools to create, edit, share and delete your 
 ### Overview of your streams
 Head over to the <Link to={links.userpages.streams}>Streams page</Link> to see an overview of your subscribed streams. The list includes streams you have created and streams that you have purchased on the Marketplace.
 
-<div className={cx(docsStyles.centered, streamsStyles.streamListing)}>
-  <img src={StreamListing} />
-</div>
+<img
+  src={StreamListing}
+  srcSet={`${StreamListing2x} 2x`}
+  alt="Stream Listing"
+/>
 
 This stream listing page gives an indication for when data was last pushed to each stream and uses traffic light indicators show the health of each stream, at a glance.
 
@@ -38,9 +46,11 @@ A new stream can be created by the clicking the **Create Stream** button.
 ### Editing a stream
 The stream editor provides basic tools for setting up, inspecting and editing your stream. Below is a run-down of each stream editor section.
 
-<div className={cx(docsStyles.centered, streamsStyles.streamDetails)}>
-  <img src={StreamDetails} />
-</div>
+<img
+  src={StreamDetails}
+  srcSet={`${StreamDetails2x} 2x`}
+  alt="Stream Details"
+/>
 
 #### Details section
 The details section provides basic information about your stream. 
@@ -54,9 +64,11 @@ In this section you can configure stream fields and their data types. All fields
 The Autodetect feature can be used to automatically deduce fields from the stream's last received message.
 It is possible to manually correct the data types if automatic detection is not suitable for your stream.
 
-<div className={cx(docsStyles.centered, streamsStyles.streamConfigure)}>
-  <img src={StreamConfigure} />
-</div>
+<img
+  src={StreamConfigure}
+  srcSet={`${StreamConfigure2x} 2x`}
+  alt="Stream Configure"
+/>
 
 | Setting                                             | Explanation                                                                                                     |
 | ----------------------------------------------------| --------------------------------------------------------------------------------------------------------------- |
@@ -66,9 +78,11 @@ It is possible to manually correct the data types if automatic detection is not 
 #### Preview section
 This section is used to preview data flowing into the stream. Use the live inspector to make sure your stream is receiving data and it is correctly formatted.
 
-<div className={cx(docsStyles.centered, streamsStyles.streamPreview)}>
-  <img src={StreamPreview} />
-</div>
+<img
+  src={StreamPreview}
+  srcSet={`${StreamPreview2x} 2x`}
+  alt="Stream Preview"
+/>
 
 #### API Access section
 Here you can manage API keys for your stream. Keys generated here grant access to only this stream and can have either read or write access.

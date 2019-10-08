@@ -3,7 +3,7 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
 import DocsLayout from '$docs/components/DocsLayout'
-import UsingProductsInCoreContent from '$docs/content/products/usingProductsInCore.mdx'
+import UsingProductsInCoreContent from '$docs/content/core/usingProductsInCore.mdx'
 
 const UsingProductsInCore = () => (
     <DocsLayout >
@@ -15,4 +15,3 @@ const UsingProductsInCore = () => (
 )
 
 export default UsingProductsInCore
-

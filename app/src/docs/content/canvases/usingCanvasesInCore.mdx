@@ -1,28 +1,79 @@
 import cx from 'classnames'
 import { Link } from 'react-router-dom'
 import links from '$shared/../links'
-import CreateCanvasButton from './images/createCanvasButton.png'
-import CoreListing from './images/coreListing.png'
-import CanvasTile from './images/canvasTile.png'
+
+import CanvasListing from './images/using_canvases_01_desktop_border.jpg'
+import CanvasListing2x from './images/using_canvases_01_desktop_border@2x.jpg'
+import CanvasModes2x from './images/using_canvases_02_mobile@2x.jpg'
+import RealtimeMode2x from './images/using_canvases_03_mobile@2x.jpg'
+import HistoricalMode2x from './images/using_canvases_04_mobile@2x.jpg'
+import PlaybackSpeed2x from './images/using_canvases_05_mobile@2x.jpg'
+
 import docsStyles from '$docs/components/DocsLayout/docsLayout.pcss'
 import canvasesStyles from '$docs/components/DocsPages/Canvases/canvasesStyles.pcss'
 
 # Using canvases in Core
 
-To create a new canvas, click on **Create Canvas** on the <Link to={links.userpages.canvases}>canvas listing</Link> page.
+To create a new canvas, click <Link to={links.userpages.canvases}>Create Canvas</Link> on the Core > Canvases view. You'll see all of your canvases along with their running state on the canvases listing page. Click on a canvas preview tile to open it in the editor. You can also search and sort your canvases by their name, when they were modified, or from their running state. Hover your mouse over the canvas preview tile to discover extra things you can do with your canvas such as sharing it with friends or the public.
 
-<div className={cx(docsStyles.centered, canvasesStyles.createCanvasButton)}>
-  <img src={CreateCanvasButton} />
+<img
+  className={docsStyles.bordered}
+  src={CanvasListing}
+  srcSet={`${CanvasListing2x} 2x`}
+  alt="Canvas Listing"
+/>
+
+## Canvas Modes
+
+You can run your canvas in one of two ways - **historical** or **realtime** mode. There's a natural iterative workflow where you first build a perhaps rudimentary version of a canvas, test it with historical data where possible, refine the design based on the test findings, and repeat until you're happy to run it in realtime.
+
+<div className={docsStyles.mobileStretch}>
+  <img
+    src={CanvasModes2x}
+    alt="Canvas Modes"
+  />
 </div>
 
-You'll see all of your canvases along with their running state on the canvases listing page - click on a canvas preview tile to open it in the editor. You can also search and sort your canvases by their name, when they were modified, or from their running state. 
+### Realtime mode
 
-<div className={docsStyles.centered}>
-  <img src={CoreListing} />
+Realtime mode (default) is used in production where you want to react to data points as they arrive. Realtime data can flow from streams or can be generated from modules connected to the outside world, e.g. a HTTP API GET request.
+
+When you run a canvas in realtime mode, it will listen to realtime events arriving in the subscribed streams, and process them as soon as they're available. When the canvas is running you won't be able to edit it, if you need to make changes, you'll need to stop the canvas and then restart it.
+
+<div className={docsStyles.mobileStretch}>
+  <img
+    src={RealtimeMode2x}
+    alt="Realtime Mode"
+  />
 </div>
 
-Hover your mouse over the canvas preview tile to discover extra things you can do with your canvas such as sharing it with friends or the public.
+A live canvas keeps running until you explictly tell it to stop. When you stop a canvas, its internal state is saved on the disk. If you later restart the canvas, it will gracefully resume from the point where it stopped. It will not, however, process any events that occurred when it was not running.
 
-<div className={docsStyles.centered}>
-  <img src={CanvasTile} />
+### Historical mode
+
+Historical mode is a playback of what has happened in a past date range. A playback can be extremely useful when you’re testing, refining, or demonstrating the functionality of a canvas.
+
+A canvas run in historical mode consumes a playback of past events stored in the subscribed streams. The playback is a simulation of what has happened in the past. You may run the canvas in historical mode provided the streams inside the canvas contain some historical data.
+
+<div className={docsStyles.mobileStretch}>
+  <img
+    src={HistoricalMode2x}
+    alt="Historical Mode"
+  />
 </div>
+
+You can specify the time period (the start date and the end date) for the historical playback period as well as the speed of playback. By default, playback events are processed sequentially but at a much faster pace compared to the actual history. You can easily change the playback speed for the historical run. Click on the arrow menu icon, connected to the   Run   button to choose your desired playback speed.
+
+The playback starts when you press the   Run   button.
+
+<div className={docsStyles.mobileStretch}>
+  <img
+    src={PlaybackSpeed2x}
+    alt="Playback speed"
+  />
+</div>
+
+### Reusing canvases as modules
+You can easily reuse a canvas as a component of another canvas. This is done via abstraction, where you encapsulate a canvas as a module. You can then use the new module when you build additional canvases.
+
+To create an abstraction, you'll need to expose — or export — inputs and outputs. The exported endpoints will show up as endpoints of the abstracted canvas.

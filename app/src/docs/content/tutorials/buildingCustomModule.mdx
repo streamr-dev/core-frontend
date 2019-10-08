@@ -6,8 +6,8 @@ import Warning from '$docs/components/Warning'
 import CodeSnippet from '$shared/components/CodeSnippet'
 import links from '$shared/../links'
 
-import ModuleExampleOnCanvas from '../canvases/images/moduleExampleOnCanvas.png'
-import JavaModuleOnCanvas from '../canvases/images/javaModuleOnCanvas.png'
+// import ModuleExampleOnCanvas from '../canvases/images/moduleExampleOnCanvas.png'  TODO Check what this was
+// import JavaModuleOnCanvas from '../canvases/images/javaModuleOnCanvas.png' TODO Check what this was
 
 import {
   JavaModule,
@@ -40,9 +40,7 @@ Inputs and outputs are defined in the beginning of the code template. To help yo
 
 If you uncomment those lines (as we've done above), you will get a module with one numerical input and one numerical output. If you want to see the result on the canvas, first click **Apply**, then **Close**. 
 
-<div className={cx(docsStyles.centered, canvasesStyles.javaModuleOnCanvas)}>
-  <img src={JavaModuleOnCanvas} />
-</div>
+<!-- TODO Check JavaModuleOnCanvas IMG -->
 
 In this example, the inputs belong to the `TimeSeriesInput` class and the outputs to the `TimeSeriesOutput` class. The first argument of an input or output constructor is always `this`, a reference to the current module. The second argument is there for the display name, i.e. a visual label for the endpoint. The variable name on the left-hand side of the assignment can be any valid variable name in Java.
 
@@ -95,6 +93,4 @@ The code in a JavaModule is compiled and validated when you click the **Apply** 
 
 This is what the output looks like with sample input data:
 
-<div className={docsStyles.centered}>
-  <img src={ModuleExampleOnCanvas} />
-</div>
+<!--  ModuleExampleOnCanvas img -->

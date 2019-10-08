@@ -118,9 +118,12 @@ class PageTurner extends React.Component<Props> {
 
     render() {
         return (
-            <ul className={styles.pageTurnerContainer}>
-                {this.generateNavButtons()}
-            </ul>
+            <React.Fragment>
+                <hr className={styles.pageEnd} />
+                <ul className={styles.pageTurnerContainer}>
+                    {this.generateNavButtons()}
+                </ul>
+            </React.Fragment>
         )
     }
 }
