@@ -7,6 +7,7 @@ import * as CanvasState from '../state'
 import { DragDropContext, Draggable } from './DragDropContext'
 import Dragger from './Ports/Dragger'
 import Plug from './Ports/Plug'
+import useModuleApi from './ModuleRenderer/useModuleApi'
 
 class DraggablePort extends React.Component {
     static contextType = DragDropContext
@@ -48,7 +49,7 @@ class DraggablePort extends React.Component {
         const { data } = this.context
         const { sourceId, portId, overId } = data
         if (overId === portId) { return } // do nothing, already connected
-        this.props.api.setCanvas({ type: 'Connect Ports' }, (canvas) => {
+        this.props.setCanvas({ type: 'Connect Ports' }, (canvas) => {
             if (!this.canConnectPorts(canvas)) { return null } // noop if incompatible
             let nextCanvas = canvas
             if (sourceId) {
@@ -108,7 +109,7 @@ class DraggablePort extends React.Component {
         const { sourceId, portId } = data
         if (!sourceId) { return } // not connected
         const triggeredPorts = []
-        this.props.api.setCanvas({ type: 'Disconnect Ports' }, (canvas) => {
+        this.props.setCanvas({ type: 'Disconnect Ports' }, (canvas) => {
             const disconnectedPort = CanvasState.getPort(canvas, portId)
             const nextCanvas = CanvasState.disconnectPorts(canvas, sourceId, portId)
 
@@ -157,15 +158,11 @@ class DraggablePort extends React.Component {
     }
 }
 
-export function DragSource({
-    api,
-    port,
-    onValueChange,
-    className,
-    disabled,
-}) {
+export function DragSource({ port, onValueChange, className, disabled }) {
+    const { setCanvas } = useModuleApi()
+
     return (
-        <DraggablePort api={api} port={port} onValueChange={onValueChange} disabled={disabled}>
+        <DraggablePort setCanvas={setCanvas} port={port} onValueChange={onValueChange} disabled={disabled}>
             <div
                 className={cx(Dragger.styles.root, Dragger.styles.source, Dragger.styles.dragHandle, className, {
                     [Dragger.styles.disabled]: disabled,

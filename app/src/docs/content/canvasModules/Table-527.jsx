@@ -5,6 +5,15 @@ export default {
     id: 527,
     name: 'Table',
     path: 'Utils',
+    jsModule: 'TableModule',
+    layout: {
+        position: {
+            left: '0px',
+            top: '0px',
+        },
+        width: '250px',
+        height: '231px',
+    },
     help: {
         params: {},
         paramNames: [],
@@ -39,4 +48,10 @@ export default {
     ],
     outputs: [],
     params: [],
+    tableConfig: {
+        headers: [
+            'timestamp',
+        ],
+        title: 'Table',
+    },
 }

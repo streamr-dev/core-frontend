@@ -8,6 +8,7 @@ export default {
     help: {
         helpText: moduleDescription,
     },
+    jsModule: 'SolidityModule',
     inputs: [],
     outputs: [],
     params: [

@@ -5,6 +5,17 @@ export default {
     id: 220,
     name: 'TextField',
     path: 'Input',
+    jsModule: 'InputModule',
+    widget: 'StreamrTextField',
+    textFieldValue: '',
+    layout: {
+        position: {
+            left: '0px',
+            top: '0px',
+        },
+        width: '250px',
+        height: '156px',
+    },
     help: {
         params: {},
         paramNames: [],

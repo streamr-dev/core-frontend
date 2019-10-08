@@ -5,6 +5,7 @@ export default {
     id: 801,
     name: 'Scheduler',
     path: 'Time & Date',
+    jsModule: 'SchedulerModule',
     help: {
         params: {},
         paramNames: [],
@@ -32,5 +33,27 @@ export default {
             canBeNoRepeat: true,
         },
     ],
-    params: [],
+    params: [
+        {
+            id: 'e51da7e8-84d5-4f9b-8b38-e74a7138d910',
+            name: 'timezone',
+            longName: 'Scheduler.timezone',
+            type: 'String',
+            connected: false,
+            canConnect: true,
+            export: false,
+            value: 'UTC',
+            drivingInput: false,
+            canToggleDrivingInput: true,
+            acceptedTypes: [
+                'String',
+            ],
+            requiresConnection: false,
+            defaultValue: 'UTC',
+        },
+    ],
+    schedule: {
+        defaultValue: 0,
+        rules: [],
+    },
 }

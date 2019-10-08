@@ -5,6 +5,7 @@ export default {
     id: 136,
     name: 'JavaModule',
     path: 'Custom Modules',
+    jsModule: 'CustomModule',
     help: {
         params: {},
         paramNames: [],
