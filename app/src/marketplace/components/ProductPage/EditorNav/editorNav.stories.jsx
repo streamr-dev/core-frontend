@@ -16,8 +16,6 @@ const stories =
         }))
         .addDecorator(withKnobs)
 
-const options = Object.keys(statuses)
-
 const sections = [{
     id: 'name',
     title: 'Name',
@@ -45,12 +43,12 @@ const sections = [{
 }]
 
 const EditNavController = () => {
-    const nameStatus = select('Name', options, options.empty)
-    const coverImageStatus = select('Cover Image', options, options.empty)
-    const descriptionStatus = select('Description', options, options.empty)
-    const streamsStatus = select('Streams', options, options.empty)
-    const priceStatus = select('Price', options, options.empty)
-    const datailsStatus = select('Details', options, options.empty)
+    const nameStatus = select('Name', statuses, statuses.EMPTY)
+    const coverImageStatus = select('Cover Image', statuses, statuses.EMPTY)
+    const descriptionStatus = select('Description', statuses, statuses.EMPTY)
+    const streamsStatus = select('Streams', statuses, statuses.EMPTY)
+    const priceStatus = select('Price', statuses, statuses.EMPTY)
+    const datailsStatus = select('Details', statuses, statuses.EMPTY)
 
     const statusValues = {
         name: nameStatus,

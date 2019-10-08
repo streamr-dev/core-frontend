@@ -83,7 +83,7 @@ const PriceSelector = () => {
                     {!isValid && (
                         <p>{level}: {message}</p>
                     )}
-                    {isCommunityProduct(product) && (
+                    {!isCommunityProduct(product) && (
                         <BeneficiaryAddress
                             className={styles.beneficiaryAddress}
                             address={product.beneficiaryAddress}

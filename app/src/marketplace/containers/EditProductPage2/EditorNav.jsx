@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom'
 import { I18n } from 'react-redux-i18n'
 
 import { isCommunityProduct } from '$mp/utils/product'
-import EditorNavComponent from '$mp/components/ProductPage/EditorNav'
+import EditorNavComponent, { statuses } from '$mp/components/ProductPage/EditorNav'
 
 import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
 import useValidation from '../ProductController/useValidation'
@@ -37,44 +37,44 @@ const EditorNav = withRouter(({ location: { hash } }: EditorNavProps) => {
 
     const nameStatus = useMemo(() => {
         if (!isTouched('name')) {
-            return 'EMPTY'
+            return statuses.EMPTY
         }
-        return isNameValid ? 'VALID' : 'ERROR'
+        return isNameValid ? statuses.VALID : statuses.ERROR
     }, [isTouched, isNameValid])
 
     const coverImageStatus = useMemo(() => {
         if (!isTouched('coverImage')) {
-            return 'EMPTY'
+            return statuses.EMPTY
         }
-        return isCoverImageValid ? 'VALID' : 'ERROR'
+        return isCoverImageValid ? statuses.VALID : statuses.ERROR
     }, [isTouched, isCoverImageValid])
 
     const descriptionStatus = useMemo(() => {
         if (!isTouched('description')) {
-            return 'EMPTY'
+            return statuses.EMPTY
         }
-        return isDescriptionValid ? 'VALID' : 'ERROR'
+        return isDescriptionValid ? statuses.VALID : statuses.ERROR
     }, [isTouched, isDescriptionValid])
 
     const streamsStatus = useMemo(() => {
         if (!isTouched('streams')) {
-            return 'EMPTY'
+            return statuses.EMPTY
         }
-        return areStreamsValid ? 'VALID' : 'ERROR'
+        return areStreamsValid ? statuses.VALID : statuses.ERROR
     }, [isTouched, areStreamsValid])
 
     const priceStatus = useMemo(() => {
         if (!isTouched('price')) {
-            return 'EMPTY'
+            return statuses.EMPTY
         }
-        return (isPriceValid && (isCommunity || isBeneficiaryAddressValid)) ? 'VALID' : 'ERROR'
+        return (isPriceValid && (isCommunity || isBeneficiaryAddressValid)) ? statuses.VALID : statuses.ERROR
     }, [isTouched, isCommunity, isPriceValid, isBeneficiaryAddressValid])
 
     const detailsStatus = useMemo(() => {
         if (!isTouched('details')) {
-            return 'EMPTY'
+            return statuses.EMPTY
         }
-        return (isCategoryValid && (!isCommunity || isAdminFeeValid)) ? 'VALID' : 'ERROR'
+        return (isCategoryValid && (!isCommunity || isAdminFeeValid)) ? statuses.VALID : statuses.ERROR
     }, [isTouched, isCommunity, isCategoryValid, isAdminFeeValid])
 
     const sections = useMemo(() => [{

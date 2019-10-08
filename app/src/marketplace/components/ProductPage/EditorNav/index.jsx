@@ -15,6 +15,13 @@ export const statuses = {
     UNPUBLISHED: 'unpublished',
 }
 
+const statusIcons = {
+    [statuses.EMPTY]: 'default',
+    [statuses.VALID]: 'valid',
+    [statuses.ERROR]: 'error',
+    [statuses.UNPUBLISHED]: 'unpublished',
+}
+
 type Section = {
     // eslint-disable-next-line react/no-unused-prop-types
     id: string,
@@ -25,10 +32,9 @@ type Section = {
     active?: boolean,
 }
 
-// $FlowFixMe
-const isSet = (status) => !!statuses[status] && statuses[status] !== statuses.EMPTY
-// $FlowFixMe
-const isError = (status) => !!statuses[status] && statuses[status] === statuses.ERROR
+const isSet = (status) => !!status && status !== statuses.EMPTY
+
+const isError = (status) => !!status && status === statuses.ERROR
 
 const NavSection = ({
     title,
@@ -46,11 +52,8 @@ const NavSection = ({
                 return 'seen'
             }
         }
-        // $FlowFixMe
-        if (!status || !statuses[status] || statuses[status] === statuses.EMPTY) {
-            return 'default'
-        }
-        return statuses[status]
+
+        return statusIcons[status] || 'default'
     }, [status, seen, active])
 
     return (
