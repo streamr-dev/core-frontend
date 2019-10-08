@@ -10,6 +10,7 @@ import { getCommunityStats } from '$mp/modules/communityProduct/services'
 import useInterval from '$shared/hooks/useInterval'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import DonutChart from '$shared/components/DonutChart'
+import Dropdown from '$shared/components/Dropdown'
 import MembersGraph from '../MembersGraph'
 
 import styles from './productOverview.pcss'
@@ -26,6 +27,7 @@ const ProductOverview = ({ product, authApiKeyId, className }: Props) => {
     const isMounted = useIsMounted()
     const [isDeploying, setIsDeploying] = useState(true)
     const [stats, setStats] = useState(null)
+    const [shownDays, setShownDays] = useState(7)
 
     const getStats = useCallback(async () => {
         try {
@@ -108,13 +110,26 @@ const ProductOverview = ({ product, authApiKeyId, className }: Props) => {
                         </div>
                     </div>
                     <div className={styles.graphs}>
-                        <div>
-                            <div className={styles.statHeading}>Members</div>
+                        <div className={styles.memberContainer}>
+                            <div className={styles.memberHeadingContainer}>
+                                <div className={styles.statHeading}>Members</div>
+                                <Dropdown
+                                    title=""
+                                    selectedItem={shownDays.toString()}
+                                    onChange={(item) => setShownDays(Number(item))}
+                                    className={styles.memberGraphDropdown}
+                                >
+                                    <Dropdown.Item value="7">Last 7 days</Dropdown.Item>
+                                    <Dropdown.Item value="28">Last 28 days</Dropdown.Item>
+                                    <Dropdown.Item value="90">Last 90 days</Dropdown.Item>
+                                </Dropdown>
+                            </div>
                             <MembersGraph
                                 className={styles.graph}
                                 authApiKeyId={authApiKeyId}
                                 joinPartStreamId="DRaCVLn1TOWpe7I76gN8hA"
                                 memberCount={stats.memberCount.total}
+                                shownDays={shownDays}
                             />
                         </div>
                         <div className={styles.memberDonut}>
@@ -137,9 +152,7 @@ const ProductOverview = ({ product, authApiKeyId, className }: Props) => {
                             />
                         </div>
                     </div>
-                    <div className={styles.footer}>
-                        TODO
-                    </div>
+                    <div className={styles.footer} />
                 </div>
             )}
         </div>
