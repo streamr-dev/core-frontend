@@ -1,79 +1,25 @@
 // @flow
 
-import React, { useContext } from 'react'
-import cx from 'classnames'
-import findLastIndex from 'lodash/findLastIndex'
+import React, { useContext, useMemo } from 'react'
 import { withRouter } from 'react-router-dom'
-import { Translate } from 'react-redux-i18n'
+import { I18n } from 'react-redux-i18n'
 
-import SvgIcon from '$shared/components/SvgIcon'
 import { isCommunityProduct } from '$mp/utils/product'
+import EditorNavComponent from '$mp/components/ProductPage/EditorNav'
 
 import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
 import useValidation from '../ProductController/useValidation'
 import useProduct from '../ProductController/useProduct'
+
 import styles from './editorNav.pcss'
 
-type NavSectioProps = {
-    id: string,
-    anchorId: string,
-    hasError?: boolean,
-    touched?: boolean,
+type EditorNavProps = {
     location: {
         hash: string,
     },
 }
 
-const NavSection = withRouter(({
-    id,
-    anchorId,
-    hasError = false,
-    touched = false,
-    location: { hash },
-}: NavSectioProps) => (
-    <div className={cx(styles.navSection, {
-        [styles.active]: !!(anchorId === hash.substr(1)),
-    })}
-    >
-        <div className={styles.title}>
-            <a href={`#${anchorId}`}>
-                <Translate value={`editProductPage.navigation.${id}`} />
-            </a>
-        </div>
-        <div className={styles.status}>
-            <div className={cx(styles.marker, {
-                [styles.markerComplete]: !!touched && !hasError,
-                [styles.markerError]: !!touched && hasError,
-            })}
-            >
-                {!!touched && hasError && (<SvgIcon name="exclamation" className={styles.icon} />)}
-                {!!touched && !hasError && (<SvgIcon name="tick" className={styles.icon} />)}
-            </div>
-        </div>
-    </div>
-))
-
-const sections = [{
-    id: 'name',
-    anchorId: 'product-name',
-}, {
-    id: 'coverImage',
-    anchorId: 'cover-image',
-}, {
-    id: 'description',
-    anchorId: 'description',
-}, {
-    id: 'streams',
-    anchorId: 'streams',
-}, {
-    id: 'price',
-    anchorId: 'price',
-}, {
-    id: 'details',
-    anchorId: 'details',
-}]
-
-const EditorNav = () => {
+const EditorNav = withRouter(({ location: { hash } }: EditorNavProps) => {
     const product = useProduct()
 
     const { isTouched } = useContext(ValidationContext)
@@ -89,38 +35,100 @@ const EditorNav = () => {
 
     const isCommunity = isCommunityProduct(product)
 
-    const validSections = {
-        name: isNameValid,
-        coverImage: isCoverImageValid,
-        description: isDescriptionValid,
-        streams: areStreamsValid,
-        price: isPriceValid && (isCommunity || isBeneficiaryAddressValid),
-        details: isCategoryValid && (!isCommunity || isAdminFeeValid),
-    }
-    const lastIndex = findLastIndex(sections, ({ id }) => isTouched(id))
+    const nameStatus = useMemo(() => {
+        if (!isTouched('name')) {
+            return 'EMPTY'
+        }
+        return isNameValid ? 'VALID' : 'ERROR'
+    }, [isTouched, isNameValid])
+
+    const coverImageStatus = useMemo(() => {
+        if (!isTouched('coverImage')) {
+            return 'EMPTY'
+        }
+        return isCoverImageValid ? 'VALID' : 'ERROR'
+    }, [isTouched, isCoverImageValid])
+
+    const descriptionStatus = useMemo(() => {
+        if (!isTouched('description')) {
+            return 'EMPTY'
+        }
+        return isDescriptionValid ? 'VALID' : 'ERROR'
+    }, [isTouched, isDescriptionValid])
+
+    const streamsStatus = useMemo(() => {
+        if (!isTouched('streams')) {
+            return 'EMPTY'
+        }
+        return areStreamsValid ? 'VALID' : 'ERROR'
+    }, [isTouched, areStreamsValid])
+
+    const priceStatus = useMemo(() => {
+        if (!isTouched('price')) {
+            return 'EMPTY'
+        }
+        return (isPriceValid && (isCommunity || isBeneficiaryAddressValid)) ? 'VALID' : 'ERROR'
+    }, [isTouched, isCommunity, isPriceValid, isBeneficiaryAddressValid])
+
+    const detailsStatus = useMemo(() => {
+        if (!isTouched('details')) {
+            return 'EMPTY'
+        }
+        return (isCategoryValid && (!isCommunity || isAdminFeeValid)) ? 'VALID' : 'ERROR'
+    }, [isTouched, isCommunity, isCategoryValid, isAdminFeeValid])
+
+    const sections = useMemo(() => [{
+        id: 'name',
+        anchorId: 'product-name',
+        title: I18n.t('editProductPage.navigation.name'),
+        status: nameStatus,
+    }, {
+        id: 'coverImage',
+        anchorId: 'cover-image',
+        title: I18n.t('editProductPage.navigation.coverImage'),
+        status: coverImageStatus,
+    }, {
+        id: 'description',
+        anchorId: 'description',
+        title: I18n.t('editProductPage.navigation.description'),
+        status: descriptionStatus,
+    }, {
+        id: 'streams',
+        anchorId: 'streams',
+        title: I18n.t('editProductPage.navigation.streams'),
+        status: streamsStatus,
+    }, {
+        id: 'price',
+        anchorId: 'price',
+        title: I18n.t('editProductPage.navigation.price'),
+        status: priceStatus,
+    }, {
+        id: 'details',
+        anchorId: 'details',
+        title: I18n.t('editProductPage.navigation.details'),
+        status: detailsStatus,
+    }], [
+        nameStatus,
+        coverImageStatus,
+        descriptionStatus,
+        streamsStatus,
+        priceStatus,
+        detailsStatus,
+    ])
+
+    const activeSectionId = useMemo(() => {
+        const activeSection = sections.find(({ anchorId }) => anchorId === hash.substr(1))
+
+        return activeSection ? activeSection.id : undefined
+    }, [sections, hash])
 
     return (
-        <div className={cx(styles.root, styles.EditorNav)}>
-            <div className={styles.progressBar}>
-                <div className={styles.baseTrack} />
-                <div
-                    className={styles.progressTrack}
-                    style={{
-                        height: `${(Math.max(0, lastIndex) / Math.max(1, sections.length - 1)) * 100}%`,
-                    }}
-                />
-            </div>
-            {sections.map(({ id, anchorId }, index) => (
-                <NavSection
-                    key={id}
-                    id={id}
-                    anchorId={anchorId}
-                    hasError={!validSections[id]}
-                    touched={lastIndex >= index}
-                />
-            ))}
-        </div>
+        <EditorNavComponent
+            className={styles.sticky}
+            sections={sections}
+            activeSection={activeSectionId}
+        />
     )
-}
+})
 
 export default EditorNav

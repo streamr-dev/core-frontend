@@ -73,14 +73,11 @@ const NavSection = ({
 type Props = {
     sections: Array<Section>,
     activeSection?: string,
+    className?: string,
 }
 
-const EditorNav = ({ sections, activeSection }: Props) => {
+const EditorNav = ({ sections, activeSection, className }: Props) => {
     const [highestSeenSection, setHighestSeenSection] = useState(-1)
-    /* const highestSeenSection = useMemo(() => (
-        findLastIndex(sections, ({ id }) => id === activeSection)
-    ), [sections, activeSection]) */
-    // const lastIndex = findLastIndex(sections, ({ status }) => isSet(status))
 
     useEffect(() => {
         setHighestSeenSection((prev) => {
@@ -91,7 +88,7 @@ const EditorNav = ({ sections, activeSection }: Props) => {
     }, [sections, activeSection])
 
     return (
-        <div className={cx(styles.root, styles.EditorNav)}>
+        <div className={cx(styles.root, styles.EditorNav, className)}>
             <div className={styles.progressBar}>
                 <div className={styles.baseTrack} />
                 <div
