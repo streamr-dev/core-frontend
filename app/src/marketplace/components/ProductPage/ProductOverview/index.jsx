@@ -118,6 +118,7 @@ const ProductOverview = ({ product, authApiKeyId, className }: Props) => {
                                     selectedItem={shownDays.toString()}
                                     onChange={(item) => setShownDays(Number(item))}
                                     className={styles.memberGraphDropdown}
+                                    toggleStyle="small"
                                 >
                                     <Dropdown.Item value="7">Last 7 days</Dropdown.Item>
                                     <Dropdown.Item value="28">Last 28 days</Dropdown.Item>
