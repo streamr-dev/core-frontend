@@ -1,8 +1,7 @@
 // $flow
 
-import React from 'react'
+import React, { useState } from 'react'
 import { storiesOf } from '@storybook/react'
-import { action } from '@storybook/addon-actions'
 import { withKnobs, select } from '@storybook/addon-knobs'
 import styles from '@sambego/storybook-styles'
 import EditorNav, { statuses } from '.'
@@ -19,30 +18,25 @@ const stories =
 const sections = [{
     id: 'name',
     title: 'Name',
-    onClick: action('Name'),
 }, {
     id: 'coverImage',
     title: 'Cover Image',
-    onClick: action('Cover Image'),
 }, {
     id: 'description',
     title: 'Description',
-    onClick: action('Description'),
 }, {
     id: 'streams',
     title: 'Streams',
-    onClick: action('Streams'),
 }, {
     id: 'price',
     title: 'Price',
-    onClick: action('Price'),
 }, {
     id: 'details',
     title: 'Details',
-    onClick: action('Details'),
 }]
 
 const EditNavController = () => {
+    const [activeSection, setActiveSection] = useState(null)
     const nameStatus = select('Name', statuses, statuses.EMPTY)
     const coverImageStatus = select('Cover Image', statuses, statuses.EMPTY)
     const descriptionStatus = select('Description', statuses, statuses.EMPTY)
@@ -58,13 +52,12 @@ const EditNavController = () => {
         price: priceStatus,
         details: datailsStatus,
     }
-    const sectionNames = ['-', ...sections.map(({ id }) => id)]
-    const activeSection = select('Active section', sectionNames)
 
     const sectionsData = sections.map(({ id, ...section }) => ({
         id,
         ...section,
         status: statusValues[id],
+        onClick: () => setActiveSection(id),
     }))
 
     return (
