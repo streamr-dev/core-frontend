@@ -32,7 +32,7 @@ Computation in Streamr is entirely event-based. Any module will execute immediat
 
 A module processes its inputs as soon as it is activated. This happens when the following conditions are both satisfied; **every input has a value** and **an event arrives at one of the driving inputs**.
 
-<div className={docsStyles.mobileStretch}>
+<div className={docsStyles.mobileImageStretch}>
     <img
     src={AndModule}
     srcSet={`${AndModule2x} 2x`}
@@ -44,7 +44,7 @@ At least one endpoint in any module is designated as a driving input by default.
 
 Lastly, note the NR icon next to each output connector. This is a non-repeat button, and if it’s on, the module suppresses any output that would be an exact replica of the last outgoing event. This covers the use case where you’re only interested in events that represent something new.
 
-<div className={docsStyles.mobileStretch}>
+<div className={docsStyles.mobileImageStretch}>
     <img
     src={StringToNumberModule}
     srcSet={`${StringToNumberModule2x} 2x`}

@@ -7,7 +7,8 @@ import CanvasListing2x from './images/using_canvases_01_desktop_border@2x.jpg'
 import CanvasModes2x from './images/using_canvases_02_mobile@2x.jpg'
 import RealtimeMode2x from './images/using_canvases_03_mobile@2x.jpg'
 import HistoricalMode2x from './images/using_canvases_04_mobile@2x.jpg'
-import PlaybackSpeed2x from './images/using_canvases_05_mobile@2x.jpg'
+import PlaybackSpeedMobile2x from './images/using_canvases_05_mobile@2x.jpg'
+import PlaybackSpeedDesktop2x from './images/using_canvases_05_desktop@2x.jpg'
 
 import docsStyles from '$docs/components/DocsLayout/docsLayout.pcss'
 import canvasesStyles from '$docs/components/DocsPages/Canvases/canvasesStyles.pcss'
@@ -27,7 +28,7 @@ To create a new canvas, click <Link to={links.userpages.canvases}>Create Canvas<
 
 You can run your canvas in one of two ways - **historical** or **realtime** mode. There's a natural iterative workflow where you first build a perhaps rudimentary version of a canvas, test it with historical data where possible, refine the design based on the test findings, and repeat until you're happy to run it in realtime.
 
-<div className={docsStyles.mobileStretch}>
+<div className={docsStyles.mobileImageStretch}>
   <img
     src={CanvasModes2x}
     alt="Canvas Modes"
@@ -40,7 +41,7 @@ Realtime mode (default) is used in production where you want to react to data po
 
 When you run a canvas in realtime mode, it will listen to realtime events arriving in the subscribed streams, and process them as soon as they're available. When the canvas is running you won't be able to edit it, if you need to make changes, you'll need to stop the canvas and then restart it.
 
-<div className={docsStyles.mobileStretch}>
+<div className={docsStyles.mobileImageStretch}>
   <img
     src={RealtimeMode2x}
     alt="Realtime Mode"
@@ -55,7 +56,7 @@ Historical mode is a playback of what has happened in a past date range. A playb
 
 A canvas run in historical mode consumes a playback of past events stored in the subscribed streams. The playback is a simulation of what has happened in the past. You may run the canvas in historical mode provided the streams inside the canvas contain some historical data.
 
-<div className={docsStyles.mobileStretch}>
+<div className={docsStyles.mobileImageStretch}>
   <img
     src={HistoricalMode2x}
     alt="Historical Mode"
@@ -66,12 +67,10 @@ You can specify the time period (the start date and the end date) for the histor
 
 The playback starts when you press the   Run   button.
 
-<div className={docsStyles.mobileStretch}>
-  <img
-    src={PlaybackSpeed2x}
-    alt="Playback speed"
-  />
-</div>
+<picture>
+  <source srcset={PlaybackSpeedMobile2x} media="(max-width: 575px)" />
+  <img src={PlaybackSpeedDesktop2x} alt="Playback speed" />
+</picture>
 
 ### Reusing canvases as modules
 You can easily reuse a canvas as a component of another canvas. This is done via abstraction, where you encapsulate a canvas as a module. You can then use the new module when you build additional canvases.

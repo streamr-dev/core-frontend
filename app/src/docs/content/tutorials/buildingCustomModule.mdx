@@ -6,8 +6,10 @@ import Warning from '$docs/components/Warning'
 import CodeSnippet from '$shared/components/CodeSnippet'
 import links from '$shared/../links'
 
-// import ModuleExampleOnCanvas from '../canvases/images/moduleExampleOnCanvas.png'  TODO Check what this was
-// import JavaModuleOnCanvas from '../canvases/images/javaModuleOnCanvas.png' TODO Check what this was
+import CodeEditor from '../tutorials/images/tutorials_custom_canvas_01_desktop.jpg'  
+import CodeEditor2x from '../tutorials/images/tutorials_custom_canvas_01_desktop@2x.jpg'  
+import JavaModuleOnCanvas from '../tutorials/images/tutorials_custom_canvas_02_desktop.jpg'
+import JavaModuleOnCanvas2x from '../tutorials/images/tutorials_custom_canvas_02_desktop@2x.jpg'
 
 import {
   JavaModule,
@@ -24,13 +26,13 @@ import tutorialStyles from '$docs/components/DocsPages/Tutorials/tutorials.pcss'
 
 # Building a custom canvas module
 
-You can easily extend Streamr by writing custom modules in the Java programming language. When a custom module is activated in a canvas, your code is executed as if the module were a part of the built-in machinery. As an alternative to custom code, you can also do abstraction, i.e. reuse existing canvases as modules. 
+You can easily extend Streamr by writing custom modules in the Java programming language. When a custom module is activated in a canvas, your code is executed as if the module were a part of the built-in machinery. As an alternative to custom code, you can also do abstraction, i.e. reuse existing canvases as modules.
 
-The **Java module** is the module to use for custom code. Start by creating a new canvas or by opening an existing canvas in the editor. Then insert a JavaModule on the workspace, click on the **Edit Code** button, and a code editor will open in a resizable pop-up window. This is what you'll see:
+The Java module is the module to use for custom code. Start by creating a new canvas or by opening an existing canvas in the editor. Then insert a JavaModule on the workspace, click on the Edit Code button, and a code editor will open in a resizable pop-up window. This is what you'll see:
 
 <CodeSnippet language='java' showLineNumbers wrapLines>{JavaModule}</CodeSnippet>
 
-The Java editor contains a code template that you need to fill in with the appropriate components. A custom module consists of inputs, parameters, outputs, an optional state, and a few specific methods. For the magic to happen, you'll need to specify the inputs and outputs and override the relevant methods. 
+The Java editor contains a code template that you need to fill in with the appropriate components. A custom module consists of inputs, parameters, outputs, an optional state, and a few specific methods. For the magic to happen, you'll need to specify the inputs and outputs and override the relevant methods.
 
 The custom module's inputs correspond to the endpoints that receive incoming events. On the canvas, they are shown as small circles on the left-hand side of a module. The outputs correspond to the endpoints which send out computed values after module activation. The output endpoints are shown as small circles on the right-hand side of a module.
 
@@ -38,9 +40,13 @@ Inputs and outputs are defined in the beginning of the code template. To help yo
 
 <CodeSnippet language='java' showLineNumbers wrapLines>{InputsAndOutputs}</CodeSnippet>
 
-If you uncomment those lines (as we've done above), you will get a module with one numerical input and one numerical output. If you want to see the result on the canvas, first click **Apply**, then **Close**. 
+If you uncomment those lines (as we've done above), you will get a module with one numerical input and one numerical output. If you want to see the result on the canvas, first click Apply, then Close.
 
-<!-- TODO Check JavaModuleOnCanvas IMG -->
+<img
+  src={CodeEditor}
+  srcSet={`${CodeEditor2x} 2x`}
+  alt="Code Editor"
+/>
 
 In this example, the inputs belong to the `TimeSeriesInput` class and the outputs to the `TimeSeriesOutput` class. The first argument of an input or output constructor is always `this`, a reference to the current module. The second argument is there for the display name, i.e. a visual label for the endpoint. The variable name on the left-hand side of the assignment can be any valid variable name in Java.
 
@@ -48,26 +54,45 @@ The input and output variables must be unique within a module, but the display n
 
 You're not limited to numerical endpoints. These are the possible choices for an input event:
 
-- **TimeSeriesInput**: Used for numeric floating point data.
-- **BooleanInput**: Used for boolean data.
-- **StringInput**: Used for string data.
-- **ListInput**: Used for lists (or arrays) of data.
-- **MapInput**: Used for key-value pairs.
+<div className={docsStyles.tableNoHeader}>
+
+| | |
+| ------------------------ |:-------------:|
+| **TimeSeriesInput**  | Used for numeric floating point data |
+| **BooleanInput**  | Used for boolean data |
+| **StringInput**  | Used for string data |
+| **ListInput**  | Used for lists (or arrays) of data |
+| **MapInput**  | Used for key-value pairs |
+
+</div>
 
 These are the possible choices for an output event:
-- **TimeSeriesOutput**: Used for numeric floating point data.
-- **BooleanOutput**: Used for boolean data.
-- **StringOutput**: Used for string data.
-- **ListOutput**: Used for lists (or arrays) of data.
-- **MapOutput**: Used for key-value pairs.
+
+<div className={docsStyles.tableNoHeader}>
+
+| | |
+| ------------------------ |:-------------:|
+| **TimeSeriesOutput**  | Used for numeric floating point data |
+| **BooleanOutput**  | Used for boolean data |
+| **StringOutput**  | Used for string data |
+| **ListOutput**  | Used for lists (or arrays) of data |
+| **MapOutput**  | Used for key-value pairs |
+
+</div>
 
 **Parameters are just inputs with default values.** Because a parameter has a default value, there is no need for an incoming connection in the corresponding endpoint. If there is a connection, however, the custom module should take any parameter changes into account at run-time. Possible parameter types are listed below.
 
-- **BooleanParameter**: Used for boolean values (displayed as a drop-down selection).
-- **DoubleParameter**: Used for numeric floating point data (displayed as an input).
-- **IntegerParameter**: Used for integers (displayed as an input).
-- **StringParameter**: Used for strings (displayed as an input).
-- **ColorParameter**: Used for RGB colors (displayed as a color selector).
+<div className={docsStyles.tableNoHeader}>
+
+| | |
+| ------------------------ |:-------------:|
+| **BooleanParameter**  | Used for boolean values (displayed as a drop-down selection) |
+| **DoubleParameter**  | Used for numeric floating point data (displayed as an input) |
+| **IntegerParameter**  | Used for integers (displayed as an input) |
+| **StringParameter**  | Used for strings (displayed as an input) |
+| **ColorParameter**  | Used for RGB colors (displayed as a color selector) |
+
+</div>
 
 There’s no limitations on the number of incoming and outgoing connections. An an example, the following code would give you three inputs (one of which is a parameter) and two outputs:
 
@@ -93,4 +118,8 @@ The code in a JavaModule is compiled and validated when you click the **Apply** 
 
 This is what the output looks like with sample input data:
 
-<!--  ModuleExampleOnCanvas img -->
+<img
+  src={JavaModuleOnCanvas}
+  srcSet={`${JavaModuleOnCanvas2x} 2x`}
+  alt="Java Module on Canvas"
+/>
