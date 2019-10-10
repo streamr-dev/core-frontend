@@ -14,7 +14,7 @@ import * as RouterContext from '$shared/components/RouterContextProvider'
 
 import PurchaseDialog from '$mp/containers/ProductPage/PurchaseDialog'
 import PublishOrUnpublishDialog from '$mp/containers/ProductPage/PublishOrUnpublishDialog'
-import { getProductById, getProductSubscription, purchaseProduct, getUserProductPermissions } from '../../modules/product/actions'
+import { getProductById, getProductSubscription, purchaseProduct, getUserProductPermissions } from '$mp/modules/product/actions'
 import BackButton from '$shared/components/BackButton'
 
 import { getRelatedProducts } from '../../modules/relatedProducts/actions'
@@ -28,6 +28,7 @@ import {
     selectFetchingStreams,
     selectSubscriptionIsValid,
     selectProductEditPermission,
+    selectContractSubscription,
 } from '$mp/modules/product/selectors'
 import { selectUserData } from '$shared/modules/user/selectors'
 import links from '$mp/../links'
@@ -50,6 +51,7 @@ const ProductPage = ({ overlayPurchaseDialog, overlayPublishDialog }: Props) => 
     const isLoggedIn = userData !== null
     const editPermission = useSelector(selectProductEditPermission)
     const isProductSubscriptionValid = useSelector(selectSubscriptionIsValid)
+    const subscription = useSelector(selectContractSubscription)
 
     const { match } = useContext(RouterContext.Context)
 
@@ -182,6 +184,7 @@ const ProductPage = ({ overlayPurchaseDialog, overlayPublishDialog }: Props) => 
                 isLoggedIn={isLoggedIn}
                 relatedProducts={relatedProducts}
                 isProductSubscriptionValid={isProductSubscriptionValid}
+                productSubscription={subscription}
                 onPurchase={() => onPurchase(product.id || '')}
                 toolbarStatus={<BackButton />}
                 showStreamLiveDataDialog={(streamId) => noHistoryRedirect(links.marketplace.products, product.id, 'streamPreview', streamId)}
