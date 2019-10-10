@@ -8,7 +8,7 @@ import styles from '@sambego/storybook-styles'
 import InputControl from '.'
 
 const stories =
-    storiesOf('Marketplace/ProductPage/InputControl', module)
+    storiesOf('Marketplace/InputControl', module)
         .addDecorator(styles({
             color: '#323232',
             padding: '5rem',

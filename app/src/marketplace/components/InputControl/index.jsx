@@ -8,6 +8,7 @@ export type InputProps = {
     hasFocus: boolean,
     hasError: boolean,
     error: ?string,
+    className?: string,
 }
 
 export type FormControlProps = {

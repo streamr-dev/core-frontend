@@ -11,7 +11,6 @@ import store from './utils/i18nStore'
 
 import Products from '$mp/components/Products'
 import ProductTypeChooser from '$mp/components/ProductTypeChooser'
-import MarkdownEditor from '$mp/components/MarkdownEditor'
 import SetPrice from '$mp/components/SetPrice'
 import exampleProductList from './exampleProductList'
 import CompletePublishTransaction from '$mp/components/Modal/CompletePublishTransaction'
@@ -46,11 +45,6 @@ story('ProductList')
 story('ProductTypeChooser')
     .addWithJSX('basic', () => (
         <ProductTypeChooser onSelect={() => {}} />
-    ))
-
-story('MarkdownEditor')
-    .addWithJSX('basic', () => (
-        <MarkdownEditor placeholder="Type here" />
     ))
 
 const SetPriceController = () => {

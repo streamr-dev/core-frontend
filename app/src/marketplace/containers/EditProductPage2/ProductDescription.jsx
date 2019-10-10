@@ -12,7 +12,7 @@ import styles from './productDescription.pcss'
 
 const ProductDescription = () => {
     const product = useProduct()
-    const { isValid, level, message } = useValidation('description')
+    const { isValid, message } = useValidation('description')
     const { updateDescription } = useProductActions()
 
     return (
@@ -27,12 +27,10 @@ const ProductDescription = () => {
                 <MarkdownEditor
                     placeholder="Type something great about your product"
                     value={product.description}
-                    onChange={updateDescription}
+                    onCommit={updateDescription}
                     className={styles.productDescription}
+                    error={!isValid ? message : undefined}
                 />
-                {!isValid && (
-                    <p>{level}: {message}</p>
-                )}
             </div>
         </section>
     )

@@ -7,7 +7,7 @@ import useProduct from '../ProductController/useProduct'
 import useValidation from '../ProductController/useValidation'
 import useProductActions from '../ProductController/useProductActions'
 
-import TextField from '$mp/components/ProductPage/TextField'
+import TextField from '$mp/components/TextField'
 
 import styles from './productName.pcss'
 
@@ -21,8 +21,6 @@ const ProductName = () => {
             <div>
                 <h1>Name your product</h1>
                 <TextField
-                    immediateCommit={false}
-                    commitEmpty
                     value={product.name}
                     onCommit={updateName}
                     placeholder="Product Name"
