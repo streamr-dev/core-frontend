@@ -1,5 +1,4 @@
 # Data signing and verification
-
 Authenticity and integrity of events published on a stream can be guaranteed with digital signatures. Every stream's metadata has a boolean `requiresSignedData` that can be set by the stream's owner to let subscribers know whether they should expect signed or unsigned events.
 
 Every message published to a stream has six fields that uniquely identify this message across time, all streams and all publishers:
@@ -11,26 +10,22 @@ Every message published to a stream has six fields that uniquely identify this m
 - `publisherId`
 - `msgChainId`
 
-More details about these fields can be found in the <a href="https://github.com/streamr-dev/streamr-specs/blob/master/PROTOCOL.md" target="_blank">protocol specification</a>. All together they form the message ID. They must be signed along with the actual message `content` to resist against replay attacks.
-
-So the payload to be signed for every message by every publisher is the following:
+More details about these fields can be found in the <a href="https://github.com/streamr-dev/streamr-specs/blob/master/PROTOCOL.md" target="_blank">protocol specification</a>. All together they form the message ID. They must be signed along with the actual message  content to resist against replay attacks. So the payload to be signed for every message by every publisher is the following.
 
 ```
 payload = streamId + streamPartition + timestamp + sequenceNumber + publisherId + msgChaindId + content
 ```
 
-The signing algorithm follows the convention described <a href="https://github.com/ethereum/EIPs/blob/master/EIPS/eip-712.md" target="_blank">here</a>. The secp256k1 ECDSA algorithm is applied on the keccak256 hash of a string derived from the challenge text:
+The signing algorithm follows the convention described <a href="https://github.com/ethereum/EIPs/blob/master/EIPS/eip-712.md" target="_blank">here</a>. The secp256k1 ECDSA algorithm is applied on the keccak256 hash of a string derived from the challenge text.
 
 ```
 signature = sign(keccak256("\x19Ethereum Signed Message:\\n" + len(payload) + payload)))
 ```
 
-On the recipient side, every subscriber needs to verify signed events. If a received event is unsigned, the subscriber accepts the event if and only if the stream's boolean flag `requiresSignedData` is set to `false`.
+On the recipient side, every subscriber needs to verify signed events. If a received event is unsigned, the subscriber accepts the event if and only if the stream's boolean flag `requiresSignedData` is set to `false`. The signature verification is done in three steps. The signature verification is done in three steps:
 
-The signature verification is done in three steps:
-
-1. the subscriber extracts from the event and the signature the Ethereum address that signed the message (using the EC recover operation).
+1. The subscriber extracts from the event and the signature the Ethereum address that signed the message (using the EC recover operation).
 2. Check that the address recovered in step 1 matches the address defined by `publisherId`
 3. Check that this `publisherId` belongs to the set of valid publishers for that stream by querying the `api/v1/streams/${id}/publishers` endpoint.
 
-Both signature computation and verification are implemented in the Javascript and Java SDKs.
+Both signature computation and verification are implemented in the JavaScript and Java SDKs.

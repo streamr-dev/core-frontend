@@ -28,7 +28,6 @@ const SDKs = () => (
             <section id="contribute-sdk">
                 <ContributeSdk />
             </section>
-            <hr />
         </section>
     </DocsLayout>
 )
