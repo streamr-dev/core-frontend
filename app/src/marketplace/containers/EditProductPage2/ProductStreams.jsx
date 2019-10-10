@@ -13,7 +13,7 @@ import styles from './productStreams.pcss'
 
 const ProductStreams = () => {
     const product = useProduct()
-    const { isValid, level, message } = useValidation('streams')
+    const { isValid, message } = useValidation('streams')
     const { updateStreams } = useProductActions()
 
     return (
@@ -31,12 +31,10 @@ const ProductStreams = () => {
                             onEdit={updateStreams}
                             streams={product.streams}
                             className={styles.streams}
+                            error={!isValid ? message : undefined}
                         />
                     )}
                 </AvailableStreams>
-                {!isValid && (
-                    <p>{level}: {message}</p>
-                )}
             </div>
         </section>
     )
