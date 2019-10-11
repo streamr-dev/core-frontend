@@ -7,7 +7,7 @@ import UsingStreamsViaApiContent from '$docs/content/streams/usingStreamsViaApi.
 
 const UsingStreamsViaApi = () => (
     <DocsLayout>
-        <Helmet title="Using streams via API | Streamr Docs" />
+        <Helmet title="Work with streams via API | Streamr Docs" />
         <section>
             <UsingStreamsViaApiContent />
         </section>

@@ -25,7 +25,6 @@ import canvasesStyles from '$docs/components/DocsPages/Canvases/canvasesStyles.p
 import tutorialStyles from '$docs/components/DocsPages/Tutorials/tutorials.pcss'
 
 # Building a custom canvas module
-
 You can easily extend Streamr by writing custom modules in the Java programming language. When a custom module is activated in a canvas, your code is executed as if the module were a part of the built-in machinery. As an alternative to custom code, you can also do abstraction, i.e. reuse existing canvases as modules.
 
 The Java module is the module to use for custom code. Start by creating a new canvas or by opening an existing canvas in the editor. Then insert a JavaModule on the workspace, click on the Edit Code button, and a code editor will open in a resizable pop-up window. This is what you'll see:
@@ -42,11 +41,15 @@ Inputs and outputs are defined in the beginning of the code template. To help yo
 
 If you uncomment those lines (as we've done above), you will get a module with one numerical input and one numerical output. If you want to see the result on the canvas, first click Apply, then Close.
 
-<img
-  src={CodeEditor}
-  srcSet={`${CodeEditor2x} 2x`}
-  alt="Code Editor"
-/>
+<figure>
+    <picture>
+      <img
+        src={CodeEditor}
+        srcSet={`${CodeEditor2x} 2x`}
+        alt="Code Editor"
+      />
+    </picture>
+</figure>
 
 In this example, the inputs belong to the `TimeSeriesInput` class and the outputs to the `TimeSeriesOutput` class. The first argument of an input or output constructor is always `this`, a reference to the current module. The second argument is there for the display name, i.e. a visual label for the endpoint. The variable name on the left-hand side of the assignment can be any valid variable name in Java.
 
@@ -99,7 +102,6 @@ There’s no limitations on the number of incoming and outgoing connections. An 
 <CodeSnippet language='java' showLineNumbers wrapLines>{InputsAndOutputsExample}</CodeSnippet>
 
 ### Custom module example
-
 For the sake of illustration, let's create a new JavaModule. It will be similar to the built-in **Sum**, but instead of keeping a running sum, we'll calculate a running product of successive numerical events.
 
 We'll start with the module inputs and outputs. We only need one numerical input and one output here, so we'll just uncomment the relevant lines:
@@ -118,8 +120,12 @@ The code in a JavaModule is compiled and validated when you click the **Apply** 
 
 This is what the output looks like with sample input data:
 
-<img
-  src={JavaModuleOnCanvas}
-  srcSet={`${JavaModuleOnCanvas2x} 2x`}
-  alt="Java Module on Canvas"
-/>
+<figure>
+    <picture>
+      <img
+        src={JavaModuleOnCanvas}
+        srcSet={`${JavaModuleOnCanvas2x} 2x`}
+        alt="Java Module on Canvas"
+      />
+    </picture>
+</figure>

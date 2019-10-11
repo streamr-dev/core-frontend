@@ -14,12 +14,16 @@ import canvasesStyles from '$docs/components/DocsPages/Canvases/canvasesStyles.p
 # Intro to canvases
 A Streamr canvas is a microservice which consumes and acts upon realtime data. A canvas contains one or more <Link to={links.docs.streams.root}>streams</Link> (these provide the data) and one or more <Link to={links.docs.moduleReference.root}>modules</Link> (these do the processing). Streams and modules are connected in the configuration that you'll design. The connections determine how the data flows through the canvas.
 
-<img
-  className={docsStyles.bordered}
-  src={CanvasDemo}
-  srcSet={`${CanvasDemo2x} 2x`}
-  alt="Streamr Canvas"
-/>
+<figure>
+    <picture>
+      <img
+        className={docsStyles.bordered}
+        src={CanvasDemo}
+        srcSet={`${CanvasDemo2x} 2x`}
+        alt="Streamr Canvas"
+      />
+    </picture>
+</figure>
 
 Here's a few examples of specific things you can do;
 

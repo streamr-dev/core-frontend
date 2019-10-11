@@ -129,6 +129,13 @@ ul.subNavList li.navListItem {
 
   ul.navList li.navListItem.mobileHeader {
     margin-bottom: 1.5rem;
+
+    a {
+      width: calc(100% - 60px);
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
   }
 
   .arrowExtender {
@@ -150,6 +157,7 @@ ul.subNavList li.navListItem {
     position: relative;
     height: auto;
     margin-bottom: 2em;
+    overflow: hidden;
 
     &.compressed {
       height: 72px;
