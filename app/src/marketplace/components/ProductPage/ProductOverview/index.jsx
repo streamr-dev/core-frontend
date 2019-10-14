@@ -66,9 +66,18 @@ const ProductOverview = ({ product, authApiKeyId, className }: Props) => {
     return (
         <div className={cx(styles.root, className)}>
             {isDeploying && (
-                <div className={styles.spinnerContainer}>
-                    <div className={styles.spinner}>
-                        <DeploySpinner isRunning showCounter={false} />
+                <div className={styles.grid}>
+                    <div className={styles.header}>
+                        <span>Overview</span>
+                    </div>
+                    <div className={styles.deployingGrid}>
+                        <div>
+                            <DeploySpinner isRunning showCounter={false} />
+                        </div>
+                        <div>
+                            <div className={styles.deployMessageHeading}>Deploying your Community Product</div>
+                            <div className={styles.deployMessage}>It will be ready soon, thanks for your patience.</div>
+                        </div>
                     </div>
                 </div>
             )}

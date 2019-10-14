@@ -125,7 +125,7 @@ class ProductDetailsPage extends Component<Props> {
                         </div>
                     </ProductContainer>
                 </div>
-                {isCommunityProduct && (
+                {isCommunity && (
                     <ProductContainer>
                         <ProductOverview
                             product={product}
