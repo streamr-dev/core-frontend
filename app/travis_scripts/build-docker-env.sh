@@ -24,7 +24,7 @@ RETRIES=30;
 RETRY_DELAY=5s;
 
 # wait for E&E to come up
-waitFor $RETRIES $RETRY_DELAY checkHTTP "engine-and-editor" 401 http://localhost/api/v1/users/me;
+waitFor $RETRIES $RETRY_DELAY checkHTTP "engine-and-editor" 302 http://localhost/api/v1/users/me;
 if [ $? -eq 1 ] ; then
     echo "engine-and-editor never up";
     $streamr_docker_dev ps;
