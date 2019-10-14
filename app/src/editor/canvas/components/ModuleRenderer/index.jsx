@@ -159,6 +159,7 @@ function ModuleRenderer({
                 uiEmitter={uiEmitter}
                 hasWritePermission={hasWritePermission}
                 isSubscriptionActive={isSubscriptionActive}
+                isActive={isRunning}
             />
             <div className={ModuleStyles.selectionDecorator} />
         </Resizable>
