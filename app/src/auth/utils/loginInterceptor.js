@@ -7,8 +7,6 @@ import routes from '$routes'
 import { formatApiUrl } from '$shared/utils/url'
 import { matchPath } from 'react-router-dom'
 
-const meURL = formatApiUrl('users', 'me')
-
 function shouldRedirect(error) {
     // ignore redirect to login logic for login route
     if (window.location.pathname === routes.login()) { return false }
@@ -28,7 +26,7 @@ function shouldRedirect(error) {
 
     if (error.response && error.response.status === 401) {
         const url = new window.URL(error.config.url)
-        const me = new window.URL(meURL)
+        const me = new window.URL(formatApiUrl('users', 'me'))
         // shouldn't redirect if hitting /users/me api, 401 normal, signals logged out
         if (me.pathname === url.pathname && me.origin === url.origin && error.config.method === 'get') {
             return false

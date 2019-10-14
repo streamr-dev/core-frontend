@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
 import { selectAuthState } from '$shared/modules/user/selectors'
 import SessionContext from '$auth/contexts/Session'
+import cx from 'classnames'
 
 import Layout from '$shared/components/Layout'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
@@ -26,6 +27,8 @@ import Sidebar from '$editor/shared/components/Sidebar'
 import { useCanvasSelection, SelectionProvider } from './components/CanvasController/useCanvasSelection'
 import ModuleSidebar from './components/ModuleSidebar'
 import KeyboardShortcutsSidebar from './components/KeyboardShortcutsSidebar'
+import { CameraProvider, cameraControl } from './components/Camera'
+import { useCanvasCameraEffects } from './hooks/useCanvasCamera'
 
 import * as CanvasController from './components/CanvasController'
 import * as RunController from './components/CanvasController/Run'
@@ -260,7 +263,8 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         if (this.unmounted) { return }
 
         this.replaceCanvas((canvas) => (
-            CanvasState.updateModule(canvas, hash, () => newModule)
+            // use replaceModule to maintain connections & other state as much as possible
+            CanvasState.replaceModule(canvas, newModule)
         ))
     }
 
@@ -401,7 +405,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         const resendFrom = settings.beginDate
         const resendTo = settings.endDate
         return (
-            <div className={styles.CanvasEdit} onPaste={this.onPaste}>
+            <div className={cx(styles.CanvasEdit, cameraControl)} onPaste={this.onPaste}>
                 <Helmet title={`${canvas.name} | Streamr Core`} />
                 <Subscription
                     uiChannel={canvas.uiChannel}
@@ -494,6 +498,7 @@ const CanvasEdit = withRouter((props) => {
     const isEmbedMode = useEmbedMode()
     useCanvasNotifications(canvas)
     useAutosaveEffect()
+    useCanvasCameraEffects()
     const selection = useCanvasSelection()
 
     return (
@@ -531,7 +536,9 @@ const CanvasEditWrap = () => {
     return (
         <SubscriptionStatus.Provider key={key}>
             <RunController.Provider canvas={canvas}>
-                <CanvasEdit />
+                <CameraProvider>
+                    <CanvasEdit />
+                </CameraProvider>
             </RunController.Provider>
         </SubscriptionStatus.Provider>
     )
@@ -539,7 +546,7 @@ const CanvasEditWrap = () => {
 
 const CanvasContainer = withRouter(withErrorBoundary(ErrorComponentView)((props) => (
     <UndoContext.Provider key={props.match.params.id} enableBreadcrumbs>
-        <PendingProvider>
+        <PendingProvider name="canvas">
             <PendingLoadingIndicator />
             <ClientProvider>
                 <CanvasController.Provider embed={!!props.embed}>

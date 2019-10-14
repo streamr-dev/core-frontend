@@ -4,7 +4,7 @@ import React, { useMemo, useCallback, useState, type Node, type Context } from '
 import useIsMounted from '$shared/hooks/useIsMounted'
 
 import { isEthereumAddress } from '$mp/utils/validate'
-import { isPaidProduct } from '$mp/utils/product'
+import { isPaidProduct, isCommunityProduct } from '$mp/utils/product'
 import { isPriceValid } from '$mp/utils/price'
 
 export const INFO = 'info'
@@ -89,7 +89,7 @@ function useValidationContext(): ContextProps {
         const isPaid = isPaidProduct(product)
 
         // applies only to community product
-        if (product.type === 'COMMUNITY') {
+        if (isCommunityProduct(product)) {
             if (!product.adminFee || (product.adminFee < 10 && product.adminFee > 90)) {
                 setStatus('adminFee', ERROR, 'Admin fee cannot be empty')
             } else {

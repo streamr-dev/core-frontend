@@ -299,7 +299,7 @@ function DashboardLoadingIndicator() {
 export default withRouter((props) => (
     <Layout className={styles.layout} footer={false}>
         <UndoContextProvider key={props.match.params.id} enableBreadcrumbs>
-            <PendingProvider>
+            <PendingProvider name="dashboard">
                 <ClientProvider>
                     <DashboardLoadingIndicator />
                     <DashboardLoader>

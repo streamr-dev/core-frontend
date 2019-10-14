@@ -5,6 +5,8 @@ export default {
     id: 218,
     name: 'Button',
     path: 'Input',
+    jsModule: 'InputModule',
+    widget: 'StreamrButton',
     help: {
         params: {
             buttonName: 'The name which the button gets',

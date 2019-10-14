@@ -3,13 +3,13 @@
 import React, { useCallback, useState, useEffect, useContext, useMemo } from 'react'
 import cx from 'classnames'
 import startCase from 'lodash/startCase'
+import useModule from '$editor/canvas/components/ModuleRenderer/useModule'
 import EditableText from '$shared/components/EditableText'
 import useGlobalEventWithin from '$shared/hooks/useGlobalEventWithin'
 import useKeyDown from '$shared/hooks/useKeyDown'
 
 import { isPortInvisible, isPortRenameDisabled } from '../../../state'
 import { DragDropContext } from '../../DragDropContext'
-import * as RunController from '../../CanvasController/Run'
 import Option from '../Option'
 import Plug from '../Plug'
 import Menu from '../Menu'
@@ -18,8 +18,6 @@ import Cell from './Cell'
 import styles from './port.pcss'
 
 type Props = {
-    api: any,
-    canvas: any,
     onPort: any,
     onValueChange: (any, any, any) => void,
     onSizeChange: () => void,
@@ -30,8 +28,6 @@ type Props = {
 const EMPTY = {}
 
 const Port = ({
-    api,
-    canvas,
     onPort,
     onSizeChange,
     onValueChange: onValueChangeProp,
@@ -41,7 +37,7 @@ const Port = ({
     const { isDragging, data } = useContext(DragDropContext)
     const { portId } = data || EMPTY
     const dragInProgress = !!isDragging && portId != null
-    const { isEditable: isCanvasEditable } = useContext(RunController.Context)
+    const { isCanvasEditable, canvas } = useModule()
     const isContentEditable = !dragInProgress && isCanvasEditable
     const isInput = !!port.acceptedTypes
     const isParam = 'defaultValue' in port
@@ -114,8 +110,6 @@ const Port = ({
 
     const plug = (
         <Plug
-            api={api}
-            canvas={canvas}
             onContextMenu={onContextMenu}
             onValueChange={onValueChangeProp}
             port={port}
@@ -125,6 +119,7 @@ const Port = ({
     )
 
     const isInvisible = isPortInvisible(canvas, port.id)
+
     const isRenameDisabled = !isContentEditable || isPortRenameDisabled(canvas, port.id)
 
     return (
@@ -136,8 +131,6 @@ const Port = ({
         >
             {!!contextMenuTarget && (
                 <Menu
-                    api={api}
-                    canvas={canvas}
                     dismiss={dismiss}
                     port={port}
                     setPortOptions={setOptions}
@@ -170,7 +163,6 @@ const Port = ({
             {!!hasInputField && (
                 <Cell>
                     <Value
-                        canvas={canvas}
                         port={port}
                         onChange={onValueChange}
                         disabled={!isContentEditable}
@@ -195,5 +187,5 @@ const Port = ({
 const PortExport = React.memo(Port)
 // $FlowFixMe
 PortExport.styles = styles
-// $FlowFixMe
+
 export default PortExport

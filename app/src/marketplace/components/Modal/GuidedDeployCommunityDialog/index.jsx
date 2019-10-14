@@ -45,6 +45,9 @@ const ProductCard = ({ name, image, className }: ProductCardProps) => (
         <Tile
             className={styles.productTile}
             imageUrl={image}
+            labels={{
+                community: true,
+            }}
             badges={{
                 members: 15,
             }}

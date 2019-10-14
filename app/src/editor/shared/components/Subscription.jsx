@@ -222,6 +222,12 @@ export default React.forwardRef((props, ref) => {
     const { uiChannel, resendAll } = props
     // create new subscription if uiChannel or resendAll changes
     const subscriptionKey = (uiChannel && uiChannel.id) + resendAll
+
+    if (!clientContext) {
+        console.warn('Missing clientContext.')
+        return null
+    }
+
     return (
         <Subscription
             {...props}

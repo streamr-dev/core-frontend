@@ -5,6 +5,7 @@ import cx from 'classnames'
 
 import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
 import Toggle from '$shared/components/Toggle'
+import { isCommunityProduct } from '$mp/utils/product'
 
 import useProduct from '../ProductController/useProduct'
 import useProductActions from '../ProductController/useProductActions'
@@ -22,7 +23,7 @@ const ProductEditorDebug = () => {
     const { updateType } = useProductActions()
     const { touched } = useContext(ValidationContext)
 
-    const isCommunity = product.type === 'COMMUNITY'
+    const isCommunity = isCommunityProduct(product)
     const onFixPriceChange = useCallback((checked) => {
         updateType(checked ? 'COMMUNITY' : 'NORMAL')
     }, [updateType])

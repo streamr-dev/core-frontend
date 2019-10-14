@@ -7,6 +7,7 @@ import { withRouter } from 'react-router-dom'
 import { Translate } from 'react-redux-i18n'
 
 import SvgIcon from '$shared/components/SvgIcon'
+import { isCommunityProduct } from '$mp/utils/product'
 
 import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
 import useValidation from '../ProductController/useValidation'
@@ -86,15 +87,15 @@ const EditorNav = () => {
     const { isValid: isCategoryValid } = useValidation('category')
     const { isValid: isAdminFeeValid } = useValidation('adminFee')
 
-    const isCommunityProduct = product.type === 'COMMUNITY'
+    const isCommunity = isCommunityProduct(product)
 
     const validSections = {
         name: isNameValid,
         coverImage: isCoverImageValid,
         description: isDescriptionValid,
         streams: areStreamsValid,
-        price: isPriceValid && (isCommunityProduct || isBeneficiaryAddressValid),
-        details: isCategoryValid && (!isCommunityProduct || isAdminFeeValid),
+        price: isPriceValid && (isCommunity || isBeneficiaryAddressValid),
+        details: isCategoryValid && (!isCommunity || isAdminFeeValid),
     }
     const lastIndex = findLastIndex(sections, ({ id }) => isTouched(id))
 

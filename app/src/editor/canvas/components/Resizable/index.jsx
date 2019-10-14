@@ -36,6 +36,7 @@ type Props = {
     onResize?: ?(Size) => void,
     style?: any,
     width: number,
+    scale: number,
 }
 
 const Resizable = ({
@@ -46,6 +47,7 @@ const Resizable = ({
     onResize,
     style,
     width,
+    scale,
     ...props
 }: Props) => {
     const { minWidth, minHeight } = useContext(SizeConstraintContext)
@@ -63,13 +65,15 @@ const Resizable = ({
 
     const updateSize = useCallback(({ dx, dy }): Size => {
         const { height, width } = ((previousSize.current: any): Size)
+        dx /= scale
+        dy /= scale
         const size = {
             height: Math.max(minHeight, height - dy),
             width: Math.max(minWidth, width - dx),
         }
         setSize(size)
         return size
-    }, [minHeight, minWidth])
+    }, [minHeight, minWidth, scale])
 
     const ref: Ref<HTMLDivElement> = useRef(null)
 
@@ -80,15 +84,15 @@ const Resizable = ({
         if (root) {
             const { width, height } = root.getBoundingClientRect()
             previousSize.current = {
-                height,
-                width,
+                height: height / scale,
+                width: width / scale,
             }
             updateSize({
                 dx: 0,
                 dy: 0,
             })
         }
-    }, [updateSize])
+    }, [updateSize, scale])
 
     const preview = useCallback((diff) => {
         updateSize(diff)
@@ -193,6 +197,7 @@ const Resizable = ({
 
 Resizable.defaultProps = {
     enabled: false,
+    scale: 1,
 }
 
 export { ResizeableContext as Context }

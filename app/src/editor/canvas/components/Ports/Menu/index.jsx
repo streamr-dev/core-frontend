@@ -2,36 +2,33 @@
 
 import React, { useCallback } from 'react'
 import ContextMenu from '$shared/components/ContextMenu'
+import useModuleApi from '../../ModuleRenderer/useModuleApi'
+import useModule from '../../ModuleRenderer/useModule'
 import { disconnectAllFromPort, isPortConnected, getPortValue } from '../../../state'
 import styles from './menu.pcss'
 
 import useCopy from '$shared/hooks/useCopy'
 
 type Props = {
-    api: any,
-    canvas: any,
     dismiss: () => void,
     port: any,
     setPortOptions: (any, Object) => void,
     target: HTMLDivElement,
 }
 
-const Menu = ({
-    api,
-    canvas,
-    dismiss,
-    port,
-    setPortOptions,
-    target,
-}: Props) => {
+const Menu = ({ dismiss, port, setPortOptions, target }: Props) => {
+    const { setCanvas } = useModuleApi()
+    const { canvas } = useModule()
+
     const disconnectAll = useCallback(() => {
-        api.setCanvas({
+        setCanvas({
             type: 'Disconnect all port connections',
         }, (canvas) => (
             disconnectAllFromPort(canvas, port.id)
         ))
         dismiss()
-    }, [api, port, dismiss])
+    }, [setCanvas, port, dismiss])
+
     const toggleExport = useCallback(() => {
         setPortOptions(port.id, {
             export: !port.export,

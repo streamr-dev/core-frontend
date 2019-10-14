@@ -20,16 +20,16 @@ export default function Preview({
             title,
             type,
             w,
-            x: left,
-            y: top,
+            x,
+            y,
         }) => ({
             // 0.15 makes the module slightly smaller which mimics a margin
             // and lets us having a bit of empty space between modules.
             height: h - 0.15,
             key,
-            left,
+            x,
             title,
-            top,
+            y,
             type,
             width: w - 0.15,
         }))

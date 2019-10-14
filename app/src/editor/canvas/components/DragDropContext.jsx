@@ -1,6 +1,7 @@
 /* eslint-disable react/no-unused-state */
 import React from 'react'
 import Draggable from 'react-draggable'
+import { useCameraContext } from './Camera'
 
 const DragDropContext = React.createContext({})
 
@@ -45,9 +46,7 @@ export class DragDropProvider extends React.PureComponent {
         })
     }
 
-    getDiff = () => (
-        this.diff
-    )
+    getDiff = () => this.diff
 
     onMove = (fn) => {
         this.moveListeners.add(fn)
@@ -156,6 +155,7 @@ class EditorDraggable extends React.PureComponent {
     onStart = (event, data) => {
         if (this.unmounted) { return }
         this.initialPosition = data
+        event.stopPropagation()
     }
 
     onStop = (event, data) => {
@@ -195,6 +195,7 @@ class EditorDraggable extends React.PureComponent {
 
     onDrag = (event, data) => {
         if (this.unmounted) { return false }
+        event.stopPropagation()
         // do nothing if cancelled
         if (this.context.isCancelled) {
             return false
@@ -284,4 +285,14 @@ class EditorDraggable extends React.PureComponent {
     }
 }
 
-export { EditorDraggable as Draggable }
+function EditorDraggableWithScale(props) {
+    const { scale } = useCameraContext()
+    return (
+        <EditorDraggable
+            {...props}
+            scale={scale}
+        />
+    )
+}
+
+export { EditorDraggableWithScale as Draggable }

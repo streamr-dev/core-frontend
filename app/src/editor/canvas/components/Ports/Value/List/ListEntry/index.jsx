@@ -75,6 +75,7 @@ const ListEntry = ({
                         className={mapStyles.button}
                         type="button"
                         onClick={onRemoveClick}
+                        disabled={disabled}
                     >
                         <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
                             <path d="M11.2 8H4.8" stroke="#323232" fill="none" strokeLinecap="round" />
@@ -86,6 +87,7 @@ const ListEntry = ({
                         className={mapStyles.button}
                         type="button"
                         onClick={onAddClick}
+                        disabled={disabled}
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
                             <g fill="none" fillRule="evenodd">

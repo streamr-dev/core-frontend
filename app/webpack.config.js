@@ -241,6 +241,8 @@ module.exports = {
                     // skip stories
                     '**/*.stories.js',
                     '**/*.stories.jsx',
+                    // and files used by stories
+                    'src/editor/canvas/components/ModuleRenderer/modules.js',
                     // skip MD documentation
                     'src/docs/docsEditingGuide.md',
                     // skip sketch files

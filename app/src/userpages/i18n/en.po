@@ -449,6 +449,33 @@ msgstr "String"
 msgid "userpages##streams##fieldTypes##timestamp"
 msgstr "Timestamp"
 
+msgid "userpages##streams##security##basic##title"
+msgstr "Basic"
+
+msgid "userpages##streams##security##basic##shortDescription"
+msgstr "No data security enforced."
+
+msgid "userpages##streams##security##basic##longDescription"
+msgstr "This setting is flexible, but doesn’t give subscribers any guarantees about data authenticity. Network nodes can read any unencrypted data. This setting is suitable for testing, unimportant data, or if publishers cannot use cryptography."
+
+msgid "userpages##streams##security##signed##title"
+msgstr "Signed"
+
+msgid "userpages##streams##security##signed##shortDescription"
+msgstr "All data will be cryptographically signed."
+
+msgid "userpages##streams##security##signed##longDescription"
+msgstr "Unsigned data will be rejected. This setting enables subscribers to validate all data in the stream. Network nodes can still read any unencrypted data. Recommended setting for public streams."
+
+msgid "userpages##streams##security##encrypted##title"
+msgstr "Encrypted"
+
+msgid "userpages##streams##security##encrypted##shortDescription"
+msgstr "All data will be signed and end-to-end encrypted."
+
+msgid "userpages##streams##security##encrypted##longDescription"
+msgstr "Unsigned or unencrypted data will be rejected. This is the strongest security setting and ensures that no unauthorized party can read your data, including the network nodes brokering the data."
+
 msgid "userpages##transactions##noTransactions##title"
 msgstr "No transactions."
 

@@ -5,13 +5,42 @@ import cx from 'classnames'
 import { type CommonProps } from '..'
 import styles from './select.pcss'
 
+type Options = Array<{
+    name: string,
+    value: any,
+}>
+
 type Props = CommonProps & {
     description?: string,
-    options: Array<{
-        name?: string,
-        text?: string, // sidebar options use 'text' instead of 'name' :/
-        value: any,
-    }>,
+    options: Options,
+}
+
+type SelectOptions = {
+    value: any,
+    options: Options,
+}
+
+export function useSelectOptions({ value, options = [] }: SelectOptions = {}) {
+    /* coerce option value to string or undefined */
+    const toValue = (value) => (value == null ? undefined : String(value))
+    value = toValue(value)
+    // $FlowFixMe
+    options = options.map(({ name, value }) => ({
+        name,
+        value: toValue(value),
+    }))
+
+    const { name, value: selectedValue } = options.find((opt) => opt.value === value) || {
+        // default if matching option not found
+        name: value,
+        value,
+    }
+
+    return useMemo(() => ({
+        name,
+        value: selectedValue,
+        options,
+    }), [options, name, selectedValue])
 }
 
 const Select = ({
@@ -28,20 +57,13 @@ const Select = ({
         onChangeProp(e.target.value)
     }, [onChangeProp])
 
-    if (value == null) { value = undefined } // select doesn't want null value
+    const selectConfig = useSelectOptions({
+        value,
+        options,
+    })
 
-    const optionMap = useMemo(() => (
-        options.reduce((memo, { name, text, value }) => {
-            if (value == null) { value = undefined }
-            memo.set(value, name != null ? name : text)
-            return memo
-        }, new Map())
-    ), [options])
-
-    const selectionText = optionMap.get(value)
-
-    const selectOptions = options.map(({ name, text, value }) => (
-        <option key={value} value={value}>{name != null ? name : text}</option>
+    const selectOptions = selectConfig.options.map(({ name, value }) => (
+        <option key={value + name} value={value}>{name}</option>
     ))
 
     return (
@@ -51,7 +73,7 @@ const Select = ({
                     {...props}
                     title={title != null ? String(title) : String(value)}
                     className={styles.control}
-                    value={value}
+                    value={selectConfig.value}
                     disabled={disabled}
                     onChange={onChange}
                 >
@@ -68,7 +90,7 @@ const Select = ({
                         to a value that's not on the list of possible values (casing mismatch
                         such as `events` vs `EVENTS`). In that case we simply display the raw
                         value here instead of nothing. */}
-                    <option>{selectionText != null ? selectionText : value}</option>
+                    <option>{selectConfig.name != null ? selectConfig.name : selectConfig.value}</option>
                 </select>
             </div>
         </div>

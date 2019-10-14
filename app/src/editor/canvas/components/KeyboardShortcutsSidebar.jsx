@@ -70,6 +70,38 @@ const generalCombos = [
         keys: [['meta', 'v']],
         title: 'Paste',
     },
+    {
+        keys: [['meta', '-']],
+        title: 'Zoom Out',
+    },
+    {
+        keys: [['meta', '+']],
+        title: 'Zoom In',
+    },
+    {
+        keys: [['meta', '0']],
+        title: 'Full Size',
+    },
+    {
+        keys: [['meta', '1']],
+        title: 'Fit to Screen',
+    },
+    {
+        keys: [['arrowleft']],
+        title: 'Pan Left',
+    },
+    {
+        keys: [['arrowright']],
+        title: 'Pan Right',
+    },
+    {
+        keys: [['arrowup']],
+        title: 'Pan Up',
+    },
+    {
+        keys: [['arrowdown']],
+        title: 'Pan Down',
+    },
 ]
 
 const moduleCombos = [
