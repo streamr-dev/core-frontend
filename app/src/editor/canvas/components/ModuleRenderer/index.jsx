@@ -160,6 +160,7 @@ function ModuleRenderer({
                 hasWritePermission={hasWritePermission}
                 isSubscriptionActive={isSubscriptionActive}
                 isActive={isRunning}
+                isEditable={isEditable}
             />
             <div className={ModuleStyles.selectionDecorator} />
         </Resizable>
