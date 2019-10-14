@@ -68,6 +68,7 @@ class ProductDetailsPage extends Component<Props> {
         } = this.props
         const isProductFree = (product && BN(product.pricePerSecond).isEqualTo(0)) || false
         const isCommunity = !!(product && isCommunityProduct(product))
+        const subscriberCount = 0
 
         return !!product && (
             <div className={classNames(styles.productPage, !!showToolbar && styles.withToolbar)}>
@@ -114,7 +115,7 @@ class ProductDetailsPage extends Component<Props> {
                                 {isCommunity && (
                                     <div>
                                         <div className={styles.subheading}>Active subscribers</div>
-                                        <div>TODO</div>
+                                        <div>{subscriberCount}</div>
                                     </div>
                                 )}
                                 <div>
@@ -130,6 +131,8 @@ class ProductDetailsPage extends Component<Props> {
                         <ProductOverview
                             product={product}
                             authApiKeyId={authApiKeyId}
+                            adminFee={0}
+                            subscriberCount={subscriberCount}
                         />
                     </ProductContainer>
                 )}

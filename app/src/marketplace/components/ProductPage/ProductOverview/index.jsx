@@ -18,12 +18,20 @@ import styles from './productOverview.pcss'
 type Props = {
     product: Product,
     authApiKeyId?: ?ResourceKeyId,
+    adminFee: number,
+    subscriberCount: number,
     className?: string,
 }
 
 const CP_SERVER_POLL_INTERVAL_MS = 10000
 
-const ProductOverview = ({ product, authApiKeyId, className }: Props) => {
+const ProductOverview = ({
+    product,
+    authApiKeyId,
+    adminFee,
+    subscriberCount,
+    className,
+}: Props) => {
     const isMounted = useIsMounted()
     const [isDeploying, setIsDeploying] = useState(true)
     const [stats, setStats] = useState(null)
@@ -107,11 +115,11 @@ const ProductOverview = ({ product, authApiKeyId, className }: Props) => {
                         </div>
                         <div>
                             <div className={styles.statHeading}>Subscribers</div>
-                            <div className={styles.statValue}>TODO</div>
+                            <div className={styles.statValue}>{subscriberCount}</div>
                         </div>
                         <div>
                             <div className={styles.statHeading}>Admin fee</div>
-                            <div className={styles.statValue}>TODO</div>
+                            <div className={styles.statValue}>{adminFee}</div>
                         </div>
                         <div>
                             <div className={styles.statHeading}>Product created</div>
