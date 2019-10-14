@@ -49,7 +49,7 @@ const PriceSelector = () => {
 
     const isFreeProduct = !!product.isFree
 
-    const { isValid, level, message } = useValidation('price')
+    const { isValid, message } = useValidation('price')
 
     return (
         <section id="price" className={cx(styles.root, styles.PriceSelector)}>
@@ -78,10 +78,8 @@ const PriceSelector = () => {
                         timeUnit={product.timeUnit}
                         onTimeUnitChange={onTimeUnitChange}
                         dataPerUsd={dataPerUsd}
+                        error={!isValid ? message : undefined}
                     />
-                    {!isValid && (
-                        <p>{level}: {message}</p>
-                    )}
                     {!isCommunityProduct(product) && (
                         <BeneficiaryAddress
                             className={styles.beneficiaryAddress}

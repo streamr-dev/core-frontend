@@ -9,6 +9,7 @@ import { timeUnits, currencies, DEFAULT_CURRENCY } from '$shared/utils/constants
 import { convert } from '$mp/utils/price'
 import Dropdown from '$shared/components/Dropdown'
 import SvgIcon from '$shared/components/SvgIcon'
+import PriceField from '$mp/components/PriceField'
 
 import styles from './setPrice.pcss'
 
@@ -22,6 +23,7 @@ type Props = {
     dataPerUsd: NumberString,
     disabled: boolean,
     className?: string,
+    error?: string,
 }
 
 const getQuoteCurrencyFor = (currency: Currency) => (
@@ -38,11 +40,11 @@ const SetPrice = ({
     dataPerUsd,
     disabled,
     className,
+    error,
 }: Props) => {
     const [quotePrice, setQuotePrice] = useState(BN(0))
 
-    const onPriceChange = useCallback((e: SyntheticInputEvent<EventTarget>) => {
-        const newPrice = e.target.value
+    const onPriceChange = useCallback((newPrice) => {
         onPriceChangeProp(newPrice)
     }, [onPriceChangeProp])
 
@@ -64,23 +66,23 @@ const SetPrice = ({
                 })}
             >
                 <div className={styles.priceControls}>
-                    <input
-                        className={styles.input}
+                    <PriceField
+                        currency={currency}
+                        onCommit={onPriceChange}
+                        disabled={disabled}
                         placeholder="Price"
                         value={price.toString()}
-                        onChange={onPriceChange}
-                        disabled={disabled}
-                    />
-                    <span className={styles.currency}>{currency}</span>
-                    <SvgIcon name="transfer" className={styles.icon} onClick={onCurrencyChange} />
-                    <input
+                        error={error}
                         className={styles.input}
-                        placeholder="Price"
-                        value={quotePrice.toString()}
-                        onChange={() => {}}
-                        disabled={disabled}
                     />
-                    <span className={styles.currency}>{getQuoteCurrencyFor(currency)}</span>
+                    <SvgIcon name="transfer" className={styles.icon} onClick={onCurrencyChange} />
+                    <PriceField
+                        currency={getQuoteCurrencyFor(currency)}
+                        placeholder="Price"
+                        value={BN(quotePrice).isNaN() ? '0' : quotePrice.toString()}
+                        disabled={disabled}
+                        className={styles.input}
+                    />
                     <span className={styles.per}>per</span>
                     <Dropdown
                         title=""

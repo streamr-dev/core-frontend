@@ -24,7 +24,7 @@ const PriceField = ({ currency, ...props }: Props) => (
             className,
             ...rest
         }) => (
-            <div className={styles.root}>
+            <div className={cx(styles.root, className)}>
                 <div
                     className={cx(styles.inputWrapper, {
                         [styles.withFocus]: !!hasFocus,
@@ -46,7 +46,7 @@ const PriceField = ({ currency, ...props }: Props) => (
                 <InputError
                     eligible={hasError}
                     message={error}
-                    preserved
+                    preserved={false}
                 />
             </div>
         )}

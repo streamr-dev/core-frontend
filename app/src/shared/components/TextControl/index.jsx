@@ -55,6 +55,15 @@ const TextControl = ({
         }
     }, [normalizedValue, valueProp, onCommit, commitEmpty])
 
+    useEffect(() => {
+        setValue((prev) => {
+            if (valueProp !== prev) {
+                return valueProp
+            }
+            return prev
+        })
+    }, [valueProp])
+
     const onBlur = useCallback((e: SyntheticInputEvent<EventTarget>) => {
         if (flushHistoryOnBlur) {
             // `blurCount` is used as `key` of the actual control. Changing it replaces the control
