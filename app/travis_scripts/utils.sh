@@ -12,7 +12,7 @@ checkHTTP() {
         echo "$name up";
         return 0;
     else
-        echo "$name not up. Expected: $expected_status. Got: $http_code";
+        echo "$name not up. Expected: $expected_status. Got: $http_code from $url";
         return 1;
     fi;
 }
