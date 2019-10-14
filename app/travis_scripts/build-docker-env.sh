@@ -32,4 +32,4 @@ if [ $? -eq 1 ] ; then
 fi
 
 # wait for brokers to come up
-waitFor $RETRIES $RETRY_DELAY checkHTTP "broker-node" 404 http://localhost/api/v1/ws;
+waitFor $RETRIES $RETRY_DELAY checkHTTP "broker-node" 426 http://localhost/api/v1/ws;
