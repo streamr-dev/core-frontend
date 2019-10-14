@@ -79,10 +79,10 @@ import BuildingCustomModuleDocsPage from '$docs/components/DocsPages/Tutorials/B
 import DataTokenDocsPage from '$docs/components/DocsPages/DataToken'
 // Core Docs
 import IntroToCoreDocsPage from '$docs/components/DocsPages/Core/IntroToCore'
-import StreamsInCoreDocsPage from '$docs/components/DocsPages/Core/UsingStreamsInCore'
+// import StreamsInCoreDocsPage from '$docs/components/DocsPages/Core/UsingStreamsInCore'
 import UsingCanvasesInCoreDocsPage from '$docs/components/DocsPages/Core/UsingCanvasesInCore'
-import DashboardsInCoreDocsPage from '$docs/components/DocsPages/Core/UsingDashboardsInCore'
-import ProductsInCoreDocsPage from '$docs/components/DocsPages/Core/UsingProductsInCore'
+// import DashboardsInCoreDocsPage from '$docs/components/DocsPages/Core/UsingDashboardsInCore'
+// import ProductsInCoreDocsPage from '$docs/components/DocsPages/Core/UsingProductsInCore'
 // Marketplace Docs
 import IntroToMarketplaceDocsPage from '$docs/components/DocsPages/Marketplace/IntroToMarketplace'
 // Running a Node Docs
@@ -237,10 +237,10 @@ const DocsRouter = () => ([
     // Core routes
     <Route exact path={docs.core.introToCore} component={IntroToCoreDocsPage} key="IntroToCore" />,
     <Redirect exact from={docs.core.root} to={docs.core.introToCore} key="CoreRoot" />,
-    <Route exact path={docs.core.streamsInCore} component={StreamsInCoreDocsPage} key="streamsInCore" />,
-    <Route exact path={docs.core.canvasesInCore} component={UsingCanvasesInCoreDocsPage} key="canvasesInCore" />,
-    <Route exact path={docs.core.dashboardsInCore} component={DashboardsInCoreDocsPage} key="dashboardsInCore" />,
-    <Route exact path={docs.core.productsInCore} component={ProductsInCoreDocsPage} key="productsInCore" />,
+    // <Route exact path={docs.core.streamsInCore} component={StreamsInCoreDocsPage} key="streamsInCore" />,
+    // <Route exact path={docs.core.canvasesInCore} component={UsingCanvasesInCoreDocsPage} key="canvasesInCore" />,
+    // <Route exact path={docs.core.dashboardsInCore} component={DashboardsInCoreDocsPage} key="dashboardsInCore" />,
+    // <Route exact path={docs.core.productsInCore} component={ProductsInCoreDocsPage} key="productsInCore" />,
     // Marketplace routes
     <Route exact path={docs.marketplace.introToMarketplace} component={IntroToMarketplaceDocsPage} key="IntroToMarketplace" />,
     <Redirect exact from={docs.marketplace.root} to={docs.marketplace.introToMarketplace} key="MarketplaceRoot" />,

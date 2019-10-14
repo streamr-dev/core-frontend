@@ -83,10 +83,10 @@ export const docsNav: DocsNav = {
     Core: {
         root: core.root,
         'Intro to Core': core.introToCore,
-        'Streams in Core': core.streamsInCore,
-        'Canvases in Core': core.canvasesInCore,
-        'Dashboards in Core': core.dashboardsInCore,
-        'Products in Core': core.productsInCore,
+        // 'Streams in Core': core.streamsInCore,
+        // 'Canvases in Core': core.canvasesInCore,
+        // 'Dashboards in Core': core.dashboardsInCore,
+        // 'Products in Core': core.productsInCore,
     },
     Marketplace: {
         root: marketplace.root,
