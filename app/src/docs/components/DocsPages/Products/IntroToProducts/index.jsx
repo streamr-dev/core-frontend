@@ -8,7 +8,7 @@ import IntroToProductsContent from '$docs/content/products/introToProducts.mdx'
 const IntroToProducts = () => (
     <DocsLayout>
         <Helmet title="Intro to products | Streamr Docs" />
-        <section id="intro-to-products">
+        <section>
             <IntroToProductsContent />
         </section>
     </DocsLayout>

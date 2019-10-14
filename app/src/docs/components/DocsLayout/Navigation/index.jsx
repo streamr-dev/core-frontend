@@ -67,6 +67,7 @@ class Navigation extends React.Component<Props, State> {
         if (this.getSecondLevelTitle() !== 'root') {
             return `${this.getTopLevelTitle()} > ${this.getSecondLevelTitle()}`
         }
+
         return this.getTopLevelTitle()
     }
 
@@ -99,7 +100,12 @@ class Navigation extends React.Component<Props, State> {
                         if (subKey !== 'root') {
                             return (
                                 <li key={subKey} className={styles.navListItem}>
-                                    <Link className={pathname.includes(navItem[subKey]) ? styles.active : ''} to={navItem[subKey]}>{subKey}</Link>
+                                    <Link
+                                        className={pathname.includes(navItem[subKey]) ? styles.active : ''}
+                                        to={navItem[subKey]}
+                                    >
+                                        {subKey}
+                                    </Link>
                                 </li>)
                         }
                         return null

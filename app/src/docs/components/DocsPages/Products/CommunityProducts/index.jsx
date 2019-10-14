@@ -7,7 +7,7 @@ import CommunityProductsContent from '$docs/content/products/communityProducts.m
 
 const CommunityProducts = () => (
     <DocsLayout>
-        <Helmet title="community-products | Streamr Docs" />
+        <Helmet title="Community products | Streamr Docs" />
         <section>
             <CommunityProductsContent />
         </section>

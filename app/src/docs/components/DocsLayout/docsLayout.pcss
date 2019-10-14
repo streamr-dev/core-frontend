@@ -190,22 +190,16 @@
     }
   }
 
+  /* Margin/Padding is dynamic based on what follows each element */
+
   figure + figure {
     margin-top: -3.5rem;
-  }
-
-  .darkBg {
-    background-color: #E7E7E7;
   }
 
   figure + .mdH2,
   figure + .mdH3,
   figure + .mdP {
     margin-top: -3.5rem;
-  }
-
-  .mdH3 + .mdH4 {
-    margin-top: 2rem;
   }
 
   .playerWrapper + figure,
@@ -217,12 +211,20 @@
     margin-top: 3.5rem;
   }
 
+  .mdH3 + .mdH4 {
+    margin-top: 2rem;
+  }
+
   figcaption {
     text-align: center;
     font-style: italic;
     font-size: 14px;
     padding-top: 0.5rem;
     background-color: white;
+  }
+
+  .darkBg {
+    background-color: #E7E7E7;
   }
 
   strong {

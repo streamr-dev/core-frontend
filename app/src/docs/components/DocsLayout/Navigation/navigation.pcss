@@ -51,15 +51,12 @@ ul.subNavList {
     color: #A3A3A3;
   }
 
-  &:empty {
-    display: none;
-  }
-
   &.show {
     display: block;
   }
 
-  &.hide {
+  &.hide,
+  &:empty {
     display: none;
   }
 }
