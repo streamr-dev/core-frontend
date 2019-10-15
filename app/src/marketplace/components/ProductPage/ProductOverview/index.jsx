@@ -145,7 +145,7 @@ const ProductOverview = ({
                             <MembersGraph
                                 className={styles.graph}
                                 authApiKeyId={authApiKeyId}
-                                joinPartStreamId="DRaCVLn1TOWpe7I76gN8hA"
+                                joinPartStreamId="naRkiCAURDibPs-YNc5IFg"
                                 memberCount={stats.memberCount.total}
                                 shownDays={shownDays}
                             />
