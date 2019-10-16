@@ -29,7 +29,7 @@ const customStyles = {
                 stroke: '#A3A3A3',
             },
         },
-        border: '1px solid #D8D8D8',
+        border: '0',
         boxShadow: 'none',
         cursor: 'pointer',
         minHeight: '32px',
@@ -64,6 +64,7 @@ const customStyles = {
     }),
     placeholder: () => ({
         lineHeight: 'normal',
+        color: '#CDCDCD',
     }),
     valueContainer: (provided) => ({
         ...provided,

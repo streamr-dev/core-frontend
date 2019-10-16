@@ -26,7 +26,7 @@ const ProductDescription = () => {
                 </p>
                 <MarkdownEditor
                     placeholder="Type something great about your product"
-                    value={product.description}
+                    value={product.description || ''}
                     onCommit={updateDescription}
                     className={styles.productDescription}
                     error={!isValid ? message : undefined}

@@ -6,7 +6,7 @@ import cx from 'classnames'
 import useProduct from '../ProductController/useProduct'
 import useValidation from '../ProductController/useValidation'
 import useProductActions from '../ProductController/useProductActions'
-import SelectInput from '$shared/components/SelectInput/Select'
+import SelectField from '$mp/components/SelectField'
 import { isCommunityProduct } from '$mp/utils/product'
 
 import AvailableCategories from '../AvailableCategories'
@@ -21,8 +21,8 @@ const adminFeeOptions = [10, 20, 30, 40, 50, 60, 70, 80, 90].map((value) => ({
 
 const ProductDetails = () => {
     const product = useProduct()
-    const { isValid: isCategoryValid, level: categoryLevel, message: categoryMessage } = useValidation('category')
-    const { isValid: isAdminFeeValid, level: adminFeeLevel, message: adminFeeMessage } = useValidation('adminFee')
+    const { isValid: isCategoryValid, message: categoryMessage } = useValidation('category')
+    const { isValid: isAdminFeeValid, message: adminFeeMessage } = useValidation('adminFee')
     const { updateCategory, updateAdminFee } = useProductActions()
 
     const adminFee = product && product.adminFee
@@ -43,35 +43,31 @@ const ProductDetails = () => {
                                 const selected = opts.find((o) => o.value === product.category)
 
                                 return !fetching ? (
-                                    <SelectInput
+                                    <SelectField
                                         name="name"
                                         options={opts}
                                         value={selected}
                                         onChange={(option) => updateCategory(option.value)}
                                         isSearchable={false}
+                                        error={!isCategoryValid ? categoryMessage : undefined}
                                     />
                                 ) : null
                             }}
                         </AvailableCategories>
                     </Details.Row>
-                    {!isCategoryValid && (
-                        <p>{categoryLevel}: {categoryMessage}</p>
-                    )}
                     {isCommunityProduct(product) && (
                         <Details.Row label="Set your admin fee">
-                            <SelectInput
+                            <SelectField
                                 name="adminFee"
                                 options={adminFeeOptions}
                                 value={selectedAdminFee}
                                 onChange={(option) => updateAdminFee(option.value)}
                                 isSearchable={false}
+                                error={!isAdminFeeValid ? adminFeeMessage : undefined}
                             />
                         </Details.Row>
                     )}
                 </Details>
-                {!isAdminFeeValid && (
-                    <p>{adminFeeLevel}: {adminFeeMessage}</p>
-                )}
             </div>
         </section>
     )
