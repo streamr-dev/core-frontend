@@ -79,14 +79,15 @@ describe('Canvas Subscriptions', () => {
                 </ClientProviderComponent>
             ))
 
-            await wait(5000)
+            // as of streamr-client 2.2.2, 5 seconds is not enough :(
+            await wait(10000)
             const receivedMessages = messages.slice() // copy before unmounting
             result.unmount()
-            // should have roughly 5 messages
+            // should have roughly 10 messages
             expect(receivedMessages.length).toBeTruthy()
-            expect(receivedMessages.length >= 4).toBeTruthy()
-            expect(receivedMessages.length <= 6).toBeTruthy()
+            expect(receivedMessages.length >= 8).toBeTruthy()
+            expect(receivedMessages.length <= 12).toBeTruthy()
             done()
-        }, 15000)
+        }, 25000)
     })
 })
