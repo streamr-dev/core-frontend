@@ -24,7 +24,7 @@ RETRIES=30;
 RETRY_DELAY=5s;
 
 # wait for E&E to come up
-waitFor $RETRIES $RETRY_DELAY checkHTTP "engine-and-editor" 401 http://localhost/api/v1/users/me;
+waitFor $RETRIES $RETRY_DELAY checkHTTP "engine-and-editor" 302 http://localhost/api/v1/users/me;
 if [ $? -eq 1 ] ; then
     echo "engine-and-editor never up";
     $streamr_docker_dev ps;
@@ -32,4 +32,9 @@ if [ $? -eq 1 ] ; then
 fi
 
 # wait for brokers to come up
-waitFor $RETRIES $RETRY_DELAY checkHTTP "broker-node" 404 http://localhost/api/v1/ws;
+waitFor $RETRIES $RETRY_DELAY checkHTTP "broker-node" 426 http://localhost/api/v1/ws;
+if [ $? -eq 1 ] ; then
+    echo "broker-node never up";
+    $streamr_docker_dev ps;
+    exit 1;
+fi
