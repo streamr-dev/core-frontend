@@ -298,7 +298,7 @@ jobs:
       secret_access_key:
         secure: K0oYY9l2dLEiGnB0ZzRWwlPIgKO0v11usTbrWJD2nWFa4lwgBVw+jHLIjbQMdQcsY4QoUq5BNK25DLsq8yNrQhW0cX0XbmI5L+j5ZFFfgBxFhI7Q0UAtwzJvBzSs6+k4cF/twwsuSt6uOZbtA4E/7hw9rTPkdeWx6bahwuVnU7/tTw9z2mt1pqGFQaCcy2MZh+6pCxcGonBTl1bh8VLCf7g9SXsU8+jz2ec6BjKmonJKdMiMxf2rbCKOudlrBjjjrP/5q/38rzzr9hx0TkkQ0fnZoFIeYhFJvKTxXXBujOqZBMAKh7R1MvVZf3JY+ADKqOD9t3C4XGW98s7D/v2J3HTxoQf2bWCzkGGto8KqbnqEm61YIhzTp6bHKadeLkhh3wTnxjiS6NnSGTNqybUO9ic2YcMtp6zY4nYW2mMPaxgiyZb869EkRWFOtgeECHmXmrZXv+8dnpyzVC4QPp53blxYErPwhAs/cQzcwDaj6v4mcU0Nem8DN0g0lzXCP11pFxLvqa/9TzIGs/1N2+OB8STrxEQi9wPpDUJ7gcC+1ovBXCDWfQX+yn7MDIauTRPOQlQrOSuoSzSZsamAFTOfvL7257myQlo8vdGT6WqFKXwZ+yTh3Lif/hUruQmDzDHAifJeY8tXRu51RNM1UEDtOj26I1yUOmiD4wjMwGJdzng=
       bucket: eu-west-1-lx-streamr-vault
-      local-dir: "$TRAVIS_BUILD_DIR/app/dist"
+      local-dir: "$TRAVIS_BUILD_DIR/build"
       upload-dir: marketplace/releases/latest
       acl: private
       region: eu-west-1
@@ -310,11 +310,22 @@ jobs:
       secret_access_key:
           secure: K0oYY9l2dLEiGnB0ZzRWwlPIgKO0v11usTbrWJD2nWFa4lwgBVw+jHLIjbQMdQcsY4QoUq5BNK25DLsq8yNrQhW0cX0XbmI5L+j5ZFFfgBxFhI7Q0UAtwzJvBzSs6+k4cF/twwsuSt6uOZbtA4E/7hw9rTPkdeWx6bahwuVnU7/tTw9z2mt1pqGFQaCcy2MZh+6pCxcGonBTl1bh8VLCf7g9SXsU8+jz2ec6BjKmonJKdMiMxf2rbCKOudlrBjjjrP/5q/38rzzr9hx0TkkQ0fnZoFIeYhFJvKTxXXBujOqZBMAKh7R1MvVZf3JY+ADKqOD9t3C4XGW98s7D/v2J3HTxoQf2bWCzkGGto8KqbnqEm61YIhzTp6bHKadeLkhh3wTnxjiS6NnSGTNqybUO9ic2YcMtp6zY4nYW2mMPaxgiyZb869EkRWFOtgeECHmXmrZXv+8dnpyzVC4QPp53blxYErPwhAs/cQzcwDaj6v4mcU0Nem8DN0g0lzXCP11pFxLvqa/9TzIGs/1N2+OB8STrxEQi9wPpDUJ7gcC+1ovBXCDWfQX+yn7MDIauTRPOQlQrOSuoSzSZsamAFTOfvL7257myQlo8vdGT6WqFKXwZ+yTh3Lif/hUruQmDzDHAifJeY8tXRu51RNM1UEDtOj26I1yUOmiD4wjMwGJdzng=
       bucket: eu-west-1-lx-streamr-vault
-      local-dir: "$TRAVIS_BUILD_DIR/app/dist"
+      local-dir: "$TRAVIS_BUILD_DIR/build"
       upload-dir: marketplace/releases/$TRAVIS_TAG
       acl: private
       region: eu-west-1
       skip_cleanup: true
+      on:
+        branch: development
+    - provider: codedeploy
+      access_key_id: AKIAJBAGP3WA5UXQ3AZQ
+      secret_access_key:
+        secure: K0oYY9l2dLEiGnB0ZzRWwlPIgKO0v11usTbrWJD2nWFa4lwgBVw+jHLIjbQMdQcsY4QoUq5BNK25DLsq8yNrQhW0cX0XbmI5L+j5ZFFfgBxFhI7Q0UAtwzJvBzSs6+k4cF/twwsuSt6uOZbtA4E/7hw9rTPkdeWx6bahwuVnU7/tTw9z2mt1pqGFQaCcy2MZh+6pCxcGonBTl1bh8VLCf7g9SXsU8+jz2ec6BjKmonJKdMiMxf2rbCKOudlrBjjjrP/5q/38rzzr9hx0TkkQ0fnZoFIeYhFJvKTxXXBujOqZBMAKh7R1MvVZf3JY+ADKqOD9t3C4XGW98s7D/v2J3HTxoQf2bWCzkGGto8KqbnqEm61YIhzTp6bHKadeLkhh3wTnxjiS6NnSGTNqybUO9ic2YcMtp6zY4nYW2mMPaxgiyZb869EkRWFOtgeECHmXmrZXv+8dnpyzVC4QPp53blxYErPwhAs/cQzcwDaj6v4mcU0Nem8DN0g0lzXCP11pFxLvqa/9TzIGs/1N2+OB8STrxEQi9wPpDUJ7gcC+1ovBXCDWfQX+yn7MDIauTRPOQlQrOSuoSzSZsamAFTOfvL7257myQlo8vdGT6WqFKXwZ+yTh3Lif/hUruQmDzDHAifJeY8tXRu51RNM1UEDtOj26I1yUOmiD4wjMwGJdzng=
+      bucket: eu-west-1-lx-streamr-vault
+      key: marketplace/releases/$TRAVIS_TAG/marketplace.tar
+      application: eu-west-1-lx-marketplace-codedeploy
+      deployment_group: eu-west-1-lx-marketplace-deployment-group
+      region: eu-west-1
       on:
         branch: development
 notifications:
