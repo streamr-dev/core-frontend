@@ -33,7 +33,7 @@ const DonutChart = ({ className, strokeWidth, data }: Props) => {
         const valueSum = parts.reduce((acc, val) => acc + val.value, 0)
 
         parts.forEach((item) => {
-            const val = item.value / valueSum
+            const val = valueSum !== 0 ? item.value / valueSum : 0
             segments.push({
                 percentage: val,
                 offset: currentProgress,

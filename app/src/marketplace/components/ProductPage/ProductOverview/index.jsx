@@ -46,12 +46,6 @@ const ProductOverview = ({
             if (!isMounted) {
                 return
             }
-            result.totalEarnings = 100
-            result.memberCount = {
-                total: 100,
-                active: 80,
-                inactive: 20,
-            }
             setStats(result)
             setIsDeploying(false)
         } catch (e) {
@@ -71,7 +65,7 @@ const ProductOverview = ({
 
     const productAgeMs = Date.now() - new Date(product.created || 0).getTime()
     const revenuePerMonth = (stats && stats.totalEarnings) ? Math.floor(stats.totalEarnings / (productAgeMs / (1000 * 60 * 60 * 24 * 30))) : 0
-    const revenuePerMonthPerMember = (stats && stats.memberCount) ? revenuePerMonth / stats.memberCount.total : 0
+    const revenuePerMonthPerMember = (stats && stats.memberCount && stats.memberCount.total > 0) ? (revenuePerMonth / stats.memberCount.total) : 0
 
     return (
         <div className={cx(styles.root, className)}>
