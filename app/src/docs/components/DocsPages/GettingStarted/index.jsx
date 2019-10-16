@@ -1,14 +1,14 @@
 // @flow
 
 import React from 'react'
-import { Helmet } from 'react-helmet'
+import DocsHelmet from '$docs/components/DocsHelmet'
 import DocsLayout from '$docs/components/DocsLayout'
 import GettingStartedContent from '$docs/content/gettingStarted/gettingStarted.mdx'
 import GetBuilding from '$docs/content/gettingStarted/getBuilding.mdx'
 
 const GettingStarted = () => (
     <DocsLayout>
-        <Helmet title="Getting Started | Streamr Docs" />
+        <DocsHelmet pageTitle="Getting Started" />
         <section>
             <section>
                 <GettingStartedContent />

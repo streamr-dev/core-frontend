@@ -1,13 +1,13 @@
 // @flow
 
 import React from 'react'
-import { Helmet } from 'react-helmet'
+import DocsHelmet from '$docs/components/DocsHelmet'
 import DocsLayout from '$docs/components/DocsLayout'
 import CommunityProductsContent from '$docs/content/products/communityProducts.mdx'
 
 const CommunityProducts = () => (
     <DocsLayout>
-        <Helmet title="Community products | Streamr Docs" />
+        <DocsHelmet pageTitle="Community products" />
         <section>
             <CommunityProductsContent />
         </section>

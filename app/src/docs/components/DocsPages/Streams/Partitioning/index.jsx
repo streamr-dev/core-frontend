@@ -1,13 +1,13 @@
 // @flow
 
 import React from 'react'
-import { Helmet } from 'react-helmet'
+import DocsHelmet from '$docs/components/DocsHelmet'
 import DocsLayout from '$docs/components/DocsLayout'
 import PartitioningContent from '$docs/content/streams/partitioning.mdx'
 
 const Partitioning = () => (
     <DocsLayout>
-        <Helmet title="Partitioning | Streamr Docs" />
+        <DocsHelmet pageTitle="Partitioning" />
         <section>
             <PartitioningContent />
         </section>

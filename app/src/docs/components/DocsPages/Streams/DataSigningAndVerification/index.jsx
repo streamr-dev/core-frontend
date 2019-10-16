@@ -1,13 +1,13 @@
 // @flow
 
 import React from 'react'
-import { Helmet } from 'react-helmet'
+import DocsHelmet from '$docs/components/DocsHelmet'
 import DocsLayout from '$docs/components/DocsLayout'
 import DataSigningAndVerificationContent from '$docs/content/streams/dataSigningAndVerification.mdx'
 
 const DataSigningAndVerification = () => (
     <DocsLayout >
-        <Helmet title="Data signing and verification | Streamr Docs" />
+        <DocsHelmet pageTitle="Data signing and verification" />
         <section id="data-signing-and-verification">
             <DataSigningAndVerificationContent />
         </section>

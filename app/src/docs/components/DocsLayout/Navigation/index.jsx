@@ -6,6 +6,8 @@ import cx from 'classnames'
 import scrollIntoView from 'smooth-scroll-into-view-if-needed'
 import SvgIcon from '$shared/components/SvgIcon'
 import { docsNav } from '$docs/components/DocsLayout/Navigation/navLinks'
+import TableOfContents from './TableOfContents'
+
 import styles from './navigation.pcss'
 
 type Props = {
@@ -79,55 +81,6 @@ class Navigation extends React.Component<Props, State> {
         })
     }
 
-    generateNavigation(topLevelNav, index) {
-        const navItem = docsNav[topLevelNav]
-        const isActiveSection = this.isActiveSection(navItem)
-        const { pathname } = this.props.location
-
-        return (
-            <React.Fragment key={index}>
-                <li className={styles.navListItem}>
-                    <Link className={isActiveSection ? styles.active : ''} to={navItem.root}>{topLevelNav}</Link>
-                </li>
-                <ul
-                    className={cx(styles.subNavList, {
-                        [styles.show]: isActiveSection,
-                        [styles.hide]: !isActiveSection,
-                    })}
-                >
-                    {/* Render subNav contents */}
-                    {Object.keys(navItem).map((subKey) => {
-                        if (subKey !== 'root') {
-                            return (
-                                <li key={subKey} className={styles.navListItem}>
-                                    <Link
-                                        className={pathname.includes(navItem[subKey]) ? styles.active : ''}
-                                        to={navItem[subKey]}
-                                    >
-                                        {subKey}
-                                    </Link>
-                                </li>)
-                        }
-                        return null
-                    })
-                    }
-                </ul>
-            </React.Fragment>
-        )
-    }
-
-    isActiveSection(subNavList) {
-        let match = false
-
-        Object.keys(subNavList).forEach((subKey) => {
-            if (this.props.location.pathname.includes(subNavList[subKey])) {
-                match = true
-            }
-        })
-
-        return match
-    }
-
     render() {
         const { className, responsive } = this.props
 
@@ -145,14 +98,14 @@ class Navigation extends React.Component<Props, State> {
                     container: responsive,
                 })}
                 >
-                    {responsive && (
+                    {!!responsive && (
                         <li className={cx(styles.navListItem, styles.mobileHeader)}>
                             <Link to="#">
                                 {this.generateMobileHeader()}
                             </Link>
                         </li>
                     )}
-                    {Object.keys(docsNav).map((topLevelNav, index) => this.generateNavigation(topLevelNav, index))}
+                    <TableOfContents />
                 </ul>
                 <SvgIcon name="back" className={styles.arrowExtender} />
             </div>

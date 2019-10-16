@@ -54,18 +54,18 @@ import IntroToCanvasesDocsPage from '$docs/components/DocsPages/Canvases/IntroTo
 import ModulesBasicsDocsPage from '$docs/components/DocsPages/Canvases/ModulesBasics'
 import ModulesAdvancedDocsPage from '$docs/components/DocsPages/Canvases/ModulesAdvanced'
 // Module Reference Docs
-import ModuleReferenceBooleanDocsPage from '$docs/components/DocsPages/ModuleReference/Boolean'
-import ModuleReferenceCustomModulesDocsPage from '$docs/components/DocsPages/ModuleReference/CustomModules'
-import ModuleReferenceInputDocsPage from '$docs/components/DocsPages/ModuleReference/Input'
-import ModuleReferenceIntegrationsDocsPage from '$docs/components/DocsPages/ModuleReference/Integrations'
-import ModuleReferenceListDocsPage from '$docs/components/DocsPages/ModuleReference/List'
-import ModuleReferenceMapDocsPage from '$docs/components/DocsPages/ModuleReference/Map'
-import ModuleReferenceStreamsDocsPage from '$docs/components/DocsPages/ModuleReference/Streams'
-import ModuleReferenceTextDocsPage from '$docs/components/DocsPages/ModuleReference/Text'
-import ModuleReferenceTimeAndDateDocsPage from '$docs/components/DocsPages/ModuleReference/TimeAndDate'
-import ModuleReferenceTimeSeriesDocsPage from '$docs/components/DocsPages/ModuleReference/TimeSeries'
-import ModuleReferenceUtilsDocsPage from '$docs/components/DocsPages/ModuleReference/Utils'
-import ModuleReferenceVisualizationsDocsPage from '$docs/components/DocsPages/ModuleReference/Visualizations'
+import ModuleReferenceHelp from '$docs/components/DocsPages/ModuleReference/HelpModules'
+// import ModuleReferenceCustomModulesDocsPage from '$docs/components/DocsPages/ModuleReference/CustomModules'
+// import ModuleReferenceInputDocsPage from '$docs/components/DocsPages/ModuleReference/Input'
+// import ModuleReferenceIntegrationsDocsPage from '$docs/components/DocsPages/ModuleReference/Integrations'
+// import ModuleReferenceListDocsPage from '$docs/components/DocsPages/ModuleReference/List'
+// import ModuleReferenceMapDocsPage from '$docs/components/DocsPages/ModuleReference/Map'
+// import ModuleReferenceStreamsDocsPage from '$docs/components/DocsPages/ModuleReference/Streams'
+// import ModuleReferenceTextDocsPage from '$docs/components/DocsPages/ModuleReference/Text'
+// import ModuleReferenceTimeAndDateDocsPage from '$docs/components/DocsPages/ModuleReference/TimeAndDate'
+// import ModuleReferenceTimeSeriesDocsPage from '$docs/components/DocsPages/ModuleReference/TimeSeries'
+// import ModuleReferenceUtilsDocsPage from '$docs/components/DocsPages/ModuleReference/Utils'
+// import ModuleReferenceVisualizationsDocsPage from '$docs/components/DocsPages/ModuleReference/Visualizations'
 
 // Dashboard Docs
 import DashboardsDocsPage from '$docs/components/DocsPages/Dashboards'
@@ -215,19 +215,79 @@ const DocsRouter = () => ([
     <Redirect exact from={docs.products.root} to={docs.products.introToProducts} key="ProductsRoot" />,
     <Route exact path={docs.products.communityProducts} component={CommunityProductsDocsPage} key="CommunityProducts" />,
     // Module Reference routes
-    <Route exact path={docs.moduleReference.boolean} component={ModuleReferenceBooleanDocsPage} key="BooleanDocsPage" />,
+    <Route
+        exact
+        path={docs.moduleReference.boolean}
+        render={() => (<ModuleReferenceHelp category="Boolean" pageTitle="Boolean Modules" />)}
+        key="BooleanDocsPage"
+    />,
     <Redirect exact from={docs.moduleReference.root} to={docs.moduleReference.boolean} key="ModuleReferencePage" />,
-    <Route exact path={docs.moduleReference.customModules} component={ModuleReferenceCustomModulesDocsPage} key="CustomModulesDocsPage" />,
-    <Route exact path={docs.moduleReference.input} component={ModuleReferenceInputDocsPage} key="InputDocsPage" />,
-    <Route exact path={docs.moduleReference.integrations} component={ModuleReferenceIntegrationsDocsPage} key="IntegrationsDocsPage" />,
-    <Route exact path={docs.moduleReference.list} component={ModuleReferenceListDocsPage} key="ListDocsPage" />,
-    <Route exact path={docs.moduleReference.map} component={ModuleReferenceMapDocsPage} key="MapDocsPage" />,
-    <Route exact path={docs.moduleReference.streams} component={ModuleReferenceStreamsDocsPage} key="StreamsDocsPage" />,
-    <Route exact path={docs.moduleReference.text} component={ModuleReferenceTextDocsPage} key="TextDocsPage" />,
-    <Route exact path={docs.moduleReference.timeAndDate} component={ModuleReferenceTimeAndDateDocsPage} key="TimeAndDateDocsPage" />,
-    <Route exact path={docs.moduleReference.timeSeries} component={ModuleReferenceTimeSeriesDocsPage} key="TimeSeriesDocsPage" />,
-    <Route exact path={docs.moduleReference.utils} component={ModuleReferenceUtilsDocsPage} key="UtilsDocsPage" />,
-    <Route exact path={docs.moduleReference.visualizations} component={ModuleReferenceVisualizationsDocsPage} key="VisualizationsDocsPage" />,
+    <Route
+        exact
+        path={docs.moduleReference.customModules}
+        render={() => (<ModuleReferenceHelp category="Custom Modules" pageTitle="Custom Modules" />)}
+        key="CMDocsPage"
+    />,
+    <Route
+        exact
+        path={docs.moduleReference.input}
+        render={() => (<ModuleReferenceHelp category="Input" pageTitle="Input Modules" />)}
+        key="InputDocsPage"
+    />,
+    <Route
+        exact
+        path={docs.moduleReference.integrations}
+        render={() => (<ModuleReferenceHelp category="Integrations" pageTitle="Integration Modules" />)}
+        key="IntegrationsDocsPage"
+    />,
+    <Route
+        exact
+        path={docs.moduleReference.list}
+        render={() => (<ModuleReferenceHelp category="List" pageTitle="List Modules" />)}
+        key="ListDocsPage"
+    />,
+    <Route
+        exact
+        path={docs.moduleReference.map}
+        render={() => (<ModuleReferenceHelp category="Map" pageTitle="Map Modules" />)}
+        key="MapDocsPage"
+    />,
+    <Route
+        exact
+        path={docs.moduleReference.streams}
+        render={() => (<ModuleReferenceHelp category="Streams" pageTitle="Stream Modules" />)}
+        key="StreamsDocsPage"
+    />,
+    <Route
+        exact
+        path={docs.moduleReference.text}
+        render={() => (<ModuleReferenceHelp category="Text" pageTitle="Text Modules" />)}
+        key="TextDocsPage"
+    />,
+    <Route
+        exact
+        path={docs.moduleReference.timeAndDate}
+        render={() => (<ModuleReferenceHelp category="Time & Date" pageTitle="Time & Date Modules" />)}
+        key="TimeAndDateDocsPage"
+    />,
+    <Route
+        exact
+        path={docs.moduleReference.timeSeries}
+        render={() => (<ModuleReferenceHelp category="Time Series" pageTitle="Time Series Modules" />)}
+        key="TimeSeriesDocsPage"
+    />,
+    <Route
+        exact
+        path={docs.moduleReference.utils}
+        render={() => (<ModuleReferenceHelp category="Utils" pageTitle="Utils Modules" />)}
+        key="UtilsDocsPage"
+    />,
+    <Route
+        exact
+        path={docs.moduleReference.visualizations}
+        render={() => (<ModuleReferenceHelp category="Visualizations" pageTitle="Visualization Modules" />)}
+        key="VisualizationsDocsPage"
+    />,
     // Tutorials routes
     <Route exact path={docs.tutorials.buildingPubSub} component={BuildingPubSubDocsPage} key="BuildingPubSub" />,
     <Redirect exact from={docs.tutorials.root} to={docs.tutorials.buildingPubSub} key="TutorialsRoot" />,

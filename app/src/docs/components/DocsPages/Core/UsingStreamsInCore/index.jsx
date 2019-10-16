@@ -1,13 +1,13 @@
 // @flow
 
 import React from 'react'
-import { Helmet } from 'react-helmet'
+import DocsHelmet from '$docs/components/DocsHelmet'
 import DocsLayout from '$docs/components/DocsLayout'
 import UsingStreamsInCoreContent from '$docs/content/streams/usingStreamsInCore.mdx'
 
 const UsingStreamsInCore = () => (
     <DocsLayout >
-        <Helmet title="Using streams in Core | Streamr Docs" />
+        <DocsHelmet pageTitle="Using streams in Core" />
         <section>
             <UsingStreamsInCoreContent />
         </section>

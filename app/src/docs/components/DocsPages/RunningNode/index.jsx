@@ -1,7 +1,7 @@
 // @flow
 
 // import React from 'react'
-// import { Helmet } from 'react-helmet'
+// import DocsHelmet from '$docs/components/DocsHelmet'
 
 // import DocsLayout from '$docs/components/DocsLayout'
 //
@@ -9,7 +9,7 @@
 
 // const RunningNode = () => (
 //     <DocsLayout subNav={subNav.runningNode}>
-//         <Helmet title="Running a Node | Streamr Docs" />
+//         <DocsHelmet pageTitle="Running a Node" />
 //         <RunningNodeContent />
 //     </DocsLayout>
 // )

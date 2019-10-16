@@ -1,13 +1,13 @@
 // @flow
 
 import React from 'react'
-import { Helmet } from 'react-helmet'
+import DocsHelmet from '$docs/components/DocsHelmet'
 import DocsLayout from '$docs/components/DocsLayout'
 import ApiExplorerContent from '$docs/content/api/apiExplorer.mdx'
 
 const ApiExplorer = () => (
     <DocsLayout>
-        <Helmet title="API Explorer | Streamr Docs" />
+        <DocsHelmet pageTitle="API Explorer" />
         <section>
             <ApiExplorerContent />
         </section>

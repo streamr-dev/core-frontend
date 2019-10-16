@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { Helmet } from 'react-helmet'
+import DocsHelmet from '$docs/components/DocsHelmet'
 import DocsLayout from '$docs/components/DocsLayout'
 import SdksOverview from '$docs/content/sdks/sdksOverview.mdx'
 import JavascriptSdk from '$docs/content/sdks/javascriptSdk.mdx'
@@ -11,7 +11,7 @@ import ContributeSdk from '$docs/content/technicalNotes/howToContribute.mdx'
 
 const SDKs = () => (
     <DocsLayout>
-        <Helmet title="SDKs | Streamr Docs" />
+        <DocsHelmet pageTitle="SDKs" />
         <section>
             <section id="sdks-overview">
                 <SdksOverview />
