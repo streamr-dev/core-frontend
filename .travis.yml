@@ -204,11 +204,11 @@ jobs:
     - PORT=12345
     - VERSION=$TRAVIS_TAG
     - SENTRY_ENVIRONMENT=production
-    - STREAMR_API_URL=https://www.streamr.com/api/v1
-    - STREAMR_WS_URL=wss://www.streamr.com/api/v1/ws
-    - PLATFORM_ORIGIN_URL=https://www.streamr.com
+    - STREAMR_API_URL=https://streamr.network/api/v1
+    - STREAMR_WS_URL=wss://streamr.network/api/v1/ws
+    - PLATFORM_ORIGIN_URL=https://streamr.network
     - PLATFORM_PUBLIC_PATH=https://cdn.streamr.com
-    - STREAMR_URL=https://www.streamr.com
+    - STREAMR_URL=https://streamr.network
     - GOOGLE_ANALYTICS_ID=UA-55331565-5
     - MARKETPLACE_CONTRACT_ADDRESS=0xA10151D088f6f2705a05d6c83719e99E079A61C1
     - TOKEN_CONTRACT_ADDRESS=0x0Cf0Ee63788A0849fE5297F3407f701E122cC023
