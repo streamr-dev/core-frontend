@@ -332,13 +332,17 @@ function useCameraSimpleApi(opts) {
     const shouldIgnoreEvent = useCallback((event) => {
         const { current: el } = elRef
 
-        // has cameraControl class
+        // do not ignore if has cameraControl class
         if (event.target.classList.contains(styles.cameraControl)) { return false }
-        // is within parent with cameraControl class
+        // always ignore if target is editable
+        if (isEditableElement(event.target)) { return true }
+
+        // do not ignore if is within parent with cameraControl class
         if (event.target.matches(`.${styles.cameraControl} *`)) { return false }
+
         return (
-            isEditableElement(event.target)
-            || (!el.contains(event.target) && event.target !== document.body)
+            // ignore if target not within camera el and isn't body
+            !el.contains(event.target) && event.target !== document.body
         )
     }, [elRef])
 
