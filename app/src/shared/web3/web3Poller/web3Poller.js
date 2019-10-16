@@ -21,7 +21,7 @@ export const events = {
 }
 
 export type Event = $Values<typeof events>
-export type Handler = (any, any) => void
+export type Handler = (any, any) => void | Promise<void>
 
 const WEB3_POLL_INTERVAL = 1000 // 1s
 const NETWORK_POLL_INTERVAL = 1000 // 1s

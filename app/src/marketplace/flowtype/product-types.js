@@ -12,6 +12,10 @@ export type ProductState = $Keys<typeof productStates>
 
 export type ProductType = $Keys<typeof productTypes>
 
+export type PendingChanges = {
+    adminFee?: number
+}
+
 export type Product = {
     key?: string,
     id: ?ProductId,
@@ -37,6 +41,7 @@ export type Product = {
     price?: NumberString,
     isFree?: boolean,
     type?: ProductType,
+    pendingChanges?: PendingChanges,
 }
 
 export type ProductSubscription = {

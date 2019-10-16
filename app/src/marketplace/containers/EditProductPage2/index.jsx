@@ -2,6 +2,7 @@
 
 import React, { useContext, useMemo } from 'react'
 import { withRouter } from 'react-router-dom'
+import { I18n } from 'react-redux-i18n'
 
 import CoreLayout from '$shared/components/Layout/Core'
 import * as UndoContext from '$shared/components/UndoContextProvider'
@@ -12,6 +13,7 @@ import { isCommunityProduct } from '$mp/utils/product'
 import ProductController from '../ProductController'
 import useProduct from '../ProductController/useProduct'
 import usePending from '$shared/hooks/usePending'
+import { productStates } from '$shared/utils/constants'
 
 import { Provider as EditControllerProvider, Context as EditControllerContext } from './EditControllerProvider'
 import BackButton from './BackButton'
@@ -22,74 +24,84 @@ import { Provider as ModalProvider } from '$shared/components/ModalContextProvid
 import ConfirmSaveModal from './ConfirmSaveModal'
 import UpdateContractProductModal from './UpdateContractProductModal'
 import DeployCommunityModal from './DeployCommunityModal'
-import DeployContractModal from './DeployContractModal'
+import PublishModal from './PublishModal'
 
 import styles from './editProductPage.pcss'
 
 const EditProductPage = ({ product }: { product: Product }) => {
-    const { isPreview, setIsPreview, save, deployCommunity } = useContext(EditControllerContext)
+    const {
+        isPreview,
+        setIsPreview,
+        save,
+        publish,
+        deployCommunity,
+    } = useContext(EditControllerContext)
     const { isPending: savePending } = usePending('product.SAVE')
 
     const isSaving = savePending
     const isCommunity = isCommunityProduct(product)
 
-    const actions = useMemo(() => {
-        let buttons = {
-            saveAndExit: {
-                title: 'Save & Exit',
-                color: 'link',
-                outline: true,
-                onClick: save,
-                disabled: isSaving,
-            },
-        }
+    const saveAndExitButton = useMemo(() => ({
+        title: 'Save & Exit',
+        color: 'link',
+        outline: true,
+        onClick: () => save(),
+        disabled: isSaving,
+    }), [save, isSaving])
 
+    const previewButton = useMemo(() => {
         if (isPreview) {
-            buttons = {
-                ...buttons,
-                preview: {
-                    title: 'Edit',
-                    outline: true,
-                    onClick: () => setIsPreview(false),
-                    disabled: isSaving,
-                },
-            }
-        } else {
-            buttons = {
-                ...buttons,
-                preview: {
-                    title: 'Preview',
-                    outline: true,
-                    onClick: () => setIsPreview(true),
-                    disabled: isSaving,
-                },
+            return {
+                title: 'Edit',
+                outline: true,
+                onClick: () => setIsPreview(false),
+                disabled: isSaving,
             }
         }
 
+        return {
+            title: 'Preview',
+            outline: true,
+            onClick: () => setIsPreview(true),
+            disabled: isSaving,
+        }
+    }, [isPreview, setIsPreview, isSaving])
+
+    const productState = product.state
+    const publishButton = useMemo(() => {
+        const titles = {
+            [productStates.DEPLOYING]: 'publishing',
+            [productStates.UNDEPLOYING]: 'unpublishing',
+            [productStates.NOT_DEPLOYED]: 'publish',
+            [productStates.DEPLOYED]: 'unpublish',
+        }
+
+        return {
+            title: (productState && I18n.t(`editProductPage.${titles[productState]}`)) || '',
+            color: 'primary',
+            onClick: publish,
+            disabled: !(productState === productStates.NOT_DEPLOYED || productState === productStates.DEPLOYED),
+        }
+    }, [productState, publish])
+
+    const deployButton = useMemo(() => {
         if (isCommunity) {
-            buttons = {
-                ...buttons,
-                continue: {
-                    title: 'Continue',
-                    color: 'primary',
-                    onClick: deployCommunity,
-                    disabled: isSaving,
-                },
-            }
-        } else {
-            buttons = {
-                ...buttons,
-                publish: {
-                    title: 'Publish',
-                    color: 'primary',
-                    onClick: () => {},
-                    disabled: true,
-                },
+            return {
+                title: 'Continue',
+                color: 'primary',
+                onClick: deployCommunity,
+                disabled: isSaving,
             }
         }
 
-        return buttons
-    }, [isPreview, setIsPreview, save, deployCommunity, isSaving, isCommunity])
+        return publishButton
+    }, [isCommunity, deployCommunity, isSaving, publishButton])
+
+    const actions = {
+        saveAndExit: saveAndExitButton,
+        preview: previewButton,
+        publish: deployButton,
+    }
 
     return (
         <CoreLayout
@@ -115,7 +127,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
             <ConfirmSaveModal />
             <UpdateContractProductModal />
             <DeployCommunityModal />
-            <DeployContractModal />
+            <PublishModal />
         </CoreLayout>
     )
 }
