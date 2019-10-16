@@ -53,7 +53,7 @@ export const UnpublishDialog = ({
     switch (step) {
         case publishFlowSteps.CONFIRM:
             return (
-                <ReadyToUnpublishDialog onUnpublish={onUnpublish} onCancel={onCancel} />
+                <ReadyToUnpublishDialog onContinue={onUnpublish} onCancel={onCancel} />
             )
 
         case publishFlowSteps.UNPUBLISH_CONTRACT_PRODUCT: {

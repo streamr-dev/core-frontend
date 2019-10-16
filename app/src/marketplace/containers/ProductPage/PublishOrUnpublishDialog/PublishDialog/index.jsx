@@ -81,7 +81,7 @@ export const PublishDialog = ({
             return (
                 <ReadyToPublishDialog
                     waiting={fetching}
-                    onPublish={onPublish}
+                    onContinue={onPublish}
                     onCancel={onCancel}
                 />
             )

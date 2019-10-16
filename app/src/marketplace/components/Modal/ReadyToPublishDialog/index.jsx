@@ -13,7 +13,7 @@ import styles from './readytopublish.pcss'
 export type Props = {
     waiting?: boolean,
     onCancel: () => void,
-    onPublish: () => void,
+    onContinue: () => void,
 }
 
 export type State = {
@@ -26,7 +26,7 @@ class ReadyToPublishDialog extends Component<Props, State> {
     }
 
     render = () => {
-        const { waiting, onPublish, onCancel } = this.props
+        const { waiting, onContinue, onCancel } = this.props
 
         return (
             <Dialog
@@ -42,7 +42,7 @@ class ReadyToPublishDialog extends Component<Props, State> {
                     publish: {
                         title: I18n.t('modal.readyToPublish.publish'),
                         color: 'primary',
-                        onClick: onPublish,
+                        onClick: onContinue,
                         disabled: !this.state.termsAccepted,
                     },
                 }}

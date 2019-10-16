@@ -72,13 +72,19 @@ function useValidationContext(): ContextProps {
     const validate = useCallback((product) => {
         if (!isMounted() || !product) { return }
 
-        ['name', 'description', 'imageUrl', 'category'].forEach((field) => {
+        ['name', 'description', 'category'].forEach((field) => {
             if (String(product[field]).length <= 0) {
                 setStatus(field, ERROR, `Product ${field} cannot be empty`)
             } else {
                 clearStatus(field)
             }
         })
+
+        if (!product.imageUrl && !product.newImageToUpload) {
+            setStatus('imageUrl', ERROR, 'Product must have a cover image')
+        } else {
+            clearStatus('imageUrl')
+        }
 
         if (!product.streams || product.streams.length <= 0) {
             setStatus('streams', ERROR, 'No streams selected')
