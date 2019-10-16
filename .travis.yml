@@ -280,7 +280,7 @@ jobs:
     - COMMUNITY_PRODUCT_OPERATOR_ADDRESS=0x0
     - COMMUNITY_PRODUCT_BLOCK_FREEZE_PERIOD_SECONDS=1
     - WEB3_TRANSACTION_CONFIRMATION_BLOCKS=1
-    script: "$TRAVIS_BUILD_DIR/app/travis_scripts/build-app.sh"
+    script: "$TRAVIS_BUILD_DIR/app/travis_scripts/build-app-stg.sh"
     deploy:
     - provider: s3
       access_key_id: AKIAJBAGP3WA5UXQ3AZQ
