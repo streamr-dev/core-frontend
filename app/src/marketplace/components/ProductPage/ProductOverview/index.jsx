@@ -19,6 +19,7 @@ type Props = {
     product: Product,
     authApiKeyId?: ?ResourceKeyId,
     adminFee: number,
+    joinPartStreamId: ?string,
     subscriberCount: number,
     className?: string,
 }
@@ -29,6 +30,7 @@ const ProductOverview = ({
     product,
     authApiKeyId,
     adminFee,
+    joinPartStreamId,
     subscriberCount,
     className,
 }: Props) => {
@@ -145,7 +147,7 @@ const ProductOverview = ({
                             <MembersGraph
                                 className={styles.graph}
                                 authApiKeyId={authApiKeyId}
-                                joinPartStreamId="naRkiCAURDibPs-YNc5IFg"
+                                joinPartStreamId={joinPartStreamId}
                                 memberCount={stats.memberCount.total}
                                 shownDays={shownDays}
                             />

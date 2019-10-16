@@ -41,6 +41,10 @@ export type Props = {
     productSubscription?: Subscription,
     authApiKeyId?: ?ResourceKeyId,
     onPurchase?: () => void,
+    adminFee?: ?number,
+    joinPartStreamId?: ?string,
+    subscriberCount?: ?number,
+    mostRecentPurchaseTimestamp?: ?Date,
 }
 
 class ProductDetailsPage extends Component<Props> {
@@ -65,10 +69,13 @@ class ProductDetailsPage extends Component<Props> {
             authApiKeyId,
             onPurchase,
             toolbarStatus,
+            adminFee,
+            joinPartStreamId,
+            subscriberCount,
+            mostRecentPurchaseTimestamp,
         } = this.props
         const isProductFree = (product && BN(product.pricePerSecond).isEqualTo(0)) || false
         const isCommunity = !!(product && isCommunityProduct(product))
-        const subscriberCount = 0
 
         return !!product && (
             <div className={classNames(styles.productPage, !!showToolbar && styles.withToolbar)}>
@@ -118,10 +125,12 @@ class ProductDetailsPage extends Component<Props> {
                                         <div>{subscriberCount}</div>
                                     </div>
                                 )}
-                                <div>
-                                    <div className={styles.subheading}>Most recent purchase</div>
-                                    <div>TODO</div>
-                                </div>
+                                {mostRecentPurchaseTimestamp && (
+                                    <div>
+                                        <div className={styles.subheading}>Most recent purchase</div>
+                                        <div>{mostRecentPurchaseTimestamp.toLocaleDateString()}</div>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </ProductContainer>
@@ -131,8 +140,9 @@ class ProductDetailsPage extends Component<Props> {
                         <ProductOverview
                             product={product}
                             authApiKeyId={authApiKeyId}
-                            adminFee={0}
-                            subscriberCount={subscriberCount}
+                            adminFee={adminFee || 0}
+                            subscriberCount={subscriberCount || 0}
+                            joinPartStreamId={joinPartStreamId}
                         />
                     </ProductContainer>
                 )}

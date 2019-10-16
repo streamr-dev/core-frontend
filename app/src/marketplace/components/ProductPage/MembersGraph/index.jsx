@@ -14,7 +14,7 @@ import { ClientProvider } from '$editor/shared/components/Client'
 
 type Props = {
     className?: string,
-    joinPartStreamId: string,
+    joinPartStreamId: ?string,
     memberCount: number,
     shownDays: number,
 }
@@ -98,15 +98,17 @@ const MembersGraph = ({ className, joinPartStreamId, memberCount, shownDays }: P
     return (
         <div className={className}>
             <ClientProvider>
-                <Subscription
-                    key={`${joinPartStreamId}-${shownDays}`}
-                    uiChannel={{
-                        id: joinPartStreamId,
-                    }}
-                    resendFrom={Date.now() - (shownDays * MILLISECONDS_IN_DAY)}
-                    onMessage={onMessage}
-                    isActive
-                />
+                {joinPartStreamId && (
+                    <Subscription
+                        key={`${joinPartStreamId}-${shownDays}`}
+                        uiChannel={{
+                            id: joinPartStreamId,
+                        }}
+                        resendFrom={Date.now() - (shownDays * MILLISECONDS_IN_DAY)}
+                        onMessage={onMessage}
+                        isActive
+                    />
+                )}
             </ClientProvider>
             <XYPlot
                 xType="time"

@@ -147,5 +147,8 @@ export const setAdminFee = (address: Address, adminFee: number): SmartContractTr
     })
 )
 
+export const getJoinPartStreamId = (address: Address, usePublicNode: boolean = false) =>
+    call(getCommunityContract(address, usePublicNode).methods.joinPartStream())
+
 export const getCommunityStats = (id: string): ApiResult<Object> =>
     get(formatApiUrl('communities', id, 'stats'))
