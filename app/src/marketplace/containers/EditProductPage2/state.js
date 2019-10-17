@@ -1,7 +1,7 @@
 // @flow
 
 import { productStates } from '$shared/utils/constants'
-import type { Product } from '$mp/flowtype/product-types'
+import type { Product, PendingChanges } from '$mp/flowtype/product-types'
 
 export const PENDING_CHANGE_FIELDS = [
     'name',
@@ -22,7 +22,7 @@ export function isPublished(product: Product) {
     return !!(state === productStates.DEPLOYED || state === productStates.DEPLOYING)
 }
 
-export const getPendingObject = (product: Product): Object => {
+export const getPendingObject = (product: Product | PendingChanges): Object => {
     const allowedChanges = new Set(PENDING_CHANGE_FIELDS)
 
     return Object.fromEntries(Object.entries(product).filter(([key, value]) => allowedChanges.has(key) && value !== undefined))

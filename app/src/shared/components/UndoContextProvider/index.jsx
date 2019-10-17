@@ -204,9 +204,8 @@ class UndoContextProvider extends Component<Props, State> {
     }
 
     /**
-     * Reset to initialState
+     * Set initialState which is used as the "reset" state value
      */
-
     setInitialState = (fn: Function, done: Function) => {
         const p: Promise<void> = new Promise((resolve) => (
             this.setState(({ initialState }) => {
@@ -220,6 +219,9 @@ class UndoContextProvider extends Component<Props, State> {
         return p
     }
 
+    /**
+     * Reset to initialState
+     */
     reset = (done: Function) => {
         const p: Promise<void> = new Promise((resolve) => (
             this.setState(({ initialState }) => ({

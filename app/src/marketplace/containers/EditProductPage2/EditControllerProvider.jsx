@@ -113,7 +113,12 @@ function useEditController(product: Product) {
             // upload image
             if (nextProduct.newImageToUpload != null) {
                 try {
-                    const { imageUrl: newImageUrl, thumbnailUrl: newThumbnailUrl } = await postImage(nextProduct.id || '', nextProduct.newImageToUpload)
+                    /* eslint-disable object-curly-newline */
+                    const {
+                        imageUrl: newImageUrl,
+                        thumbnailUrl: newThumbnailUrl,
+                    } = await postImage(nextProduct.id || '', nextProduct.newImageToUpload)
+                    /* eslint-eanble object-curly-newline */
                     nextProduct.imageUrl = newImageUrl
                     nextProduct.thumbnailUrl = newThumbnailUrl
                     delete nextProduct.newImageToUpload
@@ -122,7 +127,7 @@ function useEditController(product: Product) {
                 }
             }
 
-            // save product
+            // save product (don't need to abort if unmounted)
             await putProduct(State.update(originalProduct, () => ({
                 ...nextProduct,
             })), nextProduct.id || '')
