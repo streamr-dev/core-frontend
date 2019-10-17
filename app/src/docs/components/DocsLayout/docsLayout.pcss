@@ -19,6 +19,20 @@
     font-size: inherit;
     background-color: #F8F8F8 !important;
     line-height: 20px;
+    overflow-x: auto !important;
+    /* stylelint-disable-next-line property-no-vendor-prefix */
+    -webkit-appearance: none;
+    -webkit-overflow-scrolling: auto;
+
+    &::-webkit-scrollbar {
+      height: 7px;
+      background-color: #F8F8F8;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border-radius: 4px;
+      background-color: #EAEAEA;
+    }
 
     code {
       font-size: 14px;
@@ -42,7 +56,7 @@
     font-family: 'IBM Plex Sans', sans-serif;
     font-size: 14px;
     background-color: #0424FF;
-    padding: 4px;
+    padding: 4px 8px;
     border-radius: 4px;
     white-space: nowrap;
   }
@@ -52,7 +66,7 @@
     font-family: 'IBM Plex Sans', sans-serif;
     font-size: 14px;
     background-color: #2AC437;
-    padding: 4px;
+    padding: 4px 8px;
     border-radius: 4px;
     white-space: nowrap;
   }
@@ -373,6 +387,7 @@
     pre {
       width: 100vw;
       margin: 3.5rem -1.5rem;
+      overflow: scroll !important;
 
       code {
         margin-left: -2rem;
@@ -398,5 +413,11 @@
   .grid {
     grid-template-columns: auto 736px;
     grid-column-gap: 2rem;
+  }
+}
+
+@media (--xl) {
+  .grid > div:nth-child(1) {
+    margin-left: -2rem;
   }
 }

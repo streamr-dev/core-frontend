@@ -8,7 +8,7 @@
 
 .navigationContainer {
   padding-top: 0;
-  top: 0;
+  top: 80px;
   position: sticky;
 }
 
@@ -20,8 +20,9 @@ ul.subNavList {
 }
 
 ul.navList {
-  padding: 0;
   max-height: 100vh;
+  margin-top: 0.5rem;
+  padding: 0;
   overflow: scroll;
   overflow-x: hidden;
   scrollbar-width: none;
@@ -171,6 +172,12 @@ ul.subNavList li.navListItem {
         transform: rotate(270deg);
       }
     }
+  }
+}
+
+@media (--lg-up) {
+  ul.navList {
+    max-width: 150px;
   }
 }
 

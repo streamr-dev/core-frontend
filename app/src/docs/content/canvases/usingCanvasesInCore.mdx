@@ -4,10 +4,17 @@ import links from '$shared/../links'
 
 import CanvasListing from './images/using_canvases_01_desktop_border.jpg'
 import CanvasListing2x from './images/using_canvases_01_desktop_border@2x.jpg'
-import CanvasModes2x from './images/using_canvases_02_mobile@2x.jpg'
-import RealtimeMode2x from './images/using_canvases_03_mobile@2x.jpg'
-import HistoricalMode2x from './images/using_canvases_04_mobile@2x.jpg'
+import CanvasModesMobile2x from './images/using_canvases_02_mobile@2x.jpg'
+import CanvasModes from './images/using_canvases_02_desktop.jpg'
+import CanvasModes2x from './images/using_canvases_02_desktop@2x.jpg'
+import RealtimeModeMobile2x from './images/using_canvases_03_mobile@2x.jpg'
+import RealtimeMode from './images/using_canvases_03_desktop.jpg'
+import RealtimeMode2x from './images/using_canvases_03_desktop@2x.jpg'
+import HistoricalModeMobile2x from './images/using_canvases_04_mobile@2x.jpg'
+import HistoricalMode from './images/using_canvases_04_desktop.jpg'
+import HistoricalMode2x from './images/using_canvases_04_desktop@2x.jpg'
 import PlaybackSpeedMobile2x from './images/using_canvases_05_mobile@2x.jpg'
+import PlaybackSpeedDesktop from './images/using_canvases_05_desktop.jpg'
 import PlaybackSpeedDesktop2x from './images/using_canvases_05_desktop@2x.jpg'
 
 import docsStyles from '$docs/components/DocsLayout/docsLayout.pcss'
@@ -30,10 +37,12 @@ To create a new canvas, click <span className={docsStyles.streamrHighlight}>Crea
 ## Canvas Modes
 You can run your canvas in one of two ways - **historical** or **realtime** mode. There's a natural iterative workflow where you first build a perhaps rudimentary version of a canvas, test it with historical data where possible, refine the design based on the test findings, and repeat until you're happy to run it in real-time.
 
-<figure className={docsStyles.mobileImageStretch}>
+<figure>
   <picture>
+    <source srcSet={CanvasModesMobile2x} media="(max-width: 575px)" />
     <img
-      src={CanvasModes2x}
+      src={CanvasModes}
+      srcSet={`${CanvasModes2x} 2x`}
       alt="Canvas Modes"
     />
   </picture>
@@ -44,10 +53,12 @@ Realtime mode (default) is used in production where you want to react to data po
 
 When you run a canvas in real-time mode, it will listen to real-time events arriving in the subscribed streams, and process them as soon as they're available. When the canvas is running you won't be able to edit it, if you need to make changes, you'll need to stop the canvas and then restart it.
 
-<figure className={docsStyles.mobileImageStretch}>
+<figure>
   <picture>
+    <source srcSet={RealtimeModeMobile2x} media="(max-width: 575px)" />
     <img
-      src={RealtimeMode2x}
+      src={RealtimeMode}
+      srcSet={`${RealtimeMode2x} 2x`}
       alt="Realtime Mode"
     />
   </picture>
@@ -60,10 +71,12 @@ Historical mode is a playback of what has happened in a past date range. A playb
 
 A canvas run in historical mode consumes a playback of past events stored in the subscribed streams. The playback is a simulation of what has happened in the past. You may run the canvas in historical mode provided the streams inside the canvas contain some historical data.
 
-<figure className={docsStyles.mobileImageStretch}>
+<figure>
   <picture>
+    <source srcSet={HistoricalModeMobile2x} media="(max-width: 575px)" />
     <img
-      src={HistoricalMode2x}
+      src={HistoricalMode}
+      srcSet={`${HistoricalMode2x} 2x`}
       alt="Historical Mode"
     />
   </picture>
@@ -76,7 +89,11 @@ The playback starts when you press the <span className={docsStyles.greenHighligh
 <figure>
   <picture>
     <source srcSet={PlaybackSpeedMobile2x} media="(max-width: 575px)" />
-    <img src={PlaybackSpeedDesktop2x} alt="Playback speed" />
+    <img
+      src={PlaybackSpeedDesktop}
+      srcSet={`${PlaybackSpeedDesktop2x} 2x`}
+      alt="Playback speed"
+    />
   </picture>
 </figure>
 
