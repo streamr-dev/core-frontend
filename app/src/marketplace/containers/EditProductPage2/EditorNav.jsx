@@ -80,32 +80,32 @@ const EditorNav = withRouter(({ location: { hash } }: EditorNavProps) => {
     const sections = useMemo(() => [{
         id: 'name',
         anchorId: 'product-name',
-        title: I18n.t('editProductPage.navigation.name'),
+        heading: I18n.t('editProductPage.navigation.name'),
         status: nameStatus,
     }, {
         id: 'coverImage',
         anchorId: 'cover-image',
-        title: I18n.t('editProductPage.navigation.coverImage'),
+        heading: I18n.t('editProductPage.navigation.coverImage'),
         status: coverImageStatus,
     }, {
         id: 'description',
         anchorId: 'description',
-        title: I18n.t('editProductPage.navigation.description'),
+        heading: I18n.t('editProductPage.navigation.description'),
         status: descriptionStatus,
     }, {
         id: 'streams',
         anchorId: 'streams',
-        title: I18n.t('editProductPage.navigation.streams'),
+        heading: I18n.t('editProductPage.navigation.streams'),
         status: streamsStatus,
     }, {
         id: 'price',
         anchorId: 'price',
-        title: I18n.t('editProductPage.navigation.price'),
+        heading: I18n.t('editProductPage.navigation.price'),
         status: priceStatus,
     }, {
         id: 'details',
         anchorId: 'details',
-        title: I18n.t('editProductPage.navigation.details'),
+        heading: I18n.t('editProductPage.navigation.details'),
         status: detailsStatus,
     }].map((section) => ({
         ...section,

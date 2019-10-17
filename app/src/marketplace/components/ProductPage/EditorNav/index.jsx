@@ -25,7 +25,7 @@ const statusIcons = {
 type Section = {
     // eslint-disable-next-line react/no-unused-prop-types
     id: string,
-    title: string,
+    heading: string,
     onClick?: Function,
     href?: string,
     status: $Values<typeof statuses>,
@@ -38,7 +38,7 @@ const isSet = (status) => !!status && status !== statuses.EMPTY
 const isError = (status) => !!status && status === statuses.ERROR
 
 const NavSection = ({
-    title,
+    heading,
     onClick,
     href,
     status = statuses.EMPTY,
@@ -59,16 +59,18 @@ const NavSection = ({
     }, [status, seen, active])
 
     return (
-        <div className={cx(styles.navSection, {
-            [styles.active]: !!active,
-        })}
+        <div
+            className={cx(styles.navSection, {
+                [styles.active]: !!active,
+            })}
+            aria-label={heading}
         >
-            <div className={styles.title}>
+            <div className={styles.heading}>
                 {!!href && (
-                    <a href={href} onClick={onClick}>{title}</a>
+                    <a href={href} onClick={onClick}>{heading}</a>
                 )}
                 {!href && (
-                    <button type="button" onClick={onClick}>{title}</button>
+                    <button type="button" onClick={onClick}>{heading}</button>
                 )}
             </div>
             <div className={styles.status}>

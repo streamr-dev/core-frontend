@@ -17,22 +17,22 @@ const stories =
 
 const sections = [{
     id: 'name',
-    title: 'Name',
+    heading: 'Name',
 }, {
     id: 'coverImage',
-    title: 'Cover Image',
+    heading: 'Cover Image',
 }, {
     id: 'description',
-    title: 'Description',
+    heading: 'Description',
 }, {
     id: 'streams',
-    title: 'Streams',
+    heading: 'Streams',
 }, {
     id: 'price',
-    title: 'Price',
+    heading: 'Price',
 }, {
     id: 'details',
-    title: 'Details',
+    heading: 'Details',
 }]
 
 const EditNavController = () => {
