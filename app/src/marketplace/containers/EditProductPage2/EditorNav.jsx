@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useContext, useMemo, useState } from 'react'
+import React, { useContext, useMemo, useState, useCallback, useRef } from 'react'
 import { I18n } from 'react-redux-i18n'
 
 import { isCommunityProduct } from '$mp/utils/product'
@@ -12,6 +12,8 @@ import useValidation from '../ProductController/useValidation'
 import useProduct from '../ProductController/useProduct'
 
 import styles from './editorNav.pcss'
+
+const OFFSET = -60
 
 const EditorNav = () => {
     const product = useProduct()
@@ -72,6 +74,21 @@ const EditorNav = () => {
         return (isCategoryValid && (!isCommunity || isAdminFeeValid)) ? statuses.VALID : statuses.ERROR
     }, [isTouched, isCommunity, isCategoryValid, isAdminFeeValid])
 
+    const clickTargetRef = useRef(null)
+    const onClickFn = useCallback((id, e) => {
+        e.preventDefault()
+        const anchor = document.getElementById(id)
+
+        if (anchor) {
+            const offsetTop = anchor.getBoundingClientRect().top + window.pageYOffset
+            window.scroll({
+                top: offsetTop + OFFSET,
+                behavior: 'smooth',
+            })
+            clickTargetRef.current = id
+        }
+    }, [clickTargetRef])
+
     const sections = useMemo(() => [{
         id: 'product-name',
         heading: I18n.t('editProductPage.navigation.name'),
@@ -98,7 +115,7 @@ const EditorNav = () => {
         status: detailsStatus,
     }].map((section) => ({
         ...section,
-        href: `#${section.id}`,
+        onClick: onClickFn.bind(null, section.id),
     })), [
         nameStatus,
         coverImageStatus,
@@ -106,20 +123,29 @@ const EditorNav = () => {
         streamsStatus,
         priceStatus,
         detailsStatus,
+        onClickFn,
     ])
 
     const sectionAnchors = useMemo(() => sections.map(({ id }) => id), [sections])
+
+    const onUpdate = useCallback((el) => {
+        if (el && typeof el.getAttribute === 'function') {
+            const scrolledId = el.getAttribute('id')
+
+            // don't update active position if clicked on a menu item
+            if (!clickTargetRef.current || clickTargetRef.current === scrolledId) {
+                setActiveSectionId(scrolledId)
+                clickTargetRef.current = null
+            }
+        }
+    }, [clickTargetRef])
 
     return (
         <Scrollspy
             items={sectionAnchors}
             componentTag="div"
-            onUpdate={(el) => {
-                if (el && typeof el.getAttribute === 'function') {
-                    setActiveSectionId(el.getAttribute('id'))
-                }
-            }}
-            offset={-60}
+            onUpdate={onUpdate}
+            offset={OFFSET}
             className={styles.sticky}
         >
             <EditorNavComponent
