@@ -1,7 +1,7 @@
 // @flow
 
 import React, { useMemo } from 'react'
-import ScrollableAnchor from 'react-scrollable-anchor'
+import cx from 'classnames'
 
 import useProduct from '../ProductController/useProduct'
 import useValidation from '../ProductController/useValidation'
@@ -11,6 +11,8 @@ import { isCommunityProduct } from '$mp/utils/product'
 
 import AvailableCategories from '../AvailableCategories'
 import Details from './Details'
+
+import styles from './productDetails.pcss'
 
 const adminFeeOptions = [10, 20, 30, 40, 50, 60, 70, 80, 90].map((value) => ({
     label: `${value} %`,
@@ -27,7 +29,7 @@ const ProductDetails = () => {
     const selectedAdminFee = useMemo(() => adminFeeOptions[adminFee], [adminFee])
 
     return (
-        <ScrollableAnchor id="details">
+        <section id="details" className={cx(styles.root, styles.ProductDetails)}>
             <div>
                 <h1>Give us some more details</h1>
                 <Details>
@@ -71,7 +73,7 @@ const ProductDetails = () => {
                     <p>{adminFeeLevel}: {adminFeeMessage}</p>
                 )}
             </div>
-        </ScrollableAnchor>
+        </section>
     )
 }
 

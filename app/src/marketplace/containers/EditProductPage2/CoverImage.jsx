@@ -1,7 +1,6 @@
 // @flow
 
 import React from 'react'
-import ScrollableAnchor from 'react-scrollable-anchor'
 import cx from 'classnames'
 
 import useProduct from '../ProductController/useProduct'
@@ -17,8 +16,8 @@ const CoverImage = () => {
     const { isValid, level, message } = useValidation('coverImage')
 
     return (
-        <ScrollableAnchor id="cover-image">
-            <div className={cx(styles.root, styles.CoverImage)}>
+        <section id="cover-image" className={cx(styles.root, styles.CoverImage)}>
+            <div>
                 <h1>Add a cover image</h1>
                 <p>This image will be shown as the tile image in the Marketplace browse view,
                     and also as the main image on your product page. For best quality,
@@ -34,7 +33,7 @@ const CoverImage = () => {
                     <p>{level}: {message}</p>
                 )}
             </div>
-        </ScrollableAnchor>
+        </section>
     )
 }
 

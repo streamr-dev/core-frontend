@@ -2,7 +2,6 @@
 
 import React from 'react'
 import cx from 'classnames'
-import ScrollableAnchor from 'react-scrollable-anchor'
 
 import TextControl from '$shared/components/TextControl'
 
@@ -18,8 +17,8 @@ const ProductName = () => {
     const { updateName } = useProductActions()
 
     return (
-        <ScrollableAnchor id="product-name">
-            <div className={cx(styles.root, styles.ProductName)}>
+        <section id="product-name" className={cx(styles.root, styles.ProductName)}>
+            <div>
                 <h1>Name your product</h1>
                 <TextControl
                     immediateCommit={false}
@@ -33,7 +32,7 @@ const ProductName = () => {
                     <p>{level}: {message}</p>
                 )}
             </div>
-        </ScrollableAnchor>
+        </section>
     )
 }
 

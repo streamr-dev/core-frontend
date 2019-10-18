@@ -1,11 +1,11 @@
 // @flow
 
-import React, { useContext, useMemo } from 'react'
-import { withRouter } from 'react-router-dom'
+import React, { useContext, useMemo, useState } from 'react'
 import { I18n } from 'react-redux-i18n'
 
 import { isCommunityProduct } from '$mp/utils/product'
 import EditorNavComponent, { statuses } from '$mp/components/ProductPage/EditorNav'
+import Scrollspy from 'react-scrollspy'
 
 import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
 import useValidation from '../ProductController/useValidation'
@@ -13,14 +13,9 @@ import useProduct from '../ProductController/useProduct'
 
 import styles from './editorNav.pcss'
 
-type EditorNavProps = {
-    location: {
-        hash: string,
-    },
-}
-
-const EditorNav = withRouter(({ location: { hash } }: EditorNavProps) => {
+const EditorNav = () => {
     const product = useProduct()
+    const [activeSectionId, setActiveSectionId] = useState(undefined)
 
     const { isTouched } = useContext(ValidationContext)
 
@@ -78,38 +73,32 @@ const EditorNav = withRouter(({ location: { hash } }: EditorNavProps) => {
     }, [isTouched, isCommunity, isCategoryValid, isAdminFeeValid])
 
     const sections = useMemo(() => [{
-        id: 'name',
-        anchorId: 'product-name',
+        id: 'product-name',
         heading: I18n.t('editProductPage.navigation.name'),
         status: nameStatus,
     }, {
-        id: 'coverImage',
-        anchorId: 'cover-image',
+        id: 'cover-image',
         heading: I18n.t('editProductPage.navigation.coverImage'),
         status: coverImageStatus,
     }, {
         id: 'description',
-        anchorId: 'description',
         heading: I18n.t('editProductPage.navigation.description'),
         status: descriptionStatus,
     }, {
         id: 'streams',
-        anchorId: 'streams',
         heading: I18n.t('editProductPage.navigation.streams'),
         status: streamsStatus,
     }, {
         id: 'price',
-        anchorId: 'price',
         heading: I18n.t('editProductPage.navigation.price'),
         status: priceStatus,
     }, {
         id: 'details',
-        anchorId: 'details',
         heading: I18n.t('editProductPage.navigation.details'),
         status: detailsStatus,
     }].map((section) => ({
         ...section,
-        href: `#${section.anchorId}`,
+        href: `#${section.id}`,
     })), [
         nameStatus,
         coverImageStatus,
@@ -119,20 +108,26 @@ const EditorNav = withRouter(({ location: { hash } }: EditorNavProps) => {
         detailsStatus,
     ])
 
-    const activeSectionId = useMemo(() => {
-        const activeSection = sections.find(({ anchorId }) => anchorId === hash.substr(1))
-
-        return activeSection ? activeSection.id : undefined
-    }, [sections, hash])
+    const sectionAnchors = useMemo(() => sections.map(({ id }) => id), [sections])
 
     return (
-        <EditorNavComponent
+        <Scrollspy
+            items={sectionAnchors}
+            componentTag="div"
+            onUpdate={(el) => {
+                if (el && typeof el.getAttribute === 'function') {
+                    setActiveSectionId(el.getAttribute('id'))
+                }
+            }}
+            offset={-60}
             className={styles.sticky}
-            // $FlowFixMe
-            sections={sections}
-            activeSection={activeSectionId}
-        />
+        >
+            <EditorNavComponent
+                sections={sections}
+                activeSection={activeSectionId}
+            />
+        </Scrollspy>
     )
-})
+}
 
 export default EditorNav
