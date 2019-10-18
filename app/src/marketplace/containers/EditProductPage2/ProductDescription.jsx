@@ -1,17 +1,19 @@
 // @flow
 
-import React from 'react'
+import React, { useContext } from 'react'
 import cx from 'classnames'
 
 import useProduct from '../ProductController/useProduct'
 import useValidation from '../ProductController/useValidation'
 import useProductActions from '../ProductController/useProductActions'
 import MarkdownEditor from '$mp/components/MarkdownEditor'
+import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
 
 import styles from './productDescription.pcss'
 
 const ProductDescription = () => {
     const product = useProduct()
+    const { isTouched } = useContext(ValidationContext)
     const { isValid, message } = useValidation('description')
     const { updateDescription } = useProductActions()
 
@@ -29,7 +31,7 @@ const ProductDescription = () => {
                     value={product.description || ''}
                     onCommit={updateDescription}
                     className={styles.productDescription}
-                    error={!isValid ? message : undefined}
+                    error={isTouched('description') && !isValid ? message : undefined}
                 />
             </div>
         </section>

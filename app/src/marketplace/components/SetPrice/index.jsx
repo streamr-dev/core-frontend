@@ -96,7 +96,6 @@ const SetPrice = ({
                         options={options}
                         value={selectedValue}
                         onChange={({ value: nextValue }) => onTimeUnitChange(nextValue)}
-                        error={error}
                         className={styles.select}
                     />
                 </div>

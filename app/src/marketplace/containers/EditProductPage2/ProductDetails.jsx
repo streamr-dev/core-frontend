@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useMemo } from 'react'
+import React, { useMemo, useContext } from 'react'
 import cx from 'classnames'
 
 import useProduct from '../ProductController/useProduct'
@@ -8,6 +8,7 @@ import useValidation from '../ProductController/useValidation'
 import useProductActions from '../ProductController/useProductActions'
 import SelectField from '$mp/components/SelectField'
 import { isCommunityProduct } from '$mp/utils/product'
+import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
 
 import AvailableCategories from '../AvailableCategories'
 import Details from './Details'
@@ -21,6 +22,8 @@ const adminFeeOptions = [10, 20, 30, 40, 50, 60, 70, 80, 90].map((value) => ({
 
 const ProductDetails = () => {
     const product = useProduct()
+    const { isTouched } = useContext(ValidationContext)
+
     const { isValid: isCategoryValid, message: categoryMessage } = useValidation('category')
     const { isValid: isAdminFeeValid, message: adminFeeMessage } = useValidation('adminFee')
     const { updateCategory, updateAdminFee } = useProductActions()
@@ -49,21 +52,21 @@ const ProductDetails = () => {
                                         value={selected}
                                         onChange={(option) => updateCategory(option.value)}
                                         isSearchable={false}
-                                        error={!isCategoryValid ? categoryMessage : undefined}
+                                        error={isTouched('category') && !isCategoryValid ? categoryMessage : undefined}
                                     />
                                 ) : null
                             }}
                         </AvailableCategories>
                     </Details.Row>
                     {isCommunityProduct(product) && (
-                        <Details.Row label="Set your admin fee">
+                        <Details.Row label="Set your admin fee" className={styles.adminFee}>
                             <SelectField
                                 name="adminFee"
                                 options={adminFeeOptions}
                                 value={selectedAdminFee}
                                 onChange={(option) => updateAdminFee(option.value)}
                                 isSearchable={false}
-                                error={!isAdminFeeValid ? adminFeeMessage : undefined}
+                                error={isTouched('adminFee') && !isAdminFeeValid ? adminFeeMessage : undefined}
                             />
                         </Details.Row>
                     )}

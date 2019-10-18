@@ -1,7 +1,8 @@
 // @flow
 
-import React from 'react'
+import React, { useContext } from 'react'
 import cx from 'classnames'
+import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
 
 import useProduct from '../ProductController/useProduct'
 import useValidation from '../ProductController/useValidation'
@@ -15,6 +16,7 @@ const ProductName = () => {
     const product = useProduct()
     const { isValid, message } = useValidation('name')
     const { updateName } = useProductActions()
+    const { isTouched } = useContext(ValidationContext)
 
     return (
         <section id="product-name" className={cx(styles.root, styles.ProductName)}>
@@ -24,7 +26,7 @@ const ProductName = () => {
                     value={product.name}
                     onCommit={updateName}
                     placeholder="Product Name"
-                    error={!isValid ? message : undefined}
+                    error={isTouched('name') && !isValid ? message : undefined}
                 />
             </div>
         </section>
