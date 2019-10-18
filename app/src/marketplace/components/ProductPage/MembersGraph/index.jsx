@@ -20,6 +20,17 @@ type Props = {
     shownDays: number,
 }
 
+type JoinPartMessage = {
+    type: string,
+    addresses: Array<string>,
+}
+
+type MessageMetadata = {
+    messageId: {
+        timestamp: number,
+    }
+}
+
 const axisStyle = {
     ticks: {
         fontSize: '12px',
@@ -47,12 +58,27 @@ const convertAndCallback = (rawMessages: Array<Object>, onMessage) => {
     })
 }
 
+const formatXAxisTicks = (value, index, scale, tickTotal, dayCount) => {
+    if (dayCount < 10) {
+        return scale.tickFormat(tickTotal, '%a %d')(value)
+    }
+
+    // Include month only for the first item and when month
+    // changes.
+    if (index === 0 || value.getDate() === 1) {
+        return scale.tickFormat(tickTotal, '%b %d')(value)
+    }
+    // Otherwise return only day number
+    return scale.tickFormat(tickTotal, '%d')(value)
+}
+
 const MembersGraph = ({ className, joinPartStreamId, memberCount, shownDays }: Props) => {
     const [memberCountUpdatedAt, setMemberCountUpdatedAt] = useState(Date.now())
     const [memberData, setMemberData] = useState([])
     const [graphData, setGraphData] = useState([])
+    const [dataDomain, setDataDomain] = useState([])
 
-    const onMessage = useCallback((data, metadata) => {
+    const onMessage = useCallback((data: JoinPartMessage, metadata: MessageMetadata) => {
         // Check if message type is 'join' or 'part' and
         // calculate member count diff based on the type.
         // E.g. 'join' with 3 addresses means +3 diff in member count.
@@ -96,8 +122,30 @@ const MembersGraph = ({ className, joinPartStreamId, memberCount, shownDays }: P
             })
             return acc
         }, initialData)
+
+        // If there's only 1 data point, "extrapolate"
+        // data to have 2 points so that we can draw
+        // a line between them.
+        if (data.length === 1) {
+            data.push({
+                x: data[0].x - (shownDays * MILLISECONDS_IN_DAY),
+                y: data[0].y,
+            })
+        }
         setGraphData(data)
-    }, [memberData, memberCount, memberCountUpdatedAt])
+
+        const dataValues = data.map((d) => d.y)
+        let max = Math.max(...dataValues)
+        let min = Math.min(...dataValues)
+
+        // If we provide a domain with same min and max, react-vis
+        // shows seemingly random scale for y-axis
+        if (max === min) {
+            min -= 2
+            max += 2
+        }
+        setDataDomain([min - 2, max])
+    }, [memberData, memberCount, memberCountUpdatedAt, shownDays])
 
     useEffect(() => {
         setMemberCountUpdatedAt(Date.now())
@@ -142,10 +190,12 @@ const MembersGraph = ({ className, joinPartStreamId, memberCount, shownDays }: P
                 xType="time"
                 width={540}
                 height={200}
+                /* We need margin to not clip axis labels */
                 margin={{
-                    left: 0,
+                    left: 10,
                     right: 50,
                 }}
+                yDomain={dataDomain}
             >
                 <HorizontalGridLines />
                 <LineSeries
@@ -160,6 +210,7 @@ const MembersGraph = ({ className, joinPartStreamId, memberCount, shownDays }: P
                     hideLine
                     style={axisStyle}
                     tickTotal={7}
+                    tickFormat={(value, index, scale, tickTotal) => formatXAxisTicks(value, index, scale, tickTotal, shownDays)}
                 />
                 <YAxis
                     hideLine
