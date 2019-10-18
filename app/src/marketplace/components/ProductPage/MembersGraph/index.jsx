@@ -9,8 +9,9 @@ import {
     HorizontalGridLines,
 } from 'react-vis'
 import '$app/node_modules/react-vis/dist/style.css'
-import Subscription from '$editor/shared/components/Subscription'
-import { ClientProvider } from '$editor/shared/components/Client'
+// import Subscription from '$editor/shared/components/Subscription'
+// import { ClientProvider } from '$editor/shared/components/Client'
+import { getStreamData } from '$mp/modules/communityProduct/services'
 
 type Props = {
     className?: string,
@@ -31,6 +32,20 @@ const axisStyle = {
 }
 
 const MILLISECONDS_IN_DAY = 24 * 60 * 60 * 1000
+
+// Converts raw messages from the HTTP api to match format we get with
+// streamr-client. Contains only payload and needed parts of the metadata.
+const convertAndCallback = (rawMessages: Array<Object>, onMessage) => {
+    rawMessages.forEach((msg) => {
+        const data = JSON.parse(msg[5])
+        const metaData = {
+            messageId: {
+                timestamp: msg[1][2],
+            },
+        }
+        onMessage(data, metaData)
+    })
+}
 
 const MembersGraph = ({ className, joinPartStreamId, memberCount, shownDays }: Props) => {
     const [memberCountUpdatedAt, setMemberCountUpdatedAt] = useState(Date.now())
@@ -93,10 +108,22 @@ const MembersGraph = ({ className, joinPartStreamId, memberCount, shownDays }: P
         // resubscription to stream will happen and data will
         // be resent
         setMemberData([])
-    }, [shownDays])
+
+        const loadStreamData = async (streamId) => {
+            const from = Date.now() - (shownDays * MILLISECONDS_IN_DAY)
+            const rawData = await getStreamData(streamId, from)
+            convertAndCallback(rawData, onMessage)
+        }
+
+        if (joinPartStreamId) {
+            loadStreamData(joinPartStreamId)
+        }
+    }, [shownDays, joinPartStreamId, onMessage])
 
     return (
         <div className={className}>
+            {/*
+            // Disabled for now because resends are super flaky at the moment
             <ClientProvider>
                 {joinPartStreamId && (
                     <Subscription
@@ -110,6 +137,7 @@ const MembersGraph = ({ className, joinPartStreamId, memberCount, shownDays }: P
                     />
                 )}
             </ClientProvider>
+            */}
             <XYPlot
                 xType="time"
                 width={540}

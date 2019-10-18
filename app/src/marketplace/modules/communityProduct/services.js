@@ -152,3 +152,8 @@ export const getJoinPartStreamId = (address: Address, usePublicNode: boolean = f
 
 export const getCommunityStats = (id: string): ApiResult<Object> =>
     get(formatApiUrl('communities', id, 'stats'))
+
+export const getStreamData = (id: string, fromTimestamp: number): ApiResult<Object> =>
+    get(formatApiUrl('streams', id, 'data', 'partitions', 0, 'from', {
+        fromTimestamp,
+    }))
