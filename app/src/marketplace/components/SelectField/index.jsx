@@ -29,6 +29,7 @@ export const SelectField = (props: any) => (
                         [styles.withFocus]: !!hasFocus,
                         [styles.withError]: !!hasError,
                     }, className)}
+                    controlClassName={styles.control}
                     {...rest}
                 />
                 <InputError

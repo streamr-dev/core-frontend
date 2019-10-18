@@ -45,6 +45,10 @@ story('ProductTypeChooser')
         <ProductTypeChooser onSelect={() => {}} />
     ))
 
+type CompletePublishControllerProps = {
+    isUnpublish?: boolean,
+}
+
 const CompletePublishController = ({ isUnpublish = false }: CompletePublishControllerProps) => {
     const options = [
         transactionStates.PENDING,

@@ -17,22 +17,22 @@ export type Props = {
     clearable?: boolean,
     isDisabled?: boolean,
     className?: string,
+    controlClassName?: string,
 }
 
 const customStyles = {
     control: (provided) => ({
         ...provided,
-        fontSize: '14px',
         padding: '0',
         '&:hover': {
             path: {
                 stroke: '#A3A3A3',
             },
         },
+        minHeight: '32px',
         border: '0',
         boxShadow: 'none',
         cursor: 'pointer',
-        minHeight: '32px',
     }),
     dropdownIndicator: (provided) => ({
         ...provided,
@@ -51,7 +51,6 @@ const customStyles = {
     }),
     option: (provided, state) => ({
         ...provided,
-        fontSize: '14px',
         padding: '0.5rem 1rem',
         paddingLeft: '2rem',
         lineHeight: 'normal',
@@ -74,6 +73,14 @@ const customStyles = {
     }),
 }
 
+const Control = ({ className, ...props }) => {
+    const { controlClassName } = props.selectProps
+
+    return (
+        <components.Control {...props} className={cx(className, controlClassName)} />
+    )
+}
+
 const IconOption = (props) => (
     <components.Option {...props}>
         {props.isSelected && (
@@ -86,20 +93,22 @@ const IconOption = (props) => (
 const DropdownIndicator = (props) => (
     components.DropdownIndicator && (
         <components.DropdownIndicator {...props}>
-            <SvgIcon name="caretDown" className={styles.caret} />
+            <SvgIcon name={props.selectProps.menuIsOpen ? 'caretUp' : 'caretDown'} className={styles.caret} />
         </components.DropdownIndicator>
     )
 )
 
-const SelectInput = ({ className, ...props }: Props) => (
+const SelectInput = ({ className, controlClassName, ...props }: Props) => (
     <Select
         className={cx(styles.select, className)}
         styles={customStyles}
         components={{
+            Control,
             IndicatorSeparator: null,
             Option: IconOption,
             DropdownIndicator,
         }}
+        controlClassName={controlClassName}
         {...props}
     />
 )
