@@ -1,80 +1,23 @@
 // @flow
 
-import React, { useContext } from 'react'
-import cx from 'classnames'
-import findLastIndex from 'lodash/findLastIndex'
-import { withRouter } from 'react-router-dom'
-import { Translate } from 'react-redux-i18n'
+import React, { useContext, useMemo, useState, useCallback, useRef } from 'react'
+import { I18n } from 'react-redux-i18n'
 
-import SvgIcon from '$shared/components/SvgIcon'
 import { isCommunityProduct } from '$mp/utils/product'
+import EditorNavComponent, { statuses } from '$mp/components/ProductPage/EditorNav'
+import Scrollspy from 'react-scrollspy'
 
 import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
 import useValidation from '../ProductController/useValidation'
 import useProduct from '../ProductController/useProduct'
+
 import styles from './editorNav.pcss'
 
-type NavSectioProps = {
-    id: string,
-    anchorId: string,
-    hasError?: boolean,
-    touched?: boolean,
-    location: {
-        hash: string,
-    },
-}
-
-const NavSection = withRouter(({
-    id,
-    anchorId,
-    hasError = false,
-    touched = false,
-    location: { hash },
-}: NavSectioProps) => (
-    <div className={cx(styles.navSection, {
-        [styles.active]: !!(anchorId === hash.substr(1)),
-    })}
-    >
-        <div className={styles.title}>
-            <a href={`#${anchorId}`}>
-                <Translate value={`editProductPage.navigation.${id}`} />
-            </a>
-        </div>
-        <div className={styles.status}>
-            <div className={cx(styles.marker, {
-                [styles.markerComplete]: !!touched && !hasError,
-                [styles.markerError]: !!touched && hasError,
-            })}
-            >
-                {!!touched && hasError && (<SvgIcon name="exclamation" className={styles.icon} />)}
-                {!!touched && !hasError && (<SvgIcon name="tick" className={styles.icon} />)}
-            </div>
-        </div>
-    </div>
-))
-
-const sections = [{
-    id: 'name',
-    anchorId: 'product-name',
-}, {
-    id: 'coverImage',
-    anchorId: 'cover-image',
-}, {
-    id: 'description',
-    anchorId: 'description',
-}, {
-    id: 'streams',
-    anchorId: 'streams',
-}, {
-    id: 'price',
-    anchorId: 'price',
-}, {
-    id: 'details',
-    anchorId: 'details',
-}]
+const OFFSET = -60
 
 const EditorNav = () => {
     const product = useProduct()
+    const [activeSectionId, setActiveSectionId] = useState(undefined)
 
     const { isTouched } = useContext(ValidationContext)
 
@@ -89,37 +32,127 @@ const EditorNav = () => {
 
     const isCommunity = isCommunityProduct(product)
 
-    const validSections = {
-        name: isNameValid,
-        coverImage: isCoverImageValid,
-        description: isDescriptionValid,
-        streams: areStreamsValid,
-        price: isPriceValid && (isCommunity || isBeneficiaryAddressValid),
-        details: isCategoryValid && (!isCommunity || isAdminFeeValid),
-    }
-    const lastIndex = findLastIndex(sections, ({ id }) => isTouched(id))
+    const nameStatus = useMemo(() => {
+        if (!isTouched('name')) {
+            return statuses.EMPTY
+        }
+        return isNameValid ? statuses.VALID : statuses.ERROR
+    }, [isTouched, isNameValid])
+
+    const coverImageStatus = useMemo(() => {
+        if (!isTouched('coverImage')) {
+            return statuses.EMPTY
+        }
+        return isCoverImageValid ? statuses.VALID : statuses.ERROR
+    }, [isTouched, isCoverImageValid])
+
+    const descriptionStatus = useMemo(() => {
+        if (!isTouched('description')) {
+            return statuses.EMPTY
+        }
+        return isDescriptionValid ? statuses.VALID : statuses.ERROR
+    }, [isTouched, isDescriptionValid])
+
+    const streamsStatus = useMemo(() => {
+        if (!isTouched('streams')) {
+            return statuses.EMPTY
+        }
+        return areStreamsValid ? statuses.VALID : statuses.ERROR
+    }, [isTouched, areStreamsValid])
+
+    const priceStatus = useMemo(() => {
+        if (!isTouched('price')) {
+            return statuses.EMPTY
+        }
+        return (isPriceValid && (isCommunity || isBeneficiaryAddressValid)) ? statuses.VALID : statuses.ERROR
+    }, [isTouched, isCommunity, isPriceValid, isBeneficiaryAddressValid])
+
+    const detailsStatus = useMemo(() => {
+        if (!isTouched('details')) {
+            return statuses.EMPTY
+        }
+        return (isCategoryValid && (!isCommunity || isAdminFeeValid)) ? statuses.VALID : statuses.ERROR
+    }, [isTouched, isCommunity, isCategoryValid, isAdminFeeValid])
+
+    const clickTargetRef = useRef(null)
+    const onClickFn = useCallback((id, e) => {
+        e.preventDefault()
+        const anchor = document.getElementById(id)
+
+        if (anchor) {
+            const offsetTop = anchor.getBoundingClientRect().top + window.pageYOffset
+            window.scroll({
+                top: offsetTop + OFFSET,
+                behavior: 'smooth',
+            })
+            clickTargetRef.current = id
+        }
+    }, [clickTargetRef])
+
+    const sections = useMemo(() => [{
+        id: 'product-name',
+        heading: I18n.t('editProductPage.navigation.name'),
+        status: nameStatus,
+    }, {
+        id: 'cover-image',
+        heading: I18n.t('editProductPage.navigation.coverImage'),
+        status: coverImageStatus,
+    }, {
+        id: 'description',
+        heading: I18n.t('editProductPage.navigation.description'),
+        status: descriptionStatus,
+    }, {
+        id: 'streams',
+        heading: I18n.t('editProductPage.navigation.streams'),
+        status: streamsStatus,
+    }, {
+        id: 'price',
+        heading: I18n.t('editProductPage.navigation.price'),
+        status: priceStatus,
+    }, {
+        id: 'details',
+        heading: I18n.t('editProductPage.navigation.details'),
+        status: detailsStatus,
+    }].map((section) => ({
+        ...section,
+        onClick: onClickFn.bind(null, section.id),
+    })), [
+        nameStatus,
+        coverImageStatus,
+        descriptionStatus,
+        streamsStatus,
+        priceStatus,
+        detailsStatus,
+        onClickFn,
+    ])
+
+    const sectionAnchors = useMemo(() => sections.map(({ id }) => id), [sections])
+
+    const onUpdate = useCallback((el) => {
+        if (el && typeof el.getAttribute === 'function') {
+            const scrolledId = el.getAttribute('id')
+
+            // don't update active position if clicked on a menu item
+            if (!clickTargetRef.current || clickTargetRef.current === scrolledId) {
+                setActiveSectionId(scrolledId)
+                clickTargetRef.current = null
+            }
+        }
+    }, [clickTargetRef])
 
     return (
-        <div className={cx(styles.root, styles.EditorNav)}>
-            <div className={styles.progressBar}>
-                <div className={styles.baseTrack} />
-                <div
-                    className={styles.progressTrack}
-                    style={{
-                        height: `${(Math.max(0, lastIndex) / Math.max(1, sections.length - 1)) * 100}%`,
-                    }}
-                />
-            </div>
-            {sections.map(({ id, anchorId }, index) => (
-                <NavSection
-                    key={id}
-                    id={id}
-                    anchorId={anchorId}
-                    hasError={!validSections[id]}
-                    touched={lastIndex >= index}
-                />
-            ))}
-        </div>
+        <Scrollspy
+            items={sectionAnchors}
+            componentTag="div"
+            onUpdate={onUpdate}
+            offset={OFFSET}
+            className={styles.sticky}
+        >
+            <EditorNavComponent
+                sections={sections}
+                activeSection={activeSectionId}
+            />
+        </Scrollspy>
     )
 }
 

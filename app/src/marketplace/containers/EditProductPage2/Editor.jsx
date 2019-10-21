@@ -12,14 +12,12 @@ import ProductDescription from './ProductDescription'
 import ProductStreams from './ProductStreams'
 import PriceSelector from './PriceSelector'
 import ProductDetails from './ProductDetails'
-import ConfigureAnchorOffset from '$shared/components/ConfigureAnchorOffset'
 
 import styles from './editor.pcss'
 
 const Editor = () => (
     <div className={cx(styles.root, styles.Editor)}>
         <DetailsContainer className={styles.container}>
-            <ConfigureAnchorOffset value={-100} />
             <div className={styles.grid}>
                 <div className={styles.nav}>
                     <EditorNav />

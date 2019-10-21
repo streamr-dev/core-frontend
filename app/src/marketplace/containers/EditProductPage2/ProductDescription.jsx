@@ -2,7 +2,6 @@
 
 import React from 'react'
 import cx from 'classnames'
-import ScrollableAnchor from 'react-scrollable-anchor'
 
 import useProduct from '../ProductController/useProduct'
 import useValidation from '../ProductController/useValidation'
@@ -17,8 +16,8 @@ const ProductDescription = () => {
     const { updateDescription } = useProductActions()
 
     return (
-        <ScrollableAnchor id="description">
-            <div className={cx(styles.root, styles.ProductDescription)}>
+        <section id="description" className={cx(styles.root, styles.ProductDescription)}>
+            <div>
                 <h1>Write a product description</h1>
                 <p>Sell your product — make sure you include details about the contents of
                     your streams, historical data, and any other relevant details.
@@ -35,7 +34,7 @@ const ProductDescription = () => {
                     <p>{level}: {message}</p>
                 )}
             </div>
-        </ScrollableAnchor>
+        </section>
     )
 }
 
