@@ -18,6 +18,7 @@ import FallbackImage from '$shared/components/FallbackImage'
 import ProductContainer from '$shared/components/Container/Product'
 import Tile from '$shared/components/Tile'
 import { isCommunityProduct } from '$mp/utils/product'
+import { ago } from '$shared/utils/time'
 
 import ProductDetails from './ProductDetails'
 import CollapsedText from './CollapsedText'
@@ -128,7 +129,7 @@ class ProductDetailsPage extends Component<Props> {
                                 {mostRecentPurchaseTimestamp && (
                                     <div>
                                         <div className={styles.subheading}>Most recent purchase</div>
-                                        <div>{mostRecentPurchaseTimestamp.toLocaleDateString()}</div>
+                                        <div>{ago(mostRecentPurchaseTimestamp)}</div>
                                     </div>
                                 )}
                             </div>
