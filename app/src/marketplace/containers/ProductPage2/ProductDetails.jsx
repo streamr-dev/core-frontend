@@ -6,8 +6,9 @@ import { Button } from 'reactstrap'
 import { I18n } from 'react-redux-i18n'
 
 import { isPaidProduct } from '$mp/utils/product'
-import type { Product } from '$mp/flowtype/product-types'
+import type { Product, Subscription } from '$mp/flowtype/product-types'
 import PaymentRate from '$mp/components/PaymentRate'
+import ExpirationCounter from '$mp/components/ExpirationCounter'
 import { timeUnits, productStates } from '$shared/utils/constants'
 import Link from '$shared/components/Link'
 
@@ -16,6 +17,7 @@ import styles from './productDetails2.pcss'
 type Props = {
     product: Product,
     isValidSubscription: boolean,
+    productSubscription?: Subscription,
     onPurchase: () => void,
 }
 
@@ -31,7 +33,7 @@ const buttonTitle = (product: Product, isValidSubscription: boolean) => {
         I18n.t('productPage.productDetails.add')
 }
 
-const ProductDetails = ({ product, isValidSubscription, onPurchase }: Props) => (
+const ProductDetails = ({ product, isValidSubscription, productSubscription, onPurchase }: Props) => (
     <div className={styles.root}>
         <div
             className={cx(styles.basics, {
@@ -56,9 +58,9 @@ const ProductDetails = ({ product, isValidSubscription, onPurchase }: Props) => 
                         </React.Fragment>
                     )}
                 </div>
-                <div className={styles.activeTag}>
-                    <span>Active</span>
-                </div>
+                {productSubscription != null && productSubscription.endTimestamp != null && (
+                    <ExpirationCounter expiresAt={new Date(productSubscription.endTimestamp * 1000)} />
+                )}
             </div>
         </div>
         <div className={styles.separator} />

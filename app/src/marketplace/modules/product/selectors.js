@@ -70,7 +70,7 @@ export const selectStreamsError: (StoreState) => ?ErrorInUi = createSelector(
     (subState: ProductState): ?ErrorInUi => subState.streamsError,
 )
 
-export const selectContractSubscription: (StoreState) => ?ErrorInUi = createSelector(
+export const selectContractSubscription: (StoreState) => ?Subscription = createSelector(
     selectProductState,
     (subState: ProductState): ?Subscription => subState.contractSubscription,
 )
