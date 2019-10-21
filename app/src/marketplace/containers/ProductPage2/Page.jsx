@@ -85,6 +85,7 @@ class ProductDetailsPage extends Component<Props> {
                 )}
                 <Hero
                     className={styles.hero}
+                    containerClassName={styles.heroContainer}
                     product={product}
                     leftContent={
                         <div className={styles.productImageWrapper}>
@@ -120,13 +121,13 @@ class ProductDetailsPage extends Component<Props> {
                                     <div className={styles.subheading}>Product category</div>
                                     <div>{product.category}</div>
                                 </div>
-                                {isCommunity && (
+                                {subscriberCount != null && (
                                     <div>
                                         <div className={styles.subheading}>Active subscribers</div>
                                         <div>{subscriberCount}</div>
                                     </div>
                                 )}
-                                {mostRecentPurchaseTimestamp && (
+                                {mostRecentPurchaseTimestamp != null && (
                                     <div>
                                         <div className={styles.subheading}>Most recent purchase</div>
                                         <div>{ago(mostRecentPurchaseTimestamp)}</div>

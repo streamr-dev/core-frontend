@@ -118,9 +118,12 @@ const ProductPage = ({ overlayPurchaseDialog, overlayPublishDialog }: Props) => 
         if (isCommunityProduct(p) && p.beneficiaryAddress) {
             setAdminFee(await getAdminFee(p.beneficiaryAddress))
             setJoinPartStreamId(await getJoinPartStreamId(p.beneficiaryAddress))
-            setSubscriberCount(await getSubscriberCount(p.id))
-            setRecentPurchaseTimestamp(await getMostRecentPurchase(p.id))
         }
+    }, [])
+
+    const loadBlockchainData = useCallback(async (p) => {
+        setSubscriberCount(await getSubscriberCount(p.id))
+        setRecentPurchaseTimestamp(await getMostRecentPurchase(p.id))
     }, [])
 
     const onPurchase = useCallback((id: ProductId) => {
@@ -160,8 +163,9 @@ const ProductPage = ({ overlayPurchaseDialog, overlayPublishDialog }: Props) => 
     }, [product, overlayPurchaseDialog, isPurchaseAllowed, deniedRedirect])
 
     useEffect(() => {
+        loadBlockchainData(product)
         loadCPData(product)
-    }, [product, loadCPData])
+    }, [product, loadCPData, loadBlockchainData])
 
     const overlay = () => {
         if (product) {
