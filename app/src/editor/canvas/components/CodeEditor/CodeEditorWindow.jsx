@@ -77,7 +77,10 @@ export default class CodeEditorWindow extends React.Component {
         })
     }
 
-    onMouseDownTitle = () => {
+    onClickTitle = (event) => {
+        // need to cancel event otherwise editor focus doesn't stick
+        event.preventDefault()
+        event.stopPropagation()
         // forward title clicks to editor focus
         this.editor.current.editor.focus()
     }
@@ -98,7 +101,7 @@ export default class CodeEditorWindow extends React.Component {
             <DraggableCanvasWindow {...canvasWindowProps}>
                 <div className={styles.editorDialog}>
                     <DraggableCanvasWindow.Dialog onClose={onClose}>
-                        <DraggableCanvasWindow.Title onClose={onClose} onMouseDown={this.onMouseDownTitle}>Code Editor</DraggableCanvasWindow.Title>
+                        <DraggableCanvasWindow.Title onClose={onClose} onClick={this.onClickTitle}>Code Editor</DraggableCanvasWindow.Title>
                         <div className={styles.editorContainer}>
                             <AceEditor
                                 ref={this.editor}
