@@ -36,6 +36,7 @@
   "license": "UNLICENSED",
   "jest": {
     "collectCoverage": true,
+    "coverageReporters": ["text-summary", "lcov-report"],
     "coverageThreshold": {
       "global": {
         "lines": 32
