@@ -10,8 +10,6 @@ import store from './utils/i18nStore'
 
 import Products from '$mp/components/Products'
 import ProductTypeChooser from '$mp/components/ProductTypeChooser'
-import MarkdownEditor from '$mp/components/MarkdownEditor'
-import SetPrice from '$mp/components/SetPrice'
 import ExpirationCounter from '$mp/components/ExpirationCounter'
 import exampleProductList from './exampleProductList'
 import CompletePublishTransaction from '$mp/components/Modal/CompletePublishTransaction'

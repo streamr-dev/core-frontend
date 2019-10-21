@@ -12,7 +12,8 @@ type Props = {
     className?: string,
 }
 
-const DAY_SECONDS = 24 * 60 * 60
+const HOUR_SECONDS = 60 * 60
+const DAY_SECONDS = 24 * HOUR_SECONDS
 
 const getExpirationString = (secondsLeft: number): string => {
     if (secondsLeft < DAY_SECONDS) {
@@ -25,11 +26,12 @@ const getExpirationString = (secondsLeft: number): string => {
     return `${days} day${days > 1 ? 's' : ''}`
 }
 
-const Error = ({ expiresAt, className }: Props) => {
+const ExpirationCounter = ({ expiresAt, className }: Props) => {
     const [secondsUntilExpiration, setSecondsUntilExpiration] = useState(parseInt((expiresAt.getTime() - Date.now()) / 1000, 10))
 
     useInterval(() => {
-        setSecondsUntilExpiration(secondsUntilExpiration - 1)
+        const diff = parseInt((expiresAt.getTime() - Date.now()) / 1000, 10)
+        setSecondsUntilExpiration(diff)
     }, 1000)
 
     return (
@@ -37,23 +39,16 @@ const Error = ({ expiresAt, className }: Props) => {
             cx(
                 styles.root,
                 className, {
-                    [styles.expiringSoon]: secondsUntilExpiration > 0 && secondsUntilExpiration <= (60 * 60),
+                    [styles.expiringSoon]: secondsUntilExpiration > 0 && secondsUntilExpiration <= HOUR_SECONDS,
                     [styles.expired]: secondsUntilExpiration < 0,
                 },
             )}
         >
-            {secondsUntilExpiration <= 0 && (
-                <React.Fragment>
-                    Expired
-                </React.Fragment>
-            )}
-            {secondsUntilExpiration > 0 && (
-                <React.Fragment>
-                    Expires in {getExpirationString(secondsUntilExpiration)}
-                </React.Fragment>
+            {secondsUntilExpiration <= 0 ? 'Expired' : (
+                `Expires in ${getExpirationString(secondsUntilExpiration)}`
             )}
         </span>
     )
 }
 
-export default Error
+export default ExpirationCounter
