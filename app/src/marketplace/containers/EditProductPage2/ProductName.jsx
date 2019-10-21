@@ -1,36 +1,35 @@
 // @flow
 
-import React from 'react'
+import React, { useContext } from 'react'
 import cx from 'classnames'
-import ScrollableAnchor from 'react-scrollable-anchor'
+import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
 
 import useProduct from '../ProductController/useProduct'
 import useValidation from '../ProductController/useValidation'
 import useProductActions from '../ProductController/useProductActions'
 
+import TextField from '$mp/components/TextField'
+
 import styles from './productName.pcss'
 
 const ProductName = () => {
     const product = useProduct()
-    const { isValid, level, message } = useValidation('name')
+    const { isValid, message } = useValidation('name')
     const { updateName } = useProductActions()
+    const { isTouched } = useContext(ValidationContext)
 
     return (
-        <ScrollableAnchor id="product-name">
-            <div className={cx(styles.root, styles.ProductName)}>
+        <section id="product-name" className={cx(styles.root, styles.ProductName)}>
+            <div>
                 <h1>Name your product</h1>
-                <input
-                    type="text"
+                <TextField
                     value={product.name}
-                    onChange={(e: SyntheticInputEvent<EventTarget>) => updateName(e.target.value)}
+                    onCommit={updateName}
                     placeholder="Product Name"
-                    className={styles.input}
+                    error={isTouched('name') && !isValid ? message : undefined}
                 />
-                {!isValid && (
-                    <p>{level}: {message}</p>
-                )}
             </div>
-        </ScrollableAnchor>
+        </section>
     )
 }
 

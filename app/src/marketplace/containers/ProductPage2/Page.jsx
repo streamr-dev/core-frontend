@@ -9,7 +9,7 @@ import { I18n } from 'react-redux-i18n'
 
 import Toolbar from '$shared/components/Toolbar'
 import Hero from '$mp/components/Hero'
-import type { Product } from '../../flowtype/product-types'
+import type { Product, Subscription } from '../../flowtype/product-types'
 import type { StreamList } from '$shared/flowtype/stream-types'
 import type { ButtonActions } from '$shared/components/Buttons'
 import Products from '$mp/components/Products'
@@ -36,6 +36,7 @@ export type Props = {
     showStreamActions?: boolean,
     isLoggedIn?: boolean,
     isProductSubscriptionValid?: boolean,
+    productSubscription?: Subscription,
     onPurchase?: () => void,
 }
 
@@ -57,6 +58,7 @@ class ProductDetailsPage extends Component<Props> {
             showStreamActions,
             isLoggedIn,
             isProductSubscriptionValid,
+            productSubscription,
             onPurchase,
             toolbarStatus,
         } = this.props
@@ -90,6 +92,7 @@ class ProductDetailsPage extends Component<Props> {
                         <ProductDetails
                             product={product}
                             isValidSubscription={!!isProductSubscriptionValid}
+                            productSubscription={productSubscription}
                             onPurchase={() => onPurchase && onPurchase()}
                         />
                     }

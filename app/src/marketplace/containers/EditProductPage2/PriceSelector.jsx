@@ -1,10 +1,10 @@
 // @flow
 
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useContext } from 'react'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { Translate } from 'react-redux-i18n'
-import ScrollableAnchor from 'react-scrollable-anchor'
+import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
 
 import useProduct from '../ProductController/useProduct'
 import useValidation from '../ProductController/useValidation'
@@ -21,6 +21,7 @@ import styles from './PriceSelector.pcss'
 
 const PriceSelector = () => {
     const product = useProduct()
+    const { isTouched } = useContext(ValidationContext)
     const {
         updateIsFree,
         updatePrice,
@@ -50,11 +51,11 @@ const PriceSelector = () => {
 
     const isFreeProduct = !!product.isFree
 
-    const { isValid, level, message } = useValidation('price')
+    const { isValid, message } = useValidation('price')
 
     return (
-        <ScrollableAnchor id="price">
-            <div className={cx(styles.root, styles.PriceSelector)}>
+        <section id="price" className={cx(styles.root, styles.PriceSelector)}>
+            <div>
                 <Translate
                     tag="h1"
                     value="editProductPage.setPrice.title"
@@ -79,11 +80,9 @@ const PriceSelector = () => {
                         timeUnit={product.timeUnit}
                         onTimeUnitChange={onTimeUnitChange}
                         dataPerUsd={dataPerUsd}
+                        error={isTouched('price') && !isValid ? message : undefined}
                     />
-                    {!isValid && (
-                        <p>{level}: {message}</p>
-                    )}
-                    {isCommunityProduct(product) && (
+                    {!isCommunityProduct(product) && (
                         <BeneficiaryAddress
                             className={styles.beneficiaryAddress}
                             address={product.beneficiaryAddress}
@@ -105,7 +104,7 @@ const PriceSelector = () => {
                     </div>
                 </div>
             </div>
-        </ScrollableAnchor>
+        </section>
     )
 }
 

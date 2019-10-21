@@ -15,6 +15,9 @@ import useProductActions from '../ProductController/useProductActions'
 import { isEthereumAddress } from '$mp/utils/validate'
 import { areAddressesEqual } from '$mp/utils/smartContract'
 
+import useOriginalProduct from '../ProductController/useOriginalProduct'
+
+import * as State from '../EditProductPage2/state'
 import useModal from '$shared/hooks/useModal'
 
 type ContextProps = {
@@ -35,6 +38,7 @@ function useEditController(product: Product) {
     const isMounted = useIsMounted()
     const savePending = usePending('product.SAVE')
     const { updateBeneficiaryAddress } = useProductActions()
+    const originalProduct = useOriginalProduct()
 
     useEffect(() => {
         const handleBeforeunload = (event) => {
@@ -100,20 +104,33 @@ function useEditController(product: Product) {
     const save = useCallback(async (options = {
         redirect: true,
     }) => {
+        if (!originalProduct) { throw new Error('originalProduct is missing') }
         const savedSuccessfully = await savePending.wrap(async () => {
-            const p = productRef.current
-
-            // save product
-            await putProduct(p, p.id || '')
+            const nextProduct = {
+                ...productRef.current,
+            }
 
             // upload image
-            if (p.newImageToUpload != null) {
+            if (nextProduct.newImageToUpload != null) {
                 try {
-                    await postImage(p.id || '', p.newImageToUpload)
+                    /* eslint-disable object-curly-newline */
+                    const {
+                        imageUrl: newImageUrl,
+                        thumbnailUrl: newThumbnailUrl,
+                    } = await postImage(nextProduct.id || '', nextProduct.newImageToUpload)
+                    /* eslint-eanble object-curly-newline */
+                    nextProduct.imageUrl = newImageUrl
+                    nextProduct.thumbnailUrl = newThumbnailUrl
+                    delete nextProduct.newImageToUpload
                 } catch (e) {
                     console.error('Could not upload image', e)
                 }
             }
+
+            // save product (don't need to abort if unmounted)
+            await putProduct(State.update(originalProduct, () => ({
+                ...nextProduct,
+            })), nextProduct.id || '')
 
             // TODO: handle saving errors
             return true
@@ -126,6 +143,7 @@ function useEditController(product: Product) {
     }, [
         savePending,
         redirectToProduct,
+        originalProduct,
     ])
 
     const validate = useCallback(() => {

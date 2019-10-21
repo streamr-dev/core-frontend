@@ -50,7 +50,7 @@ story('Avatar')
         const user = {
             name: text('Name', 'Matt Innes'),
             username: text('Username', 'matt@streamr.com'),
-            imageUrl: boolean('showImage', true) ? 'https://www.streamr.com/assets/TeamPhotos/Matt.jpg' : null,
+            imageUrlLarge: boolean('showImage', true) ? 'https://miro.medium.com/fit/c/256/256/1*NfJkA-ChiQtYLRBOLryZxQ.jpeg' : null,
         }
 
         return (

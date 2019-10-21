@@ -156,7 +156,7 @@ msgid "language##name"
 msgstr "English"
 
 msgid "urls##whitepaper"
-msgstr "https://www.streamr.com/whitepaper"
+msgstr "https://streamr.network/whitepaper"
 
 msgid "modal##common##cancel"
 msgstr "Cancel"

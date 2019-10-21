@@ -1,24 +1,25 @@
 // @flow
 
-import React from 'react'
+import React, { useContext } from 'react'
 import cx from 'classnames'
-import ScrollableAnchor from 'react-scrollable-anchor'
 
 import useProduct from '../ProductController/useProduct'
 import useValidation from '../ProductController/useValidation'
 import useProductActions from '../ProductController/useProductActions'
 import MarkdownEditor from '$mp/components/MarkdownEditor'
+import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
 
 import styles from './productDescription.pcss'
 
 const ProductDescription = () => {
     const product = useProduct()
-    const { isValid, level, message } = useValidation('description')
+    const { isTouched } = useContext(ValidationContext)
+    const { isValid, message } = useValidation('description')
     const { updateDescription } = useProductActions()
 
     return (
-        <ScrollableAnchor id="description">
-            <div className={cx(styles.root, styles.ProductDescription)}>
+        <section id="description" className={cx(styles.root, styles.ProductDescription)}>
+            <div>
                 <h1>Write a product description</h1>
                 <p>Sell your product — make sure you include details about the contents of
                     your streams, historical data, and any other relevant details.
@@ -27,15 +28,13 @@ const ProductDescription = () => {
                 </p>
                 <MarkdownEditor
                     placeholder="Type something great about your product"
-                    value={product.description}
-                    onChange={updateDescription}
+                    value={product.description || ''}
+                    onCommit={updateDescription}
                     className={styles.productDescription}
+                    error={isTouched('description') && !isValid ? message : undefined}
                 />
-                {!isValid && (
-                    <p>{level}: {message}</p>
-                )}
             </div>
-        </ScrollableAnchor>
+        </section>
     )
 }
 
