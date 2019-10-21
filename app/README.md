@@ -34,7 +34,7 @@ Webpack is configured with live reloading and will be served on http://localhost
 
 ### Documentation
 
-The live documentation can be found at [streamr.com/docs](https://streamr.com/docs). 
+The live documentation can be found at [streamr.network/docs](https://streamr.network/docs). 
 The documentation content files are held in `/src/docs/content` as MDX files (jsx flavoured markdown). 
 Community contributions are encouraged, please see the [Docs Editing Guide](https://github.com/streamr-dev/streamr-platform/app/src/docs/docsEditingGuide.md) for more information.
 
@@ -133,7 +133,7 @@ Development Branch -> Local environment (bleeding edge)
 
 Master Branch (untagged) -> Production ready code
 
-Master Branch (tagged releases) -> Production code - https://streamr.com/marketplace
+Master Branch (tagged releases) -> Production code - https://streamr.network/marketplace
 
 ### Deploying to Staging
 

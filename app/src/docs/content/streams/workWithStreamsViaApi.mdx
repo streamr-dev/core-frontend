@@ -9,12 +9,12 @@ While the Core UI can do just about everything you'd want to do with streams, so
 Events in streams can be queried via HTTP. Example using `curl`:
 
 <CodeSnippet language='bash'>
-    {`curl -i -X POST -H "Authorization: Bearer MY-SESSION-TOKEN" -d "{\"foo\":\"hello\",\"bar\":24.5}" https://www.streamr.com/api/v1/streams/MY-STREAM-ID/data`}
+    {`curl -i -X POST -H "Authorization: Bearer MY-SESSION-TOKEN" -d "{\"foo\":\"hello\",\"bar\":24.5}" https://streamr.network/api/v1/streams/MY-STREAM-ID/data`}
 </CodeSnippet>
 
 The following endpoint would return the 5 most recent messages in a stream (or to be more precise, the default partition 0 of a stream):
 
-<CodeSnippet language='json'>{`https://www.streamr.com/api/v1/streams/{id}/data/partitions/0/last?count=5`}</CodeSnippet>
+<CodeSnippet language='json'>{`https://streamr.network/api/v1/streams/{id}/data/partitions/0/last?count=5`}</CodeSnippet>
 
 The HTTP API covers session management, data input, data output, and managing Streamr resources such as Canvases, Streams, and Dashboards. The endpoints allow you to list, create, read, update and delete the resources, as well as execute resource-specific actions such as start and stop Canvases.
 

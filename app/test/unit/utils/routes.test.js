@@ -28,7 +28,7 @@ describe('route utils', () => {
         }))(params)
 
         it('renders urls correctly', () => {
-            expect(r('https://www.streamr.com/')).toEqual('https://www.streamr.com/')
+            expect(r('https://www.streamr.network/')).toEqual('https://www.streamr.network/')
         })
 
         it('prints the raw path when params are falsy', () => {

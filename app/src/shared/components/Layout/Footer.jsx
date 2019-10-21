@@ -9,7 +9,6 @@ import { push } from 'connected-react-router'
 
 import withI18n, { type I18nProps } from '$shared/containers/WithI18n'
 import { formatPath } from '$shared/utils/url'
-import routes from '$routes'
 import links from '$shared/../links'
 
 export type DispatchProps = {
@@ -49,23 +48,23 @@ class Footer extends React.Component<Props> {
                 )}
                 onSelectLanguage={this.onSelectLanguage}
             >
-                <FooterColumn title={I18n.t('general.product')}>
-                    <a href={links.howItWorks}>
-                        <Translate value="general.howItWorks" />
+                <FooterColumn title="Learn">
+                    <a href="/">
+                        Top
                     </a>
-                    <a href={links.streamrSystem}>
-                        <Translate value="general.streamrSystem" />
+                    <a href="/learn/network">
+                        Network
                     </a>
-                    <a href={routes.canvasEditor()} className="d-none d-lg-inline">
-                        <Translate value="general.tryTheEditor" />
+                    <a href="/learn/marketplace">
+                        Marketplace
+                    </a>
+                    <a href="/learn/core">
+                        Core
                     </a>
                 </FooterColumn>
                 <FooterColumn title={I18n.t('general.company')}>
-                    <a href={links.aboutUs}>
+                    <a href="/about">
                         <Translate value="general.aboutUs" />
-                    </a>
-                    <a href={links.faq}>
-                        <Translate value="general.faq" />
                     </a>
                     <a href={links.blog}>
                         <Translate value="general.blog" />
