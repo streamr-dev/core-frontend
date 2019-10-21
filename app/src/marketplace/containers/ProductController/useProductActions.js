@@ -80,6 +80,7 @@ export function useProductActions() {
             ...p,
             category,
         }))
+        touch('category')
         touch('details')
     }, [commit, touch])
     const updateAdminFee = useCallback((adminFee: number) => {
@@ -87,6 +88,7 @@ export function useProductActions() {
             ...p,
             adminFee,
         }))
+        touch('adminFee')
         touch('details')
     }, [commit, touch])
     const updateIsFree = useCallback((isFree: $ElementType<Product, 'isFree'>) => {

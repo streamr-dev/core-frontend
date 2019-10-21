@@ -1,20 +1,22 @@
 // @flow
 
-import React from 'react'
+import React, { useContext } from 'react'
 import cx from 'classnames'
 
 import StreamSelectorComponent from '$mp/components/StreamSelector'
 import useProduct from '../ProductController/useProduct'
 import useValidation from '../ProductController/useValidation'
 import useProductActions from '../ProductController/useProductActions'
+import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
 
 import AvailableStreams from '../AvailableStreams'
 import styles from './productStreams.pcss'
 
 const ProductStreams = () => {
     const product = useProduct()
-    const { isValid, level, message } = useValidation('streams')
+    const { isValid, message } = useValidation('streams')
     const { updateStreams } = useProductActions()
+    const { isTouched } = useContext(ValidationContext)
 
     return (
         <section id="streams" className={cx(styles.root, styles.StreamSelector)}>
@@ -31,12 +33,10 @@ const ProductStreams = () => {
                             onEdit={updateStreams}
                             streams={product.streams}
                             className={styles.streams}
+                            error={isTouched('streams') && !isValid ? message : undefined}
                         />
                     )}
                 </AvailableStreams>
-                {!isValid && (
-                    <p>{level}: {message}</p>
-                )}
             </div>
         </section>
     )

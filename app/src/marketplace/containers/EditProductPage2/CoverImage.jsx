@@ -1,19 +1,24 @@
 // @flow
 
-import React from 'react'
+import React, { useContext } from 'react'
 import cx from 'classnames'
+import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
 
 import useProduct from '../ProductController/useProduct'
 import useValidation from '../ProductController/useValidation'
 import useProductActions from '../ProductController/useProductActions'
 import ImageUpload from '$shared/components/ImageUpload'
+import InputError from '$mp/components/InputError'
 
 import styles from './coverImage.pcss'
 
 const CoverImage = () => {
     const product = useProduct()
+    const { isTouched } = useContext(ValidationContext)
     const { updateImageFile } = useProductActions()
-    const { isValid, level, message } = useValidation('coverImage')
+    const { isValid, message } = useValidation('coverImage')
+
+    const hasError = isTouched('coverImage') && !isValid
 
     return (
         <section id="cover-image" className={cx(styles.root, styles.CoverImage)}>
@@ -28,10 +33,15 @@ const CoverImage = () => {
                     setImageToUpload={updateImageFile}
                     originalImage={(product.newImageToUpload && product.newImageToUpload.preview) || product.imageUrl}
                     className={styles.imageUpload}
+                    dropzoneClassname={cx(styles.dropZone, {
+                        [styles.dropZoneError]: !!hasError,
+                    })}
                 />
-                {!isValid && (
-                    <p>{level}: {message}</p>
-                )}
+                <InputError
+                    eligible={hasError}
+                    message={message}
+                    preserved={false}
+                />
             </div>
         </section>
     )

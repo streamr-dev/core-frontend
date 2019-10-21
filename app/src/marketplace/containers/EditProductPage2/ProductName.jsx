@@ -1,36 +1,33 @@
 // @flow
 
-import React from 'react'
+import React, { useContext } from 'react'
 import cx from 'classnames'
-
-import TextControl from '$shared/components/TextControl'
+import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
 
 import useProduct from '../ProductController/useProduct'
 import useValidation from '../ProductController/useValidation'
 import useProductActions from '../ProductController/useProductActions'
 
+import TextField from '$mp/components/TextField'
+
 import styles from './productName.pcss'
 
 const ProductName = () => {
     const product = useProduct()
-    const { isValid, level, message } = useValidation('name')
+    const { isValid, message } = useValidation('name')
     const { updateName } = useProductActions()
+    const { isTouched } = useContext(ValidationContext)
 
     return (
         <section id="product-name" className={cx(styles.root, styles.ProductName)}>
             <div>
                 <h1>Name your product</h1>
-                <TextControl
-                    immediateCommit={false}
-                    commitEmpty
-                    onCommit={(value) => updateName(value)}
+                <TextField
                     value={product.name}
+                    onCommit={updateName}
                     placeholder="Product Name"
-                    className={styles.input}
+                    error={isTouched('name') && !isValid ? message : undefined}
                 />
-                {!isValid && (
-                    <p>{level}: {message}</p>
-                )}
             </div>
         </section>
     )

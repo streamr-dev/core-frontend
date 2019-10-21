@@ -73,7 +73,7 @@ function useValidationContext(): ContextProps {
         if (!isMounted() || !product) { return }
 
         ['name', 'description', 'category'].forEach((field) => {
-            if (String(product[field]).length <= 0) {
+            if (!product[field]) {
                 setStatus(field, ERROR, `Product ${field} cannot be empty`)
             } else {
                 clearStatus(field)

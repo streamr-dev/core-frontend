@@ -1,14 +1,15 @@
 // @flow
 
-import React, { useState, useCallback, useEffect } from 'react'
+import React, { useState, useCallback, useEffect, useMemo } from 'react'
 import cx from 'classnames'
 import BN from 'bignumber.js'
 
 import type { NumberString, TimeUnit, Currency } from '$shared/flowtype/common-types'
 import { timeUnits, currencies, DEFAULT_CURRENCY } from '$shared/utils/constants'
 import { convert } from '$mp/utils/price'
-import Dropdown from '$shared/components/Dropdown'
 import SvgIcon from '$shared/components/SvgIcon'
+import PriceField from '$mp/components/PriceField'
+import SelectField from '$mp/components/SelectField'
 
 import styles from './setPrice.pcss'
 
@@ -22,11 +23,17 @@ type Props = {
     dataPerUsd: NumberString,
     disabled: boolean,
     className?: string,
+    error?: string,
 }
 
 const getQuoteCurrencyFor = (currency: Currency) => (
     currency === currencies.DATA ? currencies.USD : currencies.DATA
 )
+
+const options = [timeUnits.hour, timeUnits.day, timeUnits.week, timeUnits.month].map((unit: TimeUnit) => ({
+    label: unit,
+    value: unit,
+}))
 
 const SetPrice = ({
     price,
@@ -38,11 +45,11 @@ const SetPrice = ({
     dataPerUsd,
     disabled,
     className,
+    error,
 }: Props) => {
     const [quotePrice, setQuotePrice] = useState(BN(0))
 
-    const onPriceChange = useCallback((e: SyntheticInputEvent<EventTarget>) => {
-        const newPrice = e.target.value
+    const onPriceChange = useCallback((newPrice) => {
         onPriceChangeProp(newPrice)
     }, [onPriceChangeProp])
 
@@ -56,6 +63,8 @@ const SetPrice = ({
         setQuotePrice(quoteAmount)
     }, [price, dataPerUsd, currency])
 
+    const selectedValue = useMemo(() => options.find(({ value: optionValue }) => optionValue === timeUnit), [timeUnit])
+
     return (
         <div className={cx(styles.root, className)}>
             <div
@@ -64,36 +73,32 @@ const SetPrice = ({
                 })}
             >
                 <div className={styles.priceControls}>
-                    <input
-                        className={styles.input}
+                    <PriceField
+                        currency={currency}
+                        onCommit={onPriceChange}
+                        disabled={disabled}
                         placeholder="Price"
                         value={price.toString()}
-                        onChange={onPriceChange}
-                        disabled={disabled}
-                    />
-                    <span className={styles.currency}>{currency}</span>
-                    <SvgIcon name="transfer" className={styles.icon} onClick={onCurrencyChange} />
-                    <input
+                        error={error}
                         className={styles.input}
-                        placeholder="Price"
-                        value={quotePrice.toString()}
-                        onChange={() => {}}
-                        disabled={disabled}
                     />
-                    <span className={styles.currency}>{getQuoteCurrencyFor(currency)}</span>
-                    <span className={styles.per}>per</span>
-                    <Dropdown
-                        title=""
-                        selectedItem={timeUnit}
-                        onChange={onTimeUnitChange}
+                    <SvgIcon name="transfer" className={styles.icon} onClick={onCurrencyChange} />
+                    <PriceField
+                        currency={getQuoteCurrencyFor(currency)}
+                        placeholder="Price"
+                        value={BN(quotePrice).isNaN() ? '0' : quotePrice.toString()}
                         disabled={disabled}
-                    >
-                        {[timeUnits.hour, timeUnits.day, timeUnits.week, timeUnits.month].map((unit: TimeUnit) => (
-                            <Dropdown.Item key={unit} value={unit}>
-                                {unit}
-                            </Dropdown.Item>
-                        ))}
-                    </Dropdown>
+                        className={styles.input}
+                    />
+                    <span className={styles.per}>per</span>
+                    <SelectField
+                        placeholder="Select"
+                        options={options}
+                        value={selectedValue}
+                        onChange={({ value: nextValue }) => onTimeUnitChange(nextValue)}
+                        disabled={disabled}
+                        className={styles.select}
+                    />
                 </div>
             </div>
         </div>
