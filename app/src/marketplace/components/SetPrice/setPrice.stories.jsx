@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { storiesOf } from '@storybook/react'
-import { withKnobs, boolean, number } from '@storybook/addon-knobs'
+import { withKnobs, number } from '@storybook/addon-knobs'
 import styles from '@sambego/storybook-styles'
 
 import SetPrice from '.'
@@ -17,17 +17,18 @@ const stories =
         .addDecorator(withKnobs)
 
 type SetPriceControllerProps = {
-    error?: string
+    error?: string,
+    disabled?: boolean,
 }
 
-const SetPriceController = ({ error }: SetPriceControllerProps) => {
+const SetPriceController = ({ error, disabled }: SetPriceControllerProps) => {
     const [price, setPrice] = useState('0')
     const [currency, setCurrency] = useState('DATA')
     const [timeUnit, setTimeUnit] = useState('hour')
 
     return (
         <SetPrice
-            disabled={boolean('disabled', false)}
+            disabled={disabled}
             price={price}
             onPriceChange={setPrice}
             currency={currency}
@@ -42,6 +43,10 @@ const SetPriceController = ({ error }: SetPriceControllerProps) => {
 
 stories.add('basic', () => (
     <SetPriceController />
+))
+
+stories.add('disabled', () => (
+    <SetPriceController disabled />
 ))
 
 stories.add('with error', () => (

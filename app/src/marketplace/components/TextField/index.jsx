@@ -3,44 +3,40 @@
 import React from 'react'
 import cx from 'classnames'
 
-import InputControl from '$mp/components/InputControl'
 import TextControl from '$shared/components/TextControl'
 import InputError from '$mp/components/InputError'
+import { useLastError, type LastErrorProps } from '$shared/hooks/useLastError'
 
 import styles from './textField.pcss'
 
-export const TextField = (props: any) => (
-    <InputControl {...props}>
-        {({
-            value,
-            hasFocus,
-            onFocusChange,
-            hasError,
-            error,
-            className,
-            ...rest
-        }) => (
-            <div>
-                <TextControl
-                    immediateCommit={false}
-                    commitEmpty
-                    selectAllOnFocus
-                    value={value}
-                    onBlur={onFocusChange}
-                    onFocus={onFocusChange}
-                    className={cx(styles.input, {
-                        [styles.withError]: !!hasError,
-                    }, className)}
-                    {...rest}
-                />
-                <InputError
-                    eligible={hasError}
-                    message={error}
-                    preserved
-                />
-            </div>
-        )}
-    </InputControl>
-)
+type TextFieldProps = LastErrorProps & {
+    className?: string,
+}
+
+export const TextField = ({ error, isProcessing, className, ...inputProps }: TextFieldProps) => {
+    const { hasError, error: lastError } = useLastError({
+        error,
+        isProcessing,
+    })
+
+    return (
+        <div>
+            <TextControl
+                immediateCommit={false}
+                commitEmpty
+                selectAllOnFocus
+                className={cx(styles.input, {
+                    [styles.withError]: !!hasError,
+                }, className)}
+                {...inputProps}
+            />
+            <InputError
+                eligible={hasError}
+                message={lastError}
+                preserved
+            />
+        </div>
+    )
+}
 
 export default TextField

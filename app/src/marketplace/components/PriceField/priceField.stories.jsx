@@ -25,6 +25,15 @@ stories.add('basic', () => (
     />
 ))
 
+stories.add('disabled', () => (
+    <PriceField
+        currency="USD"
+        placeholder="Price"
+        onCommit={action('commit')}
+        disabled
+    />
+))
+
 stories.add('with error', () => (
     <PriceField
         currency="USD"

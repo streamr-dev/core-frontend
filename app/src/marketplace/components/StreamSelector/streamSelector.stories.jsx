@@ -60,9 +60,10 @@ const availableStreams = [{
 
 type StreamControllerProps = {
     error?: string,
+    disabled?: boolean,
 }
 
-const StreamController = ({ error }: StreamControllerProps) => {
+const StreamController = ({ error, disabled }: StreamControllerProps) => {
     const [streams, setStreams] = useState([])
 
     return (
@@ -73,6 +74,7 @@ const StreamController = ({ error }: StreamControllerProps) => {
             }}
             availableStreams={availableStreams}
             error={error}
+            disabled={disabled}
         />
     )
 }
@@ -83,6 +85,10 @@ stories.add('basic', () => (
 
 stories.add('with error', () => (
     <StreamController error="Something went wrong" />
+))
+
+stories.add('disabled', () => (
+    <StreamController disabled />
 ))
 
 stories.add('empty', () => (

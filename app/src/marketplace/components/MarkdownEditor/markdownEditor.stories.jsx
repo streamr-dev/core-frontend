@@ -24,6 +24,14 @@ stories.add('basic', () => (
     />
 ))
 
+stories.add('disabled', () => (
+    <MarkdownEditor
+        placeholder="Type here"
+        onCommit={action('commit')}
+        disabled
+    />
+))
+
 stories.add('with error', () => (
     <MarkdownEditor
         placeholder="Type here"

@@ -3,54 +3,55 @@
 import React from 'react'
 import cx from 'classnames'
 
-import InputControl from '$mp/components/InputControl'
 import TextControl from '$shared/components/TextControl'
 import InputError from '$mp/components/InputError'
+import { useLastError, type LastErrorProps } from '$shared/hooks/useLastError'
 
 import styles from './priceField.pcss'
 
-type Props = {
+type Props = LastErrorProps & {
     currency: string,
+    className?: string,
+    value?: string | number,
 }
 
-const PriceField = ({ currency, ...props }: Props) => (
-    <InputControl {...props}>
-        {({
-            value,
-            onFocusChange,
-            hasFocus,
-            hasError,
-            error,
-            className,
-            ...rest
-        }) => (
-            <div className={cx(styles.root, className)}>
-                <div
-                    className={cx(styles.inputWrapper, {
-                        [styles.withFocus]: !!hasFocus,
-                        [styles.withError]: !!hasError,
-                    })}
-                >
-                    <TextControl
-                        immediateCommit={false}
-                        commitEmpty
-                        selectAllOnFocus
-                        value={value}
-                        onBlur={onFocusChange}
-                        onFocus={onFocusChange}
-                        className={styles.input}
-                        {...rest}
-                    />
-                    <span className={styles.currency}>{currency}</span>
-                </div>
-                <InputError
-                    eligible={hasError}
-                    message={error}
-                    preserved={false}
+const PriceField = ({
+    currency,
+    className,
+    value,
+    isProcessing,
+    error,
+    ...inputProps
+}: Props) => {
+    const { hasError, error: lastError } = useLastError({
+        error,
+        isProcessing,
+    })
+
+    return (
+        <div className={cx(styles.root, className)}>
+            <div
+                className={cx(styles.inputWrapper, {
+                    [styles.withError]: !!hasError,
+                })}
+            >
+                <TextControl
+                    immediateCommit={false}
+                    commitEmpty
+                    selectAllOnFocus
+                    value={value}
+                    className={styles.input}
+                    {...inputProps}
                 />
+                <span className={styles.currency}>{currency}</span>
             </div>
-        )}
-    </InputControl>
-)
+            <InputError
+                eligible={hasError}
+                message={lastError}
+                preserved={false}
+            />
+        </div>
+    )
+}
 
 export default PriceField

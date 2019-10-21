@@ -29,10 +29,11 @@ const options = [{
 }]
 
 type SetPriceControllerProps = {
-    error?: string
+    error?: string,
+    disabled?: boolean,
 }
 
-const SelectFieldController = ({ error }: SetPriceControllerProps) => {
+const SelectFieldController = ({ error, disabled }: SetPriceControllerProps) => {
     const [value, setValue] = useState()
 
     const selectedValue = useMemo(() => options.find(({ value: optionValue }) => optionValue === value), [value])
@@ -44,12 +45,17 @@ const SelectFieldController = ({ error }: SetPriceControllerProps) => {
             value={selectedValue}
             onChange={({ value: nextValue }) => setValue(nextValue)}
             error={error}
+            disabled={disabled}
         />
     )
 }
 
 stories.add('basic', () => (
     <SelectFieldController />
+))
+
+stories.add('disabled', () => (
+    <SelectFieldController disabled />
 ))
 
 stories.add('with error', () => (

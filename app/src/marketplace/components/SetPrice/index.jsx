@@ -96,6 +96,7 @@ const SetPrice = ({
                         options={options}
                         value={selectedValue}
                         onChange={({ value: nextValue }) => onTimeUnitChange(nextValue)}
+                        disabled={disabled}
                         className={styles.select}
                     />
                 </div>

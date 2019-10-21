@@ -56,12 +56,7 @@ const TextControl = ({
     }, [normalizedValue, valueProp, onCommit, commitEmpty])
 
     useEffect(() => {
-        setValue((prev) => {
-            if (valueProp !== prev) {
-                return valueProp
-            }
-            return prev
-        })
+        setValue(valueProp)
     }, [valueProp])
 
     const onBlur = useCallback((e: SyntheticInputEvent<EventTarget>) => {

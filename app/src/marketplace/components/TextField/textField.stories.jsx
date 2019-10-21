@@ -24,6 +24,14 @@ stories.add('basic', () => (
     />
 ))
 
+stories.add('disabled', () => (
+    <TextField
+        placeholder="Add some text"
+        onCommit={action('commit')}
+        disabled
+    />
+))
+
 stories.add('with error', () => (
     <TextField
         placeholder="Add some text"

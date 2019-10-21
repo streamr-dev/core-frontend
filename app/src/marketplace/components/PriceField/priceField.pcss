@@ -6,16 +6,14 @@
   align-items: center;
   border: 1px solid #F1F1F1;
   border-radius: 4px;
-}
 
-.withFocus {
-  border: 1px solid #0324FF;
+  &:focus-within {
+    border: 1px solid #0324FF !important;
+  }
 }
 
 .withError {
-  &:not(.withFocus) {
-    border: 1px solid #FF5C00;
-  }
+  border: 1px solid #FF5C00;
 }
 
 .disabled {

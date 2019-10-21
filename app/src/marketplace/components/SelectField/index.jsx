@@ -3,43 +3,46 @@
 import React from 'react'
 import cx from 'classnames'
 
-import InputControl from '$mp/components/InputControl'
-import Select from '$shared/components/SelectInput/Select'
+import Select, { type Props as SelectProps } from '$shared/components/SelectInput/Select'
 import InputError from '$mp/components/InputError'
+import { useLastError, type LastErrorProps } from '$shared/hooks/useLastError'
 
 import styles from './selectField.pcss'
 
-export const SelectField = (props: any) => (
-    <InputControl {...props}>
-        {({
-            value,
-            hasFocus,
-            onFocusChange,
-            hasError,
-            error,
-            className,
-            ...rest
-        }) => (
-            <div>
-                <Select
-                    value={value}
-                    onBlur={onFocusChange}
-                    onFocus={onFocusChange}
-                    className={cx(styles.input, {
-                        [styles.withFocus]: !!hasFocus,
-                        [styles.withError]: !!hasError,
-                    }, className)}
-                    controlClassName={styles.control}
-                    {...rest}
-                />
-                <InputError
-                    eligible={hasError}
-                    message={error}
-                    preserved
-                />
-            </div>
-        )}
-    </InputControl>
-)
+type SelectFieldProps = LastErrorProps & SelectProps & {
+    disabled?: boolean,
+}
+
+export const SelectField = ({
+    error,
+    isProcessing,
+    disabled,
+    className,
+    ...inputProps
+}: SelectFieldProps) => {
+    const { hasError, error: lastError } = useLastError({
+        error,
+        isProcessing,
+    })
+    const castProps: SelectProps = ((inputProps: any): SelectProps)
+
+    return (
+        <div>
+            <Select
+                className={cx(styles.input, {
+                    [styles.withError]: !!hasError,
+                }, className)}
+                controlClassName={styles.control}
+                isDisabled={disabled}
+                {...castProps}
+            />
+            <InputError
+                eligible={hasError}
+                message={lastError}
+                preserved
+            />
+        </div>
+    )
+}
 
 export default SelectField
