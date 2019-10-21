@@ -32,7 +32,10 @@ export const getSubscriberCount = async (id: ProductId, usePublicNode: boolean =
         fromBlock: 0,
         toBlock: 'latest',
     })
-    return events.length
+    const validSubs = events.filter((e) => (
+        e.returnValues && e.returnValues.endTimestamp && ((e.returnValues.endTimestamp.toNumber() * 1000) > Date.now())
+    ))
+    return validSubs.length
 }
 
 export const getMostRecentPurchase = async (id: ProductId, usePublicNode: boolean = false) => {
@@ -52,5 +55,9 @@ export const getMostRecentPurchase = async (id: ProductId, usePublicNode: boolea
 
     const lastEvent = events[events.length - 1]
     const lastBlock = await web3.eth.getBlock(lastEvent.blockHash)
-    return new Date(lastBlock.timestamp * 1000)
+    if (lastBlock && lastBlock.timestamp) {
+        return new Date(lastBlock.timestamp * 1000)
+    }
+
+    return null
 }
