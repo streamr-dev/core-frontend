@@ -250,6 +250,7 @@ module.exports = {
                     'src/docs/scripts/*.*',
                     // upcoming docs
                     'src/docs/components/DocsPages/RunningNode/index.jsx',
+                    'src/docs/components/DocsPages/Marketplace/CommunityProducts/index.jsx',
                 ],
             },
         }),

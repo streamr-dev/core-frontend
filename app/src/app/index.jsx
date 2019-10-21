@@ -55,17 +55,6 @@ import ModulesBasicsDocsPage from '$docs/components/DocsPages/Canvases/ModulesBa
 import ModulesAdvancedDocsPage from '$docs/components/DocsPages/Canvases/ModulesAdvanced'
 // Module Reference Docs
 import ModuleReferenceHelp from '$docs/components/DocsPages/ModuleReference/HelpModules'
-// import ModuleReferenceCustomModulesDocsPage from '$docs/components/DocsPages/ModuleReference/CustomModules'
-// import ModuleReferenceInputDocsPage from '$docs/components/DocsPages/ModuleReference/Input'
-// import ModuleReferenceIntegrationsDocsPage from '$docs/components/DocsPages/ModuleReference/Integrations'
-// import ModuleReferenceListDocsPage from '$docs/components/DocsPages/ModuleReference/List'
-// import ModuleReferenceMapDocsPage from '$docs/components/DocsPages/ModuleReference/Map'
-// import ModuleReferenceStreamsDocsPage from '$docs/components/DocsPages/ModuleReference/Streams'
-// import ModuleReferenceTextDocsPage from '$docs/components/DocsPages/ModuleReference/Text'
-// import ModuleReferenceTimeAndDateDocsPage from '$docs/components/DocsPages/ModuleReference/TimeAndDate'
-// import ModuleReferenceTimeSeriesDocsPage from '$docs/components/DocsPages/ModuleReference/TimeSeries'
-// import ModuleReferenceUtilsDocsPage from '$docs/components/DocsPages/ModuleReference/Utils'
-// import ModuleReferenceVisualizationsDocsPage from '$docs/components/DocsPages/ModuleReference/Visualizations'
 
 // Dashboard Docs
 import DashboardsDocsPage from '$docs/components/DocsPages/Dashboards'
