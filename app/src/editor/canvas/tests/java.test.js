@@ -90,5 +90,5 @@ describe('Java Module', () => {
         canvas = State.replaceModule(canvas, newModule)
         expect(State.arePortsConnected(canvas, constant1.outputs[0].id, javaModule.inputs[0].id)).toBeTruthy()
         expect(State.arePortsConnected(canvas, javaModule.outputs[0].id, constant2.params[0].id)).toBeTruthy()
-    })
+    }, 10000)
 })
