@@ -16,9 +16,9 @@ const CoverImage = () => {
     const product = useProduct()
     const { isTouched } = useContext(ValidationContext)
     const { updateImageFile } = useProductActions()
-    const { isValid, message } = useValidation('coverImage')
+    const { isValid, message } = useValidation('imageUrl')
 
-    const hasError = isTouched('coverImage') && !isValid
+    const hasError = isTouched('imageUrl') && !isValid
 
     return (
         <section id="cover-image" className={cx(styles.root, styles.CoverImage)}>

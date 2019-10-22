@@ -32,7 +32,7 @@ export const getChangeObject = (original: Product, next: Product): Object => (
     Object.fromEntries(Object.entries(getPendingObject(next)).filter(([key, value]) => value !== original[key]))
 )
 
-export function getPendingChanges(product: Product) {
+export function getPendingChanges(product: Product): Object {
     if (isPublished(product)) {
         return getPendingObject(product.pendingChanges || {})
     }

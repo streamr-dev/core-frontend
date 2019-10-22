@@ -51,7 +51,7 @@ const PriceSelector = () => {
 
     const isFreeProduct = !!product.isFree
 
-    const { isValid, message } = useValidation('price')
+    const { isValid, message } = useValidation('pricePerSecond')
 
     return (
         <section id="price" className={cx(styles.root, styles.PriceSelector)}>
@@ -80,7 +80,7 @@ const PriceSelector = () => {
                         timeUnit={product.timeUnit}
                         onTimeUnitChange={onTimeUnitChange}
                         dataPerUsd={dataPerUsd}
-                        error={isTouched('price') && !isValid ? message : undefined}
+                        error={isTouched('pricePerSecond') && !isValid ? message : undefined}
                     />
                     {!isCommunityProduct(product) && (
                         <BeneficiaryAddress

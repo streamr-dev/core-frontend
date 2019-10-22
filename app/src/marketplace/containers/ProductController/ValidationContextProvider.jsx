@@ -6,6 +6,7 @@ import useIsMounted from '$shared/hooks/useIsMounted'
 import { isEthereumAddress } from '$mp/utils/validate'
 import { isPaidProduct, isCommunityProduct } from '$mp/utils/product'
 import { isPriceValid } from '$mp/utils/price'
+import { isPublished, getPendingChanges, PENDING_CHANGE_FIELDS } from '../EditProductPage2/state'
 
 export const INFO = 'info'
 export const WARNING = 'warning'
@@ -17,17 +18,22 @@ type ContextProps = {
     setStatus: (string, Level, string) => void,
     clearStatus: (string) => void,
     status: Object,
+    isValid: (string) => boolean,
     validate: (Object) => void,
     touched: Object,
     touch: (string) => void,
     isTouched: (string) => boolean,
     isAnyTouched: () => boolean,
+    pendingChanges: Object,
+    isPendingChange: (string) => boolean,
+    isAnyChangePending: () => boolean,
 }
 
 const ValidationContext: Context<ContextProps> = React.createContext({})
 
 function useValidationContext(): ContextProps {
     const [status, setStatusState] = useState({})
+    const [pendingChanges, setPendingChanges] = useState({})
     const [touched, setTouched] = useState({})
 
     const touch = useCallback((name: string) => {
@@ -41,6 +47,20 @@ function useValidationContext(): ContextProps {
     const isAnyTouched = useCallback(() => Object.values(touched).some(Boolean), [touched])
 
     const isMounted = useIsMounted()
+
+    const setPendingChange = useCallback((name: string, isPending: boolean = true): Object => {
+        if (!isMounted()) { return }
+        if (!name) {
+            throw new Error('pending change needs a name')
+        }
+
+        setPendingChanges((state) => ({
+            ...state,
+            [name]: isPending,
+        }))
+    }, [setPendingChanges, isMounted])
+    const isPendingChange = useCallback((name: string) => !!pendingChanges[name], [pendingChanges])
+    const isAnyChangePending = useCallback(() => Object.values(pendingChanges).some(Boolean), [pendingChanges])
 
     const setStatus = useCallback((name: string, level: Level, message: string): Object => {
         if (!isMounted()) { return }
@@ -68,6 +88,8 @@ function useValidationContext(): ContextProps {
             [name]: undefined,
         }))
     }, [setStatusState, isMounted])
+
+    const isValid = useCallback((name: string) => !status[name], [status])
 
     const validate = useCallback((product) => {
         if (!isMounted() || !product) { return }
@@ -113,31 +135,46 @@ function useValidationContext(): ContextProps {
 
         if (isPaid) {
             if (!isPriceValid(product.pricePerSecond)) {
-                setStatus('price', ERROR, 'Price should be greater or equal to 0')
+                setStatus('pricePerSecond', ERROR, 'Price should be greater or equal to 0')
             } else {
-                clearStatus('price')
+                clearStatus('pricePerSecond')
             }
         } else {
-            clearStatus('price')
+            clearStatus('pricePerSecond')
         }
-    }, [setStatus, clearStatus, isMounted])
+
+        // Set pending fields
+        const changes = getPendingChanges(product)
+        const isPublic = isPublished(product)
+        PENDING_CHANGE_FIELDS.forEach((field) => {
+            setPendingChange(field, !!changes[field] || (isPublic && isTouched(field)))
+        })
+    }, [setStatus, clearStatus, isMounted, setPendingChange, isTouched])
 
     return useMemo(() => ({
         setStatus,
         clearStatus,
+        isValid,
         touched,
         touch,
         isTouched,
         isAnyTouched,
+        pendingChanges,
+        isPendingChange,
+        isAnyChangePending,
         status,
         validate,
     }), [
         status,
         setStatus,
+        isValid,
         touched,
         touch,
         isTouched,
         isAnyTouched,
+        pendingChanges,
+        isPendingChange,
+        isAnyChangePending,
         clearStatus,
         validate,
     ])

@@ -58,7 +58,6 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
         const { id: joinPartStreamId } = await createJoinPartStream(productId)
 
         return new Promise((resolve) => (
-            // $FlowFixMe
             deployContract(joinPartStreamId, adminFee)
                 .onTransactionHash((hash, communityAddress) => {
                     dispatch(addTransaction(hash, transactionTypes.DEPLOY_COMMUNITY))

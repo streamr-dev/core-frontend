@@ -40,6 +40,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
 
     const isSaving = savePending
     const isCommunity = isCommunityProduct(product)
+    const isDeployed = isCommunity && product.beneficiaryAddress
 
     const saveAndExitButton = useMemo(() => ({
         title: 'Save & Exit',
@@ -85,7 +86,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
     }, [productState, publish])
 
     const deployButton = useMemo(() => {
-        if (isCommunity) {
+        if (isCommunity && !isDeployed) {
             return {
                 title: 'Continue',
                 color: 'primary',
@@ -95,7 +96,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
         }
 
         return publishButton
-    }, [isCommunity, deployCommunity, isSaving, publishButton])
+    }, [isCommunity, isDeployed, deployCommunity, isSaving, publishButton])
 
     const actions = {
         saveAndExit: saveAndExitButton,

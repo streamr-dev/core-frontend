@@ -184,19 +184,22 @@ function useEditController(product: Product) {
     }, [updateBeneficiaryAddress])
 
     const deployCommunity = useCallback(async () => {
-        await save({
-            redirect: false,
-        })
-        const communityCreated = await deployCommunityDialog.open({
-            product: productRef.current,
-            updateAddress: updateBeneficiary,
-        })
+        if (validate()) {
+            await save({
+                redirect: false,
+            })
+            const communityCreated = await deployCommunityDialog.open({
+                product: productRef.current,
+                updateAddress: updateBeneficiary,
+            })
 
-        // TODO: doesn't save unless dialog closed
-        if (communityCreated) {
-            await save()
+            // TODO: doesn't save unless dialog closed
+            if (communityCreated) {
+                await save()
+            }
         }
     }, [
+        validate,
         deployCommunityDialog,
         save,
         updateBeneficiary,
