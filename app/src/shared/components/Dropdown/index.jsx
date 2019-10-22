@@ -13,11 +13,14 @@ import SvgIcon from '$shared/components/SvgIcon'
 import DropdownItem from './DropdownItem'
 import styles from './dropdown.pcss'
 
+type ToggleStyle = 'normal' | 'small'
+
 type Props = {
     title: Node,
     selectedItem?: ?string,
     children: ChildrenArray<Element<typeof DropdownItem>>,
     className?: string,
+    toggleStyle?: ToggleStyle,
     onChange: (string) => void,
     disabled?: boolean,
 }
@@ -73,6 +76,7 @@ export default class Dropdown extends Component<Props, State> {
             title,
             children,
             className,
+            toggleStyle,
             selectedItem,
             disabled,
         } = this.props
@@ -91,7 +95,7 @@ export default class Dropdown extends Component<Props, State> {
                 })}
                 disabled={disabled}
             >
-                <RsDropdownToggle className={cx(styles.toggle)} disabled={disabled}>
+                <RsDropdownToggle className={toggleStyle === 'small' ? styles.toggleSmall : styles.toggle} disabled={disabled}>
                     {currentItem || title}
                     <SvgIcon name="caretUp" className={styles.caret} />
                 </RsDropdownToggle>

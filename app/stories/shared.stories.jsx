@@ -45,6 +45,7 @@ import Toolbar from '$shared/components/Toolbar'
 import DeploySpinner from '$shared/components/DeploySpinner'
 import Label from '$shared/components/Label'
 import Tile from '$shared/components/Tile'
+import DonutChart from '$shared/components/DonutChart'
 
 import sharedStyles from './shared.pcss'
 
@@ -847,4 +848,28 @@ story('Tile')
                 </Tile.Status>
             </Tile>
         </div>
+    ))
+
+story('DonutChart')
+    .addWithJSX('basic', () => (
+        <DonutChart
+            strokeWidth={5}
+            data={[
+                {
+                    title: '1',
+                    value: 50,
+                    color: 'red',
+                },
+                {
+                    title: '2',
+                    value: 25,
+                    color: 'blue',
+                },
+                {
+                    title: '3',
+                    value: 25,
+                    color: 'green',
+                },
+            ]}
+        />
     ))

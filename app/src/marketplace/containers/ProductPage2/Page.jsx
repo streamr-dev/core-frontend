@@ -12,15 +12,18 @@ import Hero from '$mp/components/Hero'
 import type { Product, Subscription } from '../../flowtype/product-types'
 import type { StreamList } from '$shared/flowtype/stream-types'
 import type { ButtonActions } from '$shared/components/Buttons'
+import type { ResourceKeyId } from '$shared/flowtype/resource-key-types'
 import Products from '$mp/components/Products'
 import FallbackImage from '$shared/components/FallbackImage'
 import ProductContainer from '$shared/components/Container/Product'
 import Tile from '$shared/components/Tile'
 import { isCommunityProduct } from '$mp/utils/product'
+import { ago } from '$shared/utils/time'
 
 import ProductDetails from './ProductDetails'
 import CollapsedText from './CollapsedText'
 import StreamListing from '$mp/components/ProductPage/StreamListing'
+import ProductOverview from '$mp/components/ProductPage/ProductOverview'
 import styles from './page.pcss'
 
 const { md } = breakpoints
@@ -37,7 +40,12 @@ export type Props = {
     isLoggedIn?: boolean,
     isProductSubscriptionValid?: boolean,
     productSubscription?: Subscription,
+    authApiKeyId?: ?ResourceKeyId,
     onPurchase?: () => void,
+    adminFee?: ?number,
+    joinPartStreamId?: ?string,
+    subscriberCount?: ?number,
+    mostRecentPurchaseTimestamp?: ?Date,
 }
 
 class ProductDetailsPage extends Component<Props> {
@@ -59,8 +67,13 @@ class ProductDetailsPage extends Component<Props> {
             isLoggedIn,
             isProductSubscriptionValid,
             productSubscription,
+            authApiKeyId,
             onPurchase,
             toolbarStatus,
+            adminFee,
+            joinPartStreamId,
+            subscriberCount,
+            mostRecentPurchaseTimestamp,
         } = this.props
         const isProductFree = (product && BN(product.pricePerSecond).isEqualTo(0)) || false
         const isCommunity = !!(product && isCommunityProduct(product))
@@ -72,6 +85,7 @@ class ProductDetailsPage extends Component<Props> {
                 )}
                 <Hero
                     className={styles.hero}
+                    containerClassName={styles.heroContainer}
                     product={product}
                     leftContent={
                         <div className={styles.productImageWrapper}>
@@ -107,20 +121,33 @@ class ProductDetailsPage extends Component<Props> {
                                     <div className={styles.subheading}>Product category</div>
                                     <div>{product.category}</div>
                                 </div>
-                                {isCommunity && (
+                                {subscriberCount != null && (
                                     <div>
                                         <div className={styles.subheading}>Active subscribers</div>
-                                        <div>TODO</div>
+                                        <div>{subscriberCount}</div>
                                     </div>
                                 )}
-                                <div>
-                                    <div className={styles.subheading}>Most recent purchase</div>
-                                    <div>TODO</div>
-                                </div>
+                                {mostRecentPurchaseTimestamp != null && (
+                                    <div>
+                                        <div className={styles.subheading}>Most recent purchase</div>
+                                        <div>{ago(mostRecentPurchaseTimestamp)}</div>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </ProductContainer>
                 </div>
+                {isCommunity && (
+                    <ProductContainer>
+                        <ProductOverview
+                            product={product}
+                            authApiKeyId={authApiKeyId}
+                            adminFee={adminFee || 0}
+                            subscriberCount={subscriberCount || 0}
+                            joinPartStreamId={joinPartStreamId}
+                        />
+                    </ProductContainer>
+                )}
                 <StreamListing
                     product={product}
                     streams={streams}

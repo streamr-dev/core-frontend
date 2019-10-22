@@ -38,7 +38,7 @@
     "collectCoverage": true,
     "coverageThreshold": {
       "global": {
-        "lines": 34
+        "lines": 32
       },
       "./src/userpages/": {
         "lines": 10
@@ -222,6 +222,7 @@
     "react-syntax-highlighter": "^10.1.2",
     "react-toggle-switch": "^3.0.4",
     "react-transition-group": "^2.2.1",
+    "react-vis": "^1.11.7",
     "reactstrap": "^6.5.0",
     "redux": "^4.0.0",
     "redux-actions": "^2.6.1",

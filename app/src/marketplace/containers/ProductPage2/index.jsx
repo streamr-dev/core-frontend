@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useEffect, useCallback, useContext } from 'react'
+import React, { useEffect, useCallback, useContext, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { push, replace } from 'connected-react-router'
 import { I18n } from 'react-redux-i18n'
@@ -16,9 +16,11 @@ import PurchaseDialog from '$mp/containers/ProductPage/PurchaseDialog'
 import PublishOrUnpublishDialog from '$mp/containers/ProductPage/PublishOrUnpublishDialog'
 import { getProductById, getProductSubscription, purchaseProduct, getUserProductPermissions } from '$mp/modules/product/actions'
 import BackButton from '$shared/components/BackButton'
+import { getAdminFee, getJoinPartStreamId } from '$mp/modules/communityProduct/services'
+import { getSubscriberCount, getMostRecentPurchase } from '$mp/modules/contractProduct/services'
 
 import { getRelatedProducts } from '../../modules/relatedProducts/actions'
-import { isPaidProduct } from '../../utils/product'
+import { isPaidProduct, isCommunityProduct } from '../../utils/product'
 import Page from './Page'
 
 import {
@@ -31,6 +33,7 @@ import {
     selectContractSubscription,
 } from '$mp/modules/product/selectors'
 import { selectUserData } from '$shared/modules/user/selectors'
+import { selectAuthApiKeyId } from '$shared/modules/resourceKey/selectors'
 import links from '$mp/../links'
 import routes from '$routes'
 import { selectRelatedProductList } from '$mp/modules/relatedProducts/selectors'
@@ -52,6 +55,11 @@ const ProductPage = ({ overlayPurchaseDialog, overlayPublishDialog }: Props) => 
     const editPermission = useSelector(selectProductEditPermission)
     const isProductSubscriptionValid = useSelector(selectSubscriptionIsValid)
     const subscription = useSelector(selectContractSubscription)
+    const authApiKeyId = useSelector(selectAuthApiKeyId)
+    const [adminFee, setAdminFee] = useState(null)
+    const [joinPartStreamId, setJoinPartStreamId] = useState(null)
+    const [subscriberCount, setSubscriberCount] = useState(null)
+    const [recentPurchaseTimestamp, setRecentPurchaseTimestamp] = useState(null)
 
     const { match } = useContext(RouterContext.Context)
 
@@ -97,7 +105,7 @@ const ProductPage = ({ overlayPurchaseDialog, overlayPublishDialog }: Props) => 
         }
     }
 
-    const loadProduct = useCallback((id: ProductId) => {
+    const loadProduct = useCallback(async (id: ProductId) => {
         dispatch(getProductById(id))
         dispatch(getUserProductPermissions(id))
         dispatch(getRelatedProducts(id))
@@ -105,6 +113,18 @@ const ProductPage = ({ overlayPurchaseDialog, overlayPublishDialog }: Props) => 
             dispatch(getProductSubscription(id))
         }
     }, [dispatch, isLoggedIn])
+
+    const loadCPData = useCallback(async (p) => {
+        if (isCommunityProduct(p) && p.beneficiaryAddress) {
+            setAdminFee(await getAdminFee(p.beneficiaryAddress))
+            setJoinPartStreamId(await getJoinPartStreamId(p.beneficiaryAddress))
+        }
+    }, [])
+
+    const loadBlockchainData = useCallback(async (p) => {
+        setSubscriberCount(await getSubscriberCount(p.id))
+        setRecentPurchaseTimestamp(await getMostRecentPurchase(p.id))
+    }, [])
 
     const onPurchase = useCallback((id: ProductId) => {
         if (isLoggedIn) {
@@ -141,6 +161,11 @@ const ProductPage = ({ overlayPurchaseDialog, overlayPublishDialog }: Props) => 
             deniedRedirect(product.id || '0')
         }
     }, [product, overlayPurchaseDialog, isPurchaseAllowed, deniedRedirect])
+
+    useEffect(() => {
+        loadBlockchainData(product)
+        loadCPData(product)
+    }, [product, loadCPData, loadBlockchainData])
 
     const overlay = () => {
         if (product) {
@@ -188,6 +213,11 @@ const ProductPage = ({ overlayPurchaseDialog, overlayPublishDialog }: Props) => 
                 onPurchase={() => onPurchase(product.id || '')}
                 toolbarStatus={<BackButton />}
                 showStreamLiveDataDialog={(streamId) => noHistoryRedirect(links.marketplace.products, product.id, 'streamPreview', streamId)}
+                authApiKeyId={authApiKeyId}
+                adminFee={adminFee}
+                joinPartStreamId={joinPartStreamId}
+                subscriberCount={subscriberCount}
+                mostRecentPurchaseTimestamp={recentPurchaseTimestamp}
             />
             {overlay()}
         </Layout>
