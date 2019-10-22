@@ -29,6 +29,7 @@ module.exports = {
     marketplace: {
         main: '/marketplace',
         products: '/marketplace/products',
+        products2: '/marketplace/products2',
         createProduct: '/marketplace/products/create',
         createProductPreview: '/marketplace/products/preview',
     },
