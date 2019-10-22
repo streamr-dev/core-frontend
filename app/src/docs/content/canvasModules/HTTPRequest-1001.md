@@ -1,7 +1,7 @@
 
 [comment]: # (IntegrationsCanvasModule)
 
-HTTP Request module sends inputs as HTTP request to given URL, and returns server response. Headers, query params and body should be Maps. Body can also be List or String.Request body format can be changed in Options. Default is JSON. Server is expected to return JSON formatted documents.
+HTTP Request module sends inputs as HTTP request to given URL, and returns server response. Headers, query params and body should be Maps. Body can also be List or String. Request body format can be changed in Options. Default is JSON. Server is expected to return JSON formatted documents.
 
 HTTP Request is asynchronous by default. Synchronized requests block the execution of the whole canvas until they receive the server response, but otherwise they work just like any other module; asynchronous requests on the other hand work like streams in that they activate modules they're connected to only when they receive data from the server.
 
