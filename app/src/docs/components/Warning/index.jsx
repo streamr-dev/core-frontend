@@ -12,7 +12,9 @@ type Props = {
 const Warning = ({ children }: Props) => (
     <div className={styles.root}>
         <SvgIcon name="warning" className={styles.warningIcon} />
-        {children}
+        <div className={styles.content}>
+            {children}
+        </div>
     </div>
 )
 
