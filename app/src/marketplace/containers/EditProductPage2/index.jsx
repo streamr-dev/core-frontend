@@ -14,6 +14,7 @@ import ProductController from '../ProductController'
 import useProduct from '../ProductController/useProduct'
 import usePending from '$shared/hooks/usePending'
 import { productStates } from '$shared/utils/constants'
+import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
 
 import { Provider as EditControllerProvider, Context as EditControllerContext } from './EditControllerProvider'
 import BackButton from './BackButton'
@@ -37,6 +38,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
         deployCommunity,
     } = useContext(EditControllerContext)
     const { isPending: savePending } = usePending('product.SAVE')
+    const { isAnyChangePending } = useContext(ValidationContext)
 
     const isSaving = savePending
     const isCommunity = isCommunityProduct(product)
@@ -75,15 +77,18 @@ const EditProductPage = ({ product }: { product: Product }) => {
             [productStates.UNDEPLOYING]: 'unpublishing',
             [productStates.NOT_DEPLOYED]: 'publish',
             [productStates.DEPLOYED]: 'unpublish',
+            republish: 'republish',
         }
 
+        const tmpState: any = (productState === productStates.DEPLOYED && isAnyChangePending()) ? 'republish' : productState
+
         return {
-            title: (productState && I18n.t(`editProductPage.${titles[productState]}`)) || '',
+            title: (productState && I18n.t(`editProductPage.${titles[tmpState]}`)) || '',
             color: 'primary',
             onClick: publish,
             disabled: !(productState === productStates.NOT_DEPLOYED || productState === productStates.DEPLOYED),
         }
-    }, [productState, publish])
+    }, [isAnyChangePending, productState, publish])
 
     const deployButton = useMemo(() => {
         if (isCommunity && !isDeployed) {

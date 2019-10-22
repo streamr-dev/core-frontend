@@ -12,6 +12,7 @@ import { getProductById } from '$mp/modules/product/services'
 import { getProductFromContract } from '$mp/modules/contractProduct/services'
 import { getCommunityOwner, getAdminFee, setAdminFee } from '$mp/modules/communityProduct/services'
 import { areAddressesEqual, isUpdateContractProductRequired } from '$mp/utils/smartContract'
+import { putProduct } from '$mp/modules/editProduct/services'
 
 import ErrorDialog from '$mp/components/Modal/ErrorDialog'
 import Dialog from '$shared/components/Dialog'
@@ -28,6 +29,7 @@ import useWeb3Status from '$shared/hooks/useWeb3Status'
 import UnlockWalletDialog from '$mp/components/Modal/UnlockWalletDialog'
 
 import PublishQueue, { actionsTypes } from './publishQueue'
+import { getPendingChanges, withPendingChanges } from './state'
 
 type Props = {
     product: Product,
@@ -101,10 +103,18 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
 
             const { state: productState } = p
 
-            const { adminFee } = p.pendingChanges || {}
+            const pendingChanges = getPendingChanges(p)
+            const productWithPendingChagnes = withPendingChanges(p)
+            const {
+                adminFee,
+                pricePerSecond,
+                beneficiaryAddress,
+                priceCurrency,
+                ...productDataChanges
+            } = pendingChanges || {}
             const hasAdminFeeChanged = !!currentAdminFee && adminFee && currentAdminFee !== adminFee
-            const hasPriceChanged = !!contractProduct && isUpdateContractProductRequired(contractProduct, p)
-            const hasPendingChanges = hasAdminFeeChanged || hasPriceChanged
+            const hasPriceChanged = !!contractProduct && isUpdateContractProductRequired(contractProduct, productWithPendingChagnes)
+            const hasPendingChanges = Object.keys(productDataChanges).length > 0 || hasAdminFeeChanged || hasPriceChanged
 
             let nextMode
 
@@ -131,8 +141,8 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
                             setAdminFee(p.beneficiaryAddress, adminFee)
                                 .onTransactionHash((hash) => {
                                     update(transactionStates.PENDING)
-                                    done()
                                     dispatch(addTransaction(hash, transactionTypes.UPDATE_ADMIN_FEE))
+                                    done()
                                 })
                                 .onTransactionComplete(() => {
                                     update(transactionStates.CONFIRMED)
@@ -292,6 +302,26 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
                         ),
                     })
                 }
+            }
+
+            // finally update product data
+            if (nextMode === modes.REPUBLISH) {
+                queue.add({
+                    id: actionsTypes.PUBLISH_PENDING_CHANGES,
+                    handler: (update, done) => (
+                        putProduct({
+                            ...p,
+                            ...productDataChanges,
+                            pendingChanges: undefined,
+                        }, p.id || '').then(() => {
+                            update(transactionStates.CONFIRMED)
+                            done()
+                        }, (error) => {
+                            update(transactionStates.FAILED, error)
+                            done()
+                        })
+                    ),
+                })
             }
 
             // validate metamask based on queued actions
