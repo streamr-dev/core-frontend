@@ -1,8 +1,9 @@
 import React from 'react'
 import AceEditor from 'react-ace'
 import uniqueId from 'lodash/uniqueId'
-import 'brace/mode/java'
-import 'brace/theme/textmate'
+
+import 'ace-builds/src-noconflict/mode-java'
+import 'ace-builds/src-noconflict/theme-textmate'
 
 import DraggableCanvasWindow from '../DraggableCanvasWindow'
 
