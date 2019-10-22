@@ -6,10 +6,24 @@ import 'ace-builds/src-noconflict/mode-java'
 import 'ace-builds/src-noconflict/theme-textmate'
 
 import DraggableCanvasWindow from '../DraggableCanvasWindow'
+import { CanvasWindowContext } from '../CanvasWindow'
 
 import styles from './CodeEditorWindow.pcss'
 
+function fixTooltipParent(codeWindowRef) {
+    const { Tooltip } = window.ace.require('./tooltip')
+
+    const init = Tooltip.prototype.$init
+    Tooltip.prototype.$init = function $init(...args) {
+        this.$parentNode = codeWindowRef.current.parentElement.parentElement
+        const r = init.call(this, ...args)
+        r.classList.add(styles.customAceTooltip)
+        return r
+    }
+}
+
 export default class CodeEditorWindow extends React.Component {
+    static contextType = CanvasWindowContext
     state = {
         editorResetKey: uniqueId('CodeEditorWindow'),
         code: undefined,
@@ -21,6 +35,7 @@ export default class CodeEditorWindow extends React.Component {
 
     componentDidMount() {
         this.editor.current.editor.focus()
+        fixTooltipParent(this.context)
     }
 
     componentWillUnmount() {
