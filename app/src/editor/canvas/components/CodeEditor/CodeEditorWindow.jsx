@@ -120,6 +120,7 @@ export default class CodeEditorWindow extends React.Component {
                                     useSoftTabs: true,
                                     tooltipFollowsMouse: false,
                                     useWorker: false,
+                                    hasCssTransforms: true,
                                 }}
                                 annotations={errors}
                                 editorProps={{ $blockScrolling: true }}
