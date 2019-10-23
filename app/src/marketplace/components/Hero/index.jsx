@@ -1,6 +1,7 @@
 // @flow
 
 import * as React from 'react'
+import cx from 'classnames'
 import ProductContainer from '$shared/components/Container/Product'
 
 import styles from './hero.pcss'
@@ -8,11 +9,13 @@ import styles from './hero.pcss'
 type Props = {
     leftContent: React.Node,
     rightContent: React.Node,
+    className?: string,
+    containerClassName?: string,
 }
 
-const Hero = ({ leftContent, rightContent }: Props) => (
-    <div className={styles.hero}>
-        <ProductContainer className={styles.container}>
+const Hero = ({ leftContent, rightContent, containerClassName, className }: Props) => (
+    <div className={cx(styles.hero, className)}>
+        <ProductContainer className={cx(styles.container, containerClassName)}>
             <div className={styles.leftColumn}>
                 {leftContent}
             </div>

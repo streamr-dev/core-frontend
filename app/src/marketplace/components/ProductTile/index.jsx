@@ -112,7 +112,9 @@ class ProductTile extends Component<Props, State> {
                     />
                 }
                 <Link
-                    to={formatPath(links.marketplace.products, id || '')}
+                    to={process.env.COMMUNITY_PRODUCTS ?
+                        formatPath(links.marketplace.products2, id || '') :
+                        formatPath(links.marketplace.products, id || '')}
                     className={classnames({
                         [styles.loading]: !this.state.loaded,
                     })}

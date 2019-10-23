@@ -81,17 +81,22 @@ const ProductDetails = ({ product, isValidSubscription, productSubscription, onP
                 &nbsp;
                 {product.owner}
             </div>
-            <div>
-                <span className={styles.subheading}>Website</span>
-                &nbsp;
-                TODO
-            </div>
-            <div>
-                <Link href="#TODO">Contact seller</Link>
-            </div>
-            <div>
-                <Link href="#TODO">View other products</Link>
-            </div>
+            {/* Hide these until we have a place to read them from */}
+            {false && (
+                <React.Fragment>
+                    <div>
+                        <span className={styles.subheading}>Website</span>
+                        &nbsp;
+                        TODO
+                    </div>
+                    <div>
+                        <Link href="#TODO">Contact seller</Link>
+                    </div>
+                    <div>
+                        <Link href="#TODO">View other products</Link>
+                    </div>
+                </React.Fragment>
+            )}
         </div>
     </div>
 )
