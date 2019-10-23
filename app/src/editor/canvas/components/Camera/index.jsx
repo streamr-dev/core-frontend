@@ -5,6 +5,8 @@ import styles from './Camera.pcss'
 
 import isEditableElement from '$editor/shared/utils/isEditableElement'
 
+import { useThrottled } from '$shared/hooks/wrapCallback'
+
 function clamp(value, min, max) {
     return Math.max(min, Math.min(max, value))
 }
@@ -146,6 +148,15 @@ function useCameraSimpleApi(opts) {
             ...s,
             lastX: x,
             lastY: y,
+        }))
+    }, [setState])
+
+    // changes current camera position
+    const setPosition = useCallback(({ x, y }) => {
+        setState((s) => ({
+            ...s,
+            x,
+            y,
         }))
     }, [setState])
 
@@ -356,6 +367,7 @@ function useCameraSimpleApi(opts) {
         ...state,
         elRef,
         updateScale,
+        setPosition,
         initUpdatePosition,
         updatePosition,
         setState,
@@ -372,12 +384,16 @@ function useCameraSimpleApi(opts) {
         panIntoViewIfNeeded,
         eventToWorldPoint,
         shouldIgnoreEvent,
+        scaleFactor,
+        minScale,
+        maxScale,
     }), [
         state,
         setState,
         updateScale,
         updatePosition,
         initUpdatePosition,
+        setPosition,
         zoomIn,
         zoomOut,
         pan,
@@ -391,6 +407,9 @@ function useCameraSimpleApi(opts) {
         panIntoViewIfNeeded,
         eventToWorldPoint,
         shouldIgnoreEvent,
+        scaleFactor,
+        minScale,
+        maxScale,
     ])
 }
 
@@ -405,26 +424,103 @@ const defaultCameraConfig = {
 
 function useCameraSpringApi() {
     const camera = useCameraSimpleApi()
-    const { x, y, scale } = camera
-    const [cameraConfig, setCameraConfig] = useState(defaultCameraConfig)
-    const onSpring = useCallback(() => ({
+    const {
         x,
         y,
         scale,
-        ...cameraConfig,
-    }), [x, y, scale, cameraConfig])
+        scaleFactor,
+        setState,
+        minScale,
+        maxScale,
+    } = camera
 
-    const [spring, set, stop] = useSpring(onSpring)
+    const destStateRef = useRef({
+        x,
+        y,
+        scale,
+    })
 
-    set({
+    const springRef = useRef()
+    const commitSpringState = useCallback(() => {
+        setState({
+            x: springRef.current.x.value,
+            y: springRef.current.y.value,
+            scale: springRef.current.scale.value,
+        })
+    }, [setState])
+
+    const commitDestState = useCallback(() => {
+        setState(destStateRef.current)
+    }, [setState])
+
+    const [cameraConfig, setCameraConfig] = useState({
+        ...defaultCameraConfig,
+    })
+
+    const onSpring = () => ({
         x,
         y,
         scale,
         ...cameraConfig,
     })
 
-    const springRef = useRef()
+    const [spring, set, stop] = useSpring(onSpring)
+
+    const lastRef = useRef()
+
     springRef.current = spring
+    const isTransitioning = !(spring.x.done && spring.y.done && spring.scale.done)
+
+    useLayoutEffect(() => {
+        // update dest state to current state if not transitioning
+        if (isTransitioning) { return }
+        destStateRef.current = {
+            x,
+            y,
+            scale,
+        }
+        set({
+            x,
+            y,
+            scale,
+            ...cameraConfig,
+        })
+    }, [x, y, set, scale, cameraConfig, isTransitioning])
+
+    const startSmoothPan = useCallback(({ x, y }) => {
+        lastRef.current = {
+            lastX: x,
+            lastY: y,
+        }
+    }, [])
+
+    const smoothPan = useCallback(({ x: px, y: py }) => {
+        const { lastX = px, lastY = py } = lastRef.current || {}
+        const { x, y } = destStateRef.current
+        destStateRef.current = {
+            ...destStateRef.current,
+            x: x + (px - lastX),
+            y: y + (py - lastY),
+        }
+        lastRef.current = {
+            lastX: px,
+            lastY: py,
+        }
+        set(destStateRef.current)
+    }, [set])
+
+    const smoothUpdateScale = useCallback(({ x, y, delta }) => {
+        const factor = Math.abs(scaleFactor * (delta / 120))
+        const actualScaleFactor = delta < 0 ? 1 + factor : 1 - factor
+        const currentScale = destStateRef.current.scale
+
+        destStateRef.current = updateScaleState(destStateRef.current, {
+            x,
+            y,
+            scale: clamp(currentScale * actualScaleFactor, minScale, maxScale),
+        })
+        set(destStateRef.current)
+    }, [set, scaleFactor, minScale, maxScale])
 
     const stopRef = useRef()
     stopRef.current = stop
@@ -453,10 +549,37 @@ function useCameraSpringApi() {
         getSpring,
         stopSpring,
         ...camera,
-    }), [getSpring, camera, setCameraConfig, getCurrentScale, resetCameraConfig, stopSpring])
+        smoothPan,
+        startSmoothPan,
+        commitSpringState,
+        commitDestState,
+        smoothUpdateScale,
+    }), [
+        getSpring,
+        startSmoothPan,
+        smoothPan,
+        commitSpringState,
+        commitDestState,
+        smoothUpdateScale,
+        camera,
+        setCameraConfig,
+        getCurrentScale,
+        resetCameraConfig,
+        stopSpring,
+    ])
 }
 
 export const CameraContext = React.createContext({})
+
+export function useCameraState() {
+    const { x, y, scale, getCurrentScale } = useContext(CameraContext)
+    return useMemo(() => ({
+        x,
+        y,
+        scale,
+        getCurrentScale,
+    }), [x, y, scale, getCurrentScale])
+}
 
 export function useCameraContext() {
     return useContext(CameraContext)
@@ -477,7 +600,12 @@ export function CameraProvider({ onChange, children, ...props }) {
 }
 
 function useWheelControls(elRef) {
-    const { updateScale, shouldIgnoreEvent } = useCameraContext()
+    const { smoothUpdateScale, commitDestState, shouldIgnoreEvent } = useCameraContext()
+
+    const commitDebounced = useThrottled(useCallback(() => {
+        commitDestState()
+    }, [commitDestState]), 500)
+
     const onChangeScale = useCallback((event) => {
         if (shouldIgnoreEvent(event)) { return }
         event.preventDefault()
@@ -488,12 +616,13 @@ function useWheelControls(elRef) {
         // find current location on screen
         const x = event.clientX - left
         const y = event.clientY - top
-        updateScale({
+        smoothUpdateScale({
             x,
             y,
             delta,
         })
-    }, [elRef, updateScale, shouldIgnoreEvent])
+        commitDebounced()
+    }, [elRef, commitDebounced, smoothUpdateScale, shouldIgnoreEvent])
 
     useEffect(() => {
         const el = elRef.current
@@ -505,7 +634,7 @@ function useWheelControls(elRef) {
 }
 
 function usePanControls(elRef) {
-    const { initUpdatePosition, updatePosition, setCameraConfig } = useCameraContext()
+    const { smoothPan, startSmoothPan, commitSpringState } = useCameraContext()
     const [isPanning, setPanning] = useState(false)
 
     const startPanning = useCallback((event) => {
@@ -523,24 +652,18 @@ function usePanControls(elRef) {
         // find current location on screen
         const x = event.clientX - left
         const y = event.clientY - top
-        initUpdatePosition({
+        startSmoothPan({
             x,
             y,
         })
         setPanning(true)
-    }, [elRef, isPanning, initUpdatePosition, setPanning])
-
-    useEffect(() => {
-        setCameraConfig((s) => ({
-            ...s,
-            immediate: isPanning,
-        }))
-    }, [setCameraConfig, isPanning])
+    }, [elRef, isPanning, startSmoothPan, setPanning])
 
     const stopPanning = useCallback(() => {
         if (!isPanning) { return }
+        commitSpringState()
         setPanning(false)
-    }, [isPanning])
+    }, [isPanning, commitSpringState])
 
     const pan = useCallback((event) => {
         if (!isPanning) { return }
@@ -554,11 +677,11 @@ function usePanControls(elRef) {
         // find current location on screen
         const x = event.clientX - left
         const y = event.clientY - top
-        updatePosition({
+        smoothPan({
             x,
             y,
         })
-    }, [isPanning, elRef, stopPanning, updatePosition])
+    }, [isPanning, elRef, stopPanning, smoothPan])
 
     useEffect(() => {
         if (!isPanning) { return }
