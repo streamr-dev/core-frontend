@@ -11,7 +11,7 @@ import { CanvasWindowProvider } from './CanvasWindow'
 import Cables from './Cables'
 
 import styles from './Canvas.pcss'
-import Camera, { useCameraContext, cameraControl } from './Camera'
+import Camera, { useCameraState, cameraControl } from './Camera'
 
 export default function Canvas(props) {
     const propsRef = useRef()
@@ -120,7 +120,7 @@ function CanvasElements(props) {
     const [positions, setPositions] = useState({})
     const updatePositionsRef = useRef()
 
-    const camera = useCameraContext()
+    const camera = useCameraState()
     const getCurrentScaleRef = useRef()
     getCurrentScaleRef.current = camera.getCurrentScale
 

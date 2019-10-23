@@ -5,7 +5,7 @@
 // the highlight will flicker when the item at same index changes selection state
 /* eslint-disable react/no-array-index-key */
 
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useMemo } from 'react'
 import startCase from 'lodash/startCase'
 import debounce from 'lodash/debounce'
 import cx from 'classnames'
@@ -416,10 +416,16 @@ class ModuleSearch extends React.PureComponent<Props, State> {
 
 export default function (props: Props) {
     const camera = useCameraContext()
+    // just grab bits ModuleSearch needs
+    const searchCamera = useMemo(() => ({
+        elRef: camera.elRef,
+        eventToWorldPoint: camera.eventToWorldPoint,
+        cameraToWorldBounds: camera.cameraToWorldBounds,
+    }), [camera.elRef, camera.eventToWorldPoint, camera.cameraToWorldBounds])
     return (
         <ModuleSearch
             {...props}
-            camera={camera}
+            camera={searchCamera}
         />
     )
 }
