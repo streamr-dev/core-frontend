@@ -1,4 +1,4 @@
-import React, { Component, useContext } from 'react'
+import React, { Component, PureComponent, useContext } from 'react'
 import { withRouter } from 'react-router-dom'
 import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
@@ -51,7 +51,7 @@ import * as CanvasState from './state'
 
 import styles from './index.pcss'
 
-const CanvasEditComponent = class CanvasEdit extends Component {
+const CanvasEditComponent = class CanvasEdit extends PureComponent {
     state = {
         moduleSearchIsOpen: true,
         moduleSidebarIsOpen: false,
