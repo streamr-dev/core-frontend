@@ -96,6 +96,12 @@ const defaultCameraOptions = {
     ],
 }
 
+function hasParentMatching(el, selector) {
+    if (!el) { return false }
+    if (el.matches(selector)) { return true }
+    return hasParentMatching(el.parentElement, selector)
+}
+
 function useCameraSimpleApi(opts) {
     const { scaleFactor, scaleLevels } = Object.assign({}, defaultCameraOptions, opts)
     const minScale = scaleLevels[0]
@@ -338,7 +344,7 @@ function useCameraSimpleApi(opts) {
         if (isEditableElement(event.target)) { return true }
 
         // do not ignore if is within parent with cameraControl class
-        if (event.target.matches(`.${styles.cameraControl} *`)) { return false }
+        if (hasParentMatching(event.target, `.${styles.cameraControl}`)) { return false }
 
         return (
             // ignore if target not within camera el and isn't body
