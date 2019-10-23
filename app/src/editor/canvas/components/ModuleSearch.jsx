@@ -66,7 +66,7 @@ export function ModuleMenuCategory(props: MenuCategoryProps) {
                 {category.name}
             </SearchRow>
             {isExpanded && category.modules.map((m, index) => (
-                <ModuleMenuItem module={m} key={index} addModule={addModule} />
+                <ModuleMenuItem key={index} module={m} addModule={addModule} />
             ))}
         </React.Fragment>
     )
@@ -100,17 +100,25 @@ const onDrop = (e: any, camera: any, addModule: (number, number, number, ?string
     addModule(moduleId, x, y, streamId)
 }
 
-const ModuleMenuItem = ({ module, addModule }) => (
-    <SearchRow
-        draggable
-        onDragStart={(e) => { onDragStart(e, module.id, module.name) }}
-        onClick={() => addModule(module.id)}
-        className={styles.ModuleItem}
-        title={startCase(module.name)}
-    >
-        {startCase(module.name)}
-    </SearchRow>
-)
+const ModuleMenuItem = ({ module, addModule }) => {
+    const onClick = useCallback(() => {
+        addModule(module.id)
+    }, [addModule, module.id])
+    const onDragStartFn = useCallback((e) => {
+        onDragStart(e, module.id, module.name)
+    }, [module.id, module.name])
+    return (
+        <SearchRow
+            draggable
+            onDragStart={onDragStartFn}
+            onClick={onClick}
+            className={styles.ModuleItem}
+            title={startCase(module.name)}
+        >
+            {startCase(module.name)}
+        </SearchRow>
+    )
+}
 
 type Props = {
     isOpen: boolean,

@@ -31,7 +31,8 @@ type Props = {
     interactive?: boolean,
 }
 
-function ModuleRenderer({
+// $FlowFixMe
+const ModuleRenderer = React.memo(({
     className,
     isSelected,
     onPort,
@@ -44,7 +45,7 @@ function ModuleRenderer({
     scale,
     interactive,
     ...props
-}: Props) {
+}: Props) => {
     const isRunning = useIsCanvasRunning()
 
     const {
@@ -165,9 +166,10 @@ function ModuleRenderer({
             <div className={ModuleStyles.selectionDecorator} />
         </Resizable>
     )
-}
+})
 
-export default ({
+// $FlowFixMe
+export default React.memo(({
     api,
     module,
     canvasEditable: isCanvasEditable,
@@ -189,4 +191,4 @@ export default ({
             </ModuleContext.Provider>
         </ModuleApiContext.Provider>
     )
-}
+})

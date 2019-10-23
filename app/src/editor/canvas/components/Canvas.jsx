@@ -97,6 +97,7 @@ export default function Canvas(props) {
         >
             <DragDropProvider>
                 <Camera>
+                    <CanvasCameraEffects />
                     <CanvasWindowProvider className={styles.CanvasWindow}>
                         <CanvasElements
                             key={canvas.id}
@@ -113,7 +114,13 @@ export default function Canvas(props) {
     )
 }
 
-function CanvasElements(props) {
+function CanvasCameraEffects() {
+    useCanvasCameraDragEffects()
+    return null
+}
+
+// $FlowFixMe
+const CanvasElements = React.memo(function CanvasElements(props) { /* eslint-disable-line prefer-arrow-callback */
     const { canvas, api, selectedModuleHash, moduleSidebarIsOpen } = props
     const modulesRef = useRef()
     const portsRef = useRef(new Map())
@@ -188,8 +195,6 @@ function CanvasElements(props) {
         }), {})
     }, [positions, getCurrentScaleRef])
 
-    useCanvasCameraDragEffects()
-
     if (!canvas) { return null }
 
     return (
@@ -219,4 +224,4 @@ function CanvasElements(props) {
             />
         </div>
     )
-}
+})

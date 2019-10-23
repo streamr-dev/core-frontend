@@ -33,6 +33,7 @@ import styles from './Toolbar.pcss'
 function ZoomButtons({ canvas }) {
     const camera = useCameraContext()
     const canvasCamera = useCanvasCamera({ canvas })
+    const metaKeyLabel = getKeyLabel('meta')
     return (
         <div className={styles.ZoomButtons}>
             <button
@@ -59,16 +60,16 @@ function ZoomButtons({ canvas }) {
                 <DropdownActions.Item onClick={() => camera.setScale(1)}>100%</DropdownActions.Item>
                 <DropdownActions.Item divider />
                 <DropdownActions.Item onClick={() => camera.zoomIn()}>
-                    Zoom In <span className={styles.menuShortcut}>{getKeyLabel('meta')}=</span>
+                    Zoom In <span className={styles.menuShortcut}>{metaKeyLabel}=</span>
                 </DropdownActions.Item>
                 <DropdownActions.Item onClick={() => camera.zoomOut()}>
-                    Zoom Out <span className={styles.menuShortcut}>{getKeyLabel('meta')}-</span>
+                    Zoom Out <span className={styles.menuShortcut}>{metaKeyLabel}-</span>
                 </DropdownActions.Item>
                 <DropdownActions.Item onClick={() => camera.setScale(1)}>
-                    Full Size <span className={styles.menuShortcut}>{getKeyLabel('meta')}0</span>
+                    Full Size <span className={styles.menuShortcut}>{metaKeyLabel}0</span>
                 </DropdownActions.Item>
                 <DropdownActions.Item onClick={() => canvasCamera.fitCanvas()}>
-                    Fit Screen <span className={styles.menuShortcut}>{getKeyLabel('meta')}1</span>
+                    Fit Screen <span className={styles.menuShortcut}>{metaKeyLabel}1</span>
                 </DropdownActions.Item>
             </DropdownActions>
             <button

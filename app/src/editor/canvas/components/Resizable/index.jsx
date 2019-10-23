@@ -39,15 +39,15 @@ type Props = {
     scale: number,
 }
 
-const Resizable = ({
+const Resizable = React.memo(({
     children,
     className,
-    enabled,
+    enabled = false,
     height,
     onResize,
     style,
     width,
-    scale,
+    scale = 1,
     ...props
 }: Props) => {
     const { minWidth, minHeight } = useContext(SizeConstraintContext)
@@ -157,22 +157,24 @@ const Resizable = ({
         })
     }, [minWidth, minHeight])
 
+    const divStyle = useMemo(() => ({
+        ...style,
+        ...(isResizing ? {
+            height: size.height,
+            width: size.width,
+        } : {
+            minHeight: size.height,
+            minWidth: size.width,
+        }),
+    }), [style, isResizing, size.width, size.height])
+
     return enabled ? (
         <ResizeableContext.Provider value={value}>
             <div
                 {...props}
                 className={cx(styles.root, className)}
                 ref={ref}
-                style={{
-                    ...style,
-                    ...(isResizing ? {
-                        height: size.height,
-                        width: size.width,
-                    } : {
-                        minHeight: size.height,
-                        minWidth: size.width,
-                    }),
-                }}
+                style={divStyle}
             >
                 {children}
                 {!!showHandle && (
@@ -193,17 +195,13 @@ const Resizable = ({
             {children}
         </div>
     )
-}
-
-Resizable.defaultProps = {
-    enabled: false,
-    scale: 1,
-}
+})
 
 export { ResizeableContext as Context }
 
-export default (props: Props) => (
+// $FlowFixMe
+export default React.memo((props: Props) => (
     <SizeConstraintProvider>
         <Resizable {...props} />
     </SizeConstraintProvider>
-)
+))
