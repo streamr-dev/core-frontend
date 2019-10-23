@@ -6,7 +6,7 @@
   "scripts": {
     "start": "webpack-dev-server --hot --host 0.0.0.0",
     "build": "node --max_old_space_size=4096 ./node_modules/.bin/webpack --progress --profile",
-    "test": "NODE_ENV=test jest ./test/* ./src/shared/test/* ./src/userpages/tests/* ./src/editor/shared/tests/* ./src/editor/canvas/tests/*",
+    "test": "NODE_ENV=test jest",
     "flow": "flow",
     "flow-stop": "flow stop",
     "eslint": "eslint .",
@@ -36,22 +36,24 @@
   "license": "UNLICENSED",
   "jest": {
     "collectCoverage": true,
+    "coverageReporters": ["text-summary", "lcov"],
     "coverageThreshold": {
       "global": {
-        "lines": 32
-      },
-      "./src/userpages/": {
-        "lines": 10
-      },
-      "./src/shared/": {
-        "lines": 10
+        "lines": 38
       }
     },
     "collectCoverageFrom": [
-      "src/**/*.{js,jsx}"
+      "src/**/*.{js,jsx}",
+      "!*.stories.*"
+    ],
+    "coveragePathIgnorePatterns": [
+      "<rootDir>/src/docs/content/",
+      "<rootDir>/src/docs/scripts/",
+      "/flowtype/",
+      "/tests/"
     ],
     "moduleNameMapper": {
-      "\\.(css|scss|pcss)$": "identity-obj-proxy",
+      "\\.(css|scss|pcss|po|md|mdx)$": "identity-obj-proxy",
       "\\.(png)$": "empty/object",
       "\\$app/(.*)$": "<rootDir>/$1",
       "\\$auth/(.*)$": "<rootDir>/src/auth/$1",
