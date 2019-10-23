@@ -36,16 +36,10 @@
   "license": "UNLICENSED",
   "jest": {
     "collectCoverage": true,
-    "coverageReporters": ["text-summary", "lcov-report"],
+    "coverageReporters": ["text-summary", "lcov"],
     "coverageThreshold": {
       "global": {
-        "lines": 32
-      },
-      "./src/userpages/": {
-        "lines": 10
-      },
-      "./src/shared/": {
-        "lines": 10
+        "lines": 38
       }
     },
     "collectCoverageFrom": [
