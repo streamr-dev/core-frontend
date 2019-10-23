@@ -488,17 +488,19 @@ function useCameraSpringApi() {
     }, [x, y, set, scale, cameraConfig, isTransitioning])
 
     const startSmoothPan = useCallback(({ x, y }) => {
+        commitSpringState()
         lastRef.current = {
             lastX: x,
             lastY: y,
         }
-    }, [])
+    }, [commitSpringState])
 
     const smoothPan = useCallback(({ x: px, y: py }) => {
         const { lastX = px, lastY = py } = lastRef.current || {}
         const { x, y } = destStateRef.current
         destStateRef.current = {
             ...destStateRef.current,
+            scale: springRef.current.scale.value,
             x: x + (px - lastX),
             y: y + (py - lastY),
         }
@@ -506,8 +508,11 @@ function useCameraSpringApi() {
             lastX: px,
             lastY: py,
         }
-        set(destStateRef.current)
-    }, [set])
+        set({
+            ...destStateRef.current,
+            ...cameraConfig,
+        })
+    }, [set, cameraConfig])
 
     const smoothUpdateScale = useCallback(({ x, y, delta }) => {
         const factor = Math.abs(scaleFactor * (delta / 120))
@@ -519,8 +524,11 @@ function useCameraSpringApi() {
             y,
             scale: clamp(currentScale * actualScaleFactor, minScale, maxScale),
         })
-        set(destStateRef.current)
-    }, [set, scaleFactor, minScale, maxScale])
+        set({
+            ...destStateRef.current,
+            ...cameraConfig,
+        })
+    }, [set, cameraConfig, scaleFactor, minScale, maxScale])
 
     const stopRef = useRef()
     stopRef.current = stop
@@ -634,7 +642,7 @@ function useWheelControls(elRef) {
 }
 
 function usePanControls(elRef) {
-    const { smoothPan, startSmoothPan, commitSpringState } = useCameraContext()
+    const { smoothPan, startSmoothPan, setCameraConfig, commitSpringState } = useCameraContext()
     const [isPanning, setPanning] = useState(false)
 
     const startPanning = useCallback((event) => {
@@ -652,18 +660,27 @@ function usePanControls(elRef) {
         // find current location on screen
         const x = event.clientX - left
         const y = event.clientY - top
+        setCameraConfig((s) => ({
+            ...s,
+            immediate: true,
+        }))
         startSmoothPan({
             x,
             y,
         })
+
         setPanning(true)
-    }, [elRef, isPanning, startSmoothPan, setPanning])
+    }, [elRef, setCameraConfig, isPanning, startSmoothPan, setPanning])
 
     const stopPanning = useCallback(() => {
         if (!isPanning) { return }
         commitSpringState()
+        setCameraConfig((s) => ({
+            ...s,
+            immediate: false,
+        }))
         setPanning(false)
-    }, [isPanning, commitSpringState])
+    }, [isPanning, setCameraConfig, commitSpringState])
 
     const pan = useCallback((event) => {
         if (!isPanning) { return }
