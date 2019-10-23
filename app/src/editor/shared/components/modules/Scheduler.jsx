@@ -510,7 +510,7 @@ const defaultDates = [
     },
 ]
 
-export class RuleComponent extends React.Component {
+export class RuleComponent extends React.PureComponent {
     onRemove = () => {
         const { onRemove, rule } = this.props
 
@@ -628,7 +628,7 @@ const changeRule = (rules, id, properties) => rules.map((r) => {
     return r
 })
 
-export default class SchedulerModule extends React.Component {
+export default class SchedulerModule extends React.PureComponent {
     state = {
         defaultValue: undefined,
         rules: undefined,
