@@ -1,22 +1,24 @@
 import React, { useEffect, useCallback, useState } from 'react'
 import cx from 'classnames'
 
-import { isWindows } from '$shared/utils/platform'
+import { isWindows as getIsWindows } from '$shared/utils/platform'
 import { Header, Content, Section } from '$editor/shared/components/Sidebar'
 import isEditableElement from '$editor/shared/utils/isEditableElement'
 
 import styles from './KeyboardShortcutsSidebar.pcss'
 
+const isWindows = getIsWindows()
+
 const keyLabels = {
     escape: 'esc',
-    meta: isWindows() ? 'win' : '⌘',
+    meta: isWindows ? 'win' : '⌘',
     control: '⌃',
     shift: '⇧',
 }
 
 function getPlatformKey(key) {
     // transform 'meta' shortcuts to use the 'control' key on windows
-    if (key === 'meta' && isWindows()) { return 'control' }
+    if (key === 'meta' && isWindows) { return 'control' }
     return key
 }
 
@@ -29,11 +31,12 @@ export const getKeyLabel = (key) => {
     return key.length === 1 ? key.toUpperCase() : key
 }
 
+const AS_IS = new Set(['Meta', 'Alt', 'Shift', 'Control', 'Delete'])
 const getEventKey = (event) => {
     const { key, code } = event
     let finalKey
 
-    if (['Meta', 'Alt', 'Shift', 'Control', 'Delete'].includes(key)) {
+    if (AS_IS.has(key)) {
         finalKey = key
     } else if (code === 'Space') {
         finalKey = code
@@ -66,10 +69,13 @@ function usePressedKeys(initialState = INITIAL_PRESSED_KEYS_STATE) {
     const resetState = useCallback(() => {
         setState(initialState)
     }, [setState, initialState])
+    const isInitialState = state === initialState
 
     const onKeyDown = useCallback((event) => {
         if (!shouldHandleKeyEvent(event)) {
-            resetState()
+            if (!isInitialState) {
+                resetState()
+            }
             return
         }
 
@@ -103,10 +109,13 @@ function usePressedKeys(initialState = INITIAL_PRESSED_KEYS_STATE) {
                 modifiedKeys: newModifiedKeys,
             }
         })
-    }, [setState, resetState])
+    }, [setState, isInitialState, resetState])
 
     const onKeyUp = useCallback((event) => {
         if (!shouldHandleKeyEvent(event)) {
+            if (!isInitialState) {
+                resetState()
+            }
             resetState()
             return
         }
@@ -143,7 +152,7 @@ function usePressedKeys(initialState = INITIAL_PRESSED_KEYS_STATE) {
                 modifiedKeys: newModifiedKeys,
             }
         })
-    }, [resetState, setState])
+    }, [resetState, isInitialState, setState])
 
     useEffect(() => {
         window.addEventListener('keydown', onKeyDown)
