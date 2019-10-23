@@ -15,6 +15,7 @@ import useProduct from '../ProductController/useProduct'
 import usePending from '$shared/hooks/usePending'
 import { productStates } from '$shared/utils/constants'
 import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
+import { isEthereumAddress } from '$mp/utils/validate'
 
 import { Provider as EditControllerProvider, Context as EditControllerContext } from './EditControllerProvider'
 import BackButton from './BackButton'
@@ -42,7 +43,8 @@ const EditProductPage = ({ product }: { product: Product }) => {
 
     const isSaving = savePending
     const isCommunity = isCommunityProduct(product)
-    const isDeployed = isCommunity && product.beneficiaryAddress
+    // TODO: should really check for the contract existance here
+    const isDeployed = isCommunity && isEthereumAddress(product.beneficiaryAddress)
 
     const saveAndExitButton = useMemo(() => ({
         title: 'Save & Exit',

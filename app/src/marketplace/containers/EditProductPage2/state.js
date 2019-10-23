@@ -1,6 +1,7 @@
 // @flow
 
 import { productStates } from '$shared/utils/constants'
+import { isCommunityProduct } from '$mp/utils/product'
 import type { Product, PendingChanges } from '$mp/flowtype/product-types'
 
 export const PENDING_CHANGE_FIELDS = [
@@ -14,6 +15,7 @@ export const PENDING_CHANGE_FIELDS = [
     'beneficiaryAddress',
     'pricePerSecond',
     'priceCurrency',
+    'adminFee',
 ]
 
 export function isPublished(product: Product) {
@@ -33,8 +35,24 @@ export const getChangeObject = (original: Product, next: Product): Object => (
 )
 
 export function getPendingChanges(product: Product): Object {
-    if (isPublished(product)) {
-        return getPendingObject(product.pendingChanges || {})
+    const isPublic = isPublished(product)
+    const isCommunity = isCommunityProduct(product)
+
+    if (isPublic || isCommunity) {
+        const { adminFee, ...otherPendingChanges } = getPendingObject(product.pendingChanges || {})
+
+        if (isPublic) {
+            return {
+                ...otherPendingChanges,
+                ...(adminFee ? {
+                    adminFee,
+                } : {}),
+            }
+        } else if (isCommunity && adminFee) {
+            return {
+                adminFee,
+            }
+        }
     }
 
     return {}
@@ -56,6 +74,15 @@ export function update(product: Product, fn: Function) {
                 ...getChangeObject(product, result),
             },
         }
+    } else if (isCommunityProduct(product)) {
+        const { adminFee, ...otherChanges } = result
+
+        return {
+            ...otherChanges,
+            pendingChanges: {
+                adminFee,
+            },
+        }
     }
 
     return {
@@ -64,7 +91,7 @@ export function update(product: Product, fn: Function) {
 }
 
 export function withPendingChanges(product: Product) {
-    if (product && isPublished(product)) {
+    if (product && (isPublished(product) || isCommunityProduct(product))) {
         return {
             ...product,
             ...getPendingChanges(product),

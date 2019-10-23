@@ -9,6 +9,7 @@ import Scrollspy from 'react-scrollspy'
 
 import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
 import useProduct from '../ProductController/useProduct'
+import { isPublished } from './state'
 
 import styles from './editorNav.pcss'
 
@@ -23,8 +24,11 @@ const EditorNav = () => {
 
     const { isValid, isTouched, isPendingChange } = useContext(ValidationContext)
 
+    const isCommunity = isCommunityProduct(product)
+    const isPublic = isPublished(product)
+
     const getStatus = useCallback((name: string) => {
-        const pending = isPendingChange(name)
+        const pending = !!isPublic && isPendingChange(name)
 
         if (!isTouched(name) && !pending) {
             return statuses.EMPTY
@@ -32,9 +36,7 @@ const EditorNav = () => {
         const validState = pending ? statuses.UNPUBLISHED : statuses.VALID
 
         return isValid(name) ? validState : statuses.ERROR
-    }, [isPendingChange, isTouched, isValid])
-
-    const isCommunity = isCommunityProduct(product)
+    }, [isPublic, isPendingChange, isTouched, isValid])
 
     const priceStatus = useMemo(() => {
         const price = getStatus('pricePerSecond')
