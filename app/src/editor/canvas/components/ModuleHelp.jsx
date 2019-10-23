@@ -39,7 +39,7 @@ function ModuleHelp({ className, module: m }) {
     if (!m) { return null }
 
     return (
-        <CanvasModuleHelp className={className} module={m} help={currentHelpContent} hideName />
+        <CanvasModuleHelp className={className} module={m} help={currentHelpContent} minifiedContent />
     )
 }
 
