@@ -8,4 +8,4 @@ Click the **Edit code** button to open the code editor. The code you write will 
   
 
 
-See the User Guide for more information on programmable modules.
+See the Docs for more information on programmable modules.
