@@ -29,7 +29,7 @@ import useWeb3Status from '$shared/hooks/useWeb3Status'
 import UnlockWalletDialog from '$mp/components/Modal/UnlockWalletDialog'
 
 import PublishQueue, { actionsTypes } from './publishQueue'
-import { getPendingChanges, withPendingChanges } from './state'
+import { getPendingChanges, withPendingChanges, getPaidProductUpdateObject } from './state'
 
 type Props = {
     product: Product,
@@ -309,11 +309,11 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
                 queue.add({
                     id: actionsTypes.PUBLISH_PENDING_CHANGES,
                     handler: (update, done) => (
-                        putProduct({
+                        putProduct(getPaidProductUpdateObject({
                             ...p,
                             ...productDataChanges,
                             pendingChanges: undefined,
-                        }, p.id || '').then(() => {
+                        }), p.id || '').then(() => {
                             update(transactionStates.CONFIRMED)
                             done()
                         }, (error) => {

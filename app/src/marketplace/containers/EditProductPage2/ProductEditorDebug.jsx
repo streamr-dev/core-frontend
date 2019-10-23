@@ -13,7 +13,7 @@ import useProductActions from '../ProductController/useProductActions'
 import styles from './productEditorDebug.pcss'
 
 const ProductEditorDebug = () => {
-    const [minimized, setMinimized] = useState(false)
+    const [minimized, setMinimized] = useState(true)
 
     const toggle = useCallback(() => {
         setMinimized((prev) => !prev)

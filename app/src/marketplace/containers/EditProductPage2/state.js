@@ -1,7 +1,7 @@
 // @flow
 
 import { productStates } from '$shared/utils/constants'
-import { isCommunityProduct } from '$mp/utils/product'
+import { isCommunityProduct, isPaidProduct } from '$mp/utils/product'
 import type { Product, PendingChanges } from '$mp/flowtype/product-types'
 
 export const PENDING_CHANGE_FIELDS = [
@@ -64,19 +64,36 @@ export function hasPendingChange(product: Product, field: string) {
     return !!pendingChanges[field]
 }
 
+export function getPaidProductUpdateObject(product: Product): Object {
+    // For published paid products, the some fields can only be updated on the smart contract
+    if (isPaidProduct(product)) {
+        const {
+            ownerAddress,
+            beneficiaryAddress,
+            pricePerSecond,
+            priceCurrency,
+            minimumSubscriptionInSeconds,
+            ...otherData
+        } = product
+
+        return otherData
+    }
+
+    return product
+}
+
 export function update(product: Product, fn: Function) {
     const result = fn(product)
+    const { adminFee, ...otherChanges } = result
 
     if (isPublished(product)) {
         return {
-            ...product,
+            ...getPaidProductUpdateObject(product),
             pendingChanges: {
                 ...getChangeObject(product, result),
             },
         }
     } else if (isCommunityProduct(product)) {
-        const { adminFee, ...otherChanges } = result
-
         return {
             ...otherChanges,
             pendingChanges: {
@@ -86,7 +103,7 @@ export function update(product: Product, fn: Function) {
     }
 
     return {
-        ...result,
+        ...otherChanges,
     }
 }
 

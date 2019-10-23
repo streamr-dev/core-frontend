@@ -398,4 +398,92 @@ describe('Product State', () => {
             })
         })
     })
+
+    describe('getPaidProductUpdateObject', () => {
+        it('returns the same object for unpaid product', () => {
+            const product = {
+                id: '1',
+                name: 'My Product',
+                description: 'My nice product',
+                state: productStates.DEPLOYED,
+            }
+
+            expect(State.getPaidProductUpdateObject(product)).toMatchObject({
+                id: '1',
+                name: 'My Product',
+                description: 'My nice product',
+                state: productStates.DEPLOYED,
+            })
+        })
+
+        it('returns the pending changes for unpaid product', () => {
+            const product = {
+                id: '1',
+                name: 'My Product',
+                description: 'My nice product',
+                state: productStates.DEPLOYED,
+                pendingChanges: {
+                    name: 'Better name',
+                },
+            }
+
+            expect(State.getPaidProductUpdateObject(product)).toMatchObject({
+                id: '1',
+                name: 'My Product',
+                description: 'My nice product',
+                state: productStates.DEPLOYED,
+                pendingChanges: {
+                    name: 'Better name',
+                },
+            })
+        })
+
+        it('returns removes smart contract fields for paid product', () => {
+            const product = {
+                id: '1',
+                name: 'My Product',
+                description: 'My nice product',
+                ownerAddress: '0x1234',
+                beneficiaryAddress: '0x1234',
+                pricePerSecond: '12345',
+                priceCurrency: 'USD',
+                minimumSubscriptionInSeconds: 0,
+                state: productStates.DEPLOYED,
+            }
+
+            expect(State.getPaidProductUpdateObject(product)).toMatchObject({
+                id: '1',
+                name: 'My Product',
+                description: 'My nice product',
+                state: productStates.DEPLOYED,
+            })
+        })
+
+        it('returns removes smart contract fields and returns pending changes for paid product', () => {
+            const product = {
+                id: '1',
+                name: 'My Product',
+                description: 'My nice product',
+                ownerAddress: '0x1234',
+                beneficiaryAddress: '0x1234',
+                pricePerSecond: '12345',
+                priceCurrency: 'USD',
+                minimumSubscriptionInSeconds: 0,
+                state: productStates.DEPLOYED,
+                pendingChanges: {
+                    name: 'Better name',
+                },
+            }
+
+            expect(State.getPaidProductUpdateObject(product)).toMatchObject({
+                id: '1',
+                name: 'My Product',
+                description: 'My nice product',
+                state: productStates.DEPLOYED,
+                pendingChanges: {
+                    name: 'Better name',
+                },
+            })
+        })
+    })
 })

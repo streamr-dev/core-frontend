@@ -53,7 +53,8 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
     }, [api, address])
 
     const productId = product.id
-    const { adminFee = 0 } = product.pendingChanges || {}
+    // $FlowFixMe
+    const { adminFee = 0 } = product || {}
     const onDeploy = useCallback(async () => {
         const { id: joinPartStreamId } = await createJoinPartStream(productId)
 

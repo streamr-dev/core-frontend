@@ -16,7 +16,7 @@ import { gasLimits } from '$shared/utils/constants'
 
 import { post, del, get } from '$shared/utils/api'
 import { formatApiUrl } from '$shared/utils/url'
-import { postStream /* , getMyStreamPermissions */ } from '$userpages/modules/userPageStreams/services'
+import { postStream, getMyStreamPermissions } from '$userpages/modules/userPageStreams/services'
 import { addStreamResourceKey } from '$shared/modules/resourceKey/services'
 import { getWeb3, getPublicWeb3 } from '$shared/web3/web3Provider'
 
@@ -60,18 +60,21 @@ export const createJoinPartStream = async (productId: ?ProductId = undefined): P
 
     // Add write permissions for all Streamr Engine nodes
     try {
-        const addWriteKeyPromises = getStreamrEngineAddresses().map((address) => (
-            addStreamResourceKey(stream.id, address, 'write')
-        ))
-        await Promise.all(addWriteKeyPromises)
+        const addEngineKeyPromises = [
+            ...getStreamrEngineAddresses().map((address) => (
+                addStreamResourceKey(stream.id, address, 'share')
+            )),
+            ...getStreamrEngineAddresses().map((address) => (
+                addStreamResourceKey(stream.id, address, 'write')
+            )),
+        ]
+        await Promise.all(addEngineKeyPromises)
     } catch (e) {
         console.error('Could not add write keys to JoinPart stream', e)
         throw e
     }
 
     // Remove share permission to prevent deleting the stream
-    // TODO: Backend will throw error because there must at least one 'share' permission.
-    /*
     try {
         // $FlowFixMe
         const myPermissions = await getMyStreamPermissions(stream.id)
@@ -82,7 +85,6 @@ export const createJoinPartStream = async (productId: ?ProductId = undefined): P
     } catch (e) {
         console.error('Could not remove share permission from JoinPart stream', e)
     }
-    */
 
     return stream
 }
