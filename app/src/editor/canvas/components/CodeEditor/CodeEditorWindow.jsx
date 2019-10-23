@@ -6,16 +6,22 @@ import 'ace-builds/src-noconflict/mode-java'
 import 'ace-builds/src-noconflict/theme-textmate'
 
 import DraggableCanvasWindow from '../DraggableCanvasWindow'
-import { CanvasWindowContext } from '../CanvasWindow'
+import { CameraContext } from '../Camera'
 
 import styles from './CodeEditorWindow.pcss'
 
-function fixTooltipParent(codeWindowRef) {
+/**
+ * Hacky monkeypatch that corrects tooltips appearing
+ * at incorrect position when inside css transformed container.
+ * Solution attaches tooltips to camera root i.e. outside scaling
+ */
+
+function fixTooltipParent(cameraContext) {
     const { Tooltip } = window.ace.require('./tooltip')
 
     const init = Tooltip.prototype.$init
     Tooltip.prototype.$init = function $init(...args) {
-        this.$parentNode = codeWindowRef.current.parentElement.parentElement
+        this.$parentNode = cameraContext.elRef.current
         const r = init.call(this, ...args)
         r.classList.add(styles.customAceTooltip)
         return r
@@ -23,7 +29,7 @@ function fixTooltipParent(codeWindowRef) {
 }
 
 export default class CodeEditorWindow extends React.Component {
-    static contextType = CanvasWindowContext
+    static contextType = CameraContext
     state = {
         editorResetKey: uniqueId('CodeEditorWindow'),
         code: undefined,

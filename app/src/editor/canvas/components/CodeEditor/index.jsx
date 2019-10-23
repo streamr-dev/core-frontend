@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useContext } from 'react'
+import React, { useState, useCallback, useContext, useRef } from 'react'
 
 import { useLayoutState } from '$editor/canvas/components/DraggableCanvasWindow'
 import { CanvasWindowContext } from '../CanvasWindow'
