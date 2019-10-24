@@ -72,7 +72,7 @@ export const mapProductFromApi = (product: Product | EditProduct): Product => {
 
 export const mapAllProductsFromApi = (products: Array<Product>): Array<Product> => products.map(mapProductFromApi)
 
-export const mapProductToApi = (product: Product | EditProduct) => {
+export const mapProductToPostApi = (product: Product | EditProduct): Product => {
     const pricePerSecond = mapPriceToApi(product.pricePerSecond)
     validateApiProductPricePerSecond(pricePerSecond)
     validateProductPriceCurrency(product.priceCurrency)
@@ -82,13 +82,29 @@ export const mapProductToApi = (product: Product | EditProduct) => {
     }
 }
 
+export const isPublishedProduct = (p: Product | EditProduct) => p.state === productStates.DEPLOYED
+
+export const mapProductToPutApi = (product: Product | EditProduct): Object => {
+    // For published paid products, the some fields can only be updated on the smart contract
+    if (isPaidProduct(product) && isPublishedProduct(product)) {
+        const {
+            ownerAddress,
+            beneficiaryAddress,
+            pricePerSecond,
+            priceCurrency,
+            minimumSubscriptionInSeconds,
+            ...otherData
+        } = product
+
+        return otherData
+    }
+
+    return product
+}
+
 export const getValidId = (id: string, prefix: boolean = true): string => {
     if (!isValidHexString(id) || parseInt(id, 16) === 0) {
         throw new Error(`${id} is not valid hex string`)
     }
     return prefix ? getPrefixedHexString(id) : getUnprefixedHexString(id)
 }
-
-export const isPublishedProduct = (p: Product | EditProduct) => p.state === productStates.DEPLOYED
-
-export const isPaidAndNotPublishedProduct = (p: Product | EditProduct) => isPaidProduct(p) && !isPublishedProduct(p)

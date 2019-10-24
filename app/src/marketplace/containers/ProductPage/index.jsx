@@ -187,13 +187,6 @@ export class ProductPage extends Component<Props> {
 
         const toolbarActions = {}
         if (product && editPermission) {
-            if (process.env.COMMUNITY_PRODUCTS) {
-                toolbarActions.edit2 = {
-                    title: 'Edit (new)',
-                    linkTo: formatPath(links.marketplace.products, product.id || '', 'edit2'),
-                }
-            }
-
             toolbarActions.edit = {
                 title: I18n.t('editProductPage.edit'),
                 linkTo: formatPath(links.marketplace.products, product.id || '', 'edit'),

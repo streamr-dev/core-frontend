@@ -63,24 +63,6 @@ const ProductPage = ({ overlayPurchaseDialog, overlayPublishDialog }: Props) => 
 
     const { match } = useContext(RouterContext.Context)
 
-    const getPublishButtonTitle = () => {
-        switch (product.state) {
-            case productStates.DEPLOYED:
-                return I18n.t('editProductPage.unpublish')
-            case productStates.DEPLOYING:
-                return I18n.t('editProductPage.publishing')
-            case productStates.UNDEPLOYING:
-                return I18n.t('editProductPage.unpublishing')
-            case productStates.NOT_DEPLOYED:
-            default:
-                return I18n.t('editProductPage.publish')
-        }
-    }
-
-    const getPublishButtonDisabled = () => (
-        product.state === productStates.DEPLOYING || product.state === productStates.UNDEPLOYING
-    )
-
     const noHistoryRedirect = useCallback((...params) => {
         dispatch(replace(formatPath(...params)))
     }, [dispatch])
@@ -89,19 +71,9 @@ const ProductPage = ({ overlayPurchaseDialog, overlayPublishDialog }: Props) => 
     if (product && editPermission) {
         toolbarActions.edit = {
             title: I18n.t('editProductPage.edit'),
-            linkTo: routes.editProduct2({
+            linkTo: routes.editProduct({
                 id: product.id,
             }),
-        }
-    }
-
-    if (product) {
-        toolbarActions.publish = {
-            title: getPublishButtonTitle(),
-            disabled: getPublishButtonDisabled(),
-            color: 'primary',
-            onClick: () => noHistoryRedirect(links.marketplace.products, product.id || '', 'publish2'),
-            className: 'd-none d-sm-inline-block',
         }
     }
 

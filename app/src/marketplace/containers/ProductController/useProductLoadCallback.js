@@ -45,6 +45,7 @@ export default function useProductLoadCallback() {
                 }
             }
             if (!isMountedRef.current) { return }
+
             const nextProduct = {
                 ...product,
                 isFree: !!product.isFree || !isPaidProduct(product),
