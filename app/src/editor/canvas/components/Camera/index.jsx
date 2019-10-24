@@ -15,7 +15,7 @@ function clamp(value, min, max) {
  * Allows interaction events to bubble from this element
  * and be handled by camera controls
  */
-export const { cameraControl } = styles
+export const { cameraControl, noCameraControl } = styles
 
 const defaultFit = {
     x: 0,
@@ -98,10 +98,10 @@ const defaultCameraOptions = {
     ],
 }
 
-function hasParentMatching(el, selector) {
+function getParentMatching(el, selector) {
     if (!el) { return false }
-    if (el.matches(selector)) { return true }
-    return hasParentMatching(el.parentElement, selector)
+    if (el.matches(selector)) { return el }
+    return getParentMatching(el.parentElement, selector)
 }
 
 function useCameraSimpleApi(opts) {
@@ -351,11 +351,20 @@ function useCameraSimpleApi(opts) {
 
         // do not ignore if has cameraControl class
         if (event.target.classList.contains(styles.cameraControl)) { return false }
+        // always ignore if has noCameraControl class
+        if (event.target.classList.contains(styles.noCameraControl)) { return true }
         // always ignore if target is editable
         if (isEditableElement(event.target)) { return true }
 
         // do not ignore if is within parent with cameraControl class
-        if (hasParentMatching(event.target, `.${styles.cameraControl}`)) { return false }
+        const cameraControlEl = getParentMatching(event.target, `.${styles.cameraControl}`)
+        // ignore if is within parent with noCameraControl class
+        const noCameraControlEl = getParentMatching(event.target, `.${styles.noCameraControl}`)
+        if (cameraControlEl && noCameraControlEl) {
+            return cameraControlEl.contains(noCameraControlEl)
+        }
+        if (cameraControlEl) { return false }
+        if (noCameraControlEl) { return false }
 
         return (
             // ignore if target not within camera el and isn't body
