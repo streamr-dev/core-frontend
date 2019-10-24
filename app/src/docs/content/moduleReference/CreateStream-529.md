@@ -1,3 +1,3 @@
 
 [comment]: # (StreamsCanvasModule)
-Create a new stream.
+Creates a new stream

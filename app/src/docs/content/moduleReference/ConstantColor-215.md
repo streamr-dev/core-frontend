@@ -1,3 +1,3 @@
 
 [comment]: # (UtilsCanvasModule)
-There is no documentation for this module at this time.
+This module represents a constant color value, that can be connected to any color input. The input will have that value during the whole execution.

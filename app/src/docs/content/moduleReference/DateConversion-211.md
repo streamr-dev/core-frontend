@@ -1,39 +1,20 @@
 
 [comment]: # (Time & DateCanvasModule)
-Takes a date as an input in either in [Date](https://docs.oracle.com/javase/8/docs/api/java/util/Date.html) object, timestamp(ms) or in string notation. If the input is in text form, is the given format used.  
+Takes a date as an input in either in [Date](https://docs.oracle.com/javase/8/docs/api/java/util/Date.html) object, timestamp(ms) or in string notation. If the input is in text form, is the given format used.  See example below.
 
-
-
-Example:  
-
-
-
-Parameters:  
-
-
-
+Parameters  
 
 
 	- Format <- "yyyy-MM-dd HH:mm:ss"
 	- Timezone <- Europe/Helsinki
 
-
-
-  
-
-Inputs:  
-
-
-
+Inputs  
 
 
 	- Date in <- "2015-07-15 13:06:13" or 1436954773474
 
 
-
-Outputs:   
-
-
+Outputs   
 
 
 
