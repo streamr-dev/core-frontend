@@ -1,8 +1,6 @@
 
 [comment]: # (TextCanvasModule)
-For template syntax, see [StringTemplate cheatsheet](https://github.com/antlr/stringtemplate4/blob/master/doc/cheatsheet.md).  
-
-Values of the **args** map are added as substitutions in the template. For example, incoming map **{name: "Bernie", age: 50}** substituted into template "**Hi, <name>!**" would produce string "Hi, Bernie!"  
+For template syntax, see [StringTemplate cheatsheet](https://github.com/antlr/stringtemplate4/blob/master/doc/cheatsheet.md). Values of the **args** map are added as substitutions in the template. For example, incoming map **{name: "Bernie", age: 50}** substituted into template "**Hi, <name>!**" would produce string "Hi, Bernie!"  
 
 Nested maps can be accessed with dot notation: **{name: "Bernie", pet: {species: "dog", age: 3}}** substituted into "**What a cute <pet.species>!**" would result in "What a cute dog!".  
 
