@@ -117,7 +117,10 @@ const ProductOverview = ({
                         </div>
                         <div>
                             <div className={styles.statHeading}>Admin fee</div>
-                            <div className={styles.statValue}>{adminFee}</div>
+                            <div className={styles.statValue}>
+                                {(adminFee * 100).toFixed(0)}
+                                <span className={styles.currency}> %</span>
+                            </div>
                         </div>
                         <div>
                             <div className={styles.statHeading}>Product created</div>
