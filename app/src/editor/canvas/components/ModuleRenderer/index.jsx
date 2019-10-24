@@ -6,9 +6,11 @@ import Resizable from '../Resizable'
 import Probe from '../Resizable/SizeConstraintProvider/Probe'
 import Ports from '../Ports'
 import styles from '../Module.pcss'
+import { noCameraControl } from '../Camera'
 import useIsCanvasRunning from '../../hooks/useIsCanvasRunning'
 import useModule, { ModuleContext } from './useModule'
 import useModuleApi, { ModuleApiContext } from './useModuleApi'
+
 import ModuleHeader from '$editor/shared/components/ModuleHeader'
 import ModuleHeaderButton from '$editor/shared/components/ModuleHeaderButton'
 import ModuleStyles from '$editor/shared/components/Module.pcss'
@@ -155,7 +157,7 @@ const ModuleRenderer = React.memo(({
             <div className={styles.pasteTrap} />
             <ModuleUI
                 autoSize
-                className={styles.canvasModuleUI}
+                className={cx(styles.canvasModuleUI, noCameraControl)}
                 uiEmitter={uiEmitter}
                 isSubscriptionActive={isSubscriptionActive}
             />

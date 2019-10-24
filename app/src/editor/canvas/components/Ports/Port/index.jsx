@@ -10,6 +10,7 @@ import useKeyDown from '$shared/hooks/useKeyDown'
 
 import { isPortInvisible, isPortRenameDisabled } from '../../../state'
 import { DragDropContext } from '../../DragDropContext'
+import { noCameraControl } from '../../Camera'
 import Option from '../Option'
 import Plug from '../Plug'
 import Menu from '../Menu'
@@ -163,6 +164,7 @@ const Port = ({
             {!!hasInputField && (
                 <Cell>
                     <Value
+                        className={noCameraControl}
                         port={port}
                         onChange={onValueChange}
                         disabled={!isContentEditable}
