@@ -4,29 +4,14 @@ The Email module can be used to send notifications to your email address. Just l
 
 
 
-When running against historical data, emails are not actually sent. Instead, a notification is shown representing the would-be email. Emails are capped at one per minute to avoid accidental self-spamming.  
+When running against historical data, emails are not actually sent. Instead, a notification is shown representing the would-be email. Emails are capped at one per minute to avoid accidental self-spamming. See below for an example.  
 
 
-
-Here's an example of email content:  
-
-
-
-
-Message:  
-
-(your custom message)
+Message:  (your custom message)
   
+Event Timestamp:  2014-11-18 10:30:00.124
   
-
-Event Timestamp:  
-
-2014-11-18 10:30:00.124
-  
-  
-
-Input Values:  
+Input Values  
 
 value1: 7357  
-
 value2: test value
