@@ -24,6 +24,13 @@ function useStateCallback(setState, fn) {
     ), [setState, fn])
 }
 
+const defaultCameraConfig = {
+    mass: 1,
+    friction: 62,
+    tension: 700,
+    precision: 0.00001,
+}
+
 function useCameraSimpleApi(opts) {
     const elRef = useRef()
     const [state, setActualState] = useState(State.createCamera({
@@ -34,184 +41,58 @@ function useCameraSimpleApi(opts) {
     const stateRef = useRef()
     stateRef.current = state
 
-    const updateScale = useStateCallback(setActualState, State.updateScale)
-    const setPosition = useStateCallback(setActualState, State.setPosition)
-    const pan = useStateCallback(setActualState, State.pan)
-    const setState = useStateCallback(setActualState, State.setState)
-    const zoomIn = useStateCallback(setActualState, State.zoomIn)
-    const zoomOut = useStateCallback(setActualState, State.zoomOut)
-    const setScale = useStateCallback(setActualState, State.setScale)
-    const fitBounds = useStateCallback(setActualState, State.fitBounds)
-    const fitView = useStateCallback(setActualState, State.fitView)
-    const centerBounds = useStateCallback(setActualState, State.centerBounds)
-    const panIntoViewIfNeeded = useStateCallback(setActualState, State.panIntoViewIfNeeded)
+    const [cameraConfig, setCameraConfig] = useState(defaultCameraConfig)
 
-    const areBoundsInView = useCallback((...args) => State.areBoundsInView(stateRef.current, ...args), [stateRef])
-    const cameraToWorldBounds = useCallback((...args) => State.cameraToWorldBounds(stateRef.current, ...args), [stateRef])
-    const cameraToWorldPoint = useCallback((...args) => State.cameraToWorldPoint(stateRef.current, ...args), [stateRef])
-    const eventToWorldPoint = useCallback((...args) => State.eventToWorldPoint(stateRef.current, ...args), [stateRef])
-    const shouldIgnoreEvent = useCallback((...args) => State.shouldIgnoreEvent(stateRef.current, ...args), [stateRef])
+    const cameraConfigRef = useRef()
+    cameraConfigRef.current = cameraConfig
 
-    return useMemo(() => ({
-        ...state,
-        state,
-        updateScale,
-        setPosition,
-        setState,
-        zoomIn,
-        zoomOut,
-        pan,
-        setScale,
-        fitBounds,
-        fitView,
-        centerBounds,
-        areBoundsInView,
-        cameraToWorldBounds,
-        cameraToWorldPoint,
-        panIntoViewIfNeeded,
-        eventToWorldPoint,
-        shouldIgnoreEvent,
-    }), [
-        state,
-        setState,
-        updateScale,
-        setPosition,
-        zoomIn,
-        zoomOut,
-        pan,
-        setScale,
-        fitBounds,
-        fitView,
-        centerBounds,
-        areBoundsInView,
-        cameraToWorldBounds,
-        cameraToWorldPoint,
-        panIntoViewIfNeeded,
-        eventToWorldPoint,
-        shouldIgnoreEvent,
-    ])
-}
+    const destStateRef = useRef()
 
-const defaultCameraConfig = {
-    config: {
-        mass: 1,
-        friction: 62,
-        tension: 700,
-        precision: 0.00001,
-    },
-}
-
-function useCameraSpringApi() {
-    const camera = useCameraSimpleApi()
-    const {
-        x,
-        y,
-        scale,
-        scaleFactor,
-        setState,
-        minScale,
-        maxScale,
-    } = camera
-
-    const destStateRef = useRef({
-        x,
-        y,
-        scale,
-    })
-
-    const springRef = useRef()
-    const commitSpringState = useCallback(() => {
-        setState((s) => ({
+    const commit = useCallback(() => {
+        setActualState((s) => ({
             ...s,
-            x: springRef.current.x.value,
-            y: springRef.current.y.value,
-            scale: springRef.current.scale.value,
+            x: destStateRef.current.x,
+            y: destStateRef.current.y,
+            scale: destStateRef.current.scale,
         }))
-    }, [setState])
+    }, [])
 
-    const commitDestState = useCallback(() => {
-        setState((s) => ({
-            ...s,
-            ...destStateRef.current,
-        }))
-    }, [setState])
+    const commitThrottled = useThrottled(useCallback(() => {
+        commit()
+    }, [commit]), 500)
 
-    const [cameraConfig, setCameraConfig] = useState({
-        ...defaultCameraConfig,
-    })
+    // init destState after creating destStateRef + commit
+    if (!destStateRef.current) {
+        destStateRef.current = {
+            x: state.x,
+            y: state.y,
+            scale: state.scale,
+            config: cameraConfig,
+            onRest: commit,
+        }
+    }
 
-    const onSpring = () => ({
-        x,
-        y,
-        scale,
-        ...cameraConfig,
-    })
+    const onSpring = () => destStateRef.current
 
     const [spring, set, stop] = useSpring(onSpring)
 
-    const lastRef = useRef()
-
+    const springRef = useRef()
     springRef.current = spring
-    const isTransitioning = !(spring.x.done && spring.y.done && spring.scale.done)
 
-    useLayoutEffect(() => {
-        // update dest state to current state if not transitioning
-        if (isTransitioning) { return }
+    const setSpringState = useCallback((v) => {
+        const { x, y, scale } = (typeof v === 'function') ? v({
+            ...stateRef.current,
+            ...destStateRef.current,
+        }) : v
         destStateRef.current = {
             x,
             y,
             scale,
+            config: cameraConfigRef.current,
         }
-        set({
-            x,
-            y,
-            scale,
-            ...cameraConfig,
-        })
-    }, [x, y, set, scale, cameraConfig, isTransitioning])
-
-    const startSmoothPan = useCallback(({ x, y }) => {
-        commitSpringState()
-        lastRef.current = {
-            lastX: x,
-            lastY: y,
-        }
-    }, [commitSpringState])
-
-    const smoothPan = useCallback(({ x: px, y: py }) => {
-        const { lastX = px, lastY = py } = lastRef.current || {}
-        const { x, y } = destStateRef.current
-        destStateRef.current = {
-            ...destStateRef.current,
-            scale: springRef.current.scale.value,
-            x: x + (px - lastX),
-            y: y + (py - lastY),
-        }
-        lastRef.current = {
-            lastX: px,
-            lastY: py,
-        }
-        set({
-            ...destStateRef.current,
-            ...cameraConfig,
-        })
-    }, [set, cameraConfig])
-
-    const smoothUpdateScale = useCallback(({ x, y, delta }) => {
-        const factor = Math.abs(scaleFactor * (delta / 120))
-        const actualScaleFactor = delta < 0 ? 1 + factor : 1 - factor
-        const currentScale = destStateRef.current.scale
-
-        destStateRef.current = State.updateScaleState(destStateRef.current, {
-            x,
-            y,
-            scale: clamp(currentScale * actualScaleFactor, minScale, maxScale),
-        })
-        set({
-            ...destStateRef.current,
-            ...cameraConfig,
-        })
-    }, [set, cameraConfig, scaleFactor, minScale, maxScale])
+        set(destStateRef.current)
+        commitThrottled()
+    }, [set, commitThrottled])
 
     const stopRef = useRef()
     stopRef.current = stop
@@ -232,30 +113,70 @@ function useCameraSpringApi() {
         stopRef.current()
     ), [stopRef])
 
+    const updateScale = useStateCallback(setSpringState, State.updateScale)
+    const setPosition = useStateCallback(setSpringState, State.setPosition)
+    const pan = useStateCallback(setSpringState, State.pan)
+    const setState = useStateCallback(setSpringState, State.setState)
+    const zoomIn = useStateCallback(setSpringState, State.zoomIn)
+    const zoomOut = useStateCallback(setSpringState, State.zoomOut)
+    const setScale = useStateCallback(setSpringState, State.setScale)
+    const fitBounds = useStateCallback(setSpringState, State.fitBounds)
+    const fitView = useStateCallback(setSpringState, State.fitView)
+    const centerBounds = useStateCallback(setSpringState, State.centerBounds)
+    const panIntoViewIfNeeded = useStateCallback(setSpringState, State.panIntoViewIfNeeded)
+
+    const areBoundsInView = useCallback((...args) => State.areBoundsInView(stateRef.current, ...args), [stateRef])
+    const cameraToWorldBounds = useCallback((...args) => State.cameraToWorldBounds(stateRef.current, ...args), [stateRef])
+    const cameraToWorldPoint = useCallback((...args) => State.cameraToWorldPoint(stateRef.current, ...args), [stateRef])
+    const eventToWorldPoint = useCallback((...args) => State.eventToWorldPoint(stateRef.current, ...args), [stateRef])
+    const shouldIgnoreEvent = useCallback((...args) => State.shouldIgnoreEvent(stateRef.current, ...args), [stateRef])
+
     return useMemo(() => ({
+        ...state,
+        updateScale,
+        setPosition,
+        setState,
+        zoomIn,
+        zoomOut,
+        pan,
+        setScale,
+        fitBounds,
+        fitView,
+        centerBounds,
+        areBoundsInView,
+        cameraToWorldBounds,
+        cameraToWorldPoint,
+        panIntoViewIfNeeded,
+        eventToWorldPoint,
+        shouldIgnoreEvent,
         resetCameraConfig,
-        defaultCameraConfig,
         setCameraConfig,
         getCurrentScale,
         getSpring,
         stopSpring,
-        ...camera,
-        smoothPan,
-        startSmoothPan,
-        commitSpringState,
-        commitDestState,
-        smoothUpdateScale,
+        defaultCameraConfig,
     }), [
-        getSpring,
-        startSmoothPan,
-        smoothPan,
-        commitSpringState,
-        commitDestState,
-        smoothUpdateScale,
-        camera,
+        state,
+        setState,
+        updateScale,
+        setPosition,
+        zoomIn,
+        zoomOut,
+        pan,
+        setScale,
+        fitBounds,
+        fitView,
+        centerBounds,
+        areBoundsInView,
+        cameraToWorldBounds,
+        cameraToWorldPoint,
+        panIntoViewIfNeeded,
+        eventToWorldPoint,
+        shouldIgnoreEvent,
+        resetCameraConfig,
         setCameraConfig,
         getCurrentScale,
-        resetCameraConfig,
+        getSpring,
         stopSpring,
     ])
 }
@@ -277,7 +198,7 @@ export function useCameraContext() {
 }
 
 export function CameraProvider({ onChange, children, ...props }) {
-    const camera = useCameraSpringApi(props)
+    const camera = useCameraSimpleApi(props)
     useEffect(() => {
         if (typeof onChange !== 'function') { return }
         onChange(camera)
@@ -291,11 +212,7 @@ export function CameraProvider({ onChange, children, ...props }) {
 }
 
 function useWheelControls(elRef) {
-    const { smoothUpdateScale, commitDestState, shouldIgnoreEvent } = useCameraContext()
-
-    const commitDebounced = useThrottled(useCallback(() => {
-        commitDestState()
-    }, [commitDestState]), 500)
+    const { updateScale, shouldIgnoreEvent } = useCameraContext()
 
     const onChangeScale = useCallback((event) => {
         if (shouldIgnoreEvent(event)) { return }
@@ -307,13 +224,12 @@ function useWheelControls(elRef) {
         // find current location on screen
         const x = event.clientX - left
         const y = event.clientY - top
-        smoothUpdateScale({
+        updateScale({
             x,
             y,
             delta,
         })
-        commitDebounced()
-    }, [elRef, commitDebounced, smoothUpdateScale, shouldIgnoreEvent])
+    }, [elRef, updateScale, shouldIgnoreEvent])
 
     useEffect(() => {
         const el = elRef.current
@@ -325,8 +241,12 @@ function useWheelControls(elRef) {
 }
 
 function usePanControls(elRef) {
-    const { smoothPan, startSmoothPan, setCameraConfig, commitSpringState } = useCameraContext()
+    const { pan, setCameraConfig } = useCameraContext()
     const [isPanning, setPanning] = useState(false)
+    const prevPositionRef = useRef({
+        lastX: 0,
+        lastY: 0,
+    })
 
     const startPanning = useCallback((event) => {
         if (event.buttons !== 1) { return }
@@ -341,31 +261,32 @@ function usePanControls(elRef) {
         const el = elRef.current
         const { left, top } = el.getBoundingClientRect()
         // find current location on screen
-        const x = event.clientX - left
-        const y = event.clientY - top
+        const lastX = event.clientX - left
+        const lastY = event.clientY - top
         setCameraConfig((s) => ({
             ...s,
             immediate: true,
         }))
-        startSmoothPan({
-            x,
-            y,
-        })
+
+        prevPositionRef.current = {
+            lastX,
+            lastY,
+        }
 
         setPanning(true)
-    }, [elRef, setCameraConfig, isPanning, startSmoothPan, setPanning])
+    }, [elRef, setCameraConfig, isPanning, setPanning])
 
     const stopPanning = useCallback(() => {
         if (!isPanning) { return }
-        commitSpringState()
         setCameraConfig((s) => ({
             ...s,
             immediate: false,
         }))
-        setPanning(false)
-    }, [isPanning, setCameraConfig, commitSpringState])
 
-    const pan = useCallback((event) => {
+        setPanning(false)
+    }, [isPanning, setCameraConfig])
+
+    const onPan = useCallback((event) => {
         if (!isPanning) { return }
         if (event.buttons !== 1) {
             stopPanning(event)
@@ -377,21 +298,27 @@ function usePanControls(elRef) {
         // find current location on screen
         const x = event.clientX - left
         const y = event.clientY - top
-        smoothPan({
-            x,
-            y,
+        const { lastX, lastY } = prevPositionRef.current
+        prevPositionRef.current = {
+            lastX: x,
+            lastY: y,
+        }
+
+        pan({
+            x: x - lastX,
+            y: y - lastY,
         })
-    }, [isPanning, elRef, stopPanning, smoothPan])
+    }, [isPanning, elRef, stopPanning, pan])
 
     useEffect(() => {
         if (!isPanning) { return }
-        window.addEventListener('mousemove', pan)
+        window.addEventListener('mousemove', onPan)
         window.addEventListener('mouseup', stopPanning)
         return () => {
-            window.removeEventListener('mousemove', pan)
+            window.removeEventListener('mousemove', onPan)
             window.removeEventListener('mouseup', stopPanning)
         }
-    }, [isPanning, pan, stopPanning])
+    }, [isPanning, onPan, stopPanning])
 
     useEffect(() => {
         const el = elRef.current

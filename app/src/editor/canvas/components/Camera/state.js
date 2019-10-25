@@ -238,7 +238,7 @@ export function panIntoViewIfNeeded(state, { bounds, padding }) {
         bounds,
         padding,
     })
-    if (inView) { return }
+    if (inView) { return state }
 
     const { x, y, scale } = state
     const { width, height } = getBounds(state)
