@@ -1,6 +1,6 @@
 // @flow
 
-import React, { type Node, useContext, useEffect } from 'react'
+import React, { type Node, type Context, useMemo, useContext, useEffect } from 'react'
 
 import * as RouterContext from '$shared/components/RouterContextProvider'
 import { Provider as PendingProvider } from '$shared/components/PendingContextProvider'
@@ -9,11 +9,20 @@ import { usePending } from '$shared/hooks/usePending'
 
 import useProduct from './useProduct'
 import useProductLoadCallback from './useProductLoadCallback'
+import useContractProductLoadCallback from './useContractProductLoadCallback'
 import useProductValidationEffect from './useProductValidationEffect'
+
+type ContextProps = {
+    loadProduct: Function,
+    loadContractProduct: Function,
+}
+
+const ProductControllerContext: Context<ContextProps> = React.createContext({})
 
 function useProductLoadEffect() {
     const product = useProduct()
-    const load = useProductLoadCallback()
+    const loadProduct = useProductLoadCallback()
+    const loadContractProduct = useContractProductLoadCallback()
     const { match } = useContext(RouterContext.Context)
     const { isPending } = usePending('product.LOAD')
 
@@ -22,10 +31,11 @@ function useProductLoadEffect() {
 
     useEffect(() => {
         if (urlId && productId !== urlId && !isPending) {
-            // load canvas if needed and not already loading
-            load(urlId)
+            // load product if needed and not already loading
+            loadProduct(urlId)
+            loadContractProduct(urlId)
         }
-    }, [urlId, productId, load, isPending])
+    }, [urlId, productId, loadProduct, loadContractProduct, isPending])
 }
 
 function ProductEffects() {
@@ -35,16 +45,40 @@ function ProductEffects() {
     return null
 }
 
+export function useController() {
+    return useContext(ProductControllerContext)
+}
+
+function useProductController() {
+    const loadProduct = useProductLoadCallback()
+    const loadContractProduct = useContractProductLoadCallback()
+
+    return useMemo(() => ({
+        loadProduct,
+        loadContractProduct,
+    }), [loadProduct, loadContractProduct])
+}
+
 type ControllerProps = {
     children?: Node,
+}
+
+function ControllerProvider({ children }: ControllerProps) {
+    return (
+        <ProductControllerContext.Provider value={useProductController()}>
+            {children}
+        </ProductControllerContext.Provider>
+    )
 }
 
 const ProductController = ({ children }: ControllerProps) => (
     <RouterContext.Provider>
         <PendingProvider name="product">
             <ValidationContextProvider>
-                <ProductEffects />
-                {children || null}
+                <ControllerProvider>
+                    <ProductEffects />
+                    {children || null}
+                </ControllerProvider>
             </ValidationContextProvider>
         </PendingProvider>
     </RouterContext.Provider>

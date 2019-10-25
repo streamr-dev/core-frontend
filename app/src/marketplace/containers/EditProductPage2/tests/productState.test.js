@@ -73,6 +73,25 @@ describe('Product State', () => {
                 name: 'New Name',
             })
         })
+
+        it('returns the changed fields for stream arrays', () => {
+            const product = {
+                id: '1',
+                name: 'My Product',
+                description: 'My nice product',
+                state: productStates.NOT_DEPLOYED,
+                streams: ['1', '2'],
+            }
+            expect(State.getChangeObject(product, {
+                id: '2',
+                name: 'New Name',
+                state: 'DEPLOYED',
+                streams: ['1', '3'],
+            })).toMatchObject({
+                name: 'New Name',
+                streams: ['1', '3'],
+            })
+        })
     })
 
     describe('update', () => {

@@ -1,12 +1,14 @@
 // @flow
 
 import React, { type Node, type Context, useEffect, useState, useMemo, useCallback, useContext, useRef } from 'react'
+import { useSelector } from 'react-redux'
 
 import { Context as RouterContext } from '$shared/components/RouterContextProvider'
 import { Context as ValidationContext, ERROR } from '../ProductController/ValidationContextProvider'
 import type { Product } from '$mp/flowtype/product-types'
 import usePending from '$shared/hooks/usePending'
 import { putProduct, postImage } from '$mp/modules/editProduct/services'
+import { selectProduct } from '$mp/modules/product/selectors'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
@@ -14,8 +16,6 @@ import routes from '$routes'
 import useProductActions from '../ProductController/useProductActions'
 import { isEthereumAddress } from '$mp/utils/validate'
 import { areAddressesEqual } from '$mp/utils/smartContract'
-
-import useOriginalProduct from '../ProductController/useOriginalProduct'
 
 import * as State from '../EditProductPage2/state'
 import useModal from '$shared/hooks/useModal'
@@ -38,7 +38,7 @@ function useEditController(product: Product) {
     const isMounted = useIsMounted()
     const savePending = usePending('product.SAVE')
     const { updateBeneficiaryAddress } = useProductActions()
-    const originalProduct = useOriginalProduct()
+    const originalProduct = useSelector(selectProduct)
 
     useEffect(() => {
         const handleBeforeunload = (event) => {
@@ -162,8 +162,9 @@ function useEditController(product: Product) {
         return true
     }, [errors])
 
+    const isPublic = State.isPublished(product)
     const publish = useCallback(async () => {
-        if (validate()) {
+        if (isPublic || validate()) {
             await save({
                 redirect: false,
             })
@@ -174,7 +175,7 @@ function useEditController(product: Product) {
             // TODO: just redirect for now, need to check result for smarter handling
             redirectToProduct()
         }
-    }, [validate, save, publishDialog, redirectToProduct])
+    }, [validate, save, publishDialog, redirectToProduct, isPublic])
 
     const updateBeneficiary = useCallback(async (address) => {
         const { beneficiaryAddress } = productRef.current

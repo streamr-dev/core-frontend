@@ -16,6 +16,9 @@ export const PENDING_CHANGE_FIELDS = [
     'pricePerSecond',
     'priceCurrency',
     'adminFee',
+    'timeUnit',
+    'currency',
+    'price',
 ]
 
 export function isPublished(product: Product) {
@@ -31,7 +34,7 @@ export const getPendingObject = (product: Product | PendingChanges): Object => {
 }
 
 export const getChangeObject = (original: Product, next: Product): Object => (
-    Object.fromEntries(Object.entries(getPendingObject(next)).filter(([key, value]) => value !== original[key]))
+    Object.fromEntries(Object.entries(getPendingObject(next)).filter(([key, value]) => JSON.stringify(value) !== JSON.stringify(original[key])))
 )
 
 export function getPendingChanges(product: Product): Object {
