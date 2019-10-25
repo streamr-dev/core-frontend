@@ -90,7 +90,7 @@ function useFitCanvasOnLoadEffect() {
     const [initCamera, setInitCamera] = useState(false)
     const canvasId = canvas ? canvas.id : undefined
 
-    // immeditately fit canvas
+    // immediately fit canvas
     useEffect(() => {
         // this is a bit hacky
         cameraRef.current.setCameraConfig((s) => ({

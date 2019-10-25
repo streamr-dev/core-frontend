@@ -29,7 +29,7 @@ export function useOnResizeEffect(onResizeFn, timeout = 300) {
  * Will call again on resize
  */
 
-function useInitPosition(initPosition) {
+export function useInitPosition(initPosition) {
     const isInitializedRef = useRef(false)
     const initPositionCallback = useCallback((init) => {
         if (!init && isInitializedRef.current) { return }
