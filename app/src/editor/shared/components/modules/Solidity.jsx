@@ -69,7 +69,7 @@ export default class SolidityModule extends React.Component {
     }
 
     render() {
-        const { module, isActive } = this.props
+        const { module, isEditable } = this.props
         const { debugMessages, deploying } = this.state
         const { contract } = module
 
@@ -82,7 +82,7 @@ export default class SolidityModule extends React.Component {
                 />
                 <CodeEditor
                     code={module.code || ''}
-                    readOnly={isActive}
+                    readOnly={!isEditable}
                     onApply={this.onApply}
                     onChange={this.onChange}
                     debugMessages={debugMessages}
@@ -101,7 +101,7 @@ export default class SolidityModule extends React.Component {
                                 type="button"
                                 className={styles.button}
                                 onClick={this.onDeploy}
-                                disabled={contract && (contract.address || deploying)}
+                                disabled={!isEditable || (contract && (contract.address || deploying))}
                             >
                                 {(!contract || (contract && !contract.address)) && !deploying && (
                                     'Deploy'
