@@ -1,4 +1,4 @@
-import React, { Component, PureComponent, useContext } from 'react'
+import React, { PureComponent, useContext } from 'react'
 import { withRouter } from 'react-router-dom'
 import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'

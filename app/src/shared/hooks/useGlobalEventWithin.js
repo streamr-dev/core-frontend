@@ -8,7 +8,7 @@ import { type Ref } from '$shared/flowtype/common-types'
  * within a given element (ref.current) or not.
  */
 
-export default (eventName: string, ref: Ref<Element>, callback: (boolean) => void, ignoredClassName?: ?string) => {
+export default (eventName: string, ref: Ref<Element>, callback: (boolean) => void, ignoredClassName?: ?string, useCapture?: ?boolean) => {
     useEffect(() => {
         const onEvent = (e: any) => {
             const { current } = ref
@@ -28,13 +28,13 @@ export default (eventName: string, ref: Ref<Element>, callback: (boolean) => voi
         const eventNames = eventName.split(/\s+/)
 
         eventNames.forEach((name) => {
-            window.addEventListener(name, onEvent)
+            window.addEventListener(name, onEvent, useCapture)
         })
 
         return () => {
             eventNames.forEach((name) => {
-                window.removeEventListener(name, onEvent)
+                window.removeEventListener(name, onEvent, useCapture)
             })
         }
-    }, [eventName, ref, callback, ignoredClassName])
+    }, [useCapture, eventName, ref, callback, ignoredClassName])
 }
