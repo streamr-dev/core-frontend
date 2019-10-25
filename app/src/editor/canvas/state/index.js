@@ -719,10 +719,20 @@ function getHash(canvas, iterations = 0) {
 }
 
 /**
- * Create new module from data
+ * Create new module from data, makes module unique first
+ * Simple uniqifying wrapper around addModuleData.
  */
 
 export function addModule(canvas, moduleData) {
+    return addModuleData(canvas, makeModuleUnique(moduleData))
+}
+
+/**
+ * Adds moduleData to canvas as-is.
+ * Does not ensure module port ids etc are unique.
+ */
+
+function addModuleData(canvas, moduleData) {
     if (!moduleData || !moduleData.id) {
         throw createError(`trying to add bad module: ${moduleData}`, {
             canvas,
@@ -1454,6 +1464,11 @@ export function applyChanges({ sent, received, current }) {
         ))
     })
     return nextCanvas
+}
+
+export function makeModuleUnique(moduleData) {
+    const tempCanvas = addModuleData(emptyCanvas(), moduleData)
+    return getModuleCopy(tempCanvas, tempCanvas.modules[0].hash)
 }
 
 export function getModuleCopy(canvas, moduleHash) {
