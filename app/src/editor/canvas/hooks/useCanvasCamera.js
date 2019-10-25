@@ -83,12 +83,28 @@ function useFitCanvasOnLoadEffect() {
     const canvasCamera = useCanvasCamera()
     const canvasCameraRef = useRef()
     canvasCameraRef.current = canvasCamera
+    const camera = useCameraContext()
+    const cameraRef = useRef()
+    cameraRef.current = camera
 
     const [initCamera, setInitCamera] = useState(false)
     const canvasId = canvas ? canvas.id : undefined
 
+    // immeditately fit canvas
     useEffect(() => {
+        // this is a bit hacky
+        cameraRef.current.setCameraConfig((s) => ({
+            ...s,
+            immediate: true, // disable transition
+        }))
         canvasCameraRef.current.fitCanvas()
+        // wait a moment for fitCanvas to apply
+        Promise.resolve().then(() => {
+            cameraRef.current.setCameraConfig((s) => ({
+                ...s,
+                immediate: false, // re-enable transition
+            }))
+        })
     }, [initCamera])
 
     useEffect(() => {
