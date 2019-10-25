@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useState, useCallback, useRef } from 'react'
 import {
     XYPlot,
     LineSeries,
@@ -59,6 +59,7 @@ const convertAndCallback = (rawMessages: Array<Object>, onMessage) => {
 }
 
 const formatXAxisTicks = (value, index, scale, tickTotal, dayCount) => {
+    // Show weekday name for small datasets
     if (dayCount < 10) {
         return scale.tickFormat(tickTotal, '%a %d')(value)
     }
@@ -68,6 +69,7 @@ const formatXAxisTicks = (value, index, scale, tickTotal, dayCount) => {
     if (index === 0 || value.getDate() === 1) {
         return scale.tickFormat(tickTotal, '%b %d')(value)
     }
+
     // Otherwise return only day number
     return scale.tickFormat(tickTotal, '%d')(value)
 }
@@ -77,29 +79,49 @@ const MembersGraph = ({ className, joinPartStreamId, memberCount, shownDays }: P
     const [memberData, setMemberData] = useState([])
     const [graphData, setGraphData] = useState([])
     const [dataDomain, setDataDomain] = useState([])
+    const activeAddressesRef = useRef([])
 
     const onMessage = useCallback((data: JoinPartMessage, metadata: MessageMetadata) => {
+        let diff = 0
+        const activeAddresses = activeAddressesRef.current
+
         // Check if message type is 'join' or 'part' and
         // calculate member count diff based on the type.
         // E.g. 'join' with 3 addresses means +3 diff in member count.
-        let diffCoefficient = 0
-        if (data.type === 'join') {
-            diffCoefficient = 1
-        } else if (data.type === 'part') {
-            diffCoefficient = -1
+        // JoinPartStream might have duplicate joins/parts for a
+        // single address so make sure we skip duplicates.
+        if (data.type === 'join' && data.addresses && data.addresses.length > 0) {
+            data.addresses.forEach((address) => {
+                if (!activeAddresses.includes(address)) {
+                    diff += 1
+                    activeAddresses.push(address)
+                }
+            })
+        } else if (data.type === 'part' && data.addresses && data.addresses.length > 0) {
+            data.addresses.forEach((address) => {
+                if (activeAddresses.includes(address)) {
+                    diff -= 1
+                    const addrIndex = activeAddresses.indexOf(address)
+                    if (addrIndex > -1) {
+                        activeAddresses.splice(addrIndex, 1)
+                    }
+                }
+            })
         } else {
             // Reject other message types.
             return
         }
 
-        const entry = {
-            timestamp: metadata.messageId.timestamp,
-            diff: data.addresses.length * diffCoefficient,
+        if (diff !== 0) {
+            const entry = {
+                timestamp: metadata.messageId.timestamp,
+                diff,
+            }
+            setMemberData((oldArray) => [
+                ...oldArray,
+                entry,
+            ])
         }
-        setMemberData((oldArray) => [
-            ...oldArray,
-            entry,
-        ])
     }, [])
 
     useEffect(() => {
@@ -118,7 +140,7 @@ const MembersGraph = ({ className, joinPartStreamId, memberCount, shownDays }: P
         const data = memberData.reduce((acc, element, index) => {
             acc.push({
                 x: element.timestamp,
-                y: acc[index].y + element.diff,
+                y: acc[index].y - element.diff,
             })
             return acc
         }, initialData)
@@ -156,6 +178,7 @@ const MembersGraph = ({ className, joinPartStreamId, memberCount, shownDays }: P
         // resubscription to stream will happen and data will
         // be resent
         setMemberData([])
+        activeAddressesRef.current = []
 
         const loadStreamData = async (streamId) => {
             const from = Date.now() - (shownDays * MILLISECONDS_IN_DAY)

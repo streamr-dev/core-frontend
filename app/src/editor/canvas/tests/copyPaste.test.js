@@ -61,6 +61,22 @@ describe('copy/paste with getModuleCopy', () => {
         expect(State.moduleHasConnections(canvas, toLowerCase2.hash)).not.toBeTruthy()
     })
 
+    it('gives unique port ids for multiple pastes', async () => {
+        let canvas = State.emptyCanvas()
+        canvas = State.addModule(canvas, await loadModuleDefinition('ToLowerCase'))
+        const [toLowerCase1] = canvas.modules
+        const toLowerCaseDefn = State.getModuleCopy(canvas, toLowerCase1.hash)
+        canvas = State.addModule(canvas, toLowerCaseDefn)
+        canvas = State.addModule(canvas, toLowerCaseDefn)
+        const [, toLowerCase2, toLowerCase3] = canvas.modules
+        const toLowerCase2Ports = State.getModulePorts(canvas, toLowerCase2.hash)
+        const toLowerCase3Ports = State.getModulePorts(canvas, toLowerCase3.hash)
+
+        toLowerCase2Ports.forEach((port) => {
+            expect(toLowerCase3Ports.find((p) => p.id === port.id)).not.toBeTruthy()
+        })
+    })
+
     it('does not copy uiChannel', async () => {
         let canvas = State.emptyCanvas()
         canvas = State.addModule(canvas, await loadModuleDefinition('Table'))

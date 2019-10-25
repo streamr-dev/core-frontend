@@ -1,10 +1,20 @@
 .root {
   border-radius: calc(0.125 * var(--um));
-  cursor: pointer;
   height: var(--um);
   outline: 0;
   position: relative;
   width: calc(1.5 * var(--um));
+  display: block;
+  appearance: none;
+  border: none;
+}
+
+.root:not(:disabled) {
+  cursor: pointer;
+}
+
+.root:focus {
+  outline: none;
 }
 
 .root > div {

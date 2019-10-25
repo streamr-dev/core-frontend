@@ -12,6 +12,7 @@ import useIsMounted from '$shared/hooks/useIsMounted'
 import DonutChart from '$shared/components/DonutChart'
 import Dropdown from '$shared/components/Dropdown'
 import MembersGraph from '../MembersGraph'
+import { fromAtto } from '$mp/utils/math'
 
 import styles from './productOverview.pcss'
 
@@ -25,6 +26,7 @@ type Props = {
 }
 
 const CP_SERVER_POLL_INTERVAL_MS = 10000
+const MILLISECONDS_IN_MONTH = 1000 * 60 * 60 * 24 * 30
 
 const ProductOverview = ({
     product,
@@ -64,7 +66,8 @@ const ProductOverview = ({
     }, [getStats])
 
     const productAgeMs = Date.now() - new Date(product.created || 0).getTime()
-    const revenuePerMonth = (stats && stats.totalEarnings) ? Math.floor(stats.totalEarnings / (productAgeMs / (1000 * 60 * 60 * 24 * 30))) : 0
+    const totalEarnings = (stats && stats.totalEarnings && fromAtto(stats.totalEarnings).toNumber()) || 0
+    const revenuePerMonth = totalEarnings !== 0 ? (totalEarnings / (productAgeMs / MILLISECONDS_IN_MONTH)) : 0
     const revenuePerMonthPerMember = (stats && stats.memberCount && stats.memberCount.total > 0) ? (revenuePerMonth / stats.memberCount.total) : 0
 
     return (
@@ -80,7 +83,6 @@ const ProductOverview = ({
                         </div>
                         <div>
                             <div className={styles.deployMessageHeading}>Deploying your Community Product</div>
-                            <div className={styles.deployMessage}>It will be ready soon, thanks for your patience.</div>
                         </div>
                     </div>
                 </div>
@@ -94,7 +96,7 @@ const ProductOverview = ({
                         <div>
                             <div className={styles.statHeading}>Total product revenue</div>
                             <div className={styles.statValue}>
-                                {stats.totalEarnings}
+                                {totalEarnings}
                                 <span className={styles.currency}> DATA</span>
                             </div>
                         </div>
@@ -105,7 +107,7 @@ const ProductOverview = ({
                         <div>
                             <div className={styles.statHeading}>Avg rev member / month</div>
                             <div className={styles.statValue}>
-                                {Math.floor(revenuePerMonthPerMember)}
+                                {revenuePerMonthPerMember.toFixed(2)}
                                 <span className={styles.currency}> DATA</span>
                             </div>
                         </div>
@@ -115,7 +117,10 @@ const ProductOverview = ({
                         </div>
                         <div>
                             <div className={styles.statHeading}>Admin fee</div>
-                            <div className={styles.statValue}>{adminFee}</div>
+                            <div className={styles.statValue}>
+                                {(adminFee * 100).toFixed(0)}
+                                <span className={styles.currency}> %</span>
+                            </div>
                         </div>
                         <div>
                             <div className={styles.statHeading}>Product created</div>

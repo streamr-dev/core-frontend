@@ -40,10 +40,12 @@ export default class CommentModule extends React.PureComponent {
     }
 
     render() {
+        const { isEditable } = this.props
         return (
             <UiSizeConstraint minWidth={100} minHeight={50}>
                 <div className={cx(this.props.className, styles.Comment)}>
                     <TextControl
+                        disabled={!isEditable}
                         commitEmpty
                         flushHistoryOnBlur
                         onCommit={this.onChange}
