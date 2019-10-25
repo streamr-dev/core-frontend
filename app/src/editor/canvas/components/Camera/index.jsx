@@ -1,21 +1,11 @@
 import React, { useRef, useState, useCallback, useLayoutEffect, useEffect, useMemo, useContext } from 'react'
 import { useSpring, animated, to } from 'react-spring'
 import cx from 'classnames'
+import { useThrottled } from '$shared/hooks/wrapCallback'
+
+import * as State from './state'
 import styles from './Camera.pcss'
 
-import isEditableElement from '$editor/shared/utils/isEditableElement'
-
-import { useThrottled } from '$shared/hooks/wrapCallback'
-import * as State from './state'
-
-function clamp(value, min, max) {
-    return Math.max(min, Math.min(max, value))
-}
-
-/**
- * Allows interaction events to bubble from this element
- * and be handled by camera controls
- */
 export const { cameraControl, noCameraControl } = styles
 
 function useStateCallback(setState, fn) {
@@ -25,10 +15,12 @@ function useStateCallback(setState, fn) {
 }
 
 const defaultCameraConfig = {
-    mass: 1,
-    friction: 62,
-    tension: 700,
-    precision: 0.00001,
+    config: {
+        mass: 1,
+        friction: 62,
+        tension: 700,
+        precision: 0.00001,
+    },
 }
 
 function useCameraSimpleApi(opts) {
@@ -46,8 +38,11 @@ function useCameraSimpleApi(opts) {
     const cameraConfigRef = useRef()
     cameraConfigRef.current = cameraConfig
 
+    // hold the destination state in a ref
+    // update fast with spring, commit to react state later
     const destStateRef = useRef()
 
+    // commit destination state to react
     const commit = useCallback(() => {
         setActualState((s) => ({
             ...s,
@@ -57,6 +52,7 @@ function useCameraSimpleApi(opts) {
         }))
     }, [])
 
+    // commit to react state once every 500ms
     const commitThrottled = useThrottled(useCallback(() => {
         commit()
     }, [commit]), 500)
@@ -67,28 +63,28 @@ function useCameraSimpleApi(opts) {
             x: state.x,
             y: state.y,
             scale: state.scale,
-            config: cameraConfig,
             onRest: commit,
+            ...cameraConfig,
         }
     }
 
-    const onSpring = () => destStateRef.current
-
-    const [spring, set, stop] = useSpring(onSpring)
+    const [spring, set, stop] = useSpring(() => destStateRef.current)
 
     const springRef = useRef()
     springRef.current = spring
 
+    // A react setState-like api, but sets spring/dest state
     const setSpringState = useCallback((v) => {
-        const { x, y, scale } = (typeof v === 'function') ? v({
+        const { x, y, scale } = (typeof v !== 'function') ? v : v({
+            // add additional state props but only read back x, y & scale
             ...stateRef.current,
             ...destStateRef.current,
-        }) : v
+        })
         destStateRef.current = {
             x,
             y,
             scale,
-            config: cameraConfigRef.current,
+            ...cameraConfigRef.current,
         }
         set(destStateRef.current)
         commitThrottled()
