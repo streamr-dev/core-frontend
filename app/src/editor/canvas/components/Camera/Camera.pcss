@@ -4,6 +4,8 @@
 
 .scaleLayer {
   transform-origin: 0 0;
+
+  /* without this, smooth panning/scale is unusable in Chrome 78-80 */
   will-change: transform;
 }
 
