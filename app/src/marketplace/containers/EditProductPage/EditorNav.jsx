@@ -76,6 +76,13 @@ const EditorNav = () => {
         return statuses.EMPTY
     }, [getStatus, isCommunity])
 
+    const sharedSecretStatus = useMemo(() => {
+        if (!isTouched('sharedSecrets')) {
+            return statuses.EMPTY
+        }
+        return statuses.VALID
+    }, [isTouched])
+
     const clickTargetRef = useRef(null)
     const onClickFn = useCallback((id, e) => {
         e.preventDefault()
@@ -115,6 +122,10 @@ const EditorNav = () => {
         id: 'details',
         heading: I18n.t('editProductPage.navigation.details'),
         status: detailsStatus,
+    }, {
+        id: 'shared-secrets',
+        heading: I18n.t('editProductPage.navigation.sharedSecrets'),
+        status: sharedSecretStatus,
     }].map((section) => ({
         ...section,
         onClick: onClickFn.bind(null, section.id),
@@ -122,6 +133,7 @@ const EditorNav = () => {
         getStatus,
         priceStatus,
         detailsStatus,
+        sharedSecretStatus,
         onClickFn,
     ])
 

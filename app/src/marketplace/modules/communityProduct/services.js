@@ -14,7 +14,7 @@ import type { Permission } from '$userpages/flowtype/permission-types'
 import type { ApiResult } from '$shared/flowtype/common-types'
 import { gasLimits } from '$shared/utils/constants'
 
-import { post, del, get } from '$shared/utils/api'
+import { post, del, get, put } from '$shared/utils/api'
 import { formatApiUrl } from '$shared/utils/url'
 import { postStream, getMyStreamPermissions } from '$userpages/modules/userPageStreams/services'
 import { addStreamResourceKey } from '$shared/modules/resourceKey/services'
@@ -168,3 +168,20 @@ export const getCommunityData = async (id: CommunityId, usePublicNode: boolean =
         owner,
     }
 }
+
+export const getSecrets = (communityId: string): ApiResult<Array<Object>> =>
+    get(formatApiUrl('communities', communityId, 'secrets'))
+
+export const postSecret = (communityId: string, name: string, secret: string): ApiResult<any> =>
+    post(formatApiUrl('communities', communityId, 'secrets'), {
+        name,
+        secret,
+    })
+
+export const putSecret = (communityId: string, secretId: string, name: string): ApiResult<any> =>
+    put(formatApiUrl('communities', communityId, 'secrets', secretId), {
+        name,
+    })
+
+export const deleteSecret = (communityId: string, secretId: string): ApiResult<any> =>
+    del(formatApiUrl('communities', communityId, 'secrets', secretId))
