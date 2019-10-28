@@ -48,7 +48,7 @@ class PageTurner extends React.Component<Props, State> {
     matchFound: boolean = false
     navDirections: DocsNav = this.calcNavDirections()
 
-    isExtraPaddingRequired = () => this.state.documentHeight < 2000 && this.state.documentHeight !== 0
+    isExtraPaddingRequired = () => this.state.documentHeight < 2000 && this.state.documentHeight !== 0 && window.document.body.scrollWidth > 991
 
     isPathnameMatch(pathnames) {
         let match = false
