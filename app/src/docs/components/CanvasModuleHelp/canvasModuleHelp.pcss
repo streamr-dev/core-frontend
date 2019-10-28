@@ -7,6 +7,15 @@ section.root {
     text-transform: uppercase;
   }
 
+  code {
+    color: #323232;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    background-color: #EFEFEF;
+    padding: 2px 4px;
+    border-radius: 2px;
+  }
+
   h4 {
     font-size: 20px;
     font-weight: var(--medium);
@@ -19,6 +28,14 @@ section.root {
       font-size: 18px;
       line-height: 28px;
     }
+  }
+
+  h6 {
+    font-size: 16px;
+    font-weight: var(--medium);
+    line-height: 1.5um;
+    letter-spacing: 0;
+    margin-bottom: 1.5rem;
   }
 }
 
@@ -33,6 +50,22 @@ section.root {
   }
 }
 
+.nameAndDescription {
+  margin-bottom: 1.8rem;
+
+  p {
+    font-size: 18px;
+    line-height: 30px;
+  }
+
+  @media (--md-down) {
+    p {
+      font-size: 16px;
+      line-height: 28px;
+    }
+  }
+}
+
 .ports {
   > div {
     margin-bottom: 1rem;
@@ -41,6 +74,18 @@ section.root {
   span {
     font-size: 18px;
     line-height: 30px;
+
+    > p {
+      display: inline-block;
+
+      &::first-letter {
+        text-transform: uppercase;
+      }
+    }
+
+    &::first-letter {
+      text-transform: uppercase;
+    }
   }
 
   @media (--md-down) {
@@ -64,29 +109,13 @@ section.root {
   }
 }
 
-.portText > p {
+.ports .portText > p {
   display: inline;
   margin: 0;
 }
 
 .portType::first-letter {
   text-transform: uppercase;
-}
-
-.nameAndDescription {
-  margin-bottom: 1.8rem;
-
-  p {
-    font-size: 18px;
-    line-height: 30px;
-  }
-
-  @media (--md-down) {
-    p {
-      font-size: 16px;
-      line-height: 28px;
-    }
-  }
 }
 
 .minifiedContent {

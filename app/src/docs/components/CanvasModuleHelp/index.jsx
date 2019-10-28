@@ -13,6 +13,10 @@ type PortHelpProps = {
     port: any,
 }
 
+// Need to capitalize the first letter in JS because text-transform capitalize
+// doesn't play well with inline elements.
+const capitalizeText = (text: string): string => text.charAt(0).toUpperCase() + text.slice(1)
+
 function PortHelp({ help, port }: PortHelpProps) {
     return (
         <div className={styles.portHelp}>
@@ -20,9 +24,9 @@ function PortHelp({ help, port }: PortHelpProps) {
             {port.type.split(/\s+/).map((type) => (
                 <span className={styles.portType} key={type}> {type}.</span>
             ))}
-            <span className={styles.portText}> <ReactMarkdown source={help || ''} /></span>
+            {!help ? null : (<span className={styles.portText}> <ReactMarkdown source={capitalizeText(help) || ''} />.</span>)}
             {isEmpty(port.defaultValue) ? null : (
-                <span className={styles.defaultValue}>. Default Value ${port.defaultValue}</span>
+                <span className={styles.defaultValue}> Default Value ${port.defaultValue}</span>
             )}
         </div>
     )
@@ -86,10 +90,14 @@ export default function CanvasModuleHelp({ module: m, help, minifiedContent, cla
             )}
             <div className={styles.ports}>
                 <div>
+                    {!minifiedContent || (!m.inputs.length && !m.params.length) ? null : (<h6>Inputs</h6>)}
                     <PortsHelp module={m} help={help} portsKey="inputs" />
                     <PortsHelp module={m} help={help} portsKey="params" />
                 </div>
-                <PortsHelp module={m} help={help} portsKey="outputs" />
+                <div>
+                    {!minifiedContent || !m.outputs.length ? null : (<h6>Outputs</h6>)}
+                    <PortsHelp module={m} help={help} portsKey="outputs" />
+                </div>
             </div>
         </section>
     )

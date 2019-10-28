@@ -116,7 +116,7 @@ export default function ModuleSidebar({ canvas, selectedModuleHash, setModuleOpt
                         </div>
                     </Section>
                 )}
-                <Section label="About" initialIsOpen>
+                <Section label="Description" initialIsOpen>
                     <ModuleHelp className={styles.moduleHelp} module={module} />
                 </Section>
             </Content>
