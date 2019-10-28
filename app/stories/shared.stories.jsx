@@ -696,6 +696,15 @@ story('RadioButtonGroup')
             onChange={action('selected')}
         />
     ))
+    .addWithJSX('disabled', () => (
+        <RadioButtonGroup
+            name="group"
+            options={['value 1', 'value 2', 'value 3']}
+            selectedOption="value 2"
+            onChange={action('selected')}
+            disabled
+        />
+    ))
 
 const toolbarActions = {
     cancel: {

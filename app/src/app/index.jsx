@@ -157,7 +157,14 @@ const AuthenticationRouter = () => ([
     <Redirect from="/register/forgotPassword" to={routes.forgotPassword()} key="ForgotPasswordRedirect" />,
 ])
 
-const MarketplaceRouter = () => ([
+const MarketplaceRouter = () => (process.env.COMMUNITY_PRODUCTS ? [
+    <Route exact path={marketplace.main} component={Products} key="Products" />,
+    <Route exact path={links.marketplace.createProduct} component={CreateProductAuth2} key="CreateProduct" />,
+    <Route exact path={formatPath(marketplace.products, ':id', 'purchase2')} component={ProductPurchasePage2} key="ProductPurchasePage2" />,
+    <Route exact path={formatPath(marketplace.products, ':id', 'publish2')} component={ProductPublishPage2} key="ProductPublishPage2" />,
+    <Route exact path={formatPath(marketplace.products, ':id')} component={ProductPage2} key="ProductPage2" />,
+    <Route exact path={routes.editProduct()} component={EditProductAuth2} key="EditProduct" />,
+] : [
     <Route exact path={marketplace.main} component={Products} key="Products" />,
     <Route exact path={links.marketplace.createProduct} component={CreateProductAuth} key="CreateProduct" />,
     <Route exact path={formatPath(marketplace.products, ':id', 'purchase')} component={ProductPurchasePage} key="ProductPurchasePage" />,
@@ -165,14 +172,6 @@ const MarketplaceRouter = () => ([
     <Route exact path={formatPath(marketplace.products, ':id', 'streamPreview', ':streamId')} component={StreamPreviewPage} key="StreamPreview" />,
     <Route exact path={formatPath(marketplace.products, ':id')} component={ProductPage} key="ProductPage" />,
     <Route exact path={routes.editProduct()} component={EditProductAuth} key="EditProduct" />,
-])
-
-const CommunityProductsRouter = () => ([
-    <Route exact path={routes.createProduct2()} component={CreateProductAuth2} key="CreateProduct2" />,
-    <Route exact path={formatPath(marketplace.products, ':id', 'purchase2')} component={ProductPurchasePage2} key="ProductPurchasePage2" />,
-    <Route exact path={formatPath(marketplace.products, ':id', 'publish2')} component={ProductPublishPage2} key="ProductPublishPage2" />,
-    <Route exact path={formatPath(marketplace.products2, ':id')} component={ProductPage2} key="ProductPage2" />,
-    <Route exact path={routes.editProduct2()} component={EditProductAuth2} key="EditProduct2" />,
 ])
 
 const DocsRouter = () => ([
@@ -344,7 +343,6 @@ const App = () => (
                 <Analytics />
                 <Switch>
                     {AuthenticationRouter()}
-                    {!!process.env.COMMUNITY_PRODUCTS && CommunityProductsRouter()}
                     {MarketplaceRouter()}
                     {DocsRouter()}
                     {UserpagesRouter()}

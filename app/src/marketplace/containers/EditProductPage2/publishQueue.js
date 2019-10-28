@@ -12,6 +12,7 @@ export const actionsTypes = {
     UNDEPLOY_CONTRACT_PRODUCT: 'undeployContractProduct',
     PUBLISH_FREE: 'publishFree',
     UNPUBLISH_FREE: 'unpublishFree',
+    PUBLISH_PENDING_CHANGES: 'publishPendingChanges',
 }
 
 const web3Actions = [

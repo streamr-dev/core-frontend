@@ -276,6 +276,9 @@ msgstr "Publish"
 msgid "modal##completePublish##unpublishFree##started##title"
 msgstr "Unpublish"
 
+msgid "modal##completePublish##publishPendingChanges##started##title"
+msgstr "Update product data"
+
 msgid "modal##completePublish##started##title"
 msgstr "Publish Confirmation"
 

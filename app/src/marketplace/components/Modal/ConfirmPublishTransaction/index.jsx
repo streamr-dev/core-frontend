@@ -30,6 +30,7 @@ const ConfirmPublishTransaction = ({
     const isWaiting = useMemo(() => waiting || [
         actionsTypes.PUBLISH_FREE,
         actionsTypes.UNPUBLISH_FREE,
+        actionsTypes.PUBLISH_PENDING_CHANGES,
     ].includes(action), [action, waiting])
 
     switch (publishState) {

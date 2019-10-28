@@ -1,6 +1,8 @@
 import assert from 'assert-diff'
 import BN from 'bignumber.js'
 
+import { productStates } from '$shared/utils/constants'
+
 import * as all from '$mp/utils/product'
 
 describe('product utils', () => {
@@ -162,7 +164,7 @@ describe('product utils', () => {
         })
     })
 
-    describe('mapProductToApi', () => {
+    describe('mapProductToPostApi', () => {
         it('maps product properties', () => {
             const inProduct = {
                 name: 'test',
@@ -175,7 +177,7 @@ describe('product utils', () => {
                 priceCurrency: 'DATA',
             }
 
-            assert.deepStrictEqual(all.mapProductToApi(inProduct), outProduct)
+            assert.deepStrictEqual(all.mapProductToPostApi(inProduct), outProduct)
         })
 
         it('rejects invalid objects', () => {
@@ -185,7 +187,117 @@ describe('product utils', () => {
                 priceCurrency: 'EUR',
             }
 
-            assert.throws(() => all.mapProductToApi(inProduct))
+            assert.throws(() => all.mapProductToPostApi(inProduct))
+        })
+    })
+
+    describe('mapProductToPutApi', () => {
+        it('returns the same object for unpaid product', () => {
+            const product = {
+                id: '1',
+                name: 'My Product',
+                description: 'My nice product',
+                state: productStates.DEPLOYED,
+            }
+
+            expect(all.mapProductToPutApi(product)).toMatchObject({
+                id: '1',
+                name: 'My Product',
+                description: 'My nice product',
+                state: productStates.DEPLOYED,
+            })
+        })
+
+        it('returns the same object for unpublished paid product', () => {
+            const product = {
+                id: '1',
+                name: 'My Product',
+                description: 'My nice product',
+                pricePerSecond: '123',
+                beneficiaryAddress: '0x12334',
+                isFree: false,
+                state: productStates.NOT_DEPLOYED,
+            }
+
+            expect(all.mapProductToPutApi(product)).toMatchObject({
+                id: '1',
+                name: 'My Product',
+                description: 'My nice product',
+                pricePerSecond: '123',
+                beneficiaryAddress: '0x12334',
+                isFree: false,
+                state: productStates.NOT_DEPLOYED,
+            })
+        })
+
+        it('returns the pending changes for unpaid product', () => {
+            const product = {
+                id: '1',
+                name: 'My Product',
+                description: 'My nice product',
+                state: productStates.DEPLOYED,
+                pendingChanges: {
+                    name: 'Better name',
+                },
+            }
+
+            expect(all.mapProductToPutApi(product)).toMatchObject({
+                id: '1',
+                name: 'My Product',
+                description: 'My nice product',
+                state: productStates.DEPLOYED,
+                pendingChanges: {
+                    name: 'Better name',
+                },
+            })
+        })
+
+        it('returns removes smart contract fields for published paid product', () => {
+            const product = {
+                id: '1',
+                name: 'My Product',
+                description: 'My nice product',
+                ownerAddress: '0x1234',
+                beneficiaryAddress: '0x1234',
+                pricePerSecond: '12345',
+                priceCurrency: 'USD',
+                minimumSubscriptionInSeconds: 0,
+                state: productStates.DEPLOYED,
+            }
+
+            expect(all.mapProductToPutApi(product)).toMatchObject({
+                id: '1',
+                name: 'My Product',
+                description: 'My nice product',
+                state: productStates.DEPLOYED,
+            })
+        })
+
+        it('returns removes smart contract fields and returns pending changes for published paid product', () => {
+            const product = {
+                id: '1',
+                name: 'My Product',
+                description: 'My nice product',
+                ownerAddress: '0x1234',
+                beneficiaryAddress: '0x1234',
+                pricePerSecond: '12345',
+                priceCurrency: 'USD',
+                minimumSubscriptionInSeconds: 0,
+                state: productStates.DEPLOYED,
+                pendingChanges: {
+                    name: 'Better name',
+                },
+            }
+
+            expect(all.mapProductToPutApi(product)).toMatchObject({
+                id: '1',
+                name: 'My Product',
+                description: 'My nice product',
+                state: productStates.DEPLOYED,
+                pendingChanges: {
+                    name: 'Better name',
+                },
+            })
         })
     })
 
@@ -237,34 +349,6 @@ describe('product utils', () => {
                 state: 'UNDEPLOYING',
             }
             assert.equal(all.isPublishedProduct(prod4), false)
-        })
-    })
-
-    describe('isPaidAndNotPublishedProduct', () => {
-        it('returns status', () => {
-            const prod1 = {
-                isFree: false,
-                state: 'NOT_DEPLOYED',
-            }
-            assert.equal(all.isPaidAndNotPublishedProduct(prod1), true)
-
-            const prod2 = {
-                isFree: false,
-                state: 'DEPLOYED',
-            }
-            assert.equal(all.isPaidAndNotPublishedProduct(prod2), false)
-
-            const prod3 = {
-                isFree: true,
-                state: 'DEPLOYED',
-            }
-            assert.equal(all.isPaidAndNotPublishedProduct(prod3), false)
-
-            const prod4 = {
-                isFree: true,
-                state: 'NOT_DEPLOYED',
-            }
-            assert.equal(all.isPaidAndNotPublishedProduct(prod4), false)
         })
     })
 

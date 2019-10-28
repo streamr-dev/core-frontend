@@ -1,19 +1,17 @@
 // @flow
 
 import { put, post } from '$shared/utils/api'
-import { mapProductFromApi, mapProductToApi, isPaidAndNotPublishedProduct } from '../../utils/product'
+import { mapProductFromApi, mapProductToPostApi, mapProductToPutApi } from '../../utils/product'
 import { formatApiUrl } from '$shared/utils/url'
 import type { ApiResult } from '$shared/flowtype/common-types'
 import type { EditProduct, Product, ProductId, ProductType } from '../../flowtype/product-types'
 
-export const putProduct = (data: EditProduct, id: ProductId): ApiResult<Product> => {
-    const isPaidAndNotPublished = isPaidAndNotPublishedProduct(data)
-
-    return put(formatApiUrl('products', id), isPaidAndNotPublished ? mapProductToApi(data) : data)
+export const putProduct = (data: EditProduct, id: ProductId): ApiResult<Product> => (
+    put(formatApiUrl('products', id), mapProductToPutApi(data))
         .then(mapProductFromApi)
-}
+)
 
-export const postProduct = (product: Product): ApiResult<Product> => post(formatApiUrl('products'), mapProductToApi(product))
+export const postProduct = (product: Product): ApiResult<Product> => post(formatApiUrl('products'), mapProductToPostApi(product))
     .then(mapProductFromApi)
 
 export const postEmptyProduct = (type: ProductType): ApiResult<Product> => {

@@ -17,7 +17,7 @@ import styles from './productDetails.pcss'
 
 const adminFeeOptions = [10, 20, 30, 40, 50, 60, 70, 80, 90].map((value) => ({
     label: `${value} %`,
-    value,
+    value: `${value / 100}`,
 }))
 
 const ProductDetails = () => {
@@ -29,7 +29,7 @@ const ProductDetails = () => {
     const { updateCategory, updateAdminFee } = useProductActions()
 
     const adminFee = product && product.adminFee
-    const selectedAdminFee = useMemo(() => adminFeeOptions[adminFee], [adminFee])
+    const selectedAdminFee = useMemo(() => adminFeeOptions.find(({ value }) => value === adminFee), [adminFee])
 
     return (
         <section id="details" className={cx(styles.root, styles.ProductDetails)}>

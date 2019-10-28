@@ -20,6 +20,7 @@ type Props = {
 const BeneficiaryAddress = ({ address, onChange, disabled, className }: Props) => {
     const { isValid, message } = useValidation('beneficiaryAddress')
     const { isTouched } = useContext(ValidationContext)
+    const priceTouched = isTouched('pricePerSecond') || isTouched('beneficiaryAddress')
 
     return (
         <form autoComplete="off">
@@ -37,7 +38,7 @@ const BeneficiaryAddress = ({ address, onChange, disabled, className }: Props) =
                         value={address || ''}
                         onCommit={onChange}
                         placeholder={I18n.t('editProductPage.setPrice.placeholder.enterEthAddress')}
-                        error={isTouched('beneficiaryAddress') && !isValid ? message : undefined}
+                        error={priceTouched && !isValid ? message : undefined}
                         disabled={disabled}
                     />
                 </div>

@@ -13,7 +13,7 @@ import useProductActions from '../ProductController/useProductActions'
 import styles from './productEditorDebug.pcss'
 
 const ProductEditorDebug = () => {
-    const [minimized, setMinimized] = useState(false)
+    const [minimized, setMinimized] = useState(true)
 
     const toggle = useCallback(() => {
         setMinimized((prev) => !prev)
@@ -21,7 +21,7 @@ const ProductEditorDebug = () => {
 
     const product = useProduct()
     const { updateType } = useProductActions()
-    const { touched } = useContext(ValidationContext)
+    const { touched, pendingChanges } = useContext(ValidationContext)
 
     const isCommunity = isCommunityProduct(product)
     const onFixPriceChange = useCallback((checked) => {
@@ -45,11 +45,17 @@ const ProductEditorDebug = () => {
                     value={isCommunity}
                     onChange={onFixPriceChange}
                 />
+                product:<br />
                 <pre className={styles.productData}>
                     {JSON.stringify(product, null, 2)}
                 </pre>
+                touched:<br />
                 <pre className={styles.productData}>
                     {JSON.stringify(touched, null, 2)}
+                </pre>
+                pending:<br />
+                <pre className={styles.productData}>
+                    {JSON.stringify(pendingChanges, null, 2)}
                 </pre>
             </div>
         </div>

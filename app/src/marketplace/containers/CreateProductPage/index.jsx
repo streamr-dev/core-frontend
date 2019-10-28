@@ -18,7 +18,7 @@ const CreateProductPage = () => {
     const createProduct = useCallback(async (type: ProductType) => {
         try {
             const product = await postEmptyProduct(type)
-            dispatch(push(routes.editProduct2({
+            dispatch(push(routes.editProduct({
                 id: product.id,
             })))
         } catch (err) {

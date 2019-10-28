@@ -4,24 +4,30 @@ import React, { useState, useCallback, useContext } from 'react'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { Translate } from 'react-redux-i18n'
-import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
 
-import useProduct from '../ProductController/useProduct'
-import useValidation from '../ProductController/useValidation'
 import { isCommunityProduct } from '$mp/utils/product'
-
-import useProductActions from '../ProductController/useProductActions'
+import { usePending } from '$shared/hooks/usePending'
 import { currencies, DEFAULT_CURRENCY } from '$shared/utils/constants'
 import { selectDataPerUsd } from '$mp/modules/global/selectors'
 import RadioButtonGroup from '$shared/components/RadioButtonGroup'
 import SetPrice from '$mp/components/SetPrice'
 import Toggle from '$shared/components/Toggle'
+import { selectContractProduct } from '$mp/modules/contractProduct/selectors'
+
+import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
+import useProduct from '../ProductController/useProduct'
+import useValidation from '../ProductController/useValidation'
+import useProductActions from '../ProductController/useProductActions'
+import { isPublished } from './state'
+
 import BeneficiaryAddress from './BeneficiaryAddress'
+
 import styles from './PriceSelector.pcss'
 
 const PriceSelector = () => {
     const product = useProduct()
     const { isTouched } = useContext(ValidationContext)
+
     const {
         updateIsFree,
         updatePrice,
@@ -30,6 +36,10 @@ const PriceSelector = () => {
         updateBeneficiaryAddress,
     } = useProductActions()
     const dataPerUsd = useSelector(selectDataPerUsd)
+    const { isPending } = usePending('contractProduct.LOAD')
+    const isPublic = isPublished(product)
+    const contractProduct = useSelector(selectContractProduct)
+    const isPriceTypeDisabled = !!(isPending || isPublic || !!contractProduct)
 
     const [currency, setCurrency] = useState(product.priceCurrency || DEFAULT_CURRENCY)
 
@@ -51,7 +61,7 @@ const PriceSelector = () => {
 
     const isFreeProduct = !!product.isFree
 
-    const { isValid, message } = useValidation('price')
+    const { isValid, message } = useValidation('pricePerSecond')
 
     return (
         <section id="price" className={cx(styles.root, styles.PriceSelector)}>
@@ -65,6 +75,7 @@ const PriceSelector = () => {
                     options={['Paid', 'Free']}
                     selectedOption={isFreeProduct ? 'Free' : 'Paid'}
                     onChange={onPriceTypeChange}
+                    disabled={isPriceTypeDisabled}
                 />
                 <div className={cx(styles.inner, {
                     [styles.disabled]: isFreeProduct,
@@ -80,7 +91,7 @@ const PriceSelector = () => {
                         timeUnit={product.timeUnit}
                         onTimeUnitChange={onTimeUnitChange}
                         dataPerUsd={dataPerUsd}
-                        error={isTouched('price') && !isValid ? message : undefined}
+                        error={isTouched('pricePerSecond') && !isValid ? message : undefined}
                     />
                     {!isCommunityProduct(product) && (
                         <BeneficiaryAddress
