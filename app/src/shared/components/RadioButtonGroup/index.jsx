@@ -11,6 +11,7 @@ type Props = {
     selectedOption?: string,
     className?: string,
     onChange?: (string) => void,
+    disabled?: boolean,
 }
 
 const RadioButtonGroup = ({
@@ -19,6 +20,7 @@ const RadioButtonGroup = ({
     selectedOption,
     className,
     onChange,
+    disabled = false,
 }: Props) => {
     const [selection, setSelection] = useState(selectedOption)
 
@@ -28,7 +30,7 @@ const RadioButtonGroup = ({
     }, [selectedOption, setSelection])
 
     const onCheck = useCallback((option: string) => {
-        if (selection === option) {
+        if (disabled || selection === option) {
             return
         }
 
@@ -37,7 +39,7 @@ const RadioButtonGroup = ({
         if (onChange) {
             onChange(option)
         }
-    }, [selection, onChange])
+    }, [disabled, selection, onChange])
 
     return (
         <div className={cx(styles.root, className)}>
@@ -51,6 +53,7 @@ const RadioButtonGroup = ({
                         className={styles.radio}
                         onChange={() => onCheck(option)}
                         checked={selection === option}
+                        disabled={disabled}
                     />
                     <label
                         htmlFor={`${name}-${index}`}

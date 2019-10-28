@@ -38,14 +38,14 @@ import type {
     ProductSubscriptionActionCreator,
 } from './types'
 
-const getProductByIdRequest: ProductIdActionCreator = createAction(
+export const getProductByIdRequest: ProductIdActionCreator = createAction(
     GET_PRODUCT_BY_ID_REQUEST,
     (id: ProductId) => ({
         id,
     }),
 )
 
-const getProductByIdSuccess: ProductIdActionCreator = createAction(
+export const getProductByIdSuccess: ProductIdActionCreator = createAction(
     GET_PRODUCT_BY_ID_SUCCESS,
     (id: ProductId) => ({
         id,

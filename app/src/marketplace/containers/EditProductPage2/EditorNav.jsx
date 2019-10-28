@@ -8,8 +8,8 @@ import EditorNavComponent, { statuses } from '$mp/components/ProductPage/EditorN
 import Scrollspy from 'react-scrollspy'
 
 import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
-import useValidation from '../ProductController/useValidation'
 import useProduct from '../ProductController/useProduct'
+import { isPublished } from './state'
 
 import styles from './editorNav.pcss'
 
@@ -17,62 +17,64 @@ const OFFSET = -60
 
 const EditorNav = () => {
     const product = useProduct()
+    const productRef = useRef()
+    productRef.current = product
+
     const [activeSectionId, setActiveSectionId] = useState(undefined)
 
-    const { isTouched } = useContext(ValidationContext)
-
-    const { isValid: isNameValid } = useValidation('name')
-    const { isValid: isCoverImageValid } = useValidation('coverImage')
-    const { isValid: isDescriptionValid } = useValidation('description')
-    const { isValid: areStreamsValid } = useValidation('streams')
-    const { isValid: isPriceValid } = useValidation('price')
-    const { isValid: isBeneficiaryAddressValid } = useValidation('beneficiaryAddress')
-    const { isValid: isCategoryValid } = useValidation('category')
-    const { isValid: isAdminFeeValid } = useValidation('adminFee')
+    const { isValid, isTouched, isPendingChange } = useContext(ValidationContext)
 
     const isCommunity = isCommunityProduct(product)
+    const isPublic = isPublished(product)
 
-    const nameStatus = useMemo(() => {
-        if (!isTouched('name')) {
+    const getStatus = useCallback((name: string) => {
+        const pending = !!isPublic && isPendingChange(name)
+
+        if (!isTouched(name) && !pending) {
             return statuses.EMPTY
         }
-        return isNameValid ? statuses.VALID : statuses.ERROR
-    }, [isTouched, isNameValid])
+        const validState = pending ? statuses.UNPUBLISHED : statuses.VALID
 
-    const coverImageStatus = useMemo(() => {
-        if (!isTouched('coverImage')) {
-            return statuses.EMPTY
-        }
-        return isCoverImageValid ? statuses.VALID : statuses.ERROR
-    }, [isTouched, isCoverImageValid])
-
-    const descriptionStatus = useMemo(() => {
-        if (!isTouched('description')) {
-            return statuses.EMPTY
-        }
-        return isDescriptionValid ? statuses.VALID : statuses.ERROR
-    }, [isTouched, isDescriptionValid])
-
-    const streamsStatus = useMemo(() => {
-        if (!isTouched('streams')) {
-            return statuses.EMPTY
-        }
-        return areStreamsValid ? statuses.VALID : statuses.ERROR
-    }, [isTouched, areStreamsValid])
+        return isValid(name) ? validState : statuses.ERROR
+    }, [isPublic, isPendingChange, isTouched, isValid])
 
     const priceStatus = useMemo(() => {
-        if (!isTouched('price')) {
-            return statuses.EMPTY
+        const price = getStatus('pricePerSecond')
+
+        if (!isCommunity) {
+            return price
         }
-        return (isPriceValid && (isCommunity || isBeneficiaryAddressValid)) ? statuses.VALID : statuses.ERROR
-    }, [isTouched, isCommunity, isPriceValid, isBeneficiaryAddressValid])
+        const address = getStatus('beneficiaryAddress')
+
+        if (price === statuses.ERROR || address === statuses.ERROR) {
+            return statuses.ERROR
+        } else if (price === statuses.UNPUBLISHED || address === statuses.UNPUBLISHED) {
+            return statuses.UNPUBLISHED
+        } else if (price === statuses.VALID || address === statuses.VALID) {
+            return statuses.VALID
+        }
+
+        return statuses.EMPTY
+    }, [getStatus, isCommunity])
 
     const detailsStatus = useMemo(() => {
-        if (!isTouched('details')) {
-            return statuses.EMPTY
+        const category = getStatus('category')
+
+        if (!isCommunity) {
+            return category
         }
-        return (isCategoryValid && (!isCommunity || isAdminFeeValid)) ? statuses.VALID : statuses.ERROR
-    }, [isTouched, isCommunity, isCategoryValid, isAdminFeeValid])
+        const adminFee = getStatus('adminFee')
+
+        if (category === statuses.ERROR || adminFee === statuses.ERROR) {
+            return statuses.ERROR
+        } else if (category === statuses.UNPUBLISHED || adminFee === statuses.UNPUBLISHED) {
+            return statuses.UNPUBLISHED
+        } else if (category === statuses.VALID || adminFee === statuses.VALID) {
+            return statuses.VALID
+        }
+
+        return statuses.EMPTY
+    }, [getStatus, isCommunity])
 
     const clickTargetRef = useRef(null)
     const onClickFn = useCallback((id, e) => {
@@ -92,19 +94,19 @@ const EditorNav = () => {
     const sections = useMemo(() => [{
         id: 'product-name',
         heading: I18n.t('editProductPage.navigation.name'),
-        status: nameStatus,
+        status: getStatus('name'),
     }, {
         id: 'cover-image',
         heading: I18n.t('editProductPage.navigation.coverImage'),
-        status: coverImageStatus,
+        status: getStatus('imageUrl'),
     }, {
         id: 'description',
         heading: I18n.t('editProductPage.navigation.description'),
-        status: descriptionStatus,
+        status: getStatus('description'),
     }, {
         id: 'streams',
         heading: I18n.t('editProductPage.navigation.streams'),
-        status: streamsStatus,
+        status: getStatus('streams'),
     }, {
         id: 'price',
         heading: I18n.t('editProductPage.navigation.price'),
@@ -117,10 +119,7 @@ const EditorNav = () => {
         ...section,
         onClick: onClickFn.bind(null, section.id),
     })), [
-        nameStatus,
-        coverImageStatus,
-        descriptionStatus,
-        streamsStatus,
+        getStatus,
         priceStatus,
         detailsStatus,
         onClickFn,

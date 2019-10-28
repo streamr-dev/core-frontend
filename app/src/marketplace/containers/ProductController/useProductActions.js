@@ -59,14 +59,14 @@ export function useProductActions() {
             ...p,
             imageUrl: image,
         }))
-        touch('coverImage')
+        touch('imageUrl')
     }, [commit, touch])
     const updateImageFile = useCallback((image: File) => {
         commit('Update image file', (p) => ({
             ...p,
             newImageToUpload: image,
         }))
-        touch('coverImage')
+        touch('imageUrl')
     }, [commit, touch])
     const updateStreams = useCallback((streams: StreamIdList) => {
         commit('Update streams', (p) => ({
@@ -97,7 +97,7 @@ export function useProductActions() {
             isFree,
             pricePerSecond: getPricePerSecond(isFree, p.price, p.priceCurrency, p.timeUnit, dataPerUsd),
         }))
-        touch('price')
+        touch('pricePerSecond')
     }, [commit, touch, dataPerUsd])
     const updatePrice = useCallback((price: $ElementType<Product, 'price'>) => {
         commit('Update price', (p) => ({
@@ -105,7 +105,7 @@ export function useProductActions() {
             price,
             pricePerSecond: getPricePerSecond(p.isFree, price, p.priceCurrency, p.timeUnit, dataPerUsd),
         }))
-        touch('price')
+        touch('pricePerSecond')
     }, [commit, touch, dataPerUsd])
     const updateTimeUnit = useCallback((timeUnit: $ElementType<Product, 'timeUnit'>) => {
         commit('Update time unit', (p) => ({
@@ -113,7 +113,7 @@ export function useProductActions() {
             timeUnit,
             pricePerSecond: getPricePerSecond(p.isFree, p.price, p.priceCurrency, timeUnit, dataPerUsd),
         }))
-        touch('price')
+        touch('pricePerSecond')
     }, [commit, touch, dataPerUsd])
     const updatePriceCurrency = useCallback((priceCurrency: $ElementType<Product, 'priceCurrency'>) => {
         commit('Update price currency', (p) => ({
@@ -121,7 +121,7 @@ export function useProductActions() {
             priceCurrency,
             pricePerSecond: getPricePerSecond(p.isFree, p.price, priceCurrency, p.timeUnit, dataPerUsd),
         }))
-        touch('price')
+        touch('pricePerSecond')
     }, [commit, touch, dataPerUsd])
     const updateBeneficiaryAddress = useCallback((beneficiaryAddress: $ElementType<Product, 'beneficiaryAddress'>) => {
         commit('Update beneficiary address', (p) => ({
