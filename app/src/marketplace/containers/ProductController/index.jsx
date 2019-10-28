@@ -7,7 +7,7 @@ import { Provider as PendingProvider } from '$shared/components/PendingContextPr
 import { Provider as ValidationContextProvider } from './ValidationContextProvider'
 import { usePending } from '$shared/hooks/usePending'
 
-import useProduct from './useProduct'
+import useEditableProduct from './useEditableProduct'
 import useProductLoadCallback from './useProductLoadCallback'
 import useContractProductLoadCallback from './useContractProductLoadCallback'
 import useProductValidationEffect from './useProductValidationEffect'
@@ -20,7 +20,7 @@ type ContextProps = {
 const ProductControllerContext: Context<ContextProps> = React.createContext({})
 
 function useProductLoadEffect() {
-    const product = useProduct()
+    const product = useEditableProduct()
     const loadProduct = useProductLoadCallback()
     const loadContractProduct = useContractProductLoadCallback()
     const { match } = useContext(RouterContext.Context)

@@ -4,9 +4,9 @@ import React, { useContext } from 'react'
 import cx from 'classnames'
 import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
 
-import useProduct from '../ProductController/useProduct'
+import useEditableProduct from '../ProductController/useEditableProduct'
 import useValidation from '../ProductController/useValidation'
-import useProductActions from '../ProductController/useProductActions'
+import useEditableProductActions from '../ProductController/useEditableProductActions'
 import ImageUpload from '$shared/components/ImageUpload'
 import InputError from '$mp/components/InputError'
 import usePending from '$shared/hooks/usePending'
@@ -14,9 +14,9 @@ import usePending from '$shared/hooks/usePending'
 import styles from './coverImage.pcss'
 
 const CoverImage = () => {
-    const product = useProduct()
+    const product = useEditableProduct()
     const { isTouched } = useContext(ValidationContext)
-    const { updateImageFile } = useProductActions()
+    const { updateImageFile } = useEditableProductActions()
     const { isValid, message } = useValidation('imageUrl')
     const { isPending } = usePending('product.SAVE')
 

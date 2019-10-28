@@ -13,7 +13,7 @@ function productUpdater(fn) {
     }
 }
 
-export default function useProductUpdater() {
+export default function useEditableProductUpdater() {
     const { push, replace, setInitialState } = useContext(UndoContext)
 
     const initialize = useOnlyIfMountedCallback((fn, done) => {

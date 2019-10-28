@@ -5,18 +5,18 @@ import cx from 'classnames'
 import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
 
 import usePending from '$shared/hooks/usePending'
-import useProduct from '../ProductController/useProduct'
+import useEditableProduct from '../ProductController/useEditableProduct'
 import useValidation from '../ProductController/useValidation'
-import useProductActions from '../ProductController/useProductActions'
+import useEditableProductActions from '../ProductController/useEditableProductActions'
 
 import TextField from '$mp/components/TextField'
 
 import styles from './productName.pcss'
 
 const ProductName = () => {
-    const product = useProduct()
+    const product = useEditableProduct()
     const { isValid, message } = useValidation('name')
-    const { updateName } = useProductActions()
+    const { updateName } = useEditableProductActions()
     const { isTouched } = useContext(ValidationContext)
     const { isPending } = usePending('product.SAVE')
 

@@ -13,7 +13,7 @@ import useIsMounted from '$shared/hooks/useIsMounted'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import routes from '$routes'
-import useProductActions from '../ProductController/useProductActions'
+import useEditableProductActions from '../ProductController/useEditableProductActions'
 import { isEthereumAddress } from '$mp/utils/validate'
 import { areAddressesEqual } from '$mp/utils/smartContract'
 
@@ -37,7 +37,7 @@ function useEditController(product: Product) {
     const [isPreview, setIsPreview] = useState(false)
     const isMounted = useIsMounted()
     const savePending = usePending('product.SAVE')
-    const { updateBeneficiaryAddress } = useProductActions()
+    const { updateBeneficiaryAddress } = useEditableProductActions()
     const originalProduct = useSelector(selectProduct)
 
     useEffect(() => {

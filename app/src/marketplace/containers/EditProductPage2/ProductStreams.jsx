@@ -4,9 +4,9 @@ import React, { useContext } from 'react'
 import cx from 'classnames'
 
 import StreamSelectorComponent from '$mp/components/StreamSelector'
-import useProduct from '../ProductController/useProduct'
+import useEditableProduct from '../ProductController/useEditableProduct'
 import useValidation from '../ProductController/useValidation'
-import useProductActions from '../ProductController/useProductActions'
+import useEditableProductActions from '../ProductController/useEditableProductActions'
 import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
 import usePending from '$shared/hooks/usePending'
 
@@ -14,9 +14,9 @@ import AvailableStreams from '../AvailableStreams'
 import styles from './productStreams.pcss'
 
 const ProductStreams = () => {
-    const product = useProduct()
+    const product = useEditableProduct()
     const { isValid, message } = useValidation('streams')
-    const { updateStreams } = useProductActions()
+    const { updateStreams } = useEditableProductActions()
     const { isTouched } = useContext(ValidationContext)
     const { isPending } = usePending('product.SAVE')
 

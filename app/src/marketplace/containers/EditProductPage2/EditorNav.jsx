@@ -8,7 +8,7 @@ import EditorNavComponent, { statuses } from '$mp/components/ProductPage/EditorN
 import Scrollspy from 'react-scrollspy'
 
 import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
-import useProduct from '../ProductController/useProduct'
+import useEditableProduct from '../ProductController/useEditableProduct'
 import { isPublished } from './state'
 
 import styles from './editorNav.pcss'
@@ -16,7 +16,7 @@ import styles from './editorNav.pcss'
 const OFFSET = -60
 
 const EditorNav = () => {
-    const product = useProduct()
+    const product = useEditableProduct()
     const productRef = useRef()
     productRef.current = product
 

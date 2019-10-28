@@ -3,9 +3,9 @@
 import React, { useMemo, useContext } from 'react'
 import cx from 'classnames'
 
-import useProduct from '../ProductController/useProduct'
+import useEditableProduct from '../ProductController/useEditableProduct'
 import useValidation from '../ProductController/useValidation'
-import useProductActions from '../ProductController/useProductActions'
+import useEditableProductActions from '../ProductController/useEditableProductActions'
 import { usePending } from '$shared/hooks/usePending'
 import SelectField from '$mp/components/SelectField'
 import { isCommunityProduct } from '$mp/utils/product'
@@ -22,12 +22,12 @@ const adminFeeOptions = [10, 20, 30, 40, 50, 60, 70, 80, 90].map((value) => ({
 }))
 
 const ProductDetails = () => {
-    const product = useProduct()
+    const product = useEditableProduct()
     const { isTouched } = useContext(ValidationContext)
 
     const { isValid: isCategoryValid, message: categoryMessage } = useValidation('category')
     const { isValid: isAdminFeeValid, message: adminFeeMessage } = useValidation('adminFee')
-    const { updateCategory, updateAdminFee } = useProductActions()
+    const { updateCategory, updateAdminFee } = useEditableProductActions()
     const { isPending } = usePending('product.SAVE')
 
     const adminFee = product && product.adminFee

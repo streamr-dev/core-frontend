@@ -3,9 +3,9 @@
 import React, { useContext } from 'react'
 import cx from 'classnames'
 
-import useProduct from '../ProductController/useProduct'
+import useEditableProduct from '../ProductController/useEditableProduct'
 import useValidation from '../ProductController/useValidation'
-import useProductActions from '../ProductController/useProductActions'
+import useEditableProductActions from '../ProductController/useEditableProductActions'
 import MarkdownEditor from '$mp/components/MarkdownEditor'
 import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
 import usePending from '$shared/hooks/usePending'
@@ -13,10 +13,10 @@ import usePending from '$shared/hooks/usePending'
 import styles from './productDescription.pcss'
 
 const ProductDescription = () => {
-    const product = useProduct()
+    const product = useEditableProduct()
     const { isTouched } = useContext(ValidationContext)
     const { isValid, message } = useValidation('description')
-    const { updateDescription } = useProductActions()
+    const { updateDescription } = useEditableProductActions()
     const { isPending } = usePending('product.SAVE')
 
     return (

@@ -7,8 +7,8 @@ import { Context as ValidationContext } from '../ProductController/ValidationCon
 import Toggle from '$shared/components/Toggle'
 import { isCommunityProduct } from '$mp/utils/product'
 
-import useProduct from '../ProductController/useProduct'
-import useProductActions from '../ProductController/useProductActions'
+import useEditableProduct from '../ProductController/useEditableProduct'
+import useEditableProductActions from '../ProductController/useEditableProductActions'
 
 import styles from './productEditorDebug.pcss'
 
@@ -19,8 +19,8 @@ const ProductEditorDebug = () => {
         setMinimized((prev) => !prev)
     }, [setMinimized])
 
-    const product = useProduct()
-    const { updateType } = useProductActions()
+    const product = useEditableProduct()
+    const { updateType } = useEditableProductActions()
     const { touched, pendingChanges } = useContext(ValidationContext)
 
     const isCommunity = isCommunityProduct(product)

@@ -7,7 +7,7 @@ import BN from 'bignumber.js'
 import { Context as UndoContext } from '$shared/components/UndoContextProvider'
 import { Context as ValidationContext } from './ValidationContextProvider'
 
-import useProductUpdater from '../ProductController/useProductUpdater'
+import useEditableProductUpdater from '../ProductController/useEditableProductUpdater'
 import { pricePerSecondFromTimeUnit, convert } from '$mp/utils/price'
 import { currencies, timeUnits } from '$shared/utils/constants'
 import { selectDataPerUsd } from '$mp/modules/global/selectors'
@@ -28,8 +28,8 @@ const getPricePerSecond = (isFree, price, currency, timeUnit, dataPerUsd) => {
     return pricePerSecond
 }
 
-export function useProductActions() {
-    const { updateProduct: commit } = useProductUpdater()
+export function useEditableProductActions() {
+    const { updateProduct: commit } = useEditableProductUpdater()
     const { undo } = useContext(UndoContext)
     const { touch } = useContext(ValidationContext)
     const dataPerUsd = useSelector(selectDataPerUsd)
@@ -173,4 +173,4 @@ export function useProductActions() {
     ])
 }
 
-export default useProductActions
+export default useEditableProductActions

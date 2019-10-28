@@ -19,11 +19,11 @@ import { handleEntities } from '$shared/utils/entities'
 import { productSchema } from '$shared/modules/entities/schema'
 
 import * as State from '../EditProductPage2/state'
-import useProductUpdater from './useProductUpdater'
+import useEditableProductUpdater from './useEditableProductUpdater'
 
 export default function useProductLoadCallback() {
     const { history } = useContext(RouterContext)
-    const productUpdater = useProductUpdater()
+    const productUpdater = useEditableProductUpdater()
     const { wrap } = usePending('product.LOAD')
     const isMountedRef = useIsMountedRef()
     const dispatch = useDispatch()

@@ -15,9 +15,9 @@ import Toggle from '$shared/components/Toggle'
 import { selectContractProduct } from '$mp/modules/contractProduct/selectors'
 
 import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
-import useProduct from '../ProductController/useProduct'
+import useEditableProduct from '../ProductController/useEditableProduct'
 import useValidation from '../ProductController/useValidation'
-import useProductActions from '../ProductController/useProductActions'
+import useEditableProductActions from '../ProductController/useEditableProductActions'
 import { isPublished } from './state'
 
 import BeneficiaryAddress from './BeneficiaryAddress'
@@ -25,7 +25,7 @@ import BeneficiaryAddress from './BeneficiaryAddress'
 import styles from './PriceSelector.pcss'
 
 const PriceSelector = () => {
-    const product = useProduct()
+    const product = useEditableProduct()
     const { isTouched } = useContext(ValidationContext)
 
     const {
@@ -34,7 +34,7 @@ const PriceSelector = () => {
         updatePriceCurrency,
         updateTimeUnit,
         updateBeneficiaryAddress,
-    } = useProductActions()
+    } = useEditableProductActions()
     const dataPerUsd = useSelector(selectDataPerUsd)
     const { isPending: savePending } = usePending('product.SAVE')
     const { isPending: contractProductLoadPending } = usePending('contractProduct.LOAD')

@@ -2,13 +2,13 @@
 
 import React, { useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import useProduct from '../ProductController/useProduct'
+import useEditableProduct from '../ProductController/useEditableProduct'
 import { selectStreams } from '$mp/modules/streams/selectors'
 
 import ProductPage from '$mp/containers/ProductPage2/Page'
 
 const Preview = () => {
-    const product = useProduct()
+    const product = useEditableProduct()
     const streamIds = product.streams
     const streams = useSelector(selectStreams) // todo: safe to assume streams are fetched?
 

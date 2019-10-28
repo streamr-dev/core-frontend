@@ -11,7 +11,7 @@ import type { Product } from '$mp/flowtype/product-types'
 import { isCommunityProduct } from '$mp/utils/product'
 
 import ProductController from '../ProductController'
-import useProduct from '../ProductController/useProduct'
+import useEditableProduct from '../ProductController/useEditableProduct'
 import usePending from '$shared/hooks/usePending'
 import { productStates } from '$shared/utils/constants'
 import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
@@ -157,7 +157,7 @@ const LoadingView = () => (
 )
 
 const EditWrap = () => {
-    const product = useProduct()
+    const product = useEditableProduct()
 
     if (!product) {
         return <LoadingView />
