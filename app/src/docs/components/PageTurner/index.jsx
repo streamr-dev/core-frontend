@@ -14,16 +14,41 @@ type Props = {
     location: Location,
 }
 
-class PageTurner extends React.Component<Props> {
+type State = {
+    documentHeight: number,
+}
+
+class PageTurner extends React.Component<Props, State> {
     // currentPathMatch: True when the current URL pathname is a match to the current docsNav item.
     // firstPathMatch: True when the current URL pathname is a match to the first docsNav item.
     // matchFound: A pathname match found which is not the first item.
     // navDirections: An object containing the previous and next pages when the direction is valid.
 
+    state = {
+        documentHeight: 0,
+    }
+
+    componentDidMount() {
+        this.getScrollHeight()
+        window.addEventListener('load', this.getScrollHeight)
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('load', this.getScrollHeight)
+    }
+
+    getScrollHeight = () => {
+        this.setState({
+            documentHeight: window.document.body.scrollHeight,
+        })
+    }
+
     currentPathMatch: boolean = false
     firstPathMatch: boolean = false
     matchFound: boolean = false
     navDirections: DocsNav = this.calcNavDirections()
+
+    isExtraPaddingRequired = () => this.state.documentHeight < 2000 && this.state.documentHeight !== 0
 
     isPathnameMatch(pathnames) {
         let match = false
@@ -118,12 +143,12 @@ class PageTurner extends React.Component<Props> {
 
     render() {
         return (
-            <React.Fragment>
+            <div className={this.isExtraPaddingRequired() ? styles.extraPadding : null}>
                 <hr />
                 <ul className={styles.pageTurnerContainer}>
                     {this.generateNavButtons()}
                 </ul>
-            </React.Fragment>
+            </div>
         )
     }
 }
