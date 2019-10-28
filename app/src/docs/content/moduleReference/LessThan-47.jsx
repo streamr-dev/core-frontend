@@ -53,8 +53,8 @@ export default {
     outputs: [
         {
             id: 'ep_-UFx7EGzRD6ffpAcUM1QWw',
-            name: 'A&lt;B',
-            longName: 'LessThan.A&lt;B',
+            name: 'A<B',
+            longName: 'LessThan.A<B',
             type: 'Boolean',
             connected: false,
             canConnect: true,
