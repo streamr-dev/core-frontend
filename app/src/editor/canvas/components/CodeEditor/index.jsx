@@ -1,10 +1,9 @@
-import React, { useState, useCallback, useContext } from 'react'
-
+import React, { useState, useCallback } from 'react'
 import { useLayoutState } from '$editor/canvas/components/DraggableCanvasWindow'
-import { CanvasWindowContext } from '../CanvasWindow'
+
+import { useCameraContext } from '../Camera'
 import CodeEditorWindow from './CodeEditorWindow'
 import DebugWindow from './DebugWindow'
-import { useInitToCenter, useInitToPosition, useOnResizeEffect } from './useInitPosition'
 
 export const CodeEditor = ({
     children,
@@ -17,25 +16,30 @@ export const CodeEditor = ({
 }) => {
     const [editorOpen, setEditorOpen] = useState(false)
     const [debugOpen, setDebugOpen] = useState(false)
-    const canvasWindowElRef = useContext(CanvasWindowContext)
+    const camera = useCameraContext()
     const editorLayout = useLayoutState()
     const debugLayout = useLayoutState()
 
-    const initEditorPosition = useInitToCenter({
-        containerRef: canvasWindowElRef,
-        width: editorLayout.size[0],
-        height: editorLayout.size[1],
-        setPosition: editorLayout.setPosition,
-    })
-
-    const offset = 16
+    const initEditorPosition = useCallback(() => {
+        const { scale } = camera
+        const center = camera.getCenterWorldPoint()
+        const { setPosition } = editorLayout
+        setPosition([
+            center.x - ((editorLayout.size[0] / 2) * scale),
+            center.y - ((editorLayout.size[1] / 2) * scale),
+        ])
+    }, [editorLayout, camera])
 
     // set debug default position to editor window + offset
-    const initDebugPosition = useInitToPosition({
-        x: editorLayout.position[0] + offset,
-        y: editorLayout.position[1] + offset,
-        setPosition: debugLayout.setPosition,
-    })
+    const initDebugPosition = useCallback(() => {
+        const { scale } = camera
+        const { setPosition } = debugLayout
+        const offset = 16 / scale
+        setPosition([
+            editorLayout.position[0] + offset,
+            editorLayout.position[1] + offset,
+        ])
+    }, [debugLayout, camera, editorLayout])
 
     const onShowEditor = useCallback(() => {
         initEditorPosition()
@@ -47,7 +51,6 @@ export const CodeEditor = ({
     }, [setEditorOpen])
 
     const onShowDebug = useCallback(() => {
-        initEditorPosition() // just in case
         initDebugPosition()
         setDebugOpen((v) => !v) // show === toggle
     }, [setDebugOpen, initEditorPosition, initDebugPosition])
@@ -55,14 +58,6 @@ export const CodeEditor = ({
     const onCloseDebug = useCallback(() => {
         setDebugOpen(false)
     }, [setDebugOpen])
-
-    useOnResizeEffect(useCallback(() => {
-        // reset position on resize
-        debugLayout.setPosition([
-            editorLayout.position[0] + offset,
-            editorLayout.position[1] + offset,
-        ])
-    }, [editorLayout, debugLayout, offset]))
 
     return (
         <React.Fragment>

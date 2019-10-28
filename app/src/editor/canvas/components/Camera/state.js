@@ -295,6 +295,18 @@ export function cameraToWorldPoint(state, point) {
     }
 }
 
+/**
+ * Get world point at center of screen
+ */
+
+export function getCenterWorldPoint(state) {
+    const { width, height } = getBounds(state)
+    return cameraToWorldPoint(state, {
+        x: width / 2,
+        y: height / 2,
+    })
+}
+
 export function eventToWorldPoint(state, event) {
     const point = {
         x: 0,

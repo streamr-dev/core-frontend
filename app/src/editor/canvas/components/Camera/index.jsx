@@ -126,6 +126,7 @@ function useCameraSimpleApi(opts) {
     const cameraToWorldPoint = useCallback((...args) => State.cameraToWorldPoint(stateRef.current, ...args), [stateRef])
     const eventToWorldPoint = useCallback((...args) => State.eventToWorldPoint(stateRef.current, ...args), [stateRef])
     const shouldIgnoreEvent = useCallback((...args) => State.shouldIgnoreEvent(stateRef.current, ...args), [stateRef])
+    const getCenterWorldPoint = useCallback((...args) => State.getCenterWorldPoint(stateRef.current, ...args), [stateRef])
 
     return useMemo(() => ({
         ...state,
@@ -151,6 +152,7 @@ function useCameraSimpleApi(opts) {
         getSpring,
         stopSpring,
         defaultCameraConfig,
+        getCenterWorldPoint,
     }), [
         state,
         setState,
@@ -174,6 +176,7 @@ function useCameraSimpleApi(opts) {
         getCurrentScale,
         getSpring,
         stopSpring,
+        getCenterWorldPoint,
     ])
 }
 
