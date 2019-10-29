@@ -42,6 +42,7 @@ import ConfigureView from './ConfigureView'
 import PreviewView from './PreviewView'
 import HistoryView from './HistoryView'
 import SecurityView from './SecurityView'
+import StatusView from './StatusView'
 
 import styles from './streamShowView.pcss'
 
@@ -214,6 +215,13 @@ export class StreamShowView extends Component<Props, State> {
                             customStyled
                         >
                             <ConfigureView disabled={disabled} />
+                        </TOCPage.Section>
+                        <TOCPage.Section
+                            id="status"
+                            title="Status"
+                            customStyled
+                        >
+                            <StatusView disabled={disabled} />
                         </TOCPage.Section>
                         <TOCPage.Section
                             id="preview"

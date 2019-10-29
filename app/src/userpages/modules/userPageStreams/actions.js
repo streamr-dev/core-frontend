@@ -579,6 +579,7 @@ export const initEditStream = () => (dispatch: Function, getState: Function) => 
             partitions: stream.partitions || 1,
             requireSignedData: stream.requireSignedData || false,
             requireEncryptedData: stream.requireEncryptedData || false,
+            inactivityThresholdHours: stream.inactivityThresholdHours || 0,
             uiChannel: stream.uiChannel || false,
             storageDays: stream.storageDays !== undefined ? stream.storageDays : 365,
         }))
@@ -595,6 +596,7 @@ export const initNewStream = () => (dispatch: Function) => {
         lastUpdated: 0,
         autoConfigure: false,
         partitions: 1,
+        inactivityThresholdHours: 0,
         requireSignedData: false,
         requireEncryptedData: false,
         storageDays: 365,

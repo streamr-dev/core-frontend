@@ -431,6 +431,15 @@ msgstr "Custom Java SimpleDateFormat"
 msgid "userpages##streams##edit##history##datePicker##selectDate"
 msgstr "Select date"
 
+msgid "userpages##streams##inactivityDescription"
+msgstr "If no new data is published to this stream, it will be shown as inactive on the marketplace after this period of time. Adjust the threshold to an appropriate period for your stream's frequency."
+
+msgid "userpages##streams##inactivityHours"
+msgstr "Hours"
+
+msgid "userpages##streams##inactivityDays"
+msgstr "Days"
+
 msgid "userpages##streams##fieldTypes##number"
 msgstr "Number"
 
