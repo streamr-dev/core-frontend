@@ -582,6 +582,7 @@ export const initEditStream = () => (dispatch: Function, getState: Function) => 
             inactivityThresholdHours: stream.inactivityThresholdHours || 0,
             uiChannel: stream.uiChannel || false,
             storageDays: stream.storageDays !== undefined ? stream.storageDays : 365,
+            streamStatus: stream.streamStatus,
         }))
     }
 }
