@@ -53,7 +53,7 @@ export const CodeEditor = ({
     const onShowDebug = useCallback(() => {
         initDebugPosition()
         setDebugOpen((v) => !v) // show === toggle
-    }, [setDebugOpen, initEditorPosition, initDebugPosition])
+    }, [setDebugOpen, initDebugPosition])
 
     const onCloseDebug = useCallback(() => {
         setDebugOpen(false)
