@@ -1,0 +1,119 @@
+import cx from 'classnames'
+import { Link } from 'react-router-dom'
+
+import links from '$shared/../links'
+
+import StreamListing from './images/core_streams_01_desktop_border.jpg'
+import StreamListing2x from './images/core_streams_01_desktop_border@2x.jpg'
+import StreamDetails from './images/core_streams_02_desktop.jpg'
+import StreamDetails2x from './images/core_streams_02_desktop@2x.jpg'
+import StreamConfigure from './images/core_streams_03_desktop.jpg'
+import StreamConfigure2x from './images/core_streams_03_desktop@2x.jpg'
+import StreamPreview from './images/core_streams_04_desktop.jpg'
+import StreamPreview2x from './images/core_streams_04_desktop@2x.jpg'
+import StreamApiAccess from './images/core_streams_05_desktop.jpg'
+import StreamApiAccess2x from './images/core_streams_05_desktop@2x.jpg'
+import StreamHistorical from './images/core_streams_06_desktop.jpg'
+import StreamHistorical2x from './images/core_streams_06_desktop@2x.jpg'
+
+import docsStyles from '$docs/components/DocsLayout/docsLayout.pcss'
+import streamsStyles from '$docs/components/DocsPages/Streams/streamsStyles.pcss'
+
+# Work with streams in Core
+Streamr Core provides you with the tools to create, edit, share and delete your streams as well as view and inspect the streams you have purchased on the Marketplace.
+
+### Overview of your streams
+Head over to the <Link to={links.userpages.streams}>Streams page</Link> to see an overview of your subscribed streams. The list includes streams you have created and streams that you have purchased on the Marketplace.Using streams in Core
+
+<figure>
+    <picture>
+      <img
+        className={docsStyles.bordered}
+        src={StreamListing}
+        srcSet={`${StreamListing2x} 2x`}
+        alt="Stream Listing"
+      />
+    </picture>
+</figure>
+
+This stream listing page gives an indication for when data was last pushed to each stream and uses traffic light indicators show the health of each stream, at a glance. Green shows a stream receiving data, while red indicates no data flowing. Clicking on a stream will open the stream editor. You may only edit streams that you have created or have explicit permission to edit.
+
+By clicking on the more options icon you may access advanced features for each stream, such as stream sharing and code snippets. A new stream can be created by the clicking the Create Stream button.
+
+### Editing a stream
+The stream editor provides basic tools for setting up, inspecting and editing your stream. Below is a run-down of each stream editor section.
+
+### Details
+The details section provides basic information about your stream.
+
+- The stream name is used to identify your stream in the Core app.
+- The stream description can be used to offer more information about your stream and the kind of data it contains.
+- The stream ID is the unique identifier for your stream and is needed when interacting with the <Link to={links.docs.SDKs.root}>Streamr SDKs</Link>.
+
+<figure>
+    <picture>
+      <img
+        src={StreamDetails}
+        srcSet={`${StreamDetails2x} 2x`}
+        alt="Stream Details"
+      />
+    </picture>
+</figure>
+
+### Configure
+In this section you can configure stream fields and their data types. All fields have a name and a data type. The Autodetect feature can be used to automatically deduce fields from the stream's last received message. It is possible to manually correct the data types if automatic detection is not suitable for your stream.
+
+<figure>
+    <picture>
+      <img
+        src={StreamConfigure}
+        srcSet={`${StreamConfigure2x} 2x`}
+        alt="Stream Configure"
+      />
+    </picture>
+</figure>
+
+You can also optionally toggle on the requirement for all messages to be signed to enforce a level of verification if you choose.
+
+### Preview
+This section is used to preview data flowing into the stream. Use the live inspector to make sure your stream is receiving data and it is correctly formatted.
+
+<figure>
+    <picture>
+      <img
+        src={StreamPreview}
+        srcSet={`${StreamPreview2x} 2x`}
+        alt="Stream Preview"
+      />
+    </picture>
+</figure>
+
+### API Access
+Here you can manage API keys for your stream. Keys generated here grant access to only this stream and can have either read or write access. These keys can also be removed if for example, the key has been compromised.
+
+<figure>
+    <picture>
+      <img
+        src={StreamApiAccess}
+        srcSet={`${StreamApiAccess2x} 2x`}
+        alt="API Access"
+      />
+    </picture>
+</figure>
+
+### Historical Data
+This section contains the stream's historical data storage settings and includes tools to add or remove historical data from the stream.
+
+<figure>
+    <picture>
+      <img
+        src={StreamHistorical}
+        srcSet={`${StreamHistorical2x} 2x`}
+        alt="Historical Data"
+      />
+    </picture>
+</figure>
+
+You can add new data to the stream by uploading a CSV file and you can delete existing historical data from the stream by choosing an inclusive date range.
+
+The historical data storage period determines how many days your data is retained before it will be removed automatically from the Streamr network. The default period is 365 days.

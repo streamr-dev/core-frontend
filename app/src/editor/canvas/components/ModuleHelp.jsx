@@ -3,7 +3,7 @@ import CanvasModuleHelp from '$docs/components/CanvasModuleHelp'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import Empty from '$docs/components/CanvasModuleHelp/Empty'
 
-const docs = require.context('$docs/content/canvasModules/', false, /\.jsx$/)
+const docs = require.context('$docs/content/moduleReference/', false, /\.jsx$/)
 
 function ModuleHelp({ className, module: m }) {
     const moduleId = m.id
@@ -22,7 +22,7 @@ function ModuleHelp({ className, module: m }) {
             }))
             return
         }
-        import(`$docs/content/canvasModules/${path.slice(2)}`).then((result) => {
+        import(`$docs/content/moduleReference/${path.slice(2)}`).then((result) => {
             if (!isMounted()) { return }
             setHelpContent((state) => ({
                 ...state,
@@ -39,7 +39,7 @@ function ModuleHelp({ className, module: m }) {
     if (!m) { return null }
 
     return (
-        <CanvasModuleHelp className={className} module={m} help={currentHelpContent} hideName />
+        <CanvasModuleHelp className={className} module={m} help={currentHelpContent} minifiedContent />
     )
 }
 

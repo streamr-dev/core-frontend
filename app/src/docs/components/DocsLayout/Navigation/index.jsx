@@ -2,20 +2,17 @@
 
 import React from 'react'
 import { Link, withRouter, type Location } from 'react-router-dom'
-import scrollIntoView from 'smooth-scroll-into-view-if-needed'
-import { formatPath } from '$shared/utils/url'
 import cx from 'classnames'
-import Scrollspy from 'react-scrollspy'
+import scrollIntoView from 'smooth-scroll-into-view-if-needed'
+import throttle from 'lodash/throttle'
 
 import SvgIcon from '$shared/components/SvgIcon'
-
-import type { NavigationLink } from '../../../flowtype/navigation-types'
+import { docsNav } from '$docs/components/DocsLayout/Navigation/navLinks'
+import TableOfContents from './TableOfContents'
 
 import styles from './navigation.pcss'
 
 type Props = {
-    navigationItems: NavigationLink,
-    subNavigationItems?: NavigationLink,
     className: String,
     responsive?: boolean,
     location: Location,
@@ -23,11 +20,70 @@ type Props = {
 
 type State = {
     compressed: boolean,
+    topOfPage: boolean,
 }
 
 class Navigation extends React.Component<Props, State> {
     state = {
         compressed: true,
+        topOfPage: true,
+    }
+
+    componentDidMount() {
+        this.isTopOfPage()
+        window.addEventListener('scroll', this.isTopOfPage)
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('scroll', this.isTopOfPage)
+    }
+
+    getTopLevelTitle() {
+        let title = ''
+
+        Object.keys(docsNav).forEach((topLevelNavItem) => {
+            if (this.props.location.pathname.includes(docsNav[topLevelNavItem].root)) {
+                title = topLevelNavItem
+            }
+        })
+
+        return title
+    }
+
+    getSecondLevelTitle() {
+        let title = ''
+
+        Object.keys(docsNav).forEach((topLevelNavItem) => {
+            if (this.props.location.pathname.includes(docsNav[topLevelNavItem].root)) {
+                Object.keys(docsNav[topLevelNavItem]).forEach((secondLevelNavItem) => {
+                    if (this.props.location.pathname.includes(docsNav[topLevelNavItem][secondLevelNavItem])) {
+                        title = secondLevelNavItem
+                    }
+                })
+            }
+        })
+
+        return title
+    }
+
+    scrollTop = () => {
+        const root = document.getElementById('root')
+
+        if (root) {
+            scrollIntoView(root, {
+                behavior: 'smooth',
+                block: 'start',
+                inline: 'nearest',
+            })
+        }
+    }
+
+    generateMobileHeader() {
+        if (this.getSecondLevelTitle() !== 'root') {
+            return `${this.getTopLevelTitle()} > ${this.getSecondLevelTitle()}`
+        }
+
+        return this.getTopLevelTitle()
     }
 
     toggleExpand = () => {
@@ -38,72 +94,17 @@ class Navigation extends React.Component<Props, State> {
         })
     }
 
-    scrollTop = () => {
-        const root = document.getElementById('root')
-
-        // Edge case for really long pages
-        // Snap straight to top
-        if (root && window.pageYOffset > 2000) {
-            window.scrollTo(0, 0)
-        } else if (root) {
-            scrollIntoView(root, {
-                behavior: 'smooth',
-                block: 'start',
-                inline: 'nearest',
+    isTopOfPage = throttle(() => {
+        if (window.pageYOffset === 0) {
+            this.setState({
+                topOfPage: true,
+            })
+        } else {
+            this.setState({
+                topOfPage: false,
             })
         }
-    }
-
-    parseNavigation() {
-        const { navigationItems, subNavigationItems } = this.props
-
-        return Object.entries(navigationItems).map((navListItem) => (
-            <li key={`item-${navListItem[0]}`} className={styles.navListItem}>
-                <Link
-                    to={formatPath(String(navListItem[1]))}
-                    onClick={() => this.scrollTop()}
-                    className={this.props.location.pathname === navListItem[1] ? styles.active : ''}
-                >
-                    {navListItem[0]}
-                </Link>
-                {this.props.location.pathname === navListItem[1] ?
-                    (!!subNavigationItems && (<ul className={styles.subNavList}> {this.parseSubNavigation()} </ul>)) : ''}
-            </li>
-        ))
-    }
-
-    parseSubNavigation() {
-        const { subNavigationItems } = this.props
-
-        return (
-            <Scrollspy items={subNavigationItems && Object.keys(subNavigationItems)} currentClassName={styles.active}>
-                {Object.entries(subNavigationItems).map((subNavigationItem) => (
-                    <li key={`item-${subNavigationItem[0]}`} className={styles.navListItem}>
-                        <a
-                            href={`#${subNavigationItem[0]}`}
-                        >
-                            {String(subNavigationItem[1])}
-                        </a>
-                    </li>
-                ))}
-            </Scrollspy>
-        )
-    }
-
-    parseCurrentPage() {
-        const { navigationItems } = this.props
-
-        return Object.entries(navigationItems).map((navListItem) => (
-            this.props.location.pathname === navListItem[1] ?
-                (
-                    <li key={`item-${String(navListItem[1])}`} className={styles.navListItem}>
-                        <Link to={formatPath(String(navListItem[1]))}>
-                            {navListItem[0]}
-                        </Link>
-                    </li>
-                ) : null
-        ))
-    }
+    }, 250)
 
     render() {
         const { className, responsive } = this.props
@@ -114,6 +115,7 @@ class Navigation extends React.Component<Props, State> {
                     [styles.compressed]: this.state.compressed,
                     [styles.mobileNav]: responsive,
                     [styles.desktopNav]: !responsive,
+                    [styles.bottomShadow]: responsive && !this.state.topOfPage,
                 })}
 
                 onClick={() => this.toggleExpand()}
@@ -122,8 +124,14 @@ class Navigation extends React.Component<Props, State> {
                     container: responsive,
                 })}
                 >
-                    {!!responsive && this.parseCurrentPage()}
-                    {this.parseNavigation()}
+                    {!!responsive && (
+                        <li className={cx(styles.navListItem, styles.mobileHeader)}>
+                            <Link to="#">
+                                {this.generateMobileHeader()}
+                            </Link>
+                        </li>
+                    )}
+                    <TableOfContents />
                 </ul>
                 <SvgIcon name="back" className={styles.arrowExtender} />
             </div>

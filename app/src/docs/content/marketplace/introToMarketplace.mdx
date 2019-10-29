@@ -1,10 +1,134 @@
 import { Link } from 'react-router-dom'
-
 import links from '$shared/../links'
 
-## Introduction to the Marketplace
-The <Link to={links.marketplace.main}>Marketplace</Link> is an application that enables users to buy and sell access to realtime data content on the Streamr Network. The Marketplace is filled with both paid and free products, offering data producers an opportunity to either monetise their data or make it freely available to everyone. Products have time-based subscription periods, and the currency used on the Marketplace is the <Link to={links.docs.dataToken}>DATA token</Link>.
+import MarketplaceOverview from './images/intro_to_marketplace_01_desktop.jpg'
+import MarketplaceOverview2x from './images/intro_to_marketplace_01_desktop@2x.jpg'
+import FreeProduct from './images/intro_to_marketplace_02_desktop.jpg'
+import FreeProduct2x from './images/intro_to_marketplace_02_desktop@2x.jpg'
+import PaidProduct from './images/intro_to_marketplace_03_desktop.jpg'
+import PaidProduct2x from './images/intro_to_marketplace_03_desktop@2x.jpg'
+import AccessPeriod from './images/intro_to_marketplace_04_desktop.jpg'
+import AccessPeriod2x from './images/intro_to_marketplace_04_desktop@2x.jpg'
+import SetAllowance from  './images/intro_to_marketplace_05_desktop.jpg'
+import SetAllowance2x from  './images/intro_to_marketplace_05_desktop@2x.jpg'
+import SetAllowanceMetamask from  './images/intro_to_marketplace_06_desktop.jpg'
+import SetAllowanceMetamask2x from  './images/intro_to_marketplace_06_desktop@2x.jpg'
+import CompletePurchase from  './images/intro_to_marketplace_07_desktop.jpg'
+import CompletePurchase2x from  './images/intro_to_marketplace_07_desktop@2x.jpg'
+import CompletePurchaseMetamask from  './images/intro_to_marketplace_08_desktop.jpg'
+import CompletePurchaseMetamask2x from  './images/intro_to_marketplace_08_desktop@2x.jpg'
+import TransactionComplete from './images/intro_to_marketplace_09_desktop.jpg'
+import TransactionComplete2x from './images/intro_to_marketplace_09_desktop@2x.jpg'
 
-The Marketplace is an <a href="https://github.com/streamr-dev/streamr-platform" target="_blank">open source</a> project that builds on the <a href="https://streamr.network/learn/network" target="_blank">Streamr Network</a> and the <a href="https://www.ethereum.org" target="_blank">Ethereum blockchain</a>.
+import docsStyles from '$docs/components/DocsLayout/docsLayout.pcss'
 
-Ethereum is used to store a registry of data products, coordinate access to them, and to provide a secure ledger of value transactions. Products are published to the <a href="https://etherscan.io/address/0xa10151d088f6f2705a05d6c83719e99e079a61c1" target="_blank">Marketplace smart contract</a>, and the contract allows data buyers to directly transact with sellers using the DATA token, removing all traditionally present middlemen and their fees. All of the data on the Marketplace is delivered peer-to-peer via the Streamr Network.
+# Introduction to the Marketplace
+The <Link to={links.marketplace.main}>Marketplace</Link> is an application that enables users to buy and sell access to real-time data content on the Streamr Network. The Marketplace is filled with both paid and free products, offering data producers an opportunity to either monetise their data or make it freely available to everyone. Products have time-based subscription periods, and the currency used on the Marketplace is the <Link to={links.docs.dataToken.root}>DATA token</Link>.
+
+<figure>
+    <picture>
+      <img
+        src={MarketplaceOverview}
+        srcSet={`${MarketplaceOverview2x} 2x`}
+        alt="Marketplace Overview"
+      />
+    </picture>
+</figure>
+
+The Marketplace is an <a href="https://github.com/streamr-dev/streamr-platform" target="_blank">open source</a> project that builds on the <a href="https://streamr.network/learn/network" target="_blank">Streamr Network</a> and the <a href="https://www.ethereum.org" target="_blank">Ethereum blockchain</a>. Ethereum is used to store a registry of data products, coordinate access to them, and to provide a secure ledger of value transactions. Products are published to the <a href="https://etherscan.io/address/0xa10151d088f6f2705a05d6c83719e99e079a61c1" target="_blank">Marketplace smart contract</a>, and the contract allows data buyers to directly transact with sellers using the DATA token, removing all traditionally present middlemen and their fees. All of the data on the Marketplace is delivered peer-to-peer via the Streamr Network.
+
+## Get data from the Marketplace
+Many products on the Marketplace are free. To access the streams of a free product, simply click the <span className={docsStyles.streamrHighlight}>Add to my purchases</span> on the product page. The product will appear immediately in the Purchases view of Core, and the streams will be available for your use both in the Streams view of Core and also directly within any canvases you create — just search for it’s name in the Module search panel. You don't need any DATA or Ether to purchase a free product.
+
+<figure>
+    <picture>
+      <img
+        src={FreeProduct}
+        srcSet={`${FreeProduct2x} 2x`}
+        alt="Free product"
+      />
+    </picture>
+</figure>
+
+### Purchasing paid products
+Interacting with paid products requires an Ethereum wallet address, and a small amount of Ether, in order to pay the gas fees required to purchase or publish the product. Getting access to a paid product requires a payment of DATA to the product owner.
+
+<figure>
+    <picture>
+      <img
+        src={PaidProduct}
+        srcSet={`${PaidProduct2x} 2x`}
+        alt="Paid product"
+      />
+    </picture>
+</figure>
+
+Clicking the <span className={docsStyles.streamrHighlight}>Purchase</span> button initiates the purchase dialog which guides you through the contract transaction process. Gaining access to the streams inside the product happens automatically once the transaction has been completed which usually takes no longer than a few minutes. A dialog will pop up where you select the desired access period.
+
+<figure>
+    <picture>
+      <img
+        src={AccessPeriod}
+        srcSet={`${AccessPeriod2x} 2x`}
+        alt="Access period"
+      />
+    </picture>
+</figure>
+
+The marketplace uses smart contracts to withdraw tokens from your account. In order to allow the smart contract to execute the transfer, an allowance must be set to give permission to withdraw up to a certain amount of your tokens. This is a security measure for ERC20 tokens that means that the smart contract will only ever be able to transfer the amount of tokens that you approve.
+
+<figure>
+    <picture>
+      <img
+        src={SetAllowance}
+        srcSet={`${SetAllowance2x} 2x`}
+        alt="Set allowance"
+      />
+    </picture>
+</figure>
+
+To complete the the allowance step, confirm the transaction in Metamask. After setting the allowance, you will be asked to confirm the payment.
+
+<figure>
+    <picture>
+      <img
+        src={SetAllowanceMetamask}
+        srcSet={`${SetAllowanceMetamask2x} 2x`}
+        alt="Set allowance Metamask"
+      />
+    </picture>
+</figure>
+
+<figure>
+    <picture>
+      <img
+        src={CompletePurchase}
+        srcSet={`${CompletePurchase2x} 2x`}
+        alt="Complete purchase"
+      />
+    </picture>
+</figure>
+
+Finally, confirm the transaction in Metamask to complete your purchase. While the transaction is being mined, you can either wait for it to complete or continue browsing the Marketplace. You will be notified after it has completed.
+
+<figure>
+    <picture>
+      <img
+        src={CompletePurchaseMetamask}
+        srcSet={`${CompletePurchaseMetamask2x} 2x`}
+        alt="Complete purchase on Metamask"
+      />
+    </picture>
+</figure>
+
+<figure>
+    <picture>
+      <img
+        src={TransactionComplete}
+        srcSet={`${TransactionComplete2x} 2x`}
+        alt="Transaction complete"
+      />
+    </picture>
+</figure>
+
+Note that while you may purchase products with any Web3 wallet, the purchases will not be visible until you <Link to={links.docs.gettingStarted.root}>link the account to your profile</Link>.

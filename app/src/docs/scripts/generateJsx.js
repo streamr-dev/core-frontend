@@ -9,7 +9,7 @@
 // Followon steps:
 // "moduleDescription" needs to be replaced with moduledescription,
 // httpRequest-1001 in canvasModuleHelpData is malformed, needs to be manually fixed.
-// run -> npx eslint --fix src/docs/content/canvasModules/*.jsx to fix the linting issues after import.
+// run -> npx eslint --fix src/docs/content/moduleReference/*.jsx to fix the linting issues after import.
 
 var html2md = require('html-markdown')
 var writeFile = require('write-file')

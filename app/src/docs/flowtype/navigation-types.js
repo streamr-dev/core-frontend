@@ -1,5 +1,8 @@
 // @flow
 
-export type NavigationLink = {
-    [string]: string
+export type DocsNav = {
+    [string]: {
+        root: string,
+        [string]: string
+    },
 }

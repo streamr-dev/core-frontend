@@ -14,18 +14,33 @@
   }
 
   pre {
-    padding: 1rem !important;
-    margin: 4rem 0;
+    padding: 2rem 3.5rem !important;
+    margin: 3.5rem 0;
     font-size: inherit;
     background-color: #F8F8F8 !important;
     line-height: 20px;
+    overflow-x: auto !important;
+    /* stylelint-disable-next-line property-no-vendor-prefix */
+    -webkit-appearance: none;
+    -webkit-overflow-scrolling: auto;
+
+    &::-webkit-scrollbar {
+      height: 7px;
+      background-color: #F8F8F8;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border-radius: 4px;
+      background-color: #EAEAEA;
+    }
 
     code {
       font-size: 14px;
     }
   }
 
-  p {
+  p,
+  li {
     code {
       color: #323232;
       font-family: 'IBM Plex Mono', monospace;
@@ -41,8 +56,19 @@
     font-family: 'IBM Plex Sans', sans-serif;
     font-size: 14px;
     background-color: #0424FF;
-    padding: 4px;
+    padding: 4px 8px;
     border-radius: 4px;
+    white-space: nowrap;
+  }
+
+  .greenHighlight {
+    color: #FFFFFF;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 14px;
+    background-color: #2AC437;
+    padding: 4px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
   }
 
   hr {
@@ -84,9 +110,16 @@
     margin: 0;
   }
 
+  .mdH4 {
+    font-size: 18px;
+    line-height: 30px;
+    margin: 0;
+  }
+
   .mdH1,
   .mdH2,
-  .mdH3 {
+  .mdH3,
+  .mdH4 {
     font-weight: var(--medium);
   }
 
@@ -126,6 +159,15 @@
     }
   }
 
+  section ol {
+    padding-left: 1.5rem;
+    margin-bottom: 2rem;
+
+    li {
+      padding-left: 0.5rem;
+    }
+  }
+
   /* Video Styles */
   .playerWrapper {
     position: relative;
@@ -147,10 +189,56 @@
     }
   }
 
-  img { /* temporary styling during docs design pass */
-    display: block;
-    max-width: 100%;
-    margin: 2em auto;
+  figure {
+    margin-top: 3.5rem;
+    margin-bottom: 7rem;
+
+    picture img {
+      display: block;
+      margin: 0 auto;
+      max-width: 100%;
+
+      &.bordered {
+        border: 1px solid #D8D8D8;
+      }
+    }
+  }
+
+  /* Margin/Padding is dynamic based on what follows each element */
+
+  figure + figure {
+    margin-top: -3.5rem;
+  }
+
+  figure + .mdH2,
+  figure + .mdH3,
+  figure + .mdP {
+    margin-top: -3.5rem;
+  }
+
+  .playerWrapper + figure,
+  .playerWrapper + figure,
+  .mdP + figure,
+  .playerWrapper + .mdH2,
+  .playerWrapper + .mdH3,
+  .playerWrapper + .mdP {
+    margin-top: 3.5rem;
+  }
+
+  .mdH3 + .mdH4 {
+    margin-top: 2rem;
+  }
+
+  figcaption {
+    text-align: center;
+    font-style: italic;
+    font-size: 14px;
+    padding-top: 0.5rem;
+    background-color: white;
+  }
+
+  .darkBg {
+    background-color: #E7E7E7;
   }
 
   strong {
@@ -169,7 +257,7 @@
   table {
     width: 100%;
     border: 1px solid #E7E7E7;
-    margin: 2rem 0;
+    margin: 3.5rem 0;
 
     th,
     td {
@@ -193,45 +281,10 @@
     }
   }
 
-  /* Canvas Module Sections */
-  section.canvasModule {
-    h1,
-    h2,
-    h3,
-    h4,
-    h5 {
-      text-align: left;
+  .tableNoHeader table {
+    thead {
+      display: none;
     }
-
-    section {
-      background-color: #F1F1F170;
-      padding: 2rem 2rem 1rem 2rem;
-      margin: 20px 0;
-    }
-  }
-}
-
-/* temporary selector during docs design pass */
-:global(.designUpdateWip) { /* stylelint-disable-line no-descending-specificity */
-  img {
-    display: block;
-    max-width: 100%;
-    margin-top: 3.5rem;
-    margin-bottom: 7rem;
-  }
-
-  img + .mdH3,
-  img + .mdP {
-    margin-top: -3.5rem;
-  }
-
-  .mdP + img {
-    margin-top: 3.5rem;
-  }
-
-  .playerWrapper + .mdH3,
-  .playerWrapper + .mdP {
-    margin-top: 3.5rem;
   }
 }
 
@@ -270,6 +323,11 @@
       line-height: 28px;
     }
 
+    .mdH4 {
+      font-size: 16px;
+      line-height: 28px;
+    }
+
     .mdP,
     li {
       font-size: 16px;
@@ -280,19 +338,24 @@
 
 @media (--xs) {
   /* Full width images on mobile */
-  .grid {
-    display: block;
-  }
+  .docsLayout {
+    .grid {
+      display: block;
+    }
 
-  .content {
-    overflow: visible;
-  }
+    .content {
+      overflow: visible;
+    }
 
-  :global(.designUpdateWip) { /* temporary selector during docs design pass */
-    img {
-      max-width: 100vw;
-      position: relative;
+    figure {
+      width: 100vw;
       margin-left: -1.5rem;
+
+      img,
+      picture img {
+        max-width: 100vw;
+        position: relative;
+      }
     }
 
     .playerWrapper {
@@ -303,6 +366,29 @@
         border: none;
       }
     }
+
+    pre {
+      width: 100vw;
+      margin: 3.5rem -1.5rem;
+      overflow: scroll !important;
+
+      code {
+        margin-left: -2rem;
+        display: block;
+      }
+    }
+
+    table {
+      th,
+      td {
+        font-size: 12px;
+        padding: 0.5rem;
+      }
+    }
+
+    section ol {
+      padding-left: 1rem;
+    }
   }
 }
 
@@ -310,5 +396,11 @@
   .grid {
     grid-template-columns: auto 736px;
     grid-column-gap: 2rem;
+  }
+}
+
+@media (--xl) {
+  .grid > div:nth-child(1) {
+    margin-left: -2rem;
   }
 }

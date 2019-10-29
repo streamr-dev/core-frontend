@@ -6,59 +6,59 @@ import Warning from '$docs/components/Warning'
 import CodeSnippet from '$shared/components/CodeSnippet'
 import links from '$shared/../links'
 
-import Postman from './images/postman.png'
-import StreamEditorPreview from './images/streamEditorPreview.png'
+import StreamEditorPreview from './images/tutorials_pub_sub_01_desktop.jpg'
+import StreamEditorPreview2x from './images/tutorials_pub_sub_01_desktop@2x.jpg'
+import Postman from './images/tutorials_pub_sub_02_desktop.jpg'
+import Postman2x from './images/tutorials_pub_sub_02_desktop@2x.jpg'
 
 import { ClientSub, ClientPub, InputsAndOutputs } from './code/tutorials.js'
 
 import docsStyles from '$docs/components/DocsLayout/docsLayout.pcss'
 import tutorialStyles from '$docs/components/DocsPages/Tutorials/tutorials.pcss'
 
-## Building a simple pub/sub system
-
-Before proceeding with this tutorial, we assume you have completed the following steps:
-
-- <Link to={links.docs.gettingStarted}>Got your API key or connected your Ethereum account</Link>
-- <Link to={links.docs.streams}>Created your first stream</Link> 
+# Building a simple pub/sub system
+Before proceeding with this tutorial, we assume you have <Link to={links.docs.gettingStarted.root}>got your API key or connected your Ethereum account</Link> and that you have also <Link to={links.docs.streams.root}>created your first stream</Link>.
 
 ### Publish to a stream
-The easiest way to push data to a stream is to use the one of our <Link to={links.docs.SDKs}>SDKs</Link>, currently available in <a target="_blank" href="https://github.com/streamr-dev/streamr-client-javascript">Javascript</a>, <a target="_blank" href="https://github.com/streamr-dev/streamr-client-java">Java</a> and a community contributed version in <a target="_blank" href="https://github.com/streamr-dev/streamr-client-python">Python</a>. Client libraries for other languages are on the roadmap.
-
-Here is an example of publishing data to a stream using Streamr Javascript client:
+The easiest way to push data to a stream is to use the one of our <Link to={links.docs.SDKs.root}>SDKs</Link>, currently available in <a target="_blank" href="https://github.com/streamr-dev/streamr-client-javascript">Javascript</a>, <a target="_blank" href="https://github.com/streamr-dev/streamr-client-java">Java</a> and a community contributed version in <a target="_blank" href="https://github.com/streamr-dev/streamr-client-python">Python</a>. Client libraries for other languages are on the roadmap. Here is an example of publishing data to a stream using Streamr Javascript client.
 
 <CodeSnippet language='javascript' wrapLines showLineNumbers >{ClientPub}</CodeSnippet>
 
-You can also try it locally in your browser. Just open this <a target="_blank" href="https://jsbin.com/xahoxut/edit?js,output">JS Bin</a> or <a target="_blank" href="https://gist.github.com/fonty1/f09aa09afcbae0bf5d7032163a466f76">GitHub Gist</a>, and replace `MY-STREAM-ID` and `MY-API-KEY` with your stream ID and API key. Your browser will start producing data to your stream!
+You can also try it locally in your browser. Just open this <a target="_blank" href="https://jsbin.com/xahoxut/edit?js,output">JS Bin</a> or <a target="_blank" href="https://gist.github.com/fonty1/f09aa09afcbae0bf5d7032163a466f76">GitHub Gist</a>, and replace `MY-STREAM-ID` and `MY-API-KEY` with your stream ID and API key. Your browser will start producing data to your stream! If you were successful, you should see something like this in your stream editor preview.
 
-If you were successful, you should see something like this in your stream editor preview:
+<figure>
+    <picture>
+      <img
+        src={StreamEditorPreview}
+        srcSet={`${StreamEditorPreview2x} 2x`}
+        alt="Stream Editor Preview"
+      />
+    </picture>
+</figure>
 
-<div className={cx(docsStyles.centered, tutorialStyles.streamPreview)}>
-  <img src={StreamEditorPreview} />
-</div>
+Additionally, you can interact with the Streamr API using any HTTP library of your choice. You will find all the details in the <Link to={links.docs.api.root}>API section</Link>, but here’s a brief rundown. You’ll be making a `HTTP POST` request to a URL, which contains your stream ID.
 
-Additionally, you can interact with the Streamr API using any HTTP library of your choice. You will find all the details in the <Link to={links.docs.api}>API section</Link>, but here’s a brief rundown:
-
-You’ll be making a `HTTP POST` requests to a URL, which contains your stream ID:
 <CodeSnippet language='json' wrapLines >{`https://streamr.network/api/v1/streams/MY-STREAM-ID/data`}</CodeSnippet>
 
-The body of the request will be your data payload in JSON.
-
-Add your API key to the HTTP headers as follows:
+The body of the request will be your data payload in JSON. Add your API key to the HTTP headers as follows.
 
 <CodeSnippet language='json' wrapLines >{`Authorization: token MY-API-KEY`}</CodeSnippet>
 
-This is how a test request would look in the fabulous <a target="_blank" href="https://www.getpostman.com/">Postman</a> app, with the URL and Authorization header set:
+This is how a test request would look in the fabulous <a target="_blank" href="https://www.getpostman.com/">Postman</a> app, with the URL and Authorization header set.
 
-<div className={docsStyles.centered}>
-  <img src={Postman} />
-</div>
+<figure>
+    <picture>
+      <img
+        src={Postman}
+        srcSet={`${Postman2x} 2x`}
+        alt="Postman App"
+      />
+    </picture>
+</figure>
 
-All the different authorization options are explained in the: <Link to={links.docs.api}>API docs</Link>
+All the different authorization options are explained in the: <Link to={links.docs.api.root}>API docs</Link>.
 
 ### Subscribe to data
-
-Along with publishing data to a stream, this is best done with one of our <Link to={links.docs.SDKs}>SDKs</Link>. 
-
-Here is the given example from the Streamr JavaScript client <a target="_blank" href="https://github.com/streamr-dev/streamr-client-javascript">readme</a>:
+Along with publishing data to a stream, this is best done with one of our <Link to={links.docs.SDKs.root}>SDKs</Link>. Here is the given example from the Streamr JavaScript client <a target="_blank" href="https://github.com/streamr-dev/streamr-client-javascript">readme</a>.
 
 <CodeSnippet language='javascript' wrapLines showLineNumbers >{ClientSub}</CodeSnippet> 

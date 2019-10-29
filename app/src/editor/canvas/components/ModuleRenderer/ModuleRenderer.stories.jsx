@@ -5,7 +5,7 @@ import ModuleRenderer from '.'
 
 const stories = storiesOf('Editor/ModuleRenderer', module)
 
-const Module = ({ src }) => (
+export const Module = ({ src }) => (
     <ModuleRenderer
         canvasEditable={false}
         canvasAdjustable={false}

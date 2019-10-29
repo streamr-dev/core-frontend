@@ -1,0 +1,70 @@
+import CodeSnippet from '$shared/components/CodeSnippet'
+import Warning from '$docs/components/Warning'
+
+import AndModule from './images/modules_advanced_01_mobile.jpg'
+import AndModule2x from './images/modules_advanced_01_mobile@2x.jpg'
+import StringToNumberModule from './images/modules_advanced_02_mobile.jpg'
+import StringToNumberModule2x from './images/modules_advanced_02_mobile@2x.jpg'
+
+import { JavaModuleDeclarations } from '../tutorials/code/tutorials.js'
+
+import docsStyles from '$docs/components/DocsLayout/docsLayout.pcss'
+
+# Using modules - advanced 
+The design and layout of the services you create with modules and canvases can be as complex as you choose. You can of course design a simple sequential work flow, and in many cases it will be perfectly adequate. In other cases the flow of data may involve merging data pathways, branches and even loops. Go ahead, be adventurous, but also bear in mind Streamr's abstraction capabilities. Reusing existing canvases will help you manage the development process and keep things tidy and neat.
+
+<Warning>
+
+**Module logic rules**
+
+- Any non-boolean events are automatically converted to logical truth values if a boolean input is required. 
+- Numbers exactly equal to zero are deemed to be False, and any non-zero values True.
+- An empty string ("") is False, a non-empty string is True. 
+- An empty list is False, a non-empty list is True. 
+- An empty Map is False, and anything else is True.
+
+</Warning>
+
+### Module activation
+Computation in Streamr is entirely event-based. Any module will execute immediately when activated by incoming events. When new events arrive in the input stream, the data automatically flows through the canvas. This inherently asynchronous process allows for fast and continuous in-memory processing of large volumes of realtime data.
+
+A module processes its inputs as soon as it is activated. This happens when the following conditions are both satisfied; **every input has a value** and **an event arrives at one of the driving inputs**.
+
+<figure className={docsStyles.darkBg}>
+    <picture>
+        <img
+            src={AndModule}
+            srcSet={`${AndModule2x} 2x`}
+            alt="And Module"
+        />
+    </picture>
+</figure>
+
+At least one endpoint in any module is designated as a driving input by default. To change the default settings, hover on top of a module and you’ll see a number of additional controls. You can make any input a driver by clicking on the associated DR icon (a toggle button) next to an input connector. A module with no driving inputs will never activate.
+
+Lastly, note the NR icon next to each output connector. This is a non-repeat button, and if it’s on, the module suppresses any output that would be an exact replica of the last outgoing event. This covers the use case where you’re only interested in events that represent something new.
+
+<figure className={docsStyles.darkBg}>
+    <picture>
+        <img
+            src={StringToNumberModule}
+            srcSet={`${StringToNumberModule2x} 2x`}
+            alt="String to Number Module"
+        />
+    </picture>
+</figure>
+
+### State and methods
+Every Streamr module can have a state. If present, the state persists between module activations and even when a live service is stopped and later restarted. Whilst a module does not need to have a state, there are many streaming data operations which simply cannot be implemented without one.
+
+The state of a module is kept in its instance variables (aka member variables or member fields). Each instance of JavaModule has its own variables, and these are visible and acccessible in that one instance only. You can use any of the valid Java data types for the instance variables. Here's some examples of valid declarations:
+
+<CodeSnippet language='java' showLineNumbers wrapLines>{JavaModuleDeclarations}</CodeSnippet>
+
+Any manipulation of the module state and the generation of module output is handled by JavaModule's methods. There are three methods that you need to override and implement. They are the following:
+
+`initialize()`: This method is called once when a specific JavaModule is activated. This is where you define and initialise the instance variables (i.e. the module state).
+
+`sendOutput()`: This is where you read the incoming events, perform arbitrary calculations, and send events downstream. You can see and alter the module state here.
+
+`clearState()`: This is where you reset the module state. Any module **must** be able to reset itself to its initial state on request. This is typically done by reinitialising the instance variables.

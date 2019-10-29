@@ -5,7 +5,6 @@ import { storiesOf } from '@storybook/react'
 import { withKnobs } from '@storybook/addon-knobs'
 import StoryRouter from 'storybook-react-router'
 import styles from '@sambego/storybook-styles'
-import links from '$shared/../links'
 
 import Navigation from '$docs/components/DocsLayout/Navigation'
 import PageTurner from '$docs/components/PageTurner'
@@ -19,21 +18,6 @@ const story = (name) => storiesOf(`Docs/${name}`, module)
     }))
     .addDecorator(withKnobs)
 
-const navigationItems = {
-    Introduction: links.docs.introduction,
-    'Getting Started': links.docs.main,
-    Tutorials: links.docs.tutorials,
-    'Visual Editor': links.docs.visualEditor,
-    'Streamr Engine': links.docs.streamrEngine,
-    Marketplace: links.docs.dataMarketplace,
-    'Streamr APIs': links.docs.api,
-}
-
-const subNavigationItems = {
-    'streamr-tech-stack': 'Streamr Tech Stack',
-    'realtime-engine': 'Realtime Engine',
-}
-
 story('Navigation')
     .addDecorator(StoryRouter())
     .addWithJSX('desktop', () => (
@@ -46,7 +30,7 @@ story('Navigation')
             >
             * Only visible in Desktop resolution
             </span>
-            <Navigation navigationItems={navigationItems} subNavigationItems={subNavigationItems} />
+            <Navigation />
         </div>
     ))
     .addWithJSX('mobile', () => (
@@ -59,7 +43,7 @@ story('Navigation')
             >
             * Only visible in mobile/table resolution
             </span>
-            <Navigation responsive navigationItems={navigationItems} />
+            <Navigation responsive />
         </div>
     ))
 
@@ -67,6 +51,6 @@ story('PageTurner')
     .addDecorator(StoryRouter())
     .addWithJSX('PageTurner', () => (
         <div className={docsStyles.docsLayout}>
-            <PageTurner navigationItems={navigationItems} />
+            <PageTurner />
         </div>
     ))
