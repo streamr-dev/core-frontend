@@ -4,6 +4,8 @@ import React from 'react'
 import { Link, withRouter, type Location } from 'react-router-dom'
 import cx from 'classnames'
 import scrollIntoView from 'smooth-scroll-into-view-if-needed'
+import throttle from 'lodash/throttle'
+
 import SvgIcon from '$shared/components/SvgIcon'
 import { docsNav } from '$docs/components/DocsLayout/Navigation/navLinks'
 import TableOfContents from './TableOfContents'
@@ -18,11 +20,22 @@ type Props = {
 
 type State = {
     compressed: boolean,
+    topOfPage: boolean,
 }
 
 class Navigation extends React.Component<Props, State> {
     state = {
         compressed: true,
+        topOfPage: true,
+    }
+
+    componentDidMount() {
+        this.isTopOfPage()
+        window.addEventListener('scroll', this.isTopOfPage)
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('scroll', this.isTopOfPage)
     }
 
     getTopLevelTitle() {
@@ -81,6 +94,18 @@ class Navigation extends React.Component<Props, State> {
         })
     }
 
+    isTopOfPage = throttle(() => {
+        if (window.pageYOffset === 0) {
+            this.setState({
+                topOfPage: true,
+            })
+        } else {
+            this.setState({
+                topOfPage: false,
+            })
+        }
+    }, 250)
+
     render() {
         const { className, responsive } = this.props
 
@@ -90,6 +115,7 @@ class Navigation extends React.Component<Props, State> {
                     [styles.compressed]: this.state.compressed,
                     [styles.mobileNav]: responsive,
                     [styles.desktopNav]: !responsive,
+                    [styles.bottomShadow]: responsive && !this.state.topOfPage,
                 })}
 
                 onClick={() => this.toggleExpand()}
