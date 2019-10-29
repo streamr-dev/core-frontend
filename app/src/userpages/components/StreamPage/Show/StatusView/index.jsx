@@ -42,9 +42,9 @@ function getUnits(value) {
 }
 
 function StatusView(props: Props) {
-    const { stream, updateEditStream } = props
+    const { disabled, stream, updateEditStream } = props
     // $FlowFixMe
-    const { disabled, inactivityThresholdHours } = stream
+    const { inactivityThresholdHours } = stream
 
     // init units based on initial threshold value
     // don't calculate on the fly otherwise
