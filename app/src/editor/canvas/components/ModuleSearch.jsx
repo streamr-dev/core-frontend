@@ -5,7 +5,7 @@
 // the highlight will flicker when the item at same index changes selection state
 /* eslint-disable react/no-array-index-key */
 
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useMemo } from 'react'
 import startCase from 'lodash/startCase'
 import debounce from 'lodash/debounce'
 import cx from 'classnames'
@@ -66,7 +66,7 @@ export function ModuleMenuCategory(props: MenuCategoryProps) {
                 {category.name}
             </SearchRow>
             {isExpanded && category.modules.map((m, index) => (
-                <ModuleMenuItem module={m} key={index} addModule={addModule} />
+                <ModuleMenuItem key={index} module={m} addModule={addModule} />
             ))}
         </React.Fragment>
     )
@@ -100,17 +100,25 @@ const onDrop = (e: any, camera: any, addModule: (number, number, number, ?string
     addModule(moduleId, x, y, streamId)
 }
 
-const ModuleMenuItem = ({ module, addModule }) => (
-    <SearchRow
-        draggable
-        onDragStart={(e) => { onDragStart(e, module.id, module.name) }}
-        onClick={() => addModule(module.id)}
-        className={styles.ModuleItem}
-        title={startCase(module.name)}
-    >
-        {startCase(module.name)}
-    </SearchRow>
-)
+const ModuleMenuItem = ({ module, addModule }) => {
+    const onClick = useCallback(() => {
+        addModule(module.id)
+    }, [addModule, module.id])
+    const onDragStartFn = useCallback((e) => {
+        onDragStart(e, module.id, module.name)
+    }, [module.id, module.name])
+    return (
+        <SearchRow
+            draggable
+            onDragStart={onDragStartFn}
+            onClick={onClick}
+            className={styles.ModuleItem}
+            title={startCase(module.name)}
+        >
+            {startCase(module.name)}
+        </SearchRow>
+    )
+}
 
 type Props = {
     isOpen: boolean,
@@ -416,10 +424,16 @@ class ModuleSearch extends React.PureComponent<Props, State> {
 
 export default function (props: Props) {
     const camera = useCameraContext()
+    // just grab bits ModuleSearch needs
+    const searchCamera = useMemo(() => ({
+        elRef: camera.elRef,
+        eventToWorldPoint: camera.eventToWorldPoint,
+        cameraToWorldBounds: camera.cameraToWorldBounds,
+    }), [camera.elRef, camera.eventToWorldPoint, camera.cameraToWorldBounds])
     return (
         <ModuleSearch
             {...props}
-            camera={camera}
+            camera={searchCamera}
         />
     )
 }

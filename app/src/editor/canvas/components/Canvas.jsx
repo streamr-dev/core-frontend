@@ -11,7 +11,7 @@ import { CanvasWindowProvider } from './CanvasWindow'
 import Cables from './Cables'
 
 import styles from './Canvas.pcss'
-import Camera, { useCameraContext, cameraControl } from './Camera'
+import Camera, { useCameraState, cameraControl } from './Camera'
 
 export default function Canvas(props) {
     const propsRef = useRef()
@@ -97,6 +97,7 @@ export default function Canvas(props) {
         >
             <DragDropProvider>
                 <Camera>
+                    <CanvasCameraEffects />
                     <CanvasWindowProvider className={styles.CanvasWindow}>
                         <CanvasElements
                             key={canvas.id}
@@ -113,14 +114,20 @@ export default function Canvas(props) {
     )
 }
 
-function CanvasElements(props) {
+function CanvasCameraEffects() {
+    useCanvasCameraDragEffects()
+    return null
+}
+
+// $FlowFixMe
+const CanvasElements = React.memo(function CanvasElements(props) { /* eslint-disable-line prefer-arrow-callback */
     const { canvas, api, selectedModuleHash, moduleSidebarIsOpen } = props
     const modulesRef = useRef()
     const portsRef = useRef(new Map())
     const [positions, setPositions] = useState({})
     const updatePositionsRef = useRef()
 
-    const camera = useCameraContext()
+    const camera = useCameraState()
     const getCurrentScaleRef = useRef()
     getCurrentScaleRef.current = camera.getCurrentScale
 
@@ -188,8 +195,6 @@ function CanvasElements(props) {
         }), {})
     }, [positions, getCurrentScaleRef])
 
-    useCanvasCameraDragEffects()
-
     if (!canvas) { return null }
 
     return (
@@ -219,4 +224,4 @@ function CanvasElements(props) {
             />
         </div>
     )
-}
+})

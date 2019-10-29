@@ -15,6 +15,7 @@ import styles from './value.pcss'
 type Props = {
     disabled: boolean,
     port: any,
+    className?: string,
     onChange: (any) => void,
 }
 
@@ -115,7 +116,7 @@ function PortSelect({ canvas, port, value, ...props }) {
     )
 }
 
-const Value = ({ disabled, port, onChange }: Props) => {
+const Value = ({ className, disabled, port, onChange }: Props) => {
     const { canvas } = useModule()
     // Enable non-running input whether connected or not if port.canHaveInitialValue
     const portValueEditDisabled = State.isPortValueEditDisabled(canvas, port.id)
@@ -133,7 +134,7 @@ const Value = ({ disabled, port, onChange }: Props) => {
 
     return (
         <div
-            className={cx(styles.root, {
+            className={cx(styles.root, className, {
                 [styles.disabled]: disabled,
             })}
         >

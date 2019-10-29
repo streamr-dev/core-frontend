@@ -6,9 +6,11 @@ import Resizable from '../Resizable'
 import Probe from '../Resizable/SizeConstraintProvider/Probe'
 import Ports from '../Ports'
 import styles from '../Module.pcss'
+import { noCameraControl } from '../Camera'
 import useIsCanvasRunning from '../../hooks/useIsCanvasRunning'
 import useModule, { ModuleContext } from './useModule'
 import useModuleApi, { ModuleApiContext } from './useModuleApi'
+
 import ModuleHeader from '$editor/shared/components/ModuleHeader'
 import ModuleHeaderButton from '$editor/shared/components/ModuleHeaderButton'
 import ModuleStyles from '$editor/shared/components/Module.pcss'
@@ -31,7 +33,8 @@ type Props = {
     interactive?: boolean,
 }
 
-function ModuleRenderer({
+// $FlowFixMe
+const ModuleRenderer = React.memo(({
     className,
     isSelected,
     onPort,
@@ -44,7 +47,7 @@ function ModuleRenderer({
     scale,
     interactive,
     ...props
-}: Props) {
+}: Props) => {
     const isRunning = useIsCanvasRunning()
 
     const {
@@ -155,7 +158,7 @@ function ModuleRenderer({
             <div className={styles.pasteTrap} />
             <ModuleUI
                 autoSize
-                className={styles.canvasModuleUI}
+                className={cx(styles.canvasModuleUI, noCameraControl)}
                 uiEmitter={uiEmitter}
                 hasWritePermission={hasWritePermission}
                 isSubscriptionActive={isSubscriptionActive}
@@ -165,9 +168,10 @@ function ModuleRenderer({
             <div className={ModuleStyles.selectionDecorator} />
         </Resizable>
     )
-}
+})
 
-export default ({
+// $FlowFixMe
+export default React.memo(({
     api,
     module,
     canvasEditable: isCanvasEditable,
@@ -189,4 +193,4 @@ export default ({
             </ModuleContext.Provider>
         </ModuleApiContext.Provider>
     )
-}
+})

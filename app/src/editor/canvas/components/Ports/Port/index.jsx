@@ -10,6 +10,7 @@ import useKeyDown from '$shared/hooks/useKeyDown'
 
 import { isPortInvisible, isPortRenameDisabled } from '../../../state'
 import { DragDropContext } from '../../DragDropContext'
+import { useCameraState, noCameraControl } from '../../Camera'
 import Option from '../Option'
 import Plug from '../Plug'
 import Menu from '../Menu'
@@ -55,13 +56,21 @@ const Port = ({
         setContextMenuTarget(null)
     }, [])
 
-    useGlobalEventWithin('mousedown', useMemo(() => ({
+    // close menu on click/wheel/focus outside
+    useGlobalEventWithin('mousedown mousewheel focus', useMemo(() => ({
         current: contextMenuTarget,
     }), [contextMenuTarget]), useCallback((within: boolean) => {
         if (!within) {
             dismiss()
         }
-    }, [dismiss]), Menu.styles.noAutoDismiss)
+    }, [dismiss]), Menu.styles.noAutoDismiss, true)
+
+    const { scale, x, y } = useCameraState()
+
+    // close menu on camera change
+    useEffect(() => {
+        dismiss()
+    }, [dismiss, scale, x, y])
 
     useKeyDown(useMemo(() => ({
         Escape: () => {
@@ -163,6 +172,7 @@ const Port = ({
             {!!hasInputField && (
                 <Cell>
                     <Value
+                        className={noCameraControl}
                         port={port}
                         onChange={onValueChange}
                         disabled={!isContentEditable}

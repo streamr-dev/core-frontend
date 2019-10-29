@@ -1,391 +1,17 @@
 import React, { useRef, useState, useCallback, useLayoutEffect, useEffect, useMemo, useContext } from 'react'
 import { useSpring, animated, to } from 'react-spring'
 import cx from 'classnames'
+import { useThrottled } from '$shared/hooks/wrapCallback'
+
+import * as State from './state'
 import styles from './Camera.pcss'
 
-import isEditableElement from '$editor/shared/utils/isEditableElement'
+export const { cameraControl, noCameraControl } = styles
 
-function clamp(value, min, max) {
-    return Math.max(min, Math.min(max, value))
-}
-
-/**
- * Allows interaction events to bubble from this element
- * and be handled by camera controls
- */
-export const { cameraControl } = styles
-
-const defaultFit = {
-    x: 0,
-    y: 0,
-    scale: 1,
-}
-
-function scaleToFit({ bounds, fit, maxScale = 1, padding = 20 } = {}) {
-    const totalPadding = 2 * padding
-    const maxWidth = fit.width - totalPadding
-    const maxHeight = fit.height - totalPadding
-    return Math.min(maxScale, Math.min(maxWidth / bounds.width, maxHeight / bounds.height))
-}
-
-function centerBoundsTo({ bounds, fit, scale }) {
-    // vertically & horizontally center content
-    const offsetY = fit.height / 2
-    const offsetX = fit.width / 2
-
-    return {
-        x: -((bounds.x + (bounds.width / 2)) * scale) + offsetX,
-        y: -((bounds.y + (bounds.height / 2)) * scale) + offsetY,
-    }
-}
-
-function toPrecision(v, precision = 0) {
-    if (!precision) { return v }
-    const p = 10 ** precision
-    return Math.round((v * p)) / p
-}
-
-function fitBoundsTo({ bounds, fit, padding }) {
-    const scale = scaleToFit({
-        bounds,
-        fit,
-        padding,
-    })
-
-    if (!scale) { return defaultFit }
-
-    const { x, y } = centerBoundsTo({
-        bounds,
-        fit,
-        scale,
-    })
-
-    return {
-        x,
-        y,
-        scale,
-    }
-}
-
-function updateScaleState(s, { x, y, scale: newScale }) {
-    const { scale: currentScale } = s
-
-    // adjust for offset created by scale change
-    const ratio = (1 - (newScale / currentScale))
-    const x2 = s.x + ((x - s.x) * ratio)
-    const y2 = s.y + ((y - s.y) * ratio)
-
-    return {
-        ...s,
-        scale: newScale,
-        x: x2,
-        y: y2,
-    }
-}
-const defaultCameraOptions = {
-    scaleFactor: 0.1,
-    scaleLevels: [
-        0.1,
-        0.25,
-        0.5,
-        1.0,
-        1.25,
-        1.50,
-        2.0,
-        3.0,
-    ],
-}
-
-function useCameraSimpleApi(opts) {
-    const { scaleFactor, scaleLevels } = Object.assign({}, defaultCameraOptions, opts)
-    const minScale = scaleLevels[0]
-    const maxScale = scaleLevels[scaleLevels.length - 1]
-    const [state, setActualState] = useState({
-        scale: 1,
-        x: 0,
-        y: 0,
-    })
-
-    const elRef = useRef()
-
-    const { scale, x, y } = state
-
-    // clamps scale
-    const setState = useCallback((v) => {
-        setActualState((state) => {
-            const nextState = (typeof v === 'function') ? v(state) : v
-            return {
-                ...nextState,
-                scale: clamp(nextState.scale, minScale, maxScale),
-            }
-        })
-    }, [setActualState, minScale, maxScale])
-
-    // updates scale of camera, centers scaling on x,y
-    const updateScale = useCallback(({ x, y, delta }) => {
-        setState((s) => {
-            const factor = Math.abs(scaleFactor * (delta / 120))
-            const actualScaleFactor = delta < 0 ? 1 + factor : 1 - factor
-            return updateScaleState(s, {
-                x,
-                y,
-                scale: clamp(s.scale * actualScaleFactor, minScale, maxScale),
-            })
-        })
-    }, [setState, scaleFactor, minScale, maxScale])
-
-    // init needed to reset last values before starting pan
-    const initUpdatePosition = useCallback(({ x, y }) => {
-        setState((s) => ({
-            ...s,
-            lastX: x,
-            lastY: y,
-        }))
-    }, [setState])
-
-    // changes current camera offset i.e. pans camera
-    const updatePosition = useCallback(({ x, y }) => {
-        setState(({ lastX = x, lastY = y, ...s }) => ({
-            ...s,
-            lastX: x,
-            lastY: y,
-            x: s.x + (x - lastX),
-            y: s.y + (y - lastY),
-        }))
-    }, [setState])
-
-    // set scale to value, centered on middle of camera el
-    const setScale = useCallback((value) => {
-        setState((s) => {
-            const rect = elRef.current.getBoundingClientRect()
-            return updateScaleState(s, {
-                x: rect.left + (rect.width / 2),
-                y: rect.top + (rect.height / 2),
-                scale: clamp(toPrecision(value, 2), minScale, maxScale),
-            })
-        })
-    }, [setState, minScale, maxScale])
-
-    // zoom in to next largest scale level
-    const zoomIn = useCallback(() => {
-        const currentScale = toPrecision(scale, 2)
-        const nextLevel = scaleLevels.find((v) => v > currentScale) || scale
-        setScale(nextLevel)
-    }, [setScale, scale, scaleLevels])
-
-    // zoom out to next largest scale level
-    const zoomOut = useCallback(() => {
-        const currentScale = toPrecision(scale, 2)
-        const nextLevel = scaleLevels.slice().reverse().find((v) => v < currentScale) || scale
-        setScale(nextLevel)
-    }, [setScale, scale, scaleLevels])
-
-    const pan = useCallback(({ x = 0, y = 0 } = {}) => {
-        setState((s) => ({
-            ...s,
-            x: s.x + x,
-            y: s.y + y,
-        }))
-    }, [setState])
-
-    // fit camera to supplied bounds
-    const fitBounds = useCallback((opts) => {
-        setState((s) => ({
-            ...s,
-            ...fitBoundsTo(opts),
-        }))
-    }, [setState])
-
-    // fit supplied bounds to camera element bounds
-    const fitView = useCallback((opts) => {
-        const { current: cameraEl } = elRef
-        const { width, height } = cameraEl.getBoundingClientRect()
-        return fitBounds({
-            ...opts,
-            fit: {
-                width,
-                height,
-            },
-        })
-    }, [fitBounds, elRef])
-
-    // move bounds into center
-    const centerBounds = useCallback(({ bounds }) => {
-        const { current: cameraEl } = elRef
-        const { width, height } = cameraEl.getBoundingClientRect()
-
-        return setState((s) => ({
-            ...s,
-            ...centerBoundsTo({
-                bounds,
-                fit: {
-                    width,
-                    height,
-                },
-                scale: s.scale,
-            }),
-        }))
-    }, [setState, elRef])
-
-    const areBoundsInView = useCallback(({ bounds, padding = 0 }) => {
-        const { current: cameraEl } = elRef
-        const { width, height } = cameraEl.getBoundingClientRect()
-
-        return (
-            ((bounds.x * scale) + x) >= padding
-            && ((bounds.y * scale) + y) >= padding
-            && (((bounds.x + bounds.width) * scale) + x) < (width - padding)
-            && (((bounds.y + bounds.height) * scale) + y) < (height - padding)
-        )
-    }, [scale, x, y])
-
-    // minimally move bounds into view, if not already in view
-    const panIntoViewIfNeeded = useCallback(({ bounds, padding }) => {
-        const inView = areBoundsInView({
-            bounds,
-            padding,
-        })
-        if (inView) { return }
-
-        const { current: cameraEl } = elRef
-        const { width, height } = cameraEl.getBoundingClientRect()
-
-        const [overLeft, overTop, overRight, overBottom] = [
-            padding - ((bounds.x * scale) + x),
-            padding - ((bounds.y * scale) + y),
-            (((bounds.x + bounds.width) * scale) + x) - (width - padding),
-            (((bounds.y + bounds.height) * scale) + y) - (height - padding),
-        ].map((v) => Math.max(0, v))
-
-        // if too big to fit on screen rescale and center
-        if ((overLeft > 0 && overRight > 0) || (overTop > 0 && overBottom > 0)) {
-            return fitView({
-                bounds,
-                padding,
-            })
-        }
-
-        // prioritise top & left offsets over right & bottom
-        const offsetX = overLeft > 0 ? overLeft : -overRight
-        const offsetY = overTop > 0 ? overTop : -overBottom
-
-        return setState((s) => ({
-            ...s,
-            x: s.x + offsetX,
-            y: s.y + offsetY,
-        }))
-    }, [setState, scale, x, y, areBoundsInView, fitView, elRef])
-
-    // convert bounds in screen/camera coordinates to world coordinates
-    const cameraToWorldBounds = useCallback((bounds) => {
-        const canvasX = (bounds.x - x) / scale
-        const canvasY = (bounds.y - y) / scale
-        return {
-            x: canvasX,
-            y: canvasY,
-            width: bounds.width / scale,
-            height: bounds.height / scale,
-        }
-    }, [x, y, scale])
-
-    // convert point in screen/camera coordinates to world coordinates
-    const cameraToWorldPoint = useCallback((point) => {
-        const { x, y } = cameraToWorldBounds({
-            ...point,
-            width: 1,
-            height: 1,
-        })
-        return {
-            x,
-            y,
-        }
-    }, [cameraToWorldBounds])
-
-    const eventToWorldPoint = useCallback((event) => {
-        const point = {
-            x: 0,
-            y: 0,
-        }
-
-        if (event.target === elRef.current) {
-            // if target is camera el then we can just use event offsets
-            point.x = event.offsetX
-            point.y = event.offsetY
-        } else {
-            const rect = elRef.current.getBoundingClientRect()
-            // otherwise need to calculate offset
-            point.x = event.clientX - rect.left
-            point.y = event.clientY - rect.top
-        }
-
-        const { x, y } = cameraToWorldBounds({
-            ...point,
-            width: 1,
-            height: 1,
-        })
-        return {
-            x,
-            y,
-        }
-    }, [cameraToWorldBounds])
-
-    const shouldIgnoreEvent = useCallback((event) => {
-        const { current: el } = elRef
-
-        // do not ignore if has cameraControl class
-        if (event.target.classList.contains(styles.cameraControl)) { return false }
-        // always ignore if target is editable
-        if (isEditableElement(event.target)) { return true }
-
-        // do not ignore if is within parent with cameraControl class
-        if (event.target.matches(`.${styles.cameraControl} *`)) { return false }
-
-        return (
-            // ignore if target not within camera el and isn't body
-            !el.contains(event.target) && event.target !== document.body
-        )
-    }, [elRef])
-
-    return useMemo(() => ({
-        ...state,
-        elRef,
-        updateScale,
-        initUpdatePosition,
-        updatePosition,
-        setState,
-        zoomIn,
-        zoomOut,
-        pan,
-        setScale,
-        fitBounds,
-        fitView,
-        centerBounds,
-        areBoundsInView,
-        cameraToWorldBounds,
-        cameraToWorldPoint,
-        panIntoViewIfNeeded,
-        eventToWorldPoint,
-        shouldIgnoreEvent,
-    }), [
-        state,
-        setState,
-        updateScale,
-        updatePosition,
-        initUpdatePosition,
-        zoomIn,
-        zoomOut,
-        pan,
-        setScale,
-        fitBounds,
-        fitView,
-        centerBounds,
-        areBoundsInView,
-        cameraToWorldBounds,
-        cameraToWorldPoint,
-        panIntoViewIfNeeded,
-        eventToWorldPoint,
-        shouldIgnoreEvent,
-    ])
+function useStateCallback(setState, fn) {
+    return useCallback((...args) => (
+        setState((s) => fn(s, ...args))
+    ), [setState, fn])
 }
 
 const defaultCameraConfig = {
@@ -397,28 +23,72 @@ const defaultCameraConfig = {
     },
 }
 
-function useCameraSpringApi() {
-    const camera = useCameraSimpleApi()
-    const { x, y, scale } = camera
+function useCameraSimpleApi(opts) {
+    const elRef = useRef()
+    const [state, setActualState] = useState(State.createCamera({
+        ...opts,
+        elRef,
+    }))
+
+    const stateRef = useRef()
+    stateRef.current = state
+
     const [cameraConfig, setCameraConfig] = useState(defaultCameraConfig)
-    const onSpring = useCallback(() => ({
-        x,
-        y,
-        scale,
-        ...cameraConfig,
-    }), [x, y, scale, cameraConfig])
 
-    const [spring, set, stop] = useSpring(onSpring)
+    const cameraConfigRef = useRef()
+    cameraConfigRef.current = cameraConfig
 
-    set({
-        x,
-        y,
-        scale,
-        ...cameraConfig,
-    })
+    // hold the destination state in a ref
+    // update fast with spring, commit to react state later
+    const destStateRef = useRef()
+
+    // commit destination state to react
+    const commit = useCallback(() => {
+        setActualState((s) => ({
+            ...s,
+            x: destStateRef.current.x,
+            y: destStateRef.current.y,
+            scale: destStateRef.current.scale,
+        }))
+    }, [])
+
+    // commit to react state once every 500ms
+    const commitThrottled = useThrottled(useCallback(() => {
+        commit()
+    }, [commit]), 500)
+
+    // init destState after creating destStateRef + commit
+    if (!destStateRef.current) {
+        destStateRef.current = {
+            x: state.x,
+            y: state.y,
+            scale: state.scale,
+            onRest: commit,
+            ...cameraConfig,
+        }
+    }
+
+    const [spring, set, stop] = useSpring(() => destStateRef.current)
 
     const springRef = useRef()
     springRef.current = spring
+
+    // A react setState-like api, but sets spring/dest state
+    const setSpringState = useCallback((v) => {
+        const { x, y, scale } = (typeof v !== 'function') ? v : v({
+            // add additional state props but only read back x, y & scale
+            ...stateRef.current,
+            ...destStateRef.current,
+        })
+        destStateRef.current = {
+            x,
+            y,
+            scale,
+            ...cameraConfigRef.current,
+        }
+        set(destStateRef.current)
+        commitThrottled()
+    }, [set, commitThrottled])
 
     const stopRef = useRef()
     stopRef.current = stop
@@ -439,25 +109,95 @@ function useCameraSpringApi() {
         stopRef.current()
     ), [stopRef])
 
+    const updateScale = useStateCallback(setSpringState, State.updateScale)
+    const setPosition = useStateCallback(setSpringState, State.setPosition)
+    const pan = useStateCallback(setSpringState, State.pan)
+    const setState = useStateCallback(setSpringState, State.setState)
+    const zoomIn = useStateCallback(setSpringState, State.zoomIn)
+    const zoomOut = useStateCallback(setSpringState, State.zoomOut)
+    const setScale = useStateCallback(setSpringState, State.setScale)
+    const fitBounds = useStateCallback(setSpringState, State.fitBounds)
+    const fitView = useStateCallback(setSpringState, State.fitView)
+    const centerBounds = useStateCallback(setSpringState, State.centerBounds)
+    const panIntoViewIfNeeded = useStateCallback(setSpringState, State.panIntoViewIfNeeded)
+
+    const areBoundsInView = useCallback((...args) => State.areBoundsInView(stateRef.current, ...args), [stateRef])
+    const cameraToWorldBounds = useCallback((...args) => State.cameraToWorldBounds(stateRef.current, ...args), [stateRef])
+    const cameraToWorldPoint = useCallback((...args) => State.cameraToWorldPoint(stateRef.current, ...args), [stateRef])
+    const eventToWorldPoint = useCallback((...args) => State.eventToWorldPoint(stateRef.current, ...args), [stateRef])
+    const shouldIgnoreEvent = useCallback((...args) => State.shouldIgnoreEvent(stateRef.current, ...args), [stateRef])
+    const getCenterWorldPoint = useCallback((...args) => State.getCenterWorldPoint(stateRef.current, ...args), [stateRef])
+
     return useMemo(() => ({
+        ...state,
+        updateScale,
+        setPosition,
+        setState,
+        zoomIn,
+        zoomOut,
+        pan,
+        setScale,
+        fitBounds,
+        fitView,
+        centerBounds,
+        areBoundsInView,
+        cameraToWorldBounds,
+        cameraToWorldPoint,
+        panIntoViewIfNeeded,
+        eventToWorldPoint,
+        shouldIgnoreEvent,
         resetCameraConfig,
-        defaultCameraConfig,
         setCameraConfig,
         getCurrentScale,
         getSpring,
         stopSpring,
-        ...camera,
-    }), [getSpring, camera, setCameraConfig, getCurrentScale, resetCameraConfig, stopSpring])
+        defaultCameraConfig,
+        getCenterWorldPoint,
+    }), [
+        state,
+        setState,
+        updateScale,
+        setPosition,
+        zoomIn,
+        zoomOut,
+        pan,
+        setScale,
+        fitBounds,
+        fitView,
+        centerBounds,
+        areBoundsInView,
+        cameraToWorldBounds,
+        cameraToWorldPoint,
+        panIntoViewIfNeeded,
+        eventToWorldPoint,
+        shouldIgnoreEvent,
+        resetCameraConfig,
+        setCameraConfig,
+        getCurrentScale,
+        getSpring,
+        stopSpring,
+        getCenterWorldPoint,
+    ])
 }
 
 export const CameraContext = React.createContext({})
+
+export function useCameraState() {
+    const { x, y, scale, getCurrentScale } = useContext(CameraContext)
+    return useMemo(() => ({
+        x,
+        y,
+        scale,
+        getCurrentScale,
+    }), [x, y, scale, getCurrentScale])
+}
 
 export function useCameraContext() {
     return useContext(CameraContext)
 }
 
 export function CameraProvider({ onChange, children, ...props }) {
-    const camera = useCameraSpringApi(props)
+    const camera = useCameraSimpleApi(props)
     useEffect(() => {
         if (typeof onChange !== 'function') { return }
         onChange(camera)
@@ -472,6 +212,7 @@ export function CameraProvider({ onChange, children, ...props }) {
 
 function useWheelControls(elRef) {
     const { updateScale, shouldIgnoreEvent } = useCameraContext()
+
     const onChangeScale = useCallback((event) => {
         if (shouldIgnoreEvent(event)) { return }
         event.preventDefault()
@@ -499,8 +240,12 @@ function useWheelControls(elRef) {
 }
 
 function usePanControls(elRef) {
-    const { initUpdatePosition, updatePosition, setCameraConfig } = useCameraContext()
+    const { pan, setCameraConfig } = useCameraContext()
     const [isPanning, setPanning] = useState(false)
+    const prevPositionRef = useRef({
+        lastX: 0,
+        lastY: 0,
+    })
 
     const startPanning = useCallback((event) => {
         if (event.buttons !== 1) { return }
@@ -515,28 +260,32 @@ function usePanControls(elRef) {
         const el = elRef.current
         const { left, top } = el.getBoundingClientRect()
         // find current location on screen
-        const x = event.clientX - left
-        const y = event.clientY - top
-        initUpdatePosition({
-            x,
-            y,
-        })
-        setPanning(true)
-    }, [elRef, isPanning, initUpdatePosition, setPanning])
-
-    useEffect(() => {
+        const lastX = event.clientX - left
+        const lastY = event.clientY - top
         setCameraConfig((s) => ({
             ...s,
-            immediate: isPanning,
+            immediate: true,
         }))
-    }, [setCameraConfig, isPanning])
+
+        prevPositionRef.current = {
+            lastX,
+            lastY,
+        }
+
+        setPanning(true)
+    }, [elRef, setCameraConfig, isPanning, setPanning])
 
     const stopPanning = useCallback(() => {
         if (!isPanning) { return }
-        setPanning(false)
-    }, [isPanning])
+        setCameraConfig((s) => ({
+            ...s,
+            immediate: false,
+        }))
 
-    const pan = useCallback((event) => {
+        setPanning(false)
+    }, [isPanning, setCameraConfig])
+
+    const onPan = useCallback((event) => {
         if (!isPanning) { return }
         if (event.buttons !== 1) {
             stopPanning(event)
@@ -548,21 +297,27 @@ function usePanControls(elRef) {
         // find current location on screen
         const x = event.clientX - left
         const y = event.clientY - top
-        updatePosition({
-            x,
-            y,
+        const { lastX, lastY } = prevPositionRef.current
+        prevPositionRef.current = {
+            lastX: x,
+            lastY: y,
+        }
+
+        pan({
+            x: x - lastX,
+            y: y - lastY,
         })
-    }, [isPanning, elRef, stopPanning, updatePosition])
+    }, [isPanning, elRef, stopPanning, pan])
 
     useEffect(() => {
         if (!isPanning) { return }
-        window.addEventListener('mousemove', pan)
+        window.addEventListener('mousemove', onPan)
         window.addEventListener('mouseup', stopPanning)
         return () => {
-            window.removeEventListener('mousemove', pan)
+            window.removeEventListener('mousemove', onPan)
             window.removeEventListener('mouseup', stopPanning)
         }
-    }, [isPanning, pan, stopPanning])
+    }, [isPanning, onPan, stopPanning])
 
     useEffect(() => {
         const el = elRef.current

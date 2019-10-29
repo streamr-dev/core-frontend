@@ -8,7 +8,7 @@ import { UiEmitter } from '$editor/shared/components/RunStateLoader'
 
 import ModuleDragger from './ModuleDragger'
 import * as RunController from './CanvasController/Run'
-import { useCameraContext } from './Camera'
+import { useCameraState } from './Camera'
 
 import ModuleStyles from '$editor/shared/components/Module.pcss'
 import styles from './Module.pcss'
@@ -192,7 +192,7 @@ function ModuleError(props) {
 const CanvasModuleWithErrorBoundary = React.memo(withErrorBoundary(ModuleError)(CanvasModule))
 
 export default React.memo(withErrorBoundary(ModuleError)((props) => {
-    const { scale } = useCameraContext()
+    const { scale } = useCameraState()
     return (
         <ModuleDragger module={props.module} api={props.api}>
             <CanvasModuleWithErrorBoundary scale={scale} {...props} />
