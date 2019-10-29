@@ -45,7 +45,6 @@ import PreviewView from './PreviewView'
 import HistoryView from './HistoryView'
 import SecurityView from './SecurityView'
 import StatusView from './StatusView'
-import PartitionsView from './PartitionsView'
 
 import styles from './streamShowView.pcss'
 
@@ -205,13 +204,6 @@ export class StreamShowView extends Component<Props, State> {
                             title="Details"
                         >
                             <InfoView disabled={disabled} />
-                        </TOCPage.Section>
-                        <TOCPage.Section
-                            id="partitions"
-                            title="Partitions"
-                            customStyled
-                        >
-                            <PartitionsView disabled={disabled} />
                         </TOCPage.Section>
                         <TOCPage.Section
                             id="security"

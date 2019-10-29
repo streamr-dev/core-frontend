@@ -14,6 +14,7 @@ import { updateEditStreamField } from '$userpages/modules/userPageStreams/action
 import { selectEditedStream } from '$userpages/modules/userPageStreams/selectors'
 import { NotificationIcon } from '$shared/utils/constants'
 import SplitControl from '$userpages/components/SplitControl'
+import PartitionsView from '../PartitionsView'
 
 import styles from './infoView.pcss'
 
@@ -123,29 +124,33 @@ export class InfoView extends Component<Props, State> {
                     />
                 </div>
                 {stream && stream.id &&
-                    <SplitControl>
-                        <div className={styles.textInput}>
-                            <TextInput
-                                label={I18n.t('userpages.streams.edit.details.streamId')}
-                                type="text"
-                                name="id"
-                                value={(stream && stream.id) || ''}
-                                preserveLabelSpace
-                                readOnly
-                                disabled={disabled}
-                            />
-                        </div>
-                        <Button
-                            color="userpages"
-                            className={styles.copyStreamIdButton}
-                            onClick={() => this.copyStreamTap(stream.id)}
-                        >
-                            {idCopied ?
-                                <Translate value="userpages.streams.edit.details.copied" /> :
-                                <Translate value="userpages.streams.edit.details.copyStreamId" />
-                            }
-                        </Button>
-                    </SplitControl>
+                    <React.Fragment>
+                        <SplitControl>
+                            <div className={styles.textInput}>
+                                <TextInput
+                                    label={I18n.t('userpages.streams.edit.details.streamId')}
+                                    type="text"
+                                    name="id"
+                                    value={(stream && stream.id) || ''}
+                                    preserveLabelSpace
+                                    readOnly
+                                    disabled={disabled}
+                                />
+                            </div>
+                            <Button
+                                color="userpages"
+                                className={styles.copyStreamIdButton}
+                                onClick={() => this.copyStreamTap(stream.id)}
+                            >
+                                {idCopied ?
+                                    <Translate value="userpages.streams.edit.details.copied" /> :
+                                    <Translate value="userpages.streams.edit.details.copyStreamId" />
+                                }
+                            </Button>
+                        </SplitControl>
+                        <h5 className={styles.partitions}>Partitions</h5>
+                        <PartitionsView disabled={disabled} />
+                    </React.Fragment>
                 }
             </div>
         )
