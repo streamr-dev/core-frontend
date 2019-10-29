@@ -12,5 +12,3 @@ export const rightColumn = {
     },
     sm: 12,
 }
-
-export const fieldTypes = ['number', 'boolean', 'map', 'list', 'string', 'timestamp']
