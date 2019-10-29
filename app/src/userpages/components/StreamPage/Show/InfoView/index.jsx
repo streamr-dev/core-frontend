@@ -109,6 +109,7 @@ export class InfoView extends Component<Props, State> {
                         onChange={this.onNameChange}
                         preserveLabelSpace
                         disabled={disabled}
+                        autoComplete="off"
                     />
                 </div>
                 <div className={styles.textInput}>
@@ -120,6 +121,7 @@ export class InfoView extends Component<Props, State> {
                         onChange={this.onDescriptionChange}
                         preserveLabelSpace
                         disabled={disabled}
+                        autoComplete="off"
                     />
                 </div>
                 {stream && stream.id &&
