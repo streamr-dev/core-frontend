@@ -9,12 +9,16 @@
   border: 1px solid var(--streamrBlue);
 }
 
+.root .content ul {
+  margin-left: 2rem;
+}
+
 .root .content p {
   flex: 1;
   margin-left: 4rem;
 
   &:last-of-type {
-    margin: -1.5rem 0 1rem 1.5rem;
+    margin: -1.4rem 0 1rem 2rem;
   }
 }
 
@@ -34,24 +38,48 @@
   .warningIcon {
     position: absolute;
     top: 2rem;
-    left: 1rem;
+    left: 28px;
     width: 24px;
     height: 24px;
   }
 
   .root .content {
+    margin-left: 50px;
+    margin-bottom: 2rem;
+
     p,
     li {
-      font-size: 14px;
-      line-height: 24px;
+      font-size: 16px;
+      line-height: 30px;
+    }
+
+    p:last-of-type {
+      margin: -1.7rem 1rem 0 0;
+    }
+
+    ul {
+      margin: 0;
     }
   }
 }
 
 @media (--xs) {
   .root .content {
-    p {
+    margin-left: 0;
+
+    p,
+    li {
+      font-size: 14px;
+      line-height: 24px;
       margin-left: 1.5rem;
     }
+
+    p:last-of-type {
+      margin: -1.5rem 0 0 1.5rem;
+    }
+  }
+
+  .warningIcon {
+    left: 20px;
   }
 }
