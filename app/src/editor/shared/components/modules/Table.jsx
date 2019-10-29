@@ -2,11 +2,15 @@ import React from 'react'
 import uuid from 'uuid'
 import cx from 'classnames'
 import throttle from 'lodash/throttle'
+import { formatDateTime } from '$mp/utils/time'
+import moment from 'moment'
 
 import UiSizeConstraint from '../UiSizeConstraint'
 import ModuleSubscription from '../ModuleSubscription'
 
 import styles from './Table.pcss'
+
+const tz = moment.tz.guess()
 
 function getCellContent(cell) {
     let content = cell
@@ -15,7 +19,7 @@ function getCellContent(cell) {
         if (cell.__streamr_date) {
             // special handling for __streamr_date
             const date = new Date(cell.__streamr_date)
-            return `${date.toLocaleString()}.${date.getMilliseconds()}`
+            return formatDateTime(date, tz)
         }
         /* eslint-enable no-underscore-dangle */
         content = JSON.stringify(cell)
