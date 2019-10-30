@@ -81,6 +81,8 @@ describe('Java Module', () => {
         }))
         // simulate pressing 'apply' button in java editor
         const javaModuleUpdated = canvas.modules[canvas.modules.length - 1]
+
+        // if this test is timing out, this is probably where it's doing so.
         const newModule = await SharedServices.getModule({
             id: javaModuleUpdated.id,
             configuration: javaModuleUpdated,
@@ -90,5 +92,5 @@ describe('Java Module', () => {
         canvas = State.replaceModule(canvas, newModule)
         expect(State.arePortsConnected(canvas, constant1.outputs[0].id, javaModule.inputs[0].id)).toBeTruthy()
         expect(State.arePortsConnected(canvas, javaModule.outputs[0].id, constant2.params[0].id)).toBeTruthy()
-    }, 10000)
+    }, 30000) // java module takes a long time sometimes
 })
