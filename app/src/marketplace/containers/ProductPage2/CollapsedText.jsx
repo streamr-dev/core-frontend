@@ -13,7 +13,8 @@ type Props = {
     className?: string,
 }
 
-const CollapsedText = ({ text, className }: Props) => {
+const CollapsedText = ({ text: textProp, className }: Props) => {
+    const text = textProp || ''
     const maxLength = 4000
     const rootRef = useRef(null)
     const truncationRequired = text.length > maxLength
