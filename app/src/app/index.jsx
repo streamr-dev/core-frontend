@@ -8,12 +8,12 @@ import { ConnectedRouter } from 'connected-react-router'
 import qs from 'query-string'
 
 // Marketplace
-import ProductPage from '$mp/containers/ProductPage'
-import ProductPage2 from '$mp/containers/ProductPage2'
+import ProductPage from '$mp/containers/deprecated/ProductPage'
+import ProductPage2 from '$mp/containers/ProductPage'
 import StreamPreviewPage from '$mp/containers/StreamPreviewPage'
 import CreateProductPage from '$mp/containers/CreateProductPage'
-import EditProductPage from '$mp/containers/EditProductPage'
-import EditProductPage2 from '$mp/containers/EditProductPage2'
+import EditProductPage from '$mp/containers/deprecated/EditProductPage'
+import EditProductPage2 from '$mp/containers/EditProductPage'
 import Products from '$mp/containers/Products'
 
 // Auth

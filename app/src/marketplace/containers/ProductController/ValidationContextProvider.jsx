@@ -6,7 +6,7 @@ import useIsMounted from '$shared/hooks/useIsMounted'
 import { isEthereumAddress } from '$mp/utils/validate'
 import { isPaidProduct, isCommunityProduct } from '$mp/utils/product'
 import { isPriceValid } from '$mp/utils/price'
-import { isPublished, getPendingChanges, PENDING_CHANGE_FIELDS } from '../EditProductPage2/state'
+import { isPublished, getPendingChanges, PENDING_CHANGE_FIELDS } from '../EditProductPage/state'
 
 export const INFO = 'info'
 export const WARNING = 'warning'

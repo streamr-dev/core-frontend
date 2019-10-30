@@ -14,7 +14,7 @@ import ExpirationCounter from '$mp/components/ExpirationCounter'
 import exampleProductList from './exampleProductList'
 import CompletePublishTransaction from '$mp/components/Modal/CompletePublishTransaction'
 import { transactionStates } from '$shared/utils/constants'
-import { actionsTypes } from '$mp/containers/EditProductPage2/publishQueue'
+import { actionsTypes } from '$mp/containers/EditProductPage/publishQueue'
 
 const story = (name) => storiesOf(`Marketplace/${name}`, module)
     .addDecorator(StoryRouter())

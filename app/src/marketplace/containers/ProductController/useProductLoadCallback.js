@@ -18,7 +18,7 @@ import { getAdminFee } from '$mp/modules/communityProduct/services'
 import { handleEntities } from '$shared/utils/entities'
 import { productSchema } from '$shared/modules/entities/schema'
 
-import * as State from '../EditProductPage2/state'
+import * as State from '../EditProductPage/state'
 import useEditableProductUpdater from './useEditableProductUpdater'
 
 export default function useProductLoadCallback() {

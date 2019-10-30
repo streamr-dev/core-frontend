@@ -99,7 +99,12 @@ export const mapProductToPutApi = (product: Product | EditProduct): Object => {
         return otherData
     }
 
-    return product
+    const pricePerSecond = mapPriceToApi(product.pricePerSecond)
+
+    return {
+        ...product,
+        pricePerSecond,
+    }
 }
 
 export const getValidId = (id: string, prefix: boolean = true): string => {
