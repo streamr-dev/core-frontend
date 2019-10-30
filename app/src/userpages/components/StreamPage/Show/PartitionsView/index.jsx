@@ -4,7 +4,6 @@ import React, { useCallback, useState } from 'react'
 import { connect } from 'react-redux'
 import { I18n } from 'react-redux-i18n'
 import { Link } from 'react-router-dom'
-import cx from 'classnames'
 
 import type { Stream } from '$shared/flowtype/stream-types'
 import type { StoreState } from '$shared/flowtype/store-state'
@@ -29,6 +28,9 @@ type DispatchProps = {
 
 type Props = OwnProps & StateProps & DispatchProps
 
+const MIN_PARTITIONS = 1
+const MAX_PARTITIONS = 99
+
 function PartitionsView(props: Props) {
     const { stream, updateEditStream, disabled } = props
     // $FlowFixMe
@@ -40,6 +42,7 @@ function PartitionsView(props: Props) {
         let numberValue = Number.parseInt(value, 10)
         // if entered value is NaN use existing value
         numberValue = Number.isNaN(numberValue) ? partitions : numberValue
+        numberValue = Math.max(MIN_PARTITIONS, Math.min(numberValue, MAX_PARTITIONS))
         setValue(String(numberValue))
         updateEditStream({
             ...stream,
@@ -55,14 +58,16 @@ function PartitionsView(props: Props) {
         <div className={styles.root}>
             <p className={styles.description}>
                 {I18n.t('userpages.streams.partitionsDescription')}
-                <Link to={`${routes.docsStreams()}#partitioning`}>
+                <Link to={routes.docsStreamsPartitioning()}>
                     {I18n.t('userpages.streams.partitionsReadMore')}
                 </Link>.
             </p>
-            <div className={cx(styles.InactivityOptions)}>
+            <div className={styles.PartitionsOptions}>
                 <TextInput
-                    label=""
+                    label={I18n.t('userpages.streams.partitionsLabel')}
                     type="number"
+                    min={MIN_PARTITIONS}
+                    max={MAX_PARTITIONS}
                     value={value}
                     onChange={onChange}
                     onBlur={onCommit}

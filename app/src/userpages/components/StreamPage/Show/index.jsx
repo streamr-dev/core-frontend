@@ -221,7 +221,7 @@ export class StreamShowView extends Component<Props, State> {
                         </TOCPage.Section>
                         <TOCPage.Section
                             id="status"
-                            linkTitle="Status"
+                            linkTitle="Stream Status"
                             title={(
                                 <div className={styles.statusTitle}>
                                     Status <StatusIcon status={editedStream ? editedStream.streamStatus : undefined} />

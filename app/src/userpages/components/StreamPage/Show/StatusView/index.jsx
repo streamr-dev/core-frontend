@@ -1,9 +1,8 @@
 // @flow
 
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useState, useEffect, useRef } from 'react'
 import { connect } from 'react-redux'
 import { I18n } from 'react-redux-i18n'
-import cx from 'classnames'
 
 import type { Stream } from '$shared/flowtype/stream-types'
 import type { StoreState } from '$shared/flowtype/store-state'
@@ -59,13 +58,20 @@ function StatusView(props: Props) {
         setValue(String(numberValue))
         updateEditStream({
             ...stream,
-            inactivityThresholdHours: unitsToHours(numberValue, units),
+            inactivityThresholdHours: Math.max(0, unitsToHours(numberValue, units)),
         })
     }, [stream, updateEditStream, inactivityThresholdHours, value, units])
 
     const onChangeUnits = useCallback((newUnits) => {
         setUnits(newUnits)
     }, [setUnits])
+
+    const onCommitRef = useRef(onCommit)
+    onCommitRef.current = onCommit
+    // commit when units change
+    useEffect(() => {
+        onCommitRef.current()
+    }, [units])
 
     const onChange = useCallback((event) => {
         setValue(event.target.value)
@@ -76,28 +82,26 @@ function StatusView(props: Props) {
             <p className={styles.description}>
                 {I18n.t('userpages.streams.inactivityDescription')}
             </p>
-            <div className={cx(styles.InactivityOptions)}>
-                <SplitControl>
-                    <TextInput
-                        label=""
-                        type="number"
-                        value={value}
-                        onChange={onChange}
-                        onBlur={onCommit}
-                        disabled={disabled}
-                    />
-                    <Dropdown
-                        title=""
-                        selectedItem={units}
-                        onChange={onChangeUnits}
-                        className={styles.permissionsDropdown}
-                        disabled={disabled}
-                    >
-                        <Dropdown.Item value="days">{I18n.t('userpages.streams.inactivityDays')}</Dropdown.Item>
-                        <Dropdown.Item value="hours">{I18n.t('userpages.streams.inactivityHours')}</Dropdown.Item>
-                    </Dropdown>
-                </SplitControl>
-            </div>
+            <SplitControl className={styles.InactivityOptions}>
+                <TextInput
+                    label={I18n.t('userpages.streams.inactivityLabel')}
+                    type="number"
+                    value={value}
+                    min="0"
+                    onChange={onChange}
+                    onBlur={onCommit}
+                    disabled={disabled}
+                />
+                <Dropdown
+                    title=""
+                    selectedItem={units}
+                    onChange={onChangeUnits}
+                    disabled={disabled}
+                >
+                    <Dropdown.Item value="days">{I18n.t('userpages.streams.inactivityDays')}</Dropdown.Item>
+                    <Dropdown.Item value="hours">{I18n.t('userpages.streams.inactivityHours')}</Dropdown.Item>
+                </Dropdown>
+            </SplitControl>
         </div>
     )
 }
