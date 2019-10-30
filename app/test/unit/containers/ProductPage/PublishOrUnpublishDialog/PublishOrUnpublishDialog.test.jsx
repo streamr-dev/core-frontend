@@ -3,12 +3,12 @@ import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import assert from 'assert-diff'
 
-import { PublishOrUnpublishDialog, mapDispatchToProps } from '$mp/containers/ProductPage/PublishOrUnpublishDialog'
+import { PublishOrUnpublishDialog, mapDispatchToProps } from '$mp/containers/deprecated/ProductPage/PublishOrUnpublishDialog'
 import { productStates } from '$shared/utils/constants'
-import UnpublishDialog from '$mp/containers/ProductPage/PublishOrUnpublishDialog/UnpublishDialog'
-import PublishDialog from '$mp/containers/ProductPage/PublishOrUnpublishDialog/PublishDialog'
+import UnpublishDialog from '$mp/containers/deprecated/ProductPage/PublishOrUnpublishDialog/UnpublishDialog'
+import PublishDialog from '$mp/containers/deprecated/ProductPage/PublishOrUnpublishDialog/PublishDialog'
 
-import * as publishDialogActions from '$mp/modules/publishDialog/actions'
+import * as publishDialogActions from '$mp/modules/deprecated/publishDialog/actions'
 
 describe('PublishOrUnpublishDialog', () => {
     let wrapper

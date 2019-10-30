@@ -5,23 +5,23 @@ import assert from 'assert-diff'
 import { replace } from 'connected-react-router'
 import { I18n } from 'react-redux-i18n'
 
-import { mapStateToProps, mapDispatchToProps, PurchaseDialog } from '$mp/containers/ProductPage/PurchaseDialog'
-import ChooseAccessPeriodDialog from '$mp/containers/ProductPage/PurchaseDialog/ChooseAccessPeriodDialog'
+import { mapStateToProps, mapDispatchToProps, PurchaseDialog } from '$mp/containers/deprecated/ProductPage/PurchaseDialog'
+import ChooseAccessPeriodDialog from '$mp/containers/deprecated/ProductPage/PurchaseDialog/ChooseAccessPeriodDialog'
 import ErrorDialog from '$mp/components/Modal/ErrorDialog'
 import ReplaceAllowanceDialog from '$mp/components/Modal/ReplaceAllowanceDialog'
 import SetAllowanceDialog from '$mp/components/Modal/SetAllowanceDialog'
-import PurchaseSummaryDialog from '$mp/components/Modal/PurchaseSummaryDialog'
+import PurchaseSummaryDialog from '$mp/components/deprecated/PurchaseSummaryDialog'
 import CompletePurchaseDialog from '$mp/components/Modal/CompletePurchaseDialog'
 import NoBalanceDialog from '$mp/components/Modal/NoBalanceDialog'
 import { purchaseFlowSteps } from '$mp/utils/constants'
 import { transactionStates } from '$shared/utils/constants'
 import * as allowanceSelectors from '$mp/modules/allowance/selectors'
 import * as purchaseSelectors from '$mp/modules/purchase/selectors'
-import * as purchaseDialogSelectors from '$mp/modules/purchaseDialog/selectors'
+import * as purchaseDialogSelectors from '$mp/modules/deprecated/purchaseDialog/selectors'
 import * as web3Selectors from '$mp/modules/web3/selectors'
 import * as contractProductSelectors from '$mp/modules/contractProduct/selectors'
 import * as integrationKeySelectors from '$shared/modules/integrationKey/selectors'
-import * as purchaseDialogActions from '$mp/modules/purchaseDialog/actions'
+import * as purchaseDialogActions from '$mp/modules/deprecated/purchaseDialog/actions'
 import * as allowanceActions from '$mp/modules/allowance/actions'
 import * as integrationKeyActions from '$shared/modules/integrationKey/actions'
 import * as urlUtils from '$shared/utils/url'
@@ -411,26 +411,20 @@ describe('PurchaseDialog container', () => {
             assert.equal(dispatchStub.callCount, 4)
             assert(dispatchStub.calledWith('approvePurchase'))
 
-            mappedProps.onCancel()
-            assert(formatPathStub.calledOnce)
-            assert(formatPathStub.calledWith(links.marketplace.products, ownProps.productId))
-            assert.equal(dispatchStub.callCount, 5)
-            assert.deepStrictEqual(dispatchStub.getCall(dispatchStub.callCount - 1).args[0], replace('formatPath'))
-
             mappedProps.onSetAccessPeriod('123', 'years')
             assert(setAccessPeriodStub.calledOnce)
             assert(setAccessPeriodStub.calledWith('123', 'years'))
-            assert.equal(dispatchStub.callCount, 6)
+            assert.equal(dispatchStub.callCount, 5)
             assert(dispatchStub.calledWith('initPurchase'))
 
             mappedProps.onSetAllowance('test id')
             assert(setAllowanceStub.calledOnce)
-            assert.equal(dispatchStub.callCount, 7)
+            assert.equal(dispatchStub.callCount, 6)
             assert(dispatchStub.calledWith('setAllowance'))
 
             mappedProps.resetAllowanceState('test id')
             assert(resetAllowanceStateActionStub.calledOnce)
-            assert.equal(dispatchStub.callCount, 8)
+            assert.equal(dispatchStub.callCount, 7)
             assert(dispatchStub.calledWith('resetAllowanceState'))
         })
     })

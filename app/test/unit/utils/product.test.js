@@ -197,6 +197,7 @@ describe('product utils', () => {
                 id: '1',
                 name: 'My Product',
                 description: 'My nice product',
+                pricePerSecond: 0,
                 state: productStates.DEPLOYED,
             }
 
@@ -204,16 +205,17 @@ describe('product utils', () => {
                 id: '1',
                 name: 'My Product',
                 description: 'My nice product',
+                pricePerSecond: '0',
                 state: productStates.DEPLOYED,
             })
         })
 
-        it('returns the same object for unpublished paid product', () => {
+        it('maps price for unpublished paid product', () => {
             const product = {
                 id: '1',
                 name: 'My Product',
                 description: 'My nice product',
-                pricePerSecond: '123',
+                pricePerSecond: 1,
                 beneficiaryAddress: '0x12334',
                 isFree: false,
                 state: productStates.NOT_DEPLOYED,
@@ -223,7 +225,7 @@ describe('product utils', () => {
                 id: '1',
                 name: 'My Product',
                 description: 'My nice product',
-                pricePerSecond: '123',
+                pricePerSecond: '1000000000',
                 beneficiaryAddress: '0x12334',
                 isFree: false,
                 state: productStates.NOT_DEPLOYED,

@@ -1,4 +1,4 @@
-import * as constants from '$mp/modules/publishDialog/constants'
+import * as constants from '$mp/modules/deprecated/publishDialog/constants'
 
 describe('publishDialog - constants', () => {
     it('is namespaced correctly', () => {
