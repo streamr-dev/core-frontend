@@ -64,6 +64,7 @@ export default function CanvasModuleHelp({ module: m, help, minifiedContent, cla
     return (
         <section
             key={m.id}
+            id={m.name.toLowerCase()}
             className={cx(
                 styles.root,
                 className, {
