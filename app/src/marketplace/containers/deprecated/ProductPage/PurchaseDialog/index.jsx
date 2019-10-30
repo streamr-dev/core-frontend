@@ -19,7 +19,7 @@ import {
 import { selectPurchaseTransaction, selectPurchaseStarted } from '$mp/modules/purchase/selectors'
 import SetAllowanceDialog from '$mp/components/Modal/SetAllowanceDialog'
 import ReplaceAllowanceDialog from '$mp/components/Modal/ReplaceAllowanceDialog'
-import PurchaseSummaryDialog from '$mp/components/Modal/PurchaseSummaryDialog'
+import PurchaseSummaryDialog from '$mp/components/deprecated/PurchaseSummaryDialog'
 import CompletePurchaseDialog from '$mp/components/Modal/CompletePurchaseDialog'
 import ErrorDialog from '$mp/components/Modal/ErrorDialog'
 import NoBalanceDialog from '$mp/components/Modal/NoBalanceDialog'

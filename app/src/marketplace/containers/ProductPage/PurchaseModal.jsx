@@ -1,8 +1,8 @@
 // @flow
 
-import React, { useEffect, useCallback, useState, useMemo, useRef } from 'react'
+import React, { useEffect, useCallback, useState, useMemo } from 'react'
 import BN from 'bignumber.js'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { I18n } from 'react-redux-i18n'
 
 import type { ProductId } from '$mp/flowtype/product-types'
@@ -15,11 +15,29 @@ import { purchaseFlowSteps } from '$mp/utils/constants'
 import { areAddressesEqual } from '$mp/utils/smartContract'
 import { selectEthereumIdentities } from '$shared/modules/integrationKey/selectors'
 import { selectProduct } from '$mp/modules/product/selectors'
-import { selectContractProduct } from '$mp/modules/contractProduct/selectors'
+import { selectContractProduct, selectContractProductError } from '$mp/modules/contractProduct/selectors'
 import { selectDataPerUsd } from '$mp/modules/global/selectors'
-import { selectAllowanceOrPendingAllowance } from '$mp/modules/allowance/selectors'
+import { buyProduct } from '$mp/modules/purchase/actions'
+import { transactionStates } from '$shared/utils/constants'
+import {
+    getAllowance,
+    resetAllowanceState,
+    setAllowance as setAllowanceToContract,
+    resetAllowance as resetAllowanceToContract,
+} from '$mp/modules/allowance/actions'
+import {
+    selectAllowanceOrPendingAllowance,
+    selectSettingAllowance,
+    selectSetAllowanceTx,
+    selectSetAllowanceError,
+    selectResettingAllowance,
+    selectResetAllowanceTx,
+    selectResetAllowanceError,
+} from '$mp/modules/allowance/selectors'
+import { selectPurchaseTransaction, selectPurchaseStarted } from '$mp/modules/purchase/selectors'
 import type { TimeUnit, NumberString } from '$shared/flowtype/common-types'
 import { dataForTimeUnits } from '$mp/utils/price'
+import { toSeconds } from '$mp/utils/time'
 import { validateDataBalanceForPurchase } from '$mp/modules/deprecated/purchaseDialog/actions'
 import NoBalanceError from '$mp/errors/NoBalanceError'
 import SetAllowanceDialog from '$mp/components/Modal/SetAllowanceDialog'
@@ -29,6 +47,7 @@ import CompletePurchaseDialog from '$mp/components/Modal/CompletePurchaseDialog'
 import ErrorDialog from '$mp/components/Modal/ErrorDialog'
 import NoBalanceDialog from '$mp/components/Modal/NoBalanceDialog'
 import ChooseAccessPeriodDialog from '$mp/components/Modal/ChooseAccessPeriodDialog'
+import useIsMounted from '$shared/hooks/useIsMounted'
 
 import Web3ErrorDialog from '$shared/components/Web3ErrorDialog'
 
@@ -38,21 +57,25 @@ type Props = {
 }
 
 export const PurchaseDialog = ({ productId, api }: Props) => {
+    const dispatch = useDispatch()
     const { loadContractProduct } = useController()
     const { web3Error, checkingWeb3, account } = useWeb3Status()
     const { isPending } = usePending('contractProduct.LOAD')
     const [step, setStep] = useState(null)
     const [purchaseError, setPurchaseError] = useState(null)
     const [purchaseSucceeded, setPurchaseSucceeded] = useState(false)
-    const [accessPeriod, setAccessPeriod] = useState({})
+    const [time, setTime] = useState('1')
+    const [timeUnit, setTimeUnit] = useState('hour')
+    const [purchasePrice, setPurchasePrice] = useState(undefined)
     const ethereumIdentities = useSelector(selectEthereumIdentities)
     const dataPerUsd = useSelector(selectDataPerUsd)
     const allowance = BN(useSelector(selectAllowanceOrPendingAllowance))
     const product = useSelector(selectProduct)
+    const isMounted = useIsMounted()
     const contractProduct = useSelector(selectContractProduct)
-    const contractProductRef = useRef(undefined)
-    contractProductRef.current = contractProduct
+    const contractProductError = useSelector(selectContractProductError)
 
+    // Check if current metamask account is linked to Streamr account
     const accountLinked = useMemo(() => (
         !!(ethereumIdentities &&
         account &&
@@ -61,34 +84,91 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
         )
     ), [ethereumIdentities, account])
 
+    // Start loading the contract product & clear allowance state
     useEffect(() => {
+        dispatch(resetAllowanceState())
+        dispatch(getAllowance())
+
         loadContractProduct(productId)
             .then(() => {
-                setStep(purchaseFlowSteps.ACCESS_PERIOD)
+                if (isMounted()) {
+                    setStep(purchaseFlowSteps.ACCESS_PERIOD)
+                }
             })
-    }, [loadContractProduct, productId])
+    }, [dispatch, loadContractProduct, productId, isMounted])
+
+    // Monitor reset allowance state, set error or proceed after receiving the hash
+    const resetAllowanceTx = useSelector(selectResetAllowanceTx)
+    const resettingAllowance = useSelector(selectResettingAllowance)
+    const hasResetAllowanceTx = !!resetAllowanceTx
+
+    useEffect(() => {
+        if (step === purchaseFlowSteps.RESET_ALLOWANCE && hasResetAllowanceTx) {
+            setStep(purchaseFlowSteps.ALLOWANCE)
+        }
+    }, [step, hasResetAllowanceTx])
+
+    // Monitor set allowance state, set error or proceed after receiving the hash
+    const setAllowanceTx = useSelector(selectSetAllowanceTx)
+    const settingAllowance = useSelector(selectSettingAllowance)
+    const hasSetAllowanceTx = !!setAllowanceTx
+
+    useEffect(() => {
+        if (step === purchaseFlowSteps.ALLOWANCE && hasSetAllowanceTx) {
+            setStep(purchaseFlowSteps.SUMMARY)
+        }
+    }, [step, hasSetAllowanceTx])
+
+    // Monitor purchase transaction
+    const purchaseTransaction = useSelector(selectPurchaseTransaction)
+    const hasPurchaseTransaction = !!purchaseTransaction
+    const purchaseStarted = useSelector(selectPurchaseStarted)
+    const purchaseState = purchaseTransaction && purchaseTransaction.state
+
+    useEffect(() => {
+        if (step === purchaseFlowSteps.SUMMARY && hasPurchaseTransaction) {
+            setStep(purchaseFlowSteps.COMPLETE)
+        }
+    }, [step, hasPurchaseTransaction])
+
+    useEffect(() => {
+        setPurchaseSucceeded(!!(step === purchaseFlowSteps.COMPLETE && purchaseState === transactionStates.CONFIRMED))
+    }, [step, purchaseState])
+
+    // Monitor allowance & reset allowance state error
+    const setAllowanceError = useSelector(selectSetAllowanceError)
+    const resetAllowanceError = useSelector(selectResetAllowanceError)
+
+    useEffect(() => {
+        if (!step || step === purchaseFlowSteps.ACCESS_PERIOD) {
+            return
+        }
+        if (setAllowanceError) {
+            setPurchaseError(setAllowanceError)
+        } else if (resetAllowanceError) {
+            setPurchaseError(setAllowanceError)
+        } else {
+            setPurchaseError(null)
+        }
+    }, [step, setAllowanceError, resetAllowanceError])
 
     const onClose = useCallback(() => {
         api.close(purchaseSucceeded)
     }, [api, purchaseSucceeded])
 
-    const onSetAccessPeriod = useCallback(async (time: NumberString | BN, timeUnit: TimeUnit) => {
-        if (!contractProductRef.current) {
-            throw new Error(I18n.t('error.noProduct'))
-        }
+    const { pricePerSecond, priceCurrency } = contractProduct || {}
 
-        setAccessPeriod({
-            time: time.toString(),
-            timeUnit,
-        })
+    const onSetAccessPeriod = useCallback(async (selectedTime: NumberString | BN, selectedTimeUnit: TimeUnit) => {
+        const price = dataForTimeUnits(pricePerSecond, dataPerUsd, priceCurrency, selectedTime, selectedTimeUnit)
 
-        // Check if allowance is needed
-        const { pricePerSecond, priceCurrency } = contractProductRef.current || {}
-
-        const price = dataForTimeUnits(pricePerSecond, dataPerUsd, priceCurrency, time, timeUnit)
+        setTime(selectedTime.toString())
+        setTimeUnit(selectedTimeUnit)
+        setPurchasePrice(price)
 
         try {
             await validateDataBalanceForPurchase(price)
+
+            if (!isMounted()) { return }
 
             if (allowance.isLessThan(price)) {
                 if (allowance.isGreaterThan(0)) {
@@ -102,16 +182,45 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
         } catch (e) {
             setPurchaseError(e)
         }
-    }, [contractProductRef, allowance, dataPerUsd])
+    }, [pricePerSecond, priceCurrency, allowance, dataPerUsd, isMounted])
 
-    const onSetAllowance = () => {}
-    const gettingAllowance = false
-    const resettingAllowance = false
-    const settingAllowance = false
-    const purchaseStarted = false
-    const purchase = () => {}
-    const onApprovePurchase = () => {}
-    const purchaseTransaction = {}
+    const onSetAllowance = useCallback(async () => {
+        if (!purchasePrice) {
+            throw new Error(I18n.t('error.noProductOrAccess'))
+        }
+
+        try {
+            await validateDataBalanceForPurchase(purchasePrice)
+
+            if (!isMounted()) { return }
+
+            if (BN(allowance).isGreaterThan(0)) {
+                await dispatch(resetAllowanceToContract())
+            } else {
+                await dispatch(setAllowanceToContract(purchasePrice.toString()))
+            }
+        } catch (e) {
+            setPurchaseError(e)
+        }
+    }, [dispatch, purchasePrice, allowance, isMounted])
+
+    const onApprovePurchase = useCallback(async () => {
+        if (!time || !timeUnit || !purchasePrice) {
+            throw new Error(I18n.t('error.noProductOrAccess'))
+        }
+
+        const subscriptionTimeInSeconds = toSeconds(time, timeUnit)
+
+        try {
+            await validateDataBalanceForPurchase(purchasePrice)
+
+            if (!isMounted()) { return }
+
+            await dispatch(buyProduct(productId || '', subscriptionTimeInSeconds))
+        } catch (e) {
+            setPurchaseError(e)
+        }
+    }, [productId, dispatch, time, timeUnit, purchasePrice, isMounted])
 
     if (isPending || checkingWeb3 || web3Error) {
         return (
@@ -123,7 +232,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
         )
     }
 
-    if (purchaseError) {
+    if (purchaseError || contractProductError) {
         if (purchaseError instanceof NoBalanceError) {
             return (
                 <NoBalanceDialog
@@ -139,7 +248,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
         return (
             <ErrorDialog
                 title={I18n.t('purchaseDialog.errorTitle')}
-                message={purchaseError.message}
+                message={(purchaseError || contractProductError).message}
                 onClose={onClose}
             />
         )
@@ -149,7 +258,8 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
         return (
             <ChooseAccessPeriodDialog
                 dataPerUsd={dataPerUsd}
-                contractProduct={contractProduct}
+                pricePerSecond={pricePerSecond}
+                priceCurrency={priceCurrency}
                 onCancel={onClose}
                 onNext={onSetAccessPeriod}
             />
@@ -161,7 +271,6 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
             <ReplaceAllowanceDialog
                 onCancel={onClose}
                 onSet={onSetAllowance}
-                gettingAllowance={gettingAllowance}
                 settingAllowance={resettingAllowance}
             />
         )
@@ -172,7 +281,6 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
             <SetAllowanceDialog
                 onCancel={onClose}
                 onSet={onSetAllowance}
-                gettingAllowance={gettingAllowance}
                 settingAllowance={settingAllowance}
             />
         )
@@ -182,9 +290,11 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
         return (
             <PurchaseSummaryDialog
                 purchaseStarted={purchaseStarted}
-                product={product}
-                contractProduct={contractProduct}
-                purchase={purchase}
+                name={product.name}
+                time={time}
+                timeUnit={timeUnit}
+                price={purchasePrice}
+                priceCurrency={priceCurrency}
                 onCancel={onClose}
                 onPay={onApprovePurchase}
             />
@@ -195,7 +305,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
         return (
             <CompletePurchaseDialog
                 onCancel={onClose}
-                purchaseState={purchaseTransaction && purchaseTransaction.state}
+                purchaseState={purchaseState}
                 accountLinked={accountLinked}
             />
         )

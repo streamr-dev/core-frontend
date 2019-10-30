@@ -12,7 +12,7 @@ export type Props = {
     gettingAllowance: boolean,
     settingAllowance: boolean,
     onCancel: () => void,
-    onSet: () => void,
+    onSet: () => void | Promise<void>,
 }
 
 const HelpText = () => (
