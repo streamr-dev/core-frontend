@@ -66,26 +66,28 @@ const getBalances = (): Promise<[BN, BN]> => {
         })
 }
 
+export const validateDataBalanceForPurchase = async (price: BN) => {
+    const [ethBalance, dataBalance] = await getBalances()
+
+    const requiredEth = fromAtto(gasLimits.BUY_PRODUCT)
+
+    if (ethBalance.isLessThan(requiredEth) || dataBalance.isLessThan(price)) {
+        throw new NoBalanceError(
+            I18n.t('error.noBalance'),
+            requiredEth,
+            ethBalance,
+            price,
+            dataBalance,
+        )
+    }
+}
+
 const checkBalanceForPurchase = (product: SmartContractProduct, subscriptionInSeconds: BN) =>
     (dispatch: Function, getState: () => StoreState): Promise<void> => {
         const dataPerUsd = selectDataPerUsd(getState())
         const price = dataForTimeUnits(product.pricePerSecond, dataPerUsd, product.priceCurrency, subscriptionInSeconds, timeUnits.second)
 
-        return getBalances().then((balances) => {
-            const ethBalance = balances[0]
-            const dataBalance = balances[1]
-            const requiredEth = fromAtto(gasLimits.BUY_PRODUCT)
-
-            if (ethBalance.isLessThan(requiredEth) || dataBalance.isLessThan(price)) {
-                throw new NoBalanceError(
-                    I18n.t('error.noBalance'),
-                    requiredEth,
-                    ethBalance,
-                    price,
-                    dataBalance,
-                )
-            }
-        })
+        return validateDataBalanceForPurchase(price)
     }
 
 const handleBalanceError = (error: Error, dispatch: Function) => {

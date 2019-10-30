@@ -18,7 +18,7 @@ type Props = {
     product: Product,
     isValidSubscription: boolean,
     productSubscription?: Subscription,
-    onPurchase: () => void,
+    onPurchase: () => void | Promise<void>,
 }
 
 const buttonTitle = (product: Product, isValidSubscription: boolean) => {

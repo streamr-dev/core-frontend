@@ -66,6 +66,7 @@ export type DispatchProps = {
     getRelatedProducts: (ProductId) => any,
     deniedRedirect: (ProductId) => void,
     noHistoryRedirect: (...any) => void,
+    onCancelPurchase: (ProductId) => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
@@ -136,7 +137,7 @@ export class ProductPage extends Component<Props> {
     productDetails = () => null
 
     overlay() {
-        const { overlayPurchaseDialog, product, overlayPublishDialog } = this.props
+        const { overlayPurchaseDialog, product, overlayPublishDialog, onCancelPurchase } = this.props
 
         if (product) {
             if (overlayPurchaseDialog) {
@@ -145,6 +146,7 @@ export class ProductPage extends Component<Props> {
                         <PurchaseDialog
                             productId={product.id || ''}
                             requireInContract
+                            onCancel={() => onCancelPurchase(product.id || '')}
                         />
                     )
                 }
@@ -258,6 +260,7 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     },
     getRelatedProducts: (id: ProductId) => dispatch(getRelatedProducts(id)),
     noHistoryRedirect: (...params) => dispatch(replace(formatPath(...params))),
+    onCancelPurchase: (id: ProductId) => dispatch(replace(formatPath(links.marketplace.products, id))),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProductPage)

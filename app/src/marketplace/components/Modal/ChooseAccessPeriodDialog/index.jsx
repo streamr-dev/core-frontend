@@ -18,7 +18,7 @@ import style from './chooseAccessPeriod.pcss'
 export type Props = {
     dataPerUsd: ?NumberString,
     contractProduct: SmartContractProduct,
-    onNext: (time: NumberString, timeUnit: TimeUnit) => void,
+    onNext: (time: NumberString, timeUnit: TimeUnit) => void | Promise<void>,
     onCancel: () => void,
 }
 

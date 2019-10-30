@@ -41,7 +41,7 @@ export type Props = {
     isProductSubscriptionValid?: boolean,
     productSubscription?: Subscription,
     authApiKeyId?: ?ResourceKeyId,
-    onPurchase?: () => void,
+    onPurchase?: () => void | Promise<void>,
     adminFee?: ?number,
     joinPartStreamId?: ?string,
     subscriberCount?: ?number,

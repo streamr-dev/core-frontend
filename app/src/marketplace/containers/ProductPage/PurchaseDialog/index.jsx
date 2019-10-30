@@ -2,7 +2,6 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { replace } from 'connected-react-router'
 import { I18n } from 'react-redux-i18n'
 
 import Modal from '$shared/components/Modal'
@@ -24,8 +23,6 @@ import PurchaseSummaryDialog from '$mp/components/Modal/PurchaseSummaryDialog'
 import CompletePurchaseDialog from '$mp/components/Modal/CompletePurchaseDialog'
 import ErrorDialog from '$mp/components/Modal/ErrorDialog'
 import NoBalanceDialog from '$mp/components/Modal/NoBalanceDialog'
-import { formatPath } from '$shared/utils/url'
-import links from '$mp/../links'
 import { selectAccountId } from '$mp/modules/web3/selectors'
 import { selectEthereumIdentities } from '$shared/modules/integrationKey/selectors'
 import type { PurchaseStep } from '$mp/flowtype/store-state'
@@ -61,7 +58,6 @@ type StateProps = {
 type DispatchProps = {
     getAllowance: () => void,
     initPurchase: (ProductId) => void,
-    onCancel: () => void,
     onSetAccessPeriod: (time: NumberString, timeUnit: TimeUnit) => void,
     onSetAllowance: () => void,
     onApprovePurchase: () => void,
@@ -71,6 +67,7 @@ type DispatchProps = {
 
 export type OwnProps = {
     productId: ProductId,
+    onCancel: () => void,
 }
 
 type Props = WithContractProductProps & StateProps & DispatchProps & OwnProps
@@ -237,12 +234,11 @@ export const mapStateToProps = (state: StoreState): StateProps => ({
     ethereumIdentities: selectEthereumIdentities(state),
 })
 
-export const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
+export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getAllowance: () => dispatch(getAllowance()),
     getIntegrationKeys: () => dispatch(fetchIntegrationKeys()),
     initPurchase: (id: ProductId) => dispatch(initPurchase(id)),
     onApprovePurchase: () => dispatch(approvePurchase()),
-    onCancel: () => dispatch(replace(formatPath(links.marketplace.products, ownProps.productId))),
     onSetAccessPeriod: (time: NumberString, timeUnit: TimeUnit) => dispatch(setAccessPeriod(time, timeUnit)),
     onSetAllowance: () => dispatch(setAllowance()),
     resetAllowanceState: () => dispatch(resetAllowanceStateAction()),

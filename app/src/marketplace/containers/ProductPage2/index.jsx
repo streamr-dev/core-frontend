@@ -2,26 +2,32 @@
 
 import React, { useEffect, useCallback, useContext, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { push, replace } from 'connected-react-router'
+import { replace } from 'connected-react-router'
 import { I18n } from 'react-redux-i18n'
 import { Helmet } from 'react-helmet'
+import { withRouter } from 'react-router-dom'
 
 import Layout from '$shared/components/Layout'
 import { formatPath } from '$shared/utils/url'
 import type { ProductId } from '$mp/flowtype/product-types'
 import { productStates } from '$shared/utils/constants'
 import * as RouterContext from '$shared/components/RouterContextProvider'
+import ProductController from '../ProductController'
 
-import PurchaseDialog from '$mp/containers/ProductPage/PurchaseDialog'
-import PublishOrUnpublishDialog from '$mp/containers/ProductPage/PublishOrUnpublishDialog'
-import { getProductById, getProductSubscription, purchaseProduct, getUserProductPermissions } from '$mp/modules/product/actions'
+import { getProductSubscription, getUserProductPermissions } from '$mp/modules/product/actions'
 import BackButton from '$shared/components/BackButton'
 import { getAdminFee, getJoinPartStreamId } from '$mp/modules/communityProduct/services'
 import { getSubscriberCount, getMostRecentPurchase } from '$mp/modules/contractProduct/services'
+import LoadingIndicator from '$userpages/components/LoadingIndicator'
+import { Provider as ModalProvider } from '$shared/components/ModalContextProvider'
+import useModal from '$shared/hooks/useModal'
 
 import { getRelatedProducts } from '../../modules/relatedProducts/actions'
-import { isPaidProduct, isCommunityProduct } from '../../utils/product'
+import { isCommunityProduct } from '../../utils/product'
+import PurchaseModal from './PurchaseModal'
+
 import Page from './Page'
+import styles from './page.pcss'
 
 import {
     selectFetchingProduct,
@@ -38,12 +44,7 @@ import links from '$mp/../links'
 import routes from '$routes'
 import { selectRelatedProductList } from '$mp/modules/relatedProducts/selectors'
 
-export type Props = {
-    overlayPurchaseDialog?: boolean,
-    overlayPublishDialog?: boolean,
-}
-
-const ProductPage = ({ overlayPurchaseDialog, overlayPublishDialog }: Props) => {
+const ProductPage = () => {
     const dispatch = useDispatch()
     const product = useSelector(selectProduct)
     const streams = useSelector(selectStreams)
@@ -78,7 +79,6 @@ const ProductPage = ({ overlayPurchaseDialog, overlayPublishDialog }: Props) => 
     }
 
     const loadProduct = useCallback(async (id: ProductId) => {
-        dispatch(getProductById(id))
         dispatch(getUserProductPermissions(id))
         dispatch(getRelatedProducts(id))
         if (isLoggedIn) {
@@ -98,9 +98,13 @@ const ProductPage = ({ overlayPurchaseDialog, overlayPublishDialog }: Props) => 
         setRecentPurchaseTimestamp(await getMostRecentPurchase(p.id))
     }, [])
 
-    const onPurchase = useCallback((id: ProductId) => {
+    const { api: purchaseDialog } = useModal('purchase')
+
+    const onPurchase = useCallback(async (id: ProductId) => {
         if (isLoggedIn) {
-            dispatch(purchaseProduct())
+            await purchaseDialog.open({
+                productId: id,
+            })
         } else {
             dispatch(replace(routes.login({
                 redirect: routes.product({
@@ -108,61 +112,16 @@ const ProductPage = ({ overlayPurchaseDialog, overlayPublishDialog }: Props) => 
                 }),
             })))
         }
-    }, [dispatch, isLoggedIn])
-
-    const deniedRedirect = useCallback((id: ProductId) => {
-        dispatch(push(formatPath(links.marketplace.products, id)))
-    }, [dispatch])
-
-    const getPurchaseAllowed = useCallback(() => (
-        (isPaidProduct(product) || !isProductSubscriptionValid) &&
-        product.state === productStates.DEPLOYED &&
-        isLoggedIn
-    ), [isLoggedIn, isProductSubscriptionValid, product])
-
-    const isPurchaseAllowed = useCallback(() => (
-        !!product && getPurchaseAllowed()
-    ), [product, getPurchaseAllowed])
+    }, [dispatch, isLoggedIn, purchaseDialog])
 
     useEffect(() => {
         loadProduct(match.params.id)
     }, [loadProduct, match.params.id])
 
     useEffect(() => {
-        if (product && overlayPurchaseDialog && !isPurchaseAllowed()) {
-            deniedRedirect(product.id || '0')
-        }
-    }, [product, overlayPurchaseDialog, isPurchaseAllowed, deniedRedirect])
-
-    useEffect(() => {
         loadBlockchainData(product)
         loadCPData(product)
     }, [product, loadCPData, loadBlockchainData])
-
-    const overlay = () => {
-        if (product) {
-            if (overlayPurchaseDialog) {
-                if (isPurchaseAllowed()) {
-                    return (
-                        <PurchaseDialog
-                            productId={product.id || ''}
-                            requireInContract
-                        />
-                    )
-                }
-            } else if (overlayPublishDialog) {
-                return (
-                    <PublishOrUnpublishDialog
-                        productId={product.id || ''}
-                        requireOwnerIfDeployed
-                        requireWeb3={isPaidProduct(product)}
-                    />
-                )
-            }
-        }
-
-        return null
-    }
 
     if (!product) {
         return null
@@ -191,13 +150,41 @@ const ProductPage = ({ overlayPurchaseDialog, overlayPublishDialog }: Props) => 
                 subscriberCount={subscriberCount}
                 mostRecentPurchaseTimestamp={recentPurchaseTimestamp}
             />
-            {overlay()}
+            <PurchaseModal />
         </Layout>
     )
 }
 
+const LoadingView = () => (
+    <Layout>
+        <LoadingIndicator loading className={styles.loadingIndicator} />
+    </Layout>
+)
+
+const EditWrap = () => {
+    const product = useSelector(selectProduct)
+
+    if (!product) {
+        return <LoadingView />
+    }
+
+    const key = (!!product && product.id) || ''
+
+    return (
+        <ModalProvider key={key}>
+            <ProductPage
+                product={product}
+            />
+        </ModalProvider>
+    )
+}
+
+const ProductContainer = withRouter((props) => (
+    <ProductController key={props.match.params.id}>
+        <EditWrap />
+    </ProductController>
+))
+
 export default () => (
-    <RouterContext.Provider>
-        <ProductPage />
-    </RouterContext.Provider>
+    <ProductContainer />
 )
