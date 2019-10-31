@@ -35,6 +35,7 @@ export type Stream = NewStream & {
     },
     ownPermissions: Array<$ElementType<Permission, 'operation'>>,
     lastUpdated: number,
+    inactivityThresholdHours: number,
     partitions: number,
     autoConfigure: boolean,
     requireSignedData: boolean,

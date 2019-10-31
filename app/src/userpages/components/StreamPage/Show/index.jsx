@@ -7,6 +7,7 @@ import { push } from 'connected-react-router'
 import { withRouter } from 'react-router-dom'
 import MediaQuery from 'react-responsive'
 import useIsMounted from '$shared/hooks/useIsMounted'
+import StatusIcon from '$shared/components/StatusIcon'
 import ConfigureAnchorOffset from '$shared/components/ConfigureAnchorOffset'
 import type { Stream, StreamId } from '$shared/flowtype/stream-types'
 import type { Operation } from '$userpages/flowtype/permission-types'
@@ -16,6 +17,7 @@ import type { ResourceKeyId } from '$shared/flowtype/resource-key-types'
 import {
     getMyStreamPermissions,
     getStream,
+    getStreamStatus,
     openStream,
     closeStream,
     updateStream,
@@ -42,6 +44,7 @@ import ConfigureView from './ConfigureView'
 import PreviewView from './PreviewView'
 import HistoryView from './HistoryView'
 import SecurityView from './SecurityView'
+import StatusView from './StatusView'
 
 import styles from './streamShowView.pcss'
 
@@ -72,6 +75,7 @@ type DispatchProps = {
     initNewStream: () => void,
     getKeys: () => void,
     redirectToUserPages: () => void,
+    refreshStreamStatus: (id: StreamId) => void,
 }
 
 type RouterProps = {
@@ -216,6 +220,18 @@ export class StreamShowView extends Component<Props, State> {
                             <ConfigureView disabled={disabled} />
                         </TOCPage.Section>
                         <TOCPage.Section
+                            id="status"
+                            linkTitle="Stream Status"
+                            title={(
+                                <div className={styles.statusTitle}>
+                                    Status <StatusIcon status={editedStream ? editedStream.streamStatus : undefined} />
+                                </div>
+                            )}
+                            customStyled
+                        >
+                            <StatusView disabled={disabled} />
+                        </TOCPage.Section>
+                        <TOCPage.Section
                             id="preview"
                             title="Preview"
                         >
@@ -261,8 +277,10 @@ function StreamLoader(props: Props) {
         if (!isMounted()) { return }
         currentProps = propsRef.current
         return Promise.all([
-            currentProps.getStream(id).then(() => {
+            currentProps.getStream(id).then(async () => {
                 if (!isMounted()) { return }
+                // get stream status before copying state to edit stream object
+                await currentProps.refreshStreamStatus(id)
                 currentProps.openStream(id)
                 currentProps.initEditStream()
             }),
@@ -337,6 +355,7 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     cancel: () => {
         dispatch(push(routes.userPageStreamListing()))
     },
+    refreshStreamStatus: (id: StreamId) => dispatch(getStreamStatus(id)),
     updateStream: (stream: Stream) => dispatch(updateStream(stream)),
     initEditStream: () => dispatch(initEditStream()),
     initNewStream: () => dispatch(initNewStream()),
