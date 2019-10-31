@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet'
 
 import * as RouterContext from '$shared/components/RouterContextProvider'
 import { usePending } from '$shared/hooks/usePending'
+import { handleLoadError, canHandleLoadError } from '$auth/utils/loginInterceptor'
 
 import * as CanvasState from '../../state'
 import useCanvas from './useCanvas'
@@ -80,6 +81,10 @@ function useError() {
         setError(undefined)
     }, [match.path])
     if (error) {
+        if (canHandleLoadError(error)) {
+            handleLoadError(error)
+            return
+        }
         // propagate error to error boundary
         throw error
     }
