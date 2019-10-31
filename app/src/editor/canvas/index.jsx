@@ -554,7 +554,10 @@ const CanvasErrorPage = () => (
     <ErrorPageContent>
         <Link
             to=""
-            onClick={window.location.reload}
+            onClick={(event) => {
+                event.preventDefault()
+                window.location.reload()
+            }}
             className="btn btn-special"
         >
             <Translate value="editor.error.refresh" />
