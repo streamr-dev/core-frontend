@@ -1,17 +1,19 @@
 import React, { PureComponent, useContext } from 'react'
-import { withRouter } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
 import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
 import { selectAuthState } from '$shared/modules/user/selectors'
 import SessionContext from '$auth/contexts/Session'
 import cx from 'classnames'
 
 import Layout from '$shared/components/Layout'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
-import ErrorComponentView from '$shared/components/ErrorComponentView'
+import { ErrorPageContent } from '$mp/components/ErrorPageView'
 import copyToClipboard from 'copy-to-clipboard'
 
 import links from '../../links'
+import routes from '$routes'
 
 import isEditableElement from '$editor/shared/utils/isEditableElement'
 import UndoControls from '$editor/shared/components/UndoControls'
@@ -548,7 +550,25 @@ const CanvasEditWrap = () => {
     )
 }
 
-const CanvasContainer = withRouter(withErrorBoundary(ErrorComponentView)((props) => (
+const CanvasErrorPage = () => (
+    <ErrorPageContent>
+        <Link
+            to=""
+            onClick={window.location.reload}
+            className="btn btn-special"
+        >
+            <Translate value="editor.error.refresh" />
+        </Link>
+        <Link
+            to={routes.canvases()}
+            className="btn btn-special d-none d-md-inline-block"
+        >
+            <Translate value="editor.general.backToCanvases" />
+        </Link>
+    </ErrorPageContent>
+)
+
+const CanvasContainer = withRouter(withErrorBoundary(CanvasErrorPage)((props) => (
     <UndoContext.Provider key={props.match.params.id} enableBreadcrumbs>
         <PendingProvider name="canvas">
             <PendingLoadingIndicator />
@@ -569,7 +589,7 @@ export default connect(selectAuthState)(({ embed, isAuthenticated }) => {
     // don't drop into embed mode unless no token
     embed = embed || (!isAuthenticated && !token)
     return (
-        <Layout className={styles.layout} footer={false} nav={!embed}>
+        <Layout className={styles.layout} footer={false} nav={!embed} navshadow>
             <BodyClass className="editor" />
             <CanvasContainer embed={embed} />
         </Layout>
