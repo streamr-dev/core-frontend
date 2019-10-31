@@ -92,7 +92,7 @@ export async function handleLoadError(err) {
         await notFoundRedirect()
     }
 
-    if (err.response.status === 403) {
+    if (err.response.status === 403 || err.response.status === 401) {
         // if already logged in and no access, do not redirect to login
         if (isLoggedInError(err)) {
             await notFoundRedirect() // redirect to not found
