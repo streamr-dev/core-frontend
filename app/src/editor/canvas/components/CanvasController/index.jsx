@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo } from 'react'
+import React, { useContext, useEffect, useMemo, useState } from 'react'
 import { Helmet } from 'react-helmet'
 
 import * as RouterContext from '$shared/components/RouterContextProvider'
@@ -16,36 +16,43 @@ import { Provider as PermissionsProvider } from './useCanvasPermissions'
 
 const CanvasControllerContext = React.createContext()
 
+export function useController() {
+    return useContext(CanvasControllerContext)
+}
+
 function useCanvasLoadEffect() {
     const canvas = useCanvas()
     const load = useCanvasLoadCallback()
+    const { error, setError } = useController()
     const { match } = useContext(RouterContext.Context)
     const { isPending } = usePending('canvas.LOAD')
 
     const { id: urlId } = match.params
     const currentCanvasRootId = canvas && CanvasState.getRootCanvasId(canvas)
     const canvasId = currentCanvasRootId || urlId
+    const shouldLoad = !error && urlId && canvasId && currentCanvasRootId !== canvasId && !isPending
 
     useEffect(() => {
-        if (!urlId) { return } // do nothing if no url id
-        if (canvasId && currentCanvasRootId !== canvasId && !isPending) {
-            // load canvas if needed and not already loading
-            load(canvasId)
+        // load canvas if needed and not already loading
+        if (shouldLoad) {
+            load(canvasId).catch(setError)
         }
-    }, [urlId, canvasId, currentCanvasRootId, load, canvas, isPending])
+    }, [shouldLoad, canvasId, load, setError])
 }
 
 function useCanvasCreateEffect() {
     const { match } = useContext(RouterContext.Context)
     const { isPending } = usePending('canvas.CREATE')
 
+    const { error, setError } = useController()
     const create = useCanvasCreateCallback()
     const { id } = match.params
-
+    const shouldCreate = !error && !id && !isPending
     useEffect(() => {
-        if (id || isPending) { return }
-        create({ replace: true })
-    }, [id, create, isPending])
+        if (shouldCreate) {
+            create({ replace: true }).catch(setError)
+        }
+    }, [shouldCreate, create, setError])
 }
 
 function CanvasEffects() {
@@ -65,8 +72,18 @@ function CanvasEffects() {
     )
 }
 
-export function useController() {
-    return useContext(CanvasControllerContext)
+function useError() {
+    const [error, setError] = useState()
+    const { match } = useContext(RouterContext.Context)
+    useEffect(() => {
+        // remove error on route change
+        setError(undefined)
+    }, [match.path])
+    if (error) {
+        // propagate error to error boundary
+        throw error
+    }
+    return [error, setError]
 }
 
 function useCanvasController() {
@@ -75,13 +92,16 @@ function useCanvasController() {
     const remove = useCanvasRemoveCallback()
     const duplicate = useCanvasDuplicateCallback()
     const loadModule = useModuleLoadCallback()
+    const [error, setError] = useError()
     return useMemo(() => ({
+        error,
+        setError,
         load,
         create,
         remove,
         duplicate,
         loadModule,
-    }), [load, create, remove, duplicate, loadModule])
+    }), [load, create, remove, duplicate, loadModule, error, setError])
 }
 
 function ControllerProvider({ children }) {
