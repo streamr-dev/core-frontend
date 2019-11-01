@@ -20,5 +20,5 @@ spawn npx --quiet -- wscat -c http://localhost/api/v1/ws --slash
 match_max 100000
 expect -exact "\[2K\[3D\[32mConnected (press CTRL+C to quit)\[39m\r
 \[1G\[0J> \[3G"
-send -- "/close\r" # immediately closes connection once connected
+send -- "/close\r"  ;# immediately closes connection once connected
 expect eof
