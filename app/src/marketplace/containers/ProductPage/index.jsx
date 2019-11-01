@@ -12,7 +12,7 @@ import * as RouterContext from '$shared/components/RouterContextProvider'
 import ProductController, { useController } from '../ProductController'
 import usePending from '$shared/hooks/usePending'
 
-import { getProductSubscription, getUserProductPermissions } from '$mp/modules/product/actions'
+import { getProductSubscription } from '$mp/modules/product/actions'
 import BackButton from '$shared/components/BackButton'
 import LoadingIndicator from '$userpages/components/LoadingIndicator'
 import { Provider as ModalProvider } from '$shared/components/ModalContextProvider'
@@ -50,7 +50,6 @@ const ProductPage = () => {
     }
 
     const loadProduct = useCallback(async (id: ProductId) => {
-        dispatch(getUserProductPermissions(id))
         dispatch(getRelatedProducts(id))
         loadContractProductSubscription(id)
         loadCategories()
