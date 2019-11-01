@@ -33,6 +33,9 @@ import { selectUserData } from '$shared/modules/user/selectors'
 import NoCanvasesView from './NoCanvases'
 import { RunStates } from '$editor/canvas/state'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
+import { getResourcePermissions } from '$userpages/modules/permission/actions'
+import { selectFetchingPermissions, selectCanvasPermissions } from '$userpages/modules/permission/selectors'
+import type { Permission, ResourceId } from '$userpages/flowtype/permission-types'
 import CanvasPreview from '$editor/canvas/components/Preview'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
@@ -46,6 +49,10 @@ export type StateProps = {
     canvases: Array<Canvas>,
     filter: ?Filter,
     fetching: boolean,
+    fetchingPermissions: boolean,
+    permissions: {
+        [ResourceId]: Array<Permission>,
+    },
 }
 
 export type DispatchProps = {
@@ -54,6 +61,7 @@ export type DispatchProps = {
     updateFilter: (filter: Filter) => void,
     navigate: (to: string) => void,
     copyToClipboard: (text: string) => void,
+    getCanvasPermissions: (id: string) => Promise<void>,
 }
 
 type Props = StateProps & DispatchProps
@@ -153,6 +161,7 @@ class CanvasList extends Component<Props, State> {
                     <Translate value="userpages.canvases.menu.edit" />
                 </DropdownActions.Item>
                 <DropdownActions.Item
+                    disabled={!this.hasPermission(canvas.id, 'share')}
                     onClick={() => this.onOpenShareDialog(canvas)}
                 >
                     <Translate value="userpages.canvases.menu.share" />
@@ -203,6 +212,29 @@ class CanvasList extends Component<Props, State> {
     }
 
     generateTimeAgoDescription = (canvasUpdatedDate: Date) => moment(canvasUpdatedDate).fromNow()
+
+    onToggleStreamDropdown = (id: string) => async (open: boolean) => {
+        const { getCanvasPermissions, fetchingPermissions, permissions } = this.props
+
+        if (open && !fetchingPermissions && !permissions[id]) {
+            try {
+                await getCanvasPermissions(id)
+            } catch (e) {
+                // Noop.
+            }
+        }
+    }
+
+    hasPermission = (id: string, operation: string): boolean => {
+        const { fetchingPermissions, permissions, user } = this.props
+
+        return (
+            !fetchingPermissions &&
+            !!user &&
+            permissions[id] &&
+            permissions[id].find((p: Permission) => p.user === user.username && p.operation === operation) !== undefined
+        )
+    }
 
     render() {
         const { canvases, filter, fetching } = this.props
@@ -259,6 +291,7 @@ class CanvasList extends Component<Props, State> {
                             >
                                 <Tile
                                     dropdownActions={this.getActions(canvas)}
+                                    onMenuToggle={this.onToggleStreamDropdown(canvas.id)}
                                     image={<CanvasPreview className={cx(styles.PreviewImage, TileStyles.image)} canvas={canvas} />}
                                 >
                                     <Tile.Title>{canvas.name}</Tile.Title>
@@ -291,10 +324,13 @@ export const mapStateToProps = (state: any): StateProps => ({
     canvases: selectCanvases(state),
     filter: selectFilter(state),
     fetching: selectFetching(state),
+    fetchingPermissions: selectFetchingPermissions(state),
+    permissions: selectCanvasPermissions(state),
 })
 
 export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getCanvases: () => dispatch(getCanvases()),
+    getCanvasPermissions: (id) => dispatch(getResourcePermissions('CANVAS', id, false)),
     deleteCanvas: (id) => dispatch(deleteCanvas(id)),
     updateFilter: (filter) => dispatch(updateFilter(filter)),
     navigate: (to) => dispatch(push(to)),
