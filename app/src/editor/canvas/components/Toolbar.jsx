@@ -63,10 +63,6 @@ function ZoomButtons({ canvas }) {
                 </div>
             }
         >
-            <DropdownActions.Item onClick={() => camera.setScale(0.25)}>25%</DropdownActions.Item>
-            <DropdownActions.Item onClick={() => camera.setScale(0.5)}>50%</DropdownActions.Item>
-            <DropdownActions.Item onClick={() => camera.setScale(1)}>100%</DropdownActions.Item>
-            <DropdownActions.Item divider />
             <DropdownActions.Item onClick={() => camera.zoomIn()}>
                 Zoom In <span className={styles.menuShortcut}>{metaKeyLabel}=</span>
             </DropdownActions.Item>
@@ -79,6 +75,10 @@ function ZoomButtons({ canvas }) {
             <DropdownActions.Item onClick={() => canvasCamera.fitCanvas()}>
                 Fit Screen <span className={styles.menuShortcut}>{metaKeyLabel}1</span>
             </DropdownActions.Item>
+            <DropdownActions.Item divider />
+            <DropdownActions.Item onClick={() => camera.setScale(0.5)}>50%</DropdownActions.Item>
+            <DropdownActions.Item onClick={() => camera.setScale(1)}>100%</DropdownActions.Item>
+            <DropdownActions.Item onClick={() => camera.setScale(2)}>200%</DropdownActions.Item>
         </DropdownActions>
     )
 }
