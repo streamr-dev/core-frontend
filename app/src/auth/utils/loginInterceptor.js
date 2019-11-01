@@ -81,6 +81,14 @@ function isLoggedInError(err) {
     return err.response.data.user && err.response.data.user !== '<not authenticated>'
 }
 
+export function canHandleLoadError(err) {
+    if (!err.response) { return false }
+    if (err.response.status === 404) { return true }
+    if (err.response.status === 403) { return true }
+    if (err.response.status === 401) { return true }
+    return false
+}
+
 export async function handleLoadError(err) {
     if (!err.response) { throw err } // unexpected error
     // server issues
@@ -92,7 +100,7 @@ export async function handleLoadError(err) {
         await notFoundRedirect()
     }
 
-    if (err.response.status === 403) {
+    if (err.response.status === 403 || err.response.status === 401) {
         // if already logged in and no access, do not redirect to login
         if (isLoggedInError(err)) {
             await notFoundRedirect() // redirect to not found

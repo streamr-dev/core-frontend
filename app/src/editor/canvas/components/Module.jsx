@@ -146,7 +146,7 @@ function ModuleError(props) {
         ...restProps
     } = props
 
-    const errorObj = (error && error.error) ? error.error : error
+    const errorObj = error
     const moduleLayout = layout || module.layout
     const errorMessage = (errorObj.stack || errorObj.message || '').trim()
 

@@ -8,6 +8,12 @@ msgstr ""
 "POT-Creation-Date: 2018-09-26T12:51:00.805Z\n"
 "PO-Revision-Date: 2018-09-26T12:51:00.805Z\n"
 
+msgid "editor##error##refresh"
+msgstr "Refresh"
+
+msgid "editor##general##backToCanvases"
+msgstr "Back to Canvases"
+
 msgid "editor##module##portOption##drivingInput##name"
 msgstr "Driving Input"
 
