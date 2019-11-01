@@ -40,6 +40,18 @@
   margin: 0 1um;
 }
 
+.CanvasToolbar .CanvasSearch {
+  margin-bottom: 18px;
+}
+
+.CanvasToolbar :global(.btn) {
+  font-family: var(--sans);
+}
+
+.CanvasToolbar :global(.dropdown-item) {
+  line-height: 28px;
+}
+
 .ToolbarButton {
   &:global(.btn) {
     /* Reset button styles for toolbar */
@@ -48,7 +60,6 @@
     border: none;
     background: transparent;
     box-shadow: transparent;
-    font-family: inherit;
     text-transform: initial;
     padding: 12px;
   }
@@ -101,6 +112,17 @@
   }
 }
 
+.CanvasToolbar .DropdownMenu .DropdownMenuMenu {
+  padding-top: 4px;
+  padding-bottom: 4px;
+  margin-bottom: 10px;
+  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.05);
+
+  & .show {
+    display: grid;
+  }
+}
+
 .CanvasNameContainer .DropdownMenu {
   margin-left: 8px;
 }
@@ -109,11 +131,6 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-}
-
-.CanvasNameContainer .DropdownMenu .DropdownMenuMenu {
-  margin-bottom: 10px;
-  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.05);
 }
 
 .CanvasNameContainer .DropdownMenu svg {
@@ -148,12 +165,11 @@
 .RunButtonGroup :global(.btn) {
   border: none;
   box-shadow: transparent;
-  font-family: inherit;
+  font-family: var(--sans);
   color: #FFFFFF !important;
-  font-size: 14px !important;
+  font-size: 14px;
   font-weight: 500;
   text-align: center;
-  letter-spacing: 2px;
   text-transform: uppercase !important;
   line-height: 18px;
   border-radius: 4px;
@@ -175,7 +191,7 @@
 
 .RunButtonMenu {
   font-size: 12px;
-  padding: 8px;
+  padding: 0.5um 0;
   min-width: 152px !important;
   margin-bottom: 10px;
   box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.05);
@@ -183,10 +199,6 @@
   overflow: hidden;
 
   & :global(.dropdown-item) {
-    font-weight: 500;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    line-height: 1.2;
     transition: color 0.1s;
 
     &:not(:disabled) {
@@ -207,7 +219,6 @@ body .RealtimeRunButtonMenu {
   & :global(.dropdown-item):not(:disabled) {
     background: none;
     text-align: center;
-    color: #A3A3A3;
     padding-left: 0;
     padding-right: 0;
   }
@@ -215,8 +226,7 @@ body .RealtimeRunButtonMenu {
   & :global(.dropdown-item):active,
   & :global(.dropdown-item):hover,
   & :global(.dropdown-item):focus {
-    background: none;
-    color: #525252;
+    background-color: #F8F8F8;
   }
 }
 
@@ -228,9 +238,9 @@ body .RealtimeRunButtonMenu {
   & :global(.dropdown-item):active,
   & :global(.dropdown-item):hover,
   & :global(.dropdown-item):global(.active) {
-    background: url('../../../shared/assets/images/tick.svg') no-repeat 0 50%;
+    background: url('../../../shared/assets/images/tick.svg') no-repeat calc(100% - 14px) 50%;
+    background-color: #F8F8F8;
     outline: none;
-    background-color: transparent;
   }
 }
 
@@ -419,23 +429,26 @@ body .RealtimeRunButtonMenu {
   margin: 0 1um;
 }
 
-.ZoomButtons {
+body .ZoomButtons {
   display: flex;
   background: #FFFFFF;
-  border-radius: 4px;
-  color: #CDCDCD;
   align-items: center;
-  padding: 0 0.5um;
   line-height: 40px;
+  border-radius: 4px;
+  padding: 0 0.5um;
 }
 
-.ZoomButtons .ZoomMenuTrigger {
+.ZoomMenu {
+}
+
+.ToolbarZoomButtons .ZoomMenuTrigger {
   appearance: none;
+  transition: color 0.1s 0.2s;
   color: #CDCDCD;
   background: transparent;
   outline: none;
   border: none;
-  border-radius: inherit;
+  border-radius: 4px;
   margin: auto 0.5um;
   cursor: pointer;
   min-width: 48px; /* prevent jump when going from 2 to 3 digits e.g. 99% to 100% */
@@ -462,7 +475,7 @@ body .RealtimeRunButtonMenu {
   height: 1.5um;
   width: 1.5um;
   appearance: none;
-  border-radius: inherit;
+  border-radius: 4px;
   background: #F8F8F8;
   color: #A3A3A3;
   outline: none;
