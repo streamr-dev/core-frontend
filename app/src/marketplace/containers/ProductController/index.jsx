@@ -10,10 +10,14 @@ import { usePending } from '$shared/hooks/usePending'
 import useProductLoadCallback from './useProductLoadCallback'
 import useContractProductLoadCallback from './useContractProductLoadCallback'
 import useProductValidationEffect from './useProductValidationEffect'
+import useContractProductSubscriptionLoadCallback from './useContractProductSubscriptionLoadCallback'
+import useLoadCategoriesCallback from './useLoadCategoriesCallback'
 
 type ContextProps = {
     loadProduct: Function,
     loadContractProduct: Function,
+    loadContractProductSubscription: Function,
+    loadCategories: Function,
 }
 
 const ProductControllerContext: Context<ContextProps> = React.createContext({})
@@ -51,11 +55,15 @@ export function useController() {
 function useProductController() {
     const loadProduct = useProductLoadCallback()
     const loadContractProduct = useContractProductLoadCallback()
+    const loadContractProductSubscription = useContractProductSubscriptionLoadCallback()
+    const loadCategories = useLoadCategoriesCallback()
 
     return useMemo(() => ({
         loadProduct,
         loadContractProduct,
-    }), [loadProduct, loadContractProduct])
+        loadContractProductSubscription,
+        loadCategories,
+    }), [loadProduct, loadContractProduct, loadContractProductSubscription, loadCategories])
 }
 
 type ControllerProps = {

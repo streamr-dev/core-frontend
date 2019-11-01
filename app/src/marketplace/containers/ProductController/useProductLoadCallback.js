@@ -43,9 +43,11 @@ export default function useProductLoadCallback() {
 
             // fetch admin fee from community contract
             let currentAdminFee
+            let communityDeployed = false
             if (isCommunityProduct(product) && isEthereumAddress(product.beneficiaryAddress)) {
                 try {
                     currentAdminFee = await getAdminFee(product.beneficiaryAddress)
+                    communityDeployed = true
                 } catch (e) {
                     // ignore error, assume contract has not been deployed
                 }
@@ -59,6 +61,7 @@ export default function useProductLoadCallback() {
                 currency: product.priceCurrency || DEFAULT_CURRENCY,
                 price: product.price || priceForTimeUnits(product.pricePerSecond || '0', 1, timeUnits.hour),
                 adminFee: currentAdminFee,
+                communityDeployed,
             }
 
             // update redux state, keep original product in redux

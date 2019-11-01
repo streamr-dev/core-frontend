@@ -131,16 +131,12 @@ export const isCommunityDeployed = async (address: Address, usePublicNode: boole
     !!getCommunityOwner(address, usePublicNode)
 )
 
-export const getAdminFee = (address: Address, usePublicNode: boolean = false) => {
+export const getAdminFee = async (address: Address, usePublicNode: boolean = false) => {
     const web3 = usePublicNode ? getPublicWeb3() : getWeb3()
+    const contract = getCommunityContract(address, usePublicNode)
+    const adminFee = await call(contract.methods.adminFee)
 
-    return call(getCommunityContract(address, usePublicNode).methods.adminFee())
-        .then((value) => {
-            if (value) {
-                return web3.utils.fromWei(web3.utils.toBN(value), 'ether')
-            }
-            return null
-        })
+    return web3.utils.fromWei(web3.utils.toBN(adminFee), 'ether')
 }
 
 export const setAdminFee = (address: Address, adminFee: number): SmartContractTransaction => (

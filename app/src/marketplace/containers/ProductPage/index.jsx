@@ -12,23 +12,23 @@ import { formatPath } from '$shared/utils/url'
 import type { ProductId } from '$mp/flowtype/product-types'
 import { productStates } from '$shared/utils/constants'
 import * as RouterContext from '$shared/components/RouterContextProvider'
-import ProductController from '../ProductController'
+import ProductController, { useController } from '../ProductController'
 
 import { getProductSubscription, getUserProductPermissions } from '$mp/modules/product/actions'
 import BackButton from '$shared/components/BackButton'
 import { getAdminFee, getJoinPartStreamId } from '$mp/modules/communityProduct/services'
-import { getSubscriberCount, getMostRecentPurchase } from '$mp/modules/contractProduct/services'
 import LoadingIndicator from '$userpages/components/LoadingIndicator'
 import { Provider as ModalProvider } from '$shared/components/ModalContextProvider'
-import useModal from '$shared/hooks/useModal'
 
 import { getRelatedProducts } from '../../modules/relatedProducts/actions'
 import { isCommunityProduct } from '../../utils/product'
 import PurchaseModal from './PurchaseModal'
+import Toolbar from '$shared/components/Toolbar'
 
 import Page from './Page'
 import styles from './page.pcss'
 
+import useProduct from '$mp/containers/ProductController/useProduct'
 import {
     selectFetchingProduct,
     selectProduct,
@@ -46,7 +46,8 @@ import { selectRelatedProductList } from '$mp/modules/relatedProducts/selectors'
 
 const ProductPage = () => {
     const dispatch = useDispatch()
-    const product = useSelector(selectProduct)
+    const { loadContractProductSubscription, loadCategories } = useController()
+    const product = useProduct()
     const streams = useSelector(selectStreams)
     const relatedProducts = useSelector(selectRelatedProductList)
     const fetchingProduct = useSelector(selectFetchingProduct)
@@ -59,8 +60,6 @@ const ProductPage = () => {
     const authApiKeyId = useSelector(selectAuthApiKeyId)
     const [adminFee, setAdminFee] = useState(null)
     const [joinPartStreamId, setJoinPartStreamId] = useState(null)
-    const [subscriberCount, setSubscriberCount] = useState(null)
-    const [recentPurchaseTimestamp, setRecentPurchaseTimestamp] = useState(null)
 
     const { match } = useContext(RouterContext.Context)
 
@@ -81,10 +80,12 @@ const ProductPage = () => {
     const loadProduct = useCallback(async (id: ProductId) => {
         dispatch(getUserProductPermissions(id))
         dispatch(getRelatedProducts(id))
+        loadContractProductSubscription(id)
+        loadCategories()
         if (isLoggedIn) {
             dispatch(getProductSubscription(id))
         }
-    }, [dispatch, isLoggedIn])
+    }, [dispatch, isLoggedIn, loadContractProductSubscription, loadCategories])
 
     const loadCPData = useCallback(async (p) => {
         if (isCommunityProduct(p) && p.beneficiaryAddress) {
@@ -93,62 +94,38 @@ const ProductPage = () => {
         }
     }, [])
 
-    const loadBlockchainData = useCallback(async (p) => {
-        setSubscriberCount(await getSubscriberCount(p.id))
-        setRecentPurchaseTimestamp(await getMostRecentPurchase(p.id))
-    }, [])
-
-    const { api: purchaseDialog } = useModal('purchase')
-
-    const onPurchase = useCallback(async (id: ProductId) => {
-        if (isLoggedIn) {
-            await purchaseDialog.open({
-                productId: id,
-            })
-        } else {
-            dispatch(replace(routes.login({
-                redirect: routes.product({
-                    id,
-                }),
-            })))
-        }
-    }, [dispatch, isLoggedIn, purchaseDialog])
-
     useEffect(() => {
         loadProduct(match.params.id)
     }, [loadProduct, match.params.id])
 
     useEffect(() => {
-        loadBlockchainData(product)
         loadCPData(product)
-    }, [product, loadCPData, loadBlockchainData])
+    }, [product, loadCPData])
 
     if (!product) {
         return null
     }
 
     return (
-        <Layout>
+        <Layout hideNavOnDesktop={!!editPermission}>
             <Helmet title={`${product.name} | ${I18n.t('general.title.suffix')}`} />
+            {!!editPermission && (
+                <Toolbar left={<BackButton />} actions={toolbarActions} />
+            )}
             <Page
                 product={product}
                 streams={streams}
                 fetchingStreams={fetchingProduct || fetchingStreams}
                 showToolbar={editPermission}
-                toolbarActions={toolbarActions}
                 showStreamActions={product.state === productStates.DEPLOYED}
                 isLoggedIn={isLoggedIn}
                 relatedProducts={relatedProducts}
                 isProductSubscriptionValid={isProductSubscriptionValid}
                 productSubscription={subscription}
-                onPurchase={() => onPurchase(product.id || '')}
-                toolbarStatus={<BackButton />}
                 showStreamLiveDataDialog={(streamId) => noHistoryRedirect(links.marketplace.products, product.id, 'streamPreview', streamId)}
                 authApiKeyId={authApiKeyId}
                 adminFee={adminFee}
                 joinPartStreamId={joinPartStreamId}
-                subscriberCount={subscriberCount}
-                mostRecentPurchaseTimestamp={recentPurchaseTimestamp}
             />
             <PurchaseModal />
         </Layout>
