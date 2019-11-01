@@ -6,7 +6,7 @@ import { getContract, call } from '../../utils/smartContract'
 import getConfig from '$shared/web3/config'
 
 import type { ApiResult } from '$shared/flowtype/common-types'
-import type { Product, ProductId, Subscription, UserProductPermissionList } from '$mp/flowtype/product-types'
+import type { Product, ProductId, Subscription } from '$mp/flowtype/product-types'
 import type { SmartContractCall } from '$shared/flowtype/web3-types'
 import type { StreamList } from '$shared/flowtype/stream-types'
 import { getValidId, mapProductFromApi } from '$mp/utils/product'

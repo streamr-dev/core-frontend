@@ -2,15 +2,12 @@
 
 import React, { useEffect, useCallback, useContext } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { replace } from 'connected-react-router'
 import { I18n } from 'react-redux-i18n'
 import { Helmet } from 'react-helmet'
 import { withRouter } from 'react-router-dom'
 
 import Layout from '$shared/components/Layout'
-import { formatPath } from '$shared/utils/url'
 import type { ProductId } from '$mp/flowtype/product-types'
-import { productStates } from '$shared/utils/constants'
 import * as RouterContext from '$shared/components/RouterContextProvider'
 import ProductController, { useController } from '../ProductController'
 import usePending from '$shared/hooks/usePending'
@@ -23,47 +20,27 @@ import { Provider as ModalProvider } from '$shared/components/ModalContextProvid
 import { getRelatedProducts } from '../../modules/relatedProducts/actions'
 import PurchaseModal from './PurchaseModal'
 import Toolbar from '$shared/components/Toolbar'
+import useProduct from '$mp/containers/ProductController/useProduct'
+import useProductPermissions from '$mp/containers/ProductController/useProductPermissions'
+import { selectUserData } from '$shared/modules/user/selectors'
+import routes from '$routes'
 
 import Page from './Page'
 import styles from './page.pcss'
 
-import useProduct from '$mp/containers/ProductController/useProduct'
-import {
-    selectFetchingProduct,
-    selectProduct,
-    selectStreams,
-    selectFetchingStreams,
-    selectSubscriptionIsValid,
-    selectProductEditPermission,
-    selectContractSubscription,
-} from '$mp/modules/product/selectors'
-import { selectUserData } from '$shared/modules/user/selectors'
-import links from '$mp/../links'
-import routes from '$routes'
-import { selectRelatedProductList } from '$mp/modules/relatedProducts/selectors'
-
 const ProductPage = () => {
     const dispatch = useDispatch()
-    const { loadContractProductSubscription, loadCategories } = useController()
+    const { loadContractProductSubscription, loadCategories, loadProductStreams } = useController()
     const product = useProduct()
-    const streams = useSelector(selectStreams)
-    const relatedProducts = useSelector(selectRelatedProductList)
-    const fetchingProduct = useSelector(selectFetchingProduct)
-    const fetchingStreams = useSelector(selectFetchingStreams)
     const userData = useSelector(selectUserData)
     const isLoggedIn = userData !== null
-    const editPermission = useSelector(selectProductEditPermission)
-    const isProductSubscriptionValid = useSelector(selectSubscriptionIsValid)
-    const subscription = useSelector(selectContractSubscription)
+    const { write, share } = useProductPermissions()
+    const canEdit = !!(write || share)
 
     const { match } = useContext(RouterContext.Context)
 
-    const noHistoryRedirect = useCallback((...params) => {
-        dispatch(replace(formatPath(...params)))
-    }, [dispatch])
-
     const toolbarActions = {}
-    if (product && editPermission) {
+    if (product && canEdit) {
         toolbarActions.edit = {
             title: I18n.t('editProductPage.edit'),
             linkTo: routes.editProduct({
@@ -77,33 +54,23 @@ const ProductPage = () => {
         dispatch(getRelatedProducts(id))
         loadContractProductSubscription(id)
         loadCategories()
+        loadProductStreams(id)
         if (isLoggedIn) {
             dispatch(getProductSubscription(id))
         }
-    }, [dispatch, isLoggedIn, loadContractProductSubscription, loadCategories])
+    }, [dispatch, isLoggedIn, loadContractProductSubscription, loadCategories, loadProductStreams])
 
     useEffect(() => {
         loadProduct(match.params.id)
     }, [loadProduct, match.params.id])
 
     return (
-        <Layout hideNavOnDesktop={!!editPermission}>
+        <Layout hideNavOnDesktop={canEdit}>
             <Helmet title={`${product.name} | ${I18n.t('general.title.suffix')}`} />
-            {!!editPermission && (
+            {canEdit && (
                 <Toolbar left={<BackButton />} actions={toolbarActions} />
             )}
-            <Page
-                product={product}
-                streams={streams}
-                fetchingStreams={fetchingProduct || fetchingStreams}
-                showToolbar={editPermission}
-                showStreamActions={product.state === productStates.DEPLOYED}
-                isLoggedIn={isLoggedIn}
-                relatedProducts={relatedProducts}
-                isProductSubscriptionValid={isProductSubscriptionValid}
-                productSubscription={subscription}
-                showStreamLiveDataDialog={(streamId) => noHistoryRedirect(links.marketplace.products, product.id, 'streamPreview', streamId)}
-            />
+            <Page />
             <PurchaseModal />
         </Layout>
     )
@@ -116,7 +83,7 @@ const LoadingView = () => (
 )
 
 const EditWrap = () => {
-    const product = useSelector(selectProduct)
+    const product = useProduct()
     const { isPending: loadPending } = usePending('product.LOAD')
     const { isPending: permissionsPending } = usePending('product.PERMISSIONS')
 

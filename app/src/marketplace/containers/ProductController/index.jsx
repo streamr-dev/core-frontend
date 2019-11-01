@@ -13,12 +13,14 @@ import useContractProductLoadCallback from './useContractProductLoadCallback'
 import useProductValidationEffect from './useProductValidationEffect'
 import useContractProductSubscriptionLoadCallback from './useContractProductSubscriptionLoadCallback'
 import useLoadCategoriesCallback from './useLoadCategoriesCallback'
+import useLoadProductStreamsCallback from './useLoadProductStreamsCallback'
 
 type ContextProps = {
     loadProduct: Function,
     loadContractProduct: Function,
     loadContractProductSubscription: Function,
     loadCategories: Function,
+    loadProductStreams: Function,
 }
 
 const ProductControllerContext: Context<ContextProps> = React.createContext({})
@@ -58,13 +60,21 @@ function useProductController() {
     const loadContractProduct = useContractProductLoadCallback()
     const loadContractProductSubscription = useContractProductSubscriptionLoadCallback()
     const loadCategories = useLoadCategoriesCallback()
+    const loadProductStreams = useLoadProductStreamsCallback()
 
     return useMemo(() => ({
         loadProduct,
         loadContractProduct,
         loadContractProductSubscription,
         loadCategories,
-    }), [loadProduct, loadContractProduct, loadContractProductSubscription, loadCategories])
+        loadProductStreams,
+    }), [
+        loadProduct,
+        loadContractProduct,
+        loadContractProductSubscription,
+        loadCategories,
+        loadProductStreams,
+    ])
 }
 
 type ControllerProps = {
