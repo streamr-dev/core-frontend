@@ -231,14 +231,14 @@ class StreamList extends Component<Props, State> {
         }
     }
 
-    hasPermission = (id: StreamId, operation: string): boolean => {
+    canBeSharedByCurrentUser = (id: StreamId): boolean => {
         const { fetchingPermissions, permissions, user } = this.props
 
         return (
             !fetchingPermissions &&
             !!user &&
             permissions[id] &&
-            permissions[id].find((p: Permission) => p.user === user.username && p.operation === operation) !== undefined
+            permissions[id].find((p: Permission) => p.user === user.username && p.operation === 'share') !== undefined
         )
     }
 
@@ -430,7 +430,7 @@ class StreamList extends Component<Props, State> {
                                                                 <Translate value="userpages.streams.actions.copySnippet" />
                                                             </DropdownActions.Item>
                                                             <DropdownActions.Item
-                                                                disabled={!this.hasPermission(stream.id, 'share')}
+                                                                disabled={!this.canBeSharedByCurrentUser(stream.id)}
                                                                 onClick={() => this.onOpenShareDialog(stream)}
                                                             >
                                                                 <Translate value="userpages.streams.actions.share" />

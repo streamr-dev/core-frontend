@@ -161,7 +161,7 @@ class CanvasList extends Component<Props, State> {
                     <Translate value="userpages.canvases.menu.edit" />
                 </DropdownActions.Item>
                 <DropdownActions.Item
-                    disabled={!this.hasPermission(canvas.id, 'share')}
+                    disabled={!this.canBeSharedByCurrentUser(canvas.id)}
                     onClick={() => this.onOpenShareDialog(canvas)}
                 >
                     <Translate value="userpages.canvases.menu.share" />
@@ -225,14 +225,14 @@ class CanvasList extends Component<Props, State> {
         }
     }
 
-    hasPermission = (id: string, operation: string): boolean => {
+    canBeSharedByCurrentUser = (id: string): boolean => {
         const { fetchingPermissions, permissions, user } = this.props
 
         return (
             !fetchingPermissions &&
             !!user &&
             permissions[id] &&
-            permissions[id].find((p: Permission) => p.user === user.username && p.operation === operation) !== undefined
+            permissions[id].find((p: Permission) => p.user === user.username && p.operation === 'share') !== undefined
         )
     }
 
