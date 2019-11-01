@@ -219,17 +219,6 @@ class StreamList extends Component<Props, State> {
         }
     }
 
-    hasWritePermission = (id: StreamId) => {
-        const { fetchingPermissions, permissions, user } = this.props
-
-        return (
-            !fetchingPermissions &&
-            !!user &&
-            permissions[id] &&
-            permissions[id].find((p: Permission) => p.user === user.username && p.operation === 'write') !== undefined
-        )
-    }
-
     onOpenShareDialog = (stream: Stream) => {
         this.setState({
             dialogTargetStream: stream,
