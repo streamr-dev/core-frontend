@@ -86,7 +86,7 @@ class Subscription extends Component {
 
     getResendOptions() {
         const { resendFrom, resendTo, resendLast } = this.props
-        if (resendFrom == null && resendTo == null && resendLast == null) {
+        if ((resendFrom == null && resendTo == null && resendLast == null) || resendLast === 0) {
             // undefined if no options
             return undefined
         }
