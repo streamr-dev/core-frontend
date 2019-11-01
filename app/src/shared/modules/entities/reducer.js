@@ -22,9 +22,9 @@ export const initialState: EntitiesState = {
     resourceKeys: {},
 }
 
-// Empty arrays do not replace the destination value by default, use customizer to handle
+// Arrays do not replace the destination value by default, use customizer to handle
 // that special case. If customizer returns undefined, merging is handled by the default method instead
-const mergeCustomizer = (obj, src) => ((Array.isArray(src) && src.length <= 0) ? src : undefined)
+const mergeCustomizer = (obj, src) => (Array.isArray(src) ? src : undefined)
 
 const reducer: (EntitiesState) => EntitiesState = handleActions({
     [UPDATE_ENTITIES]: (state: EntitiesState, action: UpdateEntitiesAction) => mergeWith({}, state, action.payload.entities, mergeCustomizer),

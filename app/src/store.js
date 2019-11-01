@@ -48,43 +48,47 @@ if (!isProduction()) {
     /* eslint-enable no-underscore-dangle */
 }
 
-const store = createStore(
-    combineReducers({
-        allowance: allowanceReducer,
-        categories: categoriesReducer,
-        contractProduct: contractProductReducer,
-        createContractProduct: createContractProductReducer,
-        updateContractProduct: updateContractProductReducer,
-        editProduct: editProductReducer,
-        entities: entitiesReducer,
-        global: globalReducer,
-        myProductList: myProductsReducer,
-        myPurchaseList: myPurchasesReducer,
-        product: productReducer,
-        productList: productsReducer,
-        publish: publishReducer,
-        unpublish: unpublishReducer,
-        publishDialog: publishDialogReducer,
-        purchase: purchaseReducer,
-        purchaseDialog: purchaseDialogReducer,
-        saveProductDialog: saveProductReducer,
-        router: connectRouter(history),
-        streams: streamsReducer,
-        user: userReducer,
-        integrationKey: integrationKeyReducer,
-        resourceKey: resourceKeyReducer,
-        web3: web3Reducer,
-        i18n: i18nReducer,
-        relatedProducts: relatedProductsReducer,
-        transactions: transactionsReducer,
-        // TODO: RE-ENABLE THESE WHEN USERPAGES ARE READY
-        // userpages
-        ...userpagesReducers,
-    }),
-    compose(...toBeComposed),
-)
+export function initStore() {
+    const store = createStore(
+        combineReducers({
+            allowance: allowanceReducer,
+            categories: categoriesReducer,
+            contractProduct: contractProductReducer,
+            createContractProduct: createContractProductReducer,
+            updateContractProduct: updateContractProductReducer,
+            editProduct: editProductReducer,
+            entities: entitiesReducer,
+            global: globalReducer,
+            myProductList: myProductsReducer,
+            myPurchaseList: myPurchasesReducer,
+            product: productReducer,
+            productList: productsReducer,
+            publish: publishReducer,
+            unpublish: unpublishReducer,
+            publishDialog: publishDialogReducer,
+            purchase: purchaseReducer,
+            purchaseDialog: purchaseDialogReducer,
+            saveProductDialog: saveProductReducer,
+            router: connectRouter(history),
+            streams: streamsReducer,
+            user: userReducer,
+            integrationKey: integrationKeyReducer,
+            resourceKey: resourceKeyReducer,
+            web3: web3Reducer,
+            i18n: i18nReducer,
+            relatedProducts: relatedProductsReducer,
+            transactions: transactionsReducer,
+            // TODO: RE-ENABLE THESE WHEN USERPAGES ARE READY
+            // userpages
+            ...userpagesReducers,
+        }),
+        compose(...toBeComposed),
+    )
 
-syncTranslationWithStore(store)
-store.dispatch(loadTranslations(translations))
+    syncTranslationWithStore(store)
 
-export default store
+    store.dispatch(loadTranslations(translations))
+    return store
+}
+
+export default initStore()

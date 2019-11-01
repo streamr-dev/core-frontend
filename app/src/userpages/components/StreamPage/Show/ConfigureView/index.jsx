@@ -15,12 +15,10 @@ import FieldList from '$shared/components/FieldList'
 import FieldItem from '$shared/components/FieldList/FieldItem'
 import Dropdown from '$shared/components/Dropdown'
 import { updateEditStreamField, updateEditStream, streamFieldsAutodetect } from '$userpages/modules/userPageStreams/actions'
-import { selectEditedStream, selectFieldsAutodetectFetching } from '$userpages/modules/userPageStreams/selectors'
+import { selectEditedStream, selectFieldsAutodetectFetching, fieldTypes } from '$userpages/modules/userPageStreams/selectors'
 import TextInput from '$shared/components/TextInput'
 import Toggle from '$shared/components/Toggle'
 import SplitControl from '$userpages/components/SplitControl'
-
-import { fieldTypes } from '../../constants'
 
 import styles from './configureView.pcss'
 import NewFieldEditor from './NewFieldEditor'

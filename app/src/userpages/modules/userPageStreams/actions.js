@@ -587,8 +587,8 @@ export const initEditStream = () => (dispatch: Function, getState: Function) => 
     }
 }
 
-export const initNewStream = () => (dispatch: Function) => {
-    dispatch(updateEditStream({
+export const initNewStream = (initData: ?any) => (dispatch: Function) => {
+    dispatch(updateEditStream(Object.assign({}, {
         id: '',
         name: '',
         description: '',
@@ -602,7 +602,7 @@ export const initNewStream = () => (dispatch: Function) => {
         requireEncryptedData: false,
         storageDays: 365,
         uiChannel: false,
-    }))
+    }, initData)))
 }
 
 export const streamFieldsAutodetect = (id: StreamId) => (dispatch: Function) => {
