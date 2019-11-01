@@ -9,6 +9,7 @@ branches:
   - beta
   - "/^v\\d+\\.\\d+(\\.\\d+)?(-\\S*)?$/"
 before_install:
+- sudo apt-get -y install expect
 - pip install awscli --upgrade --user
 - npm config set //registry.npmjs.org/:_authToken=$NPM_TOKEN
 - npm i -g npm@^6.9.0
