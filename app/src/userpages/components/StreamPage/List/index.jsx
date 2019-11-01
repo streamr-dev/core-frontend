@@ -89,7 +89,7 @@ export type DispatchProps = {
     showStream: (StreamId) => void,
     deleteStream: (StreamId) => void,
     copyToClipboard: (string) => void,
-    getStreamPermissions: (id: StreamId) => void,
+    getStreamPermissions: (id: StreamId) => Promise<void>,
     refreshStreamStatus: (id: StreamId) => Promise<void>,
     cancelStreamStatusFetch: () => void,
 }
@@ -217,6 +217,29 @@ class StreamList extends Component<Props, State> {
         if (confirmed) {
             this.props.deleteStream(stream.id)
         }
+    }
+
+    onToggleStreamDropdown = (streamId: StreamId) => async (open: boolean) => {
+        const { getStreamPermissions, fetchingPermissions, permissions } = this.props
+
+        if (open && !fetchingPermissions && !permissions[streamId]) {
+            try {
+                await getStreamPermissions(streamId)
+            } catch (e) {
+                // Noop.
+            }
+        }
+    }
+
+    hasPermission = (id: StreamId, operation: string): boolean => {
+        const { fetchingPermissions, permissions, user } = this.props
+
+        return (
+            !fetchingPermissions &&
+            !!user &&
+            permissions[id] &&
+            permissions[id].find((p: Permission) => p.user === user.username && p.operation === operation) !== undefined
+        )
     }
 
     onOpenShareDialog = (stream: Stream) => {
@@ -386,6 +409,7 @@ class StreamList extends Component<Props, State> {
                                                         <DropdownActions
                                                             title={<Meatball alt={I18n.t('userpages.streams.actions')} />}
                                                             noCaret
+                                                            onMenuToggle={this.onToggleStreamDropdown(stream.id)}
                                                             menuProps={{
                                                                 modifiers: {
                                                                     offset: {
@@ -406,6 +430,7 @@ class StreamList extends Component<Props, State> {
                                                                 <Translate value="userpages.streams.actions.copySnippet" />
                                                             </DropdownActions.Item>
                                                             <DropdownActions.Item
+                                                                disabled={!this.hasPermission(stream.id, 'share')}
                                                                 onClick={() => this.onOpenShareDialog(stream)}
                                                             >
                                                                 <Translate value="userpages.streams.actions.share" />
@@ -512,7 +537,7 @@ const mapDispatchToProps = (dispatch) => ({
     showStream: (id: StreamId) => dispatch(push(`${links.userpages.streamShow}/${id}`)),
     deleteStream: (id: StreamId) => dispatch(deleteStream(id)),
     copyToClipboard: (text) => copy(text),
-    getStreamPermissions: (id: StreamId) => dispatch(getResourcePermissions('STREAM', id)),
+    getStreamPermissions: (id: StreamId) => dispatch(getResourcePermissions('STREAM', id, false)),
     refreshStreamStatus: (id: StreamId) => dispatch(getStreamStatus(id)),
     cancelStreamStatusFetch,
 })
