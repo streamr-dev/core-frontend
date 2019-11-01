@@ -113,15 +113,17 @@ const saveRemovedResourcePermissionFailure = (resourceType: ResourceType, resour
     permission,
 })
 
-export const getResourcePermissions = (resourceType: ResourceType, resourceId: ResourceId) => async (dispatch: Function) => {
+export const getResourcePermissions = (resourceType: ResourceType, resourceId: ResourceId, notify: boolean = true) => async (dispatch: Function) => {
     dispatch(getResourcePermissionsRequest())
     const resourcePermissions = await api.get(`${getApiUrl(resourceType, resourceId)}/permissions`)
         .catch((error) => {
             dispatch(getResourcePermissionsFailure(error))
-            Notification.push({
-                title: error.message,
-                icon: NotificationIcon.ERROR,
-            })
+            if (notify) {
+                Notification.push({
+                    title: error.message,
+                    icon: NotificationIcon.ERROR,
+                })
+            }
             throw error
         })
     dispatch(getResourcePermissionsSuccess(resourceType, resourceId, resourcePermissions))
