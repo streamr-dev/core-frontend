@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useEffect, useCallback, useContext, useState } from 'react'
+import React, { useEffect, useCallback, useContext } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { replace } from 'connected-react-router'
 import { I18n } from 'react-redux-i18n'
@@ -13,15 +13,14 @@ import type { ProductId } from '$mp/flowtype/product-types'
 import { productStates } from '$shared/utils/constants'
 import * as RouterContext from '$shared/components/RouterContextProvider'
 import ProductController, { useController } from '../ProductController'
+import usePending from '$shared/hooks/usePending'
 
 import { getProductSubscription, getUserProductPermissions } from '$mp/modules/product/actions'
 import BackButton from '$shared/components/BackButton'
-import { getAdminFee, getJoinPartStreamId } from '$mp/modules/communityProduct/services'
 import LoadingIndicator from '$userpages/components/LoadingIndicator'
 import { Provider as ModalProvider } from '$shared/components/ModalContextProvider'
 
 import { getRelatedProducts } from '../../modules/relatedProducts/actions'
-import { isCommunityProduct } from '../../utils/product'
 import PurchaseModal from './PurchaseModal'
 import Toolbar from '$shared/components/Toolbar'
 
@@ -39,7 +38,6 @@ import {
     selectContractSubscription,
 } from '$mp/modules/product/selectors'
 import { selectUserData } from '$shared/modules/user/selectors'
-import { selectAuthApiKeyId } from '$shared/modules/resourceKey/selectors'
 import links from '$mp/../links'
 import routes from '$routes'
 import { selectRelatedProductList } from '$mp/modules/relatedProducts/selectors'
@@ -57,9 +55,6 @@ const ProductPage = () => {
     const editPermission = useSelector(selectProductEditPermission)
     const isProductSubscriptionValid = useSelector(selectSubscriptionIsValid)
     const subscription = useSelector(selectContractSubscription)
-    const authApiKeyId = useSelector(selectAuthApiKeyId)
-    const [adminFee, setAdminFee] = useState(null)
-    const [joinPartStreamId, setJoinPartStreamId] = useState(null)
 
     const { match } = useContext(RouterContext.Context)
 
@@ -87,24 +82,9 @@ const ProductPage = () => {
         }
     }, [dispatch, isLoggedIn, loadContractProductSubscription, loadCategories])
 
-    const loadCPData = useCallback(async (p) => {
-        if (isCommunityProduct(p) && p.beneficiaryAddress) {
-            setAdminFee(await getAdminFee(p.beneficiaryAddress))
-            setJoinPartStreamId(await getJoinPartStreamId(p.beneficiaryAddress))
-        }
-    }, [])
-
     useEffect(() => {
         loadProduct(match.params.id)
     }, [loadProduct, match.params.id])
-
-    useEffect(() => {
-        loadCPData(product)
-    }, [product, loadCPData])
-
-    if (!product) {
-        return null
-    }
 
     return (
         <Layout hideNavOnDesktop={!!editPermission}>
@@ -123,9 +103,6 @@ const ProductPage = () => {
                 isProductSubscriptionValid={isProductSubscriptionValid}
                 productSubscription={subscription}
                 showStreamLiveDataDialog={(streamId) => noHistoryRedirect(links.marketplace.products, product.id, 'streamPreview', streamId)}
-                authApiKeyId={authApiKeyId}
-                adminFee={adminFee}
-                joinPartStreamId={joinPartStreamId}
             />
             <PurchaseModal />
         </Layout>
@@ -140,8 +117,10 @@ const LoadingView = () => (
 
 const EditWrap = () => {
     const product = useSelector(selectProduct)
+    const { isPending: loadPending } = usePending('product.LOAD')
+    const { isPending: permissionsPending } = usePending('product.PERMISSIONS')
 
-    if (!product) {
+    if (!product || loadPending || permissionsPending) {
         return <LoadingView />
     }
 

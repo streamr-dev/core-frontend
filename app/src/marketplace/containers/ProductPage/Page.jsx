@@ -8,17 +8,15 @@ import { I18n } from 'react-redux-i18n'
 
 import type { Product } from '../../flowtype/product-types'
 import type { StreamList } from '$shared/flowtype/stream-types'
-import type { ResourceKeyId } from '$shared/flowtype/resource-key-types'
 import Products from '$mp/components/Products'
-import ProductContainer from '$shared/components/Container/Product'
 import { isCommunityProduct } from '$mp/utils/product'
 import useProduct from '$mp/containers/ProductController/useProduct'
 
 import StreamListing from '$mp/components/ProductPage/StreamListing'
-import ProductOverview from '$mp/components/ProductPage/ProductOverview'
 
 import Hero from './Hero'
 import Description from './Description'
+import CommunityStats from './CommunityStats'
 
 import styles from './page.pcss'
 
@@ -31,10 +29,6 @@ export type Props = {
     showStreamActions?: boolean,
     isLoggedIn?: boolean,
     isProductSubscriptionValid?: boolean,
-    authApiKeyId?: ?ResourceKeyId,
-    adminFee?: ?number,
-    joinPartStreamId?: ?string,
-    subscriberCount?: ?number,
 }
 
 const ProductDetailsPage = ({
@@ -44,10 +38,6 @@ const ProductDetailsPage = ({
     showStreamActions,
     isLoggedIn,
     isProductSubscriptionValid,
-    authApiKeyId,
-    adminFee,
-    joinPartStreamId,
-    subscriberCount,
 }: Props) => {
     const product = useProduct()
     const isProductFree = (product && BN(product.pricePerSecond).isEqualTo(0)) || false
@@ -57,17 +47,8 @@ const ProductDetailsPage = ({
         <div className={styles.productPage}>
             <Hero />
             <Description />
-
             {isCommunity && (
-                <ProductContainer>
-                    <ProductOverview
-                        product={product}
-                        authApiKeyId={authApiKeyId}
-                        adminFee={adminFee || 0}
-                        subscriberCount={subscriberCount || 0}
-                        joinPartStreamId={joinPartStreamId}
-                    />
-                </ProductContainer>
+                <CommunityStats />
             )}
             <StreamListing
                 product={product}

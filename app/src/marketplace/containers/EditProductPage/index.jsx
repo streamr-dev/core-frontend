@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useContext, useMemo } from 'react'
+import React, { useContext, useMemo, useEffect } from 'react'
 import { withRouter } from 'react-router-dom'
 import { I18n } from 'react-redux-i18n'
 
@@ -16,6 +16,8 @@ import usePending from '$shared/hooks/usePending'
 import { productStates } from '$shared/utils/constants'
 import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
 import { isEthereumAddress } from '$mp/utils/validate'
+import { notFoundRedirect } from '$auth/utils/loginInterceptor'
+import useProductPermissions from '../ProductController/useProductPermissions'
 
 import { Provider as EditControllerProvider, Context as EditControllerContext } from './EditControllerProvider'
 import BackButton from './BackButton'
@@ -158,8 +160,16 @@ const LoadingView = () => (
 
 const EditWrap = () => {
     const product = useEditableProduct()
+    const { isPending: isLoadPending } = usePending('product.LOAD')
+    const { isPending: isPermissionsPending } = usePending('product.PERMISSIONS')
+    const { hasPermissions, write, share } = useProductPermissions()
+    const canEdit = !!(write || share)
 
-    if (!product) {
+    if (hasPermissions && !isPermissionsPending && !canEdit) {
+        notFoundRedirect()
+    }
+
+    if (!product || isLoadPending || isPermissionsPending || !hasPermissions || !canEdit) {
         return <LoadingView />
     }
 

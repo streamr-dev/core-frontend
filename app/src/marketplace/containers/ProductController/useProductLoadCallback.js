@@ -1,11 +1,11 @@
 // @flow
 
-import { useContext, useCallback } from 'react'
+import { useCallback } from 'react'
 import { useDispatch } from 'react-redux'
 
-import { Context as RouterContext } from '$shared/components/RouterContextProvider'
-import useIsMountedRef from '$shared/hooks/useIsMountedRef'
+import useIsMounted from '$shared/hooks/useIsMounted'
 import usePending from '$shared/hooks/usePending'
+import { handleLoadError } from '$auth/utils/loginInterceptor'
 
 import type { ProductId } from '$mp/flowtype/product-types'
 import { getProductById } from '$mp/modules/product/services'
@@ -22,10 +22,9 @@ import * as State from '../EditProductPage/state'
 import useEditableProductUpdater from './useEditableProductUpdater'
 
 export default function useProductLoadCallback() {
-    const { history } = useContext(RouterContext)
     const productUpdater = useEditableProductUpdater()
     const { wrap } = usePending('product.LOAD')
-    const isMountedRef = useIsMountedRef()
+    const isMounted = useIsMounted()
     const dispatch = useDispatch()
 
     return useCallback(async (productId: ProductId) => (
@@ -35,11 +34,12 @@ export default function useProductLoadCallback() {
             try {
                 product = await getProductById(productId)
             } catch (err) {
-                if (!isMountedRef.current) { return }
-                history.replace('/404') // 404
-                return
+                if (!isMounted()) { return }
+                await handleLoadError(err)
+
+                throw err
             }
-            if (!isMountedRef.current) { return }
+            if (!isMounted()) { return }
 
             // fetch admin fee from community contract
             let currentAdminFee
@@ -52,7 +52,7 @@ export default function useProductLoadCallback() {
                     // ignore error, assume contract has not been deployed
                 }
             }
-            if (!isMountedRef.current) { return }
+            if (!isMounted()) { return }
 
             const nextProduct = {
                 ...product,
@@ -74,5 +74,5 @@ export default function useProductLoadCallback() {
 
             productUpdater.replaceProduct(() => State.withPendingChanges(nextProduct))
         })
-    ), [wrap, dispatch, productUpdater, history, isMountedRef])
+    ), [wrap, dispatch, productUpdater, isMounted])
 }

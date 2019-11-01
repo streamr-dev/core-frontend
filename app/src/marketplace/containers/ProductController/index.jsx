@@ -5,6 +5,7 @@ import React, { type Node, type Context, useMemo, useContext, useEffect, useStat
 import * as RouterContext from '$shared/components/RouterContextProvider'
 import { Provider as PendingProvider } from '$shared/components/PendingContextProvider'
 import { Provider as ValidationContextProvider } from './ValidationContextProvider'
+import { Provider as PermissionsProvider } from './useProductPermissions'
 import { usePending } from '$shared/hooks/usePending'
 
 import useProductLoadCallback from './useProductLoadCallback'
@@ -82,10 +83,12 @@ const ProductController = ({ children }: ControllerProps) => (
     <RouterContext.Provider>
         <PendingProvider name="product">
             <ValidationContextProvider>
-                <ControllerProvider>
-                    <ProductEffects />
-                    {children || null}
-                </ControllerProvider>
+                <PermissionsProvider>
+                    <ControllerProvider>
+                        <ProductEffects />
+                        {children || null}
+                    </ControllerProvider>
+                </PermissionsProvider>
             </ValidationContextProvider>
         </PendingProvider>
     </RouterContext.Provider>
