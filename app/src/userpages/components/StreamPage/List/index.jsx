@@ -3,7 +3,7 @@
 import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import { push } from 'connected-react-router'
-import moment from 'moment'
+import moment from 'moment-timezone'
 import copy from 'copy-to-clipboard'
 import { Translate, I18n } from 'react-redux-i18n'
 import Helmet from 'react-helmet'

@@ -3,7 +3,7 @@ import uuid from 'uuid'
 import cx from 'classnames'
 import throttle from 'lodash/throttle'
 import { formatDateTime } from '$mp/utils/time'
-import moment from 'moment'
+import moment from 'moment-timezone'
 
 import UiSizeConstraint from '../UiSizeConstraint'
 import ModuleSubscription from '../ModuleSubscription'
