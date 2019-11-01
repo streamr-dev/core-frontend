@@ -121,13 +121,14 @@ class Subscription extends Component {
 
         this.isSubscribed = true
         this.client = this.props.clientContext.client
+        await this.client.ensureConnected()
 
         const { id } = uiChannel
 
-        this.subscription = this.client.subscribe({
+        const resend = this.getResendOptions()
+        this.subscription = this.client.subscribe(Object.assign({
             stream: id,
-            resend: this.getResendOptions(),
-        }, this.onMessage)
+        }, resend ? { resend } : undefined), this.onMessage)
 
         this.subscription.on('subscribed', this.onSubscribed)
         this.subscription.on('unsubscribed', this.onUnsubscribed)
