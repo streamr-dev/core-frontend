@@ -345,6 +345,8 @@ export function shouldIgnoreEvent(state, event) {
     if (event.target.classList.contains(styles.noCameraControl)) { return true }
     // always ignore if target is editable
     if (isEditableElement(event.target)) { return true }
+    if (event.target.tagName === 'BUTTON') { return true }
+    if (event.target.tagName === 'A') { return true }
 
     // do not ignore if is within parent with cameraControl class
     const cameraControlEl = getParentMatching(event.target, `.${styles.cameraControl}`)
