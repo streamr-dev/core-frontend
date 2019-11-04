@@ -17,7 +17,7 @@ type Props = {
         className?: string,
         modifiers?: Object,
     },
-    onMenuToggle?: (boolean) => void,
+    onMenuToggle?: (boolean) => any,
     direction?: string,
 }
 
