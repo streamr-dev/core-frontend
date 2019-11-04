@@ -96,7 +96,7 @@ const ProductOverview = ({
                         <div>
                             <div className={styles.statHeading}>Total product revenue</div>
                             <div className={styles.statValue}>
-                                {totalEarnings}
+                                {totalEarnings.toFixed(0)}
                                 <span className={styles.currency}> DATA</span>
                             </div>
                         </div>
