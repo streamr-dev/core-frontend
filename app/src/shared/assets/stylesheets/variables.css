@@ -48,6 +48,9 @@
   --medium: 500;
   --semiBold: 600;
   --bold: 700;
+
+  /* shared vars */
+  --nav-shadow: 0 10px 10px rgba(0, 0, 0, 0.02);
 }
 
 @custom-selector :--enter :hover, :focus, :global(.active);

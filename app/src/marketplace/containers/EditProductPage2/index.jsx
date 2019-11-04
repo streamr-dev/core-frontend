@@ -117,6 +117,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
             hideNavOnDesktop
             navComponent={(
                 <Toolbar
+                    className={Toolbar.styles.shadow}
                     left={<BackButton />}
                     actions={actions}
                     altMobileLayout
@@ -147,6 +148,7 @@ const LoadingView = () => (
         loading
         navComponent={(
             <Toolbar
+                className={Toolbar.styles.shadow}
                 actions={{}}
                 altMobileLayout
             />
