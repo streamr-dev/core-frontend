@@ -29,6 +29,19 @@ env:
   - SENTRY_PROJECT=marketplace
 jobs:
   include:
+  - stage: Build docker (dev)
+    install: true
+    env:
+      - OWNER=streamr
+      - IMAGE_NAME=platform
+      - TAG=dev
+    script:
+      - cd app
+      - npm run build
+      - docker build -t $OWNER/$IMAGE_NAME:$TAG --build-arg NPM_TOKEN=${NPM_TOKEN} .
+    deploy:
+      - provider: script
+        script: bash app/travis_scripts/deploy_docker.sh staging
   - stage: Platform Tests
     if: type IN (pull_request)
     env:
