@@ -116,3 +116,5 @@ export type ProductPermissions = {
     fetchingPermissions: boolean,
     permissionsError: ?ErrorInUi,
 }
+
+export type CommunityId = $ElementType<Product, 'beneficiaryAddress'>

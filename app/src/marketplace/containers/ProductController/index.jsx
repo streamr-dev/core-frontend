@@ -1,12 +1,14 @@
 // @flow
 
 import React, { type Node, type Context, useMemo, useContext, useEffect, useState } from 'react'
+import { useDispatch } from 'react-redux'
 
 import * as RouterContext from '$shared/components/RouterContextProvider'
 import { Provider as PendingProvider } from '$shared/components/PendingContextProvider'
 import { Provider as ValidationContextProvider } from './ValidationContextProvider'
 import { Provider as PermissionsProvider } from './useProductPermissions'
 import { usePending } from '$shared/hooks/usePending'
+import { resetProduct } from '$mp/modules/product/actions'
 
 import useProductLoadCallback from './useProductLoadCallback'
 import useContractProductLoadCallback from './useContractProductLoadCallback'
@@ -14,6 +16,7 @@ import useProductValidationEffect from './useProductValidationEffect'
 import useContractProductSubscriptionLoadCallback from './useContractProductSubscriptionLoadCallback'
 import useLoadCategoriesCallback from './useLoadCategoriesCallback'
 import useLoadProductStreamsCallback from './useLoadProductStreamsCallback'
+import useCommunityProductLoadCallback from './useCommunityProductLoadCallback'
 
 type ContextProps = {
     loadProduct: Function,
@@ -21,6 +24,7 @@ type ContextProps = {
     loadContractProductSubscription: Function,
     loadCategories: Function,
     loadProductStreams: Function,
+    loadCommunityProduct: Function,
 }
 
 const ProductControllerContext: Context<ContextProps> = React.createContext({})
@@ -47,6 +51,10 @@ function useProductLoadEffect() {
 function ProductEffects() {
     useProductLoadEffect()
     useProductValidationEffect()
+    const dispatch = useDispatch()
+
+    // Clear product on unmount
+    useEffect(() => () => dispatch(resetProduct()), [dispatch])
 
     return null
 }
@@ -61,6 +69,7 @@ function useProductController() {
     const loadContractProductSubscription = useContractProductSubscriptionLoadCallback()
     const loadCategories = useLoadCategoriesCallback()
     const loadProductStreams = useLoadProductStreamsCallback()
+    const loadCommunityProduct = useCommunityProductLoadCallback()
 
     return useMemo(() => ({
         loadProduct,
@@ -68,12 +77,14 @@ function useProductController() {
         loadContractProductSubscription,
         loadCategories,
         loadProductStreams,
+        loadCommunityProduct,
     }), [
         loadProduct,
         loadContractProduct,
         loadContractProductSubscription,
         loadCategories,
         loadProductStreams,
+        loadCommunityProduct,
     ])
 }
 

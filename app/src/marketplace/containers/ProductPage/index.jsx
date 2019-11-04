@@ -7,7 +7,7 @@ import { Helmet } from 'react-helmet'
 import { withRouter } from 'react-router-dom'
 
 import Layout from '$shared/components/Layout'
-import type { ProductId } from '$mp/flowtype/product-types'
+import type { ProductId, CommunityId } from '$mp/flowtype/product-types'
 import * as RouterContext from '$shared/components/RouterContextProvider'
 import ProductController, { useController } from '../ProductController'
 import usePending from '$shared/hooks/usePending'
@@ -30,7 +30,7 @@ import styles from './page.pcss'
 
 const ProductPage = () => {
     const dispatch = useDispatch()
-    const { loadContractProductSubscription, loadCategories, loadProductStreams } = useController()
+    const { loadContractProductSubscription, loadCategories, loadProductStreams, loadCommunityProduct } = useController()
     const product = useProduct()
     const userData = useSelector(selectUserData)
     const isLoggedIn = userData !== null
@@ -59,9 +59,21 @@ const ProductPage = () => {
         }
     }, [dispatch, isLoggedIn, loadContractProductSubscription, loadCategories, loadProductStreams])
 
+    const loadCommunity = useCallback(async (id: CommunityId) => {
+        loadCommunityProduct(id)
+    }, [loadCommunityProduct])
+
     useEffect(() => {
         loadProduct(match.params.id)
     }, [loadProduct, match.params.id])
+
+    const { communityDeployed, beneficiaryAddress } = product
+
+    useEffect(() => {
+        if (communityDeployed && beneficiaryAddress) {
+            loadCommunity(beneficiaryAddress)
+        }
+    }, [communityDeployed, beneficiaryAddress, loadCommunity])
 
     return (
         <Layout hideNavOnDesktop={canEdit}>

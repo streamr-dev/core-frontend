@@ -26,7 +26,6 @@ import Preview from './Preview'
 import ProductEditorDebug from './ProductEditorDebug'
 import { Provider as ModalProvider } from '$shared/components/ModalContextProvider'
 import ConfirmSaveModal from './ConfirmSaveModal'
-import UpdateContractProductModal from './UpdateContractProductModal'
 import DeployCommunityModal from './DeployCommunityModal'
 import PublishModal from './PublishModal'
 
@@ -136,7 +135,6 @@ const EditProductPage = ({ product }: { product: Product }) => {
                 <Editor />
             )}
             <ConfirmSaveModal />
-            <UpdateContractProductModal />
             <DeployCommunityModal />
             <PublishModal />
         </CoreLayout>

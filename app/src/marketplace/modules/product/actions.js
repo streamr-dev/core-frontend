@@ -12,7 +12,7 @@ import { isPaidProduct } from '../../utils/product'
 import { getMyPurchases } from '../myPurchaseList/actions'
 import type { StreamIdList } from '$shared/flowtype/stream-types'
 import type { ProductId, Subscription } from '../../flowtype/product-types'
-import type { ErrorInUi } from '$shared/flowtype/common-types'
+import type { ReduxActionCreator, ErrorInUi } from '$shared/flowtype/common-types'
 import type { StoreState } from '../../flowtype/store-state'
 
 import { selectProduct } from './selectors'
@@ -29,6 +29,7 @@ import {
     GET_USER_PRODUCT_PERMISSIONS_REQUEST,
     GET_USER_PRODUCT_PERMISSIONS_SUCCESS,
     GET_USER_PRODUCT_PERMISSIONS_FAILURE,
+    RESET_PRODUCT,
 } from './constants'
 import * as services from './services'
 import type {
@@ -129,6 +130,8 @@ const getUserProductPermissionsFailure: ProductErrorActionCreator = createAction
         error,
     }),
 )
+
+export const resetProduct: ReduxActionCreator = createAction(RESET_PRODUCT)
 
 export const getStreamsByProductId = (id: ProductId) => (dispatch: Function) => {
     dispatch(getStreamsByProductIdRequest(id))
