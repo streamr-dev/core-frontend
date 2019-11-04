@@ -4,17 +4,26 @@ import React from 'react'
 import { withRouter } from 'react-router-dom'
 
 type Props = {
-    onChange: () => void,
+    onChange: (urlHash?: string) => void,
     location: {
         pathname: string,
+        hash: string,
     },
 }
 
 class RouteWatcher extends React.Component<Props> {
+    componentDidMount() {
+        this.checkIfPathChange('')
+    }
+
     componentDidUpdate({ location: { pathname: prevPathname } }: Props) {
-        const { location: { pathname }, onChange } = this.props
+        this.checkIfPathChange(prevPathname)
+    }
+
+    checkIfPathChange(prevPathname) {
+        const { location: { pathname, hash }, onChange } = this.props
         if (pathname !== prevPathname) {
-            onChange()
+            onChange(hash)
         }
     }
 
