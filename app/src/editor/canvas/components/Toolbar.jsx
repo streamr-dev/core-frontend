@@ -64,17 +64,17 @@ function ZoomControls({ className, canvas }) {
                     </div>
                 }
             >
-                <DropdownActions.Item onClick={() => camera.zoomIn()}>
-                    Zoom In <span className={styles.menuShortcut}>{metaKeyLabel}=</span>
-                </DropdownActions.Item>
-                <DropdownActions.Item onClick={() => camera.zoomOut()}>
-                    Zoom Out <span className={styles.menuShortcut}>{metaKeyLabel}-</span>
-                </DropdownActions.Item>
                 <DropdownActions.Item onClick={() => camera.setScale(1)}>
                     Full Size <span className={styles.menuShortcut}>{metaKeyLabel}0</span>
                 </DropdownActions.Item>
                 <DropdownActions.Item onClick={() => canvasCamera.fitCanvas()}>
                     Fit Screen <span className={styles.menuShortcut}>{metaKeyLabel}1</span>
+                </DropdownActions.Item>
+                <DropdownActions.Item onClick={() => camera.zoomIn()}>
+                    Zoom In <span className={styles.menuShortcut}>{metaKeyLabel}=</span>
+                </DropdownActions.Item>
+                <DropdownActions.Item onClick={() => camera.zoomOut()}>
+                    Zoom Out <span className={styles.menuShortcut}>{metaKeyLabel}-</span>
                 </DropdownActions.Item>
                 <DropdownActions.Item divider />
                 <DropdownActions.Item onClick={() => camera.setScale(0.5)}>50%</DropdownActions.Item>
