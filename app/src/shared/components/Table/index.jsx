@@ -61,7 +61,7 @@ export default class Table extends React.Component<Props> {
         const { children, className, ...props } = this.props
 
         return (
-            <ReactstrapTable responsive className={cx(className, styles.table)} {...props}>
+            <ReactstrapTable className={cx(className, styles.table)} {...props}>
                 {children}
             </ReactstrapTable>
         )

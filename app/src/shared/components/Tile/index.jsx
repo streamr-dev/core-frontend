@@ -17,7 +17,7 @@ type Props = {
     image?: ?Node,
     imageUrl?: string,
     dropdownActions?: Array<typeof DropdownActions.Item> | Node,
-    onMenuToggle?: (boolean) => void,
+    onMenuToggle?: (boolean) => any,
     className?: string,
     badges: subcomponents.BadgesType,
     labels: subcomponents.LabelsType,
