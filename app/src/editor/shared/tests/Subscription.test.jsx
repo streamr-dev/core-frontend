@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { mount } from 'enzyme'
 import { setupAuthorizationHeader } from '$editor/shared/tests/utils'
+import { act } from 'react-dom/test-utils'
 import uniqueId from 'lodash/uniqueId'
 
 import api from '../utils/api'
@@ -61,6 +62,30 @@ describe('Subscription', () => {
         afterEach(async () => {
             await teardown()
         })
+
+        it('unsubscribes on isActive false', async (done) => {
+            const Test = () => {
+                const [isActive, setIsActive] = useState(true)
+                return (
+                    <ClientProviderComponent apiKey={apiKey}>
+                        <Subscription
+                            uiChannel={stream}
+                            onSubscribed={() => {
+                                act(() => {
+                                    setIsActive(false)
+                                })
+                            }}
+                            onUnsubscribed={() => {
+                                done()
+                            }}
+                            isActive={isActive}
+                        />
+                    </ClientProviderComponent>
+                )
+            }
+
+            mount(<Test />)
+        }, 15000)
 
         it('can create subscription', async (done) => {
             const msg = { test: uniqueId() }
