@@ -45,7 +45,7 @@ describe('ShareDialogPermission', () => {
     })
 
     describe('render', () => {
-        it('renders the userLabel correctly if there is a user', () => {
+        it('does not render the userLabel for the current user', () => {
             const permissions = [{
                 user: 'test@test.test',
             }]
@@ -56,9 +56,24 @@ describe('ShareDialogPermission', () => {
                 resourceId=""
             />)
 
-            assert(permissionRow.find('.user'))
-            assert.equal(permissionRow.find('.user').find('.username').text(), 'test@test.test')
+            expect(permissionRow.find('.user')).toHaveLength(0)
         })
+
+        it('renders the userLabel for other users', () => {
+            const permissions = [{
+                user: 'test2@test.test',
+            }]
+            const permissionRow = shallow(<ShareDialogPermission
+                username="test@test.test"
+                permissions={permissions}
+                resourceType=""
+                resourceId=""
+            />)
+
+            expect(permissionRow.find('.user')).toHaveLength(1)
+            expect(permissionRow.find('.user').find('.username').text()).toEqual('test2@test.test')
+        })
+
         it('renders the userLabel correctly if there is no user', () => {
             const permissions = [{
                 user: 'A',
