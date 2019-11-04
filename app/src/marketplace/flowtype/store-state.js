@@ -204,6 +204,7 @@ export type StoreState = {
     allowance: AllowanceState,
     categories: CategoryState,
     contractProduct: ContractProductState,
+    communityProduct: CommunityProductState,
     createContractProduct: ModifyContractProductState,
     editProduct: EditProductState,
     global: GlobalState,

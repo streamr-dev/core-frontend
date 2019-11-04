@@ -51,9 +51,9 @@ function useProductLoadEffect() {
 function ProductEffects() {
     useProductLoadEffect()
     useProductValidationEffect()
-    const dispatch = useDispatch()
 
     // Clear product on unmount
+    const dispatch = useDispatch()
     useEffect(() => () => dispatch(resetProduct()), [dispatch])
 
     return null
