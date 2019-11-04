@@ -42,6 +42,8 @@ jobs:
     deploy:
       - provider: script
         script: bash app/travis_scripts/deploy_docker.sh staging
+        on:
+          all_branches: true
   - stage: Platform Tests
     if: type IN (pull_request)
     env:
