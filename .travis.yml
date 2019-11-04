@@ -29,21 +29,6 @@ env:
   - SENTRY_PROJECT=marketplace
 jobs:
   include:
-  - stage: Build docker (dev)
-    install: true
-    env:
-      - OWNER=streamr
-      - IMAGE_NAME=platform
-      - TAG=dev
-    script:
-      - npm ci
-      - npm run build
-      - docker build -t $OWNER/$IMAGE_NAME:$TAG --build-arg NPM_TOKEN=${NPM_TOKEN} .
-    deploy:
-      - provider: script
-        script: bash app/travis_scripts/deploy_docker.sh staging
-        on:
-          all_branches: true
   - stage: Platform Tests
     if: type IN (pull_request)
     env:
@@ -81,6 +66,19 @@ jobs:
     - SENTRY_DSN=https://e012761929d24baa96ca82772f60b395@sentry.io/1203154
     - LOGROCKET_SLUG=et0uhu/streamr-frontend-local
     script: "$TRAVIS_BUILD_DIR/app/travis_scripts/visual-tests.sh"
+  - stage: Build docker (dev)
+    install: true
+    env:
+      - OWNER=streamr
+      - IMAGE_NAME=platform
+      - TAG=dev
+    script:
+      - npm ci
+      - npm run build
+      - docker build -t $OWNER/$IMAGE_NAME:$TAG --build-arg NPM_TOKEN=${NPM_TOKEN} .
+    deploy:
+      - provider: script
+        script: bash app/travis_scripts/deploy_docker.sh staging
   - stage: Platform Build Staging
     if: NOT type IN (pull_request)
     env:
