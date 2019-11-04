@@ -425,69 +425,75 @@ body .RealtimeRunButtonMenu {
   color: #323232 !important;
 }
 
-.ToolbarZoomButtons {
+/**
+ * Zoom Controls
+ */
+
+.ToolbarZoomControls {
   margin: 0 1um;
 }
 
-body .ZoomButtons {
-  display: flex;
-  background: #FFFFFF;
-  align-items: center;
-  line-height: 40px;
-  border-radius: 4px;
-  padding: 0 0.5um;
-}
+.ZoomControls {
+  .ZoomButtons {
+    display: flex;
+    background: #FFFFFF;
+    align-items: center;
+    line-height: 40px;
+    border-radius: 4px;
+    padding: 0 0.5um;
 
-.ZoomMenu {
-}
+    .ZoomButton .icon {
+      height: 0.5um;
+      width: 0.5um;
+    }
 
-.ToolbarZoomButtons .ZoomMenuTrigger {
-  appearance: none;
-  transition: color 0.1s 0.2s;
-  color: #CDCDCD;
-  background: transparent;
-  outline: none;
-  border: none;
-  border-radius: 4px;
-  margin: auto 0.5um;
-  cursor: pointer;
-  min-width: 48px; /* prevent jump when going from 2 to 3 digits e.g. 99% to 100% */
-  text-align: center;
-}
+    .ZoomButton {
+      cursor: pointer;
+      height: 1.5um;
+      width: 1.5um;
+      appearance: none;
+      border-radius: 4px;
+      background: #F8F8F8;
+      color: #A3A3A3;
+      outline: none;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
 
-.ZoomMenu:--enter .ZoomMenuTrigger {
-  outline: none;
-  color: #323232;
-}
+      &:--enter {
+        outline: none;
+        color: #323232;
+        background: #EFEFEF;
+      }
+    }
+  }
 
-.ZoomMenu button {
-  display: inline-flex;
-  justify-content: space-between;
-}
+  .ZoomMenu {
+    .ZoomMenuTrigger {
+      appearance: none;
+      transition: color 0.1s;
+      color: #CDCDCD;
+      background: transparent;
+      outline: none;
+      border: none;
+      border-radius: 4px;
+      margin: auto 0.5um;
+      cursor: pointer;
+      min-width: 48px; /* prevent jump when going from 2 to 3 digits e.g. 99% to 100% */
+      text-align: center;
+    }
 
-.ZoomButtons .ZoomButton .icon {
-  height: 0.5um;
-  width: 0.5um;
-}
+    &:global(.show) .ZoomMenuTrigger,
+    &:--enter .ZoomMenuTrigger {
+      outline: none;
+      color: #323232;
+    }
 
-.ZoomButtons .ZoomButton {
-  cursor: pointer;
-  height: 1.5um;
-  width: 1.5um;
-  appearance: none;
-  border-radius: 4px;
-  background: #F8F8F8;
-  color: #A3A3A3;
-  outline: none;
-  border: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  &:--enter {
-    outline: none;
-    color: #323232;
-    background: #EFEFEF;
+    button {
+      display: inline-flex;
+      justify-content: space-between;
+    }
   }
 }
 
