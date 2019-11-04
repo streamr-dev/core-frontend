@@ -36,7 +36,6 @@ jobs:
       - IMAGE_NAME=platform
       - TAG=dev
     script:
-      - cd app
       - npm run build
       - docker build -t $OWNER/$IMAGE_NAME:$TAG --build-arg NPM_TOKEN=${NPM_TOKEN} .
     deploy:
