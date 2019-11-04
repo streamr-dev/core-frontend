@@ -170,5 +170,41 @@ describe('Subscription', () => {
                 </ClientProviderComponent>
             ))
         }, 15000)
+
+        it('can use resendLast 0', async (done) => {
+            const msg1 = { msg: uniqueId() }
+            const msg2 = { msg: uniqueId() }
+            const msg3 = { msg: uniqueId() }
+            await stream.publish(msg1)
+            await stream.publish(msg2)
+            const messages = []
+            const onResending = jest.fn()
+            const onNoResend = jest.fn()
+
+            await wait(10000) // wait for above messages to flush
+
+            const result = mount((
+                <ClientProviderComponent apiKey={apiKey}>
+                    <Subscription
+                        uiChannel={stream}
+                        resendLast={0}
+                        onSubscribed={async () => {
+                            await stream.publish(msg3)
+                            await wait(500)
+                            expect(onResending).not.toHaveBeenCalled()
+                            expect(messages).toEqual([msg3])
+                            result.unmount()
+                            done()
+                        }}
+                        onMessage={(message) => {
+                            messages.push(message)
+                        }}
+                        onResending={onResending}
+                        onNoResend={onNoResend}
+                        isActive
+                    />
+                </ClientProviderComponent>
+            ))
+        }, 15000)
     })
 })

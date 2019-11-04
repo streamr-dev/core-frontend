@@ -86,6 +86,11 @@ class Subscription extends Component {
 
     getResendOptions() {
         const { resendFrom, resendTo, resendLast } = this.props
+        if ((resendFrom == null && resendTo == null && resendLast == null) || resendLast === 0) {
+            // undefined if no options
+            return undefined
+        }
+
         const resend = {}
 
         if (resendFrom != null) {
@@ -116,13 +121,14 @@ class Subscription extends Component {
 
         this.isSubscribed = true
         this.client = this.props.clientContext.client
+        await this.client.ensureConnected()
 
         const { id } = uiChannel
 
-        this.subscription = this.client.subscribe({
+        const resend = this.getResendOptions()
+        this.subscription = this.client.subscribe(Object.assign({
             stream: id,
-            resend: this.getResendOptions(),
-        }, this.onMessage)
+        }, resend ? { resend } : undefined), this.onMessage)
 
         this.subscription.on('subscribed', this.onSubscribed)
         this.subscription.on('unsubscribed', this.onUnsubscribed)
