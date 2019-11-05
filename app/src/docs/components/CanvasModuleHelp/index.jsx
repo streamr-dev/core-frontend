@@ -61,10 +61,12 @@ type Props = {
 }
 
 export default function CanvasModuleHelp({ module: m, help, minifiedContent, className }: Props) {
+    const modulePageId = m.name.toLowerCase().replace(/\s/g, '')
+
     return (
         <section
             key={m.id}
-            id={m.name.toLowerCase()}
+            id={modulePageId}
             className={cx(
                 styles.root,
                 className, {
@@ -73,7 +75,7 @@ export default function CanvasModuleHelp({ module: m, help, minifiedContent, cla
             )}
         >
             <div className={styles.nameAndDescription}>
-                {minifiedContent ? null : <h4>{m.name}</h4>}
+                {minifiedContent ? null : <a href={`#${modulePageId}`}><h4>{m.name}</h4></a>}
                 <ReactMarkdown source={help && help.helpText} />
             </div>
             {minifiedContent ? null : (
