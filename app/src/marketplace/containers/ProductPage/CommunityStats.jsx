@@ -1,15 +1,11 @@
 // @flow
 
 import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react'
-import { useSelector } from 'react-redux'
-import Skeleton from 'react-loading-skeleton'
 
 import useProduct from '$mp/containers/ProductController/useProduct'
 import useContractProduct from '$mp/containers/ProductController/useContractProduct'
 import useCommunityProduct from '$mp/containers/ProductController/useCommunityProduct'
-import usePending from '$shared/hooks/usePending'
 import ProductContainer from '$shared/components/Container/Product'
-import { selectAuthApiKeyId } from '$shared/modules/resourceKey/selectors'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { getCommunityStats } from '$mp/modules/communityProduct/services'
 import { fromAtto } from '$mp/utils/math'
@@ -66,9 +62,7 @@ const CommunityStats = () => {
 
     const { communityDeployed, created, beneficiaryAddress } = product
     const community = useCommunityProduct()
-    const { isPending } = usePending('communityProduct.LOAD')
 
-    const authApiKeyId = useSelector(selectAuthApiKeyId)
     const { subscriberCount } = contractProduct || {}
     const { adminFee, joinPartStreamId } = community || {}
 
@@ -221,7 +215,6 @@ const CommunityStats = () => {
                                 </div>
                                 <MembersGraph
                                     className={styles.graph}
-                                    authApiKeyId={authApiKeyId}
                                     joinPartStreamId={joinPartStreamId}
                                     memberCount={memberCount.total}
                                     shownDays={shownDays}

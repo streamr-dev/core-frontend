@@ -76,10 +76,14 @@ const ProductPage = () => {
     }, [communityDeployed, beneficiaryAddress, loadCommunity])
 
     return (
-        <Layout hideNavOnDesktop={canEdit}>
+        <Layout hideNavOnDesktop={canEdit} navShadow>
             <Helmet title={`${product.name} | ${I18n.t('general.title.suffix')}`} />
             {canEdit && (
-                <Toolbar left={<BackButton />} actions={toolbarActions} />
+                <Toolbar
+                    className={Toolbar.styles.shadow}
+                    left={<BackButton />}
+                    actions={toolbarActions}
+                />
             )}
             <Page />
             <PurchaseModal />
