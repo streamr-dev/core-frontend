@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useState, useCallback, useEffect } from 'react'
+import React, { useState, useCallback, useEffect, useRef } from 'react'
 import { useDispatch } from 'react-redux'
 
 import useModal from '$shared/hooks/useModal'
@@ -18,6 +18,7 @@ import { addTransaction } from '$mp/modules/transactions/actions'
 import { transactionTypes } from '$shared/utils/constants'
 import getWeb3 from '$shared/web3/web3Provider'
 import { averageBlockTime } from '$shared/utils/web3'
+import useIsMounted from '$shared/hooks/useIsMounted'
 
 type DeployDialogProps = {
     product: Product,
@@ -53,38 +54,55 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
     const [estimate, setEstimate] = useState(0)
     const [address, setAddress] = useState(null)
     const dispatch = useDispatch()
+    const isMounted = useIsMounted()
 
     const onClose = useCallback(() => {
         api.close(!!address && isEthereumAddress(address))
     }, [api, address])
+    const onCloseRef = useRef()
+    onCloseRef.current = onClose
 
     const productId = product.id
     // $FlowFixMe
     const { adminFee = 0 } = product || {}
     const onDeploy = useCallback(async () => {
         const { id: joinPartStreamId } = await createJoinPartStream(productId)
-        const blockEstimate = await averageBlockTime(getWeb3())
+
+        if (!isMounted()) { return Promise.resolve() }
 
         // Set estimate
+        const blockEstimate = await averageBlockTime(getWeb3())
         setEstimate(blockEstimate + API_READY_ESTIMATE)
+
+        if (!isMounted()) { return Promise.resolve() }
 
         return new Promise((resolve) => (
             deployContract(joinPartStreamId, adminFee)
                 .onTransactionHash((hash, communityAddress) => {
+                    if (!isMounted()) { return }
                     dispatch(addTransaction(hash, transactionTypes.DEPLOY_COMMUNITY))
                     setAddress(communityAddress)
                     setStep(steps.COMPLETE)
                     resolve()
                 })
                 .onTransactionComplete(({ contractAddress }) => {
+                    if (!isMounted()) { return }
                     setAddress(contractAddress)
+
+                    // Redirect back to product but allow the api to start up
+                    setTimeout(() => {
+                        if (isMounted() && onCloseRef.current) {
+                            onCloseRef.current()
+                        }
+                    }, API_READY_ESTIMATE * 1000)
                 })
                 .onError((e) => {
+                    if (!isMounted()) { return }
                     setDeployError(e)
                     resolve()
                 })
         ))
-    }, [productId, adminFee, dispatch])
+    }, [isMounted, productId, adminFee, dispatch])
 
     const onGuideContinue = useCallback((dontShow) => {
         setSkipGuide(dontShow)
