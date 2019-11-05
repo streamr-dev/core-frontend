@@ -16,6 +16,8 @@ import { isEthereumAddress } from '$mp/utils/validate'
 import type { Address } from '$shared/flowtype/web3-types'
 import { addTransaction } from '$mp/modules/transactions/actions'
 import { transactionTypes } from '$shared/utils/constants'
+import getWeb3 from '$shared/web3/web3Provider'
+import { averageBlockTime } from '$shared/utils/web3'
 
 type DeployDialogProps = {
     product: Product,
@@ -27,7 +29,6 @@ const steps = {
     GUIDE: 'guide',
     CONFIRM: 'deploy',
     COMPLETE: 'wait',
-    ERROR: 'error',
 }
 
 const SKIP_GUIDE_KEY = 'marketplace.skipCpDeployGuide'
@@ -42,9 +43,14 @@ function setSkipGuide(value) {
     storage.setItem(SKIP_GUIDE_KEY, JSON.stringify(value))
 }
 
+// allow 60s for the API to start in CP server
+const API_READY_ESTIMATE = 60
+
 export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps) => {
     const dontShowAgain = skipGuide()
     const [step, setStep] = useState(dontShowAgain ? steps.CONFIRM : steps.GUIDE)
+    const [deployError, setDeployError] = useState(null)
+    const [estimate, setEstimate] = useState(0)
     const [address, setAddress] = useState(null)
     const dispatch = useDispatch()
 
@@ -57,6 +63,10 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
     const { adminFee = 0 } = product || {}
     const onDeploy = useCallback(async () => {
         const { id: joinPartStreamId } = await createJoinPartStream(productId)
+        const blockEstimate = await averageBlockTime(getWeb3())
+
+        // Set estimate
+        setEstimate(blockEstimate + API_READY_ESTIMATE)
 
         return new Promise((resolve) => (
             deployContract(joinPartStreamId, adminFee)
@@ -69,8 +79,8 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
                 .onTransactionComplete(({ contractAddress }) => {
                     setAddress(contractAddress)
                 })
-                .onError(() => {
-                    setStep(steps.ERROR)
+                .onError((e) => {
+                    setDeployError(e)
                     resolve()
                 })
         ))
@@ -87,6 +97,15 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
             updateAddress(address)
         }
     }, [address, updateAddress])
+
+    if (deployError) {
+        return (
+            <ErrorDialog
+                message={deployError.message}
+                onClose={onClose}
+            />
+        )
+    }
 
     switch (step) {
         case steps.GUIDE:
@@ -113,16 +132,9 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
             return (
                 <DeployingCommunityDialog
                     product={product}
+                    estimate={estimate}
                     onContinue={() => api.close(true)}
                     onClose={onClose}
-                />
-            )
-
-        case steps.ERROR:
-            return (
-                <ErrorDialog
-                    message="error.message"
-                    onClose={() => api.close(false)}
                 />
             )
 
