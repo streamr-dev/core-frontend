@@ -36,7 +36,7 @@ export const averageBlockTime = async (web3Instance: StreamrWeb3, blocksAgo: num
     // Get the current block
     const currentBlock = await web3Instance.eth.getBlock(currentBlockNumber)
 
-    // Get the block X blocks ago
+    // Get the block X number of blocks ago
     const thenBlock = await web3Instance.eth.getBlock(currentBlockNumber - blocksAgo)
 
     // Take the average of the then and now timestamps

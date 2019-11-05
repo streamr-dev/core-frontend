@@ -183,8 +183,6 @@ export type GlobalState = {
     fetchingDataPerUsdRate: boolean,
     dataPerUsdRateError: ?TransactionError,
     ethereumNetworkError: ?TransactionError,
-    metamaskPermission: ?boolean,
-    isWeb3Injected: ?boolean,
 }
 
 // transactions
