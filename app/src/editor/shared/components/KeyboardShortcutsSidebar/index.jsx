@@ -1,19 +1,21 @@
 import React, { useEffect, useCallback, useState } from 'react'
 import cx from 'classnames'
 
-import { isWindows as getIsWindows } from '$shared/utils/platform'
+import { isWindows as getIsWindows, isMac as getIsMac } from '$shared/utils/platform'
 import { Header, Content, Section } from '$editor/shared/components/Sidebar'
 import isEditableElement from '$editor/shared/utils/isEditableElement'
 
 import styles from './KeyboardShortcutsSidebar.pcss'
 
 const isWindows = getIsWindows()
+const isMac = getIsMac()
 
 const keyLabels = {
     escape: 'esc',
     meta: isWindows ? 'win' : '⌘',
-    control: '⌃',
-    shift: '⇧',
+    control: 'ctrl',
+    alt: isMac ? 'opt' : 'alt',
+    shift: 'shift',
 }
 
 function getPlatformKey(key) {
@@ -40,10 +42,12 @@ const getEventKey = (event) => {
         finalKey = key
     } else if (code === 'Space') {
         finalKey = code
-    } else if (code.substring(0, 3) === 'Key') {
-        finalKey = code.substring(3)
+    } else if (code.startsWith('Key')) {
+        finalKey = code.slice('Key'.length)
+    } else if (code.startsWith('Digit')) {
+        finalKey = code.slice('Digit'.length)
     } else {
-        finalKey = key
+        finalKey = code
     }
 
     return finalKey.toLowerCase()
@@ -155,15 +159,15 @@ function usePressedKeys(initialState = INITIAL_PRESSED_KEYS_STATE) {
     }, [resetState, isInitialState, setState])
 
     useEffect(() => {
-        window.addEventListener('keydown', onKeyDown)
-        window.addEventListener('keyup', onKeyUp)
-        window.addEventListener('blur', resetState)
-        window.addEventListener('focus', resetState)
+        window.addEventListener('keydown', onKeyDown, true)
+        window.addEventListener('keyup', onKeyUp, true)
+        window.addEventListener('blur', resetState, true)
+        window.addEventListener('focus', resetState, true)
         return () => {
-            window.removeEventListener('keydown', onKeyDown)
-            window.removeEventListener('keyup', onKeyUp)
-            window.removeEventListener('blur', resetState)
-            window.removeEventListener('focus', resetState)
+            window.removeEventListener('keydown', onKeyDown, true)
+            window.removeEventListener('keyup', onKeyUp, true)
+            window.removeEventListener('blur', resetState, true)
+            window.removeEventListener('focus', resetState, true)
         }
     }, [onKeyDown, onKeyUp, resetState])
     return state

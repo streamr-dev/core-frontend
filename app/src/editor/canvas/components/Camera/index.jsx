@@ -341,6 +341,7 @@ function useKeyboardPanControls({ panAmount = 25 } = {}) {
         if (event.key === 'ArrowRight' || event.key.toLowerCase() === 'd') {
             event.preventDefault()
             event.stopPropagation()
+            event.stopImmediatePropagation()
             pan({ x: -panAmount })
         }
         if ((!event.shiftKey && event.key === 'ArrowUp') || event.key.toLowerCase() === 'w') {
