@@ -7,7 +7,7 @@
   background: #CDCDCD;
 
   &::after {
-    content: '';
+    content: attr(statustext);
     visibility: hidden;
     opacity: 0;
     transition: 0s all;
@@ -35,7 +35,6 @@
 
   &:hover {
     &::after {
-      content: 'Active';
       left: -13px;
     }
   }
@@ -46,7 +45,6 @@
 
   &:hover {
     &::after {
-      content: 'Inactive';
       left: -17px;
     }
   }
@@ -57,7 +55,6 @@
 
   &:hover {
     &::after {
-      content: 'No data yet';
       left: -28px;
       width: 78px;
     }

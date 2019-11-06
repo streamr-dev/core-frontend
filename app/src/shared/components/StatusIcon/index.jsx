@@ -2,6 +2,7 @@
 
 import React from 'react'
 import cx from 'classnames'
+import { I18n } from 'react-redux-i18n'
 
 import styles from './statusIcon.pcss'
 
@@ -24,6 +25,7 @@ export default class StatusIcon extends React.Component<Props> {
 
         return (
             <div
+                statustext={!!status && I18n.t(`shared.stream.status.${status}`)}
                 className={cx(className, styles.status, {
                     [styles.ok]: status === StatusIcon.OK,
                     [styles.error]: status === StatusIcon.ERROR,
