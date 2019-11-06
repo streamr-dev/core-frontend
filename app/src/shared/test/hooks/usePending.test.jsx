@@ -24,7 +24,7 @@ function Unmounter({ children, unmountAfter }) {
 describe('usePending', () => {
     it('is pending while waiting for wrapped function', async (done) => {
         let currentPendingState
-        const timeout = 50
+        const timeout = 200
         const fn = jest.fn()
         let isAnyPending
         function Test() {
@@ -60,7 +60,7 @@ describe('usePending', () => {
 
     it('can call wrapped function multiple times, will wait for all to complete', async (done) => {
         let currentPendingState
-        const timeout = 100
+        const timeout = 200
         const started = jest.fn()
         const ended = jest.fn()
         function Test() {
@@ -102,7 +102,7 @@ describe('usePending', () => {
 
     it('can detect any pending', async (done) => {
         let currentPendingContext
-        const timeout = 100
+        const timeout = 200
         function Test({ name }) {
             const { wrap } = usePending(name)
             useEffect(() => {
@@ -138,7 +138,7 @@ describe('usePending', () => {
 
     it('can handle pending item unmounting', async (done) => {
         let currentPendingContext
-        const timeout = 100
+        const timeout = 200
         const unmountTime = timeout * 0.5
         const fn = jest.fn()
         function Inspect() {
@@ -175,7 +175,7 @@ describe('usePending', () => {
 
     it('works with nested contexts', async (done) => {
         let currentPendingContext
-        const maxTimeout = 100
+        const maxTimeout = 200
         function Test({ name, timeout }) {
             const { wrap } = usePending(name)
             useEffect(() => {
