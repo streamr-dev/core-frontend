@@ -6,6 +6,7 @@ import cx from 'classnames'
 import useProduct from '../ProductController/useProduct'
 import useValidation from '../ProductController/useValidation'
 import useProductActions from '../ProductController/useProductActions'
+import { usePending } from '$shared/hooks/usePending'
 import SelectField from '$mp/components/SelectField'
 import { isCommunityProduct } from '$mp/utils/product'
 import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
@@ -27,6 +28,7 @@ const ProductDetails = () => {
     const { isValid: isCategoryValid, message: categoryMessage } = useValidation('category')
     const { isValid: isAdminFeeValid, message: adminFeeMessage } = useValidation('adminFee')
     const { updateCategory, updateAdminFee } = useProductActions()
+    const { isPending } = usePending('product.SAVE')
 
     const adminFee = product && product.adminFee
     const selectedAdminFee = useMemo(() => adminFeeOptions.find(({ value }) => value === adminFee), [adminFee])
@@ -53,6 +55,7 @@ const ProductDetails = () => {
                                         onChange={(option) => updateCategory(option.value)}
                                         isSearchable={false}
                                         error={isTouched('category') && !isCategoryValid ? categoryMessage : undefined}
+                                        disabled={!!isPending}
                                     />
                                 ) : null
                             }}
@@ -67,6 +70,7 @@ const ProductDetails = () => {
                                 onChange={(option) => updateAdminFee(option.value)}
                                 isSearchable={false}
                                 error={isTouched('adminFee') && !isAdminFeeValid ? adminFeeMessage : undefined}
+                                disabled={!!isPending}
                             />
                         </Details.Row>
                     )}

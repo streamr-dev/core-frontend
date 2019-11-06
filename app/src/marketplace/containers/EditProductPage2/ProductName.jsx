@@ -4,6 +4,7 @@ import React, { useContext } from 'react'
 import cx from 'classnames'
 import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
 
+import usePending from '$shared/hooks/usePending'
 import useProduct from '../ProductController/useProduct'
 import useValidation from '../ProductController/useValidation'
 import useProductActions from '../ProductController/useProductActions'
@@ -17,6 +18,7 @@ const ProductName = () => {
     const { isValid, message } = useValidation('name')
     const { updateName } = useProductActions()
     const { isTouched } = useContext(ValidationContext)
+    const { isPending } = usePending('product.SAVE')
 
     return (
         <section id="product-name" className={cx(styles.root, styles.ProductName)}>
@@ -27,6 +29,7 @@ const ProductName = () => {
                     onCommit={updateName}
                     placeholder="Product Name"
                     error={isTouched('name') && !isValid ? message : undefined}
+                    disabled={isPending}
                 />
             </div>
         </section>

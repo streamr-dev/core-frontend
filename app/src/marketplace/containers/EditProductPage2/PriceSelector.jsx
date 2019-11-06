@@ -36,10 +36,12 @@ const PriceSelector = () => {
         updateBeneficiaryAddress,
     } = useProductActions()
     const dataPerUsd = useSelector(selectDataPerUsd)
-    const { isPending } = usePending('contractProduct.LOAD')
+    const { isPending: savePending } = usePending('product.SAVE')
+    const { isPending: contractProductLoadPending } = usePending('contractProduct.LOAD')
     const isPublic = isPublished(product)
     const contractProduct = useSelector(selectContractProduct)
-    const isPriceTypeDisabled = !!(isPending || isPublic || !!contractProduct)
+    const isLoadingOrSaving = !!(savePending || contractProductLoadPending)
+    const isPriceTypeDisabled = !!(isLoadingOrSaving || isPublic || !!contractProduct)
 
     const [currency, setCurrency] = useState(product.priceCurrency || DEFAULT_CURRENCY)
 
@@ -78,12 +80,12 @@ const PriceSelector = () => {
                     disabled={isPriceTypeDisabled}
                 />
                 <div className={cx(styles.inner, {
-                    [styles.disabled]: isFreeProduct,
+                    [styles.disabled]: isFreeProduct || isLoadingOrSaving,
                 })}
                 >
                     <SetPrice
                         className={styles.priceSelector}
-                        disabled={!!product.isFree}
+                        disabled={isFreeProduct || isLoadingOrSaving}
                         price={product.price}
                         onPriceChange={onPriceChange}
                         currency={currency}
@@ -98,7 +100,7 @@ const PriceSelector = () => {
                             className={styles.beneficiaryAddress}
                             address={product.beneficiaryAddress}
                             onChange={updateBeneficiaryAddress}
-                            disabled={isFreeProduct}
+                            disabled={isFreeProduct || isLoadingOrSaving}
                         />
                     )}
                     <div className={styles.fixPrice}>
@@ -110,7 +112,7 @@ const PriceSelector = () => {
                             className={styles.toggle}
                             value={fixInFiat}
                             onChange={onFixPriceChange}
-                            disabled={isFreeProduct}
+                            disabled={isFreeProduct || isLoadingOrSaving}
                         />
                     </div>
                 </div>

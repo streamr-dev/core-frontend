@@ -88,9 +88,9 @@ const EditProductPage = ({ product }: { product: Product }) => {
             title: (productState && I18n.t(`editProductPage.${titles[tmpState]}`)) || '',
             color: 'primary',
             onClick: publish,
-            disabled: !(productState === productStates.NOT_DEPLOYED || productState === productStates.DEPLOYED),
+            disabled: !(productState === productStates.NOT_DEPLOYED || productState === productStates.DEPLOYED) || isSaving,
         }
-    }, [isAnyChangePending, productState, publish])
+    }, [isAnyChangePending, productState, publish, isSaving])
 
     const deployButton = useMemo(() => {
         if (isCommunity && !isDeployed) {

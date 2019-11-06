@@ -8,6 +8,7 @@ import useValidation from '../ProductController/useValidation'
 import useProductActions from '../ProductController/useProductActions'
 import MarkdownEditor from '$mp/components/MarkdownEditor'
 import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
+import usePending from '$shared/hooks/usePending'
 
 import styles from './productDescription.pcss'
 
@@ -16,6 +17,7 @@ const ProductDescription = () => {
     const { isTouched } = useContext(ValidationContext)
     const { isValid, message } = useValidation('description')
     const { updateDescription } = useProductActions()
+    const { isPending } = usePending('product.SAVE')
 
     return (
         <section id="description" className={cx(styles.root, styles.ProductDescription)}>
@@ -32,6 +34,7 @@ const ProductDescription = () => {
                     onCommit={updateDescription}
                     className={styles.productDescription}
                     error={isTouched('description') && !isValid ? message : undefined}
+                    disabled={!!isPending}
                 />
             </div>
         </section>

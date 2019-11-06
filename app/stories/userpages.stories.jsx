@@ -1,4 +1,4 @@
-// $flow
+// @flow
 
 import React from 'react'
 import { Provider } from 'react-redux'
@@ -56,6 +56,7 @@ story('Avatar')
         return (
             <Avatar
                 editable={boolean('Editable', false)}
+                // $FlowFixMe
                 user={user}
                 onImageChange={() => Promise.resolve()}
             />
@@ -69,10 +70,12 @@ story('KeyField')
             value={text('Value')}
             hideValue={boolean('Hide value')}
             allowEdit={boolean('Allow edit')}
+            // $FlowFixMe
             onSave={() => {
                 alert('Saved!') // eslint-disable-line no-alert
             }}
             allowDelete={boolean('Allow delete')}
+            // $FlowFixMe
             onDelete={() => {
                 alert('Deleted!') // eslint-disable-line no-alert
             }}

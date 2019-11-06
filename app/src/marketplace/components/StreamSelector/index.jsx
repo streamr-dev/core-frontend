@@ -24,6 +24,7 @@ type Props = LastErrorProps & {
     availableStreams: StreamList,
     className?: string,
     onEdit: (StreamIdList) => void,
+    disabled?: boolean,
 }
 
 const SORT_BY_NAME = 'name'
@@ -37,6 +38,7 @@ export const StreamSelector = (props: Props) => {
         onEdit,
         availableStreams,
         fetchingStreams = false,
+        disabled,
         ...rest
     } = props
     const [sort, setSort] = useState(SORT_BY_NAME)
@@ -100,6 +102,7 @@ export const StreamSelector = (props: Props) => {
                 <div
                     className={classNames(styles.root, {
                         [styles.withError]: !!hasError,
+                        [styles.disabled]: !!disabled,
                     })}
                 >
                     {!!fetchingStreams && <Translate value="streamSelector.loading" />}
@@ -110,6 +113,7 @@ export const StreamSelector = (props: Props) => {
                             onChange={onSearchChange}
                             value={search}
                             placeholder={I18n.t('streamSelector.typeToSearch')}
+                            disabled={!!disabled}
                         />
                         <DropdownActions
                             className={classNames(styles.sortDropdown, styles.dropdown)}
@@ -120,6 +124,7 @@ export const StreamSelector = (props: Props) => {
                                     {sort}
                                 </span>
                             }
+                            disabled={!!disabled}
                         >
                             <DropdownActions.Item onClick={() => setSort(SORT_BY_NAME)}>
                                 <Translate value="streamSelector.sortByName" />
@@ -155,6 +160,7 @@ export const StreamSelector = (props: Props) => {
                                     onClick={() => {
                                         onToggle(stream.id)
                                     }}
+                                    disabled={!!disabled}
                                 >
                                     {stream.name}
                                 </button>
@@ -178,6 +184,7 @@ export const StreamSelector = (props: Props) => {
                                     onSelectAll(toSelect)
                                 }
                             }}
+                            disabled={!!disabled}
                         >
                             {!allVisibleStreamsSelected
                                 ? <Translate value="streamSelector.selectAll" />
