@@ -44,8 +44,8 @@ function setSkipGuide(value) {
     storage.setItem(SKIP_GUIDE_KEY, JSON.stringify(value))
 }
 
-// allow 60s for the API to start in CP server
-const API_READY_ESTIMATE = 60
+// allow 5s for the API to start in CP server
+const API_READY_ESTIMATE = 5
 
 export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps) => {
     const dontShowAgain = skipGuide()
@@ -72,9 +72,8 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
 
         // Set estimate
         const blockEstimate = await averageBlockTime(getWeb3())
-        setEstimate(blockEstimate + API_READY_ESTIMATE)
-
         if (!isMounted()) { return Promise.resolve() }
+        setEstimate(blockEstimate + API_READY_ESTIMATE)
 
         return new Promise((resolve) => (
             deployContract(joinPartStreamId, adminFee)
