@@ -30,6 +30,9 @@ export default class UndoControls extends React.Component {
         if (!metaKey) { return } // all shortcuts require meta key
 
         if (event.code === 'KeyZ') {
+            event.preventDefault()
+            event.stopPropagation()
+            event.stopImmediatePropagation()
             if (!event.shiftKey) { // Meta+Z – Undo
                 this.context.undo()
             } else { // Meta+Shift+Z – Redo
@@ -38,6 +41,9 @@ export default class UndoControls extends React.Component {
         }
 
         if (event.code === 'KeyY') { // Meta+Y – Redo (windows style)
+            event.preventDefault()
+            event.stopPropagation()
+            event.stopImmediatePropagation()
             this.context.redo()
         }
     }
