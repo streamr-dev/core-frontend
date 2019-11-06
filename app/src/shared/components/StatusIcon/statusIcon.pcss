@@ -1,92 +1,20 @@
 
 .status {
-  position: relative;
   display: inline-block;
   width: 16px;
   height: 16px;
   border-radius: 50%;
   background: #CDCDCD;
-
-  &::after {
-    content: '';
-    visibility: hidden;
-    opacity: 0;
-    transition: 0s all;
-    position: absolute;
-    background-color: #323232;
-    border-radius: 2px;
-    color: white;
-    font-size: 12px;
-    line-height: 16px;
-    top: 26px;
-    padding: 2px 6px;
-  }
-
-  &:hover {
-    &::after {
-      transition-delay: 0.5s;
-      visibility: visible;
-      opacity: 1;
-    }
-  }
 }
 
 .ok {
   background: #2AC437;
-
-  &:hover {
-    &::after {
-      content: 'Active';
-      left: -13px;
-    }
-  }
 }
 
 .error {
   background: #FF0F2D;
-
-  &:hover {
-    &::after {
-      content: 'Inactive';
-      left: -17px;
-    }
-  }
 }
 
 .inactive {
   background: #CDCDCD;
-
-  &:hover {
-    &::after {
-      content: 'No data yet';
-      left: -28px;
-      width: 78px;
-    }
-  }
-}
-
-@media (--md-down) {
-  .ok {
-    &:hover {
-      &::after {
-        left: -19px;
-      }
-    }
-  }
-
-  .error {
-    &:hover {
-      &::after {
-        left: -26px;
-      }
-    }
-  }
-
-  .inactive {
-    &:hover {
-      &::after {
-        left: -34px;
-      }
-    }
-  }
 }
