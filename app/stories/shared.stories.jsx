@@ -102,7 +102,8 @@ story('Popover actions')
     ))
 
 story('Status icon')
-    .addWithJSX('normal', () => <StatusIcon />)
+    .addWithJSX('ok', () => <StatusIcon status={StatusIcon.OK} />)
+    .addWithJSX('inactive', () => <StatusIcon status={StatusIcon.INACTIVE} />)
     .addWithJSX('error', () => <StatusIcon status={StatusIcon.ERROR} />)
 
 story('Table')
