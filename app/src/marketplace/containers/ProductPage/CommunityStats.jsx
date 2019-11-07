@@ -67,16 +67,14 @@ const CommunityStats = () => {
     const { adminFee, joinPartStreamId } = community || {}
 
     useEffect(() => {
-        if (totalEarnings) {
-            setStats((prev) => ({
-                ...prev,
-                revenue: {
-                    ...prev.revenue,
-                    value: fromAtto(totalEarnings).toNumber() || 0,
-                    loading: false,
-                },
-            }))
-        }
+        setStats((prev) => ({
+            ...prev,
+            revenue: {
+                ...prev.revenue,
+                value: fromAtto(totalEarnings || 0).toNumber(),
+                loading: false,
+            },
+        }))
     }, [totalEarnings])
 
     useEffect(() => {
@@ -117,8 +115,8 @@ const CommunityStats = () => {
     }, [created])
 
     useEffect(() => {
-        if (totalEarnings && created && memberCount) {
-            const productAgeMs = Date.now() - new Date(created || 0).getTime()
+        if (totalEarnings !== null && created && memberCount) {
+            const productAgeMs = Date.now() - new Date(created).getTime()
             const revenuePerMonth = totalEarnings !== 0 ? (totalEarnings / (productAgeMs / MILLISECONDS_IN_MONTH)) : 0
             const revenuePerMonthPerMember = memberCount.total > 0 ? (revenuePerMonth / memberCount.total) : 0
 
@@ -161,9 +159,15 @@ const CommunityStats = () => {
             setTotalEarnings(result.totalEarnings)
             setMemberCount(result.memberCount)
         } catch (e) {
-            // Try again
-            resetTimeout()
-            timeOutId.current = setTimeout(getStats, CP_SERVER_POLL_INTERVAL_MS)
+            // Try again if status is 404, it means API might not be up yet
+            if (e.statusCode && e.statusCode === 404) {
+                console.warn(e)
+                resetTimeout()
+                timeOutId.current = setTimeout(getStats, CP_SERVER_POLL_INTERVAL_MS)
+            } else {
+                // Otherwise pass the error on
+                throw e
+            }
         }
     }, [beneficiaryAddress, timeOutId, resetTimeout, isMounted])
 

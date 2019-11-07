@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useContext, useMemo, useEffect } from 'react'
+import React, { useContext, useMemo } from 'react'
 import { withRouter } from 'react-router-dom'
 import { I18n } from 'react-redux-i18n'
 
