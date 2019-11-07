@@ -46,6 +46,7 @@ import DeploySpinner from '$shared/components/DeploySpinner'
 import Label from '$shared/components/Label'
 import Tile from '$shared/components/Tile'
 import DonutChart from '$shared/components/DonutChart'
+import Button from '$shared/components/Button'
 
 import sharedStyles from './shared.pcss'
 
@@ -905,4 +906,43 @@ story('DonutChart')
                 },
             ]}
         />
+    ))
+
+story('Button')
+    .addWithJSX('all', () => (
+        <div>
+            <Button type="primary" size="mini" onClick={action('Clicked')}>Primary mini</Button>
+            <br />
+            <Button type="primary" size="normal" onClick={action('Clicked')}>Primary normal</Button>
+            <br />
+            <Button type="primary" size="big" onClick={action('Clicked')}>Primary big</Button>
+            <br />
+            <Button type="primary" size="normal" disabled onClick={action('Clicked')}>Primary normal disabled</Button>
+            <br />
+            <Button type="primary" size="normal" outline onClick={action('Clicked')}>Primary normal outline</Button>
+            <br />
+            <Button type="secondary" size="mini" onClick={action('Clicked')}>Secondary mini</Button>
+            <br />
+            <Button type="secondary" size="normal" onClick={action('Clicked')}>Secondary normal</Button>
+            <br />
+            <Button type="secondary" size="big" onClick={action('Clicked')}>Secondary big</Button>
+            <br />
+            <Button type="secondary" size="normal" disabled onClick={action('Clicked')}>Secondary normal disabled</Button>
+            <br />
+            <Button type="secondary" size="normal" outline onClick={action('Clicked')}>Secondary normal outline</Button>
+            <br />
+            <Button type="destructive" onClick={action('Clicked')}>Destructive</Button>
+            <br />
+            <Button type="destructive" disabled onClick={action('Clicked')}>Destructive disabled</Button>
+            <br />
+            <Button type="link" variant="dark" onClick={action('Clicked')}>Link (dark)</Button>
+            <br />
+            <Button type="link" variant="light" onClick={action('Clicked')}>Link (light)</Button>
+            <br />
+            <Button type="special" variant="dark" onClick={action('Clicked')}>Special (dark)</Button>
+            <br />
+            <Button type="special" variant="light" onClick={action('Clicked')}>Special (light)</Button>
+            <br />
+            <Button tag="a" href="#" onClick={action('Clicked')}>With link tag</Button>
+        </div>
     ))

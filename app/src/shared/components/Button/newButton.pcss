@@ -1,0 +1,250 @@
+.root {
+  display: inline-flex;
+  align-items: center;
+  padding: 0;
+  background-color: transparent;
+  border: 1px solid;
+  border-radius: 4px;
+  font: var(--sans);
+  font-weight: var(--medium);
+  letter-spacing: 0;
+  text-align: center;
+  transition: 200ms ease-in-out;
+  transition-property: border-color, background-color, color;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+
+  &,
+  &:--idle,
+  &:--enter {
+    text-decoration: none;
+    outline: none;
+  }
+
+  &:--enter {
+    transition-duration: 5ms;
+    transform: scale(1.05);
+  }
+
+  &:active {
+    transform: scale(0.95);
+    outline: none;
+  }
+
+  &[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &.waiting {
+    opacity: 0.5;
+  }
+}
+
+/*
+  Types
+*/
+.primary {
+  color: rgba(255, 255, 255, 1);
+  background-color: #0324FF;
+  border-color: #0324FF;
+
+  &:--enter {
+    background-color: #0D009A;
+    border-color: #0D009A;
+  }
+
+  &:active {
+    background-color: #09006D;
+    border-color: #09006D;
+  }
+
+  &[disabled] {
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  &.outline {
+    color: rgb(3, 36, 255, 1);
+    background-color: #FFFFFF;
+    border-color: #0324FF;
+
+    &:--enter {
+      color: #0D009A;
+      border-color: #0D009A;
+    }
+
+    &:active {
+      color: #09006D;
+      border-color: #09006D;
+    }
+
+    &[disabled] {
+      color: rgb(3, 36, 255, 0.5);
+    }
+  }
+}
+
+.secondary {
+  color: rgba(50, 50, 50, 1);
+  background-color: #EFEFEF;
+  border-color: #EFEFEF;
+
+  &:--enter {
+    background-color: #E7E7E7;
+    border-color: #E7E7E7;
+  }
+
+  &:active {
+    background-color: #D8D8D8;
+    border-color: #D8D8D8;
+  }
+
+  &[disabled] {
+    color: rgba(50, 50, 50, 0.5);
+  }
+
+  &.outline {
+    border-color: #525252;
+    background-color: #FFFFFF;
+
+    &:--enter {
+      border-color: #323232;
+    }
+
+    &:active {
+      border-color: #525252;
+    }
+  }
+}
+
+.destructive {
+  color: rgba(255, 255, 255, 1);
+  background-color: #FF0F2D;
+  border-color: #FF0F2D;
+
+  &:--enter {
+    background-color: #EA112C;
+    border-color: #EA112C;
+  }
+
+  &:active {
+    background-color: #D50F28;
+    border-color: #D50F28;
+  }
+
+  &[disabled] {
+    color: rgba(255, 255, 255, 0.5);
+  }
+}
+
+.link {
+  color: rgba(171, 171, 171, 1);
+  background-color: transparent;
+  border-color: transparent;
+
+  &:--enter {
+    color: #323232;
+    transform: scale(1);
+  }
+
+  &:active {
+    color: rgba(171, 171, 171, 0.8);
+    transform: scale(1);
+  }
+
+  &[disabled] {
+    color: rgba(171, 171, 171, 0.5);
+  }
+
+  &.dark {
+    color: rgba(3, 36, 255, 1);
+    background-color: transparent;
+    border-color: transparent;
+
+    &:--enter {
+      color: #0D009A;
+    }
+
+    &:active {
+      color: #13013D;
+    }
+
+    &[disabled] {
+      color: rgba(3, 36, 255, 0.5);
+    }
+  }
+}
+
+.special {
+  color: rgba(50, 50, 50, 1);
+  background-color: rgba(255, 255, 255, 0.9);
+  border-color: rgba(255, 255, 255, 0.9);
+  border-radius: 20px;
+  font: var(--sans);
+  font-weight: var(--medium);
+  font-size: 12px !important;
+  line-height: 12px !important;
+  padding: 0 1.5rem !important;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  height: 40px !important;
+
+  &:--enter {
+    background-color: rgba(255, 255, 255, 1);
+    border-color: rgba(255, 255, 255, 1);
+  }
+
+  &:active {
+    background-color: rgba(255, 255, 255, 0.8);
+    border-color: rgba(255, 255, 255, 0.8);
+  }
+
+  &[disabled] {
+    color: rgba(50, 50, 50, 0.5);
+  }
+
+  &.dark {
+    color: rgba(50, 50, 50, 1);
+    background-color: rgba(239, 239, 239, 0.9);
+    border-color: rgba(239, 239, 239, 0.9);
+
+    &:--enter {
+      background-color: #E7E7E7;
+      border-color: #E7E7E7;
+    }
+
+    &:active {
+      background-color: #D8D8D8;
+      border-color: #D8D8D8;
+    }
+
+    &[disabled] {
+      color: rgba(50, 50, 50, 0.5);
+    }
+  }
+}
+
+/*
+  Sizes
+*/
+.mini {
+  height: 2rem;
+  padding: 0 0.5rem;
+  font-size: 14px;
+  line-height: 16px;
+}
+
+.normal {
+  height: 2.5rem;
+  padding: 0 1rem;
+  font-size: 14px;
+  line-height: 22px;
+}
+
+.big {
+  height: 3rem;
+  padding: 0 2rem;
+  font-size: 16px;
+  line-height: 24px;
+}
