@@ -196,9 +196,9 @@ export class StreamSelector extends React.Component<Props, State> {
 
         if (!isEditing) {
             return (
-                <ProductContainer className={className}>
-                    <div className={styles.root}>
-                        <StreamListing {...this.props} streams={availableStreams.filter(({ id }) => nextStreams.has(id))} />
+                <div>
+                    <StreamListing {...this.props} streams={availableStreams.filter(({ id }) => nextStreams.has(id))} />
+                    <ProductContainer>
                         <div className={styles.footer}>
                             <Button
                                 className={styles.editButton}
@@ -207,8 +207,8 @@ export class StreamSelector extends React.Component<Props, State> {
                                 <Translate value="streamSelector.edit" />
                             </Button>
                         </div>
-                    </div>
-                </ProductContainer>
+                    </ProductContainer>
+                </div>
             )
         }
         return (
