@@ -208,13 +208,13 @@ msgstr "Create identity failed"
 msgid "shared##errors##identityExists"
 msgstr "Identity exists"
 
-msgid "shared##stream##status##ok"
+msgid "shared##status##ok"
 msgstr "Active"
 
-msgid "shared##stream##status##inactive"
+msgid "shared##status##inactive"
 msgstr "No data yet"
 
-msgid "shared##stream##status##error"
+msgid "shared##status##error"
 msgstr "Inactive"
 
 msgid "general##docs"

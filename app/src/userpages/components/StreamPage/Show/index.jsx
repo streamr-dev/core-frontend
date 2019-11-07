@@ -225,7 +225,7 @@ export class StreamShowView extends Component<Props, State> {
                             linkTitle="Stream Status"
                             title={(
                                 <div className={styles.statusTitle}>
-                                    Status <StatusIcon status={editedStream ? editedStream.streamStatus : undefined} />
+                                    Status <StatusIcon showTooltip status={editedStream ? editedStream.streamStatus : undefined} />
                                 </div>
                             )}
                             customStyled
