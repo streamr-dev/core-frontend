@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useState, useCallback, useEffect } from 'react'
+import React, { useState, useCallback, useEffect, useRef } from 'react'
 import { useDispatch } from 'react-redux'
 
 import useModal from '$shared/hooks/useModal'
@@ -16,6 +16,9 @@ import { isEthereumAddress } from '$mp/utils/validate'
 import type { Address } from '$shared/flowtype/web3-types'
 import { addTransaction } from '$mp/modules/transactions/actions'
 import { transactionTypes } from '$shared/utils/constants'
+import getWeb3 from '$shared/web3/web3Provider'
+import { averageBlockTime } from '$shared/utils/web3'
+import useIsMounted from '$shared/hooks/useIsMounted'
 
 type DeployDialogProps = {
     product: Product,
@@ -27,7 +30,6 @@ const steps = {
     GUIDE: 'guide',
     CONFIRM: 'deploy',
     COMPLETE: 'wait',
-    ERROR: 'error',
 }
 
 const SKIP_GUIDE_KEY = 'marketplace.skipCpDeployGuide'
@@ -42,15 +44,23 @@ function setSkipGuide(value) {
     storage.setItem(SKIP_GUIDE_KEY, JSON.stringify(value))
 }
 
+// allow 5s for the API to start in CP server
+const API_READY_ESTIMATE = 5
+
 export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps) => {
     const dontShowAgain = skipGuide()
     const [step, setStep] = useState(dontShowAgain ? steps.CONFIRM : steps.GUIDE)
+    const [deployError, setDeployError] = useState(null)
+    const [estimate, setEstimate] = useState(0)
     const [address, setAddress] = useState(null)
     const dispatch = useDispatch()
+    const isMounted = useIsMounted()
 
     const onClose = useCallback(() => {
         api.close(!!address && isEthereumAddress(address))
     }, [api, address])
+    const onCloseRef = useRef()
+    onCloseRef.current = onClose
 
     const productId = product.id
     // $FlowFixMe
@@ -58,23 +68,40 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
     const onDeploy = useCallback(async () => {
         const { id: joinPartStreamId } = await createJoinPartStream(productId)
 
+        if (!isMounted()) { return Promise.resolve() }
+
+        // Set estimate
+        const blockEstimate = await averageBlockTime(getWeb3())
+        if (!isMounted()) { return Promise.resolve() }
+        setEstimate(blockEstimate + API_READY_ESTIMATE)
+
         return new Promise((resolve) => (
             deployContract(joinPartStreamId, adminFee)
                 .onTransactionHash((hash, communityAddress) => {
+                    if (!isMounted()) { return }
                     dispatch(addTransaction(hash, transactionTypes.DEPLOY_COMMUNITY))
                     setAddress(communityAddress)
                     setStep(steps.COMPLETE)
                     resolve()
                 })
                 .onTransactionComplete(({ contractAddress }) => {
+                    if (!isMounted()) { return }
                     setAddress(contractAddress)
+
+                    // Redirect back to product but allow the api to start up
+                    setTimeout(() => {
+                        if (isMounted() && onCloseRef.current) {
+                            onCloseRef.current()
+                        }
+                    }, API_READY_ESTIMATE * 1000)
                 })
-                .onError(() => {
-                    setStep(steps.ERROR)
+                .onError((e) => {
+                    if (!isMounted()) { return }
+                    setDeployError(e)
                     resolve()
                 })
         ))
-    }, [productId, adminFee, dispatch])
+    }, [isMounted, productId, adminFee, dispatch])
 
     const onGuideContinue = useCallback((dontShow) => {
         setSkipGuide(dontShow)
@@ -87,6 +114,15 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
             updateAddress(address)
         }
     }, [address, updateAddress])
+
+    if (deployError) {
+        return (
+            <ErrorDialog
+                message={deployError.message}
+                onClose={onClose}
+            />
+        )
+    }
 
     switch (step) {
         case steps.GUIDE:
@@ -113,16 +149,9 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
             return (
                 <DeployingCommunityDialog
                     product={product}
+                    estimate={estimate}
                     onContinue={() => api.close(true)}
                     onClose={onClose}
-                />
-            )
-
-        case steps.ERROR:
-            return (
-                <ErrorDialog
-                    message="error.message"
-                    onClose={() => api.close(false)}
                 />
             )
 

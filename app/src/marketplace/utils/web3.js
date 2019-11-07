@@ -23,6 +23,3 @@ export const getDataTokenBalance = (web3Instance: StreamrWeb3): SmartContractCal
     .then((myAddress) => call(tokenContractMethods().balanceOf(myAddress)))
     .then(fromAtto).then((result) => result.toString())
 )
-
-export const isWeb3Injected = (web3Instance: StreamrWeb3): boolean =>
-    web3Instance && (web3Instance.currentProvider != null)
