@@ -26,7 +26,7 @@ export default {
         ],
         outputs: {
             map: 'Key-sum pairs',
-            valueOfCurrentKey: 'The aggregated sum of the last key received. ',
+            valueOfCurrentKey: 'The aggregated sum of the last key received.',
         },
         outputNames: [
             'map',

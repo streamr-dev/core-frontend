@@ -16,15 +16,22 @@ section.root {
     border-radius: 2px;
   }
 
-  h4 {
+  a h4 {
+    color: #323232;
     font-size: 20px;
     font-weight: var(--medium);
     line-height: 1.5um;
     letter-spacing: 0;
+
+    &:hover,
+    &:active,
+    &:visited {
+      color: #323232;
+    }
   }
 
   @media (--md-down) {
-    h4 {
+    a h4 {
       font-size: 18px;
       line-height: 28px;
     }
@@ -52,6 +59,7 @@ section.root {
 
 .nameAndDescription {
   margin-bottom: 1.8rem;
+  word-break: break-word;
 
   p {
     font-size: 18px;
