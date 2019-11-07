@@ -170,8 +170,7 @@ export class StreamShowView extends Component<Props, State> {
                                 actions={{
                                     cancel: {
                                         title: I18n.t('userpages.profilePage.toolbar.cancel'),
-                                        color: 'link',
-                                        outline: true,
+                                        type: 'link',
                                         onClick: () => {
                                             cancel()
                                         },
@@ -180,7 +179,7 @@ export class StreamShowView extends Component<Props, State> {
                                         title: isDesktop ?
                                             I18n.t('userpages.profilePage.toolbar.saveAndExit') :
                                             I18n.t('userpages.profilePage.toolbar.done'),
-                                        color: 'primary',
+                                        type: 'primary',
                                         spinner: this.state.saving,
                                         onClick: () => {
                                             if (editedStream) {

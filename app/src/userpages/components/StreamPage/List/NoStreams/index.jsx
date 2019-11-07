@@ -4,6 +4,7 @@ import React from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
 import MediaQuery from 'react-responsive'
 
+import Button from '$shared/components/Button'
 import EmptyState from '$shared/components/EmptyState'
 import emptyStateIcon from '$shared/assets/images/empty_state_icon.png'
 import emptyStateIcon2x from '$shared/assets/images/empty_state_icon@2x.png'
@@ -50,13 +51,12 @@ const NoResultsView = ({ onResetFilter }: NoResultsViewProps) => (
             />
         )}
         link={(
-            <button
-                type="button"
-                className="btn btn-special"
+            <Button
+                type="special"
                 onClick={onResetFilter}
             >
                 <Translate value="userpages.streams.noStreamsResult.clearFilters" />
-            </button>
+            </Button>
         )}
     >
         <Translate value="userpages.streams.noStreamsResult.title" />

@@ -85,12 +85,12 @@ export class ProfilePage extends Component<Props, State> {
                         actions={{
                             cancel: {
                                 title: I18n.t('userpages.profilePage.toolbar.cancel'),
-                                color: 'link',
+                                type: 'link',
                                 linkTo: links.userpages.main,
                             },
                             saveChanges: {
                                 title: I18n.t('userpages.profilePage.toolbar.saveAndExit'),
-                                color: 'primary',
+                                type: 'primary',
                                 onClick: this.onSave,
                                 disabled: saving,
                                 spinner: saving,

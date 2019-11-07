@@ -163,13 +163,12 @@ export class ConfirmCsvImportView extends Component<Props, State> {
                     actions={{
                         cancel: {
                             title: I18n.t('modal.common.cancel'),
-                            outline: true,
                             onClick: onClose,
-                            color: 'link',
+                            type: 'link',
                         },
                         confirm: {
                             title: I18n.t('modal.common.confirm'),
-                            color: 'primary',
+                            type: 'primary',
                             onClick: this.onConfirm,
                             spinner: fetching,
                         },

@@ -2,7 +2,6 @@
 
 import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
-import { Button } from 'reactstrap'
 import { Translate, I18n } from 'react-redux-i18n'
 import cx from 'classnames'
 
@@ -12,6 +11,7 @@ import type { StoreState } from '$userpages/flowtype/states/store-state'
 import type { CsvUploadState } from '$userpages/flowtype/states/stream-state'
 import { getRange, deleteDataUpTo, uploadCsvFile, confirmCsvFileUpload, updateEditStream } from '$userpages/modules/userPageStreams/actions'
 import { selectDeleteDataError, selectUploadCsvState, selectEditedStream } from '$userpages/modules/userPageStreams/selectors'
+import Button from '$shared/components/Button'
 import TextInput from '$shared/components/TextInput'
 import FileUpload from '$shared/components/FileUpload'
 import DatePicker from '$shared/components/DatePicker'
@@ -271,8 +271,9 @@ class HistoryView extends Component<Props, State> {
                                 disabled={disabled}
                             />
                             <Button
+                                type="secondary"
+                                size="mini"
                                 className={styles.browseFiles}
-                                color="userpages"
                                 onClick={() => this.handleBrowseFilesClick()}
                                 disabled={disabled}
                             >
@@ -302,8 +303,9 @@ class HistoryView extends Component<Props, State> {
                             />
                         </div>
                         <Button
+                            type="secondary"
+                            size="mini"
                             className={styles.deleteButton}
-                            color="userpages"
                             onClick={() => this.deleteDataUpTo(streamId, deleteDate)}
                             disabled={deleteDate == null || disabled}
                         >

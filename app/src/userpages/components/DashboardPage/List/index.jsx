@@ -2,7 +2,6 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Button } from 'reactstrap'
 import { Translate, I18n } from 'react-redux-i18n'
 import Helmet from 'react-helmet'
 import { Link } from 'react-router-dom'
@@ -25,6 +24,7 @@ import DashboardPreview from '$editor/dashboard/components/Preview'
 import styles from './dashboardList.pcss'
 import ListContainer from '$shared/components/Container/List'
 import TileGrid from '$shared/components/TileGrid'
+import Button from '$shared/components/Button'
 
 import NoDashboardsView from './NoDashboards'
 
@@ -43,7 +43,6 @@ type Props = StateProps & DispatchProps
 
 const CreateDashboardButton = () => (
     <Button
-        color="primary"
         className={styles.createDashboardButton}
         tag={Link}
         to={links.editor.dashboardEditor}

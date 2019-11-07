@@ -104,12 +104,12 @@ export const ShareDialogContent = (props: Props) => {
             actions={{
                 cancel: {
                     title: I18n.t('modal.common.cancel'),
-                    outline: true,
+                    type: 'link',
                     onClick: onClose,
                 },
                 save: {
                     title: I18n.t('modal.shareResource.save'),
-                    color: 'primary',
+                    type: 'primary',
                     onClick: saveDialog,
                     disabled: saving,
                     spinner: saving,

@@ -42,12 +42,12 @@ const EmbedDialogContent = (props: Props) => {
             actions={{
                 cancel: {
                     title: I18n.t('modal.common.cancel'),
-                    outline: true,
+                    type: 'link',
                     onClick: onClose,
                 },
                 copy: {
                     title: buttonText,
-                    color: 'primary',
+                    type: 'primary',
                     onClick: onCopy,
                 },
             }}

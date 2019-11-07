@@ -1,7 +1,6 @@
 // @flow
 
 import React, { Component, Fragment } from 'react'
-import { Button } from 'reactstrap'
 import { Link } from 'react-router-dom'
 import { Translate } from 'react-redux-i18n'
 import cx from 'classnames'
@@ -9,6 +8,7 @@ import cx from 'classnames'
 import type { Stream } from '$shared/flowtype/stream-types'
 import type { User } from '$shared/flowtype/user-types'
 import type { ResourceKeyId } from '$shared/flowtype/resource-key-types'
+import Button from '$shared/components/Button'
 import StreamLivePreview from '$mp/components/StreamPreviewPage/StreamLivePreview'
 import SvgIcon from '$shared/components/SvgIcon'
 import routes from '$routes'
@@ -74,7 +74,12 @@ export class PreviewView extends Component<Props, State> {
                         })}
                     >
                         <div className={styles.previewControls}>
-                            <Button color="userpages" className={styles.playPauseButton} onClick={this.onToggleRun}>
+                            <Button
+                                type="secondary"
+                                outline
+                                className={styles.playPauseButton}
+                                onClick={this.onToggleRun}
+                            >
                                 {!isRunning ?
                                     <SvgIcon name="play" className={styles.icon} /> :
                                     <SvgIcon name="pause" className={styles.icon} />
@@ -82,8 +87,9 @@ export class PreviewView extends Component<Props, State> {
                             </Button>
                             {stream && stream.id && (
                                 <Button
+                                    type="secondary"
+                                    outline
                                     className={styles.inspectButton}
-                                    color="userpages"
                                     tag={Link}
                                     to={routes.userPageStreamPreview({
                                         streamId: stream.id,

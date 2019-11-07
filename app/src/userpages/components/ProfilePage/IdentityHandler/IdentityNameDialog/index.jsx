@@ -42,13 +42,13 @@ class IdentityNameDialog extends React.Component<Props, State> {
                 actions={{
                     cancel: {
                         title: I18n.t('modal.common.cancel'),
-                        color: 'link',
+                        type: 'link',
                         outline: true,
                         onClick: onClose,
                     },
                     save: {
                         title: I18n.t('modal.common.next'),
-                        color: 'primary',
+                        type: 'primary',
                         onClick: this.onSave,
                         disabled: !name,
                     },

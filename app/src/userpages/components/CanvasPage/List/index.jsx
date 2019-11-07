@@ -2,8 +2,8 @@
 
 import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
-import { Button } from 'reactstrap'
 import { capital } from 'case'
+import { Link as RouterLink } from 'react-router-dom'
 import Link from '$shared/components/Link'
 import { push } from 'connected-react-router'
 import copy from 'copy-to-clipboard'
@@ -41,6 +41,7 @@ import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import ListContainer from '$shared/components/Container/List'
 import TileGrid from '$shared/components/TileGrid'
+import Button from '$shared/components/Button'
 
 import styles from './canvasList.pcss'
 
@@ -72,9 +73,8 @@ type State = {
 
 const CreateCanvasButton = () => (
     <Button
-        color="primary"
         className={styles.createCanvasButton}
-        tag={Link}
+        tag={RouterLink}
         to={links.editor.canvasEditor}
     >
         <Translate value="userpages.canvases.createCanvas" />

@@ -1,13 +1,12 @@
 // @flow
 
 import React, { Component } from 'react'
-import cx from 'classnames'
 import { I18n } from 'react-redux-i18n'
 
+import Button from '$shared/components/Button'
 import SvgIcon from '$shared/components/SvgIcon'
 
 import styles from './shareDialogInputRow.pcss'
-import buttonStyles from '$shared/components/Button/button.pcss'
 
 type Props = {
     onAdd: (email: string) => void,
@@ -49,14 +48,14 @@ export class ShareDialogInputRow extends Component<Props, State> {
                     value={email}
                     onChange={this.onChange}
                 />
-                <button
-                    type="button"
-                    className={cx(styles.button, buttonStyles.btn, buttonStyles.btnOutline)}
+                <Button
+                    type="secondary"
                     onClick={this.onAdd}
                     disabled={!email}
+                    className={styles.button}
                 >
                     <SvgIcon name="plus" className={styles.plusIcon} />
-                </button>
+                </Button>
             </div>
         )
     }

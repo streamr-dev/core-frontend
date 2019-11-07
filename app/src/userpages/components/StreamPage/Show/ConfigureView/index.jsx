@@ -2,12 +2,12 @@
 
 import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
-import { Button } from 'reactstrap'
 import copy from 'copy-to-clipboard'
 import { arrayMove } from 'react-sortable-hoc'
 import { Translate } from 'react-redux-i18n'
 import uuid from 'uuid'
 
+import Button from '$shared/components/Button'
 import Spinner from '$shared/components/Spinner'
 import type { Stream, StreamId } from '$shared/flowtype/stream-types'
 import type { StoreState } from '$shared/flowtype/store-state'
@@ -160,6 +160,7 @@ export class ConfigureView extends Component<Props, State> {
 
     autodetectFields = () => {
         if (this.props.stream && this.props.stream.id) {
+            // $FlowFixMe: "streamFieldsAutodetect is missing in OwnProps or StateProps"
             return this.props.streamFieldsAutodetect(this.props.stream.id)
         }
     }
@@ -170,26 +171,7 @@ export class ConfigureView extends Component<Props, State> {
 
         return (
             <div>
-                <SplitControl className={styles.helpText}>
-                    <Translate value="userpages.streams.edit.configure.help" tag="p" className={styles.longText} />
-                    <Button
-                        color="userpages"
-                        className={styles.autodetect}
-                        outline
-                        onClick={this.autodetectFields}
-                        disabled={this.props.fieldsAutodetectFetching || disabled}
-                    >
-                        {!this.props.fieldsAutodetectFetching && (
-                            <Translate value="userpages.streams.edit.configure.autodetect" />
-                        )}
-                        {this.props.fieldsAutodetectFetching && (
-                            <Fragment>
-                                <Translate value="userpages.streams.edit.configure.waiting" />
-                                <Spinner size="small" className={styles.spinner} color="white" />
-                            </Fragment>
-                        )}
-                    </Button>
-                </SplitControl>
+                <Translate value="userpages.streams.edit.configure.help" tag="p" className={styles.longText} />
                 {stream && stream.config && stream.config.fields && !!stream.config.fields.length &&
                     <Fragment>
                         <SplitControl className={styles.fieldHeaderRow}>
@@ -225,8 +207,9 @@ export class ConfigureView extends Component<Props, State> {
                                                     ))}
                                                 </Dropdown>
                                                 <Button
+                                                    type="secondary"
+                                                    size="mini"
                                                     outline
-                                                    color="userpages"
                                                     className={styles.deleteFieldButton}
                                                     onClick={() => this.deleteField(field.name)}
                                                     disabled={disabled}
@@ -241,15 +224,32 @@ export class ConfigureView extends Component<Props, State> {
                         </FieldList>
                     </Fragment>}
                 {!isAddingField &&
-                    <Button
-                        color="userpages"
-                        className={styles.addFieldButton}
-                        outline
-                        onClick={this.addNewField}
-                        disabled={disabled}
-                    >
-                        <Translate value="userpages.streams.edit.configure.addField" />
-                    </Button>
+                    <React.Fragment>
+                        <Button
+                            type="secondary"
+                            className={styles.addFieldButton}
+                            onClick={this.addNewField}
+                            disabled={disabled}
+                        >
+                            <Translate value="userpages.streams.edit.configure.addField" />
+                        </Button>
+                        <Button
+                            type="secondary"
+                            outline
+                            onClick={this.autodetectFields}
+                            disabled={this.props.fieldsAutodetectFetching || disabled}
+                        >
+                            {!this.props.fieldsAutodetectFetching && (
+                                <Translate value="userpages.streams.edit.configure.autodetect" />
+                            )}
+                            {this.props.fieldsAutodetectFetching && (
+                                <Fragment>
+                                    <Translate value="userpages.streams.edit.configure.waiting" />
+                                    <Spinner size="small" className={styles.spinner} color="white" />
+                                </Fragment>
+                            )}
+                        </Button>
+                    </React.Fragment>
                 }
                 {isAddingField &&
                     <NewFieldEditor

@@ -4,6 +4,7 @@ import React from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
 import { Link } from 'react-router-dom'
 
+import Button from '$shared/components/Button'
 import EmptyState from '$shared/components/EmptyState'
 import emptyStateIcon from '$shared/assets/images/empty_state_icon.png'
 import emptyStateIcon2x from '$shared/assets/images/empty_state_icon@2x.png'
@@ -25,12 +26,13 @@ const NoTransactionsView = ({ accountsExist, accountLinked }: Props) => (
             />
         )}
         link={(!accountsExist || !accountLinked) && (
-            <Link
-                className="btn btn-special"
+            <Button
+                type="special"
+                tag={Link}
                 to={routes.editProfile({}, 'ethereum-accounts')}
             >
                 <Translate value="userpages.transactions.noAccountsLinked.linkAccount" />
-            </Link>
+            </Button>
         )}
     >
         {(() => {

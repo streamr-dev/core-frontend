@@ -1,10 +1,10 @@
 // @flow
 
 import React from 'react'
-import { Button } from 'reactstrap'
 import { Translate } from 'react-redux-i18n'
 
 import EditAvatarDialog from '../EditAvatarDialog'
+import Button from '$shared/components/Button'
 
 import styles from './avatarUpload.pcss'
 
@@ -42,10 +42,7 @@ class AvatarUpload extends React.Component<Props, State> {
         return (
             <div className={styles.upload}>
                 <Button
-                    color="userpages"
-                    type="button"
-                    outline
-                    className={styles.updateButton}
+                    type="secondary"
                     disabled={modalOpen}
                     onClick={this.onShowModal}
                 >

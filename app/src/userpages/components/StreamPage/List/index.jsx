@@ -7,7 +7,6 @@ import moment from 'moment-timezone'
 import copy from 'copy-to-clipboard'
 import { Translate, I18n } from 'react-redux-i18n'
 import Helmet from 'react-helmet'
-import { Button } from 'reactstrap'
 import MediaQuery from 'react-responsive'
 import cx from 'classnames'
 import { Link } from 'react-router-dom'
@@ -54,6 +53,7 @@ import breakpoints from '$app/scripts/breakpoints'
 import Notification from '$shared/utils/Notification'
 import LoadMore from '$mp/components/LoadMore'
 import ListContainer from '$shared/components/Container/List'
+import Button from '$shared/components/Button'
 
 import styles from './streamsList.pcss'
 
@@ -61,7 +61,6 @@ const { lg } = breakpoints
 
 export const CreateStreamButton = () => (
     <Button
-        color="primary"
         className={styles.createStreamButton}
         tag={Link}
         to={links.userpages.streamCreate}
