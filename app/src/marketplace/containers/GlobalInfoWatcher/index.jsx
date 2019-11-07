@@ -3,19 +3,14 @@
 import React, { type Node } from 'react'
 import { connect } from 'react-redux'
 
-import getWeb3 from '$shared/web3/web3Provider'
 import { selectAccountId } from '$mp/modules/web3/selectors'
-import { selectDataPerUsd, selectIsWeb3Injected } from '$mp/modules/global/selectors'
+import { selectDataPerUsd } from '$mp/modules/global/selectors'
 import { receiveAccount, changeAccount, accountError, updateEthereumNetworkId } from '$mp/modules/web3/actions'
 import type { StoreState } from '$shared/flowtype/store-state'
 import type { Address, Hash, Receipt } from '$shared/flowtype/web3-types'
-import type { StreamrWeb3 as StreamrWeb3Type } from '$shared/web3/web3Provider'
 import type { ErrorInUi, TransactionType, NumberString } from '$shared/flowtype/common-types'
 import { getUserData } from '$shared/modules/user/actions'
-import {
-    getDataPerUsd as getDataPerUsdAction,
-    checkWeb3 as checkWeb3Action,
-} from '$mp/modules/global/actions'
+import { getDataPerUsd as getDataPerUsdAction } from '$mp/modules/global/actions'
 import { areAddressesEqual } from '$mp/utils/smartContract'
 import {
     addTransaction as addTransactionAction,
@@ -41,7 +36,6 @@ type DispatchProps = {
     getUserData: () => void,
     getDataPerUsd: () => void,
     updateEthereumNetworkId: (id: any) => void,
-    checkWeb3: (?boolean) => void,
     addTransaction: (Hash, TransactionType) => void,
     completeTransaction: (Hash, Receipt) => void,
     transactionError: (Hash, TransactionError) => void,
@@ -55,8 +49,6 @@ const PENDING_TX_WAIT = 1000 // 1s
 
 export class GlobalInfoWatcher extends React.Component<Props> {
     componentDidMount = () => {
-        this.initWeb3()
-
         // Start polling for info
         this.pollDataPerUsdRate()
         this.pollLogin()
@@ -81,12 +73,6 @@ export class GlobalInfoWatcher extends React.Component<Props> {
 
     loginPollTimeout: ?TimeoutID = null
     dataPerUsdRatePollTimeout: ?TimeoutID = null
-    web3: StreamrWeb3Type = getWeb3()
-
-    initWeb3 = () => {
-        this.web3 = getWeb3()
-        this.props.checkWeb3()
-    }
 
     pollLogin = () => {
         this.props.getUserData()
@@ -161,7 +147,6 @@ export class GlobalInfoWatcher extends React.Component<Props> {
 export const mapStateToProps = (state: StoreState): StateProps => ({
     account: selectAccountId(state),
     dataPerUsd: selectDataPerUsd(state),
-    isWeb3Injected: selectIsWeb3Injected(state),
 })
 
 export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
@@ -171,7 +156,6 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getUserData: () => dispatch(getUserData()),
     getDataPerUsd: () => dispatch(getDataPerUsdAction()),
     updateEthereumNetworkId: (id: any) => dispatch(updateEthereumNetworkId(id)),
-    checkWeb3: () => dispatch(checkWeb3Action()),
     addTransaction: (id: Hash, type: TransactionType) => dispatch(addTransactionAction(id, type)),
     completeTransaction: (id: Hash, receipt: Receipt) => dispatch(completeTransactionAction(id, receipt)),
     transactionError: (id: Hash, error: TransactionError) => dispatch(transactionErrorAction(id, error)),

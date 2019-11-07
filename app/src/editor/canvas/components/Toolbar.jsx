@@ -18,7 +18,6 @@ import dateFormatter from '$utils/dateFormatter'
 import EditableText from '$shared/components/EditableText'
 import UseState from '$shared/components/UseState'
 import confirmDialog from '$shared/utils/confirm'
-import { getKeyLabel } from '$editor/shared/components/KeyboardShortcutsSidebar'
 
 import Toolbar from '$editor/shared/components/Toolbar'
 import useCanvasCamera from '../hooks/useCanvasCamera'
@@ -30,55 +29,56 @@ import * as RunController from './CanvasController/Run'
 import { useCameraContext } from './Camera'
 import styles from './Toolbar.pcss'
 
-function ZoomButtons({ canvas }) {
+function ZoomControls({ className, canvas }) {
     const camera = useCameraContext()
     const canvasCamera = useCanvasCamera({ canvas })
-    const metaKeyLabel = getKeyLabel('meta')
     return (
-        <div className={styles.ZoomButtons}>
-            <button
-                className={cx(styles.ToolbarButton, styles.ZoomButton)}
-                type="button"
-                onClick={() => camera.zoomOut()}
-            >
-                <SvgIcon name="minusSmall" className={styles.icon} />
-            </button>
+        <div className={cx(className, styles.ZoomControls)}>
             <DropdownActions
-                title={
-                    <button className={cx(styles.ZoomMenuTrigger)} type="button">
-                        {Math.round(camera.scale * 100)}%
-                    </button>
-                }
-                noCaret
                 className={cx(styles.ZoomMenu, styles.DropdownMenu)}
+                noCaret
                 menuProps={{
                     className: styles.DropdownMenuMenu,
                 }}
+                title={
+                    <div className={styles.ZoomButtons}>
+                        <button
+                            className={cx(styles.ToolbarButton, styles.ZoomButton)}
+                            type="button"
+                            onClick={(event) => { event.stopPropagation(); camera.zoomOut() }}
+                        >
+                            <SvgIcon name="minusSmall" className={styles.icon} />
+                        </button>
+                        <button className={cx(styles.ZoomMenuTrigger)} type="button">
+                            {Math.round(camera.scale * 100)}%
+                        </button>
+                        <button
+                            className={cx(styles.ToolbarButton, styles.ZoomButton)}
+                            type="button"
+                            onClick={(event) => { event.stopPropagation(); camera.zoomIn() }}
+                        >
+                            <SvgIcon name="plusSmall" className={styles.icon} />
+                        </button>
+                    </div>
+                }
             >
-                <DropdownActions.Item onClick={() => camera.setScale(0.25)}>25%</DropdownActions.Item>
-                <DropdownActions.Item onClick={() => camera.setScale(0.5)}>50%</DropdownActions.Item>
-                <DropdownActions.Item onClick={() => camera.setScale(1)}>100%</DropdownActions.Item>
-                <DropdownActions.Item divider />
-                <DropdownActions.Item onClick={() => camera.zoomIn()}>
-                    Zoom In <span className={styles.menuShortcut}>{metaKeyLabel}=</span>
-                </DropdownActions.Item>
-                <DropdownActions.Item onClick={() => camera.zoomOut()}>
-                    Zoom Out <span className={styles.menuShortcut}>{metaKeyLabel}-</span>
-                </DropdownActions.Item>
                 <DropdownActions.Item onClick={() => camera.setScale(1)}>
-                    Full Size <span className={styles.menuShortcut}>{metaKeyLabel}0</span>
+                    Full size
                 </DropdownActions.Item>
                 <DropdownActions.Item onClick={() => canvasCamera.fitCanvas()}>
-                    Fit Screen <span className={styles.menuShortcut}>{metaKeyLabel}1</span>
+                    Fit screen
                 </DropdownActions.Item>
+                <DropdownActions.Item onClick={() => camera.zoomIn()}>
+                    Zoom In
+                </DropdownActions.Item>
+                <DropdownActions.Item onClick={() => camera.zoomOut()}>
+                    Zoom Out
+                </DropdownActions.Item>
+                <DropdownActions.Item divider />
+                <DropdownActions.Item onClick={() => camera.setScale(0.5)}>50%</DropdownActions.Item>
+                <DropdownActions.Item onClick={() => camera.setScale(1)}>100%</DropdownActions.Item>
+                <DropdownActions.Item onClick={() => camera.setScale(2)}>200%</DropdownActions.Item>
             </DropdownActions>
-            <button
-                className={cx(styles.ToolbarButton, styles.ZoomButton)}
-                type="button"
-                onClick={() => camera.zoomIn()}
-            >
-                <SvgIcon name="plusSmall" className={styles.icon} />
-            </button>
         </div>
     )
 }
@@ -233,6 +233,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                         Open
                                     </R.Button>
                                     <CanvasSearch
+                                        className={styles.CanvasSearch}
                                         canvas={canvas}
                                         isOpen={canvasSearchIsOpen}
                                         open={this.canvasSearchOpen}
@@ -257,9 +258,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                     </Tooltip>
                                 </div>
                             </div>
-                            <div className={styles.ToolbarZoomButtons}>
-                                <ZoomButtons canvas={canvas} />
-                            </div>
+                            <ZoomControls className={styles.ToolbarZoomControls} canvas={canvas} />
                             <div>
                                 <R.ButtonGroup
                                     className={cx(styles.RunButtonGroup, {

@@ -1,7 +1,6 @@
 // @flow
 
 import { getContract, call } from '$mp/utils/smartContract'
-import { isWeb3Injected as isWeb3InjectedUtil } from '$mp/utils/web3'
 import { checkEthereumNetworkIsCorrect as checkEthereumNetworkIsCorrectUtil } from '$shared/utils/web3'
 import getConfig from '$shared/web3/config'
 import getWeb3 from '$shared/web3/web3Provider'
@@ -15,5 +14,3 @@ export const getDataPerUsd = (): SmartContractCall<NumberString> => call(marketp
     .then((value) => fromAtto(value).toString())
 
 export const checkEthereumNetworkIsCorrect = (): Promise<void> => (checkEthereumNetworkIsCorrectUtil(getWeb3()))
-
-export const isWeb3Injected = (): boolean => isWeb3InjectedUtil(getWeb3())

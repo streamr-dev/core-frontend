@@ -60,7 +60,6 @@ describe('WithContractProduct', () => {
             },
             global: {
                 ethereumNetworkIsCorrect: true,
-                isWeb3Injected: true,
             },
         }
         props = {

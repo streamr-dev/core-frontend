@@ -29,6 +29,7 @@ export default connect((state) => ({
     }
 
     render() {
+        const { className } = this.props
         const search = this.state.search.trim().toLowerCase()
         const otherCanvases = this.props.canvases.filter(({ id }) => id !== this.props.canvas.id)
 
@@ -38,7 +39,7 @@ export default connect((state) => ({
         return (
             <SearchPanel
                 placeholder="Search or select a canvas"
-                className={styles.CanvasSearch}
+                className={cx(className, styles.CanvasSearch)}
                 onChange={this.onChange}
                 isOpen={this.props.isOpen}
                 open={this.props.open}
