@@ -22,7 +22,7 @@ export default {
         ],
         outputs: {
             map: 'Key-count pairs',
-            valueOfCurrentKey: 'The occurrence count of the last key received. ',
+            valueOfCurrentKey: 'The occurrence count of the last key received.',
         },
         outputNames: [
             'map',
