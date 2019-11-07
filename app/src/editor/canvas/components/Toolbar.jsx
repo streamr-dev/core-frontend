@@ -18,7 +18,6 @@ import dateFormatter from '$utils/dateFormatter'
 import EditableText from '$shared/components/EditableText'
 import UseState from '$shared/components/UseState'
 import confirmDialog from '$shared/utils/confirm'
-import { getKeyLabel } from '$editor/shared/components/KeyboardShortcutsSidebar'
 
 import Toolbar from '$editor/shared/components/Toolbar'
 import useCanvasCamera from '../hooks/useCanvasCamera'
@@ -33,7 +32,6 @@ import styles from './Toolbar.pcss'
 function ZoomControls({ className, canvas }) {
     const camera = useCameraContext()
     const canvasCamera = useCanvasCamera({ canvas })
-    const metaKeyLabel = getKeyLabel('meta')
     return (
         <div className={cx(className, styles.ZoomControls)}>
             <DropdownActions
@@ -65,16 +63,16 @@ function ZoomControls({ className, canvas }) {
                 }
             >
                 <DropdownActions.Item onClick={() => camera.setScale(1)}>
-                    Full Size <span className={styles.menuShortcut}>{metaKeyLabel}0</span>
+                    Full size
                 </DropdownActions.Item>
                 <DropdownActions.Item onClick={() => canvasCamera.fitCanvas()}>
-                    Fit Screen <span className={styles.menuShortcut}>{metaKeyLabel}1</span>
+                    Fit screen
                 </DropdownActions.Item>
                 <DropdownActions.Item onClick={() => camera.zoomIn()}>
-                    Zoom In <span className={styles.menuShortcut}>{metaKeyLabel}=</span>
+                    Zoom In
                 </DropdownActions.Item>
                 <DropdownActions.Item onClick={() => camera.zoomOut()}>
-                    Zoom Out <span className={styles.menuShortcut}>{metaKeyLabel}-</span>
+                    Zoom Out
                 </DropdownActions.Item>
                 <DropdownActions.Item divider />
                 <DropdownActions.Item onClick={() => camera.setScale(0.5)}>50%</DropdownActions.Item>

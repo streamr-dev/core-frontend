@@ -1,6 +1,7 @@
 import { useMemo, useCallback, useEffect, useState, useRef, useContext } from 'react'
 import { getCanvasBounds, getModuleBounds } from '$editor/shared/utils/bounds'
 import { useThrottled } from '$shared/hooks/wrapCallback'
+import { isChordEvent } from '$editor/shared/utils/shortcuts'
 
 import { useCameraContext } from '../components/Camera'
 import { DragDropContext } from '../components/DragDropContext'
@@ -155,16 +156,16 @@ function useKeyboardZoomControls() {
 
     const onKeyDown = useCallback((event) => {
         if (shouldIgnoreEvent(event)) { return }
-        const meta = (event.metaKey || event.ctrlKey)
+        const chordEvent = isChordEvent(event)
 
-        if (event.key === '0' && meta) {
+        if (event.code === 'Digit0' && chordEvent) {
             event.preventDefault()
             event.stopPropagation()
             event.stopImmediatePropagation()
             setScale(1)
         }
 
-        if (event.key === '1' && meta) {
+        if (event.code === 'Digit1' && chordEvent) {
             event.preventDefault()
             event.stopPropagation()
             event.stopImmediatePropagation()

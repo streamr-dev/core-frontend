@@ -22,3 +22,12 @@ export const isWindows = (userAgent: string = navigator.userAgent): boolean => {
 
     return !!osFamily.match(/windows/)
 }
+
+export const isMac = (userAgent: string = navigator.userAgent): boolean => {
+    const info = platform.parse(userAgent)
+    const osFamily = (info.os && info.os.family && info.os.family.toLowerCase()) || ''
+
+    return !!osFamily.match(/os x/)
+}
+
+export default platform
