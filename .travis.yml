@@ -66,12 +66,13 @@ jobs:
     - SENTRY_DSN=https://e012761929d24baa96ca82772f60b395@sentry.io/1203154
     - LOGROCKET_SLUG=et0uhu/streamr-frontend-local
     script: "$TRAVIS_BUILD_DIR/app/travis_scripts/visual-tests.sh"
-  - stage: Build docker (dev)
+  - stage: Build docker (master)
+    if: branch = master
     install: true
     env:
       - OWNER=streamr
       - IMAGE_NAME=platform
-      - TAG=dev
+      - TAG=master
     script:
       - npm ci
       - npm run build
