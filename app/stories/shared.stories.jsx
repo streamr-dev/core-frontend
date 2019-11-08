@@ -102,8 +102,12 @@ story('Popover actions')
     ))
 
 story('Status icon')
-    .addWithJSX('normal', () => <StatusIcon />)
+    .addWithJSX('ok', () => <StatusIcon status={StatusIcon.OK} />)
+    .addWithJSX('ok with tooltip', () => <StatusIcon showTooltip status={StatusIcon.OK} />)
+    .addWithJSX('inactive', () => <StatusIcon status={StatusIcon.INACTIVE} />)
+    .addWithJSX('inactive with tooltip', () => <StatusIcon showTooltip status={StatusIcon.INACTIVE} />)
     .addWithJSX('error', () => <StatusIcon status={StatusIcon.ERROR} />)
+    .addWithJSX('error with tooltip', () => <StatusIcon showTooltip status={StatusIcon.ERROR} />)
 
 story('Table')
     .addWithJSX('basic', () => (

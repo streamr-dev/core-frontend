@@ -400,7 +400,7 @@ class StreamList extends Component<Props, State> {
                                                         )}
                                                     </Table.Td>
                                                     <Table.Td className={styles.statusColumn}>
-                                                        <StatusIcon status={stream.streamStatus} />
+                                                        <StatusIcon showTooltip status={stream.streamStatus} />
                                                     </Table.Td>
                                                     <Table.Td
                                                         onClick={(event) => event.stopPropagation()}
@@ -497,7 +497,7 @@ class StreamList extends Component<Props, State> {
                                                                         moment.min(moment.tz(stream.lastUpdated, timezone), nowTime).fromNow()
                                                                     )}
                                                                 </span>
-                                                                <StatusIcon status={stream.streamStatus} className={styles.tabletStatusStreamIcon} />
+                                                                <StatusIcon showTooltip status={stream.streamStatus} className={styles.tabletStatusStreamIcon} />
                                                             </div>
                                                         </div>
                                                     </Table.Td>
