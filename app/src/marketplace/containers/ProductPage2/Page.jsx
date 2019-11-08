@@ -21,7 +21,7 @@ import { isCommunityProduct } from '$mp/utils/product'
 import { ago } from '$shared/utils/time'
 
 import ProductDetails from './ProductDetails'
-import CollapsedText from './CollapsedText'
+import CollapsedText from '$mp/components/ProductPage/CollapsedText'
 import StreamListing from '$mp/components/ProductPage/StreamListing'
 import ProductOverview from '$mp/components/ProductPage/ProductOverview'
 import styles from './page.pcss'
