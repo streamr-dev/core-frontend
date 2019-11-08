@@ -18,18 +18,19 @@ const CollapsedText = ({ text: textProp, className }: Props) => {
     const text = textProp || ''
     const [truncationRequired, setTruncationRequired] = useState(false)
     const [expanded, setExpanded] = useState(false)
-    const rootRef = useRef()
     const outerElRef = useRef()
     const innerElRef = useRef()
 
-    const toggleTruncate = useCallback(() => {
+    const toggleExpanded = useCallback(() => {
         setExpanded((prev) => !prev)
 
-        if (rootRef.current) {
-            rootRef.current.scrollIntoView({
+        const outerEl = outerElRef.current
+        if (outerEl) {
+            const { top } = outerEl.getBoundingClientRect()
+
+            window.scrollTo({
+                top: (top + window.pageYOffset) - 100, // offset nav
                 behavior: 'smooth',
-                block: 'start',
-                inline: 'nearest',
             })
         }
     }, [setExpanded])
@@ -75,7 +76,7 @@ const CollapsedText = ({ text: textProp, className }: Props) => {
     }, [innerElRef, onResize])
 
     return (
-        <div className={cx(styles.root, styles.CollapsedText, className)} ref={rootRef}>
+        <div className={cx(styles.root, styles.CollapsedText, className)}>
             <div
                 className={cx(styles.outer, {
                     [styles.expanded]: !!expanded,
@@ -93,7 +94,7 @@ const CollapsedText = ({ text: textProp, className }: Props) => {
             {truncationRequired && (
                 <button
                     type="button"
-                    onClick={toggleTruncate}
+                    onClick={toggleExpanded}
                     className={styles.expandButton}
                 >
                     {!expanded ? (
