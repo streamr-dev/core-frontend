@@ -42,6 +42,7 @@ import ContextMenu from '$shared/components/ContextMenu'
 import { NotificationIcon } from '$shared/utils/constants'
 import RadioButtonGroup from '$shared/components/RadioButtonGroup'
 import Toolbar from '$shared/components/Toolbar'
+import Spinner from '$shared/components/Spinner'
 import DeploySpinner from '$shared/components/DeploySpinner'
 import Label from '$shared/components/Label'
 import Tile from '$shared/components/Tile'
@@ -908,6 +909,12 @@ story('DonutChart')
         />
     ))
 
+story('Spinner')
+    .addWithJSX('Small', () => (<Spinner size="small" />))
+    .addWithJSX('Large', () => (<Spinner size="large" />))
+    .addWithJSX('Green', () => (<Spinner color="green" />))
+    .addWithJSX('White', () => (<Spinner color="white" />))
+
 story('Button')
     .addWithJSX('all', () => (
         <div>
@@ -944,5 +951,9 @@ story('Button')
             <Button type="special" variant="light" onClick={action('Clicked')}>Special (light)</Button>
             <br />
             <Button tag="a" href="#" onClick={action('Clicked')}>With link tag</Button>
+            <br />
+            <Button type="primary" waiting onClick={action('Clicked')}>Waiting primary</Button>
+            <br />
+            <Button type="secondary" waiting onClick={action('Clicked')}>Waiting secondary</Button>
         </div>
     ))
