@@ -14,7 +14,11 @@ function useFilePreview() {
     }, [preview])
 
     const createPreview = useCallback((file: File) => {
-        const imagePreview = URL.createObjectURL(file)
+        let imagePreview
+
+        if (file) {
+            imagePreview = URL.createObjectURL(file)
+        }
 
         setPreview(imagePreview)
 
