@@ -36,36 +36,35 @@ const Button = ({
     onClick,
     children,
     ...args
-}: Props) => {
-    console.log(type, size, outline, disabled, args)
-    return (
-        <Tag
-            className={
-                cx(styles.root, {
-                    [styles.primary]: type === 'primary',
-                    [styles.secondary]: type === 'secondary',
-                    [styles.destructive]: type === 'destructive',
-                    [styles.link]: type === 'link',
-                    [styles.special]: type === 'special',
-                    [styles.mini]: size === 'mini',
-                    [styles.normal]: size === 'normal',
-                    [styles.big]: size === 'big',
-                    [styles.dark]: variant === 'dark',
-                    [styles.outline]: outline,
-                    [styles.waiting]: waiting,
-                }, className)
-            }
-            onClick={onClick}
-            disabled={disabled}
-            {...args}
-        >
-            {children}
-            {waiting && (
+}: Props) => (
+    <Tag
+        className={
+            cx(styles.root, {
+                [styles.primary]: type === 'primary',
+                [styles.secondary]: type === 'secondary',
+                [styles.destructive]: type === 'destructive',
+                [styles.link]: type === 'link',
+                [styles.special]: type === 'special',
+                [styles.mini]: size === 'mini',
+                [styles.normal]: size === 'normal',
+                [styles.big]: size === 'big',
+                [styles.dark]: variant === 'dark',
+                [styles.outline]: outline,
+            }, className)
+        }
+        onClick={onClick}
+        disabled={disabled || waiting}
+        {...args}
+    >
+        {children}
+        {waiting && (
+            <React.Fragment>
+                &nbsp;
                 <Spinner color="white" />
-            )}
-        </Tag>
-    )
-}
+            </React.Fragment>
+        )}
+    </Tag>
+)
 
 Button.defaultProps = {
     tag: 'button',
