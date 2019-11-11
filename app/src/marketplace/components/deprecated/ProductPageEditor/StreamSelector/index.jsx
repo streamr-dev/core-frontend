@@ -4,10 +4,11 @@ import React from 'react'
 import classNames from 'classnames'
 import uniq from 'lodash/uniq'
 import sortBy from 'lodash/sortBy'
-import { Input, Button } from 'reactstrap'
+import { Input } from 'reactstrap'
 import { Translate, I18n } from 'react-redux-i18n'
 
 import StreamListing from '$mp/components/ProductPage/StreamListing'
+import Button from '$shared/components/Button'
 import DropdownActions from '$shared/components/DropdownActions'
 import SvgIcon from '$shared/components/SvgIcon'
 import ProductContainer from '$shared/components/Container/Product'
@@ -297,7 +298,7 @@ export class StreamSelector extends React.Component<Props, State> {
                                 <Translate value="streamSelector.selectedStream" streamCount={selectedStreams.size} />
                             }
                         </div>
-                        <Button color="link" onClick={() => this.onCancel()}>
+                        <Button type="link" onClick={() => this.onCancel()}>
                             <Translate value="modal.common.cancel" />
                         </Button>
                         <Button

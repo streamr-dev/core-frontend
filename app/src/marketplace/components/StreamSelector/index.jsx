@@ -5,9 +5,10 @@ import React, { useState, useMemo, useCallback } from 'react'
 import classNames from 'classnames'
 import uniq from 'lodash/uniq'
 import sortBy from 'lodash/sortBy'
-import { Input, Button } from 'reactstrap'
+import { Input } from 'reactstrap'
 import { Translate, I18n } from 'react-redux-i18n'
 
+import Button from '$shared/components/Button'
 import DropdownActions from '$shared/components/DropdownActions'
 import SvgIcon from '$shared/components/SvgIcon'
 import InputError from '$mp/components/InputError'
@@ -175,6 +176,7 @@ export const StreamSelector = (props: Props) => {
                             }
                         </div>
                         <Button
+                            type="secondary"
                             onClick={() => {
                                 const toSelect = matchingStreams.map((s) => s.id)
 
