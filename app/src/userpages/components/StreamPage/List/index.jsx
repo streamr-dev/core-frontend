@@ -497,7 +497,11 @@ class StreamList extends Component<Props, State> {
                                                                         moment.min(moment.tz(stream.lastUpdated, timezone), nowTime).fromNow()
                                                                     )}
                                                                 </span>
-                                                                <StatusIcon showTooltip status={stream.streamStatus} className={styles.tabletStatusStreamIcon} />
+                                                                <StatusIcon
+                                                                    showTooltip
+                                                                    status={stream.streamStatus}
+                                                                    className={styles.tabletStatusStreamIcon}
+                                                                />
                                                             </div>
                                                         </div>
                                                     </Table.Td>
