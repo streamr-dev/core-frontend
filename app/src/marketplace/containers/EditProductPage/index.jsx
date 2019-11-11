@@ -27,6 +27,7 @@ import ConfirmSaveModal from './ConfirmSaveModal'
 import UpdateContractProductModal from './UpdateContractProductModal'
 import DeployCommunityModal from './DeployCommunityModal'
 import PublishModal from './PublishModal'
+import CropImageModal from './CropImageModal'
 
 import styles from './editProductPage.pcss'
 
@@ -137,6 +138,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
             <UpdateContractProductModal />
             <DeployCommunityModal />
             <PublishModal />
+            <CropImageModal />
         </CoreLayout>
     )
 }

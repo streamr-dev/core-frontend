@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useContext } from 'react'
+import React, { useContext, useCallback } from 'react'
 import cx from 'classnames'
 import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
 
@@ -10,6 +10,8 @@ import useEditableProductActions from '../ProductController/useEditableProductAc
 import ImageUpload from '$shared/components/ImageUpload'
 import InputError from '$mp/components/InputError'
 import usePending from '$shared/hooks/usePending'
+import useModal from '$shared/hooks/useModal'
+import useFilePreview from '$shared/hooks/useFilePreview'
 
 import styles from './coverImage.pcss'
 
@@ -19,6 +21,19 @@ const CoverImage = () => {
     const { updateImageFile } = useEditableProductActions()
     const { isValid, message } = useValidation('imageUrl')
     const { isPending } = usePending('product.SAVE')
+    const { api: cropImageDialog } = useModal('cropImage')
+    const { preview, createPreview } = useFilePreview()
+
+    const onUpload = useCallback(async (image: File) => {
+        const newImage = await cropImageDialog.open({
+            image,
+        })
+
+        if (newImage) {
+            createPreview(newImage)
+            updateImageFile(newImage)
+        }
+    }, [cropImageDialog, createPreview, updateImageFile])
 
     const hasError = isTouched('imageUrl') && !isValid
 
@@ -32,13 +47,14 @@ const CoverImage = () => {
                     Need images? See the docs.
                 </p>
                 <ImageUpload
-                    setImageToUpload={updateImageFile}
-                    originalImage={(product.newImageToUpload && product.newImageToUpload.preview) || product.imageUrl}
+                    setImageToUpload={onUpload}
+                    originalImage={preview || product.imageUrl}
                     className={styles.imageUpload}
                     dropzoneClassname={cx(styles.dropZone, {
                         [styles.dropZoneError]: !!hasError,
                     })}
                     disabled={!!isPending}
+                    updatePreview={false}
                 />
                 <InputError
                     eligible={hasError}
