@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import AvatarEditor from 'react-avatar-editor'
 import { I18n } from 'react-redux-i18n'
 
@@ -17,6 +17,7 @@ type Props = {
 
 const CropImageModal = ({ image, api }: Props) => {
     const editorRef = useRef()
+    const resultRef = useRef(undefined)
     const [previewImage, setPreviewImage] = useState(null)
     const [sliderValue, setSliderValue] = useState(1)
 
@@ -28,20 +29,21 @@ const CropImageModal = ({ image, api }: Props) => {
         }
     }, [image])
 
-    const onClose = useCallback((result: ?File = undefined) => {
-        api.close(result)
+    const onClose = useCallback(() => {
+        api.close(resultRef.current)
     }, [api])
 
     const onSave = useCallback(async () => {
         if (editorRef.current) {
-            const canvas = editorRef.current.getImageScaledToCanvas()
+            const canvas = editorRef.current.getImage()
             const dataURL = canvas.toDataURL()
 
             const res = await fetch(dataURL)
             const blob = await res.blob()
             const file = new File([blob], 'coverImage.png')
 
-            onClose(file)
+            resultRef.current = file
+            onClose()
         }
     }, [onClose])
 
@@ -62,26 +64,28 @@ const CropImageModal = ({ image, api }: Props) => {
                     onClick: onSave,
                 },
             }}
+            contentClassName={styles.contentArea}
         >
-            <AvatarEditor
-                ref={editorRef}
-                className={styles.editor}
-                image={previewImage}
-                width={200}
-                height={200}
-                border={[132, 16]}
-                borderRadius={100}
-                color={[255, 255, 255, 0.6]} // RGBA
-                scale={(100 + sliderValue) / 100}
-                rotate={0}
-            />
-            <div>
+            <div className={styles.inner}>
+                <AvatarEditor
+                    ref={editorRef}
+                    className={styles.editor}
+                    image={previewImage}
+                    width={540}
+                    height={340}
+                    border={[0, 0]}
+                    borderRadius={0}
+                    color={[255, 255, 255, 0.6]} // RGBA
+                    scale={(100 + sliderValue) / 100}
+                    rotate={0}
+                />
                 <Slider
                     min={0}
                     max={200}
                     value={sliderValue}
                     onChange={setSliderValue}
-                    className={styles.slider}
+                    className={styles.sliderWrapper}
+                    sliderClassname={styles.slider}
                 />
             </div>
         </Dialog>
