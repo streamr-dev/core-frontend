@@ -1,4 +1,5 @@
 .root {
+  position: relative;
   display: inline-flex;
   align-items: center;
   padding: 0;
@@ -10,7 +11,7 @@
   letter-spacing: 0;
   text-align: center;
   transition: 200ms ease-in-out;
-  transition-property: border-color, background-color, color;
+  transition-property: border-color, background-color, color, transform;
   white-space: nowrap;
   cursor: pointer;
   user-select: none;
@@ -39,6 +40,10 @@
 
   &.waiting {
     opacity: 0.5;
+  }
+
+  & * {
+    width: 100%;
   }
 }
 
@@ -70,6 +75,7 @@
     border-color: #0324FF;
 
     &:--enter {
+      color: inherit;
       color: #0D009A;
       border-color: #0D009A;
     }
@@ -91,6 +97,7 @@
   border-color: #EFEFEF;
 
   &:--enter {
+    color: inherit;
     background-color: #E7E7E7;
     border-color: #E7E7E7;
   }
@@ -139,9 +146,11 @@
 }
 
 .link {
-  color: rgba(171, 171, 171, 1);
+  color: rgba(82, 82, 82, 1);
   background-color: transparent;
   border-color: transparent;
+  font-weight: var(--regular);
+  padding: 0 0.5rem !important; /* ignore "size" classes */
 
   &:--enter {
     color: #323232;
@@ -149,12 +158,12 @@
   }
 
   &:active {
-    color: rgba(171, 171, 171, 0.8);
+    color: rgba(82, 82, 82, 0.8);
     transform: scale(1);
   }
 
   &[disabled] {
-    color: rgba(171, 171, 171, 0.5);
+    color: rgba(82, 82, 82, 0.5);
   }
 
   &.dark {
@@ -183,14 +192,15 @@
   border-radius: 20px;
   font: var(--sans);
   font-weight: var(--medium);
-  font-size: 12px !important;
-  line-height: 12px !important;
-  padding: 0 1.5rem !important;
+  font-size: 12px !important; /* ignore "size" classes */
+  line-height: 12px !important; /* ignore "size" classes */
+  padding: 0 1.5rem !important; /* ignore "size" classes */
   text-transform: uppercase;
   letter-spacing: 1px;
-  height: 40px !important;
+  height: 40px !important; /* ignore "size" classes */
 
   &:--enter {
+    color: inherit;
     background-color: rgba(255, 255, 255, 1);
     border-color: rgba(255, 255, 255, 1);
   }

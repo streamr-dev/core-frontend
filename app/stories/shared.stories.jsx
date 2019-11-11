@@ -734,12 +734,12 @@ story('RadioButtonGroup')
 const toolbarActions = {
     cancel: {
         title: 'Cancel',
-        color: 'link',
+        type: 'link',
         onClick: action('cancel'),
     },
     ok: {
         title: 'Ok',
-        color: 'primary',
+        type: 'primary',
         onClick: action('ok'),
         disabled: boolean('disabled'),
         spinner: boolean('spinner'),

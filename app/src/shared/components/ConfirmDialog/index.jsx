@@ -68,14 +68,14 @@ const ConfirmDialog = (props: Props) => {
         cancel: {
             title: I18n.t('modal.common.cancel'),
             onClick: onReject,
-            color: 'link',
+            type: 'link',
             outline: true,
             ...cancelButtonProps,
         },
         save: {
             title: I18n.t('modal.common.ok'),
             onClick: (event) => onAccept(event, checked),
-            color: 'primary',
+            type: 'primary',
             ...acceptButtonProps,
         },
     }

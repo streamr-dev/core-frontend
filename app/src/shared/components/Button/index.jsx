@@ -7,9 +7,9 @@ import Spinner from '$shared/components/Spinner'
 
 import styles from './newButton.pcss'
 
-type Size = 'mini' | 'normal' | 'big'
-type Type = 'primary' | 'secondary' | 'destructive' | 'link' | 'special'
-type Variant = 'dark'
+export type Size = 'mini' | 'normal' | 'big'
+export type Type = 'primary' | 'secondary' | 'destructive' | 'link' | 'special'
+export type Variant = 'dark'
 
 type Props = {
     className?: string,
@@ -20,7 +20,7 @@ type Props = {
     outline: boolean,
     disabled: boolean,
     waiting: boolean,
-    onClick?: () => void,
+    onClick?: (e: SyntheticInputEvent<EventTarget>) => void | Promise<void>,
     children?: Node,
 }
 
