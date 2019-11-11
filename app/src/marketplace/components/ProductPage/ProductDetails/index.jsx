@@ -34,7 +34,7 @@ const buttonTitle = (product: Product, isValidSubscription: boolean) => {
 
 const ProductDetails = ({ product, isValidSubscription, onPurchase }: Props) => {
     const productDetailsRef = useRef(null)
-
+    console.log(product.description.length)
     const truncationRequired = !((product.description || '').length < 400)
     const [truncated, setTruncatedState] = useState(truncationRequired)
 

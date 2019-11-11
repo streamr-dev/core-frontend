@@ -95,13 +95,13 @@ class Steps extends Component<Props, State> {
                 actions={{
                     cancel: {
                         title: I18n.t('modal.common.cancel'),
-                        color: 'link',
+                        type: 'link',
                         onClick: this.props.onCancel,
                     },
                     next: {
                         title: this.nextButtonLabel(),
                         outline: this.nextButtonOutline(),
-                        color: 'primary',
+                        type: 'primary',
                         onClick: this.onNext,
                         disabled: this.props.isDisabled,
                     },

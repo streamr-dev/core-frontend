@@ -44,11 +44,11 @@ const ConfirmPublishTransaction = ({
                         cancel: {
                             title: I18n.t('modal.common.cancel'),
                             onClick: onCancel,
-                            color: 'link',
+                            type: 'link',
                         },
                         publish: {
                             title: I18n.t('modal.common.waiting'),
-                            color: 'primary',
+                            type: 'primary',
                             disabled: true,
                             spinner: true,
                         },

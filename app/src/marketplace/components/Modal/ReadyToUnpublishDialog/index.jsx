@@ -18,11 +18,11 @@ const ReadyToUnpublishDialog = ({ onCancel, onContinue }: Props) => (
             cancel: {
                 title: I18n.t('modal.common.cancel'),
                 onClick: onCancel,
-                color: 'link',
+                type: 'link',
             },
             unpublish: {
                 title: I18n.t('modal.readyToUnpublish.unpublish'),
-                color: 'primary',
+                type: 'primary',
                 onClick: onContinue,
             },
         }}

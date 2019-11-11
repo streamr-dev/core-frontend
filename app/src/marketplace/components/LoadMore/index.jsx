@@ -2,7 +2,9 @@
 
 import React from 'react'
 import { Translate } from 'react-redux-i18n'
-import { Row, Container, Col, Button } from 'reactstrap'
+import { Row, Container, Col } from 'reactstrap'
+
+import Button from '$shared/components/Button'
 
 import styles from './loadMore.pcss'
 
@@ -20,7 +22,7 @@ const LoadMore = ({ onClick, hasMoreSearchResults }: Props) => {
         <Container className={styles.container}>
             <Row className="justify-content-center">
                 <Col xs="auto">
-                    <Button color="special" onClick={onClick}>
+                    <Button type="special" variant="dark" onClick={onClick}>
                         <Translate value="productList.viewMore" />
                     </Button>
                 </Col>

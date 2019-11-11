@@ -1,7 +1,6 @@
 // @flow
 
 import React from 'react'
-import { Button } from 'reactstrap'
 import classNames from 'classnames'
 import MediaQuery from 'react-responsive'
 import { Translate } from 'react-redux-i18n'
@@ -14,6 +13,7 @@ import { formatExternalUrl } from '$shared/utils/url'
 import type { Product, ProductId } from '../../../flowtype/product-types'
 import links from '../../../../links'
 import Link from '$shared/components/Link'
+import Button from '$shared/components/Button'
 
 import styles from './streamListing.pcss'
 
@@ -61,9 +61,11 @@ const HoverComponent = ({
     <div className={styles.hoverContainer}>
         {(isLoggedIn && (isProductFree || isProductSubscriptionValid)) && (
             <Button
-                color="secondary"
-                size="sm"
-                className="d-none d-md-inline-block"
+                type="secondary"
+                size="mini"
+                outline
+                tag={Link}
+                className={styles.button}
                 href={formatExternalUrl(links.editor.canvasEditor, {
                     addStream: streamId,
                 })}
@@ -74,9 +76,10 @@ const HoverComponent = ({
         {/* No need to show the preview button on editProduct page */}
         {(isProductFree || (isLoggedIn && isProductSubscriptionValid)) && productId && (
             <Button
+                type="secondary"
+                size="mini"
+                outline
                 tag={Link}
-                color="secondary"
-                size="sm"
                 to={routes.streamPreview({
                     id: productId,
                     streamId,

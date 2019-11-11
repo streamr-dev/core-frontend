@@ -2,9 +2,9 @@
 
 import React from 'react'
 import cx from 'classnames'
-import { Button } from 'reactstrap'
 import { I18n } from 'react-redux-i18n'
 
+import Button from '$shared/components/Button'
 import { isPaidProduct } from '$mp/utils/product'
 import type { Product, Subscription } from '$mp/flowtype/product-types'
 import PaymentRate from '$mp/components/PaymentRate'
@@ -67,7 +67,8 @@ const ProductDetails = ({ product, isValidSubscription, productSubscription, onP
         <div className={styles.buttonWrapper}>
             <Button
                 className={styles.button}
-                color="primary"
+                type="primary"
+                size="big"
                 disabled={(!isPaidProduct(product) && isValidSubscription) || product.state !== productStates.DEPLOYED}
                 onClick={onPurchase}
             >

@@ -7,6 +7,7 @@ import EmptyState from '$shared/components/EmptyState'
 import { marketplace } from '$shared/../links'
 import emptyStateIcon from '$shared/assets/images/empty_state_icon.png'
 import emptyStateIcon2x from '$shared/assets/images/empty_state_icon@2x.png'
+import Button from '$shared/components/Button'
 
 const NoProductsView = () => (
     <EmptyState
@@ -18,9 +19,9 @@ const NoProductsView = () => (
             />
         )}
         link={(
-            <a href={marketplace.main} className="btn btn-special">
+            <Button tag="a" href={marketplace.main} type="special">
                 <Translate value="noMyPurchasesView.goToMarketplace" />
-            </a>
+            </Button>
         )}
     >
         <Translate value="noMyPurchasesView.message" />

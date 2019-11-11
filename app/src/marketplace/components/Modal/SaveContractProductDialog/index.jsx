@@ -28,12 +28,13 @@ const SaveContractProductDialog = ({ transactionState, onClose }: Props) => {
                     actions={{
                         cancel: {
                             title: I18n.t('modal.common.cancel'),
+                            type: 'link',
                             onClick: onClose,
                             outline: true,
                         },
                         publish: {
                             title: I18n.t('modal.common.waiting'),
-                            color: 'primary',
+                            type: 'primary',
                             disabled: true,
                             spinner: true,
                         },
