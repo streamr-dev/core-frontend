@@ -15,7 +15,7 @@ const canvasesUrl = `${process.env.STREAMR_API_URL}/canvases`
 const getModuleCategoriesURL = `${process.env.STREAMR_API_URL}/module_categories`
 const streamsUrl = `${process.env.STREAMR_API_URL}/streams`
 
-const AUTOSAVE_DELAY = 3000
+const AUTOSAVE_DELAY = 500
 
 async function save(canvas) {
     return api().put(`${canvasesUrl}/${canvas.id}`, canvas).then(getData)
