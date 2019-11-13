@@ -21,11 +21,11 @@ export default function ModuleSidebar({ canvas, selectedModuleHash, setModuleOpt
         // format value based on option.type
         let value = _value
         if (option.type === 'int') {
-            value = parseInt(value, 10)
+            value = parseInt(value, 10) || 0
         }
 
         if (option.type === 'double') {
-            value = Number(value)
+            value = Number(value) || 0
         }
 
         if (option.type === 'string' || option.type === 'color') {
