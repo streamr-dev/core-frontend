@@ -98,6 +98,7 @@ function StatusView(props: Props) {
                     type="number"
                     value={value}
                     min="0"
+                    hideButtons
                     onChange={onChange}
                     onBlur={onCommit}
                     disabled={disabled}
