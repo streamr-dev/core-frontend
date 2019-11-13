@@ -9,6 +9,7 @@ import useValidation from '../ProductController/useValidation'
 import useProductActions from '../ProductController/useProductActions'
 import ImageUpload from '$shared/components/ImageUpload'
 import InputError from '$mp/components/InputError'
+import usePending from '$shared/hooks/usePending'
 
 import styles from './coverImage.pcss'
 
@@ -17,6 +18,7 @@ const CoverImage = () => {
     const { isTouched } = useContext(ValidationContext)
     const { updateImageFile } = useProductActions()
     const { isValid, message } = useValidation('imageUrl')
+    const { isPending } = usePending('product.SAVE')
 
     const hasError = isTouched('imageUrl') && !isValid
 
@@ -36,6 +38,7 @@ const CoverImage = () => {
                     dropzoneClassname={cx(styles.dropZone, {
                         [styles.dropZoneError]: !!hasError,
                     })}
+                    disabled={!!isPending}
                 />
                 <InputError
                     eligible={hasError}

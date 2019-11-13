@@ -16,13 +16,18 @@
   border: 1px solid #FF5C00;
 }
 
+.disabled {
+  opacity: 0.5;
+}
+
 .input {
   border: none;
   background: none;
   width: auto;
   flex: 1;
 
-  &:focus {
+  &:focus,
+  &:disabled {
     background: none;
     outline: none;
     box-shadow: none;

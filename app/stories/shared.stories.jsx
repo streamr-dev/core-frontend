@@ -89,10 +89,30 @@ story('Popover actions')
             <DropdownActions.Item>Another option</DropdownActions.Item>
         </DropdownActions>
     ))
+    .addWithJSX('disabled', () => (
+        <DropdownActions title="Select" disabled>
+            <DropdownActions.Item onClick={action('clicked')}>
+                Click me
+            </DropdownActions.Item>
+            <DropdownActions.Item>Another option</DropdownActions.Item>
+        </DropdownActions>
+    ))
     .addWithJSX('meatball dropdown', () => (
         <DropdownActions
             title={<Meatball alt="Select" />}
             noCaret
+        >
+            <DropdownActions.Item onClick={action('clicked')}>
+                Click me
+            </DropdownActions.Item>
+            <DropdownActions.Item>Another option</DropdownActions.Item>
+        </DropdownActions>
+    ))
+    .addWithJSX('disabled meatball dropdown', () => (
+        <DropdownActions
+            title={<Meatball alt="Select" disabled />}
+            noCaret
+            disabled
         >
             <DropdownActions.Item onClick={action('clicked')}>
                 Click me

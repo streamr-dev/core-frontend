@@ -16,8 +16,10 @@
   fill: var(--greyDark);
 }
 
-.root:--enter,
-a:--enter .root {
+.disabled {}
+
+.root:not(.disabled):--enter,
+a:--enter .root:not(.disabled) {
   opacity: 1;
   transition-duration: 50ms;
 }

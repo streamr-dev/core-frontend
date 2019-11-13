@@ -8,6 +8,7 @@ import useProduct from '../ProductController/useProduct'
 import useValidation from '../ProductController/useValidation'
 import useProductActions from '../ProductController/useProductActions'
 import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
+import usePending from '$shared/hooks/usePending'
 
 import AvailableStreams from '../AvailableStreams'
 import styles from './productStreams.pcss'
@@ -17,6 +18,7 @@ const ProductStreams = () => {
     const { isValid, message } = useValidation('streams')
     const { updateStreams } = useProductActions()
     const { isTouched } = useContext(ValidationContext)
+    const { isPending } = usePending('product.SAVE')
 
     return (
         <section id="streams" className={cx(styles.root, styles.StreamSelector)}>
@@ -34,6 +36,7 @@ const ProductStreams = () => {
                             streams={product.streams}
                             className={styles.streams}
                             error={isTouched('streams') && !isValid ? message : undefined}
+                            disabled={!!isPending}
                         />
                     )}
                 </AvailableStreams>
