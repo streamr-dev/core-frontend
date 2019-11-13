@@ -1,9 +1,9 @@
 // @flow
 
-import React, { Component, type Element } from 'react'
+import React, { type Element, useEffect, useState, useCallback, useMemo } from 'react'
 import Dropzone from 'react-dropzone'
+import cx from 'classnames'
 
-import { type Ref } from '$shared/flowtype/common-types'
 import styles from './fileUpload.pcss'
 
 export type DropzoneFile = File & {
@@ -24,44 +24,65 @@ type Props = {
     onError?: (error: FileUploadError) => void,
     acceptMime: Array<string>,
     maxFileSizeInMB: number,
+    className?: string,
 }
 
-type State = {
-    isDragActive: boolean,
-    isDragOver: boolean,
-}
+const megabytesToBytes = (mb: number) => mb * 1024 * 1024
 
-class FileUpload extends Component<Props, State> {
-    constructor() {
-        super()
-        window.addEventListener('dragenter', this.onWindowDragEnter)
-        window.addEventListener('dragleave', this.onWindowDragLeave)
-        window.addEventListener('drop', this.onWindowDrop)
-    }
+// $FlowFixMe shoulbe forwardRef<Props, HTMLDivElement>(...) but flow doesn't recognize forwardRef annotations
+const FileUpload = React.forwardRef(({
+    onFilesAccepted,
+    onError,
+    acceptMime,
+    maxFileSizeInMB,
+    dragOverComponent,
+    dropTargetComponent,
+    component,
+    className,
+    ...rest
+}: Props, ref: any) => {
+    const [isDragOver, setDragOver] = useState(false)
+    const [isDragActive, setDragActive] = useState(false)
 
-    state = {
-        isDragActive: false,
-        isDragOver: false,
-    }
+    useEffect(() => {
+        let lastTarget
+        const onWindowDragEnter = (event: DragEvent) => {
+            lastTarget = event.target
+            setDragActive(true)
+        }
 
-    componentWillUnmount() {
-        window.removeEventListener('dragenter', this.onWindowDragEnter)
-        window.removeEventListener('dragleave', this.onWindowDragLeave)
-        window.removeEventListener('drop', this.onWindowDrop)
-    }
+        const onWindowDragLeave = (event: DragEvent) => {
+            if (lastTarget === event.target || event.target === document) {
+                setDragActive(false)
+                setDragOver(false)
+            }
+        }
 
-    onDrop = (files: Array<DropzoneFile>) => {
-        const { onFilesAccepted } = this.props
+        const onWindowDrop = () => {
+            setDragActive(false)
+            setDragOver(false)
+        }
+
+        window.addEventListener('dragenter', onWindowDragEnter)
+        window.addEventListener('dragleave', onWindowDragLeave)
+        window.addEventListener('drop', onWindowDrop)
+
+        return () => {
+            window.removeEventListener('dragenter', onWindowDragEnter)
+            window.removeEventListener('dragleave', onWindowDragLeave)
+            window.removeEventListener('drop', onWindowDrop)
+        }
+    }, [])
+
+    const onDrop = useCallback((files: Array<DropzoneFile>) => {
         if (files && files.length > 0) {
             onFilesAccepted(files)
         }
-    }
+    }, [onFilesAccepted])
 
-    onDropRejected = ([file]: any) => {
-        const { onError, acceptMime, maxFileSizeInMB } = this.props
-
+    const onDropRejected = useCallback(([file]: any) => {
         if (onError) {
-            if (file.size > this.megabytesToBytes(maxFileSizeInMB)) {
+            if (file.size > megabytesToBytes(maxFileSizeInMB)) {
                 onError(fileUploadErrors.FILE_TOO_LARGE)
             }
 
@@ -69,53 +90,9 @@ class FileUpload extends Component<Props, State> {
                 onError(fileUploadErrors.INVALID_MIME_TYPE)
             }
         }
-    }
+    }, [onError, acceptMime, maxFileSizeInMB])
 
-    onDragOver = () => {
-        this.setState({
-            isDragOver: true,
-        })
-    }
-
-    onDragLeave = () => {
-        this.setState({
-            isDragOver: false,
-        })
-    }
-
-    onWindowDragEnter = (event: DragEvent) => {
-        this.lastTarget = event.target
-        this.setState({
-            isDragActive: true,
-        })
-    }
-
-    onWindowDragLeave = (event: DragEvent) => {
-        if (this.lastTarget === event.target || event.target === document) {
-            this.setState({
-                isDragActive: false,
-                isDragOver: false,
-            })
-        }
-    }
-
-    onWindowDrop = () => {
-        this.setState({
-            isDragActive: false,
-            isDragOver: false,
-        })
-    }
-
-    dropzoneRef: Ref<Dropzone> = React.createRef()
-
-    lastTarget = null
-
-    megabytesToBytes = (mb: number) => mb * 1024 * 1024
-
-    renderChildren() {
-        const { component, dropTargetComponent, dragOverComponent } = this.props
-        const { isDragActive, isDragOver } = this.state
-
+    const children = useMemo(() => {
         if (isDragActive && (!isDragOver || dragOverComponent == null)) {
             return dropTargetComponent
         } else if (isDragOver && dragOverComponent != null) {
@@ -123,36 +100,31 @@ class FileUpload extends Component<Props, State> {
         }
 
         return component
-    }
+    }, [isDragActive, isDragOver, dropTargetComponent, dragOverComponent, component])
 
-    render() {
-        const {
-            component,
-            dropTargetComponent,
-            dragOverComponent,
-            onFilesAccepted,
-            onError,
-            acceptMime,
-            maxFileSizeInMB,
-            ...rest
-        } = this.props
-
-        return (
-            <Dropzone
-                ref={this.dropzoneRef}
-                className={styles.dropzone}
-                onDrop={this.onDrop}
-                onDropRejected={this.onDropRejected}
-                onDragOver={this.onDragOver}
-                onDragLeave={this.onDragLeave}
-                accept={acceptMime.join(', ')}
-                maxSize={this.megabytesToBytes(maxFileSizeInMB)}
-                {...rest}
-            >
-                {this.renderChildren()}
-            </Dropzone>
-        )
-    }
-}
+    return (
+        <Dropzone
+            onDrop={onDrop}
+            onDropRejected={onDropRejected}
+            onDragOver={() => setDragOver(true)}
+            onDragLeave={() => setDragOver(false)}
+            accept={acceptMime.join(', ')}
+            maxSize={megabytesToBytes(maxFileSizeInMB)}
+            ref={ref}
+            {...rest}
+        >
+            {({ getRootProps, getInputProps }) => (
+                <div
+                    {...getRootProps({
+                        className: cx(styles.dropzone, className),
+                    })}
+                >
+                    <input {...getInputProps()} />
+                    {children}
+                </div>
+            )}
+        </Dropzone>
+    )
+})
 
 export default FileUpload
