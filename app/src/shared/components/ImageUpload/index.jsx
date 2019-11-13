@@ -1,6 +1,6 @@
 // @flow
 
-import React, { Fragment, useState, useCallback, useEffect, useMemo } from 'react'
+import React, { Fragment, useState, useCallback, useMemo } from 'react'
 import { useDropzone } from 'react-dropzone'
 import cx from 'classnames'
 import { Translate, I18n } from 'react-redux-i18n'
@@ -42,14 +42,6 @@ const ImageUpload = ({
     const [uploaded, setUploaded] = useState(false)
     const { preview, createPreview } = useFilePreview()
     const isMounted = useIsMounted()
-
-    useEffect(() => {
-        if (!preview) { return () => {} }
-
-        return () => {
-            URL.revokeObjectURL(preview)
-        }
-    }, [preview])
 
     const onDrop = useCallback((files: Array<File>) => {
         if (!isMounted()) { return }
