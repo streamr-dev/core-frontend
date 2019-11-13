@@ -1,6 +1,6 @@
 // @flow
 
-import React, { type Node, type Context, createContext, useMemo, useState, useCallback } from 'react'
+import React, { type Node, type Context, createContext, useMemo, useState, useCallback, useRef, useEffect } from 'react'
 import debounce from 'lodash/debounce'
 import useIsMounted from '$shared/hooks/useIsMounted'
 
@@ -29,9 +29,10 @@ export { SizeConstraintContext as Context }
 
 type Props = {
     children?: Node,
+    onSizeChange: () => void,
 }
 
-const SizeConstraintProvider = ({ children }: Props) => {
+const SizeConstraintProvider = ({ onSizeChange, children }: Props) => {
     const isMounted = useIsMounted()
     const [dim, setDim] = useState({
         heights: {},
@@ -85,6 +86,13 @@ const SizeConstraintProvider = ({ children }: Props) => {
             Math.max(Object.values(group).reduce((sum, value) => sum + ((value: any): number), 0), min)
         ), 0),
     }), [dim])
+    const onSizeChangeRef = useRef()
+    onSizeChangeRef.current = onSizeChange
+    useEffect(() => {
+        if (typeof onSizeChangeRef.current === 'function') {
+            onSizeChangeRef.current()
+        }
+    }, [minWidth, minHeight])
 
     const value = useMemo(() => ({
         minHeight,
