@@ -21,6 +21,12 @@ const CollapsedText = ({ text: textProp, className }: Props) => {
     const outerElRef = useRef()
     const innerElRef = useRef()
 
+    useEffect(() => {
+        if (!truncationRequired) {
+            setExpanded(false)
+        }
+    }, [truncationRequired])
+
     const toggleExpanded = useCallback(() => {
         setExpanded((prev) => !prev)
 
