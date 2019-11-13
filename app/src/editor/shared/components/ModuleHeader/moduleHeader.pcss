@@ -51,10 +51,17 @@
 .loadingIndicator {
   position: absolute;
   bottom: 0;
-  margin: 0 2px;
-  transform: scaleY(0.5); /* 1px high */
-  transform-origin: 0 1px; /* vertical offset */
+  margin: 0 1px;
   left: 0;
   right: 0;
   width: auto;
+}
+
+.loadingIndicator::before,
+.loadingIndicator::after {
+  height: 1px;
+}
+
+.loadingIndicator::after {
+  animation-duration: 2400ms;
 }
