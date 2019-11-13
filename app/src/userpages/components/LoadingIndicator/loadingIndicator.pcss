@@ -23,6 +23,7 @@
 .loadingIndicator {
   position: relative;
   width: 100%;
+  will-change: opacity;
 }
 
 .loadingIndicator::after,
@@ -38,17 +39,13 @@
 
 .loadingIndicator::after {
   animation: 1200ms infinite;
+  animation-delay: 0.3s;
   animation-name: loading;
   background-color: #0424FF;
+  will-change: left, right;
 }
 
 .loadingIndicator::before {
   background-color: transparent;
   width: 100%;
-}
-
-.loading::after {
-}
-
-.loading::before {
 }
