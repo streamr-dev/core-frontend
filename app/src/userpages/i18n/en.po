@@ -722,6 +722,12 @@ msgstr "Save avatar"
 msgid "modal##avatar##saveAndApplyAvatar"
 msgstr "Save & Apply"
 
+msgid "modal##cropImage##title"
+msgstr "Scale and crop your image"
+
+msgid "modal##cropImage##apply"
+msgstr "Apply"
+
 msgid "userpages##keyField##options"
 msgstr "Select"
 
