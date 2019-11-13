@@ -1,6 +1,6 @@
 // @flow
 
-import React, { Fragment, useState, useCallback, useEffect } from 'react'
+import React, { Fragment, useState, useCallback, useEffect, useMemo } from 'react'
 import { useDropzone } from 'react-dropzone'
 import cx from 'classnames'
 import { Translate, I18n } from 'react-redux-i18n'
@@ -28,9 +28,16 @@ type Props = {
     originalImage?: ?string,
     className?: string,
     disabled?: boolean,
+    noPreview?: boolean,
 }
 
-const ImageUpload = ({ setImageToUpload, originalImage, className }: Props) => {
+const ImageUpload = ({
+    setImageToUpload,
+    originalImage,
+    className,
+    noPreview,
+    disabled,
+}: Props) => {
     const [uploading, setUploading] = useState(false)
     const [uploaded, setUploaded] = useState(false)
     const { preview, createPreview } = useFilePreview()
@@ -93,9 +100,16 @@ const ImageUpload = ({ setImageToUpload, originalImage, className }: Props) => {
         onDrop,
         onDropAccepted,
         onDropRejected,
+        disabled,
     })
 
-    const srcImage = originalImage
+    const srcImage = useMemo(() => {
+        if (noPreview) {
+            return originalImage
+        }
+
+        return preview || originalImage
+    }, [noPreview, originalImage, preview])
 
     return (
         <div

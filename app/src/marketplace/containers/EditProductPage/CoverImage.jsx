@@ -54,7 +54,7 @@ const CoverImage = () => {
                         [styles.dropZoneError]: !!hasError,
                     })}
                     disabled={!!isPending}
-                    updatePreview={false}
+                    noPreview
                 />
                 <InputError
                     eligible={hasError}
