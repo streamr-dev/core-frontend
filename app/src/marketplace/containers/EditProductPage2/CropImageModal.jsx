@@ -7,6 +7,7 @@ import { I18n } from 'react-redux-i18n'
 import useModal from '$shared/hooks/useModal'
 import Dialog from '$shared/components/Dialog'
 import Slider from '$shared/components/Slider'
+import useFilePreview from '$shared/hooks/useFilePreview'
 
 import styles from './cropImageModal.pcss'
 
@@ -18,16 +19,12 @@ type Props = {
 const CropImageModal = ({ image, api }: Props) => {
     const editorRef = useRef()
     const resultRef = useRef(undefined)
-    const [previewImage, setPreviewImage] = useState(null)
     const [sliderValue, setSliderValue] = useState(1)
+    const { preview, createPreview } = useFilePreview()
 
     useEffect(() => {
-        const objectUrl = URL.createObjectURL(image)
-        setPreviewImage(objectUrl)
-        return () => {
-            URL.revokeObjectURL(objectUrl)
-        }
-    }, [image])
+        createPreview(image)
+    }, [image, createPreview])
 
     const onClose = useCallback(() => {
         api.close(resultRef.current)
@@ -70,7 +67,7 @@ const CropImageModal = ({ image, api }: Props) => {
                 <AvatarEditor
                     ref={editorRef}
                     className={styles.editor}
-                    image={previewImage}
+                    image={preview}
                     width={540}
                     height={340}
                     border={[0, 0]}
