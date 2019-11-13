@@ -27,33 +27,28 @@
 
 .loadingIndicator::after,
 .loadingIndicator::before {
+  animation-iteration-count: inherit;
+  height: 2px;
   bottom: 0;
   content: '';
-  height: 2px;
   position: absolute;
   z-index: 1;
+  display: block;
 }
 
 .loadingIndicator::after {
-  display: none;
+  animation: 1200ms infinite;
+  animation-name: loading;
+  background-color: #0424FF;
 }
 
 .loadingIndicator::before {
   background-color: transparent;
-  display: block;
-  transition: background-color 200ms;
   width: 100%;
 }
 
 .loading::after {
-  animation: 1200ms infinite;
-  animation-name: loading;
-  background-color: #0424FF;
-  display: block;
 }
 
 .loading::before {
-  background-color: transparent;
-  opacity: 0.25;
-  transition: none;
 }
