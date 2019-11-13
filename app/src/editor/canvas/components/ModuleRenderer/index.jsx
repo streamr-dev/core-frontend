@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback, useMemo, useContext, useEffect } from 'react'
 import cx from 'classnames'
 import Resizable from '../Resizable'
 import Probe from '../Resizable/SizeConstraintProvider/Probe'
@@ -17,6 +17,7 @@ import ModuleStyles from '$editor/shared/components/Module.pcss'
 import ModuleUI from '$editor/shared/components/ModuleUI'
 import { type Ref } from '$shared/flowtype/common-types'
 import { UiEmitter } from '$editor/shared/components/RunStateLoader'
+import { Context as SizeConstraintContext } from '$editor/canvas/components/Resizable/SizeConstraintProvider'
 
 type Props = {
     // FIXME: Update types
@@ -51,15 +52,17 @@ const ModuleRenderer = React.memo(({
     ...props
 }: Props) => {
     const isRunning = useIsCanvasRunning()
+    const { refreshProbes } = useContext(SizeConstraintContext)
 
     const {
         moduleClassNames,
         isResizable,
-        module: { hash, displayName, name, canRefresh },
+        module,
         isCanvasEditable: isEditable,
         isCanvasAdjustable: isAdjustable,
         hasWritePermission,
     } = useModule()
+    const { hash, displayName, name, canRefresh } = module
 
     const stopPropagation = useCallback((e) => {
         e.stopPropagation() /* skip parent focus behaviour */
@@ -97,6 +100,10 @@ const ModuleRenderer = React.memo(({
             onPortChange(portId, value)
         }
     }, [onPortChange])
+
+    useEffect(() => {
+        refreshProbes()
+    }, [module, refreshProbes, isLoading])
 
     return (
         /* eslint-disable-next-line max-len */
