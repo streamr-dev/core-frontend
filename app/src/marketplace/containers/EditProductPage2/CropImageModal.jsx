@@ -46,7 +46,7 @@ const CropImageModal = ({ image, api }: Props) => {
 
     return (
         <Dialog
-            title={I18n.t('modal.avatar.cropYourImage')}
+            title={I18n.t('modal.cropImage.title')}
             onClose={onClose}
             actions={{
                 cancel: {
@@ -56,7 +56,7 @@ const CropImageModal = ({ image, api }: Props) => {
                     onClick: onClose,
                 },
                 save: {
-                    title: I18n.t('modal.avatar.saveAndApplyAvatar'),
+                    title: I18n.t('modal.cropImage.apply'),
                     color: 'primary',
                     onClick: onSave,
                 },
