@@ -13,6 +13,11 @@ type Props = {
 
 const LoadingIndicator = ({ loading, className }: Props) => {
     const transitions = useTransition(!!loading, null, {
+        config: {
+            tension: 500,
+            friction: 50,
+            clamp: true,
+        },
         from: {
             opacity: 0,
         },
