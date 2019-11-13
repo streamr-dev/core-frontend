@@ -216,7 +216,7 @@ class HistoryView extends Component<Props, State> {
 
     handleBrowseFilesClick = () => {
         // $FlowFixMe
-        this.fileUploadRef.current.dropzoneRef.current.open()
+        this.fileUploadRef.current.open()
     }
 
     render() {
