@@ -197,8 +197,9 @@ const CanvasModuleWithErrorBoundary = React.memo(withErrorBoundary(ModuleError)(
 export default React.memo(withErrorBoundary(ModuleError)((props) => {
     const { module } = props
     const { scale } = useCameraState()
-    const { moduleNeedsUpdate } = useContext(AutosaveContext)
-    const isLoading = moduleNeedsUpdate(module.hash)
+    const { moduleNeedsUpdate, moduleJustAdded } = useContext(AutosaveContext)
+    // do not display loader if module just added
+    const isLoading = !moduleJustAdded(module.hash) && moduleNeedsUpdate(module.hash)
     return (
         <ModuleDragger module={props.module} api={props.api}>
             <CanvasModuleWithErrorBoundary isLoading={isLoading} scale={scale} {...props} />

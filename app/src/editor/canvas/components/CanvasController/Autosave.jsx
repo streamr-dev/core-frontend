@@ -32,7 +32,12 @@ function useTrackChanges() {
     ), [changedModules])
 
     const moduleNeedsUpdate = useCallback((hash) => (
+        // only needs update if previous canvas has module
         CanvasState.moduleNeedsUpdate(snapshot, canvas, hash)
+    ), [snapshot, canvas])
+
+    const moduleJustAdded = useCallback((hash) => (
+        !CanvasState.hasModule(snapshot, hash) && CanvasState.hasModule(canvas, hash)
     ), [snapshot, canvas])
 
     return useMemo(() => ({
@@ -40,8 +45,9 @@ function useTrackChanges() {
         changedModules,
         moduleHasChanges,
         moduleNeedsUpdate,
+        moduleJustAdded,
         reset,
-    }), [hasChanges, changedModules, reset, moduleHasChanges, moduleNeedsUpdate])
+    }), [hasChanges, moduleJustAdded, changedModules, reset, moduleHasChanges, moduleNeedsUpdate])
 }
 
 function useAutosaveEffect(onChange) {
@@ -128,7 +134,13 @@ export function AutosaveProvider({ children }) {
         }
     }, [onDone, onRun])
 
-    const { moduleNeedsUpdate, hasChanges, changedModules, reset: resetChanged } = useTrackChanges()
+    const {
+        moduleNeedsUpdate,
+        moduleJustAdded,
+        hasChanges,
+        changedModules,
+        reset: resetChanged,
+    } = useTrackChanges()
 
     const onChange = useCallback((nextCanvas) => {
         // TODO set updated time
@@ -143,8 +155,9 @@ export function AutosaveProvider({ children }) {
         hasChanges,
         changedModules,
         moduleNeedsUpdate,
+        moduleJustAdded,
         isAutosaving,
-    }), [changedModules, isAutosaving, hasChanges, moduleNeedsUpdate])
+    }), [changedModules, isAutosaving, hasChanges, moduleNeedsUpdate, moduleJustAdded])
 
     return (
         <AutosaveContext.Provider value={value}>
