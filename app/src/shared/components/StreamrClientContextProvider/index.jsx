@@ -1,24 +1,35 @@
+// @flow
+
 /**
  * Provides a shared streamr-client instance.
  */
 
 /* eslint-disable react/no-unused-state */
 
-import React, { useState, useEffect, useLayoutEffect, useCallback, useMemo } from 'react'
+import React, { type Node, type Context, useState, useEffect, useLayoutEffect, useCallback, useMemo } from 'react'
 import { connect } from 'react-redux'
-import t from 'prop-types'
 import StreamrClient from 'streamr-client'
+
 import { selectAuthApiKeyId } from '$shared/modules/resourceKey/selectors'
 import { getMyResourceKeys } from '$shared/modules/resourceKey/actions'
 import { selectAuthState } from '$shared/modules/user/selectors'
 import useIsMountedRef from '$shared/hooks/useIsMountedRef'
 import { usePending } from '$shared/hooks/usePending'
+import type { ResourceKeyId } from '$shared/flowtype/resource-key-types'
 
-import * as services from '../services'
+type ContextProps = {
+    hasLoaded: boolean,
+    client: ?Object,
+    apiKey: ?ResourceKeyId,
+}
 
-export const ClientContext = React.createContext()
+export const ClientContext: Context<ContextProps> = React.createContext({
+    hasLoaded: false,
+    client: undefined,
+    apiKey: undefined,
+})
 
-export function createClient(apiKey) {
+export function createClient(apiKey: ResourceKeyId) {
     return new StreamrClient({
         url: process.env.STREAMR_WS_URL,
         restUrl: process.env.STREAMR_API_URL,
@@ -30,13 +41,21 @@ export function createClient(apiKey) {
     })
 }
 
+type ClientProviderProps = {
+    apiKey: ?ResourceKeyId,
+    loadKeys: Function,
+    isAuthenticating: boolean,
+    isAuthenticated: boolean,
+    authenticationFailed: boolean,
+}
+
 function useClientProvider({
     apiKey,
     loadKeys,
     isAuthenticating,
     isAuthenticated,
     authenticationFailed,
-}) {
+}: ClientProviderProps) {
     const [client, setClient] = useState()
     const isMountedRef = useIsMountedRef()
     const hasClient = !!client
@@ -75,7 +94,7 @@ function useClientProvider({
 
     // listen for state changes which should trigger reset
     useEffect(() => {
-        if (!client) { return }
+        if (!client) { return () => {} }
         client.connection.once('disconnecting', reset)
         client.connection.once('disconnected', reset)
         client.once('error', reset)
@@ -84,43 +103,36 @@ function useClientProvider({
 
     // (re)create client if none
     useLayoutEffect(() => {
-        if (hasClient || !hasLoaded) { return }
+        if (hasClient || !hasLoaded || !apiKey) { return }
         setClient(createClient(apiKey))
     }, [hasClient, setClient, apiKey, hasLoaded])
 
     // disconnect on unmount/client change
     useEffect(() => {
-        if (!client) { return }
+        if (!client) { return () => {} }
         return () => {
             client.ensureDisconnected()
         }
     }, [client, setClient])
 
-    const send = useCallback(async (rest) => (
-        services.send({
-            apiKey,
-            ...rest,
-        })
-    ), [apiKey])
-
     return useMemo(() => ({
         hasLoaded,
         client,
-        send,
-    }), [client, send, hasLoaded])
+        apiKey,
+    }), [client, apiKey, hasLoaded])
 }
 
-export function ClientProviderComponent({ children, ...props }) {
+type Props = ClientProviderProps & {
+    children?: Node,
+}
+
+export function ClientProviderComponent({ children, ...props }: Props) {
     const clientContext = useClientProvider(props)
     return (
         <ClientContext.Provider value={clientContext}>
             {children || null}
         </ClientContext.Provider>
     )
-}
-
-ClientProviderComponent.propTypes = {
-    apiKey: t.string,
 }
 
 const withAuthApiKey = connect((state) => ({

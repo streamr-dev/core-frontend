@@ -5,7 +5,7 @@ import uniqueId from 'lodash/uniqueId'
 
 import api from '../utils/api'
 import * as Services from '../services'
-import { ClientProviderComponent, createClient } from '../components/Client'
+import { ClientProviderComponent, createClient } from '$shared/components/StreamrClientContextProvider'
 import Subscription from '../components/Subscription'
 
 function throwError(err) {
