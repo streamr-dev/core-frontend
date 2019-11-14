@@ -10,7 +10,7 @@ import { transactionStates } from '$shared/utils/constants'
 import links from '$mp/../links'
 import PngIcon from '$shared/components/PngIcon'
 import Dialog from '$shared/components/Dialog'
-import styles from '../CompletePublishDialog/completePublishDialog.pcss'
+import styles from '../modal.pcss'
 
 export type Props = {
     publishState: ?TransactionState,

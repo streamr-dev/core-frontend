@@ -1,7 +1,7 @@
 import assert from 'assert-diff'
 
-import reducer, { initialState } from '$mp/modules/purchaseDialog/reducer'
-import * as constants from '$mp/modules/purchaseDialog/constants'
+import reducer, { initialState } from '$mp/modules/deprecated/purchaseDialog/reducer'
+import * as constants from '$mp/modules/deprecated/purchaseDialog/constants'
 import { RECEIVE_SET_ALLOWANCE_HASH, RECEIVE_RESET_ALLOWANCE_HASH } from '$mp/modules/allowance/constants'
 import { RECEIVE_PURCHASE_HASH } from '$mp/modules/purchase/constants'
 

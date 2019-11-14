@@ -1,13 +1,12 @@
 // @flow
 
-import React, { type Node, type Context, useMemo, useContext, useEffect } from 'react'
+import React, { type Node, type Context, useMemo, useContext, useEffect, useState } from 'react'
 
 import * as RouterContext from '$shared/components/RouterContextProvider'
 import { Provider as PendingProvider } from '$shared/components/PendingContextProvider'
 import { Provider as ValidationContextProvider } from './ValidationContextProvider'
 import { usePending } from '$shared/hooks/usePending'
 
-import useProduct from './useProduct'
 import useProductLoadCallback from './useProductLoadCallback'
 import useContractProductLoadCallback from './useContractProductLoadCallback'
 import useProductValidationEffect from './useProductValidationEffect'
@@ -20,22 +19,22 @@ type ContextProps = {
 const ProductControllerContext: Context<ContextProps> = React.createContext({})
 
 function useProductLoadEffect() {
-    const product = useProduct()
+    const [loadedOnce, setLoadedOnce] = useState(false)
     const loadProduct = useProductLoadCallback()
     const loadContractProduct = useContractProductLoadCallback()
     const { match } = useContext(RouterContext.Context)
     const { isPending } = usePending('product.LOAD')
 
     const { id: urlId } = match.params
-    const productId = product && product.id
 
     useEffect(() => {
-        if (urlId && productId !== urlId && !isPending) {
+        if (urlId && !loadedOnce && !isPending) {
             // load product if needed and not already loading
             loadProduct(urlId)
             loadContractProduct(urlId)
+            setLoadedOnce(true)
         }
-    }, [urlId, productId, loadProduct, loadContractProduct, isPending])
+    }, [urlId, loadedOnce, loadProduct, loadContractProduct, isPending])
 }
 
 function ProductEffects() {

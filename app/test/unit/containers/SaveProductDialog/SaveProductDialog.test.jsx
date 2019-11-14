@@ -3,12 +3,12 @@ import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import assert from 'assert-diff'
 
-import { SaveProductDialog, mapStateToProps, mapDispatchToProps } from '$mp/containers/EditProductPage/SaveProductDialog'
+import { SaveProductDialog, mapStateToProps, mapDispatchToProps } from '$mp/containers/deprecated/EditProductPage/SaveProductDialog'
 import { saveProductSteps } from '$mp/utils/constants'
 import { transactionStates } from '$shared/utils/constants'
-import SaveProductDialogComponent from '$mp/components/Modal/SaveProductDialog'
+import SaveProductDialogComponent from '$mp/components/deprecated/SaveProductDialog'
 import SaveContractProductDialogComponent from '$mp/components/Modal/SaveContractProductDialog'
-import * as saveProductDialogActions from '$mp/modules/saveProductDialog/actions'
+import * as saveProductDialogActions from '$mp/modules/deprecated/saveProductDialog/actions'
 
 describe('SaveProductDialog', () => {
     let wrapper

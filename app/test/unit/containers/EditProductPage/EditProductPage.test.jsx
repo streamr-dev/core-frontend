@@ -6,10 +6,10 @@ import { productStates } from '$shared/utils/constants'
 import * as validators from '$mp/validators'
 import { I18n } from 'react-redux-i18n'
 
-import { EditProductPage, mapStateToProps, mapDispatchToProps } from '$mp/containers/EditProductPage'
-import ProductPageEditorComponent from '$mp/components/ProductPageEditor'
+import { EditProductPage, mapStateToProps, mapDispatchToProps } from '$mp/containers/deprecated/EditProductPage'
+import ProductPageEditorComponent from '$mp/components/deprecated/ProductPageEditor'
 import * as productActions from '$mp/modules/product/actions'
-import * as editProductActions from '$mp/modules/editProduct/actions'
+import * as editProductActions from '$mp/modules/deprecated/editProduct/actions'
 import * as streamsActions from '$mp/modules/streams/actions'
 import * as categoriesActions from '$mp/modules/categories/actions'
 import * as contractProductActions from '$mp/modules/contractProduct/actions'
@@ -20,7 +20,7 @@ import * as web3Selectors from '$mp/modules/web3/selectors'
 import * as categoriesSelectors from '$mp/modules/categories/selectors'
 import * as userSelectors from '$shared/modules/user/selectors'
 import * as streamsSelectors from '$mp/modules/streams/selectors'
-import * as editProductSelectors from '$mp/modules/editProduct/selectors'
+import * as editProductSelectors from '$mp/modules/deprecated/editProduct/selectors'
 
 describe('EditProductPage', () => {
     let wrapper

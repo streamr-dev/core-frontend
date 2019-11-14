@@ -8,9 +8,9 @@ import type { TransactionState } from '$shared/flowtype/common-types'
 import { transactionStates } from '$shared/utils/constants'
 import links from '$mp/../links'
 import Dialog from '$shared/components/Dialog'
-import { actionsTypes } from '$mp/containers/EditProductPage2/publishQueue'
+import { actionsTypes } from '$mp/containers/EditProductPage/publishQueue'
 
-import styles from '../CompletePublishDialog/completePublishDialog.pcss'
+import styles from '../modal.pcss'
 
 export type Props = {
     isUnpublish: ?boolean,

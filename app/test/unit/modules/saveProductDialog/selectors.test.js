@@ -1,6 +1,6 @@
 import assert from 'assert-diff'
 
-import * as all from '$mp/modules/saveProductDialog/selectors'
+import * as all from '$mp/modules/deprecated/saveProductDialog/selectors'
 import { saveProductSteps } from '$mp/utils/constants'
 
 const state = {
