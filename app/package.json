@@ -241,7 +241,7 @@
     "storybook-addon-jsx": "^5.4.0",
     "storybook-chromatic": "^1.2.0",
     "storybook-react-router": "^1.0.1",
-    "streamr-client": "^2.2.6",
+    "streamr-client": "^2.2.7",
     "stringify-object": "^3.2.2",
     "style-loader": "^0.21.0",
     "stylelint": "^10.0.1",
