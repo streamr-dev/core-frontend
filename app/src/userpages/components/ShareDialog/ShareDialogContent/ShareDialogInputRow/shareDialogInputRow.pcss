@@ -1,29 +1,21 @@
 .container {
-  margin-top: 2rem;
-  display: flex;
+  margin-top: 3rem;
+  display: grid;
+  grid-template-columns: 1fr calc(2.5 * var(--um));
+  grid-column-gap: 1rem;
 }
 
 .input {
-  outline: none;
-  border: 0;
-  border-bottom: 1px solid #D8D8D8;
   width: 100%;
-  color: #323232;
-  font-size: 16px;
-  letter-spacing: 0;
-  line-height: 20px;
   padding: 0.625rem 0;
   margin-right: 1rem;
-
-  &::placeholder {
-    color: #323232;
-  }
 }
 
 .button {
-  width: 32px;
-  height: 32px;
-  margin-top: 0.625rem;
+  display: flex;
+  align-self: center;
+  width: calc(2.5 * var(--um));
+  height: calc(2.5 * var(--um));
 }
 
 .plusIcon {

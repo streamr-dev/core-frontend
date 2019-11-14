@@ -18,15 +18,16 @@
 }
 
 .avatarIcon {
+  align-self: center;
   width: 27px;
   height: 27px;
   color: #323232;
   margin-right: 1rem;
-  margin-top: 2px;
 }
 
 .user {
   flex: 1;
+  align-self: center;
 
   .title {
     color: #323232;
@@ -50,9 +51,8 @@
 }
 
 .button {
-  width: 32px;
-  height: 32px;
-  border-radius: 4px;
+  width: calc(2.5 * var(--um));
+  height: calc(2.5 * var(--um));
   position: relative;
   margin-left: 1rem;
 
@@ -67,5 +67,5 @@
 }
 
 .select {
-  min-width: 7rem;
+  min-width: calc(8 * var(--um));
 }

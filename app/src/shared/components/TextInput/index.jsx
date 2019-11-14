@@ -11,8 +11,9 @@ type Props = FormControlProps & {
 const TextInput = ({ label, className, passwordStrengthUpdate, ...props }: Props) => (
     <FormControl
         passwordStrengthUpdate={passwordStrengthUpdate}
-        {...props}
         label={label}
+        noUnderline
+        {...props}
     >
         {({ value, onFocusChange, setAutoCompleted, ...rest }) => (
             <TextField

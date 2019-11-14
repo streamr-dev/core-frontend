@@ -13,17 +13,33 @@
 }
 
 .root {
-  border: 0;
-  box-sizing: content-box;
   color: var(--greyDark);
+  background-color: white;
+  border-radius: 4px;
+  border: 1px solid #EFEFEF;
   display: block;
-  font-size: 16px;
-  height: 1rem;
-  line-height: 1rem;
-  outline: 0;
-  padding: 0.75rem 0;
+  font-size: 1rem;
+  height: calc(2.5 * var(--um));
+  line-height: 1.5rem;
   width: 100%;
-  background-color: inherit;
+  padding: 0 1rem;
+  box-sizing: border-box;
+  box-shadow: none;
+  outline: none;
+
+  &:focus {
+    outline: none;
+    box-shadow: none;
+    border: 1px solid #0324FF;
+  }
+
+  &::placeholder {
+    color: #CDCDCD;
+  }
+}
+
+.root.dark {
+  background-color: #FDFDFD;
 }
 
 .root:-webkit-autofill {
@@ -32,16 +48,4 @@
 
 .root:not(:-webkit-autofill) {
   animation-name: onAutoFillCancel;
-}
-
-.root::placeholder {
-  font-size: inherit;
-  opacity: 0;
-  padding-left: 0;
-  transition: opacity 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-  color: #A3A3A3;
-}
-
-.root:focus::placeholder {
-  opacity: 1;
 }
