@@ -11,7 +11,7 @@ import ProductContainer from '$shared/components/Container/Product'
 import { ago } from '$shared/utils/time'
 import { selectCategory } from '$mp/modules/product/selectors'
 
-import CollapsedText from './CollapsedText'
+import CollapsedText from '$mp/components/ProductPage/CollapsedText'
 
 import styles from './description.pcss'
 

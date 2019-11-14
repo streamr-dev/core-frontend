@@ -1,18 +1,19 @@
 // @flow
 
-import React, { useState, useCallback, useContext } from 'react'
+import React, { useState, useCallback, useContext, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { Translate } from 'react-redux-i18n'
 
 import { isCommunityProduct } from '$mp/utils/product'
 import { usePending } from '$shared/hooks/usePending'
-import { currencies, DEFAULT_CURRENCY } from '$shared/utils/constants'
+import { currencies, timeUnits, DEFAULT_CURRENCY } from '$shared/utils/constants'
 import { selectDataPerUsd } from '$mp/modules/global/selectors'
 import RadioButtonGroup from '$shared/components/RadioButtonGroup'
 import SetPrice from '$mp/components/SetPrice'
 import Toggle from '$shared/components/Toggle'
 import { selectContractProduct } from '$mp/modules/contractProduct/selectors'
+import { priceForTimeUnits } from '$mp/utils/price'
 
 import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
 import useEditableProduct from '../ProductController/useEditableProduct'
@@ -55,6 +56,12 @@ const PriceSelector = () => {
     const onTimeUnitChange = useCallback((t) => {
         updateTimeUnit(t)
     }, [updateTimeUnit])
+
+    useEffect(() => {
+        if (contractProduct && contractProduct.pricePerSecond) {
+            updatePrice(priceForTimeUnits(contractProduct.pricePerSecond || '0', 1, timeUnits.hour))
+        }
+    }, [updatePrice, contractProduct])
 
     const fixInFiat = product.priceCurrency === currencies.USD
     const onFixPriceChange = useCallback((checked) => {

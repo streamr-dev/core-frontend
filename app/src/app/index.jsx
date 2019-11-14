@@ -132,8 +132,6 @@ const DashboardEditorAuth = userIsAuthenticated(DashboardEditor)
 // Other components
 const ProductPurchasePage = (props) => <ProductPage overlayPurchaseDialog {...props} />
 const ProductPublishPage = (props) => <ProductPage overlayPublishDialog {...props} />
-const ProductPurchasePage2 = (props) => <ProductPage2 overlayPurchaseDialog {...props} />
-const ProductPublishPage2 = (props) => <ProductPage2 overlayPublishDialog {...props} />
 
 // Wrap each Route to an ErrorBoundary
 const Route = withErrorBoundary(ErrorPageView)(RouterRoute)
