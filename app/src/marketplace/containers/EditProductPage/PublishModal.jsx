@@ -62,6 +62,8 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
     const [requireWeb3, setRequireWeb3] = useState(false)
     const [requiredOwner, setRequiredOwner] = useState(null)
     const { web3Error, checkingWeb3, account } = useWeb3Status(requireWeb3)
+    const accountRef = useRef()
+    accountRef.current = account
 
     const setActionStatus = useCallback((name, s) => {
         setStatus((prevStatus) => ({
@@ -158,17 +160,17 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
 
             // update price, currency & beneficiary if changed
             if ([modes.REPUBLISH, modes.REDEPLOY].includes(nextMode)) {
-                if (hasPriceChanged) {
-                    requireOwner = p.ownerAddress
+                if (hasPriceChanged && contractProduct) {
+                    requireOwner = contractProduct.ownerAddress
 
                     queue.add({
                         id: actionsTypes.UPDATE_CONTRACT_PRODUCT,
                         handler: (update, done) => (
                             updateContractProduct({
                                 ...contractProduct,
-                                pricePerSecond: p.pricePerSecond,
-                                beneficiaryAddress: p.beneficiaryAddress,
-                                priceCurrency: p.priceCurrency,
+                                pricePerSecond: pricePerSecond || p.pricePerSecond,
+                                beneficiaryAddress: beneficiaryAddress || p.beneficiaryAddress,
+                                priceCurrency: priceCurrency || p.priceCurrency,
                             })
                                 .onTransactionHash((hash) => {
                                     update(transactionStates.PENDING)
@@ -202,7 +204,7 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
                             createContractProduct({
                                 id: p.id || '',
                                 name: p.name,
-                                ownerAddress: p.ownerAddress,
+                                ownerAddress: accountRef.current || '',
                                 beneficiaryAddress: p.beneficiaryAddress,
                                 pricePerSecond: p.pricePerSecond,
                                 priceCurrency: p.priceCurrency,
@@ -242,7 +244,8 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
 
             // do republish for products that have been at some point deployed
             if (nextMode === modes.REDEPLOY) {
-                requireOwner = p.ownerAddress
+                // $FlowFixMe
+                requireOwner = contractProduct.ownerAddress
 
                 queue.add({
                     id: actionsTypes.REDEPLOY_PAID,
@@ -268,7 +271,7 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
             // do unpublish
             if (nextMode === modes.UNPUBLISH) {
                 if (contractProduct) {
-                    requireOwner = p.ownerAddress
+                    requireOwner = contractProduct.ownerAddress
                     queue.add({
                         id: actionsTypes.UNDEPLOY_CONTRACT_PRODUCT,
                         handler: (update, done) => (
@@ -356,7 +359,7 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
         return () => {
             queue.unsubscribeAll()
         }
-    }, [queueRef, setActionStatus, productId, dispatch])
+    }, [queueRef, setActionStatus, productId, dispatch, accountRef])
 
     const onClose = useCallback(() => {
         api.close(false)
