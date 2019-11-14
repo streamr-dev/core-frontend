@@ -12,6 +12,7 @@ export const initialState: EntitiesState = {
     categories: {},
     products: {},
     contractProducts: {},
+    communityProducts: {},
     streams: {},
     relatedProducts: {},
     subscriptions: {},

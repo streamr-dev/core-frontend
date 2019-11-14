@@ -6,7 +6,7 @@ import { getContract, call } from '../../utils/smartContract'
 import getConfig from '$shared/web3/config'
 
 import type { ApiResult } from '$shared/flowtype/common-types'
-import type { Product, ProductId, Subscription, UserProductPermissionList } from '$mp/flowtype/product-types'
+import type { Product, ProductId, Subscription } from '$mp/flowtype/product-types'
 import type { SmartContractCall } from '$shared/flowtype/web3-types'
 import type { StreamList } from '$shared/flowtype/stream-types'
 import { getValidId, mapProductFromApi } from '$mp/utils/product'
@@ -38,6 +38,28 @@ export const getMyProductSubscription = (id: ProductId): SmartContractCall<Subsc
     Prefixed with 'async' so that if getValidId() throws, it can be caught with getUserProductPermissions(id).catch().
     Otherwise it'd be a synchronous error.
   */
-export const getUserProductPermissions = async (id: ProductId): ApiResult<Array<UserProductPermissionList>> => (
-    get(formatApiUrl('products', getValidId(id, false), 'permissions', 'me'))
-)
+export const getUserProductPermissions = async (id: ProductId): ApiResult<Object> => {
+    const result = await get(formatApiUrl('products', getValidId(id, false), 'permissions', 'me'))
+
+    const p = result.reduce((permissions, permission) => {
+        if (permission.anonymous) {
+            return {
+                ...permissions,
+                read: true,
+            }
+        }
+        if (!permission.operation) {
+            return permissions
+        }
+        return {
+            ...permissions,
+            [permission.operation]: true,
+        }
+    }, {})
+
+    return {
+        read: !!p.read || false,
+        write: !!p.write || false,
+        share: !!p.share || false,
+    }
+}

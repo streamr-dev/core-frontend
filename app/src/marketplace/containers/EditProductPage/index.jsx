@@ -16,6 +16,8 @@ import usePending from '$shared/hooks/usePending'
 import { productStates } from '$shared/utils/constants'
 import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
 import { isEthereumAddress } from '$mp/utils/validate'
+import { notFoundRedirect } from '$auth/utils/loginInterceptor'
+import useProductPermissions from '../ProductController/useProductPermissions'
 
 import { Provider as EditControllerProvider, Context as EditControllerContext } from './EditControllerProvider'
 import BackButton from './BackButton'
@@ -24,7 +26,6 @@ import Preview from './Preview'
 import ProductEditorDebug from './ProductEditorDebug'
 import { Provider as ModalProvider } from '$shared/components/ModalContextProvider'
 import ConfirmSaveModal from './ConfirmSaveModal'
-import UpdateContractProductModal from './UpdateContractProductModal'
 import DeployCommunityModal from './DeployCommunityModal'
 import PublishModal from './PublishModal'
 
@@ -134,7 +135,6 @@ const EditProductPage = ({ product }: { product: Product }) => {
                 <Editor />
             )}
             <ConfirmSaveModal />
-            <UpdateContractProductModal />
             <DeployCommunityModal />
             <PublishModal />
         </CoreLayout>
@@ -158,8 +158,16 @@ const LoadingView = () => (
 
 const EditWrap = () => {
     const product = useEditableProduct()
+    const { isPending: isLoadPending } = usePending('product.LOAD')
+    const { isPending: isPermissionsPending } = usePending('product.PERMISSIONS')
+    const { hasPermissions, write, share } = useProductPermissions()
+    const canEdit = !!(write || share)
 
-    if (!product) {
+    if (hasPermissions && !isPermissionsPending && !canEdit) {
+        notFoundRedirect()
+    }
+
+    if (!product || isLoadPending || isPermissionsPending || !hasPermissions || !canEdit) {
         return <LoadingView />
     }
 

@@ -3,13 +3,13 @@
 import { deploy, getContract, call, send } from '$mp/utils/smartContract'
 import getConfig from '$shared/web3/config'
 
-import type { SmartContractDeployTransaction, Address, SmartContractTransaction } from '$shared/flowtype/web3-types'
+import type { SmartContractDeployTransaction, SmartContractTransaction } from '$shared/flowtype/web3-types'
 import type {
     StreamId,
     Stream,
     NewStream,
 } from '$shared/flowtype/stream-types'
-import type { ProductId } from '$mp/flowtype/product-types'
+import type { ProductId, CommunityId } from '$mp/flowtype/product-types'
 import type { Permission } from '$userpages/flowtype/permission-types'
 import type { ApiResult } from '$shared/flowtype/common-types'
 import { gasLimits } from '$shared/utils/constants'
@@ -111,7 +111,7 @@ export const deployContract = (joinPartStreamId: string, adminFee: number): Smar
     ])
 }
 
-export const getCommunityContract = (address: Address, usePublicNode: boolean = false) => {
+export const getCommunityContract = (address: CommunityId, usePublicNode: boolean = false) => {
     const { abi } = getConfig().communityProduct
 
     return getContract({
@@ -120,42 +120,51 @@ export const getCommunityContract = (address: Address, usePublicNode: boolean = 
     }, usePublicNode)
 }
 
-export const getCommunityOwner = async (address: Address, usePublicNode: boolean = false) => {
+export const getCommunityOwner = async (address: CommunityId, usePublicNode: boolean = false) => {
     const contract = getCommunityContract(address, usePublicNode)
     const owner = await call(contract.methods.owner)
 
     return owner
 }
 
-export const isCommunityDeployed = async (address: Address, usePublicNode: boolean = false) => (
+export const isCommunityDeployed = async (address: CommunityId, usePublicNode: boolean = false) => (
     !!getCommunityOwner(address, usePublicNode)
 )
 
-export const getAdminFee = (address: Address, usePublicNode: boolean = false) => {
+export const getAdminFee = async (address: CommunityId, usePublicNode: boolean = false) => {
     const web3 = usePublicNode ? getPublicWeb3() : getWeb3()
+    const contract = getCommunityContract(address, usePublicNode)
+    const adminFee = await call(contract.methods.adminFee)
 
-    return call(getCommunityContract(address, usePublicNode).methods.adminFee())
-        .then((value) => {
-            if (value) {
-                return web3.utils.fromWei(web3.utils.toBN(value), 'ether')
-            }
-            return null
-        })
+    return web3.utils.fromWei(web3.utils.toBN(adminFee), 'ether')
 }
 
-export const setAdminFee = (address: Address, adminFee: number): SmartContractTransaction => (
+export const setAdminFee = (address: CommunityId, adminFee: number): SmartContractTransaction => (
     send(getCommunityContract(address).methods.setAdminFee(getAdminFeeInEther(adminFee)), {
         gas: gasLimits.UPDATE_ADMIN_FEE,
     })
 )
 
-export const getJoinPartStreamId = (address: Address, usePublicNode: boolean = false) =>
+export const getJoinPartStreamId = (address: CommunityId, usePublicNode: boolean = false) =>
     call(getCommunityContract(address, usePublicNode).methods.joinPartStream())
 
-export const getCommunityStats = (id: string): ApiResult<Object> =>
+export const getCommunityStats = (id: CommunityId): ApiResult<Object> =>
     get(formatApiUrl('communities', id, 'stats'))
 
-export const getStreamData = (id: string, fromTimestamp: number): ApiResult<Object> =>
+export const getStreamData = (id: CommunityId, fromTimestamp: number): ApiResult<Object> =>
     get(formatApiUrl('streams', id, 'data', 'partitions', 0, 'from', {
         fromTimestamp,
     }))
+
+export const getCommunityData = async (id: CommunityId, usePublicNode: boolean = true): ApiResult<Object> => {
+    const adminFee = await getAdminFee(id, usePublicNode)
+    const joinPartStreamId = await getJoinPartStreamId(id, usePublicNode)
+    const owner = await getCommunityOwner(id, usePublicNode)
+
+    return {
+        id,
+        adminFee,
+        joinPartStreamId,
+        owner,
+    }
+}

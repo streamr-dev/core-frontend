@@ -381,26 +381,11 @@ describe('product - actions', () => {
     describe('getUserProductPermissions', () => {
         it('calls services.getUserProductPermissions and sets permissions', async () => {
             const productId = 1
-            const data = [
-                {
-                    id: 1,
-                    user: 'tester1@streamr.com',
-                    operation: 'read',
-                },
-                {
-                    id: 2,
-                    user: 'tester1@streamr.com',
-                    operation: 'write',
-                },
-                {
-                    id: 3,
-                    anonymous: true,
-                },
-                {
-                    id: 4,
-                    user: 'tester1@streamr.com',
-                },
-            ]
+            const data = {
+                read: true,
+                write: true,
+                share: false,
+            }
 
             const serviceStub = sandbox.stub(services, 'getUserProductPermissions').callsFake(() => Promise.resolve(data))
 
@@ -429,10 +414,11 @@ describe('product - actions', () => {
 
         it('handles anonymous permission as read', async () => {
             const productId = 1
-            const data = [{
-                id: 3,
-                anonymous: true,
-            }]
+            const data = {
+                read: true,
+                write: false,
+                share: false,
+            }
 
             const serviceStub = sandbox.stub(services, 'getUserProductPermissions').callsFake(() => Promise.resolve(data))
 

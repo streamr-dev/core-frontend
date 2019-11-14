@@ -116,3 +116,12 @@ export type ProductPermissions = {
     fetchingPermissions: boolean,
     permissionsError: ?ErrorInUi,
 }
+
+export type CommunityId = $ElementType<Product, 'beneficiaryAddress'>
+
+export type Community = {
+    id: CommunityId,
+    adminFee: number | string,
+    joinPartStreamId: StreamId,
+    owner: Address,
+}

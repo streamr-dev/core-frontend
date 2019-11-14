@@ -132,8 +132,6 @@ const DashboardEditorAuth = userIsAuthenticated(DashboardEditor)
 // Other components
 const ProductPurchasePage = (props) => <ProductPage overlayPurchaseDialog {...props} />
 const ProductPublishPage = (props) => <ProductPage overlayPublishDialog {...props} />
-const ProductPurchasePage2 = (props) => <ProductPage2 overlayPurchaseDialog {...props} />
-const ProductPublishPage2 = (props) => <ProductPage2 overlayPublishDialog {...props} />
 
 // Wrap each Route to an ErrorBoundary
 const Route = withErrorBoundary(ErrorPageView)(RouterRoute)
@@ -160,8 +158,7 @@ const AuthenticationRouter = () => ([
 const MarketplaceRouter = () => (process.env.COMMUNITY_PRODUCTS ? [
     <Route exact path={marketplace.main} component={Products} key="Products" />,
     <Route exact path={links.marketplace.createProduct} component={CreateProductAuth2} key="CreateProduct" />,
-    <Route exact path={formatPath(marketplace.products, ':id', 'purchase2')} component={ProductPurchasePage2} key="ProductPurchasePage2" />,
-    <Route exact path={formatPath(marketplace.products, ':id', 'publish2')} component={ProductPublishPage2} key="ProductPublishPage2" />,
+    <Route exact path={formatPath(marketplace.products, ':id', 'streamPreview', ':streamId')} component={StreamPreviewPage} key="StreamPreview" />,
     <Route exact path={formatPath(marketplace.products, ':id')} component={ProductPage2} key="ProductPage2" />,
     <Route exact path={routes.editProduct()} component={EditProductAuth2} key="EditProduct" />,
 ] : [

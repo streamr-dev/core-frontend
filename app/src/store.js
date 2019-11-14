@@ -11,6 +11,7 @@ import myProductsReducer from './marketplace/modules/myProductList/reducer'
 import myPurchasesReducer from './marketplace/modules/myPurchaseList/reducer'
 import productReducer from './marketplace/modules/product/reducer'
 import contractProductReducer from './marketplace/modules/contractProduct/reducer'
+import communityProductReducer from './marketplace/modules/communityProduct/reducer'
 import categoriesReducer from './marketplace/modules/categories/reducer'
 import entitiesReducer from '$shared/modules/entities/reducer'
 import userReducer from '$shared/modules/user/reducer'
@@ -54,6 +55,7 @@ export function initStore() {
             allowance: allowanceReducer,
             categories: categoriesReducer,
             contractProduct: contractProductReducer,
+            communityProduct: communityProductReducer,
             createContractProduct: createContractProductReducer,
             updateContractProduct: updateContractProductReducer,
             editProduct: editProductReducer,

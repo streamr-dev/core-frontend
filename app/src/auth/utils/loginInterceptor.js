@@ -71,7 +71,7 @@ async function loginRedirect() {
     await wait(3000) // stall a moment to let redirect happen
 }
 
-async function notFoundRedirect() {
+export async function notFoundRedirect() {
     window.location = routes.notFound()
     await wait(3000) // stall a moment to let redirect happen
 }

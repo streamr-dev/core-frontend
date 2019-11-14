@@ -17,6 +17,7 @@ import {
     GET_USER_PRODUCT_PERMISSIONS_REQUEST,
     GET_USER_PRODUCT_PERMISSIONS_SUCCESS,
     GET_USER_PRODUCT_PERMISSIONS_FAILURE,
+    RESET_PRODUCT,
 } from './constants'
 import type {
     ProductIdAction,
@@ -33,8 +34,6 @@ export const initialState: ProductState = {
     streams: [],
     fetchingStreams: false,
     streamsError: null,
-    fetchingContractProduct: false,
-    contractProductError: null,
     fetchingContractSubscription: false,
     contractSubscriptionError: null,
     contractSubscription: null,
@@ -137,6 +136,10 @@ const reducer: (ProductState) => ProductState = handleActions({
             fetchingPermissions: false,
             permissionsError: action.payload.error,
         },
+    }),
+
+    [RESET_PRODUCT]: () => ({
+        ...initialState,
     }),
 }, initialState)
 
