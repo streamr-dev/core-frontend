@@ -115,7 +115,7 @@ class CanvasList extends Component<Props, State> {
             message: I18n.t('userpages.canvases.delete.confirmMessage'),
             acceptButton: {
                 title: I18n.t('userpages.canvases.delete.confirmButton'),
-                color: 'danger',
+                type: 'destructive',
             },
             centerButtons: true,
             dontShowAgain: false,

@@ -21,7 +21,7 @@ const DeleteAccountDialog = ({ waiting, onClose, onSave }: Props) => (
         message={<Translate value="modal.deleteAccount.content" tag="p" className={styles.deleteWarning} />}
         acceptButton={{
             title: I18n.t('modal.deleteAccount.save'),
-            color: 'danger',
+            type: 'destructive',
             disabled: waiting,
             spinner: waiting,
         }}
