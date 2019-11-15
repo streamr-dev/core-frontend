@@ -79,14 +79,13 @@ describe('Canvas Subscriptions', () => {
                 </ClientProviderComponent>
             ))
 
-            await wait(5000)
+            await wait(10000)
             const receivedMessages = messages.slice() // copy before unmounting
             result.unmount()
-            // should have roughly 5 messages
-            expect(receivedMessages.length).toBeTruthy()
-            expect(receivedMessages.length >= 4).toBeTruthy()
-            expect(receivedMessages.length <= 6).toBeTruthy()
+            // should have roughly 10 messages
+            expect(receivedMessages.length).toBeGreaterThanOrEqual(8)
+            expect(receivedMessages.length).toBeLessThanOrEqual(13)
             done()
-        }, 15000)
+        }, 20000)
     })
 })
