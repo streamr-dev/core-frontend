@@ -12,6 +12,7 @@
   text-align: center;
   transition: 200ms ease-in-out;
   transition-property: border-color, background-color, color, transform;
+  will-change: transform;
   white-space: nowrap;
   cursor: pointer;
   user-select: none;
@@ -36,6 +37,7 @@
   &[disabled] {
     opacity: 0.5;
     cursor: not-allowed;
+    transform: scale(1);
   }
 
   & * {

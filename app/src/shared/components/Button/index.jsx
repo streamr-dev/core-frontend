@@ -14,12 +14,12 @@ export type Variant = 'dark'
 type Props = {
     className?: string,
     tag: ElementType,
-    size: Size,
-    type: Type,
+    size?: Size,
+    type?: Type,
     variant?: Variant,
-    outline: boolean,
-    disabled: boolean,
-    waiting: boolean,
+    outline?: boolean,
+    disabled?: boolean,
+    waiting?: boolean,
     onClick?: (e: SyntheticInputEvent<EventTarget>) => void | Promise<void>,
     children?: Node,
 }
@@ -55,6 +55,7 @@ const Button = ({
         onClick={onClick}
         disabled={disabled || waiting}
         {...args}
+        tabIndex={disabled ? -1 : 0}
     >
         {children}
         {waiting && (
