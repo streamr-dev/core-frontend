@@ -12,10 +12,12 @@
   text-align: center;
   transition: 200ms ease-in-out;
   transition-property: border-color, background-color, color, transform;
-  will-change: transform;
+  transform: transale3d(0, 0, 0);
   white-space: nowrap;
   cursor: pointer;
   user-select: none;
+  backface-visibility: hidden;
+  -webkit-font-smoothing: subpixel-antialiased;
 
   &,
   &:--idle,
