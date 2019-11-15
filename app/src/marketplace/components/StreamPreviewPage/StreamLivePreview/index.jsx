@@ -183,6 +183,7 @@ export class StreamLivePreview extends Component<Props, State> {
         const { userpagesPreview } = this.props
         const tz = moment.tz.guess()
         const { visibleData, mobileTableColumnIndex } = this.state
+
         return (
             <MediaQuery maxWidth={sm.max}>
                 {(isMobile) => {

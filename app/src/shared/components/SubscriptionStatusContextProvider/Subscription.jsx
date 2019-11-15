@@ -1,15 +1,18 @@
+// @flow
+
 /**
  * Manages a subscription.
  */
 
 /* eslint-disable react/no-unused-state */
 
-import React, { Component, useContext } from 'react'
+import React, { type Node, Component, useContext } from 'react'
 import uniqueId from 'lodash/uniqueId'
-import t from 'prop-types'
 
-import { ClientContext } from '$shared/components/StreamrClientContextProvider'
-import { SubscriptionStatusContext } from './SubscriptionStatus'
+import { ClientContext, type ContextProps as ClientContextProps } from '$shared/components/StreamrClientContextProvider'
+import type { StreamId } from '$shared/flowtype/stream-types'
+
+import { SubscriptionStatusContext } from '.'
 
 const Message = {
     Done: 'D',
@@ -18,7 +21,36 @@ const Message = {
     Warning: 'MW',
 }
 
-class Subscription extends Component {
+type SubscriptionStatus = {
+    register: Function,
+    unregister: Function,
+    subscribed: Function,
+    unsubscribed: Function,
+}
+
+type Props = {
+    onMessage: Function,
+    onDoneMessage: Function,
+    onErrorMessage: Function,
+    onWarningMessage: Function,
+    onNotificationMessage: Function,
+    onSubscribed: Function,
+    onUnsubscribed: Function,
+    onResending: Function,
+    onResent: Function,
+    onNoResend: Function,
+    onError: Function,
+    subscriptionStatus?: SubscriptionStatus,
+    isActive?: boolean,
+    uiChannel: StreamId,
+    clientContext: ClientContextProps,
+    resendFrom: any,
+    resendTo: any,
+    resendLast: any,
+    children?: Node,
+}
+
+class Subscription extends Component<Props> {
     static defaultProps = {
         onMessage: Function.prototype,
         onDoneMessage: Function.prototype,
@@ -32,22 +64,6 @@ class Subscription extends Component {
         onNoResend: Function.prototype,
         onError: Function.prototype,
     }
-
-    static propTypes = {
-        onMessage: t.func.isRequired,
-        onDoneMessage: t.func.isRequired,
-        onErrorMessage: t.func.isRequired,
-        onWarningMessage: t.func.isRequired,
-        onNotificationMessage: t.func.isRequired,
-        onSubscribed: t.func.isRequired,
-        onUnsubscribed: t.func.isRequired,
-        onResending: t.func.isRequired,
-        onResent: t.func.isRequired,
-        onNoResend: t.func.isRequired,
-        onError: t.func.isRequired,
-    }
-
-    uid = uniqueId('sub')
 
     componentDidMount() {
         if (this.props.subscriptionStatus) {
@@ -74,14 +90,44 @@ class Subscription extends Component {
         this.unsubscribe()
     }
 
-    autosubscribe() {
-        if (this.isSubscribed) { return }
-        const { isActive, uiChannel } = this.props
-        if (!this.props.clientContext.client) { return }
+    onMessage = (message, ...args) => {
+        if (!this.isSubscribed) { return }
+        this.handleKnownMessageTypes(message, ...args)
+        this.props.onMessage(message, ...args)
+    }
 
-        if (isActive && uiChannel) {
-            this.subscribe()
+    /**
+     * Wrap prop event handlers so they can be cleaned up in unsubscribe
+     */
+
+    onSubscribed = (...args) => {
+        if (this.props.subscriptionStatus) {
+            this.props.subscriptionStatus.subscribed(this.uid)
         }
+        this.props.onSubscribed(...args)
+    }
+
+    onUnsubscribed = (...args) => {
+        if (this.props.subscriptionStatus) {
+            this.props.subscriptionStatus.unsubscribed(this.uid)
+        }
+        this.props.onUnsubscribed(...args)
+    }
+
+    onResending = (...args) => {
+        this.props.onResending(...args)
+    }
+
+    onResent = (...args) => {
+        this.props.onResent(...args)
+    }
+
+    onNoResend = (...args) => {
+        this.props.onNoResend(...args)
+    }
+
+    onError = (...args) => {
+        this.props.onError(...args)
     }
 
     getResendOptions() {
@@ -114,6 +160,23 @@ class Subscription extends Component {
         return resend
     }
 
+    unmounted: boolean = false
+    isSubscribed: boolean = false
+    client: any = undefined
+    subscription: any = undefined
+
+    autosubscribe() {
+        if (this.isSubscribed) { return }
+        const { isActive, uiChannel } = this.props
+        if (!this.props.clientContext.client) { return }
+
+        if (isActive && uiChannel) {
+            this.subscribe()
+        }
+    }
+
+    uid = uniqueId('sub')
+
     async subscribe() {
         const { uiChannel } = this.props
 
@@ -123,12 +186,17 @@ class Subscription extends Component {
         this.client = this.props.clientContext.client
         await this.client.ensureConnected()
 
+        // $FlowFixMe
         const { id } = uiChannel
 
         const resend = this.getResendOptions()
+
+        // $FlowFixMe
         this.subscription = this.client.subscribe(Object.assign({
             stream: id,
-        }, resend ? { resend } : undefined), this.onMessage)
+        }, resend ? {
+            resend,
+        } : undefined), this.onMessage)
 
         this.subscription.on('subscribed', this.onSubscribed)
         this.subscription.on('unsubscribed', this.onUnsubscribed)
@@ -177,51 +245,12 @@ class Subscription extends Component {
         }
     }
 
-    onMessage = (message, ...args) => {
-        if (!this.isSubscribed) { return }
-        this.handleKnownMessageTypes(message, ...args)
-        this.props.onMessage(message, ...args)
-    }
-
-    /**
-     * Wrap prop event handlers so they can be cleaned up in unsubscribe
-     */
-
-    onSubscribed = (...args) => {
-        if (this.props.subscriptionStatus) {
-            this.props.subscriptionStatus.subscribed(this.uid)
-        }
-        this.props.onSubscribed(...args)
-    }
-
-    onUnsubscribed = (...args) => {
-        if (this.props.subscriptionStatus) {
-            this.props.subscriptionStatus.unsubscribed(this.uid)
-        }
-        this.props.onUnsubscribed(...args)
-    }
-
-    onResending = (...args) => {
-        this.props.onResending(...args)
-    }
-
-    onResent = (...args) => {
-        this.props.onResent(...args)
-    }
-
-    onNoResend = (...args) => {
-        this.props.onNoResend(...args)
-    }
-
-    onError = (...args) => {
-        this.props.onError(...args)
-    }
-
     render() {
         return this.props.children || null
     }
 }
 
+// $FlowFixMe
 export default React.forwardRef((props, ref) => {
     const subscriptionStatus = useContext(SubscriptionStatusContext)
     const clientContext = useContext(ClientContext)

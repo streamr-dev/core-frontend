@@ -2,7 +2,7 @@
 
 import React from 'react'
 
-import Subscription from './Subscription'
+import Subscription from '$shared/components/SubscriptionStatusContextProvider/Subscription'
 import { ClientContext } from '$shared/components/StreamrClientContextProvider'
 import * as services from '$editor/shared/services'
 

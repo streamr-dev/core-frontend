@@ -1,17 +1,39 @@
+// @flow
+
 /**
  * Enables waiting for all registered subscriptions to be subscribed.
  */
 
-import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react'
+import React, { type Context, type Node, useState, useCallback, useMemo, useEffect, useRef } from 'react'
 import useIsMountedRef from '$shared/hooks/useIsMountedRef'
 
-export const SubscriptionStatusContext = React.createContext()
+type ContextProps = {
+    onAllReady: Function,
+    allReady: boolean,
+    register: Function,
+    unregister: Function,
+    subscribed: Function,
+    unsubscribed: Function,
+}
+
+export const SubscriptionStatusContext: Context<ContextProps> = React.createContext({})
+
+type PromiseResolver = {
+    resolved?: boolean,
+    promise: Promise<any>,
+    resolve: Function,
+    reject: Function,
+}
+
+type ReadyRef = {
+    current: ?PromiseResolver,
+}
 
 /**
  * Returns a promise + its resolve/reject functions
  */
 
-function getPromiseResolver() {
+function getPromiseResolver(): PromiseResolver {
     let resolver
     let rejector
     const promise = new Promise((resolve, reject) => {
@@ -34,7 +56,7 @@ function useAllReady(subscriptions) {
     const subscriptionIds = Object.keys(subscriptions)
     const allReady = !!(subscriptionIds.length && subscriptionIds.every((key) => subscriptions[key]))
 
-    const onAllReadyRef = useRef()
+    const onAllReadyRef: ReadyRef = useRef()
     useEffect(() => {
         if (allReady && onAllReadyRef.current) {
             onAllReadyRef.current.resolved = true
@@ -51,7 +73,7 @@ function useAllReady(subscriptions) {
 
     const onAllReady = useCallback(async () => {
         if (allReady || !isMountedRef.current) {
-            return // resolve immediately
+            return () => {} // resolve immediately
         }
 
         if (!onAllReadyRef.current) {
@@ -72,7 +94,9 @@ function useSubscriptionStatus() {
 
     const unregister = useCallback((uid) => {
         if (subscriptions[uid] == null) { return }
-        const nextState = { ...subscriptions }
+        const nextState = {
+            ...subscriptions,
+        }
         delete nextState[uid]
         setSubscriptions(nextState)
     }, [subscriptions, setSubscriptions])
@@ -114,7 +138,11 @@ function useSubscriptionStatus() {
     }), [onAllReady, allReady, register, unregister, subscribed, unsubscribed])
 }
 
-export default function SubscriptionStatusProvider({ children }) {
+type Props = {
+    children?: Node,
+}
+
+export default function SubscriptionStatusProvider({ children }: Props) {
     return (
         <SubscriptionStatusContext.Provider value={useSubscriptionStatus()}>
             {children || null}
