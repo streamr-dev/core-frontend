@@ -16,9 +16,10 @@ type Props = {
 }
 
 const Spinner = ({ size, color, className }: Props) => (
-    <span className={classNames(className, styles[size], styles.spinner, styles[color])}>
-        <Translate value="spinner.screenReaderText" />
-    </span>
+    <div className={styles.container}>
+        <span className={classNames(className, styles[size], styles.spinner, styles[color])} />
+        <Translate className={styles.screenReaderText} value="spinner.screenReaderText" />
+    </div>
 )
 
 Spinner.defaultProps = {
