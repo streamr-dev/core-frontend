@@ -79,7 +79,7 @@ jobs:
       - docker build -t $OWNER/$IMAGE_NAME:$TAG --build-arg NPM_TOKEN=${NPM_TOKEN} .
     deploy:
       - provider: script
-        script: bash app/travis_scripts/deploy_docker.sh staging
+        script: bash app/travis_scripts/deploy-docker.sh staging
         on:
           branch: development
   - stage: Platform Build Staging
