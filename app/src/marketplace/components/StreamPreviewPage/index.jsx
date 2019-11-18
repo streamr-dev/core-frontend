@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useState, useEffect, useCallback, useMemo } from 'react'
+import React, { useState, useEffect, useCallback, useMemo, useContext } from 'react'
 import classnames from 'classnames'
 import { Link } from 'react-router-dom'
 import findIndex from 'lodash/findIndex'
@@ -8,7 +8,6 @@ import { Translate, I18n } from 'react-redux-i18n'
 
 import type { StreamId, StreamList } from '$shared/flowtype/stream-types'
 import type { User } from '$shared/flowtype/user-types'
-import type { ResourceKeyId } from '$shared/flowtype/resource-key-types'
 import type { ProductId } from '../../flowtype/product-types'
 import Button from '$shared/components/Button'
 import routes from '$routes'
@@ -21,6 +20,7 @@ import InspectorSidebar from './InspectorSidebar'
 import CopyStreamIdButton from './CopyStreamIdButton'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
+import { ClientContext, ClientProvider } from '$shared/components/StreamrClientContextProvider'
 
 type Props = {
     match: {
@@ -31,8 +31,6 @@ type Props = {
     productId: ProductId,
     streams: StreamList,
     currentUser: ?User,
-    authApiKeyId: ?ResourceKeyId,
-    getApiKeys: () => void,
     getStreams: () => void,
     onClose: () => void,
 }
@@ -51,30 +49,21 @@ const getStreamTabUrl = (productId: ProductId, streamId: ?StreamId) => (streamId
 
 const StreamPreviewPage = ({
     productId,
-    getApiKeys,
     getStreams,
     match,
     streams,
     onClose,
-    authApiKeyId,
     currentUser,
 }: Props) => {
     const [selectedDataPoint, setSelectedDataPoint] = useState(null)
     const [sidebarVisible, setSidebarVisible] = useState(false)
     const [hasData, setHasData] = useState(false)
+    const { hasLoaded, apiKey } = useContext(ClientContext)
     const urlId = match.params.streamId
 
     useEffect(() => {
         getStreams()
     }, [getStreams])
-
-    const hasUser = !!currentUser
-
-    useEffect(() => {
-        if (hasUser) {
-            getApiKeys()
-        }
-    }, [hasUser, getApiKeys])
 
     useEffect(() => {
         setSelectedDataPoint(null)
@@ -89,8 +78,11 @@ const StreamPreviewPage = ({
 
     const currentStream = useMemo(() => streams && streams[currentStreamIndex], [streams, currentStreamIndex])
 
-    const prevStreamId = useMemo(() => (currentStreamIndex > 0 && streams[currentStreamIndex - 1].id) || null, [streams, currentStreamIndex])
-
+    const prevStreamId = useMemo(
+        () => (
+            (currentStreamIndex > 0 && streams[currentStreamIndex - 1].id) || null),
+        [streams, currentStreamIndex],
+    )
     const nextStreamId = useMemo(
         () => (
             (currentStreamIndex >= 0 && currentStreamIndex < streams.length - 1 && streams[currentStreamIndex + 1].id) || null),
@@ -109,7 +101,7 @@ const StreamPreviewPage = ({
             <BodyClass className="overflow-hidden" />
             <LoadingIndicator
                 className={styles.loadingIndicator}
-                loading
+                loading={!hasLoaded}
             />
             <div className={styles.closeRow}>
                 <Button
@@ -165,10 +157,9 @@ const StreamPreviewPage = ({
                     <div className={styles.body}>
                         {currentStream && (
                             <StreamLivePreviewTable
-                                key={`${currentStream.id}${String(authApiKeyId)}`} // Rerender if streamId or apiKey changes
+                                key={`${currentStream.id}${String(apiKey)}`} // Rerender if streamId or apiKey changes
                                 streamId={currentStream.id}
                                 currentUser={currentUser}
-                                authApiKeyId={authApiKeyId}
                                 onSelectDataPoint={onSelectDataPoint}
                                 selectedDataPoint={selectedDataPoint}
                                 hasData={() => setHasData(true)}
@@ -215,4 +206,8 @@ const StreamPreviewPage = ({
     )
 }
 
-export default StreamPreviewPage
+export default (props: Props) => (
+    <ClientProvider>
+        <StreamPreviewPage {...props} />
+    </ClientProvider>
+)
