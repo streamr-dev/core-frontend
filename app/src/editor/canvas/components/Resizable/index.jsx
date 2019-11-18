@@ -200,8 +200,8 @@ const Resizable = React.memo(({
 export { ResizeableContext as Context }
 
 // $FlowFixMe
-export default React.memo((props: Props) => (
-    <SizeConstraintProvider>
+export default React.memo(({ onSizeChange, ...props }: Props) => (
+    <SizeConstraintProvider onSizeChange={onSizeChange}>
         <Resizable {...props} />
     </SizeConstraintProvider>
 ))

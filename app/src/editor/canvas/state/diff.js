@@ -40,6 +40,7 @@ const isEqualModule = getIsEqualIgnoring(MODULE_IGNORE_KEYS)
 const isEqualCanvasCheck = getIsEqualIgnoring(CANVAS_IGNORE_KEYS)
 
 export function changedModules(canvasA, canvasB) {
+    if (!canvasA || !canvasB) { return EMPTY }
     if (canvasA === canvasB || canvasA.modules === canvasB.modules) { return EMPTY }
     const modulesA = orderBy(canvasA.modules || [], 'hash')
     const modulesB = orderBy(canvasB.modules || [], 'hash')
@@ -63,3 +64,4 @@ export function isEqualCanvas(canvasA, canvasB) {
     // don't re-check modules, ignore updated time
     return isEqualCanvasCheck(canvasA, canvasB)
 }
+

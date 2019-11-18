@@ -12,7 +12,8 @@ type Props = {
     className?: ?string,
     value: any,
     disabled: boolean,
-    onChange: (value: string, done: any) => void,
+    onChange: (value: string) => void,
+    onUpdate?: () => void,
 }
 
 type State = {
@@ -42,9 +43,16 @@ export default class StreamSelector extends React.Component<Props, State> {
         this.unmounted = true
     }
 
-    componentDidUpdate(prevProps: Props) {
+    componentDidUpdate(prevProps: Props, prevState: State) {
         if (prevProps.value !== this.props.value) {
             this.loadStream()
+        }
+        const didLoad = (
+            prevState.matchingStreams !== this.state.matchingStreams
+            || prevState.loadedStream !== this.state.loadedStream
+        )
+        if (didLoad && typeof this.props.onUpdate === 'function') {
+            this.props.onUpdate()
         }
     }
 
@@ -135,6 +143,10 @@ export default class StreamSelector extends React.Component<Props, State> {
                 this.search(this.state.search)
             }
         })
+
+        if (typeof this.props.onUpdate === 'function') {
+            this.props.onUpdate()
+        }
     }
 
     render() {

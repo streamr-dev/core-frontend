@@ -4,6 +4,7 @@
   font-size: 12px;
   font-weight: var(--medium);
   justify-content: space-between;
+  position: relative;
 }
 
 .name {
@@ -45,4 +46,22 @@
 
 .buttons button {
   display: block;
+}
+
+.loadingIndicator {
+  position: absolute;
+  bottom: 0;
+  margin: 0 1px;
+  left: 0;
+  right: 0;
+  width: auto;
+}
+
+.loadingIndicator::before,
+.loadingIndicator::after {
+  height: 1px;
+}
+
+.loadingIndicator::after {
+  animation-duration: 2400ms;
 }

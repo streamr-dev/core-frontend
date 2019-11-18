@@ -213,6 +213,7 @@ const CanvasElements = React.memo(function CanvasElements(props) { /* eslint-dis
                         api={api}
                         isSelected={selectedModuleHash === m.hash}
                         moduleSidebarIsOpen={moduleSidebarIsOpen}
+                        onSizeChange={updatePositions}
                         {...api.module}
                     />
                 ))}
