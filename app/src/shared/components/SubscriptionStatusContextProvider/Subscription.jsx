@@ -66,7 +66,7 @@ class Subscription extends Component<Props> {
     }
 
     componentDidMount() {
-        if (this.props.subscriptionStatus) {
+        if (this.props.subscriptionStatus && this.props.subscriptionStatus.register) {
             this.props.subscriptionStatus.register(this.uid)
         }
         this.autosubscribe()
@@ -76,7 +76,7 @@ class Subscription extends Component<Props> {
         // unsubscribe if switching to active
         if (this.props.isActive && !this.isSubscribed) {
             this.autosubscribe()
-        } else if (!this.props.isActive && !this.isSubscribed) {
+        } else if (!this.props.isActive && this.isSubscribed) {
             // unsubscribe if switching to inactive
             this.unsubscribe()
         }
@@ -84,7 +84,7 @@ class Subscription extends Component<Props> {
 
     componentWillUnmount() {
         this.unmounted = true
-        if (this.props.subscriptionStatus) {
+        if (this.props.subscriptionStatus && this.props.subscriptionStatus.unregister) {
             this.props.subscriptionStatus.unregister(this.uid)
         }
         this.unsubscribe()
@@ -101,14 +101,14 @@ class Subscription extends Component<Props> {
      */
 
     onSubscribed = (...args) => {
-        if (this.props.subscriptionStatus) {
+        if (this.props.subscriptionStatus && this.props.subscriptionStatus.subscribed) {
             this.props.subscriptionStatus.subscribed(this.uid)
         }
         this.props.onSubscribed(...args)
     }
 
     onUnsubscribed = (...args) => {
-        if (this.props.subscriptionStatus) {
+        if (this.props.subscriptionStatus && this.props.subscriptionStatus.unsubscribed) {
             this.props.subscriptionStatus.unsubscribed(this.uid)
         }
         this.props.onUnsubscribed(...args)
