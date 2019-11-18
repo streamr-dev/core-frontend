@@ -9,7 +9,8 @@ import EventEmitter from 'events'
 import t from 'prop-types'
 import React from 'react'
 
-import { ClientContext } from './Client'
+import { ClientContext } from '$shared/components/StreamrClientContextProvider'
+import * as services from '$editor/shared/services'
 
 /**
  * Supplies default implementation of loadRunState to RunStateLoader.
@@ -35,7 +36,9 @@ export default class RunStateLoaderContainer extends React.PureComponent {
             type: 'json',
         }
 
-        const res = await this.context.send({
+        const { apiKey } = this.context
+        const res = await services.send({
+            apiKey,
             data,
             canvasId,
             dashboardId,

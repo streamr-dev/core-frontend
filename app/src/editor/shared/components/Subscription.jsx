@@ -8,7 +8,7 @@ import React, { Component, useContext } from 'react'
 import uniqueId from 'lodash/uniqueId'
 import t from 'prop-types'
 
-import { ClientContext } from './Client'
+import { ClientContext } from '$shared/components/StreamrClientContextProvider'
 import { SubscriptionStatusContext } from './SubscriptionStatus'
 
 const Message = {
