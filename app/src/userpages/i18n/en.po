@@ -431,6 +431,26 @@ msgstr "Custom Java SimpleDateFormat"
 msgid "userpages##streams##edit##history##datePicker##selectDate"
 msgstr "Select date"
 
+msgid "userpages##streams##partitionsDescription"
+msgstr "Partitioning enables high-volume streams to scale beyond what one subscriber can handle. Read more about partitioning in the "
+msgid "userpages##streams##partitionsReadMore"
+msgstr "docs"
+
+msgid "userpages##streams##partitionsLabel"
+msgstr "Number of partitions"
+
+msgid "userpages##streams##inactivityDescription"
+msgstr "If no new data is published to this stream, it will be shown as inactive on the marketplace after this period of time. Adjust the threshold to an appropriate period for your stream's frequency."
+
+msgid "userpages##streams##inactivityHours"
+msgstr "Hours"
+
+msgid "userpages##streams##inactivityDays"
+msgstr "Days"
+
+msgid "userpages##streams##inactivityLabel"
+msgstr "Inactivity threshold"
+
 msgid "userpages##streams##fieldTypes##number"
 msgstr "Number"
 
@@ -448,6 +468,33 @@ msgstr "String"
 
 msgid "userpages##streams##fieldTypes##timestamp"
 msgstr "Timestamp"
+
+msgid "userpages##streams##security##basic##title"
+msgstr "Basic"
+
+msgid "userpages##streams##security##basic##shortDescription"
+msgstr "No data security enforced."
+
+msgid "userpages##streams##security##basic##longDescription"
+msgstr "This setting is flexible, but doesn’t give subscribers any guarantees about data authenticity. Network nodes can read any unencrypted data. This setting is suitable for testing, unimportant data, or if publishers cannot use cryptography."
+
+msgid "userpages##streams##security##signed##title"
+msgstr "Signed"
+
+msgid "userpages##streams##security##signed##shortDescription"
+msgstr "All data will be cryptographically signed."
+
+msgid "userpages##streams##security##signed##longDescription"
+msgstr "Unsigned data will be rejected. This setting enables subscribers to validate all data in the stream. Network nodes can still read any unencrypted data. Recommended setting for public streams."
+
+msgid "userpages##streams##security##encrypted##title"
+msgstr "Encrypted"
+
+msgid "userpages##streams##security##encrypted##shortDescription"
+msgstr "All data will be signed and end-to-end encrypted."
+
+msgid "userpages##streams##security##encrypted##longDescription"
+msgstr "Unsigned or unencrypted data will be rejected. This is the strongest security setting and ensures that no unauthorized party can read your data, including the network nodes brokering the data."
 
 msgid "userpages##transactions##noTransactions##title"
 msgstr "No transactions."
@@ -770,7 +817,7 @@ msgid "modal##shareResource##withLink"
 msgstr "Public — viewable by anyone with the link or via the API"
 
 msgid "modal##shareResource##enterEmailAddress"
-msgstr "Enter email address"
+msgstr "Enter email address or Ethereum account."
 
 msgid "modal##shareResource##permissions##read"
 msgstr "View only"

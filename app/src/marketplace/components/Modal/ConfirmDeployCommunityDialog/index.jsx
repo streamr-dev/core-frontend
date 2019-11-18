@@ -1,6 +1,6 @@
 // @flow
 
-import React from 'react'
+import React, { useState, useCallback } from 'react'
 import { I18n } from 'react-redux-i18n'
 import cx from 'classnames'
 
@@ -15,11 +15,18 @@ import styles from './confirmDeployCommunityDialog.pcss'
 export type Props = {
     product: Product,
     onClose: () => void,
-    onContinue: () => void,
+    onContinue: () => Promise<void>,
     onShowGuidedDialog: () => void,
 }
 
-const ConfirmDeployCommunityDialog = ({ product, onClose, onContinue, onShowGuidedDialog }: Props) => {
+const ConfirmDeployCommunityDialog = ({ product, onClose, onContinue: onContinueProp, onShowGuidedDialog }: Props) => {
+    const [waitingOnContinue, setWaitingOnContinue] = useState(false)
+
+    const onContinue = useCallback(async () => {
+        setWaitingOnContinue(true)
+        await onContinueProp()
+    }, [onContinueProp])
+
     // $FlowFixMe
     const image = String((product.newImageToUpload && product.newImageToUpload.preview) || product.imageUrl)
 
@@ -47,11 +54,14 @@ const ConfirmDeployCommunityDialog = ({ product, onClose, onContinue, onShowGuid
                                     title: I18n.t('modal.common.cancel'),
                                     onClick: onClose,
                                     color: 'link',
+                                    disabled: waitingOnContinue,
                                 },
                                 continue: {
                                     title: I18n.t('modal.common.deploy'),
                                     color: 'primary',
                                     onClick: onContinue,
+                                    spinner: waitingOnContinue,
+                                    disabled: waitingOnContinue,
                                 },
                             }}
                         />

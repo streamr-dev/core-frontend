@@ -1,14 +1,35 @@
 import React from 'react'
 import AceEditor from 'react-ace'
 import uniqueId from 'lodash/uniqueId'
-import 'brace/mode/java'
-import 'brace/theme/textmate'
+
+import 'ace-builds/src-noconflict/mode-java'
+import 'ace-builds/src-noconflict/theme-textmate'
 
 import DraggableCanvasWindow from '../DraggableCanvasWindow'
+import { CameraContext } from '../Camera'
 
 import styles from './CodeEditorWindow.pcss'
 
+/**
+ * Hacky monkeypatch that corrects tooltips appearing
+ * at incorrect position when inside css transformed container.
+ * Solution attaches tooltips to camera root i.e. outside scaling
+ */
+
+function fixTooltipParent(cameraContext) {
+    const { Tooltip } = window.ace.require('./tooltip')
+
+    const init = Tooltip.prototype.$init
+    Tooltip.prototype.$init = function $init(...args) {
+        this.$parentNode = cameraContext.elRef.current
+        const r = init.call(this, ...args)
+        r.classList.add(styles.customAceTooltip)
+        return r
+    }
+}
+
 export default class CodeEditorWindow extends React.Component {
+    static contextType = CameraContext
     state = {
         editorResetKey: uniqueId('CodeEditorWindow'),
         code: undefined,
@@ -20,6 +41,7 @@ export default class CodeEditorWindow extends React.Component {
 
     componentDidMount() {
         this.editor.current.editor.focus()
+        fixTooltipParent(this.context)
     }
 
     componentWillUnmount() {
@@ -77,7 +99,10 @@ export default class CodeEditorWindow extends React.Component {
         })
     }
 
-    onMouseDownTitle = () => {
+    onClickTitle = (event) => {
+        // need to cancel event otherwise editor focus doesn't stick
+        event.preventDefault()
+        event.stopPropagation()
         // forward title clicks to editor focus
         this.editor.current.editor.focus()
     }
@@ -98,7 +123,7 @@ export default class CodeEditorWindow extends React.Component {
             <DraggableCanvasWindow {...canvasWindowProps}>
                 <div className={styles.editorDialog}>
                     <DraggableCanvasWindow.Dialog onClose={onClose}>
-                        <DraggableCanvasWindow.Title onClose={onClose} onMouseDown={this.onMouseDownTitle}>Code Editor</DraggableCanvasWindow.Title>
+                        <DraggableCanvasWindow.Title onClose={onClose} onClick={this.onClickTitle}>Code Editor</DraggableCanvasWindow.Title>
                         <div className={styles.editorContainer}>
                             <AceEditor
                                 ref={this.editor}
@@ -117,6 +142,7 @@ export default class CodeEditorWindow extends React.Component {
                                     useSoftTabs: true,
                                     tooltipFollowsMouse: false,
                                     useWorker: false,
+                                    hasCssTransforms: true,
                                 }}
                                 annotations={errors}
                                 editorProps={{ $blockScrolling: true }}

@@ -8,19 +8,19 @@ import FallbackImage from '$shared/components/FallbackImage'
 import DropdownActions from '$shared/components/DropdownActions'
 import Meatball from '$shared/components/Meatball'
 
-import Badges, { type BadgesType } from './Badges'
 import * as subcomponents from './subcomponents'
 
 import styles from './tile.pcss'
 
 type Props = {
-    children: Node,
+    children?: Node,
     image?: ?Node,
     imageUrl?: string,
     dropdownActions?: Array<typeof DropdownActions.Item> | Node,
-    onMenuToggle?: (boolean) => void,
+    onMenuToggle?: (boolean) => any,
     className?: string,
-    badges: BadgesType,
+    badges: subcomponents.BadgesType,
+    labels: subcomponents.LabelsType,
 }
 
 const Tile = ({
@@ -31,6 +31,7 @@ const Tile = ({
     onMenuToggle,
     className,
     badges,
+    labels,
 }: Props) => {
     const [hoveredRef, isHovered] = useHover()
 
@@ -60,9 +61,8 @@ const Tile = ({
                 {image || (
                     <FallbackImage src={imageUrl || ''} alt="Tile" className={styles.image} />
                 )}
-                {Object.keys(badges).length > 0 && (
-                    <Badges badges={badges} />
-                )}
+                <subcomponents.Labels topLeft labels={labels} />
+                <subcomponents.Badges bottomRight badges={badges} />
             </div>
             <div className={styles.content}>
                 {children}
@@ -73,6 +73,7 @@ const Tile = ({
 
 Tile.defaultProps = {
     badges: {},
+    labels: {},
 }
 
 // Add subcomonents as static properties

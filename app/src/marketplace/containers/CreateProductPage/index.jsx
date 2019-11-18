@@ -8,7 +8,7 @@ import { push } from 'connected-react-router'
 import routes from '$routes'
 import type { ProductType } from '$mp/flowtype/product-types'
 import ProductTypeChooser from '$mp/components/ProductTypeChooser'
-import { postEmptyProduct } from '$mp/modules/editProduct/services'
+import { postEmptyProduct } from '$mp/modules/deprecated/editProduct/services'
 
 import styles from './createProductPage.pcss'
 
@@ -18,7 +18,7 @@ const CreateProductPage = () => {
     const createProduct = useCallback(async (type: ProductType) => {
         try {
             const product = await postEmptyProduct(type)
-            dispatch(push(routes.editProduct2({
+            dispatch(push(routes.editProduct({
                 id: product.id,
             })))
         } catch (err) {

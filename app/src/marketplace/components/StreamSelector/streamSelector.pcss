@@ -6,6 +6,18 @@
   > * {
     padding: 15px 25px;
   }
+
+  &:focus-within {
+    border: 1px solid #0324FF !important;
+  }
+}
+
+.withError {
+  border: 1px solid #FF5C00;
+}
+
+.disabled {
+  opacity: 0.5;
 }
 
 .input {
@@ -14,7 +26,8 @@
   width: auto;
   flex: 1;
 
-  &:focus {
+  &:focus,
+  &:disabled {
     background: none;
     outline: none;
     box-shadow: none;

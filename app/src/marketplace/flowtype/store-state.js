@@ -11,6 +11,7 @@ import type {
     Filter,
     Subscription,
     ProductPermissions,
+    CommunityId,
 } from './product-types'
 import type { Hash, Address, HashList } from '$shared/flowtype/web3-types'
 import type { StreamIdList } from '$shared/flowtype/stream-types'
@@ -78,6 +79,13 @@ export type ContractProductState = {
     id: ?ProductId,
     fetchingContractProduct: boolean,
     contractProductError: ?ErrorInUi,
+}
+
+// Community product
+export type CommunityProductState = {
+    id: ?CommunityId,
+    fetching: boolean,
+    error: ?ErrorInUi,
 }
 
 // streams
@@ -183,8 +191,6 @@ export type GlobalState = {
     fetchingDataPerUsdRate: boolean,
     dataPerUsdRateError: ?TransactionError,
     ethereumNetworkError: ?TransactionError,
-    metamaskPermission: ?boolean,
-    isWeb3Injected: ?boolean,
 }
 
 // transactions
@@ -198,6 +204,7 @@ export type StoreState = {
     allowance: AllowanceState,
     categories: CategoryState,
     contractProduct: ContractProductState,
+    communityProduct: CommunityProductState,
     createContractProduct: ModifyContractProductState,
     editProduct: EditProductState,
     global: GlobalState,

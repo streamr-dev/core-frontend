@@ -1,19 +1,31 @@
 import React, { useEffect, useCallback, useState } from 'react'
 import cx from 'classnames'
 
-import { isWindows } from '$shared/utils/platform'
+import { isWindows as getIsWindows, isMac as getIsMac } from '$shared/utils/platform'
 import { Header, Content, Section } from '$editor/shared/components/Sidebar'
 import isEditableElement from '$editor/shared/utils/isEditableElement'
 
 import styles from './KeyboardShortcutsSidebar.pcss'
 
+const isWindows = getIsWindows()
+const isMac = getIsMac()
+
 const keyLabels = {
     escape: 'esc',
-    meta: isWindows() ? 'win' : 'cmd',
+    meta: isWindows ? 'win' : '⌘',
     control: 'ctrl',
+    alt: isMac ? 'opt' : 'alt',
+    shift: 'shift',
 }
 
-const getKeyLabel = (key) => {
+function getPlatformKey(key) {
+    // transform 'meta' shortcuts to use the 'control' key on windows
+    if (key === 'meta' && isWindows) { return 'control' }
+    return key
+}
+
+export const getKeyLabel = (key) => {
+    key = getPlatformKey(key)
     if (keyLabels[key]) {
         return keyLabels[key]
     }
@@ -21,18 +33,21 @@ const getKeyLabel = (key) => {
     return key.length === 1 ? key.toUpperCase() : key
 }
 
+const AS_IS = new Set(['Meta', 'Alt', 'Shift', 'Control', 'Delete'])
 const getEventKey = (event) => {
     const { key, code } = event
     let finalKey
 
-    if (['Meta', 'Alt', 'Shift', 'Control', 'Delete'].includes(key)) {
+    if (AS_IS.has(key)) {
         finalKey = key
     } else if (code === 'Space') {
         finalKey = code
-    } else if (code.substring(0, 3) === 'Key') {
-        finalKey = code.substring(3)
+    } else if (code.startsWith('Key')) {
+        finalKey = code.slice('Key'.length)
+    } else if (code.startsWith('Digit')) {
+        finalKey = code.slice('Digit'.length)
     } else {
-        finalKey = key
+        finalKey = code
     }
 
     return finalKey.toLowerCase()
@@ -58,10 +73,13 @@ function usePressedKeys(initialState = INITIAL_PRESSED_KEYS_STATE) {
     const resetState = useCallback(() => {
         setState(initialState)
     }, [setState, initialState])
+    const isInitialState = state === initialState
 
     const onKeyDown = useCallback((event) => {
         if (!shouldHandleKeyEvent(event)) {
-            resetState()
+            if (!isInitialState) {
+                resetState()
+            }
             return
         }
 
@@ -95,10 +113,13 @@ function usePressedKeys(initialState = INITIAL_PRESSED_KEYS_STATE) {
                 modifiedKeys: newModifiedKeys,
             }
         })
-    }, [setState, resetState])
+    }, [setState, isInitialState, resetState])
 
     const onKeyUp = useCallback((event) => {
         if (!shouldHandleKeyEvent(event)) {
+            if (!isInitialState) {
+                resetState()
+            }
             resetState()
             return
         }
@@ -135,18 +156,18 @@ function usePressedKeys(initialState = INITIAL_PRESSED_KEYS_STATE) {
                 modifiedKeys: newModifiedKeys,
             }
         })
-    }, [resetState, setState])
+    }, [resetState, isInitialState, setState])
 
     useEffect(() => {
-        window.addEventListener('keydown', onKeyDown)
-        window.addEventListener('keyup', onKeyUp)
-        window.addEventListener('blur', resetState)
-        window.addEventListener('focus', resetState)
+        window.addEventListener('keydown', onKeyDown, true)
+        window.addEventListener('keyup', onKeyUp, true)
+        window.addEventListener('blur', resetState, true)
+        window.addEventListener('focus', resetState, true)
         return () => {
-            window.removeEventListener('keydown', onKeyDown)
-            window.removeEventListener('keyup', onKeyUp)
-            window.removeEventListener('blur', resetState)
-            window.removeEventListener('focus', resetState)
+            window.removeEventListener('keydown', onKeyDown, true)
+            window.removeEventListener('keyup', onKeyUp, true)
+            window.removeEventListener('blur', resetState, true)
+            window.removeEventListener('focus', resetState, true)
         }
     }, [onKeyDown, onKeyUp, resetState])
     return state
@@ -164,12 +185,6 @@ export function KeyboardShortcutsSidebar({ onClose, children }) {
             </Content>
         </React.Fragment>
     )
-}
-
-function getPlatformKey(key) {
-    // transform 'meta' shortcuts to use the 'control' key on windows
-    if (key === 'meta' && isWindows()) { return 'control' }
-    return key
 }
 
 export function ComboList({ combos, ...props }) {

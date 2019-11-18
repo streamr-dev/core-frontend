@@ -36,16 +36,18 @@ type Props = {
     onResize?: ?(Size) => void,
     style?: any,
     width: number,
+    scale: number,
 }
 
-const Resizable = ({
+const Resizable = React.memo(({
     children,
     className,
-    enabled,
+    enabled = false,
     height,
     onResize,
     style,
     width,
+    scale = 1,
     ...props
 }: Props) => {
     const { minWidth, minHeight } = useContext(SizeConstraintContext)
@@ -63,13 +65,15 @@ const Resizable = ({
 
     const updateSize = useCallback(({ dx, dy }): Size => {
         const { height, width } = ((previousSize.current: any): Size)
+        dx /= scale
+        dy /= scale
         const size = {
             height: Math.max(minHeight, height - dy),
             width: Math.max(minWidth, width - dx),
         }
         setSize(size)
         return size
-    }, [minHeight, minWidth])
+    }, [minHeight, minWidth, scale])
 
     const ref: Ref<HTMLDivElement> = useRef(null)
 
@@ -80,15 +84,15 @@ const Resizable = ({
         if (root) {
             const { width, height } = root.getBoundingClientRect()
             previousSize.current = {
-                height,
-                width,
+                height: height / scale,
+                width: width / scale,
             }
             updateSize({
                 dx: 0,
                 dy: 0,
             })
         }
-    }, [updateSize])
+    }, [updateSize, scale])
 
     const preview = useCallback((diff) => {
         updateSize(diff)
@@ -153,22 +157,24 @@ const Resizable = ({
         })
     }, [minWidth, minHeight])
 
+    const divStyle = useMemo(() => ({
+        ...style,
+        ...(isResizing ? {
+            height: size.height,
+            width: size.width,
+        } : {
+            minHeight: size.height,
+            minWidth: size.width,
+        }),
+    }), [style, isResizing, size.width, size.height])
+
     return enabled ? (
         <ResizeableContext.Provider value={value}>
             <div
                 {...props}
                 className={cx(styles.root, className)}
                 ref={ref}
-                style={{
-                    ...style,
-                    ...(isResizing ? {
-                        height: size.height,
-                        width: size.width,
-                    } : {
-                        minHeight: size.height,
-                        minWidth: size.width,
-                    }),
-                }}
+                style={divStyle}
             >
                 {children}
                 {!!showHandle && (
@@ -189,16 +195,13 @@ const Resizable = ({
             {children}
         </div>
     )
-}
-
-Resizable.defaultProps = {
-    enabled: false,
-}
+})
 
 export { ResizeableContext as Context }
 
-export default (props: Props) => (
-    <SizeConstraintProvider>
+// $FlowFixMe
+export default React.memo(({ onSizeChange, ...props }: Props) => (
+    <SizeConstraintProvider onSizeChange={onSizeChange}>
         <Resizable {...props} />
     </SizeConstraintProvider>
-)
+))

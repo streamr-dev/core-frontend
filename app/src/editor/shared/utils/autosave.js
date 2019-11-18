@@ -98,7 +98,7 @@ export default function Autosave(saveFn, waitTime) {
         .on('fail', (err, canvas = {}) => {
             console.warn('Autosave failed', canvas.id, err) // eslint-disable-line no-console
         })
-        .on('run', (_, canvas = {}) => {
+        .on('run', (canvas = {}) => {
             console.info('Autosaving...', canvas.id) // eslint-disable-line no-console
         })
         .on('start', () => {

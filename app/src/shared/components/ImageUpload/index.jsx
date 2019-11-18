@@ -26,6 +26,7 @@ type Props = {
     originalImage?: ?string,
     dropzoneClassname?: string,
     className?: string,
+    disabled?: boolean,
 }
 
 type State = {
@@ -116,7 +117,7 @@ class ImageUpload extends Component<Props, State> {
     unmounted = false
 
     render() {
-        const { originalImage, dropzoneClassname, className } = this.props
+        const { originalImage, dropzoneClassname, className, disabled } = this.props
         const { imageUploading, imageUploaded, dragEntered } = this.state
         const srcImage = this.getPreviewImage() || originalImage
         return (
@@ -140,6 +141,7 @@ class ImageUpload extends Component<Props, State> {
                     onDropRejected={this.onDropRejected}
                     accept="image/jpeg, image/png"
                     maxSize={maxFileSizeForImageUpload}
+                    disabled={!!disabled}
                 >
                     <div className={styles.dropzoneAdvice}>
                         <PngIcon

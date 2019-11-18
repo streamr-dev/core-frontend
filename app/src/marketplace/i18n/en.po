@@ -235,6 +235,50 @@ msgstr ""
 "You need to confirm the transaction <br /> in your wallet to publish this "
 "product."
 
+msgid "modal##completePublish##updateAdminFee##started##title"
+msgstr "Update admin fee"
+
+msgid "modal##completePublish##updateAdminFee##started##message"
+msgstr ""
+"You need to confirm the transaction in your wallet to update the community admin fee."
+
+msgid "modal##completePublish##updateContractProduct##started##title"
+msgstr "Update price information"
+
+msgid "modal##completePublish##updateContractProduct##started##message"
+msgstr ""
+"You need to confirm the transaction in your wallet to update the product's price."
+
+msgid "modal##completePublish##publishPaid##started##title"
+msgstr "Publish"
+
+msgid "modal##completePublish##publishPaid##started##message"
+msgstr ""
+"You need to confirm the transaction in your wallet to publish the product."
+
+msgid "modal##completePublish##createContractProduct##started##title"
+msgstr "Publish"
+
+msgid "modal##completePublish##createContractProduct##started##message"
+msgstr ""
+"You need to confirm the transaction in your wallet to publish the product."
+
+msgid "modal##completePublish##undeployContractProduct##started##title"
+msgstr "Unpublish"
+
+msgid "modal##completePublish##undeployContractProduct##started##message"
+msgstr ""
+"You need to confirm the transaction in your wallet to unpublish the product."
+
+msgid "modal##completePublish##publishFree##started##title"
+msgstr "Publish"
+
+msgid "modal##completePublish##unpublishFree##started##title"
+msgstr "Unpublish"
+
+msgid "modal##completePublish##publishPendingChanges##started##title"
+msgstr "Update product data"
+
 msgid "modal##completePublish##started##title"
 msgstr "Publish Confirmation"
 
@@ -287,6 +331,18 @@ msgstr ""
 
 msgid "modal##confirmNoCoverImage##title"
 msgstr "No cover image"
+
+msgid "modal##confirmSave##title"
+msgstr "You have unsaved changes"
+
+msgid "modal##confirmSave##message"
+msgstr ""
+"You have made changes to this product."
+"<br />"
+"Do you want to save your changes?"
+
+msgid "modal##confirmSave##dontSave"
+msgstr "Don't save"
 
 msgid "modal##noStreams##message"
 msgstr "You need to add at least one stream to your product to be able to publish it."

@@ -45,6 +45,9 @@ const ProductCard = ({ name, image, className }: ProductCardProps) => (
         <Tile
             className={styles.productTile}
             imageUrl={image}
+            labels={{
+                community: true,
+            }}
             badges={{
                 members: 15,
             }}
@@ -63,22 +66,24 @@ const ProductCard = ({ name, image, className }: ProductCardProps) => (
 export type Props = {
     product: Product,
     onClose: () => void,
-    onContinue: (boolean) => void,
+    onContinue: (boolean) => Promise<void>,
     dontShowAgain?: boolean,
 }
 
 const GuidedDeployCommunityDialog = ({ product, onClose, onContinue: onContinueProp, dontShowAgain }: Props) => {
     const [skipHelp, setSkipHelp] = useState(!!dontShowAgain)
     const [step, setStep] = useState(0)
+    const [waitingOnContinue, setWaitingOnContinue] = useState(false)
 
     const isLastStep = step === 3
     const { name } = product
     // $FlowFixMe
     const image = String((product.newImageToUpload && product.newImageToUpload.preview) || product.imageUrl)
 
-    const onContinue = useCallback(() => {
+    const onContinue = useCallback(async () => {
         if (isLastStep) {
-            onContinueProp(skipHelp)
+            setWaitingOnContinue(true)
+            await onContinueProp(skipHelp)
         } else {
             setStep((prev) => prev + 1)
         }
@@ -171,11 +176,17 @@ const GuidedDeployCommunityDialog = ({ product, onClose, onContinue: onContinueP
                                     title: I18n.t('modal.common.cancel'),
                                     onClick: onClose,
                                     color: 'link',
+                                    disabled: waitingOnContinue,
                                 },
-                                continue: {
-                                    title: isLastStep ? I18n.t('modal.common.deploy') : I18n.t('modal.common.next'),
-                                    color: isLastStep ? 'primary' : undefined,
-                                    outline: !isLastStep,
+                                continue: isLastStep ? {
+                                    title: I18n.t('modal.common.deploy'),
+                                    color: 'primary',
+                                    onClick: onContinue,
+                                    spinner: waitingOnContinue,
+                                    disabled: waitingOnContinue,
+                                } : {
+                                    title: I18n.t('modal.common.next'),
+                                    outline: true,
                                     onClick: onContinue,
                                 },
                             }}

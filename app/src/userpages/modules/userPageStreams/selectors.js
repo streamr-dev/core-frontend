@@ -16,6 +16,8 @@ import { selectEntities } from '$shared/modules/entities/selectors'
 import { streamsSchema, streamSchema, resourceKeysSchema } from '$shared/modules/entities/schema'
 import { selectStreamResourceKeys } from '$shared/modules/resourceKey/selectors'
 
+export const fieldTypes = ['number', 'boolean', 'map', 'list', 'string', 'timestamp']
+
 const selectUserPageStreamsState = (state: StoreState): UserPageStreamsState => state.userPageStreams
 
 export const selectStreamIds: (StoreState) => StreamIdList = createSelector(

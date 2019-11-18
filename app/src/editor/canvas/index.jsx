@@ -1,16 +1,19 @@
-import React, { Component, useContext } from 'react'
-import { withRouter } from 'react-router-dom'
+import React, { PureComponent, useContext } from 'react'
+import { Link, withRouter } from 'react-router-dom'
 import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
 import { selectAuthState } from '$shared/modules/user/selectors'
 import SessionContext from '$auth/contexts/Session'
+import cx from 'classnames'
 
 import Layout from '$shared/components/Layout'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
-import ErrorComponentView from '$shared/components/ErrorComponentView'
+import { ErrorPageContent } from '$mp/components/ErrorPageView'
 import copyToClipboard from 'copy-to-clipboard'
 
 import links from '../../links'
+import routes from '$routes'
 
 import isEditableElement from '$editor/shared/utils/isEditableElement'
 import UndoControls from '$editor/shared/components/UndoControls'
@@ -18,7 +21,7 @@ import * as UndoContext from '$shared/components/UndoContextProvider'
 import { Provider as PendingProvider } from '$shared/components/PendingContextProvider'
 import Subscription from '$editor/shared/components/Subscription'
 import * as SubscriptionStatus from '$editor/shared/components/SubscriptionStatus'
-import { ClientProvider } from '$editor/shared/components/Client'
+import { ClientProvider } from '$shared/components/StreamrClientContextProvider'
 import { Provider as ModalProvider } from '$shared/components/ModalContextProvider'
 import * as sharedServices from '$editor/shared/services'
 import BodyClass from '$shared/components/BodyClass'
@@ -26,12 +29,14 @@ import Sidebar from '$editor/shared/components/Sidebar'
 import { useCanvasSelection, SelectionProvider } from './components/CanvasController/useCanvasSelection'
 import ModuleSidebar from './components/ModuleSidebar'
 import KeyboardShortcutsSidebar from './components/KeyboardShortcutsSidebar'
+import { CameraProvider, cameraControl } from './components/Camera'
+import { useCanvasCameraEffects } from './hooks/useCanvasCamera'
 
 import * as CanvasController from './components/CanvasController'
 import * as RunController from './components/CanvasController/Run'
 import useCanvas from './components/CanvasController/useCanvas'
 import useCanvasUpdater from './components/CanvasController/useCanvasUpdater'
-import useAutosaveEffect from './components/CanvasController/useAutosaveEffect'
+import { AutosaveProvider } from './components/CanvasController/Autosave'
 import useUpdatedTime from './components/CanvasController/useUpdatedTime'
 import useEmbedMode from './components/CanvasController/useEmbedMode'
 
@@ -48,7 +53,7 @@ import * as CanvasState from './state'
 
 import styles from './index.pcss'
 
-const CanvasEditComponent = class CanvasEdit extends Component {
+const CanvasEditComponent = class CanvasEdit extends PureComponent {
     state = {
         moduleSearchIsOpen: true,
         moduleSidebarIsOpen: false,
@@ -151,7 +156,9 @@ const CanvasEditComponent = class CanvasEdit extends Component {
             event.preventDefault()
             event.stopPropagation()
             copyToClipboard(JSON.stringify(CanvasState.getModuleCopy(this.props.canvas, hash)))
-            this.removeModule({ hash })
+            if (runController.isEditable) {
+                this.removeModule({ hash })
+            }
         }
     }
 
@@ -260,7 +267,8 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         if (this.unmounted) { return }
 
         this.replaceCanvas((canvas) => (
-            CanvasState.updateModule(canvas, hash, () => newModule)
+            // use replaceModule to maintain connections & other state as much as possible
+            CanvasState.replaceModule(canvas, newModule)
         ))
     }
 
@@ -362,6 +370,8 @@ const CanvasEditComponent = class CanvasEdit extends Component {
     }
 
     onPaste = (event) => {
+        const { runController } = this.props
+        if (!runController.isEditable) { return } // ignore if not editable
         // prevent handling paste in form fields
         if (isEditableElement(event.target || event.srcElement)) { return }
         event.preventDefault()
@@ -401,7 +411,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         const resendFrom = settings.beginDate
         const resendTo = settings.endDate
         return (
-            <div className={styles.CanvasEdit} onPaste={this.onPaste}>
+            <div className={cx(styles.CanvasEdit, cameraControl)} onPaste={this.onPaste}>
                 <Helmet title={`${canvas.name} | Streamr Core`} />
                 <Subscription
                     uiChannel={canvas.uiChannel}
@@ -493,11 +503,11 @@ const CanvasEdit = withRouter((props) => {
     const [updated, setUpdated] = useUpdatedTime(canvas.updated)
     const isEmbedMode = useEmbedMode()
     useCanvasNotifications(canvas)
-    useAutosaveEffect()
+    useCanvasCameraEffects()
     const selection = useCanvasSelection()
 
     return (
-        <React.Fragment>
+        <AutosaveProvider>
             <UndoControls disabled={!runController.isEditable} />
             <CanvasEditComponent
                 {...props}
@@ -512,7 +522,7 @@ const CanvasEdit = withRouter((props) => {
                 setUpdated={setUpdated}
                 selection={selection}
             />
-        </React.Fragment>
+        </AutosaveProvider>
     )
 })
 
@@ -531,15 +541,38 @@ const CanvasEditWrap = () => {
     return (
         <SubscriptionStatus.Provider key={key}>
             <RunController.Provider canvas={canvas}>
-                <CanvasEdit />
+                <CameraProvider>
+                    <CanvasEdit />
+                </CameraProvider>
             </RunController.Provider>
         </SubscriptionStatus.Provider>
     )
 }
 
-const CanvasContainer = withRouter(withErrorBoundary(ErrorComponentView)((props) => (
+const CanvasErrorPage = () => (
+    <ErrorPageContent>
+        <Link
+            to=""
+            onClick={(event) => {
+                event.preventDefault()
+                window.location.reload()
+            }}
+            className="btn btn-special"
+        >
+            <Translate value="editor.error.refresh" />
+        </Link>
+        <Link
+            to={routes.canvases()}
+            className="btn btn-special d-none d-md-inline-block"
+        >
+            <Translate value="editor.general.backToCanvases" />
+        </Link>
+    </ErrorPageContent>
+)
+
+const CanvasContainer = withRouter(withErrorBoundary(CanvasErrorPage)((props) => (
     <UndoContext.Provider key={props.match.params.id} enableBreadcrumbs>
-        <PendingProvider>
+        <PendingProvider name="canvas">
             <PendingLoadingIndicator />
             <ClientProvider>
                 <CanvasController.Provider embed={!!props.embed}>
@@ -558,7 +591,7 @@ export default connect(selectAuthState)(({ embed, isAuthenticated }) => {
     // don't drop into embed mode unless no token
     embed = embed || (!isAuthenticated && !token)
     return (
-        <Layout className={styles.layout} footer={false} nav={!embed}>
+        <Layout className={styles.layout} footer={false} nav={!embed} navShadow>
             <BodyClass className="editor" />
             <CanvasContainer embed={embed} />
         </Layout>

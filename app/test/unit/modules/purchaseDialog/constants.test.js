@@ -1,4 +1,4 @@
-import * as constants from '$mp/modules/purchaseDialog/constants'
+import * as constants from '$mp/modules/deprecated/purchaseDialog/constants'
 
 describe('purchaseDialog - constants', () => {
     it('is namespaced correctly', () => {

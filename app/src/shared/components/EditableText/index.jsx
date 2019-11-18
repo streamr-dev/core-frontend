@@ -18,6 +18,7 @@ type Props = {
     editOnFocus?: boolean,
     selectAllOnFocus?: boolean,
     onChange?: (string) => void,
+    blankClassName?: string,
     onCommit?: (string) => void,
     onModeChange?: ?(boolean) => void,
     placeholder?: ?string,
@@ -38,6 +39,7 @@ const EditableText = ({
     editOnFocus,
     selectAllOnFocus,
     onChange: onChangeProp,
+    blankClassName,
     onCommit,
     onModeChange,
     placeholder,
@@ -91,15 +93,15 @@ const EditableText = ({
     const renderValue = useCallback((val) => (
         !isBlank(val) ? val : (placeholder || '')
     ), [placeholder])
-
+    const valueIsBlank = isBlank(editing ? value : children)
     return (
         <div
             className={cx(styles.root, className, {
                 [styles.idle]: !editing,
                 [styles.disabled]: disabled,
-                [styles.blank]: isBlank(editing ? value : children),
+                [styles.blank]: valueIsBlank,
                 [ModuleStyles.dragCancel]: !!editing,
-            })}
+            }, valueIsBlank ? blankClassName : undefined)}
             onDoubleClick={startEditing}
             {...((editOnFocus && !disabled) ? {
                 onFocus: startEditing,

@@ -4,6 +4,7 @@ import ReactMarkdown from 'react-markdown'
 import isEmpty from 'lodash/isEmpty'
 import get from 'lodash/get'
 import cx from 'classnames'
+import { Module } from '$editor/canvas/components/ModuleRenderer/ModuleRenderer.stories'
 
 import styles from './canvasModuleHelp.pcss'
 
@@ -12,25 +13,40 @@ type PortHelpProps = {
     port: any,
 }
 
+// Need to capitalize the first letter in JS because text-transform capitalize
+// doesn't play well with inline elements.
+const capitalizeText = (text: string): string => text.charAt(0).toUpperCase() + text.slice(1)
+
+const hasTrailingFullStop = (text: string): string => {
+    if (text.slice(-1) === '.') {
+        return true
+    }
+    return false
+}
+
 function PortHelp({ help, port }: PortHelpProps) {
+    const portName = capitalizeText(port.displayName || port.name)
+
     return (
         <div className={styles.portHelp}>
-            <div className={styles.portHelpHeader}>
-                <h5 className={styles.portName} title={port.name}>{port.displayName || port.name}</h5>
-            </div>
-            <div className={styles.portTypes}>
-                {port.type.split(/\s+/).map((type) => (
-                    <span key={type}>{type}</span>
-                ))}
-            </div>
+            <span className={styles.portName} title={port.name}>{portName}</span>
+            {port.type.split(/\s+/).map((type) => {
+                const portType = capitalizeText(type)
+                return (
+                    <span className={styles.portType} key={type}>
+                        {portType === portName && help ? '.' : ` ${type}${hasTrailingFullStop(portType) ? null : '.'}`}
+                    </span>
+                )
+            })}
+            {!help ? null
+                : (
+                    <span className={styles.portText}> <ReactMarkdown source={capitalizeText(help) || ''} />
+                        {hasTrailingFullStop(help) ? null : '.'}
+                    </span>
+                )}
             {isEmpty(port.defaultValue) ? null : (
-                <div className={styles.defaultValue}>
-                    Default Value: <span>${port.defaultValue}</span>
-                </div>
+                <span className={styles.defaultValue}> Default Value ${port.defaultValue}{hasTrailingFullStop(port.defaultValue) ? null : '.'}</span>
             )}
-            <div className={styles.portHelpContent}>
-                <ReactMarkdown source={help || ''} />
-            </div>
         </div>
     )
 }
@@ -38,46 +54,72 @@ function PortHelp({ help, port }: PortHelpProps) {
 type PortsHelpProps = {
     module: any,
     help: any,
-    heading: string,
     portsKey: string,
 }
 
-function PortsHelp({ module, help, heading, portsKey }: PortsHelpProps) {
+function PortsHelp({ module, help, portsKey }: PortsHelpProps) {
     const ports = module[portsKey] || []
     return (
-        <div className={styles.portsHelp}>
-            <h4 className={styles.portTypesHeading}>{heading}</h4>
-            <div className={styles.portsContent}>
-                {ports.length ? (
-                    ports.map((port) => (
+        ports.length ? (
+            <div className={styles.portsHelp}>
+                <div className={styles.portsContent}>
+                    {ports.map((port) => (
                         <PortHelp key={port.id} port={port} help={get(help, [portsKey, port.name], '')} />
-                    ))
-                ) : (
-                    <div className={styles.portHelp}>
-                        <em>None</em>
-                    </div>
-                )}
+                    ))}
+                </div>
             </div>
-        </div>
+        ) : null
     )
 }
 
 type Props = {
     module: any,
     help: any,
-    hideName?: boolean,
+    minifiedContent?: boolean,
     className?: string,
 }
 
-export default function CanvasModuleHelp({ module: m, help, hideName, className }: Props) {
+export default function CanvasModuleHelp({ module: m, help, minifiedContent, className }: Props) {
+    const modulePageId = m.name.toLowerCase().replace(/\s/g, '')
+
     return (
-        <section key={m.id} className={cx(styles.root, className)}>
-            {hideName ? null : <h3>{m.name}</h3>}
-            <ReactMarkdown source={help && help.helpText} />
+        <section
+            key={m.id}
+            id={modulePageId}
+            className={cx(
+                styles.root,
+                className, {
+                    [styles.minifiedContent]: minifiedContent,
+                },
+            )}
+        >
+            <div className={styles.nameAndDescription}>
+                {minifiedContent ? null : <a href={`#${modulePageId}`}><h4>{m.name}</h4></a>}
+                <ReactMarkdown source={help && help.helpText} />
+            </div>
+            {minifiedContent ? null : (
+                <div className={styles.moduleContainer}>
+                    <Module
+                        src={Object.assign({
+                            params: [],
+                            inputs: [],
+                            outputs: [],
+                        }, m, {
+                            name: m.name || '<Empty>',
+                        })}
+                    />
+                </div>
+            )}
             <div className={styles.ports}>
-                <PortsHelp module={m} help={help} heading="Inputs" portsKey="inputs" />
-                <PortsHelp module={m} help={help} heading="Parameters" portsKey="params" />
-                <PortsHelp module={m} help={help} heading="Outputs" portsKey="outputs" />
+                <div>
+                    {!minifiedContent || (!m.inputs.length && !m.params.length) ? null : (<h6>Inputs</h6>)}
+                    <PortsHelp module={m} help={help} portsKey="inputs" />
+                    <PortsHelp module={m} help={help} portsKey="params" />
+                </div>
+                <div>
+                    {!minifiedContent || !m.outputs.length ? null : (<h6>Outputs</h6>)}
+                    <PortsHelp module={m} help={help} portsKey="outputs" />
+                </div>
             </div>
         </section>
     )

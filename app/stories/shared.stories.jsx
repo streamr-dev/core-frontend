@@ -42,6 +42,10 @@ import ContextMenu from '$shared/components/ContextMenu'
 import { NotificationIcon } from '$shared/utils/constants'
 import RadioButtonGroup from '$shared/components/RadioButtonGroup'
 import Toolbar from '$shared/components/Toolbar'
+import DeploySpinner from '$shared/components/DeploySpinner'
+import Label from '$shared/components/Label'
+import Tile from '$shared/components/Tile'
+import DonutChart from '$shared/components/DonutChart'
 
 import sharedStyles from './shared.pcss'
 
@@ -85,6 +89,14 @@ story('Popover actions')
             <DropdownActions.Item>Another option</DropdownActions.Item>
         </DropdownActions>
     ))
+    .addWithJSX('disabled', () => (
+        <DropdownActions title="Select" disabled>
+            <DropdownActions.Item onClick={action('clicked')}>
+                Click me
+            </DropdownActions.Item>
+            <DropdownActions.Item>Another option</DropdownActions.Item>
+        </DropdownActions>
+    ))
     .addWithJSX('meatball dropdown', () => (
         <DropdownActions
             title={<Meatball alt="Select" />}
@@ -96,10 +108,26 @@ story('Popover actions')
             <DropdownActions.Item>Another option</DropdownActions.Item>
         </DropdownActions>
     ))
+    .addWithJSX('disabled meatball dropdown', () => (
+        <DropdownActions
+            title={<Meatball alt="Select" disabled />}
+            noCaret
+            disabled
+        >
+            <DropdownActions.Item onClick={action('clicked')}>
+                Click me
+            </DropdownActions.Item>
+            <DropdownActions.Item>Another option</DropdownActions.Item>
+        </DropdownActions>
+    ))
 
 story('Status icon')
-    .addWithJSX('normal', () => <StatusIcon />)
+    .addWithJSX('ok', () => <StatusIcon status={StatusIcon.OK} />)
+    .addWithJSX('ok with tooltip', () => <StatusIcon showTooltip status={StatusIcon.OK} />)
+    .addWithJSX('inactive', () => <StatusIcon status={StatusIcon.INACTIVE} />)
+    .addWithJSX('inactive with tooltip', () => <StatusIcon showTooltip status={StatusIcon.INACTIVE} />)
     .addWithJSX('error', () => <StatusIcon status={StatusIcon.ERROR} />)
+    .addWithJSX('error with tooltip', () => <StatusIcon showTooltip status={StatusIcon.ERROR} />)
 
 story('Table')
     .addWithJSX('basic', () => (
@@ -692,6 +720,15 @@ story('RadioButtonGroup')
             onChange={action('selected')}
         />
     ))
+    .addWithJSX('disabled', () => (
+        <RadioButtonGroup
+            name="group"
+            options={['value 1', 'value 2', 'value 3']}
+            selectedOption="value 2"
+            onChange={action('selected')}
+            disabled
+        />
+    ))
 
 const toolbarActions = {
     cancel: {
@@ -733,5 +770,139 @@ story('Toolbar')
                 }}
             />}
             actions={toolbarActions}
+        />
+    ))
+
+story('DeploySpinner')
+    .addWithJSX('basic', () => (
+        <DeploySpinner isRunning showCounter />
+    ))
+    .addWithJSX('stopped', () => (
+        <DeploySpinner isRunning={false} showCounter />
+    ))
+    .addWithJSX('without counter', () => (
+        <DeploySpinner isRunning showCounter={false} />
+    ))
+
+story('Label')
+    .addWithJSX('basic', () => (
+        <Label>{text('Label', 'Label')}</Label>
+    ))
+    .addWithJSX('with position', () => (
+        <div style={{
+            width: '350px',
+            height: '200px',
+            border: '1px solid black',
+            position: 'relative',
+        }}
+        >
+            <Label topLeft>{text('First', 'First')}</Label>
+            <Label bottomRight>{text('Second', 'Second')}</Label>
+        </div>
+    ))
+    .addWithJSX('with badge & tag', () => (
+        <div>
+            <Label>
+                <Label.Badge badge="members" value={number('Community members', 15)} />
+            </Label>
+            <br />
+            <Label>
+                <Label.Badge tag="community" />
+            </Label>
+        </div>
+    ))
+
+story('Tile')
+    .addWithJSX('basic', () => (
+        <div style={{
+            width: '350px',
+        }}
+        >
+            <Tile>
+                <Tile.Title>{text('Product name', 'Product name')}</Tile.Title>
+                <Tile.Description>
+                    {text('Description', 'Description')}
+                </Tile.Description>
+                <Tile.Status>
+                    {text('Status', 'Status')}
+                </Tile.Status>
+            </Tile>
+        </div>
+    ))
+    .addWithJSX('with badge & label', () => (
+        <div style={{
+            width: '350px',
+        }}
+        >
+            <Tile
+                labels={{
+                    community: boolean('Community', true),
+                }}
+                badges={{
+                    members: number('Community members', 15),
+                }}
+            >
+                <Tile.Title>{text('Product name', 'Product name')}</Tile.Title>
+                <Tile.Description>
+                    {text('Description', 'Description')}
+                </Tile.Description>
+                <Tile.Status>
+                    {text('Status', 'Status')}
+                </Tile.Status>
+            </Tile>
+        </div>
+    ))
+    .addWithJSX('with dropdown actions', () => (
+        <div style={{
+            width: '350px',
+        }}
+        >
+            <Tile
+                dropdownActions={(
+                    <React.Fragment>
+                        <DropdownActions.Item onClick={action('option 1')}>
+                            Option 1
+                        </DropdownActions.Item>
+                        <DropdownActions.Item onClick={action('option 2')}>
+                            Option 2
+                        </DropdownActions.Item>
+                        <DropdownActions.Item onClick={action('option 3')}>
+                            Option 3
+                        </DropdownActions.Item>
+                    </React.Fragment>
+                )}
+            >
+                <Tile.Title>{text('Product name', 'Product name')}</Tile.Title>
+                <Tile.Description>
+                    {text('Description', 'Description')}
+                </Tile.Description>
+                <Tile.Status>
+                    {text('Status', 'Status')}
+                </Tile.Status>
+            </Tile>
+        </div>
+    ))
+
+story('DonutChart')
+    .addWithJSX('basic', () => (
+        <DonutChart
+            strokeWidth={5}
+            data={[
+                {
+                    title: '1',
+                    value: 50,
+                    color: 'red',
+                },
+                {
+                    title: '2',
+                    value: 25,
+                    color: 'blue',
+                },
+                {
+                    title: '3',
+                    value: 25,
+                    color: 'green',
+                },
+            ]}
         />
     ))

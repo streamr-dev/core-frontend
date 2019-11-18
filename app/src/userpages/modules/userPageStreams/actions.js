@@ -578,14 +578,17 @@ export const initEditStream = () => (dispatch: Function, getState: Function) => 
             autoConfigure: stream.autoConfigure || false,
             partitions: stream.partitions || 1,
             requireSignedData: stream.requireSignedData || false,
+            requireEncryptedData: stream.requireEncryptedData || false,
+            inactivityThresholdHours: stream.inactivityThresholdHours || 0,
             uiChannel: stream.uiChannel || false,
             storageDays: stream.storageDays !== undefined ? stream.storageDays : 365,
+            streamStatus: stream.streamStatus,
         }))
     }
 }
 
-export const initNewStream = () => (dispatch: Function) => {
-    dispatch(updateEditStream({
+export const initNewStream = (initData: ?any) => (dispatch: Function) => {
+    dispatch(updateEditStream(Object.assign({}, {
         id: '',
         name: '',
         description: '',
@@ -594,10 +597,12 @@ export const initNewStream = () => (dispatch: Function) => {
         lastUpdated: 0,
         autoConfigure: false,
         partitions: 1,
+        inactivityThresholdHours: 0,
         requireSignedData: false,
+        requireEncryptedData: false,
         storageDays: 365,
         uiChannel: false,
-    }))
+    }, initData)))
 }
 
 export const streamFieldsAutodetect = (id: StreamId) => (dispatch: Function) => {

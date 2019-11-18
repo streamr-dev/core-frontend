@@ -9,7 +9,6 @@
   left: 0;
   bottom: 0;
   right: 0;
-  overflow: auto;
   scroll-behavior: smooth;
 }
 
@@ -46,6 +45,10 @@ svg.Cables {
 svg.Cables path {
   transition: opacity 0.5s, stroke 0.5s, stroke-width 0.75s;
   opacity: 1;
+}
+
+svg.Cables path.hidden {
+  visibility: hidden;
 }
 
 svg.Cables path.fade {

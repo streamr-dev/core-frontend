@@ -8,7 +8,7 @@
 
 .navigationContainer {
   padding-top: 0;
-  top: 0;
+  top: 80px;
   position: sticky;
 }
 
@@ -20,15 +20,25 @@ ul.subNavList {
 }
 
 ul.navList {
-  padding: 0;
   max-height: 100vh;
-  overflow: auto;
+  margin-top: 0.5rem;
+  padding: 0;
   overflow: scroll;
   overflow-x: hidden;
+  scrollbar-width: none;
 
   &::-webkit-scrollbar {
     width: 0;
     background: transparent;
+  }
+
+  li.navListItem a {
+    color: var(--greyDark);
+
+    &.active {
+      font-weight: var(--medium);
+      color: var(--streamrBlue);
+    }
   }
 }
 
@@ -37,53 +47,50 @@ ul.subNavList {
   margin-bottom: 0.2em;
   padding-left: 1.2em;
   border-left: 1px solid #D8D8D8;
+
+  li.navListItem a {
+    color: #A3A3A3;
+  }
+
+  &.show {
+    display: block;
+  }
+
+  &.hide,
+  &:empty {
+    display: none;
+  }
 }
 
 ul.navList li.navListItem,
 ul.subNavList li.navListItem {
   color: var(--greyDark);
   font-weight: var(--regular);
-  font-size: 1em;
+  font-size: 16px;
   letter-spacing: 0;
   margin-bottom: 1em;
   line-height: 1.5em;
+  padding: 0;
+  list-style: none;
 
   a {
     display: block;
     width: 100%;
-    color: var(--greyDark);
     text-decoration: none;
 
     &:hover,
-    &:active {
+    &.active {
       color: var(--streamrBlue);
     }
-  }
-
-  &.active {
-    color: var(--streamrBlue);
-  }
-
-  ul.subNavList ul {
-    padding: 0;
-    list-style: none;
-  }
-
-  ul.subNavList li a {
-    color: #A3A3A3;
-
-    &:hover {
-      color: var(--streamrBlue);
-    }
-  }
-
-  ul.subNavList li.active a {
-    color: var(--streamrBlue);
   }
 }
 
 .arrowExtender {
   display: none;
+}
+
+.bottomShadow {
+  box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.1);
 }
 
 @media (--md-down) {
@@ -110,11 +117,31 @@ ul.subNavList li.navListItem {
     padding-left: 1.5rem;
   }
 
+  .navigationContainer.compressed ul.navList {
+    overflow: hidden;
+  }
+
   li.navListItem a {
     padding: 0.5em 0;
     font-size: 16px;
     letter-spacing: 0;
     line-height: 24px;
+  }
+
+  ul.navList li.navListItem,
+  ul.subNavList li.navListItem {
+    margin-bottom: 0;
+  }
+
+  ul.navList li.navListItem.mobileHeader {
+    margin-bottom: 1.5rem;
+
+    a {
+      width: calc(100% - 60px);
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
   }
 
   .arrowExtender {
@@ -124,7 +151,7 @@ ul.subNavList li.navListItem {
     position: absolute;
     transform: rotate(90deg);
     top: 28px;
-    right: 34px;
+    right: 28px;
     transition: transform 180ms ease-in-out;
 
     &:hover {
@@ -136,20 +163,25 @@ ul.subNavList li.navListItem {
     position: relative;
     height: auto;
     margin-bottom: 2em;
-    border-bottom: 1px solid #D8D8D8;
+    overflow: hidden;
+    top: 0;
 
     &.compressed {
       height: 72px;
       position: sticky;
-      top: 0;
-      z-index: 11;
+      z-index: 9;
       overflow: hidden;
-      border-bottom: 1px solid #E7E7E7;
 
       .arrowExtender {
         transform: rotate(270deg);
       }
     }
+  }
+}
+
+@media (--lg-up) {
+  ul.navList {
+    max-width: 150px;
   }
 }
 

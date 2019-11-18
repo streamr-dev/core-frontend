@@ -1,10 +1,10 @@
 import assert from 'assert-diff'
 
 import { saveProductSteps } from '$mp/utils/constants'
-import reducer, { initialState } from '$mp/modules/saveProductDialog/reducer'
-import * as constants from '$mp/modules/saveProductDialog/constants'
+import reducer, { initialState } from '$mp/modules/deprecated/saveProductDialog/reducer'
+import * as constants from '$mp/modules/deprecated/saveProductDialog/constants'
 import * as contractProductConstants from '$mp/modules/updateContractProduct/constants'
-import * as editProductConstants from '$mp/modules/editProduct/constants'
+import * as editProductConstants from '$mp/modules/deprecated/editProduct/constants'
 
 describe('saveProductDialog - reducers', () => {
     it('has initial state', async () => {

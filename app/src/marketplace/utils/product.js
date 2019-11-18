@@ -3,13 +3,22 @@
 import BN from 'bignumber.js'
 
 import type { NumberString } from '$shared/flowtype/common-types'
-import type { Product, EditProduct, ProductId, SmartContractProduct } from '../flowtype/product-types'
+import type { Product, EditProduct, ProductId, SmartContractProduct, ProductType } from '../flowtype/product-types'
 
 import { currencies, productStates } from '$shared/utils/constants'
+import { productTypes } from './constants'
 import { fromAtto, fromNano, toAtto, toNano } from './math'
 import { getPrefixedHexString, getUnprefixedHexString, isValidHexString } from './smartContract'
 
 export const isPaidProduct = (product: Product) => product.isFree === false || BN(product.pricePerSecond).isGreaterThan(0)
+
+export const isCommunityProduct = (productOrProductType?: Product | ProductType) => {
+    const { type } = (typeof productOrProductType === 'string') ? {
+        type: productOrProductType,
+    } : (productOrProductType || {})
+
+    return type === productTypes.COMMUNITY
+}
 
 export const validateProductPriceCurrency = (priceCurrency: string) => {
     const currencyIndex = Object.keys(currencies).indexOf(priceCurrency)
@@ -63,10 +72,35 @@ export const mapProductFromApi = (product: Product | EditProduct): Product => {
 
 export const mapAllProductsFromApi = (products: Array<Product>): Array<Product> => products.map(mapProductFromApi)
 
-export const mapProductToApi = (product: Product | EditProduct) => {
+export const mapProductToPostApi = (product: Product | EditProduct): Product => {
     const pricePerSecond = mapPriceToApi(product.pricePerSecond)
     validateApiProductPricePerSecond(pricePerSecond)
     validateProductPriceCurrency(product.priceCurrency)
+    return {
+        ...product,
+        pricePerSecond,
+    }
+}
+
+export const isPublishedProduct = (p: Product | EditProduct) => p.state === productStates.DEPLOYED
+
+export const mapProductToPutApi = (product: Product | EditProduct): Object => {
+    // For published paid products, the some fields can only be updated on the smart contract
+    if (isPaidProduct(product) && isPublishedProduct(product)) {
+        const {
+            ownerAddress,
+            beneficiaryAddress,
+            pricePerSecond,
+            priceCurrency,
+            minimumSubscriptionInSeconds,
+            ...otherData
+        } = product
+
+        return otherData
+    }
+
+    const pricePerSecond = mapPriceToApi(product.pricePerSecond)
+
     return {
         ...product,
         pricePerSecond,
@@ -79,7 +113,3 @@ export const getValidId = (id: string, prefix: boolean = true): string => {
     }
     return prefix ? getPrefixedHexString(id) : getUnprefixedHexString(id)
 }
-
-export const isPublishedProduct = (p: Product | EditProduct) => p.state === productStates.DEPLOYED
-
-export const isPaidAndNotPublishedProduct = (p: Product | EditProduct) => isPaidProduct(p) && !isPublishedProduct(p)

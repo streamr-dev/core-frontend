@@ -25,6 +25,7 @@ import NoProductsView from './NoProducts'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
 import ListContainer from '$shared/components/Container/List'
 import TileGrid from '$shared/components/TileGrid'
+import { isCommunityProduct } from '$mp/utils/product'
 
 import type { ProductList, ProductId, Product } from '$mp/flowtype/product-types'
 import type { Filter, SortOption } from '$userpages/flowtype/common-types'
@@ -194,6 +195,9 @@ class ProductsPage extends Component<Props> {
                                 <Tile
                                     imageUrl={product.imageUrl || ''}
                                     dropdownActions={this.getActions(product)}
+                                    labels={{
+                                        community: isCommunityProduct(product),
+                                    }}
                                 >
                                     <Tile.Title>{product.name}</Tile.Title>
                                     <Tile.Tag >

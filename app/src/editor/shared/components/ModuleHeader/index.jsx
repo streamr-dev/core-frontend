@@ -3,6 +3,7 @@
 import React, { useState, type Node, Fragment, useContext, useCallback, useEffect } from 'react'
 import cx from 'classnames'
 import EditableText from '$shared/components/EditableText'
+import LoadingIndicator from '$userpages/components/LoadingIndicator'
 import Probe from '$editor/canvas/components/Resizable/SizeConstraintProvider/Probe'
 import { Context as SizeConstraintContext } from '$editor/canvas/components/Resizable/SizeConstraintProvider'
 import { Context as ResizableContext } from '$editor/canvas/components/Resizable'
@@ -15,6 +16,7 @@ type Props = {
     label: string,
     limitWidth?: boolean,
     onLabelChange: (string) => void,
+    isLoading?: boolean,
 }
 
 const ModuleHeader = ({
@@ -24,6 +26,7 @@ const ModuleHeader = ({
     label,
     limitWidth,
     onLabelChange,
+    isLoading,
     ...props
 }: Props) => {
     const [editing, setEditing] = useState(false)
@@ -81,6 +84,7 @@ const ModuleHeader = ({
                         {children}
                     </div>
                 )}
+                <LoadingIndicator className={styles.loadingIndicator} loading={!!isLoading} />
             </div>
         </Fragment>
     )

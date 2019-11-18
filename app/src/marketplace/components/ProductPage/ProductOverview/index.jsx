@@ -1,0 +1,181 @@
+// @flow
+
+import React, { useState, useEffect, useCallback } from 'react'
+import cx from 'classnames'
+
+import type { Product } from '$mp/flowtype/product-types'
+import type { ResourceKeyId } from '$shared/flowtype/resource-key-types'
+import DeploySpinner from '$shared/components/DeploySpinner'
+import { getCommunityStats } from '$mp/modules/communityProduct/services'
+import useInterval from '$shared/hooks/useInterval'
+import useIsMounted from '$shared/hooks/useIsMounted'
+import DonutChart from '$shared/components/DonutChart'
+import Dropdown from '$shared/components/Dropdown'
+import MembersGraph from '../MembersGraph'
+import { fromAtto } from '$mp/utils/math'
+
+import styles from './productOverview.pcss'
+
+type Props = {
+    product: Product,
+    authApiKeyId?: ?ResourceKeyId,
+    adminFee: number,
+    joinPartStreamId: ?string,
+    subscriberCount: number,
+    className?: string,
+}
+
+const CP_SERVER_POLL_INTERVAL_MS = 10000
+const MILLISECONDS_IN_MONTH = 1000 * 60 * 60 * 24 * 30
+
+const ProductOverview = ({
+    product,
+    authApiKeyId,
+    adminFee,
+    joinPartStreamId,
+    subscriberCount,
+    className,
+}: Props) => {
+    const isMounted = useIsMounted()
+    const [isDeploying, setIsDeploying] = useState(true)
+    const [stats, setStats] = useState(null)
+    const [shownDays, setShownDays] = useState(7)
+
+    const getStats = useCallback(async () => {
+        try {
+            setIsDeploying(true)
+            const result = await getCommunityStats(product.beneficiaryAddress)
+            if (!isMounted) {
+                return
+            }
+            setStats(result)
+            setIsDeploying(false)
+        } catch (e) {
+            console.error(e)
+        }
+    }, [product, isMounted])
+
+    useInterval(() => {
+        if (isDeploying) {
+            getStats()
+        }
+    }, CP_SERVER_POLL_INTERVAL_MS)
+
+    useEffect(() => {
+        getStats()
+    }, [getStats])
+
+    const productAgeMs = Date.now() - new Date(product.created || 0).getTime()
+    const totalEarnings = (stats && stats.totalEarnings && fromAtto(stats.totalEarnings).toNumber()) || 0
+    const revenuePerMonth = totalEarnings !== 0 ? (totalEarnings / (productAgeMs / MILLISECONDS_IN_MONTH)) : 0
+    const revenuePerMonthPerMember = (stats && stats.memberCount && stats.memberCount.total > 0) ? (revenuePerMonth / stats.memberCount.total) : 0
+
+    return (
+        <div className={cx(styles.root, className)}>
+            {isDeploying && (
+                <div className={styles.grid}>
+                    <div className={styles.header}>
+                        <span>Overview</span>
+                    </div>
+                    <div className={styles.deployingGrid}>
+                        <div>
+                            <DeploySpinner isRunning showCounter={false} />
+                        </div>
+                        <div>
+                            <div className={styles.deployMessageHeading}>Deploying your Community Product</div>
+                        </div>
+                    </div>
+                </div>
+            )}
+            {!isDeploying && stats != null && (
+                <div className={styles.grid}>
+                    <div className={styles.header}>
+                        <span>Overview</span>
+                    </div>
+                    <div className={styles.stats}>
+                        <div>
+                            <div className={styles.statHeading}>Total product revenue</div>
+                            <div className={styles.statValue}>
+                                {totalEarnings.toFixed(0)}
+                                <span className={styles.currency}> DATA</span>
+                            </div>
+                        </div>
+                        <div>
+                            <div className={styles.statHeading}>Active Members</div>
+                            <div className={styles.statValue}>{stats.memberCount.active}</div>
+                        </div>
+                        <div>
+                            <div className={styles.statHeading}>Avg rev member / month</div>
+                            <div className={styles.statValue}>
+                                {revenuePerMonthPerMember.toFixed(2)}
+                                <span className={styles.currency}> DATA</span>
+                            </div>
+                        </div>
+                        <div>
+                            <div className={styles.statHeading}>Subscribers</div>
+                            <div className={styles.statValue}>{subscriberCount}</div>
+                        </div>
+                        <div>
+                            <div className={styles.statHeading}>Admin fee</div>
+                            <div className={styles.statValue}>
+                                {(adminFee * 100).toFixed(0)}
+                                <span className={styles.currency}> %</span>
+                            </div>
+                        </div>
+                        <div>
+                            <div className={styles.statHeading}>Product created</div>
+                            <div className={styles.statValue}>{product && product.created && new Date(product.created).toLocaleDateString()}</div>
+                        </div>
+                    </div>
+                    <div className={styles.graphs}>
+                        <div className={styles.memberContainer}>
+                            <div className={styles.memberHeadingContainer}>
+                                <div className={styles.statHeading}>Members</div>
+                                <Dropdown
+                                    title=""
+                                    selectedItem={shownDays.toString()}
+                                    onChange={(item) => setShownDays(Number(item))}
+                                    className={styles.memberGraphDropdown}
+                                    toggleStyle="small"
+                                >
+                                    <Dropdown.Item value="7">Last 7 days</Dropdown.Item>
+                                    <Dropdown.Item value="28">Last 28 days</Dropdown.Item>
+                                    <Dropdown.Item value="90">Last 90 days</Dropdown.Item>
+                                </Dropdown>
+                            </div>
+                            <MembersGraph
+                                className={styles.graph}
+                                authApiKeyId={authApiKeyId}
+                                joinPartStreamId={joinPartStreamId}
+                                memberCount={stats.memberCount.total}
+                                shownDays={shownDays}
+                            />
+                        </div>
+                        <div className={styles.memberDonut}>
+                            <div className={styles.statHeading}>Members by status</div>
+                            <DonutChart
+                                className={styles.graph}
+                                strokeWidth={3}
+                                data={[
+                                    {
+                                        title: 'Active',
+                                        value: stats.memberCount.active,
+                                        color: '#0324FF',
+                                    },
+                                    {
+                                        title: 'Inactive',
+                                        value: stats.memberCount.inactive,
+                                        color: '#FB0606',
+                                    },
+                                ]}
+                            />
+                        </div>
+                    </div>
+                    <div className={styles.footer} />
+                </div>
+            )}
+        </div>
+    )
+}
+
+export default ProductOverview

@@ -8,7 +8,7 @@ import React, { Component, useContext } from 'react'
 import uniqueId from 'lodash/uniqueId'
 import t from 'prop-types'
 
-import { ClientContext } from './Client'
+import { ClientContext } from '$shared/components/StreamrClientContextProvider'
 import { SubscriptionStatusContext } from './SubscriptionStatus'
 
 const Message = {
@@ -86,6 +86,11 @@ class Subscription extends Component {
 
     getResendOptions() {
         const { resendFrom, resendTo, resendLast } = this.props
+        if ((resendFrom == null && resendTo == null && resendLast == null) || resendLast === 0) {
+            // undefined if no options
+            return undefined
+        }
+
         const resend = {}
 
         if (resendFrom != null) {
@@ -116,13 +121,14 @@ class Subscription extends Component {
 
         this.isSubscribed = true
         this.client = this.props.clientContext.client
+        await this.client.ensureConnected()
 
         const { id } = uiChannel
 
-        this.subscription = this.client.subscribe({
+        const resend = this.getResendOptions()
+        this.subscription = this.client.subscribe(Object.assign({
             stream: id,
-            resend: this.getResendOptions(),
-        }, this.onMessage)
+        }, resend ? { resend } : undefined), this.onMessage)
 
         this.subscription.on('subscribed', this.onSubscribed)
         this.subscription.on('unsubscribed', this.onUnsubscribed)
@@ -222,6 +228,12 @@ export default React.forwardRef((props, ref) => {
     const { uiChannel, resendAll } = props
     // create new subscription if uiChannel or resendAll changes
     const subscriptionKey = (uiChannel && uiChannel.id) + resendAll
+
+    if (!clientContext) {
+        console.warn('Missing clientContext.')
+        return null
+    }
+
     return (
         <Subscription
             {...props}

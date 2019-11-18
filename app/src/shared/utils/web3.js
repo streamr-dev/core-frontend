@@ -28,3 +28,24 @@ export const hasTransactionCompleted = (txHash: Hash): Promise<boolean> => {
     return web3.eth.getTransaction(txHash)
         .then((trx) => !!(trx && trx.blockNumber))
 }
+
+/**
+ * Estimates time it takes to mine one block on the blockchain by counting the average time
+ * between the current and the given amount of previous blocks.
+ *
+ * @param {*} web3Instance Web3 instance
+ * @param {*} blocksAgo How many previous blocks to include
+ */
+export const averageBlockTime = async (web3Instance: StreamrWeb3, blocksAgo: number = 500) => {
+    // Get the current block number
+    const currentBlockNumber = await web3Instance.eth.getBlockNumber()
+
+    // Get the current block
+    const currentBlock = await web3Instance.eth.getBlock(currentBlockNumber)
+
+    // Get the block X number of blocks ago
+    const thenBlock = await web3Instance.eth.getBlock(currentBlockNumber - blocksAgo)
+
+    // Take the average of the then and now timestamps
+    return (currentBlock.timestamp - thenBlock.timestamp) / blocksAgo
+}

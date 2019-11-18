@@ -9,7 +9,7 @@ import TextInput from '$shared/components/TextInput'
 import type { StreamField } from '$shared/flowtype/stream-types'
 import SplitControl from '$userpages/components/SplitControl'
 
-import { fieldTypes } from '../../../constants'
+import { fieldTypes } from '$userpages/modules/userPageStreams/selectors'
 import styles from './newFieldEditor.pcss'
 
 type Props = {

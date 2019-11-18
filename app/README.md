@@ -34,7 +34,7 @@ Webpack is configured with live reloading and will be served on http://localhost
 
 ### Documentation
 
-The live documentation can be found at [streamr.com/docs](https://streamr.com/docs). 
+The live documentation can be found at [streamr.network/docs](https://streamr.network/docs). 
 The documentation content files are held in `/src/docs/content` as MDX files (jsx flavoured markdown). 
 Community contributions are encouraged, please see the [Docs Editing Guide](https://github.com/streamr-dev/streamr-platform/app/src/docs/docsEditingGuide.md) for more information.
 
@@ -63,8 +63,8 @@ Development values (set the values in your `.env`):
 | PORT                         | `3333`                                       |                                 |
 | PLATFORM_ORIGIN_URL          | `http://localhost`                           |                                 |
 | STREAMR_API_URL              | `http://localhost/api/v1`                    |                                 |
-| STREAMR_WS_URL               | `ws://localhost:8890/api/v1/ws`              |                                 |
-| STREAMR_URL                  | `http://localhost:8081/streamr-core`         |                                 |
+| STREAMR_WS_URL               | `ws://localhost/api/v1/ws`              |                                 |
+| STREAMR_URL                  | `http://localhost`         |                                 |
 | MARKETPLACE_CONTRACT_ADDRESS | `0x0af64558670a3b761B57e465Cb80B62254b39619` |                                 |
 | TOKEN_CONTRACT_ADDRESS       | `0x8e3877fe5551f9c14bc9b062bbae9d84bc2f5d4e` |                                 |
 | WEB3_REQUIRED_NETWORK_ID     | 4                                            | Rinkeby                         |
@@ -133,7 +133,7 @@ Development Branch -> Local environment (bleeding edge)
 
 Master Branch (untagged) -> Production ready code
 
-Master Branch (tagged releases) -> Production code - https://streamr.com/marketplace
+Master Branch (tagged releases) -> Production code - https://streamr.network/marketplace
 
 ### Deploying to Staging
 

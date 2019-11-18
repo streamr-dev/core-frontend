@@ -1,16 +1,13 @@
 // @flow
 
 import React from 'react'
-import { Helmet } from 'react-helmet'
-
-import DocsLayout from '../../DocsLayout'
-import { subNav } from '../../DocsLayout/Navigation/navLinks'
-
+import DocsHelmet from '$docs/components/DocsHelmet'
+import DocsLayout from '$docs/components/DocsLayout'
 import DataTokenContent from '$docs/content/dataToken/dataToken.mdx'
 
 const DataToken = () => (
-    <DocsLayout subNav={subNav.dataToken}>
-        <Helmet title="DATA Token | Streamr Docs" />
+    <DocsLayout>
+        <DocsHelmet pageTitle="DATA Token" />
         <DataTokenContent />
     </DocsLayout>
 )

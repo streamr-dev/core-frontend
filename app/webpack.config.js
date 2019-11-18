@@ -241,6 +241,8 @@ module.exports = {
                     // skip stories
                     '**/*.stories.js',
                     '**/*.stories.jsx',
+                    // and files used by stories
+                    'src/editor/canvas/components/ModuleRenderer/modules.js',
                     // skip MD documentation
                     'src/docs/docsEditingGuide.md',
                     // skip sketch files
@@ -248,6 +250,7 @@ module.exports = {
                     'src/docs/scripts/*.*',
                     // upcoming docs
                     'src/docs/components/DocsPages/RunningNode/index.jsx',
+                    'src/docs/components/DocsPages/Marketplace/CommunityProducts/index.jsx',
                 ],
             },
         }),

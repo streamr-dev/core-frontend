@@ -64,28 +64,34 @@
   border-radius: 4px;
   border: 1px solid #EBEBEB;
 
-  &.dragEntered {
-    border: 1px solid #0324FF;
-    background-color: #EFEFEF;
-
-    .dropzoneAdvice {
-      display: block;
-    }
-
-    .previewImage {
-      display: none;
-    }
+  &[aria-disabled='true'] {
+    opacity: 0.5;
   }
 
-  &:hover {
-    cursor: pointer;
+  &:not([aria-disabled='true']) {
+    &.dragEntered {
+      border: 1px solid #0324FF;
+      background-color: #EFEFEF;
 
-    .dropzoneAdvice {
-      display: block;
+      .dropzoneAdvice {
+        display: block;
+      }
+
+      .previewImage {
+        display: none;
+      }
     }
 
-    .previewImage {
-      opacity: 0.05;
+    &:hover {
+      cursor: pointer;
+
+      .dropzoneAdvice {
+        display: block;
+      }
+
+      .previewImage {
+        opacity: 0.05;
+      }
     }
   }
 }

@@ -2,26 +2,28 @@
 
 import React from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
+import BN from 'bignumber.js'
 
 import Dialog from '$shared/components/Dialog'
-import withI18n from '$shared/containers/WithI18n'
-import { toSeconds } from '../../../utils/time'
-import type { Product, SmartContractProduct } from '../../../flowtype/product-types'
-import type { Purchase } from '../../../flowtype/common-types'
+import type { Currency, TimeUnit } from '$shared/flowtype/common-types'
 
 export type Props = {
-    product: Product,
-    contractProduct: SmartContractProduct,
-    purchase: Purchase,
+    name: string,
+    time: string,
+    timeUnit: TimeUnit,
+    price: BN,
+    priceCurrency: Currency,
     purchaseStarted: boolean,
     onCancel: () => void,
-    onPay: () => void,
+    onPay: () => void | Promise<void>,
 }
 
 export const PurchaseSummaryDialog = ({
-    product,
-    contractProduct,
-    purchase,
+    name,
+    time,
+    timeUnit,
+    price,
+    priceCurrency,
     purchaseStarted,
     onCancel,
     onPay,
@@ -52,8 +54,6 @@ export const PurchaseSummaryDialog = ({
         )
     }
 
-    const { pricePerSecond, priceCurrency } = contractProduct
-
     return (
         <Dialog
             onClose={onCancel}
@@ -71,18 +71,18 @@ export const PurchaseSummaryDialog = ({
                 },
             }}
         >
-            <h6>{product.name}</h6>
+            <h6>{name}</h6>
             <p>
                 <Translate
                     value="modal.purchaseSummary.access"
-                    time={purchase.time}
-                    timeUnit={I18n.t(`common.timeUnit.${purchase.timeUnit}`)}
+                    time={time}
+                    timeUnit={I18n.t(`common.timeUnit.${timeUnit}`)}
                 />
             </p>
             <p>
                 <Translate
                     value="modal.purchaseSummary.price"
-                    price={toSeconds(purchase.time, purchase.timeUnit).multipliedBy(pricePerSecond).toString()}
+                    price={price}
                     priceCurrency={priceCurrency}
                 />
             </p>
@@ -95,4 +95,4 @@ PurchaseSummaryDialog.defaultProps = {
     purchaseStarted: false,
 }
 
-export default withI18n(PurchaseSummaryDialog)
+export default PurchaseSummaryDialog

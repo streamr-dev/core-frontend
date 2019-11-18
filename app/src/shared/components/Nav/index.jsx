@@ -78,16 +78,16 @@ const Nav = compose(
                 <Link to={routes.docsGettingStarted()}>
                     <Translate value="general.gettingStarted" />
                 </Link>
-                <Link to={routes.docsStreams()}>
+                <Link to={routes.docsStreamsRoot()}>
                     <Translate value="general.streams" />
                 </Link>
-                <Link to={routes.docsCanvases()}>
+                <Link to={routes.docsCanvasesRoot()}>
                     <Translate value="general.canvases" />
                 </Link>
                 <Link to={routes.docsDashboards()}>
                     <Translate value="general.dashboards" />
                 </Link>
-                <Link to={routes.docsProducts()}>
+                <Link to={routes.docsProductsRoot()}>
                     <Translate value="general.products" />
                 </Link>
             </DropdownItem>

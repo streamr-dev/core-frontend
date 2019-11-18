@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { KeyboardShortcutsSidebar, ComboList } from '$editor/shared/components/KeyboardShortcutsSidebar'
+import { chord } from '$editor/shared/utils/shortcuts'
 
 const generalCombos = [
     {
@@ -69,6 +70,38 @@ const generalCombos = [
     {
         keys: [['meta', 'v']],
         title: 'Paste',
+    },
+    {
+        keys: [['meta', '-']],
+        title: 'Zoom Out',
+    },
+    {
+        keys: [['meta', '+']],
+        title: 'Zoom In',
+    },
+    {
+        keys: [[...chord, '0']],
+        title: 'Full Size',
+    },
+    {
+        keys: [[...chord, '1']],
+        title: 'Fit to Screen',
+    },
+    {
+        keys: [['arrowleft']],
+        title: 'Pan Left',
+    },
+    {
+        keys: [['arrowright']],
+        title: 'Pan Right',
+    },
+    {
+        keys: [['arrowup']],
+        title: 'Pan Up',
+    },
+    {
+        keys: [['arrowdown']],
+        title: 'Pan Down',
     },
 ]
 

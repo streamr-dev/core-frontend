@@ -3,35 +3,118 @@ import { Link } from 'react-router-dom'
 
 import links from '$shared/../links'
 
-import ProductsOverview from './images/products-overview.png'
-import ProductsList from './images/products-list.png'
+import ProductsOverview from './images/intro_to_products_01_desktop.jpg'
+import ProductsOverview2x from './images/intro_to_products_01_desktop@2x.jpg'
+import ProductsCreateFlowMobile from './images/intro_to_products_02_mobile@2x.jpg'
+import ProductsCreateFlow from './images/intro_to_products_02_desktop.jpg'
+import ProductsCreateFlow2x from './images/intro_to_products_02_desktop@2x.jpg'
+import StreamSelector from './images/intro_to_products_03_desktop.jpg'
+import StreamSelector2x from './images/intro_to_products_03_desktop@2x.jpg'
+import CoverImage from './images/intro_to_products_04_desktop.jpg'
+import CoverImage2x from './images/intro_to_products_04_desktop@2x.jpg'
+import MDEditor from './images/intro_to_products_05_desktop.jpg'
+import MDEditor2x from './images/intro_to_products_05_desktop@2x.jpg'
+import PriceEditor from './images/intro_to_products_06_desktop.jpg'
+import PriceEditor2x from './images/intro_to_products_06_desktop@2x.jpg'
+import WalletAccess from './images/intro_to_products_07_desktop.jpg'
+import WalletAccess2x from './images/intro_to_products_07_desktop@2x.jpg'
 
 import docsStyles from '$docs/components/DocsLayout/docsLayout.pcss'
 
-## Intro to products
+# Introduction to products
+In the Streamr Marketplace, you can buy and sell a variety of real-time data products, and if you have access to your own real-time data, you can make and sell your own within the Core app. A product is a single stream or bundle of real-time data streams either sold or made available for free on the Marketplace. These streams typically originate from sensors or applications. You can also create crowdsourced data products (sometimes known as data unions) with Core, where they are called Community Products. 
 
-<img src={ProductsOverview} />
+Currently Core and the Marketplace only support crypto token payments using Streamr's native DATA token, an ERC-20 token on the Ethereum blockchain. This means to create or purchase paid products, you will need an Ethereum wallet, some ether for gas, and the DATA token, if making purchases. Below we'll run through the basics of creating a product.
 
-The Marketplace is filled with both paid and free products, offering data producers an opportunity to either monetise their data or make it freely available to everyone. To purchase or create products on the Marketplace, <Link to={links.docs.gettingStarted}>you will need a Streamr account, and you will need to be signed in</Link>.
+<figure>
+    <picture>
+      <img
+        src={ProductsOverview}
+        srcSet={`${ProductsOverview2x} 2x`}
+        alt="Products Overview"
+      />
+    </picture>
+</figure>
 
-### Free products
+## Create a product in Core
+Creating a product in Core is quite simple, but requires some preparation. Once you're ready, simply go to Core > Products and click <span className={docsStyles.streamrHighlight}>Create Product</span> But before you do, you should prepare the various things listed below. If you get stuck halfway through, you can click Save & Exit at any time, and Streamr will keep a draft of your product. When you come back, simply click on the draft product tile in Core > Products to continue.
 
-To purchase a free product, simply click the "Add to my purchases" button on the product page. You will immediately gain access to the streams inside the product. You don't need any <Link to={links.docs.dataToken}>$DATA</Link> or Ether to purchase a free product. 
+The Product edit validator helps you to see what is required for publishing. If you see an orange ! icon there, it means you've skipped a section required. Once all the required sections have blue ticks, you're ready to publish.
 
-<img src={ProductsList} />
+<figure>
+    <picture>
+      <source srcSet={ProductsCreateFlowMobile} media="(max-width: 575px)" />
+      <img
+        src={ProductsCreateFlow}
+        srcSet={`${ProductsCreateFlow2x} 2x`}
+        alt="Product creation steps"
+      />
+    </picture>
+</figure>
 
-### Paid products
+### Prepare your streams
+You need some real-time streams, added to Streamr. You can do this in Core > Streams by clicking <span className={docsStyles.streamrHighlight}>Create Stream</span> This will open the Stream editor, and create an empty stream container, with a unique ID. Then all you need to do is
 
-Interacting with paid products requires an Ethereum wallet address, and a small amount of Ether, in order to pay the gas fees required to purchase or publish the product. Getting access to a paid product requires a payment of <Link to={links.docs.dataToken}>$DATA</Link> to the product owner. 
+- Copy the ID to use in your code to pipe data into Streamr
+- Test whether data is flowing correctly by using the Preview section
+- Field names, type and order should be auto-configured by Streamr
+- If not, manually name fields, select type and drag-to-order them 
+- Add historical data to a stream by uploading a CSV file
 
-Clicking the “Purchase” button initiates the purchase dialog which guides you through the contract transaction process. Gaining access to the streams inside the product happens automatically once the transaction has been completed which usually takes no longer than a few minutes. 
+### Add your streams
+All streams you have added to your Streamr account will show in the stream selector part of the Product Editor. Click to select as many streams as you like, but do consider how to best provide value to your buyers.
 
-How much you pay is determined by the price of the product (set by the product owner) and how long you wish to gain access to the data.
+<figure>
+    <picture>
+      <img
+        src={StreamSelector}
+        srcSet={`${StreamSelector2x} 2x`}
+        alt="Stream Selector"
+      />
+    </picture>
+</figure>
 
-While explaining everything around buying Ether and setting up a wallet is beyond the scope of this documentation, <a href="https://metamask.io" target="blank">Metamask</a> is a relatively easy to use wallet that plugs into Chrome, and is the recommended way to interact with the Streamr Marketplace.
+### Cover images
+You will need a good cover image. If you have a designer who can help, this is ideal, otherwise you can find many high quality free images at Unsplash.com or Reshot.com. Make sure your image is around 1000-1200 pixels on the long side so it is sharp even on large, high-dpi screens. Something thematically related to your data is good if you don't have custom imagery for it. If you upload the wrong one, just upload another and it will be replaced.
 
-### Publishing your product
+### Description
+Write a good description, be concise, but give enough details for buyers to understand the value of your data. You can use Markdown to format headlines and lists, but do remember to keep it simple. You can write as much as you like, but something around 400 words maximum is probably a good rule of thumb.
 
-Once you’ve created a product, you don’t need to publish it right away, it is possible to create several drafts and publish them later. If you make some mistakes, or you need to amend the product description or other details, you can edit the product at any time by opening it from your <Link to={links.userpages.products}>Products</Link> page, inside Core. 
+<figure>
+    <picture>
+      <img
+        src={MDEditor}
+        srcSet={`${MDEditor2x} 2x`}
+        alt="Text MD Editor"
+      />
+    </picture>
+</figure>
 
-If you want to change the product price, this requires re-writing the product to the blockchain, so you’ll need your Ethereum wallet and a small amount of Ether to pay for gas in order to update the price of a published product.
+### Price
+You can make your product free or paid. For paid products, set price by minute, hour, day or week intervals. You can switch between viewing price in Streamr's DATA token or fiat currency for your convenience. You can also choose to fix price in fiat to protect against sudden shifts in the DATA price.
+
+<figure>
+    <picture>
+      <img
+        src={PriceEditor}
+        srcSet={`${PriceEditor2x} 2x`}
+        alt="Price Editor"
+      />
+    </picture>
+</figure>
+
+### Details and Terms
+Here you can add contact details, choose a category, add your website for more information, as well as add some social media links. Social media is optional, but can help buyers feel more confident in buying from you as they can check your reputation online more easily. Terms allows you to state the terms you are offering your data on. You can choose from some multiple choice options, in addition to giving a link to a PDF or website which contains full terms of use..
+
+### Publishing
+For a paid product, you'll need a web3 wallet, and a small amount of ethereum for gas fees, required to publish the product to the Marketplace smart contract. The <span className={docsStyles.streamrHighlight}>Publish</span> button will be enabled once required sections are filled, so click that, unlock your wallet and confirm the transaction. Your product will be published on the Marketplace once the ethereum blockchain has confirmed your transaction.
+
+<figure>
+    <picture>
+      <img
+        src={WalletAccess}
+        srcSet={`${WalletAccess2x} 2x`}
+        alt="Wallet Access"
+      />
+    </picture>
+</figure>

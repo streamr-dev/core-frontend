@@ -43,9 +43,12 @@ export class ShareDialogPermission extends Component<Props> {
     }
 
     render() {
+        const user = this.props.permissions[0] && this.props.permissions[0].user
+        const isSelf = user === this.props.username
+        if (isSelf) { return null } // hide self
+
         const errors = this.props.permissions.filter((p) => p.error).map((p) => p.error && p.error.message) || []
         const highestOperationIndex = Math.max(...(this.props.permissions.map((p) => operationsInOrder.indexOf(p.operation))))
-        const user = this.props.permissions[0] && this.props.permissions[0].user
         const options = operationsInOrder.map((o) => ({
             value: o,
             label: I18n.t(`modal.shareResource.permissions.${o}`),
@@ -55,10 +58,7 @@ export class ShareDialogPermission extends Component<Props> {
                 <div className={styles.permissionRow}>
                     <SvgIcon name="user" className={styles.avatarIcon} />
                     <div className={styles.user}>
-                        <div className={cx(styles.title, {
-                            [styles.meLabel]: user === this.props.username,
-                        })}
-                        >
+                        <div className={styles.title}>
                             <Translate value="modal.shareResource.user.defaultTitle" />
                         </div>
                         <div className={styles.username} title={user}>
@@ -71,13 +71,11 @@ export class ShareDialogPermission extends Component<Props> {
                         options={options}
                         value={options[highestOperationIndex]}
                         onChange={this.onSelect}
-                        isDisabled={user === this.props.username}
                     />
                     <button
                         type="button"
                         onClick={this.onRemove}
                         className={cx(styles.button, buttonStyles.btn, buttonStyles.btnOutline)}
-                        disabled={user === this.props.username}
                     >
                         <SvgIcon name="crossHeavy" />
                     </button>

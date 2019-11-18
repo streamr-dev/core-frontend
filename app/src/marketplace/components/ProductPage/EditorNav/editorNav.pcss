@@ -1,0 +1,98 @@
+.root {
+  position: relative;
+}
+
+.EditorNav {}
+
+.progressBar {
+  position: absolute;
+  top: 15px;
+  bottom: 15px;
+  right: 0;
+  z-index: 0;
+  width: 16px;
+}
+
+.baseTrack {
+  position: absolute;
+  width: 1px;
+  background-color: #E7E7E7;
+  left: 50%;
+  top: 0;
+  z-index: 0;
+  height: 100%;
+  transform: translateX(-50%);
+}
+
+.progressTrack {
+  position: absolute;
+  width: 1.5px;
+  background-color: #0324FF;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+  height: 0;
+  transition: height 0.2s;
+}
+
+.heading {
+  position: relative;
+  text-align: right;
+  white-space: nowrap;
+  transition: color 0.3s;
+
+  a,
+  a:visited,
+  a:focus,
+  a:hover,
+  button,
+  button:focus {
+    appearance: none;
+    border: none;
+    background: none;
+    color: inherit;
+    padding: 0;
+    margin: 0;
+    font-size: 1rem;
+    letter-spacing: 0;
+    outline: none;
+    cursor: pointer;
+    text-decoration: none;
+  }
+}
+
+.status {
+  position: relative;
+}
+
+.marker {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.navSection {
+  display: grid;
+  grid-template-columns: 1fr 16px;
+  grid-column-gap: 1rem;
+}
+
+.active {
+  font-weight: var(--medium);
+  color: #0324FF;
+}
+
+.navSection:hover {
+  color: #0324FF;
+}
+
+.icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 4;
+  width: 16px;
+  height: 16px;
+}

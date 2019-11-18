@@ -7,8 +7,6 @@ import routes from '$routes'
 import { formatApiUrl } from '$shared/utils/url'
 import { matchPath } from 'react-router-dom'
 
-const meURL = formatApiUrl('users', 'me')
-
 function shouldRedirect(error) {
     // ignore redirect to login logic for login route
     if (window.location.pathname === routes.login()) { return false }
@@ -28,7 +26,7 @@ function shouldRedirect(error) {
 
     if (error.response && error.response.status === 401) {
         const url = new window.URL(error.config.url)
-        const me = new window.URL(meURL)
+        const me = new window.URL(formatApiUrl('users', 'me'))
         // shouldn't redirect if hitting /users/me api, 401 normal, signals logged out
         if (me.pathname === url.pathname && me.origin === url.origin && error.config.method === 'get') {
             return false
@@ -73,7 +71,7 @@ async function loginRedirect() {
     await wait(3000) // stall a moment to let redirect happen
 }
 
-async function notFoundRedirect() {
+export async function notFoundRedirect() {
     window.location = routes.notFound()
     await wait(3000) // stall a moment to let redirect happen
 }
@@ -81,6 +79,14 @@ async function notFoundRedirect() {
 function isLoggedInError(err) {
     if (!err || !err.response || !err.response.data) { return false }
     return err.response.data.user && err.response.data.user !== '<not authenticated>'
+}
+
+export function canHandleLoadError(err) {
+    if (!err.response) { return false }
+    if (err.response.status === 404) { return true }
+    if (err.response.status === 403) { return true }
+    if (err.response.status === 401) { return true }
+    return false
 }
 
 export async function handleLoadError(err) {
@@ -94,7 +100,7 @@ export async function handleLoadError(err) {
         await notFoundRedirect()
     }
 
-    if (err.response.status === 403) {
+    if (err.response.status === 403 || err.response.status === 401) {
         // if already logged in and no access, do not redirect to login
         if (isLoggedInError(err)) {
             await notFoundRedirect() // redirect to not found

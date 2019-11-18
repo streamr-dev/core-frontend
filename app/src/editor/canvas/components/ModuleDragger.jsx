@@ -1,34 +1,35 @@
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { updateModulePosition } from '../state'
 import { Draggable } from './DragDropContext'
 import ModuleStyles from '$editor/shared/components/Module.pcss'
 import styles from './Module.pcss'
 
-const bounds = {
-    top: 0,
-    left: 0,
-}
-
 const EMPTY = {}
 
 export default function ModuleDragger({ api, module, children, onStartDragModule: onStartDragModuleProp }) {
     const { setCanvas } = api
     const { hash: moduleHash } = module
+    const [newPosition, setNewPosition] = useState()
     const onDropModule = useCallback((event, data) => {
         if (data.diff.x === 0 && data.diff.y === 0) {
             return // do nothing if not moved
         }
 
-        const newPosition = {
+        setNewPosition({
             top: data.y,
             left: data.x,
-        }
+        })
+    }, [setNewPosition])
+
+    useEffect(() => {
+        if (!newPosition) { return }
+        setNewPosition(undefined)
 
         setCanvas({ type: 'Move Module' }, (canvas) => (
             updateModulePosition(canvas, moduleHash, newPosition)
         ))
-    }, [setCanvas, moduleHash])
+    }, [setCanvas, moduleHash, newPosition])
 
     const onStartDragModule = useCallback(() => {
         if (onStartDragModuleProp) {
@@ -42,8 +43,8 @@ export default function ModuleDragger({ api, module, children, onStartDragModule
     const { layout = EMPTY } = module
     const { position = EMPTY } = layout
     const defaultPosition = useMemo(() => ({
-        x: parseInt(position.left, 10) || 0,
-        y: parseInt(position.top, 10) || 0,
+        x: parseFloat(position.left) || 0,
+        y: parseFloat(position.top) || 0,
     }), [position.left, position.top])
 
     return (
@@ -51,7 +52,6 @@ export default function ModuleDragger({ api, module, children, onStartDragModule
             defaultClassNameDragging={styles.isDragging}
             cancel={`.${ModuleStyles.dragCancel}`}
             handle={`.${ModuleStyles.dragHandle}`}
-            bounds={bounds}
             defaultPosition={defaultPosition}
             onStop={onDropModule}
             onStart={onStartDragModule}

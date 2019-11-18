@@ -5,7 +5,7 @@
 // the highlight will flicker when the item at same index changes selection state
 /* eslint-disable react/no-array-index-key */
 
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useMemo } from 'react'
 import startCase from 'lodash/startCase'
 import debounce from 'lodash/debounce'
 import cx from 'classnames'
@@ -13,12 +13,13 @@ import cx from 'classnames'
 import type { Stream } from '$shared/flowtype/stream-types'
 import SvgIcon from '$shared/components/SvgIcon'
 import { type Ref } from '$shared/flowtype/common-types'
-import { getModuleBoundingBox, findNonOverlappingPosition } from '$editor/shared/utils/boundingBox'
+import { getModuleBounds, findNonOverlappingPosition } from '$editor/shared/utils/bounds'
 
 import { getModuleCategories, getStreams } from '../services'
 import { moduleSearch } from '../state'
 import CanvasStyles from '$editor/canvas/components/Canvas.pcss'
 import SearchPanel, { SearchRow } from '$editor/shared/components/SearchPanel'
+import { useCameraContext } from './Camera'
 
 import styles from './ModuleSearch.pcss'
 
@@ -65,7 +66,7 @@ export function ModuleMenuCategory(props: MenuCategoryProps) {
                 {category.name}
             </SearchRow>
             {isExpanded && category.modules.map((m, index) => (
-                <ModuleMenuItem module={m} key={index} addModule={addModule} />
+                <ModuleMenuItem key={index} module={m} addModule={addModule} />
             ))}
         </React.Fragment>
     )
@@ -88,37 +89,43 @@ const onDragStart = (e: any, moduleId: number, moduleName: string, streamId?: st
     }
 }
 
-const onDrop = (e: any, addModule: (number, number, number, ?string) => void) => {
+const onDrop = (e: any, camera: any, addModule: (number, number, number, ?string) => void) => {
     const moduleId = e.dataTransfer.getData('streamr/module')
     const streamId = e.dataTransfer.getData('streamr/stream')
 
-    if (moduleId) {
-        // Get click position relative to the canvas element
-        const rect = e.currentTarget.getBoundingClientRect()
-        const x = e.clientX - rect.left - 20 // TODO: where is this 20px offset coming
-        const y = e.clientY - rect.top - 20 // TODO: where is this 20px offset coming
+    if (!moduleId) { return }
 
-        addModule(moduleId, x, y, streamId)
-    }
+    const { x, y } = camera.eventToWorldPoint(e)
+
+    addModule(moduleId, x, y, streamId)
 }
 
-const ModuleMenuItem = ({ module, addModule }) => (
-    <SearchRow
-        draggable
-        onDragStart={(e) => { onDragStart(e, module.id, module.name) }}
-        onClick={() => addModule(module.id)}
-        className={styles.ModuleItem}
-        title={startCase(module.name)}
-    >
-        {startCase(module.name)}
-    </SearchRow>
-)
+const ModuleMenuItem = ({ module, addModule }) => {
+    const onClick = useCallback(() => {
+        addModule(module.id)
+    }, [addModule, module.id])
+    const onDragStartFn = useCallback((e) => {
+        onDragStart(e, module.id, module.name)
+    }, [module.id, module.name])
+    return (
+        <SearchRow
+            draggable
+            onDragStart={onDragStartFn}
+            onClick={onClick}
+            className={styles.ModuleItem}
+            title={startCase(module.name)}
+        >
+            {startCase(module.name)}
+        </SearchRow>
+    )
+}
 
 type Props = {
     isOpen: boolean,
     open: (open: boolean) => void,
     addModule: (module: Object) => void,
     canvas: any,
+    camera?: any,
 }
 
 type State = {
@@ -130,7 +137,7 @@ type State = {
 
 const STREAM_MODULE_ID = 147
 
-export class ModuleSearch extends React.PureComponent<Props, State> {
+class ModuleSearch extends React.PureComponent<Props, State> {
     state = {
         search: '',
         allModules: [],
@@ -144,7 +151,6 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
     selfRef: Ref<HTMLDivElement> = React.createRef()
 
     componentDidMount() {
-        this.addOrRemoveDropListener(true)
         this.load()
 
         if (this.input && this.props.isOpen) {
@@ -152,21 +158,29 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
         }
     }
 
+    componentDidUpdate() {
+        // due to component hierarchy, camera el won't be set on first render
+        this.addOrRemoveDropListener(true)
+    }
+
     componentWillUnmount() {
         this.unmounted = true
         this.addOrRemoveDropListener(false)
     }
 
-    addOrRemoveDropListener= (add: boolean) => {
-        const canvasElement = document.querySelector(`.${CanvasStyles.Modules}`)
-        if (canvasElement) {
-            if (add) {
-                canvasElement.addEventListener('dragover', this.onDragOver)
-                canvasElement.addEventListener('drop', this.onDrop)
-            } else {
-                canvasElement.removeEventListener('dragover', this.onDragOver)
-                canvasElement.removeEventListener('drop', this.onDrop)
-            }
+    addOrRemoveDropListener = (add: boolean) => {
+        const { camera = {} } = this.props
+        const { current: el } = camera.elRef
+        if (!el) { return }
+        if (add) {
+            // remove first, ensure can't add more than once
+            el.removeEventListener('dragover', this.onDragOver)
+            el.removeEventListener('drop', this.onDrop)
+            el.addEventListener('dragover', this.onDragOver)
+            el.addEventListener('drop', this.onDrop)
+        } else {
+            el.removeEventListener('dragover', this.onDragOver)
+            el.removeEventListener('drop', this.onDrop)
         }
     }
 
@@ -175,7 +189,7 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
     }
 
     onDrop = (e: DragEvent) => {
-        onDrop(e, this.addModule)
+        onDrop(e, this.props.camera, this.addModule)
     }
 
     async load() {
@@ -278,9 +292,7 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
     }
 
     getPositionForClickInsert = () => {
-        const canvasElement = document.querySelector(`.${CanvasStyles.Modules}`)
-
-        if (this.selfRef.current == null || canvasElement == null) {
+        if (this.selfRef.current == null) {
             return {
                 x: 0,
                 y: 0,
@@ -288,19 +300,21 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
         }
 
         const selfRect = this.selfRef.current.getBoundingClientRect()
-        const canvasRect = canvasElement.getBoundingClientRect()
 
-        const myBB = {
+        const { camera = {} } = this.props
+
+        const canvasRect = camera.elRef.current.getBoundingClientRect()
+        const myBB = camera.cameraToWorldBounds({
             // Align module to the top right corner of ModuleSearch with a 32px offset
             x: (selfRect.right - canvasRect.left - 20) + 32,
-            y: selfRect.top - canvasRect.top - 20,
+            y: selfRect.top - canvasRect.top,
             // TODO: It would be nice to use actual module size here but we know
             //       it only after the module has been added to the canvas
             width: 100,
             height: 50,
-        }
+        })
 
-        const boundingBoxes = this.props.canvas.modules.map((m) => getModuleBoundingBox(m))
+        const boundingBoxes = this.props.canvas.modules.map((m) => getModuleBounds(m))
 
         const stackOffset = 16 // pixels
         return findNonOverlappingPosition(myBB, boundingBoxes, stackOffset)
@@ -408,4 +422,18 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
     }
 }
 
-export default ModuleSearch
+export default function (props: Props) {
+    const camera = useCameraContext()
+    // just grab bits ModuleSearch needs
+    const searchCamera = useMemo(() => ({
+        elRef: camera.elRef,
+        eventToWorldPoint: camera.eventToWorldPoint,
+        cameraToWorldBounds: camera.cameraToWorldBounds,
+    }), [camera.elRef, camera.eventToWorldPoint, camera.cameraToWorldBounds])
+    return (
+        <ModuleSearch
+            {...props}
+            camera={searchCamera}
+        />
+    )
+}

@@ -4,6 +4,7 @@ import get from 'lodash/get'
 import cloneDeep from 'lodash/cloneDeep'
 import uniqBy from 'lodash/uniqBy'
 import uuid from 'uuid'
+import isEqual from 'lodash/isEqual'
 import * as diff from './diff'
 
 const MISSING_ENTITY = 'EDITOR/MISSING_ENTITY'
@@ -392,8 +393,8 @@ export function updateModulePosition(canvas, moduleHash, newPosition) {
     const modulePath = getModulePath(canvas, moduleHash)
     return update(modulePath.concat('layout', 'position'), (position) => ({
         ...position,
-        top: `${Number.parseInt(newPosition.top, 10)}px`,
-        left: `${Number.parseInt(newPosition.left, 10)}px`,
+        top: `${Number.parseFloat(newPosition.top)}px`,
+        left: `${Number.parseFloat(newPosition.left)}px`,
     }), canvas)
 }
 
@@ -719,10 +720,20 @@ function getHash(canvas, iterations = 0) {
 }
 
 /**
- * Create new module from data
+ * Create new module from data, makes module unique first
+ * Simple uniqifying wrapper around addModuleData.
  */
 
 export function addModule(canvas, moduleData) {
+    return addModuleData(canvas, makeModuleUnique(moduleData))
+}
+
+/**
+ * Adds moduleData to canvas as-is.
+ * Does not ensure module port ids etc are unique.
+ */
+
+function addModuleData(canvas, moduleData) {
     if (!moduleData || !moduleData.id) {
         throw createError(`trying to add bad module: ${moduleData}`, {
             canvas,
@@ -925,26 +936,6 @@ export function setModuleOptions(canvas, moduleHash, newOptions = {}) {
 }
 
 /**
- * Prevent module positions erroneously going out of bounds.
- */
-
-export function limitLayout(canvas) {
-    let nextCanvas = { ...canvas }
-    nextCanvas.modules.forEach(({ layout, hash }) => {
-        const top = (layout && parseInt(layout.position.top, 10)) || 0
-        const left = (layout && parseInt(layout.position.left, 10)) || 0
-        if (!top || !left || top < 0 || left < 0) {
-            nextCanvas = updateModulePosition(nextCanvas, hash, {
-                top: Math.max(0, top),
-                left: Math.max(0, left),
-            })
-        }
-    })
-
-    return nextCanvas
-}
-
-/**
  * Ensures historical 'beginDate' is before 'endDate'
  */
 
@@ -953,14 +944,14 @@ export function setHistoricalRange(canvas, update = {}) {
     let { beginDate, endDate } = settings
     if (update.beginDate) {
         beginDate = update.beginDate // eslint-disable-line prefer-destructuring
-        if (endDate && Date.parse(update.beginDate) > Date.parse(endDate)) {
+        if (endDate && new Date(beginDate).getTime() > new Date(endDate).getTime()) {
             endDate = beginDate
         }
     }
 
     if (update.endDate) {
         endDate = update.endDate // eslint-disable-line prefer-destructuring
-        if (beginDate && Date.parse(beginDate) > Date.parse(update.endDate)) {
+        if (beginDate && new Date(beginDate).getTime() > new Date(endDate).getTime()) {
             beginDate = endDate
         }
     }
@@ -969,16 +960,31 @@ export function setHistoricalRange(canvas, update = {}) {
         ...canvas,
         settings: {
             ...canvas.settings,
-            beginDate: beginDate ? new Date(beginDate).toISOString() : canvas.settings.beginDate,
-            endDate: endDate ? new Date(endDate).toISOString() : canvas.settings.endDate,
+            beginDate: beginDate ? new Date(beginDate).getTime() : canvas.settings.beginDate,
+            endDate: endDate ? new Date(endDate).getTime() : canvas.settings.endDate,
         },
     })
+}
+
+/**
+ * Convert historical range date strings to numeric timestamps
+ */
+
+function convertHistoricalRange(canvas) {
+    return {
+        ...canvas,
+        settings: {
+            ...canvas.settings,
+            beginDate: canvas.settings.beginDate ? new Date(canvas.settings.beginDate).getTime() : canvas.settings.beginDate,
+            endDate: canvas.settings.endDate ? new Date(canvas.settings.endDate).getTime() : canvas.settings.endDate,
+        },
+    }
 }
 
 export function isHistoricalRunValid(canvas = {}) {
     const { settings = {} } = canvas
     const { beginDate, endDate } = settings
-    return !!(beginDate && endDate && Date.parse(beginDate) <= Date.parse(endDate))
+    return !!(beginDate && endDate && new Date(beginDate).getTime() <= new Date(endDate).getTime())
 }
 
 /**
@@ -1330,7 +1336,7 @@ export function updateCanvas(canvas, path, fn) {
         // so let's skip update call altogether
         canvas = update(path, fn, canvas)
     }
-    return limitLayout(updateVariadic(updatePortConnections(workaroundInitialValueWeirdness(canvas))))
+    return convertHistoricalRange(updateVariadic(updatePortConnections(workaroundInitialValueWeirdness(canvas))))
 }
 
 export function moduleCategoriesIndex(modules = [], path = [], index = []) {
@@ -1461,14 +1467,19 @@ export function applyChanges({ sent, received, current }) {
     return nextCanvas
 }
 
+export function makeModuleUnique(moduleData) {
+    const tempCanvas = addModuleData(emptyCanvas(), moduleData)
+    return getModuleCopy(tempCanvas, tempCanvas.modules[0].hash)
+}
+
 export function getModuleCopy(canvas, moduleHash) {
     // apply transformations on temp canvas
     // ensure all ports disconnected
     let tempCanvas = disconnectAllModulePorts(canvas, moduleHash)
     let m = getModule(tempCanvas, moduleHash)
     // offset new module by 32px
-    const top = ((m.layout && parseInt(m.layout.position.top, 10)) + 32) || 0
-    const left = ((m.layout && parseInt(m.layout.position.left, 10)) + 32) || 0
+    const top = ((m.layout && parseFloat(m.layout.position.top)) + 32) || 0
+    const left = ((m.layout && parseFloat(m.layout.position.left)) + 32) || 0
     tempCanvas = updateCanvas(updateModulePosition(tempCanvas, moduleHash, {
         top,
         left,
@@ -1487,6 +1498,25 @@ export function getModuleCopy(canvas, moduleHash) {
 
     const newPortIds = getModulePortIds(tempCanvas, moduleHash)
     // always unset export
+    newPortIds.forEach((portId) => {
+        if (isPortExported(tempCanvas, portId)) {
+            tempCanvas = setPortOptions(tempCanvas, portId, {
+                export: false,
+            })
+        }
+    })
+
+    // always change uiChannel id
+    if (m.uiChannel) {
+        tempCanvas = updateModule(tempCanvas, moduleHash, (m) => ({
+            ...m,
+            uiChannel: {
+                ...m.uiChannel,
+                id: uuid.v4(), // set new uiChannel id
+            },
+        }))
+    }
+
     newPortIds.forEach((portId) => {
         if (isPortExported(tempCanvas, portId)) {
             tempCanvas = setPortOptions(tempCanvas, portId, {
@@ -1524,4 +1554,19 @@ export function getModuleCopy(canvas, moduleHash) {
         ...m,
         hash: undefined, // always remove hash
     }
+}
+
+export function moduleNeedsUpdate(canvasA, canvasB, hash) {
+    if (diff.isEqualCanvas(canvasA, canvasB)) { return false }
+    const changed = diff.changedModules(canvasA, canvasB)
+    if (!changed.includes(hash)) { return false }
+    const b = getModule(canvasB, hash)
+    const a = getModuleIfExists(canvasA, hash)
+    if (!isEqual(b.options, a && a.options)) { return true }
+    const bUpdateNeededPorts = [].concat(b.inputs, b.outputs, b.params).filter((p) => p.updateOnChange)
+    return bUpdateNeededPorts.some((bPort) => {
+        const aPort = matchPortInPreviousCanvas(canvasA, canvasB, bPort.id)
+        if (!aPort) { return true }
+        return !isEqual(bPort, aPort)
+    })
 }

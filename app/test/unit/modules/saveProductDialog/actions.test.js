@@ -1,12 +1,12 @@
 import assert from 'assert-diff'
 import sinon from 'sinon'
 
-import * as actions from '$mp/modules/saveProductDialog/actions'
-import * as constants from '$mp/modules/saveProductDialog/constants'
-import * as editProductActions from '$mp/modules/editProduct/actions'
+import * as actions from '$mp/modules/deprecated/saveProductDialog/actions'
+import * as constants from '$mp/modules/deprecated/saveProductDialog/constants'
+import * as editProductActions from '$mp/modules/deprecated/editProduct/actions'
 import * as contractProductActions from '$mp/modules/updateContractProduct/actions'
 import * as contractProductSelectors from '$mp/modules/contractProduct/selectors'
-import * as editProductSelectors from '$mp/modules/editProduct/selectors'
+import * as editProductSelectors from '$mp/modules/deprecated/editProduct/selectors'
 import * as smartContractUtils from '$mp/utils/smartContract'
 import { saveProductSteps } from '$mp/utils/constants'
 

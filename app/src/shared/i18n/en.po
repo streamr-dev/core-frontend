@@ -156,7 +156,7 @@ msgid "language##name"
 msgstr "English"
 
 msgid "urls##whitepaper"
-msgstr "https://www.streamr.com/whitepaper"
+msgstr "https://streamr.network/whitepaper"
 
 msgid "modal##common##cancel"
 msgstr "Cancel"
@@ -208,6 +208,15 @@ msgstr "Create identity failed"
 msgid "shared##errors##identityExists"
 msgstr "Identity exists"
 
+msgid "shared##status##ok"
+msgstr "Active"
+
+msgid "shared##status##inactive"
+msgstr "No data yet"
+
+msgid "shared##status##error"
+msgstr "Inactive"
+
 msgid "general##docs"
 msgstr "Docs"
 
@@ -228,3 +237,6 @@ msgstr "Telegram Group"
 
 msgid "general##giveFeedback"
 msgstr "Give feedback"
+
+msgid "general##labels##community"
+msgstr "Community Product"

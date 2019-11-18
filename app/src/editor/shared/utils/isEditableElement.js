@@ -11,5 +11,5 @@ export default function isEditableElement(element) {
         tagName === 'select' ||
         tagName === 'textarea' ||
         element.isContentEditable
-    )
+    ) || element.classList.contains('ace_content')
 }

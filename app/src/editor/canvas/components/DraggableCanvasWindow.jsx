@@ -1,13 +1,15 @@
 // @flow
 
-import React, { useState, useCallback, useMemo, useContext, type Node } from 'react'
+import React, { useState, useCallback, useMemo, type Node } from 'react'
 import cx from 'classnames'
 import { DraggableCore } from 'react-draggable'
 import { Resizable } from 'react-resizable'
+import { useCameraState } from './Camera'
 
 import SvgIcon from '$shared/components/SvgIcon'
 
-import CanvasWindow, { CanvasWindowContext } from './CanvasWindow'
+import CanvasWindow from './CanvasWindow'
+import { type Bounds } from '$editor/shared/utils/bounds'
 
 import styles from './DraggableCanvasWindow.pcss'
 
@@ -52,27 +54,17 @@ export const Toolbar = ({ children, className, ...props }: BaseProps) => (
     </div>
 )
 
-export type Layout = {
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-}
-
-type CanvasWindowProps = Layout & {
+type CanvasWindowProps = Bounds & {
     onChangePosition: Function,
     onChangeSize: Function,
     children?: Node,
 }
 
-function clamp(value, min, max) {
-    return Math.max(min, Math.min(max, value))
-}
-
-export function useLayoutState({ x = 0, y = 0, width = 600, height = 400 }: Layout = {}) {
+export function useLayoutState({ x = 0, y = 0, width = 600, height = 400 }: Bounds = {}) {
     // wtf flow. I don't know what it wants.
     // $FlowFixMe
     const [position, setPosition] = useState([x, y])
+
     // $FlowFixMe
     const [size, setSize] = useState([width, height])
     return useMemo(() => ({
@@ -92,6 +84,7 @@ export const DraggableCanvasWindow = ({
     onChangeSize,
     children,
 }: CanvasWindowProps) => {
+    const { scale } = useCameraState()
     const { position, setPosition, size, setSize } = useLayoutState({
         x,
         y,
@@ -102,22 +95,17 @@ export const DraggableCanvasWindow = ({
     const [dragging, setDragging] = useState(false)
     const [resizing, setResizing] = useState(false)
 
-    const canvasWindowElRef = useContext(CanvasWindowContext)
-
     const onDragStart = useCallback(() => {
         setPosition([x, y])
         setDragging(true)
     }, [setPosition, setDragging, x, y])
 
     const onDrag = useCallback((e, coreEvent) => {
-        const { current: canvasWindowEl } = canvasWindowElRef
-        const rect = canvasWindowEl.getBoundingClientRect()
-        // constrain drag to screen
         setPosition(([posX, posY]) => ([
-            clamp(posX + coreEvent.deltaX, 0, rect.width - size[0]),
-            clamp(posY + coreEvent.deltaY, 0, rect.height - size[1]),
+            posX + (coreEvent.deltaX / scale),
+            posY + (coreEvent.deltaY / scale),
         ]))
-    }, [setPosition, size, canvasWindowElRef])
+    }, [setPosition, scale])
 
     const onDragStop = useCallback(() => {
         if (!dragging) { return }
@@ -130,22 +118,30 @@ export const DraggableCanvasWindow = ({
     }, [dragging, setDragging, position, onChangePosition])
 
     const onResizeStart = useCallback(() => {
-        setSize([width, height])
-        setResizing(true)
-    }, [width, height, setSize, setResizing])
+        setSize([
+            width,
+            height,
+        ])
+        if (!resizing) {
+            setResizing(true)
+        }
+    }, [width, height, setSize, resizing, setResizing])
 
     const onResizeStop = useCallback(() => {
         if (!resizing) { return }
 
-        setResizing(false)
         if (onChangeSize) {
             onChangeSize(size)
         }
+        setResizing(false)
     }, [resizing, size, setResizing, onChangeSize])
 
-    const onResize = useCallback((e, data) => {
-        setSize([data.size.width, data.size.height])
-    }, [setSize])
+    const onResize = useCallback((e) => {
+        setSize(([w, h]) => ([
+            w + (e.movementX / scale),
+            h + (e.movementY / scale),
+        ]))
+    }, [setSize, scale])
 
     const pos = useMemo(() => ({
         left: dragging ? position[0] : x,
@@ -169,6 +165,7 @@ export const DraggableCanvasWindow = ({
                 onStart={onDragStart}
                 onDrag={onDrag}
                 onStop={onDragStop}
+                scale={scale}
             >
                 <Resizable
                     className={styles.ResizableBox}
@@ -178,6 +175,7 @@ export const DraggableCanvasWindow = ({
                     onResizeStop={onResizeStop}
                     onResize={onResize}
                     onResizeStart={onResizeStart}
+                    draggableOpts={{ scale }}
                 >
                     {React.cloneElement(React.Children.only(children), {
                         style,

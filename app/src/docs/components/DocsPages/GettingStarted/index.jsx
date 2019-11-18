@@ -1,34 +1,21 @@
 // @flow
 
 import React from 'react'
-import { Helmet } from 'react-helmet'
-
-import DocsLayout from '../../DocsLayout'
-import { subNav } from '../../DocsLayout/Navigation/navLinks'
-
-import GettingStartedIntro from '$docs/content/gettingStarted/intro.mdx'
-import GetYourApiKeys from '$docs/content/gettingStarted/getYourApiKeys.mdx'
-import ConnectEthereumIdentity from '$docs/content/gettingStarted/connectEthereumIdentity.mdx'
+import DocsHelmet from '$docs/components/DocsHelmet'
+import DocsLayout from '$docs/components/DocsLayout'
+import GettingStartedContent from '$docs/content/gettingStarted/gettingStarted.mdx'
 import GetBuilding from '$docs/content/gettingStarted/getBuilding.mdx'
-import UsefulLinks from '$docs/content/gettingStarted/usefulLinks.mdx'
 
 const GettingStarted = () => (
-    <DocsLayout subNav={subNav.gettingStarted}>
-        <Helmet title="Getting Started | Streamr Docs" />
+    <DocsLayout>
+        <DocsHelmet pageTitle="Getting Started" />
         <section>
-            <GettingStartedIntro />
-        </section>
-        <section id="get-api-keys">
-            <GetYourApiKeys />
-        </section>
-        <section id="connecting-ethereum-identity">
-            <ConnectEthereumIdentity />
-        </section>
-        <section id="get-building">
-            <GetBuilding />
-        </section>
-        <section id="useful-links">
-            <UsefulLinks />
+            <section>
+                <GettingStartedContent />
+            </section>
+            <section id="get-building">
+                <GetBuilding />
+            </section>
         </section>
     </DocsLayout>
 )

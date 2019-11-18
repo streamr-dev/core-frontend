@@ -1,8 +1,10 @@
-import { useContext } from 'react'
+// @flow
 
-import { Context as UndoContext } from '$shared/components/UndoContextProvider'
+import { useSelector } from 'react-redux'
+import { selectProduct } from '$mp/modules/product/selectors'
 
 export default function useProduct() {
-    const { state } = useContext(UndoContext)
-    return state
+    const product = useSelector(selectProduct)
+
+    return product
 }

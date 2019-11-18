@@ -1,4 +1,4 @@
-// $flow
+// @flow
 
 import React from 'react'
 import { Provider } from 'react-redux'
@@ -50,12 +50,13 @@ story('Avatar')
         const user = {
             name: text('Name', 'Matt Innes'),
             username: text('Username', 'matt@streamr.com'),
-            imageUrl: boolean('showImage', true) ? 'https://www.streamr.com/assets/TeamPhotos/Matt.jpg' : null,
+            imageUrlLarge: boolean('showImage', true) ? 'https://miro.medium.com/fit/c/256/256/1*NfJkA-ChiQtYLRBOLryZxQ.jpeg' : null,
         }
 
         return (
             <Avatar
                 editable={boolean('Editable', false)}
+                // $FlowFixMe
                 user={user}
                 onImageChange={() => Promise.resolve()}
             />
@@ -69,10 +70,12 @@ story('KeyField')
             value={text('Value')}
             hideValue={boolean('Hide value')}
             allowEdit={boolean('Allow edit')}
+            // $FlowFixMe
             onSave={() => {
                 alert('Saved!') // eslint-disable-line no-alert
             }}
             allowDelete={boolean('Allow delete')}
+            // $FlowFixMe
             onDelete={() => {
                 alert('Deleted!') // eslint-disable-line no-alert
             }}

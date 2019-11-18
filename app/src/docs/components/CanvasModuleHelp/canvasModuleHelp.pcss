@@ -1,86 +1,149 @@
 section.root {
-  font-size: 0.875um;
   color: var(--greyDark2);
   padding: 0;
-  margin: 20px 0;
-
-  h4,
-  h5,
-  p {
-    margin-bottom: 0;
-  }
+  margin: 3.5rem 0 5rem;
 
   p::first-letter {
     text-transform: uppercase;
   }
+
+  code {
+    color: #323232;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    background-color: #EFEFEF;
+    padding: 2px 4px;
+    border-radius: 2px;
+  }
+
+  a h4 {
+    color: #323232;
+    font-size: 20px;
+    font-weight: var(--medium);
+    line-height: 1.5um;
+    letter-spacing: 0;
+
+    &:hover,
+    &:active,
+    &:visited {
+      color: #323232;
+    }
+  }
+
+  @media (--md-down) {
+    a h4 {
+      font-size: 18px;
+      line-height: 28px;
+    }
+  }
+
+  h6 {
+    font-size: 16px;
+    font-weight: var(--medium);
+    line-height: 1.5um;
+    letter-spacing: 0;
+    margin-bottom: 1.5rem;
+  }
+}
+
+.moduleContainer {
+  background-color: #E7E7E7;
+  padding: 0.1rem;
+  margin: 0 0 2rem;
+  border-radius: 2px;
+
+  > div {
+    margin: 2rem auto;
+  }
+}
+
+.nameAndDescription {
+  margin-bottom: 1.8rem;
+  word-break: break-word;
+
+  p {
+    font-size: 18px;
+    line-height: 30px;
+  }
+
+  @media (--md-down) {
+    p {
+      font-size: 16px;
+      line-height: 28px;
+    }
+  }
 }
 
 .ports {
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-row-gap: 1um;
+  > div {
+    margin-bottom: 1rem;
+  }
+
+  span {
+    font-size: 18px;
+    line-height: 30px;
+
+    > p {
+      display: inline-block;
+
+      &::first-letter {
+        text-transform: uppercase;
+      }
+    }
+
+    &::first-letter {
+      text-transform: uppercase;
+    }
+  }
+
+  @media (--md-down) {
+    span {
+      font-size: 16px;
+      line-height: 28px;
+    }
+  }
 }
 
-.portHelpContent {
-  font-family: var(--sans);
-  font-size: 0.875um;
-  line-height: 1.5um;
-}
-
-.portHelpContent::first-letter,
-.portHelpContent *::first-letter {
-  text-transform: uppercase;
-}
-
-.portHelpHeader {
-  display: flex;
-  align-items: baseline;
-}
-
-.portHelpHeader > * + * {
-  margin-left: 0.5um;
-}
-
-.portsContent {
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-row-gap: 1.5um;
-}
-
-.portHelp {
-  display: grid;
-  grid-template-columns: 1fr;
-}
-
-.root h4.portTypesHeading {
-  padding: 1um 0;
-  font-size: 1um;
-  font-weight: var(--medium);
-}
-
-.portTypes > * {
-  display: inline-block;
-  background: #E7E7E7;
-  border-radius: 2px;
-  padding: 0 0.5um;
-  font-family: var(--mono);
-  font-size: 0.625um;
-  font-weight: var(--medium);
-  line-height: 1.25um;
-}
-
-.portTypes > * + * {
-  margin-left: 0.5um;
+.portsHelp:empty {
+  height: 0;
 }
 
 .portName {
-  font-size: 0.875um;
-  font-family: var(--mono);
   font-weight: var(--medium);
-  line-height: 1.5um;
-  letter-spacing: 0;
+  display: inline-block;
+
+  &::first-letter {
+    text-transform: uppercase;
+  }
 }
 
-.defaultValue span {
-  font-family: var(--mono);
+.ports .portText > p {
+  display: inline;
+  margin: 0;
+}
+
+.portType::first-letter {
+  text-transform: uppercase;
+}
+
+.minifiedContent {
+  .nameAndDescription {
+    margin-bottom: 1.5rem;
+
+    p {
+      font-size: 14px;
+      line-height: 24px;
+    }
+  }
+
+  .ports {
+    > div {
+      margin-bottom: 1.5rem;
+    }
+
+    span {
+      font-size: 14px;
+      line-height: 24px;
+    }
+  }
 }

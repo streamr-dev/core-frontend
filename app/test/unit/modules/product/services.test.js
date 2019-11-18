@@ -171,9 +171,47 @@ describe('product - services', () => {
                 assert.equal(request.config.method, 'get')
                 assert.equal(request.config.url, `${process.env.STREAMR_API_URL}/products/${productId}/permissions/me`)
             })
+            const expected = {
+                read: true,
+                write: true,
+                share: true,
+            }
 
             const result = await all.getUserProductPermissions(productId)
-            assert.deepStrictEqual(result, data)
+            assert.deepStrictEqual(result, expected)
+            assert(getIdSpy.calledOnce)
+            assert(getIdSpy.calledWith(productId, false))
+        })
+
+        it('gets anynymous permissions', async () => {
+            process.env.STREAMR_API_URL = 'TEST_STREAMR_API_URL'
+            const productId = '1'
+            const data = [
+                {
+                    id: 3,
+                    anonymous: true,
+                },
+            ]
+
+            const getIdSpy = sandbox.spy(productUtils, 'getValidId')
+            moxios.wait(() => {
+                const request = moxios.requests.mostRecent()
+                request.respondWith({
+                    status: 200,
+                    response: data,
+                })
+
+                assert.equal(request.config.method, 'get')
+                assert.equal(request.config.url, `${process.env.STREAMR_API_URL}/products/${productId}/permissions/me`)
+            })
+            const expected = {
+                read: true,
+                write: false,
+                share: false,
+            }
+
+            const result = await all.getUserProductPermissions(productId)
+            assert.deepStrictEqual(result, expected)
             assert(getIdSpy.calledOnce)
             assert(getIdSpy.calledWith(productId, false))
         })
