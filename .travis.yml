@@ -80,6 +80,8 @@ jobs:
     deploy:
       - provider: script
         script: bash app/travis_scripts/deploy_docker.sh staging
+        on:
+          branch: development
   - stage: Platform Build Staging
     if: NOT type IN (pull_request)
     env:
