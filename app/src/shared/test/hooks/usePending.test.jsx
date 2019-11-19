@@ -2,7 +2,7 @@ import React, { useEffect, useContext, useState } from 'react'
 import { mount } from 'enzyme'
 import { act } from 'react-dom/test-utils'
 import usePending, { useAnyPending } from '$shared/hooks/usePending'
-import * as PendingContext from '$shared/components/PendingContextProvider'
+import * as PendingContext from '$shared/contexts/Pending'
 
 function wait(timeout) {
     return new Promise((resolve) => setTimeout(resolve, timeout))

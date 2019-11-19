@@ -90,7 +90,7 @@ import CanvasEditor from '$editor/canvas'
 import CanvasEmbed from '$editor/canvas/components/Embed'
 import DashboardEditor from '$editor/dashboard'
 
-import ModalRoot from '$shared/components/ModalRoot'
+import { Provider as ModalPortalProvider } from '$shared/contexts/ModalPortal'
 import Notifications from '$shared/components/Notifications'
 import { formatPath } from '$shared/utils/url'
 import { userIsAuthenticated } from '$auth/utils/userAuthenticated'
@@ -334,7 +334,7 @@ const MiscRouter = () => ([
 const App = () => (
     <ConnectedRouter history={history}>
         <SessionProvider>
-            <ModalRoot>
+            <ModalPortalProvider>
                 <LocaleSetter />
                 <AutoScroll />
                 <Analytics />
@@ -348,7 +348,7 @@ const App = () => (
                 </Switch>
                 <Notifications />
                 {isProduction() && <GoogleAnalyticsTracker />}
-            </ModalRoot>
+            </ModalPortalProvider>
         </SessionProvider>
     </ConnectedRouter>
 )

@@ -9,10 +9,10 @@
 import React, { type Node, Component, useContext } from 'react'
 import uniqueId from 'lodash/uniqueId'
 
-import { ClientContext, type ContextProps as ClientContextProps } from '$shared/components/StreamrClientContextProvider'
+import { Context as ClientContext, type ContextProps as ClientContextProps } from '$shared/contexts/StreamrClient'
 import type { StreamId } from '$shared/flowtype/stream-types'
 
-import { SubscriptionStatusContext } from '.'
+import { SubscriptionStatusContext } from '$shared/contexts/SubscriptionStatus'
 
 const Message = {
     Done: 'D',
@@ -186,7 +186,6 @@ class Subscription extends Component<Props> {
         this.client = this.props.clientContext.client
         await this.client.ensureConnected()
 
-        // $FlowFixMe
         const { id } = uiChannel
 
         const resend = this.getResendOptions()

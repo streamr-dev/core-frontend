@@ -1,7 +1,20 @@
 // @flow
 
-import React, { type Node } from 'react'
-import Context from '$shared/contexts/Modal'
+import React, { type Node, type Context as ReactContext } from 'react'
+
+type Context = {
+    isModalOpen: boolean,
+    registerModal: ?() => void,
+    unregisterModal: ?() => void,
+}
+
+const defaultContext: Context = {
+    isModalOpen: false,
+    registerModal: null,
+    unregisterModal: null,
+}
+
+export const ModalPortalContext: ReactContext<Context> = React.createContext(defaultContext)
 
 type Props = {
     children: Node,
@@ -13,7 +26,7 @@ type State = {
     unregisterModal: () => void,
 }
 
-class ModalRoot extends React.Component<Props, State> {
+export class ModalPortalProvider extends React.Component<Props, State> {
     state = {
         isModalOpen: false,
         registerModal: this.registerModal.bind(this),
@@ -48,7 +61,7 @@ class ModalRoot extends React.Component<Props, State> {
 
         return (
             <div id="app">
-                <Context.Provider
+                <ModalPortalContext.Provider
                     value={{
                         isModalOpen,
                         registerModal,
@@ -56,10 +69,13 @@ class ModalRoot extends React.Component<Props, State> {
                     }}
                 >
                     {children}
-                </Context.Provider>
+                </ModalPortalContext.Provider>
             </div>
         )
     }
 }
 
-export default ModalRoot
+export {
+    ModalPortalContext as Context,
+    ModalPortalProvider as Provider,
+}

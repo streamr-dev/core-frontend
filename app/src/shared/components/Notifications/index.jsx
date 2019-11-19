@@ -5,7 +5,7 @@ import NotificationSystem from 'react-notification-system'
 
 import BasicNotification from './BasicNotification'
 import TransactionNotification from './TransactionNotification'
-import ModalContext from '$shared/contexts/Modal'
+import { Context as ModalContext } from '$shared/contexts/ModalPortal'
 import { type Ref } from '$shared/flowtype/common-types'
 import Notification from '$shared/utils/Notification'
 import styles from './notificationStyles'

@@ -2,7 +2,7 @@
 
 import React from 'react'
 
-import { Context as UndoContext } from '$shared/components/UndoContextProvider'
+import { Context as UndoContext } from '$shared/contexts/Undo'
 
 export default class UndoControls extends React.Component {
     static contextType = UndoContext

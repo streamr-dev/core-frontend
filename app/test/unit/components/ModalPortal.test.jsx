@@ -4,11 +4,10 @@ import React from 'react'
 import { shallow, mount } from 'enzyme'
 import sinon from 'sinon'
 
-import Context from '$shared/contexts/Modal'
+import { Context as ModalPortalContext, Provider as ModalPortalProvider } from '$shared/contexts/ModalPortal'
 import Modal from '$shared/components/Modal'
-import ModalRoot from '$shared/components/ModalRoot'
 
-describe(ModalRoot, () => {
+describe(ModalPortalProvider, () => {
     const { body } = global.document
     const modalRoot = global.document.createElement('div')
     modalRoot.setAttribute('id', 'modal-root')
@@ -25,15 +24,15 @@ describe(ModalRoot, () => {
     })
 
     it('renders #app', () => {
-        expect(shallow(<ModalRoot />).find('#app')).toHaveLength(1)
+        expect(shallow(<ModalPortalProvider />).find('#app')).toHaveLength(1)
     })
 
     it('renders children', () => {
         const el = mount((
-            <ModalRoot>
+            <ModalPortalProvider>
                 <div className="child" />
                 <div className="child" />
-            </ModalRoot>
+            </ModalPortalProvider>
         ))
         expect(el.find('#app .child')).toHaveLength(2)
     })
@@ -41,11 +40,11 @@ describe(ModalRoot, () => {
     it('provides current modal root to context consumers', () => {
         const consume = sinon.spy()
         expect(mount((
-            <ModalRoot>
-                <Context.Consumer>
+            <ModalPortalProvider>
+                <ModalPortalContext.Consumer>
                     {consume}
-                </Context.Consumer>
-            </ModalRoot>
+                </ModalPortalContext.Consumer>
+            </ModalPortalProvider>
         )))
         sinon.assert.alwaysCalledWith(consume, sinon.match.has('isModalOpen', false))
         sinon.assert.alwaysCalledWith(consume, sinon.match.has('registerModal', sinon.match.instanceOf(Function)))
@@ -55,15 +54,15 @@ describe(ModalRoot, () => {
     it('provides a flag indicating that a modal is open', () => {
         const consume = sinon.spy()
         const el = mount((
-            <ModalRoot>
+            <ModalPortalProvider>
                 <React.Fragment>
                     <Modal />
                     <Modal />
-                    <Context.Consumer>
+                    <ModalPortalContext.Consumer>
                         {consume}
-                    </Context.Consumer>
+                    </ModalPortalContext.Consumer>
                 </React.Fragment>
-            </ModalRoot>
+            </ModalPortalProvider>
         ))
         expect(el.instance().count).toEqual(2)
         sinon.assert.calledTwice(consume)
@@ -74,14 +73,14 @@ describe(ModalRoot, () => {
     it('resets the flag indicating that the modal is open when modals are gone', () => {
         const consume = sinon.spy()
         const el = mount((
-            <ModalRoot>
+            <ModalPortalProvider>
                 <React.Fragment>
                     <Modal />
-                    <Context.Consumer>
+                    <ModalPortalContext.Consumer>
                         {consume}
-                    </Context.Consumer>
+                    </ModalPortalContext.Consumer>
                 </React.Fragment>
-            </ModalRoot>
+            </ModalPortalProvider>
         ))
         expect(el.instance().count).toEqual(1)
         sinon.assert.calledTwice(consume)
@@ -90,9 +89,9 @@ describe(ModalRoot, () => {
         el.setProps({
             children: (
                 <React.Fragment>
-                    <Context.Consumer>
+                    <ModalPortalContext.Consumer>
                         {consume}
-                    </Context.Consumer>
+                    </ModalPortalContext.Consumer>
                 </React.Fragment>
             ),
         })

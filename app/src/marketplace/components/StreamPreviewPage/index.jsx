@@ -20,7 +20,7 @@ import InspectorSidebar from './InspectorSidebar'
 import CopyStreamIdButton from './CopyStreamIdButton'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
-import { ClientContext, ClientProvider } from '$shared/components/StreamrClientContextProvider'
+import { Context as ClientContext, Provider as ClientProvider } from '$shared/contexts/StreamrClient'
 
 type Props = {
     match: {

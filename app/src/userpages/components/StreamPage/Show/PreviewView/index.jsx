@@ -11,7 +11,7 @@ import Button from '$shared/components/Button'
 import StreamLivePreview from '$mp/components/StreamPreviewPage/StreamLivePreview'
 import SvgIcon from '$shared/components/SvgIcon'
 import routes from '$routes'
-import { ClientProvider } from '$shared/components/StreamrClientContextProvider'
+import { Provider as ClientProvider } from '$shared/contexts/StreamrClient'
 
 import styles from './previewView.pcss'
 
