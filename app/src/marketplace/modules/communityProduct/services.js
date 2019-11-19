@@ -156,6 +156,18 @@ export const getCommunityStats = (id: CommunityId): ApiResult<Object> => get({
     url: formatApiUrl('communities', id, 'stats'),
 })
 
+export const getCommunities = async (): ApiResult<Array<Object>> => {
+    const { communities } = await get({
+        url: formatApiUrl('communities'),
+        useAuthorization: false,
+    })
+
+    return Object.keys(communities || {}).map((id) => ({
+        id,
+        ...communities[id],
+    }))
+}
+
 export const getCommunityData = async (id: CommunityId, usePublicNode: boolean = true): ApiResult<Object> => {
     const adminFee = await getAdminFee(id, usePublicNode)
     const joinPartStreamId = await getJoinPartStreamId(id, usePublicNode)

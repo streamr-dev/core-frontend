@@ -85,6 +85,9 @@ export type CommunityProductState = {
     id: ?CommunityId,
     fetching: boolean,
     error: ?ErrorInUi,
+    fetchingStats: boolean,
+    ids: Array<CommunityId>,
+    statsError: ?ErrorInUi,
 }
 
 // streams

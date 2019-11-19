@@ -1,7 +1,8 @@
 // @flow
 
-import React, { Fragment, useCallback, useEffect, useMemo } from 'react'
+import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { Button } from 'reactstrap'
 import { Translate, I18n } from 'react-redux-i18n'
 import { Link } from 'react-router-dom'
 import { push } from 'connected-react-router'
@@ -24,13 +25,13 @@ import DocsShortcuts from '$userpages/components/DocsShortcuts'
 import ListContainer from '$shared/components/Container/List'
 import TileGrid from '$shared/components/TileGrid'
 import { isCommunityProduct } from '$mp/utils/product'
-import Button from '$shared/components/Button'
+import { getAllCommunityStats } from '$mp/modules/communityProduct/actions'
+import { selectCommunityProducts, selectFetchingCommunityStats } from '$mp/modules/communityProduct/selectors'
+import type { ProductId, Product } from '$mp/flowtype/product-types'
 import useFilterSort from '$userpages/hooks/useFilterSort'
 import useCopy from '$shared/hooks/useCopy'
 import useModal from '$shared/hooks/useModal'
 import routes from '$routes'
-
-import type { ProductId, Product } from '$mp/flowtype/product-types'
 
 import CreateProductModal from '$mp/containers/CreateProductModal'
 
@@ -179,10 +180,30 @@ const ProductsPage = () => {
     const products = useSelector(selectMyProductList)
     const fetching = useSelector(selectFetching)
     const dispatch = useDispatch()
+    const communityStats = useSelector(selectCommunityProducts)
+    const fetchingCommunityStats = useSelector(selectFetchingCommunityStats)
+    const [members, setMembers] = useState({})
+
+    useEffect(() => {
+        if (!communityStats || communityStats.length === 0) { return }
+
+        setMembers(communityStats.reduce((result, { id, memberCount }) => {
+            if (!memberCount) { return result }
+
+            return {
+                ...result,
+                [id.toLowerCase()]: memberCount.total,
+            }
+        }, {}))
+    }, [communityStats])
 
     useEffect(() => {
         dispatch(getMyProducts(filter))
     }, [dispatch, filter])
+
+    useEffect(() => {
+        dispatch(getAllCommunityStats())
+    }, [dispatch])
 
     return (
         <Layout
@@ -221,6 +242,8 @@ const ProductsPage = () => {
                 <TileGrid>
                     {products.map((product) => {
                         const isCommunity = isCommunityProduct(product)
+                        const beneficiaryAddress = (product.beneficiaryAddress || '').toLowerCase()
+                        const memberCount = members[beneficiaryAddress]
 
                         return (
                             <Link
@@ -233,9 +256,10 @@ const ProductsPage = () => {
                                     labels={{
                                         community: isCommunity,
                                     }}
-                                    badges={isCommunity ? {
-                                        members: '-',
+                                    badges={(isCommunity && memberCount !== undefined) ? {
+                                        members: memberCount,
                                     } : undefined}
+                                    deploying={!fetchingCommunityStats && (isCommunity && memberCount === undefined)}
                                 >
                                     <Tile.Title>{product.name}</Tile.Title>
                                     <Tile.Tag >
