@@ -157,10 +157,18 @@ export class StreamShowView extends Component<Props, State> {
         const isLoading = !!(!editedStream || isFetching)
         const disabled = !!(isLoading || !hasWritePermission)
 
+        if (isLoading) {
+            return (
+                <CoreLayout
+                    hideNavOnDesktop
+                    loading={isLoading}
+                />
+            )
+        }
+
         return (
             <CoreLayout
                 hideNavOnDesktop
-                loading={isLoading}
                 navComponent={(
                     <MediaQuery minWidth={lg.min}>
                         {(isDesktop) => (
