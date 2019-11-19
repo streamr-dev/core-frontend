@@ -13,7 +13,6 @@ import type { PropertySetter } from '$shared/flowtype/common-types'
 import type { CategoryList, Category } from '$mp/flowtype/category-types'
 import type { User } from '$shared/flowtype/user-types'
 
-import productPageStyles from '$mp/components/ProductPage/productPage.pcss'
 import StreamSelector from './StreamSelector'
 import ProductDetailsEditor from './ProductDetailsEditor'
 import styles from './productPageEditor.pcss'
@@ -79,7 +78,7 @@ export default class ProductPage extends Component<Props> {
                     onEdit={onEdit}
                     availableStreams={availableStreams}
                     fetchingStreams={fetchingStreams}
-                    className={productPageStyles.section}
+                    className={styles.section}
                 />
             </div>
         )

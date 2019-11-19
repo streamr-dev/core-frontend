@@ -36,8 +36,48 @@
 
 .inner {
   position: relative;
+  font-size: 1.125rem;
+  letter-spacing: 0;
+  line-height: 1.875rem;
 
-  p:last-child {
+  h1 {
+    font-size: 1.25rem;
+    font-weight: var(--semiBold);
+    margin: 0;
+    margin-bottom: 1rem;
+  }
+
+  h2 {
+    font-size: 1rem;
+    font-weight: var(--semiBold);
+    margin: 0;
+    margin-bottom: 1rem;
+  }
+
+  h3,
+  h4,
+  h6 {
+    font-size: 1rem;
+    font-weight: var(--medium);
+    margin: 0;
+    margin-bottom: 1rem;
+  }
+
+  blockquote {
+    font-size: 0.875rem;
+    border-left: 4px solid var(--grey4);
+    padding: 0 1rem;
+  }
+
+  code {
+    font-family: var(--mono);
+    color: #E83E8C;
+    font-size: 0.875rem;
+    letter-spacing: 1px;
+    line-height: 1rem;
+  }
+
+  *:last-child {
     margin-bottom: 0;
   }
 }
