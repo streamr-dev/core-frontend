@@ -28,7 +28,7 @@ const PreviewView = ({ stream, currentUser }: Props) => {
         setIsRunning((wasRunning) => !wasRunning)
     }, [setIsRunning])
 
-    if (!stream) {
+    if (!stream || !stream.id) {
         return null
     }
 

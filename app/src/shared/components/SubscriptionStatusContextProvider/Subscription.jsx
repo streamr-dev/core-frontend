@@ -42,11 +42,11 @@ type Props = {
     onError: Function,
     subscriptionStatus?: SubscriptionStatus,
     isActive?: boolean,
-    uiChannel: StreamId,
+    uiChannel: { id: StreamId },
     clientContext: ClientContextProps,
-    resendFrom: any,
-    resendTo: any,
-    resendLast: any,
+    resendFrom: number,
+    resendTo: number,
+    resendLast: number,
     children?: Node,
 }
 
@@ -170,7 +170,7 @@ class Subscription extends Component<Props> {
         const { isActive, uiChannel } = this.props
         if (!this.props.clientContext.client) { return }
 
-        if (isActive && uiChannel) {
+        if (isActive && uiChannel && uiChannel.id) {
             this.subscribe()
         }
     }
