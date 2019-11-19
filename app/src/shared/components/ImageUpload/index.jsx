@@ -111,6 +111,7 @@ const ImageUpload = ({
                     [styles.imageUploaded]: !uploading && (!!srcImage || uploaded),
                     [styles.dragEntered]: isDragActive,
                 }, className),
+                'aria-disabled': disabled,
             })}
         >
             <input {...getInputProps()} />
