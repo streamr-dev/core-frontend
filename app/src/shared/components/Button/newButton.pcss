@@ -12,7 +12,7 @@
   text-align: center;
   transition: 200ms ease-in-out;
   transition-property: border-color, background-color, color, transform;
-  transform: transale3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
   white-space: nowrap;
   cursor: pointer;
   user-select: none;
@@ -28,18 +28,18 @@
 
   &:--enter {
     transition-duration: 5ms;
-    transform: scale(1.05);
+    transform: scale(1.05) translate3d(0, 0, 0);
   }
 
   &:active {
-    transform: scale(0.95);
+    transform: scale(0.95) translate3d(0, 0, 0);
     outline: none;
   }
 
   &[disabled] {
     opacity: 0.5;
     cursor: not-allowed;
-    transform: scale(1);
+    transform: scale(1) translate3d(0, 0, 0);
   }
 
   & * {
@@ -153,12 +153,12 @@
 
   &:--enter {
     color: #323232;
-    transform: scale(1);
+    transform: scale(1) translate3d(0, 0, 0);
   }
 
   &:active {
     color: rgba(82, 82, 82, 0.8);
-    transform: scale(1);
+    transform: scale(1) translate3d(0, 0, 0);
   }
 
   &[disabled] {
@@ -238,21 +238,21 @@
   Sizes
 */
 .mini {
-  height: 2rem;
+  height: calc(2 * var(--um));
   padding: 0 0.5rem;
   font-size: 14px;
   line-height: 16px;
 }
 
 .normal {
-  height: 2.5rem;
+  height: calc(2.5 * var(--um));
   padding: 0 1rem;
   font-size: 14px;
   line-height: 22px;
 }
 
 .big {
-  height: 3rem;
+  height: calc(3 * var(--um));
   padding: 0 2rem;
   font-size: 16px;
   line-height: 24px;
