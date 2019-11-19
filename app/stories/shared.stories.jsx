@@ -10,7 +10,6 @@ import { Row, Col } from 'reactstrap'
 
 import Toggle from '$shared/components/Toggle'
 import Table from '$shared/components/Table'
-import FileUpload from '$shared/components/FileUpload'
 import Checkbox from '$shared/components/Checkbox'
 import DropdownActions from '$shared/components/DropdownActions'
 import Meatball from '$shared/components/Meatball'
@@ -179,24 +178,6 @@ story('Table')
                 </Table.Tr>
             </Table.Body>
         </Table>
-    ))
-
-story('FileUpload')
-    .addWithJSX('basic', () => (
-        <FileUpload
-            style={{
-                color: 'black',
-            }}
-            component={<span>Drag a file here or click to browse</span>}
-            dropTargetComponent={<span>Drop here!</span>}
-            dragOverComponent={<span>Yay, just drop it!</span>}
-            onFilesAccepted={action('onFilesAccepted')}
-            onError={action('onError')}
-            acceptMime={array('acceptMime', ['image/jpeg', 'image/png'])}
-            maxFileSizeInMB={number('maxFileSizeInMB', 5)}
-            multiple={false}
-            disablePreview
-        />
     ))
 
 class CheckboxContainer extends React.Component {

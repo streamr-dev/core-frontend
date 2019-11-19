@@ -28,6 +28,7 @@ import { Provider as ModalProvider } from '$shared/components/ModalContextProvid
 import ConfirmSaveModal from './ConfirmSaveModal'
 import DeployCommunityModal from './DeployCommunityModal'
 import PublishModal from './PublishModal'
+import CropImageModal from './CropImageModal'
 
 import styles from './editProductPage.pcss'
 
@@ -137,6 +138,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
             <ConfirmSaveModal />
             <DeployCommunityModal />
             <PublishModal />
+            <CropImageModal />
         </CoreLayout>
     )
 }
