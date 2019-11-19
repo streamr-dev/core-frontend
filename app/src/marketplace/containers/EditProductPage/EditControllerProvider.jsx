@@ -3,7 +3,7 @@
 import React, { type Node, type Context, useEffect, useState, useMemo, useCallback, useContext, useRef } from 'react'
 import { useSelector } from 'react-redux'
 
-import { Context as RouterContext } from '$shared/components/RouterContextProvider'
+import { Context as RouterContext } from '$shared/contexts/Router'
 import { Context as ValidationContext, ERROR } from '../ProductController/ValidationContextProvider'
 import type { Product } from '$mp/flowtype/product-types'
 import usePending from '$shared/hooks/usePending'

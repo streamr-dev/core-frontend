@@ -9,7 +9,7 @@ import EventEmitter from 'events'
 import t from 'prop-types'
 import React from 'react'
 
-import { ClientContext } from '$shared/components/StreamrClientContextProvider'
+import { Context as ClientContext } from '$shared/contexts/StreamrClient'
 import * as services from '$editor/shared/services'
 
 /**

@@ -11,9 +11,9 @@ import MediaQuery from 'react-responsive'
 import SwipeableViews from 'react-swipeable-views'
 
 import { sm } from '$app/scripts/breakpoints'
-import Subscription from '$shared/components/SubscriptionStatusContextProvider/Subscription'
-import { Provider as SubscriptionStatusProvider } from '$shared/components/SubscriptionStatusContextProvider'
-import { ClientContext } from '$shared/components/StreamrClientContextProvider'
+import Subscription from '$shared/components/Subscription'
+import { Provider as SubscriptionStatusProvider } from '$shared/contexts/SubscriptionStatus'
+import { Context as ClientContext } from '$shared/contexts/StreamrClient'
 import { formatDateTime } from '../../../utils/time'
 import type { StreamId } from '$shared/flowtype/stream-types'
 

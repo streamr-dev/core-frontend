@@ -142,3 +142,8 @@ const withAuthApiKey = connect((state) => ({
 })
 
 export const ClientProvider = withAuthApiKey(connect(selectAuthState)(ClientProviderComponent))
+
+export {
+    ClientProvider as Provider,
+    ClientContext as Context,
+}

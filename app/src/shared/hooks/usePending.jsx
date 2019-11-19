@@ -3,7 +3,7 @@
 import { useContext, useMemo, useCallback, useState, useLayoutEffect, useRef } from 'react'
 
 import useIsMounted from '$shared/hooks/useIsMounted'
-import { Context as PendingContext } from '$shared/components/PendingContextProvider'
+import { Context as PendingContext } from '$shared/contexts/Pending'
 
 function useCounter() {
     const [counter, setCounterState] = useState(0)

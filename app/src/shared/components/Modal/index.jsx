@@ -3,7 +3,7 @@
 import React, { type Node } from 'react'
 import { createPortal } from 'react-dom'
 
-import Context from '$shared/contexts/Modal'
+import { Context } from '$shared/contexts/ModalPortal'
 import NoModalRootError from '$shared/errors/NoModalRootError'
 
 type Props = {
