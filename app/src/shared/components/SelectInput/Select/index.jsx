@@ -42,6 +42,7 @@ const customStyles = {
         fontSize: '1rem',
         letterSpacing: '0',
         lineHeight: '2rem',
+        width: '100%',
     }),
     dropdownIndicator: (provided) => ({
         ...provided,
