@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 import { I18n, Translate } from 'react-redux-i18n'
 
 import Button from '$shared/components/Button'
-import Dropdown from '$shared/components/Dropdown'
+import SelectInput from '$shared/components/SelectInput'
 import TextInput from '$shared/components/TextInput'
 import type { StreamField } from '$shared/flowtype/stream-types'
 import SplitControl from '$userpages/components/SplitControl'
@@ -25,10 +25,15 @@ type State = {
 }
 
 export class NewFieldEditor extends Component<Props, State> {
+    typeOptions: Array<any> = fieldTypes.map((t) => ({
+        value: t,
+        label: I18n.t(`userpages.streams.fieldTypes.${t}`),
+    }))
+
     state = {
         name: '',
         nameError: null,
-        type: fieldTypes[0],
+        type: this.typeOptions[0].value,
     }
 
     onNameChange = (value: string) => {
@@ -37,9 +42,9 @@ export class NewFieldEditor extends Component<Props, State> {
         }, this.validate)
     }
 
-    onTypeChange = (value: string) => {
+    onTypeChange = (option: any) => {
         this.setState({
-            type: value,
+            type: option.value,
         })
     }
 
@@ -96,21 +101,15 @@ export class NewFieldEditor extends Component<Props, State> {
                         autoFocus
                         onKeyPress={(e) => this.handleKeyPress(e.key)}
                     />
-                    <Dropdown
-                        title=""
-                        selectedItem={type}
+                    <SelectInput
+                        label="Data type"
+                        name="type"
+                        className={styles.select}
+                        options={this.typeOptions}
+                        value={this.typeOptions.find((t) => t.value === type)}
                         onChange={this.onTypeChange}
-                        className={styles.dropdownToggle}
-                    >
-                        {fieldTypes.map((t) => (
-                            <Dropdown.Item
-                                key={t}
-                                value={t}
-                            >
-                                <Translate value={`userpages.streams.fieldTypes.${t}`} />
-                            </Dropdown.Item>
-                        ))}
-                    </Dropdown>
+                        preserveLabelSpace={false}
+                    />
                 </SplitControl>
                 <Button
                     kind="secondary"
