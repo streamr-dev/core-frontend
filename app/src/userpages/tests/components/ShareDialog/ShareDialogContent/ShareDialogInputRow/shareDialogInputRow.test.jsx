@@ -28,7 +28,6 @@ describe('ShareDialogInputRow', () => {
             />)
             const input = inputRow.find('input')
             assert.equal(input.props().placeholder, 'enterEmailAddress')
-            assert.equal(input.props().name, 'email')
         })
     })
 })
