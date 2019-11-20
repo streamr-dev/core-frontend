@@ -71,7 +71,12 @@ export class ProfileSettings extends Component<Props> {
                     />
                 </div>
                 <div className={styles.email}>
-                    <TextInput label="Email" value={user.username || ''} readOnly />
+                    <TextInput
+                        label="Email"
+                        value={user.username || ''}
+                        readOnly
+                        preserveLabelSpace
+                    />
                 </div>
                 <div className={styles.password}>
                     <ChangePassword.Button />

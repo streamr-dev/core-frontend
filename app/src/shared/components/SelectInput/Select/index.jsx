@@ -7,9 +7,14 @@ import cx from 'classnames'
 import SvgIcon from '$shared/components/SvgIcon'
 import styles from './selectInput.pcss'
 
+export type Option = {
+    value: any,
+    label: string,
+}
+
 export type Props = {
     placeholder?: string,
-    options: Array<any>,
+    options: Array<Option>,
     value: any,
     name?: string,
     onChange?: Function,
@@ -68,13 +73,13 @@ const customStyles = {
     }),
     placeholder: () => ({
         color: '#CDCDCD',
-        lineHeight: '2rem',
+        lineHeight: '1rem',
     }),
     valueContainer: (provided) => ({
         ...provided,
         padding: '0 1rem',
         color: '#323232',
-        lineHeight: '2rem',
+        lineHeight: '1rem',
     }),
 }
 

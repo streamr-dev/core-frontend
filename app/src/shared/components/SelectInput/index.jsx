@@ -5,8 +5,6 @@ import React from 'react'
 import FormControl, { type FormControlProps, type InputProps } from '../FormControl'
 import Select, { type Props as SelectProps } from './Select'
 
-import styles from './Select/selectInput.pcss'
-
 type Props = FormControlProps & SelectProps
 
 type InnerProps = InputProps
@@ -30,7 +28,6 @@ class SelectInput extends React.Component<Props> {
 
                     return (
                         <Select
-                            className={styles.paddedSelect}
                             value={value}
                             onBlur={onFocusChange}
                             onFocus={onFocusChange}
