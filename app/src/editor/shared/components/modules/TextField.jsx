@@ -75,6 +75,7 @@ export default class TextFieldModule extends React.Component {
                         flushHistoryOnBlur
                         onCommit={this.onChange}
                         placeholder="Enter your text here"
+                        immediateCommit={false}
                         tag="textarea"
                         value={value}
                         disabled={!hasWritePermission}

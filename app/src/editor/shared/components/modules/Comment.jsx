@@ -48,6 +48,7 @@ export default class CommentModule extends React.PureComponent {
                         disabled={!isEditable}
                         commitEmpty
                         flushHistoryOnBlur
+                        immediateCommit={false}
                         onCommit={this.onChange}
                         placeholder="Enter comment here…"
                         tag="textarea"
