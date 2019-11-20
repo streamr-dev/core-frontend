@@ -167,7 +167,7 @@ class KeyField extends React.Component<Props, State> {
                 <div className={styles.actions}>
                     <DropdownActions
                         onMenuToggle={this.onMenuToggle}
-                        title={<Meatball alt={I18n.t('userpages.keyField.options')} blue />}
+                        title={<Meatball alt={I18n.t('userpages.keyField.options')} gray />}
                         noCaret
                     >
                         {!!hideValue && (

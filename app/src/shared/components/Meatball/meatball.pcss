@@ -1,6 +1,5 @@
 .root {
   border: 1.4px solid transparent;
-  margin-bottom: 3px;
   border-radius: 2px;
   opacity: 0.5;
   padding: 5px;
@@ -52,15 +51,35 @@ a:--enter .blue {
 }
 
 .gray {
-  border-color: rgba(50, 50, 50, 0.5);
+  border: none;
+  background-color: #EFEFEF;
   opacity: 1;
+  height: 1.5rem;
+  width: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .gray circle {
-  fill: var(--greyDark);
+  fill: var(--grey2);
 }
 
 .gray:--enter,
 a:--enter .gray {
+  background-color: #F8F8F8;
+}
+
+.gray2 {
+  border-color: rgba(50, 50, 50, 0.5);
+  opacity: 1;
+}
+
+.gray2 circle {
+  fill: var(--greyDark);
+}
+
+.gray2:--enter,
+a:--enter .gray2 {
   border-color: var(--greyDark);
 }
