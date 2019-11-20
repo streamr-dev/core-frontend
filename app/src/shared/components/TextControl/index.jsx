@@ -145,11 +145,18 @@ const TextControl = ({
         }
     })
 
+    // captured refs for next effect
+    const commitRef = useRef(commit)
+    commitRef.current = commit
+    const immediateCommitRef = useRef()
+    immediateCommitRef.current = immediateCommit
+    // when value changes do immediate commit if needed
+    const normalizedCurrentValue = normalize(value)
     useEffect(() => {
-        if (immediateCommit) {
-            commit()
+        if (immediateCommitRef.current) {
+            commitRef.current()
         }
-    }, [immediateCommit, commit])
+    }, [normalizedCurrentValue])
 
     const displayedValue = hasFocus ? value : normalizedValueProp
 
