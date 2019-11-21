@@ -1,7 +1,7 @@
 .root {
   color: var(--greyDark2);
-  line-height: 24px;
-  font-size: 16px;
+  line-height: 30px;
+  font-size: 18px;
   letter-spacing: 0;
 }
 
@@ -11,6 +11,7 @@
   position: relative;
   overflow: hidden;
   max-height: 240px;
+  padding-left: 1.5rem;
 }
 
 .truncated {
@@ -36,8 +37,118 @@
 
 .inner {
   position: relative;
+  font-size: 1.125rem;
+  letter-spacing: 0;
+  line-height: 1.875rem;
 
-  p:last-child {
+  p {
+    margin-bottom: 2rem;
+  }
+
+  strong {
+    font-weight: var(--medium);
+  }
+
+  em {
+    font-weight: 400;
+    font-style: italic;
+  }
+
+  h1 {
+    font-size: 1.25rem;
+    font-weight: var(--semiBold);
+    margin: 0;
+    margin-bottom: 2rem;
+  }
+
+  h2 {
+    font-size: 1rem;
+    font-weight: var(--semiBold);
+    margin: 0;
+    margin-bottom: 2rem;
+  }
+
+  h3,
+  h4,
+  h6 {
+    font-size: 1rem;
+    font-weight: var(--medium);
+    margin: 0;
+    margin-bottom: 2rem;
+  }
+
+  blockquote {
+    border-left: 4px solid var(--greyDark2);
+    padding-left: calc(1.5rem - 4px);
+  }
+
+  ul,
+  ol,
+  dl {
+    padding: 0;
+    margin-bottom: 2rem;
+    margin-left: -1.5rem;
+  }
+
+  ul {
+    list-style-type: none;
+
+    li {
+      position: relative;
+      margin-left: 1.875rem;
+      margin-left: 3rem;
+    }
+
+    li::before {
+      content: '•';
+      position: absolute;
+      left: -1.5rem;
+    }
+  }
+
+  ol {
+    counter-reset: list-counter;
+    list-style-type: none;
+
+    li {
+      position: relative;
+      counter-increment: list-counter;
+      margin-left: 3rem;
+    }
+
+    li::before {
+      content: counter(list-counter, decimal) '.';
+      width: 2rem;
+      display: inline-block;
+      text-align: right;
+      position: absolute;
+      left: -3rem;
+    }
+  }
+
+  code {
+    font-family: var(--mono);
+    color: inherit;
+    font-size: 14px;
+    letter-spacing: 1px;
+    line-height: 30px;
+    background: #E7E7E7;
+    padding: 0.2rem 0.2rem 0.2rem 0.4rem;
+    border-radius: 1px;
+    margin-left: 0.2rem;
+    margin-right: 0.2rem;
+  }
+
+  pre {
+    overflow: scroll;
+    white-space: nowrap;
+  }
+
+  pre > code {
+    margin: 0;
+  }
+
+  *:last-child {
     margin-bottom: 0;
   }
 }
@@ -52,6 +163,7 @@
   outline: none;
   cursor: pointer;
   text-decoration: underline;
+  margin-left: 1.5rem;
 
   &:focus {
     outline: none;

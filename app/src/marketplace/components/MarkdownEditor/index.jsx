@@ -64,12 +64,10 @@ const MarkdownEditor = ({
                 />
                 <div className={styles.footer}>
                     <div>
-                        <span className={styles.bold}>*bold*</span>
-                        <span className={styles.italic}>_italics_</span>
+                        <span className={styles.bold}>**bold**</span>
+                        <span className={styles.italic}>*italics*</span>
                         <span className={styles.code}>`code`</span>
                         <span>&gt;quote</span>
-                        <span>#Headline 1</span>
-                        <span>##Headline 2</span>
                         <span>* bullet point</span>
                     </div>
                     <div className={styles.wordCount}>

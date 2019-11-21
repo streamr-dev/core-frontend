@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useRef, useState, useCallback, useEffect } from 'react'
+import React, { useRef, useState, useCallback, useEffect, useMemo } from 'react'
 import cx from 'classnames'
 import { Translate } from 'react-redux-i18n'
 import ReactMarkdown from 'react-markdown'
@@ -14,11 +14,26 @@ type Props = {
     className?: string,
 }
 
+const ALLOWED_MARKDOWN = [
+    'text',
+    'paragraph',
+    'break',
+    'emphasis',
+    'strong',
+    'thematicBreak',
+    'blockquote',
+    'delete',
+    'link',
+    'list',
+    'listItem',
+    'inlineCode',
+    'code',
+]
+
 const CollapsedText = ({ text: textProp, className }: Props) => {
     const text = textProp || ''
     const [truncationRequired, setTruncationRequired] = useState(false)
     const [expanded, setExpanded] = useState(false)
-    const outerElRef = useRef()
     const innerElRef = useRef()
 
     useEffect(() => {
@@ -30,9 +45,9 @@ const CollapsedText = ({ text: textProp, className }: Props) => {
     const toggleExpanded = useCallback(() => {
         setExpanded((prev) => !prev)
 
-        const outerEl = outerElRef.current
-        if (outerEl) {
-            const { top } = outerEl.getBoundingClientRect()
+        const innerEl = innerElRef.current
+        if (innerEl) {
+            const { top } = innerEl.getBoundingClientRect()
 
             window.scrollTo({
                 top: (top + window.pageYOffset) - 100, // offset nav
@@ -42,16 +57,14 @@ const CollapsedText = ({ text: textProp, className }: Props) => {
     }, [setExpanded])
 
     const updateTruncation = useCallback(() => {
-        const outerEl = outerElRef.current
         const innerEl = innerElRef.current
 
-        if (outerEl && innerEl) {
-            const { height: outerHeight } = outerEl.getBoundingClientRect()
+        if (innerEl) {
             const { height: innerHeight } = innerEl.getBoundingClientRect()
 
-            setTruncationRequired(innerHeight > outerHeight)
+            setTruncationRequired(innerHeight > 240)
         }
-    }, [outerElRef, innerElRef])
+    }, [innerElRef])
 
     const onResize = useThrottled(updateTruncation, 250)
 
@@ -81,6 +94,15 @@ const CollapsedText = ({ text: textProp, className }: Props) => {
         return () => {}
     }, [innerElRef, onResize])
 
+    const markdownText = useMemo(() => (
+        <ReactMarkdown
+            source={text}
+            escapeHtml
+            allowedTypes={ALLOWED_MARKDOWN}
+            unwrapDisallowed
+        />
+    ), [text])
+
     return (
         <div className={cx(styles.root, styles.CollapsedText, className)}>
             <div
@@ -88,13 +110,9 @@ const CollapsedText = ({ text: textProp, className }: Props) => {
                     [styles.expanded]: !!expanded,
                     [styles.truncated]: !!truncationRequired,
                 })}
-                ref={outerElRef}
             >
                 <div className={styles.inner} ref={innerElRef}>
-                    <ReactMarkdown
-                        source={text}
-                        escapeHtml
-                    />
+                    {markdownText}
                 </div>
             </div>
             {truncationRequired && (
