@@ -11,6 +11,7 @@
   position: relative;
   overflow: hidden;
   max-height: 240px;
+  padding-left: 1.5rem;
 }
 
 .truncated {
@@ -78,7 +79,7 @@
 
   blockquote {
     border-left: 4px solid var(--grey2);
-    padding-left: calc(1.875rem - 4px);
+    padding-left: calc(1.5rem - 4px);
   }
 
   ul,
@@ -86,6 +87,7 @@
   dl {
     padding: 0;
     margin-bottom: 2rem;
+    margin-left: -1.5rem;
   }
 
   ul {
@@ -94,12 +96,13 @@
     li {
       position: relative;
       margin-left: 1.875rem;
+      margin-left: 3rem;
     }
 
     li::before {
       content: '•';
       position: absolute;
-      left: -1.875rem;
+      left: -1.5rem;
       color: var(--grey2);
     }
   }
@@ -110,15 +113,18 @@
 
     li {
       position: relative;
-      margin-left: 1.875rem;
       counter-increment: list-counter;
+      margin-left: 3rem;
     }
 
     li::before {
-      content: counter(list-counter) '.';
-      position: absolute;
-      left: -1.875rem;
+      content: counter(list-counter, decimal) '.';
       color: var(--grey2);
+      width: 2rem;
+      display: inline-block;
+      text-align: right;
+      position: absolute;
+      left: -3rem;
     }
   }
 
@@ -159,6 +165,7 @@
   outline: none;
   cursor: pointer;
   text-decoration: underline;
+  margin-left: 1.5rem;
 
   &:focus {
     outline: none;
