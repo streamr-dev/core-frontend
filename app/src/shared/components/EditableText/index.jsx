@@ -116,6 +116,7 @@ const EditableText = ({
                 {editing && !disabled ? (
                     <Fragment>
                         <TextControl
+                            immediateCommit={false}
                             {...props}
                             autoComplete="off"
                             autoFocus
