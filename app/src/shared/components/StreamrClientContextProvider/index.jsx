@@ -29,7 +29,7 @@ export const ClientContext: Context<ContextProps> = React.createContext({
     apiKey: undefined,
 })
 
-export function createClient(apiKey: ResourceKeyId) {
+export function createClient(apiKey: ?ResourceKeyId) {
     return new StreamrClient({
         url: process.env.STREAMR_WS_URL,
         restUrl: process.env.STREAMR_API_URL,
@@ -59,24 +59,24 @@ function useClientProvider({
     const [client, setClient] = useState()
     const isMountedRef = useIsMountedRef()
     const hasClient = !!client
+    const hasLoaded = !!apiKey || !!(!isAuthenticating && (isAuthenticated || authenticationFailed))
     const loadKeyPending = usePending('client.key')
-    const [hasLoaded, setHasLoaded] = useState(!!apiKey)
-    const endLoad = useCallback(() => {
-        if (!isMountedRef.current) { return }
-        setHasLoaded(true)
-    }, [isMountedRef])
 
     useEffect(() => {
-        if ((isAuthenticating || !isAuthenticated) && !authenticationFailed) { return } // do nothing if waiting to auth
+        // do nothing if waiting to auth
         if (hasLoaded || loadKeyPending.isPending) { return }
         loadKeyPending.wrap(() => (
-            loadKeys().then(endLoad, (error) => {
-                endLoad()
+            loadKeys().catch((error) => {
                 if (!isMountedRef.current) { return }
+                if (error.statusCode === 401 || error.statusCode === 403) {
+                    // ignore 401/403
+                    return
+                }
+
                 throw error
             })
         ))
-    }, [loadKeys, loadKeyPending, hasLoaded, endLoad, isMountedRef, authenticationFailed, isAuthenticated, isAuthenticating])
+    }, [loadKeys, loadKeyPending, isMountedRef, hasLoaded])
 
     const reset = useCallback(() => {
         if (!client) { return }
@@ -103,7 +103,7 @@ function useClientProvider({
 
     // (re)create client if none
     useLayoutEffect(() => {
-        if (hasClient || !hasLoaded || !apiKey) { return }
+        if (hasClient || !hasLoaded) { return }
         setClient(createClient(apiKey))
     }, [hasClient, setClient, apiKey, hasLoaded])
 
