@@ -68,8 +68,6 @@ const MarkdownEditor = ({
                         <span className={styles.italic}>*italics*</span>
                         <span className={styles.code}>`code`</span>
                         <span>&gt;quote</span>
-                        <span>#Headline 1</span>
-                        <span>##Headline 2</span>
                         <span>* bullet point</span>
                     </div>
                     <div className={styles.wordCount}>

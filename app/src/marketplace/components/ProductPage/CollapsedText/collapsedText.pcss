@@ -1,7 +1,7 @@
 .root {
   color: var(--greyDark2);
-  line-height: 24px;
-  font-size: 16px;
+  line-height: 30px;
+  font-size: 18px;
   letter-spacing: 0;
 }
 
@@ -40,18 +40,31 @@
   letter-spacing: 0;
   line-height: 1.875rem;
 
+  p {
+    margin-bottom: 2rem;
+  }
+
+  strong {
+    font-weight: var(--medium);
+  }
+
+  em {
+    font-weight: 400;
+    font-style: italic;
+  }
+
   h1 {
     font-size: 1.25rem;
     font-weight: var(--semiBold);
     margin: 0;
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
   }
 
   h2 {
     font-size: 1rem;
     font-weight: var(--semiBold);
     margin: 0;
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
   }
 
   h3,
@@ -60,21 +73,75 @@
     font-size: 1rem;
     font-weight: var(--medium);
     margin: 0;
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
   }
 
   blockquote {
-    font-size: 0.875rem;
-    border-left: 4px solid var(--grey4);
-    padding: 0 1rem;
+    border-left: 4px solid var(--grey2);
+    padding-left: calc(1.875rem - 4px);
+  }
+
+  ul,
+  ol,
+  dl {
+    padding: 0;
+    margin-bottom: 2rem;
+  }
+
+  ul {
+    list-style-type: none;
+
+    li {
+      position: relative;
+      margin-left: 1.875rem;
+    }
+
+    li::before {
+      content: '•';
+      position: absolute;
+      left: -1.875rem;
+      color: var(--grey2);
+    }
+  }
+
+  ol {
+    counter-reset: list-counter;
+    list-style-type: none;
+
+    li {
+      position: relative;
+      margin-left: 1.875rem;
+      counter-increment: list-counter;
+    }
+
+    li::before {
+      content: counter(list-counter) '.';
+      position: absolute;
+      left: -1.875rem;
+      color: var(--grey2);
+    }
   }
 
   code {
     font-family: var(--mono);
-    color: #E83E8C;
-    font-size: 0.875rem;
+    color: inherit;
+    font-size: 14px;
     letter-spacing: 1px;
-    line-height: 1rem;
+    line-height: 30px;
+    background: #E7E7E7;
+    padding: 0.2rem 0.2rem 0.2rem 0.4rem;
+    border-radius: 1px;
+    margin-left: 0.2rem;
+    margin-right: 0.2rem;
+  }
+
+  pre {
+    overflow: scroll;
+    white-space: nowrap;
+  }
+
+  pre > code {
+    margin: 0;
   }
 
   *:last-child {
