@@ -85,4 +85,5 @@ const RangeSelect = ({ className, value, onChange: onChangeProp }: Props) => {
     )
 }
 
-export default RangeSelect
+// $FlowFixMe
+export default React.memo(RangeSelect)
