@@ -134,11 +134,15 @@ const CanvasEditComponent = class CanvasEdit extends PureComponent {
         const { runController } = this.props
 
         if ((event.code === 'Backspace' || event.code === 'Delete') && runController.isEditable) {
+            event.preventDefault() // important. prevents stupid browser back on backspace behaviour
+            event.stopPropagation()
             this.removeModule({ hash })
         }
 
         if (event.key === 'Escape') {
             // select none on escape
+            event.preventDefault()
+            event.stopPropagation()
             this.selectModule({ hash: undefined })
         }
 
