@@ -30,21 +30,21 @@ const NotFoundPage = () => (
                 link={(
                     <React.Fragment>
                         <Button
-                            type="special"
+                            kind="special"
                             tag={Link}
                             to={links.userpages.main}
                         >
                             <Translate value="notFoundPage.coreApp" />
                         </Button>
                         <Button
-                            type="special"
+                            kind="special"
                             tag={Link}
                             to={links.marketplace.main}
                         >
                             <Translate value="notFoundPage.top" />
                         </Button>
                         <Button
-                            type="special"
+                            kind="special"
                             tag={Link}
                             to={links.root}
                         >

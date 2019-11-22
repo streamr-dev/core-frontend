@@ -207,7 +207,7 @@ export class ConfigureView extends Component<Props, State> {
                                                     ))}
                                                 </Dropdown>
                                                 <Button
-                                                    type="secondary"
+                                                    kind="secondary"
                                                     size="mini"
                                                     outline
                                                     className={styles.deleteFieldButton}
@@ -226,7 +226,7 @@ export class ConfigureView extends Component<Props, State> {
                 {!isAddingField &&
                     <React.Fragment>
                         <Button
-                            type="secondary"
+                            kind="secondary"
                             className={styles.addFieldButton}
                             onClick={this.addNewField}
                             disabled={disabled}
@@ -234,7 +234,7 @@ export class ConfigureView extends Component<Props, State> {
                             <Translate value="userpages.streams.edit.configure.addField" />
                         </Button>
                         <Button
-                            type="secondary"
+                            kind="secondary"
                             outline
                             onClick={this.autodetectFields}
                             disabled={this.props.fieldsAutodetectFetching || disabled}

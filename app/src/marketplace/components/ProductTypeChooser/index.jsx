@@ -38,7 +38,7 @@ const ProductTypeChooser = ({ onSelect }: Props) => (
                         <Translate value="productTypeChooser.standard.description" />
                     </div>
                     <Button
-                        type="special"
+                        kind="special"
                         className={styles.button}
                         onClick={() => onSelect('NORMAL')}
                     >
@@ -62,7 +62,7 @@ const ProductTypeChooser = ({ onSelect }: Props) => (
                         <Translate value="productTypeChooser.community.description" />
                     </div>
                     <Button
-                        type="special"
+                        kind="special"
                         className={styles.button}
                         onClick={() => onSelect('COMMUNITY')}
                     >

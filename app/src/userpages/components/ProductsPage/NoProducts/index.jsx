@@ -52,7 +52,7 @@ const NoResultsView = ({ onResetFilter }: NoResultsViewProps) => (
         )}
         link={(
             <Button
-                type="special"
+                kind="special"
                 onClick={onResetFilter}
             >
                 <Translate value="userpages.products.noProductsResult.clearFilters" />

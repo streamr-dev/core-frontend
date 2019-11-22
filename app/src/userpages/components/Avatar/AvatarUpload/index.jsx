@@ -42,7 +42,7 @@ class AvatarUpload extends React.Component<Props, State> {
         return (
             <div className={styles.upload}>
                 <Button
-                    type="secondary"
+                    kind="secondary"
                     disabled={modalOpen}
                     onClick={this.onShowModal}
                 >

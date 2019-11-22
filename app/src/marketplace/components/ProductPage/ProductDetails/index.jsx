@@ -79,7 +79,7 @@ const ProductDetails = ({ product, isValidSubscription, onPurchase }: Props) => 
             <div className={styles.buttonWrapper}>
                 <Button
                     className={styles.button}
-                    type="primary"
+                    kind="primary"
                     disabled={(!isPaidProduct(product) && isValidSubscription) || product.state !== productStates.DEPLOYED}
                     onClick={onPurchase}
                 >

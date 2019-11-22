@@ -554,7 +554,7 @@ const CanvasEditWrap = () => {
 const CanvasErrorPage = () => (
     <ErrorPageContent>
         <Button
-            type="special"
+            kind="special"
             tag={Link}
             to=""
             onClick={(event) => {
@@ -565,7 +565,7 @@ const CanvasErrorPage = () => (
             <Translate value="editor.error.refresh" />
         </Button>
         <Button
-            type="special"
+            kind="special"
             tag={Link}
             to={routes.canvases()}
             className="d-none d-md-inline-block"

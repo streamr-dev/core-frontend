@@ -75,7 +75,7 @@ export class PreviewView extends Component<Props, State> {
                     >
                         <div className={styles.previewControls}>
                             <Button
-                                type="secondary"
+                                kind="secondary"
                                 outline
                                 className={styles.playPauseButton}
                                 onClick={this.onToggleRun}
@@ -87,7 +87,7 @@ export class PreviewView extends Component<Props, State> {
                             </Button>
                             {stream && stream.id && (
                                 <Button
-                                    type="secondary"
+                                    kind="secondary"
                                     outline
                                     className={styles.inspectButton}
                                     tag={Link}

@@ -207,7 +207,7 @@ class StreamList extends Component<Props, State> {
             message: I18n.t('userpages.streams.delete.confirmMessage'),
             acceptButton: {
                 title: I18n.t('userpages.streams.delete.confirmButton'),
-                type: 'destructive',
+                kind: 'destructive',
             },
             centerButtons: true,
             dontShowAgain: false,

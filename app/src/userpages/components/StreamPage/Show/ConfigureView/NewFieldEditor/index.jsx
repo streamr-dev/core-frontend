@@ -113,7 +113,7 @@ export class NewFieldEditor extends Component<Props, State> {
                     </Dropdown>
                 </SplitControl>
                 <Button
-                    type="secondary"
+                    kind="secondary"
                     disabled={nameError !== null}
                     className={styles.addButton}
                     onClick={this.onConfirm}
@@ -121,7 +121,7 @@ export class NewFieldEditor extends Component<Props, State> {
                     <Translate value="userpages.streams.edit.configure.newFieldEditor.add" />
                 </Button>
                 <Button
-                    type="link"
+                    kind="link"
                     className={styles.cancelButton}
                     onClick={onCancel}
                 >

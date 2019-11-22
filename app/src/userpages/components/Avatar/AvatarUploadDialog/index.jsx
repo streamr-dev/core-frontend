@@ -62,12 +62,12 @@ class AvatarUploadDialog extends React.Component<Props, State> {
                         cancel: {
                             title: I18n.t('modal.common.cancel'),
                             outline: true,
-                            type: 'link',
+                            kind: 'link',
                             onClick: onClose,
                         },
                         save: {
                             title: I18n.t('modal.common.apply'),
-                            type: 'primary',
+                            kind: 'primary',
                             onClick: this.onSave,
                             disabled: (!originalImage && !this.state.image),
                         },

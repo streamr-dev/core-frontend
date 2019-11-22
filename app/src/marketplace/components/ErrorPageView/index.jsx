@@ -43,14 +43,14 @@ const ErrorPageView = () => (
         <BodyClass className={PAGE_SECONDARY} />
         <ErrorPageContent>
             <Button
-                type="special"
+                kind="special"
                 tag={Link}
                 to={links.marketplace.main}
             >
                 <Translate value="errorPageView.top" />
             </Button>
             <Button
-                type="special"
+                kind="special"
                 tag={Link}
                 to={links.userpages.products}
                 className="d-none d-md-inline-block"

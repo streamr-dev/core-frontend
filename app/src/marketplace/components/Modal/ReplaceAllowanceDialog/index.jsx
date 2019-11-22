@@ -31,11 +31,11 @@ const ReplaceAllowanceDialog = ({ gettingAllowance, settingAllowance, onCancel, 
                     cancel: {
                         title: I18n.t('modal.common.cancel'),
                         onClick: onCancel,
-                        type: 'link',
+                        kind: 'link',
                     },
                     publish: {
                         title: I18n.t('modal.common.waiting'),
-                        type: 'primary',
+                        kind: 'primary',
                         disabled: true,
                         spinner: true,
                     },
@@ -57,12 +57,12 @@ const ReplaceAllowanceDialog = ({ gettingAllowance, settingAllowance, onCancel, 
             actions={{
                 cancel: {
                     title: I18n.t('modal.common.cancel'),
-                    type: 'link',
+                    kind: 'link',
                     onClick: onCancel,
                 },
                 next: {
                     title: I18n.t('modal.common.next'),
-                    type: 'primary',
+                    kind: 'primary',
                     outline: true,
                     onClick: () => onSet(),
                 },

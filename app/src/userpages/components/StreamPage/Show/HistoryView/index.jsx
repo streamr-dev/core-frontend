@@ -271,7 +271,7 @@ class HistoryView extends Component<Props, State> {
                                 disabled={disabled}
                             />
                             <Button
-                                type="secondary"
+                                kind="secondary"
                                 className={styles.browseFiles}
                                 onClick={() => this.handleBrowseFilesClick()}
                                 disabled={disabled}
@@ -302,7 +302,7 @@ class HistoryView extends Component<Props, State> {
                             />
                         </div>
                         <Button
-                            type="secondary"
+                            kind="secondary"
                             className={styles.deleteButton}
                             onClick={() => this.deleteDataUpTo(streamId, deleteDate)}
                             disabled={deleteDate == null || disabled}

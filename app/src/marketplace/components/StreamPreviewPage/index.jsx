@@ -206,7 +206,7 @@ class StreamPreviewPage extends React.Component<Props, State> {
                         {productId &&
                             <div className={styles.footer}>
                                 <Button
-                                    type="secondary"
+                                    kind="secondary"
                                     disabled={!prevStreamId}
                                     className={styles.button}
                                     to={prevStreamUrl}
@@ -215,7 +215,7 @@ class StreamPreviewPage extends React.Component<Props, State> {
                                     <Translate value="modal.streamLiveData.previous" />
                                 </Button>
                                 <Button
-                                    type="secondary"
+                                    kind="secondary"
                                     disabled={!nextStreamId}
                                     className={styles.button}
                                     to={nextStreamUrl}

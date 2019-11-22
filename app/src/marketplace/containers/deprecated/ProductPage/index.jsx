@@ -199,7 +199,7 @@ export class ProductPage extends Component<Props> {
             toolbarActions.publish = {
                 title: this.getPublishButtonTitle(product),
                 disabled: this.getPublishButtonDisabled(product),
-                color: 'primary',
+                kind: 'primary',
                 onClick: () => noHistoryRedirect(links.marketplace.products, product.id || '', 'publish'),
                 className: 'd-none d-sm-inline-block',
             }

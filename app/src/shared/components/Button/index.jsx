@@ -8,14 +8,14 @@ import Spinner from '$shared/components/Spinner'
 import styles from './newButton.pcss'
 
 export type Size = 'mini' | 'normal' | 'big'
-export type Type = 'primary' | 'secondary' | 'destructive' | 'link' | 'special'
+export type Kind = 'primary' | 'secondary' | 'destructive' | 'link' | 'special'
 export type Variant = 'dark'
 
 type Props = {
     className?: string,
     tag: ElementType,
     size?: Size,
-    type?: Type,
+    kind?: Kind,
     variant?: Variant,
     outline?: boolean,
     disabled?: boolean,
@@ -28,7 +28,7 @@ const Button = ({
     className,
     tag: Tag,
     size,
-    type,
+    kind,
     variant,
     outline,
     disabled,
@@ -40,11 +40,11 @@ const Button = ({
     <Tag
         className={
             cx(styles.root, {
-                [styles.primary]: type === 'primary',
-                [styles.secondary]: type === 'secondary',
-                [styles.destructive]: type === 'destructive',
-                [styles.link]: type === 'link',
-                [styles.special]: type === 'special',
+                [styles.primary]: kind === 'primary',
+                [styles.secondary]: kind === 'secondary',
+                [styles.destructive]: kind === 'destructive',
+                [styles.link]: kind === 'link',
+                [styles.special]: kind === 'special',
                 [styles.mini]: size === 'mini',
                 [styles.normal]: size === 'normal',
                 [styles.big]: size === 'big',
@@ -69,7 +69,7 @@ const Button = ({
 
 Button.defaultProps = {
     tag: 'button',
-    type: 'primary',
+    kind: 'primary',
     size: 'normal',
     outline: false,
     disabled: false,

@@ -35,7 +35,7 @@ class AddIdentityButton extends React.Component<Props, State> {
         return (
             <Fragment>
                 <Button
-                    type="secondary"
+                    kind="secondary"
                     disabled={modalOpen}
                     onClick={this.onShowModal}
                 >

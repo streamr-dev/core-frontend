@@ -53,12 +53,12 @@ const ConfirmDeployCommunityDialog = ({ product, onClose, onContinue: onContinue
                                 cancel: {
                                     title: I18n.t('modal.common.cancel'),
                                     onClick: onClose,
-                                    type: 'link',
+                                    kind: 'link',
                                     disabled: waitingOnContinue,
                                 },
                                 continue: {
                                     title: I18n.t('modal.common.deploy'),
-                                    type: 'primary',
+                                    kind: 'primary',
                                     onClick: onContinue,
                                     spinner: waitingOnContinue,
                                     disabled: waitingOnContinue,

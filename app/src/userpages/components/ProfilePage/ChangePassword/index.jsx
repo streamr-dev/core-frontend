@@ -96,12 +96,12 @@ class ChangePasswordDialog extends Component<Props, State> {
                         cancel: {
                             title: I18n.t('modal.common.cancel'),
                             outline: true,
-                            type: 'link',
+                            kind: 'link',
                             onClick: this.props.onToggle,
                         },
                         save: {
                             title: I18n.t('modal.common.save'),
-                            type: 'primary',
+                            kind: 'primary',
                             onClick: this.onSubmit,
                             disabled: !allPasswordsGiven || !passWordsMatch || !strongEnoughPassword || updating,
                             spinner: updating,
@@ -202,7 +202,7 @@ class ChangePasswordButton extends React.Component<TriggerProps, TriggerState> {
         return (
             <React.Fragment>
                 <Button
-                    type="secondary"
+                    kind="secondary"
                     className={styles.changePassword}
                     onClick={this.onToggle}
                     aria-label="Change Password"

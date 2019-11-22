@@ -63,7 +63,7 @@ class DeleteAccount extends React.Component<Props, State> {
                 <Translate value="userpages.profilePage.deleteAccount.description" tag="p" className={profileStyles.longText} />
                 <div>
                     <Button
-                        type="destructive"
+                        kind="destructive"
                         onClick={this.openModal}
                         disabled={modalOpen}
                         aria-label={I18n.t('userpages.profilePage.deleteAccount.button')}

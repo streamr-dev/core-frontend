@@ -61,7 +61,7 @@ const HoverComponent = ({
     <div className={styles.hoverContainer}>
         {(isLoggedIn && (isProductFree || isProductSubscriptionValid)) && (
             <Button
-                type="secondary"
+                kind="secondary"
                 size="mini"
                 outline
                 tag={Link}
@@ -76,7 +76,7 @@ const HoverComponent = ({
         {/* No need to show the preview button on editProduct page */}
         {(isProductFree || (isLoggedIn && isProductSubscriptionValid)) && productId && (
             <Button
-                type="secondary"
+                kind="secondary"
                 size="mini"
                 outline
                 tag={Link}

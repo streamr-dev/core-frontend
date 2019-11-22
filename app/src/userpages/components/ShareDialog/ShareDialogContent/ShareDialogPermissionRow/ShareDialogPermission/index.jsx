@@ -72,7 +72,7 @@ export class ShareDialogPermission extends Component<Props> {
                         onChange={this.onSelect}
                     />
                     <Button
-                        type="secondary"
+                        kind="secondary"
                         onClick={this.onRemove}
                         className={styles.button}
                     >

@@ -19,7 +19,7 @@ const NoProductsView = () => (
             />
         )}
         link={(
-            <Button tag="a" href={editor.canvasEditor} type="special">
+            <Button tag="a" href={editor.canvasEditor} kind="special">
                 <Translate value="noMyProductsView.goToEditor" />
             </Button>
         )}

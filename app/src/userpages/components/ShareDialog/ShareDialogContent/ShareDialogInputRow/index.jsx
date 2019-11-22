@@ -49,7 +49,7 @@ export class ShareDialogInputRow extends Component<Props, State> {
                     onChange={this.onChange}
                 />
                 <Button
-                    type="secondary"
+                    kind="secondary"
                     onClick={this.onAdd}
                     disabled={!email}
                     className={styles.button}

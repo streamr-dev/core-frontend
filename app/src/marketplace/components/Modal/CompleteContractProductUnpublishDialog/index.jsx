@@ -28,11 +28,11 @@ const CompleteContractProductUnpublishDialog = ({ onCancel, publishState }: Prop
                         cancel: {
                             title: I18n.t('modal.common.cancel'),
                             onClick: onCancel,
-                            type: 'link',
+                            kind: 'link',
                         },
                         publish: {
                             title: I18n.t('modal.common.waiting'),
-                            type: 'primary',
+                            kind: 'primary',
                             disabled: true,
                             spinner: true,
                         },

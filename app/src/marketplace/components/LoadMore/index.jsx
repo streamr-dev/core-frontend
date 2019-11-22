@@ -22,7 +22,7 @@ const LoadMore = ({ onClick, hasMoreSearchResults }: Props) => {
         <Container className={styles.container}>
             <Row className="justify-content-center">
                 <Col xs="auto">
-                    <Button type="special" variant="dark" onClick={onClick}>
+                    <Button kind="special" variant="dark" onClick={onClick}>
                         <Translate value="productList.viewMore" />
                     </Button>
                 </Col>

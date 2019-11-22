@@ -28,7 +28,7 @@ const ConfirmSaveDialog = ({ onSave, onClose, onContinue }: Props) => (
                 <div className={styles.footer}>
                     <div className={styles.footerText}>
                         <Button
-                            type="primary"
+                            kind="primary"
                             onClick={onContinue}
                             outline
                         >
@@ -40,11 +40,11 @@ const ConfirmSaveDialog = ({ onSave, onClose, onContinue }: Props) => (
                             cancel: {
                                 title: I18n.t('modal.common.cancel'),
                                 onClick: onClose,
-                                type: 'link',
+                                kind: 'link',
                             },
                             continue: {
                                 title: I18n.t('modal.common.save'),
-                                type: 'primary',
+                                kind: 'primary',
                                 onClick: onSave,
                             },
                         }}

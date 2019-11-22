@@ -87,7 +87,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
 
         return {
             title: (productState && I18n.t(`editProductPage.${titles[tmpState]}`)) || '',
-            type: 'primary',
+            kind: 'primary',
             onClick: publish,
             disabled: !(productState === productStates.NOT_DEPLOYED || productState === productStates.DEPLOYED) || isSaving,
         }
@@ -97,7 +97,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
         if (isCommunity && !isDeployed) {
             return {
                 title: 'Continue',
-                type: 'primary',
+                kind: 'primary',
                 onClick: deployCommunity,
                 disabled: isSaving,
             }

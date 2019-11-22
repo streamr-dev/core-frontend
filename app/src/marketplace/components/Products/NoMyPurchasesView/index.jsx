@@ -19,7 +19,7 @@ const NoProductsView = () => (
             />
         )}
         link={(
-            <Button tag="a" href={marketplace.main} type="special">
+            <Button tag="a" href={marketplace.main} kind="special">
                 <Translate value="noMyPurchasesView.goToMarketplace" />
             </Button>
         )}

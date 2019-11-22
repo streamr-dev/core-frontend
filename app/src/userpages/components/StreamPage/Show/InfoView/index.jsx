@@ -140,7 +140,7 @@ export class InfoView extends Component<Props, State> {
                                 />
                             </div>
                             <Button
-                                type="secondary"
+                                kind="secondary"
                                 size="mini"
                                 outline
                                 className={styles.copyStreamIdButton}

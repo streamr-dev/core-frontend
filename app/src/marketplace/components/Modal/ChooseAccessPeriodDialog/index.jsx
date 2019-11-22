@@ -70,11 +70,11 @@ export const ChooseAccessPeriodDialog = ({
                 cancel: {
                     title: I18n.t('modal.common.cancel'),
                     onClick: onCancel,
-                    type: 'link',
+                    kind: 'link',
                 },
                 next: {
                     title: I18n.t('modal.common.next'),
-                    type: 'primary',
+                    kind: 'primary',
                     outline: true,
                     onClick: () => onNext(time, timeUnit),
                     disabled: BN(time).isNaN() || BN(time).isLessThanOrEqualTo(0) || waiting,

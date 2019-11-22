@@ -176,7 +176,7 @@ export const StreamSelector = (props: Props) => {
                             }
                         </div>
                         <Button
-                            type="secondary"
+                            kind="secondary"
                             onClick={() => {
                                 const toSelect = matchingStreams.map((s) => s.id)
 

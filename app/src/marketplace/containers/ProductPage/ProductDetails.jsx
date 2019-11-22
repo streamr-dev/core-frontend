@@ -67,7 +67,7 @@ const ProductDetails = ({ product, isValidSubscription, productSubscription, onP
         <div className={styles.buttonWrapper}>
             <Button
                 className={styles.button}
-                type="primary"
+                kind="primary"
                 size="big"
                 disabled={(!isPaidProduct(product) && isValidSubscription) || product.state !== productStates.DEPLOYED}
                 onClick={onPurchase}

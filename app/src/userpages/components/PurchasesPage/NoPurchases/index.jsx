@@ -31,7 +31,7 @@ const NoAddedPurchasesView = () => (
             />
         )}
         link={(
-            <Button type="special" tag={Link} to={routes.marketplace()}>
+            <Button kind="special" tag={Link} to={routes.marketplace()}>
                 <Translate value="userpages.purchases.noAddedPurchases.hint" />
             </Button>
         )}
@@ -52,7 +52,7 @@ const NoResultsView = ({ onResetFilter }: NoResultsViewProps) => (
         )}
         link={(
             <Button
-                type="special"
+                kind="special"
                 onClick={onResetFilter}
             >
                 <Translate value="userpages.purchases.noPurchasesResult.clearFilters" />

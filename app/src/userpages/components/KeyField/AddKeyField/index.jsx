@@ -77,7 +77,7 @@ class AddKeyField extends React.Component<Props, State> {
         const { label, createWithValue, showPermissionType, addKeyFieldAllowed } = this.props
         return !editing ? (
             <Button
-                type="secondary"
+                kind="secondary"
                 onClick={this.onEdit}
                 disabled={!addKeyFieldAllowed}
             >

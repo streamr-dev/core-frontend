@@ -27,7 +27,7 @@ const NoTransactionsView = ({ accountsExist, accountLinked }: Props) => (
         )}
         link={(!accountsExist || !accountLinked) && (
             <Button
-                type="special"
+                kind="special"
                 tag={Link}
                 to={routes.editProfile({}, 'ethereum-accounts')}
             >
