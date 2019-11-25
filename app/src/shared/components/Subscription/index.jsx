@@ -162,7 +162,6 @@ class Subscription extends Component<Props> {
 
     unmounted: boolean = false
     isSubscribed: boolean = false
-    client: any = undefined
     subscription: any = undefined
 
     autosubscribe() {
@@ -183,15 +182,15 @@ class Subscription extends Component<Props> {
         this.unsubscribe()
 
         this.isSubscribed = true
-        this.client = this.props.clientContext.client
-        await this.client.ensureConnected()
+        const { client } = this.props.clientContext
+        await client.ensureConnected()
 
         const { id } = uiChannel
 
         const resend = this.getResendOptions()
 
         // $FlowFixMe
-        this.subscription = this.client.subscribe(Object.assign({
+        this.subscription = client.subscribe(Object.assign({
             stream: id,
         }, resend ? {
             resend,
@@ -207,7 +206,8 @@ class Subscription extends Component<Props> {
 
     unsubscribe() {
         if (!this.isSubscribed) { return }
-        const { client, subscription } = this
+        const { subscription } = this
+        const { client } = this.props.clientContext
         if (subscription) {
             subscription.off('subscribed', this.onSubscribed)
             subscription.off('resending', this.onResending)
@@ -215,11 +215,10 @@ class Subscription extends Component<Props> {
             subscription.off('no_resend', this.onNoResend)
             subscription.off('error', this.onError)
             subscription.off('unsubscribed', this.onUnsubscribed)
+            client.unsubscribe(subscription)
         }
         this.subscription = undefined
-        this.client = undefined
         this.isSubscribed = false
-        client.unsubscribe(subscription)
     }
 
     handleKnownMessageTypes = (message, ...args) => {

@@ -21,6 +21,7 @@ import CopyStreamIdButton from './CopyStreamIdButton'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import { Context as ClientContext, Provider as ClientProvider } from '$shared/contexts/StreamrClient'
+import useIsMounted from '$shared/hooks/useIsMounted'
 
 type Props = {
     match: {
@@ -58,7 +59,9 @@ const StreamPreviewPage = ({
     const [selectedDataPoint, setSelectedDataPoint] = useState(null)
     const [sidebarVisible, setSidebarVisible] = useState(false)
     const [hasData, setHasData] = useState(false)
-    const { hasLoaded, apiKey } = useContext(ClientContext)
+    const { hasLoaded } = useContext(ClientContext)
+    const isMounted = useIsMounted()
+
     const urlId = match.params.streamId
 
     useEffect(() => {
@@ -95,6 +98,11 @@ const StreamPreviewPage = ({
 
     const prevStreamUrl = getStreamTabUrl(productId, prevStreamId)
     const nextStreamUrl = getStreamTabUrl(productId, nextStreamId)
+
+    const setData = useCallback(() => {
+        if (!isMounted()) { return }
+        setHasData(true)
+    }, [isMounted])
 
     return (
         <div className={styles.streamLiveDataDialog}>
@@ -157,12 +165,12 @@ const StreamPreviewPage = ({
                     <div className={styles.body}>
                         {currentStream && (
                             <StreamLivePreviewTable
-                                key={`${currentStream.id}${String(apiKey)}`} // Rerender if streamId or apiKey changes
+                                key={`${currentStream.id}`} // Rerender if streamId or apiKey changes
                                 streamId={currentStream.id}
                                 currentUser={currentUser}
                                 onSelectDataPoint={onSelectDataPoint}
                                 selectedDataPoint={selectedDataPoint}
-                                hasData={() => setHasData(true)}
+                                hasData={setData}
                             />
                         )}
                     </div>
@@ -209,7 +217,7 @@ const StreamPreviewPage = ({
 }
 
 export default (props: Props) => (
-    <ClientProvider>
+    <ClientProvider key={props.match.params.streamId}>
         <StreamPreviewPage {...props} />
     </ClientProvider>
 )
