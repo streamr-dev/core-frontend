@@ -1,6 +1,6 @@
 import React from 'react'
 import { mount } from 'enzyme'
-import * as UndoContext from '$shared/components/UndoContextProvider'
+import * as UndoContext from '$shared/contexts/Undo'
 
 describe('UndoContext', () => {
     describe('initialState', () => {

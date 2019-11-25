@@ -2,8 +2,8 @@
 
 import React from 'react'
 
-import Subscription from './Subscription'
-import { ClientContext } from '$shared/components/StreamrClientContextProvider'
+import Subscription from '$shared/components/Subscription'
+import { Context as ClientContext } from '$shared/contexts/StreamrClient'
 import * as services from '$editor/shared/services'
 
 export default class ModuleSubscription extends React.PureComponent {

@@ -7,7 +7,7 @@ import Notification from '$shared/utils/Notification'
 import Notifications from '$shared/components/Notifications'
 import BasicNotification from '$shared/components/Notifications/BasicNotification'
 import TransactionNotification from '$shared/components/Notifications/TransactionNotification'
-import ModalContext from '$shared/contexts/Modal'
+import { Context as ModalContext } from '$shared/contexts/ModalPortal'
 
 describe(Notifications, () => {
     const sandbox = sinon.createSandbox()

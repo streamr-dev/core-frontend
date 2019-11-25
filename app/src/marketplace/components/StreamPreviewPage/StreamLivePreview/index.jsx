@@ -1,8 +1,7 @@
 // @flow
 
-import React, { Component, Fragment } from 'react'
+import React, { Fragment, useState, useCallback, useRef, useContext } from 'react'
 import classnames from 'classnames'
-import StreamrClient from 'streamr-client'
 import { Table } from 'reactstrap'
 import moment from 'moment-timezone'
 import stringifyObject from 'stringify-object'
@@ -10,13 +9,18 @@ import throttle from 'lodash/throttle'
 import { Translate } from 'react-redux-i18n'
 import MediaQuery from 'react-responsive'
 import SwipeableViews from 'react-swipeable-views'
-import { sm } from '$app/scripts/breakpoints'
 
+import { sm } from '$app/scripts/breakpoints'
+import Subscription from '$shared/components/Subscription'
+import { Provider as SubscriptionStatusProvider } from '$shared/contexts/SubscriptionStatus'
+import { Context as ClientContext } from '$shared/contexts/StreamrClient'
 import { formatDateTime } from '../../../utils/time'
 import type { StreamId } from '$shared/flowtype/stream-types'
-import type { ResourceKeyId } from '$shared/flowtype/resource-key-types'
+import useIsMounted from '$shared/hooks/useIsMounted'
 
 import styles from './streamLivePreview.pcss'
+
+const tz = moment.tz.guess()
 
 export type DataPoint = {
     data: any,
@@ -30,7 +34,6 @@ export type DataPoint = {
 
 type Props = {
     streamId: ?StreamId,
-    authApiKeyId: ?ResourceKeyId,
     selectedDataPoint: ?DataPoint,
     onSelectDataPoint: (DataPoint, ?boolean) => void,
     run?: boolean,
@@ -38,152 +41,63 @@ type Props = {
     hasData?: () => void,
 }
 
-type State = {
-    visibleData: Array<DataPoint>,
-    subscriptionError: boolean,
-    dataError: boolean,
-    mobileTableColumnIndex: number,
-}
-
-let cachedClient: ?StreamrClient
-
 const LOCAL_DATA_LIST_LENGTH = 10
 
-export class StreamLivePreview extends Component<Props, State> {
-    static defaultProps = {
-        run: true,
-    }
+const prettyPrintData = (data: ?{}, compact: boolean = false) => stringifyObject(data, {
+    indent: '  ',
+    inlineCharacterLimit: compact ? Infinity : 5,
+})
 
-    state = {
-        visibleData: [],
-        subscriptionError: false,
-        dataError: false,
-        mobileTableColumnIndex: 0,
-    }
+const StreamLivePreview = ({
+    streamId,
+    selectedDataPoint,
+    onSelectDataPoint,
+    userpagesPreview,
+    hasData,
+    run = true,
+}: Props) => {
+    const dataRef = useRef([])
+    const [visibleData, setVisibleData] = useState([])
+    const [dataError, setDataError] = useState(false)
+    const [mobileTableColumnIndex, setMobileTableColumnIndex] = useState(0)
+    const { hasLoaded, client } = useContext(ClientContext)
+    const isMounted = useIsMounted()
 
-    componentDidMount() {
-        this.createClientAndSubscribe()
-    }
+    const updateDataToState = useCallback(throttle((data) => {
+        if (hasData && visibleData.length === 0) {
+            hasData()
+        }
+        setVisibleData([...data])
 
-    componentWillUnmount = () => {
-        this.unsubscribe()
-        this.updateDataToState.cancel()
-    }
+        if (!selectedDataPoint && data.length) {
+            onSelectDataPoint(data[0], true)
+        }
+    }, 100), [hasData, selectedDataPoint])
 
-    onData = (dataPoint: DataPoint) => {
-        if (this.props.hasData && this.state.visibleData.length === 0) {
-            this.props.hasData()
+    const onData = useCallback((data, metadata) => {
+        if (!isMounted()) { return }
+
+        const dataPoint: DataPoint = {
+            data,
+            metadata,
         }
 
-        if (this.props.run) {
-            this.data.unshift(dataPoint)
-            this.data.length = Math.min(this.data.length, LOCAL_DATA_LIST_LENGTH)
-            this.updateDataToState(this.data)
-        }
-    }
+        dataRef.current.unshift(dataPoint)
+        dataRef.current.length = Math.min(dataRef.current.length, LOCAL_DATA_LIST_LENGTH)
+        updateDataToState(dataRef.current)
+    }, [dataRef, updateDataToState, isMounted])
 
-    onMobileTableColumnIndexChange = (index: number) => {
-        this.setState({
-            mobileTableColumnIndex: index,
-        })
-    }
-
-    dataColumn: ?HTMLTableCellElement = null
-
-    createClientAndSubscribe = () => {
-        const { authApiKeyId, streamId } = this.props
-        this.client = this.createClient(authApiKeyId)
-        if (this.client && streamId) {
-            this.subscribe(streamId)
-        }
-    }
-
-    createClient = (authApiKeyId: ?ResourceKeyId): ?StreamrClient => {
-        if (!cachedClient || (authApiKeyId && cachedClient.options.apiKey !== authApiKeyId)) {
-            cachedClient = new StreamrClient({
-                url: process.env.STREAMR_WS_URL,
-                restUrl: process.env.STREAMR_API_URL,
-                auth: {
-                    apiKey: authApiKeyId || undefined,
-                },
-                autoConnect: true,
-                autoDisconnect: false,
-            })
-        }
-        return cachedClient
-    }
-
-    subscribe = (streamId: ?StreamId) => {
-        if (!streamId) {
-            return
-        }
-        if (this.subscription) {
-            this.unsubscribe()
-        }
-        try {
-            this.subscription = this.client.subscribe({
-                stream: streamId,
-                resend: {
-                    last: LOCAL_DATA_LIST_LENGTH,
-                },
-            }, (data, metadata) => this.onData({
-                data,
-                metadata,
-            }))
-        } catch (e) {
-            this.setState({
-                subscriptionError: true,
-            })
-        }
-
-        if (this.subscription) {
-            // Log errors thrown by stream
-            this.subscription.on('error', () => {
-                if (!this.state.dataError) {
-                    this.setState({
-                        dataError: true,
-                    })
-                }
-            })
-        }
-    }
-
-    unsubscribe = () => {
-        if (this.client && this.subscription) {
-            this.client.unsubscribe(this.subscription)
-        }
-    }
-
-    prettyPrintData = (data: ?{}, compact: boolean = false) => stringifyObject(data, {
-        indent: '  ',
-        inlineCharacterLimit: compact ? Infinity : 5,
-    })
-
-    subscription: any
-    data: Array<{}> = []
-    client: StreamrClient
-
-    updateDataToState = throttle((data) => {
-        this.setState({
-            visibleData: [...data],
-        })
-        if (!this.props.selectedDataPoint && data.length) {
-            this.props.onSelectDataPoint(data[0], true)
-        }
-    }, 100)
-
-    clearData = () => {
-        this.data = []
-        this.setState({
-            visibleData: [],
-        })
-    }
-
-    render() {
-        const { userpagesPreview } = this.props
-        const tz = moment.tz.guess()
-        const { visibleData, mobileTableColumnIndex } = this.state
-        return (
+    return (
+        <SubscriptionStatusProvider>
+            <Subscription
+                uiChannel={{
+                    id: streamId,
+                }}
+                resendLast={LOCAL_DATA_LIST_LENGTH}
+                isActive={run}
+                onMessage={onData}
+                onErrorMessage={() => setDataError(true)}
+            />
             <MediaQuery maxWidth={sm.max}>
                 {(isMobile) => {
                     const data = isMobile ? visibleData.slice(0, 5) : visibleData.slice(0, 8)
@@ -194,7 +108,7 @@ export class StreamLivePreview extends Component<Props, State> {
                                     <div className={styles.carouselContainer}>
                                         <SwipeableViews
                                             index={mobileTableColumnIndex}
-                                            onChangeIndex={this.onMobileTableColumnIndexChange}
+                                            onChangeIndex={(idx) => setMobileTableColumnIndex(idx)}
                                             slideStyle={{
                                                 overflow: 'visible',
                                             }}
@@ -224,7 +138,7 @@ export class StreamLivePreview extends Component<Props, State> {
                                                     {data.map((d) => (
                                                         <tr
                                                             key={JSON.stringify(d.metadata.messageId)}
-                                                            onClick={() => this.props.onSelectDataPoint(d)}
+                                                            onClick={() => onSelectDataPoint(d)}
                                                         >
                                                             <td className={styles.timestampColumn}>
                                                                 {formatDateTime(d.metadata
@@ -243,11 +157,7 @@ export class StreamLivePreview extends Component<Props, State> {
                                             >
                                                 <thead>
                                                     <tr>
-                                                        <th
-                                                            ref={(th) => {
-                                                                this.dataColumn = th
-                                                            }}
-                                                        >
+                                                        <th>
                                                             <Translate value="streamLivePreview.data" />
                                                         </th>
                                                     </tr>
@@ -256,11 +166,11 @@ export class StreamLivePreview extends Component<Props, State> {
                                                     {data.map((d) => (
                                                         <tr
                                                             key={JSON.stringify(d.metadata.messageId)}
-                                                            onClick={() => this.props.onSelectDataPoint(d)}
+                                                            onClick={() => onSelectDataPoint(d)}
                                                         >
                                                             <td className={styles.messageColumn}>
                                                                 <div className={styles.messagePreview}>
-                                                                    {this.prettyPrintData(d.data, true)}
+                                                                    {prettyPrintData(d.data, true)}
                                                                 </div>
                                                             </td>
                                                         </tr>
@@ -278,7 +188,7 @@ export class StreamLivePreview extends Component<Props, State> {
                                                 className={classnames(styles.dot, {
                                                     [styles.active]: mobileTableColumnIndex === idx,
                                                 })}
-                                                onClick={() => this.onMobileTableColumnIndexChange(idx)}
+                                                onClick={() => setMobileTableColumnIndex(idx)}
                                             />
                                         ))}
                                     </div>
@@ -296,11 +206,7 @@ export class StreamLivePreview extends Component<Props, State> {
                                             <th className={styles.timestampColumn}>
                                                 <Translate value="streamLivePreview.timestamp" />
                                             </th>
-                                            <th
-                                                ref={(th) => {
-                                                    this.dataColumn = th
-                                                }}
-                                            >
+                                            <th>
                                                 <Translate value="streamLivePreview.data" />
                                             </th>
                                         </tr>
@@ -309,14 +215,14 @@ export class StreamLivePreview extends Component<Props, State> {
                                         {data.map((d) => (
                                             <tr
                                                 key={JSON.stringify(d.metadata.messageId)}
-                                                onClick={() => this.props.onSelectDataPoint(d)}
+                                                onClick={() => onSelectDataPoint(d)}
                                             >
                                                 <td className={styles.timestampColumn}>
                                                     {formatDateTime(d.metadata && d.metadata.messageId && d.metadata.messageId.timestamp, tz)}
                                                 </td>
                                                 <td className={styles.messageColumn}>
                                                     <div className={styles.messagePreview}>
-                                                        {this.prettyPrintData(d.data, true)}
+                                                        {prettyPrintData(d.data, true)}
                                                     </div>
                                                 </td>
                                             </tr>
@@ -324,12 +230,12 @@ export class StreamLivePreview extends Component<Props, State> {
                                     </tbody>
                                 </Table>
                             )}
-                            {this.state.subscriptionError && (
+                            {hasLoaded && !client && (
                                 <p className={styles.errorNotice}>
                                     <Translate value="streamLivePreview.subscriptionErrorNotice" />
                                 </p>
                             )}
-                            {this.state.dataError && (
+                            {dataError && (
                                 <p className={styles.errorNotice}>
                                     <Translate value="streamLivePreview.dataErrorNotice" />
                                 </p>
@@ -338,8 +244,8 @@ export class StreamLivePreview extends Component<Props, State> {
                     )
                 }}
             </MediaQuery>
-        )
-    }
+        </SubscriptionStatusProvider>
+    )
 }
 
 export default StreamLivePreview

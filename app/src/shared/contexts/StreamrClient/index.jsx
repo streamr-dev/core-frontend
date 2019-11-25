@@ -17,9 +17,9 @@ import useIsMountedRef from '$shared/hooks/useIsMountedRef'
 import { usePending } from '$shared/hooks/usePending'
 import type { ResourceKeyId } from '$shared/flowtype/resource-key-types'
 
-type ContextProps = {
+export type ContextProps = {
     hasLoaded: boolean,
-    client: ?Object,
+    client: any,
     apiKey: ?ResourceKeyId,
 }
 
@@ -142,3 +142,8 @@ const withAuthApiKey = connect((state) => ({
 })
 
 export const ClientProvider = withAuthApiKey(connect(selectAuthState)(ClientProviderComponent))
+
+export {
+    ClientProvider as Provider,
+    ClientContext as Context,
+}

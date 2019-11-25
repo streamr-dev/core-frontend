@@ -3,7 +3,7 @@ import { mount } from 'enzyme'
 
 import { setupAuthorizationHeader, loadModuleDefinition } from '$editor/shared/tests/utils'
 import api from '$editor/shared/utils/api'
-import { ClientProviderComponent, createClient } from '$shared/components/StreamrClientContextProvider'
+import { ClientProviderComponent, createClient } from '$shared/contexts/StreamrClient'
 import ModuleSubscription from '$editor/shared/components/ModuleSubscription'
 import * as State from '$editor/canvas/state'
 import * as Services from '$editor/canvas/services'

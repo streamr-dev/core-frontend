@@ -5,7 +5,7 @@ import { act } from 'react-dom/test-utils'
 import api from '../utils/api'
 
 import * as Services from '../services'
-import { ClientProviderComponent, ClientContext } from '$shared/components/StreamrClientContextProvider'
+import { ClientProviderComponent, Context as ClientContext } from '$shared/contexts/StreamrClient'
 
 describe('Client', () => {
     let teardown

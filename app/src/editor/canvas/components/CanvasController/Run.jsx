@@ -6,7 +6,7 @@ import React, { useContext, useState, useCallback, useMemo } from 'react'
 import get from 'lodash/get'
 
 import useIsMountedRef from '$shared/hooks/useIsMountedRef'
-import * as SubscriptionStatus from '$editor/shared/components/SubscriptionStatus'
+import * as SubscriptionStatus from '$shared/contexts/SubscriptionStatus'
 import usePending from '$shared/hooks/usePending'
 
 import * as services from '../../services'

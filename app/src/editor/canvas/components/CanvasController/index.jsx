@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react'
 import { Helmet } from 'react-helmet'
 
-import * as RouterContext from '$shared/components/RouterContextProvider'
+import * as RouterContext from '$shared/contexts/Router'
 import { usePending } from '$shared/hooks/usePending'
 import { handleLoadError, canHandleLoadError } from '$auth/utils/loginInterceptor'
 

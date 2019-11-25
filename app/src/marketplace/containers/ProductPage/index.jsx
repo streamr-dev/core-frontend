@@ -8,14 +8,14 @@ import { withRouter } from 'react-router-dom'
 
 import Layout from '$shared/components/Layout'
 import type { ProductId, CommunityId } from '$mp/flowtype/product-types'
-import * as RouterContext from '$shared/components/RouterContextProvider'
+import * as RouterContext from '$shared/contexts/Router'
 import ProductController, { useController } from '../ProductController'
 import usePending from '$shared/hooks/usePending'
 
 import { getProductSubscription } from '$mp/modules/product/actions'
 import BackButton from '$shared/components/BackButton'
 import LoadingIndicator from '$userpages/components/LoadingIndicator'
-import { Provider as ModalProvider } from '$shared/components/ModalContextProvider'
+import { Provider as ModalProvider } from '$shared/contexts/ModalApi'
 
 import { getRelatedProducts } from '../../modules/relatedProducts/actions'
 import PurchaseModal from './PurchaseModal'

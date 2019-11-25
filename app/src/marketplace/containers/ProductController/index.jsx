@@ -3,8 +3,8 @@
 import React, { type Node, type Context, useMemo, useContext, useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 
-import * as RouterContext from '$shared/components/RouterContextProvider'
-import { Provider as PendingProvider } from '$shared/components/PendingContextProvider'
+import * as RouterContext from '$shared/contexts/Router'
+import { Provider as PendingProvider } from '$shared/contexts/Pending'
 import { Provider as ValidationContextProvider } from './ValidationContextProvider'
 import { Provider as PermissionsProvider } from './useProductPermissions'
 import { usePending } from '$shared/hooks/usePending'

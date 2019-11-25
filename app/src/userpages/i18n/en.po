@@ -287,6 +287,9 @@ msgstr "Description"
 msgid "userpages##streams##edit##details##streamId"
 msgstr "Stream ID"
 
+msgid "userpages##streams##edit##details##partitions"
+msgstr "Partitions"
+
 msgid "userpages##streams##edit##details##copyStreamId"
 msgstr "Copy Stream ID"
 
