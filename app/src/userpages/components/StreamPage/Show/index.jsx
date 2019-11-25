@@ -29,7 +29,6 @@ import {
 import { getMyResourceKeys } from '$shared/modules/resourceKey/actions'
 import { selectEditedStream, selectPermissions, selectFetching } from '$userpages/modules/userPageStreams/selectors'
 import { selectUserData } from '$shared/modules/user/selectors'
-import { selectAuthApiKeyId } from '$shared/modules/resourceKey/selectors'
 import DetailsContainer from '$shared/components/Container/Details'
 import TOCPage from '$userpages/components/TOCPage'
 import Toolbar from '$shared/components/Toolbar'
@@ -54,7 +53,6 @@ type StateProps = {
     editedStream: ?Stream,
     permissions: ?Array<Operation>,
     currentUser: ?User,
-    authApiKeyId: ?ResourceKeyId,
     isFetching: ?boolean,
 }
 
@@ -149,7 +147,6 @@ export class StreamShowView extends Component<Props, State> {
             editedStream,
             cancel,
             currentUser,
-            authApiKeyId,
             permissions,
             isFetching,
         } = this.props
@@ -246,7 +243,6 @@ export class StreamShowView extends Component<Props, State> {
                             <PreviewView
                                 stream={editedStream}
                                 currentUser={currentUser}
-                                authApiKeyId={authApiKeyId}
                             />
                         </TOCPage.Section>
                         <TOCPage.Section
@@ -334,7 +330,6 @@ const mapStateToProps = (state: StoreState): StateProps => ({
     editedStream: selectEditedStream(state),
     permissions: selectPermissions(state),
     currentUser: selectUserData(state),
-    authApiKeyId: selectAuthApiKeyId(state),
     isFetching: selectFetching(state),
 })
 

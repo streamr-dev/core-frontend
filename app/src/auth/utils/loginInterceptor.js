@@ -27,8 +27,10 @@ function shouldRedirect(error) {
     if (error.response && error.response.status === 401) {
         const url = new window.URL(error.config.url)
         const me = new window.URL(formatApiUrl('users', 'me'))
+        const keys = new window.URL(formatApiUrl('users', 'me', 'keys'))
+
         // shouldn't redirect if hitting /users/me api, 401 normal, signals logged out
-        if (me.pathname === url.pathname && me.origin === url.origin && error.config.method === 'get') {
+        if ([me.pathname, keys.pathname].includes(url.pathname) && me.origin === url.origin && error.config.method === 'get') {
             return false
         }
         return true

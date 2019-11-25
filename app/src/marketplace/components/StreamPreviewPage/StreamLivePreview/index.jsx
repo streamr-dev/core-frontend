@@ -16,6 +16,7 @@ import { Provider as SubscriptionStatusProvider } from '$shared/contexts/Subscri
 import { Context as ClientContext } from '$shared/contexts/StreamrClient'
 import { formatDateTime } from '../../../utils/time'
 import type { StreamId } from '$shared/flowtype/stream-types'
+import useIsMounted from '$shared/hooks/useIsMounted'
 
 import styles from './streamLivePreview.pcss'
 
@@ -60,6 +61,7 @@ const StreamLivePreview = ({
     const [dataError, setDataError] = useState(false)
     const [mobileTableColumnIndex, setMobileTableColumnIndex] = useState(0)
     const { hasLoaded, client } = useContext(ClientContext)
+    const isMounted = useIsMounted()
 
     const updateDataToState = useCallback(throttle((data) => {
         if (hasData && visibleData.length === 0) {
@@ -73,6 +75,8 @@ const StreamLivePreview = ({
     }, 100), [hasData, selectedDataPoint])
 
     const onData = useCallback((data, metadata) => {
+        if (!isMounted()) { return }
+
         const dataPoint: DataPoint = {
             data,
             metadata,
@@ -81,7 +85,7 @@ const StreamLivePreview = ({
         dataRef.current.unshift(dataPoint)
         dataRef.current.length = Math.min(dataRef.current.length, LOCAL_DATA_LIST_LENGTH)
         updateDataToState(dataRef.current)
-    }, [dataRef, updateDataToState])
+    }, [dataRef, updateDataToState, isMounted])
 
     return (
         <SubscriptionStatusProvider>
