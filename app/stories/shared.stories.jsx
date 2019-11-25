@@ -31,7 +31,7 @@ import PngIcon from '$shared/components/PngIcon'
 import Dropdown from '$shared/components/Dropdown'
 import Slider from '$shared/components/Slider'
 import Modal from '$shared/components/Modal'
-import ModalRoot from '$shared/components/ModalRoot'
+import { Provider as ModalPortalProvider } from '$shared/contexts/ModalPortal'
 import ErrorDialog from '$mp/components/Modal/ErrorDialog'
 import Notifications from '$shared/components/Notifications'
 import Notification from '$shared/utils/Notification'
@@ -568,7 +568,7 @@ story('Modal')
     .addWithJSX('basic', () => (
         <React.Fragment>
             <div id="modal-root" />
-            <ModalRoot>
+            <ModalPortalProvider>
                 <h1>Lorem ipsum cause dolor sit emat!</h1>
                 {boolean('Visible', true) && (
                     <Modal>
@@ -579,7 +579,7 @@ story('Modal')
                         />
                     </Modal>
                 )}
-            </ModalRoot>
+            </ModalPortalProvider>
         </React.Fragment>
     ))
 
@@ -590,7 +590,7 @@ story('Notifications')
         return (
             <React.Fragment>
                 <div id="modal-root" />
-                <ModalRoot>
+                <ModalPortalProvider>
                     <button
                         type="button"
                         onClick={() => {
@@ -625,7 +625,7 @@ story('Notifications')
                             />
                         </Modal>
                     )}
-                </ModalRoot>
+                </ModalPortalProvider>
             </React.Fragment>
         )
     })

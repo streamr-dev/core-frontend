@@ -10,8 +10,8 @@ type Context = {
 
 const defaultContext: Context = {
     isModalOpen: false,
-    registerModal: null,
-    unregisterModal: null,
+    registerModal: undefined,
+    unregisterModal: undefined,
 }
 
 export const ModalPortalContext: ReactContext<Context> = React.createContext(defaultContext)
