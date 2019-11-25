@@ -5,6 +5,8 @@ import { I18n, Translate } from 'react-redux-i18n'
 import cx from 'classnames'
 import { Label, FormGroup } from 'reactstrap'
 
+import type { Kind } from '$shared/components/Button'
+
 import Dialog from '$shared/components/Dialog'
 import Modal from '$shared/components/Modal'
 import Buttons from '$shared/components/Buttons'
@@ -14,7 +16,7 @@ import styles from './confirmDialog.pcss'
 
 type Button = string | {
     title: string,
-    color?: 'outline' | 'primary' | 'danger',
+    kind?: Kind,
     disabled?: boolean,
     spinner?: boolean,
 }
@@ -68,14 +70,14 @@ const ConfirmDialog = (props: Props) => {
         cancel: {
             title: I18n.t('modal.common.cancel'),
             onClick: onReject,
-            color: 'link',
+            kind: 'link',
             outline: true,
             ...cancelButtonProps,
         },
         save: {
             title: I18n.t('modal.common.ok'),
             onClick: (event) => onAccept(event, checked),
-            color: 'primary',
+            kind: 'primary',
             ...acceptButtonProps,
         },
     }

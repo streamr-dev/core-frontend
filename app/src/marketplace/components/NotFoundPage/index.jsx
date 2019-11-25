@@ -11,6 +11,8 @@ import Layout from '$shared/components/Layout'
 import links from '../../../links'
 import pageNotFoundPic from '$shared/assets/images/404_blocks.png'
 import pageNotFoundPic2x from '$shared/assets/images/404_blocks@2x.png'
+import Button from '$shared/components/Button'
+
 import styles from './notFoundPage.pcss'
 
 const NotFoundPage = () => (
@@ -27,24 +29,27 @@ const NotFoundPage = () => (
                 )}
                 link={(
                     <React.Fragment>
-                        <Link
+                        <Button
+                            kind="special"
+                            tag={Link}
                             to={links.userpages.main}
-                            className="btn btn-special"
                         >
                             <Translate value="notFoundPage.coreApp" />
-                        </Link>
-                        <Link
+                        </Button>
+                        <Button
+                            kind="special"
+                            tag={Link}
                             to={links.marketplace.main}
-                            className="btn btn-special"
                         >
                             <Translate value="notFoundPage.top" />
-                        </Link>
-                        <Link
+                        </Button>
+                        <Button
+                            kind="special"
+                            tag={Link}
                             to={links.root}
-                            className="btn btn-special"
                         >
                             <Translate value="notFoundPage.publicSite" />
-                        </Link>
+                        </Button>
                     </React.Fragment>
                 )}
                 linkOnMobile

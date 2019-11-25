@@ -2,7 +2,6 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import cx from 'classnames'
 import { I18n, Translate } from 'react-redux-i18n'
 
 import { setResourceHighestOperationForUser, removeAllResourcePermissionsByUser } from '../../../../../modules/permission/actions'
@@ -11,9 +10,9 @@ import type { Permission, ResourceType, ResourceId } from '../../../../../flowty
 import { selectUserData } from '$shared/modules/user/selectors'
 import SvgIcon from '$shared/components/SvgIcon'
 import SelectInput from '$shared/components/SelectInput'
+import Button from '$shared/components/Button'
 
 import styles from './shareDialogPermission.pcss'
-import buttonStyles from '$shared/components/Button/button.pcss'
 
 type StateProps = {}
 
@@ -72,13 +71,13 @@ export class ShareDialogPermission extends Component<Props> {
                         value={options[highestOperationIndex]}
                         onChange={this.onSelect}
                     />
-                    <button
-                        type="button"
+                    <Button
+                        kind="secondary"
                         onClick={this.onRemove}
-                        className={cx(styles.button, buttonStyles.btn, buttonStyles.btnOutline)}
+                        className={styles.button}
                     >
                         <SvgIcon name="crossHeavy" />
-                    </button>
+                    </Button>
                 </div>
                 {errors.length > 0 && (
                     <div className={styles.errorContainer}>

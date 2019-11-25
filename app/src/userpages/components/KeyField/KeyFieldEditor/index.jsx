@@ -138,14 +138,13 @@ class KeyFieldEditor extends React.Component<Props, State> {
                     actions={{
                         save: {
                             title: I18n.t(`userpages.keyFieldEditor.${createNew ? 'add' : 'save'}`),
-                            color: 'primary',
-                            outline: true,
+                            kind: 'secondary',
                             onClick: this.onSave,
                             disabled: !filled || waiting,
                             spinner: waiting,
                         },
                         cancel: {
-                            color: 'link',
+                            kind: 'link',
                             className: 'grey-container',
                             title: I18n.t('userpages.keyFieldEditor.cancel'),
                             outline: true,

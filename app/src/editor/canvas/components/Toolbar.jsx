@@ -115,7 +115,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
             message: I18n.t('userpages.canvases.delete.confirmMessage'),
             acceptButton: {
                 title: I18n.t('userpages.canvases.delete.confirmButton'),
-                color: 'danger',
+                kind: 'destructive',
             },
             centerButtons: true,
             dontShowAgain: false,

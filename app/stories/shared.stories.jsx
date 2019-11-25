@@ -41,10 +41,12 @@ import ContextMenu from '$shared/components/ContextMenu'
 import { NotificationIcon } from '$shared/utils/constants'
 import RadioButtonGroup from '$shared/components/RadioButtonGroup'
 import Toolbar from '$shared/components/Toolbar'
+import Spinner from '$shared/components/Spinner'
 import DeploySpinner from '$shared/components/DeploySpinner'
 import Label from '$shared/components/Label'
 import Tile from '$shared/components/Tile'
 import DonutChart from '$shared/components/DonutChart'
+import Button from '$shared/components/Button'
 
 import sharedStyles from './shared.pcss'
 
@@ -426,7 +428,7 @@ story('Dialog')
         if (boolean('hasCancel', true)) {
             actions.cancel = {
                 title: 'Cancel',
-                outline: true,
+                kind: 'link',
                 onClick: action('onDismiss'),
             }
         }
@@ -435,7 +437,7 @@ story('Dialog')
             const waitingForSave = boolean('waitingForSave', false)
             actions.ok = {
                 title: waitingForSave ? 'Saving....' : 'Save',
-                color: 'primary',
+                kind: 'primary',
                 onClick: action('onSave'),
                 disabled: waitingForSave,
                 spinner: waitingForSave,
@@ -714,12 +716,12 @@ story('RadioButtonGroup')
 const toolbarActions = {
     cancel: {
         title: 'Cancel',
-        color: 'link',
+        kind: 'link',
         onClick: action('cancel'),
     },
     ok: {
         title: 'Ok',
-        color: 'primary',
+        kind: 'primary',
         onClick: action('ok'),
         disabled: boolean('disabled'),
         spinner: boolean('spinner'),
@@ -886,4 +888,53 @@ story('DonutChart')
                 },
             ]}
         />
+    ))
+
+story('Spinner')
+    .addWithJSX('Small', () => (<Spinner size="small" />))
+    .addWithJSX('Large', () => (<Spinner size="large" />))
+    .addWithJSX('Green', () => (<Spinner color="green" />))
+    .addWithJSX('White', () => (<Spinner color="white" />))
+
+story('Button')
+    .addWithJSX('all', () => (
+        <div>
+            <Button kind="primary" size="mini" onClick={action('Clicked')}>Primary mini</Button>
+            <br />
+            <Button kind="primary" size="normal" onClick={action('Clicked')}>Primary normal</Button>
+            <br />
+            <Button kind="primary" size="big" onClick={action('Clicked')}>Primary big</Button>
+            <br />
+            <Button kind="primary" size="normal" disabled onClick={action('Clicked')}>Primary normal disabled</Button>
+            <br />
+            <Button kind="primary" size="normal" outline onClick={action('Clicked')}>Primary normal outline</Button>
+            <br />
+            <Button kind="secondary" size="mini" onClick={action('Clicked')}>Secondary mini</Button>
+            <br />
+            <Button kind="secondary" size="normal" onClick={action('Clicked')}>Secondary normal</Button>
+            <br />
+            <Button kind="secondary" size="big" onClick={action('Clicked')}>Secondary big</Button>
+            <br />
+            <Button kind="secondary" size="normal" disabled onClick={action('Clicked')}>Secondary normal disabled</Button>
+            <br />
+            <Button kind="secondary" size="normal" outline onClick={action('Clicked')}>Secondary normal outline</Button>
+            <br />
+            <Button kind="destructive" onClick={action('Clicked')}>Destructive</Button>
+            <br />
+            <Button kind="destructive" disabled onClick={action('Clicked')}>Destructive disabled</Button>
+            <br />
+            <Button kind="link" variant="dark" onClick={action('Clicked')}>Link (dark)</Button>
+            <br />
+            <Button kind="link" variant="light" onClick={action('Clicked')}>Link (light)</Button>
+            <br />
+            <Button kind="special" variant="dark" onClick={action('Clicked')}>Special (dark)</Button>
+            <br />
+            <Button kind="special" variant="light" onClick={action('Clicked')}>Special (light)</Button>
+            <br />
+            <Button tag="a" href="#" onClick={action('Clicked')}>With link tag</Button>
+            <br />
+            <Button kind="primary" waiting onClick={action('Clicked')}>Waiting primary</Button>
+            <br />
+            <Button kind="secondary" waiting onClick={action('Clicked')}>Waiting secondary</Button>
+        </div>
     ))

@@ -1,13 +1,11 @@
 // @flow
 
 import React, { Fragment } from 'react'
-import { Button } from 'reactstrap'
 import { Translate } from 'react-redux-i18n'
 
+import Button from '$shared/components/Button'
 import Modal from '$shared/components/Modal'
 import AddIdentityDialog from '$userpages/components/ProfilePage/IdentityHandler/AddIdentityDialog'
-
-import styles from './addIdentityButton.pcss'
 
 type Props = {}
 
@@ -37,10 +35,7 @@ class AddIdentityButton extends React.Component<Props, State> {
         return (
             <Fragment>
                 <Button
-                    className={styles.button}
-                    color="userpages"
-                    type="button"
-                    outline
+                    kind="secondary"
                     disabled={modalOpen}
                     onClick={this.onShowModal}
                 >

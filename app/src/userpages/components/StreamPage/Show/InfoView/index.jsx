@@ -2,10 +2,10 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Button } from 'reactstrap'
 import copy from 'copy-to-clipboard'
 import { I18n, Translate } from 'react-redux-i18n'
 
+import Button from '$shared/components/Button'
 import Notification from '$shared/utils/Notification'
 import type { Stream } from '$shared/flowtype/stream-types'
 import type { StoreState } from '$shared/flowtype/store-state'
@@ -140,7 +140,9 @@ export class InfoView extends Component<Props, State> {
                                 />
                             </div>
                             <Button
-                                color="userpages"
+                                kind="secondary"
+                                size="mini"
+                                outline
                                 className={styles.copyStreamIdButton}
                                 onClick={() => this.copyStreamTap(stream.id)}
                             >

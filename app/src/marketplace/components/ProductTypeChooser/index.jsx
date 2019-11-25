@@ -1,9 +1,9 @@
 // @flow
 
 import * as React from 'react'
-import cx from 'classnames'
 import { Translate, I18n } from 'react-redux-i18n'
 
+import Button from '$shared/components/Button'
 import standardProductImage from '$mp/assets/product_standard.png'
 import standardProductImage2x from '$mp/assets/product_standard@2x.png'
 import communityProductImage from '$mp/assets/product_community.png'
@@ -37,13 +37,13 @@ const ProductTypeChooser = ({ onSelect }: Props) => (
                     <div className={styles.description}>
                         <Translate value="productTypeChooser.standard.description" />
                     </div>
-                    <button
-                        type="button"
-                        className={cx('btn', 'btn-special', styles.button)}
+                    <Button
+                        kind="special"
+                        className={styles.button}
                         onClick={() => onSelect('NORMAL')}
                     >
                         <Translate value="productTypeChooser.standard.linkTitle" />
-                    </button>
+                    </Button>
                 </div>
             </div>
             <div className={styles.padding} />
@@ -61,13 +61,13 @@ const ProductTypeChooser = ({ onSelect }: Props) => (
                     <div className={styles.description}>
                         <Translate value="productTypeChooser.community.description" />
                     </div>
-                    <button
-                        type="button"
-                        className={cx('btn', 'btn-special', styles.button)}
+                    <Button
+                        kind="special"
+                        className={styles.button}
                         onClick={() => onSelect('COMMUNITY')}
                     >
                         <Translate value="productTypeChooser.community.linkTitle" />
-                    </button>
+                    </Button>
                 </div>
             </div>
             <div className={styles.padding} />

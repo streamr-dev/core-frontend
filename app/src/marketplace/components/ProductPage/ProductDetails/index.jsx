@@ -2,10 +2,10 @@
 
 import React, { useRef, useState, useCallback } from 'react'
 import cx from 'classnames'
-import { Button } from 'reactstrap'
 import { Translate, I18n } from 'react-redux-i18n'
 import scrollIntoView from 'smooth-scroll-into-view-if-needed'
 
+import Button from '$shared/components/Button'
 import Link from '$shared/components/Link'
 import { isPaidProduct } from '$mp/utils/product'
 import type { Product } from '$mp/flowtype/product-types'
@@ -34,7 +34,6 @@ const buttonTitle = (product: Product, isValidSubscription: boolean) => {
 
 const ProductDetails = ({ product, isValidSubscription, onPurchase }: Props) => {
     const productDetailsRef = useRef(null)
-
     const truncationRequired = !((product.description || '').length < 400)
     const [truncated, setTruncatedState] = useState(truncationRequired)
 
@@ -80,7 +79,7 @@ const ProductDetails = ({ product, isValidSubscription, onPurchase }: Props) => 
             <div className={styles.buttonWrapper}>
                 <Button
                     className={styles.button}
-                    color="primary"
+                    kind="primary"
                     disabled={(!isPaidProduct(product) && isValidSubscription) || product.state !== productStates.DEPLOYED}
                     onClick={onPurchase}
                 >

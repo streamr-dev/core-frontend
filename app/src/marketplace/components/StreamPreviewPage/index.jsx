@@ -6,11 +6,11 @@ import { Link } from 'react-router-dom'
 import findIndex from 'lodash/findIndex'
 import { Translate, I18n } from 'react-redux-i18n'
 
-import { Button } from 'reactstrap'
 import type { StreamId, StreamList } from '$shared/flowtype/stream-types'
 import type { User } from '$shared/flowtype/user-types'
 import type { ResourceKeyId } from '$shared/flowtype/resource-key-types'
 import type { ProductId } from '../../flowtype/product-types'
+import Button from '$shared/components/Button'
 import routes from '$routes'
 
 import StreamLivePreviewTable, { type DataPoint } from './StreamLivePreview'
@@ -206,20 +206,18 @@ class StreamPreviewPage extends React.Component<Props, State> {
                         {productId &&
                             <div className={styles.footer}>
                                 <Button
-                                    outline
-                                    color="secondary"
+                                    kind="secondary"
                                     disabled={!prevStreamId}
-                                    className={classnames(styles.button, styles.prevbutton)}
+                                    className={styles.button}
                                     to={prevStreamUrl}
                                     tag={Link}
                                 >
                                     <Translate value="modal.streamLiveData.previous" />
                                 </Button>
                                 <Button
-                                    outline
-                                    color="secondary"
+                                    kind="secondary"
                                     disabled={!nextStreamId}
-                                    className={classnames(styles.button, styles.nextButton)}
+                                    className={styles.button}
                                     to={nextStreamUrl}
                                     tag={Link}
                                 >

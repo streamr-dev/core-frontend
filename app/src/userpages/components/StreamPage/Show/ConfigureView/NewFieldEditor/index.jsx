@@ -1,9 +1,9 @@
 // @flow
 
 import React, { Component } from 'react'
-import { Button } from 'reactstrap'
 import { I18n, Translate } from 'react-redux-i18n'
 
+import Button from '$shared/components/Button'
 import Dropdown from '$shared/components/Dropdown'
 import TextInput from '$shared/components/TextInput'
 import type { StreamField } from '$shared/flowtype/stream-types'
@@ -113,6 +113,7 @@ export class NewFieldEditor extends Component<Props, State> {
                     </Dropdown>
                 </SplitControl>
                 <Button
+                    kind="secondary"
                     disabled={nameError !== null}
                     className={styles.addButton}
                     onClick={this.onConfirm}
@@ -120,9 +121,9 @@ export class NewFieldEditor extends Component<Props, State> {
                     <Translate value="userpages.streams.edit.configure.newFieldEditor.add" />
                 </Button>
                 <Button
+                    kind="link"
                     className={styles.cancelButton}
                     onClick={onCancel}
-                    color="link"
                 >
                     <Translate value="userpages.streams.edit.configure.newFieldEditor.cancel" />
                 </Button>

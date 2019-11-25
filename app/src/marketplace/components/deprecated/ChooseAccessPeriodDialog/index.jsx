@@ -71,11 +71,11 @@ export class ChooseAccessPeriodDialog extends React.Component<Props, State> {
                     cancel: {
                         title: I18n.t('modal.common.cancel'),
                         onClick: onCancel,
-                        color: 'link',
+                        kind: 'link',
                     },
                     next: {
                         title: I18n.t('modal.common.next'),
-                        color: 'primary',
+                        kind: 'primary',
                         outline: true,
                         onClick: () => onNext(time, timeUnit),
                         disabled: BN(time).isNaN() || BN(time).isLessThanOrEqualTo(0),

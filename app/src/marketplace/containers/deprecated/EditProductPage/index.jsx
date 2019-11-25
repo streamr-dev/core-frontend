@@ -172,6 +172,7 @@ export class EditProductPage extends Component<Props, State> {
                 toolbarActions.saveAndExit = {
                     title: this.getUpdateButtonTitle(editProduct),
                     disabled: this.isUpdateButtonDisabled(editProduct),
+                    kind: 'primary',
                     onClick: () => this.validateProductBeforeSaving(() => redirect(links.userpages.products)),
                 }
             }
@@ -180,7 +181,7 @@ export class EditProductPage extends Component<Props, State> {
                 toolbarActions.publish = {
                     title: this.getPublishButtonTitle(editProduct),
                     disabled: this.isPublishButtonDisabled(editProduct),
-                    color: 'primary',
+                    kind: 'primary',
                     onClick: () => this.validateProductBeforeSaving((id) => noHistoryRedirect(links.marketplace.products, id, 'publish')),
                     className: 'd-none d-sm-inline-block',
                 }
@@ -193,11 +194,12 @@ export class EditProductPage extends Component<Props, State> {
         return {
             saveAndExit: {
                 title: I18n.t('editProductPage.save'),
+                kind: 'primary',
                 onClick: () => this.validateProductBeforeSaving(onSaveAndExit),
             },
             publish: {
                 title: I18n.t('editProductPage.publish'),
-                color: 'primary',
+                kind: 'primary',
                 onClick: () => this.validateProductBeforeSaving(onPublish),
                 className: 'd-none d-sm-block',
             },

@@ -2,7 +2,6 @@
 
 import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
-import { Button } from 'reactstrap'
 import { Translate, I18n } from 'react-redux-i18n'
 import { Link } from 'react-router-dom'
 import { push } from 'connected-react-router'
@@ -26,6 +25,7 @@ import DocsShortcuts from '$userpages/components/DocsShortcuts'
 import ListContainer from '$shared/components/Container/List'
 import TileGrid from '$shared/components/TileGrid'
 import { isCommunityProduct } from '$mp/utils/product'
+import Button from '$shared/components/Button'
 
 import type { ProductList, ProductId, Product } from '$mp/flowtype/product-types'
 import type { Filter, SortOption } from '$userpages/flowtype/common-types'
@@ -50,7 +50,6 @@ type Props = StateProps & DispatchProps
 
 const CreateProductButton = () => (
     <Button
-        color="primary"
         className={styles.createProductButton}
         tag={Link}
         to={links.marketplace.createProduct}

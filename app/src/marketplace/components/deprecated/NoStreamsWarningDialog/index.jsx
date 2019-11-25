@@ -25,11 +25,11 @@ const NoStreamsWarningDialog = ({ onClose, onContinue, waiting }: Props) => (
             cancel: {
                 title: I18n.t('modal.common.cancel'),
                 onClick: onClose,
-                color: 'link',
+                kind: 'link',
             },
             continue: {
                 title: I18n.t('editProductPage.edit'),
-                color: 'primary',
+                kind: 'primary',
                 onClick: onContinue,
             },
         }}

@@ -17,6 +17,7 @@ import routes from '$routes'
 
 import isEditableElement from '$editor/shared/utils/isEditableElement'
 import UndoControls from '$editor/shared/components/UndoControls'
+import Button from '$shared/components/Button'
 import * as UndoContext from '$shared/components/UndoContextProvider'
 import { Provider as PendingProvider } from '$shared/components/PendingContextProvider'
 import Subscription from '$editor/shared/components/Subscription'
@@ -551,22 +552,25 @@ const CanvasEditWrap = () => {
 
 const CanvasErrorPage = () => (
     <ErrorPageContent>
-        <Link
+        <Button
+            kind="special"
+            tag={Link}
             to=""
             onClick={(event) => {
                 event.preventDefault()
                 window.location.reload()
             }}
-            className="btn btn-special"
         >
             <Translate value="editor.error.refresh" />
-        </Link>
-        <Link
+        </Button>
+        <Button
+            kind="special"
+            tag={Link}
             to={routes.canvases()}
-            className="btn btn-special d-none d-md-inline-block"
+            className="d-none d-md-inline-block"
         >
             <Translate value="editor.general.backToCanvases" />
-        </Link>
+        </Button>
     </ErrorPageContent>
 )
 

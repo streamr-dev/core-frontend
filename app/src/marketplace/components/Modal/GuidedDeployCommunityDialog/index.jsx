@@ -175,12 +175,12 @@ const GuidedDeployCommunityDialog = ({ product, onClose, onContinue: onContinueP
                                 cancel: {
                                     title: I18n.t('modal.common.cancel'),
                                     onClick: onClose,
-                                    color: 'link',
+                                    kind: 'link',
                                     disabled: waitingOnContinue,
                                 },
                                 continue: isLastStep ? {
                                     title: I18n.t('modal.common.deploy'),
-                                    color: 'primary',
+                                    kind: 'primary',
                                     onClick: onContinue,
                                     spinner: waitingOnContinue,
                                     disabled: waitingOnContinue,

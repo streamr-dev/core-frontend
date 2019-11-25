@@ -1,7 +1,11 @@
+.container {
+  display: inline-flex;
+  align-self: center;
+}
+
 .spinner {
   display: inline-block;
   position: relative;
-  text-indent: -9999em;
   transform: translateZ(0);
   animation: spin 1.1s infinite linear;
 
@@ -12,6 +16,17 @@
     min-height: 16px;
     line-height: 1;
   }
+}
+
+.screenReaderText {
+  clip: rect(1px, 1px, 1px, 1px);
+  clip-path: inset(50%);
+  height: 1px;
+  width: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
 }
 
 .small {
