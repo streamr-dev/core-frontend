@@ -98,7 +98,7 @@ const EditorNav = () => {
         }
     }, [clickTargetRef])
 
-    const sections = useMemo(() => [{
+    let sections = useMemo(() => [{
         id: 'product-name',
         heading: I18n.t('editProductPage.navigation.name'),
         status: getStatus('name'),
@@ -136,6 +136,10 @@ const EditorNav = () => {
         sharedSecretStatus,
         onClickFn,
     ])
+
+    if (!isCommunity) {
+        sections = sections.filter((s) => s.id !== 'shared-secrets')
+    }
 
     const sectionAnchors = useMemo(() => sections.map(({ id }) => id), [sections])
 

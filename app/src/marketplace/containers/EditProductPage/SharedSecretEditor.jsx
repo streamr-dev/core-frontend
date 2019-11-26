@@ -8,7 +8,7 @@ import KeyField from '$userpages/components/KeyField'
 import AddKeyField from '$userpages/components/KeyField/AddKeyField'
 import useProduct from '../ProductController/useProduct'
 import { getSecrets, postSecret, putSecret, deleteSecret } from '$mp/modules/communityProduct/services'
-import { isCommunityProduct } from '$mp/utils/product'
+import type { Secret } from '$mp/modules/communityProduct/types'
 
 import styles from './sharedSecretEditor.pcss'
 
@@ -16,16 +16,10 @@ type Props = {
     className?: string
 }
 
-type Secret = {
-    id: string,
-    name: string,
-    secret: string,
-}
-
 const SharedSecretEditor = ({ className }: Props) => {
     const product = useProduct()
     const [secrets, setSecrets] = useState([])
-    const communityId = (product && isCommunityProduct(product) && product.beneficiaryAddress) || ''
+    const communityId = (product && product.beneficiaryAddress) || ''
 
     const fetchSecrets = useCallback(async () => {
         try {
@@ -43,7 +37,7 @@ const SharedSecretEditor = ({ className }: Props) => {
     }, [communityId, fetchSecrets])
 
     return (
-        <div className={cx(className)}>
+        <div id="shared-secrets" className={cx(className)}>
             {secrets.map((s: Secret) => (
                 <KeyField
                     key={s.id}
