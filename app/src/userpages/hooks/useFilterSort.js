@@ -1,9 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react'
 
 function useFilterSort(sortOptions = []) {
-    const [search, setSearch] = useState(undefined)
-    const [filterOptions, setFilterOptions] = useState(undefined)
-
     const defaultFilter = useMemo(() => {
         if (sortOptions && sortOptions.length > 0) {
             return sortOptions[0].filter
@@ -11,6 +8,9 @@ function useFilterSort(sortOptions = []) {
 
         return undefined
     }, [sortOptions])
+
+    const [filterOptions, setFilterOptions] = useState(defaultFilter)
+    const [search, setSearch] = useState(undefined)
 
     useEffect(() => {
         setFilterOptions((previousFilterOptions) => {
