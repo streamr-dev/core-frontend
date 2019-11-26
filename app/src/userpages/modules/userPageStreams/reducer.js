@@ -38,7 +38,6 @@ import {
     CONFIRM_CSV_FILE_UPLOAD_FAILURE,
     OPEN_STREAM,
     CANCEL_CSV_FILE_UPLOAD,
-    UPDATE_FILTER,
     UPDATE_EDIT_STREAM,
     UPDATE_EDIT_STREAM_FIELD,
     DELETE_DATA_UP_TO_REQUEST,
@@ -58,7 +57,6 @@ const initialState = {
     fetching: false,
     error: null,
     csvUpload: null,
-    filter: null,
     editedStream: null,
     deleteDataError: null,
     autodetectFetching: false,
@@ -262,12 +260,6 @@ export default function (state: UserPageStreamsState = initialState, action: Str
                 ...state,
                 csvUpload: null,
                 fetching: false,
-            }
-
-        case UPDATE_FILTER:
-            return {
-                ...state,
-                filter: action.filter,
             }
 
         case UPDATE_EDIT_STREAM:

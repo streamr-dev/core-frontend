@@ -1,6 +1,6 @@
 // @flow
 
-import React, { Fragment, useCallback, useEffect } from 'react'
+import React, { Fragment, useCallback, useEffect, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Translate, I18n } from 'react-redux-i18n'
 import { Link } from 'react-router-dom'
@@ -29,7 +29,6 @@ import useFilterSort from '$userpages/hooks/useFilterSort'
 import useCopy from '$shared/hooks/useCopy'
 
 import type { ProductId, Product } from '$mp/flowtype/product-types'
-import type { SortOption } from '$userpages/flowtype/common-types'
 
 import styles from './products.pcss'
 
@@ -42,16 +41,6 @@ const CreateProductButton = () => (
         <Translate value="userpages.products.createProduct" />
     </Button>
 )
-
-const getSortOptions = (): Array<SortOption> => {
-    const filters = getFilters()
-    return [
-        filters.NAME_ASC,
-        filters.NAME_DESC,
-        filters.PUBLISHED,
-        filters.DRAFT,
-    ]
-}
 
 const generateTimeAgoDescription = (productUpdatedDate: Date) => moment(productUpdatedDate).fromNow()
 
@@ -101,13 +90,22 @@ const Actions = ({ id, state }: Product) => {
 }
 
 const ProductsPage = () => {
+    const sortOptions = useMemo(() => {
+        const filters = getFilters()
+        return [
+            filters.NAME_ASC,
+            filters.NAME_DESC,
+            filters.PUBLISHED,
+            filters.DRAFT,
+        ]
+    }, [])
     const {
         defaultFilter,
         filter,
         setSearch,
         setSort,
         resetFilter,
-    } = useFilterSort(getSortOptions())
+    } = useFilterSort(sortOptions)
     const products = useSelector(selectMyProductList)
     const fetching = useSelector(selectFetching)
     const dispatch = useDispatch()
@@ -140,7 +138,7 @@ const ProductsPage = () => {
                     onChange={onSortChange}
                     selectedItem={(filter && filter.id) || (defaultFilter && defaultFilter.id)}
                 >
-                    {getSortOptions().map((s) => (
+                    {sortOptions.map((s) => (
                         <Dropdown.Item key={s.filter.id} value={s.filter.id}>
                             {s.displayName}
                         </Dropdown.Item>

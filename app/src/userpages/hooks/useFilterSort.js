@@ -3,26 +3,23 @@ import { useState, useEffect, useMemo, useCallback } from 'react'
 function useFilterSort(sortOptions = []) {
     const [search, setSearch] = useState(undefined)
     const [filterOptions, setFilterOptions] = useState(undefined)
-    const [defaultFilter, setDefaultFilter] = useState(undefined)
+
+    const defaultFilter = useMemo(() => {
+        if (sortOptions && sortOptions.length > 0) {
+            return sortOptions[0].filter
+        }
+
+        return undefined
+    }, [sortOptions])
 
     useEffect(() => {
-        setDefaultFilter((previousDefaultFilter) => {
-            let newDefaultFilter
-            if (sortOptions && sortOptions.length > 0) {
-                newDefaultFilter = sortOptions[0].filter
+        setFilterOptions((previousFilterOptions) => {
+            if (!previousFilterOptions) {
+                return defaultFilter
             }
-            newDefaultFilter = previousDefaultFilter
-
-            setFilterOptions((previousFilterOptions) => {
-                if (!previousFilterOptions) {
-                    return newDefaultFilter
-                }
-                return previousFilterOptions
-            })
-
-            return newDefaultFilter
+            return previousFilterOptions
         })
-    }, [sortOptions])
+    }, [defaultFilter])
 
     const setSort = useCallback((sortOptionId) => {
         const sortOption = sortOptions.find((opt) => opt.filter.id === sortOptionId)
