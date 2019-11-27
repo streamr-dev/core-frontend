@@ -437,7 +437,9 @@ export const updateStream = (stream: Stream) => (dispatch: Function) => {
 export const deleteStream = (id: StreamId) => async (dispatch: Function): Promise<void> => {
     dispatch(deleteStreamRequest())
     try {
-        const deleteStream = await api.del(formatApiUrl('streams', id))
+        const deleteStream = await api.del({
+            url: formatApiUrl('streams', id),
+        })
         dispatch(deleteStreamSuccess(id))
         Notification.push({
             title: I18n.t('userpages.streams.actions.deleteStreamSuccess'),
@@ -455,7 +457,10 @@ export const deleteStream = (id: StreamId) => async (dispatch: Function): Promis
 
 export const saveFields = (id: StreamId, fields: StreamFieldList) => (dispatch: Function) => {
     dispatch(saveFieldsRequest())
-    return api.post(`${process.env.STREAMR_API_URL}/streams/${id}/fields`, fields)
+    return api.post({
+        url: `${process.env.STREAMR_API_URL}/streams/${id}/fields`,
+        data: fields,
+    })
         .then((data) => ({
             id,
             config: {

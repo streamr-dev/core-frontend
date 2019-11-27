@@ -91,7 +91,10 @@ export const getCanvases = () => (dispatch: Function, getState: () => StoreState
         sortBy: 'lastUpdated',
     })
 
-    return api.get(apiUrl, { params })
+    return api.get({
+        url: apiUrl,
+        options: { params },
+    })
         .then((data) => (
             // filter out adhoc canvases which should be filtered by server
             data.filter(({ adhoc }) => !adhoc)
@@ -108,7 +111,9 @@ export const getCanvases = () => (dispatch: Function, getState: () => StoreState
 
 export const getCanvas = (id: CanvasId) => (dispatch: Function) => {
     dispatch(getCanvasRequest(id))
-    return api.get(`${apiUrl}/${id}`)
+    return api.get({
+        url: `${apiUrl}/${id}`,
+    })
         .then(handleEntities(canvasSchema, dispatch))
         .then((data) => dispatch(getCanvasSuccess(data)))
         .catch((e) => {
@@ -124,7 +129,9 @@ export const getCanvas = (id: CanvasId) => (dispatch: Function) => {
 export const deleteCanvas = (id: CanvasId) => async (dispatch: Function): Promise<void> => {
     dispatch(deleteCanvasRequest(id))
     try {
-        const deleteCanvas = await api.del(`${apiUrl}/${id}`)
+        const deleteCanvas = await api.del({
+            url: `${apiUrl}/${id}`,
+        })
         dispatch(deleteCanvasSuccess(id))
         Notification.push({
             title: I18n.t('userpages.canvases.deleteCanvas'),

@@ -26,11 +26,14 @@ export const getStreamrEngineAddresses = (): Array<string> => {
     return addresses
 }
 
-export const addPermission = (id: StreamId, permission: Permission): ApiResult<Array<Permission>> =>
-    post(formatApiUrl('streams', id, 'permissions'), permission)
+export const addPermission = (id: StreamId, permission: Permission): ApiResult<Array<Permission>> => post({
+    url: formatApiUrl('streams', id, 'permissions'),
+    data: permission,
+})
 
-export const deletePermission = (id: StreamId, permissionId: string): ApiResult<Array<Permission>> =>
-    del(formatApiUrl('streams', id, 'permissions', permissionId))
+export const deletePermission = (id: StreamId, permissionId: string): ApiResult<Array<Permission>> => del({
+    url: formatApiUrl('streams', id, 'permissions', permissionId),
+})
 
 export const createJoinPartStream = async (productId: ?ProductId = undefined): Promise<Stream> => {
     const newStream: NewStream = {
@@ -148,13 +151,15 @@ export const setAdminFee = (address: CommunityId, adminFee: number): SmartContra
 export const getJoinPartStreamId = (address: CommunityId, usePublicNode: boolean = false) =>
     call(getCommunityContract(address, usePublicNode).methods.joinPartStream())
 
-export const getCommunityStats = (id: CommunityId): ApiResult<Object> =>
-    get(formatApiUrl('communities', id, 'stats'))
+export const getCommunityStats = (id: CommunityId): ApiResult<Object> => get({
+    url: formatApiUrl('communities', id, 'stats'),
+})
 
-export const getStreamData = (id: CommunityId, fromTimestamp: number): ApiResult<Object> =>
-    get(formatApiUrl('streams', id, 'data', 'partitions', 0, 'from', {
+export const getStreamData = (id: CommunityId, fromTimestamp: number): ApiResult<Object> => get({
+    url: formatApiUrl('streams', id, 'data', 'partitions', 0, 'from', {
         fromTimestamp,
-    }))
+    }),
+})
 
 export const getCommunityData = async (id: CommunityId, usePublicNode: boolean = true): ApiResult<Object> => {
     const adminFee = await getAdminFee(id, usePublicNode)

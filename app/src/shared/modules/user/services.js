@@ -5,15 +5,20 @@ import { formatApiUrl } from '$shared/utils/url'
 import type { ApiResult } from '$shared/flowtype/common-types'
 import type { User, PasswordUpdate } from '$shared/flowtype/user-types'
 
-export const getUserData = (): ApiResult<User> => get(formatApiUrl('users', 'me', {
-    noCache: Date.now(),
-}))
+export const getUserData = (): ApiResult<User> => get({
+    url: formatApiUrl('users', 'me', {
+        noCache: Date.now(),
+    }),
+})
 
-export const putUser = (user: User): ApiResult<User> => put(formatApiUrl('users', 'me'), {
-    headers: {
-        'Content-Type': 'application/json',
+export const putUser = (user: User): ApiResult<User> => put({
+    url: formatApiUrl('users', 'me'),
+    data: {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        ...user,
     },
-    ...user,
 })
 
 export const postPasswordUpdate = (passwordUpdate: PasswordUpdate, userInputs?: Array<string> = []): ApiResult<null> => {
@@ -23,10 +28,14 @@ export const postPasswordUpdate = (passwordUpdate: PasswordUpdate, userInputs?: 
     form.append('password', passwordUpdate.newPassword)
     form.append('password2', passwordUpdate.confirmNewPassword)
 
-    return post(formatApiUrl('users', 'me', 'changePassword'), form, {
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'X-Requested-With': 'XMLHttpRequest',
+    return post({
+        url: formatApiUrl('users', 'me', 'changePassword'),
+        data: form,
+        options: {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-Requested-With': 'XMLHttpRequest',
+            },
         },
     })
 }
@@ -41,7 +50,13 @@ export const uploadProfileAvatar = (image: File): Promise<void> => {
     const data = new FormData()
     data.append('file', image, image.name)
 
-    return post(formatApiUrl('users', 'me', 'image'), data, options)
+    return post({
+        url: formatApiUrl('users', 'me', 'image'),
+        data,
+        options,
+    })
 }
 
-export const deleteUserAccount = (): ApiResult<null> => del(formatApiUrl('users/me'))
+export const deleteUserAccount = (): ApiResult<null> => del({
+    url: formatApiUrl('users/me'),
+})

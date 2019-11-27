@@ -13,12 +13,15 @@ import { getValidId, mapProductFromApi } from '$mp/utils/product'
 import { getProductFromContract } from '$mp/modules/contractProduct/services'
 import getWeb3 from '$shared/web3/web3Provider'
 
-export const getProductById = async (id: ProductId): ApiResult<Product> => get(formatApiUrl('products', getValidId(id, false)))
+export const getProductById = async (id: ProductId): ApiResult<Product> => get({
+    url: formatApiUrl('products', getValidId(id, false)),
+})
     .then(mapProductFromApi)
 
-export const getStreamsByProductId = async (id: ProductId): ApiResult<StreamList> => (
-    get(formatApiUrl('products', getValidId(id, false), 'streams'))
-)
+export const getStreamsByProductId = async (id: ProductId): ApiResult<StreamList> => get({
+    url: formatApiUrl('products', getValidId(id, false), 'streams'),
+    useAuthorization: false,
+})
 
 const contractMethods = () => getContract(getConfig().marketplace).methods
 
@@ -39,7 +42,9 @@ export const getMyProductSubscription = (id: ProductId): SmartContractCall<Subsc
     Otherwise it'd be a synchronous error.
   */
 export const getUserProductPermissions = async (id: ProductId): ApiResult<Object> => {
-    const result = await get(formatApiUrl('products', getValidId(id, false), 'permissions', 'me'))
+    const result = await get({
+        url: formatApiUrl('products', getValidId(id, false), 'permissions', 'me'),
+    })
 
     const p = result.reduce((permissions, permission) => {
         if (permission.anonymous) {

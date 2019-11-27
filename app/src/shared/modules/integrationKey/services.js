@@ -14,35 +14,48 @@ import {
     IdentityExistsError,
 } from '$shared/errors/Web3'
 
-export const getIntegrationKeys = (): ApiResult<Array<IntegrationKey>> => get(formatApiUrl('integration_keys'))
+export const getIntegrationKeys = (): ApiResult<Array<IntegrationKey>> => get({
+    url: formatApiUrl('integration_keys'),
+})
 
 export const createPrivateKey = (name: string, privateKey: Address): ApiResult<IntegrationKey> =>
-    post(formatApiUrl('integration_keys'), {
-        name,
-        service: integrationKeyServices.PRIVATE_KEY,
-        json: {
-            privateKey,
+    post({
+        url: formatApiUrl('integration_keys'),
+        data: {
+            name,
+            service: integrationKeyServices.PRIVATE_KEY,
+            json: {
+                privateKey,
+            },
         },
     })
 
 export const editIntegrationKey = (keyId: IntegrationKeyId, name: string): ApiResult<IntegrationKey> =>
-    put(formatApiUrl('integration_keys', keyId), {
-        name,
+    put({
+        url: formatApiUrl('integration_keys', keyId),
+        data: {
+            name,
+        },
     })
 
-export const createChallenge = (account: Address): ApiResult<Challenge> => post(formatApiUrl('login', 'challenge', account))
+export const createChallenge = (account: Address): ApiResult<Challenge> => post({
+    url: formatApiUrl('login', 'challenge', account),
+})
 
 export const createEthereumIdentity = (
     name: string,
     address: Address,
     challenge: Challenge,
     signature: Hash,
-): ApiResult<IntegrationKey> => post(formatApiUrl('integration_keys'), {
-    name,
-    service: integrationKeyServices.ETHEREREUM_IDENTITY,
-    challenge,
-    signature,
-    address,
+): ApiResult<IntegrationKey> => post({
+    url: formatApiUrl('integration_keys'),
+    data: {
+        name,
+        service: integrationKeyServices.ETHEREREUM_IDENTITY,
+        challenge,
+        signature,
+        address,
+    },
 })
 
 export const createIdentity = async (name: string): ApiResult<IntegrationKey> => {
@@ -83,4 +96,6 @@ export const createIdentity = async (name: string): ApiResult<IntegrationKey> =>
     }
 }
 
-export const deleteIntegrationKey = (id: IntegrationKeyId): ApiResult<null> => del(formatApiUrl('integration_keys', id))
+export const deleteIntegrationKey = (id: IntegrationKeyId): ApiResult<null> => del({
+    url: formatApiUrl('integration_keys', id),
+})

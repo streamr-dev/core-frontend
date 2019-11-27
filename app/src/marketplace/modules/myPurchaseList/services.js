@@ -13,5 +13,7 @@ const mapProductSubscriptions = (subscriptions: Array<ProductSubscription>): Arr
         product: mapProductFromApi(subscription.product),
     }))
 
-export const getMyPurchases = (): ApiResult<Array<ProductSubscription>> => get(formatApiUrl('subscriptions'))
+export const getMyPurchases = (): ApiResult<Array<ProductSubscription>> => get({
+    url: formatApiUrl('subscriptions'),
+})
     .then(mapProductSubscriptions)
