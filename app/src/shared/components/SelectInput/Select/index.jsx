@@ -82,6 +82,10 @@ const customStyles = {
         color: '#323232',
         lineHeight: '1rem',
     }),
+    singleValue: (provided) => ({
+        ...provided,
+        overflow: 'visible',
+    }),
 }
 
 const Control = ({ className, ...props }) => {
