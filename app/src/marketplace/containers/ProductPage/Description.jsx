@@ -44,7 +44,7 @@ const Description = () => {
                         <div>
                             <div className={styles.subheading}>Most recent purchase</div>
                             {!isPending ? (
-                                <div>{purchaseTimestamp != null ? ago(purchaseTimestamp) : '-'}</div>
+                                <div>{purchaseTimestamp != null ? ago(new Date(purchaseTimestamp)) : '-'}</div>
                             ) : <Skeleton />}
                         </div>
                     </div>

@@ -68,7 +68,7 @@ export const getProductFromContract = (id: ProductId) => (dispatch: Function) =>
 
 export const loadSubscriptionDataFromContract = (id: ProductId) => async (dispatch: Function) => {
     const subscriberCount = await services.getSubscriberCount(id)
-    const purchaseTimestamp = await services.getMostRecentPurchase(id)
+    const purchaseTimestamp = await services.getMostRecentPurchaseTimestamp(id)
 
     const { entities } = normalize({
         id,

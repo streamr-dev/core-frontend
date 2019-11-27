@@ -71,7 +71,7 @@ const CommunityStats = () => {
             ...prev,
             revenue: {
                 ...prev.revenue,
-                value: fromAtto(totalEarnings || 0).toNumber(),
+                value: fromAtto(totalEarnings || 0).toFixed(0),
                 loading: false,
             },
         }))
@@ -124,7 +124,7 @@ const CommunityStats = () => {
                 ...prev,
                 averageRevenue: {
                     ...prev.averageRevenue,
-                    value: revenuePerMonthPerMember,
+                    value: fromAtto(revenuePerMonthPerMember).toFixed(1),
                     loading: false,
                 },
             }))
