@@ -13,12 +13,7 @@ export const getUserData = (): ApiResult<User> => get({
 
 export const putUser = (user: User): ApiResult<User> => put({
     url: formatApiUrl('users', 'me'),
-    data: {
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        ...user,
-    },
+    data: user,
 })
 
 export const postPasswordUpdate = (passwordUpdate: PasswordUpdate, userInputs?: Array<string> = []): ApiResult<null> => {
