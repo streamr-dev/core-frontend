@@ -7,7 +7,7 @@ import cx from 'classnames'
 import type { ResourcePermission } from '$shared/flowtype/resource-key-types'
 import TextInput from '$shared/components/TextInput'
 import Buttons from '$shared/components/Buttons'
-import Dropdown from '$shared/components/Dropdown'
+import SelectInput from '$shared/components/SelectInput'
 import SplitControl from '$userpages/components/SplitControl'
 
 import styles from './keyFieldEditor.pcss'
@@ -79,6 +79,17 @@ class KeyFieldEditor extends React.Component<Props, State> {
         } = this.props
         const filled = !!keyName && (createNew || !!keyId)
 
+        const permissionOptions = [
+            {
+                value: 'read',
+                label: 'Read',
+            },
+            {
+                value: 'write',
+                label: 'Write',
+            },
+        ]
+
         return (
             <div className={cx(styles.editor, {
                 [styles.editorWithPermissions]: showPermissionType,
@@ -95,19 +106,13 @@ class KeyFieldEditor extends React.Component<Props, State> {
                                 error={(createNew && !editValue && error) || undefined}
                             />
                         </div>
-                        <Dropdown
-                            title=""
-                            onChange={this.onPermissionChange}
-                            selectedItem={permission}
-                            className={styles.permissionDropdown}
-                        >
-                            <Dropdown.Item key="read" value="read">
-                                Read
-                            </Dropdown.Item>
-                            <Dropdown.Item key="write" value="write">
-                                Write
-                            </Dropdown.Item>
-                        </Dropdown>
+                        <SelectInput
+                            label="Permission"
+                            options={permissionOptions}
+                            value={permissionOptions.find((t) => t.value === permission)}
+                            onChange={(o) => this.onPermissionChange(o.value)}
+                            preserveLabelSpace
+                        />
                     </SplitControl>
                 )}
                 {!showPermissionType && (

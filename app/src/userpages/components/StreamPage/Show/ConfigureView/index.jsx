@@ -4,7 +4,7 @@ import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import copy from 'copy-to-clipboard'
 import { arrayMove } from 'react-sortable-hoc'
-import { Translate } from 'react-redux-i18n'
+import { I18n, Translate } from 'react-redux-i18n'
 import uuid from 'uuid'
 
 import Button from '$shared/components/Button'
@@ -13,7 +13,7 @@ import type { Stream, StreamId } from '$shared/flowtype/stream-types'
 import type { StoreState } from '$shared/flowtype/store-state'
 import FieldList from '$shared/components/FieldList'
 import FieldItem from '$shared/components/FieldList/FieldItem'
-import Dropdown from '$shared/components/Dropdown'
+import SelectInput from '$shared/components/SelectInput'
 import { updateEditStreamField, updateEditStream, streamFieldsAutodetect } from '$userpages/modules/userPageStreams/actions'
 import { selectEditedStream, selectFieldsAutodetectFetching, fieldTypes } from '$userpages/modules/userPageStreams/selectors'
 import TextInput from '$shared/components/TextInput'
@@ -46,6 +46,11 @@ type State = {
 }
 
 export class ConfigureView extends Component<Props, State> {
+    typeOptions: Array<any> = fieldTypes.map((t) => ({
+        value: t,
+        label: I18n.t(`userpages.streams.fieldTypes.${t}`),
+    }))
+
     state = {
         isAddingField: false,
     }
@@ -190,22 +195,14 @@ export class ConfigureView extends Component<Props, State> {
                                                     onChange={(e) => this.onFieldNameChange(field.name, e.target.value)}
                                                     disabled={disabled}
                                                 />
-                                                <Dropdown
-                                                    title=""
-                                                    selectedItem={field.type}
-                                                    onChange={(val) => this.onFieldTypeChange(field.name, val)}
-                                                    className={styles.permissionsDropdown}
-                                                    disabled={disabled}
-                                                >
-                                                    {fieldTypes.map((t) => (
-                                                        <Dropdown.Item
-                                                            key={t}
-                                                            value={t}
-                                                        >
-                                                            <Translate value={`userpages.streams.fieldTypes.${t}`} />
-                                                        </Dropdown.Item>
-                                                    ))}
-                                                </Dropdown>
+                                                <SelectInput
+                                                    label=""
+                                                    className={styles.select}
+                                                    options={this.typeOptions}
+                                                    value={this.typeOptions.find((t) => t.value === field.type)}
+                                                    onChange={(o) => this.onFieldTypeChange(field.name, o.value)}
+                                                    preserveLabelSpace={false}
+                                                />
                                                 <Button
                                                     kind="secondary"
                                                     size="mini"

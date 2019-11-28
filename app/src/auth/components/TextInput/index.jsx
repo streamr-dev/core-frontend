@@ -2,7 +2,7 @@
 
 import React from 'react'
 
-import FormControl, { type FormControlProps } from '../FormControl'
+import FormControl, { type FormControlProps } from '$shared/components/FormControl'
 import TextField from '../TextField'
 
 type Props = FormControlProps & {
@@ -11,9 +11,8 @@ type Props = FormControlProps & {
 const TextInput = ({ label, className, passwordStrengthUpdate, ...props }: Props) => (
     <FormControl
         passwordStrengthUpdate={passwordStrengthUpdate}
-        label={label}
-        noUnderline
         {...props}
+        label={label}
     >
         {({ value, onFocusChange, setAutoCompleted, ...rest }) => (
             <TextField

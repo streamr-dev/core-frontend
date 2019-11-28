@@ -2,6 +2,7 @@
 
 import React from 'react'
 import { I18n } from 'react-redux-i18n'
+import cx from 'classnames'
 
 import { isMobile as checkMobile } from '$shared/utils/platform'
 import FormControl, { type FormControlProps, type InputProps } from '../FormControl'
@@ -9,6 +10,8 @@ import WithCalendar, { type WithCalendarProps } from '../WithCalendar'
 import CalendarIcon from '../CalendarIcon'
 import TextField from '../TextField'
 import dateFormatter from '$utils/dateFormatter'
+
+import styles from './datePicker.pcss'
 
 type Props = FormControlProps & WithCalendarProps & {
     format?: string,
@@ -45,6 +48,7 @@ class DatePicker extends React.Component<Props> {
             <FormControl
                 label={label}
                 {...props}
+                noUnderline
             >
                 {({ value, onFocusChange, setAutoCompleted, ...rest0 }: InnerProps) => (
                     <WithCalendar {...rest0} disabled={isMobile}>
@@ -61,7 +65,11 @@ class DatePicker extends React.Component<Props> {
                                     onChange={this.onChange}
                                     {...rest1}
                                 />
-                                <CalendarIcon />
+                                <CalendarIcon
+                                    className={cx(styles.icon, {
+                                        [styles.hasError]: props.error != null,
+                                    })}
+                                />
                             </React.Fragment>
                         )}
                     </WithCalendar>

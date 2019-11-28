@@ -9,7 +9,7 @@ import type { ResourcePermission } from '$shared/flowtype/resource-key-types'
 import TextInput from '$shared/components/TextInput'
 import Meatball from '$shared/components/Meatball'
 import DropdownActions from '$shared/components/DropdownActions'
-import Dropdown from '$shared/components/Dropdown'
+import SelectInput from '$shared/components/SelectInput'
 import SplitControl from '$userpages/components/SplitControl'
 import KeyFieldEditor from './KeyFieldEditor'
 import styles from './keyField.pcss'
@@ -167,7 +167,7 @@ class KeyField extends React.Component<Props, State> {
                 <div className={styles.actions}>
                     <DropdownActions
                         onMenuToggle={this.onMenuToggle}
-                        title={<Meatball alt={I18n.t('userpages.keyField.options')} blue />}
+                        title={<Meatball alt={I18n.t('userpages.keyField.options')} gray />}
                         noCaret
                     >
                         {!!hideValue && (
@@ -198,27 +198,31 @@ class KeyField extends React.Component<Props, State> {
         const { keyName, value, showPermissionType } = this.props
         const { waiting, editing, error, permission } = this.state
 
+        const permissionOptions = [
+            {
+                value: 'read',
+                label: 'Read',
+            },
+            {
+                value: 'write',
+                label: 'Write',
+            },
+        ]
+
         return !editing ? (
             <React.Fragment>
                 {!showPermissionType && this.renderInput()}
                 {showPermissionType && (
                     <SplitControl>
                         {this.renderInput()}
-                        <div className={styles.permissionDropdownContainer}>
-                            <Dropdown
-                                title=""
-                                onChange={this.onPermissionChange}
-                                className={styles.permissionDropdown}
-                                selectedItem={permission}
-                            >
-                                <Dropdown.Item key="read" value="read" onClick={(val) => this.onPermissionChange(val.toString())}>
-                                    Read
-                                </Dropdown.Item>
-                                <Dropdown.Item key="write" value="write" onClick={(val) => this.onPermissionChange(val.toString())}>
-                                    Write
-                                </Dropdown.Item>
-                            </Dropdown>
-                        </div>
+                        <SelectInput
+                            label=""
+                            options={permissionOptions}
+                            value={permissionOptions.find((t) => t.value === permission)}
+                            onChange={(o) => this.onPermissionChange(o.value)}
+                            preserveLabelSpace={false}
+                            className={styles.select}
+                        />
                     </SplitControl>
                 )}
             </React.Fragment>

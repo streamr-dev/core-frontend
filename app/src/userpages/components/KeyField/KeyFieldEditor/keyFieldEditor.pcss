@@ -36,44 +36,7 @@
   margin-top: 2.7rem;
 }
 
-.permissionDropdown {
-  display: flex;
-  justify-content: flex-end;
-  border-radius: 4px;
-
-  :global(.dropdown-menu) {
-    margin-top: 8px;
-  }
-
-  > button[type='button'] {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 1.4em;
-    padding: 0 1em;
-    background-color: white !important;
-    color: #323232;
-    height: 32px;
-    min-width: 128px;
-    font-family: 'IBM Plex Sans', sans-serif;
-    text-transform: capitalize;
-    font-weight: 400;
-    font-size: 14px;
-    letter-spacing: 0;
-    line-height: 20px;
-
-    &:hover,
-    &:focus,
-    &:active {
-      background-color: white !important;
-    }
-  }
-}
-
 @media (--lg-down) {
-  .permissionDropdown {
-    right: -10px;
-  }
-
   .editorWithPermissions {
     max-width: 588px;
   }

@@ -5,6 +5,7 @@ import { I18n } from 'react-redux-i18n'
 
 import Button from '$shared/components/Button'
 import SvgIcon from '$shared/components/SvgIcon'
+import TextInput from '$shared/components/TextInput'
 
 import styles from './shareDialogInputRow.pcss'
 
@@ -41,10 +42,10 @@ export class ShareDialogInputRow extends Component<Props, State> {
         const { email } = this.state
         return (
             <div className={styles.container}>
-                <input
+                <TextInput
                     className={styles.input}
                     placeholder={I18n.t('modal.shareResource.enterEmailAddress')}
-                    name="email"
+                    label={I18n.t('auth.labels.email')}
                     value={email}
                     onChange={this.onChange}
                 />
