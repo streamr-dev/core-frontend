@@ -118,9 +118,22 @@ function useFitCanvasOnLoadEffect() {
  * True when mouse button down
  */
 
-function useIsMouseDown({ buttons = 1, ref }) {
+function useIsMouseDownForPanning({ buttons = 1, ref }) {
     const [isMouseDown, setIsMouseDown] = useState(false)
-    const onMouseDown = useCallback(() => {
+    const onMouseDown = useCallback(({ target: { tagName } }) => {
+        // Let's ignore mousedown events on the following (interactive) HTML
+        // elements.
+        if ([
+            'select',
+            'option',
+            'input',
+            'button',
+            'a',
+            'textarea',
+        ].includes(tagName.toLowerCase())) {
+            return
+        }
+
         setIsMouseDown(true)
     }, [setIsMouseDown])
 
@@ -191,7 +204,7 @@ function usePanToSelectionEffect() {
     const canvasCamera = useCanvasCamera()
     const canvasCameraRef = useRef()
     canvasCameraRef.current = canvasCamera
-    const isMouseDown = useIsMouseDown({ ref: useRef(window) })
+    const isMouseDown = useIsMouseDownForPanning({ ref: useRef(window) })
 
     // pan to selected on mouse up
     useEffect(() => {
