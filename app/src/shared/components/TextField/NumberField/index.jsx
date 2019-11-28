@@ -27,7 +27,7 @@ const NumberField = ({ className, onAutoComplete, hideButtons, ...props }: Props
     }, [onAutoComplete])
 
     const addValue = useCallback((step) => {
-        if (inputRef.current && inputRef.current.value) {
+        if (inputRef.current) {
             const { value } = inputRef.current
             let valueInt = parseInt(value, 10)
             let stepInt = parseInt(step, 10)
