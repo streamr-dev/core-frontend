@@ -37,7 +37,7 @@ const SharedSecretEditor = ({ className }: Props) => {
     }, [communityId, fetchSecrets])
 
     return (
-        <div id="shared-secrets" className={cx(className)}>
+        <div className={cx(className)}>
             {secrets.map((s: Secret) => (
                 <KeyField
                     key={s.id}
