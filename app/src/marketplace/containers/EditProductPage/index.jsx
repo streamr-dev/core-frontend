@@ -1,8 +1,9 @@
 // @flow
 
-import React, { useContext, useMemo } from 'react'
+import React, { useContext, useMemo, useEffect } from 'react'
 import { withRouter } from 'react-router-dom'
 import { I18n } from 'react-redux-i18n'
+import cx from 'classnames'
 
 import CoreLayout from '$shared/components/Layout/Core'
 import * as UndoContext from '$shared/contexts/Undo'
@@ -10,7 +11,7 @@ import Toolbar from '$shared/components/Toolbar'
 import type { Product } from '$mp/flowtype/product-types'
 import { isCommunityProduct } from '$mp/utils/product'
 
-import ProductController from '../ProductController'
+import ProductController, { useController } from '../ProductController'
 import useEditableProduct from '../ProductController/useEditableProduct'
 import usePending from '$shared/hooks/usePending'
 import { productStates } from '$shared/utils/constants'
@@ -42,6 +43,13 @@ const EditProductPage = ({ product }: { product: Product }) => {
     } = useContext(EditControllerContext)
     const { isPending: savePending } = usePending('product.SAVE')
     const { isAnyChangePending } = useContext(ValidationContext)
+    const { loadCategories, loadStreams } = useController()
+
+    // Load categories and streams
+    useEffect(() => {
+        loadCategories()
+        loadStreams()
+    }, [loadCategories, loadStreams])
 
     const isSaving = savePending
     const isCommunity = isCommunityProduct(product)
@@ -50,8 +58,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
 
     const saveAndExitButton = useMemo(() => ({
         title: 'Save & Exit',
-        color: 'link',
-        outline: true,
+        kind: 'link',
         onClick: () => save(),
         disabled: isSaving,
     }), [save, isSaving])
@@ -113,6 +120,18 @@ const EditProductPage = ({ product }: { product: Product }) => {
         publish: deployButton,
     }
 
+    const toolbarMiddle = useMemo(() => {
+        if (isPreview) {
+            return (
+                <span className={styles.toolbarMiddle}>
+                    This is a preview of how your product will appear when published
+                </span>
+            )
+        }
+
+        return undefined
+    }, [isPreview])
+
     return (
         <CoreLayout
             className={styles.layout}
@@ -121,11 +140,16 @@ const EditProductPage = ({ product }: { product: Product }) => {
                 <Toolbar
                     className={Toolbar.styles.shadow}
                     left={<BackButton />}
+                    middle={toolbarMiddle}
                     actions={actions}
                     altMobileLayout
                 />
             )}
             loadingClassname={styles.loadingIndicator}
+            contentClassname={cx({
+                [styles.editorContent]: !isPreview,
+                [styles.previewContent]: !!isPreview,
+            })}
             loading={isSaving}
         >
             <ProductEditorDebug />

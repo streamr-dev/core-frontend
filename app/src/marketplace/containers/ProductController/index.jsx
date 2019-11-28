@@ -18,6 +18,7 @@ import useLoadCategoriesCallback from './useLoadCategoriesCallback'
 import useLoadProductStreamsCallback from './useLoadProductStreamsCallback'
 import useCommunityProductLoadCallback from './useCommunityProductLoadCallback'
 import useRelatedProductsLoadCallback from './useRelatedProductsLoadCallback'
+import useLoadStreamsCallback from './useLoadStreamsCallback'
 
 type ContextProps = {
     loadProduct: Function,
@@ -27,6 +28,7 @@ type ContextProps = {
     loadProductStreams: Function,
     loadCommunityProduct: Function,
     loadRelatedProducts: Function,
+    loadStreams: Function,
 }
 
 const ProductControllerContext: Context<ContextProps> = React.createContext({})
@@ -73,6 +75,7 @@ function useProductController() {
     const loadProductStreams = useLoadProductStreamsCallback()
     const loadCommunityProduct = useCommunityProductLoadCallback()
     const loadRelatedProducts = useRelatedProductsLoadCallback()
+    const loadStreams = useLoadStreamsCallback()
 
     return useMemo(() => ({
         loadProduct,
@@ -82,6 +85,7 @@ function useProductController() {
         loadProductStreams,
         loadCommunityProduct,
         loadRelatedProducts,
+        loadStreams,
     }), [
         loadProduct,
         loadContractProduct,
@@ -90,6 +94,7 @@ function useProductController() {
         loadProductStreams,
         loadCommunityProduct,
         loadRelatedProducts,
+        loadStreams,
     ])
 }
 

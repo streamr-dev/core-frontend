@@ -11,7 +11,7 @@ import { addFreeProduct } from '$mp/modules/purchase/actions'
 
 import FallbackImage from '$shared/components/FallbackImage'
 import Tile from '$shared/components/Tile'
-import ProductDetails from './ProductDetails'
+import ProductDetails from '$mp/components/ProductPage/ProductDetails'
 import HeroComponent from '$mp/components/Hero'
 import { isCommunityProduct, isPaidProduct } from '$mp/utils/product'
 import {

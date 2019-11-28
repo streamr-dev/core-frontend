@@ -27,6 +27,7 @@ type ContextProps = {
     save: () => void | Promise<void>,
     publish: () => void | Promise<void>,
     deployCommunity: () => void | Promise<void>,
+    lastSectionRef: any,
 }
 
 const EditControllerContext: Context<ContextProps> = React.createContext({})
@@ -35,6 +36,7 @@ function useEditController(product: Product) {
     const { history } = useContext(RouterContext)
     const { isAnyTouched, status } = useContext(ValidationContext)
     const [isPreview, setIsPreview] = useState(false)
+    const lastSectionRef = useRef(undefined)
     const isMounted = useIsMounted()
     const savePending = usePending('product.SAVE')
     const { updateBeneficiaryAddress } = useEditableProductActions()
@@ -236,6 +238,7 @@ function useEditController(product: Product) {
         save,
         publish,
         deployCommunity,
+        lastSectionRef,
     }), [
         isPreview,
         setIsPreview,
@@ -243,6 +246,7 @@ function useEditController(product: Product) {
         save,
         publish,
         deployCommunity,
+        lastSectionRef,
     ])
 }
 

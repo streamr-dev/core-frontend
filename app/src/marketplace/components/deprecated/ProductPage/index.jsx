@@ -8,17 +8,17 @@ import classNames from 'classnames'
 import { I18n } from 'react-redux-i18n'
 
 import Toolbar from '$shared/components/Toolbar'
-import Hero from '../Hero'
-import type { Product } from '../../flowtype/product-types'
+import Hero from '$mp/components/Hero'
+import type { Product } from '$mp/flowtype/product-types'
 import type { StreamList } from '$shared/flowtype/stream-types'
 import type { ButtonActions } from '$shared/components/Buttons'
-import Products from '../Products'
+import Products from '$mp/components/Products'
 import FallbackImage from '$shared/components/FallbackImage'
 import Tile from '$shared/components/Tile'
 import { isCommunityProduct } from '$mp/utils/product'
 
-import ProductDetails from './ProductDetails'
-import StreamListing from './StreamListing'
+import ProductDetails from '$mp/components/deprecated/ProductPage/ProductDetails'
+import StreamListing from '$mp/components/ProductPage/StreamListing'
 import styles from './productPage.pcss'
 
 const { md } = breakpoints

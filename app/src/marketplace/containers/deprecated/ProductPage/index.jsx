@@ -7,7 +7,7 @@ import { push, replace } from 'connected-react-router'
 import { I18n } from 'react-redux-i18n'
 import { Helmet } from 'react-helmet'
 
-import ProductPageComponent from '$mp/components/ProductPage'
+import ProductPageComponent from '$mp/components/deprecated/ProductPage'
 import Layout from '$shared/components/Layout'
 import { formatPath } from '$shared/utils/url'
 import type { StoreState } from '$shared/flowtype/store-state'

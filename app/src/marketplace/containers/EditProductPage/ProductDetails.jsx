@@ -2,6 +2,7 @@
 
 import React, { useMemo, useContext } from 'react'
 import cx from 'classnames'
+import { useSelector } from 'react-redux'
 
 import useEditableProduct from '../ProductController/useEditableProduct'
 import useValidation from '../ProductController/useValidation'
@@ -10,8 +11,8 @@ import { usePending } from '$shared/hooks/usePending'
 import SelectField from '$mp/components/SelectField'
 import { isCommunityProduct } from '$mp/utils/product'
 import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
+import { selectAllCategories, selectFetchingCategories } from '$mp/modules/categories/selectors'
 
-import AvailableCategories from '../AvailableCategories'
 import Details from './Details'
 
 import styles from './productDetails.pcss'
@@ -24,6 +25,8 @@ const adminFeeOptions = [10, 20, 30, 40, 50, 60, 70, 80, 90].map((value) => ({
 const ProductDetails = () => {
     const product = useEditableProduct()
     const { isTouched } = useContext(ValidationContext)
+    const categories = useSelector(selectAllCategories)
+    const fetching = useSelector(selectFetchingCategories)
 
     const { isValid: isCategoryValid, message: categoryMessage } = useValidation('category')
     const { isValid: isAdminFeeValid, message: adminFeeMessage } = useValidation('adminFee')
@@ -33,33 +36,32 @@ const ProductDetails = () => {
     const adminFee = product && product.adminFee
     const selectedAdminFee = useMemo(() => adminFeeOptions.find(({ value }) => value === adminFee), [adminFee])
 
+    const categoryOptions = useMemo(() => (categories || []).map((c) => ({
+        label: c.name,
+        value: c.id,
+    })), [categories])
+    const productCategory = product.category
+    const selectedCategory = useMemo(() => (
+        categoryOptions.find((o) => o.value === productCategory)
+    ), [categoryOptions, productCategory])
+
     return (
         <section id="details" className={cx(styles.root, styles.ProductDetails)}>
             <div>
                 <h1>Give us some more details</h1>
                 <Details>
                     <Details.Row label="Choose a product category">
-                        <AvailableCategories>
-                            {({ fetching, categories }) => {
-                                const opts = (categories || []).map((c) => ({
-                                    label: c.name,
-                                    value: c.id,
-                                }))
-                                const selected = opts.find((o) => o.value === product.category)
-
-                                return !fetching ? (
-                                    <SelectField
-                                        name="name"
-                                        options={opts}
-                                        value={selected}
-                                        onChange={(option) => updateCategory(option.value)}
-                                        isSearchable={false}
-                                        error={isTouched('category') && !isCategoryValid ? categoryMessage : undefined}
-                                        disabled={!!isPending}
-                                    />
-                                ) : null
-                            }}
-                        </AvailableCategories>
+                        {!fetching && (
+                            <SelectField
+                                name="name"
+                                options={categoryOptions}
+                                value={selectedCategory}
+                                onChange={(option) => updateCategory(option.value)}
+                                isSearchable={false}
+                                error={isTouched('category') && !isCategoryValid ? categoryMessage : undefined}
+                                disabled={!!isPending}
+                            />
+                        )}
                     </Details.Row>
                     {isCommunityProduct(product) && (
                         <Details.Row label="Set your admin fee" className={styles.adminFee}>
