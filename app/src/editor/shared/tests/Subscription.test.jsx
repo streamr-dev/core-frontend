@@ -215,7 +215,7 @@ describe('Subscription', () => {
                         resendLast={0}
                         onSubscribed={async () => {
                             await stream.publish(msg3)
-                            await wait(5000)
+                            await wait(15000)
                             expect(onResending).not.toHaveBeenCalled()
                             expect(messages).toEqual([msg3])
                             result.unmount()
@@ -230,6 +230,6 @@ describe('Subscription', () => {
                     />
                 </ClientProviderComponent>
             ))
-        }, 20000)
+        }, 30000)
     })
 })
