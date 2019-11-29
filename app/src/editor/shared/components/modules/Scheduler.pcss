@@ -54,6 +54,24 @@
   }
 }
 
+.selectWrapper {
+  display: inline-flex;
+  border-radius: calc(0.125 * var(--um));
+
+  &:hover,
+  &:focus-within {
+    background-color: #F5F5F5;
+  }
+
+  .select {
+    background-color: transparent;
+  }
+
+  .select option {
+    font-family: system-ui;
+  }
+}
+
 .select::-ms-expand {
   display: none;
 }
