@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useMemo, useCallback, useEffect } from 'react'
+import React, { useMemo, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Translate, I18n } from 'react-redux-i18n'
 import cx from 'classnames'
@@ -59,28 +59,20 @@ const PurchasesPage = () => {
             })
     }, [dispatch, filter])
 
-    const onSearchChange = useCallback((value: string) => {
-        setSearch(value)
-    }, [setSearch])
-
-    const onSortChange = useCallback((sortOptionId) => {
-        setSort(sortOptionId)
-    }, [setSort])
-
     return (
         <Layout
             headerSearchComponent={
                 <Search
                     placeholder={I18n.t('userpages.purchases.filterPurchases')}
                     value={(filter && filter.search) || ''}
-                    onChange={onSearchChange}
+                    onChange={setSearch}
                     debounceTime={0}
                 />
             }
             headerFilterComponent={
                 <Dropdown
                     title={I18n.t('userpages.filter.sortBy')}
-                    onChange={onSortChange}
+                    onChange={setSort}
                     selectedItem={(filter && filter.id) || (defaultFilter && defaultFilter.id)}
                 >
                     {sortOptions.map((s) => (

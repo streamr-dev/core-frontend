@@ -114,14 +114,6 @@ const ProductsPage = () => {
         dispatch(getMyProducts(filter))
     }, [dispatch, filter])
 
-    const onSearchChange = useCallback((value: string) => {
-        setSearch(value)
-    }, [setSearch])
-
-    const onSortChange = useCallback((sortOptionId) => {
-        setSort(sortOptionId)
-    }, [setSort])
-
     return (
         <Layout
             headerAdditionalComponent={<CreateProductButton />}
@@ -129,13 +121,13 @@ const ProductsPage = () => {
                 <Search
                     placeholder={I18n.t('userpages.products.filterProducts')}
                     value={(filter && filter.search) || ''}
-                    onChange={onSearchChange}
+                    onChange={setSearch}
                 />
             }
             headerFilterComponent={
                 <Dropdown
                     title={I18n.t('userpages.filter.sortBy')}
-                    onChange={onSortChange}
+                    onChange={setSort}
                     selectedItem={(filter && filter.id) || (defaultFilter && defaultFilter.id)}
                 >
                     {sortOptions.map((s) => (

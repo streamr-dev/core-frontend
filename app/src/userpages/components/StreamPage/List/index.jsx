@@ -145,14 +145,6 @@ const StreamList = () => {
         }))
     }, [dispatch, filter])
 
-    const onSearchChange = useCallback((value: string) => {
-        setSearch(value)
-    }, [setSearch])
-
-    const onSortChange = useCallback((sortOptionId) => {
-        setSort(sortOptionId)
-    }, [setSort])
-
     const confirmDeleteStream = useCallback(async (stream: Stream) => {
         const confirmed = await confirmDialog('stream', {
             title: I18n.t('userpages.streams.delete.confirmTitle'),
@@ -246,13 +238,13 @@ const StreamList = () => {
                 <Search
                     placeholder={I18n.t('userpages.streams.filterStreams')}
                     value={(filter && filter.search) || ''}
-                    onChange={onSearchChange}
+                    onChange={setSearch}
                 />
             }
             headerFilterComponent={
                 <Dropdown
                     title={I18n.t('userpages.filter.sortBy')}
-                    onChange={onSortChange}
+                    onChange={setSort}
                     selectedItem={(filter && filter.id) || (defaultFilter && defaultFilter.id)}
                 >
                     {sortOptions.map((s) => (

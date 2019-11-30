@@ -86,14 +86,6 @@ const CanvasList = () => {
         dispatch(getCanvases(filter))
     }, [dispatch, filter])
 
-    const onSearchChange = useCallback((value: string) => {
-        setSearch(value)
-    }, [setSearch])
-
-    const onSortChange = useCallback((sortOptionId) => {
-        setSort(sortOptionId)
-    }, [setSort])
-
     const confirmDeleteCanvas = useCallback(async (canvas: Canvas) => {
         const confirmed = await confirmDialog('canvas', {
             title: I18n.t('userpages.canvases.delete.confirmTitle'),
@@ -184,13 +176,13 @@ const CanvasList = () => {
                 <Search
                     placeholder={I18n.t('userpages.canvases.filterCanvases')}
                     value={(filter && filter.search) || ''}
-                    onChange={onSearchChange}
+                    onChange={setSearch}
                 />
             }
             headerFilterComponent={
                 <Dropdown
                     title={I18n.t('userpages.filter.sortBy')}
-                    onChange={onSortChange}
+                    onChange={setSort}
                     selectedItem={(filter && filter.id) || (defaultFilter && defaultFilter.id)}
                 >
                     {sortOptions.map((s) => (

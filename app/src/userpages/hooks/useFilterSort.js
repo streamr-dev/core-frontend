@@ -13,12 +13,9 @@ function useFilterSort(sortOptions = []) {
     const [search, setSearch] = useState(undefined)
 
     useEffect(() => {
-        setFilterOptions((previousFilterOptions) => {
-            if (!previousFilterOptions) {
-                return defaultFilter
-            }
-            return previousFilterOptions
-        })
+        setFilterOptions((previousFilterOptions) => (
+            previousFilterOptions || defaultFilter
+        ))
     }, [defaultFilter])
 
     const setSort = useCallback((sortOptionId) => {

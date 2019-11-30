@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useMemo, useEffect, useCallback } from 'react'
+import React, { useMemo, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Translate, I18n } from 'react-redux-i18n'
 import Helmet from 'react-helmet'
@@ -60,14 +60,6 @@ const DashboardList = () => {
         dispatch(getDashboards(filter))
     }, [dispatch, filter])
 
-    const onSearchChange = useCallback((value: string) => {
-        setSearch(value)
-    }, [setSearch])
-
-    const onSortChange = useCallback((sortOptionId) => {
-        setSort(sortOptionId)
-    }, [setSort])
-
     return (
         <Layout
             headerAdditionalComponent={<CreateDashboardButton />}
@@ -75,13 +67,13 @@ const DashboardList = () => {
                 <Search
                     placeholder={I18n.t('userpages.dashboards.filterDashboards')}
                     value={(filter && filter.search) || ''}
-                    onChange={onSearchChange}
+                    onChange={setSearch}
                 />
             }
             headerFilterComponent={
                 <Dropdown
                     title={I18n.t('userpages.filter.sortBy')}
-                    onChange={onSortChange}
+                    onChange={setSort}
                     selectedItem={(filter && filter.id) || (defaultFilter && defaultFilter.id)}
                 >
                     {sortOptions.map((s) => (
