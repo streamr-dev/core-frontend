@@ -16,7 +16,6 @@ import { getProductSubscription } from '$mp/modules/product/actions'
 import LoadingIndicator from '$userpages/components/LoadingIndicator'
 import { Provider as ModalProvider } from '$shared/contexts/ModalApi'
 
-import { getRelatedProducts } from '../../modules/relatedProducts/actions'
 import PurchaseModal from './PurchaseModal'
 import useProduct from '$mp/containers/ProductController/useProduct'
 import { selectUserData } from '$shared/modules/user/selectors'
@@ -26,7 +25,13 @@ import styles from './page.pcss'
 
 const ProductPage = () => {
     const dispatch = useDispatch()
-    const { loadContractProductSubscription, loadCategories, loadProductStreams, loadCommunityProduct } = useController()
+    const {
+        loadContractProductSubscription,
+        loadCategories,
+        loadProductStreams,
+        loadCommunityProduct,
+        loadRelatedProducts,
+    } = useController()
     const product = useProduct()
     const userData = useSelector(selectUserData)
     const isLoggedIn = userData !== null
@@ -34,14 +39,21 @@ const ProductPage = () => {
     const { match } = useContext(RouterContext.Context)
 
     const loadProduct = useCallback(async (id: ProductId) => {
-        dispatch(getRelatedProducts(id))
         loadContractProductSubscription(id)
         loadCategories()
-        loadProductStreams(id)
+        loadProductStreams(id, isLoggedIn)
+        loadRelatedProducts(id, isLoggedIn)
         if (isLoggedIn) {
             dispatch(getProductSubscription(id))
         }
-    }, [dispatch, isLoggedIn, loadContractProductSubscription, loadCategories, loadProductStreams])
+    }, [
+        dispatch,
+        isLoggedIn,
+        loadContractProductSubscription,
+        loadCategories,
+        loadProductStreams,
+        loadRelatedProducts,
+    ])
 
     const loadCommunity = useCallback(async (id: CommunityId) => {
         loadCommunityProduct(id)

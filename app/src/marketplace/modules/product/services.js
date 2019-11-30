@@ -18,9 +18,9 @@ export const getProductById = async (id: ProductId): ApiResult<Product> => get({
 })
     .then(mapProductFromApi)
 
-export const getStreamsByProductId = async (id: ProductId): ApiResult<StreamList> => get({
+export const getStreamsByProductId = async (id: ProductId, useAuthorization: boolean = true): ApiResult<StreamList> => get({
     url: formatApiUrl('products', getValidId(id, false), 'streams'),
-    useAuthorization: false,
+    useAuthorization,
 })
 
 const contractMethods = () => getContract(getConfig().marketplace).methods

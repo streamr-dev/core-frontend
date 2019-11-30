@@ -28,9 +28,9 @@ export const getRelatedProductsFailure: RelatedProductsErrorActionCreator = crea
     error,
 }))
 
-export const getRelatedProducts = (id: ProductId) => (dispatch: Function) => {
+export const getRelatedProducts = (id: ProductId, useAuthorization: boolean = true) => (dispatch: Function) => {
     dispatch(getRelatedProductsRequest())
-    return api.getRelatedProducts(id)
+    return api.getRelatedProducts(id, useAuthorization)
         .then((data) => {
             const { result, entities } = normalize(data, productsSchema)
             dispatch(updateEntities(entities))
