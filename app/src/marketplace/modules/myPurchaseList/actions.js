@@ -3,6 +3,7 @@
 import { createAction } from 'redux-actions'
 import { normalize } from 'normalizr'
 import orderBy from 'lodash/orderBy'
+import get from 'lodash/get'
 
 import type { Product, ProductSubscription } from '../../flowtype/product-types'
 import type { ErrorInUi, ReduxActionCreator } from '$shared/flowtype/common-types'
@@ -115,9 +116,10 @@ const filterPurchases = (data: Array<ProductSubscription>, filter: ?Filter) => {
         return hasTextMatch && hasKeyValueMatch
     })
 
-    // Order results if needed
+    // Order results if needed (case insensitive)
     if (filter && filter.sortBy && filter.order) {
-        return orderBy(filtered, `product.${filter.sortBy}`, filter.order)
+        // $FlowFixMe
+        return orderBy(filtered, (subscription) => get(subscription, `product.${filter.sortBy}`).toLowerCase(), filter.order)
     }
 
     return filtered

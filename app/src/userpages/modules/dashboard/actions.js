@@ -16,7 +16,7 @@ import { selectEntities } from '$shared/modules/entities/selectors'
 import { getParamsForFilter } from '$userpages/utils/filters'
 
 import * as services from './services'
-import { selectOpenDashboard, selectFilter } from './selectors'
+import { selectOpenDashboard } from './selectors'
 
 export const OPEN_DASHBOARD = 'userpages/dashboard/OPEN_DASHBOARD'
 
@@ -41,7 +41,6 @@ export const GET_MY_DASHBOARD_PERMISSIONS_SUCCESS = 'userpages/dashboard/GET_MY_
 export const GET_MY_DASHBOARD_PERMISSIONS_FAILURE = 'userpages/dashboard/GET_MY_DASHBOARD_PERMISSIONS_FAILURE'
 
 export const CHANGE_DASHBOARD_ID = 'userpages/dashboard/CHANGE_DASHBOARD_ID'
-export const UPDATE_FILTER = 'userpages/dashboard/UPDATE_FILTER'
 
 const dashboardConfig = require('../../components/DashboardPage/dashboardConfig')
 
@@ -230,15 +229,9 @@ const getMyDashboardPermissionsFailure = (id: DashboardId, error: ErrorInUi) => 
     error,
 })
 
-const updateFilterAction = (filter: Filter) => ({
-    type: UPDATE_FILTER,
-    filter,
-})
-
-export const getDashboards = () => (dispatch: Function, getState: () => StoreState) => {
+export const getDashboards = (filter?: Filter) => (dispatch: Function) => {
     dispatch(getDashboardsRequest())
 
-    const filter = selectFilter(getState())
     const params = getParamsForFilter(filter, {
         sortBy: 'name',
     })
@@ -381,7 +374,3 @@ export const updateDashboardChanges = (id: DashboardId, changes: {}) => (dispatc
         }))
     }
 }
-
-export const updateFilter = (filter: Filter) => (dispatch: Function) => (
-    dispatch(updateFilterAction(filter))
-)

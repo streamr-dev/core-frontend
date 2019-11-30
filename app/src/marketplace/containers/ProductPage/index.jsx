@@ -13,17 +13,13 @@ import ProductController, { useController } from '../ProductController'
 import usePending from '$shared/hooks/usePending'
 
 import { getProductSubscription } from '$mp/modules/product/actions'
-import BackButton from '$shared/components/BackButton'
 import LoadingIndicator from '$userpages/components/LoadingIndicator'
 import { Provider as ModalProvider } from '$shared/contexts/ModalApi'
 
 import { getRelatedProducts } from '../../modules/relatedProducts/actions'
 import PurchaseModal from './PurchaseModal'
-import Toolbar from '$shared/components/Toolbar'
 import useProduct from '$mp/containers/ProductController/useProduct'
-import useProductPermissions from '$mp/containers/ProductController/useProductPermissions'
 import { selectUserData } from '$shared/modules/user/selectors'
-import routes from '$routes'
 
 import Page from './Page'
 import styles from './page.pcss'
@@ -34,20 +30,8 @@ const ProductPage = () => {
     const product = useProduct()
     const userData = useSelector(selectUserData)
     const isLoggedIn = userData !== null
-    const { write, share } = useProductPermissions()
-    const canEdit = !!(write || share)
 
     const { match } = useContext(RouterContext.Context)
-
-    const toolbarActions = {}
-    if (product && canEdit) {
-        toolbarActions.edit = {
-            title: I18n.t('editProductPage.edit'),
-            linkTo: routes.editProduct({
-                id: product.id,
-            }),
-        }
-    }
 
     const loadProduct = useCallback(async (id: ProductId) => {
         dispatch(getRelatedProducts(id))
@@ -76,15 +60,8 @@ const ProductPage = () => {
     }, [communityDeployed, beneficiaryAddress, loadCommunity])
 
     return (
-        <Layout hideNavOnDesktop={canEdit} navShadow>
+        <Layout navShadow>
             <Helmet title={`${product.name} | ${I18n.t('general.title.suffix')}`} />
-            {canEdit && (
-                <Toolbar
-                    className={Toolbar.styles.shadow}
-                    left={<BackButton />}
-                    actions={toolbarActions}
-                />
-            )}
             <Page />
             <PurchaseModal />
         </Layout>

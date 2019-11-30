@@ -20,7 +20,7 @@ import CsvSchemaError from '$shared/errors/CsvSchemaError'
 import { formatApiUrl } from '$shared/utils/url'
 
 import * as services from './services'
-import { selectFilter, selectOpenStream, selectPageSize, selectOffset } from './selectors'
+import { selectOpenStream, selectPageSize, selectOffset } from './selectors'
 
 export const GET_STREAM_REQUEST = 'userpages/streams/GET_STREAM_REQUEST'
 export const GET_STREAM_SUCCESS = 'userpages/streams/GET_STREAM_SUCCESS'
@@ -66,7 +66,6 @@ export const DELETE_DATA_UP_TO_FAILURE = 'userpages/streams/DELETE_DATA_UP_TO_FA
 
 export const CANCEL_CSV_FILE_UPLOAD = 'userpages/streams/CANCEL_CSV_FILE_UPLOAD'
 export const OPEN_STREAM = 'userpages/streams/OPEN_STREAM'
-export const UPDATE_FILTER = 'userpages/streams/UPDATE_FILTER'
 export const UPDATE_EDIT_STREAM = 'userpages/streams/UPDATE_EDIT_STREAM'
 export const UPDATE_EDIT_STREAM_FIELD = 'userpages/streams/UPDATE_EDIT_STREAM_FIELD'
 export const GET_STREAM_RANGE_REQUEST = 'userpages/streams/GET_STREAM_RANGE_REQUEST'
@@ -242,11 +241,6 @@ const deleteDataUpToFailure = (error: ErrorInUi) => ({
     error,
 })
 
-const updateFilterAction = (filter: Filter) => ({
-    type: UPDATE_FILTER,
-    filter,
-})
-
 const getStreamRangeRequest = () => ({
     type: GET_STREAM_RANGE_REQUEST,
 })
@@ -314,11 +308,15 @@ export const cancelStreamStatusFetch = () => {
     streamStatusCancel()
 }
 
-export const getStreams = (replace: ?boolean = false) => (dispatch: Function, getState: Function) => {
+type GetStreamParams = {
+    replace?: boolean,
+    filter?: Filter,
+}
+
+export const getStreams = ({ replace = false, filter = {} }: GetStreamParams = {}) => (dispatch: Function, getState: Function) => {
     dispatch(getStreamsRequest())
 
     const state = getState()
-    const filter = selectFilter(state)
     const params = getParamsForFilter(filter, {
         uiChannel: false,
         sortBy: 'lastUpdated',
@@ -554,10 +552,6 @@ export const deleteDataUpTo = (id: StreamId, date: Date) => (dispatch: Function)
             })
         })
 }
-
-export const updateFilter = (filter: Filter) => (dispatch: Function) => (
-    dispatch(updateFilterAction(filter))
-)
 
 export const updateEditStream = (stream: ?Stream) => ({
     type: UPDATE_EDIT_STREAM,
