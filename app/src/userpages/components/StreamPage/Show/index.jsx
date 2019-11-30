@@ -13,7 +13,6 @@ import type { Stream, StreamId } from '$shared/flowtype/stream-types'
 import type { Operation } from '$userpages/flowtype/permission-types'
 import type { StoreState } from '$shared/flowtype/store-state'
 import type { User } from '$shared/flowtype/user-types'
-import type { ResourceKeyId } from '$shared/flowtype/resource-key-types'
 import {
     getMyStreamPermissions,
     getStream,

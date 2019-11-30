@@ -17,10 +17,24 @@ export const getError = (res: any): ErrorInUi => ({
     statusCode: res && res.response && res.response.status,
 })
 
-export default function request(url: string, method: RequestMethod = 'get', data?: any = null, options?: Object): ApiResult<*> {
+export type RequestParams = {
+    url: string,
+    method?: RequestMethod,
+    data?: any,
+    options?: Object,
+    useAuthorization?: boolean,
+}
+
+export default function request({
+    url,
+    options,
+    method = 'get',
+    data = null,
+    useAuthorization = true,
+}: RequestParams): ApiResult<*> {
     const defaultOptions = {
         headers: {
-            ...getAuthorizationHeader(),
+            ...(useAuthorization ? getAuthorizationHeader() : {}),
         },
     }
 

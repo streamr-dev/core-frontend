@@ -1,12 +1,24 @@
 // @flow
 
 import type { ApiResult } from '$shared/flowtype/common-types'
-import request from '$shared/utils/request'
+import request, { type RequestParams } from '$shared/utils/request'
 
-export const get = (endpoint: string, options?: Object): ApiResult<*> => request(endpoint, 'get', null, options)
+export const get = (args: RequestParams): ApiResult<*> => request({
+    ...args,
+    method: 'get',
+})
 
-export const post = (endpoint: string, data: any, options?: Object): ApiResult<*> => request(endpoint, 'post', data, options)
+export const post = (args: RequestParams): ApiResult<*> => request({
+    ...args,
+    method: 'post',
+})
 
-export const put = (endpoint: string, data: any, options?: Object): ApiResult<*> => request(endpoint, 'put', data, options)
+export const put = (args: RequestParams): ApiResult<*> => request({
+    ...args,
+    method: 'put',
+})
 
-export const del = (endpoint: string, data: any, options?: Object): ApiResult<*> => request(endpoint, 'delete', data, options)
+export const del = (args: RequestParams): ApiResult<*> => request({
+    ...args,
+    method: 'delete',
+})

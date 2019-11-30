@@ -10,14 +10,17 @@ import type { SmartContractTransaction, Hash } from '$shared/flowtype/web3-types
 import { gasLimits } from '$shared/utils/constants'
 import { getValidId, mapProductFromApi } from '$mp/utils/product'
 
-export const postUndeployFree = async (id: ProductId): ApiResult<Product> => post(formatApiUrl('products', getValidId(id, false), 'undeployFree'))
+export const postUndeployFree = async (id: ProductId): ApiResult<Product> => post({
+    url: formatApiUrl('products', getValidId(id, false), 'undeployFree'),
+})
     .then(mapProductFromApi)
 
-export const postSetUndeploying = async (id: ProductId, txHash: Hash): ApiResult<Product> => (
-    post(formatApiUrl('products', getValidId(id, false), 'setUndeploying'), {
+export const postSetUndeploying = async (id: ProductId, txHash: Hash): ApiResult<Product> => post({
+    url: formatApiUrl('products', getValidId(id, false), 'setUndeploying'),
+    data: {
         transactionHash: txHash,
-    }).then(mapProductFromApi)
-)
+    },
+}).then(mapProductFromApi)
 
 const contractMethods = () => getContract(getConfig().marketplace).methods
 
