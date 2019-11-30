@@ -44,6 +44,14 @@ const CreateProductButton = () => (
 
 const generateTimeAgoDescription = (productUpdatedDate: Date) => moment(productUpdatedDate).fromNow()
 
+const getProductLink = (id: ProductId) => {
+    if (process.env.COMMUNITY_PRODUCTS) {
+        return formatPath(links.marketplace.products, id, 'edit')
+    }
+
+    return formatPath(links.marketplace.products, id)
+}
+
 const Actions = ({ id, state }: Product) => {
     const { copy } = useCopy()
     const dispatch = useDispatch()
@@ -53,6 +61,9 @@ const Actions = ({ id, state }: Product) => {
     ), [dispatch])
     const redirectToPublishProduct = useCallback((id: ProductId) => (
         dispatch(push(formatPath(links.marketplace.products, id, 'publish')))
+    ), [dispatch])
+    const redirectToProduct = useCallback((id: ProductId) => (
+        dispatch(push(formatPath(links.marketplace.products, id)))
     ), [dispatch])
     const copyUrl = useCallback((id: ProductId) => copy(formatExternalUrl(
         process.env.PLATFORM_ORIGIN_URL,
@@ -68,7 +79,7 @@ const Actions = ({ id, state }: Product) => {
             >
                 <Translate value="actionsDropdown.edit" />
             </DropdownActions.Item>
-            {(state === productStates.DEPLOYED || state === productStates.NOT_DEPLOYED) &&
+            {!process.env.COMMUNITY_PRODUCTS && (state === productStates.DEPLOYED || state === productStates.NOT_DEPLOYED) &&
                 <DropdownActions.Item
                     className={styles.item}
                     onClick={() => redirectToPublishProduct(id || '')}
@@ -77,6 +88,14 @@ const Actions = ({ id, state }: Product) => {
                         <Translate value="actionsDropdown.unpublish" /> :
                         <Translate value="actionsDropdown.publish" />
                     }
+                </DropdownActions.Item>
+            }
+            {!!process.env.COMMUNITY_PRODUCTS && (state === productStates.DEPLOYED) &&
+                <DropdownActions.Item
+                    className={styles.item}
+                    onClick={() => (!!redirectToProduct && redirectToProduct(id || ''))}
+                >
+                    <Translate value="actionsDropdown.show" />
                 </DropdownActions.Item>
             }
             <DropdownActions.Item
@@ -152,7 +171,7 @@ const ProductsPage = () => {
                     {products.map((product) => (
                         <Link
                             key={product.id}
-                            to={product.id && `${links.marketplace.products}/${product.id}`}
+                            to={product.id && getProductLink(product.id)}
                         >
                             <Tile
                                 imageUrl={product.imageUrl || ''}
