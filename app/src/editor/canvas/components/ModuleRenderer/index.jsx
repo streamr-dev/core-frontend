@@ -37,7 +37,6 @@ type Props = {
 
 // $FlowFixMe
 const ModuleRenderer = React.memo(({
-    canvas,
     className,
     isSelected,
     onPort,

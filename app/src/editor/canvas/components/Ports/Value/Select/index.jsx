@@ -97,5 +97,4 @@ const Select = ({
     )
 }
 
-// $FlowFixMe
-export default React.memo(Select)
+export default Select
