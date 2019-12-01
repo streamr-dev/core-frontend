@@ -124,7 +124,7 @@ function useIsMouseDownForPanning({ buttons = 1, ref }) {
         // Let's ignore mousedown events on the following (interactive) HTML
         // elements. It means, in practice, that mousedown-ing them will not
         // hopelessly attempt to trigger panning. It wouldn't succeed anyway
-        // but makes <select> options unselectable on Firefox.
+        // but it makes <select> options unselectable in Firefox.
         if ([
             'select',
             'option',
