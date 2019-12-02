@@ -42,6 +42,8 @@ Community contributions are encouraged, please see the [Docs Editing Guide](http
 
 To be able to use the Marketplace, you'll need to configure these variables into your `.env` file:
 
+! TEMPORARY VAR: MARKETPLACE_CONTRACT_ADDRESS_OLD = MARKETPLACE_CONTRACT_ADDRESS while the new MP contract is being tested/upgraded. Old contract is used when NEW_MP_CONTRACT=undefined.
+
 | Variable                     | Description                                                          |
 |------------------------------|----------------------------------------------------------------------|
 | PORT                         | Port used by webpack devServer                                       |
