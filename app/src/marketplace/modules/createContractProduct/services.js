@@ -24,10 +24,12 @@ const createOrUpdateContractProduct = (method: (...any) => Sendable, product: Sm
         minimumSubscriptionInSeconds,
     } = product
     const currencyIndex = Object.keys(currencies).indexOf(priceCurrency)
+    const requiresWhitelist = false
     validateContractProductPricePerSecond(pricePerSecond)
     validateProductPriceCurrency(priceCurrency)
     const transformedPricePerSecond = mapPriceToContract(pricePerSecond)
-    const methodToSend = method(getValidId(id), name, beneficiaryAddress, transformedPricePerSecond, currencyIndex, minimumSubscriptionInSeconds)
+    const methodToSend =
+        method(getValidId(id), name, beneficiaryAddress, transformedPricePerSecond, currencyIndex, minimumSubscriptionInSeconds, requiresWhitelist)
     return send(methodToSend, {
         gas: gasLimits.CREATE_PRODUCT,
     })
