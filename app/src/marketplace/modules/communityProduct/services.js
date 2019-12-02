@@ -177,18 +177,28 @@ export const getCommunityData = async (id: CommunityId, usePublicNode: boolean =
 }
 
 export const getSecrets = (communityId: string): ApiResult<Array<Secret>> =>
-    get(formatApiUrl('communities', communityId, 'secrets'))
+    get({
+        url: formatApiUrl('communities', communityId, 'secrets'),
+    })
 
 export const postSecret = (communityId: string, name: string, secret: string): ApiResult<Secret> =>
-    post(formatApiUrl('communities', communityId, 'secrets'), {
-        name,
-        secret,
+    post({
+        url: formatApiUrl('communities', communityId, 'secrets'),
+        data: {
+            name,
+            secret,
+        },
     })
 
 export const putSecret = (communityId: string, secretId: string, name: string): ApiResult<Secret> =>
-    put(formatApiUrl('communities', communityId, 'secrets', secretId), {
-        name,
+    put({
+        url: formatApiUrl('communities', communityId, 'secrets', secretId),
+        data: {
+            name,
+        },
     })
 
 export const deleteSecret = (communityId: string, secretId: string): ApiResult<void> =>
-    del(formatApiUrl('communities', communityId, 'secrets', secretId))
+    del({
+        url: formatApiUrl('communities', communityId, 'secrets', secretId),
+    })
