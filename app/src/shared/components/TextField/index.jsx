@@ -19,22 +19,14 @@ const TextField = ({ className, onAutoComplete, ...props }: Props) => {
         }
     }, [onAutoComplete])
 
+    const Tag = props.type === 'number' ? NumberField : 'input'
+
     return (
-        <React.Fragment>
-            {props.type === 'number' ? (
-                <NumberField
-                    {...props}
-                    className={cx(className, styles.root)}
-                    onAnimationStart={onAnimationStart}
-                />
-            ) : (
-                <input
-                    {...props}
-                    className={cx(className, styles.root)}
-                    onAnimationStart={onAnimationStart}
-                />
-            )}
-        </React.Fragment>
+        <Tag
+            {...props}
+            className={cx(className, styles.root)}
+            onAnimationStart={onAnimationStart}
+        />
     )
 }
 
