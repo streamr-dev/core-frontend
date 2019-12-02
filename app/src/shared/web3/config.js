@@ -19,6 +19,10 @@ type Config = {
     uniswapAdaptor: SmartContractConfig,
 }
 
+const MARKETPLACE_CONTRACT_ADDRESS = process.env.NEW_MP_CONTRACT ?
+    process.env.MARKETPLACE_CONTRACT_ADDRESS
+    : process.env.MARKETPLACE_CONTRACT_ADDRESS_OLD
+
 const getConfig = (): Config => ({
     networkId: process.env.WEB3_REQUIRED_NETWORK_ID || '',
     publicNodeAddress: process.env.WEB3_PUBLIC_HTTP_PROVIDER || '',
@@ -34,7 +38,7 @@ const getConfig = (): Config => ({
     },
     marketplace: {
         abi: marketplaceAbi,
-        address: process.env.MARKETPLACE_CONTRACT_ADDRESS || '',
+        address: MARKETPLACE_CONTRACT_ADDRESS || '',
     },
     communityProduct: {
         abi: communityProductMetadata.abi,
