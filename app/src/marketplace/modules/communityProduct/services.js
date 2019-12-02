@@ -14,11 +14,13 @@ import type { Permission } from '$userpages/flowtype/permission-types'
 import type { ApiResult } from '$shared/flowtype/common-types'
 import { gasLimits } from '$shared/utils/constants'
 
-import { post, del, get } from '$shared/utils/api'
+import { post, del, get, put } from '$shared/utils/api'
 import { formatApiUrl } from '$shared/utils/url'
 import { postStream, getMyStreamPermissions } from '$userpages/modules/userPageStreams/services'
 import { addStreamResourceKey } from '$shared/modules/resourceKey/services'
 import { getWeb3, getPublicWeb3 } from '$shared/web3/web3Provider'
+
+import type { Secret } from './types'
 
 export const getStreamrEngineAddresses = (): Array<string> => {
     const addressesString = process.env.STREAMR_ENGINE_NODE_ADDRESSES || ''
@@ -173,3 +175,20 @@ export const getCommunityData = async (id: CommunityId, usePublicNode: boolean =
         owner,
     }
 }
+
+export const getSecrets = (communityId: string): ApiResult<Array<Secret>> =>
+    get(formatApiUrl('communities', communityId, 'secrets'))
+
+export const postSecret = (communityId: string, name: string, secret: string): ApiResult<Secret> =>
+    post(formatApiUrl('communities', communityId, 'secrets'), {
+        name,
+        secret,
+    })
+
+export const putSecret = (communityId: string, secretId: string, name: string): ApiResult<Secret> =>
+    put(formatApiUrl('communities', communityId, 'secrets', secretId), {
+        name,
+    })
+
+export const deleteSecret = (communityId: string, secretId: string): ApiResult<void> =>
+    del(formatApiUrl('communities', communityId, 'secrets', secretId))

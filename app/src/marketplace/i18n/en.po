@@ -104,6 +104,15 @@ msgstr "Enter ETH address"
 msgid "editProductPage##setPrice##fixPrice"
 msgstr "Fix price in fiat for protection against shifts in the DATA price"
 
+msgid "editProductPage##sharedSecrets##addSecret"
+msgstr "Add shared secret"
+
+msgid "editProductPage##sharedSecrets##description"
+msgstr ""
+"Shared secrets are the access control for your product. "
+"Create, name and revoke shared secrets from here. "
+"For help with shared secrets, see the docs. "
+
 msgid "editProductPage##navigation##name"
 msgstr "Name"
 
@@ -121,6 +130,9 @@ msgstr "Set price"
 
 msgid "editProductPage##navigation##details"
 msgstr "Details"
+
+msgid "editProductPage##navigation##sharedSecrets"
+msgstr "Shared secrets"
 
 msgid "error##general"
 msgstr "Oops. Something has broken down here."

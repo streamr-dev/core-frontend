@@ -13,3 +13,9 @@ export type CommunityErrorAction = PayloadAction<{
     error: ErrorInUi
 }>
 export type CommunityErrorActionCreator = (id: CommunityId, error: ErrorInUi) => CommunityErrorAction
+
+export type Secret = {
+    id: string,
+    name: string,
+    secret: string,
+}
