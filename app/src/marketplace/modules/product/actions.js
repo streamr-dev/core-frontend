@@ -14,6 +14,7 @@ import type { StreamIdList } from '$shared/flowtype/stream-types'
 import type { ProductId, Subscription } from '../../flowtype/product-types'
 import type { ReduxActionCreator, ErrorInUi } from '$shared/flowtype/common-types'
 import type { StoreState } from '../../flowtype/store-state'
+import { productStates } from '$shared/utils/constants'
 
 import { selectProduct } from './selectors'
 import {
@@ -133,10 +134,10 @@ const getUserProductPermissionsFailure: ProductErrorActionCreator = createAction
 
 export const resetProduct: ReduxActionCreator = createAction(RESET_PRODUCT)
 
-export const getStreamsByProductId = (id: ProductId) => (dispatch: Function) => {
+export const getStreamsByProductId = (id: ProductId, useAuthorization: boolean = true) => (dispatch: Function) => {
     dispatch(getStreamsByProductIdRequest(id))
     return services
-        .getStreamsByProductId(id)
+        .getStreamsByProductId(id, useAuthorization)
         .then(handleEntities(streamsSchema, dispatch))
         .then(
             (result) => dispatch(getStreamsByProductIdSuccess(id, result)),
@@ -147,7 +148,7 @@ export const getStreamsByProductId = (id: ProductId) => (dispatch: Function) => 
 const fetchProductStreams = (id: ProductId, getState: () => StoreState, dispatch: Function) => () => {
     const product = selectProduct(getState())
     if (product && product.streams) {
-        dispatch(getStreamsByProductId(id))
+        dispatch(getStreamsByProductId(id, product.state !== productStates.DEPLOYED))
     }
 }
 

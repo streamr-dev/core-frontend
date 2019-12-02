@@ -7,8 +7,8 @@ import { mapAllProductsFromApi } from '../../utils/product'
 import type { ApiResult } from '$shared/flowtype/common-types'
 import type { Product, ProductId } from '../../flowtype/product-types'
 
-export const getRelatedProducts = (id: ProductId): ApiResult<Array<Product>> => get({
+export const getRelatedProducts = (id: ProductId, useAuthorization: boolean = true): ApiResult<Array<Product>> => get({
     url: formatApiUrl('products', id, 'related'),
-    useAuthorization: false,
+    useAuthorization,
 })
     .then(mapAllProductsFromApi)
