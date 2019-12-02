@@ -31,16 +31,17 @@
 }
 
 .graphs {
-  padding: 3em 2em 0 2em;
+  padding: 0 2em 0 2em;
   border-top: 1px solid #E7E7E7;
   border-bottom: 1px solid #E7E7E7;
   display: grid;
-  height: 22.5em;
   grid-template-columns: 60% 40%;
 }
 
-.graph {
-  margin-top: 3em;
+.membersGraph {
+  margin-right: 2rem;
+  padding-top: 3em;
+  padding-bottom: 1rem;
 }
 
 .memberDonut {
@@ -48,16 +49,19 @@
   height: 100%;
   display: flex;
   flex-direction: column;
+  padding-top: 3em;
+  padding-bottom: 1rem;
 
   .statHeading {
     padding-left: 2em;
   }
+}
 
-  .graph {
-    width: 160px;
-    height: 160px;
-    align-self: center;
-  }
+.donutChart {
+  margin-top: 2rem;
+  width: 160px;
+  height: 160px;
+  align-self: center;
 }
 
 .memberContainer {

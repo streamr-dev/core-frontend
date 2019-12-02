@@ -11,10 +11,10 @@ import { getCommunityStats } from '$mp/modules/communityProduct/services'
 import { fromAtto } from '$mp/utils/math'
 
 import CommunityPending from '$mp/components/ProductPage/CommunityPending'
-import CommunityStatsComponent from '$mp/components/ProductPage/CommunityStats'
+import CommunityStatsComponent from '$shared/components/CommunityStats'
 import DonutChart from '$shared/components/DonutChart'
-import Dropdown from '$shared/components/Dropdown'
-import MembersGraph from '$mp/components/ProductPage/MembersGraph'
+
+import MembersGraph from './MembersGraph'
 
 import styles from './communityStats.pcss'
 
@@ -57,7 +57,6 @@ const CommunityStats = () => {
     const [stats, setStats] = useState(initialStats)
     const [totalEarnings, setTotalEarnings] = useState(null)
     const [memberCount, setMemberCount] = useState(null)
-    const [shownDays, setShownDays] = useState(7)
     const isMounted = useIsMounted()
 
     const { communityDeployed, created, beneficiaryAddress } = product
@@ -202,42 +201,25 @@ const CommunityStats = () => {
                     )}
                     {!!communityDeployed && memberCount && (
                         <div className={styles.graphs}>
-                            <div className={styles.memberContainer}>
-                                <div className={styles.memberHeadingContainer}>
-                                    <div className={styles.statHeading}>Members</div>
-                                    <Dropdown
-                                        title=""
-                                        selectedItem={shownDays.toString()}
-                                        onChange={(item) => setShownDays(Number(item))}
-                                        className={styles.memberGraphDropdown}
-                                        toggleStyle="small"
-                                    >
-                                        <Dropdown.Item value="7">Last 7 days</Dropdown.Item>
-                                        <Dropdown.Item value="28">Last 28 days</Dropdown.Item>
-                                        <Dropdown.Item value="90">Last 90 days</Dropdown.Item>
-                                    </Dropdown>
-                                </div>
-                                <MembersGraph
-                                    className={styles.graph}
-                                    joinPartStreamId={joinPartStreamId}
-                                    memberCount={memberCount.total}
-                                    shownDays={shownDays}
-                                />
-                            </div>
+                            <MembersGraph
+                                className={styles.membersGraph}
+                                joinPartStreamId={joinPartStreamId}
+                                memberCount={memberCount.total}
+                            />
                             <div className={styles.memberDonut}>
                                 <div className={styles.statHeading}>Members by status</div>
                                 <DonutChart
-                                    className={styles.graph}
+                                    className={styles.donutChart}
                                     strokeWidth={3}
                                     data={[
                                         {
                                             title: 'Active',
-                                            value: memberCount.active,
+                                            value: memberCount.active || 0,
                                             color: '#0324FF',
                                         },
                                         {
                                             title: 'Inactive',
-                                            value: memberCount.inactive,
+                                            value: memberCount.inactive || 0,
                                             color: '#FB0606',
                                         },
                                     ]}

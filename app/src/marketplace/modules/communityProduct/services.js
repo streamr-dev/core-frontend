@@ -156,12 +156,6 @@ export const getCommunityStats = (id: CommunityId): ApiResult<Object> => get({
     url: formatApiUrl('communities', id, 'stats'),
 })
 
-export const getStreamData = (id: CommunityId, fromTimestamp: number): ApiResult<Object> => get({
-    url: formatApiUrl('streams', id, 'data', 'partitions', 0, 'from', {
-        fromTimestamp,
-    }),
-})
-
 export const getCommunityData = async (id: CommunityId, usePublicNode: boolean = true): ApiResult<Object> => {
     const adminFee = await getAdminFee(id, usePublicNode)
     const joinPartStreamId = await getJoinPartStreamId(id, usePublicNode)

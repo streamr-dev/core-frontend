@@ -5,10 +5,12 @@ import { storiesOf } from '@storybook/react'
 import { withKnobs } from '@storybook/addon-knobs'
 import styles from '@sambego/storybook-styles'
 
-import CommunityStats from '.'
+import Header from './Header'
+import Value from './Value'
+import Values from './Values'
 
 const stories =
-    storiesOf('Marketplace/CommunityStats', module)
+    storiesOf('Shared/CommunityStats', module)
         .addDecorator(styles({
             color: '#323232',
             padding: '5rem',
@@ -45,12 +47,23 @@ const stats = [{
     value: '08/10/2019',
 }]
 
-stories.add('basic', () => (
-    <CommunityStats stats={stats} />
+stories.add('header', () => (
+    <div>
+        <Header>header</Header>
+        <div>content</div>
+    </div>
+))
+
+stories.add('value', () => (
+    <Value {...stats[0]} />
+))
+
+stories.add('values', () => (
+    <Values stats={stats} />
 ))
 
 stories.add('loading', () => (
-    <CommunityStats stats={stats.map((stat) => ({
+    <Values stats={stats.map((stat) => ({
         ...stat,
         loading: true,
     }))}
