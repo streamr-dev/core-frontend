@@ -2,225 +2,7 @@
   {
     "constant": false,
     "inputs": [],
-    "name": "resume",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "productId",
-        "type": "bytes32"
-      },
-      {
-        "name": "subscriptionSeconds",
-        "type": "uint256"
-      }
-    ],
-    "name": "buy",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "productId",
-        "type": "bytes32"
-      }
-    ],
-    "name": "claimProductOwnership",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "productId",
-        "type": "bytes32"
-      },
-      {
-        "name": "newSubscriber",
-        "type": "address"
-      }
-    ],
-    "name": "transferSubscription",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "id",
-        "type": "bytes32"
-      }
-    ],
-    "name": "getProduct",
-    "outputs": [
-      {
-        "name": "name",
-        "type": "string"
-      },
-      {
-        "name": "owner",
-        "type": "address"
-      },
-      {
-        "name": "beneficiary",
-        "type": "address"
-      },
-      {
-        "name": "pricePerSecond",
-        "type": "uint256"
-      },
-      {
-        "name": "currency",
-        "type": "uint8"
-      },
-      {
-        "name": "minimumSubscriptionSeconds",
-        "type": "uint256"
-      },
-      {
-        "name": "state",
-        "type": "uint8"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "productId",
-        "type": "bytes32"
-      },
-      {
-        "name": "name",
-        "type": "string"
-      },
-      {
-        "name": "beneficiary",
-        "type": "address"
-      },
-      {
-        "name": "pricePerSecond",
-        "type": "uint256"
-      },
-      {
-        "name": "currency",
-        "type": "uint8"
-      },
-      {
-        "name": "minimumSubscriptionSeconds",
-        "type": "uint256"
-      }
-    ],
-    "name": "updateProduct",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "productId",
-        "type": "bytes32"
-      }
-    ],
-    "name": "getSubscriptionTo",
-    "outputs": [
-      {
-        "name": "isValid",
-        "type": "bool"
-      },
-      {
-        "name": "endTimestamp",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "productId",
-        "type": "bytes32"
-      }
-    ],
-    "name": "redeployProduct",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [],
-    "name": "halt",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "productId",
-        "type": "bytes32"
-      },
-      {
-        "name": "subscriber",
-        "type": "address"
-      }
-    ],
-    "name": "getSubscription",
-    "outputs": [
-      {
-        "name": "isValid",
-        "type": "bool"
-      },
-      {
-        "name": "endTimestamp",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "datacoinAddress",
-        "type": "address"
-      },
-      {
-        "name": "currencyUpdateAgentAddress",
-        "type": "address"
-      }
-    ],
-    "name": "reInitialize",
+    "name": "claimOwnership",
     "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -271,6 +53,10 @@
       {
         "name": "newOwnerCandidate",
         "type": "address"
+      },
+      {
+        "name": "requiresWhitelist",
+        "type": "bool"
       }
     ],
     "payable": false,
@@ -320,61 +106,6 @@
     "type": "function"
   },
   {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "productId",
-        "type": "bytes32"
-      }
-    ],
-    "name": "deleteProduct",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "productId",
-        "type": "bytes32"
-      },
-      {
-        "name": "newOwnerCandidate",
-        "type": "address"
-      }
-    ],
-    "name": "offerProductOwnership",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "productId",
-        "type": "bytes32"
-      },
-      {
-        "name": "subscriber",
-        "type": "address"
-      }
-    ],
-    "name": "hasValidSubscription",
-    "outputs": [
-      {
-        "name": "isValid",
-        "type": "bool"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "constant": true,
     "inputs": [],
     "name": "halted",
@@ -386,67 +117,6 @@
     ],
     "payable": false,
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "subscriptionSeconds",
-        "type": "uint256"
-      },
-      {
-        "name": "price",
-        "type": "uint256"
-      },
-      {
-        "name": "unit",
-        "type": "uint8"
-      }
-    ],
-    "name": "getPriceInData",
-    "outputs": [
-      {
-        "name": "datacoinAmount",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "id",
-        "type": "bytes32"
-      },
-      {
-        "name": "name",
-        "type": "string"
-      },
-      {
-        "name": "beneficiary",
-        "type": "address"
-      },
-      {
-        "name": "pricePerSecond",
-        "type": "uint256"
-      },
-      {
-        "name": "currency",
-        "type": "uint8"
-      },
-      {
-        "name": "minimumSubscriptionSeconds",
-        "type": "uint256"
-      }
-    ],
-    "name": "createProduct",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -464,21 +134,17 @@
     "type": "function"
   },
   {
-    "constant": false,
-    "inputs": [
+    "constant": true,
+    "inputs": [],
+    "name": "pendingOwner",
+    "outputs": [
       {
-        "name": "timestamp",
-        "type": "uint256"
-      },
-      {
-        "name": "dataUsd",
-        "type": "uint256"
+        "name": "",
+        "type": "address"
       }
     ],
-    "name": "updateExchangeRates",
-    "outputs": [],
     "payable": false,
-    "stateMutability": "nonpayable",
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -503,6 +169,10 @@
       },
       {
         "name": "currencyUpdateAgentAddress",
+        "type": "address"
+      },
+      {
+        "name": "prev_marketplace_address",
         "type": "address"
       }
     ],
@@ -675,6 +345,48 @@
         "type": "uint256"
       }
     ],
+    "name": "ProductImported",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "id",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "name": "beneficiary",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "pricePerSecond",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "currency",
+        "type": "uint8"
+      },
+      {
+        "indexed": false,
+        "name": "minimumSubscriptionSeconds",
+        "type": "uint256"
+      }
+    ],
     "name": "ProductRedeployed",
     "type": "event"
   },
@@ -798,6 +510,28 @@
       },
       {
         "indexed": true,
+        "name": "subscriber",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "endTimestamp",
+        "type": "uint256"
+      }
+    ],
+    "name": "SubscriptionImported",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "productId",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
         "name": "from",
         "type": "address"
       },
@@ -834,6 +568,81 @@
   },
   {
     "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "productId",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "name": "subscriber",
+        "type": "address"
+      }
+    ],
+    "name": "WhitelistRequested",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "productId",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "name": "subscriber",
+        "type": "address"
+      }
+    ],
+    "name": "WhitelistApproved",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "productId",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "name": "subscriber",
+        "type": "address"
+      }
+    ],
+    "name": "WhitelistRejected",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "productId",
+        "type": "bytes32"
+      }
+    ],
+    "name": "WhitelistEnabled",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "productId",
+        "type": "bytes32"
+      }
+    ],
+    "name": "WhitelistDisabled",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
     "inputs": [],
     "name": "Halted",
     "type": "event"
@@ -860,5 +669,495 @@
     ],
     "name": "OwnershipTransferred",
     "type": "event"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "id",
+        "type": "bytes32"
+      }
+    ],
+    "name": "getProduct",
+    "outputs": [
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "name": "beneficiary",
+        "type": "address"
+      },
+      {
+        "name": "pricePerSecond",
+        "type": "uint256"
+      },
+      {
+        "name": "currency",
+        "type": "uint8"
+      },
+      {
+        "name": "minimumSubscriptionSeconds",
+        "type": "uint256"
+      },
+      {
+        "name": "state",
+        "type": "uint8"
+      },
+      {
+        "name": "requiresWhitelist",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "id",
+        "type": "bytes32"
+      },
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "beneficiary",
+        "type": "address"
+      },
+      {
+        "name": "pricePerSecond",
+        "type": "uint256"
+      },
+      {
+        "name": "currency",
+        "type": "uint8"
+      },
+      {
+        "name": "minimumSubscriptionSeconds",
+        "type": "uint256"
+      },
+      {
+        "name": "requiresWhitelist",
+        "type": "bool"
+      }
+    ],
+    "name": "createProduct",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "productId",
+        "type": "bytes32"
+      }
+    ],
+    "name": "deleteProduct",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "productId",
+        "type": "bytes32"
+      }
+    ],
+    "name": "redeployProduct",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "productId",
+        "type": "bytes32"
+      },
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "beneficiary",
+        "type": "address"
+      },
+      {
+        "name": "pricePerSecond",
+        "type": "uint256"
+      },
+      {
+        "name": "currency",
+        "type": "uint8"
+      },
+      {
+        "name": "minimumSubscriptionSeconds",
+        "type": "uint256"
+      }
+    ],
+    "name": "updateProduct",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "productId",
+        "type": "bytes32"
+      },
+      {
+        "name": "newOwnerCandidate",
+        "type": "address"
+      }
+    ],
+    "name": "offerProductOwnership",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "productId",
+        "type": "bytes32"
+      }
+    ],
+    "name": "claimProductOwnership",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "productId",
+        "type": "bytes32"
+      },
+      {
+        "name": "subscriber",
+        "type": "address"
+      }
+    ],
+    "name": "getSubscription",
+    "outputs": [
+      {
+        "name": "isValid",
+        "type": "bool"
+      },
+      {
+        "name": "endTimestamp",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "productId",
+        "type": "bytes32"
+      }
+    ],
+    "name": "getSubscriptionTo",
+    "outputs": [
+      {
+        "name": "isValid",
+        "type": "bool"
+      },
+      {
+        "name": "endTimestamp",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "productId",
+        "type": "bytes32"
+      },
+      {
+        "name": "subscriber",
+        "type": "address"
+      }
+    ],
+    "name": "hasValidSubscription",
+    "outputs": [
+      {
+        "name": "isValid",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "productId",
+        "type": "bytes32"
+      },
+      {
+        "name": "subscriptionSeconds",
+        "type": "uint256"
+      },
+      {
+        "name": "recipient",
+        "type": "address"
+      }
+    ],
+    "name": "grantSubscription",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "productId",
+        "type": "bytes32"
+      },
+      {
+        "name": "subscriptionSeconds",
+        "type": "uint256"
+      },
+      {
+        "name": "recipient",
+        "type": "address"
+      }
+    ],
+    "name": "buyFor",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "productId",
+        "type": "bytes32"
+      },
+      {
+        "name": "subscriptionSeconds",
+        "type": "uint256"
+      }
+    ],
+    "name": "buy",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "timestamp",
+        "type": "uint256"
+      },
+      {
+        "name": "dataUsd",
+        "type": "uint256"
+      }
+    ],
+    "name": "updateExchangeRates",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "subscriptionSeconds",
+        "type": "uint256"
+      },
+      {
+        "name": "price",
+        "type": "uint256"
+      },
+      {
+        "name": "unit",
+        "type": "uint8"
+      }
+    ],
+    "name": "getPriceInData",
+    "outputs": [
+      {
+        "name": "datacoinAmount",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [],
+    "name": "halt",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [],
+    "name": "resume",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "datacoinAddress",
+        "type": "address"
+      },
+      {
+        "name": "currencyUpdateAgentAddress",
+        "type": "address"
+      },
+      {
+        "name": "prev_marketplace_address",
+        "type": "address"
+      }
+    ],
+    "name": "reInitialize",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "productId",
+        "type": "bytes32"
+      },
+      {
+        "name": "_requiresWhitelist",
+        "type": "bool"
+      }
+    ],
+    "name": "setRequiresWhitelist",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "productId",
+        "type": "bytes32"
+      },
+      {
+        "name": "subscriber",
+        "type": "address"
+      }
+    ],
+    "name": "whitelistApprove",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "productId",
+        "type": "bytes32"
+      },
+      {
+        "name": "subscriber",
+        "type": "address"
+      }
+    ],
+    "name": "whitelistReject",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "productId",
+        "type": "bytes32"
+      }
+    ],
+    "name": "whitelistRequest",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "productId",
+        "type": "bytes32"
+      },
+      {
+        "name": "subscriber",
+        "type": "address"
+      }
+    ],
+    "name": "getWhitelistState",
+    "outputs": [
+      {
+        "name": "wlstate",
+        "type": "uint8"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
   }
 ]
