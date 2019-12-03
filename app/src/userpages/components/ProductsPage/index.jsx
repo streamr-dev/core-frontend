@@ -27,20 +27,27 @@ import { isCommunityProduct } from '$mp/utils/product'
 import Button from '$shared/components/Button'
 import useFilterSort from '$userpages/hooks/useFilterSort'
 import useCopy from '$shared/hooks/useCopy'
-
+import { Provider as ModalProvider } from '$shared/contexts/ModalApi'
+import useModal from '$shared/hooks/useModal'
 import type { ProductId, Product } from '$mp/flowtype/product-types'
+
+import CreateProductModal from './CreateProductModal'
 
 import styles from './products.pcss'
 
-const CreateProductButton = () => (
-    <Button
-        className={styles.createProductButton}
-        tag={Link}
-        to={links.marketplace.createProduct}
-    >
-        <Translate value="userpages.products.createProduct" />
-    </Button>
-)
+const CreateProductButton = () => {
+    const { api: createProductDialog } = useModal('createProduct')
+
+    return (
+        <Button
+            className={styles.createProductButton}
+            tag={Link}
+            onClick={() => createProductDialog.open()}
+        >
+            <Translate value="userpages.products.createProduct" />
+        </Button>
+    )
+}
 
 const generateTimeAgoDescription = (productUpdatedDate: Date) => moment(productUpdatedDate).fromNow()
 
@@ -200,8 +207,13 @@ const ProductsPage = () => {
                 </TileGrid>
             </ListContainer>
             <DocsShortcuts />
+            <CreateProductModal />
         </Layout>
     )
 }
 
-export default ProductsPage
+export default () => (
+    <ModalProvider>
+        <ProductsPage />
+    </ModalProvider>
+)
