@@ -22,12 +22,20 @@ const Footer = () => (
                 Core
             </a>
         </FooterColumn>
-        <FooterColumn title={I18n.t('general.company')}>
+        <FooterColumn title={I18n.t('general.apps')}>
+            <a href={links.marketplace.main}>
+                <Translate value="general.marketplace" />
+            </a>
+            <a href={links.userpages.main}>
+                <Translate value="general.core" />
+            </a>
+        </FooterColumn>
+        <FooterColumn title={I18n.t('general.project')}>
             <a href="/about">
                 <Translate value="general.aboutUs" />
             </a>
             <a href="/design">
-                Design Assets
+                <Translate value="general.designAssets" />
             </a>
             <a href={links.blog}>
                 <Translate value="general.blog" />
