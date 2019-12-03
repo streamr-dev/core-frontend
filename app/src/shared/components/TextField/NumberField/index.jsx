@@ -34,8 +34,8 @@ const NumberField = ({
     }, [])
 
     const addValue = useCallback((val) => {
-        let parsedValue = Number.parseFloat(internalValue)
-        let parsedStep = Number.parseFloat(val)
+        let parsedValue = Number.parseFloat(internalValue != null ? internalValue : '')
+        let parsedStep = Number.parseFloat(val.toString())
 
         if (Number.isNaN(parsedValue)) {
             parsedValue = 0
@@ -53,7 +53,7 @@ const NumberField = ({
             newValue = max
         }
 
-        setInternalValue(newValue)
+        setInternalValue(newValue.toString())
     }, [min, max, internalValue])
 
     const onIncrease = useCallback(() => {
