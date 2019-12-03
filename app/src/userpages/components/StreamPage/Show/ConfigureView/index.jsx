@@ -19,6 +19,7 @@ import { selectEditedStream, selectFieldsAutodetectFetching, fieldTypes } from '
 import TextInput from '$shared/components/TextInput'
 import Toggle from '$shared/components/Toggle'
 import SplitControl from '$userpages/components/SplitControl'
+import DropdownActions from '$shared/components/DropdownActions'
 
 import styles from './configureView.pcss'
 import NewFieldEditor from './NewFieldEditor'
@@ -194,6 +195,11 @@ export class ConfigureView extends Component<Props, State> {
                                                     value={field.name}
                                                     onChange={(e) => this.onFieldNameChange(field.name, e.target.value)}
                                                     disabled={disabled}
+                                                    actions={[
+                                                        <DropdownActions.Item onClick={() => this.deleteField(field.name)}>
+                                                            <Translate value="userpages.streams.edit.configure.delete" />
+                                                        </DropdownActions.Item>,
+                                                    ]}
                                                 />
                                                 <SelectInput
                                                     label=""
@@ -203,16 +209,6 @@ export class ConfigureView extends Component<Props, State> {
                                                     onChange={(o) => this.onFieldTypeChange(field.name, o.value)}
                                                     preserveLabelSpace={false}
                                                 />
-                                                <Button
-                                                    kind="secondary"
-                                                    size="mini"
-                                                    outline
-                                                    className={styles.deleteFieldButton}
-                                                    onClick={() => this.deleteField(field.name)}
-                                                    disabled={disabled}
-                                                >
-                                                    <Translate value="userpages.streams.edit.configure.delete" />
-                                                </Button>
                                             </SplitControl>
                                         </FieldItem>
                                     </div>

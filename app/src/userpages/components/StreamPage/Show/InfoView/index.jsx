@@ -4,13 +4,12 @@ import React, { useEffect, useRef, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { I18n, Translate } from 'react-redux-i18n'
 
-import Button from '$shared/components/Button'
 import Notification from '$shared/utils/Notification'
 import TextInput from '$shared/components/TextInput'
+import DropdownActions from '$shared/components/DropdownActions'
 import { updateEditStreamField } from '$userpages/modules/userPageStreams/actions'
 import { selectEditedStream } from '$userpages/modules/userPageStreams/selectors'
 import { NotificationIcon } from '$shared/utils/constants'
-import SplitControl from '$userpages/components/SplitControl'
 import useCopy from '$shared/hooks/useCopy'
 import PartitionsView from '../PartitionsView'
 import type { StreamId } from '$shared/flowtype/stream-types'
@@ -24,6 +23,7 @@ type Props = {
 export const InfoView = ({ disabled }: Props) => {
     const stream = useSelector(selectEditedStream)
     const dispatch = useDispatch()
+    /* eslint-disable-next-line no-unused-vars */
     const { isCopied, copy } = useCopy()
     const contentChangedRef = useRef(false)
     const streamRef = useRef()
@@ -100,31 +100,22 @@ export const InfoView = ({ disabled }: Props) => {
             </div>
             {stream && stream.id &&
                 <React.Fragment>
-                    <SplitControl>
-                        <div className={styles.textInput}>
-                            <TextInput
-                                label={I18n.t('userpages.streams.edit.details.streamId')}
-                                type="text"
-                                name="id"
-                                value={(stream && stream.id) || ''}
-                                preserveLabelSpace
-                                readOnly
-                                disabled={disabled}
-                            />
-                        </div>
-                        <Button
-                            kind="secondary"
-                            size="mini"
-                            outline
-                            className={styles.copyStreamIdButton}
-                            onClick={() => onCopy(stream.id)}
-                        >
-                            {isCopied ?
-                                <Translate value="userpages.streams.edit.details.copied" /> :
-                                <Translate value="userpages.streams.edit.details.copyStreamId" />
-                            }
-                        </Button>
-                    </SplitControl>
+                    <div className={styles.textInput}>
+                        <TextInput
+                            label={I18n.t('userpages.streams.edit.details.streamId')}
+                            type="text"
+                            name="id"
+                            value={(stream && stream.id) || ''}
+                            preserveLabelSpace
+                            readOnly
+                            disabled={disabled}
+                            actions={[
+                                <DropdownActions.Item onClick={() => onCopy(stream.id)}>
+                                    <Translate value="userpages.keyField.copy" />
+                                </DropdownActions.Item>,
+                            ]}
+                        />
+                    </div>
                     <h5 className={styles.partitions}>{I18n.t('userpages.streams.edit.details.partitions')}</h5>
                     <PartitionsView disabled={disabled} />
                 </React.Fragment>
