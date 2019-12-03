@@ -3,7 +3,7 @@ import React from 'react'
 
 import { storiesOf } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
-import { withKnobs, text, array, number, boolean } from '@storybook/addon-knobs'
+import { withKnobs, text, number, boolean } from '@storybook/addon-knobs'
 import StoryRouter from 'storybook-react-router'
 import styles from '@sambego/storybook-styles'
 import { Row, Col } from 'reactstrap'
@@ -39,7 +39,6 @@ import CodeSnippet from '$shared/components/CodeSnippet'
 import Tooltip from '$shared/components/Tooltip'
 import ContextMenu from '$shared/components/ContextMenu'
 import { NotificationIcon } from '$shared/utils/constants'
-import RadioButtonGroup from '$shared/components/RadioButtonGroup'
 import Toolbar from '$shared/components/Toolbar'
 import Spinner from '$shared/components/Spinner'
 import DeploySpinner from '$shared/components/DeploySpinner'
@@ -692,25 +691,6 @@ story('Tooltip')
         <Tooltip value="This is a tooltip">
             Hover to show tooltip
         </Tooltip>
-    ))
-
-story('RadioButtonGroup')
-    .addWithJSX('basic', () => (
-        <RadioButtonGroup
-            name="group"
-            options={['value 1', 'value 2', 'value 3']}
-            selectedOption="value 2"
-            onChange={action('selected')}
-        />
-    ))
-    .addWithJSX('disabled', () => (
-        <RadioButtonGroup
-            name="group"
-            options={['value 1', 'value 2', 'value 3']}
-            selectedOption="value 2"
-            onChange={action('selected')}
-            disabled
-        />
     ))
 
 const toolbarActions = {
