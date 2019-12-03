@@ -8,6 +8,7 @@ import useCommunityProduct from '$mp/containers/ProductController/useCommunityPr
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { getCommunityStats } from '$mp/modules/communityProduct/services'
 import { fromAtto } from '$mp/utils/math'
+import { isEthereumAddress } from '$mp/utils/validate'
 
 import ProductContainer from '$shared/components/Container/Product'
 import CommunityPending from '$mp/components/ProductPage/CommunityPending'
@@ -184,6 +185,10 @@ const CommunityStats = () => {
         ...stats[key],
     })), [stats])
 
+    if (!communityDeployed && !isEthereumAddress(beneficiaryAddress)) {
+        return null
+    }
+
     return (
         <ProductContainer>
             <div className={styles.root}>
@@ -191,7 +196,7 @@ const CommunityStats = () => {
                     <div className={styles.header}>
                         <span>Overview</span>
                     </div>
-                    {!communityDeployed && (
+                    {!communityDeployed && isEthereumAddress(beneficiaryAddress) && (
                         <CommunityPending />
                     )}
                     {!!communityDeployed && statsArray && (
