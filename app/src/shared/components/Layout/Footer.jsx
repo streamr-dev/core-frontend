@@ -10,16 +10,16 @@ const Footer = () => (
     <LayoutFooter>
         <FooterColumn title={I18n.t('general.learn')}>
             <a href="/">
-                <Translate value="generals.top" />
+                <Translate value="general.top" />
             </a>
             <a href="/learn/network">
-                <Translate value="generals.network" />
+                <Translate value="general.network" />
             </a>
             <a href="/learn/marketplace">
-                <Translate value="generals.marketplace" />
+                <Translate value="general.marketplace" />
             </a>
             <a href="/learn/core">
-                <Translate value="generals.core" />
+                <Translate value="general.core" />
             </a>
         </FooterColumn>
         <FooterColumn title={I18n.t('general.apps')}>

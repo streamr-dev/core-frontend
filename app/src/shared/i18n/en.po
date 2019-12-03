@@ -249,3 +249,9 @@ msgstr "Give feedback"
 
 msgid "general##labels##community"
 msgstr "Community Product"
+
+msgid "general##top"
+msgstr "Top"
+
+msgid "general##network"
+msgstr "Network"
