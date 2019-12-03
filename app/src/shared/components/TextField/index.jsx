@@ -11,6 +11,7 @@ type Props = {
     className?: string,
     onAutoComplete?: (boolean) => void,
     type?: string,
+    actions?: Array<any>,
 }
 
 const TextField = ({ className, onAutoComplete, ...props }: Props) => {

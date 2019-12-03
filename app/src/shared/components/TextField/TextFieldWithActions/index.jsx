@@ -21,7 +21,7 @@ const TextFieldWithActions = ({ className, actions, ...props }: Props) => (
         {actions != null && actions.length > 0 && (
             <div className={styles.actionContainer}>
                 <DropdownActions
-                    title={<Meatball gray />}
+                    title={<Meatball alt="Actions" gray />}
                     noCaret
                 >
                     {actions}

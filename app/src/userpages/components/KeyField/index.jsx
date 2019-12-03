@@ -144,7 +144,7 @@ class KeyField extends React.Component<Props, State> {
         }
     }
 
-    insertIf = (condition, ...elements) => (condition ? elements : [])
+    insertIf = (condition: boolean, ...elements: Array<any>) => (condition ? elements : [])
 
     renderInput = () => {
         const {
