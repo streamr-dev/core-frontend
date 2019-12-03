@@ -3,11 +3,10 @@
 import React from 'react'
 import copy from 'copy-to-clipboard'
 import cx from 'classnames'
-import { I18n, Translate } from 'react-redux-i18n'
+import { Translate } from 'react-redux-i18n'
 
 import type { ResourcePermission } from '$shared/flowtype/resource-key-types'
 import TextInput from '$shared/components/TextInput'
-import Meatball from '$shared/components/Meatball'
 import DropdownActions from '$shared/components/DropdownActions'
 import SelectInput from '$shared/components/SelectInput'
 import SplitControl from '$userpages/components/SplitControl'
@@ -145,6 +144,8 @@ class KeyField extends React.Component<Props, State> {
         }
     }
 
+    insertIf = (condition, ...elements) => (condition ? elements : [])
+
     renderInput = () => {
         const {
             hideValue,
@@ -157,39 +158,34 @@ class KeyField extends React.Component<Props, State> {
         } = this.props
         const { hidden, menuOpen } = this.state
 
+        const actions = [
+            ...this.insertIf(!!hideValue, [
+                <DropdownActions.Item onClick={this.toggleHidden}>
+                    <Translate value={`userpages.keyField.${hidden ? 'reveal' : 'conceal'}`} />
+                </DropdownActions.Item>,
+            ]),
+            <DropdownActions.Item onClick={this.onCopy}>
+                <Translate value="userpages.keyField.copy" />
+            </DropdownActions.Item>,
+            ...this.insertIf(!!allowEdit, [
+                <DropdownActions.Item onClick={this.onEdit}>
+                    <Translate value="userpages.keyField.edit" />
+                </DropdownActions.Item>,
+            ]),
+            ...this.insertIf(!!allowDelete, [
+                <DropdownActions.Item onClick={this.onDelete} disabled={disableDelete}>
+                    <Translate value="userpages.keyField.delete" />
+                </DropdownActions.Item>,
+            ]),
+        ]
+
         return (
             <div
                 className={cx(styles.container, className, {
                     [styles.withMenu]: menuOpen,
                 })}
             >
-                <TextInput label={keyName} value={value} readOnly type={hidden ? 'password' : 'text'} />
-                <div className={styles.actions}>
-                    <DropdownActions
-                        onMenuToggle={this.onMenuToggle}
-                        title={<Meatball alt={I18n.t('userpages.keyField.options')} gray />}
-                        noCaret
-                    >
-                        {!!hideValue && (
-                            <DropdownActions.Item onClick={this.toggleHidden}>
-                                <Translate value={`userpages.keyField.${hidden ? 'reveal' : 'conceal'}`} />
-                            </DropdownActions.Item>
-                        )}
-                        <DropdownActions.Item onClick={this.onCopy}>
-                            <Translate value="userpages.keyField.copy" />
-                        </DropdownActions.Item>
-                        {!!allowEdit && (
-                            <DropdownActions.Item onClick={this.onEdit}>
-                                <Translate value="userpages.keyField.edit" />
-                            </DropdownActions.Item>
-                        )}
-                        {!!allowDelete && (
-                            <DropdownActions.Item onClick={this.onDelete} disabled={disableDelete}>
-                                <Translate value="userpages.keyField.delete" />
-                            </DropdownActions.Item>
-                        )}
-                    </DropdownActions>
-                </div>
+                <TextInput label={keyName} actions={actions} value={value} readOnly type={hidden ? 'password' : 'text'} />
             </div>
         )
     }
