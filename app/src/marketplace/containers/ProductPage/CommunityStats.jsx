@@ -5,13 +5,14 @@ import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import useProduct from '$mp/containers/ProductController/useProduct'
 import useContractProduct from '$mp/containers/ProductController/useContractProduct'
 import useCommunityProduct from '$mp/containers/ProductController/useCommunityProduct'
-import ProductContainer from '$shared/components/Container/Product'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { getCommunityStats } from '$mp/modules/communityProduct/services'
 import { fromAtto } from '$mp/utils/math'
 
+import ProductContainer from '$shared/components/Container/Product'
 import CommunityPending from '$mp/components/ProductPage/CommunityPending'
-import CommunityStatsComponent from '$shared/components/CommunityStats'
+import StatsValues from '$shared/components/CommunityStats/Values'
+import StatsHeader from '$shared/components/CommunityStats/Header'
 import DonutChart from '$shared/components/DonutChart'
 
 import MembersGraph from './MembersGraph'
@@ -194,7 +195,7 @@ const CommunityStats = () => {
                         <CommunityPending />
                     )}
                     {!!communityDeployed && statsArray && (
-                        <CommunityStatsComponent
+                        <StatsValues
                             className={styles.stats}
                             stats={statsArray}
                         />
@@ -207,7 +208,7 @@ const CommunityStats = () => {
                                 memberCount={memberCount.total}
                             />
                             <div className={styles.memberDonut}>
-                                <div className={styles.statHeading}>Members by status</div>
+                                <StatsHeader>Members by status</StatsHeader>
                                 <DonutChart
                                     className={styles.donutChart}
                                     strokeWidth={3}

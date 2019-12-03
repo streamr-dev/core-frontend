@@ -16,10 +16,17 @@ import FallbackImage from '$shared/components/FallbackImage'
 import Tile from '$shared/components/Tile'
 import ProductDetails from '$mp/components/ProductPage/ProductDetails'
 import StreamListing from '$mp/components/ProductPage/StreamListing'
+import ProductContainer from '$shared/components/Container/Product'
+import StatsValues from '$shared/components/CommunityStats/Values'
+import StatsHeader from '$shared/components/CommunityStats/Header'
+import DonutChart from '$shared/components/DonutChart'
+import TimeSeriesGraph from '$shared/components/TimeSeriesGraph'
+import WithShownDays from '$shared/components/TimeSeriesGraph/WithShownDays'
 
 import productPageStyles from '$mp/containers/ProductPage/page.pcss'
 import heroStyles from '$mp/containers/ProductPage/hero.pcss'
 import streamStyles from '$mp/containers/ProductPage/streams.pcss'
+import statsStyles from '$mp/containers/ProductPage/communityStats.pcss'
 
 const Hero = () => {
     const product = useEditableProduct()
@@ -98,11 +105,91 @@ const Description = () => {
     )
 }
 
-const CommunityStats = () => (
-    <div>
-        stats
-    </div>
-)
+const CommunityStats = () => {
+    const product = useEditableProduct()
+
+    const { created, adminFee } = product
+
+    return (
+        <ProductContainer>
+            <div className={statsStyles.root}>
+                <div className={statsStyles.grid}>
+                    <div className={statsStyles.header}>
+                        <span>Overview</span>
+                    </div>
+                    <StatsValues
+                        className={statsStyles.stats}
+                        stats={[{
+                            id: 'revenue',
+                            label: 'Total product revenue',
+                            unit: 'DATA',
+                            value: '0',
+                        }, {
+                            id: 'members',
+                            label: 'Active Members',
+                            value: '0',
+                        }, {
+                            id: 'averageRevenue',
+                            label: 'Avg rev member / month',
+                            unit: 'DATA',
+                            value: '0',
+                        }, {
+                            id: 'subscribers',
+                            label: 'Subscribers',
+                            value: '0',
+                        }, {
+                            id: 'adminFee',
+                            label: 'Admin Fee',
+                            unit: '%',
+                            value: adminFee ? (adminFee * 100).toFixed(0) : '0',
+                        }, {
+                            id: 'created',
+                            label: 'Product created',
+                            value: created ? new Date(created).toLocaleDateString() : '-',
+                        }]}
+                    />
+                    <div className={statsStyles.graphs}>
+                        <WithShownDays
+                            label="Members"
+                            className={statsStyles.membersGraph}
+                            disabled
+                        >
+                            {({ shownDays: days }) => (
+                                <TimeSeriesGraph
+                                    graphData={[{
+                                        x: new Date().getTime(),
+                                        y: 0,
+                                    }]}
+                                    shownDays={days}
+                                />
+                            )}
+                        </WithShownDays>
+                        <div className={statsStyles.memberDonut}>
+                            <StatsHeader>Members by status</StatsHeader>
+                            <DonutChart
+                                className={statsStyles.donutChart}
+                                strokeWidth={3}
+                                data={[
+                                    {
+                                        title: 'Active',
+                                        value: 0,
+                                        color: '#D8D8D8',
+                                    },
+                                    {
+                                        title: 'Inactive',
+                                        value: 0,
+                                        color: '#D8D8D8',
+                                    },
+                                ]}
+                            />
+                        </div>
+                    </div>
+                </div>
+                <div className={statsStyles.footer} />
+            </div>
+        </ProductContainer>
+    )
+}
 
 const Streams = () => {
     const product = useEditableProduct()
