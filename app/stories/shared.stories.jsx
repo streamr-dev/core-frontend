@@ -249,6 +249,26 @@ story('Text Field/Password')
         <TextInput preserveLabelSpace label="" value={text('value', 'You shall not pass!')} type="password" measureStrength />
     ))
 
+story('Text Field/Number')
+    .addWithJSX('basic', () => (
+        <TextInput preserveLabelSpace label="Count" type="number" />
+    ))
+    .addWithJSX('with predefined value', () => (
+        <TextInput preserveLabelSpace label="Count" type="number" value="5" />
+    ))
+    .addWithJSX('with min, max & step', () => (
+        <TextInput preserveLabelSpace label="Count" type="number" min="0" max="10" step="2" />
+    ))
+    .addWithJSX('hidden buttons', () => (
+        <TextInput preserveLabelSpace label="Count" type="number" hideButtons />
+    ))
+    .addWithJSX('without label', () => (
+        <TextInput label="" type="number" />
+    ))
+    .addWithJSX('with error', () => (
+        <TextInput preserveLabelSpace label="Count" type="number" error="Error" />
+    ))
+
 class SelectInputContainer extends React.Component {
     static options = [{
         value: 'Leonardo',
