@@ -253,6 +253,9 @@ story('Text Field/Number')
     .addWithJSX('basic', () => (
         <TextInput preserveLabelSpace label="Count" type="number" />
     ))
+    .addWithJSX('with predefined value', () => (
+        <TextInput preserveLabelSpace label="Count" type="number" value="5" />
+    ))
     .addWithJSX('with min, max & step', () => (
         <TextInput preserveLabelSpace label="Count" type="number" min="0" max="10" step="2" />
     ))

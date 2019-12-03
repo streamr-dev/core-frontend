@@ -9,6 +9,7 @@ import styles from '../textField.pcss'
 
 type Props = {
     className?: string,
+    value?: string,
     type?: string,
     min?: number,
     max?: number,
@@ -16,54 +17,73 @@ type Props = {
     hideButtons?: boolean,
 }
 
-const NumberField = ({ className, hideButtons, ...props }: Props) => {
-    const [value, setValue] = useState(null)
+const NumberField = ({
+    className,
+    value,
+    type,
+    min,
+    max,
+    step,
+    hideButtons,
+    ...props
+}: Props) => {
+    const [internalValue, setInternalValue] = useState(value)
 
-    const addValue = useCallback((step) => {
-        let valueInt = Number.parseFloat(value)
-        let stepInt = Number.parseFloat(step)
+    const onChange = useCallback((event: SyntheticInputEvent<EventTarget>) => {
+        setInternalValue(event.target.value)
+    }, [])
 
-        if (Number.isNaN(valueInt)) {
-            valueInt = 0
+    const addValue = useCallback((val) => {
+        let parsedValue = Number.parseFloat(internalValue)
+        let parsedStep = Number.parseFloat(val)
+
+        if (Number.isNaN(parsedValue)) {
+            parsedValue = 0
         }
-        if (Number.isNaN(stepInt)) {
-            stepInt = 1
+        if (Number.isNaN(parsedStep)) {
+            parsedStep = 1
         }
 
-        let newValue = valueInt + stepInt
+        let newValue = parsedValue + parsedStep
 
-        if (props.min && newValue < props.min) {
-            newValue = props.min
+        if (min != null && newValue < min) {
+            newValue = min
         }
-        if (props.max && newValue > props.max) {
-            newValue = props.max
+        if (max != null && newValue > max) {
+            newValue = max
         }
 
-        setValue(newValue)
-    }, [props.min, props.max, value])
+        setInternalValue(newValue)
+    }, [min, max, internalValue])
 
     const onIncrease = useCallback(() => {
-        const step = props.step || 1
-        addValue(step)
-    }, [addValue, props.step])
+        addValue(step != null ? step : 1)
+    }, [addValue, step])
 
     const onDecrease = useCallback(() => {
-        const step = -(props.step || 1)
-        addValue(step)
-    }, [addValue, props.step])
+        addValue(-(step != null ? step : 1))
+    }, [addValue, step])
 
     return (
         <React.Fragment>
             <input
                 {...props}
-                value={value || ''}
-                onChange={(event) => setValue(event.target.value)}
+                type={type}
+                min={min}
+                max={max}
+                step={step}
+                value={internalValue != null ? internalValue : ''}
+                onChange={onChange}
                 className={cx(className, styles.root)}
             />
-            {!hideButtons && props.type === 'number' && (
+            {!hideButtons && type === 'number' && (
                 <div className={styles.buttonContainer}>
-                    <button type="button" className={styles.numberButton} onClick={onIncrease}><SvgIcon name="caretUp" /></button>
-                    <button type="button" className={styles.numberButton} onClick={onDecrease}><SvgIcon name="caretDown" /></button>
+                    <button type="button" className={styles.numberButton} onClick={onIncrease}>
+                        <SvgIcon name="caretUp" />
+                    </button>
+                    <button type="button" className={styles.numberButton} onClick={onDecrease}>
+                        <SvgIcon name="caretDown" />
+                    </button>
                 </div>
             )}
         </React.Fragment>
