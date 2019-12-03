@@ -119,6 +119,9 @@ msgstr "Sign In"
 msgid "general##signUp"
 msgstr "Sign Up"
 
+msgid "general##apps"
+msgstr "Apps"
+
 msgid "general##streamrSystem"
 msgstr "Streamr System"
 
@@ -222,6 +225,9 @@ msgstr "Inactive"
 
 msgid "general##docs"
 msgstr "Docs"
+
+msgid "general##learn"
+msgstr "Learn"
 
 msgid "general##introduction"
 msgstr "Introduction"

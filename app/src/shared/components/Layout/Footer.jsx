@@ -8,18 +8,18 @@ import links from '$shared/../links'
 
 const Footer = () => (
     <LayoutFooter>
-        <FooterColumn title="Learn">
+        <FooterColumn title={I18n.t('general.learn')}>
             <a href="/">
-                Top
+                <Translate value="generals.top" />
             </a>
             <a href="/learn/network">
-                Network
+                <Translate value="generals.network" />
             </a>
             <a href="/learn/marketplace">
-                Marketplace
+                <Translate value="generals.marketplace" />
             </a>
             <a href="/learn/core">
-                Core
+                <Translate value="generals.core" />
             </a>
         </FooterColumn>
         <FooterColumn title={I18n.t('general.apps')}>
@@ -41,18 +41,18 @@ const Footer = () => (
                 <Translate value="general.blog" />
             </a>
         </FooterColumn>
-        <FooterColumn title="Docs">
+        <FooterColumn title={I18n.t('general.docs')}>
             <a href={links.docs.streams}>
-                Streams
+                <Translate value="general.streams" />
             </a>
             <a href={links.docs.canvases}>
-                Canvases
+                <Translate value="general.canvases" />
             </a>
             <a href={links.docs.dashboards}>
-                Dashboards
+                <Translate value="general.dashboards" />
             </a>
             <a href={links.docs.products}>
-                Products
+                <Translate value="general.products" />
             </a>
         </FooterColumn>
         <FooterColumn title={I18n.t('general.contact')}>
