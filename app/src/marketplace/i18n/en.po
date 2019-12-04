@@ -41,8 +41,11 @@ msgstr "Publish"
 msgid "actionsDropdown##unpublish"
 msgstr "Unpublish"
 
-msgid "actionsDropdown##show"
-msgstr "Show"
+msgid "actionsDropdown##viewProduct"
+msgstr "View Product"
+
+msgid "actionsDropdown##viewStats"
+msgstr "View Stats"
 
 msgid "actionsDropdown##copyUrl"
 msgstr "Copy URL"

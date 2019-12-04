@@ -1,0 +1,62 @@
+.profile {
+  display: flex;
+  margin: 24px 0 64px 0;
+}
+
+.avatar {
+  flex-grow: 1;
+}
+
+.additionalComponent {
+  display: flex;
+  align-items: center;
+}
+
+.tabBar {
+  display: flex;
+  line-height: 32px;
+  overflow-x: auto;
+}
+
+.searchBar {
+  display: flex;
+  margin-right: 36px;
+}
+
+.filterBar {
+  /* 40px - height of the dropdown toggle. */
+  height: 40px;
+  right: 16px;
+}
+
+.tabContainer {
+  align-items: center;
+  display: flex;
+  height: calc(3.25 * var(--um));
+  justify-content: space-between;
+  position: relative;
+}
+
+.tabs {
+  display: flex;
+}
+
+@media (--md-down) {
+  .filterBar {
+    display: flex;
+    position: absolute;
+    right: 4px;
+    top: 72px;
+  }
+
+  .containerOverrides {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+@media (--sm-down) {
+  .filterBar {
+    display: none;
+  }
+}

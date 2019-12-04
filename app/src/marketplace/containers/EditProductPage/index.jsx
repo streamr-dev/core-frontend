@@ -21,7 +21,7 @@ import { notFoundRedirect } from '$auth/utils/loginInterceptor'
 import useProductPermissions from '../ProductController/useProductPermissions'
 
 import { Provider as EditControllerProvider, Context as EditControllerContext } from './EditControllerProvider'
-import BackButton from './BackButton'
+import BackButton from '$shared/components/BackButton'
 import Editor from './Editor'
 import Preview from './Preview'
 import ProductEditorDebug from './ProductEditorDebug'
@@ -39,6 +39,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
         save,
         publish,
         deployCommunity,
+        back,
     } = useContext(EditControllerContext)
     const { isPending: savePending } = usePending('product.SAVE')
     const { isAnyChangePending } = useContext(ValidationContext)
@@ -138,7 +139,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
             navComponent={(
                 <Toolbar
                     className={Toolbar.styles.shadow}
-                    left={<BackButton />}
+                    left={<BackButton onBack={back} />}
                     middle={toolbarMiddle}
                     actions={actions}
                     altMobileLayout
