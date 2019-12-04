@@ -1,0 +1,62 @@
+@import '../../shared/components/variables.pcss';
+
+.root {
+
+}
+
+.messageGroup {
+  font-size: 14px;
+  line-height: 18px;
+
+  &.selectedGroup {
+    outline: 1px solid var(--focus-border-color);
+    outline-offset: -1px;
+  }
+}
+
+.messageGroupTitle {
+  font-weight: var(--bold);
+  padding: 0.5um 1um;
+}
+
+.MessageRow {
+  padding: 1um;
+  display: grid;
+  grid-template-columns: 1um 1fr;
+  grid-column-gap: 0.5um;
+
+  a,
+  a:active,
+  a:hover,
+  a:visited {
+    color: #0324FF;
+    text-decoration: underline;
+  }
+
+  .messageIcon {
+    width: 0.5um;
+
+    /* aligns icon with baseline of title */
+    height: 1um;
+  }
+
+  &.info {
+    background: #F5F7FF;
+  }
+
+  &.warn {
+    background: #FFFAF7;
+  }
+
+  &.error {
+    background: #FFF4F5;
+  }
+
+  .messageTitle {
+    font-weight: var(--bold);
+  }
+
+  .messageContent {
+
+  }
+}

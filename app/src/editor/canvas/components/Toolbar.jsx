@@ -459,6 +459,14 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                 </div>
                             </div>
                             <div className={styles.ModalButtons}>
+                                <Tooltip container={this.elRef.current} value="Console">
+                                    <R.Button
+                                        className={cx(styles.ToolbarButton, styles.ConsoleButton)}
+                                        onClick={() => this.props.consoleSidebarOpen()}
+                                    >
+                                        <SvgIcon name="console" />
+                                    </R.Button>
+                                </Tooltip>
                                 <Tooltip container={this.elRef.current} value="Share">
                                     <R.Button
                                         className={cx(styles.ToolbarButton, styles.ShareButton)}

@@ -7,6 +7,7 @@ import Probe from '../Resizable/SizeConstraintProvider/Probe'
 import Ports from '../Ports'
 import styles from '../Module.pcss'
 import { noCameraControl } from '../Camera'
+import { MessageIcon } from '../ConsoleSidebar'
 import useIsCanvasRunning from '../../hooks/useIsCanvasRunning'
 import useModule, { ModuleContext } from './useModule'
 import useModuleApi, { ModuleApiContext } from './useModuleApi'
@@ -59,11 +60,13 @@ const ModuleRenderer = React.memo(({
     const {
         moduleClassNames,
         isResizable,
+        messageLevel,
         module,
         isCanvasEditable: isEditable,
         isCanvasAdjustable: isAdjustable,
         hasWritePermission,
     } = useModule()
+
     const { hash, displayName, name, canRefresh } = module
 
     const stopPropagation = useCallback((e) => {
@@ -77,7 +80,7 @@ const ModuleRenderer = React.memo(({
         }
     }, [isRunning, uiEmitter])
 
-    const { selectModule, moduleSidebarOpen, port: { onChange: onPortChange } } = useModuleApi()
+    const { selectModule, moduleSidebarOpen, consoleSidebarOpen, port: { onChange: onPortChange } } = useModuleApi()
 
     const onTriggerOptions = useCallback((e) => {
         e.stopPropagation()
@@ -127,6 +130,13 @@ const ModuleRenderer = React.memo(({
         >
             <div className={styles.body} ref={innerRef}>
                 <Probe group="ModuleHeight" height="auto" />
+                {(isEditable && messageLevel !== 'none') && (
+                    <MessageIcon
+                        level={messageLevel}
+                        className={cx(styles.ModuleBadge, styles[messageLevel])}
+                        onClick={() => consoleSidebarOpen()}
+                    />
+                )}
                 <ModuleHeader
                     className={cx(styles.header, ModuleStyles.dragHandle)}
                     editable={isEditable}
