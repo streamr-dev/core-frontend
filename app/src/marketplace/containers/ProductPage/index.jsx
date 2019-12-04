@@ -14,7 +14,6 @@ import usePending from '$shared/hooks/usePending'
 
 import { getProductSubscription } from '$mp/modules/product/actions'
 import LoadingIndicator from '$userpages/components/LoadingIndicator'
-import { Provider as ModalProvider } from '$shared/contexts/ModalApi'
 
 import PurchaseModal from './PurchaseModal'
 import useProduct from '$mp/containers/ProductController/useProduct'
@@ -98,11 +97,10 @@ const EditWrap = () => {
     const key = (!!product && product.id) || ''
 
     return (
-        <ModalProvider key={key}>
-            <ProductPage
-                product={product}
-            />
-        </ModalProvider>
+        <ProductPage
+            key={key}
+            product={product}
+        />
     )
 }
 

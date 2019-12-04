@@ -91,6 +91,7 @@ import CanvasEmbed from '$editor/canvas/components/Embed'
 import DashboardEditor from '$editor/dashboard'
 
 import { Provider as ModalPortalProvider } from '$shared/contexts/ModalPortal'
+import { Provider as ModalProvider } from '$shared/contexts/ModalApi'
 import Notifications from '$shared/components/Notifications'
 import { formatPath } from '$shared/utils/url'
 import { userIsAuthenticated } from '$auth/utils/userAuthenticated'
@@ -335,19 +336,21 @@ const App = () => (
     <ConnectedRouter history={history}>
         <SessionProvider>
             <ModalPortalProvider>
-                <LocaleSetter />
-                <AutoScroll />
-                <Analytics />
-                <Switch>
-                    {AuthenticationRouter()}
-                    {MarketplaceRouter()}
-                    {DocsRouter()}
-                    {UserpagesRouter()}
-                    {EditorRouter()}
-                    {MiscRouter()}
-                </Switch>
-                <Notifications />
-                {isProduction() && <GoogleAnalyticsTracker />}
+                <ModalProvider>
+                    <LocaleSetter />
+                    <AutoScroll />
+                    <Analytics />
+                    <Switch>
+                        {AuthenticationRouter()}
+                        {MarketplaceRouter()}
+                        {DocsRouter()}
+                        {UserpagesRouter()}
+                        {EditorRouter()}
+                        {MiscRouter()}
+                    </Switch>
+                    <Notifications />
+                    {isProduction() && <GoogleAnalyticsTracker />}
+                </ModalProvider>
             </ModalPortalProvider>
         </SessionProvider>
     </ConnectedRouter>

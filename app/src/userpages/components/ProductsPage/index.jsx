@@ -27,7 +27,6 @@ import { isCommunityProduct } from '$mp/utils/product'
 import Button from '$shared/components/Button'
 import useFilterSort from '$userpages/hooks/useFilterSort'
 import useCopy from '$shared/hooks/useCopy'
-import { Provider as ModalProvider } from '$shared/contexts/ModalApi'
 import useModal from '$shared/hooks/useModal'
 import type { ProductId, Product } from '$mp/flowtype/product-types'
 
@@ -40,8 +39,8 @@ const CreateProductButton = () => {
 
     return (
         <Button
+            type="button"
             className={styles.createProductButton}
-            tag={Link}
             onClick={() => createProductDialog.open()}
         >
             <Translate value="userpages.products.createProduct" />
@@ -212,8 +211,4 @@ const ProductsPage = () => {
     )
 }
 
-export default () => (
-    <ModalProvider>
-        <ProductsPage />
-    </ModalProvider>
-)
+export default ProductsPage
