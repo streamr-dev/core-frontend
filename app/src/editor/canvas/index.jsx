@@ -15,6 +15,7 @@ import copyToClipboard from 'copy-to-clipboard'
 import links from '../../links'
 import routes from '$routes'
 
+import { findNonOverlappingPositionForModule } from '$editor/shared/utils/bounds'
 import isEditableElement from '$editor/shared/utils/isEditableElement'
 import UndoControls from '$editor/shared/components/UndoControls'
 import Button from '$shared/components/Button'
@@ -204,6 +205,8 @@ const CanvasEditComponent = class CanvasEdit extends PureComponent {
     addModule = async ({ id, configuration }) => {
         const { canvas, canvasController } = this.props
         const action = { type: 'Add Module' }
+
+        configuration.layout.position = findNonOverlappingPositionForModule(canvas, configuration)
         const moduleData = await canvasController.loadModule(canvas, {
             ...configuration,
             id,
@@ -398,6 +401,7 @@ const CanvasEditComponent = class CanvasEdit extends PureComponent {
             // doesn't look like a module
             return
         }
+
         this.addAndSelectModule({
             id: moduleData.id,
             configuration: {
