@@ -61,6 +61,7 @@ function MessageGroup({
                 behavior: 'smooth',
                 block: 'start',
                 inline: 'nearest',
+                scrollMode: 'if-needed',
             })
         }
     }, [isSelected])
