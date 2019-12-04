@@ -171,7 +171,7 @@ describe('Subscription', () => {
             ))
         }, 15000)
 
-        it('can use resendLast 0', async (done) => {
+        xit('can use resendLast 0', async (done) => {
             const msg1 = { msg: uniqueId() }
             const msg2 = { msg: uniqueId() }
             const msg3 = { msg: uniqueId() }

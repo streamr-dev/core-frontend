@@ -145,7 +145,7 @@ describe('Canvas Services', () => {
             })
         })
 
-        it('can duplicate a running canvas', async () => {
+        xit('can duplicate a running canvas', async () => {
             const canvas = await Services.create()
             const startedCanvas = await Services.start(canvas)
 
