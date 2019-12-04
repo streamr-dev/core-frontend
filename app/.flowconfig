@@ -2,6 +2,7 @@
 .*/node_modules/oboe/.*
 
 [untyped]
+.*/node_modules/@streamr/streamr-layout/.*
 .*/node_modules/react-leaflet/.*
 .*/node_modules/react-select/.*
 
