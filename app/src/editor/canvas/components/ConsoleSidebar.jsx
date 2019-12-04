@@ -1,12 +1,12 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import cx from 'classnames'
 import groupBy from 'lodash/groupBy'
 import sortBy from 'lodash/sortBy'
+import scrollIntoView from 'smooth-scroll-into-view-if-needed'
 
 import SvgIcon from '$shared/components/SvgIcon'
 import { Header, Content } from '$editor/shared/components/Sidebar'
 import { Translate } from 'react-redux-i18n'
-
 import * as CanvasState from '../state'
 import * as CanvasMessages from '../state/messages'
 import styles from './ConsoleSidebar.pcss'
@@ -45,6 +45,46 @@ function MessageRow({ msg }) {
     )
 }
 
+function MessageGroup({
+    canvas,
+    messages,
+    moduleHash,
+    selectedModuleHash,
+    selectModule,
+}) {
+    const isSelected = selectedModuleHash === moduleHash
+    const elRef = useRef()
+    useEffect(() => {
+        // scroll into view if selected
+        if (isSelected) {
+            scrollIntoView(elRef.current, {
+                behavior: 'smooth',
+                block: 'start',
+                inline: 'nearest',
+            })
+        }
+    }, [isSelected])
+
+    return (
+        /* eslint-disable-next-line jsx-a11y/no-static-element-interactions,jsx-a11y/click-events-have-key-events */
+        <div
+            className={cx(styles.messageGroup, {
+                [styles.selectedGroup]: isSelected,
+            })}
+            onClick={() => selectModule({ hash: moduleHash })}
+            ref={elRef}
+        >
+            <div className={styles.messageGroupTitle}>
+                {CanvasState.getDisplayName(CanvasState.getModule(canvas, moduleHash))}
+            </div>
+            {sortBy(messages, (level) => CanvasMessages.LEVELS.indexOf(level)).reverse().map((msg, index) => (
+                /* eslint-disable-next-line react/no-array-index-key */
+                <MessageRow key={index} msg={msg} />
+            ))}
+        </div>
+    )
+}
+
 function ConsoleMessages({ canvas, messages, selectedModuleHash, selectModule }) {
     const groupedMessages = groupBy(messages, 'moduleHash')
     const maxMessageLevel = (msgs) => Math.max(...msgs.map(({ level }) => CanvasMessages.LEVELS.indexOf(level)))
@@ -53,27 +93,16 @@ function ConsoleMessages({ canvas, messages, selectedModuleHash, selectModule })
     return (
         <div className={styles.ConsoleMessages}>
             <div className={styles.messageList}>
-                {sortedMessageEntries.map(([moduleHash, msgs]) => {
-                    moduleHash = Number(moduleHash)
-                    return (
-                        /* eslint-disable-next-line jsx-a11y/no-static-element-interactions,jsx-a11y/click-events-have-key-events */
-                        <div
-                            key={moduleHash}
-                            className={cx(styles.messageGroup, {
-                                [styles.selectedGroup]: selectedModuleHash === moduleHash,
-                            })}
-                            onClick={() => selectModule({ hash: moduleHash })}
-                        >
-                            <div className={styles.messageGroupTitle}>
-                                {CanvasState.getDisplayName(CanvasState.getModule(canvas, moduleHash))}
-                            </div>
-                            {sortBy(msgs, (level) => CanvasMessages.LEVELS.indexOf(level)).reverse().map((msg, index) => (
-                                /* eslint-disable-next-line react/no-array-index-key */
-                                <MessageRow key={index} msg={msg} />
-                            ))}
-                        </div>
-                    )
-                })}
+                {sortedMessageEntries.map(([moduleHash, msgs]) => (
+                    <MessageGroup
+                        key={moduleHash}
+                        moduleHash={Number(moduleHash)}
+                        canvas={canvas}
+                        messages={msgs}
+                        selectedModuleHash={selectedModuleHash}
+                        selectModule={selectModule}
+                    />
+                ))}
             </div>
         </div>
     )
