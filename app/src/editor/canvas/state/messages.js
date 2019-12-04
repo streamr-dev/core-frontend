@@ -108,8 +108,8 @@ export function getModuleMessages(canvas, moduleHash) {
     }))
 }
 
-export function getModuleMessageLevel(canvas, moduleHash) {
-    const levelIndex = getModuleMessages(canvas, moduleHash).reduce((maxLevel, msg) => (
+export function getMaxLevel(moduleMessages) {
+    const levelIndex = moduleMessages.reduce((maxLevel, msg) => (
         Math.max(maxLevel, LEVELS.indexOf(msg.level))
     ), 0)
     return LEVELS[levelIndex]

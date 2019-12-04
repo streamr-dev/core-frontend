@@ -3,7 +3,6 @@
 import { createContext, useContext, type Context, useMemo } from 'react'
 import ModuleStyles from '$editor/shared/components/Module.pcss'
 import isModuleResizable from '$editor/canvas/utils/isModuleResizable'
-import { getModuleMessageLevel } from '$editor/canvas/state/messages'
 import useCanvas from '../CanvasController/useCanvas'
 
 type Module = {
@@ -29,7 +28,6 @@ type ModuleManifest = {
     isCanvasEditable?: boolean,
     hasWritePermission?: boolean,
     module: Module,
-    messageLevel?: string,
 }
 
 type UseModuleHook = {
@@ -77,8 +75,6 @@ export default (): UseModuleHook => {
         widget,
     })
 
-    const messageLevel = getModuleMessageLevel(canvas, mod.hash)
-
     return useMemo(() => ({
         canvas,
         isCanvasAdjustable,
@@ -87,7 +83,6 @@ export default (): UseModuleHook => {
         isResizable,
         module: mod,
         moduleClassNames,
-        messageLevel,
     }), [
         canvas,
         isCanvasAdjustable,
@@ -96,6 +91,5 @@ export default (): UseModuleHook => {
         isResizable,
         mod,
         moduleClassNames,
-        messageLevel,
     ])
 }
