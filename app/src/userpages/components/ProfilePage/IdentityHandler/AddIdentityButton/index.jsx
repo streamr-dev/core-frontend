@@ -4,7 +4,7 @@ import React, { Fragment } from 'react'
 import { Translate } from 'react-redux-i18n'
 
 import Button from '$shared/components/Button'
-import Modal from '$shared/components/Modal'
+import ModalPortal from '$shared/components/ModalPortal'
 import AddIdentityDialog from '$userpages/components/ProfilePage/IdentityHandler/AddIdentityDialog'
 
 type Props = {}
@@ -42,12 +42,12 @@ class AddIdentityButton extends React.Component<Props, State> {
                     <Translate value="userpages.profilePage.ethereumAddress.addNewAddress" />
                 </Button>
                 {!!modalOpen && (
-                    <Modal>
+                    <ModalPortal>
                         <AddIdentityDialog
                             onSave={this.onModalClose}
                             onClose={this.onModalClose}
                         />
-                    </Modal>
+                    </ModalPortal>
                 )}
             </Fragment>
         )

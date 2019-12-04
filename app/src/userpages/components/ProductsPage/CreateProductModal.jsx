@@ -8,8 +8,8 @@ import useModal from '$shared/hooks/useModal'
 import type { ProductType } from '$mp/flowtype/product-types'
 import { postEmptyProduct } from '$mp/modules/deprecated/editProduct/services'
 import ProductTypeChooser from '$mp/components/ProductTypeChooser'
-import Modal from '$shared/components/Modal'
-import BodyClass, { NO_SCROLL } from '$shared/components/BodyClass'
+import ModalPortal from '$shared/components/ModalPortal'
+import ModalDialog from '$shared/components/ModalDialog'
 import SvgIcon from '$shared/components/SvgIcon'
 import LoadingIndicator from '$userpages/components/LoadingIndicator'
 import useIsMounted from '$shared/hooks/useIsMounted'
@@ -49,29 +49,34 @@ const CreateProductPage = ({ api }: Props) => {
         createProduct(type)
     }, [createProduct])
 
+    const onClose = useCallback(() => {
+        api.close()
+    }, [api])
+
     return (
-        <Modal>
-            <BodyClass className={NO_SCROLL} />
-            <div className={styles.root}>
-                <LoadingIndicator
-                    className={styles.loadingIndicator}
-                    loading={creating}
-                />
-                <button
-                    type="button"
-                    className={styles.closeButton}
-                    onClick={() => api.close()}
-                    disabled={creating}
-                >
-                    <SvgIcon name="crossMedium" />
-                </button>
-                <ProductTypeChooser
-                    onSelect={onTypeSelect}
-                    className={styles.chooser}
-                    disabled={creating}
-                />
-            </div>
-        </Modal>
+        <ModalPortal>
+            <ModalDialog onClose={onClose}>
+                <div className={styles.root}>
+                    <LoadingIndicator
+                        className={styles.loadingIndicator}
+                        loading={creating}
+                    />
+                    <button
+                        type="button"
+                        className={styles.closeButton}
+                        onClick={onClose}
+                        disabled={creating}
+                    >
+                        <SvgIcon name="crossMedium" />
+                    </button>
+                    <ProductTypeChooser
+                        onSelect={onTypeSelect}
+                        className={styles.chooser}
+                        disabled={creating}
+                    />
+                </div>
+            </ModalDialog>
+        </ModalPortal>
     )
 }
 

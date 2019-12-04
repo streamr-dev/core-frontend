@@ -3,7 +3,7 @@
 import React from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
 
-import Modal from '$shared/components/Modal'
+import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import DiscardChangesPng from '$mp/assets/discard-changes.png'
 import DiscardChangesPng2x from '$mp/assets/discard-changes@2x.png'
@@ -19,7 +19,7 @@ export type Props = {
 }
 
 const ConfirmSaveDialog = ({ onSave, onClose, onContinue }: Props) => (
-    <Modal>
+    <ModalPortal>
         <Dialog
             title={I18n.t('modal.confirmSave.title')}
             contentClassName={styles.content}
@@ -64,7 +64,7 @@ const ConfirmSaveDialog = ({ onSave, onClose, onContinue }: Props) => (
                 dangerousHTML
             />
         </Dialog>
-    </Modal>
+    </ModalPortal>
 )
 
 export default ConfirmSaveDialog
