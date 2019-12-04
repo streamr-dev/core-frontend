@@ -22,11 +22,13 @@ import confirmDialog from '$shared/utils/confirm'
 import Toolbar from '$editor/shared/components/Toolbar'
 import useCanvasCamera from '../hooks/useCanvasCamera'
 import { RunTabs } from '../state'
+import { getCanvasMessages, getMaxLevel } from '../state/messages'
 
 import ShareDialog from './ShareDialog'
 import CanvasSearch from './CanvasSearch'
 import * as RunController from './CanvasController/Run'
 import { useCameraContext } from './Camera'
+import { MessageIcon } from './ConsoleSidebar'
 import styles from './Toolbar.pcss'
 
 function ZoomControls({ className, canvas }) {
@@ -157,6 +159,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
         const canShare = runController.hasSharePermission
         const { settings = {} } = canvas
         const { editorState = {} } = settings
+        const badgeLevel = getMaxLevel(getCanvasMessages(canvas))
         return (
             <div
                 ref={this.elRef}
@@ -464,6 +467,9 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                         className={cx(styles.ToolbarButton, styles.ConsoleButton)}
                                         onClick={() => this.props.consoleSidebarOpen()}
                                     >
+                                        {(badgeLevel && badgeLevel !== 'none') && (
+                                            <MessageIcon level={badgeLevel} className={styles.consoleButtonBadge} />
+                                        )}
                                         <SvgIcon name="console" />
                                     </R.Button>
                                 </Tooltip>
