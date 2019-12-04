@@ -81,15 +81,17 @@ const Select = ({
     }
 
     return (
-        <select
-            disabled={disabled}
-            value={value}
-            onChange={(e) => onChange(parseInt(e.target.value, 10))}
-            className={styles.select}
-            style={style}
-        >
-            {children}
-        </select>
+        <div className={styles.selectWrapper}>
+            <select
+                disabled={disabled}
+                value={value}
+                onChange={(e) => onChange(parseInt(e.target.value, 10))}
+                className={styles.select}
+                style={style}
+            >
+                {children}
+            </select>
+        </div>
     )
 }
 

@@ -25,23 +25,51 @@
   cursor: grabbing !important;
 }
 
-.select,
-.input {
-  background: none;
-  outline: none;
-  color: #ADADAD;
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0;
-  line-height: 16px;
-  border: 0;
-  appearance: none;
-  margin: 0 0.1rem;
-  min-width: 2ch;
-}
-
 .input {
   min-width: 10ch;
+}
+
+.select,
+.input {
+  appearance: none;
+  background-color: transparent;
+  border: 0;
+  border-radius: 0.125um;
+  color: #ADADAD;
+  font-weight: var(--medium);
+  line-height: 1um;
+  outline: 0;
+  padding: 0 0.5um;
+  transition: 200ms linear;
+  transition-property: background-color, color, box-shadow;
+
+  &:hover,
+  &:focus-within {
+    background-color: #F5F5F5;
+  }
+
+  &:focus {
+    box-shadow: inset 0 0 0 1px #6AEDFF;
+    color: #323232;
+  }
+}
+
+.selectWrapper {
+  display: inline-flex;
+  border-radius: 0.125um;
+
+  &:hover,
+  &:focus-within {
+    background-color: #F5F5F5;
+  }
+
+  .select {
+    background-color: transparent;
+  }
+
+  .select option {
+    font-family: system-ui;
+  }
 }
 
 .select::-ms-expand {
