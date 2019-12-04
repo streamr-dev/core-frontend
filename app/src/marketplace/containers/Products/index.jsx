@@ -1,7 +1,7 @@
 // @flow
 
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
+import React, { useCallback, useEffect, useRef } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import merge from 'lodash/merge'
 import Helmet from 'react-helmet'
 import { I18n } from 'react-redux-i18n'
@@ -9,11 +9,10 @@ import { I18n } from 'react-redux-i18n'
 import ProductsComponent from '../../components/Products'
 import ActionBar from '../../components/ActionBar'
 import Layout from '$shared/components/Layout'
+import useModal from '$shared/hooks/useModal'
+import CreateProductModal from '$mp/containers/CreateProductModal'
 
-import type { StoreState } from '../../flowtype/store-state'
-import type { ProductList, Filter } from '../../flowtype/product-types'
-import type { CategoryList } from '../../flowtype/category-types'
-import type { ErrorInUi } from '$shared/flowtype/common-types'
+import type { Filter } from '../../flowtype/product-types'
 
 import {
     getProducts,
@@ -31,102 +30,70 @@ import {
     selectHasMoreSearchResults,
 } from '../../modules/productList/selectors'
 
-type StateProps = {
-    categories: CategoryList,
-    products: ProductList,
-    productsError: ?ErrorInUi,
-    filter: Filter,
-    isFetching: boolean,
-    hasMoreSearchResults: boolean,
-}
+const Products = () => {
+    const categories = useSelector(selectAllCategories)
+    const products = useSelector(selectProductList)
+    const productsError = useSelector(selectProductListError)
+    const selectedFilter = useSelector(selectFilter)
+    const isFetching = useSelector(selectFetchingProductList)
+    const hasMoreSearchResults = useSelector(selectHasMoreSearchResults)
+    const dispatch = useDispatch()
+    const productsRef = useRef()
+    productsRef.current = products
 
-type DispatchProps = {
-    loadCategories: () => void,
-    loadProducts: () => void,
-    onFilterChange: (filter: Filter) => void,
-    onSearchChange: (filter: Filter) => void,
-    clearFiltersAndReloadProducts: () => void,
-}
+    const { api: createProductModal } = useModal('marketplace.createProduct')
 
-type Props = StateProps & DispatchProps
+    const loadCategories = useCallback(() => dispatch(getCategories(false)), [dispatch])
 
-type State = {}
+    const loadProducts = useCallback(() => dispatch(getProducts()), [dispatch])
 
-export class Products extends Component<Props, State> {
-    constructor(props: Props) {
-        super(props)
-        const { loadCategories, products, clearFiltersAndReloadProducts } = this.props
-
-        loadCategories()
-
-        // Make sure we don't reset state if it's not necessary
-        if (products.length === 0) {
-            clearFiltersAndReloadProducts()
-        }
-    }
-
-    render() {
-        const {
-            products,
-            productsError,
-            filter,
-            onFilterChange,
-            onSearchChange,
-            categories,
-            isFetching,
-            loadProducts,
-            hasMoreSearchResults,
-        } = this.props
-
-        return (
-            <Layout>
-                <Helmet title={I18n.t('general.title.suffix')} />
-                <ActionBar
-                    filter={filter}
-                    categories={categories}
-                    onCategoryChange={onFilterChange}
-                    onSortChange={onFilterChange}
-                    onSearchChange={onSearchChange}
-                />
-                <ProductsComponent
-                    products={products.map((p, i) => merge({}, p, {
-                        key: `${i}-${p.id || ''}`,
-                    }))}
-                    error={productsError}
-                    type="products"
-                    isFetching={isFetching}
-                    loadProducts={loadProducts}
-                    hasMoreSearchResults={hasMoreSearchResults}
-                />
-            </Layout>
-        )
-    }
-}
-
-export const mapStateToProps = (state: StoreState): StateProps => ({
-    categories: selectAllCategories(state),
-    products: selectProductList(state),
-    productsError: selectProductListError(state),
-    filter: selectFilter(state),
-    isFetching: selectFetchingProductList(state),
-    hasMoreSearchResults: selectHasMoreSearchResults(state),
-})
-
-export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
-    loadCategories: () => dispatch(getCategories(false)),
-    loadProducts: () => dispatch(getProducts()),
-    onFilterChange: (filter: Filter) => {
+    const onFilterChange = useCallback((filter: Filter) => {
         dispatch(updateFilter(filter))
         dispatch(getProducts(true))
-    },
-    onSearchChange: (filter: Filter) => {
+    }, [dispatch])
+
+    const onSearchChange = useCallback((filter: Filter) => {
         dispatch(updateFilter(filter))
         dispatch(getProductsDebounced(true))
-    },
-    clearFiltersAndReloadProducts: () => {
+    }, [dispatch])
+
+    const clearFiltersAndReloadProducts = useCallback(() => {
         dispatch(clearFilters())
         dispatch(getProducts(true))
-    },
-})
+    }, [dispatch])
 
-export default connect(mapStateToProps, mapDispatchToProps)(Products)
+    useEffect(() => {
+        loadCategories()
+
+        if (productsRef.current && productsRef.current.length === 0) {
+            clearFiltersAndReloadProducts()
+        }
+    }, [loadCategories, clearFiltersAndReloadProducts])
+
+    return (
+        <Layout>
+            <Helmet title={I18n.t('general.title.suffix')} />
+            <ActionBar
+                filter={selectedFilter}
+                categories={categories}
+                onCategoryChange={onFilterChange}
+                onSortChange={onFilterChange}
+                onSearchChange={onSearchChange}
+                onCreateProduct={() => createProductModal.open()}
+            />
+            <CreateProductModal />
+            <ProductsComponent
+                products={products.map((p, i) => merge({}, p, {
+                    key: `${i}-${p.id || ''}`,
+                }))}
+                error={productsError}
+                type="products"
+                isFetching={isFetching}
+                loadProducts={loadProducts}
+                hasMoreSearchResults={hasMoreSearchResults}
+            />
+        </Layout>
+    )
+}
+
+export default Products

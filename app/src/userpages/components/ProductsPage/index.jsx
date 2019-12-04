@@ -30,12 +30,20 @@ import useCopy from '$shared/hooks/useCopy'
 import useModal from '$shared/hooks/useModal'
 import type { ProductId, Product } from '$mp/flowtype/product-types'
 
-import CreateProductModal from './CreateProductModal'
+import CreateProductModal from '$mp/containers/CreateProductModal'
 
 import styles from './products.pcss'
 
 const CreateProductButton = () => {
-    const { api: createProductDialog } = useModal('createProduct')
+    const { api: createProductDialog } = useModal('marketplace.createProduct')
+
+    if (!process.env.COMMUNITY_PRODUCTS) {
+        return (
+            <Button kind="secondary" tag={Link} to={links.marketplace.createProduct}>
+                <Translate value="actionBar.create" />
+            </Button>
+        )
+    }
 
     return (
         <Button

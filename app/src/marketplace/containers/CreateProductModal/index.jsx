@@ -21,37 +21,39 @@ type Props = {
     api: Object,
 }
 
-const CreateProductPage = ({ api }: Props) => {
+const CreateProductModal = ({ api }: Props) => {
     const dispatch = useDispatch()
     const isMounted = useIsMounted()
-    const [creating, setCreating] = useState(false)
+    const [processing, setProcessing] = useState(false)
+
+    const onClose = useCallback(() => {
+        api.close()
+    }, [api])
 
     const createProduct = useCallback(async (type: ProductType) => {
-        setCreating(true)
+        setProcessing(true)
         try {
             const product = await postEmptyProduct(type)
 
             if (isMounted()) {
+                setProcessing(false)
+                onClose()
                 dispatch(push(routes.editProduct({
                     id: product.id,
                 })))
             }
         } catch (err) {
             console.error('Could not create an empty product', err)
-        }
 
-        if (isMounted()) {
-            setCreating(false)
+            if (isMounted()) {
+                setProcessing(false)
+            }
         }
-    }, [dispatch, isMounted])
+    }, [dispatch, isMounted, onClose])
 
     const onTypeSelect = useCallback((type: ProductType) => {
         createProduct(type)
     }, [createProduct])
-
-    const onClose = useCallback(() => {
-        api.close()
-    }, [api])
 
     return (
         <ModalPortal>
@@ -59,20 +61,20 @@ const CreateProductPage = ({ api }: Props) => {
                 <div className={styles.root}>
                     <LoadingIndicator
                         className={styles.loadingIndicator}
-                        loading={creating}
+                        loading={processing}
                     />
                     <button
                         type="button"
                         className={styles.closeButton}
                         onClick={onClose}
-                        disabled={creating}
+                        disabled={processing}
                     >
                         <SvgIcon name="crossMedium" />
                     </button>
                     <ProductTypeChooser
                         onSelect={onTypeSelect}
                         className={styles.chooser}
-                        disabled={creating}
+                        disabled={processing}
                     />
                 </div>
             </ModalDialog>
@@ -81,14 +83,14 @@ const CreateProductPage = ({ api }: Props) => {
 }
 
 export default () => {
-    const { api, isOpen } = useModal('createProduct')
+    const { api, isOpen } = useModal('marketplace.createProduct')
 
     if (!isOpen) {
         return null
     }
 
     return (
-        <CreateProductPage
+        <CreateProductModal
             api={api}
         />
     )
