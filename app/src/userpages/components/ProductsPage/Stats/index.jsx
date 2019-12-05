@@ -15,16 +15,21 @@ import { isEthereumAddress } from '$mp/utils/validate'
 import ProductController, { useController } from '$mp/containers/ProductController'
 import usePending from '$shared/hooks/usePending'
 import useProduct from '$mp/containers/ProductController/useProduct'
+import useCommunityProduct from '$mp/containers/ProductController/useCommunityProduct'
 import useCommunityStats from '$mp/containers/ProductPage/useCommunityStats'
 import CommunityPending from '$mp/components/ProductPage/CommunityPending'
 import StatsValues from '$shared/components/CommunityStats/Values'
+import MembersGraph from '$mp/containers/ProductPage/MembersGraph'
 
 import styles from './stats.pcss'
 
 const Stats = () => {
     const { loadCommunityProduct } = useController()
     const product = useProduct()
-    const { statsArray } = useCommunityStats()
+    const { statsArray, memberCount } = useCommunityStats()
+    const community = useCommunityProduct()
+
+    const { joinPartStreamId } = community || {}
 
     const loadCommunity = useCallback(async (id: CommunityId) => {
         loadCommunityProduct(id)
@@ -45,6 +50,7 @@ const Stats = () => {
             navComponent={(
                 <Header />
             )}
+            contentClassname={styles.contentArea}
         >
             <Helmet title={`Streamr Core | ${I18n.t('userpages.title.products')}`} />
             <ListContainer>
@@ -58,6 +64,19 @@ const Stats = () => {
                             stats={statsArray}
                         />
                     )}
+                </div>
+                <div className={styles.graphs}>
+                    <div className={styles.statBox}>
+                        {!!communityDeployed && memberCount && (
+                            <MembersGraph
+                                joinPartStreamId={joinPartStreamId}
+                                memberCount={memberCount.total}
+                            />
+                        )}
+                    </div>
+                    <div className={styles.statBox}>
+                        subscribers
+                    </div>
                 </div>
             </ListContainer>
         </CoreLayout>

@@ -173,6 +173,12 @@ msgstr "Published"
 msgid "userpages##products##createProduct"
 msgstr "Create product"
 
+msgid "userpages##products##viewProduct"
+msgstr "View Product"
+
+msgid "userpages##products##settings"
+msgstr "Settings"
+
 msgid "userpages##purchases##filterPurchases"
 msgstr "Filter purchases"
 

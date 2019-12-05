@@ -3,33 +3,37 @@
 import React, { type Node, useCallback } from 'react'
 import { useDispatch } from 'react-redux'
 import { push } from 'connected-react-router'
+import { Link } from 'react-router-dom'
+import { Translate } from 'react-redux-i18n'
 import cx from 'classnames'
 
 import { userpages } from '$userpages/../links'
 import Tab from '$userpages/components/Header/Tab'
 import { formatPath } from '$shared/utils/url'
 import NameAndEmail from '$userpages/components/Avatar/NameAndEmail'
-import AvatarCircle from '$shared/components/AvatarCircle'
 import ListContainer from '$shared/components/Container/List'
 import BackButton from '$shared/components/BackButton'
 import Toolbar from '$shared/components/Toolbar'
 import BodyClass from '$shared/components/BodyClass'
+import FallbackImage from '$shared/components/FallbackImage'
+import Button from '$shared/components/Button'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import useProduct from '$mp/containers/ProductController/useProduct'
+import { productStates } from '$shared/utils/constants'
 
 import routes from '$routes'
 
 import avatarStyles from '$userpages/components/Avatar/avatar.pcss'
+import avatarCircleStyles from '$shared/components/AvatarCircle/avatarCircle.pcss'
 import styles from './header.pcss'
 
 type Props = {
     className?: string,
-    additionalComponent?: Node,
     searchComponent?: Node,
     filterComponent?: Node,
 }
 
-const Header = ({ className, additionalComponent, searchComponent, filterComponent }: Props) => {
+const Header = ({ className, searchComponent, filterComponent }: Props) => {
     const dispatch = useDispatch()
     const isMounted = useIsMounted()
     const product = useProduct()
@@ -52,16 +56,35 @@ const Header = ({ className, additionalComponent, searchComponent, filterCompone
             <ListContainer className={cx(styles.listTemp, className)}>
                 <div className={styles.profile}>
                     <div className={cx(avatarStyles.container, styles.avatar)}>
-                        <AvatarCircle
-                            name={product.name}
-                            imageUrl={product.imageUrl}
-                            className={avatarStyles.avatarCircle}
-                            uploadAvatarPlaceholder
+                        <FallbackImage
+                            className={cx(avatarCircleStyles.accountCircle, avatarStyles.avatarCircle)}
+                            src={product.imageUrl || ''}
+                            alt={product.name || ''}
                         />
                         <NameAndEmail name={product.name} email={product.beneficiaryAddress} />
                     </div>
                     <div className={styles.additionalComponent}>
-                        {additionalComponent}
+                        <Button
+                            className={styles.viewProductButton}
+                            tag={Link}
+                            outline
+                            to={routes.product({
+                                id: product.id,
+                            })}
+                            disabled={product.state !== productStates.DEPLOYED}
+                        >
+                            <Translate value="userpages.products.viewProduct" />
+                        </Button>
+                        <Button
+                            className={styles.editProductButton}
+                            tag={Link}
+                            outline
+                            to={routes.editProduct({
+                                id: product.id,
+                            })}
+                        >
+                            <Translate value="userpages.products.settings" />
+                        </Button>
                     </div>
                 </div>
                 <div className={styles.tabContainer} >
