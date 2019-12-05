@@ -19,6 +19,7 @@
     "dashboards": "/core/dashboards",
     "editProduct": "/core/products/:id/edit",
     "productStats": "/core/products/:id/stats",
+    "productMembers": "/core/products/:id/members",
     "editProfile": "/core/profile/edit",
     "externalForgotPassword": "<streamr>/api/v1/passwords/tokens",
     "externalLogout": "<streamr>/api/v1/logout",

@@ -47,6 +47,9 @@ msgstr "View Product"
 msgid "actionsDropdown##viewStats"
 msgstr "View Stats"
 
+msgid "actionsDropdown##viewCommunity"
+msgstr "View Community"
+
 msgid "actionsDropdown##copyUrl"
 msgstr "Copy URL"
 

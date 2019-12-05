@@ -52,7 +52,7 @@ const Stats = () => {
             )}
             contentClassname={styles.contentArea}
         >
-            <Helmet title={`Streamr Core | ${I18n.t('userpages.title.products')}`} />
+            <Helmet title={`Streamr Core | ${I18n.t('userpages.title.stats')}`} />
             <ListContainer>
                 <div className={styles.statBox}>
                     {!communityDeployed && isEthereumAddress(beneficiaryAddress) && (
@@ -65,19 +65,21 @@ const Stats = () => {
                         />
                     )}
                 </div>
-                <div className={styles.graphs}>
-                    <div className={styles.statBox}>
-                        {!!communityDeployed && memberCount && (
-                            <MembersGraph
-                                joinPartStreamId={joinPartStreamId}
-                                memberCount={memberCount.total}
-                            />
-                        )}
+                {!!communityDeployed && (
+                    <div className={styles.graphs}>
+                        <div className={styles.graphBox}>
+                            {!!communityDeployed && memberCount && (
+                                <MembersGraph
+                                    joinPartStreamId={joinPartStreamId}
+                                    memberCount={memberCount.total}
+                                />
+                            )}
+                        </div>
+                        <div className={styles.graphBox}>
+                            TODO: subscribers graph missing
+                        </div>
                     </div>
-                    <div className={styles.statBox}>
-                        subscribers
-                    </div>
-                </div>
+                )}
             </ListContainer>
         </CoreLayout>
     )

@@ -84,6 +84,11 @@ const Actions = (product: Product) => {
             id,
         })))
     ), [dispatch])
+    const redirectToProductMembers = useCallback((id: ProductId) => (
+        dispatch(push(routes.productMembers({
+            id,
+        })))
+    ), [dispatch])
     const redirectToPublishProduct = useCallback((id: ProductId) => (
         dispatch(push(formatPath(links.marketplace.products, id, 'publish')))
     ), [dispatch])
@@ -115,6 +120,15 @@ const Actions = (product: Product) => {
                     }
                 </DropdownActions.Item>
             }
+            {!!process.env.COMMUNITY_PRODUCTS &&
+                <DropdownActions.Item
+                    className={styles.item}
+                    onClick={() => (!!redirectToProduct && redirectToProduct(id || ''))}
+                    disabled={state !== productStates.DEPLOYED}
+                >
+                    <Translate value="actionsDropdown.viewProduct" />
+                </DropdownActions.Item>
+            }
             {!!process.env.COMMUNITY_PRODUCTS && isCommunity &&
                 <DropdownActions.Item
                     className={styles.item}
@@ -123,13 +137,12 @@ const Actions = (product: Product) => {
                     <Translate value="actionsDropdown.viewStats" />
                 </DropdownActions.Item>
             }
-            {!!process.env.COMMUNITY_PRODUCTS &&
+            {!!process.env.COMMUNITY_PRODUCTS && isCommunity &&
                 <DropdownActions.Item
                     className={styles.item}
-                    onClick={() => (!!redirectToProduct && redirectToProduct(id || ''))}
-                    disabled={state !== productStates.DEPLOYED}
+                    onClick={() => (!!redirectToProduct && redirectToProductMembers(id || ''))}
                 >
-                    <Translate value="actionsDropdown.viewProduct" />
+                    <Translate value="actionsDropdown.viewCommunity" />
                 </DropdownActions.Item>
             }
             <DropdownActions.Item

@@ -7,9 +7,7 @@ import { Link } from 'react-router-dom'
 import { Translate } from 'react-redux-i18n'
 import cx from 'classnames'
 
-import { userpages } from '$userpages/../links'
 import Tab from '$userpages/components/Header/Tab'
-import { formatPath } from '$shared/utils/url'
 import NameAndEmail from '$userpages/components/Avatar/NameAndEmail'
 import ListContainer from '$shared/components/Container/List'
 import BackButton from '$shared/components/BackButton'
@@ -100,7 +98,11 @@ const Header = ({ className, searchComponent, filterComponent }: Props) => {
                             >
                                 Overview
                             </Tab>
-                            <Tab to={formatPath(userpages.canvases)}>
+                            <Tab
+                                to={routes.productMembers({
+                                    id: product.id,
+                                })}
+                            >
                                 Members
                             </Tab>
                         </div>

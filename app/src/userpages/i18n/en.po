@@ -128,6 +128,12 @@ msgstr "Transactions"
 msgid "userpages##title##profile"
 msgstr "Profile"
 
+msgid "userpages##title##stats"
+msgstr "Overview"
+
+msgid "userpages##title##members"
+msgstr "Members"
+
 msgid "userpages##header##products"
 msgstr "Products"
 
@@ -531,6 +537,9 @@ msgstr "Account not linked."
 
 msgid "userpages##transactions##currentAccountNotLinked##message"
 msgstr "You need to link the current Ethereum account to see your transaction history."
+
+msgid "userpages##members##filterMembers"
+msgstr "Filter members"
 
 msgid "userpages##dashboards##createDashboard"
 msgstr "Create dashboard"
