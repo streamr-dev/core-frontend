@@ -23,8 +23,7 @@ type Props = {
 export const InfoView = ({ disabled }: Props) => {
     const stream = useSelector(selectEditedStream)
     const dispatch = useDispatch()
-    /* eslint-disable-next-line no-unused-vars */
-    const { isCopied, copy } = useCopy()
+    const { copy } = useCopy()
     const contentChangedRef = useRef(false)
     const streamRef = useRef()
     streamRef.current = stream

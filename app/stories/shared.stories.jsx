@@ -251,6 +251,23 @@ story('Text Field/With actions')
             }
         />
     ))
+    .addWithJSX('disabled', () => (
+        <TextInput
+            preserveLabelSpace
+            disabled
+            label="I have a Meatball menu"
+            actions={
+                [
+                    <DropdownActions.Item>
+                        Test 1
+                    </DropdownActions.Item>,
+                    <DropdownActions.Item>
+                        Test 2
+                    </DropdownActions.Item>,
+                ]
+            }
+        />
+    ))
 
 story('Text Field/Password')
     .addWithJSX('basic', () => (
