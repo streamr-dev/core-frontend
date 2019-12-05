@@ -1,11 +1,10 @@
 // @flow
 
 import React, { type Node, useCallback } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { push } from 'connected-react-router'
 import cx from 'classnames'
 
-import { selectUserData } from '$shared/modules/user/selectors'
 import { userpages } from '$userpages/../links'
 import Tab from '$userpages/components/Header/Tab'
 import { formatPath } from '$shared/utils/url'
@@ -16,6 +15,7 @@ import BackButton from '$shared/components/BackButton'
 import Toolbar from '$shared/components/Toolbar'
 import BodyClass from '$shared/components/BodyClass'
 import useIsMounted from '$shared/hooks/useIsMounted'
+import useProduct from '$mp/containers/ProductController/useProduct'
 
 import routes from '$routes'
 
@@ -30,9 +30,9 @@ type Props = {
 }
 
 const Header = ({ className, additionalComponent, searchComponent, filterComponent }: Props) => {
-    const user = useSelector(selectUserData)
     const dispatch = useDispatch()
     const isMounted = useIsMounted()
+    const product = useProduct()
 
     const redirectToProductList = useCallback(() => {
         if (!isMounted()) { return }
@@ -50,29 +50,31 @@ const Header = ({ className, additionalComponent, searchComponent, filterCompone
                 altMobileLayout
             />
             <ListContainer className={cx(styles.listTemp, className)}>
-                {user &&
-                    <div className={styles.profile}>
-                        <div className={cx(avatarStyles.container, styles.avatar)}>
-                            <AvatarCircle
-                                name={user.name}
-                                imageUrl={user.imageUrlLarge}
-                                className={avatarStyles.avatarCircle}
-                                uploadAvatarPlaceholder
-                            />
-                            <NameAndEmail name={user.name} email={user.username} />
-                        </div>
-                        <div className={styles.additionalComponent}>
-                            {additionalComponent}
-                        </div>
+                <div className={styles.profile}>
+                    <div className={cx(avatarStyles.container, styles.avatar)}>
+                        <AvatarCircle
+                            name={product.name}
+                            imageUrl={product.imageUrl}
+                            className={avatarStyles.avatarCircle}
+                            uploadAvatarPlaceholder
+                        />
+                        <NameAndEmail name={product.name} email={product.beneficiaryAddress} />
                     </div>
-                }
+                    <div className={styles.additionalComponent}>
+                        {additionalComponent}
+                    </div>
+                </div>
                 <div className={styles.tabContainer} >
                     <div className={styles.tabBar}>
                         <div className={styles.searchBar}>
                             {searchComponent}
                         </div>
                         <div className={styles.tabs}>
-                            <Tab to={formatPath(userpages.streams)}>
+                            <Tab
+                                to={routes.productStats({
+                                    id: product.id,
+                                })}
+                            >
                                 Overview
                             </Tab>
                             <Tab to={formatPath(userpages.canvases)}>
