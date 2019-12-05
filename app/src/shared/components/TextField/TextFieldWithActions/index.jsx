@@ -25,6 +25,9 @@ const TextFieldWithActions = ({ className, disabled, actions, ...props }: Props)
                 <DropdownActions
                     title={<Meatball alt="Actions" gray />}
                     disabled={disabled}
+                    menuProps={{
+                        right: true,
+                    }}
                     noCaret
                 >
                     {actions}
