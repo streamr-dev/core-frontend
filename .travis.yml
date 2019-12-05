@@ -29,6 +29,8 @@ env:
   - SENTRY_PROJECT=marketplace
   - secure: FttWn322rLJj+iCCAyHxptnyj4LZPyNVx8owctcq8/C5hYC2cEWqEy0e7h4Hu1EUXlXVvgPa/b/ND1NZbKARNeiVtBFiwaThXNBJuttRWaVTV5WnKyVQNCcHeuWC/vYtIRSfW0sw1x7rSEMRqv2SRa7tqdkENCNmovr2soF8FyeImI1AxUXN+qlTAa6Nt8g2nNBUnes061O1bkAJJeH7vxAeLLSSvxGKtMCn+l31hKkSzwsc0M8bVCNoh95B8Klz0xgyfTn11sW1eQR2bkHctVn0VYc7LjMvnavQjD4kQUaTFb7bQrH1YSE2YetjIvNrUoHqcZETok86ONC0OoeJJeGl22cPYWThyANtBTer2dNkIXkJxVrF75nJ8T1Tr8aDd0Y2lOvH4OsP++1uHkGRgQ20cyl2t36BxZ30sIj2HALqGd9R7k+wUIyDSPYMu0N9NvTQjDvF3KWOTrKe8ImvOSxRukCe9sEIxPB159smpD4YsWHoJ/T0N9NC7D2S34tn9Nh4OZDnPpaDY5mrfa9yZC0cgIf6uj1X08fDhCq0cc5Jn3RqpTAImCs1r1xwCv2LfaxvYFrmt3+WmDq4eFW2kzhaOF9C74FzS+D4cm6GihbikWx1QrWZJUTnpRJ1Sl0Z4X5mPQAqA9MzIX+Eik1MrOOEaB4K5p4GTi++BEJwd1U=
   - secure: sUzjQJhRmjgRZX2aPcCChTbUpOObNR6virIw0AjfCtQlQQBF0AmCLOSgi4a6GIC4lBIl67flUwbAOHGOaRqVw1K6WZ1A8hEjcmBor6sbIIVtbbJFGr6GnozLeXI/fkTfFfH5n6oRvtJwZAk4GT1weiUzn0xCgvLcn7p5oXZ+M9qvTFDaWr18R9EQF9I+BDX3PwSuhrzveYH6mQRmXVIkoFYmmjAh2MNvP46fIS+HEGadhrpshUwipYmMZ0xyF+xw4Km2tj9okoP18C5UtG43/LcJ0Ja4Fg0WMqXlNSi+JcO5IEg0noJ/x77woIZtsNrphqhUgpp8PJJPBg2YyzQk57OPWVSDlaBfI2Jkhf0E/LTTFuzbORjBOgS2S4zWS8sHWtsnjECpiCb+v20PBIEcLjfUGJEhBW4bsNoJCtE1afUDCkcvarT9pQBqlOrVzvTNlAHyjBzB9JeWel0MKUm+g4/hSHhaDYVfAWGIo0fUboLL09+CVzKPcKfQjdu4vROyQWheDpC/kzvCEMhnaxIAB3fs6lA+BsBFo9lXFF93PVatBdo36mw6fJkk75kfXBOTu0D2fPWYryQm1GeE2uiTWLWscoOQ4GDh6o0vummVk6mxA1A1RU5p2lC8SrB3WMTvrM3dg3vTvzvUavP1WVnPmCoYg0+j+UVpkBEWvazNZqM=
+  - OWNER=streamr
+  - IMAGE_NAME=platform
 jobs:
   include:
   - stage: Platform Tests
@@ -68,23 +70,32 @@ jobs:
     - SENTRY_DSN=https://e012761929d24baa96ca82772f60b395@sentry.io/1203154
     - LOGROCKET_SLUG=et0uhu/streamr-frontend-local
     script: "$TRAVIS_BUILD_DIR/app/travis_scripts/visual-tests.sh"
-  - stage: Build docker (development)
+  - stage: Build docker (Dev/Nightly)
     if: branch = development
     install: true
-    env:
-      - OWNER=streamr
-      - IMAGE_NAME=platform
-      - TAG=development
     script:
       - npm ci
       - npm run build
-      - docker build -t $OWNER/$IMAGE_NAME:$TAG --build-arg NPM_TOKEN=${NPM_TOKEN} .
+      - docker build -t $OWNER/$IMAGE_NAME:local --build-arg NPM_TOKEN=${NPM_TOKEN} .
     deploy:
       - provider: script
         skip_cleanup: true
-        script: bash travis_scripts/deploy-docker.sh staging
+        script: bash travis_scripts/deploy-docker.sh dev
         on:
           branch: development
+  - stage: Build docker (Production)
+    if: branch = master
+    install: true
+    script:
+      - npm ci
+      - npm run build
+      - docker build -t $OWNER/$IMAGE_NAME:local --build-arg NPM_TOKEN=${NPM_TOKEN} .
+    deploy:
+      - provider: script
+        skip_cleanup: true
+        script: bash travis_scripts/deploy-docker.sh production
+        on:
+          branch: master
   - stage: Platform Build Staging
     if: NOT type IN (pull_request)
     env:
