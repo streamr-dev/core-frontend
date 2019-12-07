@@ -63,41 +63,43 @@ const ProductDetails = ({ product, isValidSubscription, productSubscription, onP
                 )}
             </div>
         </div>
-        <div className={styles.separator} />
-        <div className={styles.buttonWrapper}>
-            <Button
-                className={styles.button}
-                kind="primary"
-                size="big"
-                disabled={(!isPaidProduct(product) && isValidSubscription) || product.state !== productStates.DEPLOYED}
-                onClick={onPurchase}
-            >
-                {buttonTitle(product, isValidSubscription)}
-            </Button>
-        </div>
-        <div className={styles.separator} />
-        <div className={styles.details}>
-            <div>
-                <span className={styles.subheading}>Sold by</span>
-                &nbsp;
-                {product.owner}
+        <div className={cx(styles.separator, styles.titleSeparator)} />
+        <div className={styles.purchaseWrapper}>
+            <div className={styles.buttonWrapper}>
+                <Button
+                    className={styles.button}
+                    kind="primary"
+                    size="big"
+                    disabled={(!isPaidProduct(product) && isValidSubscription) || product.state !== productStates.DEPLOYED}
+                    onClick={onPurchase}
+                >
+                    {buttonTitle(product, isValidSubscription)}
+                </Button>
             </div>
-            {/* Hide these until we have a place to read them from */}
-            {false && (
-                <React.Fragment>
-                    <div>
-                        <span className={styles.subheading}>Website</span>
-                        &nbsp;
-                        TODO
-                    </div>
-                    <div>
-                        <Link href="#TODO">Contact seller</Link>
-                    </div>
-                    <div>
-                        <Link href="#TODO">View other products</Link>
-                    </div>
-                </React.Fragment>
-            )}
+            <div className={cx(styles.separator, styles.purchaseSeparator)} />
+            <div className={styles.details}>
+                <div>
+                    <span className={styles.subheading}>Sold by</span>
+                    &nbsp;
+                    {product.owner}
+                </div>
+                {/* Hide these until we have a place to read them from */}
+                {false && (
+                    <React.Fragment>
+                        <div>
+                            <span className={styles.subheading}>Website</span>
+                            &nbsp;
+                            TODO
+                        </div>
+                        <div>
+                            <Link href="#TODO">Contact seller</Link>
+                        </div>
+                        <div>
+                            <Link href="#TODO">View other products</Link>
+                        </div>
+                    </React.Fragment>
+                )}
+            </div>
         </div>
     </div>
 )

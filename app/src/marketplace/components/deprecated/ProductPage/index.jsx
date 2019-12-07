@@ -8,7 +8,7 @@ import classNames from 'classnames'
 import { I18n } from 'react-redux-i18n'
 
 import Toolbar from '$shared/components/Toolbar'
-import Hero from '$mp/components/Hero'
+import Hero from '$mp/components/deprecated/Hero'
 import type { Product } from '$mp/flowtype/product-types'
 import type { StreamList } from '$shared/flowtype/stream-types'
 import type { ButtonActions } from '$shared/components/Buttons'

@@ -59,7 +59,6 @@ const Hero = () => {
     return (
         <HeroComponent
             className={styles.hero}
-            containerClassName={styles.heroContainer}
             product={product}
             leftContent={
                 <div className={styles.productImageWrapper}>
