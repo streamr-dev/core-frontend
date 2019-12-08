@@ -11,9 +11,9 @@ type Props = {
 
 const ModuleHeaderButton = ({ children, className, ...props }: Props) => (
     <button
+        {...props}
         className={cx(styles.root, className)}
         type="button"
-        {...props}
     >
         {children}
     </button>

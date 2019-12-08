@@ -36,8 +36,8 @@ const Preview = ({
             className={cx(styles.root, className)}
         >
             <svg
-                preserveAspectRatio="none"
                 {...props}
+                preserveAspectRatio="none"
                 viewBox={viewBox}
             >
                 {children}

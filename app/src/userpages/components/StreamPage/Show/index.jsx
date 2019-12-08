@@ -101,6 +101,7 @@ export class StreamShowView extends Component<Props, State> {
     }
 
     onSave = (editedStream: Stream) => {
+        // $FlowFixMe `save` missing in  `StateProps` or in `RouterProps`
         const { save, redirectToUserPages } = this.props
 
         this.setState({
@@ -322,7 +323,7 @@ function StreamLoader(props: Props) {
         }
     }, [isCurrent, propsRef])
 
-    return <StreamShowView key={streamId} {...props} editedStream={isCurrent ? props.editedStream : null} />
+    return <StreamShowView {...props} key={streamId} editedStream={isCurrent ? props.editedStream : null} />
 }
 
 const mapStateToProps = (state: StoreState): StateProps => ({

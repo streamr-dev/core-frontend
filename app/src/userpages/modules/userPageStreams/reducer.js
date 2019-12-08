@@ -273,9 +273,6 @@ export default function (state: UserPageStreamsState = initialState, action: Str
         case UPDATE_EDIT_STREAM_FIELD: {
             const newState = {
                 ...state,
-                editedStream: {
-                    ...state.editedStream,
-                },
             }
             const fullPath = `editedStream.${action.field}`
             set(newState, fullPath, action.data)
@@ -306,16 +303,18 @@ export default function (state: UserPageStreamsState = initialState, action: Str
         }
 
         case STREAM_FIELD_AUTODETECT_SUCCESS: {
-            return {
+            const newState = {
                 ...state,
-                editedStream: {
-                    ...state.editedStream,
-                    config: {
-                        fields: action.fields,
-                    },
-                },
                 autodetectFetching: false,
             }
+
+            if (newState.editedStream) {
+                newState.editedStream.config = {
+                    fields: action.fields,
+                }
+            }
+
+            return newState
         }
 
         case STREAM_FIELD_AUTODETECT_FAILURE: {

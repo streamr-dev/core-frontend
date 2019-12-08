@@ -14,11 +14,11 @@ export type Props = {
     message?: string,
 }
 
-const UnlockWalletDialog = ({ onClose, message, translate, ...props }: Props) => (
+const UnlockWalletDialog = ({ onClose, message, ...props }: Props) => (
     <Dialog
+        {...props}
         onClose={onClose}
         title={I18n.t('modal.unlockWallet.title')}
-        {...props}
     >
         <img className={styles.walletIcon} src={WalletPng} srcSet={`${WalletPng2x} 2x`} alt={I18n.t('error.wallet')} />
         {message && (

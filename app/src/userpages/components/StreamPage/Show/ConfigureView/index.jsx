@@ -147,6 +147,7 @@ export class ConfigureView extends Component<Props, State> {
     }
 
     onAutoConfigureChange = (checked: boolean) => {
+        // $FlowFixMe: "updateEditStream is missing in OwnProps or StateProps"
         const { updateEditStream, stream } = this.props
 
         updateEditStream({
@@ -156,6 +157,7 @@ export class ConfigureView extends Component<Props, State> {
     }
 
     onRequireSignedChange = (checked: boolean) => {
+        // $FlowFixMe: "updateEditStream is missing in OwnProps or StateProps"
         const { updateEditStream, stream } = this.props
 
         updateEditStream({

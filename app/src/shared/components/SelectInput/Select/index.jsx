@@ -124,6 +124,7 @@ const SelectInput = ({ className, controlClassName, ...props }: Props) => (
             DropdownIndicator,
         }}
         controlClassName={controlClassName}
+        // $FlowFixMe potential override necessary.
         {...props}
     />
 )

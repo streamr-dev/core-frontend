@@ -31,14 +31,17 @@ const Probe = ({ group, uid: uidProp, width, height }: Props) => {
         // which we want so it reports original px values rather than camera-scaled px values
         const { clientWidth: w, clientHeight: h } = current
 
-        setDimensions({
-            ...(width != null ? {
-                width: [group, uid, width !== 'auto' ? width : w],
-            } : {}),
-            ...(height != null ? {
-                height: [group, uid, height !== 'auto' ? height : h],
-            } : {}),
-        })
+        const dim = {}
+
+        if (width != null) {
+            dim.width = [group, uid, width !== 'auto' ? width : w]
+        }
+
+        if (height != null) {
+            dim.height = [group, uid, height !== 'auto' ? height : h]
+        }
+
+        setDimensions(dim)
     }, [
         group,
         height,

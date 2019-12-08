@@ -118,6 +118,7 @@ class HistoryView extends Component<Props, State> {
     }
 
     onStoragePeriodChange = (e: SyntheticInputEvent<EventTarget>) => {
+        // $FlowFixMe: "updateEditStream is missing in OwnProps or StateProps"
         const { updateEditStream, stream } = this.props
         const days = Number(e.target.value)
 

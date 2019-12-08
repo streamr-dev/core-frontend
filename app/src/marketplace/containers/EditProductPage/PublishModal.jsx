@@ -165,8 +165,12 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
 
                     queue.add({
                         id: actionsTypes.UPDATE_CONTRACT_PRODUCT,
-                        handler: (update, done) => (
-                            updateContractProduct({
+                        handler: (update, done) => {
+                            if (!contractProduct) {
+                                return null
+                            }
+
+                            return updateContractProduct({
                                 ...contractProduct,
                                 pricePerSecond: pricePerSecond || p.pricePerSecond,
                                 beneficiaryAddress: beneficiaryAddress || p.beneficiaryAddress,
@@ -184,7 +188,7 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
                                     done()
                                     update(transactionStates.FAILED, error)
                                 })
-                        ),
+                        },
                     })
                 }
             }

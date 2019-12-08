@@ -8,7 +8,13 @@ import Nav from '..'
 import LinkItemUnderline from '../LinkItemUnderline'
 import styles from './linkItem.pcss'
 
-type Props = {
+type ForeignProps = {
+    history?: any,
+    match?: any,
+    staticContext?: any,
+}
+
+type Props = ForeignProps & {
     children?: Node,
     className?: ?string,
     location: Location,

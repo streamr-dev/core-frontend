@@ -12,7 +12,7 @@ type Props = {
 }
 
 const SortableItem = ({ children, className, ...props }: Props) => (
-    <div className={cx(styles.root, className)} {...props}>
+    <div {...props} className={cx(styles.root, className)}>
         {children}
     </div>
 )

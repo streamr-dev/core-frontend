@@ -35,6 +35,7 @@ class UserpagesLayout extends Component<Props, State> {
         } = this.props
         return (
             <CoreLayout
+                {...props}
                 footer={false}
                 navComponent={(
                     <React.Fragment>
@@ -47,7 +48,6 @@ class UserpagesLayout extends Component<Props, State> {
                         />
                     </React.Fragment>
                 )}
-                {...props}
             />
         )
     }

@@ -54,13 +54,13 @@ const MarkdownEditor = ({
                 }, className)}
             >
                 <TextControl
+                    {...editorProps}
                     immediateCommit={false}
                     commitEmpty
                     tag="textarea"
                     value={value}
                     onChange={onTextChange}
                     className={styles.input}
-                    {...editorProps}
                 />
                 <div className={styles.footer}>
                     <div>

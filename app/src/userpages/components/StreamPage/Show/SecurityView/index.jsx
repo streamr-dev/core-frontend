@@ -146,25 +146,26 @@ export function SecurityIcon({
     const { icons } = securityLevels[level]
     return (
         <SvgIcon
+            {...props}
             title={I18n.t(securityLevels[level].title)}
             className={cx(styles.SecurityIcon, className, styles[level])}
             name={icons[mode]}
-            {...props}
         />
     )
 }
 
 export function SecurityView(props: Props) {
     const { stream, updateEditStream } = props
-    // $FlowFixMe
     const level = getSecurityLevel(stream) || 'basic'
     const levelIndex = Object.keys(securityLevels).indexOf(level)
     const detail = securityLevels[level]
     const onChange = useCallback((event, newLevel) => {
-        updateEditStream({
-            ...stream,
-            ...setSecurityLevel(newLevel),
-        })
+        if (stream) {
+            updateEditStream({
+                ...stream,
+                ...setSecurityLevel(newLevel),
+            })
+        }
     }, [updateEditStream, stream])
     return (
         <div className={styles.root}>

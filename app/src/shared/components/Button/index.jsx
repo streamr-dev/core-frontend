@@ -1,6 +1,6 @@
 // @flow
 
-import React, { type Node, type ElementType } from 'react'
+import React, { type Node, type ComponentType } from 'react'
 import cx from 'classnames'
 
 import Spinner from '$shared/components/Spinner'
@@ -13,7 +13,7 @@ export type Variant = 'dark'
 
 type Props = {
     className?: string,
-    tag: ElementType,
+    tag: string | ComponentType<any>,
     size?: Size,
     kind?: Kind,
     variant?: Variant,
@@ -38,6 +38,7 @@ const Button = ({
     ...args
 }: Props) => (
     <Tag
+        {...args}
         className={
             cx(styles.root, {
                 [styles.primary]: kind === 'primary',
@@ -54,7 +55,6 @@ const Button = ({
         }
         onClick={onClick}
         disabled={disabled || waiting}
-        {...args}
         tabIndex={disabled ? -1 : 0}
     >
         {children}

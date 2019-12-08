@@ -21,7 +21,7 @@ type BaseProps = {
 }
 
 export const Title = ({ children, className, onClose, ...props }: BaseProps) => (
-    <div className={cx(className, styles.titleContainer)} {...props}>
+    <div {...props} className={cx(className, styles.titleContainer)}>
         <div className={styles.title}>{children}</div>
         <button
             type="button"
@@ -40,7 +40,7 @@ export const Dialog = ({
     title,
     ...props
 }: BaseProps) => (
-    <div className={cx(styles.dialog, className)} {...props}>
+    <div {...props} className={cx(styles.dialog, className)}>
         {!!title && (
             <Title onClose={onClose}>{title}</Title>
         )}
@@ -49,7 +49,7 @@ export const Dialog = ({
 )
 
 export const Toolbar = ({ children, className, ...props }: BaseProps) => (
-    <div className={cx(styles.toolbar, className)} {...props}>
+    <div {...props} className={cx(styles.toolbar, className)}>
         {children}
     </div>
 )
