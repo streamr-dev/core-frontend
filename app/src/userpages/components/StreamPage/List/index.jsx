@@ -73,8 +73,7 @@ const Dialogs = {
 }
 
 const getSnippets = (streamId: StreamId) => ({
-    // $FlowFixMe It's alright but Flow doesn't get it
-    [ProgrammingLanguages.JAVASCRIPT]: String.raw`const StreamrClient = require('streamr-client')
+    [ProgrammingLanguages.JAVASCRIPT]: `const StreamrClient = require('streamr-client')
 
 const streamr = new StreamrClient({
     auth: {
@@ -90,8 +89,7 @@ streamr.subscribe({
     // Do something with the message here!
     console.log(message)
 }`,
-    // $FlowFixMe Array is incompatible with $Shape.
-    [ProgrammingLanguages.JAVA]: String.raw`StreamrClient client = new StreamrClient();
+    [ProgrammingLanguages.JAVA]: `StreamrClient client = new StreamrClient();
 Stream stream = client.getStream("${streamId}");
 
 Subscription sub = client.subscribe(stream, new MessageHandler() {

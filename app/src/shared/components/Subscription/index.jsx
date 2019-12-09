@@ -250,17 +250,18 @@ class Subscription extends Component<Props> {
     }
 }
 
-type OuterProps = Props & {
+type OuterProps = {
     // Deprecated?
-    resendAll: any,
+    resendAll?: any,
 }
 
-export default (React.forwardRef((props: OuterProps, ref) => {
+export default (React.forwardRef(({ resendAll, ...rest }: OuterProps, ref) => {
     const subscriptionStatus = useContext(SubscriptionStatusContext)
     const clientContext = useContext(ClientContext)
-    const { uiChannel, resendAll } = props
+    const props: Props = (rest: any)
+    const { uiChannel } = props
     // create new subscription if uiChannel or resendAll changes
-    const subscriptionKey = (uiChannel && uiChannel.id) + resendAll
+    const subscriptionKey = (uiChannel && uiChannel.id) + (resendAll || '')
 
     if (!clientContext) {
         console.warn('Missing clientContext.')
