@@ -13,7 +13,7 @@ const stories =
     storiesOf('Shared/CommunityStats', module)
         .addDecorator(styles({
             color: '#323232',
-            padding: '5rem',
+            padding: '1rem',
             background: '#F8F8F8',
         }))
         .addDecorator(withKnobs)
@@ -61,6 +61,22 @@ stories.add('value', () => (
 stories.add('values', () => (
     <Values stats={stats} />
 ))
+
+stories.add('mobile', () => (
+    <Values stats={stats} />
+), {
+    viewport: {
+        defaultViewport: 'xs',
+    },
+})
+
+stories.add('tablet', () => (
+    <Values stats={stats} />
+), {
+    viewport: {
+        defaultViewport: 'sm',
+    },
+})
 
 stories.add('loading', () => (
     <Values stats={stats.map((stat) => ({
