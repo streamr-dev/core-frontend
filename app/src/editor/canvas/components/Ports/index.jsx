@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, type ComponentType } from 'react'
 import cx from 'classnames'
 import useModule from '../ModuleRenderer/useModule'
 import useModuleApi from '../ModuleRenderer/useModuleApi'
@@ -64,5 +64,4 @@ const Ports = ({ className, onPort, onValueChange }: Props) => {
     )
 }
 
-// $FlowFixMe
-export default React.memo(Ports)
+export default (React.memo(Ports): ComponentType<Props>)

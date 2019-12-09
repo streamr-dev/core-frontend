@@ -35,7 +35,7 @@ const longText = [
 ].join('\n\n')
 
 // from https://raw.githubusercontent.com/adamschwartz/github-markdown-kitchen-sink/master/TEST.md
-// $FlowFixMe
+// $FlowFixMe array is incompatible with `$Shape`…
 const markdown = String.raw`This is a paragraph.
 
 This is a paragraph.
@@ -185,7 +185,7 @@ This paragraph has some \`code\` in it.
 
     ![Alt Text](http://placehold.it/200x50 "Image Title")`
 
-// $FlowFixMe
+// $FlowFixMe array is incompatible with `$Shape`…
 const markdownWithNumberedList = String.raw`Normal & numbered list:
 
 * List item 1

@@ -2,7 +2,6 @@ import groupBy from 'lodash/groupBy'
 
 const importAll = (r) => r.keys().map(r).map(({ default: m }) => m)
 
-// $FlowFixMe
 export const canvasModules = importAll(require.context('$docs/content/moduleReference', false, /\.jsx$/))
 
 export const canvasModulesCategorised = Object.entries((

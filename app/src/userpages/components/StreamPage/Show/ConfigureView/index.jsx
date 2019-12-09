@@ -57,16 +57,15 @@ export class ConfigureView extends Component<Props, State> {
     }
 
     componentDidUpdate(prevProps: Props) {
-        if (this.validFieldProps(prevProps) && this.validFieldProps(this.props) &&
-        // $FlowFixMe
-        (this.props.stream.config.fields !== prevProps.stream.config.fields)) {
+        const { config = {} } = this.props.stream || {}
+        const { config: prevConfig = {} } = prevProps.stream || {}
+
+        if (config.fields && prevConfig.fields && config.fields !== prevConfig.fields) {
             const { editField } = this.props
             const fields = this.getStreamFields()
             editField('config.fields', fields)
         }
     }
-
-    validFieldProps = (props: Props) => props.stream && props.stream.config && props.stream.config.fields
 
     getStreamFields = () => {
         const { stream } = this.props
@@ -76,9 +75,8 @@ export class ConfigureView extends Component<Props, State> {
         return []
     }
 
-    addTempIdsToStreamFields = (stream: Stream) => (
-        // $FlowFixMe
-        stream.config.fields.map((field) => (
+    addTempIdsToStreamFields = (stream: Stream): Array<any> => (
+        (stream.config.fields || []).map((field) => (
             {
                 ...field,
                 id: field.id ? field.id : uuid(),

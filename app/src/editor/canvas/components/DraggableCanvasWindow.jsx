@@ -60,13 +60,15 @@ type CanvasWindowProps = Bounds & {
     children?: Node,
 }
 
-export function useLayoutState({ x = 0, y = 0, width = 600, height = 400 }: Bounds = {}) {
-    // wtf flow. I don't know what it wants.
-    // $FlowFixMe
-    const [position, setPosition] = useState([x, y])
+type Pair = [number, number]
 
-    // $FlowFixMe
-    const [size, setSize] = useState([width, height])
+type TupleUseState = [Pair, ((Pair => Pair) | Pair) => void]
+
+export function useLayoutState({ x = 0, y = 0, width = 600, height = 400 }: Bounds = {}) {
+    const [position, setPosition] = (useState([x, y]): TupleUseState)
+
+    const [size, setSize] = (useState([width, height]): TupleUseState)
+
     return useMemo(() => ({
         position,
         setPosition,

@@ -118,7 +118,7 @@ class HistoryView extends Component<Props, State> {
     }
 
     onStoragePeriodChange = (e: SyntheticInputEvent<EventTarget>) => {
-        // $FlowFixMe: "updateEditStream is missing in OwnProps or StateProps"
+        // $FlowFixMe `updateEditStream` not in OwnProps or StateProps.
         const { updateEditStream, stream } = this.props
         const days = Number(e.target.value)
 
@@ -216,8 +216,11 @@ class HistoryView extends Component<Props, State> {
     }
 
     handleBrowseFilesClick = () => {
-        // $FlowFixMe
-        this.fileUploadRef.current.open()
+        const { current: uploader } = this.fileUploadRef
+
+        if (uploader) {
+            uploader.opem()
+        }
     }
 
     render() {

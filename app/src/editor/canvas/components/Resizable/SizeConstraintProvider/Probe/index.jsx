@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useRef, useEffect, useContext } from 'react'
+import React, { useRef, useEffect, useContext, type ComponentType } from 'react'
 import cx from 'classnames'
 import { type Ref } from '$shared/flowtype/common-types'
 import { Context as SizeConstaintContext } from '..'
@@ -62,5 +62,4 @@ const Probe = ({ group, uid: uidProp, width, height }: Props) => {
     )
 }
 
-// $FlowFixMe – again, memo's annotation issue
-export default React.memo(Probe)
+export default (React.memo(Probe): ComponentType<Props>)

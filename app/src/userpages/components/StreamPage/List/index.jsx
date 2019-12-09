@@ -90,7 +90,7 @@ streamr.subscribe({
     // Do something with the message here!
     console.log(message)
 }`,
-    // $FlowFixMe
+    // $FlowFixMe Array is incompatible with $Shape.
     [ProgrammingLanguages.JAVA]: String.raw`StreamrClient client = new StreamrClient();
 Stream stream = client.getStream("${streamId}");
 
@@ -104,6 +104,10 @@ Subscription sub = client.subscribe(stream, new MessageHandler() {
 })
 
 const timezone = moment.tz.guess()
+
+type TargetStream = ?Stream
+
+type TargetStreamSetter = [TargetStream, ((TargetStream => TargetStream) | TargetStream) => void]
 
 const StreamList = () => {
     const sortOptions = useMemo(() => {
@@ -122,7 +126,7 @@ const StreamList = () => {
         setSort,
         resetFilter,
     } = useFilterSort(sortOptions)
-    const [dialogTargetStream, setDialogTargetStream] = useState(undefined)
+    const [dialogTargetStream, setDialogTargetStream] = (useState(null): TargetStreamSetter)
     const [activeDialog, setActiveDialog] = useState(undefined)
     const dispatch = useDispatch()
     const { copy } = useCopy()
@@ -180,19 +184,16 @@ const StreamList = () => {
     ), [fetchingPermissions, permissions, user])
 
     const onOpenShareDialog = useCallback((stream: Stream) => {
-        // $FlowFixMe
         setDialogTargetStream(stream)
         setActiveDialog(Dialogs.SHARE)
     }, [])
 
     const onCloseDialog = useCallback(() => {
-        // $FlowFixMe
         setDialogTargetStream(null)
         setActiveDialog(null)
     }, [])
 
     const onOpenSnippetDialog = useCallback((stream: Stream) => {
-        // $FlowFixMe
         setDialogTargetStream(stream)
         setActiveDialog(Dialogs.SNIPPET)
     }, [])

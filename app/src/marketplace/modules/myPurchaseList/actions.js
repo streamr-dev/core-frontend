@@ -118,8 +118,11 @@ const filterPurchases = (data: Array<ProductSubscription>, filter: ?Filter) => {
 
     // Order results if needed (case insensitive)
     if (filter && filter.sortBy && filter.order) {
-        // $FlowFixMe
-        return orderBy(filtered, (subscription) => get(subscription, `product.${filter.sortBy}`).toLowerCase(), filter.order)
+        return orderBy(filtered, (subscription) => (
+            // NOTE: Flow requires another check for `filter` inside this callback. We default
+            // the identity of each item to `null` if the filter isn't there.
+            filter && filter.sortBy ? get(subscription, `product.${filter.sortBy}`).toLowerCase() : null
+        ), filter.order)
     }
 
     return filtered

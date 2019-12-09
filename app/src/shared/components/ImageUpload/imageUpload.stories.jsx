@@ -23,8 +23,7 @@ const ImageUploadContainer = ({ disabled, defaultImage }: Props) => {
 
     return (
         <ImageUpload
-            // $FlowFixMe
-            setImageToUpload={setImage}
+            setImageToUpload={(setImage: any)}
             originalImage={image}
             disabled={!!disabled}
         />

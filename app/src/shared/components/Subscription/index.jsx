@@ -4,9 +4,7 @@
  * Manages a subscription.
  */
 
-/* eslint-disable react/no-unused-state */
-
-import React, { type Node, Component, useContext } from 'react'
+import React, { type Node, Component, useContext, type ComponentType } from 'react'
 import uniqueId from 'lodash/uniqueId'
 
 import { Context as ClientContext, type ContextProps as ClientContextProps } from '$shared/contexts/StreamrClient'
@@ -189,12 +187,16 @@ class Subscription extends Component<Props> {
 
         const resend = this.getResendOptions()
 
-        // $FlowFixMe
-        this.subscription = client.subscribe(Object.assign({
+        const options = {
             stream: id,
-        }, resend ? {
             resend,
-        } : undefined), this.onMessage)
+        }
+
+        if (!resend) {
+            delete options.resend
+        }
+
+        this.subscription = client.subscribe(options, this.onMessage)
 
         this.subscription.on('subscribed', this.onSubscribed)
         this.subscription.on('unsubscribed', this.onUnsubscribed)
@@ -248,8 +250,12 @@ class Subscription extends Component<Props> {
     }
 }
 
-// $FlowFixMe
-export default React.forwardRef((props, ref) => {
+type OuterProps = Props & {
+    // Deprecated?
+    resendAll: any,
+}
+
+export default (React.forwardRef((props: OuterProps, ref) => {
     const subscriptionStatus = useContext(SubscriptionStatusContext)
     const clientContext = useContext(ClientContext)
     const { uiChannel, resendAll } = props
@@ -270,4 +276,4 @@ export default React.forwardRef((props, ref) => {
             clientContext={clientContext}
         />
     )
-})
+}): ComponentType<OuterProps>)

@@ -27,7 +27,7 @@ const ConfirmDeployCommunityDialog = ({ product, onClose, onContinue: onContinue
         await onContinueProp()
     }, [onContinueProp])
 
-    // $FlowFixMe
+    // $FlowFixMe property `preview` is missing in  `File`.
     const image = String((product.newImageToUpload && product.newImageToUpload.preview) || product.imageUrl)
 
     return (

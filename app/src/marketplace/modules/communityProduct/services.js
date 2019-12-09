@@ -81,10 +81,10 @@ export const createJoinPartStream = async (productId: ?ProductId = undefined): P
 
     // Remove share permission to prevent deleting the stream
     try {
-        // $FlowFixMe
         const myPermissions = await getMyStreamPermissions(stream.id)
         const sharePermission = myPermissions.find((p) => p.operation === 'share')
         if (sharePermission) {
+            // $FlowFixMe is `sharePermission.id` a number or a string?
             await deletePermission(stream.id, sharePermission.id)
         }
     } catch (e) {

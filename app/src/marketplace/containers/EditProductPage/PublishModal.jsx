@@ -248,28 +248,29 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
 
             // do republish for products that have been at some point deployed
             if (nextMode === modes.REDEPLOY) {
-                // $FlowFixMe
-                requireOwner = contractProduct.ownerAddress
+                if (contractProduct) {
+                    requireOwner = contractProduct.ownerAddress
 
-                queue.add({
-                    id: actionsTypes.REDEPLOY_PAID,
-                    handler: (update, done) => (
-                        redeployProduct(productId || '')
-                            .onTransactionHash((hash) => {
-                                update(transactionStates.PENDING)
-                                done()
-                                dispatch(addTransaction(hash, transactionTypes.REDEPLOY_PRODUCT))
-                                postSetDeploying(productId || '', hash)
-                            })
-                            .onTransactionComplete(() => {
-                                update(transactionStates.CONFIRMED)
-                            })
-                            .onError((error) => {
-                                update(transactionStates.FAILED, error)
-                                done()
-                            })
-                    ),
-                })
+                    queue.add({
+                        id: actionsTypes.REDEPLOY_PAID,
+                        handler: (update, done) => (
+                            redeployProduct(productId || '')
+                                .onTransactionHash((hash) => {
+                                    update(transactionStates.PENDING)
+                                    done()
+                                    dispatch(addTransaction(hash, transactionTypes.REDEPLOY_PRODUCT))
+                                    postSetDeploying(productId || '', hash)
+                                })
+                                .onTransactionComplete(() => {
+                                    update(transactionStates.CONFIRMED)
+                                })
+                                .onError((error) => {
+                                    update(transactionStates.FAILED, error)
+                                    done()
+                                })
+                        ),
+                    })
+                }
             }
 
             // do unpublish
