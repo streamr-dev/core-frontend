@@ -21,20 +21,20 @@ const viewports = {
         type: 'mobile',
     },
     sm: {
-        name: 'Tablet (sm)',
+        name: 'Mobile (sm)',
         styles: {
             width: `${sm.max}px`,
             height: '100%',
         },
-        type: 'tablet',
+        type: 'mobile',
     },
     md: {
-        name: 'Desktop (md)',
+        name: 'Tablet (md)',
         styles: {
             width: `${md.max}px`,
             height: '100%',
         },
-        type: 'desktop',
+        type: 'tablet',
     },
     lg: {
         name: 'Desktop (lg)',

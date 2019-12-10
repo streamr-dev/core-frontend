@@ -66,7 +66,7 @@ stories.add('mobile', () => (
     <Values stats={stats} />
 ), {
     viewport: {
-        defaultViewport: 'xs',
+        defaultViewport: 'sm',
     },
 })
 
@@ -74,7 +74,7 @@ stories.add('tablet', () => (
     <Values stats={stats} />
 ), {
     viewport: {
-        defaultViewport: 'sm',
+        defaultViewport: 'md',
     },
 })
 
