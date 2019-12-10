@@ -25,6 +25,15 @@ export function MessageIcon({ level, ...props }) {
     )
 }
 
+export function MessageIconSimple({ level, className, ...props }) {
+    return (
+        <div
+            {...props}
+            className={cx(className, styles.MessageSimpleIcon, styles[level])}
+        />
+    )
+}
+
 function MessageRow({ msg }) {
     return (
         <div className={cx(styles.MessageRow, styles[msg.level])}>

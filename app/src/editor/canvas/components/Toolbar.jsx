@@ -28,7 +28,7 @@ import ShareDialog from './ShareDialog'
 import CanvasSearch from './CanvasSearch'
 import * as RunController from './CanvasController/Run'
 import { useCameraContext } from './Camera'
-import { MessageIcon } from './ConsoleSidebar'
+import { MessageIconSimple } from './ConsoleSidebar'
 import styles from './Toolbar.pcss'
 
 function ZoomControls({ className, canvas }) {
@@ -468,7 +468,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                         onClick={() => this.props.consoleSidebarOpen()}
                                     >
                                         {(badgeLevel && badgeLevel !== 'none') && (
-                                            <MessageIcon level={badgeLevel} className={styles.consoleButtonBadge} />
+                                            <MessageIconSimple level={badgeLevel} className={styles.consoleButtonBadge} />
                                         )}
                                         <SvgIcon name="console" />
                                     </R.Button>
