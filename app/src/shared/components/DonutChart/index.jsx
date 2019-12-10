@@ -19,6 +19,7 @@ type DonutSegment = {
 
 type Props = {
     className?: string,
+    chartClassName?: string,
     data: Array<Segment>,
     strokeWidth: number,
     disabled?: boolean,
@@ -89,7 +90,13 @@ const renderSegments = (segments: Array<DonutSegment>, strokeWidth: number) => (
     ))
 )
 
-const DonutChart = ({ className, strokeWidth, data, disabled }: Props) => {
+const DonutChart = ({
+    className,
+    chartClassName,
+    strokeWidth,
+    data,
+    disabled,
+}: Props) => {
     const segments = useMemo(() => {
         if (disabled) {
             return []
@@ -112,7 +119,7 @@ const DonutChart = ({ className, strokeWidth, data, disabled }: Props) => {
 
     return (
         <div className={cx(styles.root, className)}>
-            <div className={styles.donut}>
+            <div className={cx(styles.donut, chartClassName)}>
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 100 100"

@@ -1,7 +1,9 @@
 // @flow
 
 import React, { useEffect, useState, useCallback, useRef } from 'react'
+import MediaQuery from 'react-responsive'
 
+import { lg } from '$app/scripts/breakpoints'
 import { getStreamData } from '$mp/modules/streams/services'
 
 import TimeSeriesGraph from '$shared/components/TimeSeriesGraph'
@@ -146,18 +148,24 @@ const MembersGraph = ({ className, joinPartStreamId, memberCount }: Props) => {
     }, [shownDays, joinPartStreamId, onMessage])
 
     return (
-        <WithShownDays
-            label="Members"
-            className={className}
-            onDaysChange={(days) => setShownDays(days)}
-        >
-            {({ shownDays: days }) => (
-                <TimeSeriesGraph
-                    graphData={graphData}
-                    shownDays={days}
-                />
+        <MediaQuery maxWidth={lg.max}>
+            {(isTabletOrMobile: boolean) => (
+                <WithShownDays
+                    label="Members"
+                    className={className}
+                    onDaysChange={(days) => setShownDays(days)}
+                >
+                    {({ shownDays: days }) => (
+                        <TimeSeriesGraph
+                            graphData={graphData}
+                            shownDays={days}
+                            width={isTabletOrMobile ? 380 : 540}
+                            height={200}
+                        />
+                    )}
+                </WithShownDays>
             )}
-        </WithShownDays>
+        </MediaQuery>
     )
 }
 

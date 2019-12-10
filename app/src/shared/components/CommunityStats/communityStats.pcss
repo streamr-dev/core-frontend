@@ -1,12 +1,10 @@
 .stat {}
 
 .stats {
-  display: flex;
-  justify-content: space-between;
-
-  & > .stat + .stat {
-    margin-left: 3rem;
-  }
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-column-gap: 3em;
+  grid-row-gap: 2em;
 
   :global(.react-loading-skeleton) {
     height: 32px;
@@ -42,6 +40,14 @@
 
 @media (--md-up) {
   .stats {
+    grid-template-columns: repeat(3, 1fr);
+    grid-column-gap: 1em;
+  }
+}
+
+@media (--xl) {
+  .stats {
     grid-template-columns: repeat(6, 1fr);
+    grid-column-gap: 1em;
   }
 }

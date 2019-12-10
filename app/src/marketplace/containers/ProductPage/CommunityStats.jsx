@@ -190,7 +190,7 @@ const CommunityStats = () => {
     }
 
     return (
-        <ProductContainer>
+        <ProductContainer className={styles.container}>
             <div className={styles.root}>
                 <div className={styles.grid}>
                     <div className={styles.header}>
