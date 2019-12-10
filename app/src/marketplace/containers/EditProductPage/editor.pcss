@@ -8,9 +8,12 @@
 .container {
 }
 
+.nav {
+  display: none;
+}
+
 .grid {
   display: grid;
-  grid-template-columns: 1fr 680px;
   grid-column-gap: 2.25rem;
 }
 
@@ -40,5 +43,27 @@
 
   > section + section {
     margin-top: 7rem;
+  }
+}
+
+@media (--md-up) {
+  .grid {
+    grid-template-columns: 120px auto;
+  }
+
+  .nav {
+    display: block;
+  }
+}
+
+@media (--lg-up) {
+  .grid {
+    grid-template-columns: 180px auto;
+  }
+}
+
+@media (--xl) {
+  .grid {
+    grid-template-columns: auto 660px;
   }
 }
