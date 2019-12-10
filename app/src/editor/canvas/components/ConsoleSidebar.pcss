@@ -7,10 +7,24 @@
 .messageGroup {
   font-size: 14px;
   line-height: 18px;
+  position: relative;
 
-  &.selectedGroup {
-    outline: 1px solid var(--focus-border-color);
-    outline-offset: -1px;
+  &::after {
+    content: ' ';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    background: #323232;
+    opacity: 0;
+    transition: opacity 0.1s;
+  }
+
+  &:hover::after,
+  &.selectedGroup::after {
+    opacity: 0.05;
   }
 }
 
