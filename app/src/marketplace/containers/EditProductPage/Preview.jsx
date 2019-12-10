@@ -3,12 +3,15 @@
 import React, { useMemo, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { I18n } from 'react-redux-i18n'
+import MediaQuery from 'react-responsive'
+import cx from 'classnames'
 
 import useEditableProduct from '../ProductController/useEditableProduct'
 import { selectStreams } from '$mp/modules/streams/selectors'
 import { selectAllCategories } from '$mp/modules/categories/selectors'
 import { isCommunityProduct, isPaidProduct } from '$mp/utils/product'
 import useFilePreview from '$shared/hooks/useFilePreview'
+import { lg } from '$app/scripts/breakpoints'
 
 import DescriptionComponent from '$mp/components/ProductPage/Description'
 import HeroComponent from '$mp/components/Hero'
@@ -27,6 +30,7 @@ import productPageStyles from '$mp/containers/ProductPage/page.pcss'
 import heroStyles from '$mp/containers/ProductPage/hero.pcss'
 import streamStyles from '$mp/containers/ProductPage/streams.pcss'
 import statsStyles from '$mp/containers/ProductPage/communityStats.pcss'
+import styles from './preview.pcss'
 
 const Hero = () => {
     const product = useEditableProduct()
@@ -111,7 +115,7 @@ const CommunityStats = () => {
     const { created, adminFee } = product
 
     return (
-        <ProductContainer>
+        <ProductContainer className={statsStyles.container}>
             <div className={statsStyles.root}>
                 <div className={statsStyles.grid}>
                     <div className={statsStyles.header}>
@@ -149,21 +153,27 @@ const CommunityStats = () => {
                         }]}
                     />
                     <div className={statsStyles.graphs}>
-                        <WithShownDays
-                            label="Members"
-                            className={statsStyles.membersGraph}
-                            disabled
-                        >
-                            {({ shownDays: days }) => (
-                                <TimeSeriesGraph
-                                    graphData={[{
-                                        x: new Date().getTime(),
-                                        y: 0,
-                                    }]}
-                                    shownDays={days}
-                                />
+                        <MediaQuery maxWidth={lg.max}>
+                            {(isTabletOrMobile: boolean) => (
+                                <WithShownDays
+                                    label="Members"
+                                    className={statsStyles.membersGraph}
+                                    disabled
+                                >
+                                    {({ shownDays: days }) => (
+                                        <TimeSeriesGraph
+                                            width={isTabletOrMobile ? 380 : 540}
+                                            height={200}
+                                            graphData={[{
+                                                x: new Date().getTime(),
+                                                y: 0,
+                                            }]}
+                                            shownDays={days}
+                                        />
+                                    )}
+                                </WithShownDays>
                             )}
-                        </WithShownDays>
+                        </MediaQuery>
                         <div className={statsStyles.memberDonut}>
                             <StatsHeader>Members by status</StatsHeader>
                             <DonutChart
@@ -225,7 +235,7 @@ const Preview = () => {
     }, [])
 
     return (
-        <div className={productPageStyles.productPage}>
+        <div className={cx(productPageStyles.productPage, styles.preview)}>
             <Hero />
             <Description />
             {isCommunity && (
