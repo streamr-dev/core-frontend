@@ -185,6 +185,9 @@ msgstr "Waiting"
 msgid "modal##common##close"
 msgstr "Close"
 
+msgid "modal##common##confirm"
+msgstr "Confirm"
+
 msgid "modal##unlockWallet##title"
 msgstr "Access your wallet"
 
