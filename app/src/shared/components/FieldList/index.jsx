@@ -52,12 +52,12 @@ class FieldList extends React.Component<Props, State> {
 
         return (
             <SortableList
+                {...props}
                 className={cx({
                     [FieldItem.styles.locked]: locked,
                 })}
                 helperClass={FieldItem.styles.helper}
                 lockAxis="y"
-                {...props}
                 onSortStart={this.onSortStart}
                 onSortEnd={this.onSortEnd}
                 useDragHandle

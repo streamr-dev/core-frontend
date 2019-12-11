@@ -21,10 +21,10 @@ const UnlockWalletDialog = ({
     ...props
 }: Props) => (
     <Dialog
+        {...props}
         onClose={onClose}
         title={!waiting ? title || I18n.t('modal.unlockWallet.title') : I18n.t('modal.unlockWallet.waiting')}
         waiting={waiting}
-        {...props}
     >
         <PngIcon name="wallet" />
         {children}

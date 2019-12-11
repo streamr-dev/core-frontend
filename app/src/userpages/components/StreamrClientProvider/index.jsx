@@ -116,7 +116,7 @@ export default connect(
 export function withClient<Props: {}>(Child: ComponentType<Props>): ComponentType<$Diff<Props, { client: StreamrClient }>> {
     return (props: Props) => (
         <Consumer>
-            {(client) => !!client && <Child client={client} {...props} />}
+            {(client) => !!client && <Child {...props} client={client} />}
         </Consumer>
     )
 }

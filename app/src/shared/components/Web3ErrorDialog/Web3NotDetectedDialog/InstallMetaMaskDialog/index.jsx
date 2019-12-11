@@ -15,9 +15,9 @@ export type Props = {
 
 const InstallMetaMaskDialog = ({ onClose, ...props }: Props) => (
     <Dialog
+        {...props}
         onClose={onClose}
         title={I18n.t('modal.web3.installmetamask.title')}
-        {...props}
     >
         <img className={styles.icon} src={WalletErrorPng} srcSet={`${WalletErrorPng2x} 2x`} alt={I18n.t('error.wallet')} />
         <p><Translate value="modal.web3.installmetamask.message" dangerousHTML /></p>

@@ -104,6 +104,7 @@ const FileUpload = React.forwardRef(({
 
     return (
         <Dropzone
+            {...rest}
             onDrop={onDrop}
             onDropRejected={onDropRejected}
             onDragOver={() => setDragOver(true)}
@@ -111,7 +112,6 @@ const FileUpload = React.forwardRef(({
             accept={acceptMime.join(', ')}
             maxSize={megabytesToBytes(maxFileSizeInMB)}
             ref={ref}
-            {...rest}
         >
             {({ getRootProps, getInputProps }) => (
                 <div

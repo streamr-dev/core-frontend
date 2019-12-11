@@ -79,10 +79,10 @@ const SizeConstraintProvider = ({ onSizeChange, children }: Props) => {
     }, 200), [isMounted])
 
     const { minWidth, minHeight } = useMemo(() => ({
-        minHeight: Object.values(dim.heights).reduce((min, group) => (
+        minHeight: Object.values(dim.heights).reduce((min, group: Object) => (
             Math.max(Object.values(group).reduce((sum, value) => sum + ((value: any): number), 0), min)
         ), 0),
-        minWidth: Object.values(dim.widths).reduce((min, group) => (
+        minWidth: Object.values(dim.widths).reduce((min, group: Object) => (
             Math.max(Object.values(group).reduce((sum, value) => sum + ((value: any): number), 0), min)
         ), 0),
     }), [dim])

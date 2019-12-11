@@ -50,7 +50,7 @@ const ConfirmDialog = (props: Props) => {
         onAccept,
     } = props
 
-    const cancelButtonProps = (typeof cancelButton === 'object') ? {
+    const cancelButtonProps: Object = (typeof cancelButton === 'object') ? {
         ...cancelButton,
     } : {
         ...(cancelButton ? {
@@ -58,7 +58,7 @@ const ConfirmDialog = (props: Props) => {
         } : {}),
     }
 
-    const acceptButtonProps = (typeof acceptButton === 'object') ? {
+    const acceptButtonProps: Object = (typeof acceptButton === 'object') ? {
         ...acceptButton,
     } : {
         ...(acceptButton ? {

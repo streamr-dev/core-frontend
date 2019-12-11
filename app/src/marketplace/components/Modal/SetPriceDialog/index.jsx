@@ -118,7 +118,8 @@ class SetPriceDialog extends React.Component<Props, State> {
             },
         )
     }
-    getErrors = (): Array<string> => (Object.values(this.state.errors): Array<any>).filter((a) => a)
+
+    getErrors = (): Array<string> => (Object.values(this.state.errors || {}): Array<any>).filter((a) => a)
 
     isBNAmountValid = (BNAmount: any) => !BNAmount.isNaN() && BNAmount.isPositive()
 

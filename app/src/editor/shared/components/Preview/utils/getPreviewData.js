@@ -32,8 +32,8 @@ function getModuleKey(m) {
 export function getModulePreviews(canvas: any) {
     return (
         canvas.modules.map((m) => ({
-            key: getModuleKey(m),
             ...getModuleBounds(m),
+            key: getModuleKey(m),
             title: (m.displayName || m.name),
             type: (m.uiChannel && m.uiChannel.webcomponent) || m.widget || m.jsModule,
         }))

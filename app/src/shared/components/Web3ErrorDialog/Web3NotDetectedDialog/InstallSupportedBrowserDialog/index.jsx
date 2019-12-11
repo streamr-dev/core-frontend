@@ -15,9 +15,9 @@ export type Props = {
 
 const InstallSupportedBrowserDialog = ({ onClose, ...props }: Props) => (
     <Dialog
+        {...props}
         onClose={onClose}
         title={I18n.t('modal.web3.installsupportedbrowser.title')}
-        {...props}
     >
         <PngIcon
             name="browserNotSupported"

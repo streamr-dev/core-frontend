@@ -46,8 +46,8 @@ class DatePicker extends React.Component<Props> {
 
         return (
             <FormControl
-                label={label}
                 {...props}
+                label={label}
                 noUnderline
             >
                 {({ value, onFocusChange, setAutoCompleted, ...rest0 }: InnerProps) => (

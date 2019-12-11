@@ -48,8 +48,8 @@ const ModuleHeader = ({
     return (
         <Fragment>
             <div
-                className={cx(styles.root, className)}
                 {...props}
+                className={cx(styles.root, className)}
             >
                 {/* TODO: Replace the following line with the actual toggle. This here is just a placeholder. */}
                 <div className={styles.expandToggle}>

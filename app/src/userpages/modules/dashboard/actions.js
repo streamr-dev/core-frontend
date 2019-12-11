@@ -364,7 +364,7 @@ export const getMyDashboardPermissions = (id: DashboardId) => (dispatch: Functio
         })
 }
 
-export const updateDashboardChanges = (id: DashboardId, changes: {}) => (dispatch: Function, getState: Function) => {
+export const updateDashboardChanges = (id: DashboardId, changes: Object) => (dispatch: Function, getState: Function) => {
     const dashboard = selectOpenDashboard(getState())
 
     if (dashboard) {

@@ -51,7 +51,7 @@ const InnerIcon = ({ name }: Props) => {
 }
 
 const Icons = ({ name, ...props }: Props) => (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" {...props}>
+    <svg {...props} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
         <g
             fill="currentFill"
             fillRule="evenodd"

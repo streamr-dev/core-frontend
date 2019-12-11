@@ -11,7 +11,7 @@ type Props = {
 }
 
 const Details = ({ className, children, ...props }: Props) => (
-    <div className={cx(styles.root, styles.DetailsContainer, className)} {...props}>
+    <div {...props} className={cx(styles.root, styles.DetailsContainer, className)}>
         {children}
     </div>
 )

@@ -9,21 +9,16 @@ import DropdownActions from '$shared/components/DropdownActions'
 import styles from '../textField.pcss'
 
 type Props = {
-    className?: string,
     disabled?: boolean,
-    actions: Array<any>,
+    actions?: Array<any>,
 }
 
-const TextFieldWithActions = ({ className, disabled, actions, ...props }: Props) => {
+const TextFieldWithActions = ({ disabled, actions, ...props }: Props) => {
     const [isOpen, setIsOpen] = useState(false)
 
     return (
         <React.Fragment>
-            <input
-                className={className}
-                disabled={disabled}
-                {...props}
-            />
+            <input {...props} disabled={disabled} />
             {actions != null && actions.length > 0 && (
                 <div
                     className={cx(styles.actionContainer, {

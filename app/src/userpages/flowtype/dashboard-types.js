@@ -30,19 +30,6 @@ export type Layout = {
 export type DashboardId = string
 export type DashboardIdList = Array<DashboardId>
 
-export type Dashboard = {
-    id: DashboardId,
-    name: string,
-    items: Array<DashboardItem>, // eslint-disable-line no-use-before-define
-    ownPermissions?: Array<$ElementType<Permission, 'operation'>>,
-    editingLocked?: boolean,
-    layout: Layout,
-    new?: boolean,
-    saved?: boolean
-}
-
-export type DashboardList = Array<Dashboard>
-
 export type DashboardItem = {
     id: ?string,
     title: string,
@@ -52,6 +39,19 @@ export type DashboardItem = {
     layout?: Layout,
     webcomponent: $ElementType<Webcomponent, 'type'>
 }
+
+export type Dashboard = {
+    id: DashboardId,
+    name: string,
+    items: Array<DashboardItem>,
+    ownPermissions?: Array<$ElementType<Permission, 'operation'>>,
+    editingLocked?: boolean,
+    layout: Layout,
+    new?: boolean,
+    saved?: boolean
+}
+
+export type DashboardList = Array<Dashboard>
 
 export type DashboardEntities = {
     [DashboardId]: Dashboard,

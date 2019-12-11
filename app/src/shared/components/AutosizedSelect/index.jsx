@@ -44,10 +44,10 @@ const AutosizedSelect = ({
             className={cx(styles.root, className)}
         >
             <select
+                {...props}
                 className={styles.control}
                 value={value}
                 onChange={onChange}
-                {...props}
                 // Force single selected value. Other cases are unsupported.
                 multiple={false}
             >

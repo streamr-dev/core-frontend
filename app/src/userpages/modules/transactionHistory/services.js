@@ -7,7 +7,7 @@ import BN from 'bignumber.js'
 import { transactionTypes } from '$shared/utils/constants'
 import { getPublicWeb3 } from '$shared/web3/web3Provider'
 import getConfig from '$shared/web3/config'
-import type { HashList, TransactionEntityList, EventLog, EventLogList } from '$shared/flowtype/web3-types'
+import type { HashList, TransactionEntityList, TransactionEntity, EventLog, EventLogList } from '$shared/flowtype/web3-types'
 import TransactionError from '$shared/errors/TransactionError'
 // import { getUnprefixedHexString } from '$mp/utils/smartContract'
 
@@ -99,7 +99,7 @@ export const getTransactionEvents = (addresses: HashList): Promise<EventLogList>
     const eventPromises = eventNames.map(({ contract, name, filter }) => contract.getPastEvents(name, {
         fromBlock: 1,
         filter: {
-            [filter]: addresses,
+            [(filter: string)]: addresses,
         },
     }))
     const transactionCounts = {}
@@ -139,18 +139,24 @@ export const getTransactionsFromEvents = (events: EventLogList): Promise<Transac
         web3.eth.getBlock(event.blockHash),
     ])))
         .then(([...transactions]) =>
-            transactions.map(([event, tx, receipt, block]) => ({
-                id: event.id,
-                hash: tx.hash,
-                state: 'completed',
-                gasUsed: receipt.gasUsed,
-                gasPrice: tx.gas,
-                timestamp: block.timestamp,
-                ...getInputValues(event.type, receipt.logs),
-                ...((receipt.status === true) ? {
-                    receipt,
-                } : {
-                    error: new TransactionError(I18n.t('error.txFailed'), receipt),
-                }),
-            })))
+            transactions.map(([event, tx, receipt, block]): TransactionEntity => {
+                const rest = {}
+
+                if (receipt.status === true) {
+                    rest.receipt = receipt
+                } else {
+                    rest.error = new TransactionError(I18n.t('error.txFailed'), receipt)
+                }
+
+                return {
+                    id: event.id,
+                    hash: tx.hash,
+                    state: 'completed',
+                    gasUsed: receipt.gasUsed,
+                    gasPrice: tx.gas,
+                    timestamp: block.timestamp,
+                    ...getInputValues(event.type, receipt.logs),
+                    ...rest,
+                }
+            }))
 }

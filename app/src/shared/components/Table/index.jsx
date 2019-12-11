@@ -35,7 +35,7 @@ const makeComponent = (Element: string, styleOverrides?: Array<string> = []) => 
         }, {})
 
         return (
-            <Element className={cx(className, styleFlags)} {...propsWithoutFlags}>{children}</Element>
+            <Element {...propsWithoutFlags} className={cx(className, styleFlags)}>{children}</Element>
         )
     }
 
@@ -61,7 +61,7 @@ export default class Table extends React.Component<Props> {
         const { children, className, ...props } = this.props
 
         return (
-            <ReactstrapTable className={cx(className, styles.table)} {...props}>
+            <ReactstrapTable {...props} className={cx(className, styles.table)}>
                 {children}
             </ReactstrapTable>
         )

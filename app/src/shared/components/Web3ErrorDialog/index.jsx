@@ -14,13 +14,13 @@ export type Props = {
     error: ?ErrorInUi,
 }
 
-const Web3ErrorDialog = ({ error, ...props }: Props) => {
+const Web3ErrorDialog = ({ error, waiting, ...props }: Props) => {
     if (error instanceof Web3NotSupportedError) {
         return <Web3NotDetectedDialog {...props} />
     }
 
     return (
-        <UnlockWalletDialog {...props}>
+        <UnlockWalletDialog {...props} waiting={!!waiting}>
             {(!!error && error.message) || 'Error'}
         </UnlockWalletDialog>
     )

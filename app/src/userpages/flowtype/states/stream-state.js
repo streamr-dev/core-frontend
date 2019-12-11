@@ -5,7 +5,7 @@ import type { Operation } from '$userpages/flowtype/permission-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 
 export type CsvUploadState = {
-    id: StreamId,
+    id?: StreamId,
     fetching: boolean,
     fileUrl?: string,
     schema?: CSVImporterSchema,

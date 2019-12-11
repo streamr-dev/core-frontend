@@ -30,4 +30,4 @@ module.name_mapper='\$editor' -> '<PROJECT_ROOT>/src/editor'
 module.ignore_non_literal_requires=true
 
 [version]
-0.96.0
+0.113.0
