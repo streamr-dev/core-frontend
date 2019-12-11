@@ -4,12 +4,14 @@ import React, { useCallback } from 'react'
 import cx from 'classnames'
 
 import NumberField from './NumberField'
+import TextFieldWithActions from './TextFieldWithActions'
 import styles from './textField.pcss'
 
 type Props = {
     className?: string,
     onAutoComplete?: (boolean) => void,
     type?: string,
+    actions?: Array<any>,
 }
 
 const TextField = ({ className, onAutoComplete, ...props }: Props) => {
@@ -19,7 +21,12 @@ const TextField = ({ className, onAutoComplete, ...props }: Props) => {
         }
     }, [onAutoComplete])
 
-    const Tag = props.type === 'number' ? NumberField : 'input'
+    let Tag = 'input'
+    if (props.type === 'number') {
+        Tag = NumberField
+    } else if (props.actions != null && props.actions.length > 0) {
+        Tag = TextFieldWithActions
+    }
 
     return (
         <Tag

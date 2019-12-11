@@ -234,6 +234,41 @@ story('Text Field/Text')
         <TextInput preserveLabelSpace label="With invalid value" value="Something invalid" error="Oh, something went wrong!" />
     ))
 
+story('Text Field/With actions')
+    .addWithJSX('basic', () => (
+        <TextInput
+            preserveLabelSpace
+            label="I have a Meatball menu"
+            actions={
+                [
+                    <DropdownActions.Item>
+                        Test 1
+                    </DropdownActions.Item>,
+                    <DropdownActions.Item>
+                        Test 2
+                    </DropdownActions.Item>,
+                ]
+            }
+        />
+    ))
+    .addWithJSX('disabled', () => (
+        <TextInput
+            preserveLabelSpace
+            disabled
+            label="I have a Meatball menu"
+            actions={
+                [
+                    <DropdownActions.Item>
+                        Test 1
+                    </DropdownActions.Item>,
+                    <DropdownActions.Item>
+                        Test 2
+                    </DropdownActions.Item>,
+                ]
+            }
+        />
+    ))
+
 story('Text Field/Password')
     .addWithJSX('basic', () => (
         <TextInput preserveLabelSpace label="Password…" value={text('value', '')} type="password" measureStrength />
