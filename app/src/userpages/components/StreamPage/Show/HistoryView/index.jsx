@@ -219,7 +219,7 @@ class HistoryView extends Component<Props, State> {
         const { current: uploader } = this.fileUploadRef
 
         if (uploader) {
-            uploader.opem()
+            uploader.open()
         }
     }
 
