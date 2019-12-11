@@ -196,7 +196,7 @@ export class ConfigureView extends Component<Props, State> {
                                                     onChange={(e) => this.onFieldNameChange(field.name, e.target.value)}
                                                     disabled={disabled}
                                                     actions={[
-                                                        <DropdownActions.Item onClick={() => this.deleteField(field.name)}>
+                                                        <DropdownActions.Item key="delete" onClick={() => this.deleteField(field.name)}>
                                                             <Translate value="userpages.streams.edit.configure.delete" />
                                                         </DropdownActions.Item>,
                                                     ]}

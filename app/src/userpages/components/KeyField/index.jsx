@@ -36,6 +36,8 @@ type State = {
     permission: ?ResourcePermission,
 }
 
+const useIf = (condition: boolean, elements: Array<any>) => (condition ? elements : [])
+
 class KeyField extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props)
@@ -144,8 +146,6 @@ class KeyField extends React.Component<Props, State> {
         }
     }
 
-    insertIf = (condition: boolean, ...elements: Array<any>) => (condition ? elements : [])
-
     renderInput = () => {
         const {
             hideValue,
@@ -159,21 +159,21 @@ class KeyField extends React.Component<Props, State> {
         const { hidden, menuOpen } = this.state
 
         const actions = [
-            ...this.insertIf(!!hideValue, [
-                <DropdownActions.Item onClick={this.toggleHidden}>
+            ...useIf(!!hideValue, [
+                <DropdownActions.Item key="reveal" onClick={this.toggleHidden}>
                     <Translate value={`userpages.keyField.${hidden ? 'reveal' : 'conceal'}`} />
                 </DropdownActions.Item>,
             ]),
-            <DropdownActions.Item onClick={this.onCopy}>
+            <DropdownActions.Item key="copy" onClick={this.onCopy}>
                 <Translate value="userpages.keyField.copy" />
             </DropdownActions.Item>,
-            ...this.insertIf(!!allowEdit, [
-                <DropdownActions.Item onClick={this.onEdit}>
+            ...useIf(!!allowEdit, [
+                <DropdownActions.Item key="edit" onClick={this.onEdit}>
                     <Translate value="userpages.keyField.edit" />
                 </DropdownActions.Item>,
             ]),
-            ...this.insertIf(!!allowDelete, [
-                <DropdownActions.Item onClick={this.onDelete} disabled={disableDelete}>
+            ...useIf(!!allowDelete, [
+                <DropdownActions.Item key="delete" onClick={this.onDelete} disabled={disableDelete}>
                     <Translate value="userpages.keyField.delete" />
                 </DropdownActions.Item>,
             ]),

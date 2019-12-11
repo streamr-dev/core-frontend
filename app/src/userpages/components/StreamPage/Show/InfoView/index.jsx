@@ -109,7 +109,7 @@ export const InfoView = ({ disabled }: Props) => {
                             readOnly
                             disabled={disabled}
                             actions={[
-                                <DropdownActions.Item onClick={() => onCopy(stream.id)}>
+                                <DropdownActions.Item key="copy" onClick={() => onCopy(stream.id)}>
                                     <Translate value="userpages.keyField.copy" />
                                 </DropdownActions.Item>,
                             ]}
