@@ -1,6 +1,17 @@
 // @flow
 
-import React, { type Context, createContext, type Node, useState, useRef, useCallback, useContext, useMemo, useEffect, type ComponentType } from 'react'
+import React, {
+    type Context,
+    createContext,
+    type Node,
+    useState,
+    useRef,
+    useCallback,
+    useContext,
+    useMemo,
+    useEffect,
+    type ComponentType,
+} from 'react'
 import cx from 'classnames'
 import { type Ref } from '$shared/flowtype/common-types'
 import Handle from './Handle'

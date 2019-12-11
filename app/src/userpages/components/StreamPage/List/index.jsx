@@ -124,7 +124,7 @@ const StreamList = () => {
         setSort,
         resetFilter,
     } = useFilterSort(sortOptions)
-    const [dialogTargetStream, setDialogTargetStream] = (useState(null): TargetStreamSetter)
+    const [dialogTargetStream, setDialogTargetStream]: TargetStreamSetter = useState(null)
     const [activeDialog, setActiveDialog] = useState(undefined)
     const dispatch = useDispatch()
     const { copy } = useCopy()
