@@ -65,9 +65,9 @@ type Pair = [number, number]
 type TupleUseState = [Pair, ((Pair => Pair) | Pair) => void]
 
 export function useLayoutState({ x = 0, y = 0, width = 600, height = 400 }: Bounds = {}) {
-    const [position, setPosition] = (useState([x, y]): TupleUseState)
+    const [position, setPosition]: TupleUseState = useState([x, y])
 
-    const [size, setSize] = (useState([width, height]): TupleUseState)
+    const [size, setSize]: TupleUseState = useState([width, height])
 
     return useMemo(() => ({
         position,
