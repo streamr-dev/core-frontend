@@ -20,6 +20,6 @@ module.exports = exports = {
         'jsx-a11y/no-noninteractive-tabindex': 'warn',
         'react/jsx-indent': 'warn',
         'max-len': 'warn',
-        'flowtype/no-flow-fix-me-comments': ['error', '\\s.+'],
+        'flowtype/no-flow-fix-me-comments': ['warn', '\\s.+'],
     }
 }
