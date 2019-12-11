@@ -10,7 +10,7 @@ import styles from '../textField.pcss'
 
 type Props = {
     disabled?: boolean,
-    actions: Array<any>,
+    actions?: Array<any>,
 }
 
 const TextFieldWithActions = ({ disabled, actions, ...props }: Props) => {
