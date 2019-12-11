@@ -1,7 +1,6 @@
 // @flow
 
 import React from 'react'
-import cx from 'classnames'
 import ReactSelect, { components } from 'react-select'
 import SvgIcon from '$shared/components/SvgIcon'
 
