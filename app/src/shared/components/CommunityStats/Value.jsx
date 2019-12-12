@@ -9,7 +9,6 @@ import Header from './Header'
 import styles from './communityStats.pcss'
 
 export type Props = {
-    id: string,
     label: string | Node,
     value?: string,
     unit?: string,
@@ -18,14 +17,13 @@ export type Props = {
 }
 
 export const Value = ({
-    id,
     label,
     value,
     unit,
     loading,
     className,
 }: Props) => (
-    <div key={id} className={cx(styles.stat, className)}>
+    <div className={cx(styles.stat, className)}>
         <Header>{label}</Header>
         {!loading ? (
             <div className={styles.statValue}>

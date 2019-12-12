@@ -169,12 +169,7 @@ const EditorNav = () => {
     useEffect(() => {
         if (lastSectionRef.current) {
             scrollTo(lastSectionRef.current, false)
-            setActiveSectionId((prevActive) => {
-                if (prevActive !== lastSectionRef.current) {
-                    return lastSectionRef.current
-                }
-                return prevActive
-            })
+            setActiveSectionId(lastSectionRef.current)
             lastSectionRef.current = undefined
         }
 
