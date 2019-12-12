@@ -354,7 +354,13 @@ msgid "userpages##streams##edit##preview##description"
 msgstr "This stream's most recent data is shown here live. Use the Inspector to view the full details of the messages."
 
 msgid "userpages##streams##edit##preview##inspect"
-msgstr "Inspect"
+msgstr "Inspect data"
+
+msgid "userpages##streams##edit##preview##start"
+msgstr "Start"
+
+msgid "userpages##streams##edit##preview##stop"
+msgstr "Stop"
 
 msgid "userpages##streams##edit##preview##noDataPre"
 msgstr "This Stream has no data yet. Check out the "

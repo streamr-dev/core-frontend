@@ -9,7 +9,6 @@ import type { Stream } from '$shared/flowtype/stream-types'
 import type { User } from '$shared/flowtype/user-types'
 import Button from '$shared/components/Button'
 import StreamLivePreview from '$mp/components/StreamPreviewPage/StreamLivePreview'
-import SvgIcon from '$shared/components/SvgIcon'
 import routes from '$routes'
 import { Provider as ClientProvider } from '$shared/contexts/StreamrClient'
 
@@ -48,32 +47,6 @@ const PreviewView = ({ stream, currentUser }: Props) => {
                     [styles.hasData]: hasData,
                 })}
             >
-                <div className={styles.previewControls}>
-                    <Button
-                        kind="secondary"
-                        outline
-                        className={styles.playPauseButton}
-                        onClick={onToggleRun}
-                    >
-                        {!isRunning ?
-                            <SvgIcon name="play" className={styles.icon} /> :
-                            <SvgIcon name="pause" className={styles.icon} />
-                        }
-                    </Button>
-                    {stream && stream.id && (
-                        <Button
-                            kind="secondary"
-                            outline
-                            className={styles.inspectButton}
-                            tag={Link}
-                            to={routes.userPageStreamPreview({
-                                streamId: stream.id,
-                            })}
-                        >
-                            <Translate value="userpages.streams.edit.preview.inspect" />
-                        </Button>
-                    )}
-                </div>
                 <StreamLivePreview
                     key={stream.id}
                     streamId={stream.id}
@@ -84,6 +57,30 @@ const PreviewView = ({ stream, currentUser }: Props) => {
                     userpagesPreview
                     hasData={() => setHasData(true)}
                 />
+                <div className={styles.previewControls}>
+                    <Button
+                        kind="secondary"
+                        className={styles.playPauseButton}
+                        onClick={onToggleRun}
+                    >
+                        {!isRunning ?
+                            <Translate value="userpages.streams.edit.preview.start" /> :
+                            <Translate value="userpages.streams.edit.preview.stop" />
+                        }
+                    </Button>
+                    {stream && stream.id && (
+                        <Button
+                            kind="secondary"
+                            className={styles.inspectButton}
+                            tag={Link}
+                            to={routes.userPageStreamPreview({
+                                streamId: stream.id,
+                            })}
+                        >
+                            <Translate value="userpages.streams.edit.preview.inspect" />
+                        </Button>
+                    )}
+                </div>
             </div>
         </ClientProvider>
     )
