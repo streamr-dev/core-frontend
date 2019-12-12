@@ -241,7 +241,7 @@
     "sinon": "^6.0.0",
     "smooth-scroll-into-view-if-needed": "^1.1.23",
     "storybook-addon-jsx": "^5.4.0",
-    "storybook-chromatic": "^1.2.0",
+    "storybook-chromatic": "^1.4.0",
     "storybook-react-router": "^1.0.1",
     "streamr-client": "^2.2.7",
     "stringify-object": "^3.2.2",
