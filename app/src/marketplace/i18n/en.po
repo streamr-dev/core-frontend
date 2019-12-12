@@ -134,6 +134,15 @@ msgstr "Details"
 msgid "editProductPage##navigation##sharedSecrets"
 msgstr "Shared secrets"
 
+msgid "editProductPage##sidebar##category"
+msgstr "Product category"
+
+msgid "editProductPage##sidebar##activeSubscribers"
+msgstr "Active subscribers"
+
+msgid "editProductPage##sidebar##mostRecentPurchase"
+msgstr "Most recent purchase"
+
 msgid "error##general"
 msgstr "Oops. Something has broken down here."
 

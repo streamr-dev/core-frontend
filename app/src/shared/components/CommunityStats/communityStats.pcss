@@ -1,7 +1,10 @@
+.stat {}
+
 .stats {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   grid-column-gap: 3em;
+  grid-row-gap: 2em;
 
   :global(.react-loading-skeleton) {
     height: 32px;
@@ -14,6 +17,7 @@
   letter-spacing: 0;
   line-height: 24px;
   white-space: nowrap;
+  margin-bottom: 0.5rem;
 }
 
 .statValue {
@@ -32,4 +36,18 @@
   font-weight: var(--regular);
   line-height: 42px;
   letter-spacing: 0;
+}
+
+@media (--md-up) {
+  .stats {
+    grid-template-columns: repeat(3, 1fr);
+    grid-column-gap: 1em;
+  }
+}
+
+@media (--xl) {
+  .stats {
+    grid-template-columns: repeat(6, 1fr);
+    grid-column-gap: 1em;
+  }
 }

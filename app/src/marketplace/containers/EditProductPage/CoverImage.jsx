@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useContext, useCallback } from 'react'
+import React, { useContext, useCallback, useEffect } from 'react'
 import cx from 'classnames'
 import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
 
@@ -30,10 +30,17 @@ const CoverImage = () => {
         })
 
         if (newImage) {
-            createPreview(newImage)
             updateImageFile(newImage)
         }
-    }, [cropImageDialog, createPreview, updateImageFile])
+    }, [cropImageDialog, updateImageFile])
+
+    const uploadedImage = product.newImageToUpload
+
+    useEffect(() => {
+        if (!uploadedImage) { return }
+
+        createPreview(uploadedImage)
+    }, [uploadedImage, createPreview])
 
     const hasError = isTouched('imageUrl') && !isValid
 

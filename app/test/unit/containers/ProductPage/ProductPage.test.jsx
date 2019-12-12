@@ -13,7 +13,7 @@ import * as relatedProductsActions from '$mp/modules/relatedProducts/actions'
 import * as urlUtils from '$shared/utils/url'
 import links from '$shared/../links'
 
-import ProductPageComponent from '$mp/components/ProductPage'
+import ProductPageComponent from '$mp/components/deprecated/ProductPage'
 import NotFoundPage from '$mp/components/NotFoundPage'
 
 describe('ProductPage', () => {

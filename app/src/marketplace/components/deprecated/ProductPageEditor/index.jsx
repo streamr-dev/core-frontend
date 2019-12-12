@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 
 import Toolbar from '$shared/components/Toolbar'
 import ImageUpload from '$shared/components/ImageUpload'
-import Hero from '$mp/components/Hero'
+import Hero from '$mp/components/deprecated/Hero'
 import BackButton from '$shared/components/BackButton'
 import type { Product } from '$mp/flowtype/product-types'
 import type { ButtonActions } from '$shared/components/Buttons'

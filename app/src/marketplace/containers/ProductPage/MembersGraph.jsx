@@ -1,23 +1,18 @@
 // @flow
 
 import React, { useEffect, useState, useCallback, useRef } from 'react'
-import {
-    XYPlot,
-    LineSeries,
-    XAxis,
-    YAxis,
-    HorizontalGridLines,
-} from 'react-vis'
-import '$app/node_modules/react-vis/dist/style.css'
-// import Subscription from '$editor/shared/components/Subscription'
-// import { ClientProvider } from '$editor/shared/components/Client'
-import { getStreamData } from '$mp/modules/communityProduct/services'
+import MediaQuery from 'react-responsive'
+
+import { lg } from '$app/scripts/breakpoints'
+import { getStreamData } from '$mp/modules/streams/services'
+
+import TimeSeriesGraph from '$shared/components/TimeSeriesGraph'
+import WithShownDays from '$shared/components/TimeSeriesGraph/WithShownDays'
 
 type Props = {
     className?: string,
     joinPartStreamId: ?string,
     memberCount: number,
-    shownDays: number,
 }
 
 type JoinPartMessage = {
@@ -29,17 +24,6 @@ type MessageMetadata = {
     messageId: {
         timestamp: number,
     }
-}
-
-const axisStyle = {
-    ticks: {
-        fontSize: '12px',
-        fontFamily: "'IBM Plex Sans', sans-serif",
-        color: '#A3A3A3',
-        strokeOpacity: '0',
-        opacity: '0.5',
-        letterSpacing: '0px',
-    },
 }
 
 const MILLISECONDS_IN_DAY = 24 * 60 * 60 * 1000
@@ -58,27 +42,11 @@ const convertAndCallback = (rawMessages: Array<Object>, onMessage) => {
     })
 }
 
-const formatXAxisTicks = (value, index, scale, tickTotal, dayCount) => {
-    // Show weekday name for small datasets
-    if (dayCount < 10) {
-        return scale.tickFormat(tickTotal, '%a %d')(value)
-    }
-
-    // Include month only for the first item and when month
-    // changes.
-    if (index === 0 || value.getDate() === 1) {
-        return scale.tickFormat(tickTotal, '%b %d')(value)
-    }
-
-    // Otherwise return only day number
-    return scale.tickFormat(tickTotal, '%d')(value)
-}
-
-const MembersGraph = ({ className, joinPartStreamId, memberCount, shownDays }: Props) => {
+const MembersGraph = ({ className, joinPartStreamId, memberCount }: Props) => {
     const [memberCountUpdatedAt, setMemberCountUpdatedAt] = useState(Date.now())
     const [memberData, setMemberData] = useState([])
     const [graphData, setGraphData] = useState([])
-    const [dataDomain, setDataDomain] = useState([])
+    const [shownDays, setShownDays] = useState(7)
     const activeAddressesRef = useRef([])
 
     const onMessage = useCallback((data: JoinPartMessage, metadata: MessageMetadata) => {
@@ -155,18 +123,6 @@ const MembersGraph = ({ className, joinPartStreamId, memberCount, shownDays }: P
             })
         }
         setGraphData(data)
-
-        const dataValues = data.map((d) => d.y)
-        let max = Math.max(...dataValues)
-        let min = Math.min(...dataValues)
-
-        // If we provide a domain with same min and max, react-vis
-        // shows seemingly random scale for y-axis
-        if (max === min) {
-            min -= 2
-            max += 2
-        }
-        setDataDomain([min - 2, max])
     }, [memberData, memberCount, memberCountUpdatedAt, shownDays])
 
     useEffect(() => {
@@ -192,57 +148,24 @@ const MembersGraph = ({ className, joinPartStreamId, memberCount, shownDays }: P
     }, [shownDays, joinPartStreamId, onMessage])
 
     return (
-        <div className={className}>
-            {/*
-            // Disabled for now because resends are super flaky at the moment
-            <ClientProvider>
-                {joinPartStreamId && (
-                    <Subscription
-                        key={`${joinPartStreamId}-${shownDays}`}
-                        uiChannel={{
-                            id: joinPartStreamId,
-                        }}
-                        resendFrom={Date.now() - (shownDays * MILLISECONDS_IN_DAY)}
-                        onMessage={onMessage}
-                        isActive
-                    />
-                )}
-            </ClientProvider>
-            */}
-            <XYPlot
-                xType="time"
-                width={540}
-                height={200}
-                /* We need margin to not clip axis labels */
-                margin={{
-                    left: 10,
-                    right: 50,
-                }}
-                yDomain={dataDomain}
-            >
-                <HorizontalGridLines />
-                <LineSeries
-                    curve={null}
-                    color="#0324FF"
-                    opacity={1}
-                    strokeStyle="solid"
-                    strokeWidth="4"
-                    data={graphData}
-                />
-                <XAxis
-                    hideLine
-                    style={axisStyle}
-                    tickTotal={7}
-                    tickFormat={(value, index, scale, tickTotal) => formatXAxisTicks(value, index, scale, tickTotal, shownDays)}
-                />
-                <YAxis
-                    hideLine
-                    style={axisStyle}
-                    position="start"
-                    orientation="right"
-                />
-            </XYPlot>
-        </div>
+        <MediaQuery maxWidth={lg.max}>
+            {(isTabletOrMobile: boolean) => (
+                <WithShownDays
+                    label="Members"
+                    className={className}
+                    onDaysChange={(days) => setShownDays(days)}
+                >
+                    {({ shownDays: days }) => (
+                        <TimeSeriesGraph
+                            graphData={graphData}
+                            shownDays={days}
+                            width={isTabletOrMobile ? 380 : 540}
+                            height={200}
+                        />
+                    )}
+                </WithShownDays>
+            )}
+        </MediaQuery>
     )
 }
 

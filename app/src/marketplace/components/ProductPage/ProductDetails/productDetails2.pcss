@@ -29,11 +29,23 @@
   border-top: 1px solid #E7E7E7;
   width: 100%;
   height: 1px;
-  margin: 1.5em 0;
+  margin: 2em 0;
+}
+
+.titleSeparator {
+  display: none;
+}
+
+.purchaseSeparator {}
+
+.purchaseWrapper {
+  margin-top: 2rem;
 }
 
 .button {
   width: 100%;
+  text-align: center;
+  justify-content: center;
 }
 
 .paymentRate {
@@ -61,7 +73,22 @@
   line-height: 2em;
 }
 
-@media (--md-up) {
+@media (--sm-up) {
+  .purchaseWrapper {
+    margin-top: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-column-gap: 5rem;
+  }
+
+  .titleSeparator {
+    display: block;
+  }
+
+  .purchaseSeparator {
+    display: none;
+  }
+
   .button {
     padding-left: 2em;
     padding-right: 2em;
@@ -70,6 +97,9 @@
 }
 
 @media (--lg-up) {
+}
+
+@media (--xl) {
   .title {
     font-size: 1.875em;
     line-height: calc(40em / 30);
@@ -77,5 +107,13 @@
 
   .offer {
     font-size: 1em;
+  }
+
+  .purchaseWrapper {
+    display: block;
+  }
+
+  .purchaseSeparator {
+    display: block;
   }
 }

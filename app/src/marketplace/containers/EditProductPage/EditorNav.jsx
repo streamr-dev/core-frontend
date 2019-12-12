@@ -1,19 +1,21 @@
 // @flow
 
-import React, { useContext, useMemo, useState, useCallback, useRef } from 'react'
+import React, { useContext, useMemo, useState, useCallback, useRef, useEffect } from 'react'
 import { I18n } from 'react-redux-i18n'
 
 import { isCommunityProduct } from '$mp/utils/product'
 import EditorNavComponent, { statuses } from '$mp/components/ProductPage/EditorNav'
 import Scrollspy from 'react-scrollspy'
 
-import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
 import useEditableProduct from '../ProductController/useEditableProduct'
+import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
+import { Context as EditControllerContext } from './EditControllerProvider'
 import { isPublished } from './state'
 
 import styles from './editorNav.pcss'
 
-const OFFSET = -60
+const SCROLLSPY_OFFSET = -40
+const CLICK_OFFSET = -120
 
 const EditorNav = () => {
     const product = useEditableProduct()
@@ -23,6 +25,7 @@ const EditorNav = () => {
     const [activeSectionId, setActiveSectionId] = useState(undefined)
 
     const { isValid, isTouched, isPendingChange } = useContext(ValidationContext)
+    const { lastSectionRef } = useContext(EditControllerContext)
 
     const isCommunity = isCommunityProduct(product)
     const isPublic = isPublished(product)
@@ -84,19 +87,24 @@ const EditorNav = () => {
     }, [isTouched])
 
     const clickTargetRef = useRef(null)
-    const onClickFn = useCallback((id, e) => {
-        e.preventDefault()
+
+    const scrollTo = useCallback((id, smooth = true) => {
         const anchor = document.getElementById(id)
 
         if (anchor) {
-            const offsetTop = anchor.getBoundingClientRect().top + window.pageYOffset
+            const offsetTop = anchor.getBoundingClientRect().top + window.pageYOffset + CLICK_OFFSET
             window.scroll({
-                top: offsetTop + OFFSET,
-                behavior: 'smooth',
+                top: offsetTop,
+                behavior: smooth ? 'smooth' : undefined,
             })
             clickTargetRef.current = id
         }
     }, [clickTargetRef])
+
+    const onClickFn = useCallback((id, e) => {
+        e.preventDefault()
+        scrollTo(id)
+    }, [scrollTo])
 
     let sections = useMemo(() => [{
         id: 'product-name',
@@ -155,12 +163,27 @@ const EditorNav = () => {
         }
     }, [clickTargetRef])
 
+    const activeSectionRef = useRef()
+    activeSectionRef.current = activeSectionId
+
+    useEffect(() => {
+        if (lastSectionRef.current) {
+            scrollTo(lastSectionRef.current, false)
+            setActiveSectionId(lastSectionRef.current)
+            lastSectionRef.current = undefined
+        }
+
+        return () => {
+            lastSectionRef.current = activeSectionRef.current
+        }
+    }, [scrollTo, lastSectionRef])
+
     return (
         <Scrollspy
             items={sectionAnchors}
             componentTag="div"
             onUpdate={onUpdate}
-            offset={OFFSET}
+            offset={SCROLLSPY_OFFSET}
             className={styles.sticky}
         >
             <EditorNavComponent
