@@ -119,7 +119,6 @@ function CanvasCameraEffects() {
     return null
 }
 
-// $FlowFixMe
 const CanvasElements = React.memo(function CanvasElements(props) { /* eslint-disable-line prefer-arrow-callback */
     const { canvas, api, selectedModuleHash, moduleSidebarIsOpen } = props
     const modulesRef = useRef()

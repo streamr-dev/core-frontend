@@ -118,7 +118,7 @@ export const setAllowance = (allowance: NumberString | BN) => (dispatch: Functio
             .onTransactionComplete(resolve)
             .onError(() => reject(new Error(I18n.t('error.txAborted'))))
     })
-    // $FlowFixMe
+
     return txPromise
         .then(() => {
             dispatch(setAllowanceSuccess())
@@ -150,7 +150,7 @@ export const resetAllowance = () => (dispatch: Function) => {
             .onTransactionComplete(resolve)
             .onError(() => reject(new Error(I18n.t('error.txAborted'))))
     })
-    // $FlowFixMe
+
     return txPromise
         .then(() => {
             dispatch(resetAllowanceSuccess())

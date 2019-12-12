@@ -26,6 +26,7 @@ export type TracePoint = {
 
 export type Marker = {
     id: string,
+    label?: ?string,
     lat: number,
     long: number,
     rotation: number,
@@ -161,9 +162,7 @@ export default function Map(props: Props) {
     const mapCenter = [centerLat, centerLong]
     const tileUrl = getTileUrl(skin)
 
-    // https://github.com/facebook/flow/issues/2221
-    // $FlowFixMe Object.values() returns mixed[]
-    const markerArray: Array<Marker> = useMemo(() => Object.values(markers), [markers])
+    const markerArray: Array<Marker> = useMemo(() => ((Object.values(markers): any): Array<Marker>), [markers])
 
     const bounds: ?LatLngBounds = useMemo(() => {
         if (autoZoom && markerArray.length > 0 && !touched) {

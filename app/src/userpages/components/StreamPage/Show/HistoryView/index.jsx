@@ -4,6 +4,7 @@ import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import { Translate, I18n } from 'react-redux-i18n'
 import cx from 'classnames'
+import Dropzone from 'react-dropzone'
 
 import type { Stream, StreamId, Range } from '$shared/flowtype/stream-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
@@ -20,6 +21,7 @@ import ConfirmCsvImportDialog from '$userpages/components/StreamPage/ConfirmCsvI
 import Spinner from '$shared/components/Spinner'
 import CsvSchemaError from '$shared/errors/CsvSchemaError'
 import SplitControl from '$userpages/components/SplitControl'
+import { type Ref } from '$shared/flowtype/common-types'
 
 import styles from './historyView.pcss'
 
@@ -78,7 +80,7 @@ class HistoryView extends Component<Props, State> {
     }
 
     mounted = false
-    fileUploadRef = React.createRef()
+    fileUploadRef: Ref<Dropzone> = React.createRef()
 
     componentDidMount() {
         this.mounted = true
@@ -118,7 +120,7 @@ class HistoryView extends Component<Props, State> {
     }
 
     onStoragePeriodChange = (e: SyntheticInputEvent<EventTarget>) => {
-        // $FlowFixMe: "updateEditStream is missing in OwnProps or StateProps"
+        // $FlowFixMe `updateEditStream` not in OwnProps or StateProps.
         const { updateEditStream, stream } = this.props
         const days = Number(e.target.value)
 
@@ -216,8 +218,11 @@ class HistoryView extends Component<Props, State> {
     }
 
     handleBrowseFilesClick = () => {
-        // $FlowFixMe
-        this.fileUploadRef.current.open()
+        const { current: uploader } = this.fileUploadRef
+
+        if (uploader) {
+            uploader.open()
+        }
     }
 
     render() {

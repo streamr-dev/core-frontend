@@ -24,7 +24,6 @@ export function useSelectOptions({ value, options = [] }: SelectOptions = {}) {
     /* coerce option value to string or undefined */
     const toValue = (value) => (value == null ? undefined : String(value))
     value = toValue(value)
-    // $FlowFixMe
     options = options.map(({ name, value }) => ({
         name,
         value: toValue(value),

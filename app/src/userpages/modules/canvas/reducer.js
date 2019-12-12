@@ -60,7 +60,6 @@ export default function (state: CanvasState = initialState, action: CanvasAction
         case DELETE_CANVAS_SUCCESS:
             return {
                 ...state,
-                // $FlowFixMe
                 ids: state.ids.filter((id) => id !== action.id),
                 fetching: false,
                 error: null,

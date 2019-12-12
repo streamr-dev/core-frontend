@@ -5,7 +5,7 @@
 // the highlight will flicker when the item at same index changes selection state
 /* eslint-disable react/no-array-index-key */
 
-import React, { useState, useCallback, useMemo } from 'react'
+import React, { useState, useCallback, useMemo, type Element } from 'react'
 import startCase from 'lodash/startCase'
 import debounce from 'lodash/debounce'
 import cx from 'classnames'
@@ -320,7 +320,7 @@ class ModuleSearch extends React.PureComponent<Props, State> {
         return findNonOverlappingPosition(myBB, boundingBoxes, stackOffset)
     }
 
-    renderMenu = () => {
+    renderMenu = (): Array<Element<typeof ModuleMenuCategory>> => {
         const modules = this.getMappedModuleTree()
 
         // Form category tree
@@ -335,11 +335,8 @@ class ModuleSearch extends React.PureComponent<Props, State> {
                 categoryTree[m.path].modules.push(m)
             }
         })
-        // https://github.com/facebook/flow/issues/2221
-        // $FlowFixMe Object.values() returns mixed[]
-        const categories: Array<CategoryType> = Object.values(categoryTree)
+        const categories: Array<CategoryType> = (Object.values(categoryTree): any)
 
-        // $FlowFixMe "Missing type annotation for U"
         return categories.map((category) => (
             <ModuleMenuCategory
                 key={category.name}

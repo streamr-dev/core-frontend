@@ -352,7 +352,6 @@ SearchPanel.defaultProps = {
     defaultPosY: (window.innerHeight / 2) - (DEFAULT_HEIGHT / 2) - 80, // center vertically (take header into account)
 }
 
-// $FlowFixMe
 export default React.memo(({ resetOnClose, isOpen, ...props }) => (
     <SearchPanel key={resetOnClose ? isOpen : ''} isOpen={isOpen} {...props} />
 ))

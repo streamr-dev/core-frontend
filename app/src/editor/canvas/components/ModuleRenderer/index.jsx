@@ -28,6 +28,7 @@ type Props = {
     layout: any,
     onPort?: any,
     onRename: (string) => void,
+    onSizeChange: () => void,
     isSubscriptionActive?: boolean,
     uiEmitter: UiEmitter,
     moduleSidebarIsOpen?: boolean,
@@ -181,8 +182,7 @@ const ModuleRenderer = React.memo(({
     )
 })
 
-// $FlowFixMe
-export default React.memo(({
+export default (React.memo(({
     api,
     module,
     canvasEditable: isCanvasEditable,
@@ -204,4 +204,4 @@ export default React.memo(({
             </ModuleContext.Provider>
         </ModuleApiContext.Provider>
     )
-})
+}): any)

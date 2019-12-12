@@ -23,7 +23,6 @@ export default class IntegrationKeyList extends Component<Props> {
                         className={styles.singleKey}
                         key={key.id}
                         keyName={key.name}
-                        // $FlowFixMe
                         value={(key.json || {}).address || ''}
                         allowDelete
                         allowEdit

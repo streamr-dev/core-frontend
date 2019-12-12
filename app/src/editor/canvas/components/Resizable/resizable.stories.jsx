@@ -24,6 +24,8 @@ stories.add('default', () => (
             <Resizeable
                 height={height}
                 onResize={setSize}
+                onSizeChange={() => {}}
+                scale={1}
                 width={width}
             >
                 Hello world.

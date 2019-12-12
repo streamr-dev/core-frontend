@@ -91,12 +91,13 @@ const securityLevels = {
     },
 }
 
+type SecurityLevelSymbol = $Keys<typeof securityLevels>
+
 /**
  * Map stream flags to a security level e.g. basic, signed, etc
  */
-// $FlowFixMe
-export function getSecurityLevel({ requireSignedData, requireEncryptedData }) {
-    return Object.keys(securityLevels).find((level) => {
+export function getSecurityLevel({ requireSignedData, requireEncryptedData }: any) {
+    return Object.keys(securityLevels).find((level: SecurityLevelSymbol) => {
         const { config } = securityLevels[level]
         if (level === 'encrypted') {
             return config.requireEncryptedData === requireEncryptedData
@@ -121,15 +122,14 @@ export function getSecurityLevelTitle(stream: Stream) {
  * Extracts config to be applied to stream for passed in current security level
  */
 
-function setSecurityLevel(level) {
+function setSecurityLevel(level: SecurityLevelSymbol) {
     const { config } = securityLevels[level]
     return config
 }
 
-// $FlowFixMe
 type SecurityIconProps = {
     className?: string,
-    level?: string,
+    level?: SecurityLevelSymbol,
     mode?: 'selected' | 'highlighted' | 'normal',
     hideBasic?: boolean,
 }
@@ -155,6 +155,7 @@ export function SecurityIcon({
 }
 
 export function SecurityView(props: Props) {
+    // $FlowFixMe `updateEditStream` not in OwnProps or StateProps.
     const { stream, updateEditStream } = props
     const level = getSecurityLevel(stream) || 'basic'
     const levelIndex = Object.keys(securityLevels).indexOf(level)
@@ -173,7 +174,6 @@ export function SecurityView(props: Props) {
                 <strong>{I18n.t(detail.shortDescription)}</strong>&nbsp;
                 {I18n.t(detail.longDescription)}
             </p>
-            {/* $FlowFixMe */}
             <div className={cx(styles.SecurityOptions, styles[level])}>
                 <Slider index={levelIndex} selector="input[type=radio]" />
                 {Object.keys(securityLevels).map((key, index) => {

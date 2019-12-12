@@ -40,9 +40,9 @@ function getUnits(value) {
 }
 
 function StatusView(props: Props) {
+    // $FlowFixMe `updateEditStream` not in OwnProps or StateProps.
     const { disabled, stream, updateEditStream } = props
-    // $FlowFixMe
-    const { inactivityThresholdHours } = stream
+    const { inactivityThresholdHours } = stream || {}
 
     // init units based on initial threshold value
     // don't calculate on the fly otherwise

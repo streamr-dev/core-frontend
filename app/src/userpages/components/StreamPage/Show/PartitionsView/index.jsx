@@ -32,8 +32,8 @@ const MIN_PARTITIONS = 1
 const MAX_PARTITIONS = 99
 
 function PartitionsView(props: Props) {
+    // $FlowFixMe `updateEditStream` not in OwnProps or StateProps.
     const { stream, updateEditStream, disabled } = props
-    // $FlowFixMe
     const { partitions } = stream
 
     const [value, setValue] = useState(String(partitions))

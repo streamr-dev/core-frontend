@@ -77,7 +77,7 @@ const GuidedDeployCommunityDialog = ({ product, onClose, onContinue: onContinueP
 
     const isLastStep = step === 3
     const { name } = product
-    // $FlowFixMe
+    // $FlowFixMe property `preview` is missing in  `File`.
     const image = String((product.newImageToUpload && product.newImageToUpload.preview) || product.imageUrl)
 
     const onContinue = useCallback(async () => {
