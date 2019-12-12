@@ -84,6 +84,7 @@ class HistoryView extends Component<Props, State> {
 
     componentDidMount() {
         this.mounted = true
+        this.loadData()
     }
 
     componentWillUnmount() {
@@ -202,10 +203,10 @@ class HistoryView extends Component<Props, State> {
                 .then(() => {
                     this.closeConfigurationModal()
                 })
-                .catch(() => {
+                .catch((error) => {
                     if (this.mounted) {
                         this.setState({
-                            confirmError: I18n.t('userpages.streams.edit.history.parseError'),
+                            confirmError: error.message || I18n.t('userpages.streams.edit.history.parseError'),
                         })
                     }
                     // Backend will destroy file reference on error

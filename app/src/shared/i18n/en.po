@@ -167,6 +167,9 @@ msgstr "https://streamr.network/whitepaper"
 msgid "modal##common##cancel"
 msgstr "Cancel"
 
+msgid "modal##common##confirm"
+msgstr "Confirm"
+
 msgid "modal##common##continue"
 msgstr "Continue"
 
