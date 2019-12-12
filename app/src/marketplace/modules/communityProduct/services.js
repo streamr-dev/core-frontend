@@ -33,7 +33,7 @@ export const addPermission = (id: StreamId, permission: Permission): ApiResult<A
     data: permission,
 })
 
-export const deletePermission = (id: StreamId, permissionId: string): ApiResult<Array<Permission>> => del({
+export const deletePermission = (id: StreamId, permissionId: $PropertyType<Permission, 'id'>): ApiResult<Array<Permission>> => del({
     url: formatApiUrl('streams', id, 'permissions', permissionId),
 })
 
@@ -84,7 +84,6 @@ export const createJoinPartStream = async (productId: ?ProductId = undefined): P
         const myPermissions = await getMyStreamPermissions(stream.id)
         const sharePermission = myPermissions.find((p) => p.operation === 'share')
         if (sharePermission) {
-            // $FlowFixMe is `sharePermission.id` a number or a string?
             await deletePermission(stream.id, sharePermission.id)
         }
     } catch (e) {
