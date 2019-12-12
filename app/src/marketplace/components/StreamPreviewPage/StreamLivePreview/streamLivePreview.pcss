@@ -22,7 +22,7 @@
 
   td,
   th {
-    padding: 16px 23px;
+    padding: 18px 24px;
     border: var(--border);
   }
 
@@ -31,8 +31,12 @@
       font-weight: var(--regular);
       text-transform: uppercase;
       border: var(--border);
-      border-bottom-width: 2px;
     }
+  }
+
+  td:nth-child(2),
+  th:nth-child(2) {
+    padding: 18px 32px;
   }
 
   .timestampColumn {
@@ -124,6 +128,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-top: 1rem;
 
     .dot {
       display: inline-block;
