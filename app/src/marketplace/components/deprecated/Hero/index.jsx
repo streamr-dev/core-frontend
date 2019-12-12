@@ -4,7 +4,7 @@ import * as React from 'react'
 import cx from 'classnames'
 import ProductContainer from '$shared/components/Container/Product'
 
-import styles from './hero.pcss'
+import styles from './hero_deprecated.pcss'
 
 type Props = {
     leftContent: React.Node,

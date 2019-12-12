@@ -15,7 +15,7 @@ type Props = {
 
 const Hero = ({ leftContent, rightContent, containerClassName, className }: Props) => (
     <div className={cx(styles.hero, className)}>
-        <ProductContainer className={cx('overview', styles.container, containerClassName)}>
+        <ProductContainer className={cx(styles.container, containerClassName)}>
             <div className={styles.leftColumn}>
                 {leftContent}
             </div>
