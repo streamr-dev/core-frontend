@@ -6,7 +6,7 @@ import { Translate, I18n } from 'react-redux-i18n'
 import type { StreamId } from '$shared/flowtype/stream-types'
 import type { CsvUploadState } from '$userpages/flowtype/states/stream-state'
 import TextInput from '$shared/components/TextInput'
-import Modal from '$shared/components/Modal'
+import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import SelectInput from '$shared/components/SelectInput'
 
@@ -156,7 +156,7 @@ export class ConfirmCsvImportView extends Component<Props, State> {
         const dateFormats = getDateFormats()
 
         return (
-            <Modal>
+            <ModalPortal>
                 <Dialog
                     title={I18n.t('userpages.streams.edit.history.confirmCsv.title')}
                     onClose={onClose}
@@ -230,7 +230,7 @@ export class ConfirmCsvImportView extends Component<Props, State> {
                         )}
                     </div>
                 </Dialog>
-            </Modal>
+            </ModalPortal>
         )
     }
 }

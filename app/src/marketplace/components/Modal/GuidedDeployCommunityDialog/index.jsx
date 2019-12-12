@@ -5,7 +5,7 @@ import { Translate, I18n } from 'react-redux-i18n'
 import cx from 'classnames'
 import { Label, FormGroup } from 'reactstrap'
 
-import Modal from '$shared/components/Modal'
+import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import Buttons from '$shared/components/Buttons'
 import Checkbox from '$shared/components/Checkbox'
@@ -147,7 +147,7 @@ const GuidedDeployCommunityDialog = ({ product, onClose, onContinue: onContinueP
     ), [step, name, image])
 
     return (
-        <Modal>
+        <ModalPortal>
             <Dialog
                 className={cx(styles.root, styles.GuidedDeployCommunityDialog)}
                 title={I18n.t('modal.deployCommunity.guide.title', {
@@ -215,7 +215,7 @@ const GuidedDeployCommunityDialog = ({ product, onClose, onContinue: onContinueP
                     ))}
                 </div>
             </Dialog>
-        </Modal>
+        </ModalPortal>
     )
 }
 

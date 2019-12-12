@@ -4,7 +4,7 @@ import React from 'react'
 import { I18n, Translate } from 'react-redux-i18n'
 import cx from 'classnames'
 
-import Modal from '$shared/components/Modal'
+import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import { type Product } from '$mp/flowtype/product-types'
 import DeploySpinner from '$shared/components/DeploySpinner'
@@ -25,7 +25,7 @@ const formatSeconds = (seconds) => {
 }
 
 const DeployingCommunityDialog = ({ product, estimate, onClose, onContinue }: Props) => (
-    <Modal>
+    <ModalPortal>
         <Dialog
             className={cx(styles.root, styles.DeployingCommunityDialog)}
             title={I18n.t('modal.deployCommunity.deploying.title', {
@@ -52,7 +52,7 @@ const DeployingCommunityDialog = ({ product, estimate, onClose, onContinue }: Pr
                 />
             </div>
         </Dialog>
-    </Modal>
+    </ModalPortal>
 )
 
 export default DeployingCommunityDialog

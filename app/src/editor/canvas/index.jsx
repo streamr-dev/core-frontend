@@ -23,7 +23,6 @@ import { Provider as PendingProvider } from '$shared/contexts/Pending'
 import Subscription from '$shared/components/Subscription'
 import * as SubscriptionStatus from '$shared/contexts/SubscriptionStatus'
 import { Provider as ClientProvider } from '$shared/contexts/StreamrClient'
-import { Provider as ModalProvider } from '$shared/contexts/ModalApi'
 import * as sharedServices from '$editor/shared/services'
 import BodyClass from '$shared/components/BodyClass'
 import Sidebar from '$editor/shared/components/Sidebar'
@@ -447,27 +446,25 @@ const CanvasEditComponent = class CanvasEdit extends PureComponent {
                 </Canvas>
                 {isEmbedMode ? <EmbedToolbar canvas={canvas} /> : (
                     <React.Fragment>
-                        <ModalProvider>
-                            <CanvasToolbar
-                                className={styles.CanvasToolbar}
-                                canvas={canvas}
-                                setCanvas={this.setCanvas}
-                                renameCanvas={this.renameCanvas}
-                                deleteCanvas={this.deleteCanvas}
-                                newCanvas={this.newCanvas}
-                                duplicateCanvas={this.duplicateCanvas}
-                                moduleSearchIsOpen={this.state.moduleSearchIsOpen}
-                                moduleSearchOpen={this.moduleSearchOpen}
-                                setRunTab={this.setRunTab}
-                                setHistorical={this.setHistorical}
-                                setSpeed={this.setSpeed}
-                                setSaveState={this.setSaveState}
-                                canvasStart={this.canvasStart}
-                                canvasStop={this.canvasStop}
-                                keyboardShortcutOpen={this.keyboardShortcutOpen}
-                                canvasExit={this.canvasExit}
-                            />
-                        </ModalProvider>
+                        <CanvasToolbar
+                            className={styles.CanvasToolbar}
+                            canvas={canvas}
+                            setCanvas={this.setCanvas}
+                            renameCanvas={this.renameCanvas}
+                            deleteCanvas={this.deleteCanvas}
+                            newCanvas={this.newCanvas}
+                            duplicateCanvas={this.duplicateCanvas}
+                            moduleSearchIsOpen={this.state.moduleSearchIsOpen}
+                            moduleSearchOpen={this.moduleSearchOpen}
+                            setRunTab={this.setRunTab}
+                            setHistorical={this.setHistorical}
+                            setSpeed={this.setSpeed}
+                            setSaveState={this.setSaveState}
+                            canvasStart={this.canvasStart}
+                            canvasStop={this.canvasStop}
+                            keyboardShortcutOpen={this.keyboardShortcutOpen}
+                            canvasExit={this.canvasExit}
+                        />
                         <Sidebar
                             className={styles.ModuleSidebar}
                             isOpen={moduleSidebarIsOpen || keyboardShortcutIsOpen}

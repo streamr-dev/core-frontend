@@ -761,7 +761,9 @@ msgid "productTypeChooser##standard##title"
 msgstr "Standard Product"
 
 msgid "productTypeChooser##standard##description"
-msgstr "Add your own data stream or group of streams to a product and publish it on the Marketplace. For help creating streams, see the docs."
+msgstr ""
+"Add your own data stream or group of streams to a product and publish it on the Marketplace. "
+"For help creating streams, see the <a href=\"%{docsLink}\">docs</a>."
 
 msgid "productTypeChooser##standard##linkTitle"
 msgstr "Create standard product"

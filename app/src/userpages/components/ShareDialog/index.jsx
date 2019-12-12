@@ -3,7 +3,7 @@
 import React, { type Node, useState, useCallback, useEffect } from 'react'
 import { connect } from 'react-redux'
 
-import Modal from '$shared/components/Modal'
+import ModalPortal from '$shared/components/ModalPortal'
 import { getResourcePermissions } from '$userpages/modules/permission/actions'
 import type { ResourceType, ResourceId } from '$userpages/flowtype/permission-types'
 import SvgIcon from '$shared/components/SvgIcon'
@@ -61,7 +61,7 @@ export const ShareDialog = (props: Props) => {
     }, [isMounted, loadPermissions])
 
     return (
-        <Modal>
+        <ModalPortal>
             {!error && activeTab === ShareDialogTabs.SHARE && (
                 <ShareDialogContent
                     resourceTitle={resourceTitle}
@@ -88,7 +88,7 @@ export const ShareDialog = (props: Props) => {
                     <p>{error.message}</p>
                 </Dialog>
             )}
-        </Modal>
+        </ModalPortal>
     )
 }
 

@@ -25,7 +25,6 @@ import BackButton from './BackButton'
 import Editor from './Editor'
 import Preview from './Preview'
 import ProductEditorDebug from './ProductEditorDebug'
-import { Provider as ModalProvider } from '$shared/contexts/ModalApi'
 import ConfirmSaveModal from './ConfirmSaveModal'
 import DeployCommunityModal from './DeployCommunityModal'
 import PublishModal from './PublishModal'
@@ -200,14 +199,12 @@ const EditWrap = () => {
     const key = (!!product && product.id) || ''
 
     return (
-        <ModalProvider>
-            <EditControllerProvider product={product}>
-                <EditProductPage
-                    key={key}
-                    product={product}
-                />
-            </EditControllerProvider>
-        </ModalProvider>
+        <EditControllerProvider product={product}>
+            <EditProductPage
+                key={key}
+                product={product}
+            />
+        </EditControllerProvider>
     )
 }
 

@@ -10,7 +10,7 @@ type Props = {
     children: Node,
 }
 
-class Modal extends React.Component<Props> {
+class ModalPortal extends React.Component<Props> {
     static contextType = Context
 
     componentDidMount() {
@@ -48,4 +48,4 @@ class Modal extends React.Component<Props> {
     }
 }
 
-export default Modal
+export default ModalPortal

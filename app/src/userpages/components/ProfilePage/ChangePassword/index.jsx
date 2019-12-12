@@ -6,7 +6,7 @@ import { I18n, Translate } from 'react-redux-i18n'
 import { Link } from 'react-router-dom'
 
 import { updatePassword } from '$shared/modules/user/actions'
-import Modal from '$shared/components/Modal'
+import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import TextInput from '$shared/components/TextInput'
 import routes from '$routes'
@@ -86,7 +86,7 @@ class ChangePasswordDialog extends Component<Props, State> {
         const allPasswordsGiven = !!currentPassword && !!newPassword && !!confirmNewPassword
 
         return (
-            <Modal>
+            <ModalPortal>
                 <Dialog
                     className={styles.dialogContainerOverride}
                     contentClassName={styles.content}
@@ -146,7 +146,7 @@ class ChangePasswordDialog extends Component<Props, State> {
                         />
                     </div>
                 </Dialog>
-            </Modal>
+            </ModalPortal>
         )
     }
 }

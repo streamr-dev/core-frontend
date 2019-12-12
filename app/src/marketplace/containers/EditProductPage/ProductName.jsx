@@ -30,6 +30,7 @@ const ProductName = () => {
                     placeholder="Product Name"
                     error={isTouched('name') && !isValid ? message : undefined}
                     disabled={isPending}
+                    className={styles.input}
                 />
             </div>
         </section>
