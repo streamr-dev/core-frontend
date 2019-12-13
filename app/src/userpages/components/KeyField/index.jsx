@@ -161,6 +161,7 @@ class KeyField extends React.Component<Props, State> {
             allowDelete,
             allowEdit,
             disableDelete,
+            showPermissionType,
         } = this.props
         const { hidden, menuOpen } = this.state
 
