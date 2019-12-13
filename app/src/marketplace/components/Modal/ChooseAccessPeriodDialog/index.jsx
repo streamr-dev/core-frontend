@@ -10,6 +10,7 @@ import { dataToUsd, usdToData, formatDecimals } from '$mp/utils/price'
 import { currencies } from '$shared/utils/constants'
 import type { Product } from '$mp/flowtype/product-types'
 import type { Currency, NumberString, TimeUnit } from '$shared/flowtype/common-types'
+import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 
 import TimeUnitSelector from './TimeUnitSelector'
@@ -63,66 +64,68 @@ export const ChooseAccessPeriodDialog = ({
     }, [onNextProp])
 
     return (
-        <Dialog
-            onClose={onCancel}
-            title={I18n.t('modal.chooseAccessPeriod.title')}
-            actions={{
-                cancel: {
-                    title: I18n.t('modal.common.cancel'),
-                    onClick: onCancel,
-                    kind: 'link',
-                },
-                next: {
-                    title: I18n.t('modal.common.next'),
-                    kind: 'primary',
-                    outline: true,
-                    onClick: () => onNext(time, timeUnit),
-                    disabled: BN(time).isNaN() || BN(time).isLessThanOrEqualTo(0) || waiting,
-                },
-            }}
-        >
-            <Form className={style.accessPeriodForm}>
-                <FormGroup className={style.accessPeriodNumberSelector}>
-                    <input
-                        className={style.accessPeriodNumber}
-                        type="text"
-                        name="time"
-                        id="time"
-                        min={1}
-                        value={!BN(time).isNaN() ? time : ''}
-                        onChange={(e: SyntheticInputEvent<EventTarget>) => setTime(e.target.value)}
-                        onBlur={(e: SyntheticInputEvent<EventTarget>) => {
-                            if (parseInt(e.target.value, 10) <= 1) {
-                                setTime('1')
-                            }
-                        }}
-                    />
-                </FormGroup>
-                <FormGroup tag="fieldset" className={style.timeUnitFieldset}>
-                    <div className={style.timeUnitSelectionCol}>
-                        <TimeUnitSelector timeUnit={timeUnit} onChange={setTimeUnit} />
-                        <div className={style.priceLabels}>
-                            <div className={style.priceColumn}>
-                                <span className={style.priceValue}>
-                                    {priceinData}
-                                </span>
-                                <span className={style.priceLabel}>
-                                    {currencies.DATA}
-                                </span>
-                            </div>
-                            <div className={style.priceColumn}>
-                                <span className={style.priceValue}>
-                                    ${priceInUsd}
-                                </span>
-                                <span className={style.priceLabel}>
-                                    {currencies.USD}
-                                </span>
+        <ModalPortal>
+            <Dialog
+                onClose={onCancel}
+                title={I18n.t('modal.chooseAccessPeriod.title')}
+                actions={{
+                    cancel: {
+                        title: I18n.t('modal.common.cancel'),
+                        onClick: onCancel,
+                        kind: 'link',
+                    },
+                    next: {
+                        title: I18n.t('modal.common.next'),
+                        kind: 'primary',
+                        outline: true,
+                        onClick: () => onNext(time, timeUnit),
+                        disabled: BN(time).isNaN() || BN(time).isLessThanOrEqualTo(0) || waiting,
+                    },
+                }}
+            >
+                <Form className={style.accessPeriodForm}>
+                    <FormGroup className={style.accessPeriodNumberSelector}>
+                        <input
+                            className={style.accessPeriodNumber}
+                            type="text"
+                            name="time"
+                            id="time"
+                            min={1}
+                            value={!BN(time).isNaN() ? time : ''}
+                            onChange={(e: SyntheticInputEvent<EventTarget>) => setTime(e.target.value)}
+                            onBlur={(e: SyntheticInputEvent<EventTarget>) => {
+                                if (parseInt(e.target.value, 10) <= 1) {
+                                    setTime('1')
+                                }
+                            }}
+                        />
+                    </FormGroup>
+                    <FormGroup tag="fieldset" className={style.timeUnitFieldset}>
+                        <div className={style.timeUnitSelectionCol}>
+                            <TimeUnitSelector timeUnit={timeUnit} onChange={setTimeUnit} />
+                            <div className={style.priceLabels}>
+                                <div className={style.priceColumn}>
+                                    <span className={style.priceValue}>
+                                        {priceinData}
+                                    </span>
+                                    <span className={style.priceLabel}>
+                                        {currencies.DATA}
+                                    </span>
+                                </div>
+                                <div className={style.priceColumn}>
+                                    <span className={style.priceValue}>
+                                        ${priceInUsd}
+                                    </span>
+                                    <span className={style.priceLabel}>
+                                        {currencies.USD}
+                                    </span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </FormGroup>
-            </Form>
-        </Dialog>
+                    </FormGroup>
+                </Form>
+            </Dialog>
+        </ModalPortal>
     )
 }
 

@@ -97,7 +97,7 @@ class ChangePasswordDialog extends Component<Props, State> {
                             title: I18n.t('modal.common.cancel'),
                             outline: true,
                             kind: 'link',
-                            onClick: this.props.onToggle,
+                            onClick: () => this.props.onToggle(),
                         },
                         save: {
                             title: I18n.t('modal.common.save'),
@@ -218,4 +218,7 @@ class ChangePasswordButton extends React.Component<TriggerProps, TriggerState> {
     }
 }
 
-export { ChangePasswordButton as Button }
+export {
+    ChangePasswordDialog,
+    ChangePasswordButton as Button,
+}

@@ -35,7 +35,7 @@ import ReadyToPublishDialog from '$mp/components/Modal/ReadyToPublishDialog'
 import ReadyToUnpublishDialog from '$mp/components/Modal/ReadyToUnpublishDialog'
 import SaveContractProductDialog from '$mp/components/Modal/SaveContractProductDialog'
 import SetAllowanceDialog from '$mp/components/Modal/SetAllowanceDialog'
-import UnlockWalletDialog from '$mp/components/Modal/UnlockWalletDialog'
+import MpUnlockWalletDialog from '$mp/components/Modal/UnlockWalletDialog'
 import ErrorDialog from '$mp/components/Modal/ErrorDialog'
 import CropImageModal from '$mp/components/Modal/CropImageModal'
 
@@ -44,9 +44,21 @@ import ConfirmCsvImportDialog from '$userpages/components/StreamPage/ConfirmCsvI
 import SnippetDialog from '$userpages/components/SnippetDialog'
 import AvatarUploadDialog from '$userpages/components/Avatar/AvatarUploadDialog'
 import CropAvatarDialog from '$userpages/components/Avatar/CropAvatarDialog'
+import { ChangePasswordDialog } from '$userpages/components/ProfilePage/ChangePassword'
+import {
+    SignatureRequestDialog,
+    ErrorDialog as SignatureRequestErrorDialog,
+    SuccessDialog as SignatureRequestSuccessDialog,
+} from '$userpages/components/ProfilePage/IdentityHandler/IdentityChallengeDialog'
+import DuplicateIdentityDialog from '$userpages/components/ProfilePage/IdentityHandler/IdentityChallengeDialog/DuplicateIdentityDialog'
+import IdentityNameDialog from '$userpages/components/ProfilePage/IdentityHandler/IdentityNameDialog'
 
 // shared
 import ConfirmDialog from '$shared/components/ConfirmDialog'
+import SharedUnlockWalletDialog from '$shared/components/Web3ErrorDialog/UnlockWalletDialog'
+import InstallMetaMaskDialog from '$shared/components/Web3ErrorDialog/Web3NotDetectedDialog/InstallMetaMaskDialog'
+import InstallMobileApplicationDialog from '$shared/components/Web3ErrorDialog/Web3NotDetectedDialog/InstallMobileApplicationDialog'
+import InstallSupportedBrowserDialog from '$shared/components/Web3ErrorDialog/Web3NotDetectedDialog/InstallSupportedBrowserDialog'
 
 const story = (name) => storiesOf(`Modal/${name}`, module)
     .addDecorator(StoryRouter())
@@ -500,7 +512,10 @@ story('Marketplace/CompletePurchaseDialog')
 
 story('Marketplace/UnlockWalletDialog')
     .add('default', () => (
-        <UnlockWalletDialog onClose={action('close')} message={text('Dialog text', 'Dialog text')} />
+        <MpUnlockWalletDialog
+            onClose={action('close')}
+            message={text('Dialog text', 'Dialog text')}
+        />
     ))
 
 story('Marketplace/ErrorDialog')
@@ -541,8 +556,7 @@ story('Streams/ConfirmCsvImportDialog')
     ))
 
 const snippets = {
-    // $FlowFixMe It's alright but Flow doesn't get it
-    [ProgrammingLanguages.JAVASCRIPT]: String.raw`const StreamrClient = require('streamr-client')
+    [ProgrammingLanguages.JAVASCRIPT]: `const StreamrClient = require('streamr-client')
 
 const streamr = new StreamrClient({
     auth: {
@@ -558,8 +572,7 @@ streamr.subscribe({
     // Do something with the message here!
     console.log(message)
 }`,
-    // $FlowFixMe
-    [ProgrammingLanguages.JAVA]: String.raw`StreamrClient client = new StreamrClient();
+    [ProgrammingLanguages.JAVA]: `StreamrClient client = new StreamrClient();
 Stream stream = client.getStream("streamId");
 
 Subscription sub = client.subscribe(stream, new MessageHandler() {
@@ -624,6 +637,38 @@ story('Shared/ConfirmDialog')
         />
     ))
 
+story('Shared/UnlockWalletDialog')
+    .add('default', () => (
+        <SharedUnlockWalletDialog
+            title={text('Dialog title', 'Dialog title')}
+            onClose={action('onClose')}
+        />
+    ))
+    .add('waiting', () => (
+        <SharedUnlockWalletDialog
+            waiting
+            title={text('Dialog title', 'Dialog title')}
+            onClose={action('onClose')}
+        />
+    ))
+
+story('Shared/Web3NotDetectedDialog')
+    .add('install Metamask', () => (
+        <InstallMetaMaskDialog
+            onClose={action('onClose')}
+        />
+    ))
+    .add('install mobile app', () => (
+        <InstallMobileApplicationDialog
+            onClose={action('onClose')}
+        />
+    ))
+    .add('install supported browser', () => (
+        <InstallSupportedBrowserDialog
+            onClose={action('onClose')}
+        />
+    ))
+
 story('Profile/AvatarUploadDialog')
     .add('default', () => (
         <AvatarUploadDialog
@@ -655,3 +700,51 @@ story('Profile/CropAvatarDialog')
             />
         )
     })
+
+story('Profile/ChangePasswordDialog')
+    .add('default', () => {
+        const updatePassword = action('updatePassword')
+        const updateAction = (...args) => new Promise((resolve) => {
+            updatePassword(...args)
+            resolve()
+        })
+        return (
+            <ChangePasswordDialog
+                isOpen
+                updatePassword={updateAction}
+                onToggle={action('onToggle')}
+            />
+        )
+    })
+
+story('EthereumIdentity/IdentityChallengeDialog')
+    .add('signature request', () => (
+        <SignatureRequestDialog
+            onClose={action('onClose')}
+        />
+    ))
+    .add('signature success', () => (
+        <SignatureRequestSuccessDialog
+            onClose={action('onClose')}
+        />
+    ))
+    .add('signature error', () => (
+        <SignatureRequestErrorDialog
+            onClose={action('onClose')}
+        />
+    ))
+
+story('EthereumIdentity/DuplicateIdentityDialog')
+    .add('default', () => (
+        <DuplicateIdentityDialog
+            onClose={action('onClose')}
+        />
+    ))
+
+story('EthereumIdentity/IdentityNameDialog')
+    .add('default', () => (
+        <IdentityNameDialog
+            onClose={action('onClose')}
+            onSave={action('onSave')}
+        />
+    ))
