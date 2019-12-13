@@ -42,6 +42,8 @@ import CropImageModal from '$mp/components/Modal/CropImageModal'
 // userpages
 import ConfirmCsvImportDialog from '$userpages/components/StreamPage/ConfirmCsvImportDialog'
 import SnippetDialog from '$userpages/components/SnippetDialog'
+import AvatarUploadDialog from '$userpages/components/Avatar/AvatarUploadDialog'
+import CropAvatarDialog from '$userpages/components/Avatar/CropAvatarDialog'
 
 // shared
 import ConfirmDialog from '$shared/components/ConfirmDialog'
@@ -621,3 +623,35 @@ story('Shared/ConfirmDialog')
             onReject={action('onReject')}
         />
     ))
+
+story('Profile/AvatarUploadDialog')
+    .add('default', () => (
+        <AvatarUploadDialog
+            onClose={action('onClose')}
+            onSave={action('onSave')}
+        />
+    ))
+    .add('with original image', () => (
+        <AvatarUploadDialog
+            originalImage="https://miro.medium.com/fit/c/256/256/1*NfJkA-ChiQtYLRBOLryZxQ.jpeg"
+            onClose={action('onClose')}
+            onSave={action('onSave')}
+        />
+    ))
+
+story('Profile/CropAvatarDialog')
+    .add('default', () => {
+        const cropAndSave = action('cropAndSave')
+        const saveAction = (...args) => new Promise((resolve) => {
+            cropAndSave(...args)
+            resolve()
+        })
+
+        return (
+            <CropAvatarDialog
+                originalImage={croppedImage}
+                onClose={action('onClose')}
+                cropAndSave={saveAction}
+            />
+        )
+    })

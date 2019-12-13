@@ -4,7 +4,7 @@ import React, { useState, useCallback, useRef } from 'react'
 import AvatarEditor from 'react-avatar-editor'
 import { I18n } from 'react-redux-i18n'
 
-import Modal from '$shared/components/Modal'
+import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import Slider from '$shared/components/Slider'
 
@@ -34,7 +34,7 @@ const CropImageModal = ({ imageUrl, onClose, onSave: onSaveProp }: Props) => {
     }, [onSaveProp])
 
     return (
-        <Modal>
+        <ModalPortal>
             <Dialog
                 title={I18n.t('modal.cropImage.title')}
                 onClose={onClose}
@@ -76,7 +76,7 @@ const CropImageModal = ({ imageUrl, onClose, onSave: onSaveProp }: Props) => {
                     />
                 </div>
             </Dialog>
-        </Modal>
+        </ModalPortal>
     )
 }
 
