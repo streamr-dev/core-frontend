@@ -3,6 +3,25 @@
 }
 
 .longText {
-  line-height: 24px;
-  max-width: 488px;
+  line-height: 20px;
+  letter-spacing: 0;
+  display: none;
+}
+
+.removeAccountButton {}
+
+@media (--md-up) {
+  .longText {
+    display: block;
+  }
+
+  .removeAccountButton {
+    margin-top: 3.75rem;
+  }
+}
+
+@media (--lg-up) {
+  .removeAccountButton {
+    margin-top: 3rem;
+  }
 }

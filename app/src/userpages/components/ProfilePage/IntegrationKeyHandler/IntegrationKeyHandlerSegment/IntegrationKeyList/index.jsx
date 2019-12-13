@@ -16,6 +16,7 @@ export type Props = {
 export default class IntegrationKeyList extends Component<Props> {
     render() {
         const { integrationKeys, hideValues, onDelete, onEdit } = this.props
+
         return (
             <div className={styles.keyList}>
                 {integrationKeys.map((key: IntegrationKey) => (

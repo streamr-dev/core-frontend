@@ -50,15 +50,15 @@ export default class CredentialsControl extends Component<Props> {
                 <div className={styles.keyList}>
                     {this.props.keys.map((key: ResourceKey, index: number) => (
                         <Fragment key={key.id}>
-                            {!index && (
+                            {!index && showPermissionType && (
                                 <SplitControl>
                                     <div />
-                                    {showPermissionType && (
+                                    <div>
                                         <Translate
                                             value="userpages.streams.edit.configure.permission"
                                             className={styles.permissionColHeading}
                                         />
-                                    )}
+                                    </div>
                                 </SplitControl>
                             )}
                             <KeyField

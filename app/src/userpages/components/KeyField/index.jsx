@@ -155,6 +155,7 @@ class KeyField extends React.Component<Props, State> {
             allowDelete,
             allowEdit,
             disableDelete,
+            showPermissionType,
         } = this.props
         const { hidden, menuOpen } = this.state
 
@@ -185,7 +186,14 @@ class KeyField extends React.Component<Props, State> {
                     [styles.withMenu]: menuOpen,
                 })}
             >
-                <TextInput label={keyName} actions={actions} value={value} readOnly type={hidden ? 'password' : 'text'} />
+                <TextInput
+                    label={keyName}
+                    actions={actions}
+                    value={value}
+                    readOnly
+                    type={hidden ? 'password' : 'text'}
+                    preserveLabelSpace={!showPermissionType}
+                />
             </div>
         )
     }
