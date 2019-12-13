@@ -330,7 +330,7 @@ msgid "userpages##streams##edit##configure##addField"
 msgstr "Add field"
 
 msgid "userpages##streams##edit##configure##help"
-msgstr "You can configure your stream’s fields and data types here. This affects how this stream appears on canvases. You can choose to have Streamr try to autoconfigure fields, or you can edit them yourself."
+msgstr "You can configure your stream’s fields and data types here. If you’re planning to add historical data, you can choose to have Streamr try to autoconfigure fields or you can edit them yourself."
 
 msgid "userpages##streams##edit##configure##autoConfigure"
 msgstr "Always try to autoconfigure field names and types"
@@ -351,7 +351,7 @@ msgid "userpages##streams##edit##configure##historicalStoragePeriod##label"
 msgstr "Historical data storage period (days)"
 
 msgid "userpages##streams##edit##preview##description"
-msgstr "This stream's most recent data is shown here live. Use the Inspector to view the full details of the messages."
+msgstr "You can preview the stream's live data here. Use the Inspector to view details and use the transport controls to check the data is flowing correctly."
 
 msgid "userpages##streams##edit##preview##inspect"
 msgstr "Inspect data"

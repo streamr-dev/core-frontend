@@ -251,9 +251,7 @@ class HistoryView extends Component<Props, State> {
             <div className={styles.historyView}>
                 {streamId && (
                     <Fragment>
-                        <SplitControl>
-                            <Translate value="userpages.streams.edit.history.upload.description" tag="p" className={styles.longText} />
-                        </SplitControl>
+                        <Translate value="userpages.streams.edit.history.upload.description" tag="p" className={styles.longText} />
                         <SplitControl>
                             <FileUpload
                                 ref={this.fileUploadRef}
