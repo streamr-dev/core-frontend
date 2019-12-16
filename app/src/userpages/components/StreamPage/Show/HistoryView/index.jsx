@@ -14,6 +14,7 @@ import { getRange, deleteDataUpTo, uploadCsvFile, confirmCsvFileUpload, updateEd
 import { selectDeleteDataError, selectUploadCsvState, selectEditedStream } from '$userpages/modules/userPageStreams/selectors'
 import Button from '$shared/components/Button'
 import TextInput from '$shared/components/TextInput'
+import SelectInput from '$shared/components/SelectInput'
 import FileUpload from '$shared/components/FileUpload'
 import DatePicker from '$shared/components/DatePicker'
 import SvgIcon from '$shared/components/SvgIcon'
@@ -53,6 +54,8 @@ type State = {
     csvFile: ?File,
     confirmError: ?string,
     deleteInProgress: boolean,
+    storageAmount: ?number,
+    storageUnit: ?string,
 }
 
 const DropTarget = ({ mouseOver }: { mouseOver: boolean }) => (
@@ -69,6 +72,13 @@ const DropTarget = ({ mouseOver }: { mouseOver: boolean }) => (
     </div>
 )
 
+const convertFromStorageDays = (days: number) => ({
+    amount: (days % 30 === 0) ? days / 30 : days,
+    unit: (days % 30 === 0) ? 'months' : 'days',
+})
+
+const convertToStorageDays = (amount: number, unit: string) => (unit === 'days' ? amount : amount * 30)
+
 class HistoryView extends Component<Props, State> {
     state = {
         range: undefined,
@@ -77,6 +87,8 @@ class HistoryView extends Component<Props, State> {
         csvFile: undefined,
         confirmError: undefined,
         deleteInProgress: false,
+        storageAmount: undefined,
+        storageUnit: undefined,
     }
 
     mounted = false
@@ -102,7 +114,15 @@ class HistoryView extends Component<Props, State> {
     }
 
     async loadData() {
-        const { getRange, streamId } = this.props
+        const { getRange, streamId, stream } = this.props
+
+        if (stream) {
+            const { amount, unit } = convertFromStorageDays(stream.storageDays)
+            this.setState({
+                storageAmount: amount,
+                storageUnit: unit,
+            })
+        }
 
         if (streamId) {
             const range = await getRange(streamId)
@@ -120,15 +140,30 @@ class HistoryView extends Component<Props, State> {
         })
     }
 
-    onStoragePeriodChange = (e: SyntheticInputEvent<EventTarget>) => {
+    onStorageAmountChange = (e: SyntheticInputEvent<EventTarget>) => {
+        const amount = Number(e.target.value)
+        this.setState({
+            storageAmount: amount,
+        }, this.updateStreamStorageDays)
+    }
+
+    onStoragePeriodUnitChange = (unit: string) => {
+        this.setState({
+            storageUnit: unit,
+        }, this.updateStreamStorageDays)
+    }
+
+    updateStreamStorageDays = () => {
         // $FlowFixMe `updateEditStream` not in OwnProps or StateProps.
         const { updateEditStream, stream } = this.props
-        const days = Number(e.target.value)
+        const { storageAmount, storageUnit } = this.state
 
-        updateEditStream({
-            ...stream,
-            storageDays: days,
-        })
+        if (storageAmount != null && storageUnit != null) {
+            updateEditStream({
+                ...stream,
+                storageDays: convertToStorageDays(storageAmount, storageUnit),
+            })
+        }
     }
 
     deleteDataUpTo = async (streamId: StreamId, date: ?Date) => {
@@ -233,6 +268,8 @@ class HistoryView extends Component<Props, State> {
             isModalOpen,
             confirmError,
             deleteInProgress,
+            storageAmount,
+            storageUnit,
         } = this.state
         const {
             streamId,
@@ -248,6 +285,17 @@ class HistoryView extends Component<Props, State> {
             }) :
             I18n.t('userpages.streams.edit.history.noEvents')
 
+        const unitOptions: Array<any> = [
+            {
+                value: 'days',
+                label: I18n.t('userpages.streams.inactivityDays'),
+            },
+            {
+                value: 'months',
+                label: I18n.t('userpages.streams.inactivityMonths'),
+            },
+        ]
+
         return (
             <div className={styles.historyView}>
                 {streamId && (
@@ -255,7 +303,7 @@ class HistoryView extends Component<Props, State> {
                         <SplitControl>
                             <Translate value="userpages.streams.edit.history.upload.description" tag="p" className={styles.longText} />
                         </SplitControl>
-                        <SplitControl>
+                        <SplitControl className={styles.row}>
                             <FileUpload
                                 ref={this.fileUploadRef}
                                 className={styles.fileUpload}
@@ -265,6 +313,7 @@ class HistoryView extends Component<Props, State> {
                                         value={storedEventsText}
                                         readOnly
                                         preserveLabelSpace
+                                        preserveErrorSpace
                                     />
                                 }
                                 dropTargetComponent={<DropTarget mouseOver={false} />}
@@ -294,7 +343,7 @@ class HistoryView extends Component<Props, State> {
                     </SplitControl>
                 )}
                 {streamId && range && (
-                    <SplitControl>
+                    <SplitControl className={styles.row}>
                         <div className={styles.storedEventsContainer}>
                             <DatePicker
                                 label={I18n.t('userpages.streams.edit.history.deleteEvents')}
@@ -325,24 +374,25 @@ class HistoryView extends Component<Props, State> {
                     </SplitControl>
                 )}
                 {stream && stream.storageDays !== undefined &&
-                    <Fragment>
-                        <label htmlFor="storage-period">
-                            <Translate
-                                value="userpages.streams.edit.configure.historicalStoragePeriod.description"
-                                className={cx(styles.longText, styles.historicalStoragePeriod)}
-                                tag="p"
-                            />
-                        </label>
+                    <div className={styles.storageContainer}>
                         <TextInput
-                            id="storage-period"
-                            type="number"
+                            className={styles.row}
                             label={I18n.t('userpages.streams.edit.configure.historicalStoragePeriod.label')}
-                            value={stream.storageDays}
-                            onChange={this.onStoragePeriodChange}
+                            value={storageAmount}
+                            onChange={this.onStorageAmountChange}
                             preserveLabelSpace
                             disabled={disabled}
                         />
-                    </Fragment>}
+                        <SelectInput
+                            label=""
+                            options={unitOptions}
+                            value={unitOptions.find((o) => o.value === storageUnit)}
+                            onChange={(o) => this.onStoragePeriodUnitChange(o.value)}
+                            preserveLabelSpace
+                            disabled={disabled}
+                        />
+                    </div>
+                }
                 {isModalOpen && (
                     <ConfirmCsvImportDialog
                         streamId={streamId}

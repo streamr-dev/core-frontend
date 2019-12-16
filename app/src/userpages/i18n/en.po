@@ -356,11 +356,8 @@ msgstr "Waiting..."
 msgid "userpages##streams##edit##configure##requireSignedData"
 msgstr "Require all messages in this stream to be signed"
 
-msgid "userpages##streams##edit##configure##historicalStoragePeriod##description"
-msgstr "Please select how long your historical data is retained before it is automatically removed from the system."
-
 msgid "userpages##streams##edit##configure##historicalStoragePeriod##label"
-msgstr "Historical data storage period (days)"
+msgstr "Period to retain historical data until auto-removal"
 
 msgid "userpages##streams##edit##preview##description"
 msgstr "This stream's most recent data is shown here live. Use the Inspector to view the full details of the messages."
@@ -471,6 +468,9 @@ msgstr "Hours"
 
 msgid "userpages##streams##inactivityDays"
 msgstr "Days"
+
+msgid "userpages##streams##inactivityMonths"
+msgstr "Months"
 
 msgid "userpages##streams##inactivityLabel"
 msgstr "Inactivity threshold"
