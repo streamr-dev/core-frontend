@@ -1,6 +1,7 @@
 // @flow
 
 import '$shared/assets/stylesheets'
+import '@ibm/plex/css/ibm-plex.css'
 
 import React from 'react'
 import { Route as RouterRoute, Switch, Redirect, type Location } from 'react-router-dom'

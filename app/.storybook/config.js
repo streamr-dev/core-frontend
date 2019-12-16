@@ -8,6 +8,7 @@ import { xs, sm, md, lg } from '$app/scripts/breakpoints'
 
 // To import the global styling
 import '$shared/assets/stylesheets'
+import '@ibm/plex/css/ibm-plex.css'
 
 setAddon(JSXAddon)
 
