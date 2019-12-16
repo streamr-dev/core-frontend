@@ -658,14 +658,14 @@ msgid "userpages##profilePage##apiCredentials##addAPIKey"
 msgstr "Add new key"
 
 msgid "userpages##profilePage##ethereumAddress##title"
-msgstr "Ethereum Address"
+msgstr "Ethereum identities"
 
 msgid "userpages##profilePage##ethereumAddress##linkTitle"
-msgstr "Ethereum accounts"
+msgstr "Eth Identities"
 
 msgid "userpages##profilePage##ethereumAddress##description"
 msgstr ""
-"You can connect any number of Ethereum accounts to your Streamr identity. "
+"You can connect any number of Ethereum identities to your Streamr account. "
 "You might use them for the Ethereum one-click login feature or for buying and selling products on the Marketplace."
 
 msgid "userpages##profilePage##ethereumAddress##addAddress"
@@ -681,40 +681,47 @@ msgstr ""
 "the <a href=\"https://github.com/ethereum/mist/releases\">Mist browser</a>."
 
 msgid "userpages##profilePage##ethereumPrivateKeys##title"
-msgstr "Ethereum Private Keys"
+msgstr "Ethereum keys for canvases"
 
 msgid "userpages##profilePage##ethereumPrivateKeys##description"
 msgstr ""
-"These Ethereum accounts can be used on Canvases to build data-driven interactions with Ethereum. "
-"Even though the private keys are securely stored server-side, we do not recommend having significant "
-"amounts of value on these accounts."
+"These Ethereum accounts can be used on canvases to build data-driven interactions "
+"with Ethereum. Even though the private keys are securely stored server-side, "
+"we do not recommend having significant amounts of value on these accounts."
 
 msgid "userpages##profilePage##ethereumPrivateKeys##linkTitle"
-msgstr "Private keys"
+msgstr "Eth Dev Accounts"
 
 msgid "userpages##profilePage##deleteAccount##title"
-msgstr "Disable Streamr Account"
+msgstr "Delete Streamr Account"
 
 msgid "userpages##profilePage##deleteAccount##linkTitle"
-msgstr "Disable account"
+msgstr "Delete account"
 
 msgid "userpages##profilePage##deleteAccount##description"
 msgstr ""
-"This action will disable your account but may still retain your data. Please contact us directly to "
-"manually delete your data entirely."
+"Unlike other companies that deactivate your account but retain your data, "
+"if you delete your Streamr account, all your data is deleted from our servers and will be unrecoverable. "
+"Please proceed with caution."
 
 msgid "userpages##profilePage##deleteAccount##button"
-msgstr "Disable account"
+msgstr "Delete account"
 
 msgid "modal##deleteAccount##defaultTitle"
-msgstr "Do you really want to disable your account?"
+msgstr "Are you sure?"
 
 msgid "modal##deleteAccount##save"
-msgstr "Yes, disable"
+msgstr "Delete account"
 
 msgid "modal##deleteAccount##content"
 msgstr ""
-"Please make sure this is what you want before you proceed."
+"This is an unrecoverable action. Please check the box to confirm you want to delete your account."
+
+msgid "modal##deleteAccount##confirmCheckbox##title"
+msgstr "I’m sure, go ahead and delete my account"
+
+msgid "modal##deleteAccount##confirmCheckbox##subtitle"
+msgstr "Streamr cannot recover it once deleted"
 
 msgid "userpages##profile##settings##update"
 msgstr "Update"
