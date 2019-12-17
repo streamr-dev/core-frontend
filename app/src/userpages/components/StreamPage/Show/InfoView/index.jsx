@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useState, useEffect, useRef, useCallback } from 'react'
+import React, { useEffect, useRef, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { I18n, Translate } from 'react-redux-i18n'
 
@@ -27,8 +27,6 @@ export const InfoView = ({ disabled }: Props) => {
     const contentChangedRef = useRef(false)
     const streamRef = useRef()
     streamRef.current = stream
-    const [name, setName] = useState(stream.name || 'Untitled Stream')
-    const [description, setDescription] = useState(stream.description || '')
 
     useEffect(() => {
         const handleBeforeunload = (event) => {
@@ -55,14 +53,12 @@ export const InfoView = ({ disabled }: Props) => {
     const onNameChange = useCallback((e: SyntheticInputEvent<EventTarget>) => {
         const name = e.target.value
         contentChangedRef.current = contentChangedRef.current || name !== (streamRef.current && streamRef.current.name)
-        setName(name)
         editField('name', name)
     }, [editField])
 
     const onDescriptionChange = useCallback((e: SyntheticInputEvent<EventTarget>) => {
         const description = e.target.value
         contentChangedRef.current = contentChangedRef.current || description !== (streamRef.current && streamRef.current.description)
-        setDescription(description)
         editField('description', description)
     }, [editField])
 
@@ -82,7 +78,7 @@ export const InfoView = ({ disabled }: Props) => {
                     label={I18n.t('userpages.streams.edit.details.name')}
                     type="text"
                     name="name"
-                    value={name || ''}
+                    value={(stream && stream.name) || ''}
                     onChange={onNameChange}
                     preserveLabelSpace
                     disabled={disabled}
@@ -94,7 +90,7 @@ export const InfoView = ({ disabled }: Props) => {
                     label={I18n.t('userpages.streams.edit.details.description')}
                     type="text"
                     name="description"
-                    value={description || ''}
+                    value={(stream && stream.description) || ''}
                     onChange={onDescriptionChange}
                     preserveLabelSpace
                     disabled={disabled}
