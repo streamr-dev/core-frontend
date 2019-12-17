@@ -4,7 +4,7 @@ import React from 'react'
 import scrollIntoView from 'smooth-scroll-into-view-if-needed'
 
 import RouteWatcher from '$shared/containers/RouteWatcher'
-import ModalContext from '$shared/contexts/Modal'
+import { Context as ModalContext } from '$shared/contexts/ModalPortal'
 
 /**
  * AutoScroll controls the page load scroll behaviour for the entire app,

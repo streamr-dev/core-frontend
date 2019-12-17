@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-
 <% const title = 'Streamr Core' %>
 <% const description = 'Data done differently' %>
-
 <html>
 <head>
+    <meta charset="UTF-8">
     <title><%= title %></title>
 
     <link href="https://streamr.network/resources/favicon-16x16.png" rel="icon" size="16" type="image/png">
@@ -21,7 +20,6 @@
     <link href="https://streamr.network/resources/apple-icon-180x180.png" rel="apple-touch-icon" size="180" type="image/png">
     <link href="https://streamr.network/resources/android-icon-192x192.png" rel="icon" size="192" type="image/png">
 
-    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="<%= description %>">
     <meta property="og:title" content="<%= title %>">
@@ -33,9 +31,10 @@
     <meta name="twitter:image" content="https://streamr.network/resources/social.jpg">
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="msapplication-TileImage" content="https://streamr.network/resources/ms-icon-144x144.png">
-    <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
+    <script src="https://cdn.polyfill.io/v3/polyfill.min.js"></script>
     <style>@-ms-viewport { width: device-width; }</style>
-
+</head>
+<body>
     <%/*
         Global site tag (gtag.js) - Google Analytics
         Is added here so that it can be read without rendering js on the page.
@@ -51,8 +50,6 @@
             'send_page_view': false,
         })
     </script>
-</head>
-<body>
     <div id="root"></div> <!-- React root -->
     <div id="modal-root"></div> <!-- Modal root -->
 </body>

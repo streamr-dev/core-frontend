@@ -1,12 +1,10 @@
 // @flow
 
 import React from 'react'
-import { Button } from 'reactstrap'
 
+import Button from '$shared/components/Button'
 import type { ResourcePermission } from '$shared/flowtype/resource-key-types'
 import KeyFieldEditor from '../KeyFieldEditor'
-
-import styles from './addKeyField.pcss'
 
 type Props = {
     label: string,
@@ -79,11 +77,8 @@ class AddKeyField extends React.Component<Props, State> {
         const { label, createWithValue, showPermissionType, addKeyFieldAllowed } = this.props
         return !editing ? (
             <Button
-                type="button"
-                color="userpages"
-                className={styles.button}
+                kind="secondary"
                 onClick={this.onEdit}
-                outline
                 disabled={!addKeyFieldAllowed}
             >
                 {label}

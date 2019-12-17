@@ -7,8 +7,11 @@ import { useSelector } from 'react-redux'
 
 import breakpoints from '$app/scripts/breakpoints'
 import { selectRelatedProductList } from '$mp/modules/relatedProducts/selectors'
+import ProductContainer from '$shared/components/Container/Product'
 
 import Products from '$mp/components/Products'
+
+import styles from './relatedProducts.pcss'
 
 const { md } = breakpoints
 
@@ -22,11 +25,13 @@ const RelatedProducts = () => {
     return (
         <MediaQuery minDeviceWidth={md.max}>
             {(matches) => (
-                <Products
-                    header={I18n.t('productPage.relatedProducts')}
-                    products={matches ? relatedProducts : relatedProducts.slice(0, 2)}
-                    type="relatedProducts"
-                />
+                <ProductContainer className={styles.relatedProducts}>
+                    <Products
+                        header={I18n.t('productPage.relatedProducts')}
+                        products={matches ? relatedProducts : relatedProducts.slice(0, 2)}
+                        type="relatedProducts"
+                    />
+                </ProductContainer>
             )}
         </MediaQuery>
     )

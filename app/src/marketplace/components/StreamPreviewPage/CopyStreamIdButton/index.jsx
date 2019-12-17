@@ -1,8 +1,9 @@
 // @flow
 
-import React from 'react'
-import { CopyToClipboard } from 'react-copy-to-clipboard'
+import React, { useCallback } from 'react'
 import { Translate } from 'react-redux-i18n'
+
+import useCopy from '$shared/hooks/useCopy'
 
 import styles from './copyStreamIdButton.pcss'
 
@@ -31,61 +32,31 @@ type Props = {
     onCopy: () => void,
 }
 
-type State = {
-    copied: boolean,
-}
+const CopyStreamIdButton = ({ streamId, onCopy: onCopyProp }: Props) => {
+    const { isCopied, copy } = useCopy()
 
-class CopyStreamIdButton extends React.Component<Props, State> {
-    state = {
-        copied: false,
-    }
+    const onCopy = useCallback(() => {
+        copy(streamId)
+        onCopyProp()
+    }, [streamId, copy, onCopyProp])
 
-    componentWillReceiveProps(newProps: Props) {
-        if (this.props.streamId !== newProps.streamId) {
-            this.setState({
-                copied: false,
-            })
-        }
-    }
-
-    onCopy = () => {
-        this.props.onCopy()
-        this.setState({
-            copied: true,
-        })
-        if (this.timeout) {
-            clearTimeout(this.timeout)
-        }
-        this.timeout = setTimeout(() => {
-            this.setState({
-                copied: false,
-            })
-        }, 3000)
-    }
-
-    timeout: ?TimeoutID = null
-
-    render() {
-        return (
-            <CopyToClipboard
-                text={this.props.streamId}
-                onCopy={this.onCopy}
-            >
-                <div className={styles.copyButton}>
-                    {!this.state.copied && (
-                        <div className={styles.hoverLabel}>
-                            <Translate value="modal.streamLiveData.inspectorSidebar.copyStreamId" />
-                        </div>
-                    )}
-                    {this.state.copied ? (
-                        <CopiedIcon />
-                    ) : (
-                        <CopyIcon />
-                    )}
+    return (
+        <div // eslint-disable-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
+            className={styles.copyButton}
+            onClick={onCopy}
+        >
+            {!isCopied && (
+                <div className={styles.hoverLabel}>
+                    <Translate value="modal.streamLiveData.inspectorSidebar.copyStreamId" />
                 </div>
-            </CopyToClipboard>
-        )
-    }
+            )}
+            {isCopied ? (
+                <CopiedIcon />
+            ) : (
+                <CopyIcon />
+            )}
+        </div>
+    )
 }
 
 export default CopyStreamIdButton

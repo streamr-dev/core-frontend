@@ -42,7 +42,6 @@ export type MyProductListState = {
     ids: ProductIdList,
     fetching: boolean,
     error: ?ErrorInUi,
-    filter: ?UserpagesFilter,
 }
 
 // my purchases

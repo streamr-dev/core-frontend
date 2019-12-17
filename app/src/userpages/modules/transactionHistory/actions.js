@@ -90,12 +90,9 @@ export const showEvents = () => (dispatch: Function, getState: () => StoreState)
                     entities.contractProducts &&
                     entities.contractProducts[transaction.productId]
                 ))
-                .reduce(
-                    (result, transaction: TransactionEntity) =>
-                        // $FlowFixMe
-                        (result.includes(transaction.productId) ? result : [...result, transaction.productId]),
-                    [],
-                )
+                .reduce((result, transaction: TransactionEntity) => (
+                    result.includes(transaction.productId) ? result : [...result, (transaction.productId || '')]
+                ), [])
 
             dispatch(fetchProducts(productsToFetch))
             return data

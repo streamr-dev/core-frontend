@@ -3,15 +3,14 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Translate, I18n } from 'react-redux-i18n'
-import { Button } from 'reactstrap'
 
 import profileStyles from '../profilePage.pcss'
-import styles from './deleteAccount.pcss'
 
 import DeleteAccountDialog from './DeleteAccountDialog'
 import { deleteUserAccount } from '$shared/modules/user/actions'
 import { selectDeletingUserAccount } from '$shared/modules/user/selectors'
 import type { StoreState } from '$shared/flowtype/store-state'
+import Button from '$shared/components/Button'
 
 type State = {
     modalOpen: boolean,
@@ -62,12 +61,9 @@ class DeleteAccount extends React.Component<Props, State> {
         return (
             <div>
                 <Translate value="userpages.profilePage.deleteAccount.description" tag="p" className={profileStyles.longText} />
-                <div className={styles.button}>
+                <div>
                     <Button
-                        outline
-                        type="button"
-                        color="userpages"
-                        className={styles.button}
+                        kind="destructive"
                         onClick={this.openModal}
                         disabled={modalOpen}
                         aria-label={I18n.t('userpages.profilePage.deleteAccount.button')}

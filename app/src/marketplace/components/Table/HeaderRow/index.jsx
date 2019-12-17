@@ -10,7 +10,7 @@ import type { Props } from '../Row'
 
 export const HeaderRow = (props: Props) => {
     const { className, ...rest } = props
-    return <TableRow className={classNames(pageStyles.headerCell, className)} {...rest} />
+    return <TableRow {...rest} className={classNames(pageStyles.headerCell, className)} />
 }
 
 export default HeaderRow

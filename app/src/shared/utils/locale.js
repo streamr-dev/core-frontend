@@ -20,7 +20,7 @@ export const localize = (pathname: ?string, locale: ?string, availableLocals: Ar
     return pn
 }
 
-export const getNavigatorLocales = (): Array<Locale> => {
+export const getNavigatorLocales = (): $ReadOnlyArray<Locale> => {
     if (typeof window !== 'undefined' && window.navigator) {
         if (Array.isArray(navigator.languages)) {
             return navigator.languages

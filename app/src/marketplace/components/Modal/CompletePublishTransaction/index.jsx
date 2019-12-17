@@ -40,11 +40,11 @@ const CompletePublishTransaction = ({ isUnpublish, onCancel, status }: Props) =>
                 cancel: {
                     title: I18n.t('modal.common.cancel'),
                     onClick: onCancel,
-                    color: 'link',
+                    kind: 'link',
                 },
                 close: {
                     title: somePending ? I18n.t('modal.common.waiting') : I18n.t('modal.common.close'),
-                    color: 'primary',
+                    kind: 'primary',
                     disabled: somePending,
                     spinner: somePending,
                     onClick: onCancel,

@@ -14,9 +14,9 @@ export type Props = {
 
 const InstallMobileApplicationDialog = ({ onClose, ...props }: Props) => (
     <Dialog
+        {...props}
         onClose={onClose}
         title={I18n.t('modal.web3.installmobileapplication.title')}
-        {...props}
     >
         <p><Translate value="modal.web3.installmobileapplication.message" dangerousHTML /></p>
 

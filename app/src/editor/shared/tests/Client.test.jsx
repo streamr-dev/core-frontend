@@ -5,7 +5,7 @@ import { act } from 'react-dom/test-utils'
 import api from '../utils/api'
 
 import * as Services from '../services'
-import { ClientProviderComponent, ClientContext } from '$shared/components/StreamrClientContextProvider'
+import { ClientProviderComponent, Context as ClientContext } from '$shared/contexts/StreamrClient'
 
 describe('Client', () => {
     let teardown
@@ -127,5 +127,30 @@ describe('Client', () => {
 
         await client.ensureConnected()
         result.unmount()
+    })
+
+    it('can create client for unauthed user', async (done) => {
+        let currentContext
+        function Test() {
+            currentContext = useContext(ClientContext)
+            return null
+        }
+
+        const result = mount((
+            <ClientProviderComponent authenticationFailed>
+                <Test />
+            </ClientProviderComponent>
+        ))
+        const { client } = currentContext
+        expect(client).toBeTruthy()
+
+        const prevClient = client
+        result.unmount()
+        result.mount()
+        expect(currentContext.client).not.toBe(prevClient)
+        result.unmount()
+        await prevClient.ensureDisconnected()
+        await currentContext.client.ensureDisconnected()
+        done()
     })
 })

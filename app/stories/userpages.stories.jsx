@@ -48,15 +48,16 @@ story('TOCPage')
 story('Avatar')
     .addWithJSX('basic', () => {
         const user = {
+            email: 'tester1@streamr.com',
+            imageUrlLarge: boolean('showImage', true) ? 'https://miro.medium.com/fit/c/256/256/1*NfJkA-ChiQtYLRBOLryZxQ.jpeg' : '',
+            imageUrlSmall: '',
             name: text('Name', 'Matt Innes'),
             username: text('Username', 'matt@streamr.com'),
-            imageUrlLarge: boolean('showImage', true) ? 'https://miro.medium.com/fit/c/256/256/1*NfJkA-ChiQtYLRBOLryZxQ.jpeg' : null,
         }
 
         return (
             <Avatar
                 editable={boolean('Editable', false)}
-                // $FlowFixMe
                 user={user}
                 onImageChange={() => Promise.resolve()}
             />
@@ -70,13 +71,11 @@ story('KeyField')
             value={text('Value')}
             hideValue={boolean('Hide value')}
             allowEdit={boolean('Allow edit')}
-            // $FlowFixMe
-            onSave={() => {
+            onSave={async () => {
                 alert('Saved!') // eslint-disable-line no-alert
             }}
             allowDelete={boolean('Allow delete')}
-            // $FlowFixMe
-            onDelete={() => {
+            onDelete={async () => {
                 alert('Deleted!') // eslint-disable-line no-alert
             }}
         />

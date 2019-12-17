@@ -7,6 +7,7 @@ import { editor } from '$shared/../links'
 import EmptyState from '$shared/components/EmptyState'
 import emptyStateIcon from '$shared/assets/images/empty_state_icon.png'
 import emptyStateIcon2x from '$shared/assets/images/empty_state_icon@2x.png'
+import Button from '$shared/components/Button'
 
 const NoProductsView = () => (
     <EmptyState
@@ -18,9 +19,9 @@ const NoProductsView = () => (
             />
         )}
         link={(
-            <a href={editor.canvasEditor} className="btn btn-special">
+            <Button tag="a" href={editor.canvasEditor} kind="special">
                 <Translate value="noMyProductsView.goToEditor" />
-            </a>
+            </Button>
         )}
     >
         <Translate value="noMyProductsView.message" />

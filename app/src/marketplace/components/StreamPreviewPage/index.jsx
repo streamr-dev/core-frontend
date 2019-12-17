@@ -1,17 +1,18 @@
 // @flow
 
-import React from 'react'
+import React, { useState, useEffect, useCallback, useMemo, useContext } from 'react'
 import classnames from 'classnames'
 import { Link } from 'react-router-dom'
 import findIndex from 'lodash/findIndex'
 import { Translate, I18n } from 'react-redux-i18n'
 
-import { Button } from 'reactstrap'
 import type { StreamId, StreamList } from '$shared/flowtype/stream-types'
 import type { User } from '$shared/flowtype/user-types'
-import type { ResourceKeyId } from '$shared/flowtype/resource-key-types'
 import type { ProductId } from '../../flowtype/product-types'
+import Button from '$shared/components/Button'
 import routes from '$routes'
+import BodyClass from '$shared/components/BodyClass'
+import LoadingIndicator from '$userpages/components/LoadingIndicator'
 
 import StreamLivePreviewTable, { type DataPoint } from './StreamLivePreview'
 import styles from './streamPreviewPage.pcss'
@@ -19,6 +20,8 @@ import InspectorSidebar from './InspectorSidebar'
 import CopyStreamIdButton from './CopyStreamIdButton'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
+import { Context as ClientContext, Provider as ClientProvider } from '$shared/contexts/StreamrClient'
+import useIsMounted from '$shared/hooks/useIsMounted'
 
 type Props = {
     match: {
@@ -29,16 +32,8 @@ type Props = {
     productId: ProductId,
     streams: StreamList,
     currentUser: ?User,
-    authApiKeyId: ?ResourceKeyId,
-    getApiKeys: () => void,
     getStreams: () => void,
     onClose: () => void,
-}
-
-type State = {
-    selectedDataPoint: ?DataPoint,
-    sidebarVisible: boolean,
-    hasData: boolean,
 }
 
 const addStreamIdCopiedNotification = () => {
@@ -48,202 +43,179 @@ const addStreamIdCopiedNotification = () => {
     })
 }
 
-class StreamPreviewPage extends React.Component<Props, State> {
-    constructor(props: Props) {
-        super(props)
-        if (document.body) {
-            document.body.classList.add('overflow-hidden')
-        }
-    }
+const getStreamTabUrl = (productId: ProductId, streamId: ?StreamId) => (streamId ? routes.streamPreview({
+    id: productId,
+    streamId,
+}) : '#')
 
-    state = {
-        selectedDataPoint: null,
-        sidebarVisible: false,
-        hasData: false,
-    }
+const StreamPreviewPage = ({
+    productId,
+    getStreams,
+    match,
+    streams,
+    onClose,
+    currentUser,
+}: Props) => {
+    const [selectedDataPoint, setSelectedDataPoint] = useState(null)
+    const [sidebarVisible, setSidebarVisible] = useState(false)
+    const [hasData, setHasData] = useState(false)
+    const { hasLoaded } = useContext(ClientContext)
+    const isMounted = useIsMounted()
 
-    componentDidMount() {
-        const { currentUser } = this.props
+    const urlId = match.params.streamId
 
-        if (currentUser) {
-            this.props.getApiKeys()
-        }
-        this.props.getStreams()
-    }
+    useEffect(() => {
+        getStreams()
+    }, [getStreams])
 
-    componentWillReceiveProps = (newProps: Props) => {
-        if (newProps.match.params.streamId !== this.props.match.params.streamId) {
-            this.setState({
-                selectedDataPoint: null,
-            })
-        }
-    }
+    useEffect(() => {
+        setSelectedDataPoint(null)
+    }, [urlId])
 
-    componentWillUnmount() {
-        if (document.body) {
-            document.body.classList.remove('overflow-hidden')
-        }
-    }
+    const onSelectDataPoint = useCallback((p: DataPoint, initial: ?boolean) => {
+        setSelectedDataPoint(p)
+        setSidebarVisible(!initial)
+    }, [])
 
-    onSelectDataPoint = (p: DataPoint, initial: ?boolean) => {
-        this.setState({
-            selectedDataPoint: p,
-            sidebarVisible: !initial,
-        })
-    }
+    const currentStreamIndex = useMemo(() => findIndex(streams, (s) => s.id === urlId), [streams, urlId])
 
-    getCurrentStreamIndex = () => {
-        const { streams, match: { params: { streamId } } } = this.props
-        return findIndex(streams, (s) => s.id === streamId)
-    }
+    const currentStream = useMemo(() => streams && streams[currentStreamIndex], [streams, currentStreamIndex])
 
-    getPrevStreamId = () => {
-        const { streams } = this.props
-        const index = this.getCurrentStreamIndex()
-        return (index > 0 && streams[index - 1].id) || null
-    }
+    const prevStreamId = useMemo(
+        () => (
+            (currentStreamIndex > 0 && streams[currentStreamIndex - 1].id) || null),
+        [streams, currentStreamIndex],
+    )
+    const nextStreamId = useMemo(
+        () => (
+            (currentStreamIndex >= 0 && currentStreamIndex < streams.length - 1 && streams[currentStreamIndex + 1].id) || null),
+        [streams, currentStreamIndex],
+    )
 
-    getNextStreamId = () => {
-        const { streams } = this.props
-        const index = this.getCurrentStreamIndex()
-        return (index >= 0 && index < streams.length - 1 && streams[index + 1].id) || null
-    }
+    const toggleSidebar = useCallback(() => {
+        setSidebarVisible(!sidebarVisible)
+    }, [sidebarVisible])
 
-    getStreamTabUrl = (streamId: ?StreamId) => (streamId ? routes.streamPreview({
-        id: this.props.productId,
-        streamId,
-    }) : '#')
+    const prevStreamUrl = getStreamTabUrl(productId, prevStreamId)
+    const nextStreamUrl = getStreamTabUrl(productId, nextStreamId)
 
-    setHasData = () => {
-        this.setState(() => ({
-            hasData: true,
-        }))
-    }
+    const setData = useCallback(() => {
+        if (!isMounted()) { return }
+        setHasData(true)
+    }, [isMounted])
 
-    toggleSidebar = () => {
-        this.setState({
-            sidebarVisible: !this.state.sidebarVisible,
-        })
-    }
-
-    render() {
-        const {
-            streams, productId, match: { params: { streamId } }, currentUser,
-            authApiKeyId, onClose,
-        } = this.props
-        const { hasData } = this.state
-        const currentStream = streams && streams.find((s) => s.id === streamId)
-        const prevStreamId = this.getPrevStreamId()
-        const nextStreamId = this.getNextStreamId()
-        const prevStreamUrl = this.getStreamTabUrl(prevStreamId)
-        const nextStreamUrl = this.getStreamTabUrl(nextStreamId)
-        return (
-            <div className={styles.streamLiveDataDialog}>
-                <div className={styles.closeRow}>
-                    <Button
-                        className={classnames(styles.closeButton)}
-                        onClick={onClose}
-                    >
-                        <span className={styles.icon}>
-                            <svg width="15" height="15" xmlns="http://www.w3.org/2000/svg">
-                                <g
-                                    strokeWidth="1.5"
-                                    stroke="#323232"
-                                    fill="none"
-                                    fillRule="evenodd"
-                                    strokeLinecap="round"
-                                >
-                                    <path d="M1 1l13.2 13.2M14.2 1L1 14.2" />
-                                </g>
-                            </svg>
-                        </span>
-                    </Button>
-                    {currentStream && (
-                        <div className="d-md-none">
-                            <CopyStreamIdButton
-                                streamId={currentStream.id}
-                                onCopy={addStreamIdCopiedNotification}
-                            />
-                        </div>
-                    )}
-                    <a
-                        href="#"
-                        className={classnames(styles.toggleSidebarButton, 'ff-plex-mono', 'uppercase', 'd-none', 'd-md-inline', 'd-xl-none')}
-                        onClick={this.toggleSidebar}
-                    >
-                        <Translate
-                            value={this.state.sidebarVisible ?
-                                'modal.streamLiveData.inspectorSidebar.hide' :
-                                'modal.streamLiveData.inspectorSidebar.show'}
-                        />
-                    </a>
-                </div>
-                <div className={styles.tableContainer}>
-                    <div className={styles.innerTableContainer}>
-                        <h2 className={styles.title}>
-                            {currentStream && currentStream.name}
-                            <p className={styles.subtitle}>
-                                {hasData ? (
-                                    <Translate value="modal.streamLiveData.liveData" />
-                                ) :
-                                    <Translate value="modal.streamLiveData.noLiveData" />
-                                }
-                            </p>
-                        </h2>
-                        <div className={styles.body}>
-                            {currentStream && (
-                                <StreamLivePreviewTable
-                                    key={`${currentStream.id}${String(authApiKeyId)}`} // Rerender if streamId or apiKey changes
-                                    streamId={currentStream.id}
-                                    currentUser={currentUser}
-                                    authApiKeyId={authApiKeyId}
-                                    onSelectDataPoint={this.onSelectDataPoint}
-                                    selectedDataPoint={this.state.selectedDataPoint}
-                                    hasData={this.setHasData}
-                                />
-                            )}
-                        </div>
-                        {productId &&
-                            <div className={styles.footer}>
-                                <Button
-                                    outline
-                                    color="secondary"
-                                    disabled={!prevStreamId}
-                                    className={classnames(styles.button, styles.prevbutton)}
-                                    to={prevStreamUrl}
-                                    tag={Link}
-                                >
-                                    <Translate value="modal.streamLiveData.previous" />
-                                </Button>
-                                <Button
-                                    outline
-                                    color="secondary"
-                                    disabled={!nextStreamId}
-                                    className={classnames(styles.button, styles.nextButton)}
-                                    to={nextStreamUrl}
-                                    tag={Link}
-                                >
-                                    <Translate value="modal.streamLiveData.next" />
-                                </Button>
-                            </div>
-                        }
-                    </div>
-                </div>
-                <div
-                    className={classnames(styles.sidebar, 'd-none d-md-block', {
-                        [styles.visible]: this.state.sidebarVisible, // only affects on tablet
-                    })}
+    return (
+        <div className={styles.streamLiveDataDialog}>
+            <BodyClass className="overflow-hidden" />
+            <LoadingIndicator
+                className={styles.loadingIndicator}
+                loading={!hasLoaded}
+            />
+            <div className={styles.closeRow}>
+                <Button
+                    className={classnames(styles.closeButton)}
+                    onClick={onClose}
                 >
-                    <InspectorSidebar
-                        streamId={currentStream && currentStream.id}
-                        dataPoint={this.state.selectedDataPoint}
-                        currentUser={currentUser}
-                        onStreamIdCopy={addStreamIdCopiedNotification}
+                    <span className={styles.icon}>
+                        <svg width="15" height="15" xmlns="http://www.w3.org/2000/svg">
+                            <g
+                                strokeWidth="1.5"
+                                stroke="#323232"
+                                fill="none"
+                                fillRule="evenodd"
+                                strokeLinecap="round"
+                            >
+                                <path d="M1 1l13.2 13.2M14.2 1L1 14.2" />
+                            </g>
+                        </svg>
+                    </span>
+                </Button>
+                {currentStream && (
+                    <div className="d-md-none">
+                        <CopyStreamIdButton
+                            streamId={currentStream.id}
+                            onCopy={addStreamIdCopiedNotification}
+                        />
+                    </div>
+                )}
+                <a
+                    href="#"
+                    className={classnames(styles.toggleSidebarButton, 'ff-plex-mono', 'uppercase', 'd-none', 'd-md-inline', 'd-xl-none')}
+                    onClick={toggleSidebar}
+                >
+                    <Translate
+                        value={sidebarVisible ?
+                            'modal.streamLiveData.inspectorSidebar.hide' :
+                            'modal.streamLiveData.inspectorSidebar.show'}
                     />
+                </a>
+            </div>
+            <div className={styles.tableContainer}>
+                <div className={styles.innerTableContainer}>
+                    <h2 className={styles.title}>
+                        {currentStream && currentStream.name}
+                        <p className={styles.subtitle}>
+                            {hasData ? (
+                                <Translate value="modal.streamLiveData.liveData" />
+                            ) :
+                                <Translate value="modal.streamLiveData.noLiveData" />
+                            }
+                        </p>
+                    </h2>
+                    <div className={styles.body}>
+                        {currentStream && (
+                            <StreamLivePreviewTable
+                                key={`${currentStream.id}`} // Rerender if streamId or apiKey changes
+                                streamId={currentStream.id}
+                                currentUser={currentUser}
+                                onSelectDataPoint={onSelectDataPoint}
+                                selectedDataPoint={selectedDataPoint}
+                                hasData={setData}
+                            />
+                        )}
+                    </div>
+                    {productId &&
+                        <div className={styles.footer}>
+                            <Button
+                                kind="secondary"
+                                disabled={!prevStreamId}
+                                className={styles.button}
+                                to={prevStreamUrl}
+                                tag={Link}
+                            >
+                                <Translate value="modal.streamLiveData.previous" />
+                            </Button>
+                            <Button
+                                kind="secondary"
+                                disabled={!nextStreamId}
+                                className={styles.button}
+                                to={nextStreamUrl}
+                                tag={Link}
+                            >
+                                <Translate value="modal.streamLiveData.next" />
+                            </Button>
+                        </div>
+                    }
                 </div>
             </div>
-        )
-    }
+            <div
+                className={classnames(styles.sidebar, 'd-none d-md-block', {
+                    [styles.visible]: sidebarVisible, // only affects on tablet
+                })}
+            >
+                <InspectorSidebar
+                    streamId={currentStream && currentStream.id}
+                    dataPoint={selectedDataPoint}
+                    currentUser={currentUser}
+                    onStreamIdCopy={addStreamIdCopiedNotification}
+                />
+            </div>
+        </div>
+    )
 }
 
-export default StreamPreviewPage
+export default (props: Props) => (
+    <ClientProvider key={props.match.params.streamId}>
+        <StreamPreviewPage {...props} />
+    </ClientProvider>
+)

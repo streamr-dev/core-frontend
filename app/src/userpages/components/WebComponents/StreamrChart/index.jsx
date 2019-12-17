@@ -65,7 +65,7 @@ export default class StreamrChartComponent extends Component<Props, State> {
         if (root) {
             this.chart = new StreamrChart(root, {
                 ...this.state.options,
-                ...options,
+                ...(options: Object),
             })
         }
     }

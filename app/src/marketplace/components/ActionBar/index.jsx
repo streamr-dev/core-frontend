@@ -4,13 +4,14 @@ import React, { Component } from 'react'
 import BN from 'bignumber.js'
 import { Link } from 'react-router-dom'
 import classNames from 'classnames'
-import { Container, Button } from 'reactstrap'
+import { Container } from 'reactstrap'
 import { Translate, I18n } from 'react-redux-i18n'
 
 import links from '../../../links'
 import type { Filter, SearchFilter, CategoryFilter, SortByFilter } from '../../flowtype/product-types'
 import type { Category } from '../../flowtype/category-types'
 import { isValidSearchQuery } from '../../utils/validate'
+import Button from '$shared/components/Button'
 
 import SearchInput from './SearchInput'
 import FilterSelector from './FilterSelector'
@@ -23,6 +24,7 @@ export type Props = {
     onCategoryChange: (filter: Filter) => void,
     onSortChange: (filter: Filter) => void,
     onSearchChange: (filter: Filter) => void,
+    onCreateProduct: () => void,
 }
 
 class ActionBar extends Component<Props> {
@@ -87,7 +89,7 @@ class ActionBar extends Component<Props> {
     }
 
     render() {
-        const { filter: { search, categories: category, sortBy, maxPrice }, categories } = this.props
+        const { filter: { search, categories: category, sortBy, maxPrice }, categories, onCreateProduct } = this.props
         return (
             <div className={styles.actionBar}>
                 <SearchInput value={search} onChange={this.onSearchChange} onClear={this.clearSearch} />
@@ -133,11 +135,20 @@ class ActionBar extends Component<Props> {
                                 </FilterSelector>
                             </li>
                             <li className={classNames('d-none d-md-block', styles.createProduct)}>
-                                <Link to={links.marketplace.createProduct}>
-                                    <Button className={styles.createProductButton} color="secondary" outline>
+                                {!!process.env.COMMUNITY_PRODUCTS && (
+                                    <Button
+                                        kind="secondary"
+                                        type="button"
+                                        onClick={() => onCreateProduct()}
+                                    >
                                         <Translate value="actionBar.create" />
                                     </Button>
-                                </Link>
+                                )}
+                                {!process.env.COMMUNITY_PRODUCTS && (
+                                    <Button kind="secondary" tag={Link} to={links.marketplace.createProduct}>
+                                        <Translate value="actionBar.create" />
+                                    </Button>
+                                )}
                             </li>
                         </ul>
                     </Container>

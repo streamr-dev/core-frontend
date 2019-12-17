@@ -11,9 +11,12 @@ import type { SmartContractTransaction } from '$shared/flowtype/web3-types'
 import { gasLimits } from '$shared/utils/constants'
 import { getValidId } from '$mp/utils/product'
 
-export const addFreeProduct = async (id: ProductId, endsAt: number): ApiResult<null> => post(formatApiUrl('subscriptions'), {
-    product: getValidId(id, false),
-    endsAt,
+export const addFreeProduct = async (id: ProductId, endsAt: number): ApiResult<null> => post({
+    url: formatApiUrl('subscriptions'),
+    data: {
+        product: getValidId(id, false),
+        endsAt,
+    },
 })
 
 const contractMethods = () => getContract(getConfig().marketplace).methods

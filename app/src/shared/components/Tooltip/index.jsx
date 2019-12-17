@@ -39,11 +39,11 @@ export default function Tooltip(props: Props) {
         <div id={id} className={styles.tooltipContainer}>
             {children}
             <RsTooltip
+                {...otherProps}
                 innerClassName={styles.tooltip}
                 hideArrow
                 placement="top"
                 delay={DELAY}
-                {...otherProps}
                 isOpen={isOpen}
                 target={id}
                 toggle={toggleIsOpen}

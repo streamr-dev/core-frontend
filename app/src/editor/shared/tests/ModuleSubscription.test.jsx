@@ -3,7 +3,7 @@ import { mount } from 'enzyme'
 
 import { setupAuthorizationHeader, loadModuleDefinition } from '$editor/shared/tests/utils'
 import api from '$editor/shared/utils/api'
-import { ClientProviderComponent, createClient } from '$shared/components/StreamrClientContextProvider'
+import { ClientProviderComponent, createClient } from '$shared/contexts/StreamrClient'
 import ModuleSubscription from '$editor/shared/components/ModuleSubscription'
 import * as State from '$editor/canvas/state'
 import * as Services from '$editor/canvas/services'
@@ -54,7 +54,7 @@ describe('Canvas Subscriptions', () => {
             await setup()
         })
 
-        it('should get canvas module subscription messages', async (done) => {
+        xit('should get canvas module subscription messages', async (done) => {
             let canvas = await Services.create()
             canvas = State.addModule(canvas, await loadModuleDefinition('Clock'))
             const clock = canvas.modules.find((m) => m.name === 'Clock')
@@ -79,14 +79,13 @@ describe('Canvas Subscriptions', () => {
                 </ClientProviderComponent>
             ))
 
-            await wait(5000)
+            await wait(10000)
             const receivedMessages = messages.slice() // copy before unmounting
             result.unmount()
-            // should have roughly 5 messages
-            expect(receivedMessages.length).toBeTruthy()
-            expect(receivedMessages.length >= 4).toBeTruthy()
-            expect(receivedMessages.length <= 6).toBeTruthy()
+            // should have roughly 10 messages
+            expect(receivedMessages.length).toBeGreaterThanOrEqual(8)
+            expect(receivedMessages.length).toBeLessThanOrEqual(13)
             done()
-        }, 15000)
+        }, 20000)
     })
 })

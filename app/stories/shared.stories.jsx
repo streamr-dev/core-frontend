@@ -3,14 +3,13 @@ import React from 'react'
 
 import { storiesOf } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
-import { withKnobs, text, array, number, boolean } from '@storybook/addon-knobs'
+import { withKnobs, text, number, boolean } from '@storybook/addon-knobs'
 import StoryRouter from 'storybook-react-router'
 import styles from '@sambego/storybook-styles'
 import { Row, Col } from 'reactstrap'
 
 import Toggle from '$shared/components/Toggle'
 import Table from '$shared/components/Table'
-import FileUpload from '$shared/components/FileUpload'
 import Checkbox from '$shared/components/Checkbox'
 import DropdownActions from '$shared/components/DropdownActions'
 import Meatball from '$shared/components/Meatball'
@@ -32,7 +31,7 @@ import PngIcon from '$shared/components/PngIcon'
 import Dropdown from '$shared/components/Dropdown'
 import Slider from '$shared/components/Slider'
 import Modal from '$shared/components/Modal'
-import ModalRoot from '$shared/components/ModalRoot'
+import { Provider as ModalPortalProvider } from '$shared/contexts/ModalPortal'
 import ErrorDialog from '$mp/components/Modal/ErrorDialog'
 import Notifications from '$shared/components/Notifications'
 import Notification from '$shared/utils/Notification'
@@ -40,12 +39,12 @@ import CodeSnippet from '$shared/components/CodeSnippet'
 import Tooltip from '$shared/components/Tooltip'
 import ContextMenu from '$shared/components/ContextMenu'
 import { NotificationIcon } from '$shared/utils/constants'
-import RadioButtonGroup from '$shared/components/RadioButtonGroup'
 import Toolbar from '$shared/components/Toolbar'
+import Spinner from '$shared/components/Spinner'
 import DeploySpinner from '$shared/components/DeploySpinner'
 import Label from '$shared/components/Label'
 import Tile from '$shared/components/Tile'
-import DonutChart from '$shared/components/DonutChart'
+import Button from '$shared/components/Button'
 
 import sharedStyles from './shared.pcss'
 
@@ -181,24 +180,6 @@ story('Table')
         </Table>
     ))
 
-story('FileUpload')
-    .addWithJSX('basic', () => (
-        <FileUpload
-            style={{
-                color: 'black',
-            }}
-            component={<span>Drag a file here or click to browse</span>}
-            dropTargetComponent={<span>Drop here!</span>}
-            dragOverComponent={<span>Yay, just drop it!</span>}
-            onFilesAccepted={action('onFilesAccepted')}
-            onError={action('onError')}
-            acceptMime={array('acceptMime', ['image/jpeg', 'image/png'])}
-            maxFileSizeInMB={number('maxFileSizeInMB', 5)}
-            multiple={false}
-            disablePreview
-        />
-    ))
-
 class CheckboxContainer extends React.Component {
     constructor() {
         super()
@@ -252,6 +233,41 @@ story('Text Field/Text')
         <TextInput preserveLabelSpace label="With invalid value" value="Something invalid" error="Oh, something went wrong!" />
     ))
 
+story('Text Field/With actions')
+    .addWithJSX('basic', () => (
+        <TextInput
+            preserveLabelSpace
+            label="I have a Meatball menu"
+            actions={
+                [
+                    <DropdownActions.Item>
+                        Test 1
+                    </DropdownActions.Item>,
+                    <DropdownActions.Item>
+                        Test 2
+                    </DropdownActions.Item>,
+                ]
+            }
+        />
+    ))
+    .addWithJSX('disabled', () => (
+        <TextInput
+            preserveLabelSpace
+            disabled
+            label="I have a Meatball menu"
+            actions={
+                [
+                    <DropdownActions.Item>
+                        Test 1
+                    </DropdownActions.Item>,
+                    <DropdownActions.Item>
+                        Test 2
+                    </DropdownActions.Item>,
+                ]
+            }
+        />
+    ))
+
 story('Text Field/Password')
     .addWithJSX('basic', () => (
         <TextInput preserveLabelSpace label="Password…" value={text('value', '')} type="password" measureStrength />
@@ -264,6 +280,26 @@ story('Text Field/Password')
     ))
     .addWithJSX('min strength 2', () => (
         <TextInput preserveLabelSpace label="" value={text('value', 'You shall not pass!')} type="password" measureStrength />
+    ))
+
+story('Text Field/Number')
+    .addWithJSX('basic', () => (
+        <TextInput preserveLabelSpace label="Count" type="number" />
+    ))
+    .addWithJSX('with predefined value', () => (
+        <TextInput preserveLabelSpace label="Count" type="number" value="5" />
+    ))
+    .addWithJSX('with min, max & step', () => (
+        <TextInput preserveLabelSpace label="Count" type="number" min="0" max="10" step="2" />
+    ))
+    .addWithJSX('hidden buttons', () => (
+        <TextInput preserveLabelSpace label="Count" type="number" hideButtons />
+    ))
+    .addWithJSX('without label', () => (
+        <TextInput label="" type="number" />
+    ))
+    .addWithJSX('with error', () => (
+        <TextInput preserveLabelSpace label="Count" type="number" error="Error" />
     ))
 
 class SelectInputContainer extends React.Component {
@@ -445,7 +481,7 @@ story('Dialog')
         if (boolean('hasCancel', true)) {
             actions.cancel = {
                 title: 'Cancel',
-                outline: true,
+                kind: 'link',
                 onClick: action('onDismiss'),
             }
         }
@@ -454,7 +490,7 @@ story('Dialog')
             const waitingForSave = boolean('waitingForSave', false)
             actions.ok = {
                 title: waitingForSave ? 'Saving....' : 'Save',
-                color: 'primary',
+                kind: 'primary',
                 onClick: action('onSave'),
                 disabled: waitingForSave,
                 spinner: waitingForSave,
@@ -585,7 +621,7 @@ story('Modal')
     .addWithJSX('basic', () => (
         <React.Fragment>
             <div id="modal-root" />
-            <ModalRoot>
+            <ModalPortalProvider>
                 <h1>Lorem ipsum cause dolor sit emat!</h1>
                 {boolean('Visible', true) && (
                     <Modal>
@@ -596,7 +632,7 @@ story('Modal')
                         />
                     </Modal>
                 )}
-            </ModalRoot>
+            </ModalPortalProvider>
         </React.Fragment>
     ))
 
@@ -607,7 +643,7 @@ story('Notifications')
         return (
             <React.Fragment>
                 <div id="modal-root" />
-                <ModalRoot>
+                <ModalPortalProvider>
                     <button
                         type="button"
                         onClick={() => {
@@ -642,7 +678,7 @@ story('Notifications')
                             />
                         </Modal>
                     )}
-                </ModalRoot>
+                </ModalPortalProvider>
             </React.Fragment>
         )
     })
@@ -711,34 +747,15 @@ story('Tooltip')
         </Tooltip>
     ))
 
-story('RadioButtonGroup')
-    .addWithJSX('basic', () => (
-        <RadioButtonGroup
-            name="group"
-            options={['value 1', 'value 2', 'value 3']}
-            selectedOption="value 2"
-            onChange={action('selected')}
-        />
-    ))
-    .addWithJSX('disabled', () => (
-        <RadioButtonGroup
-            name="group"
-            options={['value 1', 'value 2', 'value 3']}
-            selectedOption="value 2"
-            onChange={action('selected')}
-            disabled
-        />
-    ))
-
 const toolbarActions = {
     cancel: {
         title: 'Cancel',
-        color: 'link',
+        kind: 'link',
         onClick: action('cancel'),
     },
     ok: {
         title: 'Ok',
-        color: 'primary',
+        kind: 'primary',
         onClick: action('ok'),
         disabled: boolean('disabled'),
         spinner: boolean('spinner'),
@@ -883,26 +900,51 @@ story('Tile')
         </div>
     ))
 
-story('DonutChart')
-    .addWithJSX('basic', () => (
-        <DonutChart
-            strokeWidth={5}
-            data={[
-                {
-                    title: '1',
-                    value: 50,
-                    color: 'red',
-                },
-                {
-                    title: '2',
-                    value: 25,
-                    color: 'blue',
-                },
-                {
-                    title: '3',
-                    value: 25,
-                    color: 'green',
-                },
-            ]}
-        />
+story('Spinner')
+    .addWithJSX('Small', () => (<Spinner size="small" />))
+    .addWithJSX('Large', () => (<Spinner size="large" />))
+    .addWithJSX('Green', () => (<Spinner color="green" />))
+    .addWithJSX('White', () => (<Spinner color="white" />))
+
+story('Button')
+    .addWithJSX('all', () => (
+        <div>
+            <Button kind="primary" size="mini" onClick={action('Clicked')}>Primary mini</Button>
+            <br />
+            <Button kind="primary" size="normal" onClick={action('Clicked')}>Primary normal</Button>
+            <br />
+            <Button kind="primary" size="big" onClick={action('Clicked')}>Primary big</Button>
+            <br />
+            <Button kind="primary" size="normal" disabled onClick={action('Clicked')}>Primary normal disabled</Button>
+            <br />
+            <Button kind="primary" size="normal" outline onClick={action('Clicked')}>Primary normal outline</Button>
+            <br />
+            <Button kind="secondary" size="mini" onClick={action('Clicked')}>Secondary mini</Button>
+            <br />
+            <Button kind="secondary" size="normal" onClick={action('Clicked')}>Secondary normal</Button>
+            <br />
+            <Button kind="secondary" size="big" onClick={action('Clicked')}>Secondary big</Button>
+            <br />
+            <Button kind="secondary" size="normal" disabled onClick={action('Clicked')}>Secondary normal disabled</Button>
+            <br />
+            <Button kind="secondary" size="normal" outline onClick={action('Clicked')}>Secondary normal outline</Button>
+            <br />
+            <Button kind="destructive" onClick={action('Clicked')}>Destructive</Button>
+            <br />
+            <Button kind="destructive" disabled onClick={action('Clicked')}>Destructive disabled</Button>
+            <br />
+            <Button kind="link" variant="dark" onClick={action('Clicked')}>Link (dark)</Button>
+            <br />
+            <Button kind="link" variant="light" onClick={action('Clicked')}>Link (light)</Button>
+            <br />
+            <Button kind="special" variant="dark" onClick={action('Clicked')}>Special (dark)</Button>
+            <br />
+            <Button kind="special" variant="light" onClick={action('Clicked')}>Special (light)</Button>
+            <br />
+            <Button tag="a" href="#" onClick={action('Clicked')}>With link tag</Button>
+            <br />
+            <Button kind="primary" waiting onClick={action('Clicked')}>Waiting primary</Button>
+            <br />
+            <Button kind="secondary" waiting onClick={action('Clicked')}>Waiting secondary</Button>
+        </div>
     ))

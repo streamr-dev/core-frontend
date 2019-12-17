@@ -1,6 +1,7 @@
 // @flow
 
 import '$shared/assets/stylesheets'
+import '@ibm/plex/css/ibm-plex.css'
 
 import React from 'react'
 import { Route as RouterRoute, Switch, Redirect, type Location } from 'react-router-dom'
@@ -11,7 +12,6 @@ import qs from 'query-string'
 import ProductPage from '$mp/containers/deprecated/ProductPage'
 import ProductPage2 from '$mp/containers/ProductPage'
 import StreamPreviewPage from '$mp/containers/StreamPreviewPage'
-import CreateProductPage from '$mp/containers/CreateProductPage'
 import EditProductPage from '$mp/containers/deprecated/EditProductPage'
 import EditProductPage2 from '$mp/containers/EditProductPage'
 import Products from '$mp/containers/Products'
@@ -90,7 +90,8 @@ import CanvasEditor from '$editor/canvas'
 import CanvasEmbed from '$editor/canvas/components/Embed'
 import DashboardEditor from '$editor/dashboard'
 
-import ModalRoot from '$shared/components/ModalRoot'
+import { Provider as ModalPortalProvider } from '$shared/contexts/ModalPortal'
+import { Provider as ModalProvider } from '$shared/contexts/ModalApi'
 import Notifications from '$shared/components/Notifications'
 import { formatPath } from '$shared/utils/url'
 import { userIsAuthenticated } from '$auth/utils/userAuthenticated'
@@ -111,7 +112,6 @@ import routes from '$routes'
 // Wrap authenticated components here instead of render() method
 // Marketplace Auth
 const CreateProductAuth = userIsAuthenticated(EditProductPage)
-const CreateProductAuth2 = userIsAuthenticated(CreateProductPage)
 const EditProductAuth = userIsAuthenticated(EditProductPage)
 const EditProductAuth2 = userIsAuthenticated(EditProductPage2)
 
@@ -157,7 +157,6 @@ const AuthenticationRouter = () => ([
 
 const MarketplaceRouter = () => (process.env.COMMUNITY_PRODUCTS ? [
     <Route exact path={marketplace.main} component={Products} key="Products" />,
-    <Route exact path={links.marketplace.createProduct} component={CreateProductAuth2} key="CreateProduct" />,
     <Route exact path={formatPath(marketplace.products, ':id', 'streamPreview', ':streamId')} component={StreamPreviewPage} key="StreamPreview" />,
     <Route exact path={formatPath(marketplace.products, ':id')} component={ProductPage2} key="ProductPage2" />,
     <Route exact path={routes.editProduct()} component={EditProductAuth2} key="EditProduct" />,
@@ -334,21 +333,23 @@ const MiscRouter = () => ([
 const App = () => (
     <ConnectedRouter history={history}>
         <SessionProvider>
-            <ModalRoot>
-                <LocaleSetter />
-                <AutoScroll />
-                <Analytics />
-                <Switch>
-                    {AuthenticationRouter()}
-                    {MarketplaceRouter()}
-                    {DocsRouter()}
-                    {UserpagesRouter()}
-                    {EditorRouter()}
-                    {MiscRouter()}
-                </Switch>
-                <Notifications />
-                {isProduction() && <GoogleAnalyticsTracker />}
-            </ModalRoot>
+            <ModalPortalProvider>
+                <ModalProvider>
+                    <LocaleSetter />
+                    <AutoScroll />
+                    <Analytics />
+                    <Switch>
+                        {AuthenticationRouter()}
+                        {MarketplaceRouter()}
+                        {DocsRouter()}
+                        {UserpagesRouter()}
+                        {EditorRouter()}
+                        {MiscRouter()}
+                    </Switch>
+                    <Notifications />
+                    {isProduction() && <GoogleAnalyticsTracker />}
+                </ModalProvider>
+            </ModalPortalProvider>
         </SessionProvider>
     </ConnectedRouter>
 )

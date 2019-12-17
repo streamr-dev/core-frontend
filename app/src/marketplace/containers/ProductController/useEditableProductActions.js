@@ -4,7 +4,7 @@ import { useMemo, useCallback, useContext } from 'react'
 import { useSelector } from 'react-redux'
 import BN from 'bignumber.js'
 
-import { Context as UndoContext } from '$shared/components/UndoContextProvider'
+import { Context as UndoContext } from '$shared/contexts/Undo'
 import { Context as ValidationContext } from './ValidationContextProvider'
 
 import useEditableProductUpdater from '../ProductController/useEditableProductUpdater'

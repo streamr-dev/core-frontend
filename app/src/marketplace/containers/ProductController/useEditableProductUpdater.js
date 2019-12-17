@@ -1,7 +1,7 @@
 import { useMemo, useContext } from 'react'
 
 import useOnlyIfMountedCallback from '$shared/hooks/useOnlyIfMountedCallback'
-import { Context as UndoContext } from '$shared/components/UndoContextProvider'
+import { Context as UndoContext } from '$shared/contexts/Undo'
 
 function productUpdater(fn) {
     return (product) => {

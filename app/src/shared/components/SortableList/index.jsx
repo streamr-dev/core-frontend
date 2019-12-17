@@ -16,15 +16,24 @@ type Props = {
     children: Node,
 }
 
-const SortableList = ({ children, ...props }: Props) => (
-    <div {...props}>
-        {React.Children.map(children, (child, index) => (
-            <SortableItem index={index}>
-                {child}
-            </SortableItem>
-        ))}
-    </div>
-)
+const SortableList = ({ children, ...props }: Props) => {
+    const len = React.Children.count(children)
+
+    return (
+        <div {...props}>
+            {React.Children.map(children, (child, index) => (
+                <SortableItem
+                    index={index}
+                    style={{
+                        zIndex: len - index,
+                    }}
+                >
+                    {child}
+                </SortableItem>
+            ))}
+        </div>
+    )
+}
 
 const Sortable = SortableContainer(SortableList)
 

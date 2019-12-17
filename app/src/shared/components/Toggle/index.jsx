@@ -40,11 +40,11 @@ class ControlledToggle extends Component<Props, State> {
                     })}
                 >
                     <input
+                        {...rest}
                         type="checkbox"
                         onChange={this.onChange}
                         checked={value}
                         disabled={disabled}
-                        {...rest}
                     />
                     <span className={cx(styles.slider)} />
                 </label>

@@ -287,6 +287,9 @@ msgstr "Description"
 msgid "userpages##streams##edit##details##streamId"
 msgstr "Stream ID"
 
+msgid "userpages##streams##edit##details##partitions"
+msgstr "Partitions"
+
 msgid "userpages##streams##edit##details##copyStreamId"
 msgstr "Copy Stream ID"
 
@@ -324,7 +327,7 @@ msgid "userpages##streams##edit##configure##delete"
 msgstr "Delete"
 
 msgid "userpages##streams##edit##configure##addField"
-msgstr "+ Add field"
+msgstr "Add field"
 
 msgid "userpages##streams##edit##configure##help"
 msgstr "You can configure your stream’s fields and data types here. This affects how this stream appears on canvases. You can choose to have Streamr try to autoconfigure fields, or you can edit them yourself."
@@ -351,7 +354,13 @@ msgid "userpages##streams##edit##preview##description"
 msgstr "This stream's most recent data is shown here live. Use the Inspector to view the full details of the messages."
 
 msgid "userpages##streams##edit##preview##inspect"
-msgstr "Inspect"
+msgstr "Inspect data"
+
+msgid "userpages##streams##edit##preview##start"
+msgstr "Start"
+
+msgid "userpages##streams##edit##preview##stop"
+msgstr "Stop"
 
 msgid "userpages##streams##edit##preview##noDataPre"
 msgstr "This Stream has no data yet. Check out the "
@@ -631,7 +640,7 @@ msgstr ""
 "As they give the holder complete power over your account, please be cautious when sharing these keys."
 
 msgid "userpages##profilePage##apiCredentials##addAPIKey"
-msgstr "+ Add new key"
+msgstr "Add new key"
 
 msgid "userpages##profilePage##ethereumAddress##title"
 msgstr "Ethereum Address"
@@ -645,10 +654,10 @@ msgstr ""
 "You might use them for the Ethereum one-click login feature or for buying and selling products on the Marketplace."
 
 msgid "userpages##profilePage##ethereumAddress##addAddress"
-msgstr "+ Add address"
+msgstr "Add address"
 
 msgid "userpages##profilePage##ethereumAddress##addNewAddress"
-msgstr "+ Add new address"
+msgstr "Add new address"
 
 msgid "userpages##profilePage##ethereumAddress##notMetamaskEnabledBrowser"
 msgstr ""
@@ -718,6 +727,12 @@ msgstr "Save avatar"
 
 msgid "modal##avatar##saveAndApplyAvatar"
 msgstr "Save & Apply"
+
+msgid "modal##cropImage##title"
+msgstr "Scale and crop your image"
+
+msgid "modal##cropImage##apply"
+msgstr "Apply"
 
 msgid "userpages##keyField##options"
 msgstr "Select"

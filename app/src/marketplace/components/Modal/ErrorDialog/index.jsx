@@ -20,7 +20,7 @@ const ErrorDialog = ({ title, message, waiting, onClose }: Props) => (
         actions={{
             dismiss: {
                 title: I18n.t('modal.common.ok'),
-                color: 'primary',
+                kind: 'primary',
                 onClick: onClose,
             },
         }}

@@ -1,10 +1,10 @@
 // @flow
 
 import React, { Component } from 'react'
-import { Button } from 'reactstrap'
 import { I18n, Translate } from 'react-redux-i18n'
 
-import Dropdown from '$shared/components/Dropdown'
+import Button from '$shared/components/Button'
+import SelectInput from '$shared/components/SelectInput'
 import TextInput from '$shared/components/TextInput'
 import type { StreamField } from '$shared/flowtype/stream-types'
 import SplitControl from '$userpages/components/SplitControl'
@@ -25,10 +25,15 @@ type State = {
 }
 
 export class NewFieldEditor extends Component<Props, State> {
+    typeOptions: Array<any> = fieldTypes.map((t) => ({
+        value: t,
+        label: I18n.t(`userpages.streams.fieldTypes.${t}`),
+    }))
+
     state = {
         name: '',
         nameError: null,
-        type: fieldTypes[0],
+        type: this.typeOptions[0].value,
     }
 
     onNameChange = (value: string) => {
@@ -37,9 +42,9 @@ export class NewFieldEditor extends Component<Props, State> {
         }, this.validate)
     }
 
-    onTypeChange = (value: string) => {
+    onTypeChange = (option: any) => {
         this.setState({
-            type: value,
+            type: option.value,
         })
     }
 
@@ -96,23 +101,18 @@ export class NewFieldEditor extends Component<Props, State> {
                         autoFocus
                         onKeyPress={(e) => this.handleKeyPress(e.key)}
                     />
-                    <Dropdown
-                        title=""
-                        selectedItem={type}
+                    <SelectInput
+                        label="Data type"
+                        name="type"
+                        className={styles.select}
+                        options={this.typeOptions}
+                        value={this.typeOptions.find((t) => t.value === type)}
                         onChange={this.onTypeChange}
-                        className={styles.dropdownToggle}
-                    >
-                        {fieldTypes.map((t) => (
-                            <Dropdown.Item
-                                key={t}
-                                value={t}
-                            >
-                                <Translate value={`userpages.streams.fieldTypes.${t}`} />
-                            </Dropdown.Item>
-                        ))}
-                    </Dropdown>
+                        preserveLabelSpace={false}
+                    />
                 </SplitControl>
                 <Button
+                    kind="secondary"
                     disabled={nameError !== null}
                     className={styles.addButton}
                     onClick={this.onConfirm}
@@ -120,9 +120,9 @@ export class NewFieldEditor extends Component<Props, State> {
                     <Translate value="userpages.streams.edit.configure.newFieldEditor.add" />
                 </Button>
                 <Button
+                    kind="link"
                     className={styles.cancelButton}
                     onClick={onCancel}
-                    color="link"
                 >
                     <Translate value="userpages.streams.edit.configure.newFieldEditor.cancel" />
                 </Button>

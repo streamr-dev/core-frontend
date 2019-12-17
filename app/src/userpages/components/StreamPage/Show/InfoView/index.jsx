@@ -1,170 +1,126 @@
 // @flow
 
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import { Button } from 'reactstrap'
-import copy from 'copy-to-clipboard'
+import React, { useEffect, useRef, useCallback } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import { I18n, Translate } from 'react-redux-i18n'
 
 import Notification from '$shared/utils/Notification'
-import type { Stream } from '$shared/flowtype/stream-types'
-import type { StoreState } from '$shared/flowtype/store-state'
 import TextInput from '$shared/components/TextInput'
+import DropdownActions from '$shared/components/DropdownActions'
 import { updateEditStreamField } from '$userpages/modules/userPageStreams/actions'
 import { selectEditedStream } from '$userpages/modules/userPageStreams/selectors'
 import { NotificationIcon } from '$shared/utils/constants'
-import SplitControl from '$userpages/components/SplitControl'
+import useCopy from '$shared/hooks/useCopy'
 import PartitionsView from '../PartitionsView'
+import type { StreamId } from '$shared/flowtype/stream-types'
 
 import styles from './infoView.pcss'
 
-type OwnProps = {
+type Props = {
     disabled: boolean,
 }
 
-type StateProps = {
-    stream: ?Stream,
-}
+export const InfoView = ({ disabled }: Props) => {
+    const stream = useSelector(selectEditedStream)
+    const dispatch = useDispatch()
+    const { copy } = useCopy()
+    const contentChangedRef = useRef(false)
+    const streamRef = useRef()
+    streamRef.current = stream
 
-type DispatchProps = {
-    editField: (string, any) => void,
-}
-
-type Props = OwnProps & StateProps & DispatchProps
-
-type State = {
-    idCopied: boolean,
-}
-
-export class InfoView extends Component<Props, State> {
-    contentChanged: boolean = false
-    unmounted: boolean = false
-
-    state = {
-        idCopied: false,
-    }
-
-    componentDidMount() {
-        window.addEventListener('beforeunload', this.onBeforeUnload)
-    }
-
-    componentWillUnmount() {
-        this.unmounted = true
-        window.removeEventListener('beforeunload', this.onBeforeUnload)
-    }
-
-    onBeforeUnload = (e: Event & { returnValue: ?string }): ?string => {
-        if (this.contentChanged) {
-            const message = I18n.t('userpages.streams.edit.details.unsavedChanges')
-            e.returnValue = message
-            return message
+    useEffect(() => {
+        const handleBeforeunload = (event) => {
+            if (contentChangedRef.current) {
+                const message = I18n.t('userpages.streams.edit.details.unsavedChanges')
+                const evt = (event || window.event)
+                evt.returnValue = message // Gecko + IE
+                return message // Webkit, Safari, Chrome etc.
+            }
+            return ''
         }
-    }
 
-    onNameChange = (e: SyntheticInputEvent<EventTarget>) => {
-        const { stream } = this.props
+        window.addEventListener('beforeunload', handleBeforeunload)
+
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeunload)
+        }
+    }, [contentChangedRef])
+
+    const editField = useCallback((field: string, data: any) => {
+        dispatch(updateEditStreamField(field, data))
+    }, [dispatch])
+
+    const onNameChange = useCallback((e: SyntheticInputEvent<EventTarget>) => {
         const name = e.target.value
-        this.contentChanged = this.contentChanged || name !== (stream && stream.name)
-        this.props.editField('name', name)
-    }
+        contentChangedRef.current = contentChangedRef.current || name !== (streamRef.current && streamRef.current.name)
+        editField('name', name)
+    }, [editField])
 
-    onDescriptionChange = (e: SyntheticInputEvent<EventTarget>) => {
-        const { stream = {} } = this.props
+    const onDescriptionChange = useCallback((e: SyntheticInputEvent<EventTarget>) => {
         const description = e.target.value
-        this.contentChanged = this.contentChanged || description !== (stream && stream.description)
-        this.props.editField('description', description)
-    }
+        contentChangedRef.current = contentChangedRef.current || description !== (streamRef.current && streamRef.current.description)
+        editField('description', description)
+    }, [editField])
 
-    copyStreamTap = async (id: string) => {
-        this.setState({
-            idCopied: true,
-        })
+    const onCopy = useCallback((id: StreamId) => {
         copy(id)
-        await new Promise((resolve) => setTimeout(resolve, 1000))
-        if (this.unmounted) { return }
-        this.setState({
-            idCopied: false,
-        })
-        this.addStreamIdCopiedNotification()
-    }
 
-    addStreamIdCopiedNotification = () => {
         Notification.push({
             title: I18n.t('notifications.streamIdCopied'),
             icon: NotificationIcon.CHECKMARK,
         })
-    }
+    }, [copy])
 
-    render() {
-        const { stream, disabled } = this.props
-        const { idCopied } = this.state
-
-        return (
-            <div className={styles.infoView}>
-                <div className={styles.textInput}>
-                    <TextInput
-                        label={I18n.t('userpages.streams.edit.details.name')}
-                        type="text"
-                        name="name"
-                        value={(stream && stream.name) || ''}
-                        onChange={this.onNameChange}
-                        preserveLabelSpace
-                        disabled={disabled}
-                        autoComplete="off"
-                    />
-                </div>
-                <div className={styles.textInput}>
-                    <TextInput
-                        label={I18n.t('userpages.streams.edit.details.description')}
-                        type="text"
-                        name="description"
-                        value={(stream && stream.description) || ''}
-                        onChange={this.onDescriptionChange}
-                        preserveLabelSpace
-                        disabled={disabled}
-                        autoComplete="off"
-                    />
-                </div>
-                {stream && stream.id &&
-                    <React.Fragment>
-                        <SplitControl>
-                            <div className={styles.textInput}>
-                                <TextInput
-                                    label={I18n.t('userpages.streams.edit.details.streamId')}
-                                    type="text"
-                                    name="id"
-                                    value={(stream && stream.id) || ''}
-                                    preserveLabelSpace
-                                    readOnly
-                                    disabled={disabled}
-                                />
-                            </div>
-                            <Button
-                                color="userpages"
-                                className={styles.copyStreamIdButton}
-                                onClick={() => this.copyStreamTap(stream.id)}
-                            >
-                                {idCopied ?
-                                    <Translate value="userpages.streams.edit.details.copied" /> :
-                                    <Translate value="userpages.streams.edit.details.copyStreamId" />
-                                }
-                            </Button>
-                        </SplitControl>
-                        <h5 className={styles.partitions}>Partitions</h5>
-                        <PartitionsView disabled={disabled} />
-                    </React.Fragment>
-                }
+    return (
+        <div className={styles.infoView}>
+            <div className={styles.textInput}>
+                <TextInput
+                    label={I18n.t('userpages.streams.edit.details.name')}
+                    type="text"
+                    name="name"
+                    value={(stream && stream.name) || ''}
+                    onChange={onNameChange}
+                    preserveLabelSpace
+                    disabled={disabled}
+                    autoComplete="off"
+                />
             </div>
-        )
-    }
+            <div className={styles.textInput}>
+                <TextInput
+                    label={I18n.t('userpages.streams.edit.details.description')}
+                    type="text"
+                    name="description"
+                    value={(stream && stream.description) || ''}
+                    onChange={onDescriptionChange}
+                    preserveLabelSpace
+                    disabled={disabled}
+                    autoComplete="off"
+                />
+            </div>
+            {stream && stream.id &&
+                <React.Fragment>
+                    <div className={styles.textInput}>
+                        <TextInput
+                            label={I18n.t('userpages.streams.edit.details.streamId')}
+                            type="text"
+                            name="id"
+                            value={(stream && stream.id) || ''}
+                            preserveLabelSpace
+                            readOnly
+                            disabled={disabled}
+                            actions={[
+                                <DropdownActions.Item key="copy" onClick={() => onCopy(stream.id)}>
+                                    <Translate value="userpages.keyField.copy" />
+                                </DropdownActions.Item>,
+                            ]}
+                        />
+                    </div>
+                    <h5 className={styles.partitions}>{I18n.t('userpages.streams.edit.details.partitions')}</h5>
+                    <PartitionsView disabled={disabled} />
+                </React.Fragment>
+            }
+        </div>
+    )
 }
 
-const mapStateToProps = (state: StoreState): StateProps => ({
-    stream: selectEditedStream(state),
-})
-
-const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
-    editField: (field: string, data: any) => dispatch(updateEditStreamField(field, data)),
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(InfoView)
+export default InfoView

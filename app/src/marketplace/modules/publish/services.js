@@ -9,12 +9,17 @@ import type { ProductId, Product } from '$mp/flowtype/product-types'
 import type { SmartContractTransaction, Hash } from '$shared/flowtype/web3-types'
 import { getValidId, mapProductFromApi } from '$mp/utils/product'
 
-export const postDeployFree = async (id: ProductId): ApiResult<Product> => post(formatApiUrl('products', getValidId(id, false), 'deployFree'))
+export const postDeployFree = async (id: ProductId): ApiResult<Product> => post({
+    url: formatApiUrl('products', getValidId(id, false), 'deployFree'),
+})
     .then(mapProductFromApi)
 
 export const postSetDeploying = async (id: ProductId, txHash: Hash): ApiResult<Product> => (
-    post(formatApiUrl('products', getValidId(id, false), 'setDeploying'), {
-        transactionHash: txHash,
+    post({
+        url: formatApiUrl('products', getValidId(id, false), 'setDeploying'),
+        data: {
+            transactionHash: txHash,
+        },
     }).then(mapProductFromApi)
 )
 

@@ -14,11 +14,13 @@ import type { Permission } from '$userpages/flowtype/permission-types'
 import type { ApiResult } from '$shared/flowtype/common-types'
 import { gasLimits } from '$shared/utils/constants'
 
-import { post, del, get } from '$shared/utils/api'
+import { post, del, get, put } from '$shared/utils/api'
 import { formatApiUrl } from '$shared/utils/url'
 import { postStream, getMyStreamPermissions } from '$userpages/modules/userPageStreams/services'
 import { addStreamResourceKey } from '$shared/modules/resourceKey/services'
 import { getWeb3, getPublicWeb3 } from '$shared/web3/web3Provider'
+
+import type { Secret } from './types'
 
 export const getStreamrEngineAddresses = (): Array<string> => {
     const addressesString = process.env.STREAMR_ENGINE_NODE_ADDRESSES || ''
@@ -26,11 +28,14 @@ export const getStreamrEngineAddresses = (): Array<string> => {
     return addresses
 }
 
-export const addPermission = (id: StreamId, permission: Permission): ApiResult<Array<Permission>> =>
-    post(formatApiUrl('streams', id, 'permissions'), permission)
+export const addPermission = (id: StreamId, permission: Permission): ApiResult<Array<Permission>> => post({
+    url: formatApiUrl('streams', id, 'permissions'),
+    data: permission,
+})
 
-export const deletePermission = (id: StreamId, permissionId: string): ApiResult<Array<Permission>> =>
-    del(formatApiUrl('streams', id, 'permissions', permissionId))
+export const deletePermission = (id: StreamId, permissionId: $PropertyType<Permission, 'id'>): ApiResult<Array<Permission>> => del({
+    url: formatApiUrl('streams', id, 'permissions', permissionId),
+})
 
 export const createJoinPartStream = async (productId: ?ProductId = undefined): Promise<Stream> => {
     const newStream: NewStream = {
@@ -76,7 +81,6 @@ export const createJoinPartStream = async (productId: ?ProductId = undefined): P
 
     // Remove share permission to prevent deleting the stream
     try {
-        // $FlowFixMe
         const myPermissions = await getMyStreamPermissions(stream.id)
         const sharePermission = myPermissions.find((p) => p.operation === 'share')
         if (sharePermission) {
@@ -148,13 +152,9 @@ export const setAdminFee = (address: CommunityId, adminFee: number): SmartContra
 export const getJoinPartStreamId = (address: CommunityId, usePublicNode: boolean = false) =>
     call(getCommunityContract(address, usePublicNode).methods.joinPartStream())
 
-export const getCommunityStats = (id: CommunityId): ApiResult<Object> =>
-    get(formatApiUrl('communities', id, 'stats'))
-
-export const getStreamData = (id: CommunityId, fromTimestamp: number): ApiResult<Object> =>
-    get(formatApiUrl('streams', id, 'data', 'partitions', 0, 'from', {
-        fromTimestamp,
-    }))
+export const getCommunityStats = (id: CommunityId): ApiResult<Object> => get({
+    url: formatApiUrl('communities', id, 'stats'),
+})
 
 export const getCommunityData = async (id: CommunityId, usePublicNode: boolean = true): ApiResult<Object> => {
     const adminFee = await getAdminFee(id, usePublicNode)
@@ -168,3 +168,30 @@ export const getCommunityData = async (id: CommunityId, usePublicNode: boolean =
         owner,
     }
 }
+
+export const getSecrets = (communityId: string): ApiResult<Array<Secret>> =>
+    get({
+        url: formatApiUrl('communities', communityId, 'secrets'),
+    })
+
+export const postSecret = (communityId: string, name: string, secret: string): ApiResult<Secret> =>
+    post({
+        url: formatApiUrl('communities', communityId, 'secrets'),
+        data: {
+            name,
+            secret,
+        },
+    })
+
+export const putSecret = (communityId: string, secretId: string, name: string): ApiResult<Secret> =>
+    put({
+        url: formatApiUrl('communities', communityId, 'secrets', secretId),
+        data: {
+            name,
+        },
+    })
+
+export const deleteSecret = (communityId: string, secretId: string): ApiResult<void> =>
+    del({
+        url: formatApiUrl('communities', communityId, 'secrets', secretId),
+    })

@@ -7,12 +7,11 @@ import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import LoadingIndicator from '$userpages/components/LoadingIndicator'
 import ErrorComponentView from '$shared/components/ErrorComponentView'
 import UndoControls from '$editor/shared/components/UndoControls'
-import { Context as UndoContext, Provider as UndoContextProvider } from '$shared/components/UndoContextProvider'
-import { ClientProvider } from '$shared/components/StreamrClientContextProvider'
+import { Context as UndoContext, Provider as UndoContextProvider } from '$shared/contexts/Undo'
+import { Provider as ClientProvider } from '$shared/contexts/StreamrClient'
 import * as sharedServices from '$editor/shared/services'
-import { Provider as ModalProvider } from '$shared/components/ModalContextProvider'
 import { SelectionProvider } from '$editor/shared/hooks/useSelection'
-import { Provider as PendingProvider } from '$shared/components/PendingContextProvider'
+import { Provider as PendingProvider } from '$shared/contexts/Pending'
 import { useAnyPending } from '$shared/hooks/usePending'
 import CanvasStyles from '$editor/canvas/index.pcss'
 import Sidebar from '$editor/shared/components/Sidebar'
@@ -166,44 +165,42 @@ const DashboardEdit = withRouter(class DashboardEdit extends Component {
         return (
             <div className={styles.DashboardEdit}>
                 <Helmet title={`${dashboard.name} | Streamr Core`} />
-                <ModalProvider>
-                    <Dashboard
-                        className={styles.Dashboard}
-                        dashboard={dashboard}
-                        setDashboard={this.setDashboard}
-                        replaceDashboard={this.replaceDashboard}
-                    />
-                    <DashboardToolbar
-                        className={styles.DashboardToolbar}
-                        dashboard={dashboard}
-                        setDashboard={this.setDashboard}
-                        renameDashboard={this.renameDashboard}
-                        deleteDashboard={this.deleteDashboard}
-                        newDashboard={this.newDashboard}
-                        duplicateDashboard={this.duplicateDashboard}
-                        addModule={this.addModule}
-                        removeModule={this.removeModule}
-                        moduleSearchIsOpen={this.state.moduleSearchIsOpen}
-                        moduleSearchOpen={this.moduleSearchOpen}
-                        keyboardShortcutOpen={this.keyboardShortcutOpen}
-                    />
-                    <Sidebar
-                        className={CanvasStyles.ModuleSidebar}
-                        isOpen={this.state.keyboardShortcutIsOpen}
+                <Dashboard
+                    className={styles.Dashboard}
+                    dashboard={dashboard}
+                    setDashboard={this.setDashboard}
+                    replaceDashboard={this.replaceDashboard}
+                />
+                <DashboardToolbar
+                    className={styles.DashboardToolbar}
+                    dashboard={dashboard}
+                    setDashboard={this.setDashboard}
+                    renameDashboard={this.renameDashboard}
+                    deleteDashboard={this.deleteDashboard}
+                    newDashboard={this.newDashboard}
+                    duplicateDashboard={this.duplicateDashboard}
+                    addModule={this.addModule}
+                    removeModule={this.removeModule}
+                    moduleSearchIsOpen={this.state.moduleSearchIsOpen}
+                    moduleSearchOpen={this.moduleSearchOpen}
+                    keyboardShortcutOpen={this.keyboardShortcutOpen}
+                />
+                <Sidebar
+                    className={CanvasStyles.ModuleSidebar}
+                    isOpen={this.state.keyboardShortcutIsOpen}
+                    onClose={this.keyboardShortcutClose}
+                >
+                    <KeyboardShortcutsSidebar
                         onClose={this.keyboardShortcutClose}
-                    >
-                        <KeyboardShortcutsSidebar
-                            onClose={this.keyboardShortcutClose}
-                        />
-                    </Sidebar>
-                    <DashboardModuleSearch
-                        isOpen={this.state.moduleSearchIsOpen}
-                        open={this.moduleSearchOpen}
-                        removeModule={this.removeModule}
-                        addModule={this.addModule}
-                        dashboard={dashboard}
                     />
-                </ModalProvider>
+                </Sidebar>
+                <DashboardModuleSearch
+                    isOpen={this.state.moduleSearchIsOpen}
+                    open={this.moduleSearchOpen}
+                    removeModule={this.removeModule}
+                    addModule={this.addModule}
+                    dashboard={dashboard}
+                />
             </div>
         )
     }

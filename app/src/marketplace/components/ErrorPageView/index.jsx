@@ -11,6 +11,7 @@ import Layout from '$shared/components/Layout'
 import links from '../../../links'
 import appCrashedImage from '$shared/assets/images/app_crashed.png'
 import appCrashedImage2x from '$shared/assets/images/app_crashed@2x.png'
+import Button from '$shared/components/Button'
 
 import styles from './errorPageView.pcss'
 
@@ -41,18 +42,21 @@ const ErrorPageView = () => (
     <Layout className={styles.errorPageView}>
         <BodyClass className={PAGE_SECONDARY} />
         <ErrorPageContent>
-            <Link
+            <Button
+                kind="special"
+                tag={Link}
                 to={links.marketplace.main}
-                className="btn btn-special"
             >
                 <Translate value="errorPageView.top" />
-            </Link>
-            <Link
+            </Button>
+            <Button
+                kind="special"
+                tag={Link}
                 to={links.userpages.products}
-                className="btn btn-special d-none d-md-inline-block"
+                className="d-none d-md-inline-block"
             >
                 <Translate value="general.products" />
-            </Link>
+            </Button>
         </ErrorPageContent>
     </Layout>
 )

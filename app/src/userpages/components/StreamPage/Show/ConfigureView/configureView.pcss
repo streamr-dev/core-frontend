@@ -16,30 +16,6 @@
   margin-left: 4px;
 }
 
-.deleteFieldButton {
-  display: none;
-  position: absolute;
-  right: -105px;
-  top: 6px;
-  margin: 0;
-  font-weight: var(--regular);
-  font-family: 'IBM Plex Sans', sans-serif;
-  text-transform: capitalize;
-  width: 80px;
-  height: 32px;
-  border: 1px solid #525252;
-  border-radius: 4px;
-  color: #525252;
-  font-size: 14px;
-  letter-spacing: 0;
-  line-height: 20px;
-}
-
-.autodetect {
-  height: 32px;
-  width: 128px;
-}
-
 @media (--lg-down) {
   .autodetect {
     margin-left: 0;
@@ -53,23 +29,11 @@
 
 .hoverContainer {
   margin-right: -120px;
-
-  &:hover,
-  &:focus {
-    .deleteFieldButton {
-      display: flex;
-    }
-  }
 }
 
 .addFieldButton {
   margin-top: 2em;
-  width: 144px;
-  font-size: 16px;
-  font-weight: 400;
-  font-family: 'IBM Plex Sans', sans-serif;
-  text-transform: inherit;
-  letter-spacing: 0;
+  margin-right: 1em;
 }
 
 .settings {
@@ -119,7 +83,7 @@
     color: #323232 !important;
     height: 32px;
     min-width: 128px;
-    font-family: 'IBM Plex Sans', sans-serif;
+    font-family: var(--sans);
     text-transform: capitalize;
     font-weight: 400;
     font-size: 14px;

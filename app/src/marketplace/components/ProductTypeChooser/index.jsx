@@ -1,23 +1,27 @@
 // @flow
 
 import * as React from 'react'
-import cx from 'classnames'
 import { Translate, I18n } from 'react-redux-i18n'
+import cx from 'classnames'
 
+import Button from '$shared/components/Button'
 import standardProductImage from '$mp/assets/product_standard.png'
 import standardProductImage2x from '$mp/assets/product_standard@2x.png'
 import communityProductImage from '$mp/assets/product_community.png'
 import communityProductImage2x from '$mp/assets/product_community@2x.png'
 import type { ProductType } from '$mp/flowtype/product-types'
+import routes from '$routes'
 
 import styles from './productTypeChooser.pcss'
 
 type Props = {
     onSelect: (type: ProductType) => void,
+    className?: string,
+    disabled?: boolean,
 }
 
-const ProductTypeChooser = ({ onSelect }: Props) => (
-    <div className={styles.root}>
+const ProductTypeChooser = ({ onSelect, className, disabled }: Props) => (
+    <div className={cx(styles.root, className)}>
         <div className={styles.pageTitle}>
             <Translate value="productTypeChooser.title" />
         </div>
@@ -35,15 +39,20 @@ const ProductTypeChooser = ({ onSelect }: Props) => (
                         <Translate value="productTypeChooser.standard.title" />
                     </div>
                     <div className={styles.description}>
-                        <Translate value="productTypeChooser.standard.description" />
+                        <Translate
+                            value="productTypeChooser.standard.description"
+                            docsLink={routes.docsStreamsRoot()}
+                            dangerousHTML
+                        />
                     </div>
-                    <button
-                        type="button"
-                        className={cx('btn', 'btn-special', styles.button)}
+                    <Button
+                        kind="special"
+                        className={styles.button}
                         onClick={() => onSelect('NORMAL')}
+                        disabled={disabled}
                     >
                         <Translate value="productTypeChooser.standard.linkTitle" />
-                    </button>
+                    </Button>
                 </div>
             </div>
             <div className={styles.padding} />
@@ -61,13 +70,14 @@ const ProductTypeChooser = ({ onSelect }: Props) => (
                     <div className={styles.description}>
                         <Translate value="productTypeChooser.community.description" />
                     </div>
-                    <button
-                        type="button"
-                        className={cx('btn', 'btn-special', styles.button)}
+                    <Button
+                        kind="special"
+                        className={styles.button}
                         onClick={() => onSelect('COMMUNITY')}
+                        disabled={disabled}
                     >
                         <Translate value="productTypeChooser.community.linkTitle" />
-                    </button>
+                    </Button>
                 </div>
             </div>
             <div className={styles.padding} />

@@ -22,7 +22,9 @@ const LogoutPage = ({ logout }: Props) => {
     const isMounted = useIsMounted()
 
     useOnMount(() => {
-        post(routes.externalLogout())
+        post({
+            url: routes.externalLogout(),
+        })
             .then(
                 () => {
                     if (isMounted()) {

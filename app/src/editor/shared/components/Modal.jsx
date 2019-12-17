@@ -4,7 +4,7 @@ import React from 'react'
 import t from 'prop-types'
 import cx from 'classnames'
 
-import StreamrModal from '$shared/components/Modal'
+import StreamrModal from '$shared/components/ModalPortal'
 import useModal from '$shared/hooks/useModal'
 
 import styles from './Modal.pcss'

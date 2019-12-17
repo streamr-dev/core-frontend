@@ -31,11 +31,11 @@ const SetAllowanceDialog = ({ gettingAllowance, settingAllowance, onCancel, onSe
                     cancel: {
                         title: I18n.t('modal.common.cancel'),
                         onClick: onCancel,
-                        color: 'link',
+                        kind: 'link',
                     },
                     publish: {
                         title: I18n.t('modal.common.waiting'),
-                        color: 'primary',
+                        kind: 'primary',
                         disabled: true,
                         spinner: true,
                     },
@@ -57,12 +57,12 @@ const SetAllowanceDialog = ({ gettingAllowance, settingAllowance, onCancel, onSe
             actions={{
                 cancel: {
                     title: I18n.t('modal.common.cancel'),
-                    color: 'link',
+                    kind: 'link',
                     onClick: onCancel,
                 },
                 next: {
                     title: I18n.t('modal.common.next'),
-                    color: 'primary',
+                    kind: 'primary',
                     outline: true,
                     onClick: () => onSet(),
                 },

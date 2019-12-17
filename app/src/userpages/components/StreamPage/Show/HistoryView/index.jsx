@@ -2,9 +2,9 @@
 
 import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
-import { Button } from 'reactstrap'
 import { Translate, I18n } from 'react-redux-i18n'
 import cx from 'classnames'
+import Dropzone from 'react-dropzone'
 
 import type { Stream, StreamId, Range } from '$shared/flowtype/stream-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
@@ -12,6 +12,7 @@ import type { StoreState } from '$userpages/flowtype/states/store-state'
 import type { CsvUploadState } from '$userpages/flowtype/states/stream-state'
 import { getRange, deleteDataUpTo, uploadCsvFile, confirmCsvFileUpload, updateEditStream } from '$userpages/modules/userPageStreams/actions'
 import { selectDeleteDataError, selectUploadCsvState, selectEditedStream } from '$userpages/modules/userPageStreams/selectors'
+import Button from '$shared/components/Button'
 import TextInput from '$shared/components/TextInput'
 import FileUpload from '$shared/components/FileUpload'
 import DatePicker from '$shared/components/DatePicker'
@@ -20,6 +21,7 @@ import ConfirmCsvImportDialog from '$userpages/components/StreamPage/ConfirmCsvI
 import Spinner from '$shared/components/Spinner'
 import CsvSchemaError from '$shared/errors/CsvSchemaError'
 import SplitControl from '$userpages/components/SplitControl'
+import { type Ref } from '$shared/flowtype/common-types'
 
 import styles from './historyView.pcss'
 
@@ -78,7 +80,7 @@ class HistoryView extends Component<Props, State> {
     }
 
     mounted = false
-    fileUploadRef = React.createRef()
+    fileUploadRef: Ref<Dropzone> = React.createRef()
 
     componentDidMount() {
         this.mounted = true
@@ -118,6 +120,7 @@ class HistoryView extends Component<Props, State> {
     }
 
     onStoragePeriodChange = (e: SyntheticInputEvent<EventTarget>) => {
+        // $FlowFixMe `updateEditStream` not in OwnProps or StateProps.
         const { updateEditStream, stream } = this.props
         const days = Number(e.target.value)
 
@@ -215,8 +218,11 @@ class HistoryView extends Component<Props, State> {
     }
 
     handleBrowseFilesClick = () => {
-        // $FlowFixMe
-        this.fileUploadRef.current.dropzoneRef.current.open()
+        const { current: uploader } = this.fileUploadRef
+
+        if (uploader) {
+            uploader.open()
+        }
     }
 
     render() {
@@ -271,8 +277,8 @@ class HistoryView extends Component<Props, State> {
                                 disabled={disabled}
                             />
                             <Button
+                                kind="secondary"
                                 className={styles.browseFiles}
-                                color="userpages"
                                 onClick={() => this.handleBrowseFilesClick()}
                                 disabled={disabled}
                             >
@@ -302,8 +308,8 @@ class HistoryView extends Component<Props, State> {
                             />
                         </div>
                         <Button
+                            kind="secondary"
                             className={styles.deleteButton}
-                            color="userpages"
                             onClick={() => this.deleteDataUpTo(streamId, deleteDate)}
                             disabled={deleteDate == null || disabled}
                         >

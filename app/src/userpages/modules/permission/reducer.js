@@ -33,7 +33,7 @@ const modifyPermission = (
     resourceType: ResourceType,
     resourceId: ResourceId,
     permission: Permission,
-    attributes: {},
+    attributes: Object,
 ): Array<Permission> => {
     const permissions = byTypeAndId[resourceType] ? byTypeAndId[resourceType][resourceId] : []
     return [...permissions].map((p2) => {
@@ -60,7 +60,7 @@ export default function (state: PermissionState = initialState, action: Permissi
                 ...state,
                 byTypeAndId: {
                     ...state.byTypeAndId,
-                    [action.resourceType]: {
+                    [(action.resourceType: string)]: {
                         ...(state.byTypeAndId[action.resourceType] || {}),
                         [action.resourceId]: action.permissions.map((permission) => ({
                             ...permission,
@@ -94,7 +94,7 @@ export default function (state: PermissionState = initialState, action: Permissi
                 ...state,
                 byTypeAndId: {
                     ...state.byTypeAndId,
-                    [action.resourceType]: {
+                    [(action.resourceType: string)]: {
                         ...state.byTypeAndId[action.resourceType],
                         [action.resourceId]: [...(byResourceId || []), {
                             ...action.permission,
@@ -115,7 +115,7 @@ export default function (state: PermissionState = initialState, action: Permissi
                 ...state,
                 byTypeAndId: {
                     ...state.byTypeAndId,
-                    [action.resourceType]: {
+                    [(action.resourceType: string)]: {
                         ...state.byTypeAndId[action.resourceType],
                         [action.resourceId]: modifyPermission(state.byTypeAndId, action.resourceType, action.resourceId, action.permission, {
                             removed: true,
@@ -133,7 +133,7 @@ export default function (state: PermissionState = initialState, action: Permissi
                 ...state,
                 byTypeAndId: {
                     ...state.byTypeAndId,
-                    [action.resourceType]: {
+                    [(action.resourceType: string)]: {
                         ...state.byTypeAndId[action.resourceType],
                         [action.resourceId]: modifyPermission(state.byTypeAndId, action.resourceType, action.resourceId, action.permission, {
                             fetching: true,
@@ -150,7 +150,7 @@ export default function (state: PermissionState = initialState, action: Permissi
                 ...state,
                 byTypeAndId: {
                     ...state.byTypeAndId,
-                    [action.resourceType]: {
+                    [(action.resourceType: string)]: {
                         [action.resourceId]: (
                             state.byTypeAndId[action.resourceType][action.resourceId]
                                 .filter((permission) => !perm || !permEquals(permission, perm))
@@ -167,7 +167,7 @@ export default function (state: PermissionState = initialState, action: Permissi
                 ...state,
                 byTypeAndId: {
                     ...state.byTypeAndId,
-                    [action.resourceType]: {
+                    [(action.resourceType: string)]: {
                         ...state.byTypeAndId[action.resourceType],
                         [action.resourceId]: modifyPermission(state.byTypeAndId, action.resourceType, action.resourceId, action.permission, {
                             removed: false,
@@ -186,7 +186,7 @@ export default function (state: PermissionState = initialState, action: Permissi
                 ...state,
                 byTypeAndId: {
                     ...state.byTypeAndId,
-                    [action.resourceType]: {
+                    [(action.resourceType: string)]: {
                         ...state.byTypeAndId[action.resourceType],
                         [action.resourceId]: modifyPermission(state.byTypeAndId, action.resourceType, action.resourceId, action.permission, {
                             fetching: true,
@@ -202,7 +202,7 @@ export default function (state: PermissionState = initialState, action: Permissi
                 ...state,
                 byTypeAndId: {
                     ...state.byTypeAndId,
-                    [action.resourceType]: {
+                    [(action.resourceType: string)]: {
                         ...state.byTypeAndId[action.resourceType],
                         [action.resourceId]: modifyPermission(state.byTypeAndId, action.resourceType, action.resourceId, action.permission, {
                             id: action.permission.id,
@@ -221,7 +221,7 @@ export default function (state: PermissionState = initialState, action: Permissi
                 ...state,
                 byTypeAndId: {
                     ...state.byTypeAndId,
-                    [action.resourceType]: {
+                    [(action.resourceType: string)]: {
                         ...state.byTypeAndId[action.resourceType],
                         [action.resourceId]: modifyPermission(state.byTypeAndId, action.resourceType, action.resourceId, action.permission, {
                             fetching: false,

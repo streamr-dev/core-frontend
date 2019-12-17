@@ -7,12 +7,13 @@ import { replace } from 'connected-react-router'
 import useProduct from '$mp/containers/ProductController/useProduct'
 import useModal from '$shared/hooks/useModal'
 import { selectUserData } from '$shared/modules/user/selectors'
+import { addFreeProduct } from '$mp/modules/purchase/actions'
 
 import FallbackImage from '$shared/components/FallbackImage'
 import Tile from '$shared/components/Tile'
-import ProductDetails from './ProductDetails'
+import ProductDetails from '$mp/components/ProductPage/ProductDetails'
 import HeroComponent from '$mp/components/Hero'
-import { isCommunityProduct } from '$mp/utils/product'
+import { isCommunityProduct, isPaidProduct } from '$mp/utils/product'
 import {
     selectSubscriptionIsValid,
     selectContractSubscription,
@@ -34,11 +35,18 @@ const Hero = () => {
     const subscription = useSelector(selectContractSubscription)
 
     const productId = product.id
+    const isPaid = isPaidProduct(product)
     const onPurchase = useCallback(async () => {
         if (isLoggedIn) {
-            await purchaseDialog.open({
-                productId,
-            })
+            if (isPaid) {
+                // Paid product has to be bought with Metamask
+                await purchaseDialog.open({
+                    productId,
+                })
+            } else {
+                // Free product can be bought directly
+                dispatch(addFreeProduct(productId || ''))
+            }
         } else {
             dispatch(replace(routes.login({
                 redirect: routes.product({
@@ -46,12 +54,11 @@ const Hero = () => {
                 }),
             })))
         }
-    }, [productId, dispatch, isLoggedIn, purchaseDialog])
+    }, [productId, dispatch, isLoggedIn, purchaseDialog, isPaid])
 
     return (
         <HeroComponent
             className={styles.hero}
-            containerClassName={styles.heroContainer}
             product={product}
             leftContent={
                 <div className={styles.productImageWrapper}>

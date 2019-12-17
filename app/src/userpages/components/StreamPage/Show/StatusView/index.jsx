@@ -8,9 +8,8 @@ import type { Stream } from '$shared/flowtype/stream-types'
 import type { StoreState } from '$shared/flowtype/store-state'
 import { updateEditStream } from '$userpages/modules/userPageStreams/actions'
 import { selectEditedStream } from '$userpages/modules/userPageStreams/selectors'
-import SplitControl from '$userpages/components/SplitControl'
 import TextInput from '$shared/components/TextInput'
-import Dropdown from '$shared/components/Dropdown'
+import SelectInput from '$shared/components/SelectInput'
 
 import styles from './statusView.pcss'
 
@@ -41,15 +40,26 @@ function getUnits(value) {
 }
 
 function StatusView(props: Props) {
+    // $FlowFixMe `updateEditStream` not in OwnProps or StateProps.
     const { disabled, stream, updateEditStream } = props
-    // $FlowFixMe
-    const { inactivityThresholdHours } = stream
+    const { inactivityThresholdHours } = stream || {}
 
     // init units based on initial threshold value
     // don't calculate on the fly otherwise
     // user inputting 24 hours would immediately turn into 1 day
     const [units, setUnits] = useState(getUnits(inactivityThresholdHours))
     const [value, setValue] = useState(String(hoursToUnits(inactivityThresholdHours, units)))
+
+    const unitOptions: Array<any> = [
+        {
+            value: 'days',
+            label: I18n.t('userpages.streams.inactivityDays'),
+        },
+        {
+            value: 'hours',
+            label: I18n.t('userpages.streams.inactivityHours'),
+        },
+    ]
 
     const onCommit = useCallback(() => {
         let numberValue = Number.parseInt(value, 10)
@@ -78,30 +88,31 @@ function StatusView(props: Props) {
     }, [setValue])
 
     return (
-        <div className={styles.root}>
-            <p className={styles.description}>
+        <div>
+            <p>
                 {I18n.t('userpages.streams.inactivityDescription')}
             </p>
-            <SplitControl className={styles.InactivityOptions}>
+            <div className={styles.container}>
                 <TextInput
                     label={I18n.t('userpages.streams.inactivityLabel')}
                     type="number"
                     value={value}
                     min="0"
+                    hideButtons
                     onChange={onChange}
                     onBlur={onCommit}
                     disabled={disabled}
+                    preserveLabelSpace
                 />
-                <Dropdown
-                    title=""
-                    selectedItem={units}
-                    onChange={onChangeUnits}
+                <SelectInput
+                    label=""
+                    options={unitOptions}
+                    value={unitOptions.find((o) => o.value === units)}
+                    onChange={(o) => onChangeUnits(o.value)}
+                    preserveLabelSpace
                     disabled={disabled}
-                >
-                    <Dropdown.Item value="days">{I18n.t('userpages.streams.inactivityDays')}</Dropdown.Item>
-                    <Dropdown.Item value="hours">{I18n.t('userpages.streams.inactivityHours')}</Dropdown.Item>
-                </Dropdown>
-            </SplitControl>
+                />
+            </div>
         </div>
     )
 }

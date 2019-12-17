@@ -35,8 +35,7 @@ const longText = [
 ].join('\n\n')
 
 // from https://raw.githubusercontent.com/adamschwartz/github-markdown-kitchen-sink/master/TEST.md
-// $FlowFixMe
-const markdown = String.raw`This is a paragraph.
+const markdown = `This is a paragraph.
 
 This is a paragraph.
 
@@ -184,6 +183,30 @@ This paragraph has some \`code\` in it.
 ![Alt Text](http://placehold.it/200x50 "Image Title")
 
     ![Alt Text](http://placehold.it/200x50 "Image Title")`
+
+const markdownWithNumberedList = `Normal & numbered list:
+
+* List item 1
+* List item 2
+* List item 3
+
+1. Item 1
+2. Item 2
+3. Item 3
+4. Item 4
+5. Item 5
+6. Item 6
+7. Item 7
+8. Item 8
+9. Item 9
+10. Item 10
+11. Item 11
+12. Item 12
+
+> Quote at the end
+
+Bullets should align with dots, same text left align.
+`
 /* eslint-enable max-len */
 
 stories.add('short', () => (
@@ -200,4 +223,8 @@ stories.add('long', () => (
 
 stories.add('markdown', () => (
     <CollapsedText text={markdown} />
+))
+
+stories.add('numbered list', () => (
+    <CollapsedText text={markdownWithNumberedList} />
 ))

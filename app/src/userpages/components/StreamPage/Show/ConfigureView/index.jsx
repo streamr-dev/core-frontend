@@ -2,23 +2,24 @@
 
 import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
-import { Button } from 'reactstrap'
 import copy from 'copy-to-clipboard'
 import { arrayMove } from 'react-sortable-hoc'
-import { Translate } from 'react-redux-i18n'
+import { I18n, Translate } from 'react-redux-i18n'
 import uuid from 'uuid'
 
+import Button from '$shared/components/Button'
 import Spinner from '$shared/components/Spinner'
 import type { Stream, StreamId } from '$shared/flowtype/stream-types'
 import type { StoreState } from '$shared/flowtype/store-state'
 import FieldList from '$shared/components/FieldList'
 import FieldItem from '$shared/components/FieldList/FieldItem'
-import Dropdown from '$shared/components/Dropdown'
+import SelectInput from '$shared/components/SelectInput'
 import { updateEditStreamField, updateEditStream, streamFieldsAutodetect } from '$userpages/modules/userPageStreams/actions'
 import { selectEditedStream, selectFieldsAutodetectFetching, fieldTypes } from '$userpages/modules/userPageStreams/selectors'
 import TextInput from '$shared/components/TextInput'
 import Toggle from '$shared/components/Toggle'
 import SplitControl from '$userpages/components/SplitControl'
+import DropdownActions from '$shared/components/DropdownActions'
 
 import styles from './configureView.pcss'
 import NewFieldEditor from './NewFieldEditor'
@@ -46,21 +47,25 @@ type State = {
 }
 
 export class ConfigureView extends Component<Props, State> {
+    typeOptions: Array<any> = fieldTypes.map((t) => ({
+        value: t,
+        label: I18n.t(`userpages.streams.fieldTypes.${t}`),
+    }))
+
     state = {
         isAddingField: false,
     }
 
     componentDidUpdate(prevProps: Props) {
-        if (this.validFieldProps(prevProps) && this.validFieldProps(this.props) &&
-        // $FlowFixMe
-        (this.props.stream.config.fields !== prevProps.stream.config.fields)) {
+        const { config = {} } = this.props.stream || {}
+        const { config: prevConfig = {} } = prevProps.stream || {}
+
+        if (config.fields && prevConfig.fields && config.fields !== prevConfig.fields) {
             const { editField } = this.props
             const fields = this.getStreamFields()
             editField('config.fields', fields)
         }
     }
-
-    validFieldProps = (props: Props) => props.stream && props.stream.config && props.stream.config.fields
 
     getStreamFields = () => {
         const { stream } = this.props
@@ -70,9 +75,8 @@ export class ConfigureView extends Component<Props, State> {
         return []
     }
 
-    addTempIdsToStreamFields = (stream: Stream) => (
-        // $FlowFixMe
-        stream.config.fields.map((field) => (
+    addTempIdsToStreamFields = (stream: Stream): Array<any> => (
+        (stream.config.fields || []).map((field) => (
             {
                 ...field,
                 id: field.id ? field.id : uuid(),
@@ -141,6 +145,7 @@ export class ConfigureView extends Component<Props, State> {
     }
 
     onAutoConfigureChange = (checked: boolean) => {
+        // $FlowFixMe: "updateEditStream is missing in OwnProps or StateProps"
         const { updateEditStream, stream } = this.props
 
         updateEditStream({
@@ -150,6 +155,7 @@ export class ConfigureView extends Component<Props, State> {
     }
 
     onRequireSignedChange = (checked: boolean) => {
+        // $FlowFixMe: "updateEditStream is missing in OwnProps or StateProps"
         const { updateEditStream, stream } = this.props
 
         updateEditStream({
@@ -160,6 +166,7 @@ export class ConfigureView extends Component<Props, State> {
 
     autodetectFields = () => {
         if (this.props.stream && this.props.stream.id) {
+            // $FlowFixMe: "streamFieldsAutodetect is missing in OwnProps or StateProps"
             return this.props.streamFieldsAutodetect(this.props.stream.id)
         }
     }
@@ -170,26 +177,7 @@ export class ConfigureView extends Component<Props, State> {
 
         return (
             <div>
-                <SplitControl className={styles.helpText}>
-                    <Translate value="userpages.streams.edit.configure.help" tag="p" className={styles.longText} />
-                    <Button
-                        color="userpages"
-                        className={styles.autodetect}
-                        outline
-                        onClick={this.autodetectFields}
-                        disabled={this.props.fieldsAutodetectFetching || disabled}
-                    >
-                        {!this.props.fieldsAutodetectFetching && (
-                            <Translate value="userpages.streams.edit.configure.autodetect" />
-                        )}
-                        {this.props.fieldsAutodetectFetching && (
-                            <Fragment>
-                                <Translate value="userpages.streams.edit.configure.waiting" />
-                                <Spinner size="small" className={styles.spinner} color="white" />
-                            </Fragment>
-                        )}
-                    </Button>
-                </SplitControl>
+                <Translate value="userpages.streams.edit.configure.help" tag="p" className={styles.longText} />
                 {stream && stream.config && stream.config.fields && !!stream.config.fields.length &&
                     <Fragment>
                         <SplitControl className={styles.fieldHeaderRow}>
@@ -207,32 +195,20 @@ export class ConfigureView extends Component<Props, State> {
                                                     value={field.name}
                                                     onChange={(e) => this.onFieldNameChange(field.name, e.target.value)}
                                                     disabled={disabled}
+                                                    actions={[
+                                                        <DropdownActions.Item key="delete" onClick={() => this.deleteField(field.name)}>
+                                                            <Translate value="userpages.streams.edit.configure.delete" />
+                                                        </DropdownActions.Item>,
+                                                    ]}
                                                 />
-                                                <Dropdown
-                                                    title=""
-                                                    selectedItem={field.type}
-                                                    onChange={(val) => this.onFieldTypeChange(field.name, val)}
-                                                    className={styles.permissionsDropdown}
-                                                    disabled={disabled}
-                                                >
-                                                    {fieldTypes.map((t) => (
-                                                        <Dropdown.Item
-                                                            key={t}
-                                                            value={t}
-                                                        >
-                                                            <Translate value={`userpages.streams.fieldTypes.${t}`} />
-                                                        </Dropdown.Item>
-                                                    ))}
-                                                </Dropdown>
-                                                <Button
-                                                    outline
-                                                    color="userpages"
-                                                    className={styles.deleteFieldButton}
-                                                    onClick={() => this.deleteField(field.name)}
-                                                    disabled={disabled}
-                                                >
-                                                    <Translate value="userpages.streams.edit.configure.delete" />
-                                                </Button>
+                                                <SelectInput
+                                                    label=""
+                                                    className={styles.select}
+                                                    options={this.typeOptions}
+                                                    value={this.typeOptions.find((t) => t.value === field.type)}
+                                                    onChange={(o) => this.onFieldTypeChange(field.name, o.value)}
+                                                    preserveLabelSpace={false}
+                                                />
                                             </SplitControl>
                                         </FieldItem>
                                     </div>
@@ -241,15 +217,32 @@ export class ConfigureView extends Component<Props, State> {
                         </FieldList>
                     </Fragment>}
                 {!isAddingField &&
-                    <Button
-                        color="userpages"
-                        className={styles.addFieldButton}
-                        outline
-                        onClick={this.addNewField}
-                        disabled={disabled}
-                    >
-                        <Translate value="userpages.streams.edit.configure.addField" />
-                    </Button>
+                    <React.Fragment>
+                        <Button
+                            kind="secondary"
+                            className={styles.addFieldButton}
+                            onClick={this.addNewField}
+                            disabled={disabled}
+                        >
+                            <Translate value="userpages.streams.edit.configure.addField" />
+                        </Button>
+                        <Button
+                            kind="secondary"
+                            outline
+                            onClick={this.autodetectFields}
+                            disabled={this.props.fieldsAutodetectFetching || disabled}
+                        >
+                            {!this.props.fieldsAutodetectFetching && (
+                                <Translate value="userpages.streams.edit.configure.autodetect" />
+                            )}
+                            {this.props.fieldsAutodetectFetching && (
+                                <Fragment>
+                                    <Translate value="userpages.streams.edit.configure.waiting" />
+                                    <Spinner size="small" className={styles.spinner} color="white" />
+                                </Fragment>
+                            )}
+                        </Button>
+                    </React.Fragment>
                 }
                 {isAddingField &&
                     <NewFieldEditor

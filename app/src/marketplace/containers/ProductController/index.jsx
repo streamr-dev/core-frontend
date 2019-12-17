@@ -3,8 +3,8 @@
 import React, { type Node, type Context, useMemo, useContext, useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 
-import * as RouterContext from '$shared/components/RouterContextProvider'
-import { Provider as PendingProvider } from '$shared/components/PendingContextProvider'
+import * as RouterContext from '$shared/contexts/Router'
+import { Provider as PendingProvider } from '$shared/contexts/Pending'
 import { Provider as ValidationContextProvider } from './ValidationContextProvider'
 import { Provider as PermissionsProvider } from './useProductPermissions'
 import { usePending } from '$shared/hooks/usePending'
@@ -17,6 +17,8 @@ import useContractProductSubscriptionLoadCallback from './useContractProductSubs
 import useLoadCategoriesCallback from './useLoadCategoriesCallback'
 import useLoadProductStreamsCallback from './useLoadProductStreamsCallback'
 import useCommunityProductLoadCallback from './useCommunityProductLoadCallback'
+import useRelatedProductsLoadCallback from './useRelatedProductsLoadCallback'
+import useLoadStreamsCallback from './useLoadStreamsCallback'
 
 type ContextProps = {
     loadProduct: Function,
@@ -25,6 +27,8 @@ type ContextProps = {
     loadCategories: Function,
     loadProductStreams: Function,
     loadCommunityProduct: Function,
+    loadRelatedProducts: Function,
+    loadStreams: Function,
 }
 
 const ProductControllerContext: Context<ContextProps> = React.createContext({})
@@ -70,6 +74,8 @@ function useProductController() {
     const loadCategories = useLoadCategoriesCallback()
     const loadProductStreams = useLoadProductStreamsCallback()
     const loadCommunityProduct = useCommunityProductLoadCallback()
+    const loadRelatedProducts = useRelatedProductsLoadCallback()
+    const loadStreams = useLoadStreamsCallback()
 
     return useMemo(() => ({
         loadProduct,
@@ -78,6 +84,8 @@ function useProductController() {
         loadCategories,
         loadProductStreams,
         loadCommunityProduct,
+        loadRelatedProducts,
+        loadStreams,
     }), [
         loadProduct,
         loadContractProduct,
@@ -85,6 +93,8 @@ function useProductController() {
         loadCategories,
         loadProductStreams,
         loadCommunityProduct,
+        loadRelatedProducts,
+        loadStreams,
     ])
 }
 

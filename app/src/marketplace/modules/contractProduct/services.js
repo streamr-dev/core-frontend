@@ -38,7 +38,7 @@ export const getSubscriberCount = async (id: ProductId, usePublicNode: boolean =
     return validSubs.length
 }
 
-export const getMostRecentPurchase = async (id: ProductId, usePublicNode: boolean = false) => {
+export const getMostRecentPurchaseTimestamp = async (id: ProductId, usePublicNode: boolean = false) => {
     const web3 = usePublicNode ? getPublicWeb3() : getWeb3()
     const contract = getContract(getConfig().marketplace, usePublicNode)
     const events = await contract.getPastEvents('Subscribed', {
@@ -56,7 +56,7 @@ export const getMostRecentPurchase = async (id: ProductId, usePublicNode: boolea
     const lastEvent = events[events.length - 1]
     const lastBlock = await web3.eth.getBlock(lastEvent.blockHash)
     if (lastBlock && lastBlock.timestamp) {
-        return new Date(lastBlock.timestamp * 1000)
+        return lastBlock.timestamp * 1000
     }
 
     return null

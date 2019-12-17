@@ -3,7 +3,7 @@
 import React from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
 
-import Modal from '$shared/components/Modal'
+import ModalPortal from '$shared/components/ModalPortal'
 import NoCoverPng from '$mp/assets/no_cover.png'
 import NoCoverPng2x from '$mp/assets/no_cover@2x.png'
 import Dialog from '$shared/components/Dialog'
@@ -17,7 +17,7 @@ export type Props = {
 }
 
 const ConfirmNoCoverImageDialog = ({ closeOnContinue, onClose, onContinue }: Props) => (
-    <Modal>
+    <ModalPortal>
         <Dialog
             title={I18n.t('modal.confirmNoCoverImage.title')}
             contentClassName={styles.content}
@@ -26,11 +26,11 @@ const ConfirmNoCoverImageDialog = ({ closeOnContinue, onClose, onContinue }: Pro
                 cancel: {
                     title: I18n.t('modal.common.cancel'),
                     onClick: onClose,
-                    color: 'link',
+                    kind: 'link',
                 },
                 continue: {
                     title: I18n.t('modal.common.continue'),
-                    color: 'primary',
+                    kind: 'primary',
                     onClick: () => {
                         onContinue()
 
@@ -49,7 +49,7 @@ const ConfirmNoCoverImageDialog = ({ closeOnContinue, onClose, onContinue }: Pro
             />
             <p><Translate value="modal.confirmNoCoverImage.message" dangerousHTML /></p>
         </Dialog>
-    </Modal>
+    </ModalPortal>
 )
 
 ConfirmNoCoverImageDialog.defaultProps = {

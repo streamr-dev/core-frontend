@@ -33,9 +33,11 @@ describe('KeyField', () => {
                 value="testValue"
             />)
 
-            const actions = el.find(DropdownActions).children()
+            const actions = el.find(TextInput).prop('actions').map((action) => (
+                shallow(action)
+            ))
             assert(actions.length === 1)
-            assert(actions.at(0).find('Translate').shallow().text() === 'copy')
+            assert(actions[0].find('Translate').shallow().text() === 'copy')
         })
     })
 
@@ -59,10 +61,10 @@ describe('KeyField', () => {
 
             assert(el.find(TextInput).prop('type') === 'password')
 
-            const action = el.find(DropdownActions).childAt(0)
+            const action = shallow(el.find(TextInput).prop('actions')[0])
             assert(action.find('Translate').shallow().text() === 'reveal')
-            action.simulate('click')
 
+            el.instance().toggleHidden()
             assert(el.find(TextInput).prop('type') === 'text')
         })
 
@@ -74,13 +76,13 @@ describe('KeyField', () => {
             />)
             assert(el.find(TextInput).prop('type') === 'password')
 
-            const action = el.find(DropdownActions).childAt(0)
+            const action = shallow(el.find(TextInput).prop('actions')[0])
             assert(action.find('Translate').shallow().text() === 'reveal')
-            action.simulate('click')
+            el.instance().toggleHidden()
 
             assert(el.find(TextInput).prop('type') === 'text')
 
-            action.simulate('click')
+            el.instance().toggleHidden()
             assert(el.find(TextInput).prop('type') === 'password')
         })
     })
@@ -93,7 +95,7 @@ describe('KeyField', () => {
                 allowEdit
             />)
 
-            const action = el.find(DropdownActions).childAt(1)
+            const action = shallow(el.find(TextInput).prop('actions')[1])
             assert(action.find('Translate').shallow().text() === 'edit')
         })
 
@@ -104,8 +106,7 @@ describe('KeyField', () => {
                 allowEdit
             />)
 
-            const action = el.find(DropdownActions).childAt(1)
-            action.simulate('click')
+            el.instance().onEdit()
 
             assert(el.find(TextInput).length === 0)
             assert(el.find(KeyFieldEditor).length === 1)
@@ -121,8 +122,7 @@ describe('KeyField', () => {
                 onSave={onSaveStub}
             />)
 
-            const action = el.find(DropdownActions).childAt(1)
-            action.simulate('click')
+            el.instance().onEdit()
 
             const editor = el.find(KeyFieldEditor).shallow().instance()
             editor.setState({
@@ -146,7 +146,7 @@ describe('KeyField', () => {
                 allowDelete
             />)
 
-            const action = el.find(DropdownActions).childAt(1)
+            const action = shallow(el.find(TextInput).prop('actions')[1])
             assert(action.find('Translate').shallow().text() === 'delete')
             assert(action.prop('disabled') !== true)
         })
@@ -159,7 +159,7 @@ describe('KeyField', () => {
                 disableDelete
             />)
 
-            const action = el.find(DropdownActions).childAt(1)
+            const action = shallow(el.find(TextInput).prop('actions')[1])
             assert(action.prop('disabled') === true)
         })
 
@@ -172,8 +172,7 @@ describe('KeyField', () => {
                 onDelete={spy}
             />)
 
-            const action = el.find(DropdownActions).childAt(1)
-            action.simulate('click')
+            el.instance().onDelete()
 
             assert(spy.calledOnce)
         })

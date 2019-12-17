@@ -3,13 +3,12 @@
 import React from 'react'
 import copy from 'copy-to-clipboard'
 import cx from 'classnames'
-import { I18n, Translate } from 'react-redux-i18n'
+import { Translate } from 'react-redux-i18n'
 
 import type { ResourcePermission } from '$shared/flowtype/resource-key-types'
 import TextInput from '$shared/components/TextInput'
-import Meatball from '$shared/components/Meatball'
 import DropdownActions from '$shared/components/DropdownActions'
-import Dropdown from '$shared/components/Dropdown'
+import SelectInput from '$shared/components/SelectInput'
 import SplitControl from '$userpages/components/SplitControl'
 import KeyFieldEditor from './KeyFieldEditor'
 import styles from './keyField.pcss'
@@ -36,6 +35,8 @@ type State = {
     error: ?string,
     permission: ?ResourcePermission,
 }
+
+const useIf = (condition: boolean, elements: Array<any>) => (condition ? elements : [])
 
 class KeyField extends React.Component<Props, State> {
     constructor(props: Props) {
@@ -157,39 +158,34 @@ class KeyField extends React.Component<Props, State> {
         } = this.props
         const { hidden, menuOpen } = this.state
 
+        const actions = [
+            ...useIf(!!hideValue, [
+                <DropdownActions.Item key="reveal" onClick={this.toggleHidden}>
+                    <Translate value={`userpages.keyField.${hidden ? 'reveal' : 'conceal'}`} />
+                </DropdownActions.Item>,
+            ]),
+            <DropdownActions.Item key="copy" onClick={this.onCopy}>
+                <Translate value="userpages.keyField.copy" />
+            </DropdownActions.Item>,
+            ...useIf(!!allowEdit, [
+                <DropdownActions.Item key="edit" onClick={this.onEdit}>
+                    <Translate value="userpages.keyField.edit" />
+                </DropdownActions.Item>,
+            ]),
+            ...useIf(!!allowDelete, [
+                <DropdownActions.Item key="delete" onClick={this.onDelete} disabled={disableDelete}>
+                    <Translate value="userpages.keyField.delete" />
+                </DropdownActions.Item>,
+            ]),
+        ]
+
         return (
             <div
                 className={cx(styles.container, className, {
                     [styles.withMenu]: menuOpen,
                 })}
             >
-                <TextInput label={keyName} value={value} readOnly type={hidden ? 'password' : 'text'} />
-                <div className={styles.actions}>
-                    <DropdownActions
-                        onMenuToggle={this.onMenuToggle}
-                        title={<Meatball alt={I18n.t('userpages.keyField.options')} blue />}
-                        noCaret
-                    >
-                        {!!hideValue && (
-                            <DropdownActions.Item onClick={this.toggleHidden}>
-                                <Translate value={`userpages.keyField.${hidden ? 'reveal' : 'conceal'}`} />
-                            </DropdownActions.Item>
-                        )}
-                        <DropdownActions.Item onClick={this.onCopy}>
-                            <Translate value="userpages.keyField.copy" />
-                        </DropdownActions.Item>
-                        {!!allowEdit && (
-                            <DropdownActions.Item onClick={this.onEdit}>
-                                <Translate value="userpages.keyField.edit" />
-                            </DropdownActions.Item>
-                        )}
-                        {!!allowDelete && (
-                            <DropdownActions.Item onClick={this.onDelete} disabled={disableDelete}>
-                                <Translate value="userpages.keyField.delete" />
-                            </DropdownActions.Item>
-                        )}
-                    </DropdownActions>
-                </div>
+                <TextInput label={keyName} actions={actions} value={value} readOnly type={hidden ? 'password' : 'text'} />
             </div>
         )
     }
@@ -198,27 +194,31 @@ class KeyField extends React.Component<Props, State> {
         const { keyName, value, showPermissionType } = this.props
         const { waiting, editing, error, permission } = this.state
 
+        const permissionOptions = [
+            {
+                value: 'read',
+                label: 'Read',
+            },
+            {
+                value: 'write',
+                label: 'Write',
+            },
+        ]
+
         return !editing ? (
             <React.Fragment>
                 {!showPermissionType && this.renderInput()}
                 {showPermissionType && (
                     <SplitControl>
                         {this.renderInput()}
-                        <div className={styles.permissionDropdownContainer}>
-                            <Dropdown
-                                title=""
-                                onChange={this.onPermissionChange}
-                                className={styles.permissionDropdown}
-                                selectedItem={permission}
-                            >
-                                <Dropdown.Item key="read" value="read" onClick={(val) => this.onPermissionChange(val.toString())}>
-                                    Read
-                                </Dropdown.Item>
-                                <Dropdown.Item key="write" value="write" onClick={(val) => this.onPermissionChange(val.toString())}>
-                                    Write
-                                </Dropdown.Item>
-                            </Dropdown>
-                        </div>
+                        <SelectInput
+                            label=""
+                            options={permissionOptions}
+                            value={permissionOptions.find((t) => t.value === permission)}
+                            onChange={(o) => this.onPermissionChange(o.value)}
+                            preserveLabelSpace={false}
+                            className={styles.select}
+                        />
                     </SplitControl>
                 )}
             </React.Fragment>

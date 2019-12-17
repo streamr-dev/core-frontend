@@ -13,11 +13,11 @@ export type Props = {
 
 const Checkbox = ({ value, className, onChange, ...props }: Props) => (
     <input
+        {...props}
         type="checkbox"
         checked={!!value}
         onChange={onChange}
         className={classNames(styles.root, className)}
-        {...props}
     />
 )
 

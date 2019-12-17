@@ -33,7 +33,7 @@ story('Navigation')
             <Navigation />
         </div>
     ))
-    .addWithJSX('mobile', () => (
+    .add('mobile', () => (
         <div>
             <span style={
                 {
@@ -45,7 +45,11 @@ story('Navigation')
             </span>
             <Navigation responsive />
         </div>
-    ))
+    ), {
+        viewport: {
+            defaultViewport: 'xs',
+        },
+    })
 
 story('PageTurner')
     .addDecorator(StoryRouter())

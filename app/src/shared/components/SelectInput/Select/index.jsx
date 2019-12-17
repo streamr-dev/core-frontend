@@ -7,9 +7,14 @@ import cx from 'classnames'
 import SvgIcon from '$shared/components/SvgIcon'
 import styles from './selectInput.pcss'
 
+export type Option = {
+    value: any,
+    label: string,
+}
+
 export type Props = {
     placeholder?: string,
-    options: Array<any>,
+    options: Array<Option>,
     value: any,
     name?: string,
     onChange?: Function,
@@ -21,7 +26,7 @@ export type Props = {
 }
 
 const customStyles = {
-    control: (provided) => ({
+    control: (provided, state) => ({
         ...provided,
         padding: '0',
         '&:hover': {
@@ -29,10 +34,15 @@ const customStyles = {
                 stroke: '#A3A3A3',
             },
         },
-        minHeight: '32px',
-        border: '0',
+        border: state.isFocused ? '1px solid #0324FF' : '1px solid #EFEFEF',
+        borderRadius: '4px',
+        height: '40px',
         boxShadow: 'none',
         cursor: 'pointer',
+        fontSize: '1rem',
+        letterSpacing: '0',
+        lineHeight: '2rem',
+        width: '100%',
     }),
     dropdownIndicator: (provided) => ({
         ...provided,
@@ -43,6 +53,7 @@ const customStyles = {
         ...provided,
         marginTop: '0.5rem',
         padding: '0',
+        zIndex: '10',
     }),
     menuList: (provided) => ({
         ...provided,
@@ -51,25 +62,29 @@ const customStyles = {
     }),
     option: (provided, state) => ({
         ...provided,
-        padding: '0.5rem 1rem',
+        padding: '0 1rem',
         paddingLeft: '2rem',
-        lineHeight: 'normal',
         color: '#323232',
         position: 'relative',
         backgroundColor: state.isSelected || state.isFocused ? '#f8f8f8' : null,
         '&:active': {
             backgroundColor: '#f8f8f8',
         },
+        lineHeight: '2rem',
     }),
     placeholder: () => ({
-        lineHeight: 'normal',
         color: '#CDCDCD',
+        lineHeight: '1rem',
     }),
     valueContainer: (provided) => ({
         ...provided,
-        padding: '0.1rem 1rem',
-        lineHeight: 'normal',
+        padding: '0 1rem',
         color: '#323232',
+        lineHeight: '1rem',
+    }),
+    singleValue: (provided) => ({
+        ...provided,
+        overflow: 'visible',
     }),
 }
 
@@ -109,6 +124,7 @@ const SelectInput = ({ className, controlClassName, ...props }: Props) => (
             DropdownIndicator,
         }}
         controlClassName={controlClassName}
+        // $FlowFixMe potential override necessary.
         {...props}
     />
 )

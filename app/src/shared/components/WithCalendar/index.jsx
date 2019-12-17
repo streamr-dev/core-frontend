@@ -1,6 +1,6 @@
 // @flow
 
-import * as React from 'react'
+import React, { type Node } from 'react'
 import cx from 'classnames'
 
 import Calendar from '$shared/components/Calendar'
@@ -17,10 +17,7 @@ export type WithCalendarProps = {
 }
 
 type Props = WithCalendarProps & {
-    children: React.Node | ({
-        date: Date,
-        toggleCalendar: () => void,
-    }) => React.Node,
+    children: any,
     date?: Date,
 }
 
@@ -72,7 +69,7 @@ class WithCalendar extends React.Component<Props, State> {
         const { current: root } = this.rootRef
         const { target } = e
 
-        if (root && (root === target || (target instanceof Node && !root.contains(target)))) {
+        if (root && (root === target || (target instanceof Element && !root.contains(target)))) {
             this.toggle(false)
         }
     }
@@ -111,7 +108,7 @@ class WithCalendar extends React.Component<Props, State> {
         })
     }
 
-    children(): React.Node {
+    children(): Node {
         const {
             children,
             openOnFocus,

@@ -13,7 +13,6 @@ import type { Stream, StreamId } from '$shared/flowtype/stream-types'
 import type { Operation } from '$userpages/flowtype/permission-types'
 import type { StoreState } from '$shared/flowtype/store-state'
 import type { User } from '$shared/flowtype/user-types'
-import type { ResourceKeyId } from '$shared/flowtype/resource-key-types'
 import {
     getMyStreamPermissions,
     getStream,
@@ -29,7 +28,6 @@ import {
 import { getMyResourceKeys } from '$shared/modules/resourceKey/actions'
 import { selectEditedStream, selectPermissions, selectFetching } from '$userpages/modules/userPageStreams/selectors'
 import { selectUserData } from '$shared/modules/user/selectors'
-import { selectAuthApiKeyId } from '$shared/modules/resourceKey/selectors'
 import DetailsContainer from '$shared/components/Container/Details'
 import TOCPage from '$userpages/components/TOCPage'
 import Toolbar from '$shared/components/Toolbar'
@@ -54,7 +52,6 @@ type StateProps = {
     editedStream: ?Stream,
     permissions: ?Array<Operation>,
     currentUser: ?User,
-    authApiKeyId: ?ResourceKeyId,
     isFetching: ?boolean,
 }
 
@@ -104,6 +101,7 @@ export class StreamShowView extends Component<Props, State> {
     }
 
     onSave = (editedStream: Stream) => {
+        // $FlowFixMe `save` missing in  `StateProps` or in `RouterProps`
         const { save, redirectToUserPages } = this.props
 
         this.setState({
@@ -149,7 +147,6 @@ export class StreamShowView extends Component<Props, State> {
             editedStream,
             cancel,
             currentUser,
-            authApiKeyId,
             permissions,
             isFetching,
         } = this.props
@@ -157,10 +154,18 @@ export class StreamShowView extends Component<Props, State> {
         const isLoading = !!(!editedStream || isFetching)
         const disabled = !!(isLoading || !hasWritePermission)
 
+        if (isLoading) {
+            return (
+                <CoreLayout
+                    hideNavOnDesktop
+                    loading={isLoading}
+                />
+            )
+        }
+
         return (
             <CoreLayout
                 hideNavOnDesktop
-                loading={isLoading}
                 navComponent={(
                     <MediaQuery minWidth={lg.min}>
                         {(isDesktop) => (
@@ -170,8 +175,7 @@ export class StreamShowView extends Component<Props, State> {
                                 actions={{
                                     cancel: {
                                         title: I18n.t('userpages.profilePage.toolbar.cancel'),
-                                        color: 'link',
-                                        outline: true,
+                                        kind: 'link',
                                         onClick: () => {
                                             cancel()
                                         },
@@ -180,7 +184,7 @@ export class StreamShowView extends Component<Props, State> {
                                         title: isDesktop ?
                                             I18n.t('userpages.profilePage.toolbar.saveAndExit') :
                                             I18n.t('userpages.profilePage.toolbar.done'),
-                                        color: 'primary',
+                                        kind: 'primary',
                                         spinner: this.state.saving,
                                         onClick: () => {
                                             if (editedStream) {
@@ -239,7 +243,6 @@ export class StreamShowView extends Component<Props, State> {
                             <PreviewView
                                 stream={editedStream}
                                 currentUser={currentUser}
-                                authApiKeyId={authApiKeyId}
                             />
                         </TOCPage.Section>
                         <TOCPage.Section
@@ -320,14 +323,13 @@ function StreamLoader(props: Props) {
         }
     }, [isCurrent, propsRef])
 
-    return <StreamShowView key={streamId} {...props} editedStream={isCurrent ? props.editedStream : null} />
+    return <StreamShowView {...props} key={streamId} editedStream={isCurrent ? props.editedStream : null} />
 }
 
 const mapStateToProps = (state: StoreState): StateProps => ({
     editedStream: selectEditedStream(state),
     permissions: selectPermissions(state),
     currentUser: selectUserData(state),
-    authApiKeyId: selectAuthApiKeyId(state),
     isFetching: selectFetching(state),
 })
 

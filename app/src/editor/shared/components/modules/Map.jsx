@@ -159,9 +159,7 @@ export default class MapModule extends React.PureComponent<Props, State> {
             if (msg.pointList && msg.pointList.length > 0) {
                 const { pointList } = msg
 
-                // $FlowFixMe Object.values() returns mixed[]
-                const tracePoints: Array<Array<TracePoint>> = Object
-                    .values(this.positionHistory)
+                const tracePoints: Array<Array<TracePoint>> = ((Object.values(this.positionHistory): any): Array<Array<TracePoint>>)
                 tracePoints.forEach((points) => {
                     remove(points, (p: TracePoint) => pointList.includes(p.id))
                 })
@@ -270,9 +268,8 @@ export default class MapModule extends React.PureComponent<Props, State> {
         this.queuedMarkers = {}
 
         this.setState((state) => {
-            const markers = { ...state.markers }
-            // $FlowFixMe Object.values() returns mixed[]
-            Object.values(queuedMarkers).forEach((m: Marker) => {
+            const markers = { ...state.markers };
+            ((Object.values(queuedMarkers): any): Array<Marker>).forEach((m: Marker) => {
                 const marker = markers[m.id]
                 if (marker) {
                     marker.lat = m.lat

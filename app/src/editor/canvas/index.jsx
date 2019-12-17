@@ -17,12 +17,12 @@ import routes from '$routes'
 
 import isEditableElement from '$editor/shared/utils/isEditableElement'
 import UndoControls from '$editor/shared/components/UndoControls'
-import * as UndoContext from '$shared/components/UndoContextProvider'
-import { Provider as PendingProvider } from '$shared/components/PendingContextProvider'
-import Subscription from '$editor/shared/components/Subscription'
-import * as SubscriptionStatus from '$editor/shared/components/SubscriptionStatus'
-import { ClientProvider } from '$shared/components/StreamrClientContextProvider'
-import { Provider as ModalProvider } from '$shared/components/ModalContextProvider'
+import Button from '$shared/components/Button'
+import * as UndoContext from '$shared/contexts/Undo'
+import { Provider as PendingProvider } from '$shared/contexts/Pending'
+import Subscription from '$shared/components/Subscription'
+import * as SubscriptionStatus from '$shared/contexts/SubscriptionStatus'
+import { Provider as ClientProvider } from '$shared/contexts/StreamrClient'
 import * as sharedServices from '$editor/shared/services'
 import BodyClass from '$shared/components/BodyClass'
 import Sidebar from '$editor/shared/components/Sidebar'
@@ -133,11 +133,15 @@ const CanvasEditComponent = class CanvasEdit extends PureComponent {
         const { runController } = this.props
 
         if ((event.code === 'Backspace' || event.code === 'Delete') && runController.isEditable) {
+            event.preventDefault() // important. prevents stupid browser back on backspace behaviour
+            event.stopPropagation()
             this.removeModule({ hash })
         }
 
         if (event.key === 'Escape') {
             // select none on escape
+            event.preventDefault()
+            event.stopPropagation()
             this.selectModule({ hash: undefined })
         }
 
@@ -442,27 +446,25 @@ const CanvasEditComponent = class CanvasEdit extends PureComponent {
                 </Canvas>
                 {isEmbedMode ? <EmbedToolbar canvas={canvas} /> : (
                     <React.Fragment>
-                        <ModalProvider>
-                            <CanvasToolbar
-                                className={styles.CanvasToolbar}
-                                canvas={canvas}
-                                setCanvas={this.setCanvas}
-                                renameCanvas={this.renameCanvas}
-                                deleteCanvas={this.deleteCanvas}
-                                newCanvas={this.newCanvas}
-                                duplicateCanvas={this.duplicateCanvas}
-                                moduleSearchIsOpen={this.state.moduleSearchIsOpen}
-                                moduleSearchOpen={this.moduleSearchOpen}
-                                setRunTab={this.setRunTab}
-                                setHistorical={this.setHistorical}
-                                setSpeed={this.setSpeed}
-                                setSaveState={this.setSaveState}
-                                canvasStart={this.canvasStart}
-                                canvasStop={this.canvasStop}
-                                keyboardShortcutOpen={this.keyboardShortcutOpen}
-                                canvasExit={this.canvasExit}
-                            />
-                        </ModalProvider>
+                        <CanvasToolbar
+                            className={styles.CanvasToolbar}
+                            canvas={canvas}
+                            setCanvas={this.setCanvas}
+                            renameCanvas={this.renameCanvas}
+                            deleteCanvas={this.deleteCanvas}
+                            newCanvas={this.newCanvas}
+                            duplicateCanvas={this.duplicateCanvas}
+                            moduleSearchIsOpen={this.state.moduleSearchIsOpen}
+                            moduleSearchOpen={this.moduleSearchOpen}
+                            setRunTab={this.setRunTab}
+                            setHistorical={this.setHistorical}
+                            setSpeed={this.setSpeed}
+                            setSaveState={this.setSaveState}
+                            canvasStart={this.canvasStart}
+                            canvasStop={this.canvasStop}
+                            keyboardShortcutOpen={this.keyboardShortcutOpen}
+                            canvasExit={this.canvasExit}
+                        />
                         <Sidebar
                             className={styles.ModuleSidebar}
                             isOpen={moduleSidebarIsOpen || keyboardShortcutIsOpen}
@@ -551,22 +553,25 @@ const CanvasEditWrap = () => {
 
 const CanvasErrorPage = () => (
     <ErrorPageContent>
-        <Link
+        <Button
+            kind="special"
+            tag={Link}
             to=""
             onClick={(event) => {
                 event.preventDefault()
                 window.location.reload()
             }}
-            className="btn btn-special"
         >
             <Translate value="editor.error.refresh" />
-        </Link>
-        <Link
+        </Button>
+        <Button
+            kind="special"
+            tag={Link}
             to={routes.canvases()}
-            className="btn btn-special d-none d-md-inline-block"
+            className="d-none d-md-inline-block"
         >
             <Translate value="editor.general.backToCanvases" />
-        </Link>
+        </Button>
     </ErrorPageContent>
 )
 

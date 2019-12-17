@@ -3,7 +3,7 @@
 import React, { type Node, type Context, useEffect, useState, useMemo, useCallback, useContext, useRef } from 'react'
 import { useSelector } from 'react-redux'
 
-import { Context as RouterContext } from '$shared/components/RouterContextProvider'
+import { Context as RouterContext } from '$shared/contexts/Router'
 import { Context as ValidationContext, ERROR } from '../ProductController/ValidationContextProvider'
 import type { Product } from '$mp/flowtype/product-types'
 import usePending from '$shared/hooks/usePending'
@@ -27,6 +27,7 @@ type ContextProps = {
     save: () => void | Promise<void>,
     publish: () => void | Promise<void>,
     deployCommunity: () => void | Promise<void>,
+    lastSectionRef: any,
 }
 
 const EditControllerContext: Context<ContextProps> = React.createContext({})
@@ -35,6 +36,7 @@ function useEditController(product: Product) {
     const { history } = useContext(RouterContext)
     const { isAnyTouched, status } = useContext(ValidationContext)
     const [isPreview, setIsPreview] = useState(false)
+    const lastSectionRef = useRef(undefined)
     const isMounted = useIsMounted()
     const savePending = usePending('product.SAVE')
     const { updateBeneficiaryAddress } = useEditableProductActions()
@@ -91,11 +93,9 @@ function useEditController(product: Product) {
     const { api: confirmSaveDialog } = useModal('confirmSave')
     const { api: publishDialog } = useModal('publish')
 
-    const redirectToProduct = useCallback(() => {
+    const redirectToProductList = useCallback(() => {
         if (!isMounted()) { return }
-        history.replace(routes.product({
-            id: productRef.current.id,
-        }))
+        history.replace(routes.products())
     }, [
         isMounted,
         history,
@@ -138,11 +138,11 @@ function useEditController(product: Product) {
 
         // Everything ok, do a redirect back to product page
         if (savedSuccessfully && !!options.redirect) {
-            redirectToProduct()
+            redirectToProductList()
         }
     }, [
         savePending,
-        redirectToProduct,
+        redirectToProductList,
         originalProduct,
     ])
 
@@ -173,9 +173,9 @@ function useEditController(product: Product) {
             })
 
             // TODO: just redirect for now, need to check result for smarter handling
-            redirectToProduct()
+            redirectToProductList()
         }
-    }, [validate, save, publishDialog, redirectToProduct, isPublic])
+    }, [validate, save, publishDialog, redirectToProductList, isPublic])
 
     const updateBeneficiary = useCallback(async (address) => {
         const { beneficiaryAddress } = productRef.current
@@ -222,13 +222,13 @@ function useEditController(product: Product) {
                 redirect: doRedirect,
             })
         } else if (doRedirect) {
-            redirectToProduct()
+            redirectToProductList()
         }
     }, [
         isAnyTouched,
         confirmSaveDialog,
         save,
-        redirectToProduct,
+        redirectToProductList,
     ])
 
     return useMemo(() => ({
@@ -238,6 +238,7 @@ function useEditController(product: Product) {
         save,
         publish,
         deployCommunity,
+        lastSectionRef,
     }), [
         isPreview,
         setIsPreview,
@@ -245,6 +246,7 @@ function useEditController(product: Product) {
         save,
         publish,
         deployCommunity,
+        lastSectionRef,
     ])
 }
 

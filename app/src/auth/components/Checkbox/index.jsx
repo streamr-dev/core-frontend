@@ -25,8 +25,8 @@ const Checkbox = ({
     <div>
         <label className={styles.label}>
             <SharedCheckbox
-                value={checked}
                 {...props}
+                value={checked}
                 className={className}
             />
             <span>{children}</span>

@@ -12,9 +12,9 @@ export default function useLoadProductStreamsCallback() {
     const dispatch = useDispatch()
     const { wrap } = usePending('product.LOAD_STREAMS')
 
-    return useCallback(async (productId: ProductId) => (
+    return useCallback(async (productId: ProductId, useAuthorization: boolean = true) => (
         wrap(async () => {
-            await dispatch(getStreamsByProductId(productId))
+            await dispatch(getStreamsByProductId(productId, useAuthorization))
         })
     ), [wrap, dispatch])
 }

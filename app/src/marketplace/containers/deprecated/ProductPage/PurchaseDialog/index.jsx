@@ -4,7 +4,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { I18n } from 'react-redux-i18n'
 
-import Modal from '$shared/components/Modal'
+import ModalPortal from '$shared/components/ModalPortal'
 import { selectStep, selectStepParams, selectProduct, selectPurchaseData } from '$mp/modules/deprecated/purchaseDialog/selectors'
 import { setAccessPeriod, setAllowance, initPurchase, approvePurchase } from '$mp/modules/deprecated/purchaseDialog/actions'
 import { purchaseFlowSteps } from '$mp/utils/constants'
@@ -247,7 +247,7 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
 export const UnwrappedPurchaseDialog = connect(mapStateToProps, mapDispatchToProps)(withContractProduct(PurchaseDialog))
 
 export default (props: {}) => (
-    <Modal>
+    <ModalPortal>
         <UnwrappedPurchaseDialog {...props} />
-    </Modal>
+    </ModalPortal>
 )

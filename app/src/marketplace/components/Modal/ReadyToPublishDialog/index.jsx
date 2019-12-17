@@ -37,11 +37,11 @@ class ReadyToPublishDialog extends Component<Props, State> {
                     cancel: {
                         title: I18n.t('modal.common.cancel'),
                         onClick: onCancel,
-                        color: 'link',
+                        kind: 'link',
                     },
                     publish: {
                         title: I18n.t('modal.readyToPublish.publish'),
-                        color: 'primary',
+                        kind: 'primary',
                         onClick: onContinue,
                         disabled: !this.state.termsAccepted,
                     },

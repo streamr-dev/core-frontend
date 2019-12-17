@@ -2,7 +2,7 @@ import React from 'react'
 import { mount } from 'enzyme'
 
 import Modal from '$shared/components/Modal'
-import ModalRoot from '$shared/components/ModalRoot'
+import { Provider as ModalPortalProvider } from '$shared/contexts/ModalPortal'
 
 describe(Modal, () => {
     const { body } = global.document
@@ -21,7 +21,7 @@ describe(Modal, () => {
     })
 
     it('mounts Modals inside #modal-root', () => {
-        const root = mount(<ModalRoot />)
+        const root = mount(<ModalPortalProvider />)
         expect(modalRoot.hasChildNodes()).toBe(false)
         root.setProps({
             children: <Modal>Modal content</Modal>,

@@ -1,0 +1,121 @@
+.root {
+  color: var(--greyDark2);
+  font-size: 16px;
+  line-height: 1;
+}
+
+.title {
+  color: var(--greyDark);
+  font-size: 1.25em;
+  font-weight: var(--regular);
+  line-height: 1.4em;
+  padding: 0;
+}
+
+.basics {
+  margin-top: 0;
+}
+
+.buttonWrapper {
+  margin: 1.75em 0;
+}
+
+.offer {
+  font-size: 0.875em;
+  margin-top: 0.8em;
+}
+
+.separator {
+  background-color: var(--greyDark2);
+  display: inline-block;
+  height: 1em;
+  margin: 0 1em;
+  vertical-align: middle;
+  width: 1px;
+}
+
+.activeTag {
+  border-radius: 2px;
+  background-color: var(--orange);
+  color: var(--white);
+  display: inline-block;
+  margin-left: 1em;
+  padding: 0 0.4em;
+  visibility: hidden;
+}
+
+.active .activeTag {
+  visibility: visible;
+}
+
+.activeTag span {
+  font-size: 0.75em;
+  line-height: 1.5em;
+}
+
+.button {
+  width: 100%;
+}
+
+.paymentRate {
+  color: var(--greyDark);
+  display: inline-block;
+  font-weight: var(--medium);
+}
+
+.description {
+  border-top: 1px solid #EBEBEB;
+  overflow-wrap: break-word;
+  padding-top: 1.25em;
+}
+
+.description .inner {
+  font-size: 0.875em;
+  line-height: 1.5em;
+}
+
+.toggleMore {
+  display: block;
+  margin-top: 1.75em;
+}
+
+.truncated {
+  height: calc(6 * 1.5em);
+  overflow: hidden;
+}
+
+@media (--md-up) {
+  .buttonWrapper {
+    margin: 2em 0;
+  }
+
+  .button {
+    padding-left: 2em;
+    padding-right: 2em;
+    width: auto;
+  }
+}
+
+@media (--lg-up) {
+  .basics {
+    margin-bottom: 2.5em;
+  }
+
+  .buttonWrapper {
+    margin: 2.5em 0;
+  }
+
+  .description .inner {
+    font-size: 1em;
+    line-height: 1.5em;
+  }
+
+  .title {
+    font-size: 1.875em;
+    line-height: calc(40em / 30);
+  }
+
+  .offer {
+    font-size: 1em;
+  }
+}
