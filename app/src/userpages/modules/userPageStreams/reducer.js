@@ -1,7 +1,5 @@
 // @flow
 
-import set from 'lodash/set'
-
 import type { UserPageStreamsState } from '$userpages/flowtype/states/stream-state'
 import type { StreamAction } from '$userpages/flowtype/actions/stream-actions'
 import { streamListPageSize } from '$userpages/utils/constants'
@@ -271,12 +269,13 @@ export default function (state: UserPageStreamsState = initialState, action: Str
             }
 
         case UPDATE_EDIT_STREAM_FIELD: {
-            const newState = {
+            return {
                 ...state,
+                editedStream: {
+                    ...state.editedStream,
+                    [action.field]: action.data,
+                },
             }
-            const fullPath = `editedStream.${action.field}`
-            set(newState, fullPath, action.data)
-            return newState
         }
 
         case DELETE_DATA_UP_TO_SUCCESS: {
