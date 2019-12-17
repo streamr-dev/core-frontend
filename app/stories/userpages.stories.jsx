@@ -17,7 +17,7 @@ import KeyField from '$userpages/components/KeyField'
 const story = (name) => storiesOf(`UserPages/${name}`, module)
     .addDecorator(StoryRouter())
     .addDecorator(styles({
-        padding: '15px',
+        padding: '2rem',
         color: 'black',
     }))
     .addDecorator((callback) => (<Provider store={store}>{callback()}</Provider>))
@@ -78,5 +78,21 @@ story('KeyField')
             onDelete={async () => {
                 alert('Deleted!') // eslint-disable-line no-alert
             }}
+        />
+    ))
+    .addWithJSX('truncated', () => (
+        <KeyField
+            keyName={text('Key name')}
+            value={text('Value', 'Value')}
+            hideValue={boolean('Hide value')}
+            allowEdit={boolean('Allow edit')}
+            onSave={async () => {
+                alert('Saved!') // eslint-disable-line no-alert
+            }}
+            allowDelete={boolean('Allow delete')}
+            onDelete={async () => {
+                alert('Deleted!') // eslint-disable-line no-alert
+            }}
+            truncateValue
         />
     ))

@@ -51,6 +51,7 @@ export class IdentityHandler extends Component<Props> {
                     onDelete={this.onDelete}
                     onEdit={this.onEdit}
                     integrationKeys={this.props.integrationKeys || []}
+                    truncateValues
                 />
                 <AddIdentityButton />
             </Fragment>

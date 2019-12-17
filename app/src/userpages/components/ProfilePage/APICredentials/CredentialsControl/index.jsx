@@ -1,12 +1,11 @@
 // @flow
 
 import React, { Component, Fragment } from 'react'
-import { I18n, Translate } from 'react-redux-i18n'
+import { I18n } from 'react-redux-i18n'
 import cx from 'classnames'
 
 import KeyField from '$userpages/components/KeyField'
 import AddKeyField from '$userpages/components/KeyField/AddKeyField'
-import SplitControl from '$userpages/components/SplitControl'
 import type { ResourceKeyId, ResourceKey, ResourcePermission } from '$shared/flowtype/resource-key-types'
 import type { StreamId } from '$shared/flowtype/stream-types'
 
@@ -50,17 +49,6 @@ export default class CredentialsControl extends Component<Props> {
                 <div className={styles.keyList}>
                     {this.props.keys.map((key: ResourceKey, index: number) => (
                         <Fragment key={key.id}>
-                            {!index && showPermissionType && (
-                                <SplitControl>
-                                    <div />
-                                    <div>
-                                        <Translate
-                                            value="userpages.streams.edit.configure.permission"
-                                            className={styles.permissionColHeading}
-                                        />
-                                    </div>
-                                </SplitControl>
-                            )}
                             <KeyField
                                 className={cx(styles.singleKey, {
                                     [styles.firstKey]: showPermissionType && !index,
@@ -77,12 +65,12 @@ export default class CredentialsControl extends Component<Props> {
                                         return editMyResourceKey(key.id, keyName)
                                     }
                                     return Promise.resolve()
-                                }
-                                }
+                                }}
                                 allowDelete={!disabled}
                                 disableDelete={this.props.disableDelete}
                                 onDelete={() => this.props.removeKey(key.id || '')}
                                 showPermissionType={this.props.showPermissionType}
+                                showPermissionHeader={!index && showPermissionType}
                                 permission={key.permission}
                             />
                         </Fragment>

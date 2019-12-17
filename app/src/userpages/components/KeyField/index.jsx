@@ -3,27 +3,32 @@
 import React from 'react'
 import copy from 'copy-to-clipboard'
 import cx from 'classnames'
-import { Translate } from 'react-redux-i18n'
+import { Translate, I18n } from 'react-redux-i18n'
 
 import type { ResourcePermission } from '$shared/flowtype/resource-key-types'
 import TextInput from '$shared/components/TextInput'
 import DropdownActions from '$shared/components/DropdownActions'
 import SelectInput from '$shared/components/SelectInput'
 import SplitControl from '$userpages/components/SplitControl'
+import { truncate } from '$shared/utils/text'
 import KeyFieldEditor from './KeyFieldEditor'
+
 import styles from './keyField.pcss'
 
 type Props = {
     keyName: string,
     value?: string,
     hideValue?: boolean,
+    truncateValue?: boolean,
     className?: string,
+    keyFieldClassName?: string,
     allowEdit?: boolean,
     onSave?: (?string, ?string, ?ResourcePermission) => Promise<void>,
     allowDelete?: boolean,
     disableDelete?: boolean,
     onDelete?: () => Promise<void>,
     showPermissionType?: boolean,
+    showPermissionHeader?: boolean,
     permission?: ResourcePermission,
 }
 
@@ -149,13 +154,13 @@ class KeyField extends React.Component<Props, State> {
     renderInput = () => {
         const {
             hideValue,
+            truncateValue,
             keyName,
             value,
-            className,
+            keyFieldClassName,
             allowDelete,
             allowEdit,
             disableDelete,
-            showPermissionType,
         } = this.props
         const { hidden, menuOpen } = this.state
 
@@ -182,24 +187,32 @@ class KeyField extends React.Component<Props, State> {
 
         return (
             <div
-                className={cx(styles.container, className, {
+                className={cx(styles.keyFieldContainer, keyFieldClassName, {
                     [styles.withMenu]: menuOpen,
                 })}
             >
                 <TextInput
                     label={keyName}
                     actions={actions}
-                    value={value}
+                    value={value && (!truncateValue ? value : truncate(value, {
+                        maxLength: 15,
+                    }))}
                     readOnly
                     type={hidden ? 'password' : 'text'}
-                    preserveLabelSpace={!showPermissionType}
+                    preserveLabelSpace
                 />
             </div>
         )
     }
 
     render = () => {
-        const { keyName, value, showPermissionType } = this.props
+        const {
+            keyName,
+            value,
+            showPermissionType,
+            showPermissionHeader,
+            className,
+        } = this.props
         const { waiting, editing, error, permission } = this.state
 
         const permissionOptions = [
@@ -213,34 +226,38 @@ class KeyField extends React.Component<Props, State> {
             },
         ]
 
-        return !editing ? (
-            <React.Fragment>
-                {!showPermissionType && this.renderInput()}
-                {showPermissionType && (
-                    <SplitControl>
-                        {this.renderInput()}
-                        <SelectInput
-                            label=""
-                            options={permissionOptions}
-                            value={permissionOptions.find((t) => t.value === permission)}
-                            onChange={(o) => this.onPermissionChange(o.value)}
-                            preserveLabelSpace={false}
-                            className={styles.select}
-                        />
-                    </SplitControl>
+        return (
+            <div className={cx(styles.root, styles.KeyField, className)}>
+                {!editing ? (
+                    <React.Fragment>
+                        {!showPermissionType && this.renderInput()}
+                        {showPermissionType && (
+                            <SplitControl>
+                                {this.renderInput()}
+                                <SelectInput
+                                    label={showPermissionHeader ? I18n.t('userpages.streams.edit.configure.permission') : ''}
+                                    options={permissionOptions}
+                                    value={permissionOptions.find((t) => t.value === permission)}
+                                    onChange={(o) => this.onPermissionChange(o.value)}
+                                    preserveLabelSpace
+                                    className={styles.select}
+                                />
+                            </SplitControl>
+                        )}
+                    </React.Fragment>
+                ) : (
+                    <KeyFieldEditor
+                        keyName={keyName}
+                        value={value}
+                        onCancel={this.onCancel}
+                        onSave={this.onSave}
+                        waiting={waiting}
+                        error={error}
+                        showPermissionType={showPermissionType}
+                        permission={permission}
+                    />
                 )}
-            </React.Fragment>
-        ) : (
-            <KeyFieldEditor
-                keyName={keyName}
-                value={value}
-                onCancel={this.onCancel}
-                onSave={this.onSave}
-                waiting={waiting}
-                error={error}
-                showPermissionType={showPermissionType}
-                permission={permission}
-            />
+            </div>
         )
     }
 }

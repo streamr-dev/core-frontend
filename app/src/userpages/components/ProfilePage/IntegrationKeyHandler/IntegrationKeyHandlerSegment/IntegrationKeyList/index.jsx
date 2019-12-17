@@ -9,13 +9,20 @@ import styles from './integrationKeyList.pcss'
 export type Props = {
     integrationKeys: IntegrationKeyListType,
     hideValues?: boolean,
+    truncateValues?: boolean,
     onDelete: (IntegrationKeyId: IntegrationKeyId) => Promise<void>,
     onEdit: (IntegrationKeyId: IntegrationKeyId, keyName: string) => Promise<void>,
 }
 
 export default class IntegrationKeyList extends Component<Props> {
     render() {
-        const { integrationKeys, hideValues, onDelete, onEdit } = this.props
+        const {
+            integrationKeys,
+            hideValues,
+            truncateValues,
+            onDelete,
+            onEdit,
+        } = this.props
 
         return (
             <div className={styles.keyList}>
@@ -28,6 +35,7 @@ export default class IntegrationKeyList extends Component<Props> {
                         allowDelete
                         allowEdit
                         hideValue={hideValues}
+                        truncateValue={truncateValues}
                         onDelete={() => onDelete(key.id)}
                         onSave={(keyName) => onEdit(key.id, keyName || '')}
                     />
