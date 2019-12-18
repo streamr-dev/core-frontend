@@ -3,7 +3,7 @@ import React from 'react'
 
 import { storiesOf } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
-import { withKnobs, text, number, boolean } from '@storybook/addon-knobs'
+import { withKnobs, text, boolean } from '@storybook/addon-knobs'
 import StoryRouter from 'storybook-react-router'
 import styles from '@sambego/storybook-styles'
 import { Row, Col } from 'reactstrap'
@@ -41,9 +41,8 @@ import ContextMenu from '$shared/components/ContextMenu'
 import { NotificationIcon } from '$shared/utils/constants'
 import Toolbar from '$shared/components/Toolbar'
 import Spinner from '$shared/components/Spinner'
-import Label from '$shared/components/Label'
-import Tile from '$shared/components/Tile'
 import Button from '$shared/components/Button'
+import DonutChart from '$shared/components/DonutChart'
 
 import sharedStyles from './shared.pcss'
 
@@ -789,105 +788,6 @@ story('Toolbar')
         />
     ))
 
-story('Label')
-    .addWithJSX('basic', () => (
-        <Label>{text('Label', 'Label')}</Label>
-    ))
-    .addWithJSX('with position', () => (
-        <div style={{
-            width: '350px',
-            height: '200px',
-            border: '1px solid black',
-            position: 'relative',
-        }}
-        >
-            <Label topLeft>{text('First', 'First')}</Label>
-            <Label bottomRight>{text('Second', 'Second')}</Label>
-        </div>
-    ))
-    .addWithJSX('with badge & tag', () => (
-        <div>
-            <Label>
-                <Label.Badge badge="members" value={number('Community members', 15)} />
-            </Label>
-            <br />
-            <Label>
-                <Label.Badge tag="community" />
-            </Label>
-        </div>
-    ))
-
-story('Tile')
-    .addWithJSX('basic', () => (
-        <div style={{
-            width: '350px',
-        }}
-        >
-            <Tile>
-                <Tile.Title>{text('Product name', 'Product name')}</Tile.Title>
-                <Tile.Description>
-                    {text('Description', 'Description')}
-                </Tile.Description>
-                <Tile.Status>
-                    {text('Status', 'Status')}
-                </Tile.Status>
-            </Tile>
-        </div>
-    ))
-    .addWithJSX('with badge & label', () => (
-        <div style={{
-            width: '350px',
-        }}
-        >
-            <Tile
-                labels={{
-                    community: boolean('Community', true),
-                }}
-                badges={{
-                    members: number('Community members', 15),
-                }}
-            >
-                <Tile.Title>{text('Product name', 'Product name')}</Tile.Title>
-                <Tile.Description>
-                    {text('Description', 'Description')}
-                </Tile.Description>
-                <Tile.Status>
-                    {text('Status', 'Status')}
-                </Tile.Status>
-            </Tile>
-        </div>
-    ))
-    .addWithJSX('with dropdown actions', () => (
-        <div style={{
-            width: '350px',
-        }}
-        >
-            <Tile
-                dropdownActions={(
-                    <React.Fragment>
-                        <DropdownActions.Item onClick={action('option 1')}>
-                            Option 1
-                        </DropdownActions.Item>
-                        <DropdownActions.Item onClick={action('option 2')}>
-                            Option 2
-                        </DropdownActions.Item>
-                        <DropdownActions.Item onClick={action('option 3')}>
-                            Option 3
-                        </DropdownActions.Item>
-                    </React.Fragment>
-                )}
-            >
-                <Tile.Title>{text('Product name', 'Product name')}</Tile.Title>
-                <Tile.Description>
-                    {text('Description', 'Description')}
-                </Tile.Description>
-                <Tile.Status>
-                    {text('Status', 'Status')}
-                </Tile.Status>
-            </Tile>
-        </div>
-    ))
-
 story('Spinner')
     .addWithJSX('Small', () => (<Spinner size="small" />))
     .addWithJSX('Large', () => (<Spinner size="large" />))
@@ -935,4 +835,28 @@ story('Button')
             <br />
             <Button kind="secondary" waiting onClick={action('Clicked')}>Waiting secondary</Button>
         </div>
+    ))
+
+story('DonutChart')
+    .addWithJSX('basic', () => (
+        <DonutChart
+            strokeWidth={5}
+            data={[
+                {
+                    title: '1',
+                    value: 50,
+                    color: 'red',
+                },
+                {
+                    title: '2',
+                    value: 25,
+                    color: 'blue',
+                },
+                {
+                    title: '3',
+                    value: 25,
+                    color: 'green',
+                },
+            ]}
+        />
     ))

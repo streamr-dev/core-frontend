@@ -219,35 +219,42 @@ const ProductsPage = () => {
                     />
                 )}
                 <TileGrid>
-                    {products.map((product) => (
-                        <Link
-                            key={product.id}
-                            to={product.id && getProductLink(product.id)}
-                        >
-                            <Tile
-                                imageUrl={product.imageUrl || ''}
-                                dropdownActions={<Actions {...product} />}
-                                labels={{
-                                    community: isCommunityProduct(product),
-                                }}
+                    {products.map((product) => {
+                        const isCommunity = isCommunityProduct(product)
+
+                        return (
+                            <Link
+                                key={product.id}
+                                to={product.id && getProductLink(product.id)}
                             >
-                                <Tile.Title>{product.name}</Tile.Title>
-                                <Tile.Tag >
-                                    {product.updated === product.created ? 'Created ' : 'Updated '}
-                                    {product.updated && generateTimeAgoDescription(new Date(product.updated))}
-                                </Tile.Tag>
-                                <Tile.Tag
-                                    className={product.state === productStates.DEPLOYED ? styles.green : styles.grey}
+                                <Tile
+                                    imageUrl={product.imageUrl || ''}
+                                    dropdownActions={<Actions {...product} />}
+                                    labels={{
+                                        community: isCommunity,
+                                    }}
+                                    badges={isCommunity ? {
+                                        members: '-',
+                                    } : undefined}
                                 >
-                                    {
-                                        product.state === productStates.DEPLOYED ?
-                                            <Translate value="userpages.products.published" /> :
-                                            <Translate value="userpages.products.draft" />
-                                    }
-                                </Tile.Tag>
-                            </Tile>
-                        </Link>
-                    ))}
+                                    <Tile.Title>{product.name}</Tile.Title>
+                                    <Tile.Tag >
+                                        {product.updated === product.created ? 'Created ' : 'Updated '}
+                                        {product.updated && generateTimeAgoDescription(new Date(product.updated))}
+                                    </Tile.Tag>
+                                    <Tile.Tag
+                                        className={product.state === productStates.DEPLOYED ? styles.green : styles.grey}
+                                    >
+                                        {
+                                            product.state === productStates.DEPLOYED ?
+                                                <Translate value="userpages.products.published" /> :
+                                                <Translate value="userpages.products.draft" />
+                                        }
+                                    </Tile.Tag>
+                                </Tile>
+                            </Link>
+                        )
+                    })}
                 </TileGrid>
             </ListContainer>
             <DocsShortcuts />
