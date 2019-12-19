@@ -154,6 +154,7 @@ export const getJoinPartStreamId = (address: CommunityId, usePublicNode: boolean
 
 export const getCommunityStats = (id: CommunityId): ApiResult<Object> => get({
     url: formatApiUrl('communities', id, 'stats'),
+    useAuthorization: false,
 })
 
 export const getCommunities = async (): ApiResult<Array<Object>> => {
@@ -163,7 +164,7 @@ export const getCommunities = async (): ApiResult<Array<Object>> => {
     })
 
     return Object.keys(communities || {}).map((id) => ({
-        id,
+        id: id.toLowerCase(),
         ...communities[id],
     }))
 }

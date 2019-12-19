@@ -12,6 +12,7 @@ import links from '../../../links'
 import { getFilters } from '../../utils/constants'
 import { getMyPurchases, updateFilter, applyFilter } from '$mp/modules/myPurchaseList/actions'
 import { selectMyPurchaseList, selectSubscriptions, selectFetchingMyPurchaseList } from '$mp/modules/myPurchaseList/selectors'
+import { selectCommunityProducts, selectFetchingCommunityStats } from '$mp/modules/communityProduct/selectors'
 import Tile from '$shared/components/Tile'
 import { isActive } from '$mp/utils/time'
 import Search from '../Header/Search'
@@ -22,6 +23,7 @@ import ListContainer from '$shared/components/Container/List'
 import TileGrid from '$shared/components/TileGrid'
 import { isCommunityProduct } from '$mp/utils/product'
 import useFilterSort from '$userpages/hooks/useFilterSort'
+import { getAllCommunityStats } from '$mp/modules/communityProduct/actions'
 
 import type { ProductSubscription } from '$mp/flowtype/product-types'
 
@@ -50,6 +52,8 @@ const PurchasesPage = () => {
     const subscriptions = useSelector(selectSubscriptions)
     const fetching = useSelector(selectFetchingMyPurchaseList)
     const dispatch = useDispatch()
+    const communityStats = useSelector(selectCommunityProducts)
+    const fetchingCommunityStats = useSelector(selectFetchingCommunityStats)
 
     useEffect(() => {
         dispatch(updateFilter(filter))
@@ -58,6 +62,21 @@ const PurchasesPage = () => {
                 dispatch(applyFilter())
             })
     }, [dispatch, filter])
+
+    useEffect(() => {
+        dispatch(getAllCommunityStats())
+    }, [dispatch])
+
+    const members = useMemo(() => (
+        (communityStats || {}).reduce((result, { id, memberCount }) => {
+            if (!memberCount) { return result }
+
+            return {
+                ...result,
+                [id.toLowerCase()]: memberCount.total,
+            }
+        }, {})
+    ), [communityStats])
 
     return (
         <Layout
@@ -96,6 +115,9 @@ const PurchasesPage = () => {
                 <TileGrid>
                     {purchases.map((product) => {
                         const isActive = subscriptions && isSubscriptionActive(subscriptions.find((s) => s.product.id === product.id))
+                        const isCommunity = isCommunityProduct(product)
+                        const beneficiaryAddress = (product.beneficiaryAddress || '').toLowerCase()
+                        const memberCount = members[beneficiaryAddress]
 
                         return (
                             <Link
@@ -108,6 +130,10 @@ const PurchasesPage = () => {
                                     labels={{
                                         community: isCommunityProduct(product),
                                     }}
+                                    badges={(isCommunity && memberCount !== undefined) ? {
+                                        members: memberCount,
+                                    } : undefined}
+                                    deploying={!fetchingCommunityStats && (isCommunity && beneficiaryAddress && memberCount === undefined)}
                                 >
                                     <Tile.Title>{product.name}</Tile.Title>
                                     <Tile.Description>{product.owner}</Tile.Description>

@@ -1,6 +1,6 @@
 // @flow
 
-import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+import React, { Fragment, useCallback, useEffect, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Button } from 'reactstrap'
 import { Translate, I18n } from 'react-redux-i18n'
@@ -182,20 +182,17 @@ const ProductsPage = () => {
     const dispatch = useDispatch()
     const communityStats = useSelector(selectCommunityProducts)
     const fetchingCommunityStats = useSelector(selectFetchingCommunityStats)
-    const [members, setMembers] = useState({})
 
-    useEffect(() => {
-        if (!communityStats || communityStats.length === 0) { return }
-
-        setMembers(communityStats.reduce((result, { id, memberCount }) => {
+    const members = useMemo(() => (
+        (communityStats || {}).reduce((result, { id, memberCount }) => {
             if (!memberCount) { return result }
 
             return {
                 ...result,
                 [id.toLowerCase()]: memberCount.total,
             }
-        }, {}))
-    }, [communityStats])
+        }, {})
+    ), [communityStats])
 
     useEffect(() => {
         dispatch(getMyProducts(filter))
@@ -259,7 +256,7 @@ const ProductsPage = () => {
                                     badges={(isCommunity && memberCount !== undefined) ? {
                                         members: memberCount,
                                     } : undefined}
-                                    deploying={!fetchingCommunityStats && (isCommunity && memberCount === undefined)}
+                                    deploying={!fetchingCommunityStats && (isCommunity && beneficiaryAddress && memberCount === undefined)}
                                 >
                                     <Tile.Title>{product.name}</Tile.Title>
                                     <Tile.Tag >

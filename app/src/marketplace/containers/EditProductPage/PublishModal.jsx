@@ -367,8 +367,8 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
     }, [queueRef, setActionStatus, productId, dispatch, accountRef])
 
     const onClose = useCallback(() => {
-        api.close(false)
-    }, [api])
+        api.close([steps.ACTIONS, steps.COMPLETE].includes(step))
+    }, [api, step])
 
     const currentStatus = useMemo(() => (currentAction && status[currentAction] ? status[currentAction] : undefined), [status, currentAction])
 
