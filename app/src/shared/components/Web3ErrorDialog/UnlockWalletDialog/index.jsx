@@ -10,7 +10,7 @@ import PngIcon from '$shared/components/PngIcon'
 type Props = {
     title?: string,
     onClose: () => void,
-    waiting: boolean,
+    waiting?: boolean,
     children?: Node,
 }
 

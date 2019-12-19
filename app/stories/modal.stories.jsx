@@ -672,6 +672,7 @@ story('Shared/Web3NotDetectedDialog')
 story('Profile/AvatarUploadDialog')
     .add('default', () => (
         <AvatarUploadDialog
+            originalImage=""
             onClose={action('onClose')}
             onSave={action('onSave')}
         />

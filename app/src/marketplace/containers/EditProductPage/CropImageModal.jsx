@@ -30,8 +30,7 @@ const PreviewAndCropModal = ({ image, api }: Props) => {
 
     return (
         <CropImageModal
-            // $FlowFixMe
-            imageUrl={preview}
+            imageUrl={preview || ''}
             onSave={onSave}
             onClose={onClose}
         />
