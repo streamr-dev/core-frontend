@@ -1,7 +1,7 @@
 FROM nginx:alpine
 
-# Install nodejs for running healthcheck.js
-RUN apk add --update nodejs
+# Install curl for running healthcheck
+RUN apk add --update curl
 
 # Add nginx configuration
 RUN rm /etc/nginx/conf.d/default.conf
