@@ -30,7 +30,7 @@ import SvgIcon from '$shared/components/SvgIcon'
 import PngIcon from '$shared/components/PngIcon'
 import Dropdown from '$shared/components/Dropdown'
 import Slider from '$shared/components/Slider'
-import Modal from '$shared/components/Modal'
+import ModalPortal from '$shared/components/ModalPortal'
 import { Provider as ModalPortalProvider } from '$shared/contexts/ModalPortal'
 import ErrorDialog from '$mp/components/Modal/ErrorDialog'
 import Notifications from '$shared/components/Notifications'
@@ -624,13 +624,13 @@ story('Modal')
             <ModalPortalProvider>
                 <h1>Lorem ipsum cause dolor sit emat!</h1>
                 {boolean('Visible', true) && (
-                    <Modal>
+                    <ModalPortal>
                         <ErrorDialog
                             title="Godlike!"
                             message="Hello world!"
                             onClose={() => {}}
                         />
-                    </Modal>
+                    </ModalPortal>
                 )}
             </ModalPortalProvider>
         </React.Fragment>
@@ -670,13 +670,13 @@ story('Notifications')
                     ))}
                     <Notifications />
                     {boolean('Show dialog', false) && (
-                        <Modal>
+                        <ModalPortal>
                             <ErrorDialog
                                 title="Godlike!"
                                 message="Hello world!"
                                 onClose={() => {}}
                             />
-                        </Modal>
+                        </ModalPortal>
                     )}
                 </ModalPortalProvider>
             </React.Fragment>
