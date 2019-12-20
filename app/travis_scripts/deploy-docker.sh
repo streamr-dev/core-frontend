@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 ## Script for logging in to docker service and upload docker images
 docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
 if [ "$1" == "dev" ]; then
