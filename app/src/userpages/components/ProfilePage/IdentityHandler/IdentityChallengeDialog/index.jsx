@@ -4,6 +4,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { I18n, Translate } from 'react-redux-i18n'
 
+import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import withWeb3 from '$shared/utils/withWeb3'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
@@ -28,40 +29,46 @@ type StateProps = {
 
 type Props = DialogProps & StateProps
 
-const SignatureRequestDialog = ({ onClose }: DialogProps) => (
-    <Dialog
-        title={I18n.t('modal.signatureRequest.defaultTitle')}
-        onClose={onClose}
-    >
-        <div>
-            <PngIcon name="metamask" className={styles.icon} />
-            <Translate tag="p" value="modal.signatureRequest.description" />
-        </div>
-    </Dialog>
+export const SignatureRequestDialog = ({ onClose }: DialogProps) => (
+    <ModalPortal>
+        <Dialog
+            title={I18n.t('modal.signatureRequest.defaultTitle')}
+            onClose={onClose}
+        >
+            <div>
+                <PngIcon name="metamask" className={styles.icon} />
+                <Translate tag="p" value="modal.signatureRequest.description" />
+            </div>
+        </Dialog>
+    </ModalPortal>
 )
 
-const ErrorDialog = ({ onClose }: DialogProps) => (
-    <Dialog
-        title={I18n.t('modal.newIdentityError.defaultTitle')}
-        onClose={onClose}
-    >
-        <div>
-            <PngIcon name="walletError" className={styles.icon} />
-            <Translate tag="p" value="modal.newIdentityError.description" />
-        </div>
-    </Dialog>
+export const ErrorDialog = ({ onClose }: DialogProps) => (
+    <ModalPortal>
+        <Dialog
+            title={I18n.t('modal.newIdentityError.defaultTitle')}
+            onClose={onClose}
+        >
+            <div>
+                <PngIcon name="walletError" className={styles.icon} />
+                <Translate tag="p" value="modal.newIdentityError.description" />
+            </div>
+        </Dialog>
+    </ModalPortal>
 )
 
-const SuccessDialog = ({ onClose }: DialogProps) => (
-    <Dialog
-        title={I18n.t('modal.newIdentitySuccess.defaultTitle')}
-        onClose={onClose}
-    >
-        <div>
-            <SvgIcon name="checkmark" size="large" className={styles.icon} />
-            <Translate tag="p" value="modal.newIdentitySuccess.description" />
-        </div>
-    </Dialog>
+export const SuccessDialog = ({ onClose }: DialogProps) => (
+    <ModalPortal>
+        <Dialog
+            title={I18n.t('modal.newIdentitySuccess.defaultTitle')}
+            onClose={onClose}
+        >
+            <div>
+                <SvgIcon name="checkmark" size="large" className={styles.icon} />
+                <Translate tag="p" value="modal.newIdentitySuccess.description" />
+            </div>
+        </Dialog>
+    </ModalPortal>
 )
 
 const IdentityChallengeDialog = (props: Props) => {

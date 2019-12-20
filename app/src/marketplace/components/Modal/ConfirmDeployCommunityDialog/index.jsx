@@ -19,13 +19,18 @@ export type Props = {
     onShowGuidedDialog: () => void,
 }
 
-const ConfirmDeployCommunityDialog = ({ product, onClose, onContinue: onContinueProp, onShowGuidedDialog }: Props) => {
+const ConfirmDeployCommunityDialog = ({ product, onClose, onContinue: onContinueProp, onShowGuidedDialog: onShowGuidedDialogProp }: Props) => {
     const [waitingOnContinue, setWaitingOnContinue] = useState(false)
 
     const onContinue = useCallback(async () => {
         setWaitingOnContinue(true)
         await onContinueProp()
     }, [onContinueProp])
+
+    const onShowGuidedDialog = useCallback((e: SyntheticInputEvent<EventTarget>) => {
+        e.preventDefault()
+        onShowGuidedDialogProp()
+    }, [onShowGuidedDialogProp])
 
     // $FlowFixMe property `preview` is missing in  `File`.
     const image = String((product.newImageToUpload && product.newImageToUpload.preview) || product.imageUrl)

@@ -3,6 +3,7 @@
 import React from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
 
+import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import links from '../../../../links'
 
@@ -24,52 +25,56 @@ const HelpText = () => (
 const ReplaceAllowanceDialog = ({ gettingAllowance, settingAllowance, onCancel, onSet }: Props) => {
     if (settingAllowance) {
         return (
-            <Dialog
-                onClose={onCancel}
-                title={I18n.t('modal.setAllowance.started.title')}
-                actions={{
-                    cancel: {
-                        title: I18n.t('modal.common.cancel'),
-                        onClick: onCancel,
-                        kind: 'link',
-                    },
-                    publish: {
-                        title: I18n.t('modal.common.waiting'),
-                        kind: 'primary',
-                        disabled: true,
-                        spinner: true,
-                    },
-                }}
-            >
-                <div>
-                    <p><Translate value="modal.replaceAllowance.started.message" dangerousHTML /></p>
-                </div>
-            </Dialog>
+            <ModalPortal>
+                <Dialog
+                    onClose={onCancel}
+                    title={I18n.t('modal.setAllowance.started.title')}
+                    actions={{
+                        cancel: {
+                            title: I18n.t('modal.common.cancel'),
+                            onClick: onCancel,
+                            kind: 'link',
+                        },
+                        publish: {
+                            title: I18n.t('modal.common.waiting'),
+                            kind: 'primary',
+                            disabled: true,
+                            spinner: true,
+                        },
+                    }}
+                >
+                    <div>
+                        <p><Translate value="modal.replaceAllowance.started.message" dangerousHTML /></p>
+                    </div>
+                </Dialog>
+            </ModalPortal>
         )
     }
 
     return (
-        <Dialog
-            onClose={onCancel}
-            title={I18n.t('modal.setAllowance.title')}
-            waiting={gettingAllowance}
-            helpText={<HelpText />}
-            actions={{
-                cancel: {
-                    title: I18n.t('modal.common.cancel'),
-                    kind: 'link',
-                    onClick: onCancel,
-                },
-                next: {
-                    title: I18n.t('modal.common.next'),
-                    kind: 'primary',
-                    outline: true,
-                    onClick: () => onSet(),
-                },
-            }}
-        >
-            <p><Translate value="modal.replaceAllowance.message" dangerousHTML /></p>
-        </Dialog>
+        <ModalPortal>
+            <Dialog
+                onClose={onCancel}
+                title={I18n.t('modal.setAllowance.title')}
+                waiting={gettingAllowance}
+                helpText={<HelpText />}
+                actions={{
+                    cancel: {
+                        title: I18n.t('modal.common.cancel'),
+                        kind: 'link',
+                        onClick: onCancel,
+                    },
+                    next: {
+                        title: I18n.t('modal.common.next'),
+                        kind: 'primary',
+                        outline: true,
+                        onClick: () => onSet(),
+                    },
+                }}
+            >
+                <p><Translate value="modal.replaceAllowance.message" dangerousHTML /></p>
+            </Dialog>
+        </ModalPortal>
     )
 }
 

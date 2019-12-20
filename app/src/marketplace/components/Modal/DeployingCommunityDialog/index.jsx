@@ -37,7 +37,7 @@ const DeployingCommunityDialog = ({ product, estimate, onClose, onContinue }: Pr
                 continue: {
                     title: I18n.t('modal.common.close'),
                     outline: true,
-                    onClick: onContinue,
+                    onClick: () => onContinue(),
                 },
             }}
         >

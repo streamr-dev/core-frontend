@@ -3,6 +3,7 @@
 import React from 'react'
 import { I18n } from 'react-redux-i18n'
 
+import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import TextInput from '$shared/components/TextInput'
 
@@ -36,34 +37,36 @@ class IdentityNameDialog extends React.Component<Props, State> {
         const { onClose } = this.props
         const { name } = this.state
         return (
-            <Dialog
-                title={I18n.t('modal.newIdentity.defaultTitle')}
-                onClose={onClose}
-                actions={{
-                    cancel: {
-                        title: I18n.t('modal.common.cancel'),
-                        kind: 'link',
-                        outline: true,
-                        onClick: onClose,
-                    },
-                    save: {
-                        title: I18n.t('modal.common.next'),
-                        kind: 'primary',
-                        onClick: this.onSave,
-                        disabled: !name,
-                    },
-                }}
-            >
-                <div className={styles.textField}>
-                    <TextInput
-                        label=""
-                        placeholder={I18n.t('modal.newIdentity.placeholder')}
-                        value={name}
-                        onChange={this.onNameChange}
-                        preserveLabelSpace
-                    />
-                </div>
-            </Dialog>
+            <ModalPortal>
+                <Dialog
+                    title={I18n.t('modal.newIdentity.defaultTitle')}
+                    onClose={onClose}
+                    actions={{
+                        cancel: {
+                            title: I18n.t('modal.common.cancel'),
+                            kind: 'link',
+                            outline: true,
+                            onClick: () => onClose(),
+                        },
+                        save: {
+                            title: I18n.t('modal.common.next'),
+                            kind: 'primary',
+                            onClick: this.onSave,
+                            disabled: !name,
+                        },
+                    }}
+                >
+                    <div className={styles.textField}>
+                        <TextInput
+                            label=""
+                            placeholder={I18n.t('modal.newIdentity.placeholder')}
+                            value={name}
+                            onChange={this.onNameChange}
+                            preserveLabelSpace
+                        />
+                    </div>
+                </Dialog>
+            </ModalPortal>
         )
     }
 }

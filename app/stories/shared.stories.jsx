@@ -616,7 +616,7 @@ story('Slider')
         <SliderContainer />
     ))
 
-story('Modal')
+story('ModalPortal')
     .addDecorator(StoryRouter())
     .addWithJSX('basic', () => (
         <React.Fragment>
