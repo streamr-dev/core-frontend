@@ -144,7 +144,7 @@ export class ConfirmCsvImportView extends Component<Props, State> {
     }
 
     render() {
-        const { csvUploadState, onClose } = this.props
+        const { csvUploadState, onClose, errorMessage } = this.props
         const {
             dateFormat,
             dateSelector,
@@ -188,6 +188,7 @@ export class ConfirmCsvImportView extends Component<Props, State> {
                                 value={timestampColumnSelector || headers[0]}
                                 onChange={this.onTimestampColumnIndexChange}
                                 required
+                                preserveLabelSpace
                             />
                         </div>
 
@@ -206,7 +207,9 @@ export class ConfirmCsvImportView extends Component<Props, State> {
                                 }
                                 value={dateSelector}
                                 onChange={(value) => this.onDateFormatChange(value)}
+                                error={errorMessage || ''}
                                 required
+                                preserveLabelSpace
                             />
                             {dateFormat && dateFormats[dateFormat] && (
                                 <span className={styles.helpText}>

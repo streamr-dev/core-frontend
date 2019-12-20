@@ -500,10 +500,6 @@ export const uploadCsvFile = (id: StreamId, file: File) => (dispatch: Function) 
         .catch((error) => {
             const e = getError(error)
             dispatch(uploadCsvFileFailure(e))
-            Notification.push({
-                title: e.message,
-                icon: NotificationIcon.ERROR,
-            })
             throw error
         })
 }
@@ -520,10 +516,6 @@ export const confirmCsvFileUpload = (id: StreamId, fileUrl: string, dateFormat: 
         })
         .catch((e) => {
             dispatch(confirmCsvFileUploadFailure(e))
-            Notification.push({
-                title: e.message,
-                icon: NotificationIcon.ERROR,
-            })
             throw e
         })
 }

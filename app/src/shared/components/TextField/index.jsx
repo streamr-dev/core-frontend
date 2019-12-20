@@ -8,7 +8,7 @@ import TextFieldWithActions from './TextFieldWithActions'
 import styles from './textField.pcss'
 
 type Props = {
-    className?: string,
+    className?: ?string,
     onAutoComplete?: (boolean) => void,
     type?: string,
     actions?: Array<any>,

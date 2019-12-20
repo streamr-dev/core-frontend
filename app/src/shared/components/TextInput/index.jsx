@@ -43,6 +43,7 @@ const TextInput = ({
             return (
                 <TextField
                     {...rest}
+                    className={className}
                     value={value}
                     onBlur={onBlur}
                     onFocus={onFocus}

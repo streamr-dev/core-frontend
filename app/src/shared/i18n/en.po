@@ -167,6 +167,9 @@ msgstr "https://streamr.network/whitepaper"
 msgid "modal##common##cancel"
 msgstr "Cancel"
 
+msgid "modal##common##confirm"
+msgstr "Confirm"
+
 msgid "modal##common##continue"
 msgstr "Continue"
 
@@ -228,6 +231,30 @@ msgstr "No data yet"
 
 msgid "shared##status##error"
 msgstr "Inactive"
+
+msgid "shared##date##day"
+msgstr "Day"
+
+msgid "shared##date##day_plural"
+msgstr "Days"
+
+msgid "shared##date##week"
+msgstr "Week"
+
+msgid "shared##date##week_plural"
+msgstr "Weeks"
+
+msgid "shared##date##month"
+msgstr "Month"
+
+msgid "shared##date##month_plural"
+msgstr "Months"
+
+msgid "shared##date##year"
+msgstr "Year"
+
+msgid "shared##date##year_plural"
+msgstr "Years"
 
 msgid "general##docs"
 msgstr "Docs"
