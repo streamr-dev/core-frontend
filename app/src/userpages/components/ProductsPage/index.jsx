@@ -28,6 +28,8 @@ import Button from '$shared/components/Button'
 import useFilterSort from '$userpages/hooks/useFilterSort'
 import useCopy from '$shared/hooks/useCopy'
 import useModal from '$shared/hooks/useModal'
+import routes from '$routes'
+
 import type { ProductId, Product } from '$mp/flowtype/product-types'
 
 import CreateProductModal from '$mp/containers/CreateProductModal'
@@ -60,18 +62,32 @@ const generateTimeAgoDescription = (productUpdatedDate: Date) => moment(productU
 
 const getProductLink = (id: ProductId) => {
     if (process.env.COMMUNITY_PRODUCTS) {
-        return formatPath(links.marketplace.products, id, 'edit')
+        return formatPath(links.userpages.products, id, 'edit')
     }
 
     return formatPath(links.marketplace.products, id)
 }
 
-const Actions = ({ id, state }: Product) => {
+const Actions = (product: Product) => {
+    const { id, state } = product
+    const isCommunity = isCommunityProduct(product)
     const { copy } = useCopy()
     const dispatch = useDispatch()
 
     const redirectToEditProduct = useCallback((id: ProductId) => (
-        dispatch(push(formatPath(links.marketplace.products, id, 'edit')))
+        dispatch(push(routes.editProduct({
+            id,
+        })))
+    ), [dispatch])
+    const redirectToProductStats = useCallback((id: ProductId) => (
+        dispatch(push(routes.productStats({
+            id,
+        })))
+    ), [dispatch])
+    const redirectToProductMembers = useCallback((id: ProductId) => (
+        dispatch(push(routes.productMembers({
+            id,
+        })))
     ), [dispatch])
     const redirectToPublishProduct = useCallback((id: ProductId) => (
         dispatch(push(formatPath(links.marketplace.products, id, 'publish')))
@@ -104,17 +120,35 @@ const Actions = ({ id, state }: Product) => {
                     }
                 </DropdownActions.Item>
             }
-            {!!process.env.COMMUNITY_PRODUCTS && (state === productStates.DEPLOYED) &&
+            {!!process.env.COMMUNITY_PRODUCTS &&
                 <DropdownActions.Item
                     className={styles.item}
                     onClick={() => (!!redirectToProduct && redirectToProduct(id || ''))}
+                    disabled={state !== productStates.DEPLOYED}
                 >
-                    <Translate value="actionsDropdown.show" />
+                    <Translate value="actionsDropdown.viewProduct" />
+                </DropdownActions.Item>
+            }
+            {!!process.env.COMMUNITY_PRODUCTS && isCommunity &&
+                <DropdownActions.Item
+                    className={styles.item}
+                    onClick={() => (!!redirectToProduct && redirectToProductStats(id || ''))}
+                >
+                    <Translate value="actionsDropdown.viewStats" />
+                </DropdownActions.Item>
+            }
+            {!!process.env.COMMUNITY_PRODUCTS && isCommunity &&
+                <DropdownActions.Item
+                    className={styles.item}
+                    onClick={() => (!!redirectToProduct && redirectToProductMembers(id || ''))}
+                >
+                    <Translate value="actionsDropdown.viewCommunity" />
                 </DropdownActions.Item>
             }
             <DropdownActions.Item
                 className={styles.item}
                 onClick={() => copyUrl(id || '')}
+                disabled={state !== productStates.DEPLOYED}
             >
                 <Translate value="actionsDropdown.copyUrl" />
             </DropdownActions.Item>

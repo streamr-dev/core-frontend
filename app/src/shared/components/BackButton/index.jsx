@@ -1,59 +1,32 @@
 // @flow
 
 import React from 'react'
-import cx from 'classnames'
 import { Translate } from 'react-redux-i18n'
+import cx from 'classnames'
 
-import Link from '../Link'
-import List from '../List'
-import SvgIcon from '../SvgIcon'
-import routes from '$routes'
-import links from '$mp/../links'
+import SvgIcon from '$shared/components/SvgIcon'
+
 import styles from './backButton.pcss'
 
 type Props = {
+    onBack: Function,
     className?: string,
-    href?: string,
-    to?: string,
 }
 
-const BackButton = ({ className, ...props }: Props) => (
+const BackButton = ({ onBack, className }: Props) => (
     <div
         className={cx(styles.root, className)}
     >
-        &zwnj;
-        <List
-            className={styles.list}
+        <button
+            type="button"
+            onClick={() => onBack()}
+            className={styles.button}
         >
-            <li>
-                <Link
-                    to={routes.marketplace()}
-                    {...props}
-                >
-                    <SvgIcon name="back" className={styles.backIcon} />
-                    <span className={styles.shortLabel}>
-                        <Translate value="general.back" />
-                    </span>
-                    <span className={styles.longLabel}>
-                        <Translate value="general.backToMarketplace" />
-                    </span>
-                </Link>
-            </li>
-            <li>
-                <Link
-                    to={links.userpages.products}
-                >
-                    <Translate value="general.products" />
-                </Link>
-            </li>
-            <li>
-                <Link
-                    to={links.userpages.purchases}
-                >
-                    <Translate value="general.purchases" />
-                </Link>
-            </li>
-        </List>
+            <SvgIcon name="back" className={styles.backIcon} />
+            <span>
+                <Translate value="general.back" />
+            </span>
+        </button>
     </div>
 )
 

@@ -30,6 +30,7 @@ import productPageStyles from '$mp/containers/ProductPage/page.pcss'
 import heroStyles from '$mp/containers/ProductPage/hero.pcss'
 import streamStyles from '$mp/containers/ProductPage/streams.pcss'
 import statsStyles from '$mp/containers/ProductPage/communityStats.pcss'
+
 import styles from './preview.pcss'
 
 const Hero = () => {
