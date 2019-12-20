@@ -47,6 +47,9 @@ jobs:
     - STREAMR_URL=http://localhost
     - PLATFORM_ORIGIN_URL=http://localhost
     script: "travis_retry $TRAVIS_BUILD_DIR/app/travis_scripts/unit-tests.sh"
+    after_failure:
+      - docker ps
+      - $TRAVIS_BUILD_DIR/streamr-docker-dev/streamr-docker-dev/bin.sh log --all
   - stage: Platform tests
     if: type IN (pull_request)
     env:

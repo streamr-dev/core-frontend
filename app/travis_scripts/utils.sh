@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+set -e
 # Check url responds with expected http response code
 # arguments: name expected_status url
 # e.g. checkHTTP 'data-api' 404 http://localhost:8890/
