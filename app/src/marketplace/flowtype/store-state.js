@@ -162,16 +162,28 @@ export type ModifyContractProductState = {
 
 // Allowance
 export type AllowanceState = {
-    allowance: NumberString,
-    pendingAllowance: ?NumberString,
-    gettingAllowance: boolean,
-    getAllowanceError: ?ErrorInUi,
-    settingAllowance: boolean,
-    setAllowanceTx: ?Hash,
-    setAllowanceError: ?ErrorInUi,
-    resettingAllowance: boolean,
-    resetAllowanceTx: ?Hash,
-    resetAllowanceError: ?ErrorInUi,
+    // DATA
+    dataAllowance: NumberString,
+    pendingDataAllowance: ?NumberString,
+    gettingDataAllowance: boolean,
+    getDataAllowanceError: ?ErrorInUi,
+    settingDataAllowance: boolean,
+    setDataAllowanceTx: ?Hash,
+    setDataAllowanceError: ?ErrorInUi,
+    resettingDataAllowance: boolean,
+    resetDataAllowanceTx: ?Hash,
+    resetDataAllowanceError: ?ErrorInUi,
+    // DAI
+    daiAllowance: NumberString,
+    pendingDaiAllowance: ?NumberString,
+    gettingDaiAllowance: boolean,
+    getDaiAllowanceError: ?ErrorInUi,
+    settingDaiAllowance: boolean,
+    setDaiAllowanceTx: ?Hash,
+    setDaiAllowanceError: ?ErrorInUi,
+    resettingDaiAllowance: boolean,
+    resetDaiAllowanceTx: ?Hash,
+    resetDaiAllowanceError: ?ErrorInUi,
 }
 
 // web3

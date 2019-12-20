@@ -8,8 +8,8 @@ import { I18n } from 'react-redux-i18n'
 import { mapStateToProps, mapDispatchToProps, PurchaseDialog } from '$mp/containers/deprecated/ProductPage/PurchaseDialog'
 import ChooseAccessPeriodDialog from '$mp/containers/deprecated/ProductPage/PurchaseDialog/ChooseAccessPeriodDialog'
 import ErrorDialog from '$mp/components/Modal/ErrorDialog'
-import ReplaceAllowanceDialog from '$mp/components/Modal/ReplaceAllowanceDialog'
-import SetAllowanceDialog from '$mp/components/Modal/SetAllowanceDialog'
+import ReplaceDataAllowanceDialog from '$mp/components/Modal/ReplaceAllowanceDialog'
+import SetDataAllowanceDialog from '$mp/components/Modal/SetAllowanceDialog'
 import PurchaseSummaryDialog from '$mp/components/deprecated/PurchaseSummaryDialog'
 import CompletePurchaseDialog from '$mp/components/Modal/CompletePurchaseDialog'
 import NoBalanceDialog from '$mp/components/Modal/NoBalanceDialog'
@@ -36,18 +36,18 @@ describe('PurchaseDialog container', () => {
         sandbox = sinon.createSandbox()
         productId = 'test'
         initialProps = {
-            getAllowance: sandbox.spy(),
+            getDataAllowance: sandbox.spy(),
             getIntegrationKeys: sandbox.spy(),
             initPurchase: sandbox.spy(),
             onApprovePurchase: sandbox.spy(),
             onCancel: sandbox.spy(),
             onSetAccessPeriod: sandbox.spy(),
-            onSetAllowance: sandbox.spy(),
-            resetAllowanceState: sandbox.spy(),
+            onSetDataAllowance: sandbox.spy(),
+            resetDataAllowanceState: sandbox.spy(),
             getContractProduct: sandbox.spy(),
-            gettingAllowance: false,
-            settingAllowance: false,
-            resettingAllowance: false,
+            gettingDataAllowance: false,
+            settingDataAllowance: false,
+            resettingDataAllowance: false,
             productId,
         }
         sandbox.stub(I18n, 't').callsFake(String)
@@ -63,13 +63,13 @@ describe('PurchaseDialog container', () => {
             assert(initialProps.initPurchase.calledOnce)
             assert(initialProps.initPurchase.calledWith(productId))
         })
-        it('calls props.resetAllowanceState', () => {
+        it('calls props.resetDataAllowanceState', () => {
             shallow(<PurchaseDialog {...initialProps} />)
-            assert(initialProps.resetAllowanceState.calledOnce)
+            assert(initialProps.resetDataAllowanceState.calledOnce)
         })
-        it('calls props.getAllowance', () => {
+        it('calls props.getDataAllowance', () => {
             shallow(<PurchaseDialog {...initialProps} />)
-            assert(initialProps.getAllowance.calledOnce)
+            assert(initialProps.getDataAllowance.calledOnce)
         })
         it('calls props.getContractProduct with productId', () => {
             shallow(<PurchaseDialog {...initialProps} />)
@@ -112,29 +112,29 @@ describe('PurchaseDialog container', () => {
                     assert.equal(wrapper.props().onNext, props.onSetAccessPeriod)
                 })
             })
-            describe('RESET_ALLOWANCE step', () => {
+            describe('RESET_DATA_ALLOWANCE step', () => {
                 it('renders null if there is no purchase', () => {
-                    const wrapper = shallow(<PurchaseDialog {...props} step={purchaseFlowSteps.RESET_ALLOWANCE} />)
+                    const wrapper = shallow(<PurchaseDialog {...props} step={purchaseFlowSteps.RESET_DATA_ALLOWANCE} />)
                     assert.equal(wrapper.type(), null)
                 })
-                it('renders ReplaceAllowanceDialog with correct props', () => {
+                it('renders ReplaceDataAllowanceDialog with correct props', () => {
                     const wrapper = shallow(<PurchaseDialog
                         {...props}
                         purchase="test purchase"
-                        step={purchaseFlowSteps.RESET_ALLOWANCE}
+                        step={purchaseFlowSteps.RESET_DATA_ALLOWANCE}
                     />)
-                    assert(wrapper.is(ReplaceAllowanceDialog))
+                    assert(wrapper.is(ReplaceDataAllowanceDialog))
                     assert.equal(wrapper.props().onCancel, props.onCancel)
-                    assert.equal(wrapper.props().onSet, props.onSetAllowance)
-                    assert.equal(wrapper.props().gettingAllowance, props.gettingAllowance)
-                    assert.equal(wrapper.props().settingAllowance, props.settingAllowance)
+                    assert.equal(wrapper.props().onSet, props.onSetDataAllowance)
+                    assert.equal(wrapper.props().gettingDataAllowance, props.gettingDataAllowance)
+                    assert.equal(wrapper.props().settingDataAllowance, props.settingDataAllowance)
                 })
-                it('renders ErrorDialog if there is resetAllowanceError', () => {
+                it('renders ErrorDialog if there is resetDataAllowanceError', () => {
                     const wrapper = shallow(<PurchaseDialog
                         {...props}
                         purchase="test purchase"
-                        step={purchaseFlowSteps.RESET_ALLOWANCE}
-                        resetAllowanceError={{
+                        step={purchaseFlowSteps.RESET_DATA_ALLOWANCE}
+                        resetDataAllowanceError={{
                             message: 'test',
                         }}
                     />)
@@ -144,29 +144,29 @@ describe('PurchaseDialog container', () => {
                     assert.equal(wrapper.props().onClose, props.onCancel)
                 })
             })
-            describe('ALLOWANCE step', () => {
+            describe('DATA ALLOWANCE step', () => {
                 it('renders null if there is no purchase', () => {
-                    const wrapper = shallow(<PurchaseDialog{...props} step={purchaseFlowSteps.ALLOWANCE} />)
+                    const wrapper = shallow(<PurchaseDialog{...props} step={purchaseFlowSteps.DATA_ALLOWANCE} />)
                     assert.equal(wrapper.type(), null)
                 })
-                it('renders SetAllowanceDialog with correct props', () => {
+                it('renders SetDataAllowanceDialog with correct props', () => {
                     const wrapper = shallow(<PurchaseDialog
                         {...props}
                         purchase="test purchase"
-                        step={purchaseFlowSteps.ALLOWANCE}
+                        step={purchaseFlowSteps.DATA_ALLOWANCE}
                     />)
-                    assert(wrapper.is(SetAllowanceDialog))
+                    assert(wrapper.is(SetDataAllowanceDialog))
                     assert.equal(wrapper.props().onCancel, props.onCancel)
-                    assert.equal(wrapper.props().onSet, props.onSetAllowance)
-                    assert.equal(wrapper.props().gettingAllowance, props.gettingAllowance)
-                    assert.equal(wrapper.props().settingAllowance, props.settingAllowance)
+                    assert.equal(wrapper.props().onSet, props.onSetDataAllowance)
+                    assert.equal(wrapper.props().gettingDataAllowance, props.gettingDataAllowance)
+                    assert.equal(wrapper.props().settingDataAllowance, props.settingDataAllowance)
                 })
                 it('renders ErrorDialog if there is setAllowanceError', () => {
                     const wrapper = shallow(<PurchaseDialog
                         {...props}
                         purchase="test purchase"
-                        step={purchaseFlowSteps.ALLOWANCE}
-                        setAllowanceError={{
+                        step={purchaseFlowSteps.DATA_ALLOWANCE}
+                        setDataAllowanceError={{
                             message: 'test',
                         }}
                     />)
@@ -284,18 +284,18 @@ describe('PurchaseDialog container', () => {
         it('maps the state to props', () => {
             const selectAccountIdStub = sandbox.stub(web3Selectors, 'selectAccountId')
                 .callsFake(() => 'selectAccountId')
-            const selectSetAllowanceErrorStub = sandbox.stub(allowanceSelectors, 'selectSetAllowanceError')
-                .callsFake(() => 'selectSetAllowanceError')
-            const selectResetAllowanceErrorStub = sandbox.stub(allowanceSelectors, 'selectResetAllowanceError')
-                .callsFake(() => 'selectResetAllowanceError')
+            const selectSetDataAllowanceErrorStub = sandbox.stub(allowanceSelectors, 'selectSetDataAllowanceError')
+                .callsFake(() => 'selectSetDataAllowanceError')
+            const selectResetDataAllowanceErrorStub = sandbox.stub(allowanceSelectors, 'selectResetDataAllowanceError')
+                .callsFake(() => 'selectResetDataAllowanceError')
             const selectContractProductStub = sandbox.stub(contractProductSelectors, 'selectContractProduct')
                 .callsFake(() => 'selectContractProduct')
-            const selectGettingAllowanceStub = sandbox.stub(allowanceSelectors, 'selectGettingAllowance')
-                .callsFake(() => 'selectGettingAllowance')
-            const selectSettingAllowanceStub = sandbox.stub(allowanceSelectors, 'selectSettingAllowance')
-                .callsFake(() => 'selectSettingAllowance')
-            const selectResettingAllowanceStub = sandbox.stub(allowanceSelectors, 'selectResettingAllowance')
-                .callsFake(() => 'selectResettingAllowance')
+            const selectGettingDataAllowanceStub = sandbox.stub(allowanceSelectors, 'selectGettingDataAllowance')
+                .callsFake(() => 'selectGettingDataAllowance')
+            const selectSettingDataAllowanceStub = sandbox.stub(allowanceSelectors, 'selectSettingDataAllowance')
+                .callsFake(() => 'selectSettingDataAllowance')
+            const selectResettingDataAllowanceStub = sandbox.stub(allowanceSelectors, 'selectResettingDataAllowance')
+                .callsFake(() => 'selectResettingDataAllowance')
             const selectProductStub = sandbox.stub(purchaseDialogSelectors, 'selectProduct')
                 .callsFake(() => 'selectProduct')
             const selectPurchaseDataStub = sandbox.stub(purchaseDialogSelectors, 'selectPurchaseData')
@@ -318,12 +318,12 @@ describe('PurchaseDialog container', () => {
 
             assert.deepStrictEqual(mapStateToProps(state), {
                 accountId: 'selectAccountId',
-                setAllowanceError: 'selectSetAllowanceError',
-                resetAllowanceError: 'selectResetAllowanceError',
+                setDataAllowanceError: 'selectSetDataAllowanceError',
+                resetDataAllowanceError: 'selectResetDataAllowanceError',
                 contractProduct: 'selectContractProduct',
-                gettingAllowance: 'selectGettingAllowance',
-                settingAllowance: 'selectSettingAllowance',
-                resettingAllowance: 'selectResettingAllowance',
+                gettingDataAllowance: 'selectGettingDataAllowance',
+                settingDataAllowance: 'selectSettingDataAllowance',
+                resettingDataAllowance: 'selectResettingDataAllowance',
                 product: 'selectProduct',
                 purchase: 'selectPurchaseData',
                 purchaseStarted: 'selectPurchaseStarted',
@@ -335,18 +335,18 @@ describe('PurchaseDialog container', () => {
 
             assert(selectAccountIdStub.calledOnce)
             assert(selectAccountIdStub.calledWith(state))
-            assert(selectSetAllowanceErrorStub.calledOnce)
-            assert(selectSetAllowanceErrorStub.calledWith(state))
-            assert(selectResetAllowanceErrorStub.calledOnce)
-            assert(selectResetAllowanceErrorStub.calledWith(state))
+            assert(selectSetDataAllowanceErrorStub.calledOnce)
+            assert(selectSetDataAllowanceErrorStub.calledWith(state))
+            assert(selectResetDataAllowanceErrorStub.calledOnce)
+            assert(selectResetDataAllowanceErrorStub.calledWith(state))
             assert(selectContractProductStub.calledOnce)
             assert(selectContractProductStub.calledWith(state))
-            assert(selectGettingAllowanceStub.calledOnce)
-            assert(selectGettingAllowanceStub.calledWith(state))
-            assert(selectSettingAllowanceStub.calledOnce)
-            assert(selectSettingAllowanceStub.calledWith(state))
-            assert(selectResettingAllowanceStub.calledOnce)
-            assert(selectResettingAllowanceStub.calledWith(state))
+            assert(selectGettingDataAllowanceStub.calledOnce)
+            assert(selectGettingDataAllowanceStub.calledWith(state))
+            assert(selectSettingDataAllowanceStub.calledOnce)
+            assert(selectSettingDataAllowanceStub.calledWith(state))
+            assert(selectResettingDataAllowanceStub.calledOnce)
+            assert(selectResettingDataAllowanceStub.calledWith(state))
             assert(selectProductStub.calledOnce)
             assert(selectProductStub.calledWith(state))
             assert(selectPurchaseDataStub.calledOnce)
@@ -366,8 +366,8 @@ describe('PurchaseDialog container', () => {
 
     describe('mapDispatchToProps', () => {
         it('maps actions to props', () => {
-            const getAllowanceStub = sandbox.stub(allowanceActions, 'getAllowance')
-                .callsFake(() => 'getAllowance')
+            const getDataAllowanceStub = sandbox.stub(allowanceActions, 'getDataAllowance')
+                .callsFake(() => 'getDataAllowance')
             const fetchIntegrationKeysStub = sandbox.stub(integrationKeyActions, 'fetchIntegrationKeys')
                 .callsFake(() => 'fetchIntegrationKeys')
             const initPurchaseStub = sandbox.stub(purchaseDialogActions, 'initPurchase')
@@ -378,10 +378,10 @@ describe('PurchaseDialog container', () => {
                 .callsFake(() => 'formatPath')
             const setAccessPeriodStub = sandbox.stub(purchaseDialogActions, 'setAccessPeriod')
                 .callsFake(() => 'setAccessPeriod')
-            const setAllowanceStub = sandbox.stub(purchaseDialogActions, 'setAllowance')
-                .callsFake(() => 'setAllowance')
-            const resetAllowanceStateActionStub = sandbox.stub(allowanceActions, 'resetAllowanceState')
-                .callsFake(() => 'resetAllowanceState')
+            const setDataAllowanceStub = sandbox.stub(purchaseDialogActions, 'setDataAllowance')
+                .callsFake(() => 'setDataAllowance')
+            const resetDataAllowanceStateActionStub = sandbox.stub(allowanceActions, 'resetDataAllowanceState')
+                .callsFake(() => 'resetDataAllowanceState')
 
             const dispatchStub = sandbox.stub().callsFake((action) => action)
             const ownProps = {
@@ -390,10 +390,10 @@ describe('PurchaseDialog container', () => {
 
             const mappedProps = mapDispatchToProps(dispatchStub, ownProps)
 
-            mappedProps.getAllowance()
-            assert(getAllowanceStub.calledOnce)
+            mappedProps.getDataAllowance()
+            assert(getDataAllowanceStub.calledOnce)
             assert(dispatchStub.calledOnce)
-            assert(dispatchStub.calledWith('getAllowance'))
+            assert(dispatchStub.calledWith('getDataAllowance'))
 
             mappedProps.getIntegrationKeys()
             assert(fetchIntegrationKeysStub.calledOnce)
@@ -417,15 +417,15 @@ describe('PurchaseDialog container', () => {
             assert.equal(dispatchStub.callCount, 5)
             assert(dispatchStub.calledWith('initPurchase'))
 
-            mappedProps.onSetAllowance('test id')
-            assert(setAllowanceStub.calledOnce)
+            mappedProps.onSetDataAllowance('test id')
+            assert(setDataAllowanceStub.calledOnce)
             assert.equal(dispatchStub.callCount, 6)
-            assert(dispatchStub.calledWith('setAllowance'))
+            assert(dispatchStub.calledWith('setDataAllowance'))
 
-            mappedProps.resetAllowanceState('test id')
-            assert(resetAllowanceStateActionStub.calledOnce)
+            mappedProps.resetDataAllowanceState('test id')
+            assert(resetDataAllowanceStateActionStub.calledOnce)
             assert.equal(dispatchStub.callCount, 7)
-            assert(dispatchStub.calledWith('resetAllowanceState'))
+            assert(dispatchStub.calledWith('resetDataAllowanceState'))
         })
     })
 })

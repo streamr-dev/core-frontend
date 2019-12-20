@@ -57,7 +57,7 @@ describe('purchaseDialog - actions', () => {
             }
         })
 
-        it('sets the access period when existing allowance is zero and pricePerSecond is in DATA', async () => {
+        it('sets the access period when existing DATA allowance is zero and pricePerSecond is in DATA', async () => {
             const time = '1'
             const timeUnit = 'day'
             const allowance = '0'
@@ -82,7 +82,7 @@ describe('purchaseDialog - actions', () => {
             }
 
             sandbox.stub(contractProductSelectors, 'selectContractProduct').callsFake(() => product)
-            sandbox.stub(allowanceSelectors, 'selectAllowanceOrPendingAllowance').callsFake(() => allowance)
+            sandbox.stub(allowanceSelectors, 'selectDataAllowanceOrPendingDataAllowance').callsFake(() => allowance)
             sandbox.stub(globalSelectors, 'selectDataPerUsd').callsFake(() => dataPerUsd)
             sandbox.stub(web3Utils, 'getDataTokenBalance').callsFake(() => Promise.resolve(BN(dataBalance)))
             sandbox.stub(web3Utils, 'getEthBalance').callsFake(() => Promise.resolve(BN(ethBalance)))
@@ -99,7 +99,7 @@ describe('purchaseDialog - actions', () => {
                 {
                     type: constants.SET_STEP,
                     payload: {
-                        step: 'allowance',
+                        step: 'dataAllowance',
                         params: undefined,
                     },
                 },
@@ -108,7 +108,7 @@ describe('purchaseDialog - actions', () => {
             assert.deepStrictEqual(store.getActions(), expectedActions)
         })
 
-        it('sets the access period when existing allowance is non-zero and pricePerSecond is in DATA', async () => {
+        it('sets the access period when existing DATA allowance is non-zero and pricePerSecond is in DATA', async () => {
             const time = '1'
             const timeUnit = 'day'
             const allowance = '1000'
@@ -133,7 +133,7 @@ describe('purchaseDialog - actions', () => {
             }
 
             sandbox.stub(contractProductSelectors, 'selectContractProduct').callsFake(() => product)
-            sandbox.stub(allowanceSelectors, 'selectAllowanceOrPendingAllowance').callsFake(() => allowance)
+            sandbox.stub(allowanceSelectors, 'selectDataAllowanceOrPendingDataAllowance').callsFake(() => allowance)
             sandbox.stub(globalSelectors, 'selectDataPerUsd').callsFake(() => dataPerUsd)
             sandbox.stub(web3Utils, 'getDataTokenBalance').callsFake(() => Promise.resolve(BN(dataBalance)))
             sandbox.stub(web3Utils, 'getEthBalance').callsFake(() => Promise.resolve(BN(ethBalance)))
@@ -150,7 +150,7 @@ describe('purchaseDialog - actions', () => {
                 {
                     type: constants.SET_STEP,
                     payload: {
-                        step: 'resetAllowance',
+                        step: 'resetDataAllowance',
                         params: undefined,
                     },
                 },
@@ -159,7 +159,7 @@ describe('purchaseDialog - actions', () => {
             assert.deepStrictEqual(store.getActions(), expectedActions)
         })
 
-        it('sets the access period when existing allowance is non-zero and pricePerSecond is in USD', async () => {
+        it('sets the access period when existing DATA allowance is non-zero and pricePerSecond is in USD', async () => {
             const time = '1'
             const timeUnit = 'hour'
             const allowance = '1000'
@@ -184,7 +184,7 @@ describe('purchaseDialog - actions', () => {
             }
 
             sandbox.stub(contractProductSelectors, 'selectContractProduct').callsFake(() => product)
-            sandbox.stub(allowanceSelectors, 'selectAllowanceOrPendingAllowance').callsFake(() => allowance)
+            sandbox.stub(allowanceSelectors, 'selectDataAllowanceOrPendingDataAllowance').callsFake(() => allowance)
             sandbox.stub(globalSelectors, 'selectDataPerUsd').callsFake(() => dataPerUsd)
             sandbox.stub(web3Utils, 'getDataTokenBalance').callsFake(() => Promise.resolve(BN(dataBalance)))
             sandbox.stub(web3Utils, 'getEthBalance').callsFake(() => Promise.resolve(BN(ethBalance)))
@@ -201,7 +201,7 @@ describe('purchaseDialog - actions', () => {
                 {
                     type: constants.SET_STEP,
                     payload: {
-                        step: 'resetAllowance',
+                        step: 'resetDataAllowance',
                         params: undefined,
                     },
                 },
@@ -210,7 +210,7 @@ describe('purchaseDialog - actions', () => {
             assert.deepStrictEqual(store.getActions(), expectedActions)
         })
 
-        it('sets the access period and moves to summary when existing allowance is sufficient and pricePerSecond is in DATA', async () => {
+        it('sets the access period and moves to summary when existing DATA allowance is sufficient and pricePerSecond is in DATA', async () => {
             const time = '1'
             const timeUnit = 'day'
             const allowance = '100000000000000000000'
@@ -235,7 +235,7 @@ describe('purchaseDialog - actions', () => {
             }
 
             sandbox.stub(contractProductSelectors, 'selectContractProduct').callsFake(() => product)
-            sandbox.stub(allowanceSelectors, 'selectAllowanceOrPendingAllowance').callsFake(() => allowance)
+            sandbox.stub(allowanceSelectors, 'selectDataAllowanceOrPendingDataAllowance').callsFake(() => allowance)
             sandbox.stub(globalSelectors, 'selectDataPerUsd').callsFake(() => dataPerUsd)
             sandbox.stub(web3Utils, 'getDataTokenBalance').callsFake(() => Promise.resolve(BN(dataBalance)))
             sandbox.stub(web3Utils, 'getEthBalance').callsFake(() => Promise.resolve(BN(ethBalance)))
@@ -261,7 +261,7 @@ describe('purchaseDialog - actions', () => {
             assert.deepStrictEqual(store.getActions(), expectedActions)
         })
 
-        it('sets the access period and moves to summary when existing allowance is sufficient and pricePerSecond is in USD', async () => {
+        it('sets the access period and moves to summary when existing DATA allowance is sufficient and pricePerSecond is in USD', async () => {
             const time = '1'
             const timeUnit = 'hour'
             const allowance = '100000000000000000000'
@@ -286,7 +286,7 @@ describe('purchaseDialog - actions', () => {
             }
 
             sandbox.stub(contractProductSelectors, 'selectContractProduct').callsFake(() => product)
-            sandbox.stub(allowanceSelectors, 'selectAllowanceOrPendingAllowance').callsFake(() => allowance)
+            sandbox.stub(allowanceSelectors, 'selectDataAllowanceOrPendingDataAllowance').callsFake(() => allowance)
             sandbox.stub(globalSelectors, 'selectDataPerUsd').callsFake(() => dataPerUsd)
             sandbox.stub(web3Utils, 'getDataTokenBalance').callsFake(() => Promise.resolve(BN(dataBalance)))
             sandbox.stub(web3Utils, 'getEthBalance').callsFake(() => Promise.resolve(BN(ethBalance)))
@@ -312,7 +312,7 @@ describe('purchaseDialog - actions', () => {
             assert.deepStrictEqual(store.getActions(), expectedActions)
         })
 
-        it('sets the access period and moves to noBalance when existing allowance is sufficient but there is not enough DATA balance', async () => {
+        it('sets the access period and moves to noBalance when existing DATA allowance is sufficient but there is not enough DATA balance', async () => {
             const time = '1'
             const timeUnit = 'day'
             const allowance = '100000000000000000000'
@@ -338,7 +338,7 @@ describe('purchaseDialog - actions', () => {
             const price = dataForTimeUnits(product.pricePerSecond, dataPerUsd, product.priceCurrency, time, timeUnit)
 
             sandbox.stub(contractProductSelectors, 'selectContractProduct').callsFake(() => product)
-            sandbox.stub(allowanceSelectors, 'selectAllowanceOrPendingAllowance').callsFake(() => allowance)
+            sandbox.stub(allowanceSelectors, 'selectDataAllowanceOrPendingDataAllowance').callsFake(() => allowance)
             sandbox.stub(globalSelectors, 'selectDataPerUsd').callsFake(() => dataPerUsd)
             sandbox.stub(web3Utils, 'getDataTokenBalance').callsFake(() => Promise.resolve(BN(dataBalance)))
             sandbox.stub(web3Utils, 'getEthBalance').callsFake(() => Promise.resolve(BN(ethBalance)))
@@ -369,7 +369,7 @@ describe('purchaseDialog - actions', () => {
             assert.deepStrictEqual(store.getActions(), expectedActions)
         })
 
-        it('sets the access period and moves to noBalance when existing allowance is sufficient but there is not enough ETH balance', async () => {
+        it('sets the access period and moves to noBalance when existing DATA allowance is sufficient but there is not enough ETH balance', async () => {
             const time = '1'
             const timeUnit = 'day'
             const allowance = '100000000000000000000'
@@ -395,7 +395,7 @@ describe('purchaseDialog - actions', () => {
             const price = dataForTimeUnits(product.pricePerSecond, dataPerUsd, product.priceCurrency, time, timeUnit)
 
             sandbox.stub(contractProductSelectors, 'selectContractProduct').callsFake(() => product)
-            sandbox.stub(allowanceSelectors, 'selectAllowanceOrPendingAllowance').callsFake(() => allowance)
+            sandbox.stub(allowanceSelectors, 'selectDataAllowanceOrPendingDataAllowance').callsFake(() => allowance)
             sandbox.stub(globalSelectors, 'selectDataPerUsd').callsFake(() => dataPerUsd)
             sandbox.stub(web3Utils, 'getDataTokenBalance').callsFake(() => Promise.resolve(BN(dataBalance)))
             sandbox.stub(web3Utils, 'getEthBalance').callsFake(() => Promise.resolve(BN(ethBalance)))
@@ -427,7 +427,7 @@ describe('purchaseDialog - actions', () => {
         })
     })
 
-    describe('setAllowance', () => {
+    describe('setDataAllowance', () => {
         it('throws an error if product is not defined', async (done) => {
             const time = '1'
             const timeUnit = 'day'
@@ -442,7 +442,7 @@ describe('purchaseDialog - actions', () => {
             const store = mockStore()
 
             try {
-                await store.dispatch(purchaseDialogActions.setAllowance())
+                await store.dispatch(purchaseDialogActions.setDataAllowance())
             } catch (e) {
                 assert.equal('noProductOrAccess', e.message)
                 done()
@@ -471,7 +471,7 @@ describe('purchaseDialog - actions', () => {
             const store = mockStore()
 
             try {
-                await store.dispatch(purchaseDialogActions.setAllowance())
+                await store.dispatch(purchaseDialogActions.setDataAllowance())
             } catch (e) {
                 assert.equal('noProductOrAccess', e.message)
                 done()
@@ -509,20 +509,20 @@ describe('purchaseDialog - actions', () => {
 
             sandbox.stub(selectors, 'selectPurchaseData').callsFake(() => purchaseData)
             sandbox.stub(contractProductSelectors, 'selectContractProduct').callsFake(() => product)
-            sandbox.stub(allowanceSelectors, 'selectAllowanceOrPendingAllowance').callsFake(() => allowance)
+            sandbox.stub(allowanceSelectors, 'selectDataAllowanceOrPendingDataAllowance').callsFake(() => allowance)
             sandbox.stub(globalSelectors, 'selectDataPerUsd').callsFake(() => dataPerUsd)
             sandbox.stub(web3Utils, 'getDataTokenBalance').callsFake(() => Promise.resolve(BN(dataBalance)))
             sandbox.stub(web3Utils, 'getEthBalance').callsFake(() => Promise.resolve(BN(ethBalance)))
 
-            sandbox.stub(allowanceActions, 'setAllowance')
+            sandbox.stub(allowanceActions, 'setDataAllowance')
                 .callsFake(() => ({
-                    type: 'TEST_SET_ALLOWANCE',
+                    type: 'TEST_SET_DATA_ALLOWANCE',
                     payload: {
-                        allowance,
+                        dataAllowance: allowance,
                     },
                 }))
 
-            await store.dispatch(purchaseDialogActions.setAllowance(allowance))
+            await store.dispatch(purchaseDialogActions.setDataAllowance(allowance))
 
             const expectedActions = [
                 {
@@ -573,16 +573,16 @@ describe('purchaseDialog - actions', () => {
 
             sandbox.stub(selectors, 'selectPurchaseData').callsFake(() => purchaseData)
             sandbox.stub(contractProductSelectors, 'selectContractProduct').callsFake(() => product)
-            sandbox.stub(allowanceSelectors, 'selectAllowanceOrPendingAllowance').callsFake(() => allowance)
+            sandbox.stub(allowanceSelectors, 'selectDataAllowanceOrPendingDataAllowance').callsFake(() => allowance)
             sandbox.stub(globalSelectors, 'selectDataPerUsd').callsFake(() => dataPerUsd)
             sandbox.stub(web3Utils, 'getDataTokenBalance').callsFake(() => Promise.resolve(BN(dataBalance)))
             sandbox.stub(web3Utils, 'getEthBalance').callsFake(() => Promise.resolve(BN(ethBalance)))
 
-            sandbox.stub(allowanceActions, 'setAllowance')
+            sandbox.stub(allowanceActions, 'setDataAllowance')
                 .callsFake(() => ({
-                    type: 'TEST_SET_ALLOWANCE',
+                    type: 'TEST_SET_DATA_ALLOWANCE',
                     payload: {
-                        allowance,
+                        dataAllowance: allowance,
                     },
                 }))
 
@@ -606,7 +606,7 @@ describe('purchaseDialog - actions', () => {
             assert.deepStrictEqual(store.getActions(), expectedActions)
         })
 
-        it('sets the allowance when existing allowance is zero and pricePerSecond is in DATA', async () => {
+        it('sets the DATA allowance when existing DATA allowance is zero and pricePerSecond is in DATA', async () => {
             const time = '1'
             const timeUnit = 'day'
             const purchaseData = {
@@ -636,24 +636,24 @@ describe('purchaseDialog - actions', () => {
 
             sandbox.stub(selectors, 'selectPurchaseData').callsFake(() => purchaseData)
             sandbox.stub(contractProductSelectors, 'selectContractProduct').callsFake(() => product)
-            sandbox.stub(allowanceSelectors, 'selectAllowanceOrPendingAllowance').callsFake(() => allowance)
+            sandbox.stub(allowanceSelectors, 'selectDataAllowanceOrPendingDataAllowance').callsFake(() => allowance)
             sandbox.stub(globalSelectors, 'selectDataPerUsd').callsFake(() => dataPerUsd)
             sandbox.stub(web3Utils, 'getDataTokenBalance').callsFake(() => Promise.resolve(BN(dataBalance)))
             sandbox.stub(web3Utils, 'getEthBalance').callsFake(() => Promise.resolve(BN(ethBalance)))
 
-            sandbox.stub(allowanceActions, 'setAllowance')
+            sandbox.stub(allowanceActions, 'setDataAllowance')
                 .callsFake(() => ({
-                    type: 'TEST_SET_ALLOWANCE',
+                    type: 'TEST_SET_DATA_ALLOWANCE',
                     payload: {
-                        allowance,
+                        dataAllowance: allowance,
                     },
                 }))
 
-            await store.dispatch(purchaseDialogActions.setAllowance(allowance))
+            await store.dispatch(purchaseDialogActions.setDataAllowance(allowance))
 
             const expectedActions = [
                 {
-                    type: 'TEST_SET_ALLOWANCE',
+                    type: 'TEST_SET_DATA_ALLOWANCE',
                     payload: {
                         allowance: '0',
                     },
@@ -663,7 +663,7 @@ describe('purchaseDialog - actions', () => {
             assert.deepStrictEqual(store.getActions(), expectedActions)
         })
 
-        it('sets the allowance when exisiting allowance is non-zero and pricePerSecond is in DATA', async () => {
+        it('sets the DATA allowance when exisiting DATA allowance is non-zero and pricePerSecond is in DATA', async () => {
             const time = '1'
             const timeUnit = 'day'
             const purchaseData = {
@@ -695,28 +695,28 @@ describe('purchaseDialog - actions', () => {
 
             sandbox.stub(selectors, 'selectPurchaseData').callsFake(() => purchaseData)
             sandbox.stub(contractProductSelectors, 'selectContractProduct').callsFake(() => product)
-            sandbox.stub(allowanceSelectors, 'selectAllowanceOrPendingAllowance').callsFake(() => allowance)
+            sandbox.stub(allowanceSelectors, 'selectDataAllowanceOrPendingDataAllowance').callsFake(() => allowance)
             sandbox.stub(globalSelectors, 'selectDataPerUsd').callsFake(() => dataPerUsd)
             sandbox.stub(web3Utils, 'getDataTokenBalance').callsFake(() => Promise.resolve(BN(dataBalance)))
             sandbox.stub(web3Utils, 'getEthBalance').callsFake(() => Promise.resolve(BN(ethBalance)))
 
-            sandbox.stub(allowanceActions, 'setAllowance')
+            sandbox.stub(allowanceActions, 'setDataAllowance')
                 .callsFake(() => ({
-                    type: 'TEST_SET_ALLOWANCE',
+                    type: 'TEST_SET_DATA_ALLOWANCE',
                     payload: {
                         allowance: newAllowance.toString(),
                     },
                 }))
-            sandbox.stub(allowanceActions, 'resetAllowance')
+            sandbox.stub(allowanceActions, 'resetDataAllowance')
                 .callsFake(() => ({
-                    type: 'TEST_RESET_ALLOWANCE',
+                    type: 'TEST_RESET_DATA_ALLOWANCE',
                 }))
 
-            await store.dispatch(purchaseDialogActions.setAllowance(allowance))
+            await store.dispatch(purchaseDialogActions.setDataAllowance(allowance))
 
             const expectedActions = [
                 {
-                    type: 'TEST_RESET_ALLOWANCE',
+                    type: 'TEST_RESET_DATA_ALLOWANCE',
                 },
             ]
 

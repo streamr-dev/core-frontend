@@ -18,27 +18,38 @@ import { selectProduct } from '$mp/modules/product/selectors'
 import { selectContractProduct, selectContractProductError } from '$mp/modules/contractProduct/selectors'
 import { selectDataPerUsd } from '$mp/modules/global/selectors'
 import { buyProduct } from '$mp/modules/purchase/actions'
-import { transactionStates } from '$shared/utils/constants'
+import { transactionStates, DEFAULT_CURRENCY, paymentCurrencies } from '$shared/utils/constants'
 import {
-    getAllowance,
-    resetAllowanceState,
-    setAllowance as setAllowanceToContract,
-    resetAllowance as resetAllowanceToContract,
+    getDataAllowance,
+    resetDataAllowanceState,
+    setDataAllowance as setDataAllowanceToContract,
+    resetDataAllowance as resetDataAllowanceToContract,
+    getDaiAllowance,
+    resetDaiAllowanceState,
+    setDaiAllowance as setDaiAllowanceToContract,
+    resetDaiAllowance as resetDaiAllowanceToContract,
 } from '$mp/modules/allowance/actions'
 import {
-    selectAllowanceOrPendingAllowance,
-    selectSettingAllowance,
-    selectSetAllowanceTx,
-    selectSetAllowanceError,
-    selectResettingAllowance,
-    selectResetAllowanceTx,
-    selectResetAllowanceError,
+    selectDataAllowanceOrPendingDataAllowance,
+    selectSettingDataAllowance,
+    selectSetDataAllowanceTx,
+    selectSetDataAllowanceError,
+    selectResettingDataAllowance,
+    selectResetDataAllowanceTx,
+    selectResetDataAllowanceError,
+    selectDaiAllowanceOrPendingDaiAllowance,
+    selectSettingDaiAllowance,
+    selectSetDaiAllowanceTx,
+    selectSetDaiAllowanceError,
+    selectResettingDaiAllowance,
+    selectResetDaiAllowanceTx,
+    selectResetDaiAllowanceError,
 } from '$mp/modules/allowance/selectors'
 import { selectPurchaseTransaction, selectPurchaseStarted } from '$mp/modules/purchase/selectors'
-import type { TimeUnit, NumberString } from '$shared/flowtype/common-types'
+import type { TimeUnit, NumberString, PaymentCurrency } from '$shared/flowtype/common-types'
 import { dataForTimeUnits } from '$mp/utils/price'
 import { toSeconds } from '$mp/utils/time'
-import { validateDataBalanceForPurchase } from '$mp/modules/deprecated/purchaseDialog/actions'
+import { validateBalanceForPurchase, getUniswapEquivalents } from '$mp/utils/web3'
 import NoBalanceError from '$mp/errors/NoBalanceError'
 import SetAllowanceDialog from '$mp/components/Modal/SetAllowanceDialog'
 import ReplaceAllowanceDialog from '$mp/components/Modal/ReplaceAllowanceDialog'
@@ -67,9 +78,13 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
     const [time, setTime] = useState('1')
     const [timeUnit, setTimeUnit] = useState('hour')
     const [purchasePrice, setPurchasePrice] = useState(undefined)
+    const [ethPrice, setEthPrice] = useState(undefined)
+    const [daiPrice, setDaiPrice] = useState(undefined)
+    const [paymentCurrency, setPaymentCurrency] = useState(DEFAULT_CURRENCY)
     const ethereumIdentities = useSelector(selectEthereumIdentities)
     const dataPerUsd = useSelector(selectDataPerUsd)
-    const allowance = BN(useSelector(selectAllowanceOrPendingAllowance))
+    const dataAllowance = BN(useSelector(selectDataAllowanceOrPendingDataAllowance))
+    const daiAllowance = BN(useSelector(selectDaiAllowanceOrPendingDaiAllowance))
     const product = useSelector(selectProduct)
     const isMounted = useIsMounted()
     const contractProduct = useSelector(selectContractProduct)
@@ -86,8 +101,10 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
 
     // Start loading the contract product & clear allowance state
     useEffect(() => {
-        dispatch(resetAllowanceState())
-        dispatch(getAllowance())
+        dispatch(resetDataAllowanceState())
+        dispatch(getDataAllowance())
+        dispatch(resetDaiAllowanceState())
+        dispatch(getDaiAllowance())
 
         loadContractProduct(productId)
             .then(() => {
@@ -97,27 +114,49 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
             })
     }, [dispatch, loadContractProduct, productId, isMounted])
 
-    // Monitor reset allowance state, set error or proceed after receiving the hash
-    const resetAllowanceTx = useSelector(selectResetAllowanceTx)
-    const resettingAllowance = useSelector(selectResettingAllowance)
-    const hasResetAllowanceTx = !!resetAllowanceTx
+    // Monitor reset DATA allowance state, set error or proceed after receiving the hash
+    const resetDataAllowanceTx = useSelector(selectResetDataAllowanceTx)
+    const resettingDataAllowance = useSelector(selectResettingDataAllowance)
+    const hasResetDataAllowanceTx = !!resetDataAllowanceTx
+
+    // Monitor reset DAI allowance state, set error or proceed after receiving the hash
+    const resetDaiAllowanceTx = useSelector(selectResetDaiAllowanceTx)
+    const resettingDaiAllowance = useSelector(selectResettingDaiAllowance)
+    const hasResetDaiAllowanceTx = !!resetDaiAllowanceTx
 
     useEffect(() => {
-        if (step === purchaseFlowSteps.RESET_ALLOWANCE && hasResetAllowanceTx) {
-            setStep(purchaseFlowSteps.ALLOWANCE)
+        if (step === purchaseFlowSteps.RESET_DATA_ALLOWANCE && hasResetDataAllowanceTx) {
+            setStep(purchaseFlowSteps.DATA_ALLOWANCE)
         }
-    }, [step, hasResetAllowanceTx])
-
-    // Monitor set allowance state, set error or proceed after receiving the hash
-    const setAllowanceTx = useSelector(selectSetAllowanceTx)
-    const settingAllowance = useSelector(selectSettingAllowance)
-    const hasSetAllowanceTx = !!setAllowanceTx
+    }, [step, hasResetDataAllowanceTx])
 
     useEffect(() => {
-        if (step === purchaseFlowSteps.ALLOWANCE && hasSetAllowanceTx) {
+        if (step === purchaseFlowSteps.RESET_DAI_ALLOWANCE && hasResetDaiAllowanceTx) {
+            setStep(purchaseFlowSteps.DAI_ALLOWANCE)
+        }
+    }, [step, hasResetDaiAllowanceTx])
+
+    // Monitor set DATA allowance state, set error or proceed after receiving the hash
+    const setDataAllowanceTx = useSelector(selectSetDataAllowanceTx)
+    const settingDataAllowance = useSelector(selectSettingDataAllowance)
+    const hasSetDataAllowanceTx = !!setDataAllowanceTx
+
+    // Monitor set DAI allowance state, set error or proceed after receiving the hash
+    const setDaiAllowanceTx = useSelector(selectSetDaiAllowanceTx)
+    const settingDaiAllowance = useSelector(selectSettingDaiAllowance)
+    const hasSetDaiAllowanceTx = !!setDaiAllowanceTx
+
+    useEffect(() => {
+        if (step === purchaseFlowSteps.DATA_ALLOWANCE && hasSetDataAllowanceTx) {
             setStep(purchaseFlowSteps.SUMMARY)
         }
-    }, [step, hasSetAllowanceTx])
+    }, [step, hasSetDataAllowanceTx])
+
+    useEffect(() => {
+        if (step === purchaseFlowSteps.DAI_ALLOWANCE && hasSetDaiAllowanceTx) {
+            setStep(purchaseFlowSteps.SUMMARY)
+        }
+    }, [step, hasSetDaiAllowanceTx])
 
     // Monitor purchase transaction
     const purchaseTransaction = useSelector(selectPurchaseTransaction)
@@ -135,22 +174,37 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
         setPurchaseSucceeded(!!(step === purchaseFlowSteps.COMPLETE && purchaseState === transactionStates.CONFIRMED))
     }, [step, purchaseState])
 
-    // Monitor allowance & reset allowance state error
-    const setAllowanceError = useSelector(selectSetAllowanceError)
-    const resetAllowanceError = useSelector(selectResetAllowanceError)
+    // Monitor DATA & DAI allowances & reset allowance state error
+    const setDataAllowanceError = useSelector(selectSetDataAllowanceError)
+    const resetDataAllowanceError = useSelector(selectResetDataAllowanceError)
+    const setDaiAllowanceError = useSelector(selectSetDaiAllowanceError)
+    const resetDaiAllowanceError = useSelector(selectResetDaiAllowanceError)
 
     useEffect(() => {
         if (!step || step === purchaseFlowSteps.ACCESS_PERIOD) {
             return
         }
-        if (setAllowanceError) {
-            setPurchaseError(setAllowanceError)
-        } else if (resetAllowanceError) {
-            setPurchaseError(setAllowanceError)
+        if (setDataAllowanceError) {
+            setPurchaseError(setDataAllowanceError)
+        } else if (resetDataAllowanceError) {
+            setPurchaseError(setDataAllowanceError)
         } else {
             setPurchaseError(null)
         }
-    }, [step, setAllowanceError, resetAllowanceError])
+    }, [step, setDataAllowanceError, resetDataAllowanceError])
+
+    useEffect(() => {
+        if (!step || step === purchaseFlowSteps.ACCESS_PERIOD) {
+            return
+        }
+        if (setDaiAllowanceError) {
+            setPurchaseError(setDaiAllowanceError)
+        } else if (resetDaiAllowanceError) {
+            setPurchaseError(setDaiAllowanceError)
+        } else {
+            setPurchaseError(null)
+        }
+    }, [step, setDaiAllowanceError, resetDaiAllowanceError])
 
     const onClose = useCallback(() => {
         api.close(purchaseSucceeded)
@@ -158,51 +212,99 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
 
     const { pricePerSecond, priceCurrency } = contractProduct || {}
 
-    const onSetAccessPeriod = useCallback(async (selectedTime: NumberString | BN, selectedTimeUnit: TimeUnit) => {
-        const price = dataForTimeUnits(pricePerSecond, dataPerUsd, priceCurrency, selectedTime, selectedTimeUnit)
+    const onSetAccessPeriodAndCurrency =
+        useCallback(async (selectedTime: NumberString | BN, selectedTimeUnit: TimeUnit, selectedCurrency: PaymentCurrency) => {
+            const price = dataForTimeUnits(pricePerSecond, dataPerUsd, priceCurrency, selectedTime, selectedTimeUnit)
 
-        setTime(selectedTime.toString())
-        setTimeUnit(selectedTimeUnit)
-        setPurchasePrice(price)
+            setTime(selectedTime.toString())
+            setTimeUnit(selectedTimeUnit)
+            setPurchasePrice(price)
+            setPaymentCurrency(selectedCurrency)
+            setEthPrice((await getUniswapEquivalents(price.toString()))[0])
+            setDaiPrice((await getUniswapEquivalents(price.toString()))[1])
 
-        try {
-            await validateDataBalanceForPurchase(price)
+            try {
+                await validateBalanceForPurchase(price, selectedCurrency)
 
-            if (!isMounted()) { return }
+                if (!isMounted()) { return }
 
-            if (allowance.isLessThan(price)) {
-                if (allowance.isGreaterThan(0)) {
-                    setStep(purchaseFlowSteps.RESET_ALLOWANCE)
-                } else {
-                    setStep(purchaseFlowSteps.ALLOWANCE)
+                switch (selectedCurrency) {
+                    case paymentCurrencies.ETH:
+                        setStep(purchaseFlowSteps.SUMMARY)
+                        break
+
+                    // eslint-disable-next-line no-case-declarations
+                    case paymentCurrencies.DAI:
+                        const daiPurchasePrice = (await getUniswapEquivalents(price.toString()))[1].toString()
+                        if (daiAllowance.isLessThan(daiPurchasePrice)) {
+                            if (daiAllowance.isGreaterThan(0)) {
+                                setStep(purchaseFlowSteps.RESET_DAI_ALLOWANCE)
+                            } else {
+                                setStep(purchaseFlowSteps.DAI_ALLOWANCE)
+                            }
+                        } else {
+                            setStep(purchaseFlowSteps.SUMMARY)
+                        }
+                        break
+
+                    default: // Pay w DATA
+                        if (dataAllowance.isLessThan(price)) {
+                            if (dataAllowance.isGreaterThan(0)) {
+                                setStep(purchaseFlowSteps.RESET_DATA_ALLOWANCE)
+                            } else {
+                                setStep(purchaseFlowSteps.DATA_ALLOWANCE)
+                            }
+                        } else {
+                            setStep(purchaseFlowSteps.SUMMARY)
+                        }
+                        break
                 }
-            } else {
-                setStep(purchaseFlowSteps.SUMMARY)
+            } catch (e) {
+                setPurchaseError(e)
             }
-        } catch (e) {
-            setPurchaseError(e)
-        }
-    }, [pricePerSecond, priceCurrency, allowance, dataPerUsd, isMounted])
+        }, [pricePerSecond, dataPerUsd, priceCurrency, isMounted, daiAllowance, dataAllowance])
 
-    const onSetAllowance = useCallback(async () => {
+    const onSetDataAllowance = useCallback(async () => {
         if (!purchasePrice) {
             throw new Error(I18n.t('error.noProductOrAccess'))
         }
 
         try {
-            await validateDataBalanceForPurchase(purchasePrice)
+            await validateBalanceForPurchase(purchasePrice, paymentCurrency)
 
             if (!isMounted()) { return }
 
-            if (BN(allowance).isGreaterThan(0)) {
-                await dispatch(resetAllowanceToContract())
+            if (BN(dataAllowance).isGreaterThan(0)) {
+                await dispatch(resetDataAllowanceToContract())
             } else {
-                await dispatch(setAllowanceToContract(purchasePrice.toString()))
+                await dispatch(setDataAllowanceToContract(purchasePrice.toString()))
             }
         } catch (e) {
             setPurchaseError(e)
         }
-    }, [dispatch, purchasePrice, allowance, isMounted])
+    }, [purchasePrice, paymentCurrency, isMounted, dataAllowance, dispatch])
+
+    const onSetDaiAllowance = useCallback(async () => {
+        if (!purchasePrice) {
+            throw new Error(I18n.t('error.noProductOrAccess'))
+        }
+
+        try {
+            await validateBalanceForPurchase(purchasePrice, paymentCurrency)
+
+            if (!isMounted()) { return }
+
+            if (BN(daiAllowance).isGreaterThan(0)) {
+                await dispatch(resetDaiAllowanceToContract())
+            } else {
+                const daiPurchasePrice = (await getUniswapEquivalents(purchasePrice.toString()))[1].toString()
+
+                await dispatch(setDaiAllowanceToContract(daiPurchasePrice))
+            }
+        } catch (e) {
+            setPurchaseError(e)
+        }
+    }, [purchasePrice, paymentCurrency, isMounted, daiAllowance, dispatch])
 
     const onApprovePurchase = useCallback(async () => {
         if (!time || !timeUnit || !purchasePrice) {
@@ -212,15 +314,16 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
         const subscriptionTimeInSeconds = toSeconds(time, timeUnit)
 
         try {
-            await validateDataBalanceForPurchase(purchasePrice)
+            await validateBalanceForPurchase(purchasePrice, paymentCurrency)
+            const [ethPurchasePrice, daiPurchasePrice] = await getUniswapEquivalents(purchasePrice.toString())
 
             if (!isMounted()) { return }
 
-            await dispatch(buyProduct(productId || '', subscriptionTimeInSeconds))
+            await dispatch(buyProduct(productId || '', subscriptionTimeInSeconds, paymentCurrency, ethPurchasePrice, daiPurchasePrice))
         } catch (e) {
             setPurchaseError(e)
         }
-    }, [productId, dispatch, time, timeUnit, purchasePrice, isMounted])
+    }, [time, timeUnit, purchasePrice, paymentCurrency, isMounted, dispatch, productId])
 
     if (isPending || checkingWeb3 || web3Error) {
         return (
@@ -237,10 +340,14 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
             return (
                 <NoBalanceDialog
                     onCancel={onClose}
+                    requiredGasBalance={purchaseError.getRequiredGasBalance()}
                     requiredEthBalance={purchaseError.getRequiredEthBalance()}
                     currentEthBalance={purchaseError.getCurrentEthBalance()}
                     requiredDataBalance={purchaseError.getRequiredDataBalance()}
                     currentDataBalance={purchaseError.getCurrentDataBalance()}
+                    currentDaiBalance={purchaseError.getCurrentDaiBalance()}
+                    requiredDaiBalance={purchaseError.getRequiredDaiBalance()}
+                    paymentCurrency={paymentCurrency}
                 />
             )
         }
@@ -261,27 +368,47 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
                 pricePerSecond={pricePerSecond}
                 priceCurrency={priceCurrency}
                 onCancel={onClose}
-                onNext={onSetAccessPeriod}
+                onNext={onSetAccessPeriodAndCurrency}
             />
         )
     }
 
-    if (step === purchaseFlowSteps.RESET_ALLOWANCE) {
+    if (step === purchaseFlowSteps.RESET_DATA_ALLOWANCE) {
         return (
             <ReplaceAllowanceDialog
                 onCancel={onClose}
-                onSet={onSetAllowance}
-                settingAllowance={resettingAllowance}
+                onSet={onSetDataAllowance}
+                settingDataAllowance={resettingDataAllowance}
             />
         )
     }
 
-    if (step === purchaseFlowSteps.ALLOWANCE) {
+    if (step === purchaseFlowSteps.DATA_ALLOWANCE) {
         return (
             <SetAllowanceDialog
                 onCancel={onClose}
-                onSet={onSetAllowance}
-                settingAllowance={settingAllowance}
+                onSet={onSetDataAllowance}
+                settingDataAllowance={settingDataAllowance}
+            />
+        )
+    }
+
+    if (step === purchaseFlowSteps.RESET_DAI_ALLOWANCE) {
+        return (
+            <ReplaceAllowanceDialog
+                onCancel={onClose}
+                onSet={onSetDaiAllowance}
+                settingDaiAllowance={resettingDaiAllowance}
+            />
+        )
+    }
+
+    if (step === purchaseFlowSteps.DAI_ALLOWANCE) {
+        return (
+            <SetAllowanceDialog
+                onCancel={onClose}
+                onSet={onSetDaiAllowance}
+                settingDaiAllowance={settingDaiAllowance}
             />
         )
     }
@@ -294,9 +421,11 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
                 time={time}
                 timeUnit={timeUnit}
                 price={purchasePrice}
-                priceCurrency={priceCurrency}
+                ethPrice={ethPrice}
+                daiPrice={daiPrice}
                 onCancel={onClose}
                 onPay={onApprovePurchase}
+                paymentCurrency={paymentCurrency}
             />
         )
     }

@@ -12,7 +12,7 @@ const transactions = [
     },
     {
         id: 'abcdef',
-        type: 'allowance',
+        type: 'dataAllowance',
         state: 'completed',
     },
 ]

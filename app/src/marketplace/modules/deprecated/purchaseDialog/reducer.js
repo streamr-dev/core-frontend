@@ -2,7 +2,7 @@
 
 import { handleActions } from 'redux-actions'
 
-import { RECEIVE_SET_ALLOWANCE_HASH, RECEIVE_RESET_ALLOWANCE_HASH } from '$mp/modules/allowance/constants'
+import { RECEIVE_SET_DATA_ALLOWANCE_HASH, RECEIVE_RESET_DATA_ALLOWANCE_HASH } from '$mp/modules/allowance/constants'
 import { RECEIVE_PURCHASE_HASH } from '$mp/modules/purchase/constants'
 import { purchaseFlowSteps } from '$mp/utils/constants'
 import type { PurchaseDialogState } from '$mp/flowtype/store-state'
@@ -45,14 +45,14 @@ export const reducer: (PurchaseDialogState) => PurchaseDialogState = handleActio
     }),
 
     // Handle event from allowance here as well to set the step once the allowance transaction has started.
-    [RECEIVE_SET_ALLOWANCE_HASH]: (state: PurchaseDialogState) => ({
+    [RECEIVE_SET_DATA_ALLOWANCE_HASH]: (state: PurchaseDialogState) => ({
         ...state,
         step: purchaseFlowSteps.SUMMARY,
     }),
 
-    [RECEIVE_RESET_ALLOWANCE_HASH]: (state: PurchaseDialogState) => ({
+    [RECEIVE_RESET_DATA_ALLOWANCE_HASH]: (state: PurchaseDialogState) => ({
         ...state,
-        step: purchaseFlowSteps.ALLOWANCE,
+        step: purchaseFlowSteps.DATA_ALLOWANCE,
     }),
 
     // Handle event from RECEIVE_PURCHASE_HASH to set the next step after the transaction has started.
