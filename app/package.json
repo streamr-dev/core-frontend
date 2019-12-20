@@ -52,6 +52,7 @@
     "coveragePathIgnorePatterns": [
       "<rootDir>/src/docs/content/",
       "<rootDir>/src/docs/scripts/",
+      "<rootDir>/src/marketplace/components/deprecated",
       "/flowtype/",
       "/tests/"
     ],
