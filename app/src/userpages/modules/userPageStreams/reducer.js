@@ -55,6 +55,7 @@ const initialState = {
     },
     savingStreamFields: false,
     fetching: false,
+    deleting: false,
     error: null,
     csvUpload: null,
     editedStream: null,
@@ -74,7 +75,6 @@ export default function (state: UserPageStreamsState = initialState, action: Str
         case UPDATE_STREAM_REQUEST:
         case GET_MY_STREAM_PERMISSIONS_REQUEST:
         case DELETE_STREAM_REQUEST:
-        case DELETE_DATA_UP_TO_REQUEST:
             return {
                 ...state,
                 fetching: true,
@@ -282,10 +282,16 @@ export default function (state: UserPageStreamsState = initialState, action: Str
             }
         }
 
+        case DELETE_DATA_UP_TO_REQUEST:
+            return {
+                ...state,
+                deleting: true,
+            }
+
         case DELETE_DATA_UP_TO_SUCCESS: {
             return {
                 ...state,
-                fetching: false,
+                deleting: false,
                 deleteDataError: null,
             }
         }
@@ -293,7 +299,7 @@ export default function (state: UserPageStreamsState = initialState, action: Str
         case DELETE_DATA_UP_TO_FAILURE: {
             return {
                 ...state,
-                fetching: false,
+                deleting: false,
                 deleteDataError: action.error,
             }
         }

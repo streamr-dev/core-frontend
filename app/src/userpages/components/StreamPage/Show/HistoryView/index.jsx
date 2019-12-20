@@ -72,12 +72,32 @@ const DropTarget = ({ mouseOver }: { mouseOver: boolean }) => (
     </div>
 )
 
-const convertFromStorageDays = (days: number) => ({
-    amount: (days % 30 === 0) ? days / 30 : days,
-    unit: (days % 30 === 0) ? 'months' : 'days',
-})
+const convertFromStorageDays = (days: number) => {
+    let amount = days
+    let unit = 'days'
 
-const convertToStorageDays = (amount: number, unit: string) => (unit === 'days' ? amount : amount * 30)
+    if (days % 30 === 0) {
+        amount = days / 30
+        unit = 'months'
+    } else if (days % 7 === 0) {
+        amount = days / 7
+        unit = 'weeks'
+    }
+
+    return {
+        amount,
+        unit,
+    }
+}
+
+const convertToStorageDays = (amount: number, unit: string) => {
+    if (unit === 'months') {
+        return amount * 30
+    } else if (unit === 'weeks') {
+        return amount * 7
+    }
+    return amount
+}
 
 class HistoryView extends Component<Props, State> {
     state = {
@@ -288,11 +308,15 @@ class HistoryView extends Component<Props, State> {
         const unitOptions: Array<any> = [
             {
                 value: 'days',
-                label: I18n.t('userpages.streams.inactivityDays'),
+                label: I18n.t('shared.date.day', { count: storageAmount }),
+            },
+            {
+                value: 'weeks',
+                label: I18n.t('shared.date.week', { count: storageAmount }),
             },
             {
                 value: 'months',
-                label: I18n.t('userpages.streams.inactivityMonths'),
+                label: I18n.t('shared.date.month', { count: storageAmount }),
             },
         ]
 
@@ -374,9 +398,9 @@ class HistoryView extends Component<Props, State> {
                     </SplitControl>
                 )}
                 {stream && stream.storageDays !== undefined &&
-                    <div className={styles.storageContainer}>
+                    <div className={cx(styles.row, styles.storageContainer)}>
                         <TextInput
-                            className={styles.row}
+                            className={styles.storageAmount}
                             label={I18n.t('userpages.streams.edit.configure.historicalStoragePeriod.label')}
                             value={storageAmount}
                             onChange={this.onStorageAmountChange}

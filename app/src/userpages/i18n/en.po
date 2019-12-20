@@ -469,9 +469,6 @@ msgstr "Hours"
 msgid "userpages##streams##inactivityDays"
 msgstr "Days"
 
-msgid "userpages##streams##inactivityMonths"
-msgstr "Months"
-
 msgid "userpages##streams##inactivityLabel"
 msgstr "Inactivity threshold"
 
