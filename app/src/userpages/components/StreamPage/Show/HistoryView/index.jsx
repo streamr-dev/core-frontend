@@ -385,7 +385,7 @@ class HistoryView extends Component<Props, State> {
                             kind="secondary"
                             className={styles.deleteButton}
                             onClick={() => this.deleteDataUpTo(streamId, deleteDate)}
-                            disabled={deleteDate == null || disabled}
+                            disabled={deleteDate == null || disabled || deleteInProgress}
                         >
                             <Translate value="userpages.streams.edit.history.deleteRange" />
                             {deleteInProgress &&
