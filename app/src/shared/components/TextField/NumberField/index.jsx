@@ -15,6 +15,7 @@ type Props = {
     max?: number,
     step?: number,
     hideButtons?: boolean,
+    onChange?: (SyntheticInputEvent<EventTarget>) => void,
 }
 
 const NumberField = ({
@@ -25,13 +26,18 @@ const NumberField = ({
     max,
     step,
     hideButtons,
+    onChange: onChangeProp,
     ...props
 }: Props) => {
     const [internalValue, setInternalValue] = useState(value)
 
     const onChange = useCallback((event: SyntheticInputEvent<EventTarget>) => {
         setInternalValue(event.target.value)
-    }, [])
+
+        if (onChangeProp) {
+            onChangeProp(event)
+        }
+    }, [onChangeProp])
 
     const addValue = useCallback((val) => {
         let parsedValue = Number.parseFloat(internalValue != null ? internalValue : '')
