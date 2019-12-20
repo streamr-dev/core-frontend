@@ -7,6 +7,7 @@ jest.mock('$shared/web3/contracts/communityProduct', () => ({
     abi: ['c_test', 'c_values', 'c_only'],
     bytecode: '0xdeadbeef',
 }))
+jest.mock('$shared/web3/abis/uniswapAdaptor', () => (['u_test', 'u_values', 'u_only']))
 
 describe('config', () => {
     let oldEnv
@@ -25,7 +26,7 @@ describe('config', () => {
 
         it('gets the right config from env', () => {
             process.env.MARKETPLACE_CONTRACT_ADDRESS = 'mpAddress'
-            process.env.TOKEN_CONTRACT_ADDRESS = 'tokenAddress'
+            process.env.DATA_TOKEN_CONTRACT_ADDRESS = 'tokenAddress'
             process.env.WEB3_REQUIRED_NETWORK_ID = '1'
             process.env.WEB3_PUBLIC_HTTP_PROVIDER = 'https://dummy'
             process.env.WEB3_PUBLIC_WS_PROVIDER = 'wss://dummy/ws'
@@ -36,7 +37,11 @@ describe('config', () => {
                 publicNodeAddress: 'https://dummy',
                 websocketAddress: 'wss://dummy/ws',
                 transactionConfirmationBlocks: 1337,
-                token: {
+                dataToken: {
+                    abi: ['t_test', 't_values', 't_only'],
+                    address: 'tokenAddress',
+                },
+                daiToken: {
                     abi: ['t_test', 't_values', 't_only'],
                     address: 'tokenAddress',
                 },
@@ -46,6 +51,10 @@ describe('config', () => {
                 },
                 communityProduct: {
                     abi: ['c_test', 'c_values', 'c_only'],
+                    bytecode: '0xdeadbeef',
+                },
+                uniswapAdaptor: {
+                    abi: ['u_test', 'u_values', 'u_only'],
                     bytecode: '0xdeadbeef',
                 },
             })

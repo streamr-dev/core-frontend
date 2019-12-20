@@ -2,7 +2,9 @@
 
 import marketplaceAbi from './abis/marketplace'
 import tokenAbi from './abis/token'
+import uniswapAdaptorAbi from './abis/uniswapAdaptor'
 import communityProductMetadata from './contracts/communityProduct'
+
 import type { SmartContractConfig, SmartContractMetadata } from '$shared/flowtype/web3-types'
 
 type Config = {
@@ -11,8 +13,10 @@ type Config = {
     websocketAddress: string,
     transactionConfirmationBlocks: number,
     marketplace: SmartContractConfig,
-    token: SmartContractConfig,
+    dataToken: SmartContractConfig,
+    daiToken: SmartContractConfig,
     communityProduct: SmartContractMetadata,
+    uniswapAdaptor: SmartContractConfig,
 }
 
 const getConfig = (): Config => ({
@@ -24,13 +28,21 @@ const getConfig = (): Config => ({
         abi: marketplaceAbi,
         address: process.env.MARKETPLACE_CONTRACT_ADDRESS || '',
     },
-    token: {
+    dataToken: {
         abi: tokenAbi,
-        address: process.env.TOKEN_CONTRACT_ADDRESS || '',
+        address: process.env.DATA_TOKEN_CONTRACT_ADDRESS || '',
+    },
+    daiToken: {
+        abi: tokenAbi,
+        address: process.env.DAI_TOKEN_CONTRACT_ADDRESS || '',
     },
     communityProduct: {
         abi: communityProductMetadata.abi,
         bytecode: communityProductMetadata.bytecode,
+    },
+    uniswapAdaptor: {
+        abi: uniswapAdaptorAbi,
+        address: process.env.UNISWAP_ADAPTOR_CONTRACT_ADDRESS || '',
     },
 })
 
