@@ -104,7 +104,7 @@ export const getAdminFeeInEther = (adminFee: number) => {
 
 export const deployContract = (joinPartStreamId: string, adminFee: number): SmartContractDeployTransaction => {
     const operatorAddress = process.env.COMMUNITY_PRODUCT_OPERATOR_ADDRESS
-    const tokenAddress = process.env.TOKEN_CONTRACT_ADDRESS
+    const tokenAddress = process.env.DATA_TOKEN_CONTRACT_ADDRESS
     const blockFreezePeriodSeconds = process.env.COMMUNITY_PRODUCT_BLOCK_FREEZE_PERIOD_SECONDS || 1
     return deploy(getConfig().communityProduct, [
         operatorAddress,
