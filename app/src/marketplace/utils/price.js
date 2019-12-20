@@ -2,9 +2,9 @@
 
 import BN from 'bignumber.js'
 
-import type { TimeUnit, Currency, NumberString } from '$shared/flowtype/common-types'
+import type { TimeUnit, ContractCurrency as Currency, NumberString } from '$shared/flowtype/common-types'
 
-import { timeUnits, currencies } from '$shared/utils/constants'
+import { timeUnits, contractCurrencies, paymentCurrencies } from '$shared/utils/constants'
 import { toSeconds, getAbbreviation } from './time'
 
 /**
@@ -52,7 +52,7 @@ export const convert = (amount: BN, dataPerUsd: BN, fromCurrency: Currency, toCu
     if (fromCurrency === toCurrency) {
         return amount
     }
-    const calc = fromCurrency === currencies.DATA ? dataToUsd : usdToData
+    const calc = fromCurrency === contractCurrencies.DATA ? dataToUsd : usdToData
     return calc(amount, dataPerUsd)
 }
 
@@ -64,7 +64,7 @@ export const dataForTimeUnits = (
     timeUnit: TimeUnit,
 ): BN => (
     priceForTimeUnits(
-        convert(pricePerSecond, dataPerUsd, fromCurrency, currencies.DATA),
+        convert(pricePerSecond, dataPerUsd, fromCurrency, contractCurrencies.DATA),
         timeAmount,
         timeUnit,
     )
@@ -98,12 +98,21 @@ export const formatAmount = (value: BN, maxDigits: ?number): BN => {
  */
 export const formatDecimals = (value: number | BN, currency: Currency): string => {
     let result
+
+    if (currency === paymentCurrencies.ETH) {
+        return BN(value).toFixed(4)
+    }
+
+    if (currency === paymentCurrencies.DAI) {
+        return BN(value).toFixed(2)
+    }
+
     if (Math.abs(value) < 10) {
-        result = (currency === currencies.DATA) ? BN(value).decimalPlaces(3) : BN(value).toFixed(2)
+        result = (currency === contractCurrencies.DATA) ? BN(value).decimalPlaces(3) : BN(value).toFixed(2)
     } else if (Math.abs(value) < 100) {
-        result = (currency === currencies.DATA) ? BN(value).decimalPlaces(2) : BN(value).toFixed(2)
+        result = (currency === contractCurrencies.DATA) ? BN(value).decimalPlaces(2) : BN(value).toFixed(2)
     } else if (Math.abs(value) < 1000) {
-        result = (currency === currencies.DATA) ? BN(value).decimalPlaces(1) : BN(value).toFixed(1)
+        result = (currency === contractCurrencies.DATA) ? BN(value).decimalPlaces(1) : BN(value).toFixed(1)
     } else {
         result = BN(value).decimalPlaces(0)
     }
