@@ -3,7 +3,7 @@
 import React from 'react'
 import { Translate } from 'react-redux-i18n'
 
-import type { Currency } from '$shared/flowtype/common-types'
+import type { ContractCurrency as Currency } from '$shared/flowtype/common-types'
 import Switcher from './Switcher'
 
 import styles from './fixedPriceSelector.pcss'

@@ -7,7 +7,7 @@ import { Translate } from 'react-redux-i18n'
 
 import { isCommunityProduct } from '$mp/utils/product'
 import { usePending } from '$shared/hooks/usePending'
-import { currencies, DEFAULT_CURRENCY } from '$shared/utils/constants'
+import { contractCurrencies as currencies, DEFAULT_CURRENCY } from '$shared/utils/constants'
 import { selectDataPerUsd } from '$mp/modules/global/selectors'
 import RadioButtonGroup from '$shared/components/RadioButtonGroup'
 import SetPrice from '$mp/components/SetPrice'

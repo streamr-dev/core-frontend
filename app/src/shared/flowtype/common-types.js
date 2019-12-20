@@ -1,8 +1,10 @@
 // @flow
 
-import { currencies, timeUnits, transactionStates, transactionTypes } from '../utils/constants'
+import { contractCurrencies, paymentCurrencies, timeUnits, transactionStates, transactionTypes } from '../utils/constants'
 
-export type Currency = $Values<typeof currencies>
+export type ContractCurrency = $Values<typeof contractCurrencies>
+
+export type PaymentCurrency = $Values<typeof paymentCurrencies>
 
 export type TimeUnit = $Values<typeof timeUnits>
 

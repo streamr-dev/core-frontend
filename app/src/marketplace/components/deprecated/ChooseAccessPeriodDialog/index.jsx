@@ -7,9 +7,9 @@ import { I18n } from 'react-redux-i18n'
 
 import { toSeconds } from '$mp/utils/time'
 import { dataToUsd, usdToData, formatDecimals } from '$mp/utils/price'
-import { currencies } from '$shared/utils/constants'
+import { contractCurrencies } from '$shared/utils/constants'
 import type { SmartContractProduct } from '$mp/flowtype/product-types'
-import type { Currency, NumberString, TimeUnit } from '$shared/flowtype/common-types'
+import type { ContractCurrency, NumberString, TimeUnit } from '$shared/flowtype/common-types'
 import Dialog from '$shared/components/Dialog'
 
 import TimeUnitSelector from '$mp/components/Modal/ChooseAccessPeriodDialog/TimeUnitSelector'
@@ -28,7 +28,7 @@ type State = {
 }
 
 export class ChooseAccessPeriodDialog extends React.Component<Props, State> {
-    static parsePrice = (time: NumberString | BN, timeUnit: TimeUnit, pricePerSecond: BN, currency: Currency) => {
+    static parsePrice = (time: NumberString | BN, timeUnit: TimeUnit, pricePerSecond: BN, currency: ContractCurrency) => {
         if (!BN(time).isNaN() && BN(time).isGreaterThan(0)) {
             return formatDecimals(toSeconds(time, timeUnit).multipliedBy(pricePerSecond), currency).toString()
         }
@@ -55,11 +55,11 @@ export class ChooseAccessPeriodDialog extends React.Component<Props, State> {
             return null
         }
 
-        const pricePerSecondInData = priceCurrency === currencies.DATA ?
+        const pricePerSecondInData = priceCurrency === contractCurrencies.DATA ?
             pricePerSecond :
             usdToData(pricePerSecond, dataPerUsd)
 
-        const pricePerSecondInUsd = priceCurrency === currencies.USD ?
+        const pricePerSecondInUsd = priceCurrency === contractCurrencies.USD ?
             pricePerSecond :
             dataToUsd(pricePerSecond, dataPerUsd)
 
@@ -109,18 +109,18 @@ export class ChooseAccessPeriodDialog extends React.Component<Props, State> {
                             <div className={style.priceLabels}>
                                 <div className={style.priceColumn}>
                                     <span className={style.priceValue}>
-                                        {ChooseAccessPeriodDialog.parsePrice(time, timeUnit, pricePerSecondInData, currencies.DATA)}
+                                        {ChooseAccessPeriodDialog.parsePrice(time, timeUnit, pricePerSecondInData, contractCurrencies.DATA)}
                                     </span>
                                     <span className={style.priceLabel}>
-                                        {currencies.DATA}
+                                        {contractCurrencies.DATA}
                                     </span>
                                 </div>
                                 <div className={style.priceColumn}>
                                     <span className={style.priceValue}>
-                                        ${ChooseAccessPeriodDialog.parsePrice(time, timeUnit, pricePerSecondInUsd, currencies.USD)}
+                                        ${ChooseAccessPeriodDialog.parsePrice(time, timeUnit, pricePerSecondInUsd, contractCurrencies.USD)}
                                     </span>
                                     <span className={style.priceLabel}>
-                                        {currencies.USD}
+                                        {contractCurrencies.USD}
                                     </span>
                                 </div>
                             </div>

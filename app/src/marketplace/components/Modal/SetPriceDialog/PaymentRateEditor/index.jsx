@@ -6,8 +6,8 @@ import { Row, Col } from 'reactstrap'
 
 import TimeUnitSelector from '../TimeUnitSelector'
 import AmountEditor from '../AmountEditor'
-import { currencies } from '$shared/utils/constants'
-import type { Currency, NumberString, TimeUnit } from '$shared/flowtype/common-types'
+import { contractCurrencies as currencies } from '$shared/utils/constants'
+import type { ContractCurrency as Currency, NumberString, TimeUnit } from '$shared/flowtype/common-types'
 import FixedPriceSelector from './FixedPriceSelector'
 
 import styles from './paymentRateEditor.pcss'
