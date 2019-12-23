@@ -62,7 +62,6 @@ export type SmartContractProduct = {
     priceCurrency: $ElementType<Product, 'priceCurrency'>,
     minimumSubscriptionInSeconds: $ElementType<Product, 'minimumSubscriptionInSeconds'>,
     state: $ElementType<Product, 'state'>,
-    requiresWhitelist?: boolean,
 }
 
 export type Subscription = {
