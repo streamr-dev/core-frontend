@@ -15,6 +15,7 @@ import { addStreamResourceKey, editStreamResourceKey, removeStreamResourceKey, g
 import { selectOpenStreamId, selectOpenStreamResourceKeys } from '$userpages/modules/userPageStreams/selectors'
 
 import styles from './keyView.pcss'
+import profileStyles from '../profilePage.pcss'
 
 type OwnProps = {
     disabled: boolean,
@@ -57,8 +58,8 @@ export class KeyView extends Component<Props> {
         return this.props.addKey(this.props.streamId, key, keyPermission)
     }
 
-    editStreamResourceKey = (streamId: StreamId, keyId: ResourceKeyId, keyName: string, keyPermission: ResourcePermission): Promise<void> => (
-        this.props.editStreamResourceKey(streamId, keyId, keyName, keyPermission)
+    editStreamResourceKey = (keyId: ResourceKeyId, keyName: string, keyPermission: ResourcePermission): Promise<void> => (
+        this.props.editStreamResourceKey(this.props.streamId || '', keyId, keyName, keyPermission)
     )
 
     removeKey = (keyId: ResourceKeyId): Promise<void> => this.props.removeKey(this.props.streamId || '', keyId)
@@ -75,12 +76,11 @@ export class KeyView extends Component<Props> {
                 <CredentialsControl
                     keys={keys}
                     addKey={this.addKey}
-                    editStreamResourceKey={this.editStreamResourceKey}
+                    onSave={this.editStreamResourceKey}
                     removeKey={this.removeKey}
                     showPermissionType
-                    newStream={!this.props.streamId}
-                    streamId={this.props.streamId}
                     disabled={disabled}
+                    className={profileStyles.keyList}
                 />
             </Fragment>
         )

@@ -28,7 +28,6 @@ type DispatchProps = {
     getKeys: () => void,
     addKey: (keyName: string) => Promise<void>,
     editMyResourceKey?: (keyId: ResourceKeyId, keyname: string) => Promise<void>,
-    editStreamResourceKey?: (streamId: StreamId, keyId: ResourceKeyId, keyName: string, keyPermission: ResourcePermission) => Promise<void>,
     removeKey: (keyId: ResourceKeyId) => Promise<void>
 }
 
@@ -40,7 +39,7 @@ export class APICredentials extends Component<Props> {
     }
 
     render() {
-        const { addKey, editStreamResourceKey, editMyResourceKey, removeKey } = this.props
+        const { addKey, editMyResourceKey, removeKey } = this.props
         const keys = this.props.keys.sort((a, b) => a.name.localeCompare(b.name))
         return (
             <Fragment>
@@ -52,11 +51,11 @@ export class APICredentials extends Component<Props> {
                 <CredentialsControl
                     keys={keys}
                     addKey={addKey}
-                    editMyResourceKey={editMyResourceKey}
-                    editStreamResourceKey={editStreamResourceKey}
+                    onSave={editMyResourceKey}
                     removeKey={removeKey}
                     disableDelete={keys.length <= 1}
                     showPermissionType={false}
+                    className={styles.keyList}
                 />
             </Fragment>
         )
@@ -71,8 +70,6 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getKeys: () => dispatch(getMyResourceKeys()),
     addKey: (keyName: string) => dispatch(addMyResourceKey(keyName)),
     editMyResourceKey: (keyId: ResourceKeyId, keyName: string) => dispatch(editMyResourceKey(keyId, keyName)),
-    editStreamResourceKey: (streamId: StreamId, keyId: ResourceKeyId, keyname: string, keyPermission: ResourcePermission) =>
-        dispatch(editStreamResourceKey(streamId, keyId, keyname, keyPermission)),
     removeKey: (keyId: ResourceKeyId) => dispatch(removeMyResourceKey(keyId)),
 })
 

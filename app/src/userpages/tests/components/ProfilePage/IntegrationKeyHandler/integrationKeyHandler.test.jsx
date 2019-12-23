@@ -64,7 +64,7 @@ describe('IntegrationKeyHandler', () => {
                 createIntegrationKey={() => {}}
                 getIntegrationKeys={() => {}}
             />)
-            const handlerSegment = handler.find('IntegrationKeyHandlerSegment')
+            const handlerSegment = handler.find('IntegrationKeyList')
             assert(handlerSegment.exists())
             assert.equal(handlerSegment.props().onNew, handler.instance().onNew)
             assert.equal(handlerSegment.props().onDelete, handler.instance().onDelete)

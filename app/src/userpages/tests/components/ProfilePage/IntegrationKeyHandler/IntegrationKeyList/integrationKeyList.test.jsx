@@ -2,14 +2,14 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import assert from 'assert-diff'
 
-import IntegrationKeyHandlerSegment from '../../../../../components/ProfilePage/IntegrationKeyHandler/IntegrationKeyHandlerSegment'
+import IntegrationKeyList from '$userpages/components/ProfilePage/IntegrationKeyHandler/IntegrationKeyList'
 
 describe('IntegrationKeyHandler', () => {
     describe('render', () => {
         it('renders IntegrationKeyList correctly', () => {
             const onDelete = () => {}
             const onEdit = () => {}
-            const el = shallow(<IntegrationKeyHandlerSegment
+            const el = shallow(<IntegrationKeyList
                 integrationKeys={[3, 2, 1]}
                 service=""
                 name="test"
