@@ -112,12 +112,12 @@ const EditorNav = ({ sections, activeSection, className }: Props) => {
             </div>
             {sections.map(({ id, status, ...rest }, index) => (
                 <NavSection
+                    {...rest}
                     key={id}
                     id={id}
                     status={status}
                     active={id === activeSection}
                     seen={highestSeenSection >= index}
-                    {...rest}
                 />
             ))}
         </div>

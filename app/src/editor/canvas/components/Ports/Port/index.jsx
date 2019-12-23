@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useCallback, useState, useEffect, useContext, useMemo } from 'react'
+import React, { useCallback, useState, useEffect, useContext, useMemo, type ComponentType } from 'react'
 import cx from 'classnames'
 import startCase from 'lodash/startCase'
 import useModule from '$editor/canvas/components/ModuleRenderer/useModule'
@@ -48,8 +48,7 @@ const Port = ({
 
     const onContextMenu = useCallback((e: SyntheticMouseEvent<EventTarget>) => {
         e.preventDefault()
-        // $FlowFixMe wtf?
-        setContextMenuTarget(e.currentTarget)
+        setContextMenuTarget((e.currentTarget: any))
     }, [setContextMenuTarget])
 
     const dismiss = useCallback(() => {
@@ -193,9 +192,4 @@ const Port = ({
     )
 }
 
-// $FlowFixMe
-const PortExport = React.memo(Port)
-// $FlowFixMe
-PortExport.styles = styles
-
-export default PortExport
+export default (React.memo(Port): ComponentType<Props>)

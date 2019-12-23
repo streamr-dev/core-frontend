@@ -4,7 +4,7 @@ import React, { useState, useCallback } from 'react'
 import { I18n } from 'react-redux-i18n'
 import cx from 'classnames'
 
-import Modal from '$shared/components/Modal'
+import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import Buttons from '$shared/components/Buttons'
 import FallbackImage from '$shared/components/FallbackImage'
@@ -19,7 +19,7 @@ export type Props = {
     onShowGuidedDialog: () => void,
 }
 
-const ConfirmDeployCommunityDialog = ({ product, onClose, onContinue: onContinueProp, onShowGuidedDialog }: Props) => {
+const ConfirmDeployCommunityDialog = ({ product, onClose, onContinue: onContinueProp, onShowGuidedDialog: onShowGuidedDialogProp }: Props) => {
     const [waitingOnContinue, setWaitingOnContinue] = useState(false)
 
     const onContinue = useCallback(async () => {
@@ -27,11 +27,16 @@ const ConfirmDeployCommunityDialog = ({ product, onClose, onContinue: onContinue
         await onContinueProp()
     }, [onContinueProp])
 
-    // $FlowFixMe
+    const onShowGuidedDialog = useCallback((e: SyntheticInputEvent<EventTarget>) => {
+        e.preventDefault()
+        onShowGuidedDialogProp()
+    }, [onShowGuidedDialogProp])
+
+    // $FlowFixMe property `preview` is missing in  `File`.
     const image = String((product.newImageToUpload && product.newImageToUpload.preview) || product.imageUrl)
 
     return (
-        <Modal>
+        <ModalPortal>
             <Dialog
                 className={cx(styles.root, styles.ConfirmDeployCommunityDialog)}
                 title={I18n.t('modal.deployCommunity.confirm.title', {
@@ -72,7 +77,7 @@ const ConfirmDeployCommunityDialog = ({ product, onClose, onContinue: onContinue
                     <FallbackImage src={image} alt={product.name} className={styles.previewImage} />
                 </div>
             </Dialog>
-        </Modal>
+        </ModalPortal>
     )
 }
 

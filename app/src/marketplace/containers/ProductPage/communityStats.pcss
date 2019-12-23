@@ -1,3 +1,5 @@
+.container {}
+
 .root {
   margin: 4em 0;
   background-color: #F8F8F8;
@@ -9,8 +11,12 @@
   grid-template-rows: 4.5em auto auto 4.5em;
 }
 
+.communityPending {
+  padding-top: 4em;
+}
+
 .stats {
-  padding: 4em 2em 2.875em 2em;
+  padding: 2rem;
 }
 
 .header {
@@ -31,52 +37,66 @@
 }
 
 .graphs {
-  padding: 3em 2em 0 2em;
+  padding: 0;
   border-top: 1px solid #E7E7E7;
   border-bottom: 1px solid #E7E7E7;
   display: grid;
-  height: 22.5em;
-  grid-template-columns: 60% 40%;
 }
 
-.graph {
-  margin-top: 3em;
+.membersGraph {
+  padding: 2em;
 }
 
 .memberDonut {
-  border-left: 1px solid #E7E7E7;
   height: 100%;
   display: flex;
   flex-direction: column;
-
-  .statHeading {
-    padding-left: 2em;
-  }
-
-  .graph {
-    width: 160px;
-    height: 160px;
-    align-self: center;
-  }
+  padding: 2rem;
+  border-top: 1px solid #E7E7E7;
 }
 
-.memberContainer {
-  margin-right: 2em;
-}
-
-.memberHeadingContainer {
-  display: grid;
-  grid-template-columns: 1fr auto;
-
-  .statHeading {
-    align-self: center;
-  }
-}
-
-.memberGraphDropdown {
-  text-align: right;
+.donutChart {
+  margin-top: 2rem;
+  align-self: center;
 }
 
 .footer {
   padding: 0 2em;
+}
+
+@media (--md-down) {
+  .container {
+    width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+@media (--md-up) {
+  .stats {
+    padding: 4.5rem;
+  }
+
+  .graphs {
+    grid-template-columns: 60% 40%;
+  }
+
+  .memberDonut {
+    border-top: 0;
+    border-left: 1px solid #E7E7E7;
+  }
+}
+
+@media (--xl) {
+  .stats {
+    padding: 4rem 2rem 2.875rem 2rem;
+  }
+
+  .membersGraph {
+    padding-top: 3em;
+  }
+
+  .memberDonut {
+    padding-top: 3em;
+  }
 }

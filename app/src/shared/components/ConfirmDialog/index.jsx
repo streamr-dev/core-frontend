@@ -8,7 +8,7 @@ import { Label, FormGroup } from 'reactstrap'
 import type { Kind } from '$shared/components/Button'
 
 import Dialog from '$shared/components/Dialog'
-import Modal from '$shared/components/Modal'
+import ModalPortal from '$shared/components/ModalPortal'
 import Buttons from '$shared/components/Buttons'
 import Checkbox from '$shared/components/Checkbox'
 
@@ -50,7 +50,7 @@ const ConfirmDialog = (props: Props) => {
         onAccept,
     } = props
 
-    const cancelButtonProps = (typeof cancelButton === 'object') ? {
+    const cancelButtonProps: Object = (typeof cancelButton === 'object') ? {
         ...cancelButton,
     } : {
         ...(cancelButton ? {
@@ -58,7 +58,7 @@ const ConfirmDialog = (props: Props) => {
         } : {}),
     }
 
-    const acceptButtonProps = (typeof acceptButton === 'object') ? {
+    const acceptButtonProps: Object = (typeof acceptButton === 'object') ? {
         ...acceptButton,
     } : {
         ...(acceptButton ? {
@@ -83,7 +83,7 @@ const ConfirmDialog = (props: Props) => {
     }
 
     return (
-        <Modal>
+        <ModalPortal>
             <Dialog
                 title={title}
                 onClose={actions.cancel.onClick}
@@ -122,7 +122,7 @@ const ConfirmDialog = (props: Props) => {
             >
                 {message}
             </Dialog>
-        </Modal>
+        </ModalPortal>
     )
 }
 

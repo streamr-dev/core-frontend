@@ -7,7 +7,6 @@ import type { EntitiesState } from '$shared/flowtype/store-state'
 import type { StoreState } from '$userpages/flowtype/states/store-state'
 import type { CanvasState } from '$userpages/flowtype/states/canvas-state'
 import type { Canvas, CanvasId } from '$userpages/flowtype/canvas-types'
-import type { Filter } from '$userpages/flowtype/common-types'
 
 import { selectEntities } from '$shared/modules/entities/selectors'
 import { canvasSchema, canvasesSchema } from '$shared/modules/entities/schema'
@@ -39,9 +38,4 @@ export const selectOpenCanvas: (StoreState) => ?Canvas = createSelector(
 export const selectFetching: (StoreState) => boolean = createSelector(
     selectUserPageCanvasState,
     (subState: CanvasState): boolean => subState.fetching,
-)
-
-export const selectFilter: (StoreState) => ?Filter = createSelector(
-    selectUserPageCanvasState,
-    (subState: CanvasState): ?Filter => subState.filter,
 )

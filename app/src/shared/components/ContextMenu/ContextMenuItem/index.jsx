@@ -25,13 +25,13 @@ class ContextMenuItem extends React.Component<Props> {
         return (
             // eslint-disable-next-line jsx-a11y/click-events-have-key-events
             <div
+                {...props}
                 role="button"
                 className={cx(styles.item, className, {
                     [styles.disabled]: disabled,
                 })}
                 onClick={this.onClick}
                 tabIndex="0"
-                {...props}
             >
                 {text}
             </div>

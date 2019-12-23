@@ -12,7 +12,7 @@ type Props = {
 }
 
 const ErrorComponentView = ({ className, ...props }: Props) => (
-    <div className={cx(className, styles.errorView)} {...props}>
+    <div {...props} className={cx(className, styles.errorView)}>
         <Translate value="error.general" />
     </div>
 )

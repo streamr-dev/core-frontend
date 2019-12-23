@@ -91,8 +91,8 @@ function PortSelect({ canvas, port, value, ...props }) {
         // always render as disabled text box if value editing is disabled
         return (
             <Text
-                value={selectConfig.name}
                 {...props}
+                value={selectConfig.name}
                 disabled
             />
         )

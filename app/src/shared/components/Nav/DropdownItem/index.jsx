@@ -28,9 +28,9 @@ const DropdownItem = ({
     <div className={cx(styles.dropdown, LinkItem.styles.parent)}>
         {toggle || (
             <LinkItem
+                {...props}
                 to={to || '#'}
                 underlined
-                {...props}
             >
                 {label || null}
             </LinkItem>

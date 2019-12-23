@@ -3,7 +3,7 @@
 import React, { Fragment, useState, useCallback, useEffect, useMemo } from 'react'
 import { I18n, Translate } from 'react-redux-i18n'
 
-import Modal from '$shared/components/Modal'
+import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import Buttons from '$shared/components/Buttons'
 import DropdownActions from '$shared/components/DropdownActions'
@@ -51,7 +51,7 @@ const SnippetDialog = ({ snippets, onClose }: Props) => {
     }, [snippets, selectedLanguage, copy])
 
     return (
-        <Modal>
+        <ModalPortal>
             <Dialog
                 contentClassName={styles.content}
                 title={I18n.t('modal.copySnippet.defaultTitle')}
@@ -108,7 +108,7 @@ const SnippetDialog = ({ snippets, onClose }: Props) => {
                     </Fragment>
                 )}
             </Dialog>
-        </Modal>
+        </ModalPortal>
     )
 }
 

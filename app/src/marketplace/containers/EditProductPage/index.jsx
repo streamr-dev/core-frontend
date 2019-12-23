@@ -1,8 +1,9 @@
 // @flow
 
-import React, { useContext, useMemo } from 'react'
+import React, { useContext, useMemo, useEffect } from 'react'
 import { withRouter } from 'react-router-dom'
 import { I18n } from 'react-redux-i18n'
+import cx from 'classnames'
 
 import CoreLayout from '$shared/components/Layout/Core'
 import * as UndoContext from '$shared/contexts/Undo'
@@ -10,7 +11,7 @@ import Toolbar from '$shared/components/Toolbar'
 import type { Product } from '$mp/flowtype/product-types'
 import { isCommunityProduct } from '$mp/utils/product'
 
-import ProductController from '../ProductController'
+import ProductController, { useController } from '../ProductController'
 import useEditableProduct from '../ProductController/useEditableProduct'
 import usePending from '$shared/hooks/usePending'
 import { productStates } from '$shared/utils/constants'
@@ -20,11 +21,10 @@ import { notFoundRedirect } from '$auth/utils/loginInterceptor'
 import useProductPermissions from '../ProductController/useProductPermissions'
 
 import { Provider as EditControllerProvider, Context as EditControllerContext } from './EditControllerProvider'
-import BackButton from './BackButton'
+import BackButton from '$shared/components/BackButton'
 import Editor from './Editor'
 import Preview from './Preview'
 import ProductEditorDebug from './ProductEditorDebug'
-import { Provider as ModalProvider } from '$shared/contexts/ModalApi'
 import ConfirmSaveModal from './ConfirmSaveModal'
 import DeployCommunityModal from './DeployCommunityModal'
 import PublishModal from './PublishModal'
@@ -39,9 +39,17 @@ const EditProductPage = ({ product }: { product: Product }) => {
         save,
         publish,
         deployCommunity,
+        back,
     } = useContext(EditControllerContext)
     const { isPending: savePending } = usePending('product.SAVE')
     const { isAnyChangePending } = useContext(ValidationContext)
+    const { loadCategories, loadStreams } = useController()
+
+    // Load categories and streams
+    useEffect(() => {
+        loadCategories()
+        loadStreams()
+    }, [loadCategories, loadStreams])
 
     const isSaving = savePending
     const isCommunity = isCommunityProduct(product)
@@ -50,8 +58,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
 
     const saveAndExitButton = useMemo(() => ({
         title: 'Save & Exit',
-        color: 'link',
-        outline: true,
+        kind: 'link',
         onClick: () => save(),
         disabled: isSaving,
     }), [save, isSaving])
@@ -113,6 +120,18 @@ const EditProductPage = ({ product }: { product: Product }) => {
         publish: deployButton,
     }
 
+    const toolbarMiddle = useMemo(() => {
+        if (isPreview) {
+            return (
+                <span className={styles.toolbarMiddle}>
+                    This is a preview of how your product will appear when published
+                </span>
+            )
+        }
+
+        return undefined
+    }, [isPreview])
+
     return (
         <CoreLayout
             className={styles.layout}
@@ -120,12 +139,17 @@ const EditProductPage = ({ product }: { product: Product }) => {
             navComponent={(
                 <Toolbar
                     className={Toolbar.styles.shadow}
-                    left={<BackButton />}
+                    left={<BackButton onBack={back} />}
+                    middle={toolbarMiddle}
                     actions={actions}
                     altMobileLayout
                 />
             )}
             loadingClassname={styles.loadingIndicator}
+            contentClassname={cx({
+                [styles.editorContent]: !isPreview,
+                [styles.previewContent]: !!isPreview,
+            })}
             loading={isSaving}
         >
             <ProductEditorDebug />
@@ -176,14 +200,12 @@ const EditWrap = () => {
     const key = (!!product && product.id) || ''
 
     return (
-        <ModalProvider>
-            <EditControllerProvider product={product}>
-                <EditProductPage
-                    key={key}
-                    product={product}
-                />
-            </EditControllerProvider>
-        </ModalProvider>
+        <EditControllerProvider product={product}>
+            <EditProductPage
+                key={key}
+                product={product}
+            />
+        </EditControllerProvider>
     )
 }
 

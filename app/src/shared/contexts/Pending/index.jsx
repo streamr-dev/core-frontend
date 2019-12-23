@@ -62,8 +62,7 @@ function usePendingContext(name): ContextProps {
     }, [updatePendingChildren, isMounted])
     const isSelfPending = Object.values(selfPending).some((value) => !!value)
     const pendingChildrenValues = Object.values(pendingChildren)
-    // $FlowFixMe
-    const isChildrenPending = !!pendingChildrenValues.length && pendingChildrenValues.some(({ isPending }) => isPending)
+    const isChildrenPending = !!pendingChildrenValues.length && pendingChildrenValues.some(({ isPending }: any) => isPending)
     const isPending = isSelfPending || isChildrenPending
 
     const checkPending = useCallback((key) => (

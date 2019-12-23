@@ -1,63 +1,36 @@
 .root {
   color: var(--greyDark2);
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--sans);
   font-size: 0.875rem;
-  font-weight: var(--semiBold);
-  letter-spacing: 1.5px;
-  line-height: 2rem;
+  letter-spacing: 0;
+  line-height: 1.125rem;
   position: relative;
-  text-transform: uppercase;
   white-space: nowrap;
-
-  a {
-    display: block;
-    margin: 0; /* FIXME: Do we really have to override `.toolbar .left a`? */
-    padding: 0 1em 0 2.25em;
-    position: relative;
-  }
-
-  a:hover {
-    background: var(--greyLight3);
-  }
 }
 
 .backIcon {
-  left: 0.75rem;
+  left: 0;
   position: absolute;
   top: 50%;
-  transform: translateY(-50%);
-  width: 0.5rem;
+  transform: translate(-100%, -50%);
+  height: 12px;
+  color: inherit;
 }
 
-.list {
-  border-radius: 0.25rem;
-  padding: 0.25rem 0;
-  position: absolute;
-  top: -0.25rem;
-  z-index: 1;
-}
+.button {
+  background: transparent;
+  border: none !important;
+  outline: none;
+  cursor: pointer;
+  margin: 0;
+  padding: 0 0.5rem;
+  position: relative;
 
-.list li + li {
-  display: none;
-}
-
-.longLabel {
-  display: none;
-}
-
-.list:hover {
-  background: var(--white);
-  box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
-
-  li + li {
-    display: block;
+  &:hover {
+    color: #0324FF;
   }
 
-  .shortLabel {
-    display: none;
-  }
-
-  .longLabel {
-    display: inline;
+  &:focus {
+    outline: none;
   }
 }

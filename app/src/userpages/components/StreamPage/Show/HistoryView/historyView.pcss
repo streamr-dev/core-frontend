@@ -2,9 +2,11 @@
   max-width: 682px;
 }
 
-.fileUpload {
-  margin-bottom: 3rem;
+.row {
+  margin-bottom: 1rem;
+}
 
+.fileUpload {
   &:--enter {
     cursor: pointer !important;
 
@@ -90,4 +92,14 @@
 .historicalStoragePeriod {
   margin: 2em 0 1em;
   display: block;
+}
+
+.storageContainer {
+  display: grid;
+  grid-template-columns: 5rem 11rem;
+  grid-column-gap: 1rem;
+}
+
+.storageAmount {
+  text-align: center;
 }

@@ -17,12 +17,7 @@ describe('Canvas actions', () => {
     beforeEach(() => {
         moxios.install()
         store = mockStore({
-            canvas: {
-                filter: {
-                    sortBy: 'sortTest',
-                    search: 'searchTest',
-                },
-            },
+            canvas: {},
         })
         sandbox = sinon.createSandbox()
     })
@@ -30,6 +25,7 @@ describe('Canvas actions', () => {
     afterEach(() => {
         moxios.uninstall()
         store.clearActions()
+        sandbox.restore()
     })
 
     it('creates GET_CANVASES_SUCCESS when fetching running canvases has succeeded', async () => {
@@ -42,9 +38,8 @@ describe('Canvas actions', () => {
             expect(request.url).toMatch(/canvases/)
             expect(request.config.params).toEqual({
                 adhoc: false,
-                sortBy: 'sortTest',
+                sortBy: 'lastUpdated',
                 order: 'desc',
-                search: 'searchTest',
             })
             request.respondWith({
                 status: 200,
@@ -80,9 +75,8 @@ describe('Canvas actions', () => {
             expect(request.url).toMatch(/canvases/)
             expect(request.config.params).toEqual({
                 adhoc: false,
-                sortBy: 'sortTest',
+                sortBy: 'lastUpdated',
                 order: 'desc',
-                search: 'searchTest',
             })
             request.respondWith({
                 status: 500,
@@ -126,16 +120,47 @@ describe('Canvas actions', () => {
     })
 
     it('Updates the filter', async () => {
-        const filter = {
-            test: true,
-        }
+        sandbox.stub(entitiesActions, 'updateEntities').callsFake(() => ({
+            type: 'updateEntities',
+        }))
+
+        const wait = moxios.promiseWait().then(() => {
+            const request = moxios.requests.mostRecent()
+            expect(request.url).toMatch(/canvases/)
+            expect(request.config.params).toEqual({
+                adhoc: false,
+                sortBy: 'sortTest',
+                order: 'desc',
+                search: 'searchTest',
+            })
+            request.respondWith({
+                status: 200,
+                response: [{
+                    id: 'test',
+                    name: 'test',
+                }, {
+                    id: 'test2',
+                    name: 'test2',
+                }],
+            })
+        })
 
         const expectedActions = [{
-            type: actions.UPDATE_FILTER,
-            filter,
+            type: actions.GET_CANVASES_REQUEST,
+        }, {
+            type: 'updateEntities',
+        }, {
+            type: actions.GET_CANVASES_SUCCESS,
+            canvases: ['test', 'test2'],
         }]
 
-        store.dispatch(actions.updateFilter(filter))
+        await store.dispatch(actions.getCanvases({
+            sortBy: 'sortTest',
+            search: 'searchTest',
+        }))
+
         expect(store.getActions()).toEqual(expectedActions)
+
+        await wait
     })
 })

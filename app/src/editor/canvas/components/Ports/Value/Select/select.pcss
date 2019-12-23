@@ -1,11 +1,19 @@
 /* TODO(Mariusz): A lot is shared w/ Text. Share maybe? */
 
 .root {
-  height: var(--um);
+  min-height: var(--um);
+  display: flex;
 }
 
 .inner {
   position: relative;
+  display: flex;
+  border-radius: calc(0.125 * var(--um));
+}
+
+.inner:hover,
+.inner:focus-within {
+  background-color: #F5F5F5;
 }
 
 .root select {
@@ -20,11 +28,6 @@
   padding: 0 calc(0.5 * var(--um));
   transition: 200ms linear;
   transition-property: background-color, color, box-shadow;
-}
-
-.root select:hover,
-.root select:focus {
-  background-color: #F5F5F5;
 }
 
 .root select:focus {

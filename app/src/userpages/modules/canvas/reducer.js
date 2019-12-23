@@ -14,7 +14,6 @@ import {
     DELETE_CANVAS_SUCCESS,
     DELETE_CANVAS_FAILURE,
     OPEN_CANVAS,
-    UPDATE_FILTER,
 } from './actions'
 
 const initialState = {
@@ -22,7 +21,6 @@ const initialState = {
     openCanvasId: null,
     error: null,
     fetching: false,
-    filter: null,
 }
 
 export default function (state: CanvasState = initialState, action: CanvasAction): CanvasState {
@@ -62,7 +60,6 @@ export default function (state: CanvasState = initialState, action: CanvasAction
         case DELETE_CANVAS_SUCCESS:
             return {
                 ...state,
-                // $FlowFixMe
                 ids: state.ids.filter((id) => id !== action.id),
                 fetching: false,
                 error: null,
@@ -77,11 +74,6 @@ export default function (state: CanvasState = initialState, action: CanvasAction
             return {
                 ...state,
                 openCanvasId: action.id,
-            }
-        case UPDATE_FILTER:
-            return {
-                ...state,
-                filter: action.filter,
             }
         default:
             return state

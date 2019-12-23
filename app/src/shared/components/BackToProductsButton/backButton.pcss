@@ -1,0 +1,63 @@
+.root {
+  color: var(--greyDark2);
+  font-family: var(--mono);
+  font-size: 0.875rem;
+  font-weight: var(--semiBold);
+  letter-spacing: 1.5px;
+  line-height: 2rem;
+  position: relative;
+  text-transform: uppercase;
+  white-space: nowrap;
+
+  a {
+    display: block;
+    margin: 0; /* FIXME: Do we really have to override `.toolbar .left a`? */
+    padding: 0 1em 0 2.25em;
+    position: relative;
+  }
+
+  a:hover {
+    background: var(--greyLight3);
+  }
+}
+
+.backIcon {
+  left: 0.75rem;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0.5rem;
+}
+
+.list {
+  border-radius: 0.25rem;
+  padding: 0.25rem 0;
+  position: absolute;
+  top: -0.25rem;
+  z-index: 1;
+}
+
+.list li + li {
+  display: none;
+}
+
+.longLabel {
+  display: none;
+}
+
+.list:hover {
+  background: var(--white);
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+
+  li + li {
+    display: block;
+  }
+
+  .shortLabel {
+    display: none;
+  }
+
+  .longLabel {
+    display: inline;
+  }
+}

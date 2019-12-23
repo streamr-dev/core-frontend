@@ -38,7 +38,6 @@ import {
     CONFIRM_CSV_FILE_UPLOAD_FAILURE,
     OPEN_STREAM,
     CANCEL_CSV_FILE_UPLOAD,
-    UPDATE_FILTER,
     UPDATE_EDIT_STREAM,
     UPDATE_EDIT_STREAM_FIELD,
     DELETE_DATA_UP_TO_REQUEST,
@@ -56,9 +55,9 @@ const initialState = {
     },
     savingStreamFields: false,
     fetching: false,
+    deleting: false,
     error: null,
     csvUpload: null,
-    filter: null,
     editedStream: null,
     deleteDataError: null,
     autodetectFetching: false,
@@ -76,7 +75,6 @@ export default function (state: UserPageStreamsState = initialState, action: Str
         case UPDATE_STREAM_REQUEST:
         case GET_MY_STREAM_PERMISSIONS_REQUEST:
         case DELETE_STREAM_REQUEST:
-        case DELETE_DATA_UP_TO_REQUEST:
             return {
                 ...state,
                 fetching: true,
@@ -264,12 +262,6 @@ export default function (state: UserPageStreamsState = initialState, action: Str
                 fetching: false,
             }
 
-        case UPDATE_FILTER:
-            return {
-                ...state,
-                filter: action.filter,
-            }
-
         case UPDATE_EDIT_STREAM:
             return {
                 ...state,
@@ -279,21 +271,27 @@ export default function (state: UserPageStreamsState = initialState, action: Str
             }
 
         case UPDATE_EDIT_STREAM_FIELD: {
-            const newState = {
-                ...state,
-                editedStream: {
-                    ...state.editedStream,
-                },
+            const editedStream: any = {
+                ...state.editedStream,
             }
-            const fullPath = `editedStream.${action.field}`
-            set(newState, fullPath, action.data)
-            return newState
+            set(editedStream, action.field, action.data)
+
+            return {
+                ...state,
+                editedStream,
+            }
         }
+
+        case DELETE_DATA_UP_TO_REQUEST:
+            return {
+                ...state,
+                deleting: true,
+            }
 
         case DELETE_DATA_UP_TO_SUCCESS: {
             return {
                 ...state,
-                fetching: false,
+                deleting: false,
                 deleteDataError: null,
             }
         }
@@ -301,7 +299,7 @@ export default function (state: UserPageStreamsState = initialState, action: Str
         case DELETE_DATA_UP_TO_FAILURE: {
             return {
                 ...state,
-                fetching: false,
+                deleting: false,
                 deleteDataError: action.error,
             }
         }
@@ -314,16 +312,18 @@ export default function (state: UserPageStreamsState = initialState, action: Str
         }
 
         case STREAM_FIELD_AUTODETECT_SUCCESS: {
-            return {
+            const newState = {
                 ...state,
-                editedStream: {
-                    ...state.editedStream,
-                    config: {
-                        fields: action.fields,
-                    },
-                },
                 autodetectFetching: false,
             }
+
+            if (newState.editedStream) {
+                newState.editedStream.config = {
+                    fields: action.fields,
+                }
+            }
+
+            return newState
         }
 
         case STREAM_FIELD_AUTODETECT_FAILURE: {

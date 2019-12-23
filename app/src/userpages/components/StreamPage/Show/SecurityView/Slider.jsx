@@ -82,7 +82,8 @@ export default function Slider({ index: selectedIndex = 0, selector } = {}) {
             >
                 {positions.positions.map((p, index) => (
                     <div
-                        key={p.left}
+                        // eslint-disable-next-line react/no-array-index-key
+                        key={index}
                         className={cx(styles.SliderStop, {
                             [styles.highlighted]: index <= selectedIndex,
                             [styles.selected]: index === selectedIndex,

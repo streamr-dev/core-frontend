@@ -3,7 +3,7 @@ import React from 'react'
 
 import { storiesOf } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
-import { withKnobs, text, array, number, boolean } from '@storybook/addon-knobs'
+import { withKnobs, text, number, boolean } from '@storybook/addon-knobs'
 import StoryRouter from 'storybook-react-router'
 import styles from '@sambego/storybook-styles'
 import { Row, Col } from 'reactstrap'
@@ -30,7 +30,7 @@ import SvgIcon from '$shared/components/SvgIcon'
 import PngIcon from '$shared/components/PngIcon'
 import Dropdown from '$shared/components/Dropdown'
 import Slider from '$shared/components/Slider'
-import Modal from '$shared/components/Modal'
+import ModalPortal from '$shared/components/ModalPortal'
 import { Provider as ModalPortalProvider } from '$shared/contexts/ModalPortal'
 import ErrorDialog from '$mp/components/Modal/ErrorDialog'
 import Notifications from '$shared/components/Notifications'
@@ -39,13 +39,11 @@ import CodeSnippet from '$shared/components/CodeSnippet'
 import Tooltip from '$shared/components/Tooltip'
 import ContextMenu from '$shared/components/ContextMenu'
 import { NotificationIcon } from '$shared/utils/constants'
-import RadioButtonGroup from '$shared/components/RadioButtonGroup'
 import Toolbar from '$shared/components/Toolbar'
 import Spinner from '$shared/components/Spinner'
 import DeploySpinner from '$shared/components/DeploySpinner'
 import Label from '$shared/components/Label'
 import Tile from '$shared/components/Tile'
-import DonutChart from '$shared/components/DonutChart'
 import Button from '$shared/components/Button'
 
 import sharedStyles from './shared.pcss'
@@ -235,6 +233,41 @@ story('Text Field/Text')
         <TextInput preserveLabelSpace label="With invalid value" value="Something invalid" error="Oh, something went wrong!" />
     ))
 
+story('Text Field/With actions')
+    .addWithJSX('basic', () => (
+        <TextInput
+            preserveLabelSpace
+            label="I have a Meatball menu"
+            actions={
+                [
+                    <DropdownActions.Item>
+                        Test 1
+                    </DropdownActions.Item>,
+                    <DropdownActions.Item>
+                        Test 2
+                    </DropdownActions.Item>,
+                ]
+            }
+        />
+    ))
+    .addWithJSX('disabled', () => (
+        <TextInput
+            preserveLabelSpace
+            disabled
+            label="I have a Meatball menu"
+            actions={
+                [
+                    <DropdownActions.Item>
+                        Test 1
+                    </DropdownActions.Item>,
+                    <DropdownActions.Item>
+                        Test 2
+                    </DropdownActions.Item>,
+                ]
+            }
+        />
+    ))
+
 story('Text Field/Password')
     .addWithJSX('basic', () => (
         <TextInput preserveLabelSpace label="Password…" value={text('value', '')} type="password" measureStrength />
@@ -247,6 +280,26 @@ story('Text Field/Password')
     ))
     .addWithJSX('min strength 2', () => (
         <TextInput preserveLabelSpace label="" value={text('value', 'You shall not pass!')} type="password" measureStrength />
+    ))
+
+story('Text Field/Number')
+    .addWithJSX('basic', () => (
+        <TextInput preserveLabelSpace label="Count" type="number" />
+    ))
+    .addWithJSX('with predefined value', () => (
+        <TextInput preserveLabelSpace label="Count" type="number" value="5" />
+    ))
+    .addWithJSX('with min, max & step', () => (
+        <TextInput preserveLabelSpace label="Count" type="number" min="0" max="10" step="2" />
+    ))
+    .addWithJSX('hidden buttons', () => (
+        <TextInput preserveLabelSpace label="Count" type="number" hideButtons />
+    ))
+    .addWithJSX('without label', () => (
+        <TextInput label="" type="number" />
+    ))
+    .addWithJSX('with error', () => (
+        <TextInput preserveLabelSpace label="Count" type="number" error="Error" />
     ))
 
 class SelectInputContainer extends React.Component {
@@ -563,7 +616,7 @@ story('Slider')
         <SliderContainer />
     ))
 
-story('Modal')
+story('ModalPortal')
     .addDecorator(StoryRouter())
     .addWithJSX('basic', () => (
         <React.Fragment>
@@ -571,13 +624,13 @@ story('Modal')
             <ModalPortalProvider>
                 <h1>Lorem ipsum cause dolor sit emat!</h1>
                 {boolean('Visible', true) && (
-                    <Modal>
+                    <ModalPortal>
                         <ErrorDialog
                             title="Godlike!"
                             message="Hello world!"
                             onClose={() => {}}
                         />
-                    </Modal>
+                    </ModalPortal>
                 )}
             </ModalPortalProvider>
         </React.Fragment>
@@ -617,13 +670,13 @@ story('Notifications')
                     ))}
                     <Notifications />
                     {boolean('Show dialog', false) && (
-                        <Modal>
+                        <ModalPortal>
                             <ErrorDialog
                                 title="Godlike!"
                                 message="Hello world!"
                                 onClose={() => {}}
                             />
-                        </Modal>
+                        </ModalPortal>
                     )}
                 </ModalPortalProvider>
             </React.Fragment>
@@ -692,25 +745,6 @@ story('Tooltip')
         <Tooltip value="This is a tooltip">
             Hover to show tooltip
         </Tooltip>
-    ))
-
-story('RadioButtonGroup')
-    .addWithJSX('basic', () => (
-        <RadioButtonGroup
-            name="group"
-            options={['value 1', 'value 2', 'value 3']}
-            selectedOption="value 2"
-            onChange={action('selected')}
-        />
-    ))
-    .addWithJSX('disabled', () => (
-        <RadioButtonGroup
-            name="group"
-            options={['value 1', 'value 2', 'value 3']}
-            selectedOption="value 2"
-            onChange={action('selected')}
-            disabled
-        />
     ))
 
 const toolbarActions = {
@@ -864,30 +898,6 @@ story('Tile')
                 </Tile.Status>
             </Tile>
         </div>
-    ))
-
-story('DonutChart')
-    .addWithJSX('basic', () => (
-        <DonutChart
-            strokeWidth={5}
-            data={[
-                {
-                    title: '1',
-                    value: 50,
-                    color: 'red',
-                },
-                {
-                    title: '2',
-                    value: 25,
-                    color: 'blue',
-                },
-                {
-                    title: '3',
-                    value: 25,
-                    color: 'green',
-                },
-            ]}
-        />
     ))
 
 story('Spinner')

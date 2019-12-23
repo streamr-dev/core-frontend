@@ -1,6 +1,6 @@
 // @flow
 
-import { memo, useEffect } from 'react'
+import { memo, useEffect, type ComponentType } from 'react'
 import { configureAnchors } from 'react-scrollable-anchor'
 
 type Props = {
@@ -23,5 +23,4 @@ const ConfigureAnchorOffset = ({ value: offset }: Props) => {
     return null
 }
 
-// $FlowFixMe
-export default memo(ConfigureAnchorOffset)
+export default (memo(ConfigureAnchorOffset): ComponentType<Props>)

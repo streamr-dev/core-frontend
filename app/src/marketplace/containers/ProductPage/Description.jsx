@@ -1,19 +1,16 @@
 // @flow
 
-import React from 'react'
+import React, { useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import Skeleton from 'react-loading-skeleton'
+import { I18n } from 'react-redux-i18n'
 
 import useProduct from '$mp/containers/ProductController/useProduct'
 import useContractProduct from '$mp/containers/ProductController/useContractProduct'
 import usePending from '$shared/hooks/usePending'
-import ProductContainer from '$shared/components/Container/Product'
-import { ago } from '$shared/utils/time'
 import { selectCategory } from '$mp/modules/product/selectors'
+import { ago } from '$shared/utils/time'
 
-import CollapsedText from '$mp/components/ProductPage/CollapsedText'
-
-import styles from './description.pcss'
+import DescriptionComponent from '$mp/components/ProductPage/Description'
 
 const Description = () => {
     const product = useProduct()
@@ -22,35 +19,29 @@ const Description = () => {
     const { isPending } = usePending('contractProduct.LOAD_SUBSCRIPTION')
     const { purchaseTimestamp, subscriberCount } = contractProduct || {}
 
+    const sidebar = useMemo(() => ({
+        category: {
+            title: I18n.t('editProductPage.sidebar.category'),
+            loading: !category,
+            value: category && category.name,
+        },
+        subscriberCount: {
+            title: I18n.t('editProductPage.sidebar.activeSubscribers'),
+            loading: isPending,
+            value: subscriberCount || 0,
+        },
+        purchaseTimestamp: {
+            title: I18n.t('editProductPage.sidebar.mostRecentPurchase'),
+            loading: isPending,
+            value: purchaseTimestamp != null ? ago(new Date(purchaseTimestamp)) : '-',
+        },
+    }), [category, isPending, subscriberCount, purchaseTimestamp])
+
     return (
-        <div className={styles.container}>
-            <ProductContainer>
-                <div className={styles.separator} />
-                <div className={styles.additionalInfo}>
-                    <CollapsedText text={product.description} className={styles.description} />
-                    <div className={styles.info}>
-                        <div>
-                            <div className={styles.subheading}>Product category</div>
-                            {category ? (
-                                <div>{category.name}</div>
-                            ) : <Skeleton />}
-                        </div>
-                        <div>
-                            <div className={styles.subheading}>Active subscribers</div>
-                            {!isPending ? (
-                                <div>{subscriberCount || 0}</div>
-                            ) : <Skeleton />}
-                        </div>
-                        <div>
-                            <div className={styles.subheading}>Most recent purchase</div>
-                            {!isPending ? (
-                                <div>{purchaseTimestamp != null ? ago(new Date(purchaseTimestamp)) : '-'}</div>
-                            ) : <Skeleton />}
-                        </div>
-                    </div>
-                </div>
-            </ProductContainer>
-        </div>
+        <DescriptionComponent
+            description={product.description}
+            sidebar={sidebar}
+        />
     )
 }
 

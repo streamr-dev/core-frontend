@@ -24,6 +24,7 @@ export type Props = {
     onCategoryChange: (filter: Filter) => void,
     onSortChange: (filter: Filter) => void,
     onSearchChange: (filter: Filter) => void,
+    onCreateProduct: () => void,
 }
 
 class ActionBar extends Component<Props> {
@@ -88,7 +89,7 @@ class ActionBar extends Component<Props> {
     }
 
     render() {
-        const { filter: { search, categories: category, sortBy, maxPrice }, categories } = this.props
+        const { filter: { search, categories: category, sortBy, maxPrice }, categories, onCreateProduct } = this.props
         return (
             <div className={styles.actionBar}>
                 <SearchInput value={search} onChange={this.onSearchChange} onClear={this.clearSearch} />
@@ -134,9 +135,20 @@ class ActionBar extends Component<Props> {
                                 </FilterSelector>
                             </li>
                             <li className={classNames('d-none d-md-block', styles.createProduct)}>
-                                <Button kind="secondary" tag={Link} to={links.marketplace.createProduct}>
-                                    <Translate value="actionBar.create" />
-                                </Button>
+                                {!!process.env.COMMUNITY_PRODUCTS && (
+                                    <Button
+                                        kind="secondary"
+                                        type="button"
+                                        onClick={() => onCreateProduct()}
+                                    >
+                                        <Translate value="actionBar.create" />
+                                    </Button>
+                                )}
+                                {!process.env.COMMUNITY_PRODUCTS && (
+                                    <Button kind="secondary" tag={Link} to={links.marketplace.createProduct}>
+                                        <Translate value="actionBar.create" />
+                                    </Button>
+                                )}
                             </li>
                         </ul>
                     </Container>

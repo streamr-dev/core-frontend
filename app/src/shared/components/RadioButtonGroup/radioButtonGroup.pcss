@@ -5,12 +5,38 @@
   letter-spacing: 0;
   line-height: 4rem;
   text-align: center;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-  grid-column-gap: 0.5rem;
   background-color: #F1F1F1;
   padding: 1rem;
   border-radius: 0.5rem;
+}
+
+.inner {
+  position: relative;
+}
+
+.buttonGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  grid-column-gap: 0.5rem;
+  position: absolute;
+  width: 100%;
+  top: 0;
+  z-index: 1;
+}
+
+.slider {
+  outline: none;
+  cursor: pointer;
+  user-select: none;
+  transition: all 250ms ease-in;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  border-radius: 0.5rem;
+  color: #0324FF;
+  background-color: white;
+  box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.1);
+  height: 4rem;
 }
 
 .radio {
@@ -19,13 +45,10 @@
 
 .radio:checked + label {
   color: #0324FF;
-  background-color: white;
-  box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.1);
 }
 
 .label {
   color: #A3A3A3;
-  background-color: #F1F1F1;
   outline: none;
   cursor: pointer;
   user-select: none;

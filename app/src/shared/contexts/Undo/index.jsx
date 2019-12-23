@@ -254,7 +254,7 @@ class UndoContextProvider extends Component<Props, State> {
     render() {
         const { enableBreadcrumbs, children, ...props } = this.props
         return (
-            <UndoContext.Provider value={this.state} {...props}>
+            <UndoContext.Provider {...props} value={this.state}>
                 <UndoBreadcrumbs enableBreadcrumbs={enableBreadcrumbs} />
                 {children || null}
             </UndoContext.Provider>

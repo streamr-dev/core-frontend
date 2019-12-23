@@ -102,12 +102,12 @@
   margin: 0;
   background: none;
   cursor: inherit;
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: var(--sans);
   font-size: 14px;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  max-width: 500px;
+  max-width: 200px;
 
   &:focus {
     outline: none;
@@ -172,4 +172,10 @@
   width: 16px;
   height: 16px;
   color: #A3A3A3;
+}
+
+@media (--md-up) {
+  .addButton {
+    max-width: 500px;
+  }
 }

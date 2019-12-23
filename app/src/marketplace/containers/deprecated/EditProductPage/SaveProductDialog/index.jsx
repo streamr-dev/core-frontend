@@ -3,7 +3,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import Modal from '$shared/components/Modal'
+import ModalPortal from '$shared/components/ModalPortal'
 import SaveProductDialogComponent from '$mp/components/deprecated/SaveProductDialog'
 import SaveContractProductDialogComponent from '$mp/components/Modal/SaveContractProductDialog'
 import { selectTransactionState as selectUpdateTransactionState } from '$mp/modules/deprecated/editProduct/selectors'
@@ -111,7 +111,7 @@ export class SaveProductDialog extends React.Component<Props> {
 
     render() {
         const dialog = this.dialog()
-        return dialog && <Modal>{dialog}</Modal>
+        return dialog && <ModalPortal>{dialog}</ModalPortal>
     }
 }
 

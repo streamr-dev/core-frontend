@@ -7,6 +7,7 @@ import Spinner from '$shared/components/Spinner'
 import type { TransactionState } from '$shared/flowtype/common-types'
 import { transactionStates } from '$shared/utils/constants'
 import links from '$mp/../links'
+import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import { actionsTypes } from '$mp/containers/EditProductPage/publishQueue'
 
@@ -36,55 +37,61 @@ const ConfirmPublishTransaction = ({
     switch (publishState) {
         case transactionStates.STARTED:
             return (
-                <Dialog
-                    waiting={isWaiting}
-                    onClose={onCancel}
-                    title={I18n.t(`modal.complete${isUnpublish ? 'Unpublish' : 'Publish'}.started.title`)}
-                    actions={{
-                        cancel: {
-                            title: I18n.t('modal.common.cancel'),
-                            onClick: onCancel,
-                            kind: 'link',
-                        },
-                        publish: {
-                            title: I18n.t('modal.common.waiting'),
-                            kind: 'primary',
-                            disabled: true,
-                            spinner: true,
-                        },
-                    }}
-                >
-                    <div>
-                        {action && (
-                            <Translate
-                                value={`modal.completePublish.${action}.started.message`}
-                                tag="p"
-                                dangerousHTML
-                            />
-                        )}
-                    </div>
-                </Dialog>
+                <ModalPortal>
+                    <Dialog
+                        waiting={isWaiting}
+                        onClose={onCancel}
+                        title={I18n.t(`modal.complete${isUnpublish ? 'Unpublish' : 'Publish'}.started.title`)}
+                        actions={{
+                            cancel: {
+                                title: I18n.t('modal.common.cancel'),
+                                onClick: onCancel,
+                                kind: 'link',
+                            },
+                            publish: {
+                                title: I18n.t('modal.common.waiting'),
+                                kind: 'primary',
+                                disabled: true,
+                                spinner: true,
+                            },
+                        }}
+                    >
+                        <div>
+                            {action && (
+                                <Translate
+                                    value={`modal.completePublish.${action}.started.message`}
+                                    tag="p"
+                                    dangerousHTML
+                                />
+                            )}
+                        </div>
+                    </Dialog>
+                </ModalPortal>
             )
 
         case transactionStates.PENDING:
             return (
-                <Dialog
-                    onClose={onCancel}
-                    title={I18n.t('modal.completePublish.pending.title')}
-                >
-                    <div>
-                        <Spinner size="large" className={styles.icon} />
-                        <Translate tag="p" value="modal.common.waitingForBlockchain" marketplaceLink={links.marketplace.main} dangerousHTML />
-                    </div>
-                </Dialog>
+                <ModalPortal>
+                    <Dialog
+                        onClose={onCancel}
+                        title={I18n.t('modal.completePublish.pending.title')}
+                    >
+                        <div>
+                            <Spinner size="large" className={styles.icon} />
+                            <Translate tag="p" value="modal.common.waitingForBlockchain" marketplaceLink={links.marketplace.main} dangerousHTML />
+                        </div>
+                    </Dialog>
+                </ModalPortal>
             )
 
         default:
             return (
-                <Dialog
-                    waiting
-                    onClose={onCancel}
-                />
+                <ModalPortal>
+                    <Dialog
+                        waiting
+                        onClose={onCancel}
+                    />
+                </ModalPortal>
             )
     }
 }

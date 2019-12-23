@@ -47,6 +47,7 @@ const customStyles = {
     dropdownIndicator: (provided) => ({
         ...provided,
         color: '#323232',
+        marginRight: '8px',
     }),
     indicatorSeparator: () => ({}),
     menu: (provided) => ({
@@ -124,6 +125,7 @@ const SelectInput = ({ className, controlClassName, ...props }: Props) => (
             DropdownIndicator,
         }}
         controlClassName={controlClassName}
+        // $FlowFixMe potential override necessary.
         {...props}
     />
 )

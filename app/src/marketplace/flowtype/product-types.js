@@ -17,6 +17,7 @@ export type PendingChanges = {
 }
 
 export type Product = {
+    adminFee?: number,
     key?: string,
     id: ?ProductId,
     name: string,

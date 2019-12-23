@@ -1,6 +1,7 @@
 // @flow
 
 import '$shared/assets/stylesheets'
+import '@ibm/plex/css/ibm-plex.css'
 
 import React from 'react'
 import { Route as RouterRoute, Switch, Redirect, type Location } from 'react-router-dom'
@@ -11,7 +12,6 @@ import qs from 'query-string'
 import ProductPage from '$mp/containers/deprecated/ProductPage'
 import ProductPage2 from '$mp/containers/ProductPage'
 import StreamPreviewPage from '$mp/containers/StreamPreviewPage'
-import CreateProductPage from '$mp/containers/CreateProductPage'
 import EditProductPage from '$mp/containers/deprecated/EditProductPage'
 import EditProductPage2 from '$mp/containers/EditProductPage'
 import Products from '$mp/containers/Products'
@@ -35,6 +35,8 @@ import TransactionList from '$userpages/components/TransactionPage/List'
 import ProfilePage from '$userpages/components/ProfilePage'
 import PurchasesPage from '$userpages/components/PurchasesPage'
 import ProductsPage from '$userpages/components/ProductsPage'
+import StatsPage from '$userpages/components/ProductsPage/Stats'
+import MembersPage from '$userpages/components/ProductsPage/Members'
 
 // Docs Pages
 import IntroductionDocsPage from '$docs/components/DocsPages/Introduction'
@@ -91,6 +93,7 @@ import CanvasEmbed from '$editor/canvas/components/Embed'
 import DashboardEditor from '$editor/dashboard'
 
 import { Provider as ModalPortalProvider } from '$shared/contexts/ModalPortal'
+import { Provider as ModalProvider } from '$shared/contexts/ModalApi'
 import Notifications from '$shared/components/Notifications'
 import { formatPath } from '$shared/utils/url'
 import { userIsAuthenticated } from '$auth/utils/userAuthenticated'
@@ -111,7 +114,6 @@ import routes from '$routes'
 // Wrap authenticated components here instead of render() method
 // Marketplace Auth
 const CreateProductAuth = userIsAuthenticated(EditProductPage)
-const CreateProductAuth2 = userIsAuthenticated(CreateProductPage)
 const EditProductAuth = userIsAuthenticated(EditProductPage)
 const EditProductAuth2 = userIsAuthenticated(EditProductPage2)
 
@@ -125,6 +127,8 @@ const StreamLivePreviewAuth = userIsAuthenticated(StreamLivePreview)
 const TransactionListAuth = userIsAuthenticated(TransactionList)
 const PurchasesPageAuth = userIsAuthenticated(PurchasesPage)
 const ProductsPageAuth = userIsAuthenticated(ProductsPage)
+const StatsPageAuth = userIsAuthenticated(StatsPage)
+const MembersPageAuth = userIsAuthenticated(MembersPage)
 
 // Editor Auth
 const DashboardEditorAuth = userIsAuthenticated(DashboardEditor)
@@ -157,10 +161,8 @@ const AuthenticationRouter = () => ([
 
 const MarketplaceRouter = () => (process.env.COMMUNITY_PRODUCTS ? [
     <Route exact path={marketplace.main} component={Products} key="Products" />,
-    <Route exact path={links.marketplace.createProduct} component={CreateProductAuth2} key="CreateProduct" />,
     <Route exact path={formatPath(marketplace.products, ':id', 'streamPreview', ':streamId')} component={StreamPreviewPage} key="StreamPreview" />,
     <Route exact path={formatPath(marketplace.products, ':id')} component={ProductPage2} key="ProductPage2" />,
-    <Route exact path={routes.editProduct()} component={EditProductAuth2} key="EditProduct" />,
 ] : [
     <Route exact path={marketplace.main} component={Products} key="Products" />,
     <Route exact path={links.marketplace.createProduct} component={CreateProductAuth} key="CreateProduct" />,
@@ -316,6 +318,11 @@ const UserpagesRouter = () => ([
     <Route exact path={userpages.transactions} component={TransactionListAuth} key="TransactionList" />,
     <Route exact path={userpages.purchases} component={PurchasesPageAuth} key="PurchasesPage" />,
     <Route exact path={userpages.products} component={ProductsPageAuth} key="ProductsPage" />,
+    <Route exact path={routes.editProduct()} component={EditProductAuth2} key="EditProduct" />,
+    ...(process.env.COMMUNITY_PRODUCTS ? [
+        <Route exact path={routes.productStats()} component={StatsPageAuth} key="StatsPage" />,
+        <Route exact path={routes.productMembers()} component={MembersPageAuth} key="MembersPage" />,
+    ] : []),
     <Redirect from={userpages.main} to={userpages.streams} component={StreamListViewAuth} key="StreamListViewRedirect" />,
 ])
 
@@ -335,19 +342,21 @@ const App = () => (
     <ConnectedRouter history={history}>
         <SessionProvider>
             <ModalPortalProvider>
-                <LocaleSetter />
-                <AutoScroll />
-                <Analytics />
-                <Switch>
-                    {AuthenticationRouter()}
-                    {MarketplaceRouter()}
-                    {DocsRouter()}
-                    {UserpagesRouter()}
-                    {EditorRouter()}
-                    {MiscRouter()}
-                </Switch>
-                <Notifications />
-                {isProduction() && <GoogleAnalyticsTracker />}
+                <ModalProvider>
+                    <LocaleSetter />
+                    <AutoScroll />
+                    <Analytics />
+                    <Switch>
+                        {AuthenticationRouter()}
+                        {MarketplaceRouter()}
+                        {DocsRouter()}
+                        {UserpagesRouter()}
+                        {EditorRouter()}
+                        {MiscRouter()}
+                    </Switch>
+                    <Notifications />
+                    {isProduction() && <GoogleAnalyticsTracker />}
+                </ModalProvider>
             </ModalPortalProvider>
         </SessionProvider>
     </ConnectedRouter>

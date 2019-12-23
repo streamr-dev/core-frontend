@@ -49,14 +49,16 @@ export class ProfileSettings extends Component<Props> {
         const user = this.props.user || {
             email: '',
             name: '',
-            username: null,
+            username: '',
+            imageUrlSmall: '',
+            imageUrlLarge: '',
         }
+
         return (
             <Fragment>
                 <Avatar
                     className={styles.avatar}
                     editable
-                    // $FlowFixMe
                     user={user}
                     onImageChange={this.onImageChange}
                 />

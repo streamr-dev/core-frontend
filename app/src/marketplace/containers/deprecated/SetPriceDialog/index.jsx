@@ -3,7 +3,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import Modal from '$shared/components/Modal'
+import ModalPortal from '$shared/components/ModalPortal'
 import Dialog, { type OwnProps as Props } from '$mp/components/Modal/SetPriceDialog'
 import { selectDataPerUsd } from '$mp/modules/global/selectors'
 import withContractProduct from '$mp/containers/deprecated/WithContractProduct'
@@ -15,7 +15,7 @@ const mapStateToProps = (state) => ({
 const SetPriceDialog = connect(mapStateToProps)(withContractProduct(Dialog))
 
 export default (props: Props) => (
-    <Modal>
+    <ModalPortal>
         <SetPriceDialog {...props} />
-    </Modal>
+    </ModalPortal>
 )

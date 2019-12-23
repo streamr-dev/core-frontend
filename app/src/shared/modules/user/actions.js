@@ -115,10 +115,12 @@ const updateCurrentUser: UserDataActionCreator = createAction(UPDATE_CURRENT_USE
 
 export const updateCurrentUserName = (name: string) => (dispatch: Function, getState: Function) => {
     const user = selectUserData(getState())
-    dispatch(updateCurrentUser({
-        ...user,
-        name,
-    }))
+    if (user) {
+        dispatch(updateCurrentUser({
+            ...user,
+            name,
+        }))
+    }
 }
 
 export const updateCurrentUserImage = (image: ?File) => (dispatch: Function, getState: Function) => {

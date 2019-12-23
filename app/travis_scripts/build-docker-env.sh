@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+set -e
 trap "killall background" EXIT # clean up background jobs
 
 ##
@@ -18,7 +18,7 @@ streamr_docker_dev='streamr-docker-dev/streamr-docker-dev/bin.sh'
 
 # start everything except eth watcher
 $streamr_docker_dev start 5
-$streamr_docker_dev log -f &
+#$streamr_docker_dev log -f &
 
 RETRIES=30;
 RETRY_DELAY=5s;

@@ -11,6 +11,7 @@ import { maxFileSizeForImageUpload } from '$shared/utils/constants'
 import PngIcon from '$shared/components/PngIcon'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import useFilePreview from '$shared/hooks/useFilePreview'
+import type { DropzoneFile } from '$shared/components/FileUpload'
 
 import Notification from '$shared/utils/Notification'
 import styles from './imageUpload.pcss'
@@ -18,10 +19,6 @@ import styles from './imageUpload.pcss'
 const { lg } = breakpoints
 
 export type OnUploadError = (errorMessage: string) => void
-
-type DropzoneFile = File & {
-    preview?: string,
-}
 
 type Props = {
     setImageToUpload?: (DropzoneFile) => void | Promise<void>,
@@ -56,7 +53,7 @@ const ImageUpload = ({
             setUploaded(false)
 
             if (setImageToUpload) {
-                // $FlowFixMe
+                // $FlowFixMe property `preview` is missing in  `File`.
                 setImageToUpload(Object.assign(image, {
                     preview: imagePreview,
                 }))

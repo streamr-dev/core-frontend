@@ -7,7 +7,7 @@ import { push, replace } from 'connected-react-router'
 import { I18n } from 'react-redux-i18n'
 import { Helmet } from 'react-helmet'
 
-import ProductPageComponent from '$mp/components/ProductPage'
+import ProductPageComponent from '$mp/components/deprecated/ProductPage'
 import Layout from '$shared/components/Layout'
 import { formatPath } from '$shared/utils/url'
 import type { StoreState } from '$shared/flowtype/store-state'
@@ -21,7 +21,7 @@ import PublishOrUnpublishDialog from '$mp/containers/deprecated/ProductPage/Publ
 import { getProductById, getProductSubscription, purchaseProduct, getUserProductPermissions } from '$mp/modules/product/actions'
 import { getRelatedProducts } from '$mp/modules/relatedProducts/actions'
 import { isPaidProduct } from '$mp/utils/product'
-import BackButton from '$shared/components/BackButton'
+import BackToProductsButton from '$shared/components/BackToProductsButton'
 
 import {
     selectFetchingProduct,
@@ -219,7 +219,7 @@ export class ProductPage extends Component<Props> {
                     relatedProducts={relatedProducts}
                     isProductSubscriptionValid={isProductSubscriptionValid}
                     onPurchase={() => onPurchase(product.id || '', !!isLoggedIn)}
-                    toolbarStatus={<BackButton />}
+                    toolbarStatus={<BackToProductsButton />}
                     showStreamLiveDataDialog={(streamId) => noHistoryRedirect(links.marketplace.products, product.id, 'streamPreview', streamId)}
                 />
                 {this.overlay()}

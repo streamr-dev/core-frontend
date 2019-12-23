@@ -5,8 +5,6 @@ import { I18n } from 'react-redux-i18n'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { Filter } from '../../flowtype/common-types'
 import type { Canvas, CanvasId } from '../../flowtype/canvas-types'
-import type { StoreState } from '../../flowtype/states/store-state'
-import { selectFilter } from './selectors'
 import { canvasSchema, canvasesSchema } from '$shared/modules/entities/schema'
 import { handleEntities } from '$shared/utils/entities'
 import { getParamsForFilter } from '$userpages/utils/filters'
@@ -26,7 +24,6 @@ export const DELETE_CANVAS_REQUEST = 'userpages/canvas/DELETE_CANVAS_REQUEST'
 export const DELETE_CANVAS_SUCCESS = 'userpages/canvas/DELETE_CANVAS_SUCCESS'
 export const DELETE_CANVAS_FAILURE = 'userpages/canvas/DELETE_CANVAS_FAILURE'
 export const OPEN_CANVAS = 'userpages/canvas/OPEN_CANVAS'
-export const UPDATE_FILTER = 'userpages/canvas/UPDATE_FILTER'
 
 const getCanvasesRequest = () => ({
     type: GET_CANVASES_REQUEST,
@@ -77,21 +74,18 @@ const openCanvasAction = (id: CanvasId) => ({
     id,
 })
 
-const updateFilterAction = (filter: Filter) => ({
-    type: UPDATE_FILTER,
-    filter,
-})
-
-export const getCanvases = () => (dispatch: Function, getState: () => StoreState) => {
+export const getCanvases = (filter?: Filter) => (dispatch: Function) => {
     dispatch(getCanvasesRequest())
 
-    const filter = selectFilter(getState())
     const params = getParamsForFilter(filter, {
         adhoc: false,
         sortBy: 'lastUpdated',
     })
 
-    return api.get(apiUrl, { params })
+    return api.get({
+        url: apiUrl,
+        options: { params },
+    })
         .then((data) => (
             // filter out adhoc canvases which should be filtered by server
             data.filter(({ adhoc }) => !adhoc)
@@ -108,7 +102,9 @@ export const getCanvases = () => (dispatch: Function, getState: () => StoreState
 
 export const getCanvas = (id: CanvasId) => (dispatch: Function) => {
     dispatch(getCanvasRequest(id))
-    return api.get(`${apiUrl}/${id}`)
+    return api.get({
+        url: `${apiUrl}/${id}`,
+    })
         .then(handleEntities(canvasSchema, dispatch))
         .then((data) => dispatch(getCanvasSuccess(data)))
         .catch((e) => {
@@ -124,7 +120,9 @@ export const getCanvas = (id: CanvasId) => (dispatch: Function) => {
 export const deleteCanvas = (id: CanvasId) => async (dispatch: Function): Promise<void> => {
     dispatch(deleteCanvasRequest(id))
     try {
-        const deleteCanvas = await api.del(`${apiUrl}/${id}`)
+        const deleteCanvas = await api.del({
+            url: `${apiUrl}/${id}`,
+        })
         dispatch(deleteCanvasSuccess(id))
         Notification.push({
             title: I18n.t('userpages.canvases.deleteCanvas'),
@@ -144,7 +142,3 @@ export const openCanvas = (id: CanvasId) => (dispatch: Function) => {
     dispatch(openCanvasAction(id))
     return dispatch(getCanvas(id))
 }
-
-export const updateFilter = (filter: Filter) => (dispatch: Function) => (
-    dispatch(updateFilterAction(filter))
-)

@@ -1,12 +1,12 @@
 // @flow
 
 import React, { Component } from 'react'
-import { Translate, I18n } from 'react-redux-i18n'
+import { I18n } from 'react-redux-i18n'
 
 import type { StreamId } from '$shared/flowtype/stream-types'
 import type { CsvUploadState } from '$userpages/flowtype/states/stream-state'
 import TextInput from '$shared/components/TextInput'
-import Modal from '$shared/components/Modal'
+import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import SelectInput from '$shared/components/SelectInput'
 
@@ -144,7 +144,7 @@ export class ConfirmCsvImportView extends Component<Props, State> {
     }
 
     render() {
-        const { csvUploadState, onClose } = this.props
+        const { csvUploadState, onClose, errorMessage } = this.props
         const {
             dateFormat,
             dateSelector,
@@ -156,7 +156,7 @@ export class ConfirmCsvImportView extends Component<Props, State> {
         const dateFormats = getDateFormats()
 
         return (
-            <Modal>
+            <ModalPortal>
                 <Dialog
                     title={I18n.t('userpages.streams.edit.history.confirmCsv.title')}
                     onClose={onClose}
@@ -176,9 +176,8 @@ export class ConfirmCsvImportView extends Component<Props, State> {
                 >
                     <div className={styles.content}>
                         <div className={styles.row}>
-                            <Translate value="userpages.streams.edit.history.confirmCsv.selectTimestamp" className={styles.label} />
                             <SelectInput
-                                label=""
+                                label={I18n.t('userpages.streams.edit.history.confirmCsv.selectTimestamp')}
                                 name=""
                                 options={headers.map((header, index) => (
                                     {
@@ -189,14 +188,13 @@ export class ConfirmCsvImportView extends Component<Props, State> {
                                 value={timestampColumnSelector || headers[0]}
                                 onChange={this.onTimestampColumnIndexChange}
                                 required
-                                className={styles.selectInputs}
+                                preserveLabelSpace
                             />
                         </div>
 
                         <div className={styles.row}>
-                            <Translate value="userpages.streams.edit.history.confirmCsv.dateFormat" className={styles.label} />
                             <SelectInput
-                                label=""
+                                label={I18n.t('userpages.streams.edit.history.confirmCsv.dateFormat')}
                                 name=""
                                 options={
                                     Object.keys(dateFormats).map((f) => {
@@ -209,8 +207,9 @@ export class ConfirmCsvImportView extends Component<Props, State> {
                                 }
                                 value={dateSelector}
                                 onChange={(value) => this.onDateFormatChange(value)}
+                                error={errorMessage || ''}
                                 required
-                                className={styles.selectInputs}
+                                preserveLabelSpace
                             />
                             {dateFormat && dateFormats[dateFormat] && (
                                 <span className={styles.helpText}>
@@ -220,9 +219,10 @@ export class ConfirmCsvImportView extends Component<Props, State> {
                         </div>
 
                         {dateFormat === 'CUSTOM' && (
-                            <div className={styles.customInput}>
+                            <div className={styles.row}>
                                 <TextInput
                                     label={I18n.t('userpages.streams.edit.history.confirmCsv.customFormat')}
+                                    preserveLabelSpace
                                     value={customFormat}
                                     onChange={this.onCustomFormatChange}
                                 />
@@ -230,7 +230,7 @@ export class ConfirmCsvImportView extends Component<Props, State> {
                         )}
                     </div>
                 </Dialog>
-            </Modal>
+            </ModalPortal>
         )
     }
 }

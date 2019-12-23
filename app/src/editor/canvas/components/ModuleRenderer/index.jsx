@@ -20,13 +20,15 @@ import { UiEmitter } from '$editor/shared/components/RunStateLoader'
 import { Context as SizeConstraintContext } from '$editor/canvas/components/Resizable/SizeConstraintProvider'
 
 type Props = {
-    // FIXME: Update types
+    // TODO: Update types
     className?: ?string,
     innerRef: Ref<HTMLDivElement>,
     isSelected?: boolean,
+    canvas: any,
     layout: any,
     onPort?: any,
     onRename: (string) => void,
+    onSizeChange: () => void,
     isSubscriptionActive?: boolean,
     uiEmitter: UiEmitter,
     moduleSidebarIsOpen?: boolean,
@@ -35,8 +37,8 @@ type Props = {
     isLoading?: boolean,
 }
 
-// $FlowFixMe
 const ModuleRenderer = React.memo(({
+    canvas,
     className,
     isSelected,
     onPort,
@@ -109,6 +111,7 @@ const ModuleRenderer = React.memo(({
         /* eslint-disable-next-line max-len */
         /* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-tabindex */
         <Resizable
+            {...props}
             enabled={isResizable}
             role="rowgroup"
             tabIndex="0"
@@ -121,7 +124,6 @@ const ModuleRenderer = React.memo(({
             height={parseInt(layout.height, 10)}
             data-modulehash={hash}
             scale={scale}
-            {...props}
         >
             <div className={styles.body} ref={innerRef}>
                 <Probe group="ModuleHeight" height="auto" />
@@ -180,8 +182,7 @@ const ModuleRenderer = React.memo(({
     )
 })
 
-// $FlowFixMe
-export default React.memo(({
+export default (React.memo(({
     api,
     module,
     canvasEditable: isCanvasEditable,
@@ -203,4 +204,4 @@ export default React.memo(({
             </ModuleContext.Provider>
         </ModuleApiContext.Provider>
     )
-})
+}): any)

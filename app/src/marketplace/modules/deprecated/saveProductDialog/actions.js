@@ -39,8 +39,11 @@ export const saveProduct = () => (dispatch: Function, getState: () => StoreState
     dispatch(updateProduct(!doContractUpdate))
 
     if (doContractUpdate) {
-        dispatch(setStep(saveProductSteps.TRANSACTION))
+        if (!contractProduct) {
+            return
+        }
 
+        dispatch(setStep(saveProductSteps.TRANSACTION))
         dispatch(updateContractProduct(editProduct.id || '', {
             ...contractProduct,
             pricePerSecond: editProduct.pricePerSecond,

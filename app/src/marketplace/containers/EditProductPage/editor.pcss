@@ -8,9 +8,12 @@
 .container {
 }
 
+.nav {
+  display: none;
+}
+
 .grid {
   display: grid;
-  grid-template-columns: 1fr 680px;
   grid-column-gap: 2.25rem;
 }
 
@@ -27,13 +30,40 @@
     letter-spacing: 0;
     line-height: 1.5rem;
     color: var(--greyDark);
-    font-weight: var(--medium);
+    font-weight: var(--regular);
     border-bottom: 1px solid var(--grey4);
     padding-bottom: 1.25rem;
     margin-bottom: 2.5rem;
   }
 
-  > div + div {
+  > section {
+    margin: 0;
+    padding: 0;
+  }
+
+  > section + section {
     margin-top: 7rem;
+  }
+}
+
+@media (--md-up) {
+  .grid {
+    grid-template-columns: 120px auto;
+  }
+
+  .nav {
+    display: block;
+  }
+}
+
+@media (--lg-up) {
+  .grid {
+    grid-template-columns: 180px auto;
+  }
+}
+
+@media (--xl) {
+  .grid {
+    grid-template-columns: auto 660px;
   }
 }

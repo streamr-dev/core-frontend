@@ -41,6 +41,15 @@ msgstr "Publish"
 msgid "actionsDropdown##unpublish"
 msgstr "Unpublish"
 
+msgid "actionsDropdown##viewProduct"
+msgstr "View Product"
+
+msgid "actionsDropdown##viewStats"
+msgstr "View Stats"
+
+msgid "actionsDropdown##viewCommunity"
+msgstr "View Community"
+
 msgid "actionsDropdown##copyUrl"
 msgstr "Copy URL"
 
@@ -101,6 +110,15 @@ msgstr "Enter ETH address"
 msgid "editProductPage##setPrice##fixPrice"
 msgstr "Fix price in fiat for protection against shifts in the DATA price"
 
+msgid "editProductPage##sharedSecrets##addSecret"
+msgstr "Add shared secret"
+
+msgid "editProductPage##sharedSecrets##description"
+msgstr ""
+"Shared secrets are the access control for your product. "
+"Create, name and revoke shared secrets from here. "
+"For help with shared secrets, see the docs. "
+
 msgid "editProductPage##navigation##name"
 msgstr "Name"
 
@@ -118,6 +136,18 @@ msgstr "Set price"
 
 msgid "editProductPage##navigation##details"
 msgstr "Details"
+
+msgid "editProductPage##navigation##sharedSecrets"
+msgstr "Shared secrets"
+
+msgid "editProductPage##sidebar##category"
+msgstr "Product category"
+
+msgid "editProductPage##sidebar##activeSubscribers"
+msgstr "Active subscribers"
+
+msgid "editProductPage##sidebar##mostRecentPurchase"
+msgstr "Most recent purchase"
 
 msgid "error##general"
 msgstr "Oops. Something has broken down here."
@@ -737,7 +767,9 @@ msgid "productTypeChooser##standard##title"
 msgstr "Standard Product"
 
 msgid "productTypeChooser##standard##description"
-msgstr "Add your own data stream or group of streams to a product and publish it on the Marketplace. For help creating streams, see the docs."
+msgstr ""
+"Add your own data stream or group of streams to a product and publish it on the Marketplace. "
+"For help creating streams, see the <a href=\"%{docsLink}\">docs</a>."
 
 msgid "productTypeChooser##standard##linkTitle"
 msgstr "Create standard product"

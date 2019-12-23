@@ -3,6 +3,7 @@
 import React from 'react'
 import { I18n } from 'react-redux-i18n'
 
+import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import ImageUpload from '$shared/components/ImageUpload'
 
@@ -53,36 +54,38 @@ class AvatarUploadDialog extends React.Component<Props, State> {
         const { originalImage, onClose } = this.props
         const { image } = this.state
         return (
-            <Dialog
-                contentClassName={styles.content}
-                title={originalImage ? I18n.t('modal.avatar.updateTitle') : I18n.t('modal.avatar.defaultTitle')}
-                onClose={onClose}
-                actions={image
-                    ? {
-                        cancel: {
-                            title: I18n.t('modal.common.cancel'),
-                            outline: true,
-                            kind: 'link',
-                            onClick: onClose,
-                        },
-                        save: {
-                            title: I18n.t('modal.common.apply'),
-                            kind: 'primary',
-                            onClick: this.onSave,
-                            disabled: (!originalImage && !this.state.image),
-                        },
+            <ModalPortal>
+                <Dialog
+                    contentClassName={styles.content}
+                    title={originalImage ? I18n.t('modal.avatar.updateTitle') : I18n.t('modal.avatar.defaultTitle')}
+                    onClose={onClose}
+                    actions={image
+                        ? {
+                            cancel: {
+                                title: I18n.t('modal.common.cancel'),
+                                outline: true,
+                                kind: 'link',
+                                onClick: onClose,
+                            },
+                            save: {
+                                title: I18n.t('modal.common.apply'),
+                                kind: 'primary',
+                                onClick: this.onSave,
+                                disabled: (!originalImage && !this.state.image),
+                            },
+                        }
+                        : {}
                     }
-                    : {}
-                }
-            >
-                <ImageUpload
-                    className={styles.upload}
-                    setImageToUpload={this.onUpload}
-                    onUploadError={this.onUploadError}
-                    originalImage={originalImage}
-                    dropzoneClassname={styles.dropzone}
-                />
-            </Dialog>
+                >
+                    <ImageUpload
+                        className={styles.upload}
+                        setImageToUpload={this.onUpload}
+                        onUploadError={this.onUploadError}
+                        originalImage={originalImage}
+                        dropzoneClassname={styles.dropzone}
+                    />
+                </Dialog>
+            </ModalPortal>
         )
     }
 }

@@ -1,6 +1,6 @@
 // @flow
 
-import React, { type Element, useEffect, useState, useCallback, useMemo } from 'react'
+import React, { type Element, useEffect, useState, useCallback, useMemo, type ComponentType } from 'react'
 import Dropzone from 'react-dropzone'
 import cx from 'classnames'
 
@@ -29,8 +29,7 @@ type Props = {
 
 const megabytesToBytes = (mb: number) => mb * 1024 * 1024
 
-// $FlowFixMe shoulbe forwardRef<Props, HTMLDivElement>(...) but flow doesn't recognize forwardRef annotations
-const FileUpload = React.forwardRef(({
+const FileUpload = ({
     onFilesAccepted,
     onError,
     acceptMime,
@@ -104,6 +103,7 @@ const FileUpload = React.forwardRef(({
 
     return (
         <Dropzone
+            {...rest}
             onDrop={onDrop}
             onDropRejected={onDropRejected}
             onDragOver={() => setDragOver(true)}
@@ -111,7 +111,6 @@ const FileUpload = React.forwardRef(({
             accept={acceptMime.join(', ')}
             maxSize={megabytesToBytes(maxFileSizeInMB)}
             ref={ref}
-            {...rest}
         >
             {({ getRootProps, getInputProps }) => (
                 <div
@@ -125,6 +124,6 @@ const FileUpload = React.forwardRef(({
             )}
         </Dropzone>
     )
-})
+}
 
-export default FileUpload
+export default (React.forwardRef(FileUpload): ComponentType<Props>)

@@ -4,8 +4,8 @@ import React, { Component } from 'react'
 
 import Toolbar from '$shared/components/Toolbar'
 import ImageUpload from '$shared/components/ImageUpload'
-import Hero from '$mp/components/Hero'
-import BackButton from '$shared/components/BackButton'
+import Hero from '$mp/components/deprecated/Hero'
+import BackToProductsButton from '$shared/components/BackToProductsButton'
 import type { Product } from '$mp/flowtype/product-types'
 import type { ButtonActions } from '$shared/components/Buttons'
 import type { Address } from '$shared/flowtype/web3-types'
@@ -55,7 +55,7 @@ export default class ProductPage extends Component<Props> {
 
         return !!product && (
             <div className={styles.productPage}>
-                <Toolbar actions={toolbarActions} left={<BackButton />} />
+                <Toolbar actions={toolbarActions} left={<BackToProductsButton />} />
                 <Hero
                     product={product}
                     leftContent={<ImageUpload

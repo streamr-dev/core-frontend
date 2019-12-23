@@ -19,6 +19,7 @@ import { selectEditedStream, selectFieldsAutodetectFetching, fieldTypes } from '
 import TextInput from '$shared/components/TextInput'
 import Toggle from '$shared/components/Toggle'
 import SplitControl from '$userpages/components/SplitControl'
+import DropdownActions from '$shared/components/DropdownActions'
 
 import styles from './configureView.pcss'
 import NewFieldEditor from './NewFieldEditor'
@@ -56,16 +57,15 @@ export class ConfigureView extends Component<Props, State> {
     }
 
     componentDidUpdate(prevProps: Props) {
-        if (this.validFieldProps(prevProps) && this.validFieldProps(this.props) &&
-        // $FlowFixMe
-        (this.props.stream.config.fields !== prevProps.stream.config.fields)) {
+        const { config = {} } = this.props.stream || {}
+        const { config: prevConfig = {} } = prevProps.stream || {}
+
+        if (config.fields && prevConfig.fields && config.fields !== prevConfig.fields) {
             const { editField } = this.props
             const fields = this.getStreamFields()
             editField('config.fields', fields)
         }
     }
-
-    validFieldProps = (props: Props) => props.stream && props.stream.config && props.stream.config.fields
 
     getStreamFields = () => {
         const { stream } = this.props
@@ -75,9 +75,8 @@ export class ConfigureView extends Component<Props, State> {
         return []
     }
 
-    addTempIdsToStreamFields = (stream: Stream) => (
-        // $FlowFixMe
-        stream.config.fields.map((field) => (
+    addTempIdsToStreamFields = (stream: Stream): Array<any> => (
+        (stream.config.fields || []).map((field) => (
             {
                 ...field,
                 id: field.id ? field.id : uuid(),
@@ -146,6 +145,7 @@ export class ConfigureView extends Component<Props, State> {
     }
 
     onAutoConfigureChange = (checked: boolean) => {
+        // $FlowFixMe: "updateEditStream is missing in OwnProps or StateProps"
         const { updateEditStream, stream } = this.props
 
         updateEditStream({
@@ -155,6 +155,7 @@ export class ConfigureView extends Component<Props, State> {
     }
 
     onRequireSignedChange = (checked: boolean) => {
+        // $FlowFixMe: "updateEditStream is missing in OwnProps or StateProps"
         const { updateEditStream, stream } = this.props
 
         updateEditStream({
@@ -194,6 +195,11 @@ export class ConfigureView extends Component<Props, State> {
                                                     value={field.name}
                                                     onChange={(e) => this.onFieldNameChange(field.name, e.target.value)}
                                                     disabled={disabled}
+                                                    actions={[
+                                                        <DropdownActions.Item key="delete" onClick={() => this.deleteField(field.name)}>
+                                                            <Translate value="userpages.streams.edit.configure.delete" />
+                                                        </DropdownActions.Item>,
+                                                    ]}
                                                 />
                                                 <SelectInput
                                                     label=""
@@ -203,16 +209,6 @@ export class ConfigureView extends Component<Props, State> {
                                                     onChange={(o) => this.onFieldTypeChange(field.name, o.value)}
                                                     preserveLabelSpace={false}
                                                 />
-                                                <Button
-                                                    kind="secondary"
-                                                    size="mini"
-                                                    outline
-                                                    className={styles.deleteFieldButton}
-                                                    onClick={() => this.deleteField(field.name)}
-                                                    disabled={disabled}
-                                                >
-                                                    <Translate value="userpages.streams.edit.configure.delete" />
-                                                </Button>
                                             </SplitControl>
                                         </FieldItem>
                                     </div>
