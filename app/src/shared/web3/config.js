@@ -1,6 +1,7 @@
 // @flow
 
 import marketplaceAbi from './abis/marketplace'
+import marketplaceAbiOld from './abis/marketplace_old'
 import tokenAbi from './abis/token'
 import communityProductMetadata from './contracts/communityProduct'
 import type { SmartContractConfig, SmartContractMetadata } from '$shared/flowtype/web3-types'
@@ -25,7 +26,7 @@ const getConfig = (): Config => ({
     websocketAddress: process.env.WEB3_PUBLIC_WS_PROVIDER || '',
     transactionConfirmationBlocks: parseInt(process.env.WEB3_TRANSACTION_CONFIRMATION_BLOCKS, 10) || 24,
     marketplace: {
-        abi: marketplaceAbi,
+        abi: process.env.NEW_MP_CONTRACT ? marketplaceAbi : marketplaceAbiOld,
         address: MARKETPLACE_CONTRACT_ADDRESS || '',
     },
     token: {
