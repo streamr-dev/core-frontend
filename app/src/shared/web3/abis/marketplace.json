@@ -743,13 +743,43 @@
       {
         "name": "minimumSubscriptionSeconds",
         "type": "uint256"
-      },
-      {
-        "name": "requiresWhitelist",
-        "type": "bool"
       }
     ],
     "name": "createProduct",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "id",
+        "type": "bytes32"
+      },
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "beneficiary",
+        "type": "address"
+      },
+      {
+        "name": "pricePerSecond",
+        "type": "uint256"
+      },
+      {
+        "name": "currency",
+        "type": "uint8"
+      },
+      {
+        "name": "minimumSubscriptionSeconds",
+        "type": "uint256"
+      }
+    ],
+    "name": "createProductWithWhitelist",
     "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",
