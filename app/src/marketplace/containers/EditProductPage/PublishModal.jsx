@@ -213,7 +213,6 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
                                 pricePerSecond: p.pricePerSecond,
                                 priceCurrency: p.priceCurrency,
                                 minimumSubscriptionInSeconds: p.minimumSubscriptionInSeconds,
-                                requiresWhitelist: false,
                                 state: p.state,
                             })
                                 .onTransactionHash((hash) => {
