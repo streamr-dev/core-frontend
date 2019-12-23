@@ -368,37 +368,53 @@ story('Marketplace/InsufficientDataDialog')
 story('Marketplace/NoBalanceDialog')
     .add('eth balance 0', () => (
         <NoBalanceDialog
+            requiredGasBalance={BN(0)}
             requiredEthBalance={BN(0)}
             currentEthBalance={BN(0)}
             requiredDataBalance={BN(0)}
             currentDataBalance={BN(0)}
+            currentDaiBalance={BN(0)}
+            requiredDaiBalance={BN(0)}
+            paymentCurrency="DATA"
             onCancel={action('onCancel')}
         />
     ))
     .add('eth balance < required', () => (
         <NoBalanceDialog
+            requiredGasBalance={BN(1)}
             requiredEthBalance={BN(2)}
             currentEthBalance={BN(1)}
             requiredDataBalance={BN(0)}
             currentDataBalance={BN(0)}
+            currentDaiBalance={BN(0)}
+            requiredDaiBalance={BN(0)}
+            paymentCurrency="DATA"
             onCancel={action('onCancel')}
         />
     ))
     .add('DATA balance 0', () => (
         <NoBalanceDialog
+            requiredGasBalance={BN(0)}
             requiredEthBalance={BN(2)}
             currentEthBalance={BN(3)}
             requiredDataBalance={BN(0)}
             currentDataBalance={BN(0)}
+            currentDaiBalance={BN(0)}
+            requiredDaiBalance={BN(0)}
+            paymentCurrency="DATA"
             onCancel={action('onCancel')}
         />
     ))
     .add('DATA balance < required', () => (
         <NoBalanceDialog
+            requiredGasBalance={BN(0)}
             requiredEthBalance={BN(2)}
             currentEthBalance={BN(3)}
             requiredDataBalance={BN(3)}
             currentDataBalance={BN(2)}
+            currentDaiBalance={BN(0)}
+            requiredDaiBalance={BN(0)}
+            paymentCurrency="DATA"
             onCancel={action('onCancel')}
         />
     ))
@@ -419,7 +435,9 @@ story('Marketplace/PurchaseSummaryDialog')
         <PurchaseSummaryDialog
             name="Example Product"
             price={BN(123)}
-            priceCurrency="DATA"
+            ethPrice={BN(124)}
+            daiPrice={BN(125)}
+            paymentCurrency="DATA"
             time="24"
             timeUnit="hour"
             onCancel={action('onCancel')}
@@ -430,7 +448,9 @@ story('Marketplace/PurchaseSummaryDialog')
         <PurchaseSummaryDialog
             name="Example Product"
             price={BN(123)}
-            priceCurrency="DATA"
+            ethPrice={BN(124)}
+            daiPrice={BN(125)}
+            paymentCurrency="DATA"
             time="24"
             timeUnit="hour"
             onCancel={action('onCancel')}
