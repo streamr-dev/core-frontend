@@ -48,8 +48,8 @@ export class IntegrationKeyHandler extends Component<Props> {
                     onNew={this.onNew}
                     onDelete={this.onDelete}
                     onEdit={this.onEdit}
-                    hideValues
                     createWithValue
+                    truncateValues
                 />
                 <AddKeyField
                     label={this.props.integrationKeys && this.props.integrationKeys[0]

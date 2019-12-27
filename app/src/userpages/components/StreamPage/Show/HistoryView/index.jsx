@@ -324,10 +324,8 @@ class HistoryView extends Component<Props, State> {
             <div className={styles.historyView}>
                 {streamId && (
                     <Fragment>
+                        <Translate value="userpages.streams.edit.history.upload.description" tag="p" className={styles.longText} />
                         <SplitControl>
-                            <Translate value="userpages.streams.edit.history.upload.description" tag="p" className={styles.longText} />
-                        </SplitControl>
-                        <SplitControl className={styles.row}>
                             <FileUpload
                                 ref={this.fileUploadRef}
                                 className={styles.fileUpload}
@@ -367,7 +365,7 @@ class HistoryView extends Component<Props, State> {
                     </SplitControl>
                 )}
                 {streamId && range && (
-                    <SplitControl className={styles.row}>
+                    <SplitControl>
                         <div className={styles.storedEventsContainer}>
                             <DatePicker
                                 label={I18n.t('userpages.streams.edit.history.deleteEvents')}
@@ -398,7 +396,7 @@ class HistoryView extends Component<Props, State> {
                     </SplitControl>
                 )}
                 {stream && stream.storageDays !== undefined &&
-                    <div className={cx(styles.row, styles.storageContainer)}>
+                    <div className={styles.storageContainer}>
                         <TextInput
                             className={styles.storageAmount}
                             label={I18n.t('userpages.streams.edit.configure.historicalStoragePeriod.label')}

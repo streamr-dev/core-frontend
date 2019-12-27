@@ -19,13 +19,17 @@ describe('IntegrationKeyHandler', () => {
                 onDelete={onDelete}
                 onEdit={onEdit}
                 hideValues
+                truncateValues
             />)
             const table = el.find('IntegrationKeyList')
-            assert.deepStrictEqual(table.props(), {
+            const x = table.props()
+            debugger
+            assert.deepStrictEqual(x, {
                 integrationKeys: [3, 2, 1],
                 onDelete,
                 onEdit,
                 hideValues: true,
+                truncateValues: true,
             })
         })
     })

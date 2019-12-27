@@ -4,23 +4,6 @@
   border-radius: 4px;
   margin: 2rem -4rem 0 -2rem;
   padding: 2rem;
-  max-width: 544px;
-}
-
-@media (--lg-down) {
-  .editor {
-    margin: 2rem -114px 0 -2rem;
-  }
-}
-
-@media (--sm-down) {
-  .editor {
-    margin: 0;
-  }
-}
-
-.editorWithPermissions {
-  max-width: 742px;
 }
 
 .buttons {
@@ -36,8 +19,38 @@
   margin-top: 2.7rem;
 }
 
-@media (--lg-down) {
+.keyValueWithPermission {
+  max-width: calc(100% - 1rem - 130px);
+}
+
+@media (--sm-down) {
+  .editor {
+    margin: 0;
+  }
+}
+
+@media (--md-up) and (--lg-down) {
+  .editor {
+    max-width: calc(624px + 4rem);
+  }
+
   .editorWithPermissions {
-    max-width: 588px;
+    max-width: calc(624px + 4rem);
+  }
+}
+
+@media (--lg-up) {
+  .editor {
+    max-width: calc(536px + 4rem);
+  }
+
+  .editorWithPermissions {
+    max-width: calc(542px + 4rem);
+  }
+}
+
+@media (--xl) {
+  .editorWithPermissions {
+    max-width: calc(678px + 4rem);
   }
 }

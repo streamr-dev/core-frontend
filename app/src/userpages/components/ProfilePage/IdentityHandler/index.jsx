@@ -9,8 +9,10 @@ import type { IntegrationKeyId, IntegrationKeyList } from '$shared/flowtype/inte
 import type { StoreState } from '$shared/flowtype/store-state'
 import { deleteIntegrationKey, fetchIntegrationKeys, createIdentity, editIntegrationKey } from '$shared/modules/integrationKey/actions'
 import { selectEthereumIdentities, selectIntegrationKeysError } from '$shared/modules/integrationKey/selectors'
+
+import profileStyles from '../profilePage.pcss'
+
 import AddIdentityButton from './AddIdentityButton'
-import styles from './identityHandler.pcss'
 
 type StateProps = {
     integrationKeys: ?IntegrationKeyList,
@@ -43,12 +45,13 @@ export class IdentityHandler extends Component<Props> {
                 <Translate
                     tag="p"
                     value="userpages.profilePage.ethereumAddress.description"
-                    className={styles.description}
+                    className={profileStyles.longText}
                 />
                 <IntegrationKeyHandlerSegment
                     onDelete={this.onDelete}
                     onEdit={this.onEdit}
                     integrationKeys={this.props.integrationKeys || []}
+                    truncateValues
                 />
                 <AddIdentityButton />
             </Fragment>
