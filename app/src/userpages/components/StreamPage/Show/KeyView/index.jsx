@@ -2,7 +2,7 @@
 
 import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
-import { I18n, Translate } from 'react-redux-i18n'
+import { Translate } from 'react-redux-i18n'
 import { formatPath } from '$shared/utils/url'
 import { Link } from 'react-router-dom'
 
@@ -12,8 +12,8 @@ import type { StoreState } from '$shared/flowtype/store-state'
 import type { ResourceKeyId, ResourceKey, ResourcePermission } from '$shared/flowtype/resource-key-types'
 import { addStreamResourceKey, editStreamResourceKey, removeStreamResourceKey, getStreamResourceKeys } from '$shared/modules/resourceKey/actions'
 import { selectOpenStreamId, selectOpenStreamResourceKeys } from '$userpages/modules/userPageStreams/selectors'
-import PermissionKeyField from '$userpages/components/PermissionKeyField'
-import AddPermissionKeyField from '$userpages/components/PermissionKeyField/AddPermissionKeyField'
+
+import PermissionCredentialsControl from './PermissionCredentialsControl'
 
 import styles from './keyView.pcss'
 
@@ -52,7 +52,7 @@ export class KeyView extends Component<Props> {
         this.props.getKeys(this.props.streamId)
     }
 
-    addKey = async (keyName: string, value: string, permission: ?ResourcePermission): Promise<void> => {
+    addKey = async (keyName: string, permission: ?ResourcePermission): Promise<void> => {
         if (this.props.streamId == null) { return }
         const keyPermission = permission || 'read'
         return this.props.addKey(this.props.streamId, keyName, keyPermission)
@@ -80,30 +80,16 @@ export class KeyView extends Component<Props> {
                     <Translate value="userpages.streams.edit.apiCredentials.description" />
                     <Link to={formatPath(links.userpages.profile)}>Settings</Link>.
                 </p>
-                <div className={styles.root}>
-                    {keys.map((key: ResourceKey, index: number) => (
-                        <PermissionKeyField
-                            className={styles.singleKey}
-                            key={key.id}
-                            keyName={key.name}
-                            value={key.id}
-                            hideValue
-                            allowEdit={!disabled}
-                            allowDelete={!disabled}
-                            onDelete={() => this.removeKey(key.id || '')}
-                            showPermissionHeader={!index}
-                            permission={key.permission}
-                            onSave={this.editStreamResourceKey}
-                        />
-                    ))}
-                </div>
-                <div className={styles.addKey}>
-                    <AddPermissionKeyField
-                        label={I18n.t('userpages.profilePage.apiCredentials.addAPIKey')}
-                        onSave={this.addKey}
-                        addKeyFieldAllowed={!disabled}
-                    />
-                </div>
+                <PermissionCredentialsControl
+                    keys={keys}
+                    addKey={this.addKey}
+                    onSave={this.editStreamResourceKey}
+                    removeKey={this.removeKey}
+                    disableDelete={keys.length <= 1}
+                    disabled={disabled}
+                    showPermissionType={false}
+                    className={styles.keyList}
+                />
             </Fragment>
         )
     }

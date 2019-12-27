@@ -140,7 +140,7 @@ class PermissionKeyFieldEditor extends React.Component<Props, State> {
                             className: 'grey-container',
                             title: I18n.t('userpages.keyFieldEditor.cancel'),
                             outline: true,
-                            onClick: onCancel,
+                            onClick: () => onCancel && onCancel(),
                         },
                     }}
                 />

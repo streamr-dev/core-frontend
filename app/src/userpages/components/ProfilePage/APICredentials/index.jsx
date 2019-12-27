@@ -45,7 +45,6 @@ const APICredentials = () => {
                 onSave={editKey}
                 removeKey={removeKey}
                 disableDelete={keys.length <= 1}
-                showPermissionType={false}
                 className={styles.keyList}
             />
         </Fragment>

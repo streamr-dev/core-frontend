@@ -9,7 +9,7 @@ import PermissionKeyFieldEditor from '../PermissionKeyFieldEditor'
 type Props = {
     label: string,
     createWithValue?: boolean,
-    onSave: (keyName: string, value: string, permission: ?ResourcePermission) => Promise<void>,
+    onSave: (keyName: string, permission: ?ResourcePermission) => Promise<void>,
     addKeyFieldAllowed: boolean,
 }
 
@@ -52,7 +52,7 @@ class AddPermissionKeyField extends React.Component<Props, State> {
             error: null,
         }, async () => {
             try {
-                await this.props.onSave(keyName, value, permission)
+                await this.props.onSave(keyName, permission)
 
                 if (!this.unmounted) {
                     this.setState({

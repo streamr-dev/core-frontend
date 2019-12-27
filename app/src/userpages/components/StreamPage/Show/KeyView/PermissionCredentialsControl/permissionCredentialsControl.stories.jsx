@@ -8,10 +8,10 @@ import styles from '@sambego/storybook-styles'
 
 import type { ResourceKey } from '$shared/flowtype/resource-key-types'
 
-import CredentialsControl from '.'
+import PermissionCredentialsControl from '.'
 
 const stories =
-    storiesOf('Userpages/CredentialsControl', module)
+    storiesOf('Userpages/PermissionCredentialsControl', module)
         .addDecorator(styles({
             color: '#323232',
             background: 'white',
@@ -46,7 +46,7 @@ type Props = {
     disableDelete?: boolean,
 }
 
-const CredentialsControlWrapper = ({ keys, disabled, disableDelete }: Props) => {
+const PermissionCredentialsControlWrapper = ({ keys, disabled, disableDelete }: Props) => {
     const addAction = action('addKey')
     const removeAction = action('removeKey')
     const saveAction = action('onSave')
@@ -68,7 +68,7 @@ const CredentialsControlWrapper = ({ keys, disabled, disableDelete }: Props) => 
     })
 
     return (
-        <CredentialsControl
+        <PermissionCredentialsControl
             keys={keys}
             addKey={addKey}
             onSave={onSave}
@@ -80,17 +80,17 @@ const CredentialsControlWrapper = ({ keys, disabled, disableDelete }: Props) => 
 }
 
 stories.add('basic', () => (
-    <CredentialsControlWrapper keys={defaultKeys} />
+    <PermissionCredentialsControlWrapper keys={defaultKeys} />
 ))
 
 stories.add('empty', () => (
-    <CredentialsControlWrapper keys={[]} />
+    <PermissionCredentialsControlWrapper keys={[]} />
 ))
 
 stories.add('delete disabled', () => (
-    <CredentialsControlWrapper keys={defaultKeys} disableDelete />
+    <PermissionCredentialsControlWrapper keys={defaultKeys} disableDelete />
 ))
 
 stories.add('disabled', () => (
-    <CredentialsControlWrapper keys={defaultKeys} disabled />
+    <PermissionCredentialsControlWrapper keys={defaultKeys} disabled />
 ))

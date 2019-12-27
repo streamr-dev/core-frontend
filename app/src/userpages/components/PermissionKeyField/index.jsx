@@ -140,10 +140,10 @@ class PermissionKeyField extends React.Component<Props, State> {
     }
 
     onPermissionChange = (permissionValue: string) => {
-        const { value, keyName } = this.props
+        const { value, keyName, allowEdit } = this.props
         // Value needs to be checked to satisfy Flow
         const permission: ?ResourcePermission = ['read', 'write', 'share'].find((p) => p === permissionValue)
-        if (permission) {
+        if (allowEdit && permission) {
             this.setState({
                 permission,
             }, () => {
@@ -213,6 +213,7 @@ class PermissionKeyField extends React.Component<Props, State> {
             showPermissionType,
             showPermissionHeader,
             className,
+            allowEdit,
         } = this.props
         const { waiting, editing, error, permission } = this.state
 
@@ -239,6 +240,7 @@ class PermissionKeyField extends React.Component<Props, State> {
                             onChange={(o) => this.onPermissionChange(o.value)}
                             preserveLabelSpace
                             className={styles.select}
+                            isDisabled={!allowEdit}
                         />
                     </SplitControl>
                 ) : (
