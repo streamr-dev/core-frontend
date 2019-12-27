@@ -4,6 +4,8 @@
   padding-right: 2rem;
   width: 100%;
 
+  :global(.constrainInputWidth) {}
+
   @media (--sm-up) {
     max-width: 540px;
     padding-left: 1.5rem;
@@ -20,6 +22,10 @@
 
   @media (--xl) {
     max-width: 980px;
+
+    :global(.constrainInputWidth) {
+      max-width: 536px;
+    }
   }
 }
 

@@ -3,14 +3,18 @@
 import React from 'react'
 import copy from 'copy-to-clipboard'
 import cx from 'classnames'
-import { Translate } from 'react-redux-i18n'
+import { Translate, I18n } from 'react-redux-i18n'
 
+import type { ResourcePermission } from '$shared/flowtype/resource-key-types'
 import TextInput from '$shared/components/TextInput'
 import DropdownActions from '$shared/components/DropdownActions'
+import SelectInput from '$shared/components/SelectInput'
+import SplitControl from '$userpages/components/SplitControl'
 import { truncate } from '$shared/utils/text'
-import KeyFieldEditor, { type ValueLabel } from './KeyFieldEditor'
 
-import styles from './keyField.pcss'
+import PermissionKeyFieldEditor from './PermissionKeyFieldEditor'
+
+import styles from './permissionKeyField.pcss'
 
 type Props = {
     keyName: string,
@@ -20,11 +24,13 @@ type Props = {
     className?: string,
     keyFieldClassName?: string,
     allowEdit?: boolean,
-    onSave?: (?string, ?string) => Promise<void>,
+    onSave?: (?string, ?string, ?ResourcePermission) => Promise<void>,
     allowDelete?: boolean,
     disableDelete?: boolean,
     onDelete?: () => Promise<void>,
-    valueLabel?: ValueLabel,
+    showPermissionType?: boolean,
+    showPermissionHeader?: boolean,
+    permission?: ResourcePermission,
 }
 
 type State = {
@@ -33,11 +39,12 @@ type State = {
     editing: boolean,
     menuOpen: boolean,
     error: ?string,
+    permission: ?ResourcePermission,
 }
 
 const useIf = (condition: boolean, elements: Array<any>) => (condition ? elements : [])
 
-class KeyField extends React.Component<Props, State> {
+class PermissionKeyField extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props)
 
@@ -47,6 +54,7 @@ class KeyField extends React.Component<Props, State> {
             editing: false,
             menuOpen: false,
             error: undefined,
+            permission: props.permission,
         }
     }
 
@@ -73,7 +81,7 @@ class KeyField extends React.Component<Props, State> {
         })
     }
 
-    onSave = (keyName: ?string, value: ?string) => {
+    onSave = (keyName: ?string, value: ?string, permission: ?ResourcePermission) => {
         const { allowEdit, onSave } = this.props
 
         if (allowEdit) {
@@ -82,10 +90,11 @@ class KeyField extends React.Component<Props, State> {
                     waiting: true,
                     error: null,
                 })
-                onSave(keyName, value)
+                onSave(keyName, value, permission)
                     .then(() => {
                         if (!this.unmounted) {
                             this.setState({
+                                permission,
                                 waiting: false,
                                 editing: false,
                                 menuOpen: false,
@@ -128,6 +137,19 @@ class KeyField extends React.Component<Props, State> {
         this.setState({
             editing: true,
         })
+    }
+
+    onPermissionChange = (permissionValue: string) => {
+        const { value, keyName } = this.props
+        // Value needs to be checked to satisfy Flow
+        const permission: ?ResourcePermission = ['read', 'write', 'share'].find((p) => p === permissionValue)
+        if (permission) {
+            this.setState({
+                permission,
+            }, () => {
+                this.onSave(keyName, value, permission)
+            })
+        }
     }
 
     renderInput = () => {
@@ -185,22 +207,50 @@ class KeyField extends React.Component<Props, State> {
     }
 
     render = () => {
-        const { keyName, value, className, valueLabel } = this.props
-        const { waiting, editing, error } = this.state
+        const {
+            keyName,
+            value,
+            showPermissionType,
+            showPermissionHeader,
+            className,
+        } = this.props
+        const { waiting, editing, error, permission } = this.state
+
+        const permissionOptions = [
+            {
+                value: 'read',
+                label: 'Read',
+            },
+            {
+                value: 'write',
+                label: 'Write',
+            },
+        ]
 
         return (
-            <div className={cx(styles.root, styles.KeyField, className)}>
+            <div className={cx(styles.root, styles.PermissionKeyField, className)}>
                 {!editing ? (
-                    this.renderInput()
+                    <SplitControl>
+                        {this.renderInput()}
+                        <SelectInput
+                            label={showPermissionHeader ? I18n.t('userpages.streams.edit.configure.permission') : ''}
+                            options={permissionOptions}
+                            value={permissionOptions.find((t) => t.value === permission)}
+                            onChange={(o) => this.onPermissionChange(o.value)}
+                            preserveLabelSpace
+                            className={styles.select}
+                        />
+                    </SplitControl>
                 ) : (
-                    <KeyFieldEditor
+                    <PermissionKeyFieldEditor
                         keyName={keyName}
                         value={value}
                         onCancel={this.onCancel}
                         onSave={this.onSave}
                         waiting={waiting}
                         error={error}
-                        valueLabel={valueLabel}
+                        showPermissionType={showPermissionType}
+                        permission={permission}
                     />
                 )}
             </div>
@@ -208,4 +258,4 @@ class KeyField extends React.Component<Props, State> {
     }
 }
 
-export default KeyField
+export default PermissionKeyField

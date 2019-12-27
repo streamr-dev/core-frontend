@@ -29,7 +29,7 @@ export default class IntegrationKeyList extends Component<Props> {
         } = this.props
 
         return (
-            <div className={cx(styles.root, className)}>
+            <div className={cx(styles.root, 'constrainInputWidth', className)}>
                 {integrationKeys.map((key: IntegrationKey) => (
                     <KeyField
                         className={styles.singleKey}
@@ -42,6 +42,7 @@ export default class IntegrationKeyList extends Component<Props> {
                         truncateValue={truncateValues}
                         onDelete={() => onDelete(key.id)}
                         onSave={(keyName) => onEdit(key.id, keyName || '')}
+                        valueLabel="address"
                     />
                 ))}
             </div>

@@ -1,6 +1,6 @@
 // @flow
 
-import React, { Fragment, Component } from 'react'
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
 import TextInput from '$shared/components/TextInput'
@@ -55,7 +55,7 @@ export class ProfileSettings extends Component<Props> {
         }
 
         return (
-            <Fragment>
+            <div className="constrainInputWidth">
                 <Avatar
                     className={styles.avatar}
                     editable
@@ -83,7 +83,7 @@ export class ProfileSettings extends Component<Props> {
                 <div className={styles.password}>
                     <ChangePassword.Button />
                 </div>
-            </Fragment>
+            </div>
         )
     }
 }

@@ -68,7 +68,6 @@ const CredentialsControlWrapper = ({ showPermissionType = false }: Props) => {
             addKey={addKey}
             onSave={onSave}
             removeKey={removeKey}
-            showPermissionType={showPermissionType}
         />
     )
 }
