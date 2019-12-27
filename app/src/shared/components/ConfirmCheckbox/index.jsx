@@ -23,7 +23,8 @@ export const ConfirmCheckbox = ({ title, subtitle, onToggle: onToggleProp, class
     }, [onToggleProp])
 
     return (
-        <div
+        // eslint-disable-next-line jsx-a11y/label-has-associated-control
+        <label
             className={cx(styles.root, styles.ConfirmCheckbox, className)}
         >
             <Checkbox value={confirmed} onChange={onToggle} />
@@ -31,7 +32,7 @@ export const ConfirmCheckbox = ({ title, subtitle, onToggle: onToggleProp, class
                 <div className={styles.title}>{title}</div>
                 <div className={styles.subtitle}>{subtitle}</div>
             </div>
-        </div>
+        </label>
     )
 }
 
