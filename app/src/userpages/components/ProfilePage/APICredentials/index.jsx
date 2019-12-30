@@ -16,8 +16,9 @@ import type { StoreState } from '$shared/flowtype/store-state'
 import type { ResourceKeyList, ResourceKeyId, ResourcePermission } from '$shared/flowtype/resource-key-types'
 import type { StreamId } from '$shared/flowtype/stream-types'
 
+import styles from '../profilePage.pcss'
+
 import CredentialsControl from './CredentialsControl'
-import styles from './apiCredentials.pcss'
 
 type StateProps = {
     keys: ResourceKeyList,
@@ -43,9 +44,11 @@ export class APICredentials extends Component<Props> {
         const keys = this.props.keys.sort((a, b) => a.name.localeCompare(b.name))
         return (
             <Fragment>
-                <div className={styles.description}>
-                    <Translate value="userpages.profilePage.apiCredentials.description" />
-                </div>
+                <Translate
+                    value="userpages.profilePage.apiCredentials.description"
+                    tag="p"
+                    className={styles.longText}
+                />
                 <CredentialsControl
                     keys={keys}
                     addKey={addKey}

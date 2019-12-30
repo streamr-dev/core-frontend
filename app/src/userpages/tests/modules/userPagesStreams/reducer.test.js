@@ -9,6 +9,7 @@ const initialState = {
     },
     savingStreamFields: false,
     fetching: false,
+    deleting: false,
     error: null,
     csvUpload: null,
     editedStream: null,

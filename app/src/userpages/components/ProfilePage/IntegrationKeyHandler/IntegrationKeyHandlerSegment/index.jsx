@@ -11,6 +11,7 @@ type GivenProps = {
     className?: string,
     name?: $ElementType<IntegrationKey, 'name'>,
     hideValues?: boolean,
+    truncateValues?: boolean,
 }
 
 type Props = ListProps & GivenProps
@@ -21,11 +22,18 @@ export default class IntegrationKeyHandlerSegment extends Component<Props> {
     }
 
     render() {
-        const { hideValues, integrationKeys, onDelete, onEdit } = this.props
+        const {
+            hideValues,
+            truncateValues,
+            integrationKeys,
+            onDelete,
+            onEdit,
+        } = this.props
 
         return (
             <IntegrationKeyList
                 hideValues={hideValues}
+                truncateValues={truncateValues}
                 integrationKeys={integrationKeys}
                 onDelete={onDelete}
                 onEdit={onEdit}

@@ -127,7 +127,10 @@ class KeyFieldEditor extends React.Component<Props, State> {
                     </div>
                 )}
                 {(!createNew || editValue) && (
-                    <div className={styles.keyValue}>
+                    <div className={cx(styles.keyValue, {
+                        [styles.keyValueWithPermission]: !!showPermissionType,
+                    })}
+                    >
                         <TextInput
                             label={I18n.t('userpages.keyFieldEditor.apiKey')}
                             value={keyId}

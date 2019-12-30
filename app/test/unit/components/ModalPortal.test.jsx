@@ -5,7 +5,7 @@ import { shallow, mount } from 'enzyme'
 import sinon from 'sinon'
 
 import { Context as ModalPortalContext, Provider as ModalPortalProvider } from '$shared/contexts/ModalPortal'
-import Modal from '$shared/components/ModalDialog'
+import ModalPortal from '$shared/components/ModalPortal'
 
 describe(ModalPortalProvider, () => {
     const { body } = global.document
@@ -56,8 +56,8 @@ describe(ModalPortalProvider, () => {
         const el = mount((
             <ModalPortalProvider>
                 <React.Fragment>
-                    <Modal />
-                    <Modal />
+                    <ModalPortal />
+                    <ModalPortal />
                     <ModalPortalContext.Consumer>
                         {consume}
                     </ModalPortalContext.Consumer>
@@ -75,7 +75,7 @@ describe(ModalPortalProvider, () => {
         const el = mount((
             <ModalPortalProvider>
                 <React.Fragment>
-                    <Modal />
+                    <ModalPortal />
                     <ModalPortalContext.Consumer>
                         {consume}
                     </ModalPortalContext.Consumer>
