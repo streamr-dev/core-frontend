@@ -24,10 +24,6 @@ const getConfig = (): Config => ({
     publicNodeAddress: process.env.WEB3_PUBLIC_HTTP_PROVIDER || '',
     websocketAddress: process.env.WEB3_PUBLIC_WS_PROVIDER || '',
     transactionConfirmationBlocks: parseInt(process.env.WEB3_TRANSACTION_CONFIRMATION_BLOCKS, 10) || 24,
-    marketplace: {
-        abi: marketplaceAbi,
-        address: process.env.MARKETPLACE_CONTRACT_ADDRESS || '',
-    },
     dataToken: {
         abi: tokenAbi,
         address: process.env.DATA_TOKEN_CONTRACT_ADDRESS || '',
@@ -35,6 +31,10 @@ const getConfig = (): Config => ({
     daiToken: {
         abi: tokenAbi,
         address: process.env.DAI_TOKEN_CONTRACT_ADDRESS || '',
+    },
+    marketplace: {
+        abi: marketplaceAbi,
+        address: process.env.MARKETPLACE_CONTRACT_ADDRESS || '',
     },
     communityProduct: {
         abi: communityProductMetadata.abi,

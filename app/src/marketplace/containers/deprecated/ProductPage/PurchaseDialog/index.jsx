@@ -163,6 +163,7 @@ export class PurchaseDialog extends React.Component<Props> {
                             onSet={onSetAllowance}
                             gettingAllowance={gettingAllowance}
                             settingAllowance={settingAllowance}
+                            paymentCurrency="DATA"
                         />
                     )
                 }

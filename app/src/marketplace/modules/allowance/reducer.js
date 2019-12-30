@@ -122,10 +122,10 @@ const reducer: (AllowanceState) => AllowanceState = handleActions({
 
     [RESET_DATA_ALLOWANCE_SUCCESS]: (state: AllowanceState) => ({
         ...state,
-        resettingAllowance: false,
+        resettingDataAllowance: false,
         dataAllowance: state.settingDataAllowance ? state.dataAllowance : state.pendingDataAllowance,
         pendingDataAllowance: state.settingDataAllowance ? state.pendingDataAllowance : null,
-        resetAllowanceError: null,
+        resetDataAllowanceError: null,
     }),
 
     [RESET_DATA_ALLOWANCE_FAILURE]: (state: AllowanceState, action: SetAllowanceErrorAction) => ({
@@ -199,7 +199,7 @@ const reducer: (AllowanceState) => AllowanceState = handleActions({
 
     [RESET_DAI_ALLOWANCE_SUCCESS]: (state: AllowanceState) => ({
         ...state,
-        resettingAllowance: false,
+        resettingDaiAllowance: false,
         daiAllowance: state.settingDaiAllowance ? state.daiAllowance : state.pendingDaiAllowance,
         pendingDaiAllowance: state.settingDaiAllowance ? state.pendingDaiAllowance : null,
         resetAllowanceError: null,
