@@ -51,7 +51,7 @@ describe(ModalPortalProvider, () => {
         sinon.assert.alwaysCalledWith(consume, sinon.match.has('unregisterModal', sinon.match.instanceOf(Function)))
     })
 
-    xit('provides a flag indicating that a modal is open', () => {
+    it('provides a flag indicating that a modal is open', () => {
         const consume = sinon.spy()
         const el = mount((
             <ModalPortalProvider>
@@ -70,7 +70,7 @@ describe(ModalPortalProvider, () => {
         sinon.assert.calledWith(consume.secondCall, sinon.match.has('isModalOpen', true))
     })
 
-    xit('resets the flag indicating that the modal is open when modals are gone', () => {
+    it('resets the flag indicating that the modal is open when modals are gone', () => {
         const consume = sinon.spy()
         const el = mount((
             <ModalPortalProvider>

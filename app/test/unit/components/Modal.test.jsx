@@ -20,7 +20,7 @@ describe('ModalPortal', () => {
         body.removeChild(modalRoot)
     })
 
-    xit('mounts Modals inside #modal-root', () => {
+    it('mounts Modals inside #modal-root', () => {
         const root = mount(<ModalPortalProvider />)
         expect(modalRoot.hasChildNodes()).toBe(false)
         root.setProps({
