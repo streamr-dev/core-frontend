@@ -31,7 +31,6 @@ type State = {
     waiting: boolean,
     hidden: boolean,
     editing: boolean,
-    menuOpen: boolean,
     error: ?string,
 }
 
@@ -45,7 +44,6 @@ class KeyField extends React.Component<Props, State> {
             waiting: false,
             hidden: !!props.hideValue,
             editing: false,
-            menuOpen: false,
             error: undefined,
         }
     }
@@ -69,7 +67,6 @@ class KeyField extends React.Component<Props, State> {
     onCancel = () => {
         this.setState({
             editing: false,
-            menuOpen: false,
         })
     }
 
@@ -88,7 +85,6 @@ class KeyField extends React.Component<Props, State> {
                             this.setState({
                                 waiting: false,
                                 editing: false,
-                                menuOpen: false,
                                 error: null,
                             })
                         }
@@ -104,7 +100,6 @@ class KeyField extends React.Component<Props, State> {
                 this.setState({
                     editing: false,
                     waiting: false,
-                    menuOpen: false,
                     error: null,
                 })
             }
@@ -116,12 +111,6 @@ class KeyField extends React.Component<Props, State> {
         if (allowDelete && onDelete) {
             onDelete()
         }
-    }
-
-    onMenuToggle = (menuOpen: boolean) => {
-        this.setState({
-            menuOpen,
-        })
     }
 
     onEdit = () => {
@@ -141,7 +130,7 @@ class KeyField extends React.Component<Props, State> {
             allowEdit,
             disableDelete,
         } = this.props
-        const { hidden, menuOpen } = this.state
+        const { hidden } = this.state
 
         const actions = [
             ...useIf(!!hideValue, [
@@ -166,9 +155,7 @@ class KeyField extends React.Component<Props, State> {
 
         return (
             <div
-                className={cx(styles.keyFieldContainer, keyFieldClassName, {
-                    [styles.withMenu]: menuOpen,
-                })}
+                className={cx(styles.keyFieldContainer, keyFieldClassName)}
             >
                 <TextInput
                     label={keyName}

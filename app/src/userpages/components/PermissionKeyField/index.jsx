@@ -37,7 +37,6 @@ type State = {
     waiting: boolean,
     hidden: boolean,
     editing: boolean,
-    menuOpen: boolean,
     error: ?string,
     permission: ?ResourcePermission,
 }
@@ -52,7 +51,6 @@ class PermissionKeyField extends React.Component<Props, State> {
             waiting: false,
             hidden: !!props.hideValue,
             editing: false,
-            menuOpen: false,
             error: undefined,
             permission: props.permission,
         }
@@ -77,7 +75,6 @@ class PermissionKeyField extends React.Component<Props, State> {
     onCancel = () => {
         this.setState({
             editing: false,
-            menuOpen: false,
         })
     }
 
@@ -97,7 +94,6 @@ class PermissionKeyField extends React.Component<Props, State> {
                                 permission,
                                 waiting: false,
                                 editing: false,
-                                menuOpen: false,
                                 error: null,
                             })
                         }
@@ -113,7 +109,6 @@ class PermissionKeyField extends React.Component<Props, State> {
                 this.setState({
                     editing: false,
                     waiting: false,
-                    menuOpen: false,
                     error: null,
                 })
             }
@@ -125,12 +120,6 @@ class PermissionKeyField extends React.Component<Props, State> {
         if (allowDelete && onDelete) {
             onDelete()
         }
-    }
-
-    onMenuToggle = (menuOpen: boolean) => {
-        this.setState({
-            menuOpen,
-        })
     }
 
     onEdit = () => {
@@ -163,7 +152,7 @@ class PermissionKeyField extends React.Component<Props, State> {
             allowEdit,
             disableDelete,
         } = this.props
-        const { hidden, menuOpen } = this.state
+        const { hidden } = this.state
 
         const actions = [
             ...useIf(!!hideValue, [
@@ -188,9 +177,7 @@ class PermissionKeyField extends React.Component<Props, State> {
 
         return (
             <div
-                className={cx(styles.keyFieldContainer, keyFieldClassName, {
-                    [styles.withMenu]: menuOpen,
-                })}
+                className={cx(styles.keyFieldContainer, keyFieldClassName)}
             >
                 <TextInput
                     label={keyName}
@@ -253,6 +240,7 @@ class PermissionKeyField extends React.Component<Props, State> {
                         error={error}
                         showPermissionType={showPermissionType}
                         permission={permission}
+                        className={styles.editor}
                     />
                 )}
             </div>

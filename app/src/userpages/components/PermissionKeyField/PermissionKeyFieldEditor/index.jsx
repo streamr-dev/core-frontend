@@ -2,6 +2,7 @@
 
 import React from 'react'
 import { I18n } from 'react-redux-i18n'
+import cx from 'classnames'
 
 import type { ResourcePermission } from '$shared/flowtype/resource-key-types'
 import TextInput from '$shared/components/TextInput'
@@ -22,6 +23,7 @@ type Props = {
     error?: ?string,
     permission?: ?ResourcePermission,
     valueLabel: 'apiKey' | 'privateKey' | 'address',
+    className?: string,
 }
 
 type State = {
@@ -79,6 +81,7 @@ class PermissionKeyFieldEditor extends React.Component<Props, State> {
             waiting,
             error,
             valueLabel,
+            className,
         } = this.props
         const filled = !!keyName && (createNew || !!keyId)
 
@@ -94,7 +97,7 @@ class PermissionKeyFieldEditor extends React.Component<Props, State> {
         ]
 
         return (
-            <div className={styles.editor}>
+            <div className={cx(styles.editor, className)}>
                 <SplitControl>
                     <div className={styles.keyName}>
                         <TextInput

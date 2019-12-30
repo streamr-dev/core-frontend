@@ -1,13 +1,17 @@
-.root {}
+.editor {}
+
+.root {
+  &:not(:first-child) {
+    & > .editor {
+      margin-top: 1.5rem;
+    }
+  }
+}
 
 .PermissionKeyField {}
 
 .keyFieldContainer {
   position: relative;
-}
-
-.withMenu {
-  z-index: 2;
 }
 
 .select {

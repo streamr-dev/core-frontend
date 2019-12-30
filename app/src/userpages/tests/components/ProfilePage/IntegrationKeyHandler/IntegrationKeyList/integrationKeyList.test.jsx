@@ -1,36 +1,31 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import assert from 'assert-diff'
 
 import IntegrationKeyList from '$userpages/components/ProfilePage/IntegrationKeyHandler/IntegrationKeyList'
 
+const keys = [{
+    id: 1,
+}, {
+    id: 2,
+}, {
+    id: 3,
+}]
+
 describe('IntegrationKeyHandler', () => {
     describe('render', () => {
-        it('renders IntegrationKeyList correctly', () => {
+        it('renders KeyFields correctly', () => {
             const onDelete = () => {}
             const onEdit = () => {}
             const el = shallow(<IntegrationKeyList
-                integrationKeys={[3, 2, 1]}
-                service=""
-                name="test"
-                getIntegrationKeys={() => {}}
-                createIntegrationKey=""
-                deleteIntegrationKey=""
+                integrationKeys={keys}
                 onDelete={onDelete}
                 onEdit={onEdit}
                 hideValues
                 truncateValues
+                className="extra"
             />)
-            const table = el.find('IntegrationKeyList')
-            const x = table.props()
-            debugger
-            assert.deepStrictEqual(x, {
-                integrationKeys: [3, 2, 1],
-                onDelete,
-                onEdit,
-                hideValues: true,
-                truncateValues: true,
-            })
+            const keyFields = el.find('KeyField')
+            expect(keyFields.length).toBe(3)
         })
     })
 })

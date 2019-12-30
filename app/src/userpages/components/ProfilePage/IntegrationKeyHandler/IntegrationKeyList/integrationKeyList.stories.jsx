@@ -13,8 +13,9 @@ const stories =
     storiesOf('Userpages/IntegrationKeyList', module)
         .addDecorator(styles({
             color: '#323232',
-            padding: '3rem',
             background: 'white',
+            border: '1px dashed #DDDDDD',
+            margin: '3rem',
         }))
         .addDecorator(withKnobs)
 
@@ -44,7 +45,12 @@ const integrationKeys = [{
     },
 }]
 
-const IntegrationKeyListController = () => {
+type Props = {
+    hideValues?: boolean,
+    truncateValues?: boolean,
+}
+
+const IntegrationKeyListController = ({ hideValues, truncateValues }: Props) => {
     const editAction = action('onEdit')
     const onEdit = (...args) => new Promise((resolve) => {
         editAction(...args)
@@ -57,6 +63,8 @@ const IntegrationKeyListController = () => {
             integrationKeys={integrationKeys}
             onEdit={onEdit}
             onDelete={action('onDelete')}
+            hideValues={hideValues}
+            truncateValues={truncateValues}
         />
     )
 }
@@ -65,18 +73,10 @@ stories.add('default', () => (
     <IntegrationKeyListController />
 ))
 
-stories.add('basic (mobile)', () => (
-    <IntegrationKeyListController />
-), {
-    viewport: {
-        defaultViewport: 'xs',
-    },
-})
+stories.add('values hidden', () => (
+    <IntegrationKeyListController hideValues />
+))
 
-stories.add('basic (tablet)', () => (
-    <IntegrationKeyListController />
-), {
-    viewport: {
-        defaultViewport: 'md',
-    },
-})
+stories.add('truncated values', () => (
+    <IntegrationKeyListController truncateValues />
+))
