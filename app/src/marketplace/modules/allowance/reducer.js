@@ -202,7 +202,7 @@ const reducer: (AllowanceState) => AllowanceState = handleActions({
         resettingDaiAllowance: false,
         daiAllowance: state.settingDaiAllowance ? state.daiAllowance : state.pendingDaiAllowance,
         pendingDaiAllowance: state.settingDaiAllowance ? state.pendingDaiAllowance : null,
-        resetAllowanceError: null,
+        resetDaiAllowanceError: null,
     }),
 
     [RESET_DAI_ALLOWANCE_FAILURE]: (state: AllowanceState, action: SetAllowanceErrorAction) => ({

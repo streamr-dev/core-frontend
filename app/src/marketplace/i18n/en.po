@@ -528,15 +528,18 @@ msgstr "Writing to the blockchain"
 msgid "modal##saveProduct##started##title"
 msgstr "Updating"
 
+msgid "modal##setAllowance##dai"
+msgstr "This allows the marketplace to <br /> transfer the required amount of DAI."
+
+msgid "modal##setAllowance##data"
+msgstr "This allows the marketplace to <br /> transfer the required amount of DATA."
+
 msgid "modal##setAllowance##helpText"
 msgstr ""
 "Allowance is a requirement of ERC-20 token transfers, designed to increase "
 "security and efficiency. For more about allowances, see this <a "
 "href=%{allowanceLink} target=\"_blank\" rel=\"noopener "
 "noreferrer\">page</a>."
-
-msgid "modal##setAllowance##message"
-msgstr "This allows the marketplace to <br /> transfer the required amount of DATA."
 
 msgid "modal##setAllowance##started##message"
 msgstr ""

@@ -389,6 +389,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
                 onCancel={onClose}
                 onSet={onSetDataAllowance}
                 settingDataAllowance={settingDataAllowance}
+                paymentCurrency={paymentCurrency}
             />
         )
     }
@@ -409,6 +410,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
                 onCancel={onClose}
                 onSet={onSetDaiAllowance}
                 settingDaiAllowance={settingDaiAllowance}
+                paymentCurrency={paymentCurrency}
             />
         )
     }
