@@ -42,7 +42,7 @@
     ],
     "coverageThreshold": {
       "global": {
-        "lines": 38
+        "lines": 36
       }
     },
     "collectCoverageFrom": [
@@ -53,6 +53,7 @@
       "<rootDir>/src/docs/content/",
       "<rootDir>/src/docs/scripts/",
       "<rootDir>/src/marketplace/components/deprecated",
+      "<rootDir>/src/marketplace/modules/deprecated/",
       "/flowtype/",
       "/tests/"
     ],
