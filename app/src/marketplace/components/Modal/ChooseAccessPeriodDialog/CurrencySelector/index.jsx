@@ -13,9 +13,11 @@ type Props = {
     paymentCurrency: PaymentCurrency,
 }
 
+const availableCurrencies = process.env.NEW_MP_CONTRACT ? ['DATA', 'ETH', 'DAI'] : ['DATA']
+
 const CurrencySelector = ({ onChange, paymentCurrency }: Props) => (
     <div className={styles.root}>
-        {['DATA', 'ETH', 'DAI'].map((currency, index) => // eslint-disable-next-line react/no-array-index-key
+        {availableCurrencies.map((currency, index) => // eslint-disable-next-line react/no-array-index-key
             <CurrencyButton key={index} currency={currency} onChange={onChange} selected={currency === paymentCurrency} />)}
     </div>
 )

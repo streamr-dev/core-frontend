@@ -60,7 +60,7 @@ export const getUniswapEquivalents = async (dataQuantity: string): Promise<[BN, 
     const DATA = process.env.DATA_TOKEN_CONTRACT_ADDRESS
     const ETH = '0x0000000000000000000000000000000000000000'
     const DAI = process.env.DAI_TOKEN_CONTRACT_ADDRESS
-    const safetyMargin = 1.2
+    const safetyMargin = 1.05
 
     let ethValue = await call(uniswapAdaptorMethods().getConversionRate(DATA, ETH, amt))
     ethValue = BN(ethValue).toNumber() * safetyMargin
