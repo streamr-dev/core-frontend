@@ -61,7 +61,7 @@ const NoBalanceDialog = ({
             }
             break
         default:
-            break
+            return <GetCryptoDialog onCancel={onCancel} />
     }
 
     return null
