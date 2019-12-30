@@ -464,6 +464,7 @@ story('Marketplace/SetAllowanceDialog')
         <SetAllowanceDialog
             onCancel={action('onCancel')}
             onSet={action('onSet')}
+            paymentCurrency="DATA"
         />
     ))
     .add('getting allowance', () => (
@@ -471,6 +472,7 @@ story('Marketplace/SetAllowanceDialog')
             onCancel={action('onCancel')}
             onSet={action('onSet')}
             gettingAllowance
+            paymentCurrency="DATA"
         />
     ))
     .add('setting allowance', () => (
@@ -478,6 +480,7 @@ story('Marketplace/SetAllowanceDialog')
             onCancel={action('onCancel')}
             onSet={action('onSet')}
             settingAllowance
+            paymentCurrency="DATA"
         />
     ))
 
