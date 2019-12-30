@@ -63,32 +63,3 @@ describe('config', () => {
         })
     })
 })
-
-// Message:
-//   Input A expected to strictly deep-equal input B:
-// + expected - actual ... Lines skipped
-
-//   {
-//     communityProduct: {
-// ...
-//       ],
-// -     address: '0x642d2b84a32a9a92fec78ceaa9488388b3704898'
-// +     address: 'tokenAddress'
-//     },
-// ...
-//       ],
-// -     address: '0xE4eA76e830a659282368cA2e7E4d18C4AE52D8B3'
-// +     bytecode: '0xdeadbeef'
-//     },
-//     websocketAddress: 'wss://dummy/ws'
-//   }
-//  {
-//    daiToken: {
-// -    address: "tokenAddress"
-// +    address: "0x642d2b84a32a9a92fec78ceaa9488388b3704898"
-//    }
-//    uniswapAdaptor: {
-// -    bytecode: "0xdeadbeef"
-// +    address: "0xE4eA76e830a659282368cA2e7E4d18C4AE52D8B3"
-//    }
-//  }
