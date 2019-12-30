@@ -14,7 +14,7 @@
     "stylelint": "stylelint src/**/*.css src/**/*.[ps]css",
     "stylelint-fix": "stylelint src/**/*.css src/**/*.[ps]css --fix",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook",
+    "build-storybook": "node --max_old_space_size=4096 ./node_modules/.bin/build-storybook",
     "chromatic": "CHROMATIC_APP_CODE=exgpyxh1il5 chromatic test --exit-zero-on-changes",
     "clear-cache": "npm run clean-cache",
     "clean-cache": "rm -rf node_modules/.cache; rm -rf .cache; rm -rf dist; jest --clearCache; killall flow; rm -rf /tmp/flow"
