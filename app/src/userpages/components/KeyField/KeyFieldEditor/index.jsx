@@ -16,7 +16,7 @@ type Props = {
     createNew?: boolean,
     editValue?: boolean,
     onCancel?: () => void,
-    onSave: (keyName: string, value: string) => void,
+    onSave: (keyName: string, value: string) => void | Promise<void>,
     waiting?: boolean,
     error?: ?string,
     valueLabel: ValueLabel,

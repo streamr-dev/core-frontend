@@ -5,9 +5,9 @@ import Web3 from 'web3'
 import { I18n } from 'react-redux-i18n'
 
 import NoBalanceError from '$mp/errors/NoBalanceError'
-import { StreamrWeb3, getWeb3 } from '$shared/web3/web3Provider'
+import { getPublicWeb3, getWeb3 } from '$shared/web3/web3Provider'
 import getConfig from '$shared/web3/config'
-import type { SmartContractCall } from '$shared/flowtype/web3-types'
+import type { SmartContractCall, Address } from '$shared/flowtype/web3-types'
 import { getContract, call } from '../utils/smartContract'
 import { gasLimits, paymentCurrencies } from '$shared/utils/constants'
 import { fromAtto } from './math'
@@ -15,30 +15,44 @@ import type { PaymentCurrency } from '$shared/flowtype/common-types'
 
 declare var ethereum: Web3
 
-const dataTokenContractMethods = () => getContract(getConfig().dataToken).methods
-const daiTokenContractMethods = () => getContract(getConfig().daiToken).methods
-const uniswapAdaptorMethods = () => getContract(getConfig().uniswapAdaptor).methods
+const dataTokenContractMethods = (usePublicNode: boolean = false) => getContract(getConfig().dataToken, usePublicNode).methods
+const daiTokenContractMethods = (usePublicNode: boolean = false) => getContract(getConfig().daiToken, usePublicNode).methods
+const uniswapAdaptorMethods = (usePublicNode: boolean = false) => getContract(getConfig().uniswapAdaptor, usePublicNode).methods
 
-export const getEthBalance = (web3Instance: StreamrWeb3): Promise<number> => (web3Instance.getDefaultAccount()
-    .then((myAccount) => web3Instance.eth.getBalance(myAccount).then((balance) => BN(balance)))
-    .then(fromAtto)
+export const getEthBalance = (address: Address, usePublicNode: boolean = false): Promise<BN> => {
+    const web3 = usePublicNode ? getPublicWeb3() : getWeb3()
+
+    return web3.eth.getBalance(address)
+        .then((balance) => BN(balance))
+        .then(fromAtto)
+}
+
+export const getDataTokenBalance = (address: Address, usePublicNode: boolean = false): SmartContractCall<BN> => (
+    call(dataTokenContractMethods(usePublicNode).balanceOf(address))
+        .then(fromAtto)
 )
 
-export const getDataTokenBalance = (web3Instance: StreamrWeb3): SmartContractCall<number> => (web3Instance.getDefaultAccount()
-    .then((myAddress) => call(dataTokenContractMethods().balanceOf(myAddress)))
-    .then(fromAtto)
+export const getDaiTokenBalance = (address: Address, usePublicNode: boolean = false): SmartContractCall<BN> => (
+    call(daiTokenContractMethods(usePublicNode).balanceOf(address))
+        .then(fromAtto)
 )
 
-export const getDaiTokenBalance = (web3Instance: StreamrWeb3): SmartContractCall<number> => (web3Instance.getDefaultAccount()
-    .then((myAddress) => call(daiTokenContractMethods().balanceOf(myAddress)))
-    .then(fromAtto)
+export const getMyEthBalance = (): Promise<BN> => (getWeb3().getDefaultAccount()
+    .then((myAccount) => getEthBalance(myAccount))
+)
+
+export const getMyDataTokenBalance = (): SmartContractCall<BN> => (getWeb3().getDefaultAccount()
+    .then((myAccount) => getDataTokenBalance(myAccount))
+)
+
+export const getMyDaiTokenBalance = (): SmartContractCall<BN> => (getWeb3().getDefaultAccount()
+    .then((myAccount) => getDaiTokenBalance(myAccount))
 )
 
 export const getBalances = (): Promise<[BN, BN, BN]> => {
-    const web3 = getWeb3()
-    const ethPromise = getEthBalance(web3)
-    const dataPromise = getDataTokenBalance(web3)
-    const daiPromise = getDaiTokenBalance(web3)
+    const ethPromise = getMyEthBalance()
+    const dataPromise = getMyDataTokenBalance()
+    const daiPromise = getMyDaiTokenBalance()
 
     return Promise.all([ethPromise, dataPromise, daiPromise])
 }

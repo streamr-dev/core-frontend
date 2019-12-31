@@ -1,7 +1,6 @@
 // @flow
 
-import React from 'react'
-import copy from 'copy-to-clipboard'
+import React, { useState, useCallback, useEffect, useMemo } from 'react'
 import cx from 'classnames'
 import { Translate, I18n } from 'react-redux-i18n'
 
@@ -11,6 +10,8 @@ import { truncate } from '$shared/utils/text'
 import KeyFieldEditor, { type ValueLabel } from './KeyFieldEditor'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
+import useIsMounted from '$shared/hooks/useIsMounted'
+import useCopy from '$shared/hooks/useCopy'
 
 import styles from './keyField.pcss'
 
@@ -27,187 +28,154 @@ type Props = {
     disableDelete?: boolean,
     onDelete?: () => Promise<void>,
     valueLabel: ValueLabel,
+    onToggleEditor?: (boolean) => void,
 }
 
-type State = {
-    waiting: boolean,
-    hidden: boolean,
-    editing: boolean,
-    error: ?string,
-}
+const includeIf = (condition: boolean, elements: Array<any>) => (condition ? elements : [])
 
-const useIf = (condition: boolean, elements: Array<any>) => (condition ? elements : [])
+const KeyField = ({
+    keyName,
+    value,
+    hideValue,
+    truncateValue,
+    className,
+    keyFieldClassName,
+    allowEdit,
+    onSave: onSaveProp,
+    allowDelete,
+    disableDelete,
+    onDelete: onDeleteProp,
+    valueLabel = 'apiKey',
+    onToggleEditor: onToggleEditorProp,
+}: Props) => {
+    const [waiting, setWaiting] = useState(false)
+    const [hidden, setHidden] = useState(!!hideValue)
+    const [editing, setEditing] = useState(false)
+    const [error, setError] = useState(undefined)
 
-class KeyField extends React.Component<Props, State> {
-    constructor(props: Props) {
-        super(props)
+    const isMounted = useIsMounted()
+    const { copy } = useCopy()
 
-        this.state = {
-            waiting: false,
-            hidden: !!props.hideValue,
-            editing: false,
-            error: undefined,
+    const toggleHidden = useCallback(() => {
+        setHidden((wasHidden) => !wasHidden)
+    }, [])
+
+    useEffect(() => {
+        if (onToggleEditorProp) {
+            onToggleEditorProp(editing)
         }
-    }
+    }, [editing, onToggleEditorProp])
 
-    static defaultProps = {
-        valueLabel: 'apiKey',
-    }
-
-    componentWillUnmount() {
-        this.unmounted = true
-    }
-
-    unmounted: boolean = false
-
-    toggleHidden = () => {
-        this.setState(({ hidden }) => ({
-            hidden: !hidden,
-        }))
-    }
-
-    onCopy = () => {
-        const { value, valueLabel } = this.props
-
-        copy(value)
-
+    const notify = useCallback(() => {
         Notification.push({
             title: I18n.t('notifications.valueCopied', {
                 value: I18n.t(`userpages.keyFieldEditor.keyValue.${valueLabel}`),
             }),
             icon: NotificationIcon.CHECKMARK,
         })
-    }
+    }, [valueLabel])
 
-    onCancel = () => {
-        this.setState({
-            editing: false,
-        })
-    }
+    const onCopy = useCallback(() => {
+        copy(value || '')
+        notify()
+    }, [copy, value, notify])
 
-    onSave = (keyName: ?string, value: ?string) => {
-        const { allowEdit, onSave } = this.props
+    const onCancel = useCallback(() => {
+        setEditing(false)
+    }, [])
 
+    const onSave = useCallback(async (keyName: ?string, value: ?string) => {
         if (allowEdit) {
-            if (onSave) {
-                this.setState({
-                    waiting: true,
-                    error: null,
-                })
-                onSave(keyName, value)
-                    .then(() => {
-                        if (!this.unmounted) {
-                            this.setState({
-                                waiting: false,
-                                editing: false,
-                                error: null,
-                            })
-                        }
-                    }, (error) => {
-                        if (!this.unmounted) {
-                            this.setState({
-                                error: error.message,
-                                waiting: false,
-                            })
-                        }
-                    })
+            setError(undefined)
+
+            if (onSaveProp) {
+                setWaiting(true)
+
+                try {
+                    await onSaveProp(keyName, value)
+
+                    if (isMounted()) {
+                        setEditing(false)
+                        setError(undefined)
+                    }
+                } catch (e) {
+                    if (isMounted()) {
+                        setError(undefined)
+                    }
+                } finally {
+                    setWaiting(false)
+                }
             } else {
-                this.setState({
-                    editing: false,
-                    waiting: false,
-                    error: null,
-                })
+                setEditing(false)
             }
         }
-    }
+    }, [allowEdit, onSaveProp, isMounted])
 
-    onDelete = () => {
-        const { allowDelete, onDelete } = this.props
-        if (allowDelete && onDelete) {
-            onDelete()
+    const onDelete = useCallback(() => {
+        if (allowDelete && onDeleteProp) {
+            onDeleteProp()
         }
-    }
+    }, [allowDelete, onDeleteProp])
 
-    onEdit = () => {
-        this.setState({
-            editing: true,
-        })
-    }
+    const onEdit = useCallback(() => {
+        setEditing(true)
+    }, [])
 
-    renderInput = () => {
-        const {
-            hideValue,
-            truncateValue,
-            keyName,
-            value,
-            keyFieldClassName,
-            allowDelete,
-            allowEdit,
-            disableDelete,
-        } = this.props
-        const { hidden } = this.state
-
-        const actions = [
-            ...useIf(!!hideValue, [
-                <DropdownActions.Item key="reveal" onClick={this.toggleHidden}>
-                    <Translate value={`userpages.keyField.${hidden ? 'reveal' : 'conceal'}`} />
-                </DropdownActions.Item>,
-            ]),
-            <DropdownActions.Item key="copy" onClick={this.onCopy}>
-                <Translate value="userpages.keyField.copy" />
+    const inputActions = useMemo(() => ([
+        ...includeIf(!!hideValue, [
+            <DropdownActions.Item key="reveal" onClick={toggleHidden}>
+                <Translate value={`userpages.keyField.${hidden ? 'reveal' : 'conceal'}`} />
             </DropdownActions.Item>,
-            ...useIf(!!allowEdit, [
-                <DropdownActions.Item key="edit" onClick={this.onEdit}>
-                    <Translate value="userpages.keyField.edit" />
-                </DropdownActions.Item>,
-            ]),
-            ...useIf(!!allowDelete, [
-                <DropdownActions.Item key="delete" onClick={this.onDelete} disabled={disableDelete}>
-                    <Translate value="userpages.keyField.delete" />
-                </DropdownActions.Item>,
-            ]),
-        ]
+        ]),
+        <DropdownActions.Item key="copy" onClick={onCopy}>
+            <Translate value="userpages.keyField.copy" />
+        </DropdownActions.Item>,
+        ...includeIf(!!allowEdit, [
+            <DropdownActions.Item key="edit" onClick={onEdit}>
+                <Translate value="userpages.keyField.edit" />
+            </DropdownActions.Item>,
+        ]),
+        ...includeIf(!!allowDelete, [
+            <DropdownActions.Item key="delete" onClick={onDelete} disabled={disableDelete}>
+                <Translate value="userpages.keyField.delete" />
+            </DropdownActions.Item>,
+        ]),
+    ]), [hideValue, allowEdit, allowDelete, hidden, toggleHidden, onCopy, onEdit, onDelete, disableDelete])
 
-        return (
-            <div
-                className={cx(styles.keyFieldContainer, keyFieldClassName)}
-            >
-                <TextInput
-                    label={keyName}
-                    actions={actions}
-                    value={value && (!truncateValue ? value : truncate(value, {
-                        maxLength: 15,
-                    }))}
-                    readOnly
-                    type={hidden ? 'password' : 'text'}
-                    preserveLabelSpace
-                />
-            </div>
-        )
-    }
+    const displayValue = useMemo(() => (
+        value && (!truncateValue ? value : truncate(value, {
+            maxLength: 15,
+        }))
+    ), [truncateValue, value])
 
-    render = () => {
-        const { keyName, value, className, valueLabel } = this.props
-        const { waiting, editing, error } = this.state
-
-        return (
-            <div className={cx(styles.root, styles.KeyField, className)}>
-                {!editing ? (
-                    this.renderInput()
-                ) : (
-                    <KeyFieldEditor
-                        keyName={keyName}
-                        value={value}
-                        onCancel={this.onCancel}
-                        onSave={this.onSave}
-                        waiting={waiting}
-                        error={error}
-                        valueLabel={valueLabel}
+    return (
+        <div className={cx(styles.root, styles.KeyField, className)}>
+            {!editing ? (
+                <div
+                    className={cx(styles.keyFieldContainer, keyFieldClassName)}
+                >
+                    <TextInput
+                        label={keyName}
+                        actions={inputActions}
+                        value={displayValue}
+                        readOnly
+                        type={hidden ? 'password' : 'text'}
+                        preserveLabelSpace
                     />
-                )}
-            </div>
-        )
-    }
+                </div>
+            ) : (
+                <KeyFieldEditor
+                    keyName={keyName}
+                    value={value}
+                    onCancel={onCancel}
+                    onSave={onSave}
+                    waiting={waiting}
+                    error={error}
+                    valueLabel={valueLabel}
+                />
+            )}
+        </div>
+    )
 }
 
 export default KeyField
