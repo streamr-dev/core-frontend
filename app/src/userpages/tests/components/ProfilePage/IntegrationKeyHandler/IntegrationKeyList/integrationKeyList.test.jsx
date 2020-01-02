@@ -1,5 +1,5 @@
 import React from 'react'
-import { shallow } from 'enzyme'
+import { mount } from 'enzyme'
 
 import IntegrationKeyList from '$userpages/components/ProfilePage/IntegrationKeyHandler/IntegrationKeyList'
 
@@ -16,7 +16,7 @@ describe('IntegrationKeyHandler', () => {
         it('renders KeyFields correctly', () => {
             const onDelete = () => {}
             const onEdit = () => {}
-            const el = shallow(<IntegrationKeyList
+            const el = mount(<IntegrationKeyList
                 integrationKeys={keys}
                 onDelete={onDelete}
                 onEdit={onEdit}
