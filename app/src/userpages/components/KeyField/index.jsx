@@ -3,12 +3,14 @@
 import React from 'react'
 import copy from 'copy-to-clipboard'
 import cx from 'classnames'
-import { Translate } from 'react-redux-i18n'
+import { Translate, I18n } from 'react-redux-i18n'
 
 import TextInput from '$shared/components/TextInput'
 import DropdownActions from '$shared/components/DropdownActions'
 import { truncate } from '$shared/utils/text'
 import KeyFieldEditor, { type ValueLabel } from './KeyFieldEditor'
+import Notification from '$shared/utils/Notification'
+import { NotificationIcon } from '$shared/utils/constants'
 
 import styles from './keyField.pcss'
 
@@ -24,7 +26,7 @@ type Props = {
     allowDelete?: boolean,
     disableDelete?: boolean,
     onDelete?: () => Promise<void>,
-    valueLabel?: ValueLabel,
+    valueLabel: ValueLabel,
 }
 
 type State = {
@@ -48,6 +50,10 @@ class KeyField extends React.Component<Props, State> {
         }
     }
 
+    static defaultProps = {
+        valueLabel: 'apiKey',
+    }
+
     componentWillUnmount() {
         this.unmounted = true
     }
@@ -61,7 +67,16 @@ class KeyField extends React.Component<Props, State> {
     }
 
     onCopy = () => {
-        copy(this.props.value)
+        const { value, valueLabel } = this.props
+
+        copy(value)
+
+        Notification.push({
+            title: I18n.t('notifications.valueCopied', {
+                value: I18n.t(`userpages.keyFieldEditor.keyValue.${valueLabel}`),
+            }),
+            icon: NotificationIcon.CHECKMARK,
+        })
     }
 
     onCancel = () => {

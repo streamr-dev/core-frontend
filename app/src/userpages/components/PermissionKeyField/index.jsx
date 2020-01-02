@@ -4,6 +4,8 @@ import React from 'react'
 import copy from 'copy-to-clipboard'
 import cx from 'classnames'
 import { Translate, I18n } from 'react-redux-i18n'
+import Notification from '$shared/utils/Notification'
+import { NotificationIcon } from '$shared/utils/constants'
 
 import type { ResourcePermission } from '$shared/flowtype/resource-key-types'
 import TextInput from '$shared/components/TextInput'
@@ -70,6 +72,13 @@ class PermissionKeyField extends React.Component<Props, State> {
 
     onCopy = () => {
         copy(this.props.value)
+
+        Notification.push({
+            title: I18n.t('notifications.valueCopied', {
+                value: I18n.t('userpages.keyFieldEditor.keyValue.apiKey'),
+            }),
+            icon: NotificationIcon.CHECKMARK,
+        })
     }
 
     onCancel = () => {
