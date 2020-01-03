@@ -1,9 +1,11 @@
 // @flow
 
 import React, { Component } from 'react'
+import cx from 'classnames'
 
 import type { IntegrationKeyId, IntegrationKey, IntegrationKeyList as IntegrationKeyListType } from '$shared/flowtype/integration-key-types'
 import KeyField from '$userpages/components/KeyField'
+
 import styles from './integrationKeyList.pcss'
 
 export type Props = {
@@ -12,6 +14,7 @@ export type Props = {
     truncateValues?: boolean,
     onDelete: (IntegrationKeyId: IntegrationKeyId) => Promise<void>,
     onEdit: (IntegrationKeyId: IntegrationKeyId, keyName: string) => Promise<void>,
+    className?: string,
 }
 
 export default class IntegrationKeyList extends Component<Props> {
@@ -22,10 +25,11 @@ export default class IntegrationKeyList extends Component<Props> {
             truncateValues,
             onDelete,
             onEdit,
+            className,
         } = this.props
 
         return (
-            <div className={styles.keyList}>
+            <div className={cx(styles.root, 'constrainInputWidth', className)}>
                 {integrationKeys.map((key: IntegrationKey) => (
                     <KeyField
                         className={styles.singleKey}
@@ -38,6 +42,7 @@ export default class IntegrationKeyList extends Component<Props> {
                         truncateValue={truncateValues}
                         onDelete={() => onDelete(key.id)}
                         onSave={(keyName) => onEdit(key.id, keyName || '')}
+                        valueLabel="address"
                     />
                 ))}
             </div>

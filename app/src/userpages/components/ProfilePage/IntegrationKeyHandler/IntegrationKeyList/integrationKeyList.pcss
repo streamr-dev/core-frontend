@@ -1,22 +1,10 @@
-.keyList {
-  margin-top: 3.5rem;
-  margin-bottom: 2.5rem;
-}
-
-.keyList:empty {
-  margin-top: 2.5rem;
-  height: 1rem;
-}
+.root {}
 
 .singleKey + .singleKey {
   margin-top: 2.5rem;
 }
 
 @media (--sm-down) {
-  .keyList:empty {
-    display: none;
-  }
-
   .singleKey input {
     font-size: 14px;
   }
@@ -31,15 +19,5 @@
 @media (max-width: 350px) {
   .singleKey input {
     font-size: 10px;
-  }
-}
-
-@media (--lg-up) {
-  .keyList {
-    margin-top: 4.5rem;
-  }
-
-  .keyList:empty {
-    margin-top: -2rem;
   }
 }

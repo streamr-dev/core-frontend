@@ -3,14 +3,14 @@
 import React from 'react'
 
 import Button from '$shared/components/Button'
-import KeyFieldEditor, { type ValueLabel } from '../KeyFieldEditor'
+import type { ResourcePermission } from '$shared/flowtype/resource-key-types'
+import PermissionKeyFieldEditor from '../PermissionKeyFieldEditor'
 
 type Props = {
     label: string,
     createWithValue?: boolean,
-    onSave: (keyName: string, value: string) => Promise<void>,
+    onSave: (keyName: string, permission: ?ResourcePermission) => Promise<void>,
     addKeyFieldAllowed: boolean,
-    valueLabel?: ValueLabel,
 }
 
 type State = {
@@ -19,7 +19,7 @@ type State = {
     error: ?string,
 }
 
-class AddKeyField extends React.Component<Props, State> {
+class AddPermissionKeyField extends React.Component<Props, State> {
     state = {
         editing: false,
         waiting: false,
@@ -46,13 +46,13 @@ class AddKeyField extends React.Component<Props, State> {
         })
     }
 
-    onSave = (keyName: string, value: string) => {
+    onSave = (keyName: string, value: string, permission: ?ResourcePermission) => {
         this.setState({
             waiting: true,
             error: null,
         }, async () => {
             try {
-                await this.props.onSave(keyName, value)
+                await this.props.onSave(keyName, permission)
 
                 if (!this.unmounted) {
                     this.setState({
@@ -73,7 +73,7 @@ class AddKeyField extends React.Component<Props, State> {
 
     render = () => {
         const { editing, waiting, error } = this.state
-        const { label, createWithValue, addKeyFieldAllowed, valueLabel } = this.props
+        const { label, createWithValue, addKeyFieldAllowed } = this.props
         return !editing ? (
             <Button
                 kind="secondary"
@@ -83,17 +83,16 @@ class AddKeyField extends React.Component<Props, State> {
                 {label}
             </Button>
         ) : (
-            <KeyFieldEditor
+            <PermissionKeyFieldEditor
                 createNew
                 onCancel={this.onCancel}
                 onSave={this.onSave}
                 editValue={createWithValue}
                 waiting={waiting}
                 error={error}
-                valueLabel={valueLabel}
             />
         )
     }
 }
 
-export default AddKeyField
+export default AddPermissionKeyField
