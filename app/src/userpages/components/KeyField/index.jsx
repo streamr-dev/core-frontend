@@ -45,7 +45,7 @@ const KeyField = ({
     allowDelete,
     disableDelete,
     onDelete: onDeleteProp,
-    valueLabel = 'apiKey',
+    valueLabel,
     onToggleEditor: onToggleEditorProp,
 }: Props) => {
     const [waiting, setWaiting] = useState(false)
@@ -182,6 +182,10 @@ const KeyField = ({
             )}
         </div>
     )
+}
+
+KeyField.defaultProps = {
+    valueLabel: 'apiKey',
 }
 
 export default KeyField
