@@ -188,6 +188,8 @@ module.exports = {
                 openAnalyzer: false,
             }),
         ] : []),
+        // Ignore all locale files of moment.js
+        new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     ].concat(isProduction() ? [
         new CleanWebpackPlugin([dist]),
         // Production plugins
