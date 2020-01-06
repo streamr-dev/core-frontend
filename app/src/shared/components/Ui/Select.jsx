@@ -19,6 +19,7 @@ export type Props = {
     onChange?: Function,
     required?: boolean,
     clearable?: boolean,
+    // FIXME(MR): Rename to `disabled`!
     isDisabled?: boolean,
     controlClassName?: string,
 }

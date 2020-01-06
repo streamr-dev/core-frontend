@@ -14,9 +14,10 @@ export type SortProps = {
 
 type Props = {
     children: Node,
+    disabled?: boolean,
 }
 
-const SortableList = ({ children, ...props }: Props) => {
+const SortableList = ({ children, disabled, ...props }: Props) => {
     const len = React.Children.count(children)
 
     return (
@@ -24,6 +25,7 @@ const SortableList = ({ children, ...props }: Props) => {
             {React.Children.map(children, (child, index) => (
                 <SortableItem
                     index={index}
+                    disabled={disabled}
                     style={{
                         zIndex: len - index,
                     }}

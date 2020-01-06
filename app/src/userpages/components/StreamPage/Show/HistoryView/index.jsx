@@ -372,7 +372,11 @@ class HistoryView extends Component<Props, State> {
                 {streamId && range && (
                     <Fragment>
                         <SplitControl className={styles.defaultSplit}>
-                            <div className={styles.storedEventsContainer}>
+                            <div
+                                className={cx(styles.storedEventsContainer, {
+                                    [styles.disabled]: disabled,
+                                })}
+                            >
                                 <Label>
                                     {I18n.t('userpages.streams.edit.history.deleteEvents')}
                                 </Label>
@@ -422,7 +426,7 @@ class HistoryView extends Component<Props, State> {
                                 options={unitOptions}
                                 value={unitOptions.find((o) => o.value === storageUnit)}
                                 onChange={(o) => this.onStoragePeriodUnitChange(o.value)}
-                                disabled={disabled}
+                                isDisabled={disabled}
                             />
                         </div>
                     </Fragment>

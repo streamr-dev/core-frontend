@@ -14,6 +14,7 @@ type Props = {
     onCancel: () => void,
     onComplete: () => void,
     tabClassName?: string,
+    // FIXME(MR): Rename `isDisabled` to `disabled`, jeez.
     isDisabled: boolean,
     errors?: Array<string>,
 }

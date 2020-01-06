@@ -35,10 +35,10 @@ class DatePicker extends React.Component<Props> {
 
     render() {
         // $FlowFixMe `value` is not in `WithCalendarProps` #fml.
-        const { value, format, ...props } = this.props
+        const { value, format, disabled, ...props } = this.props
 
         return (
-            <WithCalendar {...props} disabled={isMobile}>
+            <WithCalendar {...props} disabled={isMobile || disabled}>
                 {({ date, toggleCalendar, ...rest1 }) => (
                     <React.Fragment>
                         <Text
@@ -47,6 +47,7 @@ class DatePicker extends React.Component<Props> {
                                 I18n.t('userpages.streams.edit.history.datePicker.selectDate') :
                                 dateFormatter(isMobile ? ISO_DATE_FORMAT : (format || ISO_DATE_FORMAT))(value) || ''}
                             onChange={this.onChange}
+                            disabled={disabled}
                             {...rest1}
                         />
                         <CalendarIcon />
