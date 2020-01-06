@@ -33,13 +33,7 @@ const Members = () => {
         ]
     }, [])
 
-    const {
-        defaultFilter,
-        filter,
-        setSearch,
-        setSort,
-        resetFilter,
-    } = useFilterSort(sortOptions)
+    const { defaultFilter, filter, setSearch, setSort } = useFilterSort(sortOptions)
 
     const loadCommunity = useCallback(async (id: CommunityId) => {
         loadCommunityProduct(id)
