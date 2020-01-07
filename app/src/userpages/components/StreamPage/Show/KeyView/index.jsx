@@ -40,6 +40,8 @@ type Props = DispatchProps & OwnProps & StateProps
 export class KeyView extends Component<Props> {
     mounted: boolean = false
 
+    getKeysRequestCount = 0
+
     componentDidMount() {
         this.mounted = true
         this.getKeys()
@@ -59,11 +61,16 @@ export class KeyView extends Component<Props> {
     getKeys = async () => {
         const { disabled, streamId, getKeys } = this.props
 
+        this.getKeysRequestCount += 1
+
         if (disabled || streamId == null) { return }
+
+        const numRequests = this.getKeysRequestCount
+
         try {
             await getKeys(streamId)
         } catch (error) {
-            if (this.mounted) {
+            if (this.mounted && numRequests === this.getKeysRequestCount) {
                 Notification.push({
                     title: 'Loading keys failed.',
                     icon: NotificationIcon.ERROR,
