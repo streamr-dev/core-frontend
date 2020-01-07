@@ -7,6 +7,7 @@ import Probe from '../Resizable/SizeConstraintProvider/Probe'
 import Ports from '../Ports'
 import styles from '../Module.pcss'
 import { noCameraControl } from '../Camera'
+import { MessageIcon } from '../ConsoleSidebar'
 import useIsCanvasRunning from '../../hooks/useIsCanvasRunning'
 import useModule, { ModuleContext } from './useModule'
 import useModuleApi, { ModuleApiContext } from './useModuleApi'
@@ -35,6 +36,7 @@ type Props = {
     scale: number,
     interactive?: boolean,
     isLoading?: boolean,
+    badgeLevel?: string,
 }
 
 const ModuleRenderer = React.memo(({
@@ -51,6 +53,7 @@ const ModuleRenderer = React.memo(({
     scale,
     interactive,
     isLoading,
+    badgeLevel = 'none',
     ...props
 }: Props) => {
     const isRunning = useIsCanvasRunning()
@@ -64,6 +67,7 @@ const ModuleRenderer = React.memo(({
         isCanvasAdjustable: isAdjustable,
         hasWritePermission,
     } = useModule()
+
     const { hash, displayName, name, canRefresh } = module
 
     const stopPropagation = useCallback((e) => {
@@ -77,7 +81,7 @@ const ModuleRenderer = React.memo(({
         }
     }, [isRunning, uiEmitter])
 
-    const { selectModule, moduleSidebarOpen, port: { onChange: onPortChange } } = useModuleApi()
+    const { selectModule, moduleSidebarOpen, consoleSidebarOpen, port: { onChange: onPortChange } } = useModuleApi()
 
     const onTriggerOptions = useCallback((e) => {
         e.stopPropagation()
@@ -127,6 +131,13 @@ const ModuleRenderer = React.memo(({
         >
             <div className={styles.body} ref={innerRef}>
                 <Probe group="ModuleHeight" height="auto" />
+                {(isEditable && badgeLevel !== 'none') && (
+                    <MessageIcon
+                        level={badgeLevel}
+                        className={cx(styles.ModuleBadge, styles[badgeLevel])}
+                        onClick={() => consoleSidebarOpen()}
+                    />
+                )}
                 <ModuleHeader
                     className={cx(styles.header, ModuleStyles.dragHandle)}
                     editable={isEditable}

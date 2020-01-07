@@ -12,7 +12,6 @@ import store from './utils/i18nStore'
 
 import TOCPage from '$userpages/components/TOCPage'
 import Avatar from '$userpages/components/Avatar'
-import KeyField from '$userpages/components/KeyField'
 
 const story = (name) => storiesOf(`UserPages/${name}`, module)
     .addDecorator(StoryRouter())
@@ -63,36 +62,3 @@ story('Avatar')
             />
         )
     })
-
-story('KeyField')
-    .addWithJSX('basic', () => (
-        <KeyField
-            keyName={text('Key name')}
-            value={text('Value')}
-            hideValue={boolean('Hide value')}
-            allowEdit={boolean('Allow edit')}
-            onSave={async () => {
-                alert('Saved!') // eslint-disable-line no-alert
-            }}
-            allowDelete={boolean('Allow delete')}
-            onDelete={async () => {
-                alert('Deleted!') // eslint-disable-line no-alert
-            }}
-        />
-    ))
-    .addWithJSX('truncated', () => (
-        <KeyField
-            keyName={text('Key name')}
-            value={text('Value', 'Value')}
-            hideValue={boolean('Hide value')}
-            allowEdit={boolean('Allow edit')}
-            onSave={async () => {
-                alert('Saved!') // eslint-disable-line no-alert
-            }}
-            allowDelete={boolean('Allow delete')}
-            onDelete={async () => {
-                alert('Deleted!') // eslint-disable-line no-alert
-            }}
-            truncateValue
-        />
-    ))

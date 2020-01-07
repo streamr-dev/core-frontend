@@ -360,6 +360,48 @@ const sources = {
             </g>
         </svg>
     ),
+    infoBadge: (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+            <g fill="none" fillRule="evenodd" transform="matrix(1 0 0 -1 0 16)">
+                <circle cx="8" cy="8" r="8" fill="#0324FF" />
+                <path
+                    stroke="#FFF"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M8 11.5v.1m0-2.8V4"
+                />
+            </g>
+        </svg>
+    ),
+    warnBadge: (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+            <g fill="none" fillRule="evenodd">
+                <circle cx="8" cy="8" r="8" fill="#FF5C00" />
+                <path
+                    stroke="#FFF"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M8 11.5v.1m0-2.8V4"
+                />
+            </g>
+        </svg>
+    ),
+    errorBadge: (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+            <g fill="none" fillRule="evenodd">
+                <circle cx="8" cy="8" r="8" fill="#FF0F2D" />
+                <path
+                    stroke="#FFF"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M4.606 4.606l6.788 6.788m0-6.788l-6.788 6.788"
+                />
+            </g>
+        </svg>
+    ),
     clear: (
         <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg">
             <g transform="translate(.25 .25)" fill="none">
@@ -431,6 +473,21 @@ const sources = {
             <g fillRule="nonzero" fill="none">
                 <path d="M12 0C5.371 0 0 5.371 0 12s5.371 12 12 12 12-5.371 12-12S18.629 0 12 0z" fill="#CDCDCD" />
                 <path d="M18 10.245h-1.29C16.002 8.323 14.094 7 11.577 7H7.438v3.245H6v1.164h1.438v1.22H6v1.165h1.438V17h4.138c2.488 0 4.382-1.31 5.11-3.206H18V12.63h-1.025c.026-.205.036-.418.036-.63v-.028c0-.191-.01-.379-.029-.563H18v-1.164zM8.596 8.04h2.98c1.847 0 3.22.889 3.853 2.205H8.596V8.04zm2.98 7.916h-2.98v-2.162h6.826c-.641 1.295-2.006 2.162-3.846 2.162zm4.24-3.928c0 .206-.014.407-.043.602H8.596v-1.22h7.18c.026.19.04.388.04.59v.028z" fill="#FFF" />
+            </g>
+        </svg>
+    ),
+    console: (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 23 20">
+            <g
+                fill="none"
+                fillRule="evenodd"
+                stroke="#A3A3A3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="1.5"
+            >
+                <path d="M2.525 18.775a1.35 1.35 0 01-1.35-1.35V2.678a1.458 1.458 0 011.453-1.453h17.35a1.45 1.45 0 011.447 1.446v14.65a1.458 1.458 0 01-1.454 1.454H2.525zm18.9-13.5H1.175m10.8 6.75h4.05" />
+                <path d="M6.575 9.325l2.7 2.7-2.7 2.7" />
             </g>
         </svg>
     ),

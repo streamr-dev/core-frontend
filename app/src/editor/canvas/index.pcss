@@ -23,6 +23,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .CanvasToolbar {
@@ -37,4 +38,8 @@
 
 :global(.react-draggable-transparent-selection) {
   user-select: none;
+}
+
+body:global(.editor) {
+  overflow: hidden;
 }

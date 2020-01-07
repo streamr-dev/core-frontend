@@ -7,7 +7,7 @@ import Value, { type Props as ValueProps } from './Value'
 
 import styles from './communityStats.pcss'
 
-type StatValue = {
+export type StatValue = {
     id: string,
 } & ValueProps
 

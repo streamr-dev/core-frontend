@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { I18n, Translate } from 'react-redux-i18n'
+import cx from 'classnames'
 
 import Notification from '$shared/utils/Notification'
 import TextInput from '$shared/components/TextInput'
@@ -72,7 +73,7 @@ export const InfoView = ({ disabled }: Props) => {
     }, [copy])
 
     return (
-        <div className={styles.infoView}>
+        <div className={cx('constrainInputWidth', styles.infoView)}>
             <div className={styles.textInput}>
                 <TextInput
                     label={I18n.t('userpages.streams.edit.details.name')}
@@ -97,28 +98,24 @@ export const InfoView = ({ disabled }: Props) => {
                     autoComplete="off"
                 />
             </div>
-            {stream && stream.id &&
-                <React.Fragment>
-                    <div className={styles.textInput}>
-                        <TextInput
-                            label={I18n.t('userpages.streams.edit.details.streamId')}
-                            type="text"
-                            name="id"
-                            value={(stream && stream.id) || ''}
-                            preserveLabelSpace
-                            readOnly
-                            disabled={disabled}
-                            actions={[
-                                <DropdownActions.Item key="copy" onClick={() => onCopy(stream.id)}>
-                                    <Translate value="userpages.keyField.copy" />
-                                </DropdownActions.Item>,
-                            ]}
-                        />
-                    </div>
-                    <h5 className={styles.partitions}>{I18n.t('userpages.streams.edit.details.partitions')}</h5>
-                    <PartitionsView disabled={disabled} />
-                </React.Fragment>
-            }
+            <div className={styles.textInput}>
+                <TextInput
+                    label={I18n.t('userpages.streams.edit.details.streamId')}
+                    type="text"
+                    name="id"
+                    value={(stream && stream.id) || ''}
+                    preserveLabelSpace
+                    readOnly
+                    disabled={disabled}
+                    actions={[
+                        <DropdownActions.Item key="copy" onClick={() => onCopy(stream.id)}>
+                            <Translate value="userpages.keyField.copy" />
+                        </DropdownActions.Item>,
+                    ]}
+                />
+            </div>
+            <h5 className={styles.partitions}>{I18n.t('userpages.streams.edit.details.partitions')}</h5>
+            <PartitionsView disabled={disabled} />
         </div>
     )
 }

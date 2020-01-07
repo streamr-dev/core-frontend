@@ -10,6 +10,7 @@ import SvgIcon from '$shared/components/SvgIcon'
 
 import CanvasWindow from './CanvasWindow'
 import { type Bounds } from '$editor/shared/utils/bounds'
+import { type UseStateTuple } from '$shared/flowtype/common-types'
 
 import styles from './DraggableCanvasWindow.pcss'
 
@@ -60,14 +61,10 @@ type CanvasWindowProps = Bounds & {
     children?: Node,
 }
 
-type Pair = [number, number]
-
-type TupleUseState = [Pair, ((Pair => Pair) | Pair) => void]
-
 export function useLayoutState({ x = 0, y = 0, width = 600, height = 400 }: Bounds = {}) {
-    const [position, setPosition]: TupleUseState = useState([x, y])
+    const [position, setPosition]: UseStateTuple<[number, number]> = useState([x, y])
 
-    const [size, setSize]: TupleUseState = useState([width, height])
+    const [size, setSize]: UseStateTuple<[number, number]> = useState([width, height])
 
     return useMemo(() => ({
         position,

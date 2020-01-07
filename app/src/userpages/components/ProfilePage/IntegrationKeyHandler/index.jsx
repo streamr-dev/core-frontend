@@ -6,16 +6,16 @@ import { connect } from 'react-redux'
 
 import styles from '../profilePage.pcss'
 
-import type { IntegrationKeyId, IntegrationKeyList } from '$shared/flowtype/integration-key-types'
+import type { IntegrationKeyId, IntegrationKeyList as IntegrationKeyListType } from '$shared/flowtype/integration-key-types'
 import { createIntegrationKey, deleteIntegrationKey, fetchIntegrationKeys, editIntegrationKey } from '$shared/modules/integrationKey/actions'
 import type { StoreState } from '$shared/flowtype/store-state'
-import IntegrationKeyHandlerSegment from './IntegrationKeyHandlerSegment'
+import IntegrationKeyList from './IntegrationKeyList'
 import { selectPrivateKeys, selectIntegrationKeysError } from '$shared/modules/integrationKey/selectors'
 import type { Address } from '$shared/flowtype/web3-types'
 import AddKeyField from '$userpages/components/KeyField/AddKeyField'
 
 type StateProps = {
-    integrationKeys: IntegrationKeyList,
+    integrationKeys: IntegrationKeyListType,
 }
 
 type DispatchProps = {
@@ -43,23 +43,27 @@ export class IntegrationKeyHandler extends Component<Props> {
         return (
             <Fragment>
                 <Translate value="userpages.profilePage.ethereumPrivateKeys.description" tag="p" className={styles.longText} />
-                <IntegrationKeyHandlerSegment
-                    integrationKeys={this.props.integrationKeys}
-                    onNew={this.onNew}
-                    onDelete={this.onDelete}
-                    onEdit={this.onEdit}
-                    createWithValue
-                    truncateValues
-                />
-                <AddKeyField
-                    label={this.props.integrationKeys && this.props.integrationKeys[0]
-                        ? I18n.t('userpages.profilePage.ethereumAddress.addNewAddress')
-                        : I18n.t('userpages.profilePage.ethereumAddress.addAddress')
-                    }
-                    onSave={this.onNew}
-                    createWithValue
-                    addKeyFieldAllowed
-                />
+                <div className="constrainInputWidth">
+                    <IntegrationKeyList
+                        integrationKeys={this.props.integrationKeys}
+                        onNew={this.onNew}
+                        onDelete={this.onDelete}
+                        onEdit={this.onEdit}
+                        createWithValue
+                        truncateValues
+                        className={styles.keyList}
+                    />
+                    <AddKeyField
+                        label={this.props.integrationKeys && this.props.integrationKeys[0]
+                            ? I18n.t('userpages.profilePage.ethereumPrivateKeys.addNewAddress')
+                            : I18n.t('userpages.profilePage.ethereumPrivateKeys.addAddress')
+                        }
+                        onSave={this.onNew}
+                        createWithValue
+                        addKeyFieldAllowed
+                        valueLabel="privateKey"
+                    />
+                </div>
             </Fragment>
         )
     }

@@ -70,3 +70,10 @@ msgstr "15 seconds"
 
 msgid "editor##timeRange##1000"
 msgstr "1 second"
+
+msgid "editor##canvas##msg##NoFieldsConfiguredTitle"
+msgstr "No fields configured."
+
+msgid "editor##canvas##msg##NoFieldsConfiguredMessage"
+msgstr "The selected stream should have fields configured. "
+"<a href=\"%{streamLink}\" target=\"_blank\" rel=\"noopener noreferrer\">Configure Fields</a>"

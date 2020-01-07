@@ -31,6 +31,16 @@ describe('copy/paste with getModuleCopy', () => {
         expect(updatedClockPorts).toEqual(clockPorts)
     })
 
+    it('adds "Copy" to name', async () => {
+        let canvas = State.emptyCanvas()
+        canvas = State.addModule(canvas, await loadModuleDefinition('Clock'))
+        const [clock] = canvas.modules
+        const clockCopyDefn = State.getModuleCopy(canvas, clock.hash)
+        canvas = State.addModule(canvas, clockCopyDefn)
+        const [, clock2] = canvas.modules
+        expect(clock2.displayName).toEqual(`${clock.displayName} Copy`)
+    })
+
     it('can be applied without creating duplicate ports', async () => {
         let canvas = State.emptyCanvas()
         canvas = State.addModule(canvas, await loadModuleDefinition('Clock'))

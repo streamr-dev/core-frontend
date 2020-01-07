@@ -2,7 +2,6 @@
 
 import { createAction } from 'redux-actions'
 
-import { error as errorNotification } from 'react-notification-system-redux'
 import * as services from './services'
 
 import type {
@@ -167,7 +166,6 @@ export const getMyResourceKeys = () => (dispatch: Function) => {
                 message: e.message,
             }
             dispatch(getResourceKeysFailure(error))
-            dispatch(errorNotification(error))
             throw e
         })
 }
@@ -187,7 +185,6 @@ export const getStreamResourceKeys = (id: StreamId) => (dispatch: Function) => {
                 message: e.message,
             }
             dispatch(getResourceKeysFailure(error))
-            dispatch(errorNotification(error))
             throw e
         })
 }
@@ -207,7 +204,6 @@ export const addMyResourceKey = (name: string) => (dispatch: Function) => {
                 message: e.message,
             }
             dispatch(addResourceKeyFailure(error))
-            dispatch(errorNotification(error))
             throw e
         })
 }
@@ -229,7 +225,6 @@ export const addStreamResourceKey = (id: StreamId, name: string, permission: Res
                 message: e.message,
             }
             dispatch(addResourceKeyFailure(error))
-            dispatch(errorNotification(error))
             throw e
         })
 }
@@ -244,7 +239,6 @@ export const removeMyResourceKey = (keyId: ResourceKeyId) => (dispatch: Function
                 message: e.message,
             }
             dispatch(removeResourceKeyFailure(error))
-            dispatch(errorNotification(error))
             throw e
         })
 }
@@ -259,7 +253,6 @@ export const removeStreamResourceKey = (id: StreamId, keyId: ResourceKeyId) => (
                 message: e.message,
             }
             dispatch(removeResourceKeyFailure(error))
-            dispatch(errorNotification(error))
             throw e
         })
 }
@@ -283,7 +276,6 @@ export const editStreamResourceKey =
                     message: e.message,
                 }
                 dispatch(editStreamResourceKeyFailure(error))
-                dispatch(errorNotification(error))
                 throw e
             })
     }
@@ -306,7 +298,6 @@ export const editMyResourceKey = (keyId: ResourceKeyId, keyName: string) => (dis
                 message: e.message,
             }
             dispatch(editMyResourceKeyFailure(error))
-            dispatch(errorNotification(error))
             throw e
         })
 }

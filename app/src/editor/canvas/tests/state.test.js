@@ -46,6 +46,21 @@ describe('Canvas State', () => {
         })
     })
 
+    describe('addModule', () => {
+        test('gives modules unique displayName', () => {
+            let canvas = State.addModule(State.emptyCanvas(), Clock)
+            canvas = State.addModule(canvas, Clock)
+            canvas = State.addModule(canvas, Clock)
+            const clock1 = canvas.modules[0]
+            expect(canvas.modules[1]).toMatchObject({
+                displayName: `${clock1.displayName} 02`,
+            })
+            expect(canvas.modules[2]).toMatchObject({
+                displayName: `${clock1.displayName} 03`,
+            })
+        })
+    })
+
     describe('getModule/findModule', () => {
         let canvas
 

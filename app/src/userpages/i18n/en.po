@@ -692,6 +692,12 @@ msgstr ""
 msgid "userpages##profilePage##ethereumPrivateKeys##linkTitle"
 msgstr "Eth Dev Accounts"
 
+msgid "userpages##profilePage##ethereumPrivateKeys##addAddress"
+msgstr "Add account"
+
+msgid "userpages##profilePage##ethereumPrivateKeys##addNewAddress"
+msgstr "Add new account"
+
 msgid "userpages##profilePage##deleteAccount##title"
 msgstr "Delete Streamr Account"
 
@@ -777,8 +783,14 @@ msgstr "Delete"
 msgid "userpages##keyFieldEditor##keyName"
 msgstr "Key name"
 
-msgid "userpages##keyFieldEditor##apiKey"
+msgid "userpages##keyFieldEditor##keyValue##apiKey"
 msgstr "API key"
+
+msgid "userpages##keyFieldEditor##keyValue##privateKey"
+msgstr "Private key"
+
+msgid "userpages##keyFieldEditor##keyValue##address"
+msgstr "Address"
 
 msgid "userpages##keyFieldEditor##add"
 msgstr "Add"
@@ -814,6 +826,9 @@ msgstr "Please sign the challenge in Metamask window"
 
 msgid "modal##newIdentity##defaultTitle"
 msgstr "Add a name to this Ethereum address"
+
+msgid "modal##newIdentity##label"
+msgstr "Account name"
 
 msgid "modal##newIdentity##placeholder"
 msgstr "eg. Mainnet Eth Address"
