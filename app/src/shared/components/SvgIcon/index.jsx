@@ -360,6 +360,48 @@ const sources = {
             </g>
         </svg>
     ),
+    infoBadge: (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+            <g fill="none" fillRule="evenodd" transform="matrix(1 0 0 -1 0 16)">
+                <circle cx="8" cy="8" r="8" fill="#0324FF" />
+                <path
+                    stroke="#FFF"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M8 11.5v.1m0-2.8V4"
+                />
+            </g>
+        </svg>
+    ),
+    warnBadge: (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+            <g fill="none" fillRule="evenodd">
+                <circle cx="8" cy="8" r="8" fill="#FF5C00" />
+                <path
+                    stroke="#FFF"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M8 11.5v.1m0-2.8V4"
+                />
+            </g>
+        </svg>
+    ),
+    errorBadge: (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+            <g fill="none" fillRule="evenodd">
+                <circle cx="8" cy="8" r="8" fill="#FF0F2D" />
+                <path
+                    stroke="#FFF"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M4.606 4.606l6.788 6.788m0-6.788l-6.788 6.788"
+                />
+            </g>
+        </svg>
+    ),
     clear: (
         <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg">
             <g transform="translate(.25 .25)" fill="none">
@@ -403,6 +445,21 @@ const sources = {
                 <path d="M1.314 10.81C-.656 8.111-.216 4.416 2.34 2.22c2.555-2.197 6.413-2.197 8.968 0 2.556 2.197 2.997 5.892 1.026 8.591" />
                 <ellipse cx="6.824" cy="6.978" rx="2.042" ry="1.969" />
                 <path d="M10.111 11.76c-.487-1.348-1.805-2.251-3.286-2.251-1.48 0-2.798.903-3.285 2.25h6.571z" />
+            </g>
+        </svg>
+    ),
+    console: (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 23 20">
+            <g
+                fill="none"
+                fillRule="evenodd"
+                stroke="#A3A3A3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="1.5"
+            >
+                <path d="M2.525 18.775a1.35 1.35 0 01-1.35-1.35V2.678a1.458 1.458 0 011.453-1.453h17.35a1.45 1.45 0 011.447 1.446v14.65a1.458 1.458 0 01-1.454 1.454H2.525zm18.9-13.5H1.175m10.8 6.75h4.05" />
+                <path d="M6.575 9.325l2.7 2.7-2.7 2.7" />
             </g>
         </svg>
     ),

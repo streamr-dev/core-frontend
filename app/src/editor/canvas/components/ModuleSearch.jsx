@@ -13,7 +13,6 @@ import cx from 'classnames'
 import type { Stream } from '$shared/flowtype/stream-types'
 import SvgIcon from '$shared/components/SvgIcon'
 import { type Ref } from '$shared/flowtype/common-types'
-import { getModuleBounds, findNonOverlappingPosition } from '$editor/shared/utils/bounds'
 
 import { getModuleCategories, getStreams } from '../services'
 import { moduleSearch } from '../state'
@@ -304,20 +303,11 @@ class ModuleSearch extends React.PureComponent<Props, State> {
         const { camera = {} } = this.props
 
         const canvasRect = camera.elRef.current.getBoundingClientRect()
-        const myBB = camera.cameraToWorldBounds({
+        return camera.cameraToWorldBounds({
             // Align module to the top right corner of ModuleSearch with a 32px offset
             x: (selfRect.right - canvasRect.left - 20) + 32,
             y: selfRect.top - canvasRect.top,
-            // TODO: It would be nice to use actual module size here but we know
-            //       it only after the module has been added to the canvas
-            width: 100,
-            height: 50,
         })
-
-        const boundingBoxes = this.props.canvas.modules.map((m) => getModuleBounds(m))
-
-        const stackOffset = 16 // pixels
-        return findNonOverlappingPosition(myBB, boundingBoxes, stackOffset)
     }
 
     renderMenu = (): Array<Element<typeof ModuleMenuCategory>> => {

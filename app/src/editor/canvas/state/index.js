@@ -5,6 +5,7 @@ import cloneDeep from 'lodash/cloneDeep'
 import uniqBy from 'lodash/uniqBy'
 import uuid from 'uuid'
 import isEqual from 'lodash/isEqual'
+import { nextUniqueName } from '$editor/shared/utils/uniqueName'
 import * as diff from './diff'
 
 const MISSING_ENTITY = 'EDITOR/MISSING_ENTITY'
@@ -589,7 +590,7 @@ export function connectPorts(canvas, portIdA, portIdB) {
 
     let nextCanvas = canvas
 
-    const displayName = getDisplayNameFromPort(output)
+    const displayName = getDisplayName(output)
     const outputModule = getModuleForPort(nextCanvas, output.id)
     const { contract } = outputModule || {}
 
@@ -672,11 +673,29 @@ export function updatePortConnection(canvas, portId) {
     }, canvas)
 
     const connected = isPortConnected(nextCanvas, portId)
-    if (connected === getPort(nextCanvas, portId).connected) { return nextCanvas }
-    return updatePort(nextCanvas, portId, (port) => ({
-        ...port,
-        connected,
-    }))
+    const isOutput = getIsOutput(canvas, portId)
+    let sourceId
+    // if connected input, make sure sourceId set correctly
+    if (connected && !isOutput) {
+        // eslint-disable-next-line prefer-destructuring
+        sourceId = getConnectedPortIds(canvas, portId)[0]
+    }
+
+    const nextPort = getPort(nextCanvas, portId)
+    if (connected === nextPort.connected && sourceId === nextPort.sourceId) {
+        // no change
+        return nextCanvas
+    }
+    return updatePort(nextCanvas, portId, (port) => {
+        const p = {
+            ...port,
+            connected,
+        }
+        if (!isOutput) {
+            p.sourceId = sourceId
+        }
+        return p
+    })
 }
 
 export function updateModulePortConnections(canvas, moduleHash) {
@@ -725,7 +744,14 @@ function getHash(canvas, iterations = 0) {
  */
 
 export function addModule(canvas, moduleData) {
-    return addModuleData(canvas, makeModuleUnique(moduleData))
+    return addModuleData(canvas, makeModuleUnique(canvas, moduleData))
+}
+
+function getModuleUniqueDisplayName(canvas, moduleData) {
+    const moduleName = getDisplayName(moduleData)
+    const existingNames = canvas.modules.map((m) => getDisplayName(m))
+    if (!existingNames.includes(moduleName)) { return moduleName }
+    return nextUniqueName(moduleName, existingNames)
 }
 
 /**
@@ -743,8 +769,9 @@ function addModuleData(canvas, moduleData) {
     const canvasModule = {
         ...moduleData,
         hash: getHash(canvas), // TODO: better IDs
+        displayName: getModuleUniqueDisplayName(canvas, moduleData),
         layout: {
-            ...defaultModuleLayout, // TODO: read position from mouse
+            ...defaultModuleLayout, // TODO: smarter module positioning
             ...moduleData.layout,
         },
     }
@@ -856,7 +883,7 @@ export function getPortPlaceholder(canvas, portId) {
     }
 
     const port = getPort(canvas, portId)
-    return getDisplayNameFromPort(port)
+    return getDisplayName(port)
 }
 
 export function getPortValue(canvas, portId) {
@@ -1098,7 +1125,7 @@ function getVariadicLongName(canvas, portId, portIndex) {
     }
 
     const sourcePort = getPort(canvas, portId)
-    return `${m.name}.${getDisplayNameFromPort(sourcePort)}`
+    return `${m.name}.${getDisplayName(sourcePort)}`
 }
 
 function updateVariadics(canvas, moduleHash, type) {
@@ -1259,8 +1286,8 @@ function updateVariadicModuleForType(canvas, moduleHash, type) {
     return updateVariadics(canvas, moduleHash, type)
 }
 
-function getDisplayNameFromPort(port) {
-    return port.displayName || port.name
+export function getDisplayName(obj) {
+    return obj.displayName || obj.name
 }
 
 export function updateVariadicModule(canvas, moduleHash) {
@@ -1467,24 +1494,14 @@ export function applyChanges({ sent, received, current }) {
     return nextCanvas
 }
 
-export function makeModuleUnique(moduleData) {
-    const tempCanvas = addModuleData(emptyCanvas(), moduleData)
-    return getModuleCopy(tempCanvas, tempCanvas.modules[0].hash)
-}
-
-export function getModuleCopy(canvas, moduleHash) {
+function makeModuleUnique(canvas, moduleData) {
     // apply transformations on temp canvas
+    let tempCanvas = addModuleData(emptyCanvas(), moduleData)
+    const moduleHash = tempCanvas.modules[0].hash
+
     // ensure all ports disconnected
-    let tempCanvas = disconnectAllModulePorts(canvas, moduleHash)
+    tempCanvas = disconnectAllModulePorts(tempCanvas, moduleHash)
     let m = getModule(tempCanvas, moduleHash)
-    // offset new module by 32px
-    const top = ((m.layout && parseFloat(m.layout.position.top)) + 32) || 0
-    const left = ((m.layout && parseFloat(m.layout.position.left)) + 32) || 0
-    tempCanvas = updateCanvas(updateModulePosition(tempCanvas, moduleHash, {
-        top,
-        left,
-    }))
-    m = getModule(tempCanvas, moduleHash)
 
     const portIds = getModulePortIds(tempCanvas, moduleHash)
     // give all ports fresh ids
@@ -1549,10 +1566,20 @@ export function getModuleCopy(canvas, moduleHash) {
         }))
     })
 
+    tempCanvas = updateCanvas(tempCanvas)
+
     m = getModule(tempCanvas, moduleHash)
     return {
         ...m,
         hash: undefined, // always remove hash
+    }
+}
+
+export function getModuleCopy(canvas, moduleHash) {
+    const m = getModule(canvas, moduleHash)
+    return {
+        ...m,
+        displayName: `${getDisplayName(m)} Copy`,
     }
 }
 

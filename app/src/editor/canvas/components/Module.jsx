@@ -11,6 +11,8 @@ import * as RunController from './CanvasController/Run'
 import { useCameraState } from './Camera'
 
 import ModuleStyles from '$editor/shared/components/Module.pcss'
+import { getModuleMessages, getMaxLevel } from '$editor/canvas/state/messages'
+
 import styles from './Module.pcss'
 import ModuleRenderer from './ModuleRenderer'
 import { AutosaveContext } from './CanvasController/Autosave'
@@ -110,6 +112,8 @@ class CanvasModule extends React.PureComponent {
 
         const { layout } = this.state
 
+        const badgeLevel = getMaxLevel(getModuleMessages(canvas, module.hash))
+
         return (
             <ModuleRenderer
                 interactive
@@ -130,6 +134,7 @@ class CanvasModule extends React.PureComponent {
                 onRename={this.onChangeModuleName}
                 onResize={this.onResize}
                 uiEmitter={this.uiEmitter}
+                badgeLevel={badgeLevel}
                 {...props}
             />
         )
