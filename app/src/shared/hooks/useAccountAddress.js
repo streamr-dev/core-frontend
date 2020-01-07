@@ -28,7 +28,7 @@ export default (): ?string => {
         return () => {
             Web3Poller.unsubscribe(Web3Poller.events.ACCOUNT, setAddress)
         }
-    }, [])
+    }, [isMounted])
 
     return address
 }
