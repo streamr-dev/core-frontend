@@ -15,9 +15,7 @@ export default (): ?string => {
                 return undefined
             }
         })().then(setAddress)
-    }, [])
 
-    useEffect(() => {
         Web3Poller.subscribe(Web3Poller.events.ACCOUNT, setAddress)
 
         return () => {
