@@ -8,8 +8,15 @@ import useCommunityProduct from '$mp/containers/ProductController/useCommunityPr
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { getCommunityStats } from '$mp/modules/communityProduct/services'
 import { fromAtto } from '$mp/utils/math'
+import { type UseStateTuple } from '$shared/flowtype/common-types'
+import { type StatValue } from '$shared/components/CommunityStats/Values'
+import { type Props as ValueProps } from '$shared/components/CommunityStats/Value'
 
-const initialStats = {
+type StatCollection = {
+    [string]: ValueProps,
+}
+
+const initialStats: StatCollection = {
     revenue: {
         label: 'Total product revenue',
         unit: 'DATA',
@@ -45,7 +52,7 @@ const MILLISECONDS_IN_MONTH = 1000 * 60 * 60 * 24 * 30
 function useCommunityStats() {
     const product = useProduct()
     const contractProduct = useContractProduct()
-    const [stats, setStats] = useState(initialStats)
+    const [stats, setStats]: UseStateTuple<StatCollection> = useState(initialStats)
     const [totalEarnings, setTotalEarnings] = useState(null)
     const [memberCount, setMemberCount] = useState(null)
     const isMounted = useIsMounted()
@@ -169,10 +176,9 @@ function useCommunityStats() {
         }
     }, [getStats, resetTimeout])
 
-    // $FlowFixMe
-    const statsArray = useMemo(() => Object.keys(stats).map((key) => ({
-        id: key,
+    const statsArray = useMemo((): Array<StatValue> => Object.keys(stats).map((key) => ({
         ...stats[key],
+        id: key,
     })), [stats])
 
     return useMemo(() => ({

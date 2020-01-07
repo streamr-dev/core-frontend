@@ -760,6 +760,9 @@ msgstr "Waiting for the blockchain..."
 msgid "notifications##streamIdCopied"
 msgstr "Stream ID copied"
 
+msgid "notifications##valueCopied"
+msgstr "%{value} copied"
+
 msgid "productTypeChooser##title"
 msgstr "Choose your product type"
 

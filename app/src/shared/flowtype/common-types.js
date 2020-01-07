@@ -42,3 +42,5 @@ export type TransactionType = $Values<typeof transactionTypes>
 export type Ref<T> = {
     current: null | T,
 }
+
+export type UseStateTuple<T> = [T, ((T => T) | T) => void]

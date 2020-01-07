@@ -95,10 +95,7 @@ function StatusView(props: Props) {
             <div className={styles.container}>
                 <TextInput
                     label={I18n.t('userpages.streams.inactivityLabel')}
-                    type="number"
                     value={value}
-                    min="0"
-                    hideButtons
                     onChange={onChange}
                     onBlur={onCommit}
                     disabled={disabled}

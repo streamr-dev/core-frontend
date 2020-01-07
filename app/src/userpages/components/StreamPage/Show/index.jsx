@@ -219,14 +219,14 @@ export class StreamShowView extends Component<Props, State> {
                         </TOCPage.Section>
                         <TOCPage.Section
                             id="configure"
-                            title="Configure"
+                            title="Fields"
                             customStyled
                         >
                             <ConfigureView disabled={disabled} />
                         </TOCPage.Section>
                         <TOCPage.Section
                             id="status"
-                            linkTitle="Stream Status"
+                            linkTitle="Status"
                             title={(
                                 <div className={styles.statusTitle}>
                                     Status <StatusIcon showTooltip status={editedStream ? editedStream.streamStatus : undefined} />

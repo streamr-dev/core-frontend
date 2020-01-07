@@ -109,13 +109,6 @@ export class ProfilePage extends Component<Props, State> {
                             <ProfileSettings />
                         </TOCPage.Section>
                         <TOCPage.Section
-                            id="api-keys"
-                            title={I18n.t('userpages.profilePage.apiCredentials.title')}
-                            linkTitle={I18n.t('userpages.profilePage.apiCredentials.linkTitle')}
-                        >
-                            <APICredentials />
-                        </TOCPage.Section>
-                        <TOCPage.Section
                             id="ethereum-accounts"
                             title={I18n.t('userpages.profilePage.ethereumAddress.title')}
                             linkTitle={I18n.t('userpages.profilePage.ethereumAddress.linkTitle')}
@@ -128,6 +121,13 @@ export class ProfilePage extends Component<Props, State> {
                             linkTitle={I18n.t('userpages.profilePage.ethereumPrivateKeys.linkTitle')}
                         >
                             <IntegrationKeyHandler />
+                        </TOCPage.Section>
+                        <TOCPage.Section
+                            id="api-keys"
+                            title={I18n.t('userpages.profilePage.apiCredentials.title')}
+                            linkTitle={I18n.t('userpages.profilePage.apiCredentials.linkTitle')}
+                        >
+                            <APICredentials />
                         </TOCPage.Section>
                         <TOCPage.Section
                             id="delete-account"

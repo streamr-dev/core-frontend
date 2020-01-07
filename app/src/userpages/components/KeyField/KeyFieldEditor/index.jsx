@@ -2,15 +2,13 @@
 
 import React from 'react'
 import { I18n } from 'react-redux-i18n'
-import cx from 'classnames'
 
-import type { ResourcePermission } from '$shared/flowtype/resource-key-types'
 import TextInput from '$shared/components/TextInput'
 import Buttons from '$shared/components/Buttons'
-import SelectInput from '$shared/components/SelectInput'
-import SplitControl from '$userpages/components/SplitControl'
 
 import styles from './keyFieldEditor.pcss'
+
+export type ValueLabel = 'apiKey' | 'privateKey' | 'address'
 
 type Props = {
     keyName?: string,
@@ -18,24 +16,25 @@ type Props = {
     createNew?: boolean,
     editValue?: boolean,
     onCancel?: () => void,
-    onSave: (keyName: string, value: string, keyPermission: ?ResourcePermission) => void,
+    onSave: (keyName: string, value: string) => void,
     waiting?: boolean,
     error?: ?string,
-    showPermissionType?: boolean,
-    permission?: ?ResourcePermission,
+    valueLabel: ValueLabel,
 }
 
 type State = {
     keyName: string,
     keyId: string,
-    permission: ?ResourcePermission,
 }
 
 class KeyFieldEditor extends React.Component<Props, State> {
+    static defaultProps = {
+        valueLabel: 'apiKey',
+    }
+
     state = {
         keyName: this.props.keyName || '',
         keyId: this.props.value || '',
-        permission: this.props.permission || 'read',
     }
 
     onKeyNameChange = (e: SyntheticInputEvent<EventTarget>) => {
@@ -50,86 +49,40 @@ class KeyFieldEditor extends React.Component<Props, State> {
         })
     }
 
-    onPermissionChange = (value: string) => {
-        // Value needs to be checked to satisfy Flow
-        const permission: ?ResourcePermission = ['read', 'write', 'share'].find((p) => p === value)
-        if (permission) {
-            this.setState({
-                permission,
-            })
-        }
-    }
-
     onSave = () => {
-        const { keyName, keyId, permission } = this.state
+        const { keyName, keyId } = this.state
         const { onSave } = this.props
 
-        onSave(keyName, keyId, permission)
+        onSave(keyName, keyId)
     }
 
     render = () => {
-        const { keyName, keyId, permission } = this.state
+        const { keyName, keyId } = this.state
         const {
             onCancel,
             createNew,
             editValue,
             waiting,
             error,
-            showPermissionType,
+            valueLabel,
         } = this.props
         const filled = !!keyName && (createNew || !!keyId)
 
-        const permissionOptions = [
-            {
-                value: 'read',
-                label: 'Read',
-            },
-            {
-                value: 'write',
-                label: 'Write',
-            },
-        ]
-
         return (
-            <div className={cx(styles.editor, {
-                [styles.editorWithPermissions]: showPermissionType,
-            })}
-            >
-                {showPermissionType && (
-                    <SplitControl>
-                        <div className={styles.keyName}>
-                            <TextInput
-                                label={I18n.t('userpages.keyFieldEditor.keyName')}
-                                value={keyName}
-                                onChange={this.onKeyNameChange}
-                                preserveLabelSpace
-                                error={(createNew && !editValue && error) || undefined}
-                            />
-                        </div>
-                        <SelectInput
-                            label="Permission"
-                            options={permissionOptions}
-                            value={permissionOptions.find((t) => t.value === permission)}
-                            onChange={(o) => this.onPermissionChange(o.value)}
-                            preserveLabelSpace
-                        />
-                    </SplitControl>
-                )}
-                {!showPermissionType && (
-                    <div className={styles.keyName}>
-                        <TextInput
-                            label={I18n.t('userpages.keyFieldEditor.keyName')}
-                            value={keyName}
-                            onChange={this.onKeyNameChange}
-                            preserveLabelSpace
-                            error={(createNew && !editValue && error) || undefined}
-                        />
-                    </div>
-                )}
+            <div className={styles.editor}>
+                <div className={styles.keyName}>
+                    <TextInput
+                        label={I18n.t('userpages.keyFieldEditor.keyName')}
+                        value={keyName}
+                        onChange={this.onKeyNameChange}
+                        preserveLabelSpace
+                        error={(createNew && !editValue && error) || undefined}
+                    />
+                </div>
                 {(!createNew || editValue) && (
                     <div className={styles.keyValue}>
                         <TextInput
-                            label={I18n.t('userpages.keyFieldEditor.apiKey')}
+                            label={I18n.t(`userpages.keyFieldEditor.keyValue.${valueLabel}`)}
                             value={keyId}
                             onChange={this.onValueChange}
                             preserveLabelSpace
@@ -153,7 +106,7 @@ class KeyFieldEditor extends React.Component<Props, State> {
                             className: 'grey-container',
                             title: I18n.t('userpages.keyFieldEditor.cancel'),
                             outline: true,
-                            onClick: onCancel,
+                            onClick: () => onCancel && onCancel(),
                         },
                     }}
                 />

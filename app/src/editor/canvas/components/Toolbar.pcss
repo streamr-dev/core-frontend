@@ -100,6 +100,7 @@
   margin-left: 8px;
 }
 
+.ConsoleButton,
 .ShareButton,
 .KeyboardButton {
   padding: 0 !important;
@@ -112,11 +113,28 @@
   }
 }
 
+.ConsoleButton {
+  position: relative;
+  overflow: visible;
+
+  .consoleButtonBadge {
+    position: absolute;
+    width: 0.5um;
+    height: 0.5um;
+    top: 11px;
+    right: 10px;
+    transform: translate(50%, -50%);
+    z-index: 1;
+    display: inline-grid;
+  }
+}
+
 .CanvasToolbar .DropdownMenu .DropdownMenuMenu {
   padding-top: 4px;
   padding-bottom: 4px;
   margin-bottom: 10px;
   box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.05);
+  font-size: 12px;
 
   & .show {
     display: grid;

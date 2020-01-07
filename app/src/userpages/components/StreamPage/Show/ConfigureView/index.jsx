@@ -17,7 +17,6 @@ import SelectInput from '$shared/components/SelectInput'
 import { updateEditStreamField, updateEditStream, streamFieldsAutodetect } from '$userpages/modules/userPageStreams/actions'
 import { selectEditedStream, selectFieldsAutodetectFetching, fieldTypes } from '$userpages/modules/userPageStreams/selectors'
 import TextInput from '$shared/components/TextInput'
-import Toggle from '$shared/components/Toggle'
 import SplitControl from '$userpages/components/SplitControl'
 import DropdownActions from '$shared/components/DropdownActions'
 
@@ -144,26 +143,6 @@ export class ConfigureView extends Component<Props, State> {
         editField('config.fields', fields)
     }
 
-    onAutoConfigureChange = (checked: boolean) => {
-        // $FlowFixMe: "updateEditStream is missing in OwnProps or StateProps"
-        const { updateEditStream, stream } = this.props
-
-        updateEditStream({
-            ...stream,
-            autoConfigure: checked,
-        })
-    }
-
-    onRequireSignedChange = (checked: boolean) => {
-        // $FlowFixMe: "updateEditStream is missing in OwnProps or StateProps"
-        const { updateEditStream, stream } = this.props
-
-        updateEditStream({
-            ...stream,
-            requireSignedData: checked,
-        })
-    }
-
     autodetectFields = () => {
         if (this.props.stream && this.props.stream.id) {
             // $FlowFixMe: "streamFieldsAutodetect is missing in OwnProps or StateProps"
@@ -182,7 +161,7 @@ export class ConfigureView extends Component<Props, State> {
                     <Fragment>
                         <SplitControl className={styles.fieldHeaderRow}>
                             <Translate value="userpages.streams.edit.configure.fieldName" />
-                            <Translate value="userpages.streams.edit.configure.dataType" className={styles.dataTypeHeader} />
+                            <Translate value="userpages.streams.edit.configure.dataType" />
                         </SplitControl>
                         <FieldList onSortEnd={this.onSortEnd}>
                             {stream.config.fields.map((field, index) => (
@@ -251,37 +230,6 @@ export class ConfigureView extends Component<Props, State> {
                         onCancel={this.cancelAddField}
                     />
                 }
-                <div className={styles.settings}>
-                    {/* eslint-disable jsx-a11y/label-has-associated-control */}
-                    {stream && stream.autoConfigure !== undefined && (
-                        <SplitControl>
-                            <label htmlFor="auto-configure">
-                                <Translate value="userpages.streams.edit.configure.autoConfigure" />
-                            </label>
-                            <Toggle
-                                id="auto-configure"
-                                value={stream.autoConfigure}
-                                onChange={this.onAutoConfigureChange}
-                                disabled={disabled}
-                                className={styles.toggle}
-                            />
-                        </SplitControl>
-                    )}
-                    {stream && stream.requireSignedData !== undefined && (
-                        <SplitControl>
-                            <label htmlFor="require-signed">
-                                <Translate value="userpages.streams.edit.configure.requireSignedData" />
-                            </label>
-                            <Toggle
-                                id="require-signed"
-                                value={stream.requireSignedData}
-                                onChange={this.onRequireSignedChange}
-                                disabled={disabled}
-                                className={styles.toggle}
-                            />
-                        </SplitControl>
-                    )}
-                </div>
             </div>
         )
     }
