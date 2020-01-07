@@ -213,7 +213,7 @@ msgid "userpages##purchases##expired"
 msgstr "Expired"
 
 msgid "userpages##streams##createStream"
-msgstr "Create Stream"
+msgstr "Create stream"
 
 msgid "userpages##streams##filterStreams"
 msgstr "Filter streams"
