@@ -39,7 +39,7 @@ story('ProductList')
 
 story('ProductTypeChooser')
     .addWithJSX('basic', () => (
-        <ProductTypeChooser onSelect={() => {}} />
+        <ProductTypeChooser />
     ))
 
 story('ExpirationCounter')

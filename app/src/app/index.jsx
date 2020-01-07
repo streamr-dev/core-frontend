@@ -15,6 +15,7 @@ import StreamPreviewPage from '$mp/containers/StreamPreviewPage'
 import EditProductPage from '$mp/containers/deprecated/EditProductPage'
 import EditProductPage2 from '$mp/containers/EditProductPage'
 import Products from '$mp/containers/Products'
+import NewProductPage from '$mp/components/NewProductPage'
 
 // Auth
 import SessionProvider from '$auth/components/SessionProvider'
@@ -163,6 +164,7 @@ const MarketplaceRouter = () => (process.env.COMMUNITY_PRODUCTS ? [
     <Route exact path={marketplace.main} component={Products} key="Products" />,
     <Route exact path={formatPath(marketplace.products, ':id', 'streamPreview', ':streamId')} component={StreamPreviewPage} key="StreamPreview" />,
     <Route exact path={formatPath(marketplace.products, ':id')} component={ProductPage2} key="ProductPage2" />,
+    <Route exact path={routes.newProduct()} component={NewProductPage} key="NewProductPage" />,
 ] : [
     <Route exact path={marketplace.main} component={Products} key="Products" />,
     <Route exact path={links.marketplace.createProduct} component={CreateProductAuth} key="CreateProduct" />,
