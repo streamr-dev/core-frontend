@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useState, useCallback, useContext } from 'react'
+import React, { useState, useCallback, useContext, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { Translate } from 'react-redux-i18n'
@@ -13,6 +13,7 @@ import RadioButtonGroup from '$shared/components/RadioButtonGroup'
 import SetPrice from '$mp/components/SetPrice'
 import Toggle from '$shared/components/Toggle'
 import { selectContractProduct } from '$mp/modules/contractProduct/selectors'
+import useAccountAddress from '$shared/hooks/useAccountAddress'
 
 import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
 import useEditableProduct from '../ProductController/useEditableProduct'
@@ -64,6 +65,14 @@ const PriceSelector = () => {
     const isFreeProduct = !!product.isFree
 
     const { isValid, message } = useValidation('pricePerSecond')
+
+    const accountAddress = useAccountAddress()
+
+    useEffect(() => {
+        if (!product.beneficiaryAddress && accountAddress) {
+            updateBeneficiaryAddress(accountAddress)
+        }
+    }, [product.beneficiaryAddress, updateBeneficiaryAddress, accountAddress])
 
     return (
         <section id="price" className={cx(styles.root, styles.PriceSelector)}>
