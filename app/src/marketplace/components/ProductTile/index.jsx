@@ -127,7 +127,7 @@ class ProductTile extends Component<Props, State> {
                             <Tile.Labels
                                 topLeft
                                 labels={{
-                                    community: isCommunityProduct(type),
+                                    community: isCommunity,
                                 }}
                             />
                         </div>

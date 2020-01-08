@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useCallback, useEffect, useRef, useMemo } from 'react'
+import React, { useCallback, useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import merge from 'lodash/merge'
 import Helmet from 'react-helmet'
@@ -22,8 +22,7 @@ import {
 } from '$mp/modules/productList/actions'
 import { getCategories } from '$mp/modules/categories/actions'
 import { selectAllCategories } from '$mp/modules/categories/selectors'
-import { getAllCommunityStats } from '$mp/modules/communityProduct/actions'
-import { selectCommunityProducts } from '$mp/modules/communityProduct/selectors'
+import useCommunityStats from '$mp/modules/communityProduct/hooks/useCommunityStats'
 import {
     selectProductList,
     selectProductListError,
@@ -42,12 +41,11 @@ const Products = () => {
     const dispatch = useDispatch()
     const productsRef = useRef()
     productsRef.current = products
-    const communityStats = useSelector(selectCommunityProducts)
 
     const { api: createProductModal } = useModal('marketplace.createProduct')
 
     const loadCategories = useCallback(() => dispatch(getCategories(false)), [dispatch])
-    const loadCommunities = useCallback(() => dispatch(getAllCommunityStats()), [dispatch])
+    const { load: loadCommunities, members } = useCommunityStats()
 
     const loadProducts = useCallback(() => dispatch(getProducts()), [dispatch])
 
@@ -65,17 +63,6 @@ const Products = () => {
         dispatch(clearFilters())
         dispatch(getProducts(true))
     }, [dispatch])
-
-    const members = useMemo(() => (
-        (communityStats || {}).reduce((result, { id, memberCount }) => {
-            if (!memberCount) { return result }
-
-            return {
-                ...result,
-                [id.toLowerCase()]: memberCount.total,
-            }
-        }, {})
-    ), [communityStats])
 
     useEffect(() => {
         loadCategories()
