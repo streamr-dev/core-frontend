@@ -4,6 +4,8 @@ import React, { useState, useCallback, useEffect, useMemo } from 'react'
 import BN from 'bignumber.js'
 import { Translate, I18n } from 'react-redux-i18n'
 
+import TextInput from '$shared/components/TextInput'
+import useWeb3Status from '$shared/hooks/useWeb3Status'
 import LoadingIndicator from '$userpages/components/LoadingIndicator'
 import SelectField from '$mp/components/SelectField'
 import CurrencySelector from './CurrencySelector'
@@ -74,14 +76,22 @@ export const ChooseAccessPeriodDialog = ({
         ]
     }, [dataPerUsd, priceCurrency, pricePerSecond, time, timeUnit])
 
-    const getProductPrices = useCallback(async () => {
-        setLoading(true)
-        const [ethValue, daiValue] = await getUniswapEquivalents(priceInData)
-        setLoading(false)
+    const { account } = useWeb3Status()
 
-        setPriceInEth(formatDecimals(ethValue, paymentCurrencies.ETH).toString())
-        setPriceInDai(formatDecimals(daiValue, paymentCurrencies.DAI).toString())
-    }, [priceInData])
+    const isValidTime = useCallback(() => !BN(time).isNaN() && BN(time).isGreaterThan(0), [time])
+
+    const getProductPrices = useCallback(async () => {
+        if (isValidTime()) {
+            setLoading(true)
+            const [ethValue, daiValue] = await getUniswapEquivalents(priceInData)
+            setLoading(false)
+            setPriceInEth(formatDecimals(ethValue, paymentCurrencies.ETH).toString())
+            setPriceInDai(formatDecimals(daiValue, paymentCurrencies.DAI).toString())
+        } else {
+            setPriceInEth('-')
+            setPriceInDai('-')
+        }
+    }, [isValidTime, priceInData])
 
     const getAccountBalance = useCallback(async () => {
         setLoading(true)
@@ -101,9 +111,12 @@ export const ChooseAccessPeriodDialog = ({
     }, [paymentCurrency])
 
     useEffect(() => {
-        getAccountBalance()
         getProductPrices()
-    }, [getAccountBalance, getProductPrices, paymentCurrency])
+    }, [getProductPrices])
+
+    useEffect(() => {
+        getAccountBalance()
+    }, [getAccountBalance, account])
 
     const currentBalance = () => {
         switch (paymentCurrency) {
@@ -161,26 +174,20 @@ export const ChooseAccessPeriodDialog = ({
                         kind: 'primary',
                         outline: true,
                         onClick: () => onNext(time, timeUnit, paymentCurrency),
-                        disabled: BN(time).isNaN() || BN(time).isLessThanOrEqualTo(0) || loading,
+                        disabled: !isValidTime() || loading,
                     },
                 }}
                 className={styles.modalOverrides}
             >
                 <div className={styles.root}>
                     <div className={styles.accessPeriod}>
-                        <input
-                            className={styles.accessPeriodNumber}
+                        <TextInput
+                            label=""
                             type="number"
-                            name="time"
-                            id="time"
-                            min={1}
-                            value={!BN(time).isNaN() ? time : ''}
+                            hideButtons
+                            value={isValidTime() ? time : ''}
                             onChange={(e: SyntheticInputEvent<EventTarget>) => setTime(e.target.value)}
-                            onBlur={(e: SyntheticInputEvent<EventTarget>) => {
-                                if (parseInt(e.target.value, 10) <= 1) {
-                                    setTime('1')
-                                }
-                            }}
+                            className={styles.accessPeriodNumber}
                         />
                         <SelectField
                             placeholder="Select"

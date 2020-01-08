@@ -13,6 +13,7 @@ import type { ContractCurrency, NumberString, TimeUnit } from '$shared/flowtype/
 import Dialog from '$shared/components/Dialog'
 
 import style from './chooseAccessPeriod.pcss'
+import TimeUnitSelector from '$mp/components/Modal/ChooseAccessPeriodDialog/TimeUnitSelector'
 
 export type Props = {
     dataPerUsd: ?NumberString,
@@ -104,7 +105,7 @@ export class ChooseAccessPeriodDialog extends React.Component<Props, State> {
                     </FormGroup>
                     <FormGroup tag="fieldset" className={style.timeUnitFieldset}>
                         <div className={style.timeUnitSelectionCol}>
-                            {/* <TimeUnitSelector timeUnit={this.state.timeUnit} onChange={this.onTimeUnitChange} /> */}
+                            <TimeUnitSelector timeUnit={this.state.timeUnit} onChange={this.onTimeUnitChange} />
                             <div className={style.priceLabels}>
                                 <div className={style.priceColumn}>
                                     <span className={style.priceValue}>

@@ -41,12 +41,6 @@ export const getBalances = (): Promise<[BN, BN, BN]> => {
     const daiPromise = getDaiTokenBalance(web3)
 
     return Promise.all([ethPromise, dataPromise, daiPromise])
-        .then((results) => {
-            const ethBalance = BN(results[0])
-            const dataBalance = BN(results[1])
-            const daiBalance = BN(results[2])
-            return [ethBalance, dataBalance, daiBalance]
-        })
 }
 
 /**
@@ -56,17 +50,17 @@ export const getBalances = (): Promise<[BN, BN, BN]> => {
  */
 export const getUniswapEquivalents = async (dataQuantity: string): Promise<[BN, BN]> => {
     const web3 = getWeb3()
-    const amt = web3.utils.toWei(dataQuantity)
+    const amount = web3.utils.toWei(dataQuantity)
     const DATA = process.env.DATA_TOKEN_CONTRACT_ADDRESS
     const ETH = '0x0000000000000000000000000000000000000000'
     const DAI = process.env.DAI_TOKEN_CONTRACT_ADDRESS
     const safetyMargin = 1.05
 
-    let ethValue = await call(uniswapAdaptorMethods().getConversionRate(DATA, ETH, amt))
+    let ethValue = await call(uniswapAdaptorMethods().getConversionRate(DATA, ETH, amount))
     ethValue = BN(ethValue).toNumber() * safetyMargin
     ethValue = BN(web3.utils.fromWei(ethValue.toString()))
 
-    let daiValue = await call(uniswapAdaptorMethods().getConversionRate(DATA, DAI, amt))
+    let daiValue = await call(uniswapAdaptorMethods().getConversionRate(DATA, DAI, amount))
     daiValue = BN(daiValue).toNumber() * safetyMargin
     daiValue = BN(web3.utils.fromWei(daiValue.toString()))
 

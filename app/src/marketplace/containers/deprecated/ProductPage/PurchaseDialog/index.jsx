@@ -3,6 +3,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { I18n } from 'react-redux-i18n'
+import BN from 'bignumber.js'
 
 import ModalPortal from '$shared/components/ModalPortal'
 import { selectStep, selectStepParams, selectProduct, selectPurchaseData } from '$mp/modules/deprecated/purchaseDialog/selectors'
@@ -174,13 +175,17 @@ export class PurchaseDialog extends React.Component<Props> {
                     const requiredDataBalance = getStepParamField(stepParams, 'requiredDataBalance')
                     const currentDataBalance = getStepParamField(stepParams, 'currentDataBalance')
 
-                    return ( // $FlowFixMe
+                    return (
                         <NoBalanceDialog
                             onCancel={onCancel}
+                            requiredGasBalance={requiredEthBalance}
                             requiredEthBalance={requiredEthBalance}
                             currentEthBalance={currentEthBalance}
                             requiredDataBalance={requiredDataBalance}
                             currentDataBalance={currentDataBalance}
+                            currentDaiBalance={BN(0)}
+                            requiredDaiBalance={BN(0)}
+                            paymentCurrency="DATA"
                         />
                     )
                 }

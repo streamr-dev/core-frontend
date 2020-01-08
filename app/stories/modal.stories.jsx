@@ -26,6 +26,7 @@ import DeployingCommunityDialog from '$mp/components/Modal/DeployingCommunityDia
 import GetDataTokensDialog from '$mp/components/Modal/GetDataTokensDialog'
 import GetCryptoDialog from '$mp/components/Modal/GetCryptoDialog'
 import InsufficientDataDialog from '$mp/components/Modal/InsufficientDataDialog'
+import InsufficientDaiDialog from '$mp/components/Modal/InsufficientDaiDialog'
 import NoBalanceDialog from '$mp/components/Modal/NoBalanceDialog'
 import ChooseAccessPeriodDialog from '$mp/components/Modal/ChooseAccessPeriodDialog'
 import PurchaseSummaryDialog from '$mp/components/Modal/PurchaseSummaryDialog'
@@ -361,6 +362,13 @@ story('Marketplace/GetCryptoDialog')
 story('Marketplace/InsufficientDataDialog')
     .add('default', () => (
         <InsufficientDataDialog
+            onCancel={action('onCancel')}
+        />
+    ))
+
+story('Marketplace/InsufficientDaiDialog')
+    .add('default', () => (
+        <InsufficientDaiDialog
             onCancel={action('onCancel')}
         />
     ))

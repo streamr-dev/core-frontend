@@ -132,7 +132,7 @@ export const setDataAllowance = (allowance: NumberString | BN) => (dispatch: Fun
             .onTransactionComplete(resolve)
             .onError(() => reject(new Error(I18n.t('error.txAborted'))))
     })
-    // $FlowFixMe
+
     return txPromise
         .then(() => {
             dispatch(setDataAllowanceSuccess())
@@ -164,7 +164,7 @@ export const resetDataAllowance = () => (dispatch: Function) => {
             .onTransactionComplete(resolve)
             .onError(() => reject(new Error(I18n.t('error.txAborted'))))
     })
-    // $FlowFixMe
+
     return txPromise
         .then(() => {
             dispatch(resetDataAllowanceSuccess())

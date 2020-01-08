@@ -3,6 +3,7 @@
 import React from 'react'
 import cx from 'classnames'
 
+import { paymentCurrencies } from '$shared/utils/constants'
 import type { PaymentCurrency } from '$shared/flowtype/common-types'
 import SvgIcon from '$shared/components/SvgIcon'
 
@@ -13,7 +14,13 @@ type Props = {
     paymentCurrency: PaymentCurrency,
 }
 
-const availableCurrencies = process.env.NEW_MP_CONTRACT ? ['DATA', 'ETH', 'DAI'] : ['DATA']
+const availableCurrencies = process.env.NEW_MP_CONTRACT ? [
+    paymentCurrencies.DATA,
+    paymentCurrencies.ETH,
+    paymentCurrencies.DAI,
+] : [
+    paymentCurrencies.DATA,
+]
 
 const CurrencySelector = ({ onChange, paymentCurrency }: Props) => (
     <div className={styles.root}>
