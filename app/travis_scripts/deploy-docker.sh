@@ -2,6 +2,11 @@
 set -e
 ## Script for logging in to docker service and upload docker images
 docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
+echo '$TRAVIS_TAG'
+echo $TRAVIS_TAG
+echo '$TAG'
+echo $TAG
+
 if [ "$1" == "dev" ]; then
     # If the build is a cron build then it should tag and push a nightly build but if it is not a cronjob
     # then it is just another dev tag and push
@@ -23,9 +28,9 @@ if [ "$1" == "dev" ]; then
     fi
 elif [ "$1" == "production" ]; then
     echo "Tag Production latest/tag"
-    docker tag "$OWNER/$IMAGE_NAME:local" "$OWNER/$IMAGE_NAME:$TRAVIS_TAG"
+    docker tag "$OWNER/$IMAGE_NAME:local" "$OWNER/$IMAGE_NAME:$TAG"
     docker tag "$OWNER/$IMAGE_NAME:local" "$OWNER/$IMAGE_NAME:latest"
     ## Push Production
-    docker push "$OWNER/$IMAGE_NAME:$TRAVIS_TAG"
+    docker push "$OWNER/$IMAGE_NAME:$TAG"
     docker push "$OWNER/$IMAGE_NAME:latest"
 fi
