@@ -105,6 +105,7 @@ jobs:
     - NODE_ENV=production
     - PORT=12345
     - VERSION=$TRAVIS_BRANCH
+    - TAG=dev    
     - SENTRY_ENVIRONMENT=staging
     - BUNDLE_ANALYSIS=1
     - STREAMR_API_URL=https://staging.streamr.com/api/v1
@@ -169,6 +170,7 @@ jobs:
     - BUNDLE_ANALYSIS=1
     - PORT=12345
     - VERSION=$TRAVIS_PULL_REQUEST_BRANCH
+    - TAG=dev
     - SENTRY_ENVIRONMENT=pr
     - STREAMR_API_URL=https://staging.streamr.com/api/v1
     - STREAMR_WS_URL=wss://staging.streamr.com/api/v1/ws
@@ -200,6 +202,7 @@ jobs:
     - NODE_ENV=production
     - PORT=12345
     - VERSION=$TRAVIS_BRANCH
+    - TAG=latest
     - SENTRY_ENVIRONMENT=production
     - STREAMR_API_URL=https://www.streamr.com/api/v1
     - STREAMR_WS_URL=wss://www.streamr.com/api/v1/ws
@@ -238,6 +241,7 @@ jobs:
     - VERSION=$TRAVIS_TAG
     - PORT=12345
     - VERSION=$TRAVIS_TAG
+    - TAG=latest
     - SENTRY_ENVIRONMENT=production
     - STREAMR_API_URL=https://streamr.network/api/v1
     - STREAMR_WS_URL=wss://streamr.network/api/v1/ws
@@ -298,6 +302,7 @@ jobs:
     - NODE_ENV=production
     - PORT=12345
     - VERSION=$TRAVIS_TAG
+    - TAG=latest
     - SENTRY_ENVIRONMENT=lisboa
     - STREAMR_API_URL=https://lisboa.streamr.com/api/v1
     - STREAMR_WS_URL=wss://lisboa.streamr.com/api/v1/ws
