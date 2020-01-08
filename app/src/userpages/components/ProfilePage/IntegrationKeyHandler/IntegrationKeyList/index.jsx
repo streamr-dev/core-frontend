@@ -50,12 +50,12 @@ const IntegrationKeyItem = ({
                     <span className={styles.balanceLabel}>DATA</span>
                     <span className={styles.balanceValue}>
                         {!fetchingDataBalance && !dataBalanceError && (dataBalance)}
-                        {!fetchingDataBalance && dataBalanceError && '-'}
+                        {!fetchingDataBalance && !!dataBalanceError && '-'}
                     </span>
                     <span className={styles.balanceLabel}>ETH</span>
                     <span className={styles.balanceValue}>
                         {!fetchingEthBalance && !ethBalanceError && (ethBalance)}
-                        {!fetchingEthBalance && ethBalanceError && '-'}
+                        {!fetchingEthBalance && !!ethBalanceError && '-'}
                     </span>
                 </div>
             )}
