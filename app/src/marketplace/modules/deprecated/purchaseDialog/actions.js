@@ -59,11 +59,6 @@ const getBalances = (): Promise<[BN, BN]> => {
     const dataPromise = getDataTokenBalance(web3)
 
     return Promise.all([ethPromise, dataPromise])
-        .then((results) => {
-            const ethBalance = BN(results[0])
-            const dataBalance = BN(results[1])
-            return [ethBalance, dataBalance]
-        })
 }
 
 export const validateDataBalanceForPurchase = async (price: BN) => {

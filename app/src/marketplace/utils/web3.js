@@ -21,17 +21,17 @@ const uniswapAdaptorMethods = () => getContract(getConfig().uniswapAdaptor).meth
 
 export const getEthBalance = (web3Instance: StreamrWeb3): Promise<number> => (web3Instance.getDefaultAccount()
     .then((myAccount) => web3Instance.eth.getBalance(myAccount).then((balance) => BN(balance)))
-    .then(fromAtto).then((result) => result.toString())
+    .then(fromAtto)
 )
 
 export const getDataTokenBalance = (web3Instance: StreamrWeb3): SmartContractCall<number> => (web3Instance.getDefaultAccount()
     .then((myAddress) => call(dataTokenContractMethods().balanceOf(myAddress)))
-    .then(fromAtto).then((result) => result.toString())
+    .then(fromAtto)
 )
 
 export const getDaiTokenBalance = (web3Instance: StreamrWeb3): SmartContractCall<number> => (web3Instance.getDefaultAccount()
     .then((myAddress) => call(daiTokenContractMethods().balanceOf(myAddress)))
-    .then(fromAtto).then((result) => result.toString())
+    .then(fromAtto)
 )
 
 export const getBalances = (): Promise<[BN, BN, BN]> => {
