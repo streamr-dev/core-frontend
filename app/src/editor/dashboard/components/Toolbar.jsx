@@ -16,7 +16,7 @@ import Toolbar from '$editor/shared/components/Toolbar'
 
 import ShareDialog from './ShareDialog'
 
-import styles from '$editor/canvas/components/Toolbar.pcss'
+import styles from '$editor/canvas/components/Toolbar/Toolbar.pcss'
 import dashboardStyles from './Toolbar.pcss'
 
 /* eslint-disable react/no-unused-state */

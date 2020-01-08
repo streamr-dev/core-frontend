@@ -20,15 +20,15 @@ import UseState from '$shared/components/UseState'
 import confirmDialog from '$shared/utils/confirm'
 
 import Toolbar from '$editor/shared/components/Toolbar'
-import useCanvasCamera from '../hooks/useCanvasCamera'
-import { RunTabs } from '../state'
-import { getCanvasMessages, getMaxLevel } from '../state/messages'
+import useCanvasCamera from '../../hooks/useCanvasCamera'
+import { RunTabs } from '../../state'
+import { getCanvasMessages, getMaxLevel } from '../../state/messages'
 
-import ShareDialog from './ShareDialog'
-import CanvasSearch from './CanvasSearch'
-import * as RunController from './CanvasController/Run'
-import { useCameraContext } from './Camera'
-import { MessageIconSimple } from './ConsoleSidebar'
+import ShareDialog from '../ShareDialog'
+import CanvasSearch from '../CanvasSearch'
+import * as RunController from '../CanvasController/Run'
+import { useCameraContext } from '../Camera'
+import { MessageIconSimple } from '../ConsoleSidebar'
 import styles from './Toolbar.pcss'
 
 function ZoomControls({ className, canvas }) {
