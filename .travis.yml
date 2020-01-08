@@ -238,6 +238,7 @@ jobs:
     - VERSION=$TRAVIS_TAG
     - PORT=12345
     - VERSION=$TRAVIS_TAG
+    - TAG=$TRAVIS_TAG
     - SENTRY_ENVIRONMENT=production
     - STREAMR_API_URL=https://streamr.network/api/v1
     - STREAMR_WS_URL=wss://streamr.network/api/v1/ws
@@ -298,6 +299,7 @@ jobs:
     - NODE_ENV=production
     - PORT=12345
     - VERSION=$TRAVIS_TAG
+    - TAG=$TRAVIS_TAG
     - SENTRY_ENVIRONMENT=lisboa
     - STREAMR_API_URL=https://lisboa.streamr.com/api/v1
     - STREAMR_WS_URL=wss://lisboa.streamr.com/api/v1/ws
