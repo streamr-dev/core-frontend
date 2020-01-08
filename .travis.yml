@@ -75,6 +75,8 @@ jobs:
     script: "$TRAVIS_BUILD_DIR/app/travis_scripts/visual-tests.sh"
   - stage: Build docker (Dev/Nightly)
     if: branch = development
+    env:
+      - TAG=dev
     install: true
     script:
       - npm ci
@@ -88,6 +90,8 @@ jobs:
           branch: development
   - stage: Build docker (Production)
     if: branch = master
+    env:
+      - TAG=latest
     install: true
     script:
       - npm ci
