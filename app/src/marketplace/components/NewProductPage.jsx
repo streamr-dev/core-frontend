@@ -39,8 +39,7 @@ const UnstyledNewProductPage = ({ className, location: { search } }: Props) => {
                         id,
                     })))
                 }
-            })
-            .catch(setError)
+            }, setError)
     }, [dispatch, isMounted, search])
 
     useEffect(() => {
