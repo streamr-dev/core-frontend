@@ -66,7 +66,7 @@ export class ChooseAccessPeriodDialog extends React.Component<Props, State> {
         return (
             <Dialog
                 onClose={onCancel}
-                title={I18n.t('modal.chooseAccessPeriod.title')}
+                title={I18n.t('modal.chooseAccessPeriod.mobileTitle')}
                 actions={{
                     cancel: {
                         title: I18n.t('modal.common.cancel'),
@@ -85,7 +85,7 @@ export class ChooseAccessPeriodDialog extends React.Component<Props, State> {
                 <Form className={style.accessPeriodForm}>
                     <FormGroup className={style.accessPeriodNumberSelector}>
                         <input
-                            className={style.accessPeriodNumber}
+                            className={style.accessPeriodNumberOld}
                             type="text"
                             name="time"
                             id="time"
