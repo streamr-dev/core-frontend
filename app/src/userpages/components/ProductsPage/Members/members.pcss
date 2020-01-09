@@ -12,6 +12,21 @@
 
 .addressRow {}
 
+.checkboxContainer {
+  position: absolute;
+  padding: 0.75rem;
+  padding-right: 0.5rem;
+  top: 50%;
+  left: 0;
+  transform: translate(-100%, -50%);
+  display: none;
+}
+
+.checkbox {
+  margin: 0;
+  padding: 0;
+}
+
 .rowSelected,
 .addressRow:hover {
   .fullAddress {
@@ -21,11 +36,17 @@
   .truncatedAddress {
     display: none;
   }
+
+  .checkboxContainer {
+    display: block;
+  }
 }
 
 .addressColumn {
   min-width: 0 !important;
   max-width: 8rem !important;
+  position: relative;
+  overflow: visible;
 }
 
 .joinColumn {
@@ -44,12 +65,6 @@
   max-width: 2rem !important;
 }
 
-.checkbox {
-  float: left;
-  margin-top: 5px;
-  margin-right: 5px;
-}
-
 .selectedToolbar {
   position: fixed;
   left: 0;
@@ -57,9 +72,32 @@
   background: white;
   width: 100%;
   height: 80px;
-  transition: all 0.3s ease 0s;
+  transition: all 0.3s ease 0.1s;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: #525252;
+  font-family: var(--sans);
+  font-size: 1rem;
+  letter-spacing: 0;
+  line-height: 40px;
 }
 
 .hasAnySelected {
   bottom: 0;
+}
+
+.selectedToolbarInner {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-column-gap: 1rem;
+}
+
+.numberOfSelected {
+}
+
+.actionButtons {
+  button + button {
+    margin-left: 1rem;
+  }
 }

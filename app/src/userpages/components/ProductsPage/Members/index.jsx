@@ -21,8 +21,9 @@ import useProduct from '$mp/containers/ProductController/useProduct'
 import useFilterSort from '$userpages/hooks/useFilterSort'
 import Table from '$shared/components/Table'
 import StatusIcon from '$shared/components/StatusIcon'
-import { truncate } from '$shared/utils/text'
 import Checkbox from '$shared/components/Checkbox'
+import Button from '$shared/components/Button'
+import { truncate } from '$shared/utils/text'
 import { useSelectionContext, SelectionProvider } from '$shared/hooks/useSelection'
 
 import styles from './members.pcss'
@@ -74,6 +75,13 @@ const Members = () => {
         } else {
             selection.add(id)
         }
+    }, [selection])
+
+    const isAnySelected = !selection.isEmpty()
+
+    const onApprove = useCallback(() => {
+        console.log(...selection.selection)
+        selection.none()
     }, [selection])
 
     return (
@@ -129,11 +137,13 @@ const Members = () => {
                                     onClick={() => toggleSelect(member.id)}
                                 >
                                     <Table.Th noWrap title={member.address} className={styles.addressColumn}>
-                                        <Checkbox
-                                            value={isSelected}
-                                            onChange={() => toggleSelect(member.id)}
-                                            className={styles.checkbox}
-                                        />
+                                        <div className={styles.checkboxContainer}>
+                                            <Checkbox
+                                                value={isSelected}
+                                                onChange={() => toggleSelect(member.id)}
+                                                className={styles.checkbox}
+                                            />
+                                        </div>
                                         <span className={styles.fullAddress}>{member.address}</span>
                                         <span className={styles.truncatedAddress}>
                                             {truncate(member.address, {
@@ -153,11 +163,40 @@ const Members = () => {
                 </Table>
             </ListContainer>
             <div className={cx(styles.selectedToolbar, {
-                [styles.hasAnySelected]: !selection.isEmpty(),
+                [styles.hasAnySelected]: isAnySelected,
             })}
             >
-                <ListContainer>
-                    {selection.size()} applicants selected
+                <ListContainer className={styles.selectedToolbarInner}>
+                    <div className={styles.numberOfSelected}>
+                        {selection.size()} applicants selected
+                    </div>
+                    <div className={styles.actionButtons}>
+                        <Button
+                            kind="link"
+                            disabled={!isAnySelected}
+                            type="button"
+                            onClick={() => selection.none()}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            kind="primary"
+                            outline
+                            disabled={!isAnySelected}
+                            type="button"
+                            onClick={() => selection.none()}
+                        >
+                            Deselect all
+                        </Button>
+                        <Button
+                            kind="primary"
+                            disabled={!isAnySelected}
+                            type="button"
+                            onClick={onApprove}
+                        >
+                            Approve
+                        </Button>
+                    </div>
                 </ListContainer>
             </div>
         </CoreLayout>

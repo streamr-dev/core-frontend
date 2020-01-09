@@ -91,5 +91,5 @@ export const SelectionProvider = ({ children }) => (
 )
 
 SelectionProvider.propTypes = {
-    children: t.func,
+    children: t.node,
 }
