@@ -30,7 +30,7 @@ import * as RunController from '../CanvasController/Run'
 import { useCameraContext } from '../Camera'
 import { MessageIconSimple } from '../ConsoleSidebar'
 import styles from './Toolbar.pcss'
-import ToolbarInner from './ToolbarInner'
+import ToolbarLayout from './ToolbarLayout'
 
 function ZoomControls({ className, canvas }) {
     const camera = useCameraContext()
@@ -170,8 +170,8 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
             >
                 <ModalContainer modalId="ShareDialog">
                     {({ api: shareDialog }) => (
-                        <ToolbarInner>
-                            <div className={ToolbarInner.classNames.LEFT}>
+                        <ToolbarLayout>
+                            <div className={ToolbarLayout.classNames.LEFT}>
                                 <UseState initialValue={false}>
                                     {(editing, setEditing) => (
                                         <div className={styles.CanvasNameContainer}>
@@ -264,7 +264,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                 <ZoomControls className={styles.ToolbarZoomControls} canvas={canvas} />
                                 <div />
                             </div>
-                            <div className={ToolbarInner.classNames.CENTER}>
+                            <div className={ToolbarLayout.classNames.CENTER}>
                                 <div>
                                     <R.ButtonGroup
                                         className={cx(styles.RunButtonGroup, {
@@ -370,7 +370,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                     </R.ButtonGroup>
                                 </div>
                             </div>
-                            <div className={ToolbarInner.classNames.RIGHT}>
+                            <div className={ToolbarLayout.classNames.RIGHT}>
                                 <div />
                                 <div className={styles.StateSelectorContainer}>
                                     <div className={styles.StateSelector}>
@@ -498,7 +498,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                     </Tooltip>
                                 </div>
                             </div>
-                        </ToolbarInner>
+                        </ToolbarLayout>
                     )}
                 </ModalContainer>
                 <ShareDialog canvas={canvas} />

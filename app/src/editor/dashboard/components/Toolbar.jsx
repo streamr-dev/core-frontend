@@ -17,7 +17,7 @@ import Toolbar from '$editor/shared/components/Toolbar'
 import ShareDialog from './ShareDialog'
 
 import styles from '$editor/canvas/components/Toolbar/Toolbar.pcss'
-import ToolbarInner from '$editor/canvas/components/Toolbar/ToolbarInner'
+import ToolbarLayout from '$editor/canvas/components/Toolbar/ToolbarLayout'
 
 /* eslint-disable react/no-unused-state */
 
@@ -50,8 +50,8 @@ export default withErrorBoundary(ErrorComponentView)(class DashboardToolbar exte
             <div className={cx(className, styles.CanvasToolbar)} ref={this.elRef}>
                 <ModalContainer modalId="ShareDialog">
                     {({ api: shareDialog }) => (
-                        <ToolbarInner>
-                            <div className={ToolbarInner.classNames.LEFT}>
+                        <ToolbarLayout>
+                            <div className={ToolbarLayout.classNames.LEFT}>
                                 <UseState initialValue={false}>
                                     {(editing, setEditing) => (
                                         <div className={styles.CanvasNameContainer}>
@@ -98,8 +98,8 @@ export default withErrorBoundary(ErrorComponentView)(class DashboardToolbar exte
                                 </div>
                                 <div />
                             </div>
-                            <div className={ToolbarInner.classNames.CENTER} />
-                            <div className={ToolbarInner.classNames.RIGHT}>
+                            <div className={ToolbarLayout.classNames.CENTER} />
+                            <div className={ToolbarLayout.classNames.RIGHT}>
                                 <div />
                                 <div className={cx(styles.ToolbarLeft, styles.DashboardButtons)}>
                                     <div className={styles.ModalButtons}>
@@ -122,7 +122,7 @@ export default withErrorBoundary(ErrorComponentView)(class DashboardToolbar exte
                                     </div>
                                 </div>
                             </div>
-                        </ToolbarInner>
+                        </ToolbarLayout>
                     )}
                 </ModalContainer>
                 <ShareDialog dashboard={dashboard} />

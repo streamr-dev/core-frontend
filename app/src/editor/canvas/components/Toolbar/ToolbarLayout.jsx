@@ -8,16 +8,16 @@ type Props = {
 }
 
 const classNames = {
-    CENTER: 'ToolbarInner-center',
-    LEFT: 'ToolbarInner-left',
-    RIGHT: 'ToolbarInner-right',
+    CENTER: 'ToolbarLayout-center',
+    LEFT: 'ToolbarLayout-left',
+    RIGHT: 'ToolbarLayout-right',
 }
 
-const UnstyledToolbarInner = ({ className, ...props }: Props) => (
+const UnstyledToolbarLayout = ({ className, ...props }: Props) => (
     <div {...props} className={className} />
 )
 
-const ToolbarInner = styled(UnstyledToolbarInner)`
+const ToolbarLayout = styled(UnstyledToolbarLayout)`
     box-sizing: content-box;
     align-items: center;
     background: #f5f5f5;
@@ -48,6 +48,6 @@ const ToolbarInner = styled(UnstyledToolbarInner)`
     }
 `
 
-ToolbarInner.classNames = classNames
+ToolbarLayout.classNames = classNames
 
-export default ToolbarInner
+export default ToolbarLayout
