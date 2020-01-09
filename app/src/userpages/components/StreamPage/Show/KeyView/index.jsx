@@ -12,6 +12,8 @@ import type { StoreState } from '$shared/flowtype/store-state'
 import type { ResourceKeyId, ResourceKey, ResourcePermission } from '$shared/flowtype/resource-key-types'
 import { addStreamResourceKey, editStreamResourceKey, removeStreamResourceKey, getStreamResourceKeys } from '$shared/modules/resourceKey/actions'
 import { selectOpenStreamId, selectOpenStreamResourceKeys } from '$userpages/modules/userPageStreams/selectors'
+import Notification from '$shared/utils/Notification'
+import { NotificationIcon } from '$shared/utils/constants'
 
 import PermissionCredentialsControl from './PermissionCredentialsControl'
 
@@ -36,7 +38,12 @@ type DispatchProps = {
 type Props = DispatchProps & OwnProps & StateProps
 
 export class KeyView extends Component<Props> {
+    mounted: boolean = false
+
+    getKeysRequestCount = 0
+
     componentDidMount() {
+        this.mounted = true
         this.getKeys()
     }
 
@@ -47,9 +54,30 @@ export class KeyView extends Component<Props> {
         }
     }
 
-    getKeys = () => {
-        if (this.props.disabled || this.props.streamId == null) { return }
-        this.props.getKeys(this.props.streamId)
+    componentWillUnmount() {
+        this.mounted = false
+    }
+
+    getKeys = async () => {
+        const { disabled, streamId, getKeys } = this.props
+
+        this.getKeysRequestCount += 1
+
+        if (disabled || streamId == null) { return }
+
+        const numRequests = this.getKeysRequestCount
+
+        try {
+            await getKeys(streamId)
+        } catch (error) {
+            if (this.mounted && numRequests === this.getKeysRequestCount) {
+                Notification.push({
+                    title: 'Loading keys failed.',
+                    icon: NotificationIcon.ERROR,
+                    error,
+                })
+            }
+        }
     }
 
     addKey = async (keyName: string, permission: ?ResourcePermission): Promise<void> => {
@@ -102,7 +130,7 @@ export const mapStateToProps = (state: StoreState): StateProps => ({
 
 export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getKeys(streamId: StreamId) {
-        dispatch(getStreamResourceKeys(streamId))
+        return dispatch(getStreamResourceKeys(streamId))
     },
     addKey(streamId: StreamId, keyName: string, keyPermission: ResourcePermission) {
         return dispatch(addStreamResourceKey(streamId, keyName, keyPermission))
