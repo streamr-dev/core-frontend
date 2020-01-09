@@ -1,7 +1,7 @@
 import React from 'react'
 import { mount } from 'enzyme'
 import { act } from 'react-dom/test-utils'
-import useSelection from '../hooks/useSelection'
+import useSelection from '$shared/hooks/useSelection'
 
 describe('useSelection', () => {
     it('has empty initial state', () => {

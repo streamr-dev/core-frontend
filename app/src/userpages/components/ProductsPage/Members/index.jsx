@@ -4,6 +4,7 @@ import React, { useEffect, useCallback, useMemo } from 'react'
 import Helmet from 'react-helmet'
 import { I18n } from 'react-redux-i18n'
 import { withRouter } from 'react-router-dom'
+import cx from 'classnames'
 
 import CoreLayout from '$shared/components/Layout/Core'
 import Header from '../Header'
@@ -18,8 +19,27 @@ import ProductController, { useController } from '$mp/containers/ProductControll
 import usePending from '$shared/hooks/usePending'
 import useProduct from '$mp/containers/ProductController/useProduct'
 import useFilterSort from '$userpages/hooks/useFilterSort'
+import Table from '$shared/components/Table'
+import StatusIcon from '$shared/components/StatusIcon'
+import { truncate } from '$shared/utils/text'
+import Checkbox from '$shared/components/Checkbox'
+import { useSelectionContext, SelectionProvider } from '$shared/hooks/useSelection'
 
 import styles from './members.pcss'
+
+const members = [{
+    id: '1',
+    address: '0xeABE498C90fB31F6932Ab9DA9C4997a6d9f18639',
+}, {
+    id: '2',
+    address: '0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1',
+}, {
+    id: '3',
+    address: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
+}, {
+    id: '4',
+    address: '0x795063367EbFEB994445d810b94461274E4f109A',
+}]
 
 const Members = () => {
     const { loadCommunityProduct } = useController()
@@ -46,6 +66,15 @@ const Members = () => {
             loadCommunity(beneficiaryAddress)
         }
     }, [communityDeployed, beneficiaryAddress, loadCommunity])
+    const selection = useSelectionContext()
+
+    const toggleSelect = useCallback((id) => {
+        if (selection.has(id)) {
+            selection.remove(id)
+        } else {
+            selection.add(id)
+        }
+    }, [selection])
 
     return (
         <CoreLayout
@@ -78,8 +107,59 @@ const Members = () => {
         >
             <Helmet title={`Streamr Core | ${I18n.t('userpages.title.members')}`} />
             <ListContainer>
-                TODO: members list missing
+                <Table>
+                    <thead>
+                        <tr>
+                            <th>Ethereum address</th>
+                            <th className={styles.joinColumn}>Joined / requested</th>
+                            <th className={styles.dataColumn}>Last data</th>
+                            <th className={styles.statusColumn}>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {members.map((member) => {
+                            const isSelected = selection.has(member.id)
+
+                            return (
+                                <tr
+                                    key={member.id}
+                                    className={cx(styles.addressRow, {
+                                        [styles.rowSelected]: isSelected,
+                                    })}
+                                    onClick={() => toggleSelect(member.id)}
+                                >
+                                    <Table.Th noWrap title={member.address} className={styles.addressColumn}>
+                                        <Checkbox
+                                            value={isSelected}
+                                            onChange={() => toggleSelect(member.id)}
+                                            className={styles.checkbox}
+                                        />
+                                        <span className={styles.fullAddress}>{member.address}</span>
+                                        <span className={styles.truncatedAddress}>
+                                            {truncate(member.address, {
+                                                maxLength: 15,
+                                            })}
+                                        </span>
+                                    </Table.Th>
+                                    <Table.Td noWrap className={styles.joinColumn}>-</Table.Td>
+                                    <Table.Td noWrap className={styles.dataColumn}>-</Table.Td>
+                                    <Table.Td noWrap className={styles.statusColumn}>
+                                        <StatusIcon status={StatusIcon.INACTIVE} />
+                                    </Table.Td>
+                                </tr>
+                            )
+                        })}
+                    </tbody>
+                </Table>
             </ListContainer>
+            <div className={cx(styles.selectedToolbar, {
+                [styles.hasAnySelected]: !selection.isEmpty(),
+            })}
+            >
+                <ListContainer>
+                    {selection.size()} applicants selected
+                </ListContainer>
+            </div>
         </CoreLayout>
     )
 }
@@ -102,7 +182,9 @@ const MembersWrap = () => {
     const key = (!!product && product.id) || ''
 
     return (
-        <Members key={key} />
+        <SelectionProvider key={key}>
+            <Members />
+        </SelectionProvider>
     )
 }
 
