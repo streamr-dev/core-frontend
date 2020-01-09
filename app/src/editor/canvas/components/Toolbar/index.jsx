@@ -171,7 +171,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                 <ModalContainer modalId="ShareDialog">
                     {({ api: shareDialog }) => (
                         <ToolbarInner>
-                            <div className="ToolbarInner-left">
+                            <div className={ToolbarInner.classNames.LEFT}>
                                 <UseState initialValue={false}>
                                     {(editing, setEditing) => (
                                         <div className={styles.CanvasNameContainer}>
@@ -264,7 +264,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                 <ZoomControls className={styles.ToolbarZoomControls} canvas={canvas} />
                                 <div />
                             </div>
-                            <div className="ToolbarInner-center">
+                            <div className={ToolbarInner.classNames.CENTER}>
                                 <div>
                                     <R.ButtonGroup
                                         className={cx(styles.RunButtonGroup, {
@@ -370,7 +370,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                     </R.ButtonGroup>
                                 </div>
                             </div>
-                            <div className="ToolbarInner-right">
+                            <div className={ToolbarInner.classNames.RIGHT}>
                                 <div />
                                 <div className={styles.StateSelectorContainer}>
                                     <div className={styles.StateSelector}>
