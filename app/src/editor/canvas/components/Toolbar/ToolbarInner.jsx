@@ -7,6 +7,12 @@ type Props = {
     className?: ?string,
 }
 
+const classNames = {
+    CENTER: 'ToolbarInner-center',
+    LEFT: 'ToolbarInner-left',
+    RIGHT: 'ToolbarInner-right',
+}
+
 const UnstyledToolbarInner = ({ className, ...props }: Props) => (
     <div {...props} className={className} />
 )
@@ -29,17 +35,19 @@ const ToolbarInner = styled(UnstyledToolbarInner)`
         flex-wrap: nowrap;
     }
 
-    .ToolbarInner-left,
-    .ToolbarInner-right,
-    .ToolbarInner-center {
+    .${classNames.LEFT},
+    .${classNames.RIGHT},
+    .${classNames.CENTER} {
         justify-content: space-between;
     }
 
-    .ToolbarInner-left > * + *,
-    .ToolbarInner-right > * + *,
-    .ToolbarInner-center > * + * {
+    .${classNames.LEFT} > * + *,
+    .${classNames.RIGHT} > * + *,
+    .${classNames.CENTER} > * + * {
         margin-left: 16px;
     }
 `
+
+ToolbarInner.classNames = classNames
 
 export default ToolbarInner
