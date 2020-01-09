@@ -1,0 +1,71 @@
+.root {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  font-size: 14px;
+}
+
+.content {
+  padding: 1.4um 2um;
+}
+
+.InputNewShare {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-column-gap: 1um;
+
+  .input {
+    font-size: 14px;
+  }
+
+  .plusIcon {
+    height: 1um;
+    width: 1um;
+  }
+}
+
+.userPermissions {
+  border-top: 1px solid #EFEFEF;
+  border-bottom: 1px solid #EFEFEF;
+
+  .permissionsHeader {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+
+    h4 {
+      font-size: inherit;
+      margin: 0;
+    }
+  }
+
+  .permissionsCheckboxes {
+    display: grid;
+    grid-template-columns: auto 1fr auto 1fr;
+    grid-column-gap: 1um;
+    align-items: center;
+
+    label {
+      margin-bottom: 0;
+    }
+  }
+
+  .trashIcon {
+    height: 1um;
+    width: 1um;
+  }
+}
+
+.footer {
+  border-top: 1px solid grey;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+
+  .content {
+    display: flex;
+
+    :first-child {
+      margin-right: auto;
+    }
+  }
+}

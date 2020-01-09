@@ -30,6 +30,7 @@ import Sidebar from '$editor/shared/components/Sidebar'
 import { useCanvasSelection, SelectionProvider } from './components/CanvasController/useCanvasSelection'
 import ModuleSidebar from './components/ModuleSidebar'
 import ConsoleSidebar from './components/ConsoleSidebar'
+import ShareSidebar from './components/ShareSidebar'
 import KeyboardShortcutsSidebar from './components/KeyboardShortcutsSidebar'
 import { CameraProvider, cameraControl } from './components/Camera'
 import { useCanvasCameraEffects } from './hooks/useCanvasCamera'
@@ -80,24 +81,8 @@ const CanvasEditComponent = class CanvasEdit extends PureComponent {
         this.props.sidebar.open('module', show)
     }
 
-    moduleSidebarClose = () => {
-        this.props.sidebar.close('module')
-    }
-
     consoleSidebarOpen = (show = true) => {
         this.props.sidebar.open('console', show)
-    }
-
-    consoleSidebarClose = () => {
-        this.props.sidebar.close('console')
-    }
-
-    keyboardShortcutOpen = (show = true) => {
-        this.props.sidebar.open('keyboardShortcuts', show)
-    }
-
-    keyboardShortcutClose = () => {
-        this.props.sidebar.close('keyboardShortcuts')
     }
 
     selectModule = async ({ hash } = {}) => {
@@ -454,8 +439,7 @@ const CanvasEditComponent = class CanvasEdit extends PureComponent {
                             canvasStart={this.canvasStart}
                             canvasStop={this.canvasStop}
                             canvasExit={this.canvasExit}
-                            consoleSidebarOpen={this.consoleSidebarOpen}
-                            keyboardShortcutOpen={this.keyboardShortcutOpen}
+                            sidebar={sidebar}
                         />
                         <Sidebar
                             className={styles.ModuleSidebar}
@@ -463,12 +447,12 @@ const CanvasEditComponent = class CanvasEdit extends PureComponent {
                         >
                             {sidebar.isOpen('keyboardShortcuts') && (
                                 <KeyboardShortcutsSidebar
-                                    onClose={this.keyboardShortcutClose}
+                                    onClose={() => sidebar.close('keyboardShortcuts')}
                                 />
                             )}
                             {sidebar.isOpen('module') && (
                                 <ModuleSidebar
-                                    onClose={this.moduleSidebarClose}
+                                    onClose={() => sidebar.close('module')}
                                     canvas={canvas}
                                     selectedModuleHash={this.props.selection.last()}
                                     setModuleOptions={this.setModuleOptions}
@@ -476,10 +460,16 @@ const CanvasEditComponent = class CanvasEdit extends PureComponent {
                             )}
                             {sidebar.isOpen('console') && (
                                 <ConsoleSidebar
-                                    onClose={this.consoleSidebarClose}
+                                    onClose={() => sidebar.close('console')}
                                     canvas={canvas}
                                     selectedModuleHash={this.props.selection.last()}
                                     selectModule={this.selectModule}
+                                />
+                            )}
+                            {sidebar.isOpen('share') && (
+                                <ShareSidebar
+                                    onClose={() => sidebar.close('share')}
+                                    canvas={canvas}
                                 />
                             )}
                         </Sidebar>

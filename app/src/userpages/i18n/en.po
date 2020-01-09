@@ -946,7 +946,7 @@ msgid "modal##shareResource##withLink"
 msgstr "Public — viewable by anyone with the link or via the API"
 
 msgid "modal##shareResource##enterEmailAddress"
-msgstr "Enter email address or Ethereum account."
+msgstr "Enter email or Ethereum address."
 
 msgid "modal##shareResource##permissions##read"
 msgstr "View only"
