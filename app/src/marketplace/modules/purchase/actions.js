@@ -17,6 +17,7 @@ import { getProductSubscription } from '../product/actions'
 import { addTransaction } from '../transactions/actions'
 
 import {
+    CLEAR_PURCHASE_STATE,
     BUY_PRODUCT_REQUEST,
     BUY_PRODUCT_SUCCESS,
     BUY_PRODUCT_FAILURE,
@@ -35,6 +36,8 @@ import type {
 import * as services from './services'
 
 const FIVE_SECONDS = 5000
+
+export const clearPurchaseState: ReduxActionCreator = createAction(CLEAR_PURCHASE_STATE)
 
 const buyProductRequest: PurchaseActionCreator = createAction(
     BUY_PRODUCT_REQUEST,

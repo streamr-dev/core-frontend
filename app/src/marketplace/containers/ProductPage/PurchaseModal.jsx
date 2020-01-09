@@ -17,7 +17,7 @@ import { selectEthereumIdentities } from '$shared/modules/integrationKey/selecto
 import { selectProduct } from '$mp/modules/product/selectors'
 import { selectContractProduct, selectContractProductError } from '$mp/modules/contractProduct/selectors'
 import { selectDataPerUsd } from '$mp/modules/global/selectors'
-import { buyProduct } from '$mp/modules/purchase/actions'
+import { buyProduct, clearPurchaseState } from '$mp/modules/purchase/actions'
 import { transactionStates, DEFAULT_CURRENCY, paymentCurrencies } from '$shared/utils/constants'
 import {
     getDataAllowance,
@@ -105,6 +105,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
         dispatch(getDataAllowance())
         dispatch(resetDaiAllowanceState())
         dispatch(getDaiAllowance())
+        dispatch(clearPurchaseState())
 
         loadContractProduct(productId)
             .then(() => {
