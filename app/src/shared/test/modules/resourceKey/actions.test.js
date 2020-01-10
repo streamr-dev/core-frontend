@@ -66,9 +66,6 @@ describe('resourceKey - actions', () => {
                         message: 'error',
                     },
                 },
-            }, {
-                type: 'errorNotification',
-                level: 'error',
             }]
             const store = mockStore()
 
@@ -129,9 +126,6 @@ describe('resourceKey - actions', () => {
                         message: 'error',
                     },
                 },
-            }, {
-                type: 'errorNotification',
-                level: 'error',
             }]
             const store = mockStore()
 
@@ -192,9 +186,6 @@ describe('resourceKey - actions', () => {
                         message: 'error',
                     },
                 },
-            }, {
-                type: 'errorNotification',
-                level: 'error',
             }]
 
             const store = mockStore()
@@ -261,9 +252,6 @@ describe('resourceKey - actions', () => {
                         message: 'error',
                     },
                 },
-            }, {
-                type: 'errorNotification',
-                level: 'error',
             }]
 
             const store = mockStore()
@@ -318,9 +306,6 @@ describe('resourceKey - actions', () => {
                         message: 'error',
                     },
                 },
-            }, {
-                type: 'errorNotification',
-                level: 'error',
             }]
 
             const store = mockStore()
@@ -378,9 +363,6 @@ describe('resourceKey - actions', () => {
                         message: 'error',
                     },
                 },
-            }, {
-                type: 'errorNotification',
-                level: 'error',
             }]
 
             const store = mockStore()
