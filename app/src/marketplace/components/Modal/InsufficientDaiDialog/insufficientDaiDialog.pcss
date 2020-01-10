@@ -1,0 +1,28 @@
+.icon {
+  margin: 20px 0 40px;
+}
+
+.buttonContainer {
+  display: flex;
+  margin-top: 42px;
+}
+
+.button:not(:last-child) {
+  margin-right: 16px;
+}
+
+@media (--xs) {
+  .icon {
+    margin: 0 0 10px;
+  }
+
+  .buttonContainer {
+    margin-top: 15px;
+    flex-direction: column;
+  }
+
+  .button:not(:last-child) {
+    margin-right: 0;
+    margin-bottom: 8px;
+  }
+}

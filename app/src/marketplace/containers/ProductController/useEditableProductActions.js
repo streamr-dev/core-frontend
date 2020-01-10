@@ -9,7 +9,7 @@ import { Context as ValidationContext } from './ValidationContextProvider'
 
 import useEditableProductUpdater from '../ProductController/useEditableProductUpdater'
 import { pricePerSecondFromTimeUnit, convert } from '$mp/utils/price'
-import { currencies, timeUnits } from '$shared/utils/constants'
+import { contractCurrencies as currencies, timeUnits } from '$shared/utils/constants'
 import { selectDataPerUsd } from '$mp/modules/global/selectors'
 
 import type { Product } from '$mp/flowtype/product-types'

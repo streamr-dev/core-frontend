@@ -8,12 +8,18 @@
  */
 
 // The order of these must be the same than in the smart contract
-export const currencies = {
+export const contractCurrencies = {
     DATA: 'DATA',
     USD: 'USD',
 }
 
-export const DEFAULT_CURRENCY = currencies.DATA
+export const paymentCurrencies = {
+    DATA: 'DATA',
+    ETH: 'ETH',
+    DAI: 'DAI',
+}
+
+export const DEFAULT_CURRENCY = contractCurrencies.DATA
 
 // The order of these must be the same than in the smart contract
 export const productStates = {
@@ -48,8 +54,10 @@ export const transactionStates = {
 }
 
 export const transactionTypes = {
-    SET_ALLOWANCE: 'setAllowance',
-    RESET_ALLOWANCE: 'resetAllowance',
+    SET_DATA_ALLOWANCE: 'setDataAllowance',
+    RESET_DATA_ALLOWANCE: 'resetDataAllowance',
+    SET_DAI_ALLOWANCE: 'setDaiAllowance',
+    RESET_DAI_ALLOWANCE: 'resetDaiAllowance',
     PURCHASE: 'purchase',
     CREATE_CONTRACT_PRODUCT: 'createContractProduct',
     UPDATE_CONTRACT_PRODUCT: 'updateContractProduct',
@@ -64,6 +72,8 @@ export const gasLimits = {
     DEFAULT: 3e5,
     CREATE_PRODUCT: 3e5,
     BUY_PRODUCT: 1e5,
+    BUY_PRODUCT_WITH_ETH: 6e6,
+    BUY_PRODUCT_WITH_ERC20: 6e6,
     DELETE_PRODUCT: 5e4,
     APPROVE: 5e4,
     DEPLOY_COMMUNITY_PRODUCT: 3e6,

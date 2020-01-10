@@ -6,17 +6,20 @@ import BN from 'bignumber.js'
 
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
-import type { Currency, TimeUnit } from '$shared/flowtype/common-types'
+import type { TimeUnit, PaymentCurrency } from '$shared/flowtype/common-types'
+import { paymentCurrencies } from '$shared/utils/constants'
 
 export type Props = {
     name: string,
     time: string,
     timeUnit: TimeUnit,
     price: BN,
-    priceCurrency: Currency,
+    ethPrice: BN,
+    daiPrice: BN,
     purchaseStarted: boolean,
     onCancel: () => void,
     onPay: () => void | Promise<void>,
+    paymentCurrency: PaymentCurrency,
 }
 
 export const PurchaseSummaryDialog = ({
@@ -24,11 +27,22 @@ export const PurchaseSummaryDialog = ({
     time,
     timeUnit,
     price,
-    priceCurrency,
+    ethPrice,
+    daiPrice,
     purchaseStarted,
     onCancel,
     onPay,
+    paymentCurrency,
 }: Props) => {
+    const priceInChosenCurrency = () => {
+        if (paymentCurrency === paymentCurrencies.ETH) {
+            return ethPrice.toFixed(4)
+        } else if (paymentCurrency === paymentCurrencies.DAI) {
+            return daiPrice.toFixed(2)
+        }
+        return price.toFixed(4)
+    }
+
     if (purchaseStarted) {
         return (
             <ModalPortal>
@@ -86,8 +100,8 @@ export const PurchaseSummaryDialog = ({
                 <p>
                     <Translate
                         value="modal.purchaseSummary.price"
-                        price={price}
-                        priceCurrency={priceCurrency}
+                        price={priceInChosenCurrency()}
+                        priceCurrency={paymentCurrency}
                     />
                 </p>
             </Dialog>

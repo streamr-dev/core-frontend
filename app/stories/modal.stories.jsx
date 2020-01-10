@@ -26,6 +26,7 @@ import DeployingCommunityDialog from '$mp/components/Modal/DeployingCommunityDia
 import GetDataTokensDialog from '$mp/components/Modal/GetDataTokensDialog'
 import GetCryptoDialog from '$mp/components/Modal/GetCryptoDialog'
 import InsufficientDataDialog from '$mp/components/Modal/InsufficientDataDialog'
+import InsufficientDaiDialog from '$mp/components/Modal/InsufficientDaiDialog'
 import NoBalanceDialog from '$mp/components/Modal/NoBalanceDialog'
 import ChooseAccessPeriodDialog from '$mp/components/Modal/ChooseAccessPeriodDialog'
 import PurchaseSummaryDialog from '$mp/components/Modal/PurchaseSummaryDialog'
@@ -365,40 +366,63 @@ story('Marketplace/InsufficientDataDialog')
         />
     ))
 
+story('Marketplace/InsufficientDaiDialog')
+    .add('default', () => (
+        <InsufficientDaiDialog
+            onCancel={action('onCancel')}
+        />
+    ))
+
 story('Marketplace/NoBalanceDialog')
     .add('eth balance 0', () => (
         <NoBalanceDialog
+            requiredGasBalance={BN(0)}
             requiredEthBalance={BN(0)}
             currentEthBalance={BN(0)}
             requiredDataBalance={BN(0)}
             currentDataBalance={BN(0)}
+            currentDaiBalance={BN(0)}
+            requiredDaiBalance={BN(0)}
+            paymentCurrency="DATA"
             onCancel={action('onCancel')}
         />
     ))
     .add('eth balance < required', () => (
         <NoBalanceDialog
+            requiredGasBalance={BN(1)}
             requiredEthBalance={BN(2)}
             currentEthBalance={BN(1)}
             requiredDataBalance={BN(0)}
             currentDataBalance={BN(0)}
+            currentDaiBalance={BN(0)}
+            requiredDaiBalance={BN(0)}
+            paymentCurrency="DATA"
             onCancel={action('onCancel')}
         />
     ))
     .add('DATA balance 0', () => (
         <NoBalanceDialog
+            requiredGasBalance={BN(0)}
             requiredEthBalance={BN(2)}
             currentEthBalance={BN(3)}
             requiredDataBalance={BN(0)}
             currentDataBalance={BN(0)}
+            currentDaiBalance={BN(0)}
+            requiredDaiBalance={BN(0)}
+            paymentCurrency="DATA"
             onCancel={action('onCancel')}
         />
     ))
     .add('DATA balance < required', () => (
         <NoBalanceDialog
+            requiredGasBalance={BN(0)}
             requiredEthBalance={BN(2)}
             currentEthBalance={BN(3)}
             requiredDataBalance={BN(3)}
             currentDataBalance={BN(2)}
+            currentDaiBalance={BN(0)}
+            requiredDaiBalance={BN(0)}
+            paymentCurrency="DATA"
             onCancel={action('onCancel')}
         />
     ))
@@ -419,7 +443,9 @@ story('Marketplace/PurchaseSummaryDialog')
         <PurchaseSummaryDialog
             name="Example Product"
             price={BN(123)}
-            priceCurrency="DATA"
+            ethPrice={BN(124)}
+            daiPrice={BN(125)}
+            paymentCurrency="DATA"
             time="24"
             timeUnit="hour"
             onCancel={action('onCancel')}
@@ -430,7 +456,9 @@ story('Marketplace/PurchaseSummaryDialog')
         <PurchaseSummaryDialog
             name="Example Product"
             price={BN(123)}
-            priceCurrency="DATA"
+            ethPrice={BN(124)}
+            daiPrice={BN(125)}
+            paymentCurrency="DATA"
             time="24"
             timeUnit="hour"
             onCancel={action('onCancel')}
@@ -444,6 +472,7 @@ story('Marketplace/SetAllowanceDialog')
         <SetAllowanceDialog
             onCancel={action('onCancel')}
             onSet={action('onSet')}
+            paymentCurrency="DATA"
         />
     ))
     .add('getting allowance', () => (
@@ -451,6 +480,7 @@ story('Marketplace/SetAllowanceDialog')
             onCancel={action('onCancel')}
             onSet={action('onSet')}
             gettingAllowance
+            paymentCurrency="DATA"
         />
     ))
     .add('setting allowance', () => (
@@ -458,6 +488,7 @@ story('Marketplace/SetAllowanceDialog')
             onCancel={action('onCancel')}
             onSet={action('onSet')}
             settingAllowance
+            paymentCurrency="DATA"
         />
     ))
 

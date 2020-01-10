@@ -28,7 +28,7 @@ describe('web3 utils', () => {
             })
 
             const balance = await all.getEthBalance(web3)
-            assert.deepStrictEqual(balance, '0.12345')
+            assert.deepStrictEqual(balance.toString(), '0.12345')
         })
     })
 
@@ -61,7 +61,7 @@ describe('web3 utils', () => {
                 },
             }))
             const result = await all.getDataTokenBalance(web3)
-            assert.deepStrictEqual('2209', result)
+            assert.deepStrictEqual('2209', result.toString())
         })
     })
 })

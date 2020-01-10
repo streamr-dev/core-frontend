@@ -4,7 +4,7 @@ import { productStates } from '$shared/utils/constants'
 import { productTypes } from '$mp/utils/constants'
 import type { CategoryId } from './category-types'
 import type { StreamIdList, StreamId } from '$shared/flowtype/stream-types'
-import type { ErrorInUi, Currency, NumberString, TimeUnit } from '$shared/flowtype/common-types'
+import type { ErrorInUi, ContractCurrency as Currency, NumberString, TimeUnit } from '$shared/flowtype/common-types'
 import type { Address } from '$shared/flowtype/web3-types'
 
 export type ProductId = string

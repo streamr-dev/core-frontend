@@ -73,11 +73,11 @@ const getInputValues = (type, logs) => {
 
 export const getTransactionEvents = (addresses: HashList): Promise<EventLogList> => {
     const web3 = getPublicWeb3()
-    const { marketplace, token } = getConfig()
+    const { marketplace, dataToken } = getConfig()
     const marketPlaceContract = new web3.eth.Contract(marketplace.abi, marketplace.address)
-    const tokenContract = new web3.eth.Contract(token.abi, token.address)
+    const tokenContract = new web3.eth.Contract(dataToken.abi, dataToken.address)
     abiDecoder.addABI(marketplace.abi)
-    abiDecoder.addABI(token.abi)
+    abiDecoder.addABI(dataToken.abi)
 
     const rawEvents = []
 
