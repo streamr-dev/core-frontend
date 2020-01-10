@@ -17,7 +17,7 @@ import Toolbar from '$editor/shared/components/Toolbar'
 import ShareDialog from './ShareDialog'
 
 import styles from '$editor/canvas/components/Toolbar/Toolbar.pcss'
-import dashboardStyles from './Toolbar.pcss'
+import ToolbarLayout from '$editor/canvas/components/Toolbar/ToolbarLayout'
 
 /* eslint-disable react/no-unused-state */
 
@@ -47,11 +47,11 @@ export default withErrorBoundary(ErrorComponentView)(class DashboardToolbar exte
         }
 
         return (
-            <div className={cx(className, styles.CanvasToolbar, dashboardStyles.DasboardToolbar)} ref={this.elRef}>
+            <div className={cx(className, styles.CanvasToolbar)} ref={this.elRef}>
                 <ModalContainer modalId="ShareDialog">
                     {({ api: shareDialog }) => (
-                        <div className={styles.ToolbarInner}>
-                            <div className={cx(dashboardStyles.LeftControls, styles.LeftControls)}>
+                        <ToolbarLayout>
+                            <div className={ToolbarLayout.classNames.LEFT}>
                                 <UseState initialValue={false}>
                                     {(editing, setEditing) => (
                                         <div className={styles.CanvasNameContainer}>
@@ -88,7 +88,7 @@ export default withErrorBoundary(ErrorComponentView)(class DashboardToolbar exte
                                         </div>
                                     )}
                                 </UseState>
-                                <div className={styles.ToolbarRight}>
+                                <div>
                                     <R.Button
                                         className={styles.ToolbarButton}
                                         onClick={moduleSearchOpen}
@@ -96,28 +96,33 @@ export default withErrorBoundary(ErrorComponentView)(class DashboardToolbar exte
                                         <SvgIcon name="plus" className={styles.icon} />
                                     </R.Button>
                                 </div>
+                                <div />
                             </div>
-                            <div className={cx(styles.ToolbarLeft, styles.DashboardButtons)}>
-                                <div className={styles.ModalButtons}>
-                                    <Tooltip container={this.elRef.current} value="Share">
-                                        <R.Button
-                                            className={cx(styles.ToolbarButton, styles.ShareButton)}
-                                            onClick={() => shareDialog.open()}
-                                        >
-                                            <SvgIcon name="share" />
-                                        </R.Button>
-                                    </Tooltip>
-                                    <Tooltip container={this.elRef.current} value={<React.Fragment>Keyboard<br />shortcuts</React.Fragment>}>
-                                        <R.Button
-                                            className={cx(styles.ToolbarButton, styles.KeyboardButton)}
-                                            onClick={() => keyboardShortcutOpen()}
-                                        >
-                                            <SvgIcon name="keyboard" />
-                                        </R.Button>
-                                    </Tooltip>
+                            <div className={ToolbarLayout.classNames.CENTER} />
+                            <div className={ToolbarLayout.classNames.RIGHT}>
+                                <div />
+                                <div className={cx(styles.ToolbarLeft, styles.DashboardButtons)}>
+                                    <div className={styles.ModalButtons}>
+                                        <Tooltip container={this.elRef.current} value="Share">
+                                            <R.Button
+                                                className={cx(styles.ToolbarButton, styles.ShareButton)}
+                                                onClick={() => shareDialog.open()}
+                                            >
+                                                <SvgIcon name="share" />
+                                            </R.Button>
+                                        </Tooltip>
+                                        <Tooltip container={this.elRef.current} value={<React.Fragment>Keyboard<br />shortcuts</React.Fragment>}>
+                                            <R.Button
+                                                className={cx(styles.ToolbarButton, styles.KeyboardButton)}
+                                                onClick={() => keyboardShortcutOpen()}
+                                            >
+                                                <SvgIcon name="keyboard" />
+                                            </R.Button>
+                                        </Tooltip>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </ToolbarLayout>
                     )}
                 </ModalContainer>
                 <ShareDialog dashboard={dashboard} />

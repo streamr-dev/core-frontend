@@ -30,6 +30,7 @@ import * as RunController from '../CanvasController/Run'
 import { useCameraContext } from '../Camera'
 import { MessageIconSimple } from '../ConsoleSidebar'
 import styles from './Toolbar.pcss'
+import ToolbarLayout from './ToolbarLayout'
 
 function ZoomControls({ className, canvas }) {
     const camera = useCameraContext()
@@ -169,8 +170,8 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
             >
                 <ModalContainer modalId="ShareDialog">
                     {({ api: shareDialog }) => (
-                        <div className={styles.ToolbarInner}>
-                            <div className={styles.LeftControls}>
+                        <ToolbarLayout>
+                            <div className={ToolbarLayout.classNames.LEFT}>
                                 <UseState initialValue={false}>
                                     {(editing, setEditing) => (
                                         <div className={styles.CanvasNameContainer}>
@@ -260,238 +261,244 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                         </R.Button>
                                     </Tooltip>
                                 </div>
+                                <ZoomControls className={styles.ToolbarZoomControls} canvas={canvas} />
+                                <div />
                             </div>
-                            <ZoomControls className={styles.ToolbarZoomControls} canvas={canvas} />
-                            <div>
-                                <R.ButtonGroup
-                                    className={cx(styles.RunButtonGroup, {
-                                        [styles.RunButtonStopped]: !(isActive || canvas.adhoc),
-                                        [styles.RunButtonRunning]: isActive || canvas.adhoc,
-                                    })}
-                                >
-                                    <R.Button
-                                        disabled={!canChangeRunState}
-                                        onClick={() => {
-                                            if (isRunning) {
-                                                return canvasStop()
-                                            }
-                                            if (canvas.adhoc) {
-                                                return canvasExit()
-                                            }
-                                            return canvasStart()
-                                        }}
-                                        className={styles.RunButton}
+                            <div className={ToolbarLayout.classNames.CENTER}>
+                                <div>
+                                    <R.ButtonGroup
+                                        className={cx(styles.RunButtonGroup, {
+                                            [styles.RunButtonStopped]: !(isActive || canvas.adhoc),
+                                            [styles.RunButtonRunning]: isActive || canvas.adhoc,
+                                        })}
                                     >
-                                        {((() => {
-                                            if (isActive) { return 'Stop' }
-                                            if (canvas.adhoc && !isActive) { return 'Clear' }
-                                            if (editorState.runTab === RunTabs.realtime) { return 'Start' }
-                                            return 'Run'
-                                        })())}
-                                    </R.Button>
-                                    {editorState.runTab === RunTabs.historical ? (
-                                        <R.ButtonDropdown
-                                            isOpen={runButtonDropdownOpen}
-                                            toggle={this.onToggleRunButtonMenu}
-                                            className={styles.RunDropdownButton}
+                                        <R.Button
+                                            disabled={!canChangeRunState}
+                                            onClick={() => {
+                                                if (isRunning) {
+                                                    return canvasStop()
+                                                }
+                                                if (canvas.adhoc) {
+                                                    return canvasExit()
+                                                }
+                                                return canvasStart()
+                                            }}
+                                            className={styles.RunButton}
                                         >
-                                            <R.DropdownToggle disabled={!canChangeRunState} caret>
-                                                {!runButtonDropdownOpen && (
-                                                    <SvgIcon name="caretUp" />
-                                                )}
-                                                {runButtonDropdownOpen && (
-                                                    <SvgIcon name="caretDown" />
-                                                )}
-                                            </R.DropdownToggle>
-                                            <R.DropdownMenu
-                                                className={cx(styles.RunButtonMenu, styles.HistoricalRunButtonMenu)}
-                                                disabled={!canChangeRunState}
-                                                right
+                                            {((() => {
+                                                if (isActive) { return 'Stop' }
+                                                if (canvas.adhoc && !isActive) { return 'Clear' }
+                                                if (editorState.runTab === RunTabs.realtime) { return 'Start' }
+                                                return 'Run'
+                                            })())}
+                                        </R.Button>
+                                        {editorState.runTab === RunTabs.historical ? (
+                                            <R.ButtonDropdown
+                                                isOpen={runButtonDropdownOpen}
+                                                toggle={this.onToggleRunButtonMenu}
+                                                className={styles.RunDropdownButton}
                                             >
-                                                <R.DropdownItem
-                                                    onClick={() => setSpeed('0')}
-                                                    active={!settings.speed || settings.speed === '0'}
+                                                <R.DropdownToggle disabled={!canChangeRunState} caret>
+                                                    {!runButtonDropdownOpen && (
+                                                        <SvgIcon name="caretUp" />
+                                                    )}
+                                                    {runButtonDropdownOpen && (
+                                                        <SvgIcon name="caretDown" />
+                                                    )}
+                                                </R.DropdownToggle>
+                                                <R.DropdownMenu
+                                                    className={cx(styles.RunButtonMenu, styles.HistoricalRunButtonMenu)}
+                                                    disabled={!canChangeRunState}
+                                                    right
                                                 >
-                                                    Full
-                                                </R.DropdownItem>
-                                                <R.DropdownItem
-                                                    onClick={() => setSpeed('1')}
-                                                    active={settings.speed === '1'}
-                                                >
-                                                    1x
-                                                </R.DropdownItem>
-                                                <R.DropdownItem
-                                                    onClick={() => setSpeed('10')}
-                                                    active={settings.speed === '10'}
-                                                >
-                                                    10x
-                                                </R.DropdownItem>
-                                                <R.DropdownItem
-                                                    onClick={() => setSpeed('100')}
-                                                    active={settings.speed === '100'}
-                                                >
-                                                    100x
-                                                </R.DropdownItem>
-                                                <R.DropdownItem
-                                                    onClick={() => setSpeed('1000')}
-                                                    active={settings.speed === '1000'}
-                                                >
-                                                    1000x
-                                                </R.DropdownItem>
-                                            </R.DropdownMenu>
-                                        </R.ButtonDropdown>
-                                    ) : (
-                                        <R.ButtonDropdown
-                                            isOpen={runButtonDropdownOpen}
-                                            toggle={this.onToggleRunButtonMenu}
-                                            className={styles.RunDropdownButton}
-                                        >
-                                            <R.DropdownToggle disabled={!canEdit} caret>
-                                                {!runButtonDropdownOpen && (
-                                                    <SvgIcon name="caretUp" />
-                                                )}
-                                                {runButtonDropdownOpen && (
-                                                    <SvgIcon name="caretDown" />
-                                                )}
-                                            </R.DropdownToggle>
-                                            <R.DropdownMenu className={cx(styles.RunButtonMenu, styles.RealtimeRunButtonMenu)} right>
-                                                <R.DropdownItem
-                                                    onClick={() => canvasStart({ clearState: true })}
-                                                    disabled={!canEdit}
-                                                >
-                                                    Reset &amp; Start
-                                                </R.DropdownItem>
-                                            </R.DropdownMenu>
-                                        </R.ButtonDropdown>
-                                    )}
-                                </R.ButtonGroup>
-                            </div>
-                            <div className={styles.StateSelectorContainer}>
-                                <div className={styles.StateSelector}>
-                                    <div className={styles.runTabToggle}>
-                                        <button
-                                            type="button"
-                                            onClick={() => setRunTab(RunTabs.realtime)}
-                                            disabled={!canEdit}
-                                            className={cx(styles.ToolbarSolidButton, styles.firstButton, {
-                                                [styles.StateSelectorActive]: editorState.runTab !== RunTabs.historical,
-                                            })}
-                                        >
-                                            Realtime
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => setRunTab(RunTabs.historical)}
-                                            disabled={!canEdit}
-                                            className={cx(styles.ToolbarSolidButton, styles.lastButton, {
-                                                [styles.StateSelectorActive]: editorState.runTab === RunTabs.historical,
-                                            })}
-                                        >
-                                            Historical
-                                        </button>
-                                    </div>
-                                    {editorState.runTab === RunTabs.historical ? (
-                                        <div className={styles.runTabValueToggle}>
-                                            <WithCalendar
-                                                date={!!settings.beginDate && new Date(settings.beginDate)}
-                                                className={styles.CalendarRoot}
-                                                wrapperClassname={styles.CalendarWrapper}
-                                                onChange={this.getOnChangeHistorical('beginDate')}
-                                            >
-                                                {({ toggleCalendar }) => (
-                                                    <button
-                                                        type="button"
-                                                        disabled={!canEdit}
-                                                        onClick={toggleCalendar}
-                                                        className={cx(styles.ToolbarSolidButton, styles.firstButton, {
-                                                            [styles.StateSelectorActive]: !!settings.beginDate,
-                                                        })}
+                                                    <R.DropdownItem
+                                                        onClick={() => setSpeed('0')}
+                                                        active={!settings.speed || settings.speed === '0'}
                                                     >
-                                                        {!settings.beginDate && ('From')}
-                                                        {!!settings.beginDate && dateFormatter('DD/MM/YYYY')(settings.beginDate)}
-                                                    </button>
-                                                )}
-                                            </WithCalendar>
-                                            <WithCalendar
-                                                date={!!settings.endDate && new Date(settings.endDate)}
-                                                className={styles.CalendarRoot}
-                                                wrapperClassname={styles.CalendarWrapper}
-                                                onChange={this.getOnChangeHistorical('endDate')}
-                                            >
-                                                {({ toggleCalendar }) => (
-                                                    <button
-                                                        type="button"
-                                                        disabled={!canEdit}
-                                                        onClick={toggleCalendar}
-                                                        className={cx(styles.ToolbarSolidButton, styles.lastButton, {
-                                                            [styles.StateSelectorActive]: !!settings.endDate,
-                                                        })}
+                                                        Full
+                                                    </R.DropdownItem>
+                                                    <R.DropdownItem
+                                                        onClick={() => setSpeed('1')}
+                                                        active={settings.speed === '1'}
                                                     >
-                                                        {!settings.endDate && ('To')}
-                                                        {!!settings.endDate && dateFormatter('DD/MM/YYYY')(settings.endDate)}
-                                                    </button>
-                                                )}
-                                            </WithCalendar>
-                                        </div>
-                                    ) : (
-                                        <div className={styles.runTabValueToggle}>
-                                            <div className={styles.saveStateToggleSection}>
-                                                {/* eslint-disable react/no-unknown-property */}
-                                                <R.Label
-                                                    for="saveStateToggle"
-                                                    className={cx(styles.saveStateToggleLabel, {
-                                                        [styles.StateSelectorActive]: settings.serializationEnabled === 'true',
-                                                    })}
-
-                                                >
-                                                    Save state
-                                                </R.Label>
-                                                {/* eslint-enable react/no-unknown-property */}
-                                                {/* eslint-disable max-len */}
-                                                <Toggle
-                                                    id="saveStateToggle"
-                                                    className={styles.saveStateToggle}
-                                                    value={settings.serializationEnabled === 'true' /* yes, it's a string. legacy compatibility */}
-                                                    onChange={(value) => setSaveState(value)}
-                                                    disabled={!canEdit}
-                                                />
-                                                {/* eslint-enable max-len */}
-                                            </div>
-                                        </div>
-                                    )}
+                                                        1x
+                                                    </R.DropdownItem>
+                                                    <R.DropdownItem
+                                                        onClick={() => setSpeed('10')}
+                                                        active={settings.speed === '10'}
+                                                    >
+                                                        10x
+                                                    </R.DropdownItem>
+                                                    <R.DropdownItem
+                                                        onClick={() => setSpeed('100')}
+                                                        active={settings.speed === '100'}
+                                                    >
+                                                        100x
+                                                    </R.DropdownItem>
+                                                    <R.DropdownItem
+                                                        onClick={() => setSpeed('1000')}
+                                                        active={settings.speed === '1000'}
+                                                    >
+                                                        1000x
+                                                    </R.DropdownItem>
+                                                </R.DropdownMenu>
+                                            </R.ButtonDropdown>
+                                        ) : (
+                                            <R.ButtonDropdown
+                                                isOpen={runButtonDropdownOpen}
+                                                toggle={this.onToggleRunButtonMenu}
+                                                className={styles.RunDropdownButton}
+                                            >
+                                                <R.DropdownToggle disabled={!canEdit} caret>
+                                                    {!runButtonDropdownOpen && (
+                                                        <SvgIcon name="caretUp" />
+                                                    )}
+                                                    {runButtonDropdownOpen && (
+                                                        <SvgIcon name="caretDown" />
+                                                    )}
+                                                </R.DropdownToggle>
+                                                <R.DropdownMenu className={cx(styles.RunButtonMenu, styles.RealtimeRunButtonMenu)} right>
+                                                    <R.DropdownItem
+                                                        onClick={() => canvasStart({ clearState: true })}
+                                                        disabled={!canEdit}
+                                                    >
+                                                        Reset &amp; Start
+                                                    </R.DropdownItem>
+                                                </R.DropdownMenu>
+                                            </R.ButtonDropdown>
+                                        )}
+                                    </R.ButtonGroup>
                                 </div>
                             </div>
-                            <div className={styles.ModalButtons}>
-                                <Tooltip container={this.elRef.current} value="Console">
-                                    <R.Button
-                                        className={cx(styles.ToolbarButton, styles.ConsoleButton)}
-                                        onClick={() => this.props.consoleSidebarOpen()}
-                                    >
-                                        {(badgeLevel && badgeLevel !== 'none') && (
-                                            <MessageIconSimple level={badgeLevel} className={styles.consoleButtonBadge} />
+                            <div className={ToolbarLayout.classNames.RIGHT}>
+                                <div />
+                                <div className={styles.StateSelectorContainer}>
+                                    <div className={styles.StateSelector}>
+                                        <div className={styles.runTabToggle}>
+                                            <button
+                                                type="button"
+                                                onClick={() => setRunTab(RunTabs.realtime)}
+                                                disabled={!canEdit}
+                                                className={cx(styles.ToolbarSolidButton, styles.firstButton, {
+                                                    [styles.StateSelectorActive]: editorState.runTab !== RunTabs.historical,
+                                                })}
+                                            >
+                                                Realtime
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => setRunTab(RunTabs.historical)}
+                                                disabled={!canEdit}
+                                                className={cx(styles.ToolbarSolidButton, styles.lastButton, {
+                                                    [styles.StateSelectorActive]: editorState.runTab === RunTabs.historical,
+                                                })}
+                                            >
+                                                Historical
+                                            </button>
+                                        </div>
+                                        {editorState.runTab === RunTabs.historical ? (
+                                            <div className={styles.runTabValueToggle}>
+                                                <WithCalendar
+                                                    date={!!settings.beginDate && new Date(settings.beginDate)}
+                                                    className={styles.CalendarRoot}
+                                                    wrapperClassname={styles.CalendarWrapper}
+                                                    onChange={this.getOnChangeHistorical('beginDate')}
+                                                >
+                                                    {({ toggleCalendar }) => (
+                                                        <button
+                                                            type="button"
+                                                            disabled={!canEdit}
+                                                            onClick={toggleCalendar}
+                                                            className={cx(styles.ToolbarSolidButton, styles.firstButton, {
+                                                                [styles.StateSelectorActive]: !!settings.beginDate,
+                                                            })}
+                                                        >
+                                                            {!settings.beginDate && ('From')}
+                                                            {!!settings.beginDate && dateFormatter('DD/MM/YYYY')(settings.beginDate)}
+                                                        </button>
+                                                    )}
+                                                </WithCalendar>
+                                                <WithCalendar
+                                                    date={!!settings.endDate && new Date(settings.endDate)}
+                                                    className={styles.CalendarRoot}
+                                                    wrapperClassname={styles.CalendarWrapper}
+                                                    onChange={this.getOnChangeHistorical('endDate')}
+                                                >
+                                                    {({ toggleCalendar }) => (
+                                                        <button
+                                                            type="button"
+                                                            disabled={!canEdit}
+                                                            onClick={toggleCalendar}
+                                                            className={cx(styles.ToolbarSolidButton, styles.lastButton, {
+                                                                [styles.StateSelectorActive]: !!settings.endDate,
+                                                            })}
+                                                        >
+                                                            {!settings.endDate && ('To')}
+                                                            {!!settings.endDate && dateFormatter('DD/MM/YYYY')(settings.endDate)}
+                                                        </button>
+                                                    )}
+                                                </WithCalendar>
+                                            </div>
+                                        ) : (
+                                            <div className={styles.runTabValueToggle}>
+                                                <div className={styles.saveStateToggleSection}>
+                                                    {/* eslint-disable react/no-unknown-property */}
+                                                    <R.Label
+                                                        for="saveStateToggle"
+                                                        className={cx(styles.saveStateToggleLabel, {
+                                                            [styles.StateSelectorActive]: settings.serializationEnabled === 'true',
+                                                        })}
+
+                                                    >
+                                                        Save state
+                                                    </R.Label>
+                                                    {/* eslint-enable react/no-unknown-property */}
+                                                    {/* eslint-disable max-len */}
+                                                    <Toggle
+                                                        id="saveStateToggle"
+                                                        className={styles.saveStateToggle}
+                                                        value={settings.serializationEnabled === 'true' /* yes, it's a string. legacy compatibility */}
+                                                        onChange={(value) => setSaveState(value)}
+                                                        disabled={!canEdit}
+                                                    />
+                                                    {/* eslint-enable max-len */}
+                                                </div>
+                                            </div>
                                         )}
-                                        <SvgIcon name="console" />
-                                    </R.Button>
-                                </Tooltip>
-                                <Tooltip container={this.elRef.current} value="Share">
-                                    <R.Button
-                                        className={cx(styles.ToolbarButton, styles.ShareButton)}
-                                        onClick={() => shareDialog.open()}
-                                        disabled={!canShare}
-                                    >
-                                        <SvgIcon name="share" />
-                                    </R.Button>
-                                </Tooltip>
-                                <Tooltip container={this.elRef.current} value={<React.Fragment>Keyboard<br />shortcuts</React.Fragment>}>
-                                    <R.Button
-                                        className={cx(styles.ToolbarButton, styles.KeyboardButton)}
-                                        onClick={() => this.props.keyboardShortcutOpen()}
-                                    >
-                                        <SvgIcon name="keyboard" />
-                                    </R.Button>
-                                </Tooltip>
+                                    </div>
+                                </div>
+                                <div className={styles.ModalButtons}>
+                                    <Tooltip container={this.elRef.current} value="Console">
+                                        <R.Button
+                                            className={cx(styles.ToolbarButton, styles.ConsoleButton)}
+                                            onClick={() => this.props.consoleSidebarOpen()}
+                                        >
+                                            {(badgeLevel && badgeLevel !== 'none') && (
+                                                <MessageIconSimple level={badgeLevel} className={styles.consoleButtonBadge} />
+                                            )}
+                                            <SvgIcon name="console" />
+                                        </R.Button>
+                                    </Tooltip>
+                                    <Tooltip container={this.elRef.current} value="Share">
+                                        <R.Button
+                                            className={cx(styles.ToolbarButton, styles.ShareButton)}
+                                            onClick={() => shareDialog.open()}
+                                            disabled={!canShare}
+                                        >
+                                            <SvgIcon name="share" />
+                                        </R.Button>
+                                    </Tooltip>
+                                    <Tooltip container={this.elRef.current} value={<React.Fragment>Keyboard<br />shortcuts</React.Fragment>}>
+                                        <R.Button
+                                            className={cx(styles.ToolbarButton, styles.KeyboardButton)}
+                                            onClick={() => this.props.keyboardShortcutOpen()}
+                                        >
+                                            <SvgIcon name="keyboard" />
+                                        </R.Button>
+                                    </Tooltip>
+                                </div>
                             </div>
-                        </div>
+                        </ToolbarLayout>
                     )}
                 </ModalContainer>
                 <ShareDialog canvas={canvas} />
