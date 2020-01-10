@@ -16,9 +16,9 @@ if {$force_conservative} {
 
 # Ensures we can connect to broker's websocket.
 set timeout -1
-spawn npx --quiet -- wscat -c http://localhost/api/v1/ws --slash
+spawn npx --quiet -- wscat -c ws://localhost/api/v1/ws --slash
 match_max 100000
 expect -exact "\[2K\[3D\[32mConnected (press CTRL+C to quit)\[39m\r
 \[1G\[0J> \[3G"
 send -- "/close\r"  ;# immediately closes connection once connected
-expect eof
+
