@@ -216,13 +216,14 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
     const onSetAccessPeriodAndCurrency =
         useCallback(async (selectedTime: NumberString | BN, selectedTimeUnit: TimeUnit, selectedCurrency: PaymentCurrency) => {
             const price = dataForTimeUnits(pricePerSecond, dataPerUsd, priceCurrency, selectedTime, selectedTimeUnit)
+            const [ethVal, daiVal] = await getUniswapEquivalents(price.toString())
 
             setTime(selectedTime.toString())
             setTimeUnit(selectedTimeUnit)
             setPurchasePrice(price)
             setPaymentCurrency(selectedCurrency)
-            setEthPrice((await getUniswapEquivalents(price.toString()))[0])
-            setDaiPrice((await getUniswapEquivalents(price.toString()))[1])
+            setEthPrice(ethVal)
+            setDaiPrice(daiVal)
 
             try {
                 await validateBalanceForPurchase(price, selectedCurrency)
@@ -236,7 +237,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
 
                     // eslint-disable-next-line no-case-declarations
                     case paymentCurrencies.DAI:
-                        const daiPurchasePrice = (await getUniswapEquivalents(price.toString()))[1].toString()
+                        const daiPurchasePrice = daiVal.toString()
                         if (daiAllowance.isLessThan(daiPurchasePrice)) {
                             if (daiAllowance.isGreaterThan(0)) {
                                 setStep(purchaseFlowSteps.RESET_DAI_ALLOWANCE)
