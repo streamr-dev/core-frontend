@@ -189,7 +189,7 @@ class CheckboxContainer extends React.Component {
     render() {
         return (
             <Checkbox
-                checked={this.state.checked}
+                value={this.state.checked}
                 onChange={(e) => {
                     this.setState({
                         checked: e.target.checked,
@@ -203,10 +203,10 @@ class CheckboxContainer extends React.Component {
 
 story('Checkbox')
     .addWithJSX('checked', () => (
-        <Checkbox checked={boolean('checked', true)} />
+        <Checkbox value={boolean('checked', true)} />
     ))
     .addWithJSX('unchecked', () => (
-        <Checkbox checked={boolean('checked', false)} />
+        <Checkbox value={boolean('checked', false)} />
     ))
     .addWithJSX('changeable', () => (
         <CheckboxContainer />
