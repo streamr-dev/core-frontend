@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 set -e
-trap "killall background" EXIT # clean up background jobs
-
 ##
 ## Pulls down streamr-docker-dev and starts an engine-and-editor instance + associated services ##
 ##
