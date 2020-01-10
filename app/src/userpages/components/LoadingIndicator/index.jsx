@@ -9,7 +9,7 @@ import styles from './loadingIndicator.pcss'
 
 type Props = {
     loading?: boolean,
-    className?: string
+    className?: ?string
 }
 
 const LoadingIndicator = ({ loading, className }: Props) => {

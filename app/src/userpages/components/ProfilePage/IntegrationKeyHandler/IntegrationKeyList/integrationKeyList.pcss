@@ -1,17 +1,7 @@
-.keyList {
-  margin-bottom: 2rem;
-}
+.root {}
 
-.singleKey {
-  margin-top: 3rem;
-}
-
-@media (--md-down) {
-  .singleKey {
-    :global(.dropdown) {
-      display: none;
-    }
-  }
+.singleKey + .singleKey {
+  margin-top: 2.5rem;
 }
 
 @media (--sm-down) {

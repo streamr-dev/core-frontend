@@ -2,28 +2,6 @@
   border-top: 1px solid #FF0F2D;
 }
 
-.ToolbarInner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: #F5F5F5;
-  color: #A3A3A3;
-  padding: 20px 30px;
-  font-size: 12px;
-}
-
-.ToolbarInner > * {
-  display: flex;
-  align-items: center;
-  flex-wrap: nowrap;
-}
-
-.LeftControls {
-  display: flex;
-  justify-content: space-between;
-  flex: 0.45;
-}
-
 .StateSelectorContainer {
   display: flex;
 }
@@ -37,7 +15,6 @@
   position: relative;
   display: flex;
   flex-wrap: nowrap;
-  margin: 0 1um;
 }
 
 .CanvasToolbar .CanvasSearch {
@@ -100,6 +77,7 @@
   margin-left: 8px;
 }
 
+.ConsoleButton,
 .ShareButton,
 .KeyboardButton {
   padding: 0 !important;
@@ -112,11 +90,28 @@
   }
 }
 
+.ConsoleButton {
+  position: relative;
+  overflow: visible;
+
+  .consoleButtonBadge {
+    position: absolute;
+    width: 0.5um;
+    height: 0.5um;
+    top: 11px;
+    right: 10px;
+    transform: translate(50%, -50%);
+    z-index: 1;
+    display: inline-grid;
+  }
+}
+
 .CanvasToolbar .DropdownMenu .DropdownMenuMenu {
   padding-top: 4px;
   padding-bottom: 4px;
   margin-bottom: 10px;
   box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.05);
+  font-size: 12px;
 
   & .show {
     display: grid;
@@ -130,7 +125,6 @@
 .CanvasNameContainer {
   display: flex;
   align-items: center;
-  justify-content: space-between;
 }
 
 .CanvasNameContainer .DropdownMenu svg {
@@ -238,7 +232,7 @@ body .RealtimeRunButtonMenu {
   & :global(.dropdown-item):active,
   & :global(.dropdown-item):hover,
   & :global(.dropdown-item):global(.active) {
-    background: url('../../../shared/assets/images/tick.svg') no-repeat calc(100% - 14px) 50%;
+    background: url('../../../../shared/assets/images/tick.svg') no-repeat calc(100% - 14px) 50%;
     background-color: #F8F8F8;
     outline: none;
   }
@@ -282,7 +276,7 @@ body .RealtimeRunButtonMenu {
 }
 
 .CanvasToolbar .runTabToggle {
-  margin: 0 16px;
+  margin-right: 16px;
   white-space: nowrap;
   position: relative;
 }
@@ -430,7 +424,6 @@ body .RealtimeRunButtonMenu {
  */
 
 .ToolbarZoomControls {
-  margin: 0 1um;
 }
 
 .ZoomControls {

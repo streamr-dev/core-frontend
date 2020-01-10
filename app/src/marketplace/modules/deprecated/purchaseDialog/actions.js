@@ -6,12 +6,12 @@ import { I18n } from 'react-redux-i18n'
 
 import { purchaseFlowSteps } from '$mp/utils/constants'
 import { timeUnits, gasLimits } from '$shared/utils/constants'
-import { selectAllowanceOrPendingAllowance } from '$mp/modules/allowance/selectors'
+import { selectDataAllowanceOrPendingDataAllowance } from '$mp/modules/allowance/selectors'
 import { selectContractProduct } from '$mp/modules/contractProduct/selectors'
 import { selectDataPerUsd } from '$mp/modules/global/selectors'
 import { toSeconds } from '$mp/utils/time'
 import getWeb3 from '$shared/web3/web3Provider'
-import { setAllowance as setAllowanceToContract, resetAllowance as resetAllowanceToContract } from '$mp/modules/allowance/actions'
+import { setDataAllowance as setAllowanceToContract, resetDataAllowance as resetAllowanceToContract } from '$mp/modules/allowance/actions'
 import { buyProduct } from '$mp/modules/purchase/actions'
 import NoBalanceError from '$mp/errors/NoBalanceError'
 import type { NumberString, TimeUnit } from '$shared/flowtype/common-types'
@@ -59,11 +59,6 @@ const getBalances = (): Promise<[BN, BN]> => {
     const dataPromise = getDataTokenBalance(web3)
 
     return Promise.all([ethPromise, dataPromise])
-        .then((results) => {
-            const ethBalance = BN(results[0])
-            const dataBalance = BN(results[1])
-            return [ethBalance, dataBalance]
-        })
 }
 
 export const validateDataBalanceForPurchase = async (price: BN) => {
@@ -113,7 +108,7 @@ export const setAccessPeriod = (time: NumberString | BN, timeUnit: TimeUnit) => 
     }
 
     // Pending allowance is set if there is an ongoing transaction to set new allowance
-    const allowance = BN(selectAllowanceOrPendingAllowance(state))
+    const allowance = BN(selectDataAllowanceOrPendingDataAllowance(state))
     const dataPerUsd = selectDataPerUsd(state)
     const price = dataForTimeUnits(product.pricePerSecond, dataPerUsd, product.priceCurrency, time, timeUnit)
     const subscriptionTimeInSeconds = toSeconds(time, timeUnit)
@@ -123,9 +118,9 @@ export const setAccessPeriod = (time: NumberString | BN, timeUnit: TimeUnit) => 
             () => {
                 if (allowance.isLessThan(price)) {
                     if (allowance.isGreaterThan(0)) {
-                        dispatch(setStep(purchaseFlowSteps.RESET_ALLOWANCE))
+                        dispatch(setStep(purchaseFlowSteps.RESET_DATA_ALLOWANCE))
                     } else {
-                        dispatch(setStep(purchaseFlowSteps.ALLOWANCE))
+                        dispatch(setStep(purchaseFlowSteps.DATA_ALLOWANCE))
                     }
                 } else {
                     dispatch(setStep(purchaseFlowSteps.SUMMARY))
@@ -152,7 +147,7 @@ export const setAllowance = () => (dispatch: Function, getState: () => StoreStat
     return dispatch(checkBalanceForPurchase(product, subscriptionTimeInSeconds))
         .then(() => {
             // Pending allowance is set if there is an ongoing transaction to set new allowance
-            const currentAllowance = selectAllowanceOrPendingAllowance(state)
+            const currentAllowance = selectDataAllowanceOrPendingDataAllowance(state)
             const dataPerUsd = selectDataPerUsd(state)
             const price = dataForTimeUnits(product.pricePerSecond, dataPerUsd, product.priceCurrency, purchase.time, purchase.timeUnit)
 
@@ -184,7 +179,7 @@ export const approvePurchase = () => (dispatch: Function, getState: () => StoreS
             () => {
                 // Start the purchase transaction, we catch the RECEIVE_PURCHASE_HASH action from purchase
                 // in the reducer and proceed to next step.
-                dispatch(buyProduct(product.id || '', subscriptionTimeInSeconds))
+                dispatch(buyProduct(product.id || '', subscriptionTimeInSeconds, 'DATA', 'DONTCARE', 'DONTCARE'))
             },
             (e) => {
                 handleBalanceError(e, dispatch)

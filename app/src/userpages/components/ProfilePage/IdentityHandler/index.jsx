@@ -4,16 +4,18 @@ import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 
-import IntegrationKeyHandlerSegment from '../IntegrationKeyHandler/IntegrationKeyHandlerSegment'
-import type { IntegrationKeyId, IntegrationKeyList } from '$shared/flowtype/integration-key-types'
+import IntegrationKeyList from '../IntegrationKeyHandler/IntegrationKeyList'
+import type { IntegrationKeyId, IntegrationKeyList as IntegrationKeyListType } from '$shared/flowtype/integration-key-types'
 import type { StoreState } from '$shared/flowtype/store-state'
 import { deleteIntegrationKey, fetchIntegrationKeys, createIdentity, editIntegrationKey } from '$shared/modules/integrationKey/actions'
 import { selectEthereumIdentities, selectIntegrationKeysError } from '$shared/modules/integrationKey/selectors'
+
+import profileStyles from '../profilePage.pcss'
+
 import AddIdentityButton from './AddIdentityButton'
-import styles from './identityHandler.pcss'
 
 type StateProps = {
-    integrationKeys: ?IntegrationKeyList,
+    integrationKeys: ?IntegrationKeyListType,
 }
 
 type DispatchProps = {
@@ -43,12 +45,14 @@ export class IdentityHandler extends Component<Props> {
                 <Translate
                     tag="p"
                     value="userpages.profilePage.ethereumAddress.description"
-                    className={styles.description}
+                    className={profileStyles.longText}
                 />
-                <IntegrationKeyHandlerSegment
+                <IntegrationKeyList
                     onDelete={this.onDelete}
                     onEdit={this.onEdit}
                     integrationKeys={this.props.integrationKeys || []}
+                    truncateValues
+                    className={profileStyles.keyList}
                 />
                 <AddIdentityButton />
             </Fragment>

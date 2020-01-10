@@ -188,6 +188,8 @@ module.exports = {
                 openAnalyzer: false,
             }),
         ] : []),
+        // Ignore all locale files of moment.js
+        new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     ].concat(isProduction() ? [
         new CleanWebpackPlugin([dist]),
         // Production plugins
@@ -250,6 +252,8 @@ module.exports = {
                     // upcoming docs
                     'src/docs/components/DocsPages/RunningNode/index.jsx',
                     'src/docs/components/DocsPages/Marketplace/CommunityProducts/index.jsx',
+                    // deprecated components
+                    'src/marketplace/components/deprecated/**/*.*',
                 ],
             },
         }),

@@ -44,35 +44,51 @@ To be able to use the Marketplace, you'll need to configure these variables into
 
 ! TEMPORARY VAR: MARKETPLACE_CONTRACT_ADDRESS_OLD = MARKETPLACE_CONTRACT_ADDRESS while the new MP contract is being tested/upgraded. Old contract is used when NEW_MP_CONTRACT=undefined.
 
-| Variable                     | Description                                                          |
-|------------------------------|----------------------------------------------------------------------|
-| PORT                         | Port used by webpack devServer                                       |
-| PLATFORM_ORIGIN_URL          | Base path/address of the current environment                         |
-| STREAMR_API_URL              | Address of the environment's Backend Rest API                        |
-| STREAMR_WS_URL               | Address of the environment's Backend Websocket API                   |
-| STREAMR_URL                  | API Address for Dockerized Environments                              |
-| MARKETPLACE_CONTRACT_ADDRESS | Address of the deployed Marketplace contract                         |
-| TOKEN_CONTRACT_ADDRESS       | Address of the deployed Token contract                               |
-| WEB3_REQUIRED_NETWORK_ID     | This is used to check that the user has selected the correct network |
-| WEB3_PUBLIC_HTTP_PROVIDER    | A public provider used to query Marketplace methods without Metamask |
-| WEB3_PUBLIC_WS_PROVIDER      | A public websocket prodiver (currently not in use)                   |
-| BUNDLE_ANALYSIS              | Optional, enables generating bundle size analysis report.            |
+| Variable                                          | Description                                                          |
+|---------------------------------------------------|----------------------------------------------------------------------|
+| PORT                                              | Port used by webpack devServer                                       |
+| PLATFORM_ORIGIN_URL                               | Base path/address of the current environment                         |
+| STREAMR_API_URL                                   | Address of the environment's Backend Rest API                        |
+| STREAMR_WS_URL                                    | Address of the environment's Backend Websocket API                   |
+| STREAMR_URL                                       | API Address for Dockerized Environments                              |
+| MARKETPLACE_CONTRACT_ADDRESS_OLD                  | Address of the deployed old Marketplace contract                      |
+| MARKETPLACE_CONTRACT_ADDRESS                      | Address of the deployed latest Marketplace contract                  |
+| DATA_TOKEN_CONTRACT_ADDRESS                       | Address of the deployed DATA Token contract                          |
+| DAI_TOKEN_CONTRACT_ADDRESS                        | Address of the deployed DAI Token contract                           |
+| WEB3_REQUIRED_NETWORK_ID                          | This is used to check that the user has selected the correct network |
+| WEB3_PUBLIC_HTTP_PROVIDER                         | A public provider used to query Marketplace methods without Metamask |
+| WEB3_PUBLIC_WS_PROVIDER                           | A public websocket prodiver (currently not in use)                   |
+| BUNDLE_ANALYSIS                                   | Optional, enables generating bundle size analysis report.            |
+| WEB3_TRANSACTION_CONFIRMATION_BLOCKS              |                                                                      |
+| STREAMR_ENGINE_NODE_ADDRESSES                     |                                                                      |
+| UNISWAP_ADAPTOR_CONTRACT_ADDRESS                  | Address of the deployed Uniswap adaptor                              |
+| COMMUNITY_PRODUCT_OPERATOR_ADDRESS                |                                                                      |
+| COMMUNITY_PRODUCT_BLOCK_FREEZE_PERIOD_SECONDS     |                                                                      |
+| WEB3_TRANSACTION_CONFIRMATION_BLOCKS              |                                                                      |
 
 Development values (set the values in your `.env`):
 
-| Variable                     | Value                                        | Description                     |
-|------------------------------|----------------------------------------------|---------------------------------|
-| PORT                         | `3333`                                       |                                 |
-| PLATFORM_ORIGIN_URL          | `http://localhost`                           |                                 |
-| STREAMR_API_URL              | `http://localhost/api/v1`                    |                                 |
-| STREAMR_WS_URL               | `ws://localhost/api/v1/ws`              |                                 |
-| STREAMR_URL                  | `http://localhost`         |                                 |
-| MARKETPLACE_CONTRACT_ADDRESS | `0x0af64558670a3b761B57e465Cb80B62254b39619` |                                 |
-| TOKEN_CONTRACT_ADDRESS       | `0x8e3877fe5551f9c14bc9b062bbae9d84bc2f5d4e` |                                 |
-| WEB3_REQUIRED_NETWORK_ID     | 4                                            | Rinkeby                         |
-| WEB3_PUBLIC_HTTP_PROVIDER    | https://rinkeby.infura.io/v3/{projectId}     | Infura (Rinkeby)                |
-| WEB3_PUBLIC_WS_PROVIDER      | wss://rinkeby.infura.io/ws/v3/{projectId}    | Infura (Rinkeby)                |
-| BUNDLE_ANALYSIS              | 1                                            | PLATFORM_ORIGIN_URL/report.html |
+| Variable                                          | Value                                        | Description                     |
+|---------------------------------------------------|----------------------------------------------|---------------------------------|
+| PORT                                              | `3333`                                       |                                 |
+| PLATFORM_ORIGIN_URL                               | `http://localhost`                           |                                 |
+| STREAMR_API_URL                                   | `http://localhost/api/v1`                    |                                 |
+| STREAMR_WS_URL                                    | `ws://localhost/api/v1/ws`                   |                                 |
+| STREAMR_URL                                       | `http://localhost`                           |                                 |
+| MARKETPLACE_CONTRACT_ADDRESS_OLD                  | `0x0af64558670a3b761B57e465Cb80B62254b39619` |                                 |
+| MARKETPLACE_CONTRACT_ADDRESS                      | `0xF1371c0f40528406dc4f4cAf89924eA9Da49E866` |                                 |
+| DATA_TOKEN_CONTRACT_ADDRESS                       | `0xbAA81A0179015bE47Ad439566374F2Bae098686F` |                                 |
+| DAI_TOKEN_CONTRACT_ADDRESS                        | `0x642d2b84a32a9a92fec78ceaa9488388b3704898` |                                 |
+| WEB3_REQUIRED_NETWORK_ID                          | 1111                                         |                                 |
+| WEB3_PUBLIC_HTTP_PROVIDER                         | http://localhost:8545                        | Private network                 |
+| WEB3_PUBLIC_WS_PROVIDER                           | ws://localhost:8545                          |                                 |
+| BUNDLE_ANALYSIS                                   | 1                                            | PLATFORM_ORIGIN_URL/report.html |
+| WEB3_TRANSACTION_CONFIRMATION_BLOCKS              | 1                                            |                                 |
+| STREAMR_ENGINE_NODE_ADDRESSES                     | 0xFCAd0B19bB29D4674531d6f115237E16AfCE377c   |                                 |
+| UNISWAP_ADAPTOR_CONTRACT_ADDRESS                  | 0xe4ea76e830a659282368ca2e7e4d18c4ae52d8b3   |                                 |
+| COMMUNITY_PRODUCT_OPERATOR_ADDRESS                | 0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1   |                                 |
+| COMMUNITY_PRODUCT_BLOCK_FREEZE_PERIOD_SECONDS     | 1                                            |                                 |
+| WEB3_TRANSACTION_CONFIRMATION_BLOCKS              | 1                                            |                                 |
 
 Optional config values:
 
@@ -93,7 +109,7 @@ To be able to use the Marketplace, you'll need to configure these variables into
 | Variable                     | Description                                                          |
 |------------------------------|----------------------------------------------------------------------|
 | MARKETPLACE_CONTRACT_ADDRESS | Address of the deployed Marketplace contract                         |
-| TOKEN_CONTRACT_ADDRESS       | Address of the deployed Token contract                               |
+| DATA_TOKEN_CONTRACT_ADDRESS  | Address of the deployed DATA Token contract                          |
 | WEB3_REQUIRED_NETWORK_ID     | This is used to check that the user has selected the correct network |
 | WEB3_PUBLIC_HTTP_PROVIDER    | A public provider used to query Marketplace methods without Metamask |
 | WEB3_PUBLIC_WS_PROVIDER      | A public websocket prodiver (currently not in use)                   |
@@ -102,11 +118,11 @@ Development values (set the values in your `.env`):
 
 | Variable                     | Value                                        | Description      |
 |------------------------------|----------------------------------------------|------------------|
-| MARKETPLACE_CONTRACT_ADDRESS | `0x0af64558670a3b761B57e465Cb80B62254b39619` |                  |
-| TOKEN_CONTRACT_ADDRESS       | `0x8e3877fe5551f9c14bc9b062bbae9d84bc2f5d4e` |                  |
-| WEB3_REQUIRED_NETWORK_ID     | 4                                            | Rinkeby          |
-| WEB3_PUBLIC_HTTP_PROVIDER    | https://rinkeby.infura.io                    | Infura (Rinkeby) |
-| WEB3_PUBLIC_WS_PROVIDER      | wss://rinkeby.infura.io/ws                   | Infura (Rinkeby) |
+| MARKETPLACE_CONTRACT_ADDRESS | `0xF1371c0f40528406dc4f4cAf89924eA9Da49E866` |                  |
+| DATA_TOKEN_CONTRACT_ADDRESS  | `0xbAA81A0179015bE47Ad439566374F2Bae098686F` |                  |
+| WEB3_REQUIRED_NETWORK_ID     | 1111                                         | Private network  |
+| WEB3_PUBLIC_HTTP_PROVIDER    | http://localhost:8545                        |                  |
+| WEB3_PUBLIC_WS_PROVIDER      | ws://localhost:8545                          |                  |
 
 Use `.travis.yml` to set the production values.
 

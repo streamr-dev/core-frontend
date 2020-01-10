@@ -11,7 +11,7 @@ import { DEFAULT_CURRENCY, timeUnits } from '$shared/utils/constants'
 import { priceForTimeUnits, pricePerSecondFromTimeUnit } from '$mp/utils/price'
 import type { Product } from '$mp/flowtype/product-types'
 import type { Address } from '$shared/flowtype/web3-types'
-import type { Currency, NumberString, PropertySetter } from '$shared/flowtype/common-types'
+import type { ContractCurrency, NumberString, PropertySetter } from '$shared/flowtype/common-types'
 import type { PriceDialogResult } from '$mp/components/Modal/SetPriceDialog'
 import type { Category, CategoryList } from '$mp/flowtype/category-types'
 import type { User } from '$shared/flowtype/user-types'
@@ -34,7 +34,7 @@ type State = {
     pricePerSecond: ?NumberString,
     beneficiaryAddress: ?Address,
     ownerAddress: ?Address,
-    priceCurrency: ?Currency,
+    priceCurrency: ?ContractCurrency,
     setPriceDialogOpen: boolean,
 }
 

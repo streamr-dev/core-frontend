@@ -16,7 +16,7 @@ describe('Token services', () => {
         sandbox.restore()
     })
 
-    describe('getMyAllowance', () => {
+    describe('getMyDataAllowance', () => {
         it('must call the correct method', async () => {
             sandbox.stub(getWeb3, 'default').callsFake(() => ({
                 getDefaultAccount: () => Promise.resolve('testAccount'),
@@ -38,7 +38,7 @@ describe('Token services', () => {
                     },
                 }
             })
-            await all.getMyAllowance()
+            await all.getMyDataAllowance()
             assert(allowanceStub.calledOnce)
             assert(getContractStub.calledTwice)
             assert.equal('testAccount', allowanceStub.getCall(0).args[0])
@@ -65,12 +65,12 @@ describe('Token services', () => {
                     },
                 }
             })
-            const result = await all.getMyAllowance()
+            const result = await all.getMyDataAllowance()
             assert.equal(276, result)
         })
     })
 
-    describe('setMyAllowance', () => {
+    describe('setMyDataAllowance', () => {
         it('must call the correct method', async () => {
             const approveStub = sinon.stub().callsFake(() => ({
                 send: () => 'test',
@@ -87,13 +87,13 @@ describe('Token services', () => {
                     address: 'marketplaceAddress',
                 },
             }))
-            await all.setMyAllowance(100)
+            await all.setMyDataAllowance(100)
             assert(approveStub.calledOnce)
             assert(approveStub.calledWith('marketplaceAddress', '100000000000000000000'))
         })
         it('must not approve negative values', (done) => {
             try {
-                all.setMyAllowance(-100)
+                all.setMyDataAllowance(-100)
             } catch (e) {
                 assert.equal('negativeAmount', e.message)
                 done()
@@ -125,7 +125,7 @@ describe('Token services', () => {
                     },
                 }
             })
-            const result = await all.setMyAllowance(100)
+            const result = await all.setMyDataAllowance(100)
             assert.equal(result, 'test')
         })
     })

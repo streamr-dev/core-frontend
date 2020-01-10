@@ -9,7 +9,7 @@ import List from '../List'
 import SvgIcon from '../SvgIcon'
 import routes from '$routes'
 import links from '$mp/../links'
-import styles from './backButton.pcss'
+import styles from './backToProductsButton.pcss'
 
 type Props = {
     className?: string,

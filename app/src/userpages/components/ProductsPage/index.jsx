@@ -41,8 +41,11 @@ const CreateProductButton = () => {
 
     if (!process.env.COMMUNITY_PRODUCTS) {
         return (
-            <Button kind="secondary" tag={Link} to={links.marketplace.createProduct}>
-                <Translate value="actionBar.create" />
+            <Button
+                tag={Link}
+                to={links.marketplace.createProduct}
+            >
+                <Translate value="userpages.products.createProduct" />
             </Button>
         )
     }

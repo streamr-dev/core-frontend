@@ -3,24 +3,23 @@
 import * as React from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
 import cx from 'classnames'
+import { Link } from 'react-router-dom'
 
 import Button from '$shared/components/Button'
 import standardProductImage from '$mp/assets/product_standard.png'
 import standardProductImage2x from '$mp/assets/product_standard@2x.png'
 import communityProductImage from '$mp/assets/product_community.png'
 import communityProductImage2x from '$mp/assets/product_community@2x.png'
-import type { ProductType } from '$mp/flowtype/product-types'
 import routes from '$routes'
+import { productTypes } from '$mp/utils/constants'
 
 import styles from './productTypeChooser.pcss'
 
 type Props = {
-    onSelect: (type: ProductType) => void,
     className?: string,
-    disabled?: boolean,
 }
 
-const ProductTypeChooser = ({ onSelect, className, disabled }: Props) => (
+const ProductTypeChooser = ({ className }: Props) => (
     <div className={cx(styles.root, className)}>
         <div className={styles.pageTitle}>
             <Translate value="productTypeChooser.title" />
@@ -48,8 +47,10 @@ const ProductTypeChooser = ({ onSelect, className, disabled }: Props) => (
                     <Button
                         kind="special"
                         className={styles.button}
-                        onClick={() => onSelect('NORMAL')}
-                        disabled={disabled}
+                        tag={Link}
+                        to={routes.newProduct({
+                            type: productTypes.NORMAL,
+                        })}
                     >
                         <Translate value="productTypeChooser.standard.linkTitle" />
                     </Button>
@@ -73,8 +74,10 @@ const ProductTypeChooser = ({ onSelect, className, disabled }: Props) => (
                     <Button
                         kind="special"
                         className={styles.button}
-                        onClick={() => onSelect('COMMUNITY')}
-                        disabled={disabled}
+                        tag={Link}
+                        to={routes.newProduct({
+                            type: productTypes.COMMUNITY,
+                        })}
                     >
                         <Translate value="productTypeChooser.community.linkTitle" />
                     </Button>

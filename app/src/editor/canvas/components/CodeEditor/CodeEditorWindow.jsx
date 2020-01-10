@@ -28,6 +28,15 @@ function fixTooltipParent(cameraContext) {
     }
 }
 
+function toErrorAnnotations({ line, message }) {
+    return {
+        row: line - 1,
+        column: 1,
+        text: message,
+        type: 'error',
+    }
+}
+
 export default class CodeEditorWindow extends React.Component {
     static contextType = CameraContext
     state = {
@@ -42,6 +51,9 @@ export default class CodeEditorWindow extends React.Component {
     componentDidMount() {
         this.editor.current.editor.focus()
         fixTooltipParent(this.context)
+        if (this.props.code) {
+            this.onApply()
+        }
     }
 
     componentWillUnmount() {
@@ -88,12 +100,7 @@ export default class CodeEditorWindow extends React.Component {
                 if (!e.moduleErrors) { throw e } // unexpected error
                 this.setState({
                     sending: false,
-                    errors: e.moduleErrors.map(({ line, message }) => ({
-                        row: line - 1,
-                        column: 1,
-                        text: message,
-                        type: 'error',
-                    })),
+                    errors: e.moduleErrors.map(toErrorAnnotations),
                 })
             }
         })

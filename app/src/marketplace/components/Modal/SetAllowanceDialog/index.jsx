@@ -3,9 +3,11 @@
 import React from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
 
+import { paymentCurrencies } from '$shared/utils/constants'
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import links from '../../../../links'
+import type { PaymentCurrency } from '$shared/flowtype/common-types'
 
 import style from './setAllowanceDialog.pcss'
 
@@ -14,6 +16,7 @@ export type Props = {
     settingAllowance: boolean,
     onCancel: () => void,
     onSet: () => void | Promise<void>,
+    paymentCurrency: PaymentCurrency,
 }
 
 const HelpText = () => (
@@ -22,7 +25,13 @@ const HelpText = () => (
     </p>
 )
 
-const SetAllowanceDialog = ({ gettingAllowance, settingAllowance, onCancel, onSet }: Props) => {
+const SetAllowanceDialog = ({
+    gettingAllowance,
+    settingAllowance,
+    onCancel,
+    onSet,
+    paymentCurrency,
+}: Props) => {
     if (settingAllowance) {
         return (
             <ModalPortal>
@@ -72,7 +81,12 @@ const SetAllowanceDialog = ({ gettingAllowance, settingAllowance, onCancel, onSe
                     },
                 }}
             >
-                <p><Translate value="modal.setAllowance.message" dangerousHTML /></p>
+                <p>
+                    {paymentCurrency === paymentCurrencies.DATA
+                        ? <Translate value="modal.setAllowance.data" dangerousHTML />
+                        : <Translate value="modal.setAllowance.dai" dangerousHTML />
+                    }
+                </p>
             </Dialog>
         </ModalPortal>
     )

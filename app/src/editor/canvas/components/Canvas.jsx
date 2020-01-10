@@ -53,6 +53,9 @@ export default function Canvas(props) {
         moduleSidebarOpen: (...args) => (
             propsRef.current.moduleSidebarOpen(...args)
         ),
+        consoleSidebarOpen: (...args) => (
+            propsRef.current.consoleSidebarOpen(...args)
+        ),
         updateModule: (...args) => (
             propsRef.current.updateModule(...args)
         ),

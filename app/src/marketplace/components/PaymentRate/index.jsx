@@ -2,7 +2,7 @@
 
 import React from 'react'
 import BN from 'bignumber.js'
-import type { Currency, TimeUnit } from '$shared/flowtype/common-types'
+import type { ContractCurrency as Currency, TimeUnit } from '$shared/flowtype/common-types'
 import { formatPrice } from '$mp/utils/price'
 
 type Props = {
