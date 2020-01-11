@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 set -e
-trap "killall background" EXIT # clean up background jobs
-
 ##
 ## Pulls down streamr-docker-dev and starts an engine-and-editor instance + associated services ##
 ##
@@ -31,13 +29,10 @@ if [ $? -eq 1 ] ; then
 	exit 1;
 fi
 
-# script automates connecting and then disconnecting from websocket
-BROKER_NODE_CHECK="${BASH_SOURCE%/*}/broker-node-check.exp"
-
-# wait for brokers to come up
-waitFor $RETRIES $RETRY_DELAY expect "$BROKER_NODE_CHECK"
+# wait for brokers
+waitFor $RETRIES $RETRY_DELAY checkHTTP "brokers" 200 http://localhost/api/v1/volume
 if [ $? -eq 1 ] ; then
-	echo "broker-node never up";
+	echo "brokers never up";
 	$streamr_docker_dev ps;
 	exit 1;
 fi
