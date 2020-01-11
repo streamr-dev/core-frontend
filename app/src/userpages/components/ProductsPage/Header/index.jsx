@@ -64,12 +64,17 @@ const Header = ({ className, searchComponent, filterComponent }: Props) => {
                     <div className={styles.additionalComponent}>
                         <Button
                             className={styles.viewProductButton}
-                            tag={Link}
                             outline
-                            to={routes.product({
-                                id: product.id,
+                            {...(product.state === productStates.DEPLOYED ? {
+                                tag: Link,
+                                to: routes.product({
+                                    id: product.id,
+                                }),
+                            } : {
+                                type: 'button',
+                                onClick: () => {},
+                                disabled: true,
                             })}
-                            disabled={product.state !== productStates.DEPLOYED}
                         >
                             <Translate value="userpages.products.viewProduct" />
                         </Button>

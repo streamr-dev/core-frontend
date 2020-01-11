@@ -2,7 +2,7 @@
 
 import React, { useEffect, useCallback, useMemo } from 'react'
 import Helmet from 'react-helmet'
-import { I18n } from 'react-redux-i18n'
+import { Translate, I18n } from 'react-redux-i18n'
 import { withRouter } from 'react-router-dom'
 import cx from 'classnames'
 
@@ -26,9 +26,12 @@ import Button from '$shared/components/Button'
 import { truncate } from '$shared/utils/text'
 import { useSelectionContext, SelectionProvider } from '$shared/hooks/useSelection'
 
+import NoMembersView from './NoMembers'
+
 import styles from './members.pcss'
 
-const members = [{
+const all = true
+const members = all ? [{
     id: '1',
     address: '0xeABE498C90fB31F6932Ab9DA9C4997a6d9f18639',
 }, {
@@ -40,7 +43,7 @@ const members = [{
 }, {
     id: '4',
     address: '0x795063367EbFEB994445d810b94461274E4f109A',
-}]
+}] : []
 
 const Members = () => {
     const { loadCommunityProduct } = useController()
@@ -54,7 +57,13 @@ const Members = () => {
         ]
     }, [])
 
-    const { defaultFilter, filter, setSearch, setSort } = useFilterSort(sortOptions)
+    const {
+        defaultFilter,
+        filter,
+        setSearch,
+        setSort,
+        resetFilter,
+    } = useFilterSort(sortOptions)
 
     const loadCommunity = useCallback(async (id: CommunityId) => {
         loadCommunityProduct(id)
@@ -115,52 +124,69 @@ const Members = () => {
         >
             <Helmet title={`Streamr Core | ${I18n.t('userpages.title.members')}`} />
             <ListContainer>
-                <Table>
-                    <thead>
-                        <tr>
-                            <th>Ethereum address</th>
-                            <th className={styles.joinColumn}>Joined / requested</th>
-                            <th className={styles.dataColumn}>Last data</th>
-                            <th className={styles.statusColumn}>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {members.map((member) => {
-                            const isSelected = selection.has(member.id)
+                {!members && (
+                    <NoMembersView
+                        hasFilter={!!filter && (!!filter.search || !!filter.key)}
+                        filter={filter}
+                        onResetFilter={resetFilter}
+                    />
+                )}
+                {members && members.length > 0 && (
+                    <Table>
+                        <thead>
+                            <tr>
+                                <th>
+                                    <Translate value="userpages.members.table.ethereumAddress" />
+                                </th>
+                                <th className={styles.joinColumn}>
+                                    <Translate value="userpages.members.table.joinedRequested" />
+                                </th>
+                                <th className={styles.dataColumn}>
+                                    <Translate value="userpages.members.table.lastData" />
+                                </th>
+                                <th className={styles.statusColumn}>
+                                    <Translate value="userpages.members.table.status" />
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {members.map((member) => {
+                                const isSelected = selection.has(member.id)
 
-                            return (
-                                <tr
-                                    key={member.id}
-                                    className={cx(styles.addressRow, {
-                                        [styles.rowSelected]: isSelected,
-                                    })}
-                                    onClick={() => toggleSelect(member.id)}
-                                >
-                                    <Table.Th noWrap title={member.address} className={styles.addressColumn}>
-                                        <div className={styles.checkboxContainer}>
-                                            <Checkbox
-                                                value={isSelected}
-                                                onChange={() => toggleSelect(member.id)}
-                                                className={styles.checkbox}
-                                            />
-                                        </div>
-                                        <span className={styles.fullAddress}>{member.address}</span>
-                                        <span className={styles.truncatedAddress}>
-                                            {truncate(member.address, {
-                                                maxLength: 15,
-                                            })}
-                                        </span>
-                                    </Table.Th>
-                                    <Table.Td noWrap className={styles.joinColumn}>-</Table.Td>
-                                    <Table.Td noWrap className={styles.dataColumn}>-</Table.Td>
-                                    <Table.Td noWrap className={styles.statusColumn}>
-                                        <StatusIcon status={StatusIcon.INACTIVE} />
-                                    </Table.Td>
-                                </tr>
-                            )
-                        })}
-                    </tbody>
-                </Table>
+                                return (
+                                    <tr
+                                        key={member.id}
+                                        className={cx(styles.addressRow, {
+                                            [styles.rowSelected]: isSelected,
+                                        })}
+                                        onClick={() => toggleSelect(member.id)}
+                                    >
+                                        <Table.Th noWrap title={member.address} className={styles.addressColumn}>
+                                            <div className={styles.checkboxContainer}>
+                                                <Checkbox
+                                                    value={isSelected}
+                                                    onChange={() => toggleSelect(member.id)}
+                                                    className={styles.checkbox}
+                                                />
+                                            </div>
+                                            <span className={styles.fullAddress}>{member.address}</span>
+                                            <span className={styles.truncatedAddress}>
+                                                {truncate(member.address, {
+                                                    maxLength: 15,
+                                                })}
+                                            </span>
+                                        </Table.Th>
+                                        <Table.Td noWrap className={styles.joinColumn}>-</Table.Td>
+                                        <Table.Td noWrap className={styles.dataColumn}>-</Table.Td>
+                                        <Table.Td noWrap className={styles.statusColumn}>
+                                            <StatusIcon status={StatusIcon.INACTIVE} />
+                                        </Table.Td>
+                                    </tr>
+                                )
+                            })}
+                        </tbody>
+                    </Table>
+                )}
             </ListContainer>
             <div className={cx(styles.selectedToolbar, {
                 [styles.hasAnySelected]: isAnySelected,
@@ -168,7 +194,12 @@ const Members = () => {
             >
                 <ListContainer className={styles.selectedToolbarInner}>
                     <div className={styles.numberOfSelected}>
-                        {selection.size()} applicants selected
+                        {isAnySelected && (
+                            <Translate
+                                value="userpages.members.applicantsSelected"
+                                count={selection.size()}
+                            />
+                        )}
                     </div>
                     <div className={styles.actionButtons}>
                         <Button
@@ -177,7 +208,7 @@ const Members = () => {
                             type="button"
                             onClick={() => selection.none()}
                         >
-                            Cancel
+                            <Translate value="userpages.members.actions.cancel" />
                         </Button>
                         <Button
                             kind="primary"
@@ -186,7 +217,7 @@ const Members = () => {
                             type="button"
                             onClick={() => selection.none()}
                         >
-                            Deselect all
+                            <Translate value="userpages.members.actions.deselectAll" />
                         </Button>
                         <Button
                             kind="primary"
@@ -194,7 +225,7 @@ const Members = () => {
                             type="button"
                             onClick={onApprove}
                         >
-                            Approve
+                            <Translate value="userpages.members.actions.approve" />
                         </Button>
                     </div>
                 </ListContainer>
