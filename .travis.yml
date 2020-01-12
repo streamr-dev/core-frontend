@@ -178,8 +178,8 @@ jobs:
     env:
     - NODE_ENV=production
     - PORT=12345
-    - VERSION=$TRAVIS_BRANCH
-    - SENTRY_ENVIRONMENT=staging
+    - VERSION=$TRAVIS_PULL_REQUEST_BRANCH
+    - SENTRY_ENVIRONMENT=pr
     - BUNDLE_ANALYSIS=1
     - STREAMR_API_URL=https://staging.streamr.com/api/v1
     - STREAMR_WS_URL=wss://staging.streamr.com/api/v1/ws
