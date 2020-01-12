@@ -42,7 +42,6 @@ import { NotificationIcon } from '$shared/utils/constants'
 import Toolbar from '$shared/components/Toolbar'
 import Spinner from '$shared/components/Spinner'
 import Button from '$shared/components/Button'
-import DonutChart from '$shared/components/DonutChart'
 
 import sharedStyles from './shared.pcss'
 
@@ -837,26 +836,3 @@ story('Button')
         </div>
     ))
 
-story('DonutChart')
-    .addWithJSX('basic', () => (
-        <DonutChart
-            strokeWidth={5}
-            data={[
-                {
-                    title: '1',
-                    value: 50,
-                    color: 'red',
-                },
-                {
-                    title: '2',
-                    value: 25,
-                    color: 'blue',
-                },
-                {
-                    title: '3',
-                    value: 25,
-                    color: 'green',
-                },
-            ]}
-        />
-    ))
