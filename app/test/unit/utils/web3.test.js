@@ -55,7 +55,7 @@ describe('web3 utils', () => {
                 call: () => Promise.resolve(accountBalance),
             }))
             sandbox.stub(getConfig, 'default').callsFake(() => ({
-                token: 'token',
+                dataToken: 'dataToken',
             }))
             const getContractStub = sandbox.stub(utils, 'getContract').callsFake(() => ({
                 methods: {
@@ -65,7 +65,7 @@ describe('web3 utils', () => {
             const result = await all.getDataTokenBalance('testAccount')
             expect(result.isEqualTo(accountBalance.dividedBy(1e18))).toBe(true)
             expect(getContractStub.calledOnce).toBe(true)
-            expect(getContractStub.calledWith('token', false)).toBe(true)
+            expect(getContractStub.calledWith('dataToken', false)).toBe(true)
             expect(balanceStub.calledOnce).toBe(true)
             expect(balanceStub.calledWith('testAccount')).toBe(true)
         })
@@ -76,7 +76,7 @@ describe('web3 utils', () => {
                 call: () => Promise.resolve(accountBalance),
             }))
             sandbox.stub(getConfig, 'default').callsFake(() => ({
-                token: 'token',
+                dataToken: 'dataToken',
             }))
             const getContractStub = sandbox.stub(utils, 'getContract').callsFake(() => ({
                 methods: {
@@ -86,7 +86,7 @@ describe('web3 utils', () => {
             const result = await all.getDataTokenBalance('testAccount', true)
             expect(result.isEqualTo(accountBalance.dividedBy(1e18))).toBe(true)
             expect(getContractStub.calledOnce).toBe(true)
-            expect(getContractStub.calledWith('token', true)).toBe(true)
+            expect(getContractStub.calledWith('dataToken', true)).toBe(true)
             expect(balanceStub.calledOnce).toBe(true)
             expect(balanceStub.calledWith('testAccount')).toBe(true)
         })

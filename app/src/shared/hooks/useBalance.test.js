@@ -21,7 +21,10 @@ describe('getBalance', () => {
     it('gets ETH balance', async () => {
         sandbox.stub(utils, 'getEthBalance').callsFake(() => '123')
 
-        const balance = await getBalance('testAccount', BalanceType.ETH)
+        const balance = await getBalance({
+            address: 'testAccount',
+            type: BalanceType.ETH,
+        })
 
         expect(balance).toBe('123')
     })
@@ -29,7 +32,10 @@ describe('getBalance', () => {
     it('gets token balance', async () => {
         sandbox.stub(utils, 'getDataTokenBalance').callsFake(() => '123')
 
-        const balance = await getBalance('testAccount', BalanceType.DATA)
+        const balance = await getBalance({
+            address: 'testAccount',
+            type: BalanceType.DATA,
+        })
         expect(balance).toBe('123')
     })
 
@@ -37,7 +43,10 @@ describe('getBalance', () => {
         let balance
         let error
         try {
-            balance = await getBalance('testAccount', 'someToken')
+            balance = await getBalance({
+                adress: 'testAccount',
+                type: 'someToken',
+            })
         } catch (e) {
             error = e
         }
