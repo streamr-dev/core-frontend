@@ -1,6 +1,7 @@
 // @flow
 
 import marketplaceAbi from './abis/marketplace'
+import marketplaceAbiOld from './abis/marketplace_old'
 import tokenAbi from './abis/token'
 import uniswapAdaptorAbi from './abis/uniswapAdaptor'
 import communityProductMetadata from './contracts/communityProduct'
@@ -33,8 +34,10 @@ const getConfig = (): Config => ({
         address: process.env.DAI_TOKEN_CONTRACT_ADDRESS || '',
     },
     marketplace: {
-        abi: marketplaceAbi,
-        address: process.env.MARKETPLACE_CONTRACT_ADDRESS || '',
+        abi: process.env.NEW_MP_CONTRACT ? marketplaceAbi : marketplaceAbiOld,
+        address: (process.env.NEW_MP_CONTRACT ?
+            process.env.MARKETPLACE_CONTRACT_ADDRESS : process.env.MARKETPLACE_CONTRACT_ADDRESS_OLD
+        ) || '',
     },
     communityProduct: {
         abi: communityProductMetadata.abi,

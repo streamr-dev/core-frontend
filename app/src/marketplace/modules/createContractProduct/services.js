@@ -27,7 +27,8 @@ const createOrUpdateContractProduct = (method: (...any) => Sendable, product: Sm
     validateContractProductPricePerSecond(pricePerSecond)
     validateProductPriceCurrency(priceCurrency)
     const transformedPricePerSecond = mapPriceToContract(pricePerSecond)
-    const methodToSend = method(getValidId(id), name, beneficiaryAddress, transformedPricePerSecond, currencyIndex, minimumSubscriptionInSeconds)
+    const methodToSend =
+        method(getValidId(id), name, beneficiaryAddress, transformedPricePerSecond, currencyIndex, minimumSubscriptionInSeconds)
     return send(methodToSend, {
         gas: gasLimits.CREATE_PRODUCT,
     })

@@ -188,7 +188,7 @@ describe(Notifications, () => {
         })
 
         it('removes notification instances from the state if isModalOpen is false', () => {
-            const notifications = mount(<Notifications />)
+            const notifications = mount(<Notifications noAnimation />)
             notifications.setState({
                 notifications: [
                     new Notification({

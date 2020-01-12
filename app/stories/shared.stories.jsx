@@ -41,7 +41,6 @@ import ContextMenu from '$shared/components/ContextMenu'
 import { NotificationIcon } from '$shared/utils/constants'
 import Toolbar from '$shared/components/Toolbar'
 import Spinner from '$shared/components/Spinner'
-import DeploySpinner from '$shared/components/DeploySpinner'
 import Label from '$shared/components/Label'
 import Tile from '$shared/components/Tile'
 import Button from '$shared/components/Button'
@@ -788,17 +787,6 @@ story('Toolbar')
             />}
             actions={toolbarActions}
         />
-    ))
-
-story('DeploySpinner')
-    .addWithJSX('basic', () => (
-        <DeploySpinner isRunning showCounter />
-    ))
-    .addWithJSX('stopped', () => (
-        <DeploySpinner isRunning={false} showCounter />
-    ))
-    .addWithJSX('without counter', () => (
-        <DeploySpinner isRunning showCounter={false} />
     ))
 
 story('Label')
