@@ -10,7 +10,6 @@ import { selectDataAllowanceOrPendingDataAllowance } from '$mp/modules/allowance
 import { selectContractProduct } from '$mp/modules/contractProduct/selectors'
 import { selectDataPerUsd } from '$mp/modules/global/selectors'
 import { toSeconds } from '$mp/utils/time'
-import getWeb3 from '$shared/web3/web3Provider'
 import { setDataAllowance as setAllowanceToContract, resetDataAllowance as resetAllowanceToContract } from '$mp/modules/allowance/actions'
 import { buyProduct } from '$mp/modules/purchase/actions'
 import NoBalanceError from '$mp/errors/NoBalanceError'
@@ -19,7 +18,7 @@ import type { ProductId, SmartContractProduct } from '$mp/flowtype/product-types
 import type { StoreState } from '$shared/flowtype/store-state'
 import type { PurchaseStep } from '$mp/flowtype/store-state'
 
-import { getDataTokenBalance, getEthBalance } from '$mp/utils/web3'
+import { getMyDataTokenBalance, getMyEthBalance } from '$mp/utils/web3'
 import { dataForTimeUnits } from '$mp/utils/price'
 import { fromAtto } from '$mp/utils/math'
 import { selectPurchaseData } from './selectors'
@@ -54,9 +53,8 @@ const setAccessPeriodData: AccessPeriodActionCreator = createAction(
 )
 
 const getBalances = (): Promise<[BN, BN]> => {
-    const web3 = getWeb3()
-    const ethPromise = getEthBalance(web3)
-    const dataPromise = getDataTokenBalance(web3)
+    const ethPromise = getMyEthBalance()
+    const dataPromise = getMyDataTokenBalance()
 
     return Promise.all([ethPromise, dataPromise])
 }
