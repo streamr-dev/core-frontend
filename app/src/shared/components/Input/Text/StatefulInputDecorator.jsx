@@ -1,6 +1,6 @@
 // @flow
 
-import React, { type ComponentType, useState, useCallback } from 'react'
+import React, { type ComponentType, useState, useCallback, useEffect } from 'react'
 import { type UseStateTuple } from '$shared/flowtype/common-types'
 
 type Props = {
@@ -8,9 +8,17 @@ type Props = {
     value?: string,
 }
 
+const sanitizeValue = (value: any): string => (
+    value != null ? value : ''
+)
+
 const StatefulInputDecorator = (WrappedComponent: ComponentType<any>) => {
     const StatefulInputDecoratorWrapper = ({ onChange: onChangeProp, value: valueProp, ...props }: Props) => {
-        const [value, setValue]: UseStateTuple<string> = useState(valueProp || '')
+        const [value, setValue]: UseStateTuple<string> = useState(sanitizeValue(valueProp))
+
+        useEffect(() => {
+            setValue(sanitizeValue(valueProp))
+        }, [valueProp])
 
         const onChange = useCallback((e: SyntheticInputEvent<EventTarget>) => {
             if (onChangeProp) {
