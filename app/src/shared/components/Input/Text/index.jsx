@@ -6,6 +6,8 @@ import OnAutoCompleteDecorator from './OnAutoCompleteDecorator'
 import OnCommitDecorator from './OnCommitDecorator'
 import StatefulInputDecorator from './StatefulInputDecorator'
 import ActionsDropdownDecorator from './ActionsDropdownDecorator'
+import FlushHistoryDecorator from './FlushHistoryDecorator'
+import SelectAllOnFocusDecorator from './SelectAllOnFocusDecorator'
 
 type Props = {
     tag: 'input' | 'textarea',
@@ -15,4 +17,11 @@ const Input = ({ tag: Tag = 'input', ...props }: Props) => (
     <Tag {...props} />
 )
 
-export default compose(ActionsDropdownDecorator, OnAutoCompleteDecorator, OnCommitDecorator, StatefulInputDecorator)(Input)
+export default compose(
+    ActionsDropdownDecorator,
+    FlushHistoryDecorator,
+    OnAutoCompleteDecorator,
+    OnCommitDecorator,
+    SelectAllOnFocusDecorator,
+    StatefulInputDecorator,
+)(Input)
