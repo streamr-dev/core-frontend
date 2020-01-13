@@ -23,29 +23,12 @@ const TextField = ({
     value,
     ...props
 }: Props) => {
-    const onAnimationStart = useCallback(({ animationName }: SyntheticAnimationEvent<EventTarget>) => {
-        if (onAutoComplete && (animationName === styles.onAutoFillStart || animationName === styles.onAutoFillCancel)) {
-            onAutoComplete(animationName === styles.onAutoFillStart)
-        }
-    }, [onAutoComplete])
-
-    const onChange = useCallback((e: SyntheticInputEvent<EventTarget>) => {
-        if (onChangeProp) {
-            onChangeProp(e)
-        }
-    }, [onChangeProp])
-
-    let Tag = Text
-    if (props.type === 'number') {
-        Tag = NumberField
-    }
+    const Tag = props.type === 'number' ? NumberField : Text
 
     return (
         <Tag
             {...props}
             className={cx(className, styles.root)}
-            onAnimationStart={onAnimationStart}
-            onChange={onChange}
             value={value != null ? value : ''}
         />
     )
