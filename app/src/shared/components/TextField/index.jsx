@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useCallback } from 'react'
+import React from 'react'
 import cx from 'classnames'
 
 import NumberField from './NumberField'
