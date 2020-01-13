@@ -1,9 +1,10 @@
 // @flow
 
 import React from 'react'
-
+import cx from 'classnames'
 import FormControl, { type FormControlProps } from '$shared/components/FormControl'
-import TextField from '../TextField'
+import { Text } from '$shared/components/Input'
+import styles from './TextInput.pcss'
 
 type Props = FormControlProps & {
     className?: ?string,
@@ -40,8 +41,9 @@ const TextInput = ({
             }
 
             return (
-                <TextField
+                <Text
                     {...rest}
+                    className={cx(styles.root, className)}
                     value={value}
                     onBlur={onBlur}
                     onFocus={onFocus}

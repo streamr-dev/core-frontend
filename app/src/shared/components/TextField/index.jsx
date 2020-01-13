@@ -9,20 +9,11 @@ import styles from './textField.pcss'
 
 type Props = {
     className?: ?string,
-    onAutoComplete?: (boolean) => void,
     type?: string,
-    actions?: Array<any>,
-    onChange?: (SyntheticInputEvent<EventTarget>) => void,
     value: any,
 }
 
-const TextField = ({
-    className,
-    onAutoComplete,
-    onChange: onChangeProp,
-    value,
-    ...props
-}: Props) => {
+const TextField = ({ className, value, ...props }: Props) => {
     const Tag = props.type === 'number' ? NumberField : Text
 
     return (
