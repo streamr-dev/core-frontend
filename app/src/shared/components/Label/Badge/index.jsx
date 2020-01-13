@@ -32,7 +32,7 @@ export const Badge = ({ badge, tag, value, className }: Props) => (
                 className={styles.badgeValue}
             />
         )}
-        {!!value && (
+        {value !== undefined && (
             <span className={styles.badgeValue}>
                 {value}
             </span>

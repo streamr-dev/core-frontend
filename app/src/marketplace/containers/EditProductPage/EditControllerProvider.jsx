@@ -168,12 +168,13 @@ function useEditController(product: Product) {
             await save({
                 redirect: false,
             })
-            await publishDialog.open({
+            const succeeded = await publishDialog.open({
                 product: productRef.current,
             })
 
-            // TODO: just redirect for now, need to check result for smarter handling
-            redirectToProductList()
+            if (succeeded) {
+                redirectToProductList()
+            }
         }
     }, [validate, save, publishDialog, redirectToProductList, isPublic])
 

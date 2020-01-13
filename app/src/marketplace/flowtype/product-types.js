@@ -120,9 +120,16 @@ export type ProductPermissions = {
 
 export type CommunityId = $ElementType<Product, 'beneficiaryAddress'>
 
+export type MemberCount = {
+    total: number,
+    active: number,
+    inactive: number,
+}
+
 export type Community = {
     id: CommunityId,
     adminFee: number | string,
     joinPartStreamId: StreamId,
     owner: Address,
+    memberCount?: MemberCount,
 }

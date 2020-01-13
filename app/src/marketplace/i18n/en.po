@@ -29,9 +29,6 @@ msgstr "Free products only"
 msgid "actionBar##sortOptions##pricePerSecond"
 msgstr "Price, low to high"
 
-msgid "actionsDropdown##caption"
-msgstr "Actions"
-
 msgid "actionsDropdown##edit"
 msgstr "Edit"
 
@@ -705,24 +702,6 @@ msgstr ""
 "Estimated deployment time is %{time}. You can wait or close"
 "<br />"
 "this dialogue and get notified when your product is ready."
-
-msgid "noMyProductsView##goToEditor"
-msgstr "Go to the editor"
-
-msgid "noMyProductsView##hint"
-msgstr "Click + to make one, or check out links below for some help."
-
-msgid "noMyProductsView##message"
-msgstr "You haven’t created any products yet."
-
-msgid "noMyPurchasesView##goToMarketplace"
-msgstr "Go to the marketplace"
-
-msgid "noMyPurchasesView##hint"
-msgstr "Visit the Marketplace to get started."
-
-msgid "noMyPurchasesView##message"
-msgstr "You haven’t purchased or added any products yet."
 
 msgid "noProductsView##keywordHint"
 msgstr "Please try some different keywords"

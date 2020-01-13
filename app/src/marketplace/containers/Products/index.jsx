@@ -6,29 +6,30 @@ import merge from 'lodash/merge'
 import Helmet from 'react-helmet'
 import { I18n } from 'react-redux-i18n'
 
-import ProductsComponent from '../../components/Products'
-import ActionBar from '../../components/ActionBar'
+import ProductsComponent from '$mp/components/Products'
+import ActionBar from '$mp/components/ActionBar'
 import Layout from '$shared/components/Layout'
 import useModal from '$shared/hooks/useModal'
 import CreateProductModal from '$mp/containers/CreateProductModal'
 
-import type { Filter } from '../../flowtype/product-types'
+import type { Filter } from '$mp/flowtype/product-types'
 
 import {
     getProducts,
     getProductsDebounced,
     updateFilter,
     clearFilters,
-} from '../../modules/productList/actions'
-import { getCategories } from '../../modules/categories/actions'
-import { selectAllCategories } from '../../modules/categories/selectors'
+} from '$mp/modules/productList/actions'
+import { getCategories } from '$mp/modules/categories/actions'
+import { selectAllCategories } from '$mp/modules/categories/selectors'
+import useCommunityStats from '$mp/modules/communityProduct/hooks/useCommunityStats'
 import {
     selectProductList,
     selectProductListError,
     selectFilter,
     selectFetchingProductList,
     selectHasMoreSearchResults,
-} from '../../modules/productList/selectors'
+} from '$mp/modules/productList/selectors'
 
 const Products = () => {
     const categories = useSelector(selectAllCategories)
@@ -44,6 +45,7 @@ const Products = () => {
     const { api: createProductModal } = useModal('marketplace.createProduct')
 
     const loadCategories = useCallback(() => dispatch(getCategories(false)), [dispatch])
+    const { load: loadCommunities, members } = useCommunityStats()
 
     const loadProducts = useCallback(() => dispatch(getProducts()), [dispatch])
 
@@ -64,11 +66,12 @@ const Products = () => {
 
     useEffect(() => {
         loadCategories()
+        loadCommunities()
 
         if (productsRef.current && productsRef.current.length === 0) {
             clearFiltersAndReloadProducts()
         }
-    }, [loadCategories, clearFiltersAndReloadProducts])
+    }, [loadCommunities, loadCategories, clearFiltersAndReloadProducts])
 
     return (
         <Layout>
@@ -83,9 +86,14 @@ const Products = () => {
             />
             <CreateProductModal />
             <ProductsComponent
-                products={products.map((p, i) => merge({}, p, {
-                    key: `${i}-${p.id || ''}`,
-                }))}
+                products={products.map((p, i) => {
+                    const beneficiaryAddress = (p.beneficiaryAddress || '').toLowerCase()
+
+                    return merge({}, p, {
+                        key: `${i}-${p.id || ''}`,
+                        members: members[beneficiaryAddress],
+                    })
+                })}
                 error={productsError}
                 type="products"
                 isFetching={isFetching}
