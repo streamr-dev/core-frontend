@@ -109,6 +109,33 @@ export const getFilters = (): { [string]: SortOption } => {
                 order: 'desc',
             },
         },
+        ACCEPTED: {
+            displayName: I18n.t('userpages.filter.accepted'),
+            filter: {
+                id: 'accepted',
+                key: 'state',
+                value: 'accepted',
+                order: 'desc',
+            },
+        },
+        REJECTED: {
+            displayName: I18n.t('userpages.filter.rejected'),
+            filter: {
+                id: 'rejected',
+                key: 'state',
+                value: 'rejected',
+                order: 'desc',
+            },
+        },
+        PENDING: {
+            displayName: I18n.t('userpages.filter.pending'),
+            filter: {
+                id: 'pending',
+                key: 'state',
+                value: 'pending',
+                order: 'desc',
+            },
+        },
     }
 }
 

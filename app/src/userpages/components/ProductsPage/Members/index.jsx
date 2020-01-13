@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useEffect, useCallback, useMemo } from 'react'
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import Helmet from 'react-helmet'
 import { Translate, I18n } from 'react-redux-i18n'
 import { withRouter } from 'react-router-dom'
@@ -25,25 +25,26 @@ import Checkbox from '$shared/components/Checkbox'
 import Button from '$shared/components/Button'
 import { truncate } from '$shared/utils/text'
 import { useSelectionContext, SelectionProvider } from '$shared/hooks/useSelection'
-
+import useJoinRequests from '$mp/modules/communityProduct/hooks/useJoinRequests'
 import NoMembersView from './NoMembers'
+import { isEthereumAddress } from '$mp/utils/validate'
+import CommunityPending from '$mp/components/ProductPage/CommunityPending'
+import { ago } from '$shared/utils/time'
 
 import styles from './members.pcss'
 
-const all = true
-const members = all ? [{
-    id: '1',
-    address: '0xeABE498C90fB31F6932Ab9DA9C4997a6d9f18639',
-}, {
-    id: '2',
-    address: '0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1',
-}, {
-    id: '3',
-    address: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
-}, {
-    id: '4',
-    address: '0x795063367EbFEB994445d810b94461274E4f109A',
-}] : []
+const mapStatus = (state) => {
+    switch (state) {
+        case 'ACCEPTED':
+            return StatusIcon.OK
+        case 'REJECTED':
+            return StatusIcon.ERROR
+        case 'PENDING':
+            return StatusIcon.PENDING
+        default:
+            return StatusIcon.INACTIVE
+    }
+}
 
 const Members = () => {
     const { loadCommunityProduct } = useController()
@@ -52,10 +53,12 @@ const Members = () => {
         const filters = getFilters()
         return [
             filters.RECENT,
-            filters.NAME_ASC,
-            filters.NAME_DESC,
+            filters.ACCEPTED,
+            filters.REJECTED,
+            filters.PENDING,
         ]
     }, [])
+    const [approving, setApproving] = useState(false)
 
     const {
         defaultFilter,
@@ -64,6 +67,7 @@ const Members = () => {
         setSort,
         resetFilter,
     } = useFilterSort(sortOptions)
+    const { load: loadMembers, fetching: fetchingMembers, members, approve } = useJoinRequests()
 
     const loadCommunity = useCallback(async (id: CommunityId) => {
         loadCommunityProduct(id)
@@ -78,6 +82,12 @@ const Members = () => {
     }, [communityDeployed, beneficiaryAddress, loadCommunity])
     const selection = useSelectionContext()
 
+    useEffect(() => {
+        if (communityDeployed && beneficiaryAddress) {
+            loadMembers(beneficiaryAddress, filter)
+        }
+    }, [communityDeployed, beneficiaryAddress, loadMembers, filter])
+
     const toggleSelect = useCallback((id) => {
         if (selection.has(id)) {
             selection.remove(id)
@@ -88,10 +98,17 @@ const Members = () => {
 
     const isAnySelected = !selection.isEmpty()
 
-    const onApprove = useCallback(() => {
-        console.log(...selection.selection)
+    const onApprove = useCallback(async () => {
+        const ids = [...selection.selection]
+
+        setApproving(true)
+        for (let index = 0; index < ids.length; index += 1) {
+            // eslint-disable-next-line no-await-in-loop
+            await approve(beneficiaryAddress, ids[index])
+        }
+        setApproving(false)
         selection.none()
-    }, [selection])
+    }, [beneficiaryAddress, approve, selection])
 
     return (
         <CoreLayout
@@ -99,39 +116,51 @@ const Members = () => {
             hideNavOnDesktop
             navComponent={(
                 <Header
-                    searchComponent={
-                        <Search
-                            placeholder={I18n.t('userpages.members.filterMembers')}
-                            value={(filter && filter.search) || ''}
-                            onChange={setSearch}
-                        />
-                    }
-                    filterComponent={
-                        <Dropdown
-                            title={I18n.t('userpages.filter.sortBy')}
-                            onChange={setSort}
-                            selectedItem={(filter && filter.id) || (defaultFilter && defaultFilter.id)}
-                        >
-                            {sortOptions.map((s) => (
-                                <Dropdown.Item key={s.filter.id} value={s.filter.id}>
-                                    {s.displayName}
-                                </Dropdown.Item>
-                            ))}
-                        </Dropdown>
-                    }
+                    {...(communityDeployed ? {
+                        searchComponent: (
+                            <Search
+                                placeholder={I18n.t('userpages.members.filterMembers')}
+                                value={(filter && filter.search) || ''}
+                                onChange={setSearch}
+                            />
+                        ),
+                        filterComponent: (
+                            <Dropdown
+                                title={I18n.t('userpages.filter.sortBy')}
+                                onChange={setSort}
+                                selectedItem={(filter && filter.id) || (defaultFilter && defaultFilter.id)}
+                                disabled={!communityDeployed}
+                            >
+                                {sortOptions.map((s) => (
+                                    <Dropdown.Item key={s.filter.id} value={s.filter.id}>
+                                        {s.displayName}
+                                    </Dropdown.Item>
+                                ))}
+                            </Dropdown>
+                        ),
+                    } : {})}
                 />
             )}
+            loading={fetchingMembers}
         >
             <Helmet title={`Streamr Core | ${I18n.t('userpages.title.members')}`} />
-            <ListContainer>
-                {!members && (
+            <ListContainer className={cx(styles.container, {
+                [styles.containerWithSelected]: isAnySelected,
+            })}
+            >
+                {!communityDeployed && isEthereumAddress(beneficiaryAddress) && (
+                    <div className={styles.pending}>
+                        <CommunityPending />
+                    </div>
+                )}
+                {!!communityDeployed && !members && !fetchingMembers && (
                     <NoMembersView
                         hasFilter={!!filter && (!!filter.search || !!filter.key)}
                         filter={filter}
                         onResetFilter={resetFilter}
                     />
                 )}
-                {members && members.length > 0 && (
+                {!!communityDeployed && members && !fetchingMembers && members.length > 0 && (
                     <Table>
                         <thead>
                             <tr>
@@ -142,7 +171,7 @@ const Members = () => {
                                     <Translate value="userpages.members.table.joinedRequested" />
                                 </th>
                                 <th className={styles.dataColumn}>
-                                    <Translate value="userpages.members.table.lastData" />
+                                    <Translate value="userpages.members.table.lastUpdated" />
                                 </th>
                                 <th className={styles.statusColumn}>
                                     <Translate value="userpages.members.table.status" />
@@ -169,17 +198,21 @@ const Members = () => {
                                                     className={styles.checkbox}
                                                 />
                                             </div>
-                                            <span className={styles.fullAddress}>{member.address}</span>
+                                            <span className={styles.fullAddress}>{member.memberAddress}</span>
                                             <span className={styles.truncatedAddress}>
-                                                {truncate(member.address, {
+                                                {truncate(member.memberAddress, {
                                                     maxLength: 15,
                                                 })}
                                             </span>
                                         </Table.Th>
-                                        <Table.Td noWrap className={styles.joinColumn}>-</Table.Td>
-                                        <Table.Td noWrap className={styles.dataColumn}>-</Table.Td>
+                                        <Table.Td noWrap className={styles.joinColumn}>
+                                            {member.dateCreated ? ago(new Date(member.dateCreated)) : '-'}
+                                        </Table.Td>
+                                        <Table.Td noWrap className={styles.dataColumn}>
+                                            {member.lastUpdated ? ago(new Date(member.lastUpdated)) : '-'}
+                                        </Table.Td>
                                         <Table.Td noWrap className={styles.statusColumn}>
-                                            <StatusIcon status={StatusIcon.INACTIVE} />
+                                            <StatusIcon status={mapStatus(member.state)} />
                                         </Table.Td>
                                     </tr>
                                 )
@@ -221,9 +254,10 @@ const Members = () => {
                         </Button>
                         <Button
                             kind="primary"
-                            disabled={!isAnySelected}
+                            disabled={!isAnySelected || approving}
                             type="button"
                             onClick={onApprove}
+                            waiting={approving}
                         >
                             <Translate value="userpages.members.actions.approve" />
                         </Button>

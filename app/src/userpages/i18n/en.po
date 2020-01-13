@@ -101,6 +101,15 @@ msgstr "Active"
 msgid "userpages##filter##expired"
 msgstr "Expired"
 
+msgid "userpages##filter##accepted"
+msgstr "Accepted"
+
+msgid "userpages##filter##rejected"
+msgstr "Rejected"
+
+msgid "userpages##filter##pending"
+msgstr "Pending"
+
 msgid "userpages##header##canvases"
 msgstr "Canvases"
 
@@ -203,8 +212,8 @@ msgstr "Ethereum address"
 msgid "userpages##members##table##joinedRequested"
 msgstr "Joined / requested"
 
-msgid "userpages##members##table##lastData"
-msgstr "Last data"
+msgid "userpages##members##table##lastUpdated"
+msgstr "Last updated"
 
 msgid "userpages##members##table##status"
 msgstr "Status"
