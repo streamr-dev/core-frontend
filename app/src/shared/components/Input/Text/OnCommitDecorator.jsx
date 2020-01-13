@@ -45,7 +45,7 @@ const OnCommitDecorator = (WrappedComponent: ComponentType<any>) => {
         const valueRef: Ref<string> = useRef(null)
 
         const onFocus = useCallback((e: SyntheticFocusEvent<EventTarget>) => {
-            if (e.target instanceof HTMLInputElement) {
+            if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
                 valueRef.current = e.target.value
             }
 
@@ -55,7 +55,7 @@ const OnCommitDecorator = (WrappedComponent: ComponentType<any>) => {
         }, [onFocusProp])
 
         const onBlur = useCallback((e: SyntheticFocusEvent<EventTarget>) => {
-            if (e.target instanceof HTMLInputElement) {
+            if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
                 const { value } = e.target
 
                 if (onCommit && smartCommit && valueRef.current !== value) {
