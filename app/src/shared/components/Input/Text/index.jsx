@@ -4,5 +4,6 @@ import { compose } from 'redux'
 import OnAutoCompleteDecorator from './OnAutoCompleteDecorator'
 import OnCommitDecorator from './OnCommitDecorator'
 import StatefulInputDecorator from './StatefulInputDecorator'
+import ActionsDropdownDecorator from './ActionsDropdownDecorator'
 
-export default compose(OnAutoCompleteDecorator, OnCommitDecorator, StatefulInputDecorator)('input')
+export default compose(ActionsDropdownDecorator, OnAutoCompleteDecorator, OnCommitDecorator, StatefulInputDecorator)('input')

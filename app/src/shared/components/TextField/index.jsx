@@ -4,7 +4,7 @@ import React, { useCallback } from 'react'
 import cx from 'classnames'
 
 import NumberField from './NumberField'
-import TextFieldWithActions from './TextFieldWithActions'
+import { Text } from '$shared/components/Input'
 import styles from './textField.pcss'
 
 type Props = {
@@ -35,11 +35,9 @@ const TextField = ({
         }
     }, [onChangeProp])
 
-    let Tag = 'input'
+    let Tag = Text
     if (props.type === 'number') {
         Tag = NumberField
-    } else if (props.actions != null && props.actions.length > 0) {
-        Tag = TextFieldWithActions
     }
 
     return (
