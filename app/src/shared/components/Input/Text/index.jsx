@@ -8,6 +8,7 @@ import StatefulInputDecorator from './StatefulInputDecorator'
 import ActionsDropdownDecorator from './ActionsDropdownDecorator'
 import FlushHistoryDecorator from './FlushHistoryDecorator'
 import SelectAllOnFocusDecorator from './SelectAllOnFocusDecorator'
+import UnderlineDecorator from './UnderlineDecorator'
 
 type Props = {
     tag: 'input' | 'textarea',
@@ -24,4 +25,5 @@ export default compose(
     OnCommitDecorator,
     SelectAllOnFocusDecorator,
     StatefulInputDecorator,
+    UnderlineDecorator,
 )(Input)
