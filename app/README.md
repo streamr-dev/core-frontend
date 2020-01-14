@@ -51,7 +51,7 @@ To be able to use the Marketplace, you'll need to configure these variables into
 | STREAMR_API_URL                                   | Address of the environment's Backend Rest API                        |
 | STREAMR_WS_URL                                    | Address of the environment's Backend Websocket API                   |
 | STREAMR_URL                                       | API Address for Dockerized Environments                              |
-| MARKETPLACE_CONTRACT_ADDRESS_OLD                  | Address of the deployed old Marketplace contract                      |
+| MARKETPLACE_CONTRACT_ADDRESS_OLD                  | Address of the deployed old Marketplace contract                     |
 | MARKETPLACE_CONTRACT_ADDRESS                      | Address of the deployed latest Marketplace contract                  |
 | DATA_TOKEN_CONTRACT_ADDRESS                       | Address of the deployed DATA Token contract                          |
 | DAI_TOKEN_CONTRACT_ADDRESS                        | Address of the deployed DAI Token contract                           |
@@ -92,13 +92,13 @@ Development values (set the values in your `.env`):
 
 Optional config values:
 
-| Variable             | Description                                                  |
-| -------------------- | ------------------------------------------------------------ |
-| SENTRY_DSN           | Identifier for Sentry error reporting service                |
+| Variable             | Description                                                                                    |
+| -------------------- | ---------------------------------------------------------------------------------------------- |
+| SENTRY_DSN           | Identifier for Sentry error reporting service                                                  |
 | LOGROCKET_SLUG       | Identifier for LogRocket error reporting service (used in staging and public beta environment) |
-| GOOGLE_ANALYTICS_ID  | Identifier for Google Analytics                              |
-| STORYBOOK_BASE_PATH  | Build path for Storybook stories                             |
-| PLATFORM_PUBLIC_PATH | Public path for Webpack config. If not defined, relative paths are used. |
+| GOOGLE_ANALYTICS_ID  | Identifier for Google Analytics                                                                |
+| STORYBOOK_BASE_PATH  | Build path for Storybook stories                                                               |
+| PLATFORM_PUBLIC_PATH | Public path for Webpack config. If not defined, relative paths are used.                       |
 
 Use `.travis.yml` to set the production values.
 
