@@ -172,10 +172,11 @@ npm version patch
 git push
 ```
 
-At this point it's a good idea to check that Travis confirms all tests are passing. Then,
+At this point it's a good idea to check that Travis confirms all tests are passing. Then, for example if the new version is '2.1.15', 
 
 ```
-git push origin <tag>
+git tag -a v2.1.15 -m 'v2.1.15'
+git push --tags
 ```
 
 Following a deployment, `package.json` on `master` will have a higher version that on `development` so it's important to update `development` with this change.
@@ -195,12 +196,13 @@ Merge the approved branch to master and push a tagged incremental release.
 
 ```
 npm version patch
-git push 
+git push
 ```
 
-At this point it's a good idea to check that Travis confirms all tests are passing. Then,
+At this point it's a good idea to check that Travis confirms all tests are passing. Then, for example if the new version is '2.1.15', 
 
 ```
+git tag -a v2.1.15 -m 'v2.1.15'
 git push --tags
 ```
 
