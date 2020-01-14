@@ -151,7 +151,7 @@ Development Branch -> Local environment (bleeding edge)
 
 Master Branch (untagged) -> Production ready code
 
-Master Branch (tagged releases) -> Production code - https://streamr.network/marketplace
+Master Branch (tagged releases) -> Production code - https://streamr.network/core
 
 ### Deploying to Staging
 
@@ -169,6 +169,8 @@ To make life easier, nobody should push to the `development` branch while you're
 git checkout master
 git merge origin/development
 npm version patch
+git add package.json package-lock.json
+git commit -m "Upgrade to 2.1.15"
 git push
 ```
 
@@ -198,6 +200,8 @@ Merge the approved branch to master and push a tagged incremental release.
 git checkout master
 git merge hotfix/ticket-id-issue-title
 npm version patch
+git add package.json package-lock.json
+git commit -m "Upgrade to 2.1.15"
 git push
 ```
 
@@ -228,7 +232,7 @@ Then write your code, and get the pull request approved by two developers, ideal
 
 ### Storybook
 
-The project contains a Storybook including stories from the main components. The Storybook can be run with `npm run storybook` and built with `npm run build-storybook`.
+The project contains a Storybook including stories from the main components. The Storybook can be run with `npm run storybook` and built with `npm run build-storybook`. Storybook should be accessible after running `npm run storybook` at http://localhost:6006 or on your network at http://10.200.10.1:6006
 
 ## Deployment
 
