@@ -1,40 +1,118 @@
-import assert from 'assert-diff'
 import sinon from 'sinon'
+import BN from 'bignumber.js'
 
 import * as all from '$mp/utils/web3'
 import * as utils from '$mp/utils/smartContract'
 import * as getWeb3 from '$shared/web3/web3Provider'
+import * as getConfig from '$shared/web3/config'
 
 describe('web3 utils', () => {
     let sandbox
-    let web3
 
     beforeEach(() => {
         sandbox = sinon.createSandbox()
-        web3 = new getWeb3.StreamrWeb3()
     })
 
     afterEach(() => {
         sandbox.restore()
         sandbox.reset()
-        web3 = null
     })
 
     describe('getEthBalance', () => {
-        it('gets ethereum balance', async () => {
-            sandbox.stub(web3, 'eth').value({
-                getAccounts: sandbox.stub().callsFake(() => Promise.resolve(['0xTEST'])),
-                getBalance: sandbox.stub().callsFake(() => Promise.resolve(123450000000000000)),
-            })
+        it('gets balance with web3 from metamask', async () => {
+            const accountBalance = BN(123450000000000000)
+            const balanceStub = sandbox.stub().callsFake(() => Promise.resolve(accountBalance))
+            sandbox.stub(getWeb3, 'getWeb3').callsFake(() => ({
+                eth: {
+                    getBalance: balanceStub,
+                },
+            }))
+            const balance = await all.getEthBalance('testAccount')
+            expect(balanceStub.calledOnce).toBe(true)
+            expect(balanceStub.calledWith('testAccount')).toBe(true)
+            expect(balance.isEqualTo(accountBalance.dividedBy(1e18))).toBe(true)
+        })
 
-            const balance = await all.getEthBalance(web3)
-            assert.deepStrictEqual(balance, '0.12345')
+        it('gets balance from public web3', async () => {
+            const accountBalance = BN(123450000000000000)
+            const balanceStub = sandbox.stub().callsFake(() => Promise.resolve(accountBalance))
+            sandbox.stub(getWeb3, 'getPublicWeb3').callsFake(() => ({
+                eth: {
+                    getBalance: balanceStub,
+                },
+            }))
+            const balance = await all.getEthBalance('testAccount', true)
+            expect(balanceStub.calledOnce).toBe(true)
+            expect(balanceStub.calledWith('testAccount')).toBe(true)
+            expect(balance.isEqualTo(accountBalance.dividedBy(1e18))).toBe(true)
         })
     })
 
     describe('getDataTokenBalance', () => {
+        it('gets balance with web3 from metamask', async () => {
+            const accountBalance = BN('2209000000000000000000')
+            const balanceStub = sandbox.stub().callsFake(() => ({
+                call: () => Promise.resolve(accountBalance),
+            }))
+            sandbox.stub(getConfig, 'default').callsFake(() => ({
+                dataToken: 'dataToken',
+            }))
+            const getContractStub = sandbox.stub(utils, 'getContract').callsFake(() => ({
+                methods: {
+                    balanceOf: balanceStub,
+                },
+            }))
+            const result = await all.getDataTokenBalance('testAccount')
+            expect(result.isEqualTo(accountBalance.dividedBy(1e18))).toBe(true)
+            expect(getContractStub.calledOnce).toBe(true)
+            expect(getContractStub.calledWith('dataToken', false)).toBe(true)
+            expect(balanceStub.calledOnce).toBe(true)
+            expect(balanceStub.calledWith('testAccount')).toBe(true)
+        })
+
+        it('gets balance with public web3', async () => {
+            const accountBalance = BN('2209000000000000000000')
+            const balanceStub = sandbox.stub().callsFake(() => ({
+                call: () => Promise.resolve(accountBalance),
+            }))
+            sandbox.stub(getConfig, 'default').callsFake(() => ({
+                dataToken: 'dataToken',
+            }))
+            const getContractStub = sandbox.stub(utils, 'getContract').callsFake(() => ({
+                methods: {
+                    balanceOf: balanceStub,
+                },
+            }))
+            const result = await all.getDataTokenBalance('testAccount', true)
+            expect(result.isEqualTo(accountBalance.dividedBy(1e18))).toBe(true)
+            expect(getContractStub.calledOnce).toBe(true)
+            expect(getContractStub.calledWith('dataToken', true)).toBe(true)
+            expect(balanceStub.calledOnce).toBe(true)
+            expect(balanceStub.calledWith('testAccount')).toBe(true)
+        })
+    })
+
+    describe('getMyEthBalance', () => {
+        it('gets ethereum balance', async () => {
+            const accountBalance = BN(123450000000000000)
+            sandbox.stub(getWeb3, 'getWeb3').callsFake(() => ({
+                getDefaultAccount: sandbox.stub().callsFake(() => Promise.resolve('testAccount')),
+                eth: {
+                    getBalance: sandbox.stub().callsFake(() => Promise.resolve(accountBalance)),
+                },
+            }))
+
+            const balance = await all.getMyEthBalance()
+            expect(balance.isEqualTo(accountBalance.dividedBy(1e18))).toBe(true)
+        })
+    })
+
+    describe('getMyDataTokenBalance', () => {
         it('must call the correct method', async () => {
-            sandbox.stub(web3, 'getDefaultAccount').callsFake(() => Promise.resolve('testAccount'))
+            sandbox.stub(getWeb3, 'getWeb3').callsFake(() => ({
+                getDefaultAccount: sandbox.stub().callsFake(() => Promise.resolve('testAccount')),
+            }))
+
             const balanceStub = sandbox.stub().callsFake(() => ({
                 call: () => Promise.resolve('100000'),
             }))
@@ -43,25 +121,28 @@ describe('web3 utils', () => {
                     balanceOf: balanceStub,
                 },
             }))
-            await all.getDataTokenBalance(web3)
-            assert(getContractStub.calledOnce)
-            assert(getContractStub.getCall(0).args[0].abi.find((f) => f.name === 'balanceOf'))
-            assert(balanceStub.calledOnce)
-            assert(balanceStub.calledWith('testAccount'))
+            await all.getMyDataTokenBalance()
+            expect(getContractStub.calledOnce).toBe(true)
+            expect(getContractStub.getCall(0).args[0].abi.find((f) => f.name === 'balanceOf')).toBeDefined()
+            expect(balanceStub.calledOnce).toBe(true)
+            expect(balanceStub.calledWith('testAccount')).toBe(true)
         })
 
         it('must transform the result from wei to tokens', async () => {
-            sandbox.stub(web3, 'getDefaultAccount').callsFake(() => Promise.resolve('testAccount'))
+            const accountBalance = BN('2209000000000000000000')
+            sandbox.stub(getWeb3, 'getWeb3').callsFake(() => ({
+                getDefaultAccount: sandbox.stub().callsFake(() => Promise.resolve('testAccount')),
+            }))
             const balanceStub = sandbox.stub().callsFake(() => ({
-                call: () => Promise.resolve(('2209000000000000000000').toString()),
+                call: () => Promise.resolve(accountBalance),
             }))
             sandbox.stub(utils, 'getContract').callsFake(() => ({
                 methods: {
                     balanceOf: balanceStub,
                 },
             }))
-            const result = await all.getDataTokenBalance(web3)
-            assert.deepStrictEqual('2209', result)
+            const result = await all.getMyDataTokenBalance()
+            expect(result.isEqualTo(accountBalance.dividedBy(1e18))).toBe(true)
         })
     })
 })

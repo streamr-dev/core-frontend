@@ -151,6 +151,7 @@ export class StreamShowView extends Component<Props, State> {
             isFetching,
         } = this.props
         const hasWritePermission = (permissions && permissions.some((p) => p === 'write')) || false
+        const hasSharePermission = (permissions && permissions.some((p) => p === 'share')) || false
         const isLoading = !!(!editedStream || isFetching)
         const disabled = !!(isLoading || !hasWritePermission)
 
@@ -250,7 +251,7 @@ export class StreamShowView extends Component<Props, State> {
                             title="API Access"
                             customStyled
                         >
-                            <KeyView disabled={disabled} />
+                            <KeyView disabled={disabled || !hasSharePermission} />
                         </TOCPage.Section>
                         <TOCPage.Section
                             id="historical-data"

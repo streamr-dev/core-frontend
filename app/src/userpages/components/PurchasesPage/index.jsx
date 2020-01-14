@@ -22,6 +22,7 @@ import ListContainer from '$shared/components/Container/List'
 import TileGrid from '$shared/components/TileGrid'
 import { isCommunityProduct } from '$mp/utils/product'
 import useFilterSort from '$userpages/hooks/useFilterSort'
+import useCommunityStats from '$mp/modules/communityProduct/hooks/useCommunityStats'
 
 import type { ProductSubscription } from '$mp/flowtype/product-types'
 
@@ -51,6 +52,8 @@ const PurchasesPage = () => {
     const fetching = useSelector(selectFetchingMyPurchaseList)
     const dispatch = useDispatch()
 
+    const { load: loadCommunityStats, members, fetching: fetchingCommunityStats } = useCommunityStats()
+
     useEffect(() => {
         dispatch(updateFilter(filter))
         dispatch(getMyPurchases())
@@ -58,6 +61,10 @@ const PurchasesPage = () => {
                 dispatch(applyFilter())
             })
     }, [dispatch, filter])
+
+    useEffect(() => {
+        loadCommunityStats()
+    }, [loadCommunityStats])
 
     return (
         <Layout
@@ -96,6 +103,9 @@ const PurchasesPage = () => {
                 <TileGrid>
                     {purchases.map((product) => {
                         const isActive = subscriptions && isSubscriptionActive(subscriptions.find((s) => s.product.id === product.id))
+                        const isCommunity = isCommunityProduct(product)
+                        const beneficiaryAddress = (product.beneficiaryAddress || '').toLowerCase()
+                        const memberCount = members[beneficiaryAddress]
 
                         return (
                             <Link
@@ -108,6 +118,10 @@ const PurchasesPage = () => {
                                     labels={{
                                         community: isCommunityProduct(product),
                                     }}
+                                    badges={(isCommunity && memberCount !== undefined) ? {
+                                        members: memberCount,
+                                    } : undefined}
+                                    deploying={!fetchingCommunityStats && (isCommunity && beneficiaryAddress && memberCount === undefined)}
                                 >
                                     <Tile.Title>{product.name}</Tile.Title>
                                     <Tile.Description>{product.owner}</Tile.Description>

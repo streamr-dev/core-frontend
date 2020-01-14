@@ -252,6 +252,8 @@ module.exports = {
                     // upcoming docs
                     'src/docs/components/DocsPages/RunningNode/index.jsx',
                     'src/docs/components/DocsPages/Marketplace/CommunityProducts/index.jsx',
+                    // deprecated components
+                    'src/marketplace/components/deprecated/**/*.*',
                 ],
             },
         }),

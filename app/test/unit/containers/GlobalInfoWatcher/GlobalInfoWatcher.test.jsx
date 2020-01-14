@@ -178,7 +178,7 @@ describe('GlobalInfoWatcher', () => {
 
     it('adds pending transactions from storage on mount', () => {
         const transactions = {
-            '0x123': 'setAllowance',
+            '0x123': 'setDataAllowance',
             '0x456': 'purchase',
         }
 

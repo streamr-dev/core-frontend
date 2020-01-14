@@ -14,6 +14,7 @@
     "contactJobs": "mailto:jobs@streamr.com",
     "contactLabs": "mailto:labs@streamr.com",
     "contactMedia": "mailto:media@streamr.com",
+    "newProduct": "/core/products/new",
     "createProduct": "/marketplace/products/create",
     "dashboardEditor": "/dashboard/editor",
     "dashboards": "/core/dashboards",

@@ -104,7 +104,7 @@ export const getAdminFeeInEther = (adminFee: number) => {
 
 export const deployContract = (joinPartStreamId: string, adminFee: number): SmartContractDeployTransaction => {
     const operatorAddress = process.env.COMMUNITY_PRODUCT_OPERATOR_ADDRESS
-    const tokenAddress = process.env.TOKEN_CONTRACT_ADDRESS
+    const tokenAddress = process.env.DATA_TOKEN_CONTRACT_ADDRESS
     const blockFreezePeriodSeconds = process.env.COMMUNITY_PRODUCT_BLOCK_FREEZE_PERIOD_SECONDS || 1
     return deploy(getConfig().communityProduct, [
         operatorAddress,
@@ -154,7 +154,20 @@ export const getJoinPartStreamId = (address: CommunityId, usePublicNode: boolean
 
 export const getCommunityStats = (id: CommunityId): ApiResult<Object> => get({
     url: formatApiUrl('communities', id, 'stats'),
+    useAuthorization: false,
 })
+
+export const getCommunities = async (): ApiResult<Array<Object>> => {
+    const { communities } = await get({
+        url: formatApiUrl('communities'),
+        useAuthorization: false,
+    })
+
+    return Object.keys(communities || {}).map((id) => ({
+        id: id.toLowerCase(),
+        ...communities[id],
+    }))
+}
 
 export const getCommunityData = async (id: CommunityId, usePublicNode: boolean = true): ApiResult<Object> => {
     const adminFee = await getAdminFee(id, usePublicNode)

@@ -6,109 +6,209 @@ import BN from 'bignumber.js'
 import type { AllowanceState } from '../../flowtype/store-state'
 
 import {
-    RESET_ALLOWANCE_STATE,
-    GET_ALLOWANCE_REQUEST,
-    GET_ALLOWANCE_SUCCESS,
-    GET_ALLOWANCE_FAILURE,
-    SET_ALLOWANCE_REQUEST,
-    SET_ALLOWANCE_SUCCESS,
-    SET_ALLOWANCE_FAILURE,
-    RECEIVE_SET_ALLOWANCE_HASH,
-    RESET_ALLOWANCE_REQUEST,
-    RESET_ALLOWANCE_SUCCESS,
-    RESET_ALLOWANCE_FAILURE,
-    RECEIVE_RESET_ALLOWANCE_HASH,
+    RESET_DATA_ALLOWANCE_STATE,
+    GET_DATA_ALLOWANCE_REQUEST,
+    GET_DATA_ALLOWANCE_SUCCESS,
+    GET_DATA_ALLOWANCE_FAILURE,
+    SET_DATA_ALLOWANCE_REQUEST,
+    SET_DATA_ALLOWANCE_SUCCESS,
+    SET_DATA_ALLOWANCE_FAILURE,
+    RECEIVE_SET_DATA_ALLOWANCE_HASH,
+    RESET_DATA_ALLOWANCE_REQUEST,
+    RESET_DATA_ALLOWANCE_SUCCESS,
+    RESET_DATA_ALLOWANCE_FAILURE,
+    RECEIVE_RESET_DATA_ALLOWANCE_HASH,
+    RESET_DAI_ALLOWANCE_STATE,
+    GET_DAI_ALLOWANCE_REQUEST,
+    GET_DAI_ALLOWANCE_SUCCESS,
+    GET_DAI_ALLOWANCE_FAILURE,
+    SET_DAI_ALLOWANCE_REQUEST,
+    SET_DAI_ALLOWANCE_SUCCESS,
+    SET_DAI_ALLOWANCE_FAILURE,
+    RECEIVE_SET_DAI_ALLOWANCE_HASH,
+    RESET_DAI_ALLOWANCE_REQUEST,
+    RESET_DAI_ALLOWANCE_SUCCESS,
+    RESET_DAI_ALLOWANCE_FAILURE,
+    RECEIVE_RESET_DAI_ALLOWANCE_HASH,
 } from './constants'
-import type { AllowanceAction, HashAction, GetAllowanceErrorAction, SetAllowanceErrorAction } from './types'
+import type { DataAllowanceAction, DaiAllowanceAction, HashAction, GetAllowanceErrorAction, SetAllowanceErrorAction } from './types'
 
 export const initialState: AllowanceState = {
-    allowance: BN(0),
-    pendingAllowance: null,
-    gettingAllowance: false,
-    getAllowanceError: null,
-    settingAllowance: false,
-    setAllowanceTx: null,
-    setAllowanceError: null,
-    resettingAllowance: false,
-    resetAllowanceTx: null,
-    resetAllowanceError: null,
+    dataAllowance: BN(0),
+    pendingDataAllowance: null,
+    gettingDataAllowance: false,
+    getDataAllowanceError: null,
+    settingDataAllowance: false,
+    setDataAllowanceTx: null,
+    setDataAllowanceError: null,
+    resettingDataAllowance: false,
+    resetDataAllowanceTx: null,
+    resetDataAllowanceError: null,
+    daiAllowance: BN(0),
+    pendingDaiAllowance: null,
+    gettingDaiAllowance: false,
+    getDaiAllowanceError: null,
+    settingDaiAllowance: false,
+    setDaiAllowanceTx: null,
+    setDaiAllowanceError: null,
+    resettingDaiAllowance: false,
+    resetDaiAllowanceTx: null,
+    resetDaiAllowanceError: null,
 }
 
 const reducer: (AllowanceState) => AllowanceState = handleActions({
-    [RESET_ALLOWANCE_STATE]: () => ({
+    // DATA Allowance
+    [RESET_DATA_ALLOWANCE_STATE]: () => ({
         ...initialState,
     }),
 
-    [GET_ALLOWANCE_REQUEST]: (state: AllowanceState) => ({
+    [GET_DATA_ALLOWANCE_REQUEST]: (state: AllowanceState) => ({
         ...state,
-        gettingAllowance: true,
+        gettingDataAllowance: true,
     }),
 
-    [GET_ALLOWANCE_SUCCESS]: (state: AllowanceState, action: AllowanceAction) => ({
+    [GET_DATA_ALLOWANCE_SUCCESS]: (state: AllowanceState, action: DataAllowanceAction) => ({
         ...state,
-        gettingAllowance: false,
-        allowance: action.payload.allowance,
+        gettingDataAllowance: false,
+        dataAllowance: action.payload.dataAllowance,
     }),
 
-    [GET_ALLOWANCE_FAILURE]: (state: AllowanceState, action: GetAllowanceErrorAction) => ({
+    [GET_DATA_ALLOWANCE_FAILURE]: (state: AllowanceState, action: GetAllowanceErrorAction) => ({
         ...state,
-        gettingAllowance: false,
-        getAllowanceError: action.payload.error,
+        gettingDataAllowance: false,
+        getDataAllowanceError: action.payload.error,
     }),
 
-    [SET_ALLOWANCE_REQUEST]: (state: AllowanceState, action: AllowanceAction) => ({
+    [SET_DATA_ALLOWANCE_REQUEST]: (state: AllowanceState, action: DataAllowanceAction) => ({
         ...state,
-        settingAllowance: true,
-        pendingAllowance: action.payload.allowance,
-        setAllowanceTx: null,
-        setAllowanceError: null,
+        settingDataAllowance: true,
+        pendingDataAllowance: action.payload.dataAllowance,
+        setDataAllowanceTx: null,
+        setDataAllowanceError: null,
     }),
 
-    [RECEIVE_SET_ALLOWANCE_HASH]: (state: AllowanceState, action: HashAction) => ({
+    [RECEIVE_SET_DATA_ALLOWANCE_HASH]: (state: AllowanceState, action: HashAction) => ({
         ...state,
-        setAllowanceTx: action.payload.hash,
+        setDataAllowanceTx: action.payload.hash,
     }),
 
-    [SET_ALLOWANCE_SUCCESS]: (state: AllowanceState) => ({
+    [SET_DATA_ALLOWANCE_SUCCESS]: (state: AllowanceState) => ({
         ...state,
-        settingAllowance: false,
-        allowance: state.pendingAllowance,
-        pendingAllowance: null,
-        setAllowanceError: null,
+        settingDataAllowance: false,
+        dataAllowance: state.pendingDataAllowance,
+        pendingDataAllowance: null,
+        setDataAllowanceError: null,
     }),
 
-    [SET_ALLOWANCE_FAILURE]: (state: AllowanceState, action: SetAllowanceErrorAction) => ({
+    [SET_DATA_ALLOWANCE_FAILURE]: (state: AllowanceState, action: SetAllowanceErrorAction) => ({
         ...state,
-        settingAllowance: false,
-        pendingAllowance: null,
-        setAllowanceError: action.payload.error,
+        settingDataAllowance: false,
+        pendingDataAllowance: null,
+        setDataAllowanceError: action.payload.error,
     }),
 
-    [RESET_ALLOWANCE_REQUEST]: (state: AllowanceState) => ({
+    [RESET_DATA_ALLOWANCE_REQUEST]: (state: AllowanceState) => ({
         ...state,
-        resettingAllowance: true,
-        pendingAllowance: state.settingAllowance ? state.pendingAllowance : BN(0),
-        resetAllowanceTx: null,
-        resetAllowanceError: null,
+        resettingDataAllowance: true,
+        pendingDataAllowance: state.settingDataAllowance ? state.pendingDataAllowance : BN(0),
+        resetDataAllowanceTx: null,
+        resetDataAllowanceError: null,
     }),
 
-    [RECEIVE_RESET_ALLOWANCE_HASH]: (state: AllowanceState, action: HashAction) => ({
+    [RECEIVE_RESET_DATA_ALLOWANCE_HASH]: (state: AllowanceState, action: HashAction) => ({
         ...state,
-        resetAllowanceTx: action.payload.hash,
+        resetDataAllowanceTx: action.payload.hash,
     }),
 
-    [RESET_ALLOWANCE_SUCCESS]: (state: AllowanceState) => ({
+    [RESET_DATA_ALLOWANCE_SUCCESS]: (state: AllowanceState) => ({
         ...state,
-        resettingAllowance: false,
-        allowance: state.settingAllowance ? state.allowance : state.pendingAllowance,
-        pendingAllowance: state.settingAllowance ? state.pendingAllowance : null,
-        resetAllowanceError: null,
+        resettingDataAllowance: false,
+        dataAllowance: state.settingDataAllowance ? state.dataAllowance : state.pendingDataAllowance,
+        pendingDataAllowance: state.settingDataAllowance ? state.pendingDataAllowance : null,
+        resetDataAllowanceError: null,
     }),
 
-    [RESET_ALLOWANCE_FAILURE]: (state: AllowanceState, action: SetAllowanceErrorAction) => ({
+    [RESET_DATA_ALLOWANCE_FAILURE]: (state: AllowanceState, action: SetAllowanceErrorAction) => ({
         ...state,
-        resettingAllowance: false,
-        resetAllowanceError: action.payload.error,
+        resettingDataAllowance: false,
+        resetDataAllowanceError: action.payload.error,
+    }),
+
+    // DAI Allowance
+    [RESET_DAI_ALLOWANCE_STATE]: () => ({
+        ...initialState,
+    }),
+
+    [GET_DAI_ALLOWANCE_REQUEST]: (state: AllowanceState) => ({
+        ...state,
+        gettingDaiAllowance: true,
+    }),
+
+    [GET_DAI_ALLOWANCE_SUCCESS]: (state: AllowanceState, action: DaiAllowanceAction) => ({
+        ...state,
+        gettingDaiAllowance: false,
+        daiAllowance: action.payload.daiAllowance,
+    }),
+
+    [GET_DAI_ALLOWANCE_FAILURE]: (state: AllowanceState, action: GetAllowanceErrorAction) => ({
+        ...state,
+        gettingDaiAllowance: false,
+        getDaiAllowanceError: action.payload.error,
+    }),
+
+    [SET_DAI_ALLOWANCE_REQUEST]: (state: AllowanceState, action: DaiAllowanceAction) => ({
+        ...state,
+        settingDaiAllowance: true,
+        pendingDaiAllowance: action.payload.daiAllowance,
+        setDaiAllowanceTx: null,
+        setDaiAllowanceError: null,
+    }),
+
+    [RECEIVE_SET_DAI_ALLOWANCE_HASH]: (state: AllowanceState, action: HashAction) => ({
+        ...state,
+        setDaiAllowanceTx: action.payload.hash,
+    }),
+
+    [SET_DAI_ALLOWANCE_SUCCESS]: (state: AllowanceState) => ({
+        ...state,
+        settingDaiAllowance: false,
+        daiAllowance: state.pendingDaiAllowance,
+        pendingDaiAllowance: null,
+        setDaiAllowanceError: null,
+    }),
+
+    [SET_DAI_ALLOWANCE_FAILURE]: (state: AllowanceState, action: SetAllowanceErrorAction) => ({
+        ...state,
+        settingDaiAllowance: false,
+        pendingDaiAllowance: null,
+        setDaiAllowanceError: action.payload.error,
+    }),
+
+    [RESET_DAI_ALLOWANCE_REQUEST]: (state: AllowanceState) => ({
+        ...state,
+        resettingDaiAllowance: true,
+        pendingDaiAllowance: state.settingDaiAllowance ? state.pendingDaiAllowance : BN(0),
+        resetDaiAllowanceTx: null,
+        resetDaiAllowanceError: null,
+    }),
+
+    [RECEIVE_RESET_DAI_ALLOWANCE_HASH]: (state: AllowanceState, action: HashAction) => ({
+        ...state,
+        resetDaiAllowanceTx: action.payload.hash,
+    }),
+
+    [RESET_DAI_ALLOWANCE_SUCCESS]: (state: AllowanceState) => ({
+        ...state,
+        resettingDaiAllowance: false,
+        daiAllowance: state.settingDaiAllowance ? state.daiAllowance : state.pendingDaiAllowance,
+        pendingDaiAllowance: state.settingDaiAllowance ? state.pendingDaiAllowance : null,
+        resetDaiAllowanceError: null,
+    }),
+
+    [RESET_DAI_ALLOWANCE_FAILURE]: (state: AllowanceState, action: SetAllowanceErrorAction) => ({
+        ...state,
+        resettingDaiAllowance: false,
+        resetDaiAllowanceError: action.payload.error,
     }),
 }, initialState)
 

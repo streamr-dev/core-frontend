@@ -5,6 +5,7 @@ import { handleActions } from 'redux-actions'
 import type { PurchaseState } from '../../flowtype/store-state'
 
 import {
+    CLEAR_PURCHASE_STATE,
     BUY_PRODUCT_REQUEST,
     BUY_PRODUCT_SUCCESS,
     BUY_PRODUCT_FAILURE,
@@ -23,6 +24,13 @@ export const initialState: PurchaseState = {
 }
 
 const reducer: (PurchaseState) => PurchaseState = handleActions({
+    [CLEAR_PURCHASE_STATE]: (state: PurchaseState) => ({
+        ...state,
+        processing: false,
+        error: null,
+        purchaseTx: null,
+    }),
+
     [BUY_PRODUCT_REQUEST]: (state: PurchaseState, action: PurchaseAction) => ({
         ...state,
         productId: action.payload.productId,

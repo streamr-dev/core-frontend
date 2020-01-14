@@ -161,7 +161,7 @@ const GuidedDeployCommunityDialog = ({ product, onClose, onContinue: onContinueP
                             <FormGroup check className={styles.formGroup}>
                                 <Label check className={styles.label}>
                                     <Checkbox
-                                        checked={skipHelp}
+                                        value={skipHelp}
                                         onChange={(e) => {
                                             setSkipped(e.target.checked)
                                         }}

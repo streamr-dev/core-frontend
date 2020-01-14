@@ -101,7 +101,7 @@ const ConfirmDialog = (props: Props) => {
                                 <FormGroup check className={styles.formGroup}>
                                     <Label check className={styles.label}>
                                         <Checkbox
-                                            checked={checked}
+                                            value={checked}
                                             onChange={(e) => {
                                                 setChecked(e.target.checked)
                                             }}

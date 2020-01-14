@@ -9,7 +9,7 @@ import type { EditProduct } from '$mp/flowtype/product-types'
 import type { PriceDialogResult } from '$mp/components/Modal/SetPriceDialog'
 import { validate, isEthereumAddress, type Options } from '$mp/utils/validate'
 import { isPriceValid } from '$mp/utils/price'
-import { currencies, timeUnits } from '$shared/utils/constants'
+import { contractCurrencies as currencies, timeUnits } from '$shared/utils/constants'
 import { isPublishedProduct } from '$mp/utils/product'
 
 const addresses = () => ({

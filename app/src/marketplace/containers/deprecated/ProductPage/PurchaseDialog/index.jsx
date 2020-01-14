@@ -3,18 +3,19 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { I18n } from 'react-redux-i18n'
+import BN from 'bignumber.js'
 
 import ModalPortal from '$shared/components/ModalPortal'
 import { selectStep, selectStepParams, selectProduct, selectPurchaseData } from '$mp/modules/deprecated/purchaseDialog/selectors'
 import { setAccessPeriod, setAllowance, initPurchase, approvePurchase } from '$mp/modules/deprecated/purchaseDialog/actions'
 import { purchaseFlowSteps } from '$mp/utils/constants'
-import { getAllowance, resetAllowanceState as resetAllowanceStateAction } from '$mp/modules/allowance/actions'
+import { getDataAllowance, resetDataAllowanceState as resetDataAllowanceStateAction } from '$mp/modules/allowance/actions'
 import {
-    selectGettingAllowance,
-    selectSettingAllowance,
-    selectResettingAllowance,
-    selectSetAllowanceError,
-    selectResetAllowanceError,
+    selectGettingDataAllowance,
+    selectSettingDataAllowance,
+    selectResettingDataAllowance,
+    selectSetDataAllowanceError,
+    selectResetDataAllowanceError,
 } from '$mp/modules/allowance/selectors'
 import { selectPurchaseTransaction, selectPurchaseStarted } from '$mp/modules/purchase/selectors'
 import SetAllowanceDialog from '$mp/components/Modal/SetAllowanceDialog'
@@ -61,7 +62,7 @@ type DispatchProps = {
     onSetAccessPeriod: (time: NumberString, timeUnit: TimeUnit) => void,
     onSetAllowance: () => void,
     onApprovePurchase: () => void,
-    resetAllowanceState: () => void,
+    resetDataAllowanceState: () => void,
     getIntegrationKeys: () => void,
 }
 
@@ -85,7 +86,7 @@ export class PurchaseDialog extends React.Component<Props> {
         const { productId } = this.props
 
         this.props.initPurchase(productId)
-        this.props.resetAllowanceState()
+        this.props.resetDataAllowanceState()
         this.props.getAllowance()
         this.props.getContractProduct(productId)
         this.props.getIntegrationKeys()
@@ -125,7 +126,7 @@ export class PurchaseDialog extends React.Component<Props> {
             }
 
             if (purchase) {
-                if (step === purchaseFlowSteps.RESET_ALLOWANCE) {
+                if (step === purchaseFlowSteps.RESET_DATA_ALLOWANCE) {
                     if (resetAllowanceError) {
                         return (
                             <ErrorDialog
@@ -146,7 +147,7 @@ export class PurchaseDialog extends React.Component<Props> {
                     )
                 }
 
-                if (step === purchaseFlowSteps.ALLOWANCE) {
+                if (step === purchaseFlowSteps.DATA_ALLOWANCE) {
                     if (setAllowanceError) {
                         return (
                             <ErrorDialog
@@ -163,6 +164,7 @@ export class PurchaseDialog extends React.Component<Props> {
                             onSet={onSetAllowance}
                             gettingAllowance={gettingAllowance}
                             settingAllowance={settingAllowance}
+                            paymentCurrency="DATA"
                         />
                     )
                 }
@@ -176,10 +178,14 @@ export class PurchaseDialog extends React.Component<Props> {
                     return (
                         <NoBalanceDialog
                             onCancel={onCancel}
+                            requiredGasBalance={requiredEthBalance}
                             requiredEthBalance={requiredEthBalance}
                             currentEthBalance={currentEthBalance}
                             requiredDataBalance={requiredDataBalance}
                             currentDataBalance={currentDataBalance}
+                            currentDaiBalance={BN(0)}
+                            requiredDaiBalance={BN(0)}
+                            paymentCurrency="DATA"
                         />
                     )
                 }
@@ -224,24 +230,24 @@ export const mapStateToProps = (state: StoreState): StateProps => ({
     purchase: selectPurchaseData(state),
     purchaseTransaction: selectPurchaseTransaction(state),
     purchaseStarted: selectPurchaseStarted(state),
-    gettingAllowance: selectGettingAllowance(state),
-    settingAllowance: selectSettingAllowance(state),
-    setAllowanceError: selectSetAllowanceError(state),
-    resettingAllowance: selectResettingAllowance(state),
-    resetAllowanceError: selectResetAllowanceError(state),
+    gettingAllowance: selectGettingDataAllowance(state),
+    settingAllowance: selectSettingDataAllowance(state),
+    setAllowanceError: selectSetDataAllowanceError(state),
+    resettingAllowance: selectResettingDataAllowance(state),
+    resetAllowanceError: selectResetDataAllowanceError(state),
     step: selectStep(state),
     stepParams: selectStepParams(state),
     ethereumIdentities: selectEthereumIdentities(state),
 })
 
 export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
-    getAllowance: () => dispatch(getAllowance()),
+    getAllowance: () => dispatch(getDataAllowance()),
     getIntegrationKeys: () => dispatch(fetchIntegrationKeys()),
     initPurchase: (id: ProductId) => dispatch(initPurchase(id)),
     onApprovePurchase: () => dispatch(approvePurchase()),
     onSetAccessPeriod: (time: NumberString, timeUnit: TimeUnit) => dispatch(setAccessPeriod(time, timeUnit)),
     onSetAllowance: () => dispatch(setAllowance()),
-    resetAllowanceState: () => dispatch(resetAllowanceStateAction()),
+    resetDataAllowanceState: () => dispatch(resetDataAllowanceStateAction()),
 })
 
 export const UnwrappedPurchaseDialog = connect(mapStateToProps, mapDispatchToProps)(withContractProduct(PurchaseDialog))

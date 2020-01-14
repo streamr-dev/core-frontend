@@ -3,10 +3,15 @@
 import type { NumberString, PayloadAction, ErrorInUi } from '$shared/flowtype/common-types'
 import type { Hash } from '$shared/flowtype/web3-types'
 
-export type AllowanceAction = PayloadAction<{
-    allowance: NumberString,
+export type DataAllowanceAction = PayloadAction<{
+    dataAllowance: NumberString,
 }>
-export type AllowanceActionCreator = (NumberString) => AllowanceAction
+
+export type DaiAllowanceAction = PayloadAction<{
+    daiAllowance: NumberString,
+}>
+
+export type AllowanceActionCreator = (NumberString) => DataAllowanceAction
 
 export type GetAllowanceErrorAction = PayloadAction<{
     error: ErrorInUi,

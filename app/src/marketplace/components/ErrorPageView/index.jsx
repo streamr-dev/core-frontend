@@ -53,7 +53,7 @@ const ErrorPageView = () => (
                 kind="special"
                 tag={Link}
                 to={links.userpages.products}
-                className="d-none d-md-inline-block"
+                className="d-none d-md-flex"
             >
                 <Translate value="general.products" />
             </Button>

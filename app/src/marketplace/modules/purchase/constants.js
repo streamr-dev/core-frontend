@@ -1,5 +1,7 @@
 // @flow
 
+export const CLEAR_PURCHASE_STATE: string = 'marketplace/purchase/CLEAR_PURCHASE_STATE'
+
 export const BUY_PRODUCT_REQUEST: string = 'marketplace/purchase/BUY_PRODUCT_REQUEST'
 export const BUY_PRODUCT_SUCCESS: string = 'marketplace/purchase/BUY_PRODUCT_SUCCESS'
 export const BUY_PRODUCT_FAILURE: string = 'marketplace/purchase/BUY_PRODUCT_FAILURE'

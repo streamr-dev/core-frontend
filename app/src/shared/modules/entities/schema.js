@@ -41,3 +41,4 @@ export const resourceKeySchema = new schema.Entity('resourceKeys')
 export const resourceKeysSchema = [resourceKeySchema]
 
 export const communityProductSchema = new schema.Entity('communityProducts')
+export const communityProductsSchema = [communityProductSchema]
