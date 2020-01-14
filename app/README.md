@@ -195,6 +195,8 @@ Create new branch from master `hotfix/ticket-id-issue-title`
 Merge the approved branch to master and push a tagged incremental release. 
 
 ```
+git checkout master
+git merge hotfix/ticket-id-issue-title
 npm version patch
 git push
 ```
@@ -206,7 +208,13 @@ git tag -a v2.1.15 -m 'v2.1.15'
 git push --tags
 ```
 
-Remember to mirror the same fix in the `development` branch with new tests or new test conditions that prove the new functionality if required. 
+Remember to mirror the same fix in the `development` branch with new tests or new test conditions that prove the new functionality if required.
+
+```
+git checkout development
+git merge origin/master
+git push
+```
 
 ### Adding new Features
 
