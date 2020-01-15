@@ -32,6 +32,7 @@ const BeneficiaryAddress = ({ address, onChange, disabled, className }: Props) =
                     <Translate value="editProductPage.setPrice.setRecipientEthAddress" />
                 </strong>
                 <div>
+                    {/* TODO(MR): replace with Input/Text. #newtext */}
                     <TextField
                         id="beneficiaryAddress"
                         autoComplete="off"

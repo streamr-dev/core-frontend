@@ -3,7 +3,7 @@
 import React, { useState, useCallback, useEffect } from 'react'
 import cx from 'classnames'
 
-import TextControl from '$shared/components/TextControl'
+import { Text } from '$shared/components/Input'
 import InputError from '$mp/components/InputError'
 import { useLastError, type LastErrorProps } from '$shared/hooks/useLastError'
 
@@ -53,14 +53,13 @@ const MarkdownEditor = ({
                     [styles.withError]: !!hasError,
                 }, className)}
             >
-                <TextControl
+                <Text
                     {...editorProps}
-                    immediateCommit={false}
-                    commitEmpty
+                    className={styles.input}
+                    onChange={onTextChange}
+                    smartCommit
                     tag="textarea"
                     value={value}
-                    onChange={onTextChange}
-                    className={styles.input}
                 />
                 <div className={styles.footer}>
                     <div>

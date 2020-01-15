@@ -24,6 +24,7 @@ const ProductName = () => {
         <section id="product-name" className={cx(styles.root, styles.ProductName)}>
             <div>
                 <h1>Name your product</h1>
+                {/* TODO(MR): replace with Input/Text. #newtext */}
                 <TextField
                     value={product.name}
                     onCommit={updateName}

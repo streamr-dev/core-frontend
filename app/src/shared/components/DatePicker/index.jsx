@@ -54,6 +54,7 @@ class DatePicker extends React.Component<Props> {
                     <WithCalendar {...rest0} disabled={isMobile}>
                         {({ date, toggleCalendar, ...rest1 }) => (
                             <React.Fragment>
+                                {/* TODO(MR): replace with Input/Text. #newtext */}
                                 <TextField
                                     type={isMobile ? 'date' : 'text'}
                                     value={value === I18n.t('userpages.streams.edit.history.datePicker.selectDate') ?

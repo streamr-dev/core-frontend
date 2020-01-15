@@ -3,7 +3,7 @@
 import React from 'react'
 import cx from 'classnames'
 
-import TextControl from '$shared/components/TextControl'
+import { Text } from '$shared/components/Input'
 import InputError from '$mp/components/InputError'
 import { useLastError, type LastErrorProps } from '$shared/hooks/useLastError'
 
@@ -21,9 +21,8 @@ export const TextField = ({ error, isProcessing, className, ...inputProps }: Tex
 
     return (
         <div>
-            <TextControl
-                immediateCommit={false}
-                commitEmpty
+            <Text
+                smartCommit
                 selectAllOnFocus
                 className={cx(styles.input, {
                     [styles.withError]: !!hasError,

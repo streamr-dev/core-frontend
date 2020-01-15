@@ -7,7 +7,7 @@ import throttle from 'lodash/throttle'
 import UiSizeConstraint from '../UiSizeConstraint'
 import ModuleSubscription from '../ModuleSubscription'
 
-import TextControl from '$shared/components/TextControl'
+import { Text } from '$shared/components/Input'
 import styles from './TextField.pcss'
 
 export default class TextFieldModule extends React.Component {
@@ -70,12 +70,11 @@ export default class TextFieldModule extends React.Component {
                         onMessage={this.onMessage}
                         onActiveChange={this.onActiveChange}
                     />
-                    <TextControl
-                        commitEmpty
+                    <Text
                         flushHistoryOnBlur
                         onCommit={this.onChange}
                         placeholder="Enter your text here"
-                        immediateCommit={false}
+                        smartCommit
                         tag="textarea"
                         value={value}
                         disabled={!hasWritePermission}

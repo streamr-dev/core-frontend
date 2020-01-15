@@ -1,5 +1,7 @@
 // @flow
 
+// NOTE(MR): We're in the middle of replacing this component with Text.
+
 import React, { useState, useCallback, Fragment, useEffect, useRef, type Node } from 'react'
 import cx from 'classnames'
 import { type Ref } from '$shared/flowtype/common-types'
