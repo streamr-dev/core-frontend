@@ -48,7 +48,6 @@ const TextInput = ({
                     value={value}
                     onBlur={onBlur}
                     onFocus={onFocus}
-                    onAutoComplete={setAutoCompleted}
                 />
             )
         }}
