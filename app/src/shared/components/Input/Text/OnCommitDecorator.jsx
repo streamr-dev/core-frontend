@@ -3,6 +3,14 @@
 import React, { type ComponentType, useCallback, useRef } from 'react'
 import { type Ref } from '$shared/flowtype/common-types'
 
+const sanitise = (value) => (
+    value == null ? '' : value
+)
+
+const normalize = (value: any): string => (
+    typeof value === 'string' ? value.trim() : String(sanitise(value))
+)
+
 type Props = {
     onBlur?: ?(SyntheticFocusEvent<EventTarget>) => void,
     onChange?: ?(SyntheticInputEvent<EventTarget>) => void,
@@ -10,20 +18,39 @@ type Props = {
     onFocus?: ?(SyntheticFocusEvent<EventTarget>) => void,
     onKeyDown?: ?(SyntheticKeyboardEvent<EventTarget>) => void,
     smartCommit?: boolean,
+    noEmptyCommit?: boolean,
 }
 
 const OnCommitDecorator = (WrappedComponent: ComponentType<any>) => {
     const OnCommitDecoratorWrapper = ({
+        noEmptyCommit,
         onBlur: onBlurProp,
         onChange: onChangeProp,
-        onCommit,
+        onCommit: onCommitProp,
         onFocus: onFocusProp,
         onKeyDown: onKeyDownProp,
         smartCommit,
         ...props
     }: Props) => {
+        const valueRef: Ref<string> = useRef(null)
+
+        const lastCommitedRef: Ref<string> = useRef(null)
+
+        const onCommit = useCallback((value: string, requireChanged: boolean = false) => {
+            if (onCommitProp) {
+                const newValue = noEmptyCommit ? normalize(value) : value
+
+                if ((!requireChanged || valueRef.current !== value) && (newValue || !noEmptyCommit)) {
+                    if (lastCommitedRef.current !== value) {
+                        onCommitProp(value)
+                        lastCommitedRef.current = value
+                    }
+                }
+            }
+        }, [onCommitProp, noEmptyCommit])
+
         const onChange = useCallback((e: SyntheticInputEvent<EventTarget>) => {
-            if (onCommit && !smartCommit) {
+            if (!smartCommit) {
                 onCommit(e.target.value)
             }
 
@@ -33,7 +60,7 @@ const OnCommitDecorator = (WrappedComponent: ComponentType<any>) => {
         }, [onChangeProp, onCommit, smartCommit])
 
         const onKeyDown = useCallback((e: SyntheticKeyboardEvent<EventTarget>) => {
-            if (onCommit && e.key === 'Enter' && smartCommit && e.target instanceof HTMLInputElement) {
+            if (e.key === 'Enter' && smartCommit && e.target instanceof HTMLInputElement) {
                 onCommit(e.target.value)
             }
 
@@ -41,8 +68,6 @@ const OnCommitDecorator = (WrappedComponent: ComponentType<any>) => {
                 onKeyDownProp(e)
             }
         }, [onKeyDownProp, onCommit, smartCommit])
-
-        const valueRef: Ref<string> = useRef(null)
 
         const onFocus = useCallback((e: SyntheticFocusEvent<EventTarget>) => {
             if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
@@ -58,8 +83,8 @@ const OnCommitDecorator = (WrappedComponent: ComponentType<any>) => {
             if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
                 const { value } = e.target
 
-                if (onCommit && smartCommit && valueRef.current !== value) {
-                    onCommit(value)
+                if (smartCommit) {
+                    onCommit(value, true)
                 }
             }
 

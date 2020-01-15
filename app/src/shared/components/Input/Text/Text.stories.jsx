@@ -26,7 +26,7 @@ stories.add('default', () => (
         onAutoComplete={action('onAutoComplete')}
         onChange={action('onChange')}
         onCommit={action('onCommit')}
-        underline
+        noEmptyCommit={boolean('noEmptyCommit', false)}
     />
 ))
 
