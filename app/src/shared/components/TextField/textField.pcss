@@ -1,17 +1,3 @@
-/**
- * We use onAutoFillStart and onAuthFillCancel to detect
- * autocompletion on a text field. Don't remove them!
- */
-@keyframes onAutoFillStart {
-  from {}
-  to {}
-}
-
-@keyframes onAutoFillCancel {
-  from {}
-  to {}
-}
-
 .root {
   color: var(--greyDark);
   background-color: white;
@@ -40,14 +26,6 @@
 
 .root.dark {
   background-color: #FDFDFD;
-}
-
-.root:-webkit-autofill {
-  animation-name: onAutoFillStart;
-}
-
-.root:not(:-webkit-autofill) {
-  animation-name: onAutoFillCancel;
 }
 
 .root[type=number] {

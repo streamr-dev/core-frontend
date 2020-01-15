@@ -3,25 +3,30 @@
 import React from 'react'
 import cx from 'classnames'
 
+import ActionsDropdown from '$shared/components/ActionsDropdown'
+import DropdownActions from '$shared/components/DropdownActions'
 import NumberField from './NumberField'
 import { Text } from '$shared/components/Input'
 import styles from './textField.pcss'
 
 type Props = {
+    actions?: Array<typeof DropdownActions.Item>,
     className?: ?string,
     type?: string,
     value: any,
 }
 
-const TextField = ({ className, value, ...props }: Props) => {
+const TextField = ({ className, value, actions, ...props }: Props) => {
     const Tag = props.type === 'number' ? NumberField : Text
 
     return (
-        <Tag
-            {...props}
-            className={cx(className, styles.root)}
-            value={value != null ? value : ''}
-        />
+        <ActionsDropdown actions={actions}>
+            <Tag
+                {...props}
+                className={cx(className, styles.root)}
+                value={value != null ? value : ''}
+            />
+        </ActionsDropdown>
     )
 }
 
