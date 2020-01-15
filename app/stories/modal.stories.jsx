@@ -445,6 +445,7 @@ story('Marketplace/PurchaseSummaryDialog')
             price={BN(123)}
             ethPrice={BN(124)}
             daiPrice={BN(125)}
+            dataPerUsd="0.1"
             paymentCurrency="DATA"
             time="24"
             timeUnit="hour"
@@ -458,6 +459,7 @@ story('Marketplace/PurchaseSummaryDialog')
             price={BN(123)}
             ethPrice={BN(124)}
             daiPrice={BN(125)}
+            dataPerUsd="0.1"
             paymentCurrency="DATA"
             time="24"
             timeUnit="hour"

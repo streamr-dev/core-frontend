@@ -6,8 +6,12 @@ import BN from 'bignumber.js'
 
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
-import type { TimeUnit, PaymentCurrency } from '$shared/flowtype/common-types'
-import { paymentCurrencies } from '$shared/utils/constants'
+import type { TimeUnit, PaymentCurrency, NumberString } from '$shared/flowtype/common-types'
+import { paymentCurrencies, contractCurrencies } from '$shared/utils/constants'
+import { formatDecimals, dataToUsd } from '$mp/utils/price'
+import { isMobile } from '$shared/utils/platform'
+
+import styles from './purchaseSummaryDialog.pcss'
 
 export type Props = {
     name: string,
@@ -16,6 +20,7 @@ export type Props = {
     price: BN,
     ethPrice: BN,
     daiPrice: BN,
+    dataPerUsd: NumberString,
     purchaseStarted: boolean,
     onCancel: () => void,
     onPay: () => void | Promise<void>,
@@ -29,6 +34,7 @@ export const PurchaseSummaryDialog = ({
     price,
     ethPrice,
     daiPrice,
+    dataPerUsd,
     purchaseStarted,
     onCancel,
     onPay,
@@ -36,12 +42,14 @@ export const PurchaseSummaryDialog = ({
 }: Props) => {
     const priceInChosenCurrency = () => {
         if (paymentCurrency === paymentCurrencies.ETH) {
-            return ethPrice.toFixed(4)
+            return formatDecimals(ethPrice, paymentCurrencies.ETH)
         } else if (paymentCurrency === paymentCurrencies.DAI) {
-            return daiPrice.toFixed(2)
+            return formatDecimals(daiPrice, paymentCurrencies.DAI)
         }
-        return price.toFixed(4)
+        return formatDecimals(price, paymentCurrencies.DATA)
     }
+
+    const approxUsd = () => formatDecimals(dataToUsd(price, dataPerUsd), contractCurrencies.USD)
 
     if (purchaseStarted) {
         return (
@@ -78,32 +86,38 @@ export const PurchaseSummaryDialog = ({
                 title={I18n.t('modal.purchaseSummary.title')}
                 actions={{
                     cancel: {
-                        title: I18n.t('modal.common.cancel'),
+                        title: isMobile() ? I18n.t('modal.purchaseSummary.back') : I18n.t('modal.common.cancel'),
                         kind: 'link',
                         onClick: onCancel,
                     },
                     next: {
-                        title: I18n.t('modal.purchaseSummary.pay'),
+                        title: I18n.t('modal.purchaseSummary.payNow'),
                         kind: 'primary',
                         onClick: () => onPay(),
                     },
                 }}
+                contentClassName={styles.purchaseSummaryContent}
             >
-                <h6>{name}</h6>
-                <p>
+                <p className={styles.purchaseInfo}>
+                    <strong>{name}</strong>
                     <Translate
-                        value="modal.purchaseSummary.access"
+                        value="modal.purchaseSummary.time"
                         time={time}
                         timeUnit={I18n.t(`common.timeUnit.${timeUnit}`)}
+                        className={styles.time}
                     />
                 </p>
-                <p>
-                    <Translate
-                        value="modal.purchaseSummary.price"
-                        price={priceInChosenCurrency()}
-                        priceCurrency={paymentCurrency}
-                    />
-                </p>
+                <div>
+                    <span className={styles.priceValue}>
+                        {priceInChosenCurrency()}
+                        <span className={styles.priceCurrency}>
+                            {paymentCurrency}
+                        </span>
+                    </span>
+                    <p className={styles.usdEquiv}>
+                        {I18n.t('modal.chooseAccessPeriod.approx')} {approxUsd()} {contractCurrencies.USD}
+                    </p>
+                </div>
             </Dialog>
         </ModalPortal>
     )

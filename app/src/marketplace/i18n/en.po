@@ -443,8 +443,14 @@ msgstr ""
 msgid "modal##purchaseSummary##access"
 msgstr "%{time} %{timeUnit} access"
 
+msgid "modal##purchaseSummary##back"
+msgstr "Back"
+
 msgid "modal##purchaseSummary##pay"
 msgstr "Pay"
+
+msgid "modal##purchaseSummary##payNow"
+msgstr "Pay now"
 
 msgid "modal##purchaseSummary##price"
 msgstr "%{price} %{priceCurrency}"
@@ -453,6 +459,9 @@ msgid "modal##purchaseSummary##started##message"
 msgstr ""
 "You need to confirm the transaction <br /> in your wallet to purchase this "
 "product."
+
+msgid "modal##purchaseSummary##time"
+msgstr "%{time} %{timeUnit}"
 
 msgid "modal##purchaseSummary##started##title"
 msgstr "Purchase confirmation"

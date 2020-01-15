@@ -427,6 +427,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
                 price={purchasePrice}
                 ethPrice={ethPrice}
                 daiPrice={daiPrice}
+                dataPerUsd={dataPerUsd}
                 onCancel={onClose}
                 onPay={onApprovePurchase}
                 paymentCurrency={paymentCurrency}
