@@ -11,7 +11,6 @@ import Header from '../Header'
 import ListContainer from '$shared/components/Container/List'
 import LoadingIndicator from '$userpages/components/LoadingIndicator'
 import Layout from '$shared/components/Layout'
-import Search from '$userpages/components/Header/Search'
 import Dropdown from '$shared/components/Dropdown'
 import type { CommunityId } from '$mp/flowtype/product-types'
 import { getFilters } from '$userpages/utils/constants'
@@ -59,14 +58,9 @@ const Members = () => {
         ]
     }, [])
     const [approving, setApproving] = useState(false)
+    const [originalSelection, setOriginalSelection] = useState([])
 
-    const {
-        defaultFilter,
-        filter,
-        setSearch,
-        setSort,
-        resetFilter,
-    } = useFilterSort(sortOptions)
+    const { defaultFilter, filter, setSort, resetFilter } = useFilterSort(sortOptions)
     const { load: loadMembers, fetching: fetchingMembers, members, approve } = useJoinRequests()
 
     const loadCommunity = useCallback(async (id: CommunityId) => {
@@ -97,6 +91,22 @@ const Members = () => {
     }, [selection])
 
     const isAnySelected = !selection.isEmpty()
+    const areAllSelected = selection.size() === members.length
+
+    const toggleSelectAll = useCallback(() => {
+        if (!members || members.length <= 0) { return }
+
+        if (areAllSelected) {
+            selection.none()
+
+            // restore selections before selecting all
+            originalSelection.forEach(selection.add)
+        } else {
+            // save selections before selecting all
+            setOriginalSelection([...selection.selection])
+            members.forEach(({ id }) => selection.add(id))
+        }
+    }, [areAllSelected, selection, members, originalSelection])
 
     const onApprove = useCallback(async () => {
         const ids = [...selection.selection]
@@ -117,13 +127,6 @@ const Members = () => {
             navComponent={(
                 <Header
                     {...(communityDeployed ? {
-                        searchComponent: (
-                            <Search
-                                placeholder={I18n.t('userpages.members.filterMembers')}
-                                value={(filter && filter.search) || ''}
-                                onChange={setSearch}
-                            />
-                        ),
                         filterComponent: (
                             <Dropdown
                                 title={I18n.t('userpages.filter.sortBy')}
@@ -153,7 +156,7 @@ const Members = () => {
                         <CommunityPending />
                     </div>
                 )}
-                {!!communityDeployed && !members && !fetchingMembers && (
+                {!!communityDeployed && !fetchingMembers && members && !members.length && (
                     <NoMembersView
                         hasFilter={!!filter && (!!filter.search || !!filter.key)}
                         filter={filter}
@@ -248,9 +251,9 @@ const Members = () => {
                             outline
                             disabled={!isAnySelected}
                             type="button"
-                            onClick={() => selection.none()}
+                            onClick={toggleSelectAll}
                         >
-                            <Translate value="userpages.members.actions.deselectAll" />
+                            <Translate value={`userpages.members.actions.${areAllSelected ? 'deselectAll' : 'selectAll'}`} />
                         </Button>
                         <Button
                             kind="primary"

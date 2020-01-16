@@ -53,6 +53,7 @@ describe('entities - reducer', () => {
             canvases: {},
             integrationKeys: {},
             resourceKeys: {},
+            joinRequests: {},
         }
 
         let state = reducer(undefined, {
@@ -121,6 +122,7 @@ describe('entities - reducer', () => {
             canvases: {},
             integrationKeys: {},
             resourceKeys: {},
+            joinRequests: {},
         }
 
         assert.deepStrictEqual(reducer(undefined, {
