@@ -29,15 +29,33 @@ const InstallMobileApplicationDialog = ({ onClose, ...props }: Props) => (
             <p><Translate value="modal.web3.installmobileapplication.message" dangerousHTML /></p>
             <div className={styles.buttonContainer}>
                 <ExternalLinkButton
-                    textI18nKey="modal.web3.installmobileapplication.app.trust"
-                    href="https://trustwalletapp.com"
-                    className={styles.button}
-                />
-                <ExternalLinkButton
                     textI18nKey="modal.web3.installmobileapplication.app.coinbase"
                     href="https://wallet.coinbase.com"
                     className={styles.button}
                 />
+                <ExternalLinkButton
+                    textI18nKey="modal.web3.installmobileapplication.app.coinbase"
+                    href="https://www.argent.xyz/"
+                    className={styles.button}
+                />
+                <ExternalLinkButton
+                    textI18nKey="modal.web3.installmobileapplication.app.trust"
+                    href="https://trustwalletapp.com"
+                    className={styles.button}
+                />
+                <p><Translate value="modal.web3.installmobileapplication.message" dangerousHTML /></p>
+                <div className={styles.buttonContainer}>
+                    <ExternalLinkButton
+                        textI18nKey="modal.web3.installmobileapplication.app.trust"
+                        href="https://trustwalletapp.com"
+                        className={styles.button}
+                    />
+                    <ExternalLinkButton
+                        textI18nKey="modal.web3.installmobileapplication.app.coinbase"
+                        href="https://wallet.coinbase.com"
+                        className={styles.button}
+                    />
+                </div>
             </div>
         </Dialog>
     </ModalPortal>

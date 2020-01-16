@@ -620,6 +620,9 @@ msgstr ""
 msgid "modal##web3##installmetamask##title"
 msgstr "No wallet found"
 
+msgid "modal##web3##installmobileapplication##app##argent"
+msgstr "Argent"
+
 msgid "modal##web3##installmobileapplication##app##coinbase"
 msgstr "Coinbase"
 
