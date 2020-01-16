@@ -1,5 +1,5 @@
 import cx from 'classnames'
-import React from 'react'
+import React, { useContext } from 'react'
 import { Translate } from 'react-redux-i18n'
 
 import ModuleHeader from '../../shared/components/ModuleHeader'
@@ -11,8 +11,11 @@ import * as RunController from './CanvasController/Run'
 import { useCameraState } from './Camera'
 
 import ModuleStyles from '$editor/shared/components/Module.pcss'
+import { getModuleMessages, getMaxLevel } from '$editor/canvas/state/messages'
+
 import styles from './Module.pcss'
 import ModuleRenderer from './ModuleRenderer'
+import { AutosaveContext } from './CanvasController/Autosave'
 
 class CanvasModule extends React.PureComponent {
     static contextType = RunController.Context
@@ -35,9 +38,12 @@ class CanvasModule extends React.PureComponent {
 
     onSelection() {
         if (!this.el.current) { return }
+        const { parentElement } = this.el.current
+        // don't move focus if focus already inside
+        if (parentElement.contains(document.activeElement)) { return }
 
         // no direct access to normal focus ref, have to go via parentElement
-        this.el.current.parentElement.focus() // focus should scroll element into view
+        parentElement.focus() // focus should scroll element into view
     }
 
     componentDidMount() {
@@ -97,6 +103,7 @@ class CanvasModule extends React.PureComponent {
             isSelected,
             moduleSidebarIsOpen,
             onPort,
+            isLoading,
             scale,
             ...props
         } = this.props
@@ -104,6 +111,8 @@ class CanvasModule extends React.PureComponent {
         const { isEditable, isAdjustable, hasWritePermission, isSubscriptionActive } = this.context
 
         const { layout } = this.state
+
+        const badgeLevel = getMaxLevel(getModuleMessages(canvas, module.hash))
 
         return (
             <ModuleRenderer
@@ -116,6 +125,7 @@ class CanvasModule extends React.PureComponent {
                 innerRef={this.el}
                 isSelected={isSelected}
                 isSubscriptionActive={isSubscriptionActive}
+                isLoading={isLoading}
                 layout={layout}
                 module={module}
                 onFocus={this.onFocus}
@@ -124,6 +134,7 @@ class CanvasModule extends React.PureComponent {
                 onRename={this.onChangeModuleName}
                 onResize={this.onResize}
                 uiEmitter={this.uiEmitter}
+                badgeLevel={badgeLevel}
                 {...props}
             />
         )
@@ -146,7 +157,7 @@ function ModuleError(props) {
         ...restProps
     } = props
 
-    const errorObj = (error && error.error) ? error.error : error
+    const errorObj = error
     const moduleLayout = layout || module.layout
     const errorMessage = (errorObj.stack || errorObj.message || '').trim()
 
@@ -192,10 +203,14 @@ function ModuleError(props) {
 const CanvasModuleWithErrorBoundary = React.memo(withErrorBoundary(ModuleError)(CanvasModule))
 
 export default React.memo(withErrorBoundary(ModuleError)((props) => {
+    const { module } = props
     const { scale } = useCameraState()
+    const { moduleNeedsUpdate, moduleJustAdded } = useContext(AutosaveContext)
+    // do not display loader if module just added
+    const isLoading = !moduleJustAdded(module.hash) && moduleNeedsUpdate(module.hash)
     return (
         <ModuleDragger module={props.module} api={props.api}>
-            <CanvasModuleWithErrorBoundary scale={scale} {...props} />
+            <CanvasModuleWithErrorBoundary isLoading={isLoading} scale={scale} {...props} />
         </ModuleDragger>
     )
 }))

@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useState, Fragment, useCallback, useEffect, useRef } from 'react'
+import React, { useState, Fragment, useCallback, useEffect, useRef, type ComponentType } from 'react'
 import { type Ref } from '$shared/flowtype/common-types'
 import BodyClass from '$shared/components/BodyClass'
 import styles from './handle.pcss'
@@ -113,5 +113,4 @@ const Handle = ({ beforeDrag, onDrop, onDrag }: Props) => {
     )
 }
 
-// $FlowFixMe: flow doesn't play cool w/ React.memo.
-export default React.memo(Handle)
+export default (React.memo(Handle): ComponentType<Props>)

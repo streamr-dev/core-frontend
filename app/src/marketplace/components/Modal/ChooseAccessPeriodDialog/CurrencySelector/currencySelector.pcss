@@ -1,0 +1,39 @@
+.root {
+  display: flex;
+  align-content: stretch;
+  justify-content: center;
+  height: 100%;
+  width: 280px;
+  margin: 0 auto 1rem;
+}
+
+.currencyButton {
+  width: 30%;
+  color: #CDCDCD;
+  font-size: 12px;
+  font-family: var(--sans);
+  font-weight: var(--medium);
+  text-align: center;
+  letter-spacing: 0.5px;
+  line-height: 24px;
+  transition: 0.2s ease-in-out;
+  transition-property: all;
+
+  .name {
+    display: block;
+  }
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.currencyButton.selected {
+  color: var(--streamrBlue);
+
+  .currencyIcon {
+    path:first-of-type {
+      fill: var(--streamrBlue);
+    }
+  }
+}

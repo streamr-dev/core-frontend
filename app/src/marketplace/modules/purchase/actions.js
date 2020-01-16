@@ -7,7 +7,7 @@ import { getLocation } from 'connected-react-router'
 import { I18n } from 'react-redux-i18n'
 
 import Notification from '$shared/utils/Notification'
-import type { ErrorFromApi, NumberString, ErrorInUi, ReduxActionCreator } from '$shared/flowtype/common-types'
+import type { ErrorFromApi, NumberString, ErrorInUi, ReduxActionCreator, PaymentCurrency } from '$shared/flowtype/common-types'
 import type { Hash } from '$shared/flowtype/web3-types'
 import type { ProductId } from '$mp/flowtype/product-types'
 import type { StoreState } from '$shared/flowtype/store-state'
@@ -17,6 +17,7 @@ import { getProductSubscription } from '../product/actions'
 import { addTransaction } from '../transactions/actions'
 
 import {
+    CLEAR_PURCHASE_STATE,
     BUY_PRODUCT_REQUEST,
     BUY_PRODUCT_SUCCESS,
     BUY_PRODUCT_FAILURE,
@@ -35,6 +36,8 @@ import type {
 import * as services from './services'
 
 const FIVE_SECONDS = 5000
+
+export const clearPurchaseState: ReduxActionCreator = createAction(CLEAR_PURCHASE_STATE)
 
 const buyProductRequest: PurchaseActionCreator = createAction(
     BUY_PRODUCT_REQUEST,
@@ -77,11 +80,17 @@ const addFreeProductFailure: ProductErrorActionCreator = createAction(
     }),
 )
 
-export const buyProduct = (productId: ProductId, subscriptionInSeconds: NumberString | BN) => (dispatch: Function, getState: () => StoreState) => {
+export const buyProduct = (
+    productId: ProductId,
+    subscriptionInSeconds: NumberString | BN,
+    paymentCurrency: PaymentCurrency,
+    ethPrice: NumberString | BN,
+    daiPrice: NumberString | BN,
+) => (dispatch: Function, getState: () => StoreState) => {
     dispatch(buyProductRequest(productId, subscriptionInSeconds.toString()))
 
     return services
-        .buyProduct(productId, subscriptionInSeconds)
+        .buyProduct(productId, subscriptionInSeconds, paymentCurrency, ethPrice, daiPrice)
         .onTransactionHash((hash) => {
             dispatch(receivePurchaseHash(hash))
             dispatch(addTransaction(hash, transactionTypes.PURCHASE))

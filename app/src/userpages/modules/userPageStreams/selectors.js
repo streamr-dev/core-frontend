@@ -8,13 +8,14 @@ import type { StoreState } from '$userpages/flowtype/states/store-state'
 import type { UserPageStreamsState, CsvUploadState } from '$userpages/flowtype/states/stream-state'
 import type { Stream, StreamList, StreamId, StreamIdList } from '$shared/flowtype/stream-types'
 import type { ResourceKeyIdList, ResourceKeyList } from '$shared/flowtype/resource-key-types'
-import type { Filter } from '$userpages/flowtype/common-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { Operation } from '$userpages/flowtype/permission-types'
 
 import { selectEntities } from '$shared/modules/entities/selectors'
 import { streamsSchema, streamSchema, resourceKeysSchema } from '$shared/modules/entities/schema'
 import { selectStreamResourceKeys } from '$shared/modules/resourceKey/selectors'
+
+export const fieldTypes = ['number', 'boolean', 'map', 'list', 'string', 'timestamp']
 
 const selectUserPageStreamsState = (state: StoreState): UserPageStreamsState => state.userPageStreams
 
@@ -43,11 +44,6 @@ export const selectOpenStream: (StoreState) => ?Stream = createSelector(
 export const selectFetching: (StoreState) => boolean = createSelector(
     selectUserPageStreamsState,
     (subState: UserPageStreamsState): boolean => subState.fetching,
-)
-
-export const selectFilter: (StoreState) => ?Filter = createSelector(
-    selectUserPageStreamsState,
-    (subState: UserPageStreamsState): ?Filter => subState.filter,
 )
 
 export const selectEditedStream: (StoreState) => ?Stream = createSelector(

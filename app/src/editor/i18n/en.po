@@ -8,6 +8,12 @@ msgstr ""
 "POT-Creation-Date: 2018-09-26T12:51:00.805Z\n"
 "PO-Revision-Date: 2018-09-26T12:51:00.805Z\n"
 
+msgid "editor##error##refresh"
+msgstr "Refresh"
+
+msgid "editor##general##backToCanvases"
+msgstr "Back to Canvases"
+
 msgid "editor##module##portOption##drivingInput##name"
 msgstr "Driving Input"
 
@@ -64,3 +70,10 @@ msgstr "15 seconds"
 
 msgid "editor##timeRange##1000"
 msgstr "1 second"
+
+msgid "editor##canvas##msg##NoFieldsConfiguredTitle"
+msgstr "No fields configured."
+
+msgid "editor##canvas##msg##NoFieldsConfiguredMessage"
+msgstr "The selected stream should have fields configured. "
+"<a href=\"%{streamLink}\" target=\"_blank\" rel=\"noopener noreferrer\">Configure Fields</a>"

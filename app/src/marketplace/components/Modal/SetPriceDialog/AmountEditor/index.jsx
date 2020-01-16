@@ -2,21 +2,21 @@
 
 import React from 'react'
 import { Row, Col } from 'reactstrap'
-import { currencies, DEFAULT_CURRENCY } from '$shared/utils/constants'
-import type { Currency, NumberString } from '$shared/flowtype/common-types'
+import { contractCurrencies as currencies, DEFAULT_CURRENCY } from '$shared/utils/constants'
+import type { ContractCurrency, NumberString } from '$shared/flowtype/common-types'
 import { convert, sanitize, formatDecimals } from '$mp/utils/price'
 import styles from './amountEditor.pcss'
 
 type Props = {
     amount: ?NumberString,
     dataPerUsd: ?NumberString,
-    currency: Currency,
+    currency: ContractCurrency,
     onChange: (NumberString) => void,
 }
 
 type State = {
     amount: NumberString,
-    currency: Currency,
+    currency: ContractCurrency,
 }
 
 class AmountEditor extends React.Component<Props, State> {
@@ -37,7 +37,7 @@ class AmountEditor extends React.Component<Props, State> {
         this.setLocalAmount(e.target.value, currencies.DATA)
     }
 
-    setLocalAmount = (amount: string, currency: Currency) => {
+    setLocalAmount = (amount: string, currency: ContractCurrency) => {
         this.setState({
             amount,
             currency,
@@ -45,7 +45,7 @@ class AmountEditor extends React.Component<Props, State> {
         this.setProductAmount(amount, currency)
     }
 
-    setProductAmount = (amount: string, currency: Currency) => {
+    setProductAmount = (amount: string, currency: ContractCurrency) => {
         if (currency === this.props.currency) {
             this.props.onChange(amount)
         } else {
@@ -57,7 +57,7 @@ class AmountEditor extends React.Component<Props, State> {
         }
     }
 
-    getLocalAmount = (currency: Currency) => {
+    getLocalAmount = (currency: ContractCurrency) => {
         const { amount } = this.state
 
         if (currency === this.state.currency) {

@@ -1,10 +1,6 @@
-.historyView {
-  max-width: 682px;
-}
+.historyView {}
 
 .fileUpload {
-  margin-bottom: 3rem;
-
   &:--enter {
     cursor: pointer !important;
 
@@ -15,14 +11,11 @@
 }
 
 .longText {
-  line-height: 20px;
-  max-width: 488px;
-  padding-bottom: 2em;
+  margin-bottom: 3.125rem;
 }
 
 .deleteButton,
 .browseFiles {
-  height: 32px;
   min-width: 128px;
   margin-left: 0;
   margin-top: 18px;
@@ -36,6 +29,8 @@
 }
 
 .storedEventsContainer {
+  font-size: 1rem;
+
   &:--enter {
     cursor: pointer !important;
 
@@ -89,4 +84,14 @@
 .historicalStoragePeriod {
   margin: 2em 0 1em;
   display: block;
+}
+
+.storageContainer {
+  display: grid;
+  grid-template-columns: 5rem 11rem;
+  grid-column-gap: 1rem;
+}
+
+.storageAmount {
+  text-align: center;
 }

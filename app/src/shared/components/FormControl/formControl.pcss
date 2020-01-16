@@ -3,20 +3,20 @@
   position: relative;
 
   label {
-    color: #A3A3A3;
+    color: #323232;
     font-size: 0.75rem;
+    font-weight: var(--medium);
     left: 0;
-    line-height: 1rem;
+    line-height: 1.25rem;
     margin: 0;
-    pointer-events: none;
     position: absolute;
-    top: -1rem;
-    transform: translate(0, 1.75rem) scale(1);
-    transform-origin: top left;
+    top: -1.5rem;
     transition: 200ms cubic-bezier(0, 0, 0.2, 1) 0ms;
     transition-property: color, transform;
     width: 100%;
     z-index: 1;
+    overflow: visible;
+    white-space: nowrap;
   }
 }
 
@@ -25,14 +25,6 @@
 }
 
 .focused {
-}
-
-.filled,
-.focused {
-  label {
-    transform: translate(0, 0) scale(0.75);
-    color: #323232 !important;
-  }
 }
 
 .withError.filled label,
@@ -53,12 +45,5 @@
 }
 
 .withLabelSpace {
-  margin-top: 1rem;
-  max-width: 488px;
-}
-
-@media (--md-up) {
-  .root label {
-    font-size: 1rem;
-  }
+  margin-top: 1.5rem;
 }

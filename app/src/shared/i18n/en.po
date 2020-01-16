@@ -15,7 +15,7 @@ msgid "general##off"
 msgstr "Off"
 
 msgid "general##aboutUs"
-msgstr "About Us"
+msgstr "About"
 
 msgid "general##back"
 msgstr "Back"
@@ -53,6 +53,9 @@ msgstr "FAQ"
 msgid "general##footnote"
 msgstr "Made with ❤️ & ☕ by Streamr contributors in 2019"
 
+msgid "general##designAssets"
+msgstr "Design Assets"
+
 msgid "general##general"
 msgstr "General"
 
@@ -66,7 +69,7 @@ msgid "general##jobs"
 msgstr "Jobs"
 
 msgid "general##labs"
-msgstr "Labs"
+msgstr "Business"
 
 msgid "general##language"
 msgstr "Language"
@@ -93,7 +96,7 @@ msgid "general##newCanvas"
 msgstr "New Canvas"
 
 msgid "general##privacy"
-msgstr "Privacy Policy"
+msgstr "Privacy"
 
 msgid "general##product"
 msgstr "Product"
@@ -116,6 +119,9 @@ msgstr "Sign In"
 msgid "general##signUp"
 msgstr "Sign Up"
 
+msgid "general##apps"
+msgstr "Apps"
+
 msgid "general##streamrSystem"
 msgstr "Streamr System"
 
@@ -126,7 +132,7 @@ msgid "general##telegram"
 msgstr "Telegram"
 
 msgid "general##terms"
-msgstr "Terms of Use"
+msgstr "Terms & Conditions"
 
 msgid "general##title##suffix"
 msgstr "Streamr Marketplace"
@@ -161,6 +167,9 @@ msgstr "https://streamr.network/whitepaper"
 msgid "modal##common##cancel"
 msgstr "Cancel"
 
+msgid "modal##common##confirm"
+msgstr "Confirm"
+
 msgid "modal##common##continue"
 msgstr "Continue"
 
@@ -175,6 +184,12 @@ msgstr "OK"
 
 msgid "modal##common##waiting"
 msgstr "Waiting"
+
+msgid "modal##common##close"
+msgstr "Close"
+
+msgid "modal##common##confirm"
+msgstr "Confirm"
 
 msgid "modal##unlockWallet##title"
 msgstr "Access your wallet"
@@ -208,8 +223,44 @@ msgstr "Create identity failed"
 msgid "shared##errors##identityExists"
 msgstr "Identity exists"
 
+msgid "shared##status##ok"
+msgstr "Active"
+
+msgid "shared##status##inactive"
+msgstr "No data yet"
+
+msgid "shared##status##error"
+msgstr "Inactive"
+
+msgid "shared##date##day"
+msgstr "Day"
+
+msgid "shared##date##day_plural"
+msgstr "Days"
+
+msgid "shared##date##week"
+msgstr "Week"
+
+msgid "shared##date##week_plural"
+msgstr "Weeks"
+
+msgid "shared##date##month"
+msgstr "Month"
+
+msgid "shared##date##month_plural"
+msgstr "Months"
+
+msgid "shared##date##year"
+msgstr "Year"
+
+msgid "shared##date##year_plural"
+msgstr "Years"
+
 msgid "general##docs"
 msgstr "Docs"
+
+msgid "general##learn"
+msgstr "Learn"
 
 msgid "general##introduction"
 msgstr "Introduction"
@@ -231,3 +282,9 @@ msgstr "Give feedback"
 
 msgid "general##labels##community"
 msgstr "Community Product"
+
+msgid "general##top"
+msgstr "Top"
+
+msgid "general##network"
+msgstr "Network"

@@ -12,7 +12,7 @@ const getData = ({ data }) => data
 const dashboardsURL = `${process.env.STREAMR_API_URL}/dashboards`
 const canvasesURL = `${process.env.STREAMR_API_URL}/canvases?adhoc=false&sort=dateCreated&order=desc`
 
-const AUTOSAVE_DELAY = 3000
+const AUTOSAVE_DELAY = 500
 
 async function save(dashboard) {
     const body = {

@@ -2,15 +2,15 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Button } from 'reactstrap'
 import { I18n, Translate } from 'react-redux-i18n'
 import { Link } from 'react-router-dom'
 
 import { updatePassword } from '$shared/modules/user/actions'
-import Modal from '$shared/components/Modal'
+import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import TextInput from '$shared/components/TextInput'
 import routes from '$routes'
+import Button from '$shared/components/Button'
 
 import type { PasswordUpdate } from '$shared/flowtype/user-types'
 import styles from './changePassword.pcss'
@@ -86,7 +86,7 @@ class ChangePasswordDialog extends Component<Props, State> {
         const allPasswordsGiven = !!currentPassword && !!newPassword && !!confirmNewPassword
 
         return (
-            <Modal>
+            <ModalPortal>
                 <Dialog
                     className={styles.dialogContainerOverride}
                     contentClassName={styles.content}
@@ -96,12 +96,12 @@ class ChangePasswordDialog extends Component<Props, State> {
                         cancel: {
                             title: I18n.t('modal.common.cancel'),
                             outline: true,
-                            color: 'link',
-                            onClick: this.props.onToggle,
+                            kind: 'link',
+                            onClick: () => this.props.onToggle(),
                         },
                         save: {
                             title: I18n.t('modal.common.save'),
-                            color: 'primary',
+                            kind: 'primary',
                             onClick: this.onSubmit,
                             disabled: !allPasswordsGiven || !passWordsMatch || !strongEnoughPassword || updating,
                             spinner: updating,
@@ -146,7 +146,7 @@ class ChangePasswordDialog extends Component<Props, State> {
                         />
                     </div>
                 </Dialog>
-            </Modal>
+            </ModalPortal>
         )
     }
 }
@@ -202,9 +202,7 @@ class ChangePasswordButton extends React.Component<TriggerProps, TriggerState> {
         return (
             <React.Fragment>
                 <Button
-                    outline
-                    type="button"
-                    color="userpages"
+                    kind="secondary"
                     className={styles.changePassword}
                     onClick={this.onToggle}
                     aria-label="Change Password"
@@ -220,4 +218,7 @@ class ChangePasswordButton extends React.Component<TriggerProps, TriggerState> {
     }
 }
 
-export { ChangePasswordButton as Button }
+export {
+    ChangePasswordDialog,
+    ChangePasswordButton as Button,
+}

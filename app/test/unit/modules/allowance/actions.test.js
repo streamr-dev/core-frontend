@@ -27,22 +27,22 @@ describe('allowance - actions', () => {
         store.clearActions()
     })
 
-    describe('getAllowance', () => {
-        it('gets allowance succesfully', async () => {
+    describe('getDataAllowance', () => {
+        it('gets data allowance succesfully', async () => {
             const allowance = '200000000000000000000'
 
-            sandbox.stub(services, 'getMyAllowance').callsFake(() => Promise.resolve(allowance))
+            sandbox.stub(services, 'getMyDataAllowance').callsFake(() => Promise.resolve(allowance))
 
-            await store.dispatch(actions.getAllowance())
+            await store.dispatch(actions.getDataAllowance())
 
             const expectedActions = [
                 {
-                    type: constants.GET_ALLOWANCE_REQUEST,
+                    type: constants.GET_DATA_ALLOWANCE_REQUEST,
                 },
                 {
-                    type: constants.GET_ALLOWANCE_SUCCESS,
+                    type: constants.GET_DATA_ALLOWANCE_SUCCESS,
                     payload: {
-                        allowance,
+                        dataAllowance: allowance,
                     },
                 },
             ]
@@ -51,16 +51,16 @@ describe('allowance - actions', () => {
 
         it('responds to errors', async () => {
             const error = new Error('Error')
-            sandbox.stub(services, 'getMyAllowance').callsFake(() => Promise.reject(error))
+            sandbox.stub(services, 'getMyDataAllowance').callsFake(() => Promise.reject(error))
 
-            await store.dispatch(actions.getAllowance())
+            await store.dispatch(actions.getDataAllowance())
 
             const expectedActions = [
                 {
-                    type: constants.GET_ALLOWANCE_REQUEST,
+                    type: constants.GET_DATA_ALLOWANCE_REQUEST,
                 },
                 {
-                    type: constants.GET_ALLOWANCE_FAILURE,
+                    type: constants.GET_DATA_ALLOWANCE_FAILURE,
                     error: true,
                     payload: error,
                 },
@@ -69,8 +69,8 @@ describe('allowance - actions', () => {
         })
     })
 
-    describe('setAllowance', () => {
-        it('sets allowance succesfully', async () => {
+    describe('setDataAllowance', () => {
+        it('sets DATA allowance succesfully', async () => {
             const allowance = '200000000000000000000'
             const hash = 'test'
             const receipt = {
@@ -80,7 +80,7 @@ describe('allowance - actions', () => {
             const emitter = new EventEmitter()
             const tx = new Transaction(emitter)
 
-            sandbox.stub(services, 'setMyAllowance').callsFake(() => tx)
+            sandbox.stub(services, 'setMyDataAllowance').callsFake(() => tx)
 
             setTimeout(() => {
                 emitter.emit('transactionHash', hash)
@@ -89,13 +89,13 @@ describe('allowance - actions', () => {
                 emitter.emit('receipt', receipt)
             }, 1000)
 
-            await store.dispatch(actions.setAllowance(allowance))
+            await store.dispatch(actions.setDataAllowance(allowance))
 
             const expectedActions = [
                 {
-                    type: constants.SET_ALLOWANCE_REQUEST,
+                    type: constants.SET_DATA_ALLOWANCE_REQUEST,
                     payload: {
-                        allowance,
+                        dataAllowance: allowance,
                     },
                 },
                 {
@@ -106,7 +106,7 @@ describe('allowance - actions', () => {
                                 [hash]: {
                                     id: hash,
                                     hash,
-                                    type: 'setAllowance',
+                                    type: 'setDataAllowance',
                                     state: 'pending',
                                 },
                             },
@@ -120,13 +120,13 @@ describe('allowance - actions', () => {
                     },
                 },
                 {
-                    type: constants.RECEIVE_SET_ALLOWANCE_HASH,
+                    type: constants.RECEIVE_SET_DATA_ALLOWANCE_HASH,
                     payload: {
                         hash,
                     },
                 },
                 {
-                    type: constants.SET_ALLOWANCE_SUCCESS,
+                    type: constants.SET_DATA_ALLOWANCE_SUCCESS,
                 },
             ]
 
@@ -137,21 +137,21 @@ describe('allowance - actions', () => {
             const allowance = '200000000000000000000'
             const errorMsg = 'Error'
 
-            sandbox.stub(services, 'setMyAllowance').callsFake(() => {
+            sandbox.stub(services, 'setMyDataAllowance').callsFake(() => {
                 throw new Error(errorMsg)
             })
 
-            await store.dispatch(actions.setAllowance(allowance))
+            await store.dispatch(actions.setDataAllowance(allowance))
 
             const expectedActions = [
                 {
-                    type: constants.SET_ALLOWANCE_REQUEST,
+                    type: constants.SET_DATA_ALLOWANCE_REQUEST,
                     payload: {
-                        allowance,
+                        dataAllowance: allowance,
                     },
                 },
                 {
-                    type: constants.SET_ALLOWANCE_FAILURE,
+                    type: constants.SET_DATA_ALLOWANCE_FAILURE,
                     payload: {
                         error: {
                             message: errorMsg,
@@ -170,7 +170,7 @@ describe('allowance - actions', () => {
             const emitter = new EventEmitter()
             const tx = new Transaction(emitter)
 
-            sandbox.stub(services, 'setMyAllowance').callsFake(() => tx)
+            sandbox.stub(services, 'setMyDataAllowance').callsFake(() => tx)
 
             setTimeout(() => {
                 emitter.emit('transactionHash', hash)
@@ -179,13 +179,13 @@ describe('allowance - actions', () => {
                 emitter.emit('error', error)
             }, 1000)
 
-            await store.dispatch(actions.setAllowance(allowance))
+            await store.dispatch(actions.setDataAllowance(allowance))
 
             const expectedActions = [
                 {
-                    type: constants.SET_ALLOWANCE_REQUEST,
+                    type: constants.SET_DATA_ALLOWANCE_REQUEST,
                     payload: {
-                        allowance,
+                        dataAllowance: allowance,
                     },
                 },
                 {
@@ -196,7 +196,7 @@ describe('allowance - actions', () => {
                                 [hash]: {
                                     id: hash,
                                     hash,
-                                    type: 'setAllowance',
+                                    type: 'setDataAllowance',
                                     state: 'pending',
                                 },
                             },
@@ -210,13 +210,13 @@ describe('allowance - actions', () => {
                     },
                 },
                 {
-                    type: constants.RECEIVE_SET_ALLOWANCE_HASH,
+                    type: constants.RECEIVE_SET_DATA_ALLOWANCE_HASH,
                     payload: {
                         hash,
                     },
                 },
                 {
-                    type: constants.SET_ALLOWANCE_FAILURE,
+                    type: constants.SET_DATA_ALLOWANCE_FAILURE,
                     payload: {
                         error: {
                             message: 'txAborted',
@@ -228,8 +228,8 @@ describe('allowance - actions', () => {
         })
     })
 
-    describe('resetAllowance', () => {
-        it('resets allowance succesfully', async () => {
+    describe('resetDataAllowance', () => {
+        it('resets DATA allowance succesfully', async () => {
             const hash = 'test'
             const receipt = {
                 transactionHash: hash,
@@ -238,7 +238,7 @@ describe('allowance - actions', () => {
             const emitter = new EventEmitter()
             const tx = new Transaction(emitter)
 
-            sandbox.stub(services, 'setMyAllowance').callsFake(() => tx)
+            sandbox.stub(services, 'setMyDataAllowance').callsFake(() => tx)
 
             setTimeout(() => {
                 emitter.emit('transactionHash', hash)
@@ -247,11 +247,11 @@ describe('allowance - actions', () => {
                 emitter.emit('receipt', receipt)
             }, 1000)
 
-            await store.dispatch(actions.resetAllowance())
+            await store.dispatch(actions.resetDataAllowance())
 
             const expectedActions = [
                 {
-                    type: constants.RESET_ALLOWANCE_REQUEST,
+                    type: constants.RESET_DATA_ALLOWANCE_REQUEST,
                 },
                 {
                     type: entityConstants.UPDATE_ENTITIES,
@@ -261,7 +261,7 @@ describe('allowance - actions', () => {
                                 [hash]: {
                                     id: hash,
                                     hash,
-                                    type: 'resetAllowance',
+                                    type: 'resetDataAllowance',
                                     state: 'pending',
                                 },
                             },
@@ -275,13 +275,13 @@ describe('allowance - actions', () => {
                     },
                 },
                 {
-                    type: constants.RECEIVE_RESET_ALLOWANCE_HASH,
+                    type: constants.RECEIVE_RESET_DATA_ALLOWANCE_HASH,
                     payload: {
                         hash,
                     },
                 },
                 {
-                    type: constants.RESET_ALLOWANCE_SUCCESS,
+                    type: constants.RESET_DATA_ALLOWANCE_SUCCESS,
                 },
             ]
 
@@ -292,18 +292,18 @@ describe('allowance - actions', () => {
             const allowance = '200000000000000000000'
             const errorMsg = 'Error'
 
-            sandbox.stub(services, 'setMyAllowance').callsFake(() => {
+            sandbox.stub(services, 'setMyDataAllowance').callsFake(() => {
                 throw new Error(errorMsg)
             })
 
-            await store.dispatch(actions.resetAllowance(allowance))
+            await store.dispatch(actions.resetDataAllowance(allowance))
 
             const expectedActions = [
                 {
-                    type: constants.RESET_ALLOWANCE_REQUEST,
+                    type: constants.RESET_DATA_ALLOWANCE_REQUEST,
                 },
                 {
-                    type: constants.RESET_ALLOWANCE_FAILURE,
+                    type: constants.RESET_DATA_ALLOWANCE_FAILURE,
                     payload: {
                         error: {
                             message: errorMsg,
@@ -322,7 +322,7 @@ describe('allowance - actions', () => {
             const emitter = new EventEmitter()
             const tx = new Transaction(emitter)
 
-            sandbox.stub(services, 'setMyAllowance').callsFake(() => tx)
+            sandbox.stub(services, 'setMyDataAllowance').callsFake(() => tx)
 
             setTimeout(() => {
                 emitter.emit('transactionHash', hash)
@@ -331,11 +331,11 @@ describe('allowance - actions', () => {
                 emitter.emit('error', error)
             }, 1000)
 
-            await store.dispatch(actions.resetAllowance(allowance))
+            await store.dispatch(actions.resetDataAllowance(allowance))
 
             const expectedActions = [
                 {
-                    type: constants.RESET_ALLOWANCE_REQUEST,
+                    type: constants.RESET_DATA_ALLOWANCE_REQUEST,
                 },
                 {
                     type: entityConstants.UPDATE_ENTITIES,
@@ -345,7 +345,7 @@ describe('allowance - actions', () => {
                                 [hash]: {
                                     id: hash,
                                     hash,
-                                    type: 'resetAllowance',
+                                    type: 'resetDataAllowance',
                                     state: 'pending',
                                 },
                             },
@@ -359,13 +359,13 @@ describe('allowance - actions', () => {
                     },
                 },
                 {
-                    type: constants.RECEIVE_RESET_ALLOWANCE_HASH,
+                    type: constants.RECEIVE_RESET_DATA_ALLOWANCE_HASH,
                     payload: {
                         hash,
                     },
                 },
                 {
-                    type: constants.RESET_ALLOWANCE_FAILURE,
+                    type: constants.RESET_DATA_ALLOWANCE_FAILURE,
                     payload: {
                         error: {
                             message: 'txAborted',

@@ -1,6 +1,7 @@
 // @flow
 
 import '$shared/assets/stylesheets'
+import '@ibm/plex/css/ibm-plex.css'
 
 import React from 'react'
 import { Route as RouterRoute, Switch, Redirect, type Location } from 'react-router-dom'
@@ -8,13 +9,13 @@ import { ConnectedRouter } from 'connected-react-router'
 import qs from 'query-string'
 
 // Marketplace
-import ProductPage from '$mp/containers/ProductPage'
-import ProductPage2 from '$mp/containers/ProductPage2'
+import ProductPage from '$mp/containers/deprecated/ProductPage'
+import ProductPage2 from '$mp/containers/ProductPage'
 import StreamPreviewPage from '$mp/containers/StreamPreviewPage'
-import CreateProductPage from '$mp/containers/CreateProductPage'
-import EditProductPage from '$mp/containers/EditProductPage'
-import EditProductPage2 from '$mp/containers/EditProductPage2'
+import EditProductPage from '$mp/containers/deprecated/EditProductPage'
+import EditProductPage2 from '$mp/containers/EditProductPage'
 import Products from '$mp/containers/Products'
+import NewProductPage from '$mp/components/NewProductPage'
 
 // Auth
 import SessionProvider from '$auth/components/SessionProvider'
@@ -35,6 +36,8 @@ import TransactionList from '$userpages/components/TransactionPage/List'
 import ProfilePage from '$userpages/components/ProfilePage'
 import PurchasesPage from '$userpages/components/PurchasesPage'
 import ProductsPage from '$userpages/components/ProductsPage'
+import StatsPage from '$userpages/components/ProductsPage/Stats'
+import MembersPage from '$userpages/components/ProductsPage/Members'
 
 // Docs Pages
 import IntroductionDocsPage from '$docs/components/DocsPages/Introduction'
@@ -90,7 +93,8 @@ import CanvasEditor from '$editor/canvas'
 import CanvasEmbed from '$editor/canvas/components/Embed'
 import DashboardEditor from '$editor/dashboard'
 
-import ModalRoot from '$shared/components/ModalRoot'
+import { Provider as ModalPortalProvider } from '$shared/contexts/ModalPortal'
+import { Provider as ModalProvider } from '$shared/contexts/ModalApi'
 import Notifications from '$shared/components/Notifications'
 import { formatPath } from '$shared/utils/url'
 import { userIsAuthenticated } from '$auth/utils/userAuthenticated'
@@ -111,7 +115,6 @@ import routes from '$routes'
 // Wrap authenticated components here instead of render() method
 // Marketplace Auth
 const CreateProductAuth = userIsAuthenticated(EditProductPage)
-const CreateProductAuth2 = userIsAuthenticated(CreateProductPage)
 const EditProductAuth = userIsAuthenticated(EditProductPage)
 const EditProductAuth2 = userIsAuthenticated(EditProductPage2)
 
@@ -125,6 +128,8 @@ const StreamLivePreviewAuth = userIsAuthenticated(StreamLivePreview)
 const TransactionListAuth = userIsAuthenticated(TransactionList)
 const PurchasesPageAuth = userIsAuthenticated(PurchasesPage)
 const ProductsPageAuth = userIsAuthenticated(ProductsPage)
+const StatsPageAuth = userIsAuthenticated(StatsPage)
+const MembersPageAuth = userIsAuthenticated(MembersPage)
 
 // Editor Auth
 const DashboardEditorAuth = userIsAuthenticated(DashboardEditor)
@@ -132,8 +137,6 @@ const DashboardEditorAuth = userIsAuthenticated(DashboardEditor)
 // Other components
 const ProductPurchasePage = (props) => <ProductPage overlayPurchaseDialog {...props} />
 const ProductPublishPage = (props) => <ProductPage overlayPublishDialog {...props} />
-const ProductPurchasePage2 = (props) => <ProductPage2 overlayPurchaseDialog {...props} />
-const ProductPublishPage2 = (props) => <ProductPage2 overlayPublishDialog {...props} />
 
 // Wrap each Route to an ErrorBoundary
 const Route = withErrorBoundary(ErrorPageView)(RouterRoute)
@@ -159,11 +162,9 @@ const AuthenticationRouter = () => ([
 
 const MarketplaceRouter = () => (process.env.COMMUNITY_PRODUCTS ? [
     <Route exact path={marketplace.main} component={Products} key="Products" />,
-    <Route exact path={links.marketplace.createProduct} component={CreateProductAuth2} key="CreateProduct" />,
-    <Route exact path={formatPath(marketplace.products, ':id', 'purchase2')} component={ProductPurchasePage2} key="ProductPurchasePage2" />,
-    <Route exact path={formatPath(marketplace.products, ':id', 'publish2')} component={ProductPublishPage2} key="ProductPublishPage2" />,
+    <Route exact path={formatPath(marketplace.products, ':id', 'streamPreview', ':streamId')} component={StreamPreviewPage} key="StreamPreview" />,
     <Route exact path={formatPath(marketplace.products, ':id')} component={ProductPage2} key="ProductPage2" />,
-    <Route exact path={routes.editProduct()} component={EditProductAuth2} key="EditProduct" />,
+    <Route exact path={routes.newProduct()} component={NewProductPage} key="NewProductPage" />,
 ] : [
     <Route exact path={marketplace.main} component={Products} key="Products" />,
     <Route exact path={links.marketplace.createProduct} component={CreateProductAuth} key="CreateProduct" />,
@@ -319,6 +320,11 @@ const UserpagesRouter = () => ([
     <Route exact path={userpages.transactions} component={TransactionListAuth} key="TransactionList" />,
     <Route exact path={userpages.purchases} component={PurchasesPageAuth} key="PurchasesPage" />,
     <Route exact path={userpages.products} component={ProductsPageAuth} key="ProductsPage" />,
+    <Route exact path={routes.editProduct()} component={EditProductAuth2} key="EditProduct" />,
+    ...(process.env.COMMUNITY_PRODUCTS ? [
+        <Route exact path={routes.productStats()} component={StatsPageAuth} key="StatsPage" />,
+        <Route exact path={routes.productMembers()} component={MembersPageAuth} key="MembersPage" />,
+    ] : []),
     <Redirect from={userpages.main} to={userpages.streams} component={StreamListViewAuth} key="StreamListViewRedirect" />,
 ])
 
@@ -337,21 +343,23 @@ const MiscRouter = () => ([
 const App = () => (
     <ConnectedRouter history={history}>
         <SessionProvider>
-            <ModalRoot>
-                <LocaleSetter />
-                <AutoScroll />
-                <Analytics />
-                <Switch>
-                    {AuthenticationRouter()}
-                    {MarketplaceRouter()}
-                    {DocsRouter()}
-                    {UserpagesRouter()}
-                    {EditorRouter()}
-                    {MiscRouter()}
-                </Switch>
-                <Notifications />
-                {isProduction() && <GoogleAnalyticsTracker />}
-            </ModalRoot>
+            <ModalPortalProvider>
+                <ModalProvider>
+                    <LocaleSetter />
+                    <AutoScroll />
+                    <Analytics />
+                    <Switch>
+                        {AuthenticationRouter()}
+                        {MarketplaceRouter()}
+                        {DocsRouter()}
+                        {UserpagesRouter()}
+                        {EditorRouter()}
+                        {MiscRouter()}
+                    </Switch>
+                    <Notifications />
+                    {isProduction() && <GoogleAnalyticsTracker />}
+                </ModalProvider>
+            </ModalPortalProvider>
         </SessionProvider>
     </ConnectedRouter>
 )

@@ -1,7 +1,7 @@
 import assert from 'assert-diff'
 import moxios from 'moxios'
 import { cloneDeep } from 'lodash'
-import * as services from '$mp/modules/editProduct/services'
+import * as services from '$mp/modules/deprecated/editProduct/services'
 import { existingProduct } from './mockData'
 
 const mockFile = new File(['test'], 'test.jpg', {

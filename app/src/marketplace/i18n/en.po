@@ -29,9 +29,6 @@ msgstr "Free products only"
 msgid "actionBar##sortOptions##pricePerSecond"
 msgstr "Price, low to high"
 
-msgid "actionsDropdown##caption"
-msgstr "Actions"
-
 msgid "actionsDropdown##edit"
 msgstr "Edit"
 
@@ -40,6 +37,15 @@ msgstr "Publish"
 
 msgid "actionsDropdown##unpublish"
 msgstr "Unpublish"
+
+msgid "actionsDropdown##viewProduct"
+msgstr "View Product"
+
+msgid "actionsDropdown##viewStats"
+msgstr "View Stats"
+
+msgid "actionsDropdown##viewCommunity"
+msgstr "View Community"
 
 msgid "actionsDropdown##copyUrl"
 msgstr "Copy URL"
@@ -101,6 +107,15 @@ msgstr "Enter ETH address"
 msgid "editProductPage##setPrice##fixPrice"
 msgstr "Fix price in fiat for protection against shifts in the DATA price"
 
+msgid "editProductPage##sharedSecrets##addSecret"
+msgstr "Add shared secret"
+
+msgid "editProductPage##sharedSecrets##description"
+msgstr ""
+"Shared secrets are the access control for your product. "
+"Create, name and revoke shared secrets from here. "
+"For help with shared secrets, see the docs. "
+
 msgid "editProductPage##navigation##name"
 msgstr "Name"
 
@@ -118,6 +133,18 @@ msgstr "Set price"
 
 msgid "editProductPage##navigation##details"
 msgstr "Details"
+
+msgid "editProductPage##navigation##sharedSecrets"
+msgstr "Shared secrets"
+
+msgid "editProductPage##sidebar##category"
+msgstr "Product category"
+
+msgid "editProductPage##sidebar##activeSubscribers"
+msgstr "Active subscribers"
+
+msgid "editProductPage##sidebar##mostRecentPurchase"
+msgstr "Most recent purchase"
 
 msgid "error##general"
 msgstr "Oops. Something has broken down here."
@@ -175,6 +202,12 @@ msgstr "Image file size must be less than %{limit}MB"
 msgid "imageUpload##imageCaption"
 msgstr "Uploaded image"
 
+msgid "modal##chooseAccessPeriod##approx"
+msgstr "Approx"
+
+msgid "modal##chooseAccessPeriod##balance"
+msgstr "Balance"
+
 msgid "modal##chooseAccessPeriod##day"
 msgstr "Day"
 
@@ -184,11 +217,17 @@ msgstr "Hour"
 msgid "modal##chooseAccessPeriod##month"
 msgstr "Month"
 
-msgid "modal##chooseAccessPeriod##title"
+msgid "modal##chooseAccessPeriod##mobileTitle"
 msgstr "Choose your access period"
+
+msgid "modal##chooseAccessPeriod##title"
+msgstr "Choose your access period & payment token"
 
 msgid "modal##chooseAccessPeriod##week"
 msgstr "Week"
+
+msgid "modal##chooseAccessPeriod##uniswap"
+msgstr "Exchange via Uniswap"
 
 msgid "modal##common##save"
 msgstr "Save"
@@ -373,6 +412,14 @@ msgstr ""
 msgid "modal##getCryptoDialog##title"
 msgstr "No Ether balance"
 
+msgid "modal##insufficientDaiDialog##title"
+msgstr "Insufficient DAI"
+
+msgid "modal##insufficientDaiDialog##message"
+msgstr ""
+"It looks like you don’t have enough DAI to purchase this product. "
+"Please get some & try again or choose a different payment currency."
+
 msgid "modal##getDataTokensDialog##link##bancor"
 msgstr "Bancor"
 
@@ -478,15 +525,18 @@ msgstr "Writing to the blockchain"
 msgid "modal##saveProduct##started##title"
 msgstr "Updating"
 
+msgid "modal##setAllowance##dai"
+msgstr "This allows the marketplace to <br /> transfer the required amount of DAI."
+
+msgid "modal##setAllowance##data"
+msgstr "This allows the marketplace to <br /> transfer the required amount of DATA."
+
 msgid "modal##setAllowance##helpText"
 msgstr ""
 "Allowance is a requirement of ERC-20 token transfers, designed to increase "
 "security and efficiency. For more about allowances, see this <a "
 "href=%{allowanceLink} target=\"_blank\" rel=\"noopener "
 "noreferrer\">page</a>."
-
-msgid "modal##setAllowance##message"
-msgstr "This allows the marketplace to <br /> transfer the required amount of DATA."
 
 msgid "modal##setAllowance##started##message"
 msgstr ""
@@ -653,24 +703,6 @@ msgstr ""
 "<br />"
 "this dialogue and get notified when your product is ready."
 
-msgid "noMyProductsView##goToEditor"
-msgstr "Go to the editor"
-
-msgid "noMyProductsView##hint"
-msgstr "Click + to make one, or check out links below for some help."
-
-msgid "noMyProductsView##message"
-msgstr "You haven’t created any products yet."
-
-msgid "noMyPurchasesView##goToMarketplace"
-msgstr "Go to the marketplace"
-
-msgid "noMyPurchasesView##hint"
-msgstr "Visit the Marketplace to get started."
-
-msgid "noMyPurchasesView##message"
-msgstr "You haven’t purchased or added any products yet."
-
 msgid "noProductsView##keywordHint"
 msgstr "Please try some different keywords"
 
@@ -730,6 +762,9 @@ msgstr "Waiting for the blockchain..."
 msgid "notifications##streamIdCopied"
 msgstr "Stream ID copied"
 
+msgid "notifications##valueCopied"
+msgstr "%{value} copied"
+
 msgid "productTypeChooser##title"
 msgstr "Choose your product type"
 
@@ -737,7 +772,9 @@ msgid "productTypeChooser##standard##title"
 msgstr "Standard Product"
 
 msgid "productTypeChooser##standard##description"
-msgstr "Add your own data stream or group of streams to a product and publish it on the Marketplace. For help creating streams, see the docs."
+msgstr ""
+"Add your own data stream or group of streams to a product and publish it on the Marketplace. "
+"For help creating streams, see the <a href=\"%{docsLink}\">docs</a>."
 
 msgid "productTypeChooser##standard##linkTitle"
 msgstr "Create standard product"

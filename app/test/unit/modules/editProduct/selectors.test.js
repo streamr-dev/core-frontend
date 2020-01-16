@@ -1,7 +1,7 @@
 import assert from 'assert-diff'
 import { normalize } from 'normalizr'
 
-import * as all from '$mp/modules/editProduct/selectors'
+import * as all from '$mp/modules/deprecated/editProduct/selectors'
 import { productSchema, streamsSchema, categoriesSchema } from '$shared/modules/entities/schema'
 import { transactionStates } from '$shared/utils/constants'
 

@@ -10,22 +10,41 @@ import type { SmartContractCall, SmartContractTransaction } from '$shared/flowty
 import { fromAtto, toAtto } from '$mp/utils/math'
 import { gasLimits } from '$shared/utils/constants'
 
-const tokenContractMethods = () => getContract(getConfig().token).methods
+const dataTokenContractMethods = () => getContract(getConfig().dataToken).methods
+const daiTokenContractMethods = () => getContract(getConfig().daiToken).methods
 const marketplaceContract = () => getContract(getConfig().marketplace)
 
-export const getMyAllowance = (): SmartContractCall<BN> => {
+export const getMyDataAllowance = (): SmartContractCall<BN> => {
     const web3 = getWeb3()
     return web3.getDefaultAccount()
-        .then((myAddress) => call(tokenContractMethods().allowance(myAddress, marketplaceContract().options.address)))
+        .then((myAddress) => call(dataTokenContractMethods().allowance(myAddress, marketplaceContract().options.address)))
         .then(fromAtto)
 }
 
-export const setMyAllowance = (amount: string | BN): SmartContractTransaction => {
+export const setMyDataAllowance = (amount: string | BN): SmartContractTransaction => {
     if (BN(amount).isLessThan(0)) {
         throw new Error(I18n.t('error.negativeAmount'))
     }
 
-    const method = tokenContractMethods().approve(marketplaceContract().options.address, toAtto(amount).toFixed(0))
+    const method = dataTokenContractMethods().approve(marketplaceContract().options.address, toAtto(amount).toFixed(0))
+    return send(method, {
+        gas: gasLimits.APPROVE,
+    })
+}
+
+export const getMyDaiAllowance = (): SmartContractCall<BN> => {
+    const web3 = getWeb3()
+    return web3.getDefaultAccount()
+        .then((myAddress) => call(daiTokenContractMethods().allowance(myAddress, marketplaceContract().options.address)))
+        .then(fromAtto)
+}
+
+export const setMyDaiAllowance = (amount: string | BN): SmartContractTransaction => {
+    if (BN(amount).isLessThan(0)) {
+        throw new Error(I18n.t('error.negativeAmount'))
+    }
+
+    const method = daiTokenContractMethods().approve(process.env.UNISWAP_ADAPTOR_CONTRACT_ADDRESS, toAtto(amount).toFixed(0))
     return send(method, {
         gas: gasLimits.APPROVE,
     })

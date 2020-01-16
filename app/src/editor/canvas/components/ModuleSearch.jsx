@@ -5,7 +5,7 @@
 // the highlight will flicker when the item at same index changes selection state
 /* eslint-disable react/no-array-index-key */
 
-import React, { useState, useCallback, useMemo } from 'react'
+import React, { useState, useCallback, useMemo, type Element } from 'react'
 import startCase from 'lodash/startCase'
 import debounce from 'lodash/debounce'
 import cx from 'classnames'
@@ -13,7 +13,6 @@ import cx from 'classnames'
 import type { Stream } from '$shared/flowtype/stream-types'
 import SvgIcon from '$shared/components/SvgIcon'
 import { type Ref } from '$shared/flowtype/common-types'
-import { getModuleBounds, findNonOverlappingPosition } from '$editor/shared/utils/bounds'
 
 import { getModuleCategories, getStreams } from '../services'
 import { moduleSearch } from '../state'
@@ -304,23 +303,14 @@ class ModuleSearch extends React.PureComponent<Props, State> {
         const { camera = {} } = this.props
 
         const canvasRect = camera.elRef.current.getBoundingClientRect()
-        const myBB = camera.cameraToWorldBounds({
+        return camera.cameraToWorldBounds({
             // Align module to the top right corner of ModuleSearch with a 32px offset
             x: (selfRect.right - canvasRect.left - 20) + 32,
             y: selfRect.top - canvasRect.top,
-            // TODO: It would be nice to use actual module size here but we know
-            //       it only after the module has been added to the canvas
-            width: 100,
-            height: 50,
         })
-
-        const boundingBoxes = this.props.canvas.modules.map((m) => getModuleBounds(m))
-
-        const stackOffset = 16 // pixels
-        return findNonOverlappingPosition(myBB, boundingBoxes, stackOffset)
     }
 
-    renderMenu = () => {
+    renderMenu = (): Array<Element<typeof ModuleMenuCategory>> => {
         const modules = this.getMappedModuleTree()
 
         // Form category tree
@@ -335,11 +325,8 @@ class ModuleSearch extends React.PureComponent<Props, State> {
                 categoryTree[m.path].modules.push(m)
             }
         })
-        // https://github.com/facebook/flow/issues/2221
-        // $FlowFixMe Object.values() returns mixed[]
-        const categories: Array<CategoryType> = Object.values(categoryTree)
+        const categories: Array<CategoryType> = (Object.values(categoryTree): any)
 
-        // $FlowFixMe "Missing type annotation for U"
         return categories.map((category) => (
             <ModuleMenuCategory
                 key={category.name}

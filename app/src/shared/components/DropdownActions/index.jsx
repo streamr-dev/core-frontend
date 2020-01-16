@@ -17,8 +17,9 @@ type Props = {
         className?: string,
         modifiers?: Object,
     },
-    onMenuToggle?: (boolean) => void,
+    onMenuToggle?: (boolean) => any,
     direction?: string,
+    disabled?: boolean,
 }
 
 type State = {
@@ -61,6 +62,7 @@ export default class DropdownActions extends Component<Props, State> {
             toggleProps: { className: toggleClassName, ...toggleProps },
             menuProps: { className: menuClassName, ...menuProps },
             direction,
+            disabled,
         } = this.props
 
         return (
@@ -72,10 +74,11 @@ export default class DropdownActions extends Component<Props, State> {
                 className={cx(className, styles.dropdown)}
             >
                 <DropdownToggle
+                    {...toggleProps}
                     href="#"
                     tag="div"
-                    {...toggleProps}
                     className={cx(styles.textToggle, toggleClassName)}
+                    disabled={!!disabled}
                 >
                     {title}
                     {!noCaret && <span className={styles.caret}>&#9662;</span>}

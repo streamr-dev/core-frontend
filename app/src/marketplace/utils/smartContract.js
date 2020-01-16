@@ -5,6 +5,7 @@ import type { PromiEvent } from 'web3'
 import { I18n } from 'react-redux-i18n'
 import { isHex } from 'web3-utils'
 import { generateAddress, bufferToHex } from 'ethereumjs-util'
+import BN from 'bignumber.js'
 
 import { arePricesEqual } from '../utils/price'
 import { checkEthereumNetworkIsCorrect } from '$shared/utils/web3'
@@ -20,6 +21,7 @@ import type {
     SmartContractMetadata,
 } from '$shared/flowtype/web3-types'
 import type { EditProduct, SmartContractProduct } from '../flowtype/product-types'
+import type { NumberString } from '$shared/flowtype/common-types'
 
 import Transaction from '$shared/utils/Transaction'
 import DeployTransaction from '$shared/utils/DeployTransaction'
@@ -77,6 +79,7 @@ export const call = (method: Callable): SmartContractCall<*> => method.call()
 
 export const send = (method: Sendable, options?: {
     gas?: number,
+    value?: NumberString | BN,
 }): SmartContractTransaction => {
     const web3 = getWeb3()
     const emitter = new EventEmitter()
@@ -93,6 +96,7 @@ export const send = (method: Sendable, options?: {
                 .send({
                     gas: (options && options.gas) || gasLimits.DEFAULT,
                     from: account,
+                    value: options && options.value,
                 })
                 .on('error', errorHandler)
                 .on('transactionHash', (hash) => {

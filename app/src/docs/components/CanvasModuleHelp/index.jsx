@@ -17,16 +17,35 @@ type PortHelpProps = {
 // doesn't play well with inline elements.
 const capitalizeText = (text: string): string => text.charAt(0).toUpperCase() + text.slice(1)
 
+const hasTrailingFullStop = (text: string): string => {
+    if (text.slice(-1) === '.') {
+        return true
+    }
+    return false
+}
+
 function PortHelp({ help, port }: PortHelpProps) {
+    const portName = capitalizeText(port.displayName || port.name)
+
     return (
         <div className={styles.portHelp}>
-            <span className={styles.portName} title={port.name}>{port.displayName || port.name}</span>
-            {port.type.split(/\s+/).map((type) => (
-                <span className={styles.portType} key={type}> {type}.</span>
-            ))}
-            {!help ? null : (<span className={styles.portText}> <ReactMarkdown source={capitalizeText(help) || ''} />.</span>)}
+            <span className={styles.portName} title={port.name}>{portName}</span>
+            {port.type.split(/\s+/).map((type) => {
+                const portType = capitalizeText(type)
+                return (
+                    <span className={styles.portType} key={type}>
+                        {portType === portName && help ? '.' : ` ${type}${hasTrailingFullStop(portType) ? null : '.'}`}
+                    </span>
+                )
+            })}
+            {!help ? null
+                : (
+                    <span className={styles.portText}> <ReactMarkdown source={capitalizeText(help) || ''} />
+                        {hasTrailingFullStop(help) ? null : '.'}
+                    </span>
+                )}
             {isEmpty(port.defaultValue) ? null : (
-                <span className={styles.defaultValue}> Default Value ${port.defaultValue}</span>
+                <span className={styles.defaultValue}> Default Value ${port.defaultValue}{hasTrailingFullStop(port.defaultValue) ? null : '.'}</span>
             )}
         </div>
     )
@@ -61,9 +80,12 @@ type Props = {
 }
 
 export default function CanvasModuleHelp({ module: m, help, minifiedContent, className }: Props) {
+    const modulePageId = m.name.toLowerCase().replace(/\s/g, '')
+
     return (
         <section
             key={m.id}
+            id={modulePageId}
             className={cx(
                 styles.root,
                 className, {
@@ -72,7 +94,7 @@ export default function CanvasModuleHelp({ module: m, help, minifiedContent, cla
             )}
         >
             <div className={styles.nameAndDescription}>
-                {minifiedContent ? null : <h4>{m.name}</h4>}
+                {minifiedContent ? null : <a href={`#${modulePageId}`}><h4>{m.name}</h4></a>}
                 <ReactMarkdown source={help && help.helpText} />
             </div>
             {minifiedContent ? null : (

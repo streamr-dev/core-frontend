@@ -7,21 +7,21 @@ const state = {
     test: true,
     allowance: {
         hash: 'hash',
-        allowance: BN(5),
-        pendingAllowance: BN(10),
-        gettingAllowance: false,
-        getAllowanceError: {
+        dataAllowance: BN(5),
+        pendingDataAllowance: BN(10),
+        gettingDataAllowance: false,
+        getDataAllowanceError: {
             message: 'getAllowanceError',
         },
-        settingAllowance: true,
-        setAllowanceTx: 'setAllowanceTx',
-        setAllowanceError: {
-            message: 'setAllowanceError',
+        settingDataAllowance: true,
+        setDataAllowanceTx: 'setDataAllowanceTx',
+        setDataAllowanceError: {
+            message: 'setDataAllowanceError',
         },
-        resettingAllowance: false,
-        resetAllowanceTx: 'resetAllowanceTx',
-        resetAllowanceError: {
-            message: 'resetAllowanceError',
+        resettingDataAllowance: false,
+        resetDataAllowanceTx: 'resetDataAllowanceTx',
+        resetDataAllowanceError: {
+            message: 'resetDataAllowanceError',
         },
     },
     otherData: 42,
@@ -29,54 +29,54 @@ const state = {
 }
 
 describe('allowance - selectors', () => {
-    it('selects allowance', () => {
-        assert.deepStrictEqual(all.selectAllowance(state), state.allowance.allowance)
+    it('selects DATA allowance', () => {
+        assert.deepStrictEqual(all.selectDataAllowance(state), state.allowance.dataAllowance)
     })
 
-    it('selects pendingAllowance', () => {
-        assert.deepStrictEqual(all.selectPendingAllowance(state), state.allowance.pendingAllowance)
+    it('selects pendingDataAllowance', () => {
+        assert.deepStrictEqual(all.selectPendingDataAllowance(state), state.allowance.pendingDataAllowance)
     })
 
-    it('selects fetching status for getting allowance', () => {
-        assert.deepStrictEqual(all.selectGettingAllowance(state), false)
+    it('selects fetching status for getting DATA allowance', () => {
+        assert.deepStrictEqual(all.selectGettingDataAllowance(state), false)
     })
 
-    it('selects fetching status for setting allowance', () => {
-        assert.deepStrictEqual(all.selectSettingAllowance(state), true)
+    it('selects fetching status for setting DATA allowance', () => {
+        assert.deepStrictEqual(all.selectSettingDataAllowance(state), true)
     })
 
-    it('selects the set allowance transaction hash', () => {
-        assert.deepStrictEqual(all.selectSetAllowanceTx(state), state.allowance.setAllowanceTx)
+    it('selects the set DATA allowance transaction hash', () => {
+        assert.deepStrictEqual(all.selectSetDataAllowanceTx(state), state.allowance.setDataAllowanceTx)
     })
 
-    it('selects the set allowance error', () => {
-        assert.deepStrictEqual(all.selectSetAllowanceError(state), state.allowance.setAllowanceError)
+    it('selects the set DATA allowance error', () => {
+        assert.deepStrictEqual(all.selectSetDataAllowanceError(state), state.allowance.setDataAllowanceError)
     })
 
-    it('selects fetching status for resetting allowance', () => {
-        assert.deepStrictEqual(all.selectResettingAllowance(state), false)
+    it('selects fetching status for resetting DATA allowance', () => {
+        assert.deepStrictEqual(all.selectResettingDataAllowance(state), false)
     })
 
-    it('selects the reset allowance transaction hash', () => {
-        assert.deepStrictEqual(all.selectResetAllowanceTx(state), state.allowance.resetAllowanceTx)
+    it('selects the reset DATA allowance transaction hash', () => {
+        assert.deepStrictEqual(all.selectResetDataAllowanceTx(state), state.allowance.resetDataAllowanceTx)
     })
 
-    it('selects the reset allowance error', () => {
-        assert.deepStrictEqual(all.selectResetAllowanceError(state), state.allowance.resetAllowanceError)
+    it('selects the reset DATA allowance error', () => {
+        assert.deepStrictEqual(all.selectResetDataAllowanceError(state), state.allowance.resetDataAllowanceError)
     })
 
-    it('selects pending allowance', () => {
-        assert.deepStrictEqual(all.selectAllowanceOrPendingAllowance(state), state.allowance.pendingAllowance)
+    it('selects pending DATA allowance', () => {
+        assert.deepStrictEqual(all.selectDataAllowanceOrPendingDataAllowance(state), state.allowance.pendingDataAllowance)
     })
 
-    it('selects allowance when pending allowance is not defined', () => {
+    it('selects DATA allowance when pending DATA allowance is not defined', () => {
         const nextState = {
             ...state,
             allowance: {
                 ...state.allowance,
-                pendingAllowance: null,
+                pendingDataAllowance: null,
             },
         }
-        assert.deepStrictEqual(all.selectAllowanceOrPendingAllowance(nextState), state.allowance.allowance)
+        assert.deepStrictEqual(all.selectDataAllowanceOrPendingDataAllowance(nextState), state.allowance.dataAllowance)
     })
 })

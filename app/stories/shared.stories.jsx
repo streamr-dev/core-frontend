@@ -3,14 +3,13 @@ import React from 'react'
 
 import { storiesOf } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
-import { withKnobs, text, array, number, boolean } from '@storybook/addon-knobs'
+import { withKnobs, text, boolean } from '@storybook/addon-knobs'
 import StoryRouter from 'storybook-react-router'
 import styles from '@sambego/storybook-styles'
 import { Row, Col } from 'reactstrap'
 
 import Toggle from '$shared/components/Toggle'
 import Table from '$shared/components/Table'
-import FileUpload from '$shared/components/FileUpload'
 import Checkbox from '$shared/components/Checkbox'
 import DropdownActions from '$shared/components/DropdownActions'
 import Meatball from '$shared/components/Meatball'
@@ -31,8 +30,8 @@ import SvgIcon from '$shared/components/SvgIcon'
 import PngIcon from '$shared/components/PngIcon'
 import Dropdown from '$shared/components/Dropdown'
 import Slider from '$shared/components/Slider'
-import Modal from '$shared/components/Modal'
-import ModalRoot from '$shared/components/ModalRoot'
+import ModalPortal from '$shared/components/ModalPortal'
+import { Provider as ModalPortalProvider } from '$shared/contexts/ModalPortal'
 import ErrorDialog from '$mp/components/Modal/ErrorDialog'
 import Notifications from '$shared/components/Notifications'
 import Notification from '$shared/utils/Notification'
@@ -40,12 +39,9 @@ import CodeSnippet from '$shared/components/CodeSnippet'
 import Tooltip from '$shared/components/Tooltip'
 import ContextMenu from '$shared/components/ContextMenu'
 import { NotificationIcon } from '$shared/utils/constants'
-import RadioButtonGroup from '$shared/components/RadioButtonGroup'
 import Toolbar from '$shared/components/Toolbar'
-import DeploySpinner from '$shared/components/DeploySpinner'
-import Label from '$shared/components/Label'
-import Tile from '$shared/components/Tile'
-import DonutChart from '$shared/components/DonutChart'
+import Spinner from '$shared/components/Spinner'
+import Button from '$shared/components/Button'
 
 import sharedStyles from './shared.pcss'
 
@@ -89,6 +85,14 @@ story('Popover actions')
             <DropdownActions.Item>Another option</DropdownActions.Item>
         </DropdownActions>
     ))
+    .addWithJSX('disabled', () => (
+        <DropdownActions title="Select" disabled>
+            <DropdownActions.Item onClick={action('clicked')}>
+                Click me
+            </DropdownActions.Item>
+            <DropdownActions.Item>Another option</DropdownActions.Item>
+        </DropdownActions>
+    ))
     .addWithJSX('meatball dropdown', () => (
         <DropdownActions
             title={<Meatball alt="Select" />}
@@ -100,10 +104,26 @@ story('Popover actions')
             <DropdownActions.Item>Another option</DropdownActions.Item>
         </DropdownActions>
     ))
+    .addWithJSX('disabled meatball dropdown', () => (
+        <DropdownActions
+            title={<Meatball alt="Select" disabled />}
+            noCaret
+            disabled
+        >
+            <DropdownActions.Item onClick={action('clicked')}>
+                Click me
+            </DropdownActions.Item>
+            <DropdownActions.Item>Another option</DropdownActions.Item>
+        </DropdownActions>
+    ))
 
 story('Status icon')
-    .addWithJSX('normal', () => <StatusIcon />)
+    .addWithJSX('ok', () => <StatusIcon status={StatusIcon.OK} />)
+    .addWithJSX('ok with tooltip', () => <StatusIcon showTooltip status={StatusIcon.OK} />)
+    .addWithJSX('inactive', () => <StatusIcon status={StatusIcon.INACTIVE} />)
+    .addWithJSX('inactive with tooltip', () => <StatusIcon showTooltip status={StatusIcon.INACTIVE} />)
     .addWithJSX('error', () => <StatusIcon status={StatusIcon.ERROR} />)
+    .addWithJSX('error with tooltip', () => <StatusIcon showTooltip status={StatusIcon.ERROR} />)
 
 story('Table')
     .addWithJSX('basic', () => (
@@ -157,24 +177,6 @@ story('Table')
         </Table>
     ))
 
-story('FileUpload')
-    .addWithJSX('basic', () => (
-        <FileUpload
-            style={{
-                color: 'black',
-            }}
-            component={<span>Drag a file here or click to browse</span>}
-            dropTargetComponent={<span>Drop here!</span>}
-            dragOverComponent={<span>Yay, just drop it!</span>}
-            onFilesAccepted={action('onFilesAccepted')}
-            onError={action('onError')}
-            acceptMime={array('acceptMime', ['image/jpeg', 'image/png'])}
-            maxFileSizeInMB={number('maxFileSizeInMB', 5)}
-            multiple={false}
-            disablePreview
-        />
-    ))
-
 class CheckboxContainer extends React.Component {
     constructor() {
         super()
@@ -185,7 +187,7 @@ class CheckboxContainer extends React.Component {
     render() {
         return (
             <Checkbox
-                checked={this.state.checked}
+                value={this.state.checked}
                 onChange={(e) => {
                     this.setState({
                         checked: e.target.checked,
@@ -199,10 +201,10 @@ class CheckboxContainer extends React.Component {
 
 story('Checkbox')
     .addWithJSX('checked', () => (
-        <Checkbox checked={boolean('checked', true)} />
+        <Checkbox value={boolean('checked', true)} />
     ))
     .addWithJSX('unchecked', () => (
-        <Checkbox checked={boolean('checked', false)} />
+        <Checkbox value={boolean('checked', false)} />
     ))
     .addWithJSX('changeable', () => (
         <CheckboxContainer />
@@ -228,6 +230,41 @@ story('Text Field/Text')
         <TextInput preserveLabelSpace label="With invalid value" value="Something invalid" error="Oh, something went wrong!" />
     ))
 
+story('Text Field/With actions')
+    .addWithJSX('basic', () => (
+        <TextInput
+            preserveLabelSpace
+            label="I have a Meatball menu"
+            actions={
+                [
+                    <DropdownActions.Item>
+                        Test 1
+                    </DropdownActions.Item>,
+                    <DropdownActions.Item>
+                        Test 2
+                    </DropdownActions.Item>,
+                ]
+            }
+        />
+    ))
+    .addWithJSX('disabled', () => (
+        <TextInput
+            preserveLabelSpace
+            disabled
+            label="I have a Meatball menu"
+            actions={
+                [
+                    <DropdownActions.Item>
+                        Test 1
+                    </DropdownActions.Item>,
+                    <DropdownActions.Item>
+                        Test 2
+                    </DropdownActions.Item>,
+                ]
+            }
+        />
+    ))
+
 story('Text Field/Password')
     .addWithJSX('basic', () => (
         <TextInput preserveLabelSpace label="Password…" value={text('value', '')} type="password" measureStrength />
@@ -240,6 +277,26 @@ story('Text Field/Password')
     ))
     .addWithJSX('min strength 2', () => (
         <TextInput preserveLabelSpace label="" value={text('value', 'You shall not pass!')} type="password" measureStrength />
+    ))
+
+story('Text Field/Number')
+    .addWithJSX('basic', () => (
+        <TextInput preserveLabelSpace label="Count" type="number" />
+    ))
+    .addWithJSX('with predefined value', () => (
+        <TextInput preserveLabelSpace label="Count" type="number" value="5" />
+    ))
+    .addWithJSX('with min, max & step', () => (
+        <TextInput preserveLabelSpace label="Count" type="number" min="0" max="10" step="2" />
+    ))
+    .addWithJSX('hidden buttons', () => (
+        <TextInput preserveLabelSpace label="Count" type="number" hideButtons />
+    ))
+    .addWithJSX('without label', () => (
+        <TextInput label="" type="number" />
+    ))
+    .addWithJSX('with error', () => (
+        <TextInput preserveLabelSpace label="Count" type="number" error="Error" />
     ))
 
 class SelectInputContainer extends React.Component {
@@ -421,7 +478,7 @@ story('Dialog')
         if (boolean('hasCancel', true)) {
             actions.cancel = {
                 title: 'Cancel',
-                outline: true,
+                kind: 'link',
                 onClick: action('onDismiss'),
             }
         }
@@ -430,7 +487,7 @@ story('Dialog')
             const waitingForSave = boolean('waitingForSave', false)
             actions.ok = {
                 title: waitingForSave ? 'Saving....' : 'Save',
-                color: 'primary',
+                kind: 'primary',
                 onClick: action('onSave'),
                 disabled: waitingForSave,
                 spinner: waitingForSave,
@@ -556,23 +613,23 @@ story('Slider')
         <SliderContainer />
     ))
 
-story('Modal')
+story('ModalPortal')
     .addDecorator(StoryRouter())
     .addWithJSX('basic', () => (
         <React.Fragment>
             <div id="modal-root" />
-            <ModalRoot>
+            <ModalPortalProvider>
                 <h1>Lorem ipsum cause dolor sit emat!</h1>
                 {boolean('Visible', true) && (
-                    <Modal>
+                    <ModalPortal>
                         <ErrorDialog
                             title="Godlike!"
                             message="Hello world!"
                             onClose={() => {}}
                         />
-                    </Modal>
+                    </ModalPortal>
                 )}
-            </ModalRoot>
+            </ModalPortalProvider>
         </React.Fragment>
     ))
 
@@ -583,7 +640,7 @@ story('Notifications')
         return (
             <React.Fragment>
                 <div id="modal-root" />
-                <ModalRoot>
+                <ModalPortalProvider>
                     <button
                         type="button"
                         onClick={() => {
@@ -610,15 +667,15 @@ story('Notifications')
                     ))}
                     <Notifications />
                     {boolean('Show dialog', false) && (
-                        <Modal>
+                        <ModalPortal>
                             <ErrorDialog
                                 title="Godlike!"
                                 message="Hello world!"
                                 onClose={() => {}}
                             />
-                        </Modal>
+                        </ModalPortal>
                     )}
-                </ModalRoot>
+                </ModalPortalProvider>
             </React.Fragment>
         )
     })
@@ -687,34 +744,15 @@ story('Tooltip')
         </Tooltip>
     ))
 
-story('RadioButtonGroup')
-    .addWithJSX('basic', () => (
-        <RadioButtonGroup
-            name="group"
-            options={['value 1', 'value 2', 'value 3']}
-            selectedOption="value 2"
-            onChange={action('selected')}
-        />
-    ))
-    .addWithJSX('disabled', () => (
-        <RadioButtonGroup
-            name="group"
-            options={['value 1', 'value 2', 'value 3']}
-            selectedOption="value 2"
-            onChange={action('selected')}
-            disabled
-        />
-    ))
-
 const toolbarActions = {
     cancel: {
         title: 'Cancel',
-        color: 'link',
+        kind: 'link',
         onClick: action('cancel'),
     },
     ok: {
         title: 'Ok',
-        color: 'primary',
+        kind: 'primary',
         onClick: action('ok'),
         disabled: boolean('disabled'),
         spinner: boolean('spinner'),
@@ -749,136 +787,52 @@ story('Toolbar')
         />
     ))
 
-story('DeploySpinner')
-    .addWithJSX('basic', () => (
-        <DeploySpinner isRunning showCounter />
-    ))
-    .addWithJSX('stopped', () => (
-        <DeploySpinner isRunning={false} showCounter />
-    ))
-    .addWithJSX('without counter', () => (
-        <DeploySpinner isRunning showCounter={false} />
-    ))
+story('Spinner')
+    .addWithJSX('Small', () => (<Spinner size="small" />))
+    .addWithJSX('Large', () => (<Spinner size="large" />))
+    .addWithJSX('Green', () => (<Spinner color="green" />))
+    .addWithJSX('White', () => (<Spinner color="white" />))
 
-story('Label')
-    .addWithJSX('basic', () => (
-        <Label>{text('Label', 'Label')}</Label>
-    ))
-    .addWithJSX('with position', () => (
-        <div style={{
-            width: '350px',
-            height: '200px',
-            border: '1px solid black',
-            position: 'relative',
-        }}
-        >
-            <Label topLeft>{text('First', 'First')}</Label>
-            <Label bottomRight>{text('Second', 'Second')}</Label>
-        </div>
-    ))
-    .addWithJSX('with badge & tag', () => (
+story('Button')
+    .addWithJSX('all', () => (
         <div>
-            <Label>
-                <Label.Badge badge="members" value={number('Community members', 15)} />
-            </Label>
+            <Button kind="primary" size="mini" onClick={action('Clicked')}>Primary mini</Button>
             <br />
-            <Label>
-                <Label.Badge tag="community" />
-            </Label>
+            <Button kind="primary" size="normal" onClick={action('Clicked')}>Primary normal</Button>
+            <br />
+            <Button kind="primary" size="big" onClick={action('Clicked')}>Primary big</Button>
+            <br />
+            <Button kind="primary" size="normal" disabled onClick={action('Clicked')}>Primary normal disabled</Button>
+            <br />
+            <Button kind="primary" size="normal" outline onClick={action('Clicked')}>Primary normal outline</Button>
+            <br />
+            <Button kind="secondary" size="mini" onClick={action('Clicked')}>Secondary mini</Button>
+            <br />
+            <Button kind="secondary" size="normal" onClick={action('Clicked')}>Secondary normal</Button>
+            <br />
+            <Button kind="secondary" size="big" onClick={action('Clicked')}>Secondary big</Button>
+            <br />
+            <Button kind="secondary" size="normal" disabled onClick={action('Clicked')}>Secondary normal disabled</Button>
+            <br />
+            <Button kind="secondary" size="normal" outline onClick={action('Clicked')}>Secondary normal outline</Button>
+            <br />
+            <Button kind="destructive" onClick={action('Clicked')}>Destructive</Button>
+            <br />
+            <Button kind="destructive" disabled onClick={action('Clicked')}>Destructive disabled</Button>
+            <br />
+            <Button kind="link" variant="dark" onClick={action('Clicked')}>Link (dark)</Button>
+            <br />
+            <Button kind="link" variant="light" onClick={action('Clicked')}>Link (light)</Button>
+            <br />
+            <Button kind="special" variant="dark" onClick={action('Clicked')}>Special (dark)</Button>
+            <br />
+            <Button kind="special" variant="light" onClick={action('Clicked')}>Special (light)</Button>
+            <br />
+            <Button tag="a" href="#" onClick={action('Clicked')}>With link tag</Button>
+            <br />
+            <Button kind="primary" waiting onClick={action('Clicked')}>Waiting primary</Button>
+            <br />
+            <Button kind="secondary" waiting onClick={action('Clicked')}>Waiting secondary</Button>
         </div>
     ))
 
-story('Tile')
-    .addWithJSX('basic', () => (
-        <div style={{
-            width: '350px',
-        }}
-        >
-            <Tile>
-                <Tile.Title>{text('Product name', 'Product name')}</Tile.Title>
-                <Tile.Description>
-                    {text('Description', 'Description')}
-                </Tile.Description>
-                <Tile.Status>
-                    {text('Status', 'Status')}
-                </Tile.Status>
-            </Tile>
-        </div>
-    ))
-    .addWithJSX('with badge & label', () => (
-        <div style={{
-            width: '350px',
-        }}
-        >
-            <Tile
-                labels={{
-                    community: boolean('Community', true),
-                }}
-                badges={{
-                    members: number('Community members', 15),
-                }}
-            >
-                <Tile.Title>{text('Product name', 'Product name')}</Tile.Title>
-                <Tile.Description>
-                    {text('Description', 'Description')}
-                </Tile.Description>
-                <Tile.Status>
-                    {text('Status', 'Status')}
-                </Tile.Status>
-            </Tile>
-        </div>
-    ))
-    .addWithJSX('with dropdown actions', () => (
-        <div style={{
-            width: '350px',
-        }}
-        >
-            <Tile
-                dropdownActions={(
-                    <React.Fragment>
-                        <DropdownActions.Item onClick={action('option 1')}>
-                            Option 1
-                        </DropdownActions.Item>
-                        <DropdownActions.Item onClick={action('option 2')}>
-                            Option 2
-                        </DropdownActions.Item>
-                        <DropdownActions.Item onClick={action('option 3')}>
-                            Option 3
-                        </DropdownActions.Item>
-                    </React.Fragment>
-                )}
-            >
-                <Tile.Title>{text('Product name', 'Product name')}</Tile.Title>
-                <Tile.Description>
-                    {text('Description', 'Description')}
-                </Tile.Description>
-                <Tile.Status>
-                    {text('Status', 'Status')}
-                </Tile.Status>
-            </Tile>
-        </div>
-    ))
-
-story('DonutChart')
-    .addWithJSX('basic', () => (
-        <DonutChart
-            strokeWidth={5}
-            data={[
-                {
-                    title: '1',
-                    value: 50,
-                    color: 'red',
-                },
-                {
-                    title: '2',
-                    value: 25,
-                    color: 'blue',
-                },
-                {
-                    title: '3',
-                    value: 25,
-                    color: 'green',
-                },
-            ]}
-        />
-    ))

@@ -10,9 +10,9 @@ type Props = {
 export default function DocsHelmet({ pageTitle, ...props }: Props) {
     return (
         <Helmet
+            {...props}
             titleTemplate="%s | Streamr Docs"
             title={pageTitle}
-            {...props}
         />
     )
 }

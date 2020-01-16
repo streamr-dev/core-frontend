@@ -16,7 +16,8 @@ import Toolbar from '$editor/shared/components/Toolbar'
 
 import ShareDialog from './ShareDialog'
 
-import styles from '$editor/canvas/components/Toolbar.pcss'
+import styles from '$editor/canvas/components/Toolbar/Toolbar.pcss'
+import ToolbarLayout from '$editor/canvas/components/Toolbar/ToolbarLayout'
 
 /* eslint-disable react/no-unused-state */
 
@@ -49,72 +50,79 @@ export default withErrorBoundary(ErrorComponentView)(class DashboardToolbar exte
             <div className={cx(className, styles.CanvasToolbar)} ref={this.elRef}>
                 <ModalContainer modalId="ShareDialog">
                     {({ api: shareDialog }) => (
-                        <React.Fragment>
-                            <UseState initialValue={false}>
-                                {(editing, setEditing) => (
-                                    <div className={styles.ToolbarLeft}>
-                                        <EditableText
-                                            className={cx(Toolbar.styles.entityName, styles.DashboardEntityName)}
-                                            editing={editing}
-                                            onChange={this.renameDashboard}
-                                            setEditing={setEditing}
-                                        >
-                                            {dashboard.name}
-                                        </EditableText>
-                                        <DropdownActions
-                                            title={
-                                                <R.Button className={cx(styles.MeatballContainer, styles.ToolbarButton)}>
-                                                    <Meatball alt="Select" />
-                                                </R.Button>
-                                            }
-                                            noCaret
-                                            className={styles.DropdownMenu}
-                                            menuProps={{
-                                                className: styles.DropdownMenuMenu,
-                                            }}
-                                        >
-                                            <DropdownActions.Item onClick={newDashboard}>New Dashboard</DropdownActions.Item>
-                                            <DropdownActions.Item onClick={() => shareDialog.open()}>Share</DropdownActions.Item>
-                                            <DropdownActions.Item
-                                                onClick={() => setEditing(true)}
+                        <ToolbarLayout>
+                            <div className={ToolbarLayout.classNames.LEFT}>
+                                <UseState initialValue={false}>
+                                    {(editing, setEditing) => (
+                                        <div className={styles.CanvasNameContainer}>
+                                            <EditableText
+                                                className={cx(Toolbar.styles.entityName, styles.DashboardEntityName)}
+                                                editing={editing}
+                                                onChange={this.renameDashboard}
+                                                setEditing={setEditing}
                                             >
-                                                Rename
-                                            </DropdownActions.Item>
-                                            <DropdownActions.Item onClick={() => duplicateDashboard()}>Duplicate</DropdownActions.Item>
-                                            <DropdownActions.Item onClick={() => deleteDashboard()}>Delete</DropdownActions.Item>
-                                        </DropdownActions>
-                                    </div>
-                                )}
-                            </UseState>
-                            <div className={styles.ToolbarRight}>
-                                <R.Button
-                                    className={styles.ToolbarButton}
-                                    onClick={moduleSearchOpen}
-                                >
-                                    <SvgIcon name="plus" className={styles.icon} />
-                                </R.Button>
+                                                {dashboard.name}
+                                            </EditableText>
+                                            <DropdownActions
+                                                title={
+                                                    <R.Button className={cx(styles.MeatballContainer, styles.ToolbarButton)}>
+                                                        <Meatball alt="Select" />
+                                                    </R.Button>
+                                                }
+                                                noCaret
+                                                className={styles.DropdownMenu}
+                                                menuProps={{
+                                                    className: styles.DropdownMenuMenu,
+                                                }}
+                                            >
+                                                <DropdownActions.Item onClick={newDashboard}>New Dashboard</DropdownActions.Item>
+                                                <DropdownActions.Item onClick={() => shareDialog.open()}>Share</DropdownActions.Item>
+                                                <DropdownActions.Item
+                                                    onClick={() => setEditing(true)}
+                                                >
+                                                    Rename
+                                                </DropdownActions.Item>
+                                                <DropdownActions.Item onClick={() => duplicateDashboard()}>Duplicate</DropdownActions.Item>
+                                                <DropdownActions.Item onClick={() => deleteDashboard()}>Delete</DropdownActions.Item>
+                                            </DropdownActions>
+                                        </div>
+                                    )}
+                                </UseState>
+                                <div>
+                                    <R.Button
+                                        className={styles.ToolbarButton}
+                                        onClick={moduleSearchOpen}
+                                    >
+                                        <SvgIcon name="plus" className={styles.icon} />
+                                    </R.Button>
+                                </div>
+                                <div />
                             </div>
-                            <div className={cx(styles.ToolbarLeft, styles.DashboardButtons)}>
-                                <div className={styles.ModalButtons}>
-                                    <Tooltip container={this.elRef.current} value="Share">
-                                        <R.Button
-                                            className={cx(styles.ToolbarButton, styles.ShareButton)}
-                                            onClick={() => shareDialog.open()}
-                                        >
-                                            <SvgIcon name="share" />
-                                        </R.Button>
-                                    </Tooltip>
-                                    <Tooltip container={this.elRef.current} value={<React.Fragment>Keyboard<br />shortcuts</React.Fragment>}>
-                                        <R.Button
-                                            className={cx(styles.ToolbarButton, styles.KeyboardButton)}
-                                            onClick={() => keyboardShortcutOpen()}
-                                        >
-                                            <SvgIcon name="keyboard" />
-                                        </R.Button>
-                                    </Tooltip>
+                            <div className={ToolbarLayout.classNames.CENTER} />
+                            <div className={ToolbarLayout.classNames.RIGHT}>
+                                <div />
+                                <div className={cx(styles.ToolbarLeft, styles.DashboardButtons)}>
+                                    <div className={styles.ModalButtons}>
+                                        <Tooltip container={this.elRef.current} value="Share">
+                                            <R.Button
+                                                className={cx(styles.ToolbarButton, styles.ShareButton)}
+                                                onClick={() => shareDialog.open()}
+                                            >
+                                                <SvgIcon name="share" />
+                                            </R.Button>
+                                        </Tooltip>
+                                        <Tooltip container={this.elRef.current} value={<React.Fragment>Keyboard<br />shortcuts</React.Fragment>}>
+                                            <R.Button
+                                                className={cx(styles.ToolbarButton, styles.KeyboardButton)}
+                                                onClick={() => keyboardShortcutOpen()}
+                                            >
+                                                <SvgIcon name="keyboard" />
+                                            </R.Button>
+                                        </Tooltip>
+                                    </div>
                                 </div>
                             </div>
-                        </React.Fragment>
+                        </ToolbarLayout>
                     )}
                 </ModalContainer>
                 <ShareDialog dashboard={dashboard} />

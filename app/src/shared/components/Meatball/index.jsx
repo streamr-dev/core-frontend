@@ -9,19 +9,31 @@ type Props = {
     alt: string,
     blue?: boolean,
     gray?: boolean,
+    gray2?: boolean,
     white?: boolean,
+    disabled?: boolean,
 }
 
-const Meatball = ({ alt, blue, gray, white }: Props) => (
+const Meatball = ({
+    alt,
+    blue,
+    gray,
+    gray2,
+    white,
+    disabled,
+}: Props) => (
     <div
         className={cx(styles.root, {
             [styles.blue]: !!blue,
             [styles.gray]: !!gray,
+            [styles.gray2]: !!gray2,
             [styles.white]: !!white,
+            [styles.disabled]: !!disabled,
         })}
     >
         <svg
             xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 4"
             width="20"
             height="4"
             alt={alt}

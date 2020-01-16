@@ -5,7 +5,7 @@ import { Translate, I18n } from 'react-redux-i18n'
 import cx from 'classnames'
 import { Label, FormGroup } from 'reactstrap'
 
-import Modal from '$shared/components/Modal'
+import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import Buttons from '$shared/components/Buttons'
 import Checkbox from '$shared/components/Checkbox'
@@ -77,7 +77,7 @@ const GuidedDeployCommunityDialog = ({ product, onClose, onContinue: onContinueP
 
     const isLastStep = step === 3
     const { name } = product
-    // $FlowFixMe
+    // $FlowFixMe property `preview` is missing in  `File`.
     const image = String((product.newImageToUpload && product.newImageToUpload.preview) || product.imageUrl)
 
     const onContinue = useCallback(async () => {
@@ -147,7 +147,7 @@ const GuidedDeployCommunityDialog = ({ product, onClose, onContinue: onContinueP
     ), [step, name, image])
 
     return (
-        <Modal>
+        <ModalPortal>
             <Dialog
                 className={cx(styles.root, styles.GuidedDeployCommunityDialog)}
                 title={I18n.t('modal.deployCommunity.guide.title', {
@@ -161,7 +161,7 @@ const GuidedDeployCommunityDialog = ({ product, onClose, onContinue: onContinueP
                             <FormGroup check className={styles.formGroup}>
                                 <Label check className={styles.label}>
                                     <Checkbox
-                                        checked={skipHelp}
+                                        value={skipHelp}
                                         onChange={(e) => {
                                             setSkipped(e.target.checked)
                                         }}
@@ -175,12 +175,12 @@ const GuidedDeployCommunityDialog = ({ product, onClose, onContinue: onContinueP
                                 cancel: {
                                     title: I18n.t('modal.common.cancel'),
                                     onClick: onClose,
-                                    color: 'link',
+                                    kind: 'link',
                                     disabled: waitingOnContinue,
                                 },
                                 continue: isLastStep ? {
                                     title: I18n.t('modal.common.deploy'),
-                                    color: 'primary',
+                                    kind: 'primary',
                                     onClick: onContinue,
                                     spinner: waitingOnContinue,
                                     disabled: waitingOnContinue,
@@ -215,7 +215,7 @@ const GuidedDeployCommunityDialog = ({ product, onClose, onContinue: onContinueP
                     ))}
                 </div>
             </Dialog>
-        </Modal>
+        </ModalPortal>
     )
 }
 

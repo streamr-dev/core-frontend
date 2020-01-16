@@ -2,11 +2,13 @@
 
 import React from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
-import { Button } from 'reactstrap'
 
 import PngIcon from '$shared/components/PngIcon'
-import Modal from '$shared/components/Modal'
 import Dialog from '$shared/components/Dialog'
+import ModalPortal from '$shared/components/ModalPortal'
+// import DiscardChangesPng from '$mp/assets/discard-changes.png'
+// import DiscardChangesPng2x from '$mp/assets/discard-changes@2x.png'
+import Button from '$shared/components/Button'
 import Buttons from '$shared/components/Buttons'
 
 import styles from './confirmSave.pcss'
@@ -18,7 +20,7 @@ export type Props = {
 }
 
 const ConfirmSaveDialog = ({ onSave, onClose, onContinue }: Props) => (
-    <Modal>
+    <ModalPortal>
         <Dialog
             title={I18n.t('modal.confirmSave.title')}
             contentClassName={styles.content}
@@ -27,6 +29,7 @@ const ConfirmSaveDialog = ({ onSave, onClose, onContinue }: Props) => (
                 <div className={styles.footer}>
                     <div className={styles.footerText}>
                         <Button
+                            kind="primary"
                             onClick={onContinue}
                             outline
                         >
@@ -38,11 +41,11 @@ const ConfirmSaveDialog = ({ onSave, onClose, onContinue }: Props) => (
                             cancel: {
                                 title: I18n.t('modal.common.cancel'),
                                 onClick: onClose,
-                                color: 'link',
+                                kind: 'link',
                             },
                             continue: {
                                 title: I18n.t('modal.common.save'),
-                                color: 'primary',
+                                kind: 'primary',
                                 onClick: onSave,
                             },
                         }}
@@ -61,7 +64,7 @@ const ConfirmSaveDialog = ({ onSave, onClose, onContinue }: Props) => (
                 dangerousHTML
             />
         </Dialog>
-    </Modal>
+    </ModalPortal>
 )
 
 export default ConfirmSaveDialog

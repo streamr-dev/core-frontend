@@ -1,19 +1,16 @@
 // @flow
 
 import React from 'react'
-import { Button } from 'reactstrap'
 
-import type { ResourcePermission } from '$shared/flowtype/resource-key-types'
-import KeyFieldEditor from '../KeyFieldEditor'
-
-import styles from './addKeyField.pcss'
+import Button from '$shared/components/Button'
+import KeyFieldEditor, { type ValueLabel } from '../KeyFieldEditor'
 
 type Props = {
     label: string,
     createWithValue?: boolean,
-    onSave: (keyName: string, value: string, permission: ?ResourcePermission) => Promise<void>,
-    showPermissionType?: boolean,
+    onSave: (keyName: string, value: string) => Promise<void>,
     addKeyFieldAllowed: boolean,
+    valueLabel?: ValueLabel,
 }
 
 type State = {
@@ -49,13 +46,13 @@ class AddKeyField extends React.Component<Props, State> {
         })
     }
 
-    onSave = (keyName: string, value: string, permission: ?ResourcePermission) => {
+    onSave = (keyName: string, value: string) => {
         this.setState({
             waiting: true,
             error: null,
         }, async () => {
             try {
-                await this.props.onSave(keyName, value, permission)
+                await this.props.onSave(keyName, value)
 
                 if (!this.unmounted) {
                     this.setState({
@@ -76,14 +73,11 @@ class AddKeyField extends React.Component<Props, State> {
 
     render = () => {
         const { editing, waiting, error } = this.state
-        const { label, createWithValue, showPermissionType, addKeyFieldAllowed } = this.props
+        const { label, createWithValue, addKeyFieldAllowed, valueLabel } = this.props
         return !editing ? (
             <Button
-                type="button"
-                color="userpages"
-                className={styles.button}
+                kind="secondary"
                 onClick={this.onEdit}
-                outline
                 disabled={!addKeyFieldAllowed}
             >
                 {label}
@@ -96,7 +90,7 @@ class AddKeyField extends React.Component<Props, State> {
                 editValue={createWithValue}
                 waiting={waiting}
                 error={error}
-                showPermissionType={showPermissionType}
+                valueLabel={valueLabel}
             />
         )
     }

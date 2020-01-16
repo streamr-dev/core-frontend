@@ -113,15 +113,19 @@ const saveRemovedResourcePermissionFailure = (resourceType: ResourceType, resour
     permission,
 })
 
-export const getResourcePermissions = (resourceType: ResourceType, resourceId: ResourceId) => async (dispatch: Function) => {
+export const getResourcePermissions = (resourceType: ResourceType, resourceId: ResourceId, notify: boolean = true) => async (dispatch: Function) => {
     dispatch(getResourcePermissionsRequest())
-    const resourcePermissions = await api.get(`${getApiUrl(resourceType, resourceId)}/permissions`)
+    const resourcePermissions = await api.get({
+        url: `${getApiUrl(resourceType, resourceId)}/permissions`,
+    })
         .catch((error) => {
             dispatch(getResourcePermissionsFailure(error))
-            Notification.push({
-                title: error.message,
-                icon: NotificationIcon.ERROR,
-            })
+            if (notify) {
+                Notification.push({
+                    title: error.message,
+                    icon: NotificationIcon.ERROR,
+                })
+            }
             throw error
         })
     dispatch(getResourcePermissionsSuccess(resourceType, resourceId, resourcePermissions))
@@ -186,7 +190,10 @@ export const saveUpdatedResourcePermissions = (
     const addPermissions = new Promise((resolve) => {
         settle(addedPermissions.map((permission) => {
             dispatch(saveAddedResourcePermissionRequest(resourceType, resourceId, permission))
-            return api.post(`${getApiUrl(resourceType, resourceId)}/permissions`, permission)
+            return api.post({
+                url: `${getApiUrl(resourceType, resourceId)}/permissions`,
+                data: permission,
+            })
         }))
             .then((results) => {
                 results.forEach((res, i) => {
@@ -211,7 +218,10 @@ export const saveUpdatedResourcePermissions = (
     const removePermissions = new Promise((resolve) => {
         settle(removedPermissions.map((permission) => {
             dispatch(saveRemovedResourcePermissionRequest(resourceType, resourceId, permission))
-            return api.del(`${getApiUrl(resourceType, resourceId)}/permissions/${permission.id}`, permission)
+            return api.del({
+                url: `${getApiUrl(resourceType, resourceId)}/permissions/${permission.id}`,
+                data: permission,
+            })
         }))
             .then((results) => {
                 results.forEach((res, i) => {

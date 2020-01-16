@@ -4,7 +4,7 @@ import { shallow } from 'enzyme'
 import sinon from 'sinon'
 
 import AmountEditor from '$mp/components/Modal/SetPriceDialog/AmountEditor/index'
-import { currencies } from '$shared/utils/constants'
+import { contractCurrencies as currencies } from '$shared/utils/constants'
 
 describe('AmountEditor', () => {
     let sandbox

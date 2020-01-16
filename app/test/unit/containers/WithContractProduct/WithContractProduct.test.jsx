@@ -2,7 +2,7 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
 
-import { withContractProduct } from '$mp/containers/WithContractProduct'
+import { withContractProduct } from '$mp/containers/deprecated/WithContractProduct'
 import mockStore from '$testUtils/mockStoreProvider'
 import ErrorDialog from '$mp/components/Modal/ErrorDialog'
 import UnlockWalletDialog from '$mp/components/Modal/UnlockWalletDialog'
@@ -60,7 +60,6 @@ describe('WithContractProduct', () => {
             },
             global: {
                 ethereumNetworkIsCorrect: true,
-                isWeb3Injected: true,
             },
         }
         props = {

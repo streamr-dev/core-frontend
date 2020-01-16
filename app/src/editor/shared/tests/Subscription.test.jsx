@@ -5,8 +5,8 @@ import uniqueId from 'lodash/uniqueId'
 
 import api from '../utils/api'
 import * as Services from '../services'
-import { ClientProviderComponent, createClient } from '../components/Client'
-import Subscription from '../components/Subscription'
+import { ClientProviderComponent, createClient } from '$shared/contexts/StreamrClient'
+import Subscription from '$shared/components/Subscription'
 
 function throwError(err) {
     throw err
@@ -165,6 +165,42 @@ describe('Subscription', () => {
                                 done()
                             }, 1000)
                         }}
+                        isActive
+                    />
+                </ClientProviderComponent>
+            ))
+        }, 15000)
+
+        xit('can use resendLast 0', async (done) => {
+            const msg1 = { msg: uniqueId() }
+            const msg2 = { msg: uniqueId() }
+            const msg3 = { msg: uniqueId() }
+            await stream.publish(msg1)
+            await stream.publish(msg2)
+            const messages = []
+            const onResending = jest.fn()
+            const onNoResend = jest.fn()
+
+            await wait(10000) // wait for above messages to flush
+
+            const result = mount((
+                <ClientProviderComponent apiKey={apiKey}>
+                    <Subscription
+                        uiChannel={stream}
+                        resendLast={0}
+                        onSubscribed={async () => {
+                            await stream.publish(msg3)
+                            await wait(500)
+                            expect(onResending).not.toHaveBeenCalled()
+                            expect(messages).toEqual([msg3])
+                            result.unmount()
+                            done()
+                        }}
+                        onMessage={(message) => {
+                            messages.push(message)
+                        }}
+                        onResending={onResending}
+                        onNoResend={onNoResend}
                         isActive
                     />
                 </ClientProviderComponent>

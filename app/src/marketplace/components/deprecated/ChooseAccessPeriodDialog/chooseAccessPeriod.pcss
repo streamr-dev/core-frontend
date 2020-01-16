@@ -1,0 +1,106 @@
+/*
+TODO This and parent component are to be revisited and finalized when global styles become available
+Mainly fonts and color constants
+*/
+.accessPeriodForm {
+  margin-bottom: -26px;
+}
+
+.timeUnitSelection:not(.timeUnitSelectionActive):hover {
+  color: var(--greyDark);
+}
+
+.timeUnitFieldset {
+  text-align: center;
+  margin-bottom: 0;
+}
+
+.accessPeriodNumberSelector {
+  text-align: center;
+  margin-bottom: 13px;
+
+  > div {
+    text-align: center;
+  }
+}
+
+.timeUnitSelectionCol {
+  display: inline-block;
+}
+
+.accessPeriodNumberOld {
+  padding: 0;
+  background-color: #CDE9FD;
+  display: inline-block;
+  width: 40px;
+  text-align: center;
+  border: 0;
+  font-weight: var(--light);
+  font-size: 20px;
+  line-height: 22px;
+  font-family: var(--sans);
+}
+
+.accessPeriodNumber:focus {
+  outline: none;
+}
+
+.priceLabels {
+  display: flex;
+  padding: 15px 0;
+
+  .priceColumn {
+    line-height: 1;
+    flex: 1 0 auto;
+    text-align: right;
+    padding: 0 0.5rem;
+
+    .priceValue {
+      font-size: 20px;
+      line-height: 25px;
+      padding: 0.5rem;
+      font-weight: var(--medium);
+    }
+
+    .priceLabel {
+      font-size: 12px;
+      font-weight: var(--light);
+    }
+
+    &:first-child {
+      /* border-right: 1px solid #F2F1F1; */
+    }
+  }
+}
+
+@media (--xs) {
+  .accessPeriodNumber {
+    font-size: 32px;
+    margin-bottom: 24px;
+  }
+
+  .accessPeriodForm,
+  .timeUnitSelectionCol {
+    width: 100%;
+  }
+
+  .priceLabels {
+    padding: 36px 0 24px;
+
+    .priceColumn {
+      text-align: left;
+
+      &:not(:first-child) {
+        padding-left: 36px;
+      }
+
+      .priceValue {
+        font-size: 20px;
+        font-weight: var(--light);
+        display: block;
+        padding: 0;
+        margin-bottom: 6px;
+      }
+    }
+  }
+}

@@ -1,0 +1,39 @@
+.inner {
+  position: relative;
+  height: 332px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.editor {
+  background-color: #D8D8D8;
+  position: absolute;
+  transform: translateX(-50%);
+}
+
+.sliderWrapper {
+  position: absolute;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 240px;
+  border: 1px solid #F2F1F1;
+  background: white;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  padding-top: 0;
+}
+
+.slider {
+  &::-webkit-slider-thumb {
+    background: #0324FF;
+  }
+
+  &::-moz-range-thumb {
+    background: #0324FF;
+  }
+}
+
+.contentArea {
+  padding: 0;
+}

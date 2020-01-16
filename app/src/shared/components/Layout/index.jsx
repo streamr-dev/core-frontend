@@ -14,16 +14,25 @@ type Props = {
     footer?: boolean,
     nav?: boolean,
     hideNavOnDesktop?: boolean,
+    navShadow?: boolean,
 }
 
-const Layout = ({ footer = true, nav = true, hideNavOnDesktop = false, ...props }: Props = {}) => (
+const Layout = ({
+    footer = true,
+    nav = true,
+    hideNavOnDesktop = false,
+    navShadow = false,
+    ...props
+}: Props = {}) => (
     <div className={styles.framed}>
         <div className={styles.inner}>
             {!!nav && (
                 <React.Fragment>
-                    <Nav className={cx(styles.desktopNav, {
-                        [styles.hideNavOnDesktop]: !!hideNavOnDesktop,
-                    })}
+                    <Nav
+                        className={cx(styles.desktopNav, {
+                            [styles.hideNavOnDesktop]: !!hideNavOnDesktop,
+                            [Nav.styles.shadow]: !!navShadow,
+                        })}
                     />
                     <MobileNav className={styles.mobileNav} />
                 </React.Fragment>

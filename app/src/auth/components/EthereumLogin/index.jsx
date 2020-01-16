@@ -9,7 +9,7 @@ import AuthFormContext from '../../contexts/AuthForm'
 import SessionContext from '../../contexts/Session'
 import AuthPanel from '$auth/components/AuthPanel'
 import AuthStep from '$auth/components/AuthStep'
-import TextInput from '$shared/components/TextInput'
+import TextInput from '../TextInput'
 import getSessionToken from '$auth/utils/getSessionToken'
 import { validateWeb3, getWeb3 } from '$shared/web3/web3Provider'
 

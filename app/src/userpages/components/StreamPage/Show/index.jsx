@@ -7,15 +7,16 @@ import { push } from 'connected-react-router'
 import { withRouter } from 'react-router-dom'
 import MediaQuery from 'react-responsive'
 import useIsMounted from '$shared/hooks/useIsMounted'
+import StatusIcon from '$shared/components/StatusIcon'
 import ConfigureAnchorOffset from '$shared/components/ConfigureAnchorOffset'
 import type { Stream, StreamId } from '$shared/flowtype/stream-types'
 import type { Operation } from '$userpages/flowtype/permission-types'
 import type { StoreState } from '$shared/flowtype/store-state'
 import type { User } from '$shared/flowtype/user-types'
-import type { ResourceKeyId } from '$shared/flowtype/resource-key-types'
 import {
     getMyStreamPermissions,
     getStream,
+    getStreamStatus,
     openStream,
     closeStream,
     updateStream,
@@ -27,7 +28,6 @@ import {
 import { getMyResourceKeys } from '$shared/modules/resourceKey/actions'
 import { selectEditedStream, selectPermissions, selectFetching } from '$userpages/modules/userPageStreams/selectors'
 import { selectUserData } from '$shared/modules/user/selectors'
-import { selectAuthApiKeyId } from '$shared/modules/resourceKey/selectors'
 import DetailsContainer from '$shared/components/Container/Details'
 import TOCPage from '$userpages/components/TOCPage'
 import Toolbar from '$shared/components/Toolbar'
@@ -42,6 +42,7 @@ import ConfigureView from './ConfigureView'
 import PreviewView from './PreviewView'
 import HistoryView from './HistoryView'
 import SecurityView from './SecurityView'
+import StatusView from './StatusView'
 
 import styles from './streamShowView.pcss'
 
@@ -51,7 +52,6 @@ type StateProps = {
     editedStream: ?Stream,
     permissions: ?Array<Operation>,
     currentUser: ?User,
-    authApiKeyId: ?ResourceKeyId,
     isFetching: ?boolean,
 }
 
@@ -72,6 +72,7 @@ type DispatchProps = {
     initNewStream: () => void,
     getKeys: () => void,
     redirectToUserPages: () => void,
+    refreshStreamStatus: (id: StreamId) => void,
 }
 
 type RouterProps = {
@@ -100,6 +101,7 @@ export class StreamShowView extends Component<Props, State> {
     }
 
     onSave = (editedStream: Stream) => {
+        // $FlowFixMe `save` missing in  `StateProps` or in `RouterProps`
         const { save, redirectToUserPages } = this.props
 
         this.setState({
@@ -145,28 +147,36 @@ export class StreamShowView extends Component<Props, State> {
             editedStream,
             cancel,
             currentUser,
-            authApiKeyId,
             permissions,
             isFetching,
         } = this.props
         const hasWritePermission = (permissions && permissions.some((p) => p === 'write')) || false
+        const hasSharePermission = (permissions && permissions.some((p) => p === 'share')) || false
         const isLoading = !!(!editedStream || isFetching)
         const disabled = !!(isLoading || !hasWritePermission)
+
+        if (isLoading) {
+            return (
+                <CoreLayout
+                    hideNavOnDesktop
+                    loading={isLoading}
+                />
+            )
+        }
 
         return (
             <CoreLayout
                 hideNavOnDesktop
-                loading={isLoading}
                 navComponent={(
                     <MediaQuery minWidth={lg.min}>
                         {(isDesktop) => (
                             <Toolbar
+                                className={Toolbar.styles.shadow}
                                 altMobileLayout
                                 actions={{
                                     cancel: {
                                         title: I18n.t('userpages.profilePage.toolbar.cancel'),
-                                        color: 'link',
-                                        outline: true,
+                                        kind: 'link',
                                         onClick: () => {
                                             cancel()
                                         },
@@ -175,7 +185,7 @@ export class StreamShowView extends Component<Props, State> {
                                         title: isDesktop ?
                                             I18n.t('userpages.profilePage.toolbar.saveAndExit') :
                                             I18n.t('userpages.profilePage.toolbar.done'),
-                                        color: 'primary',
+                                        kind: 'primary',
                                         spinner: this.state.saving,
                                         onClick: () => {
                                             if (editedStream) {
@@ -210,10 +220,22 @@ export class StreamShowView extends Component<Props, State> {
                         </TOCPage.Section>
                         <TOCPage.Section
                             id="configure"
-                            title="Configure"
+                            title="Fields"
                             customStyled
                         >
                             <ConfigureView disabled={disabled} />
+                        </TOCPage.Section>
+                        <TOCPage.Section
+                            id="status"
+                            linkTitle="Status"
+                            title={(
+                                <div className={styles.statusTitle}>
+                                    Status <StatusIcon showTooltip status={editedStream ? editedStream.streamStatus : undefined} />
+                                </div>
+                            )}
+                            customStyled
+                        >
+                            <StatusView disabled={disabled} />
                         </TOCPage.Section>
                         <TOCPage.Section
                             id="preview"
@@ -222,7 +244,6 @@ export class StreamShowView extends Component<Props, State> {
                             <PreviewView
                                 stream={editedStream}
                                 currentUser={currentUser}
-                                authApiKeyId={authApiKeyId}
                             />
                         </TOCPage.Section>
                         <TOCPage.Section
@@ -230,7 +251,7 @@ export class StreamShowView extends Component<Props, State> {
                             title="API Access"
                             customStyled
                         >
-                            <KeyView disabled={disabled} />
+                            <KeyView disabled={disabled || !hasSharePermission} />
                         </TOCPage.Section>
                         <TOCPage.Section
                             id="historical-data"
@@ -261,8 +282,10 @@ function StreamLoader(props: Props) {
         if (!isMounted()) { return }
         currentProps = propsRef.current
         return Promise.all([
-            currentProps.getStream(id).then(() => {
+            currentProps.getStream(id).then(async () => {
                 if (!isMounted()) { return }
+                // get stream status before copying state to edit stream object
+                await currentProps.refreshStreamStatus(id)
                 currentProps.openStream(id)
                 currentProps.initEditStream()
             }),
@@ -301,14 +324,13 @@ function StreamLoader(props: Props) {
         }
     }, [isCurrent, propsRef])
 
-    return <StreamShowView key={streamId} {...props} editedStream={isCurrent ? props.editedStream : null} />
+    return <StreamShowView {...props} key={streamId} editedStream={isCurrent ? props.editedStream : null} />
 }
 
 const mapStateToProps = (state: StoreState): StateProps => ({
     editedStream: selectEditedStream(state),
     permissions: selectPermissions(state),
     currentUser: selectUserData(state),
-    authApiKeyId: selectAuthApiKeyId(state),
     isFetching: selectFetching(state),
 })
 
@@ -337,6 +359,7 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     cancel: () => {
         dispatch(push(routes.userPageStreamListing()))
     },
+    refreshStreamStatus: (id: StreamId) => dispatch(getStreamStatus(id)),
     updateStream: (stream: Stream) => dispatch(updateStream(stream)),
     initEditStream: () => dispatch(initEditStream()),
     initNewStream: () => dispatch(initNewStream()),

@@ -5,7 +5,7 @@ import NotificationSystem from 'react-notification-system'
 
 import BasicNotification from './BasicNotification'
 import TransactionNotification from './TransactionNotification'
-import ModalContext from '$shared/contexts/Modal'
+import { Context as ModalContext } from '$shared/contexts/ModalPortal'
 import { type Ref } from '$shared/flowtype/common-types'
 import Notification from '$shared/utils/Notification'
 import styles from './notificationStyles'
@@ -19,7 +19,9 @@ type System = {
     },
 }
 
-type Props = {}
+type Props = {
+    noAnimation?: boolean,
+}
 
 type State = {
     notifications: Array<Notification>,
@@ -40,6 +42,10 @@ const getNotificationComponent = (notification: Notification): Node => (
 
 class Notifications extends React.Component<Props, State> {
     static contextType = ModalContext
+
+    static defaultProps = {
+        noAnimation: false,
+    }
 
     state = {
         notifications: [],
@@ -123,7 +129,11 @@ class Notifications extends React.Component<Props, State> {
     render() {
         return (
             <div className={wrapperStyles.wrapper}>
-                <NotificationSystem style={styles} ref={this.system} />
+                <NotificationSystem
+                    style={styles}
+                    ref={this.system}
+                    noAnimation={this.props.noAnimation}
+                />
             </div>
         )
     }

@@ -12,8 +12,9 @@ import { isPaidProduct } from '../../utils/product'
 import { getMyPurchases } from '../myPurchaseList/actions'
 import type { StreamIdList } from '$shared/flowtype/stream-types'
 import type { ProductId, Subscription } from '../../flowtype/product-types'
-import type { ErrorInUi } from '$shared/flowtype/common-types'
+import type { ReduxActionCreator, ErrorInUi } from '$shared/flowtype/common-types'
 import type { StoreState } from '../../flowtype/store-state'
+import { productStates } from '$shared/utils/constants'
 
 import { selectProduct } from './selectors'
 import {
@@ -29,6 +30,7 @@ import {
     GET_USER_PRODUCT_PERMISSIONS_REQUEST,
     GET_USER_PRODUCT_PERMISSIONS_SUCCESS,
     GET_USER_PRODUCT_PERMISSIONS_FAILURE,
+    RESET_PRODUCT,
 } from './constants'
 import * as services from './services'
 import type {
@@ -130,10 +132,12 @@ const getUserProductPermissionsFailure: ProductErrorActionCreator = createAction
     }),
 )
 
-export const getStreamsByProductId = (id: ProductId) => (dispatch: Function) => {
+export const resetProduct: ReduxActionCreator = createAction(RESET_PRODUCT)
+
+export const getStreamsByProductId = (id: ProductId, useAuthorization: boolean = true) => (dispatch: Function) => {
     dispatch(getStreamsByProductIdRequest(id))
     return services
-        .getStreamsByProductId(id)
+        .getStreamsByProductId(id, useAuthorization)
         .then(handleEntities(streamsSchema, dispatch))
         .then(
             (result) => dispatch(getStreamsByProductIdSuccess(id, result)),
@@ -144,7 +148,7 @@ export const getStreamsByProductId = (id: ProductId) => (dispatch: Function) => 
 const fetchProductStreams = (id: ProductId, getState: () => StoreState, dispatch: Function) => () => {
     const product = selectProduct(getState())
     if (product && product.streams) {
-        dispatch(getStreamsByProductId(id))
+        dispatch(getStreamsByProductId(id, product.state !== productStates.DEPLOYED))
     }
 }
 
@@ -198,26 +202,8 @@ export const getUserProductPermissions = (id: ProductId) => (dispatch: Function)
     dispatch(getUserProductPermissionsRequest(id))
     return services
         .getUserProductPermissions(id)
-        .then((result) => {
-            const p = result.reduce((permissions, permission) => {
-                if (permission.anonymous) {
-                    return {
-                        ...permissions,
-                        read: true,
-                    }
-                }
-                if (!permission.operation) {
-                    return permissions
-                }
-                return {
-                    ...permissions,
-                    [permission.operation]: true,
-                }
-            }, {})
-            const canRead = !!p.read || false
-            const canWrite = !!p.write || false
-            const canShare = !!p.share || false
-            dispatch(getUserProductPermissionsSuccess(canRead, canWrite, canShare))
+        .then(({ read, write, share }) => {
+            dispatch(getUserProductPermissionsSuccess(read, write, share))
         }, (error) => {
             dispatch(getUserProductPermissionsFailure(id, {
                 message: error.message,

@@ -4,8 +4,8 @@ import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import { Translate } from 'react-redux-i18n'
 
-import { PurchaseSummaryDialog } from '$mp/components/Modal/PurchaseSummaryDialog'
-import { currencies, timeUnits } from '$shared/utils/constants'
+import { PurchaseSummaryDialog } from '$mp/components/deprecated/PurchaseSummaryDialog'
+import { contractCurrencies as currencies, timeUnits } from '$shared/utils/constants'
 
 describe('ChooseAccessPeriodDialog', () => {
     let sandbox

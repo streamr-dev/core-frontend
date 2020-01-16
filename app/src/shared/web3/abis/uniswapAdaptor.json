@@ -1,0 +1,100 @@
+[
+  {
+    "inputs": [
+      {
+        "name": "_marketplace_address",
+        "type": "address"
+      },
+      {
+        "name": "_uniswap_factory_address",
+        "type": "address"
+      },
+      {
+        "name": "_datacoin_address",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "from_token",
+        "type": "address"
+      },
+      {
+        "name": "to_token",
+        "type": "address"
+      },
+      {
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "getConversionRate",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "productId",
+        "type": "bytes32"
+      },
+      {
+        "name": "minSubscriptionSeconds",
+        "type": "uint256"
+      },
+      {
+        "name": "timeWindow",
+        "type": "uint256"
+      },
+      {
+        "name": "erc20_address",
+        "type": "address"
+      },
+      {
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "buyWithERC20",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "productId",
+        "type": "bytes32"
+      },
+      {
+        "name": "minSubscriptionSeconds",
+        "type": "uint256"
+      },
+      {
+        "name": "timeWindow",
+        "type": "uint256"
+      }
+    ],
+    "name": "buyWithETH",
+    "outputs": [],
+    "payable": true,
+    "stateMutability": "payable",
+    "type": "function"
+  }
+]

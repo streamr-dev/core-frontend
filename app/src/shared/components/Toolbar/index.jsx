@@ -12,11 +12,18 @@ type Props = {
     middle?: Node,
     actions?: ButtonActions,
     altMobileLayout?: boolean,
+    className?: string,
 }
 
-const Toolbar = ({ left, middle, actions, altMobileLayout }: Props) => (
+const Toolbar = ({
+    className,
+    left,
+    middle,
+    actions,
+    altMobileLayout,
+}: Props) => (
     <div
-        className={cx(styles.toolbar, {
+        className={cx(styles.toolbar, className, {
             [styles.altMobileLayout]: altMobileLayout,
         })}
     >
@@ -36,5 +43,7 @@ const Toolbar = ({ left, middle, actions, altMobileLayout }: Props) => (
         </div>
     </div>
 )
+
+Toolbar.styles = styles
 
 export default Toolbar

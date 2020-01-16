@@ -26,8 +26,20 @@
     bottom: 0;
   }
 
+  .iconButton {
+    height: 32px;
+    width: 32px;
+    cursor: pointer;
+  }
+
+  .icon {
+    height: 10px;
+    width: 10px;
+    color: #CDCDCD;
+  }
+
   .header {
-    padding: 21px 39px 12px;
+    padding: 19px 39px 12px;
     user-select: none;
 
     .titleRow {
@@ -38,7 +50,7 @@
         margin: 0;
         margin-right: auto;
         color: #323232;
-        font-family: 'IBM Plex Sans', sans-serif;
+        font-family: var(--sans);
         font-size: 20px;
         font-weight: 500;
         letter-spacing: 0;
@@ -54,17 +66,24 @@
         color: #CDCDCD;
         padding: 0;
         margin: 0;
+        display: flex;
       }
 
       button:focus {
         outline: none;
+      }
+
+      .iconButton {
+        /* close button */
+        height: 10px;
+        width: 10px;
       }
     }
   }
 
   .appInfo {
     color: #ADADAD;
-    font-family: 'IBM Plex Mono', monospace;
+    font-family: var(--mono);
     font-size: 10px;
     font-weight: 500;
     letter-spacing: 1px;
@@ -77,18 +96,6 @@
   .content {
     color: #525252;
     padding-bottom: 40px; /* ensure there's always a little to scroll at the end */
-  }
-
-  .iconButton {
-    height: 32px;
-    width: 32px;
-    cursor: pointer;
-  }
-
-  .icon {
-    height: 10px;
-    width: 10px;
-    color: #CDCDCD;
   }
 }
 
@@ -117,7 +124,7 @@
   margin: 0;
   width: 100%;
   color: #323232;
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: var(--sans);
   font-size: 16px;
   font-weight: 500;
   letter-spacing: 0;
@@ -142,7 +149,7 @@
 .sidebarSectionContent {
   padding-top: 20px;
   color: #525252;
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: var(--sans);
   font-size: 14px;
   letter-spacing: 0;
   line-height: 24px;

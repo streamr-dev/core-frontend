@@ -53,6 +53,9 @@ export default function Canvas(props) {
         moduleSidebarOpen: (...args) => (
             propsRef.current.moduleSidebarOpen(...args)
         ),
+        consoleSidebarOpen: (...args) => (
+            propsRef.current.consoleSidebarOpen(...args)
+        ),
         updateModule: (...args) => (
             propsRef.current.updateModule(...args)
         ),
@@ -119,7 +122,6 @@ function CanvasCameraEffects() {
     return null
 }
 
-// $FlowFixMe
 const CanvasElements = React.memo(function CanvasElements(props) { /* eslint-disable-line prefer-arrow-callback */
     const { canvas, api, selectedModuleHash, moduleSidebarIsOpen } = props
     const modulesRef = useRef()
@@ -213,6 +215,7 @@ const CanvasElements = React.memo(function CanvasElements(props) { /* eslint-dis
                         api={api}
                         isSelected={selectedModuleHash === m.hash}
                         moduleSidebarIsOpen={moduleSidebarIsOpen}
+                        onSizeChange={updatePositions}
                         {...api.module}
                     />
                 ))}

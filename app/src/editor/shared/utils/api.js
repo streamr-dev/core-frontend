@@ -10,6 +10,5 @@ export default () => (
             ...getAuthorizationHeader(),
             'Content-Type': 'application/json',
         },
-        withCredentials: true,
     }))
 )

@@ -1,20 +1,16 @@
 .content {
   width: 100%;
-  min-height: 250px;
   text-align: left;
 }
 
-.row {
-  margin-bottom: 1rem;
+.row {}
+
+.row + .row {
+  margin-top: 3rem;
 }
 
 .dropdown {
   width: 100%;
-}
-
-.label {
-  font-size: 12px;
-  line-height: 20px;
 }
 
 .helpText {
@@ -23,17 +19,6 @@
   color: #A3A3A3;
 }
 
-.selectInputs {
-  top: -0.8rem;
-}
-
 .customInput {
-  margin-top: 1rem;
-
-  :global(label),
-  :global(.shared_underline_root),
-  :global(.shared_underline_root::after),
-  :global(.shared_underline_root::before) {
-    z-index: 0;
-  }
+  margin-bottom: 1rem;
 }

@@ -7,6 +7,8 @@ import useHover from '$shared/hooks/useHover'
 import FallbackImage from '$shared/components/FallbackImage'
 import DropdownActions from '$shared/components/DropdownActions'
 import Meatball from '$shared/components/Meatball'
+import Label from '$shared/components/Label'
+import Spinner from '$shared/components/Spinner'
 
 import * as subcomponents from './subcomponents'
 
@@ -17,10 +19,11 @@ type Props = {
     image?: ?Node,
     imageUrl?: string,
     dropdownActions?: Array<typeof DropdownActions.Item> | Node,
-    onMenuToggle?: (boolean) => void,
+    onMenuToggle?: (boolean) => any,
     className?: string,
     badges: subcomponents.BadgesType,
     labels: subcomponents.LabelsType,
+    deploying?: boolean,
 }
 
 const Tile = ({
@@ -32,6 +35,7 @@ const Tile = ({
     className,
     badges,
     labels,
+    deploying,
 }: Props) => {
     const [hoveredRef, isHovered] = useHover()
 
@@ -62,7 +66,15 @@ const Tile = ({
                     <FallbackImage src={imageUrl || ''} alt="Tile" className={styles.image} />
                 )}
                 <subcomponents.Labels topLeft labels={labels} />
-                <subcomponents.Badges bottomRight badges={badges} />
+                {!deploying && (
+                    <subcomponents.Badges bottomRight badges={badges} />
+                )}
+                {!!deploying && (
+                    <Label bottomRight>
+                        <span className={styles.deploying}>Deploying</span>
+                        <Spinner size="small" color="white" className={styles.deployingSpinner} />
+                    </Label>
+                )}
             </div>
             <div className={styles.content}>
                 {children}
@@ -74,6 +86,7 @@ const Tile = ({
 Tile.defaultProps = {
     badges: {},
     labels: {},
+    deploying: false,
 }
 
 // Add subcomonents as static properties

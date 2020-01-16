@@ -1,6 +1,7 @@
 import { useMemo, useCallback, useEffect, useState, useRef, useContext } from 'react'
 import { getCanvasBounds, getModuleBounds } from '$editor/shared/utils/bounds'
 import { useThrottled } from '$shared/hooks/wrapCallback'
+import { isChordEvent } from '$editor/shared/utils/shortcuts'
 
 import { useCameraContext } from '../components/Camera'
 import { DragDropContext } from '../components/DragDropContext'
@@ -117,9 +118,24 @@ function useFitCanvasOnLoadEffect() {
  * True when mouse button down
  */
 
-function useIsMouseDown({ buttons = 1, ref }) {
+function useIsMouseDownForPanning({ buttons = 1, ref }) {
     const [isMouseDown, setIsMouseDown] = useState(false)
-    const onMouseDown = useCallback(() => {
+    const onMouseDown = useCallback(({ target: { tagName } }) => {
+        // Let's ignore mousedown events on the following (interactive) HTML
+        // elements. It means, in practice, that mousedown-ing them will not
+        // hopelessly attempt to trigger panning. It wouldn't succeed anyway
+        // but it makes <select> options unselectable in Firefox.
+        if ([
+            'select',
+            'option',
+            'input',
+            'button',
+            'a',
+            'textarea',
+        ].includes(tagName.toLowerCase())) {
+            return
+        }
+
         setIsMouseDown(true)
     }, [setIsMouseDown])
 
@@ -155,16 +171,16 @@ function useKeyboardZoomControls() {
 
     const onKeyDown = useCallback((event) => {
         if (shouldIgnoreEvent(event)) { return }
-        const meta = (event.metaKey || event.ctrlKey)
+        const chordEvent = isChordEvent(event)
 
-        if (event.key === '0' && meta) {
+        if (event.code === 'Digit0' && chordEvent) {
             event.preventDefault()
             event.stopPropagation()
             event.stopImmediatePropagation()
             setScale(1)
         }
 
-        if (event.key === '1' && meta) {
+        if (event.code === 'Digit1' && chordEvent) {
             event.preventDefault()
             event.stopPropagation()
             event.stopImmediatePropagation()
@@ -190,7 +206,7 @@ function usePanToSelectionEffect() {
     const canvasCamera = useCanvasCamera()
     const canvasCameraRef = useRef()
     canvasCameraRef.current = canvasCamera
-    const isMouseDown = useIsMouseDown({ ref: useRef(window) })
+    const isMouseDown = useIsMouseDownForPanning({ ref: useRef(window) })
 
     // pan to selected on mouse up
     useEffect(() => {

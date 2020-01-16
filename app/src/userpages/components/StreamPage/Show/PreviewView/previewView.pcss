@@ -1,53 +1,34 @@
 .longText {
-  margin-bottom: 36px;
-  margin-bottom: 2.25rem;
-  line-height: 20px;
-  max-width: 488px;
+  margin-bottom: 3.125rem;
 }
 
 .previewControls {
-  position: absolute;
-  height: 32px;
-  right: 0;
-  top: 8px;
-}
-
-@media (--md-down) {
-  .previewControls {
-    bottom: -50px;
-    top: auto;
-  }
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 1em;
 }
 
 .previewContainer {
   display: none;
+  grid-template-rows: 1fr 72px;
   position: relative;
   max-width: 682px;
   margin: 2em 0;
+  background-color: #FDFDFD;
 
   .previewControls {
     .inspectButton {
-      height: 32px;
-      width: 80px;
       margin-left: 1rem;
     }
 
     .playPauseButton {
-      margin: 0;
-      padding: 0 !important;
-      width: 32px;
-      height: 32px;
-
-      .icon {
-        width: 32px;
-        height: 32px;
-      }
     }
   }
 }
 
 .hasData {
-  display: block;
+  display: grid;
 
   a {
     text-decoration: none;

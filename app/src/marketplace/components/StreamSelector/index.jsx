@@ -5,9 +5,10 @@ import React, { useState, useMemo, useCallback } from 'react'
 import classNames from 'classnames'
 import uniq from 'lodash/uniq'
 import sortBy from 'lodash/sortBy'
-import { Input, Button } from 'reactstrap'
+import { Input } from 'reactstrap'
 import { Translate, I18n } from 'react-redux-i18n'
 
+import Button from '$shared/components/Button'
 import DropdownActions from '$shared/components/DropdownActions'
 import SvgIcon from '$shared/components/SvgIcon'
 import InputError from '$mp/components/InputError'
@@ -24,6 +25,7 @@ type Props = LastErrorProps & {
     availableStreams: StreamList,
     className?: string,
     onEdit: (StreamIdList) => void,
+    disabled?: boolean,
 }
 
 const SORT_BY_NAME = 'name'
@@ -37,6 +39,7 @@ export const StreamSelector = (props: Props) => {
         onEdit,
         availableStreams,
         fetchingStreams = false,
+        disabled,
         ...rest
     } = props
     const [sort, setSort] = useState(SORT_BY_NAME)
@@ -100,6 +103,7 @@ export const StreamSelector = (props: Props) => {
                 <div
                     className={classNames(styles.root, {
                         [styles.withError]: !!hasError,
+                        [styles.disabled]: !!disabled,
                     })}
                 >
                     {!!fetchingStreams && <Translate value="streamSelector.loading" />}
@@ -110,6 +114,7 @@ export const StreamSelector = (props: Props) => {
                             onChange={onSearchChange}
                             value={search}
                             placeholder={I18n.t('streamSelector.typeToSearch')}
+                            disabled={!!disabled}
                         />
                         <DropdownActions
                             className={classNames(styles.sortDropdown, styles.dropdown)}
@@ -120,6 +125,7 @@ export const StreamSelector = (props: Props) => {
                                     {sort}
                                 </span>
                             }
+                            disabled={!!disabled}
                         >
                             <DropdownActions.Item onClick={() => setSort(SORT_BY_NAME)}>
                                 <Translate value="streamSelector.sortByName" />
@@ -155,6 +161,7 @@ export const StreamSelector = (props: Props) => {
                                     onClick={() => {
                                         onToggle(stream.id)
                                     }}
+                                    disabled={!!disabled}
                                 >
                                     {stream.name}
                                 </button>
@@ -169,6 +176,7 @@ export const StreamSelector = (props: Props) => {
                             }
                         </div>
                         <Button
+                            kind="secondary"
                             onClick={() => {
                                 const toSelect = matchingStreams.map((s) => s.id)
 
@@ -178,6 +186,7 @@ export const StreamSelector = (props: Props) => {
                                     onSelectAll(toSelect)
                                 }
                             }}
+                            disabled={!!disabled}
                         >
                             {!allVisibleStreamsSelected
                                 ? <Translate value="streamSelector.selectAll" />

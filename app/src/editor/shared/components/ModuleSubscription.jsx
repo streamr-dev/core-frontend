@@ -2,8 +2,9 @@
 
 import React from 'react'
 
-import Subscription from './Subscription'
-import { ClientContext } from './Client'
+import Subscription from '$shared/components/Subscription'
+import { Context as ClientContext } from '$shared/contexts/StreamrClient'
+import * as services from '$editor/shared/services'
 
 export default class ModuleSubscription extends React.PureComponent {
     static contextType = ClientContext
@@ -25,7 +26,9 @@ export default class ModuleSubscription extends React.PureComponent {
         if (this.unmounted) { return }
         if (!this.props.isActive) { return } // do nothing if not active
         const { canvasId, dashboardId, moduleHash } = this.props
-        return this.context.send({
+        const { apiKey } = this.context
+        return services.send({
+            apiKey,
             data,
             canvasId,
             dashboardId,

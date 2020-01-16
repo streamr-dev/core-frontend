@@ -6,20 +6,16 @@
   z-index: 5;
   width: 100%;
   background-color: white;
-  min-height: 5rem;
+  min-height: 4rem;
 }
 
 @media (--md-down) {
   .toolbar.altMobileLayout {
     position: fixed;
     top: auto;
-    padding: 0;
+    padding: 15px;
     bottom: 0;
     width: 100%;
-
-    .buttons {
-      padding: 15px !important;
-    }
   }
 }
 
@@ -37,6 +33,9 @@
 }
 
 .middle {
+  display: flex;
+  align-items: center;
+
   &:empty {
     display: none;
   }
@@ -49,4 +48,8 @@
   &:empty {
     display: none;
   }
+}
+
+.shadow {
+  box-shadow: var(--nav-shadow);
 }

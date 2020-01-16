@@ -2,11 +2,11 @@
 
 import { useEffect, useContext } from 'react'
 
-import useProduct from './useProduct'
+import useEditableProduct from './useEditableProduct'
 import { Context as ValidationContext } from './ValidationContextProvider'
 
 export default function useProductValidationEffect() {
-    const product = useProduct()
+    const product = useEditableProduct()
     const { validate } = useContext(ValidationContext)
 
     useEffect(() => {

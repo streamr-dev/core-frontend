@@ -29,10 +29,10 @@ export const SelectField = ({
     return (
         <div>
             <Select
-                className={cx(styles.input, {
+                className={className}
+                controlClassName={cx({
                     [styles.withError]: !!hasError,
-                }, className)}
-                controlClassName={styles.control}
+                })}
                 isDisabled={disabled}
                 {...castProps}
             />

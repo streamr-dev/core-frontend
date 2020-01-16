@@ -34,7 +34,9 @@ describe('api utils', () => {
                 assert.equal(request.config.url, '/test-endpoint')
             })
 
-            const result = await all.get('/test-endpoint')
+            const result = await all.get({
+                url: '/test-endpoint',
+            })
             assert.equal(result, data)
         })
 
@@ -48,7 +50,9 @@ describe('api utils', () => {
             })
 
             try {
-                await all.get('/test-endpoint')
+                await all.get({
+                    url: '/test-endpoint',
+                })
             } catch (e) {
                 assert.equal(e.statusCode, 500)
                 assert.equal(e.code, error.code)
@@ -72,7 +76,10 @@ describe('api utils', () => {
                 assert.equal(request.config.data, JSON.stringify(data))
             })
 
-            const result = await all.post('/test-endpoint', data)
+            const result = await all.post({
+                url: '/test-endpoint',
+                data,
+            })
             assert.equal(result, data)
         })
     })
@@ -92,7 +99,10 @@ describe('api utils', () => {
                 assert.equal(request.config.data, JSON.stringify(data))
             })
 
-            const result = await all.put('/test-endpoint', data)
+            const result = await all.put({
+                url: '/test-endpoint',
+                data,
+            })
             assert.equal(result, data)
         })
     })

@@ -1,13 +1,13 @@
 // @flow
 
 import React, { Component } from 'react'
-import cx from 'classnames'
 import { I18n } from 'react-redux-i18n'
 
+import Button from '$shared/components/Button'
 import SvgIcon from '$shared/components/SvgIcon'
+import TextInput from '$shared/components/TextInput'
 
 import styles from './shareDialogInputRow.pcss'
-import buttonStyles from '$shared/components/Button/button.pcss'
 
 type Props = {
     onAdd: (email: string) => void,
@@ -42,21 +42,21 @@ export class ShareDialogInputRow extends Component<Props, State> {
         const { email } = this.state
         return (
             <div className={styles.container}>
-                <input
+                <TextInput
                     className={styles.input}
                     placeholder={I18n.t('modal.shareResource.enterEmailAddress')}
-                    name="email"
+                    label={I18n.t('auth.labels.email')}
                     value={email}
                     onChange={this.onChange}
                 />
-                <button
-                    type="button"
-                    className={cx(styles.button, buttonStyles.btn, buttonStyles.btnOutline)}
+                <Button
+                    kind="secondary"
                     onClick={this.onAdd}
                     disabled={!email}
+                    className={styles.button}
                 >
                     <SvgIcon name="plus" className={styles.plusIcon} />
-                </button>
+                </Button>
             </div>
         )
     }

@@ -11,7 +11,6 @@ const getEmbedCode = (resourceType: ResourceType, resourceId: ResourceId) => {
         const src = formatExternalUrl(process.env.PLATFORM_ORIGIN_URL, routes.canvasEmbed({
             id: resourceId,
         }))
-        // $FlowFixMe It's alright but Flow doesn't get it
         return `
             <iframe title="streamr-embed"
             src="${src}"

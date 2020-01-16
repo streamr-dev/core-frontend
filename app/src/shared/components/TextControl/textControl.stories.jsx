@@ -1,9 +1,9 @@
-// $flow
+// @flow
 
 import React from 'react'
 import { storiesOf } from '@storybook/react'
-import { action } from '@storybook/addon-actions'
 import styles from '@sambego/storybook-styles'
+import UseState from '$shared/components/UseState'
 import TextControl from '.'
 
 const stories =
@@ -13,52 +13,103 @@ const stories =
         }))
 
 stories.add('enhanced', () => (
-    <TextControl
-        flushHistoryOnBlur
-        immediateCommit={false}
-        onCommit={action('Commit')}
-        commitEmpty={false}
-        revertOnEsc
-        selectAllOnFocus
-        value="Lorem ipsum."
-    />
+    <UseState initialValue="Lorem ipsum.">
+        {(value, setValue) => (
+            <TextControl
+                flushHistoryOnBlur
+                immediateCommit={false}
+                commitEmpty={false}
+                revertOnEsc
+                selectAllOnFocus
+                onCommit={setValue}
+                value={value}
+            />
+        )}
+    </UseState>
 ))
 
 stories.add('revert on Escape', () => (
-    <TextControl
-        onCommit={action('Commit')}
-        revertOnEsc
-        value="Lorem ipsum."
-    />
+    <UseState initialValue="Lorem ipsum.">
+        {(value, setValue) => (
+            <TextControl
+                revertOnEsc
+                onCommit={setValue}
+                value={value}
+            />
+        )}
+    </UseState>
 ))
 
 stories.add('require value', () => (
-    <TextControl
-        onCommit={action('Commit')}
-        commitEmpty={false}
-        value="Lorem ipsum."
-    />
+    <UseState initialValue="Lorem ipsum.">
+        {(value, setValue) => (
+            <TextControl
+                commitEmpty={false}
+                onCommit={setValue}
+                value={value}
+            />
+        )}
+    </UseState>
 ))
 
 stories.add('commit on Enter', () => (
-    <TextControl
-        immediateCommit={false}
-        onCommit={action('Commit')}
-        value="Lorem ipsum."
-    />
+    <UseState initialValue="Lorem ipsum.">
+        {(value, setValue) => (
+            <TextControl
+                immediateCommit={false}
+                onCommit={setValue}
+                value={value}
+            />
+        )}
+    </UseState>
 ))
 
 stories.add('select all on focus', () => (
-    <TextControl
-        onCommit={action('Commit')}
-        selectAllOnFocus
-        value="Lorem ipsum."
-    />
+    <UseState initialValue="Lorem ipsum.">
+        {(value, setValue) => (
+            <TextControl
+                selectAllOnFocus
+                onCommit={setValue}
+                value={value}
+            />
+        )}
+    </UseState>
 ))
 
 stories.add('prevent undo after blur', () => (
-    <TextControl
-        flushHistoryOnBlur
-        value="Lorem ipsum."
-    />
+    <UseState initialValue="Lorem ipsum.">
+        {(value, setValue) => (
+            <TextControl
+                flushHistoryOnBlur
+                onCommit={setValue}
+                value={value}
+            />
+        )}
+    </UseState>
+))
+
+stories.add('update prop on commit', () => (
+    <UseState initialValue="0">
+        {(value, setValue) => (
+            <TextControl
+                immediateCommit={false}
+                onCommit={(v) => {
+                    setValue(Number(v) + 1)
+                }}
+                value={value}
+            />
+        )}
+    </UseState>
+))
+
+stories.add('textarea', () => (
+    <UseState initialValue="Lorem ipsum.">
+        {(value, setValue) => (
+            <TextControl
+                tag="textarea"
+                value={value}
+                onCommit={setValue}
+            />
+        )}
+    </UseState>
 ))

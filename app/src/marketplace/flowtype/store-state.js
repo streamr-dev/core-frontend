@@ -11,6 +11,7 @@ import type {
     Filter,
     Subscription,
     ProductPermissions,
+    CommunityId,
 } from './product-types'
 import type { Hash, Address, HashList } from '$shared/flowtype/web3-types'
 import type { StreamIdList } from '$shared/flowtype/stream-types'
@@ -41,7 +42,6 @@ export type MyProductListState = {
     ids: ProductIdList,
     fetching: boolean,
     error: ?ErrorInUi,
-    filter: ?UserpagesFilter,
 }
 
 // my purchases
@@ -78,6 +78,16 @@ export type ContractProductState = {
     id: ?ProductId,
     fetchingContractProduct: boolean,
     contractProductError: ?ErrorInUi,
+}
+
+// Community product
+export type CommunityProductState = {
+    id: ?CommunityId,
+    fetching: boolean,
+    error: ?ErrorInUi,
+    fetchingStats: boolean,
+    ids: Array<CommunityId>,
+    statsError: ?ErrorInUi,
 }
 
 // streams
@@ -155,16 +165,28 @@ export type ModifyContractProductState = {
 
 // Allowance
 export type AllowanceState = {
-    allowance: NumberString,
-    pendingAllowance: ?NumberString,
-    gettingAllowance: boolean,
-    getAllowanceError: ?ErrorInUi,
-    settingAllowance: boolean,
-    setAllowanceTx: ?Hash,
-    setAllowanceError: ?ErrorInUi,
-    resettingAllowance: boolean,
-    resetAllowanceTx: ?Hash,
-    resetAllowanceError: ?ErrorInUi,
+    // DATA
+    dataAllowance: NumberString,
+    pendingDataAllowance: ?NumberString,
+    gettingDataAllowance: boolean,
+    getDataAllowanceError: ?ErrorInUi,
+    settingDataAllowance: boolean,
+    setDataAllowanceTx: ?Hash,
+    setDataAllowanceError: ?ErrorInUi,
+    resettingDataAllowance: boolean,
+    resetDataAllowanceTx: ?Hash,
+    resetDataAllowanceError: ?ErrorInUi,
+    // DAI
+    daiAllowance: NumberString,
+    pendingDaiAllowance: ?NumberString,
+    gettingDaiAllowance: boolean,
+    getDaiAllowanceError: ?ErrorInUi,
+    settingDaiAllowance: boolean,
+    setDaiAllowanceTx: ?Hash,
+    setDaiAllowanceError: ?ErrorInUi,
+    resettingDaiAllowance: boolean,
+    resetDaiAllowanceTx: ?Hash,
+    resetDaiAllowanceError: ?ErrorInUi,
 }
 
 // web3
@@ -183,8 +205,6 @@ export type GlobalState = {
     fetchingDataPerUsdRate: boolean,
     dataPerUsdRateError: ?TransactionError,
     ethereumNetworkError: ?TransactionError,
-    metamaskPermission: ?boolean,
-    isWeb3Injected: ?boolean,
 }
 
 // transactions
@@ -198,6 +218,7 @@ export type StoreState = {
     allowance: AllowanceState,
     categories: CategoryState,
     contractProduct: ContractProductState,
+    communityProduct: CommunityProductState,
     createContractProduct: ModifyContractProductState,
     editProduct: EditProductState,
     global: GlobalState,

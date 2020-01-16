@@ -12,8 +12,7 @@ type Props = {
 const CalendarIcon = ({ className }: Props) => (
     <svg
         className={cx(styles.root, className)}
-        width="24"
-        height="24"
+        viewBox="0 0 24 24"
         xmlns="http://www.w3.org/2000/svg"
         stroke="#A3A3A3"
     >

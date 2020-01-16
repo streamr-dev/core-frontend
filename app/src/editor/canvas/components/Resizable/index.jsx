@@ -1,6 +1,17 @@
 // @flow
 
-import React, { type Context, createContext, type Node, useState, useRef, useCallback, useContext, useMemo, useEffect } from 'react'
+import React, {
+    type Context,
+    createContext,
+    type Node,
+    useState,
+    useRef,
+    useCallback,
+    useContext,
+    useMemo,
+    useEffect,
+    type ComponentType,
+} from 'react'
 import cx from 'classnames'
 import { type Ref } from '$shared/flowtype/common-types'
 import Handle from './Handle'
@@ -37,6 +48,10 @@ type Props = {
     style?: any,
     width: number,
     scale: number,
+}
+
+type OuterProps = Props & {
+    onSizeChange: () => void,
 }
 
 const Resizable = React.memo(({
@@ -199,9 +214,8 @@ const Resizable = React.memo(({
 
 export { ResizeableContext as Context }
 
-// $FlowFixMe
-export default React.memo((props: Props) => (
-    <SizeConstraintProvider>
+export default (React.memo(({ onSizeChange, ...props }: OuterProps) => (
+    <SizeConstraintProvider onSizeChange={onSizeChange}>
         <Resizable {...props} />
     </SizeConstraintProvider>
-))
+)): ComponentType<OuterProps>)

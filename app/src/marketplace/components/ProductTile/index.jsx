@@ -6,34 +6,24 @@ import { Link } from 'react-router-dom'
 import Skeleton from 'react-loading-skeleton'
 import { Translate, I18n } from 'react-redux-i18n'
 
-import { withHover } from '$shared/components/WithHover'
 import { formatPath } from '$shared/utils/url'
-import { productStates, timeUnits } from '$shared/utils/constants'
+import { timeUnits } from '$shared/utils/constants'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import ErrorComponentView from '$shared/components/ErrorComponentView'
 import PaymentRate from '../PaymentRate'
 import links from '$mp/../links'
-import type { Product, ProductId } from '$mp/flowtype/product-types'
+import type { Product } from '$mp/flowtype/product-types'
 import Tile from '$shared/components/Tile'
 
 import { isPaidProduct, isCommunityProduct } from '$mp/utils/product'
 
 import Logo from '$shared/components/Logo'
-import { ActionsDropdown } from './ActionsDropdown'
+
 import styles from './productTile.pcss'
 
 export type Props = {
     source: Product,
     showOwner?: boolean,
-    showPrice?: boolean,
-    showSubscriptionStatus?: boolean,
-    showPublishStatus?: boolean,
-    showDropdownMenu?: boolean,
-    showType?: boolean,
-    redirectToEditProduct?: (id: ProductId) => void,
-    redirectToPublishProduct?: (id: ProductId) => void,
-    isActive: boolean,
-    isHovered?: boolean,
 }
 
 export type State = {
@@ -44,10 +34,6 @@ export type State = {
 class ProductTile extends Component<Props, State> {
     static defaultProps = {
         showOwner: true,
-        showPrice: true,
-        showSubscriptionStatus: true,
-        showPublishStatus: true,
-        showType: true,
     }
 
     constructor(props: Props) {
@@ -76,19 +62,7 @@ class ProductTile extends Component<Props, State> {
     gs = (item: ?Node) => (!this.state.loaded ? <Skeleton /> : (item || null))
 
     render() {
-        const {
-            source,
-            showOwner,
-            showPrice,
-            showSubscriptionStatus,
-            showPublishStatus,
-            showDropdownMenu,
-            showType,
-            redirectToEditProduct,
-            redirectToPublishProduct,
-            isActive,
-            isHovered,
-        } = this.props
+        const { source, showOwner } = this.props
         const {
             id,
             name,
@@ -96,21 +70,14 @@ class ProductTile extends Component<Props, State> {
             imageUrl,
             pricePerSecond,
             priceCurrency,
-            state: productState,
             type,
+            // $FlowFixMe property `members` is missing in  `Product` but given in Products component
+            members,
         } = source
+        const isCommunity = isCommunityProduct(type)
 
         return (
             <div className={styles.productTile}>
-                {isHovered && showDropdownMenu &&
-                    <ActionsDropdown
-                        className={styles.dropdown}
-                        redirectToEditProduct={redirectToEditProduct}
-                        redirectToPublishProduct={redirectToPublishProduct}
-                        productState={productState}
-                        id={id}
-                    />
-                }
                 <Link
                     to={formatPath(links.marketplace.products, id || '')}
                     className={classnames({
@@ -136,11 +103,17 @@ class ProductTile extends Component<Props, State> {
                                     }}
                                 />
                                 {this.gs()}
-                                {!!showType && (
-                                    <Tile.Labels
-                                        topLeft
-                                        labels={{
-                                            community: isCommunityProduct(type),
+                                <Tile.Labels
+                                    topLeft
+                                    labels={{
+                                        community: isCommunity,
+                                    }}
+                                />
+                                {isCommunity && members !== undefined && (
+                                    <Tile.Badges
+                                        bottomRight
+                                        badges={{
+                                            members,
                                         }}
                                     />
                                 )}
@@ -151,14 +124,12 @@ class ProductTile extends Component<Props, State> {
                             <div className={classnames(styles.defaultImagePlaceholder, styles.productImage)}>
                                 <Logo color="black" opacity="0.15" />
                             </div>
-                            {!!showType && (
-                                <Tile.Labels
-                                    topLeft
-                                    labels={{
-                                        community: isCommunityProduct(type),
-                                    }}
-                                />
-                            )}
+                            <Tile.Labels
+                                topLeft
+                                labels={{
+                                    community: isCommunity,
+                                }}
+                            />
                         </div>
                     )}
                     <div className={styles.name}>
@@ -172,34 +143,16 @@ class ProductTile extends Component<Props, State> {
                         </div>
                     )}
                     <div className={styles.row}>
-                        {showPrice && productState === productStates.DEPLOYED && (
-                            <div className={styles.price}>
-                                {this.gs(!isPaidProduct(source) && <Translate value="productTile.free" />) || (
-                                    <PaymentRate
-                                        amount={pricePerSecond}
-                                        currency={priceCurrency}
-                                        timeUnit={timeUnits.hour}
-                                        maxDigits={4}
-                                    />
-                                )}
-                            </div>
-                        )}
-                        {showSubscriptionStatus && (
-                            <div className={styles.subscriptionStatus}>
-                                {this.gs(isActive === true ?
-                                    <Translate value="productTile.active" /> :
-                                    <Translate value="productTile.expired" />)
-                                }
-                            </div>
-                        )}
-                        {showPublishStatus && (
-                            <div className={styles.publishStatusContainer}>
-                                {productState === productStates.DEPLOYED ?
-                                    this.gs(<Translate value="productTile.published" className={styles.publishStatus} />) :
-                                    this.gs(<Translate value="productTile.draft" className={styles.publishStatus} />)
-                                }
-                            </div>
-                        )}
+                        <div className={styles.price}>
+                            {this.gs(!isPaidProduct(source) && <Translate value="productTile.free" />) || (
+                                <PaymentRate
+                                    amount={pricePerSecond}
+                                    currency={priceCurrency}
+                                    timeUnit={timeUnits.hour}
+                                    maxDigits={4}
+                                />
+                            )}
+                        </div>
                     </div>
                 </Link>
             </div>
@@ -207,4 +160,4 @@ class ProductTile extends Component<Props, State> {
     }
 }
 
-export default withErrorBoundary(ErrorComponentView)(withHover(ProductTile))
+export default withErrorBoundary(ErrorComponentView)(ProductTile)

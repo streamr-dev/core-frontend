@@ -2,7 +2,7 @@
 
 import { createAction } from 'redux-actions'
 
-import { getAllowance } from '$mp/modules/allowance/actions'
+import { getDataAllowance } from '$mp/modules/allowance/actions'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { Address } from '$shared/flowtype/web3-types'
 
@@ -31,12 +31,12 @@ export const accountError: AccountErrorActionCreator = createAction(ACCOUNT_ERRO
 
 export const receiveAccount = (id: Address) => (dispatch: Function) => {
     dispatch(receiveAccountRequest(id))
-    dispatch(getAllowance())
+    dispatch(getDataAllowance())
 }
 
 export const changeAccount = (id: Address) => (dispatch: Function) => {
     dispatch(changeAccountRequest(id))
-    dispatch(getAllowance())
+    dispatch(getDataAllowance())
 }
 
 export const updateEthereumNetworkIdAction: EthereumNetworkIdActionCreator = createAction(UPDATE_ETHEREUM_NETWORK_ID, (id: Number) => ({

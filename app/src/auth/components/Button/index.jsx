@@ -10,7 +10,6 @@ type Props = {
 
 const Button = ({ className, ...props }: Props) => (
     <button
-        type="submit"
         {...props}
         className={cx(className, styles.button)}
     />

@@ -3,6 +3,7 @@
 import React from 'react'
 import { I18n, Translate } from 'react-redux-i18n'
 
+import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import PngIcon from '$shared/components/PngIcon'
 
@@ -13,13 +14,15 @@ type Props = {
 }
 
 export default ({ onClose }: Props) => (
-    <Dialog
-        title={I18n.t('modal.duplicateIdentity.defaultTitle')}
-        onClose={onClose}
-    >
-        <div>
-            <PngIcon name="metamask" className={styles.icon} />
-            <Translate tag="p" value="modal.duplicateIdentity.description" dangerousHTML />
-        </div>
-    </Dialog>
+    <ModalPortal>
+        <Dialog
+            title={I18n.t('modal.duplicateIdentity.defaultTitle')}
+            onClose={onClose}
+        >
+            <div>
+                <PngIcon name="metamask" className={styles.icon} />
+                <Translate tag="p" value="modal.duplicateIdentity.description" dangerousHTML />
+            </div>
+        </Dialog>
+    </ModalPortal>
 )

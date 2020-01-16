@@ -1,31 +1,35 @@
 import React, { PureComponent, useContext } from 'react'
-import { withRouter } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
 import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
 import { selectAuthState } from '$shared/modules/user/selectors'
 import SessionContext from '$auth/contexts/Session'
 import cx from 'classnames'
 
 import Layout from '$shared/components/Layout'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
-import ErrorComponentView from '$shared/components/ErrorComponentView'
+import { ErrorPageContent } from '$mp/components/ErrorPageView'
 import copyToClipboard from 'copy-to-clipboard'
 
 import links from '../../links'
+import routes from '$routes'
 
+import { findNonOverlappingPositionForModule } from '$editor/shared/utils/bounds'
 import isEditableElement from '$editor/shared/utils/isEditableElement'
 import UndoControls from '$editor/shared/components/UndoControls'
-import * as UndoContext from '$shared/components/UndoContextProvider'
-import { Provider as PendingProvider } from '$shared/components/PendingContextProvider'
-import Subscription from '$editor/shared/components/Subscription'
-import * as SubscriptionStatus from '$editor/shared/components/SubscriptionStatus'
-import { ClientProvider } from '$editor/shared/components/Client'
-import { Provider as ModalProvider } from '$shared/components/ModalContextProvider'
+import Button from '$shared/components/Button'
+import * as UndoContext from '$shared/contexts/Undo'
+import { Provider as PendingProvider } from '$shared/contexts/Pending'
+import Subscription from '$shared/components/Subscription'
+import * as SubscriptionStatus from '$shared/contexts/SubscriptionStatus'
+import { Provider as ClientProvider } from '$shared/contexts/StreamrClient'
 import * as sharedServices from '$editor/shared/services'
 import BodyClass from '$shared/components/BodyClass'
 import Sidebar from '$editor/shared/components/Sidebar'
 import { useCanvasSelection, SelectionProvider } from './components/CanvasController/useCanvasSelection'
 import ModuleSidebar from './components/ModuleSidebar'
+import ConsoleSidebar from './components/ConsoleSidebar'
 import KeyboardShortcutsSidebar from './components/KeyboardShortcutsSidebar'
 import { CameraProvider, cameraControl } from './components/Camera'
 import { useCanvasCameraEffects } from './hooks/useCanvasCamera'
@@ -34,7 +38,7 @@ import * as CanvasController from './components/CanvasController'
 import * as RunController from './components/CanvasController/Run'
 import useCanvas from './components/CanvasController/useCanvas'
 import useCanvasUpdater from './components/CanvasController/useCanvasUpdater'
-import useAutosaveEffect from './components/CanvasController/useAutosaveEffect'
+import { AutosaveProvider } from './components/CanvasController/Autosave'
 import useUpdatedTime from './components/CanvasController/useUpdatedTime'
 import useEmbedMode from './components/CanvasController/useEmbedMode'
 
@@ -56,6 +60,7 @@ const CanvasEditComponent = class CanvasEdit extends PureComponent {
         moduleSearchIsOpen: true,
         moduleSidebarIsOpen: false,
         keyboardShortcutIsOpen: false,
+        consoleSidebarIsOpen: false,
     }
 
     setCanvas = (action, fn, done) => {
@@ -76,6 +81,7 @@ const CanvasEditComponent = class CanvasEdit extends PureComponent {
 
     moduleSidebarOpen = (show = true) => {
         this.setState({
+            consoleSidebarIsOpen: false,
             moduleSidebarIsOpen: !!show,
             keyboardShortcutIsOpen: false,
         })
@@ -85,9 +91,22 @@ const CanvasEditComponent = class CanvasEdit extends PureComponent {
         this.moduleSidebarOpen(false)
     }
 
+    consoleSidebarOpen = (show = true) => {
+        this.setState({
+            consoleSidebarIsOpen: !!show,
+            moduleSidebarIsOpen: false,
+            keyboardShortcutIsOpen: false,
+        })
+    }
+
+    consoleSidebarClose = () => {
+        this.consoleSidebarOpen(false)
+    }
+
     keyboardShortcutOpen = (show = true) => {
         this.setState({
-            moduleSidebarIsOpen: !!show,
+            consoleSidebarIsOpen: false,
+            moduleSidebarIsOpen: false,
             keyboardShortcutIsOpen: !!show,
         })
     }
@@ -97,16 +116,14 @@ const CanvasEditComponent = class CanvasEdit extends PureComponent {
     }
 
     selectModule = async ({ hash } = {}) => {
-        this.setState(({ moduleSidebarIsOpen, keyboardShortcutIsOpen }) => {
-            // this logic is nonsense, please redo the sidebar code
+        this.setState(({ moduleSidebarIsOpen, consoleSidebarIsOpen, keyboardShortcutIsOpen }) => {
             const noSelection = hash == null
-            const keyboardShortcutIsOpenNew = (noSelection && keyboardShortcutIsOpen) ? false : keyboardShortcutIsOpen
-            const moduleSidebarIsOpenNew = noSelection ? false : moduleSidebarIsOpen
             return {
                 selectedModuleHash: hash,
                 // close sidebar if no selection
-                moduleSidebarIsOpen: moduleSidebarIsOpenNew,
-                keyboardShortcutIsOpen: !moduleSidebarIsOpenNew && keyboardShortcutIsOpenNew,
+                moduleSidebarIsOpen: moduleSidebarIsOpen && !noSelection,
+                keyboardShortcutIsOpen: keyboardShortcutIsOpen && !noSelection,
+                consoleSidebarIsOpen: consoleSidebarIsOpen && !noSelection,
             }
         })
         if (hash == null) {
@@ -131,31 +148,28 @@ const CanvasEditComponent = class CanvasEdit extends PureComponent {
         const { runController } = this.props
 
         if ((event.code === 'Backspace' || event.code === 'Delete') && runController.isEditable) {
+            event.preventDefault() // important. prevents stupid browser back on backspace behaviour
+            event.stopPropagation()
             this.removeModule({ hash })
         }
 
         if (event.key === 'Escape') {
             // select none on escape
+            event.preventDefault()
+            event.stopPropagation()
             this.selectModule({ hash: undefined })
         }
 
-        // ignore if not meta key down
-        if (!(event.metaKey || event.ctrlKey)) { return }
-
-        // copy
-        if (event.key === 'c') {
-            event.preventDefault()
-            event.stopPropagation()
-            copyToClipboard(JSON.stringify(CanvasState.getModuleCopy(this.props.canvas, hash)))
-        }
-
-        // cut
-        if (event.key === 'x') {
-            event.preventDefault()
-            event.stopPropagation()
-            copyToClipboard(JSON.stringify(CanvasState.getModuleCopy(this.props.canvas, hash)))
-            if (runController.isEditable) {
-                this.removeModule({ hash })
+        if ((event.metaKey || event.ctrlKey)) {
+            // copy|cut
+            if (event.key === 'c' || event.key === 'x') {
+                event.preventDefault()
+                event.stopPropagation()
+                copyToClipboard(JSON.stringify(CanvasState.getModuleCopy(this.props.canvas, hash)))
+                // cut
+                if (event.key === 'x' && runController.isEditable) {
+                    this.removeModule({ hash })
+                }
             }
         }
     }
@@ -191,6 +205,8 @@ const CanvasEditComponent = class CanvasEdit extends PureComponent {
     addModule = async ({ id, configuration }) => {
         const { canvas, canvasController } = this.props
         const action = { type: 'Add Module' }
+
+        configuration.layout.position = findNonOverlappingPositionForModule(canvas, configuration)
         const moduleData = await canvasController.loadModule(canvas, {
             ...configuration,
             id,
@@ -385,6 +401,7 @@ const CanvasEditComponent = class CanvasEdit extends PureComponent {
             // doesn't look like a module
             return
         }
+
         this.addAndSelectModule({
             id: moduleData.id,
             configuration: {
@@ -404,7 +421,7 @@ const CanvasEditComponent = class CanvasEdit extends PureComponent {
             )
         }
         const { isEditable } = runController
-        const { moduleSidebarIsOpen, keyboardShortcutIsOpen } = this.state
+        const { moduleSidebarIsOpen, keyboardShortcutIsOpen, consoleSidebarIsOpen } = this.state
         const { settings } = canvas
         const resendFrom = settings.beginDate
         const resendTo = settings.endDate
@@ -428,7 +445,8 @@ const CanvasEditComponent = class CanvasEdit extends PureComponent {
                     updateModule={this.updateModule}
                     renameModule={this.renameModule}
                     moduleSidebarOpen={this.moduleSidebarOpen}
-                    moduleSidebarIsOpen={moduleSidebarIsOpen && !keyboardShortcutIsOpen}
+                    moduleSidebarIsOpen={moduleSidebarIsOpen}
+                    consoleSidebarOpen={this.consoleSidebarOpen}
                     setCanvas={this.setCanvas}
                     pushNewDefinition={this.pushNewDefinition}
                 >
@@ -440,42 +458,49 @@ const CanvasEditComponent = class CanvasEdit extends PureComponent {
                 </Canvas>
                 {isEmbedMode ? <EmbedToolbar canvas={canvas} /> : (
                     <React.Fragment>
-                        <ModalProvider>
-                            <CanvasToolbar
-                                className={styles.CanvasToolbar}
-                                canvas={canvas}
-                                setCanvas={this.setCanvas}
-                                renameCanvas={this.renameCanvas}
-                                deleteCanvas={this.deleteCanvas}
-                                newCanvas={this.newCanvas}
-                                duplicateCanvas={this.duplicateCanvas}
-                                moduleSearchIsOpen={this.state.moduleSearchIsOpen}
-                                moduleSearchOpen={this.moduleSearchOpen}
-                                setRunTab={this.setRunTab}
-                                setHistorical={this.setHistorical}
-                                setSpeed={this.setSpeed}
-                                setSaveState={this.setSaveState}
-                                canvasStart={this.canvasStart}
-                                canvasStop={this.canvasStop}
-                                keyboardShortcutOpen={this.keyboardShortcutOpen}
-                                canvasExit={this.canvasExit}
-                            />
-                        </ModalProvider>
+                        <CanvasToolbar
+                            className={styles.CanvasToolbar}
+                            canvas={canvas}
+                            setCanvas={this.setCanvas}
+                            renameCanvas={this.renameCanvas}
+                            deleteCanvas={this.deleteCanvas}
+                            newCanvas={this.newCanvas}
+                            duplicateCanvas={this.duplicateCanvas}
+                            moduleSearchIsOpen={this.state.moduleSearchIsOpen}
+                            moduleSearchOpen={this.moduleSearchOpen}
+                            consoleSidebarOpen={this.consoleSidebarOpen}
+                            setRunTab={this.setRunTab}
+                            setHistorical={this.setHistorical}
+                            setSpeed={this.setSpeed}
+                            setSaveState={this.setSaveState}
+                            canvasStart={this.canvasStart}
+                            canvasStop={this.canvasStop}
+                            keyboardShortcutOpen={this.keyboardShortcutOpen}
+                            canvasExit={this.canvasExit}
+                        />
                         <Sidebar
                             className={styles.ModuleSidebar}
-                            isOpen={moduleSidebarIsOpen || keyboardShortcutIsOpen}
+                            isOpen={moduleSidebarIsOpen || keyboardShortcutIsOpen || consoleSidebarIsOpen}
                         >
                             {keyboardShortcutIsOpen && (
                                 <KeyboardShortcutsSidebar
                                     onClose={this.keyboardShortcutClose}
                                 />
                             )}
-                            {moduleSidebarIsOpen && !keyboardShortcutIsOpen && (
+                            {moduleSidebarIsOpen && (
                                 <ModuleSidebar
                                     onClose={this.moduleSidebarClose}
                                     canvas={canvas}
                                     selectedModuleHash={this.props.selection.last()}
                                     setModuleOptions={this.setModuleOptions}
+                                />
+                            )}
+                            {consoleSidebarIsOpen && (
+                                <ConsoleSidebar
+                                    onClose={this.consoleSidebarClose}
+                                    canvas={canvas}
+                                    selectedModuleHash={this.props.selection.last()}
+                                    selectModule={this.selectModule}
                                 />
                             )}
                         </Sidebar>
@@ -501,12 +526,11 @@ const CanvasEdit = withRouter((props) => {
     const [updated, setUpdated] = useUpdatedTime(canvas.updated)
     const isEmbedMode = useEmbedMode()
     useCanvasNotifications(canvas)
-    useAutosaveEffect()
     useCanvasCameraEffects()
     const selection = useCanvasSelection()
 
     return (
-        <React.Fragment>
+        <AutosaveProvider>
             <UndoControls disabled={!runController.isEditable} />
             <CanvasEditComponent
                 {...props}
@@ -521,7 +545,7 @@ const CanvasEdit = withRouter((props) => {
                 setUpdated={setUpdated}
                 selection={selection}
             />
-        </React.Fragment>
+        </AutosaveProvider>
     )
 })
 
@@ -548,7 +572,31 @@ const CanvasEditWrap = () => {
     )
 }
 
-const CanvasContainer = withRouter(withErrorBoundary(ErrorComponentView)((props) => (
+const CanvasErrorPage = () => (
+    <ErrorPageContent>
+        <Button
+            kind="special"
+            tag={Link}
+            to=""
+            onClick={(event) => {
+                event.preventDefault()
+                window.location.reload()
+            }}
+        >
+            <Translate value="editor.error.refresh" />
+        </Button>
+        <Button
+            kind="special"
+            tag={Link}
+            to={routes.canvases()}
+            className="d-none d-md-inline-block"
+        >
+            <Translate value="editor.general.backToCanvases" />
+        </Button>
+    </ErrorPageContent>
+)
+
+const CanvasContainer = withRouter(withErrorBoundary(CanvasErrorPage)((props) => (
     <UndoContext.Provider key={props.match.params.id} enableBreadcrumbs>
         <PendingProvider name="canvas">
             <PendingLoadingIndicator />
@@ -569,7 +617,7 @@ export default connect(selectAuthState)(({ embed, isAuthenticated }) => {
     // don't drop into embed mode unless no token
     embed = embed || (!isAuthenticated && !token)
     return (
-        <Layout className={styles.layout} footer={false} nav={!embed}>
+        <Layout className={styles.layout} footer={false} nav={!embed} navShadow>
             <BodyClass className="editor" />
             <CanvasContainer embed={embed} />
         </Layout>

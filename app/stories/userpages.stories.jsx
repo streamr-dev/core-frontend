@@ -1,4 +1,4 @@
-// $flow
+// @flow
 
 import React from 'react'
 import { Provider } from 'react-redux'
@@ -12,12 +12,11 @@ import store from './utils/i18nStore'
 
 import TOCPage from '$userpages/components/TOCPage'
 import Avatar from '$userpages/components/Avatar'
-import KeyField from '$userpages/components/KeyField'
 
 const story = (name) => storiesOf(`UserPages/${name}`, module)
     .addDecorator(StoryRouter())
     .addDecorator(styles({
-        padding: '15px',
+        padding: '2rem',
         color: 'black',
     }))
     .addDecorator((callback) => (<Provider store={store}>{callback()}</Provider>))
@@ -48,9 +47,11 @@ story('TOCPage')
 story('Avatar')
     .addWithJSX('basic', () => {
         const user = {
+            email: 'tester1@streamr.com',
+            imageUrlLarge: boolean('showImage', true) ? 'https://miro.medium.com/fit/c/256/256/1*NfJkA-ChiQtYLRBOLryZxQ.jpeg' : '',
+            imageUrlSmall: '',
             name: text('Name', 'Matt Innes'),
             username: text('Username', 'matt@streamr.com'),
-            imageUrlLarge: boolean('showImage', true) ? 'https://miro.medium.com/fit/c/256/256/1*NfJkA-ChiQtYLRBOLryZxQ.jpeg' : null,
         }
 
         return (
@@ -61,20 +62,3 @@ story('Avatar')
             />
         )
     })
-
-story('KeyField')
-    .addWithJSX('basic', () => (
-        <KeyField
-            keyName={text('Key name')}
-            value={text('Value')}
-            hideValue={boolean('Hide value')}
-            allowEdit={boolean('Allow edit')}
-            onSave={() => {
-                alert('Saved!') // eslint-disable-line no-alert
-            }}
-            allowDelete={boolean('Allow delete')}
-            onDelete={() => {
-                alert('Deleted!') // eslint-disable-line no-alert
-            }}
-        />
-    ))

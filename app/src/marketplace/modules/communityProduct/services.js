@@ -3,22 +3,24 @@
 import { deploy, getContract, call, send } from '$mp/utils/smartContract'
 import getConfig from '$shared/web3/config'
 
-import type { SmartContractDeployTransaction, Address, SmartContractTransaction } from '$shared/flowtype/web3-types'
+import type { SmartContractDeployTransaction, SmartContractTransaction } from '$shared/flowtype/web3-types'
 import type {
     StreamId,
     Stream,
     NewStream,
 } from '$shared/flowtype/stream-types'
-import type { ProductId } from '$mp/flowtype/product-types'
+import type { ProductId, CommunityId } from '$mp/flowtype/product-types'
 import type { Permission } from '$userpages/flowtype/permission-types'
 import type { ApiResult } from '$shared/flowtype/common-types'
 import { gasLimits } from '$shared/utils/constants'
 
-import { post, del, get } from '$shared/utils/api'
+import { post, del, get, put } from '$shared/utils/api'
 import { formatApiUrl } from '$shared/utils/url'
 import { postStream, getMyStreamPermissions } from '$userpages/modules/userPageStreams/services'
 import { addStreamResourceKey } from '$shared/modules/resourceKey/services'
 import { getWeb3, getPublicWeb3 } from '$shared/web3/web3Provider'
+
+import type { Secret } from './types'
 
 export const getStreamrEngineAddresses = (): Array<string> => {
     const addressesString = process.env.STREAMR_ENGINE_NODE_ADDRESSES || ''
@@ -26,11 +28,14 @@ export const getStreamrEngineAddresses = (): Array<string> => {
     return addresses
 }
 
-export const addPermission = (id: StreamId, permission: Permission): ApiResult<Array<Permission>> =>
-    post(formatApiUrl('streams', id, 'permissions'), permission)
+export const addPermission = (id: StreamId, permission: Permission): ApiResult<Array<Permission>> => post({
+    url: formatApiUrl('streams', id, 'permissions'),
+    data: permission,
+})
 
-export const deletePermission = (id: StreamId, permissionId: string): ApiResult<Array<Permission>> =>
-    del(formatApiUrl('streams', id, 'permissions', permissionId))
+export const deletePermission = (id: StreamId, permissionId: $PropertyType<Permission, 'id'>): ApiResult<Array<Permission>> => del({
+    url: formatApiUrl('streams', id, 'permissions', permissionId),
+})
 
 export const createJoinPartStream = async (productId: ?ProductId = undefined): Promise<Stream> => {
     const newStream: NewStream = {
@@ -76,7 +81,6 @@ export const createJoinPartStream = async (productId: ?ProductId = undefined): P
 
     // Remove share permission to prevent deleting the stream
     try {
-        // $FlowFixMe
         const myPermissions = await getMyStreamPermissions(stream.id)
         const sharePermission = myPermissions.find((p) => p.operation === 'share')
         if (sharePermission) {
@@ -100,7 +104,7 @@ export const getAdminFeeInEther = (adminFee: number) => {
 
 export const deployContract = (joinPartStreamId: string, adminFee: number): SmartContractDeployTransaction => {
     const operatorAddress = process.env.COMMUNITY_PRODUCT_OPERATOR_ADDRESS
-    const tokenAddress = process.env.TOKEN_CONTRACT_ADDRESS
+    const tokenAddress = process.env.DATA_TOKEN_CONTRACT_ADDRESS
     const blockFreezePeriodSeconds = process.env.COMMUNITY_PRODUCT_BLOCK_FREEZE_PERIOD_SECONDS || 1
     return deploy(getConfig().communityProduct, [
         operatorAddress,
@@ -111,7 +115,7 @@ export const deployContract = (joinPartStreamId: string, adminFee: number): Smar
     ])
 }
 
-export const getCommunityContract = (address: Address, usePublicNode: boolean = false) => {
+export const getCommunityContract = (address: CommunityId, usePublicNode: boolean = false) => {
     const { abi } = getConfig().communityProduct
 
     return getContract({
@@ -120,42 +124,87 @@ export const getCommunityContract = (address: Address, usePublicNode: boolean = 
     }, usePublicNode)
 }
 
-export const getCommunityOwner = async (address: Address, usePublicNode: boolean = false) => {
+export const getCommunityOwner = async (address: CommunityId, usePublicNode: boolean = false) => {
     const contract = getCommunityContract(address, usePublicNode)
     const owner = await call(contract.methods.owner)
 
     return owner
 }
 
-export const isCommunityDeployed = async (address: Address, usePublicNode: boolean = false) => (
+export const isCommunityDeployed = async (address: CommunityId, usePublicNode: boolean = false) => (
     !!getCommunityOwner(address, usePublicNode)
 )
 
-export const getAdminFee = (address: Address, usePublicNode: boolean = false) => {
+export const getAdminFee = async (address: CommunityId, usePublicNode: boolean = false) => {
     const web3 = usePublicNode ? getPublicWeb3() : getWeb3()
+    const contract = getCommunityContract(address, usePublicNode)
+    const adminFee = await call(contract.methods.adminFee)
 
-    return call(getCommunityContract(address, usePublicNode).methods.adminFee())
-        .then((value) => {
-            if (value) {
-                return web3.utils.fromWei(web3.utils.toBN(value), 'ether')
-            }
-            return null
-        })
+    return web3.utils.fromWei(web3.utils.toBN(adminFee), 'ether')
 }
 
-export const setAdminFee = (address: Address, adminFee: number): SmartContractTransaction => (
+export const setAdminFee = (address: CommunityId, adminFee: number): SmartContractTransaction => (
     send(getCommunityContract(address).methods.setAdminFee(getAdminFeeInEther(adminFee)), {
         gas: gasLimits.UPDATE_ADMIN_FEE,
     })
 )
 
-export const getJoinPartStreamId = (address: Address, usePublicNode: boolean = false) =>
+export const getJoinPartStreamId = (address: CommunityId, usePublicNode: boolean = false) =>
     call(getCommunityContract(address, usePublicNode).methods.joinPartStream())
 
-export const getCommunityStats = (id: string): ApiResult<Object> =>
-    get(formatApiUrl('communities', id, 'stats'))
+export const getCommunityStats = (id: CommunityId): ApiResult<Object> => get({
+    url: formatApiUrl('communities', id, 'stats'),
+    useAuthorization: false,
+})
 
-export const getStreamData = (id: string, fromTimestamp: number): ApiResult<Object> =>
-    get(formatApiUrl('streams', id, 'data', 'partitions', 0, 'from', {
-        fromTimestamp,
+export const getCommunities = async (): ApiResult<Array<Object>> => {
+    const { communities } = await get({
+        url: formatApiUrl('communities'),
+        useAuthorization: false,
+    })
+
+    return Object.keys(communities || {}).map((id) => ({
+        id: id.toLowerCase(),
+        ...communities[id],
     }))
+}
+
+export const getCommunityData = async (id: CommunityId, usePublicNode: boolean = true): ApiResult<Object> => {
+    const adminFee = await getAdminFee(id, usePublicNode)
+    const joinPartStreamId = await getJoinPartStreamId(id, usePublicNode)
+    const owner = await getCommunityOwner(id, usePublicNode)
+
+    return {
+        id,
+        adminFee,
+        joinPartStreamId,
+        owner,
+    }
+}
+
+export const getSecrets = (communityId: string): ApiResult<Array<Secret>> =>
+    get({
+        url: formatApiUrl('communities', communityId, 'secrets'),
+    })
+
+export const postSecret = (communityId: string, name: string, secret: string): ApiResult<Secret> =>
+    post({
+        url: formatApiUrl('communities', communityId, 'secrets'),
+        data: {
+            name,
+            secret,
+        },
+    })
+
+export const putSecret = (communityId: string, secretId: string, name: string): ApiResult<Secret> =>
+    put({
+        url: formatApiUrl('communities', communityId, 'secrets', secretId),
+        data: {
+            name,
+        },
+    })
+
+export const deleteSecret = (communityId: string, secretId: string): ApiResult<void> =>
+    del({
+        url: formatApiUrl('communities', communityId, 'secrets', secretId),
+    })

@@ -21,8 +21,12 @@ type Props = {
     value?: string | number,
 }
 
+const sanitise = (value) => (
+    value == null ? '' : value
+)
+
 const normalize = (value: any): string => (
-    typeof value === 'string' ? value.trim() : String(value)
+    typeof value === 'string' ? value.trim() : String(sanitise(value))
 )
 
 const TextControl = ({
@@ -45,19 +49,17 @@ const TextControl = ({
     const el = useRef(null)
     const ref = innerRef || el
     const reverted: Ref<boolean> = useRef(false)
-    const sanitizedValue = valueProp == null ? '' : valueProp
-    const [value, setValue] = useState(sanitizedValue)
+    const normalizedValueProp = normalize(valueProp)
+    const [value, setValue] = useState(normalizedValueProp)
+    const [hasFocus, setFocus] = useState(false)
+
     const [blurCount, setBlurCount] = useState(0)
-    const normalizedValue = normalize(value)
     const commit = useCallback(() => {
-        if (onCommit && normalizedValue !== normalize(valueProp) && (normalizedValue || commitEmpty)) {
+        const normalizedValue = normalize(value)
+        if (onCommit && normalizedValue !== normalizedValueProp && (normalizedValue || commitEmpty)) {
             onCommit(normalizedValue)
         }
-    }, [normalizedValue, valueProp, onCommit, commitEmpty])
-
-    useEffect(() => {
-        setValue(valueProp)
-    }, [valueProp])
+    }, [normalizedValueProp, value, onCommit, commitEmpty])
 
     const onBlur = useCallback((e: SyntheticInputEvent<EventTarget>) => {
         if (flushHistoryOnBlur) {
@@ -70,24 +72,24 @@ const TextControl = ({
             commit()
         }
 
-        if (!commitEmpty && !normalizedValue) {
-            setValue(sanitizedValue)
-        }
-
+        setFocus(false)
         if (onBlurProp) {
             onBlurProp(e)
         }
-    }, [onBlurProp, flushHistoryOnBlur, commit, sanitizedValue, commitEmpty, normalizedValue, immediateCommit])
+    }, [onBlurProp, flushHistoryOnBlur, commit, immediateCommit])
 
     const onFocus = useCallback((e: SyntheticInputEvent<EventTarget>) => {
+        setValue(normalizedValueProp)
         if (selectAllOnFocus) {
             e.target.select()
         }
 
+        setFocus(true)
+
         if (onFocusProp) {
             onFocusProp(e)
         }
-    }, [onFocusProp, selectAllOnFocus])
+    }, [onFocusProp, selectAllOnFocus, normalizedValueProp])
 
     const onChange = useCallback((e: SyntheticInputEvent<EventTarget>) => {
         const { value: newValue } = e.target
@@ -111,15 +113,17 @@ const TextControl = ({
                     break
                 case 'Escape':
                     if (revertOnEsc) {
-                        if (value === sanitizedValue) {
+                        if (value === normalizedValueProp) {
                             // No change. Re-render won't happen. We can blur right away!
                             input.blur()
                         } else {
                             // If the value changed then we have to wait with the `blur`
                             // for another render. `onBlur` has to know current `value`.
-                            setValue(sanitizedValue)
+                            setValue(normalizedValueProp)
                             reverted.current = true
                         }
+                    } else {
+                        input.blur()
                     }
                     break
                 default:
@@ -130,7 +134,7 @@ const TextControl = ({
         if (onKeyDownProp) {
             onKeyDownProp(e)
         }
-    }, [onKeyDownProp, revertOnEsc, immediateCommit, sanitizedValue, tag, ref, value])
+    }, [onKeyDownProp, revertOnEsc, immediateCommit, normalizedValueProp, tag, ref, value])
 
     useEffect(() => {
         const { current: input } = ref
@@ -141,11 +145,20 @@ const TextControl = ({
         }
     })
 
+    // captured refs for next effect
+    const commitRef = useRef(commit)
+    commitRef.current = commit
+    const immediateCommitRef = useRef()
+    immediateCommitRef.current = immediateCommit
+    // when value changes do immediate commit if needed
+    const normalizedCurrentValue = normalize(value)
     useEffect(() => {
-        if (immediateCommit) {
-            commit()
+        if (immediateCommitRef.current) {
+            commitRef.current()
         }
-    }, [immediateCommit, commit])
+    }, [normalizedCurrentValue])
+
+    const displayedValue = hasFocus ? value : normalizedValueProp
 
     return (
         <Tag
@@ -156,7 +169,7 @@ const TextControl = ({
             onFocus={onFocus}
             onKeyDown={onKeyDown}
             ref={ref}
-            value={value}
+            value={displayedValue}
         />
     )
 }

@@ -1,10 +1,10 @@
 import React from 'react'
 import { mount } from 'enzyme'
 
-import Modal from '$shared/components/Modal'
-import ModalRoot from '$shared/components/ModalRoot'
+import ModalPortal from '$shared/components/ModalPortal'
+import { Provider as ModalPortalProvider } from '$shared/contexts/ModalPortal'
 
-describe(Modal, () => {
+describe('ModalPortal', () => {
     const { body } = global.document
     const modalRoot = global.document.createElement('div')
     modalRoot.setAttribute('id', 'modal-root')
@@ -21,10 +21,10 @@ describe(Modal, () => {
     })
 
     it('mounts Modals inside #modal-root', () => {
-        const root = mount(<ModalRoot />)
+        const root = mount(<ModalPortalProvider />)
         expect(modalRoot.hasChildNodes()).toBe(false)
         root.setProps({
-            children: <Modal>Modal content</Modal>,
+            children: <ModalPortal>Modal content</ModalPortal>,
         })
         expect(modalRoot.hasChildNodes()).toBe(true)
         root.setProps({

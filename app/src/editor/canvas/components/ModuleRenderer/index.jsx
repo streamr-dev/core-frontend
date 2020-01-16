@@ -1,12 +1,13 @@
 // @flow
 
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback, useMemo, useContext, useEffect } from 'react'
 import cx from 'classnames'
 import Resizable from '../Resizable'
 import Probe from '../Resizable/SizeConstraintProvider/Probe'
 import Ports from '../Ports'
 import styles from '../Module.pcss'
 import { noCameraControl } from '../Camera'
+import { MessageIcon } from '../ConsoleSidebar'
 import useIsCanvasRunning from '../../hooks/useIsCanvasRunning'
 import useModule, { ModuleContext } from './useModule'
 import useModuleApi, { ModuleApiContext } from './useModuleApi'
@@ -17,24 +18,29 @@ import ModuleStyles from '$editor/shared/components/Module.pcss'
 import ModuleUI from '$editor/shared/components/ModuleUI'
 import { type Ref } from '$shared/flowtype/common-types'
 import { UiEmitter } from '$editor/shared/components/RunStateLoader'
+import { Context as SizeConstraintContext } from '$editor/canvas/components/Resizable/SizeConstraintProvider'
 
 type Props = {
-    // FIXME: Update types
+    // TODO: Update types
     className?: ?string,
     innerRef: Ref<HTMLDivElement>,
     isSelected?: boolean,
+    canvas: any,
     layout: any,
     onPort?: any,
     onRename: (string) => void,
+    onSizeChange: () => void,
     isSubscriptionActive?: boolean,
     uiEmitter: UiEmitter,
     moduleSidebarIsOpen?: boolean,
     scale: number,
     interactive?: boolean,
+    isLoading?: boolean,
+    badgeLevel?: string,
 }
 
-// $FlowFixMe
 const ModuleRenderer = React.memo(({
+    canvas,
     className,
     isSelected,
     onPort,
@@ -46,18 +52,23 @@ const ModuleRenderer = React.memo(({
     moduleSidebarIsOpen,
     scale,
     interactive,
+    isLoading,
+    badgeLevel = 'none',
     ...props
 }: Props) => {
     const isRunning = useIsCanvasRunning()
+    const { refreshProbes } = useContext(SizeConstraintContext)
 
     const {
         moduleClassNames,
         isResizable,
-        module: { hash, displayName, name, canRefresh },
+        module,
         isCanvasEditable: isEditable,
         isCanvasAdjustable: isAdjustable,
         hasWritePermission,
     } = useModule()
+
+    const { hash, displayName, name, canRefresh } = module
 
     const stopPropagation = useCallback((e) => {
         e.stopPropagation() /* skip parent focus behaviour */
@@ -70,7 +81,7 @@ const ModuleRenderer = React.memo(({
         }
     }, [isRunning, uiEmitter])
 
-    const { selectModule, moduleSidebarOpen, port: { onChange: onPortChange } } = useModuleApi()
+    const { selectModule, moduleSidebarOpen, consoleSidebarOpen, port: { onChange: onPortChange } } = useModuleApi()
 
     const onTriggerOptions = useCallback((e) => {
         e.stopPropagation()
@@ -96,10 +107,15 @@ const ModuleRenderer = React.memo(({
         }
     }, [onPortChange])
 
+    useEffect(() => {
+        refreshProbes()
+    }, [module, refreshProbes, isLoading])
+
     return (
         /* eslint-disable-next-line max-len */
         /* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-tabindex */
         <Resizable
+            {...props}
             enabled={isResizable}
             role="rowgroup"
             tabIndex="0"
@@ -112,15 +128,22 @@ const ModuleRenderer = React.memo(({
             height={parseInt(layout.height, 10)}
             data-modulehash={hash}
             scale={scale}
-            {...props}
         >
             <div className={styles.body} ref={innerRef}>
                 <Probe group="ModuleHeight" height="auto" />
+                {(isEditable && badgeLevel !== 'none') && (
+                    <MessageIcon
+                        level={badgeLevel}
+                        className={cx(styles.ModuleBadge, styles[badgeLevel])}
+                        onClick={() => consoleSidebarOpen()}
+                    />
+                )}
                 <ModuleHeader
                     className={cx(styles.header, ModuleStyles.dragHandle)}
                     editable={isEditable}
                     label={displayName || name}
                     onLabelChange={onRename}
+                    isLoading={isLoading}
                 >
                     {!!isRunning && !!canRefresh && (
                         <ModuleHeaderButton
@@ -170,8 +193,7 @@ const ModuleRenderer = React.memo(({
     )
 })
 
-// $FlowFixMe
-export default React.memo(({
+export default (React.memo(({
     api,
     module,
     canvasEditable: isCanvasEditable,
@@ -193,4 +215,4 @@ export default React.memo(({
             </ModuleContext.Provider>
         </ModuleApiContext.Provider>
     )
-})
+}): any)

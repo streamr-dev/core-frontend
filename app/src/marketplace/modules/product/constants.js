@@ -16,3 +16,4 @@ export const GET_USER_PRODUCT_PERMISSIONS_REQUEST: string = 'marketplace/product
 export const GET_USER_PRODUCT_PERMISSIONS_SUCCESS: string = 'marketplace/product/GET_USER_PRODUCT_PERMISSIONS_SUCCESS'
 export const GET_USER_PRODUCT_PERMISSIONS_FAILURE: string = 'marketplace/product/GET_USER_PRODUCT_PERMISSIONS_FAILURE'
 
+export const RESET_PRODUCT: string = 'marketplace/product/RESET_PRODUCT'

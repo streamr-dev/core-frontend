@@ -10,6 +10,7 @@ import SvgIcon from '$shared/components/SvgIcon'
 
 import CanvasWindow from './CanvasWindow'
 import { type Bounds } from '$editor/shared/utils/bounds'
+import { type UseStateTuple } from '$shared/flowtype/common-types'
 
 import styles from './DraggableCanvasWindow.pcss'
 
@@ -21,7 +22,7 @@ type BaseProps = {
 }
 
 export const Title = ({ children, className, onClose, ...props }: BaseProps) => (
-    <div className={cx(className, styles.titleContainer)} {...props}>
+    <div {...props} className={cx(className, styles.titleContainer)}>
         <div className={styles.title}>{children}</div>
         <button
             type="button"
@@ -40,7 +41,7 @@ export const Dialog = ({
     title,
     ...props
 }: BaseProps) => (
-    <div className={cx(styles.dialog, className)} {...props}>
+    <div {...props} className={cx(styles.dialog, className)}>
         {!!title && (
             <Title onClose={onClose}>{title}</Title>
         )}
@@ -49,7 +50,7 @@ export const Dialog = ({
 )
 
 export const Toolbar = ({ children, className, ...props }: BaseProps) => (
-    <div className={cx(styles.toolbar, className)} {...props}>
+    <div {...props} className={cx(styles.toolbar, className)}>
         {children}
     </div>
 )
@@ -61,12 +62,10 @@ type CanvasWindowProps = Bounds & {
 }
 
 export function useLayoutState({ x = 0, y = 0, width = 600, height = 400 }: Bounds = {}) {
-    // wtf flow. I don't know what it wants.
-    // $FlowFixMe
-    const [position, setPosition] = useState([x, y])
+    const [position, setPosition]: UseStateTuple<[number, number]> = useState([x, y])
 
-    // $FlowFixMe
-    const [size, setSize] = useState([width, height])
+    const [size, setSize]: UseStateTuple<[number, number]> = useState([width, height])
+
     return useMemo(() => ({
         position,
         setPosition,

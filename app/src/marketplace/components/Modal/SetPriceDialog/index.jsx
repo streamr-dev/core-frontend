@@ -6,11 +6,12 @@ import omit from 'lodash/omit'
 import { Container, Col, Row } from 'reactstrap'
 import { Translate, I18n } from 'react-redux-i18n'
 
+import ModalPortal from '$shared/components/ModalPortal'
 import ModalDialog from '$shared/components/ModalDialog'
 import Steps from '$mp/components/Steps'
 import Step from '$mp/components/Steps/Step'
 import PaymentRate from '$mp/components/PaymentRate'
-import type { TimeUnit, Currency, NumberString } from '$shared/flowtype/common-types'
+import type { TimeUnit, ContractCurrency as Currency, NumberString } from '$shared/flowtype/common-types'
 import type { Address } from '$shared/flowtype/web3-types'
 import { DEFAULT_CURRENCY, timeUnits } from '$shared/utils/constants'
 import { convert, pricePerSecondFromTimeUnit, isPriceValid } from '$mp/utils/price'
@@ -118,7 +119,8 @@ class SetPriceDialog extends React.Component<Props, State> {
             },
         )
     }
-    getErrors = (): Array<string> => (Object.values(this.state.errors): Array<any>).filter((a) => a)
+
+    getErrors = (): Array<string> => (Object.values(this.state.errors || {}): Array<any>).filter((a) => a)
 
     isBNAmountValid = (BNAmount: any) => !BNAmount.isNaN() && BNAmount.isPositive()
 
@@ -130,68 +132,70 @@ class SetPriceDialog extends React.Component<Props, State> {
             priceCurrency } = this.state
         const BNAmount = BN(amount)
         return (
-            <ModalDialog onClose={onClose} className={styles.dialog} backdropClassName={styles.backdrop}>
-                <Container>
-                    <Col
-                        sm={12}
-                        xl={{
-                            size: 8,
-                            offset: 2,
-                        }}
-                    >
-                        <Row noGutters>
-                            <Steps
-                                onCancel={onClose}
-                                onComplete={this.onComplete}
-                                isDisabled={this.getErrors().length > 0}
-                                errors={this.getErrors()}
-                            >
-                                <Step
-                                    title={I18n.t('modal.setPrice.setPrice')}
-                                    nextButtonLabel={BNAmount.isEqualTo(0) ? I18n.t('modal.setPrice.finish') : ''}
+            <ModalPortal>
+                <ModalDialog onClose={onClose} className={styles.dialog} backdropClassName={styles.backdrop}>
+                    <Container>
+                        <Col
+                            sm={12}
+                            xl={{
+                                size: 8,
+                                offset: 2,
+                            }}
+                        >
+                            <Row noGutters>
+                                <Steps
+                                    onCancel={onClose}
+                                    onComplete={this.onComplete}
+                                    isDisabled={this.getErrors().length > 0}
+                                    errors={this.getErrors()}
                                 >
-                                    <PaymentRate
-                                        currency={priceCurrency}
-                                        amount={pricePerSecondFromTimeUnit(BNAmount, timeUnit)}
-                                        timeUnit={timeUnits.hour}
-                                        className={styles.paymentRate}
-                                        maxDigits={4}
-                                    />
-                                    <PaymentRateEditor
-                                        dataPerUsd={dataPerUsd}
-                                        amount={amount}
-                                        timeUnit={timeUnit}
-                                        priceCurrency={priceCurrency}
-                                        className={styles.paymentRateEditor}
-                                        onPriceChange={this.onPriceChange}
-                                        onPriceUnitChange={this.onPriceUnitChange}
-                                        onPriceCurrencyChange={this.onPriceCurrencyChange}
-                                    />
-                                </Step>
-                                <Step
-                                    title={I18n.t('modal.setPrice.setAddresses')}
-                                    className={styles.addresses}
-                                    disabled={BNAmount.isEqualTo(0)}
-                                >
-                                    <EthAddressField
-                                        id="ownerAddress"
-                                        label={I18n.t('modal.setPrice.ownerAddress')}
-                                        value={accountId || ''}
-                                    />
-                                    <EthAddressField
-                                        id="beneficiaryAddress"
-                                        label={I18n.t('modal.setPrice.beneficiaryAddress')}
-                                        value={beneficiaryAddress || ''}
-                                        onChange={this.onBeneficiaryAddressChange}
-                                        hasError={!!(this.state.errors && this.state.errors.beneficiaryAddress)}
-                                    />
-                                    <p className={styles.info}><Translate value="modal.setPrice.required" /></p>
-                                </Step>
-                            </Steps>
-                        </Row>
-                    </Col>
-                </Container>
-            </ModalDialog>
+                                    <Step
+                                        title={I18n.t('modal.setPrice.setPrice')}
+                                        nextButtonLabel={BNAmount.isEqualTo(0) ? I18n.t('modal.setPrice.finish') : ''}
+                                    >
+                                        <PaymentRate
+                                            currency={priceCurrency}
+                                            amount={pricePerSecondFromTimeUnit(BNAmount, timeUnit)}
+                                            timeUnit={timeUnits.hour}
+                                            className={styles.paymentRate}
+                                            maxDigits={4}
+                                        />
+                                        <PaymentRateEditor
+                                            dataPerUsd={dataPerUsd}
+                                            amount={amount}
+                                            timeUnit={timeUnit}
+                                            priceCurrency={priceCurrency}
+                                            className={styles.paymentRateEditor}
+                                            onPriceChange={this.onPriceChange}
+                                            onPriceUnitChange={this.onPriceUnitChange}
+                                            onPriceCurrencyChange={this.onPriceCurrencyChange}
+                                        />
+                                    </Step>
+                                    <Step
+                                        title={I18n.t('modal.setPrice.setAddresses')}
+                                        className={styles.addresses}
+                                        disabled={BNAmount.isEqualTo(0)}
+                                    >
+                                        <EthAddressField
+                                            id="ownerAddress"
+                                            label={I18n.t('modal.setPrice.ownerAddress')}
+                                            value={accountId || ''}
+                                        />
+                                        <EthAddressField
+                                            id="beneficiaryAddress"
+                                            label={I18n.t('modal.setPrice.beneficiaryAddress')}
+                                            value={beneficiaryAddress || ''}
+                                            onChange={this.onBeneficiaryAddressChange}
+                                            hasError={!!(this.state.errors && this.state.errors.beneficiaryAddress)}
+                                        />
+                                        <p className={styles.info}><Translate value="modal.setPrice.required" /></p>
+                                    </Step>
+                                </Steps>
+                            </Row>
+                        </Col>
+                    </Container>
+                </ModalDialog>
+            </ModalPortal>
         )
     }
 }

@@ -1,7 +1,6 @@
 // @flow
 
 import React from 'react'
-import cx from 'classnames'
 import ReactSelect, { components } from 'react-select'
 import SvgIcon from '$shared/components/SvgIcon'
 
@@ -14,7 +13,7 @@ export type Props = {
     value: any,
     name?: string,
     onChange?: Function,
-    className?: string,
+    className?: ?string,
 }
 
 const IconOption = (props) => (
@@ -71,9 +70,10 @@ const customStyles = {
     }),
 }
 
-const Select = ({ disabled, ...props }: Props) => (
+const Select = ({ className, disabled, ...props }: Props) => (
     <ReactSelect
-        className={cx(styles.select)}
+        {...props}
+        className={className || styles.select}
         classNamePrefix="react-select"
         styles={customStyles}
         isDisabled={disabled}
@@ -85,7 +85,6 @@ const Select = ({ disabled, ...props }: Props) => (
         isSearchable={false}
         isClearable={false}
         backspaceRemovesValue={false}
-        {...props}
     />
 )
 

@@ -32,7 +32,6 @@ describe('GlobalInfoWatcher', () => {
             getUserData: sandbox.spy(),
             getDataPerUsd: sandbox.spy(),
             updateEthereumNetworkId: sandbox.spy(),
-            checkWeb3: sandbox.spy(),
             addTransaction: sandbox.spy(),
             completeTransaction: sandbox.spy(),
             transactionError: sandbox.spy(),
@@ -67,7 +66,6 @@ describe('GlobalInfoWatcher', () => {
         const expectedProps = {
             account,
             dataPerUsd,
-            isWeb3Injected: false,
         }
 
         assert.deepStrictEqual(mapStateToProps(state), expectedProps)
@@ -81,7 +79,6 @@ describe('GlobalInfoWatcher', () => {
         sandbox.stub(userActions, 'getUserData').callsFake(() => 'getUserData')
         sandbox.stub(globalActions, 'getDataPerUsd').callsFake(() => 'getDataPerUsd')
         const updateEthereumNetworkIdStub = sandbox.stub(web3Actions, 'updateEthereumNetworkId').callsFake(() => 'updateEthereumNetworkId')
-        sandbox.stub(globalActions, 'checkWeb3').callsFake(() => 'checkWeb3')
         const addTransactionStub = sandbox.stub(transactionActions, 'addTransaction').callsFake(() => 'addTransaction')
         const completeTransactionStub = sandbox.stub(transactionActions, 'completeTransaction').callsFake(() => 'completeTransaction')
         const transactionErrorStub = sandbox.stub(transactionActions, 'transactionError').callsFake(() => 'transactionError')
@@ -94,7 +91,6 @@ describe('GlobalInfoWatcher', () => {
             getUserData: actions.getUserData(),
             getDataPerUsd: actions.getDataPerUsd(),
             updateEthereumNetworkId: actions.updateEthereumNetworkId('1'),
-            checkWeb3: actions.checkWeb3(),
             addTransaction: actions.addTransaction('txHash', 'purchase'),
             completeTransaction: actions.completeTransaction('txHash', 'receipt'),
             transactionError: actions.transactionError('txHash', 'error'),
@@ -106,7 +102,6 @@ describe('GlobalInfoWatcher', () => {
             getUserData: 'getUserData',
             getDataPerUsd: 'getDataPerUsd',
             updateEthereumNetworkId: 'updateEthereumNetworkId',
-            checkWeb3: 'checkWeb3',
             addTransaction: 'addTransaction',
             completeTransaction: 'completeTransaction',
             transactionError: 'transactionError',
@@ -183,7 +178,7 @@ describe('GlobalInfoWatcher', () => {
 
     it('adds pending transactions from storage on mount', () => {
         const transactions = {
-            '0x123': 'setAllowance',
+            '0x123': 'setDataAllowance',
             '0x456': 'purchase',
         }
 

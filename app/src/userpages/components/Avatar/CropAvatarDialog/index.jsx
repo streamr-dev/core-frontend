@@ -4,6 +4,7 @@ import React from 'react'
 import { I18n } from 'react-redux-i18n'
 import AvatarEditor from 'react-avatar-editor'
 
+import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import Slider from '$shared/components/Slider'
 import { type Ref } from '$shared/flowtype/common-types'
@@ -70,47 +71,49 @@ class CropAvatarDialog extends React.Component<Props, State> {
         const { originalImage, onClose } = this.props
         const { sliderValue, saving } = this.state
         return (
-            <Dialog
-                title={I18n.t('modal.avatar.cropYourImage')}
-                onClose={onClose}
-                actions={{
-                    cancel: {
-                        title: I18n.t('modal.common.cancel'),
-                        outline: true,
-                        color: 'link',
-                        onClick: onClose,
-                    },
-                    save: {
-                        title: I18n.t('modal.avatar.saveAndApplyAvatar'),
-                        color: 'primary',
-                        onClick: this.onSave,
-                        disabled: saving,
-                        spinner: saving,
-                    },
-                }}
-            >
-                <AvatarEditor
-                    ref={this.editor}
-                    className={styles.editor}
-                    image={originalImage}
-                    width={200}
-                    height={200}
-                    border={[132, 16]}
-                    borderRadius={100}
-                    color={[255, 255, 255, 0.6]} // RGBA
-                    scale={(100 + sliderValue) / 100}
-                    rotate={0}
-                />
-                <div>
-                    <Slider
-                        min={0}
-                        max={200}
-                        value={sliderValue}
-                        onChange={this.onSliderChange}
-                        className={styles.slider}
+            <ModalPortal>
+                <Dialog
+                    title={I18n.t('modal.avatar.cropYourImage')}
+                    onClose={onClose}
+                    actions={{
+                        cancel: {
+                            title: I18n.t('modal.common.cancel'),
+                            outline: true,
+                            kind: 'link',
+                            onClick: () => onClose(),
+                        },
+                        save: {
+                            title: I18n.t('modal.avatar.saveAndApplyAvatar'),
+                            kind: 'primary',
+                            onClick: this.onSave,
+                            disabled: saving,
+                            spinner: saving,
+                        },
+                    }}
+                >
+                    <AvatarEditor
+                        ref={this.editor}
+                        className={styles.editor}
+                        image={originalImage}
+                        width={200}
+                        height={200}
+                        border={[132, 16]}
+                        borderRadius={100}
+                        color={[255, 255, 255, 0.6]} // RGBA
+                        scale={(100 + sliderValue) / 100}
+                        rotate={0}
                     />
-                </div>
-            </Dialog>
+                    <div>
+                        <Slider
+                            min={0}
+                            max={200}
+                            value={sliderValue}
+                            onChange={this.onSliderChange}
+                            className={styles.slider}
+                        />
+                    </div>
+                </Dialog>
+            </ModalPortal>
         )
     }
 }

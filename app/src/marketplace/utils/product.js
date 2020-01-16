@@ -5,7 +5,7 @@ import BN from 'bignumber.js'
 import type { NumberString } from '$shared/flowtype/common-types'
 import type { Product, EditProduct, ProductId, SmartContractProduct, ProductType } from '../flowtype/product-types'
 
-import { currencies, productStates } from '$shared/utils/constants'
+import { contractCurrencies as currencies, productStates } from '$shared/utils/constants'
 import { productTypes } from './constants'
 import { fromAtto, fromNano, toAtto, toNano } from './math'
 import { getPrefixedHexString, getUnprefixedHexString, isValidHexString } from './smartContract'
@@ -99,7 +99,12 @@ export const mapProductToPutApi = (product: Product | EditProduct): Object => {
         return otherData
     }
 
-    return product
+    const pricePerSecond = mapPriceToApi(product.pricePerSecond)
+
+    return {
+        ...product,
+        pricePerSecond,
+    }
 }
 
 export const getValidId = (id: string, prefix: boolean = true): string => {

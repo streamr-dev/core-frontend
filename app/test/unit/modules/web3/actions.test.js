@@ -24,7 +24,7 @@ describe('web3 - actions', () => {
     })
 
     describe('receiveAccount', () => {
-        it('receives the initial account and gets allowance', () => {
+        it('receives the initial account and gets DATA allowance', () => {
             const address = '0x13581255eE2D20e780B0cD3D07fac018241B5E03'
 
             const store = mockStore()
@@ -38,7 +38,7 @@ describe('web3 - actions', () => {
                     },
                 },
                 {
-                    type: allowanceConstants.GET_ALLOWANCE_REQUEST,
+                    type: allowanceConstants.GET_DATA_ALLOWANCE_REQUEST,
                 },
             ]
             assert.deepStrictEqual(store.getActions(), expectedActions)
@@ -46,7 +46,7 @@ describe('web3 - actions', () => {
     })
 
     describe('changeAccount', () => {
-        it('receives the changed account and gets allowance', () => {
+        it('receives the changed account and gets DATA allowance', () => {
             const address = '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10'
 
             const store = mockStore()
@@ -60,7 +60,7 @@ describe('web3 - actions', () => {
                     },
                 },
                 {
-                    type: allowanceConstants.GET_ALLOWANCE_REQUEST,
+                    type: allowanceConstants.GET_DATA_ALLOWANCE_REQUEST,
                 },
             ]
             assert.deepStrictEqual(store.getActions(), expectedActions)

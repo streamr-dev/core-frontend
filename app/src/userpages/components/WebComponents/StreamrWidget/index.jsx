@@ -144,9 +144,13 @@ export default class StreamrWidget extends Component<Props> {
     stream: ?StreamId
 
     sendRequest = (msg: {}): Promise<any> => (
-        api.post(`${this.props.url}/request`, msg, {
-            headers: {
-                ...this.getHeaders(),
+        api.post({
+            url: `${this.props.url}/request`,
+            data: msg,
+            options: {
+                headers: {
+                    ...this.getHeaders(),
+                },
             },
         })
     )

@@ -80,16 +80,17 @@ export class ProfilePage extends Component<Props, State> {
                 hideNavOnDesktop
                 navComponent={(
                     <Toolbar
+                        className={Toolbar.styles.shadow}
                         altMobileLayout
                         actions={{
                             cancel: {
                                 title: I18n.t('userpages.profilePage.toolbar.cancel'),
-                                color: 'link',
+                                kind: 'link',
                                 linkTo: links.userpages.main,
                             },
                             saveChanges: {
                                 title: I18n.t('userpages.profilePage.toolbar.saveAndExit'),
-                                color: 'primary',
+                                kind: 'primary',
                                 onClick: this.onSave,
                                 disabled: saving,
                                 spinner: saving,
@@ -108,13 +109,6 @@ export class ProfilePage extends Component<Props, State> {
                             <ProfileSettings />
                         </TOCPage.Section>
                         <TOCPage.Section
-                            id="api-keys"
-                            title={I18n.t('userpages.profilePage.apiCredentials.title')}
-                            linkTitle={I18n.t('userpages.profilePage.apiCredentials.linkTitle')}
-                        >
-                            <APICredentials />
-                        </TOCPage.Section>
-                        <TOCPage.Section
                             id="ethereum-accounts"
                             title={I18n.t('userpages.profilePage.ethereumAddress.title')}
                             linkTitle={I18n.t('userpages.profilePage.ethereumAddress.linkTitle')}
@@ -127,6 +121,13 @@ export class ProfilePage extends Component<Props, State> {
                             linkTitle={I18n.t('userpages.profilePage.ethereumPrivateKeys.linkTitle')}
                         >
                             <IntegrationKeyHandler />
+                        </TOCPage.Section>
+                        <TOCPage.Section
+                            id="api-keys"
+                            title={I18n.t('userpages.profilePage.apiCredentials.title')}
+                            linkTitle={I18n.t('userpages.profilePage.apiCredentials.linkTitle')}
+                        >
+                            <APICredentials />
                         </TOCPage.Section>
                         <TOCPage.Section
                             id="delete-account"

@@ -1,7 +1,7 @@
 import assert from 'assert-diff'
 import { normalize } from 'normalizr'
 
-import * as all from '$mp/modules/publishDialog/selectors'
+import * as all from '$mp/modules/deprecated/publishDialog/selectors'
 import { productsSchema } from '$shared/modules/entities/schema'
 
 const products = [{

@@ -1,5 +1,4 @@
 process.env.NODE_ENV = process.env.NODE_ENV || 'development' // set a default NODE_ENV
-
 const path = require('path')
 const webpack = require('webpack')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
@@ -10,7 +9,7 @@ const ImageminPlugin = require('imagemin-webpack-plugin').default
 const StyleLintPlugin = require('stylelint-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const { UnusedFilesWebpackPlugin } = require('unused-files-webpack-plugin')
-const cssProcessor = require('cssnano')
+const cssProcessor = require('clean-css')
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const GitRevisionPlugin = require('git-revision-webpack-plugin')
@@ -189,6 +188,8 @@ module.exports = {
                 openAnalyzer: false,
             }),
         ] : []),
+        // Ignore all locale files of moment.js
+        new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     ].concat(isProduction() ? [
         new CleanWebpackPlugin([dist]),
         // Production plugins
@@ -251,6 +252,8 @@ module.exports = {
                     // upcoming docs
                     'src/docs/components/DocsPages/RunningNode/index.jsx',
                     'src/docs/components/DocsPages/Marketplace/CommunityProducts/index.jsx',
+                    // deprecated components
+                    'src/marketplace/components/deprecated/**/*.*',
                 ],
             },
         }),

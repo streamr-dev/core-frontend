@@ -4,6 +4,7 @@ import React from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
 import { Link } from 'react-router-dom'
 
+import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import Spinner from '$shared/components/Spinner'
 import SvgIcon from '$shared/components/SvgIcon'
@@ -24,57 +25,63 @@ const CompletePurchaseDialog = ({ onCancel, purchaseState, accountLinked }: Prop
     switch (purchaseState) {
         case transactionStates.PENDING:
             return (
-                <Dialog
-                    onClose={onCancel}
-                    title={I18n.t('modal.completePurchase.pending.title')}
-                >
-                    <Spinner size="large" className={styles.icon} />
-                    <Translate
-                        tag="p"
-                        value="modal.common.waitingForBlockchain"
-                        marketplaceLink={links.marketplace.main}
-                        className={styles.pendingText}
-                        dangerousHTML
-                    />
-                </Dialog>
+                <ModalPortal>
+                    <Dialog
+                        onClose={onCancel}
+                        title={I18n.t('modal.completePurchase.pending.title')}
+                    >
+                        <Spinner size="large" className={styles.icon} />
+                        <Translate
+                            tag="p"
+                            value="modal.common.waitingForBlockchain"
+                            marketplaceLink={links.marketplace.main}
+                            className={styles.pendingText}
+                            dangerousHTML
+                        />
+                    </Dialog>
+                </ModalPortal>
             )
 
         case transactionStates.CONFIRMED:
             return (
-                <Dialog
-                    onClose={onCancel}
-                    title={I18n.t('modal.completePurchase.confirmed.title')}
-                >
-                    <SvgIcon name="checkmark" size="large" className={styles.icon} />
-                    {!accountLinked && (
-                        <p>
-                            <Translate value="modal.completePurchase.confirmed.message" />
-                            {' '}
-                            <Link to={links.userpages.profile}>
-                                <Translate value="modal.completePurchase.confirmed.link" />
-                            </Link>
-                        </p>
-                    )}
-                </Dialog>
+                <ModalPortal>
+                    <Dialog
+                        onClose={onCancel}
+                        title={I18n.t('modal.completePurchase.confirmed.title')}
+                    >
+                        <SvgIcon name="checkmark" size="large" className={styles.icon} />
+                        {!accountLinked && (
+                            <p>
+                                <Translate value="modal.completePurchase.confirmed.message" />
+                                {' '}
+                                <Link to={links.userpages.profile}>
+                                    <Translate value="modal.completePurchase.confirmed.link" />
+                                </Link>
+                            </p>
+                        )}
+                    </Dialog>
+                </ModalPortal>
             )
 
         case transactionStates.FAILED:
             return (
-                <Dialog
-                    onClose={onCancel}
-                    title={I18n.t('modal.completePurchase.failed.title')}
-                >
-                    <PngIcon
-                        className={styles.icon}
-                        name="txFailed"
-                        alt={I18n.t('error.txFailed')}
-                    />
-                    <Translate
-                        tag="p"
-                        value="modal.completePurchase.failed.message"
-                        dangerousHTML
-                    />
-                </Dialog>
+                <ModalPortal>
+                    <Dialog
+                        onClose={onCancel}
+                        title={I18n.t('modal.completePurchase.failed.title')}
+                    >
+                        <PngIcon
+                            className={styles.icon}
+                            name="txFailed"
+                            alt={I18n.t('error.txFailed')}
+                        />
+                        <Translate
+                            tag="p"
+                            value="modal.completePurchase.failed.message"
+                            dangerousHTML
+                        />
+                    </Dialog>
+                </ModalPortal>
             )
 
         default:

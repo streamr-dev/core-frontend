@@ -1,368 +1,222 @@
 // @flow
 
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import { push, replace } from 'connected-react-router'
-import type { Match } from 'react-router-dom'
+import React, { useContext, useMemo, useEffect } from 'react'
+import { withRouter } from 'react-router-dom'
 import { I18n } from 'react-redux-i18n'
+import cx from 'classnames'
 
-import type { StoreState } from '$shared/flowtype/store-state'
-import type { ProductId, EditProduct, SmartContractProduct, Product } from '$mp/flowtype/product-types'
-import type { Address } from '$shared/flowtype/web3-types'
-import type { StreamList } from '$shared/flowtype/stream-types'
-import type { CategoryList, Category } from '$mp/flowtype/category-types'
-import type { User } from '$shared/flowtype/user-types'
+import CoreLayout from '$shared/components/Layout/Core'
+import * as UndoContext from '$shared/contexts/Undo'
+import Toolbar from '$shared/components/Toolbar'
+import type { Product } from '$mp/flowtype/product-types'
+import { isCommunityProduct } from '$mp/utils/product'
 
-import ConfirmNoCoverImageDialog from '$mp/components/Modal/ConfirmNoCoverImageDialog'
-import SaveProductDialog from '$mp/containers/EditProductPage/SaveProductDialog'
-import ProductPageEditorComponent from '$mp/components/ProductPageEditor'
-import Layout from '$shared/components/Layout'
-import links from '$mp/../links'
+import ProductController, { useController } from '../ProductController'
+import useEditableProduct from '../ProductController/useEditableProduct'
+import usePending from '$shared/hooks/usePending'
+import { productStates } from '$shared/utils/constants'
+import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
+import { isEthereumAddress } from '$mp/utils/validate'
+import { notFoundRedirect } from '$auth/utils/loginInterceptor'
+import useProductPermissions from '../ProductController/useProductPermissions'
 
-import { selectContractProduct } from '$mp/modules/contractProduct/selectors'
-import { getProductById, getUserProductPermissions } from '$mp/modules/product/actions'
-import {
-    resetEditProduct,
-    initEditProduct,
-    updateEditProductField,
-    setImageToUpload,
-    createProductAndRedirect,
-    initNewProduct,
-} from '$mp/modules/editProduct/actions'
-import { getStreams } from '$mp/modules/streams/actions'
-import { getCategories } from '$mp/modules/categories/actions'
-import { getProductFromContract } from '$mp/modules/contractProduct/actions'
-import {
-    selectFetchingProduct,
-    selectProductError,
-    selectFetchingStreams,
-    selectStreamsError,
-    selectProduct,
-    selectProductEditPermission,
-} from '$mp/modules/product/selectors'
-import { selectAccountId } from '$mp/modules/web3/selectors'
-import { selectAllCategories, selectFetchingCategories } from '$mp/modules/categories/selectors'
-import { selectUserData } from '$shared/modules/user/selectors'
-import { selectStreams as selectAvailableStreams } from '$mp/modules/streams/selectors'
-import {
-    selectEditProduct,
-    selectStreams,
-    selectCategory,
-    selectImageToUpload,
-} from '$mp/modules/editProduct/selectors'
-import { NotificationIcon, productStates } from '$shared/utils/constants'
-import { formatPath } from '$shared/utils/url'
-import { areAddressesEqual } from '$mp/utils/smartContract'
-import { arePricesEqual } from '$mp/utils/price'
-import { isPaidProduct } from '$mp/utils/product'
-import { editProductValidator } from '$mp/validators'
-import Notification from '$shared/utils/Notification'
+import { Provider as EditControllerProvider, Context as EditControllerContext } from './EditControllerProvider'
+import BackButton from '$shared/components/BackButton'
+import Editor from './Editor'
+import Preview from './Preview'
+import ProductEditorDebug from './ProductEditorDebug'
+import ConfirmSaveModal from './ConfirmSaveModal'
+import DeployCommunityModal from './DeployCommunityModal'
+import PublishModal from './PublishModal'
+import CropImageModal from './CropImageModal'
 
-export type OwnProps = {
-    match: Match,
-    ownerAddress: ?Address,
-}
+import styles from './editProductPage.pcss'
 
-export type StateProps = {
-    contractProduct: ?SmartContractProduct,
-    availableStreams: StreamList,
-    fetchingProduct: boolean,
-    categories: CategoryList,
-    category: ?Category,
-    editPermission: boolean,
-    imageUpload: ?File,
-    streams: StreamList,
-    fetchingStreams: boolean,
-    product: ?Product,
-    editProduct: ?Product,
-    user: ?User,
-}
+const EditProductPage = ({ product }: { product: Product }) => {
+    const {
+        isPreview,
+        setIsPreview,
+        save,
+        publish,
+        deployCommunity,
+        back,
+    } = useContext(EditControllerContext)
+    const { isPending: savePending } = usePending('product.SAVE')
+    const { isAnyChangePending } = useContext(ValidationContext)
+    const { loadCategories, loadStreams } = useController()
 
-export type DispatchProps = {
-    getProductById: (ProductId) => void,
-    getContractProduct: (id: ProductId) => void,
-    setImageToUploadProp: (File) => void,
-    onEditProp: (string, any) => void,
-    initEditProductProp: () => void,
-    getUserProductPermissions: (ProductId) => void,
-    initProduct: () => void,
-    getCategories: () => void,
-    getStreams: () => void,
-    onPublish: () => void,
-    onSaveAndExit: () => void,
-    redirect: (...any) => void,
-    noHistoryRedirect: (...any) => void,
-    onReset: () => void,
-}
+    // Load categories and streams
+    useEffect(() => {
+        loadCategories()
+        loadStreams()
+    }, [loadCategories, loadStreams])
 
-type Props = OwnProps & StateProps & DispatchProps
+    const isSaving = savePending
+    const isCommunity = isCommunityProduct(product)
+    // TODO: should really check for the contract existance here
+    const isDeployed = isCommunity && isEthereumAddress(product.beneficiaryAddress)
 
-type State = {
-    onConfirmNoCoverImage: ?() => void,
-    onSave: ?() => void,
-}
+    const saveAndExitButton = useMemo(() => ({
+        title: 'Save & Exit',
+        kind: 'link',
+        onClick: () => save(),
+        disabled: isSaving,
+    }), [save, isSaving])
 
-export class EditProductPage extends Component<Props, State> {
-    state = {
-        onConfirmNoCoverImage: null,
-        onSave: null,
-    }
-
-    componentDidMount() {
-        const { match } = this.props
-        this.props.onReset()
-        this.props.getCategories()
-        this.props.getStreams()
-        if (this.isEdit()) {
-            this.props.getProductById(match.params.id)
-            this.props.getUserProductPermissions(match.params.id)
-            this.props.getContractProduct(match.params.id)
-        } else {
-            this.props.initProduct()
-        }
-    }
-
-    componentWillReceiveProps(nextProps: Props) {
-        if (nextProps.editProduct) {
-            this.getUpdateButtonTitle(nextProps.editProduct)
-        }
-    }
-
-    componentDidUpdate(prevProps: Props) {
-        if (this.isEdit() && prevProps.product && !prevProps.editProduct) {
-            this.props.initEditProductProp()
-        }
-    }
-
-    componentWillUnmount() {
-        this.props.onReset()
-    }
-
-    getUpdateButtonTitle = (product: EditProduct) => {
-        if (product.state === productStates.NOT_DEPLOYED) {
-            return I18n.t('editProductPage.save')
-        }
-
-        if (product.state === productStates.DEPLOYED && this.isWeb3Required()) {
-            return I18n.t('editProductPage.republish')
-        }
-
-        return I18n.t('editProductPage.update')
-    }
-
-    getPublishButtonTitle = (product: EditProduct) => {
-        switch (product.state) {
-            case productStates.DEPLOYED:
-                return I18n.t('editProductPage.unpublish')
-            case productStates.DEPLOYING:
-                return I18n.t('editProductPage.publishing')
-            case productStates.UNDEPLOYING:
-                return I18n.t('editProductPage.unpublishing')
-            case productStates.NOT_DEPLOYED:
-            default:
-                return I18n.t('editProductPage.publish')
-        }
-    }
-
-    getToolBarActions = () => {
-        if (this.isEdit()) {
-            const { editPermission, redirect, noHistoryRedirect, editProduct } = this.props
-            const toolbarActions = {}
-            if (editProduct && editPermission) {
-                toolbarActions.saveAndExit = {
-                    title: this.getUpdateButtonTitle(editProduct),
-                    disabled: this.isUpdateButtonDisabled(editProduct),
-                    onClick: () => this.validateProductBeforeSaving(() => redirect(links.userpages.products)),
-                }
+    const previewButton = useMemo(() => {
+        if (isPreview) {
+            return {
+                title: 'Edit',
+                outline: true,
+                onClick: () => setIsPreview(false),
+                disabled: isSaving,
             }
-
-            if (editProduct) {
-                toolbarActions.publish = {
-                    title: this.getPublishButtonTitle(editProduct),
-                    disabled: this.isPublishButtonDisabled(editProduct),
-                    color: 'primary',
-                    onClick: () => this.validateProductBeforeSaving((id) => noHistoryRedirect(links.marketplace.products, id, 'publish')),
-                    className: 'd-none d-sm-inline-block',
-                }
-            }
-            return toolbarActions
         }
 
-        // Creating a product, rather than editing an existing product:
-        const { onSaveAndExit, onPublish } = this.props
         return {
-            saveAndExit: {
-                title: I18n.t('editProductPage.save'),
-                onClick: () => this.validateProductBeforeSaving(onSaveAndExit),
-            },
-            publish: {
-                title: I18n.t('editProductPage.publish'),
-                color: 'primary',
-                onClick: () => this.validateProductBeforeSaving(onPublish),
-                className: 'd-none d-sm-block',
-            },
+            title: 'Preview',
+            outline: true,
+            onClick: () => setIsPreview(true),
+            disabled: isSaving,
         }
-    }
+    }, [isPreview, setIsPreview, isSaving])
 
-    isPublishButtonDisabled = (product: EditProduct) =>
-        product.state === productStates.DEPLOYING || product.state === productStates.UNDEPLOYING
-
-    isUpdateButtonDisabled = (product: EditProduct) =>
-        product.state === productStates.DEPLOYING || product.state === productStates.UNDEPLOYING
-
-    isWeb3Required = (): boolean => {
-        const { product, contractProduct, editProduct } = this.props
-        return !!product && !!editProduct && isPaidProduct(product) && !!contractProduct && (
-            !areAddressesEqual(product.beneficiaryAddress, editProduct.beneficiaryAddress) ||
-            !arePricesEqual(product.pricePerSecond, editProduct.pricePerSecond)
-        )
-    }
-
-    isEdit = () => !!this.props.match.params.id
-
-    validateProductBeforeSaving = (nextAction: Function) => {
-        const { editProduct } = this.props
-
-        if (editProduct) {
-            editProductValidator(editProduct)
-                .then(() => {
-                    this.confirmCoverImageBeforeSaving(nextAction)
-                }, (errors: Object) => {
-                    // Not using `Object.values` because of flow (mixed vs string).
-                    Object.keys(errors).forEach((key) => {
-                        Notification.push({
-                            title: errors[key],
-                            icon: NotificationIcon.ERROR,
-                        })
-                    })
-                })
+    const productState = product.state
+    const publishButton = useMemo(() => {
+        const titles = {
+            [productStates.DEPLOYING]: 'publishing',
+            [productStates.UNDEPLOYING]: 'unpublishing',
+            [productStates.NOT_DEPLOYED]: 'publish',
+            [productStates.DEPLOYED]: 'unpublish',
+            republish: 'republish',
         }
-    }
 
-    askConfirmIfNeeded = (action: Function) => {
-        const { editProduct, imageUpload } = this.props
-        if (editProduct && !editProduct.imageUrl && !imageUpload) {
-            this.setState({
-                onConfirmNoCoverImage: action,
-            })
-        } else {
-            action()
+        const tmpState: any = (productState === productStates.DEPLOYED && isAnyChangePending()) ? 'republish' : productState
+
+        return {
+            title: (productState && I18n.t(`editProductPage.${titles[tmpState]}`)) || '',
+            kind: 'primary',
+            onClick: publish,
+            disabled: !(productState === productStates.NOT_DEPLOYED || productState === productStates.DEPLOYED) || isSaving,
         }
-    }
+    }, [isAnyChangePending, productState, publish, isSaving])
 
-    confirmCoverImageBeforeSaving = (nextAction: () => any) => {
-        const { product, editProduct } = this.props
-        if (product && editProduct && this.isEdit()) {
-            this.askConfirmIfNeeded(() => {
-                this.setState({
-                    onSave: nextAction,
-                })
-            })
-        } else {
-            this.askConfirmIfNeeded(nextAction)
+    const deployButton = useMemo(() => {
+        if (isCommunity && !isDeployed) {
+            return {
+                title: 'Continue',
+                kind: 'primary',
+                onClick: deployCommunity,
+                disabled: isSaving,
+            }
         }
+
+        return publishButton
+    }, [isCommunity, isDeployed, deployCommunity, isSaving, publishButton])
+
+    const actions = {
+        saveAndExit: saveAndExitButton,
+        preview: previewButton,
+        publish: deployButton,
     }
 
-    closeConfirmNoCoverImageDialog = () => {
-        this.setState({
-            onConfirmNoCoverImage: null,
-        })
-    }
+    const toolbarMiddle = useMemo(() => {
+        if (isPreview) {
+            return (
+                <span className={styles.toolbarMiddle}>
+                    This is a preview of how your product will appear when published
+                </span>
+            )
+        }
 
-    closeSaveProductDialog = () => {
-        this.setState({
-            onSave: null,
-        })
-    }
+        return undefined
+    }, [isPreview])
 
-    render() {
-        const {
-            editProduct,
-            category,
-            streams,
-            availableStreams,
-            fetchingProduct,
-            fetchingStreams,
-            setImageToUploadProp,
-            onEditProp,
-            ownerAddress,
-            categories,
-            user,
-        } = this.props
-
-        const { onConfirmNoCoverImage, onSave } = this.state
-
-        return !!editProduct && (
-            <Layout>
-                <ProductPageEditorComponent
-                    isPriceEditable={!this.isEdit() || isPaidProduct(editProduct)}
-                    product={editProduct}
-                    streams={streams}
-                    category={category}
-                    categories={categories}
-                    availableStreams={availableStreams}
-                    fetchingStreams={fetchingProduct || fetchingStreams}
-                    toolbarActions={this.getToolBarActions()}
-                    setImageToUpload={setImageToUploadProp}
-                    onEdit={onEditProp}
-                    ownerAddress={ownerAddress}
-                    user={user}
+    return (
+        <CoreLayout
+            className={styles.layout}
+            hideNavOnDesktop
+            navComponent={(
+                <Toolbar
+                    className={Toolbar.styles.shadow}
+                    left={<BackButton onBack={back} />}
+                    middle={toolbarMiddle}
+                    actions={actions}
+                    altMobileLayout
                 />
-                {onConfirmNoCoverImage && (
-                    <ConfirmNoCoverImageDialog
-                        onContinue={onConfirmNoCoverImage}
-                        closeOnContinue={false}
-                        onClose={this.closeConfirmNoCoverImageDialog}
-                    />
-                )}
-                {onSave && (
-                    <SaveProductDialog
-                        productId={editProduct.id || ''}
-                        redirect={onSave}
-                        requireOwnerIfDeployed
-                        requireWeb3={this.isWeb3Required()}
-                        onClose={this.closeSaveProductDialog}
-                    />
-                )}
-            </Layout>
-        )
-    }
+            )}
+            loadingClassname={styles.loadingIndicator}
+            contentClassname={cx({
+                [styles.editorContent]: !isPreview,
+                [styles.previewContent]: !!isPreview,
+            })}
+            loading={isSaving}
+        >
+            <ProductEditorDebug />
+            {isPreview && (
+                <Preview />
+            )}
+            {!isPreview && (
+                <Editor />
+            )}
+            <ConfirmSaveModal />
+            <DeployCommunityModal />
+            <PublishModal />
+            <CropImageModal />
+        </CoreLayout>
+    )
 }
 
-export const mapStateToProps = (state: StoreState): StateProps => ({
-    product: selectProduct(state),
-    editProduct: selectEditProduct(state),
-    contractProduct: selectContractProduct(state),
-    streams: selectStreams(state),
-    availableStreams: selectAvailableStreams(state),
-    fetchingProduct: selectFetchingProduct(state),
-    productError: selectProductError(state),
-    fetchingStreams: selectFetchingStreams(state),
-    streamsError: selectStreamsError(state),
-    ownerAddress: selectAccountId(state),
-    categories: selectAllCategories(state),
-    category: selectCategory(state),
-    editPermission: selectProductEditPermission(state),
-    imageUpload: selectImageToUpload(state),
-    fetchingCategories: selectFetchingCategories(state),
-    user: selectUserData(state),
-})
+const LoadingView = () => (
+    <CoreLayout
+        className={styles.layout}
+        hideNavOnDesktop
+        loading
+        navComponent={(
+            <Toolbar
+                className={Toolbar.styles.shadow}
+                actions={{}}
+                altMobileLayout
+            />
+        )}
+    />
+)
 
-export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
-    getProductById: (id: ProductId) => dispatch(getProductById(id)),
-    getContractProduct: (id: ProductId) => dispatch(getProductFromContract(id)),
-    setImageToUploadProp: (image: File) => dispatch(setImageToUpload(image)),
-    onEditProp: (field: string, value: any) => dispatch(updateEditProductField(field, value)),
-    initEditProductProp: () => dispatch(initEditProduct()),
-    getUserProductPermissions: (id: ProductId) => dispatch(getUserProductPermissions(id)),
-    initProduct: () => dispatch(initNewProduct()),
-    getCategories: () => dispatch(getCategories(true)),
-    getStreams: () => dispatch(getStreams()),
-    redirect: (...params) => dispatch(push(formatPath(...params))),
-    noHistoryRedirect: (...params) => dispatch(replace(formatPath(...params))),
-    onPublish: () => dispatch(createProductAndRedirect((id) => formatPath(links.marketplace.products, id, 'publish'))),
-    onSaveAndExit: () => dispatch(createProductAndRedirect((id) => formatPath(links.marketplace.products, id))),
-    onReset: () => dispatch(resetEditProduct()),
-})
+const EditWrap = () => {
+    const product = useEditableProduct()
+    const { isPending: isLoadPending } = usePending('product.LOAD')
+    const { isPending: isPermissionsPending } = usePending('product.PERMISSIONS')
+    const { hasPermissions, write, share } = useProductPermissions()
+    const canEdit = !!(write || share)
 
-export default connect(mapStateToProps, mapDispatchToProps)(EditProductPage)
+    if (hasPermissions && !isPermissionsPending && !canEdit) {
+        notFoundRedirect()
+    }
+
+    if (!product || isLoadPending || isPermissionsPending || !hasPermissions || !canEdit) {
+        return <LoadingView />
+    }
+
+    const key = (!!product && product.id) || ''
+
+    return (
+        <EditControllerProvider product={product}>
+            <EditProductPage
+                key={key}
+                product={product}
+            />
+        </EditControllerProvider>
+    )
+}
+
+const ProductContainer = withRouter((props) => (
+    <UndoContext.Provider key={props.match.params.id}>
+        <ProductController>
+            <EditWrap />
+        </ProductController>
+    </UndoContext.Provider>
+))
+
+export default () => (
+    <ProductContainer />
+)

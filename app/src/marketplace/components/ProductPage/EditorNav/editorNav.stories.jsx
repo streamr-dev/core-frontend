@@ -1,4 +1,4 @@
-// $flow
+// @flow
 
 import React, { useState } from 'react'
 import { storiesOf } from '@storybook/react'
@@ -36,7 +36,7 @@ const sections = [{
 }]
 
 const EditNavController = () => {
-    const [activeSection, setActiveSection] = useState(null)
+    const [activeSection, setActiveSection] = useState('')
     const nameStatus = select('Name', statuses, statuses.EMPTY)
     const coverImageStatus = select('Cover Image', statuses, statuses.EMPTY)
     const descriptionStatus = select('Description', statuses, statuses.EMPTY)

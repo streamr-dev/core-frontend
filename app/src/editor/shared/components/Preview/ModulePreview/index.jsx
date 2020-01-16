@@ -24,11 +24,11 @@ const ModulePreview = ({
     ...props
 }: Props) => (
     <svg
+        {...props}
         height={height}
         width={width}
         x={x}
         y={y}
-        {...props}
     >
         <rect
             fill={type === 'CommentModule' ? '#FAE7DD' : 'white'}

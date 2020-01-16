@@ -120,3 +120,20 @@ export const findNonOverlappingPosition = (
 
     return findNonOverlappingPosition(nextBB, boundingBoxes, stackOffset, false)
 }
+
+export function findNonOverlappingPositionForModule(canvas: any, moduleData: any): any {
+    const moduleBounds = {
+        x: parseInt(moduleData.layout.position.left, 10) || 0,
+        y: parseInt(moduleData.layout.position.top, 10) || 0,
+        width: parseInt(moduleData.layout.width, 10) || 150,
+        height: parseInt(moduleData.layout.height, 10) || 100,
+    }
+    const boundingBoxes = canvas.modules.map((m) => getModuleBounds(m))
+
+    const stackOffset = 16 // pixels
+    const pos = findNonOverlappingPosition(moduleBounds, boundingBoxes, stackOffset)
+    return {
+        left: `${pos.x}px`,
+        top: `${pos.y}px`,
+    }
+}

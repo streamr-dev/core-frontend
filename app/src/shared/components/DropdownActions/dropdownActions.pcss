@@ -9,6 +9,7 @@
 
     button {
       padding: 0 16px 0;
+      line-height: 32px;
     }
 
     button:focus {
@@ -28,7 +29,11 @@
     cursor: pointer;
   }
 
-  &:--enter {
+  &[disabled] {
+    opacity: 0.5;
+  }
+
+  &:not([disabled]):--enter {
     color: var(--streamrBlue);
   }
 }

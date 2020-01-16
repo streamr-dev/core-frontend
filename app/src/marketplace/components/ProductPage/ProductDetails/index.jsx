@@ -1,23 +1,24 @@
 // @flow
 
-import React, { useRef, useState, useCallback } from 'react'
+import React from 'react'
 import cx from 'classnames'
-import { Button } from 'reactstrap'
-import { Translate, I18n } from 'react-redux-i18n'
-import scrollIntoView from 'smooth-scroll-into-view-if-needed'
+import { I18n } from 'react-redux-i18n'
 
-import Link from '$shared/components/Link'
+import Button from '$shared/components/Button'
 import { isPaidProduct } from '$mp/utils/product'
-import type { Product } from '$mp/flowtype/product-types'
+import type { Product, Subscription } from '$mp/flowtype/product-types'
 import PaymentRate from '$mp/components/PaymentRate'
+import ExpirationCounter from '$mp/components/ExpirationCounter'
 import { timeUnits, productStates } from '$shared/utils/constants'
+import Link from '$shared/components/Link'
 
-import styles from './productDetails.pcss'
+import styles from './productDetails2.pcss'
 
 type Props = {
     product: Product,
     isValidSubscription: boolean,
-    onPurchase: () => void,
+    productSubscription?: Subscription,
+    onPurchase: () => void | Promise<void>,
 }
 
 const buttonTitle = (product: Product, isValidSubscription: boolean) => {
@@ -32,86 +33,75 @@ const buttonTitle = (product: Product, isValidSubscription: boolean) => {
         I18n.t('productPage.productDetails.add')
 }
 
-const ProductDetails = ({ product, isValidSubscription, onPurchase }: Props) => {
-    const productDetailsRef = useRef(null)
-
-    const truncationRequired = !((product.description || '').length < 400)
-    const [truncated, setTruncatedState] = useState(truncationRequired)
-
-    const setTruncated = useCallback(() => {
-        setTruncatedState((prev) => !prev)
-
-        if (productDetailsRef.current) {
-            scrollIntoView(productDetailsRef.current, {
-                behavior: 'smooth',
-                block: 'start',
-                inline: 'nearest',
-            })
-        }
-    }, [setTruncatedState])
-
-    return (
-        <div className={styles.root} ref={productDetailsRef}>
-            <div
-                className={cx(styles.basics, {
-                    [styles.active]: !!isValidSubscription,
-                })}
-            >
-                <h2 className={styles.title}>
-                    {product.name}
-                </h2>
-                <div className={styles.offer}>
-                    <span className={styles.productOwner}>by {product.owner}</span>
-                    <span className={styles.separator} />
-                    <div className={styles.paymentRate}>
-                        {product.isFree ? I18n.t('productPage.productDetails.free') : (
+const ProductDetails = ({ product, isValidSubscription, productSubscription, onPurchase }: Props) => (
+    <div className={styles.root}>
+        <div
+            className={cx(styles.basics, {
+                [styles.active]: !!isValidSubscription,
+            })}
+        >
+            <h2 className={styles.title}>
+                {product.name}
+            </h2>
+            <div className={styles.offer}>
+                <div className={styles.paymentRate}>
+                    {product.isFree ? I18n.t('productPage.productDetails.free') : (
+                        <React.Fragment>
+                            <span className={styles.priceHeading}>Price</span>
+                            &nbsp;
                             <PaymentRate
+                                className={styles.price}
                                 amount={product.pricePerSecond}
                                 currency={product.priceCurrency}
                                 timeUnit={timeUnits.hour}
                             />
-                        )}
-                    </div>
-                    <div className={styles.activeTag}>
-                        <span>Active</span>
-                    </div>
+                        </React.Fragment>
+                    )}
                 </div>
+                {productSubscription != null && productSubscription.endTimestamp != null && (
+                    <ExpirationCounter expiresAt={new Date(productSubscription.endTimestamp * 1000)} />
+                )}
             </div>
+        </div>
+        <div className={cx(styles.separator, styles.titleSeparator)} />
+        <div className={styles.purchaseWrapper}>
             <div className={styles.buttonWrapper}>
                 <Button
                     className={styles.button}
-                    color="primary"
+                    kind="primary"
+                    size="big"
                     disabled={(!isPaidProduct(product) && isValidSubscription) || product.state !== productStates.DEPLOYED}
                     onClick={onPurchase}
                 >
                     {buttonTitle(product, isValidSubscription)}
                 </Button>
             </div>
-            <div className={styles.description}>
-                <div
-                    className={cx(styles.inner, {
-                        [styles.truncated]: !!truncated,
-                    })}
-                >
-                    {product.description}
+            <div className={cx(styles.separator, styles.purchaseSeparator)} />
+            <div className={styles.details}>
+                <div>
+                    <span className={styles.subheading}>Sold by</span>
+                    &nbsp;
+                    {product.owner}
                 </div>
-                {!!truncationRequired && (
-                    <Link
-                        decorated
-                        href="#"
-                        className={styles.toggleMore}
-                        onClick={setTruncated}
-                    >
-                        {truncated ? (
-                            <Translate value="productPage.description.more" />
-                        ) : (
-                            <Translate value="productPage.description.less" />
-                        )}
-                    </Link>
+                {/* Hide these until we have a place to read them from */}
+                {false && (
+                    <React.Fragment>
+                        <div>
+                            <span className={styles.subheading}>Website</span>
+                            &nbsp;
+                            TODO
+                        </div>
+                        <div>
+                            <Link href="#TODO">Contact seller</Link>
+                        </div>
+                        <div>
+                            <Link href="#TODO">View other products</Link>
+                        </div>
+                    </React.Fragment>
                 )}
             </div>
         </div>
-    )
-}
+    </div>
+)
 
 export default ProductDetails
