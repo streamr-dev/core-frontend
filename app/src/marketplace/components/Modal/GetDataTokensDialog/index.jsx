@@ -3,9 +3,9 @@
 import React from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
 
-// import NoDataPng from '../../../assets/wallet_no_data.png'
-// import NoDataPng2x from '../../../assets/wallet_no_data@2x.png'
 import ModalPortal from '$shared/components/ModalPortal'
+import NoDataPng from '$shared/assets/images/wallet_no_data.png'
+import NoDataPng2x from '$shared/assets/images/wallet_no_data@2x.png'
 import Dialog from '$shared/components/Dialog'
 import ExternalLinkButton from '$shared/components/Buttons/ExternalLinkButton'
 
@@ -21,7 +21,7 @@ const GetDataTokensDialog = ({ onCancel }: Props) => (
             title={I18n.t('modal.getDataTokensDialog.title')}
             onClose={onCancel}
         >
-            {/* <img className={styles.icon} src={NoDataPng} srcSet={`${NoDataPng2x} 2x`} alt={I18n.t('error.wallet')} /> */}
+            <img className={styles.icon} src={NoDataPng} srcSet={`${NoDataPng2x} 2x`} alt={I18n.t('error.wallet')} />
             <Translate value="modal.getDataTokensDialog.message" className={styles.message} />
 
             <div className={styles.buttonContainer}>

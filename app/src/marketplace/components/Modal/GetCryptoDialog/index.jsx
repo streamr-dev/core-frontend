@@ -6,6 +6,7 @@ import { Translate, I18n } from 'react-redux-i18n'
 // import WalletNoEthPng from '../../../assets/wallet_no_eth.png'
 // import WalletNoEthPng2x from '../../../assets/wallet_no_eth@2x.png'
 import ModalPortal from '$shared/components/ModalPortal'
+import PngIcon from '$shared/components/PngIcon'
 import Dialog from '$shared/components/Dialog'
 import ExternalLinkButton from '$shared/components/Buttons/ExternalLinkButton'
 
@@ -21,10 +22,19 @@ const GetCryptoDialog = ({ onCancel }: Props) => (
             title={I18n.t('modal.getCryptoDialog.title')}
             onClose={onCancel}
         >
-            {/* <img className={styles.icon} src={WalletNoEthPng} srcSet={`${WalletNoEthPng2x} 2x`} alt={I18n.t('error.wallet')} /> */}
+            <PngIcon
+                className={styles.icon}
+                name="walletNoEth"
+                alt={I18n.t('modal.getCryptoDialog.title')}
+            />
             <Translate value="modal.getCryptoDialog.message" className={styles.message} />
 
             <div className={styles.buttonContainer}>
+                <ExternalLinkButton
+                    textI18nKey="modal.getCryptoDialog.link.binance"
+                    href="https://binance.com/"
+                    className={styles.button}
+                />
                 <ExternalLinkButton
                     textI18nKey="modal.getCryptoDialog.link.coinbase"
                     href="https://www.coinbase.com/"
@@ -33,11 +43,6 @@ const GetCryptoDialog = ({ onCancel }: Props) => (
                 <ExternalLinkButton
                     textI18nKey="modal.getCryptoDialog.link.bitfinex"
                     href="https://www.bitfinex.com/"
-                    className={styles.button}
-                />
-                <ExternalLinkButton
-                    textI18nKey="modal.getCryptoDialog.link.poloniex"
-                    href="https://poloniex.com/"
                     className={styles.button}
                 />
             </div>

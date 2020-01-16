@@ -167,6 +167,9 @@ msgstr "Not found"
 msgid "error##productNotFound"
 msgstr "No product found with id %{id}"
 
+msgid "error##publishFailed"
+msgstr "Publish failed"
+
 msgid "error##txAborted"
 msgstr "Transaction aborted"
 
@@ -401,8 +404,8 @@ msgstr "Bitfinex"
 msgid "modal##getCryptoDialog##link##coinbase"
 msgstr "Coinbase"
 
-msgid "modal##getCryptoDialog##link##poloniex"
-msgstr "Poloniex"
+msgid "modal##getCryptoDialog##link##binance"
+msgstr "Binance"
 
 msgid "modal##getCryptoDialog##message"
 msgstr ""
@@ -617,8 +620,8 @@ msgstr ""
 msgid "modal##web3##installmetamask##title"
 msgstr "No wallet found"
 
-msgid "modal##web3##installmobileapplication##app##toshi"
-msgstr "Toshi"
+msgid "modal##web3##installmobileapplication##app##coinbase"
+msgstr "Coinbase"
 
 msgid "modal##web3##installmobileapplication##app##trust"
 msgstr "Trust"

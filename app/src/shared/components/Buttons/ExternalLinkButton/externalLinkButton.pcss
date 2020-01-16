@@ -11,6 +11,7 @@
     text-transform: none;
     font-weight: var(--light);
     height: 64px;
+    padding: 0 16px;
 
     .btn-external-expand-icon {
       background: url('../../../assets/images/expand.svg');
@@ -51,6 +52,16 @@
       .btn-external-text {
         margin-left: 0;
         margin-right: 0;
+      }
+    }
+  }
+}
+
+@media (--md-down) {
+  :global {
+    .btn.btn-external-link {
+      .btn-external-expand-icon {
+        display: inline-block;
       }
     }
   }
