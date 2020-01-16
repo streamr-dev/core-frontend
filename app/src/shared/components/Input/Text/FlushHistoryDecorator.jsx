@@ -9,20 +9,18 @@ type Props = {
 }
 
 const FlushHistoryDecorator = (WrappedComponent: ComponentType<any>) => {
-    const FlushHistoryDecoratorWrapper = ({ onBlur: onBlurProp, flushHistoryOnBlur = false, ...props }: Props, ref: any) => {
+    const FlushHistoryDecoratorWrapper = ({ onBlur: onBlurProp, ...props }: Props, ref: any) => {
         const [blurCount, setBlurCount]: UseStateTuple<number> = useState(0)
 
         const onBlur = useCallback((e: SyntheticFocusEvent<EventTarget>) => {
-            if (flushHistoryOnBlur) {
-                // `blurCount` is used as `key` of the actual control. Changing it replaces the control
-                // with a new instance thus the old instance along with its change history gets forgotten.
-                setBlurCount((count) => count + 1)
-            }
+            // `blurCount` is used as `key` of the actual control. Changing it replaces the control
+            // with a new instance thus the old instance along with its change history gets forgotten.
+            setBlurCount((count) => count + 1)
 
             if (onBlurProp) {
                 onBlurProp(e)
             }
-        }, [onBlurProp, flushHistoryOnBlur])
+        }, [onBlurProp])
 
         return (
             <WrappedComponent
@@ -34,7 +32,15 @@ const FlushHistoryDecorator = (WrappedComponent: ComponentType<any>) => {
         )
     }
 
-    return (forwardRef(FlushHistoryDecoratorWrapper): ComponentType<Props>)
+    const OptInFlushHistoryDecorator = ({ flushHistoryOnBlur = false, ...props }: Props, ref: any) => (
+        flushHistoryOnBlur ? (
+            <FlushHistoryDecoratorWrapper {...props} ref={ref} />
+        ) : (
+            <WrappedComponent {...props} ref={ref} />
+        )
+    )
+
+    return (forwardRef(OptInFlushHistoryDecorator): ComponentType<Props>)
 }
 
 export default FlushHistoryDecorator

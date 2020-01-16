@@ -20,6 +20,10 @@ stories.add('native', () => (
     <input />
 ))
 
+stories.add('no events', () => (
+    <Text />
+))
+
 stories.add('default', () => (
     <Text
         smartCommit={boolean('smartCommit', false)}

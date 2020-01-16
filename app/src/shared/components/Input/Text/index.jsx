@@ -21,7 +21,7 @@ export default compose(
     FlushHistoryDecorator,
     OnAutoCompleteDecorator,
     OnCommitDecorator,
-    RevertOnEscapeDecorator,
     SelectAllOnFocusDecorator,
+    RevertOnEscapeDecorator,
     StatefulInputDecorator,
 )(forwardRef(Input))

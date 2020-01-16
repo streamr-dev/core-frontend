@@ -21,11 +21,11 @@ const StatefulInputDecorator = (WrappedComponent: ComponentType<any>) => {
         }, [valueProp])
 
         const onChange = useCallback((e: SyntheticInputEvent<EventTarget>) => {
+            setValue(e.target.value)
+
             if (onChangeProp) {
                 onChangeProp(e)
             }
-
-            setValue(e.target.value)
         }, [onChangeProp])
 
         return (

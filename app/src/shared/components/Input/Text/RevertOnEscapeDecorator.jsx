@@ -15,13 +15,7 @@ const sanitizeValue = (value: any): string => (
 )
 
 const RevertOnEscapeDecorator = (WrappedComponent: ComponentType<any>) => {
-    const RevertOnEscapeDecoratorWrapper = ({
-        revertOnEscape,
-        value: valueProp,
-        onKeyDown: onKeyDownProp,
-        onChange: onChangeProp,
-        ...props
-    }: Props, ref: any) => {
+    const RevertOnEscapeDecoratorWrapper = ({ value: valueProp, onKeyDown: onKeyDownProp, onChange: onChangeProp, ...props }: Props, ref: any) => {
         const [value, setValue]: UseStateTuple<string> = useState(sanitizeValue(valueProp))
 
         useEffect(() => {
@@ -57,7 +51,17 @@ const RevertOnEscapeDecorator = (WrappedComponent: ComponentType<any>) => {
         )
     }
 
-    return (forwardRef(RevertOnEscapeDecoratorWrapper): ComponentType<Props>)
+    const RevertOnEscapeDecoratorWrapperFR: ComponentType<Props> = forwardRef(RevertOnEscapeDecoratorWrapper)
+
+    const OptInRevertOnEscapeDecoratorWrapper = ({ revertOnEscape, ...props }: Props, ref: any) => (
+        revertOnEscape ? (
+            <RevertOnEscapeDecoratorWrapperFR {...props} ref={ref} />
+        ) : (
+            <WrappedComponent {...props} ref={ref} />
+        )
+    )
+
+    return (forwardRef(OptInRevertOnEscapeDecoratorWrapper): ComponentType<Props>)
 }
 
 export default RevertOnEscapeDecorator

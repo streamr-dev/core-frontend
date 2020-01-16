@@ -49,7 +49,15 @@ const OnAutoCompleteDecorator = (WrappedComponent: ComponentType<any>) => {
         }
     `
 
-    return OnAutoCompleteDecoratorWrapper
+    const OptInOnAutoCompleteDecorator = ({ onAutoComplete, ...props }: Props, ref: any) => (
+        onAutoComplete ? (
+            <OnAutoCompleteDecoratorWrapper {...props} onAutoComplete={onAutoComplete} ref={ref} />
+        ) : (
+            <WrappedComponent {...props} ref={ref} />
+        )
+    )
+
+    return (forwardRef(OptInOnAutoCompleteDecorator): ComponentType<Props>)
 }
 
 export default OnAutoCompleteDecorator
