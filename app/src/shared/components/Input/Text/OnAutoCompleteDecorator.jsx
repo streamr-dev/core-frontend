@@ -3,7 +3,7 @@
 import React, { type ComponentType, useCallback, forwardRef } from 'react'
 import styled, { keyframes } from 'styled-components'
 
-type Props = {
+export type Props = {
     onAnimationStart?: ?(SyntheticAnimationEvent<EventTarget>) => void,
     onAutoComplete?: ?(boolean) => void,
 }

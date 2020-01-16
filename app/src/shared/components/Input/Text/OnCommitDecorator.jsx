@@ -11,7 +11,7 @@ const normalize = (value: any): string => (
     typeof value === 'string' ? value.trim() : String(sanitise(value))
 )
 
-type Props = {
+export type Props = {
     onBlur?: ?(SyntheticFocusEvent<EventTarget>) => void,
     onChange?: ?(SyntheticInputEvent<EventTarget>) => void,
     onCommit?: ?(string) => void,

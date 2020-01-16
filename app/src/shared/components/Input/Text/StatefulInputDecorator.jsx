@@ -3,7 +3,7 @@
 import React, { type ComponentType, useState, useCallback, useEffect, forwardRef } from 'react'
 import { type UseStateTuple } from '$shared/flowtype/common-types'
 
-type Props = {
+export type Props = {
     onChange?: ?(SyntheticInputEvent<EventTarget>) => void,
     value?: string,
 }

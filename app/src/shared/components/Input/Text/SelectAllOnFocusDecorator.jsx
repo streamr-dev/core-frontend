@@ -2,7 +2,7 @@
 
 import React, { type ComponentType, useCallback, forwardRef } from 'react'
 
-type Props = {
+export type Props = {
     selectAllOnFocus?: boolean,
     onFocus?: ?(SyntheticFocusEvent<EventTarget>) => void,
 }

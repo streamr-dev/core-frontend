@@ -3,7 +3,7 @@
 import React, { type ComponentType, useCallback, useState, forwardRef } from 'react'
 import { type UseStateTuple } from '$shared/flowtype/common-types'
 
-type Props = {
+export type Props = {
     flushHistoryOnBlur?: boolean,
     onBlur?: ?(SyntheticFocusEvent<EventTarget>) => void,
 }
