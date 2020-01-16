@@ -1,6 +1,6 @@
 // @flow
 
-import React, { type ComponentType, useCallback } from 'react'
+import React, { type ComponentType, useCallback, forwardRef } from 'react'
 
 type Props = {
     selectAllOnFocus?: boolean,
@@ -8,7 +8,7 @@ type Props = {
 }
 
 const SelectAllOnFocusDecorator = (WrappedComponent: ComponentType<any>) => {
-    const SelectAllOnFocusDecoratorWrapper = ({ onFocus: onFocusProp, selectAllOnFocus = false, ...props }: Props) => {
+    const SelectAllOnFocusDecoratorWrapper = ({ onFocus: onFocusProp, selectAllOnFocus = false, ...props }: Props, ref: any) => {
         const onFocus = useCallback((e: SyntheticFocusEvent<EventTarget>) => {
             if (selectAllOnFocus && (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement)) {
                 e.target.select()
@@ -23,11 +23,12 @@ const SelectAllOnFocusDecorator = (WrappedComponent: ComponentType<any>) => {
             <WrappedComponent
                 {...props}
                 onFocus={onFocus}
+                ref={ref}
             />
         )
     }
 
-    return SelectAllOnFocusDecoratorWrapper
+    return (forwardRef(SelectAllOnFocusDecoratorWrapper): ComponentType<Props>)
 }
 
 export default SelectAllOnFocusDecorator

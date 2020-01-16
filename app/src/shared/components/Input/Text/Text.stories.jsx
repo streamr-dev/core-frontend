@@ -27,6 +27,7 @@ stories.add('default', () => (
         onChange={action('onChange')}
         onCommit={action('onCommit')}
         noEmptyCommit={boolean('noEmptyCommit', false)}
+        revertOnEscape={boolean('revertOnEscape', false)}
     />
 ))
 

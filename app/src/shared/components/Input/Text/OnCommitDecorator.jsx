@@ -1,6 +1,6 @@
 // @flow
 
-import React, { type ComponentType, useCallback, useRef } from 'react'
+import React, { type ComponentType, useCallback, useRef, forwardRef } from 'react'
 import { type Ref } from '$shared/flowtype/common-types'
 
 const sanitise = (value) => (
@@ -31,7 +31,7 @@ const OnCommitDecorator = (WrappedComponent: ComponentType<any>) => {
         onKeyDown: onKeyDownProp,
         smartCommit,
         ...props
-    }: Props) => {
+    }: Props, ref: any) => {
         const valueRef: Ref<string> = useRef(null)
 
         const lastCommitedRef: Ref<string> = useRef(null)
@@ -100,11 +100,12 @@ const OnCommitDecorator = (WrappedComponent: ComponentType<any>) => {
                 onChange={onChange}
                 onFocus={onFocus}
                 onKeyDown={onKeyDown}
+                ref={ref}
             />
         )
     }
 
-    return OnCommitDecoratorWrapper
+    return (forwardRef(OnCommitDecoratorWrapper): ComponentType<Props>)
 }
 
 export default OnCommitDecorator

@@ -1,6 +1,6 @@
 // @flow
 
-import React, { type ComponentType, useCallback } from 'react'
+import React, { type ComponentType, useCallback, forwardRef } from 'react'
 import styled, { keyframes } from 'styled-components'
 
 type Props = {
@@ -19,7 +19,7 @@ const cancelAnimation = keyframes`
 `
 
 const OnAutoCompleteDecorator = (WrappedComponent: ComponentType<any>) => {
-    const UnstyledOnAutoCompleteDecoratorWrapper = ({ onAutoComplete, onAnimationStart: onAnimationStartProp, ...props }: Props) => {
+    const UnstyledOnAutoCompleteDecoratorWrapper = ({ onAutoComplete, onAnimationStart: onAnimationStartProp, ...props }: Props, ref: any) => {
         const onAnimationStart = useCallback((e: SyntheticAnimationEvent<EventTarget>) => {
             if (onAutoComplete && (e.animationName === startAnimation.name || e.animationName === cancelAnimation.name)) {
                 onAutoComplete(e.animationName === startAnimation.name)
@@ -34,11 +34,12 @@ const OnAutoCompleteDecorator = (WrappedComponent: ComponentType<any>) => {
             <WrappedComponent
                 {...props}
                 onAnimationStart={onAnimationStart}
+                ref={ref}
             />
         )
     }
 
-    const OnAutoCompleteDecoratorWrapper = styled(UnstyledOnAutoCompleteDecoratorWrapper)`
+    const OnAutoCompleteDecoratorWrapper = styled(forwardRef(UnstyledOnAutoCompleteDecoratorWrapper))`
         :-webkit-autofill {
             animation-name: ${startAnimation};
         }

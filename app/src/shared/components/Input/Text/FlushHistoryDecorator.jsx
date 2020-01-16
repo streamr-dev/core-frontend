@@ -1,6 +1,6 @@
 // @flow
 
-import React, { type ComponentType, useCallback, useState } from 'react'
+import React, { type ComponentType, useCallback, useState, forwardRef } from 'react'
 import { type UseStateTuple } from '$shared/flowtype/common-types'
 
 type Props = {
@@ -9,7 +9,7 @@ type Props = {
 }
 
 const FlushHistoryDecorator = (WrappedComponent: ComponentType<any>) => {
-    const FlushHistoryDecoratorWrapper = ({ onBlur: onBlurProp, flushHistoryOnBlur = false, ...props }: Props) => {
+    const FlushHistoryDecoratorWrapper = ({ onBlur: onBlurProp, flushHistoryOnBlur = false, ...props }: Props, ref: any) => {
         const [blurCount, setBlurCount]: UseStateTuple<number> = useState(0)
 
         const onBlur = useCallback((e: SyntheticFocusEvent<EventTarget>) => {
@@ -27,13 +27,14 @@ const FlushHistoryDecorator = (WrappedComponent: ComponentType<any>) => {
         return (
             <WrappedComponent
                 {...props}
+                ref={ref}
                 key={blurCount}
                 onBlur={onBlur}
             />
         )
     }
 
-    return FlushHistoryDecoratorWrapper
+    return (forwardRef(FlushHistoryDecoratorWrapper): ComponentType<Props>)
 }
 
 export default FlushHistoryDecorator
