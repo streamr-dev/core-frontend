@@ -51,7 +51,7 @@ To be able to use the Marketplace, you'll need to configure these variables into
 | STREAMR_API_URL                                   | Address of the environment's Backend Rest API                        |
 | STREAMR_WS_URL                                    | Address of the environment's Backend Websocket API                   |
 | STREAMR_URL                                       | API Address for Dockerized Environments                              |
-| MARKETPLACE_CONTRACT_ADDRESS_OLD                  | Address of the deployed old Marketplace contract                      |
+| MARKETPLACE_CONTRACT_ADDRESS_OLD                  | Address of the deployed old Marketplace contract                     |
 | MARKETPLACE_CONTRACT_ADDRESS                      | Address of the deployed latest Marketplace contract                  |
 | DATA_TOKEN_CONTRACT_ADDRESS                       | Address of the deployed DATA Token contract                          |
 | DAI_TOKEN_CONTRACT_ADDRESS                        | Address of the deployed DAI Token contract                           |
@@ -92,13 +92,13 @@ Development values (set the values in your `.env`):
 
 Optional config values:
 
-| Variable             | Description                                                  |
-| -------------------- | ------------------------------------------------------------ |
-| SENTRY_DSN           | Identifier for Sentry error reporting service                |
+| Variable             | Description                                                                                    |
+| -------------------- | ---------------------------------------------------------------------------------------------- |
+| SENTRY_DSN           | Identifier for Sentry error reporting service                                                  |
 | LOGROCKET_SLUG       | Identifier for LogRocket error reporting service (used in staging and public beta environment) |
-| GOOGLE_ANALYTICS_ID  | Identifier for Google Analytics                              |
-| STORYBOOK_BASE_PATH  | Build path for Storybook stories                             |
-| PLATFORM_PUBLIC_PATH | Public path for Webpack config. If not defined, relative paths are used. |
+| GOOGLE_ANALYTICS_ID  | Identifier for Google Analytics                                                                |
+| STORYBOOK_BASE_PATH  | Build path for Storybook stories                                                               |
+| PLATFORM_PUBLIC_PATH | Public path for Webpack config. If not defined, relative paths are used.                       |
 
 Use `.travis.yml` to set the production values.
 
@@ -151,7 +151,7 @@ Development Branch -> Local environment (bleeding edge)
 
 Master Branch (untagged) -> Production ready code
 
-Master Branch (tagged releases) -> Production code - https://streamr.network/marketplace
+Master Branch (tagged releases) -> Production code - https://streamr.network/core
 
 ### Deploying to Staging
 
@@ -169,13 +169,16 @@ To make life easier, nobody should push to the `development` branch while you're
 git checkout master
 git merge origin/development
 npm version patch
+git add package.json package-lock.json
+git commit -m "Upgrade to 2.1.15"
 git push
 ```
 
-At this point it's a good idea to check that Travis confirms all tests are passing. Then,
+At this point it's a good idea to check that Travis confirms all tests are passing. Then, for example if the new version is '2.1.15', 
 
 ```
-git push origin <tag>
+git tag -a v2.1.15 -m 'v2.1.15'
+git push --tags
 ```
 
 Following a deployment, `package.json` on `master` will have a higher version that on `development` so it's important to update `development` with this change.
@@ -194,17 +197,28 @@ Create new branch from master `hotfix/ticket-id-issue-title`
 Merge the approved branch to master and push a tagged incremental release. 
 
 ```
+git checkout master
+git merge hotfix/ticket-id-issue-title
 npm version patch
-git push 
+git add package.json package-lock.json
+git commit -m "Upgrade to 2.1.15"
+git push
 ```
 
-At this point it's a good idea to check that Travis confirms all tests are passing. Then,
+At this point it's a good idea to check that Travis confirms all tests are passing. Then, for example if the new version is '2.1.15', 
 
 ```
+git tag -a v2.1.15 -m 'v2.1.15'
 git push --tags
 ```
 
-Remember to mirror the same fix in the `development` branch with new tests or new test conditions that prove the new functionality if required. 
+Remember to mirror the same fix in the `development` branch with new tests or new test conditions that prove the new functionality if required.
+
+```
+git checkout development
+git merge origin/master
+git push
+```
 
 ### Adding new Features
 
@@ -218,7 +232,7 @@ Then write your code, and get the pull request approved by two developers, ideal
 
 ### Storybook
 
-The project contains a Storybook including stories from the main components. The Storybook can be run with `npm run storybook` and built with `npm run build-storybook`.
+The project contains a Storybook including stories from the main components. The Storybook can be run with `npm run storybook` and built with `npm run build-storybook`. Storybook should be accessible after running `npm run storybook` at http://localhost:6006 or on your network at http://10.200.10.1:6006
 
 ## Deployment
 
