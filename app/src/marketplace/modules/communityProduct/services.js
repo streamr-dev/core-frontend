@@ -17,7 +17,6 @@ import { gasLimits } from '$shared/utils/constants'
 import { post, del, get, put } from '$shared/utils/api'
 import { formatApiUrl } from '$shared/utils/url'
 import { postStream, getMyStreamPermissions } from '$userpages/modules/userPageStreams/services'
-import { addStreamResourceKey } from '$shared/modules/resourceKey/services'
 import { getWeb3, getPublicWeb3 } from '$shared/web3/web3Provider'
 
 import type { Secret } from './types'
@@ -67,10 +66,16 @@ export const createJoinPartStream = async (productId: ?ProductId = undefined): P
     try {
         const addEngineKeyPromises = [
             ...getStreamrEngineAddresses().map((address) => (
-                addStreamResourceKey(stream.id, address, 'share')
+                addPermission(stream.id, {
+                    operation: 'share',
+                    user: address,
+                })
             )),
             ...getStreamrEngineAddresses().map((address) => (
-                addStreamResourceKey(stream.id, address, 'write')
+                addPermission(stream.id, {
+                    operation: 'write',
+                    user: address,
+                })
             )),
         ]
         await Promise.all(addEngineKeyPromises)
