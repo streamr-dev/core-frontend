@@ -9,9 +9,11 @@ import AuthFormContext from '../../contexts/AuthForm'
 import SessionContext from '../../contexts/Session'
 import AuthPanel from '$auth/components/AuthPanel'
 import AuthStep from '$auth/components/AuthStep'
-import TextInput from '../TextInput'
 import getSessionToken from '$auth/utils/getSessionToken'
 import { validateWeb3, getWeb3 } from '$shared/web3/web3Provider'
+import { Text } from '$shared/components/Input'
+import FormControlUnderline from '$shared/components/FormControlUnderline'
+import FormControlErrors from '$shared/components/FormControlErrors'
 
 type Props = {
     onBackClick: () => void,
@@ -89,15 +91,18 @@ const EthereumLogin = ({ onBackClick }: Props) => {
                 onSuccess={redirect}
                 className={AuthStep.styles.spaceLarge}
             >
-                <TextInput
+                <Text
+                    type="text"
                     name="ethereum"
-                    label=""
                     value={I18n.t('auth.labels.ethereum')}
-                    error={errors.ethereum}
                     readOnly
-                    processing={step === 0 && isProcessing}
-                    preserveErrorSpace
                 />
+                <FormControlUnderline
+                    state={(step === 0 && isProcessing && 'PROCESSING') || (errors.ethereum && 'ERROR')}
+                />
+                <FormControlErrors>
+                    {errors.ethereum}
+                </FormControlErrors>
             </AuthStep>
         </AuthPanel>
     )

@@ -26,13 +26,8 @@ const animation = keyframes`
     }
 `
 
-type Props = {
-    className?: ?string,
-    state?: $Keys<typeof Colors>,
-}
-
-const UnstyledFormControlUnderline = ({ className }: any) => (
-    <div className={className}>
+const UnstyledFormControlUnderline = (props: any) => (
+    <div {...props}>
         <div />
     </div>
 )
