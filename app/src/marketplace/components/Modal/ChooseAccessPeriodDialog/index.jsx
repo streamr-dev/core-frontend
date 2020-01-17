@@ -177,7 +177,7 @@ export const ChooseAccessPeriodDialog = ({
                         disabled: !isValidTime() || loading,
                     },
                 }}
-                className={styles.modalOverrides}
+                contentClassName={styles.noPadding}
             >
                 <div className={styles.root}>
                     <div className={styles.accessPeriod}>
@@ -221,7 +221,7 @@ export const ChooseAccessPeriodDialog = ({
                         onChange={(c) => onPaymentCurrencyChange(c)}
                         paymentCurrency={paymentCurrency}
                     />
-                    {isMobile() ?
+                    {isMobile() && paymentCurrency !== paymentCurrencies.DATA ?
                         <Translate
                             value="modal.chooseAccessPeriod.uniswap"
                             className={styles.uniswapMsg}
