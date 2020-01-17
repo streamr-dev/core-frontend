@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useState, useEffect, useCallback, useMemo } from 'react'
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import Helmet from 'react-helmet'
 import { Translate, I18n } from 'react-redux-i18n'
 import { withRouter } from 'react-router-dom'
@@ -30,6 +30,7 @@ import { isEthereumAddress } from '$mp/utils/validate'
 import CommunityPending from '$mp/components/ProductPage/CommunityPending'
 import { ago } from '$shared/utils/time'
 import confirmDialog from '$shared/utils/confirm'
+import Search from '$userpages/components/Header/Search'
 
 import styles from './members.pcss'
 
@@ -57,8 +58,9 @@ const Members = () => {
     ]), [filters])
     const [approving, setApproving] = useState(false)
     const [removing, setRemoving] = useState(false)
+    const [search, setSearch] = useState(undefined)
 
-    const { defaultFilter, filter, setSort, resetFilter } = useFilterSort(sortOptions)
+    const { defaultFilter, filter, setSort } = useFilterSort(sortOptions)
     const {
         load: loadMembers,
         fetching: fetchingMembers,
@@ -80,7 +82,7 @@ const Members = () => {
         }
     }, [communityDeployed, beneficiaryAddress, loadCommunity])
 
-    useEffect(() => {
+    const doLoadMembers = useCallback(() => {
         if (communityDeployed && beneficiaryAddress) {
             loadMembers({
                 communityId: beneficiaryAddress,
@@ -88,6 +90,14 @@ const Members = () => {
             })
         }
     }, [communityDeployed, beneficiaryAddress, loadMembers, filter])
+    const loadMembersRef = useRef()
+    loadMembersRef.current = doLoadMembers
+
+    useEffect(() => {
+        if (loadMembersRef.current) {
+            loadMembersRef.current()
+        }
+    }, [filter, loadMembersRef])
 
     const toggleSelect = useCallback((id) => {
         if (selection.has(id)) {
@@ -123,7 +133,11 @@ const Members = () => {
         }
         setApproving(false)
         selection.none()
-    }, [beneficiaryAddress, approve, selection])
+
+        if (loadMembersRef.current) {
+            loadMembersRef.current()
+        }
+    }, [beneficiaryAddress, approve, selection, loadMembersRef])
 
     const onRemove = useCallback(async () => {
         setRemoving(true)
@@ -163,6 +177,29 @@ const Members = () => {
 
     const selectedFilterId = (filter && filter.id) || (defaultFilter && defaultFilter.id)
 
+    const filteredMembers = useMemo(() => {
+        if (!members || !search) {
+            return members
+        }
+
+        return members.filter(({ memberAddress }) => {
+            const searchTerm = search.trim().toLowerCase()
+
+            return memberAddress.toLowerCase().includes(searchTerm)
+        })
+    }, [members, search])
+
+    const onResetFilter = useCallback(() => {
+        setSearch(undefined)
+
+        // If there are no values hidden by search, clear also other filters
+        if (members && members.length <= 0) {
+            selection.none()
+        }
+    }, [members, selection])
+
+    const isApprovalView = !!(selectedFilterId === filters.APPROVE.filter.id)
+
     return (
         <CoreLayout
             footer={false}
@@ -170,6 +207,13 @@ const Members = () => {
             navComponent={(
                 <Header
                     {...(communityDeployed ? {
+                        searchComponent: (
+                            <Search
+                                placeholder={I18n.t('userpages.members.filterMembers')}
+                                value={search || ''}
+                                onChange={setSearch}
+                            />
+                        ),
                         filterComponent: (
                             <Dropdown
                                 title={I18n.t('userpages.filter.sortBy')}
@@ -199,14 +243,14 @@ const Members = () => {
                         <CommunityPending />
                     </div>
                 )}
-                {!!communityDeployed && !fetchingMembers && members && !members.length && (
+                {!!communityDeployed && !fetchingMembers && filteredMembers && !filteredMembers.length && (
                     <NoMembersView
-                        hasFilter={!!filter && (!!filter.search || !!filter.key)}
+                        hasFilter={!!search}
                         filter={filter}
-                        onResetFilter={resetFilter}
+                        onResetFilter={onResetFilter}
                     />
                 )}
-                {!!communityDeployed && members && !fetchingMembers && members.length > 0 && (
+                {!!communityDeployed && !fetchingMembers && filteredMembers && filteredMembers.length > 0 && (
                     <Table>
                         <thead>
                             <tr>
@@ -225,7 +269,7 @@ const Members = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {members.map((member) => {
+                            {filteredMembers.map((member) => {
                                 const isSelected = selection.has(member.id)
 
                                 return (
@@ -291,7 +335,7 @@ const Members = () => {
                         >
                             <Translate value={`userpages.members.actions.${areAllSelected ? 'deselectAll' : 'selectAll'}`} />
                         </Button>
-                        {selectedFilterId === filters.APPROVE.filter.id && (
+                        {isApprovalView && (
                             <Button
                                 kind="primary"
                                 disabled={!isAnySelected || approving}
@@ -300,10 +344,10 @@ const Members = () => {
                                 waiting={approving}
                                 className={styles.approveButton}
                             >
-                                <Translate value="userpages.members.actions.approveAllSelected" />
+                                <Translate value="userpages.members.actions.approve" />
                             </Button>
                         )}
-                        {selectedFilterId !== filters.APPROVE.filter.id && (
+                        {!isApprovalView && (
                             <Button
                                 kind="primary"
                                 disabled={!isAnySelected || removing}
@@ -312,7 +356,7 @@ const Members = () => {
                                 waiting={removing}
                                 className={styles.approveButton}
                             >
-                                <Translate value="userpages.members.actions.removeAllSelected" />
+                                <Translate value="userpages.members.actions.remove" />
                             </Button>
                         )}
                     </div>

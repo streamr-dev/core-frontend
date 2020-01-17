@@ -194,8 +194,14 @@ msgstr "View Product"
 msgid "userpages##products##settings"
 msgstr "Settings"
 
-msgid "userpages##members##noCommunityMembers##title"
-msgstr "No members have joined the community yet."
+msgid "userpages##members##noCommunityMembers##approve##title"
+msgstr "No pending member approvals."
+
+msgid "userpages##members##noCommunityMembers##remove##title"
+msgstr "No approved members."
+
+msgid "userpages##members##noCommunityMembers##rejected##title"
+msgstr "No rejected members."
 
 msgid "userpages##members##noCommunityMembersResult##title"
 msgstr "No members."
@@ -232,11 +238,11 @@ msgstr "Select all"
 msgid "userpages##members##actions##deselectAll"
 msgstr "Deselect all"
 
-msgid "userpages##members##actions##approveAllSelected"
-msgstr "Approve all selected"
+msgid "userpages##members##actions##approve"
+msgstr "Approve"
 
-msgid "userpages##members##actions##removeAllSelected"
-msgstr "Remove all selected"
+msgid "userpages##members##actions##remove"
+msgstr "Remove"
 
 msgid "userpages##members##confirmTitle"
 msgstr "Remove community members?"

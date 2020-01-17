@@ -11,15 +11,17 @@ import noResultIcon from '$shared/assets/images/search_no_result.png'
 import noResultemptyStateIcon2x from '$shared/assets/images/search_no_result@2x.png'
 import type { Filter } from '$userpages/flowtype/common-types'
 
-type NoResultsViewProps = {
-    onResetFilter: Function,
+type NoCommunityMembersProps = {
     filter: ?Filter,
 }
-type Props = NoResultsViewProps & {
+type NoResultsViewProps = {
+    onResetFilter: Function,
+}
+type Props = NoResultsViewProps & NoCommunityMembersProps & {
     hasFilter: boolean,
 }
 
-const NoCommunityMembers = () => (
+const NoCommunityMembers = ({ filter }: NoCommunityMembersProps) => (
     <EmptyState
         image={(
             <img
@@ -29,7 +31,7 @@ const NoCommunityMembers = () => (
             />
         )}
     >
-        <Translate value="userpages.members.noCommunityMembers.title" />
+        <Translate value={`userpages.members.noCommunityMembers.${(filter && filter.id) || ''}.title`} />
     </EmptyState>
 )
 
@@ -56,14 +58,14 @@ const NoResultsView = ({ onResetFilter }: NoResultsViewProps) => (
     </EmptyState>
 )
 
-const NoMembersView = ({ hasFilter, ...rest }: Props) => {
+const NoMembersView = ({ hasFilter, filter, ...rest }: Props) => {
     if (hasFilter) {
         return (
             <NoResultsView {...rest} />
         )
     }
 
-    return <NoCommunityMembers />
+    return <NoCommunityMembers filter={filter} />
 }
 
 export default NoMembersView
