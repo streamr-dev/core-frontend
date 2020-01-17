@@ -50,6 +50,7 @@ const Header = ({ className, searchComponent, filterComponent }: Props) => {
             <Toolbar
                 left={<BackButton onBack={redirectToProductList} />}
                 altMobileLayout
+                className={styles.toolbar}
             />
             <ListContainer className={cx(styles.listTemp, className)}>
                 <div className={styles.profile}>

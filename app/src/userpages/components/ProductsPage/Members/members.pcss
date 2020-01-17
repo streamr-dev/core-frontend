@@ -18,10 +18,16 @@
 
 .fullAddress {
   display: none;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .truncatedAddress {
   display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .addressRow {}
@@ -32,7 +38,7 @@
   padding-right: 0.5rem;
   top: 50%;
   left: 0;
-  transform: translate(-100%, -50%);
+  transform: translate(-100%, -45%);
 
   & > input {
     visibility: hidden;
@@ -122,4 +128,18 @@
 .approveButton {
   min-width: 8rem;
   margin-left: 1rem;
+}
+
+@media (--md-down) {
+  .addressColumn {
+    padding-left: 2.5rem !important;
+  }
+
+  .checkboxContainer {
+    position: absolute;
+    padding: 0.75rem;
+    top: 50%;
+    left: 0;
+    transform: translate(0, -45%);
+  }
 }
