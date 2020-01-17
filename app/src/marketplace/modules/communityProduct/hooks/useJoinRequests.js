@@ -8,8 +8,28 @@ import type { Filter } from '$userpages/flowtype/common-types'
 import type { CommunityId } from '$mp/flowtype/product-types'
 import type { Address } from '$shared/flowtype/web3-types'
 import { joinRequestSchema, joinRequestsSchema } from '$shared/modules/entities/schema'
-import { getJoinRequests, updateJoinRequest, addJoinRequest } from '$mp/modules/communityProduct/services'
+import {
+    getJoinRequests,
+    updateJoinRequest,
+    addJoinRequest,
+    removeJoinRequest,
+} from '$mp/modules/communityProduct/services'
 import { getParamsForFilter } from '$userpages/utils/filters'
+
+type LoadParams = {
+    communityId: CommunityId,
+    filter: Filter,
+}
+
+type AddParams = {
+    communityId: CommunityId,
+    memberAddress: Address,
+}
+
+type UpdateParams = {
+    communityId: CommunityId,
+    joinRequestId: string,
+}
 
 function useJoinRequests() {
     const { update, entities } = useEntities()
@@ -17,7 +37,7 @@ function useJoinRequests() {
     const [fetching, setFetching] = useState(false)
     const [error, setError] = useState(undefined)
 
-    const load = useCallback(async (communityId: CommunityId, filter: Filter) => {
+    const load = useCallback(async ({ communityId, filter }: LoadParams) => {
         setFetching(true)
         setError(undefined)
 
@@ -27,7 +47,10 @@ function useJoinRequests() {
                 communityId,
                 params,
             })
-            const result = update(response, joinRequestsSchema)
+            const result = update({
+                data: response,
+                schema: joinRequestsSchema,
+            })
             setIds(result)
         } catch (e) {
             console.warn(e)
@@ -37,30 +60,47 @@ function useJoinRequests() {
         }
     }, [update])
 
-    const approve = useCallback(async (communityId: CommunityId, joinRequestId: string) => {
+    const approve = useCallback(async ({ communityId, joinRequestId }: UpdateParams) => {
         try {
             const response = await updateJoinRequest({
                 communityId,
                 joinRequestId,
                 state: 'ACCEPTED',
             })
-            update(response, joinRequestSchema)
+            update({
+                data: response,
+                schema: joinRequestSchema,
+            })
         } catch (e) {
             console.warn(e)
         }
     }, [update])
 
-    const addRequest = useCallback(async (communityId: CommunityId, memberAddress: Address) => {
+    const addRequest = useCallback(async ({ communityId, memberAddress }: AddParams) => {
         try {
             const response = await addJoinRequest({
                 communityId,
                 memberAddress,
             })
-            update(response, joinRequestSchema)
+            update({
+                data: response,
+                schema: joinRequestSchema,
+            })
         } catch (e) {
             console.warn(e)
         }
     }, [update])
+
+    const remove = useCallback(async ({ communityId, joinRequestId }: UpdateParams) => {
+        try {
+            await removeJoinRequest({
+                communityId,
+                joinRequestId,
+            })
+        } catch (e) {
+            console.warn(e)
+        }
+    }, [])
 
     const members = useMemo(() => denormalize(ids, joinRequestsSchema, entities), [ids, entities])
 
@@ -72,6 +112,7 @@ function useJoinRequests() {
         error,
         approve,
         addRequest,
+        remove,
     }), [
         load,
         fetching,
@@ -80,6 +121,7 @@ function useJoinRequests() {
         error,
         approve,
         addRequest,
+        remove,
     ])
 }
 

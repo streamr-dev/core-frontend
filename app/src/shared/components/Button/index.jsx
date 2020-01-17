@@ -61,7 +61,7 @@ const Button = ({
         {waiting && (
             <React.Fragment>
                 &nbsp;
-                <Spinner color="white" />
+                <Spinner color="white" containerClassname={styles.spinnerContainer} />
             </React.Fragment>
         )}
     </Tag>

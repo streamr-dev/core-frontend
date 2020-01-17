@@ -33,7 +33,10 @@
   top: 50%;
   left: 0;
   transform: translate(-100%, -50%);
-  display: none;
+
+  & > input {
+    visibility: hidden;
+  }
 }
 
 .checkbox {
@@ -52,7 +55,9 @@
   }
 
   .checkboxContainer {
-    display: block;
+    & > input {
+      visibility: visible;
+    }
   }
 }
 
@@ -110,8 +115,11 @@
 .numberOfSelected {
 }
 
-.actionButtons {
-  button + button {
-    margin-left: 1rem;
-  }
+.selectButton {
+  min-width: 8rem;
+}
+
+.approveButton {
+  min-width: 12rem;
+  margin-left: 1rem;
 }

@@ -232,7 +232,7 @@ type PutJoinRequest = {
     state: 'ACCEPTED' | 'REJECTED' | 'PENDING',
 }
 
-export const updateJoinRequest = async ({ communityId, joinRequestId, state }: PutJoinRequest): ApiResult<void> => put({
+export const updateJoinRequest = async ({ communityId, joinRequestId, state }: PutJoinRequest): ApiResult<any> => put({
     url: formatApiUrl('communities', communityId, 'joinRequests', joinRequestId),
     data: {
         state,
@@ -244,9 +244,18 @@ type PostJoinRequest = {
     memberAddress: Address,
 }
 
-export const addJoinRequest = async ({ communityId, memberAddress }: PostJoinRequest): ApiResult<void> => post({
+export const addJoinRequest = async ({ communityId, memberAddress }: PostJoinRequest): ApiResult<any> => post({
     url: formatApiUrl('communities', communityId, 'joinRequests'),
     data: {
         memberAddress,
     },
+})
+
+type DeleteJoinRequest = {
+    communityId: CommunityId,
+    joinRequestId: string,
+}
+
+export const removeJoinRequest = async ({ communityId, joinRequestId }: DeleteJoinRequest): ApiResult<void> => del({
+    url: formatApiUrl('communities', communityId, 'joinRequests', joinRequestId),
 })

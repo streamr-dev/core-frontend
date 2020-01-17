@@ -109,12 +109,21 @@ export const getFilters = (): { [string]: SortOption } => {
                 order: 'desc',
             },
         },
-        ACCEPTED: {
-            displayName: I18n.t('userpages.filter.accepted'),
+        APPROVE: {
+            displayName: I18n.t('userpages.filter.approve'),
             filter: {
-                id: 'accepted',
+                id: 'approve',
                 key: 'state',
-                value: 'accepted',
+                value: 'PENDING',
+                order: 'desc',
+            },
+        },
+        REMOVE: {
+            displayName: I18n.t('userpages.filter.remove'),
+            filter: {
+                id: 'remove',
+                key: 'state',
+                value: 'ACCEPTED',
                 order: 'desc',
             },
         },
@@ -123,16 +132,7 @@ export const getFilters = (): { [string]: SortOption } => {
             filter: {
                 id: 'rejected',
                 key: 'state',
-                value: 'rejected',
-                order: 'desc',
-            },
-        },
-        PENDING: {
-            displayName: I18n.t('userpages.filter.pending'),
-            filter: {
-                id: 'pending',
-                key: 'state',
-                value: 'pending',
+                value: 'REJECTED',
                 order: 'desc',
             },
         },

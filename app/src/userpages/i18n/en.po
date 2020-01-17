@@ -101,14 +101,14 @@ msgstr "Active"
 msgid "userpages##filter##expired"
 msgstr "Expired"
 
-msgid "userpages##filter##accepted"
-msgstr "Accepted"
+msgid "userpages##filter##approve"
+msgstr "Approve"
+
+msgid "userpages##filter##remove"
+msgstr "Remove"
 
 msgid "userpages##filter##rejected"
 msgstr "Rejected"
-
-msgid "userpages##filter##pending"
-msgstr "Pending"
 
 msgid "userpages##header##canvases"
 msgstr "Canvases"
@@ -232,8 +232,20 @@ msgstr "Select all"
 msgid "userpages##members##actions##deselectAll"
 msgstr "Deselect all"
 
-msgid "userpages##members##actions##approve"
-msgstr "Approve"
+msgid "userpages##members##actions##approveAllSelected"
+msgstr "Approve all selected"
+
+msgid "userpages##members##actions##removeAllSelected"
+msgstr "Remove all selected"
+
+msgid "userpages##members##confirmTitle"
+msgstr "Remove community members?"
+
+msgid "userpages##members##confirmMessage"
+msgstr "This is an unrecoverable action. Please confirm this is what you want before you proceed."
+
+msgid "userpages##members##confirmButton"
+msgstr "Yes, delete"
 
 msgid "userpages##purchases##filterPurchases"
 msgstr "Filter purchases"

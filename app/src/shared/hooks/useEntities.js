@@ -7,13 +7,20 @@ import { normalize } from 'normalizr'
 import { updateEntities } from '$shared/modules/entities/actions'
 import { selectEntities } from '$shared/modules/entities/selectors'
 
+type UpdateParams = {
+    data: any,
+    schema: any,
+}
+
 function useEntities() {
     const dispatch = useDispatch()
     const entities = useSelector(selectEntities)
 
-    const update = useCallback((data: any, schema: any) => {
-        const { result, entities: newEntities } = normalize(data, schema)
-        dispatch(updateEntities(newEntities))
+    const update = useCallback(({ data, schema }: UpdateParams) => {
+        const { result, entities: normalizedEntities } = normalize(data, schema)
+
+        dispatch(updateEntities(normalizedEntities))
+
         return result
     }, [dispatch])
 
