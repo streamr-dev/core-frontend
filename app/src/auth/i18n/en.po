@@ -62,9 +62,6 @@ msgstr "Password is quite strong"
 msgid "auth##login##failure"
 msgstr "Login failed"
 
-msgid "auth##login##rememberMe"
-msgstr "Remember me"
-
 msgid "auth##login##forgotPassword"
 msgstr "Forgot your password?"
 

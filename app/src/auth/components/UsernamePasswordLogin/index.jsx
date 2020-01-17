@@ -12,7 +12,6 @@ import AuthPanel from '../AuthPanel'
 import TextInput from '../TextInput'
 import Actions from '../Actions'
 import Button from '../Button'
-import Checkbox from '../Checkbox'
 import AuthStep from '../AuthStep'
 
 import getSessionToken from '$auth/utils/getSessionToken'
@@ -28,13 +27,11 @@ type Props = {
 type Form = {
     email: string,
     password: string,
-    rememberMe: boolean,
 }
 
 const initialForm: Form = {
     email: '',
     password: '',
-    rememberMe: false,
 }
 
 const UsernamePasswordLogin = ({ onEthereumClick }: Props) => {
@@ -137,13 +134,6 @@ const UsernamePasswordLogin = ({ onEthereumClick }: Props) => {
                     preserveErrorSpace
                 />
                 <Actions>
-                    <Checkbox
-                        name="rememberMe"
-                        checked={form.rememberMe}
-                        onChange={onInputChange(setFormField)}
-                    >
-                        <Translate value="auth.login.rememberMe" />
-                    </Checkbox>
                     <Link to={routes.forgotPassword()}>
                         <Translate value="auth.login.forgotPassword" />
                     </Link>
