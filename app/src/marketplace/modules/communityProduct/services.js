@@ -65,6 +65,8 @@ export const createJoinPartStream = async (productId: ?ProductId = undefined): P
     // Add write permissions for all Streamr Engine nodes
     try {
         const addEngineKeyPromises = [
+            // share permission is not strictly necessary but needed to an avoid error when
+            // removing user's share permission (must have at least one share permission)
             ...getStreamrEngineAddresses().map((address) => (
                 addPermission(stream.id, {
                     operation: 'share',

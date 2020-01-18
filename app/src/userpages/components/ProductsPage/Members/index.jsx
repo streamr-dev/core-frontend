@@ -169,11 +169,12 @@ const Members = () => {
     }, [beneficiaryAddress, remove, selection])
 
     const onSortChange = useCallback((...args) => {
-        // Clear selected on sort change
+        // Clear selected & search on sort change
         selection.none()
+        setSearch(undefined)
 
         setSort(...args)
-    }, [selection, setSort])
+    }, [selection, setSort, setSearch])
 
     const selectedFilterId = (filter && filter.id) || (defaultFilter && defaultFilter.id)
 
