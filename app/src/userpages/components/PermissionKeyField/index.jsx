@@ -9,7 +9,7 @@ import { NotificationIcon } from '$shared/utils/constants'
 
 import type { ResourcePermission } from '$shared/flowtype/resource-key-types'
 import DropdownActions from '$shared/components/DropdownActions'
-import SelectInput from '$shared/components/SelectInput'
+import Select from '$shared/components/SelectInput/Select'
 import SplitControl from '$userpages/components/SplitControl'
 import { truncate } from '$shared/utils/text'
 import FormControlLabel from '$shared/components/FormControlLabel'
@@ -233,15 +233,18 @@ class PermissionKeyField extends React.Component<Props, State> {
                 {!editing ? (
                     <SplitControl>
                         {this.renderInput()}
-                        <SelectInput
-                            label={showPermissionHeader ? I18n.t('userpages.streams.edit.configure.permission') : ''}
-                            options={permissionOptions}
-                            value={permissionOptions.find((t) => t.value === permission)}
-                            onChange={(o) => this.onPermissionChange(o.value)}
-                            preserveLabelSpace
-                            className={styles.select}
-                            isDisabled={!allowEdit}
-                        />
+                        <div>
+                            <FormControlLabel>
+                                {showPermissionHeader && I18n.t('userpages.streams.edit.configure.permission')}
+                            </FormControlLabel>
+                            <Select
+                                options={permissionOptions}
+                                value={permissionOptions.find((t) => t.value === permission)}
+                                onChange={(o) => this.onPermissionChange(o.value)}
+                                className={styles.select}
+                                isDisabled={!allowEdit}
+                            />
+                        </div>
                     </SplitControl>
                 ) : (
                     <PermissionKeyFieldEditor
