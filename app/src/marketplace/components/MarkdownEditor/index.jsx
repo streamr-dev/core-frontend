@@ -4,7 +4,7 @@ import React, { useState, useCallback, useEffect } from 'react'
 import cx from 'classnames'
 
 import { Text } from '$shared/components/Input'
-import InputError from '$mp/components/InputError'
+import FormControlErrors from '$shared/components/FormControlErrors'
 import { useLastError, type LastErrorProps } from '$shared/hooks/useLastError'
 
 import styles from './markdownEditor.pcss'
@@ -74,11 +74,9 @@ const MarkdownEditor = ({
                     </div>
                 </div>
             </div>
-            <InputError
-                eligible={hasError}
-                message={lastError}
-                preserved
-            />
+            <FormControlErrors>
+                {hasError && lastError}
+            </FormControlErrors>
         </React.Fragment>
     )
 }

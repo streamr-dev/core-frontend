@@ -1,11 +1,15 @@
 // @flow
 
 import React, { type Node, Fragment } from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { ERROR } from '$shared/components/FormControlStateColors'
 
 type Props = {
     children?: Node,
+    overlap?: boolean,
+    theme?: {
+        color: string,
+    },
 }
 
 export const MarketplaceTheme = {
@@ -16,7 +20,7 @@ const DefaultTheme = {
     color: ERROR,
 }
 
-const UnstyledFormControlErrors = ({ children, ...props }: Props) => (
+const UnstyledFormControlErrors = ({ children, theme, overlap, ...props }: Props) => (
     <div {...props}>
         {children || <Fragment>&zwnj;</Fragment>}
     </div>
@@ -27,6 +31,10 @@ const FormControlErrors = styled(UnstyledFormControlErrors)`
     font-size: 12px;
     line-height: 1.5em;
     margin-top: 6px;
+
+    ${({ overlap }) => !!overlap && css`
+        position: absolute;
+    `}
 `
 
 FormControlErrors.defaultProps = {

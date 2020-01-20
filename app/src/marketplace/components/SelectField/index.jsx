@@ -4,7 +4,7 @@ import React from 'react'
 import cx from 'classnames'
 
 import Select, { type Props as SelectProps } from '$shared/components/SelectInput/Select'
-import InputError from '$mp/components/InputError'
+import FormControlErrors from '$shared/components/FormControlErrors'
 import { useLastError, type LastErrorProps } from '$shared/hooks/useLastError'
 
 import styles from './selectField.pcss'
@@ -36,11 +36,9 @@ export const SelectField = ({
                 isDisabled={disabled}
                 {...castProps}
             />
-            <InputError
-                eligible={hasError}
-                message={lastError}
-                preserved
-            />
+            <FormControlErrors>
+                {!!hasError && lastError}
+            </FormControlErrors>
         </div>
     )
 }

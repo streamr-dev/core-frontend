@@ -4,7 +4,7 @@ import React from 'react'
 import cx from 'classnames'
 
 import { Text } from '$shared/components/Input'
-import InputError from '$mp/components/InputError'
+import FormControlErrors, { MarketplaceTheme } from '$shared/components/FormControlErrors'
 import { useLastError, type LastErrorProps } from '$shared/hooks/useLastError'
 
 import styles from './priceField.pcss'
@@ -44,11 +44,11 @@ const PriceField = ({
                 />
                 <span className={styles.currency}>{currency}</span>
             </div>
-            <InputError
-                eligible={hasError}
-                message={lastError}
-                preserved={false}
-            />
+            {hasError && !!lastError && (
+                <FormControlErrors overlap theme={MarketplaceTheme}>
+                    {lastError}
+                </FormControlErrors>
+            )}
         </div>
     )
 }
