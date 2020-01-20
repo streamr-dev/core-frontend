@@ -9,7 +9,8 @@ import type { Stream } from '$shared/flowtype/stream-types'
 import type { StoreState } from '$shared/flowtype/store-state'
 import { updateEditStream } from '$userpages/modules/userPageStreams/actions'
 import { selectEditedStream } from '$userpages/modules/userPageStreams/selectors'
-import TextInput from '$shared/components/TextInput'
+import Numeric from '$shared/components/Input/Numeric'
+import FormControlLabel from '$shared/components/FormControlLabel'
 
 import styles from './partitionsView.pcss'
 import routes from '$routes'
@@ -63,9 +64,10 @@ function PartitionsView(props: Props) {
                 </Link>.
             </p>
             <div className={styles.PartitionsOptions}>
-                <TextInput
-                    label={I18n.t('userpages.streams.partitionsLabel')}
-                    type="number"
+                <FormControlLabel>
+                    {I18n.t('userpages.streams.partitionsLabel')}
+                </FormControlLabel>
+                <Numeric
                     min={MIN_PARTITIONS}
                     max={MAX_PARTITIONS}
                     value={value}

@@ -5,7 +5,7 @@ import cx from 'classnames'
 
 import ActionsDropdown from '$shared/components/ActionsDropdown'
 import DropdownActions from '$shared/components/DropdownActions'
-import NumberField from './NumberField'
+import NumberField from '../Input/Numeric'
 import { Text } from '$shared/components/Input'
 import styles from './textField.pcss'
 

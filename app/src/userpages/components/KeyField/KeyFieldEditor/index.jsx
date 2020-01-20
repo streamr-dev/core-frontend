@@ -3,8 +3,10 @@
 import React from 'react'
 import { I18n } from 'react-redux-i18n'
 
-import TextInput from '$shared/components/TextInput'
 import Buttons from '$shared/components/Buttons'
+import FormControlLabel from '$shared/components/FormControlLabel'
+import CoreText from '$shared/components/Input/CoreText'
+import FormControlErrors from '$shared/components/FormControlErrors'
 
 import styles from './keyFieldEditor.pcss'
 
@@ -71,24 +73,41 @@ class KeyFieldEditor extends React.Component<Props, State> {
         return (
             <div className={styles.editor}>
                 <div className={styles.keyName}>
-                    <TextInput
-                        label={I18n.t('userpages.keyFieldEditor.keyName')}
+                    <FormControlLabel
+                        htmlFor="keyName"
+                        state={createNew && !editValue && error && 'ERROR'}
+                    >
+                        {I18n.t('userpages.keyFieldEditor.keyName')}
+                    </FormControlLabel>
+                    <CoreText
                         value={keyName}
                         onChange={this.onKeyNameChange}
-                        preserveLabelSpace
-                        error={(createNew && !editValue && error) || undefined}
                     />
+                    {createNew && !editValue && error && (
+                        <FormControlErrors>
+                            {error}
+                        </FormControlErrors>
+                    )}
                 </div>
                 {(!createNew || editValue) && (
                     <div className={styles.keyValue}>
-                        <TextInput
-                            label={I18n.t(`userpages.keyFieldEditor.keyValue.${valueLabel}`)}
+                        <FormControlLabel
+                            htmlFor="keyValue"
+                            state={error && 'ERROR'}
+                        >
+                            {I18n.t(`userpages.keyFieldEditor.keyValue.${valueLabel}`)}
+                        </FormControlLabel>
+                        <CoreText
+                            id="keyValue"
                             value={keyId}
                             onChange={this.onValueChange}
-                            preserveLabelSpace
                             readOnly={!editValue}
-                            error={error || undefined}
                         />
+                        {error && (
+                            <FormControlErrors>
+                                {error}
+                            </FormControlErrors>
+                        )}
                     </div>
                 )}
                 <Buttons

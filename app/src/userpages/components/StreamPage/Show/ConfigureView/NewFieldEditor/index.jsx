@@ -4,11 +4,12 @@ import React, { Component } from 'react'
 import { I18n, Translate } from 'react-redux-i18n'
 
 import Button from '$shared/components/Button'
-import SelectInput from '$shared/components/SelectInput'
-import TextInput from '$shared/components/TextInput'
+import Select from '$shared/components/SelectInput/Select'
+import CoreText from '$shared/components/Input/CoreText'
 import type { StreamField } from '$shared/flowtype/stream-types'
 import SplitControl from '$userpages/components/SplitControl'
-
+import FormControlLabel from '$shared/components/FormControlLabel'
+import FormControlErrors from '$shared/components/FormControlErrors'
 import { fieldTypes } from '$userpages/modules/userPageStreams/selectors'
 import styles from './newFieldEditor.pcss'
 
@@ -93,23 +94,40 @@ export class NewFieldEditor extends Component<Props, State> {
         return (
             <div className={styles.container}>
                 <SplitControl>
-                    <TextInput
-                        value={name}
-                        label={I18n.t('userpages.streams.edit.configure.newFieldEditor.namePlaceholder')}
-                        onChange={(e) => this.onNameChange(e.target.value)}
-                        error={nameError || ''}
-                        autoFocus
-                        onKeyPress={(e) => this.handleKeyPress(e.key)}
-                    />
-                    <SelectInput
-                        label="Data type"
-                        name="type"
-                        className={styles.select}
-                        options={this.typeOptions}
-                        value={this.typeOptions.find((t) => t.value === type)}
-                        onChange={this.onTypeChange}
-                        preserveLabelSpace={false}
-                    />
+                    <div>
+                        <FormControlLabel
+                            htmlFor="newFieldName"
+                            state={nameError && 'ERROR'}
+                        >
+                            {I18n.t('userpages.streams.edit.configure.newFieldEditor.namePlaceholder')}
+                        </FormControlLabel>
+                        <CoreText
+                            id="newFieldName"
+                            type="text"
+                            value={name}
+                            onChange={(e) => this.onNameChange(e.target.value)}
+                            autoFocus
+                            onKeyPress={(e) => this.handleKeyPress(e.key)}
+                        />
+                        {nameError && (
+                            <FormControlErrors>
+                                {nameError}
+                            </FormControlErrors>
+                        )}
+                    </div>
+                    <div>
+                        <FormControlLabel htmlFor="newFieldType">
+                            Data type
+                        </FormControlLabel>
+                        <Select
+                            id="newFieldType"
+                            name="type"
+                            className={styles.select}
+                            options={this.typeOptions}
+                            value={this.typeOptions.find((t) => t.value === type)}
+                            onChange={this.onTypeChange}
+                        />
+                    </div>
                 </SplitControl>
                 <Button
                     kind="secondary"

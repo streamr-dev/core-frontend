@@ -1,12 +1,13 @@
 // @flow
 
-import React, { useContext } from 'react'
+import React, { useContext, Fragment } from 'react'
 import cx from 'classnames'
 import { Translate, I18n } from 'react-redux-i18n'
 
 import useValidation from '../ProductController/useValidation'
-import TextField from '$mp/components/TextField'
+import MarketplaceText from '$shared/components/Input/MarketplaceText'
 import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
+import FormControlErrors, { MarketplaceTheme } from '$shared/components/FormControlErrors'
 
 import styles from './beneficiaryAddress.pcss'
 
@@ -21,6 +22,7 @@ const BeneficiaryAddress = ({ address, onChange, disabled, className }: Props) =
     const { isValid, message } = useValidation('beneficiaryAddress')
     const { isTouched } = useContext(ValidationContext)
     const priceTouched = isTouched('pricePerSecond') || isTouched('beneficiaryAddress')
+    const invalid = priceTouched && !isValid
 
     return (
         <form autoComplete="off">
@@ -32,17 +34,26 @@ const BeneficiaryAddress = ({ address, onChange, disabled, className }: Props) =
                     <Translate value="editProductPage.setPrice.setRecipientEthAddress" />
                 </strong>
                 <div>
-                    {/* TODO(MR): replace with Input/Text. #newtext */}
-                    <TextField
+                    <MarketplaceText
                         id="beneficiaryAddress"
                         autoComplete="off"
                         value={address || ''}
                         onCommit={onChange}
                         placeholder={I18n.t('editProductPage.setPrice.placeholder.enterEthAddress')}
-                        error={priceTouched && !isValid ? message : undefined}
+                        invalid={invalid}
                         disabled={disabled}
+                        selectAllOnFocus
+                        smartCommit
                     />
                 </div>
+                {invalid && (
+                    <Fragment>
+                        <div />
+                        <FormControlErrors theme={MarketplaceTheme}>
+                            {message}
+                        </FormControlErrors>
+                    </Fragment>
+                )}
             </label>
         </form>
     )

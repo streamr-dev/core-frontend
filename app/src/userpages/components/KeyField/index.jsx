@@ -4,7 +4,6 @@ import React, { useState, useCallback, useEffect, useMemo } from 'react'
 import cx from 'classnames'
 import { Translate, I18n } from 'react-redux-i18n'
 
-import TextInput from '$shared/components/TextInput'
 import DropdownActions from '$shared/components/DropdownActions'
 import { truncate } from '$shared/utils/text'
 import KeyFieldEditor, { type ValueLabel } from './KeyFieldEditor'
@@ -12,6 +11,9 @@ import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import useCopy from '$shared/hooks/useCopy'
+import FormControlLabel from '$shared/components/FormControlLabel'
+import ActionsDropdown from '$shared/components/ActionsDropdown'
+import CoreText from '$shared/components/Input/CoreText'
 
 import styles from './keyField.pcss'
 
@@ -160,14 +162,16 @@ const KeyField = ({
                 <div
                     className={cx(styles.keyFieldContainer, keyFieldClassName)}
                 >
-                    <TextInput
-                        label={keyName}
-                        actions={inputActions}
-                        value={displayValue}
-                        readOnly
-                        type={hidden ? 'password' : 'text'}
-                        preserveLabelSpace
-                    />
+                    <FormControlLabel htmlFor="keyName">
+                        {keyName}
+                    </FormControlLabel>
+                    <ActionsDropdown actions={inputActions}>
+                        <CoreText
+                            value={displayValue}
+                            readOnly
+                            type={hidden ? 'password' : 'text'}
+                        />
+                    </ActionsDropdown>
                 </div>
             ) : (
                 <KeyFieldEditor

@@ -8,8 +8,8 @@ import usePending from '$shared/hooks/usePending'
 import useEditableProduct from '../ProductController/useEditableProduct'
 import useValidation from '../ProductController/useValidation'
 import useEditableProductActions from '../ProductController/useEditableProductActions'
-
-import TextField from '$mp/components/TextField'
+import MarketplaceText from '$shared/components/Input/MarketplaceText'
+import FormControlErrors, { MarketplaceTheme } from '$shared/components/FormControlErrors'
 
 import styles from './productName.pcss'
 
@@ -19,20 +19,27 @@ const ProductName = () => {
     const { updateName } = useEditableProductActions()
     const { isTouched } = useContext(ValidationContext)
     const { isPending } = usePending('product.SAVE')
+    const invalid = isTouched('name') && !isValid
 
     return (
         <section id="product-name" className={cx(styles.root, styles.ProductName)}>
             <div>
                 <h1>Name your product</h1>
-                {/* TODO(MR): replace with Input/Text. #newtext */}
-                <TextField
+                <MarketplaceText
                     value={product.name}
                     onCommit={updateName}
                     placeholder="Product Name"
-                    error={isTouched('name') && !isValid ? message : undefined}
                     disabled={isPending}
+                    selectAllOnFocus
+                    smartCommit
+                    invalid={invalid}
                     className={styles.input}
                 />
+                {invalid && (
+                    <FormControlErrors theme={MarketplaceTheme}>
+                        {message}
+                    </FormControlErrors>
+                )}
             </div>
         </section>
     )

@@ -8,11 +8,13 @@ import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 
 import type { ResourcePermission } from '$shared/flowtype/resource-key-types'
-import TextInput from '$shared/components/TextInput'
 import DropdownActions from '$shared/components/DropdownActions'
 import SelectInput from '$shared/components/SelectInput'
 import SplitControl from '$userpages/components/SplitControl'
 import { truncate } from '$shared/utils/text'
+import FormControlLabel from '$shared/components/FormControlLabel'
+import ActionsDropdown from '$shared/components/ActionsDropdown'
+import CoreText from '$shared/components/Input/CoreText'
 
 import PermissionKeyFieldEditor from './PermissionKeyFieldEditor'
 
@@ -188,16 +190,18 @@ class PermissionKeyField extends React.Component<Props, State> {
             <div
                 className={cx(styles.keyFieldContainer, keyFieldClassName)}
             >
-                <TextInput
-                    label={keyName}
-                    actions={actions}
-                    value={value && (!truncateValue ? value : truncate(value, {
-                        maxLength: 15,
-                    }))}
-                    readOnly
-                    type={hidden ? 'password' : 'text'}
-                    preserveLabelSpace
-                />
+                <FormControlLabel htmlFor="keyName">
+                    {keyName}
+                </FormControlLabel>
+                <ActionsDropdown actions={actions}>
+                    <CoreText
+                        value={value && (!truncateValue ? value : truncate(value, {
+                            maxLength: 15,
+                        }))}
+                        readOnly
+                        type={hidden ? 'password' : 'text'}
+                    />
+                </ActionsDropdown>
             </div>
         )
     }
