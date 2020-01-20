@@ -24,7 +24,7 @@ export const SelectField = ({
         error,
         isProcessing,
     })
-    const castProps: SelectProps = ((inputProps: any): SelectProps)
+    const castProps: any = inputProps
 
     return (
         <div>
