@@ -31,7 +31,6 @@ module.exports = exports = {
             ]
         }],
         "jsx-a11y/label-has-associated-control": [WARN, {
-            "controlComponents": ["FormControl"],
             "required": {
                 "some": [ "nesting", "id" ]
             }

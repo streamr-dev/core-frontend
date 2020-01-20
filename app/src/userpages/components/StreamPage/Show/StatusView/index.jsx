@@ -8,8 +8,9 @@ import type { Stream } from '$shared/flowtype/stream-types'
 import type { StoreState } from '$shared/flowtype/store-state'
 import { updateEditStream } from '$userpages/modules/userPageStreams/actions'
 import { selectEditedStream } from '$userpages/modules/userPageStreams/selectors'
-import TextInput from '$shared/components/TextInput'
-import SelectInput from '$shared/components/SelectInput'
+import CoreText from '$shared/components/Input/CoreText'
+import Select from '$shared/components/SelectInput/Select'
+import FormControlLabel from '$shared/components/FormControlLabel'
 
 import styles from './statusView.pcss'
 
@@ -93,22 +94,24 @@ function StatusView(props: Props) {
                 {I18n.t('userpages.streams.inactivityDescription')}
             </p>
             <div className={styles.container}>
-                <TextInput
-                    label={I18n.t('userpages.streams.inactivityLabel')}
-                    value={value}
-                    onChange={onChange}
-                    onBlur={onCommit}
-                    disabled={disabled}
-                    preserveLabelSpace
-                />
-                <SelectInput
-                    label=""
-                    options={unitOptions}
-                    value={unitOptions.find((o) => o.value === units)}
-                    onChange={(o) => onChangeUnits(o.value)}
-                    preserveLabelSpace
-                    disabled={disabled}
-                />
+                <FormControlLabel htmlFor="inactivityValue">
+                    {I18n.t('userpages.streams.inactivityLabel')}
+                </FormControlLabel>
+                <div className={styles.inner}>
+                    <CoreText
+                        id="inactivityValue"
+                        value={value}
+                        onChange={onChange}
+                        onBlur={onCommit}
+                        disabled={disabled}
+                    />
+                    <Select
+                        options={unitOptions}
+                        value={unitOptions.find((o) => o.value === units)}
+                        onChange={(o) => onChangeUnits(o.value)}
+                        disabled={disabled}
+                    />
+                </div>
             </div>
         </div>
     )

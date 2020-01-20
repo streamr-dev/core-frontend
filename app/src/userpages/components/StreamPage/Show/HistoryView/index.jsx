@@ -13,8 +13,8 @@ import type { CsvUploadState } from '$userpages/flowtype/states/stream-state'
 import { getRange, deleteDataUpTo, uploadCsvFile, confirmCsvFileUpload, updateEditStream } from '$userpages/modules/userPageStreams/actions'
 import { selectDeleteDataError, selectUploadCsvState, selectEditedStream } from '$userpages/modules/userPageStreams/selectors'
 import Button from '$shared/components/Button'
-import TextInput from '$shared/components/TextInput'
-import SelectInput from '$shared/components/SelectInput'
+import CoreText from '$shared/components/Input/CoreText'
+import Select from '$shared/components/SelectInput/Select'
 import FileUpload from '$shared/components/FileUpload'
 import DatePicker from '$shared/components/DatePicker'
 import SvgIcon from '$shared/components/SvgIcon'
@@ -23,6 +23,8 @@ import Spinner from '$shared/components/Spinner'
 import CsvSchemaError from '$shared/errors/CsvSchemaError'
 import SplitControl from '$userpages/components/SplitControl'
 import { type Ref } from '$shared/flowtype/common-types'
+import FormControlLabel from '$shared/components/FormControlLabel'
+import FormControlErrors from '$shared/components/FormControlErrors'
 
 import styles from './historyView.pcss'
 
@@ -325,18 +327,17 @@ class HistoryView extends Component<Props, State> {
                 {streamId && (
                     <Fragment>
                         <Translate value="userpages.streams.edit.history.upload.description" tag="p" className={styles.longText} />
-                        <SplitControl>
+                        <SplitControl className={styles.defaultSplit}>
                             <FileUpload
                                 ref={this.fileUploadRef}
                                 className={styles.fileUpload}
                                 component={
-                                    <TextInput
-                                        label={I18n.t('userpages.streams.edit.history.storedEvents')}
-                                        value={storedEventsText}
-                                        readOnly
-                                        preserveLabelSpace
-                                        preserveErrorSpace
-                                    />
+                                    <Fragment>
+                                        <FormControlLabel>
+                                            {I18n.t('userpages.streams.edit.history.storedEvents')}
+                                        </FormControlLabel>
+                                        <CoreText value={storedEventsText} readOnly />
+                                    </Fragment>
                                 }
                                 dropTargetComponent={<DropTarget mouseOver={false} />}
                                 dragOverComponent={<DropTarget mouseOver />}
@@ -357,6 +358,7 @@ class HistoryView extends Component<Props, State> {
                                 <Translate value="userpages.streams.edit.history.uploadCsvButton" />
                             </Button>
                         </SplitControl>
+                        <FormControlErrors />
                     </Fragment>
                 )}
                 {!streamId && (
@@ -365,55 +367,62 @@ class HistoryView extends Component<Props, State> {
                     </SplitControl>
                 )}
                 {streamId && range && (
-                    <SplitControl>
-                        <div className={styles.storedEventsContainer}>
-                            <DatePicker
-                                label={I18n.t('userpages.streams.edit.history.deleteEvents')}
-                                openOnFocus
-                                onChange={this.onDeleteDateChanged}
-                                error={(deleteDataError && deleteDataError.message) || ''}
-                                value={deleteDate || 'Select date'}
-                                preserveLabelSpace
-                                preserveErrorSpace
-                                className={styles.storedEvents}
+                    <Fragment>
+                        <SplitControl className={styles.defaultSplit}>
+                            <div className={styles.storedEventsContainer}>
+                                <FormControlLabel>
+                                    {I18n.t('userpages.streams.edit.history.deleteEvents')}
+                                </FormControlLabel>
+                                <DatePicker
+                                    openOnFocus
+                                    onChange={this.onDeleteDateChanged}
+                                    error={deleteDataError && deleteDataError.message}
+                                    value={deleteDate || 'Select date'}
+                                    className={styles.storedEvents}
+                                    disabled={disabled}
+                                />
+                            </div>
+                            <Button
+                                kind="secondary"
+                                className={styles.deleteButton}
+                                onClick={() => this.deleteDataUpTo(streamId, deleteDate)}
+                                disabled={deleteDate == null || disabled || deleteInProgress}
+                            >
+                                <Translate value="userpages.streams.edit.history.deleteRange" />
+                                {deleteInProgress &&
+                                    <Fragment>
+                                        <span>&nbsp;</span>
+                                        <Spinner size="small" color="white" />
+                                    </Fragment>
+                                }
+                            </Button>
+                        </SplitControl>
+                        <FormControlErrors>
+                            {(deleteDataError && deleteDataError.message) || ''}
+                        </FormControlErrors>
+                    </Fragment>
+                )}
+                {stream && stream.storageDays !== undefined &&
+                    <Fragment>
+                        <FormControlLabel htmlFor="storageAmount">
+                            {I18n.t('userpages.streams.edit.configure.historicalStoragePeriod.label')}
+                        </FormControlLabel>
+                        <div className={styles.storageContainer}>
+                            <CoreText
+                                id="storageAmount"
+                                className={styles.storageAmount}
+                                value={storageAmount}
+                                onChange={this.onStorageAmountChange}
+                                disabled={disabled}
+                            />
+                            <Select
+                                options={unitOptions}
+                                value={unitOptions.find((o) => o.value === storageUnit)}
+                                onChange={(o) => this.onStoragePeriodUnitChange(o.value)}
                                 disabled={disabled}
                             />
                         </div>
-                        <Button
-                            kind="secondary"
-                            className={styles.deleteButton}
-                            onClick={() => this.deleteDataUpTo(streamId, deleteDate)}
-                            disabled={deleteDate == null || disabled || deleteInProgress}
-                        >
-                            <Translate value="userpages.streams.edit.history.deleteRange" />
-                            {deleteInProgress &&
-                                <Fragment>
-                                    <span>&nbsp;</span>
-                                    <Spinner size="small" color="white" />
-                                </Fragment>
-                            }
-                        </Button>
-                    </SplitControl>
-                )}
-                {stream && stream.storageDays !== undefined &&
-                    <div className={styles.storageContainer}>
-                        <TextInput
-                            className={styles.storageAmount}
-                            label={I18n.t('userpages.streams.edit.configure.historicalStoragePeriod.label')}
-                            value={storageAmount}
-                            onChange={this.onStorageAmountChange}
-                            preserveLabelSpace
-                            disabled={disabled}
-                        />
-                        <SelectInput
-                            label=""
-                            options={unitOptions}
-                            value={unitOptions.find((o) => o.value === storageUnit)}
-                            onChange={(o) => this.onStoragePeriodUnitChange(o.value)}
-                            preserveLabelSpace
-                            disabled={disabled}
-                        />
-                    </div>
+                    </Fragment>
                 }
                 {isModalOpen && (
                     <ConfirmCsvImportDialog

@@ -5,22 +5,18 @@ import { I18n } from 'react-redux-i18n'
 import cx from 'classnames'
 
 import { isMobile as checkMobile } from '$shared/utils/platform'
-import FormControl, { type FormControlProps, type InputProps } from '../FormControl'
 import WithCalendar, { type WithCalendarProps } from '../WithCalendar'
 import CalendarIcon from '../CalendarIcon'
-import TextField from '../TextField'
+import CoreText from '$shared/components/Input/CoreText'
 import dateFormatter from '$utils/dateFormatter'
 
 import styles from './datePicker.pcss'
 
-type Props = FormControlProps & WithCalendarProps & {
+type Props = WithCalendarProps & {
     format?: string,
     onChange?: (Date) => void,
-    value?: Date,
-}
-
-type InnerProps = InputProps & {
-    value: ?Date,
+    value?: Date | string,
+    error?: any,
 }
 
 const isMobile = checkMobile()
@@ -42,40 +38,29 @@ class DatePicker extends React.Component<Props> {
     }
 
     render() {
-        const { label, format, ...props } = this.props
+        // $FlowFixMe value is not in WithCalendarProps but doesn't seem to be, right?
+        const { value, format, error, ...props } = this.props
 
         return (
-            <FormControl
-                {...props}
-                label={label}
-                noUnderline
-            >
-                {({ value, onFocusChange, setAutoCompleted, ...rest0 }: InnerProps) => (
-                    <WithCalendar {...rest0} disabled={isMobile}>
-                        {({ date, toggleCalendar, ...rest1 }) => (
-                            <React.Fragment>
-                                {/* TODO(MR): replace with Input/Text. #newtext */}
-                                <TextField
-                                    type={isMobile ? 'date' : 'text'}
-                                    value={value === I18n.t('userpages.streams.edit.history.datePicker.selectDate') ?
-                                        I18n.t('userpages.streams.edit.history.datePicker.selectDate') :
-                                        dateFormatter(isMobile ? ISO_DATE_FORMAT : (format || ISO_DATE_FORMAT))(value) || ''}
-                                    onBlur={onFocusChange}
-                                    onFocus={onFocusChange}
-                                    onAutoComplete={setAutoCompleted}
-                                    onChange={this.onChange}
-                                    {...rest1}
-                                />
-                                <CalendarIcon
-                                    className={cx(styles.icon, {
-                                        [styles.hasError]: props.error != null,
-                                    })}
-                                />
-                            </React.Fragment>
-                        )}
-                    </WithCalendar>
+            <WithCalendar {...props} disabled={isMobile}>
+                {({ date, toggleCalendar, ...rest1 }) => (
+                    <React.Fragment>
+                        <CoreText
+                            type={isMobile ? 'date' : 'text'}
+                            value={value === I18n.t('userpages.streams.edit.history.datePicker.selectDate') ?
+                                I18n.t('userpages.streams.edit.history.datePicker.selectDate') :
+                                dateFormatter(isMobile ? ISO_DATE_FORMAT : (format || ISO_DATE_FORMAT))(value) || ''}
+                            onChange={this.onChange}
+                            {...rest1}
+                        />
+                        <CalendarIcon
+                            className={cx(styles.icon, {
+                                [styles.hasError]: props.error != null,
+                            })}
+                        />
+                    </React.Fragment>
                 )}
-            </FormControl>
+            </WithCalendar>
         )
     }
 }
