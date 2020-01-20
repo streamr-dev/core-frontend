@@ -107,9 +107,15 @@ const OnCommitDecorator = (WrappedComponent: ComponentType<any>) => {
 
     const OnCommitDecoratorWrapperFR: ComponentType<Props> = forwardRef(OnCommitDecoratorWrapper)
 
-    const OptInOnCommitDecorator = ({ onCommit, ...props }: Props, ref: any) => (
+    const OptInOnCommitDecorator = ({ onCommit, smartCommit, noEmptyCommit, ...props }: Props, ref: any) => (
         onCommit ? (
-            <OnCommitDecoratorWrapperFR {...props} onCommit={onCommit} ref={ref} />
+            <OnCommitDecoratorWrapperFR
+                {...props}
+                noEmptyCommit={noEmptyCommit}
+                onCommit={onCommit}
+                ref={ref}
+                smartCommit={smartCommit}
+            />
         ) : (
             <WrappedComponent {...props} ref={ref} />
         )
