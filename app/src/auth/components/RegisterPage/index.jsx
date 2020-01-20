@@ -16,7 +16,7 @@ import SessionContext from '../../contexts/Session'
 import AuthPanel from '../AuthPanel'
 import Actions from '../Actions'
 import Button from '../Button'
-import Checkbox from '../Checkbox'
+import Checkbox from '$shared/components/Checkbox'
 import AuthStep from '../AuthStep'
 import AuthLayout from '../AuthLayout'
 import { Text } from '$shared/components/Input'
@@ -226,21 +226,24 @@ const RegisterPage = ({ location: { search, pathname }, history: { replace } }: 
                     showBack
                 >
                     <div className={styles.termsWrapper}>
-                        <Checkbox
-                            name="toc"
-                            checked={form.toc}
-                            onChange={onInputChange(setFormField)}
-                            error={errors.toc}
-                            autoFocus
-                            keepError
-                        >
+                        <label htmlFor="toc" className={styles.checkboxWrapper}>
+                            <Checkbox
+                                id="toc"
+                                name="toc"
+                                value={form.toc}
+                                onChange={onInputChange(setFormField)}
+                                autoFocus
+                            />&nbsp;
                             <Translate
                                 value="auth.register.agreement"
                                 terms={routes.terms()}
                                 privacy={routes.privacy()}
                                 dangerousHTML
                             />
-                        </Checkbox>
+                        </label>
+                        <FormControlErrors>
+                            {errors.toc}
+                        </FormControlErrors>
                     </div>
                     <Actions>
                         <Button disabled={isProcessing}>
