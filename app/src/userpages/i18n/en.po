@@ -195,16 +195,25 @@ msgid "userpages##products##settings"
 msgstr "Settings"
 
 msgid "userpages##members##noCommunityMembers##approve##title"
-msgstr "No pending member approvals."
+msgstr "No one has applied to join yet."
+
+msgid "userpages##members##noCommunityMembers##approve##message"
+msgstr "Get out there and promote it 🚀"
 
 msgid "userpages##members##noCommunityMembers##remove##title"
-msgstr "No approved members."
+msgstr "No one has joined yet."
+
+msgid "userpages##members##noCommunityMembers##remove##message"
+msgstr "Get out there and promote it 🚀"
 
 msgid "userpages##members##noCommunityMembers##rejected##title"
-msgstr "No rejected members."
+msgstr "No rejected approvals."
+
+msgid "userpages##members##noCommunityMembers##rejected##message"
+msgstr "You haven't rejected any approvals yet.<br />Keep up the good work 👍"
 
 msgid "userpages##members##noCommunityMembersResult##title"
-msgstr "No members."
+msgstr "Nope, sorry!"
 
 msgid "userpages##members##noCommunityMembersResult##message"
 msgstr "We couldn't find any members that match your search."
@@ -245,13 +254,13 @@ msgid "userpages##members##actions##remove"
 msgstr "Remove"
 
 msgid "userpages##members##confirmTitle"
-msgstr "Remove community members?"
+msgstr "Are you sure?"
 
 msgid "userpages##members##confirmMessage"
-msgstr "This is an unrecoverable action. Please confirm this is what you want before you proceed."
+msgstr "This is an unrecoverable action. It will permanently remove the selected members from your community."
 
 msgid "userpages##members##confirmButton"
-msgstr "Yes, delete"
+msgstr "Yes, remove"
 
 msgid "userpages##purchases##filterPurchases"
 msgstr "Filter purchases"

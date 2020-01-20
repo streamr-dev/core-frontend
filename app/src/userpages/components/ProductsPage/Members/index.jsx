@@ -150,6 +150,7 @@ const Members = () => {
                 kind: 'destructive',
             },
             centerButtons: true,
+            dontShowAgain: true,
         })
 
         if (confirmed) {
