@@ -35,7 +35,6 @@ const NoCommunityMembers = ({ filter }: NoCommunityMembersProps) => (
         <Translate
             value={`userpages.members.noCommunityMembers.${(filter && filter.id) || ''}.message`}
             tag="small"
-            dangerousHTML
         />
     </EmptyState>
 )

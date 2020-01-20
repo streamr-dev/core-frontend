@@ -144,7 +144,13 @@ const Members = () => {
 
         const confirmed = await confirmDialog('members', {
             title: I18n.t('userpages.members.confirmTitle'),
-            message: I18n.t('userpages.members.confirmMessage'),
+            message: (
+                <Translate
+                    value="userpages.members.confirmMessage"
+                    dangerousHTML
+                    tag="p"
+                />
+            ),
             acceptButton: {
                 title: I18n.t('userpages.members.confirmButton'),
                 kind: 'destructive',

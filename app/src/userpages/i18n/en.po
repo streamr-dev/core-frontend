@@ -207,10 +207,10 @@ msgid "userpages##members##noCommunityMembers##remove##message"
 msgstr "Get out there and promote it 🚀"
 
 msgid "userpages##members##noCommunityMembers##rejected##title"
-msgstr "No rejected approvals."
+msgstr "You haven't rejected any approvals yet."
 
 msgid "userpages##members##noCommunityMembers##rejected##message"
-msgstr "You haven't rejected any approvals yet.<br />Keep up the good work 👍"
+msgstr "Keep up the good work 👍"
 
 msgid "userpages##members##noCommunityMembersResult##title"
 msgstr "Nope, sorry!"
@@ -257,7 +257,7 @@ msgid "userpages##members##confirmTitle"
 msgstr "Are you sure?"
 
 msgid "userpages##members##confirmMessage"
-msgstr "This is an unrecoverable action. It will permanently remove the selected members from your community."
+msgstr "This is an unrecoverable action. It will permanently<br/>remove the selected members from your community."
 
 msgid "userpages##members##confirmButton"
 msgstr "Yes, remove"
