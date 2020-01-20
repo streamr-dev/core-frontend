@@ -2,21 +2,17 @@
 
 import React from 'react'
 import { I18n } from 'react-redux-i18n'
-import cx from 'classnames'
 
 import { isMobile as checkMobile } from '$shared/utils/platform'
-import WithCalendar, { type WithCalendarProps } from '../WithCalendar'
-import CalendarIcon from '../CalendarIcon'
+import WithCalendar, { type WithCalendarProps } from './WithCalendar'
+import CalendarIcon from './CalendarIcon'
 import CoreText from '$shared/components/Input/CoreText'
 import dateFormatter from '$utils/dateFormatter'
-
-import styles from './datePicker.pcss'
 
 type Props = WithCalendarProps & {
     format?: string,
     onChange?: (Date) => void,
     value?: Date | string,
-    error?: any,
 }
 
 const isMobile = checkMobile()
@@ -38,8 +34,8 @@ class DatePicker extends React.Component<Props> {
     }
 
     render() {
-        // $FlowFixMe value is not in WithCalendarProps but doesn't seem to be, right?
-        const { value, format, error, ...props } = this.props
+        // $FlowFixMe `value` is not in `WithCalendarProps` #fml.
+        const { value, format, ...props } = this.props
 
         return (
             <WithCalendar {...props} disabled={isMobile}>
@@ -53,11 +49,7 @@ class DatePicker extends React.Component<Props> {
                             onChange={this.onChange}
                             {...rest1}
                         />
-                        <CalendarIcon
-                            className={cx(styles.icon, {
-                                [styles.hasError]: props.error != null,
-                            })}
-                        />
+                        <CalendarIcon />
                     </React.Fragment>
                 )}
             </WithCalendar>
