@@ -32,12 +32,12 @@
   border-color: #0324FF;
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
 
-  &:--enter {
+  &:not([disabled]):--enter {
     background-color: #001BD0;
     border-color: #001BD0;
   }
 
-  &:active {
+  &:not([disabled]):active {
     background-color: #0D009A;
     border-color: #0D009A;
   }
@@ -47,8 +47,8 @@
   background-color: rgba(0, 0, 0, 0);
   border-color: white;
 
-  &:active,
-  &:--enter {
+  &:not([disabled]):active,
+  &:not([disabled]):--enter {
     background-color: white;
     color: #0D009A;
   }
@@ -59,9 +59,9 @@
   border-color: #525252;
   color: #525252;
 
-  &:active,
-  &:hover,
-  &:--enter {
+  &:not([disabled]):active,
+  &:not([disabled]):hover,
+  &:not([disabled]):--enter {
     background-color: white;
     color: #0324FF;
     border-color: #0324FF;

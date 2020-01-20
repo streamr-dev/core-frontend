@@ -26,12 +26,12 @@
     outline: none;
   }
 
-  &:--enter {
+  &:not([disabled]):--enter {
     transition-duration: 5ms;
     transform: scale(1.05) translate3d(0, 0, 0);
   }
 
-  &:active {
+  &:not([disabled]):active {
     transform: scale(0.95) translate3d(0, 0, 0);
     outline: none;
   }
@@ -60,12 +60,12 @@
   background-color: #0324FF;
   border-color: #0324FF;
 
-  &:--enter {
+  &:not([disabled]):--enter {
     background-color: #0D009A;
     border-color: #0D009A;
   }
 
-  &:active {
+  &:not([disabled]):active {
     background-color: #09006D;
     border-color: #09006D;
   }
@@ -79,12 +79,12 @@
     background-color: transparent;
     border-color: #0324FF;
 
-    &:--enter {
+    &:not([disabled]):--enter {
       color: #0D009A;
       border-color: #0D009A;
     }
 
-    &:active {
+    &:not([disabled]):active {
       color: #09006D;
       border-color: #09006D;
     }
@@ -100,13 +100,13 @@
   background-color: #EFEFEF;
   border-color: #EFEFEF;
 
-  &:--enter {
+  &:not([disabled]):--enter {
     color: inherit;
     background-color: #E7E7E7;
     border-color: #E7E7E7;
   }
 
-  &:active {
+  &:not([disabled]):active {
     background-color: #D8D8D8;
     border-color: #D8D8D8;
   }
@@ -119,11 +119,11 @@
     border-color: #525252;
     background-color: transparent;
 
-    &:--enter {
+    &:not([disabled]):--enter {
       border-color: #323232;
     }
 
-    &:active {
+    &:not([disabled]):active {
       border-color: #525252;
     }
   }
@@ -134,12 +134,12 @@
   background-color: #FF0F2D;
   border-color: #FF0F2D;
 
-  &:--enter {
+  &:not([disabled]):--enter {
     background-color: #EA112C;
     border-color: #EA112C;
   }
 
-  &:active {
+  &:not([disabled]):active {
     background-color: #D50F28;
     border-color: #D50F28;
   }
@@ -156,12 +156,12 @@
   font-weight: var(--regular);
   padding: 0 0.5rem !important; /* ignore "size" classes */
 
-  &:--enter {
+  &:not([disabled]):--enter {
     color: #323232;
     transform: scale(1) translate3d(0, 0, 0);
   }
 
-  &:active {
+  &:not([disabled]):active {
     color: rgba(82, 82, 82, 0.8);
     transform: scale(1) translate3d(0, 0, 0);
   }
@@ -175,11 +175,11 @@
     background-color: transparent;
     border-color: transparent;
 
-    &:--enter {
+    &:not([disabled]):--enter {
       color: #0D009A;
     }
 
-    &:active {
+    &:not([disabled]):active {
       color: #13013D;
     }
 
@@ -203,13 +203,13 @@
   letter-spacing: 1px;
   height: 40px !important; /* ignore "size" classes */
 
-  &:--enter {
+  &:not([disabled]):--enter {
     color: inherit;
     background-color: rgba(255, 255, 255, 1);
     border-color: rgba(255, 255, 255, 1);
   }
 
-  &:active {
+  &:not([disabled]):active {
     background-color: rgba(255, 255, 255, 0.8);
     border-color: rgba(255, 255, 255, 0.8);
   }
@@ -223,12 +223,12 @@
     background-color: rgba(239, 239, 239, 0.9);
     border-color: rgba(239, 239, 239, 0.9);
 
-    &:--enter {
+    &:not([disabled]):--enter {
       background-color: #E7E7E7;
       border-color: #E7E7E7;
     }
 
-    &:active {
+    &:not([disabled]):active {
       background-color: #D8D8D8;
       border-color: #D8D8D8;
     }

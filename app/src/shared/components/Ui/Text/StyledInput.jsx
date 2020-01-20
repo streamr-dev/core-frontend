@@ -30,7 +30,21 @@ export default styled.input`
         line-height: ${theme.lineHeight};
     `}
 
-    :focus {
+    /* Avoids weird browser bug where translucent elements with
+     * same background colour and same opacity render with
+     * different colours
+     */
+    backface-visibility: hidden;
+
+    :disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        background-color: #EFEFEF;
+        border-color: #EFEFEF;
+        color: #32323280;
+    }
+
+    :not(:disabled):focus {
         border: 1px solid #0324FF;
         box-shadow: none;
         outline: none;
