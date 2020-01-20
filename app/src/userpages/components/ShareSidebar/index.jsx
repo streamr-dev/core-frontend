@@ -4,6 +4,7 @@ import React, { useCallback, useState, useRef, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { Translate, I18n } from 'react-redux-i18n'
 import groupBy from 'lodash/groupBy'
+import isEqual from 'lodash/isEqual'
 import mapValues from 'lodash/mapValues'
 
 import * as api from '$shared/utils/api'
@@ -164,11 +165,22 @@ const ShareSidebar = connect(({ user }) => ({
         updatePermission('anonymous', 'read', value === 'withLink')
     }, [updatePermission])
 
-    const [isSaving, setIsSaving] = useState(false)
-
-    const onSave = useCallback(() => {
-        setIsSaving(true)
+    const onSaveCallback = useCallback(async () => {
+        const currentUserIds = new Set(Object.keys(currentUsers))
+        const prevUserIds = new Set(Object.keys(users))
+        const allUsers = new Set([...currentUserIds, ...prevUserIds])
+        const added = new Set([...allUsers].filter((u) => !prevUserIds.has(u)))
+        const removed = new Set([...allUsers].filter((u) => !currentUserIds.has(u)))
+        const maybeChanged = [...allUsers].filter((u) => !added.has(u) && !removed.has(u))
+        const changed = maybeChanged.filter((u) => !isEqual(currentUsers[u], users[u]))
+        return changed
     }, [])
+
+    const [isSavingState, onSave] = useAsyncCallbackWithState(onSaveCallback)
+    const { isLoading: isSaving, error } = isSavingState
+
+    if (error) { return error.message }
+    if (!permissions) { return null }
 
     const anonymousPermissions = currentUsers.anonymous
 

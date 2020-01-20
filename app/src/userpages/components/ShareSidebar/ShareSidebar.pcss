@@ -36,6 +36,23 @@
       font-size: inherit;
       margin: 0;
     }
+
+    .button {
+      display: inline-flex;
+      justify-content: center;
+      padding: 0.5um;
+      opacity: 0;
+      transition: opacity 0.1s;
+    }
+
+    &:hover .button {
+      opacity: 1;
+    }
+
+    .trashIcon {
+      height: 1um;
+      width: 1um;
+    }
   }
 
   .permissionsCheckboxes {
@@ -47,11 +64,6 @@
     label {
       margin-bottom: 0;
     }
-  }
-
-  .trashIcon {
-    height: 1um;
-    width: 1um;
   }
 }
 
