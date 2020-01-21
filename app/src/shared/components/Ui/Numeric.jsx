@@ -69,6 +69,10 @@ const Buttons = styled(UnstyledButtons)`
         width: 8px;
         height: 8px;
     }
+
+    button:disabled > svg {
+        color: #32323280;
+    }
 `
 
 type Props = {
