@@ -1,14 +1,11 @@
 // @flow
 
 import React from 'react'
-import { connect } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { I18n, Translate } from 'react-redux-i18n'
 
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
-import withWeb3 from '$shared/utils/withWeb3'
-import type { ErrorInUi } from '$shared/flowtype/common-types'
-import type { StoreState } from '$shared/flowtype/store-state'
 import { selectCreatingIdentity, selectCreatingIdentityError } from '$shared/modules/integrationKey/selectors'
 import PngIcon from '$shared/components/PngIcon'
 import SvgIcon from '$shared/components/SvgIcon'
@@ -18,18 +15,11 @@ import DuplicateIdentityDialog from './DuplicateIdentityDialog'
 
 import styles from './identityChallengeDialog.pcss'
 
-type DialogProps = {
+type Props = {
     onClose: () => void,
 }
 
-type StateProps = {
-    creatingIdentity: boolean,
-    error: ?ErrorInUi,
-}
-
-type Props = DialogProps & StateProps
-
-export const SignatureRequestDialog = ({ onClose }: DialogProps) => (
+export const SignatureRequestDialog = ({ onClose }: Props) => (
     <ModalPortal>
         <Dialog
             title={I18n.t('modal.signatureRequest.defaultTitle')}
@@ -43,7 +33,7 @@ export const SignatureRequestDialog = ({ onClose }: DialogProps) => (
     </ModalPortal>
 )
 
-export const ErrorDialog = ({ onClose }: DialogProps) => (
+export const ErrorDialog = ({ onClose }: Props) => (
     <ModalPortal>
         <Dialog
             title={I18n.t('modal.newIdentityError.defaultTitle')}
@@ -57,7 +47,7 @@ export const ErrorDialog = ({ onClose }: DialogProps) => (
     </ModalPortal>
 )
 
-export const SuccessDialog = ({ onClose }: DialogProps) => (
+export const SuccessDialog = ({ onClose }: Props) => (
     <ModalPortal>
         <Dialog
             title={I18n.t('modal.newIdentitySuccess.defaultTitle')}
@@ -71,8 +61,9 @@ export const SuccessDialog = ({ onClose }: DialogProps) => (
     </ModalPortal>
 )
 
-const IdentityChallengeDialog = (props: Props) => {
-    const { onClose, creatingIdentity, error } = props
+const IdentityChallengeDialog = ({ onClose }: Props) => {
+    const creatingIdentity = useSelector(selectCreatingIdentity)
+    const error = useSelector(selectCreatingIdentityError)
 
     if (creatingIdentity) {
         return <SignatureRequestDialog onClose={onClose} />
@@ -103,9 +94,4 @@ const IdentityChallengeDialog = (props: Props) => {
     )
 }
 
-const mapStateToProps = (state: StoreState) => ({
-    creatingIdentity: selectCreatingIdentity(state),
-    error: selectCreatingIdentityError(state),
-})
-
-export default withWeb3(connect(mapStateToProps)(IdentityChallengeDialog))
+export default IdentityChallengeDialog
