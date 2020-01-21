@@ -42,3 +42,6 @@ export const resourceKeysSchema = [resourceKeySchema]
 
 export const communityProductSchema = new schema.Entity('communityProducts')
 export const communityProductsSchema = [communityProductSchema]
+
+export const joinRequestSchema = new schema.Entity('joinRequests')
+export const joinRequestsSchema = [joinRequestSchema]

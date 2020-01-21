@@ -109,6 +109,33 @@ export const getFilters = (): { [string]: SortOption } => {
                 order: 'desc',
             },
         },
+        APPROVE: {
+            displayName: I18n.t('userpages.filter.approve'),
+            filter: {
+                id: 'approve',
+                key: 'state',
+                value: 'PENDING',
+                order: 'desc',
+            },
+        },
+        REMOVE: {
+            displayName: I18n.t('userpages.filter.remove'),
+            filter: {
+                id: 'remove',
+                key: 'state',
+                value: 'ACCEPTED',
+                order: 'desc',
+            },
+        },
+        REJECTED: {
+            displayName: I18n.t('userpages.filter.rejected'),
+            filter: {
+                id: 'rejected',
+                key: 'state',
+                value: 'REJECTED',
+                order: 'desc',
+            },
+        },
     }
 }
 

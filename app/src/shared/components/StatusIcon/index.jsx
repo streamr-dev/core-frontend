@@ -6,8 +6,10 @@ import { I18n } from 'react-redux-i18n'
 
 import styles from './statusIcon.pcss'
 
+export type Status = 'ok' | 'error' | 'inactive' | 'pending'
+
 type Props = {
-    status?: 'ok' | 'error' | 'inactive',
+    status?: Status,
     className?: string,
     showTooltip?: boolean,
 }
@@ -16,6 +18,7 @@ export default class StatusIcon extends React.Component<Props> {
     static ERROR = 'error'
     static OK = 'ok'
     static INACTIVE = 'inactive'
+    static PENDING = 'pending'
 
     static defaultProps = {
         status: StatusIcon.INACTIVE,
@@ -32,6 +35,7 @@ export default class StatusIcon extends React.Component<Props> {
                     [styles.ok]: status === StatusIcon.OK,
                     [styles.error]: status === StatusIcon.ERROR,
                     [styles.inactive]: status === StatusIcon.INACTIVE,
+                    [styles.pending]: status === StatusIcon.PENDING,
                     [styles.showTooltip]: showTooltip,
                 })}
             />

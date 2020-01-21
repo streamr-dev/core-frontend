@@ -5,9 +5,11 @@
  */
 
 import React, { useCallback, useState, useRef, useMemo, useContext } from 'react'
+import t from 'prop-types'
 
 /* eslint-disable react/no-unused-state */
 const SelectionContext = React.createContext({})
+
 const { Consumer } = SelectionContext
 
 export { Consumer, SelectionContext }
@@ -16,18 +18,18 @@ export default function useSelection() {
     const [selection, setSelection] = useState(new Set())
 
     const add = useCallback((id) => (
-        setSelection((selection) => {
-            if (selection.has(id) && [...selection][0] === id) {
-                return selection
+        setSelection((prevSelection) => {
+            if (prevSelection.has(id) && [...prevSelection][0] === id) {
+                return prevSelection
             }
-            return new Set([id, ...selection])
+            return new Set([id, ...prevSelection])
         })
     ), [setSelection])
 
     const remove = useCallback((id) => (
-        setSelection((selection) => {
-            if (!selection.has(id)) { return selection }
-            const newSelection = new Set(selection)
+        setSelection((prevSelection) => {
+            if (!prevSelection.has(id)) { return prevSelection }
+            const newSelection = new Set(prevSelection)
             newSelection.delete(id)
             return newSelection
         })
@@ -60,6 +62,10 @@ export default function useSelection() {
         [...selectionRef.current][0]
     ), [selectionRef])
 
+    const size = useCallback(() => (
+        selectionRef.current.size
+    ), [selectionRef])
+
     return useMemo(() => ({
         isEmpty,
         selection,
@@ -70,7 +76,8 @@ export default function useSelection() {
         none,
         current,
         has,
-    }), [add, remove, only, none, current, has, selection, last, isEmpty])
+        size,
+    }), [add, remove, only, none, current, has, selection, last, isEmpty, size])
 }
 
 export function useSelectionContext() {
@@ -82,3 +89,7 @@ export const SelectionProvider = ({ children }) => (
         {children || null}
     </SelectionContext.Provider>
 )
+
+SelectionProvider.propTypes = {
+    children: t.node,
+}

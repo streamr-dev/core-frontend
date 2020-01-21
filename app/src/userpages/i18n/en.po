@@ -101,6 +101,15 @@ msgstr "Active"
 msgid "userpages##filter##expired"
 msgstr "Expired"
 
+msgid "userpages##filter##approve"
+msgstr "Approve"
+
+msgid "userpages##filter##remove"
+msgstr "Remove"
+
+msgid "userpages##filter##rejected"
+msgstr "Rejected"
+
 msgid "userpages##header##canvases"
 msgstr "Canvases"
 
@@ -184,6 +193,74 @@ msgstr "View Product"
 
 msgid "userpages##products##settings"
 msgstr "Settings"
+
+msgid "userpages##members##noCommunityMembers##approve##title"
+msgstr "No one has applied to join yet."
+
+msgid "userpages##members##noCommunityMembers##approve##message"
+msgstr "Get out there and promote it 🚀"
+
+msgid "userpages##members##noCommunityMembers##remove##title"
+msgstr "No one has joined yet."
+
+msgid "userpages##members##noCommunityMembers##remove##message"
+msgstr "Get out there and promote it 🚀"
+
+msgid "userpages##members##noCommunityMembers##rejected##title"
+msgstr "You haven't rejected any approvals yet."
+
+msgid "userpages##members##noCommunityMembers##rejected##message"
+msgstr "Keep up the good work 👍"
+
+msgid "userpages##members##noCommunityMembersResult##title"
+msgstr "Nope, sorry!"
+
+msgid "userpages##members##noCommunityMembersResult##message"
+msgstr "We couldn't find any members that match your search."
+
+msgid "userpages##members##noCommunityMembersResult##clearFilters"
+msgstr "Clear filters"
+
+msgid "userpages##members##table##ethereumAddress"
+msgstr "Ethereum address"
+
+msgid "userpages##members##table##joinedRequested"
+msgstr "Joined / requested"
+
+msgid "userpages##members##table##lastUpdated"
+msgstr "Last updated"
+
+msgid "userpages##members##table##status"
+msgstr "Status"
+
+msgid "userpages##members##applicantsSelected"
+msgid_plural "userpages##members##applicantsSelected"
+msgstr[1] "%{count} applicant selected"
+msgstr[2] "%{count} applicants selected"
+
+msgid "userpages##members##actions##cancel"
+msgstr "Cancel"
+
+msgid "userpages##members##actions##selectAll"
+msgstr "Select all"
+
+msgid "userpages##members##actions##deselectAll"
+msgstr "Deselect all"
+
+msgid "userpages##members##actions##approve"
+msgstr "Approve"
+
+msgid "userpages##members##actions##remove"
+msgstr "Remove"
+
+msgid "userpages##members##confirmTitle"
+msgstr "Are you sure?"
+
+msgid "userpages##members##confirmMessage"
+msgstr "This is an unrecoverable action. It will permanently<br/>remove the selected members from your community."
+
+msgid "userpages##members##confirmButton"
+msgstr "Yes, remove"
 
 msgid "userpages##purchases##filterPurchases"
 msgstr "Filter purchases"
