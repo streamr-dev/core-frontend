@@ -2,7 +2,6 @@
 
 import React, { Fragment, useCallback, useEffect, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Button } from 'reactstrap'
 import { Translate, I18n } from 'react-redux-i18n'
 import { Link } from 'react-router-dom'
 import { push } from 'connected-react-router'
@@ -31,8 +30,8 @@ import useCopy from '$shared/hooks/useCopy'
 import useModal from '$shared/hooks/useModal'
 import useCommunityStats from '$mp/modules/communityProduct/hooks/useCommunityStats'
 import routes from '$routes'
-
 import CreateProductModal from '$mp/containers/CreateProductModal'
+import Button from '$shared/components/Button'
 
 import styles from './products.pcss'
 
@@ -44,6 +43,7 @@ const CreateProductButton = () => {
             <Button
                 tag={Link}
                 to={links.marketplace.createProduct}
+                className={styles.createProductButton}
             >
                 <Translate value="userpages.products.createProduct" />
             </Button>
