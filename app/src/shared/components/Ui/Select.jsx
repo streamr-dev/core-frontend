@@ -33,6 +33,10 @@ const customStyles = {
                 stroke: '#A3A3A3',
             },
         },
+        backgroundColor: state.isDisabled ? '#EFEFEF' : null,
+        opacity: state.isDisabled ? 0.5 : 1,
+        backfaceVisibility: 'hidden',
+        color: state.isDisabled ? '#32323280' : '#323232',
         border: state.isFocused ? '1px solid #0324FF' : '1px solid #EFEFEF',
         borderRadius: '4px',
         height: '40px',
@@ -43,9 +47,9 @@ const customStyles = {
         lineHeight: '2rem',
         width: '100%',
     }),
-    dropdownIndicator: (provided) => ({
+    dropdownIndicator: (provided, state) => ({
         ...provided,
-        color: '#323232',
+        color: state.isDisabled ? '#32323280' : '#323232',
         marginRight: '8px',
     }),
     indicatorSeparator: () => ({}),
