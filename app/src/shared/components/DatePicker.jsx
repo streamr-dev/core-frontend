@@ -50,7 +50,7 @@ class DatePicker extends React.Component<Props> {
                             disabled={disabled}
                             {...rest1}
                         />
-                        <CalendarIcon />
+                        <CalendarIcon disabled={disabled} />
                     </React.Fragment>
                 )}
             </WithCalendar>
