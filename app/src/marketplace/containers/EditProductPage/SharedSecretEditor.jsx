@@ -13,10 +13,11 @@ import type { Secret } from '$mp/modules/dataUnion/types'
 import styles from './sharedSecretEditor.pcss'
 
 type Props = {
-    className?: string
+    className?: string,
+    disabled?: boolean,
 }
 
-const SharedSecretEditor = ({ className }: Props) => {
+const SharedSecretEditor = ({ className, disabled }: Props) => {
     const product = useProduct()
     const [secrets, setSecrets] = useState([])
     const dataUnionId = (product && product.beneficiaryAddress) || ''
@@ -46,9 +47,8 @@ const SharedSecretEditor = ({ className }: Props) => {
                     keyName={s.name}
                     value={s.secret}
                     hideValue
-                    allowEdit
-                    allowEditValue={false}
-                    allowDelete
+                    allowEdit={!disabled}
+                    allowDelete={!disabled}
                     onSave={async (name) => {
                         if (name) {
                             const result = await putSecret({
@@ -69,13 +69,14 @@ const SharedSecretEditor = ({ className }: Props) => {
                         })
                         setSecrets((currentSecrets) => currentSecrets.filter((secret) => secret.id !== s.id))
                     }}
+                    valueLabel="sharedSecret"
                     className={styles.keyField}
                 />
             ))}
             <div className={styles.addButton}>
                 <AddKeyField
                     label={I18n.t('editProductPage.sharedSecrets.addSecret')}
-                    addKeyFieldAllowed
+                    addKeyFieldAllowed={!disabled}
                     onSave={async (name, value) => {
                         const result = await postSecret({
                             dataUnionId,

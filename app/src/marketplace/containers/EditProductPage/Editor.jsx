@@ -20,6 +20,7 @@ import styles from './editor.pcss'
 
 const Editor = () => {
     const product = useProduct()
+    const isDataUnion = isDataUnionProduct(product)
 
     return (
         <div className={cx(styles.root, styles.Editor)}>
@@ -35,7 +36,7 @@ const Editor = () => {
                         <ProductStreams />
                         <PriceSelector />
                         <ProductDetails />
-                        {isDataUnionProduct(product) && (
+                        {!!isDataUnion && (
                             <SharedSecrets />
                         )}
                     </div>

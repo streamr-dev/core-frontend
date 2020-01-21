@@ -880,6 +880,9 @@ msgstr "Private key"
 msgid "userpages##keyFieldEditor##keyValue##address"
 msgstr "Address"
 
+msgid "userpages##keyFieldEditor##keyValue##sharedSecret"
+msgstr "Shared secret"
+
 msgid "userpages##keyFieldEditor##add"
 msgstr "Add"
 
