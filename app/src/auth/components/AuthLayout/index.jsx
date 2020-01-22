@@ -18,7 +18,7 @@ const Panel = styled.div`
     input[type=password] {
         border: 0;
         box-sizing: content-box;
-        color: var(--greyDark);
+        color: #323232;
         display: block;
         font-size: 16px;
         height: 1rem;
