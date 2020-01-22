@@ -85,6 +85,10 @@ jobs:
       - npm ci
       - npm run build
       - docker build -t $OWNER/$IMAGE_NAME:local --build-arg NPM_TOKEN=${NPM_TOKEN} .
+      - travis_scripts/smoke-test.sh
+    after_failure:
+      - docker ps
+      - docker logs streamr_dev_platform
     deploy:
       - provider: script
         skip_cleanup: true
