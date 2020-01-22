@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 import { I18n, Translate } from 'react-redux-i18n'
 
 import Button from '$shared/components/Button'
-import Select from '$shared/components/SelectInput/Select'
+import Select from '$shared/components/Input/Select'
 import CoreText from '$shared/components/Input/CoreText'
 import type { StreamField } from '$shared/flowtype/stream-types'
 import SplitControl from '$userpages/components/SplitControl'

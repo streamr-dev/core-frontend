@@ -9,7 +9,7 @@ import type { StoreState } from '$shared/flowtype/store-state'
 import { updateEditStream } from '$userpages/modules/userPageStreams/actions'
 import { selectEditedStream } from '$userpages/modules/userPageStreams/selectors'
 import CoreText from '$shared/components/Input/CoreText'
-import Select from '$shared/components/SelectInput/Select'
+import Select from '$shared/components/Input/Select'
 import FormControlLabel from '$shared/components/FormControlLabel'
 
 import styles from './statusView.pcss'

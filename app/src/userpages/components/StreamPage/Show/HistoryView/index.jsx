@@ -14,7 +14,7 @@ import { getRange, deleteDataUpTo, uploadCsvFile, confirmCsvFileUpload, updateEd
 import { selectDeleteDataError, selectUploadCsvState, selectEditedStream } from '$userpages/modules/userPageStreams/selectors'
 import Button from '$shared/components/Button'
 import CoreText from '$shared/components/Input/CoreText'
-import Select from '$shared/components/SelectInput/Select'
+import Select from '$shared/components/Input/Select'
 import FileUpload from '$shared/components/FileUpload'
 import DatePicker from '$shared/components/DatePicker'
 import SvgIcon from '$shared/components/SvgIcon'

@@ -9,7 +9,7 @@ import { NotificationIcon } from '$shared/utils/constants'
 
 import type { ResourcePermission } from '$shared/flowtype/resource-key-types'
 import DropdownActions from '$shared/components/DropdownActions'
-import Select from '$shared/components/SelectInput/Select'
+import Select from '$shared/components/Input/Select'
 import SplitControl from '$userpages/components/SplitControl'
 import { truncate } from '$shared/utils/text'
 import FormControlLabel from '$shared/components/FormControlLabel'

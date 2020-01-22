@@ -3,7 +3,7 @@
 import React from 'react'
 import cx from 'classnames'
 
-import Select, { type Props as SelectProps } from '$shared/components/SelectInput/Select'
+import Select, { type Props as SelectProps } from '$shared/components/Input/Select'
 import FormControlErrors from '$shared/components/FormControlErrors'
 import { useLastError, type LastErrorProps } from '$shared/hooks/useLastError'
 
@@ -13,13 +13,7 @@ type SelectFieldProps = LastErrorProps & SelectProps & {
     disabled?: boolean,
 }
 
-export const SelectField = ({
-    error,
-    isProcessing,
-    disabled,
-    className,
-    ...inputProps
-}: SelectFieldProps) => {
+export const SelectField = ({ error, isProcessing, disabled, ...inputProps }: SelectFieldProps) => {
     const { hasError, error: lastError } = useLastError({
         error,
         isProcessing,
@@ -29,14 +23,13 @@ export const SelectField = ({
     return (
         <div>
             <Select
-                className={className}
                 controlClassName={cx({
                     [styles.withError]: !!hasError,
                 })}
                 isDisabled={disabled}
                 {...castProps}
             />
-            <FormControlErrors>
+            <FormControlErrors overlap>
                 {!!hasError && lastError}
             </FormControlErrors>
         </div>

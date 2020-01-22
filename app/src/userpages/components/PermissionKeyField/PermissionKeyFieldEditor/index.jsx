@@ -6,7 +6,7 @@ import cx from 'classnames'
 
 import type { ResourcePermission } from '$shared/flowtype/resource-key-types'
 import Buttons from '$shared/components/Buttons'
-import Select from '$shared/components/SelectInput/Select'
+import Select from '$shared/components/Input/Select'
 import SplitControl from '$userpages/components/SplitControl'
 import FormControlLabel from '$shared/components/FormControlLabel'
 import CoreText from '$shared/components/Input/CoreText'

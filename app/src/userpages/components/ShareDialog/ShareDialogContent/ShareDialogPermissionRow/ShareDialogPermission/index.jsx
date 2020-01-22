@@ -9,7 +9,7 @@ import { setResourceHighestOperationForUser, removeAllResourcePermissionsByUser 
 import type { Permission, ResourceType, ResourceId } from '../../../../../flowtype/permission-types'
 import { selectUserData } from '$shared/modules/user/selectors'
 import SvgIcon from '$shared/components/SvgIcon'
-import Select from '$shared/components/SelectInput/Select'
+import Select from '$shared/components/Input/Select'
 import Button from '$shared/components/Button'
 
 import styles from './shareDialogPermission.pcss'

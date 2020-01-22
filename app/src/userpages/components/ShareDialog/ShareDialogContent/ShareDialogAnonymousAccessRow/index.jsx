@@ -7,7 +7,7 @@ import { Translate, I18n } from 'react-redux-i18n'
 import type { PermissionState } from '$userpages/flowtype/states/permission-state'
 import type { Permission, ResourceType, ResourceId } from '$userpages/flowtype/permission-types'
 import { addResourcePermission, removeResourcePermission } from '$userpages/modules/permission/actions'
-import Select from '$shared/components/SelectInput/Select'
+import Select from '$shared/components/Input/Select'
 import FormControlLabel from '$shared/components/FormControlLabel'
 
 import styles from './shareDialogAnonymousAccessRow.pcss'
