@@ -23,10 +23,18 @@ export default (): ?string => {
             }
         })
 
+        const setLocked = () => {
+            if (isMounted()) {
+                setAddress(undefined)
+            }
+        }
+
         Web3Poller.subscribe(Web3Poller.events.ACCOUNT, setAddress)
+        Web3Poller.subscribe(Web3Poller.events.ACCOUNT_ERROR, setLocked)
 
         return () => {
             Web3Poller.unsubscribe(Web3Poller.events.ACCOUNT, setAddress)
+            Web3Poller.unsubscribe(Web3Poller.events.ACCOUNT_ERROR, setLocked)
         }
     }, [isMounted])
 
