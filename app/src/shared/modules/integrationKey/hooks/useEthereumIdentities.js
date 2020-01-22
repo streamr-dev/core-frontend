@@ -26,20 +26,21 @@ function useEthereumIdentities() {
 
     const edit = useCallback((keyId: IntegrationKeyId, keyName: string) => dispatch(editIntegrationKey(keyId, keyName)), [dispatch])
 
-    // Check if current metamask account is linked to Streamr account
-    const isLinked = useCallback((account: Address) => (
-        !!(ethereumIdentities &&
+    const getIdentity = useCallback((account: Address) => (
+        ethereumIdentities &&
         account &&
-        ethereumIdentities.find(({ json }) =>
-            json && json.address && areAddressesEqual(json.address, account))
-        )
+        ethereumIdentities.find(({ json }) => (json && json.address && areAddressesEqual(json.address, account)))
     ), [ethereumIdentities])
+
+    // Check if current metamask account is linked to Streamr account
+    const isLinked = useCallback((account: Address) => !!getIdentity(account), [getIdentity])
 
     return useMemo(() => ({
         load,
         fetching,
         ethereumIdentities,
         error,
+        getIdentity,
         isLinked,
         create,
         remove,
@@ -49,6 +50,7 @@ function useEthereumIdentities() {
         fetching,
         ethereumIdentities,
         error,
+        getIdentity,
         isLinked,
         create,
         remove,

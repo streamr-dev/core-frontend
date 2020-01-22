@@ -148,8 +148,56 @@ msgstr "Fix price in fiat for protection against shifts in the DATA price"
 msgid "editProductPage##productDetails##title"
 msgstr "Add some more details"
 
+msgid "editProductPage##connectEthIdentity##title"
+msgstr "Connect an Ethereum identity"
+
+msgid "editProductPage##connectEthIdentity##noLinkedEthIdentities"
+msgstr ""
+"You haven't connected an Ethereum address to your Streamr account yet. "
+"In order to manage your community, you need to do this before deploying your product."
+
+msgid "editProductPage##connectEthIdentity##notDeployed##web3Locked"
+msgstr ""
+"In order to manage your community, you need to unlock Metamask and "
+"connect your Ethereum address to your Streamr account before deploying your product."
+
+msgid "editProductPage##connectEthIdentity##notDeployed##currentIdentityNotLinked"
+msgstr ""
+"When you deploy this product, your current Metamask account %{address} will become the owner. "
+"In order to manage your community, you need to connect your Ethereum address to your Streamr account before deploying your product."
+
+msgid "editProductPage##connectEthIdentity##notDeployed##currentIdentityLinked"
+msgstr ""
+"When you deploy this product, your current Metamask account %{address} will become the owner. "
+"It is needed to manage your community, and is connected to your Streamr account with name \"%{name}\"."
+
+msgid "editProductPage##connectEthIdentity##deployed##ownerNotLinked"
+msgstr ""
+"Product is owned by account %{address}. In order to manage your community, "
+"you need to connect this Ethereum address to your Streamr account."
+
+msgid "editProductPage##connectEthIdentity##deployed##ownerLinked"
+msgstr ""
+"Product is owned by account %{address} and is connected to your Streamr account with name \"%{name}\"."
+
+msgid "editProductPage##connectEthIdentity##notLinked##description"
+msgstr ""
+"You haven't connected %{address} to your Streamr account yet. "
+"In order to manage your community, you need to do this before deploying your product."
+
+msgid "editProductPage##connectEthIdentity##linked##description"
+msgstr ""
+"You have connected %{address} to your Streamr account. "
+"This address is used to manage your community."
+
+msgid "editProductPage##connectEthIdentity##addNewAddress"
+msgstr "Add an Ethereum address"
+
 msgid "editProductPage##sharedSecrets##addSecret"
 msgstr "Add shared secret"
+
+msgid "editProductPage##sharedSecrets##title"
+msgstr "Add a shared secrect"
 
 msgid "editProductPage##sharedSecrets##notDeployed##description"
 msgstr ""
@@ -180,6 +228,9 @@ msgstr "Set price"
 
 msgid "editProductPage##navigation##details"
 msgstr "Details"
+
+msgid "editProductPage##navigation##connectEthIdentity"
+msgstr "Ethereum identity"
 
 msgid "editProductPage##navigation##sharedSecrets"
 msgstr "Shared secrets"

@@ -1,11 +1,15 @@
 // @flow
 
 import React, { useState, useCallback, useEffect } from 'react'
+import { I18n } from 'react-redux-i18n'
 
 import useWeb3Status from '$shared/hooks/useWeb3Status'
 import Web3ErrorDialog from '$shared/components/Web3ErrorDialog'
 import useEthereumIdentities from '$shared/modules/integrationKey/hooks/useEthereumIdentities'
 import useModal from '$shared/hooks/useModal'
+import type { Address } from '$shared/flowtype/web3-types'
+import UnlockWalletDialog from '$mp/components/Modal/UnlockWalletDialog'
+import { areAddressesEqual } from '$mp/utils/smartContract'
 
 import IdentityNameDialog from '../IdentityNameDialog'
 import IdentityChallengeDialog from '../IdentityChallengeDialog'
@@ -13,6 +17,7 @@ import DuplicateIdentityDialog from '../IdentityChallengeDialog/DuplicateIdentit
 
 type Props = {
     api: Object,
+    requiredAddress?: Address,
 }
 
 const identityPhases = {
@@ -21,7 +26,7 @@ const identityPhases = {
     COMPLETE: 'complete',
 }
 
-const AddIdentityDialog = ({ api }: Props) => {
+const AddIdentityDialog = ({ api, requiredAddress }: Props) => {
     const { web3Error, checkingWeb3, account } = useWeb3Status()
     const { load: getEthIdentities, fetching, create, isLinked } = useEthereumIdentities()
     const [phase, setPhase] = useState(identityPhases.NAME)
@@ -52,6 +57,17 @@ const AddIdentityDialog = ({ api }: Props) => {
                 waiting={fetching || checkingWeb3}
                 onClose={onClose}
                 error={web3Error}
+            />
+        )
+    }
+
+    if (!!requiredAddress && (!account || !areAddressesEqual(account, requiredAddress))) {
+        return (
+            <UnlockWalletDialog
+                onClose={onClose}
+                message={I18n.t('unlockWalletDialog.message', {
+                    address: requiredAddress,
+                })}
             />
         )
     }
@@ -87,15 +103,18 @@ const AddIdentityDialog = ({ api }: Props) => {
 }
 
 export default () => {
-    const { api, isOpen } = useModal('userpages.addIdentity')
+    const { api, isOpen, value } = useModal('userpages.addIdentity')
 
     if (!isOpen) {
         return null
     }
 
+    const { requiredAddress } = value || {}
+
     return (
         <AddIdentityDialog
             api={api}
+            requiredAddress={requiredAddress}
         />
     )
 }

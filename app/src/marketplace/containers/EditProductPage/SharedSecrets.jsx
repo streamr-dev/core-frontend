@@ -6,10 +6,10 @@ import { Translate } from 'react-redux-i18n'
 import routes from '$routes'
 
 import useProduct from '../ProductController/useProduct'
-import useCommunityProduct from '$mp/containers/ProductController/useCommunityProduct'
+import useDataUnion from '$mp/containers/ProductController/useDataUnion'
 import useEthereumIdentities from '$shared/modules/integrationKey/hooks/useEthereumIdentities'
 import SharedSecretEditor from './SharedSecretEditor'
-import { isCommunityProduct } from '$mp/utils/product'
+import { isDataUnionProduct } from '$mp/utils/product'
 import { isEthereumAddress } from '$mp/utils/validate'
 
 import styles from './productStreams.pcss'
@@ -20,16 +20,16 @@ type Props = {
 
 const SharedSecrets = ({ className }: Props) => {
     const product = useProduct()
-    const isCommunity = isCommunityProduct(product)
-    const community = useCommunityProduct()
-    const { owner } = community || {}
-    const isDeployed = isCommunity && isEthereumAddress(owner)
+    const isDataUnion = isDataUnionProduct(product)
+    const dataunion = useDataUnion()
+    const { owner } = dataunion || {}
+    const isDeployed = isDataUnion && isEthereumAddress(owner)
     const { isLinked } = useEthereumIdentities()
     const ownerLinked = useMemo(() => !!owner && isLinked(owner), [isLinked, owner])
 
     return (
         <section id="shared-secrets" className={cx(styles.root, className)}>
-            <Translate tag="h1" value="editProductPage.navigation.sharedSecrets" />
+            <Translate tag="h1" value="editProductPage.sharedSecrets.title" />
             <Translate
                 value={`editProductPage.sharedSecrets.${isDeployed ? 'deployed' : 'notDeployed'}.description`}
                 tag="p"

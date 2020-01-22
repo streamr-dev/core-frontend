@@ -79,6 +79,13 @@ const EditorNav = () => {
         return statuses.EMPTY
     }, [getStatus, isDataUnion])
 
+    const ethIdentityStatus = useMemo(() => {
+        if (!isTouched('ethIdentity')) {
+            return statuses.EMPTY
+        }
+        return statuses.VALID
+    }, [isTouched])
+
     const sharedSecretStatus = useMemo(() => {
         if (!isTouched('sharedSecrets')) {
             return statuses.EMPTY
@@ -130,6 +137,11 @@ const EditorNav = () => {
         id: 'details',
         heading: I18n.t('editProductPage.navigation.details'),
         status: detailsStatus,
+    },
+    {
+        id: 'connect-eth-identity',
+        heading: I18n.t('editProductPage.navigation.connectEthIdentity'),
+        status: ethIdentityStatus,
     }, {
         id: 'shared-secrets',
         heading: I18n.t('editProductPage.navigation.sharedSecrets'),
@@ -141,12 +153,15 @@ const EditorNav = () => {
         getStatus,
         priceStatus,
         detailsStatus,
+        ethIdentityStatus,
         sharedSecretStatus,
         onClickFn,
     ])
 
     if (!isDataUnion) {
-        sections = sections.filter((s) => s.id !== 'shared-secrets')
+        const dataUnionOnlySections = new Set(['connect-eth-identity', 'shared-secrets'])
+
+        sections = sections.filter((s) => !dataUnionOnlySections.has(s.id))
     }
 
     const sectionAnchors = useMemo(() => sections.map(({ id }) => id), [sections])

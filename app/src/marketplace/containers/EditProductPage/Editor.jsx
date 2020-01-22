@@ -14,6 +14,7 @@ import ProductDescription from './ProductDescription'
 import ProductStreams from './ProductStreams'
 import PriceSelector from './PriceSelector'
 import ProductDetails from './ProductDetails'
+import ConnectEthIdentity from './ConnectEthIdentity'
 import SharedSecrets from './SharedSecrets'
 
 import styles from './editor.pcss'
@@ -36,6 +37,9 @@ const Editor = () => {
                         <ProductStreams />
                         <PriceSelector />
                         <ProductDetails />
+                        {!!isDataUnion && (
+                            <ConnectEthIdentity />
+                        )}
                         {!!isDataUnion && (
                             <SharedSecrets />
                         )}

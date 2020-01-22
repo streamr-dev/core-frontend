@@ -56,14 +56,12 @@ const EditProductPage = ({ product }: { product: Product }) => {
     // Load eth identities & community product (used to determine if owner account is linked)
     const { load: loadEthIdentities } = useEthereumIdentities()
     const originalProduct = useProduct()
-    const { communityDeployed, beneficiaryAddress } = originalProduct
+    const { beneficiaryAddress } = originalProduct
 
     useEffect(() => {
-        if (communityDeployed && beneficiaryAddress) {
-            loadEthIdentities()
-            loadDataUnion(beneficiaryAddress)
-        }
-    }, [communityDeployed, beneficiaryAddress, loadDataUnion, loadEthIdentities])
+        loadEthIdentities()
+        loadDataUnion(beneficiaryAddress)
+    }, [beneficiaryAddress, loadDataUnion, loadEthIdentities])
 
     const isSaving = savePending
     const isDataUnion = isDataUnionProduct(product)
