@@ -44,9 +44,6 @@ msgstr "Editor"
 msgid "general##faq"
 msgstr "常见问题"
 
-msgid "general##footnote"
-msgstr "2018 年 Streamr Network AG 怀着 ❤️  和  ☕ 制作"
-
 msgid "general##general"
 msgstr "概要"
 

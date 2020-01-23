@@ -30,7 +30,7 @@ msgid "auth##labels##ethereum"
 msgstr "Signing you in, hold tight"
 
 msgid "auth##signInWithEthereum"
-msgstr "Sign in with Ethereum"
+msgstr "Authenticate with Ethereum"
 
 msgid "auth##forgotPassword##link##get"
 msgstr "Get a link to reset your password"

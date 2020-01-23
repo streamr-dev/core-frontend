@@ -43,9 +43,6 @@ msgstr "Editor"
 msgid "general##faq"
 msgstr "FAQ"
 
-msgid "general##footnote"
-msgstr "Erstellt mit ❤️ & ☕ von der Streamr Network AG im Jahr 2018."
-
 msgid "general##general"
 msgstr "Allgemeines"
 

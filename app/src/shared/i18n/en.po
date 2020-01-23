@@ -50,9 +50,6 @@ msgstr "Editor"
 msgid "general##faq"
 msgstr "FAQ"
 
-msgid "general##footnote"
-msgstr "Made with ❤️ & ☕ by Streamr contributors in 2019"
-
 msgid "general##designAssets"
 msgstr "Design Assets"
 
