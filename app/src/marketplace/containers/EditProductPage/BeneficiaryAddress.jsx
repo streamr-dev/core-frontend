@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useContext, Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useContext, Fragment, useCallback, useEffect, useMemo } from 'react'
 import cx from 'classnames'
 import { Translate, I18n } from 'react-redux-i18n'
 import { useSelector, useDispatch } from 'react-redux'
