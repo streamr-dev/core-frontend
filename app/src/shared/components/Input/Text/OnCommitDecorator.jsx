@@ -34,17 +34,12 @@ const OnCommitDecorator = (WrappedComponent: ComponentType<any>) => {
     }: Props, ref: any) => {
         const valueRef: Ref<string> = useRef(null)
 
-        const lastCommitedRef: Ref<string> = useRef(null)
-
         const onCommit = useCallback((value: string, requireChanged: boolean = false) => {
             if (onCommitProp) {
                 const newValue = noEmptyCommit ? normalize(value) : value
 
                 if ((!requireChanged || valueRef.current !== value) && (newValue || !noEmptyCommit)) {
-                    if (lastCommitedRef.current !== value) {
-                        onCommitProp(value)
-                        lastCommitedRef.current = value
-                    }
+                    onCommitProp(value)
                 }
             }
         }, [onCommitProp, noEmptyCommit])
