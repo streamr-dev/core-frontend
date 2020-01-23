@@ -95,9 +95,7 @@ const BeneficiaryAddress = ({ address, onChange, disabled, className }: Props) =
                                 })} (${name})`}
                             </DropdownActions.Item>
                         )),
-                        (integrationKeysFiltered.length > 0 && (
-                            <DropdownActions.Item key="divider" divider />
-                        )),
+                        <DropdownActions.Item key="divider" divider />,
                         <DropdownActions.Item
                             key="copy"
                             disabled={!address}
