@@ -48,6 +48,7 @@ const IdentityHandler = () => {
                 className={profileStyles.keyList}
             />
             <Button
+                type="button"
                 kind="secondary"
                 disabled={isOpen}
                 onClick={addIdentity}
