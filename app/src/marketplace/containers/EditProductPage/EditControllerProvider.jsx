@@ -16,6 +16,7 @@ import routes from '$routes'
 import useEditableProductActions from '../ProductController/useEditableProductActions'
 import { isEthereumAddress } from '$mp/utils/validate'
 import { areAddressesEqual } from '$mp/utils/smartContract'
+import useEditableProductUpdater from '../ProductController/useEditableProductUpdater'
 
 import * as State from '../EditProductPage/state'
 import useModal from '$shared/hooks/useModal'
@@ -41,6 +42,7 @@ function useEditController(product: Product) {
     const savePending = usePending('product.SAVE')
     const { updateBeneficiaryAddress } = useEditableProductActions()
     const originalProduct = useSelector(selectProduct)
+    const { replaceProduct } = useEditableProductUpdater()
 
     useEffect(() => {
         const handleBeforeunload = (event) => {
@@ -122,6 +124,8 @@ function useEditController(product: Product) {
                     nextProduct.imageUrl = newImageUrl
                     nextProduct.thumbnailUrl = newThumbnailUrl
                     delete nextProduct.newImageToUpload
+
+                    replaceProduct(() => nextProduct)
                 } catch (e) {
                     console.error('Could not upload image', e)
                 }
@@ -144,6 +148,7 @@ function useEditController(product: Product) {
         savePending,
         redirectToProductList,
         originalProduct,
+        replaceProduct,
     ])
 
     const validate = useCallback(() => {
