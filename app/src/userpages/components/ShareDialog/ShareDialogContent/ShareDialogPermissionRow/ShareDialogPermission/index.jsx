@@ -57,11 +57,11 @@ export class ShareDialogPermission extends Component<Props> {
                 <div className={styles.permissionRow}>
                     <SvgIcon name="user" className={styles.avatarIcon} />
                     <div className={styles.user}>
-                        <div className={styles.title}>
-                            <Translate value="modal.shareResource.user.defaultTitle" />
-                        </div>
-                        <div className={styles.username} title={user}>
+                        <div className={styles.userId}>
                             {user}
+                        </div>
+                        <div className={styles.userName} title={user}>
+                            <Translate value="modal.shareResource.user.defaultTitle" />
                         </div>
                     </div>
                     <SelectInput.Input
