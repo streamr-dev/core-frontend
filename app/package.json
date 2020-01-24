@@ -17,7 +17,8 @@
     "build-storybook": "node --max_old_space_size=4096 ./node_modules/.bin/build-storybook",
     "chromatic": "CHROMATIC_APP_CODE=exgpyxh1il5 chromatic test --exit-zero-on-changes",
     "clear-cache": "npm run clean-cache",
-    "clean-cache": "rm -rf node_modules/.cache; rm -rf .cache; rm -rf dist; jest --clearCache; killall flow; rm -rf /tmp/flow"
+    "clean-cache": "rm -rf node_modules/.cache; rm -rf .cache; rm -rf dist; jest --clearCache; killall flow; rm -rf /tmp/flow",
+    "cloc": "npx cloc --exclude-dir=node_modules,coverage,package-lock.json ."
   },
   "husky": {
     "hooks": {
