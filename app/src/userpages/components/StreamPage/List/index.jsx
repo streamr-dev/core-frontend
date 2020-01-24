@@ -326,7 +326,7 @@ const StreamList = () => {
                                                     )}
                                                 </Table.Td>
                                                 <Table.Td className={styles.statusColumn}>
-                                                    <StatusIcon showTooltip status={stream.streamStatus} />
+                                                    <StatusIcon status={stream.streamStatus} tooltip />
                                                 </Table.Td>
                                                 <Table.Td
                                                     onClick={(event) => event.stopPropagation()}
@@ -424,7 +424,7 @@ const StreamList = () => {
                                                                 )}
                                                             </span>
                                                             <StatusIcon
-                                                                showTooltip
+                                                                tooltip
                                                                 status={stream.streamStatus}
                                                                 className={styles.tabletStatusStreamIcon}
                                                             />

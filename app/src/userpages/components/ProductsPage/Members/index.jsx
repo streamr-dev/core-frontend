@@ -309,8 +309,11 @@ const Members = () => {
                                         <Table.Td noWrap className={styles.dataColumn}>
                                             {member.lastUpdated ? ago(new Date(member.lastUpdated)) : '-'}
                                         </Table.Td>
-                                        <Table.Td noWrap className={styles.statusColumn}>
-                                            <StatusIcon status={mapStatus(member.state)} />
+                                        <Table.Td className={styles.statusColumn}>
+                                            <StatusIcon
+                                                status={mapStatus(member.state)}
+                                                tooltip={I18n.t(`userpages.members.status.${(member.state || '').toLowerCase()}`)}
+                                            />
                                         </Table.Td>
                                     </tr>
                                 )

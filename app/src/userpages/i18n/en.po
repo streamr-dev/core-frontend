@@ -233,6 +233,15 @@ msgstr "Last updated"
 msgid "userpages##members##table##status"
 msgstr "Status"
 
+msgid "userpages##members##status##accepted"
+msgstr "Accepted"
+
+msgid "userpages##members##status##rejected"
+msgstr "Rejected"
+
+msgid "userpages##members##status##pending"
+msgstr "Pending"
+
 msgid "userpages##members##applicantsSelected"
 msgid_plural "userpages##members##applicantsSelected"
 msgstr[1] "%{count} applicant selected"
