@@ -229,6 +229,9 @@ msgstr "No data yet"
 msgid "shared##status##error"
 msgstr "Inactive"
 
+msgid "shared##status##pending"
+msgstr "Pending"
+
 msgid "shared##date##day"
 msgstr "Day"
 
