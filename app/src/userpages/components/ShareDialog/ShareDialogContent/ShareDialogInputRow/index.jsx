@@ -45,7 +45,7 @@ export class ShareDialogInputRow extends Component<Props, State> {
             <div className={styles.container}>
                 <div>
                     <FormControlLabel htmlFor="enterEmail">
-                        {I18n.t('auth.labels.email')}
+                        {I18n.t('modal.shareResource.enterEmailAddressLabel')}
                     </FormControlLabel>
                     <CoreText
                         id="enterEmail"

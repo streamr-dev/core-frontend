@@ -954,8 +954,11 @@ msgstr "Private — only people you’ve invited"
 msgid "modal##shareResource##withLink"
 msgstr "Public — viewable by anyone with the link or via the API"
 
+msgid "modal##shareResource##enterEmailAddressLabel"
+msgstr "Email or ETH address"
+
 msgid "modal##shareResource##enterEmailAddress"
-msgstr "Enter email address or Ethereum account."
+msgstr "Enter your email or ETH address"
 
 msgid "modal##shareResource##permissions##read"
 msgstr "View only"
