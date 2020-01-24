@@ -146,7 +146,7 @@ const BeneficiaryAddress = ({
                             onClick={useCurrentWalletAddress}
                             disabled={!accountAddress}
                         >
-                            <AddressItem name="wallet address" address={accountAddress} />
+                            <AddressItem name="wallet address" address={accountAddress || 'Wallet locked'} />
                         </DropdownActions.Item>,
                         ...integrationKeysFiltered.map(({ id, name, json }) => (
                             <DropdownActions.Item
