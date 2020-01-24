@@ -7,7 +7,6 @@ import OnAutoCompleteDecorator, { type Props as OnAutoCompleteProps } from './On
 import OnCommitDecorator, { type Props as OnCommitProps } from './OnCommitDecorator'
 import RevertOnEscapeDecorator, { type Props as RevertOnEscapeProps } from './RevertOnEscapeDecorator'
 import SelectAllOnFocusDecorator, { type Props as SelectAllOnFocusProps } from './SelectAllOnFocusDecorator'
-import StatefulInputDecorator, { type Props as StatefulInputProps } from './StatefulInputDecorator'
 
 type Props =
     & FlushHistoryProps
@@ -15,7 +14,6 @@ type Props =
     & OnCommitProps
     & RevertOnEscapeProps
     & SelectAllOnFocusProps
-    & StatefulInputProps
     & {
         tag: 'input' | 'textarea',
     }
@@ -30,5 +28,4 @@ export default compose(
     OnCommitDecorator,
     SelectAllOnFocusDecorator,
     RevertOnEscapeDecorator,
-    StatefulInputDecorator,
 )(forwardRef(Input))
