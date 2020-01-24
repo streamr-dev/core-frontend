@@ -170,10 +170,14 @@ const Members = () => {
                 })
             }
             selection.none()
+
+            if (loadMembersRef.current) {
+                loadMembersRef.current()
+            }
         }
 
         setRemoving(false)
-    }, [beneficiaryAddress, remove, selection])
+    }, [beneficiaryAddress, remove, selection, loadMembersRef])
 
     const onSortChange = useCallback((...args) => {
         // Clear selected & search on sort change
