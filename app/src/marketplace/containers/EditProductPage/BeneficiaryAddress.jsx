@@ -4,6 +4,7 @@ import React, { useContext, Fragment, useCallback, useEffect, useMemo } from 're
 import cx from 'classnames'
 import { Translate, I18n } from 'react-redux-i18n'
 import { useSelector, useDispatch } from 'react-redux'
+import styled from 'styled-components'
 
 import useValidation from '../ProductController/useValidation'
 import Text from '$ui/Text'
@@ -29,6 +30,31 @@ type Props = {
 }
 
 const EMPTY = []
+
+type AddressItemProps = {
+    address?: ?string,
+    className?: ?string,
+    name: string,
+}
+
+const UnstyledAddressItem = ({ className, name, address }: AddressItemProps) => (
+    <Fragment>
+        {`Fill ${name}`}
+        {!!address && (
+            <div className={className}>
+                {truncate(address, {
+                    maxLength: 15,
+                })}
+            </div>
+        )}
+    </Fragment>
+)
+
+const AddressItem = styled(UnstyledAddressItem)`
+    color: #adadad;
+    font-size: 10px;
+    margin-top: -16px;
+`
 
 const BeneficiaryAddress = ({ address, onChange, disabled, className }: Props) => {
     const { isValid, message } = useValidation('beneficiaryAddress')
@@ -83,19 +109,16 @@ const BeneficiaryAddress = ({ address, onChange, disabled, className }: Props) =
                             onClick={useCurrentWalletAddress}
                             disabled={!accountAddress}
                         >
-                            Use current wallet address
+                            <AddressItem name="wallet address" address={accountAddress} />
                         </DropdownActions.Item>,
                         ...integrationKeysFiltered.map(({ id, name, json }) => (
                             <DropdownActions.Item
                                 key={id}
                                 onClick={() => onChange(json.address)}
                             >
-                                {`Use ${truncate(json.address, {
-                                    maxLength: 15,
-                                })} (${name})`}
+                                <AddressItem name={name} address={json.address} />
                             </DropdownActions.Item>
                         )),
-                        <DropdownActions.Item key="divider" divider />,
                         <DropdownActions.Item
                             key="copy"
                             disabled={!address}
