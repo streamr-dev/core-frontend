@@ -1,6 +1,7 @@
 // @flow
 
 import React, { type ComponentType, useCallback, forwardRef } from 'react'
+import useIsMounted from '$shared/hooks/useIsMounted'
 
 export type Props = {
     selectAllOnFocus?: boolean,
@@ -9,15 +10,21 @@ export type Props = {
 
 const SelectAllOnFocusDecorator = (WrappedComponent: ComponentType<any>) => {
     const SelectAllOnFocusDecoratorWrapper = ({ onFocus: onFocusProp, ...props }: Props, ref: any) => {
+        const isMounted = useIsMounted()
+
         const onFocus = useCallback((e: SyntheticFocusEvent<EventTarget>) => {
-            if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
-                e.target.select()
-            }
+            e.persist()
+
+            setTimeout(() => {
+                if (isMounted() && (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement)) {
+                    e.target.select()
+                }
+            }, 0)
 
             if (onFocusProp) {
                 onFocusProp(e)
             }
-        }, [onFocusProp])
+        }, [onFocusProp, isMounted])
 
         return (
             <WrappedComponent
