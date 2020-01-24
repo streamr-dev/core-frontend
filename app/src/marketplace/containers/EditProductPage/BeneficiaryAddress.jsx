@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useContext, Fragment, useCallback, useEffect, useMemo } from 'react'
+import React, { useContext, Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import cx from 'classnames'
 import { Translate, I18n } from 'react-redux-i18n'
 import { useSelector, useDispatch } from 'react-redux'
@@ -27,6 +27,8 @@ type Props = {
     onChange: (string) => void,
     disabled: boolean,
     className?: string,
+    onFocus?: ?(SyntheticFocusEvent<EventTarget>) => void,
+    onBlur?: ?(SyntheticFocusEvent<EventTarget>) => void,
 }
 
 const EMPTY = []
@@ -56,7 +58,14 @@ const AddressItem = styled(UnstyledAddressItem)`
     margin-top: -16px;
 `
 
-const BeneficiaryAddress = ({ address, onChange, disabled, className }: Props) => {
+const BeneficiaryAddress = ({
+    address: addressProp,
+    onChange,
+    disabled,
+    className,
+    onFocus: onFocusProp,
+    onBlur: onBlurProp,
+}: Props) => {
     const { isValid, message } = useValidation('beneficiaryAddress')
     const { isTouched } = useContext(ValidationContext)
     const priceTouched = isTouched('pricePerSecond') || isTouched('beneficiaryAddress')
@@ -72,14 +81,18 @@ const BeneficiaryAddress = ({ address, onChange, disabled, className }: Props) =
         integrationKeys.filter(({ json }) => json && json.address)
     ), [integrationKeys])
 
-    const onCopy = useCallback((value: string) => {
-        copy(value)
+    const onCopy = useCallback(() => {
+        if (!addressProp) {
+            return
+        }
+
+        copy(addressProp)
 
         Notification.push({
             title: 'Copied',
             icon: NotificationIcon.CHECKMARK,
         })
-    }, [copy])
+    }, [copy, addressProp])
 
     useEffect(() => {
         dispatch(fetchIntegrationKeys())
@@ -92,6 +105,30 @@ const BeneficiaryAddress = ({ address, onChange, disabled, className }: Props) =
             onChange(accountAddress)
         }
     }, [accountAddress, onChange])
+
+    const [focused, setFocused] = useState(false)
+
+    const address: string = useMemo(() => (
+        focused ? (addressProp || '') : truncate(addressProp || '', {
+            maxLength: 30,
+        })
+    ), [focused, addressProp])
+
+    const onFocus = useCallback((e: SyntheticFocusEvent<EventTarget>) => {
+        setFocused(true)
+
+        if (onFocusProp) {
+            onFocusProp(e)
+        }
+    }, [onFocusProp])
+
+    const onBlur = useCallback((e: SyntheticFocusEvent<EventTarget>) => {
+        setFocused(false)
+
+        if (onBlurProp) {
+            onBlurProp(e)
+        }
+    }, [onBlurProp])
 
     return (
         <form autoComplete="off" onSubmit={(e) => e.preventDefault()}>
@@ -121,8 +158,8 @@ const BeneficiaryAddress = ({ address, onChange, disabled, className }: Props) =
                         )),
                         <DropdownActions.Item
                             key="copy"
-                            disabled={!address}
-                            onClick={() => onCopy(address || '')}
+                            disabled={!addressProp}
+                            onClick={onCopy}
                         >
                             <Translate value="userpages.keyField.copy" />
                         </DropdownActions.Item>,
@@ -131,13 +168,15 @@ const BeneficiaryAddress = ({ address, onChange, disabled, className }: Props) =
                     <Text
                         id="beneficiaryAddress"
                         autoComplete="off"
-                        defaultValue={address || ''}
+                        defaultValue={address}
                         onCommit={onChange}
                         placeholder={I18n.t('editProductPage.setPrice.placeholder.enterEthAddress')}
                         invalid={invalid}
                         disabled={disabled}
                         selectAllOnFocus
                         smartCommit
+                        onBlur={onBlur}
+                        onFocus={onFocus}
                     />
                 </ActionsDropdown>
                 {invalid && (
