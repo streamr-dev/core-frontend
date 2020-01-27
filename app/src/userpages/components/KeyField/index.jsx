@@ -31,6 +31,7 @@ type Props = {
     onDelete?: () => Promise<void>,
     valueLabel: ValueLabel,
     onToggleEditor?: (boolean) => void,
+    labelComponent?: any,
 }
 
 const includeIf = (condition: boolean, elements: Array<any>) => (condition ? elements : [])
@@ -49,6 +50,7 @@ const KeyField = ({
     onDelete: onDeleteProp,
     valueLabel,
     onToggleEditor: onToggleEditorProp,
+    labelComponent,
 }: Props) => {
     const [waiting, setWaiting] = useState(false)
     const [hidden, setHidden] = useState(!!hideValue)
@@ -162,9 +164,12 @@ const KeyField = ({
                 <div
                     className={cx(styles.keyFieldContainer, keyFieldClassName)}
                 >
-                    <FormControlLabel htmlFor="keyName">
-                        {keyName}
-                    </FormControlLabel>
+                    <div className={styles.labelWrapper}>
+                        <FormControlLabel htmlFor="keyName">
+                            {keyName}
+                        </FormControlLabel>
+                        {labelComponent || <div />}
+                    </div>
                     <ActionsDropdown actions={inputActions}>
                         <CoreText
                             value={displayValue}
