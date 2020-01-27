@@ -37,9 +37,7 @@ const Editor = () => {
                         <ProductStreams />
                         <PriceSelector />
                         <ProductDetails />
-                        {!!isDataUnion && (
-                            <ConnectEthIdentity />
-                        )}
+                        <ConnectEthIdentity />
                         {!!isDataUnion && (
                             <SharedSecrets />
                         )}
