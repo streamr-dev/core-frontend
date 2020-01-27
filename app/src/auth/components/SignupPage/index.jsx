@@ -66,6 +66,7 @@ const SignupPage = () => {
                         <Translate value="auth.labels.email" />
                     </FormControlLabel>
                     <Text
+                        unstyled
                         type="text"
                         name="email"
                         value={form.email}

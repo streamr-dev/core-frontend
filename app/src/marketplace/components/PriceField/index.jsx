@@ -36,6 +36,7 @@ const PriceField = ({
                 })}
             >
                 <Text
+                    unstyled
                     smartCommit
                     selectAllOnFocus
                     value={value}

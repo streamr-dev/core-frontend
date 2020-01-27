@@ -84,6 +84,7 @@ const UsernamePasswordLogin = ({ onEthereumClick }: Props) => {
                     <Translate value="auth.labels.email" />
                 </FormControlLabel>
                 <Text
+                    unstyled
                     type="email"
                     name="email"
                     value={form.email}
@@ -131,6 +132,7 @@ const UsernamePasswordLogin = ({ onEthereumClick }: Props) => {
                     <Translate value="auth.labels.password" />
                 </FormControlLabel>
                 <Text
+                    unstyled
                     name="password"
                     type="password"
                     value={form.password}

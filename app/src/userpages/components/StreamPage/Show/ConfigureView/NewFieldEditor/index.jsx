@@ -5,7 +5,7 @@ import { I18n, Translate } from 'react-redux-i18n'
 
 import Button from '$shared/components/Button'
 import Select from '$shared/components/Input/Select'
-import CoreText from '$shared/components/Input/StyledText'
+import Text from '$shared/components/Input/Text'
 import type { StreamField } from '$shared/flowtype/stream-types'
 import SplitControl from '$userpages/components/SplitControl'
 import FormControlLabel from '$shared/components/FormControlLabel'
@@ -101,7 +101,7 @@ export class NewFieldEditor extends Component<Props, State> {
                         >
                             {I18n.t('userpages.streams.edit.configure.newFieldEditor.namePlaceholder')}
                         </FormControlLabel>
-                        <CoreText
+                        <Text
                             id="newFieldName"
                             type="text"
                             value={name}

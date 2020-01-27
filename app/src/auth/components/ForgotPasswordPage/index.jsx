@@ -69,6 +69,7 @@ const ForgotPasswordPage = () => {
                         <Translate value="auth.labels.email" />
                     </FormControlLabel>
                     <Text
+                        unstyled
                         type="email"
                         name="email"
                         value={form.email}

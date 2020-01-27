@@ -9,7 +9,7 @@ import Buttons from '$shared/components/Buttons'
 import Select from '$shared/components/Input/Select'
 import SplitControl from '$userpages/components/SplitControl'
 import FormControlLabel from '$shared/components/FormControlLabel'
-import CoreText from '$shared/components/Input/StyledText'
+import Text from '$shared/components/Input/Text'
 import FormControlErrors from '$shared/components/FormControlErrors'
 
 import styles from './permissionKeyFieldEditor.pcss'
@@ -105,7 +105,7 @@ class PermissionKeyFieldEditor extends React.Component<Props, State> {
                         <FormControlLabel state={error && 'ERROR'}>
                             {I18n.t('userpages.keyFieldEditor.keyName')}
                         </FormControlLabel>
-                        <CoreText
+                        <Text
                             value={keyName}
                             onChange={this.onKeyNameChange}
                             error={(createNew && !editValue && error) || undefined}
@@ -132,7 +132,7 @@ class PermissionKeyFieldEditor extends React.Component<Props, State> {
                         <FormControlLabel state={error && 'ERROR'}>
                             {I18n.t(`userpages.keyFieldEditor.keyValue.${valueLabel}`)}
                         </FormControlLabel>
-                        <CoreText
+                        <Text
                             value={keyId}
                             onChange={this.onValueChange}
                             readOnly={!editValue}

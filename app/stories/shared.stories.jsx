@@ -40,7 +40,7 @@ import { NotificationIcon } from '$shared/utils/constants'
 import Toolbar from '$shared/components/Toolbar'
 import Spinner from '$shared/components/Spinner'
 import Button from '$shared/components/Button'
-import CoreText from '$shared/components/Input/StyledText'
+import Text from '$shared/components/Input/Text'
 
 import sharedStyles from './shared.pcss'
 
@@ -318,7 +318,7 @@ class FieldListContainer extends React.Component {
                 <FieldList onSortEnd={this.onSortEnd} lockAxis="y">
                     {items.map((item) => (
                         <FieldItem key={item} name={item}>
-                            <CoreText defaultValue={item} />
+                            <Text defaultValue={item} />
                         </FieldItem>
                     ))}
                 </FieldList>

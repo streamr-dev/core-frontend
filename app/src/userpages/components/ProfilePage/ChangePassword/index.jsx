@@ -11,7 +11,7 @@ import Dialog from '$shared/components/Dialog'
 import routes from '$routes'
 import Button from '$shared/components/Button'
 import FormControlLabel from '$shared/components/FormControlLabel'
-import CoreText from '$shared/components/Input/StyledText'
+import Text from '$shared/components/Input/Text'
 import FormControlErrors from '$shared/components/FormControlErrors'
 import usePasswordStrength, { StrengthMessage } from '$shared/hooks/usePasswordStrength'
 
@@ -141,7 +141,7 @@ class ChangePasswordDialog extends Component<Props, State> {
                         <FormControlLabel htmlFor="currentPassword">
                             {I18n.t('modal.changePassword.currentPassword')}
                         </FormControlLabel>
-                        <CoreText
+                        <Text
                             id="currentPassword"
                             type="password"
                             name="currentPassword"
@@ -159,7 +159,7 @@ class ChangePasswordDialog extends Component<Props, State> {
                                 I18n.t('modal.changePassword.newPassword')
                             )}
                         </FormControlLabel>
-                        <CoreText
+                        <Text
                             id="newPassword"
                             type="password"
                             name="newPassword"
@@ -174,7 +174,7 @@ class ChangePasswordDialog extends Component<Props, State> {
                         <FormControlLabel htmlFor="confirmNewPassword">
                             {I18n.t('modal.changePassword.confirmNewPassword')}
                         </FormControlLabel>
-                        <CoreText
+                        <Text
                             id="confirmNewPassword"
                             type="password"
                             name="confirmNewPassword"

@@ -6,7 +6,7 @@ import { I18n } from 'react-redux-i18n'
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import FormControlLabel from '$shared/components/FormControlLabel'
-import CoreText from '$shared/components/Input/StyledText'
+import Text from '$shared/components/Input/Text'
 
 import styles from './identityNameDialog.pcss'
 
@@ -61,7 +61,7 @@ class IdentityNameDialog extends React.Component<Props, State> {
                         <FormControlLabel>
                             {I18n.t('modal.newIdentity.label')}
                         </FormControlLabel>
-                        <CoreText
+                        <Text
                             placeholder={I18n.t('modal.newIdentity.placeholder')}
                             value={name}
                             onChange={this.onNameChange}

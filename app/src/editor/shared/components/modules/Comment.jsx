@@ -45,6 +45,7 @@ export default class CommentModule extends React.PureComponent {
             <UiSizeConstraint minWidth={100} minHeight={50}>
                 <div className={cx(this.props.className, styles.Comment)}>
                     <Text
+                        unstyled
                         disabled={!isEditable}
                         flushHistoryOnBlur
                         smartCommit

@@ -55,6 +55,7 @@ const MarkdownEditor = ({
             >
                 <Text
                     {...editorProps}
+                    unstyled
                     className={styles.input}
                     onChange={onTextChange}
                     smartCommit

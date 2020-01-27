@@ -102,6 +102,7 @@ export const ValueInput = ({ value, onChange, disabled }) => {
 
     return (
         <Text
+            unstyled
             className={styles.input}
             disabled={disabled}
             flushHistoryOnBlur

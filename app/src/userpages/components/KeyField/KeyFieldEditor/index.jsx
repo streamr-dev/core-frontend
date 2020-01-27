@@ -5,7 +5,7 @@ import { I18n } from 'react-redux-i18n'
 
 import Buttons from '$shared/components/Buttons'
 import FormControlLabel from '$shared/components/FormControlLabel'
-import CoreText from '$shared/components/Input/StyledText'
+import Text from '$shared/components/Input/Text'
 import FormControlErrors from '$shared/components/FormControlErrors'
 
 import styles from './keyFieldEditor.pcss'
@@ -79,7 +79,7 @@ class KeyFieldEditor extends React.Component<Props, State> {
                     >
                         {I18n.t('userpages.keyFieldEditor.keyName')}
                     </FormControlLabel>
-                    <CoreText
+                    <Text
                         value={keyName}
                         onChange={this.onKeyNameChange}
                     />
@@ -97,7 +97,7 @@ class KeyFieldEditor extends React.Component<Props, State> {
                         >
                             {I18n.t(`userpages.keyFieldEditor.keyValue.${valueLabel}`)}
                         </FormControlLabel>
-                        <CoreText
+                        <Text
                             id="keyValue"
                             value={keyId}
                             onChange={this.onValueChange}

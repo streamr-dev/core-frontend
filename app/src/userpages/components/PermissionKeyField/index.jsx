@@ -14,7 +14,7 @@ import SplitControl from '$userpages/components/SplitControl'
 import { truncate } from '$shared/utils/text'
 import FormControlLabel from '$shared/components/FormControlLabel'
 import ActionsDropdown from '$shared/components/ActionsDropdown'
-import CoreText from '$shared/components/Input/StyledText'
+import Text from '$shared/components/Input/Text'
 
 import PermissionKeyFieldEditor from './PermissionKeyFieldEditor'
 
@@ -194,7 +194,7 @@ class PermissionKeyField extends React.Component<Props, State> {
                     {keyName}
                 </FormControlLabel>
                 <ActionsDropdown actions={actions}>
-                    <CoreText
+                    <Text
                         value={value && (!truncateValue ? value : truncate(value, {
                             maxLength: 15,
                         }))}

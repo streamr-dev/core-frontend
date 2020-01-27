@@ -4,7 +4,7 @@ import React, { useState, useCallback, useEffect, useMemo } from 'react'
 import BN from 'bignumber.js'
 import { Translate, I18n } from 'react-redux-i18n'
 
-import CoreText from '$shared/components/Input/StyledText'
+import Text from '$shared/components/Input/Text'
 import useWeb3Status from '$shared/hooks/useWeb3Status'
 import LoadingIndicator from '$userpages/components/LoadingIndicator'
 import SelectField from '$mp/components/SelectField'
@@ -181,7 +181,7 @@ export const ChooseAccessPeriodDialog = ({
             >
                 <div className={styles.root}>
                     <div className={styles.accessPeriod}>
-                        <CoreText
+                        <Text
                             type="number"
                             value={isValidTime() ? time : ''}
                             onChange={(e: SyntheticInputEvent<EventTarget>) => setTime(e.target.value)}

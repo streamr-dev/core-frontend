@@ -8,7 +8,7 @@ import type { Stream } from '$shared/flowtype/stream-types'
 import type { StoreState } from '$shared/flowtype/store-state'
 import { updateEditStream } from '$userpages/modules/userPageStreams/actions'
 import { selectEditedStream } from '$userpages/modules/userPageStreams/selectors'
-import CoreText from '$shared/components/Input/StyledText'
+import Text from '$shared/components/Input/Text'
 import Select from '$shared/components/Input/Select'
 import FormControlLabel from '$shared/components/FormControlLabel'
 
@@ -98,7 +98,7 @@ function StatusView(props: Props) {
                     {I18n.t('userpages.streams.inactivityLabel')}
                 </FormControlLabel>
                 <div className={styles.inner}>
-                    <CoreText
+                    <Text
                         id="inactivityValue"
                         value={value}
                         onChange={onChange}

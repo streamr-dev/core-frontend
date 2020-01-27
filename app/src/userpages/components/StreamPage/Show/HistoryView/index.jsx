@@ -13,7 +13,7 @@ import type { CsvUploadState } from '$userpages/flowtype/states/stream-state'
 import { getRange, deleteDataUpTo, uploadCsvFile, confirmCsvFileUpload, updateEditStream } from '$userpages/modules/userPageStreams/actions'
 import { selectDeleteDataError, selectUploadCsvState, selectEditedStream } from '$userpages/modules/userPageStreams/selectors'
 import Button from '$shared/components/Button'
-import CoreText from '$shared/components/Input/StyledText'
+import Text from '$shared/components/Input/Text'
 import Select from '$shared/components/Input/Select'
 import FileUpload from '$shared/components/FileUpload'
 import DatePicker from '$shared/components/DatePicker'
@@ -336,7 +336,7 @@ class HistoryView extends Component<Props, State> {
                                         <FormControlLabel>
                                             {I18n.t('userpages.streams.edit.history.storedEvents')}
                                         </FormControlLabel>
-                                        <CoreText value={storedEventsText} readOnly />
+                                        <Text value={storedEventsText} readOnly />
                                     </Fragment>
                                 }
                                 dropTargetComponent={<DropTarget mouseOver={false} />}
@@ -408,7 +408,7 @@ class HistoryView extends Component<Props, State> {
                             {I18n.t('userpages.streams.edit.configure.historicalStoragePeriod.label')}
                         </FormControlLabel>
                         <div className={styles.storageContainer}>
-                            <CoreText
+                            <Text
                                 id="storageAmount"
                                 className={styles.storageAmount}
                                 value={storageAmount}

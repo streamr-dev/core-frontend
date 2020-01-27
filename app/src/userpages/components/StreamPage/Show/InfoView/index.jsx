@@ -15,7 +15,7 @@ import PartitionsView from '../PartitionsView'
 import type { StreamId } from '$shared/flowtype/stream-types'
 import FormControlLabel from '$shared/components/FormControlLabel'
 import ActionsDropdown from '$shared/components/ActionsDropdown'
-import CoreText from '$shared/components/Input/StyledText'
+import Text from '$shared/components/Input/Text'
 
 import styles from './infoView.pcss'
 
@@ -80,7 +80,7 @@ export const InfoView = ({ disabled }: Props) => {
                 <FormControlLabel htmlFor="streamName">
                     {I18n.t('userpages.streams.edit.details.name')}
                 </FormControlLabel>
-                <CoreText
+                <Text
                     id="streamName"
                     type="text"
                     name="name"
@@ -94,7 +94,7 @@ export const InfoView = ({ disabled }: Props) => {
                 <FormControlLabel htmlFor="streamDescription">
                     {I18n.t('userpages.streams.edit.details.description')}
                 </FormControlLabel>
-                <CoreText
+                <Text
                     type="text"
                     id="streamDescription"
                     name="description"
@@ -115,7 +115,7 @@ export const InfoView = ({ disabled }: Props) => {
                         </DropdownActions.Item>,
                     ]}
                 >
-                    <CoreText
+                    <Text
                         name="id"
                         id="streamId"
                         value={(stream && stream.id) || ''}

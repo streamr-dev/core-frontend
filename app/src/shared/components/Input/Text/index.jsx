@@ -6,6 +6,9 @@ import FlushHistoryDecorator, { type Props as FlushHistoryProps } from './FlushH
 import OnCommitDecorator, { type Props as OnCommitProps } from './OnCommitDecorator'
 import RevertOnEscapeDecorator, { type Props as RevertOnEscapeProps } from './RevertOnEscapeDecorator'
 import SelectAllOnFocusDecorator, { type Props as SelectAllOnFocusProps } from './SelectAllOnFocusDecorator'
+import StyledInput from './StyledInput'
+
+export { SpaciousTheme } from './StyledInput'
 
 type Props =
     & FlushHistoryProps
@@ -14,10 +17,15 @@ type Props =
     & SelectAllOnFocusProps
     & {
         tag: 'input' | 'textarea',
+        unstyled?: boolean,
     }
 
-const Input = ({ tag: Tag = 'input', ...props }: Props, ref: any) => (
-    <Tag {...props} ref={ref} />
+const Input = ({ tag: Tag = 'input', unstyled, ...props }: Props, ref: any) => (
+    unstyled ? (
+        <Tag {...props} ref={ref} />
+    ) : (
+        <StyledInput {...props} as={Tag} ref={ref} />
+    )
 )
 
 export default compose(

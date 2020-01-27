@@ -13,7 +13,7 @@ import useIsMounted from '$shared/hooks/useIsMounted'
 import useCopy from '$shared/hooks/useCopy'
 import FormControlLabel from '$shared/components/FormControlLabel'
 import ActionsDropdown from '$shared/components/ActionsDropdown'
-import CoreText from '$shared/components/Input/StyledText'
+import Text from '$shared/components/Input/Text'
 
 import styles from './keyField.pcss'
 
@@ -171,7 +171,7 @@ const KeyField = ({
                         {labelComponent || <div />}
                     </div>
                     <ActionsDropdown actions={inputActions}>
-                        <CoreText
+                        <Text
                             value={displayValue}
                             readOnly
                             type={hidden ? 'password' : 'text'}

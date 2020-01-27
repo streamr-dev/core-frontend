@@ -3,7 +3,7 @@
 import React, { useCallback, useState, useRef } from 'react'
 import styled from 'styled-components'
 import SvgIcon from '$shared/components/SvgIcon'
-import CoreText from '$shared/components/Input/StyledText'
+import Text from '$shared/components/Input/Text'
 
 type ButtonsProps = {
     onUpClick?: ?(SyntheticMouseEvent<EventTarget>) => void,
@@ -141,7 +141,7 @@ const Numeric = ({
                 position: 'relative',
             }}
         >
-            <CoreText
+            <Text
                 {...props}
                 type="number"
                 min={min}

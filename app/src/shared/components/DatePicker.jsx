@@ -6,7 +6,7 @@ import { I18n } from 'react-redux-i18n'
 import { isMobile as checkMobile } from '$shared/utils/platform'
 import WithCalendar, { type WithCalendarProps } from './WithCalendar'
 import CalendarIcon from './CalendarIcon'
-import CoreText from '$shared/components/Input/StyledText'
+import Text from '$shared/components/Input/Text'
 import dateFormatter from '$utils/dateFormatter'
 
 type Props = WithCalendarProps & {
@@ -41,7 +41,7 @@ class DatePicker extends React.Component<Props> {
             <WithCalendar {...props} disabled={isMobile}>
                 {({ date, toggleCalendar, ...rest1 }) => (
                     <React.Fragment>
-                        <CoreText
+                        <Text
                             type={isMobile ? 'date' : 'text'}
                             value={value === I18n.t('userpages.streams.edit.history.datePicker.selectDate') ?
                                 I18n.t('userpages.streams.edit.history.datePicker.selectDate') :

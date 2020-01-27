@@ -132,6 +132,7 @@ const ResetPasswordPage = ({ location: { search, pathname }, history: { replace 
                         )}
                     </FormControlLabel>
                     <Text
+                        unstyled
                         name="password"
                         type="password"
                         value={form.password}
@@ -165,6 +166,7 @@ const ResetPasswordPage = ({ location: { search, pathname }, history: { replace 
                         <Translate value="auth.password.confirm" />
                     </FormControlLabel>
                     <Text
+                        unstyled
                         name="confirmPassword"
                         type="password"
                         value={form.confirmPassword}

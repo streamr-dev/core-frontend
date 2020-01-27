@@ -16,7 +16,7 @@ import FieldItem from '$shared/components/FieldList/FieldItem'
 import Select from '$shared/components/Input/Select'
 import { updateEditStreamField, updateEditStream, streamFieldsAutodetect } from '$userpages/modules/userPageStreams/actions'
 import { selectEditedStream, selectFieldsAutodetectFetching, fieldTypes } from '$userpages/modules/userPageStreams/selectors'
-import CoreText from '$shared/components/Input/StyledText'
+import Text from '$shared/components/Input/Text'
 import SplitControl from '$userpages/components/SplitControl'
 import DropdownActions from '$shared/components/DropdownActions'
 import ActionsDropdown from '$shared/components/ActionsDropdown' // look up! lol #naming
@@ -177,7 +177,7 @@ export class ConfigureView extends Component<Props, State> {
                                                         </DropdownActions.Item>,
                                                     ]}
                                                 >
-                                                    <CoreText
+                                                    <Text
                                                         value={field.name}
                                                         onChange={(e) => this.onFieldNameChange(field.name, e.target.value)}
                                                         disabled={disabled}

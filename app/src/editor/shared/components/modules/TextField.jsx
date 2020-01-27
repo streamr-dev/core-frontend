@@ -71,6 +71,7 @@ export default class TextFieldModule extends React.Component {
                         onActiveChange={this.onActiveChange}
                     />
                     <Text
+                        unstyled
                         flushHistoryOnBlur
                         onCommit={this.onChange}
                         placeholder="Enter your text here"

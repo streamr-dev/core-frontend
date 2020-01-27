@@ -9,7 +9,7 @@ import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import Select from '$shared/components/Input/Select'
 import FormControlLabel from '$shared/components/FormControlLabel'
-import CoreText from '$shared/components/Input/StyledText'
+import Text from '$shared/components/Input/Text'
 import FormControlErrors from '$shared/components/FormControlErrors'
 
 import styles from './confirmCsvImportDialog.pcss'
@@ -231,7 +231,7 @@ export class ConfirmCsvImportView extends Component<Props, State> {
                                 <FormControlLabel htmlFor="customFormat">
                                     {I18n.t('userpages.streams.edit.history.confirmCsv.customFormat')}
                                 </FormControlLabel>
-                                <CoreText
+                                <Text
                                     id="customFormat"
                                     value={customFormat}
                                     onChange={this.onCustomFormatChange}

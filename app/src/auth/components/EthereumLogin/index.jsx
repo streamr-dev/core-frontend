@@ -92,6 +92,7 @@ const EthereumLogin = ({ onBackClick }: Props) => {
                 className={AuthStep.styles.spaceLarge}
             >
                 <Text
+                    unstyled
                     type="text"
                     name="ethereum"
                     value={I18n.t('auth.labels.ethereum')}

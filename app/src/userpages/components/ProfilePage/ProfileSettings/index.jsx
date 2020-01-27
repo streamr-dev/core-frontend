@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
 import FormControlLabel from '$shared/components/FormControlLabel'
-import CoreText from '$shared/components/Input/StyledText'
+import Text from '$shared/components/Input/Text'
 
 import {
     updateCurrentUserName,
@@ -67,7 +67,7 @@ export class ProfileSettings extends Component<Props> {
                     <FormControlLabel htmlFor="userFullname">
                         Your Name
                     </FormControlLabel>
-                    <CoreText
+                    <Text
                         id="userFullname"
                         name="name"
                         value={user.name || ''}
@@ -79,7 +79,7 @@ export class ProfileSettings extends Component<Props> {
                     <FormControlLabel htmlFor="userEmail">
                         Email
                     </FormControlLabel>
-                    <CoreText
+                    <Text
                         id="userEmail"
                         value={user.username || ''}
                         readOnly
