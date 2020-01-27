@@ -27,36 +27,9 @@ stories.add('no events', () => (
 stories.add('default', () => (
     <Text
         smartCommit={boolean('smartCommit', false)}
-        onAutoComplete={action('onAutoComplete')}
         onChange={action('onChange')}
         onCommit={action('onCommit')}
         noEmptyCommit={boolean('noEmptyCommit', false)}
         revertOnEscape={boolean('revertOnEscape', false)}
     />
-))
-
-stories.add('autoComplete', () => (
-    <form action="/" onSubmit={() => false} method="post" autoComplete="on">
-        <div>
-            <label htmlFor="email">Email</label>
-            <br />
-            <Text
-                name="email"
-                autoComplete="email"
-                smartCommit={boolean('smartCommit', false)}
-                onAutoComplete={action('onAutoComplete')}
-                onChange={action('onChange')}
-                onCommit={action('onCommit')}
-            />
-        </div>
-        <div>
-            <label htmlFor="password">Password</label>
-            <br />
-            <Text
-                name="password"
-                type="password"
-                autoComplete="password"
-            />
-        </div>
-    </form>
 ))
