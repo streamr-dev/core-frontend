@@ -109,11 +109,9 @@ export class NewFieldEditor extends Component<Props, State> {
                             autoFocus
                             onKeyPress={(e) => this.handleKeyPress(e.key)}
                         />
-                        {nameError && (
-                            <FormControlErrors>
-                                {nameError}
-                            </FormControlErrors>
-                        )}
+                        <FormControlErrors overlap>
+                            {nameError}
+                        </FormControlErrors>
                     </div>
                     <div>
                         <FormControlLabel htmlFor="newFieldType">

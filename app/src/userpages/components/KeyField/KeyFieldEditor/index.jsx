@@ -84,7 +84,7 @@ class KeyFieldEditor extends React.Component<Props, State> {
                         onChange={this.onKeyNameChange}
                     />
                     {createNew && !editValue && error && (
-                        <FormControlErrors>
+                        <FormControlErrors overlap>
                             {error}
                         </FormControlErrors>
                     )}
@@ -103,11 +103,9 @@ class KeyFieldEditor extends React.Component<Props, State> {
                             onChange={this.onValueChange}
                             readOnly={!editValue}
                         />
-                        {error && (
-                            <FormControlErrors>
-                                {error}
-                            </FormControlErrors>
-                        )}
+                        <FormControlErrors overlap>
+                            {error}
+                        </FormControlErrors>
                     </div>
                 )}
                 <Buttons

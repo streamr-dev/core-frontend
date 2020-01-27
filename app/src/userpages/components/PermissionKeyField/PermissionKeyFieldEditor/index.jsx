@@ -111,7 +111,7 @@ class PermissionKeyFieldEditor extends React.Component<Props, State> {
                             error={(createNew && !editValue && error) || undefined}
                         />
                         {createNew && !editValue && (
-                            <FormControlErrors>
+                            <FormControlErrors overlap>
                                 {error}
                             </FormControlErrors>
                         )}

@@ -56,7 +56,7 @@ type State = {
     csvFile: ?File,
     confirmError: ?string,
     deleteInProgress: boolean,
-    storageAmount: ?number,
+    storageAmount: number,
     storageUnit: ?string,
 }
 
@@ -109,7 +109,7 @@ class HistoryView extends Component<Props, State> {
         csvFile: undefined,
         confirmError: undefined,
         deleteInProgress: false,
-        storageAmount: undefined,
+        storageAmount: 0,
         storageUnit: undefined,
     }
 
