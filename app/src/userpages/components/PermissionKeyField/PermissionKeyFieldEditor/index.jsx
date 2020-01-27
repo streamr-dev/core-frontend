@@ -6,10 +6,10 @@ import cx from 'classnames'
 
 import type { ResourcePermission } from '$shared/flowtype/resource-key-types'
 import Buttons from '$shared/components/Buttons'
-import Select from '$shared/components/Input/Select'
+import Select from '$ui/Select'
 import SplitControl from '$userpages/components/SplitControl'
 import FormControlLabel from '$shared/components/FormControlLabel'
-import Text from '$shared/components/Input/Text'
+import Text from '$ui/Text'
 import FormControlErrors from '$shared/components/FormControlErrors'
 
 import styles from './permissionKeyFieldEditor.pcss'

@@ -11,7 +11,7 @@ import AuthPanel from '$auth/components/AuthPanel'
 import AuthStep from '$auth/components/AuthStep'
 import getSessionToken from '$auth/utils/getSessionToken'
 import { validateWeb3, getWeb3 } from '$shared/web3/web3Provider'
-import Text from '$shared/components/Input/Text'
+import Text from '$ui/Text'
 import FormControlUnderline from '$shared/components/FormControlUnderline'
 import FormControlErrors from '$shared/components/FormControlErrors'
 

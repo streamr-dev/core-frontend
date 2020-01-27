@@ -5,7 +5,7 @@ import { I18n } from 'react-redux-i18n'
 
 import Buttons from '$shared/components/Buttons'
 import FormControlLabel from '$shared/components/FormControlLabel'
-import Text from '$shared/components/Input/Text'
+import Text from '$ui/Text'
 import FormControlErrors from '$shared/components/FormControlErrors'
 
 import styles from './keyFieldEditor.pcss'

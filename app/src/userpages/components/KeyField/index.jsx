@@ -13,7 +13,7 @@ import useIsMounted from '$shared/hooks/useIsMounted'
 import useCopy from '$shared/hooks/useCopy'
 import FormControlLabel from '$shared/components/FormControlLabel'
 import ActionsDropdown from '$shared/components/ActionsDropdown'
-import Text from '$shared/components/Input/Text'
+import Text from '$ui/Text'
 
 import styles from './keyField.pcss'
 

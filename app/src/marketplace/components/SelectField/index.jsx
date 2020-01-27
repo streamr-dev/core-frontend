@@ -3,7 +3,7 @@
 import React from 'react'
 import cx from 'classnames'
 
-import Select, { type Props as SelectProps } from '$shared/components/Input/Select'
+import Select, { type Props as SelectProps } from '$ui/Select'
 import FormControlErrors from '$shared/components/FormControlErrors'
 import { useLastError, type LastErrorProps } from '$shared/hooks/useLastError'
 

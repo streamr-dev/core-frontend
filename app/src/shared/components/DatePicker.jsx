@@ -6,7 +6,7 @@ import { I18n } from 'react-redux-i18n'
 import { isMobile as checkMobile } from '$shared/utils/platform'
 import WithCalendar, { type WithCalendarProps } from './WithCalendar'
 import CalendarIcon from './CalendarIcon'
-import Text from '$shared/components/Input/Text'
+import Text from '$ui/Text'
 import dateFormatter from '$utils/dateFormatter'
 
 type Props = WithCalendarProps & {

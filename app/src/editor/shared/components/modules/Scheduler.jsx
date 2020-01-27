@@ -5,7 +5,7 @@ import { arrayMove } from 'react-sortable-hoc'
 import SortableList from '$shared/components/SortableList'
 import { withHover } from '$shared/components/WithHover'
 import SvgIcon from '$shared/components/SvgIcon'
-import Text from '$shared/components/Input/Text'
+import Text from '$ui/Text'
 
 import styles from './Scheduler.pcss'
 

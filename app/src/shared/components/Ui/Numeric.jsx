@@ -3,7 +3,7 @@
 import React, { useCallback, useState, useRef } from 'react'
 import styled from 'styled-components'
 import SvgIcon from '$shared/components/SvgIcon'
-import Text from '$shared/components/Input/Text'
+import Text from '$ui/Text'
 
 type ButtonsProps = {
     onUpClick?: ?(SyntheticMouseEvent<EventTarget>) => void,

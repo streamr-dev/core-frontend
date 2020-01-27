@@ -6,7 +6,7 @@ import { I18n } from 'react-redux-i18n'
 import Button from '$shared/components/Button'
 import SvgIcon from '$shared/components/SvgIcon'
 import FormControlLabel from '$shared/components/FormControlLabel'
-import Text from '$shared/components/Input/Text'
+import Text from '$ui/Text'
 
 import styles from './shareDialogInputRow.pcss'
 

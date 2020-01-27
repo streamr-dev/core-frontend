@@ -9,12 +9,12 @@ import { NotificationIcon } from '$shared/utils/constants'
 
 import type { ResourcePermission } from '$shared/flowtype/resource-key-types'
 import DropdownActions from '$shared/components/DropdownActions'
-import Select from '$shared/components/Input/Select'
+import Select from '$ui/Select'
 import SplitControl from '$userpages/components/SplitControl'
 import { truncate } from '$shared/utils/text'
 import FormControlLabel from '$shared/components/FormControlLabel'
 import ActionsDropdown from '$shared/components/ActionsDropdown'
-import Text from '$shared/components/Input/Text'
+import Text from '$ui/Text'
 
 import PermissionKeyFieldEditor from './PermissionKeyFieldEditor'
 

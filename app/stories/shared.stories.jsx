@@ -40,7 +40,7 @@ import { NotificationIcon } from '$shared/utils/constants'
 import Toolbar from '$shared/components/Toolbar'
 import Spinner from '$shared/components/Spinner'
 import Button from '$shared/components/Button'
-import Text from '$shared/components/Input/Text'
+import Text from '$ui/Text'
 
 import sharedStyles from './shared.pcss'
 

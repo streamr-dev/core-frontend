@@ -11,7 +11,7 @@ import Dialog from '$shared/components/Dialog'
 import routes from '$routes'
 import Button from '$shared/components/Button'
 import FormControlLabel from '$shared/components/FormControlLabel'
-import Text from '$shared/components/Input/Text'
+import Text from '$ui/Text'
 import FormControlErrors from '$shared/components/FormControlErrors'
 import usePasswordStrength, { StrengthMessage } from '$shared/hooks/usePasswordStrength'
 

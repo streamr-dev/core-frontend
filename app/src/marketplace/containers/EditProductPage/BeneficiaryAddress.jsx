@@ -5,7 +5,7 @@ import cx from 'classnames'
 import { Translate, I18n } from 'react-redux-i18n'
 
 import useValidation from '../ProductController/useValidation'
-import Text from '$shared/components/Input/Text'
+import Text from '$ui/Text'
 import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
 import FormControlErrors, { MarketplaceTheme } from '$shared/components/FormControlErrors'
 

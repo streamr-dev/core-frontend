@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
 import FormControlLabel from '$shared/components/FormControlLabel'
-import Text from '$shared/components/Input/Text'
+import Text from '$ui/Text'
 
 import {
     updateCurrentUserName,

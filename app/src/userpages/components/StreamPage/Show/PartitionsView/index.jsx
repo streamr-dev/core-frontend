@@ -9,7 +9,7 @@ import type { Stream } from '$shared/flowtype/stream-types'
 import type { StoreState } from '$shared/flowtype/store-state'
 import { updateEditStream } from '$userpages/modules/userPageStreams/actions'
 import { selectEditedStream } from '$userpages/modules/userPageStreams/selectors'
-import Numeric from '$shared/components/Input/Numeric'
+import Numeric from '$ui/Numeric'
 import FormControlLabel from '$shared/components/FormControlLabel'
 
 import styles from './partitionsView.pcss'

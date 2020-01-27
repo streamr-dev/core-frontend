@@ -8,7 +8,7 @@ import usePending from '$shared/hooks/usePending'
 import useEditableProduct from '../ProductController/useEditableProduct'
 import useValidation from '../ProductController/useValidation'
 import useEditableProductActions from '../ProductController/useEditableProductActions'
-import Text, { SpaciousTheme } from '$shared/components/Input/Text'
+import Text, { SpaciousTheme } from '$ui/Text'
 import FormControlErrors, { MarketplaceTheme } from '$shared/components/FormControlErrors'
 
 import styles from './productName.pcss'
