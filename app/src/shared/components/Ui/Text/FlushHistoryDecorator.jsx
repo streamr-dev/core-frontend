@@ -32,9 +32,11 @@ const FlushHistoryDecorator = (WrappedComponent: ComponentType<any>) => {
         )
     }
 
+    const FlushHistoryDecoratorWrapperFR: ComponentType<Props> = forwardRef(FlushHistoryDecoratorWrapper)
+
     const OptInFlushHistoryDecorator = ({ flushHistoryOnBlur = false, ...props }: Props, ref: any) => (
         flushHistoryOnBlur ? (
-            <FlushHistoryDecoratorWrapper {...props} ref={ref} />
+            <FlushHistoryDecoratorWrapperFR {...props} ref={ref} />
         ) : (
             <WrappedComponent {...props} ref={ref} />
         )
