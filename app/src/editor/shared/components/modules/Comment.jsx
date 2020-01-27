@@ -2,7 +2,7 @@ import React from 'react'
 import cx from 'classnames'
 
 import UiSizeConstraint from '../UiSizeConstraint'
-import { Text } from '$shared/components/Input'
+import Text from '$shared/components/Input/Text'
 import styles from './Comment.pcss'
 
 export default class CommentModule extends React.PureComponent {

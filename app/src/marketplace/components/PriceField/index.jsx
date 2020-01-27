@@ -3,7 +3,7 @@
 import React from 'react'
 import cx from 'classnames'
 
-import { Text } from '$shared/components/Input'
+import Text from '$shared/components/Input/Text'
 import FormControlErrors, { MarketplaceTheme } from '$shared/components/FormControlErrors'
 import { useLastError, type LastErrorProps } from '$shared/hooks/useLastError'
 

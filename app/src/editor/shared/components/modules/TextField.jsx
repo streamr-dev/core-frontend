@@ -7,7 +7,7 @@ import throttle from 'lodash/throttle'
 import UiSizeConstraint from '../UiSizeConstraint'
 import ModuleSubscription from '../ModuleSubscription'
 
-import { Text } from '$shared/components/Input'
+import Text from '$shared/components/Input/Text'
 import styles from './TextField.pcss'
 
 export default class TextFieldModule extends React.Component {
