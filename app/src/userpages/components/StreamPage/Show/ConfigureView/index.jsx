@@ -16,7 +16,7 @@ import FieldItem from '$shared/components/FieldList/FieldItem'
 import Select from '$shared/components/Input/Select'
 import { updateEditStreamField, updateEditStream, streamFieldsAutodetect } from '$userpages/modules/userPageStreams/actions'
 import { selectEditedStream, selectFieldsAutodetectFetching, fieldTypes } from '$userpages/modules/userPageStreams/selectors'
-import CoreText from '$shared/components/Input/CoreText'
+import CoreText from '$shared/components/Input/StyledText'
 import SplitControl from '$userpages/components/SplitControl'
 import DropdownActions from '$shared/components/DropdownActions'
 import ActionsDropdown from '$shared/components/ActionsDropdown' // look up! lol #naming

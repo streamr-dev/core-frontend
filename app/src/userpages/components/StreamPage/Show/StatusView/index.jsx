@@ -8,7 +8,7 @@ import type { Stream } from '$shared/flowtype/stream-types'
 import type { StoreState } from '$shared/flowtype/store-state'
 import { updateEditStream } from '$userpages/modules/userPageStreams/actions'
 import { selectEditedStream } from '$userpages/modules/userPageStreams/selectors'
-import CoreText from '$shared/components/Input/CoreText'
+import CoreText from '$shared/components/Input/StyledText'
 import Select from '$shared/components/Input/Select'
 import FormControlLabel from '$shared/components/FormControlLabel'
 

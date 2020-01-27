@@ -14,7 +14,7 @@ import SplitControl from '$userpages/components/SplitControl'
 import { truncate } from '$shared/utils/text'
 import FormControlLabel from '$shared/components/FormControlLabel'
 import ActionsDropdown from '$shared/components/ActionsDropdown'
-import CoreText from '$shared/components/Input/CoreText'
+import CoreText from '$shared/components/Input/StyledText'
 
 import PermissionKeyFieldEditor from './PermissionKeyFieldEditor'
 

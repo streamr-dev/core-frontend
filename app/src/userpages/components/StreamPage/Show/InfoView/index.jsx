@@ -15,7 +15,7 @@ import PartitionsView from '../PartitionsView'
 import type { StreamId } from '$shared/flowtype/stream-types'
 import FormControlLabel from '$shared/components/FormControlLabel'
 import ActionsDropdown from '$shared/components/ActionsDropdown'
-import CoreText from '$shared/components/Input/CoreText'
+import CoreText from '$shared/components/Input/StyledText'
 
 import styles from './infoView.pcss'
 

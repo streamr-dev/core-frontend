@@ -5,7 +5,7 @@ import { I18n, Translate } from 'react-redux-i18n'
 
 import Button from '$shared/components/Button'
 import Select from '$shared/components/Input/Select'
-import CoreText from '$shared/components/Input/CoreText'
+import CoreText from '$shared/components/Input/StyledText'
 import type { StreamField } from '$shared/flowtype/stream-types'
 import SplitControl from '$userpages/components/SplitControl'
 import FormControlLabel from '$shared/components/FormControlLabel'

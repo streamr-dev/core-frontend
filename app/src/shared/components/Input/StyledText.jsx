@@ -1,7 +1,12 @@
 // @flow
 
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import Text from './Text'
+
+export const SpaciousTheme = {
+    height: 'auto',
+    lineHeight: '4rem',
+}
 
 export default styled(Text)`
     background-color: ${({ dark }) => (dark ? '#fdfdfd' : '#ffffff')};
@@ -17,6 +22,14 @@ export default styled(Text)`
     outline: none;
     padding: 0 1rem;
     width: 100%;
+
+    ${({ theme }) => !!(theme && theme.height) && css`
+        height: ${theme.height};
+    `}
+
+    ${({ theme }) => !!(theme && theme.lineHeight) && css`
+        line-height: ${theme.lineHeight};
+    `}
 
     :focus {
         border: 1px solid #0324FF;
@@ -41,4 +54,8 @@ export default styled(Text)`
         appearance: none;
         margin: 0;
     }
+
+    ${({ invalid }) => !!invalid && css`
+        border-color: #FF5C00;
+    `}
 `

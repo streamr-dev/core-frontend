@@ -9,7 +9,7 @@ import Buttons from '$shared/components/Buttons'
 import Select from '$shared/components/Input/Select'
 import SplitControl from '$userpages/components/SplitControl'
 import FormControlLabel from '$shared/components/FormControlLabel'
-import CoreText from '$shared/components/Input/CoreText'
+import CoreText from '$shared/components/Input/StyledText'
 import FormControlErrors from '$shared/components/FormControlErrors'
 
 import styles from './permissionKeyFieldEditor.pcss'

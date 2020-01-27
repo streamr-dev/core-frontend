@@ -9,7 +9,7 @@ import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import Select from '$shared/components/Input/Select'
 import FormControlLabel from '$shared/components/FormControlLabel'
-import CoreText from '$shared/components/Input/CoreText'
+import CoreText from '$shared/components/Input/StyledText'
 import FormControlErrors from '$shared/components/FormControlErrors'
 
 import styles from './confirmCsvImportDialog.pcss'

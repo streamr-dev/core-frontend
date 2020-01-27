@@ -5,7 +5,7 @@ import cx from 'classnames'
 import { Translate, I18n } from 'react-redux-i18n'
 
 import useValidation from '../ProductController/useValidation'
-import MarketplaceText from '$shared/components/Input/MarketplaceText'
+import StyledText, { SpaciousTheme } from '$shared/components/Input/StyledText'
 import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
 import FormControlErrors, { MarketplaceTheme } from '$shared/components/FormControlErrors'
 
@@ -34,7 +34,8 @@ const BeneficiaryAddress = ({ address, onChange, disabled, className }: Props) =
                     <Translate value="editProductPage.setPrice.setRecipientEthAddress" />
                 </strong>
                 <div>
-                    <MarketplaceText
+                    <StyledText
+                        theme={SpaciousTheme}
                         id="beneficiaryAddress"
                         autoComplete="off"
                         value={address || ''}

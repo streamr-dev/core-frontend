@@ -8,7 +8,7 @@ import usePending from '$shared/hooks/usePending'
 import useEditableProduct from '../ProductController/useEditableProduct'
 import useValidation from '../ProductController/useValidation'
 import useEditableProductActions from '../ProductController/useEditableProductActions'
-import MarketplaceText from '$shared/components/Input/MarketplaceText'
+import StyledText, { SpaciousTheme } from '$shared/components/Input/StyledText'
 import FormControlErrors, { MarketplaceTheme } from '$shared/components/FormControlErrors'
 
 import styles from './productName.pcss'
@@ -25,7 +25,7 @@ const ProductName = () => {
         <section id="product-name" className={cx(styles.root, styles.ProductName)}>
             <div>
                 <h1>Name your product</h1>
-                <MarketplaceText
+                <StyledText
                     value={product.name}
                     onCommit={updateName}
                     placeholder="Product Name"
@@ -34,6 +34,7 @@ const ProductName = () => {
                     smartCommit
                     invalid={invalid}
                     className={styles.input}
+                    theme={SpaciousTheme}
                 />
                 {invalid && (
                     <FormControlErrors theme={MarketplaceTheme}>

@@ -6,7 +6,7 @@ import { I18n } from 'react-redux-i18n'
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import FormControlLabel from '$shared/components/FormControlLabel'
-import CoreText from '$shared/components/Input/CoreText'
+import CoreText from '$shared/components/Input/StyledText'
 
 import styles from './identityNameDialog.pcss'
 
