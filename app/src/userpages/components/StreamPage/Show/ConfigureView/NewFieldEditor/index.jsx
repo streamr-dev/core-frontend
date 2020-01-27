@@ -8,8 +8,8 @@ import Select from '$ui/Select'
 import Text from '$ui/Text'
 import type { StreamField } from '$shared/flowtype/stream-types'
 import SplitControl from '$userpages/components/SplitControl'
-import FormControlLabel from '$shared/components/FormControlLabel'
-import FormControlErrors from '$shared/components/FormControlErrors'
+import Label from '$ui/Label'
+import Errors from '$ui/Errors'
 import { fieldTypes } from '$userpages/modules/userPageStreams/selectors'
 import styles from './newFieldEditor.pcss'
 
@@ -95,12 +95,12 @@ export class NewFieldEditor extends Component<Props, State> {
             <div className={styles.container}>
                 <SplitControl>
                     <div>
-                        <FormControlLabel
+                        <Label
                             htmlFor="newFieldName"
                             state={nameError && 'ERROR'}
                         >
                             {I18n.t('userpages.streams.edit.configure.newFieldEditor.namePlaceholder')}
-                        </FormControlLabel>
+                        </Label>
                         <Text
                             id="newFieldName"
                             type="text"
@@ -109,14 +109,14 @@ export class NewFieldEditor extends Component<Props, State> {
                             autoFocus
                             onKeyPress={(e) => this.handleKeyPress(e.key)}
                         />
-                        <FormControlErrors overlap>
+                        <Errors overlap>
                             {nameError}
-                        </FormControlErrors>
+                        </Errors>
                     </div>
                     <div>
-                        <FormControlLabel htmlFor="newFieldType">
+                        <Label htmlFor="newFieldType">
                             Data type
-                        </FormControlLabel>
+                        </Label>
                         <Select
                             id="newFieldType"
                             name="type"

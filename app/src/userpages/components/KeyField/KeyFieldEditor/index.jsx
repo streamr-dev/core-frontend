@@ -4,9 +4,9 @@ import React from 'react'
 import { I18n } from 'react-redux-i18n'
 
 import Buttons from '$shared/components/Buttons'
-import FormControlLabel from '$shared/components/FormControlLabel'
+import Label from '$ui/Label'
 import Text from '$ui/Text'
-import FormControlErrors from '$shared/components/FormControlErrors'
+import Errors from '$ui/Errors'
 
 import styles from './keyFieldEditor.pcss'
 
@@ -73,39 +73,39 @@ class KeyFieldEditor extends React.Component<Props, State> {
         return (
             <div className={styles.editor}>
                 <div className={styles.keyName}>
-                    <FormControlLabel
+                    <Label
                         htmlFor="keyName"
                         state={createNew && !editValue && error && 'ERROR'}
                     >
                         {I18n.t('userpages.keyFieldEditor.keyName')}
-                    </FormControlLabel>
+                    </Label>
                     <Text
                         value={keyName}
                         onChange={this.onKeyNameChange}
                     />
                     {createNew && !editValue && error && (
-                        <FormControlErrors overlap>
+                        <Errors overlap>
                             {error}
-                        </FormControlErrors>
+                        </Errors>
                     )}
                 </div>
                 {(!createNew || editValue) && (
                     <div className={styles.keyValue}>
-                        <FormControlLabel
+                        <Label
                             htmlFor="keyValue"
                             state={error && 'ERROR'}
                         >
                             {I18n.t(`userpages.keyFieldEditor.keyValue.${valueLabel}`)}
-                        </FormControlLabel>
+                        </Label>
                         <Text
                             id="keyValue"
                             value={keyId}
                             onChange={this.onValueChange}
                             readOnly={!editValue}
                         />
-                        <FormControlErrors overlap>
+                        <Errors overlap>
                             {error}
-                        </FormControlErrors>
+                        </Errors>
                     </div>
                 )}
                 <Buttons

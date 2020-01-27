@@ -13,7 +13,7 @@ import { NotificationIcon } from '$shared/utils/constants'
 import useCopy from '$shared/hooks/useCopy'
 import PartitionsView from '../PartitionsView'
 import type { StreamId } from '$shared/flowtype/stream-types'
-import FormControlLabel from '$shared/components/FormControlLabel'
+import Label from '$ui/Label'
 import ActionsDropdown from '$shared/components/ActionsDropdown'
 import Text from '$ui/Text'
 
@@ -77,9 +77,9 @@ export const InfoView = ({ disabled }: Props) => {
     return (
         <div className={cx('constrainInputWidth', styles.infoView)}>
             <div className={styles.textInput}>
-                <FormControlLabel htmlFor="streamName">
+                <Label htmlFor="streamName">
                     {I18n.t('userpages.streams.edit.details.name')}
-                </FormControlLabel>
+                </Label>
                 <Text
                     id="streamName"
                     type="text"
@@ -91,9 +91,9 @@ export const InfoView = ({ disabled }: Props) => {
                 />
             </div>
             <div className={styles.textInput}>
-                <FormControlLabel htmlFor="streamDescription">
+                <Label htmlFor="streamDescription">
                     {I18n.t('userpages.streams.edit.details.description')}
-                </FormControlLabel>
+                </Label>
                 <Text
                     type="text"
                     id="streamDescription"
@@ -105,9 +105,9 @@ export const InfoView = ({ disabled }: Props) => {
                 />
             </div>
             <div className={styles.textInput}>
-                <FormControlLabel htmlFor="streamId">
+                <Label htmlFor="streamId">
                     {I18n.t('userpages.streams.edit.details.streamId')}
-                </FormControlLabel>
+                </Label>
                 <ActionsDropdown
                     actions={[
                         <DropdownActions.Item key="copy" onClick={() => onCopy(stream.id)}>

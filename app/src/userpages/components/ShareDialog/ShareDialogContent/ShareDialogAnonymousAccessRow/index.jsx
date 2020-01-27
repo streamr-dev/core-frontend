@@ -8,7 +8,7 @@ import type { PermissionState } from '$userpages/flowtype/states/permission-stat
 import type { Permission, ResourceType, ResourceId } from '$userpages/flowtype/permission-types'
 import { addResourcePermission, removeResourcePermission } from '$userpages/modules/permission/actions'
 import Select from '$ui/Select'
-import FormControlLabel from '$shared/components/FormControlLabel'
+import Label from '$ui/Label'
 
 import styles from './shareDialogAnonymousAccessRow.pcss'
 
@@ -61,9 +61,9 @@ export class ShareDialogAnonymousAccessRow extends Component<Props> {
                 {!!this.props.showEmbedInactiveWarning && (
                     <Translate value="modal.shareResource.embedInactiveWarning" className={styles.embedInactive} />
                 )}
-                <FormControlLabel>
+                <Label>
                     {I18n.t('modal.shareResource.anonymousAccess')}
-                </FormControlLabel>
+                </Label>
                 <Select
                     name="name"
                     options={opts}

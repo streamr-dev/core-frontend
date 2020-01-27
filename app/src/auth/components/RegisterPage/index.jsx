@@ -20,9 +20,9 @@ import Checkbox from '$shared/components/Checkbox'
 import AuthStep from '../AuthStep'
 import AuthLayout from '../AuthLayout'
 import Text from '$ui/Text'
-import FormControlLabel from '$shared/components/FormControlLabel'
-import FormControlUnderline from '$shared/components/FormControlUnderline'
-import FormControlErrors from '$shared/components/FormControlErrors'
+import Label from '$ui/Label'
+import Underline from '$ui/Underline'
+import Errors from '$ui/Errors'
 import usePasswordStrength, { StrengthMessage, strengthToState } from '$shared/hooks/usePasswordStrength'
 
 import post from '../../utils/post'
@@ -142,9 +142,9 @@ const RegisterPage = ({ location: { search, pathname }, history: { replace } }: 
                 onValidationError={setFieldError}
             >
                 <AuthStep title={I18n.t('general.signUp')} showSignin>
-                    <FormControlLabel state={errors.name && 'ERROR'}>
+                    <Label state={errors.name && 'ERROR'}>
                         <Translate value="auth.register.name" />
-                    </FormControlLabel>
+                    </Label>
                     <Text
                         unstyled
                         name="name"
@@ -155,12 +155,12 @@ const RegisterPage = ({ location: { search, pathname }, history: { replace } }: 
                         disabled={!form.invite}
                         autoFocus
                     />
-                    <FormControlUnderline
+                    <Underline
                         state={(step === 0 && isProcessing && 'PROCESSING') || (errors.name && 'ERROR')}
                     />
-                    <FormControlErrors>
+                    <Errors>
                         {errors.name}
-                    </FormControlErrors>
+                    </Errors>
                     <Actions>
                         <Button disabled={isProcessing}>
                             <Translate value="auth.next" />
@@ -168,13 +168,13 @@ const RegisterPage = ({ location: { search, pathname }, history: { replace } }: 
                     </Actions>
                 </AuthStep>
                 <AuthStep title={I18n.t('general.signUp')} showBack>
-                    <FormControlLabel state={(errors.password && 'ERROR') || strengthState}>
+                    <Label state={(errors.password && 'ERROR') || strengthState}>
                         {strength === -1 ? (
                             <Translate value="auth.password.create" />
                         ) : (
                             <StrengthMessage strength={strength} />
                         )}
-                    </FormControlLabel>
+                    </Label>
                     <Text
                         unstyled
                         name="password"
@@ -184,12 +184,12 @@ const RegisterPage = ({ location: { search, pathname }, history: { replace } }: 
                         autoComplete="new-password"
                         autoFocus
                     />
-                    <FormControlUnderline
+                    <Underline
                         state={(step === 1 && isProcessing && 'PROCESSING') || (errors.password && 'ERROR') || strengthState}
                     />
-                    <FormControlErrors>
+                    <Errors>
                         {errors.password}
-                    </FormControlErrors>
+                    </Errors>
                     <Actions>
                         <Button disabled={isProcessing}>
                             <Translate value="auth.next" />
@@ -197,9 +197,9 @@ const RegisterPage = ({ location: { search, pathname }, history: { replace } }: 
                     </Actions>
                 </AuthStep>
                 <AuthStep title={I18n.t('general.signUp')} showBack>
-                    <FormControlLabel state={errors.confirmPassword && 'ERROR'}>
+                    <Label state={errors.confirmPassword && 'ERROR'}>
                         <Translate value="auth.password.confirm" />
-                    </FormControlLabel>
+                    </Label>
                     <Text
                         unstyled
                         name="confirmPassword"
@@ -209,12 +209,12 @@ const RegisterPage = ({ location: { search, pathname }, history: { replace } }: 
                         autoComplete="new-password"
                         autoFocus
                     />
-                    <FormControlUnderline
+                    <Underline
                         state={(step === 2 && isProcessing && 'PROCESSING') || (errors.confirmPassword && 'ERROR')}
                     />
-                    <FormControlErrors>
+                    <Errors>
                         {errors.confirmPassword}
-                    </FormControlErrors>
+                    </Errors>
                     <Actions>
                         <Button disabled={isProcessing}>
                             <Translate value="auth.next" />
@@ -244,9 +244,9 @@ const RegisterPage = ({ location: { search, pathname }, history: { replace } }: 
                                 dangerousHTML
                             />
                         </label>
-                        <FormControlErrors>
+                        <Errors>
                             {errors.toc}
-                        </FormControlErrors>
+                        </Errors>
                     </div>
                     <Actions>
                         <Button disabled={isProcessing}>

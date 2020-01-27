@@ -13,9 +13,9 @@ import Actions from '../Actions'
 import Button from '../Button'
 import AuthStep from '../AuthStep'
 import Text from '$ui/Text'
-import FormControlLabel from '$shared/components/FormControlLabel'
-import FormControlUnderline from '$shared/components/FormControlUnderline'
-import FormControlErrors from '$shared/components/FormControlErrors'
+import Label from '$ui/Label'
+import Underline from '$ui/Underline'
+import Errors from '$ui/Errors'
 
 import getSessionToken from '$auth/utils/getSessionToken'
 import onInputChange from '../../utils/onInputChange'
@@ -80,9 +80,9 @@ const UsernamePasswordLogin = ({ onEthereumClick }: Props) => {
                 onEthereumClick={onEthereumClick}
                 autoSubmitOnChange={['hiddenPassword']}
             >
-                <FormControlLabel state={errors.email && 'ERROR'}>
+                <Label state={errors.email && 'ERROR'}>
                     <Translate value="auth.labels.email" />
-                </FormControlLabel>
+                </Label>
                 <Text
                     unstyled
                     type="email"
@@ -93,12 +93,12 @@ const UsernamePasswordLogin = ({ onEthereumClick }: Props) => {
                     className={styles.emailInput}
                     autoFocus
                 />
-                <FormControlUnderline
+                <Underline
                     state={(step === 0 && isProcessing && 'PROCESSING') || (errors.email && 'ERROR')}
                 />
-                <FormControlErrors>
+                <Errors>
                     {errors.email}
-                </FormControlErrors>
+                </Errors>
                 <input
                     name="hiddenPassword"
                     type="password"
@@ -128,9 +128,9 @@ const UsernamePasswordLogin = ({ onEthereumClick }: Props) => {
                     readOnly
                     hidden
                 />
-                <FormControlLabel state={errors.password && 'ERROR'}>
+                <Label state={errors.password && 'ERROR'}>
                     <Translate value="auth.labels.password" />
-                </FormControlLabel>
+                </Label>
                 <Text
                     unstyled
                     name="password"
@@ -141,12 +141,12 @@ const UsernamePasswordLogin = ({ onEthereumClick }: Props) => {
                     className={styles.passwordInput}
                     autoFocus
                 />
-                <FormControlUnderline
+                <Underline
                     state={(step === 1 && isProcessing && 'PROCESSING') || (errors.password && 'ERROR')}
                 />
-                <FormControlErrors>
+                <Errors>
                     {errors.password}
-                </FormControlErrors>
+                </Errors>
                 <Actions>
                     <Link to={routes.forgotPassword()}>
                         <Translate value="auth.login.forgotPassword" />

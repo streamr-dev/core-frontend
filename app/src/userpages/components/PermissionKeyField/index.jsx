@@ -12,7 +12,7 @@ import DropdownActions from '$shared/components/DropdownActions'
 import Select from '$ui/Select'
 import SplitControl from '$userpages/components/SplitControl'
 import { truncate } from '$shared/utils/text'
-import FormControlLabel from '$shared/components/FormControlLabel'
+import Label from '$ui/Label'
 import ActionsDropdown from '$shared/components/ActionsDropdown'
 import Text from '$ui/Text'
 
@@ -190,9 +190,9 @@ class PermissionKeyField extends React.Component<Props, State> {
             <div
                 className={cx(styles.keyFieldContainer, keyFieldClassName)}
             >
-                <FormControlLabel htmlFor="keyName">
+                <Label htmlFor="keyName">
                     {keyName}
-                </FormControlLabel>
+                </Label>
                 <ActionsDropdown actions={actions}>
                     <Text
                         value={value && (!truncateValue ? value : truncate(value, {
@@ -234,9 +234,9 @@ class PermissionKeyField extends React.Component<Props, State> {
                     <SplitControl>
                         {this.renderInput()}
                         <div>
-                            <FormControlLabel>
+                            <Label>
                                 {showPermissionHeader && I18n.t('userpages.streams.edit.configure.permission')}
-                            </FormControlLabel>
+                            </Label>
                             <Select
                                 options={permissionOptions}
                                 value={permissionOptions.find((t) => t.value === permission)}

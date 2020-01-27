@@ -2,7 +2,7 @@
 
 import React, { type Node, Fragment } from 'react'
 import styled, { css } from 'styled-components'
-import { ERROR } from '$shared/components/FormControlStateColors'
+import { ERROR } from '$ui/StateColors'
 
 type Props = {
     children?: Node,
@@ -20,13 +20,13 @@ const DefaultTheme = {
     color: ERROR,
 }
 
-const UnstyledFormControlErrors = ({ children, theme, overlap, ...props }: Props) => (
+const UnstyledErrors = ({ children, theme, overlap, ...props }: Props) => (
     <div {...props}>
         {children || <Fragment>&zwnj;</Fragment>}
     </div>
 )
 
-const FormControlErrors = styled(UnstyledFormControlErrors)`
+const Errors = styled(UnstyledErrors)`
     color: ${({ theme }) => theme.color};
     font-size: 12px;
     line-height: 1.5em;
@@ -37,8 +37,8 @@ const FormControlErrors = styled(UnstyledFormControlErrors)`
     `}
 `
 
-FormControlErrors.defaultProps = {
+Errors.defaultProps = {
     theme: DefaultTheme,
 }
 
-export default FormControlErrors
+export default Errors

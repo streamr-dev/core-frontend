@@ -9,7 +9,7 @@ import useEditableProduct from '../ProductController/useEditableProduct'
 import useValidation from '../ProductController/useValidation'
 import useEditableProductActions from '../ProductController/useEditableProductActions'
 import Text, { SpaciousTheme } from '$ui/Text'
-import FormControlErrors, { MarketplaceTheme } from '$shared/components/FormControlErrors'
+import Errors, { MarketplaceTheme } from '$ui/Errors'
 
 import styles from './productName.pcss'
 
@@ -37,9 +37,9 @@ const ProductName = () => {
                     theme={SpaciousTheme}
                 />
                 {invalid && (
-                    <FormControlErrors theme={MarketplaceTheme}>
+                    <Errors theme={MarketplaceTheme}>
                         {message}
-                    </FormControlErrors>
+                    </Errors>
                 )}
             </div>
         </section>

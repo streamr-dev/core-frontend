@@ -4,7 +4,7 @@ import React from 'react'
 import cx from 'classnames'
 
 import Select, { type Props as SelectProps } from '$ui/Select'
-import FormControlErrors from '$shared/components/FormControlErrors'
+import Errors from '$ui/Errors'
 import { useLastError, type LastErrorProps } from '$shared/hooks/useLastError'
 
 import styles from './selectField.pcss'
@@ -29,9 +29,9 @@ export const SelectField = ({ error, isProcessing, disabled, ...inputProps }: Se
                 isDisabled={disabled}
                 {...castProps}
             />
-            <FormControlErrors overlap>
+            <Errors overlap>
                 {!!hasError && lastError}
-            </FormControlErrors>
+            </Errors>
         </div>
     )
 }

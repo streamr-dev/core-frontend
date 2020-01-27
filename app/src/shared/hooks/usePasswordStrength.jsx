@@ -5,7 +5,7 @@ import { Translate } from 'react-redux-i18n'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import zxcvbn from '$utils/zxcvbn'
 import { type UseStateTuple } from '$shared/flowtype/common-types'
-import * as Colors from '$shared/components/FormControlStateColors'
+import * as Colors from '$ui/StateColors'
 
 type StrengthMessageProps = {
     strength: number,

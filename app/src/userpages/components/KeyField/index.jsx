@@ -11,7 +11,7 @@ import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import useCopy from '$shared/hooks/useCopy'
-import FormControlLabel from '$shared/components/FormControlLabel'
+import Label from '$ui/Label'
 import ActionsDropdown from '$shared/components/ActionsDropdown'
 import Text from '$ui/Text'
 
@@ -165,9 +165,9 @@ const KeyField = ({
                     className={cx(styles.keyFieldContainer, keyFieldClassName)}
                 >
                     <div className={styles.labelWrapper}>
-                        <FormControlLabel htmlFor="keyName">
+                        <Label htmlFor="keyName">
                             {keyName}
-                        </FormControlLabel>
+                        </Label>
                         {labelComponent || <div />}
                     </div>
                     <ActionsDropdown actions={inputActions}>

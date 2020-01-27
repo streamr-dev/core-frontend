@@ -12,8 +12,8 @@ import AuthStep from '$auth/components/AuthStep'
 import getSessionToken from '$auth/utils/getSessionToken'
 import { validateWeb3, getWeb3 } from '$shared/web3/web3Provider'
 import Text from '$ui/Text'
-import FormControlUnderline from '$shared/components/FormControlUnderline'
-import FormControlErrors from '$shared/components/FormControlErrors'
+import Underline from '$ui/Underline'
+import Errors from '$ui/Errors'
 
 type Props = {
     onBackClick: () => void,
@@ -98,12 +98,12 @@ const EthereumLogin = ({ onBackClick }: Props) => {
                     value={I18n.t('auth.labels.ethereum')}
                     readOnly
                 />
-                <FormControlUnderline
+                <Underline
                     state={(step === 0 && isProcessing && 'PROCESSING') || (errors.ethereum && 'ERROR')}
                 />
-                <FormControlErrors>
+                <Errors>
                     {errors.ethereum}
-                </FormControlErrors>
+                </Errors>
             </AuthStep>
         </AuthPanel>
     )

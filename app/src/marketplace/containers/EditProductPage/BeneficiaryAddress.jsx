@@ -7,7 +7,7 @@ import { Translate, I18n } from 'react-redux-i18n'
 import useValidation from '../ProductController/useValidation'
 import Text from '$ui/Text'
 import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
-import FormControlErrors, { MarketplaceTheme } from '$shared/components/FormControlErrors'
+import Errors, { MarketplaceTheme } from '$ui/Errors'
 
 import styles from './beneficiaryAddress.pcss'
 
@@ -49,9 +49,9 @@ const BeneficiaryAddress = ({ address, onChange, disabled, className }: Props) =
                 {invalid && (
                     <Fragment>
                         <div />
-                        <FormControlErrors theme={MarketplaceTheme}>
+                        <Errors theme={MarketplaceTheme}>
                             {message}
-                        </FormControlErrors>
+                        </Errors>
                     </Fragment>
                 )}
             </label>

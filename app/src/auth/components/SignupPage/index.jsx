@@ -12,9 +12,9 @@ import Button from '../Button'
 import AuthStep from '../AuthStep'
 import AuthLayout from '../AuthLayout'
 import Text from '$ui/Text'
-import FormControlLabel from '$shared/components/FormControlLabel'
-import FormControlUnderline from '$shared/components/FormControlUnderline'
-import FormControlErrors from '$shared/components/FormControlErrors'
+import Label from '$ui/Label'
+import Underline from '$ui/Underline'
+import Errors from '$ui/Errors'
 
 import post from '../../utils/post'
 import onInputChange from '../../utils/onInputChange'
@@ -62,9 +62,9 @@ const SignupPage = () => {
                     onFailure={onFailure}
                     showSignin
                 >
-                    <FormControlLabel state={errors.email && 'ERROR'}>
+                    <Label state={errors.email && 'ERROR'}>
                         <Translate value="auth.labels.email" />
-                    </FormControlLabel>
+                    </Label>
                     <Text
                         unstyled
                         type="text"
@@ -74,12 +74,12 @@ const SignupPage = () => {
                         autoComplete="off"
                         autoFocus
                     />
-                    <FormControlUnderline
+                    <Underline
                         state={(step === 0 && isProcessing && 'PROCESSING') || (errors.email && 'ERROR')}
                     />
-                    <FormControlErrors>
+                    <Errors>
                         {errors.email}
-                    </FormControlErrors>
+                    </Errors>
                     <Actions>
                         <Button disabled={isProcessing}>
                             <Translate value="auth.next" />

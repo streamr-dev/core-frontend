@@ -1,9 +1,9 @@
 // @flow
 
 import styled from 'styled-components'
-import * as Colors from '$shared/components/FormControlStateColors'
+import * as Colors from '$ui/StateColors'
 
-const FormControlLabel = styled.label`
+const Label = styled.label`
     color: ${({ state }) => Colors[state] || Colors.DEFAULT};
     display: block;
     font-size: 12px;
@@ -15,4 +15,4 @@ const FormControlLabel = styled.label`
     white-space: nowrap;
 `
 
-export default FormControlLabel
+export default Label

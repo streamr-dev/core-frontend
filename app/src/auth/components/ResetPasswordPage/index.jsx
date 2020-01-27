@@ -18,9 +18,9 @@ import Button from '../Button'
 import AuthStep from '../AuthStep'
 import AuthLayout from '../AuthLayout'
 import Text from '$ui/Text'
-import FormControlLabel from '$shared/components/FormControlLabel'
-import FormControlUnderline from '$shared/components/FormControlUnderline'
-import FormControlErrors from '$shared/components/FormControlErrors'
+import Label from '$ui/Label'
+import Underline from '$ui/Underline'
+import Errors from '$ui/Errors'
 import usePasswordStrength, { StrengthMessage, strengthToState } from '$shared/hooks/usePasswordStrength'
 
 import post from '../../utils/post'
@@ -124,13 +124,13 @@ const ResetPasswordPage = ({ location: { search, pathname }, history: { replace 
                 <AuthStep
                     title={I18n.t('auth.resetPassword')}
                 >
-                    <FormControlLabel state={(errors.password && 'ERROR') || strengthState}>
+                    <Label state={(errors.password && 'ERROR') || strengthState}>
                         {strength === -1 ? (
                             <Translate value="auth.password.create" />
                         ) : (
                             <StrengthMessage strength={strength} />
                         )}
-                    </FormControlLabel>
+                    </Label>
                     <Text
                         unstyled
                         name="password"
@@ -141,12 +141,12 @@ const ResetPasswordPage = ({ location: { search, pathname }, history: { replace 
                         disabled={!form.token}
                         autoFocus
                     />
-                    <FormControlUnderline
+                    <Underline
                         state={(step === 0 && isProcessing && 'PROCESSING') || (errors.password && 'ERROR') || strengthState}
                     />
-                    <FormControlErrors>
+                    <Errors>
                         {errors.password}
-                    </FormControlErrors>
+                    </Errors>
                     <Actions>
                         <Button disabled={isProcessing}>
                             <Translate value="auth.next" />
@@ -162,9 +162,9 @@ const ResetPasswordPage = ({ location: { search, pathname }, history: { replace 
                     onFailure={onFailure}
                     showBack
                 >
-                    <FormControlLabel state={errors.confirmPassword && 'ERROR'}>
+                    <Label state={errors.confirmPassword && 'ERROR'}>
                         <Translate value="auth.password.confirm" />
-                    </FormControlLabel>
+                    </Label>
                     <Text
                         unstyled
                         name="confirmPassword"
@@ -174,12 +174,12 @@ const ResetPasswordPage = ({ location: { search, pathname }, history: { replace 
                         autoComplete="new-password"
                         autoFocus
                     />
-                    <FormControlUnderline
+                    <Underline
                         state={(step === 1 && isProcessing && 'PROCESSING') || (errors.confirmPassword && 'ERROR')}
                     />
-                    <FormControlErrors>
+                    <Errors>
                         {errors.confirmPassword}
-                    </FormControlErrors>
+                    </Errors>
                     <Actions>
                         <Button disabled={isProcessing}>
                             <Translate value="auth.finish" />

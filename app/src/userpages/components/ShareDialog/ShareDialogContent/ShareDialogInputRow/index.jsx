@@ -5,7 +5,7 @@ import { I18n } from 'react-redux-i18n'
 
 import Button from '$shared/components/Button'
 import SvgIcon from '$shared/components/SvgIcon'
-import FormControlLabel from '$shared/components/FormControlLabel'
+import Label from '$ui/Label'
 import Text from '$ui/Text'
 
 import styles from './shareDialogInputRow.pcss'
@@ -44,9 +44,9 @@ export class ShareDialogInputRow extends Component<Props, State> {
         return (
             <div className={styles.container}>
                 <div>
-                    <FormControlLabel htmlFor="enterEmail">
+                    <Label htmlFor="enterEmail">
                         {I18n.t('modal.shareResource.enterEmailAddressLabel')}
-                    </FormControlLabel>
+                    </Label>
                     <Text
                         id="enterEmail"
                         className={styles.input}

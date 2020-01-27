@@ -8,9 +8,9 @@ import type { ResourcePermission } from '$shared/flowtype/resource-key-types'
 import Buttons from '$shared/components/Buttons'
 import Select from '$ui/Select'
 import SplitControl from '$userpages/components/SplitControl'
-import FormControlLabel from '$shared/components/FormControlLabel'
+import Label from '$ui/Label'
 import Text from '$ui/Text'
-import FormControlErrors from '$shared/components/FormControlErrors'
+import Errors from '$ui/Errors'
 
 import styles from './permissionKeyFieldEditor.pcss'
 
@@ -102,24 +102,24 @@ class PermissionKeyFieldEditor extends React.Component<Props, State> {
             <div className={cx(styles.editor, className)}>
                 <SplitControl>
                     <div className={styles.keyName}>
-                        <FormControlLabel state={error && 'ERROR'}>
+                        <Label state={error && 'ERROR'}>
                             {I18n.t('userpages.keyFieldEditor.keyName')}
-                        </FormControlLabel>
+                        </Label>
                         <Text
                             value={keyName}
                             onChange={this.onKeyNameChange}
                             error={(createNew && !editValue && error) || undefined}
                         />
                         {createNew && !editValue && (
-                            <FormControlErrors overlap>
+                            <Errors overlap>
                                 {error}
-                            </FormControlErrors>
+                            </Errors>
                         )}
                     </div>
                     <div>
-                        <FormControlLabel>
+                        <Label>
                             Permission
-                        </FormControlLabel>
+                        </Label>
                         <Select
                             options={permissionOptions}
                             value={permissionOptions.find((t) => t.value === permission)}
@@ -129,18 +129,18 @@ class PermissionKeyFieldEditor extends React.Component<Props, State> {
                 </SplitControl>
                 {(!createNew || editValue) && (
                     <div className={styles.keyValue}>
-                        <FormControlLabel state={error && 'ERROR'}>
+                        <Label state={error && 'ERROR'}>
                             {I18n.t(`userpages.keyFieldEditor.keyValue.${valueLabel}`)}
-                        </FormControlLabel>
+                        </Label>
                         <Text
                             value={keyId}
                             onChange={this.onValueChange}
                             readOnly={!editValue}
                         />
                         {error && (
-                            <FormControlErrors>
+                            <Errors>
                                 {error}
-                            </FormControlErrors>
+                            </Errors>
                         )}
                     </div>
                 )}

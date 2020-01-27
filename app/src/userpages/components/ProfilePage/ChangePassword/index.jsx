@@ -10,9 +10,9 @@ import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import routes from '$routes'
 import Button from '$shared/components/Button'
-import FormControlLabel from '$shared/components/FormControlLabel'
+import Label from '$ui/Label'
 import Text from '$ui/Text'
-import FormControlErrors from '$shared/components/FormControlErrors'
+import Errors from '$ui/Errors'
 import usePasswordStrength, { StrengthMessage } from '$shared/hooks/usePasswordStrength'
 
 import type { PasswordUpdate } from '$shared/flowtype/user-types'
@@ -138,9 +138,9 @@ class ChangePasswordDialog extends Component<Props, State> {
                         <Translate value="modal.changePassword.forgotPassword" />
                     </Link>
                     <div className={styles.currentPassword}>
-                        <FormControlLabel htmlFor="currentPassword">
+                        <Label htmlFor="currentPassword">
                             {I18n.t('modal.changePassword.currentPassword')}
-                        </FormControlLabel>
+                        </Label>
                         <Text
                             id="currentPassword"
                             type="password"
@@ -149,16 +149,16 @@ class ChangePasswordDialog extends Component<Props, State> {
                             onChange={this.onChange('currentPassword')}
                             required
                         />
-                        <FormControlErrors />
+                        <Errors />
                     </div>
                     <div className={styles.newPassword}>
-                        <FormControlLabel htmlFor="newPassword">
+                        <Label htmlFor="newPassword">
                             {passwordStrength !== -1 ? (
                                 <StrengthMessage strength={passwordStrength} />
                             ) : (
                                 I18n.t('modal.changePassword.newPassword')
                             )}
-                        </FormControlLabel>
+                        </Label>
                         <Text
                             id="newPassword"
                             type="password"
@@ -168,12 +168,12 @@ class ChangePasswordDialog extends Component<Props, State> {
                             required
                             autoComplete="off"
                         />
-                        <FormControlErrors />
+                        <Errors />
                     </div>
                     <div className={styles.confirmNewPassword}>
-                        <FormControlLabel htmlFor="confirmNewPassword">
+                        <Label htmlFor="confirmNewPassword">
                             {I18n.t('modal.changePassword.confirmNewPassword')}
-                        </FormControlLabel>
+                        </Label>
                         <Text
                             id="confirmNewPassword"
                             type="password"
@@ -183,9 +183,9 @@ class ChangePasswordDialog extends Component<Props, State> {
                             required
                             autoComplete="off"
                         />
-                        <FormControlErrors>
+                        <Errors>
                             {newPasswordGiven && !passWordsMatch && I18n.t('modal.changePassword.passwordsDoNotMatch')}
-                        </FormControlErrors>
+                        </Errors>
                     </div>
                 </Dialog>
             </ModalPortal>

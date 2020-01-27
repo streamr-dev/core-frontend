@@ -3,7 +3,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
-import FormControlLabel from '$shared/components/FormControlLabel'
+import Label from '$ui/Label'
 import Text from '$ui/Text'
 
 import {
@@ -64,9 +64,9 @@ export class ProfileSettings extends Component<Props> {
                     onImageChange={this.onImageChange}
                 />
                 <div className={styles.fullname}>
-                    <FormControlLabel htmlFor="userFullname">
+                    <Label htmlFor="userFullname">
                         Your Name
-                    </FormControlLabel>
+                    </Label>
                     <Text
                         id="userFullname"
                         name="name"
@@ -76,9 +76,9 @@ export class ProfileSettings extends Component<Props> {
                     />
                 </div>
                 <div className={styles.email}>
-                    <FormControlLabel htmlFor="userEmail">
+                    <Label htmlFor="userEmail">
                         Email
-                    </FormControlLabel>
+                    </Label>
                     <Text
                         id="userEmail"
                         value={user.username || ''}

@@ -8,7 +8,7 @@ import useEditableProduct from '../ProductController/useEditableProduct'
 import useValidation from '../ProductController/useValidation'
 import useEditableProductActions from '../ProductController/useEditableProductActions'
 import ImageUpload from '$shared/components/ImageUpload'
-import FormControlErrors from '$shared/components/FormControlErrors'
+import Errors from '$ui/Errors'
 import usePending from '$shared/hooks/usePending'
 import useModal from '$shared/hooks/useModal'
 import useFilePreview from '$shared/hooks/useFilePreview'
@@ -64,9 +64,9 @@ const CoverImage = () => {
                     noPreview
                 />
                 {hasError && !!message && (
-                    <FormControlErrors overlap>
+                    <Errors overlap>
                         {message}
-                    </FormControlErrors>
+                    </Errors>
                 )}
             </div>
         </section>

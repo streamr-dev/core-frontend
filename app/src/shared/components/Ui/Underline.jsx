@@ -2,7 +2,7 @@
 
 import React from 'react'
 import styled, { keyframes, css } from 'styled-components'
-import * as Colors from '$shared/components/FormControlStateColors'
+import * as Colors from '$ui/StateColors'
 
 const animation = keyframes`
     0% {
@@ -26,13 +26,13 @@ const animation = keyframes`
     }
 `
 
-const UnstyledFormControlUnderline = (props: any) => (
+const UnstyledUnderline = (props: any) => (
     <div {...props}>
         <div />
     </div>
 )
 
-const FormControlUnderline = styled(UnstyledFormControlUnderline)`
+const Underline = styled(UnstyledUnderline)`
     background-color: ${Colors.DEFAULT};
     height: 1px;
     position: relative;
@@ -66,4 +66,4 @@ const FormControlUnderline = styled(UnstyledFormControlUnderline)`
     }
 `
 
-export default FormControlUnderline
+export default Underline

@@ -10,7 +10,7 @@ import { updateEditStream } from '$userpages/modules/userPageStreams/actions'
 import { selectEditedStream } from '$userpages/modules/userPageStreams/selectors'
 import Text from '$ui/Text'
 import Select from '$ui/Select'
-import FormControlLabel from '$shared/components/FormControlLabel'
+import Label from '$ui/Label'
 
 import styles from './statusView.pcss'
 
@@ -94,9 +94,9 @@ function StatusView(props: Props) {
                 {I18n.t('userpages.streams.inactivityDescription')}
             </p>
             <div className={styles.container}>
-                <FormControlLabel htmlFor="inactivityValue">
+                <Label htmlFor="inactivityValue">
                     {I18n.t('userpages.streams.inactivityLabel')}
-                </FormControlLabel>
+                </Label>
                 <div className={styles.inner}>
                     <Text
                         id="inactivityValue"

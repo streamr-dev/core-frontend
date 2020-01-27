@@ -23,8 +23,8 @@ import Spinner from '$shared/components/Spinner'
 import CsvSchemaError from '$shared/errors/CsvSchemaError'
 import SplitControl from '$userpages/components/SplitControl'
 import { type Ref } from '$shared/flowtype/common-types'
-import FormControlLabel from '$shared/components/FormControlLabel'
-import FormControlErrors from '$shared/components/FormControlErrors'
+import Label from '$ui/Label'
+import Errors from '$ui/Errors'
 
 import styles from './historyView.pcss'
 
@@ -333,9 +333,9 @@ class HistoryView extends Component<Props, State> {
                                 className={styles.fileUpload}
                                 component={
                                     <Fragment>
-                                        <FormControlLabel>
+                                        <Label>
                                             {I18n.t('userpages.streams.edit.history.storedEvents')}
-                                        </FormControlLabel>
+                                        </Label>
                                         <Text value={storedEventsText} readOnly />
                                     </Fragment>
                                 }
@@ -358,7 +358,7 @@ class HistoryView extends Component<Props, State> {
                                 <Translate value="userpages.streams.edit.history.uploadCsvButton" />
                             </Button>
                         </SplitControl>
-                        <FormControlErrors />
+                        <Errors />
                     </Fragment>
                 )}
                 {!streamId && (
@@ -370,9 +370,9 @@ class HistoryView extends Component<Props, State> {
                     <Fragment>
                         <SplitControl className={styles.defaultSplit}>
                             <div className={styles.storedEventsContainer}>
-                                <FormControlLabel>
+                                <Label>
                                     {I18n.t('userpages.streams.edit.history.deleteEvents')}
-                                </FormControlLabel>
+                                </Label>
                                 <DatePicker
                                     openOnFocus
                                     onChange={this.onDeleteDateChanged}
@@ -397,16 +397,16 @@ class HistoryView extends Component<Props, State> {
                                 }
                             </Button>
                         </SplitControl>
-                        <FormControlErrors>
+                        <Errors>
                             {(deleteDataError && deleteDataError.message) || ''}
-                        </FormControlErrors>
+                        </Errors>
                     </Fragment>
                 )}
                 {stream && stream.storageDays !== undefined &&
                     <Fragment>
-                        <FormControlLabel htmlFor="storageAmount">
+                        <Label htmlFor="storageAmount">
                             {I18n.t('userpages.streams.edit.configure.historicalStoragePeriod.label')}
-                        </FormControlLabel>
+                        </Label>
                         <div className={styles.storageContainer}>
                             <Text
                                 id="storageAmount"

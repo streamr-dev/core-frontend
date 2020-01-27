@@ -8,9 +8,9 @@ import type { CsvUploadState } from '$userpages/flowtype/states/stream-state'
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import Select from '$ui/Select'
-import FormControlLabel from '$shared/components/FormControlLabel'
+import Label from '$ui/Label'
 import Text from '$ui/Text'
-import FormControlErrors from '$shared/components/FormControlErrors'
+import Errors from '$ui/Errors'
 
 import styles from './confirmCsvImportDialog.pcss'
 
@@ -178,9 +178,9 @@ export class ConfirmCsvImportView extends Component<Props, State> {
                 >
                     <div className={styles.content}>
                         <div className={styles.row}>
-                            <FormControlLabel>
+                            <Label>
                                 {I18n.t('userpages.streams.edit.history.confirmCsv.selectTimestamp')}
-                            </FormControlLabel>
+                            </Label>
                             <Select
                                 name=""
                                 options={headers.map((header, index) => (
@@ -196,9 +196,9 @@ export class ConfirmCsvImportView extends Component<Props, State> {
                         </div>
 
                         <div className={styles.row}>
-                            <FormControlLabel state={!!errorMessage && 'ERROR'}>
+                            <Label state={!!errorMessage && 'ERROR'}>
                                 {I18n.t('userpages.streams.edit.history.confirmCsv.dateFormat')}
-                            </FormControlLabel>
+                            </Label>
                             <Select
                                 name=""
                                 options={
@@ -215,9 +215,9 @@ export class ConfirmCsvImportView extends Component<Props, State> {
                                 required
                             />
                             {errorMessage && (
-                                <FormControlErrors>
+                                <Errors>
                                     {errorMessage}
-                                </FormControlErrors>
+                                </Errors>
                             )}
                             {dateFormat && dateFormats[dateFormat] && (
                                 <span className={styles.helpText}>
@@ -228,9 +228,9 @@ export class ConfirmCsvImportView extends Component<Props, State> {
 
                         {dateFormat === 'CUSTOM' && (
                             <div className={styles.row}>
-                                <FormControlLabel htmlFor="customFormat">
+                                <Label htmlFor="customFormat">
                                     {I18n.t('userpages.streams.edit.history.confirmCsv.customFormat')}
-                                </FormControlLabel>
+                                </Label>
                                 <Text
                                     id="customFormat"
                                     value={customFormat}
