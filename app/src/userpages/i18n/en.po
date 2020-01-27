@@ -92,8 +92,8 @@ msgstr "Z to A"
 msgid "userpages##filter##published"
 msgstr "Published"
 
-msgid "userpages##filter##draft"
-msgstr "Draft"
+msgid "userpages##filter##drafts"
+msgstr "Drafts"
 
 msgid "userpages##filter##active"
 msgstr "Active"
