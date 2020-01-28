@@ -33,7 +33,7 @@ const ConnectEthIdentity = ({ className }: Props) => {
         }
     }, [addIdentityDialog, isMounted])
 
-    if (!isRequired && !walletLocked) {
+    if (!waiting && !isRequired && !walletLocked) {
         // keeps modal visible even if requirements are met
         return (
             <AddIdentityDialog />

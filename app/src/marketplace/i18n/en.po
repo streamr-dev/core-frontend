@@ -162,7 +162,7 @@ msgstr ""
 "connect an Ethereum address to your Streamr account before deploying your product."
 
 msgid "editProductPage##connectEthIdentity##addNewAddress"
-msgstr "Add an Ethereum address"
+msgstr "Add ETH address"
 
 msgid "editProductPage##sharedSecrets##addSecret"
 msgstr "Add shared secret"
