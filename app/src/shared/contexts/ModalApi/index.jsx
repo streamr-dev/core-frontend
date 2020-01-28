@@ -1,6 +1,7 @@
 // @flow
 
-import React, { type Context, type Node, useState, useCallback, useMemo } from 'react'
+import React, { type Context, type Node, useState, useCallback, useMemo, useEffect } from 'react'
+import { withRouter, type History } from 'react-router-dom'
 
 import useIsMounted from '$shared/hooks/useIsMounted'
 
@@ -12,7 +13,7 @@ type ContextProps = {
 
 const ModalContext: Context<ContextProps> = React.createContext({})
 
-function useModalContext(): ContextProps {
+function useModalContext(path: string): ContextProps {
     const [modals, setModals] = useState({})
 
     const isMounted = useIsMounted()
@@ -53,6 +54,20 @@ function useModalContext(): ContextProps {
         })
     }, [modals, isMounted])
 
+    // close all modals on route change
+    useEffect(() => () => {
+        if (!isMounted()) { return }
+
+        setModals((prevModals) => {
+            Object.keys(prevModals).forEach((modalId) => {
+                if (prevModals[modalId].reject && typeof prevModals[modalId].reject === 'function') {
+                    prevModals[modalId].reject()
+                }
+            })
+            return {}
+        })
+    }, [isMounted, path])
+
     return useMemo(() => ({
         modals,
         openModal,
@@ -62,15 +77,14 @@ function useModalContext(): ContextProps {
 
 type Props = {
     children?: Node,
+    history: History,
 }
 
-function ModalContextProvider({ children }: Props) {
-    return (
-        <ModalContext.Provider value={useModalContext()}>
-            {children || null}
-        </ModalContext.Provider>
-    )
-}
+const ModalContextProvider = withRouter(({ children, history }: Props) => (
+    <ModalContext.Provider value={useModalContext(history.location.pathname)}>
+        {children || null}
+    </ModalContext.Provider>
+))
 
 export {
     ModalContextProvider as Provider,
