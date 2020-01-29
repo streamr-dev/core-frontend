@@ -9,7 +9,7 @@ import { selectProduct } from '$mp/modules/product/selectors'
 import { getProductFromContract, clearContractProduct as clearContractProductAction } from '$mp/modules/contractProduct/actions'
 import { selectFetchingContractProduct, selectContractProduct, selectContractProductError } from '$mp/modules/contractProduct/selectors'
 import ErrorDialog from '$mp/components/Modal/ErrorDialog'
-import UnlockWalletDialog from '$mp/components/Modal/UnlockWalletDialog'
+import UnlockWalletDialog from '$shared/components/Web3ErrorDialog/UnlockWalletDialog'
 import { isPaidProduct } from '$mp/utils/product'
 import { areAddressesEqual } from '$mp/utils/smartContract'
 import type { ProductId, Product, SmartContractProduct } from '$mp/flowtype/product-types'
@@ -111,12 +111,11 @@ export function withContractProduct(WrappedComponent: ComponentType<any>) {
                     // Product is deployed but need to check if the owner is correct
                     if (requireOwnerIfDeployed && contractProduct && !areAddressesEqual(accountId || '', contractProduct.ownerAddress)) {
                         return (
-                            <UnlockWalletDialog
-                                onClose={onClose}
-                                message={I18n.t('unlockWalletDialog.message', {
+                            <UnlockWalletDialog onClose={onClose}>
+                                {I18n.t('unlockWalletDialog.message', {
                                     address: contractProduct.ownerAddress,
                                 })}
-                            />
+                            </UnlockWalletDialog>
                         )
                     }
                 }

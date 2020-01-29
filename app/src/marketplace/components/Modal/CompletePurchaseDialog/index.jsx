@@ -69,6 +69,14 @@ const CompletePurchaseDialog = ({ onCancel, purchaseState, accountLinked }: Prop
                     <Dialog
                         onClose={onCancel}
                         title={I18n.t('modal.completePurchase.failed.title')}
+                        actions={{
+                            ok: {
+                                title: I18n.t('modal.common.ok'),
+                                onClick: () => onCancel(),
+                                kind: 'primary',
+                                outline: true,
+                            },
+                        }}
                     >
                         <PngIcon
                             className={styles.icon}

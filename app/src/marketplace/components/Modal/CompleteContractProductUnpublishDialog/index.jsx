@@ -83,6 +83,14 @@ const CompleteContractProductUnpublishDialog = ({ onCancel, publishState }: Prop
                     <Dialog
                         onClose={onCancel}
                         title={I18n.t('modal.completeUnpublish.failed.title')}
+                        actions={{
+                            ok: {
+                                title: I18n.t('modal.common.ok'),
+                                onClick: () => onCancel(),
+                                kind: 'primary',
+                                outline: true,
+                            },
+                        }}
                     >
                         <div>
                             <PngIcon
@@ -90,7 +98,7 @@ const CompleteContractProductUnpublishDialog = ({ onCancel, publishState }: Prop
                                 name="txFailed"
                                 alt={I18n.t('error.txFailed')}
                             />
-                            <p><Translate value="modal.completeUnpublish.failed.message" dangerousHTML /></p>
+                            <Translate value="modal.completeUnpublish.failed.message" dangerousHTML tag="p" />
                         </div>
                     </Dialog>
                 </ModalPortal>

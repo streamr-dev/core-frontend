@@ -5,6 +5,7 @@ import { I18n } from 'react-redux-i18n'
 
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
+import PngIcon from '$shared/components/PngIcon'
 
 export type Props = {
     title?: string,
@@ -23,11 +24,13 @@ const ErrorDialog = ({ title, message, waiting, onClose }: Props) => (
                 dismiss: {
                     title: I18n.t('modal.common.ok'),
                     kind: 'primary',
+                    outline: true,
                     onClick: onClose,
                 },
             }}
         >
-            {message}
+            <PngIcon name="walletError" />
+            <p>{message}</p>
         </Dialog>
     </ModalPortal>
 )

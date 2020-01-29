@@ -84,6 +84,14 @@ const SaveContractProductDialog = ({ transactionState, onClose }: Props) => {
                     <Dialog
                         onClose={onClose}
                         title={I18n.t('modal.saveProduct.failed.title')}
+                        actions={{
+                            ok: {
+                                title: I18n.t('modal.common.ok'),
+                                onClick: () => onClose(),
+                                kind: 'primary',
+                                outline: true,
+                            },
+                        }}
                     >
                         <div>
                             <WalletErrorIcon />

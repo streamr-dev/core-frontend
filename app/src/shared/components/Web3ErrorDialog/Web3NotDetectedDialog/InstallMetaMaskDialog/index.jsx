@@ -20,6 +20,14 @@ const InstallMetaMaskDialog = ({ onClose, ...props }: Props) => (
             {...props}
             onClose={onClose}
             title={I18n.t('modal.web3.installmetamask.title')}
+            actions={{
+                ok: {
+                    title: I18n.t('modal.common.ok'),
+                    onClick: () => onClose(),
+                    kind: 'primary',
+                    outline: true,
+                },
+            }}
         >
             <img className={styles.icon} src={WalletErrorPng} srcSet={`${WalletErrorPng2x} 2x`} alt={I18n.t('error.wallet')} />
             <p><Translate value="modal.web3.installmetamask.message" dangerousHTML /></p>

@@ -26,7 +26,7 @@ import { addTransaction } from '$mp/modules/transactions/actions'
 import { postSetDeploying, postDeployFree, redeployProduct } from '$mp/modules/publish/services'
 import { postSetUndeploying, postUndeployFree, deleteProduct } from '$mp/modules/unpublish/services'
 import useWeb3Status from '$shared/hooks/useWeb3Status'
-import UnlockWalletDialog from '$mp/components/Modal/UnlockWalletDialog'
+import UnlockWalletDialog from '$shared/components/Web3ErrorDialog/UnlockWalletDialog'
 
 import PublishQueue, { actionsTypes } from './publishQueue'
 import { getPendingChanges, withPendingChanges } from './state'
@@ -389,12 +389,11 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
 
     if (!!requireWeb3 && !!requiredOwner && (!account || !areAddressesEqual(account, requiredOwner))) {
         return (
-            <UnlockWalletDialog
-                onClose={onClose}
-                message={I18n.t('unlockWalletDialog.message', {
+            <UnlockWalletDialog onClose={onClose}>
+                {I18n.t('unlockWalletDialog.message', {
                     address: requiredOwner,
                 })}
-            />
+            </UnlockWalletDialog>
         )
     }
 
