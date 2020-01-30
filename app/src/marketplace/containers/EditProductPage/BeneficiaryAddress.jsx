@@ -108,11 +108,21 @@ const BeneficiaryAddress = ({
 
     const [focused, setFocused] = useState(false)
 
+    const [ownAddress, setOwnAddress] = useState(addressProp || '')
+
+    useEffect(() => {
+        setOwnAddress(addressProp || '')
+    }, [addressProp])
+
+    const onOwnAddressChange = useCallback((e: SyntheticInputEvent<EventTarget>) => {
+        setOwnAddress(e.target.value)
+    }, [])
+
     const address: string = useMemo(() => (
-        focused ? (addressProp || '') : truncate(addressProp || '', {
+        focused ? ownAddress : truncate(ownAddress, {
             maxLength: 30,
         })
-    ), [focused, addressProp])
+    ), [focused, ownAddress])
 
     const onFocus = useCallback((e: SyntheticFocusEvent<EventTarget>) => {
         setFocused(true)
@@ -166,10 +176,12 @@ const BeneficiaryAddress = ({
                     ]}
                 >
                     <Text
+                        key={addressProp}
                         id="beneficiaryAddress"
                         autoComplete="off"
-                        defaultValue={address}
+                        value={address}
                         onCommit={onChange}
+                        onChange={onOwnAddressChange}
                         placeholder={I18n.t('editProductPage.setPrice.placeholder.enterEthAddress')}
                         invalid={invalid}
                         disabled={disabled}
