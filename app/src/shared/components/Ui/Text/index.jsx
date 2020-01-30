@@ -28,9 +28,13 @@ const Text = ({ tag: Tag = 'input', unstyled, ...props }: Props, ref: any) => (
     )
 )
 
-export default compose(
+const EnhancedText = compose(
     FlushHistoryDecorator,
     OnCommitDecorator,
     SelectAllOnFocusDecorator,
     RevertOnEscapeDecorator,
 )(forwardRef(Text))
+
+EnhancedText.displayName = 'Text'
+
+export default EnhancedText
