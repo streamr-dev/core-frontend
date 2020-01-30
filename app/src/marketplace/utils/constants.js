@@ -42,5 +42,5 @@ export const searchCharMax = 250
 
 export const productTypes = {
     NORMAL: 'NORMAL',
-    COMMUNITY: 'COMMUNITY',
+    DATA_UNION: 'COMMUNITY',
 }

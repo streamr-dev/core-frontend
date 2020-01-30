@@ -20,7 +20,7 @@ import NoPurchasesView from './NoPurchases'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
 import ListContainer from '$shared/components/Container/List'
 import TileGrid from '$shared/components/TileGrid'
-import { isCommunityProduct } from '$mp/utils/product'
+import { isDataUnionProduct } from '$mp/utils/product'
 import useFilterSort from '$userpages/hooks/useFilterSort'
 import useCommunityStats from '$mp/modules/communityProduct/hooks/useCommunityStats'
 
@@ -103,7 +103,7 @@ const PurchasesPage = () => {
                 <TileGrid>
                     {purchases.map((product) => {
                         const isActive = subscriptions && isSubscriptionActive(subscriptions.find((s) => s.product.id === product.id))
-                        const isCommunity = isCommunityProduct(product)
+                        const isDataUnion = isDataUnionProduct(product)
                         const beneficiaryAddress = (product.beneficiaryAddress || '').toLowerCase()
                         const memberCount = members[beneficiaryAddress]
 
@@ -116,12 +116,12 @@ const PurchasesPage = () => {
                                     imageUrl={product.imageUrl || ''}
                                     link={product.id && `${links.marketplace.products}/${product.id}`}
                                     labels={{
-                                        community: isCommunityProduct(product),
+                                        community: isDataUnion,
                                     }}
-                                    badges={(isCommunity && memberCount !== undefined) ? {
+                                    badges={(isDataUnion && memberCount !== undefined) ? {
                                         members: memberCount,
                                     } : undefined}
-                                    deploying={!fetchingCommunityStats && (isCommunity && beneficiaryAddress && memberCount === undefined)}
+                                    deploying={!fetchingCommunityStats && (isDataUnion && beneficiaryAddress && memberCount === undefined)}
                                 >
                                     <Tile.Title>{product.name}</Tile.Title>
                                     <Tile.Description>{product.owner}</Tile.Description>

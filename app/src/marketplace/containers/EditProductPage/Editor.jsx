@@ -5,7 +5,7 @@ import cx from 'classnames'
 
 import DetailsContainer from '$shared/components/Container/Details'
 import useProduct from '../ProductController/useProduct'
-import { isCommunityProduct } from '$mp/utils/product'
+import { isDataUnionProduct } from '$mp/utils/product'
 
 import EditorNav from './EditorNav'
 import ProductName from './ProductName'
@@ -35,7 +35,7 @@ const Editor = () => {
                         <ProductStreams />
                         <PriceSelector />
                         <ProductDetails />
-                        {isCommunityProduct(product) && (
+                        {isDataUnionProduct(product) && (
                             <SharedSecrets />
                         )}
                     </div>

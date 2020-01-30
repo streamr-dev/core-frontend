@@ -10,7 +10,7 @@ import { handleLoadError } from '$auth/utils/loginInterceptor'
 import type { ProductId } from '$mp/flowtype/product-types'
 import { getProductById } from '$mp/modules/product/services'
 import { getProductByIdRequest, getProductByIdSuccess } from '$mp/modules/product/actions'
-import { isPaidProduct, isCommunityProduct } from '$mp/utils/product'
+import { isPaidProduct, isDataUnionProduct } from '$mp/utils/product'
 import { timeUnits, DEFAULT_CURRENCY } from '$shared/utils/constants'
 import { priceForTimeUnits } from '$mp/utils/price'
 import { isEthereumAddress } from '$mp/utils/validate'
@@ -44,7 +44,7 @@ export default function useProductLoadCallback() {
             // fetch admin fee from community contract
             let currentAdminFee
             let communityDeployed = false
-            if (isCommunityProduct(product) && isEthereumAddress(product.beneficiaryAddress)) {
+            if (isDataUnionProduct(product) && isEthereumAddress(product.beneficiaryAddress)) {
                 try {
                     currentAdminFee = await getAdminFee(product.beneficiaryAddress)
                     communityDeployed = true

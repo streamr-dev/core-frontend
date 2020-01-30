@@ -9,7 +9,7 @@ import CoreLayout from '$shared/components/Layout/Core'
 import * as UndoContext from '$shared/contexts/Undo'
 import Toolbar from '$shared/components/Toolbar'
 import type { Product } from '$mp/flowtype/product-types'
-import { isCommunityProduct } from '$mp/utils/product'
+import { isDataUnionProduct } from '$mp/utils/product'
 
 import ProductController, { useController } from '../ProductController'
 import useEditableProduct from '../ProductController/useEditableProduct'
@@ -52,9 +52,9 @@ const EditProductPage = ({ product }: { product: Product }) => {
     }, [loadCategories, loadStreams])
 
     const isSaving = savePending
-    const isCommunity = isCommunityProduct(product)
+    const isDataUnion = isDataUnionProduct(product)
     // TODO: should really check for the contract existance here
-    const isDeployed = isCommunity && isEthereumAddress(product.beneficiaryAddress)
+    const isDeployed = isDataUnion && isEthereumAddress(product.beneficiaryAddress)
 
     const saveAndExitButton = useMemo(() => ({
         title: 'Save & Exit',
@@ -102,7 +102,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
     }, [isAnyChangePending, productState, publish, isSaving])
 
     const deployButton = useMemo(() => {
-        if (isCommunity && !isDeployed) {
+        if (isDataUnion && !isDeployed) {
             return {
                 title: 'Continue',
                 kind: 'primary',
@@ -112,7 +112,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
         }
 
         return publishButton
-    }, [isCommunity, isDeployed, deployCommunity, isSaving, publishButton])
+    }, [isDataUnion, isDeployed, deployCommunity, isSaving, publishButton])
 
     const actions = {
         saveAndExit: saveAndExitButton,

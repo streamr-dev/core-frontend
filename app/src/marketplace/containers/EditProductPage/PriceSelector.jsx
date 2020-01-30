@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { Translate } from 'react-redux-i18n'
 
-import { isCommunityProduct } from '$mp/utils/product'
+import { isDataUnionProduct } from '$mp/utils/product'
 import { usePending } from '$shared/hooks/usePending'
 import { contractCurrencies as currencies, DEFAULT_CURRENCY } from '$shared/utils/constants'
 import { selectDataPerUsd } from '$mp/modules/global/selectors'
@@ -95,7 +95,7 @@ const PriceSelector = () => {
                         dataPerUsd={dataPerUsd}
                         error={isTouched('pricePerSecond') && !isValid ? message : undefined}
                     />
-                    {!isCommunityProduct(product) && (
+                    {!isDataUnionProduct(product) && (
                         <BeneficiaryAddress
                             className={styles.beneficiaryAddress}
                             address={product.beneficiaryAddress}

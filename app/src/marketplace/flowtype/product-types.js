@@ -10,7 +10,7 @@ import type { Address } from '$shared/flowtype/web3-types'
 export type ProductId = string
 export type ProductState = $Keys<typeof productStates>
 
-export type ProductType = $Keys<typeof productTypes>
+export type ProductType = $Values<typeof productTypes>
 
 export type PendingChanges = {
     adminFee?: number

@@ -9,7 +9,7 @@ import useValidation from '../ProductController/useValidation'
 import useEditableProductActions from '../ProductController/useEditableProductActions'
 import { usePending } from '$shared/hooks/usePending'
 import SelectField from '$mp/components/SelectField'
-import { isCommunityProduct } from '$mp/utils/product'
+import { isDataUnionProduct } from '$mp/utils/product'
 import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
 import { selectAllCategories, selectFetchingCategories } from '$mp/modules/categories/selectors'
 
@@ -63,7 +63,7 @@ const ProductDetails = () => {
                             />
                         )}
                     </Details.Row>
-                    {isCommunityProduct(product) && (
+                    {isDataUnionProduct(product) && (
                         <Details.Row label="Set your admin fee" className={styles.adminFee}>
                             <SelectField
                                 name="adminFee"

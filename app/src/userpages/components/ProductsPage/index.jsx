@@ -23,7 +23,7 @@ import NoProductsView from './NoProducts'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
 import ListContainer from '$shared/components/Container/List'
 import TileGrid from '$shared/components/TileGrid'
-import { isCommunityProduct } from '$mp/utils/product'
+import { isDataUnionProduct } from '$mp/utils/product'
 import type { ProductId, Product } from '$mp/flowtype/product-types'
 import useFilterSort from '$userpages/hooks/useFilterSort'
 import useCopy from '$shared/hooks/useCopy'
@@ -73,7 +73,7 @@ const getProductLink = (id: ProductId) => {
 
 const Actions = (product: Product) => {
     const { id, state } = product
-    const isCommunity = isCommunityProduct(product)
+    const isDataUnion = isDataUnionProduct(product)
     const { copy } = useCopy()
     const dispatch = useDispatch()
 
@@ -132,7 +132,7 @@ const Actions = (product: Product) => {
                     <Translate value="actionsDropdown.viewProduct" />
                 </DropdownActions.Item>
             }
-            {!!process.env.COMMUNITY_PRODUCTS && isCommunity &&
+            {!!process.env.COMMUNITY_PRODUCTS && isDataUnion &&
                 <DropdownActions.Item
                     className={styles.item}
                     onClick={() => (!!redirectToProduct && redirectToProductStats(id || ''))}
@@ -140,7 +140,7 @@ const Actions = (product: Product) => {
                     <Translate value="actionsDropdown.viewStats" />
                 </DropdownActions.Item>
             }
-            {!!process.env.COMMUNITY_PRODUCTS && isCommunity &&
+            {!!process.env.COMMUNITY_PRODUCTS && isDataUnion &&
                 <DropdownActions.Item
                     className={styles.item}
                     onClick={() => (!!redirectToProduct && redirectToProductMembers(id || ''))}
@@ -226,7 +226,7 @@ const ProductsPage = () => {
                 )}
                 <TileGrid>
                     {products.map((product) => {
-                        const isCommunity = isCommunityProduct(product)
+                        const isDataUnion = isDataUnionProduct(product)
                         const beneficiaryAddress = (product.beneficiaryAddress || '').toLowerCase()
                         const memberCount = members[beneficiaryAddress]
 
@@ -239,12 +239,12 @@ const ProductsPage = () => {
                                     imageUrl={product.imageUrl || ''}
                                     dropdownActions={<Actions {...product} />}
                                     labels={{
-                                        community: isCommunity,
+                                        community: isDataUnion,
                                     }}
-                                    badges={(isCommunity && memberCount !== undefined) ? {
+                                    badges={(isDataUnion && memberCount !== undefined) ? {
                                         members: memberCount,
                                     } : undefined}
-                                    deploying={!fetchingCommunityStats && (isCommunity && beneficiaryAddress && memberCount === undefined)}
+                                    deploying={!fetchingCommunityStats && (isDataUnion && beneficiaryAddress && memberCount === undefined)}
                                 >
                                     <Tile.Title>{product.name}</Tile.Title>
                                     <Tile.Tag >

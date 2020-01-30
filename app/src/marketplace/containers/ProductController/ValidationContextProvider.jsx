@@ -4,7 +4,7 @@ import React, { useMemo, useCallback, useState, type Node, type Context } from '
 import useIsMounted from '$shared/hooks/useIsMounted'
 
 import { isEthereumAddress } from '$mp/utils/validate'
-import { isPaidProduct, isCommunityProduct } from '$mp/utils/product'
+import { isPaidProduct, isDataUnionProduct } from '$mp/utils/product'
 import { isPriceValid } from '$mp/utils/price'
 import { isPublished, getPendingChanges, PENDING_CHANGE_FIELDS } from '../EditProductPage/state'
 
@@ -117,7 +117,7 @@ function useValidationContext(): ContextProps {
         const isPaid = isPaidProduct(product)
 
         // applies only to community product
-        if (isCommunityProduct(product)) {
+        if (isDataUnionProduct(product)) {
             if (!product.adminFee || !(product.adminFee > 0 && product.adminFee <= 1)) {
                 setStatus('adminFee', ERROR, 'Admin fee cannot be empty')
             } else {

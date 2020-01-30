@@ -9,7 +9,7 @@ import cx from 'classnames'
 import useEditableProduct from '../ProductController/useEditableProduct'
 import { selectStreams } from '$mp/modules/streams/selectors'
 import { selectAllCategories } from '$mp/modules/categories/selectors'
-import { isCommunityProduct, isPaidProduct } from '$mp/utils/product'
+import { isDataUnionProduct, isPaidProduct } from '$mp/utils/product'
 import useFilePreview from '$shared/hooks/useFilePreview'
 import { lg } from '$app/scripts/breakpoints'
 
@@ -35,7 +35,7 @@ import styles from './preview.pcss'
 
 const Hero = () => {
     const product = useEditableProduct()
-    const isCommunity = !!(product && isCommunityProduct(product))
+    const isDataUnion = !!(product && isDataUnionProduct(product))
     const { preview, createPreview } = useFilePreview()
 
     const uploadedImage = product.newImageToUpload
@@ -61,7 +61,7 @@ const Hero = () => {
                     <Tile.Labels
                         topLeft
                         labels={{
-                            community: isCommunity,
+                            community: isDataUnion,
                         }}
                     />
                 </div>
@@ -226,7 +226,7 @@ const Streams = () => {
 const Preview = () => {
     const product = useEditableProduct()
 
-    const isCommunity = !!(product && isCommunityProduct(product))
+    const isDataUnion = !!(product && isDataUnionProduct(product))
 
     // scroll to the top
     useEffect(() => {
@@ -239,7 +239,7 @@ const Preview = () => {
         <div className={cx(productPageStyles.productPage, styles.preview)}>
             <Hero />
             <Description />
-            {isCommunity && (
+            {isDataUnion && (
                 <CommunityStats />
             )}
             <Streams />

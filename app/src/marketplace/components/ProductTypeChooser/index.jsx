@@ -76,7 +76,7 @@ const ProductTypeChooser = ({ className }: Props) => (
                         className={styles.button}
                         tag={Link}
                         to={routes.newProduct({
-                            type: productTypes.COMMUNITY,
+                            type: productTypes.DATA_UNION,
                         })}
                     >
                         <Translate value="productTypeChooser.community.linkTitle" />
