@@ -9,7 +9,7 @@ import type {
     Stream,
     NewStream,
 } from '$shared/flowtype/stream-types'
-import type { ProductId, CommunityId } from '$mp/flowtype/product-types'
+import type { ProductId, DataUnionId } from '$mp/flowtype/product-types'
 import type { Permission } from '$userpages/flowtype/permission-types'
 import type { ApiResult } from '$shared/flowtype/common-types'
 import { gasLimits } from '$shared/utils/constants'
@@ -38,7 +38,7 @@ export const deletePermission = (id: StreamId, permissionId: $PropertyType<Permi
 
 export const createJoinPartStream = async (productId: ?ProductId = undefined): Promise<Stream> => {
     const newStream: NewStream = {
-        name: productId ? `JoinPart stream for product ${productId}` : 'JoinPart stream',
+        name: productId ? `JoinPart stream for data union ${productId}` : 'JoinPart stream',
         description: 'Automatically created JoinPart stream for community product contract',
     }
 
@@ -122,7 +122,7 @@ export const deployContract = (joinPartStreamId: string, adminFee: number): Smar
     ])
 }
 
-export const getCommunityContract = (address: CommunityId, usePublicNode: boolean = false) => {
+export const getCommunityContract = (address: DataUnionId, usePublicNode: boolean = false) => {
     const { abi } = getConfig().communityProduct
 
     return getContract({
@@ -131,18 +131,18 @@ export const getCommunityContract = (address: CommunityId, usePublicNode: boolea
     }, usePublicNode)
 }
 
-export const getCommunityOwner = async (address: CommunityId, usePublicNode: boolean = false) => {
+export const getDataUnionOwner = async (address: DataUnionId, usePublicNode: boolean = false) => {
     const contract = getCommunityContract(address, usePublicNode)
     const owner = await call(contract.methods.owner)
 
     return owner
 }
 
-export const isCommunityDeployed = async (address: CommunityId, usePublicNode: boolean = false) => (
-    !!getCommunityOwner(address, usePublicNode)
+export const isDataUnionDeployed = async (address: DataUnionId, usePublicNode: boolean = false) => (
+    !!getDataUnionOwner(address, usePublicNode)
 )
 
-export const getAdminFee = async (address: CommunityId, usePublicNode: boolean = false) => {
+export const getAdminFee = async (address: DataUnionId, usePublicNode: boolean = false) => {
     const web3 = usePublicNode ? getPublicWeb3() : getWeb3()
     const contract = getCommunityContract(address, usePublicNode)
     const adminFee = await call(contract.methods.adminFee)
@@ -150,21 +150,21 @@ export const getAdminFee = async (address: CommunityId, usePublicNode: boolean =
     return web3.utils.fromWei(web3.utils.toBN(adminFee), 'ether')
 }
 
-export const setAdminFee = (address: CommunityId, adminFee: number): SmartContractTransaction => (
+export const setAdminFee = (address: DataUnionId, adminFee: number): SmartContractTransaction => (
     send(getCommunityContract(address).methods.setAdminFee(getAdminFeeInEther(adminFee)), {
         gas: gasLimits.UPDATE_ADMIN_FEE,
     })
 )
 
-export const getJoinPartStreamId = (address: CommunityId, usePublicNode: boolean = false) =>
+export const getJoinPartStreamId = (address: DataUnionId, usePublicNode: boolean = false) =>
     call(getCommunityContract(address, usePublicNode).methods.joinPartStream())
 
-export const getCommunityStats = (id: CommunityId): ApiResult<Object> => get({
+export const getDataUnionStats = (id: DataUnionId): ApiResult<Object> => get({
     url: formatApiUrl('communities', id, 'stats'),
     useAuthorization: false,
 })
 
-export const getCommunities = async (): ApiResult<Array<Object>> => {
+export const getDataUnions = async (): ApiResult<Array<Object>> => {
     const { communities } = await get({
         url: formatApiUrl('communities'),
         useAuthorization: false,
@@ -176,10 +176,10 @@ export const getCommunities = async (): ApiResult<Array<Object>> => {
     }))
 }
 
-export const getCommunityData = async (id: CommunityId, usePublicNode: boolean = true): ApiResult<Object> => {
+export const getDataUnion = async (id: DataUnionId, usePublicNode: boolean = true): ApiResult<Object> => {
     const adminFee = await getAdminFee(id, usePublicNode)
     const joinPartStreamId = await getJoinPartStreamId(id, usePublicNode)
-    const owner = await getCommunityOwner(id, usePublicNode)
+    const owner = await getDataUnionOwner(id, usePublicNode)
 
     return {
         id,
@@ -189,75 +189,92 @@ export const getCommunityData = async (id: CommunityId, usePublicNode: boolean =
     }
 }
 
-export const getSecrets = (communityId: CommunityId): ApiResult<Array<Secret>> =>
-    get({
-        url: formatApiUrl('communities', communityId, 'secrets'),
-    })
+type GetSecrects = {
+    dataUnionId: DataUnionId,
+}
 
-export const postSecret = (communityId: CommunityId, name: string, secret: string): ApiResult<Secret> =>
-    post({
-        url: formatApiUrl('communities', communityId, 'secrets'),
-        data: {
-            name,
-            secret,
-        },
-    })
+export const getSecrets = ({ dataUnionId }: GetSecrects): ApiResult<Array<Secret>> => get({
+    url: formatApiUrl('communities', dataUnionId, 'secrets'),
+})
 
-export const putSecret = (communityId: CommunityId, secretId: string, name: string): ApiResult<Secret> =>
-    put({
-        url: formatApiUrl('communities', communityId, 'secrets', secretId),
-        data: {
-            name,
-        },
-    })
+type PostSecrect = {
+    dataUnionId: DataUnionId,
+    name: string,
+    secret: string
+}
 
-export const deleteSecret = (communityId: CommunityId, secretId: string): ApiResult<void> =>
-    del({
-        url: formatApiUrl('communities', communityId, 'secrets', secretId),
-    })
+export const postSecret = ({ dataUnionId, name, secret }: PostSecrect): ApiResult<Secret> => post({
+    url: formatApiUrl('communities', dataUnionId, 'secrets'),
+    data: {
+        name,
+        secret,
+    },
+})
+
+type PutSecrect = {
+    dataUnionId: DataUnionId,
+    secretId: string,
+    name: string,
+}
+
+export const putSecret = ({ dataUnionId, secretId, name }: PutSecrect): ApiResult<Secret> => put({
+    url: formatApiUrl('communities', dataUnionId, 'secrets', secretId),
+    data: {
+        name,
+    },
+})
+
+type DeleteSecrect = {
+    dataUnionId: DataUnionId,
+    secretId: string,
+}
+
+export const deleteSecret = ({ dataUnionId, secretId }: DeleteSecrect): ApiResult<void> => del({
+    url: formatApiUrl('communities', dataUnionId, 'secrets', secretId),
+})
 
 type GetJoinRequests = {
-    communityId: CommunityId,
+    dataUnionId: DataUnionId,
     params?: any,
 }
 
-export const getJoinRequests = ({ communityId, params }: GetJoinRequests): ApiResult<any> => get({
-    url: formatApiUrl('communities', communityId, 'joinRequests'),
+export const getJoinRequests = ({ dataUnionId, params }: GetJoinRequests): ApiResult<any> => get({
+    url: formatApiUrl('communities', dataUnionId, 'joinRequests'),
     options: {
         params,
     },
 })
 
 type PutJoinRequest = {
-    communityId: CommunityId,
+    dataUnionId: DataUnionId,
     joinRequestId: string,
     state: 'ACCEPTED' | 'REJECTED' | 'PENDING',
 }
 
-export const updateJoinRequest = async ({ communityId, joinRequestId, state }: PutJoinRequest): ApiResult<any> => put({
-    url: formatApiUrl('communities', communityId, 'joinRequests', joinRequestId),
+export const updateJoinRequest = async ({ dataUnionId, joinRequestId, state }: PutJoinRequest): ApiResult<any> => put({
+    url: formatApiUrl('communities', dataUnionId, 'joinRequests', joinRequestId),
     data: {
         state,
     },
 })
 
 type PostJoinRequest = {
-    communityId: CommunityId,
+    dataUnionId: DataUnionId,
     memberAddress: Address,
 }
 
-export const addJoinRequest = async ({ communityId, memberAddress }: PostJoinRequest): ApiResult<any> => post({
-    url: formatApiUrl('communities', communityId, 'joinRequests'),
+export const addJoinRequest = async ({ dataUnionId, memberAddress }: PostJoinRequest): ApiResult<any> => post({
+    url: formatApiUrl('communities', dataUnionId, 'joinRequests'),
     data: {
         memberAddress,
     },
 })
 
 type DeleteJoinRequest = {
-    communityId: CommunityId,
+    dataUnionId: DataUnionId,
     joinRequestId: string,
 }
 
-export const removeJoinRequest = async ({ communityId, joinRequestId }: DeleteJoinRequest): ApiResult<void> => del({
-    url: formatApiUrl('communities', communityId, 'joinRequests', joinRequestId),
+export const removeJoinRequest = async ({ dataUnionId, joinRequestId }: DeleteJoinRequest): ApiResult<void> => del({
+    url: formatApiUrl('communities', dataUnionId, 'joinRequests', joinRequestId),
 })

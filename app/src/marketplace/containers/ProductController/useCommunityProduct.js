@@ -1,10 +1,10 @@
 // @flow
 
 import { useSelector } from 'react-redux'
-import { selectCommunity } from '$mp/modules/communityProduct/selectors'
+import { selectDataUnion } from '$mp/modules/dataUnion/selectors'
 
 export default function useCommunityProduct() {
-    const community = useSelector(selectCommunity)
+    const community = useSelector(selectDataUnion)
 
     return community
 }

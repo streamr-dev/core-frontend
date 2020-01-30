@@ -22,7 +22,7 @@ import ListContainer from '$shared/components/Container/List'
 import TileGrid from '$shared/components/TileGrid'
 import { isDataUnionProduct } from '$mp/utils/product'
 import useFilterSort from '$userpages/hooks/useFilterSort'
-import useCommunityStats from '$mp/modules/communityProduct/hooks/useCommunityStats'
+import useMemberStats from '$mp/modules/dataUnion/hooks/useMemberStats'
 
 import type { ProductSubscription } from '$mp/flowtype/product-types'
 
@@ -52,7 +52,7 @@ const PurchasesPage = () => {
     const fetching = useSelector(selectFetchingMyPurchaseList)
     const dispatch = useDispatch()
 
-    const { load: loadCommunityStats, members, fetching: fetchingCommunityStats } = useCommunityStats()
+    const { load: loadCommunityStats, members, fetching: fetchingCommunityStats } = useMemberStats()
 
     useEffect(() => {
         dispatch(updateFilter(filter))

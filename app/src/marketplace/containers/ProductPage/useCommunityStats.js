@@ -6,7 +6,7 @@ import useProduct from '$mp/containers/ProductController/useProduct'
 import useContractProduct from '$mp/containers/ProductController/useContractProduct'
 import useCommunityProduct from '$mp/containers/ProductController/useCommunityProduct'
 import useIsMounted from '$shared/hooks/useIsMounted'
-import { getCommunityStats } from '$mp/modules/communityProduct/services'
+import { getDataUnionStats } from '$mp/modules/dataUnion/services'
 import { fromAtto } from '$mp/utils/math'
 import { type UseStateTuple } from '$shared/flowtype/common-types'
 import { type StatValue } from '$shared/components/CommunityStats/Values'
@@ -149,7 +149,7 @@ function useCommunityStats() {
     const getStats = useCallback(async () => {
         if (!beneficiaryAddress) { return }
         try {
-            const result = await getCommunityStats(beneficiaryAddress)
+            const result = await getDataUnionStats(beneficiaryAddress)
             if (!isMounted()) {
                 return
             }

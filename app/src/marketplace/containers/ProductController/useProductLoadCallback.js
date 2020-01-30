@@ -14,7 +14,7 @@ import { isPaidProduct, isDataUnionProduct } from '$mp/utils/product'
 import { timeUnits, DEFAULT_CURRENCY } from '$shared/utils/constants'
 import { priceForTimeUnits } from '$mp/utils/price'
 import { isEthereumAddress } from '$mp/utils/validate'
-import { getAdminFee } from '$mp/modules/communityProduct/services'
+import { getAdminFee } from '$mp/modules/dataUnion/services'
 import { handleEntities } from '$shared/utils/entities'
 import { productSchema } from '$shared/modules/entities/schema'
 

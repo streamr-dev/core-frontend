@@ -10,7 +10,7 @@ import { productStates, transactionStates, transactionTypes } from '$shared/util
 import useModal from '$shared/hooks/useModal'
 import { getProductById } from '$mp/modules/product/services'
 import { getProductFromContract } from '$mp/modules/contractProduct/services'
-import { getCommunityOwner, getAdminFee, setAdminFee } from '$mp/modules/communityProduct/services'
+import { getDataUnionOwner, getAdminFee, setAdminFee } from '$mp/modules/dataUnion/services'
 import { areAddressesEqual, isUpdateContractProductRequired } from '$mp/utils/smartContract'
 import { putProduct } from '$mp/modules/deprecated/editProduct/services'
 
@@ -98,7 +98,7 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
             let communityOwner
             try {
                 currentAdminFee = await getAdminFee(p.beneficiaryAddress)
-                communityOwner = await getCommunityOwner(p.beneficiaryAddress)
+                communityOwner = await getDataUnionOwner(p.beneficiaryAddress)
             } catch (e) {
                 // ignore error, assume contract has not been deployed
             }

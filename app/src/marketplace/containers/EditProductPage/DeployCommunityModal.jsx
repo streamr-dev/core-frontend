@@ -11,7 +11,7 @@ import DeployingCommunityDialog from '$mp/components/Modal/DeployingCommunityDia
 import ErrorDialog from '$mp/components/Modal/ErrorDialog'
 import { isLocalStorageAvailable } from '$shared/utils/storage'
 import withWeb3 from '$shared/utils/withWeb3'
-import { deployContract, createJoinPartStream } from '$mp/modules/communityProduct/services'
+import { deployContract, createJoinPartStream } from '$mp/modules/dataUnion/services'
 import { isEthereumAddress } from '$mp/utils/validate'
 import type { Address } from '$shared/flowtype/web3-types'
 import { addTransaction } from '$mp/modules/transactions/actions'

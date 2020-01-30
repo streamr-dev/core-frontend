@@ -7,7 +7,7 @@ import { Helmet } from 'react-helmet'
 import { withRouter } from 'react-router-dom'
 
 import Layout from '$shared/components/Layout'
-import type { ProductId, CommunityId } from '$mp/flowtype/product-types'
+import type { ProductId, DataUnionId } from '$mp/flowtype/product-types'
 import * as RouterContext from '$shared/contexts/Router'
 import ProductController, { useController } from '../ProductController'
 import usePending from '$shared/hooks/usePending'
@@ -54,7 +54,7 @@ const ProductPage = () => {
         loadRelatedProducts,
     ])
 
-    const loadCommunity = useCallback(async (id: CommunityId) => {
+    const loadCommunity = useCallback(async (id: DataUnionId) => {
         loadCommunityProduct(id)
     }, [loadCommunityProduct])
 

@@ -28,7 +28,7 @@ import type { ProductId, Product } from '$mp/flowtype/product-types'
 import useFilterSort from '$userpages/hooks/useFilterSort'
 import useCopy from '$shared/hooks/useCopy'
 import useModal from '$shared/hooks/useModal'
-import useCommunityStats from '$mp/modules/communityProduct/hooks/useCommunityStats'
+import useMemberStats from '$mp/modules/dataUnion/hooks/useMemberStats'
 import routes from '$routes'
 import CreateProductModal from '$mp/containers/CreateProductModal'
 import Button from '$shared/components/Button'
@@ -180,7 +180,7 @@ const ProductsPage = () => {
     const products = useSelector(selectMyProductList)
     const fetching = useSelector(selectFetching)
     const dispatch = useDispatch()
-    const { load: loadCommunityStats, members, fetching: fetchingCommunityStats } = useCommunityStats()
+    const { load: loadCommunityStats, members, fetching: fetchingCommunityStats } = useMemberStats()
 
     useEffect(() => {
         dispatch(getMyProducts(filter))

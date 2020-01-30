@@ -10,7 +10,7 @@ import Header from '../Header'
 import ListContainer from '$shared/components/Container/List'
 import LoadingIndicator from '$userpages/components/LoadingIndicator'
 import Layout from '$shared/components/Layout'
-import type { CommunityId } from '$mp/flowtype/product-types'
+import type { DataUnionId } from '$mp/flowtype/product-types'
 import { isEthereumAddress } from '$mp/utils/validate'
 import ProductController, { useController } from '$mp/containers/ProductController'
 import usePending from '$shared/hooks/usePending'
@@ -31,7 +31,7 @@ const Stats = () => {
 
     const { joinPartStreamId } = community || {}
 
-    const loadCommunity = useCallback(async (id: CommunityId) => {
+    const loadCommunity = useCallback(async (id: DataUnionId) => {
         loadCommunityProduct(id)
     }, [loadCommunityProduct])
 

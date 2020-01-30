@@ -3,16 +3,16 @@
 import { useCallback, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
-import { getAllCommunityStats } from '$mp/modules/communityProduct/actions'
-import { selectCommunityProducts, selectFetchingCommunityStats } from '$mp/modules/communityProduct/selectors'
+import { getAllDataUnions } from '$mp/modules/dataUnion/actions'
+import { selectDataUnions, selectFetchingDataUnionStats } from '$mp/modules/dataUnion/selectors'
 
-function useCommunityStats() {
+function useMemberStats() {
     const dispatch = useDispatch()
     const load = useCallback(() => {
-        dispatch(getAllCommunityStats())
+        dispatch(getAllDataUnions())
     }, [dispatch])
-    const stats = useSelector(selectCommunityProducts)
-    const fetching = useSelector(selectFetchingCommunityStats)
+    const stats = useSelector(selectDataUnions)
+    const fetching = useSelector(selectFetchingDataUnionStats)
 
     const members = useMemo(() => (
         (stats || []).reduce((result, { id, memberCount }) => {
@@ -38,4 +38,4 @@ function useCommunityStats() {
     ])
 }
 
-export default useCommunityStats
+export default useMemberStats

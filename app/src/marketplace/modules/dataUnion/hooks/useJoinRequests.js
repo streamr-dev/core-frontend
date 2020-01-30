@@ -5,7 +5,7 @@ import { denormalize } from 'normalizr'
 
 import useEntities from '$shared/hooks/useEntities'
 import type { Filter } from '$userpages/flowtype/common-types'
-import type { CommunityId } from '$mp/flowtype/product-types'
+import type { DataUnionId } from '$mp/flowtype/product-types'
 import type { Address } from '$shared/flowtype/web3-types'
 import { joinRequestSchema, joinRequestsSchema } from '$shared/modules/entities/schema'
 import {
@@ -13,21 +13,21 @@ import {
     updateJoinRequest,
     addJoinRequest,
     removeJoinRequest,
-} from '$mp/modules/communityProduct/services'
+} from '$mp/modules/dataUnion/services'
 import { getParamsForFilter } from '$userpages/utils/filters'
 
 type LoadParams = {
-    communityId: CommunityId,
+    dataUnionId: DataUnionId,
     filter: Filter,
 }
 
 type AddParams = {
-    communityId: CommunityId,
+    dataUnionId: DataUnionId,
     memberAddress: Address,
 }
 
 type UpdateParams = {
-    communityId: CommunityId,
+    dataUnionId: DataUnionId,
     joinRequestId: string,
 }
 
@@ -37,14 +37,14 @@ function useJoinRequests() {
     const [fetching, setFetching] = useState(false)
     const [error, setError] = useState(undefined)
 
-    const load = useCallback(async ({ communityId, filter }: LoadParams) => {
+    const load = useCallback(async ({ dataUnionId, filter }: LoadParams) => {
         setFetching(true)
         setError(undefined)
 
         try {
             const params = getParamsForFilter(filter)
             const response = await getJoinRequests({
-                communityId,
+                dataUnionId,
                 params,
             })
             const result = update({
@@ -60,10 +60,10 @@ function useJoinRequests() {
         }
     }, [update])
 
-    const approve = useCallback(async ({ communityId, joinRequestId }: UpdateParams) => {
+    const approve = useCallback(async ({ dataUnionId, joinRequestId }: UpdateParams) => {
         try {
             const response = await updateJoinRequest({
-                communityId,
+                dataUnionId,
                 joinRequestId,
                 state: 'ACCEPTED',
             })
@@ -76,10 +76,10 @@ function useJoinRequests() {
         }
     }, [update])
 
-    const addRequest = useCallback(async ({ communityId, memberAddress }: AddParams) => {
+    const addRequest = useCallback(async ({ dataUnionId, memberAddress }: AddParams) => {
         try {
             const response = await addJoinRequest({
-                communityId,
+                dataUnionId,
                 memberAddress,
             })
             update({
@@ -91,10 +91,10 @@ function useJoinRequests() {
         }
     }, [update])
 
-    const remove = useCallback(async ({ communityId, joinRequestId }: UpdateParams) => {
+    const remove = useCallback(async ({ dataUnionId, joinRequestId }: UpdateParams) => {
         try {
             await removeJoinRequest({
-                communityId,
+                dataUnionId,
                 joinRequestId,
             })
         } catch (e) {

@@ -118,7 +118,7 @@ export type ProductPermissions = {
     permissionsError: ?ErrorInUi,
 }
 
-export type CommunityId = $ElementType<Product, 'beneficiaryAddress'>
+export type DataUnionId = $ElementType<Product, 'beneficiaryAddress'>
 
 export type MemberCount = {
     total: number,
@@ -126,8 +126,8 @@ export type MemberCount = {
     inactive: number,
 }
 
-export type Community = {
-    id: CommunityId,
+export type DataUnion = {
+    id: DataUnionId,
     adminFee: number | string,
     joinPartStreamId: StreamId,
     owner: Address,

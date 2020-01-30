@@ -12,7 +12,7 @@ import ListContainer from '$shared/components/Container/List'
 import LoadingIndicator from '$userpages/components/LoadingIndicator'
 import Layout from '$shared/components/Layout'
 import Dropdown from '$shared/components/Dropdown'
-import type { CommunityId } from '$mp/flowtype/product-types'
+import type { DataUnionId } from '$mp/flowtype/product-types'
 import { getFilters } from '$userpages/utils/constants'
 import ProductController, { useController } from '$mp/containers/ProductController'
 import usePending from '$shared/hooks/usePending'
@@ -24,7 +24,7 @@ import Checkbox from '$shared/components/Checkbox'
 import Button from '$shared/components/Button'
 import { truncate } from '$shared/utils/text'
 import { useSelectionContext, SelectionProvider } from '$shared/hooks/useSelection'
-import useJoinRequests from '$mp/modules/communityProduct/hooks/useJoinRequests'
+import useJoinRequests from '$mp/modules/dataUnion/hooks/useJoinRequests'
 import NoMembersView from './NoMembers'
 import { isEthereumAddress } from '$mp/utils/validate'
 import CommunityPending from '$mp/components/ProductPage/CommunityPending'
@@ -70,7 +70,7 @@ const Members = () => {
     } = useJoinRequests()
     const selection = useSelectionContext()
 
-    const loadCommunity = useCallback(async (id: CommunityId) => {
+    const loadCommunity = useCallback(async (id: DataUnionId) => {
         loadCommunityProduct(id)
     }, [loadCommunityProduct])
 
@@ -85,7 +85,7 @@ const Members = () => {
     const doLoadMembers = useCallback(() => {
         if (communityDeployed && beneficiaryAddress) {
             loadMembers({
-                communityId: beneficiaryAddress,
+                dataUnionId: beneficiaryAddress,
                 filter,
             })
         }
@@ -127,7 +127,7 @@ const Members = () => {
         for (let index = 0; index < ids.length; index += 1) {
             // eslint-disable-next-line no-await-in-loop
             await approve({
-                communityId: beneficiaryAddress,
+                dataUnionId: beneficiaryAddress,
                 joinRequestId: ids[index],
             })
         }
@@ -165,7 +165,7 @@ const Members = () => {
             for (let index = 0; index < ids.length; index += 1) {
                 // eslint-disable-next-line no-await-in-loop
                 await remove({
-                    communityId: beneficiaryAddress,
+                    dataUnionId: beneficiaryAddress,
                     joinRequestId: ids[index],
                 })
             }
