@@ -30,11 +30,38 @@
         "type": "address"
       },
       {
-        "name": "amount",
+        "name": "input_amount",
         "type": "uint256"
       }
     ],
-    "name": "getConversionRate",
+    "name": "getConversionRateInput",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "from_token",
+        "type": "address"
+      },
+      {
+        "name": "to_token",
+        "type": "address"
+      },
+      {
+        "name": "output_amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "getConversionRateOutput",
     "outputs": [
       {
         "name": "",

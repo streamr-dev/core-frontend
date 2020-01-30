@@ -70,13 +70,17 @@ export const getUniswapEquivalents = async (dataQuantity: string): Promise<[BN, 
     const DAI = process.env.DAI_TOKEN_CONTRACT_ADDRESS
     const safetyMargin = 1.05
 
-    let ethValue = await call(uniswapAdaptorMethods().getConversionRate(DATA, ETH, amount))
-    ethValue = BN(ethValue).toNumber() * safetyMargin
-    ethValue = BN(web3.utils.fromWei(ethValue.toString()))
+    // let ethValue = await call(uniswapAdaptorMethods().getConversionRateOutput(DATA, ETH, amount))
+    // ethValue = BN(ethValue).toNumber() * safetyMargin
+    // ethValue = BN(web3.utils.fromWei(ethValue.toString()))
 
-    let daiValue = await call(uniswapAdaptorMethods().getConversionRate(DATA, DAI, amount))
-    daiValue = BN(daiValue).toNumber() * safetyMargin
-    daiValue = BN(web3.utils.fromWei(daiValue.toString()))
+    // let daiValue = await call(uniswapAdaptorMethods().getConversionRateOutput(DATA, DAI, amount))
+    // daiValue = BN(daiValue).toNumber() * safetyMargin
+    // daiValue = BN(web3.utils.fromWei(daiValue.toString()))
+
+    // TODO: TEMP FIX, until we figure out why this getConversionRateOutput is failing.
+    const ethValue = BN(3)
+    const daiValue = BN(1)
 
     return [ethValue, daiValue]
 }
