@@ -1,15 +1,16 @@
 // @flow
 
 import React, { useState, useCallback, useEffect } from 'react'
-import { I18n } from 'react-redux-i18n'
+import { Translate } from 'react-redux-i18n'
 
 import useWeb3Status from '$shared/hooks/useWeb3Status'
 import Web3ErrorDialog from '$shared/components/Web3ErrorDialog'
 import useEthereumIdentities from '$shared/modules/integrationKey/hooks/useEthereumIdentities'
 import useModal from '$shared/hooks/useModal'
 import type { Address } from '$shared/flowtype/web3-types'
-import UnlockWalletDialog from '$mp/components/Modal/UnlockWalletDialog'
+import UnlockWalletDialog from '$shared/components/Web3ErrorDialog/UnlockWalletDialog'
 import { areAddressesEqual } from '$mp/utils/smartContract'
+import { truncate } from '$shared/utils/text'
 
 import IdentityNameDialog from '../IdentityNameDialog'
 import IdentityChallengeDialog from '../IdentityChallengeDialog'
@@ -63,12 +64,15 @@ const AddIdentityDialog = ({ api, requiredAddress }: Props) => {
 
     if (!!requiredAddress && (!account || !areAddressesEqual(account, requiredAddress))) {
         return (
-            <UnlockWalletDialog
-                onClose={onClose}
-                message={I18n.t('unlockWalletDialog.message', {
-                    address: requiredAddress,
-                })}
-            />
+            <UnlockWalletDialog onClose={onClose}>
+                <Translate
+                    value="unlockWalletDialog.message"
+                    address={truncate(requiredAddress, {
+                        maxLength: 15,
+                    })}
+                    tag="p"
+                />
+            </UnlockWalletDialog>
         )
     }
 

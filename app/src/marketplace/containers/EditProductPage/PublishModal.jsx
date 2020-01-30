@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { useDispatch } from 'react-redux'
-import { I18n } from 'react-redux-i18n'
+import { Translate } from 'react-redux-i18n'
 
 import type { Product } from '$mp/flowtype/product-types'
 import { isPaidProduct } from '$mp/utils/product'
@@ -13,6 +13,7 @@ import { getProductFromContract } from '$mp/modules/contractProduct/services'
 import { getDataUnionOwner, getAdminFee, setAdminFee } from '$mp/modules/dataUnion/services'
 import { areAddressesEqual, isUpdateContractProductRequired } from '$mp/utils/smartContract'
 import { putProduct } from '$mp/modules/deprecated/editProduct/services'
+import { truncate } from '$shared/utils/text'
 
 import ErrorDialog from '$mp/components/Modal/ErrorDialog'
 import Dialog from '$shared/components/Dialog'
@@ -390,9 +391,13 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
     if (!!requireWeb3 && !!requiredOwner && (!account || !areAddressesEqual(account, requiredOwner))) {
         return (
             <UnlockWalletDialog onClose={onClose}>
-                {I18n.t('unlockWalletDialog.message', {
-                    address: requiredOwner,
-                })}
+                <Translate
+                    value="unlockWalletDialog.message"
+                    address={truncate(requiredOwner, {
+                        maxLength: 15,
+                    })}
+                    tag="p"
+                />
             </UnlockWalletDialog>
         )
     }

@@ -2,7 +2,7 @@
 
 import React, { Component as ReactComponent, type ComponentType } from 'react'
 import { connect } from 'react-redux'
-import { I18n } from 'react-redux-i18n'
+import { Translate } from 'react-redux-i18n'
 
 import { selectAccountId } from '$mp/modules/web3/selectors'
 import { selectProduct } from '$mp/modules/product/selectors'
@@ -16,6 +16,7 @@ import type { ProductId, Product, SmartContractProduct } from '$mp/flowtype/prod
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { StoreState } from '$shared/flowtype/store-state'
 import type { Address } from '$shared/flowtype/web3-types'
+import { truncate } from '$shared/utils/text'
 import withWeb3 from '$shared/utils/withWeb3'
 
 type StateProps = {
@@ -112,9 +113,13 @@ export function withContractProduct(WrappedComponent: ComponentType<any>) {
                     if (requireOwnerIfDeployed && contractProduct && !areAddressesEqual(accountId || '', contractProduct.ownerAddress)) {
                         return (
                             <UnlockWalletDialog onClose={onClose}>
-                                {I18n.t('unlockWalletDialog.message', {
-                                    address: contractProduct.ownerAddress,
-                                })}
+                                <Translate
+                                    value="unlockWalletDialog.message"
+                                    address={truncate(contractProduct.ownerAddress, {
+                                        maxLength: 15,
+                                    })}
+                                    tag="p"
+                                />
                             </UnlockWalletDialog>
                         )
                     }
