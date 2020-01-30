@@ -281,7 +281,7 @@ msgid "general##giveFeedback"
 msgstr "Give feedback"
 
 msgid "general##labels##community"
-msgstr "Community Product"
+msgstr "Data Union"
 
 msgid "general##top"
 msgstr "Top"

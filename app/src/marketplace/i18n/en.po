@@ -45,7 +45,7 @@ msgid "actionsDropdown##viewStats"
 msgstr "View Stats"
 
 msgid "actionsDropdown##viewCommunity"
-msgstr "View Community"
+msgstr "View Data Union"
 
 msgid "actionsDropdown##copyUrl"
 msgstr "Copy URL"
@@ -778,7 +778,7 @@ msgid "productTypeChooser##title"
 msgstr "Choose your product type"
 
 msgid "productTypeChooser##standard##title"
-msgstr "Standard Product"
+msgstr "Data Product"
 
 msgid "productTypeChooser##standard##description"
 msgstr ""
@@ -786,16 +786,16 @@ msgstr ""
 "For help creating streams, see the <a href=\"%{docsLink}\">docs</a>."
 
 msgid "productTypeChooser##standard##linkTitle"
-msgstr "Create standard product"
+msgstr "Create data product"
 
 msgid "productTypeChooser##community##title"
-msgstr "Community Product"
+msgstr "Data Union"
 
 msgid "productTypeChooser##community##description"
 msgstr "Gather members via your own app and crowdsell the data they provide. You take a cut, and the rest is distributed to members."
 
 msgid "productTypeChooser##community##linkTitle"
-msgstr "Create community product"
+msgstr "Create data union"
 
 msgid "productDetailsEditor##category"
 msgstr "Set product category"
@@ -841,6 +841,9 @@ msgstr "Saved to my purchases"
 
 msgid "productPage##relatedProducts"
 msgstr "Related products"
+
+msgid "productPage##communityPending##title"
+msgstr "Deploying your Data Union"
 
 msgid "productPage##streamListing##add"
 msgstr "Add to editor"

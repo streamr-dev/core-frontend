@@ -2,6 +2,7 @@
 
 import React from 'react'
 import cx from 'classnames'
+import { Translate } from 'react-redux-i18n'
 
 import DeploySpinner from '$shared/components/DeploySpinner'
 
@@ -17,7 +18,9 @@ const CommunityPending = ({ className }: Props) => (
             <DeploySpinner isRunning showCounter={false} />
         </div>
         <div>
-            <div className={styles.deployMessageHeading}>Deploying your Community Product</div>
+            <div className={styles.deployMessageHeading}>
+                <Translate value="productPage.communityPending.title" />
+            </div>
         </div>
     </div>
 )

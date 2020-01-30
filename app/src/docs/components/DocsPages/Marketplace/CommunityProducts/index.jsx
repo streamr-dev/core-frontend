@@ -7,7 +7,7 @@ import CommunityProductsContent from '$docs/content/products/communityProducts.m
 
 const CommunityProducts = () => (
     <DocsLayout>
-        <DocsHelmet pageTitle="Community products" />
+        <DocsHelmet pageTitle="Data Unions" />
         <section>
             <CommunityProductsContent />
         </section>

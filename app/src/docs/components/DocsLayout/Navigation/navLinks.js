@@ -70,7 +70,7 @@ export const docsNav: DocsNav = {
     Products: {
         root: products.root,
         'Intro to products': products.introToProducts,
-        'Community products': products.communityProducts,
+        'Data Unions': products.communityProducts,
     },
     Tutorials: {
         root: tutorials.root,
@@ -91,7 +91,7 @@ export const docsNav: DocsNav = {
     Marketplace: {
         root: marketplace.root,
         'Intro to the Marketplace': marketplace.introToMarketplace,
-        'Community products': marketplace.communityProducts,
+        'Data Unions': marketplace.communityProducts,
     },
     // 'Running a Node': {
     //     root: runningNode.root,
