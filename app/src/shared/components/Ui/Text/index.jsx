@@ -20,7 +20,7 @@ type Props =
         unstyled?: boolean,
     }
 
-const Input = ({ tag: Tag = 'input', unstyled, ...props }: Props, ref: any) => (
+const Text = ({ tag: Tag = 'input', unstyled, ...props }: Props, ref: any) => (
     unstyled ? (
         <Tag {...props} ref={ref} />
     ) : (
@@ -33,4 +33,4 @@ export default compose(
     OnCommitDecorator,
     SelectAllOnFocusDecorator,
     RevertOnEscapeDecorator,
-)(forwardRef(Input))
+)(forwardRef(Text))
