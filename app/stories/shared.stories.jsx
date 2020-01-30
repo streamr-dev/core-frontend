@@ -318,7 +318,9 @@ class FieldListContainer extends React.Component {
                 <FieldList onSortEnd={this.onSortEnd} lockAxis="y">
                     {items.map((item) => (
                         <FieldItem key={item} name={item}>
-                            <Text defaultValue={item} />
+                            <Text
+                                defaultValue={item}
+                            />
                         </FieldItem>
                     ))}
                 </FieldList>

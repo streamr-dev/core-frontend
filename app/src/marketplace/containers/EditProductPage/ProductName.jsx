@@ -26,7 +26,7 @@ const ProductName = () => {
             <div>
                 <h1>Name your product</h1>
                 <Text
-                    value={product.name}
+                    defaultValue={product.name}
                     onCommit={updateName}
                     placeholder="Product Name"
                     disabled={isPending}

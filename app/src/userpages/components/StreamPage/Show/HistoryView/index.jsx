@@ -336,7 +336,10 @@ class HistoryView extends Component<Props, State> {
                                         <Label>
                                             {I18n.t('userpages.streams.edit.history.storedEvents')}
                                         </Label>
-                                        <Text value={storedEventsText} readOnly />
+                                        <Text
+                                            value={storedEventsText}
+                                            readOnly
+                                        />
                                     </Fragment>
                                 }
                                 dropTargetComponent={<DropTarget mouseOver={false} />}

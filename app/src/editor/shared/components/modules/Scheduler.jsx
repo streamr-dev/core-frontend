@@ -106,7 +106,7 @@ export const ValueInput = ({ value, onChange, disabled }) => {
             className={styles.input}
             disabled={disabled}
             flushHistoryOnBlur
-            onCommit={(value) => onChange(parseInt(value, 10))}
+            onChange={(e) => onChange(parseInt(e.target.value, 10))}
             style={style}
             type="number"
             value={value}

@@ -39,7 +39,7 @@ const PriceField = ({
                     unstyled
                     smartCommit
                     selectAllOnFocus
-                    value={value}
+                    defaultValue={value}
                     className={styles.input}
                     {...inputProps}
                 />

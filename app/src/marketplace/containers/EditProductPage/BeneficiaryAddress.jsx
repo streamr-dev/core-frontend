@@ -37,7 +37,7 @@ const BeneficiaryAddress = ({ address, onChange, disabled, className }: Props) =
                     <Text
                         id="beneficiaryAddress"
                         autoComplete="off"
-                        value={address || ''}
+                        defaultValue={address || ''}
                         onCommit={onChange}
                         placeholder={I18n.t('editProductPage.setPrice.placeholder.enterEthAddress')}
                         invalid={invalid}

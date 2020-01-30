@@ -52,7 +52,7 @@ export default class CommentModule extends React.PureComponent {
                         onCommit={this.onChange}
                         placeholder="Enter comment here…"
                         tag="textarea"
-                        value={this.getValue()}
+                        defaultValue={this.getValue()}
                     />
                 </div>
             </UiSizeConstraint>
