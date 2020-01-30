@@ -26,8 +26,8 @@ describe('ShareDialogInputRow', () => {
                 resourceId=""
                 addPermission={() => {}}
             />)
-            const input = inputRow.find('TextInput')
-            assert.equal(input.props().placeholder, 'enterEmailAddress')
+
+            assert.equal(inputRow.find('Text').prop('placeholder'), 'enterEmailAddress')
         })
     })
 })
