@@ -17,7 +17,7 @@ export const isDataUnionProduct = (productOrProductType?: Product | ProductType)
         type: productOrProductType,
     } : (productOrProductType || {})
 
-    return type === productTypes.DATA_UNION
+    return type === productTypes.COMMUNITY
 }
 
 export const validateProductPriceCurrency = (priceCurrency: string) => {

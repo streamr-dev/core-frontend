@@ -159,8 +159,11 @@ function useDataUnionStats() {
             // Try again if status is 404, it means API might not be up yet
             if (e.statusCode && e.statusCode === 404) {
                 console.warn(e)
-                resetTimeout()
-                timeOutId.current = setTimeout(getStats, CP_SERVER_POLL_INTERVAL_MS)
+
+                if (isMounted()) {
+                    resetTimeout()
+                    timeOutId.current = setTimeout(getStats, CP_SERVER_POLL_INTERVAL_MS)
+                }
             } else {
                 // Otherwise pass the error on
                 throw e
