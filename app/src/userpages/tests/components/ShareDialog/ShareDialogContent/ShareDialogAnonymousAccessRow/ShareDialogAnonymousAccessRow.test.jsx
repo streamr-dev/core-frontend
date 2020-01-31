@@ -55,7 +55,7 @@ describe('ShareDialogOwnerRow', () => {
                 addPublicPermission={() => {}}
                 revokePublicPermission={() => {}}
             />)
-            assert.equal(ownerRow.find('SelectInput').length, 1)
+            assert.equal(ownerRow.find('Select').length, 1)
         })
     })
 

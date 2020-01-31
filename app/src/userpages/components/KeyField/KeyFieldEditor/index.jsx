@@ -3,8 +3,10 @@
 import React from 'react'
 import { I18n } from 'react-redux-i18n'
 
-import TextInput from '$shared/components/TextInput'
 import Buttons from '$shared/components/Buttons'
+import Label from '$ui/Label'
+import Text from '$ui/Text'
+import Errors from '$ui/Errors'
 
 import styles from './keyFieldEditor.pcss'
 
@@ -71,24 +73,39 @@ class KeyFieldEditor extends React.Component<Props, State> {
         return (
             <div className={styles.editor}>
                 <div className={styles.keyName}>
-                    <TextInput
-                        label={I18n.t('userpages.keyFieldEditor.keyName')}
+                    <Label
+                        htmlFor="keyName"
+                        state={createNew && !editValue && error && 'ERROR'}
+                    >
+                        {I18n.t('userpages.keyFieldEditor.keyName')}
+                    </Label>
+                    <Text
                         value={keyName}
                         onChange={this.onKeyNameChange}
-                        preserveLabelSpace
-                        error={(createNew && !editValue && error) || undefined}
                     />
+                    {createNew && !editValue && error && (
+                        <Errors overlap>
+                            {error}
+                        </Errors>
+                    )}
                 </div>
                 {(!createNew || editValue) && (
                     <div className={styles.keyValue}>
-                        <TextInput
-                            label={I18n.t(`userpages.keyFieldEditor.keyValue.${valueLabel}`)}
+                        <Label
+                            htmlFor="keyValue"
+                            state={error && 'ERROR'}
+                        >
+                            {I18n.t(`userpages.keyFieldEditor.keyValue.${valueLabel}`)}
+                        </Label>
+                        <Text
+                            id="keyValue"
                             value={keyId}
                             onChange={this.onValueChange}
-                            preserveLabelSpace
                             readOnly={!editValue}
-                            error={error || undefined}
                         />
+                        <Errors overlap>
+                            {error}
+                        </Errors>
                     </div>
                 )}
                 <Buttons

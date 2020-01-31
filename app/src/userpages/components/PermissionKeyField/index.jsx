@@ -8,11 +8,13 @@ import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 
 import type { ResourcePermission } from '$shared/flowtype/resource-key-types'
-import TextInput from '$shared/components/TextInput'
 import DropdownActions from '$shared/components/DropdownActions'
-import SelectInput from '$shared/components/SelectInput'
+import Select from '$ui/Select'
 import SplitControl from '$userpages/components/SplitControl'
 import { truncate } from '$shared/utils/text'
+import Label from '$ui/Label'
+import ActionsDropdown from '$shared/components/ActionsDropdown'
+import Text from '$ui/Text'
 
 import PermissionKeyFieldEditor from './PermissionKeyFieldEditor'
 
@@ -188,16 +190,18 @@ class PermissionKeyField extends React.Component<Props, State> {
             <div
                 className={cx(styles.keyFieldContainer, keyFieldClassName)}
             >
-                <TextInput
-                    label={keyName}
-                    actions={actions}
-                    value={value && (!truncateValue ? value : truncate(value, {
-                        maxLength: 15,
-                    }))}
-                    readOnly
-                    type={hidden ? 'password' : 'text'}
-                    preserveLabelSpace
-                />
+                <Label htmlFor="keyName">
+                    {keyName}
+                </Label>
+                <ActionsDropdown actions={actions}>
+                    <Text
+                        value={value && (!truncateValue ? value : truncate(value, {
+                            maxLength: 15,
+                        }))}
+                        readOnly
+                        type={hidden ? 'password' : 'text'}
+                    />
+                </ActionsDropdown>
             </div>
         )
     }
@@ -229,15 +233,18 @@ class PermissionKeyField extends React.Component<Props, State> {
                 {!editing ? (
                     <SplitControl>
                         {this.renderInput()}
-                        <SelectInput
-                            label={showPermissionHeader ? I18n.t('userpages.streams.edit.configure.permission') : ''}
-                            options={permissionOptions}
-                            value={permissionOptions.find((t) => t.value === permission)}
-                            onChange={(o) => this.onPermissionChange(o.value)}
-                            preserveLabelSpace
-                            className={styles.select}
-                            isDisabled={!allowEdit}
-                        />
+                        <div>
+                            <Label>
+                                {showPermissionHeader && I18n.t('userpages.streams.edit.configure.permission')}
+                            </Label>
+                            <Select
+                                options={permissionOptions}
+                                value={permissionOptions.find((t) => t.value === permission)}
+                                onChange={(o) => this.onPermissionChange(o.value)}
+                                className={styles.select}
+                                isDisabled={!allowEdit}
+                            />
+                        </div>
                     </SplitControl>
                 ) : (
                     <PermissionKeyFieldEditor

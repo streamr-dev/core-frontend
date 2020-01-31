@@ -4,7 +4,6 @@ import React, { useState, useCallback, useEffect, useMemo } from 'react'
 import cx from 'classnames'
 import { Translate, I18n } from 'react-redux-i18n'
 
-import TextInput from '$shared/components/TextInput'
 import DropdownActions from '$shared/components/DropdownActions'
 import { truncate } from '$shared/utils/text'
 import KeyFieldEditor, { type ValueLabel } from './KeyFieldEditor'
@@ -12,6 +11,9 @@ import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import useCopy from '$shared/hooks/useCopy'
+import Label from '$ui/Label'
+import ActionsDropdown from '$shared/components/ActionsDropdown'
+import Text from '$ui/Text'
 
 import styles from './keyField.pcss'
 
@@ -29,6 +31,7 @@ type Props = {
     onDelete?: () => Promise<void>,
     valueLabel: ValueLabel,
     onToggleEditor?: (boolean) => void,
+    labelComponent?: any,
 }
 
 const includeIf = (condition: boolean, elements: Array<any>) => (condition ? elements : [])
@@ -47,6 +50,7 @@ const KeyField = ({
     onDelete: onDeleteProp,
     valueLabel,
     onToggleEditor: onToggleEditorProp,
+    labelComponent,
 }: Props) => {
     const [waiting, setWaiting] = useState(false)
     const [hidden, setHidden] = useState(!!hideValue)
@@ -160,14 +164,19 @@ const KeyField = ({
                 <div
                     className={cx(styles.keyFieldContainer, keyFieldClassName)}
                 >
-                    <TextInput
-                        label={keyName}
-                        actions={inputActions}
-                        value={displayValue}
-                        readOnly
-                        type={hidden ? 'password' : 'text'}
-                        preserveLabelSpace
-                    />
+                    <div className={styles.labelWrapper}>
+                        <Label htmlFor="keyName">
+                            {keyName}
+                        </Label>
+                        {labelComponent || <div />}
+                    </div>
+                    <ActionsDropdown actions={inputActions}>
+                        <Text
+                            value={displayValue}
+                            readOnly
+                            type={hidden ? 'password' : 'text'}
+                        />
+                    </ActionsDropdown>
                 </div>
             ) : (
                 <KeyFieldEditor

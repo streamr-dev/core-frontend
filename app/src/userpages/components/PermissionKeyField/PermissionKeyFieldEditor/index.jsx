@@ -5,10 +5,12 @@ import { I18n } from 'react-redux-i18n'
 import cx from 'classnames'
 
 import type { ResourcePermission } from '$shared/flowtype/resource-key-types'
-import TextInput from '$shared/components/TextInput'
 import Buttons from '$shared/components/Buttons'
-import SelectInput from '$shared/components/SelectInput'
+import Select from '$ui/Select'
 import SplitControl from '$userpages/components/SplitControl'
+import Label from '$ui/Label'
+import Text from '$ui/Text'
+import Errors from '$ui/Errors'
 
 import styles from './permissionKeyFieldEditor.pcss'
 
@@ -100,32 +102,46 @@ class PermissionKeyFieldEditor extends React.Component<Props, State> {
             <div className={cx(styles.editor, className)}>
                 <SplitControl>
                     <div className={styles.keyName}>
-                        <TextInput
-                            label={I18n.t('userpages.keyFieldEditor.keyName')}
+                        <Label state={error && 'ERROR'}>
+                            {I18n.t('userpages.keyFieldEditor.keyName')}
+                        </Label>
+                        <Text
                             value={keyName}
                             onChange={this.onKeyNameChange}
-                            preserveLabelSpace
                             error={(createNew && !editValue && error) || undefined}
                         />
+                        {createNew && !editValue && (
+                            <Errors overlap>
+                                {error}
+                            </Errors>
+                        )}
                     </div>
-                    <SelectInput
-                        label="Permission"
-                        options={permissionOptions}
-                        value={permissionOptions.find((t) => t.value === permission)}
-                        onChange={(o) => this.onPermissionChange(o.value)}
-                        preserveLabelSpace
-                    />
+                    <div>
+                        <Label>
+                            Permission
+                        </Label>
+                        <Select
+                            options={permissionOptions}
+                            value={permissionOptions.find((t) => t.value === permission)}
+                            onChange={(o) => this.onPermissionChange(o.value)}
+                        />
+                    </div>
                 </SplitControl>
                 {(!createNew || editValue) && (
                     <div className={styles.keyValue}>
-                        <TextInput
-                            label={I18n.t(`userpages.keyFieldEditor.keyValue.${valueLabel}`)}
+                        <Label state={error && 'ERROR'}>
+                            {I18n.t(`userpages.keyFieldEditor.keyValue.${valueLabel}`)}
+                        </Label>
+                        <Text
                             value={keyId}
                             onChange={this.onValueChange}
-                            preserveLabelSpace
                             readOnly={!editValue}
-                            error={error || undefined}
                         />
+                        {error && (
+                            <Errors>
+                                {error}
+                            </Errors>
+                        )}
                     </div>
                 )}
                 <Buttons

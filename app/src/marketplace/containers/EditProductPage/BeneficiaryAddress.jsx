@@ -1,12 +1,13 @@
 // @flow
 
-import React, { useContext } from 'react'
+import React, { useContext, Fragment } from 'react'
 import cx from 'classnames'
 import { Translate, I18n } from 'react-redux-i18n'
 
 import useValidation from '../ProductController/useValidation'
-import TextField from '$mp/components/TextField'
+import Text from '$ui/Text'
 import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
+import Errors, { MarketplaceTheme } from '$ui/Errors'
 
 import styles from './beneficiaryAddress.pcss'
 
@@ -21,6 +22,7 @@ const BeneficiaryAddress = ({ address, onChange, disabled, className }: Props) =
     const { isValid, message } = useValidation('beneficiaryAddress')
     const { isTouched } = useContext(ValidationContext)
     const priceTouched = isTouched('pricePerSecond') || isTouched('beneficiaryAddress')
+    const invalid = priceTouched && !isValid
 
     return (
         <form autoComplete="off">
@@ -32,16 +34,26 @@ const BeneficiaryAddress = ({ address, onChange, disabled, className }: Props) =
                     <Translate value="editProductPage.setPrice.setRecipientEthAddress" />
                 </strong>
                 <div>
-                    <TextField
+                    <Text
                         id="beneficiaryAddress"
                         autoComplete="off"
-                        value={address || ''}
+                        defaultValue={address || ''}
                         onCommit={onChange}
                         placeholder={I18n.t('editProductPage.setPrice.placeholder.enterEthAddress')}
-                        error={priceTouched && !isValid ? message : undefined}
+                        invalid={invalid}
                         disabled={disabled}
+                        selectAllOnFocus
+                        smartCommit
                     />
                 </div>
+                {invalid && (
+                    <Fragment>
+                        <div />
+                        <Errors theme={MarketplaceTheme}>
+                            {message}
+                        </Errors>
+                    </Fragment>
+                )}
             </label>
         </form>
     )

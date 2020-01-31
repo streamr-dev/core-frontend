@@ -9,10 +9,13 @@ import AuthFormProvider from '../AuthFormProvider'
 import AuthFormContext from '../../contexts/AuthForm'
 import SessionContext from '../../contexts/Session'
 import AuthPanel from '../AuthPanel'
-import TextInput from '../TextInput'
 import Actions from '../Actions'
 import Button from '../Button'
 import AuthStep from '../AuthStep'
+import Text from '$ui/Text'
+import Label from '$ui/Label'
+import Underline from '$ui/Underline'
+import Errors from '$ui/Errors'
 
 import getSessionToken from '$auth/utils/getSessionToken'
 import onInputChange from '../../utils/onInputChange'
@@ -77,19 +80,25 @@ const UsernamePasswordLogin = ({ onEthereumClick }: Props) => {
                 onEthereumClick={onEthereumClick}
                 autoSubmitOnChange={['hiddenPassword']}
             >
-                <TextInput
+                <Label state={errors.email && 'ERROR'}>
+                    <Translate value="auth.labels.email" />
+                </Label>
+                <Text
+                    unstyled
+                    type="email"
                     name="email"
-                    label={I18n.t('auth.labels.email')}
                     value={form.email}
                     onChange={onInputChange(setFormField)}
-                    error={errors.email}
-                    processing={step === 0 && isProcessing}
                     autoComplete="email"
                     className={styles.emailInput}
                     autoFocus
-                    preserveLabelSpace
-                    preserveErrorSpace
                 />
+                <Underline
+                    state={(step === 0 && isProcessing && 'PROCESSING') || (errors.email && 'ERROR')}
+                />
+                <Errors>
+                    {errors.email}
+                </Errors>
                 <input
                     name="hiddenPassword"
                     type="password"
@@ -119,20 +128,25 @@ const UsernamePasswordLogin = ({ onEthereumClick }: Props) => {
                     readOnly
                     hidden
                 />
-                <TextInput
+                <Label state={errors.password && 'ERROR'}>
+                    <Translate value="auth.labels.password" />
+                </Label>
+                <Text
+                    unstyled
                     name="password"
                     type="password"
-                    label={I18n.t('auth.labels.password')}
                     value={form.password}
                     onChange={onInputChange(setFormField)}
-                    error={errors.password}
-                    processing={step === 1 && isProcessing}
                     autoComplete="current-password"
                     className={styles.passwordInput}
                     autoFocus
-                    preserveLabelSpace
-                    preserveErrorSpace
                 />
+                <Underline
+                    state={(step === 1 && isProcessing && 'PROCESSING') || (errors.password && 'ERROR')}
+                />
+                <Errors>
+                    {errors.password}
+                </Errors>
                 <Actions>
                     <Link to={routes.forgotPassword()}>
                         <Translate value="auth.login.forgotPassword" />

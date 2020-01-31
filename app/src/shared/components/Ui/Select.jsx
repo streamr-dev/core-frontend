@@ -1,11 +1,10 @@
 // @flow
 
 import React from 'react'
-import Select, { components } from 'react-select'
+import styled from 'styled-components'
+import ReactSelect, { components } from 'react-select'
 import cx from 'classnames'
-
 import SvgIcon from '$shared/components/SvgIcon'
-import styles from './selectInput.pcss'
 
 export type Option = {
     value: any,
@@ -21,7 +20,6 @@ export type Props = {
     required?: boolean,
     clearable?: boolean,
     isDisabled?: boolean,
-    className?: string,
     controlClassName?: string,
 }
 
@@ -97,26 +95,49 @@ const Control = ({ className, ...props }) => {
     )
 }
 
+const UnstyledTick = (props: any) => (
+    <SvgIcon {...props} name="tick" />
+)
+
+const Tick = styled(UnstyledTick)`
+    height: 8px;
+    left: 1.1rem;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px;
+`
+
 const IconOption = (props) => (
     <components.Option {...props}>
-        {props.isSelected && (
-            <SvgIcon name="tick" className={styles.tick} />
-        )}
+        {props.isSelected && <Tick />}
         {props.data.label}
     </components.Option>
 )
 
+type CaretProps = {
+    up?: boolean,
+}
+
+const UnstyledCaret = ({ up, ...props }: CaretProps) => (
+    <SvgIcon {...props} name={up ? 'caretUp' : 'caretDown'} />
+)
+
+const Caret = styled(UnstyledCaret)`
+  height: 8px;
+  width: 10px;
+`
+
 const DropdownIndicator = (props) => (
     components.DropdownIndicator && (
         <components.DropdownIndicator {...props}>
-            <SvgIcon name={props.selectProps.menuIsOpen ? 'caretUp' : 'caretDown'} className={styles.caret} />
+            <Caret up={!!props.selectProps.menuIsOpen} />
         </components.DropdownIndicator>
     )
 )
 
-const SelectInput = ({ className, controlClassName, ...props }: Props) => (
-    <Select
-        className={cx(styles.select, className)}
+const UnstyledSelect = ({ controlClassName, required = false, clearable = true, ...props }: Props) => (
+    <ReactSelect
         styles={customStyles}
         components={{
             Control,
@@ -125,14 +146,15 @@ const SelectInput = ({ className, controlClassName, ...props }: Props) => (
             DropdownIndicator,
         }}
         controlClassName={controlClassName}
+        required={required}
+        clearable={clearable}
         // $FlowFixMe potential override necessary.
         {...props}
     />
 )
 
-SelectInput.defaultProps = {
-    required: false,
-    clearable: true,
-}
+const Select = styled(UnstyledSelect)`
+    font-size: 0.875rem;
+`
 
-export default SelectInput
+export default Select

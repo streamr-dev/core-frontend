@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useCallback, useContext } from 'react'
+import React, { useCallback, useContext, useMemo } from 'react'
 import qs from 'query-string'
 import * as yup from 'yup'
 import { I18n, Translate } from 'react-redux-i18n'
@@ -14,12 +14,16 @@ import SessionProvider from '../SessionProvider'
 import AuthFormContext from '../../contexts/AuthForm'
 import SessionContext from '../../contexts/Session'
 import AuthPanel from '../AuthPanel'
-import TextInput from '../TextInput'
 import Actions from '../Actions'
 import Button from '../Button'
-import Checkbox from '../Checkbox'
+import Checkbox from '$shared/components/Checkbox'
 import AuthStep from '../AuthStep'
 import AuthLayout from '../AuthLayout'
+import Text from '$ui/Text'
+import Label from '$ui/Label'
+import Underline from '$ui/Underline'
+import Errors from '$ui/Errors'
+import usePasswordStrength, { StrengthMessage, strengthToState } from '$shared/hooks/usePasswordStrength'
 
 import post from '../../utils/post'
 import onInputChange from '../../utils/onInputChange'
@@ -125,6 +129,12 @@ const RegisterPage = ({ location: { search, pathname }, history: { replace } }: 
         ))
     }, [form, setSessionToken, mountedRef])
 
+    const strength = usePasswordStrength(form.password)
+
+    const strengthState = useMemo(() => (
+        strengthToState(strength)
+    ), [strength])
+
     return (
         <AuthLayout>
             <AuthPanel
@@ -132,20 +142,25 @@ const RegisterPage = ({ location: { search, pathname }, history: { replace } }: 
                 onValidationError={setFieldError}
             >
                 <AuthStep title={I18n.t('general.signUp')} showSignin>
-                    <TextInput
+                    <Label state={errors.name && 'ERROR'}>
+                        <Translate value="auth.register.name" />
+                    </Label>
+                    <Text
+                        unstyled
                         name="name"
-                        label={I18n.t('auth.register.name')}
                         type="text"
                         value={form.name}
                         onChange={onInputChange(setFormField)}
-                        error={errors.name}
-                        processing={step === 0 && isProcessing}
                         autoComplete="name"
                         disabled={!form.invite}
                         autoFocus
-                        preserveLabelSpace
-                        preserveErrorSpace
                     />
+                    <Underline
+                        state={(step === 0 && isProcessing && 'PROCESSING') || (errors.name && 'ERROR')}
+                    />
+                    <Errors>
+                        {errors.name}
+                    </Errors>
                     <Actions>
                         <Button disabled={isProcessing}>
                             <Translate value="auth.next" />
@@ -153,20 +168,28 @@ const RegisterPage = ({ location: { search, pathname }, history: { replace } }: 
                     </Actions>
                 </AuthStep>
                 <AuthStep title={I18n.t('general.signUp')} showBack>
-                    <TextInput
+                    <Label state={(errors.password && 'ERROR') || strengthState}>
+                        {strength === -1 ? (
+                            <Translate value="auth.password.create" />
+                        ) : (
+                            <StrengthMessage strength={strength} />
+                        )}
+                    </Label>
+                    <Text
+                        unstyled
                         name="password"
                         type="password"
-                        label={I18n.t('auth.password.create')}
                         value={form.password}
                         onChange={onInputChange(setFormField)}
-                        error={errors.password}
-                        processing={step === 1 && isProcessing}
                         autoComplete="new-password"
-                        measureStrength
                         autoFocus
-                        preserveLabelSpace
-                        preserveErrorSpace
                     />
+                    <Underline
+                        state={(step === 1 && isProcessing && 'PROCESSING') || (errors.password && 'ERROR') || strengthState}
+                    />
+                    <Errors>
+                        {errors.password}
+                    </Errors>
                     <Actions>
                         <Button disabled={isProcessing}>
                             <Translate value="auth.next" />
@@ -174,19 +197,24 @@ const RegisterPage = ({ location: { search, pathname }, history: { replace } }: 
                     </Actions>
                 </AuthStep>
                 <AuthStep title={I18n.t('general.signUp')} showBack>
-                    <TextInput
+                    <Label state={errors.confirmPassword && 'ERROR'}>
+                        <Translate value="auth.password.confirm" />
+                    </Label>
+                    <Text
+                        unstyled
                         name="confirmPassword"
                         type="password"
-                        label={I18n.t('auth.password.confirm')}
                         value={form.confirmPassword}
                         onChange={onInputChange(setFormField)}
-                        error={errors.confirmPassword}
-                        processing={step === 2 && isProcessing}
                         autoComplete="new-password"
                         autoFocus
-                        preserveLabelSpace
-                        preserveErrorSpace
                     />
+                    <Underline
+                        state={(step === 2 && isProcessing && 'PROCESSING') || (errors.confirmPassword && 'ERROR')}
+                    />
+                    <Errors>
+                        {errors.confirmPassword}
+                    </Errors>
                     <Actions>
                         <Button disabled={isProcessing}>
                             <Translate value="auth.next" />
@@ -201,21 +229,24 @@ const RegisterPage = ({ location: { search, pathname }, history: { replace } }: 
                     showBack
                 >
                     <div className={styles.termsWrapper}>
-                        <Checkbox
-                            name="toc"
-                            checked={form.toc}
-                            onChange={onInputChange(setFormField)}
-                            error={errors.toc}
-                            autoFocus
-                            keepError
-                        >
+                        <label htmlFor="toc" className={styles.checkboxWrapper}>
+                            <Checkbox
+                                id="toc"
+                                name="toc"
+                                value={form.toc}
+                                onChange={onInputChange(setFormField)}
+                                autoFocus
+                            />&nbsp;
                             <Translate
                                 value="auth.register.agreement"
                                 terms={routes.terms()}
                                 privacy={routes.privacy()}
                                 dangerousHTML
                             />
-                        </Checkbox>
+                        </label>
+                        <Errors>
+                            {errors.toc}
+                        </Errors>
                     </div>
                     <Actions>
                         <Button disabled={isProcessing}>
