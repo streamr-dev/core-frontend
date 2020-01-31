@@ -15,7 +15,9 @@
   fill: var(--greyDark);
 }
 
-.disabled {}
+.disabled {
+  cursor: not-allowed;
+}
 
 .root:not(.disabled):--enter,
 a:--enter .root:not(.disabled) {
@@ -45,8 +47,8 @@ a:--enter .root:not(.disabled) {
   fill: var(--streamrBlue);
 }
 
-.blue:--enter,
-a:--enter .blue {
+.blue:not(.disabled):--enter,
+a:--enter .blue:not(.disabled) {
   border-color: var(--streamrBlue);
 }
 
@@ -65,8 +67,8 @@ a:--enter .blue {
   fill: var(--grey2);
 }
 
-.gray:--enter,
-a:--enter .gray {
+.gray:not(.disabled):--enter,
+a:--enter .gray:not(.disabled) {
   background-color: #F8F8F8;
 }
 
@@ -79,7 +81,7 @@ a:--enter .gray {
   fill: var(--greyDark);
 }
 
-.gray2:--enter,
-a:--enter .gray2 {
+.gray2:not(.disabled):--enter,
+a:--enter .gray2:not(.disabled) {
   border-color: var(--greyDark);
 }

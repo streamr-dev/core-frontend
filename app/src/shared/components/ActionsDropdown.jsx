@@ -36,7 +36,11 @@ const UnstyledActionsDropdown = ({ actions, disabled, children = null, ...props 
                 <DropdownActions
                     disabled={disabled}
                     title={(
-                        <Meatball alt="Actions" gray />
+                        <Meatball
+                            alt="Actions"
+                            gray
+                            disabled={disabled}
+                        />
                     )}
                     menuProps={{
                         right: true,
