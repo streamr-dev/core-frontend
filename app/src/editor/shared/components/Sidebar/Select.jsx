@@ -70,8 +70,6 @@ const customStyles = {
     }),
 }
 
-// FIXME(MR): Let's replace this Select with $ui/Select!!!
-
 const Select = ({ className, disabled, ...props }: Props) => (
     <ReactSelect
         {...props}
