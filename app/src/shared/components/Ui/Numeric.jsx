@@ -51,7 +51,7 @@ const Buttons = styled(UnstyledButtons)`
     }
 
     button:disabled {
-        pointer-events: none;
+        cursor: not-allowed;
     }
 
     button:not(:disabled):active {
