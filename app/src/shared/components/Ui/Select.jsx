@@ -32,7 +32,7 @@ const customStyles = {
                 stroke: '#A3A3A3',
             },
         },
-        backgroundColor: state.isDisabled ? '#EFEFEF' : null,
+        backgroundColor: state.isDisabled ? '#EFEFEF' : provided.backgroundColor,
         opacity: state.isDisabled ? 0.5 : 1,
         backfaceVisibility: 'hidden',
         color: state.isDisabled ? '#32323280' : '#323232',
