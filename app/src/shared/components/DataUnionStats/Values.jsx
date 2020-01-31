@@ -5,7 +5,7 @@ import cx from 'classnames'
 
 import Value, { type Props as ValueProps } from './Value'
 
-import styles from './communityStats.pcss'
+import styles from './dataUnionStats.pcss'
 
 export type StatValue = {
     id: string,

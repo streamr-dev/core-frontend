@@ -19,24 +19,24 @@ type Props = {
 const SharedSecretEditor = ({ className }: Props) => {
     const product = useProduct()
     const [secrets, setSecrets] = useState([])
-    const communityId = (product && product.beneficiaryAddress) || ''
+    const dataUnionId = (product && product.beneficiaryAddress) || ''
 
     const fetchSecrets = useCallback(async () => {
         try {
             const result = await getSecrets({
-                dataUnionId: communityId,
+                dataUnionId,
             })
             setSecrets(result)
         } catch (e) {
             console.error('Could not load shared secrets', e)
         }
-    }, [communityId])
+    }, [dataUnionId])
 
     useEffect(() => {
-        if (communityId) {
+        if (dataUnionId) {
             fetchSecrets()
         }
-    }, [communityId, fetchSecrets])
+    }, [dataUnionId, fetchSecrets])
 
     return (
         <div className={cx(className)}>
@@ -52,7 +52,7 @@ const SharedSecretEditor = ({ className }: Props) => {
                     onSave={async (name) => {
                         if (name) {
                             const result = await putSecret({
-                                dataUnionId: communityId,
+                                dataUnionId,
                                 secretId: s.id,
                                 name,
                             })
@@ -64,7 +64,7 @@ const SharedSecretEditor = ({ className }: Props) => {
                     }}
                     onDelete={async () => {
                         await deleteSecret({
-                            dataUnionId: communityId,
+                            dataUnionId,
                             secretId: s.id,
                         })
                         setSecrets((currentSecrets) => currentSecrets.filter((secret) => secret.id !== s.id))
@@ -78,7 +78,7 @@ const SharedSecretEditor = ({ className }: Props) => {
                     addKeyFieldAllowed
                     onSave={async (name, value) => {
                         const result = await postSecret({
-                            dataUnionId: communityId,
+                            dataUnionId,
                             name,
                             secret: value,
                         })

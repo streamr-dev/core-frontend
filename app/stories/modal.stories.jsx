@@ -20,9 +20,9 @@ import CompletePublishTransaction from '$mp/components/Modal/CompletePublishTran
 import CompleteUnpublishDialog from '$mp/components/Modal/CompleteUnpublishDialog'
 import ConfirmPublishTransaction from '$mp/components/Modal/ConfirmPublishTransaction'
 import ConfirmSaveDialog from '$mp/components/Modal/ConfirmSaveDialog'
-import GuidedDeployCommunityDialog from '$mp/components/Modal/GuidedDeployCommunityDialog'
-import ConfirmDeployCommunityDialog from '$mp/components/Modal/ConfirmDeployCommunityDialog'
-import DeployingCommunityDialog from '$mp/components/Modal/DeployingCommunityDialog'
+import GuidedDeployDataUnionDialog from '$mp/components/Modal/GuidedDeployDataUnionDialog'
+import ConfirmDeployDataUnionDialog from '$mp/components/Modal/ConfirmDeployDataUnionDialog'
+import DeployingDataUnionDialog from '$mp/components/Modal/DeployingDataUnionDialog'
 import GetDataTokensDialog from '$mp/components/Modal/GetDataTokensDialog'
 import GetCryptoDialog from '$mp/components/Modal/GetCryptoDialog'
 import InsufficientDataDialog from '$mp/components/Modal/InsufficientDataDialog'
@@ -301,9 +301,9 @@ story('Product Editor/ConfirmSaveDialog')
         />
     ))
 
-story('Product Editor/GuidedDeployCommunityDialog')
+story('Product Editor/GuidedDeployDataUnionDialog')
     .add('default', () => (
-        <GuidedDeployCommunityDialog
+        <GuidedDeployDataUnionDialog
             // $FlowFixMe
             product={{
                 id: '1',
@@ -317,7 +317,7 @@ story('Product Editor/GuidedDeployCommunityDialog')
 
 story('Product Editor/ConfirmDeployCommunityDialog')
     .add('default', () => (
-        <ConfirmDeployCommunityDialog
+        <ConfirmDeployDataUnionDialog
             // $FlowFixMe
             product={{
                 id: '1',
@@ -332,7 +332,7 @@ story('Product Editor/ConfirmDeployCommunityDialog')
 
 story('Product Editor/DeployingCommunityDialog')
     .add('default', () => (
-        <DeployingCommunityDialog
+        <DeployingDataUnionDialog
             // $FlowFixMe
             product={{
                 id: '1',

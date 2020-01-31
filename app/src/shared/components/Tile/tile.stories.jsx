@@ -41,10 +41,10 @@ stories.add('with badge & label', () => (
     >
         <Tile
             labels={{
-                community: boolean('Community', true),
+                dataUnion: boolean('Data union', true),
             }}
             badges={{
-                members: number('Community members', 15),
+                members: number('Data union members', 15),
             }}
         >
             <Tile.Title>{text('Product name', 'Product name')}</Tile.Title>
@@ -65,10 +65,10 @@ stories.add('with deploying badge', () => (
     >
         <Tile
             labels={{
-                community: boolean('Community', true),
+                dataUnion: boolean('Data Union', true),
             }}
             badges={{
-                members: number('Community members', 15),
+                members: number('Data union members', 15),
             }}
             deploying={boolean('Deploying', true)}
         >

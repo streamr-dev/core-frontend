@@ -8,7 +8,7 @@ import usePending from '$shared/hooks/usePending'
 import type { DataUnionId } from '$mp/flowtype/product-types'
 import { getDataUnionById } from '$mp/modules/dataUnion/actions'
 
-export default function useCommunityProductLoadCallback() {
+export default function useDataUnionLoadCallback() {
     const dispatch = useDispatch()
     const { wrap } = usePending('dataUnion.LOAD')
 

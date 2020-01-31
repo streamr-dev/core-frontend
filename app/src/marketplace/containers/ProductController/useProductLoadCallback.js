@@ -41,13 +41,13 @@ export default function useProductLoadCallback() {
             }
             if (!isMounted()) { return }
 
-            // fetch admin fee from community contract
+            // fetch admin fee from data union contract
             let currentAdminFee
-            let communityDeployed = false
+            let dataUnionDeployed = false
             if (isDataUnionProduct(product) && isEthereumAddress(product.beneficiaryAddress)) {
                 try {
                     currentAdminFee = await getAdminFee(product.beneficiaryAddress)
-                    communityDeployed = true
+                    dataUnionDeployed = true
                 } catch (e) {
                     // ignore error, assume contract has not been deployed
                 }
@@ -61,7 +61,7 @@ export default function useProductLoadCallback() {
                 currency: product.priceCurrency || DEFAULT_CURRENCY,
                 price: product.price || priceForTimeUnits(product.pricePerSecond || '0', 1, timeUnits.hour),
                 adminFee: currentAdminFee,
-                communityDeployed,
+                dataUnionDeployed,
             }
 
             // update redux state, keep original product in redux

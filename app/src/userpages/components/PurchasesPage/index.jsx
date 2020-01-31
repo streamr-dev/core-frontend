@@ -52,7 +52,7 @@ const PurchasesPage = () => {
     const fetching = useSelector(selectFetchingMyPurchaseList)
     const dispatch = useDispatch()
 
-    const { load: loadCommunityStats, members, fetching: fetchingCommunityStats } = useMemberStats()
+    const { load: loadDataUnionStats, members, fetching: fetchingDataUnionStats } = useMemberStats()
 
     useEffect(() => {
         dispatch(updateFilter(filter))
@@ -63,8 +63,8 @@ const PurchasesPage = () => {
     }, [dispatch, filter])
 
     useEffect(() => {
-        loadCommunityStats()
-    }, [loadCommunityStats])
+        loadDataUnionStats()
+    }, [loadDataUnionStats])
 
     return (
         <Layout
@@ -116,12 +116,12 @@ const PurchasesPage = () => {
                                     imageUrl={product.imageUrl || ''}
                                     link={product.id && `${links.marketplace.products}/${product.id}`}
                                     labels={{
-                                        community: isDataUnion,
+                                        dataUnion: isDataUnion,
                                     }}
                                     badges={(isDataUnion && memberCount !== undefined) ? {
                                         members: memberCount,
                                     } : undefined}
-                                    deploying={!fetchingCommunityStats && (isDataUnion && beneficiaryAddress && memberCount === undefined)}
+                                    deploying={!fetchingDataUnionStats && (isDataUnion && beneficiaryAddress && memberCount === undefined)}
                                 >
                                     <Tile.Title>{product.name}</Tile.Title>
                                     <Tile.Description>{product.owner}</Tile.Description>

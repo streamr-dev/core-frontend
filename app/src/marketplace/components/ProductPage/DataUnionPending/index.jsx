@@ -6,23 +6,23 @@ import { Translate } from 'react-redux-i18n'
 
 import DeploySpinner from '$shared/components/DeploySpinner'
 
-import styles from './communityPending.pcss'
+import styles from './dataUnionPending.pcss'
 
 type Props = {
     className?: string,
 }
 
-const CommunityPending = ({ className }: Props) => (
+const DataUnionPending = ({ className }: Props) => (
     <div className={cx(styles.deployingGrid, className)}>
         <div>
             <DeploySpinner isRunning showCounter={false} />
         </div>
         <div>
             <div className={styles.deployMessageHeading}>
-                <Translate value="productPage.communityPending.title" />
+                <Translate value="productPage.dataUnionPending.title" />
             </div>
         </div>
     </div>
 )
 
-export default CommunityPending
+export default DataUnionPending

@@ -26,7 +26,7 @@ import Editor from './Editor'
 import Preview from './Preview'
 import ProductEditorDebug from './ProductEditorDebug'
 import ConfirmSaveModal from './ConfirmSaveModal'
-import DeployCommunityModal from './DeployCommunityModal'
+import DeployDataUnionModal from './DeployDataUnionModal'
 import PublishModal from './PublishModal'
 import CropImageModal from './CropImageModal'
 
@@ -38,7 +38,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
         setIsPreview,
         save,
         publish,
-        deployCommunity,
+        deployDataUnion,
         back,
     } = useContext(EditControllerContext)
     const { isPending: savePending } = usePending('product.SAVE')
@@ -106,13 +106,13 @@ const EditProductPage = ({ product }: { product: Product }) => {
             return {
                 title: 'Continue',
                 kind: 'primary',
-                onClick: deployCommunity,
+                onClick: deployDataUnion,
                 disabled: isSaving,
             }
         }
 
         return publishButton
-    }, [isDataUnion, isDeployed, deployCommunity, isSaving, publishButton])
+    }, [isDataUnion, isDeployed, deployDataUnion, isSaving, publishButton])
 
     const actions = {
         saveAndExit: saveAndExitButton,
@@ -160,7 +160,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
                 <Editor />
             )}
             <ConfirmSaveModal />
-            <DeployCommunityModal />
+            <DeployDataUnionModal />
             <PublishModal />
             <CropImageModal />
         </CoreLayout>

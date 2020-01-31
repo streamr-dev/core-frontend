@@ -15,7 +15,7 @@ import { type Product } from '$mp/flowtype/product-types'
 
 import cpStats from '$mp/assets/cp-stats.png'
 
-import styles from './guidedDeployCommunityDialog.pcss'
+import styles from './guidedDeployDataUnionDialog.pcss'
 
 type ChildrenProps = {
     children?: Node,
@@ -46,7 +46,7 @@ const ProductCard = ({ name, image, className }: ProductCardProps) => (
             className={styles.productTile}
             imageUrl={image}
             labels={{
-                community: true,
+                dataUnion: true,
             }}
             badges={{
                 members: 15,
@@ -54,10 +54,10 @@ const ProductCard = ({ name, image, className }: ProductCardProps) => (
         >
             <Tile.Title>{name}</Tile.Title>
             <Tile.Description>
-                <Translate value="modal.deployCommunity.guide.preview.updated" />
+                <Translate value="modal.deployDataUnion.guide.preview.updated" />
             </Tile.Description>
             <Tile.Status className={styles.status}>
-                <Translate value="modal.deployCommunity.guide.preview.status" />
+                <Translate value="modal.deployDataUnion.guide.preview.status" />
             </Tile.Status>
         </Tile>
     </div>
@@ -70,7 +70,7 @@ export type Props = {
     dontShowAgain?: boolean,
 }
 
-const GuidedDeployCommunityDialog = ({ product, onClose, onContinue: onContinueProp, dontShowAgain }: Props) => {
+const GuidedDeployDataUnionDialog = ({ product, onClose, onContinue: onContinueProp, dontShowAgain }: Props) => {
     const [skipHelp, setSkipHelp] = useState(!!dontShowAgain)
     const [step, setStep] = useState(0)
     const [waitingOnContinue, setWaitingOnContinue] = useState(false)
@@ -101,7 +101,7 @@ const GuidedDeployCommunityDialog = ({ product, onClose, onContinue: onContinueP
                         <FallbackImage src={image} alt={name} className={styles.previewImage} />
                     </div>
                     <TextContainer>
-                        <Translate value="modal.deployCommunity.guide.step1" dangerousHTML />
+                        <Translate value="modal.deployDataUnion.guide.step1" dangerousHTML />
                     </TextContainer>
                 </React.Fragment>
             )}
@@ -115,7 +115,7 @@ const GuidedDeployCommunityDialog = ({ product, onClose, onContinue: onContinueP
                         />
                     </PreviewContainer>
                     <TextContainer>
-                        <Translate value="modal.deployCommunity.guide.step2" dangerousHTML />
+                        <Translate value="modal.deployDataUnion.guide.step2" dangerousHTML />
                     </TextContainer>
                 </React.Fragment>
             )}
@@ -129,7 +129,7 @@ const GuidedDeployCommunityDialog = ({ product, onClose, onContinue: onContinueP
                         />
                     </PreviewContainer>
                     <TextContainer>
-                        <Translate value="modal.deployCommunity.guide.step3" dangerousHTML />
+                        <Translate value="modal.deployDataUnion.guide.step3" dangerousHTML />
                     </TextContainer>
                 </React.Fragment>
             )}
@@ -139,7 +139,7 @@ const GuidedDeployCommunityDialog = ({ product, onClose, onContinue: onContinueP
                         <img src={cpStats} alt="" className={styles.highlightStats} />
                     </PreviewContainer>
                     <TextContainer>
-                        <Translate value="modal.deployCommunity.guide.step4" dangerousHTML />
+                        <Translate value="modal.deployDataUnion.guide.step4" dangerousHTML />
                     </TextContainer>
                 </React.Fragment>
             )}
@@ -149,8 +149,8 @@ const GuidedDeployCommunityDialog = ({ product, onClose, onContinue: onContinueP
     return (
         <ModalPortal>
             <Dialog
-                className={cx(styles.root, styles.GuidedDeployCommunityDialog)}
-                title={I18n.t('modal.deployCommunity.guide.title', {
+                className={cx(styles.root, styles.GuidedDeployDataUnionDialog)}
+                title={I18n.t('modal.deployDataUnion.guide.title', {
                     name: product.name,
                 })}
                 onClose={onClose}
@@ -166,7 +166,7 @@ const GuidedDeployCommunityDialog = ({ product, onClose, onContinue: onContinueP
                                             setSkipped(e.target.checked)
                                         }}
                                     />
-                                    <Translate value="modal.deployCommunity.guide.dontShowAgain" />
+                                    <Translate value="modal.deployDataUnion.guide.dontShowAgain" />
                                 </Label>
                             </FormGroup>
                         </div>
@@ -219,4 +219,4 @@ const GuidedDeployCommunityDialog = ({ product, onClose, onContinue: onContinueP
     )
 }
 
-export default GuidedDeployCommunityDialog
+export default GuidedDeployDataUnionDialog

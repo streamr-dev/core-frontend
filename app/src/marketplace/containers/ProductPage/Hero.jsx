@@ -70,7 +70,7 @@ const Hero = () => {
                     <Tile.Labels
                         topLeft
                         labels={{
-                            community: isDataUnion,
+                            dataUnion: isDataUnion,
                         }}
                     />
                 </div>

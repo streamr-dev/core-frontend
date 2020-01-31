@@ -77,7 +77,7 @@ class ProductPage extends Component<Props> {
                             <Tile.Labels
                                 topLeft
                                 labels={{
-                                    community: isDataUnionProduct(product),
+                                    dataUnion: isDataUnionProduct(product),
                                 }}
                             />
                         </div>

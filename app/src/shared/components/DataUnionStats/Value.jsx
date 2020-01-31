@@ -6,7 +6,7 @@ import Skeleton from 'react-loading-skeleton'
 
 import Header from './Header'
 
-import styles from './communityStats.pcss'
+import styles from './dataUnionStats.pcss'
 
 export type Props = {
     label: string | Node,

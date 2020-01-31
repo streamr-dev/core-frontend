@@ -3,30 +3,30 @@
 import React from 'react'
 
 import useProduct from '$mp/containers/ProductController/useProduct'
-import useCommunityProduct from '$mp/containers/ProductController/useCommunityProduct'
+import useDataUnion from '$mp/containers/ProductController/useDataUnion'
 import { isEthereumAddress } from '$mp/utils/validate'
-import useCommunityStats from './useCommunityStats'
+import useDataUnionStats from './useDataUnionStats'
 
 import ProductContainer from '$shared/components/Container/Product'
-import CommunityPending from '$mp/components/ProductPage/CommunityPending'
-import StatsValues from '$shared/components/CommunityStats/Values'
-import StatsHeader from '$shared/components/CommunityStats/Header'
+import DataUnionPending from '$mp/components/ProductPage/DataUnionPending'
+import StatsValues from '$shared/components/DataUnionStats/Values'
+import StatsHeader from '$shared/components/DataUnionStats/Header'
 import DonutChart from '$shared/components/DonutChart'
 
 import MembersGraph from './MembersGraph'
 
-import styles from './communityStats.pcss'
+import styles from './dataUnionStats.pcss'
 
-const CommunityStats = () => {
+const DataUnionStats = () => {
     const product = useProduct()
-    const { statsArray, memberCount } = useCommunityStats()
+    const { statsArray, memberCount } = useDataUnionStats()
 
-    const { communityDeployed, beneficiaryAddress } = product
-    const community = useCommunityProduct()
+    const { dataUnionDeployed, beneficiaryAddress } = product
+    const dataUnion = useDataUnion()
 
-    const { joinPartStreamId } = community || {}
+    const { joinPartStreamId } = dataUnion || {}
 
-    if (!communityDeployed && !isEthereumAddress(beneficiaryAddress)) {
+    if (!dataUnionDeployed && !isEthereumAddress(beneficiaryAddress)) {
         return null
     }
 
@@ -37,16 +37,16 @@ const CommunityStats = () => {
                     <div className={styles.header}>
                         <span>Overview</span>
                     </div>
-                    {!communityDeployed && isEthereumAddress(beneficiaryAddress) && (
-                        <CommunityPending className={styles.communityPending} />
+                    {!dataUnionDeployed && isEthereumAddress(beneficiaryAddress) && (
+                        <DataUnionPending className={styles.dataUnionPending} />
                     )}
-                    {!!communityDeployed && statsArray && (
+                    {!!dataUnionDeployed && statsArray && (
                         <StatsValues
                             className={styles.stats}
                             stats={statsArray}
                         />
                     )}
-                    {!!communityDeployed && memberCount && (
+                    {!!dataUnionDeployed && memberCount && (
                         <div className={styles.graphs}>
                             <MembersGraph
                                 className={styles.membersGraph}
@@ -81,4 +81,4 @@ const CommunityStats = () => {
     )
 }
 
-export default CommunityStats
+export default DataUnionStats

@@ -80,7 +80,7 @@ export type ContractProductState = {
     contractProductError: ?ErrorInUi,
 }
 
-// Community product
+// Data union
 export type DataUnionState = {
     id: ?DataUnionId,
     fetching: boolean,

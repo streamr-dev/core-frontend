@@ -106,7 +106,7 @@ class ProductTile extends Component<Props, State> {
                                 <Tile.Labels
                                     topLeft
                                     labels={{
-                                        community: isDataUnion,
+                                        dataUnion: isDataUnion,
                                     }}
                                 />
                                 {isDataUnion && members !== undefined && (
@@ -127,7 +127,7 @@ class ProductTile extends Component<Props, State> {
                             <Tile.Labels
                                 topLeft
                                 labels={{
-                                    community: isDataUnion,
+                                    dataUnion: isDataUnion,
                                 }}
                             />
                         </div>

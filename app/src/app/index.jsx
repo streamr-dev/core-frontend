@@ -63,7 +63,7 @@ import ModuleReferenceHelp from '$docs/components/DocsPages/ModuleReference/Help
 import DashboardsDocsPage from '$docs/components/DocsPages/Dashboards'
 // Products Docs
 import IntroToProductsDocsPage from '$docs/components/DocsPages/Products/IntroToProducts'
-import CommunityProductsDocsPage from '$docs/components/DocsPages/Products/CommunityProducts'
+import DataUnionsDocsPage from '$docs/components/DocsPages/Products/DataUnions'
 // Tutorials Docs
 import BuildingPubSubDocsPage from '$docs/components/DocsPages/Tutorials/BuildingPubSub'
 import BuildingCustomModuleDocsPage from '$docs/components/DocsPages/Tutorials/BuildingCustomModule'
@@ -202,7 +202,7 @@ const DocsRouter = () => ([
     // Products routes
     <Route exact path={docs.products.introToProducts} component={IntroToProductsDocsPage} key="IntroToProducts" />,
     <Redirect exact from={docs.products.root} to={docs.products.introToProducts} key="ProductsRoot" />,
-    <Route exact path={docs.products.communityProducts} component={CommunityProductsDocsPage} key="CommunityProducts" />,
+    <Route exact path={docs.products.dataUnions} component={DataUnionsDocsPage} key="DataUnions" />,
     // Module Reference routes
     <Route
         exact
@@ -293,7 +293,7 @@ const DocsRouter = () => ([
     // Marketplace routes
     <Route exact path={docs.marketplace.introToMarketplace} component={IntroToMarketplaceDocsPage} key="IntroToMarketplace" />,
     <Redirect exact from={docs.marketplace.root} to={docs.marketplace.introToMarketplace} key="MarketplaceRoot" />,
-    <Route exact path={docs.marketplace.communityProducts} component={CommunityProductsDocsPage} key="CommunityProducts" />,
+    <Route exact path={docs.marketplace.dataUnions} component={DataUnionsDocsPage} key="DataUnions" />,
     // SDKs Routes
     <Route exact path={docs.SDKs.root} component={SDKsDocsPage} key="SDKsPage" />,
     // Running Node routes

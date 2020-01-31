@@ -145,7 +145,7 @@ const Actions = (product: Product) => {
                     className={styles.item}
                     onClick={() => (!!redirectToProduct && redirectToProductMembers(id || ''))}
                 >
-                    <Translate value="actionsDropdown.viewCommunity" />
+                    <Translate value="actionsDropdown.viewDataUnion" />
                 </DropdownActions.Item>
             }
             <DropdownActions.Item
@@ -180,15 +180,15 @@ const ProductsPage = () => {
     const products = useSelector(selectMyProductList)
     const fetching = useSelector(selectFetching)
     const dispatch = useDispatch()
-    const { load: loadCommunityStats, members, fetching: fetchingCommunityStats } = useMemberStats()
+    const { load: loadDataUnionStats, members, fetching: fetchingDataUnionStats } = useMemberStats()
 
     useEffect(() => {
         dispatch(getMyProducts(filter))
     }, [dispatch, filter])
 
     useEffect(() => {
-        loadCommunityStats()
-    }, [loadCommunityStats])
+        loadDataUnionStats()
+    }, [loadDataUnionStats])
 
     return (
         <Layout
@@ -239,12 +239,12 @@ const ProductsPage = () => {
                                     imageUrl={product.imageUrl || ''}
                                     dropdownActions={<Actions {...product} />}
                                     labels={{
-                                        community: isDataUnion,
+                                        dataUnion: isDataUnion,
                                     }}
                                     badges={(isDataUnion && memberCount !== undefined) ? {
                                         members: memberCount,
                                     } : undefined}
-                                    deploying={!fetchingCommunityStats && (isDataUnion && beneficiaryAddress && memberCount === undefined)}
+                                    deploying={!fetchingDataUnionStats && (isDataUnion && beneficiaryAddress && memberCount === undefined)}
                                 >
                                     <Tile.Title>{product.name}</Tile.Title>
                                     <Tile.Tag >

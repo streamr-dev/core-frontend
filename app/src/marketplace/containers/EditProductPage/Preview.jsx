@@ -20,8 +20,8 @@ import Tile from '$shared/components/Tile'
 import ProductDetails from '$mp/components/ProductPage/ProductDetails'
 import StreamListing from '$mp/components/ProductPage/StreamListing'
 import ProductContainer from '$shared/components/Container/Product'
-import StatsValues from '$shared/components/CommunityStats/Values'
-import StatsHeader from '$shared/components/CommunityStats/Header'
+import StatsValues from '$shared/components/DataUnionStats/Values'
+import StatsHeader from '$shared/components/DataUnionStats/Header'
 import DonutChart from '$shared/components/DonutChart'
 import TimeSeriesGraph from '$shared/components/TimeSeriesGraph'
 import WithShownDays from '$shared/components/TimeSeriesGraph/WithShownDays'
@@ -29,7 +29,7 @@ import WithShownDays from '$shared/components/TimeSeriesGraph/WithShownDays'
 import productPageStyles from '$mp/containers/ProductPage/page.pcss'
 import heroStyles from '$mp/containers/ProductPage/hero.pcss'
 import streamStyles from '$mp/containers/ProductPage/streams.pcss'
-import statsStyles from '$mp/containers/ProductPage/communityStats.pcss'
+import statsStyles from '$mp/containers/ProductPage/dataUnionStats.pcss'
 
 import styles from './preview.pcss'
 
@@ -61,7 +61,7 @@ const Hero = () => {
                     <Tile.Labels
                         topLeft
                         labels={{
-                            community: isDataUnion,
+                            dataUnion: isDataUnion,
                         }}
                     />
                 </div>
@@ -110,7 +110,7 @@ const Description = () => {
     )
 }
 
-const CommunityStats = () => {
+const DataUnionStats = () => {
     const product = useEditableProduct()
 
     const { created, adminFee } = product
@@ -240,7 +240,7 @@ const Preview = () => {
             <Hero />
             <Description />
             {isDataUnion && (
-                <CommunityStats />
+                <DataUnionStats />
             )}
             <Streams />
         </div>

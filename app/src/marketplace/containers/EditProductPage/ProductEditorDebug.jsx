@@ -42,7 +42,7 @@ const ProductEditorDebug = () => {
                 [styles.minimized]: minimized,
             })}
             >
-                Is Community Product? <Toggle
+                Is Data Union? <Toggle
                     value={isDataUnion}
                     onChange={onFixPriceChange}
                 />

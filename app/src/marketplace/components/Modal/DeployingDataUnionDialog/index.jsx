@@ -9,7 +9,7 @@ import Dialog from '$shared/components/Dialog'
 import { type Product } from '$mp/flowtype/product-types'
 import DeploySpinner from '$shared/components/DeploySpinner'
 
-import styles from './deployingCommunityDialog.pcss'
+import styles from './deployingDataUnionDialog.pcss'
 
 export type Props = {
     product: Product,
@@ -24,11 +24,11 @@ const formatSeconds = (seconds) => {
     return timeValue.substr(0, 2) === '00' ? timeValue.substr(3) : timeValue
 }
 
-const DeployingCommunityDialog = ({ product, estimate, onClose, onContinue }: Props) => (
+const DeployingDataUnionDialog = ({ product, estimate, onClose, onContinue }: Props) => (
     <ModalPortal>
         <Dialog
-            className={cx(styles.root, styles.DeployingCommunityDialog)}
-            title={I18n.t('modal.deployCommunity.deploying.title', {
+            className={cx(styles.root, styles.DeployingDataUnionDialog)}
+            title={I18n.t('modal.deployDataUnion.deploying.title', {
                 name: product.name,
             })}
             onClose={onClose}
@@ -46,7 +46,7 @@ const DeployingCommunityDialog = ({ product, estimate, onClose, onContinue }: Pr
             </div>
             <div className={styles.description}>
                 <Translate
-                    value="modal.deployCommunity.deploying.description"
+                    value="modal.deployDataUnion.deploying.description"
                     time={formatSeconds(estimate)}
                     dangerousHTML
                 />
@@ -55,4 +55,4 @@ const DeployingCommunityDialog = ({ product, estimate, onClose, onContinue }: Pr
     </ModalPortal>
 )
 
-export default DeployingCommunityDialog
+export default DeployingDataUnionDialog

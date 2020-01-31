@@ -116,7 +116,7 @@ function useValidationContext(): ContextProps {
 
         const isPaid = isPaidProduct(product)
 
-        // applies only to community product
+        // applies only to data union
         if (isDataUnionProduct(product)) {
             if (!product.adminFee || !(product.adminFee > 0 && product.adminFee <= 1)) {
                 setStatus('adminFee', ERROR, 'Admin fee cannot be empty')

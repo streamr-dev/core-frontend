@@ -10,7 +10,7 @@ import Buttons from '$shared/components/Buttons'
 import FallbackImage from '$shared/components/FallbackImage'
 import { type Product } from '$mp/flowtype/product-types'
 
-import styles from './confirmDeployCommunityDialog.pcss'
+import styles from './confirmDeployDataUnionDialog.pcss'
 
 export type Props = {
     product: Product,
@@ -19,7 +19,7 @@ export type Props = {
     onShowGuidedDialog: () => void,
 }
 
-const ConfirmDeployCommunityDialog = ({ product, onClose, onContinue: onContinueProp, onShowGuidedDialog: onShowGuidedDialogProp }: Props) => {
+const ConfirmDeployDataUnionDialog = ({ product, onClose, onContinue: onContinueProp, onShowGuidedDialog: onShowGuidedDialogProp }: Props) => {
     const [waitingOnContinue, setWaitingOnContinue] = useState(false)
 
     const onContinue = useCallback(async () => {
@@ -38,8 +38,8 @@ const ConfirmDeployCommunityDialog = ({ product, onClose, onContinue: onContinue
     return (
         <ModalPortal>
             <Dialog
-                className={cx(styles.root, styles.ConfirmDeployCommunityDialog)}
-                title={I18n.t('modal.deployCommunity.confirm.title', {
+                className={cx(styles.root, styles.ConfirmDeployDataUnionDialog)}
+                title={I18n.t('modal.deployDataUnion.confirm.title', {
                     name: product.name,
                 })}
                 onClose={onClose}
@@ -47,10 +47,10 @@ const ConfirmDeployCommunityDialog = ({ product, onClose, onContinue: onContinue
                 renderActions={() => (
                     <div className={styles.footer}>
                         <div className={styles.footerText}>
-                            {I18n.t('modal.deployCommunity.confirm.learnAbout')}
+                            {I18n.t('modal.deployDataUnion.confirm.learnAbout')}
                             &nbsp;
                             <a href="#" onClick={onShowGuidedDialog}>
-                                {I18n.t('modal.deployCommunity.confirm.deployingDrafts')}
+                                {I18n.t('modal.deployDataUnion.confirm.deployingDrafts')}
                             </a>
                         </div>
                         <Buttons
@@ -81,4 +81,4 @@ const ConfirmDeployCommunityDialog = ({ product, onClose, onContinue: onContinue
     )
 }
 
-export default ConfirmDeployCommunityDialog
+export default ConfirmDeployDataUnionDialog

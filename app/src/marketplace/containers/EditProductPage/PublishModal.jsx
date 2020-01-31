@@ -95,10 +95,10 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
             }
 
             let currentAdminFee
-            let communityOwner
+            let dataUnionOwner
             try {
                 currentAdminFee = await getAdminFee(p.beneficiaryAddress)
-                communityOwner = await getDataUnionOwner(p.beneficiaryAddress)
+                dataUnionOwner = await getDataUnionOwner(p.beneficiaryAddress)
             } catch (e) {
                 // ignore error, assume contract has not been deployed
             }
@@ -135,7 +135,7 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
             // update admin fee if it has changed
             if ([modes.REPUBLISH, modes.REDEPLOY, modes.PUBLISH].includes(nextMode)) {
                 if (adminFee && hasAdminFeeChanged) {
-                    requireOwner = communityOwner
+                    requireOwner = dataUnionOwner
 
                     queue.add({
                         id: actionsTypes.UPDATE_ADMIN_FEE,
@@ -196,10 +196,10 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
             // do the actual publish action
             if (nextMode === modes.PUBLISH) {
                 if (isPaidProduct(p)) {
-                    // TODO: figure out a better to detect if deploying community for the first time
-                    // force community product to be published by the same account as the community
-                    if (communityOwner) {
-                        requireOwner = communityOwner
+                    // TODO: figure out a better to detect if deploying data union for the first time
+                    // force data union product to be published by the same account as the data union itself
+                    if (dataUnionOwner) {
+                        requireOwner = dataUnionOwner
                     }
 
                     queue.add({

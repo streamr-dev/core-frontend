@@ -4,13 +4,13 @@ import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 
 import useProduct from '$mp/containers/ProductController/useProduct'
 import useContractProduct from '$mp/containers/ProductController/useContractProduct'
-import useCommunityProduct from '$mp/containers/ProductController/useCommunityProduct'
+import useDataUnion from '$mp/containers/ProductController/useDataUnion'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { getDataUnionStats } from '$mp/modules/dataUnion/services'
 import { fromAtto } from '$mp/utils/math'
 import { type UseStateTuple } from '$shared/flowtype/common-types'
-import { type StatValue } from '$shared/components/CommunityStats/Values'
-import { type Props as ValueProps } from '$shared/components/CommunityStats/Value'
+import { type StatValue } from '$shared/components/DataUnionStats/Values'
+import { type Props as ValueProps } from '$shared/components/DataUnionStats/Value'
 
 type StatCollection = {
     [string]: ValueProps,
@@ -49,7 +49,7 @@ const initialStats: StatCollection = {
 const CP_SERVER_POLL_INTERVAL_MS = 10000
 const MILLISECONDS_IN_MONTH = 1000 * 60 * 60 * 24 * 30
 
-function useCommunityStats() {
+function useDataUnionStats() {
     const product = useProduct()
     const contractProduct = useContractProduct()
     const [stats, setStats]: UseStateTuple<StatCollection> = useState(initialStats)
@@ -58,10 +58,10 @@ function useCommunityStats() {
     const isMounted = useIsMounted()
 
     const { created, beneficiaryAddress } = product
-    const community = useCommunityProduct()
+    const dataUnion = useDataUnion()
 
     const { subscriberCount } = contractProduct || {}
-    const { adminFee } = community || {}
+    const { adminFee } = dataUnion || {}
 
     useEffect(() => {
         setStats((prev) => ({
@@ -192,4 +192,4 @@ function useCommunityStats() {
     ])
 }
 
-export default useCommunityStats
+export default useDataUnionStats

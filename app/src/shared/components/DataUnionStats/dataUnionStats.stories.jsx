@@ -10,7 +10,7 @@ import Value from './Value'
 import Values from './Values'
 
 const stories =
-    storiesOf('Shared/CommunityStats', module)
+    storiesOf('Shared/DataUnionStats', module)
         .addDecorator(styles({
             color: '#323232',
             padding: '1rem',

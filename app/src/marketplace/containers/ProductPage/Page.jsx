@@ -7,7 +7,7 @@ import useProduct from '$mp/containers/ProductController/useProduct'
 
 import Hero from './Hero'
 import Description from './Description'
-import CommunityStats from './CommunityStats'
+import DataUnionStats from './DataUnionStats'
 import Streams from './Streams'
 import RelatedProducts from './RelatedProducts'
 
@@ -22,7 +22,7 @@ const ProductDetailsPage = () => {
             <Hero />
             <Description />
             {isDataUnion && (
-                <CommunityStats />
+                <DataUnionStats />
             )}
             <Streams />
             <RelatedProducts />

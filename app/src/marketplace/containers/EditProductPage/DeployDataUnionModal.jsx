@@ -5,9 +5,9 @@ import { useDispatch } from 'react-redux'
 
 import useModal from '$shared/hooks/useModal'
 import { type Product } from '$mp/flowtype/product-types'
-import GuidedDeployCommunityDialog from '$mp/components/Modal/GuidedDeployCommunityDialog'
-import ConfirmDeployCommunityDialog from '$mp/components/Modal/ConfirmDeployCommunityDialog'
-import DeployingCommunityDialog from '$mp/components/Modal/DeployingCommunityDialog'
+import GuidedDeployDataUnionDialog from '$mp/components/Modal/GuidedDeployDataUnionDialog'
+import ConfirmDeployDataUnionDialog from '$mp/components/Modal/ConfirmDeployDataUnionDialog'
+import DeployingDataUnionDialog from '$mp/components/Modal/DeployingDataUnionDialog'
 import ErrorDialog from '$mp/components/Modal/ErrorDialog'
 import { isLocalStorageAvailable } from '$shared/utils/storage'
 import withWeb3 from '$shared/utils/withWeb3'
@@ -76,10 +76,10 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
 
         return new Promise((resolve) => (
             deployContract(joinPartStreamId, adminFee)
-                .onTransactionHash((hash, communityAddress) => {
+                .onTransactionHash((hash, dataUnionAddress) => {
                     if (!isMounted()) { return }
-                    dispatch(addTransaction(hash, transactionTypes.DEPLOY_COMMUNITY))
-                    setAddress(communityAddress)
+                    dispatch(addTransaction(hash, transactionTypes.DEPLOY_DATA_UNION))
+                    setAddress(dataUnionAddress)
                     setStep(steps.COMPLETE)
                     resolve()
                 })
@@ -126,7 +126,7 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
     switch (step) {
         case steps.GUIDE:
             return (
-                <GuidedDeployCommunityDialog
+                <GuidedDeployDataUnionDialog
                     dontShowAgain={dontShowAgain}
                     product={product}
                     onContinue={onGuideContinue}
@@ -136,7 +136,7 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
 
         case steps.CONFIRM:
             return (
-                <ConfirmDeployCommunityDialog
+                <ConfirmDeployDataUnionDialog
                     product={product}
                     onContinue={onDeploy}
                     onShowGuidedDialog={() => setStep(steps.GUIDE)}
@@ -146,7 +146,7 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
 
         case steps.COMPLETE:
             return (
-                <DeployingCommunityDialog
+                <DeployingDataUnionDialog
                     product={product}
                     estimate={estimate}
                     onContinue={() => api.close(true)}
@@ -162,7 +162,7 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
 export const DeployDialogWithWeb3 = withWeb3(DeployDialog)
 
 export default () => {
-    const { api, isOpen, value } = useModal('deployCommunity')
+    const { api, isOpen, value } = useModal('dataUnion.DEPLOY')
 
     if (!isOpen) {
         return null

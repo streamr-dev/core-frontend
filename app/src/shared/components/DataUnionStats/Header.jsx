@@ -3,7 +3,7 @@
 import React, { type Node } from 'react'
 import cx from 'classnames'
 
-import styles from './communityStats.pcss'
+import styles from './dataUnionStats.pcss'
 
 type Props = {
     children?: Node,
