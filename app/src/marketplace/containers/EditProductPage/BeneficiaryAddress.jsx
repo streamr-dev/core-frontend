@@ -1,13 +1,24 @@
 // @flow
 
-import React, { useContext, Fragment } from 'react'
+import React, { useContext, Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import cx from 'classnames'
 import { Translate, I18n } from 'react-redux-i18n'
+import { useSelector, useDispatch } from 'react-redux'
+import styled from 'styled-components'
 
 import useValidation from '../ProductController/useValidation'
 import Text from '$ui/Text'
 import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
 import Errors, { MarketplaceTheme } from '$ui/Errors'
+import ActionsDropdown from '$shared/components/ActionsDropdown'
+import DropdownActions from '$shared/components/DropdownActions'
+import useCopy from '$shared/hooks/useCopy'
+import Notification from '$shared/utils/Notification'
+import { NotificationIcon } from '$shared/utils/constants'
+import { selectEthereumIdentities } from '$shared/modules/integrationKey/selectors'
+import { fetchIntegrationKeys } from '$shared/modules/integrationKey/actions'
+import { truncate } from '$shared/utils/text'
+import useAccountAddress from '$shared/hooks/useAccountAddress'
 
 import styles from './beneficiaryAddress.pcss'
 
@@ -16,16 +27,121 @@ type Props = {
     onChange: (string) => void,
     disabled: boolean,
     className?: string,
+    onFocus?: ?(SyntheticFocusEvent<EventTarget>) => void,
+    onBlur?: ?(SyntheticFocusEvent<EventTarget>) => void,
 }
 
-const BeneficiaryAddress = ({ address, onChange, disabled, className }: Props) => {
+const EMPTY = []
+
+type AddressItemProps = {
+    address?: ?string,
+    className?: ?string,
+    name: string,
+}
+
+const UnstyledAddressItem = ({ className, name, address }: AddressItemProps) => (
+    <Fragment>
+        {`Fill ${name}`}
+        {!!address && (
+            <div className={className}>
+                {truncate(address, {
+                    maxLength: 15,
+                })}
+            </div>
+        )}
+    </Fragment>
+)
+
+const AddressItem = styled(UnstyledAddressItem)`
+    color: #adadad;
+    font-size: 10px;
+    margin-top: -16px;
+`
+
+const BeneficiaryAddress = ({
+    address: addressProp,
+    onChange,
+    disabled,
+    className,
+    onFocus: onFocusProp,
+    onBlur: onBlurProp,
+}: Props) => {
     const { isValid, message } = useValidation('beneficiaryAddress')
     const { isTouched } = useContext(ValidationContext)
     const priceTouched = isTouched('pricePerSecond') || isTouched('beneficiaryAddress')
     const invalid = priceTouched && !isValid
 
+    const { copy } = useCopy()
+
+    const dispatch = useDispatch()
+
+    const integrationKeys = useSelector(selectEthereumIdentities) || EMPTY
+
+    const integrationKeysFiltered = useMemo(() => (
+        integrationKeys.filter(({ json }) => json && json.address)
+    ), [integrationKeys])
+
+    const onCopy = useCallback(() => {
+        if (!addressProp) {
+            return
+        }
+
+        copy(addressProp)
+
+        Notification.push({
+            title: 'Copied',
+            icon: NotificationIcon.CHECKMARK,
+        })
+    }, [copy, addressProp])
+
+    useEffect(() => {
+        dispatch(fetchIntegrationKeys())
+    }, [dispatch])
+
+    const accountAddress = useAccountAddress()
+
+    const useCurrentWalletAddress = useCallback(() => {
+        if (accountAddress) {
+            onChange(accountAddress)
+        }
+    }, [accountAddress, onChange])
+
+    const [focused, setFocused] = useState(false)
+
+    const [ownAddress, setOwnAddress] = useState(addressProp || '')
+
+    useEffect(() => {
+        setOwnAddress(addressProp || '')
+    }, [addressProp])
+
+    const onOwnAddressChange = useCallback((e: SyntheticInputEvent<EventTarget>) => {
+        setOwnAddress(e.target.value)
+    }, [])
+
+    const address: string = useMemo(() => (
+        focused ? ownAddress : truncate(ownAddress, {
+            maxLength: 30,
+        })
+    ), [focused, ownAddress])
+
+    const onFocus = useCallback((e: SyntheticFocusEvent<EventTarget>) => {
+        setFocused(true)
+
+        if (onFocusProp) {
+            onFocusProp(e)
+        }
+    }, [onFocusProp])
+
+    const onBlur = useCallback((e: SyntheticFocusEvent<EventTarget>) => {
+        setFocused(false)
+
+        if (onBlurProp) {
+            onBlurProp(e)
+        }
+    }, [onBlurProp])
+
     return (
-        <form autoComplete="off">
+        <form autoComplete="off" onSubmit={(e) => e.preventDefault()}>
             <label
                 htmlFor="beneficiaryAddress"
                 className={cx(styles.root, styles.BeneficiaryAddress, className)}
@@ -33,19 +149,49 @@ const BeneficiaryAddress = ({ address, onChange, disabled, className }: Props) =
                 <strong>
                     <Translate value="editProductPage.setPrice.setRecipientEthAddress" />
                 </strong>
-                <div>
+                <ActionsDropdown
+                    disabled={disabled}
+                    actions={[
+                        <DropdownActions.Item
+                            key="useCurrent"
+                            onClick={useCurrentWalletAddress}
+                            disabled={!accountAddress}
+                        >
+                            <AddressItem name="wallet address" address={accountAddress || 'Wallet locked'} />
+                        </DropdownActions.Item>,
+                        ...integrationKeysFiltered.map(({ id, name, json }) => (
+                            <DropdownActions.Item
+                                key={id}
+                                onClick={() => onChange(json.address)}
+                            >
+                                <AddressItem name={name} address={json.address} />
+                            </DropdownActions.Item>
+                        )),
+                        <DropdownActions.Item
+                            key="copy"
+                            disabled={!addressProp}
+                            onClick={onCopy}
+                        >
+                            <Translate value="userpages.keyField.copy" />
+                        </DropdownActions.Item>,
+                    ]}
+                >
                     <Text
+                        key={addressProp}
                         id="beneficiaryAddress"
                         autoComplete="off"
-                        defaultValue={address || ''}
+                        value={address}
                         onCommit={onChange}
+                        onChange={onOwnAddressChange}
                         placeholder={I18n.t('editProductPage.setPrice.placeholder.enterEthAddress')}
                         invalid={invalid}
                         disabled={disabled}
                         selectAllOnFocus
                         smartCommit
+                        onBlur={onBlur}
+                        onFocus={onFocus}
                     />
-                </div>
+                </ActionsDropdown>
                 {invalid && (
                     <Fragment>
                         <div />
