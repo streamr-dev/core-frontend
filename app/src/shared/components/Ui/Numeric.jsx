@@ -160,6 +160,7 @@ const Numeric = ({
                 step={step}
                 value={internalValue != null ? internalValue : ''}
                 onChange={onChange}
+                disabled={disabled}
                 ref={inputRef}
             />
             {!hideButtons && (
