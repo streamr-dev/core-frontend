@@ -20,10 +20,11 @@ const ActionContainer = styled.div`
 
 type Props = {
     actions?: Array<typeof DropdownActions.Item>,
+    disabled?: boolean,
     children?: Node,
 }
 
-const UnstyledActionsDropdown = ({ actions, children = null, ...props }: Props) => {
+const UnstyledActionsDropdown = ({ actions, disabled, children = null, ...props }: Props) => {
     const [open, setOpen]: UseStateTuple<boolean> = useState(false)
 
     return !actions || !actions.length ? (
@@ -33,6 +34,7 @@ const UnstyledActionsDropdown = ({ actions, children = null, ...props }: Props) 
             {children}
             <ActionContainer open={open}>
                 <DropdownActions
+                    disabled={disabled}
                     title={(
                         <Meatball alt="Actions" gray />
                     )}

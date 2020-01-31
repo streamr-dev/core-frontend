@@ -150,6 +150,7 @@ const BeneficiaryAddress = ({
                     <Translate value="editProductPage.setPrice.setRecipientEthAddress" />
                 </strong>
                 <ActionsDropdown
+                    disabled={disabled}
                     actions={[
                         <DropdownActions.Item
                             key="useCurrent"
