@@ -19,8 +19,7 @@ export type Props = {
     onChange?: Function,
     required?: boolean,
     clearable?: boolean,
-    // FIXME(MR): Rename to `disabled`!
-    isDisabled?: boolean,
+    disabled?: boolean,
     controlClassName?: string,
 }
 
@@ -141,7 +140,13 @@ const DropdownIndicator = (props) => (
     )
 )
 
-const UnstyledSelect = ({ controlClassName, required = false, clearable = true, ...props }: Props) => (
+const UnstyledSelect = ({
+    controlClassName,
+    required = false,
+    clearable = true,
+    disabled,
+    ...props
+}: Props) => (
     <ReactSelect
         styles={customStyles}
         components={{
@@ -153,6 +158,7 @@ const UnstyledSelect = ({ controlClassName, required = false, clearable = true, 
         controlClassName={controlClassName}
         required={required}
         clearable={clearable}
+        isDisabled={disabled}
         // $FlowFixMe potential override necessary.
         {...props}
     />

@@ -26,8 +26,7 @@ export const SelectField = ({ error, isProcessing, disabled, ...inputProps }: Se
                 controlClassName={cx({
                     [styles.withError]: !!hasError,
                 })}
-                // FIXME(MR): Let's rename `isDisabled` to `disabled`, come on!
-                isDisabled={disabled}
+                disabled={disabled}
                 {...castProps}
             />
             <Errors overlap>

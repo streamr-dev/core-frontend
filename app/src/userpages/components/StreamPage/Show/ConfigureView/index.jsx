@@ -186,7 +186,7 @@ export class ConfigureView extends Component<Props, State> {
                                                 </ActionsDropdown>
                                                 <Select
                                                     className={styles.select}
-                                                    isDisabled={disabled}
+                                                    disabled={disabled}
                                                     options={this.typeOptions}
                                                     value={this.typeOptions.find((t) => t.value === field.type)}
                                                     onChange={(o) => this.onFieldTypeChange(field.name, o.value)}

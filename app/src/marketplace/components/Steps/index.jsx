@@ -14,8 +14,7 @@ type Props = {
     onCancel: () => void,
     onComplete: () => void,
     tabClassName?: string,
-    // FIXME(MR): Rename `isDisabled` to `disabled`, jeez.
-    isDisabled: boolean,
+    disabled: boolean,
     errors?: Array<string>,
 }
 
@@ -104,7 +103,7 @@ class Steps extends Component<Props, State> {
                         outline: this.nextButtonOutline(),
                         kind: 'primary',
                         onClick: this.onNext,
-                        disabled: this.props.isDisabled,
+                        disabled: this.props.disabled,
                     },
                 }}
             />

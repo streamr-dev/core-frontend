@@ -109,7 +109,7 @@ function StatusView(props: Props) {
                         options={unitOptions}
                         value={unitOptions.find((o) => o.value === units)}
                         onChange={(o) => onChangeUnits(o.value)}
-                        isDisabled={disabled}
+                        disabled={disabled}
                     />
                 </div>
             </div>

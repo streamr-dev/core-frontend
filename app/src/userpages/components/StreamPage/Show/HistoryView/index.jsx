@@ -429,7 +429,7 @@ class HistoryView extends Component<Props, State> {
                                 options={unitOptions}
                                 value={unitOptions.find((o) => o.value === storageUnit)}
                                 onChange={(o) => this.onStoragePeriodUnitChange(o.value)}
-                                isDisabled={disabled}
+                                disabled={disabled}
                             />
                         </div>
                     </Fragment>
