@@ -189,11 +189,11 @@ export const getDataUnion = async (id: DataUnionId, usePublicNode: boolean = tru
     }
 }
 
-type GetSecrects = {
+type GetSecrets = {
     dataUnionId: DataUnionId,
 }
 
-export const getSecrets = ({ dataUnionId }: GetSecrects): ApiResult<Array<Secret>> => get({
+export const getSecrets = ({ dataUnionId }: GetSecrets): ApiResult<Array<Secret>> => get({
     url: formatApiUrl('communities', dataUnionId, 'secrets'),
 })
 
