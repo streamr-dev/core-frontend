@@ -13,7 +13,7 @@ import Tile from '$shared/components/Tile'
 import FallbackImage from '$shared/components/FallbackImage'
 import { type Product } from '$mp/flowtype/product-types'
 
-import cpStats from '$mp/assets/cp-stats.png'
+import dataUnionStats from '$mp/assets/deploy-modal-stats.png'
 
 import styles from './guidedDeployDataUnionDialog.pcss'
 
@@ -136,7 +136,7 @@ const GuidedDeployDataUnionDialog = ({ product, onClose, onContinue: onContinueP
             {step === 3 && (
                 <React.Fragment>
                     <PreviewContainer>
-                        <img src={cpStats} alt="" className={styles.highlightStats} />
+                        <img src={dataUnionStats} alt="" className={styles.highlightStats} />
                     </PreviewContainer>
                     <TextContainer>
                         <Translate value="modal.deployDataUnion.guide.step4" dangerousHTML />

@@ -32,7 +32,7 @@ const steps = {
     COMPLETE: 'wait',
 }
 
-const SKIP_GUIDE_KEY = 'marketplace.skipCpDeployGuide'
+const SKIP_GUIDE_KEY = 'marketplace.skipDeployGuide'
 const storage = isLocalStorageAvailable() ? window.localStorage : null
 
 function skipGuide(): boolean {
@@ -44,7 +44,7 @@ function setSkipGuide(value) {
     storage.setItem(SKIP_GUIDE_KEY, JSON.stringify(value))
 }
 
-// allow 5s for the API to start in CP server
+// allow 5s for the API to start in data union server
 const API_READY_ESTIMATE = 5
 
 export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps) => {

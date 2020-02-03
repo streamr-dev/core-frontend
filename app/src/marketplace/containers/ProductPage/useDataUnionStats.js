@@ -46,7 +46,7 @@ const initialStats: StatCollection = {
     },
 }
 
-const CP_SERVER_POLL_INTERVAL_MS = 10000
+const DATA_UNION_SERVER_POLL_INTERVAL_MS = 10000
 const MILLISECONDS_IN_MONTH = 1000 * 60 * 60 * 24 * 30
 
 function useDataUnionStats() {
@@ -162,7 +162,7 @@ function useDataUnionStats() {
 
                 if (isMounted()) {
                     resetTimeout()
-                    timeOutId.current = setTimeout(getStats, CP_SERVER_POLL_INTERVAL_MS)
+                    timeOutId.current = setTimeout(getStats, DATA_UNION_SERVER_POLL_INTERVAL_MS)
                 }
             } else {
                 // Otherwise pass the error on

@@ -160,7 +160,7 @@ const AuthenticationRouter = () => ([
     <Redirect from="/register/forgotPassword" to={routes.forgotPassword()} key="ForgotPasswordRedirect" />,
 ])
 
-const MarketplaceRouter = () => (process.env.COMMUNITY_PRODUCTS ? [
+const MarketplaceRouter = () => (process.env.DATA_UNIONS ? [
     <Route exact path={marketplace.main} component={Products} key="Products" />,
     <Route exact path={formatPath(marketplace.products, ':id', 'streamPreview', ':streamId')} component={StreamPreviewPage} key="StreamPreview" />,
     <Route exact path={formatPath(marketplace.products, ':id')} component={ProductPage2} key="ProductPage2" />,
@@ -321,7 +321,7 @@ const UserpagesRouter = () => ([
     <Route exact path={userpages.purchases} component={PurchasesPageAuth} key="PurchasesPage" />,
     <Route exact path={userpages.products} component={ProductsPageAuth} key="ProductsPage" />,
     <Route exact path={routes.editProduct()} component={EditProductAuth2} key="EditProduct" />,
-    ...(process.env.COMMUNITY_PRODUCTS ? [
+    ...(process.env.DATA_UNIONS ? [
         <Route exact path={routes.productStats()} component={StatsPageAuth} key="StatsPage" />,
         <Route exact path={routes.productMembers()} component={MembersPageAuth} key="MembersPage" />,
     ] : []),
