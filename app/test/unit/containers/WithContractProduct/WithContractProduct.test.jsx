@@ -5,7 +5,7 @@ import sinon from 'sinon'
 import { withContractProduct } from '$mp/containers/deprecated/WithContractProduct'
 import mockStore from '$testUtils/mockStoreProvider'
 import ErrorDialog from '$mp/components/Modal/ErrorDialog'
-import UnlockWalletDialog from '$mp/components/Modal/UnlockWalletDialog'
+import UnlockWalletDialog from '$shared/components/Web3ErrorDialog/UnlockWalletDialog'
 import * as web3Provider from '$shared/web3/web3Provider'
 
 /* eslint-disable-next-line react/prefer-stateless-function */
@@ -154,7 +154,7 @@ describe('WithContractProduct', () => {
             const innerComponent = withWeb3Component.dive()
             expect(innerComponent.find(UnlockWalletDialog).length).toEqual(1)
             // I18n.t will return last part of the key path if a translation was not found
-            expect(innerComponent.prop('message')).toEqual('message')
+            expect(innerComponent.prop('children')).toEqual('message')
         })
     })
 })

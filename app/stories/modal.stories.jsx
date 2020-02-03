@@ -345,7 +345,7 @@ story('Product Editor/DeployingCommunityDialog')
         />
     ))
     .add('minimized', () => (
-        <DeployingCommunityDialog
+        <DeployingDataUnionDialog
             // $FlowFixMe
             product={{
                 id: '1',
