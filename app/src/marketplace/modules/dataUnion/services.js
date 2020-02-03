@@ -64,23 +64,27 @@ export const createJoinPartStream = async (productId: ?ProductId = undefined): P
 
     // Add write permissions for all Streamr Engine nodes
     try {
-        const addEngineKeyPromises = [
-            // share permission is not strictly necessary but needed to an avoid error when
+        const nodeAddresses = getStreamrEngineAddresses()
+
+        // Process node addresses and add share & write permissions for each of them.
+        // We need to add permissions in series because adding them in parallel causes
+        // a race condition on backend and some of the calls will fail.
+        // eslint-disable-next-line no-restricted-syntax
+        for (const address of nodeAddresses) {
+            // Share permission is not strictly necessary but needed to an avoid error when
             // removing user's share permission (must have at least one share permission)
-            ...getStreamrEngineAddresses().map((address) => (
-                addPermission(stream.id, {
-                    operation: 'share',
-                    user: address,
-                })
-            )),
-            ...getStreamrEngineAddresses().map((address) => (
-                addPermission(stream.id, {
-                    operation: 'write',
-                    user: address,
-                })
-            )),
-        ]
-        await Promise.all(addEngineKeyPromises)
+            // eslint-disable-next-line no-await-in-loop
+            await addPermission(stream.id, {
+                operation: 'share',
+                user: address,
+            })
+
+            // eslint-disable-next-line no-await-in-loop
+            await addPermission(stream.id, {
+                operation: 'write',
+                user: address,
+            })
+        }
     } catch (e) {
         console.error('Could not add write keys to JoinPart stream', e)
         throw e
