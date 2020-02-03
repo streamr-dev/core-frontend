@@ -155,6 +155,7 @@ const GuidedDeployDataUnionDialog = ({ product, onClose, onContinue: onContinueP
                 })}
                 onClose={onClose}
                 contentClassName={styles.content}
+                containerClassname={styles.dialogContainer}
                 renderActions={() => (
                     <div className={styles.footer}>
                         <div className={styles.footerText}>

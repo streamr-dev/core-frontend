@@ -55,14 +55,6 @@ const CompleteUnpublishDialog = ({ onCancel, publishState }: Props) => {
                     <Dialog
                         onClose={onCancel}
                         title={I18n.t('modal.completeUnpublish.failed.title')}
-                        actions={{
-                            ok: {
-                                title: I18n.t('modal.common.ok'),
-                                onClick: () => onCancel(),
-                                kind: 'primary',
-                                outline: true,
-                            },
-                        }}
                     >
                         <div>
                             <PngIcon

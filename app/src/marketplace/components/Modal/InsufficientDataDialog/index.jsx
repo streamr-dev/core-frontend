@@ -19,14 +19,6 @@ const InsufficientDataDialog = ({ onCancel }: Props) => (
         <Dialog
             title={I18n.t('modal.insufficientDataDialog.title')}
             onClose={onCancel}
-            actions={{
-                ok: {
-                    title: I18n.t('modal.common.ok'),
-                    onClick: () => onCancel(),
-                    kind: 'primary',
-                    outline: true,
-                },
-            }}
         >
             <img className={styles.icon} src={WalletNoDataPng} srcSet={`${WalletNoDataPng2x} 2x`} alt={I18n.t('error.wallet')} />
             <Translate value="modal.insufficientDataDialog.message" className={styles.message} tag="p" />

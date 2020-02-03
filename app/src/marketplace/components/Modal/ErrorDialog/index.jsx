@@ -20,14 +20,6 @@ const ErrorDialog = ({ title, message, waiting, onClose }: Props) => (
             title={title || I18n.t('modal.errorDialog.defaultTitle')}
             waiting={waiting}
             onClose={onClose}
-            actions={{
-                dismiss: {
-                    title: I18n.t('modal.common.ok'),
-                    kind: 'primary',
-                    outline: true,
-                    onClick: onClose,
-                },
-            }}
         >
             <PngIcon name="walletError" />
             <p>{message}</p>

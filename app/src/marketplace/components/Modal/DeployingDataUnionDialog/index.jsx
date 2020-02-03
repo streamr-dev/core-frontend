@@ -8,6 +8,7 @@ import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import { type Product } from '$mp/flowtype/product-types'
 import DeploySpinner from '$shared/components/DeploySpinner'
+import Buttons from '$shared/components/Buttons'
 
 import styles from './deployingDataUnionDialog.pcss'
 
@@ -16,6 +17,7 @@ export type Props = {
     estimate: number,
     onClose: () => void,
     onContinue: () => void,
+    minimized?: boolean,
 }
 
 const formatSeconds = (seconds) => {
@@ -24,7 +26,13 @@ const formatSeconds = (seconds) => {
     return timeValue.substr(0, 2) === '00' ? timeValue.substr(3) : timeValue
 }
 
-const DeployingDataUnionDialog = ({ product, estimate, onClose, onContinue }: Props) => (
+const DeployingDataUnionDialog = ({
+    product,
+    estimate,
+    onClose,
+    onContinue,
+    minimized,
+}: Props) => (
     <ModalPortal>
         <Dialog
             className={cx(styles.root, styles.DeployingDataUnionDialog)}
@@ -32,25 +40,49 @@ const DeployingDataUnionDialog = ({ product, estimate, onClose, onContinue }: Pr
                 name: product.name,
             })}
             onClose={onClose}
-            contentClassName={styles.content}
-            actions={{
-                continue: {
-                    title: I18n.t('modal.common.close'),
-                    outline: true,
-                    onClick: () => onContinue(),
-                },
-            }}
+            contentClassName={cx({
+                [styles.content]: !minimized,
+                [styles.contentMinimized]: !!minimized,
+            })}
+            containerClassname={cx({
+                [styles.dialogContainer]: !minimized,
+                [styles.dialogContainerMinimized]: !!minimized,
+            })}
+            renderActions={() => (
+                <div className={styles.footer}>
+                    <div className={styles.footerText}>
+                        {!!minimized && (
+                            <React.Fragment>
+                                <span className={styles.estimatedTime}>{formatSeconds(estimate)}</span>
+                                &nbsp;
+                                <Translate value="modal.deployCommunity.deploying.estimatedDeploymentTime" />
+                            </React.Fragment>
+                        )}
+                    </div>
+                    <Buttons
+                        actions={{
+                            continue: {
+                                title: I18n.t('modal.common.close'),
+                                outline: true,
+                                onClick: () => onContinue(),
+                            },
+                        }}
+                    />
+                </div>
+            )}
         >
             <div className={styles.spinner}>
                 <DeploySpinner isRunning showCounter />
             </div>
-            <div className={styles.description}>
-                <Translate
-                    value="modal.deployDataUnion.deploying.description"
-                    time={formatSeconds(estimate)}
-                    dangerousHTML
-                />
-            </div>
+            {!minimized && (
+                <div className={styles.description}>
+                    <Translate
+                        value="modal.deployDataUnion.deploying.description"
+                        time={formatSeconds(estimate)}
+                        dangerousHTML
+                    />
+                </div>
+            )}
         </Dialog>
     </ModalPortal>
 )

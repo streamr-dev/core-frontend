@@ -48,14 +48,6 @@ export const ErrorDialog = ({ onClose }: DialogProps) => (
         <Dialog
             title={I18n.t('modal.newIdentityError.defaultTitle')}
             onClose={onClose}
-            actions={{
-                ok: {
-                    title: I18n.t('modal.common.ok'),
-                    onClick: () => onClose(),
-                    kind: 'primary',
-                    outline: true,
-                },
-            }}
         >
             <div>
                 <PngIcon name="walletError" className={styles.icon} />

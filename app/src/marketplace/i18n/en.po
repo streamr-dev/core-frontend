@@ -406,8 +406,8 @@ msgstr "Poloniex"
 
 msgid "modal##getCryptoDialog##message"
 msgstr ""
-"Ether is needed for gas, but you don't have any. Please purchase some and "
-"try again. Some exchanges near you shown below."
+"Ether is needed for gas, but you don't have any.<br />"
+"Please purchase some and try again."
 
 msgid "modal##getCryptoDialog##title"
 msgstr "No Ether balance"
@@ -711,6 +711,9 @@ msgstr ""
 "Estimated deployment time is %{time}. You can wait or close"
 "<br />"
 "this dialogue and get notified when your product is ready."
+
+msgid "modal##deployCommunity##deploying##estimatedDeploymentTime"
+msgstr "Estimated deployment time"
 
 msgid "noProductsView##keywordHint"
 msgstr "Please try some different keywords"

@@ -19,14 +19,6 @@ const InsufficientDaiDialog = ({ onCancel }: Props) => (
         <Dialog
             title={I18n.t('modal.insufficientDaiDialog.title')}
             onClose={onCancel}
-            actions={{
-                ok: {
-                    title: I18n.t('modal.common.ok'),
-                    onClick: () => onCancel(),
-                    kind: 'primary',
-                    outline: true,
-                },
-            }}
         >
             {/* TODO: Change to more DAI related no wallet IMG */}
             <img className={styles.icon} src={WalletNoEthPng} srcSet={`${WalletNoEthPng2x} 2x`} alt={I18n.t('error.wallet')} />

@@ -151,6 +151,7 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
                     estimate={estimate}
                     onContinue={() => api.close(true)}
                     onClose={onClose}
+                    minimized={dontShowAgain}
                 />
             )
 

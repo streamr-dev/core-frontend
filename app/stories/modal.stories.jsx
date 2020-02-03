@@ -344,6 +344,20 @@ story('Product Editor/DeployingCommunityDialog')
             onContinue={action('onContinue')}
         />
     ))
+    .add('minimized', () => (
+        <DeployingCommunityDialog
+            // $FlowFixMe
+            product={{
+                id: '1',
+                name: 'Example product',
+                type: 'COMMUNITY',
+            }}
+            estimate={number('Estimate', 360)}
+            onClose={action('onClose')}
+            onContinue={action('onContinue')}
+            minimized
+        />
+    ))
 
 story('Marketplace/GetDataTokensDialog')
     .add('default', () => (

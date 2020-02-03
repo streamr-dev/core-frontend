@@ -29,14 +29,6 @@ const UnlockWalletDialog = ({
             onClose={onClose}
             title={!waiting ? title || I18n.t('modal.unlockWallet.title') : I18n.t('modal.unlockWallet.waiting')}
             waiting={waiting}
-            actions={{
-                ok: {
-                    title: I18n.t('modal.common.ok'),
-                    onClick: () => onClose(),
-                    kind: 'primary',
-                    outline: true,
-                },
-            }}
         >
             <PngIcon name={icon} />
             {children}

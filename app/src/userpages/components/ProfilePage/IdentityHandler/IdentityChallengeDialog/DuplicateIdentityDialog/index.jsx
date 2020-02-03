@@ -18,14 +18,6 @@ export default ({ onClose }: Props) => (
         <Dialog
             title={I18n.t('modal.duplicateIdentity.defaultTitle')}
             onClose={onClose}
-            actions={{
-                ok: {
-                    title: I18n.t('modal.common.ok'),
-                    onClick: () => onClose(),
-                    kind: 'primary',
-                    outline: true,
-                },
-            }}
         >
             <div>
                 <PngIcon name="metamask" className={styles.icon} />
