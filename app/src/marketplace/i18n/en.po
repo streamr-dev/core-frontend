@@ -95,8 +95,46 @@ msgstr "Unpublishing"
 msgid "editProductPage##update"
 msgstr "Update"
 
+msgid "editProductPage##productName##title"
+msgstr "Name your product"
+
+msgid "editProductPage##coverImage##title"
+msgstr "Add a cover image"
+
+msgid "editProductPage##coverImage##description"
+msgstr ""
+"This image will be shown as the tile image in the Marketplace browse view, "
+"and also as the main image on your product page. For best quality, "
+"an image size of around 1000 x 800px is recommended. PNG or JPEG format. Need images? "
+"See the <a href=\"%{docsLink}\">docs</a>."
+
+msgid "editProductPage##productDescription##title"
+msgstr "Write a product description"
+
+msgid "editProductPage##productDescription##description"
+msgstr ""
+"Sell your product — make sure you include details about the contents of your streams, "
+"historical data, and any other relevant details. "
+"Generally around a maximum of around 300 words fits best on a product detail page. Markdown formatting is ok."
+
+msgid "editProductPage##streams##title"
+msgstr "Add streams"
+
+msgid "editProductPage##streams##description"
+msgstr ""
+"Products can contain a range of streams, or a single \"firehose\" type stream, it's up to you. "
+"If you haven't made any streams yet, you can create one here. For help creating streams, "
+"see the <a href=\"%{docsLink}\">docs</a>."
+
 msgid "editProductPage##setPrice##title"
 msgstr "Set a price"
+
+msgid "editProductPage##setPrice##description"
+msgstr ""
+"Set the price for your product here. Note that once published, "
+"you will not be able to make a free product into a paid one or vice versa. "
+"But you can edit this while your product is a draft. For help, "
+"see the <a href=\"%{docsLink}\">docs</a>."
 
 msgid "editProductPage##setPrice##setRecipientEthAddress"
 msgstr "Set recipient ETH address"
@@ -107,14 +145,16 @@ msgstr "Enter ETH address"
 msgid "editProductPage##setPrice##fixPrice"
 msgstr "Fix price in fiat for protection against shifts in the DATA price"
 
+msgid "editProductPage##productDetails##title"
+msgstr "Add some more details"
+
 msgid "editProductPage##sharedSecrets##addSecret"
 msgstr "Add shared secret"
 
 msgid "editProductPage##sharedSecrets##description"
 msgstr ""
-"Shared secrets are the access control for your product. "
-"Create, name and revoke shared secrets from here. "
-"For help with shared secrets, see the docs. "
+"These settings are only available once you have deployed your product, "
+"and provides access control for your product. Create, name and revoke shared secrets them from here."
 
 msgid "editProductPage##navigation##name"
 msgstr "Name"

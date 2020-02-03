@@ -19,6 +19,7 @@ import useEditableProduct from '../ProductController/useEditableProduct'
 import useValidation from '../ProductController/useValidation'
 import useEditableProductActions from '../ProductController/useEditableProductActions'
 import { isPublished } from './state'
+import routes from '$routes'
 
 import BeneficiaryAddress from './BeneficiaryAddress'
 
@@ -72,12 +73,19 @@ const PriceSelector = () => {
                     tag="h1"
                     value="editProductPage.setPrice.title"
                 />
+                <Translate
+                    tag="p"
+                    value="editProductPage.setPrice.description"
+                    docsLink={routes.docsProductsIntroToProducts()}
+                    dangerousHTML
+                />
                 <RadioButtonGroup
                     name="productPriceType"
                     options={['Paid', 'Free']}
                     selectedOption={isFreeProduct ? 'Free' : 'Paid'}
                     onChange={onPriceTypeChange}
                     disabled={isPriceTypeDisabled}
+                    className={styles.radioGroup}
                 />
                 <div className={cx(styles.inner, {
                     [styles.disabled]: isFreeProduct || isLoadingOrSaving,

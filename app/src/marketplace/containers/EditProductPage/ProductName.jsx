@@ -2,8 +2,9 @@
 
 import React, { useContext } from 'react'
 import cx from 'classnames'
-import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
+import { Translate } from 'react-redux-i18n'
 
+import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
 import usePending from '$shared/hooks/usePending'
 import useEditableProduct from '../ProductController/useEditableProduct'
 import useValidation from '../ProductController/useValidation'
@@ -24,7 +25,10 @@ const ProductName = () => {
     return (
         <section id="product-name" className={cx(styles.root, styles.ProductName)}>
             <div>
-                <h1>Name your product</h1>
+                <Translate
+                    tag="h1"
+                    value="editProductPage.productName.title"
+                />
                 <Text
                     defaultValue={product.name}
                     onCommit={updateName}
