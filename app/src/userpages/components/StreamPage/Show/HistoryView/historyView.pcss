@@ -1,7 +1,7 @@
 .historyView {}
 
 .fileUpload {
-  &:--enter {
+  &:not(.disabled):--enter {
     cursor: pointer !important;
 
     input {
@@ -28,7 +28,10 @@
   font-size: 1rem;
   position: relative;
 
-  &:--enter {
+  &.disabled {
+  }
+
+  &:not(.disabled):--enter {
     cursor: pointer !important;
 
     input {

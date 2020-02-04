@@ -242,7 +242,7 @@ class PermissionKeyField extends React.Component<Props, State> {
                                 value={permissionOptions.find((t) => t.value === permission)}
                                 onChange={(o) => this.onPermissionChange(o.value)}
                                 className={styles.select}
-                                isDisabled={!allowEdit}
+                                disabled={!allowEdit}
                             />
                         </div>
                     </SplitControl>

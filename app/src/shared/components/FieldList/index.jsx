@@ -9,6 +9,7 @@ import FieldItem from './FieldItem'
 type Props = {
     className?: string,
     children: React.Node,
+    disabled?: boolean,
     onSortStart?: (Object) => void,
     onSortEnd?: (Object) => void,
 }
@@ -47,14 +48,15 @@ class FieldList extends React.Component<Props, State> {
     }
 
     render() {
-        const { children, className, ...props } = this.props
+        const { children, className, disabled, ...props } = this.props
         const { locked } = this.state
 
         return (
             <SortableList
                 {...props}
+                disabled={disabled}
                 className={cx({
-                    [FieldItem.styles.locked]: locked,
+                    [FieldItem.styles.locked]: locked || disabled,
                 })}
                 helperClass={FieldItem.styles.helper}
                 lockAxis="y"

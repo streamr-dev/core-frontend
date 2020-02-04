@@ -330,7 +330,9 @@ class HistoryView extends Component<Props, State> {
                         <SplitControl className={styles.defaultSplit}>
                             <FileUpload
                                 ref={this.fileUploadRef}
-                                className={styles.fileUpload}
+                                className={cx(styles.fileUpload, {
+                                    [styles.disabled]: disabled,
+                                })}
                                 component={
                                     <Fragment>
                                         <Label>
@@ -339,11 +341,12 @@ class HistoryView extends Component<Props, State> {
                                         <Text
                                             value={storedEventsText}
                                             readOnly
+                                            disabled={disabled}
                                         />
                                     </Fragment>
                                 }
                                 dropTargetComponent={<DropTarget mouseOver={false} />}
-                                dragOverComponent={<DropTarget mouseOver />}
+                                dragOverComponent={<DropTarget mouseOver={!disabled} />}
                                 onFilesAccepted={this.onDropAccepted}
                                 onError={(error) => console.error(error)}
                                 acceptMime={['text/csv']}
@@ -372,7 +375,11 @@ class HistoryView extends Component<Props, State> {
                 {streamId && range && (
                     <Fragment>
                         <SplitControl className={styles.defaultSplit}>
-                            <div className={styles.storedEventsContainer}>
+                            <div
+                                className={cx(styles.storedEventsContainer, {
+                                    [styles.disabled]: disabled,
+                                })}
+                            >
                                 <Label>
                                     {I18n.t('userpages.streams.edit.history.deleteEvents')}
                                 </Label>

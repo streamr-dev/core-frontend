@@ -120,7 +120,6 @@ export const InfoView = ({ disabled }: Props) => {
                         id="streamId"
                         value={(stream && stream.id) || ''}
                         readOnly
-                        disabled={disabled}
                     />
                 </ActionsDropdown>
             </div>

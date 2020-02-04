@@ -156,7 +156,7 @@ export function SecurityIcon({
 
 export function SecurityView(props: Props) {
     // $FlowFixMe `updateEditStream` not in OwnProps or StateProps.
-    const { stream, updateEditStream } = props
+    const { stream, updateEditStream, disabled } = props
     const level = getSecurityLevel(stream) || 'basic'
     const levelIndex = Object.keys(securityLevels).indexOf(level)
     const detail = securityLevels[level]
@@ -186,6 +186,7 @@ export function SecurityView(props: Props) {
                         <label
                             key={key}
                             className={cx(styles.SecurityOption, {
+                                [styles.disabled]: disabled,
                                 [styles.highlighted]: highlighted,
                                 [styles.selected]: selected,
                             })}
@@ -194,6 +195,7 @@ export function SecurityView(props: Props) {
                                 type="radio"
                                 checked={index === levelIndex}
                                 onChange={(event) => onChange(event, key)}
+                                disabled={disabled}
                             />
                             <SecurityIcon
                                 className={styles.SecurityLevelIcon}

@@ -8,14 +8,15 @@ import Text from '$ui/Text'
 type ButtonsProps = {
     onUpClick?: ?(SyntheticMouseEvent<EventTarget>) => void,
     onDownClick?: ?(SyntheticMouseEvent<EventTarget>) => void,
+    disabled?: boolean,
 }
 
-const UnstyledButtons = ({ onUpClick, onDownClick, ...props }: ButtonsProps) => (
+const UnstyledButtons = ({ onUpClick, onDownClick, disabled, ...props }: ButtonsProps) => (
     <div {...props}>
-        <button type="button" onClick={onUpClick}>
+        <button disabled={disabled} type="button" onClick={onUpClick}>
             <SvgIcon name="caretUp" />
         </button>
-        <button type="button" onClick={onDownClick}>
+        <button disabled={disabled} type="button" onClick={onDownClick}>
             <SvgIcon name="caretDown" />
         </button>
     </div>
@@ -49,7 +50,11 @@ const Buttons = styled(UnstyledButtons)`
         outline: none;
     }
 
-    button:active {
+    button:disabled {
+        cursor: not-allowed;
+    }
+
+    button:not(:disabled):active {
         background-color: #EFEFEF;
     }
 
@@ -64,6 +69,10 @@ const Buttons = styled(UnstyledButtons)`
         width: 8px;
         height: 8px;
     }
+
+    button:disabled > svg {
+        color: #32323280;
+    }
 `
 
 type Props = {
@@ -72,6 +81,7 @@ type Props = {
     max?: number,
     step?: number,
     hideButtons?: boolean,
+    disabled?: boolean,
     onChange?: (SyntheticInputEvent<EventTarget>) => void,
 }
 
@@ -82,6 +92,7 @@ const Numeric = ({
     step,
     hideButtons = false,
     onChange: onChangeProp,
+    disabled,
     ...props
 }: Props) => {
     const [internalValue, setInternalValue] = useState(value)
@@ -149,10 +160,12 @@ const Numeric = ({
                 step={step}
                 value={internalValue != null ? internalValue : ''}
                 onChange={onChange}
+                disabled={disabled}
                 ref={inputRef}
             />
             {!hideButtons && (
                 <Buttons
+                    disabled={disabled}
                     onUpClick={onIncrease}
                     onDownClick={onDecrease}
                 />
