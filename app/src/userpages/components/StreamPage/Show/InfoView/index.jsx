@@ -109,7 +109,6 @@ export const InfoView = ({ disabled }: Props) => {
                     {I18n.t('userpages.streams.edit.details.streamId')}
                 </Label>
                 <ActionsDropdown
-                    disabled={disabled}
                     actions={[
                         <DropdownActions.Item key="copy" onClick={() => onCopy(stream.id)}>
                             <Translate value="userpages.keyField.copy" />
@@ -121,7 +120,6 @@ export const InfoView = ({ disabled }: Props) => {
                         id="streamId"
                         value={(stream && stream.id) || ''}
                         readOnly
-                        disabled={disabled}
                     />
                 </ActionsDropdown>
             </div>
