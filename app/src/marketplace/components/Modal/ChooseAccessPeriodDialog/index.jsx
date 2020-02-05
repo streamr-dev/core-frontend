@@ -113,7 +113,7 @@ export const ChooseAccessPeriodDialog = ({
 
             let ethUSDEquivalent = await uniswapETHtoDATA(ethValue.toString())
             ethUSDEquivalent = ethUSDEquivalent.toFixed() / (Number(dataPerUsd) || 1)
-            setEthPriceInUsd(formatDecimals(ethUSDEquivalent, contractCurrencies.USD))
+            setEthPriceInUsd(ethUSDEquivalent.toString() === 'NaN' ? 'N/A' : formatDecimals(ethUSDEquivalent, contractCurrencies.USD))
 
             setPriceInEth(ethValue.toString() === 'NaN' ? 'N/A' : formatDecimals(ethValue, paymentCurrencies.ETH).toString())
             setPriceInDai(daiValue.toString() === 'NaN' ? 'N/A' : formatDecimals(daiValue, paymentCurrencies.DAI).toString())
