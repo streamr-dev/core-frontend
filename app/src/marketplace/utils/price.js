@@ -2,8 +2,7 @@
 
 import BN from 'bignumber.js'
 
-import type { TimeUnit, ContractCurrency as Currency, NumberString } from '$shared/flowtype/common-types'
-
+import type { TimeUnit, PaymentCurrency, ContractCurrency, NumberString } from '$shared/flowtype/common-types'
 import { timeUnits, contractCurrencies, paymentCurrencies } from '$shared/utils/constants'
 import { toSeconds, getAbbreviation } from './time'
 
@@ -48,7 +47,7 @@ export const usdToData = (usd: BN, dataPerUsd: BN): BN => BN(usd).multipliedBy(d
  * @param fromCurrency Input currency.
  * @param toCurrency Output currency.
  */
-export const convert = (amount: BN, dataPerUsd: BN, fromCurrency: Currency, toCurrency: Currency): BN => {
+export const convert = (amount: BN, dataPerUsd: BN, fromCurrency: ContractCurrency, toCurrency: ContractCurrency): BN => {
     if (fromCurrency === toCurrency) {
         return amount
     }
@@ -59,7 +58,7 @@ export const convert = (amount: BN, dataPerUsd: BN, fromCurrency: Currency, toCu
 export const dataForTimeUnits = (
     pricePerSecond: NumberString | BN,
     dataPerUsd: BN,
-    fromCurrency: Currency,
+    fromCurrency: ContractCurrency,
     timeAmount: number | NumberString | BN,
     timeUnit: TimeUnit,
 ): BN => (
@@ -96,7 +95,7 @@ export const formatAmount = (value: BN, maxDigits: ?number): BN => {
  * @param currency
  * @returns {*}
  */
-export const formatDecimals = (value: number | BN, currency: Currency): string => {
+export const formatDecimals = (value: number | BN, currency: ContractCurrency | PaymentCurrency): string => {
     let result
 
     if (currency === paymentCurrencies.ETH) {
@@ -141,7 +140,7 @@ export const getMostRelevantTimeUnit = (pricePerSecond: BN): TimeUnit => {
  * @param currency Currency.
  * @param timeUnit TimeUnit to use. If omitted, the most relevant time unit is calculated.
  */
-export const formatPrice = (pricePerSecond: BN, currency: Currency, timeUnit?: TimeUnit): string => {
+export const formatPrice = (pricePerSecond: BN, currency: PaymentCurrency | ContractCurrency, timeUnit?: TimeUnit): string => {
     const actualTimeUnit = timeUnit || getMostRelevantTimeUnit(pricePerSecond)
     const price = priceForTimeUnits(pricePerSecond, 1, actualTimeUnit)
     const timeUnitAbbreviation = getAbbreviation(actualTimeUnit)
