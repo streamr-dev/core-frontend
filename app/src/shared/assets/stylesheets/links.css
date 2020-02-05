@@ -1,9 +1,13 @@
 a {
-  color: #0324FF;
+  color: #0324FF7F;
   font-weight: inherit;
 }
 
-a,
+a:link {
+  color: #0324FF;
+}
+
+a:link,
 a:active,
 a:focus,
 a:hover,
@@ -19,9 +23,4 @@ a:hover {
 a:active,
 a:visited {
   color: #13013D;
-}
-
-a.disabled,
-a:disabled {
-  color: #0324FF7F;
 }
