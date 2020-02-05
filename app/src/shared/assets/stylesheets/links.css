@@ -3,7 +3,8 @@ a {
   font-weight: inherit;
 }
 
-a:link {
+a:link,
+a:visited {
   color: #0324FF;
 }
 
@@ -20,7 +21,6 @@ a:hover {
   color: #0D009A;
 }
 
-a:active,
-a:visited {
+a:active {
   color: #13013D;
 }
