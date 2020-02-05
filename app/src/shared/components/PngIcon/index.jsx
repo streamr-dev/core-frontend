@@ -60,8 +60,10 @@ const sources = {
     ),
 }
 
+export type PngIconName = $Keys<typeof sources>
+
 type Props = {
-    name: $Keys<typeof sources>,
+    name: PngIconName,
 }
 
 const PngIcon = ({ name, ...props }: Props) => React.cloneElement(sources[name], {

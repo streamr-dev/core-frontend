@@ -15,7 +15,7 @@ import type { ButtonActions } from '$shared/components/Buttons'
 import Products from '$mp/components/Products'
 import FallbackImage from '$shared/components/FallbackImage'
 import Tile from '$shared/components/Tile'
-import { isCommunityProduct } from '$mp/utils/product'
+import { isDataUnionProduct } from '$mp/utils/product'
 
 import ProductDetails from '$mp/components/deprecated/ProductPage/ProductDetails'
 import StreamListing from '$mp/components/ProductPage/StreamListing'
@@ -77,7 +77,7 @@ class ProductPage extends Component<Props> {
                             <Tile.Labels
                                 topLeft
                                 labels={{
-                                    community: isCommunityProduct(product),
+                                    dataUnion: isDataUnionProduct(product),
                                 }}
                             />
                         </div>

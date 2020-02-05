@@ -95,7 +95,7 @@ const EditorNav = ({ sections, activeSection, className }: Props) => {
         setHighestSeenSection((prev) => {
             const highest = findLastIndex(sections, ({ id, status }) => id === activeSection || isSet(status))
 
-            return highest > prev ? highest : prev
+            return Math.min(highest > prev ? highest : prev, sections.length - 1)
         })
     }, [sections, activeSection])
 

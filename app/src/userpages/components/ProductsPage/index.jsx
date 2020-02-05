@@ -23,12 +23,12 @@ import NoProductsView from './NoProducts'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
 import ListContainer from '$shared/components/Container/List'
 import TileGrid from '$shared/components/TileGrid'
-import { isCommunityProduct } from '$mp/utils/product'
+import { isDataUnionProduct } from '$mp/utils/product'
 import type { ProductId, Product } from '$mp/flowtype/product-types'
 import useFilterSort from '$userpages/hooks/useFilterSort'
 import useCopy from '$shared/hooks/useCopy'
 import useModal from '$shared/hooks/useModal'
-import useCommunityStats from '$mp/modules/communityProduct/hooks/useCommunityStats'
+import useMemberStats from '$mp/modules/dataUnion/hooks/useMemberStats'
 import routes from '$routes'
 import CreateProductModal from '$mp/containers/CreateProductModal'
 import Button from '$shared/components/Button'
@@ -38,7 +38,7 @@ import styles from './products.pcss'
 const CreateProductButton = () => {
     const { api: createProductDialog } = useModal('marketplace.createProduct')
 
-    if (!process.env.COMMUNITY_PRODUCTS) {
+    if (!process.env.DATA_UNIONS) {
         return (
             <Button
                 tag={Link}
@@ -64,7 +64,7 @@ const CreateProductButton = () => {
 const generateTimeAgoDescription = (productUpdatedDate: Date) => moment(productUpdatedDate).fromNow()
 
 const getProductLink = (id: ProductId) => {
-    if (process.env.COMMUNITY_PRODUCTS) {
+    if (process.env.DATA_UNIONS) {
         return formatPath(links.userpages.products, id, 'edit')
     }
 
@@ -73,7 +73,7 @@ const getProductLink = (id: ProductId) => {
 
 const Actions = (product: Product) => {
     const { id, state } = product
-    const isCommunity = isCommunityProduct(product)
+    const isDataUnion = isDataUnionProduct(product)
     const { copy } = useCopy()
     const dispatch = useDispatch()
 
@@ -112,7 +112,7 @@ const Actions = (product: Product) => {
             >
                 <Translate value="actionsDropdown.edit" />
             </DropdownActions.Item>
-            {!process.env.COMMUNITY_PRODUCTS && (state === productStates.DEPLOYED || state === productStates.NOT_DEPLOYED) &&
+            {!process.env.DATA_UNIONS && (state === productStates.DEPLOYED || state === productStates.NOT_DEPLOYED) &&
                 <DropdownActions.Item
                     className={styles.item}
                     onClick={() => redirectToPublishProduct(id || '')}
@@ -123,7 +123,7 @@ const Actions = (product: Product) => {
                     }
                 </DropdownActions.Item>
             }
-            {!!process.env.COMMUNITY_PRODUCTS &&
+            {!!process.env.DATA_UNIONS &&
                 <DropdownActions.Item
                     className={styles.item}
                     onClick={() => (!!redirectToProduct && redirectToProduct(id || ''))}
@@ -132,7 +132,7 @@ const Actions = (product: Product) => {
                     <Translate value="actionsDropdown.viewProduct" />
                 </DropdownActions.Item>
             }
-            {!!process.env.COMMUNITY_PRODUCTS && isCommunity &&
+            {!!process.env.DATA_UNIONS && isDataUnion &&
                 <DropdownActions.Item
                     className={styles.item}
                     onClick={() => (!!redirectToProduct && redirectToProductStats(id || ''))}
@@ -140,12 +140,12 @@ const Actions = (product: Product) => {
                     <Translate value="actionsDropdown.viewStats" />
                 </DropdownActions.Item>
             }
-            {!!process.env.COMMUNITY_PRODUCTS && isCommunity &&
+            {!!process.env.DATA_UNIONS && isDataUnion &&
                 <DropdownActions.Item
                     className={styles.item}
                     onClick={() => (!!redirectToProduct && redirectToProductMembers(id || ''))}
                 >
-                    <Translate value="actionsDropdown.viewCommunity" />
+                    <Translate value="actionsDropdown.viewDataUnion" />
                 </DropdownActions.Item>
             }
             <DropdownActions.Item
@@ -163,10 +163,11 @@ const ProductsPage = () => {
     const sortOptions = useMemo(() => {
         const filters = getFilters()
         return [
+            filters.RECENT,
             filters.NAME_ASC,
             filters.NAME_DESC,
             filters.PUBLISHED,
-            filters.DRAFT,
+            filters.DRAFTS,
         ]
     }, [])
     const {
@@ -179,15 +180,15 @@ const ProductsPage = () => {
     const products = useSelector(selectMyProductList)
     const fetching = useSelector(selectFetching)
     const dispatch = useDispatch()
-    const { load: loadCommunityStats, members, fetching: fetchingCommunityStats } = useCommunityStats()
+    const { load: loadDataUnionStats, members, fetching: fetchingDataUnionStats } = useMemberStats()
 
     useEffect(() => {
         dispatch(getMyProducts(filter))
     }, [dispatch, filter])
 
     useEffect(() => {
-        loadCommunityStats()
-    }, [loadCommunityStats])
+        loadDataUnionStats()
+    }, [loadDataUnionStats])
 
     return (
         <Layout
@@ -225,7 +226,7 @@ const ProductsPage = () => {
                 )}
                 <TileGrid>
                     {products.map((product) => {
-                        const isCommunity = isCommunityProduct(product)
+                        const isDataUnion = isDataUnionProduct(product)
                         const beneficiaryAddress = (product.beneficiaryAddress || '').toLowerCase()
                         const memberCount = members[beneficiaryAddress]
 
@@ -238,12 +239,12 @@ const ProductsPage = () => {
                                     imageUrl={product.imageUrl || ''}
                                     dropdownActions={<Actions {...product} />}
                                     labels={{
-                                        community: isCommunity,
+                                        dataUnion: isDataUnion,
                                     }}
-                                    badges={(isCommunity && memberCount !== undefined) ? {
+                                    badges={(isDataUnion && memberCount !== undefined) ? {
                                         members: memberCount,
                                     } : undefined}
-                                    deploying={!fetchingCommunityStats && (isCommunity && beneficiaryAddress && memberCount === undefined)}
+                                    deploying={!fetchingDataUnionStats && (isDataUnion && beneficiaryAddress && memberCount === undefined)}
                                 >
                                     <Tile.Title>{product.name}</Tile.Title>
                                     <Tile.Tag >

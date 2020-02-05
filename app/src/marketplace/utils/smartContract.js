@@ -145,7 +145,7 @@ export const deploy = (contract: SmartContractMetadata, args: Array<any>, option
             })
             deployer
                 .send({
-                    gas: (options && options.gas) || gasLimits.DEPLOY_COMMUNITY_PRODUCT,
+                    gas: (options && options.gas) || gasLimits.DEPLOY_DATA_UNION,
                     from: account,
                 })
                 .on('error', errorHandler)

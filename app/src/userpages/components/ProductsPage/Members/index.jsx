@@ -12,7 +12,6 @@ import ListContainer from '$shared/components/Container/List'
 import LoadingIndicator from '$userpages/components/LoadingIndicator'
 import Layout from '$shared/components/Layout'
 import Dropdown from '$shared/components/Dropdown'
-import type { CommunityId } from '$mp/flowtype/product-types'
 import { getFilters } from '$userpages/utils/constants'
 import ProductController, { useController } from '$mp/containers/ProductController'
 import usePending from '$shared/hooks/usePending'
@@ -24,13 +23,14 @@ import Checkbox from '$shared/components/Checkbox'
 import Button from '$shared/components/Button'
 import { truncate } from '$shared/utils/text'
 import { useSelectionContext, SelectionProvider } from '$shared/hooks/useSelection'
-import useJoinRequests from '$mp/modules/communityProduct/hooks/useJoinRequests'
+import useJoinRequests from '$mp/modules/dataUnion/hooks/useJoinRequests'
 import NoMembersView from './NoMembers'
 import { isEthereumAddress } from '$mp/utils/validate'
-import CommunityPending from '$mp/components/ProductPage/CommunityPending'
+import DataUnionPending from '$mp/components/ProductPage/DataUnionPending'
 import { ago } from '$shared/utils/time'
 import confirmDialog from '$shared/utils/confirm'
 import Search from '$userpages/components/Header/Search'
+import useIsMounted from '$shared/hooks/useIsMounted'
 
 import styles from './members.pcss'
 
@@ -48,7 +48,7 @@ const mapStatus = (state) => {
 }
 
 const Members = () => {
-    const { loadCommunityProduct } = useController()
+    const { loadDataUnion } = useController()
     const product = useProduct()
     const filters = getFilters()
     const sortOptions = useMemo(() => ([
@@ -59,6 +59,7 @@ const Members = () => {
     const [approving, setApproving] = useState(false)
     const [removing, setRemoving] = useState(false)
     const [search, setSearch] = useState(undefined)
+    const isMounted = useIsMounted()
 
     const { defaultFilter, filter, setSort } = useFilterSort(sortOptions)
     const {
@@ -70,26 +71,22 @@ const Members = () => {
     } = useJoinRequests()
     const selection = useSelectionContext()
 
-    const loadCommunity = useCallback(async (id: CommunityId) => {
-        loadCommunityProduct(id)
-    }, [loadCommunityProduct])
-
-    const { communityDeployed, beneficiaryAddress } = product
+    const { dataUnionDeployed, beneficiaryAddress } = product
 
     useEffect(() => {
-        if (communityDeployed && beneficiaryAddress) {
-            loadCommunity(beneficiaryAddress)
+        if (dataUnionDeployed && beneficiaryAddress) {
+            loadDataUnion(beneficiaryAddress)
         }
-    }, [communityDeployed, beneficiaryAddress, loadCommunity])
+    }, [dataUnionDeployed, beneficiaryAddress, loadDataUnion])
 
     const doLoadMembers = useCallback(() => {
-        if (communityDeployed && beneficiaryAddress) {
+        if (dataUnionDeployed && beneficiaryAddress) {
             loadMembers({
-                communityId: beneficiaryAddress,
+                dataUnionId: beneficiaryAddress,
                 filter,
             })
         }
-    }, [communityDeployed, beneficiaryAddress, loadMembers, filter])
+    }, [dataUnionDeployed, beneficiaryAddress, loadMembers, filter])
     const loadMembersRef = useRef()
     loadMembersRef.current = doLoadMembers
 
@@ -127,17 +124,20 @@ const Members = () => {
         for (let index = 0; index < ids.length; index += 1) {
             // eslint-disable-next-line no-await-in-loop
             await approve({
-                communityId: beneficiaryAddress,
+                dataUnionId: beneficiaryAddress,
                 joinRequestId: ids[index],
             })
         }
+
+        if (!isMounted()) { return }
+
         setApproving(false)
         selection.none()
 
         if (loadMembersRef.current) {
             loadMembersRef.current()
         }
-    }, [beneficiaryAddress, approve, selection, loadMembersRef])
+    }, [beneficiaryAddress, approve, selection, loadMembersRef, isMounted])
 
     const onRemove = useCallback(async () => {
         setRemoving(true)
@@ -165,15 +165,22 @@ const Members = () => {
             for (let index = 0; index < ids.length; index += 1) {
                 // eslint-disable-next-line no-await-in-loop
                 await remove({
-                    communityId: beneficiaryAddress,
+                    dataUnionId: beneficiaryAddress,
                     joinRequestId: ids[index],
                 })
             }
+
+            if (!isMounted()) { return }
+
             selection.none()
+
+            if (loadMembersRef.current) {
+                loadMembersRef.current()
+            }
         }
 
         setRemoving(false)
-    }, [beneficiaryAddress, remove, selection])
+    }, [beneficiaryAddress, remove, selection, loadMembersRef, isMounted])
 
     const onSortChange = useCallback((...args) => {
         // Clear selected & search on sort change
@@ -214,7 +221,7 @@ const Members = () => {
             hideNavOnDesktop
             navComponent={(
                 <Header
-                    {...(communityDeployed ? {
+                    {...(dataUnionDeployed ? {
                         searchComponent: (
                             <Search
                                 placeholder={I18n.t('userpages.members.filterMembers')}
@@ -227,7 +234,7 @@ const Members = () => {
                                 title={I18n.t('userpages.filter.sortBy')}
                                 onChange={onSortChange}
                                 selectedItem={selectedFilterId}
-                                disabled={!communityDeployed}
+                                disabled={!dataUnionDeployed}
                             >
                                 {sortOptions.map((s) => (
                                     <Dropdown.Item key={s.filter.id} value={s.filter.id}>
@@ -246,19 +253,19 @@ const Members = () => {
                 [styles.containerWithSelected]: isAnySelected,
             })}
             >
-                {!communityDeployed && isEthereumAddress(beneficiaryAddress) && (
+                {!dataUnionDeployed && isEthereumAddress(beneficiaryAddress) && (
                     <div className={styles.pending}>
-                        <CommunityPending />
+                        <DataUnionPending />
                     </div>
                 )}
-                {!!communityDeployed && !fetchingMembers && filteredMembers && !filteredMembers.length && (
+                {!!dataUnionDeployed && !fetchingMembers && filteredMembers && !filteredMembers.length && (
                     <NoMembersView
                         hasFilter={!!search}
                         filter={filter}
                         onResetFilter={onResetFilter}
                     />
                 )}
-                {!!communityDeployed && !fetchingMembers && filteredMembers && filteredMembers.length > 0 && (
+                {!!dataUnionDeployed && !fetchingMembers && filteredMembers && filteredMembers.length > 0 && (
                     <Table>
                         <thead>
                             <tr>

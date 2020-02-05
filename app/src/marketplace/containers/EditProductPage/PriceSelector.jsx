@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { Translate } from 'react-redux-i18n'
 
-import { isCommunityProduct } from '$mp/utils/product'
+import { isDataUnionProduct } from '$mp/utils/product'
 import { usePending } from '$shared/hooks/usePending'
 import { contractCurrencies as currencies, DEFAULT_CURRENCY } from '$shared/utils/constants'
 import { selectDataPerUsd } from '$mp/modules/global/selectors'
@@ -19,6 +19,7 @@ import useEditableProduct from '../ProductController/useEditableProduct'
 import useValidation from '../ProductController/useValidation'
 import useEditableProductActions from '../ProductController/useEditableProductActions'
 import { isPublished } from './state'
+import routes from '$routes'
 
 import BeneficiaryAddress from './BeneficiaryAddress'
 
@@ -72,12 +73,19 @@ const PriceSelector = () => {
                     tag="h1"
                     value="editProductPage.setPrice.title"
                 />
+                <Translate
+                    tag="p"
+                    value="editProductPage.setPrice.description"
+                    docsLink={routes.docsProductsIntroToProducts()}
+                    dangerousHTML
+                />
                 <RadioButtonGroup
                     name="productPriceType"
                     options={['Paid', 'Free']}
                     selectedOption={isFreeProduct ? 'Free' : 'Paid'}
                     onChange={onPriceTypeChange}
                     disabled={isPriceTypeDisabled}
+                    className={styles.radioGroup}
                 />
                 <div className={cx(styles.inner, {
                     [styles.disabled]: isFreeProduct || isLoadingOrSaving,
@@ -95,7 +103,7 @@ const PriceSelector = () => {
                         dataPerUsd={dataPerUsd}
                         error={isTouched('pricePerSecond') && !isValid ? message : undefined}
                     />
-                    {!isCommunityProduct(product) && (
+                    {!isDataUnionProduct(product) && (
                         <BeneficiaryAddress
                             className={styles.beneficiaryAddress}
                             address={product.beneficiaryAddress}

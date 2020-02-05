@@ -8,8 +8,9 @@ import type { Stream } from '$shared/flowtype/stream-types'
 import type { StoreState } from '$shared/flowtype/store-state'
 import { updateEditStream } from '$userpages/modules/userPageStreams/actions'
 import { selectEditedStream } from '$userpages/modules/userPageStreams/selectors'
-import TextInput from '$shared/components/TextInput'
-import SelectInput from '$shared/components/SelectInput'
+import Text from '$ui/Text'
+import Select from '$ui/Select'
+import Label from '$ui/Label'
 
 import styles from './statusView.pcss'
 
@@ -93,22 +94,24 @@ function StatusView(props: Props) {
                 {I18n.t('userpages.streams.inactivityDescription')}
             </p>
             <div className={styles.container}>
-                <TextInput
-                    label={I18n.t('userpages.streams.inactivityLabel')}
-                    value={value}
-                    onChange={onChange}
-                    onBlur={onCommit}
-                    disabled={disabled}
-                    preserveLabelSpace
-                />
-                <SelectInput
-                    label=""
-                    options={unitOptions}
-                    value={unitOptions.find((o) => o.value === units)}
-                    onChange={(o) => onChangeUnits(o.value)}
-                    preserveLabelSpace
-                    disabled={disabled}
-                />
+                <Label htmlFor="inactivityValue">
+                    {I18n.t('userpages.streams.inactivityLabel')}
+                </Label>
+                <div className={styles.inner}>
+                    <Text
+                        id="inactivityValue"
+                        value={value}
+                        onChange={onChange}
+                        onBlur={onCommit}
+                        disabled={disabled}
+                    />
+                    <Select
+                        options={unitOptions}
+                        value={unitOptions.find((o) => o.value === units)}
+                        onChange={(o) => onChangeUnits(o.value)}
+                        disabled={disabled}
+                    />
+                </div>
             </div>
         </div>
     )

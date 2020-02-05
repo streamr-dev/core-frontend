@@ -12,6 +12,7 @@ import noResultIcon from '$shared/assets/images/search_no_result.png'
 import noResultemptyStateIcon2x from '$shared/assets/images/search_no_result@2x.png'
 import type { Filter } from '$userpages/flowtype/common-types'
 import breakpoints from '$app/scripts/breakpoints'
+import routes from '$routes'
 
 type NoResultsViewProps = {
     onResetFilter: Function,
@@ -33,7 +34,12 @@ const NoCreatedProductsView = () => (
     >
         <Translate value="userpages.products.noCreatedProducts.title" />
         <MediaQuery minWidth={breakpoints.lg.min}>
-            <Translate value="userpages.products.noCreatedProducts.message" tag="small" />
+            <Translate
+                value="userpages.products.noCreatedProducts.message"
+                docsLink={routes.docsProductsIntroToProducts()}
+                dangerousHTML
+                tag="small"
+            />
         </MediaQuery>
         <MediaQuery maxWidth={breakpoints.lg.min}>
             <Translate value="userpages.products.noCreatedProducts.messageMobile" tag="small" />

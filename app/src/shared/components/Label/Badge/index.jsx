@@ -16,7 +16,7 @@ type Props = {
 }
 
 const badgeIcons = {
-    members: 'community',
+    members: 'dataUnion',
 }
 
 export const Badge = ({ badge, tag, value, className }: Props) => (

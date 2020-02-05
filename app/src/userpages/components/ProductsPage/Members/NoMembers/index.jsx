@@ -11,17 +11,17 @@ import noResultIcon from '$shared/assets/images/search_no_result.png'
 import noResultemptyStateIcon2x from '$shared/assets/images/search_no_result@2x.png'
 import type { Filter } from '$userpages/flowtype/common-types'
 
-type NoCommunityMembersProps = {
+type NoDataUnionMembersProps = {
     filter: ?Filter,
 }
 type NoResultsViewProps = {
     onResetFilter: Function,
 }
-type Props = NoResultsViewProps & NoCommunityMembersProps & {
+type Props = NoResultsViewProps & NoDataUnionMembersProps & {
     hasFilter: boolean,
 }
 
-const NoCommunityMembers = ({ filter }: NoCommunityMembersProps) => (
+const NoDataUnionMembers = ({ filter }: NoDataUnionMembersProps) => (
     <EmptyState
         image={(
             <img
@@ -31,9 +31,9 @@ const NoCommunityMembers = ({ filter }: NoCommunityMembersProps) => (
             />
         )}
     >
-        <Translate value={`userpages.members.noCommunityMembers.${(filter && filter.id) || ''}.title`} />
+        <Translate value={`userpages.members.noDataUnionMembers.${(filter && filter.id) || ''}.title`} />
         <Translate
-            value={`userpages.members.noCommunityMembers.${(filter && filter.id) || ''}.message`}
+            value={`userpages.members.noDataUnionMembers.${(filter && filter.id) || ''}.message`}
             tag="small"
         />
     </EmptyState>
@@ -53,12 +53,12 @@ const NoResultsView = ({ onResetFilter }: NoResultsViewProps) => (
                 kind="special"
                 onClick={onResetFilter}
             >
-                <Translate value="userpages.members.noCommunityMembersResult.clearFilters" />
+                <Translate value="userpages.members.noDataUnionMembers.clearFilters" />
             </Button>
         )}
     >
-        <Translate value="userpages.members.noCommunityMembersResult.title" />
-        <Translate value="userpages.members.noCommunityMembersResult.message" tag="small" />
+        <Translate value="userpages.members.noDataUnionMembersResult.title" />
+        <Translate value="userpages.members.noDataUnionMembersResult.message" tag="small" />
     </EmptyState>
 )
 
@@ -69,7 +69,7 @@ const NoMembersView = ({ hasFilter, filter, ...rest }: Props) => {
         )
     }
 
-    return <NoCommunityMembers filter={filter} />
+    return <NoDataUnionMembers filter={filter} />
 }
 
 export default NoMembersView

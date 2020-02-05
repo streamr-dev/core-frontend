@@ -13,12 +13,13 @@ import type { Stream, StreamId } from '$shared/flowtype/stream-types'
 import type { StoreState } from '$shared/flowtype/store-state'
 import FieldList from '$shared/components/FieldList'
 import FieldItem from '$shared/components/FieldList/FieldItem'
-import SelectInput from '$shared/components/SelectInput'
+import Select from '$ui/Select'
 import { updateEditStreamField, updateEditStream, streamFieldsAutodetect } from '$userpages/modules/userPageStreams/actions'
 import { selectEditedStream, selectFieldsAutodetectFetching, fieldTypes } from '$userpages/modules/userPageStreams/selectors'
-import TextInput from '$shared/components/TextInput'
+import Text from '$ui/Text'
 import SplitControl from '$userpages/components/SplitControl'
 import DropdownActions from '$shared/components/DropdownActions'
+import ActionsDropdown from '$shared/components/ActionsDropdown' // look up! lol #naming
 
 import styles from './configureView.pcss'
 import NewFieldEditor from './NewFieldEditor'
@@ -163,30 +164,32 @@ export class ConfigureView extends Component<Props, State> {
                             <Translate value="userpages.streams.edit.configure.fieldName" />
                             <Translate value="userpages.streams.edit.configure.dataType" />
                         </SplitControl>
-                        <FieldList onSortEnd={this.onSortEnd}>
+                        <FieldList onSortEnd={this.onSortEnd} disabled={disabled}>
                             {stream.config.fields.map((field, index) => (
                                 <div className={styles.hoverContainer} key={field.id || index} >
                                     <div className={styles.fieldItem} >
                                         <FieldItem name={field.name}>
                                             <SplitControl>
-                                                <TextInput
-                                                    label=""
-                                                    value={field.name}
-                                                    onChange={(e) => this.onFieldNameChange(field.name, e.target.value)}
+                                                <ActionsDropdown
                                                     disabled={disabled}
                                                     actions={[
                                                         <DropdownActions.Item key="delete" onClick={() => this.deleteField(field.name)}>
                                                             <Translate value="userpages.streams.edit.configure.delete" />
                                                         </DropdownActions.Item>,
                                                     ]}
-                                                />
-                                                <SelectInput
-                                                    label=""
+                                                >
+                                                    <Text
+                                                        value={field.name}
+                                                        onChange={(e) => this.onFieldNameChange(field.name, e.target.value)}
+                                                        disabled={disabled}
+                                                    />
+                                                </ActionsDropdown>
+                                                <Select
                                                     className={styles.select}
+                                                    disabled={disabled}
                                                     options={this.typeOptions}
                                                     value={this.typeOptions.find((t) => t.value === field.type)}
                                                     onChange={(o) => this.onFieldTypeChange(field.name, o.value)}
-                                                    preserveLabelSpace={false}
                                                 />
                                             </SplitControl>
                                         </FieldItem>

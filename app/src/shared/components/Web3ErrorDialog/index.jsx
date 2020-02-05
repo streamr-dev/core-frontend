@@ -3,7 +3,7 @@
 import React from 'react'
 
 import type { ErrorInUi } from '$shared/flowtype/common-types'
-import { Web3NotSupportedError } from '$shared/errors/Web3'
+import { Web3NotSupportedError, WalletLockedError } from '$shared/errors/Web3'
 
 import UnlockWalletDialog from './UnlockWalletDialog'
 import Web3NotDetectedDialog from './Web3NotDetectedDialog'
@@ -20,8 +20,12 @@ const Web3ErrorDialog = ({ error, waiting, ...props }: Props) => {
     }
 
     return (
-        <UnlockWalletDialog {...props} waiting={!!waiting}>
-            {(!!error && error.message) || 'Error'}
+        <UnlockWalletDialog
+            {...props}
+            waiting={!!waiting}
+            icon={!(error instanceof WalletLockedError) ? 'walletError' : undefined}
+        >
+            <p>{(!!error && error.message) || 'Error'}</p>
         </UnlockWalletDialog>
     )
 }

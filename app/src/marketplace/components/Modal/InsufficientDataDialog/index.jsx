@@ -21,7 +21,7 @@ const InsufficientDataDialog = ({ onCancel }: Props) => (
             onClose={onCancel}
         >
             <img className={styles.icon} src={WalletNoDataPng} srcSet={`${WalletNoDataPng2x} 2x`} alt={I18n.t('error.wallet')} />
-            <Translate value="modal.insufficientDataDialog.message" className={styles.message} />
+            <Translate value="modal.insufficientDataDialog.message" className={styles.message} tag="p" />
         </Dialog>
     </ModalPortal>
 )

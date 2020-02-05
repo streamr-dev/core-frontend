@@ -21,16 +21,22 @@
   flex-direction: column;
   align-items: center;
   color: #D8D8D8;
-  cursor: pointer;
+
+  &:not(.disabled) {
+    cursor: pointer;
+  }
 
   /**
    * invisible interaction target
    */
   input {
-    cursor: pointer;
     margin-top: 0.5um;
     margin-bottom: 1.25um;
     opacity: 0;
+  }
+
+  input:not(:disabled) {
+    cursor: pointer;
   }
 
   .Title {

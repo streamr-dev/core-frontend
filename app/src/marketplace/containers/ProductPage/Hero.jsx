@@ -13,7 +13,7 @@ import FallbackImage from '$shared/components/FallbackImage'
 import Tile from '$shared/components/Tile'
 import ProductDetails from '$mp/components/ProductPage/ProductDetails'
 import HeroComponent from '$mp/components/Hero'
-import { isCommunityProduct, isPaidProduct } from '$mp/utils/product'
+import { isDataUnionProduct, isPaidProduct } from '$mp/utils/product'
 import {
     selectSubscriptionIsValid,
     selectContractSubscription,
@@ -30,7 +30,7 @@ const Hero = () => {
 
     const userData = useSelector(selectUserData)
     const isLoggedIn = userData !== null
-    const isCommunity = !!(product && isCommunityProduct(product))
+    const isDataUnion = !!(product && isDataUnionProduct(product))
     const isProductSubscriptionValid = useSelector(selectSubscriptionIsValid)
     const subscription = useSelector(selectContractSubscription)
 
@@ -70,7 +70,7 @@ const Hero = () => {
                     <Tile.Labels
                         topLeft
                         labels={{
-                            community: isCommunity,
+                            dataUnion: isDataUnion,
                         }}
                     />
                 </div>

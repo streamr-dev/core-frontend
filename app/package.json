@@ -71,6 +71,7 @@
       "\\$testUtils/(.*)$": "<rootDir>/test/test-utils/$1",
       "\\$utils/(.*)$": "<rootDir>/src/utils/$1",
       "\\$editor/(.*)$": "<rootDir>/src/editor/$1",
+      "\\$ui/(.*)$": "<rootDir>/src/shared/components/Ui/$1",
       "\\$docs/(.*)$": "<rootDir>/src/docs/$1"
     },
     "setupFilesAfterEnv": [
