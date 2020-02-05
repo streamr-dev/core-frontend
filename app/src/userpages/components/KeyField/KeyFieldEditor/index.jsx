@@ -10,7 +10,7 @@ import Errors from '$ui/Errors'
 
 import styles from './keyFieldEditor.pcss'
 
-export type ValueLabel = 'apiKey' | 'privateKey' | 'address'
+export type ValueLabel = 'apiKey' | 'privateKey' | 'address' | 'sharedSecret'
 
 type Props = {
     keyName?: string,

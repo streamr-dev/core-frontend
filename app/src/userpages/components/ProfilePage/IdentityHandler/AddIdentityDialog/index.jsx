@@ -1,36 +1,25 @@
 // @flow
 
-import React from 'react'
-import { connect } from 'react-redux'
+import React, { useState, useCallback, useEffect } from 'react'
+import { Translate } from 'react-redux-i18n'
 
-import withWeb3 from '$shared/utils/withWeb3'
-import { createIdentity } from '$shared/modules/integrationKey/actions'
-import type { ApiResult } from '$shared/flowtype/common-types'
-import type { IntegrationKey, IntegrationKeyList } from '$shared/flowtype/integration-key-types'
-import { areAddressesEqual } from '$mp/utils/smartContract'
-import { selectAccountId } from '$mp/modules/web3/selectors'
-import { selectEthereumIdentities } from '$shared/modules/integrationKey/selectors'
-import type { StoreState } from '$shared/flowtype/store-state'
+import useWeb3Status from '$shared/hooks/useWeb3Status'
+import Web3ErrorDialog from '$shared/components/Web3ErrorDialog'
+import useEthereumIdentities from '$shared/modules/integrationKey/hooks/useEthereumIdentities'
+import useModal from '$shared/hooks/useModal'
 import type { Address } from '$shared/flowtype/web3-types'
+import UnlockWalletDialog from '$shared/components/Web3ErrorDialog/UnlockWalletDialog'
+import { areAddressesEqual } from '$mp/utils/smartContract'
+import { truncate } from '$shared/utils/text'
 
 import IdentityNameDialog from '../IdentityNameDialog'
 import IdentityChallengeDialog from '../IdentityChallengeDialog'
 import DuplicateIdentityDialog from '../IdentityChallengeDialog/DuplicateIdentityDialog'
 
-type OwnProps = {
-    onClose: () => void,
+type Props = {
+    api: Object,
+    requiredAddress?: Address,
 }
-
-type StateProps = {
-    accountId: ?Address,
-    ethereumIdentities: ?IntegrationKeyList,
-}
-
-type DispatchProps = {
-    createIdentity: (name: string) => ApiResult<IntegrationKey>,
-}
-
-type Props = OwnProps & StateProps & DispatchProps
 
 const identityPhases = {
     NAME: 'name',
@@ -38,74 +27,98 @@ const identityPhases = {
     COMPLETE: 'complete',
 }
 
-type State = {
-    phase: $Values<typeof identityPhases>,
-}
+const AddIdentityDialog = ({ api, requiredAddress }: Props) => {
+    const { web3Error, checkingWeb3, account } = useWeb3Status()
+    const { load: getEthIdentities, fetching, create, isLinked } = useEthereumIdentities()
+    const [phase, setPhase] = useState(identityPhases.NAME)
+    const [result, setResult] = useState(false)
 
-class AddIdentityDialog extends React.Component<Props, State> {
-    state = {
-        phase: identityPhases.NAME,
-    }
-
-    onSetName = (name: string) => {
-        this.setState({
-            phase: identityPhases.CHALLENGE,
-        })
+    const onSetName = useCallback((name: string) => {
+        setPhase(identityPhases.CHALLENGE)
 
         try {
-            this.props.createIdentity(name)
+            create(name)
+            setResult(true)
         } catch (e) {
             console.warn(e)
         }
+    }, [create])
+
+    const onClose = useCallback(() => {
+        api.close(result)
+    }, [api, result])
+
+    useEffect(() => {
+        getEthIdentities()
+    }, [getEthIdentities])
+
+    if (fetching || checkingWeb3 || web3Error || !account) {
+        return (
+            <Web3ErrorDialog
+                waiting={fetching || checkingWeb3}
+                onClose={onClose}
+                error={web3Error}
+            />
+        )
     }
 
-    render() {
-        const { onClose, accountId, ethereumIdentities } = this.props
+    if (!!requiredAddress && (!account || !areAddressesEqual(account, requiredAddress))) {
+        return (
+            <UnlockWalletDialog onClose={onClose}>
+                <Translate
+                    value="unlockWalletDialog.message"
+                    address={truncate(requiredAddress, {
+                        maxLength: 15,
+                    })}
+                    tag="p"
+                />
+            </UnlockWalletDialog>
+        )
+    }
 
-        switch (this.state.phase) {
-            case identityPhases.NAME: {
-                // Check if account is already linked and show an error.
-                const accountLinked = !!(ethereumIdentities &&
-                    accountId &&
-                    ethereumIdentities.find((account) =>
-                        account.json && account.json.address && areAddressesEqual(account.json.address, accountId))
-                )
-
-                if (accountLinked) {
-                    return (
-                        <DuplicateIdentityDialog
-                            onClose={onClose}
-                        />
-                    )
-                }
-
+    switch (phase) {
+        case identityPhases.NAME: {
+            // Check if account is already linked and show an error.
+            if (isLinked(account)) {
                 return (
-                    <IdentityNameDialog
+                    <DuplicateIdentityDialog
                         onClose={onClose}
-                        onSave={this.onSetName}
                     />
                 )
             }
 
-            case identityPhases.CHALLENGE:
-                return (
-                    <IdentityChallengeDialog
-                        onClose={onClose}
-                    />
-                )
-            default:
-                return null
+            return (
+                <IdentityNameDialog
+                    onClose={onClose}
+                    onSave={onSetName}
+                />
+            )
         }
+
+        case identityPhases.CHALLENGE:
+            return (
+                <IdentityChallengeDialog
+                    onClose={onClose}
+                />
+            )
+        default:
+            return null
     }
 }
 
-export const mapStateToProps = (state: StoreState): StateProps => ({
-    accountId: selectAccountId(state),
-    ethereumIdentities: selectEthereumIdentities(state),
-})
+export default () => {
+    const { api, isOpen, value } = useModal('userpages.addIdentity')
 
-const mapDispatchToProps = (dispatch: Function) => ({
-    createIdentity: (name: string) => dispatch(createIdentity(name)),
-})
+    if (!isOpen) {
+        return null
+    }
 
-export default withWeb3(connect(mapStateToProps, mapDispatchToProps)(AddIdentityDialog))
+    const { requiredAddress } = value || {}
+
+    return (
+        <AddIdentityDialog
+            api={api}
+            requiredAddress={requiredAddress}
+        />
+    )
+}

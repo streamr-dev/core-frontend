@@ -19,6 +19,8 @@ import { Context as ValidationContext } from '../ProductController/ValidationCon
 import { isEthereumAddress } from '$mp/utils/validate'
 import { notFoundRedirect } from '$auth/utils/loginInterceptor'
 import useProductPermissions from '../ProductController/useProductPermissions'
+import useProduct from '$mp/containers/ProductController/useProduct'
+import useEthereumIdentities from '$shared/modules/integrationKey/hooks/useEthereumIdentities'
 
 import { Provider as EditControllerProvider, Context as EditControllerContext } from './EditControllerProvider'
 import BackButton from '$shared/components/BackButton'
@@ -43,13 +45,23 @@ const EditProductPage = ({ product }: { product: Product }) => {
     } = useContext(EditControllerContext)
     const { isPending: savePending } = usePending('product.SAVE')
     const { isAnyChangePending } = useContext(ValidationContext)
-    const { loadCategories, loadStreams } = useController()
+    const { loadCategories, loadStreams, loadDataUnion } = useController()
 
     // Load categories and streams
     useEffect(() => {
         loadCategories()
         loadStreams()
     }, [loadCategories, loadStreams])
+
+    // Load eth identities & data union (used to determine if owner account is linked)
+    const { load: loadEthIdentities } = useEthereumIdentities()
+    const originalProduct = useProduct()
+    const { beneficiaryAddress } = originalProduct
+
+    useEffect(() => {
+        loadEthIdentities()
+        loadDataUnion(beneficiaryAddress)
+    }, [beneficiaryAddress, loadDataUnion, loadEthIdentities])
 
     const isSaving = savePending
     const isDataUnion = isDataUnionProduct(product)

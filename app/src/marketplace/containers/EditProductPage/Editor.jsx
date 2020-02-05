@@ -14,12 +14,14 @@ import ProductDescription from './ProductDescription'
 import ProductStreams from './ProductStreams'
 import PriceSelector from './PriceSelector'
 import ProductDetails from './ProductDetails'
+import ConnectEthIdentity from './ConnectEthIdentity'
 import SharedSecrets from './SharedSecrets'
 
 import styles from './editor.pcss'
 
 const Editor = () => {
     const product = useProduct()
+    const isDataUnion = isDataUnionProduct(product)
 
     return (
         <div className={cx(styles.root, styles.Editor)}>
@@ -35,7 +37,8 @@ const Editor = () => {
                         <ProductStreams />
                         <PriceSelector />
                         <ProductDetails />
-                        {isDataUnionProduct(product) && (
+                        <ConnectEthIdentity />
+                        {!!isDataUnion && (
                             <SharedSecrets />
                         )}
                     </div>

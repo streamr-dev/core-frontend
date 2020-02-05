@@ -148,13 +148,39 @@ msgstr "Fix price in fiat for protection against shifts in the DATA price"
 msgid "editProductPage##productDetails##title"
 msgstr "Add some more details"
 
+msgid "editProductPage##connectEthIdentity##title"
+msgstr "Connect an Ethereum identity"
+
+msgid "editProductPage##connectEthIdentity##identityNotLinked"
+msgstr ""
+"You haven't connected your Ethereum address to your Streamr account yet. "
+"In order to manage your data union, you need to do this before deploying your product."
+
+msgid "editProductPage##connectEthIdentity##web3Locked"
+msgstr ""
+"In order to manage your data union, you need to unlock your wallet and "
+"connect an Ethereum address to your Streamr account before deploying your product."
+
+msgid "editProductPage##connectEthIdentity##addNewAddress"
+msgstr "Add ETH address"
+
 msgid "editProductPage##sharedSecrets##addSecret"
 msgstr "Add shared secret"
 
-msgid "editProductPage##sharedSecrets##description"
+msgid "editProductPage##sharedSecrets##title"
+msgstr "Add a shared secrect"
+
+msgid "editProductPage##sharedSecrets##notDeployed##description"
 msgstr ""
-"These settings are only available once you have deployed your product, "
-"and provides access control for your product. Create, name and revoke shared secrets them from here."
+"These settings are only available once you have deployed your product, and provides access control for your product. "
+"Create, name and revoke shared secrets them from here. "
+"For help with shared secrets, see the <a href=\"%{docsLink}\">docs</a>."
+
+msgid "editProductPage##sharedSecrets##deployed##description"
+msgstr ""
+"Shared secrets are the access control for your product. "
+"Create, name and revoke shared secrets from here. "
+"For help with shared secrets, see the <a href=\"%{docsLink}\">docs</a>."
 
 msgid "editProductPage##navigation##name"
 msgstr "Name"
@@ -173,6 +199,9 @@ msgstr "Set price"
 
 msgid "editProductPage##navigation##details"
 msgstr "Details"
+
+msgid "editProductPage##navigation##connectEthIdentity"
+msgstr "Ethereum identity"
 
 msgid "editProductPage##navigation##sharedSecrets"
 msgstr "Shared secrets"

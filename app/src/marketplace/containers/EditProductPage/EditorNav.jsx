@@ -11,6 +11,7 @@ import useEditableProduct from '../ProductController/useEditableProduct'
 import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
 import { Context as EditControllerContext } from './EditControllerProvider'
 import { isPublished } from './state'
+import useIsEthIdentityNeeded from './useIsEthIdentityNeeded'
 
 import styles from './editorNav.pcss'
 
@@ -21,6 +22,7 @@ const EditorNav = () => {
     const product = useEditableProduct()
     const productRef = useRef()
     productRef.current = product
+    const { isRequired: showConnectEthIdentity } = useIsEthIdentityNeeded()
 
     const [activeSectionId, setActiveSectionId] = useState(undefined)
 
@@ -79,6 +81,13 @@ const EditorNav = () => {
         return statuses.EMPTY
     }, [getStatus, isDataUnion])
 
+    const ethIdentityStatus = useMemo(() => {
+        if (!isTouched('ethIdentity')) {
+            return statuses.EMPTY
+        }
+        return statuses.VALID
+    }, [isTouched])
+
     const sharedSecretStatus = useMemo(() => {
         if (!isTouched('sharedSecrets')) {
             return statuses.EMPTY
@@ -106,49 +115,63 @@ const EditorNav = () => {
         scrollTo(id)
     }, [scrollTo])
 
-    let sections = useMemo(() => [{
-        id: 'product-name',
-        heading: I18n.t('editProductPage.navigation.name'),
-        status: getStatus('name'),
-    }, {
-        id: 'cover-image',
-        heading: I18n.t('editProductPage.navigation.coverImage'),
-        status: getStatus('imageUrl'),
-    }, {
-        id: 'description',
-        heading: I18n.t('editProductPage.navigation.description'),
-        status: getStatus('description'),
-    }, {
-        id: 'streams',
-        heading: I18n.t('editProductPage.navigation.streams'),
-        status: getStatus('streams'),
-    }, {
-        id: 'price',
-        heading: I18n.t('editProductPage.navigation.price'),
-        status: priceStatus,
-    }, {
-        id: 'details',
-        heading: I18n.t('editProductPage.navigation.details'),
-        status: detailsStatus,
-    }, {
-        id: 'shared-secrets',
-        heading: I18n.t('editProductPage.navigation.sharedSecrets'),
-        status: sharedSecretStatus,
-    }].map((section) => ({
-        ...section,
-        onClick: onClickFn.bind(null, section.id),
-    })), [
+    const sections = useMemo(() => {
+        const nextSections = [{
+            id: 'product-name',
+            heading: I18n.t('editProductPage.navigation.name'),
+            status: getStatus('name'),
+        }, {
+            id: 'cover-image',
+            heading: I18n.t('editProductPage.navigation.coverImage'),
+            status: getStatus('imageUrl'),
+        }, {
+            id: 'description',
+            heading: I18n.t('editProductPage.navigation.description'),
+            status: getStatus('description'),
+        }, {
+            id: 'streams',
+            heading: I18n.t('editProductPage.navigation.streams'),
+            status: getStatus('streams'),
+        }, {
+            id: 'price',
+            heading: I18n.t('editProductPage.navigation.price'),
+            status: priceStatus,
+        }, {
+            id: 'details',
+            heading: I18n.t('editProductPage.navigation.details'),
+            status: detailsStatus,
+        }]
+
+        if (isDataUnion) {
+            if (showConnectEthIdentity) {
+                nextSections.push({
+                    id: 'connect-eth-identity',
+                    heading: I18n.t('editProductPage.navigation.connectEthIdentity'),
+                    status: ethIdentityStatus,
+                })
+            }
+            nextSections.push({
+                id: 'shared-secrets',
+                heading: I18n.t('editProductPage.navigation.sharedSecrets'),
+                status: sharedSecretStatus,
+            })
+        }
+
+        return nextSections
+    }, [
         getStatus,
         priceStatus,
         detailsStatus,
+        ethIdentityStatus,
         sharedSecretStatus,
-        onClickFn,
+        isDataUnion,
+        showConnectEthIdentity,
     ])
 
-    if (!isDataUnion) {
-        sections = sections.filter((s) => s.id !== 'shared-secrets')
-    }
-
+    const sectionWithLinks = useMemo(() => sections.map((section) => ({
+        ...section,
+        onClick: onClickFn.bind(null, section.id),
+    })), [onClickFn, sections])
     const sectionAnchors = useMemo(() => sections.map(({ id }) => id), [sections])
 
     const onUpdate = useCallback((el) => {
@@ -187,7 +210,7 @@ const EditorNav = () => {
             className={styles.sticky}
         >
             <EditorNavComponent
-                sections={sections}
+                sections={sectionWithLinks}
                 activeSection={activeSectionId}
             />
         </Scrollspy>

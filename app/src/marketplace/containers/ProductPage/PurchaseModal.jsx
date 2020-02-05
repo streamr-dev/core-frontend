@@ -12,8 +12,6 @@ import useWeb3Status from '$shared/hooks/useWeb3Status'
 import { useController } from '$mp/containers/ProductController'
 import { usePending } from '$shared/hooks/usePending'
 import { purchaseFlowSteps } from '$mp/utils/constants'
-import { areAddressesEqual } from '$mp/utils/smartContract'
-import { selectEthereumIdentities } from '$shared/modules/integrationKey/selectors'
 import { selectProduct } from '$mp/modules/product/selectors'
 import { selectContractProduct, selectContractProductError } from '$mp/modules/contractProduct/selectors'
 import { selectDataPerUsd } from '$mp/modules/global/selectors'
@@ -59,6 +57,7 @@ import ErrorDialog from '$mp/components/Modal/ErrorDialog'
 import NoBalanceDialog from '$mp/components/Modal/NoBalanceDialog'
 import ChooseAccessPeriodDialog from '$mp/components/Modal/ChooseAccessPeriodDialog'
 import useIsMounted from '$shared/hooks/useIsMounted'
+import useEthereumIdentities from '$shared/modules/integrationKey/hooks/useEthereumIdentities'
 
 import Web3ErrorDialog from '$shared/components/Web3ErrorDialog'
 
@@ -81,7 +80,6 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
     const [ethPrice, setEthPrice] = useState(undefined)
     const [daiPrice, setDaiPrice] = useState(undefined)
     const [paymentCurrency, setPaymentCurrency] = useState(DEFAULT_CURRENCY)
-    const ethereumIdentities = useSelector(selectEthereumIdentities)
     const dataPerUsd = useSelector(selectDataPerUsd)
     const dataAllowance = BN(useSelector(selectDataAllowanceOrPendingDataAllowance))
     const daiAllowance = BN(useSelector(selectDaiAllowanceOrPendingDaiAllowance))
@@ -89,15 +87,10 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
     const isMounted = useIsMounted()
     const contractProduct = useSelector(selectContractProduct)
     const contractProductError = useSelector(selectContractProductError)
+    const { load: loadEthIdentities, isLinked } = useEthereumIdentities()
 
     // Check if current metamask account is linked to Streamr account
-    const accountLinked = useMemo(() => (
-        !!(ethereumIdentities &&
-        account &&
-        ethereumIdentities.find(({ json }) =>
-            json && json.address && areAddressesEqual(json.address, account))
-        )
-    ), [ethereumIdentities, account])
+    const accountLinked = useMemo(() => !!account && isLinked(account), [isLinked, account])
 
     // Start loading the contract product & clear allowance state
     useEffect(() => {
@@ -106,6 +99,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
         dispatch(resetDaiAllowanceState())
         dispatch(getDaiAllowance())
         dispatch(clearPurchaseState())
+        loadEthIdentities()
 
         loadContractProduct(productId)
             .then(() => {
@@ -113,7 +107,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
                     setStep(purchaseFlowSteps.ACCESS_PERIOD)
                 }
             })
-    }, [dispatch, loadContractProduct, productId, isMounted])
+    }, [dispatch, loadEthIdentities, loadContractProduct, productId, isMounted])
 
     // Monitor reset DATA allowance state, set error or proceed after receiving the hash
     const resetDataAllowanceTx = useSelector(selectResetDataAllowanceTx)
