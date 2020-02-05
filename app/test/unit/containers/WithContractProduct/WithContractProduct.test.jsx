@@ -153,8 +153,7 @@ describe('WithContractProduct', () => {
         return validatePromise.then(() => {
             const innerComponent = withWeb3Component.dive()
             expect(innerComponent.find(UnlockWalletDialog).length).toEqual(1)
-            // I18n.t will return last part of the key path if a translation was not found
-            expect(innerComponent.prop('children')).toEqual('message')
+            expect(innerComponent.find('Translate').prop('value')).toEqual('unlockWalletDialog.message')
         })
     })
 })
