@@ -92,11 +92,18 @@ export function useEditableProductActions() {
         touch('details')
     }, [commit, touch])
     const updateIsFree = useCallback((isFree: $ElementType<Product, 'isFree'>) => {
-        commit('Update is free', (p) => ({
-            ...p,
-            isFree,
-            pricePerSecond: getPricePerSecond(isFree, p.price, p.priceCurrency, p.timeUnit, dataPerUsd),
-        }))
+        commit('Update is free', (p) => {
+            // Switching product from free to paid also changes its price from 0 (only
+            // if it's 0) to 1. We're doing it to avoid premature validation errors.
+            const price = p.isFree && !isFree && p.price.isZero() ? new BN(1) : p.price
+
+            return {
+                ...p,
+                isFree,
+                price,
+                pricePerSecond: getPricePerSecond(isFree, price, p.priceCurrency, p.timeUnit, dataPerUsd),
+            }
+        })
         touch('pricePerSecond')
     }, [commit, touch, dataPerUsd])
     const updatePrice = useCallback((price: $ElementType<Product, 'price'>) => {
