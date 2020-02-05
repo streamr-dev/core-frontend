@@ -3,8 +3,7 @@
 import styled, { css } from 'styled-components'
 
 export const SpaciousTheme = {
-    height: 'auto',
-    lineHeight: '4rem',
+    height: '64px',
 }
 
 export default styled.input`
@@ -17,7 +16,7 @@ export default styled.input`
     display: block;
     font-size: 1rem;
     height: 40px;
-    line-height: 1.5rem;
+    line-height: 1;
     outline: none;
     padding: 0 1rem;
     width: 100%;
