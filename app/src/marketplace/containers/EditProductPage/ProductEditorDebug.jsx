@@ -26,7 +26,7 @@ const ProductEditorDebug = () => {
 
     const isDataUnion = isDataUnionProduct(product)
     const onFixPriceChange = useCallback((checked) => {
-        updateType(checked ? productTypes.DATA_UNION : productTypes.NORMAL)
+        updateType(checked ? productTypes.COMMUNITY : productTypes.NORMAL)
     }, [updateType])
 
     return (
