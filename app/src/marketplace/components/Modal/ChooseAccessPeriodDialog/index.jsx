@@ -115,20 +115,15 @@ export const ChooseAccessPeriodDialog = ({
             ethUSDEquivalent = ethUSDEquivalent.toFixed() / (Number(dataPerUsd) || 1)
             setEthPriceInUsd(formatDecimals(ethUSDEquivalent, contractCurrencies.USD))
 
+            setPriceInEth(ethValue.toString() === 'NaN' ? 'N/A' : formatDecimals(ethValue, paymentCurrencies.ETH).toString())
+            setPriceInDai(daiValue.toString() === 'NaN' ? 'N/A' : formatDecimals(daiValue, paymentCurrencies.DAI).toString())
+
             setLoading(false)
-
-            if (BN(priceInEth).isFinite() || !BN(priceInEth).isGreaterThan(0)) {
-                setPriceInEth(formatDecimals(ethValue, paymentCurrencies.ETH).toString())
-            }
-
-            if (BN(priceInDai).isFinite() || !BN(priceInDai).isGreaterThan(0)) {
-                setPriceInDai(formatDecimals(daiValue, paymentCurrencies.DAI).toString())
-            }
         } else {
             setPriceInEth('-')
             setPriceInDai('-')
         }
-    }, [dataPerUsd, isValidTime, priceInDai, priceInData, priceInEth])
+    }, [dataPerUsd, isValidTime, priceInData])
 
     const getAccountBalance = useCallback(async () => {
         setLoading(true)
