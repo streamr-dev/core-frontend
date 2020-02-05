@@ -611,7 +611,7 @@ msgid "modal##setPrice##fixedPriceSelector##text"
 msgstr "Fix price in USD"
 
 msgid "modal##setPrice##fixedPriceSelector##tooltip"
-msgstr "Fixing the price in fiat will protect you from changes in the DATA price"
+msgstr "Fixing the price in fiat can give you protection against shifts in the DATA price"
 
 msgid "modal##setPrice##ownerAddress"
 msgstr "Your account Ethereum address (cannot be changed)"

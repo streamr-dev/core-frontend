@@ -121,7 +121,12 @@ const PriceSelector = () => {
                         <div className={styles.fixPrice}>
                             <label htmlFor="fixPrice">
                                 <Translate value={`editProductPage.setPrice.${isDataUnion ? 'dataUnion' : 'dataProduct'}.fixPrice`} />
-                                <SvgIcon name="outlineQuestionMark" className={styles.helpIcon} />
+                                <div className={styles.tooltipContainer}>
+                                    <SvgIcon name="outlineQuestionMark" className={styles.helpIcon} />
+                                    <div className={styles.tooltip}>
+                                        <Translate value="modal.setPrice.fixedPriceSelector.tooltip" />
+                                    </div>
+                                </div>
                             </label>
                             <Toggle
                                 id="fixPrice"

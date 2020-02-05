@@ -25,7 +25,7 @@ const ProductEditorDebug = () => {
     const { touched, pendingChanges } = useContext(ValidationContext)
 
     const isDataUnion = isDataUnionProduct(product)
-    const onFixPriceChange = useCallback((checked) => {
+    const onTypeChange = useCallback((checked) => {
         updateType(checked ? productTypes.COMMUNITY : productTypes.NORMAL)
     }, [updateType])
 
@@ -44,7 +44,7 @@ const ProductEditorDebug = () => {
             >
                 Is Data Union? <Toggle
                     value={isDataUnion}
-                    onChange={onFixPriceChange}
+                    onChange={onTypeChange}
                 />
                 product:<br />
                 <pre className={styles.productData}>

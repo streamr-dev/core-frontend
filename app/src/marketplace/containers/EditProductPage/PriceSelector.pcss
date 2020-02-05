@@ -13,17 +13,6 @@
   opacity: 0.5;
 }
 
-.priceSelector {
-  margin-top: 2.5rem;
-}
-
-.priceOptionsWithAddress {
-  margin-top: 2.5rem;
-  display: grid;
-  grid-template-columns: 1fr 208px;
-  grid-column-gap: 1.5rem;
-}
-
 .priceOptions {
   margin-top: 3.25rem;
 }
@@ -34,12 +23,55 @@
   grid-template-columns: 1fr 36px;
   grid-column-gap: 1rem;
   line-height: 20px;
+  position: relative;
 }
 
 .helpIcon {
   height: 16px;
   width: 16px;
   margin-left: 0.5rem;
+  display: none;
+}
+
+.tooltipContainer {
+  display: inline-block;
+
+  .tooltip {
+    width: 210px;
+    position: absolute;
+    display: none;
+    padding: 1.125rem;
+    background: white;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    font-size: 0.875rem;
+    color: #323232;
+    letter-spacing: 0;
+    line-height: 20px;
+    top: 2rem;
+    right: 0;
+  }
+
+  &:hover {
+    .tooltip {
+      display: block;
+    }
+  }
+}
+
+.priceSelector {
+  margin-top: 2.5rem;
+}
+
+.priceOptionsWithAddress {
+  margin-top: 2.5rem;
+  display: grid;
+  grid-template-columns: 1fr 208px;
+  grid-column-gap: 1.5rem;
+
+  .helpIcon {
+    display: inline-block;
+  }
 }
 
 .toggle {
