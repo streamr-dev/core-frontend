@@ -22,7 +22,12 @@ const GetCryptoDialog = ({ onCancel }: Props) => (
             onClose={onCancel}
         >
             <img className={styles.icon} src={WalletNoEthPng} srcSet={`${WalletNoEthPng2x} 2x`} alt={I18n.t('error.wallet')} />
-            <Translate value="modal.getCryptoDialog.message" className={styles.message} />
+            <Translate
+                value="modal.getCryptoDialog.message"
+                className={styles.message}
+                tag="p"
+                dangerousHTML
+            />
 
             <div className={styles.buttonContainer}>
                 <ExternalLinkButton

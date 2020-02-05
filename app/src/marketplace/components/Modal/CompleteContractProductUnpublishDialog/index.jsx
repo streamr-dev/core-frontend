@@ -90,7 +90,7 @@ const CompleteContractProductUnpublishDialog = ({ onCancel, publishState }: Prop
                                 name="txFailed"
                                 alt={I18n.t('error.txFailed')}
                             />
-                            <p><Translate value="modal.completeUnpublish.failed.message" dangerousHTML /></p>
+                            <Translate value="modal.completeUnpublish.failed.message" dangerousHTML tag="p" />
                         </div>
                     </Dialog>
                 </ModalPortal>
