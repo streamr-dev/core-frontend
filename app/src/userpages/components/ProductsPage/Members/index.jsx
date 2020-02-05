@@ -31,6 +31,7 @@ import CommunityPending from '$mp/components/ProductPage/CommunityPending'
 import { ago } from '$shared/utils/time'
 import confirmDialog from '$shared/utils/confirm'
 import Search from '$userpages/components/Header/Search'
+import useIsMounted from '$shared/hooks/useIsMounted'
 
 import styles from './members.pcss'
 
@@ -59,6 +60,7 @@ const Members = () => {
     const [approving, setApproving] = useState(false)
     const [removing, setRemoving] = useState(false)
     const [search, setSearch] = useState(undefined)
+    const isMounted = useIsMounted()
 
     const { defaultFilter, filter, setSort } = useFilterSort(sortOptions)
     const {
@@ -131,13 +133,16 @@ const Members = () => {
                 joinRequestId: ids[index],
             })
         }
+
+        if (!isMounted()) { return }
+
         setApproving(false)
         selection.none()
 
         if (loadMembersRef.current) {
             loadMembersRef.current()
         }
-    }, [beneficiaryAddress, approve, selection, loadMembersRef])
+    }, [beneficiaryAddress, approve, selection, loadMembersRef, isMounted])
 
     const onRemove = useCallback(async () => {
         setRemoving(true)
@@ -169,6 +174,9 @@ const Members = () => {
                     joinRequestId: ids[index],
                 })
             }
+
+            if (!isMounted()) { return }
+
             selection.none()
 
             if (loadMembersRef.current) {
@@ -177,7 +185,7 @@ const Members = () => {
         }
 
         setRemoving(false)
-    }, [beneficiaryAddress, remove, selection, loadMembersRef])
+    }, [beneficiaryAddress, remove, selection, loadMembersRef, isMounted])
 
     const onSortChange = useCallback((...args) => {
         // Clear selected & search on sort change
