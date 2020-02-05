@@ -7,8 +7,8 @@ import { I18n } from 'react-redux-i18n'
 import KeyField from '$userpages/components/KeyField'
 import AddKeyField from '$userpages/components/KeyField/AddKeyField'
 import useProduct from '../ProductController/useProduct'
-import { getSecrets, postSecret, putSecret, deleteSecret } from '$mp/modules/communityProduct/services'
-import type { Secret } from '$mp/modules/communityProduct/types'
+import { getSecrets, postSecret, putSecret, deleteSecret } from '$mp/modules/dataUnion/services'
+import type { Secret } from '$mp/modules/dataUnion/types'
 
 import styles from './sharedSecretEditor.pcss'
 
@@ -19,22 +19,24 @@ type Props = {
 const SharedSecretEditor = ({ className }: Props) => {
     const product = useProduct()
     const [secrets, setSecrets] = useState([])
-    const communityId = (product && product.beneficiaryAddress) || ''
+    const dataUnionId = (product && product.beneficiaryAddress) || ''
 
     const fetchSecrets = useCallback(async () => {
         try {
-            const result = await getSecrets(communityId)
+            const result = await getSecrets({
+                dataUnionId,
+            })
             setSecrets(result)
         } catch (e) {
             console.error('Could not load shared secrets', e)
         }
-    }, [communityId])
+    }, [dataUnionId])
 
     useEffect(() => {
-        if (communityId) {
+        if (dataUnionId) {
             fetchSecrets()
         }
-    }, [communityId, fetchSecrets])
+    }, [dataUnionId, fetchSecrets])
 
     return (
         <div className={cx(className)}>
@@ -49,7 +51,11 @@ const SharedSecretEditor = ({ className }: Props) => {
                     allowDelete
                     onSave={async (name) => {
                         if (name) {
-                            const result = await putSecret(communityId, s.id, name)
+                            const result = await putSecret({
+                                dataUnionId,
+                                secretId: s.id,
+                                name,
+                            })
                             setSecrets((currentSecrets) => [
                                 ...currentSecrets.filter((secret) => secret.id !== s.id),
                                 result,
@@ -57,7 +63,10 @@ const SharedSecretEditor = ({ className }: Props) => {
                         }
                     }}
                     onDelete={async () => {
-                        await deleteSecret(communityId, s.id)
+                        await deleteSecret({
+                            dataUnionId,
+                            secretId: s.id,
+                        })
                         setSecrets((currentSecrets) => currentSecrets.filter((secret) => secret.id !== s.id))
                     }}
                     className={styles.keyField}
@@ -68,7 +77,11 @@ const SharedSecretEditor = ({ className }: Props) => {
                     label={I18n.t('editProductPage.sharedSecrets.addSecret')}
                     addKeyFieldAllowed
                     onSave={async (name, value) => {
-                        const result = await postSecret(communityId, name, value)
+                        const result = await postSecret({
+                            dataUnionId,
+                            name,
+                            secret: value,
+                        })
                         setSecrets((currentSecrets) => [
                             ...currentSecrets,
                             result,

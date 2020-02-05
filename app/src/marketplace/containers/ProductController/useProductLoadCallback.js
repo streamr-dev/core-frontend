@@ -10,11 +10,11 @@ import { handleLoadError } from '$auth/utils/loginInterceptor'
 import type { ProductId } from '$mp/flowtype/product-types'
 import { getProductById } from '$mp/modules/product/services'
 import { getProductByIdRequest, getProductByIdSuccess } from '$mp/modules/product/actions'
-import { isPaidProduct, isCommunityProduct } from '$mp/utils/product'
+import { isPaidProduct, isDataUnionProduct } from '$mp/utils/product'
 import { timeUnits, DEFAULT_CURRENCY } from '$shared/utils/constants'
 import { priceForTimeUnits } from '$mp/utils/price'
 import { isEthereumAddress } from '$mp/utils/validate'
-import { getAdminFee } from '$mp/modules/communityProduct/services'
+import { getAdminFee } from '$mp/modules/dataUnion/services'
 import { handleEntities } from '$shared/utils/entities'
 import { productSchema } from '$shared/modules/entities/schema'
 
@@ -41,13 +41,13 @@ export default function useProductLoadCallback() {
             }
             if (!isMounted()) { return }
 
-            // fetch admin fee from community contract
+            // fetch admin fee from data union contract
             let currentAdminFee
-            let communityDeployed = false
-            if (isCommunityProduct(product) && isEthereumAddress(product.beneficiaryAddress)) {
+            let dataUnionDeployed = false
+            if (isDataUnionProduct(product) && isEthereumAddress(product.beneficiaryAddress)) {
                 try {
                     currentAdminFee = await getAdminFee(product.beneficiaryAddress)
-                    communityDeployed = true
+                    dataUnionDeployed = true
                 } catch (e) {
                     // ignore error, assume contract has not been deployed
                 }
@@ -61,7 +61,7 @@ export default function useProductLoadCallback() {
                 currency: product.priceCurrency || DEFAULT_CURRENCY,
                 price: product.price || priceForTimeUnits(product.pricePerSecond || '0', 1, timeUnits.hour),
                 adminFee: currentAdminFee,
-                communityDeployed,
+                dataUnionDeployed,
             }
 
             // update redux state, keep original product in redux

@@ -42,5 +42,7 @@ export const searchCharMax = 250
 
 export const productTypes = {
     NORMAL: 'NORMAL',
+    DATA_UNION: 'DATA_UNION',
+    // deprecated, remove when not supported by API
     COMMUNITY: 'COMMUNITY',
 }

@@ -16,7 +16,7 @@ import useProductValidationEffect from './useProductValidationEffect'
 import useContractProductSubscriptionLoadCallback from './useContractProductSubscriptionLoadCallback'
 import useLoadCategoriesCallback from './useLoadCategoriesCallback'
 import useLoadProductStreamsCallback from './useLoadProductStreamsCallback'
-import useCommunityProductLoadCallback from './useCommunityProductLoadCallback'
+import useDataUnionLoadCallback from './useDataUnionLoadCallback'
 import useRelatedProductsLoadCallback from './useRelatedProductsLoadCallback'
 import useLoadStreamsCallback from './useLoadStreamsCallback'
 
@@ -26,7 +26,7 @@ type ContextProps = {
     loadContractProductSubscription: Function,
     loadCategories: Function,
     loadProductStreams: Function,
-    loadCommunityProduct: Function,
+    loadDataUnion: Function,
     loadRelatedProducts: Function,
     loadStreams: Function,
 }
@@ -73,7 +73,7 @@ function useProductController() {
     const loadContractProductSubscription = useContractProductSubscriptionLoadCallback()
     const loadCategories = useLoadCategoriesCallback()
     const loadProductStreams = useLoadProductStreamsCallback()
-    const loadCommunityProduct = useCommunityProductLoadCallback()
+    const loadDataUnion = useDataUnionLoadCallback()
     const loadRelatedProducts = useRelatedProductsLoadCallback()
     const loadStreams = useLoadStreamsCallback()
 
@@ -83,7 +83,7 @@ function useProductController() {
         loadContractProductSubscription,
         loadCategories,
         loadProductStreams,
-        loadCommunityProduct,
+        loadDataUnion,
         loadRelatedProducts,
         loadStreams,
     }), [
@@ -92,7 +92,7 @@ function useProductController() {
         loadContractProductSubscription,
         loadCategories,
         loadProductStreams,
-        loadCommunityProduct,
+        loadDataUnion,
         loadRelatedProducts,
         loadStreams,
     ])

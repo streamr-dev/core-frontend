@@ -44,8 +44,8 @@ msgstr "View Product"
 msgid "actionsDropdown##viewStats"
 msgstr "View Stats"
 
-msgid "actionsDropdown##viewCommunity"
-msgstr "View Community"
+msgid "actionsDropdown##viewDataUnion"
+msgstr "View Data Union"
 
 msgid "actionsDropdown##copyUrl"
 msgstr "Copy URL"
@@ -279,7 +279,7 @@ msgstr "Update admin fee"
 
 msgid "modal##completePublish##updateAdminFee##started##message"
 msgstr ""
-"You need to confirm the transaction in your wallet to update the community admin fee."
+"You need to confirm the transaction in your wallet to update the data union admin fee."
 
 msgid "modal##completePublish##updateContractProduct##started##title"
 msgstr "Update price information"
@@ -658,55 +658,55 @@ msgstr ""
 msgid "modal##web3##installsupportedbrowser##title"
 msgstr "Your browser is not supported"
 
-msgid "modal##deployCommunity##confirm##title"
+msgid "modal##deployDataUnion##confirm##title"
 msgstr "Deploy %{name}"
 
-msgid "modal##deployCommunity##confirm##learnAbout"
+msgid "modal##deployDataUnion##confirm##learnAbout"
 msgstr "Learn about"
 
-msgid "modal##deployCommunity##confirm##deployingDrafts"
+msgid "modal##deployDataUnion##confirm##deployingDrafts"
 msgstr "deploying drafts"
 
-msgid "modal##deployCommunity##guide##title"
+msgid "modal##deployDataUnion##guide##title"
 msgstr "Deploy %{name}"
 
-msgid "modal##deployCommunity##guide##dontShowAgain"
+msgid "modal##deployDataUnion##guide##dontShowAgain"
 msgstr "Don't show this guide again"
 
-msgid "modal##deployCommunity##guide##preview##updated"
+msgid "modal##deployDataUnion##guide##preview##updated"
 msgstr "Updated just now"
 
-msgid "modal##deployCommunity##guide##preview##status"
+msgid "modal##deployDataUnion##guide##preview##status"
 msgstr "Draft"
 
-msgid "modal##deployCommunity##guide##step1"
+msgid "modal##deployDataUnion##guide##step1"
 msgstr ""
 "Deploying your product’s smart contract will allow"
 "<br />"
-"your users to join the community via your app."
+"your users to join the data union via your app."
 
-msgid "modal##deployCommunity##guide##step2"
+msgid "modal##deployDataUnion##guide##step2"
 msgstr ""
 "Once deployed, your product is not published, but will appear as"
 "<br />"
 "a Draft in Core &gt; Products. Publish when it has enough members."
 
-msgid "modal##deployCommunity##guide##step3"
+msgid "modal##deployDataUnion##guide##step3"
 msgstr ""
 "A minimum of one member is needed to publish the product."
 "<br />"
-"In Core, community size is shown on the Members badge."
+"In Core, data union size is shown on the Members badge."
 
-msgid "modal##deployCommunity##guide##step4"
+msgid "modal##deployDataUnion##guide##step4"
 msgstr ""
-"View analytics and manually manage your community"
+"View analytics and manually manage your data union"
 "<br />"
 "by clicking the Members badge on the product tile."
 
-msgid "modal##deployCommunity##deploying##title"
+msgid "modal##deployDataUnion##deploying##title"
 msgstr "Deploying %{name}"
 
-msgid "modal##deployCommunity##deploying##description"
+msgid "modal##deployDataUnion##deploying##description"
 msgstr ""
 "Estimated deployment time is %{time}. You can wait or close"
 "<br />"
@@ -778,7 +778,7 @@ msgid "productTypeChooser##title"
 msgstr "Choose your product type"
 
 msgid "productTypeChooser##standard##title"
-msgstr "Standard Product"
+msgstr "Data Product"
 
 msgid "productTypeChooser##standard##description"
 msgstr ""
@@ -786,16 +786,16 @@ msgstr ""
 "For help creating streams, see the <a href=\"%{docsLink}\">docs</a>."
 
 msgid "productTypeChooser##standard##linkTitle"
-msgstr "Create standard product"
+msgstr "Create data product"
 
-msgid "productTypeChooser##community##title"
-msgstr "Community Product"
+msgid "productTypeChooser##dataUnion##title"
+msgstr "Data Union"
 
-msgid "productTypeChooser##community##description"
+msgid "productTypeChooser##dataUnion##description"
 msgstr "Gather members via your own app and crowdsell the data they provide. You take a cut, and the rest is distributed to members."
 
-msgid "productTypeChooser##community##linkTitle"
-msgstr "Create community product"
+msgid "productTypeChooser##dataUnion##linkTitle"
+msgstr "Create data union"
 
 msgid "productDetailsEditor##category"
 msgstr "Set product category"
@@ -841,6 +841,9 @@ msgstr "Saved to my purchases"
 
 msgid "productPage##relatedProducts"
 msgstr "Related products"
+
+msgid "productPage##dataUnionPending##title"
+msgstr "Deploying your Data Union"
 
 msgid "productPage##streamListing##add"
 msgstr "Add to editor"

@@ -135,7 +135,7 @@ class ActionBar extends Component<Props> {
                                 </FilterSelector>
                             </li>
                             <li className={classNames('d-none d-md-block', styles.createProduct)}>
-                                {!!process.env.COMMUNITY_PRODUCTS && (
+                                {!!process.env.DATA_UNIONS && (
                                     <Button
                                         kind="secondary"
                                         type="button"
@@ -144,7 +144,7 @@ class ActionBar extends Component<Props> {
                                         <Translate value="actionBar.create" />
                                     </Button>
                                 )}
-                                {!process.env.COMMUNITY_PRODUCTS && (
+                                {!process.env.DATA_UNIONS && (
                                     <Button kind="secondary" tag={Link} to={links.marketplace.createProduct}>
                                         <Translate value="actionBar.create" />
                                     </Button>

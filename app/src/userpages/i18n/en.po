@@ -162,13 +162,15 @@ msgid "userpages##products##filterProducts"
 msgstr "Filter products"
 
 msgid "userpages##products##noCreatedProducts##title"
-msgstr "You haven’t created any products yet."
+msgstr "You haven’t created any Data Products or Data Unions yet."
 
 msgid "userpages##products##noCreatedProducts##message"
-msgstr "Click the button above to create one."
+msgstr ""
+"Click the Create button above to get started.<br />"
+"If you need help, see the <a href=\"%{docsLink}\">docs</a>."
 
 msgid "userpages##products##noCreatedProducts##messageMobile"
-msgstr "Use the desktop app to make one."
+msgstr "Use the app in a desktop browser to create one."
 
 msgid "userpages##products##noProductsResult##title"
 msgstr "No results."
@@ -186,7 +188,7 @@ msgid "userpages##products##published"
 msgstr "Published"
 
 msgid "userpages##products##createProduct"
-msgstr "Create product"
+msgstr "Create"
 
 msgid "userpages##products##viewProduct"
 msgstr "View Product"
@@ -194,31 +196,31 @@ msgstr "View Product"
 msgid "userpages##products##settings"
 msgstr "Settings"
 
-msgid "userpages##members##noCommunityMembers##approve##title"
+msgid "userpages##members##noDataUnionMembers##approve##title"
 msgstr "No one has applied to join yet."
 
-msgid "userpages##members##noCommunityMembers##approve##message"
+msgid "userpages##members##noDataUnionMembers##approve##message"
 msgstr "Get out there and promote it 🚀"
 
-msgid "userpages##members##noCommunityMembers##remove##title"
+msgid "userpages##members##noDataUnionMembers##remove##title"
 msgstr "No one has joined yet."
 
-msgid "userpages##members##noCommunityMembers##remove##message"
+msgid "userpages##members##noDataUnionMembers##remove##message"
 msgstr "Get out there and promote it 🚀"
 
-msgid "userpages##members##noCommunityMembers##rejected##title"
+msgid "userpages##members##noDataUnionMembers##rejected##title"
 msgstr "You haven't rejected any approvals yet."
 
-msgid "userpages##members##noCommunityMembers##rejected##message"
+msgid "userpages##members##noDataUnionMembers##rejected##message"
 msgstr "Keep up the good work 👍"
 
-msgid "userpages##members##noCommunityMembersResult##title"
+msgid "userpages##members##noDataUnionMembersResult##title"
 msgstr "Nope, sorry!"
 
-msgid "userpages##members##noCommunityMembersResult##message"
+msgid "userpages##members##noDataUnionMembersResult##message"
 msgstr "We couldn't find any members that match your search."
 
-msgid "userpages##members##noCommunityMembersResult##clearFilters"
+msgid "userpages##members##noDataUnionMembersResult##clearFilters"
 msgstr "Clear filters"
 
 msgid "userpages##members##table##ethereumAddress"
@@ -266,7 +268,7 @@ msgid "userpages##members##confirmTitle"
 msgstr "Are you sure?"
 
 msgid "userpages##members##confirmMessage"
-msgstr "This is an unrecoverable action. It will permanently<br/>remove the selected members from your community."
+msgstr "This is an unrecoverable action. It will permanently<br/>remove the selected members from your data union."
 
 msgid "userpages##members##confirmButton"
 msgstr "Yes, remove"

@@ -280,8 +280,8 @@ msgstr "Telegram Group"
 msgid "general##giveFeedback"
 msgstr "Give feedback"
 
-msgid "general##labels##community"
-msgstr "Community Product"
+msgid "general##labels##dataUnion"
+msgstr "Data Union"
 
 msgid "general##top"
 msgstr "Top"

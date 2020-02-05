@@ -87,12 +87,12 @@ module.exports = {
         marketplace: {
             root: routes.docsMarketplaceRoot(),
             introToMarketplace: routes.docsMarketplaceIntroToMarketplace(),
-            communityProducts: routes.docsMarketplaceCommunityProducts(),
+            dataUnions: routes.docsMarketplaceDataUnions(),
         },
         products: {
             root: routes.docsProductsRoot(),
             introToProducts: routes.docsProductsIntroToProducts(),
-            communityProducts: routes.docsProductsCommunityProducts(),
+            dataUnions: routes.docsProductsDataUnions(),
         },
         // runningNode: routes.docsRunningNode(),
         SDKs: {

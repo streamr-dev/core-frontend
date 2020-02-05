@@ -34,11 +34,11 @@ stories.add('with position', () => (
 stories.add('with badge & tag', () => (
     <div>
         <Label>
-            <Label.Badge badge="members" value={number('Community members', 15)} />
+            <Label.Badge badge="members" value={number('Data union members', 15)} />
         </Label>
         <br />
         <Label>
-            <Label.Badge tag="community" />
+            <Label.Badge tag="dataUnion" />
         </Label>
     </div>
 ))

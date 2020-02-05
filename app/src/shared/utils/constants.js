@@ -64,7 +64,7 @@ export const transactionTypes = {
     REDEPLOY_PRODUCT: 'redeployProduct',
     UNDEPLOY_PRODUCT: 'undeployProduct',
     PAYMENT: 'payment',
-    DEPLOY_COMMUNITY: 'deployCommunity',
+    DEPLOY_DATA_UNION: 'deployDataUnion',
     UPDATE_ADMIN_FEE: 'updateAdminFee',
 }
 
@@ -76,7 +76,7 @@ export const gasLimits = {
     BUY_PRODUCT_WITH_ERC20: 6e6,
     DELETE_PRODUCT: 5e4,
     APPROVE: 5e4,
-    DEPLOY_COMMUNITY_PRODUCT: 3e6,
+    DEPLOY_DATA_UNION: 3e6,
     UPDATE_ADMIN_FEE: 3e5,
 }
 

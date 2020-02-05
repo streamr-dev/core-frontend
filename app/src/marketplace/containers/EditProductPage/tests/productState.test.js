@@ -114,7 +114,7 @@ describe('Product State', () => {
             })
         })
 
-        it('puts admin fee as pending change for unpublished community product', () => {
+        it('puts admin fee as pending change for unpublished data union', () => {
             const product = {
                 id: '1',
                 name: 'My Product',
@@ -196,7 +196,7 @@ describe('Product State', () => {
             expect(State.getPendingChanges(product)).toMatchObject({})
         })
 
-        it('returns empty object for unpublished community product', () => {
+        it('returns empty object for unpublished data union', () => {
             const product = {
                 id: '1',
                 name: 'My Product',
@@ -207,7 +207,7 @@ describe('Product State', () => {
             expect(State.getPendingChanges(product)).toMatchObject({})
         })
 
-        it('returns pending admin fee for unpublished community product', () => {
+        it('returns pending admin fee for unpublished data union', () => {
             const product = {
                 id: '1',
                 name: 'My Product',
@@ -246,7 +246,7 @@ describe('Product State', () => {
             })
         })
 
-        it('returns pending changes for published community product', () => {
+        it('returns pending changes for published data union', () => {
             const product = {
                 id: '1',
                 name: 'My Product',
@@ -269,7 +269,7 @@ describe('Product State', () => {
             })
         })
 
-        it('returns pending changes for unpublished community product', () => {
+        it('returns pending changes for unpublished data union', () => {
             const product = {
                 id: '1',
                 name: 'My Product',
@@ -308,7 +308,7 @@ describe('Product State', () => {
             expect(State.hasPendingChange(nextProduct, 'description')).toBe(false)
         })
 
-        it('it returns true for unpublished community product admin fee change', () => {
+        it('it returns true for unpublished data union admin fee change', () => {
             const product = {
                 id: '1',
                 name: 'My Product',
@@ -370,7 +370,7 @@ describe('Product State', () => {
             })
         })
 
-        it('it returns the current data and updated admin fee for unpublished community product', () => {
+        it('it returns the current data and updated admin fee for unpublished data union', () => {
             const product = {
                 id: '1',
                 name: 'My Product',

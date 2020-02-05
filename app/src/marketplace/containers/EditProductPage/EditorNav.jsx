@@ -3,7 +3,7 @@
 import React, { useContext, useMemo, useState, useCallback, useRef, useEffect } from 'react'
 import { I18n } from 'react-redux-i18n'
 
-import { isCommunityProduct } from '$mp/utils/product'
+import { isDataUnionProduct } from '$mp/utils/product'
 import EditorNavComponent, { statuses } from '$mp/components/ProductPage/EditorNav'
 import Scrollspy from 'react-scrollspy'
 
@@ -27,7 +27,7 @@ const EditorNav = () => {
     const { isValid, isTouched, isPendingChange } = useContext(ValidationContext)
     const { lastSectionRef } = useContext(EditControllerContext)
 
-    const isCommunity = isCommunityProduct(product)
+    const isDataUnion = isDataUnionProduct(product)
     const isPublic = isPublished(product)
 
     const getStatus = useCallback((name: string) => {
@@ -44,7 +44,7 @@ const EditorNav = () => {
     const priceStatus = useMemo(() => {
         const price = getStatus('pricePerSecond')
 
-        if (!isCommunity) {
+        if (!isDataUnion) {
             return price
         }
         const address = getStatus('beneficiaryAddress')
@@ -58,12 +58,12 @@ const EditorNav = () => {
         }
 
         return statuses.EMPTY
-    }, [getStatus, isCommunity])
+    }, [getStatus, isDataUnion])
 
     const detailsStatus = useMemo(() => {
         const category = getStatus('category')
 
-        if (!isCommunity) {
+        if (!isDataUnion) {
             return category
         }
         const adminFee = getStatus('adminFee')
@@ -77,7 +77,7 @@ const EditorNav = () => {
         }
 
         return statuses.EMPTY
-    }, [getStatus, isCommunity])
+    }, [getStatus, isDataUnion])
 
     const sharedSecretStatus = useMemo(() => {
         if (!isTouched('sharedSecrets')) {
@@ -145,7 +145,7 @@ const EditorNav = () => {
         onClickFn,
     ])
 
-    if (!isCommunity) {
+    if (!isDataUnion) {
         sections = sections.filter((s) => s.id !== 'shared-secrets')
     }
 
