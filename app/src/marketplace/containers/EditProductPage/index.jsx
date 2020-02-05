@@ -53,7 +53,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
         loadStreams()
     }, [loadCategories, loadStreams])
 
-    // Load eth identities & community product (used to determine if owner account is linked)
+    // Load eth identities & data union (used to determine if owner account is linked)
     const { load: loadEthIdentities } = useEthereumIdentities()
     const originalProduct = useProduct()
     const { beneficiaryAddress } = originalProduct

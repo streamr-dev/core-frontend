@@ -154,11 +154,11 @@ msgstr "Connect an Ethereum identity"
 msgid "editProductPage##connectEthIdentity##identityNotLinked"
 msgstr ""
 "You haven't connected your Ethereum address to your Streamr account yet. "
-"In order to manage your community, you need to do this before deploying your product."
+"In order to manage your data union, you need to do this before deploying your product."
 
 msgid "editProductPage##connectEthIdentity##web3Locked"
 msgstr ""
-"In order to manage your community, you need to unlock your wallet and "
+"In order to manage your data union, you need to unlock your wallet and "
 "connect an Ethereum address to your Streamr account before deploying your product."
 
 msgid "editProductPage##connectEthIdentity##addNewAddress"

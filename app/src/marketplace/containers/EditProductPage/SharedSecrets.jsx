@@ -33,7 +33,7 @@ const SharedSecrets = ({ className }: Props) => {
             <Translate
                 value={`editProductPage.sharedSecrets.${isDeployed ? 'deployed' : 'notDeployed'}.description`}
                 tag="p"
-                docsLink={routes.docsProductsCommunityProducts()}
+                docsLink={routes.docsProductsDataUnions()}
                 dangerousHTML
             />
             <SharedSecretEditor disabled={!isDeployed || !ownerLinked} />
