@@ -1,6 +1,6 @@
 // @flow
 
-import React from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import cx from 'classnames'
 
 import Text from '$ui/Text'
@@ -13,12 +13,14 @@ type Props = LastErrorProps & {
     currency: string,
     className?: string,
     value?: string | number,
+    onChange?: ?(SyntheticInputEvent<EventTarget>) => void,
 }
 
 const PriceField = ({
     currency,
     className,
-    value,
+    value: valueProp,
+    onChange: onChangeProp,
     isProcessing,
     error,
     ...inputProps
@@ -27,6 +29,20 @@ const PriceField = ({
         error,
         isProcessing,
     })
+
+    const [value, setValue] = useState(valueProp)
+
+    useEffect(() => {
+        setValue(valueProp)
+    }, [valueProp])
+
+    const onChange = useCallback((e: SyntheticInputEvent<EventTarget>) => {
+        setValue(e.target.value)
+
+        if (onChangeProp) {
+            onChangeProp(e)
+        }
+    }, [onChangeProp])
 
     return (
         <div className={cx(styles.root, className)}>
@@ -39,7 +55,8 @@ const PriceField = ({
                     unstyled
                     smartCommit
                     selectAllOnFocus
-                    defaultValue={value}
+                    value={value}
+                    onChange={onChange}
                     className={styles.input}
                     {...inputProps}
                 />
