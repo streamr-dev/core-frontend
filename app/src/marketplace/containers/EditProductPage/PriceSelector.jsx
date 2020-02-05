@@ -12,6 +12,7 @@ import { selectDataPerUsd } from '$mp/modules/global/selectors'
 import RadioButtonGroup from '$shared/components/RadioButtonGroup'
 import SetPrice from '$mp/components/SetPrice'
 import Toggle from '$shared/components/Toggle'
+import SvgIcon from '$shared/components/SvgIcon'
 import { selectContractProduct } from '$mp/modules/contractProduct/selectors'
 
 import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
@@ -63,6 +64,7 @@ const PriceSelector = () => {
     }, [updatePriceCurrency])
 
     const isFreeProduct = !!product.isFree
+    const isDataUnion = isDataUnionProduct(product)
 
     const { isValid, message } = useValidation('pricePerSecond')
 
@@ -103,25 +105,32 @@ const PriceSelector = () => {
                         dataPerUsd={dataPerUsd}
                         error={isTouched('pricePerSecond') && !isValid ? message : undefined}
                     />
-                    {!isDataUnionProduct(product) && (
-                        <BeneficiaryAddress
-                            className={styles.beneficiaryAddress}
-                            address={product.beneficiaryAddress}
-                            onChange={updateBeneficiaryAddress}
-                            disabled={isFreeProduct || isLoadingOrSaving}
-                        />
-                    )}
-                    <div className={styles.fixPrice}>
-                        <label htmlFor="fixPrice">
-                            <Translate value="editProductPage.setPrice.fixPrice" />
-                        </label>
-                        <Toggle
-                            id="fixPrice"
-                            className={styles.toggle}
-                            value={fixInFiat}
-                            onChange={onFixPriceChange}
-                            disabled={isFreeProduct || isLoadingOrSaving}
-                        />
+                    <div
+                        className={cx({
+                            [styles.priceOptions]: !!isDataUnion,
+                            [styles.priceOptionsWithAddress]: !isDataUnion,
+                        })}
+                    >
+                        {!isDataUnion && (
+                            <BeneficiaryAddress
+                                address={product.beneficiaryAddress}
+                                onChange={updateBeneficiaryAddress}
+                                disabled={isFreeProduct || isLoadingOrSaving}
+                            />
+                        )}
+                        <div className={styles.fixPrice}>
+                            <label htmlFor="fixPrice">
+                                <Translate value={`editProductPage.setPrice.${isDataUnion ? 'dataUnion' : 'dataProduct'}.fixPrice`} />
+                                <SvgIcon name="outlineQuestionMark" className={styles.helpIcon} />
+                            </label>
+                            <Toggle
+                                id="fixPrice"
+                                className={styles.toggle}
+                                value={fixInFiat}
+                                onChange={onFixPriceChange}
+                                disabled={isFreeProduct || isLoadingOrSaving}
+                            />
+                        </div>
                     </div>
                 </div>
             </div>

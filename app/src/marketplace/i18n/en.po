@@ -142,8 +142,11 @@ msgstr "Set recipient ETH address"
 msgid "editProductPage##setPrice##placeholder##enterEthAddress"
 msgstr "Enter ETH address"
 
-msgid "editProductPage##setPrice##fixPrice"
+msgid "editProductPage##setPrice##dataUnion##fixPrice"
 msgstr "Fix price in fiat for protection against shifts in the DATA price"
+
+msgid "editProductPage##setPrice##dataProduct##fixPrice"
+msgstr "Fix price in fiat"
 
 msgid "editProductPage##productDetails##title"
 msgstr "Add some more details"

@@ -146,9 +146,11 @@ const BeneficiaryAddress = ({
                 htmlFor="beneficiaryAddress"
                 className={cx(styles.root, styles.BeneficiaryAddress, className)}
             >
-                <strong>
-                    <Translate value="editProductPage.setPrice.setRecipientEthAddress" />
-                </strong>
+                <Translate
+                    value="editProductPage.setPrice.setRecipientEthAddress"
+                    tag="div"
+                    className={styles.label}
+                />
                 <ActionsDropdown
                     disabled={disabled}
                     actions={[
