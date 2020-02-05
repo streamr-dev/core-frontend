@@ -12,12 +12,13 @@ import CurrencySelector from './CurrencySelector'
 import { getBalances, uniswapDATAtoETH, uniswapDATAtoDAI, uniswapETHtoDATA } from '$mp/utils/web3'
 import { isMobile } from '$shared/utils/platform'
 import { toSeconds } from '$mp/utils/time'
-import { usdToData, formatDecimals, dataToUsd } from '$mp/utils/price'
+import { dataToUsd, usdToData, formatDecimals } from '$mp/utils/price'
 import { timeUnits, contractCurrencies, paymentCurrencies, DEFAULT_CURRENCY } from '$shared/utils/constants'
 import type { Product } from '$mp/flowtype/product-types'
 import type { ContractCurrency, PaymentCurrency, NumberString, TimeUnit } from '$shared/flowtype/common-types'
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
+
 import styles from './chooseAccessPeriod.pcss'
 
 export type Props = {

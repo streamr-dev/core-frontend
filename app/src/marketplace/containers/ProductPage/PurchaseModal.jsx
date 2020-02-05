@@ -244,7 +244,8 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
 
                     // eslint-disable-next-line no-case-declarations
                     case paymentCurrencies.DAI:
-                        if (daiAllowance.isLessThan(daiPrice)) {
+                        const daiPurchasePrice = priceInDai.toString()
+                        if (daiAllowance.isLessThan(daiPurchasePrice)) {
                             if (daiAllowance.isGreaterThan(0)) {
                                 setStep(purchaseFlowSteps.RESET_DAI_ALLOWANCE)
                             } else {
@@ -270,7 +271,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
             } catch (e) {
                 setPurchaseError(e)
             }
-        }, [pricePerSecond, dataPerUsd, priceCurrency, isMounted, daiPrice, daiAllowance, dataAllowance])
+        }, [pricePerSecond, dataPerUsd, priceCurrency, isMounted, daiAllowance, dataAllowance])
 
     const onSetDataAllowance = useCallback(async () => {
         if (!purchasePrice) {
