@@ -1,18 +1,20 @@
 import React from 'react'
 import { shallow, mount } from 'enzyme'
-import sinon from 'sinon'
 import { act } from 'react-dom/test-utils'
 
 import IdentityHandler from '../../../../components/ProfilePage/IdentityHandler'
 
 const mockLoad = jest.fn()
 const mockApiOpen = jest.fn()
+const mockRemove = jest.fn()
 
 jest.mock('$shared/modules/integrationKey/hooks/useEthereumIdentities', () => (
     jest.fn().mockImplementation(() => ({
         load: mockLoad,
-        ethereumIdentities: [],
-        remove: jest.fn(),
+        ethereumIdentities: [{
+            id: '1',
+        }],
+        remove: mockRemove,
         edit: jest.fn(),
     }))
 ))
@@ -25,16 +27,10 @@ jest.mock('$shared/hooks/useModal', () => (
 jest.mock('$shared/hooks/useIsMounted')
 
 describe('IdentityHandler', () => {
-    let sandbox
-
     beforeEach(() => {
-        sandbox = sinon.createSandbox()
         mockLoad.mockClear()
         mockApiOpen.mockClear()
-    })
-
-    afterEach(() => {
-        sandbox.restore()
+        mockRemove.mockClear()
     })
 
     describe('componentDidMount', () => {
@@ -55,6 +51,18 @@ describe('IdentityHandler', () => {
             })
 
             expect(mockApiOpen).toHaveBeenCalled()
+        })
+    })
+
+    describe('onDelete', () => {
+        it('must open dialog to add identity', () => {
+            const el = mount(<IdentityHandler />)
+
+            act(() => {
+                el.find('ActionsDropdown').find('button').at(2).simulate('click')
+            })
+
+            expect(mockRemove).toHaveBeenCalled()
         })
     })
 

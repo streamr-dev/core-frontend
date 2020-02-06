@@ -62,15 +62,28 @@ describe('integrationKey - services', () => {
     describe('createPrivateKey', () => {
         it('sends a POST request to create a new integration key', async () => {
             const name = 'My private key'
-            const privateKey = '0x876EabF441B2EE5B5b0554Fd502a8E0600950cFa'
+            const account = {
+                address: '0x1234',
+                privateKey: '1234567890abcdefgh',
+            }
             const data = {
                 id: '1',
                 name,
                 service: integrationKeyServices.PRIVATE_KEY,
                 json: {
-                    address: privateKey,
+                    address: account.address,
                 },
             }
+
+            const createStub = sandbox.stub().callsFake(() => account)
+            const publicWeb3Stub = {
+                eth: {
+                    accounts: {
+                        create: createStub,
+                    },
+                },
+            }
+            sandbox.stub(getWeb3, 'getPublicWeb3').callsFake(() => publicWeb3Stub)
 
             moxios.wait(() => {
                 const request = moxios.requests.mostRecent()
@@ -86,13 +99,14 @@ describe('integrationKey - services', () => {
                     name,
                     service: integrationKeyServices.PRIVATE_KEY,
                     json: {
-                        privateKey,
+                        privateKey: account.privateKey,
                     },
                 }))
             })
 
-            const result = await services.createPrivateKey(name, privateKey)
+            const result = await services.createPrivateKey(name)
             assert.deepStrictEqual(result, data)
+            assert(createStub.calledOnce)
         })
     })
 

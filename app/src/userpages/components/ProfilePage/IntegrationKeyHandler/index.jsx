@@ -51,7 +51,7 @@ export const IntegrationKeyHandler = () => {
                     waiting={waiting}
                 >
                     <Translate
-                        value={`userpages.profilePage.ethereumPrivateKeys.${privateKeys && privateKeys[0] ? 'addNewAddress' : 'addAddress'}`}
+                        value={`userpages.profilePage.ethereumPrivateKeys.${privateKeys && privateKeys[0] ? 'addAddress' : 'addNewAddress'}`}
                     />
                 </Button>
                 <AddPrivateKeyDialog />

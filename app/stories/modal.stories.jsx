@@ -53,6 +53,8 @@ import {
 } from '$userpages/components/ProfilePage/IdentityHandler/IdentityChallengeDialog'
 import DuplicateIdentityDialog from '$userpages/components/ProfilePage/IdentityHandler/IdentityChallengeDialog/DuplicateIdentityDialog'
 import IdentityNameDialog from '$userpages/components/ProfilePage/IdentityHandler/IdentityNameDialog'
+import PrivateKeyNameDialog from '$userpages/components/ProfilePage/IntegrationKeyHandler/AddPrivateKeyDialog/PrivateKeyNameDialog'
+import PrivateKeySuccessDialog from '$userpages/components/ProfilePage/IntegrationKeyHandler/AddPrivateKeyDialog/SuccessDialog'
 
 // shared
 import ConfirmDialog from '$shared/components/ConfirmDialog'
@@ -803,5 +805,33 @@ story('EthereumIdentity/IdentityNameDialog')
         <IdentityNameDialog
             onClose={action('onClose')}
             onSave={action('onSave')}
+        />
+    ))
+
+story('PrivateKey/PrivateKeyNameDialog')
+    .add('default', () => (
+        <PrivateKeyNameDialog
+            onClose={action('onClose')}
+            onSave={action('onSave')}
+        />
+    ))
+    .add('waiting', () => (
+        <PrivateKeyNameDialog
+            onClose={action('onClose')}
+            onSave={action('onSave')}
+            waiting
+        />
+    ))
+
+story('PrivateKey/SuccessDialog')
+    .add('default', () => (
+        <PrivateKeySuccessDialog
+            onClose={action('onClose')}
+        />
+    ))
+    .add('waiting', () => (
+        <PrivateKeySuccessDialog
+            onClose={action('onClose')}
+            waiting
         />
     ))
