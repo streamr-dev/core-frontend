@@ -58,9 +58,13 @@
   Types
 */
 .primary {
-  color: rgba(255, 255, 255, 1);
   background-color: #0324FF;
   border-color: #0324FF;
+
+  &,
+  &:not([disabled]):--idle {
+    color: rgba(255, 255, 255, 1);
+  }
 
   &:not([disabled]):--enter {
     background-color: #0D009A;
@@ -98,9 +102,13 @@
 }
 
 .secondary {
-  color: rgba(50, 50, 50, 1);
   background-color: #EFEFEF;
   border-color: #EFEFEF;
+
+  &,
+  &:not([disabled]):--idle {
+    color: rgba(50, 50, 50, 1);
+  }
 
   &:not([disabled]):--enter {
     color: inherit;
@@ -136,9 +144,13 @@
 }
 
 .destructive {
-  color: rgba(255, 255, 255, 1);
   background-color: #FF0F2D;
   border-color: #FF0F2D;
+
+  &,
+  &:not([disabled]):--idle {
+    color: rgba(255, 255, 255, 1);
+  }
 
   &:not([disabled]):--enter {
     background-color: #EA112C;
@@ -156,11 +168,15 @@
 }
 
 .link {
-  color: rgba(82, 82, 82, 1);
   background-color: transparent;
   border-color: transparent;
   font-weight: var(--regular);
   padding: 0 0.5rem !important; /* ignore "size" classes */
+
+  &,
+  &:not([disabled]):--idle {
+    color: rgba(82, 82, 82, 1);
+  }
 
   &:not([disabled]):--enter {
     color: #323232;
@@ -196,7 +212,6 @@
 }
 
 .special {
-  color: rgba(50, 50, 50, 1);
   background-color: rgba(255, 255, 255, 0.9);
   border-color: rgba(255, 255, 255, 0.9);
   border-radius: 20px;
@@ -208,6 +223,11 @@
   text-transform: uppercase;
   letter-spacing: 1px;
   height: 40px !important; /* ignore "size" classes */
+
+  &,
+  &:not([disabled]):--idle {
+    color: rgba(50, 50, 50, 1);
+  }
 
   &:not([disabled]):--enter {
     color: inherit;

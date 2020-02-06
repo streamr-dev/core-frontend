@@ -1,0 +1,26 @@
+a {
+  color: #0324FF7F;
+  font-weight: inherit;
+}
+
+a:link,
+a:visited {
+  color: #0324FF;
+}
+
+a:link,
+a:active,
+a:focus,
+a:hover,
+a:visited {
+  text-decoration: none;
+}
+
+a:focus,
+a:hover {
+  color: #0D009A;
+}
+
+a:active {
+  color: #13013D;
+}
