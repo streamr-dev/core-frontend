@@ -63,7 +63,8 @@ export const getBalances = (): Promise<[BN, BN, BN]> => {
 }
 
 /**
- * uniswapDATAtoETH & uniswapDATAtoDAI the DAI and ETH value equivalents for a given quanity of DATA through a 'Uniswap'.
+ * uniswapDATAtoETH & uniswapDATAtoDAI return the DAI and ETH value equivalents
+ * for a given quantity of DATA through a 'Uniswap'.
  * A safety margin is added to ensure transactions succeed due to dynamic mainnet DATA exchange rates.
  *
  * !!!Note some versions of web3 will return a BigNumber from the Ethers library. This has a

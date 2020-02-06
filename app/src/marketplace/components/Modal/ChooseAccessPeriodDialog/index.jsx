@@ -90,15 +90,11 @@ export const ChooseAccessPeriodDialog = ({
 
     const isValidPrice = useCallback(() => {
         if (paymentCurrency === paymentCurrencies.ETH) {
-            if (BN(priceInEth).isNaN() || !BN(priceInEth).isGreaterThan(0) || !BN(priceInEth).isFinite()) {
-                return false
-            }
+            return !(BN(priceInEth).isNaN() || !BN(priceInEth).isGreaterThan(0) || !BN(priceInEth).isFinite())
         }
 
         if (paymentCurrency === paymentCurrencies.DAI) {
-            if (BN(priceInDai).isNaN() || !BN(priceInDai).isGreaterThan(0) || !BN(priceInDai).isFinite()) {
-                return false
-            }
+            return !(BN(priceInDai).isNaN() || !BN(priceInDai).isGreaterThan(0) || !BN(priceInDai).isFinite())
         }
 
         return true
