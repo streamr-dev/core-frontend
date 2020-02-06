@@ -84,8 +84,11 @@ export const uniswapDATAtoETH = async (dataQuantity: string, usePublicNode: bool
 
             return uniswapETH
         } catch (e) {
-            // Uniswap Adaptor contract has probably reverted a transaction.
-            // Set uniswap values to infinite to invalidate the price.
+            // Uniswap Adaptor contract has probably reverted the transaction.
+            // This can happen when the order size exhausts the uniswap exchange.
+            // In this case an invalid price is returned, primarily to block
+            // progression in the purchase flow.
+
             return BN('infinity')
         }
     }
@@ -105,8 +108,11 @@ export const uniswapDATAtoDAI = async (dataQuantity: string, usePublicNode: bool
 
             return uniswapDAI
         } catch (e) {
-            // Uniswap Adaptor contract has probably reverted a transaction.
-            // Set uniswap values to infinite to invalidate the price.
+            // Uniswap Adaptor contract has probably reverted the transaction.
+            // This can happen when the order size exhausts the uniswap exchange.
+            // In this case an invalid price is returned, primarily to block
+            // progression in the purchase flow.
+
             return BN('infinity')
         }
     }
@@ -124,8 +130,11 @@ export const uniswapETHtoDATA = async (ethQuantity: string, usePublicNode: boole
 
             return uniswapDATA
         } catch (e) {
-            // Uniswap Adaptor contract has probably reverted a transaction.
-            // Set uniswap values to infinite to invalidate the price.
+            // Uniswap Adaptor contract has probably reverted the transaction.
+            // This can happen when the order size exhausts the uniswap exchange.
+            // In this case an invalid price is returned, primarily to block
+            // progression in the purchase flow.
+
             return BN('infinity')
         }
     }
