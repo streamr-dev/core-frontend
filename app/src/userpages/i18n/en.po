@@ -915,6 +915,21 @@ msgstr "Signature request"
 msgid "modal##signatureRequest##description"
 msgstr "Please sign the challenge in Metamask window"
 
+msgid "modal##privateKey##defaultTitle"
+msgstr "Add a name to this Ethereum account"
+
+msgid "modal##privateKey##label"
+msgstr "Account name"
+
+msgid "modal##privateKey##placeholder"
+msgstr "eg. Mainnet Eth Address"
+
+msgid "modal##newPrivateKeySuccess##defaultTitle"
+msgstr "Success"
+
+msgid "modal##newPrivateKeySuccess##description"
+msgstr "You have added an Ethereum account"
+
 msgid "modal##newIdentity##defaultTitle"
 msgstr "Add a name to this Ethereum address"
 
