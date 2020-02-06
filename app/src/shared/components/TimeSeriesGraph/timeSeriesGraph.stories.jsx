@@ -18,7 +18,7 @@ const stories =
         }))
         .addDecorator(withKnobs)
 
-const today = new Date().getTime()
+const today = new Date('2035-01-01').getTime()
 
 const MSEC_DAILY = 86400000
 
