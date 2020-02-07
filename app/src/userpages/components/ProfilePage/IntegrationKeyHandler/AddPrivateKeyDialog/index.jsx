@@ -1,70 +1,60 @@
 // @flow
 
 import React, { useState, useCallback, useEffect } from 'react'
+
 import usePrivateKeys from '$shared/modules/integrationKey/hooks/usePrivateKeys'
 import useModal from '$shared/hooks/useModal'
 
 import PrivateKeyNameDialog from './PrivateKeyNameDialog'
-import SuccessDialog from './SuccessDialog'
 
 type Props = {
     api: Object,
 }
 
-const identityPhases = {
-    NAME: 'name',
-    COMPLETE: 'complete',
-}
-
 const AddIdentityDialog = ({ api }: Props) => {
     const { load: getPrivateKeys, fetching, create } = usePrivateKeys()
-    const [phase, setPhase] = useState(identityPhases.NAME)
-    const [result, setResult] = useState(false)
     const [waiting, setWaiting] = useState(false)
 
     const onSetName = useCallback((name: string) => {
-        setPhase(identityPhases.COMPLETE)
         setWaiting(true)
+
+        let added = false
+        let error
 
         try {
             create(name)
-            setResult(true)
+            added = true
         } catch (e) {
             console.warn(e)
+            error = e
         } finally {
             setWaiting(false)
+
+            api.close({
+                added,
+                error,
+            })
         }
-    }, [create])
+    }, [create, api])
 
     const onClose = useCallback(() => {
-        api.close(result)
-    }, [api, result])
+        api.close({
+            added: false,
+            error: undefined,
+        })
+    }, [api])
 
     useEffect(() => {
         getPrivateKeys()
     }, [getPrivateKeys])
 
-    switch (phase) {
-        case identityPhases.NAME: {
-            return (
-                <PrivateKeyNameDialog
-                    onClose={onClose}
-                    onSave={onSetName}
-                    waiting={fetching}
-                />
-            )
-        }
-
-        case identityPhases.COMPLETE:
-            return (
-                <SuccessDialog
-                    onClose={onClose}
-                    waiting={waiting}
-                />
-            )
-        default:
-            return null
-    }
+    return (
+        <PrivateKeyNameDialog
+            onClose={onClose}
+            onSave={onSetName}
+            waiting={fetching || waiting}
+        />
+    )
 }
 
 export default () => {

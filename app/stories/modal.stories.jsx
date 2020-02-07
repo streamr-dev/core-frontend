@@ -46,15 +46,9 @@ import SnippetDialog from '$userpages/components/SnippetDialog'
 import AvatarUploadDialog from '$userpages/components/Avatar/AvatarUploadDialog'
 import CropAvatarDialog from '$userpages/components/Avatar/CropAvatarDialog'
 import { ChangePasswordDialog } from '$userpages/components/ProfilePage/ChangePassword'
-import {
-    SignatureRequestDialog,
-    ErrorDialog as SignatureRequestErrorDialog,
-    SuccessDialog as SignatureRequestSuccessDialog,
-} from '$userpages/components/ProfilePage/IdentityHandler/IdentityChallengeDialog'
-import DuplicateIdentityDialog from '$userpages/components/ProfilePage/IdentityHandler/IdentityChallengeDialog/DuplicateIdentityDialog'
+import { SignatureRequestDialog, DuplicateIdentityDialog } from '$userpages/components/ProfilePage/IdentityHandler/IdentityChallengeDialog'
 import IdentityNameDialog from '$userpages/components/ProfilePage/IdentityHandler/IdentityNameDialog'
 import PrivateKeyNameDialog from '$userpages/components/ProfilePage/IntegrationKeyHandler/AddPrivateKeyDialog/PrivateKeyNameDialog'
-import PrivateKeySuccessDialog from '$userpages/components/ProfilePage/IntegrationKeyHandler/AddPrivateKeyDialog/SuccessDialog'
 
 // shared
 import ConfirmDialog from '$shared/components/ConfirmDialog'
@@ -782,16 +776,6 @@ story('EthereumIdentity/IdentityChallengeDialog')
             onClose={action('onClose')}
         />
     ))
-    .add('signature success', () => (
-        <SignatureRequestSuccessDialog
-            onClose={action('onClose')}
-        />
-    ))
-    .add('signature error', () => (
-        <SignatureRequestErrorDialog
-            onClose={action('onClose')}
-        />
-    ))
 
 story('EthereumIdentity/DuplicateIdentityDialog')
     .add('default', () => (
@@ -819,19 +803,6 @@ story('PrivateKey/PrivateKeyNameDialog')
         <PrivateKeyNameDialog
             onClose={action('onClose')}
             onSave={action('onSave')}
-            waiting
-        />
-    ))
-
-story('PrivateKey/SuccessDialog')
-    .add('default', () => (
-        <PrivateKeySuccessDialog
-            onClose={action('onClose')}
-        />
-    ))
-    .add('waiting', () => (
-        <PrivateKeySuccessDialog
-            onClose={action('onClose')}
             waiting
         />
     ))

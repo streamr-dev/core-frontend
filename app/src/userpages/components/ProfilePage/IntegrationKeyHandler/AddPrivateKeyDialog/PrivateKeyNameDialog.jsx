@@ -5,10 +5,11 @@ import { I18n } from 'react-redux-i18n'
 
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
+import { type UseStateTuple } from '$shared/flowtype/common-types'
 import Label from '$ui/Label'
 import Text from '$ui/Text'
 
-import styles from './addPrivateKeyDialog.pcss'
+import styles from './privateKeyNameDialog.pcss'
 
 type Props = {
     onClose: () => void,
@@ -17,7 +18,7 @@ type Props = {
 }
 
 const PrivateKeyNameDialog = ({ onClose, onSave: onSaveProp, waiting }: Props) => {
-    const [name, setName] = useState(undefined)
+    const [name, setName]: UseStateTuple<string> = useState('')
     const nameRef = useRef()
     nameRef.current = name
 

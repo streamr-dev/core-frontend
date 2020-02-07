@@ -1,7 +1,7 @@
 // @flow
 
 import React, { Fragment, useState, useCallback, useEffect } from 'react'
-import { Translate } from 'react-redux-i18n'
+import { I18n, Translate } from 'react-redux-i18n'
 
 import styles from '../profilePage.pcss'
 
@@ -10,6 +10,9 @@ import usePrivateKeys from '$shared/modules/integrationKey/hooks/usePrivateKeys'
 import useModal from '$shared/hooks/useModal'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import Button from '$shared/components/Button'
+import Notification from '$shared/utils/Notification'
+import { NotificationIcon } from '$shared/utils/constants'
+
 import AddPrivateKeyDialog from './AddPrivateKeyDialog'
 
 export const IntegrationKeyHandler = () => {
@@ -21,10 +24,23 @@ export const IntegrationKeyHandler = () => {
     const addPrivateKey = useCallback(async () => {
         setWaiting(true)
 
-        await addPrivateKeyDialog.open()
+        const { added, error } = await addPrivateKeyDialog.open()
 
         if (isMounted()) {
             setWaiting(false)
+
+            if (error) {
+                Notification.push({
+                    title: I18n.t('modal.privateKey.errorNotification'),
+                    icon: NotificationIcon.ERROR,
+                    error,
+                })
+            } else if (added) {
+                Notification.push({
+                    title: I18n.t('modal.privateKey.successNotification'),
+                    icon: NotificationIcon.CHECKMARK,
+                })
+            }
         }
     }, [addPrivateKeyDialog, isMounted])
 

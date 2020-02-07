@@ -12,7 +12,7 @@ import styles from './identityNameDialog.pcss'
 
 type Props = {
     onClose: () => void,
-    onSave: (string) => void,
+    onSave: (string) => Promise<void>,
 }
 
 type State = {
