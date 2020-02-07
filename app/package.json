@@ -107,7 +107,7 @@
     "@storybook/react": "^5.2.8",
     "@streamr/po-loader": "^0.1.1",
     "@streamr/streamr-icons": "^0.1.9",
-    "@streamr/streamr-layout": "^2.1.1",
+    "@streamr/streamr-layout": "^2.1.2",
     "abi-decoder": "^1.2.0",
     "ace-builds": "^1.4.7",
     "assert-diff": "^1.2.5",
