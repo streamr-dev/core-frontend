@@ -160,27 +160,20 @@ const AuthenticationRouter = () => ([
     <Redirect from="/register/forgotPassword" to={routes.forgotPassword()} key="ForgotPasswordRedirect" />,
 ])
 
-const MarketplaceRouter = () => {
-    const productPageRoute = process.env.NEW_MP_CONTRACT
-        ? <Route exact path={formatPath(marketplace.products, ':id')} component={ProductPage2} key="ProductPage2" />
-        : <Route exact path={formatPath(marketplace.products, ':id')} component={ProductPage} key="ProductPage" />
-
-    return (process.env.DATA_UNIONS ? [
-        <Route exact path={marketplace.main} component={Products} key="Products" />,
-        <Route exact path={formatPath(marketplace.products, ':id', 'streamPreview', ':streamId')} component={StreamPreviewPage} key="StreamPreview" />,
-        <Route exact path={routes.newProduct()} component={NewProductPage} key="NewProductPage" />,
-        <Route exact path={formatPath(marketplace.products, ':id', 'purchase')} component={ProductPurchasePage} key="ProductPurchasePage" />,
-        productPageRoute,
-    ] : [
-        <Route exact path={marketplace.main} component={Products} key="Products" />,
-        <Route exact path={links.marketplace.createProduct} component={CreateProductAuth} key="CreateProduct" />,
-        <Route exact path={formatPath(marketplace.products, ':id', 'publish')} component={ProductPublishPage} key="ProductPublishPage" />,
-        <Route exact path={formatPath(marketplace.products, ':id', 'streamPreview', ':streamId')} component={StreamPreviewPage} key="StreamPreview" />,
-        <Route exact path={formatPath(marketplace.products, ':id', 'purchase')} component={ProductPurchasePage} key="ProductPurchasePage" />,
-        <Route exact path={routes.editProduct()} component={EditProductAuth} key="EditProduct" />,
-        productPageRoute,
-    ])
-}
+const MarketplaceRouter = () => (process.env.DATA_UNIONS ? [
+    <Route exact path={marketplace.main} component={Products} key="Products" />,
+    <Route exact path={formatPath(marketplace.products, ':id', 'streamPreview', ':streamId')} component={StreamPreviewPage} key="StreamPreview" />,
+    <Route exact path={formatPath(marketplace.products, ':id')} component={ProductPage2} key="ProductPage2" />,
+    <Route exact path={routes.newProduct()} component={NewProductPage} key="NewProductPage" />,
+] : [
+    <Route exact path={marketplace.main} component={Products} key="Products" />,
+    <Route exact path={links.marketplace.createProduct} component={CreateProductAuth} key="CreateProduct" />,
+    <Route exact path={formatPath(marketplace.products, ':id', 'purchase')} component={ProductPurchasePage} key="ProductPurchasePage" />,
+    <Route exact path={formatPath(marketplace.products, ':id', 'publish')} component={ProductPublishPage} key="ProductPublishPage" />,
+    <Route exact path={formatPath(marketplace.products, ':id', 'streamPreview', ':streamId')} component={StreamPreviewPage} key="StreamPreview" />,
+    <Route exact path={formatPath(marketplace.products, ':id')} component={ProductPage} key="ProductPage" />,
+    <Route exact path={routes.editProduct()} component={EditProductAuth} key="EditProduct" />,
+])
 
 const DocsRouter = () => ([
     // Introduction routes
