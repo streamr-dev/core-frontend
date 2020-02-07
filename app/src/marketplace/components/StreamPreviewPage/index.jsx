@@ -113,7 +113,7 @@ const StreamPreviewPage = ({
             />
             <div className={styles.closeRow}>
                 <Button
-                    className={classnames(styles.closeButton)}
+                    className={styles.closeButton}
                     onClick={onClose}
                 >
                     <span className={styles.icon}>
