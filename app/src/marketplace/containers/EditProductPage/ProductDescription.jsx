@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useContext, useState, useCallback, useEffect } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import cx from 'classnames'
 import { Translate } from 'react-redux-i18n'
 
