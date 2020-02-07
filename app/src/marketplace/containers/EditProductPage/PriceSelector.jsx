@@ -118,7 +118,10 @@ const PriceSelector = () => {
                                 disabled={isFreeProduct || isLoadingOrSaving}
                             />
                         )}
-                        <div className={styles.fixPrice}>
+                        <div className={cx(styles.fixPrice, {
+                            [styles.fixPriceWithoutAddress]: !!isDataUnion,
+                        })}
+                        >
                             <label htmlFor="fixPrice">
                                 <Translate value={`editProductPage.setPrice.${isDataUnion ? 'dataUnion' : 'dataProduct'}.fixPrice`} />
                                 <div className={styles.tooltipContainer}>

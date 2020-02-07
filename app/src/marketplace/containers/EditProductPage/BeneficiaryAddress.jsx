@@ -19,6 +19,7 @@ import { selectEthereumIdentities } from '$shared/modules/integrationKey/selecto
 import { fetchIntegrationKeys } from '$shared/modules/integrationKey/actions'
 import { truncate } from '$shared/utils/text'
 import useAccountAddress from '$shared/hooks/useAccountAddress'
+import Label from '$ui/Label'
 
 import styles from './beneficiaryAddress.pcss'
 
@@ -144,12 +145,12 @@ const BeneficiaryAddress = ({
         <form autoComplete="off" onSubmit={(e) => e.preventDefault()}>
             <label
                 htmlFor="beneficiaryAddress"
-                className={cx(styles.root, styles.BeneficiaryAddress, className)}
+                className={cx(styles.root, className)}
             >
-                <Translate
+                <Label
+                    as={Translate}
                     value="editProductPage.setPrice.setRecipientEthAddress"
                     tag="div"
-                    className={styles.label}
                 />
                 <ActionsDropdown
                     disabled={disabled}
