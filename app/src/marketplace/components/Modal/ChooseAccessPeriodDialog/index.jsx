@@ -9,7 +9,7 @@ import useWeb3Status from '$shared/hooks/useWeb3Status'
 import LoadingIndicator from '$userpages/components/LoadingIndicator'
 import SelectField from '$mp/components/SelectField'
 import CurrencySelector from './CurrencySelector'
-import { getBalances, getUniswapEquivalents } from '$mp/utils/web3'
+import { getBalances, uniswapDATAtoETH, uniswapDATAtoDAI, uniswapETHtoDATA } from '$mp/utils/web3'
 import { isMobile } from '$shared/utils/platform'
 import { toSeconds } from '$mp/utils/time'
 import { dataToUsd, usdToData, formatDecimals } from '$mp/utils/price'
@@ -25,7 +25,14 @@ export type Props = {
     dataPerUsd: ?NumberString,
     pricePerSecond: $ElementType<Product, 'pricePerSecond'>,
     priceCurrency: $ElementType<Product, 'priceCurrency'>,
-    onNext: (time: NumberString, timeUnit: TimeUnit, paymentCurrency: PaymentCurrency) => Promise<void>,
+    onNext: (
+        time: NumberString,
+        timeUnit: TimeUnit,
+        paymentCurrency: PaymentCurrency,
+        priceInEth: NumberString,
+        priceInDai: NumberString,
+        priceInEthUsdEquivalent: NumberString
+    ) => Promise<void>,
     onCancel: () => void,
 }
 
@@ -60,6 +67,7 @@ export const ChooseAccessPeriodDialog = ({
     const [daiBalance, setDaiBalance] = useState('-')
     const [priceInEth, setPriceInEth] = useState('-')
     const [priceInDai, setPriceInDai] = useState('-')
+    const [ethPriceInUsd, setEthPriceInUsd] = useState('-')
 
     const [priceInData, priceInUsd] = useMemo(() => {
         const pricePerSecondInData = priceCurrency === contractCurrencies.DATA ?
@@ -80,18 +88,38 @@ export const ChooseAccessPeriodDialog = ({
 
     const isValidTime = useCallback(() => !BN(time).isNaN() && BN(time).isGreaterThan(0), [time])
 
+    const isValidPrice = useCallback(() => {
+        if (paymentCurrency === paymentCurrencies.ETH) {
+            return !(BN(priceInEth).isNaN() || !BN(priceInEth).isGreaterThan(0) || !BN(priceInEth).isFinite())
+        }
+
+        if (paymentCurrency === paymentCurrencies.DAI) {
+            return !(BN(priceInDai).isNaN() || !BN(priceInDai).isGreaterThan(0) || !BN(priceInDai).isFinite())
+        }
+
+        return true
+    }, [paymentCurrency, priceInEth, priceInDai])
+
     const getProductPrices = useCallback(async () => {
         if (isValidTime()) {
             setLoading(true)
-            const [ethValue, daiValue] = await getUniswapEquivalents(priceInData)
+
+            const ethValue = await uniswapDATAtoETH(priceInData)
+            const daiValue = await uniswapDATAtoDAI(priceInData)
+
+            let ethUSDEquivalent = await uniswapETHtoDATA(ethValue.toString())
+            ethUSDEquivalent = ethUSDEquivalent.dividedBy(Number(dataPerUsd) || 1)
+            setEthPriceInUsd(ethUSDEquivalent.isNaN() ? 'N/A' : formatDecimals(ethUSDEquivalent, contractCurrencies.USD))
+
+            setPriceInEth(BN(ethValue).isNaN() ? 'N/A' : formatDecimals(ethValue, paymentCurrencies.ETH).toString())
+            setPriceInDai(BN(daiValue).isNaN() ? 'N/A' : formatDecimals(daiValue, paymentCurrencies.DAI).toString())
+
             setLoading(false)
-            setPriceInEth(formatDecimals(ethValue, paymentCurrencies.ETH).toString())
-            setPriceInDai(formatDecimals(daiValue, paymentCurrencies.DAI).toString())
         } else {
             setPriceInEth('-')
             setPriceInDai('-')
         }
-    }, [isValidTime, priceInData])
+    }, [dataPerUsd, isValidTime, priceInData])
 
     const getAccountBalance = useCallback(async () => {
         setLoading(true)
@@ -109,6 +137,15 @@ export const ChooseAccessPeriodDialog = ({
                 return undefined
         }
     }, [paymentCurrency])
+
+    const approxUsd = () => {
+        if (paymentCurrency === paymentCurrencies.ETH) {
+            return ethPriceInUsd
+        } else if (paymentCurrency === paymentCurrencies.DAI) {
+            return priceInDai
+        }
+        return priceInUsd
+    }
 
     useEffect(() => {
         getProductPrices()
@@ -152,9 +189,8 @@ export const ChooseAccessPeriodDialog = ({
 
     const onNext = useCallback(async (selectedTime: NumberString | BN, selectedTimeUnit: TimeUnit, selectedPaymentCurrency: PaymentCurrency) => {
         setLoading(true)
-
-        await onNextProp(selectedTime, selectedTimeUnit, selectedPaymentCurrency)
-    }, [onNextProp])
+        await onNextProp(selectedTime, selectedTimeUnit, selectedPaymentCurrency, priceInEth, priceInDai, ethPriceInUsd)
+    }, [ethPriceInUsd, onNextProp, priceInDai, priceInEth])
 
     const onPaymentCurrencyChange = useCallback((currency: PaymentCurrency) => (setPaymentCurrency(currency)), [setPaymentCurrency])
 
@@ -174,7 +210,7 @@ export const ChooseAccessPeriodDialog = ({
                         kind: 'primary',
                         outline: true,
                         onClick: () => onNext(time, timeUnit, paymentCurrency),
-                        disabled: !isValidTime() || loading,
+                        disabled: !isValidTime() || !isValidPrice() || loading,
                     },
                 }}
                 contentClassName={styles.noPadding}
@@ -211,7 +247,7 @@ export const ChooseAccessPeriodDialog = ({
                             </span>
                         </span>
                         <span className={styles.usdEquiv}>
-                            {I18n.t('modal.chooseAccessPeriod.approx')} {priceInUsd} {contractCurrencies.USD}
+                            {I18n.t('modal.chooseAccessPeriod.approx')} {approxUsd()} {contractCurrencies.USD}
                         </span>
                     </div>
                     <LoadingIndicator loading={!!loading} className={styles.loadingIndicator} />
