@@ -71,7 +71,7 @@ export const createJoinPartStream = async (productId: ?ProductId = undefined): P
         // a race condition on backend and some of the calls will fail.
         // eslint-disable-next-line no-restricted-syntax
         for (const address of nodeAddresses) {
-            // Share permission is not strictly necessary but needed to an avoid error when
+            // Share permission is not strictly necessary but needed to avoid error when
             // removing user's share permission (must have at least one share permission)
             // eslint-disable-next-line no-await-in-loop
             await addPermission(stream.id, {
