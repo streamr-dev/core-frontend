@@ -26,7 +26,7 @@ const InsufficientDataDialog = ({ onCancel }: Props) => (
                 name="walletNoData"
                 alt={I18n.t('modal.insufficientDataDialog.title')}
             />
-            <Translate value="modal.insufficientDataDialog.message" className={styles.message} />
+            <Translate tag="p" dangerousHTML value="modal.insufficientDataDialog.message" className={styles.message} />
         </Dialog>
     </ModalPortal>
 )
