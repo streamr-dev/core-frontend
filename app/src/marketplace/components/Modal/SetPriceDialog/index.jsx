@@ -146,7 +146,7 @@ class SetPriceDialog extends React.Component<Props, State> {
                                 <Steps
                                     onCancel={onClose}
                                     onComplete={this.onComplete}
-                                    isDisabled={this.getErrors().length > 0}
+                                    disabled={this.getErrors().length > 0}
                                     errors={this.getErrors()}
                                 >
                                     <Step

@@ -1,6 +1,6 @@
 // @flow
 
-import getWeb3 from '$shared/web3/web3Provider'
+import getWeb3, { getPublicWeb3 } from '$shared/web3/web3Provider'
 import { get, post, del, put } from '$shared/utils/api'
 import { formatApiUrl } from '$shared/utils/url'
 import type { ApiResult } from '$shared/flowtype/common-types'
@@ -18,8 +18,12 @@ export const getIntegrationKeys = (): ApiResult<Array<IntegrationKey>> => get({
     url: formatApiUrl('integration_keys'),
 })
 
-export const createPrivateKey = (name: string, privateKey: Address): ApiResult<IntegrationKey> =>
-    post({
+export const createPrivateKey = (name: string): ApiResult<IntegrationKey> => {
+    const web3 = getPublicWeb3()
+
+    const { privateKey } = web3.eth.accounts.create()
+
+    return post({
         url: formatApiUrl('integration_keys'),
         data: {
             name,
@@ -29,6 +33,7 @@ export const createPrivateKey = (name: string, privateKey: Address): ApiResult<I
             },
         },
     })
+}
 
 export const editIntegrationKey = (keyId: IntegrationKeyId, name: string): ApiResult<IntegrationKey> =>
     put({

@@ -71,7 +71,7 @@ describe('ShareDialogPermission', () => {
             />)
 
             expect(permissionRow.find('.user')).toHaveLength(1)
-            expect(permissionRow.find('.user').find('.username').text()).toEqual('test2@test.test')
+            expect(permissionRow.find('.user').find('.userId').text()).toEqual('test2@test.test')
         })
 
         it('renders the userLabel correctly if there is no user', () => {
@@ -85,7 +85,7 @@ describe('ShareDialogPermission', () => {
             />)
 
             assert(permissionRow.find('.user'))
-            assert.equal(permissionRow.find('.user').find('.username').text(), 'A')
+            assert.equal(permissionRow.find('.user').find('.userId').text(), 'A')
         })
     })
 

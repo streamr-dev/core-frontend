@@ -44,7 +44,7 @@ describe('entities - reducer', () => {
                 [value.id]: value,
             }), {}),
             contractProducts: {},
-            communityProducts: {},
+            dataUnions: {},
             streams: {},
             relatedProducts: {},
             subscriptions: {},
@@ -53,6 +53,7 @@ describe('entities - reducer', () => {
             canvases: {},
             integrationKeys: {},
             resourceKeys: {},
+            joinRequests: {},
         }
 
         let state = reducer(undefined, {
@@ -106,7 +107,7 @@ describe('entities - reducer', () => {
                 [value.id]: value,
             }), {}),
             contractProducts: {},
-            communityProducts: {},
+            dataUnions: {},
             streams: {},
             relatedProducts: {},
             transactions: {},
@@ -121,6 +122,7 @@ describe('entities - reducer', () => {
             canvases: {},
             integrationKeys: {},
             resourceKeys: {},
+            joinRequests: {},
         }
 
         assert.deepStrictEqual(reducer(undefined, {

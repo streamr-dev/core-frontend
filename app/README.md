@@ -62,8 +62,8 @@ To be able to use the Marketplace, you'll need to configure these variables into
 | WEB3_TRANSACTION_CONFIRMATION_BLOCKS              |                                                                      |
 | STREAMR_ENGINE_NODE_ADDRESSES                     |                                                                      |
 | UNISWAP_ADAPTOR_CONTRACT_ADDRESS                  | Address of the deployed Uniswap adaptor                              |
-| COMMUNITY_PRODUCT_OPERATOR_ADDRESS                |                                                                      |
-| COMMUNITY_PRODUCT_BLOCK_FREEZE_PERIOD_SECONDS     |                                                                      |
+| DATA_UNION_OPERATOR_ADDRESS                       |                                                                      |
+| DATA_UNION_BLOCK_FREEZE_PERIOD_SECONDS            |                                                                      |
 | WEB3_TRANSACTION_CONFIRMATION_BLOCKS              |                                                                      |
 
 Development values (set the values in your `.env`):
@@ -86,8 +86,8 @@ Development values (set the values in your `.env`):
 | WEB3_TRANSACTION_CONFIRMATION_BLOCKS              | 1                                            |                                 |
 | STREAMR_ENGINE_NODE_ADDRESSES                     | 0xFCAd0B19bB29D4674531d6f115237E16AfCE377c   |                                 |
 | UNISWAP_ADAPTOR_CONTRACT_ADDRESS                  | 0xe4ea76e830a659282368ca2e7e4d18c4ae52d8b3   |                                 |
-| COMMUNITY_PRODUCT_OPERATOR_ADDRESS                | 0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1   |                                 |
-| COMMUNITY_PRODUCT_BLOCK_FREEZE_PERIOD_SECONDS     | 1                                            |                                 |
+| DATA_UNION_OPERATOR_ADDRESS                       | 0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1   |                                 |
+| DATA_UNION_BLOCK_FREEZE_PERIOD_SECONDS            | 1                                            |                                 |
 | WEB3_TRANSACTION_CONFIRMATION_BLOCKS              | 1                                            |                                 |
 
 Optional config values:

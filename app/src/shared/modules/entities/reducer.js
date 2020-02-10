@@ -12,7 +12,7 @@ export const initialState: EntitiesState = {
     categories: {},
     products: {},
     contractProducts: {},
-    communityProducts: {},
+    dataUnions: {},
     streams: {},
     relatedProducts: {},
     subscriptions: {},
@@ -21,6 +21,7 @@ export const initialState: EntitiesState = {
     canvases: {},
     integrationKeys: {},
     resourceKeys: {},
+    joinRequests: {},
 }
 
 // Arrays do not replace the destination value by default, use customizer to handle

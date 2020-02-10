@@ -3,7 +3,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
-import TextInput from '$shared/components/TextInput'
+import Label from '$ui/Label'
+import Text from '$ui/Text'
 
 import {
     updateCurrentUserName,
@@ -63,21 +64,25 @@ export class ProfileSettings extends Component<Props> {
                     onImageChange={this.onImageChange}
                 />
                 <div className={styles.fullname}>
-                    <TextInput
-                        label="Your Name"
+                    <Label htmlFor="userFullname">
+                        Your Name
+                    </Label>
+                    <Text
+                        id="userFullname"
                         name="name"
                         value={user.name || ''}
                         onChange={this.onNameChange}
                         required
-                        preserveLabelSpace
                     />
                 </div>
                 <div className={styles.email}>
-                    <TextInput
-                        label="Email"
+                    <Label htmlFor="userEmail">
+                        Email
+                    </Label>
+                    <Text
+                        id="userEmail"
                         value={user.username || ''}
                         readOnly
-                        preserveLabelSpace
                     />
                 </div>
                 <div className={styles.password}>

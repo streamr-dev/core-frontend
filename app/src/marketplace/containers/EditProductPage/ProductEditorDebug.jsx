@@ -5,7 +5,8 @@ import cx from 'classnames'
 
 import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
 import Toggle from '$shared/components/Toggle'
-import { isCommunityProduct } from '$mp/utils/product'
+import { isDataUnionProduct } from '$mp/utils/product'
+import { productTypes } from '$mp/utils/constants'
 
 import useEditableProduct from '../ProductController/useEditableProduct'
 import useEditableProductActions from '../ProductController/useEditableProductActions'
@@ -23,9 +24,9 @@ const ProductEditorDebug = () => {
     const { updateType } = useEditableProductActions()
     const { touched, pendingChanges } = useContext(ValidationContext)
 
-    const isCommunity = isCommunityProduct(product)
+    const isDataUnion = isDataUnionProduct(product)
     const onFixPriceChange = useCallback((checked) => {
-        updateType(checked ? 'COMMUNITY' : 'NORMAL')
+        updateType(checked ? productTypes.COMMUNITY : productTypes.NORMAL)
     }, [updateType])
 
     return (
@@ -41,8 +42,8 @@ const ProductEditorDebug = () => {
                 [styles.minimized]: minimized,
             })}
             >
-                Is Community Product? <Toggle
-                    value={isCommunity}
+                Is Data Union? <Toggle
+                    value={isDataUnion}
                     onChange={onFixPriceChange}
                 />
                 product:<br />

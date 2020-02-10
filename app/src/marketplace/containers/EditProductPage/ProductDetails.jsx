@@ -3,13 +3,14 @@
 import React, { useMemo, useContext } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
 
 import useEditableProduct from '../ProductController/useEditableProduct'
 import useValidation from '../ProductController/useValidation'
 import useEditableProductActions from '../ProductController/useEditableProductActions'
 import { usePending } from '$shared/hooks/usePending'
 import SelectField from '$mp/components/SelectField'
-import { isCommunityProduct } from '$mp/utils/product'
+import { isDataUnionProduct } from '$mp/utils/product'
 import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
 import { selectAllCategories, selectFetchingCategories } from '$mp/modules/categories/selectors'
 
@@ -48,7 +49,10 @@ const ProductDetails = () => {
     return (
         <section id="details" className={cx(styles.root, styles.ProductDetails)}>
             <div>
-                <h1>Give us some more details</h1>
+                <Translate
+                    tag="h1"
+                    value="editProductPage.productDetails.title"
+                />
                 <Details>
                     <Details.Row label="Choose a product category">
                         {!fetching && (
@@ -63,7 +67,7 @@ const ProductDetails = () => {
                             />
                         )}
                     </Details.Row>
-                    {isCommunityProduct(product) && (
+                    {isDataUnionProduct(product) && (
                         <Details.Row label="Set your admin fee" className={styles.adminFee}>
                             <SelectField
                                 name="adminFee"

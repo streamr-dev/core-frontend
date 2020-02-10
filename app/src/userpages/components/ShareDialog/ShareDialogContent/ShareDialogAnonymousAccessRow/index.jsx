@@ -7,7 +7,8 @@ import { Translate, I18n } from 'react-redux-i18n'
 import type { PermissionState } from '$userpages/flowtype/states/permission-state'
 import type { Permission, ResourceType, ResourceId } from '$userpages/flowtype/permission-types'
 import { addResourcePermission, removeResourcePermission } from '$userpages/modules/permission/actions'
-import SelectInput from '$shared/components/SelectInput'
+import Select from '$ui/Select'
+import Label from '$ui/Label'
 
 import styles from './shareDialogAnonymousAccessRow.pcss'
 
@@ -60,8 +61,10 @@ export class ShareDialogAnonymousAccessRow extends Component<Props> {
                 {!!this.props.showEmbedInactiveWarning && (
                     <Translate value="modal.shareResource.embedInactiveWarning" className={styles.embedInactive} />
                 )}
-                <SelectInput
-                    label={I18n.t('modal.shareResource.anonymousAccess')}
+                <Label>
+                    {I18n.t('modal.shareResource.anonymousAccess')}
+                </Label>
+                <Select
                     name="name"
                     options={opts}
                     value={selected || opts[0]}

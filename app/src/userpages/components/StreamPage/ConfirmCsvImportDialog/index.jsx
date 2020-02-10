@@ -5,10 +5,12 @@ import { I18n } from 'react-redux-i18n'
 
 import type { StreamId } from '$shared/flowtype/stream-types'
 import type { CsvUploadState } from '$userpages/flowtype/states/stream-state'
-import TextInput from '$shared/components/TextInput'
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
-import SelectInput from '$shared/components/SelectInput'
+import Select from '$ui/Select'
+import Label from '$ui/Label'
+import Text from '$ui/Text'
+import Errors from '$ui/Errors'
 
 import styles from './confirmCsvImportDialog.pcss'
 
@@ -176,8 +178,10 @@ export class ConfirmCsvImportView extends Component<Props, State> {
                 >
                     <div className={styles.content}>
                         <div className={styles.row}>
-                            <SelectInput
-                                label={I18n.t('userpages.streams.edit.history.confirmCsv.selectTimestamp')}
+                            <Label>
+                                {I18n.t('userpages.streams.edit.history.confirmCsv.selectTimestamp')}
+                            </Label>
+                            <Select
                                 name=""
                                 options={headers.map((header, index) => (
                                     {
@@ -188,13 +192,14 @@ export class ConfirmCsvImportView extends Component<Props, State> {
                                 value={timestampColumnSelector || headers[0]}
                                 onChange={this.onTimestampColumnIndexChange}
                                 required
-                                preserveLabelSpace
                             />
                         </div>
 
                         <div className={styles.row}>
-                            <SelectInput
-                                label={I18n.t('userpages.streams.edit.history.confirmCsv.dateFormat')}
+                            <Label state={!!errorMessage && 'ERROR'}>
+                                {I18n.t('userpages.streams.edit.history.confirmCsv.dateFormat')}
+                            </Label>
+                            <Select
                                 name=""
                                 options={
                                     Object.keys(dateFormats).map((f) => {
@@ -207,10 +212,13 @@ export class ConfirmCsvImportView extends Component<Props, State> {
                                 }
                                 value={dateSelector}
                                 onChange={(value) => this.onDateFormatChange(value)}
-                                error={errorMessage || ''}
                                 required
-                                preserveLabelSpace
                             />
+                            {errorMessage && (
+                                <Errors>
+                                    {errorMessage}
+                                </Errors>
+                            )}
                             {dateFormat && dateFormats[dateFormat] && (
                                 <span className={styles.helpText}>
                                     {dateFormats[dateFormat].helpText}
@@ -220,9 +228,11 @@ export class ConfirmCsvImportView extends Component<Props, State> {
 
                         {dateFormat === 'CUSTOM' && (
                             <div className={styles.row}>
-                                <TextInput
-                                    label={I18n.t('userpages.streams.edit.history.confirmCsv.customFormat')}
-                                    preserveLabelSpace
+                                <Label htmlFor="customFormat">
+                                    {I18n.t('userpages.streams.edit.history.confirmCsv.customFormat')}
+                                </Label>
+                                <Text
+                                    id="customFormat"
                                     value={customFormat}
                                     onChange={this.onCustomFormatChange}
                                 />

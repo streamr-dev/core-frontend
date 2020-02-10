@@ -10,6 +10,7 @@ import BN from 'bignumber.js'
 
 import { transactionStates, ProgrammingLanguages } from '$shared/utils/constants'
 import { actionsTypes } from '$mp/containers/EditProductPage/publishQueue'
+import PngIcon from '$shared/components/PngIcon'
 
 import croppedImage from '$mp/assets/product_standard.png'
 
@@ -20,9 +21,9 @@ import CompletePublishTransaction from '$mp/components/Modal/CompletePublishTran
 import CompleteUnpublishDialog from '$mp/components/Modal/CompleteUnpublishDialog'
 import ConfirmPublishTransaction from '$mp/components/Modal/ConfirmPublishTransaction'
 import ConfirmSaveDialog from '$mp/components/Modal/ConfirmSaveDialog'
-import GuidedDeployCommunityDialog from '$mp/components/Modal/GuidedDeployCommunityDialog'
-import ConfirmDeployCommunityDialog from '$mp/components/Modal/ConfirmDeployCommunityDialog'
-import DeployingCommunityDialog from '$mp/components/Modal/DeployingCommunityDialog'
+import GuidedDeployDataUnionDialog from '$mp/components/Modal/GuidedDeployDataUnionDialog'
+import ConfirmDeployDataUnionDialog from '$mp/components/Modal/ConfirmDeployDataUnionDialog'
+import DeployingDataUnionDialog from '$mp/components/Modal/DeployingDataUnionDialog'
 import GetDataTokensDialog from '$mp/components/Modal/GetDataTokensDialog'
 import GetCryptoDialog from '$mp/components/Modal/GetCryptoDialog'
 import InsufficientDataDialog from '$mp/components/Modal/InsufficientDataDialog'
@@ -36,7 +37,6 @@ import ReadyToPublishDialog from '$mp/components/Modal/ReadyToPublishDialog'
 import ReadyToUnpublishDialog from '$mp/components/Modal/ReadyToUnpublishDialog'
 import SaveContractProductDialog from '$mp/components/Modal/SaveContractProductDialog'
 import SetAllowanceDialog from '$mp/components/Modal/SetAllowanceDialog'
-import MpUnlockWalletDialog from '$mp/components/Modal/UnlockWalletDialog'
 import ErrorDialog from '$mp/components/Modal/ErrorDialog'
 import CropImageModal from '$mp/components/Modal/CropImageModal'
 
@@ -46,17 +46,13 @@ import SnippetDialog from '$userpages/components/SnippetDialog'
 import AvatarUploadDialog from '$userpages/components/Avatar/AvatarUploadDialog'
 import CropAvatarDialog from '$userpages/components/Avatar/CropAvatarDialog'
 import { ChangePasswordDialog } from '$userpages/components/ProfilePage/ChangePassword'
-import {
-    SignatureRequestDialog,
-    ErrorDialog as SignatureRequestErrorDialog,
-    SuccessDialog as SignatureRequestSuccessDialog,
-} from '$userpages/components/ProfilePage/IdentityHandler/IdentityChallengeDialog'
-import DuplicateIdentityDialog from '$userpages/components/ProfilePage/IdentityHandler/IdentityChallengeDialog/DuplicateIdentityDialog'
+import { SignatureRequestDialog, DuplicateIdentityDialog } from '$userpages/components/ProfilePage/IdentityHandler/IdentityChallengeDialog'
 import IdentityNameDialog from '$userpages/components/ProfilePage/IdentityHandler/IdentityNameDialog'
+import PrivateKeyNameDialog from '$userpages/components/ProfilePage/IntegrationKeyHandler/AddPrivateKeyDialog/PrivateKeyNameDialog'
 
 // shared
 import ConfirmDialog from '$shared/components/ConfirmDialog'
-import SharedUnlockWalletDialog from '$shared/components/Web3ErrorDialog/UnlockWalletDialog'
+import UnlockWalletDialog from '$shared/components/Web3ErrorDialog/UnlockWalletDialog'
 import InstallMetaMaskDialog from '$shared/components/Web3ErrorDialog/Web3NotDetectedDialog/InstallMetaMaskDialog'
 import InstallMobileApplicationDialog from '$shared/components/Web3ErrorDialog/Web3NotDetectedDialog/InstallMobileApplicationDialog'
 import InstallSupportedBrowserDialog from '$shared/components/Web3ErrorDialog/Web3NotDetectedDialog/InstallSupportedBrowserDialog'
@@ -301,9 +297,9 @@ story('Product Editor/ConfirmSaveDialog')
         />
     ))
 
-story('Product Editor/GuidedDeployCommunityDialog')
+story('Product Editor/GuidedDeployDataUnionDialog')
     .add('default', () => (
-        <GuidedDeployCommunityDialog
+        <GuidedDeployDataUnionDialog
             // $FlowFixMe
             product={{
                 id: '1',
@@ -317,7 +313,7 @@ story('Product Editor/GuidedDeployCommunityDialog')
 
 story('Product Editor/ConfirmDeployCommunityDialog')
     .add('default', () => (
-        <ConfirmDeployCommunityDialog
+        <ConfirmDeployDataUnionDialog
             // $FlowFixMe
             product={{
                 id: '1',
@@ -332,7 +328,7 @@ story('Product Editor/ConfirmDeployCommunityDialog')
 
 story('Product Editor/DeployingCommunityDialog')
     .add('default', () => (
-        <DeployingCommunityDialog
+        <DeployingDataUnionDialog
             // $FlowFixMe
             product={{
                 id: '1',
@@ -342,6 +338,20 @@ story('Product Editor/DeployingCommunityDialog')
             estimate={number('Estimate', 360)}
             onClose={action('onClose')}
             onContinue={action('onContinue')}
+        />
+    ))
+    .add('minimized', () => (
+        <DeployingDataUnionDialog
+            // $FlowFixMe
+            product={{
+                id: '1',
+                name: 'Example product',
+                type: 'COMMUNITY',
+            }}
+            estimate={number('Estimate', 360)}
+            onClose={action('onClose')}
+            onContinue={action('onContinue')}
+            minimized
         />
     ))
 
@@ -445,6 +455,8 @@ story('Marketplace/PurchaseSummaryDialog')
             price={BN(123)}
             ethPrice={BN(124)}
             daiPrice={BN(125)}
+            dataPerUsd="0.1"
+            ethPriceInUsd="1"
             paymentCurrency="DATA"
             time="24"
             timeUnit="hour"
@@ -458,6 +470,8 @@ story('Marketplace/PurchaseSummaryDialog')
             price={BN(123)}
             ethPrice={BN(124)}
             daiPrice={BN(125)}
+            dataPerUsd="0.1"
+            ethPriceInUsd="1"
             paymentCurrency="DATA"
             time="24"
             timeUnit="hour"
@@ -538,14 +552,6 @@ story('Marketplace/CompletePurchaseDialog')
         <CompletePurchaseDialog
             purchaseState={transactionStates.FAILED}
             onCancel={action('onCancel')}
-        />
-    ))
-
-story('Marketplace/UnlockWalletDialog')
-    .add('default', () => (
-        <MpUnlockWalletDialog
-            onClose={action('close')}
-            message={text('Dialog text', 'Dialog text')}
         />
     ))
 
@@ -670,13 +676,30 @@ story('Shared/ConfirmDialog')
 
 story('Shared/UnlockWalletDialog')
     .add('default', () => (
-        <SharedUnlockWalletDialog
+        <UnlockWalletDialog
             title={text('Dialog title', 'Dialog title')}
             onClose={action('onClose')}
         />
     ))
+    .add('with text', () => (
+        <UnlockWalletDialog
+            title={text('Dialog title', 'Dialog title')}
+            onClose={action('onClose')}
+        >
+            {text('Dialog text', 'Please unlock your wallet')}
+        </UnlockWalletDialog>
+    ))
+    .add('with different icon', () => (
+        <UnlockWalletDialog
+            title={text('Dialog title', 'Dialog title')}
+            onClose={action('onClose')}
+            icon={select('Icon', PngIcon.names, 'walletError')}
+        >
+            {text('Dialog text', 'Please unlock your wallet')}
+        </UnlockWalletDialog>
+    ))
     .add('waiting', () => (
-        <SharedUnlockWalletDialog
+        <UnlockWalletDialog
             waiting
             title={text('Dialog title', 'Dialog title')}
             onClose={action('onClose')}
@@ -755,16 +778,6 @@ story('EthereumIdentity/IdentityChallengeDialog')
             onClose={action('onClose')}
         />
     ))
-    .add('signature success', () => (
-        <SignatureRequestSuccessDialog
-            onClose={action('onClose')}
-        />
-    ))
-    .add('signature error', () => (
-        <SignatureRequestErrorDialog
-            onClose={action('onClose')}
-        />
-    ))
 
 story('EthereumIdentity/DuplicateIdentityDialog')
     .add('default', () => (
@@ -778,5 +791,20 @@ story('EthereumIdentity/IdentityNameDialog')
         <IdentityNameDialog
             onClose={action('onClose')}
             onSave={action('onSave')}
+        />
+    ))
+
+story('PrivateKey/PrivateKeyNameDialog')
+    .add('default', () => (
+        <PrivateKeyNameDialog
+            onClose={action('onClose')}
+            onSave={action('onSave')}
+        />
+    ))
+    .add('waiting', () => (
+        <PrivateKeyNameDialog
+            onClose={action('onClose')}
+            onSave={action('onSave')}
+            waiting
         />
     ))

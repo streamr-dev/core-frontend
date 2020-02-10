@@ -15,7 +15,7 @@ import links from '$mp/../links'
 import type { Product } from '$mp/flowtype/product-types'
 import Tile from '$shared/components/Tile'
 
-import { isPaidProduct, isCommunityProduct } from '$mp/utils/product'
+import { isPaidProduct, isDataUnionProduct } from '$mp/utils/product'
 
 import Logo from '$shared/components/Logo'
 
@@ -74,7 +74,7 @@ class ProductTile extends Component<Props, State> {
             // $FlowFixMe property `members` is missing in  `Product` but given in Products component
             members,
         } = source
-        const isCommunity = isCommunityProduct(type)
+        const isDataUnion = isDataUnionProduct(type)
 
         return (
             <div className={styles.productTile}>
@@ -106,10 +106,10 @@ class ProductTile extends Component<Props, State> {
                                 <Tile.Labels
                                     topLeft
                                     labels={{
-                                        community: isCommunity,
+                                        dataUnion: isDataUnion,
                                     }}
                                 />
-                                {isCommunity && members !== undefined && (
+                                {isDataUnion && members !== undefined && (
                                     <Tile.Badges
                                         bottomRight
                                         badges={{
@@ -127,7 +127,7 @@ class ProductTile extends Component<Props, State> {
                             <Tile.Labels
                                 topLeft
                                 labels={{
-                                    community: isCommunity,
+                                    dataUnion: isDataUnion,
                                 }}
                             />
                         </div>

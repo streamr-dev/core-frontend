@@ -45,20 +45,6 @@ const IntegrationKeyItem = ({
 
     return (
         <div className={styles.keyField}>
-            {!editing && (
-                <div className={styles.balances}>
-                    <span className={styles.balanceLabel}>DATA</span>
-                    <span className={styles.balanceValue}>
-                        {!fetchingDataBalance && !dataBalanceError && (dataBalance)}
-                        {!fetchingDataBalance && !!dataBalanceError && '-'}
-                    </span>
-                    <span className={styles.balanceLabel}>ETH</span>
-                    <span className={styles.balanceValue}>
-                        {!fetchingEthBalance && !ethBalanceError && (ethBalance)}
-                        {!fetchingEthBalance && !!ethBalanceError && '-'}
-                    </span>
-                </div>
-            )}
             <KeyField
                 className={styles.singleKey}
                 keyName={item.name}
@@ -71,6 +57,20 @@ const IntegrationKeyItem = ({
                 onSave={(keyName) => onEdit(item.id, keyName || '')}
                 onToggleEditor={setEditing}
                 valueLabel="address"
+                labelComponent={!editing && (
+                    <div className={styles.balances}>
+                        <span className={styles.balanceLabel}>DATA</span>
+                        <span className={styles.balanceValue}>
+                            {!fetchingDataBalance && !dataBalanceError && (dataBalance)}
+                            {!fetchingDataBalance && !!dataBalanceError && '-'}
+                        </span>
+                        <span className={styles.balanceLabel}>ETH</span>
+                        <span className={styles.balanceValue}>
+                            {!fetchingEthBalance && !ethBalanceError && (ethBalance)}
+                            {!fetchingEthBalance && !!ethBalanceError && '-'}
+                        </span>
+                    </div>
+                )}
             />
         </div>
     )

@@ -18,10 +18,10 @@ describe('KeyFieldEditor', () => {
                 onSave={() => {}}
             />)
 
-            const inputs = el.find('TextInput')
-            assert(inputs.length === 2)
-            assert(inputs.at(0).prop('label') === 'keyName')
-            assert(inputs.at(1).prop('label') === 'apiKey')
+            assert(el.exists('.keyName Text'))
+            assert(el.exists('.keyValue Text'))
+            assert(el.find('Label').at(0).text() === 'keyName')
+            assert(el.find('Label').at(1).text() === 'apiKey')
         })
 
         it('shows correct text for save button', () => {
@@ -66,8 +66,7 @@ describe('KeyFieldEditor', () => {
                 onSave={() => {}}
             />)
 
-            const inputs = el.find('TextInput')
-            assert(inputs.at(1).prop('readOnly') === true)
+            assert(el.find('Text').at(1).prop('readOnly') === true)
         })
 
         it('calls onSave prop', () => {
@@ -88,7 +87,7 @@ describe('KeyFieldEditor', () => {
                 error={error}
             />)
 
-            assert(el.find('TextInput').at(1).prop('error') === error)
+            assert(el.find('Errors').text() === error)
         })
     })
 
@@ -99,9 +98,8 @@ describe('KeyFieldEditor', () => {
                 createNew
             />)
 
-            const inputs = el.find('TextInput')
-            assert(inputs.length === 1)
-            assert(inputs.at(0).prop('label') === 'keyName')
+            assert(el.find('Text').length === 1)
+            assert(el.find('Label').text() === 'keyName')
         })
 
         it('shows correct text for save button', () => {
@@ -120,7 +118,7 @@ describe('KeyFieldEditor', () => {
                 error={error}
             />)
 
-            assert(el.find('TextInput').at(0).prop('error') === error)
+            assert(el.find('Errors').text() === error)
         })
 
         it('shows save button as disabled unless name is given', () => {
@@ -145,8 +143,8 @@ describe('KeyFieldEditor', () => {
                 editValue
             />)
 
-            const inputs = el.find('TextInput')
-            assert(inputs.at(1).prop('readOnly') === false)
+            assert(el.find('Text').at(1).prop('id') === 'keyValue')
+            assert(el.find('Text').at(1).prop('readOnly') === false)
         })
     })
 })

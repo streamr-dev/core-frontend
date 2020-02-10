@@ -18,9 +18,9 @@ const stories =
         }))
         .addDecorator(withKnobs)
 
-const today = new Date().getTime()
-
 const MSEC_DAILY = 86400000
+
+const today = new Date('2035-01-01').getTime() + Math.floor(MSEC_DAILY / 2)
 
 const graphData = [{
     x: today,

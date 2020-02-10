@@ -9,7 +9,7 @@ import { setResourceHighestOperationForUser, removeAllResourcePermissionsByUser 
 import type { Permission, ResourceType, ResourceId } from '../../../../../flowtype/permission-types'
 import { selectUserData } from '$shared/modules/user/selectors'
 import SvgIcon from '$shared/components/SvgIcon'
-import SelectInput from '$shared/components/SelectInput'
+import Select from '$ui/Select'
 import Button from '$shared/components/Button'
 
 import styles from './shareDialogPermission.pcss'
@@ -57,14 +57,14 @@ export class ShareDialogPermission extends Component<Props> {
                 <div className={styles.permissionRow}>
                     <SvgIcon name="user" className={styles.avatarIcon} />
                     <div className={styles.user}>
-                        <div className={styles.title}>
-                            <Translate value="modal.shareResource.user.defaultTitle" />
-                        </div>
-                        <div className={styles.username} title={user}>
+                        <div className={styles.userId}>
                             {user}
                         </div>
+                        <div className={styles.userName} title={user}>
+                            <Translate value="modal.shareResource.user.defaultTitle" />
+                        </div>
                     </div>
-                    <SelectInput.Input
+                    <Select
                         name="operation"
                         className={styles.select}
                         options={options}

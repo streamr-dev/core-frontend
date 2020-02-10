@@ -50,9 +50,6 @@ msgstr "Editor"
 msgid "general##faq"
 msgstr "FAQ"
 
-msgid "general##footnote"
-msgstr "Made with ❤️ & ☕ by Streamr contributors in 2019"
-
 msgid "general##designAssets"
 msgstr "Design Assets"
 
@@ -232,6 +229,9 @@ msgstr "No data yet"
 msgid "shared##status##error"
 msgstr "Inactive"
 
+msgid "shared##status##pending"
+msgstr "Pending"
+
 msgid "shared##date##day"
 msgstr "Day"
 
@@ -280,8 +280,8 @@ msgstr "Telegram Group"
 msgid "general##giveFeedback"
 msgstr "Give feedback"
 
-msgid "general##labels##community"
-msgstr "Community Product"
+msgid "general##labels##dataUnion"
+msgstr "Data Union"
 
 msgid "general##top"
 msgstr "Top"

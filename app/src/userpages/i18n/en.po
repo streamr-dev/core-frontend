@@ -92,14 +92,23 @@ msgstr "Z to A"
 msgid "userpages##filter##published"
 msgstr "Published"
 
-msgid "userpages##filter##draft"
-msgstr "Draft"
+msgid "userpages##filter##drafts"
+msgstr "Drafts"
 
 msgid "userpages##filter##active"
 msgstr "Active"
 
 msgid "userpages##filter##expired"
 msgstr "Expired"
+
+msgid "userpages##filter##approve"
+msgstr "Approve"
+
+msgid "userpages##filter##remove"
+msgstr "Remove"
+
+msgid "userpages##filter##rejected"
+msgstr "Rejected"
 
 msgid "userpages##header##canvases"
 msgstr "Canvases"
@@ -153,13 +162,15 @@ msgid "userpages##products##filterProducts"
 msgstr "Filter products"
 
 msgid "userpages##products##noCreatedProducts##title"
-msgstr "You haven’t created any products yet."
+msgstr "You haven’t created any Data Products or Data Unions yet."
 
 msgid "userpages##products##noCreatedProducts##message"
-msgstr "Click the button above to create one."
+msgstr ""
+"Click the Create button above to get started.<br />"
+"If you need help, see the <a href=\"%{docsLink}\">docs</a>."
 
 msgid "userpages##products##noCreatedProducts##messageMobile"
-msgstr "Use the desktop app to make one."
+msgstr "Use the app in a desktop browser to create one."
 
 msgid "userpages##products##noProductsResult##title"
 msgstr "No results."
@@ -177,13 +188,90 @@ msgid "userpages##products##published"
 msgstr "Published"
 
 msgid "userpages##products##createProduct"
-msgstr "Create product"
+msgstr "Create"
 
 msgid "userpages##products##viewProduct"
 msgstr "View Product"
 
 msgid "userpages##products##settings"
 msgstr "Settings"
+
+msgid "userpages##members##noDataUnionMembers##approve##title"
+msgstr "No one has applied to join yet."
+
+msgid "userpages##members##noDataUnionMembers##approve##message"
+msgstr "Get out there and promote it 🚀"
+
+msgid "userpages##members##noDataUnionMembers##remove##title"
+msgstr "No one has joined yet."
+
+msgid "userpages##members##noDataUnionMembers##remove##message"
+msgstr "Get out there and promote it 🚀"
+
+msgid "userpages##members##noDataUnionMembers##rejected##title"
+msgstr "You haven't rejected any approvals yet."
+
+msgid "userpages##members##noDataUnionMembers##rejected##message"
+msgstr "Keep up the good work 👍"
+
+msgid "userpages##members##noDataUnionMembersResult##title"
+msgstr "Nope, sorry!"
+
+msgid "userpages##members##noDataUnionMembersResult##message"
+msgstr "We couldn't find any members that match your search."
+
+msgid "userpages##members##noDataUnionMembersResult##clearFilters"
+msgstr "Clear filters"
+
+msgid "userpages##members##table##ethereumAddress"
+msgstr "Ethereum address"
+
+msgid "userpages##members##table##joinedRequested"
+msgstr "Joined / requested"
+
+msgid "userpages##members##table##lastUpdated"
+msgstr "Last updated"
+
+msgid "userpages##members##table##status"
+msgstr "Status"
+
+msgid "userpages##members##status##accepted"
+msgstr "Accepted"
+
+msgid "userpages##members##status##rejected"
+msgstr "Rejected"
+
+msgid "userpages##members##status##pending"
+msgstr "Pending"
+
+msgid "userpages##members##applicantsSelected"
+msgid_plural "userpages##members##applicantsSelected"
+msgstr[1] "%{count} applicant selected"
+msgstr[2] "%{count} applicants selected"
+
+msgid "userpages##members##actions##cancel"
+msgstr "Cancel"
+
+msgid "userpages##members##actions##selectAll"
+msgstr "Select all"
+
+msgid "userpages##members##actions##deselectAll"
+msgstr "Deselect all"
+
+msgid "userpages##members##actions##approve"
+msgstr "Approve"
+
+msgid "userpages##members##actions##remove"
+msgstr "Remove"
+
+msgid "userpages##members##confirmTitle"
+msgstr "Are you sure?"
+
+msgid "userpages##members##confirmMessage"
+msgstr "This is an unrecoverable action. It will permanently<br/>remove the selected members from your data union."
+
+msgid "userpages##members##confirmButton"
+msgstr "Yes, remove"
 
 msgid "userpages##purchases##filterPurchases"
 msgstr "Filter purchases"
@@ -792,6 +880,9 @@ msgstr "Private key"
 msgid "userpages##keyFieldEditor##keyValue##address"
 msgstr "Address"
 
+msgid "userpages##keyFieldEditor##keyValue##sharedSecret"
+msgstr "Shared secret"
+
 msgid "userpages##keyFieldEditor##add"
 msgstr "Add"
 
@@ -824,6 +915,21 @@ msgstr "Signature request"
 msgid "modal##signatureRequest##description"
 msgstr "Please sign the challenge in Metamask window"
 
+msgid "modal##privateKey##defaultTitle"
+msgstr "Add a name to this Ethereum account"
+
+msgid "modal##privateKey##label"
+msgstr "Account name"
+
+msgid "modal##privateKey##placeholder"
+msgstr "eg. Mainnet Eth Address"
+
+msgid "modal##privateKey##successNotification"
+msgstr "Ethereum account added"
+
+msgid "modal##privateKey##errorNotification"
+msgstr "There was an error while adding an Ethereum account"
+
 msgid "modal##newIdentity##defaultTitle"
 msgstr "Add a name to this Ethereum address"
 
@@ -841,17 +947,11 @@ msgstr ""
 "This account is already connected.<br />"
 "Please choose another account from Metamask to connect."
 
-msgid "modal##newIdentityError##defaultTitle"
-msgstr "Failed to connect"
+msgid "modal##newIdentity##successNotification"
+msgstr "Ethereum address added"
 
-msgid "modal##newIdentityError##description"
-msgstr "There was a problem connecting your account."
-
-msgid "modal##newIdentitySuccess##defaultTitle"
-msgstr "Success"
-
-msgid "modal##newIdentitySuccess##description"
-msgstr "You have connected an Ethereum address to your account"
+msgid "modal##newIdentity##errorNotification"
+msgstr "There was an error while adding an Ethereum address"
 
 msgid "modal##shareResource##defaultTitle"
 msgstr "Share %{resourceTitle}"
@@ -868,8 +968,11 @@ msgstr "Private — only people you’ve invited"
 msgid "modal##shareResource##withLink"
 msgstr "Public — viewable by anyone with the link or via the API"
 
+msgid "modal##shareResource##enterEmailAddressLabel"
+msgstr "Email or ETH address"
+
 msgid "modal##shareResource##enterEmailAddress"
-msgstr "Enter email address or Ethereum account."
+msgstr "Enter your email or ETH address"
 
 msgid "modal##shareResource##permissions##read"
 msgstr "View only"

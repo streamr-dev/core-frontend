@@ -8,7 +8,6 @@ import Dialog from '$shared/components/Dialog'
 import ModalPortal from '$shared/components/ModalPortal'
 // import DiscardChangesPng from '$mp/assets/discard-changes.png'
 // import DiscardChangesPng2x from '$mp/assets/discard-changes@2x.png'
-import Button from '$shared/components/Button'
 import Buttons from '$shared/components/Buttons'
 
 import styles from './confirmSave.pcss'
@@ -27,15 +26,17 @@ const ConfirmSaveDialog = ({ onSave, onClose, onContinue }: Props) => (
             onClose={onClose}
             renderActions={() => (
                 <div className={styles.footer}>
-                    <div className={styles.footerText}>
-                        <Button
-                            kind="primary"
-                            onClick={onContinue}
-                            outline
-                        >
-                            {I18n.t('modal.confirmSave.dontSave')}
-                        </Button>
-                    </div>
+                    <Buttons
+                        className={styles.footerText}
+                        actions={{
+                            dontSave: {
+                                title: I18n.t('modal.confirmSave.dontSave'),
+                                kind: 'primary',
+                                outline: true,
+                                onClick: onContinue,
+                            },
+                        }}
+                    />
                     <Buttons
                         actions={{
                             cancel: {

@@ -15,6 +15,11 @@ import type { PaymentCurrency } from '$shared/flowtype/common-types'
 
 declare var ethereum: Web3
 
+const UNISWAP_SAFETY_MARGIN = 1.03
+const ETH = '0x0000000000000000000000000000000000000000'
+const DAI = process.env.DAI_TOKEN_CONTRACT_ADDRESS
+const DATA = process.env.DATA_TOKEN_CONTRACT_ADDRESS
+
 const dataTokenContractMethods = (usePublicNode: boolean = false) => getContract(getConfig().dataToken, usePublicNode).methods
 const daiTokenContractMethods = (usePublicNode: boolean = false) => getContract(getConfig().daiToken, usePublicNode).methods
 const uniswapAdaptorMethods = (usePublicNode: boolean = false) => getContract(getConfig().uniswapAdaptor, usePublicNode).methods
@@ -58,32 +63,88 @@ export const getBalances = (): Promise<[BN, BN, BN]> => {
 }
 
 /**
- * Returns the DAI and ETH value equivalents for a given quanity of DATA through a 'Uniswap'.
- * A safety margin is added to ensure transactions succeed incase of slippage and token volatility.
+ * uniswapDATAtoETH & uniswapDATAtoDAI return the DAI and ETH value equivalents
+ * for a given quantity of DATA through a 'Uniswap'.
+ * A safety margin is added to ensure transactions succeed due to dynamic mainnet DATA exchange rates.
+ *
+ * !!!Note some versions of web3 will return a BigNumber from the Ethers library. This has a
+ * different prototype compared with BigNumber (BN). This is why extra BNs are used in this function.
  * @param dataQuantity Number of DATA coins.
- */
-export const getUniswapEquivalents = async (dataQuantity: string): Promise<[BN, BN]> => {
-    const web3 = getWeb3()
-    const amount = web3.utils.toWei(dataQuantity)
-    const DATA = process.env.DATA_TOKEN_CONTRACT_ADDRESS
-    const ETH = '0x0000000000000000000000000000000000000000'
-    const DAI = process.env.DAI_TOKEN_CONTRACT_ADDRESS
-    const safetyMargin = 1.05
+*/
+export const uniswapDATAtoETH = async (dataQuantity: string, usePublicNode: boolean = false): Promise<BN> => {
+    if (dataQuantity !== '0') {
+        try {
+            const web3 = usePublicNode ? getPublicWeb3() : getWeb3()
+            let productPriceDATA = web3.utils.toWei(dataQuantity)
+            productPriceDATA = BN(productPriceDATA).multipliedBy((UNISWAP_SAFETY_MARGIN))
+            productPriceDATA = BN(productPriceDATA).toFixed(0, 2)
 
-    let ethValue = await call(uniswapAdaptorMethods().getConversionRate(DATA, ETH, amount))
-    ethValue = BN(ethValue).toNumber() * safetyMargin
-    ethValue = BN(web3.utils.fromWei(ethValue.toString()))
+            let uniswapETH = await call(uniswapAdaptorMethods().getConversionRateOutput(ETH, DATA, productPriceDATA))
+            uniswapETH = BN(web3.utils.fromWei(uniswapETH.toString()))
 
-    let daiValue = await call(uniswapAdaptorMethods().getConversionRate(DATA, DAI, amount))
-    daiValue = BN(daiValue).toNumber() * safetyMargin
-    daiValue = BN(web3.utils.fromWei(daiValue.toString()))
+            return uniswapETH
+        } catch (e) {
+            // Uniswap Adaptor contract has probably reverted the transaction.
+            // This can happen when the order size exhausts the uniswap exchange.
+            // In this case an invalid price is returned, primarily to block
+            // progression in the purchase flow.
 
-    return [ethValue, daiValue]
+            return BN('infinity')
+        }
+    }
+    return BN('infinity')
+}
+
+export const uniswapDATAtoDAI = async (dataQuantity: string, usePublicNode: boolean = false): Promise<BN> => {
+    if (dataQuantity !== '0') {
+        try {
+            const web3 = usePublicNode ? getPublicWeb3() : getWeb3()
+            let productPriceDATA = web3.utils.toWei(dataQuantity)
+            productPriceDATA = BN(productPriceDATA).multipliedBy((UNISWAP_SAFETY_MARGIN))
+            productPriceDATA = BN(productPriceDATA).toFixed(0, 2)
+
+            let uniswapDAI = await call(uniswapAdaptorMethods().getConversionRateOutput(DAI, DATA, productPriceDATA))
+            uniswapDAI = BN(web3.utils.fromWei(uniswapDAI.toString()))
+
+            return uniswapDAI
+        } catch (e) {
+            // Uniswap Adaptor contract has probably reverted the transaction.
+            // This can happen when the order size exhausts the uniswap exchange.
+            // In this case an invalid price is returned, primarily to block
+            // progression in the purchase flow.
+
+            return BN('infinity')
+        }
+    }
+    return BN('infinity')
+}
+
+export const uniswapETHtoDATA = async (ethQuantity: string, usePublicNode: boolean = false): Promise<BN> => {
+    if (ethQuantity !== '0') {
+        try {
+            const web3 = usePublicNode ? getPublicWeb3() : getWeb3()
+            const ethWei = web3.utils.toWei(ethQuantity)
+
+            let uniswapDATA = await call(uniswapAdaptorMethods().getConversionRateOutput(DATA, ETH, ethWei))
+            uniswapDATA = BN(web3.utils.fromWei(uniswapDATA.toString()))
+
+            return uniswapDATA
+        } catch (e) {
+            // Uniswap Adaptor contract has probably reverted the transaction.
+            // This can happen when the order size exhausts the uniswap exchange.
+            // In this case an invalid price is returned, primarily to block
+            // progression in the purchase flow.
+
+            return BN('infinity')
+        }
+    }
+    return BN('infinity')
 }
 
 export const validateBalanceForPurchase = async (price: BN, paymentCurrency: PaymentCurrency) => {
     const [ethBalance, dataBalance, daiBalance] = await getBalances()
-    const [ethPrice, daiPrice] = await getUniswapEquivalents(price.toString())
+    const ethPrice = await uniswapDATAtoETH(price.toString())
+    const daiPrice = await uniswapDATAtoDAI(price.toString())
     const requiredEth = ethPrice
     const requiredGas = fromAtto(gasLimits.BUY_PRODUCT)
     const requiredDai = daiPrice

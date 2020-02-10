@@ -16,6 +16,7 @@ import routes from '$routes'
 import useEditableProductActions from '../ProductController/useEditableProductActions'
 import { isEthereumAddress } from '$mp/utils/validate'
 import { areAddressesEqual } from '$mp/utils/smartContract'
+import useEditableProductUpdater from '../ProductController/useEditableProductUpdater'
 
 import * as State from '../EditProductPage/state'
 import useModal from '$shared/hooks/useModal'
@@ -26,7 +27,7 @@ type ContextProps = {
     back: () => void | Promise<void>,
     save: () => void | Promise<void>,
     publish: () => void | Promise<void>,
-    deployCommunity: () => void | Promise<void>,
+    deployDataUnion: () => void | Promise<void>,
     lastSectionRef: any,
 }
 
@@ -41,6 +42,7 @@ function useEditController(product: Product) {
     const savePending = usePending('product.SAVE')
     const { updateBeneficiaryAddress } = useEditableProductActions()
     const originalProduct = useSelector(selectProduct)
+    const { replaceProduct } = useEditableProductUpdater()
 
     useEffect(() => {
         const handleBeforeunload = (event) => {
@@ -89,7 +91,7 @@ function useEditController(product: Product) {
         }
     }, [isAnyTouched])
 
-    const { api: deployCommunityDialog } = useModal('deployCommunity')
+    const { api: deployDataUnionDialog } = useModal('dataUnion.DEPLOY')
     const { api: confirmSaveDialog } = useModal('confirmSave')
     const { api: publishDialog } = useModal('publish')
 
@@ -122,6 +124,8 @@ function useEditController(product: Product) {
                     nextProduct.imageUrl = newImageUrl
                     nextProduct.thumbnailUrl = newThumbnailUrl
                     delete nextProduct.newImageToUpload
+
+                    replaceProduct(() => nextProduct)
                 } catch (e) {
                     console.error('Could not upload image', e)
                 }
@@ -144,6 +148,7 @@ function useEditController(product: Product) {
         savePending,
         redirectToProductList,
         originalProduct,
+        replaceProduct,
     ])
 
     const validate = useCallback(() => {
@@ -185,24 +190,24 @@ function useEditController(product: Product) {
         }
     }, [updateBeneficiaryAddress])
 
-    const deployCommunity = useCallback(async () => {
+    const deployDataUnion = useCallback(async () => {
         if (validate()) {
             await save({
                 redirect: false,
             })
-            const communityCreated = await deployCommunityDialog.open({
+            const dataUnionCreated = await deployDataUnionDialog.open({
                 product: productRef.current,
                 updateAddress: updateBeneficiary,
             })
 
             // TODO: doesn't save unless dialog closed
-            if (communityCreated) {
+            if (dataUnionCreated) {
                 await save()
             }
         }
     }, [
         validate,
-        deployCommunityDialog,
+        deployDataUnionDialog,
         save,
         updateBeneficiary,
     ])
@@ -238,7 +243,7 @@ function useEditController(product: Product) {
         back,
         save,
         publish,
-        deployCommunity,
+        deployDataUnion,
         lastSectionRef,
     }), [
         isPreview,
@@ -246,7 +251,7 @@ function useEditController(product: Product) {
         back,
         save,
         publish,
-        deployCommunity,
+        deployDataUnion,
         lastSectionRef,
     ])
 }

@@ -45,15 +45,17 @@ export const getFilters = (): { [string]: SortOption } => {
                 id: 'published',
                 key: 'states',
                 value: 'DEPLOYED',
+                sortBy: 'lastUpdated',
                 order: 'desc',
             },
         },
-        DRAFT: {
-            displayName: I18n.t('userpages.filter.draft'),
+        DRAFTS: {
+            displayName: I18n.t('userpages.filter.drafts'),
             filter: {
                 id: 'draft',
                 key: 'states',
                 value: 'NOT_DEPLOYED',
+                sortBy: 'lastUpdated',
                 order: 'desc',
             },
         },
@@ -106,6 +108,33 @@ export const getFilters = (): { [string]: SortOption } => {
             filter: {
                 id: 'za',
                 sortBy: 'name',
+                order: 'desc',
+            },
+        },
+        APPROVE: {
+            displayName: I18n.t('userpages.filter.approve'),
+            filter: {
+                id: 'approve',
+                key: 'state',
+                value: 'PENDING',
+                order: 'desc',
+            },
+        },
+        REMOVE: {
+            displayName: I18n.t('userpages.filter.remove'),
+            filter: {
+                id: 'remove',
+                key: 'state',
+                value: 'ACCEPTED',
+                order: 'desc',
+            },
+        },
+        REJECTED: {
+            displayName: I18n.t('userpages.filter.rejected'),
+            filter: {
+                id: 'rejected',
+                key: 'state',
+                value: 'REJECTED',
                 order: 'desc',
             },
         },

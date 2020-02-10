@@ -9,7 +9,7 @@ import CoreLayout from '$shared/components/Layout/Core'
 import * as UndoContext from '$shared/contexts/Undo'
 import Toolbar from '$shared/components/Toolbar'
 import type { Product } from '$mp/flowtype/product-types'
-import { isCommunityProduct } from '$mp/utils/product'
+import { isDataUnionProduct } from '$mp/utils/product'
 
 import ProductController, { useController } from '../ProductController'
 import useEditableProduct from '../ProductController/useEditableProduct'
@@ -19,6 +19,8 @@ import { Context as ValidationContext } from '../ProductController/ValidationCon
 import { isEthereumAddress } from '$mp/utils/validate'
 import { notFoundRedirect } from '$auth/utils/loginInterceptor'
 import useProductPermissions from '../ProductController/useProductPermissions'
+import useProduct from '$mp/containers/ProductController/useProduct'
+import useEthereumIdentities from '$shared/modules/integrationKey/hooks/useEthereumIdentities'
 
 import { Provider as EditControllerProvider, Context as EditControllerContext } from './EditControllerProvider'
 import BackButton from '$shared/components/BackButton'
@@ -26,7 +28,7 @@ import Editor from './Editor'
 import Preview from './Preview'
 import ProductEditorDebug from './ProductEditorDebug'
 import ConfirmSaveModal from './ConfirmSaveModal'
-import DeployCommunityModal from './DeployCommunityModal'
+import DeployDataUnionModal from './DeployDataUnionModal'
 import PublishModal from './PublishModal'
 import CropImageModal from './CropImageModal'
 
@@ -38,12 +40,12 @@ const EditProductPage = ({ product }: { product: Product }) => {
         setIsPreview,
         save,
         publish,
-        deployCommunity,
+        deployDataUnion,
         back,
     } = useContext(EditControllerContext)
     const { isPending: savePending } = usePending('product.SAVE')
     const { isAnyChangePending } = useContext(ValidationContext)
-    const { loadCategories, loadStreams } = useController()
+    const { loadCategories, loadStreams, loadDataUnion } = useController()
 
     // Load categories and streams
     useEffect(() => {
@@ -51,10 +53,20 @@ const EditProductPage = ({ product }: { product: Product }) => {
         loadStreams()
     }, [loadCategories, loadStreams])
 
+    // Load eth identities & data union (used to determine if owner account is linked)
+    const { load: loadEthIdentities } = useEthereumIdentities()
+    const originalProduct = useProduct()
+    const { beneficiaryAddress } = originalProduct
+
+    useEffect(() => {
+        loadEthIdentities()
+        loadDataUnion(beneficiaryAddress)
+    }, [beneficiaryAddress, loadDataUnion, loadEthIdentities])
+
     const isSaving = savePending
-    const isCommunity = isCommunityProduct(product)
+    const isDataUnion = isDataUnionProduct(product)
     // TODO: should really check for the contract existance here
-    const isDeployed = isCommunity && isEthereumAddress(product.beneficiaryAddress)
+    const isDeployed = isDataUnion && isEthereumAddress(product.beneficiaryAddress)
 
     const saveAndExitButton = useMemo(() => ({
         title: 'Save & Exit',
@@ -102,17 +114,17 @@ const EditProductPage = ({ product }: { product: Product }) => {
     }, [isAnyChangePending, productState, publish, isSaving])
 
     const deployButton = useMemo(() => {
-        if (isCommunity && !isDeployed) {
+        if (isDataUnion && !isDeployed) {
             return {
                 title: 'Continue',
                 kind: 'primary',
-                onClick: deployCommunity,
+                onClick: deployDataUnion,
                 disabled: isSaving,
             }
         }
 
         return publishButton
-    }, [isCommunity, isDeployed, deployCommunity, isSaving, publishButton])
+    }, [isDataUnion, isDeployed, deployDataUnion, isSaving, publishButton])
 
     const actions = {
         saveAndExit: saveAndExitButton,
@@ -160,7 +172,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
                 <Editor />
             )}
             <ConfirmSaveModal />
-            <DeployCommunityModal />
+            <DeployDataUnionModal />
             <PublishModal />
             <CropImageModal />
         </CoreLayout>
