@@ -1,13 +1,15 @@
 // @flow
 
 import React, { Fragment, useEffect, useCallback, useState } from 'react'
-import { Translate } from 'react-redux-i18n'
+import { Translate, I18n } from 'react-redux-i18n'
 
 import IntegrationKeyList from '../IntegrationKeyHandler/IntegrationKeyList'
 import useEthereumIdentities from '$shared/modules/integrationKey/hooks/useEthereumIdentities'
 import useModal from '$shared/hooks/useModal'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import Button from '$shared/components/Button'
+import Notification from '$shared/utils/Notification'
+import { NotificationIcon } from '$shared/utils/constants'
 
 import profileStyles from '../profilePage.pcss'
 
@@ -22,10 +24,23 @@ const IdentityHandler = () => {
     const addIdentity = useCallback(async () => {
         setWaiting(true)
 
-        await addIdentityDialog.open()
+        const { added, error } = await addIdentityDialog.open()
 
         if (isMounted()) {
             setWaiting(false)
+
+            if (error) {
+                Notification.push({
+                    title: I18n.t('modal.newIdentity.errorNotification'),
+                    icon: NotificationIcon.ERROR,
+                    error,
+                })
+            } else if (added) {
+                Notification.push({
+                    title: I18n.t('modal.newIdentity.successNotification'),
+                    icon: NotificationIcon.CHECKMARK,
+                })
+            }
         }
     }, [addIdentityDialog, isMounted])
 

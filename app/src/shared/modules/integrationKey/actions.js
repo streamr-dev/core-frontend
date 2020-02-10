@@ -3,7 +3,6 @@
 import { createAction } from 'redux-actions'
 
 import type { ErrorInUi, ReduxActionCreator } from '$shared/flowtype/common-types'
-import type { Address } from '$shared/flowtype/web3-types'
 import type {
     IntegrationKeyIdActionCreator,
     IntegrationKeysActionCreator,
@@ -136,9 +135,9 @@ export const fetchIntegrationKeys = () => (dispatch: Function) => {
         })
 }
 
-export const createIntegrationKey = (name: string, privateKey: Address) => (dispatch: Function) => {
+export const createIntegrationKey = (name: string) => (dispatch: Function) => {
     dispatch(createIntegrationKeyRequest())
-    return services.createPrivateKey(name, privateKey)
+    return services.createPrivateKey(name)
         .then(handleEntities(integrationKeySchema, dispatch))
         .then((result) => dispatch(createIntegrationKeySuccess(result)))
         .catch((error) => {

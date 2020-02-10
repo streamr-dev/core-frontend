@@ -915,6 +915,21 @@ msgstr "Signature request"
 msgid "modal##signatureRequest##description"
 msgstr "Please sign the challenge in Metamask window"
 
+msgid "modal##privateKey##defaultTitle"
+msgstr "Add a name to this Ethereum account"
+
+msgid "modal##privateKey##label"
+msgstr "Account name"
+
+msgid "modal##privateKey##placeholder"
+msgstr "eg. Mainnet Eth Address"
+
+msgid "modal##privateKey##successNotification"
+msgstr "Ethereum account added"
+
+msgid "modal##privateKey##errorNotification"
+msgstr "There was an error while adding an Ethereum account"
+
 msgid "modal##newIdentity##defaultTitle"
 msgstr "Add a name to this Ethereum address"
 
@@ -932,17 +947,11 @@ msgstr ""
 "This account is already connected.<br />"
 "Please choose another account from Metamask to connect."
 
-msgid "modal##newIdentityError##defaultTitle"
-msgstr "Failed to connect"
+msgid "modal##newIdentity##successNotification"
+msgstr "Ethereum address added"
 
-msgid "modal##newIdentityError##description"
-msgstr "There was a problem connecting your account."
-
-msgid "modal##newIdentitySuccess##defaultTitle"
-msgstr "Success"
-
-msgid "modal##newIdentitySuccess##description"
-msgstr "You have connected an Ethereum address to your account"
+msgid "modal##newIdentity##errorNotification"
+msgstr "There was an error while adding an Ethereum address"
 
 msgid "modal##shareResource##defaultTitle"
 msgstr "Share %{resourceTitle}"

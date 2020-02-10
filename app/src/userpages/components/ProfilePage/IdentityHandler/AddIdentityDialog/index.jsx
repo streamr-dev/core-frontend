@@ -11,10 +11,10 @@ import type { Address } from '$shared/flowtype/web3-types'
 import UnlockWalletDialog from '$shared/components/Web3ErrorDialog/UnlockWalletDialog'
 import { areAddressesEqual } from '$mp/utils/smartContract'
 import { truncate } from '$shared/utils/text'
+import { ErrorCodes } from '$shared/errors/Web3'
 
 import IdentityNameDialog from '../IdentityNameDialog'
-import IdentityChallengeDialog from '../IdentityChallengeDialog'
-import DuplicateIdentityDialog from '../IdentityChallengeDialog/DuplicateIdentityDialog'
+import { IdentityChallengeDialog, DuplicateIdentityDialog } from '../IdentityChallengeDialog'
 
 type Props = {
     api: Object,
@@ -31,22 +31,35 @@ const AddIdentityDialog = ({ api, requiredAddress }: Props) => {
     const { web3Error, checkingWeb3, account } = useWeb3Status()
     const { load: getEthIdentities, fetching, create, isLinked } = useEthereumIdentities()
     const [phase, setPhase] = useState(identityPhases.NAME)
-    const [result, setResult] = useState(false)
 
-    const onSetName = useCallback((name: string) => {
+    const onSetName = useCallback(async (name: string) => {
         setPhase(identityPhases.CHALLENGE)
 
+        let added = false
+        let error
+
         try {
-            create(name)
-            setResult(true)
+            await create(name)
+            added = true
         } catch (e) {
             console.warn(e)
+            error = e
+        } finally {
+            if (!error || error.code !== ErrorCodes.IDENTITY_EXISTS) {
+                api.close({
+                    added,
+                    error,
+                })
+            }
         }
-    }, [create])
+    }, [create, api])
 
     const onClose = useCallback(() => {
-        api.close(result)
-    }, [api, result])
+        api.close({
+            added: false,
+            error: undefined,
+        })
+    }, [api])
 
     useEffect(() => {
         getEthIdentities()

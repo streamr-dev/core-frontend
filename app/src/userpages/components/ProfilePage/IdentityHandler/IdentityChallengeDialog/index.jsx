@@ -8,10 +8,7 @@ import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import { selectCreatingIdentity, selectCreatingIdentityError } from '$shared/modules/integrationKey/selectors'
 import PngIcon from '$shared/components/PngIcon'
-import SvgIcon from '$shared/components/SvgIcon'
 import { ErrorCodes } from '$shared/errors/Web3'
-
-import DuplicateIdentityDialog from './DuplicateIdentityDialog'
 
 import styles from './identityChallengeDialog.pcss'
 
@@ -33,35 +30,21 @@ export const SignatureRequestDialog = ({ onClose }: Props) => (
     </ModalPortal>
 )
 
-export const ErrorDialog = ({ onClose }: Props) => (
+export const DuplicateIdentityDialog = ({ onClose }: Props) => (
     <ModalPortal>
         <Dialog
-            title={I18n.t('modal.newIdentityError.defaultTitle')}
+            title={I18n.t('modal.duplicateIdentity.defaultTitle')}
             onClose={onClose}
         >
             <div>
-                <PngIcon name="walletError" className={styles.icon} />
-                <Translate tag="p" value="modal.newIdentityError.description" />
+                <PngIcon name="metamask" className={styles.icon} />
+                <Translate tag="p" value="modal.duplicateIdentity.description" dangerousHTML />
             </div>
         </Dialog>
     </ModalPortal>
 )
 
-export const SuccessDialog = ({ onClose }: Props) => (
-    <ModalPortal>
-        <Dialog
-            title={I18n.t('modal.newIdentitySuccess.defaultTitle')}
-            onClose={onClose}
-        >
-            <div>
-                <SvgIcon name="checkmark" size="large" className={styles.icon} />
-                <Translate tag="p" value="modal.newIdentitySuccess.description" />
-            </div>
-        </Dialog>
-    </ModalPortal>
-)
-
-const IdentityChallengeDialog = ({ onClose }: Props) => {
+export const IdentityChallengeDialog = ({ onClose }: Props) => {
     const creatingIdentity = useSelector(selectCreatingIdentity)
     const error = useSelector(selectCreatingIdentityError)
 
@@ -69,29 +52,17 @@ const IdentityChallengeDialog = ({ onClose }: Props) => {
         return <SignatureRequestDialog onClose={onClose} />
     }
 
-    if (error) {
+    if (error && error.code === ErrorCodes.IDENTITY_EXISTS) {
         // This probably will never be shown since the account is checked in
         // the first phase but left here just in case.
-        if (error.code === ErrorCodes.IDENTITY_EXISTS) {
-            return (
-                <DuplicateIdentityDialog
-                    onClose={onClose}
-                />
-            )
-        }
-
         return (
-            <ErrorDialog
+            <DuplicateIdentityDialog
                 onClose={onClose}
             />
         )
     }
 
-    return (
-        <SuccessDialog
-            onClose={onClose}
-        />
-    )
+    return null
 }
 
 export default IdentityChallengeDialog
