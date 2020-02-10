@@ -398,8 +398,8 @@ msgstr "Waiting..."
 msgid "modal##errorDialog##defaultTitle"
 msgstr "Error"
 
-msgid "modal##getCryptoDialog##link##bitfinex"
-msgstr "Bitfinex"
+msgid "modal##getCryptoDialog##link##uniswap"
+msgstr "Uniswap"
 
 msgid "modal##getCryptoDialog##link##coinbase"
 msgstr "Coinbase"
@@ -409,8 +409,9 @@ msgstr "Binance"
 
 msgid "modal##getCryptoDialog##message"
 msgstr ""
-"Ether is needed for gas, but you don't have any. Please purchase some and "
-"try again. Some exchanges near you shown below."
+msgstr "Ether is needed for gas, but you don't have any."
+"<br />"
+"Please get some and try again."
 
 msgid "modal##getCryptoDialog##title"
 msgstr "No Ether balance"

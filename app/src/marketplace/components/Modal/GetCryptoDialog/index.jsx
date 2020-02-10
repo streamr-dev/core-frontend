@@ -8,7 +8,8 @@ import { Translate, I18n } from 'react-redux-i18n'
 import ModalPortal from '$shared/components/ModalPortal'
 import PngIcon from '$shared/components/PngIcon'
 import Dialog from '$shared/components/Dialog'
-import ExternalLinkButton from '$shared/components/Buttons/ExternalLinkButton'
+import Button from '$shared/components/Button'
+import Link from '$shared/components/Link'
 
 import styles from './getCryptoDialog.pcss'
 
@@ -28,23 +29,34 @@ const GetCryptoDialog = ({ onCancel }: Props) => (
                 alt={I18n.t('modal.getCryptoDialog.title')}
             />
             <Translate value="modal.getCryptoDialog.message" className={styles.message} />
-
             <div className={styles.buttonContainer}>
-                <ExternalLinkButton
-                    textI18nKey="modal.getCryptoDialog.link.binance"
-                    href="https://binance.com/"
-                    className={styles.button}
-                />
-                <ExternalLinkButton
-                    textI18nKey="modal.getCryptoDialog.link.coinbase"
-                    href="https://www.coinbase.com/"
-                    className={styles.button}
-                />
-                <ExternalLinkButton
-                    textI18nKey="modal.getCryptoDialog.link.bitfinex"
-                    href="https://www.bitfinex.com/"
-                    className={styles.button}
-                />
+                <Button
+                    className={styles.externalButton}
+                    kind="secondary"
+                    tag={Link}
+                    href="https://coinbase.com"
+                    target="_blank"
+                >
+                    <Translate value="modal.getCryptoDialog.link.coinbase" />
+                </Button>
+                <Button
+                    className={styles.externalButton}
+                    kind="secondary"
+                    tag={Link}
+                    href="https://binance.com"
+                    target="_blank"
+                >
+                    <Translate value="modal.getCryptoDialog.link.binance" />
+                </Button>
+                <Button
+                    className={styles.externalButton}
+                    kind="secondary"
+                    tag={Link}
+                    href="https://uniswap.io"
+                    target="_blank"
+                >
+                    <Translate value="modal.getCryptoDialog.link.uniswap" />
+                </Button>
             </div>
         </Dialog>
     </ModalPortal>

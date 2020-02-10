@@ -22,6 +22,8 @@ type Props = {
     waiting?: boolean,
     onClick?: (e: SyntheticInputEvent<EventTarget>) => void | Promise<void>,
     children?: Node,
+    external?: boolean,
+    href?: string,
 }
 
 const Button = ({
@@ -35,6 +37,7 @@ const Button = ({
     waiting,
     onClick,
     children,
+    external,
     ...args
 }: Props) => (
     <Tag
