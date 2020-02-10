@@ -52,6 +52,7 @@ const initialState = {
     ids: [],
     openStream: {
         id: null,
+        isNew: false,
     },
     savingStreamFields: false,
     fetching: false,
@@ -252,6 +253,7 @@ export default function (state: UserPageStreamsState = initialState, action: Str
                 openStream: {
                     ...state.openStream,
                     id: action.id,
+                    isNew: !!action.isNew,
                 },
             }
 

@@ -24,6 +24,7 @@ describe('Stream actions', () => {
             ids: [],
             openStream: {
                 id: null,
+                isNew: false,
             },
             error: null,
         })
@@ -365,11 +366,21 @@ describe('Stream actions', () => {
         })
     })
 
-    it('must dispatch OPEN_STREAM when opening stream', () => {
+    it('must dispatch OPEN_STREAM when opening existing stream', () => {
         const id = 'askdfjasldkfjasdlkf'
         assert.deepStrictEqual(actions.openStream(id), {
             type: actions.OPEN_STREAM,
             id,
+            isNew: false,
+        })
+    })
+
+    it('must dispatch OPEN_STREAM, isNew=true when opening new stream', () => {
+        const id = 'askdfjasldkfjasdlkf'
+        assert.deepStrictEqual(actions.openStream(id, true), {
+            type: actions.OPEN_STREAM,
+            id,
+            isNew: true,
         })
     })
 })

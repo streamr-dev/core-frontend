@@ -15,6 +15,7 @@ export type UserPageStreamsState = {
     ids: StreamIdList,
     openStream: {
         id: ?StreamId,
+        isNew: ?boolean,
     },
     fetching: boolean,
     error?: ?ErrorInUi,

@@ -378,6 +378,33 @@ msgstr "We couldn't find any streams that match your search."
 msgid "userpages##streams##noStreamsResult##clearFilters"
 msgstr "Clear filters"
 
+msgid "userpages##streams##edit##details##pageTitle##newStream"
+msgstr "Set up your Stream"
+
+msgid "userpages##streams##edit##details##pageTitle##existingStream"
+msgstr "Edit your Stream"
+
+msgid "userpages##streams##edit##details##nav##details"
+msgstr "Details"
+
+msgid "userpages##streams##edit##details##nav##security"
+msgstr "Security"
+
+msgid "userpages##streams##edit##details##nav##fields"
+msgstr "Fields"
+
+msgid "userpages##streams##edit##details##nav##status"
+msgstr "Status"
+
+msgid "userpages##streams##edit##details##nav##preview"
+msgstr "Preview"
+
+msgid "userpages##streams##edit##details##nav##apiAccess"
+msgstr "API Access"
+
+msgid "userpages##streams##edit##details##nav##historicalData"
+msgstr "Historical Data"
+
 msgid "userpages##streams##edit##details##name"
 msgstr "Name"
 
@@ -448,7 +475,9 @@ msgid "userpages##streams##edit##configure##historicalStoragePeriod##label"
 msgstr "Period to retain historical data until auto-removal"
 
 msgid "userpages##streams##edit##preview##description"
-msgstr "You can preview the stream's live data here. Use the Inspector to view details and use the transport controls to check the data is flowing correctly."
+msgstr ""
+"You can configure your stream’s fields and preview the live data here. "
+"Use the Inspector to view details, and the transport controls to check the data is flowing correctly."
 
 msgid "userpages##streams##edit##preview##inspect"
 msgstr "Inspect data"
@@ -475,7 +504,10 @@ msgid "userpages##streams##delete##confirmButton"
 msgstr "Yes, delete"
 
 msgid "userpages##streams##edit##apiCredentials##description"
-msgstr "You can create API keys here that grant access to this stream only. You can assign read only or read + write permissions to these keys. Note that these are different from your user API keys, which you can manage in "
+msgstr ""
+"If you want to share access to just this stream you can create anonymous keys to do so here. "
+"You can assign read only or read + write powers. If you want to grant API access to all your streams, "
+"you can do so in <a href=\"%{settingsLink}\">Settings</a>."
 
 msgid "userpages##streams##edit##history##uploadCsvButton"
 msgstr "Upload CSV"
