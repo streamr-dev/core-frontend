@@ -172,7 +172,7 @@ const MarketplaceRouter = () => (process.env.DATA_UNIONS ? [
     <Route exact path={formatPath(marketplace.products, ':id', 'publish')} component={ProductPublishPage} key="ProductPublishPage" />,
     <Route exact path={formatPath(marketplace.products, ':id', 'streamPreview', ':streamId')} component={StreamPreviewPage} key="StreamPreview" />,
     <Route exact path={formatPath(marketplace.products, ':id')} component={ProductPage} key="ProductPage" />,
-    <Route exact path={routes.editProduct()} component={EditProductAuth} key="EditProduct" />,
+    <Route exact path={formatPath(marketplace.products, ':id', 'edit')} component={EditProductAuth} key="EditProduct" />,
 ])
 
 const DocsRouter = () => ([
