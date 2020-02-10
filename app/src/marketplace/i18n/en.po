@@ -477,10 +477,9 @@ msgid "modal##getCryptoDialog##link##binance"
 msgstr "Binance"
 
 msgid "modal##getCryptoDialog##message"
-msgstr ""
 msgstr "Ether is needed for gas, but you don't have any."
 "<br />"
-"Please get some and try again."
+"Please get some and try again"
 
 msgid "modal##getCryptoDialog##title"
 msgstr "No Ether balance"
@@ -489,18 +488,14 @@ msgid "modal##insufficientDaiDialog##title"
 msgstr "Insufficient DAI"
 
 msgid "modal##insufficientDaiDialog##message"
-msgstr ""
-"It looks like you don’t have enough DAI to purchase this product. "
+msgstr "It looks like you don’t have enough DAI to purchase this product. "
 "Please get some & try again or choose a different payment currency."
 
 msgid "modal##getDataTokensDialog##link##bancor"
 msgstr "Bancor"
 
 msgid "modal##getDataTokensDialog##message"
-msgstr ""
-"You have Ether in your wallet but no DATA, which you need to purchase "
-"products on the Marketplace. Please visit Bancor for the easiest way to get "
-"DATA."
+msgstr "DATA is currently required to purchase products on the Marketplace. Please purchase some and try again"
 
 msgid "modal##getDataTokensDialog##title"
 msgstr "No DATA balance"
@@ -509,9 +504,13 @@ msgid "modal##insufficientDataDialog##title"
 msgstr "Insufficient DATA"
 
 msgid "modal##insufficientDataDialog##message"
-msgstr ""
-"It looks like you don’t have enough DATAcoin to purchase this product. "
-"Please get some & try again."
+msgstr "You don't have enough DATA to purchase <br /> this product. Please get some and try again"
+
+msgid "modal##insufficientEthDialog##title"
+msgstr "Insufficient ETH"
+
+msgid "modal##insufficientEthDialog##message"
+msgstr "You don't have enough ETH to purchase <br /> this product. Please get some and try again"
 
 msgid "modal##purchaseSummary##access"
 msgstr "%{time} %{timeUnit} access"
