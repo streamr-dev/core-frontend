@@ -5,13 +5,22 @@ import { Translate, I18n } from 'react-redux-i18n'
 
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
-import ExternalLinkButton from '$shared/components/Buttons/ExternalLinkButton'
 import PngIcon from '$shared/components/PngIcon'
+import Button from '$shared/components/Button'
+import Link from '$shared/components/Link'
+import { isMobile } from '$shared/utils/platform'
 
 import styles from './installSupportedBrowserDialog.pcss'
 
 export type Props = {
     onClose: () => void,
+}
+
+const dialogText = () => {
+    if (isMobile()) {
+        return 'modal.web3.installsupportedbrowser.mobileMessage'
+    }
+    return 'modal.web3.installsupportedbrowser.message'
 }
 
 const InstallSupportedBrowserDialog = ({ onClose, ...props }: Props) => (
@@ -26,24 +35,36 @@ const InstallSupportedBrowserDialog = ({ onClose, ...props }: Props) => (
                 className={styles.icon}
                 alt={I18n.t('modal.web3.installsupportedbrowser.imageCaption')}
             />
-            <p><Translate value="modal.web3.installsupportedbrowser.message" dangerousHTML /></p>
+            <p><Translate value={dialogText()} dangerousHTML /></p>
 
             <div className={styles.buttonContainer}>
-                <ExternalLinkButton
-                    textI18nKey="modal.web3.installsupportedbrowser.brave"
-                    href="https://brave.com/"
-                    className={styles.button}
-                />
-                <ExternalLinkButton
-                    textI18nKey="modal.web3.installsupportedbrowser.chrome"
-                    href="https://www.google.com/chrome/"
-                    className={styles.button}
-                />
-                <ExternalLinkButton
-                    textI18nKey="modal.web3.installsupportedbrowser.firefox"
-                    href="https://www.mozilla.org/en-US/firefox/new/"
-                    className={styles.button}
-                />
+                <Button
+                    className={styles.externalButton}
+                    kind="secondary"
+                    tag={Link}
+                    href="https://brave.com"
+                    target="_blank"
+                >
+                    <Translate value="modal.web3.installsupportedbrowser.brave" />
+                </Button>
+                <Button
+                    className={styles.externalButton}
+                    kind="secondary"
+                    tag={Link}
+                    href="https://www.google.com/chrome"
+                    target="_blank"
+                >
+                    <Translate value="modal.web3.installsupportedbrowser.chrome" />
+                </Button>
+                <Button
+                    className={styles.externalButton}
+                    kind="secondary"
+                    tag={Link}
+                    href="https://www.mozilla.org/en-US/firefox/new"
+                    target="_blank"
+                >
+                    <Translate value="modal.web3.installsupportedbrowser.firefox" />
+                </Button>
             </div>
         </Dialog>
     </ModalPortal>

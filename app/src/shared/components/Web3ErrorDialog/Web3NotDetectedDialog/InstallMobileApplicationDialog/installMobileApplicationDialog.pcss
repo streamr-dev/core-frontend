@@ -1,12 +1,35 @@
-.buttonContainer {
-  display: flex;
-  flex-flow: row;
-  width: 100%;
-  justify-content: space-between;
-  margin-top: 42px;
-  flex-direction: row;
+.icon {
+  margin: 20px 0 40px;
 }
 
-.icon {
-  margin: 12px 0 50px;
+.buttonContainer {
+  display: flex;
+  border-top: 1px solid #F2F1F1;
+  margin-top: 32px;
+  padding-top: 20px;
+
+  .externalButton {
+    width: 144px;
+
+    &:not(:last-child) {
+      margin-right: 1rem;
+    }
+  }
+}
+
+@media (--xs) {
+  .icon {
+    display: none;
+  }
+
+  .buttonContainer {
+    margin-top: 15px;
+    flex-direction: column;
+    border-top: none;
+
+    .externalButton:not(:last-child) {
+      margin-right: 0;
+      margin-bottom: 1rem;
+    }
+  }
 }

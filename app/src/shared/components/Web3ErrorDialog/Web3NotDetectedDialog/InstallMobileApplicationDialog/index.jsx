@@ -6,7 +6,8 @@ import { Translate, I18n } from 'react-redux-i18n'
 import ModalPortal from '$shared/components/ModalPortal'
 import PngIcon from '$shared/components/PngIcon'
 import Dialog from '$shared/components/Dialog'
-import ExternalLinkButton from '$shared/components/Buttons/ExternalLinkButton'
+import Button from '$shared/components/Button'
+import Link from '$shared/components/Link'
 
 import styles from './installMobileApplicationDialog.pcss'
 
@@ -28,34 +29,33 @@ const InstallMobileApplicationDialog = ({ onClose, ...props }: Props) => (
             />
             <p><Translate value="modal.web3.installmobileapplication.message" dangerousHTML /></p>
             <div className={styles.buttonContainer}>
-                <ExternalLinkButton
-                    textI18nKey="modal.web3.installmobileapplication.app.coinbase"
-                    href="https://wallet.coinbase.com"
-                    className={styles.button}
-                />
-                <ExternalLinkButton
-                    textI18nKey="modal.web3.installmobileapplication.app.coinbase"
-                    href="https://www.argent.xyz/"
-                    className={styles.button}
-                />
-                <ExternalLinkButton
-                    textI18nKey="modal.web3.installmobileapplication.app.trust"
-                    href="https://trustwalletapp.com"
-                    className={styles.button}
-                />
-                <p><Translate value="modal.web3.installmobileapplication.message" dangerousHTML /></p>
-                <div className={styles.buttonContainer}>
-                    <ExternalLinkButton
-                        textI18nKey="modal.web3.installmobileapplication.app.trust"
-                        href="https://trustwalletapp.com"
-                        className={styles.button}
-                    />
-                    <ExternalLinkButton
-                        textI18nKey="modal.web3.installmobileapplication.app.coinbase"
-                        href="https://wallet.coinbase.com"
-                        className={styles.button}
-                    />
-                </div>
+                <Button
+                    className={styles.externalButton}
+                    kind="secondary"
+                    tag={Link}
+                    href="https://metamask.io"
+                    target="_blank"
+                >
+                    <Translate value="modal.web3.installsupportedbrowser.metamask" />
+                </Button>
+                <Button
+                    className={styles.externalButton}
+                    kind="secondary"
+                    tag={Link}
+                    href="https://brave.com"
+                    target="_blank"
+                >
+                    <Translate value="modal.web3.installsupportedbrowser.brave" />
+                </Button>
+                <Button
+                    className={styles.externalButton}
+                    kind="secondary"
+                    tag={Link}
+                    href="https://www.opera.com/download"
+                    target="_blank"
+                >
+                    <Translate value="modal.web3.installsupportedbrowser.opera" />
+                </Button>
             </div>
         </Dialog>
     </ModalPortal>

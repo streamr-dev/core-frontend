@@ -481,6 +481,13 @@ msgstr "Ether is needed for gas, but you don't have any."
 "<br />"
 "Please get some and try again"
 
+msgid "modal##getCryptoDialog##mobileMessage"
+msgstr "Ether is needed for gas,"
+"<br />"
+"but you don't have any."
+"<br />"
+"Please get some and try again"
+
 msgid "modal##getCryptoDialog##title"
 msgstr "No Ether balance"
 
@@ -496,6 +503,13 @@ msgstr "Bancor"
 
 msgid "modal##getDataTokensDialog##message"
 msgstr "DATA is currently required to purchase products on the Marketplace. Please purchase some and try again"
+
+msgid "modal##getDataTokensDialog##mobileMessage"
+msgstr "DATA is currently required to purchase"
+"<br />"
+"products on the Marketplace."
+"<br />"
+"Please purchase some and try again"
 
 msgid "modal##getDataTokensDialog##title"
 msgstr "No DATA balance"
@@ -708,7 +722,7 @@ msgid "modal##web3##installmobileapplication##app##trust"
 msgstr "Trust"
 
 msgid "modal##web3##installmobileapplication##message"
-msgstr "We couldn't find your wallet. Please install one and try again."
+msgstr "We couldn't find your wallet. <br /> Please get one and try again"
 
 msgid "modal##web3##installmobileapplication##title"
 msgstr "No wallet found"
@@ -722,13 +736,25 @@ msgstr "Chrome"
 msgid "modal##web3##installsupportedbrowser##firefox"
 msgstr "Firefox"
 
+msgid "modal##web3##installsupportedbrowser##metamask"
+msgstr "Metamask"
+
+msgid "modal##web3##installsupportedbrowser##opera"
+msgstr "Opera"
+
 msgid "modal##web3##installsupportedbrowser##imageCaption"
 msgstr "Browser not supported"
 
 msgid "modal##web3##installsupportedbrowser##message"
 msgstr ""
 "Your browser doesn't support Web3. <br /> Please use a supported browser "
-"and try again."
+"and try again"
+
+msgid "modal##web3##installsupportedbrowser##mobileMessage"
+msgstr ""
+"Your browser doesn't support Web3. <br /> Please use a supported"
+"<br />"
+"browser and try again"
 
 msgid "modal##web3##installsupportedbrowser##title"
 msgstr "Your browser is not supported"

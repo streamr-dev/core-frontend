@@ -9,11 +9,19 @@ import NoDataPng2x from '$shared/assets/images/wallet_no_data@2x.png'
 import Dialog from '$shared/components/Dialog'
 import Button from '$shared/components/Button'
 import Link from '$shared/components/Link'
+import { isMobile } from '$shared/utils/platform'
 
 import styles from './getDataTokensDialog.pcss'
 
 export type Props = {
     onCancel: () => void,
+}
+
+const dialogText = () => {
+    if (isMobile()) {
+        return 'modal.getDataTokensDialog.mobileMessage'
+    }
+    return 'modal.getDataTokensDialog.message'
 }
 
 const GetDataTokensDialog = ({ onCancel }: Props) => (
@@ -24,9 +32,10 @@ const GetDataTokensDialog = ({ onCancel }: Props) => (
         >
             <img className={styles.icon} src={NoDataPng} srcSet={`${NoDataPng2x} 2x`} alt={I18n.t('error.wallet')} />
             <Translate
-                value="modal.getDataTokensDialog.message"
+                value={dialogText()}
                 className={styles.message}
                 tag="p"
+                dangerousHTML
             />
             <div className={styles.buttonContainer}>
                 <Button

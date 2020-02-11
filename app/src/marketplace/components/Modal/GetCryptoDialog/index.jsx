@@ -10,11 +10,19 @@ import PngIcon from '$shared/components/PngIcon'
 import Dialog from '$shared/components/Dialog'
 import Button from '$shared/components/Button'
 import Link from '$shared/components/Link'
+import { isMobile } from '$shared/utils/platform'
 
 import styles from './getCryptoDialog.pcss'
 
 export type Props = {
     onCancel: () => void,
+}
+
+const dialogText = () => {
+    if (isMobile()) {
+        return 'modal.getCryptoDialog.mobileMessage'
+    }
+    return 'modal.getCryptoDialog.message'
 }
 
 const GetCryptoDialog = ({ onCancel }: Props) => (
@@ -28,7 +36,7 @@ const GetCryptoDialog = ({ onCancel }: Props) => (
                 name="walletNoEth"
                 alt={I18n.t('modal.getCryptoDialog.title')}
             />
-            <Translate value="modal.getCryptoDialog.message" tag="p" dangerousHTML className={styles.message} />
+            <Translate value={dialogText()} tag="p" dangerousHTML className={styles.message} />
             <div className={styles.buttonContainer}>
                 <Button
                     className={styles.externalButton}

@@ -1,12 +1,35 @@
 .icon {
-  margin: 40px 0 50px;
+  margin: 20px 0 40px;
 }
 
 .buttonContainer {
   display: flex;
-  margin-top: 42px;
+  border-top: 1px solid #F2F1F1;
+  margin-top: 32px;
+  padding-top: 20px;
+
+  .externalButton {
+    width: 144px;
+
+    &:not(:last-child) {
+      margin-right: 1rem;
+    }
+  }
 }
 
-.button:not(:last-child) {
-  margin-right: 16px;
+@media (--xs) {
+  .icon {
+    display: none;
+  }
+
+  .buttonContainer {
+    margin-top: 15px;
+    flex-direction: column;
+    border-top: none;
+
+    .externalButton:not(:last-child) {
+      margin-right: 0;
+      margin-bottom: 1rem;
+    }
+  }
 }
