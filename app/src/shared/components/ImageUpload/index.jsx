@@ -4,9 +4,7 @@ import React, { Fragment, useState, useCallback, useMemo } from 'react'
 import { useDropzone } from 'react-dropzone'
 import cx from 'classnames'
 import { Translate, I18n } from 'react-redux-i18n'
-import MediaQuery from 'react-responsive'
 
-import breakpoints from '$app/scripts/breakpoints'
 import { maxFileSizeForImageUpload } from '$shared/utils/constants'
 import PngIcon from '$shared/components/PngIcon'
 import useIsMounted from '$shared/hooks/useIsMounted'
@@ -15,8 +13,6 @@ import type { DropzoneFile } from '$shared/components/FileUpload'
 
 import Notification from '$shared/utils/Notification'
 import styles from './imageUpload.pcss'
-
-const { lg } = breakpoints
 
 export type OnUploadError = (errorMessage: string) => void
 
@@ -123,12 +119,21 @@ const ImageUpload = ({
                         <Translate value="imageUpload.coverImage.replace" dangerousHTML />
                     ) : (
                         <Fragment>
-                            <MediaQuery minWidth={lg.min}>
-                                <Translate value="imageUpload.coverImage.upload" className={styles.uploadAdvice} dangerousHTML />
-                            </MediaQuery>
-                            <MediaQuery maxWidth={lg.min}>
-                                <Translate value="imageUpload.coverImage.tabletUpload" className={styles.uploadAdvice} dangerousHTML />
-                            </MediaQuery>
+                            <Translate
+                                value="imageUpload.coverImage.upload"
+                                className={cx(styles.uploadAdvice, styles.uploadAdviceDesktop)}
+                                dangerousHTML
+                            />
+                            <Translate
+                                value="imageUpload.coverImage.tabletUpload"
+                                className={cx(styles.uploadAdvice, styles.uploadAdviceTablet)}
+                                dangerousHTML
+                            />
+                            <Translate
+                                value="imageUpload.coverImage.mobileUpload"
+                                className={cx(styles.uploadAdvice, styles.uploadAdviceMobile)}
+                                dangerousHTML
+                            />
                         </Fragment>
                     )}
                 </p>

@@ -30,11 +30,25 @@ const ImageUploadContainer = ({ disabled, defaultImage }: Props) => {
     )
 }
 
-// onUploadError={this.onUploadError}
-
 stories.add('default', () => (
     <ImageUploadContainer />
 ))
+
+stories.add('default (tablet)', () => (
+    <ImageUploadContainer />
+), {
+    viewport: {
+        defaultViewport: 'md',
+    },
+})
+
+stories.add('default (mobile)', () => (
+    <ImageUploadContainer />
+), {
+    viewport: {
+        defaultViewport: 'sm',
+    },
+})
 
 stories.add('with default image', () => (
     <ImageUploadContainer
