@@ -32,13 +32,14 @@ import useMemberStats from '$mp/modules/dataUnion/hooks/useMemberStats'
 import routes from '$routes'
 import CreateProductModal from '$mp/containers/CreateProductModal'
 import Button from '$shared/components/Button'
+import { productTypes } from '$mp/utils/constants'
 
 import styles from './products.pcss'
 
 const CreateProductButton = () => {
     const { api: createProductDialog } = useModal('marketplace.createProduct')
 
-    if (!process.env.DATA_UNIONS) {
+    if (!process.env.NEW_MP_CONTRACT) {
         return (
             <Button
                 tag={Link}
@@ -48,13 +49,25 @@ const CreateProductButton = () => {
                 <Translate value="userpages.products.createProduct" />
             </Button>
         )
+    } else if (process.env.DATA_UNIONS) {
+        return (
+            <Button
+                type="button"
+                className={styles.createProductButton}
+                onClick={() => createProductDialog.open()}
+            >
+                <Translate value="userpages.products.createProduct" />
+            </Button>
+        )
     }
 
     return (
         <Button
-            type="button"
+            tag={Link}
             className={styles.createProductButton}
-            onClick={() => createProductDialog.open()}
+            to={routes.newProduct({
+                type: productTypes.NORMAL,
+            })}
         >
             <Translate value="userpages.products.createProduct" />
         </Button>

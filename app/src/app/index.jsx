@@ -160,7 +160,7 @@ const AuthenticationRouter = () => ([
     <Redirect from="/register/forgotPassword" to={routes.forgotPassword()} key="ForgotPasswordRedirect" />,
 ])
 
-const MarketplaceRouter = () => (process.env.DATA_UNIONS ? [
+const MarketplaceRouter = () => (process.env.NEW_MP_CONTRACT ? [
     <Route exact path={marketplace.main} component={Products} key="Products" />,
     <Route exact path={formatPath(marketplace.products, ':id', 'streamPreview', ':streamId')} component={StreamPreviewPage} key="StreamPreview" />,
     <Route exact path={formatPath(marketplace.products, ':id')} component={ProductPage2} key="ProductPage2" />,
