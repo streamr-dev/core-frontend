@@ -6,8 +6,6 @@ import { Translate, I18n } from 'react-redux-i18n'
 import PngIcon from '$shared/components/PngIcon'
 import Dialog from '$shared/components/Dialog'
 import ModalPortal from '$shared/components/ModalPortal'
-// import DiscardChangesPng from '$mp/assets/discard-changes.png'
-// import DiscardChangesPng2x from '$mp/assets/discard-changes@2x.png'
 import Buttons from '$shared/components/Buttons'
 
 import styles from './confirmSave.pcss'

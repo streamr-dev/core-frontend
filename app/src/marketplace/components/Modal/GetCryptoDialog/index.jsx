@@ -3,8 +3,6 @@
 import React from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
 
-// import WalletNoEthPng from '../../../assets/wallet_no_eth.png'
-// import WalletNoEthPng2x from '../../../assets/wallet_no_eth@2x.png'
 import ModalPortal from '$shared/components/ModalPortal'
 import PngIcon from '$shared/components/PngIcon'
 import Dialog from '$shared/components/Dialog'
