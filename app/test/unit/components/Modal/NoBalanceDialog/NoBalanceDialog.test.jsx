@@ -8,6 +8,7 @@ import GetCryptoDialog from '$mp/components/Modal/GetCryptoDialog'
 import GetDataTokensDialog from '$mp/components/Modal/GetDataTokensDialog'
 import InsufficientDataDialog from '$mp/components/Modal/InsufficientDataDialog'
 import InsufficientDaiDialog from '$mp/components/Modal/InsufficientDaiDialog'
+import InsufficientEthDialog from '$mp/components/Modal/InsufficientEthDialog'
 
 describe('NoBalanceDialog', () => {
     describe('render', () => {
@@ -101,7 +102,7 @@ describe('NoBalanceDialog', () => {
             assert(wrapper.is(InsufficientDaiDialog))
         })
 
-        it('must render GetCryptoDialog when the Payment currency is ETH and ETH balance is not enough', async () => {
+        it('must render InsufficientEthDialog when the Payment currency is ETH and ETH balance is not enough', async () => {
             const wrapper = shallow(<NoBalanceDialog
                 requiredGasBalance={BN(1)}
                 requiredEthBalance={BN(5)}
@@ -113,7 +114,7 @@ describe('NoBalanceDialog', () => {
                 paymentCurrency="ETH"
                 onCancel={() => null}
             />)
-            assert(wrapper.is(GetCryptoDialog))
+            assert(wrapper.is(InsufficientEthDialog))
         })
     })
 })
