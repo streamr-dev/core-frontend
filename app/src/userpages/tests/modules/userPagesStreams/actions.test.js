@@ -24,7 +24,6 @@ describe('Stream actions', () => {
             ids: [],
             openStream: {
                 id: null,
-                isNew: false,
             },
             error: null,
         })
@@ -150,7 +149,7 @@ describe('Stream actions', () => {
     })
 
     describe('updateStream', () => {
-        it('creates UPDATE_STREAM_SUCCESS and CREATE_NOTIFICATION when fetcupdatinghing a stream has succeeded', async () => {
+        it('creates UPDATE_STREAM_SUCCESS and CREATE_NOTIFICATION when updating a stream has succeeded', async () => {
             const id = 'test'
             const stream = {
                 id,
@@ -366,21 +365,11 @@ describe('Stream actions', () => {
         })
     })
 
-    it('must dispatch OPEN_STREAM when opening existing stream', () => {
+    it('must dispatch OPEN_STREAM when opening stream', () => {
         const id = 'askdfjasldkfjasdlkf'
         assert.deepStrictEqual(actions.openStream(id), {
             type: actions.OPEN_STREAM,
             id,
-            isNew: false,
-        })
-    })
-
-    it('must dispatch OPEN_STREAM, isNew=true when opening new stream', () => {
-        const id = 'askdfjasldkfjasdlkf'
-        assert.deepStrictEqual(actions.openStream(id, true), {
-            type: actions.OPEN_STREAM,
-            id,
-            isNew: true,
         })
     })
 })

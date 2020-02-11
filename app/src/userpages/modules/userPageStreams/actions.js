@@ -624,10 +624,9 @@ export const streamFieldsAutodetect = (id: StreamId) => (dispatch: Function) => 
         })
 }
 
-export const openStream = (id: ?StreamId, isNew: ?boolean = false) => ({
+export const openStream = (id: ?StreamId) => ({
     type: OPEN_STREAM,
     id,
-    isNew,
 })
 
 export const closeStream = () => openStream(null)

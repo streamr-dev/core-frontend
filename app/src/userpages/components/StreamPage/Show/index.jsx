@@ -6,6 +6,8 @@ import { I18n } from 'react-redux-i18n'
 import { push } from 'connected-react-router'
 import { withRouter } from 'react-router-dom'
 import MediaQuery from 'react-responsive'
+import qs from 'query-string'
+
 import useIsMounted from '$shared/hooks/useIsMounted'
 import StatusIcon from '$shared/components/StatusIcon'
 import ConfigureAnchorOffset from '$shared/components/ConfigureAnchorOffset'
@@ -26,12 +28,7 @@ import {
     updateEditStream,
 } from '$userpages/modules/userPageStreams/actions'
 import { getMyResourceKeys } from '$shared/modules/resourceKey/actions'
-import {
-    selectEditedStream,
-    selectPermissions,
-    selectFetching,
-    selectOpenStreamIsNew,
-} from '$userpages/modules/userPageStreams/selectors'
+import { selectEditedStream, selectPermissions, selectFetching } from '$userpages/modules/userPageStreams/selectors'
 import { selectUserData } from '$shared/modules/user/selectors'
 import DetailsContainer from '$shared/components/Container/Details'
 import TOCPage from '$userpages/components/TOCPage'
@@ -53,6 +50,12 @@ import styles from './streamShowView.pcss'
 
 const { lg } = breakpoints
 
+type OwnProps = {
+    location: {
+        search: string,
+    },
+}
+
 type StateProps = {
     editedStream: ?Stream,
     permissions: ?Array<Operation>,
@@ -68,7 +71,7 @@ type State = {
 type DispatchProps = {
     createStream: () => Promise<StreamId>,
     getStream: (id: StreamId) => Promise<void>,
-    openStream: (id: StreamId, isNew?: boolean) => void,
+    openStream: (id: StreamId) => void,
     closeStream: () => void,
     getMyStreamPermissions: (id: StreamId) => void,
     save: (stream: ?Stream) => void,
@@ -285,7 +288,7 @@ function StreamLoader(props: Props) {
     propsRef.current = props
     const { id: streamId } = props.match.params || {}
 
-    const initStream = useCallback(async (id: StreamId, isNew?: boolean = false) => {
+    const initStream = useCallback(async (id: StreamId) => {
         let { current: currentProps } = propsRef
         await propsRef.current.getKeys()
         if (!isMounted()) { return }
@@ -295,7 +298,7 @@ function StreamLoader(props: Props) {
                 if (!isMounted()) { return }
                 // get stream status before copying state to edit stream object
                 await currentProps.refreshStreamStatus(id)
-                currentProps.openStream(id, isNew)
+                currentProps.openStream(id)
                 currentProps.initEditStream()
             }),
             currentProps.getMyStreamPermissions(id),
@@ -306,8 +309,8 @@ function StreamLoader(props: Props) {
         const { current: currentProps } = propsRef
         const newStreamId = await currentProps.createStream()
         if (!isMounted()) { return }
-        currentProps.history.replace(`${links.userpages.streamShow}/${newStreamId}`)
-        initStream(newStreamId, true)
+        currentProps.history.replace(`${links.userpages.streamShow}/${newStreamId}?newStream=true`)
+        initStream(newStreamId)
     }, [initStream, propsRef, isMounted])
 
     const initStreamRef = useRef(initStream)
@@ -336,13 +339,17 @@ function StreamLoader(props: Props) {
     return <StreamShowView {...props} key={streamId} editedStream={isCurrent ? props.editedStream : null} />
 }
 
-const mapStateToProps = (state: StoreState): StateProps => ({
-    editedStream: selectEditedStream(state),
-    permissions: selectPermissions(state),
-    currentUser: selectUserData(state),
-    isFetching: selectFetching(state),
-    isNewStream: selectOpenStreamIsNew(state),
-})
+const mapStateToProps = (state: StoreState, { location }: OwnProps): StateProps => {
+    const newStream = qs.parse(location.search).newStream || ''
+
+    return {
+        editedStream: selectEditedStream(state),
+        permissions: selectPermissions(state),
+        currentUser: selectUserData(state),
+        isFetching: selectFetching(state),
+        isNewStream: !!newStream,
+    }
+}
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     createStream: () => dispatch(createStream({
@@ -351,7 +358,7 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     })),
     getStream: (id: StreamId) => dispatch(getStream(id)),
     getKeys: () => dispatch(getMyResourceKeys()),
-    openStream: (id: StreamId, isNew?: boolean = false) => dispatch(openStream(id, isNew)),
+    openStream: (id: StreamId) => dispatch(openStream(id)),
     closeStream: () => {
         dispatch(closeStream())
         dispatch(updateEditStream(null))

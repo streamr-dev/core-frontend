@@ -32,14 +32,11 @@ export type StreamAction = {
         | typeof GET_STREAMS_REQUEST
         | typeof GET_MY_STREAM_PERMISSIONS_REQUEST,
 } | {
-    type: typeof UPLOAD_CSV_FILE_REQUEST
+    type: typeof OPEN_STREAM
+        | typeof UPLOAD_CSV_FILE_REQUEST
         | typeof SAVE_STREAM_FIELDS_SUCCESS
         | typeof DELETE_STREAM_SUCCESS,
     id: StreamId,
-} | {
-    type: typeof OPEN_STREAM,
-    id: StreamId,
-    isNew: boolean,
 } | {
     type: typeof GET_STREAM_SUCCESS,
     stream: Stream,

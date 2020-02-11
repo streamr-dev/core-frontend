@@ -6,7 +6,6 @@ const initialState = {
     ids: [],
     openStream: {
         id: null,
-        isNew: false,
     },
     savingStreamFields: false,
     fetching: false,

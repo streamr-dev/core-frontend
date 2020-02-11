@@ -35,11 +35,6 @@ export const selectOpenStreamId: (StoreState) => ?StreamId = createSelector(
     (subState: UserPageStreamsState): ?StreamId => subState.openStream.id,
 )
 
-export const selectOpenStreamIsNew: (StoreState) => boolean = createSelector(
-    selectUserPageStreamsState,
-    (subState: UserPageStreamsState): boolean => !!subState.openStream.isNew,
-)
-
 export const selectOpenStream: (StoreState) => ?Stream = createSelector(
     selectOpenStreamId,
     selectEntities,
