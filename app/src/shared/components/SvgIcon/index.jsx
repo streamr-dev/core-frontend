@@ -317,6 +317,16 @@ const sources = {
             />
         </svg>
     ),
+    outlineQuestionMark: (
+        <svg viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+            <g transform="translate(1 1)" stroke="#323232" fill="none" fillRule="evenodd">
+                <circle cx="8" cy="8" r="8" />
+                <g strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.071">
+                    <path d="M7.925 12.005a.316.316 0 100 .632.316.316 0 000-.632h0M5.398 5.975a2.526 2.526 0 113.369 2.383 1.263 1.263 0 00-.842 1.19v.532" />
+                </g>
+            </g>
+        </svg>
+    ),
     lockOutline: (
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 24">
             <g fill="none" fillRule="evenodd" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5">

@@ -18,9 +18,21 @@
 
 .uploadAdvice {
   font-weight: var(--medium);
-  font-size: 1rem;
+  font-size: 1um;
   letter-spacing: 0;
   line-height: 1.5rem;
+}
+
+.uploadAdviceDesktop {
+  display: none;
+}
+
+.uploadAdviceTablet {
+  display: none;
+}
+
+.uploadAdviceMobile {
+  display: none;
 }
 
 .imageUploaded {
@@ -105,7 +117,7 @@
 @media (--md-down) {
   .root {
     height: auto;
-    min-height: 180px;
+    min-height: 250px;
     font-size: 14px;
   }
 }
@@ -116,8 +128,48 @@
   }
 }
 
+@media (--lg-up) {
+  .uploadAdviceDesktop {
+    display: block;
+  }
+
+  .uploadAdviceTablet {
+    display: none;
+  }
+
+  .uploadAdviceMobile {
+    display: none;
+  }
+}
+
+@media (--sm-up) and (--lg-down) {
+  .uploadAdviceDesktop {
+    display: none;
+  }
+
+  .uploadAdviceTablet {
+    display: block;
+  }
+
+  .uploadAdviceMobile {
+    display: none;
+  }
+}
+
 @media (--sm-down) {
   .previewImage {
     height: 100%;
+  }
+
+  .uploadAdviceDesktop {
+    display: none;
+  }
+
+  .uploadAdviceTablet {
+    display: none;
+  }
+
+  .uploadAdviceMobile {
+    display: block;
   }
 }

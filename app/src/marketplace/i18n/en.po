@@ -142,8 +142,11 @@ msgstr "Set recipient ETH address"
 msgid "editProductPage##setPrice##placeholder##enterEthAddress"
 msgstr "Enter ETH address"
 
-msgid "editProductPage##setPrice##fixPrice"
+msgid "editProductPage##setPrice##dataUnion##fixPrice"
 msgstr "Fix price in fiat for protection against shifts in the DATA price"
+
+msgid "editProductPage##setPrice##dataProduct##fixPrice"
+msgstr "Fix price in fiat"
 
 msgid "editProductPage##productDetails##title"
 msgstr "Add some more details"
@@ -264,6 +267,9 @@ msgstr "Drag & drop to replace your cover image <br /> or click to browse for on
 
 msgid "imageUpload##coverImage##tabletUpload"
 msgstr "Tap to take a photo or browse for one"
+
+msgid "imageUpload##coverImage##mobileUpload"
+msgstr "Tap to take a photo<br />or browse for one"
 
 msgid "imageUpload##coverImage##upload"
 msgstr "Drag & drop to upload a cover image <br /> or click to browse for one"
@@ -654,7 +660,7 @@ msgid "modal##setPrice##fixedPriceSelector##text"
 msgstr "Fix price in USD"
 
 msgid "modal##setPrice##fixedPriceSelector##tooltip"
-msgstr "Fixing the price in fiat will protect you from changes in the DATA price"
+msgstr "Fixing the price in fiat can give you protection against shifts in the DATA price"
 
 msgid "modal##setPrice##ownerAddress"
 msgstr "Your account Ethereum address (cannot be changed)"

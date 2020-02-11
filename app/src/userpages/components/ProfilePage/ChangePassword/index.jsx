@@ -118,25 +118,35 @@ class ChangePasswordDialog extends Component<Props, State> {
                     contentClassName={styles.content}
                     title={I18n.t('modal.changePassword.defaultTitle')}
                     onClose={this.props.onToggle}
-                    actions={{
-                        cancel: {
-                            title: I18n.t('modal.common.cancel'),
-                            outline: true,
-                            kind: 'link',
-                            onClick: () => this.props.onToggle(),
-                        },
-                        save: {
-                            title: I18n.t('modal.common.save'),
-                            kind: 'primary',
-                            onClick: this.onSubmit,
-                            disabled: !allPasswordsGiven || !passWordsMatch || !strongEnoughPassword || updating,
-                            spinner: updating,
-                        },
-                    }}
+                    renderActions={() => (
+                        <div className={styles.footer}>
+                            <div className={styles.footerText}>
+                                <Link to={routes.forgotPassword()} className={styles.forgotLink}>
+                                    <Translate value="modal.changePassword.forgotPassword.mobile" className={styles.forgotLinkTextMobile} />
+                                    <Translate value="modal.changePassword.forgotPassword.desktop" className={styles.forgotLinkTextDesktop} />
+                                </Link>
+                            </div>
+                            <Button
+                                type="button"
+                                kind="link"
+                                onClick={() => this.props.onToggle()}
+                                className={styles.cancelButton}
+                            >
+                                {I18n.t('modal.common.cancel')}
+                            </Button>
+                            <Button
+                                type="button"
+                                kind="primary"
+                                onClick={this.onSubmit}
+                                disabled={!allPasswordsGiven || !passWordsMatch || !strongEnoughPassword || updating}
+                                waiting={updating}
+                                className={styles.saveButton}
+                            >
+                                {I18n.t('modal.common.save')}
+                            </Button>
+                        </div>
+                    )}
                 >
-                    <Link to={routes.forgotPassword()} className={styles.forgotLink}>
-                        <Translate value="modal.changePassword.forgotPassword" />
-                    </Link>
                     <div className={styles.currentPassword}>
                         <Label htmlFor="currentPassword">
                             {I18n.t('modal.changePassword.currentPassword')}
