@@ -4,6 +4,7 @@ import React from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
 import { Footer as LayoutFooter, FooterColumn, FooterColumns, SocialChannels, MadeBy as UnstyledMadeBy } from '@streamr/streamr-layout'
+import cx from 'classnames'
 
 import links from '$shared/../links'
 
@@ -17,9 +18,17 @@ const MadeBy = styled(UnstyledMadeBy)`
     }
 `
 
-const Footer = () => (
+type Props = {
+    topBorder?: boolean,
+}
+
+const FooterWithBorder = styled(FooterColumns)`
+    border-top: ${({ topBorder }) => (topBorder ? '2px' : '0')} solid #D8D8D8;
+`
+
+const Footer = ({ topBorder = false }: Props) => (
     <LayoutFooter>
-        <FooterColumns>
+        <FooterWithBorder topBorder={topBorder}>
             <FooterColumn title={I18n.t('general.learn')}>
                 <a href="/">
                     <Translate value="general.top" />
@@ -95,7 +104,7 @@ const Footer = () => (
                     <Translate value="general.privacy" />
                 </a>
             </FooterColumn>
-        </FooterColumns>
+        </FooterWithBorder>
         <SocialChannels />
         <MadeBy />
     </LayoutFooter>
