@@ -118,7 +118,7 @@ class PermissionKeyFieldEditor extends React.Component<Props, State> {
                     </div>
                     <div>
                         <Label>
-                            Permission
+                            {I18n.t('userpages.keyFieldEditor.permission')}
                         </Label>
                         <Select
                             options={permissionOptions}
