@@ -771,6 +771,24 @@ story('Profile/ChangePasswordDialog')
             />
         )
     })
+    .add('mobile', () => {
+        const updatePassword = action('updatePassword')
+        const updateAction = (...args) => new Promise((resolve) => {
+            updatePassword(...args)
+            resolve()
+        })
+        return (
+            <ChangePasswordDialog
+                isOpen
+                updatePassword={updateAction}
+                onToggle={action('onToggle')}
+            />
+        )
+    }, {
+        viewport: {
+            defaultViewport: 'sm',
+        },
+    })
 
 story('EthereumIdentity/IdentityChallengeDialog')
     .add('signature request', () => (

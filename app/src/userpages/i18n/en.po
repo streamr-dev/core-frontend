@@ -903,8 +903,11 @@ msgstr "New password"
 msgid "modal##changePassword##confirmNewPassword"
 msgstr "Confirm new password"
 
-msgid "modal##changePassword##forgotPassword"
+msgid "modal##changePassword##forgotPassword##desktop"
 msgstr "Forgot password?"
+
+msgid "modal##changePassword##forgotPassword##mobile"
+msgstr "Forgot?"
 
 msgid "modal##changePassword##passwordsDoNotMatch"
 msgstr "The passwords do not match"
