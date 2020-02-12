@@ -17,13 +17,6 @@ export type Props = {
     onCancel: () => void,
 }
 
-const dialogText = () => {
-    if (isMobile()) {
-        return 'modal.getDataTokensDialog.mobileMessage'
-    }
-    return 'modal.getDataTokensDialog.message'
-}
-
 const GetDataTokensDialog = ({ onCancel }: Props) => (
     <ModalPortal>
         <Dialog
@@ -32,7 +25,7 @@ const GetDataTokensDialog = ({ onCancel }: Props) => (
         >
             <img className={styles.icon} src={NoDataPng} srcSet={`${NoDataPng2x} 2x`} alt={I18n.t('error.wallet')} />
             <Translate
-                value={dialogText()}
+                value={`modal.getDataTokensDialog.${isMobile() ? 'mobileMessage' : 'message'}`}
                 className={styles.message}
                 tag="p"
                 dangerousHTML

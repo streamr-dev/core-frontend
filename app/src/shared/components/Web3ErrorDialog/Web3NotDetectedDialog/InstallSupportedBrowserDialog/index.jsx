@@ -16,13 +16,6 @@ export type Props = {
     onClose: () => void,
 }
 
-const dialogText = () => {
-    if (isMobile()) {
-        return 'modal.web3.installsupportedbrowser.mobileMessage'
-    }
-    return 'modal.web3.installsupportedbrowser.message'
-}
-
 const InstallSupportedBrowserDialog = ({ onClose, ...props }: Props) => (
     <ModalPortal>
         <Dialog
@@ -35,7 +28,7 @@ const InstallSupportedBrowserDialog = ({ onClose, ...props }: Props) => (
                 className={styles.icon}
                 alt={I18n.t('modal.web3.installsupportedbrowser.imageCaption')}
             />
-            <p><Translate value={dialogText()} dangerousHTML /></p>
+            <p><Translate value={`modal.web3.installsupportedbrowser.${isMobile() ? 'mobileMessage' : 'message'}`} dangerousHTML /></p>
 
             <div className={styles.buttonContainer}>
                 <Button

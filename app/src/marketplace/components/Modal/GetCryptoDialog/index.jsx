@@ -16,13 +16,6 @@ export type Props = {
     onCancel: () => void,
 }
 
-const dialogText = () => {
-    if (isMobile()) {
-        return 'modal.getCryptoDialog.mobileMessage'
-    }
-    return 'modal.getCryptoDialog.message'
-}
-
 const GetCryptoDialog = ({ onCancel }: Props) => (
     <ModalPortal>
         <Dialog
@@ -34,7 +27,7 @@ const GetCryptoDialog = ({ onCancel }: Props) => (
                 name="walletNoEth"
                 alt={I18n.t('modal.getCryptoDialog.title')}
             />
-            <Translate value={dialogText()} tag="p" dangerousHTML className={styles.message} />
+            <Translate value={`modal.getCryptoDialog.${isMobile() ? 'mobileMessage' : 'message'}`} tag="p" dangerousHTML className={styles.message} />
             <div className={styles.buttonContainer}>
                 <Button
                     className={styles.externalButton}
