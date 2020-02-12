@@ -27,7 +27,8 @@ const GetCryptoDialog = ({ onCancel }: Props) => (
                 name="walletNoEth"
                 alt={I18n.t('modal.getCryptoDialog.title')}
             />
-            <Translate value={`modal.getCryptoDialog.${isMobile() ? 'mobileMessage' : 'message'}`} tag="p" dangerousHTML className={styles.message} />
+            <Translate value="modal.getCryptoDialog.message" tag="p" dangerousHTML className={styles.message} />
+            <Translate value="modal.getCryptoDialog.mobileMessage" tag="p" dangerousHTML className={styles.mobileMessage} />
             <div className={styles.buttonContainer}>
                 <Button
                     className={styles.externalButton}

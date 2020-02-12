@@ -17,7 +17,23 @@
   }
 }
 
+.message {
+  display: block;
+}
+
+.mobileMessage {
+  display: none;
+}
+
 @media (--xs) {
+  .message {
+    display: none;
+  }
+
+  .mobileMessage {
+    display: block;
+  }
+
   .icon {
     display: none;
   }

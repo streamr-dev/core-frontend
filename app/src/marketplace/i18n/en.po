@@ -504,6 +504,12 @@ msgid "modal##insufficientDaiDialog##message"
 msgstr "It looks like you don’t have enough DAI to purchase this product. "
 "Please get some & try again or choose a different payment currency."
 
+msgid "modal##insufficientDaiDialog##mobileMessage"
+msgstr "It looks like you don’t have enough DAI to purchase this product. "
+"Please get some & try again or choose a different"
+"<br />"
+"payment currency."
+
 msgid "modal##getDataTokensDialog##link##bancor"
 msgstr "Bancor"
 
