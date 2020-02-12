@@ -891,6 +891,10 @@ msgstr "Save"
 
 msgid "userpages##keyFieldEditor##cancel"
 msgstr "Cancel"
+
+msgid "userpages##keyFieldEditor##permission"
+msgstr "Permission"
+
 msgid "modal##changePassword##defaultTitle"
 msgstr "Change password"
 

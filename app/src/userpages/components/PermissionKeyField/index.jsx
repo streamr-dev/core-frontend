@@ -234,7 +234,7 @@ class PermissionKeyField extends React.Component<Props, State> {
                     <SplitControl>
                         {this.renderInput()}
                         <div>
-                            <Label>
+                            <Label className={styles.permissionHeader}>
                                 {showPermissionHeader && I18n.t('userpages.streams.edit.configure.permission')}
                             </Label>
                             <Select
