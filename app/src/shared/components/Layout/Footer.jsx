@@ -4,7 +4,6 @@ import React from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
 import { Footer as LayoutFooter, FooterColumn, FooterColumns, SocialChannels, MadeBy as UnstyledMadeBy } from '@streamr/streamr-layout'
-import cx from 'classnames'
 
 import links from '$shared/../links'
 
@@ -23,7 +22,7 @@ type Props = {
 }
 
 const FooterWithBorder = styled(FooterColumns)`
-    border-top: ${({ topBorder }) => (topBorder ? '2px' : '0')} solid #D8D8D8;
+    border-top: ${({ topBorder }) => (topBorder ? '1px' : '0')} solid #D8D8D8;
 `
 
 const Footer = ({ topBorder = false }: Props) => (
