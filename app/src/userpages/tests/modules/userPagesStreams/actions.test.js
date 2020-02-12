@@ -149,7 +149,7 @@ describe('Stream actions', () => {
     })
 
     describe('updateStream', () => {
-        it('creates UPDATE_STREAM_SUCCESS and CREATE_NOTIFICATION when fetcupdatinghing a stream has succeeded', async () => {
+        it('creates UPDATE_STREAM_SUCCESS and CREATE_NOTIFICATION when updating a stream has succeeded', async () => {
             const id = 'test'
             const stream = {
                 id,

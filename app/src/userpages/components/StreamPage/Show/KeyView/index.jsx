@@ -4,7 +4,6 @@ import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { formatPath } from '$shared/utils/url'
-import { Link } from 'react-router-dom'
 
 import links from '$shared/../links'
 import type { StreamId } from '$shared/flowtype/stream-types'
@@ -105,8 +104,11 @@ export class KeyView extends Component<Props> {
         return (
             <Fragment>
                 <p className={styles.longText}>
-                    <Translate value="userpages.streams.edit.apiCredentials.description" />
-                    <Link to={formatPath(links.userpages.profile)}>Settings</Link>.
+                    <Translate
+                        value="userpages.streams.edit.apiCredentials.description"
+                        settingsLink={formatPath(links.userpages.profile)}
+                        dangerousHTML
+                    />
                 </p>
                 <PermissionCredentialsControl
                     keys={keys}
