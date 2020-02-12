@@ -363,12 +363,34 @@ story('Marketplace/GetDataTokensDialog')
         />
     ))
 
+story('Marketplace/GetDataTokensDialog(iPhone)')
+    .add('default', () => (
+        <GetDataTokensDialog
+            onCancel={action('onCancel')}
+        />
+    ), {
+        viewport: {
+            defaultViewport: 'iPhone',
+        },
+    })
+
 story('Marketplace/GetCryptoDialog')
     .add('default', () => (
         <GetCryptoDialog
             onCancel={action('onCancel')}
         />
     ))
+
+story('Marketplace/GetCryptoDialog(iPhone)')
+    .add('default', () => (
+        <GetCryptoDialog
+            onCancel={action('onCancel')}
+        />
+    ), {
+        viewport: {
+            defaultViewport: 'iPhone',
+        },
+    })
 
 story('Marketplace/InsufficientDataDialog')
     .add('default', () => (
@@ -377,18 +399,52 @@ story('Marketplace/InsufficientDataDialog')
         />
     ))
 
+story('Marketplace/InsufficientDataDialog(iPhone)')
+    .add('default', () => (
+        <InsufficientDataDialog
+            onCancel={action('onCancel')}
+        />
+    ), {
+        viewport: {
+            defaultViewport: 'iPhone',
+        },
+    })
+
 story('Marketplace/InsufficientDaiDialog')
     .add('default', () => (
         <InsufficientDaiDialog
             onCancel={action('onCancel')}
         />
     ))
+
+story('Marketplace/InsufficientDaiDialog(iPhone)')
+    .add('default', () => (
+        <InsufficientDaiDialog
+            onCancel={action('onCancel')}
+        />
+    ), {
+        viewport: {
+            defaultViewport: 'iPhone',
+        },
+    })
+
 story('Marketplace/InsufficientEthDialog')
     .add('default', () => (
         <InsufficientEthDialog
             onCancel={action('onCancel')}
         />
     ))
+
+story('Marketplace/InsufficientEthDialog(iPhone)')
+    .add('default', () => (
+        <InsufficientEthDialog
+            onCancel={action('onCancel')}
+        />
+    ), {
+        viewport: {
+            defaultViewport: 'iPhone',
+        },
+    })
 
 story('Marketplace/NoBalanceDialog')
     .add('eth balance 0', () => (
