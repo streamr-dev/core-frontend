@@ -12,7 +12,22 @@ import '$app/node_modules/react-vis/dist/style.css'
 
 import Spinner from '$shared/components/Spinner'
 
-const axisStyle = {
+const xAxisStyle = {
+    ticks: {
+        fontSize: '12px',
+        fontFamily: "'IBM Plex Sans', sans-serif",
+        color: '#A3A3A3',
+        strokeOpacity: '1',
+        stroke: '#A3A3A3',
+        opacity: '0.5',
+        letterSpacing: '0px',
+    },
+    text: {
+        strokeWidth: '0',
+    },
+}
+
+const yAxisStyle = {
     ticks: {
         fontSize: '12px',
         fontFamily: "'IBM Plex Sans', sans-serif",
@@ -112,13 +127,13 @@ const TimeSeriesGraph = ({
                     />
                     <XAxis
                         hideLine
-                        style={axisStyle}
+                        style={xAxisStyle}
                         tickTotal={7}
                         tickFormat={(value, index, scale, tickTotal) => formatXAxisTicks(value, index, scale, tickTotal, shownDays)}
                     />
                     <YAxis
                         hideLine
-                        style={axisStyle}
+                        style={yAxisStyle}
                         position="middle"
                         orientation="right"
                     />
