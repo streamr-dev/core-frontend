@@ -8,7 +8,6 @@ import PngIcon from '$shared/components/PngIcon'
 import Dialog from '$shared/components/Dialog'
 import Button from '$shared/components/Button'
 import Link from '$shared/components/Link'
-import { isMobile } from '$shared/utils/platform'
 
 import styles from './getCryptoDialog.pcss'
 

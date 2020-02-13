@@ -362,9 +362,7 @@ story('Marketplace/GetDataTokensDialog')
             onCancel={action('onCancel')}
         />
     ))
-
-story('Marketplace/GetDataTokensDialog(iPhone)')
-    .add('default', () => (
+    .add('default iPhone', () => (
         <GetDataTokensDialog
             onCancel={action('onCancel')}
         />
@@ -380,9 +378,7 @@ story('Marketplace/GetCryptoDialog')
             onCancel={action('onCancel')}
         />
     ))
-
-story('Marketplace/GetCryptoDialog(iPhone)')
-    .add('default', () => (
+    .add('default (iPhone)', () => (
         <GetCryptoDialog
             onCancel={action('onCancel')}
         />
@@ -398,9 +394,7 @@ story('Marketplace/InsufficientDataDialog')
             onCancel={action('onCancel')}
         />
     ))
-
-story('Marketplace/InsufficientDataDialog(iPhone)')
-    .add('default', () => (
+    .add('default (iPhone)', () => (
         <InsufficientDataDialog
             onCancel={action('onCancel')}
         />
@@ -416,9 +410,7 @@ story('Marketplace/InsufficientDaiDialog')
             onCancel={action('onCancel')}
         />
     ))
-
-story('Marketplace/InsufficientDaiDialog(iPhone)')
-    .add('default', () => (
+    .add('default (iPhone)', () => (
         <InsufficientDaiDialog
             onCancel={action('onCancel')}
         />
@@ -434,9 +426,7 @@ story('Marketplace/InsufficientEthDialog')
             onCancel={action('onCancel')}
         />
     ))
-
-story('Marketplace/InsufficientEthDialog(iPhone)')
-    .add('default', () => (
+    .add('default (iPhone)', () => (
         <InsufficientEthDialog
             onCancel={action('onCancel')}
         />
