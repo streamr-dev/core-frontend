@@ -60,6 +60,9 @@ export const getMostRecentPurchaseTimestamp = async (id: ProductId, usePublicNod
     return null
 }
 
+// Seeks blocks starting from 'initialBlockNumberGuess' and checks block timestamps
+// until 'targetTimestampMs' is matched.
+// Returns best guess when 'maxTries' is reached.
 export const seekBlockWithTimestamp = async (
     web3: any,
     initialBlockNumberGuess: number,
@@ -80,7 +83,7 @@ export const seekBlockWithTimestamp = async (
         return block.number
     }
 
-    // Try to find closer block
+    // Try to find a closer block
     const blocksToSeek = Math.floor(Math.abs(diff) / blockTime)
 
     if (diff < 0) {
@@ -96,6 +99,9 @@ export const calculateBlockNumber = async (web3: any, timestampMs: number) => {
     const secondsBetween = (latestBlock.timestamp - (timestampMs / 1000))
     const blocksToRewind = Math.floor(secondsBetween / blockTime)
     const predictedBlock = latestBlock.number - blocksToRewind
+
+    // Predicted block will not probably be right so make sure we get the right block
+    // corresponding to given timestamp
     return seekBlockWithTimestamp(web3, predictedBlock, timestampMs, blockTime)
 }
 

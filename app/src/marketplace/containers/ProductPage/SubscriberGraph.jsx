@@ -8,6 +8,7 @@ import { getSubscribedEvents } from '$mp/modules/contractProduct/services'
 
 import TimeSeriesGraph from '$shared/components/TimeSeriesGraph'
 import WithShownDays from '$shared/components/TimeSeriesGraph/WithShownDays'
+import useIsMounted from '$shared/hooks/useIsMounted'
 
 type Props = {
     className?: string,
@@ -21,17 +22,20 @@ const SubscriberGraph = ({ className, productId }: Props) => {
     const [subscriptionData, setSubscriptionData] = useState([])
     const [shownDays, setShownDays] = useState(7)
     const [isLoading, setIsLoading] = useState(false)
+    const isMounted = useIsMounted()
 
     useEffect(() => {
         const getSubscriptions = async () => {
             setIsLoading(true)
             const fromTimestamp = Date.now() - (shownDays * MILLISECONDS_IN_DAY)
             const subscriptions = await getSubscribedEvents(productId, fromTimestamp)
-            setSubscriptionData(subscriptions)
-            setIsLoading(false)
+            if (isMounted) {
+                setSubscriptionData(subscriptions)
+                setIsLoading(false)
+            }
         }
         getSubscriptions()
-    }, [productId, shownDays])
+    }, [productId, shownDays, isMounted])
 
     useEffect(() => {
         if (subscriptionData.length > 0) {
@@ -51,10 +55,10 @@ const SubscriberGraph = ({ className, productId }: Props) => {
 
             // Combine subscription and unsubscription events to a single array
             // ordered by event time
-            const events = ([...subs, ...unsubs]).sort((a, b) => a.time - b.time)
+            const subscriptionEvents = ([...subs, ...unsubs]).sort((a, b) => a.time - b.time)
 
             let subCount = 0
-            events.forEach((e) => {
+            subscriptionEvents.forEach((e) => {
                 // Add a superficial datapoint with "old" count
                 // to happen 1ms before actual one to form a
                 // "staircase" graph
