@@ -164,7 +164,9 @@ const EditProductPage = ({ product }: { product: Product }) => {
             })}
             loading={isSaving}
         >
-            <ProductEditorDebug />
+            {process.env.DATA_UNIONS && (
+                <ProductEditorDebug />
+            )}
             {isPreview && (
                 <Preview />
             )}
