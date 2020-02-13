@@ -9,6 +9,7 @@ import { I18n } from 'react-redux-i18n'
 import ProductsComponent from '$mp/components/Products'
 import ActionBar from '$mp/components/ActionBar'
 import Layout from '$shared/components/Layout'
+import Footer from '$shared/components/Layout/Footer'
 import useModal from '$shared/hooks/useModal'
 import CreateProductModal from '$mp/containers/CreateProductModal'
 
@@ -30,6 +31,8 @@ import {
     selectFetchingProductList,
     selectHasMoreSearchResults,
 } from '$mp/modules/productList/selectors'
+
+import styles from './products.pcss'
 
 const Products = () => {
     const categories = useSelector(selectAllCategories)
@@ -74,7 +77,11 @@ const Products = () => {
     }, [loadCommunities, loadCategories, clearFiltersAndReloadProducts])
 
     return (
-        <Layout>
+        <Layout
+            framedClassname={styles.productsFramed}
+            innerClassname={styles.productsInner}
+            footer={false}
+        >
             <Helmet title={I18n.t('general.title.suffix')} />
             <ActionBar
                 filter={selectedFilter}
@@ -100,6 +107,7 @@ const Products = () => {
                 loadProducts={loadProducts}
                 hasMoreSearchResults={hasMoreSearchResults}
             />
+            <Footer topBorder />
         </Layout>
     )
 }

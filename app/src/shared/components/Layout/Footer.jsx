@@ -17,9 +17,17 @@ const MadeBy = styled(UnstyledMadeBy)`
     }
 `
 
-const Footer = () => (
+type Props = {
+    topBorder?: boolean,
+}
+
+const FooterWithBorder = styled(FooterColumns)`
+    border-top: ${({ topBorder }) => (topBorder ? '1px' : '0')} solid #D8D8D8;
+`
+
+const Footer = ({ topBorder = false }: Props) => (
     <LayoutFooter>
-        <FooterColumns>
+        <FooterWithBorder topBorder={topBorder}>
             <FooterColumn title={I18n.t('general.learn')}>
                 <a href="/">
                     <Translate value="general.top" />
@@ -95,7 +103,7 @@ const Footer = () => (
                     <Translate value="general.privacy" />
                 </a>
             </FooterColumn>
-        </FooterColumns>
+        </FooterWithBorder>
         <SocialChannels />
         <MadeBy />
     </LayoutFooter>
