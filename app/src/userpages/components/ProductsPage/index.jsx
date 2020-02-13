@@ -112,9 +112,9 @@ const Actions = (product: Product) => {
     const redirectToPublishProduct = useCallback((id: ProductId) => (
         dispatch(push(formatPath(links.marketplace.products, id, 'publish')))
     ), [dispatch])
-    const redirectToProduct = useCallback((id: ProductId) => (
-        dispatch(push(formatPath(links.marketplace.products, id)))
-    ), [dispatch])
+    const redirectToProduct = useCallback((id: ProductId) => {
+        window.open(formatPath(links.marketplace.products, id), '_blank', 'noopener')
+    }, [])
     const copyUrl = useCallback((id: ProductId) => copy(formatExternalUrl(
         process.env.PLATFORM_ORIGIN_URL,
         links.marketplace.products,
