@@ -378,7 +378,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
             <ReplaceAllowanceDialog
                 onCancel={onClose}
                 onSet={onSetDataAllowance}
-                settingDataAllowance={resettingDataAllowance}
+                settingAllowance={resettingDataAllowance}
             />
         )
     }
@@ -388,7 +388,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
             <SetAllowanceDialog
                 onCancel={onClose}
                 onSet={onSetDataAllowance}
-                settingDataAllowance={settingDataAllowance}
+                settingAllowance={settingDataAllowance}
                 paymentCurrency={paymentCurrency}
             />
         )
@@ -399,7 +399,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
             <ReplaceAllowanceDialog
                 onCancel={onClose}
                 onSet={onSetDaiAllowance}
-                settingDaiAllowance={resettingDaiAllowance}
+                settingAllowance={resettingDaiAllowance}
             />
         )
     }
@@ -409,7 +409,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
             <SetAllowanceDialog
                 onCancel={onClose}
                 onSet={onSetDaiAllowance}
-                settingDaiAllowance={settingDaiAllowance}
+                settingAllowance={settingDaiAllowance}
                 paymentCurrency={paymentCurrency}
             />
         )
