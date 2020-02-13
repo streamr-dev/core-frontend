@@ -77,7 +77,7 @@ const CreateProductButton = () => {
 const generateTimeAgoDescription = (productUpdatedDate: Date) => moment(productUpdatedDate).fromNow()
 
 const getProductLink = (id: ProductId) => {
-    if (process.env.DATA_UNIONS) {
+    if (process.env.NEW_MP_CONTRACT) {
         return formatPath(links.userpages.products, id, 'edit')
     }
 
@@ -90,11 +90,15 @@ const Actions = (product: Product) => {
     const { copy } = useCopy()
     const dispatch = useDispatch()
 
-    const redirectToEditProduct = useCallback((id: ProductId) => (
-        dispatch(push(routes.editProduct({
-            id,
-        })))
-    ), [dispatch])
+    const redirectToEditProduct = useCallback((id: ProductId) => {
+        if (process.env.NEW_MP_CONTRACT) {
+            return dispatch(push(routes.editProduct({
+                id,
+            })))
+        }
+
+        return dispatch(push(formatPath(links.marketplace.products, id, 'edit')))
+    }, [dispatch])
     const redirectToProductStats = useCallback((id: ProductId) => (
         dispatch(push(routes.productStats({
             id,
@@ -125,7 +129,7 @@ const Actions = (product: Product) => {
             >
                 <Translate value="actionsDropdown.edit" />
             </DropdownActions.Item>
-            {!process.env.DATA_UNIONS && (state === productStates.DEPLOYED || state === productStates.NOT_DEPLOYED) &&
+            {!process.env.NEW_MP_CONTRACT && (state === productStates.DEPLOYED || state === productStates.NOT_DEPLOYED) &&
                 <DropdownActions.Item
                     className={styles.item}
                     onClick={() => redirectToPublishProduct(id || '')}
@@ -136,7 +140,7 @@ const Actions = (product: Product) => {
                     }
                 </DropdownActions.Item>
             }
-            {!!process.env.DATA_UNIONS &&
+            {!!process.env.NEW_MP_CONTRACT &&
                 <DropdownActions.Item
                     className={styles.item}
                     onClick={() => (!!redirectToProduct && redirectToProduct(id || ''))}
