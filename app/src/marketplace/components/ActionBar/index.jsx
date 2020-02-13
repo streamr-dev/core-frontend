@@ -12,6 +12,8 @@ import type { Filter, SearchFilter, CategoryFilter, SortByFilter } from '../../f
 import type { Category } from '../../flowtype/category-types'
 import { isValidSearchQuery } from '../../utils/validate'
 import Button from '$shared/components/Button'
+import routes from '$routes'
+import { productTypes } from '$mp/utils/constants'
 
 import SearchInput from './SearchInput'
 import FilterSelector from './FilterSelector'
@@ -144,7 +146,18 @@ class ActionBar extends Component<Props> {
                                         <Translate value="actionBar.create" />
                                     </Button>
                                 )}
-                                {!process.env.DATA_UNIONS && (
+                                {!!process.env.NEW_MP_CONTRACT && !process.env.DATA_UNIONS && (
+                                    <Button
+                                        kind="secondary"
+                                        tag={Link}
+                                        to={routes.newProduct({
+                                            type: productTypes.NORMAL,
+                                        })}
+                                    >
+                                        <Translate value="actionBar.create" />
+                                    </Button>
+                                )}
+                                {!process.env.NEW_MP_CONTRACT && !process.env.DATA_UNIONS && (
                                     <Button kind="secondary" tag={Link} to={links.marketplace.createProduct}>
                                         <Translate value="actionBar.create" />
                                     </Button>

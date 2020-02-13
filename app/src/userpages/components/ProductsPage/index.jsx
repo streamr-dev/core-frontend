@@ -32,13 +32,14 @@ import useMemberStats from '$mp/modules/dataUnion/hooks/useMemberStats'
 import routes from '$routes'
 import CreateProductModal from '$mp/containers/CreateProductModal'
 import Button from '$shared/components/Button'
+import { productTypes } from '$mp/utils/constants'
 
 import styles from './products.pcss'
 
 const CreateProductButton = () => {
     const { api: createProductDialog } = useModal('marketplace.createProduct')
 
-    if (!process.env.DATA_UNIONS) {
+    if (!process.env.NEW_MP_CONTRACT) {
         return (
             <Button
                 tag={Link}
@@ -48,13 +49,25 @@ const CreateProductButton = () => {
                 <Translate value="userpages.products.createProduct" />
             </Button>
         )
+    } else if (process.env.DATA_UNIONS) {
+        return (
+            <Button
+                type="button"
+                className={styles.createProductButton}
+                onClick={() => createProductDialog.open()}
+            >
+                <Translate value="userpages.products.createProduct" />
+            </Button>
+        )
     }
 
     return (
         <Button
-            type="button"
+            tag={Link}
             className={styles.createProductButton}
-            onClick={() => createProductDialog.open()}
+            to={routes.newProduct({
+                type: productTypes.NORMAL,
+            })}
         >
             <Translate value="userpages.products.createProduct" />
         </Button>
@@ -64,7 +77,7 @@ const CreateProductButton = () => {
 const generateTimeAgoDescription = (productUpdatedDate: Date) => moment(productUpdatedDate).fromNow()
 
 const getProductLink = (id: ProductId) => {
-    if (process.env.DATA_UNIONS) {
+    if (process.env.NEW_MP_CONTRACT) {
         return formatPath(links.userpages.products, id, 'edit')
     }
 
@@ -77,11 +90,15 @@ const Actions = (product: Product) => {
     const { copy } = useCopy()
     const dispatch = useDispatch()
 
-    const redirectToEditProduct = useCallback((id: ProductId) => (
-        dispatch(push(routes.editProduct({
-            id,
-        })))
-    ), [dispatch])
+    const redirectToEditProduct = useCallback((id: ProductId) => {
+        if (process.env.NEW_MP_CONTRACT) {
+            return dispatch(push(routes.editProduct({
+                id,
+            })))
+        }
+
+        return dispatch(push(formatPath(links.marketplace.products, id, 'edit')))
+    }, [dispatch])
     const redirectToProductStats = useCallback((id: ProductId) => (
         dispatch(push(routes.productStats({
             id,
@@ -112,7 +129,7 @@ const Actions = (product: Product) => {
             >
                 <Translate value="actionsDropdown.edit" />
             </DropdownActions.Item>
-            {!process.env.DATA_UNIONS && (state === productStates.DEPLOYED || state === productStates.NOT_DEPLOYED) &&
+            {!process.env.NEW_MP_CONTRACT && (state === productStates.DEPLOYED || state === productStates.NOT_DEPLOYED) &&
                 <DropdownActions.Item
                     className={styles.item}
                     onClick={() => redirectToPublishProduct(id || '')}
@@ -123,7 +140,7 @@ const Actions = (product: Product) => {
                     }
                 </DropdownActions.Item>
             }
-            {!!process.env.DATA_UNIONS &&
+            {!!process.env.NEW_MP_CONTRACT &&
                 <DropdownActions.Item
                     className={styles.item}
                     onClick={() => (!!redirectToProduct && redirectToProduct(id || ''))}
