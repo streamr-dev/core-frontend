@@ -239,6 +239,9 @@ msgstr "Not found"
 msgid "error##productNotFound"
 msgstr "No product found with id %{id}"
 
+msgid "error##publishFailed"
+msgstr "Publish failed"
+
 msgid "error##txAborted"
 msgstr "Transaction aborted"
 
@@ -470,19 +473,26 @@ msgstr "Waiting..."
 msgid "modal##errorDialog##defaultTitle"
 msgstr "Error"
 
-msgid "modal##getCryptoDialog##link##bitfinex"
-msgstr "Bitfinex"
+msgid "modal##getCryptoDialog##link##uniswap"
+msgstr "Uniswap"
 
 msgid "modal##getCryptoDialog##link##coinbase"
 msgstr "Coinbase"
 
-msgid "modal##getCryptoDialog##link##poloniex"
-msgstr "Poloniex"
+msgid "modal##getCryptoDialog##link##binance"
+msgstr "Binance"
 
 msgid "modal##getCryptoDialog##message"
-msgstr ""
-"Ether is needed for gas, but you don't have any.<br />"
-"Please purchase some and try again."
+msgstr "Ether is needed for gas, but you don't have any."
+"<br />"
+"Please get some and try again"
+
+msgid "modal##getCryptoDialog##mobileMessage"
+msgstr "Ether is needed for gas,"
+"<br />"
+"but you don't have any."
+"<br />"
+"Please get some and try again"
 
 msgid "modal##getCryptoDialog##title"
 msgstr "No Ether balance"
@@ -491,18 +501,27 @@ msgid "modal##insufficientDaiDialog##title"
 msgstr "Insufficient DAI"
 
 msgid "modal##insufficientDaiDialog##message"
-msgstr ""
-"It looks like you don’t have enough DAI to purchase this product. "
+msgstr "It looks like you don’t have enough DAI to purchase this product. "
 "Please get some & try again or choose a different payment currency."
+
+msgid "modal##insufficientDaiDialog##mobileMessage"
+msgstr "It looks like you don’t have enough DAI to purchase this product. "
+"Please get some & try again or choose a different"
+"<br />"
+"payment currency."
 
 msgid "modal##getDataTokensDialog##link##bancor"
 msgstr "Bancor"
 
 msgid "modal##getDataTokensDialog##message"
-msgstr ""
-"You have Ether in your wallet but no DATA, which you need to purchase "
-"products on the Marketplace. Please visit Bancor for the easiest way to get "
-"DATA."
+msgstr "DATA is currently required to purchase products on the Marketplace. Please purchase some and try again"
+
+msgid "modal##getDataTokensDialog##mobileMessage"
+msgstr "DATA is currently required to purchase"
+"<br />"
+"products on the Marketplace."
+"<br />"
+"Please purchase some and try again"
 
 msgid "modal##getDataTokensDialog##title"
 msgstr "No DATA balance"
@@ -511,9 +530,13 @@ msgid "modal##insufficientDataDialog##title"
 msgstr "Insufficient DATA"
 
 msgid "modal##insufficientDataDialog##message"
-msgstr ""
-"It looks like you don’t have enough DATAcoin to purchase this product. "
-"Please get some & try again."
+msgstr "You don't have enough DATA to purchase <br /> this product. Please get some and try again"
+
+msgid "modal##insufficientEthDialog##title"
+msgstr "Insufficient ETH"
+
+msgid "modal##insufficientEthDialog##message"
+msgstr "You don't have enough ETH to purchase <br /> this product. Please get some and try again"
 
 msgid "modal##purchaseSummary##access"
 msgstr "%{time} %{timeUnit} access"
@@ -701,14 +724,17 @@ msgstr ""
 msgid "modal##web3##installmetamask##title"
 msgstr "No wallet found"
 
-msgid "modal##web3##installmobileapplication##app##toshi"
-msgstr "Toshi"
+msgid "modal##web3##installmobileapplication##app##argent"
+msgstr "Argent"
+
+msgid "modal##web3##installmobileapplication##app##coinbase"
+msgstr "Coinbase"
 
 msgid "modal##web3##installmobileapplication##app##trust"
 msgstr "Trust"
 
 msgid "modal##web3##installmobileapplication##message"
-msgstr "We couldn't find your wallet. Please install one and try again."
+msgstr "We couldn't find your wallet. <br /> Please get one and try again"
 
 msgid "modal##web3##installmobileapplication##title"
 msgstr "No wallet found"
@@ -722,13 +748,25 @@ msgstr "Chrome"
 msgid "modal##web3##installsupportedbrowser##firefox"
 msgstr "Firefox"
 
+msgid "modal##web3##installsupportedbrowser##metamask"
+msgstr "Metamask"
+
+msgid "modal##web3##installsupportedbrowser##opera"
+msgstr "Opera"
+
 msgid "modal##web3##installsupportedbrowser##imageCaption"
 msgstr "Browser not supported"
 
 msgid "modal##web3##installsupportedbrowser##message"
 msgstr ""
 "Your browser doesn't support Web3. <br /> Please use a supported browser "
-"and try again."
+"and try again"
+
+msgid "modal##web3##installsupportedbrowser##mobileMessage"
+msgstr ""
+"Your browser doesn't support Web3. <br /> Please use a supported"
+"<br />"
+"browser and try again"
 
 msgid "modal##web3##installsupportedbrowser##title"
 msgstr "Your browser is not supported"

@@ -13,6 +13,14 @@ import '@ibm/plex/css/ibm-plex.css'
 setAddon(JSXAddon)
 
 const viewports = {
+    iPhone: {
+        name: 'iPhone',
+        styles: {
+            width: `375px`,
+            height: '100%',
+        },
+        type: 'mobile',
+    },
     xs: {
         name: 'Mobile (xs)',
         styles: {

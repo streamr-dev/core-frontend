@@ -53,8 +53,8 @@ const CompletePublishDialog = ({ onCancel, publishState }: Props) => {
                     <div>
                         <PngIcon
                             className={styles.icon}
-                            name="txFailed"
-                            alt={I18n.t('error.txFailed')}
+                            name="publishFailed"
+                            alt={I18n.t('error.publishFailed')}
                         />
                         <p><Translate value="modal.completePublish.failed.message" dangerousHTML /></p>
                     </div>

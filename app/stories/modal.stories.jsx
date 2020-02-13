@@ -28,6 +28,7 @@ import GetDataTokensDialog from '$mp/components/Modal/GetDataTokensDialog'
 import GetCryptoDialog from '$mp/components/Modal/GetCryptoDialog'
 import InsufficientDataDialog from '$mp/components/Modal/InsufficientDataDialog'
 import InsufficientDaiDialog from '$mp/components/Modal/InsufficientDaiDialog'
+import InsufficientEthDialog from '$mp/components/Modal/InsufficientEthDialog'
 import NoBalanceDialog from '$mp/components/Modal/NoBalanceDialog'
 import ChooseAccessPeriodDialog from '$mp/components/Modal/ChooseAccessPeriodDialog'
 import PurchaseSummaryDialog from '$mp/components/Modal/PurchaseSummaryDialog'
@@ -361,6 +362,15 @@ story('Marketplace/GetDataTokensDialog')
             onCancel={action('onCancel')}
         />
     ))
+    .add('default iPhone', () => (
+        <GetDataTokensDialog
+            onCancel={action('onCancel')}
+        />
+    ), {
+        viewport: {
+            defaultViewport: 'iPhone',
+        },
+    })
 
 story('Marketplace/GetCryptoDialog')
     .add('default', () => (
@@ -368,6 +378,15 @@ story('Marketplace/GetCryptoDialog')
             onCancel={action('onCancel')}
         />
     ))
+    .add('default (iPhone)', () => (
+        <GetCryptoDialog
+            onCancel={action('onCancel')}
+        />
+    ), {
+        viewport: {
+            defaultViewport: 'iPhone',
+        },
+    })
 
 story('Marketplace/InsufficientDataDialog')
     .add('default', () => (
@@ -375,6 +394,15 @@ story('Marketplace/InsufficientDataDialog')
             onCancel={action('onCancel')}
         />
     ))
+    .add('default (iPhone)', () => (
+        <InsufficientDataDialog
+            onCancel={action('onCancel')}
+        />
+    ), {
+        viewport: {
+            defaultViewport: 'iPhone',
+        },
+    })
 
 story('Marketplace/InsufficientDaiDialog')
     .add('default', () => (
@@ -382,6 +410,31 @@ story('Marketplace/InsufficientDaiDialog')
             onCancel={action('onCancel')}
         />
     ))
+    .add('default (iPhone)', () => (
+        <InsufficientDaiDialog
+            onCancel={action('onCancel')}
+        />
+    ), {
+        viewport: {
+            defaultViewport: 'iPhone',
+        },
+    })
+
+story('Marketplace/InsufficientEthDialog')
+    .add('default', () => (
+        <InsufficientEthDialog
+            onCancel={action('onCancel')}
+        />
+    ))
+    .add('default (iPhone)', () => (
+        <InsufficientEthDialog
+            onCancel={action('onCancel')}
+        />
+    ), {
+        viewport: {
+            defaultViewport: 'iPhone',
+        },
+    })
 
 story('Marketplace/NoBalanceDialog')
     .add('eth balance 0', () => (

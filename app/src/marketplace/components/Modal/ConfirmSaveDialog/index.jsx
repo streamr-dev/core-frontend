@@ -3,10 +3,9 @@
 import React from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
 
-import ModalPortal from '$shared/components/ModalPortal'
+import PngIcon from '$shared/components/PngIcon'
 import Dialog from '$shared/components/Dialog'
-import DiscardChangesPng from '$mp/assets/discard-changes.png'
-import DiscardChangesPng2x from '$mp/assets/discard-changes@2x.png'
+import ModalPortal from '$shared/components/ModalPortal'
 import Buttons from '$shared/components/Buttons'
 
 import styles from './confirmSave.pcss'
@@ -53,10 +52,9 @@ const ConfirmSaveDialog = ({ onSave, onClose, onContinue }: Props) => (
                 </div>
             )}
         >
-            <img
+            <PngIcon
                 className={styles.icon}
-                src={DiscardChangesPng}
-                srcSet={`${DiscardChangesPng2x} 2x`}
+                name="discardChanges"
                 alt={I18n.t('modal.confirmSave.title')}
             />
             <Translate

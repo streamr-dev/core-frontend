@@ -8,24 +8,22 @@ import WalletNoEthPng from '$shared/assets/images/wallet_no_eth.png'
 import WalletNoEthPng2x from '$shared/assets/images/wallet_no_eth@2x.png'
 import Dialog from '$shared/components/Dialog'
 
-import styles from './insufficientDaiDialog.pcss'
+import styles from './insufficientEthDialog.pcss'
 
 export type Props = {
     onCancel: () => void,
 }
 
-const InsufficientDaiDialog = ({ onCancel }: Props) => (
+const InsufficientEthDialog = ({ onCancel }: Props) => (
     <ModalPortal>
         <Dialog
-            title={I18n.t('modal.insufficientDaiDialog.title')}
+            title={I18n.t('modal.insufficientEthDialog.title')}
             onClose={onCancel}
         >
-            {/* TODO: Change to more DAI related no wallet IMG */}
             <img className={styles.icon} src={WalletNoEthPng} srcSet={`${WalletNoEthPng2x} 2x`} alt={I18n.t('error.wallet')} />
-            <Translate value="modal.insufficientDaiDialog.message" className={styles.message} tag="p" dangerousHTML />
-            <Translate value="modal.insufficientDaiDialog.mobileMessage" className={styles.mobileMessage} tag="p" dangerousHTML />
+            <Translate value="modal.insufficientEthDialog.message" className={styles.message} tag="p" dangerousHTML />
         </Dialog>
     </ModalPortal>
 )
 
-export default InsufficientDaiDialog
+export default InsufficientEthDialog
