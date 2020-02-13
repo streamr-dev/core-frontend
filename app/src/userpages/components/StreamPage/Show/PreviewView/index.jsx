@@ -21,7 +21,7 @@ type Props = {
 
 const PreviewView = ({ stream, currentUser }: Props) => {
     const [isRunning, setIsRunning] = useState(true)
-    const [hasData, setHasData] = useState(false)
+    const [hasData, setHasData] = useState(true)
 
     const onToggleRun = useCallback(() => {
         setIsRunning((wasRunning) => !wasRunning)
@@ -33,15 +33,13 @@ const PreviewView = ({ stream, currentUser }: Props) => {
 
     return (
         <ClientProvider>
-            <Translate value="userpages.streams.edit.preview.description" className={styles.longText} tag="p" />
-            {!hasData ?
-                <p className={styles.longText}>
-                    <Translate value="userpages.streams.edit.preview.noDataPre" />
-                    <Link to={routes.docsGettingStarted()}>Docs</Link>
-                    <Translate value="userpages.streams.edit.preview.noDataEnd" />
-                </p>
-                : null
-            }
+            <Translate
+                value="userpages.streams.edit.preview.description"
+                className={styles.longText}
+                tag="p"
+                dangerousHTML
+                docsLink={routes.docsGettingStarted()}
+            />
             <div
                 className={cx(styles.previewContainer, {
                     [styles.hasData]: hasData,

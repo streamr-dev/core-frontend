@@ -48,6 +48,8 @@ const prettyPrintData = (data: ?{}, compact: boolean = false) => stringifyObject
     inlineCharacterLimit: compact ? Infinity : 5,
 })
 
+const getNumberOfRows = (isMobile: boolean) => (isMobile ? 5 : 8)
+
 const StreamLivePreview = ({
     streamId,
     selectedDataPoint,
@@ -100,7 +102,7 @@ const StreamLivePreview = ({
             />
             <MediaQuery maxWidth={sm.max}>
                 {(isMobile) => {
-                    const data = isMobile ? visibleData.slice(0, 5) : visibleData.slice(0, 8)
+                    const data = visibleData.slice(0, getNumberOfRows(isMobile))
                     return (
                         <div className={styles.streamLivePreview}>
                             {(isMobile) ? (
@@ -144,7 +146,17 @@ const StreamLivePreview = ({
                                                                 {formatDateTime(d.metadata
                                                                     && d.metadata.messageId && d.metadata.messageId.timestamp, tz)}
                                                             </td>
-                                                        </tr>))}
+                                                        </tr>
+                                                    ))}
+                                                    {
+                                                        userpagesPreview &&
+                                                        data.length === 0 &&
+                                                        [...Array(getNumberOfRows(isMobile)).keys()].map((index) => (
+                                                            <tr key={index}>
+                                                                <td className={styles.timestampColumn} />
+                                                            </tr>
+                                                        ))
+                                                    }
                                                 </tbody>
                                             </Table>
                                             <Table className={classnames(
@@ -175,6 +187,15 @@ const StreamLivePreview = ({
                                                             </td>
                                                         </tr>
                                                     ))}
+                                                    {
+                                                        userpagesPreview &&
+                                                        data.length === 0 &&
+                                                        [...Array(getNumberOfRows(isMobile)).keys()].map((index) => (
+                                                            <tr key={index}>
+                                                                <td className={styles.messageColumn} />
+                                                            </tr>
+                                                        ))
+                                                    }
                                                 </tbody>
                                             </Table>
                                         </SwipeableViews>
@@ -227,6 +248,16 @@ const StreamLivePreview = ({
                                                 </td>
                                             </tr>
                                         ))}
+                                        {
+                                            userpagesPreview &&
+                                            data.length === 0 &&
+                                            [...Array(getNumberOfRows(isMobile)).keys()].map((index) => (
+                                                <tr key={index}>
+                                                    <td className={styles.timestampColumn} />
+                                                    <td className={styles.messageColumn} />
+                                                </tr>
+                                            ))
+                                        }
                                     </tbody>
                                 </Table>
                             )}
