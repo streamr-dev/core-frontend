@@ -41,13 +41,11 @@ import translations from './marketplace/i18n'
 const middleware = [thunk, routerMiddleware(history), ...analytics.getMiddlewares()]
 const toBeComposed = [applyMiddleware(...middleware)]
 
-if (!isProduction()) {
-    /* eslint-disable no-underscore-dangle */
-    if (window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()) {
-        toBeComposed.push(window.__REDUX_DEVTOOLS_EXTENSION__())
-    }
-    /* eslint-enable no-underscore-dangle */
+/* eslint-disable no-underscore-dangle */
+if (window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()) {
+    toBeComposed.push(window.__REDUX_DEVTOOLS_EXTENSION__())
 }
+/* eslint-enable no-underscore-dangle */
 
 export function initStore() {
     const store = createStore(
@@ -80,8 +78,6 @@ export function initStore() {
             i18n: i18nReducer,
             relatedProducts: relatedProductsReducer,
             transactions: transactionsReducer,
-            // TODO: RE-ENABLE THESE WHEN USERPAGES ARE READY
-            // userpages
             ...userpagesReducers,
         }),
         compose(...toBeComposed),
