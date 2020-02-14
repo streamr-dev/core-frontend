@@ -19,6 +19,7 @@ import useDataUnionStats from '$mp/containers/ProductPage/useDataUnionStats'
 import DataUnionPending from '$mp/components/ProductPage/DataUnionPending'
 import StatsValues from '$shared/components/DataUnionStats/Values'
 import MembersGraph from '$mp/containers/ProductPage/MembersGraph'
+import SubscriberGraph from '$mp/containers/ProductPage/SubscriberGraph'
 
 import styles from './stats.pcss'
 
@@ -71,7 +72,11 @@ const Stats = () => {
                             )}
                         </div>
                         <div className={styles.graphBox}>
-                            TODO: subscribers graph missing
+                            {!!dataUnionDeployed && product && (
+                                <SubscriberGraph
+                                    productId={product.id}
+                                />
+                            )}
                         </div>
                     </div>
                 )}

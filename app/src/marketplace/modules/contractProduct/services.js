@@ -23,15 +23,20 @@ export const getProductFromContract = async (id: ProductId, usePublicNode: boole
         })
 )
 
-export const getSubscriberCount = async (id: ProductId, usePublicNode: boolean = false) => {
+export const getMarketplaceEvents = async (id: ProductId, eventName: string, fromBlock: number = 0, usePublicNode: boolean = false) => {
     const contract = getContract(getConfig().marketplace, usePublicNode)
-    const events = await contract.getPastEvents('Subscribed', {
+    const events = await contract.getPastEvents(eventName, {
         filter: {
             productId: getValidId(id),
         },
-        fromBlock: 0,
+        fromBlock,
         toBlock: 'latest',
     })
+    return events
+}
+
+export const getSubscriberCount = async (id: ProductId, usePublicNode: boolean = false) => {
+    const events = await getMarketplaceEvents(id, 'Subscribed', 0, usePublicNode)
     const validSubs = events.filter((e) => (
         e.returnValues && e.returnValues.endTimestamp && ((e.returnValues.endTimestamp.toNumber() * 1000) > Date.now())
     ))
@@ -40,14 +45,7 @@ export const getSubscriberCount = async (id: ProductId, usePublicNode: boolean =
 
 export const getMostRecentPurchaseTimestamp = async (id: ProductId, usePublicNode: boolean = false) => {
     const web3 = usePublicNode ? getPublicWeb3() : getWeb3()
-    const contract = getContract(getConfig().marketplace, usePublicNode)
-    const events = await contract.getPastEvents('Subscribed', {
-        filter: {
-            productId: getValidId(id),
-        },
-        fromBlock: 0,
-        toBlock: 'latest',
-    })
+    const events = await getMarketplaceEvents(id, 'Subscribed', 0, usePublicNode)
 
     if (events.length === 0) {
         return null
@@ -60,4 +58,70 @@ export const getMostRecentPurchaseTimestamp = async (id: ProductId, usePublicNod
     }
 
     return null
+}
+
+// Seeks blocks starting from 'initialBlockNumberGuess' and checks block timestamps
+// until 'targetTimestampMs' is matched.
+// Returns best guess when 'maxTries' is reached.
+export const seekBlockWithTimestamp = async (
+    web3: any,
+    initialBlockNumberGuess: number,
+    targetTimestampMs: number,
+    blockTime: number,
+    maxTries: number = 20,
+) => {
+    const block = await web3.eth.getBlock(initialBlockNumberGuess)
+    const diff = block.timestamp - (targetTimestampMs / 1000)
+
+    // Check if this is close enough block
+    if (Math.abs(diff) <= blockTime) {
+        return block.number
+    }
+
+    // Abort if block cannot be found
+    if (maxTries <= 0) {
+        return block.number
+    }
+
+    // Try to find a closer block
+    const blocksToSeek = Math.floor(Math.abs(diff) / blockTime)
+
+    if (diff < 0) {
+        return seekBlockWithTimestamp(web3, block.number + blocksToSeek, targetTimestampMs, blockTime, maxTries - 1)
+    }
+    return seekBlockWithTimestamp(web3, block.number - blocksToSeek, targetTimestampMs, blockTime, maxTries - 1)
+}
+
+export const calculateBlockNumber = async (web3: any, timestampMs: number) => {
+    const latestBlock = await web3.eth.getBlock('latest')
+    const firstBlock = await web3.eth.getBlock(1)
+    const blockTime = (latestBlock.timestamp - firstBlock.timestamp) / (latestBlock.number - firstBlock.number)
+    const secondsBetween = (latestBlock.timestamp - (timestampMs / 1000))
+    const blocksToRewind = Math.floor(secondsBetween / blockTime)
+    const predictedBlock = latestBlock.number - blocksToRewind
+
+    // Predicted block will not probably be right so make sure we get the right block
+    // corresponding to given timestamp
+    return seekBlockWithTimestamp(web3, predictedBlock, timestampMs, blockTime)
+}
+
+export const getSubscribedEvents = async (id: ProductId, fromTimestamp: number, usePublicNode: boolean = false) => {
+    const web3 = usePublicNode ? getPublicWeb3() : getWeb3()
+    const fromBlock = await calculateBlockNumber(web3, fromTimestamp)
+    const events = await getMarketplaceEvents(id, 'Subscribed', fromBlock, usePublicNode)
+    const subscriptions = []
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const e of events) {
+        // eslint-disable-next-line no-await-in-loop
+        const block = await web3.eth.getBlock(e.blockHash)
+        if (block && block.timestamp) {
+            subscriptions.push({
+                start: block.timestamp * 1000,
+                end: e.returnValues && e.returnValues.endTimestamp && (e.returnValues.endTimestamp.toNumber() * 1000),
+            })
+        }
+    }
+
+    return subscriptions
 }

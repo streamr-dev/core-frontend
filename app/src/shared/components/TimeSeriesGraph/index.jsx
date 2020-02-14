@@ -10,7 +10,24 @@ import {
 } from 'react-vis'
 import '$app/node_modules/react-vis/dist/style.css'
 
-const axisStyle = {
+import Spinner from '$shared/components/Spinner'
+
+const xAxisStyle = {
+    ticks: {
+        fontSize: '12px',
+        fontFamily: "'IBM Plex Sans', sans-serif",
+        color: '#A3A3A3',
+        strokeOpacity: '1',
+        stroke: '#A3A3A3',
+        opacity: '0.5',
+        letterSpacing: '0px',
+    },
+    text: {
+        strokeWidth: '0',
+    },
+}
+
+const yAxisStyle = {
     ticks: {
         fontSize: '12px',
         fontFamily: "'IBM Plex Sans', sans-serif",
@@ -48,6 +65,7 @@ type Props = {
     shownDays: number,
     width: number,
     height: number,
+    isLoading?: boolean,
 }
 
 const TimeSeriesGraph = ({
@@ -56,6 +74,7 @@ const TimeSeriesGraph = ({
     shownDays,
     width,
     height,
+    isLoading,
 }: Props) => {
     const dataDomain = useMemo(() => {
         const dataValues = (graphData || []).map((d) => d.y)
@@ -73,39 +92,53 @@ const TimeSeriesGraph = ({
 
     return (
         <div className={className}>
-            <XYPlot
-                xType="time"
-                width={width}
-                height={height}
-                /* We need margin to not clip axis labels */
-                margin={{
-                    left: 0,
-                    right: 50,
-                }}
-                yDomain={dataDomain}
-            >
-                <HorizontalGridLines />
-                <LineSeries
-                    curve={null}
-                    color="#0324FF"
-                    opacity={1}
-                    strokeStyle="solid"
-                    strokeWidth="4"
-                    data={graphData}
-                />
-                <XAxis
-                    hideLine
-                    style={axisStyle}
-                    tickTotal={7}
-                    tickFormat={(value, index, scale, tickTotal) => formatXAxisTicks(value, index, scale, tickTotal, shownDays)}
-                />
-                <YAxis
-                    hideLine
-                    style={axisStyle}
-                    position="middle"
-                    orientation="right"
-                />
-            </XYPlot>
+            {isLoading && (
+                <div
+                    style={{
+                        width,
+                        height,
+                        display: 'flex',
+                        justifyContent: 'center',
+                    }}
+                >
+                    <Spinner size="large" color="white" />
+                </div>
+            )}
+            {!isLoading && (
+                <XYPlot
+                    xType="time"
+                    width={width}
+                    height={height}
+                    /* We need margin to not clip axis labels */
+                    margin={{
+                        left: 0,
+                        right: 50,
+                    }}
+                    yDomain={dataDomain}
+                >
+                    <HorizontalGridLines />
+                    <LineSeries
+                        curve={null}
+                        color="#0324FF"
+                        opacity={1}
+                        strokeStyle="solid"
+                        strokeWidth="4"
+                        data={graphData}
+                    />
+                    <XAxis
+                        hideLine
+                        style={xAxisStyle}
+                        tickTotal={7}
+                        tickFormat={(value, index, scale, tickTotal) => formatXAxisTicks(value, index, scale, tickTotal, shownDays)}
+                    />
+                    <YAxis
+                        hideLine
+                        style={yAxisStyle}
+                        position="middle"
+                        orientation="right"
+                    />
+                </XYPlot>
+            )}
         </div>
     )
 }
