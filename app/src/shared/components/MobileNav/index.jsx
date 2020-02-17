@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useCallback, useState } from 'react'
+import React, { Fragment, useCallback, useState, useMemo } from 'react'
 import cx from 'classnames'
 import { withRouter, type Location } from 'react-router-dom'
 import { compose } from 'redux'
@@ -39,6 +39,24 @@ const MobileNav = compose(
         setOpen((current) => !current)
     }, [])
 
+    const siteSection = useMemo(() => {
+        if (redirect) {
+            if (redirect === '/' || redirect.startsWith('/marketplace')) {
+                return 'marketplace'
+            }
+
+            if (redirect.startsWith('/core') || redirect.startsWith('/canvas') || redirect.startsWith('/dashboard')) {
+                return 'core'
+            }
+
+            if (redirect.startsWith('/docs')) {
+                return 'docs'
+            }
+        }
+
+        return undefined
+    }, [redirect])
+
     return (
         <nav
             className={cx(styles.root, className, {
@@ -48,7 +66,15 @@ const MobileNav = compose(
             {!!open && <BodyClass className={NO_SCROLL} />}
             <Bar
                 left={(
-                    <LogoItem />
+                    <Fragment>
+                        <LogoItem />
+                        {siteSection && (
+                            <Translate
+                                value={`general.nav.${siteSection}`}
+                                className={styles.siteSection}
+                            />
+                        )}
+                    </Fragment>
                 )}
                 right={(
                     <Hamburger onClick={toggle} />

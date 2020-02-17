@@ -152,6 +152,15 @@ msgstr "YouTube"
 msgid "general##logout"
 msgstr "Logout"
 
+msgid "general##nav##marketplace"
+msgstr "Marketplace"
+
+msgid "general##nav##core"
+msgstr "Core"
+
+msgid "general##nav##docs"
+msgstr "Docs"
+
 msgid "language##id"
 msgstr "en"
 
