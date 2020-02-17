@@ -4,7 +4,7 @@
 
 .name {
   color: #323232;
-  font-size: 28px;
+  font-size: 18px;
   font-family: var(--sans);
   letter-spacing: 0;
   line-height: 32px;
@@ -15,10 +15,16 @@
   color: #525252;
   font-size: 12px;
   font-family: var(--sans);
-  letter-spacing: 0;
+  letter-spacing: 0.75px;
   background: #EFEFEF;
   border-radius: 2px;
   padding: 6px;
   line-height: 12px;
   margin-top: 0.5rem;
+}
+
+@media (--md-up) {
+  .name {
+    font-size: 28px;
+  }
 }
