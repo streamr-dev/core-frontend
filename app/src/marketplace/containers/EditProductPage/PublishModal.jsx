@@ -5,12 +5,12 @@ import { useDispatch } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 
 import type { Product } from '$mp/flowtype/product-types'
-import { isPaidProduct } from '$mp/utils/product'
+import { isPaidProduct, isDataUnionProduct } from '$mp/utils/product'
 import { productStates, transactionStates, transactionTypes } from '$shared/utils/constants'
 import useModal from '$shared/hooks/useModal'
 import { getProductById } from '$mp/modules/product/services'
 import { getProductFromContract } from '$mp/modules/contractProduct/services'
-import { getDataUnionOwner, getAdminFee, setAdminFee } from '$mp/modules/dataUnion/services'
+import { getDataUnionOwner, getAdminFee, setAdminFee, getDataUnionStats } from '$mp/modules/dataUnion/services'
 import { areAddressesEqual, isUpdateContractProductRequired } from '$mp/utils/smartContract'
 import { putProduct } from '$mp/modules/deprecated/editProduct/services'
 import { truncate } from '$shared/utils/text'
@@ -19,6 +19,7 @@ import ErrorDialog from '$mp/components/Modal/ErrorDialog'
 import Dialog from '$shared/components/Dialog'
 import ReadyToPublishDialog from '$mp/components/Modal/ReadyToPublishDialog'
 import ReadyToUnpublishDialog from '$mp/components/Modal/ReadyToUnpublishDialog'
+import NotEnoughMembersDialog from '$mp/components/Modal/NotEnoughMembersDialog'
 import ConfirmPublishTransaction from '$mp/components/Modal/ConfirmPublishTransaction'
 import CompletePublishTransaction from '$mp/components/Modal/CompletePublishTransaction'
 import Web3ErrorDialog from '$shared/components/Web3ErrorDialog'
@@ -62,6 +63,7 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
     const [modalError, setModalError] = useState(null)
     const [requireWeb3, setRequireWeb3] = useState(false)
     const [requiredOwner, setRequiredOwner] = useState(null)
+    const [memberCount, setMemberCount] = useState(null)
     const { web3Error, checkingWeb3, account } = useWeb3Status(requireWeb3)
     const accountRef = useRef()
     accountRef.current = account
@@ -74,6 +76,7 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
     }, [setStatus])
 
     const productId = product.id
+    const productType = product.type
 
     useEffect(() => {
         const queue = queueRef.current
@@ -97,11 +100,22 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
 
             let currentAdminFee
             let dataUnionOwner
-            try {
-                currentAdminFee = await getAdminFee(p.beneficiaryAddress)
-                dataUnionOwner = await getDataUnionOwner(p.beneficiaryAddress)
-            } catch (e) {
-                // ignore error, assume contract has not been deployed
+            if (isDataUnionProduct(productType)) {
+                try {
+                    currentAdminFee = await getAdminFee(p.beneficiaryAddress)
+                    dataUnionOwner = await getDataUnionOwner(p.beneficiaryAddress)
+                } catch (e) {
+                    // ignore error, assume contract has not been deployed
+                }
+
+                try {
+                    const stats = await getDataUnionStats(p.beneficiaryAddress)
+                    if (stats && stats.memberCount && stats.memberCount.active != null) {
+                        setMemberCount(stats.memberCount.active)
+                    }
+                } catch (e) {
+                    // ignore error, assume contract has not been deployed
+                }
             }
 
             const { state: productState } = p
@@ -365,7 +379,7 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
         return () => {
             queue.unsubscribeAll()
         }
-    }, [queueRef, setActionStatus, productId, dispatch, accountRef])
+    }, [queueRef, setActionStatus, productId, dispatch, accountRef, productType])
 
     const onClose = useCallback(() => {
         api.close([steps.ACTIONS, steps.COMPLETE].includes(step))
@@ -419,6 +433,15 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
                     onClose={onClose}
                 />
             )
+        }
+
+        if (isDataUnionProduct(product) && memberCount != null) {
+            const memberLimit = parseInt(process.env.DATA_UNION_PUBLISH_MEMBER_LIMIT, 10) || 0
+            if (memberCount < memberLimit) {
+                return (
+                    <NotEnoughMembersDialog onContinue={onClose} memberCount={memberCount} requiredMemberCount={memberLimit} />
+                )
+            }
         }
 
         const ConfirmComponent = (mode === modes.UNPUBLISH) ? ReadyToUnpublishDialog : ReadyToPublishDialog
