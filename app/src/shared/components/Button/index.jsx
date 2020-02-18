@@ -53,7 +53,7 @@ const Button = ({
                 [styles.outline]: outline,
             }, className)
         }
-        onClick={onClick}
+        onClick={disabled ? ((e) => e.preventDefault()) : onClick}
         disabled={disabled || waiting}
         tabIndex={disabled ? -1 : 0}
     >
