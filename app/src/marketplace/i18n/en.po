@@ -307,6 +307,14 @@ msgstr "Week"
 msgid "modal##chooseAccessPeriod##uniswap"
 msgstr "Exchange via Uniswap"
 
+msgid "modal##connectEthereumAddress##title"
+msgstr "Connect your Ethereum address"
+
+msgid "modal##connectEthereumAddress##description"
+msgstr ""
+"Connect your Ethereum address to your Streamr account so your purchases are visible. "
+"Confirm this transaction in your wallet to proceed."
+
 msgid "modal##common##save"
 msgstr "Save"
 

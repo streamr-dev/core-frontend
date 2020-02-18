@@ -37,6 +37,7 @@ import CompletePurchaseDialog from '$mp/components/Modal/CompletePurchaseDialog'
 import ReadyToPublishDialog from '$mp/components/Modal/ReadyToPublishDialog'
 import ReadyToUnpublishDialog from '$mp/components/Modal/ReadyToUnpublishDialog'
 import SaveContractProductDialog from '$mp/components/Modal/SaveContractProductDialog'
+import ConnectEthereumAddressDialog from '$mp/components/Modal/ConnectEthereumAddressDialog'
 import SetAllowanceDialog from '$mp/components/Modal/SetAllowanceDialog'
 import ErrorDialog from '$mp/components/Modal/ErrorDialog'
 import CropImageModal from '$mp/components/Modal/CropImageModal'
@@ -531,6 +532,21 @@ story('Marketplace/PurchaseSummaryDialog')
             onCancel={action('onCancel')}
             onPay={action('onPay')}
             purchaseStarted
+        />
+    ))
+
+story('Marketplace/ConnectEthereumAddressDialog')
+    .add('default', () => (
+        <ConnectEthereumAddressDialog
+            onCancel={action('close')}
+            onSet={action('onSet')}
+        />
+    ))
+    .add('waiting', () => (
+        <ConnectEthereumAddressDialog
+            onCancel={action('close')}
+            onSet={action('onSet')}
+            waiting
         />
     ))
 
