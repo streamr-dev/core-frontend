@@ -102,7 +102,16 @@ const StreamLivePreview = ({
             />
             <MediaQuery maxWidth={sm.max}>
                 {(isMobile) => {
-                    const data = visibleData.slice(0, getNumberOfRows(isMobile))
+                    const length = getNumberOfRows(isMobile)
+                    let data = visibleData.slice(0, length)
+
+                    // Pad array with nulls to fill preview length
+                    if (userpagesPreview) {
+                        const originalLength = data.length
+                        data.length = length
+                        data = data.fill(null, originalLength, length)
+                    }
+
                     return (
                         <div className={styles.streamLivePreview}>
                             {(isMobile) ? (
@@ -137,25 +146,29 @@ const StreamLivePreview = ({
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {data.map((d) => (
-                                                        <tr
-                                                            key={JSON.stringify(d.metadata.messageId)}
-                                                            onClick={() => onSelectDataPoint(d)}
-                                                        >
-                                                            <td className={styles.timestampColumn}>
-                                                                {formatDateTime(d.metadata
-                                                                    && d.metadata.messageId && d.metadata.messageId.timestamp, tz)}
-                                                            </td>
-                                                        </tr>
-                                                    ))}
                                                     {
-                                                        userpagesPreview &&
-                                                        data.length === 0 &&
-                                                        [...Array(getNumberOfRows(isMobile)).keys()].map((index) => (
-                                                            <tr key={index}>
-                                                                <td className={styles.timestampColumn} />
-                                                            </tr>
-                                                        ))
+                                                        data.map((d, index) => {
+                                                            if (d == null) {
+                                                                return (
+                                                                    // eslint-disable-next-line react/no-array-index-key
+                                                                    <tr key={index}>
+                                                                        <td className={styles.timestampColumn} />
+                                                                    </tr>
+                                                                )
+                                                            }
+
+                                                            return (
+                                                                <tr
+                                                                    key={JSON.stringify(d.metadata.messageId)}
+                                                                    onClick={() => onSelectDataPoint(d)}
+                                                                >
+                                                                    <td className={styles.timestampColumn}>
+                                                                        {formatDateTime(d.metadata
+                                                                            && d.metadata.messageId && d.metadata.messageId.timestamp, tz)}
+                                                                    </td>
+                                                                </tr>
+                                                            )
+                                                        })
                                                     }
                                                 </tbody>
                                             </Table>
@@ -175,26 +188,30 @@ const StreamLivePreview = ({
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {data.map((d) => (
-                                                        <tr
-                                                            key={JSON.stringify(d.metadata.messageId)}
-                                                            onClick={() => onSelectDataPoint(d)}
-                                                        >
-                                                            <td className={styles.messageColumn}>
-                                                                <div className={styles.messagePreview}>
-                                                                    {prettyPrintData(d.data, true)}
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    ))}
                                                     {
-                                                        userpagesPreview &&
-                                                        data.length === 0 &&
-                                                        [...Array(getNumberOfRows(isMobile)).keys()].map((index) => (
-                                                            <tr key={index}>
-                                                                <td className={styles.messageColumn} />
-                                                            </tr>
-                                                        ))
+                                                        data.map((d, index) => {
+                                                            if (d == null) {
+                                                                return (
+                                                                    // eslint-disable-next-line react/no-array-index-key
+                                                                    <tr key={index}>
+                                                                        <td className={styles.messageColumn} />
+                                                                    </tr>
+                                                                )
+                                                            }
+
+                                                            return (
+                                                                <tr
+                                                                    key={JSON.stringify(d.metadata.messageId)}
+                                                                    onClick={() => onSelectDataPoint(d)}
+                                                                >
+                                                                    <td className={styles.messageColumn}>
+                                                                        <div className={styles.messagePreview}>
+                                                                            {prettyPrintData(d.data, true)}
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            )
+                                                        })
                                                     }
                                                 </tbody>
                                             </Table>
@@ -233,30 +250,34 @@ const StreamLivePreview = ({
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {data.map((d) => (
-                                            <tr
-                                                key={JSON.stringify(d.metadata.messageId)}
-                                                onClick={() => onSelectDataPoint(d)}
-                                            >
-                                                <td className={styles.timestampColumn}>
-                                                    {formatDateTime(d.metadata && d.metadata.messageId && d.metadata.messageId.timestamp, tz)}
-                                                </td>
-                                                <td className={styles.messageColumn}>
-                                                    <div className={styles.messagePreview}>
-                                                        {prettyPrintData(d.data, true)}
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        ))}
                                         {
-                                            userpagesPreview &&
-                                            data.length === 0 &&
-                                            [...Array(getNumberOfRows(isMobile)).keys()].map((index) => (
-                                                <tr key={index}>
-                                                    <td className={styles.timestampColumn} />
-                                                    <td className={styles.messageColumn} />
-                                                </tr>
-                                            ))
+                                            data.map((d, index) => {
+                                                if (d == null) {
+                                                    return (
+                                                        // eslint-disable-next-line react/no-array-index-key
+                                                        <tr key={index}>
+                                                            <td className={styles.timestampColumn} />
+                                                            <td className={styles.messageColumn} />
+                                                        </tr>
+                                                    )
+                                                }
+
+                                                return (
+                                                    <tr
+                                                        key={JSON.stringify(d.metadata.messageId)}
+                                                        onClick={() => onSelectDataPoint(d)}
+                                                    >
+                                                        <td className={styles.timestampColumn}>
+                                                            {formatDateTime(d.metadata && d.metadata.messageId && d.metadata.messageId.timestamp, tz)}
+                                                        </td>
+                                                        <td className={styles.messageColumn}>
+                                                            <div className={styles.messagePreview}>
+                                                                {prettyPrintData(d.data, true)}
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                )
+                                            })
                                         }
                                     </tbody>
                                 </Table>
