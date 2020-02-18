@@ -3,7 +3,6 @@
 import React, { useState, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { Translate } from 'react-redux-i18n'
-import cx from 'classnames'
 
 import type { Stream } from '$shared/flowtype/stream-types'
 import type { User } from '$shared/flowtype/user-types'
@@ -21,7 +20,7 @@ type Props = {
 
 const PreviewView = ({ stream, currentUser }: Props) => {
     const [isRunning, setIsRunning] = useState(true)
-    const [hasData, setHasData] = useState(true)
+    const [hasData, setHasData] = useState(false)
 
     const onToggleRun = useCallback(() => {
         setIsRunning((wasRunning) => !wasRunning)
@@ -41,9 +40,7 @@ const PreviewView = ({ stream, currentUser }: Props) => {
                 docsLink={routes.docsGettingStarted()}
             />
             <div
-                className={cx(styles.previewContainer, {
-                    [styles.hasData]: hasData,
-                })}
+                className={styles.previewContainer}
             >
                 <StreamLivePreview
                     key={stream.id}
@@ -60,6 +57,7 @@ const PreviewView = ({ stream, currentUser }: Props) => {
                         kind="secondary"
                         className={styles.playPauseButton}
                         onClick={onToggleRun}
+                        disabled={!hasData}
                     >
                         {!isRunning ?
                             <Translate value="userpages.streams.edit.preview.start" /> :
@@ -74,6 +72,7 @@ const PreviewView = ({ stream, currentUser }: Props) => {
                             to={routes.userPageStreamPreview({
                                 streamId: stream.id,
                             })}
+                            disabled={!hasData}
                         >
                             <Translate value="userpages.streams.edit.preview.inspect" />
                         </Button>

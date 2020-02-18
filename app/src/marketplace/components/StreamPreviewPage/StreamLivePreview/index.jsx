@@ -96,6 +96,12 @@ const StreamLivePreview = ({
                     id: streamId,
                 }}
                 resendLast={LOCAL_DATA_LIST_LENGTH}
+                onSubscribed={() => {
+                    // Clear data when subscribed to make sure
+                    // we don't get duplicate messages with resend
+                    setVisibleData([])
+                    dataRef.current = []
+                }}
                 isActive={run}
                 onMessage={onData}
                 onErrorMessage={() => setDataError(true)}
