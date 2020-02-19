@@ -3,7 +3,6 @@
 import React, { useState, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { Translate } from 'react-redux-i18n'
-import cx from 'classnames'
 
 import type { Stream } from '$shared/flowtype/stream-types'
 import type { User } from '$shared/flowtype/user-types'
@@ -33,19 +32,15 @@ const PreviewView = ({ stream, currentUser }: Props) => {
 
     return (
         <ClientProvider>
-            <Translate value="userpages.streams.edit.preview.description" className={styles.longText} tag="p" />
-            {!hasData ?
-                <p className={styles.longText}>
-                    <Translate value="userpages.streams.edit.preview.noDataPre" />
-                    <Link to={routes.docsGettingStarted()}>Docs</Link>
-                    <Translate value="userpages.streams.edit.preview.noDataEnd" />
-                </p>
-                : null
-            }
+            <Translate
+                value="userpages.streams.edit.preview.description"
+                className={styles.longText}
+                tag="p"
+                dangerousHTML
+                docsLink={routes.docsGettingStarted()}
+            />
             <div
-                className={cx(styles.previewContainer, {
-                    [styles.hasData]: hasData,
-                })}
+                className={styles.previewContainer}
             >
                 <StreamLivePreview
                     key={stream.id}
@@ -62,6 +57,7 @@ const PreviewView = ({ stream, currentUser }: Props) => {
                         kind="secondary"
                         className={styles.playPauseButton}
                         onClick={onToggleRun}
+                        disabled={!hasData}
                     >
                         {!isRunning ?
                             <Translate value="userpages.streams.edit.preview.start" /> :
@@ -76,6 +72,7 @@ const PreviewView = ({ stream, currentUser }: Props) => {
                             to={routes.userPageStreamPreview({
                                 streamId: stream.id,
                             })}
+                            disabled={!hasData}
                         >
                             <Translate value="userpages.streams.edit.preview.inspect" />
                         </Button>
