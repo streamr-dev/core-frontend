@@ -158,6 +158,9 @@ msgstr "Marketplace"
 msgid "general##nav##core"
 msgstr "Core"
 
+msgid "general##nav##editor"
+msgstr "Editor"
+
 msgid "general##nav##docs"
 msgstr "Docs"
 

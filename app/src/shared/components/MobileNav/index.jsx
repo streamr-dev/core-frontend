@@ -45,7 +45,11 @@ const MobileNav = compose(
                 return 'marketplace'
             }
 
-            if (redirect.startsWith('/core') || redirect.startsWith('/canvas') || redirect.startsWith('/dashboard')) {
+            if (redirect.startsWith('/canvas')) {
+                return 'editor'
+            }
+
+            if (redirect.startsWith('/core') || redirect.startsWith('/dashboard')) {
                 return 'core'
             }
 
