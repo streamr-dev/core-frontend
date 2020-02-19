@@ -542,6 +542,16 @@ story('Marketplace/ConnectEthereumAddressDialog')
             onSet={action('onSet')}
         />
     ))
+    .add('default (iPhone)', () => (
+        <ConnectEthereumAddressDialog
+            onCancel={action('close')}
+            onSet={action('onSet')}
+        />
+    ), {
+        viewport: {
+            defaultViewport: 'iPhone',
+        },
+    })
     .add('waiting', () => (
         <ConnectEthereumAddressDialog
             onCancel={action('close')}
