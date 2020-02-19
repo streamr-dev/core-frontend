@@ -828,12 +828,6 @@ msgstr ""
 msgid "modal##deployCommunity##deploying##estimatedDeploymentTime"
 msgstr "Estimated deployment time"
 
-msgid "modal##notEnoughMembers##title"
-msgstr "Not enough members"
-
-msgid "modal##notEnoughMembers##description"
-msgstr "Your data union member count: %{memberCount}. Required member count %{requiredMemberCount}."
-
 msgid "noProductsView##keywordHint"
 msgstr "Please try some different keywords"
 
@@ -853,6 +847,9 @@ msgstr "Go to core app"
 
 msgid "notFoundPage##publicSite"
 msgstr "Go to public site"
+
+msgid "notifications##notEnoughMembers"
+msgstr "The minimum community size for a Data Union is %{memberLimit} members."
 
 msgid "notifications##productPublished"
 msgstr "Your product has been published"

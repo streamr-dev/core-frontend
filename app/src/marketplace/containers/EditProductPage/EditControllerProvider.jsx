@@ -2,10 +2,13 @@
 
 import React, { type Node, type Context, useEffect, useState, useMemo, useCallback, useContext, useRef } from 'react'
 import { useSelector } from 'react-redux'
+import { I18n } from 'react-redux-i18n'
 
 import { Context as RouterContext } from '$shared/contexts/Router'
 import { Context as ValidationContext, ERROR } from '../ProductController/ValidationContextProvider'
 import type { Product } from '$mp/flowtype/product-types'
+import { isDataUnionProduct } from '$mp/utils/product'
+import { getDataUnionStats } from '$mp/modules/dataUnion/services'
 import usePending from '$shared/hooks/usePending'
 import { putProduct, postImage } from '$mp/modules/deprecated/editProduct/services'
 import { selectProduct } from '$mp/modules/product/selectors'
@@ -37,6 +40,7 @@ function useEditController(product: Product) {
     const { history } = useContext(RouterContext)
     const { isAnyTouched, status } = useContext(ValidationContext)
     const [isPreview, setIsPreview] = useState(false)
+    const [memberCount, setMemberCount] = useState(null)
     const lastSectionRef = useRef(undefined)
     const isMounted = useIsMounted()
     const savePending = usePending('product.SAVE')
@@ -90,6 +94,22 @@ function useEditController(product: Product) {
             window.removeEventListener('beforeunload', handleBeforeunload)
         }
     }, [isAnyTouched])
+
+    useEffect(() => {
+        const loadDataUnionStats = async () => {
+            if (isDataUnionProduct(product)) {
+                try {
+                    const stats = await getDataUnionStats(product.beneficiaryAddress)
+                    if (stats && stats.memberCount && stats.memberCount.active != null) {
+                        setMemberCount(stats.memberCount.active)
+                    }
+                } catch (e) {
+                    // ignore error, assume contract has not been deployed
+                }
+            }
+        }
+        loadDataUnionStats()
+    }, [product])
 
     const { api: deployDataUnionDialog } = useModal('dataUnion.DEPLOY')
     const { api: confirmSaveDialog } = useModal('confirmSave')
@@ -164,8 +184,19 @@ function useEditController(product: Product) {
             return false
         }
 
+        if (isDataUnionProduct(productRef.current) && memberCount != null) {
+            const memberLimit = parseInt(process.env.DATA_UNION_PUBLISH_MEMBER_LIMIT, 10) || 0
+            if (memberCount < memberLimit) {
+                Notification.push({
+                    title: I18n.t('notifications.notEnoughMembers', { memberLimit }),
+                    icon: NotificationIcon.ERROR,
+                })
+                return false
+            }
+        }
+
         return true
-    }, [errors])
+    }, [errors, memberCount])
 
     const isPublic = State.isPublished(product)
     const publish = useCallback(async () => {
