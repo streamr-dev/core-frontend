@@ -7,10 +7,10 @@
   font-size: 18px;
   font-family: var(--sans);
   letter-spacing: 0;
-  line-height: 32px;
+  line-height: 22px;
 }
 
-.email {
+.username {
   display: inline-block;
   color: #525252;
   font-size: 12px;
@@ -18,13 +18,38 @@
   letter-spacing: 0.75px;
   background: #EFEFEF;
   border-radius: 2px;
-  padding: 6px;
-  line-height: 12px;
-  margin-top: 0.5rem;
+  padding: 0 6px;
+  line-height: 22px;
+  margin-top: 6px;
+}
+
+.usernameMobile {
+  display: block;
+}
+
+.usernameDesktop {
+  display: none;
+}
+
+.balance {
+  margin-top: 4px;
 }
 
 @media (--md-up) {
   .name {
     font-size: 28px;
+    line-height: 32px;
+  }
+
+  .balance {
+    margin-top: 6px;
+  }
+
+  .usernameMobile {
+    display: none;
+  }
+
+  .usernameDesktop {
+    display: block;
   }
 }

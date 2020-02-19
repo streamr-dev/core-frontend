@@ -37,7 +37,7 @@ const Avatar = ({
             <AvatarCircle name={user.name} imageUrl={user.imageUrlLarge} className={styles.avatarCircle} uploadAvatarPlaceholder />
         )}
         {!editable && (
-            <NameAndEmail name={user.name} email={user.username} />
+            <NameAndEmail name={user.name} username={user.username} showBalance />
         )}
         {editable && onImageChange && (
             <AvatarUpload onImageChange={onImageChange} image={(user && user.imageUrlLarge) || ''} />

@@ -5,6 +5,7 @@ import cx from 'classnames'
 
 import type { IntegrationKeyId, IntegrationKey, IntegrationKeyList as IntegrationKeyListType } from '$shared/flowtype/integration-key-types'
 import KeyField from '$userpages/components/KeyField'
+import Balance from '$userpages/components/Balance'
 import { useBalance, BalanceType } from '$shared/hooks/useBalance'
 import styles from './integrationKeyList.pcss'
 import Label from '$ui/Label'
@@ -60,16 +61,16 @@ const IntegrationKeyItem = ({
                 valueLabel="address"
                 labelComponent={!editing && (
                     <Label as="div">
-                        <span className={styles.balanceLabel}>DATA</span>
-                        <span className={styles.balanceValue}>
-                            {!fetchingDataBalance && !dataBalanceError && (dataBalance)}
-                            {!fetchingDataBalance && !!dataBalanceError && '-'}
-                        </span>
-                        <span className={styles.balanceLabel}>ETH</span>
-                        <span className={styles.balanceValue}>
-                            {!fetchingEthBalance && !ethBalanceError && (ethBalance)}
-                            {!fetchingEthBalance && !!ethBalanceError && '-'}
-                        </span>
+                        <Balance>
+                            <Balance.Account
+                                name="DATA"
+                                value={(!fetchingDataBalance && !dataBalanceError && dataBalance) ? dataBalance : '-'}
+                            />
+                            <Balance.Account
+                                name="ETH"
+                                value={(!fetchingEthBalance && !ethBalanceError && ethBalance) ? ethBalance : '-'}
+                            />
+                        </Balance>
                     </Label>
                 )}
             />

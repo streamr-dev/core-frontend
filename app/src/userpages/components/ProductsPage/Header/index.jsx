@@ -60,7 +60,7 @@ const Header = ({ className, searchComponent, filterComponent }: Props) => {
                             src={product.imageUrl || ''}
                             alt={product.name || ''}
                         />
-                        <NameAndEmail name={product.name} email={product.beneficiaryAddress} />
+                        <NameAndEmail name={product.name} username={product.beneficiaryAddress} />
                     </div>
                     <div className={styles.additionalComponent}>
                         <Button
