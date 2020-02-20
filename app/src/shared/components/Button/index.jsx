@@ -26,6 +26,8 @@ type Props = {
     href?: string,
 }
 
+const darkBgs = new Set(['primary', 'destructive'])
+
 const Button = ({
     className,
     tag: Tag,
@@ -62,7 +64,7 @@ const Button = ({
     >
         {children}
         {waiting && (
-            <Spinner color="white" containerClassname={styles.spinnerContainer} />
+            <Spinner color={(!outline && darkBgs.has(kind)) ? 'white' : 'gray'} containerClassname={styles.spinnerContainer} />
         )}
     </Tag>
 )

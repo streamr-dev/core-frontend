@@ -21,18 +21,20 @@ import Dialog from '$shared/components/Dialog'
 
 import styles from './chooseAccessPeriod.pcss'
 
+export type AccessPeriod = {
+    time: NumberString,
+    timeUnit: TimeUnit,
+    paymentCurrency: PaymentCurrency,
+    priceInEth: ?NumberString,
+    priceInDai: ?NumberString,
+    priceInEthUsdEquivalent: ?NumberString,
+}
+
 export type Props = {
     dataPerUsd: ?NumberString,
     pricePerSecond: $ElementType<Product, 'pricePerSecond'>,
     priceCurrency: $ElementType<Product, 'priceCurrency'>,
-    onNext: (
-        time: NumberString,
-        timeUnit: TimeUnit,
-        paymentCurrency: PaymentCurrency,
-        priceInEth: NumberString,
-        priceInDai: NumberString,
-        priceInEthUsdEquivalent: NumberString
-    ) => Promise<void>,
+    onNext: (AccessPeriod) => Promise<void>,
     onCancel: () => void,
 }
 
@@ -189,7 +191,15 @@ export const ChooseAccessPeriodDialog = ({
 
     const onNext = useCallback(async (selectedTime: NumberString | BN, selectedTimeUnit: TimeUnit, selectedPaymentCurrency: PaymentCurrency) => {
         setLoading(true)
-        await onNextProp(selectedTime, selectedTimeUnit, selectedPaymentCurrency, priceInEth, priceInDai, ethPriceInUsd)
+
+        await onNextProp({
+            time: selectedTime,
+            timeUnit: selectedTimeUnit,
+            paymentCurrency: selectedPaymentCurrency,
+            priceInEth,
+            priceInDai,
+            priceInEthUsdEquivalent: ethPriceInUsd,
+        })
     }, [ethPriceInUsd, onNextProp, priceInDai, priceInEth])
 
     const onPaymentCurrencyChange = useCallback((currency: PaymentCurrency) => (setPaymentCurrency(currency)), [setPaymentCurrency])
