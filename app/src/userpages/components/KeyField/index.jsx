@@ -168,7 +168,9 @@ const KeyField = ({
                         <Label htmlFor="keyName">
                             {keyName}
                         </Label>
-                        {labelComponent || <div />}
+                        <div>
+                            {labelComponent}
+                        </div>
                     </div>
                     <ActionsDropdown actions={inputActions}>
                         <Text
