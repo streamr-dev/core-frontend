@@ -5,7 +5,6 @@ import { createStore, applyMiddleware, compose, combineReducers } from 'redux'
 import { connectRouter, routerMiddleware } from 'connected-react-router'
 import { loadTranslations, syncTranslationWithStore, i18nReducer } from 'react-redux-i18n'
 
-import isProduction from './marketplace/utils/isProduction'
 import productsReducer from './marketplace/modules/productList/reducer'
 import myProductsReducer from './marketplace/modules/myProductList/reducer'
 import myPurchasesReducer from './marketplace/modules/myPurchaseList/reducer'
