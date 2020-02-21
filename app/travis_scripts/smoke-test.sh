@@ -6,9 +6,7 @@ set -e
 sudo ifconfig docker0 10.200.10.1/24
 ## Get Streamr Docker dev
 mkdir "$TRAVIS_BUILD_DIR/streamr-docker-dev"
-
-# TODO: remove "--branch cleanup" before merging
-git clone --branch cleanup https://github.com/streamr-dev/streamr-docker-dev.git "$TRAVIS_BUILD_DIR/streamr-docker-dev"
+git clone https://github.com/streamr-dev/streamr-docker-dev.git "$TRAVIS_BUILD_DIR/streamr-docker-dev"
 
 ## Switch out image for local one
 sed -i "s#$OWNER/$IMAGE_NAME:dev#$OWNER/$IMAGE_NAME:local#g" "$TRAVIS_BUILD_DIR/streamr-docker-dev/docker-compose.override.yml"
