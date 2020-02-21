@@ -165,8 +165,11 @@ const KeyField = ({
                     className={cx(styles.keyFieldContainer, keyFieldClassName)}
                 >
                     <div className={styles.labelWrapper}>
-                        <Label htmlFor="keyName">
-                            {keyName}
+                        <Label htmlFor="keyName" className={styles.label}>
+                            &zwnj;
+                            <div className={styles.keyNameHolder}>
+                                {keyName}
+                            </div>
                         </Label>
                         <div>
                             {labelComponent}
