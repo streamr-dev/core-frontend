@@ -15,6 +15,7 @@ export const getError = (res: any): ErrorInUi => ({
     message: get(res, 'response.data.error') || get(res, 'response.data.message') || (res && res.message) || 'Something went wrong',
     code: get(res, 'response.data.code') || null,
     statusCode: res && res.response && res.response.status,
+    response: res.response,
 })
 
 export type RequestParams = {
