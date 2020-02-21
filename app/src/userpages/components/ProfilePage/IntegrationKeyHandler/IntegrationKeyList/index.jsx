@@ -7,6 +7,7 @@ import type { IntegrationKeyId, IntegrationKey, IntegrationKeyList as Integratio
 import KeyField from '$userpages/components/KeyField'
 import { useBalance, BalanceType } from '$shared/hooks/useBalance'
 import styles from './integrationKeyList.pcss'
+import Label from '$ui/Label'
 
 type CommonProps = {|
     hideValues?: boolean,
@@ -58,7 +59,7 @@ const IntegrationKeyItem = ({
                 onToggleEditor={setEditing}
                 valueLabel="address"
                 labelComponent={!editing && (
-                    <div className={styles.balances}>
+                    <Label as="div">
                         <span className={styles.balanceLabel}>DATA</span>
                         <span className={styles.balanceValue}>
                             {!fetchingDataBalance && !dataBalanceError && (dataBalance)}
@@ -69,7 +70,7 @@ const IntegrationKeyItem = ({
                             {!fetchingEthBalance && !ethBalanceError && (ethBalance)}
                             {!fetchingEthBalance && !!ethBalanceError && '-'}
                         </span>
-                    </div>
+                    </Label>
                 )}
             />
         </div>
