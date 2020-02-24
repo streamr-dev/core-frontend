@@ -46,7 +46,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
     } = useContext(EditControllerContext)
     const { isPending: savePending } = usePending('product.SAVE')
     const { isAnyChangePending } = useContext(ValidationContext)
-    const { loadCategories, loadStreams, loadDataUnion } = useController()
+    const { loadCategories, loadStreams, loadDataUnion, loadDataUnionStats } = useController()
 
     // Load categories and streams
     useEffect(() => {
@@ -62,7 +62,8 @@ const EditProductPage = ({ product }: { product: Product }) => {
     useEffect(() => {
         loadEthIdentities()
         loadDataUnion(beneficiaryAddress)
-    }, [beneficiaryAddress, loadDataUnion, loadEthIdentities])
+        loadDataUnionStats(beneficiaryAddress)
+    }, [beneficiaryAddress, loadDataUnion, loadDataUnionStats, loadEthIdentities])
 
     const isSaving = savePending
     const isDataUnion = isDataUnionProduct(product)
@@ -202,7 +203,6 @@ const EditWrap = () => {
     const { isPending: isLoadPending } = usePending('product.LOAD')
     const { isPending: isPermissionsPending } = usePending('product.PERMISSIONS')
     const { hasPermissions, write, share } = useProductPermissions()
-    const { memberCount } = useDataUnionStats()
     const canEdit = !!(write || share)
 
     if (hasPermissions && !isPermissionsPending && !canEdit) {
@@ -216,7 +216,7 @@ const EditWrap = () => {
     const key = (!!product && product.id) || ''
 
     return (
-        <EditControllerProvider product={product} dataUnionMemberCount={memberCount}>
+        <EditControllerProvider product={product}>
             <EditProductPage
                 key={key}
                 product={product}

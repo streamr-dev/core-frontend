@@ -11,6 +11,9 @@ import {
     GET_DATA_UNION_REQUEST,
     GET_DATA_UNION_SUCCESS,
     GET_DATA_UNION_FAILURE,
+    GET_DATA_UNION_STATS_REQUEST,
+    GET_DATA_UNION_STATS_SUCCESS,
+    GET_DATA_UNION_STATS_FAILURE,
     GET_ALL_DATA_UNIONS_REQUEST,
     GET_ALL_DATA_UNIONS_SUCCESS,
     GET_ALL_DATA_UNIONS_FAILURE,
@@ -44,6 +47,28 @@ const getDataUnionFailure: DataUnionErrorActionCreator = createAction(
     }),
 )
 
+const getDataUnionStatsRequest: DataUnionIdActionCreator = createAction(
+    GET_DATA_UNION_STATS_REQUEST,
+    (id: DataUnionId) => ({
+        id,
+    }),
+)
+
+const getDataUnionStatsSuccess: DataUnionIdActionCreator = createAction(
+    GET_DATA_UNION_STATS_SUCCESS,
+    (id: DataUnionId) => ({
+        id,
+    }),
+)
+
+const getDataUnionStatsFailure: DataUnionErrorActionCreator = createAction(
+    GET_DATA_UNION_STATS_FAILURE,
+    (id: DataUnionId, error: ErrorInUi) => ({
+        id,
+        error,
+    }),
+)
+
 const getAllDataUnionsRequest: ReduxActionCreator = createAction(GET_ALL_DATA_UNIONS_REQUEST)
 
 const getAllDataUnionsSuccess: DataUnionIdsActionCreator = createAction(
@@ -69,6 +94,19 @@ export const getDataUnionById = (id: DataUnionId) => async (dispatch: Function) 
         dispatch(getDataUnionSuccess(id))
     } catch (e) {
         dispatch(getDataUnionFailure(id, e))
+    }
+}
+
+export const getDataUnionStats = (id: DataUnionId) => async (dispatch: Function) => {
+    dispatch(getDataUnionStatsRequest(id))
+
+    try {
+        const result = await services.getDataUnionStats(id)
+        result.id = id
+        handleEntities(dataUnionSchema, dispatch)(result)
+        dispatch(getDataUnionStatsSuccess(id))
+    } catch (e) {
+        dispatch(getDataUnionStatsFailure(id, e))
     }
 }
 

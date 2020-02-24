@@ -10,6 +10,7 @@ import type { Product } from '$mp/flowtype/product-types'
 import { isDataUnionProduct } from '$mp/utils/product'
 import usePending from '$shared/hooks/usePending'
 import { putProduct, postImage } from '$mp/modules/deprecated/editProduct/services'
+import { selectDataUnion } from '$mp/modules/dataUnion/selectors'
 import { selectProduct } from '$mp/modules/product/selectors'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import Notification from '$shared/utils/Notification'
@@ -35,7 +36,7 @@ type ContextProps = {
 
 const EditControllerContext: Context<ContextProps> = React.createContext({})
 
-function useEditController(product: Product, dataUnionMemberCount: any) {
+function useEditController(product: Product) {
     const { history } = useContext(RouterContext)
     const { isAnyTouched, status } = useContext(ValidationContext)
     const [isPreview, setIsPreview] = useState(false)
@@ -45,6 +46,7 @@ function useEditController(product: Product, dataUnionMemberCount: any) {
     const { updateBeneficiaryAddress } = useEditableProductActions()
     const originalProduct = useSelector(selectProduct)
     const { replaceProduct } = useEditableProductUpdater()
+    const dataUnion = useSelector(selectDataUnion)
 
     useEffect(() => {
         const handleBeforeunload = (event) => {
@@ -149,9 +151,9 @@ function useEditController(product: Product, dataUnionMemberCount: any) {
             return false
         }
 
-        if (isDataUnionProduct(productRef.current) && dataUnionMemberCount != null) {
+        if (isDataUnionProduct(productRef.current) && dataUnion != null && dataUnion.memberCount != null) {
             const memberLimit = parseInt(process.env.DATA_UNION_PUBLISH_MEMBER_LIMIT, 10) || 0
-            if (dataUnionMemberCount.active < memberLimit) {
+            if (dataUnion.memberCount.active < memberLimit) {
                 Notification.push({
                     title: I18n.t('notifications.notEnoughMembers', { memberLimit }),
                     icon: NotificationIcon.ERROR,
@@ -161,7 +163,7 @@ function useEditController(product: Product, dataUnionMemberCount: any) {
         }
 
         return true
-    }, [errors, dataUnionMemberCount])
+    }, [errors, dataUnion])
 
     const isPublic = State.isPublished(product)
     const publish = useCallback(async () => {
