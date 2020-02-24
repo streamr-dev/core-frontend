@@ -65,6 +65,7 @@ function useEditController(product: Product) {
             window.removeEventListener('beforeunload', handleBeforeunload)
         }
     }, [isAnyTouched])
+
     const productRef = useRef(product)
     productRef.current = product
 
@@ -76,24 +77,6 @@ function useEditController(product: Product) {
                 message: status[key].message,
             }))
     ), [status])
-
-    useEffect(() => {
-        const handleBeforeunload = (event) => {
-            if (isAnyTouched()) {
-                const confirmationMessage = 'You have unsaved changes'
-                const evt = (event || window.event)
-                evt.returnValue = confirmationMessage // Gecko + IE
-                return confirmationMessage // Webkit, Safari, Chrome etc.
-            }
-            return ''
-        }
-
-        window.addEventListener('beforeunload', handleBeforeunload)
-
-        return () => {
-            window.removeEventListener('beforeunload', handleBeforeunload)
-        }
-    }, [isAnyTouched])
 
     useEffect(() => {
         const loadDataUnionStats = async () => {
