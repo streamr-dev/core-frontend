@@ -48,6 +48,8 @@ const prettyPrintData = (data: ?{}, compact: boolean = false) => stringifyObject
     inlineCharacterLimit: compact ? Infinity : 5,
 })
 
+const getNumberOfRows = (isMobile: boolean) => (isMobile ? 5 : 8)
+
 const StreamLivePreview = ({
     streamId,
     selectedDataPoint,
@@ -94,13 +96,28 @@ const StreamLivePreview = ({
                     id: streamId,
                 }}
                 resendLast={LOCAL_DATA_LIST_LENGTH}
+                onSubscribed={() => {
+                    // Clear data when subscribed to make sure
+                    // we don't get duplicate messages with resend
+                    setVisibleData([])
+                    dataRef.current = []
+                }}
                 isActive={run}
                 onMessage={onData}
                 onErrorMessage={() => setDataError(true)}
             />
             <MediaQuery maxWidth={sm.max}>
                 {(isMobile) => {
-                    const data = isMobile ? visibleData.slice(0, 5) : visibleData.slice(0, 8)
+                    const length = getNumberOfRows(isMobile)
+                    let data = visibleData.slice(0, length)
+
+                    // Pad array with nulls to fill preview length
+                    if (userpagesPreview) {
+                        const originalLength = data.length
+                        data.length = length
+                        data = data.fill(null, originalLength, length)
+                    }
+
                     return (
                         <div className={styles.streamLivePreview}>
                             {(isMobile) ? (
@@ -135,16 +152,30 @@ const StreamLivePreview = ({
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {data.map((d) => (
-                                                        <tr
-                                                            key={JSON.stringify(d.metadata.messageId)}
-                                                            onClick={() => onSelectDataPoint(d)}
-                                                        >
-                                                            <td className={styles.timestampColumn}>
-                                                                {formatDateTime(d.metadata
-                                                                    && d.metadata.messageId && d.metadata.messageId.timestamp, tz)}
-                                                            </td>
-                                                        </tr>))}
+                                                    {
+                                                        data.map((d, index) => {
+                                                            if (d == null) {
+                                                                return (
+                                                                    // eslint-disable-next-line react/no-array-index-key
+                                                                    <tr key={index}>
+                                                                        <td className={styles.timestampColumn} />
+                                                                    </tr>
+                                                                )
+                                                            }
+
+                                                            return (
+                                                                <tr
+                                                                    key={JSON.stringify(d.metadata.messageId)}
+                                                                    onClick={() => onSelectDataPoint(d)}
+                                                                >
+                                                                    <td className={styles.timestampColumn}>
+                                                                        {formatDateTime(d.metadata
+                                                                            && d.metadata.messageId && d.metadata.messageId.timestamp, tz)}
+                                                                    </td>
+                                                                </tr>
+                                                            )
+                                                        })
+                                                    }
                                                 </tbody>
                                             </Table>
                                             <Table className={classnames(
@@ -163,18 +194,31 @@ const StreamLivePreview = ({
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {data.map((d) => (
-                                                        <tr
-                                                            key={JSON.stringify(d.metadata.messageId)}
-                                                            onClick={() => onSelectDataPoint(d)}
-                                                        >
-                                                            <td className={styles.messageColumn}>
-                                                                <div className={styles.messagePreview}>
-                                                                    {prettyPrintData(d.data, true)}
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    ))}
+                                                    {
+                                                        data.map((d, index) => {
+                                                            if (d == null) {
+                                                                return (
+                                                                    // eslint-disable-next-line react/no-array-index-key
+                                                                    <tr key={index}>
+                                                                        <td className={styles.messageColumn} />
+                                                                    </tr>
+                                                                )
+                                                            }
+
+                                                            return (
+                                                                <tr
+                                                                    key={JSON.stringify(d.metadata.messageId)}
+                                                                    onClick={() => onSelectDataPoint(d)}
+                                                                >
+                                                                    <td className={styles.messageColumn}>
+                                                                        <div className={styles.messagePreview}>
+                                                                            {prettyPrintData(d.data, true)}
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            )
+                                                        })
+                                                    }
                                                 </tbody>
                                             </Table>
                                         </SwipeableViews>
@@ -212,21 +256,35 @@ const StreamLivePreview = ({
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {data.map((d) => (
-                                            <tr
-                                                key={JSON.stringify(d.metadata.messageId)}
-                                                onClick={() => onSelectDataPoint(d)}
-                                            >
-                                                <td className={styles.timestampColumn}>
-                                                    {formatDateTime(d.metadata && d.metadata.messageId && d.metadata.messageId.timestamp, tz)}
-                                                </td>
-                                                <td className={styles.messageColumn}>
-                                                    <div className={styles.messagePreview}>
-                                                        {prettyPrintData(d.data, true)}
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        ))}
+                                        {
+                                            data.map((d, index) => {
+                                                if (d == null) {
+                                                    return (
+                                                        // eslint-disable-next-line react/no-array-index-key
+                                                        <tr key={index}>
+                                                            <td className={styles.timestampColumn} />
+                                                            <td className={styles.messageColumn} />
+                                                        </tr>
+                                                    )
+                                                }
+
+                                                return (
+                                                    <tr
+                                                        key={JSON.stringify(d.metadata.messageId)}
+                                                        onClick={() => onSelectDataPoint(d)}
+                                                    >
+                                                        <td className={styles.timestampColumn}>
+                                                            {formatDateTime(d.metadata && d.metadata.messageId && d.metadata.messageId.timestamp, tz)}
+                                                        </td>
+                                                        <td className={styles.messageColumn}>
+                                                            <div className={styles.messagePreview}>
+                                                                {prettyPrintData(d.data, true)}
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                )
+                                            })
+                                        }
                                     </tbody>
                                 </Table>
                             )}

@@ -37,6 +37,7 @@ const UnstyledNewProductPage = ({ className, location: { search } }: Props) => {
                 if (isMounted()) {
                     dispatch(replace(routes.editProduct({
                         id,
+                        newProduct: true,
                     })))
                 }
             }, setError)

@@ -7,6 +7,9 @@ type ContextProps = {
     children?: Node,
     match: Match,
     history: History,
+    location: {
+        search: string,
+    },
 }
 
 const RouterContext: Context<ContextProps> = React.createContext({})
@@ -15,13 +18,17 @@ type Props = {
     children?: Node,
     match: Match,
     history: History,
+    location: {
+        search: string,
+    },
 }
 
-function Provider({ children, match, history }: Props) {
+function Provider({ children, match, history, location }: Props) {
     const value = useMemo(() => ({
         history,
         match,
-    }), [history, match])
+        location,
+    }), [history, match, location])
     return (
         <RouterContext.Provider value={value}>
             {children || null}
@@ -29,8 +36,8 @@ function Provider({ children, match, history }: Props) {
     )
 }
 
-const RouterContextProvider = withRouter(({ children, match, history }) => (
-    <Provider match={match} history={history}>
+const RouterContextProvider = withRouter(({ children, match, history, location }) => (
+    <Provider match={match} history={history} location={location}>
         {children}
     </Provider>
 ))

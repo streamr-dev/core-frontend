@@ -26,6 +26,8 @@ type Props = {
     href?: string,
 }
 
+const darkBgs = new Set(['primary', 'destructive'])
+
 const Button = ({
     className,
     tag: Tag,
@@ -56,13 +58,13 @@ const Button = ({
                 [styles.outline]: outline,
             }, className)
         }
-        onClick={onClick}
+        onClick={disabled ? ((e) => e.preventDefault()) : onClick}
         disabled={disabled || waiting}
         tabIndex={disabled ? -1 : 0}
     >
         {children}
         {waiting && (
-            <Spinner color="white" containerClassname={styles.spinnerContainer} />
+            <Spinner color={(!outline && darkBgs.has(kind)) ? 'white' : 'gray'} containerClassname={styles.spinnerContainer} />
         )}
     </Tag>
 )

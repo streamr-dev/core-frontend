@@ -32,7 +32,6 @@ const ImageUpload = ({
     disabled,
 }: Props) => {
     const [uploading, setUploading] = useState(false)
-    const [uploaded, setUploaded] = useState(false)
     const { preview, createPreview } = useFilePreview()
     const isMounted = useIsMounted()
 
@@ -46,7 +45,6 @@ const ImageUpload = ({
             const imagePreview = createPreview(image)
 
             setUploading(true)
-            setUploaded(false)
 
             if (setImageToUpload) {
                 // $FlowFixMe property `preview` is missing in  `File`.
@@ -61,7 +59,6 @@ const ImageUpload = ({
         if (!isMounted()) { return }
 
         setUploading(false)
-        setUploaded(true)
     }, [isMounted])
 
     const onDropRejected = useCallback(([file]: any) => {
@@ -76,7 +73,6 @@ const ImageUpload = ({
         }
 
         setUploading(false)
-        setUploaded(false)
     }, [isMounted])
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -101,7 +97,7 @@ const ImageUpload = ({
             {...getRootProps({
                 className: cx(styles.root, styles.ImageUpload, {
                     [styles.dropzoneAdviceImageLoading]: !!uploading,
-                    [styles.imageUploaded]: !uploading && (!!srcImage || uploaded),
+                    [styles.imageUploaded]: !uploading && !!srcImage,
                     [styles.dragEntered]: isDragActive,
                 }, className),
                 'aria-disabled': disabled,
@@ -115,7 +111,7 @@ const ImageUpload = ({
                     alt={I18n.t('imageUpload.coverImage.upload')}
                 />
                 <p>
-                    {(uploaded || !!srcImage) ? (
+                    {srcImage ? (
                         <Translate value="imageUpload.coverImage.replace" dangerousHTML />
                     ) : (
                         <Fragment>
