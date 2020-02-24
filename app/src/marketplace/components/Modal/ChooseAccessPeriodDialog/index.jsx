@@ -208,7 +208,7 @@ export const ChooseAccessPeriodDialog = ({
         <ModalPortal>
             <Dialog
                 onClose={onCancel}
-                title={isMobile ? I18n.t('modal.chooseAccessPeriod.mobileTitle') : I18n.t('modal.chooseAccessPeriod.title')}
+                title={isMobile() ? I18n.t('modal.chooseAccessPeriod.mobileTitle') : I18n.t('modal.chooseAccessPeriod.title')}
                 actions={{
                     cancel: {
                         title: I18n.t('modal.common.cancel'),
