@@ -3,10 +3,15 @@
 import React, { useState, useMemo } from 'react'
 import cx from 'classnames'
 
-import type { IntegrationKeyId, IntegrationKey, IntegrationKeyList as IntegrationKeyListType } from '$shared/flowtype/integration-key-types'
+import {
+    BalanceType,
+    type IntegrationKeyId,
+    type IntegrationKey,
+    type IntegrationKeyList as IntegrationKeyListType,
+} from '$shared/flowtype/integration-key-types'
 import KeyField from '$userpages/components/KeyField'
 import Balance from '$userpages/components/Balance'
-import { useBalance, BalanceType } from '$shared/hooks/useBalance'
+import { useAccountBalance } from '$shared/hooks/useBalances'
 import styles from './integrationKeyList.pcss'
 import Label from '$ui/Label'
 
@@ -32,18 +37,8 @@ const IntegrationKeyItem = ({
     const [editing, setEditing] = useState(false)
     const address = useMemo(() => (item.json || {}).address || '', [item])
 
-    /* eslint-disable object-curly-newline */
-    const {
-        balance: dataBalance,
-        fetching: fetchingDataBalance,
-        error: dataBalanceError,
-    } = useBalance(address, BalanceType.DATA)
-    const {
-        balance: ethBalance,
-        fetching: fetchingEthBalance,
-        error: ethBalanceError,
-    } = useBalance(address, BalanceType.ETH)
-    /* eslint-enable object-curly-newline */
+    const dataBalance = useAccountBalance(address, BalanceType.DATA)
+    const ethBalance = useAccountBalance(address, BalanceType.ETH)
 
     return (
         <div className={styles.keyField}>
@@ -64,11 +59,11 @@ const IntegrationKeyItem = ({
                         <Balance>
                             <Balance.Account
                                 name="DATA"
-                                value={(!fetchingDataBalance && !dataBalanceError && dataBalance) ? dataBalance : '-'}
+                                value={dataBalance}
                             />
                             <Balance.Account
                                 name="ETH"
-                                value={(!fetchingEthBalance && !ethBalanceError && ethBalance) ? ethBalance : '-'}
+                                value={ethBalance}
                             />
                         </Balance>
                     </Label>
