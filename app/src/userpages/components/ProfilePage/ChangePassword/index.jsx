@@ -121,7 +121,12 @@ class ChangePasswordDialog extends Component<Props, State> {
                     renderActions={() => (
                         <div className={styles.footer}>
                             <div className={styles.footerText}>
-                                <Link to={routes.forgotPassword()} className={styles.forgotLink}>
+                                <Link
+                                    to={routes.forgotPassword({
+                                        from: 'profile',
+                                    })}
+                                    className={styles.forgotLink}
+                                >
                                     <Translate value="modal.changePassword.forgotPassword.mobile" className={styles.forgotLinkTextMobile} />
                                     <Translate value="modal.changePassword.forgotPassword.desktop" className={styles.forgotLinkTextDesktop} />
                                 </Link>
