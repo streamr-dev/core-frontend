@@ -19,7 +19,6 @@ import { Context as ValidationContext } from '../ProductController/ValidationCon
 import { isEthereumAddress } from '$mp/utils/validate'
 import { notFoundRedirect } from '$auth/utils/loginInterceptor'
 import useProductPermissions from '../ProductController/useProductPermissions'
-import useDataUnionStats from '../ProductPage/useDataUnionStats'
 import useProduct from '$mp/containers/ProductController/useProduct'
 import useEthereumIdentities from '$shared/modules/integrationKey/hooks/useEthereumIdentities'
 
