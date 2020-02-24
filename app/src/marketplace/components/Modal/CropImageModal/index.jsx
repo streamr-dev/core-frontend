@@ -41,13 +41,12 @@ const CropImageModal = ({ imageUrl, onClose, onSave: onSaveProp }: Props) => {
                 actions={{
                     cancel: {
                         title: I18n.t('modal.common.cancel'),
-                        outline: true,
-                        color: 'link',
+                        kind: 'link',
                         onClick: onClose,
                     },
                     save: {
                         title: I18n.t('modal.cropImage.apply'),
-                        color: 'primary',
+                        kind: 'primary',
                         onClick: onSave,
                     },
                 }}
