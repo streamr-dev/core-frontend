@@ -82,7 +82,7 @@ const Select = ({ className, disabled, ...props }: Props) => (
             Option: IconOption,
             DropdownIndicator: null,
         }}
-        isSearchable={false}
+        isSearchable={false} // Magic words to make the Select Read Only
         isClearable={false}
         backspaceRemovesValue={false}
     />
