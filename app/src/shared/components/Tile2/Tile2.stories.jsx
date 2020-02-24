@@ -1,19 +1,18 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
-import { action } from '@storybook/addon-actions'
-import { withKnobs, text, number, boolean } from '@storybook/addon-knobs'
 import styles from '@sambego/storybook-styles'
 import sample from './sample.png'
 import { DeployingBadge, DataUnionBadge, SharedBadge } from './Badge'
 import Image from './Image'
-import Tile, { Grid } from './'
+import Grid from './Grid'
+import Summary from './Summary'
+import Tile from './'
 
 const stories = storiesOf('Shared/Tile (new)', module)
     .addDecorator(styles({
         color: '#323232',
         padding: '16px',
     }))
-    .addDecorator(withKnobs)
 
 stories.add('placeholder only', () => (
     <Tile>
@@ -41,18 +40,53 @@ stories.add('elastic grid', () => (
     <Grid>
         <Tile>
             <Image src={sample} />
+            <Summary
+                name="Helsinki Tram Network GPS"
+                updatedAt={new Date('2020-01-01').getDate()}
+                label={(
+                    <div>Draft</div>
+                )}
+            />
         </Tile>
         <Tile>
             <Image src={sample} />
+            <Summary
+                name="Helsinki Tram Network GPS"
+                updatedAt={new Date('2020-01-01').getDate()}
+                label={(
+                    <div>Draft</div>
+                )}
+            />
         </Tile>
         <Tile>
             <Image src={sample} />
+            <Summary
+                name="Helsinki Tram Network GPS"
+                updatedAt={new Date('2020-01-01').getDate()}
+                label={(
+                    <div>Draft</div>
+                )}
+            />
         </Tile>
         <Tile>
             <Image src={sample} />
+            <Summary
+                name="Helsinki Tram Network GPS"
+                updatedAt={new Date('2020-01-01').getDate()}
+                label={(
+                    <div>Draft</div>
+                )}
+            />
         </Tile>
         <Tile>
             <Image src={sample} />
+            <Summary
+                name="Helsinki Tram Network GPS"
+                updatedAt={new Date('2020-01-01').getDate()}
+                label={(
+                    <div>Draft</div>
+                )}
+            />
         </Tile>
     </Grid>
 ))
