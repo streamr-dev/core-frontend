@@ -1084,7 +1084,7 @@ msgid "streamSelector##typeToSearch"
 msgstr "Type to search & select streams or click to select individually"
 
 msgid "unlockWalletDialog##message"
-msgstr "Please select the account with address %{address}"
+msgstr "Please select the account with address"
 
 msgid "validation##invalidBeneficiaryAddress"
 msgstr "Beneficiary address is not a valid ethereum address"
