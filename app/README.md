@@ -137,10 +137,9 @@ Docs: [/docs](/docs)
 ### Backend
 
 To run the app locally, you must install and start the development environment running on Docker. 
-Follow the instructions [https://github.com/streamr-dev/streamr-docker-dev](here) to start the
-full stack:
+Follow the instructions [https://github.com/streamr-dev/streamr-docker-dev](here) to start the full stack except the frontend:
 
-`streamr-docker-dev start --all`
+`streamr-docker-dev start --except platform`
 
 Note that the instructions also include login credentials for the local app. 
 
