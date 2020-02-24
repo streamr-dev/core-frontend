@@ -19,6 +19,7 @@ import { Context as ValidationContext } from '../ProductController/ValidationCon
 import { isEthereumAddress } from '$mp/utils/validate'
 import { notFoundRedirect } from '$auth/utils/loginInterceptor'
 import useProductPermissions from '../ProductController/useProductPermissions'
+import useDataUnionStats from '../ProductPage/useDataUnionStats'
 import useProduct from '$mp/containers/ProductController/useProduct'
 import useEthereumIdentities from '$shared/modules/integrationKey/hooks/useEthereumIdentities'
 
@@ -201,6 +202,7 @@ const EditWrap = () => {
     const { isPending: isLoadPending } = usePending('product.LOAD')
     const { isPending: isPermissionsPending } = usePending('product.PERMISSIONS')
     const { hasPermissions, write, share } = useProductPermissions()
+    const { memberCount } = useDataUnionStats()
     const canEdit = !!(write || share)
 
     if (hasPermissions && !isPermissionsPending && !canEdit) {
@@ -214,7 +216,7 @@ const EditWrap = () => {
     const key = (!!product && product.id) || ''
 
     return (
-        <EditControllerProvider product={product}>
+        <EditControllerProvider product={product} dataUnionMemberCount={memberCount}>
             <EditProductPage
                 key={key}
                 product={product}

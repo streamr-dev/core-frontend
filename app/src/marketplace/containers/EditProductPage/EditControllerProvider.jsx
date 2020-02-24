@@ -8,7 +8,6 @@ import { Context as RouterContext } from '$shared/contexts/Router'
 import { Context as ValidationContext, ERROR } from '../ProductController/ValidationContextProvider'
 import type { Product } from '$mp/flowtype/product-types'
 import { isDataUnionProduct } from '$mp/utils/product'
-import { getDataUnionStats } from '$mp/modules/dataUnion/services'
 import usePending from '$shared/hooks/usePending'
 import { putProduct, postImage } from '$mp/modules/deprecated/editProduct/services'
 import { selectProduct } from '$mp/modules/product/selectors'
@@ -36,11 +35,10 @@ type ContextProps = {
 
 const EditControllerContext: Context<ContextProps> = React.createContext({})
 
-function useEditController(product: Product) {
+function useEditController(product: Product, dataUnionMemberCount: any) {
     const { history } = useContext(RouterContext)
     const { isAnyTouched, status } = useContext(ValidationContext)
     const [isPreview, setIsPreview] = useState(false)
-    const [memberCount, setMemberCount] = useState(null)
     const lastSectionRef = useRef(undefined)
     const isMounted = useIsMounted()
     const savePending = usePending('product.SAVE')
@@ -77,22 +75,6 @@ function useEditController(product: Product) {
                 message: status[key].message,
             }))
     ), [status])
-
-    useEffect(() => {
-        const loadDataUnionStats = async () => {
-            if (isDataUnionProduct(product)) {
-                try {
-                    const stats = await getDataUnionStats(product.beneficiaryAddress)
-                    if (stats && stats.memberCount && stats.memberCount.active != null) {
-                        setMemberCount(stats.memberCount.active)
-                    }
-                } catch (e) {
-                    // ignore error, assume contract has not been deployed
-                }
-            }
-        }
-        loadDataUnionStats()
-    }, [product])
 
     const { api: deployDataUnionDialog } = useModal('dataUnion.DEPLOY')
     const { api: confirmSaveDialog } = useModal('confirmSave')
@@ -167,9 +149,9 @@ function useEditController(product: Product) {
             return false
         }
 
-        if (isDataUnionProduct(productRef.current) && memberCount != null) {
+        if (isDataUnionProduct(productRef.current) && dataUnionMemberCount != null) {
             const memberLimit = parseInt(process.env.DATA_UNION_PUBLISH_MEMBER_LIMIT, 10) || 0
-            if (memberCount < memberLimit) {
+            if (dataUnionMemberCount.active < memberLimit) {
                 Notification.push({
                     title: I18n.t('notifications.notEnoughMembers', { memberLimit }),
                     icon: NotificationIcon.ERROR,
@@ -179,7 +161,7 @@ function useEditController(product: Product) {
         }
 
         return true
-    }, [errors, memberCount])
+    }, [errors, dataUnionMemberCount])
 
     const isPublic = State.isPublished(product)
     const publish = useCallback(async () => {
