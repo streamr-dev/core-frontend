@@ -215,7 +215,7 @@ export default WidthProvider(class DashboardEditor extends React.Component {
     }
 
     render() {
-        const { className, dashboard, editorLocked } = this.props
+        const { className, dashboard, editorLocked, children } = this.props
         if (!dashboard) { return null }
 
         const select = this.context
@@ -279,6 +279,7 @@ export default WidthProvider(class DashboardEditor extends React.Component {
                         })}
                     </ResponsiveReactGridLayout>
                 </div>
+                {children}
             </div>
         )
     }

@@ -45,7 +45,7 @@ import useEmbedMode from './components/CanvasController/useEmbedMode'
 import PendingLoadingIndicator from './components/PendingLoadingIndicator'
 import Canvas from './components/Canvas'
 import CanvasToolbar from './components/Toolbar'
-import CanvasStatus, { CannotSaveStatus } from './components/Status'
+import CanvasStatus, { CannotSaveStatus } from '$editor/shared/components/Status'
 import ModuleSearch from './components/ModuleSearch'
 import EmbedToolbar from './components/EmbedToolbar'
 

@@ -16,6 +16,8 @@ import { useAnyPending } from '$shared/hooks/usePending'
 import CanvasStyles from '$editor/canvas/index.pcss'
 import Sidebar from '$editor/shared/components/Sidebar'
 import { handleLoadError } from '$auth/utils/loginInterceptor'
+import BodyClass from '$shared/components/BodyClass'
+import DashboardStatus from '$editor/shared/components/Status'
 
 import links from '../../links'
 
@@ -170,7 +172,9 @@ const DashboardEdit = withRouter(class DashboardEdit extends Component {
                     dashboard={dashboard}
                     setDashboard={this.setDashboard}
                     replaceDashboard={this.replaceDashboard}
-                />
+                >
+                    <DashboardStatus updated={dashboard.updated} />
+                </Dashboard>
                 <DashboardToolbar
                     className={styles.DashboardToolbar}
                     dashboard={dashboard}
@@ -295,6 +299,7 @@ function DashboardLoadingIndicator() {
 
 export default withRouter((props) => (
     <Layout className={styles.layout} footer={false}>
+        <BodyClass className="dashboard" />
         <UndoContextProvider key={props.match.params.id} enableBreadcrumbs>
             <PendingProvider name="dashboard">
                 <ClientProvider>

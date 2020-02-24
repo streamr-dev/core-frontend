@@ -6,6 +6,7 @@ import { Translate, I18n } from 'react-redux-i18n'
 import Helmet from 'react-helmet'
 import { Link } from 'react-router-dom'
 import cx from 'classnames'
+import moment from 'moment'
 
 import links from '$userpages/../links'
 import { getDashboards } from '$userpages/modules/dashboard/actions'
@@ -26,6 +27,8 @@ import useFilterSort from '$userpages/hooks/useFilterSort'
 
 import NoDashboardsView from './NoDashboards'
 
+const generateTimeAgoDescription = (updatedDate: Date) => moment(updatedDate).fromNow()
+
 const CreateDashboardButton = () => (
     <Button
         className={styles.createDashboardButton}
@@ -40,6 +43,7 @@ const DashboardList = () => {
     const sortOptions = useMemo(() => {
         const filters = getFilters()
         return [
+            filters.RECENT,
             filters.NAME_ASC,
             filters.NAME_DESC,
         ]
@@ -105,6 +109,10 @@ const DashboardList = () => {
                                     image={<DashboardPreview className={cx(styles.PreviewImage, TileStyles.image)} dashboard={dashboard} />}
                                 >
                                     <Tile.Title>{dashboard.name}</Tile.Title>
+                                    <Tile.Description>
+                                        {dashboard.updated === dashboard.created ? 'Created ' : 'Updated '}
+                                        {generateTimeAgoDescription(new Date(dashboard.updated))}
+                                    </Tile.Description>
                                 </Tile>
                             </Link>
                         ))}
