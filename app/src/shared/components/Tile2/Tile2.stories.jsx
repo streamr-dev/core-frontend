@@ -1,6 +1,7 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
 import styles from '@sambego/storybook-styles'
+import { action } from '@storybook/addon-actions'
 import sample from './sample.png'
 import { DeployingBadge, DataUnionBadge, SharedBadge, IconBadge } from './Badge'
 import Image from './Image'
@@ -50,14 +51,22 @@ stories.add('elastic grid', () => (
                 <MenuItem>Item #4</MenuItem>
                 <MenuItem>Item #5</MenuItem>
             </Menu>
-            <Image src={sample} />
-            <Summary
-                name="Helsinki Tram Network GPS"
-                updatedAt={new Date('2020-01-01').getDate()}
-                label={(
-                    <div>Draft</div>
-                )}
-            />
+            <a
+                href="/resource/1403"
+                onClick={(e) => {
+                    e.preventDefault()
+                    action('Navigate!')()
+                }}
+            >
+                <Image src={sample} />
+                <Summary
+                    name="Helsinki Tram Network GPS"
+                    updatedAt={new Date('2020-01-01').getDate()}
+                    label={(
+                        <div>Draft</div>
+                    )}
+                />
+            </a>
         </Tile>
         <Tile>
             <Menu>
@@ -67,14 +76,22 @@ stories.add('elastic grid', () => (
                 <MenuItem>Item #4</MenuItem>
                 <MenuItem>Item #5</MenuItem>
             </Menu>
-            <Image src={sample} />
-            <Summary
-                name="Helsinki Tram Network GPS"
-                updatedAt={new Date('2020-01-01').getDate()}
-                label={(
-                    <div>Draft</div>
-                )}
-            />
+            <a
+                href="/resource/1403"
+                onClick={(e) => {
+                    e.preventDefault()
+                    action('Navigate!')()
+                }}
+            >
+                <Image src={sample} />
+                <Summary
+                    name="Helsinki Tram Network GPS"
+                    updatedAt={new Date('2020-01-01').getDate()}
+                    label={(
+                        <div>Draft</div>
+                    )}
+                />
+            </a>
         </Tile>
         <Tile>
             <Menu>
@@ -84,14 +101,22 @@ stories.add('elastic grid', () => (
                 <MenuItem>Item #4</MenuItem>
                 <MenuItem>Item #5</MenuItem>
             </Menu>
-            <Image src={sample} />
-            <Summary
-                name="Helsinki Tram Network GPS"
-                updatedAt={new Date('2020-01-01').getDate()}
-                label={(
-                    <div>Draft</div>
-                )}
-            />
+            <a
+                href="/resource/1403"
+                onClick={(e) => {
+                    e.preventDefault()
+                    action('Navigate!')()
+                }}
+            >
+                <Image src={sample} />
+                <Summary
+                    name="Helsinki Tram Network GPS"
+                    updatedAt={new Date('2020-01-01').getDate()}
+                    label={(
+                        <div>Draft</div>
+                    )}
+                />
+            </a>
         </Tile>
         <Tile>
             <Menu>
@@ -101,14 +126,22 @@ stories.add('elastic grid', () => (
                 <MenuItem>Item #4</MenuItem>
                 <MenuItem>Item #5</MenuItem>
             </Menu>
-            <Image src={sample} />
-            <Summary
-                name="Helsinki Tram Network GPS"
-                updatedAt={new Date('2020-01-01').getDate()}
-                label={(
-                    <div>Draft</div>
-                )}
-            />
+            <a
+                href="/resource/1403"
+                onClick={(e) => {
+                    e.preventDefault()
+                    action('Navigate!')()
+                }}
+            >
+                <Image src={sample} />
+                <Summary
+                    name="Helsinki Tram Network GPS"
+                    updatedAt={new Date('2020-01-01').getDate()}
+                    label={(
+                        <div>Draft</div>
+                    )}
+                />
+            </a>
         </Tile>
         <Tile>
             <Menu>
@@ -118,14 +151,22 @@ stories.add('elastic grid', () => (
                 <MenuItem>Item #4</MenuItem>
                 <MenuItem>Item #5</MenuItem>
             </Menu>
-            <Image src={sample} />
-            <Summary
-                name="Helsinki Tram Network GPS"
-                updatedAt={new Date('2020-01-01').getDate()}
-                label={(
-                    <div>Draft</div>
-                )}
-            />
+            <a
+                href="/resource/1403"
+                onClick={(e) => {
+                    e.preventDefault()
+                    action('Navigate!')()
+                }}
+            >
+                <Image src={sample} />
+                <Summary
+                    name="Helsinki Tram Network GPS"
+                    updatedAt={new Date('2020-01-01').getDate()}
+                    label={(
+                        <div>Draft</div>
+                    )}
+                />
+            </a>
         </Tile>
     </Grid>
 ))
