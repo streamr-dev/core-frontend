@@ -84,77 +84,6 @@ const getProductLink = (id: ProductId) => {
     return formatPath(links.marketplace.products, id)
 }
 
-const Tiles = ({ products, members, fetchingDataUnionStats }: any) => (
-    <Grid>
-        {products.map((product) => {
-            const {
-                id,
-                beneficiaryAddress,
-                updated,
-                created,
-                state,
-            } = product
-            const isDataUnion = isDataUnionProduct(product.type)
-            const memberCount = isDataUnion ? members[(beneficiaryAddress || '').toLowerCase()] : undefined
-            const updatedAgo = updated && moment(new Date(updated)).fromNow()
-            const isDeploying = !fetchingDataUnionStats && typeof memberCount !== 'undefined'
-            const deployed = state === productStates.DEPLOYED
-            const publishable = deployed || state === productStates.NOT_DEPLOYED
-
-            return (
-                <Tile2 key={product.id}>
-                    <Menu>
-                        <MenuItems.Edit id={id} />
-                        {!process.env.NEW_MP_CONTRACT && publishable && (
-                            <MenuItems.PublishUnpublish id={id} deployed={deployed} />
-                        )}
-                        {!!process.env.NEW_MP_CONTRACT && (
-                            <MenuItems.View id={id} disabled={!deployed} />
-                        )}
-                        {!!process.env.DATA_UNIONS && isDataUnion && (
-                            <MenuItems.ViewStats id={id} />
-                        )}
-                        {!!process.env.DATA_UNIONS && isDataUnion && (
-                            <MenuItems.ViewDataUnion id={id} />
-                        )}
-                        <MenuItems.Copy id={id} disabled={!deployed} />
-                    </Menu>
-                    <Link to={id && getProductLink(id)}>
-                        <ImageContainer src={product.imageUrl}>
-                            {isDataUnion && (
-                                <DataUnionBadge top left />
-                            )}
-                            {typeof memberCount !== 'undefined' && !isDeploying && (
-                                <IconBadge bottom right icon="dataUnion">
-                                    {memberCount}
-                                </IconBadge>
-                            )}
-                            {isDeploying && (
-                                <DeployingBadge bottom right />
-                            )}
-                        </ImageContainer>
-                        <Summary
-                            name={product.name}
-                            updatedAt={`${updated === created ? 'Created' : 'Updated'} ${updatedAgo}`}
-                            label={(
-                                <Label positive={product.state === productStates.DEPLOYED}>
-                                    {(
-                                        product.state === productStates.DEPLOYED ? (
-                                            <Translate value="userpages.products.published" />
-                                        ) : (
-                                            <Translate value="userpages.products.draft" />
-                                        )
-                                    )}
-                                </Label>
-                            )}
-                        />
-                    </Link>
-                </Tile2>
-            )
-        })}
-    </Grid>
-)
-
 const ProductsPage = () => {
     const sortOptions = useMemo(() => {
         const filters = getFilters()
@@ -220,11 +149,74 @@ const ProductsPage = () => {
                         onResetFilter={resetFilter}
                     />
                 )}
-                <Tiles
-                    products={products}
-                    members={members}
-                    fetchingDataUnionStats={fetchingDataUnionStats}
-                />
+                <Grid>
+                    {products.map((product) => {
+                        const {
+                            id,
+                            beneficiaryAddress,
+                            updated,
+                            created,
+                            state,
+                        } = product
+                        const isDataUnion = isDataUnionProduct(product.type)
+                        const memberCount = isDataUnion ? members[(beneficiaryAddress || '').toLowerCase()] : undefined
+                        const updatedAgo = updated && moment(new Date(updated)).fromNow()
+                        const isDeploying = !fetchingDataUnionStats && typeof memberCount !== 'undefined'
+                        const deployed = state === productStates.DEPLOYED
+                        const publishable = deployed || state === productStates.NOT_DEPLOYED
+
+                        return (
+                            <Tile2 key={product.id}>
+                                <Menu>
+                                    <MenuItems.Edit id={id} />
+                                    {!process.env.NEW_MP_CONTRACT && publishable && (
+                                        <MenuItems.PublishUnpublish id={id} deployed={deployed} />
+                                    )}
+                                    {!!process.env.NEW_MP_CONTRACT && (
+                                        <MenuItems.View id={id} disabled={!deployed} />
+                                    )}
+                                    {!!process.env.DATA_UNIONS && isDataUnion && (
+                                        <MenuItems.ViewStats id={id} />
+                                    )}
+                                    {!!process.env.DATA_UNIONS && isDataUnion && (
+                                        <MenuItems.ViewDataUnion id={id} />
+                                    )}
+                                    <MenuItems.Copy id={id} disabled={!deployed} />
+                                </Menu>
+                                <Link to={id && getProductLink(id)}>
+                                    <ImageContainer src={product.imageUrl}>
+                                        {isDataUnion && (
+                                            <DataUnionBadge top left />
+                                        )}
+                                        {typeof memberCount !== 'undefined' && !isDeploying && (
+                                            <IconBadge bottom right icon="dataUnion">
+                                                {memberCount}
+                                            </IconBadge>
+                                        )}
+                                        {isDeploying && (
+                                            <DeployingBadge bottom right />
+                                        )}
+                                    </ImageContainer>
+                                    <Summary
+                                        name={product.name}
+                                        updatedAt={`${updated === created ? 'Created' : 'Updated'} ${updatedAgo}`}
+                                        label={(
+                                            <Label positive={product.state === productStates.DEPLOYED}>
+                                                {(
+                                                    product.state === productStates.DEPLOYED ? (
+                                                        <Translate value="userpages.products.published" />
+                                                    ) : (
+                                                        <Translate value="userpages.products.draft" />
+                                                    )
+                                                )}
+                                            </Label>
+                                        )}
+                                    />
+                                </Link>
+                            </Tile2>
+                        )
+                    })}
+                </Grid>
             </ListContainer>
             <DocsShortcuts />
             <CreateProductModal />
