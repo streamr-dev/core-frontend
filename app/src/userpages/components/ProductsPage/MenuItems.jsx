@@ -1,14 +1,13 @@
 // @flow
 
 import React, { useCallback } from 'react'
-import { Link } from 'react-router-dom'
-import { Translate } from 'react-redux-i18n'
-import links from '../../../links'
-import routes from '$routes'
 import { formatPath, formatExternalUrl } from '$shared/utils/url'
+import { Link } from 'react-router-dom'
 import { MenuItem } from '$shared/components/Tile2/Menu'
-import { productStates } from '$shared/utils/constants'
+import { Translate } from 'react-redux-i18n'
+import routes from '$routes'
 import useCopy from '$shared/hooks/useCopy'
+import links from '../../../links'
 
 export const Edit = ({ id }: any) => {
     const to = process.env.NEW_MP_CONTRACT ? (
@@ -29,25 +28,17 @@ export const Edit = ({ id }: any) => {
     )
 }
 
-export const PublishUnpublish = ({ id, state }: any) => !process.env.NEW_MP_CONTRACT && (
-    (state === productStates.DEPLOYED || state === productStates.NOT_DEPLOYED) && (
-        <MenuItem tag={Link} to={formatPath(links.marketplace.products, id, 'publish')}>
-            {(
-                state === productStates.DEPLOYED ? (
-                    <Translate value="actionsDropdown.unpublish" />
-                ) : (
-                    <Translate value="actionsDropdown.publish" />
-                )
-            )}
-        </MenuItem>
-    )
+export const PublishUnpublish = ({ id, deployed }: any) => (
+    <MenuItem tag={Link} to={formatPath(links.marketplace.products, id, 'publish')}>
+        {deployed ? (
+            <Translate value="actionsDropdown.unpublish" />
+        ) : (
+            <Translate value="actionsDropdown.publish" />
+        )}
+    </MenuItem>
 )
 
 export const View = ({ id, disabled }: any) => {
-    if (!process.env.NEW_MP_CONTRACT) {
-        return null
-    }
-
     if (disabled) {
         return (
             <MenuItem disabled>
@@ -68,30 +59,26 @@ export const View = ({ id, disabled }: any) => {
     )
 }
 
-export const ViewStats = ({ id, isDataUnion }: any) => (
-    !!process.env.DATA_UNIONS && isDataUnion && (
-        <MenuItem
-            tag={Link}
-            to={routes.productStats({
-                id,
-            })}
-        >
-            <Translate value="actionsDropdown.viewStats" />
-        </MenuItem>
-    )
+export const ViewStats = ({ id }: any) => (
+    <MenuItem
+        tag={Link}
+        to={routes.productStats({
+            id,
+        })}
+    >
+        <Translate value="actionsDropdown.viewStats" />
+    </MenuItem>
 )
 
-export const ViewDataUnion = ({ id, isDataUnion }: any) => (
-    !!process.env.DATA_UNIONS && isDataUnion && (
-        <MenuItem
-            tag={Link}
-            to={routes.productMembers({
-                id,
-            })}
-        >
-            <Translate value="actionsDropdown.viewDataUnion" />
-        </MenuItem>
-    )
+export const ViewDataUnion = ({ id }: any) => (
+    <MenuItem
+        tag={Link}
+        to={routes.productMembers({
+            id,
+        })}
+    >
+        <Translate value="actionsDropdown.viewDataUnion" />
+    </MenuItem>
 )
 
 export const Copy = ({ id, disabled }: any) => {
