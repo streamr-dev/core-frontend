@@ -2,12 +2,15 @@
 
 import React, { type Node, type Context, useEffect, useState, useMemo, useCallback, useContext, useRef } from 'react'
 import { useSelector } from 'react-redux'
+import { I18n } from 'react-redux-i18n'
 
 import { Context as RouterContext } from '$shared/contexts/Router'
 import { Context as ValidationContext, ERROR } from '../ProductController/ValidationContextProvider'
 import type { Product } from '$mp/flowtype/product-types'
+import { isDataUnionProduct } from '$mp/utils/product'
 import usePending from '$shared/hooks/usePending'
 import { putProduct, postImage } from '$mp/modules/deprecated/editProduct/services'
+import { selectDataUnion } from '$mp/modules/dataUnion/selectors'
 import { selectProduct } from '$mp/modules/product/selectors'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import Notification from '$shared/utils/Notification'
@@ -43,6 +46,7 @@ function useEditController(product: Product) {
     const { updateBeneficiaryAddress } = useEditableProductActions()
     const originalProduct = useSelector(selectProduct)
     const { replaceProduct } = useEditableProductUpdater()
+    const dataUnion = useSelector(selectDataUnion)
 
     useEffect(() => {
         const handleBeforeunload = (event) => {
@@ -61,6 +65,7 @@ function useEditController(product: Product) {
             window.removeEventListener('beforeunload', handleBeforeunload)
         }
     }, [isAnyTouched])
+
     const productRef = useRef(product)
     productRef.current = product
 
@@ -72,24 +77,6 @@ function useEditController(product: Product) {
                 message: status[key].message,
             }))
     ), [status])
-
-    useEffect(() => {
-        const handleBeforeunload = (event) => {
-            if (isAnyTouched()) {
-                const confirmationMessage = 'You have unsaved changes'
-                const evt = (event || window.event)
-                evt.returnValue = confirmationMessage // Gecko + IE
-                return confirmationMessage // Webkit, Safari, Chrome etc.
-            }
-            return ''
-        }
-
-        window.addEventListener('beforeunload', handleBeforeunload)
-
-        return () => {
-            window.removeEventListener('beforeunload', handleBeforeunload)
-        }
-    }, [isAnyTouched])
 
     const { api: deployDataUnionDialog } = useModal('dataUnion.DEPLOY')
     const { api: confirmSaveDialog } = useModal('confirmSave')
@@ -164,8 +151,19 @@ function useEditController(product: Product) {
             return false
         }
 
+        if (isDataUnionProduct(productRef.current) && dataUnion != null && dataUnion.memberCount != null) {
+            const memberLimit = parseInt(process.env.DATA_UNION_PUBLISH_MEMBER_LIMIT, 10) || 0
+            if (dataUnion.memberCount.active < memberLimit) {
+                Notification.push({
+                    title: I18n.t('notifications.notEnoughMembers', { memberLimit }),
+                    icon: NotificationIcon.ERROR,
+                })
+                return false
+            }
+        }
+
         return true
-    }, [errors])
+    }, [errors, dataUnion])
 
     const isPublic = State.isPublished(product)
     const publish = useCallback(async () => {

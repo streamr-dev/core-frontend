@@ -45,7 +45,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
     } = useContext(EditControllerContext)
     const { isPending: savePending } = usePending('product.SAVE')
     const { isAnyChangePending } = useContext(ValidationContext)
-    const { loadCategories, loadStreams, loadDataUnion } = useController()
+    const { loadCategories, loadStreams, loadDataUnion, loadDataUnionStats } = useController()
 
     // Load categories and streams
     useEffect(() => {
@@ -61,7 +61,8 @@ const EditProductPage = ({ product }: { product: Product }) => {
     useEffect(() => {
         loadEthIdentities()
         loadDataUnion(beneficiaryAddress)
-    }, [beneficiaryAddress, loadDataUnion, loadEthIdentities])
+        loadDataUnionStats(beneficiaryAddress)
+    }, [beneficiaryAddress, loadDataUnion, loadDataUnionStats, loadEthIdentities])
 
     const isSaving = savePending
     const isDataUnion = isDataUnionProduct(product)

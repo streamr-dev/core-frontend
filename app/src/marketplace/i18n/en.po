@@ -856,6 +856,9 @@ msgstr "Go to core app"
 msgid "notFoundPage##publicSite"
 msgstr "Go to public site"
 
+msgid "notifications##notEnoughMembers"
+msgstr "The minimum community size for a Data Union is %{memberLimit} members."
+
 msgid "notifications##productPublished"
 msgstr "Your product has been published"
 
