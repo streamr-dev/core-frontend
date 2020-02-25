@@ -2,7 +2,7 @@ import React from 'react'
 import { storiesOf } from '@storybook/react'
 import styles from '@sambego/storybook-styles'
 import sample from './sample.png'
-import { DeployingBadge, DataUnionBadge, SharedBadge } from './Badge'
+import { DeployingBadge, DataUnionBadge, SharedBadge, IconBadge } from './Badge'
 import Image from './Image'
 import Grid from './Grid'
 import Summary from './Summary'
@@ -32,6 +32,9 @@ stories.add('with sample image and badge', () => (
             <DataUnionBadge top left />
             <DeployingBadge bottom right />
             <SharedBadge bottom left />
+            <IconBadge icon="dataUnion" top right>
+                15
+            </IconBadge>
         </Image>
     </Tile>
 ))

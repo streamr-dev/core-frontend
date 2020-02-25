@@ -1,8 +1,9 @@
 // @flow
 
-import React from 'react'
+import React, { type Node } from 'react'
 import styled, { css } from 'styled-components'
 import UnstyledSpinner from '$shared/components/Spinner'
+import SvgIcon from '$shared/components/SvgIcon'
 
 type BadgeProps = {
     bottom?: boolean,
@@ -83,11 +84,34 @@ const SharedBadge = (props: BadgeProps) => (
     </Badge>
 )
 
+type IconBadgeProps = BadgeProps & {
+    children?: Node,
+    icon: string,
+}
+
+// $FlowFixMe `icon` is missing in `BadgeProps` but I just wanted it here.
+const UnstyledIconBadge = ({ children, icon, ...props }: IconBadgeProps) => (
+    <Badge {...props}>
+        <SvgIcon name={icon} />
+        {!!children && (
+            <div>{children}</div>
+        )}
+    </Badge>
+)
+
+const IconBadge = styled(UnstyledIconBadge)`
+    svg {
+        height: 12px;
+        width: auto;
+    }
+`
+
 export {
-    DeployingBadge,
     DataUnionBadge,
-    SharedTheme,
+    IconBadge,
+    DeployingBadge,
     SharedBadge,
+    SharedTheme,
 }
 
 export default Badge
