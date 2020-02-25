@@ -113,7 +113,7 @@ const TimeSeriesGraph = ({
                     height={height}
                     /* We need margin to not clip axis labels */
                     margin={{
-                        left: 10,
+                        left: 0,
                         right: 50,
                     }}
                     yDomain={dataDomain}
