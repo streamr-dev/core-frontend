@@ -571,7 +571,12 @@ msgid "userpages##streams##partitionsReadMore"
 msgstr "docs"
 
 msgid "userpages##streams##partitionsLabel"
-msgstr "Number of partitions"
+msgstr "Partitions"
+
+msgid "userpages##streams##partitionsTooltip"
+msgstr ""
+"Partitioning enables high-volume streams to scale. "
+"Read more in the <a href=\"%{docsLink}\">docs</a>."
 
 msgid "userpages##streams##inactivityDescription"
 msgstr "If no new data is published to this stream, it will be shown as inactive on the marketplace after this period of time. Adjust the threshold to an appropriate period for your stream's frequency."

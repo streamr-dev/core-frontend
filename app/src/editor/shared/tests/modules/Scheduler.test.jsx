@@ -292,9 +292,9 @@ describe('Scheduler', () => {
 
         it('should show remove button when hovering', () => {
             const el = shallow(<RuleComponent rule={yearRule} />)
-            assert(el.find('SvgIcon').exists() === false)
+            assert(el.find('button').exists() === false)
             el.setProps({ isHovered: true })
-            assert(el.find('SvgIcon').exists())
+            assert(el.find('button').exists())
         })
 
         it('should set default date when interval changes', () => {
