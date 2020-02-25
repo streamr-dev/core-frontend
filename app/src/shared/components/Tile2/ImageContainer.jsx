@@ -32,7 +32,7 @@ const Logo = styled(UnstyledLogo)`
     width: 80px;
 `
 
-const Img = styled(ReactImage)`
+export const Image = styled(ReactImage)`
     height: 100%;
     left: 0;
     position: absolute;
@@ -48,7 +48,7 @@ const Placeholder = styled.div`
     background-image: linear-gradient(135deg, #0045FF 0%, #7200EE 100%);
 `
 
-const Image = ({
+const ImageContainer = ({
     alt = '',
     src,
     ratio = '16:9',
@@ -56,13 +56,13 @@ const Image = ({
     ...props
 }: Props) => (
     <Root {...props}>
-        <Img
+        <Image
             alt={alt}
             src={src}
             unloader={(
-                <Img as={Placeholder}>
+                <Image as={Placeholder}>
                     <Logo color="black" opacity="0.15" />
-                </Img>
+                </Image>
             )}
         />
         {children}
@@ -73,4 +73,4 @@ const Image = ({
     </Root>
 )
 
-export default Image
+export default ImageContainer

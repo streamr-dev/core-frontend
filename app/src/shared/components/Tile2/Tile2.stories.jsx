@@ -4,7 +4,7 @@ import styles from '@sambego/storybook-styles'
 import { action } from '@storybook/addon-actions'
 import sample from './sample.png'
 import { DeployingBadge, DataUnionBadge, SharedBadge, IconBadge } from './Badge'
-import Image from './Image'
+import ImageContainer from './ImageContainer'
 import Grid from './Grid'
 import Summary from './Summary'
 import Menu, { MenuItem } from './Menu'
@@ -18,26 +18,26 @@ const stories = storiesOf('Shared/Tile (new)', module)
 
 stories.add('placeholder only', () => (
     <Tile>
-        <Image />
+        <ImageContainer />
     </Tile>
 ))
 
 stories.add('with sample image', () => (
     <Tile>
-        <Image src={sample} />
+        <ImageContainer src={sample} />
     </Tile>
 ))
 
 stories.add('with sample image and badge', () => (
     <Tile>
-        <Image src={sample}>
+        <ImageContainer src={sample}>
             <DataUnionBadge top left />
             <DeployingBadge bottom right />
             <SharedBadge bottom left />
             <IconBadge icon="dataUnion" top right>
                 15
             </IconBadge>
-        </Image>
+        </ImageContainer>
     </Tile>
 ))
 
@@ -58,7 +58,7 @@ stories.add('elastic grid', () => (
                     action('Navigate!')()
                 }}
             >
-                <Image src={sample} />
+                <ImageContainer src={sample} />
                 <Summary
                     name="Helsinki Tram Network GPS"
                     updatedAt={new Date('2020-01-01').getDate()}
@@ -83,7 +83,7 @@ stories.add('elastic grid', () => (
                     action('Navigate!')()
                 }}
             >
-                <Image src={sample} />
+                <ImageContainer src={sample} />
                 <Summary
                     name="Helsinki Tram Network GPS"
                     updatedAt={new Date('2020-01-01').getDate()}
@@ -108,7 +108,7 @@ stories.add('elastic grid', () => (
                     action('Navigate!')()
                 }}
             >
-                <Image src={sample} />
+                <ImageContainer src={sample} />
                 <Summary
                     name="Helsinki Tram Network GPS"
                     updatedAt={new Date('2020-01-01').getDate()}
@@ -133,7 +133,7 @@ stories.add('elastic grid', () => (
                     action('Navigate!')()
                 }}
             >
-                <Image src={sample} />
+                <ImageContainer src={sample} />
                 <Summary
                     name="Helsinki Tram Network GPS"
                     updatedAt={new Date('2020-01-01').getDate()}
@@ -158,7 +158,7 @@ stories.add('elastic grid', () => (
                     action('Navigate!')()
                 }}
             >
-                <Image src={sample} />
+                <ImageContainer src={sample} />
                 <Summary
                     name="Helsinki Tram Network GPS"
                     updatedAt={new Date('2020-01-01').getDate()}

@@ -2,6 +2,7 @@
 
 import styled from 'styled-components'
 import Menu from './Menu'
+import { Image } from './ImageContainer'
 
 const Tile = styled.div`
     position: relative;
@@ -20,6 +21,16 @@ const Tile = styled.div`
         opacity: 1;
         pointer-events: auto;
         visibility: visible;
+    }
+
+    ${Image} {
+        filter: brightness(100%);
+        transition: 40ms ease-out filter;
+    }
+
+    ${Menu}.show + a ${Image},
+    :hover ${Image} {
+        filter: brightness(70%);
     }
 `
 
