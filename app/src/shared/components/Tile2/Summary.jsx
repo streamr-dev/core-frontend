@@ -26,6 +26,12 @@ const Root = styled.div`
     padding-top: 8px;
 `
 
+type Props = {
+    label: string,
+    name: string,
+    updatedAt: string,
+}
+
 const Summary = ({ name, updatedAt, label, ...props }: Props) => (
     <Root {...props}>
         <Name>{name}</Name>
