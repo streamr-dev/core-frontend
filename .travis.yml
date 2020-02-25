@@ -75,6 +75,7 @@ jobs:
     - WEB3_PUBLIC_WS_PROVIDER=wss://mainnet.infura.io/ws/v3/17c3985baecb4c4d94a1edc2c4d23206
     - SENTRY_DSN=https://e012761929d24baa96ca82772f60b395@sentry.io/1203154
     - LOGROCKET_SLUG=et0uhu/streamr-frontend-local
+    - DATA_UNION_PUBLISH_MEMBER_LIMIT=0
     script: "$TRAVIS_BUILD_DIR/app/travis_scripts/visual-tests.sh"
   - stage: Build docker (Dev/Nightly)
     if: branch = development
