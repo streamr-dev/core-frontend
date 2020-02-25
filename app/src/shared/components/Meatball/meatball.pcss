@@ -34,7 +34,8 @@ a:--enter .root:not(.disabled) {
   fill: var(--white);
 }
 
-.white:--enter {
+.white:--enter,
+:global(.dropdown.show) .white {
   border-color: var(--white);
 }
 
