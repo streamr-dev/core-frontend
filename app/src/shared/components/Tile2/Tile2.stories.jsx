@@ -6,6 +6,7 @@ import { DeployingBadge, DataUnionBadge, SharedBadge, IconBadge } from './Badge'
 import Image from './Image'
 import Grid from './Grid'
 import Summary from './Summary'
+import Menu, { MenuItem } from './Menu'
 import Tile from './'
 
 const stories = storiesOf('Shared/Tile (new)', module)
@@ -42,6 +43,13 @@ stories.add('with sample image and badge', () => (
 stories.add('elastic grid', () => (
     <Grid>
         <Tile>
+            <Menu>
+                <MenuItem>Item #1</MenuItem>
+                <MenuItem>Item #2</MenuItem>
+                <MenuItem>Item #3</MenuItem>
+                <MenuItem>Item #4</MenuItem>
+                <MenuItem>Item #5</MenuItem>
+            </Menu>
             <Image src={sample} />
             <Summary
                 name="Helsinki Tram Network GPS"
@@ -52,6 +60,13 @@ stories.add('elastic grid', () => (
             />
         </Tile>
         <Tile>
+            <Menu>
+                <MenuItem>Item #1</MenuItem>
+                <MenuItem>Item #2</MenuItem>
+                <MenuItem>Item #3</MenuItem>
+                <MenuItem>Item #4</MenuItem>
+                <MenuItem>Item #5</MenuItem>
+            </Menu>
             <Image src={sample} />
             <Summary
                 name="Helsinki Tram Network GPS"
@@ -62,6 +77,13 @@ stories.add('elastic grid', () => (
             />
         </Tile>
         <Tile>
+            <Menu>
+                <MenuItem>Item #1</MenuItem>
+                <MenuItem>Item #2</MenuItem>
+                <MenuItem>Item #3</MenuItem>
+                <MenuItem>Item #4</MenuItem>
+                <MenuItem>Item #5</MenuItem>
+            </Menu>
             <Image src={sample} />
             <Summary
                 name="Helsinki Tram Network GPS"
@@ -72,6 +94,13 @@ stories.add('elastic grid', () => (
             />
         </Tile>
         <Tile>
+            <Menu>
+                <MenuItem>Item #1</MenuItem>
+                <MenuItem>Item #2</MenuItem>
+                <MenuItem>Item #3</MenuItem>
+                <MenuItem>Item #4</MenuItem>
+                <MenuItem>Item #5</MenuItem>
+            </Menu>
             <Image src={sample} />
             <Summary
                 name="Helsinki Tram Network GPS"
@@ -82,6 +111,13 @@ stories.add('elastic grid', () => (
             />
         </Tile>
         <Tile>
+            <Menu>
+                <MenuItem>Item #1</MenuItem>
+                <MenuItem>Item #2</MenuItem>
+                <MenuItem>Item #3</MenuItem>
+                <MenuItem>Item #4</MenuItem>
+                <MenuItem>Item #5</MenuItem>
+            </Menu>
             <Image src={sample} />
             <Summary
                 name="Helsinki Tram Network GPS"
