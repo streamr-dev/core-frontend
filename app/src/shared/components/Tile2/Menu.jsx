@@ -1,6 +1,6 @@
 // @flow
 
-import React from 'react'
+import React, { type Node } from 'react'
 import styled from 'styled-components'
 import DropdownActions from '$shared/components/DropdownActions'
 import Meatball from '$shared/components/Meatball'
@@ -8,7 +8,7 @@ import Meatball from '$shared/components/Meatball'
 export const MenuItem = DropdownActions.Item
 
 type Props = {
-    children: Array<typeof MenuItem>,
+    children: Node,
     onToggle?: (boolean) => any,
 }
 

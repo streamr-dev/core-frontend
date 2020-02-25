@@ -1,6 +1,6 @@
 // @flow
 
-import React from 'react'
+import React, { type Node } from 'react'
 import styled from 'styled-components'
 import { MEDIUM } from '$shared/utils/styled'
 
@@ -27,16 +27,20 @@ const Root = styled.div`
 `
 
 type Props = {
-    label: string,
+    label: Node,
     name: string,
-    updatedAt: string,
+    updatedAt: string | false,
 }
 
 const Summary = ({ name, updatedAt, label, ...props }: Props) => (
     <Root {...props}>
         <Name>{name}</Name>
-        <UpdatedAt>{updatedAt}</UpdatedAt>
-        <Label>{label}</Label>
+        {!!updatedAt && (
+            <UpdatedAt>{updatedAt}</UpdatedAt>
+        )}
+        {!!label && (
+            <Label>{label}</Label>
+        )}
     </Root>
 )
 
