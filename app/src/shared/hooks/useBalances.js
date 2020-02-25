@@ -10,8 +10,11 @@ import { updateBalances } from '$shared/modules/integrationKey/actions'
 
 export function useBalances() {
     const dispatch = useDispatch()
+
+    // Balances are stored in redux state and polled regularly in GlobalInfoWatcher component.
     const balances = useSelector(selectBalances)
 
+    // Fetches & updates account balances to redux state
     const update = useCallback(() => {
         dispatch(updateBalances())
     }, [dispatch])

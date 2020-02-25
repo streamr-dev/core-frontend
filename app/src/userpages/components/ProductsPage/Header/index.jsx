@@ -8,7 +8,7 @@ import { Translate } from 'react-redux-i18n'
 import cx from 'classnames'
 
 import Tab from '$userpages/components/Header/Tab'
-import NameAndEmail from '$userpages/components/Avatar/NameAndEmail'
+import NameAndUsername from '$userpages/components/Avatar/NameAndUsername'
 import ListContainer from '$shared/components/Container/List'
 import BackButton from '$shared/components/BackButton'
 import Toolbar from '$shared/components/Toolbar'
@@ -60,7 +60,7 @@ const Header = ({ className, searchComponent, filterComponent }: Props) => {
                             src={product.imageUrl || ''}
                             alt={product.name || ''}
                         />
-                        <NameAndEmail name={product.name} username={product.beneficiaryAddress} />
+                        <NameAndUsername name={product.name} username={product.beneficiaryAddress} />
                     </div>
                     <div className={styles.additionalComponent}>
                         <Button

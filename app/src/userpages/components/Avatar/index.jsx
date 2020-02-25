@@ -5,7 +5,7 @@ import cx from 'classnames'
 import { Link } from 'react-router-dom'
 
 import AvatarUpload from './AvatarUpload'
-import NameAndEmail from './NameAndEmail'
+import NameAndUsername from './NameAndUsername'
 import AvatarCircle from '$shared/components/AvatarCircle'
 import type { User } from '$shared/flowtype/user-types'
 
@@ -39,9 +39,9 @@ const Avatar = ({
             <AvatarCircle name={user.name} imageUrl={user.imageUrlLarge} className={styles.avatarCircle} uploadAvatarPlaceholder />
         )}
         {!editable && (
-            <NameAndEmail name={user.name} username={user.username}>
+            <NameAndUsername name={user.name} username={user.username}>
                 {children}
-            </NameAndEmail>
+            </NameAndUsername>
         )}
         {editable && onImageChange && (
             <AvatarUpload onImageChange={onImageChange} image={(user && user.imageUrlLarge) || ''} />

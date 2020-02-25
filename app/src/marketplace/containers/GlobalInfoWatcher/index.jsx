@@ -158,6 +158,7 @@ export const GlobalInfoWatcher = ({ children }: Props) => {
     useEffect(() => {
         if (!user) { return () => {} }
 
+        // fetch the integration keys first and then start polling for the balance
         dispatch(fetchIntegrationKeys())
             .then(() => {
                 balancePoll()

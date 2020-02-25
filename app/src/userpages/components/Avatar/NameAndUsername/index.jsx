@@ -6,15 +6,15 @@ import type { Address } from '$shared/flowtype/web3-types'
 import { isEthereumAddress } from '$mp/utils/validate'
 import { truncate } from '$shared/utils/text'
 
-import styles from './nameAndEmail.pcss'
+import styles from './nameAndUsername.pcss'
 
-export type NameAndEmailProps = {
+export type NameAndUsernameProps = {
     name: string,
     username: string | Address,
     children?: Node,
 }
 
-const NameAndUsername = ({ name, username, children }: NameAndEmailProps) => {
+const NameAndUsername = ({ name, username, children }: NameAndUsernameProps) => {
     const isEthAddress = isEthereumAddress(username)
 
     return (

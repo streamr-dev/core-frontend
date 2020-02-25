@@ -56,7 +56,7 @@ const IntegrationKeyItem = ({
                 valueLabel="address"
                 labelComponent={!editing && (
                     <Label as="div">
-                        <Balance>
+                        <Balance className={styles.balances}>
                             <Balance.Account
                                 name="DATA"
                                 value={dataBalance}
