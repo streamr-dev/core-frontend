@@ -39,20 +39,14 @@ export const PublishUnpublish = ({ id, deployed }: any) => (
 )
 
 export const View = ({ id, disabled }: any) => {
-    if (disabled) {
-        return (
-            <MenuItem disabled>
-                <Translate value="actionsDropdown.viewProduct" />
-            </MenuItem>
-        )
-    }
+    const onClick = useCallback(() => {
+        window.open(formatPath(links.marketplace.products, id), '_blank', 'noopener noreferrer')
+    }, [id])
 
     return (
         <MenuItem
-            href={formatPath(links.marketplace.products, id)}
-            rel="noopener noreferrer"
-            tag={Link}
-            target="_blank"
+            disabled={disabled}
+            onClick={onClick}
         >
             <Translate value="actionsDropdown.viewProduct" />
         </MenuItem>
