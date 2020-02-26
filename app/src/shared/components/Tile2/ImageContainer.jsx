@@ -59,7 +59,7 @@ const ImageContainer = ({
     ...props
 }: Props) => (
     <Root {...props}>
-        {src == null && (
+        {src != null && (
             skeletonize ? (
                 <Image as={Skeleton} block />
             ) : (
