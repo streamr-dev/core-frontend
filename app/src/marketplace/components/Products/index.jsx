@@ -1,23 +1,31 @@
 // @flow
 
 import React from 'react'
-import merge from 'lodash/merge'
 import classnames from 'classnames'
 import { Row, Container, Col } from 'reactstrap'
+import { Link } from 'react-router-dom'
+import { Translate } from 'react-redux-i18n'
 
-import type { ProductList, Product, ProductSubscription } from '../../flowtype/product-types'
-import type { Props } from '../ProductTile'
-import ProductTile from '../ProductTile'
+import links from '$mp/../links'
+import { timeUnits } from '$shared/utils/constants'
+import PaymentRate from '../PaymentRate'
+import { formatPath } from '$shared/utils/url'
+import { isPaidProduct, isDataUnionProduct } from '$mp/utils/product'
+import type { ProductList } from '../../flowtype/product-types'
+import Tile from '$shared/components/Tile2'
 import ProductPageSpinner from '../ProductPageSpinner'
 import LoadMore from '../LoadMore'
 import Error from '../Error'
-import { isActive } from '../../utils/time'
+import ImageContainer from '$shared/components/Tile2/ImageContainer'
+import Summary from '$shared/components/Tile2/Summary'
+import { DataUnionBadge, IconBadge } from '$shared/components/Tile2/Badge'
 
-import { getTileProps, getErrorView, getCols } from './settings'
+import { getErrorView, getCols } from './settings'
 import styles from './products.pcss'
 
-export type ProductTilePropType = "myProducts" | "myPurchases" | "products" | "relatedProducts"
-export type ProductTileProps = $Rest<Props, {|source: Product|}>
+export type Props = {}
+
+export type ProductTilePropType = "products" | "relatedProducts"
 
 export type OwnProps = {
     products: ProductList,
@@ -27,27 +35,53 @@ export type OwnProps = {
     loadProducts?: () => void,
     hasMoreSearchResults?: boolean,
     header?: string,
-    productTileProps?: ProductTileProps,
-    subscriptions?: Array<ProductSubscription>,
 }
 
-const isSubscriptionActive = (subscription?: ProductSubscription): boolean => isActive((subscription && subscription.endsAt) || '')
-
-const listProducts = (products, cols, productTileProps: ProductTileProps, isFetching: ?boolean, subscriptions?: Array<ProductSubscription>) => (
+const listProducts = (products, cols, isFetching: ?boolean) => (
     <Row
         className={classnames(styles.productsRow, {
             [styles.fetching]: isFetching,
         })}
     >
-        {products.map((product) => (
-            <Col {...cols} key={product.key || product.id} >
-                <ProductTile
-                    {...productTileProps}
-                    source={product}
-                    isActive={subscriptions && isSubscriptionActive(subscriptions.find((s) => s.product.id === product.id))}
+        {products.map((product) => {
+            const isDataUnion = isDataUnionProduct(product.type)
+
+            const price = isPaidProduct(product) ? (
+                <PaymentRate
+                    amount={product.pricePerSecond}
+                    currency={product.priceCurrency}
+                    timeUnit={timeUnits.hour}
+                    maxDigits={4}
                 />
-            </Col>
-        ))}
+            ) : (
+                <Translate value="productTile.free" />
+            )
+
+            return (
+                <Col {...cols} key={product.key || product.id} >
+                    <Tile>
+                        <Link to={formatPath(links.marketplace.products, product.id || '')}>
+                            <ImageContainer src={product.imageUrl}>
+                                {isDataUnion && (
+                                    <DataUnionBadge top left />
+                                )}
+                                {/* $FlowFixMe `members` is missing in `Product`. */}
+                                {isDataUnion && typeof product.members !== 'undefined' && (
+                                    <IconBadge icon="dataUnion" bottom right>
+                                        {product.members}
+                                    </IconBadge>
+                                )}
+                            </ImageContainer>
+                            <Summary
+                                name={product.name}
+                                updatedAt={product.owner}
+                                label={price}
+                            />
+                        </Link>
+                    </Tile>
+                </Col>
+            )
+        })}
     </Row>
 )
 
@@ -59,14 +93,12 @@ const Products = ({
     loadProducts,
     hasMoreSearchResults,
     header,
-    productTileProps,
-    subscriptions,
 }: OwnProps) => (
     <Container className={styles[type]} fluid={type === 'products'}>
         {(header && <h3>{header}</h3>)}
         <Error source={error} />
         {(isFetching || products.length > 0)
-            ? listProducts(products, getCols(type), merge({}, getTileProps(type), productTileProps), isFetching, subscriptions)
+            ? listProducts(products, getCols(type), isFetching)
             : getErrorView(type)}
         {(loadProducts && !isFetching) && (
             <LoadMore
