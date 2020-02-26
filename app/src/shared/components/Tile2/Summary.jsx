@@ -29,10 +29,10 @@ const Root = styled.div`
 `
 
 type Props = {
-    label: Node,
+    label?: Node,
     name: string,
     skeletonize?: boolean,
-    updatedAt: string | false,
+    updatedAt?: string | false,
 }
 
 const Summary = ({
