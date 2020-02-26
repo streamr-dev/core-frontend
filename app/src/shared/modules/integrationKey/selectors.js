@@ -4,7 +4,7 @@ import { createSelector } from 'reselect'
 import { denormalize } from 'normalizr'
 
 import type { IntegrationKeyState, StoreState, EntitiesState } from '$shared/flowtype/store-state'
-import type { IntegrationKeyIdList, IntegrationKeyList } from '$shared/flowtype/integration-key-types'
+import type { IntegrationKeyIdList, IntegrationKeyList, BalanceList } from '$shared/flowtype/integration-key-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import { selectEntities } from '$shared/modules/entities/selectors'
 import { integrationKeysSchema } from '$shared/modules/entities/schema'
@@ -51,4 +51,27 @@ export const selectCreatingIdentity: (StoreState) => boolean = createSelector(
 export const selectCreatingIdentityError: (StoreState) => ?ErrorInUi = createSelector(
     selectIntegrationKeyState,
     (subState: IntegrationKeyState): ?ErrorInUi => subState.creatingIdentityError,
+)
+
+export const selectBalances: (StoreState) => BalanceList = createSelector(
+    selectIntegrationKeyState,
+    selectEthereumIdentities,
+    selectPrivateKeys,
+    (subState: IntegrationKeyState, ethIdentities: IntegrationKeyList, privateKeys: IntegrationKeyList): BalanceList => {
+        const uniqueAccounts = [...(new Set([
+            ...(ethIdentities || []).map(({ json }) => json.address).filter(Boolean),
+            ...(privateKeys || []).map(({ json }) => json.address).filter(Boolean),
+        ]))]
+
+        return uniqueAccounts.reduce((result, address) => {
+            if (!subState.balances[address]) {
+                return result
+            }
+
+            return ({
+                ...result,
+                [address]: subState.balances[address],
+            })
+        }, {})
+    },
 )

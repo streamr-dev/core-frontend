@@ -8,7 +8,7 @@ import { selectPrivateKeys, selectIntegrationKeysError, selectFetchingIntegratio
 import { deleteIntegrationKey, fetchIntegrationKeys, createIntegrationKey, editIntegrationKey } from '$shared/modules/integrationKey/actions'
 import type { IntegrationKeyId } from '$shared/flowtype/integration-key-types'
 
-function useEthereumIdentities() {
+function usePrivateKeys() {
     const dispatch = useDispatch()
     const privateKeys = useSelector(selectPrivateKeys)
     const error = useSelector(selectIntegrationKeysError)
@@ -43,4 +43,4 @@ function useEthereumIdentities() {
     ])
 }
 
-export default useEthereumIdentities
+export default usePrivateKeys

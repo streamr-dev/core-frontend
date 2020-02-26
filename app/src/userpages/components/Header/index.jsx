@@ -10,6 +10,7 @@ import type { StoreState } from '$shared/flowtype/store-state'
 import { selectUserData } from '$shared/modules/user/selectors'
 import { userpages } from '../../../links'
 import Tab from './Tab'
+import AccountsBalance from './AccountsBalance'
 import { formatPath } from '$shared/utils/url'
 import Avatar from '$userpages/components/Avatar'
 import ListContainer from '$shared/components/Container/List'
@@ -44,7 +45,9 @@ const Header = ({
                     className={styles.avatar}
                     user={user}
                     linkToProfile
-                />
+                >
+                    <AccountsBalance />
+                </Avatar>
                 <div className={styles.additionalComponent}>
                     {additionalComponent}
                 </div>
