@@ -2,6 +2,7 @@
 
 import React from 'react'
 import classnames from 'classnames'
+import styled from 'styled-components'
 import { Row, Container, Col } from 'reactstrap'
 import { Link } from 'react-router-dom'
 import { Translate } from 'react-redux-i18n'
@@ -12,7 +13,7 @@ import PaymentRate from '../PaymentRate'
 import { formatPath } from '$shared/utils/url'
 import { isPaidProduct, isDataUnionProduct } from '$mp/utils/product'
 import type { ProductList } from '../../flowtype/product-types'
-import Tile from '$shared/components/Tile2'
+import UnstyledTile from '$shared/components/Tile2'
 import ProductPageSpinner from '../ProductPageSpinner'
 import LoadMore from '../LoadMore'
 import Error from '../Error'
@@ -36,6 +37,10 @@ export type OwnProps = {
     hasMoreSearchResults?: boolean,
     header?: string,
 }
+
+const Tile = styled(UnstyledTile)`
+    margin-top: 16px;
+`
 
 const listProducts = (products, cols, isFetching: ?boolean) => (
     <Row
