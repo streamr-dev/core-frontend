@@ -1,6 +1,6 @@
 // @flow
 
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import Menu from './Menu'
 import { Image } from './ImageContainer'
 
@@ -23,16 +23,18 @@ const Tile = styled.div`
         visibility: visible;
     }
 
-    ${Image} {
-        filter: brightness(100%);
-        transition: 240ms ease-out filter;
-    }
+    ${({ suppressHover }) => !suppressHover && css`
+        ${Image} {
+            filter: brightness(100%);
+            transition: 240ms ease-out filter;
+        }
 
-    ${Menu}.show + a ${Image},
-    :hover ${Image} {
-        filter: brightness(70%);
-        transition-duration: 40ms;
-    }
+        ${Menu}.show + a ${Image},
+        :hover ${Image} {
+            filter: brightness(70%);
+            transition-duration: 40ms;
+        }
+    `}
 `
 
 export default Tile

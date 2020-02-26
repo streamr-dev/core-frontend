@@ -9,8 +9,6 @@ import useModal from '$shared/hooks/useModal'
 import { selectUserData } from '$shared/modules/user/selectors'
 import { addFreeProduct } from '$mp/modules/purchase/actions'
 
-import FallbackImage from '$shared/components/FallbackImage'
-import Tile from '$shared/components/Tile'
 import ProductDetails from '$mp/components/ProductPage/ProductDetails'
 import HeroComponent from '$mp/components/Hero'
 import { isDataUnionProduct, isPaidProduct } from '$mp/utils/product'
@@ -18,6 +16,9 @@ import {
     selectSubscriptionIsValid,
     selectContractSubscription,
 } from '$mp/modules/product/selectors'
+import { DataUnionBadge } from '$shared/components/Tile2/Badge'
+import ImageContainer from '$shared/components/Tile2/ImageContainer'
+import Tile2 from '$shared/components/Tile2'
 
 import routes from '$routes'
 
@@ -61,19 +62,16 @@ const Hero = () => {
             className={styles.hero}
             product={product}
             leftContent={
-                <div className={styles.productImageWrapper}>
-                    <FallbackImage
-                        className={styles.productImage}
-                        src={product.imageUrl || ''}
+                <Tile2 suppressHover>
+                    <ImageContainer
                         alt={product.name}
-                    />
-                    <Tile.Labels
-                        topLeft
-                        labels={{
-                            dataUnion: isDataUnion,
-                        }}
-                    />
-                </div>
+                        src={product.imageUrl || ''}
+                    >
+                        {isDataUnion && (
+                            <DataUnionBadge top left />
+                        )}
+                    </ImageContainer>
+                </Tile2>
             }
             rightContent={
                 <ProductDetails

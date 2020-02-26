@@ -13,7 +13,7 @@ import PaymentRate from '../PaymentRate'
 import { formatPath } from '$shared/utils/url'
 import { isPaidProduct, isDataUnionProduct } from '$mp/utils/product'
 import type { ProductList } from '../../flowtype/product-types'
-import UnstyledTile from '$shared/components/Tile2'
+import UnstyledTile2 from '$shared/components/Tile2'
 import ProductPageSpinner from '../ProductPageSpinner'
 import LoadMore from '../LoadMore'
 import Error from '../Error'
@@ -38,7 +38,7 @@ export type OwnProps = {
     header?: string,
 }
 
-const Tile = styled(UnstyledTile)`
+const Tile2 = styled(UnstyledTile2)`
     margin-top: 16px;
 `
 
@@ -64,7 +64,7 @@ const listProducts = (products, cols, isFetching: ?boolean) => (
 
             return (
                 <Col {...cols} key={product.key || product.id} >
-                    <Tile>
+                    <Tile2>
                         <Link to={formatPath(links.marketplace.products, product.id || '')}>
                             <ImageContainer src={product.imageUrl}>
                                 {isDataUnion && (
@@ -83,7 +83,7 @@ const listProducts = (products, cols, isFetching: ?boolean) => (
                                 label={price}
                             />
                         </Link>
-                    </Tile>
+                    </Tile2>
                 </Col>
             )
         })}
