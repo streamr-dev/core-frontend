@@ -8,7 +8,7 @@ import Link from '$shared/components/Link'
 import { push } from 'connected-react-router'
 import { Translate, I18n } from 'react-redux-i18n'
 import { Helmet } from 'react-helmet'
-import cx from 'classnames'
+import moment from 'moment'
 
 import type { Canvas } from '$userpages/flowtype/canvas-types'
 
@@ -17,15 +17,12 @@ import links from '$app/src/links'
 import { getCanvases, deleteCanvas } from '$userpages/modules/canvas/actions'
 import { selectCanvases, selectFetching } from '$userpages/modules/canvas/selectors'
 import { getFilters } from '$userpages/utils/constants'
-import Tile from '$shared/components/Tile'
-import TileStyles from '$shared/components/Tile/tile.pcss'
 import DropdownActions from '$shared/components/DropdownActions'
 import { formatExternalUrl } from '$shared/utils/url'
 import Search from '../../Header/Search'
 import Dropdown from '$shared/components/Dropdown'
 import ShareDialog from '$userpages/components/ShareDialog'
 import confirmDialog from '$shared/utils/confirm'
-import { ago } from '$shared/utils/time'
 import { selectUserData } from '$shared/modules/user/selectors'
 import NoCanvasesView from './NoCanvases'
 import { RunStates } from '$editor/canvas/state'
@@ -37,11 +34,16 @@ import CanvasPreview from '$editor/canvas/components/Preview'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import ListContainer from '$shared/components/Container/List'
-import TileGrid from '$shared/components/TileGrid'
 import Button from '$shared/components/Button'
 import useFilterSort from '$userpages/hooks/useFilterSort'
 import useCopy from '$shared/hooks/useCopy'
 import styles from './canvasList.pcss'
+import Tile2 from '$shared/components/Tile2'
+import Grid from '$shared/components/Tile2/Grid'
+import Menu from '$shared/components/Tile2/Menu'
+import Label from '$shared/components/Tile2/Label'
+import Summary from '$shared/components/Tile2/Summary'
+import ImageContainer, { Image } from '$shared/components/Tile2/ImageContainer'
 
 const CreateCanvasButton = () => (
     <Button
@@ -210,35 +212,34 @@ const CanvasList = () => {
                         onResetFilter={resetFilter}
                     />
                 )}
-                <TileGrid>
-                    {canvases.map((canvas) => (
-                        <Link
-                            key={canvas.id}
-                            to={`${links.editor.canvasEditor}/${canvas.id}`}
-                        >
-                            <Tile
-                                dropdownActions={getActions(canvas)}
-                                onMenuToggle={onToggleCanvasDropdown(canvas.id)}
-                                image={<CanvasPreview className={cx(styles.PreviewImage, TileStyles.image)} canvas={canvas} />}
-                            >
-                                <Tile.Title>{canvas.name}</Tile.Title>
-                                <Tile.Description>
-                                    {canvas.updated === canvas.created ? 'Created ' : 'Updated '}
-                                    {ago(new Date(canvas.updated))}
-                                </Tile.Description>
-                                <Tile.Status
-                                    className={
-                                        cx({
-                                            [styles.running]: canvas.state === RunStates.Running,
-                                            [styles.stopped]: canvas.state === RunStates.Stopped,
-                                        })}
-                                >
-                                    {capital(canvas.state)}
-                                </Tile.Status>
-                            </Tile>
-                        </Link>
-                    ))}
-                </TileGrid>
+                {canvases.length > 0 && (
+                    <Grid>
+                        {canvases.map(({ created, updated, ...canvas }) => (
+                            <Tile2 key={canvas.id}>
+                                <Menu onToggle={onToggleCanvasDropdown(canvas.id)}>
+                                    {getActions(canvas)}
+                                </Menu>
+                                <Link to={`${links.editor.canvasEditor}/${canvas.id}`}>
+                                    <ImageContainer>
+                                        <Image
+                                            as={CanvasPreview}
+                                            canvas={canvas}
+                                        />
+                                    </ImageContainer>
+                                    <Summary
+                                        name={canvas.name}
+                                        updatedAt={`${updated === created ? 'Created' : 'Updated'} ${moment(new Date(updated)).fromNow()}`}
+                                        label={(
+                                            <Label positive={canvas.state === RunStates.Running}>
+                                                {capital(canvas.state)}
+                                            </Label>
+                                        )}
+                                    />
+                                </Link>
+                            </Tile2>
+                        ))}
+                    </Grid>
+                )}
             </ListContainer>
             <DocsShortcuts />
         </Layout>
