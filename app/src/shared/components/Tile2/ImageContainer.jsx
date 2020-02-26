@@ -59,21 +59,23 @@ const ImageContainer = ({
     ...props
 }: Props) => (
     <Root {...props}>
-        {skeletonize ? (
-            <Image as={Skeleton} block />
-        ) : (
-            <Image
-                alt={alt}
-                src={src}
-                loader={(
-                    <Image as={Skeleton} block />
-                )}
-                unloader={(
-                    <Image as={Placeholder}>
-                        <Logo color="black" opacity="0.15" />
-                    </Image>
-                )}
-            />
+        {src == null && (
+            skeletonize ? (
+                <Image as={Skeleton} block />
+            ) : (
+                <Image
+                    alt={alt}
+                    src={src}
+                    loader={(
+                        <Image as={Skeleton} block />
+                    )}
+                    unloader={(
+                        <Image as={Placeholder}>
+                            <Logo color="black" opacity="0.15" />
+                        </Image>
+                    )}
+                />
+            )
         )}
         {children}
         <svg
