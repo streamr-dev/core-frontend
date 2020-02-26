@@ -1,21 +1,18 @@
 // @flow
 
 import React from 'react'
-import cx from 'classnames'
-
-import styles from './logo.pcss'
+import styled from 'styled-components'
 
 type Props = {
-    className?: string,
-    color: string,
-    opacity: string,
+    color?: string,
+    opacity?: string,
 }
 
-const Logo = ({ className, color, opacity }: Props) => (
+const UnstyledLogo = ({ color = '#ff5c00', opacity = '1', ...props }: Props) => (
     <svg
+        {...props}
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 40 40"
-        className={cx(styles.logo, className)}
     >
         <path
             fill={color}
@@ -67,9 +64,9 @@ const Logo = ({ className, color, opacity }: Props) => (
     </svg>
 )
 
-Logo.defaultProps = {
-    color: '#ff5c00',
-    opacity: '1',
-}
+const Logo = styled(UnstyledLogo)`
+    height: 2.5em;
+    width: 2.5em;
+`
 
 export default Logo
