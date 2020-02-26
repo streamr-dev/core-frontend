@@ -53,7 +53,7 @@ const Placeholder = styled.div`
 const ImageContainer = ({
     alt = '',
     src,
-    ratio = '16:9',
+    ratio = '3:2',
     children,
     skeletonize,
     ...props
