@@ -23,6 +23,13 @@ import TileGrid from '$shared/components/TileGrid'
 import { isDataUnionProduct } from '$mp/utils/product'
 import useFilterSort from '$userpages/hooks/useFilterSort'
 import useMemberStats from '$mp/modules/dataUnion/hooks/useMemberStats'
+import Tile2 from '$shared/components/Tile2'
+import Grid from '$shared/components/Tile2/Grid'
+import Menu from '$shared/components/Tile2/Menu'
+import Label from '$shared/components/Tile2/Label'
+import Summary from '$shared/components/Tile2/Summary'
+import ImageContainer, { Image } from '$shared/components/Tile2/ImageContainer'
+import { DataUnionBadge, IconBadge, DeployingBadge } from '$shared/components/Tile2/Badge'
 
 import type { ProductSubscription } from '$mp/flowtype/product-types'
 
@@ -100,49 +107,49 @@ const PurchasesPage = () => {
                         onResetFilter={resetFilter}
                     />
                 )}
-                <TileGrid>
-                    {purchases.map((product) => {
-                        const isActive = subscriptions && isSubscriptionActive(subscriptions.find((s) => s.product.id === product.id))
-                        const isDataUnion = isDataUnionProduct(product)
-                        const beneficiaryAddress = (product.beneficiaryAddress || '').toLowerCase()
-                        const memberCount = members[beneficiaryAddress]
+                {purchases.length > 0 && (
+                    <Grid>
+                        {purchases.map((product) => {
+                            const isActive = subscriptions && isSubscriptionActive(subscriptions.find((s) => s.product.id === product.id))
+                            const isDataUnion = isDataUnionProduct(product)
+                            const beneficiaryAddress = (product.beneficiaryAddress || '').toLowerCase()
+                            const memberCount = isDataUnion ? members[beneficiaryAddress] : undefined
 
-                        return (
-                            <Link
-                                key={product.id}
-                                to={product.id && `${links.marketplace.products}/${product.id}`}
-                            >
-                                <Tile
-                                    imageUrl={product.imageUrl || ''}
-                                    link={product.id && `${links.marketplace.products}/${product.id}`}
-                                    labels={{
-                                        dataUnion: isDataUnion,
-                                    }}
-                                    badges={(isDataUnion && memberCount !== undefined) ? {
-                                        members: memberCount,
-                                    } : undefined}
-                                    deploying={!fetchingDataUnionStats && (isDataUnion && beneficiaryAddress && memberCount === undefined)}
-                                >
-                                    <Tile.Title>{product.name}</Tile.Title>
-                                    <Tile.Description>{product.owner}</Tile.Description>
-                                    <Tile.Status
-                                        className={
-                                            cx({
-                                                [styles.active]: isActive,
-                                                [styles.expired]: !isActive,
-                                            })}
-                                    >
-                                        {
-                                            isActive ?
-                                                <Translate value="userpages.purchases.active" /> :
-                                                <Translate value="userpages.purchases.expired" />
-                                        }
-                                    </Tile.Status>
-                                </Tile>
-                            </Link>
-                        )
-                    })}
-                </TileGrid>
+                            return (
+                                <Tile2 key={product.id}>
+                                    <Link to={product.id && `${links.marketplace.products}/${product.id}`}>
+                                        <ImageContainer src={product.imageUrl}>
+                                            {isDataUnion && (
+                                                <DataUnionBadge top left />
+                                            )}
+                                            {typeof memberCount !== 'undefined' && (
+                                                <IconBadge icon="dataUnion" bottom right>
+                                                    {memberCount}
+                                                </IconBadge>
+                                            )}
+                                            {!fetchingDataUnionStats && isDataUnion && typeof memberCount === 'undefined' && (
+                                                <DeployingBadge bottom right />
+                                            )}
+                                        </ImageContainer>
+                                        <Summary
+                                            name={product.name}
+                                            updatedAt={product.owner}
+                                            label={(
+                                                <Label positive={isActive}>
+                                                    {isActive ? (
+                                                        <Translate value="userpages.purchases.active" />
+                                                    ) : (
+                                                        <Translate value="userpages.purchases.expired" />
+                                                    )}
+                                                </Label>
+                                            )}
+                                        />
+                                    </Link>
+                                </Tile2>
+                            )
+                        })}
+                    </Grid>
+                )}
             </ListContainer>
             <DocsShortcuts />
         </Layout>
