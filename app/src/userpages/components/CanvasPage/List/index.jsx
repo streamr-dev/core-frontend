@@ -119,7 +119,7 @@ const CanvasList = () => {
         })
     }, [copy])
 
-    const onToggleStreamDropdown = useCallback((id: string) => async (open: boolean) => {
+    const onToggleCanvasDropdown = useCallback((id: string) => async (open: boolean) => {
         if (open && !fetchingPermissions && !permissions[id]) {
             try {
                 await dispatch(getResourcePermissions('CANVAS', id, false))
@@ -218,7 +218,7 @@ const CanvasList = () => {
                         >
                             <Tile
                                 dropdownActions={getActions(canvas)}
-                                onMenuToggle={onToggleStreamDropdown(canvas.id)}
+                                onMenuToggle={onToggleCanvasDropdown(canvas.id)}
                                 image={<CanvasPreview className={cx(styles.PreviewImage, TileStyles.image)} canvas={canvas} />}
                             >
                                 <Tile.Title>{canvas.name}</Tile.Title>
