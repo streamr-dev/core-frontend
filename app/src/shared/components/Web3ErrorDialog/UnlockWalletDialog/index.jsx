@@ -36,7 +36,7 @@ const UnlockWalletDialog = ({
             waiting={waiting}
             className={styles.dialog}
         >
-            <PngIcon name={icon} />
+            <PngIcon name={icon} className={styles.icon} />
             {children}
             {!!requiredAddress && (
                 <div className={styles.addressWrapper}>
