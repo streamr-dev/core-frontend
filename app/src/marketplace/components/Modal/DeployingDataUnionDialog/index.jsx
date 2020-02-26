@@ -55,7 +55,7 @@ const DeployingDataUnionDialog = ({
                             <React.Fragment>
                                 <span className={styles.estimatedTime}>{formatSeconds(estimate)}</span>
                                 &nbsp;
-                                <Translate value="modal.deployCommunity.deploying.estimatedDeploymentTime" />
+                                <Translate value="modal.deployDataUnion.deploying.estimatedDeploymentTime" />
                             </React.Fragment>
                         )}
                     </div>

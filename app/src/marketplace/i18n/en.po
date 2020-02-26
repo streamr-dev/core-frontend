@@ -833,7 +833,7 @@ msgstr ""
 "<br />"
 "this dialogue and get notified when your product is ready."
 
-msgid "modal##deployCommunity##deploying##estimatedDeploymentTime"
+msgid "modal##deployDataUnion##deploying##estimatedDeploymentTime"
 msgstr "Estimated deployment time"
 
 msgid "noProductsView##keywordHint"

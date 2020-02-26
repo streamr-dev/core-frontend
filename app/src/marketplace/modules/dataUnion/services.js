@@ -40,7 +40,7 @@ export const deletePermission = (id: StreamId, permissionId: $PropertyType<Permi
 export const createJoinPartStream = async (productId: ?ProductId = undefined): Promise<Stream> => {
     const newStream: NewStream = {
         name: productId ? `JoinPart stream for data union ${productId}` : 'JoinPart stream',
-        description: 'Automatically created JoinPart stream for community product contract',
+        description: 'Automatically created JoinPart stream for data union',
     }
 
     let stream
