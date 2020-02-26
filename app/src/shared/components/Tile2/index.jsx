@@ -25,12 +25,13 @@ const Tile = styled.div`
 
     ${Image} {
         filter: brightness(100%);
-        transition: 40ms ease-out filter;
+        transition: 240ms ease-out filter;
     }
 
     ${Menu}.show + a ${Image},
     :hover ${Image} {
         filter: brightness(70%);
+        transition-duration: 40ms;
     }
 `
 
