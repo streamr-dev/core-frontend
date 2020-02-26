@@ -3,12 +3,14 @@
 import React, { type Node } from 'react'
 import styled from 'styled-components'
 import ReactImage from 'react-image'
+import Skeleton from '$shared/components/Skeleton'
 import UnstyledLogo from '$shared/components/Logo'
 
 type Props = {
     alt?: ?string,
     children?: Node,
     ratio?: string,
+    skeletonize?: boolean,
     src?: ?string,
 }
 
@@ -53,18 +55,26 @@ const ImageContainer = ({
     src,
     ratio = '16:9',
     children,
+    skeletonize,
     ...props
 }: Props) => (
     <Root {...props}>
-        <Image
-            alt={alt}
-            src={src}
-            unloader={(
-                <Image as={Placeholder}>
-                    <Logo color="black" opacity="0.15" />
-                </Image>
-            )}
-        />
+        {skeletonize ? (
+            <Image as={Skeleton} block />
+        ) : (
+            <Image
+                alt={alt}
+                src={src}
+                loader={(
+                    <Image as={Skeleton} block />
+                )}
+                unloader={(
+                    <Image as={Placeholder}>
+                        <Logo color="black" opacity="0.15" />
+                    </Image>
+                )}
+            />
+        )}
         {children}
         <svg
             viewBox={`0 0 ${ratio.split(/[:x]/).join(' ')}`}

@@ -2,6 +2,7 @@ import React from 'react'
 import { storiesOf } from '@storybook/react'
 import styles from '@sambego/storybook-styles'
 import { action } from '@storybook/addon-actions'
+import { withKnobs, boolean } from '@storybook/addon-knobs'
 import sample from './sample.stories.png'
 import { DeployingBadge, DataUnionBadge, SharedBadge, IconBadge } from './Badge'
 import ImageContainer from './ImageContainer'
@@ -15,6 +16,7 @@ const stories = storiesOf('Shared/Tile (new)', module)
         color: '#323232',
         padding: '16px',
     }))
+    .addDecorator(withKnobs)
 
 stories.add('placeholder only', () => (
     <Tile>
@@ -58,8 +60,9 @@ stories.add('elastic grid', () => (
                     action('Navigate!')()
                 }}
             >
-                <ImageContainer src={sample} />
+                <ImageContainer skeletonize={boolean('Skeletonize')} src={sample} />
                 <Summary
+                    skeletonize={boolean('Skeletonize')}
                     name="Helsinki Tram Network GPS"
                     updatedAt={new Date('2020-01-01').getDate()}
                     label={(
@@ -83,8 +86,9 @@ stories.add('elastic grid', () => (
                     action('Navigate!')()
                 }}
             >
-                <ImageContainer src={sample} />
+                <ImageContainer skeletonize={boolean('Skeletonize')} src={sample} />
                 <Summary
+                    skeletonize={boolean('Skeletonize')}
                     name="Helsinki Tram Network GPS"
                     updatedAt={new Date('2020-01-01').getDate()}
                     label={(
@@ -108,8 +112,9 @@ stories.add('elastic grid', () => (
                     action('Navigate!')()
                 }}
             >
-                <ImageContainer src={sample} />
+                <ImageContainer skeletonize={boolean('Skeletonize')} src={sample} />
                 <Summary
+                    skeletonize={boolean('Skeletonize')}
                     name="Helsinki Tram Network GPS"
                     updatedAt={new Date('2020-01-01').getDate()}
                     label={(
@@ -133,8 +138,9 @@ stories.add('elastic grid', () => (
                     action('Navigate!')()
                 }}
             >
-                <ImageContainer src={sample} />
+                <ImageContainer skeletonize={boolean('Skeletonize')} src={sample} />
                 <Summary
+                    skeletonize={boolean('Skeletonize')}
                     name="Helsinki Tram Network GPS"
                     updatedAt={new Date('2020-01-01').getDate()}
                     label={(
@@ -158,8 +164,9 @@ stories.add('elastic grid', () => (
                     action('Navigate!')()
                 }}
             >
-                <ImageContainer src={sample} />
+                <ImageContainer skeletonize={boolean('Skeletonize')} src={sample} />
                 <Summary
+                    skeletonize={boolean('Skeletonize')}
                     name="Helsinki Tram Network GPS"
                     updatedAt={new Date('2020-01-01').getDate()}
                     label={(

@@ -2,9 +2,11 @@
 
 import React, { type Node } from 'react'
 import styled from 'styled-components'
+import Skeleton from '$shared/components/Skeleton'
 import { MEDIUM } from '$shared/utils/styled'
 
 const Name = styled.div`
+    margin-bottom: 2px;
 `
 
 const Secondary = styled.div`
@@ -29,17 +31,36 @@ const Root = styled.div`
 type Props = {
     label: Node,
     name: string,
+    skeletonize?: boolean,
     updatedAt: string | false,
 }
 
-const Summary = ({ name, updatedAt, label, ...props }: Props) => (
+const Summary = ({
+    name,
+    updatedAt,
+    label,
+    skeletonize,
+    ...props
+}: Props) => (
     <Root {...props}>
-        <Name>{name}</Name>
+        <Name>
+            <Skeleton disabled={!skeletonize}>
+                {name}
+            </Skeleton>
+        </Name>
         {!!updatedAt && (
-            <UpdatedAt>{updatedAt}</UpdatedAt>
+            <UpdatedAt>
+                <Skeleton disabled={!skeletonize} width="45%">
+                    {updatedAt}
+                </Skeleton>
+            </UpdatedAt>
         )}
         {!!label && (
-            <Label>{label}</Label>
+            <Label>
+                <Skeleton disabled={!skeletonize} width="30%">
+                    {label}
+                </Skeleton>
+            </Label>
         )}
     </Root>
 )
