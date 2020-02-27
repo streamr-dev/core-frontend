@@ -78,7 +78,7 @@ type CanvasTileProps = {
     actions: any,
 }
 
-const updatedAt = ({ updated, created }): string => `
+export const updatedAt = ({ updated, created }): string => `
     ${updated === created ? 'Created' : 'Updated'} ${moment(new Date(updated)).fromNow()}
 `
 
