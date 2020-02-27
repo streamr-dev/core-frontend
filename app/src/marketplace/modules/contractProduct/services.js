@@ -23,7 +23,7 @@ export const getProductFromContract = async (id: ProductId, usePublicNode: boole
         })
 )
 
-export const getMarketplaceEvents = async (id: ProductId, eventName: string, fromBlock: number = 0, usePublicNode: boolean = false) => {
+export const getMarketplaceEvents = async (id: ProductId, eventName: string, fromBlock: number = 0, usePublicNode: boolean = true) => {
     const contract = getContract(getConfig().marketplace, usePublicNode)
     const events = await contract.getPastEvents(eventName, {
         filter: {
@@ -35,7 +35,7 @@ export const getMarketplaceEvents = async (id: ProductId, eventName: string, fro
     return events
 }
 
-export const getSubscriberCount = async (id: ProductId, usePublicNode: boolean = false) => {
+export const getSubscriberCount = async (id: ProductId, usePublicNode: boolean = true) => {
     const events = await getMarketplaceEvents(id, 'Subscribed', 0, usePublicNode)
     const validSubs = events.filter((e) => (
         e.returnValues && e.returnValues.endTimestamp && ((e.returnValues.endTimestamp.toNumber() * 1000) > Date.now())
@@ -43,7 +43,7 @@ export const getSubscriberCount = async (id: ProductId, usePublicNode: boolean =
     return validSubs.length
 }
 
-export const getMostRecentPurchaseTimestamp = async (id: ProductId, usePublicNode: boolean = false) => {
+export const getMostRecentPurchaseTimestamp = async (id: ProductId, usePublicNode: boolean = true) => {
     const web3 = usePublicNode ? getPublicWeb3() : getWeb3()
     const events = await getMarketplaceEvents(id, 'Subscribed', 0, usePublicNode)
 
@@ -105,7 +105,7 @@ export const calculateBlockNumber = async (web3: any, timestampMs: number) => {
     return seekBlockWithTimestamp(web3, predictedBlock, timestampMs, blockTime)
 }
 
-export const getSubscribedEvents = async (id: ProductId, fromTimestamp: number, usePublicNode: boolean = false) => {
+export const getSubscribedEvents = async (id: ProductId, fromTimestamp: number, usePublicNode: boolean = true) => {
     const web3 = usePublicNode ? getPublicWeb3() : getWeb3()
     const fromBlock = await calculateBlockNumber(web3, fromTimestamp)
     const events = await getMarketplaceEvents(id, 'Subscribed', fromBlock, usePublicNode)
