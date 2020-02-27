@@ -4,13 +4,13 @@ import React, { type Node, useState, useCallback, useMemo } from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
 import cx from 'classnames'
 import { Label, FormGroup } from 'reactstrap'
+import { ThemeProvider } from 'styled-components'
 
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import Buttons from '$shared/components/Buttons'
 import Checkbox from '$shared/components/Checkbox'
-import Tile from '$shared/components/Tile'
-import FallbackImage from '$shared/components/FallbackImage'
+import { ProductTile, ImageTile } from '$shared/components/Tile2'
 import { type Product } from '$mp/flowtype/product-types'
 
 import dataUnionStats from '$mp/assets/deploy-modal-stats.png'
@@ -40,26 +40,18 @@ const TextContainer = ({ children }: ChildrenProps) => (
     </div>
 )
 
-const ProductCard = ({ name, image, className }: ProductCardProps) => (
+const ProductCard = ({ name, image: imageUrl, className }: ProductCardProps) => (
     <div className={cx(styles.productCard, className)}>
-        <Tile
-            className={styles.productTile}
-            imageUrl={image}
-            labels={{
-                dataUnion: true,
+        <ProductTile
+            product={{
+                created: new Date(),
+                imageUrl,
+                name,
+                updated: new Date(),
             }}
-            badges={{
-                members: 15,
-            }}
-        >
-            <Tile.Title>{name}</Tile.Title>
-            <Tile.Description>
-                <Translate value="modal.deployDataUnion.guide.preview.updated" />
-            </Tile.Description>
-            <Tile.Status className={styles.status}>
-                <Translate value="modal.deployDataUnion.guide.preview.status" />
-            </Tile.Status>
-        </Tile>
+            showDataUnionBadge
+            numMembers={15}
+        />
     </div>
 )
 
@@ -97,9 +89,17 @@ const GuidedDeployDataUnionDialog = ({ product, onClose, onContinue: onContinueP
         <div className={styles.tabContent}>
             {step === 0 && (
                 <React.Fragment>
-                    <div className={styles.previewImageWrapper}>
-                        <FallbackImage src={image} alt={name} className={styles.previewImage} />
-                    </div>
+                    <ThemeProvider
+                        theme={{
+                            borderRadius: 0,
+                        }}
+                    >
+                        <ImageTile
+                            alt={name}
+                            height="240px"
+                            src={image}
+                        />
+                    </ThemeProvider>
                     <TextContainer>
                         <Translate value="modal.deployDataUnion.guide.step1" dangerousHTML />
                     </TextContainer>

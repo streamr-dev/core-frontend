@@ -55,14 +55,22 @@ const Tile = styled.div`
 
 type ImageTileProps = {
     alt?: ?string,
+    height?: any,
     showDataUnionBadge?: boolean,
     src?: ?string,
 }
 
-const ImageTile = ({ alt, showDataUnionBadge, src, ...props }: ImageTileProps) => (
+const ImageTile = ({
+    alt,
+    height,
+    showDataUnionBadge,
+    src,
+    ...props
+}: ImageTileProps) => (
     <Tile {...props} suppressHover>
         <ImageContainer
             alt={alt || ''}
+            height={height}
             src={src || ''}
         >
             {!!showDataUnionBadge && (

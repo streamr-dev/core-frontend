@@ -17,6 +17,7 @@ type Props = {
 
 const Root = styled.div`
     border-radius: 2px;
+    border-radius: ${({ theme }) => theme.borderRadius};
     overflow: hidden;
     position: relative;
 
