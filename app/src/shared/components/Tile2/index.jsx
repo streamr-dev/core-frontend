@@ -177,7 +177,7 @@ const PurchaseTile = ({
 )
 
 type ProductTileProps = {
-    actions: any,
+    actions?: any,
     deployed?: boolean,
     numMembers?: number,
     product: any,
@@ -201,9 +201,11 @@ const ProductTile = ({
     ...props
 }: ProductTileProps) => (
     <Tile {...props}>
-        <Menu>
-            {actions}
-        </Menu>
+        {!!actions && (
+            <Menu>
+                {actions}
+            </Menu>
+        )}
         <Link to={product.id && getProductLink(product.id)}>
             <ImageContainer src={product.imageUrl}>
                 {!!showDataUnionBadge && (
