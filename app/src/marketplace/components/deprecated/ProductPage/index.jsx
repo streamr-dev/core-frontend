@@ -14,7 +14,6 @@ import type { StreamList } from '$shared/flowtype/stream-types'
 import type { ButtonActions } from '$shared/components/Buttons'
 import Products from '$mp/components/Products'
 import FallbackImage from '$shared/components/FallbackImage'
-import Tile from '$shared/components/Tile'
 import { isDataUnionProduct } from '$mp/utils/product'
 import { ImageTile } from '$shared/components/Tile2'
 
