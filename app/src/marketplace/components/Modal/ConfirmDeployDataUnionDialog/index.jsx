@@ -3,11 +3,12 @@
 import React, { useState, useCallback } from 'react'
 import { I18n } from 'react-redux-i18n'
 import cx from 'classnames'
+import { ThemeProvider } from 'styled-components'
 
+import { ImageTile } from '$shared/components/Tile2'
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import Buttons from '$shared/components/Buttons'
-import FallbackImage from '$shared/components/FallbackImage'
 import { type Product } from '$mp/flowtype/product-types'
 
 import styles from './confirmDeployDataUnionDialog.pcss'
@@ -44,7 +45,6 @@ const ConfirmDeployDataUnionDialog = ({ product, onClose, onContinue: onContinue
                 })}
                 onClose={onClose}
                 contentClassName={styles.content}
-                containerClassname={styles.dialogContainer}
                 renderActions={() => (
                     <div className={styles.footer}>
                         <div className={styles.footerText}>
@@ -74,9 +74,18 @@ const ConfirmDeployDataUnionDialog = ({ product, onClose, onContinue: onContinue
                     </div>
                 )}
             >
-                <div className={styles.previewImageWrapper}>
-                    <FallbackImage src={image} alt={product.name} className={styles.previewImage} />
-                </div>
+                <ThemeProvider
+                    theme={{
+                        borderRadius: 0,
+                    }}
+                >
+                    <ImageTile
+                        className={styles.previewImage}
+                        alt={product.name}
+                        height="240px"
+                        src={image}
+                    />
+                </ThemeProvider>
             </Dialog>
         </ModalPortal>
     )
