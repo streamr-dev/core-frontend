@@ -9,6 +9,7 @@ import UnstyledLogo from '$shared/components/Logo'
 type Props = {
     alt?: ?string,
     children?: Node,
+    height?: any,
     ratio?: string,
     skeletonize?: boolean,
     src?: ?string,
@@ -52,6 +53,7 @@ const Placeholder = styled.div`
 
 const ImageContainer = ({
     alt = '',
+    height,
     src,
     ratio = '3:2',
     children,
@@ -78,10 +80,18 @@ const ImageContainer = ({
             )
         )}
         {children}
-        <svg
-            viewBox={`0 0 ${ratio.split(/[:x]/).join(' ')}`}
-            xmlns="http://www.w3.org/2000/svg"
-        />
+        {height == null ? (
+            <svg
+                viewBox={`0 0 ${ratio.split(/[:x]/).join(' ')}`}
+                xmlns="http://www.w3.org/2000/svg"
+            />
+        ) : (
+            <svg
+                height={height}
+                width="100%"
+                xmlns="http://www.w3.org/2000/svg"
+            />
+        )}
     </Root>
 )
 
