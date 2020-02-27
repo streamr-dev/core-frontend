@@ -4,22 +4,12 @@ import React from 'react'
 import classnames from 'classnames'
 import styled from 'styled-components'
 import { Row, Container, Col } from 'reactstrap'
-import { Link } from 'react-router-dom'
-import { Translate } from 'react-redux-i18n'
-
-import links from '$mp/../links'
-import { timeUnits } from '$shared/utils/constants'
-import PaymentRate from '../PaymentRate'
-import { formatPath } from '$shared/utils/url'
-import { isPaidProduct, isDataUnionProduct } from '$mp/utils/product'
+import { isDataUnionProduct } from '$mp/utils/product'
 import type { ProductList } from '../../flowtype/product-types'
-import UnstyledTile2 from '$shared/components/Tile2'
+import { MarketplaceProductTile as UnstyledMarketplaceProductTile } from '$shared/components/Tile2'
 import ProductPageSpinner from '../ProductPageSpinner'
 import LoadMore from '../LoadMore'
 import Error from '../Error'
-import ImageContainer from '$shared/components/Tile2/ImageContainer'
-import Summary from '$shared/components/Tile2/Summary'
-import { DataUnionBadge, IconBadge } from '$shared/components/Tile2/Badge'
 
 import { getErrorView, getCols } from './settings'
 import styles from './products.pcss'
@@ -38,7 +28,7 @@ export type OwnProps = {
     header?: string,
 }
 
-const Tile2 = styled(UnstyledTile2)`
+const MarketplaceProductTile = styled(UnstyledMarketplaceProductTile)`
     margin-top: 16px;
 `
 
@@ -48,45 +38,14 @@ const listProducts = (products, cols, isFetching: ?boolean) => (
             [styles.fetching]: isFetching,
         })}
     >
-        {products.map((product) => {
-            const isDataUnion = isDataUnionProduct(product.type)
-
-            const price = isPaidProduct(product) ? (
-                <PaymentRate
-                    amount={product.pricePerSecond}
-                    currency={product.priceCurrency}
-                    timeUnit={timeUnits.hour}
-                    maxDigits={4}
+        {products.map((product) => (
+            <Col {...cols} key={product.key || product.id} >
+                <MarketplaceProductTile
+                    product={product}
+                    showDataUnionBadge={isDataUnionProduct(product.type)}
                 />
-            ) : (
-                <Translate value="productTile.free" />
-            )
-
-            return (
-                <Col {...cols} key={product.key || product.id} >
-                    <Tile2>
-                        <Link to={formatPath(links.marketplace.products, product.id || '')}>
-                            <ImageContainer src={product.imageUrl}>
-                                {isDataUnion && (
-                                    <DataUnionBadge top left />
-                                )}
-                                {/* $FlowFixMe `members` is missing in `Product`. */}
-                                {isDataUnion && typeof product.members !== 'undefined' && (
-                                    <IconBadge icon="dataUnion" bottom right>
-                                        {product.members}
-                                    </IconBadge>
-                                )}
-                            </ImageContainer>
-                            <Summary
-                                name={product.name}
-                                updatedAt={product.owner}
-                                label={price}
-                            />
-                        </Link>
-                    </Tile2>
-                </Col>
-            )
-        })}
+            </Col>
+        ))}
     </Row>
 )
 

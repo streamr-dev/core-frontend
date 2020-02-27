@@ -2,13 +2,10 @@
 
 import React, { Fragment, useEffect, useMemo, useCallback, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { capital } from 'case'
 import { Link as RouterLink } from 'react-router-dom'
-import Link from '$shared/components/Link'
 import { push } from 'connected-react-router'
 import { Translate, I18n } from 'react-redux-i18n'
 import { Helmet } from 'react-helmet'
-import moment from 'moment'
 
 import type { Canvas } from '$userpages/flowtype/canvas-types'
 
@@ -25,12 +22,10 @@ import ShareDialog from '$userpages/components/ShareDialog'
 import confirmDialog from '$shared/utils/confirm'
 import { selectUserData } from '$shared/modules/user/selectors'
 import NoCanvasesView from './NoCanvases'
-import { RunStates } from '$editor/canvas/state'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
 import { getResourcePermissions } from '$userpages/modules/permission/actions'
 import { selectFetchingPermissions, selectCanvasPermissions } from '$userpages/modules/permission/selectors'
 import type { Permission } from '$userpages/flowtype/permission-types'
-import CanvasPreview from '$editor/canvas/components/Preview'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import ListContainer from '$shared/components/Container/List'
@@ -38,12 +33,8 @@ import Button from '$shared/components/Button'
 import useFilterSort from '$userpages/hooks/useFilterSort'
 import useCopy from '$shared/hooks/useCopy'
 import styles from './canvasList.pcss'
-import Tile2 from '$shared/components/Tile2'
+import { CanvasTile } from '$shared/components/Tile2'
 import Grid from '$shared/components/Tile2/Grid'
-import Menu from '$shared/components/Tile2/Menu'
-import Label from '$shared/components/Tile2/Label'
-import Summary from '$shared/components/Tile2/Summary'
-import ImageContainer, { Image } from '$shared/components/Tile2/ImageContainer'
 
 const CreateCanvasButton = () => (
     <Button
@@ -214,29 +205,13 @@ const CanvasList = () => {
                 )}
                 {canvases.length > 0 && (
                     <Grid>
-                        {canvases.map(({ created, updated, ...canvas }) => (
-                            <Tile2 key={canvas.id}>
-                                <Menu onToggle={onToggleCanvasDropdown(canvas.id)}>
-                                    {getActions(canvas)}
-                                </Menu>
-                                <Link to={`${links.editor.canvasEditor}/${canvas.id}`}>
-                                    <ImageContainer>
-                                        <Image
-                                            as={CanvasPreview}
-                                            canvas={canvas}
-                                        />
-                                    </ImageContainer>
-                                    <Summary
-                                        name={canvas.name}
-                                        updatedAt={`${updated === created ? 'Created' : 'Updated'} ${moment(new Date(updated)).fromNow()}`}
-                                        label={(
-                                            <Label positive={canvas.state === RunStates.Running}>
-                                                {capital(canvas.state)}
-                                            </Label>
-                                        )}
-                                    />
-                                </Link>
-                            </Tile2>
+                        {canvases.map((canvas) => (
+                            <CanvasTile
+                                actions={getActions(canvas)}
+                                canvas={canvas}
+                                key={canvas.id}
+                                onMenuToggle={onToggleCanvasDropdown(canvas.id)}
+                            />
                         ))}
                     </Grid>
                 )}

@@ -5,7 +5,6 @@ import { useSelector, useDispatch } from 'react-redux'
 import { Translate, I18n } from 'react-redux-i18n'
 import Helmet from 'react-helmet'
 import { Link } from 'react-router-dom'
-import moment from 'moment'
 
 import links from '$userpages/../links'
 import { getDashboards } from '$userpages/modules/dashboard/actions'
@@ -15,15 +14,12 @@ import { getFilters } from '$userpages/utils/constants'
 import Search from '../../Header/Search'
 import Dropdown from '$shared/components/Dropdown'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
-import DashboardPreview from '$editor/dashboard/components/Preview'
 import styles from './dashboardList.pcss'
 import ListContainer from '$shared/components/Container/List'
 import Button from '$shared/components/Button'
 import useFilterSort from '$userpages/hooks/useFilterSort'
-import Tile2 from '$shared/components/Tile2'
+import { DashboardTile } from '$shared/components/Tile2'
 import Grid from '$shared/components/Tile2/Grid'
-import Summary from '$shared/components/Tile2/Summary'
-import ImageContainer, { Image } from '$shared/components/Tile2/ImageContainer'
 
 import NoDashboardsView from './NoDashboards'
 
@@ -98,21 +94,8 @@ const DashboardList = () => {
                 )}
                 {dashboards && dashboards.length > 0 && (
                     <Grid>
-                        {dashboards.map(({ created, updated, ...dashboard }) => (
-                            <Tile2 key={dashboard.id}>
-                                <Link to={`${links.editor.dashboardEditor}/${dashboard.id}`}>
-                                    <ImageContainer>
-                                        <Image
-                                            as={DashboardPreview}
-                                            dashboard={dashboard}
-                                        />
-                                    </ImageContainer>
-                                    <Summary
-                                        name={dashboard.name}
-                                        updatedAt={`${updated === created ? 'Created' : 'Updated'} ${moment(new Date(updated)).fromNow()}`}
-                                    />
-                                </Link>
-                            </Tile2>
+                        {dashboards.map((dashboard) => (
+                            <DashboardTile key={dashboard.id} dashboard={dashboard} />
                         ))}
                     </Grid>
                 )}

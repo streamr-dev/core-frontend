@@ -16,9 +16,7 @@ import Products from '$mp/components/Products'
 import FallbackImage from '$shared/components/FallbackImage'
 import Tile from '$shared/components/Tile'
 import { isDataUnionProduct } from '$mp/utils/product'
-import { DataUnionBadge } from '$shared/components/Tile2/Badge'
-import ImageContainer from '$shared/components/Tile2/ImageContainer'
-import Tile2 from '$shared/components/Tile2'
+import { ImageTile } from '$shared/components/Tile2'
 
 import ProductDetails from '$mp/components/deprecated/ProductPage/ProductDetails'
 import StreamListing from '$mp/components/ProductPage/StreamListing'
@@ -71,16 +69,11 @@ class ProductPage extends Component<Props> {
                 <Hero
                     product={product}
                     leftContent={
-                        <Tile2 suppressHover>
-                            <ImageContainer
-                                alt={product.name}
-                                src={product.imageUrl || ''}
-                            >
-                                {isDataUnionProduct(product) && (
-                                    <DataUnionBadge top left />
-                                )}
-                            </ImageContainer>
-                        </Tile2>
+                        <ImageTile
+                            alt={product.name}
+                            src={product.imageUrl}
+                            dataUnionBadge={isDataUnionProduct(product)}
+                        />
                     }
                     rightContent={
                         <ProductDetails

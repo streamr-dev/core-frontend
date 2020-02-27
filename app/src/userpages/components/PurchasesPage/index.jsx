@@ -2,12 +2,10 @@
 
 import React, { useMemo, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Translate, I18n } from 'react-redux-i18n'
+import { I18n } from 'react-redux-i18n'
 import Helmet from 'react-helmet'
-import { Link } from 'react-router-dom'
 
 import Layout from '../Layout'
-import links from '../../../links'
 import { getFilters } from '../../utils/constants'
 import { getMyPurchases, updateFilter, applyFilter } from '$mp/modules/myPurchaseList/actions'
 import { selectMyPurchaseList, selectSubscriptions, selectFetchingMyPurchaseList } from '$mp/modules/myPurchaseList/selectors'
@@ -20,12 +18,8 @@ import ListContainer from '$shared/components/Container/List'
 import { isDataUnionProduct } from '$mp/utils/product'
 import useFilterSort from '$userpages/hooks/useFilterSort'
 import useMemberStats from '$mp/modules/dataUnion/hooks/useMemberStats'
-import Tile2 from '$shared/components/Tile2'
+import { PurchaseTile } from '$shared/components/Tile2'
 import Grid from '$shared/components/Tile2/Grid'
-import Label from '$shared/components/Tile2/Label'
-import Summary from '$shared/components/Tile2/Summary'
-import ImageContainer from '$shared/components/Tile2/ImageContainer'
-import { DataUnionBadge, IconBadge, DeployingBadge } from '$shared/components/Tile2/Badge'
 
 import type { ProductSubscription } from '$mp/flowtype/product-types'
 
@@ -112,36 +106,14 @@ const PurchasesPage = () => {
                             const memberCount = isDataUnion ? members[beneficiaryAddress] : undefined
 
                             return (
-                                <Tile2 key={product.id}>
-                                    <Link to={product.id && `${links.marketplace.products}/${product.id}`}>
-                                        <ImageContainer src={product.imageUrl}>
-                                            {isDataUnion && (
-                                                <DataUnionBadge top left />
-                                            )}
-                                            {typeof memberCount !== 'undefined' && (
-                                                <IconBadge icon="dataUnion" bottom right>
-                                                    {memberCount}
-                                                </IconBadge>
-                                            )}
-                                            {!fetchingDataUnionStats && isDataUnion && typeof memberCount === 'undefined' && (
-                                                <DeployingBadge bottom right />
-                                            )}
-                                        </ImageContainer>
-                                        <Summary
-                                            name={product.name}
-                                            updatedAt={product.owner}
-                                            label={(
-                                                <Label positive={isActive}>
-                                                    {isActive ? (
-                                                        <Translate value="userpages.purchases.active" />
-                                                    ) : (
-                                                        <Translate value="userpages.purchases.expired" />
-                                                    )}
-                                                </Label>
-                                            )}
-                                        />
-                                    </Link>
-                                </Tile2>
+                                <PurchaseTile
+                                    isSubActive={isActive}
+                                    key={product.id}
+                                    numMembers={memberCount}
+                                    product={product}
+                                    showDataUnionBadge={isDataUnion}
+                                    showDeployingBadge={!fetchingDataUnionStats}
+                                />
                             )
                         })}
                     </Grid>

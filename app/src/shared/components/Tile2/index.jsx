@@ -1,8 +1,24 @@
 // @flow
 
+import React from 'react'
 import styled, { css } from 'styled-components'
+import { capital } from 'case'
+import moment from 'moment'
+import { Translate } from 'react-redux-i18n'
+import { DataUnionBadge, IconBadge, DeployingBadge } from './Badge'
+import ImageContainer, { Image } from './ImageContainer'
 import Menu from './Menu'
-import { Image } from './ImageContainer'
+import Summary from './Summary'
+import Label from './Label'
+import { RunStates } from '$editor/canvas/state'
+import CanvasPreview from '$editor/canvas/components/Preview'
+import DashboardPreview from '$editor/dashboard/components/Preview'
+import Link from '$shared/components/Link'
+import { formatPath } from '$shared/utils/url'
+import { isPaidProduct } from '$mp/utils/product'
+import { timeUnits } from '$shared/utils/constants'
+import PaymentRate from '$mp/components/PaymentRate'
+import links from '$app/src/links'
 
 const Tile = styled.div`
     position: relative;
@@ -36,5 +52,232 @@ const Tile = styled.div`
         }
     `}
 `
+
+type ImageTileProps = {
+    alt?: ?string,
+    showDataUnionBadge?: boolean,
+    src?: ?string,
+}
+
+const ImageTile = ({ alt, showDataUnionBadge, src, ...props }: ImageTileProps) => (
+    <Tile {...props} suppressHover>
+        <ImageContainer
+            alt={alt || ''}
+            src={src || ''}
+        >
+            {!!showDataUnionBadge && (
+                <DataUnionBadge top left />
+            )}
+        </ImageContainer>
+    </Tile>
+)
+
+type CanvasTileProps = {
+    canvas: any,
+    onMenuToggle?: (boolean) => any,
+    actions: any,
+}
+
+const updatedAt = ({ updated, created }): string => `
+    ${updated === created ? 'Created' : 'Updated'} ${moment(new Date(updated)).fromNow()}
+`
+
+const CanvasTile = ({ canvas, onMenuToggle, actions, ...props }: CanvasTileProps) => (
+    <Tile {...props}>
+        <Menu onToggle={onMenuToggle}>
+            {actions}
+        </Menu>
+        <Link to={`${links.editor.canvasEditor}/${canvas.id}`}>
+            <ImageContainer>
+                <Image
+                    as={CanvasPreview}
+                    canvas={canvas}
+                />
+            </ImageContainer>
+            <Summary
+                name={canvas.name}
+                updatedAt={updatedAt(canvas)}
+                label={(
+                    <Label positive={canvas.state === RunStates.Running}>
+                        {capital(canvas.state)}
+                    </Label>
+                )}
+            />
+        </Link>
+    </Tile>
+)
+
+type DashboardTileProps = {
+    dashboard: any,
+}
+
+const DashboardTile = ({ dashboard, ...props }: DashboardTileProps) => (
+    <Tile {...props}>
+        <Link to={`${links.editor.dashboardEditor}/${dashboard.id}`}>
+            <ImageContainer>
+                <Image
+                    as={DashboardPreview}
+                    dashboard={dashboard}
+                />
+            </ImageContainer>
+            <Summary
+                name={dashboard.name}
+                updatedAt={updatedAt(dashboard)}
+            />
+        </Link>
+    </Tile>
+)
+
+type PurchaseTileProps = {
+    isSubActive?: boolean,
+    numMembers?: number,
+    product: any,
+    showDataUnionBadge?: boolean,
+    showDeployingBadge?: boolean,
+}
+
+const PurchaseTile = ({
+    isSubActive,
+    numMembers,
+    product,
+    showDataUnionBadge,
+    showDeployingBadge,
+    ...props
+}: PurchaseTileProps) => (
+    <Tile {...props}>
+        <Link to={product.id && `${links.marketplace.products}/${product.id}`}>
+            <ImageContainer src={product.imageUrl}>
+                {!!showDataUnionBadge && (
+                    <DataUnionBadge top left />
+                )}
+                {typeof numMembers !== 'undefined' && (
+                    <IconBadge icon="dataUnion" bottom right>
+                        {numMembers}
+                    </IconBadge>
+                )}
+                {!!showDeployingBadge && !!showDataUnionBadge && typeof numMembers === 'undefined' && (
+                    <DeployingBadge bottom right />
+                )}
+            </ImageContainer>
+            <Summary
+                name={product.name}
+                updatedAt={product.owner}
+                label={(
+                    <Label positive={isSubActive}>
+                        {isSubActive ? (
+                            <Translate value="userpages.purchases.active" />
+                        ) : (
+                            <Translate value="userpages.purchases.expired" />
+                        )}
+                    </Label>
+                )}
+            />
+        </Link>
+    </Tile>
+)
+
+type ProductTileProps = {
+    actions: any,
+    deployed?: boolean,
+    numMembers?: number,
+    product: any,
+    showDataUnionBadge?: boolean,
+    showDeployingBadge?: boolean,
+}
+
+const getProductLink = (id: string) => (process.env.NEW_MP_CONTRACT ? (
+    formatPath(links.userpages.products, id, 'edit')
+) : (
+    formatPath(links.marketplace.products, id)
+))
+
+const ProductTile = ({
+    actions,
+    deployed,
+    numMembers,
+    product,
+    showDataUnionBadge,
+    showDeployingBadge,
+    ...props
+}: ProductTileProps) => (
+    <Tile {...props}>
+        <Menu>
+            {actions}
+        </Menu>
+        <Link to={product.id && getProductLink(product.id)}>
+            <ImageContainer src={product.imageUrl}>
+                {!!showDataUnionBadge && (
+                    <DataUnionBadge top left />
+                )}
+                {typeof numMembers !== 'undefined' && !showDeployingBadge && (
+                    <IconBadge bottom right icon="dataUnion">
+                        {numMembers}
+                    </IconBadge>
+                )}
+                {!!showDeployingBadge && (
+                    <DeployingBadge bottom right />
+                )}
+            </ImageContainer>
+            <Summary
+                name={product.name}
+                updatedAt={updatedAt(product)}
+                label={(
+                    <Label positive={deployed}>
+                        {deployed ? (
+                            <Translate value="userpages.products.published" />
+                        ) : (
+                            <Translate value="userpages.products.draft" />
+                        )}
+                    </Label>
+                )}
+            />
+        </Link>
+    </Tile>
+)
+
+type MarketplaceProductTileProps = {
+    product: any,
+    showDataUnionBadge?: boolean,
+}
+
+const MarketplaceProductTile = ({ product, showDataUnionBadge, ...props }: MarketplaceProductTileProps) => (
+    <Tile {...props}>
+        <Link to={formatPath(links.marketplace.products, product.id || '')}>
+            <ImageContainer src={product.imageUrl}>
+                {!!showDataUnionBadge && (
+                    <DataUnionBadge top left />
+                )}
+                {!!showDataUnionBadge && typeof product.members !== 'undefined' && (
+                    <IconBadge icon="dataUnion" bottom right>
+                        {product.members}
+                    </IconBadge>
+                )}
+            </ImageContainer>
+            <Summary
+                name={product.name}
+                updatedAt={product.owner}
+                label={isPaidProduct(product) ? (
+                    <PaymentRate
+                        amount={product.pricePerSecond}
+                        currency={product.priceCurrency}
+                        timeUnit={timeUnits.hour}
+                        maxDigits={4}
+                    />
+                ) : (
+                    <Translate value="productTile.free" />
+                )}
+            />
+        </Link>
+    </Tile>
+)
+
+export {
+    CanvasTile,
+    DashboardTile,
+    ImageTile,
+    MarketplaceProductTile,
+    ProductTile,
+    PurchaseTile,
+}
 
 export default Tile

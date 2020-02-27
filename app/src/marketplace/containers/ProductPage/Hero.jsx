@@ -16,9 +16,7 @@ import {
     selectSubscriptionIsValid,
     selectContractSubscription,
 } from '$mp/modules/product/selectors'
-import { DataUnionBadge } from '$shared/components/Tile2/Badge'
-import ImageContainer from '$shared/components/Tile2/ImageContainer'
-import Tile2 from '$shared/components/Tile2'
+import { ImageTile } from '$shared/components/Tile2'
 
 import routes from '$routes'
 
@@ -62,16 +60,11 @@ const Hero = () => {
             className={styles.hero}
             product={product}
             leftContent={
-                <Tile2 suppressHover>
-                    <ImageContainer
-                        alt={product.name}
-                        src={product.imageUrl || ''}
-                    >
-                        {isDataUnion && (
-                            <DataUnionBadge top left />
-                        )}
-                    </ImageContainer>
-                </Tile2>
+                <ImageTile
+                    alt={product.name}
+                    src={product.imageUrl}
+                    showDataUnionBadge={isDataUnion}
+                />
             }
             rightContent={
                 <ProductDetails
