@@ -96,7 +96,7 @@ const CanvasTile = ({ canvas, onMenuToggle, actions, ...props }: CanvasTileProps
             </ImageContainer>
             <Summary
                 name={canvas.name}
-                updatedAt={updatedAt(canvas)}
+                description={updatedAt(canvas)}
                 label={(
                     <Label positive={canvas.state === RunStates.Running}>
                         {capital(canvas.state)}
@@ -122,7 +122,7 @@ const DashboardTile = ({ dashboard, ...props }: DashboardTileProps) => (
             </ImageContainer>
             <Summary
                 name={dashboard.name}
-                updatedAt={updatedAt(dashboard)}
+                description={updatedAt(dashboard)}
             />
         </Link>
     </Tile>
@@ -161,7 +161,7 @@ const PurchaseTile = ({
             </ImageContainer>
             <Summary
                 name={product.name}
-                updatedAt={product.owner}
+                description={product.owner}
                 label={(
                     <Label positive={isSubActive}>
                         {isSubActive ? (
@@ -220,7 +220,7 @@ const ProductTile = ({
             </ImageContainer>
             <Summary
                 name={product.name}
-                updatedAt={updatedAt(product)}
+                description={updatedAt(product)}
                 label={(
                     <Label positive={deployed}>
                         {deployed ? (
@@ -255,7 +255,7 @@ const MarketplaceProductTile = ({ product, showDataUnionBadge, ...props }: Marke
             </ImageContainer>
             <Summary
                 name={product.name}
-                updatedAt={product.owner}
+                description={product.owner}
                 label={isPaidProduct(product) ? (
                     <PaymentRate
                         amount={product.pricePerSecond}

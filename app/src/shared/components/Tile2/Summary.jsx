@@ -13,7 +13,7 @@ const Secondary = styled.div`
     font-size: 12px;
 `
 
-const UpdatedAt = styled(Secondary)`
+const Description = styled(Secondary)`
     color: #a3a3a3;
 `
 
@@ -32,12 +32,12 @@ type Props = {
     label?: Node,
     name: string,
     skeletonize?: boolean,
-    updatedAt?: string | false,
+    description?: string | false,
 }
 
 const Summary = ({
     name,
-    updatedAt,
+    description,
     label,
     skeletonize,
     ...props
@@ -48,12 +48,12 @@ const Summary = ({
                 {name}
             </Skeleton>
         </Name>
-        {!!updatedAt && (
-            <UpdatedAt>
+        {!!description && (
+            <Description>
                 <Skeleton disabled={!skeletonize} width="45%">
-                    {updatedAt}
+                    {description}
                 </Skeleton>
-            </UpdatedAt>
+            </Description>
         )}
         {!!label && (
             <Label>
