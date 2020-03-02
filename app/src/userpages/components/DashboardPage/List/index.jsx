@@ -6,7 +6,6 @@ import { Translate, I18n } from 'react-redux-i18n'
 import Helmet from 'react-helmet'
 import { Link } from 'react-router-dom'
 import cx from 'classnames'
-import moment from 'moment'
 
 import links from '$userpages/../links'
 import { getDashboards } from '$userpages/modules/dashboard/actions'
@@ -24,10 +23,9 @@ import ListContainer from '$shared/components/Container/List'
 import TileGrid from '$shared/components/TileGrid'
 import Button from '$shared/components/Button'
 import useFilterSort from '$userpages/hooks/useFilterSort'
+import { ago } from '$shared/utils/time'
 
 import NoDashboardsView from './NoDashboards'
-
-const generateTimeAgoDescription = (updatedDate: Date) => moment(updatedDate).fromNow()
 
 const CreateDashboardButton = () => (
     <Button
@@ -111,7 +109,7 @@ const DashboardList = () => {
                                     <Tile.Title>{dashboard.name}</Tile.Title>
                                     <Tile.Description>
                                         {dashboard.updated === dashboard.created ? 'Created ' : 'Updated '}
-                                        {generateTimeAgoDescription(new Date(dashboard.updated))}
+                                        {ago(new Date(dashboard.updated))}
                                     </Tile.Description>
                                 </Tile>
                             </Link>

@@ -3,7 +3,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Translate, I18n } from 'react-redux-i18n'
-import moment from 'moment'
 import cx from 'classnames'
 import copy from 'copy-to-clipboard'
 import BN from 'bignumber.js'
@@ -29,6 +28,7 @@ import DocsShortcuts from '$userpages/components/DocsShortcuts'
 import ListContainer from '$shared/components/Container/List'
 import { selectAccountId } from '$mp/modules/web3/selectors'
 import { areAddressesEqual } from '$mp/utils/smartContract'
+import { ago } from '$shared/utils/time'
 
 import styles from './list.pcss'
 
@@ -133,7 +133,7 @@ class TransactionList extends Component<Props> {
                                                 )}
                                             </Table.Td>
                                             <Table.Td title={transaction.hash} noWrap>{transaction.hash}</Table.Td>
-                                            <Table.Td noWrap>{transaction.timestamp ? moment.unix(transaction.timestamp).fromNow() : '-'}</Table.Td>
+                                            <Table.Td noWrap>{transaction.timestamp ? ago(new Date(transaction.timestamp)) : '-'}</Table.Td>
                                             <Table.Td noWrap>
                                                 {price.isGreaterThanOrEqualTo(0) ? '+' : ''}{mapPriceFromContract(price)} DATA
                                             </Table.Td>

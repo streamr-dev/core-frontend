@@ -8,7 +8,6 @@ import Link from '$shared/components/Link'
 import { push } from 'connected-react-router'
 import { Translate, I18n } from 'react-redux-i18n'
 import { Helmet } from 'react-helmet'
-import moment from 'moment'
 import cx from 'classnames'
 
 import type { Canvas } from '$userpages/flowtype/canvas-types'
@@ -26,6 +25,7 @@ import Search from '../../Header/Search'
 import Dropdown from '$shared/components/Dropdown'
 import ShareDialog from '$userpages/components/ShareDialog'
 import confirmDialog from '$shared/utils/confirm'
+import { ago } from '$shared/utils/time'
 import { selectUserData } from '$shared/modules/user/selectors'
 import NoCanvasesView from './NoCanvases'
 import { RunStates } from '$editor/canvas/state'
@@ -52,8 +52,6 @@ const CreateCanvasButton = () => (
         <Translate value="userpages.canvases.createCanvas" />
     </Button>
 )
-
-const generateTimeAgoDescription = (canvasUpdatedDate: Date) => moment(canvasUpdatedDate).fromNow()
 
 const CanvasList = () => {
     const sortOptions = useMemo(() => {
@@ -226,7 +224,7 @@ const CanvasList = () => {
                                 <Tile.Title>{canvas.name}</Tile.Title>
                                 <Tile.Description>
                                     {canvas.updated === canvas.created ? 'Created ' : 'Updated '}
-                                    {generateTimeAgoDescription(new Date(canvas.updated))}
+                                    {ago(new Date(canvas.updated))}
                                 </Tile.Description>
                                 <Tile.Status
                                     className={

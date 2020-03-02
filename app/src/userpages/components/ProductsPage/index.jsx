@@ -6,7 +6,6 @@ import { Translate, I18n } from 'react-redux-i18n'
 import { Link } from 'react-router-dom'
 import { push } from 'connected-react-router'
 import Helmet from 'react-helmet'
-import moment from 'moment'
 
 import Layout from '../Layout'
 import links from '../../../links'
@@ -33,6 +32,7 @@ import routes from '$routes'
 import CreateProductModal from '$mp/containers/CreateProductModal'
 import Button from '$shared/components/Button'
 import { productTypes } from '$mp/utils/constants'
+import { ago } from '$shared/utils/time'
 
 import styles from './products.pcss'
 
@@ -73,8 +73,6 @@ const CreateProductButton = () => {
         </Button>
     )
 }
-
-const generateTimeAgoDescription = (productUpdatedDate: Date) => moment(productUpdatedDate).fromNow()
 
 const getProductLink = (id: ProductId) => {
     if (process.env.NEW_MP_CONTRACT) {
@@ -266,7 +264,7 @@ const ProductsPage = () => {
                                     <Tile.Title>{product.name}</Tile.Title>
                                     <Tile.Tag >
                                         {product.updated === product.created ? 'Created ' : 'Updated '}
-                                        {product.updated && generateTimeAgoDescription(new Date(product.updated))}
+                                        {product.updated && ago(new Date(product.updated))}
                                     </Tile.Tag>
                                     <Tile.Tag
                                         className={product.state === productStates.DEPLOYED ? styles.green : styles.grey}

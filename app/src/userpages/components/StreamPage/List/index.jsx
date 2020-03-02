@@ -3,7 +3,6 @@
 import React, { Fragment, useEffect, useState, useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { push } from 'connected-react-router'
-import moment from 'moment-timezone'
 import { Translate, I18n } from 'react-redux-i18n'
 import Helmet from 'react-helmet'
 import MediaQuery from 'react-responsive'
@@ -52,6 +51,7 @@ import ListContainer from '$shared/components/Container/List'
 import Button from '$shared/components/Button'
 import useFilterSort from '$userpages/hooks/useFilterSort'
 import useCopy from '$shared/hooks/useCopy'
+import { ago } from '$shared/utils/time'
 
 import styles from './streamsList.pcss'
 
@@ -100,8 +100,6 @@ Subscription sub = client.subscribe(stream, new MessageHandler() {
     }
 });`,
 })
-
-const timezone = moment.tz.guess()
 
 type TargetStream = ?Stream
 
@@ -228,8 +226,6 @@ const StreamList = () => {
         })
     }, [copy])
 
-    const nowTime = moment.tz(Date.now(), timezone)
-
     return (
         <Layout
             headerAdditionalComponent={<CreateStreamButton />}
@@ -316,14 +312,10 @@ const StreamList = () => {
                                                 </Table.Th>
                                                 <Table.Td noWrap title={stream.description}>{stream.description}</Table.Td>
                                                 <Table.Td noWrap>
-                                                    {stream.lastUpdated && (
-                                                        moment.min(moment.tz(stream.lastUpdated, timezone), nowTime).fromNow()
-                                                    )}
+                                                    {stream.lastUpdated && ago(new Date(stream.lastUpdated))}
                                                 </Table.Td>
                                                 <Table.Td>
-                                                    {stream.lastData && (
-                                                        moment.min(moment.tz(stream.lastData, timezone), nowTime).fromNow()
-                                                    )}
+                                                    {stream.lastData && ago(new Date(stream.lastData))}
                                                 </Table.Td>
                                                 <Table.Td className={styles.statusColumn}>
                                                     <StatusIcon status={stream.streamStatus} tooltip />
@@ -412,16 +404,12 @@ const StreamList = () => {
                                                                 {stream.description}
                                                             </span>
                                                             <span className={styles.lastUpdatedStreamMobile}>
-                                                                {stream.lastUpdated && (
-                                                                    moment.min(moment.tz(stream.lastUpdated, timezone), nowTime).fromNow()
-                                                                )}
+                                                                {stream.lastUpdated && ago(new Date(stream.lastUpdated))}
                                                             </span>
                                                         </div>
                                                         <div>
                                                             <span className={styles.lastUpdatedStreamTablet}>
-                                                                {stream.lastUpdated && (
-                                                                    moment.min(moment.tz(stream.lastUpdated, timezone), nowTime).fromNow()
-                                                                )}
+                                                                {stream.lastUpdated && ago(new Date(stream.lastUpdated))}
                                                             </span>
                                                             <StatusIcon
                                                                 tooltip
