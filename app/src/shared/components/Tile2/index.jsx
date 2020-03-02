@@ -154,7 +154,7 @@ const PurchaseTile = ({
 }: PurchaseTileProps) => (
     <Tile {...props}>
         <Link to={product.id && `${links.marketplace.products}/${product.id}`}>
-            <ImageContainer src={product.imageUrl}>
+            <ImageContainer src={product.imageUrl || ''}>
                 {!!showDataUnionBadge && (
                     <DataUnionBadge top left />
                 )}
@@ -215,7 +215,7 @@ const ProductTile = ({
             </Menu>
         )}
         <Link to={product.id && getProductLink(product.id)}>
-            <ImageContainer src={product.imageUrl}>
+            <ImageContainer src={product.imageUrl || ''}>
                 {!!showDataUnionBadge && (
                     <DataUnionBadge top left />
                 )}
@@ -253,7 +253,7 @@ type MarketplaceProductTileProps = {
 const MarketplaceProductTile = ({ product, showDataUnionBadge, ...props }: MarketplaceProductTileProps) => (
     <Tile {...props}>
         <Link to={formatPath(links.marketplace.products, product.id || '')}>
-            <ImageContainer src={product.imageUrl}>
+            <ImageContainer src={product.imageUrl || ''}>
                 {!!showDataUnionBadge && (
                     <DataUnionBadge top left />
                 )}
