@@ -4,14 +4,38 @@
 
 .root {
   width: 100%;
+  position: relative;
 }
 
 .accessPeriod {
-  width: 280px;
   display: flex;
+  position: relative;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin: 1.5rem auto;
+  margin: 2rem auto;
+}
+
+.accessPeriod > div {
+  display: flex;
+  justify-content: center;
+}
+
+.uniswapErrors {
+  position: absolute;
+  top: 3rem;
+}
+
+@media (--sm-down) {
+  .uniswapErrors {
+    top: 2.5rem;
+  }
+}
+
+@media (--xl) {
+  .uniswapErrors {
+    top: 2.5rem;
+  }
 }
 
 .accessPeriodNumber {
@@ -31,10 +55,28 @@
   text-transform: capitalize;
 }
 
+.invalidInputMobile {
+  display: none;
+}
+
+.invalidInputDesktop {
+  display: block;
+}
+
+@media (--xs) {
+  .invalidInputDesktop {
+    display: none;
+  }
+
+  .invalidInputMobile {
+    display: block;
+  }
+}
+
 .balanceAndPrice {
   display: flex;
   flex-direction: column;
-  margin: 1.5rem 0;
+  margin: 2rem 0;
   padding: 1.2rem 0 1.8rem;
   height: 152px;
   background-color: #F8F8F8;
@@ -91,7 +133,10 @@
   line-height: 24px;
 }
 
-.root .uniswapMsg {
+.uniswapMsg {
+  width: 100%;
+  bottom: 0;
+  position: absolute;
   color: #D8D8D7;
   font-size: 12px;
   font-family: var(--sans);
@@ -107,5 +152,34 @@
   &::before,
   &::after {
     height: 1px;
+  }
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 37px;
+}
+
+.footer.onlyButtons {
+  justify-content: flex-end;
+}
+
+@media (--md-down) {
+  .footer,
+  .footer.onlyButtons {
+    justify-content: flex-end;
+  }
+}
+
+.uniswapFooter {
+  color: #D8D8D7;
+  font-size: 12px;
+}
+
+@media (--md-down) {
+  .uniswapFooter {
+    display: none;
   }
 }

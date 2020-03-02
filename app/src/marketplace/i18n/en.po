@@ -307,6 +307,21 @@ msgstr "Week"
 msgid "modal##chooseAccessPeriod##uniswap"
 msgstr "Exchange via Uniswap"
 
+msgid "modal##chooseAccessPeriod##invalidTime"
+msgstr "Access period must be a number"
+
+msgid "modal##chooseAccessPeriod##highPriceDesktop"
+msgstr "Transaction too large for Uniswap. Please try a shorter period."
+
+msgid "modal##chooseAccessPeriod##highPriceMobile"
+msgstr "Transaction too large. Please try a shorter period."
+
+msgid "modal##chooseAccessPeriod##lowPriceDesktop"
+msgstr "Transaction too small for Uniswap. Please try a longer period."
+
+msgid "modal##chooseAccessPeriod##lowPriceMobile"
+msgstr "Transaction too small. Please try a longer period."
+
 msgid "modal##connectEthereumAddress##title"
 msgstr "Connect your Ethereum address"
 
