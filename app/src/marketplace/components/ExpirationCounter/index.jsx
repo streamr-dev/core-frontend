@@ -26,12 +26,15 @@ const getExpirationString = (secondsLeft: number): string => {
     return `${days} day${days > 1 ? 's' : ''}`
 }
 
+const toSecondsFromNow = (data: Data) => (
+    Number.parseInt((data.getTime() - Date.now()) / 1000, 10)
+)
+
 const ExpirationCounter = ({ expiresAt, className }: Props) => {
-    const [secondsUntilExpiration, setSecondsUntilExpiration] = useState(parseInt((expiresAt.getTime() - Date.now()) / 1000, 10))
+    const [secondsUntilExpiration, setSecondsUntilExpiration] = useState(toSecondsFromNow(expiresAt))
 
     useInterval(() => {
-        const diff = parseInt((expiresAt.getTime() - Date.now()) / 1000, 10)
-        setSecondsUntilExpiration(diff)
+        setSecondsUntilExpiration(toSecondsFromNow(expiresAt))
     }, 1000)
 
     return (
