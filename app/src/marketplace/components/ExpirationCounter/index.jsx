@@ -9,7 +9,7 @@ import styles from './expirationCounter.pcss'
 
 type Props = {
     expiresAt: Date,
-    now?: ?Date,
+    now?: ?number,
     className?: string,
 }
 
@@ -27,8 +27,8 @@ const getExpirationString = (secondsLeft: number): string => {
     return `${days} day${days > 1 ? 's' : ''}`
 }
 
-const toSecondsFromNow = (data: Date, now: ?Date) => (
-    Number.parseInt((data.getTime() - (typeof now === 'undefined' ? Date.now() : now)) / 1000, 10)
+const toSecondsFromNow = (data: Date, now: ?number) => (
+    Math.floor((data.getTime() - (now == null ? Date.now() : now)) / 1000)
 )
 
 const ExpirationCounter = ({ expiresAt, now, className }: Props) => {
