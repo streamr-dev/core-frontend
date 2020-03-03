@@ -9,7 +9,7 @@ import { timeUnits, contractCurrencies as currencies, DEFAULT_CURRENCY } from '$
 import { convert } from '$mp/utils/price'
 import SvgIcon from '$shared/components/SvgIcon'
 import PriceField from '$mp/components/PriceField'
-import SelectField from '$shared/components/SelectField'
+import SelectField from '$mp/components/SelectField'
 
 import styles from './setPrice.pcss'
 

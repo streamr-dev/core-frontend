@@ -9,7 +9,7 @@ import styles from '@sambego/storybook-styles'
 import SelectField from '.'
 
 const stories =
-    storiesOf('Shared/SelectField', module)
+    storiesOf('Marketplace/SelectField', module)
         .addDecorator(styles({
             color: '#323232',
             padding: '5rem',
