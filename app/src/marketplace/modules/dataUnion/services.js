@@ -18,6 +18,7 @@ import { post, del, get, put } from '$shared/utils/api'
 import { formatApiUrl } from '$shared/utils/url'
 import { postStream, getMyStreamPermissions } from '$userpages/modules/userPageStreams/services'
 import { getWeb3, getPublicWeb3 } from '$shared/web3/web3Provider'
+import analytics from '$app/src/analytics'
 
 import type { Secret } from './types'
 
@@ -39,7 +40,7 @@ export const deletePermission = (id: StreamId, permissionId: $PropertyType<Permi
 export const createJoinPartStream = async (productId: ?ProductId = undefined): Promise<Stream> => {
     const newStream: NewStream = {
         name: productId ? `JoinPart stream for data union ${productId}` : 'JoinPart stream',
-        description: 'Automatically created JoinPart stream for community product contract',
+        description: 'Automatically created JoinPart stream for data union',
     }
 
     let stream
@@ -164,19 +165,30 @@ export const getJoinPartStreamId = (address: DataUnionId, usePublicNode: boolean
     call(getCommunityContract(address, usePublicNode).methods.joinPartStream())
 
 export const getDataUnionStats = (id: DataUnionId): ApiResult<Object> => get({
-    url: formatApiUrl('communities', id, 'stats'),
+    url: formatApiUrl('dataunions', id, 'stats'),
     useAuthorization: false,
 })
 
 export const getDataUnions = async (): ApiResult<Array<Object>> => {
-    const { communities } = await get({
-        url: formatApiUrl('communities'),
+    // TODO: Currently data union server returns 'communities' but after refactoring
+    // it will use 'dataunions'. Read both properties from the response for now and
+    // use whichever is defined.
+    const { dataunions, communities } = await get({
+        url: formatApiUrl('dataunions'),
         useAuthorization: false,
     })
 
-    return Object.keys(communities || {}).map((id) => ({
+    if (communities == null) {
+        const message = 'Data union server has been updated to use "dataunions" instead of "communities" ' +
+                        'Old code can be removed from function getDataUnions at /marketplace/modules/dataUnion/services.js'
+        console.error(message)
+        analytics.reportError(new Error(message))
+    }
+
+    const unions = dataunions || communities
+    return Object.keys(unions || {}).map((id) => ({
         id: id.toLowerCase(),
-        ...communities[id],
+        ...unions[id],
     }))
 }
 
@@ -198,7 +210,7 @@ type GetSecrets = {
 }
 
 export const getSecrets = ({ dataUnionId }: GetSecrets): ApiResult<Array<Secret>> => get({
-    url: formatApiUrl('communities', dataUnionId, 'secrets'),
+    url: formatApiUrl('dataunions', dataUnionId, 'secrets'),
 })
 
 type PostSecrect = {
@@ -208,7 +220,7 @@ type PostSecrect = {
 }
 
 export const postSecret = ({ dataUnionId, name, secret }: PostSecrect): ApiResult<Secret> => post({
-    url: formatApiUrl('communities', dataUnionId, 'secrets'),
+    url: formatApiUrl('dataunions', dataUnionId, 'secrets'),
     data: {
         name,
         secret,
@@ -222,7 +234,7 @@ type PutSecrect = {
 }
 
 export const putSecret = ({ dataUnionId, secretId, name }: PutSecrect): ApiResult<Secret> => put({
-    url: formatApiUrl('communities', dataUnionId, 'secrets', secretId),
+    url: formatApiUrl('dataunions', dataUnionId, 'secrets', secretId),
     data: {
         name,
     },
@@ -234,7 +246,7 @@ type DeleteSecrect = {
 }
 
 export const deleteSecret = ({ dataUnionId, secretId }: DeleteSecrect): ApiResult<void> => del({
-    url: formatApiUrl('communities', dataUnionId, 'secrets', secretId),
+    url: formatApiUrl('dataunions', dataUnionId, 'secrets', secretId),
 })
 
 type GetJoinRequests = {
@@ -243,7 +255,7 @@ type GetJoinRequests = {
 }
 
 export const getJoinRequests = ({ dataUnionId, params }: GetJoinRequests): ApiResult<any> => get({
-    url: formatApiUrl('communities', dataUnionId, 'joinRequests'),
+    url: formatApiUrl('dataunions', dataUnionId, 'joinRequests'),
     options: {
         params,
     },
@@ -256,7 +268,7 @@ type PutJoinRequest = {
 }
 
 export const updateJoinRequest = async ({ dataUnionId, joinRequestId, state }: PutJoinRequest): ApiResult<any> => put({
-    url: formatApiUrl('communities', dataUnionId, 'joinRequests', joinRequestId),
+    url: formatApiUrl('dataunions', dataUnionId, 'joinRequests', joinRequestId),
     data: {
         state,
     },
@@ -268,7 +280,7 @@ type PostJoinRequest = {
 }
 
 export const addJoinRequest = async ({ dataUnionId, memberAddress }: PostJoinRequest): ApiResult<any> => post({
-    url: formatApiUrl('communities', dataUnionId, 'joinRequests'),
+    url: formatApiUrl('dataunions', dataUnionId, 'joinRequests'),
     data: {
         memberAddress,
     },
@@ -280,5 +292,5 @@ type DeleteJoinRequest = {
 }
 
 export const removeJoinRequest = async ({ dataUnionId, joinRequestId }: DeleteJoinRequest): ApiResult<void> => del({
-    url: formatApiUrl('communities', dataUnionId, 'joinRequests', joinRequestId),
+    url: formatApiUrl('dataunions', dataUnionId, 'joinRequests', joinRequestId),
 })
