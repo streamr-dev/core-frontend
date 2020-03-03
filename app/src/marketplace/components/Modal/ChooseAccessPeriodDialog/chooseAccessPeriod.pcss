@@ -175,13 +175,23 @@
 
 .footer {
   display: flex;
+  width: 100%;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 37px;
+  padding: 1.5rem;
 }
 
 .footer.onlyButtons {
   justify-content: flex-end;
+}
+
+@media (--xs) {
+  .footer {
+    & > div {
+      width: 100%;
+      justify-content: space-between;
+    }
+  }
 }
 
 @media (--md-down) {
