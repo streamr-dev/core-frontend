@@ -94,9 +94,6 @@ export const ChooseAccessPeriodDialog = ({
     const isValidTime = useCallback(() => !BN(time).isNaN() && BN(time).isGreaterThan(0), [time])
 
     const isValidPrice = useCallback(() => {
-        // Avoid error handling false positives
-        if (priceInEth === '-' || priceInDai === '-') { return true }
-
         if (paymentCurrency === paymentCurrencies.ETH) {
             if (Number(priceInUsd) < MIN_UNISWAP_AMOUNT_USD) { return false }
             return !(BN(priceInEth).isNaN() || !BN(priceInEth).isGreaterThan(0) || !BN(priceInEth).isFinite())
@@ -270,7 +267,10 @@ export const ChooseAccessPeriodDialog = ({
                                 className={styles.accessPeriodUnit}
                             />
                         </div>
-                        {(!isValidTime() || !isValidPrice()) && paymentCurrency !== paymentCurrencies.DATA && (
+                        {(!isValidTime() || !isValidPrice()) &&
+                        paymentCurrency !== paymentCurrencies.DATA &&
+                        (priceInEth !== '-' || priceInDai !== '-') && // prevent false positives during load
+                        (
                             <Errors theme={MarketplaceTheme} className={styles.uniswapErrors}>
                                 {!isValidTime() &&
                                     <React.Fragment>
@@ -282,6 +282,7 @@ export const ChooseAccessPeriodDialog = ({
                                         />
                                     </React.Fragment>
                                 }
+
                                 {!isValidPrice() && Number(priceInUsd) < MIN_UNISWAP_AMOUNT_USD &&
                                     <React.Fragment>
                                         <Translate
