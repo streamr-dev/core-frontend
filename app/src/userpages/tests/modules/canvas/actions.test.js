@@ -100,7 +100,7 @@ describe('Canvas actions', () => {
 
         await store.dispatch(actions.getCanvases())
             .catch(() => {
-                expect(store.getActions()).toEqual(expectedActions)
+                expect(store.getActions()).toMatchObject(expectedActions)
             })
 
         await wait

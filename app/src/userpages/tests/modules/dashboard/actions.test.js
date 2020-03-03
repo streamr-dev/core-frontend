@@ -1,4 +1,4 @@
-import assert from 'assert-diff'
+import expect from 'expect'
 import thunk from 'redux-thunk'
 import configureMockStore from 'redux-mock-store'
 import moxios from 'moxios'
@@ -72,7 +72,7 @@ describe('Dashboard actions', () => {
             }]
 
             await store.dispatch(actions.getDashboards())
-            assert.deepStrictEqual(store.getActions(), expectedActions)
+            expect(store.getActions()).toEqual(expectedActions)
         })
         it('creates GET_ALL_INTEGRATION_KEYS_FAILURE when fetching integration keys has failed', async (done) => {
             moxios.stubRequest(new RegExp(`${process.env.STREAMR_API_URL}/dashboards*`), {
@@ -97,7 +97,7 @@ describe('Dashboard actions', () => {
             try {
                 await store.dispatch(actions.getDashboards())
             } catch (e) {
-                assert.deepStrictEqual(store.getActions().slice(0, 2), expectedActions)
+                expect(store.getActions().slice(0, 2)).toMatchObject(expectedActions)
                 done()
             }
         })
@@ -129,7 +129,7 @@ describe('Dashboard actions', () => {
             }]
 
             await store.dispatch(actions.getDashboard(id))
-            assert.deepStrictEqual(store.getActions(), expectedActions)
+            expect(store.getActions()).toEqual(expectedActions)
         })
 
         it('creates GET_ALL_INTEGRATION_KEYS_FAILURE when fetching integration keys has failed', async (done) => {
@@ -155,7 +155,7 @@ describe('Dashboard actions', () => {
             try {
                 await store.dispatch(actions.getDashboards())
             } catch (e) {
-                assert.deepStrictEqual(store.getActions().slice(0, 2), expectedActions)
+                expect(store.getActions().slice(0, 2)).toMatchObject(expectedActions)
                 done()
             }
         })
@@ -189,7 +189,7 @@ describe('Dashboard actions', () => {
             }]
 
             await store.dispatch(actions.updateAndSaveDashboard(db))
-            assert.deepStrictEqual(store.getActions(), expectedActions)
+            expect(store.getActions()).toEqual(expectedActions)
         })
         it('creates also CHANGE_ID if the id has changed', async () => {
             const id = 'test'
@@ -225,7 +225,7 @@ describe('Dashboard actions', () => {
                 type: actions.UPDATE_AND_SAVE_DASHBOARD_SUCCESS,
             }]
             await store.dispatch(actions.updateAndSaveDashboard(db))
-            assert.deepStrictEqual(store.getActions(), expectedActions)
+            expect(store.getActions()).toEqual(expectedActions)
         })
         it('creates UPDATE_AND_SAVE_DASHBOARD_FAILURE when fetching a dashboard has failed', async (done) => {
             const id = 'test'
@@ -258,8 +258,8 @@ describe('Dashboard actions', () => {
             try {
                 await store.dispatch(actions.updateAndSaveDashboard(db))
             } catch (e) {
-                assert.deepStrictEqual(store.getActions()[0], expectedActions[0])
-                assert.deepStrictEqual(store.getActions()[1], expectedActions[1])
+                expect(store.getActions()[0]).toMatchObject(expectedActions[0])
+                expect(store.getActions()[1]).toMatchObject(expectedActions[1])
                 done()
             }
         })
@@ -267,8 +267,8 @@ describe('Dashboard actions', () => {
             const wait = moxios.promiseWait()
                 .then(() => {
                     const request = moxios.requests.mostRecent()
-                    assert.equal(request.url, `${process.env.STREAMR_API_URL}/dashboards`)
-                    assert.equal(request.config.method.toLowerCase(), 'post')
+                    expect(request.url).toEqual(`${process.env.STREAMR_API_URL}/dashboards`)
+                    expect(request.config.method.toLowerCase()).toEqual('post')
                     request.respondWith({
                         status: 200,
                         response: request.config.data,
@@ -286,8 +286,8 @@ describe('Dashboard actions', () => {
             const wait = moxios.promiseWait()
                 .then(() => {
                     const request = moxios.requests.mostRecent()
-                    assert.equal(request.url, `${process.env.STREAMR_API_URL}/dashboards/${id}`)
-                    assert.equal(request.config.method.toLowerCase(), 'put')
+                    expect(request.url).toEqual(`${process.env.STREAMR_API_URL}/dashboards/${id}`)
+                    expect(request.config.method.toLowerCase()).toEqual('put')
                     request.respondWith({
                         status: 200,
                         response: request.config.data,
@@ -309,7 +309,7 @@ describe('Dashboard actions', () => {
             const wait = moxios.promiseWait()
                 .then(() => {
                     const request = moxios.requests.mostRecent()
-                    assert.equal(request.config.method, 'delete')
+                    expect(request.config.method).toEqual('delete')
                     request.respondWith({
                         status: 200,
                     })
@@ -324,7 +324,7 @@ describe('Dashboard actions', () => {
             }]
 
             await store.dispatch(originalActions.deleteDashboard('test'))
-            assert.deepStrictEqual(store.getActions(), expectedActions)
+            expect(store.getActions()).toEqual(expectedActions)
             await wait
         })
 
@@ -332,7 +332,7 @@ describe('Dashboard actions', () => {
             const wait = moxios.promiseWait()
                 .then(() => {
                     const request = moxios.requests.mostRecent()
-                    assert.equal(request.config.method, 'delete')
+                    expect(request.config.method).toEqual('delete')
                     request.respondWith({
                         status: 500,
                         response: {
@@ -357,7 +357,7 @@ describe('Dashboard actions', () => {
             try {
                 await store.dispatch(originalActions.deleteDashboard('test'))
             } catch (e) {
-                assert.deepStrictEqual(store.getActions().slice(0, 2), expectedActions)
+                expect(store.getActions().slice(0, 2)).toMatchObject(expectedActions)
             }
 
             await wait
@@ -391,7 +391,7 @@ describe('Dashboard actions', () => {
             }]
 
             await store.dispatch(originalActions.getMyDashboardPermissions(id))
-            assert.deepStrictEqual(store.getActions(), expectedActions)
+            expect(store.getActions()).toEqual(expectedActions)
         })
         it('creates GET_MY_DASHBOARD_PERMISSIONS_FAILURE when fetching permissions has failed', async (done) => {
             const id = 'asdfasdfasasd'
@@ -419,7 +419,7 @@ describe('Dashboard actions', () => {
             try {
                 await store.dispatch(originalActions.getMyDashboardPermissions(id))
             } catch (e) {
-                assert.deepStrictEqual(store.getActions().slice(0, 2), expectedActions)
+                expect(store.getActions().slice(0, 2)).toMatchObject(expectedActions)
                 done()
             }
         })
@@ -436,8 +436,8 @@ describe('Dashboard actions', () => {
             const expectedActions = [{
                 type: 'updateEntities',
             }]
-            assert(updateEntitiesStub.calledOnce)
-            assert.deepStrictEqual(store.getActions(), expectedActions)
+            expect(updateEntitiesStub.calledOnce).toEqual(true)
+            expect(store.getActions()).toEqual(expectedActions)
         })
 
         describe('addDashboardItem', () => {
@@ -476,7 +476,7 @@ describe('Dashboard actions', () => {
                         saved: false,
                     },
                 }]
-                assert.deepStrictEqual(store.getActions(), expectedActions)
+                expect(store.getActions()).toEqual(expectedActions)
             })
         })
 
@@ -520,7 +520,7 @@ describe('Dashboard actions', () => {
                         saved: false,
                     },
                 }]
-                assert.deepStrictEqual(store.getActions(), expectedActions)
+                expect(store.getActions()).toEqual(expectedActions)
             })
         })
 
@@ -561,7 +561,7 @@ describe('Dashboard actions', () => {
                     },
                 }]
 
-                assert.deepStrictEqual(store.getActions(), expectedActions)
+                expect(store.getActions()).toEqual(expectedActions)
             })
         })
     })
@@ -604,14 +604,14 @@ describe('Dashboard actions', () => {
             await store.dispatch(originalActions.updateDashboardChanges('test', {
                 name: 'test3',
             }))
-            assert.deepStrictEqual(store.getActions(), expectedActions)
+            expect(store.getActions()).toEqual(expectedActions)
         })
     })
 
     describe('openDashboard', () => {
         const id = 'test'
         it('must return correct action', () => {
-            assert.deepStrictEqual(originalActions.openDashboard(id), {
+            expect(originalActions.openDashboard(id)).toEqual({
                 type: originalActions.OPEN_DASHBOARD,
                 id,
             })
