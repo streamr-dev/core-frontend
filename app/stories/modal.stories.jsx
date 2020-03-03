@@ -306,7 +306,7 @@ story('Product Editor/GuidedDeployDataUnionDialog')
             product={{
                 id: '1',
                 name: 'Example product',
-                type: 'COMMUNITY',
+                type: 'DATAUNION',
             }}
             onClose={action('onClose')}
             onContinue={action('onContinue')}
@@ -320,7 +320,7 @@ story('Product Editor/ConfirmDeployCommunityDialog')
             product={{
                 id: '1',
                 name: 'Example product',
-                type: 'COMMUNITY',
+                type: 'DATAUNION',
             }}
             onClose={action('onClose')}
             onContinue={action('onContinue')}
@@ -335,7 +335,7 @@ story('Product Editor/DeployingCommunityDialog')
             product={{
                 id: '1',
                 name: 'Example product',
-                type: 'COMMUNITY',
+                type: 'DATAUNION',
             }}
             estimate={number('Estimate', 360)}
             onClose={action('onClose')}
@@ -348,7 +348,7 @@ story('Product Editor/DeployingCommunityDialog')
             product={{
                 id: '1',
                 name: 'Example product',
-                type: 'COMMUNITY',
+                type: 'DATAUNION',
             }}
             estimate={number('Estimate', 360)}
             onClose={action('onClose')}

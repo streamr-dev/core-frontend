@@ -4,9 +4,16 @@ import getWeb3, { getPublicWeb3 } from '$shared/web3/web3Provider'
 import { get, post, del, put } from '$shared/utils/api'
 import { formatApiUrl } from '$shared/utils/url'
 import type { ApiResult } from '$shared/flowtype/common-types'
-import type { IntegrationKeyId, IntegrationKey, Challenge } from '$shared/flowtype/integration-key-types'
+import {
+    BalanceType,
+    type IntegrationKeyId,
+    type IntegrationKey,
+    type Challenge,
+} from '$shared/flowtype/integration-key-types'
 import type { Address, Hash } from '$shared/flowtype/web3-types'
 import { integrationKeyServices } from '$shared/utils/constants'
+import { getDataTokenBalance, getEthBalance } from '$mp/utils/web3'
+
 import {
     Web3NotEnabledError,
     ChallengeFailedError,
@@ -104,3 +111,23 @@ export const createIdentity = async (name: string): ApiResult<IntegrationKey> =>
 export const deleteIntegrationKey = (id: IntegrationKeyId): ApiResult<null> => del({
     url: formatApiUrl('integration_keys', id),
 })
+
+type GetBalance = {
+    address: Address,
+    type: $Values<typeof BalanceType>,
+    usePublicNode?: boolean,
+}
+
+export async function getBalance({ address, type, usePublicNode = false }: GetBalance) {
+    let balance
+
+    if (type === BalanceType.ETH) {
+        balance = await getEthBalance(address, usePublicNode)
+    } else if (type === BalanceType.DATA) {
+        balance = await getDataTokenBalance(address, usePublicNode)
+    } else {
+        throw new Error('Unknown balance type!')
+    }
+
+    return balance
+}

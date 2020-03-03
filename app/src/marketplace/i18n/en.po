@@ -833,7 +833,7 @@ msgstr ""
 "<br />"
 "this dialogue and get notified when your product is ready."
 
-msgid "modal##deployCommunity##deploying##estimatedDeploymentTime"
+msgid "modal##deployDataUnion##deploying##estimatedDeploymentTime"
 msgstr "Estimated deployment time"
 
 msgid "noProductsView##keywordHint"
@@ -855,6 +855,9 @@ msgstr "Go to core app"
 
 msgid "notFoundPage##publicSite"
 msgstr "Go to public site"
+
+msgid "notifications##notEnoughMembers"
+msgstr "The minimum community size for a Data Union is %{memberLimit} members."
 
 msgid "notifications##productPublished"
 msgstr "Your product has been published"

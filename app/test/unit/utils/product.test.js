@@ -28,7 +28,7 @@ describe('product utils', () => {
         it('detects data union product from object', () => {
             const product1 = {
                 id: 'text',
-                type: 'COMMUNITY',
+                type: 'DATAUNION',
             }
             assert.equal(all.isDataUnionProduct(product1), true)
             const product2 = {
@@ -43,7 +43,7 @@ describe('product utils', () => {
         })
 
         it('detects data union product from value', () => {
-            assert.equal(all.isDataUnionProduct('COMMUNITY'), true)
+            assert.equal(all.isDataUnionProduct('DATAUNION'), true)
             assert.equal(all.isDataUnionProduct('NORMAL'), false)
         })
 

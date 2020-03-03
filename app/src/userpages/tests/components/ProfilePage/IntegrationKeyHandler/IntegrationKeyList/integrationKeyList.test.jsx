@@ -3,6 +3,8 @@ import { mount } from 'enzyme'
 
 import IntegrationKeyList from '$userpages/components/ProfilePage/IntegrationKeyHandler/IntegrationKeyList'
 
+jest.mock('$shared/hooks/useBalances')
+
 const keys = [{
     id: 1,
 }, {

@@ -120,7 +120,7 @@ describe('Product State', () => {
                 name: 'My Product',
                 description: 'My nice product',
                 state: productStates.NOT_DEPLOYED,
-                type: productTypes.COMMUNITY,
+                type: productTypes.DATAUNION,
             }
             expect(State.update(product, (p) => ({
                 ...p,
@@ -202,7 +202,7 @@ describe('Product State', () => {
                 name: 'My Product',
                 description: 'My nice product',
                 state: productStates.NOT_DEPLOYED,
-                type: productTypes.COMMUNITY,
+                type: productTypes.DATAUNION,
             }
             expect(State.getPendingChanges(product)).toMatchObject({})
         })
@@ -213,7 +213,7 @@ describe('Product State', () => {
                 name: 'My Product',
                 description: 'My nice product',
                 state: productStates.NOT_DEPLOYED,
-                type: productTypes.COMMUNITY,
+                type: productTypes.DATAUNION,
             }
             expect(State.getPendingChanges({
                 ...product,
@@ -253,7 +253,7 @@ describe('Product State', () => {
                 description: 'My nice product',
                 adminFee: '0.2',
                 state: productStates.DEPLOYED,
-                type: productTypes.COMMUNITY,
+                type: productTypes.DATAUNION,
             }
             expect(State.getPendingChanges({
                 ...product,
@@ -276,7 +276,7 @@ describe('Product State', () => {
                 description: 'My nice product',
                 adminFee: '0.2',
                 state: productStates.NOT_DEPLOYED,
-                type: productTypes.COMMUNITY,
+                type: productTypes.DATAUNION,
             }
             expect(State.getPendingChanges(State.update(product, (p) => ({
                 ...p,
@@ -314,7 +314,7 @@ describe('Product State', () => {
                 name: 'My Product',
                 description: 'My nice product',
                 state: productStates.NOT_DEPLOYED,
-                type: productTypes.COMMUNITY,
+                type: productTypes.DATAUNION,
             }
             const nextProduct = {
                 ...product,
@@ -377,7 +377,7 @@ describe('Product State', () => {
                 description: 'My nice product',
                 adminFee: '0.2',
                 state: productStates.NOT_DEPLOYED,
-                type: productTypes.COMMUNITY,
+                type: productTypes.DATAUNION,
             }
             expect(State.withPendingChanges({
                 ...product,
@@ -392,7 +392,7 @@ describe('Product State', () => {
                 description: 'My nice product',
                 adminFee: '0.5',
                 state: productStates.NOT_DEPLOYED,
-                type: productTypes.COMMUNITY,
+                type: productTypes.DATAUNION,
             })
         })
 
