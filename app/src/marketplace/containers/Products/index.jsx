@@ -48,7 +48,7 @@ const Products = () => {
     const { api: createProductModal } = useModal('marketplace.createProduct')
 
     const loadCategories = useCallback(() => dispatch(getCategories(false)), [dispatch])
-    const { load: loadCommunities, members } = useMemberStats()
+    const { load: loadDataUnions, members } = useMemberStats()
 
     const loadProducts = useCallback(() => dispatch(getProducts()), [dispatch])
 
@@ -69,12 +69,12 @@ const Products = () => {
 
     useEffect(() => {
         loadCategories()
-        loadCommunities()
+        loadDataUnions()
 
         if (productsRef.current && productsRef.current.length === 0) {
             clearFiltersAndReloadProducts()
         }
-    }, [loadCommunities, loadCategories, clearFiltersAndReloadProducts])
+    }, [loadDataUnions, loadCategories, clearFiltersAndReloadProducts])
 
     return (
         <Layout
