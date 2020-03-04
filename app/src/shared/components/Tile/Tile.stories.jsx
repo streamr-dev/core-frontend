@@ -9,9 +9,9 @@ import ImageContainer from './ImageContainer'
 import Grid from './Grid'
 import Summary from './Summary'
 import Menu, { MenuItem } from './Menu'
-import Tile, { updatedAt } from './'
+import Tile, { touchedAgo } from './'
 
-const stories = storiesOf('Shared/Tile (new)', module)
+const stories = storiesOf('Shared/Tile', module)
     .addDecorator(styles({
         color: '#323232',
         padding: '16px',
@@ -72,7 +72,7 @@ stories.add('elastic grid', () => (
                     <Summary
                         skeletonize={boolean('Skeletonize')}
                         name="Helsinki Tram Network GPS"
-                        description={updatedAt({
+                        description={touchedAgo({
                             created: new Date('2020-01-01'),
                             updated: new Date('2020-01-02'),
                         })}
