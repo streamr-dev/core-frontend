@@ -3,7 +3,9 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react'
 import BN from 'bignumber.js'
 import { Translate, I18n } from 'react-redux-i18n'
+import cx from 'classnames'
 
+import Buttons from '$shared/components/Buttons'
 import Text from '$ui/Text'
 import useWeb3Status from '$shared/hooks/useWeb3Status'
 import LoadingIndicator from '$userpages/components/LoadingIndicator'
@@ -13,11 +15,12 @@ import { getBalances, uniswapDATAtoETH, uniswapDATAtoDAI, uniswapETHtoDATA } fro
 import { isMobile } from '$shared/utils/platform'
 import { toSeconds } from '$mp/utils/time'
 import { dataToUsd, usdToData, formatDecimals } from '$mp/utils/price'
-import { timeUnits, contractCurrencies, paymentCurrencies, DEFAULT_CURRENCY } from '$shared/utils/constants'
+import { timeUnits, contractCurrencies, paymentCurrencies, DEFAULT_CURRENCY, MIN_UNISWAP_AMOUNT_USD } from '$shared/utils/constants'
 import type { Product } from '$mp/flowtype/product-types'
 import type { ContractCurrency, PaymentCurrency, NumberString, TimeUnit } from '$shared/flowtype/common-types'
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
+import Errors, { MarketplaceTheme } from '$ui/Errors'
 
 import styles from './chooseAccessPeriod.pcss'
 
@@ -92,15 +95,17 @@ export const ChooseAccessPeriodDialog = ({
 
     const isValidPrice = useCallback(() => {
         if (paymentCurrency === paymentCurrencies.ETH) {
+            if (Number(priceInUsd) < MIN_UNISWAP_AMOUNT_USD) { return false }
             return !(BN(priceInEth).isNaN() || !BN(priceInEth).isGreaterThan(0) || !BN(priceInEth).isFinite())
         }
 
         if (paymentCurrency === paymentCurrencies.DAI) {
+            if (Number(priceInUsd) < MIN_UNISWAP_AMOUNT_USD) { return false }
             return !(BN(priceInDai).isNaN() || !BN(priceInDai).isGreaterThan(0) || !BN(priceInDai).isFinite())
         }
 
         return true
-    }, [paymentCurrency, priceInEth, priceInDai])
+    }, [paymentCurrency, priceInUsd, priceInEth, priceInDai])
 
     const getProductPrices = useCallback(async () => {
         if (isValidTime()) {
@@ -204,42 +209,114 @@ export const ChooseAccessPeriodDialog = ({
 
     const onPaymentCurrencyChange = useCallback((currency: PaymentCurrency) => (setPaymentCurrency(currency)), [setPaymentCurrency])
 
+    const actions = {
+        cancel: {
+            title: I18n.t('modal.common.cancel'),
+            onClick: onCancel,
+            kind: 'link',
+        },
+        next: {
+            title: I18n.t('modal.common.next'),
+            kind: 'primary',
+            outline: true,
+            onClick: () => onNext(time, timeUnit, paymentCurrency),
+            disabled: !isValidTime() || !isValidPrice() || loading,
+        },
+    }
+
     return (
         <ModalPortal>
             <Dialog
                 onClose={onCancel}
                 title={isMobile() ? I18n.t('modal.chooseAccessPeriod.mobileTitle') : I18n.t('modal.chooseAccessPeriod.title')}
-                actions={{
-                    cancel: {
-                        title: I18n.t('modal.common.cancel'),
-                        onClick: onCancel,
-                        kind: 'link',
-                    },
-                    next: {
-                        title: I18n.t('modal.common.next'),
-                        kind: 'primary',
-                        outline: true,
-                        onClick: () => onNext(time, timeUnit, paymentCurrency),
-                        disabled: !isValidTime() || !isValidPrice() || loading,
-                    },
-                }}
+                actions={actions}
+                renderActions={() => (
+                    <div className={cx(styles.footer, {
+                        [styles.onlyButtons]: paymentCurrency === paymentCurrencies.DATA,
+                    })}
+                    >
+                        {!isMobile() && paymentCurrency !== paymentCurrencies.DATA &&
+                            <Translate
+                                value="modal.chooseAccessPeriod.uniswap"
+                                className={styles.uniswapFooter}
+                                tag="span"
+                                dangerousHTML
+                            />}
+                        <Buttons
+                            actions={actions}
+                        />
+                    </div>
+                )}
                 contentClassName={styles.noPadding}
             >
                 <div className={styles.root}>
                     <div className={styles.accessPeriod}>
-                        <Text
-                            type="number"
-                            value={isValidTime() ? time : ''}
-                            onChange={(e: SyntheticInputEvent<EventTarget>) => setTime(e.target.value)}
-                            className={styles.accessPeriodNumber}
-                        />
-                        <SelectField
-                            placeholder="Select"
-                            options={options}
-                            value={selectedValue}
-                            onChange={({ value: nextValue }) => onTimeUnitChange(nextValue)}
-                            className={styles.accessPeriodUnit}
-                        />
+                        <div className={styles.timeValueInput}>
+                            <Text
+                                type="number"
+                                value={isValidTime() ? time : ''}
+                                invalid={!isValidTime() || !isValidPrice()}
+                                onChange={(e: SyntheticInputEvent<EventTarget>) => setTime(e.target.value)}
+                                className={styles.accessPeriodNumber}
+                            />
+                            <SelectField
+                                placeholder="Select"
+                                options={options}
+                                value={selectedValue}
+                                onChange={({ value: nextValue }) => onTimeUnitChange(nextValue)}
+                                className={styles.accessPeriodUnit}
+                            />
+                        </div>
+                        {(!isValidTime() || !isValidPrice()) &&
+                        paymentCurrency !== paymentCurrencies.DATA &&
+                        (priceInEth !== '-' || priceInDai !== '-') && // prevent false positives during load
+                        (
+                            <Errors theme={MarketplaceTheme} className={styles.uniswapErrors}>
+                                {!isValidTime() &&
+                                    <React.Fragment>
+                                        <Translate
+                                            value="modal.chooseAccessPeriod.invalidTime"
+                                            className={styles.invalidInputDesktop}
+                                            tag="p"
+                                            dangerousHTML
+                                        />
+                                    </React.Fragment>
+                                }
+
+                                {!isValidPrice() && Number(priceInUsd) < MIN_UNISWAP_AMOUNT_USD &&
+                                    <React.Fragment>
+                                        <Translate
+                                            value="modal.chooseAccessPeriod.lowPriceDesktop"
+                                            className={styles.invalidInputDesktop}
+                                            tag="p"
+                                            dangerousHTML
+                                        />
+                                        <Translate
+                                            value="modal.chooseAccessPeriod.lowPriceMobile"
+                                            className={styles.invalidInputMobile}
+                                            tag="p"
+                                            dangerousHTML
+                                        />
+                                    </React.Fragment>
+                                }
+                                {!isValidPrice() && Number(priceInUsd) > MIN_UNISWAP_AMOUNT_USD &&
+                                    <React.Fragment>
+                                        <Translate
+                                            value="modal.chooseAccessPeriod.highPriceDesktop"
+                                            className={styles.invalidInputDesktop}
+                                            tag="p"
+                                            dangerousHTML
+                                        />
+                                        <Translate
+                                            value="modal.chooseAccessPeriod.highPriceMobile"
+                                            className={styles.invalidInputMobile}
+                                            tag="p"
+                                            dangerousHTML
+                                        />
+                                    </React.Fragment>
+                                }
+                            </Errors>
+                        )}
                     </div>
                     <div className={styles.balanceAndPrice}>
                         <span className={styles.balance}>
