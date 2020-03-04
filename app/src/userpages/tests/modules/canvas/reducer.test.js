@@ -1,4 +1,3 @@
-import expect from 'expect'
 import reducer from '../../../modules/canvas/reducer'
 import * as actions from '../../../modules/canvas/actions'
 
