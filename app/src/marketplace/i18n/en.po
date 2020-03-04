@@ -307,6 +307,29 @@ msgstr "Week"
 msgid "modal##chooseAccessPeriod##uniswap"
 msgstr "Exchange via Uniswap"
 
+msgid "modal##chooseAccessPeriod##invalidTime"
+msgstr "Access period must be a number"
+
+msgid "modal##chooseAccessPeriod##highPriceDesktop"
+msgstr "Transaction too large for Uniswap. Please try a shorter period."
+
+msgid "modal##chooseAccessPeriod##highPriceMobile"
+msgstr "Transaction too large. Please try a shorter period."
+
+msgid "modal##chooseAccessPeriod##lowPriceDesktop"
+msgstr "Transaction too small for Uniswap. Please try a longer period."
+
+msgid "modal##chooseAccessPeriod##lowPriceMobile"
+msgstr "Transaction too small. Please try a longer period."
+
+msgid "modal##connectEthereumAddress##title"
+msgstr "Connect your Ethereum address"
+
+msgid "modal##connectEthereumAddress##description"
+msgstr ""
+"Connect your Ethereum address to your Streamr account so your purchases are visible. "
+"Confirm this transaction in your wallet to proceed."
+
 msgid "modal##common##save"
 msgstr "Save"
 
@@ -825,7 +848,7 @@ msgstr ""
 "<br />"
 "this dialogue and get notified when your product is ready."
 
-msgid "modal##deployCommunity##deploying##estimatedDeploymentTime"
+msgid "modal##deployDataUnion##deploying##estimatedDeploymentTime"
 msgstr "Estimated deployment time"
 
 msgid "noProductsView##keywordHint"
@@ -847,6 +870,9 @@ msgstr "Go to core app"
 
 msgid "notFoundPage##publicSite"
 msgstr "Go to public site"
+
+msgid "notifications##notEnoughMembers"
+msgstr "The minimum community size for a Data Union is %{memberLimit} members."
 
 msgid "notifications##productPublished"
 msgstr "Your product has been published"

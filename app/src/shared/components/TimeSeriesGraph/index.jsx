@@ -44,9 +44,11 @@ const formatXAxisTicks = (value, index, scale, tickTotal, dayCount) => {
         return scale.tickFormat(tickTotal, '%a %d')(value)
     }
 
-    // Include month only for the first item and when month
-    // changes.
-    if (index === 0 || value.getDate() === 1) {
+    const previousTickDate = index > 0 ? scale.ticks()[index - 1] : null
+    const monthChanged = previousTickDate != null ? value.getMonth() !== previousTickDate.getMonth() : false
+
+    // Include month name only for the first item and when month changes
+    if (index === 0 || monthChanged) {
         return scale.tickFormat(tickTotal, '%b %d')(value)
     }
 

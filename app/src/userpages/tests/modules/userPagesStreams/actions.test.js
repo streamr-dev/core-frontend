@@ -1,4 +1,3 @@
-import assert from 'assert-diff'
 import thunk from 'redux-thunk'
 import configureMockStore from 'redux-mock-store'
 import sinon from 'sinon'
@@ -60,7 +59,7 @@ describe('Stream actions', () => {
             }]
 
             await store.dispatch(actions.createStream(stream))
-            assert.deepStrictEqual(store.getActions(), expectedActions)
+            expect(store.getActions()).toEqual(expectedActions)
         })
         it('creates CREATE_STREAM_FAILURE when creating stream has failed', async () => {
             const stream = {
@@ -87,9 +86,9 @@ describe('Stream actions', () => {
 
             try {
                 await store.dispatch(actions.createStream(stream))
-                assert(false, 'Did not fail!')
+                expect(false).toBe(true) // fail on purpose because action did not throw
             } catch (e) {
-                assert.deepStrictEqual(store.getActions().slice(0, 2), expectedActions.slice(0, 2))
+                expect(store.getActions().slice(0, 2)).toMatchObject(expectedActions.slice(0, 2))
             }
         })
     })
@@ -117,7 +116,7 @@ describe('Stream actions', () => {
                 stream: 'test',
             }]
             await store.dispatch(actions.getStream(id))
-            assert.deepStrictEqual(store.getActions(), expectedActions)
+            expect(store.getActions()).toEqual(expectedActions)
         })
         it('creates GET_STREAM_FAILURE when fetching stream has failed', async () => {
             const id = 'asdfasdfasasd'
@@ -143,7 +142,7 @@ describe('Stream actions', () => {
             try {
                 await store.dispatch(actions.getStream(id))
             } catch (e) {
-                assert.deepStrictEqual(store.getActions().slice(0, 2), expectedActions)
+                expect(store.getActions().slice(0, 2)).toMatchObject(expectedActions)
             }
         })
     })
@@ -174,7 +173,7 @@ describe('Stream actions', () => {
             }]
 
             await store.dispatch(actions.updateStream(stream))
-            assert.deepStrictEqual(store.getActions().slice(0, 2), expectedActions.slice(0, 2))
+            expect(store.getActions().slice(0, 2)).toEqual(expectedActions.slice(0, 2))
         })
         it('creates UPDATE_STREAM_FAILURE and CREATE_NOTIFICATION when updating a stream has failed', async () => {
             const id = 'test'
@@ -204,7 +203,7 @@ describe('Stream actions', () => {
             try {
                 await store.dispatch(actions.updateStream(db))
             } catch (e) {
-                assert.deepStrictEqual(store.getActions().slice(0, 2), expectedActions.slice(0, 2))
+                expect(store.getActions().slice(0, 2)).toMatchObject(expectedActions.slice(0, 2))
             }
         })
         it('uses PUT request', async () => {
@@ -215,8 +214,8 @@ describe('Stream actions', () => {
             }))
             await moxios.promiseWait()
             const request = moxios.requests.mostRecent()
-            assert.equal(request.url, `${process.env.STREAMR_API_URL}/streams/${id}`)
-            assert.equal(request.config.method.toLowerCase(), 'put')
+            expect(request.url).toEqual(`${process.env.STREAMR_API_URL}/streams/${id}`)
+            expect(request.config.method.toLowerCase()).toEqual('put')
         })
     })
 
@@ -228,8 +227,8 @@ describe('Stream actions', () => {
             store.dispatch(actions.deleteStream(stream.id))
             await moxios.promiseWait()
             const request = moxios.requests.mostRecent()
-            assert.equal(request.url, `${process.env.STREAMR_API_URL}/streams/${stream.id}`)
-            assert.equal(request.config.method, 'delete')
+            expect(request.url).toEqual(`${process.env.STREAMR_API_URL}/streams/${stream.id}`)
+            expect(request.config.method.toLowerCase()).toEqual('delete')
         })
         it('creates DELETE_STREAM_SUCCESS when deleting stream has succeeded', async () => {
             const stream = {
@@ -247,7 +246,7 @@ describe('Stream actions', () => {
             }]
 
             await store.dispatch(actions.deleteStream(stream.id))
-            assert.deepStrictEqual(store.getActions().slice(0, 2), expectedActions.slice(0, 2))
+            expect(store.getActions().slice(0, 2)).toEqual(expectedActions.slice(0, 2))
         })
         it('creates DELETE_STREAM_FAILURE when deleting stream has failed', async () => {
             const stream = {
@@ -273,9 +272,9 @@ describe('Stream actions', () => {
             }]
             try {
                 await store.dispatch(actions.deleteStream(stream.id))
-                assert(false, 'Did not fail!')
+                expect(false).toBe(true) // fail on purpose because action did not throw
             } catch (e) {
-                assert.deepStrictEqual(store.getActions().slice(0, 2), expectedActions.slice(0, 2))
+                expect(store.getActions().slice(0, 2)).toMatchObject(expectedActions.slice(0, 2))
             }
         })
     })
@@ -294,9 +293,9 @@ describe('Stream actions', () => {
             store.dispatch(actions.saveFields(id, fields))
             await moxios.promiseWait()
             const request = moxios.requests.mostRecent()
-            assert.equal(request.url, `${process.env.STREAMR_API_URL}/streams/${id}/fields`)
-            assert.equal(request.config.method, 'post')
-            assert.deepStrictEqual(JSON.parse(request.config.data), fields)
+            expect(request.url).toEqual(`${process.env.STREAMR_API_URL}/streams/${id}/fields`)
+            expect(request.config.method).toEqual('post')
+            expect(JSON.parse(request.config.data)).toEqual(fields)
         })
         it('creates SAVE_STREAM_FIELDS_SUCCESS when saving fields has succeeded', async () => {
             const id = 'sfasldkfjsaldkfj'
@@ -326,7 +325,7 @@ describe('Stream actions', () => {
             }]
 
             await store.dispatch(actions.saveFields(id, fields))
-            assert.deepStrictEqual(store.getActions().slice(0, 2), expectedActions.slice(0, 2))
+            expect(store.getActions().slice(0, 2)).toEqual(expectedActions.slice(0, 2))
         })
         it('creates SAVE_STREAM_FIELDS_FAILURE when saving fields has failed', async () => {
             const id = 'sfasldkfjsaldkfj'
@@ -358,16 +357,16 @@ describe('Stream actions', () => {
 
             try {
                 await store.dispatch(actions.saveFields(id, fields))
-                assert(false, 'Did not fail!')
+                expect(false).toBe(true) // fail on purpose because action did not throw
             } catch (e) {
-                assert.deepStrictEqual(store.getActions().slice(0, 2), expectedActions.slice(0, 2))
+                expect(store.getActions().slice(0, 2)).toMatchObject(expectedActions.slice(0, 2))
             }
         })
     })
 
     it('must dispatch OPEN_STREAM when opening stream', () => {
         const id = 'askdfjasldkfjasdlkf'
-        assert.deepStrictEqual(actions.openStream(id), {
+        expect(actions.openStream(id)).toEqual({
             type: actions.OPEN_STREAM,
             id,
         })

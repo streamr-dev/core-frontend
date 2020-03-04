@@ -1,11 +1,11 @@
 // @flow
 
-import React from 'react'
+import React, { type Node } from 'react'
 import cx from 'classnames'
 import { Link } from 'react-router-dom'
 
 import AvatarUpload from './AvatarUpload'
-import NameAndEmail from './NameAndEmail'
+import NameAndUsername from './NameAndUsername'
 import AvatarCircle from '$shared/components/AvatarCircle'
 import type { User } from '$shared/flowtype/user-types'
 
@@ -18,6 +18,7 @@ type Props = {
     className?: string,
     linkToProfile?: boolean,
     onImageChange?: (?File) => Promise<void>,
+    children?: Node,
 }
 
 const Avatar = ({
@@ -26,6 +27,7 @@ const Avatar = ({
     className,
     linkToProfile,
     onImageChange,
+    children,
 }: Props) => (
     <div className={cx(className, styles.container)}>
         {!!linkToProfile && (
@@ -37,7 +39,9 @@ const Avatar = ({
             <AvatarCircle name={user.name} imageUrl={user.imageUrlLarge} className={styles.avatarCircle} uploadAvatarPlaceholder />
         )}
         {!editable && (
-            <NameAndEmail name={user.name} email={user.username} />
+            <NameAndUsername name={user.name} username={user.username}>
+                {children}
+            </NameAndUsername>
         )}
         {editable && onImageChange && (
             <AvatarUpload onImageChange={onImageChange} image={(user && user.imageUrlLarge) || ''} />

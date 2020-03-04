@@ -2,5 +2,5 @@
 
 set -e
 
-$(dirname $0)/build-docker-env.sh
+$(dirname $0)/start-docker-env.sh
 npm test -- --maxWorkers=2

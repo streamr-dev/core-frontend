@@ -8,6 +8,7 @@ import type {
     IntegrationKeysAction,
     IntegrationKeyIdAction,
     IntegrationKeysErrorAction,
+    SetBalanceAction,
 } from './types'
 import {
     INTEGRATION_KEYS_REQUEST,
@@ -22,6 +23,7 @@ import {
     DELETE_INTEGRATION_KEY_REQUEST,
     DELETE_INTEGRATION_KEY_SUCCESS,
     DELETE_INTEGRATION_KEY_FAILURE,
+    SET_BALANCE,
 } from './constants'
 
 export const initialState: IntegrationKeyState = {
@@ -35,6 +37,7 @@ export const initialState: IntegrationKeyState = {
     creatingIdentityError: null,
     removingIntegrationKey: false,
     removingIntegrationError: null,
+    balances: {},
 }
 
 const reducer: (IntegrationKeyState) => IntegrationKeyState = handleActions({
@@ -109,6 +112,16 @@ const reducer: (IntegrationKeyState) => IntegrationKeyState = handleActions({
         ...state,
         removingIntegrationKey: false,
         removingIntegrationError: action.payload.error,
+    }),
+
+    [SET_BALANCE]: (state: IntegrationKeyState, action: SetBalanceAction) => ({
+        ...state,
+        balances: {
+            ...state.balances,
+            [action.payload.account]: {
+                ...action.payload.balances,
+            },
+        },
     }),
 
 }, initialState)

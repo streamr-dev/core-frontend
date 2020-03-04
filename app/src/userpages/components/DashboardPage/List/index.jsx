@@ -5,24 +5,21 @@ import { useSelector, useDispatch } from 'react-redux'
 import { Translate, I18n } from 'react-redux-i18n'
 import Helmet from 'react-helmet'
 import { Link } from 'react-router-dom'
-import cx from 'classnames'
 
 import links from '$userpages/../links'
 import { getDashboards } from '$userpages/modules/dashboard/actions'
 import { selectDashboards, selectFetching } from '$userpages/modules/dashboard/selectors'
 import Layout from '$userpages/components/Layout'
 import { getFilters } from '$userpages/utils/constants'
-import Tile from '$shared/components/Tile'
-import TileStyles from '$shared/components/Tile/tile.pcss'
 import Search from '../../Header/Search'
 import Dropdown from '$shared/components/Dropdown'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
-import DashboardPreview from '$editor/dashboard/components/Preview'
 import styles from './dashboardList.pcss'
 import ListContainer from '$shared/components/Container/List'
-import TileGrid from '$shared/components/TileGrid'
 import Button from '$shared/components/Button'
 import useFilterSort from '$userpages/hooks/useFilterSort'
+import { DashboardTile } from '$shared/components/Tile'
+import Grid from '$shared/components/Tile/Grid'
 
 import NoDashboardsView from './NoDashboards'
 
@@ -40,6 +37,7 @@ const DashboardList = () => {
     const sortOptions = useMemo(() => {
         const filters = getFilters()
         return [
+            filters.RECENT,
             filters.NAME_ASC,
             filters.NAME_DESC,
         ]
@@ -95,20 +93,11 @@ const DashboardList = () => {
                     />
                 )}
                 {dashboards && dashboards.length > 0 && (
-                    <TileGrid>
+                    <Grid>
                         {dashboards.map((dashboard) => (
-                            <Link
-                                key={dashboard.id}
-                                to={`${links.editor.dashboardEditor}/${dashboard.id}`}
-                            >
-                                <Tile
-                                    image={<DashboardPreview className={cx(styles.PreviewImage, TileStyles.image)} dashboard={dashboard} />}
-                                >
-                                    <Tile.Title>{dashboard.name}</Tile.Title>
-                                </Tile>
-                            </Link>
+                            <DashboardTile key={dashboard.id} dashboard={dashboard} />
                         ))}
-                    </TileGrid>
+                    </Grid>
                 )}
             </ListContainer>
             <DocsShortcuts />

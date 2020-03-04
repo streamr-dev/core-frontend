@@ -37,6 +37,7 @@ import CompletePurchaseDialog from '$mp/components/Modal/CompletePurchaseDialog'
 import ReadyToPublishDialog from '$mp/components/Modal/ReadyToPublishDialog'
 import ReadyToUnpublishDialog from '$mp/components/Modal/ReadyToUnpublishDialog'
 import SaveContractProductDialog from '$mp/components/Modal/SaveContractProductDialog'
+import ConnectEthereumAddressDialog from '$mp/components/Modal/ConnectEthereumAddressDialog'
 import SetAllowanceDialog from '$mp/components/Modal/SetAllowanceDialog'
 import ErrorDialog from '$mp/components/Modal/ErrorDialog'
 import CropImageModal from '$mp/components/Modal/CropImageModal'
@@ -305,21 +306,21 @@ story('Product Editor/GuidedDeployDataUnionDialog')
             product={{
                 id: '1',
                 name: 'Example product',
-                type: 'COMMUNITY',
+                type: 'DATAUNION',
             }}
             onClose={action('onClose')}
             onContinue={action('onContinue')}
         />
     ))
 
-story('Product Editor/ConfirmDeployCommunityDialog')
+story('Product Editor/ConfirmDeployDataUnionDialog')
     .add('default', () => (
         <ConfirmDeployDataUnionDialog
             // $FlowFixMe
             product={{
                 id: '1',
                 name: 'Example product',
-                type: 'COMMUNITY',
+                type: 'DATAUNION',
             }}
             onClose={action('onClose')}
             onContinue={action('onContinue')}
@@ -334,7 +335,7 @@ story('Product Editor/DeployingCommunityDialog')
             product={{
                 id: '1',
                 name: 'Example product',
-                type: 'COMMUNITY',
+                type: 'DATAUNION',
             }}
             estimate={number('Estimate', 360)}
             onClose={action('onClose')}
@@ -347,7 +348,7 @@ story('Product Editor/DeployingCommunityDialog')
             product={{
                 id: '1',
                 name: 'Example product',
-                type: 'COMMUNITY',
+                type: 'DATAUNION',
             }}
             estimate={number('Estimate', 360)}
             onClose={action('onClose')}
@@ -531,6 +532,31 @@ story('Marketplace/PurchaseSummaryDialog')
             onCancel={action('onCancel')}
             onPay={action('onPay')}
             purchaseStarted
+        />
+    ))
+
+story('Marketplace/ConnectEthereumAddressDialog')
+    .add('default', () => (
+        <ConnectEthereumAddressDialog
+            onCancel={action('close')}
+            onSet={action('onSet')}
+        />
+    ))
+    .add('default (iPhone)', () => (
+        <ConnectEthereumAddressDialog
+            onCancel={action('close')}
+            onSet={action('onSet')}
+        />
+    ), {
+        viewport: {
+            defaultViewport: 'iPhone',
+        },
+    })
+    .add('waiting', () => (
+        <ConnectEthereumAddressDialog
+            onCancel={action('close')}
+            onSet={action('onSet')}
+            waiting
         />
     ))
 

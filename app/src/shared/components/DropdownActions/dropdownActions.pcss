@@ -6,15 +6,32 @@
     margin: 8px 0 0;
     font-size: 14px;
     min-width: 6rem;
+    padding: 4px 0;
 
+    a,
     button {
       padding: 0 16px 0;
-      line-height: 32px;
-    }
+      line-height: 28px;
 
-    button:focus {
-      outline: none;
-      box-shadow: inset 0 0 0 1.5px var(--focus-border-color);
+      &,
+      &:link {
+        color: #323232;
+      }
+
+      &[disabled] {
+        color: #ADADAD;
+      }
+
+      &:focus {
+        outline: none;
+        box-shadow: inset 0 0 0 1.5px var(--focus-border-color);
+      }
+
+      &:global(.dropdown-item:active),
+      &:global(.dropdown-item.active) {
+        background-color: #F7F7F9;
+        color: var(--greyDark);
+      }
     }
   }
 }

@@ -57,7 +57,7 @@ function useDataUnionStats() {
     const [memberCount, setMemberCount] = useState(null)
     const isMounted = useIsMounted()
 
-    const { created, beneficiaryAddress } = product
+    const { created, beneficiaryAddress } = product || {}
     const dataUnion = useDataUnion()
 
     const { subscriberCount } = contractProduct || {}

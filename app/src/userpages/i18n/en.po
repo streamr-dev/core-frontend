@@ -475,9 +475,8 @@ msgid "userpages##streams##edit##configure##historicalStoragePeriod##label"
 msgstr "Period to retain historical data until auto-removal"
 
 msgid "userpages##streams##edit##preview##description"
-msgstr ""
-"You can configure your stream’s fields and preview the live data here. "
-"Use the Inspector to view details, and the transport controls to check the data is flowing correctly."
+msgstr "You can preview the stream's live data here. Use the Inspector to view details and use the transport controls to check the data is flowing correctly. "
+"If you need help pushing data to your stream, see the <a href=\"%{docsLink}\">docs</a>."
 
 msgid "userpages##streams##edit##preview##inspect"
 msgstr "Inspect data"
@@ -487,12 +486,6 @@ msgstr "Start"
 
 msgid "userpages##streams##edit##preview##stop"
 msgstr "Stop"
-
-msgid "userpages##streams##edit##preview##noDataPre"
-msgstr "This Stream has no data yet. Check out the "
-
-msgid "userpages##streams##edit##preview##noDataEnd"
-msgstr " for a guide to push data to your stream."
 
 msgid "userpages##streams##delete##confirmTitle"
 msgstr "Delete this stream?"
@@ -578,7 +571,12 @@ msgid "userpages##streams##partitionsReadMore"
 msgstr "docs"
 
 msgid "userpages##streams##partitionsLabel"
-msgstr "Number of partitions"
+msgstr "Partitions"
+
+msgid "userpages##streams##partitionsTooltip"
+msgstr ""
+"Partitioning enables high-volume streams to scale. "
+"Read more in the <a href=\"%{docsLink}\">docs</a>."
 
 msgid "userpages##streams##inactivityDescription"
 msgstr "If no new data is published to this stream, it will be shown as inactive on the marketplace after this period of time. Adjust the threshold to an appropriate period for your stream's frequency."

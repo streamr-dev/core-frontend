@@ -20,7 +20,7 @@ describe('KeyField', () => {
                 value="testValue"
             />)
 
-            assert(el.find('Label').text() === 'myKey')
+            assert(el.find('Label').text().replace(/\u200c/g, '') === 'myKey') // get rid of invisible &zwnj;
             assert(el.find(Text).prop('value') === 'testValue')
             assert(el.find(Text).prop('type') === 'text')
         })

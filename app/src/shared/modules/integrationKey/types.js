@@ -1,7 +1,8 @@
 // @flow
 
 import type { PayloadAction, ErrorInUi } from '$shared/flowtype/common-types'
-import type { IntegrationKeyId, IntegrationKeyIdList } from '$shared/flowtype/integration-key-types'
+import type { IntegrationKeyId, IntegrationKeyIdList, Balances } from '$shared/flowtype/integration-key-types'
+import type { Address } from '$shared/flowtype/web3-types'
 
 export type IntegrationKeysAction = PayloadAction<{
     ethereumIdentities: IntegrationKeyIdList,
@@ -19,3 +20,10 @@ export type IntegrationKeyIdAction = PayloadAction<{
 }>
 
 export type IntegrationKeyIdActionCreator = (IntegrationKeyId) => IntegrationKeyIdAction
+
+export type SetBalanceAction = PayloadAction<{
+    account: Address,
+    balances: Balances,
+}>
+
+export type SetBalanceActionCreator = (Address, Balances) => SetBalanceAction

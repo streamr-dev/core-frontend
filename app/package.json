@@ -148,7 +148,6 @@
     "eslint-plugin-react-hooks": "^1.6.0",
     "ethereumjs-util": "^6.1.0",
     "events": "^3.0.0",
-    "expect": "^25.0.0",
     "extract-text-webpack-plugin": "^3.0.2",
     "file-loader": "^1.1.9",
     "file-saver": "^2.0.2",

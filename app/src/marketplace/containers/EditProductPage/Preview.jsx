@@ -15,8 +15,7 @@ import { lg } from '$app/scripts/breakpoints'
 
 import DescriptionComponent from '$mp/components/ProductPage/Description'
 import HeroComponent from '$mp/components/Hero'
-import FallbackImage from '$shared/components/FallbackImage'
-import Tile from '$shared/components/Tile'
+import { ImageTile } from '$shared/components/Tile'
 import ProductDetails from '$mp/components/ProductPage/ProductDetails'
 import StreamListing from '$mp/components/ProductPage/StreamListing'
 import ProductContainer from '$shared/components/Container/Product'
@@ -52,19 +51,11 @@ const Hero = () => {
             containerClassName={heroStyles.heroContainer}
             product={product}
             leftContent={
-                <div className={heroStyles.productImageWrapper}>
-                    <FallbackImage
-                        className={heroStyles.productImage}
-                        src={preview || product.imageUrl || ''}
-                        alt={product.name}
-                    />
-                    <Tile.Labels
-                        topLeft
-                        labels={{
-                            dataUnion: isDataUnion,
-                        }}
-                    />
-                </div>
+                <ImageTile
+                    alt={product.name}
+                    src={preview || product.imageUrl}
+                    showDataUnionBadge={isDataUnion}
+                />
             }
             rightContent={
                 <ProductDetails

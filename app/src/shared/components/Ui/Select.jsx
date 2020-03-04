@@ -66,8 +66,9 @@ const customStyles = {
     }),
     option: (provided, state) => ({
         ...provided,
+        textAlign: 'left',
         padding: '0 1rem',
-        paddingLeft: '2rem',
+        paddingLeft: '1rem',
         color: '#323232',
         position: 'relative',
         backgroundColor: state.isSelected || state.isFocused ? '#f8f8f8' : null,
@@ -88,6 +89,7 @@ const customStyles = {
     }),
     singleValue: (provided) => ({
         ...provided,
+        margin: 0,
         overflow: 'visible',
     }),
 }
@@ -106,7 +108,7 @@ const UnstyledTick = (props: any) => (
 
 const Tick = styled(UnstyledTick)`
     height: 8px;
-    left: 1.1rem;
+    right: 12px;
     position: absolute;
     top: 50%;
     transform: translate(-50%, -50%);
@@ -160,6 +162,7 @@ const UnstyledSelect = ({
         required={required}
         clearable={clearable}
         isDisabled={disabled}
+        isSearchable={false}
         // $FlowFixMe potential override necessary.
         {...props}
     />

@@ -3,10 +3,17 @@
 import React, { useState, useMemo } from 'react'
 import cx from 'classnames'
 
-import type { IntegrationKeyId, IntegrationKey, IntegrationKeyList as IntegrationKeyListType } from '$shared/flowtype/integration-key-types'
+import {
+    BalanceType,
+    type IntegrationKeyId,
+    type IntegrationKey,
+    type IntegrationKeyList as IntegrationKeyListType,
+} from '$shared/flowtype/integration-key-types'
 import KeyField from '$userpages/components/KeyField'
-import { useBalance, BalanceType } from '$shared/hooks/useBalance'
+import Balance from '$userpages/components/Balance'
+import { useAccountBalance } from '$shared/hooks/useBalances'
 import styles from './integrationKeyList.pcss'
+import Label from '$ui/Label'
 
 type CommonProps = {|
     hideValues?: boolean,
@@ -30,18 +37,8 @@ const IntegrationKeyItem = ({
     const [editing, setEditing] = useState(false)
     const address = useMemo(() => (item.json || {}).address || '', [item])
 
-    /* eslint-disable object-curly-newline */
-    const {
-        balance: dataBalance,
-        fetching: fetchingDataBalance,
-        error: dataBalanceError,
-    } = useBalance(address, BalanceType.DATA)
-    const {
-        balance: ethBalance,
-        fetching: fetchingEthBalance,
-        error: ethBalanceError,
-    } = useBalance(address, BalanceType.ETH)
-    /* eslint-enable object-curly-newline */
+    const dataBalance = useAccountBalance(address, BalanceType.DATA)
+    const ethBalance = useAccountBalance(address, BalanceType.ETH)
 
     return (
         <div className={styles.keyField}>
@@ -58,18 +55,18 @@ const IntegrationKeyItem = ({
                 onToggleEditor={setEditing}
                 valueLabel="address"
                 labelComponent={!editing && (
-                    <div className={styles.balances}>
-                        <span className={styles.balanceLabel}>DATA</span>
-                        <span className={styles.balanceValue}>
-                            {!fetchingDataBalance && !dataBalanceError && (dataBalance)}
-                            {!fetchingDataBalance && !!dataBalanceError && '-'}
-                        </span>
-                        <span className={styles.balanceLabel}>ETH</span>
-                        <span className={styles.balanceValue}>
-                            {!fetchingEthBalance && !ethBalanceError && (ethBalance)}
-                            {!fetchingEthBalance && !!ethBalanceError && '-'}
-                        </span>
-                    </div>
+                    <Label as="div">
+                        <Balance className={styles.balances}>
+                            <Balance.Account
+                                name="DATA"
+                                value={dataBalance}
+                            />
+                            <Balance.Account
+                                name="ETH"
+                                value={ethBalance}
+                            />
+                        </Balance>
+                    </Label>
                 )}
             />
         </div>

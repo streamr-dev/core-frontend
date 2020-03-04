@@ -241,8 +241,7 @@ module.exports = {
                     // skip conditional stubs
                     '**/stub.jsx',
                     // skip stories
-                    '**/*.stories.js',
-                    '**/*.stories.jsx',
+                    '**/*.stories.*',
                     // and files used by stories
                     'src/editor/canvas/components/ModuleRenderer/modules.js',
                     // skip MD documentation

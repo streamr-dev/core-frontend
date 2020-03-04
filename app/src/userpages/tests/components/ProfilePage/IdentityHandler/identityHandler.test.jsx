@@ -25,6 +25,7 @@ jest.mock('$shared/hooks/useModal', () => (
     }))
 ))
 jest.mock('$shared/hooks/useIsMounted')
+jest.mock('$shared/hooks/useBalances')
 
 describe('IdentityHandler', () => {
     beforeEach(() => {
