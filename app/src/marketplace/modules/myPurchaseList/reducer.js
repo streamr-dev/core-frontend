@@ -14,10 +14,12 @@ import type {
     MyPurchasesAction,
     MyPurchasesErrorAction,
     MyPurchasesFilterAction,
+    MySubscriptionsAction,
 } from './types'
 
 export const initialState: MyPurchaseListState = {
-    ids: [],
+    products: [],
+    subscriptions: [],
     fetching: false,
     error: null,
     filter: null,
@@ -30,9 +32,9 @@ const reducer: (MyPurchaseListState) => MyPurchaseListState = handleActions({
         error: null,
     }),
 
-    [GET_MY_PURCHASES_SUCCESS]: (state: MyPurchaseListState, action: MyPurchasesAction) => ({
+    [GET_MY_PURCHASES_SUCCESS]: (state: MyPurchaseListState, action: MySubscriptionsAction) => ({
         ...state,
-        ids: action.payload.products,
+        subscriptions: action.payload.subscriptions,
         fetching: false,
     }),
 
@@ -49,7 +51,7 @@ const reducer: (MyPurchaseListState) => MyPurchaseListState = handleActions({
 
     [UPDATE_RESULTS]: (state: MyPurchaseListState, action: MyPurchasesAction) => ({
         ...state,
-        ids: action.payload.products,
+        products: action.payload.products,
     }),
 
 }, initialState)

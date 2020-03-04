@@ -34,6 +34,7 @@ const PurchasesPage = () => {
     const sortOptions = useMemo(() => {
         const filters = getFilters()
         return [
+            filters.RECENT,
             filters.NAME_ASC,
             filters.NAME_DESC,
             filters.ACTIVE,

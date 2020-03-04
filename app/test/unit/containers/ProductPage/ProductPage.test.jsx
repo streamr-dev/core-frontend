@@ -99,7 +99,8 @@ describe('ProductPage', () => {
                 },
             },
             myPurchaseList: {
-                ids: [],
+                products: [],
+                subscriptions: [],
                 fetching: false,
                 error: null,
             },
