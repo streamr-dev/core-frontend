@@ -145,6 +145,7 @@ const ProductsPage = () => {
 
                         return (
                             <ProductTile
+                                key={id}
                                 actions={
                                     <Fragment>
                                         <MenuItems.Edit id={id} />
