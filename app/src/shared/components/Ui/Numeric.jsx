@@ -26,7 +26,7 @@ const Buttons = styled(UnstyledButtons)`
     display: inline-grid;
     grid-template-rows: 50% 50%;
     position: absolute;
-    right: 24px;
+    right: 0;
     margin: 1px; /* We don't want to overlap with text field's border */
 
     button {

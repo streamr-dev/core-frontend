@@ -1,6 +1,6 @@
 // @flow
 
-import React from 'react'
+import React, { type ComponentType } from 'react'
 
 import UploadIcon from './ImageUploadIcon'
 import CheckmarkIcon from './CheckmarkIcon'
@@ -509,10 +509,12 @@ type Props = {
     name: IconName,
 }
 
-const SvgIcon = ({ name, ...props }: Props) => React.cloneElement(sources[name], {
+const SvgIcon = (React.forwardRef(({ name, ...props }: Props, ref) => React.cloneElement(sources[name], {
     ...props,
-})
+    ref,
+})): ComponentType<Props>)
 
+// $FlowFixMe suppress flow complaining about property `names` is missing in  `React.AbstractComponentStatics`
 SvgIcon.names = Object.keys(sources).sort()
 
 export default SvgIcon

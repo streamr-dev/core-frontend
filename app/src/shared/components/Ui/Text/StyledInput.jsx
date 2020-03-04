@@ -57,7 +57,7 @@ export default styled.input`
         appearance: textfield; /* Hide spin buttons for Mozilla based browsers */
         display: inline-block;
         margin: 0;
-        width: calc(100% - 24px);
+        width: 100%;
     }
 
     /* Hide spin buttons for Webkit based browsers */
