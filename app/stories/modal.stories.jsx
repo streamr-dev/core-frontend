@@ -313,7 +313,7 @@ story('Product Editor/GuidedDeployDataUnionDialog')
         />
     ))
 
-story('Product Editor/ConfirmDeployCommunityDialog')
+story('Product Editor/ConfirmDeployDataUnionDialog')
     .add('default', () => (
         <ConfirmDeployDataUnionDialog
             // $FlowFixMe

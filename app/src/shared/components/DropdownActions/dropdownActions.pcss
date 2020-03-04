@@ -8,9 +8,19 @@
     min-width: 6rem;
     padding: 4px 0;
 
+    a,
     button {
       padding: 0 16px 0;
       line-height: 28px;
+
+      &,
+      &:link {
+        color: #323232;
+      }
+
+      &[disabled] {
+        color: #ADADAD;
+      }
 
       &:focus {
         outline: none;

@@ -2,27 +2,24 @@
 
 import React, { useMemo, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Translate, I18n } from 'react-redux-i18n'
-import cx from 'classnames'
+import { I18n } from 'react-redux-i18n'
 import Helmet from 'react-helmet'
-import { Link } from 'react-router-dom'
 
 import Layout from '../Layout'
-import links from '../../../links'
 import { getFilters } from '../../utils/constants'
 import { getMyPurchases, updateFilter, applyFilter } from '$mp/modules/myPurchaseList/actions'
 import { selectMyPurchaseList, selectSubscriptions, selectFetchingMyPurchaseList } from '$mp/modules/myPurchaseList/selectors'
-import Tile from '$shared/components/Tile'
 import { isActive } from '$mp/utils/time'
 import Search from '../Header/Search'
 import Dropdown from '$shared/components/Dropdown'
 import NoPurchasesView from './NoPurchases'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
 import ListContainer from '$shared/components/Container/List'
-import TileGrid from '$shared/components/TileGrid'
 import { isDataUnionProduct } from '$mp/utils/product'
 import useFilterSort from '$userpages/hooks/useFilterSort'
 import useMemberStats from '$mp/modules/dataUnion/hooks/useMemberStats'
+import { PurchaseTile } from '$shared/components/Tile'
+import Grid from '$shared/components/Tile/Grid'
 
 import type { ProductSubscription } from '$mp/flowtype/product-types'
 
@@ -100,49 +97,27 @@ const PurchasesPage = () => {
                         onResetFilter={resetFilter}
                     />
                 )}
-                <TileGrid>
-                    {purchases.map((product) => {
-                        const isActive = subscriptions && isSubscriptionActive(subscriptions.find((s) => s.product.id === product.id))
-                        const isDataUnion = isDataUnionProduct(product)
-                        const beneficiaryAddress = (product.beneficiaryAddress || '').toLowerCase()
-                        const memberCount = members[beneficiaryAddress]
+                {purchases.length > 0 && (
+                    <Grid>
+                        {purchases.map((product) => {
+                            const isActive = subscriptions && isSubscriptionActive(subscriptions.find((s) => s.product.id === product.id))
+                            const isDataUnion = isDataUnionProduct(product)
+                            const beneficiaryAddress = (product.beneficiaryAddress || '').toLowerCase()
+                            const memberCount = isDataUnion ? members[beneficiaryAddress] : undefined
 
-                        return (
-                            <Link
-                                key={product.id}
-                                to={product.id && `${links.marketplace.products}/${product.id}`}
-                            >
-                                <Tile
-                                    imageUrl={product.imageUrl || ''}
-                                    link={product.id && `${links.marketplace.products}/${product.id}`}
-                                    labels={{
-                                        dataUnion: isDataUnion,
-                                    }}
-                                    badges={(isDataUnion && memberCount !== undefined) ? {
-                                        members: memberCount,
-                                    } : undefined}
-                                    deploying={!fetchingDataUnionStats && (isDataUnion && beneficiaryAddress && memberCount === undefined)}
-                                >
-                                    <Tile.Title>{product.name}</Tile.Title>
-                                    <Tile.Description>{product.owner}</Tile.Description>
-                                    <Tile.Status
-                                        className={
-                                            cx({
-                                                [styles.active]: isActive,
-                                                [styles.expired]: !isActive,
-                                            })}
-                                    >
-                                        {
-                                            isActive ?
-                                                <Translate value="userpages.purchases.active" /> :
-                                                <Translate value="userpages.purchases.expired" />
-                                        }
-                                    </Tile.Status>
-                                </Tile>
-                            </Link>
-                        )
-                    })}
-                </TileGrid>
+                            return (
+                                <PurchaseTile
+                                    isSubActive={isActive}
+                                    key={product.id}
+                                    numMembers={memberCount}
+                                    product={product}
+                                    showDataUnionBadge={isDataUnion}
+                                    showDeployingBadge={!fetchingDataUnionStats}
+                                />
+                            )
+                        })}
+                    </Grid>
+                )}
             </ListContainer>
             <DocsShortcuts />
         </Layout>
