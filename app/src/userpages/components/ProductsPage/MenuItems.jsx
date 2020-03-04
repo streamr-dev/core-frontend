@@ -3,7 +3,7 @@
 import React, { useCallback } from 'react'
 import { formatPath, formatExternalUrl } from '$shared/utils/url'
 import { Link } from 'react-router-dom'
-import { MenuItem } from '$shared/components/Tile2/Menu'
+import { MenuItem } from '$shared/components/Tile/Menu'
 import { Translate } from 'react-redux-i18n'
 import routes from '$routes'
 import useCopy from '$shared/hooks/useCopy'

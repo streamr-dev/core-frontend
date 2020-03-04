@@ -9,7 +9,7 @@ import ImageContainer from './ImageContainer'
 import Grid from './Grid'
 import Summary from './Summary'
 import Menu, { MenuItem } from './Menu'
-import Tile2, { updatedAt } from './'
+import Tile, { updatedAt } from './'
 
 const stories = storiesOf('Shared/Tile (new)', module)
     .addDecorator(styles({
@@ -20,23 +20,23 @@ const stories = storiesOf('Shared/Tile (new)', module)
 
 stories.add('placeholder only', () => (
     <Grid>
-        <Tile2>
+        <Tile>
             <ImageContainer src="" />
-        </Tile2>
+        </Tile>
     </Grid>
 ))
 
 stories.add('with sample image', () => (
     <Grid>
-        <Tile2>
+        <Tile>
             <ImageContainer src={sample} />
-        </Tile2>
+        </Tile>
     </Grid>
 ))
 
 stories.add('with sample image and badge', () => (
     <Grid>
-        <Tile2>
+        <Tile>
             <ImageContainer src={sample}>
                 <DataUnionBadge top left />
                 <DeployingBadge bottom right />
@@ -45,7 +45,7 @@ stories.add('with sample image and badge', () => (
                     15
                 </IconBadge>
             </ImageContainer>
-        </Tile2>
+        </Tile>
     </Grid>
 ))
 
@@ -53,7 +53,7 @@ stories.add('elastic grid', () => (
     <Grid>
         {[...Array(5)].map((i, index) => (
             // eslint-disable-next-line react/no-array-index-key
-            <Tile2 key={index}>
+            <Tile key={index}>
                 <Menu>
                     <MenuItem>Item #1</MenuItem>
                     <MenuItem>Item #2</MenuItem>
@@ -81,7 +81,7 @@ stories.add('elastic grid', () => (
                         )}
                     />
                 </a>
-            </Tile2>
+            </Tile>
         ))}
     </Grid>
 ))

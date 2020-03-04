@@ -15,7 +15,7 @@ import type { ButtonActions } from '$shared/components/Buttons'
 import Products from '$mp/components/Products'
 import FallbackImage from '$shared/components/FallbackImage'
 import { isDataUnionProduct } from '$mp/utils/product'
-import { ImageTile } from '$shared/components/Tile2'
+import { ImageTile } from '$shared/components/Tile'
 
 import ProductDetails from '$mp/components/deprecated/ProductPage/ProductDetails'
 import StreamListing from '$mp/components/ProductPage/StreamListing'

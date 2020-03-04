@@ -18,8 +18,8 @@ import ListContainer from '$shared/components/Container/List'
 import { isDataUnionProduct } from '$mp/utils/product'
 import useFilterSort from '$userpages/hooks/useFilterSort'
 import useMemberStats from '$mp/modules/dataUnion/hooks/useMemberStats'
-import { PurchaseTile } from '$shared/components/Tile2'
-import Grid from '$shared/components/Tile2/Grid'
+import { PurchaseTile } from '$shared/components/Tile'
+import Grid from '$shared/components/Tile/Grid'
 
 import type { ProductSubscription } from '$mp/flowtype/product-types'
 

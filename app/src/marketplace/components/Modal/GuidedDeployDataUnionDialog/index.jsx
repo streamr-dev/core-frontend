@@ -10,7 +10,7 @@ import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import Buttons from '$shared/components/Buttons'
 import Checkbox from '$shared/components/Checkbox'
-import { ProductTile, ImageTile } from '$shared/components/Tile2'
+import { ProductTile, ImageTile } from '$shared/components/Tile'
 import { type Product } from '$mp/flowtype/product-types'
 
 import dataUnionStats from '$mp/assets/deploy-modal-stats.png'

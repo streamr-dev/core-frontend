@@ -15,7 +15,7 @@ import { lg } from '$app/scripts/breakpoints'
 
 import DescriptionComponent from '$mp/components/ProductPage/Description'
 import HeroComponent from '$mp/components/Hero'
-import { ImageTile } from '$shared/components/Tile2'
+import { ImageTile } from '$shared/components/Tile'
 import ProductDetails from '$mp/components/ProductPage/ProductDetails'
 import StreamListing from '$mp/components/ProductPage/StreamListing'
 import ProductContainer from '$shared/components/Container/Product'

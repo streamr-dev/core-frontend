@@ -5,7 +5,7 @@ import { I18n } from 'react-redux-i18n'
 import cx from 'classnames'
 import { ThemeProvider } from 'styled-components'
 
-import { ImageTile } from '$shared/components/Tile2'
+import { ImageTile } from '$shared/components/Tile'
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import Buttons from '$shared/components/Buttons'

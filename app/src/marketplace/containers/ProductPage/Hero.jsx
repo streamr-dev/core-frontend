@@ -16,7 +16,7 @@ import {
     selectSubscriptionIsValid,
     selectContractSubscription,
 } from '$mp/modules/product/selectors'
-import { ImageTile } from '$shared/components/Tile2'
+import { ImageTile } from '$shared/components/Tile'
 
 import routes from '$routes'
 

@@ -33,8 +33,8 @@ import Button from '$shared/components/Button'
 import useFilterSort from '$userpages/hooks/useFilterSort'
 import useCopy from '$shared/hooks/useCopy'
 import styles from './canvasList.pcss'
-import { CanvasTile } from '$shared/components/Tile2'
-import Grid from '$shared/components/Tile2/Grid'
+import { CanvasTile } from '$shared/components/Tile'
+import Grid from '$shared/components/Tile/Grid'
 
 const CreateCanvasButton = () => (
     <Button

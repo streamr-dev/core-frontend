@@ -18,8 +18,8 @@ import styles from './dashboardList.pcss'
 import ListContainer from '$shared/components/Container/List'
 import Button from '$shared/components/Button'
 import useFilterSort from '$userpages/hooks/useFilterSort'
-import { DashboardTile } from '$shared/components/Tile2'
-import Grid from '$shared/components/Tile2/Grid'
+import { DashboardTile } from '$shared/components/Tile'
+import Grid from '$shared/components/Tile/Grid'
 
 import NoDashboardsView from './NoDashboards'
 
