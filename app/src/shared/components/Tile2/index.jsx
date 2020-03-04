@@ -3,7 +3,7 @@
 import React from 'react'
 import styled, { css } from 'styled-components'
 import { capital } from 'case'
-import moment from 'moment'
+import { ago } from '$shared/utils/time'
 import { Translate } from 'react-redux-i18n'
 import { DataUnionBadge, IconBadge, DeployingBadge } from './Badge'
 import ImageContainer, { Image } from './ImageContainer'
@@ -86,8 +86,8 @@ type CanvasTileProps = {
     actions: any,
 }
 
-export const updatedAt = ({ updated, created }: any): string => `
-    ${updated === created ? 'Created' : 'Updated'} ${moment(new Date(updated)).fromNow()}
+export const touchedAgo = ({ updated, created }: any): string => `
+    ${updated === created ? 'Created' : 'Updated'} ${ago(new Date(updated))}
 `
 
 const CanvasTile = ({ canvas, onMenuToggle, actions, ...props }: CanvasTileProps) => (
@@ -104,7 +104,7 @@ const CanvasTile = ({ canvas, onMenuToggle, actions, ...props }: CanvasTileProps
             </ImageContainer>
             <Summary
                 name={canvas.name}
-                description={updatedAt(canvas)}
+                description={touchedAgo(canvas)}
                 label={(
                     <Label positive={canvas.state === RunStates.Running}>
                         {capital(canvas.state)}
@@ -130,7 +130,7 @@ const DashboardTile = ({ dashboard, ...props }: DashboardTileProps) => (
             </ImageContainer>
             <Summary
                 name={dashboard.name}
-                description={updatedAt(dashboard)}
+                description={touchedAgo(dashboard)}
             />
         </Link>
     </Tile>
@@ -230,7 +230,7 @@ const ProductTile = ({
             </ImageContainer>
             <Summary
                 name={product.name}
-                description={updatedAt(product)}
+                description={touchedAgo(product)}
                 label={(
                     <Label positive={deployed}>
                         {deployed ? (
