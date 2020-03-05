@@ -12,7 +12,7 @@ import type { StreamIdList, StreamList } from '$shared/flowtype/stream-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { Category } from '../../flowtype/category-types'
 import { selectEntities } from '$shared/modules/entities/selectors'
-import { selectMyPurchaseList, selectSubscriptions } from '../myPurchaseList/selectors'
+import { selectSubscriptions } from '../myPurchaseList/selectors'
 import { productSchema, streamsSchema, categorySchema } from '$shared/modules/entities/schema'
 import { isActive } from '../../utils/time'
 import { selectAccountId } from '../web3/selectors'
@@ -93,17 +93,15 @@ export const selectProductIsFree: (state: StoreState) => boolean = createSelecto
 )
 
 export const selectProductIsPurchased: (state: StoreState) => boolean = createSelector(
-    selectMyPurchaseList,
     selectProductId,
     selectSubscriptions,
-    (purchasedPurchases, productId, subscriptions) => {
+    (productId, subscriptions) => {
         if (!productId) {
             return false
         }
 
-        const product = purchasedPurchases && purchasedPurchases.find((p) => p.id === productId)
-        const subscription = subscriptions && subscriptions.find((s) => s.product.id === productId)
-        return !!product && isActive(subscription.endsAt || '')
+        const subscription = subscriptions && subscriptions.find((s) => s.id === productId)
+        return !!subscription && isActive(subscription.endsAt || '')
     },
 )
 
