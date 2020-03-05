@@ -152,6 +152,9 @@ msgstr "YouTube"
 msgid "general##logout"
 msgstr "Logout"
 
+msgid "general##signout"
+msgstr "Sign out"
+
 msgid "general##nav##marketplace"
 msgstr "Marketplace"
 
@@ -270,6 +273,9 @@ msgstr "Years"
 
 msgid "general##docs"
 msgstr "Docs"
+
+msgid "general##settings"
+msgstr "Settings"
 
 msgid "general##learn"
 msgstr "Learn"

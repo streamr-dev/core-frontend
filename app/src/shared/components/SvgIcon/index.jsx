@@ -23,6 +23,20 @@ const sources = {
             />
         </svg>
     ),
+    forward: (
+        <svg viewBox="0 0 8 14" xmlns="http://www.w3.org/2000/svg">
+            <g fill="none" fillRule="evenodd">
+                <path
+                    d="M1 1.342l5.66 5.66-5.656 5.656"
+                    opacity=".5"
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="1.5"
+                />
+            </g>
+        </svg>
+    ),
     caretUp: (
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 11 6">
             <path

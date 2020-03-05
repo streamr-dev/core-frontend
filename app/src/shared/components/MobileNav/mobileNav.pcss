@@ -26,6 +26,41 @@
   visibility: visible;
 }
 
+.userWrapper {
+  padding: 0 calc(1.5 * var(--um));
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  grid-column-gap: var(--um);
+  margin-bottom: calc(1.5 * var(--um));
+  transform: translateY(var(--um));
+  transition: 200ms ease-in-out transform;
+
+  .avatar {
+    background-color: #EFEFEF;
+    border-radius: 50%;
+    overflow: hidden;
+    width: 40px;
+    height: 40px;
+  }
+
+  .user {
+    color: #323232;
+    min-width: calc(11 * var(--um));
+  }
+
+  .name {
+    font-weight: var(--medium);
+    font-size: var(--um);
+    line-height: 20px;
+  }
+
+  .username {
+    color: #A3A3A3;
+    font-size: calc(0.75 * var(--um));
+    line-height: 20px;
+  }
+}
+
 .link {
   border-radius: 2px;
   display: block;
@@ -53,6 +88,12 @@
     color: #0324FF;
     transition-duration: 50ms;
   }
+
+  &[disabled] {
+    color: var(--greyDark);
+    opacity: 0.5;
+    pointer-events: none;
+  }
 }
 
 .outlined {
@@ -68,24 +109,36 @@
   padding: 0 calc(1.5 * var(--um));
   transform: translateY(var(--um));
   transition: 200ms ease-in-out transform;
+  position: relative;
 }
 
-.open .items {
+.open .items,
+.open .userWrapper {
   transform: translateY(0);
 }
 
 .items ul {
   display: grid;
   grid-column-gap: var(--um);
-  grid-template-columns: 1fr 1fr;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   list-style: none;
   margin: 0;
-  padding: calc(1 * var(--um)) 0;
+  padding: calc(0.5 * var(--um)) 0;
+  position: relative;
 }
 
-.items ul + ul {
+.settings {
   border-top: 1px solid #EFEFEF;
+  border-bottom: 1px solid #EFEFEF;
+}
+
+.settingsIcon {
+  width: 8px;
+  height: 14px;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  color: inherit;
 }
 
 .label {
@@ -103,4 +156,43 @@
   letter-spacing: 2px;
   line-height: 1.5rem;
   text-transform: uppercase;
+}
+
+.signInWrapper {
+  position: absolute;
+  bottom: 3rem;
+  left: 50%;
+  transform: translate(-50%, var(--um));
+  transition: 200ms ease-in-out transform;
+  color: #525252;
+  text-align: center;
+  font-size: var(--um);
+}
+
+.open .signInWrapper {
+  transform: translate(-50%, 0);
+}
+
+.signIn {
+  line-height: calc(1.5 * var(--um)) 0;
+  letter-spacing: 0;
+  white-space: nowrap;
+
+  & a,
+  & a:--enter,
+  & a:--idle {
+    color: #0324FF;
+    outline: none;
+    text-decoration: none;
+  }
+
+  & a:--enter {
+    color: #0D009A;
+    transition-duration: 50ms;
+  }
+}
+
+.signUpLink {
+  width: 160px;
+  margin-bottom: var(--um);
 }
