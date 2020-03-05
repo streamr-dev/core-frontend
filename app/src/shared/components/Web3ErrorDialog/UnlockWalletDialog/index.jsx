@@ -35,6 +35,7 @@ const UnlockWalletDialog = ({
             title={!waiting ? title || I18n.t('modal.unlockWallet.title') : I18n.t('modal.unlockWallet.waiting')}
             waiting={waiting}
             className={styles.dialog}
+            contentClassName={styles.content}
         >
             <PngIcon name={icon} className={styles.icon} />
             {children}
