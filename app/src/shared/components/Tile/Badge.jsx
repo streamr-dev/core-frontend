@@ -93,7 +93,7 @@ type IconBadgeProps = BadgeProps & {
 const UnstyledIconBadge = ({ children, icon, ...props }: IconBadgeProps) => (
     <Badge {...props}>
         <SvgIcon name={icon} />
-        {!!children && (
+        {children != null && (
             <div>{children}</div>
         )}
     </Badge>
