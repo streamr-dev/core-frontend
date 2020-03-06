@@ -31,6 +31,7 @@ const Badge = styled.div`
     height: 24px;
     line-height: 1em;
     padding: 0 12px;
+    pointer-events: none;
     user-select: none;
 
     ${({ top, left, right, bottom }) => !!(top || left || right || bottom) && css`
