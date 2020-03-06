@@ -90,7 +90,7 @@ const ProductsPage = () => {
     const products = useSelector(selectMyProductList)
     const fetching = useSelector(selectFetching)
     const dispatch = useDispatch()
-    const { load: loadDataUnionStats, members, fetching: fetchingDataUnionStats } = useMemberStats()
+    const { load: loadDataUnionStats, members } = useMemberStats()
 
     useEffect(() => {
         dispatch(getMyProducts(filter))
