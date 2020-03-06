@@ -24,16 +24,19 @@ const normalizedProducts = normalize(products, productsSchema)
 
 const subscriptions = [
     {
+        id: products[0].id,
         user: 'test-user-1',
         endsAt: '2010-10-10T10:10:10Z',
         product: products[0],
     },
     {
+        id: products[1].id,
         user: 'test-user-1',
         endsAt: '2010-11-10T10:10:10Z',
         product: products[1],
     },
     {
+        id: products[2].id,
         user: 'test-user-1',
         endsAt: '2010-12-10T10:10:10Z',
         product: products[2],
@@ -47,7 +50,8 @@ const state = {
     myPurchaseList: {
         fetching: false,
         error: null,
-        ids: normalizedProducts.result,
+        products: normalizedProducts.result,
+        subscriptions: normalizedProducts.result,
     },
     entities: merge(
         normalizedProducts.entities,
@@ -61,7 +65,7 @@ describe('myPurchaseList - selectors', () => {
     })
 
     it('selects my purchase list ids', () => {
-        assert.deepStrictEqual(all.selectMyPurchaseListIds(state), state.myPurchaseList.ids)
+        assert.deepStrictEqual(all.selectMyPurchaseListIds(state), state.myPurchaseList.products)
     })
 
     it('selects purchase list', () => {

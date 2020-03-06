@@ -19,9 +19,6 @@ export const subscriptionSchema = new schema.Entity(
     {
         product: productSchema,
     },
-    {
-        idAttribute: (value) => value.product.id,
-    },
 )
 export const subscriptionsSchema = [subscriptionSchema]
 

@@ -24,14 +24,14 @@ describe('myPurchaseList - reducer', () => {
     it('handles success', () => {
         const expectedState = {
             ...initialState,
-            ids: [1, 2, 3],
+            subscriptions: [1, 2, 3],
             fetching: false,
             error: null,
         }
         const reducerState = reducer(undefined, {
             type: constants.GET_MY_PURCHASES_SUCCESS,
             payload: {
-                products: [1, 2, 3],
+                subscriptions: [1, 2, 3],
             },
         })
         assert.deepStrictEqual(reducerState, expectedState)
@@ -42,7 +42,7 @@ describe('myPurchaseList - reducer', () => {
 
         const expectedState = {
             ...initialState,
-            ids: [],
+            subscriptions: [],
             fetching: false,
             error,
         }

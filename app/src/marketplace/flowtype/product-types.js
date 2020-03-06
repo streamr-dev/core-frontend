@@ -45,11 +45,21 @@ export type Product = {
     pendingChanges?: PendingChanges,
 }
 
+export type ProductSubscriptionId = string
+
+export type ProductSubscriptionIdList = Array<ProductSubscriptionId>
+
 export type ProductSubscription = {
-    address: Address,
+    id: ProductSubscriptionId,
+    address?: Address,
+    user?: string,
     endsAt: Date,
     product: Product,
+    dateCreated: Date,
+    lastUpdated: Date,
 }
+
+export type ProductSubscriptionList = Array<ProductSubscription>
 
 export type EditProduct = Product
 

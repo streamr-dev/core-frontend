@@ -29,6 +29,7 @@ describe('myPurchaseList - actions', () => {
             }
             const subscriptions = [
                 {
+                    id: product.id,
                     user: 'test-user-1',
                     endsAt: '2010-10-10T10:10:10Z',
                     product,
@@ -61,7 +62,7 @@ describe('myPurchaseList - actions', () => {
                 {
                     type: constants.GET_MY_PURCHASES_SUCCESS,
                     payload: {
-                        products: result,
+                        subscriptions: result,
                     },
                 },
             ]
