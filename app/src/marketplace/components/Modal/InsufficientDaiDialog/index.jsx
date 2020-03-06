@@ -22,8 +22,7 @@ const InsufficientDaiDialog = ({ onCancel }: Props) => (
         >
             {/* TODO: Change to more DAI related no wallet IMG */}
             <img className={styles.icon} src={WalletNoEthPng} srcSet={`${WalletNoEthPng2x} 2x`} alt={I18n.t('error.wallet')} />
-            <Translate value="modal.insufficientDaiDialog.message" className={styles.message} tag="p" dangerousHTML />
-            <Translate value="modal.insufficientDaiDialog.mobileMessage" className={styles.mobileMessage} tag="p" dangerousHTML />
+            <Translate value="modal.insufficientDaiDialog.message" tag="p" dangerousHTML />
         </Dialog>
     </ModalPortal>
 )
