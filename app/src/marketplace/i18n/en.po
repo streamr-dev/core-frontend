@@ -524,8 +524,7 @@ msgid "modal##insufficientDaiDialog##title"
 msgstr "Insufficient DAI"
 
 msgid "modal##insufficientDaiDialog##message"
-msgstr "It looks like you don’t have enough DAI to purchase this product. "
-"Please get some & try again or choose a different payment currency."
+msgstr "You don't have enough DAI to purchase <br /> this product. Please get some and try again"
 
 msgid "modal##insufficientDaiDialog##mobileMessage"
 msgstr "It looks like you don’t have enough DAI to purchase this product. "
@@ -1099,7 +1098,7 @@ msgid "streamSelector##typeToSearch"
 msgstr "Type to search & select streams or click to select individually"
 
 msgid "unlockWalletDialog##message"
-msgstr "Please select the account with address %{address}"
+msgstr "Please select the account with address"
 
 msgid "validation##invalidBeneficiaryAddress"
 msgstr "Beneficiary address is not a valid ethereum address"

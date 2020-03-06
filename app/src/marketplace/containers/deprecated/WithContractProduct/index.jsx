@@ -16,7 +16,6 @@ import type { ProductId, Product, SmartContractProduct } from '$mp/flowtype/prod
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { StoreState } from '$shared/flowtype/store-state'
 import type { Address } from '$shared/flowtype/web3-types'
-import { truncate } from '$shared/utils/text'
 import withWeb3 from '$shared/utils/withWeb3'
 
 type StateProps = {
@@ -112,12 +111,9 @@ export function withContractProduct(WrappedComponent: ComponentType<any>) {
                     // Product is deployed but need to check if the owner is correct
                     if (requireOwnerIfDeployed && contractProduct && !areAddressesEqual(accountId || '', contractProduct.ownerAddress)) {
                         return (
-                            <UnlockWalletDialog onClose={onClose}>
+                            <UnlockWalletDialog onClose={onClose} requiredAddress={contractProduct.ownerAddress}>
                                 <Translate
                                     value="unlockWalletDialog.message"
-                                    address={truncate(contractProduct.ownerAddress, {
-                                        maxLength: 15,
-                                    })}
                                     tag="p"
                                 />
                             </UnlockWalletDialog>

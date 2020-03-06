@@ -7,6 +7,7 @@ import { withKnobs, select, text, number } from '@storybook/addon-knobs'
 import { action } from '@storybook/addon-actions'
 import styles from '@sambego/storybook-styles'
 import BN from 'bignumber.js'
+import { Translate } from 'react-redux-i18n'
 
 import { transactionStates, ProgrammingLanguages } from '$shared/utils/constants'
 import { actionsTypes } from '$mp/containers/EditProductPage/publishQueue'
@@ -768,6 +769,34 @@ story('Shared/UnlockWalletDialog')
             {text('Dialog text', 'Please unlock your wallet')}
         </UnlockWalletDialog>
     ))
+    .add('with address', () => (
+        <UnlockWalletDialog
+            title={text('Dialog title', 'Dialog title')}
+            onClose={action('onClose')}
+            requiredAddress="0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0"
+        >
+            <Translate
+                value="unlockWalletDialog.message"
+                tag="p"
+            />
+        </UnlockWalletDialog>
+    ))
+    .add('with address (iPhone)', () => (
+        <UnlockWalletDialog
+            title={text('Dialog title', 'Dialog title')}
+            onClose={action('onClose')}
+            requiredAddress="0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0"
+        >
+            <Translate
+                value="unlockWalletDialog.message"
+                tag="p"
+            />
+        </UnlockWalletDialog>
+    ), {
+        viewport: {
+            defaultViewport: 'iPhone',
+        },
+    })
     .add('with different icon', () => (
         <UnlockWalletDialog
             title={text('Dialog title', 'Dialog title')}

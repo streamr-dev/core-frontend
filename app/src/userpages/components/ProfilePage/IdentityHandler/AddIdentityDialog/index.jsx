@@ -10,7 +10,6 @@ import useModal from '$shared/hooks/useModal'
 import type { Address } from '$shared/flowtype/web3-types'
 import UnlockWalletDialog from '$shared/components/Web3ErrorDialog/UnlockWalletDialog'
 import { areAddressesEqual } from '$mp/utils/smartContract'
-import { truncate } from '$shared/utils/text'
 import { ErrorCodes } from '$shared/errors/Web3'
 
 import IdentityNameDialog from '../IdentityNameDialog'
@@ -77,12 +76,9 @@ const AddIdentityDialog = ({ api, requiredAddress }: Props) => {
 
     if (!!requiredAddress && (!account || !areAddressesEqual(account, requiredAddress))) {
         return (
-            <UnlockWalletDialog onClose={onClose}>
+            <UnlockWalletDialog onClose={onClose} requiredAddress={requiredAddress}>
                 <Translate
                     value="unlockWalletDialog.message"
-                    address={truncate(requiredAddress, {
-                        maxLength: 15,
-                    })}
                     tag="p"
                 />
             </UnlockWalletDialog>
