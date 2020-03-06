@@ -132,6 +132,7 @@ const StreamList = () => {
     const fetchingPermissions = useSelector(selectFetchingPermissions)
     const permissions = useSelector(selectStreamPermissions)
     const hasMoreResults = useSelector(selectHasMoreSearchResults)
+    const [openedDropdownStreamId, setOpenedDropdownStreamId] = useState(undefined)
 
     useEffect(() => () => {
         cancelStreamStatusFetch()
@@ -163,6 +164,8 @@ const StreamList = () => {
     }, [dispatch])
 
     const onToggleStreamDropdown = useCallback((streamId: StreamId) => async (open: boolean) => {
+        setOpenedDropdownStreamId(open ? streamId : undefined)
+
         if (open && !fetchingPermissions && !permissions[streamId]) {
             try {
                 await dispatch(getResourcePermissions('STREAM', streamId, false))
@@ -325,7 +328,7 @@ const StreamList = () => {
                                                     className={styles.menuColumn}
                                                 >
                                                     <DropdownActions
-                                                        title={<Meatball alt={I18n.t('userpages.streams.actions')} />}
+                                                        title={<Meatball alt={I18n.t('userpages.streams.actions.title')} />}
                                                         noCaret
                                                         onMenuToggle={onToggleStreamDropdown(stream.id)}
                                                         menuProps={{
@@ -336,6 +339,11 @@ const StreamList = () => {
                                                                     offset: '-100%p + 100%',
                                                                 },
                                                             },
+                                                        }}
+                                                        toggleProps={{
+                                                            className: cx(styles.dropdownActions, {
+                                                                [styles.dropdownActionsOpen]: openedDropdownStreamId === stream.id,
+                                                            }),
                                                         }}
                                                     >
                                                         <DropdownActions.Item onClick={() => showStream(stream.id)}>

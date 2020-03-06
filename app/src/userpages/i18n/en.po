@@ -324,6 +324,9 @@ msgstr "Status"
 msgid "userpages##streams##list##actions"
 msgstr "Select"
 
+msgid "userpages##streams##actions##title"
+msgstr "Actions"
+
 msgid "userpages##streams##actions##addToCanvas"
 msgstr "Add to canvas"
 
