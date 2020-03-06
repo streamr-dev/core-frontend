@@ -64,8 +64,9 @@
 .link {
   border-radius: 2px;
   display: block;
-  font-size: calc(0.75 * var(--um));
-  font-weight: var(--semiBold);
+  font-family: var(--mono);
+  font-size: calc(var(--um));
+  font-weight: var(--medium);
   letter-spacing: 2px;
   line-height: calc(2.5 * var(--um));
   overflow: hidden;
@@ -110,6 +111,11 @@
   transform: translateY(var(--um));
   transition: 200ms ease-in-out transform;
   position: relative;
+  margin-top: calc(-1 * var(--um));
+}
+
+.userWrapper + .items {
+  margin-top: 0;
 }
 
 .open .items,

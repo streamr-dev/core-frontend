@@ -28,7 +28,6 @@ const sources = {
             <g fill="none" fillRule="evenodd">
                 <path
                     d="M1 1.342l5.66 5.66-5.656 5.656"
-                    opacity=".5"
                     stroke="currentColor"
                     strokeLinecap="round"
                     strokeLinejoin="round"
