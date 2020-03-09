@@ -8,7 +8,7 @@ import useEditableProduct from '../ProductController/useEditableProduct'
 import useValidation from '../ProductController/useValidation'
 import useEditableProductActions from '../ProductController/useEditableProductActions'
 import MarkdownEditor from '$mp/components/MarkdownEditor'
-import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
+import { Context as EditControllerContext } from './EditControllerProvider'
 import usePending from '$shared/hooks/usePending'
 import routes from '$routes'
 
@@ -16,7 +16,7 @@ import styles from './productDescription.pcss'
 
 const ProductDescription = () => {
     const product = useEditableProduct()
-    const { isTouched } = useContext(ValidationContext)
+    const { publishAttempted } = useContext(EditControllerContext)
     const { isValid, message } = useValidation('description')
     const { updateDescription } = useEditableProductActions()
     const { isPending } = usePending('product.SAVE')
@@ -46,7 +46,7 @@ const ProductDescription = () => {
                     onChange={setDescription}
                     onCommit={updateDescription}
                     className={styles.productDescription}
-                    error={isTouched('description') && !isValid ? message : undefined}
+                    error={publishAttempted && !isValid ? message : undefined}
                     disabled={!!isPending}
                 />
             </div>

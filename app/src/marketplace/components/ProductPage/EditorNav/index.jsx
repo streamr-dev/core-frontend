@@ -85,19 +85,27 @@ const NavSection = ({
 type Props = {
     sections: Array<Section>,
     activeSection?: string,
+    showValidation?: boolean,
+    trackScrolling?: boolean,
     className?: string,
 }
 
-const EditorNav = ({ sections, activeSection, className }: Props) => {
+const EditorNav = ({
+    sections,
+    activeSection,
+    showValidation,
+    trackScrolling,
+    className,
+}: Props) => {
     const [highestSeenSection, setHighestSeenSection] = useState(-1)
 
-    useEffect(() => {
-        setHighestSeenSection((prev) => {
-            const highest = findLastIndex(sections, ({ id, status }) => id === activeSection || isSet(status))
+    useEffect(() => setHighestSeenSection((prev) => {
+        if (!trackScrolling) { return sections.length - 1 }
 
-            return Math.min(highest > prev ? highest : prev, sections.length - 1)
-        })
-    }, [sections, activeSection])
+        const highest = findLastIndex(sections, ({ id, status }) => id === activeSection || isSet(status))
+
+        return Math.min(highest > prev ? highest : prev, sections.length - 1)
+    }), [trackScrolling, sections, activeSection])
 
     return (
         <div className={cx(styles.root, styles.EditorNav, className)}>
@@ -106,7 +114,7 @@ const EditorNav = ({ sections, activeSection, className }: Props) => {
                 <div
                     className={styles.progressTrack}
                     style={{
-                        height: `${(Math.max(0, highestSeenSection) / Math.max(1, sections.length - 1)) * 100}%`,
+                        height: !trackScrolling ? '100%' : `${(Math.max(0, highestSeenSection) / Math.max(1, sections.length - 1)) * 100}%`,
                     }}
                 />
             </div>
@@ -115,7 +123,7 @@ const EditorNav = ({ sections, activeSection, className }: Props) => {
                     {...rest}
                     key={id}
                     id={id}
-                    status={status}
+                    status={(showValidation || status === statuses.UNPUBLISHED) ? status : statuses.EMPTY}
                     active={id === activeSection}
                     seen={highestSeenSection >= index}
                 />

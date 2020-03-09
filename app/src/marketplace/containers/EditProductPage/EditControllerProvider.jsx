@@ -32,6 +32,7 @@ type ContextProps = {
     publish: () => void | Promise<void>,
     deployDataUnion: () => void | Promise<void>,
     lastSectionRef: any,
+    publishAttempted: boolean,
 }
 
 const EditControllerContext: Context<ContextProps> = React.createContext({})
@@ -47,6 +48,7 @@ function useEditController(product: Product) {
     const originalProduct = useSelector(selectProduct)
     const { replaceProduct } = useEditableProductUpdater()
     const dataUnion = useSelector(selectDataUnion)
+    const [publishAttempted, setPublishAttempted] = useState(false)
 
     useEffect(() => {
         const handleBeforeunload = (event) => {
@@ -165,9 +167,10 @@ function useEditController(product: Product) {
         return true
     }, [errors, dataUnion])
 
-    const isPublic = State.isPublished(product)
     const publish = useCallback(async () => {
-        if (isPublic || validate()) {
+        setPublishAttempted(true)
+
+        if (validate()) {
             await save({
                 redirect: false,
             })
@@ -179,7 +182,7 @@ function useEditController(product: Product) {
                 redirectToProductList()
             }
         }
-    }, [validate, save, publishDialog, redirectToProductList, isPublic])
+    }, [validate, save, publishDialog, redirectToProductList])
 
     const updateBeneficiary = useCallback(async (address) => {
         const { beneficiaryAddress } = productRef.current
@@ -189,6 +192,8 @@ function useEditController(product: Product) {
     }, [updateBeneficiaryAddress])
 
     const deployDataUnion = useCallback(async () => {
+        setPublishAttempted(true)
+
         if (validate()) {
             await save({
                 redirect: false,
@@ -243,6 +248,7 @@ function useEditController(product: Product) {
         publish,
         deployDataUnion,
         lastSectionRef,
+        publishAttempted,
     }), [
         isPreview,
         setIsPreview,
@@ -251,6 +257,7 @@ function useEditController(product: Product) {
         publish,
         deployDataUnion,
         lastSectionRef,
+        publishAttempted,
     ])
 }
 

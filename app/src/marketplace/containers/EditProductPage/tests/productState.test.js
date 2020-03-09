@@ -346,6 +346,29 @@ describe('Product State', () => {
             expect(State.hasPendingChange(nextProduct, 'name')).toBe(true)
             expect(State.hasPendingChange(nextProduct, 'description')).toBe(true)
         })
+
+        it('it returns true if pending fields are set to empty', () => {
+            const product = {
+                id: '1',
+                name: 'My Product',
+                description: 'My nice product',
+                otherField: 'asd',
+                state: productStates.DEPLOYED,
+            }
+            const nextProduct = {
+                ...product,
+                pendingChanges: {
+                    name: '',
+                    description: null,
+                    otherField: undefined,
+                },
+            }
+            expect(State.hasPendingChange(nextProduct, 'name')).toBe(true)
+            expect(State.hasPendingChange(nextProduct, 'description')).toBe(true)
+
+            // undefined value can't be detected
+            expect(State.hasPendingChange(nextProduct, 'otherField')).toBe(false)
+        })
     })
 
     describe('withPendingChanges', () => {

@@ -15,11 +15,11 @@ import Toggle from '$shared/components/Toggle'
 import SvgIcon from '$shared/components/SvgIcon'
 import { selectContractProduct } from '$mp/modules/contractProduct/selectors'
 
-import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
 import useEditableProduct from '../ProductController/useEditableProduct'
 import useValidation from '../ProductController/useValidation'
 import useEditableProductActions from '../ProductController/useEditableProductActions'
 import { isPublished } from './state'
+import { Context as EditControllerContext } from './EditControllerProvider'
 import routes from '$routes'
 
 import BeneficiaryAddress from './BeneficiaryAddress'
@@ -28,7 +28,7 @@ import styles from './PriceSelector.pcss'
 
 const PriceSelector = () => {
     const product = useEditableProduct()
-    const { isTouched } = useContext(ValidationContext)
+    const { publishAttempted } = useContext(EditControllerContext)
 
     const {
         updateIsFree,
@@ -103,7 +103,7 @@ const PriceSelector = () => {
                         timeUnit={product.timeUnit}
                         onTimeUnitChange={onTimeUnitChange}
                         dataPerUsd={dataPerUsd}
-                        error={isTouched('pricePerSecond') && !isValid ? message : undefined}
+                        error={publishAttempted && !isValid ? message : undefined}
                     />
                     <div
                         className={cx({

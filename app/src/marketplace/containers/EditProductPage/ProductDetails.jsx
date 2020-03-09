@@ -11,7 +11,7 @@ import useEditableProductActions from '../ProductController/useEditableProductAc
 import { usePending } from '$shared/hooks/usePending'
 import SelectField from '$mp/components/SelectField'
 import { isDataUnionProduct } from '$mp/utils/product'
-import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
+import { Context as EditControllerContext } from './EditControllerProvider'
 import { selectAllCategories, selectFetchingCategories } from '$mp/modules/categories/selectors'
 
 import Details from './Details'
@@ -25,7 +25,7 @@ const adminFeeOptions = [10, 20, 30, 40, 50, 60, 70, 80, 90].map((value) => ({
 
 const ProductDetails = () => {
     const product = useEditableProduct()
-    const { isTouched } = useContext(ValidationContext)
+    const { publishAttempted } = useContext(EditControllerContext)
     const categories = useSelector(selectAllCategories)
     const fetching = useSelector(selectFetchingCategories)
 
@@ -62,7 +62,7 @@ const ProductDetails = () => {
                                 value={selectedCategory}
                                 onChange={(option) => updateCategory(option.value)}
                                 isSearchable={false}
-                                error={isTouched('category') && !isCategoryValid ? categoryMessage : undefined}
+                                error={publishAttempted && !isCategoryValid ? categoryMessage : undefined}
                                 disabled={!!isPending}
                             />
                         )}
@@ -75,7 +75,7 @@ const ProductDetails = () => {
                                 value={selectedAdminFee}
                                 onChange={(option) => updateAdminFee(option.value)}
                                 isSearchable={false}
-                                error={isTouched('adminFee') && !isAdminFeeValid ? adminFeeMessage : undefined}
+                                error={publishAttempted && !isAdminFeeValid ? adminFeeMessage : undefined}
                                 disabled={!!isPending}
                             />
                         </Details.Row>

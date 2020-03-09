@@ -9,7 +9,7 @@ import StreamSelectorComponent from '$mp/components/StreamSelector'
 import useEditableProduct from '../ProductController/useEditableProduct'
 import useValidation from '../ProductController/useValidation'
 import useEditableProductActions from '../ProductController/useEditableProductActions'
-import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
+import { Context as EditControllerContext } from './EditControllerProvider'
 import usePending from '$shared/hooks/usePending'
 import { selectStreams, selectFetchingStreams } from '$mp/modules/streams/selectors'
 import routes from '$routes'
@@ -20,7 +20,7 @@ const ProductStreams = () => {
     const product = useEditableProduct()
     const { isValid, message } = useValidation('streams')
     const { updateStreams } = useEditableProductActions()
-    const { isTouched } = useContext(ValidationContext)
+    const { publishAttempted } = useContext(EditControllerContext)
     const { isPending } = usePending('product.SAVE')
     const streams = useSelector(selectStreams)
     const fetching = useSelector(selectFetchingStreams)
@@ -44,7 +44,7 @@ const ProductStreams = () => {
                     onEdit={updateStreams}
                     streams={product.streams}
                     className={styles.streams}
-                    error={isTouched('streams') && !isValid ? message : undefined}
+                    error={publishAttempted && !isValid ? message : undefined}
                     disabled={!!isPending}
                 />
             </div>
