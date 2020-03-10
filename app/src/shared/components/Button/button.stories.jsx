@@ -67,7 +67,11 @@ story('Button')
                 <div><Button kind="primary" size="normal" outline onClick={action('Clicked')}>Primary normal outline</Button></div>
                 <div><Button kind="primary" size="normal" outline onClick={action('Clicked')} disabled>Primary normal outline</Button></div>
                 <div><Button tag="a" href="/" kind="primary" size="normal" outline onClick={action('Clicked')}>Primary normal outline</Button></div>
-                <div><Button tag="a" href="/" kind="primary" size="normal" outline onClick={action('Clicked')} disabled>Primary normal outline</Button></div>
+                <div>
+                    <Button tag="a" href="/" kind="primary" size="normal" outline onClick={action('Clicked')} disabled>
+                        Primary normal outline
+                    </Button>
+                </div>
             </Container>
             <Container>
                 <div><Button kind="secondary" size="mini" onClick={action('Clicked')}>Secondary mini</Button></div>
@@ -90,8 +94,16 @@ story('Button')
             <Container>
                 <div><Button kind="secondary" size="normal" outline onClick={action('Clicked')}>Secondary normal outline</Button></div>
                 <div><Button kind="secondary" size="normal" outline onClick={action('Clicked')} disabled>Secondary normal outline</Button></div>
-                <div><Button tag="a" href="/" kind="secondary" size="normal" outline onClick={action('Clicked')}>Secondary normal outline</Button></div>
-                <div><Button tag="a" href="/" kind="secondary" size="normal" outline onClick={action('Clicked')} disabled>Secondary normal outline</Button></div>
+                <div>
+                    <Button tag="a" href="/" kind="secondary" size="normal" outline onClick={action('Clicked')}>
+                        Secondary normal outline
+                    </Button>
+                </div>
+                <div>
+                    <Button tag="a" href="/" kind="secondary" size="normal" outline onClick={action('Clicked')} disabled>
+                        Secondary normal outline
+                    </Button>
+                </div>
             </Container>
             <Container>
                 <div><Button kind="destructive" onClick={action('Clicked')}>Destructive</Button></div>
