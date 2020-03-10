@@ -1,6 +1,6 @@
 // @flow
 
-import React, { Fragment, useEffect } from 'react'
+import React, { Fragment, useEffect, useRef } from 'react'
 import { storiesOf } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
 import { withKnobs, text, boolean } from '@storybook/addon-knobs'
@@ -8,6 +8,7 @@ import styles from '@sambego/storybook-styles'
 import Toolbar from '.'
 import styled from 'styled-components'
 import SvgIcon from '$shared/components/SvgIcon'
+import { SM, MD, LG, XL } from '$shared/utils/styled'
 
 const Content = styled.div`
     height: 1000px;
@@ -34,24 +35,41 @@ const toolbarActions = {
     },
 }
 
-story('Toolbar').addWithJSX('basic', () => (
-    <Fragment>
-        <Toolbar
-            actions={toolbarActions}
-            altMobileLayout
-        />
-        <Content>Lorem ipsum dolor sit emat.</Content>
-    </Fragment>
-))
+story('Toolbar')
+    .addParameters({
+        chromatic: {
+            // Take 5 snapshots
+            viewports: [SM - 1, SM, MD, LG, XL],
+        },
+    })
+    .addWithJSX('basic', () => (
+        <Fragment>
+            <Toolbar
+                actions={toolbarActions}
+                altMobileLayout
+            />
+            <Content>Lorem ipsum dolor sit emat.</Content>
+        </Fragment>
+    ))
 
-const Autoscrolled = (props: any) => {
+const Autoscrolled = ({ children }: any) => {
+    const ref = useRef()
+
     useEffect(() => {
-        if (typeof window !== 'undefined') {
-            window.scrollTo(0, 16)
+        if (ref.current) {
+            ref.current.scrollIntoView({
+                block: 'end',
+            })
         }
     }, [])
 
-    return <div {...props} />
+    return (
+        <div>
+            {children}
+            {/* eslint-disable-next-line jsx-a11y/no-autofocus */}
+            <div ref={ref} />
+        </div>
+    )
 }
 
 story('Toolbar').addWithJSX('basic scrolled down', () => (
@@ -63,22 +81,6 @@ story('Toolbar').addWithJSX('basic scrolled down', () => (
         <Content>Lorem ipsum dolor sit emat.</Content>
     </Autoscrolled>
 ))
-
-story('Toolbar')
-    .addParameters({
-        viewport: {
-            defaultViewport: 'xs',
-        },
-    })
-    .addWithJSX('basic mobile', () => (
-        <Fragment>
-            <Toolbar
-                actions={toolbarActions}
-                altMobileLayout
-            />
-            <Content>Lorem ipsum dolor sit emat.</Content>
-        </Fragment>
-    ))
 
 story('Toolbar').addWithJSX('left status text', () => (
     <Fragment>
