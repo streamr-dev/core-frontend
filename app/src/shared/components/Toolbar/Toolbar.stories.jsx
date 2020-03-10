@@ -1,6 +1,6 @@
 // @flow
 
-import React, { Fragment, useEffect, useRef } from 'react'
+import React, { Fragment } from 'react'
 import { storiesOf } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
 import { withKnobs, text, boolean } from '@storybook/addon-knobs'
@@ -51,36 +51,6 @@ story('Toolbar')
             <Content>Lorem ipsum dolor sit emat.</Content>
         </Fragment>
     ))
-
-const Autoscrolled = ({ children }: any) => {
-    const ref = useRef()
-
-    useEffect(() => {
-        if (ref.current) {
-            ref.current.scrollIntoView({
-                block: 'end',
-            })
-        }
-    }, [])
-
-    return (
-        <div>
-            {children}
-            {/* eslint-disable-next-line jsx-a11y/no-autofocus */}
-            <div ref={ref} />
-        </div>
-    )
-}
-
-story('Toolbar').addWithJSX('basic scrolled down', () => (
-    <Autoscrolled>
-        <Toolbar
-            actions={toolbarActions}
-            altMobileLayout
-        />
-        <Content>Lorem ipsum dolor sit emat.</Content>
-    </Autoscrolled>
-))
 
 story('Toolbar').addWithJSX('left status text', () => (
     <Fragment>
