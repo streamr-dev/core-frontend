@@ -89,18 +89,19 @@ const Tile = ({ product, members }: any) => {
 
     useEffect(() => {
         (async () => {
+            let result = false
+
             if (isDataUnion && isEthereumAddress(beneficiaryAddress)) {
                 try {
-                    const result = await getAdminFee(beneficiaryAddress, true) != null
-                    if (isMounted()) {
-                        setIsDeploying(result)
-                    }
-                    return
+                    result = await getAdminFee(beneficiaryAddress, true) != null
                 } catch (e) {
                     // Ignore.
                 }
             }
-            setIsDeploying(false)
+
+            if (isMounted()) {
+                setIsDeploying(result)
+            }
         })()
     }, [isDataUnion, beneficiaryAddress, isMounted])
 
