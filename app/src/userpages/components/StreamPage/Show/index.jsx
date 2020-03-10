@@ -181,7 +181,6 @@ export class StreamShowView extends Component<Props, State> {
                     <MediaQuery minWidth={lg.min}>
                         {(isDesktop) => (
                             <Toolbar
-                                className={Toolbar.styles.shadow}
                                 altMobileLayout
                                 actions={{
                                     cancel: {

@@ -37,7 +37,6 @@ import CodeSnippet from '$shared/components/CodeSnippet'
 import Tooltip from '$shared/components/Tooltip'
 import ContextMenu from '$shared/components/ContextMenu'
 import { NotificationIcon } from '$shared/utils/constants'
-import Toolbar from '$shared/components/Toolbar'
 import Spinner from '$shared/components/Spinner'
 import Text from '$ui/Text'
 
@@ -612,49 +611,6 @@ story('Tooltip')
         <Tooltip value="This is a tooltip">
             Hover to show tooltip
         </Tooltip>
-    ))
-
-const toolbarActions = {
-    cancel: {
-        title: 'Cancel',
-        kind: 'link',
-        onClick: action('cancel'),
-    },
-    ok: {
-        title: 'Ok',
-        kind: 'primary',
-        onClick: action('ok'),
-        disabled: boolean('disabled'),
-        spinner: boolean('spinner'),
-    },
-}
-
-story('Toolbar')
-    .addDecorator(styles({
-        backgroundColor: '#323232',
-        padding: '15px',
-    }))
-    .addWithJSX('basic', () => (
-        <Toolbar actions={toolbarActions} />
-    ))
-    .addWithJSX('left status text', () => (
-        <Toolbar
-            left={text('status text', 'status')}
-            actions={toolbarActions}
-        />
-    ))
-    .addWithJSX('middle icon', () => (
-        <Toolbar
-            left={text('status text', 'status')}
-            middle={<SvgIcon
-                name="user"
-                style={{
-                    width: '40px',
-                    height: '40px',
-                }}
-            />}
-            actions={toolbarActions}
-        />
     ))
 
 story('Spinner')
