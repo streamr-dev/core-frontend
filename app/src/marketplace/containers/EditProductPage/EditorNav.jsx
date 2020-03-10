@@ -28,22 +28,23 @@ const EditorNav = () => {
 
     const [activeSectionId, setActiveSectionId] = useState(undefined)
 
-    const { isValid, isPendingChange } = useContext(ValidationContext)
+    const { isValid, isTouched, isPendingChange } = useContext(ValidationContext)
     const { lastSectionRef, publishAttempted } = useContext(EditControllerContext)
 
     const isDataUnion = isDataUnionProduct(product)
     const isPublic = isPublished(product)
 
     const getStatus = useCallback((name: string) => {
-        const pending = !!isPublic && isPendingChange(name)
-
-        if (!publishAttempted && isNewProduct && !pending) {
+        if (isNewProduct && !isTouched(name)) {
             return statuses.EMPTY
         }
+
+        const pending = !isNewProduct && !!isPublic && isPendingChange(name)
+
         const validState = pending ? statuses.UNPUBLISHED : statuses.VALID
 
-        return (!publishAttempted || isValid(name)) ? validState : statuses.ERROR
-    }, [isPublic, isPendingChange, isNewProduct, isValid, publishAttempted])
+        return isValid(name) ? validState : statuses.ERROR
+    }, [isPublic, isPendingChange, isValid, isNewProduct, isTouched])
 
     const priceStatus = useMemo(() => {
         const price = getStatus('pricePerSecond')
@@ -214,7 +215,7 @@ const EditorNav = () => {
             <EditorNavComponent
                 sections={sectionWithLinks}
                 activeSection={activeSectionId}
-                showValidation={publishAttempted}
+                showErrors={publishAttempted}
                 trackScrolling={isNewProduct}
             />
         </Scrollspy>

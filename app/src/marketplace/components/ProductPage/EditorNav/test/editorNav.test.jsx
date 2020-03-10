@@ -217,13 +217,13 @@ describe('EditorNav', () => {
 
             expect(icons.at(0).prop('name')).toBe('seen')
             expect(icons.at(1).prop('name')).toBe('seen')
-            expect(icons.at(2).prop('name')).toBe('seen')
+            expect(icons.at(2).prop('name')).toBe('valid')
             expect(icons.at(3).prop('name')).toBe('default')
         })
     })
 
-    describe('showValidation', () => {
-        it('shows only unpublished change icon when showValidation is false', () => {
+    describe('showErrors', () => {
+        it('it doesnt show error icons when showErrors is false', () => {
             const sections = [{
                 id: 'name',
                 heading: 'Name',
@@ -249,12 +249,12 @@ describe('EditorNav', () => {
             const icons = el.update().find('Icons')
 
             expect(icons.at(0).prop('name')).toBe('seen')
-            expect(icons.at(1).prop('name')).toBe('seen')
+            expect(icons.at(1).prop('name')).toBe('valid')
             expect(icons.at(2).prop('name')).toBe('unpublished')
             expect(icons.at(3).prop('name')).toBe('seen')
         })
 
-        it('shows status icons when showValidation is true', () => {
+        it('shows error icons when showErrors is true', () => {
             const sections = [{
                 id: 'name',
                 heading: 'Name',
@@ -275,7 +275,7 @@ describe('EditorNav', () => {
 
             let el
             act(() => {
-                el = mount(<EditorNav sections={sections} showValidation />)
+                el = mount(<EditorNav sections={sections} showErrors />)
             })
             const icons = el.update().find('Icons')
             expect(icons.at(0).prop('name')).toBe('error')
@@ -305,7 +305,7 @@ describe('EditorNav', () => {
                 el = mount(<EditorNav
                     sections={sections}
                     activeSection="description"
-                    showValidation
+                    showErrors
                 />)
             })
             const icons = el.update().find('Icons')

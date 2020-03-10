@@ -85,7 +85,7 @@ const NavSection = ({
 type Props = {
     sections: Array<Section>,
     activeSection?: string,
-    showValidation?: boolean,
+    showErrors?: boolean,
     trackScrolling?: boolean,
     className?: string,
 }
@@ -93,7 +93,7 @@ type Props = {
 const EditorNav = ({
     sections,
     activeSection,
-    showValidation,
+    showErrors,
     trackScrolling,
     className,
 }: Props) => {
@@ -123,7 +123,7 @@ const EditorNav = ({
                     {...rest}
                     key={id}
                     id={id}
-                    status={(showValidation || status === statuses.UNPUBLISHED) ? status : statuses.EMPTY}
+                    status={(showErrors || status !== statuses.ERROR) ? status : statuses.EMPTY}
                     active={id === activeSection}
                     seen={highestSeenSection >= index}
                 />

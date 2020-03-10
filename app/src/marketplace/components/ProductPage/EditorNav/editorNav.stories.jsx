@@ -78,10 +78,10 @@ stories.add('basic', () => (
     <EditNavController />
 ))
 
-stories.add('with validation', () => (
-    <EditNavController showValidation />
+stories.add('with errors', () => (
+    <EditNavController showErrors />
 ))
 
-stories.add('with validation & tracking', () => (
-    <EditNavController showValidation trackScrolling />
+stories.add('with errors & tracking', () => (
+    <EditNavController showErrors trackScrolling />
 ))
