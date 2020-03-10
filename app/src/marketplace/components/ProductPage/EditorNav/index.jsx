@@ -132,4 +132,8 @@ const EditorNav = ({
     )
 }
 
+EditorNav.defaultProps = {
+    sections: [],
+}
+
 export default EditorNav
