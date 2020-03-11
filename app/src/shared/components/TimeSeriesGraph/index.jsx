@@ -24,6 +24,7 @@ const xAxisStyle = {
     },
     text: {
         strokeWidth: '0',
+        textAnchor: 'start',
     },
 }
 
@@ -40,12 +41,12 @@ const yAxisStyle = {
 
 const formatXAxisTicks = (value, index, scale, tickTotal, dayCount) => {
     // Show weekday name for small datasets
-    if (dayCount < 10) {
+    if (dayCount < 5) {
         return scale.tickFormat(tickTotal, '%a %d')(value)
     }
 
     const previousTickDate = index > 0 ? scale.ticks()[index - 1] : null
-    const monthChanged = previousTickDate != null ? value.getMonth() !== previousTickDate.getMonth() : false
+    const monthChanged = previousTickDate != null ? new Date(value).getMonth() !== previousTickDate.getMonth() : false
 
     // Include month name only for the first item and when month changes
     if (index === 0 || monthChanged) {
@@ -89,8 +90,13 @@ const TimeSeriesGraph = ({
             min -= 2
             max += 2
         }
-        return ([min - 2, max])
+        return ([min, max])
     }, [graphData])
+
+    // Adjust right margin so that it takes maximum Y value into account.
+    // This way we'll have enough room for also larger numbers.
+    const maxLength = Math.max(dataDomain[0].toString().length, dataDomain[1].toString().length)
+    const rightMargin = 12 + (maxLength * 9)
 
     return (
         <div className={className}>
@@ -114,10 +120,25 @@ const TimeSeriesGraph = ({
                     /* We need margin to not clip axis labels */
                     margin={{
                         left: 0,
-                        right: 50,
+                        right: rightMargin,
                     }}
                     yDomain={dataDomain}
+                    yBaseValue={dataDomain[0]}
                 >
+                    <XAxis
+                        hideLine
+                        style={xAxisStyle}
+                        tickTotal={7}
+                        tickFormat={(value, index, scale, tickTotal) => formatXAxisTicks(value, index, scale, tickTotal, shownDays)}
+                        tickSizeInner={0}
+                        tickSizeOuter={6}
+                    />
+                    <YAxis
+                        hideLine
+                        style={yAxisStyle}
+                        position="middle"
+                        orientation="right"
+                    />
                     <HorizontalGridLines />
                     <LineSeries
                         curve={null}
@@ -126,18 +147,6 @@ const TimeSeriesGraph = ({
                         strokeStyle="solid"
                         strokeWidth="4"
                         data={graphData}
-                    />
-                    <XAxis
-                        hideLine
-                        style={xAxisStyle}
-                        tickTotal={7}
-                        tickFormat={(value, index, scale, tickTotal) => formatXAxisTicks(value, index, scale, tickTotal, shownDays)}
-                    />
-                    <YAxis
-                        hideLine
-                        style={yAxisStyle}
-                        position="middle"
-                        orientation="right"
                     />
                 </XYPlot>
             )}
