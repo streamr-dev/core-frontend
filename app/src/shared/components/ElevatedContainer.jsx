@@ -1,8 +1,9 @@
 // @flow
 
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled, { css } from 'styled-components'
 import { TOOLBAR_SHADOW, MD } from '$shared/utils/styled'
+import useInt from '$shared/hooks/useInt'
 
 export const Root = styled.div`
     ${({ elevated, offset }) => (offset === 0 || !!elevated) && css`
@@ -21,12 +22,10 @@ type Props = {
     offset?: number | string,
 }
 
-const UnstyledElevatedContainer = ({ offset: offsetProp = 0, ...props }: any) => {
+const UnstyledElevatedContainer = ({ offset: offsetProp = 0, ...props }: Props) => {
     const [scrolled, setScrolled] = useState(false)
 
-    const offset = useMemo(() => (
-        Number.parseInt(offsetProp, 10)
-    ), [offsetProp])
+    const offset = useInt(offsetProp)
 
     useEffect(() => {
         const onScroll = () => {
