@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useEffect, useMemo, Fragment, useState } from 'react'
+import React, { useEffect, useMemo, Fragment } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Translate, I18n } from 'react-redux-i18n'
 import { Link } from 'react-router-dom'
@@ -28,9 +28,6 @@ import { productTypes } from '$mp/utils/constants'
 import Grid from '$shared/components/Tile/Grid'
 import { ProductTile } from '$shared/components/Tile'
 import * as MenuItems from './MenuItems'
-import { isEthereumAddress } from '$mp/utils/validate'
-import { getAdminFee } from '$mp/modules/dataUnion/services'
-import useIsMounted from '$shared/hooks/useIsMounted'
 
 import styles from './products.pcss'
 
@@ -72,69 +69,6 @@ const CreateProductButton = () => {
     )
 }
 
-const Tile = ({ product, members }: any) => {
-    const [isDeploying, setIsDeploying] = useState(false)
-
-    const isMounted = useIsMounted()
-
-    const { id, beneficiaryAddress, state } = product
-
-    const isDataUnion = isDataUnionProduct(product.type)
-
-    const memberCount = isDataUnion ? members[(beneficiaryAddress || '').toLowerCase()] : undefined
-
-    const deployed = state === productStates.DEPLOYED
-
-    const publishable = deployed || state === productStates.NOT_DEPLOYED
-
-    useEffect(() => {
-        (async () => {
-            let result = false
-
-            if (isDataUnion && isEthereumAddress(beneficiaryAddress)) {
-                try {
-                    result = await getAdminFee(beneficiaryAddress, true) != null
-                } catch (e) {
-                    // Ignore.
-                }
-            }
-
-            if (isMounted()) {
-                setIsDeploying(result)
-            }
-        })()
-    }, [isDataUnion, beneficiaryAddress, isMounted])
-
-    return (
-        <ProductTile
-            key={id}
-            actions={
-                <Fragment>
-                    <MenuItems.Edit id={id} />
-                    {!process.env.NEW_MP_CONTRACT && publishable && (
-                        <MenuItems.PublishUnpublish id={id} deployed={deployed} />
-                    )}
-                    {!!process.env.NEW_MP_CONTRACT && (
-                        <MenuItems.View id={id} disabled={!deployed} />
-                    )}
-                    {!!process.env.DATA_UNIONS && isDataUnion && (
-                        <MenuItems.ViewStats id={id} />
-                    )}
-                    {!!process.env.DATA_UNIONS && isDataUnion && (
-                        <MenuItems.ViewDataUnion id={id} />
-                    )}
-                    <MenuItems.Copy id={id} disabled={!deployed} />
-                </Fragment>
-            }
-            deployed={deployed}
-            numMembers={memberCount}
-            product={product}
-            showDataUnionBadge={isDataUnion}
-            showDeployingBadge={isDeploying && typeof memberCount === 'undefined'}
-        />
-    )
-}
-
 const ProductsPage = () => {
     const sortOptions = useMemo(() => {
         const filters = getFilters()
@@ -156,7 +90,7 @@ const ProductsPage = () => {
     const products = useSelector(selectMyProductList)
     const fetching = useSelector(selectFetching)
     const dispatch = useDispatch()
-    const { load: loadDataUnionStats, members } = useMemberStats()
+    const { load: loadDataUnionStats, members, fetching: fetchingDataUnionStats } = useMemberStats()
 
     useEffect(() => {
         dispatch(getMyProducts(filter))
@@ -201,9 +135,43 @@ const ProductsPage = () => {
                     />
                 )}
                 <Grid>
-                    {products.map((product) => (
-                        <Tile key={product.id} product={product} members={members} />
-                    ))}
+                    {products.map((product) => {
+                        const { id, beneficiaryAddress, state } = product
+                        const isDataUnion = isDataUnionProduct(product.type)
+                        const memberCount = isDataUnion ? members[(beneficiaryAddress || '').toLowerCase()] : undefined
+                        const isDeploying = state === productStates.DEPLOYING
+                        const deployed = state === productStates.DEPLOYED
+                        const publishable = deployed || state === productStates.NOT_DEPLOYED
+
+                        return (
+                            <ProductTile
+                                key={id}
+                                actions={
+                                    <Fragment>
+                                        <MenuItems.Edit id={id} />
+                                        {!process.env.NEW_MP_CONTRACT && publishable && (
+                                            <MenuItems.PublishUnpublish id={id} deployed={deployed} />
+                                        )}
+                                        {!!process.env.NEW_MP_CONTRACT && (
+                                            <MenuItems.View id={id} disabled={!deployed} />
+                                        )}
+                                        {!!process.env.DATA_UNIONS && isDataUnion && (
+                                            <MenuItems.ViewStats id={id} />
+                                        )}
+                                        {!!process.env.DATA_UNIONS && isDataUnion && (
+                                            <MenuItems.ViewDataUnion id={id} />
+                                        )}
+                                        <MenuItems.Copy id={id} disabled={!deployed} />
+                                    </Fragment>
+                                }
+                                deployed={deployed}
+                                numMembers={memberCount}
+                                product={product}
+                                showDataUnionBadge={isDataUnion}
+                                showDeployingBadge={isDeploying}
+                            />
+                        )
+                    })}
                 </Grid>
             </ListContainer>
             <DocsShortcuts />
