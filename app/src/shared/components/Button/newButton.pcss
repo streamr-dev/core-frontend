@@ -85,23 +85,25 @@
     color: rgba(255, 255, 255, 0.5);
   }
 
-  &.outline {
+  &.outline,
+  &[href].outline {
     color: rgb(3, 36, 255, 1);
     border-color: #0324FF;
+  }
 
-    &:not([disabled]):--enter {
-      color: #0D009A;
-      border-color: #0D009A;
-    }
+  &.outline:--enter {
+    color: #0D009A;
+    border-color: #0D009A;
+  }
 
-    &:not([disabled]):active {
-      color: #09006D;
-      border-color: #09006D;
-    }
+  &.outline:active {
+    color: #09006D;
+    border-color: #09006D;
+  }
 
-    &[disabled] {
-      color: rgb(3, 36, 255, 0.5);
-    }
+  &.outline[disabled] {
+    color: rgb(3, 36, 255, 0.5);
+    border-color: #0324FF;
   }
 }
 
