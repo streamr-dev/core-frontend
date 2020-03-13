@@ -9,7 +9,6 @@ import Layout from '../Layout'
 import { getFilters } from '../../utils/constants'
 import { getMyPurchases, updateFilter, applyFilter } from '$mp/modules/myPurchaseList/actions'
 import { selectMyPurchaseList, selectSubscriptions, selectFetchingMyPurchaseList } from '$mp/modules/myPurchaseList/selectors'
-import { isActive } from '$mp/utils/time'
 import Search from '../Header/Search'
 import Dropdown from '$shared/components/Dropdown'
 import NoPurchasesView from './NoPurchases'
@@ -21,11 +20,7 @@ import useMemberStats from '$mp/modules/dataUnion/hooks/useMemberStats'
 import { PurchaseTile } from '$shared/components/Tile'
 import Grid from '$shared/components/Tile/Grid'
 
-import type { ProductSubscription } from '$mp/flowtype/product-types'
-
 import styles from './purchases.pcss'
-
-const isSubscriptionActive = (subscription?: ProductSubscription): boolean => isActive((subscription && subscription.endsAt) || '')
 
 const PurchasesPage = () => {
     const sortOptions = useMemo(() => {
@@ -69,6 +64,13 @@ const PurchasesPage = () => {
         loadDataUnionStats()
     }, [loadDataUnionStats])
 
+    const subEndAts = useMemo(() => (
+        subscriptions.reduce((memo, sub) => ({
+            ...memo,
+            [sub.product.id]: new Date(sub.endsAt),
+        }), {})
+    ), [subscriptions])
+
     return (
         <Layout
             headerSearchComponent={
@@ -106,14 +108,13 @@ const PurchasesPage = () => {
                 {purchases.length > 0 && (
                     <Grid>
                         {purchases.map((product) => {
-                            const isActive = subscriptions && isSubscriptionActive(subscriptions.find((s) => s.product.id === product.id))
                             const isDataUnion = isDataUnionProduct(product)
                             const beneficiaryAddress = (product.beneficiaryAddress || '').toLowerCase()
                             const memberCount = isDataUnion ? members[beneficiaryAddress] : undefined
 
                             return (
                                 <PurchaseTile
-                                    isSubActive={isActive}
+                                    expiresAt={subEndAts[product.id]}
                                     key={product.id}
                                     numMembers={memberCount}
                                     product={product}

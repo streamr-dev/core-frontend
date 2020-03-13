@@ -9,7 +9,7 @@ import { DataUnionBadge, IconBadge, DeployingBadge } from './Badge'
 import ImageContainer, { Image } from './ImageContainer'
 import Menu from './Menu'
 import Summary from './Summary'
-import Label from './Label'
+import Label, { HAPPY, ANGRY, WORRIED } from './Label'
 import { RunStates } from '$editor/canvas/state'
 import CanvasPreview from '$editor/canvas/components/Preview'
 import DashboardPreview from '$editor/dashboard/components/Preview'
@@ -19,6 +19,7 @@ import { isPaidProduct } from '$mp/utils/product'
 import { timeUnits } from '$shared/utils/constants'
 import PaymentRate from '$mp/components/PaymentRate'
 import links from '$app/src/links'
+import useExpiresIn, { formatRemainingTime } from '$shared/hooks/useExpiresIn'
 
 const Tile = styled.div`
     position: relative;
@@ -106,7 +107,7 @@ const CanvasTile = ({ canvas, onMenuToggle, actions, ...props }: CanvasTileProps
                 name={canvas.name}
                 description={touchedAgo(canvas)}
                 label={(
-                    <Label positive={canvas.state === RunStates.Running}>
+                    <Label mood={canvas.state === RunStates.Running && 'happy'}>
                         {capital(canvas.state)}
                     </Label>
                 )}
@@ -137,15 +138,43 @@ const DashboardTile = ({ dashboard, ...props }: DashboardTileProps) => (
 )
 
 type PurchaseTileProps = {
-    isSubActive?: boolean,
+    expiresAt: Date,
     numMembers?: number,
     product: any,
     showDataUnionBadge?: boolean,
     showDeployingBadge?: boolean,
 }
 
+const remainingTimeToMood = (value: number) => {
+    switch (true) {
+        case value <= 0:
+            return undefined
+        case value < 300:
+            return ANGRY
+        case value < 3600:
+            return WORRIED
+        default:
+            return HAPPY
+    }
+}
+
+const ExpirationLabel = ({ expiresAt }: any) => {
+    const secondsLeft = useExpiresIn(expiresAt)
+    const mood = remainingTimeToMood(secondsLeft)
+
+    return (
+        <Label mood={mood}>
+            {secondsLeft > 0 ? (
+                `Expires in ${formatRemainingTime(secondsLeft)}`
+            ) : (
+                'Expired'
+            )}
+        </Label>
+    )
+}
+
 const PurchaseTile = ({
-    isSubActive,
+    expiresAt,
     numMembers,
     product,
     showDataUnionBadge,
@@ -171,13 +200,7 @@ const PurchaseTile = ({
                 name={product.name}
                 description={product.owner}
                 label={(
-                    <Label positive={isSubActive}>
-                        {isSubActive ? (
-                            <Translate value="userpages.purchases.active" />
-                        ) : (
-                            <Translate value="userpages.purchases.expired" />
-                        )}
-                    </Label>
+                    <ExpirationLabel expiresAt={expiresAt} />
                 )}
             />
         </Link>
@@ -232,7 +255,7 @@ const ProductTile = ({
                 name={product.name}
                 description={touchedAgo(product)}
                 label={(
-                    <Label positive={deployed}>
+                    <Label mood={deployed && 'happy'}>
                         {deployed ? (
                             <Translate value="userpages.products.published" />
                         ) : (
