@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useContext, useState, useEffect } from 'react'
+import React, { useContext } from 'react'
 import cx from 'classnames'
 import { Translate } from 'react-redux-i18n'
 
@@ -21,12 +21,6 @@ const ProductDescription = () => {
     const { updateDescription } = useEditableProductActions()
     const { isPending } = usePending('product.SAVE')
 
-    const [description, setDescription] = useState(product.description || '')
-
-    useEffect(() => {
-        setDescription(product.description || '')
-    }, [product.description])
-
     return (
         <section id="description" className={cx(styles.root, styles.ProductDescription)}>
             <div>
@@ -42,9 +36,8 @@ const ProductDescription = () => {
                 />
                 <MarkdownEditor
                     placeholder="Type something great about your product"
-                    value={description}
-                    onChange={setDescription}
-                    onCommit={updateDescription}
+                    value={product.description || ''}
+                    onChange={updateDescription}
                     className={styles.productDescription}
                     error={publishAttempted && !isValid ? message : undefined}
                     disabled={!!isPending}

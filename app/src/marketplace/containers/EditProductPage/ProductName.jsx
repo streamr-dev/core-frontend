@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useContext } from 'react'
+import React, { useContext, useCallback } from 'react'
 import cx from 'classnames'
 import { Translate } from 'react-redux-i18n'
 
@@ -22,6 +22,10 @@ const ProductName = () => {
     const { publishAttempted } = useContext(EditControllerContext)
     const invalid = publishAttempted && !isValid
 
+    const onChange = useCallback((e: SyntheticInputEvent<EventTarget>) => {
+        updateName(e.target.value)
+    }, [updateName])
+
     return (
         <section id="product-name" className={cx(styles.root, styles.ProductName)}>
             <div>
@@ -31,11 +35,10 @@ const ProductName = () => {
                 />
                 <Text
                     defaultValue={product.name}
-                    onCommit={updateName}
+                    onChange={onChange}
                     placeholder="Product Name"
                     disabled={isPending}
                     selectAllOnFocus
-                    smartCommit
                     invalid={invalid}
                     className={styles.input}
                     theme={SpaciousTheme}

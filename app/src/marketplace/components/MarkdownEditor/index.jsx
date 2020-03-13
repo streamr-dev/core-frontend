@@ -13,7 +13,6 @@ type Props = LastErrorProps & {
     value?: string,
     placeholder?: string,
     onChange?: (string) => void,
-    onCommit?: (string) => void,
     className?: string,
 }
 
@@ -58,7 +57,6 @@ const MarkdownEditor = ({
                     unstyled
                     className={styles.input}
                     onChange={onTextChange}
-                    smartCommit
                     tag="textarea"
                     value={value}
                 />
