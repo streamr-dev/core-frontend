@@ -1,49 +1,80 @@
 // @flow
 
-import React, { type Node } from 'react'
-import cx from 'classnames'
-
+import React from 'react'
+import styled, { css } from 'styled-components'
 import Buttons, { type ButtonActions } from '$shared/components/Buttons'
+import { MD } from '$shared/utils/styled'
+import ElevatedContainer from '$shared/components/ElevatedContainer'
 
-import styles from './toolbar.pcss'
+const Cell = styled.div`
+    align-items: center;
+    display: flex;
+`
+
+const Left = styled(Cell)``
+
+const Middle = styled(Cell)``
+
+const Right = styled.div`
+    text-align: right;
+`
 
 type Props = {
-    left?: Node,
-    middle?: Node,
     actions?: ButtonActions,
     altMobileLayout?: boolean,
-    className?: string,
+    left?: Node,
+    middle?: Node,
 }
 
-const Toolbar = ({
-    className,
-    left,
-    middle,
+const UnstyledToolbar = ({
     actions,
     altMobileLayout,
+    left,
+    middle,
+    ...props
 }: Props) => (
-    <div
-        className={cx(styles.toolbar, className, {
-            [styles.altMobileLayout]: altMobileLayout,
-        })}
-    >
-        <div className={cx(styles.left, {
-            [styles.noMiddle]: !middle,
-        })}
-        >
-            {left}
-        </div>
-        <div className={styles.middle}>
-            {middle}
-        </div>
-        <div className={styles.right}>
-            {actions && (
-                <Buttons actions={actions} className={styles.buttons} />
-            )}
-        </div>
-    </div>
+    <ElevatedContainer {...props}>
+        {!!(left || middle) && (
+            <Left>
+                {left}
+            </Left>
+        )}
+        {!!middle && (
+            <Middle>
+                {middle}
+            </Middle>
+        )}
+        {!!actions && (
+            <Right>
+                <Buttons actions={actions} />
+            </Right>
+        )}
+    </ElevatedContainer>
 )
 
-Toolbar.styles = styles
+const Toolbar = styled(UnstyledToolbar)`
+    background-color: white;
+    display: flex;
+    min-height: 4rem;
+    padding: 1.25rem 2rem;
+    position: sticky;
+    top: 0;
+    width: 100%;
+    z-index: 5;
+
+    ${({ altMobileLayout }) => !!altMobileLayout && css`
+        @media (max-width: ${MD - 1}px) {
+            bottom: 0;
+            padding: 15px;
+            position: fixed;
+            top: auto;
+        }
+    `}
+
+    ${Left},
+    ${Right} {
+        flex: 1;
+    }
+`
 
 export default Toolbar
