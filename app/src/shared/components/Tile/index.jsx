@@ -139,6 +139,7 @@ const DashboardTile = ({ dashboard, ...props }: DashboardTileProps) => (
 
 type PurchaseTileProps = {
     expiresAt: Date,
+    now?: ?Date,
     numMembers?: number,
     product: any,
     showDataUnionBadge?: boolean,
@@ -158,8 +159,8 @@ const remainingTimeToMood = (value: number) => {
     }
 }
 
-const ExpirationLabel = ({ expiresAt }: any) => {
-    const secondsLeft = useExpiresIn(expiresAt)
+const ExpirationLabel = ({ expiresAt, now }: any) => {
+    const secondsLeft = useExpiresIn(expiresAt, now)
     const mood = remainingTimeToMood(secondsLeft)
 
     return (
@@ -175,6 +176,7 @@ const ExpirationLabel = ({ expiresAt }: any) => {
 
 const PurchaseTile = ({
     expiresAt,
+    now,
     numMembers,
     product,
     showDataUnionBadge,
@@ -200,7 +202,7 @@ const PurchaseTile = ({
                 name={product.name}
                 description={product.owner}
                 label={(
-                    <ExpirationLabel expiresAt={expiresAt} />
+                    <ExpirationLabel expiresAt={expiresAt} now={now} />
                 )}
             />
         </Link>
