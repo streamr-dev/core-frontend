@@ -38,6 +38,7 @@ const PurchasesPage = () => {
             filters.EXPIRED,
         ]
     }, [])
+
     const {
         defaultFilter,
         filter,
@@ -45,9 +46,13 @@ const PurchasesPage = () => {
         setSort,
         resetFilter,
     } = useFilterSort(sortOptions)
+
     const purchases = useSelector(selectMyPurchaseList)
+
     const subscriptions = useSelector(selectSubscriptions)
+
     const fetching = useSelector(selectFetchingMyPurchaseList)
+
     const dispatch = useDispatch()
 
     const { load: loadDataUnionStats, members, fetching: fetchingDataUnionStats } = useMemberStats()
