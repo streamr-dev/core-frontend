@@ -64,7 +64,7 @@ export function getPendingChanges(product: Product): Object {
 export function hasPendingChange(product: Product, field: string) {
     const pendingChanges = getPendingChanges(product)
 
-    return !!pendingChanges[field]
+    return field in pendingChanges
 }
 
 export function update(product: Product, fn: Function) {

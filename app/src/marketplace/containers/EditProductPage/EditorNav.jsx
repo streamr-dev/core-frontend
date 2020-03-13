@@ -8,6 +8,7 @@ import EditorNavComponent, { statuses } from '$mp/components/ProductPage/EditorN
 import Scrollspy from 'react-scrollspy'
 
 import useEditableProduct from '../ProductController/useEditableProduct'
+import useNewProductMode from '../ProductController/useNewProductMode'
 import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
 import { Context as EditControllerContext } from './EditControllerProvider'
 import { isPublished } from './state'
@@ -23,25 +24,27 @@ const EditorNav = () => {
     const productRef = useRef()
     productRef.current = product
     const { isRequired: showConnectEthIdentity } = useIsEthIdentityNeeded()
+    const { isNewProduct } = useNewProductMode()
 
     const [activeSectionId, setActiveSectionId] = useState(undefined)
 
     const { isValid, isTouched, isPendingChange } = useContext(ValidationContext)
-    const { lastSectionRef } = useContext(EditControllerContext)
+    const { lastSectionRef, publishAttempted } = useContext(EditControllerContext)
 
     const isDataUnion = isDataUnionProduct(product)
     const isPublic = isPublished(product)
 
     const getStatus = useCallback((name: string) => {
-        const pending = !!isPublic && isPendingChange(name)
-
-        if (!isTouched(name) && !pending) {
+        if (isNewProduct && !isTouched(name)) {
             return statuses.EMPTY
         }
+
+        const pending = !isNewProduct && !!isPublic && isPendingChange(name)
+
         const validState = pending ? statuses.UNPUBLISHED : statuses.VALID
 
         return isValid(name) ? validState : statuses.ERROR
-    }, [isPublic, isPendingChange, isTouched, isValid])
+    }, [isPublic, isPendingChange, isValid, isNewProduct, isTouched])
 
     const priceStatus = useMemo(() => {
         const price = getStatus('pricePerSecond')
@@ -81,20 +84,6 @@ const EditorNav = () => {
         return statuses.EMPTY
     }, [getStatus, isDataUnion])
 
-    const ethIdentityStatus = useMemo(() => {
-        if (!isTouched('ethIdentity')) {
-            return statuses.EMPTY
-        }
-        return statuses.VALID
-    }, [isTouched])
-
-    const sharedSecretStatus = useMemo(() => {
-        if (!isTouched('sharedSecrets')) {
-            return statuses.EMPTY
-        }
-        return statuses.VALID
-    }, [isTouched])
-
     const clickTargetRef = useRef(null)
 
     const scrollTo = useCallback((id, smooth = true) => {
@@ -114,6 +103,20 @@ const EditorNav = () => {
         e.preventDefault()
         scrollTo(id)
     }, [scrollTo])
+
+    const ethIdentityStatus = useMemo(() => {
+        if (!publishAttempted) {
+            return statuses.EMPTY
+        }
+        return statuses.VALID
+    }, [publishAttempted])
+
+    const sharedSecretStatus = useMemo(() => {
+        if (!publishAttempted) {
+            return statuses.EMPTY
+        }
+        return statuses.VALID
+    }, [publishAttempted])
 
     const sections = useMemo(() => {
         const nextSections = [{
@@ -162,10 +165,10 @@ const EditorNav = () => {
         getStatus,
         priceStatus,
         detailsStatus,
-        ethIdentityStatus,
-        sharedSecretStatus,
         isDataUnion,
         showConnectEthIdentity,
+        ethIdentityStatus,
+        sharedSecretStatus,
     ])
 
     const sectionWithLinks = useMemo(() => sections.map((section) => ({
@@ -212,6 +215,8 @@ const EditorNav = () => {
             <EditorNavComponent
                 sections={sectionWithLinks}
                 activeSection={activeSectionId}
+                showErrors={publishAttempted}
+                trackScrolling={isNewProduct}
             />
         </Scrollspy>
     )

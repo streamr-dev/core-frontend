@@ -1,14 +1,14 @@
 // @flow
 
-import React, { useContext } from 'react'
+import React, { useContext, useCallback } from 'react'
 import cx from 'classnames'
 import { Translate } from 'react-redux-i18n'
 
-import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
 import usePending from '$shared/hooks/usePending'
 import useEditableProduct from '../ProductController/useEditableProduct'
 import useValidation from '../ProductController/useValidation'
 import useEditableProductActions from '../ProductController/useEditableProductActions'
+import { Context as EditControllerContext } from './EditControllerProvider'
 import Text, { SpaciousTheme } from '$ui/Text'
 import Errors, { MarketplaceTheme } from '$ui/Errors'
 
@@ -18,9 +18,13 @@ const ProductName = () => {
     const product = useEditableProduct()
     const { isValid, message } = useValidation('name')
     const { updateName } = useEditableProductActions()
-    const { isTouched } = useContext(ValidationContext)
     const { isPending } = usePending('product.SAVE')
-    const invalid = isTouched('name') && !isValid
+    const { publishAttempted } = useContext(EditControllerContext)
+    const invalid = publishAttempted && !isValid
+
+    const onChange = useCallback((e: SyntheticInputEvent<EventTarget>) => {
+        updateName(e.target.value)
+    }, [updateName])
 
     return (
         <section id="product-name" className={cx(styles.root, styles.ProductName)}>
@@ -31,11 +35,10 @@ const ProductName = () => {
                 />
                 <Text
                     defaultValue={product.name}
-                    onCommit={updateName}
+                    onChange={onChange}
                     placeholder="Product Name"
                     disabled={isPending}
                     selectAllOnFocus
-                    smartCommit
                     invalid={invalid}
                     className={styles.input}
                     theme={SpaciousTheme}

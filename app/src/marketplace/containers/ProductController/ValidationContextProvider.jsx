@@ -7,7 +7,6 @@ import { isEthereumAddress } from '$mp/utils/validate'
 import { isPaidProduct, isDataUnionProduct } from '$mp/utils/product'
 import { isPriceValid } from '$mp/utils/price'
 import { isPublished, getPendingChanges, PENDING_CHANGE_FIELDS } from '../EditProductPage/state'
-import useNewProductMode from './useNewProductMode'
 
 export const INFO = 'info'
 export const WARNING = 'warning'
@@ -36,7 +35,6 @@ function useValidationContext(): ContextProps {
     const [status, setStatusState] = useState({})
     const [pendingChanges, setPendingChanges] = useState({})
     const [touched, setTouched] = useState({})
-    const { isNewProduct } = useNewProductMode()
 
     const touch = useCallback((name: string) => {
         setTouched((existing) => ({
@@ -44,7 +42,7 @@ function useValidationContext(): ContextProps {
             [name]: true,
         }))
     }, [setTouched])
-    const isTouched = useCallback((name: string) => (!isNewProduct || !!touched[name]), [isNewProduct, touched])
+    const isTouched = useCallback((name: string) => !!touched[name], [touched])
 
     const isAnyTouched = useCallback(() => Object.values(touched).some(Boolean), [touched])
 
@@ -85,10 +83,14 @@ function useValidationContext(): ContextProps {
             throw new Error('validation needs a name')
         }
 
-        setStatusState((state) => ({
-            ...state,
-            [name]: undefined,
-        }))
+        setStatusState((prevState) => {
+            const newState = {
+                ...prevState,
+            }
+            delete newState[name]
+
+            return newState
+        })
     }, [setStatusState, isMounted])
 
     const isValid = useCallback((name: string) => !status[name], [status])
@@ -149,7 +151,7 @@ function useValidationContext(): ContextProps {
         const changes = getPendingChanges(product)
         const isPublic = isPublished(product)
         PENDING_CHANGE_FIELDS.forEach((field) => {
-            setPendingChange(field, !!changes[field] || (isPublic && isTouched(field)))
+            setPendingChange(field, (field in changes) || (isPublic && isTouched(field)))
         })
     }, [setStatus, clearStatus, isMounted, setPendingChange, isTouched])
 
