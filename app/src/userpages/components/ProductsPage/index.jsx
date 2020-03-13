@@ -139,7 +139,7 @@ const ProductsPage = () => {
                         const { id, beneficiaryAddress, state } = product
                         const isDataUnion = isDataUnionProduct(product.type)
                         const memberCount = isDataUnion ? members[(beneficiaryAddress || '').toLowerCase()] : undefined
-                        const isDeploying = !fetchingDataUnionStats && typeof memberCount !== 'undefined'
+                        const isDeploying = isDataUnion && !fetchingDataUnionStats && !!beneficiaryAddress && typeof memberCount === 'undefined'
                         const deployed = state === productStates.DEPLOYED
                         const publishable = deployed || state === productStates.NOT_DEPLOYED
 
