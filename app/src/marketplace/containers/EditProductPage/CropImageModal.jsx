@@ -44,12 +44,11 @@ export default () => {
         return null
     }
 
-    const { image, onUpdateImage } = value || {}
+    const { image } = value || {}
 
     return (
         <PreviewAndCropModal
             image={image}
-            onUpdateImage={onUpdateImage}
             api={api}
         />
     )

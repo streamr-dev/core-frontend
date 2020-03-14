@@ -46,6 +46,8 @@ export class PublishQueue {
 
     add(action: PublishAction) {
         this.actions.push(action)
+
+        return this
     }
 
     startAction(id: string, nextAction: Function): Promise<void> {
