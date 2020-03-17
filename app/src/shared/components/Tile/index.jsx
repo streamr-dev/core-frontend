@@ -107,7 +107,7 @@ const CanvasTile = ({ canvas, onMenuToggle, actions, ...props }: CanvasTileProps
                 name={canvas.name}
                 description={touchedAgo(canvas)}
                 label={(
-                    <Label mood={canvas.state === RunStates.Running && 'happy'}>
+                    <Label mood={canvas.state === RunStates.Running && HAPPY}>
                         {capital(canvas.state)}
                     </Label>
                 )}
@@ -257,7 +257,7 @@ const ProductTile = ({
                 name={product.name}
                 description={touchedAgo(product)}
                 label={(
-                    <Label mood={deployed && 'happy'}>
+                    <Label mood={deployed && HAPPY}>
                         {deployed ? (
                             <Translate value="userpages.products.published" />
                         ) : (
