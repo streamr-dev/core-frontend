@@ -3,6 +3,7 @@
 import EventEmitter from 'events'
 
 import { transactionStates } from '$shared/utils/constants'
+import type { Address } from '$shared/flowtype/web3-types'
 
 export const actionsTypes = {
     UPDATE_ADMIN_FEE: 'updateAdminFee',
@@ -15,17 +16,11 @@ export const actionsTypes = {
     PUBLISH_PENDING_CHANGES: 'publishPendingChanges',
 }
 
-const web3Actions = [
-    actionsTypes.UPDATE_ADMIN_FEE,
-    actionsTypes.UPDATE_CONTRACT_PRODUCT,
-    actionsTypes.CREATE_CONTRACT_PRODUCT,
-    actionsTypes.REDEPLOY_PAID,
-    actionsTypes.UNDEPLOY_CONTRACT_PRODUCT,
-]
-
 export type PublishAction = {
     id: string,
     handler: Function,
+    requireWeb3?: boolean,
+    requireOwner?: Address,
 }
 
 export class PublishQueue {
@@ -48,6 +43,10 @@ export class PublishQueue {
         this.actions.push(action)
 
         return this
+    }
+
+    getActions() {
+        return this.actions
     }
 
     startAction(id: string, nextAction: Function): Promise<void> {
@@ -83,9 +82,20 @@ export class PublishQueue {
         this.emitter.emit('finish')
     }
 
-    needsWeb3 = () => {
-        const web3EnabledSet = new Set(web3Actions)
-        return !!(this.actions.find(({ id }) => web3EnabledSet.has(id)))
+    needsWeb3 = () => !!(this.actions.find(({ requireWeb3 }) => !!requireWeb3))
+
+    needsOwner = () => {
+        const addresses = this.actions.reduce((result, { requireOwner }) => {
+            if (requireOwner) {
+                result.add(requireOwner)
+            }
+
+            return result
+        }, new Set([]))
+
+        return [
+            ...addresses,
+        ]
     }
 }
 

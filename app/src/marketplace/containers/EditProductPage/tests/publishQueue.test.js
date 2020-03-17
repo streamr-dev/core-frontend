@@ -289,18 +289,70 @@ describe('Publish queue', () => {
                 })
                 .add({
                     id: actionsTypes.PUBLISH_PENDING_CHANGES,
+                    requireWeb3: true,
                     handler: (update, done) => {
                         done()
                     },
                 })
                 .add({
                     id: actionsTypes.UPDATE_ADMIN_FEE,
+                    requireWeb3: true,
                     handler: (update, done) => {
                         done()
                     },
                 })
 
             expect(queue.needsWeb3()).toBe(true)
+        })
+    })
+
+    describe('needsOwner', () => {
+        it('returns empty array if there are no actions that require owner', () => {
+            const queue = new PublishQueue()
+
+            queue
+                .add({
+                    id: actionsTypes.PUBLISH_FREE,
+                    handler: (update, done) => {
+                        done()
+                    },
+                })
+                .add({
+                    id: actionsTypes.PUBLISH_PENDING_CHANGES,
+                    handler: (update, done) => {
+                        done()
+                    },
+                })
+
+            expect(queue.needsOwner()).toStrictEqual([])
+        })
+
+        it('returns false if there are no actions that require web3', () => {
+            const queue = new PublishQueue()
+
+            queue
+                .add({
+                    id: actionsTypes.PUBLISH_FREE,
+                    handler: (update, done) => {
+                        done()
+                    },
+                })
+                .add({
+                    id: actionsTypes.PUBLISH_PENDING_CHANGES,
+                    requireOwner: '0x123',
+                    handler: (update, done) => {
+                        done()
+                    },
+                })
+                .add({
+                    id: actionsTypes.UPDATE_ADMIN_FEE,
+                    requireOwner: '0xabc',
+                    handler: (update, done) => {
+                        done()
+                    },
+                })
+
+            expect(queue.needsOwner()).toStrictEqual(['0x123', '0xabc'])
         })
     })
 })
