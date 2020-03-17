@@ -1,58 +1,61 @@
 // @flow
 
-import React, { useState } from 'react'
-import cx from 'classnames'
-
-import useInterval from '$shared/hooks/useInterval'
-
-import styles from './expirationCounter.pcss'
+import React from 'react'
+import styled, { css } from 'styled-components'
+import useExpiresIn, { formatRemainingTime } from '$shared/hooks/useExpiresIn'
 
 type Props = {
     expiresAt: Date,
     now?: ?number,
     className?: string,
+    unstyled?: boolean,
 }
 
-const HOUR_SECONDS = 60 * 60
-const DAY_SECONDS = 24 * HOUR_SECONDS
+const Wrapper = styled.span`
+    && {
+        ${({ expiresSoon }) => !!expiresSoon && css`
+            border-color: #FF5C00;
+            color: #FF5C00;
+        `}
 
-const getExpirationString = (secondsLeft: number): string => {
-    if (secondsLeft < DAY_SECONDS) {
-        const date = new Date(0)
-        date.setTime(secondsLeft * 1000)
-        return date.toISOString().substr(11, 8) // hh:mm:ss
+        ${({ expired }) => !!expired && css`
+            border-color: #FB0606;
+            color: #FB0606;
+        `}
     }
+`
 
-    const days = parseInt(secondsLeft / DAY_SECONDS, 10)
-    return `${days} day${days > 1 ? 's' : ''}`
-}
-
-const toSecondsFromNow = (data: Date, now: ?number) => (
-    Math.floor((data.getTime() - (now == null ? Date.now() : now)) / 1000)
-)
-
-const ExpirationCounter = ({ expiresAt, now, className }: Props) => {
-    const [secondsUntilExpiration, setSecondsUntilExpiration] = useState(toSecondsFromNow(expiresAt, now))
-
-    useInterval(() => {
-        setSecondsUntilExpiration(toSecondsFromNow(expiresAt, now))
-    }, 1000)
+const UnstyledExpirationCounter = ({ expiresAt, now, ...props }: Props) => {
+    const secondsUntilExpiration = useExpiresIn(expiresAt, now == null ? undefined : new Date(now))
 
     return (
-        <span className={
-            cx(
-                styles.root,
-                className, {
-                    [styles.expiringSoon]: secondsUntilExpiration > 0 && secondsUntilExpiration <= HOUR_SECONDS,
-                    [styles.expired]: secondsUntilExpiration < 0,
-                },
-            )}
+        <Wrapper
+            {...props}
+            expiresSoon={secondsUntilExpiration <= 3600}
+            expired={secondsUntilExpiration < 0}
         >
             {secondsUntilExpiration <= 0 ? 'Expired' : (
-                `Expires in ${getExpirationString(secondsUntilExpiration)}`
+                `Expires in ${formatRemainingTime(secondsUntilExpiration)}`
             )}
-        </span>
+        </Wrapper>
     )
 }
+
+const ExpirationCounter = styled(UnstyledExpirationCounter)`
+    ${({ unstyled }) => !unstyled && css`
+        align-items: center;
+        border: 1px solid #525252;
+        border-radius: 4px;
+        color: #525252;
+        display: inline-flex;
+        font-family: var(--sans);
+        font-size: 12px;
+        height: 24px;
+        letter-spacing: 0;
+        line-height: 24px;
+        padding: 1px 8px;
+        text-align: center;
+    `}
+`
 
 export default ExpirationCounter
