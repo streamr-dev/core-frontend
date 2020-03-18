@@ -14,20 +14,20 @@ export type Props = {
 const Container = styled.div``
 
 const Content = styled.span`
-display: inline-flex;
-margin-left: 10px;
-width: ${(props) => props.width}px;
-color: #13013d;
+    display: inline-flex;
+    margin-left: 10px;
+    width: ${(props) => props.width}px;
+    color: #13013d;
 `
 
 const Button = styled(Content)`
-display: none;
-color: #0324ff;
-cursor: pointer;
+    display: none;
+    color: #0324ff;
+    cursor: pointer;
 
-${Container}:hover & {
-    display: inline-flex;
-}
+    ${Container}:hover & {
+        display: inline-flex;
+    }
 `
 
 const HoverCopy = ({ value, children }: Props) => {

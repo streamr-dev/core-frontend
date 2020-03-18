@@ -23,12 +23,15 @@ const NameAndUsername = ({ name, username, children }: NameAndUsernameProps) => 
             <div className={styles.name}>{name}</div>
             <div className={styles.usernameWrapper}>
                 <span title={username} className={styles.username}>
-                    {!isEthAddress && (username)}
-                    <HoverCopy value={username}>
-                        {!!isEthAddress && (truncate(username, {
-                            maxLength: 20,
-                        }))}
-                    </HoverCopy>
+                    {isEthAddress ? (
+                        <HoverCopy value={username}>
+                            {truncate(username, {
+                                maxLength: 20,
+                            })}
+                        </HoverCopy>
+                    ) : (
+                        username
+                    )}
                 </span>
             </div>
             {children}
