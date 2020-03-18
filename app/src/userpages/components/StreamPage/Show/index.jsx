@@ -296,7 +296,13 @@ function StreamLoader(props: Props) {
             currentProps.getStream(id).then(async () => {
                 if (!isMounted()) { return }
                 // get stream status before copying state to edit stream object
-                await currentProps.refreshStreamStatus(id)
+                try {
+                    // the status query might fail due to cassandra problems.
+                    // Ignore error to prevent the stream page from getting stuck while loading
+                    await currentProps.refreshStreamStatus(id)
+                } catch (e) {
+                    console.warn(e)
+                }
                 currentProps.openStream(id)
                 currentProps.initEditStream()
             }),
