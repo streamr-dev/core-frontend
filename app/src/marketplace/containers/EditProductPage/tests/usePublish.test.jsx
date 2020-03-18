@@ -7,7 +7,6 @@ import BN from 'bignumber.js'
 
 import Transaction from '$shared/utils/Transaction'
 import usePublish, { publishModes } from '../usePublish'
-import * as productServices from '$mp/modules/product/services'
 import * as contractProductServices from '$mp/modules/contractProduct/services'
 import * as createContractProductServices from '$mp/modules/createContractProduct/services'
 import * as dataUnionServices from '$mp/modules/dataUnion/services'
@@ -17,7 +16,7 @@ import * as transactionActions from '$mp/modules/transactions/actions'
 import * as editProductActions from '$mp/modules/deprecated/editProduct/services'
 
 import { actionsTypes } from '../publishQueue'
-import { productStates, transactionStates, transactionTypes } from '$shared/utils/constants'
+import { transactionStates, transactionTypes } from '$shared/utils/constants'
 
 jest.mock('react-redux', () => ({
     useDispatch: jest.fn().mockImplementation(() => (action) => action),

@@ -50,7 +50,7 @@ const steps = {
     COMPLETE: 'complete',
 }
 
-const PublishOrUnpublishModal = ({ product, api }: Props) => {
+export const PublishOrUnpublishModal = ({ product, api }: Props) => {
     const queueRef = useRef(new PublishQueue())
     const dispatch = useDispatch()
 
@@ -139,6 +139,8 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
 
                     queue.add({
                         id: actionsTypes.UPDATE_ADMIN_FEE,
+                        requireWeb3: true,
+                        requireOwner: dataUnionOwner,
                         handler: (update, done) => (
                             setAdminFee(p.beneficiaryAddress, adminFee)
                                 .onTransactionHash((hash) => {
@@ -165,6 +167,8 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
 
                     queue.add({
                         id: actionsTypes.UPDATE_CONTRACT_PRODUCT,
+                        requireWeb3: true,
+                        requireOwner: contractProduct.ownerAddress,
                         handler: (update, done) => {
                             if (!contractProduct) {
                                 return null
@@ -204,6 +208,8 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
 
                     queue.add({
                         id: actionsTypes.CREATE_CONTRACT_PRODUCT,
+                        requireWeb3: true,
+                        requireOwner: dataUnionOwner,
                         handler: (update, done) => (
                             createContractProduct({
                                 id: p.id || '',
@@ -253,6 +259,8 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
 
                     queue.add({
                         id: actionsTypes.REDEPLOY_PAID,
+                        requireWeb3: true,
+                        requireOwner: contractProduct.ownerAddress,
                         handler: (update, done) => (
                             redeployProduct(productId || '')
                                 .onTransactionHash((hash) => {
@@ -279,6 +287,8 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
                     requireOwner = contractProduct.ownerAddress
                     queue.add({
                         id: actionsTypes.UNDEPLOY_CONTRACT_PRODUCT,
+                        requireWeb3: true,
+                        requireOwner: contractProduct.ownerAddress,
                         handler: (update, done) => (
                             deleteProduct(productId || '')
                                 .onTransactionHash((hash) => {
