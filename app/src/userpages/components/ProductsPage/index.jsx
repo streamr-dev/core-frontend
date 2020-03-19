@@ -140,6 +140,7 @@ const ProductsPage = () => {
                         const isDataUnion = isDataUnionProduct(product.type)
                         const memberCount = isDataUnion ? members[(beneficiaryAddress || '').toLowerCase()] : undefined
                         const isDeploying = isDataUnion && !fetchingDataUnionStats && !!beneficiaryAddress && typeof memberCount === 'undefined'
+                        const contractAddress = isDataUnion ? beneficiaryAddress : null
                         const deployed = state === productStates.DEPLOYED
                         const publishable = deployed || state === productStates.NOT_DEPLOYED
 
@@ -160,6 +161,9 @@ const ProductsPage = () => {
                                         )}
                                         {!!process.env.DATA_UNIONS && isDataUnion && (
                                             <MenuItems.ViewDataUnion id={id} />
+                                        )}
+                                        {!!process.env.DATA_UNIONS && contractAddress && (
+                                            <MenuItems.CopyContractAddress address={contractAddress} />
                                         )}
                                         <MenuItems.Copy id={id} disabled={!deployed} />
                                     </Fragment>

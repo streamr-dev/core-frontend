@@ -3,6 +3,7 @@
 import React, { type Node } from 'react'
 
 import type { Address } from '$shared/flowtype/web3-types'
+import HoverCopy from '$shared/components/HoverCopy'
 import { isEthereumAddress } from '$mp/utils/validate'
 import { truncate } from '$shared/utils/text'
 
@@ -22,10 +23,15 @@ const NameAndUsername = ({ name, username, children }: NameAndUsernameProps) => 
             <div className={styles.name}>{name}</div>
             <div className={styles.usernameWrapper}>
                 <span title={username} className={styles.username}>
-                    {!isEthAddress && (username)}
-                    {!!isEthAddress && (truncate(username, {
-                        maxLength: 20,
-                    }))}
+                    {isEthAddress ? (
+                        <HoverCopy value={username}>
+                            {truncate(username, {
+                                maxLength: 20,
+                            })}
+                        </HoverCopy>
+                    ) : (
+                        username
+                    )}
                 </span>
             </div>
             {children}

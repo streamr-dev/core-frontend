@@ -97,3 +97,20 @@ export const Copy = ({ id, disabled }: any) => {
         </MenuItem>
     )
 }
+
+export const CopyContractAddress = ({ disabled, address }: any) => {
+    const { copy } = useCopy()
+
+    const onClick = useCallback(() => {
+        copy(address)
+    }, [copy, address])
+
+    return (
+        <MenuItem
+            onClick={onClick}
+            disabled={disabled}
+        >
+            <Translate value="actionsDropdown.copyContractAddress" />
+        </MenuItem>
+    )
+}

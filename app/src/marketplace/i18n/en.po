@@ -50,6 +50,9 @@ msgstr "View Data Union"
 msgid "actionsDropdown##copyUrl"
 msgstr "Copy URL"
 
+msgid "actionsDropdown##copyContractAddress"
+msgstr "Copy ETH address"
+
 msgid "general##backToMarketplace"
 msgstr "Back to Marketplace"
 
