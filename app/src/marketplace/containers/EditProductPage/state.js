@@ -17,7 +17,6 @@ export const PENDING_CHANGE_FIELDS = [
     'priceCurrency',
     'adminFee',
     'timeUnit',
-    'currency',
     'price',
 ]
 
