@@ -2,15 +2,14 @@
 
 import React, { useMemo } from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
-import cx from 'classnames'
+import styled from 'styled-components'
 
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
-import SvgIcon from '$shared/components/SvgIcon'
-import Spinner from '$shared/components/Spinner'
+import ProgressBar from '$shared/components/ProgressBar'
 import { transactionStates } from '$shared/utils/constants'
 
-import styles from './completePublishTransaction.pcss'
+import styles from './publishTransactionProgress.pcss'
 
 export type Status = {
     [string]: string,
@@ -22,7 +21,15 @@ export type Props = {
     onCancel: () => void,
 }
 
-const CompletePublishTransaction = ({ isUnpublish, onCancel, status }: Props) => {
+const Error = styled.div`
+    width: 100%;
+    text-align: left;
+    font-size: 0.875rem;
+    color: #FF5C00;
+    margin-top: 0.5rem;
+`
+
+const PublishTransactionProgress = ({ isUnpublish, onCancel, status }: Props) => {
     const { somePending, someFailed, allConfirmed } = useMemo(() => {
         const statuses = Object.values(status)
         const pending = statuses.some((value) => value !== transactionStates.FAILED && value !== transactionStates.CONFIRMED)
@@ -33,57 +40,69 @@ const CompletePublishTransaction = ({ isUnpublish, onCancel, status }: Props) =>
         }
     }, [status])
 
+    const progress = useMemo(() => Object.keys(status).reduce((result, key) => {
+        const value = status[key]
+
+        if (value === transactionStates.PENDING) {
+            result.pending.push(key)
+        }
+
+        if (value === transactionStates.FAILED || value === transactionStates.CONFIRMED) {
+            result.complete.push(key)
+        }
+
+        if (value === transactionStates.FAILED) {
+            result.failed.push(key)
+        }
+
+        if (value === transactionStates.CONFIRMED) {
+            result.confirmed.push(key)
+        }
+
+        return result
+    }, {
+        pending: [],
+        complete: [],
+        failed: [],
+        confirmed: [],
+    }), [status])
+
     return (
         <ModalPortal>
             <Dialog
                 onClose={onCancel}
                 title={I18n.t(`modal.complete${isUnpublish ? 'Unpublish' : 'Publish'}.started.title`)}
+                titleClassName={somePending ? styles.titlePending : undefined}
                 actions={{
                     cancel: {
                         title: I18n.t('modal.common.cancel'),
-                        onClick: onCancel,
+                        onClick: () => onCancel(),
                         kind: 'link',
+                        disabled: somePending,
                     },
                     close: {
-                        title: somePending ? I18n.t('modal.common.waiting') : I18n.t('modal.common.close'),
+                        title: somePending ? I18n.t('modal.common.working') : I18n.t('modal.common.close'),
                         kind: 'primary',
                         disabled: somePending,
-                        spinner: somePending,
-                        onClick: onCancel,
+                        onClick: () => onCancel(),
                     },
                 }}
             >
-                <div className={styles.statusArray}>
-                    {Object.keys(status).map((key) => (
-                        <div key={key} className={styles.statusRow}>
-                            <div className={styles.iconBox}>
-                                {status[key] === transactionStates.FAILED && (
-                                    <SvgIcon name="error" className={cx(styles.icon, styles.iconSize)} />
-                                )}
-                                {status[key] === transactionStates.CONFIRMED && (
-                                    <SvgIcon name="checkmark" size="small" className={styles.icon} />
-                                )}
-                                {status[key] !== transactionStates.FAILED && status[key] !== transactionStates.CONFIRMED && (
-                                    <Spinner size="small" className={cx(styles.spinner, styles.iconSize)} />
-                                )}
-                            </div>
-                            <div>
-                                <Translate
-                                    value={`modal.completePublish.${key}.started.title`}
-                                    tag="p"
-                                    dangerousHTML
-                                />
-                            </div>
-                        </div>
-                    ))}
+                <div className={styles.publishProgress}>
+                    <div className={styles.activeTask}>
+                        {progress.pending && progress.pending.length > 0 && (
+                            <span>
+                                updating {progress.pending.join(', ')}...
+                            </span>
+                        )}
+                    </div>
+                    <ProgressBar value={(progress.complete.length / Math.max(1, Object.keys(status).length)) * 100} />
+                    {progress.failed && progress.failed.length > 0 && (
+                        <Error>
+                            {progress.failed.join(', ')} failed
+                        </Error>
+                    )}
                 </div>
-                {!!somePending && (
-                    <Translate
-                        value="modal.common.waitingForBlockchain"
-                        tag="p"
-                        dangerousHTML
-                    />
-                )}
                 {!!someFailed && !isUnpublish && (
                     <Translate
                         value="modal.completePublish.failed.message"
@@ -117,4 +136,4 @@ const CompletePublishTransaction = ({ isUnpublish, onCancel, status }: Props) =>
     )
 }
 
-export default CompletePublishTransaction
+export default PublishTransactionProgress

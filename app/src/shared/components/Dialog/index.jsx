@@ -25,6 +25,7 @@ export type Props = {
     containerClassname?: string,
     actionsClassName?: string,
     backdropClassName?: string,
+    titleClassName?: string,
     onClose: () => void,
     showCloseIcon?: boolean,
     autoCloseAfter?: number, // in milliseconds, use this to close the dialog after a custom timeout
@@ -99,6 +100,7 @@ class Dialog extends Component<Props, State> {
             containerClassname,
             actionsClassName,
             backdropClassName,
+            titleClassName,
             onClose,
             showCloseIcon,
             renderActions,
@@ -117,6 +119,7 @@ class Dialog extends Component<Props, State> {
                     <TitleBar
                         showCloseIcon={showCloseIcon}
                         onClose={onClose}
+                        className={titleClassName}
                     >
                         {title}
                         {!!helpText && (

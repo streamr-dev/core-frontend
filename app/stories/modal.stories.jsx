@@ -18,10 +18,11 @@ import croppedImage from '$mp/assets/product_standard.png'
 // marketplace
 import CompleteContractProductPublishDialog from '$mp/components/Modal/CompleteContractProductPublishDialog'
 import CompleteContractProductUnpublishDialog from '$mp/components/Modal/CompleteContractProductUnpublishDialog'
-import CompletePublishTransaction from '$mp/components/Modal/CompletePublishTransaction'
+import PublishTransactionProgress from '$mp/components/Modal/PublishTransactionProgress'
 import CompleteUnpublishDialog from '$mp/components/Modal/CompleteUnpublishDialog'
-import ConfirmPublishTransaction from '$mp/components/Modal/ConfirmPublishTransaction'
 import ConfirmSaveDialog from '$mp/components/Modal/ConfirmSaveDialog'
+import PublishComplete from '$mp/components/Modal/PublishComplete'
+import UnpublishComplete from '$mp/components/Modal/UnpublishComplete'
 import GuidedDeployDataUnionDialog from '$mp/components/Modal/GuidedDeployDataUnionDialog'
 import ConfirmDeployDataUnionDialog from '$mp/components/Modal/ConfirmDeployDataUnionDialog'
 import DeployingDataUnionDialog from '$mp/components/Modal/DeployingDataUnionDialog'
@@ -127,58 +128,87 @@ story('Product Editor/CompleteContractProductUnpublishDialog')
         />
     ))
 
-type CompletePublishControllerProps = {
-    isUnpublish?: boolean,
-}
+const options = [
+    transactionStates.STARTED,
+    transactionStates.PENDING,
+    transactionStates.CONFIRMED,
+    transactionStates.FAILED,
+]
 
-const CompletePublishController = ({ isUnpublish = false }: CompletePublishControllerProps) => {
-    const options = [
-        transactionStates.PENDING,
-        transactionStates.CONFIRMED,
-        transactionStates.FAILED,
-    ]
+story('Product Editor/PublishTransactionProgress')
+    .add('Publish', () => {
+        const adminFeeStatus = select('Admin Fee', options, transactionStates.STARTED)
+        const updateContractStatus = select('Edit product price', options, transactionStates.STARTED)
+        const createContractStatus = select('Create contract product', options, transactionStates.STARTED)
+        const redeployPaidStatus = select('Redeploy paid', options, transactionStates.STARTED)
+        const publishFreeStatus = select('Publish free', options, transactionStates.STARTED)
 
-    let statuses = {}
-
-    if (isUnpublish) {
-        const unpublishFreeStatus = select('Unpublish free', options, transactionStates.PENDING)
-        const undeployPaidStatus = select('Undeploy paid', options, transactionStates.PENDING)
-
-        statuses = {
-            [actionsTypes.UNPUBLISH_FREE]: unpublishFreeStatus,
-            [actionsTypes.UNDEPLOY_CONTRACT_PRODUCT]: undeployPaidStatus,
-        }
-    } else {
-        const adminFeeStatus = select('Admin Fee', options, transactionStates.PENDING)
-        const updateContractStatus = select('Edit product price', options, transactionStates.PENDING)
-        const createContractStatus = select('Create contract product', options, transactionStates.PENDING)
-        const redeployPaidStatus = select('Redeploy paid', options, transactionStates.PENDING)
-        const publishFreeStatus = select('Publish free', options, transactionStates.PENDING)
-
-        statuses = {
+        const statuses = {
             [actionsTypes.UPDATE_ADMIN_FEE]: adminFeeStatus,
             [actionsTypes.UPDATE_CONTRACT_PRODUCT]: updateContractStatus,
             [actionsTypes.CREATE_CONTRACT_PRODUCT]: createContractStatus,
             [actionsTypes.REDEPLOY_PAID]: redeployPaidStatus,
             [actionsTypes.PUBLISH_FREE]: publishFreeStatus,
         }
-    }
 
-    return (
-        <CompletePublishTransaction
-            isUnpublish={isUnpublish}
-            onCancel={action('cancel')}
-            status={statuses}
+        return (
+            <PublishTransactionProgress
+                isUnpublish={false}
+                onCancel={action('cancel')}
+                status={statuses}
+            />
+        )
+    })
+    .add('Unpublish', () => {
+        const unpublishFreeStatus = select('Unpublish free', options, transactionStates.PENDING)
+        const undeployPaidStatus = select('Undeploy paid', options, transactionStates.PENDING)
+
+        const statuses = {
+            [actionsTypes.UNPUBLISH_FREE]: unpublishFreeStatus,
+            [actionsTypes.UNDEPLOY_CONTRACT_PRODUCT]: undeployPaidStatus,
+        }
+
+        return (
+            <PublishTransactionProgress
+                isUnpublish
+                onCancel={action('cancel')}
+                status={statuses}
+            />
+        )
+    })
+
+story('Product Editor/PublishComplete')
+    .add('Publish (default)', () => (
+        <PublishComplete
+            onContinue={action('onContinue')}
+            onCancel={action('onCancel')}
+            productLink={text(
+                'Product link',
+                'streamr.network/marketplace/products/1ff644fdb6ba40a287af2e607b131f32aaad9872ddd54e79b1106ff916e12890',
+            )}
         />
-    )
-}
-
-story('Product Editor/CompletePublishTransaction')
-    .add('Publish', () => (
-        <CompletePublishController />
     ))
-    .add('Unpublish', () => (
-        <CompletePublishController isUnpublish />
+    .add('Republish', () => (
+        <PublishComplete
+            onContinue={action('onContinue')}
+            onCancel={action('onCancel')}
+            productLink={text(
+                'Product link',
+                'streamr.network/marketplace/products/1ff644fdb6ba40a287af2e607b131f32aaad9872ddd54e79b1106ff916e12890',
+            )}
+            isRepublish
+        />
+    ))
+
+story('Product Editor/UnpublishComplete')
+    .add('default', () => (
+        <UnpublishComplete
+            onCancel={action('onCancel')}
+            productLink={text(
+                'Product link',
+                'streamr.network/marketplace/products/1ff644fdb6ba40a287af2e607b131f32aaad9872ddd54e79b1106ff916e12890',
+            )}
+        />
     ))
 
 story('Product Editor/CompleteUnpublishDialog')
@@ -201,59 +231,18 @@ story('Product Editor/CompleteUnpublishDialog')
         />
     ))
 
-const publishStory = story('Product Editor/ConfirmPublishTransaction')
-
-Object.keys(actionsTypes).forEach((actionType) => {
-    publishStory.add(`publish, started, ${actionsTypes[actionType]}`, () => (
-        <ConfirmPublishTransaction
-            action={actionsTypes[actionType]}
-            isUnpublish={false}
-            publishState={transactionStates.STARTED}
-            onCancel={action('onCancel')}
-        />
-    ))
-})
-Object.keys(actionsTypes).forEach((actionType) => {
-    publishStory.add(`unpublish, started, ${actionsTypes[actionType]}`, () => (
-        <ConfirmPublishTransaction
-            action={actionsTypes[actionType]}
-            isUnpublish
-            publishState={transactionStates.STARTED}
-            onCancel={action('onCancel')}
-        />
-    ))
-})
-
-publishStory.add('publish, pending', () => (
-    <ConfirmPublishTransaction
-        action={null}
-        isUnpublish={false}
-        publishState={transactionStates.PENDING}
-        onCancel={action('onCancel')}
-    />
-))
-
-publishStory.add('unpublish, pending', () => (
-    <ConfirmPublishTransaction
-        action={null}
-        isUnpublish
-        publishState={transactionStates.PENDING}
-        onCancel={action('onCancel')}
-    />
-))
-
 story('Product Editor/ReadyToPublishDialog')
-    .add('default', () => (
+    .add('Publish (default)', () => (
         <ReadyToPublishDialog
             onCancel={action('onCancel')}
             onContinue={action('onContinue')}
         />
     ))
-    .add('waiting', () => (
+    .add('Republish', () => (
         <ReadyToPublishDialog
-            waiting
             onCancel={action('onCancel')}
             onContinue={action('onContinue')}
+            isRepublish
         />
     ))
 
