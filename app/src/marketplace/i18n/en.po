@@ -425,6 +425,32 @@ msgstr "Update product data"
 msgid "modal##completePublish##started##title"
 msgstr "Publish Confirmation"
 
+msgid "modal##publishComplete##republish##title"
+msgstr "Republish completed"
+
+msgid "modal##publishComplete##publish##title"
+msgstr "Publish completed"
+
+msgid "modal##publishComplete##viewProduct"
+msgstr "View Product"
+
+msgid "modal##publishComplete##message"
+msgstr "View on the Marketplace or get a link to share"
+
+msgid "modal##publishComplete##copyLink"
+msgstr "Copy link"
+
+msgid "modal##publishComplete##linkCopied"
+msgstr "Copied"
+
+msgid "modal##unpublishComplete##title"
+msgstr "Unpublish completed"
+
+msgid "modal##unpublishComplete##message"
+msgstr ""
+"This product is unpublished now, <br/>"
+"but you still can see in your <a href=\"%{productLink}\">core product</a>"
+
 msgid "modal##completePurchase##confirmed##message"
 msgstr "You need to connect your Ethereum identity to your Streamr account."
 
@@ -592,21 +618,35 @@ msgstr "Purchase confirmation"
 msgid "modal##purchaseSummary##title"
 msgstr "Complete your purchase"
 
-msgid "modal##readyToPublish##message"
-msgstr ""
-"You're about to publish to the Marketplace. <br /> Paid products require an "
-"Eth balance for gas fees."
+msgid "modal##readyToPublish##publish##title"
+msgstr "Publish your product"
 
-msgid "modal##readyToPublish##publish"
+msgid "modal##readyToPublish##republish##title"
+msgstr "Republish your product"
+
+msgid "modal##readyToPublish##publish##message"
+msgstr ""
+"You're about to publish your product to the Marketplace.<br />"
+"Paid products will require an ETH balance for gas fees."
+
+msgid "modal##readyToPublish##republish##message"
+msgstr ""
+"You're about to republish your product to the Marketplace.<br />"
+"Paid products will require an ETH balance for gas fees."
+
+msgid "modal##readyToPublish##publish##action"
+msgstr "Publish"
+
+msgid "modal##readyToPublish##republish##action"
+msgstr "Republish"
+
+msgid "modal##readyToPublish##publish##action"
 msgstr "Publish"
 
 msgid "modal##readyToPublish##terms"
 msgstr ""
 "I have the right to publish this data as specified in the <a "
 "href=%{publisherTermsLink}>Terms</a>."
-
-msgid "modal##readyToPublish##title"
-msgstr "Publish your product"
 
 msgid "modal##readyToUnpublish##message"
 msgstr "Do you want to unpublish this product?"

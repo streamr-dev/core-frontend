@@ -1,6 +1,7 @@
 // @flow
 
 import React, { type Node } from 'react'
+import cx from 'classnames'
 
 import SvgIcon from '$shared/components/SvgIcon'
 
@@ -10,10 +11,11 @@ export type Props = {
     showCloseIcon?: boolean,
     onClose?: () => void,
     children?: Node,
+    className?: string,
 }
 
-export const TitleBar = ({ showCloseIcon, onClose, children }: Props) => (
-    <div className={styles.modalTitle}>
+export const TitleBar = ({ showCloseIcon, onClose, children, className }: Props) => (
+    <div className={cx(styles.modalTitle, className)}>
         {children}
         {!!showCloseIcon && (
             <button onClick={onClose} className={styles.closeButton}>

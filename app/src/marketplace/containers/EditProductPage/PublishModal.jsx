@@ -13,8 +13,7 @@ import ErrorDialog from '$mp/components/Modal/ErrorDialog'
 import Dialog from '$shared/components/Dialog'
 import ReadyToPublishDialog from '$mp/components/Modal/ReadyToPublishDialog'
 import ReadyToUnpublishDialog from '$mp/components/Modal/ReadyToUnpublishDialog'
-import ConfirmPublishTransaction from '$mp/components/Modal/ConfirmPublishTransaction'
-import CompletePublishTransaction from '$mp/components/Modal/CompletePublishTransaction'
+import PublishTransactionProgress from '$mp/components/Modal/PublishTransactionProgress'
 import Web3ErrorDialog from '$shared/components/Web3ErrorDialog'
 import useWeb3Status from '$shared/hooks/useWeb3Status'
 import UnlockWalletDialog from '$shared/components/Web3ErrorDialog/UnlockWalletDialog'
@@ -47,7 +46,7 @@ export const PublishOrUnpublishModal = ({ product, api }: Props) => {
     const [queue, setQueue] = useState(undefined)
     const [mode, setMode] = useState(null)
     const [step, setStep] = useState(steps.CONFIRM)
-    const [currentAction, setCurrentAction] = useState(null)
+    const [currentAction, setCurrentAction] = useState(undefined)
     const [status, setStatus] = useState({})
     const [modalError, setModalError] = useState(null)
     const [requireWeb3, setRequireWeb3] = useState(false)
@@ -98,9 +97,6 @@ export const PublishOrUnpublishModal = ({ product, api }: Props) => {
             })
             .subscribe('status', (id, nextStatus) => {
                 setActionStatus(id, nextStatus)
-            })
-            .subscribe('ready', (id) => {
-                setCurrentAction((action) => (action === id ? null : action))
             })
             .subscribe('finish', () => {
                 setStep((currentStep) => (currentStep !== steps.COMPLETE ? steps.COMPLETE : currentStep))
@@ -174,17 +170,16 @@ export const PublishOrUnpublishModal = ({ product, api }: Props) => {
         )
     } else if (step === steps.ACTIONS) {
         return (
-            <ConfirmPublishTransaction
+            <PublishTransactionProgress
                 isUnpublish={mode === modes.UNPUBLISH}
-                action={currentAction}
-                waiting={!currentAction}
-                publishState={currentStatus}
+                status={status}
                 onCancel={onClose}
+                activeTask={currentAction}
             />
         )
     } else if (step === steps.COMPLETE) {
         return (
-            <CompletePublishTransaction
+            <PublishTransactionProgress
                 isUnpublish={mode === modes.UNPUBLISH}
                 status={status}
                 onCancel={onClose}
