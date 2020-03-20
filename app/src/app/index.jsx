@@ -322,8 +322,6 @@ const UserpagesRouter = () => ([
     <Route exact path={userpages.products} component={ProductsPageAuth} key="ProductsPage" />,
     ...(process.env.NEW_MP_CONTRACT ? [
         <Route exact path={routes.editProduct()} component={EditProductAuth2} key="EditProduct" />,
-    ] : []),
-    ...(process.env.DATA_UNIONS ? [
         <Route exact path={routes.productStats()} component={StatsPageAuth} key="StatsPage" />,
         <Route exact path={routes.productMembers()} component={MembersPageAuth} key="MembersPage" />,
     ] : []),

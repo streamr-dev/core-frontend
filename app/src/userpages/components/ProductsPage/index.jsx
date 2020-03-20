@@ -156,13 +156,13 @@ const ProductsPage = () => {
                                         {!!process.env.NEW_MP_CONTRACT && (
                                             <MenuItems.View id={id} disabled={!deployed} />
                                         )}
-                                        {!!process.env.DATA_UNIONS && isDataUnion && (
+                                        {!!process.env.NEW_MP_CONTRACT && isDataUnion && !!beneficiaryAddress && (
                                             <MenuItems.ViewStats id={id} />
                                         )}
-                                        {!!process.env.DATA_UNIONS && isDataUnion && (
+                                        {!!process.env.NEW_MP_CONTRACT && isDataUnion && !!beneficiaryAddress && (
                                             <MenuItems.ViewDataUnion id={id} />
                                         )}
-                                        {!!process.env.DATA_UNIONS && contractAddress && (
+                                        {!!process.env.NEW_MP_CONTRACT && contractAddress && (
                                             <MenuItems.CopyContractAddress address={contractAddress} />
                                         )}
                                         <MenuItems.Copy id={id} disabled={!deployed} />
