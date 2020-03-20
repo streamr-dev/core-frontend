@@ -14,8 +14,8 @@ sudo ifconfig docker0 10.200.10.1/24
 git clone https://github.com/streamr-dev/streamr-docker-dev.git
 streamr_docker_dev='streamr-docker-dev/streamr-docker-dev/bin.sh'
 
-# start everything except eth watcher
-$streamr_docker_dev start 5
+# start everything except the frontend
+$streamr_docker_dev start --except platform --wait
 #$streamr_docker_dev log -f &
 
 RETRIES=30;
