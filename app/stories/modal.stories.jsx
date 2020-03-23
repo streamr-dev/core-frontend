@@ -68,6 +68,7 @@ const story = (name) => storiesOf(`Modal/${name}`, module)
         color: '#323232',
         padding: '5rem',
         background: '#F8F8F8',
+        fontSize: '16px',
     }))
     .addDecorator((storyFn) => (
         <div>
@@ -142,6 +143,7 @@ story('Product Editor/PublishTransactionProgress')
         const createContractStatus = select('Create contract product', options, transactionStates.STARTED)
         const redeployPaidStatus = select('Redeploy paid', options, transactionStates.STARTED)
         const publishFreeStatus = select('Publish free', options, transactionStates.STARTED)
+        const publishPendingStatus = select('Publish penging changes', options, transactionStates.STARTED)
 
         const statuses = {
             [actionsTypes.UPDATE_ADMIN_FEE]: adminFeeStatus,
@@ -149,6 +151,7 @@ story('Product Editor/PublishTransactionProgress')
             [actionsTypes.CREATE_CONTRACT_PRODUCT]: createContractStatus,
             [actionsTypes.REDEPLOY_PAID]: redeployPaidStatus,
             [actionsTypes.PUBLISH_FREE]: publishFreeStatus,
+            [actionsTypes.PUBLISH_PENDING_CHANGES]: publishPendingStatus,
         }
 
         return (

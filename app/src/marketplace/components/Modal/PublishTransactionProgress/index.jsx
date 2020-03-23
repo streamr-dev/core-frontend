@@ -21,7 +21,24 @@ export type Props = {
     onCancel: () => void,
 }
 
-const Error = styled.div`
+const PendingTasks = styled.div`
+    color: #A3A3A3;
+    font-size: 1rem;
+    line-height: 1.5rem;
+    width: 100%;
+    min-height: 1.5rem;
+    margin-bottom: 0.5rem;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    &:not(:empty)::after {
+        content: '...';
+    }
+`
+
+const FailedTasks = styled.div`
     width: 100%;
     text-align: left;
     font-size: 0.875rem;
@@ -89,19 +106,17 @@ const PublishTransactionProgress = ({ isUnpublish, onCancel, status }: Props) =>
                 }}
             >
                 <div className={styles.publishProgress}>
-                    <div className={styles.activeTask}>
-                        {progress.pending && progress.pending.length > 0 && (
-                            <span>
-                                updating {progress.pending.join(', ')}...
-                            </span>
-                        )}
-                    </div>
+                    <PendingTasks>
+                        {progress.pending && progress.pending.length > 0 && progress.pending.map((key) => (
+                            I18n.t(`modal.completePublish.${key}.pending`)
+                        )).join(', ')}
+                    </PendingTasks>
                     <ProgressBar value={(progress.complete.length / Math.max(1, Object.keys(status).length)) * 100} />
-                    {progress.failed && progress.failed.length > 0 && (
-                        <Error>
-                            {progress.failed.join(', ')} failed
-                        </Error>
-                    )}
+                    <FailedTasks>
+                        {progress.failed && progress.failed.length > 0 && progress.failed.map((key) => (
+                            I18n.t(`modal.completePublish.${key}.failed`)
+                        )).join(', ')}
+                    </FailedTasks>
                 </div>
                 {!!someFailed && !isUnpublish && (
                     <Translate

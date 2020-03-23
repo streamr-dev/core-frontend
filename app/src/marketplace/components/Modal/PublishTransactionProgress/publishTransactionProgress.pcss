@@ -8,7 +8,7 @@
   opacity: 0.5;
 }
 
-.activeTask {
+.pendingTasks {
   color: #A3A3A3;
   font-size: 1um;
   line-height: 1.5um;
@@ -16,4 +16,11 @@
   min-height: 1.5um;
   margin-bottom: 0.5um;
   text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  &:not(:empty)::after {
+    content: '...';
+  }
 }
