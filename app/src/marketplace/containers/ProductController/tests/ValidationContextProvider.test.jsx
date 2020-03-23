@@ -1,16 +1,33 @@
 import React, { useContext } from 'react'
 import { mount } from 'enzyme'
 import { act } from 'react-dom/test-utils'
+import sinon from 'sinon'
+
+import * as useProduct from '../useProduct'
 
 import { Provider as ValidationContextProvider, Context as ValidationContext } from '../ValidationContextProvider'
 
 describe('validation context', () => {
+    let sandbox
+
+    beforeEach(() => {
+        sandbox = sinon.createSandbox()
+    })
+
+    afterEach(() => {
+        sandbox.restore()
+    })
+
     it('creates validation context', () => {
         let currentContext
         function Test() {
             currentContext = useContext(ValidationContext)
             return null
         }
+
+        sandbox.stub(useProduct, 'default').callsFake(() => ({
+            id: '1',
+        }))
 
         mount((
             <ValidationContextProvider>
@@ -24,6 +41,12 @@ describe('validation context', () => {
     })
 
     describe('touched fields', () => {
+        beforeEach(() => {
+            sandbox.stub(useProduct, 'default').callsFake(() => ({
+                id: '1',
+            }))
+        })
+
         it('touch() marks a field as touched', () => {
             let currentContext
             function Test() {
@@ -89,6 +112,12 @@ describe('validation context', () => {
     })
 
     describe('status', () => {
+        beforeEach(() => {
+            sandbox.stub(useProduct, 'default').callsFake(() => ({
+                id: '1',
+            }))
+        })
+
         it('setStatus() sets field error status', () => {
             let currentContext
             function Test() {
@@ -253,6 +282,12 @@ describe('validation context', () => {
     })
 
     describe('validate', () => {
+        beforeEach(() => {
+            sandbox.stub(useProduct, 'default').callsFake(() => ({
+                id: '1',
+            }))
+        })
+
         it('does nothing if product is null', () => {
             let currentContext
             function Test() {
@@ -655,12 +690,20 @@ describe('validation context', () => {
     })
 
     describe('pending changes', () => {
-        it('marks fields as pending for published products if touched', () => {
+        it('marks fields as pending for published products if touched & different from original product', () => {
             let currentContext
             function Test() {
                 currentContext = useContext(ValidationContext)
                 return null
             }
+
+            sandbox.stub(useProduct, 'default').callsFake(() => ({
+                id: '1',
+                name: 'Name',
+                description: 'Description',
+                streams: ['1', '3'],
+                category: 'category',
+            }))
 
             mount((
                 <ValidationContextProvider>
@@ -672,14 +715,16 @@ describe('validation context', () => {
             act(() => {
                 currentContext.touch('name')
                 currentContext.touch('description')
+                currentContext.touch('streams')
             })
 
             act(() => {
                 currentContext.validate({
                     type: 'NORMAL',
-                    name: 'name',
-                    description: 'description',
+                    name: 'New Name',
+                    description: 'New Description',
                     category: 'category',
+                    streams: ['2', '3', '4'],
                     state: 'DEPLOYED',
                 })
             })
@@ -687,6 +732,52 @@ describe('validation context', () => {
             expect(currentContext.isPendingChange('name')).toBe(true)
             expect(currentContext.isPendingChange('description')).toBe(true)
             expect(currentContext.isPendingChange('category')).toBe(false)
+            expect(currentContext.isPendingChange('streams')).toBe(true)
+        })
+
+        it('does not mark a field as pending for published products if touched but not different from original product', () => {
+            let currentContext
+            function Test() {
+                currentContext = useContext(ValidationContext)
+                return null
+            }
+
+            sandbox.stub(useProduct, 'default').callsFake(() => ({
+                id: '1',
+                name: 'Name',
+                description: 'Description',
+                category: 'category',
+                streams: ['1', '3'],
+            }))
+
+            mount((
+                <ValidationContextProvider>
+                    <Test />
+                </ValidationContextProvider>
+            ))
+            expect(currentContext.isAnyChangePending()).toBe(false)
+
+            act(() => {
+                currentContext.touch('name')
+                currentContext.touch('description')
+                currentContext.touch('streams')
+            })
+
+            act(() => {
+                currentContext.validate({
+                    type: 'NORMAL',
+                    name: 'Name',
+                    description: 'Description',
+                    category: 'category',
+                    streams: ['1', '3'],
+                    state: 'DEPLOYED',
+                })
+            })
+            expect(currentContext.isAnyChangePending()).toBe(false)
+            expect(currentContext.isPendingChange('name')).toBe(false)
+            expect(currentContext.isPendingChange('description')).toBe(false)
+            expect(currentContext.isPendingChange('category')).toBe(false)
+            expect(currentContext.isPendingChange('streams')).toBe(false)
         })
 
         it('ignores pending fields for unpublished product', () => {
@@ -696,6 +787,13 @@ describe('validation context', () => {
                 return null
             }
 
+            sandbox.stub(useProduct, 'default').callsFake(() => ({
+                id: '1',
+                name: 'Name',
+                description: 'Description',
+                streams: ['1', '3'],
+            }))
+
             mount((
                 <ValidationContextProvider>
                     <Test />
@@ -706,20 +804,23 @@ describe('validation context', () => {
             act(() => {
                 currentContext.touch('name')
                 currentContext.touch('description')
+                currentContext.touch('streams')
             })
 
             act(() => {
                 currentContext.validate({
                     type: 'NORMAL',
-                    name: 'name',
-                    description: 'description',
+                    name: 'New Name',
+                    description: 'New Description',
                     category: 'category',
+                    streams: ['2', '3', '4'],
                 })
             })
             expect(currentContext.isAnyChangePending()).toBe(false)
             expect(currentContext.isPendingChange('name')).toBe(false)
             expect(currentContext.isPendingChange('description')).toBe(false)
             expect(currentContext.isPendingChange('category')).toBe(false)
+            expect(currentContext.isPendingChange('streams')).toBe(false)
         })
     })
 })

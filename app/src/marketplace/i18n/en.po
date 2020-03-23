@@ -98,6 +98,9 @@ msgstr "Unpublishing"
 msgid "editProductPage##update"
 msgstr "Update"
 
+msgid "editProductPage##preview"
+msgstr "This is a preview of how your product will appear when published"
+
 msgid "editProductPage##productName##title"
 msgstr "Name your product"
 
@@ -413,6 +416,54 @@ msgstr "Update product data"
 
 msgid "modal##completePublish##started##title"
 msgstr "Publish Confirmation"
+
+msgid "modal##completePublish##updateContractProduct##pending"
+msgstr "Updating product"
+
+msgid "modal##completePublish##createContractProduct##pending"
+msgstr "Publishing"
+
+msgid "modal##completePublish##publishPaid##pending"
+msgstr "Republishing"
+
+msgid "modal##completePublish##updateAdminFee##pending"
+msgstr "Updating data union"
+
+msgid "modal##completePublish##undeployContractProduct##pending"
+msgstr "Unpublishing"
+
+msgid "modal##completePublish##publishFree##pending"
+msgstr "Publishing"
+
+msgid "modal##completePublish##unpublishFree##pending"
+msgstr "Unpublishing"
+
+msgid "modal##completePublish##publishPendingChanges##pending"
+msgstr "Updating product"
+
+msgid "modal##completePublish##updateContractProduct##failed"
+msgstr "Updating product failed"
+
+msgid "modal##completePublish##createContractProduct##failed"
+msgstr "Publishing failed"
+
+msgid "modal##completePublish##publishPaid##failed"
+msgstr "Republishing failed"
+
+msgid "modal##completePublish##updateAdminFee##failed"
+msgstr "Updating data union failed"
+
+msgid "modal##completePublish##undeployContractProduct##failed"
+msgstr "Unpublishing failed"
+
+msgid "modal##completePublish##publishFree##failed"
+msgstr "Publishing failed"
+
+msgid "modal##completePublish##unpublishFree##failed"
+msgstr "Unpublishing failed"
+
+msgid "modal##completePublish##publishPendingChanges##failed"
+msgstr "Updating product failed"
 
 msgid "modal##publishComplete##republish##title"
 msgstr "Republish completed"
