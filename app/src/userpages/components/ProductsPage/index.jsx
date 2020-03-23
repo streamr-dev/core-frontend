@@ -1,12 +1,10 @@
 // @flow
 
-import React, { Fragment, useCallback, useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo, Fragment } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Translate, I18n } from 'react-redux-i18n'
 import { Link } from 'react-router-dom'
-import { push } from 'connected-react-router'
 import Helmet from 'react-helmet'
-import moment from 'moment'
 
 import Layout from '../Layout'
 import links from '../../../links'
@@ -14,31 +12,29 @@ import { getFilters } from '../../utils/constants'
 import { getMyProducts } from '$mp/modules/myProductList/actions'
 import { selectMyProductList, selectFetching } from '$mp/modules/myProductList/selectors'
 import { productStates } from '$shared/utils/constants'
-import Tile from '$shared/components/Tile'
 import Search from '../Header/Search'
 import Dropdown from '$shared/components/Dropdown'
-import { formatPath, formatExternalUrl } from '$shared/utils/url'
-import DropdownActions from '$shared/components/DropdownActions'
 import NoProductsView from './NoProducts'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
 import ListContainer from '$shared/components/Container/List'
-import TileGrid from '$shared/components/TileGrid'
-import { isCommunityProduct } from '$mp/utils/product'
-import type { ProductId, Product } from '$mp/flowtype/product-types'
+import { isDataUnionProduct } from '$mp/utils/product'
 import useFilterSort from '$userpages/hooks/useFilterSort'
-import useCopy from '$shared/hooks/useCopy'
 import useModal from '$shared/hooks/useModal'
-import useCommunityStats from '$mp/modules/communityProduct/hooks/useCommunityStats'
+import useMemberStats from '$mp/modules/dataUnion/hooks/useMemberStats'
 import routes from '$routes'
 import CreateProductModal from '$mp/containers/CreateProductModal'
 import Button from '$shared/components/Button'
+import { productTypes } from '$mp/utils/constants'
+import Grid from '$shared/components/Tile/Grid'
+import { ProductTile } from '$shared/components/Tile'
+import * as MenuItems from './MenuItems'
 
 import styles from './products.pcss'
 
 const CreateProductButton = () => {
     const { api: createProductDialog } = useModal('marketplace.createProduct')
 
-    if (!process.env.COMMUNITY_PRODUCTS) {
+    if (!process.env.NEW_MP_CONTRACT) {
         return (
             <Button
                 tag={Link}
@@ -48,114 +44,28 @@ const CreateProductButton = () => {
                 <Translate value="userpages.products.createProduct" />
             </Button>
         )
+    } else if (process.env.DATA_UNIONS) {
+        return (
+            <Button
+                type="button"
+                className={styles.createProductButton}
+                onClick={() => createProductDialog.open()}
+            >
+                <Translate value="userpages.products.createProduct" />
+            </Button>
+        )
     }
 
     return (
         <Button
-            type="button"
+            tag={Link}
             className={styles.createProductButton}
-            onClick={() => createProductDialog.open()}
+            to={routes.newProduct({
+                type: productTypes.NORMAL,
+            })}
         >
             <Translate value="userpages.products.createProduct" />
         </Button>
-    )
-}
-
-const generateTimeAgoDescription = (productUpdatedDate: Date) => moment(productUpdatedDate).fromNow()
-
-const getProductLink = (id: ProductId) => {
-    if (process.env.COMMUNITY_PRODUCTS) {
-        return formatPath(links.userpages.products, id, 'edit')
-    }
-
-    return formatPath(links.marketplace.products, id)
-}
-
-const Actions = (product: Product) => {
-    const { id, state } = product
-    const isCommunity = isCommunityProduct(product)
-    const { copy } = useCopy()
-    const dispatch = useDispatch()
-
-    const redirectToEditProduct = useCallback((id: ProductId) => (
-        dispatch(push(routes.editProduct({
-            id,
-        })))
-    ), [dispatch])
-    const redirectToProductStats = useCallback((id: ProductId) => (
-        dispatch(push(routes.productStats({
-            id,
-        })))
-    ), [dispatch])
-    const redirectToProductMembers = useCallback((id: ProductId) => (
-        dispatch(push(routes.productMembers({
-            id,
-        })))
-    ), [dispatch])
-    const redirectToPublishProduct = useCallback((id: ProductId) => (
-        dispatch(push(formatPath(links.marketplace.products, id, 'publish')))
-    ), [dispatch])
-    const redirectToProduct = useCallback((id: ProductId) => (
-        dispatch(push(formatPath(links.marketplace.products, id)))
-    ), [dispatch])
-    const copyUrl = useCallback((id: ProductId) => copy(formatExternalUrl(
-        process.env.PLATFORM_ORIGIN_URL,
-        links.marketplace.products,
-        id,
-    )), [copy])
-
-    return (
-        <Fragment>
-            <DropdownActions.Item
-                className={styles.item}
-                onClick={() => redirectToEditProduct(id || '')}
-            >
-                <Translate value="actionsDropdown.edit" />
-            </DropdownActions.Item>
-            {!process.env.COMMUNITY_PRODUCTS && (state === productStates.DEPLOYED || state === productStates.NOT_DEPLOYED) &&
-                <DropdownActions.Item
-                    className={styles.item}
-                    onClick={() => redirectToPublishProduct(id || '')}
-                >
-                    {(state === productStates.DEPLOYED) ?
-                        <Translate value="actionsDropdown.unpublish" /> :
-                        <Translate value="actionsDropdown.publish" />
-                    }
-                </DropdownActions.Item>
-            }
-            {!!process.env.COMMUNITY_PRODUCTS &&
-                <DropdownActions.Item
-                    className={styles.item}
-                    onClick={() => (!!redirectToProduct && redirectToProduct(id || ''))}
-                    disabled={state !== productStates.DEPLOYED}
-                >
-                    <Translate value="actionsDropdown.viewProduct" />
-                </DropdownActions.Item>
-            }
-            {!!process.env.COMMUNITY_PRODUCTS && isCommunity &&
-                <DropdownActions.Item
-                    className={styles.item}
-                    onClick={() => (!!redirectToProduct && redirectToProductStats(id || ''))}
-                >
-                    <Translate value="actionsDropdown.viewStats" />
-                </DropdownActions.Item>
-            }
-            {!!process.env.COMMUNITY_PRODUCTS && isCommunity &&
-                <DropdownActions.Item
-                    className={styles.item}
-                    onClick={() => (!!redirectToProduct && redirectToProductMembers(id || ''))}
-                >
-                    <Translate value="actionsDropdown.viewCommunity" />
-                </DropdownActions.Item>
-            }
-            <DropdownActions.Item
-                className={styles.item}
-                onClick={() => copyUrl(id || '')}
-                disabled={state !== productStates.DEPLOYED}
-            >
-                <Translate value="actionsDropdown.copyUrl" />
-            </DropdownActions.Item>
-        </Fragment>
     )
 }
 
@@ -163,10 +73,11 @@ const ProductsPage = () => {
     const sortOptions = useMemo(() => {
         const filters = getFilters()
         return [
+            filters.RECENT,
             filters.NAME_ASC,
             filters.NAME_DESC,
             filters.PUBLISHED,
-            filters.DRAFT,
+            filters.DRAFTS,
         ]
     }, [])
     const {
@@ -179,15 +90,15 @@ const ProductsPage = () => {
     const products = useSelector(selectMyProductList)
     const fetching = useSelector(selectFetching)
     const dispatch = useDispatch()
-    const { load: loadCommunityStats, members, fetching: fetchingCommunityStats } = useCommunityStats()
+    const { load: loadDataUnionStats, members, fetching: fetchingDataUnionStats } = useMemberStats()
 
     useEffect(() => {
         dispatch(getMyProducts(filter))
     }, [dispatch, filter])
 
     useEffect(() => {
-        loadCommunityStats()
-    }, [loadCommunityStats])
+        loadDataUnionStats()
+    }, [loadDataUnionStats])
 
     return (
         <Layout
@@ -223,47 +134,49 @@ const ProductsPage = () => {
                         onResetFilter={resetFilter}
                     />
                 )}
-                <TileGrid>
+                <Grid>
                     {products.map((product) => {
-                        const isCommunity = isCommunityProduct(product)
-                        const beneficiaryAddress = (product.beneficiaryAddress || '').toLowerCase()
-                        const memberCount = members[beneficiaryAddress]
+                        const { id, beneficiaryAddress, state } = product
+                        const isDataUnion = isDataUnionProduct(product.type)
+                        const memberCount = isDataUnion ? members[(beneficiaryAddress || '').toLowerCase()] : undefined
+                        const isDeploying = isDataUnion && !fetchingDataUnionStats && !!beneficiaryAddress && typeof memberCount === 'undefined'
+                        const contractAddress = isDataUnion ? beneficiaryAddress : null
+                        const deployed = state === productStates.DEPLOYED
+                        const publishable = deployed || state === productStates.NOT_DEPLOYED
 
                         return (
-                            <Link
-                                key={product.id}
-                                to={product.id && getProductLink(product.id)}
-                            >
-                                <Tile
-                                    imageUrl={product.imageUrl || ''}
-                                    dropdownActions={<Actions {...product} />}
-                                    labels={{
-                                        community: isCommunity,
-                                    }}
-                                    badges={(isCommunity && memberCount !== undefined) ? {
-                                        members: memberCount,
-                                    } : undefined}
-                                    deploying={!fetchingCommunityStats && (isCommunity && beneficiaryAddress && memberCount === undefined)}
-                                >
-                                    <Tile.Title>{product.name}</Tile.Title>
-                                    <Tile.Tag >
-                                        {product.updated === product.created ? 'Created ' : 'Updated '}
-                                        {product.updated && generateTimeAgoDescription(new Date(product.updated))}
-                                    </Tile.Tag>
-                                    <Tile.Tag
-                                        className={product.state === productStates.DEPLOYED ? styles.green : styles.grey}
-                                    >
-                                        {
-                                            product.state === productStates.DEPLOYED ?
-                                                <Translate value="userpages.products.published" /> :
-                                                <Translate value="userpages.products.draft" />
-                                        }
-                                    </Tile.Tag>
-                                </Tile>
-                            </Link>
+                            <ProductTile
+                                key={id}
+                                actions={
+                                    <Fragment>
+                                        <MenuItems.Edit id={id} />
+                                        {!process.env.NEW_MP_CONTRACT && publishable && (
+                                            <MenuItems.PublishUnpublish id={id} deployed={deployed} />
+                                        )}
+                                        {!!process.env.NEW_MP_CONTRACT && (
+                                            <MenuItems.View id={id} disabled={!deployed} />
+                                        )}
+                                        {!!process.env.NEW_MP_CONTRACT && isDataUnion && !!beneficiaryAddress && (
+                                            <MenuItems.ViewStats id={id} />
+                                        )}
+                                        {!!process.env.NEW_MP_CONTRACT && isDataUnion && !!beneficiaryAddress && (
+                                            <MenuItems.ViewDataUnion id={id} />
+                                        )}
+                                        {!!process.env.NEW_MP_CONTRACT && contractAddress && (
+                                            <MenuItems.CopyContractAddress address={contractAddress} />
+                                        )}
+                                        <MenuItems.Copy id={id} disabled={!deployed} />
+                                    </Fragment>
+                                }
+                                deployed={deployed}
+                                numMembers={memberCount}
+                                product={product}
+                                showDataUnionBadge={isDataUnion}
+                                showDeployingBadge={isDeploying}
+                            />
                         )
                     })}
-                </TileGrid>
+                </Grid>
             </ListContainer>
             <DocsShortcuts />
             <CreateProductModal />

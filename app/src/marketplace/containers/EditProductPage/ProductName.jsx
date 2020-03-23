@@ -1,15 +1,16 @@
 // @flow
 
-import React, { useContext } from 'react'
+import React, { useContext, useCallback } from 'react'
 import cx from 'classnames'
-import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
+import { Translate } from 'react-redux-i18n'
 
 import usePending from '$shared/hooks/usePending'
 import useEditableProduct from '../ProductController/useEditableProduct'
 import useValidation from '../ProductController/useValidation'
 import useEditableProductActions from '../ProductController/useEditableProductActions'
-
-import TextField from '$mp/components/TextField'
+import { Context as EditControllerContext } from './EditControllerProvider'
+import Text, { SpaciousTheme } from '$ui/Text'
+import Errors, { MarketplaceTheme } from '$ui/Errors'
 
 import styles from './productName.pcss'
 
@@ -17,21 +18,36 @@ const ProductName = () => {
     const product = useEditableProduct()
     const { isValid, message } = useValidation('name')
     const { updateName } = useEditableProductActions()
-    const { isTouched } = useContext(ValidationContext)
     const { isPending } = usePending('product.SAVE')
+    const { publishAttempted } = useContext(EditControllerContext)
+    const invalid = publishAttempted && !isValid
+
+    const onChange = useCallback((e: SyntheticInputEvent<EventTarget>) => {
+        updateName(e.target.value)
+    }, [updateName])
 
     return (
         <section id="product-name" className={cx(styles.root, styles.ProductName)}>
             <div>
-                <h1>Name your product</h1>
-                <TextField
-                    value={product.name}
-                    onCommit={updateName}
-                    placeholder="Product Name"
-                    error={isTouched('name') && !isValid ? message : undefined}
-                    disabled={isPending}
-                    className={styles.input}
+                <Translate
+                    tag="h1"
+                    value="editProductPage.productName.title"
                 />
+                <Text
+                    defaultValue={product.name}
+                    onChange={onChange}
+                    placeholder="Product Name"
+                    disabled={isPending}
+                    selectAllOnFocus
+                    invalid={invalid}
+                    className={styles.input}
+                    theme={SpaciousTheme}
+                />
+                {invalid && (
+                    <Errors theme={MarketplaceTheme}>
+                        {message}
+                    </Errors>
+                )}
             </div>
         </section>
     )

@@ -1,88 +1,79 @@
 // @flow
 
-import React, { Component, Fragment } from 'react'
+import React, { Fragment, useState, useCallback, useEffect } from 'react'
 import { I18n, Translate } from 'react-redux-i18n'
-import { connect } from 'react-redux'
 
 import styles from '../profilePage.pcss'
 
-import type { IntegrationKeyId, IntegrationKeyList as IntegrationKeyListType } from '$shared/flowtype/integration-key-types'
-import { createIntegrationKey, deleteIntegrationKey, fetchIntegrationKeys, editIntegrationKey } from '$shared/modules/integrationKey/actions'
-import type { StoreState } from '$shared/flowtype/store-state'
 import IntegrationKeyList from './IntegrationKeyList'
-import { selectPrivateKeys, selectIntegrationKeysError } from '$shared/modules/integrationKey/selectors'
-import type { Address } from '$shared/flowtype/web3-types'
-import AddKeyField from '$userpages/components/KeyField/AddKeyField'
+import usePrivateKeys from '$shared/modules/integrationKey/hooks/usePrivateKeys'
+import useModal from '$shared/hooks/useModal'
+import useIsMounted from '$shared/hooks/useIsMounted'
+import Button from '$shared/components/Button'
+import Notification from '$shared/utils/Notification'
+import { NotificationIcon } from '$shared/utils/constants'
 
-type StateProps = {
-    integrationKeys: IntegrationKeyListType,
-}
+import AddPrivateKeyDialog from './AddPrivateKeyDialog'
 
-type DispatchProps = {
-    deleteIntegrationKey: (keyId: IntegrationKeyId) => Promise<void>,
-    createIntegrationKey: (name: string, privateKey: Address) => Promise<void>,
-    editIntegrationKey: (keyId: IntegrationKeyId, keyName: string) => Promise<void>,
-    getIntegrationKeys: () => void
-}
+export const IntegrationKeyHandler = () => {
+    const [waiting, setWaiting] = useState(false)
+    const { load, privateKeys, remove, edit } = usePrivateKeys()
+    const { api: addPrivateKeyDialog, isOpen } = useModal('userpages.addPrivateKey')
+    const isMounted = useIsMounted()
 
-type Props = StateProps & DispatchProps
+    const addPrivateKey = useCallback(async () => {
+        setWaiting(true)
 
-export class IntegrationKeyHandler extends Component<Props> {
-    componentDidMount() {
-        // TODO: Move to (yet non-existent) router
-        this.props.getIntegrationKeys()
-    }
+        const { added, error } = await addPrivateKeyDialog.open()
 
-    onNew = (keyName: string, privateKey: string): Promise<void> => this.props.createIntegrationKey(keyName, privateKey)
+        if (isMounted()) {
+            setWaiting(false)
 
-    onDelete = (keyId: IntegrationKeyId): Promise<void> => this.props.deleteIntegrationKey(keyId)
+            if (error) {
+                Notification.push({
+                    title: I18n.t('modal.privateKey.errorNotification'),
+                    icon: NotificationIcon.ERROR,
+                    error,
+                })
+            } else if (added) {
+                Notification.push({
+                    title: I18n.t('modal.privateKey.successNotification'),
+                    icon: NotificationIcon.CHECKMARK,
+                })
+            }
+        }
+    }, [addPrivateKeyDialog, isMounted])
 
-    onEdit = (keyId: IntegrationKeyId, keyName: string): Promise<void> => this.props.editIntegrationKey(keyId, keyName)
+    useEffect(() => {
+        load()
+    }, [load])
 
-    render() {
-        return (
-            <Fragment>
-                <Translate value="userpages.profilePage.ethereumPrivateKeys.description" tag="p" className={styles.longText} />
-                <div className="constrainInputWidth">
-                    <IntegrationKeyList
-                        integrationKeys={this.props.integrationKeys}
-                        onNew={this.onNew}
-                        onDelete={this.onDelete}
-                        onEdit={this.onEdit}
-                        createWithValue
-                        truncateValues
-                        className={styles.keyList}
+    return (
+        <Fragment>
+            <Translate value="userpages.profilePage.ethereumPrivateKeys.description" tag="p" className={styles.longText} />
+            <div className="constrainInputWidth">
+                <IntegrationKeyList
+                    integrationKeys={privateKeys}
+                    onDelete={remove}
+                    onEdit={edit}
+                    truncateValues
+                    className={styles.keyList}
+                />
+                <Button
+                    type="button"
+                    kind="secondary"
+                    disabled={isOpen}
+                    onClick={addPrivateKey}
+                    waiting={waiting}
+                >
+                    <Translate
+                        value={`userpages.profilePage.ethereumPrivateKeys.${privateKeys && privateKeys[0] ? 'addAddress' : 'addNewAddress'}`}
                     />
-                    <AddKeyField
-                        label={this.props.integrationKeys && this.props.integrationKeys[0]
-                            ? I18n.t('userpages.profilePage.ethereumPrivateKeys.addNewAddress')
-                            : I18n.t('userpages.profilePage.ethereumPrivateKeys.addAddress')
-                        }
-                        onSave={this.onNew}
-                        createWithValue
-                        addKeyFieldAllowed
-                        valueLabel="privateKey"
-                    />
-                </div>
-            </Fragment>
-        )
-    }
+                </Button>
+                <AddPrivateKeyDialog />
+            </div>
+        </Fragment>
+    )
 }
 
-const EMPTY = []
-
-export const mapStateToProps = (state: StoreState): StateProps => ({
-    integrationKeys: selectPrivateKeys(state) || EMPTY,
-    error: selectIntegrationKeysError(state),
-})
-
-export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
-    deleteIntegrationKey: (keyId: IntegrationKeyId): Promise<void> => dispatch(deleteIntegrationKey(keyId)),
-    createIntegrationKey: (keyName: string, privateKey: Address): Promise<void> => dispatch(createIntegrationKey(keyName, privateKey)),
-    getIntegrationKeys() {
-        dispatch(fetchIntegrationKeys())
-    },
-    editIntegrationKey: (keyId: IntegrationKeyId, keyName: string) => dispatch(editIntegrationKey(keyId, keyName)),
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(IntegrationKeyHandler)
+export default IntegrationKeyHandler

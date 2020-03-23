@@ -21,6 +21,7 @@ export type Props = {
     ethPrice: BN,
     daiPrice: BN,
     dataPerUsd: NumberString,
+    ethPriceInUsd: NumberString,
     purchaseStarted: boolean,
     onCancel: () => void,
     onPay: () => void | Promise<void>,
@@ -35,6 +36,7 @@ export const PurchaseSummaryDialog = ({
     ethPrice,
     daiPrice,
     dataPerUsd,
+    ethPriceInUsd,
     purchaseStarted,
     onCancel,
     onPay,
@@ -49,7 +51,14 @@ export const PurchaseSummaryDialog = ({
         return formatDecimals(price, paymentCurrencies.DATA)
     }
 
-    const approxUsd = () => formatDecimals(dataToUsd(price, dataPerUsd), contractCurrencies.USD)
+    const approxUsd = () => {
+        if (paymentCurrency === paymentCurrencies.ETH) {
+            return ethPriceInUsd
+        } else if (paymentCurrency === paymentCurrencies.DAI) {
+            return daiPrice
+        }
+        return formatDecimals(dataToUsd(price, dataPerUsd), contractCurrencies.USD)
+    }
 
     if (purchaseStarted) {
         return (

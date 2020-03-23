@@ -56,11 +56,13 @@ const normalizedProducts = normalize(products, productsSchema)
 
 const subscriptions = [
     {
+        id: '1337',
         address: '0x123',
         endsAt: Date.now() + 100000,
         product: products[0],
     },
     {
+        id: '1338',
         address: '0x1263e6',
         endsAt: 0,
         product: products[1],
@@ -91,7 +93,8 @@ const state = {
         },
     },
     myPurchaseList: {
-        ids: ['1337', '1338'],
+        products: ['1337', '1338'],
+        subscriptions: ['1337', '1338'],
     },
     otherData: 42,
     entities: merge(

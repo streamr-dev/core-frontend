@@ -1,6 +1,5 @@
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
-import expect from 'expect'
 import moxios from 'moxios'
 import sinon from 'sinon'
 
@@ -100,7 +99,7 @@ describe('Canvas actions', () => {
 
         await store.dispatch(actions.getCanvases())
             .catch(() => {
-                expect(store.getActions()).toEqual(expectedActions)
+                expect(store.getActions()).toMatchObject(expectedActions)
             })
 
         await wait

@@ -2,6 +2,7 @@
   position: relative;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   padding: 0;
   background-color: transparent;
   border: 1px solid;
@@ -26,12 +27,12 @@
     outline: none;
   }
 
-  &:--enter {
+  &:not([disabled]):--enter {
     transition-duration: 5ms;
     transform: scale(1.05) translate3d(0, 0, 0);
   }
 
-  &:active {
+  &:not([disabled]):active {
     transform: scale(0.95) translate3d(0, 0, 0);
     outline: none;
   }
@@ -49,6 +50,11 @@
   .spinnerContainer {
     width: 16px;
     height: 16px;
+    margin-left: 0.5rem;
+  }
+
+  &.outline {
+    background-color: transparent !important;
   }
 }
 
@@ -56,16 +62,21 @@
   Types
 */
 .primary {
-  color: rgba(255, 255, 255, 1);
   background-color: #0324FF;
   border-color: #0324FF;
 
-  &:--enter {
+  &,
+  &:link,
+  &:not([disabled]):--idle {
+    color: rgba(255, 255, 255, 1);
+  }
+
+  &:not([disabled]):--enter {
     background-color: #0D009A;
     border-color: #0D009A;
   }
 
-  &:active {
+  &:not([disabled]):active {
     background-color: #09006D;
     border-color: #09006D;
   }
@@ -74,39 +85,45 @@
     color: rgba(255, 255, 255, 0.5);
   }
 
-  &.outline {
+  &.outline,
+  &[href].outline {
     color: rgb(3, 36, 255, 1);
-    background-color: transparent;
     border-color: #0324FF;
+  }
 
-    &:--enter {
-      color: #0D009A;
-      border-color: #0D009A;
-    }
+  &.outline:--enter {
+    color: #0D009A;
+    border-color: #0D009A;
+  }
 
-    &:active {
-      color: #09006D;
-      border-color: #09006D;
-    }
+  &.outline:active {
+    color: #09006D;
+    border-color: #09006D;
+  }
 
-    &[disabled] {
-      color: rgb(3, 36, 255, 0.5);
-    }
+  &.outline[disabled] {
+    color: rgb(3, 36, 255, 0.5);
+    border-color: #0324FF;
   }
 }
 
 .secondary {
-  color: rgba(50, 50, 50, 1);
   background-color: #EFEFEF;
   border-color: #EFEFEF;
 
-  &:--enter {
+  &,
+  &:link,
+  &:not([disabled]):--idle {
+    color: rgba(50, 50, 50, 1);
+  }
+
+  &:not([disabled]):--enter {
     color: inherit;
     background-color: #E7E7E7;
     border-color: #E7E7E7;
   }
 
-  &:active {
+  &:not([disabled]):active {
     background-color: #D8D8D8;
     border-color: #D8D8D8;
   }
@@ -117,29 +134,37 @@
 
   &.outline {
     border-color: #525252;
-    background-color: transparent;
 
-    &:--enter {
+    &:not([disabled]):--enter {
       border-color: #323232;
     }
 
-    &:active {
+    &:not([disabled]):active {
       border-color: #525252;
+    }
+
+    &[disabled] {
+      border-color: #EFEFEF;
     }
   }
 }
 
 .destructive {
-  color: rgba(255, 255, 255, 1);
   background-color: #FF0F2D;
   border-color: #FF0F2D;
 
-  &:--enter {
+  &,
+  &:link,
+  &:not([disabled]):--idle {
+    color: rgba(255, 255, 255, 1);
+  }
+
+  &:not([disabled]):--enter {
     background-color: #EA112C;
     border-color: #EA112C;
   }
 
-  &:active {
+  &:not([disabled]):active {
     background-color: #D50F28;
     border-color: #D50F28;
   }
@@ -150,18 +175,23 @@
 }
 
 .link {
-  color: rgba(82, 82, 82, 1);
   background-color: transparent;
   border-color: transparent;
   font-weight: var(--regular);
   padding: 0 0.5rem !important; /* ignore "size" classes */
 
-  &:--enter {
+  &,
+  &:link,
+  &:not([disabled]):--idle {
+    color: rgba(82, 82, 82, 1);
+  }
+
+  &:not([disabled]):--enter {
     color: #323232;
     transform: scale(1) translate3d(0, 0, 0);
   }
 
-  &:active {
+  &:not([disabled]):active {
     color: rgba(82, 82, 82, 0.8);
     transform: scale(1) translate3d(0, 0, 0);
   }
@@ -175,11 +205,11 @@
     background-color: transparent;
     border-color: transparent;
 
-    &:--enter {
+    &:not([disabled]):--enter {
       color: #0D009A;
     }
 
-    &:active {
+    &:not([disabled]):active {
       color: #13013D;
     }
 
@@ -190,7 +220,6 @@
 }
 
 .special {
-  color: rgba(50, 50, 50, 1);
   background-color: rgba(255, 255, 255, 0.9);
   border-color: rgba(255, 255, 255, 0.9);
   border-radius: 20px;
@@ -203,13 +232,19 @@
   letter-spacing: 1px;
   height: 40px !important; /* ignore "size" classes */
 
-  &:--enter {
+  &,
+  &:link,
+  &:not([disabled]):--idle {
+    color: rgba(50, 50, 50, 1);
+  }
+
+  &:not([disabled]):--enter {
     color: inherit;
     background-color: rgba(255, 255, 255, 1);
     border-color: rgba(255, 255, 255, 1);
   }
 
-  &:active {
+  &:not([disabled]):active {
     background-color: rgba(255, 255, 255, 0.8);
     border-color: rgba(255, 255, 255, 0.8);
   }
@@ -223,12 +258,12 @@
     background-color: rgba(239, 239, 239, 0.9);
     border-color: rgba(239, 239, 239, 0.9);
 
-    &:--enter {
+    &:not([disabled]):--enter {
       background-color: #E7E7E7;
       border-color: #E7E7E7;
     }
 
-    &:active {
+    &:not([disabled]):active {
       background-color: #D8D8D8;
       border-color: #D8D8D8;
     }

@@ -9,15 +9,14 @@ import useModal from '$shared/hooks/useModal'
 import { selectUserData } from '$shared/modules/user/selectors'
 import { addFreeProduct } from '$mp/modules/purchase/actions'
 
-import FallbackImage from '$shared/components/FallbackImage'
-import Tile from '$shared/components/Tile'
 import ProductDetails from '$mp/components/ProductPage/ProductDetails'
 import HeroComponent from '$mp/components/Hero'
-import { isCommunityProduct, isPaidProduct } from '$mp/utils/product'
+import { isDataUnionProduct, isPaidProduct } from '$mp/utils/product'
 import {
     selectSubscriptionIsValid,
     selectContractSubscription,
 } from '$mp/modules/product/selectors'
+import { ImageTile } from '$shared/components/Tile'
 
 import routes from '$routes'
 
@@ -30,7 +29,7 @@ const Hero = () => {
 
     const userData = useSelector(selectUserData)
     const isLoggedIn = userData !== null
-    const isCommunity = !!(product && isCommunityProduct(product))
+    const isDataUnion = !!(product && isDataUnionProduct(product))
     const isProductSubscriptionValid = useSelector(selectSubscriptionIsValid)
     const subscription = useSelector(selectContractSubscription)
 
@@ -61,19 +60,11 @@ const Hero = () => {
             className={styles.hero}
             product={product}
             leftContent={
-                <div className={styles.productImageWrapper}>
-                    <FallbackImage
-                        className={styles.productImage}
-                        src={product.imageUrl || ''}
-                        alt={product.name}
-                    />
-                    <Tile.Labels
-                        topLeft
-                        labels={{
-                            community: isCommunity,
-                        }}
-                    />
-                </div>
+                <ImageTile
+                    alt={product.name}
+                    src={product.imageUrl}
+                    showDataUnionBadge={isDataUnion}
+                />
             }
             rightContent={
                 <ProductDetails

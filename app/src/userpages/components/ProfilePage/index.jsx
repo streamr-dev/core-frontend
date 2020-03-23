@@ -80,7 +80,6 @@ export class ProfilePage extends Component<Props, State> {
                 hideNavOnDesktop
                 navComponent={(
                     <Toolbar
-                        className={Toolbar.styles.shadow}
                         altMobileLayout
                         actions={{
                             cancel: {

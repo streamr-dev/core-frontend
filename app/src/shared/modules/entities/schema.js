@@ -19,9 +19,6 @@ export const subscriptionSchema = new schema.Entity(
     {
         product: productSchema,
     },
-    {
-        idAttribute: (value) => value.product.id,
-    },
 )
 export const subscriptionsSchema = [subscriptionSchema]
 
@@ -40,8 +37,8 @@ export const integrationKeysSchema = [integrationKeySchema]
 export const resourceKeySchema = new schema.Entity('resourceKeys')
 export const resourceKeysSchema = [resourceKeySchema]
 
-export const communityProductSchema = new schema.Entity('communityProducts')
-export const communityProductsSchema = [communityProductSchema]
+export const dataUnionSchema = new schema.Entity('dataUnions')
+export const dataUnionsSchema = [dataUnionSchema]
 
 export const joinRequestSchema = new schema.Entity('joinRequests')
 export const joinRequestsSchema = [joinRequestSchema]

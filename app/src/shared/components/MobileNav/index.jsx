@@ -1,16 +1,20 @@
 // @flow
 
-import React, { useCallback, useState } from 'react'
+import React, { Fragment, useCallback, useState, useMemo } from 'react'
 import cx from 'classnames'
 import { withRouter, type Location } from 'react-router-dom'
-import { compose } from 'redux'
-import { connect } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { selectUserData } from '$shared/modules/user/selectors'
 import type { User } from '$shared/flowtype/user-types'
 import BodyClass, { NO_SCROLL } from '$shared/components/BodyClass'
 import Link from '$shared/components/Link'
+import Button from '$shared/components/Button'
+import SvgIcon from '$shared/components/SvgIcon'
 import LogoItem from '../Nav/LogoItem'
+import Avatar from '$shared/components/Avatar'
+import { isEthereumAddress } from '$mp/utils/validate'
+import { truncate } from '$shared/utils/text'
 import Bar from './Bar'
 import Hamburger from './Hamburger'
 import routes from '$routes'
@@ -25,19 +29,37 @@ type Props = StateProps & {
     location: Location,
 }
 
-const mapStateToProps = (state): StateProps => ({
-    currentUser: selectUserData(state),
-})
-
-const MobileNav = compose(
-    connect(mapStateToProps),
-    withRouter,
-)(({ currentUser, location: { pathname: redirect }, className }: Props) => {
+const MobileNav = withRouter(({ location: { pathname: redirect }, className }: Props) => {
+    const currentUser = useSelector(selectUserData)
     const [open, setOpen] = useState(false)
 
     const toggle = useCallback(() => {
         setOpen((current) => !current)
     }, [])
+
+    const siteSection = useMemo(() => {
+        if (redirect) {
+            if (redirect === '/' || redirect.startsWith('/marketplace')) {
+                return 'marketplace'
+            }
+
+            if (redirect.startsWith('/canvas')) {
+                return 'editor'
+            }
+
+            if (redirect.startsWith('/core') || redirect.startsWith('/dashboard')) {
+                return 'core'
+            }
+
+            if (redirect.startsWith('/docs')) {
+                return 'docs'
+            }
+        }
+
+        return undefined
+    }, [redirect])
+
+    const isEthAddress = !!currentUser && isEthereumAddress(currentUser.username)
 
     return (
         <nav
@@ -48,7 +70,15 @@ const MobileNav = compose(
             {!!open && <BodyClass className={NO_SCROLL} />}
             <Bar
                 left={(
-                    <LogoItem />
+                    <Fragment>
+                        <LogoItem />
+                        {siteSection && (
+                            <Translate
+                                value={`general.nav.${siteSection}`}
+                                className={styles.siteSection}
+                            />
+                        )}
+                    </Fragment>
                 )}
                 right={(
                     <Hamburger onClick={toggle} />
@@ -60,8 +90,36 @@ const MobileNav = compose(
                         <Hamburger onClick={toggle} open />
                     )}
                 />
+                {!!currentUser && (
+                    <div className={styles.userWrapper}>
+                        <Avatar
+                            alt={currentUser.name}
+                            className={styles.avatar}
+                            src={currentUser.imageUrlSmall}
+                        />
+                        <div className={styles.user}>
+                            <div className={styles.name}>
+                                {currentUser.name}
+                            </div>
+                            <div className={styles.username}>
+                                {!isEthAddress && (currentUser.username)}
+                                {!!isEthAddress && (truncate(currentUser.username, {
+                                    maxLength: 20,
+                                }))}
+                            </div>
+                        </div>
+                    </div>
+                )}
                 <div className={styles.items}>
                     <ul>
+                        <li>
+                            <Link
+                                className={styles.link}
+                                to={routes.streams()}
+                            >
+                                <Translate value="general.core" />
+                            </Link>
+                        </li>
                         <li>
                             <Link
                                 className={styles.link}
@@ -70,160 +128,63 @@ const MobileNav = compose(
                                 <Translate value="general.marketplace" />
                             </Link>
                         </li>
-                    </ul>
-                    <ul>
                         <li>
                             <Link
                                 className={styles.link}
-                                to={routes.streams()}
+                                to={routes.docs()}
                             >
-                                <Translate value="general.streams" />
-                            </Link>
-                        </li>
-                        <li>
-                            <Link
-                                className={styles.link}
-                                to={routes.canvases()}
-                            >
-                                <Translate value="general.canvases" />
-                            </Link>
-                        </li>
-                        <li>
-                            <Link
-                                className={styles.link}
-                                to={routes.dashboards()}
-                            >
-                                <Translate value="general.dashboards" />
-                            </Link>
-                        </li>
-                        <li>
-                            <Link
-                                className={styles.link}
-                                to={routes.products()}
-                            >
-                                <Translate value="general.products" />
-                            </Link>
-                        </li>
-                        <li>
-                            <Link
-                                className={styles.link}
-                                to={routes.purchases()}
-                            >
-                                <Translate value="general.purchases" />
-                            </Link>
-                        </li>
-                        <li>
-                            <Link
-                                className={styles.link}
-                                to={routes.transactions()}
-                            >
-                                <Translate value="general.transactions" />
+                                <Translate value="general.docs" />
                             </Link>
                         </li>
                     </ul>
-                    {!currentUser && (
-                        <ul>
-                            <li>
-                                <Link
-                                    className={styles.link}
-                                    to={routes.login(redirect !== '/' ? {
-                                        redirect,
-                                    } : {})}
-                                >
-                                    <Translate value="general.signIn" />
-                                </Link>
-                            </li>
-                            <li>
-                                <Link
-                                    className={cx(styles.link, styles.outlined)}
-                                    to={routes.signUp()}
-                                >
-                                    <Translate value="general.signUp" />
-                                </Link>
-                            </li>
-                        </ul>
-                    )}
+                    <ul className={styles.settings}>
+                        <li>
+                            <Link
+                                className={styles.link}
+                                to={routes.editProfile()}
+                                disabled={!currentUser}
+                            >
+                                <Translate value="general.settings" />
+                                <SvgIcon name="forward" className={styles.settingsIcon} />
+                            </Link>
+                        </li>
+                    </ul>
                     {!!currentUser && (
                         <ul>
                             <li>
                                 <Link
                                     className={styles.link}
-                                    to={routes.editProfile()}
-                                >
-                                    <Translate value="general.profile" />
-                                </Link>
-                            </li>
-                            <li>
-                                <Link
-                                    className={styles.link}
-                                    to={routes.editProfile({}, 'api-keys')}
-                                >
-                                    <Translate value="userpages.profilePage.apiCredentials.linkTitle" />
-                                </Link>
-                            </li>
-                            <li>
-                                <Link
-                                    className={styles.link}
-                                    to={routes.editProfile({}, 'ethereum-accounts')}
-                                >
-                                    <Translate value="userpages.profilePage.ethereumAddress.linkTitle" />
-                                </Link>
-                            </li>
-                            <li>
-                                <Link
-                                    className={styles.link}
-                                    to={routes.editProfile({}, 'private-keys')}
-                                >
-                                    <Translate value="userpages.profilePage.ethereumPrivateKeys.linkTitle" />
-                                </Link>
-                            </li>
-                            <li>
-                                <Link
-                                    className={styles.link}
                                     to={routes.logout()}
                                 >
-                                    <Translate value="general.logout" />
+                                    <Translate value="general.signout" />
                                 </Link>
                             </li>
                         </ul>
                     )}
-                    <ul>
-                        <li className={styles.label}>Contact Us</li>
-                        <li />
-                        <li>
-                            <Link
-                                className={styles.link}
-                                to={routes.contactGeneral()}
-                            >
-                                <Translate value="general.general" />
-                            </Link>
-                        </li>
-                        <li>
-                            <Link
-                                className={styles.link}
-                                to={routes.contactMedia()}
-                            >
-                                <Translate value="general.media" />
-                            </Link>
-                        </li>
-                        <li>
-                            <Link
-                                className={styles.link}
-                                to={routes.contactJobs()}
-                            >
-                                <Translate value="general.jobs" />
-                            </Link>
-                        </li>
-                        <li>
-                            <Link
-                                className={styles.link}
-                                to={routes.contactLabs()}
-                            >
-                                <Translate value="general.labs" />
-                            </Link>
-                        </li>
-                    </ul>
                 </div>
+                {!currentUser && (
+                    <div className={styles.signInWrapper}>
+                        <Button
+                            kind="primary"
+                            tag={Link}
+                            className={styles.signUpLink}
+                            to={routes.signUp()}
+                        >
+                            <Translate value="general.signUp" />
+                        </Button>
+                        <div className={styles.signIn}>
+                            Already have an account?
+                            &nbsp;
+                            <Link
+                                to={routes.login(redirect !== '/' ? {
+                                    redirect,
+                                } : {})}
+                            >
+                                <Translate value="general.signIn" />
+                            </Link>
+                        </div>
+                    </div>
+                )}
             </div>
         </nav>
     )

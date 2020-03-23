@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { useDispatch } from 'react-redux'
-import { I18n } from 'react-redux-i18n'
+import { Translate } from 'react-redux-i18n'
 
 import type { Product } from '$mp/flowtype/product-types'
 import { isPaidProduct } from '$mp/utils/product'
@@ -10,7 +10,7 @@ import { productStates, transactionStates, transactionTypes } from '$shared/util
 import useModal from '$shared/hooks/useModal'
 import { getProductById } from '$mp/modules/product/services'
 import { getProductFromContract } from '$mp/modules/contractProduct/services'
-import { getCommunityOwner, getAdminFee, setAdminFee } from '$mp/modules/communityProduct/services'
+import { getDataUnionOwner, getAdminFee, setAdminFee } from '$mp/modules/dataUnion/services'
 import { areAddressesEqual, isUpdateContractProductRequired } from '$mp/utils/smartContract'
 import { putProduct } from '$mp/modules/deprecated/editProduct/services'
 
@@ -26,7 +26,7 @@ import { addTransaction } from '$mp/modules/transactions/actions'
 import { postSetDeploying, postDeployFree, redeployProduct } from '$mp/modules/publish/services'
 import { postSetUndeploying, postUndeployFree, deleteProduct } from '$mp/modules/unpublish/services'
 import useWeb3Status from '$shared/hooks/useWeb3Status'
-import UnlockWalletDialog from '$mp/components/Modal/UnlockWalletDialog'
+import UnlockWalletDialog from '$shared/components/Web3ErrorDialog/UnlockWalletDialog'
 
 import PublishQueue, { actionsTypes } from './publishQueue'
 import { getPendingChanges, withPendingChanges } from './state'
@@ -50,7 +50,7 @@ const steps = {
     COMPLETE: 'complete',
 }
 
-const PublishOrUnpublishModal = ({ product, api }: Props) => {
+export const PublishOrUnpublishModal = ({ product, api }: Props) => {
     const queueRef = useRef(new PublishQueue())
     const dispatch = useDispatch()
 
@@ -95,10 +95,10 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
             }
 
             let currentAdminFee
-            let communityOwner
+            let dataUnionOwner
             try {
                 currentAdminFee = await getAdminFee(p.beneficiaryAddress)
-                communityOwner = await getCommunityOwner(p.beneficiaryAddress)
+                dataUnionOwner = await getDataUnionOwner(p.beneficiaryAddress)
             } catch (e) {
                 // ignore error, assume contract has not been deployed
             }
@@ -135,10 +135,12 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
             // update admin fee if it has changed
             if ([modes.REPUBLISH, modes.REDEPLOY, modes.PUBLISH].includes(nextMode)) {
                 if (adminFee && hasAdminFeeChanged) {
-                    requireOwner = communityOwner
+                    requireOwner = dataUnionOwner
 
                     queue.add({
                         id: actionsTypes.UPDATE_ADMIN_FEE,
+                        requireWeb3: true,
+                        requireOwner: dataUnionOwner,
                         handler: (update, done) => (
                             setAdminFee(p.beneficiaryAddress, adminFee)
                                 .onTransactionHash((hash) => {
@@ -165,6 +167,8 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
 
                     queue.add({
                         id: actionsTypes.UPDATE_CONTRACT_PRODUCT,
+                        requireWeb3: true,
+                        requireOwner: contractProduct.ownerAddress,
                         handler: (update, done) => {
                             if (!contractProduct) {
                                 return null
@@ -196,14 +200,16 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
             // do the actual publish action
             if (nextMode === modes.PUBLISH) {
                 if (isPaidProduct(p)) {
-                    // TODO: figure out a better to detect if deploying community for the first time
-                    // force community product to be published by the same account as the community
-                    if (communityOwner) {
-                        requireOwner = communityOwner
+                    // TODO: figure out a better to detect if deploying data union for the first time
+                    // force data union product to be published by the same account as the data union itself
+                    if (dataUnionOwner) {
+                        requireOwner = dataUnionOwner
                     }
 
                     queue.add({
                         id: actionsTypes.CREATE_CONTRACT_PRODUCT,
+                        requireWeb3: true,
+                        requireOwner: dataUnionOwner,
                         handler: (update, done) => (
                             createContractProduct({
                                 id: p.id || '',
@@ -253,6 +259,8 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
 
                     queue.add({
                         id: actionsTypes.REDEPLOY_PAID,
+                        requireWeb3: true,
+                        requireOwner: contractProduct.ownerAddress,
                         handler: (update, done) => (
                             redeployProduct(productId || '')
                                 .onTransactionHash((hash) => {
@@ -279,6 +287,8 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
                     requireOwner = contractProduct.ownerAddress
                     queue.add({
                         id: actionsTypes.UNDEPLOY_CONTRACT_PRODUCT,
+                        requireWeb3: true,
+                        requireOwner: contractProduct.ownerAddress,
                         handler: (update, done) => (
                             deleteProduct(productId || '')
                                 .onTransactionHash((hash) => {
@@ -389,12 +399,12 @@ const PublishOrUnpublishModal = ({ product, api }: Props) => {
 
     if (!!requireWeb3 && !!requiredOwner && (!account || !areAddressesEqual(account, requiredOwner))) {
         return (
-            <UnlockWalletDialog
-                onClose={onClose}
-                message={I18n.t('unlockWalletDialog.message', {
-                    address: requiredOwner,
-                })}
-            />
+            <UnlockWalletDialog onClose={onClose} requiredAddress={requiredOwner}>
+                <Translate
+                    value="unlockWalletDialog.message"
+                    tag="p"
+                />
+            </UnlockWalletDialog>
         )
     }
 

@@ -6,6 +6,8 @@ import { I18n } from 'react-redux-i18n'
 import { push } from 'connected-react-router'
 import { withRouter } from 'react-router-dom'
 import MediaQuery from 'react-responsive'
+import qs from 'query-string'
+
 import useIsMounted from '$shared/hooks/useIsMounted'
 import StatusIcon from '$shared/components/StatusIcon'
 import ConfigureAnchorOffset from '$shared/components/ConfigureAnchorOffset'
@@ -48,11 +50,18 @@ import styles from './streamShowView.pcss'
 
 const { lg } = breakpoints
 
+type OwnProps = {
+    location: {
+        search: string,
+    },
+}
+
 type StateProps = {
     editedStream: ?Stream,
     permissions: ?Array<Operation>,
     currentUser: ?User,
     isFetching: ?boolean,
+    isNewStream: boolean,
 }
 
 type State = {
@@ -149,6 +158,7 @@ export class StreamShowView extends Component<Props, State> {
             currentUser,
             permissions,
             isFetching,
+            isNewStream,
         } = this.props
         const hasWritePermission = (permissions && permissions.some((p) => p === 'write')) || false
         const hasSharePermission = (permissions && permissions.some((p) => p === 'share')) || false
@@ -171,7 +181,6 @@ export class StreamShowView extends Component<Props, State> {
                     <MediaQuery minWidth={lg.min}>
                         {(isDesktop) => (
                             <Toolbar
-                                className={Toolbar.styles.shadow}
                                 altMobileLayout
                                 actions={{
                                     cancel: {
@@ -204,33 +213,35 @@ export class StreamShowView extends Component<Props, State> {
                     <ConfigureAnchorOffset value={-80} />
                 </MediaQuery>
                 <DetailsContainer className={styles.streamShowView}>
-                    <TOCPage title="Set up your Stream">
+                    <TOCPage title={I18n.t(`userpages.streams.edit.details.pageTitle.${isNewStream ? 'newStream' : 'existingStream'}`)}>
                         <TOCPage.Section
                             id="details"
-                            title="Details"
+                            title={I18n.t('userpages.streams.edit.details.nav.details')}
                         >
                             <InfoView disabled={disabled} />
                         </TOCPage.Section>
                         <TOCPage.Section
                             id="security"
-                            title="Security"
+                            title={I18n.t('userpages.streams.edit.details.nav.security')}
                             customStyled
                         >
                             <SecurityView disabled={disabled} />
                         </TOCPage.Section>
                         <TOCPage.Section
                             id="configure"
-                            title="Fields"
+                            title={I18n.t('userpages.streams.edit.details.nav.fields')}
                             customStyled
                         >
                             <ConfigureView disabled={disabled} />
                         </TOCPage.Section>
                         <TOCPage.Section
                             id="status"
-                            linkTitle="Status"
+                            linkTitle={I18n.t('userpages.streams.edit.details.nav.status')}
                             title={(
                                 <div className={styles.statusTitle}>
-                                    Status <StatusIcon showTooltip status={editedStream ? editedStream.streamStatus : undefined} />
+                                    {I18n.t('userpages.streams.edit.details.nav.status')}
+                                    &nbsp;
+                                    <StatusIcon tooltip status={editedStream ? editedStream.streamStatus : undefined} />
                                 </div>
                             )}
                             customStyled
@@ -239,7 +250,7 @@ export class StreamShowView extends Component<Props, State> {
                         </TOCPage.Section>
                         <TOCPage.Section
                             id="preview"
-                            title="Preview"
+                            title={I18n.t('userpages.streams.edit.details.nav.preview')}
                         >
                             <PreviewView
                                 stream={editedStream}
@@ -248,14 +259,14 @@ export class StreamShowView extends Component<Props, State> {
                         </TOCPage.Section>
                         <TOCPage.Section
                             id="api-access"
-                            title="API Access"
+                            title={I18n.t('userpages.streams.edit.details.nav.apiAccess')}
                             customStyled
                         >
                             <KeyView disabled={disabled || !hasSharePermission} />
                         </TOCPage.Section>
                         <TOCPage.Section
                             id="historical-data"
-                            title="Historical Data"
+                            title={I18n.t('userpages.streams.edit.details.nav.historicalData')}
                             customStyled
                         >
                             <HistoryView
@@ -285,7 +296,13 @@ function StreamLoader(props: Props) {
             currentProps.getStream(id).then(async () => {
                 if (!isMounted()) { return }
                 // get stream status before copying state to edit stream object
-                await currentProps.refreshStreamStatus(id)
+                try {
+                    // the status query might fail due to cassandra problems.
+                    // Ignore error to prevent the stream page from getting stuck while loading
+                    await currentProps.refreshStreamStatus(id)
+                } catch (e) {
+                    console.warn(e)
+                }
                 currentProps.openStream(id)
                 currentProps.initEditStream()
             }),
@@ -297,7 +314,7 @@ function StreamLoader(props: Props) {
         const { current: currentProps } = propsRef
         const newStreamId = await currentProps.createStream()
         if (!isMounted()) { return }
-        currentProps.history.replace(`${links.userpages.streamShow}/${newStreamId}`)
+        currentProps.history.replace(`${links.userpages.streamShow}/${newStreamId}?newStream=true`)
         initStream(newStreamId)
     }, [initStream, propsRef, isMounted])
 
@@ -327,12 +344,17 @@ function StreamLoader(props: Props) {
     return <StreamShowView {...props} key={streamId} editedStream={isCurrent ? props.editedStream : null} />
 }
 
-const mapStateToProps = (state: StoreState): StateProps => ({
-    editedStream: selectEditedStream(state),
-    permissions: selectPermissions(state),
-    currentUser: selectUserData(state),
-    isFetching: selectFetching(state),
-})
+const mapStateToProps = (state: StoreState, { location }: OwnProps): StateProps => {
+    const newStream = qs.parse(location.search).newStream || ''
+
+    return {
+        editedStream: selectEditedStream(state),
+        permissions: selectPermissions(state),
+        currentUser: selectUserData(state),
+        isFetching: selectFetching(state),
+        isNewStream: !!newStream,
+    }
+}
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     createStream: () => dispatch(createStream({

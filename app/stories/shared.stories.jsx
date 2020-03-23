@@ -14,8 +14,6 @@ import Checkbox from '$shared/components/Checkbox'
 import DropdownActions from '$shared/components/DropdownActions'
 import Meatball from '$shared/components/Meatball'
 import StatusIcon from '$shared/components/StatusIcon'
-import TextInput from '$shared/components/TextInput'
-import SelectInput from '$shared/components/SelectInput'
 import Calendar from '$shared/components/Calendar'
 import WithCalendar from '$shared/components/WithCalendar'
 import DatePicker from '$shared/components/DatePicker'
@@ -39,9 +37,8 @@ import CodeSnippet from '$shared/components/CodeSnippet'
 import Tooltip from '$shared/components/Tooltip'
 import ContextMenu from '$shared/components/ContextMenu'
 import { NotificationIcon } from '$shared/utils/constants'
-import Toolbar from '$shared/components/Toolbar'
 import Spinner from '$shared/components/Spinner'
-import Button from '$shared/components/Button'
+import Text from '$ui/Text'
 
 import sharedStyles from './shared.pcss'
 
@@ -210,138 +207,6 @@ story('Checkbox')
         <CheckboxContainer />
     ))
 
-story('Text Field/Text')
-    .addWithJSX('basic', () => (
-        <TextInput preserveLabelSpace label="Initially empty text input" onChange={action('change')} />
-    ))
-    .addWithJSX('w/ placeholder', () => (
-        <TextInput preserveLabelSpace label="Text input w/ placeholder" placeholder="Placeholder" readOnly />
-    ))
-    .addWithJSX('w/ value', () => (
-        <TextInput preserveLabelSpace label="Text input w/ value" value="Something important!" readOnly />
-    ))
-    .addWithJSX('processing', () => (
-        <TextInput preserveLabelSpace label="Processing" readOnly processing />
-    ))
-    .addWithJSX('errored', () => (
-        <TextInput preserveLabelSpace label="Errored!" readOnly error="Oh, something went wrong!" />
-    ))
-    .addWithJSX('with invalid value', () => (
-        <TextInput preserveLabelSpace label="With invalid value" value="Something invalid" error="Oh, something went wrong!" />
-    ))
-
-story('Text Field/With actions')
-    .addWithJSX('basic', () => (
-        <TextInput
-            preserveLabelSpace
-            label="I have a Meatball menu"
-            actions={
-                [
-                    <DropdownActions.Item>
-                        Test 1
-                    </DropdownActions.Item>,
-                    <DropdownActions.Item>
-                        Test 2
-                    </DropdownActions.Item>,
-                ]
-            }
-        />
-    ))
-    .addWithJSX('disabled', () => (
-        <TextInput
-            preserveLabelSpace
-            disabled
-            label="I have a Meatball menu"
-            actions={
-                [
-                    <DropdownActions.Item>
-                        Test 1
-                    </DropdownActions.Item>,
-                    <DropdownActions.Item>
-                        Test 2
-                    </DropdownActions.Item>,
-                ]
-            }
-        />
-    ))
-
-story('Text Field/Password')
-    .addWithJSX('basic', () => (
-        <TextInput preserveLabelSpace label="Password…" value={text('value', '')} type="password" measureStrength />
-    ))
-    .addWithJSX('min strength 0', () => (
-        <TextInput preserveLabelSpace label="" value={text('value', 'qwerty')} type="password" measureStrength />
-    ))
-    .addWithJSX('min strength 1', () => (
-        <TextInput preserveLabelSpace label="" value={text('value', 'werty')} type="password" measureStrength />
-    ))
-    .addWithJSX('min strength 2', () => (
-        <TextInput preserveLabelSpace label="" value={text('value', 'You shall not pass!')} type="password" measureStrength />
-    ))
-
-story('Text Field/Number')
-    .addWithJSX('basic', () => (
-        <TextInput preserveLabelSpace label="Count" type="number" />
-    ))
-    .addWithJSX('with predefined value', () => (
-        <TextInput preserveLabelSpace label="Count" type="number" value="5" />
-    ))
-    .addWithJSX('with min, max & step', () => (
-        <TextInput preserveLabelSpace label="Count" type="number" min="0" max="10" step="2" />
-    ))
-    .addWithJSX('hidden buttons', () => (
-        <TextInput preserveLabelSpace label="Count" type="number" hideButtons />
-    ))
-    .addWithJSX('without label', () => (
-        <TextInput label="" type="number" />
-    ))
-    .addWithJSX('with error', () => (
-        <TextInput preserveLabelSpace label="Count" type="number" error="Error" />
-    ))
-
-class SelectInputContainer extends React.Component {
-    static options = [{
-        value: 'Leonardo',
-        label: 'Leonardo',
-    }, {
-        value: 'Donatello',
-        label: 'Donatello',
-    }, {
-        value: 'Michelangelo',
-        label: 'Michelangelo',
-    }, {
-        value: 'Raphael',
-        label: 'Raphael',
-    }]
-    state = {
-        value: null,
-    }
-    onValueChange = (val) => {
-        action('onChange')(val)
-        this.setState({
-            value: val,
-        })
-    }
-    render = () => (
-        <SelectInput
-            label="My Favourite"
-            name="name"
-            options={SelectInputContainer.options}
-            value={this.state.value || SelectInputContainer.options[0]}
-            onChange={this.onValueChange}
-            required
-        />
-    )
-}
-
-story('Select Field')
-    .addDecorator(styles({
-        backgroundColor: '#EFEFEF',
-    }))
-    .addWithJSX('basic', () => (
-        <SelectInputContainer />
-    ))
-
 const CalendarContainer = () => (
     <WithCalendar
         date={new Date('2019-01-01')}
@@ -450,7 +315,11 @@ class FieldListContainer extends React.Component {
             <div className={sharedStyles.fieldList}>
                 <FieldList onSortEnd={this.onSortEnd} lockAxis="y">
                     {items.map((item) => (
-                        <FieldItem key={item} name={item} />
+                        <FieldItem key={item} name={item}>
+                            <Text
+                                defaultValue={item}
+                            />
+                        </FieldItem>
                     ))}
                 </FieldList>
             </div>
@@ -744,95 +613,8 @@ story('Tooltip')
         </Tooltip>
     ))
 
-const toolbarActions = {
-    cancel: {
-        title: 'Cancel',
-        kind: 'link',
-        onClick: action('cancel'),
-    },
-    ok: {
-        title: 'Ok',
-        kind: 'primary',
-        onClick: action('ok'),
-        disabled: boolean('disabled'),
-        spinner: boolean('spinner'),
-    },
-}
-
-story('Toolbar')
-    .addDecorator(styles({
-        backgroundColor: '#323232',
-        padding: '15px',
-    }))
-    .addWithJSX('basic', () => (
-        <Toolbar actions={toolbarActions} />
-    ))
-    .addWithJSX('left status text', () => (
-        <Toolbar
-            left={text('status text', 'status')}
-            actions={toolbarActions}
-        />
-    ))
-    .addWithJSX('middle icon', () => (
-        <Toolbar
-            left={text('status text', 'status')}
-            middle={<SvgIcon
-                name="user"
-                style={{
-                    width: '40px',
-                    height: '40px',
-                }}
-            />}
-            actions={toolbarActions}
-        />
-    ))
-
 story('Spinner')
     .addWithJSX('Small', () => (<Spinner size="small" />))
     .addWithJSX('Large', () => (<Spinner size="large" />))
     .addWithJSX('Green', () => (<Spinner color="green" />))
     .addWithJSX('White', () => (<Spinner color="white" />))
-
-story('Button')
-    .addWithJSX('all', () => (
-        <div>
-            <Button kind="primary" size="mini" onClick={action('Clicked')}>Primary mini</Button>
-            <br />
-            <Button kind="primary" size="normal" onClick={action('Clicked')}>Primary normal</Button>
-            <br />
-            <Button kind="primary" size="big" onClick={action('Clicked')}>Primary big</Button>
-            <br />
-            <Button kind="primary" size="normal" disabled onClick={action('Clicked')}>Primary normal disabled</Button>
-            <br />
-            <Button kind="primary" size="normal" outline onClick={action('Clicked')}>Primary normal outline</Button>
-            <br />
-            <Button kind="secondary" size="mini" onClick={action('Clicked')}>Secondary mini</Button>
-            <br />
-            <Button kind="secondary" size="normal" onClick={action('Clicked')}>Secondary normal</Button>
-            <br />
-            <Button kind="secondary" size="big" onClick={action('Clicked')}>Secondary big</Button>
-            <br />
-            <Button kind="secondary" size="normal" disabled onClick={action('Clicked')}>Secondary normal disabled</Button>
-            <br />
-            <Button kind="secondary" size="normal" outline onClick={action('Clicked')}>Secondary normal outline</Button>
-            <br />
-            <Button kind="destructive" onClick={action('Clicked')}>Destructive</Button>
-            <br />
-            <Button kind="destructive" disabled onClick={action('Clicked')}>Destructive disabled</Button>
-            <br />
-            <Button kind="link" variant="dark" onClick={action('Clicked')}>Link (dark)</Button>
-            <br />
-            <Button kind="link" variant="light" onClick={action('Clicked')}>Link (light)</Button>
-            <br />
-            <Button kind="special" variant="dark" onClick={action('Clicked')}>Special (dark)</Button>
-            <br />
-            <Button kind="special" variant="light" onClick={action('Clicked')}>Special (light)</Button>
-            <br />
-            <Button tag="a" href="#" onClick={action('Clicked')}>With link tag</Button>
-            <br />
-            <Button kind="primary" waiting onClick={action('Clicked')}>Waiting primary</Button>
-            <br />
-            <Button kind="secondary" waiting onClick={action('Clicked')}>Waiting secondary</Button>
-        </div>
-    ))
-

@@ -50,9 +50,6 @@ msgstr "Editor"
 msgid "general##faq"
 msgstr "FAQ"
 
-msgid "general##footnote"
-msgstr "Made with ❤️ & ☕ by Streamr contributors in 2019"
-
 msgid "general##designAssets"
 msgstr "Design Assets"
 
@@ -155,6 +152,27 @@ msgstr "YouTube"
 msgid "general##logout"
 msgstr "Logout"
 
+msgid "general##signout"
+msgstr "Sign out"
+
+msgid "general##nav##marketplace"
+msgstr "Marketplace"
+
+msgid "general##nav##core"
+msgstr "Core"
+
+msgid "general##nav##editor"
+msgstr "Editor"
+
+msgid "general##nav##docs"
+msgstr "Docs"
+
+msgid "general##copy"
+msgstr "Copy"
+
+msgid "general##copied"
+msgstr "Copied"
+
 msgid "language##id"
 msgstr "en"
 
@@ -232,6 +250,9 @@ msgstr "No data yet"
 msgid "shared##status##error"
 msgstr "Inactive"
 
+msgid "shared##status##pending"
+msgstr "Pending"
+
 msgid "shared##date##day"
 msgstr "Day"
 
@@ -259,6 +280,9 @@ msgstr "Years"
 msgid "general##docs"
 msgstr "Docs"
 
+msgid "general##settings"
+msgstr "Settings"
+
 msgid "general##learn"
 msgstr "Learn"
 
@@ -280,8 +304,8 @@ msgstr "Telegram Group"
 msgid "general##giveFeedback"
 msgstr "Give feedback"
 
-msgid "general##labels##community"
-msgstr "Community Product"
+msgid "general##labels##dataUnion"
+msgstr "Data Union"
 
 msgid "general##top"
 msgstr "Top"

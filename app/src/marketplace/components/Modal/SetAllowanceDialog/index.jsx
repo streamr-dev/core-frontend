@@ -44,9 +44,9 @@ const SetAllowanceDialog = ({
                             onClick: onCancel,
                             kind: 'link',
                         },
-                        publish: {
+                        next: {
                             title: I18n.t('modal.common.waiting'),
-                            kind: 'primary',
+                            outline: true,
                             disabled: true,
                             spinner: true,
                         },
@@ -75,7 +75,6 @@ const SetAllowanceDialog = ({
                     },
                     next: {
                         title: I18n.t('modal.common.next'),
-                        kind: 'primary',
                         outline: true,
                         onClick: () => onSet(),
                     },

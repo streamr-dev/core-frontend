@@ -58,13 +58,13 @@ To be able to use the Marketplace, you'll need to configure these variables into
 | WEB3_REQUIRED_NETWORK_ID                          | This is used to check that the user has selected the correct network |
 | WEB3_PUBLIC_HTTP_PROVIDER                         | A public provider used to query Marketplace methods without Metamask |
 | WEB3_PUBLIC_WS_PROVIDER                           | A public websocket prodiver (currently not in use)                   |
+| WEB3_TRANSACTION_CONFIRMATION_BLOCKS              | Number of confirmations required for tx to be considered successful  |
 | BUNDLE_ANALYSIS                                   | Optional, enables generating bundle size analysis report.            |
-| WEB3_TRANSACTION_CONFIRMATION_BLOCKS              |                                                                      |
 | STREAMR_ENGINE_NODE_ADDRESSES                     |                                                                      |
 | UNISWAP_ADAPTOR_CONTRACT_ADDRESS                  | Address of the deployed Uniswap adaptor                              |
-| COMMUNITY_PRODUCT_OPERATOR_ADDRESS                |                                                                      |
-| COMMUNITY_PRODUCT_BLOCK_FREEZE_PERIOD_SECONDS     |                                                                      |
-| WEB3_TRANSACTION_CONFIRMATION_BLOCKS              |                                                                      |
+| DATA_UNION_OPERATOR_ADDRESS                       |                                                                      |
+| DATA_UNION_BLOCK_FREEZE_PERIOD_SECONDS            |                                                                      |
+| DATA_UNION_PUBLISH_MEMBER_LIMIT                   | Number of members required for a data union product before publish   |
 
 Development values (set the values in your `.env`):
 
@@ -82,13 +82,13 @@ Development values (set the values in your `.env`):
 | WEB3_REQUIRED_NETWORK_ID                          | 1111                                         |                                 |
 | WEB3_PUBLIC_HTTP_PROVIDER                         | http://localhost:8545                        | Private network                 |
 | WEB3_PUBLIC_WS_PROVIDER                           | ws://localhost:8545                          |                                 |
+| WEB3_TRANSACTION_CONFIRMATION_BLOCKS              | 1                                            | Ganache confirms tx immediately |
 | BUNDLE_ANALYSIS                                   | 1                                            | PLATFORM_ORIGIN_URL/report.html |
-| WEB3_TRANSACTION_CONFIRMATION_BLOCKS              | 1                                            |                                 |
 | STREAMR_ENGINE_NODE_ADDRESSES                     | 0xFCAd0B19bB29D4674531d6f115237E16AfCE377c   |                                 |
 | UNISWAP_ADAPTOR_CONTRACT_ADDRESS                  | 0xe4ea76e830a659282368ca2e7e4d18c4ae52d8b3   |                                 |
-| COMMUNITY_PRODUCT_OPERATOR_ADDRESS                | 0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1   |                                 |
-| COMMUNITY_PRODUCT_BLOCK_FREEZE_PERIOD_SECONDS     | 1                                            |                                 |
-| WEB3_TRANSACTION_CONFIRMATION_BLOCKS              | 1                                            |                                 |
+| DATA_UNION_OPERATOR_ADDRESS                       | 0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1   |                                 |
+| DATA_UNION_BLOCK_FREEZE_PERIOD_SECONDS            | 1                                            |                                 |
+| DATA_UNION_PUBLISH_MEMBER_LIMIT                   | 1                                            |                                 |
 
 Optional config values:
 
@@ -137,10 +137,9 @@ Docs: [/docs](/docs)
 ### Backend
 
 To run the app locally, you must install and start the development environment running on Docker. 
-Follow the instructions [https://github.com/streamr-dev/streamr-docker-dev](here) to start the
-full stack:
+Follow the instructions [https://github.com/streamr-dev/streamr-docker-dev](here) to start the full stack except the frontend:
 
-`streamr-docker-dev start --all`
+`streamr-docker-dev start --except platform`
 
 Note that the instructions also include login credentials for the local app. 
 

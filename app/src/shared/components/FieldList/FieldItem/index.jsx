@@ -2,20 +2,18 @@
 
 import React, { type Node } from 'react'
 
-import TextInput from '$shared/components/TextInput'
 import Handle from '../Handle'
 import styles from './fieldItem.pcss'
 
 type Props = {
-    name: string,
-    children?: Node,
+    children: Node,
 }
 
-const FieldItem = ({ name, children }: Props) => (
+const FieldItem = ({ children }: Props) => (
     <div className={styles.root}>
         <div className={styles.inner}>
             <Handle className={styles.handle} />
-            {children || <TextInput label="" defaultValue={name} />}
+            {children}
         </div>
     </div>
 )

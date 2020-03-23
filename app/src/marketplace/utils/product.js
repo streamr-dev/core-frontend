@@ -12,12 +12,12 @@ import { getPrefixedHexString, getUnprefixedHexString, isValidHexString } from '
 
 export const isPaidProduct = (product: Product) => product.isFree === false || BN(product.pricePerSecond).isGreaterThan(0)
 
-export const isCommunityProduct = (productOrProductType?: Product | ProductType) => {
+export const isDataUnionProduct = (productOrProductType?: Product | ProductType) => {
     const { type } = (typeof productOrProductType === 'string') ? {
         type: productOrProductType,
     } : (productOrProductType || {})
 
-    return type === productTypes.COMMUNITY
+    return type === productTypes.DATAUNION
 }
 
 export const validateProductPriceCurrency = (priceCurrency: string) => {

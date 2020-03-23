@@ -1,7 +1,7 @@
 .historyView {}
 
 .fileUpload {
-  &:--enter {
+  &:not(.disabled):--enter {
     cursor: pointer !important;
 
     input {
@@ -18,20 +18,20 @@
 .browseFiles {
   min-width: 128px;
   margin-left: 0;
-  margin-top: 18px;
 }
 
-@media (--xl) {
-  .deleteButton,
-  .browseFiles {
-    margin-top: 24px;
-  }
+.defaultSplit {
+  align-items: end;
 }
 
 .storedEventsContainer {
   font-size: 1rem;
+  position: relative;
 
-  &:--enter {
+  &.disabled {
+  }
+
+  &:not(.disabled):--enter {
     cursor: pointer !important;
 
     input {

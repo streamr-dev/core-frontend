@@ -1,23 +1,22 @@
 // @flow
 
 import React from 'react'
-import merge from 'lodash/merge'
 import classnames from 'classnames'
+import styled from 'styled-components'
 import { Row, Container, Col } from 'reactstrap'
-
-import type { ProductList, Product, ProductSubscription } from '../../flowtype/product-types'
-import type { Props } from '../ProductTile'
-import ProductTile from '../ProductTile'
+import { isDataUnionProduct } from '$mp/utils/product'
+import type { ProductList } from '../../flowtype/product-types'
+import { MarketplaceProductTile as UnstyledMarketplaceProductTile } from '$shared/components/Tile'
 import ProductPageSpinner from '../ProductPageSpinner'
 import LoadMore from '../LoadMore'
 import Error from '../Error'
-import { isActive } from '../../utils/time'
 
-import { getTileProps, getErrorView, getCols } from './settings'
+import { getErrorView, getCols } from './settings'
 import styles from './products.pcss'
 
-export type ProductTilePropType = "myProducts" | "myPurchases" | "products" | "relatedProducts"
-export type ProductTileProps = $Rest<Props, {|source: Product|}>
+export type Props = {}
+
+export type ProductTilePropType = "products" | "relatedProducts"
 
 export type OwnProps = {
     products: ProductList,
@@ -27,13 +26,13 @@ export type OwnProps = {
     loadProducts?: () => void,
     hasMoreSearchResults?: boolean,
     header?: string,
-    productTileProps?: ProductTileProps,
-    subscriptions?: Array<ProductSubscription>,
 }
 
-const isSubscriptionActive = (subscription?: ProductSubscription): boolean => isActive((subscription && subscription.endsAt) || '')
+const MarketplaceProductTile = styled(UnstyledMarketplaceProductTile)`
+    margin-top: 16px;
+`
 
-const listProducts = (products, cols, productTileProps: ProductTileProps, isFetching: ?boolean, subscriptions?: Array<ProductSubscription>) => (
+const listProducts = (products, cols, isFetching: ?boolean) => (
     <Row
         className={classnames(styles.productsRow, {
             [styles.fetching]: isFetching,
@@ -41,10 +40,9 @@ const listProducts = (products, cols, productTileProps: ProductTileProps, isFetc
     >
         {products.map((product) => (
             <Col {...cols} key={product.key || product.id} >
-                <ProductTile
-                    {...productTileProps}
-                    source={product}
-                    isActive={subscriptions && isSubscriptionActive(subscriptions.find((s) => s.product.id === product.id))}
+                <MarketplaceProductTile
+                    product={product}
+                    showDataUnionBadge={isDataUnionProduct(product.type)}
                 />
             </Col>
         ))}
@@ -59,14 +57,12 @@ const Products = ({
     loadProducts,
     hasMoreSearchResults,
     header,
-    productTileProps,
-    subscriptions,
 }: OwnProps) => (
     <Container className={styles[type]} fluid={type === 'products'}>
         {(header && <h3>{header}</h3>)}
         <Error source={error} />
         {(isFetching || products.length > 0)
-            ? listProducts(products, getCols(type), merge({}, getTileProps(type), productTileProps), isFetching, subscriptions)
+            ? listProducts(products, getCols(type), isFetching)
             : getErrorView(type)}
         {(loadProducts && !isFetching) && (
             <LoadMore

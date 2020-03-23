@@ -45,15 +45,17 @@ export const getFilters = (): { [string]: SortOption } => {
                 id: 'published',
                 key: 'states',
                 value: 'DEPLOYED',
+                sortBy: 'lastUpdated',
                 order: 'desc',
             },
         },
-        DRAFT: {
-            displayName: I18n.t('userpages.filter.draft'),
+        DRAFTS: {
+            displayName: I18n.t('userpages.filter.drafts'),
             filter: {
                 id: 'draft',
                 key: 'states',
                 value: 'NOT_DEPLOYED',
+                sortBy: 'lastUpdated',
                 order: 'desc',
             },
         },

@@ -2,12 +2,9 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import assert from 'assert-diff'
 import sinon from 'sinon'
-import { act } from 'react-dom/test-utils'
 
 import KeyField from '$userpages/components/KeyField'
-import TextInput from '$shared/components/TextInput'
-import DropdownActions from '$shared/components/DropdownActions'
-import KeyFieldEditor from '$userpages/components/KeyField/KeyFieldEditor'
+import Text from '$ui/Text'
 
 describe('KeyField', () => {
     const sandbox = sinon.createSandbox()
@@ -23,9 +20,9 @@ describe('KeyField', () => {
                 value="testValue"
             />)
 
-            assert(el.find(TextInput).prop('label') === 'myKey')
-            assert(el.find(TextInput).prop('value') === 'testValue')
-            assert(el.find(TextInput).prop('type') === 'text')
+            assert(el.find('Label').text().replace(/\u200c/g, '') === 'myKey') // get rid of invisible &zwnj;
+            assert(el.find(Text).prop('value') === 'testValue')
+            assert(el.find(Text).prop('type') === 'text')
         })
 
         it('has a copy action', () => {
@@ -34,7 +31,7 @@ describe('KeyField', () => {
                 value="testValue"
             />)
 
-            const actions = el.find(TextInput).prop('actions').map((action) => (
+            const actions = el.find('ActionsDropdown').prop('actions').map((action) => (
                 shallow(action)
             ))
             assert(actions.length === 1)
@@ -50,7 +47,7 @@ describe('KeyField', () => {
                 hideValue
             />)
 
-            assert(el.find(TextInput).prop('type') === 'password')
+            assert(el.find(Text).prop('type') === 'password')
         })
 
         it('has a menu option to reveal the value', () => {
@@ -60,9 +57,9 @@ describe('KeyField', () => {
                 hideValue
             />)
 
-            assert(el.find(TextInput).prop('type') === 'password')
+            assert(el.find(Text).prop('type') === 'password')
 
-            const action = shallow(el.find(TextInput).prop('actions')[0])
+            const action = shallow(el.find('ActionsDropdown').prop('actions')[0])
             assert(action.find('Translate').shallow().text() === 'reveal')
         })
     })
@@ -75,7 +72,7 @@ describe('KeyField', () => {
                 allowEdit
             />)
 
-            const action = shallow(el.find(TextInput).prop('actions')[1])
+            const action = shallow(el.find('ActionsDropdown').prop('actions')[1])
             assert(action.find('Translate').shallow().text() === 'edit')
         })
     })
@@ -88,7 +85,7 @@ describe('KeyField', () => {
                 allowDelete
             />)
 
-            const action = shallow(el.find(TextInput).prop('actions')[1])
+            const action = shallow(el.find('ActionsDropdown').prop('actions')[1])
             assert(action.find('Translate').shallow().text() === 'delete')
             assert(action.prop('disabled') !== true)
         })
@@ -101,7 +98,7 @@ describe('KeyField', () => {
                 disableDelete
             />)
 
-            const action = shallow(el.find(TextInput).prop('actions')[1])
+            const action = shallow(el.find('ActionsDropdown').prop('actions')[1])
             assert(action.prop('disabled') === true)
         })
     })

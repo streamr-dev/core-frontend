@@ -5,7 +5,7 @@ import { arrayMove } from 'react-sortable-hoc'
 import SortableList from '$shared/components/SortableList'
 import { withHover } from '$shared/components/WithHover'
 import SvgIcon from '$shared/components/SvgIcon'
-import TextControl from '$shared/components/TextControl'
+import Text from '$ui/Text'
 
 import styles from './Scheduler.pcss'
 
@@ -101,12 +101,12 @@ export const ValueInput = ({ value, onChange, disabled }) => {
     }
 
     return (
-        <TextControl
+        <Text
+            unstyled
             className={styles.input}
-            commitEmpty
             disabled={disabled}
             flushHistoryOnBlur
-            onCommit={(value) => onChange(parseInt(value, 10))}
+            onChange={(e) => onChange(parseInt(e.target.value, 10))}
             style={style}
             type="number"
             value={value}

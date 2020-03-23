@@ -92,8 +92,8 @@ msgstr "Z to A"
 msgid "userpages##filter##published"
 msgstr "Published"
 
-msgid "userpages##filter##draft"
-msgstr "Draft"
+msgid "userpages##filter##drafts"
+msgstr "Drafts"
 
 msgid "userpages##filter##active"
 msgstr "Active"
@@ -162,13 +162,15 @@ msgid "userpages##products##filterProducts"
 msgstr "Filter products"
 
 msgid "userpages##products##noCreatedProducts##title"
-msgstr "You haven’t created any products yet."
+msgstr "You haven’t created any Data Products or Data Unions yet."
 
 msgid "userpages##products##noCreatedProducts##message"
-msgstr "Click the button above to create one."
+msgstr ""
+"Click the Create button above to get started.<br />"
+"If you need help, see the <a href=\"%{docsLink}\">docs</a>."
 
 msgid "userpages##products##noCreatedProducts##messageMobile"
-msgstr "Use the desktop app to make one."
+msgstr "Use the app in a desktop browser to create one."
 
 msgid "userpages##products##noProductsResult##title"
 msgstr "No results."
@@ -186,7 +188,7 @@ msgid "userpages##products##published"
 msgstr "Published"
 
 msgid "userpages##products##createProduct"
-msgstr "Create product"
+msgstr "Create"
 
 msgid "userpages##products##viewProduct"
 msgstr "View Product"
@@ -194,31 +196,31 @@ msgstr "View Product"
 msgid "userpages##products##settings"
 msgstr "Settings"
 
-msgid "userpages##members##noCommunityMembers##approve##title"
+msgid "userpages##members##noDataUnionMembers##approve##title"
 msgstr "No one has applied to join yet."
 
-msgid "userpages##members##noCommunityMembers##approve##message"
+msgid "userpages##members##noDataUnionMembers##approve##message"
 msgstr "Get out there and promote it 🚀"
 
-msgid "userpages##members##noCommunityMembers##remove##title"
+msgid "userpages##members##noDataUnionMembers##remove##title"
 msgstr "No one has joined yet."
 
-msgid "userpages##members##noCommunityMembers##remove##message"
+msgid "userpages##members##noDataUnionMembers##remove##message"
 msgstr "Get out there and promote it 🚀"
 
-msgid "userpages##members##noCommunityMembers##rejected##title"
+msgid "userpages##members##noDataUnionMembers##rejected##title"
 msgstr "You haven't rejected any approvals yet."
 
-msgid "userpages##members##noCommunityMembers##rejected##message"
+msgid "userpages##members##noDataUnionMembers##rejected##message"
 msgstr "Keep up the good work 👍"
 
-msgid "userpages##members##noCommunityMembersResult##title"
+msgid "userpages##members##noDataUnionMembersResult##title"
 msgstr "Nope, sorry!"
 
-msgid "userpages##members##noCommunityMembersResult##message"
+msgid "userpages##members##noDataUnionMembersResult##message"
 msgstr "We couldn't find any members that match your search."
 
-msgid "userpages##members##noCommunityMembersResult##clearFilters"
+msgid "userpages##members##noDataUnionMembersResult##clearFilters"
 msgstr "Clear filters"
 
 msgid "userpages##members##table##ethereumAddress"
@@ -232,6 +234,15 @@ msgstr "Last updated"
 
 msgid "userpages##members##table##status"
 msgstr "Status"
+
+msgid "userpages##members##status##accepted"
+msgstr "Accepted"
+
+msgid "userpages##members##status##rejected"
+msgstr "Rejected"
+
+msgid "userpages##members##status##pending"
+msgstr "Pending"
 
 msgid "userpages##members##applicantsSelected"
 msgid_plural "userpages##members##applicantsSelected"
@@ -257,7 +268,7 @@ msgid "userpages##members##confirmTitle"
 msgstr "Are you sure?"
 
 msgid "userpages##members##confirmMessage"
-msgstr "This is an unrecoverable action. It will permanently<br/>remove the selected members from your community."
+msgstr "This is an unrecoverable action. It will permanently<br/>remove the selected members from your data union."
 
 msgid "userpages##members##confirmButton"
 msgstr "Yes, remove"
@@ -313,6 +324,9 @@ msgstr "Status"
 msgid "userpages##streams##list##actions"
 msgstr "Select"
 
+msgid "userpages##streams##actions##title"
+msgstr "Actions"
+
 msgid "userpages##streams##actions##addToCanvas"
 msgstr "Add to canvas"
 
@@ -366,6 +380,33 @@ msgstr "We couldn't find any streams that match your search."
 
 msgid "userpages##streams##noStreamsResult##clearFilters"
 msgstr "Clear filters"
+
+msgid "userpages##streams##edit##details##pageTitle##newStream"
+msgstr "Set up your Stream"
+
+msgid "userpages##streams##edit##details##pageTitle##existingStream"
+msgstr "Edit your Stream"
+
+msgid "userpages##streams##edit##details##nav##details"
+msgstr "Details"
+
+msgid "userpages##streams##edit##details##nav##security"
+msgstr "Security"
+
+msgid "userpages##streams##edit##details##nav##fields"
+msgstr "Fields"
+
+msgid "userpages##streams##edit##details##nav##status"
+msgstr "Status"
+
+msgid "userpages##streams##edit##details##nav##preview"
+msgstr "Preview"
+
+msgid "userpages##streams##edit##details##nav##apiAccess"
+msgstr "API Access"
+
+msgid "userpages##streams##edit##details##nav##historicalData"
+msgstr "Historical Data"
 
 msgid "userpages##streams##edit##details##name"
 msgstr "Name"
@@ -437,7 +478,8 @@ msgid "userpages##streams##edit##configure##historicalStoragePeriod##label"
 msgstr "Period to retain historical data until auto-removal"
 
 msgid "userpages##streams##edit##preview##description"
-msgstr "You can preview the stream's live data here. Use the Inspector to view details and use the transport controls to check the data is flowing correctly."
+msgstr "You can preview the stream's live data here. Use the Inspector to view details and use the transport controls to check the data is flowing correctly. "
+"If you need help pushing data to your stream, see the <a href=\"%{docsLink}\">docs</a>."
 
 msgid "userpages##streams##edit##preview##inspect"
 msgstr "Inspect data"
@@ -447,12 +489,6 @@ msgstr "Start"
 
 msgid "userpages##streams##edit##preview##stop"
 msgstr "Stop"
-
-msgid "userpages##streams##edit##preview##noDataPre"
-msgstr "This Stream has no data yet. Check out the "
-
-msgid "userpages##streams##edit##preview##noDataEnd"
-msgstr " for a guide to push data to your stream."
 
 msgid "userpages##streams##delete##confirmTitle"
 msgstr "Delete this stream?"
@@ -464,7 +500,10 @@ msgid "userpages##streams##delete##confirmButton"
 msgstr "Yes, delete"
 
 msgid "userpages##streams##edit##apiCredentials##description"
-msgstr "You can create API keys here that grant access to this stream only. You can assign read only or read + write permissions to these keys. Note that these are different from your user API keys, which you can manage in "
+msgstr ""
+"If you want to share access to just this stream you can create anonymous keys to do so here. "
+"You can assign read only or read + write powers. If you want to grant API access to all your streams, "
+"you can do so in <a href=\"%{settingsLink}\">Settings</a>."
 
 msgid "userpages##streams##edit##history##uploadCsvButton"
 msgstr "Upload CSV"
@@ -535,7 +574,12 @@ msgid "userpages##streams##partitionsReadMore"
 msgstr "docs"
 
 msgid "userpages##streams##partitionsLabel"
-msgstr "Number of partitions"
+msgstr "Partitions"
+
+msgid "userpages##streams##partitionsTooltip"
+msgstr ""
+"Partitioning enables high-volume streams to scale. "
+"Read more in the <a href=\"%{docsLink}\">docs</a>."
 
 msgid "userpages##streams##inactivityDescription"
 msgstr "If no new data is published to this stream, it will be shown as inactive on the marketplace after this period of time. Adjust the threshold to an appropriate period for your stream's frequency."
@@ -869,6 +913,9 @@ msgstr "Private key"
 msgid "userpages##keyFieldEditor##keyValue##address"
 msgstr "Address"
 
+msgid "userpages##keyFieldEditor##keyValue##sharedSecret"
+msgstr "Shared secret"
+
 msgid "userpages##keyFieldEditor##add"
 msgstr "Add"
 
@@ -877,6 +924,10 @@ msgstr "Save"
 
 msgid "userpages##keyFieldEditor##cancel"
 msgstr "Cancel"
+
+msgid "userpages##keyFieldEditor##permission"
+msgstr "Permission"
+
 msgid "modal##changePassword##defaultTitle"
 msgstr "Change password"
 
@@ -889,8 +940,11 @@ msgstr "New password"
 msgid "modal##changePassword##confirmNewPassword"
 msgstr "Confirm new password"
 
-msgid "modal##changePassword##forgotPassword"
+msgid "modal##changePassword##forgotPassword##desktop"
 msgstr "Forgot password?"
+
+msgid "modal##changePassword##forgotPassword##mobile"
+msgstr "Forgot?"
 
 msgid "modal##changePassword##passwordsDoNotMatch"
 msgstr "The passwords do not match"
@@ -900,6 +954,21 @@ msgstr "Signature request"
 
 msgid "modal##signatureRequest##description"
 msgstr "Please sign the challenge in Metamask window"
+
+msgid "modal##privateKey##defaultTitle"
+msgstr "Add a name to this Ethereum account"
+
+msgid "modal##privateKey##label"
+msgstr "Account name"
+
+msgid "modal##privateKey##placeholder"
+msgstr "eg. Mainnet Eth Address"
+
+msgid "modal##privateKey##successNotification"
+msgstr "Ethereum account added"
+
+msgid "modal##privateKey##errorNotification"
+msgstr "There was an error while adding an Ethereum account"
 
 msgid "modal##newIdentity##defaultTitle"
 msgstr "Add a name to this Ethereum address"
@@ -918,17 +987,11 @@ msgstr ""
 "This account is already connected.<br />"
 "Please choose another account from Metamask to connect."
 
-msgid "modal##newIdentityError##defaultTitle"
-msgstr "Failed to connect"
+msgid "modal##newIdentity##successNotification"
+msgstr "Ethereum address added"
 
-msgid "modal##newIdentityError##description"
-msgstr "There was a problem connecting your account."
-
-msgid "modal##newIdentitySuccess##defaultTitle"
-msgstr "Success"
-
-msgid "modal##newIdentitySuccess##description"
-msgstr "You have connected an Ethereum address to your account"
+msgid "modal##newIdentity##errorNotification"
+msgstr "There was an error while adding an Ethereum address"
 
 msgid "modal##shareResource##defaultTitle"
 msgstr "Share %{resourceTitle}"
@@ -944,6 +1007,9 @@ msgstr "Private — only people you’ve invited"
 
 msgid "modal##shareResource##withLink"
 msgstr "Public — viewable by anyone with the link or via the API"
+
+msgid "modal##shareResource##enterEmailAddressLabel"
+msgstr "Email or Ethereum address"
 
 msgid "modal##shareResource##enterEmailAddress"
 msgstr "Enter email or Ethereum address."

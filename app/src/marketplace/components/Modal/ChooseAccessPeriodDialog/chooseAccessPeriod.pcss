@@ -4,20 +4,55 @@
 
 .root {
   width: 100%;
+  position: relative;
+  border-bottom: 1px solid #F2F1F1;
 }
 
 .accessPeriod {
-  width: 280px;
   display: flex;
+  position: relative;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin: 1.5rem auto;
+  margin: 2rem auto;
+}
+
+.accessPeriod > div {
+  display: flex;
+  justify-content: center;
+}
+
+.uniswapErrors {
+  position: absolute;
+  top: 3rem;
+}
+
+@media (--sm-down) {
+  .uniswapErrors {
+    top: 2.5rem;
+  }
+}
+
+@media (--xl) {
+  .uniswapErrors {
+    top: 2.5rem;
+  }
 }
 
 .accessPeriodNumber {
   width: 104px !important;
   margin-right: 1rem !important;
   text-align: right;
+}
+
+@media (--xs) {
+  .accessPeriodNumber {
+    width: 128px !important;
+  }
+}
+
+.accessPeriodNumber:focus {
+  outline: none;
 }
 
 .accessPeriodUnit {
@@ -27,15 +62,44 @@
   text-transform: capitalize;
 }
 
+@media (--xs) {
+  .accessPeriodUnit {
+    width: 128px !important;
+  }
+}
+
+.invalidInputMobile {
+  display: none;
+}
+
+.invalidInputDesktop {
+  display: block;
+}
+
+@media (--xs) {
+  .invalidInputDesktop {
+    display: none;
+  }
+
+  .invalidInputMobile {
+    display: block;
+  }
+}
+
 .balanceAndPrice {
   display: flex;
   flex-direction: column;
-  margin: 1.5rem 0;
-  padding: 1.2rem 0 1.8rem;
-  height: 152px;
+  margin: 2rem 0;
+  padding: 1.5rem 0;
   background-color: #F8F8F8;
   text-align: center;
   text-transform: uppercase;
+}
+
+@media (--md-down) {
+  .balanceAndPrice {
+    padding: 2rem 0;
+  }
 }
 
 .balanceValue {
@@ -87,7 +151,10 @@
   line-height: 24px;
 }
 
-.root .uniswapMsg {
+.uniswapMsg {
+  width: 100%;
+  bottom: 0.5rem;
+  position: absolute;
   color: #D8D8D7;
   font-size: 12px;
   font-family: var(--sans);
@@ -98,10 +165,49 @@
 }
 
 .loadingIndicator {
-  top: -1.5rem;
+  top: -2rem;
 
   &::before,
   &::after {
     height: 1px;
+  }
+}
+
+.footer {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+}
+
+.footer.onlyButtons {
+  justify-content: flex-end;
+}
+
+@media (--xs) {
+  .footer {
+    & > div {
+      width: 100%;
+      justify-content: space-between;
+    }
+  }
+}
+
+@media (--md-down) {
+  .footer,
+  .footer.onlyButtons {
+    justify-content: flex-end;
+  }
+}
+
+.uniswapFooter {
+  color: #D8D8D7;
+  font-size: 12px;
+}
+
+@media (--md-down) {
+  .uniswapFooter {
+    display: none;
   }
 }

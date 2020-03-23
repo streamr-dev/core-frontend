@@ -5,13 +5,14 @@ import { I18n } from 'react-redux-i18n'
 
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
-import TextInput from '$shared/components/TextInput'
+import Label from '$ui/Label'
+import Text from '$ui/Text'
 
 import styles from './identityNameDialog.pcss'
 
 type Props = {
     onClose: () => void,
-    onSave: (string) => void,
+    onSave: (string) => Promise<void>,
 }
 
 type State = {
@@ -57,12 +58,13 @@ class IdentityNameDialog extends React.Component<Props, State> {
                     }}
                 >
                     <div className={styles.textField}>
-                        <TextInput
-                            label={I18n.t('modal.newIdentity.label')}
+                        <Label>
+                            {I18n.t('modal.newIdentity.label')}
+                        </Label>
+                        <Text
                             placeholder={I18n.t('modal.newIdentity.placeholder')}
                             value={name}
                             onChange={this.onNameChange}
-                            preserveLabelSpace
                         />
                     </div>
                 </Dialog>

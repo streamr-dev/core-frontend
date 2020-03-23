@@ -10,12 +10,16 @@
 }
 
 .previewContainer {
-  display: none;
+  display: grid;
   grid-template-rows: 1fr 72px;
   position: relative;
   max-width: 682px;
   margin: 2em 0;
   background-color: #FDFDFD;
+
+  a {
+    text-decoration: none;
+  }
 
   .previewControls {
     .inspectButton {
@@ -24,13 +28,5 @@
 
     .playPauseButton {
     }
-  }
-}
-
-.hasData {
-  display: grid;
-
-  a {
-    text-decoration: none;
   }
 }

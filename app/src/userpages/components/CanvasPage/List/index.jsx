@@ -2,14 +2,10 @@
 
 import React, { Fragment, useEffect, useMemo, useCallback, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { capital } from 'case'
 import { Link as RouterLink } from 'react-router-dom'
-import Link from '$shared/components/Link'
 import { push } from 'connected-react-router'
 import { Translate, I18n } from 'react-redux-i18n'
 import { Helmet } from 'react-helmet'
-import moment from 'moment'
-import cx from 'classnames'
 
 import type { Canvas } from '$userpages/flowtype/canvas-types'
 
@@ -18,8 +14,6 @@ import links from '$app/src/links'
 import { getCanvases, deleteCanvas } from '$userpages/modules/canvas/actions'
 import { selectCanvases, selectFetching } from '$userpages/modules/canvas/selectors'
 import { getFilters } from '$userpages/utils/constants'
-import Tile from '$shared/components/Tile'
-import TileStyles from '$shared/components/Tile/tile.pcss'
 import DropdownActions from '$shared/components/DropdownActions'
 import { formatExternalUrl } from '$shared/utils/url'
 import Search from '../../Header/Search'
@@ -28,20 +22,19 @@ import ShareDialog from '$userpages/components/ShareDialog'
 import confirmDialog from '$shared/utils/confirm'
 import { selectUserData } from '$shared/modules/user/selectors'
 import NoCanvasesView from './NoCanvases'
-import { RunStates } from '$editor/canvas/state'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
 import { getResourcePermissions } from '$userpages/modules/permission/actions'
 import { selectFetchingPermissions, selectCanvasPermissions } from '$userpages/modules/permission/selectors'
 import type { Permission } from '$userpages/flowtype/permission-types'
-import CanvasPreview from '$editor/canvas/components/Preview'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import ListContainer from '$shared/components/Container/List'
-import TileGrid from '$shared/components/TileGrid'
 import Button from '$shared/components/Button'
 import useFilterSort from '$userpages/hooks/useFilterSort'
 import useCopy from '$shared/hooks/useCopy'
 import styles from './canvasList.pcss'
+import { CanvasTile } from '$shared/components/Tile'
+import Grid from '$shared/components/Tile/Grid'
 
 const CreateCanvasButton = () => (
     <Button
@@ -52,8 +45,6 @@ const CreateCanvasButton = () => (
         <Translate value="userpages.canvases.createCanvas" />
     </Button>
 )
-
-const generateTimeAgoDescription = (canvasUpdatedDate: Date) => moment(canvasUpdatedDate).fromNow()
 
 const CanvasList = () => {
     const sortOptions = useMemo(() => {
@@ -121,7 +112,7 @@ const CanvasList = () => {
         })
     }, [copy])
 
-    const onToggleStreamDropdown = useCallback((id: string) => async (open: boolean) => {
+    const onToggleCanvasDropdown = useCallback((id: string) => async (open: boolean) => {
         if (open && !fetchingPermissions && !permissions[id]) {
             try {
                 await dispatch(getResourcePermissions('CANVAS', id, false))
@@ -212,35 +203,18 @@ const CanvasList = () => {
                         onResetFilter={resetFilter}
                     />
                 )}
-                <TileGrid>
-                    {canvases.map((canvas) => (
-                        <Link
-                            key={canvas.id}
-                            to={`${links.editor.canvasEditor}/${canvas.id}`}
-                        >
-                            <Tile
-                                dropdownActions={getActions(canvas)}
-                                onMenuToggle={onToggleStreamDropdown(canvas.id)}
-                                image={<CanvasPreview className={cx(styles.PreviewImage, TileStyles.image)} canvas={canvas} />}
-                            >
-                                <Tile.Title>{canvas.name}</Tile.Title>
-                                <Tile.Description>
-                                    {canvas.updated === canvas.created ? 'Created ' : 'Updated '}
-                                    {generateTimeAgoDescription(new Date(canvas.updated))}
-                                </Tile.Description>
-                                <Tile.Status
-                                    className={
-                                        cx({
-                                            [styles.running]: canvas.state === RunStates.Running,
-                                            [styles.stopped]: canvas.state === RunStates.Stopped,
-                                        })}
-                                >
-                                    {capital(canvas.state)}
-                                </Tile.Status>
-                            </Tile>
-                        </Link>
-                    ))}
-                </TileGrid>
+                {canvases.length > 0 && (
+                    <Grid>
+                        {canvases.map((canvas) => (
+                            <CanvasTile
+                                actions={getActions(canvas)}
+                                canvas={canvas}
+                                key={canvas.id}
+                                onMenuToggle={onToggleCanvasDropdown(canvas.id)}
+                            />
+                        ))}
+                    </Grid>
+                )}
             </ListContainer>
             <DocsShortcuts />
         </Layout>

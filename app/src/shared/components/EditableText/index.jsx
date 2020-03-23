@@ -24,6 +24,7 @@ type Props = {
     placeholder?: ?string,
     probe?: Node,
     setEditing: (boolean) => void,
+    immediateCommit?: boolean,
 }
 
 function isBlank(str) {
@@ -46,6 +47,7 @@ const EditableText = ({
     probe,
     setEditing,
     title,
+    immediateCommit,
     ...props
 }: Props) => {
     const children = (childrenProp == null) ? EditableText.defaultProps.children : childrenProp
@@ -117,7 +119,7 @@ const EditableText = ({
                     <Fragment>
                         <TextControl
                             {...props}
-                            immediateCommit={false}
+                            immediateCommit={immediateCommit}
                             autoComplete="off"
                             autoFocus
                             flushHistoryOnBlur

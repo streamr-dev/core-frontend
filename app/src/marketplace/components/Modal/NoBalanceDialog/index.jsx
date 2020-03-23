@@ -7,6 +7,7 @@ import GetCryptoDialog from '../GetCryptoDialog'
 import GetDataTokensDialog from '../GetDataTokensDialog'
 import InsufficientDataDialog from '../InsufficientDataDialog'
 import InsufficientDaiDialog from '../InsufficientDaiDialog'
+import InsufficientEthDialog from '../InsufficientEthDialog'
 
 import { paymentCurrencies } from '$shared/utils/constants'
 import type { PaymentCurrency } from '$shared/flowtype/common-types'
@@ -42,11 +43,15 @@ const NoBalanceDialog = ({
     switch (paymentCurrency) {
         case paymentCurrencies.ETH:
             if (currentEthBalance.isLessThan(requiredEthBalance)) {
-                // TODO: More descriptive, 'You need more ETH.'
-                return <GetCryptoDialog onCancel={onCancel} />
+                return <InsufficientEthDialog onCancel={onCancel} />
             }
             break
         case paymentCurrencies.DATA:
+            // Bandaid fix to avoid deprecated purchase modal crash
+            if (!currentDataBalance) {
+                return <GetDataTokensDialog onCancel={onCancel} />
+            }
+
             if (currentDataBalance.isZero()) {
                 return <GetDataTokensDialog onCancel={onCancel} />
             }

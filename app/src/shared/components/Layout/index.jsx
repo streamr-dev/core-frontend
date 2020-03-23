@@ -15,6 +15,8 @@ type Props = {
     nav?: boolean,
     hideNavOnDesktop?: boolean,
     navShadow?: boolean,
+    framedClassname?: string,
+    innerClassname?: string,
 }
 
 const Layout = ({
@@ -22,10 +24,12 @@ const Layout = ({
     nav = true,
     hideNavOnDesktop = false,
     navShadow = false,
+    framedClassname,
+    innerClassname,
     ...props
 }: Props = {}) => (
-    <div className={styles.framed}>
-        <div className={styles.inner}>
+    <div className={cx(styles.framed, framedClassname)}>
+        <div className={cx(styles.inner, innerClassname)}>
             {!!nav && (
                 <React.Fragment>
                     <Nav

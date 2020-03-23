@@ -44,7 +44,7 @@ describe('entities - reducer', () => {
                 [value.id]: value,
             }), {}),
             contractProducts: {},
-            communityProducts: {},
+            dataUnions: {},
             streams: {},
             relatedProducts: {},
             subscriptions: {},
@@ -85,12 +85,14 @@ describe('entities - reducer', () => {
         ]
         const subscriptions = [
             {
+                id: products[0].id,
                 endsAt: Date(),
                 product: {
                     ...products[0],
                 },
             },
             {
+                id: products[1].id,
                 endsAt: Date(),
                 product: {
                     ...products[1],
@@ -107,13 +109,14 @@ describe('entities - reducer', () => {
                 [value.id]: value,
             }), {}),
             contractProducts: {},
-            communityProducts: {},
+            dataUnions: {},
             streams: {},
             relatedProducts: {},
             transactions: {},
             subscriptions: subscriptions.reduce((result, value) => ({
                 ...result,
                 [value.product.id]: {
+                    id: value.product.id,
                     endsAt: value.endsAt,
                     product: value.product.id,
                 },

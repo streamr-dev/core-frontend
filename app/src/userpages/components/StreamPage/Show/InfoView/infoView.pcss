@@ -1,18 +1,105 @@
-.infoView {}
-
-.textInput {
-  margin-top: 3.5rem;
+.infoView {
+  display: grid;
+  grid-row-gap: 2rem;
+  grid-column-gap: 1rem;
 }
 
-.copyStreamIdButton {
-  width: 128px;
-  margin-bottom: 1.5rem;
-  display: flex;
-  align-self: center;
+.name {
+  grid-row: 1;
+}
+
+.description {
+  grid-row: 2;
+}
+
+.streamId {
+  grid-row: 3;
 }
 
 .partitions {
-  margin-top: 3rem;
-  border-top: 1px solid #E7E7E7;
-  padding-top: 1em;
+  max-width: 8.5rem;
+  grid-row: 4;
+  position: relative;
+}
+
+.partitionsLabel {
+  position: relative;
+}
+
+.helpIcon {
+  height: 16px;
+  width: 16px;
+  display: inline-block;
+  line-height: 1rem;
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  opacity: 0.2;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.helpIconActive {
+  opacity: 1;
+}
+
+.tooltip {
+  width: 210px;
+  position: absolute;
+  padding: 1.125rem;
+  background: white;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  font-size: 0.875um;
+  color: #323232;
+  letter-spacing: 0;
+  line-height: 20px;
+  top: 1.25um;
+  right: 8px;
+  transform: translateX(50%);
+  font-weight: var(--regular);
+  visibility: hidden;
+}
+
+.tooltipOpen {
+  visibility: visible;
+}
+
+@media (--md-up) {
+  .infoView {
+    grid-template-columns: 1fr 8.5rem;
+  }
+
+  .name {
+    grid-row: 1;
+    grid-column-start: 1;
+    grid-column-end: 3;
+  }
+
+  .description {
+    grid-row: 2;
+    grid-column-start: 1;
+    grid-column-end: 3;
+  }
+
+  .streamId {
+    grid-row: 3;
+    grid-column: 1;
+  }
+
+  .partitions {
+    max-width: 8.5rem;
+    grid-row: 3;
+    grid-column: 2;
+  }
+}
+
+@media (--md-up) and (--md-down) {
+  .tooltip {
+    right: 0;
+    transform: translateX(0);
+  }
 }

@@ -4,7 +4,7 @@ import React, { useMemo, useCallback, useState, type Node, type Context } from '
 import useIsMounted from '$shared/hooks/useIsMounted'
 
 import { isEthereumAddress } from '$mp/utils/validate'
-import { isPaidProduct, isCommunityProduct } from '$mp/utils/product'
+import { isPaidProduct, isDataUnionProduct } from '$mp/utils/product'
 import { isPriceValid } from '$mp/utils/price'
 import { isPublished, getPendingChanges, PENDING_CHANGE_FIELDS } from '../EditProductPage/state'
 
@@ -83,10 +83,14 @@ function useValidationContext(): ContextProps {
             throw new Error('validation needs a name')
         }
 
-        setStatusState((state) => ({
-            ...state,
-            [name]: undefined,
-        }))
+        setStatusState((prevState) => {
+            const newState = {
+                ...prevState,
+            }
+            delete newState[name]
+
+            return newState
+        })
     }, [setStatusState, isMounted])
 
     const isValid = useCallback((name: string) => !status[name], [status])
@@ -116,8 +120,8 @@ function useValidationContext(): ContextProps {
 
         const isPaid = isPaidProduct(product)
 
-        // applies only to community product
-        if (isCommunityProduct(product)) {
+        // applies only to data union
+        if (isDataUnionProduct(product)) {
             if (!product.adminFee || !(product.adminFee > 0 && product.adminFee <= 1)) {
                 setStatus('adminFee', ERROR, 'Admin fee cannot be empty')
             } else {
@@ -147,7 +151,7 @@ function useValidationContext(): ContextProps {
         const changes = getPendingChanges(product)
         const isPublic = isPublished(product)
         PENDING_CHANGE_FIELDS.forEach((field) => {
-            setPendingChange(field, !!changes[field] || (isPublic && isTouched(field)))
+            setPendingChange(field, (field in changes) || (isPublic && isTouched(field)))
         })
     }, [setStatus, clearStatus, isMounted, setPendingChange, isTouched])
 

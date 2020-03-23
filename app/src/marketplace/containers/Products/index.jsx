@@ -9,6 +9,7 @@ import { I18n } from 'react-redux-i18n'
 import ProductsComponent from '$mp/components/Products'
 import ActionBar from '$mp/components/ActionBar'
 import Layout from '$shared/components/Layout'
+import Footer from '$shared/components/Layout/Footer'
 import useModal from '$shared/hooks/useModal'
 import CreateProductModal from '$mp/containers/CreateProductModal'
 
@@ -22,7 +23,7 @@ import {
 } from '$mp/modules/productList/actions'
 import { getCategories } from '$mp/modules/categories/actions'
 import { selectAllCategories } from '$mp/modules/categories/selectors'
-import useCommunityStats from '$mp/modules/communityProduct/hooks/useCommunityStats'
+import useMemberStats from '$mp/modules/dataUnion/hooks/useMemberStats'
 import {
     selectProductList,
     selectProductListError,
@@ -30,6 +31,8 @@ import {
     selectFetchingProductList,
     selectHasMoreSearchResults,
 } from '$mp/modules/productList/selectors'
+
+import styles from './products.pcss'
 
 const Products = () => {
     const categories = useSelector(selectAllCategories)
@@ -45,7 +48,7 @@ const Products = () => {
     const { api: createProductModal } = useModal('marketplace.createProduct')
 
     const loadCategories = useCallback(() => dispatch(getCategories(false)), [dispatch])
-    const { load: loadCommunities, members } = useCommunityStats()
+    const { load: loadDataUnions, members } = useMemberStats()
 
     const loadProducts = useCallback(() => dispatch(getProducts()), [dispatch])
 
@@ -66,15 +69,19 @@ const Products = () => {
 
     useEffect(() => {
         loadCategories()
-        loadCommunities()
+        loadDataUnions()
 
         if (productsRef.current && productsRef.current.length === 0) {
             clearFiltersAndReloadProducts()
         }
-    }, [loadCommunities, loadCategories, clearFiltersAndReloadProducts])
+    }, [loadDataUnions, loadCategories, clearFiltersAndReloadProducts])
 
     return (
-        <Layout>
+        <Layout
+            framedClassname={styles.productsFramed}
+            innerClassname={styles.productsInner}
+            footer={false}
+        >
             <Helmet title={I18n.t('general.title.suffix')} />
             <ActionBar
                 filter={selectedFilter}
@@ -100,6 +107,7 @@ const Products = () => {
                 loadProducts={loadProducts}
                 hasMoreSearchResults={hasMoreSearchResults}
             />
+            <Footer topBorder />
         </Layout>
     )
 }

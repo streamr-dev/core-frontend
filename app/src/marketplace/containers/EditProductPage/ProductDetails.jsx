@@ -3,14 +3,15 @@
 import React, { useMemo, useContext } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
 
 import useEditableProduct from '../ProductController/useEditableProduct'
 import useValidation from '../ProductController/useValidation'
 import useEditableProductActions from '../ProductController/useEditableProductActions'
 import { usePending } from '$shared/hooks/usePending'
 import SelectField from '$mp/components/SelectField'
-import { isCommunityProduct } from '$mp/utils/product'
-import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
+import { isDataUnionProduct } from '$mp/utils/product'
+import { Context as EditControllerContext } from './EditControllerProvider'
 import { selectAllCategories, selectFetchingCategories } from '$mp/modules/categories/selectors'
 
 import Details from './Details'
@@ -24,7 +25,7 @@ const adminFeeOptions = [10, 20, 30, 40, 50, 60, 70, 80, 90].map((value) => ({
 
 const ProductDetails = () => {
     const product = useEditableProduct()
-    const { isTouched } = useContext(ValidationContext)
+    const { publishAttempted } = useContext(EditControllerContext)
     const categories = useSelector(selectAllCategories)
     const fetching = useSelector(selectFetchingCategories)
 
@@ -48,7 +49,10 @@ const ProductDetails = () => {
     return (
         <section id="details" className={cx(styles.root, styles.ProductDetails)}>
             <div>
-                <h1>Give us some more details</h1>
+                <Translate
+                    tag="h1"
+                    value="editProductPage.productDetails.title"
+                />
                 <Details>
                     <Details.Row label="Choose a product category">
                         {!fetching && (
@@ -58,12 +62,12 @@ const ProductDetails = () => {
                                 value={selectedCategory}
                                 onChange={(option) => updateCategory(option.value)}
                                 isSearchable={false}
-                                error={isTouched('category') && !isCategoryValid ? categoryMessage : undefined}
+                                error={publishAttempted && !isCategoryValid ? categoryMessage : undefined}
                                 disabled={!!isPending}
                             />
                         )}
                     </Details.Row>
-                    {isCommunityProduct(product) && (
+                    {isDataUnionProduct(product) && (
                         <Details.Row label="Set your admin fee" className={styles.adminFee}>
                             <SelectField
                                 name="adminFee"
@@ -71,7 +75,7 @@ const ProductDetails = () => {
                                 value={selectedAdminFee}
                                 onChange={(option) => updateAdminFee(option.value)}
                                 isSearchable={false}
-                                error={isTouched('adminFee') && !isAdminFeeValid ? adminFeeMessage : undefined}
+                                error={publishAttempted && !isAdminFeeValid ? adminFeeMessage : undefined}
                                 disabled={!!isPending}
                             />
                         </Details.Row>

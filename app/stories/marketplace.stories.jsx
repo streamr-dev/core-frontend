@@ -41,17 +41,3 @@ story('ProductTypeChooser')
     .addWithJSX('basic', () => (
         <ProductTypeChooser />
     ))
-
-story('ExpirationCounter')
-    .addWithJSX('more than a day', () => (
-        <ExpirationCounter expiresAt={new Date(Date.now() + (2 * 24 * 60 * 60 * 1000))} />
-    ))
-    .addWithJSX('less than hour', () => (
-        <ExpirationCounter expiresAt={new Date(Date.now() + (1 * 60 * 1000))} />
-    ))
-    .addWithJSX('less than a day', () => (
-        <ExpirationCounter expiresAt={new Date(Date.now() + (20 * 60 * 60 * 1000))} />
-    ))
-    .addWithJSX('expired', () => (
-        <ExpirationCounter expiresAt={new Date(Date.now() - (60 * 60 * 1000))} />
-    ))

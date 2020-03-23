@@ -22,7 +22,11 @@ type Props = {
     waiting?: boolean,
     onClick?: (e: SyntheticInputEvent<EventTarget>) => void | Promise<void>,
     children?: Node,
+    external?: boolean,
+    href?: string,
 }
+
+const darkBgs = new Set(['primary', 'destructive'])
 
 const Button = ({
     className,
@@ -35,6 +39,7 @@ const Button = ({
     waiting,
     onClick,
     children,
+    external,
     ...args
 }: Props) => (
     <Tag
@@ -53,16 +58,13 @@ const Button = ({
                 [styles.outline]: outline,
             }, className)
         }
-        onClick={onClick}
+        onClick={disabled ? ((e) => e.preventDefault()) : onClick}
         disabled={disabled || waiting}
         tabIndex={disabled ? -1 : 0}
     >
         {children}
         {waiting && (
-            <React.Fragment>
-                &nbsp;
-                <Spinner color="white" containerClassname={styles.spinnerContainer} />
-            </React.Fragment>
+            <Spinner color={(!outline && darkBgs.has(kind)) ? 'white' : 'gray'} containerClassname={styles.spinnerContainer} />
         )}
     </Tag>
 )

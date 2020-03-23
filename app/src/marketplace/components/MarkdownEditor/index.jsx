@@ -3,8 +3,8 @@
 import React, { useState, useCallback, useEffect } from 'react'
 import cx from 'classnames'
 
-import TextControl from '$shared/components/TextControl'
-import InputError from '$mp/components/InputError'
+import Text from '$ui/Text'
+import Errors from '$ui/Errors'
 import { useLastError, type LastErrorProps } from '$shared/hooks/useLastError'
 
 import styles from './markdownEditor.pcss'
@@ -13,7 +13,6 @@ type Props = LastErrorProps & {
     value?: string,
     placeholder?: string,
     onChange?: (string) => void,
-    onCommit?: (string) => void,
     className?: string,
 }
 
@@ -53,14 +52,13 @@ const MarkdownEditor = ({
                     [styles.withError]: !!hasError,
                 }, className)}
             >
-                <TextControl
+                <Text
                     {...editorProps}
-                    immediateCommit={false}
-                    commitEmpty
+                    unstyled
+                    className={styles.input}
+                    onChange={onTextChange}
                     tag="textarea"
                     value={value}
-                    onChange={onTextChange}
-                    className={styles.input}
                 />
                 <div className={styles.footer}>
                     <div>
@@ -75,11 +73,9 @@ const MarkdownEditor = ({
                     </div>
                 </div>
             </div>
-            <InputError
-                eligible={hasError}
-                message={lastError}
-                preserved
-            />
+            <Errors>
+                {hasError && lastError}
+            </Errors>
         </React.Fragment>
     )
 }

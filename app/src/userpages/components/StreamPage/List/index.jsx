@@ -3,7 +3,6 @@
 import React, { Fragment, useEffect, useState, useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { push } from 'connected-react-router'
-import moment from 'moment-timezone'
 import { Translate, I18n } from 'react-redux-i18n'
 import Helmet from 'react-helmet'
 import MediaQuery from 'react-responsive'
@@ -52,6 +51,7 @@ import ListContainer from '$shared/components/Container/List'
 import Button from '$shared/components/Button'
 import useFilterSort from '$userpages/hooks/useFilterSort'
 import useCopy from '$shared/hooks/useCopy'
+import { ago } from '$shared/utils/time'
 
 import styles from './streamsList.pcss'
 
@@ -101,8 +101,6 @@ Subscription sub = client.subscribe(stream, new MessageHandler() {
 });`,
 })
 
-const timezone = moment.tz.guess()
-
 type TargetStream = ?Stream
 
 type TargetStreamSetter = [TargetStream, ((TargetStream => TargetStream) | TargetStream) => void]
@@ -134,6 +132,7 @@ const StreamList = () => {
     const fetchingPermissions = useSelector(selectFetchingPermissions)
     const permissions = useSelector(selectStreamPermissions)
     const hasMoreResults = useSelector(selectHasMoreSearchResults)
+    const [openedDropdownStreamId, setOpenedDropdownStreamId] = useState(undefined)
 
     useEffect(() => () => {
         cancelStreamStatusFetch()
@@ -165,6 +164,8 @@ const StreamList = () => {
     }, [dispatch])
 
     const onToggleStreamDropdown = useCallback((streamId: StreamId) => async (open: boolean) => {
+        setOpenedDropdownStreamId(open ? streamId : undefined)
+
         if (open && !fetchingPermissions && !permissions[streamId]) {
             try {
                 await dispatch(getResourcePermissions('STREAM', streamId, false))
@@ -227,8 +228,6 @@ const StreamList = () => {
             icon: NotificationIcon.CHECKMARK,
         })
     }, [copy])
-
-    const nowTime = moment.tz(Date.now(), timezone)
 
     return (
         <Layout
@@ -316,24 +315,20 @@ const StreamList = () => {
                                                 </Table.Th>
                                                 <Table.Td noWrap title={stream.description}>{stream.description}</Table.Td>
                                                 <Table.Td noWrap>
-                                                    {stream.lastUpdated && (
-                                                        moment.min(moment.tz(stream.lastUpdated, timezone), nowTime).fromNow()
-                                                    )}
+                                                    {stream.lastUpdated && ago(new Date(stream.lastUpdated))}
                                                 </Table.Td>
                                                 <Table.Td>
-                                                    {stream.lastData && (
-                                                        moment.min(moment.tz(stream.lastData, timezone), nowTime).fromNow()
-                                                    )}
+                                                    {stream.lastData && ago(new Date(stream.lastData))}
                                                 </Table.Td>
                                                 <Table.Td className={styles.statusColumn}>
-                                                    <StatusIcon showTooltip status={stream.streamStatus} />
+                                                    <StatusIcon status={stream.streamStatus} tooltip />
                                                 </Table.Td>
                                                 <Table.Td
                                                     onClick={(event) => event.stopPropagation()}
                                                     className={styles.menuColumn}
                                                 >
                                                     <DropdownActions
-                                                        title={<Meatball alt={I18n.t('userpages.streams.actions')} />}
+                                                        title={<Meatball alt={I18n.t('userpages.streams.actions.title')} />}
                                                         noCaret
                                                         onMenuToggle={onToggleStreamDropdown(stream.id)}
                                                         menuProps={{
@@ -344,6 +339,11 @@ const StreamList = () => {
                                                                     offset: '-100%p + 100%',
                                                                 },
                                                             },
+                                                        }}
+                                                        toggleProps={{
+                                                            className: cx(styles.dropdownActions, {
+                                                                [styles.dropdownActionsOpen]: openedDropdownStreamId === stream.id,
+                                                            }),
                                                         }}
                                                     >
                                                         <DropdownActions.Item onClick={() => showStream(stream.id)}>
@@ -412,19 +412,15 @@ const StreamList = () => {
                                                                 {stream.description}
                                                             </span>
                                                             <span className={styles.lastUpdatedStreamMobile}>
-                                                                {stream.lastUpdated && (
-                                                                    moment.min(moment.tz(stream.lastUpdated, timezone), nowTime).fromNow()
-                                                                )}
+                                                                {stream.lastUpdated && ago(new Date(stream.lastUpdated))}
                                                             </span>
                                                         </div>
                                                         <div>
                                                             <span className={styles.lastUpdatedStreamTablet}>
-                                                                {stream.lastUpdated && (
-                                                                    moment.min(moment.tz(stream.lastUpdated, timezone), nowTime).fromNow()
-                                                                )}
+                                                                {stream.lastUpdated && ago(new Date(stream.lastUpdated))}
                                                             </span>
                                                             <StatusIcon
-                                                                showTooltip
+                                                                tooltip
                                                                 status={stream.streamStatus}
                                                                 className={styles.tabletStatusStreamIcon}
                                                             />

@@ -26,8 +26,6 @@ export default class FilterDropdownItem extends Component<Props> {
         const { children, selected, secondaryDropdown } = this.props
         return (
             <DropdownItem
-                tag="a"
-                href="#"
                 onClick={this.onClick}
                 className={classNames(styles.dropdownItem, {
                     active: selected,
