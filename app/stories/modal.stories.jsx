@@ -3,7 +3,7 @@
 import React from 'react'
 import StoryRouter from 'storybook-react-router'
 import { storiesOf } from '@storybook/react'
-import { withKnobs, select, text, number } from '@storybook/addon-knobs'
+import { withKnobs, select, text, number, boolean } from '@storybook/addon-knobs'
 import { action } from '@storybook/addon-actions'
 import styles from '@sambego/storybook-styles'
 import BN from 'bignumber.js'
@@ -14,15 +14,15 @@ import { actionsTypes } from '$mp/containers/EditProductPage/publishQueue'
 import PngIcon from '$shared/components/PngIcon'
 
 import croppedImage from '$mp/assets/product_standard.png'
+import { publishModes } from '$mp/containers/EditProductPage/usePublish'
 
 // marketplace
-import CompleteContractProductPublishDialog from '$mp/components/Modal/CompleteContractProductPublishDialog'
+import CompleteContractProductPublishDialog from '$mp/components/deprecated/CompleteContractProductPublishDialog'
 import CompleteContractProductUnpublishDialog from '$mp/components/Modal/CompleteContractProductUnpublishDialog'
 import PublishTransactionProgress from '$mp/components/Modal/PublishTransactionProgress'
 import CompleteUnpublishDialog from '$mp/components/Modal/CompleteUnpublishDialog'
 import ConfirmSaveDialog from '$mp/components/Modal/ConfirmSaveDialog'
 import PublishComplete from '$mp/components/Modal/PublishComplete'
-import UnpublishComplete from '$mp/components/Modal/UnpublishComplete'
 import GuidedDeployDataUnionDialog from '$mp/components/Modal/GuidedDeployDataUnionDialog'
 import ConfirmDeployDataUnionDialog from '$mp/components/Modal/ConfirmDeployDataUnionDialog'
 import DeployingDataUnionDialog from '$mp/components/Modal/DeployingDataUnionDialog'
@@ -156,15 +156,68 @@ story('Product Editor/PublishTransactionProgress')
 
         return (
             <PublishTransactionProgress
-                isUnpublish={false}
+                publishMode={publishModes.PUBLISH}
                 onCancel={action('cancel')}
                 status={statuses}
+                isPrompted={boolean('Prompted', false)}
+            />
+        )
+    })
+    .add('Republish', () => {
+        const adminFeeStatus = select('Admin Fee', options, transactionStates.STARTED)
+        const updateContractStatus = select('Edit product price', options, transactionStates.STARTED)
+        const createContractStatus = select('Create contract product', options, transactionStates.STARTED)
+        const redeployPaidStatus = select('Redeploy paid', options, transactionStates.STARTED)
+        const publishFreeStatus = select('Publish free', options, transactionStates.STARTED)
+        const publishPendingStatus = select('Publish penging changes', options, transactionStates.STARTED)
+
+        const statuses = {
+            [actionsTypes.UPDATE_ADMIN_FEE]: adminFeeStatus,
+            [actionsTypes.UPDATE_CONTRACT_PRODUCT]: updateContractStatus,
+            [actionsTypes.CREATE_CONTRACT_PRODUCT]: createContractStatus,
+            [actionsTypes.REDEPLOY_PAID]: redeployPaidStatus,
+            [actionsTypes.PUBLISH_FREE]: publishFreeStatus,
+            [actionsTypes.PUBLISH_PENDING_CHANGES]: publishPendingStatus,
+        }
+
+        return (
+            <PublishTransactionProgress
+                publishMode={publishModes.REPUBLISH}
+                onCancel={action('cancel')}
+                status={statuses}
+                isPrompted={boolean('Prompted', false)}
+            />
+        )
+    })
+    .add('Redeploy', () => {
+        const adminFeeStatus = select('Admin Fee', options, transactionStates.STARTED)
+        const updateContractStatus = select('Edit product price', options, transactionStates.STARTED)
+        const createContractStatus = select('Create contract product', options, transactionStates.STARTED)
+        const redeployPaidStatus = select('Redeploy paid', options, transactionStates.STARTED)
+        const publishFreeStatus = select('Publish free', options, transactionStates.STARTED)
+        const publishPendingStatus = select('Publish penging changes', options, transactionStates.STARTED)
+
+        const statuses = {
+            [actionsTypes.UPDATE_ADMIN_FEE]: adminFeeStatus,
+            [actionsTypes.UPDATE_CONTRACT_PRODUCT]: updateContractStatus,
+            [actionsTypes.CREATE_CONTRACT_PRODUCT]: createContractStatus,
+            [actionsTypes.REDEPLOY_PAID]: redeployPaidStatus,
+            [actionsTypes.PUBLISH_FREE]: publishFreeStatus,
+            [actionsTypes.PUBLISH_PENDING_CHANGES]: publishPendingStatus,
+        }
+
+        return (
+            <PublishTransactionProgress
+                publishMode={publishModes.REDEPLOY}
+                onCancel={action('cancel')}
+                status={statuses}
+                isPrompted={boolean('Prompted', false)}
             />
         )
     })
     .add('Unpublish', () => {
-        const unpublishFreeStatus = select('Unpublish free', options, transactionStates.PENDING)
-        const undeployPaidStatus = select('Undeploy paid', options, transactionStates.PENDING)
+        const unpublishFreeStatus = select('Unpublish free', options, transactionStates.STARTED)
+        const undeployPaidStatus = select('Undeploy paid', options, transactionStates.STARTED)
 
         const statuses = {
             [actionsTypes.UNPUBLISH_FREE]: unpublishFreeStatus,
@@ -173,7 +226,7 @@ story('Product Editor/PublishTransactionProgress')
 
         return (
             <PublishTransactionProgress
-                isUnpublish
+                publishMode={publishModes.UNPUBLISH}
                 onCancel={action('cancel')}
                 status={statuses}
             />
@@ -181,36 +234,36 @@ story('Product Editor/PublishTransactionProgress')
     })
 
 story('Product Editor/PublishComplete')
-    .add('Publish (default)', () => (
+    .add('Publish', () => (
         <PublishComplete
+            onClose={action('onClose')}
             onContinue={action('onContinue')}
-            onCancel={action('onCancel')}
-            productLink={text(
-                'Product link',
-                'streamr.network/marketplace/products/1ff644fdb6ba40a287af2e607b131f32aaad9872ddd54e79b1106ff916e12890',
-            )}
+            productId={text('Product id', '1ff644fdb6ba40a287af2e607b131f32aaad9872ddd54e79b1106ff916e12890')}
+            publishMode={publishModes.PUBLISH}
+        />
+    ))
+    .add('Redeploy', () => (
+        <PublishComplete
+            onClose={action('onClose')}
+            onContinue={action('onContinue')}
+            productId={text('Product id', '1ff644fdb6ba40a287af2e607b131f32aaad9872ddd54e79b1106ff916e12890')}
+            publishMode={publishModes.REDEPLOY}
         />
     ))
     .add('Republish', () => (
         <PublishComplete
+            onClose={action('onClose')}
             onContinue={action('onContinue')}
-            onCancel={action('onCancel')}
-            productLink={text(
-                'Product link',
-                'streamr.network/marketplace/products/1ff644fdb6ba40a287af2e607b131f32aaad9872ddd54e79b1106ff916e12890',
-            )}
-            isRepublish
+            productId={text('Product id', '1ff644fdb6ba40a287af2e607b131f32aaad9872ddd54e79b1106ff916e12890')}
+            publishMode={publishModes.REPUBLISH}
         />
     ))
-
-story('Product Editor/UnpublishComplete')
-    .add('default', () => (
-        <UnpublishComplete
-            onCancel={action('onCancel')}
-            productLink={text(
-                'Product link',
-                'streamr.network/marketplace/products/1ff644fdb6ba40a287af2e607b131f32aaad9872ddd54e79b1106ff916e12890',
-            )}
+    .add('Unpublish', () => (
+        <PublishComplete
+            onClose={action('onClose')}
+            onContinue={action('onContinue')}
+            productId={text('Product id', '1ff644fdb6ba40a287af2e607b131f32aaad9872ddd54e79b1106ff916e12890')}
+            publishMode={publishModes.UNPUBLISH}
         />
     ))
 

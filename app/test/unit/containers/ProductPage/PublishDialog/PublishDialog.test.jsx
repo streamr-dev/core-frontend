@@ -10,7 +10,7 @@ import { publishFlowSteps } from '$mp/utils/constants'
 import { transactionStates, productStates } from '$shared/utils/constants'
 import ReadyToPublishDialog from '$mp/components/Modal/ReadyToPublishDialog'
 import CompletePublishDialog from '$mp/components/deprecated/CompletePublishDialog'
-import CompleteContractProductPublishDialog from '$mp/components/Modal/CompleteContractProductPublishDialog'
+import CompleteContractProductPublishDialog from '$mp/components/deprecated/CompleteContractProductPublishDialog'
 import NoStreamsWarningDialog from '$mp/components/deprecated/NoStreamsWarningDialog'
 import links from '$shared/../links'
 
