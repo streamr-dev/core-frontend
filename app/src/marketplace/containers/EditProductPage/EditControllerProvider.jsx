@@ -92,6 +92,18 @@ function useEditController(product: Product) {
         history,
     ])
 
+    const productId = product.id
+    const redirectToProduct = useCallback(() => {
+        if (!isMounted()) { return }
+        history.replace(routes.product({
+            id: productId,
+        }))
+    }, [
+        productId,
+        isMounted,
+        history,
+    ])
+
     const save = useCallback(async (options = {
         redirect: true,
     }) => {
@@ -174,15 +186,18 @@ function useEditController(product: Product) {
             await save({
                 redirect: false,
             })
-            const succeeded = await publishDialog.open({
+
+            const { isUnpublish, succeeded, showPublishedProduct } = await publishDialog.open({
                 product: productRef.current,
             })
 
-            if (succeeded) {
+            if (succeeded && (isUnpublish || !showPublishedProduct)) {
                 redirectToProductList()
+            } else if (succeeded && showPublishedProduct) {
+                redirectToProduct()
             }
         }
-    }, [validate, save, publishDialog, redirectToProductList])
+    }, [validate, save, publishDialog, redirectToProductList, redirectToProduct])
 
     const updateBeneficiary = useCallback(async (address) => {
         const { beneficiaryAddress } = productRef.current

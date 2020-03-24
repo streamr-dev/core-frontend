@@ -45,6 +45,15 @@ class Dialog extends Component<Props, State> {
         autoClose: false,
     }
 
+    static classNames = {
+        dialog: styles.dialog,
+        backdrop: styles.backdrop,
+        container: styles.container,
+        title: styles.title,
+        content: styles.content,
+        buttons: styles.buttons,
+    }
+
     state = {
         isHelpOpen: false,
     }
@@ -115,18 +124,18 @@ class Dialog extends Component<Props, State> {
                 onClose={() => onClose && onClose()}
                 {...otherProps}
             >
-                <Container className={containerClassname}>
+                <Container className={classNames(styles.container, containerClassname)}>
                     <TitleBar
                         showCloseIcon={showCloseIcon}
                         onClose={onClose}
-                        className={titleClassName}
+                        className={classNames(styles.title, titleClassName)}
                     >
                         {title}
                         {!!helpText && (
                             <HelpToggle active={isHelpOpen} onToggle={this.onHelpToggle} />
                         )}
                     </TitleBar>
-                    <ContentArea className={contentClassName}>
+                    <ContentArea className={classNames(styles.content, contentClassName)}>
                         {(!helpText || !isHelpOpen) && (!waiting ? children : (
                             <Spinner size="large" className={styles.spinner} />
                         ))}

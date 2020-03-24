@@ -362,6 +362,14 @@ msgstr ""
 "You can wait for the blockchain or go back to the <a "
 "href=%{marketplaceLink}>Marketplace</a>"
 
+msgid "modal##completePublish##started##title"
+msgstr "Publish confirmation"
+
+msgid "modal##completePublish##started##message"
+msgstr ""
+"You need to confirm the transaction <br /> in your wallet to publish this "
+"product."
+
 msgid "modal##completePublish##confirmed##title"
 msgstr "Publish complete"
 
@@ -376,108 +384,71 @@ msgstr "Publishing failed"
 msgid "modal##completePublish##pending##title"
 msgstr "Writing to the blockchain"
 
-msgid "modal##completePublish##started##message"
-msgstr ""
-"You need to confirm the transaction <br /> in your wallet to publish this "
-"product."
-
-msgid "modal##completePublish##updateAdminFee##started##title"
-msgstr "Update admin fee"
-
-msgid "modal##completePublish##updateAdminFee##started##message"
-msgstr ""
-"You need to confirm the transaction in your wallet to update the data union admin fee."
-
-msgid "modal##completePublish##updateContractProduct##started##title"
-msgstr "Update price information"
-
-msgid "modal##completePublish##updateContractProduct##started##message"
-msgstr ""
-"You need to confirm the transaction in your wallet to update the product's price."
-
-msgid "modal##completePublish##publishPaid##started##title"
-msgstr "Publish"
-
-msgid "modal##completePublish##publishPaid##started##message"
-msgstr ""
-"You need to confirm the transaction in your wallet to publish the product."
-
-msgid "modal##completePublish##createContractProduct##started##title"
-msgstr "Publish"
-
-msgid "modal##completePublish##createContractProduct##started##message"
-msgstr ""
-"You need to confirm the transaction in your wallet to publish the product."
-
-msgid "modal##completePublish##undeployContractProduct##started##title"
-msgstr "Unpublish"
-
-msgid "modal##completePublish##undeployContractProduct##started##message"
-msgstr ""
-"You need to confirm the transaction in your wallet to unpublish the product."
-
-msgid "modal##completePublish##publishFree##started##title"
-msgstr "Publish"
-
-msgid "modal##completePublish##unpublishFree##started##title"
-msgstr "Unpublish"
-
-msgid "modal##completePublish##publishPendingChanges##started##title"
-msgstr "Update product data"
-
-msgid "modal##completePublish##started##title"
-msgstr "Publish Confirmation"
-
-msgid "modal##completePublish##updateContractProduct##pending"
-msgstr "Updating product"
-
-msgid "modal##completePublish##createContractProduct##pending"
+msgid "modal##publishProgress##publish##title"
 msgstr "Publishing"
 
-msgid "modal##completePublish##publishPaid##pending"
+msgid "modal##publishProgress##redeploy##title"
+msgstr "Redeploying"
+
+msgid "modal##publishProgress##republish##title"
 msgstr "Republishing"
 
-msgid "modal##completePublish##updateAdminFee##pending"
-msgstr "Updating data union"
-
-msgid "modal##completePublish##undeployContractProduct##pending"
+msgid "modal##publishProgress##unpublish##title"
 msgstr "Unpublishing"
 
-msgid "modal##completePublish##publishFree##pending"
-msgstr "Publishing"
-
-msgid "modal##completePublish##unpublishFree##pending"
-msgstr "Unpublishing"
-
-msgid "modal##completePublish##publishPendingChanges##pending"
+msgid "modal##publishProgress##updateContractProduct##pending"
 msgstr "Updating product"
 
-msgid "modal##completePublish##updateContractProduct##failed"
+msgid "modal##publishProgress##createContractProduct##pending"
+msgstr "Publishing"
+
+msgid "modal##publishProgress##publishPaid##pending"
+msgstr "Republishing"
+
+msgid "modal##publishProgress##updateAdminFee##pending"
+msgstr "Updating data union"
+
+msgid "modal##publishProgress##undeployContractProduct##pending"
+msgstr "Unpublishing"
+
+msgid "modal##publishProgress##publishFree##pending"
+msgstr "Publishing"
+
+msgid "modal##publishProgress##unpublishFree##pending"
+msgstr "Unpublishing"
+
+msgid "modal##publishProgress##publishPendingChanges##pending"
+msgstr "Updating product"
+
+msgid "modal##publishProgress##updateContractProduct##failed"
 msgstr "Updating product failed"
 
-msgid "modal##completePublish##createContractProduct##failed"
+msgid "modal##publishProgress##createContractProduct##failed"
 msgstr "Publishing failed"
 
-msgid "modal##completePublish##publishPaid##failed"
+msgid "modal##publishProgress##publishPaid##failed"
 msgstr "Republishing failed"
 
-msgid "modal##completePublish##updateAdminFee##failed"
+msgid "modal##publishProgress##updateAdminFee##failed"
 msgstr "Updating data union failed"
 
-msgid "modal##completePublish##undeployContractProduct##failed"
+msgid "modal##publishProgress##undeployContractProduct##failed"
 msgstr "Unpublishing failed"
 
-msgid "modal##completePublish##publishFree##failed"
+msgid "modal##publishProgress##publishFree##failed"
 msgstr "Publishing failed"
 
-msgid "modal##completePublish##unpublishFree##failed"
+msgid "modal##publishProgress##unpublishFree##failed"
 msgstr "Unpublishing failed"
 
-msgid "modal##completePublish##publishPendingChanges##failed"
+msgid "modal##publishProgress##publishPendingChanges##failed"
 msgstr "Updating product failed"
 
 msgid "modal##publishComplete##republish##title"
 msgstr "Republish completed"
+
+msgid "modal##publishComplete##redeploy##title"
+msgstr "Redeploy completed"
 
 msgid "modal##publishComplete##publish##title"
 msgstr "Publish completed"

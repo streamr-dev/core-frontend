@@ -5,21 +5,19 @@ import { Translate, I18n } from 'react-redux-i18n'
 
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
+import routes from '$routes'
 
-export type Props = {
-    onCancel: () => void,
-    productLink: string,
-}
+import type { BaseProps as Props } from '.'
 
-const UnpublishComplete = ({ onCancel, productLink }: Props) => (
+const UnpublishComplete = ({ onClose }: Props) => (
     <ModalPortal>
         <Dialog
-            onClose={onCancel}
+            onClose={onClose}
             title={I18n.t('modal.unpublishComplete.title')}
             actions={{
                 cancel: {
                     title: I18n.t('modal.common.close'),
-                    onClick: () => onCancel(),
+                    onClick: () => onClose(),
                     kind: 'primary',
                 },
             }}
@@ -28,7 +26,7 @@ const UnpublishComplete = ({ onCancel, productLink }: Props) => (
                 value="modal.unpublishComplete.message"
                 dangerousHTML
                 tag="p"
-                productLink={productLink}
+                productLink={routes.products()}
             />
         </Dialog>
     </ModalPortal>

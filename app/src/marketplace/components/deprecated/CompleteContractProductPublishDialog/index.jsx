@@ -11,7 +11,7 @@ import links from '$mp/../links'
 import PngIcon from '$shared/components/PngIcon'
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
-import styles from '../modal.pcss'
+import styles from '$mp/components/Modal/modal.pcss'
 
 export type Props = {
     publishState: ?TransactionState,

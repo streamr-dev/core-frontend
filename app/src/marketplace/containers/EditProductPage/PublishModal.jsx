@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { Translate } from 'react-redux-i18n'
 
 import type { Product } from '$mp/flowtype/product-types'
@@ -14,22 +14,15 @@ import Dialog from '$shared/components/Dialog'
 import ReadyToPublishDialog from '$mp/components/Modal/ReadyToPublishDialog'
 import ReadyToUnpublishDialog from '$mp/components/Modal/ReadyToUnpublishDialog'
 import PublishTransactionProgress from '$mp/components/Modal/PublishTransactionProgress'
+import PublishComplete from '$mp/components/Modal/PublishComplete'
 import Web3ErrorDialog from '$shared/components/Web3ErrorDialog'
 import useWeb3Status from '$shared/hooks/useWeb3Status'
 import UnlockWalletDialog from '$shared/components/Web3ErrorDialog/UnlockWalletDialog'
-import usePublish from './usePublish'
+import usePublish, { publishModes } from './usePublish'
 
 type Props = {
     product: Product,
     api: Object,
-}
-
-const modes = {
-    REPUBLISH: 'republish', // live product update
-    REDEPLOY: 'redeploy', // unpublished, but published at least once
-    PUBLISH: 'publish', // unpublished, publish for the first time
-    UNPUBLISH: 'unpublish',
-    ERROR: 'error',
 }
 
 const steps = {
@@ -51,6 +44,7 @@ export const PublishOrUnpublishModal = ({ product, api }: Props) => {
     const [modalError, setModalError] = useState(null)
     const [requireWeb3, setRequireWeb3] = useState(false)
     const [requiredOwner, setRequiredOwner] = useState(null)
+    const [web3Actions, setWeb3Actions] = useState(new Set([]))
     const { web3Error, checkingWeb3, account } = useWeb3Status(requireWeb3)
 
     const setActionStatus = useCallback((name, s) => {
@@ -90,10 +84,15 @@ export const PublishOrUnpublishModal = ({ product, api }: Props) => {
         setRequireWeb3(queue.needsWeb3())
         setRequiredOwner(owners && owners.length > 0 && owners[0])
 
+        setStatus(queue.getActions().reduce((result, { id }) => ({
+            ...result,
+            [id]: transactionStates.STARTED,
+        }), {}))
+        setWeb3Actions(new Set(queue.getActions().filter(({ requireWeb3: isTransaction }) => !!isTransaction).map(({ id }) => id)))
+
         queue
             .subscribe('started', (id) => {
                 setCurrentAction(id)
-                setActionStatus(id, transactionStates.STARTED)
             })
             .subscribe('status', (id, nextStatus) => {
                 setActionStatus(id, nextStatus)
@@ -107,11 +106,13 @@ export const PublishOrUnpublishModal = ({ product, api }: Props) => {
         }
     }, [setActionStatus, queue])
 
-    const onClose = useCallback(() => {
-        api.close([steps.ACTIONS, steps.COMPLETE].includes(step))
-    }, [api, step])
-
-    const currentStatus = useMemo(() => (currentAction && status[currentAction] ? status[currentAction] : undefined), [status, currentAction])
+    const onClose = useCallback(({ showPublishedProduct = false }: { showPublishedProduct?: boolean } = {}) => {
+        api.close({
+            isUnpublish: mode === publishModes.UNPUBLISH,
+            succeeded: Object.values(status).every((value) => value === transactionStates.CONFIRMED),
+            showPublishedProduct,
+        })
+    }, [api, mode, status])
 
     const onConfirm = useCallback(() => {
         setStep(steps.ACTIONS)
@@ -160,7 +161,7 @@ export const PublishOrUnpublishModal = ({ product, api }: Props) => {
             )
         }
 
-        const ConfirmComponent = (mode === modes.UNPUBLISH) ? ReadyToUnpublishDialog : ReadyToPublishDialog
+        const ConfirmComponent = (mode === publishModes.UNPUBLISH) ? ReadyToUnpublishDialog : ReadyToPublishDialog
 
         return (
             <ConfirmComponent
@@ -168,21 +169,24 @@ export const PublishOrUnpublishModal = ({ product, api }: Props) => {
                 onCancel={onClose}
             />
         )
-    } else if (step === steps.ACTIONS) {
+    } else if (mode && step === steps.ACTIONS) {
         return (
             <PublishTransactionProgress
-                isUnpublish={mode === modes.UNPUBLISH}
+                publishMode={mode}
                 status={status}
                 onCancel={onClose}
-                activeTask={currentAction}
+                isPrompted={web3Actions.has(currentAction) && currentAction && status[currentAction] === transactionStates.STARTED}
             />
         )
-    } else if (step === steps.COMPLETE) {
+    } else if (mode && step === steps.COMPLETE) {
         return (
-            <PublishTransactionProgress
-                isUnpublish={mode === modes.UNPUBLISH}
-                status={status}
-                onCancel={onClose}
+            <PublishComplete
+                publishMode={mode}
+                onContinue={() => onClose({
+                    showPublishedProduct: true,
+                })}
+                onClose={onClose}
+                productId={productId || ''}
             />
         )
     }

@@ -1,28 +1,40 @@
 // @flow
 
 import React, { useMemo } from 'react'
-import { Translate, I18n } from 'react-redux-i18n'
-import styled from 'styled-components'
+import { I18n } from 'react-redux-i18n'
+import styled, { css } from 'styled-components'
 
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import ProgressBar from '$shared/components/ProgressBar'
 import { transactionStates } from '$shared/utils/constants'
-
-import styles from './publishTransactionProgress.pcss'
+import type { PublishMode } from '$mp/containers/EditProductPage/usePublish'
 
 export type Status = {
     [string]: string,
 }
 
 export type Props = {
-    isUnpublish: ?boolean,
+    publishMode: PublishMode,
     status: Status,
     onCancel: () => void,
+    isPrompted?: boolean,
 }
 
+const StyledDialog = styled(Dialog)`
+    ${({ isPrompted }) => !!isPrompted && css`
+        .${Dialog.classNames.title} {
+            opacity: 0.5;
+        }
+    `}
+`
+
+const PublishProgress = styled.div`
+    width: 100%;
+`
+
 const PendingTasks = styled.div`
-    color: #A3A3A3;
+    color: ${({ isPrompted }) => (isPrompted ? '#FF5C00' : '#A3A3A3')};
     font-size: 1rem;
     line-height: 1.5rem;
     width: 100%;
@@ -33,9 +45,11 @@ const PendingTasks = styled.div`
     overflow: hidden;
     text-overflow: ellipsis;
 
-    &:not(:empty)::after {
-        content: '...';
-    }
+    ${({ isPrompted }) => !isPrompted && css`
+        &:not(:empty)::after {
+            content: '...';
+        }
+    `}
 `
 
 const FailedTasks = styled.div`
@@ -44,19 +58,11 @@ const FailedTasks = styled.div`
     font-size: 0.875rem;
     color: #FF5C00;
     margin-top: 0.5rem;
+    min-height: 1.5rem;
+    line-height: 1.5rem;
 `
 
-const PublishTransactionProgress = ({ isUnpublish, onCancel, status }: Props) => {
-    const { somePending, someFailed, allConfirmed } = useMemo(() => {
-        const statuses = Object.values(status)
-        const pending = statuses.some((value) => value !== transactionStates.FAILED && value !== transactionStates.CONFIRMED)
-        return {
-            somePending: pending,
-            someFailed: !pending && statuses.some((value) => value === transactionStates.FAILED),
-            allConfirmed: !pending && statuses.every((value) => value === transactionStates.CONFIRMED),
-        }
-    }, [status])
-
+const PublishTransactionProgress = ({ publishMode, onCancel, status, isPrompted }: Props) => {
     const progress = useMemo(() => Object.keys(status).reduce((result, key) => {
         const value = status[key]
 
@@ -86,67 +92,42 @@ const PublishTransactionProgress = ({ isUnpublish, onCancel, status }: Props) =>
 
     return (
         <ModalPortal>
-            <Dialog
+            <StyledDialog
+                isPrompted={isPrompted}
                 onClose={onCancel}
-                title={I18n.t(`modal.complete${isUnpublish ? 'Unpublish' : 'Publish'}.started.title`)}
-                titleClassName={somePending ? styles.titlePending : undefined}
+                title={I18n.t(`modal.publishProgress.${publishMode}.title`)}
                 actions={{
                     cancel: {
                         title: I18n.t('modal.common.cancel'),
                         onClick: () => onCancel(),
                         kind: 'link',
-                        disabled: somePending,
+                        disabled: true,
                     },
                     close: {
-                        title: somePending ? I18n.t('modal.common.working') : I18n.t('modal.common.close'),
+                        title: I18n.t('modal.common.working'),
                         kind: 'primary',
-                        disabled: somePending,
+                        disabled: true,
                         onClick: () => onCancel(),
                     },
                 }}
             >
-                <div className={styles.publishProgress}>
-                    <PendingTasks>
-                        {progress.pending && progress.pending.length > 0 && progress.pending.map((key) => (
-                            I18n.t(`modal.completePublish.${key}.pending`)
+                <PublishProgress>
+                    <PendingTasks isPrompted={isPrompted}>
+                        {!!isPrompted && (
+                            'Requires wallet confirmation'
+                        )}
+                        {!isPrompted && progress.pending && progress.pending.length > 0 && progress.pending.map((key) => (
+                            I18n.t(`modal.publishProgress.${key}.pending`)
                         )).join(', ')}
                     </PendingTasks>
                     <ProgressBar value={(progress.complete.length / Math.max(1, Object.keys(status).length)) * 100} />
                     <FailedTasks>
                         {progress.failed && progress.failed.length > 0 && progress.failed.map((key) => (
-                            I18n.t(`modal.completePublish.${key}.failed`)
+                            I18n.t(`modal.publishProgress.${key}.failed`)
                         )).join(', ')}
                     </FailedTasks>
-                </div>
-                {!!someFailed && !isUnpublish && (
-                    <Translate
-                        value="modal.completePublish.failed.message"
-                        tag="p"
-                        dangerousHTML
-                    />
-                )}
-                {!!someFailed && isUnpublish && (
-                    <Translate
-                        value="modal.completeUnpublish.failed.message"
-                        tag="p"
-                        dangerousHTML
-                    />
-                )}
-                {!!allConfirmed && !isUnpublish && (
-                    <Translate
-                        value="modal.completePublish.confirmed.title"
-                        tag="p"
-                        dangerousHTML
-                    />
-                )}
-                {!!allConfirmed && isUnpublish && (
-                    <Translate
-                        value="modal.completeUnpublish.confirmed.title"
-                        tag="p"
-                        dangerousHTML
-                    />
-                )}
-            </Dialog>
+                </PublishProgress>
+            </StyledDialog>
         </ModalPortal>
     )
 }
