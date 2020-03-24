@@ -3,20 +3,46 @@ import path from 'path'
 import React, { useCallback, useState, useRef, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { Translate, I18n } from 'react-redux-i18n'
-import groupBy from 'lodash/groupBy'
-import isEqual from 'lodash/isEqual'
-import mapValues from 'lodash/mapValues'
 
 import * as api from '$shared/utils/api'
-import SelectInput from '$shared/components/SelectInput'
+import SelectInput from '$ui/Select'
 import Button from '$shared/components/Button'
 import SvgIcon from '$shared/components/SvgIcon'
-import TextInput from '$shared/components/TextInput'
+import TextInput from '$ui/Text'
 import CopyLink from '$userpages/components/ShareDialog/ShareDialogContent/CopyLink'
 
+import * as State from './state'
 import styles from './ShareSidebar.pcss'
 
 const options = ['onlyInvited', 'withLink']
+
+const getApiUrl = (resourceType, resourceId) => {
+    const urlPartsByResourceType = {
+        DASHBOARD: 'dashboards',
+        CANVAS: 'canvases',
+        STREAM: 'streams',
+    }
+    const urlPart = urlPartsByResourceType[resourceType]
+    if (!urlPart) {
+        throw new Error(`Invalid resource type: ${resourceType}`)
+    }
+
+    return `${process.env.STREAMR_API_URL}/${path.join(urlPart, resourceId)}`
+}
+
+const getResourcePermissions = ({ resourceType, resourceId }) => api.get({
+    url: `${getApiUrl(resourceType, resourceId)}/permissions`,
+})
+
+const setResourcePermission = ({ resourceType, resourceId, data }) => api.post({
+    url: `${getApiUrl(resourceType, resourceId)}/permissions`,
+    data,
+})
+
+const removeResourcePermission = ({ resourceType, resourceId, data }) => api.del({
+    url: `${getApiUrl(resourceType, resourceId)}/permissions/${data.id}`,
+    data,
+})
 
 function useAsyncCallbackWithState(callback) {
     const [state, setState] = useState({
@@ -93,88 +119,66 @@ function InputNewShare({ onChange }) {
     )
 }
 
-const allPermissions = [
-    'read',
-    'write',
-    'share',
-]
-
-const emptyPermissions = allPermissions.reduce((r, p) => {
-    r[p] = false
-    return r
-}, {})
-
-const defaultPermissions = Object.assign({}, emptyPermissions, {
-    read: true,
-})
-
 const ShareSidebar = connect(({ user }) => ({
     currentUser: user && user.user && user.user.username,
-}))(({
-    currentUser,
-    permissions,
-    resourceType,
-    resourceId,
-    onClose,
-}) => {
+}))((props) => {
+    const {
+        currentUser,
+        permissions,
+        resourceType,
+        resourceId,
+        onClose,
+    } = props
+    const propsRef = useRef(props)
+    propsRef.current = props
     const opts = options.map((o) => ({
         label: I18n.t(`modal.shareResource.${o}`),
         value: o,
     }))
 
-    const users = mapValues(groupBy(permissions, 'user'), (value) => {
-        const r = Object.assign({}, emptyPermissions)
-        value.forEach((v) => {
-            r[v.operation] = true
-        })
-        return r
-    })
-
-    if (!users.anonymous) {
-        users.anonymous = emptyPermissions
-    }
+    const users = State.usersFromPermissions(permissions)
 
     const [currentUsers, setCurrentUsers] = useState(users)
 
-    const addNewShare = useCallback((value) => {
-        setCurrentUsers((prevUsers) => ({
-            ...prevUsers,
-            [value]: prevUsers[value] || defaultPermissions,
-        }))
+    const addUser = useCallback((userId) => {
+        setCurrentUsers((prevUsers) => State.addUser(prevUsers, userId))
     }, [setCurrentUsers])
 
-    const removeUser = useCallback((value) => {
-        setCurrentUsers((prevUsers) => {
-            const next = Object.assign({}, prevUsers)
-            delete next[value]
-            return next
-        })
+    const removeUser = useCallback((userId) => {
+        setCurrentUsers((prevUsers) => State.removeUser(prevUsers, userId))
     }, [setCurrentUsers])
 
-    const updatePermission = useCallback((userId, permission, value) => {
-        setCurrentUsers((prevUsers) => ({
-            ...prevUsers,
-            [userId]: {
-                ...(prevUsers[userId] || defaultPermissions),
-                [permission]: value,
-            },
-        }))
+    const updatePermission = useCallback((userId, permissions) => {
+        setCurrentUsers((prevUsers) => State.updatePermission(prevUsers, userId, permissions))
     }, [setCurrentUsers])
 
     const onAnonymousAccessChange = useCallback(({ value }) => {
-        updatePermission('anonymous', 'read', value === 'withLink')
+        updatePermission('anonymous', { read: value === 'withLink' })
     }, [updatePermission])
 
     const onSaveCallback = useCallback(async () => {
-        const currentUserIds = new Set(Object.keys(currentUsers))
-        const prevUserIds = new Set(Object.keys(users))
-        const allUsers = new Set([...currentUserIds, ...prevUserIds])
-        const added = new Set([...allUsers].filter((u) => !prevUserIds.has(u)))
-        const removed = new Set([...allUsers].filter((u) => !currentUserIds.has(u)))
-        const maybeChanged = [...allUsers].filter((u) => !added.has(u) && !removed.has(u))
-        const changed = maybeChanged.filter((u) => !isEqual(currentUsers[u], users[u]))
-        return changed
-    }, [])
+        const { added, removed } = State.diffUsersPermissions({
+            oldPermissions: permissions,
+            newUsers: currentUsers,
+        })
+        return Promise.all([
+            ...added.map((data) => (
+                setResourcePermission({
+                    resourceType,
+                    resourceId,
+                    data,
+                })
+            )),
+            ...removed.map((data) => {
+                if (data.id == null) { return undefined }
+                return removeResourcePermission({
+                    resourceType,
+                    resourceId,
+                    data,
+                })
+            }),
+        ]).then(() => propsRef.current.loadPermissions())
+    }, [currentUsers, permissions, resourceType, resourceId, propsRef])
 
     const [isSavingState, onSave] = useAsyncCallbackWithState(onSaveCallback)
     const { isLoading: isSaving, error } = isSavingState
@@ -202,7 +206,7 @@ const ShareSidebar = connect(({ user }) => ({
                 />
             </div>
             <div className={styles.content}>
-                <InputNewShare onChange={addNewShare} />
+                <InputNewShare onChange={addUser} />
             </div>
             <div className={styles.content}>
                 {Object.entries(editableUsers).map(([userId, userPermissions]) => (
@@ -227,7 +231,9 @@ const ShareSidebar = connect(({ user }) => ({
                                         id={`permission${permission}`}
                                         type="checkbox"
                                         checked={value}
-                                        onChange={() => updatePermission(userId, permission, !value)}
+                                        onChange={() => updatePermission(userId, {
+                                            [permission]: !value,
+                                        })}
                                     />
                                 </React.Fragment>
                             ))}
@@ -257,26 +263,7 @@ const ShareSidebar = connect(({ user }) => ({
     )
 })
 
-const getApiUrl = (resourceType, resourceId) => {
-    const urlPartsByResourceType = {
-        DASHBOARD: 'dashboards',
-        CANVAS: 'canvases',
-        STREAM: 'streams',
-    }
-    const urlPart = urlPartsByResourceType[resourceType]
-    if (!urlPart) {
-        throw new Error(`Invalid resource type: ${resourceType}`)
-    }
-
-    return `${process.env.STREAMR_API_URL}/${path.join(urlPart, resourceId)}`
-}
-
-const getResourcePermissions = ({ resourceType, resourceId }) => api.get({
-    url: `${getApiUrl(resourceType, resourceId)}/permissions`,
-})
-
-export default (props) => {
-    const { resourceType, resourceId } = props
+export function usePermissions({ resourceType, resourceId }) {
     const loadPermissionsCallback = useCallback(() => (
         getResourcePermissions({
             resourceType,
@@ -285,11 +272,22 @@ export default (props) => {
     ), [resourceType, resourceId])
 
     const [loadState, loadPermissions] = useAsyncCallbackWithState(loadPermissionsCallback)
-    const { result: permissions, isLoading, error, hasStarted } = loadState
+    const { hasStarted } = loadState
     useEffect(() => {
         if (hasStarted) { return }
         loadPermissions()
     }, [hasStarted, loadPermissions])
+
+    return [loadState, loadPermissions]
+}
+
+export default (props) => {
+    const { resourceType, resourceId } = props
+
+    const [{ isLoading, error, result: permissions }, loadPermissions] = usePermissions({
+        resourceType,
+        resourceId,
+    })
 
     if (isLoading) { return 'Loading...' }
     if (error) { return error.message }
@@ -299,6 +297,7 @@ export default (props) => {
         <ShareSidebar
             {...props}
             permissions={permissions}
+            loadPermissions={loadPermissions}
         />
     )
 }
