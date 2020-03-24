@@ -3,7 +3,7 @@
 import { useContext, useMemo, useCallback, useState, useLayoutEffect, useRef } from 'react'
 
 import useIsMounted from '$shared/hooks/useIsMounted'
-import { Context as PendingContext } from '$shared/contexts/Pending'
+import { usePendingContext, Context as PendingContext } from '$shared/contexts/Pending'
 
 function useCounter() {
     const [counter, setCounterState] = useState(0)
@@ -26,7 +26,7 @@ function useDiff(val) {
 
 export function usePending(name: string) {
     const [selfPending, setSelfPending] = useCounter()
-    const { checkPending, setPending } = useContext(PendingContext)
+    const { checkPending, setPending } = usePendingContext(name)
     const isMounted = useIsMounted()
 
     const start = useCallback(() => {

@@ -45,7 +45,7 @@ function useNamedCounters() {
 
 const PendingContext: Context<ContextProps> = React.createContext(ROOT)
 /* eslint-disable no-shadow */
-function usePendingContext(name): ContextProps {
+function usePendingContext(name: string): ContextProps {
     const parentContext = useContext(PendingContext)
     const isMounted = useIsMounted()
     const path = [parentContext && parentContext.name, name].filter(Boolean).join('.')
@@ -106,4 +106,5 @@ PendingContextProvider.propTypes = {
 export {
     PendingContextProvider as Provider,
     PendingContext as Context,
+    usePendingContext,
 }

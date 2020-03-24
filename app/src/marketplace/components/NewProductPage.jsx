@@ -13,6 +13,7 @@ import { type ProductType } from '$mp/flowtype/product-types'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { productTypes } from '$mp/utils/constants'
 import useFailure from '$shared/hooks/useFailure'
+import Activity, { actionTypes } from '$shared/utils/Activity'
 
 type Props = {
     className?: ?string,
@@ -40,6 +41,10 @@ const UnstyledNewProductPage = ({ className, location: { search } }: Props) => {
                         id,
                         newProduct: true,
                     })))
+                    Activity.push({
+                        action: actionTypes.CREATE,
+                        productId: id,
+                    })
                 }
             }, fail)
     }, [dispatch, isMounted, search, fail])

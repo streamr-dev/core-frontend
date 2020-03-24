@@ -514,6 +514,13 @@ const sources = {
             </g>
         </svg>
     ),
+    alarmBell: (
+        <svg viewBox="0 0 16 20" xmlns="http://www.w3.org/2000/svg">
+            <g strokeWidth="1.5" stroke="currentColor" fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M6.444 17.917a1.623 1.623 0 003.115 0M8 3.333v-1.75M8 3.333a5.833 5.833 0 015.833 5.834c0 5.48 1.167 6.416 1.167 6.416H1s1.167-1.49 1.167-6.416A5.833 5.833 0 018 3.333z" />
+            </g>
+        </svg>
+    ),
 }
 
 export type IconName = $Keys<typeof sources>

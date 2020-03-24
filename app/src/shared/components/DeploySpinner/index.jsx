@@ -128,10 +128,8 @@ const DeploySpinner = ({ isRunning, showCounter }: Props) => {
     const [elapsedSecs, setElapsedSecs] = useState(0)
 
     useInterval(() => {
-        if (isRunning) {
-            setElapsedSecs(elapsedSecs + 1)
-        }
-    }, 1000)
+        setElapsedSecs(elapsedSecs + 1)
+    }, isRunning ? 1000 : null)
 
     const toString = (seconds) => {
         const date = new Date(0)

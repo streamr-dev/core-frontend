@@ -26,6 +26,9 @@ msgstr "Blog"
 msgid "general##browse"
 msgstr "Browse"
 
+msgid "general##canvas"
+msgstr "Canvas"
+
 msgid "general##canvases"
 msgstr "Canvases"
 
@@ -124,6 +127,9 @@ msgstr "Apps"
 
 msgid "general##streamrSystem"
 msgstr "Streamr System"
+
+msgid "general##stream"
+msgstr "Stream"
 
 msgid "general##streams"
 msgstr "Streams"
@@ -285,6 +291,27 @@ msgstr "Year"
 
 msgid "shared##date##year_plural"
 msgstr "Years"
+
+msgid "shared##action##add"
+msgstr "Added"
+
+msgid "shared##action##create"
+msgstr "Created"
+
+msgid "shared##action##update"
+msgstr "Updated"
+
+msgid "shared##action##purchase"
+msgstr "Purchased"
+
+msgid "shared##action##publish"
+msgstr "Published"
+
+msgid "shared##action##unpublish"
+msgstr "Unpublished"
+
+msgid "shared##action##deploy"
+msgstr "Deployed"
 
 msgid "general##docs"
 msgstr "Docs"

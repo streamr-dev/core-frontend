@@ -25,6 +25,7 @@ import { isUpdateContractProductRequired } from '$mp/utils/smartContract'
 import PublishQueue, { actionsTypes } from './publishQueue'
 import { isPaidProduct } from '$mp/utils/product'
 import { addTransaction } from '$mp/modules/transactions/actions'
+import Activity, { actionTypes } from '$shared/utils/Activity'
 
 export const publishModes = {
     REPUBLISH: 'republish', // live product update
@@ -154,6 +155,11 @@ export default function usePublish() {
                                     if (isRedeploy) {
                                         postSetDeploying(product.id || '', hash)
                                     }
+                                    Activity.push({
+                                        action: actionTypes.PUBLISH,
+                                        txHash: hash,
+                                        productId: product.id,
+                                    })
                                 })
                                 .onTransactionComplete(() => {
                                     update(transactionStates.CONFIRMED)
@@ -199,6 +205,12 @@ export default function usePublish() {
                                     done()
                                     dispatch(addTransaction(hash, transactionTypes.CREATE_CONTRACT_PRODUCT))
                                     postSetDeploying(product.id || '', hash)
+
+                                    Activity.push({
+                                        action: actionTypes.PUBLISH,
+                                        txHash: hash,
+                                        productId: product.id,
+                                    })
                                 })
                                 .onTransactionComplete(() => {
                                     update(transactionStates.CONFIRMED)
@@ -253,6 +265,12 @@ export default function usePublish() {
                                 done()
                                 dispatch(addTransaction(hash, transactionTypes.REDEPLOY_PRODUCT))
                                 postSetDeploying(product.id || '', hash)
+
+                                Activity.push({
+                                    action: actionTypes.PUBLISH,
+                                    txHash: hash,
+                                    productId: product.id,
+                                })
                             })
                             .onTransactionComplete(() => {
                                 update(transactionStates.CONFIRMED)

@@ -13,6 +13,7 @@ import LogoItem from './LogoItem'
 import DropdownItem from './DropdownItem'
 import LinkItem from './LinkItem'
 import AvatarItem from './AvatarItem'
+import ActivityItem from './ActivityItem'
 import routes from '$routes'
 import docsLinks from '$shared/../docsLinks'
 
@@ -99,6 +100,9 @@ const Nav = compose(
                     )] : []),
                 ]}
             </DropdownItem>
+            {!!currentUser && (
+                <ActivityItem />
+            )}
             {!!currentUser && (
                 <AvatarItem user={currentUser} />
             )}

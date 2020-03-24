@@ -20,6 +20,7 @@ import { averageBlockTime } from '$shared/utils/web3'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import useWeb3Status from '$shared/hooks/useWeb3Status'
 import Web3ErrorDialog from '$shared/components/Web3ErrorDialog'
+import Activity, { actionTypes } from '$shared/utils/Activity'
 
 type DeployDialogProps = {
     product: Product,
@@ -91,6 +92,13 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
                     dispatch(addTransaction(hash, transactionTypes.DEPLOY_DATA_UNION))
                     setAddress(dataUnionAddress)
                     setStep(steps.COMPLETE)
+
+                    Activity.push({
+                        action: actionTypes.DEPLOY,
+                        txHash: hash,
+                        productId,
+                    })
+
                     resolve()
                 })
                 .onTransactionComplete(({ contractAddress }) => {
