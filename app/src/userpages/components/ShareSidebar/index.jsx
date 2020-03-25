@@ -135,14 +135,15 @@ const ShareSidebar = connect(({ user }) => ({
         label: I18n.t(`modal.shareResource.${o}`),
         value: o,
     }))
-
-    const users = State.usersFromPermissions(permissions)
+    const users = State.usersFromPermissions(permissions, resourceType)
 
     const [currentUsers, setCurrentUsers] = useState(users)
 
     const addUser = useCallback((userId) => {
-        setCurrentUsers((prevUsers) => State.addUser(prevUsers, userId))
-    }, [setCurrentUsers])
+        setCurrentUsers((prevUsers) => (
+            State.addUser(prevUsers, userId, State.getPermissionsForGroupName(resourceType, 'default'))
+        ))
+    }, [setCurrentUsers, resourceType])
 
     const removeUser = useCallback((userId) => {
         setCurrentUsers((prevUsers) => State.removeUser(prevUsers, userId))
@@ -153,13 +154,17 @@ const ShareSidebar = connect(({ user }) => ({
     }, [setCurrentUsers])
 
     const onAnonymousAccessChange = useCallback(({ value }) => {
-        updatePermission('anonymous', { read: value === 'withLink' })
-    }, [updatePermission])
+        const permissions = value === 'withLink'
+            ? State.getPermissionsForGroupName(resourceType, 'default')
+            : State.getEmptyPermissions(resourceType)
+        updatePermission('anonymous', permissions)
+    }, [updatePermission, resourceType])
 
     const onSaveCallback = useCallback(async () => {
         const { added, removed } = State.diffUsersPermissions({
             oldPermissions: permissions,
             newUsers: currentUsers,
+            resourceType,
         })
         return Promise.all([
             ...added.map((data) => (
