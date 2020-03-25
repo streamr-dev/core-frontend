@@ -1,0 +1,147 @@
+.searchContainer {
+  display: flex;
+  align-items: center;
+  position: relative;
+  height: 112px;
+}
+
+.searchOverlay {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 80px;
+  left: 0;
+  background-color: rgba(255, 255, 255, 0.5);
+  z-index: 2;
+
+  .exitButton {
+    position: absolute;
+    right: 2rem;
+    appearance: none;
+    background: none;
+    border: none;
+    width: 15px;
+    height: 15px;
+    padding: 0;
+    margin: 0 0 0 8px;
+    box-sizing: content-box;
+    line-height: 0;
+    flex-shrink: 0;
+  }
+
+  .exitButton path {
+    transition: all 0.1s;
+    fill: #A3A3A3;
+    stroke: #A3A3A3;
+  }
+
+  .exitButton:hover path {
+    fill: var(--greyDark2);
+    stroke: var(--greyDark2);
+  }
+
+  .exitButton:focus {
+    outline: none;
+  }
+}
+
+.docsSearchInput {
+  height: 112px;
+  width: 100%;
+
+  > div {
+    text-align: left !important;
+    width: 1080px !important;
+  }
+
+  span {
+    width: 100%;
+  }
+
+  input {
+    text-align: left;
+    width: 100%;
+  }
+}
+
+@media (--md-down) {
+  .docsSearchInput {
+    padding-left: 2rem;
+  }
+}
+
+.searchOverlay :global(.highlight) {
+  background-color: #E5E9FF;
+  padding: 2px;
+}
+
+.searchResults {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: center;
+  height: 100%;
+  padding-bottom: 300px;
+  z-index: 2;
+  text-align: center;
+  overflow: auto;
+
+  > * {
+    width: 1080px;
+    text-align: left;
+    list-style: none;
+    margin: 40px 0;
+    padding: 0;
+  }
+
+  li {
+    margin-bottom: 24px;
+    max-width: 700px;
+
+    .searchResultSnippet {
+      padding: 0;
+      margin: 0;
+      font-size: 16px;
+      line-height: 28px;
+    }
+  }
+}
+
+@media (--md-down) {
+  .searchResults {
+    padding-left: 2rem;
+  }
+}
+
+.resultHeading {
+  color: var(--streamrBlue);
+  font-weight: var(--medium);
+  font-size: 16px;
+  line-height: 28px;
+}
+
+.resultSection {
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #A3A3A3;
+  font-size: 12px;
+}
+
+.showAll {
+  color: var(--streamrBlue);
+}
+
+.noResults {
+  color: rgb(50, 50, 50);
+  font-size: 24px;
+  font-family: var(--sans);
+  letter-spacing: 0;
+  line-height: 28px;
+}
+
+.noResultsMoreInfo {
+  color: rgb(50, 50, 50);
+  font-family: var(--sans);
+  letter-spacing: 0;
+  line-height: 28px;
+}
