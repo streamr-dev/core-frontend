@@ -59,7 +59,7 @@ export default class TextFieldModule extends React.Component {
     }
 
     render() {
-        const { isActive, hasWritePermission } = this.props
+        const { isActive, hasInteractPermission } = this.props
         const value = this.getValue()
         return (
             <UiSizeConstraint minWidth={150} minHeight={75}>
@@ -78,13 +78,13 @@ export default class TextFieldModule extends React.Component {
                         smartCommit
                         tag="textarea"
                         defaultValue={value}
-                        disabled={!hasWritePermission}
+                        disabled={!hasInteractPermission}
                     />
                     <button
                         type="button"
                         className={styles.button}
                         onClick={this.onClick}
-                        disabled={!hasWritePermission || !isActive}
+                        disabled={!hasInteractPermission || !isActive}
                     >
                         Send
                     </button>

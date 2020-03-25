@@ -30,17 +30,42 @@ function usePermissionContextValue() {
         loadPermissions(canvasId)
     }, [canvasId, hasPermissions, isPending, loadPermissions])
 
-    const hasSharePermission = !!permissions &&
-        permissions.some((p) => p.operation === 'share')
+    const hasReadPermission = !!permissions &&
+        permissions.some((p) => p.operation === 'canvas_get')
 
+    const hasSharePermission = !!permissions &&
+        permissions.some((p) => p.operation === 'canvas_share')
+
+    const hasInteractPermission = !!permissions &&
+        permissions.some((p) => p.operation === 'canvas_interact')
+
+    // write, delete & start/stop not enabled when embedded
     const hasWritePermission = !isEmbedMode && !!permissions &&
-        permissions.some((p) => p.operation === 'write')
+        permissions.some((p) => p.operation === 'canvas_edit')
+
+    const hasDeletePermission = !isEmbedMode && !!permissions &&
+        permissions.some((p) => p.operation === 'canvas_delete')
+
+    const hasStartStopPermission = !isEmbedMode && !!permissions &&
+        permissions.some((p) => p.operation === 'canvas_startstop')
 
     return useMemo(() => ({
         permissions,
+        hasReadPermission,
         hasSharePermission,
         hasWritePermission,
-    }), [permissions, hasSharePermission, hasWritePermission])
+        hasDeletePermission,
+        hasStartStopPermission,
+        hasInteractPermission,
+    }), [
+        permissions,
+        hasReadPermission,
+        hasSharePermission,
+        hasWritePermission,
+        hasDeletePermission,
+        hasStartStopPermission,
+        hasInteractPermission,
+    ])
 }
 
 function PermissionContextProvider({ children }) {

@@ -60,7 +60,7 @@ export default class ButtonModule extends React.Component {
     }
 
     render() {
-        const { hasWritePermission, isActive } = this.props
+        const { hasInteractPermission, isActive } = this.props
         return (
             <div className={cx(this.props.className, styles.Button)}>
                 <ModuleSubscription
@@ -73,7 +73,7 @@ export default class ButtonModule extends React.Component {
                 />
                 <button
                     type="button"
-                    disabled={!hasWritePermission || !isActive}
+                    disabled={!hasInteractPermission || !isActive}
                     className={cx(styles.button, ButtonStyles.btn, ButtonStyles.btnPrimary)}
                     onClick={this.onClick}
                 >

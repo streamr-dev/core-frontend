@@ -59,7 +59,7 @@ export default class SwitcherModule extends React.Component {
     }
 
     render() {
-        const { className, hasWritePermission } = this.props
+        const { className, hasInteractPermission } = this.props
         const value = this.getValue()
 
         return (
@@ -71,7 +71,7 @@ export default class SwitcherModule extends React.Component {
                     onActiveChange={this.onActiveChange}
                 />
                 <Toggle
-                    disabled={!hasWritePermission}
+                    disabled={!hasInteractPermission}
                     className={styles.Toggle}
                     value={value}
                     onChange={this.onChange}
