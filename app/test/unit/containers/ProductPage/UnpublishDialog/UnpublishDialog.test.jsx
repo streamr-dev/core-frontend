@@ -10,9 +10,9 @@ import {
     mapDispatchToProps,
 } from '$mp/containers/deprecated/ProductPage/PublishOrUnpublishDialog/UnpublishDialog'
 import { publishFlowSteps } from '$mp/utils/constants'
-import ReadyToUnpublishDialog from '$mp/components/Modal/ReadyToUnpublishDialog'
-import CompleteUnpublishDialog from '$mp/components/Modal/CompleteUnpublishDialog'
-import CompleteContractProductUnpublishDialog from '$mp/components/Modal/CompleteContractProductUnpublishDialog'
+import ReadyToUnpublishDialog from '$mp/components/deprecated/ReadyToUnpublishDialog'
+import CompleteUnpublishDialog from '$mp/components/deprecated/CompleteUnpublishDialog'
+import CompleteContractProductUnpublishDialog from '$mp/components/deprecated/CompleteContractProductUnpublishDialog'
 import * as publishDialogSelectors from '$mp/modules/deprecated/publishDialog/selectors'
 import * as publishDialogActions from '$mp/modules/deprecated/publishDialog/actions'
 import * as unpublishSelectors from '$mp/modules/unpublish/selectors'

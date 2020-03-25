@@ -4,7 +4,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { replace } from 'connected-react-router'
 
-import ReadyToPublishDialog from '$mp/components/Modal/ReadyToPublishDialog'
+import ReadyToPublishDialog from '$mp/components/deprecated/ReadyToPublishDialog'
 import CompleteContractProductPublishDialog from '$mp/components/deprecated/CompleteContractProductPublishDialog'
 import CompletePublishDialog from '$mp/components/deprecated/CompletePublishDialog'
 import NoStreamsWarningDialog from '$mp/components/deprecated/NoStreamsWarningDialog'

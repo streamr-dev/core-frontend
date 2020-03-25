@@ -16,13 +16,19 @@ import PngIcon from '$shared/components/PngIcon'
 import croppedImage from '$mp/assets/product_standard.png'
 import { publishModes } from '$mp/containers/EditProductPage/usePublish'
 
-// marketplace
+// deprecated
 import CompleteContractProductPublishDialog from '$mp/components/deprecated/CompleteContractProductPublishDialog'
-import CompleteContractProductUnpublishDialog from '$mp/components/Modal/CompleteContractProductUnpublishDialog'
+import CompleteContractProductUnpublishDialog from '$mp/components/deprecated/CompleteContractProductUnpublishDialog'
+import CompletePublishDialog from '$mp/components/deprecated/CompletePublishDialog'
+import CompleteUnpublishDialog from '$mp/components/deprecated/CompleteUnpublishDialog'
+import DeprecatedReadyToPublishDialog from '$mp/components/deprecated/ReadyToPublishDialog'
+import DeprecatedReadyToUnpublishDialog from '$mp/components/deprecated/ReadyToUnpublishDialog'
+
+// marketplace
 import PublishTransactionProgress from '$mp/components/Modal/PublishTransactionProgress'
-import CompleteUnpublishDialog from '$mp/components/Modal/CompleteUnpublishDialog'
 import ConfirmSaveDialog from '$mp/components/Modal/ConfirmSaveDialog'
 import PublishComplete from '$mp/components/Modal/PublishComplete'
+import PublishError from '$mp/components/Modal/PublishError'
 import GuidedDeployDataUnionDialog from '$mp/components/Modal/GuidedDeployDataUnionDialog'
 import ConfirmDeployDataUnionDialog from '$mp/components/Modal/ConfirmDeployDataUnionDialog'
 import DeployingDataUnionDialog from '$mp/components/Modal/DeployingDataUnionDialog'
@@ -37,7 +43,6 @@ import PurchaseSummaryDialog from '$mp/components/Modal/PurchaseSummaryDialog'
 import ReplaceAllowanceDialog from '$mp/components/Modal/ReplaceAllowanceDialog'
 import CompletePurchaseDialog from '$mp/components/Modal/CompletePurchaseDialog'
 import ReadyToPublishDialog from '$mp/components/Modal/ReadyToPublishDialog'
-import ReadyToUnpublishDialog from '$mp/components/Modal/ReadyToUnpublishDialog'
 import SaveContractProductDialog from '$mp/components/Modal/SaveContractProductDialog'
 import ConnectEthereumAddressDialog from '$mp/components/Modal/ConnectEthereumAddressDialog'
 import SetAllowanceDialog from '$mp/components/Modal/SetAllowanceDialog'
@@ -77,7 +82,7 @@ const story = (name) => storiesOf(`Modal/${name}`, module)
         </div>
     ))
 
-story('Product Editor/CompleteContractProductPublishDialog')
+story('Marketplace (deprecated)/CompleteContractProductPublishDialog')
     .add('started', () => (
         <CompleteContractProductPublishDialog
             publishState={transactionStates.STARTED}
@@ -103,7 +108,7 @@ story('Product Editor/CompleteContractProductPublishDialog')
         />
     ))
 
-story('Product Editor/CompleteContractProductUnpublishDialog')
+story('Marketplace (deprecated)/CompleteContractProductUnpublishDialog')
     .add('started', () => (
         <CompleteContractProductUnpublishDialog
             publishState={transactionStates.STARTED}
@@ -126,6 +131,69 @@ story('Product Editor/CompleteContractProductUnpublishDialog')
         <CompleteContractProductUnpublishDialog
             publishState={transactionStates.FAILED}
             onCancel={action('onCancel')}
+        />
+    ))
+
+story('Marketplace (deprecated)/CompletePublishDialog')
+    .add('started', () => (
+        <CompletePublishDialog
+            publishState={transactionStates.STARTED}
+            onCancel={action('onCancel')}
+        />
+    ))
+    .add('confirmed', () => (
+        <CompletePublishDialog
+            publishState={transactionStates.CONFIRMED}
+            onCancel={action('onCancel')}
+        />
+    ))
+    .add('error', () => (
+        <CompletePublishDialog
+            publishState={transactionStates.FAILED}
+            onCancel={action('onCancel')}
+        />
+    ))
+
+story('Marketplace (deprecated)/CompleteUnpublishDialog')
+    .add('started', () => (
+        <CompleteUnpublishDialog
+            publishState={transactionStates.STARTED}
+            onCancel={action('onCancel')}
+        />
+    ))
+    .add('confirmed', () => (
+        <CompleteUnpublishDialog
+            publishState={transactionStates.CONFIRMED}
+            onCancel={action('onCancel')}
+        />
+    ))
+    .add('error', () => (
+        <CompleteUnpublishDialog
+            publishState={transactionStates.FAILED}
+            onCancel={action('onCancel')}
+        />
+    ))
+
+story('Marketplace (deprecated)/ReadyToPublishDialog')
+    .add('default', () => (
+        <DeprecatedReadyToPublishDialog
+            onCancel={action('onCancel')}
+            onContinue={action('onContinue')}
+        />
+    ))
+    .add('waiting', () => (
+        <DeprecatedReadyToPublishDialog
+            waiting
+            onCancel={action('onCancel')}
+            onContinue={action('onContinue')}
+        />
+    ))
+
+story('Marketplace (deprecated)/ReadyToUnpublishDialog')
+    .add('default', () => (
+        <DeprecatedReadyToUnpublishDialog
+            onCancel={action('onCancel')}
+            onContinue={action('onContinue')}
         />
     ))
 
@@ -267,46 +335,127 @@ story('Product Editor/PublishComplete')
         />
     ))
 
-story('Product Editor/CompleteUnpublishDialog')
-    .add('started', () => (
-        <CompleteUnpublishDialog
-            publishState={transactionStates.STARTED}
-            onCancel={action('onCancel')}
-        />
-    ))
-    .add('confirmed', () => (
-        <CompleteUnpublishDialog
-            publishState={transactionStates.CONFIRMED}
-            onCancel={action('onCancel')}
-        />
-    ))
-    .add('error', () => (
-        <CompleteUnpublishDialog
-            publishState={transactionStates.FAILED}
-            onCancel={action('onCancel')}
-        />
-    ))
+story('Product Editor/PublishError')
+    .add('Publish', () => {
+        const adminFeeStatus = select('Admin Fee', options, transactionStates.STARTED)
+        const updateContractStatus = select('Edit product price', options, transactionStates.STARTED)
+        const createContractStatus = select('Create contract product', options, transactionStates.STARTED)
+        const redeployPaidStatus = select('Redeploy paid', options, transactionStates.STARTED)
+        const publishFreeStatus = select('Publish free', options, transactionStates.STARTED)
+        const publishPendingStatus = select('Publish penging changes', options, transactionStates.STARTED)
+
+        const statuses = {
+            [actionsTypes.UPDATE_ADMIN_FEE]: adminFeeStatus,
+            [actionsTypes.UPDATE_CONTRACT_PRODUCT]: updateContractStatus,
+            [actionsTypes.CREATE_CONTRACT_PRODUCT]: createContractStatus,
+            [actionsTypes.REDEPLOY_PAID]: redeployPaidStatus,
+            [actionsTypes.PUBLISH_FREE]: publishFreeStatus,
+            [actionsTypes.PUBLISH_PENDING_CHANGES]: publishPendingStatus,
+        }
+
+        return (
+            <PublishError
+                onClose={action('onClose')}
+                status={statuses}
+                publishMode={publishModes.PUBLISH}
+            />
+        )
+    })
+    .add('Republish', () => {
+        const adminFeeStatus = select('Admin Fee', options, transactionStates.STARTED)
+        const updateContractStatus = select('Edit product price', options, transactionStates.STARTED)
+        const createContractStatus = select('Create contract product', options, transactionStates.STARTED)
+        const redeployPaidStatus = select('Redeploy paid', options, transactionStates.STARTED)
+        const publishFreeStatus = select('Publish free', options, transactionStates.STARTED)
+        const publishPendingStatus = select('Publish penging changes', options, transactionStates.STARTED)
+
+        const statuses = {
+            [actionsTypes.UPDATE_ADMIN_FEE]: adminFeeStatus,
+            [actionsTypes.UPDATE_CONTRACT_PRODUCT]: updateContractStatus,
+            [actionsTypes.CREATE_CONTRACT_PRODUCT]: createContractStatus,
+            [actionsTypes.REDEPLOY_PAID]: redeployPaidStatus,
+            [actionsTypes.PUBLISH_FREE]: publishFreeStatus,
+            [actionsTypes.PUBLISH_PENDING_CHANGES]: publishPendingStatus,
+        }
+
+        return (
+            <PublishError
+                onClose={action('onClose')}
+                status={statuses}
+                publishMode={publishModes.REPUBLISH}
+            />
+        )
+    })
+    .add('Redeploy', () => {
+        const adminFeeStatus = select('Admin Fee', options, transactionStates.STARTED)
+        const updateContractStatus = select('Edit product price', options, transactionStates.STARTED)
+        const createContractStatus = select('Create contract product', options, transactionStates.STARTED)
+        const redeployPaidStatus = select('Redeploy paid', options, transactionStates.STARTED)
+        const publishFreeStatus = select('Publish free', options, transactionStates.STARTED)
+        const publishPendingStatus = select('Publish penging changes', options, transactionStates.STARTED)
+
+        const statuses = {
+            [actionsTypes.UPDATE_ADMIN_FEE]: adminFeeStatus,
+            [actionsTypes.UPDATE_CONTRACT_PRODUCT]: updateContractStatus,
+            [actionsTypes.CREATE_CONTRACT_PRODUCT]: createContractStatus,
+            [actionsTypes.REDEPLOY_PAID]: redeployPaidStatus,
+            [actionsTypes.PUBLISH_FREE]: publishFreeStatus,
+            [actionsTypes.PUBLISH_PENDING_CHANGES]: publishPendingStatus,
+        }
+
+        return (
+            <PublishError
+                onClose={action('onClose')}
+                status={statuses}
+                publishMode={publishModes.REDEPLOY}
+            />
+        )
+    })
+    .add('Unpublish', () => {
+        const unpublishFreeStatus = select('Unpublish free', options, transactionStates.STARTED)
+        const undeployPaidStatus = select('Undeploy paid', options, transactionStates.STARTED)
+
+        const statuses = {
+            [actionsTypes.UNPUBLISH_FREE]: unpublishFreeStatus,
+            [actionsTypes.UNDEPLOY_CONTRACT_PRODUCT]: undeployPaidStatus,
+        }
+
+        return (
+            <PublishError
+                onClose={action('onClose')}
+                status={statuses}
+                publishMode={publishModes.UNPUBLISH}
+            />
+        )
+    })
 
 story('Product Editor/ReadyToPublishDialog')
-    .add('Publish (default)', () => (
+    .add('Publish', () => (
         <ReadyToPublishDialog
             onCancel={action('onCancel')}
             onContinue={action('onContinue')}
+            publishMode={publishModes.PUBLISH}
         />
     ))
     .add('Republish', () => (
         <ReadyToPublishDialog
             onCancel={action('onCancel')}
             onContinue={action('onContinue')}
-            isRepublish
+            publishMode={publishModes.REPUBLISH}
         />
     ))
-
-story('Product Editor/ReadyToUnpublishDialog')
-    .add('default', () => (
-        <ReadyToUnpublishDialog
+    .add('Redeploy', () => (
+        <ReadyToPublishDialog
             onCancel={action('onCancel')}
             onContinue={action('onContinue')}
+            publishMode={publishModes.REDEPLOY}
+        />
+    ))
+    .add('Unpublish', () => (
+        <ReadyToPublishDialog
+            onCancel={action('onCancel')}
+            onContinue={action('onContinue')}
+            publishMode={publishModes.UNPUBLISH}
         />
     ))
 

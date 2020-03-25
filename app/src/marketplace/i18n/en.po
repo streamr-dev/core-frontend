@@ -444,6 +444,58 @@ msgstr "Unpublishing failed"
 msgid "modal##publishProgress##publishPendingChanges##failed"
 msgstr "Updating product failed"
 
+
+msgid "modal##publishError##publishModes##publish"
+msgstr "Publishing"
+
+msgid "modal##publishError##publishModes##republish"
+msgstr "Republishing"
+
+msgid "modal##publishError##publishModes##redeploy"
+msgstr "Redeploying"
+
+msgid "modal##publishError##publishModes##unpublish"
+msgstr "Unpublishing"
+
+msgid "modal##publishError##someFailed##title"
+msgstr "%{publishMode} did not complete"
+
+msgid "modal##publishError##allFailed##title"
+msgstr "%{publishMode} failed"
+
+msgid "modal##publishError##actions##updateAdminFee"
+msgstr "The admin fee failed to update."
+
+msgid "modal##publishError##actions##updateContractProduct"
+msgstr "The product data failed to update."
+
+msgid "modal##publishError##actions##createContractProduct"
+msgstr "Failed to publish product."
+
+msgid "modal##publishError##actions##publishPaid"
+msgstr "Failed to publish product."
+
+msgid "modal##publishError##actions##publishFree"
+msgstr "Failed to publish product."
+
+msgid "modal##publishError##actions##publishPendingChanges"
+msgstr "Failed to publish product changes."
+
+msgid "modal##publishError##actions##unpublishFree"
+msgstr "Failed to unpublish product."
+
+msgid "modal##publishError##actions##undeployContractProduct"
+msgstr "Failed to unpublish product."
+
+msgid "modal##publishError##actions##allFailed"
+msgstr "The product failed to update."
+
+msgid "modal##publishError##actions##someFailed"
+msgstr "More than one transaction failed."
+
+msgid "modal##publishError##actions##checkWallet"
+msgstr "Please check your wallet or other settings and try again"
+
 msgid "modal##publishComplete##republish##title"
 msgstr "Republish completed"
 
@@ -640,26 +692,33 @@ msgstr "Purchase confirmation"
 msgid "modal##purchaseSummary##title"
 msgstr "Complete your purchase"
 
+msgid "modal##readyToPublish##title"
+msgstr "Publish product"
+
+msgid "modal##readyToPublish##publish##action"
+msgstr "Publish"
+
+msgid "modal##readyToPublish##message"
+msgstr ""
+"You're about to publish to the Marketplace. <br /> Paid products require an "
+"Eth balance for gas fees."
+
 msgid "modal##readyToPublish##publish##title"
 msgstr "Publish your product"
 
 msgid "modal##readyToPublish##republish##title"
 msgstr "Republish your product"
 
-msgid "modal##readyToPublish##publish##message"
-msgstr ""
-"You're about to publish your product to the Marketplace.<br />"
-"Paid products will require an ETH balance for gas fees."
-
-msgid "modal##readyToPublish##republish##message"
-msgstr ""
-"You're about to republish your product to the Marketplace.<br />"
-"Paid products will require an ETH balance for gas fees."
+msgid "modal##readyToPublish##redeploy##title"
+msgstr "Republish your product"
 
 msgid "modal##readyToPublish##publish##action"
 msgstr "Publish"
 
 msgid "modal##readyToPublish##republish##action"
+msgstr "Republish"
+
+msgid "modal##readyToPublish##redeploy##action"
 msgstr "Republish"
 
 msgid "modal##readyToPublish##publish##action"
