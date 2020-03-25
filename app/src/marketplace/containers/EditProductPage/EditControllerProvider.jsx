@@ -14,7 +14,7 @@ import { selectDataUnion } from '$mp/modules/dataUnion/selectors'
 import { selectProduct } from '$mp/modules/product/selectors'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import Notification from '$shared/utils/Notification'
-import { NotificationIcon } from '$shared/utils/constants'
+import { NotificationIcon, productStates } from '$shared/utils/constants'
 import routes from '$routes'
 import useEditableProductActions from '../ProductController/useEditableProductActions'
 import { isEthereumAddress } from '$mp/utils/validate'
@@ -49,10 +49,11 @@ function useEditController(product: Product) {
     const { replaceProduct } = useEditableProductUpdater()
     const dataUnion = useSelector(selectDataUnion)
     const [publishAttempted, setPublishAttempted] = useState(false)
+    const [published, setPublished] = useState(false)
 
     useEffect(() => {
         const handleBeforeunload = (event) => {
-            if (isAnyTouched()) {
+            if (isAnyTouched() && !published) {
                 const confirmationMessage = 'You have unsaved changes'
                 const evt = (event || window.event)
                 evt.returnValue = confirmationMessage // Gecko + IE
@@ -66,7 +67,7 @@ function useEditController(product: Product) {
         return () => {
             window.removeEventListener('beforeunload', handleBeforeunload)
         }
-    }, [isAnyTouched])
+    }, [isAnyTouched, published])
 
     const productRef = useRef(product)
     productRef.current = product
@@ -191,13 +192,29 @@ function useEditController(product: Product) {
                 product: productRef.current,
             })
 
+            if (!isMounted()) { return }
+
+            replaceProduct((prevProduct) => ({
+                ...prevProduct,
+                state: isUnpublish ? productStates.UNDEPLOYING : productStates.DEPLOYING,
+            }))
+            setPublished(succeeded)
+
             if (succeeded && (isUnpublish || !showPublishedProduct)) {
                 redirectToProductList()
             } else if (succeeded && showPublishedProduct) {
                 redirectToProduct()
             }
         }
-    }, [validate, save, publishDialog, redirectToProductList, redirectToProduct])
+    }, [
+        validate,
+        save,
+        publishDialog,
+        redirectToProductList,
+        redirectToProduct,
+        replaceProduct,
+        isMounted,
+    ])
 
     const updateBeneficiary = useCallback(async (address) => {
         const { beneficiaryAddress } = productRef.current

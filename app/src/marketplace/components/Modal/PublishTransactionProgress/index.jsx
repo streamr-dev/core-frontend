@@ -52,18 +52,8 @@ const PendingTasks = styled.div`
     `}
 `
 
-const FailedTasks = styled.div`
-    width: 100%;
-    text-align: left;
-    font-size: 0.875rem;
-    color: #FF5C00;
-    margin-top: 0.5rem;
-    min-height: 1.5rem;
-    line-height: 1.5rem;
-`
-
 const PublishTransactionProgress = ({ publishMode, onCancel, status, isPrompted }: Props) => {
-    const progress = useMemo(() => Object.keys(status).reduce((result, key) => {
+    const { pending, complete } = useMemo(() => Object.keys(status).reduce((result, key) => {
         const value = status[key]
 
         if (value === transactionStates.PENDING) {
@@ -74,20 +64,10 @@ const PublishTransactionProgress = ({ publishMode, onCancel, status, isPrompted 
             result.complete.push(key)
         }
 
-        if (value === transactionStates.FAILED) {
-            result.failed.push(key)
-        }
-
-        if (value === transactionStates.CONFIRMED) {
-            result.confirmed.push(key)
-        }
-
         return result
     }, {
         pending: [],
         complete: [],
-        failed: [],
-        confirmed: [],
     }), [status])
 
     return (
@@ -116,16 +96,11 @@ const PublishTransactionProgress = ({ publishMode, onCancel, status, isPrompted 
                         {!!isPrompted && (
                             'Requires wallet confirmation'
                         )}
-                        {!isPrompted && progress.pending && progress.pending.length > 0 && progress.pending.map((key) => (
+                        {!isPrompted && pending && pending.length > 0 && pending.map((key) => (
                             I18n.t(`modal.publishProgress.${key}.pending`)
                         )).join(', ')}
                     </PendingTasks>
-                    <ProgressBar value={(progress.complete.length / Math.max(1, Object.keys(status).length)) * 100} />
-                    <FailedTasks>
-                        {progress.failed && progress.failed.length > 0 && progress.failed.map((key) => (
-                            I18n.t(`modal.publishProgress.${key}.failed`)
-                        )).join(', ')}
-                    </FailedTasks>
+                    <ProgressBar value={(complete.length / Math.max(1, Object.keys(status).length)) * 100} />
                 </PublishProgress>
             </StyledDialog>
         </ModalPortal>
