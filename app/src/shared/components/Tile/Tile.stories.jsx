@@ -9,7 +9,7 @@ import ImageContainer from './ImageContainer'
 import Grid from './Grid'
 import Summary from './Summary'
 import Menu, { MenuItem } from './Menu'
-import Tile, { touchedAgo } from './'
+import Tile, { touchedAgo, PurchaseTile } from './'
 
 const stories = storiesOf('Shared/Tile', module)
     .addDecorator(styles({
@@ -83,5 +83,48 @@ stories.add('elastic grid', () => (
                 </a>
             </Tile>
         ))}
+    </Grid>
+))
+
+const now = new Date()
+
+stories.add('purchase tile', () => (
+    <Grid>
+        <PurchaseTile
+            expiresAt={new Date(now.getTime() + (299 * 1000))}
+            now={now}
+            numMembers={10}
+            product={{
+                imageUrl: sample,
+                name: 'Product that expires in <5 minutes',
+            }}
+            showDataUnionBadge
+        />
+        <PurchaseTile
+            expiresAt={new Date(now.getTime() + (3599 * 1000))}
+            now={now}
+            product={{
+                imageUrl: sample,
+                name: 'Product that expires in <1hr',
+            }}
+            showDataUnionBadge
+            showDeployingBadge
+        />
+        <PurchaseTile
+            expiresAt={new Date(now.getTime() + (3601 * 1000))}
+            now={now}
+            product={{
+                imageUrl: sample,
+                name: 'Product that expires in 1hr+',
+            }}
+        />
+        <PurchaseTile
+            expiresAt={now}
+            now={now}
+            product={{
+                imageUrl: sample,
+                name: 'Expired product',
+            }}
+        />
     </Grid>
 ))

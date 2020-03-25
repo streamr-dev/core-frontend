@@ -90,7 +90,7 @@ export function useWeb3Status(requireWeb3: boolean = true): Result {
         requireWeb3,
         web3Error,
         checkingWeb3,
-        isLocked: !!checkingWeb3 || !!web3Error,
+        isLocked: !!checkingWeb3 || (!account || !!web3Error),
         account,
     }), [requireWeb3, web3Error, checkingWeb3, account])
 }

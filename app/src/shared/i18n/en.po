@@ -167,6 +167,12 @@ msgstr "Editor"
 msgid "general##nav##docs"
 msgstr "Docs"
 
+msgid "general##copy"
+msgstr "Copy"
+
+msgid "general##copied"
+msgstr "Copied"
+
 msgid "language##id"
 msgstr "en"
 

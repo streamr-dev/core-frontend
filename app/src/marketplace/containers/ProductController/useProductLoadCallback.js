@@ -57,8 +57,8 @@ export default function useProductLoadCallback() {
             const nextProduct = {
                 ...product,
                 isFree: !!product.isFree || !isPaidProduct(product),
-                timeUnit: product.timeUnit || timeUnits.hour,
-                currency: product.priceCurrency || DEFAULT_CURRENCY,
+                timeUnit: timeUnits.hour,
+                priceCurrency: product.priceCurrency || DEFAULT_CURRENCY,
                 price: product.price || priceForTimeUnits(product.pricePerSecond || '0', 1, timeUnits.hour),
                 adminFee: currentAdminFee,
                 dataUnionDeployed,

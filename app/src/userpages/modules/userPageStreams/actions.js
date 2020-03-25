@@ -290,8 +290,12 @@ export const updateStreamStatuses = (ids: StreamIdList) => (dispatch: Function) 
 
     const fetchStatuses = async () => {
         for (let index = 0; index < ids.length && !cancelled; index += 1) {
-            // eslint-disable-next-line no-await-in-loop
-            await dispatch(updateStreamStatus(ids[index]))
+            try {
+                // eslint-disable-next-line no-await-in-loop
+                await dispatch(updateStreamStatus(ids[index]))
+            } catch (e) {
+                // ignore error and continue, updateStreamStatus() already logs the issue
+            }
         }
     }
 
