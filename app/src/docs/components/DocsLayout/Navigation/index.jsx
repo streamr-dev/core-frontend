@@ -8,6 +8,7 @@ import ElevatedContainer from '$shared/components/ElevatedContainer'
 
 import SvgIcon from '$shared/components/SvgIcon'
 import { docsNav } from '$docs/components/DocsLayout/Navigation/navLinks'
+import Search from '../../Search'
 import TableOfContents from './TableOfContents'
 
 import styles from './navigation.pcss'
@@ -20,11 +21,13 @@ type Props = {
 
 type State = {
     compressed: boolean,
+    isSearching: boolean,
 }
 
 class Navigation extends React.Component<Props, State> {
     state = {
         compressed: true,
+        isSearching: false,
     }
 
     getTopLevelTitle() {
@@ -83,34 +86,49 @@ class Navigation extends React.Component<Props, State> {
         })
     }
 
+    toggleOverlay = () => {
+        this.setState({
+            isSearching: !this.state.isSearching,
+        })
+    }
+
     render() {
         const { className, responsive } = this.props
+        const { isSearching } = this.state
 
         return (
-            <ElevatedContainer
-                offset="64"
-                className={cx(className, styles.navigationContainer, {
-                    [styles.compressed]: this.state.compressed,
-                    [styles.mobileNav]: responsive,
-                    [styles.desktopNav]: !responsive,
-                })}
-                onClick={() => this.toggleExpand()}
-            >
-                <ul className={cx(styles.navList, {
-                    container: responsive,
-                })}
+            <React.Fragment>
+                {isSearching && <Search visible toggleOverlay={this.toggleOverlay} />}
+                <ElevatedContainer
+                    offset="64"
+                    className={cx(className, styles.navigationContainer, {
+                        [styles.compressed]: this.state.compressed,
+                        [styles.mobileNav]: responsive,
+                        [styles.desktopNav]: !responsive,
+                    })}
+                    onClick={() => this.toggleExpand()}
                 >
-                    {!!responsive && (
-                        <li className={cx(styles.navListItem, styles.mobileHeader)}>
-                            <Link to="#">
-                                {this.generateMobileHeader()}
-                            </Link>
-                        </li>
-                    )}
-                    <TableOfContents />
-                </ul>
-                <SvgIcon name="back" className={styles.arrowExtender} />
-            </ElevatedContainer>
+                    {!isSearching && <SvgIcon
+                        name="search"
+                        className={styles.searchIcon}
+                        onClick={() => { this.toggleOverlay() }}
+                    />}
+                    <ul className={cx(styles.navList, {
+                        container: responsive,
+                    })}
+                    >
+                        {!!responsive && (
+                            <li className={cx(styles.navListItem, styles.mobileHeader)}>
+                                <Link to="#">
+                                    {this.generateMobileHeader()}
+                                </Link>
+                            </li>
+                        )}
+                        <TableOfContents />
+                    </ul>
+                    <SvgIcon name="back" className={styles.arrowExtender} />
+                </ElevatedContainer>
+            </React.Fragment>
         )
     }
 }

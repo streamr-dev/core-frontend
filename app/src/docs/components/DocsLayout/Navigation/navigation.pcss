@@ -1,3 +1,25 @@
+.searchIcon {
+  width: 16px;
+
+  g {
+    color: rgb(163, 163, 163);
+  }
+
+  &:--enter {
+    cursor: pointer;
+
+    g {
+      color: rgb(50, 50, 50);
+    }
+  }
+}
+
+@media (--md-down) {
+  .searchIcon {
+    display: none;
+  }
+}
+
 .desktopNav {
   box-shadow: none !important;
   display: block;
