@@ -1,6 +1,55 @@
+import cx from 'classnames'
+import { Link } from 'react-router-dom'
+
+import CodeSnippet from '$shared/components/CodeSnippet'
+import links from '$shared/../links'
+
+import EncryptedStream from './images/encrypted_stream.jpg'
+
+import docsStyles from '$docs/components/DocsLayout/docsLayout.pcss'
+
+import {
+    encryptionJavaClient,
+    encryptionJavascriptClient,
+    rekeyJavaClient,
+    rekeyJavascriptClient
+} from './code/streams.js'
+
 # End-to-end encryption
 
-Confidentiality of events published on a stream can be guaranteed with end-to-end encryption. The publisher decides on a AES-256 symmetric group key and encrypts the messages in CTR mode before publishing them to the network. The subscribers must know this symmetric group key in order to decrypt the data.
+## Why use end-to-end encryption
+
+Secure communications must guarantee three main properties: authenticity, integrity and confidentiality. In a decentralized system such as the Streamr Network where intermediary nodes are untrusted, TLS can only guarantee these properties between two adjacent nodes. To enforce these security properties, we must use end-to-end mechanisms. While authenticity and integrity are guaranteed by digital signatures, confidentiality of messages published on a stream can be guaranteed with end-to-end encryption.
+
+## Publishing encrypted messages
+
+Using the Java client:
+<CodeSnippet language='java'>
+{encryptionJavaClient}
+</CodeSnippet>
+
+Using the Javascript client:
+<CodeSnippet language='javascript'>
+{encryptionJavascriptClient}
+</CodeSnippet>
+
+As shown below, it is possible to enforce that only encrypted data is published to a stream. This prevents publishers to accidentally publish data in cleartext if they're concerned about data confidentiality.
+
+<figure>
+    <picture>
+      <img
+        className={docsStyles.bordered}
+        src={EncryptedStream}
+        alt="Encrypted Stream"
+      />
+    </picture>
+</figure>
+
+The end-to-end encryption feature is still experimental, so it may not be supported everywhere yet. For example, canvases can subscribe to encrypted streams, but they can't publish encrypted messages yet.
+
+## How it works
+
+The publisher decides on a AES-256 symmetric group key and encrypts the messages in CTR mode before publishing them to the network. The subscribers must know this symmetric group key in order to decrypt the data.
 
 There are two ways for the subscribers to obtain that symmetric group key: either the publisher shares the key with the subscribers in a secure way outside of the Streamr Network, or the subscribers use a secure key-exchange protocol to request the symmetric group key to the publisher using the Streamr Network.
 
@@ -20,9 +69,9 @@ Publisher p >> send(s, group_key_response)
 Subscriber s >> k = RSA_decrypt(group_key_response.c, RSA_priv)
 ```
 
-In order to prevent new subscribers to eavesdrop and then decrypt past messages published before the start of their subscription, the publisher can decide at any time to update the symmetric group key by sending a new key concatenated with an event and encrypted with the current key:
+In order to prevent new subscribers to eavesdrop and then decrypt past messages published before the start of their subscription, the publisher can decide at any time to update the symmetric group key by sending a new key concatenated with a message and encrypted with the current key:
 ```
-// normal case when creating a ciphertext of an event 'm1' with a key 'k1'
+// normal case when creating a ciphertext of a message 'm1' with a key 'k1'
 c1 = AES_encrypt(m1, k1)
 // when updating the key to 'k2', current subscribers will recover 'k2'
 c2 = AES_encrypt(m2 + k2, k1)
@@ -30,4 +79,24 @@ c2 = AES_encrypt(m2 + k2, k1)
 c3 = AES_encrypt(m3, k2)
 ```
 
-Both the Javascript and the Java SDKs support this key update mechanism. It can be triggered by calling the `publish` method with a new symmetric group key as parameter.
+Both the <a href="https://github.com/streamr-dev/streamr-client-javascript" target="_blank">Javascript</a> and the <a href="https://github.com/streamr-dev/streamr-client-java" target="_blank">Java</a> SDKs support this key update mechanism. It can be triggered by calling the `publish` method with a new symmetric group key as parameter.
+
+We also need to prevent subscribers whose subscription expired to be able to continue decrypting messages. Since any valid subscriber receives the decryption keys, the only way to revoke subscribers is for the publisher to choose a new key and somehow make it available only to the remaining valid subscribers. This process is called "rekey" and can be done in different ways.
+
+For now we use a simple rekeying scheme to revoke susbcribers: the publisher choose a new AES group key K. Then for each valid subscriber, the publisher encrypts K with the subscriber's RSA public key and send it to the subscriber in a "group key reset" message through the Streamr Network. Each subscriber can decrypt the message with his RSA private key to recover the group key K.
+
+As this is an expensive operation (N different ciphertexts crafted and sent for N valid susbcribers), both the <a href="https://github.com/streamr-dev/streamr-client-javascript" target="_blank">Javascript</a> and the <a href="https://github.com/streamr-dev/streamr-client-java" target="_blank">Java</a> SDKs support a built-in mechanism that triggers this rekey if two conditions are met:
+- some minimum amount of time elapsed since the last rekey
+- the number of subscribers to revoke reaches some predefined threshold
+
+In both libraries, this mechanism can be turned on or off and the user always has the possibility to manually trigger a rekey for a stream:
+
+Using the Java client:
+<CodeSnippet language='java'>
+{rekeyJavaClient}
+</CodeSnippet>
+
+Using the Javascript client:
+<CodeSnippet language='javascript'>
+{rekeyJavascriptClient}
+</CodeSnippet>
