@@ -25,6 +25,7 @@ type ContextProps = {
     touch: (string) => void,
     isTouched: (string) => boolean,
     isAnyTouched: () => boolean,
+    resetTouched: () => void,
     pendingChanges: Object,
     isPendingChange: (string) => boolean,
     isAnyChangePending: () => boolean,
@@ -49,6 +50,8 @@ function useValidationContext(): ContextProps {
     const isTouched = useCallback((name: string) => !!touched[name], [touched])
 
     const isAnyTouched = useCallback(() => Object.values(touched).some(Boolean), [touched])
+
+    const resetTouched = useCallback(() => setTouched({}), [])
 
     const isMounted = useIsMounted()
 
@@ -167,6 +170,7 @@ function useValidationContext(): ContextProps {
         touch,
         isTouched,
         isAnyTouched,
+        resetTouched,
         pendingChanges,
         isPendingChange,
         isAnyChangePending,
@@ -180,6 +184,7 @@ function useValidationContext(): ContextProps {
         touch,
         isTouched,
         isAnyTouched,
+        resetTouched,
         pendingChanges,
         isPendingChange,
         isAnyChangePending,

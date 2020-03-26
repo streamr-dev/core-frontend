@@ -39,7 +39,7 @@ const EditControllerContext: Context<ContextProps> = React.createContext({})
 
 function useEditController(product: Product) {
     const { history } = useContext(RouterContext)
-    const { isAnyTouched, status } = useContext(ValidationContext)
+    const { isAnyTouched, resetTouched, status } = useContext(ValidationContext)
     const [isPreview, setIsPreview] = useState(false)
     const lastSectionRef = useRef(undefined)
     const isMounted = useIsMounted()
@@ -49,11 +49,10 @@ function useEditController(product: Product) {
     const { replaceProduct } = useEditableProductUpdater()
     const dataUnion = useSelector(selectDataUnion)
     const [publishAttempted, setPublishAttempted] = useState(false)
-    const [published, setPublished] = useState(false)
 
     useEffect(() => {
         const handleBeforeunload = (event) => {
-            if (isAnyTouched() && !published) {
+            if (isAnyTouched()) {
                 const confirmationMessage = 'You have unsaved changes'
                 const evt = (event || window.event)
                 evt.returnValue = confirmationMessage // Gecko + IE
@@ -67,7 +66,7 @@ function useEditController(product: Product) {
         return () => {
             window.removeEventListener('beforeunload', handleBeforeunload)
         }
-    }, [isAnyTouched, published])
+    }, [isAnyTouched])
 
     const productRef = useRef(product)
     productRef.current = product
@@ -137,6 +136,7 @@ function useEditController(product: Product) {
             await putProduct(State.update(originalProduct, () => ({
                 ...nextProduct,
             })), nextProduct.id || '')
+            resetTouched()
 
             // TODO: handle saving errors
             return true
@@ -151,6 +151,7 @@ function useEditController(product: Product) {
         redirectToProductList,
         originalProduct,
         replaceProduct,
+        resetTouched,
     ])
 
     const validate = useCallback(() => {
@@ -188,17 +189,18 @@ function useEditController(product: Product) {
                 redirect: false,
             })
 
-            const { isUnpublish, succeeded, showPublishedProduct } = await publishDialog.open({
+            const { isUnpublish, started, succeeded, showPublishedProduct } = await publishDialog.open({
                 product: productRef.current,
             })
 
             if (!isMounted()) { return }
 
-            replaceProduct((prevProduct) => ({
-                ...prevProduct,
-                state: isUnpublish ? productStates.UNDEPLOYING : productStates.DEPLOYING,
-            }))
-            setPublished(succeeded)
+            if (started) {
+                replaceProduct((prevProduct) => ({
+                    ...prevProduct,
+                    state: isUnpublish ? productStates.UNDEPLOYING : productStates.DEPLOYING,
+                }))
+            }
 
             if (succeeded && (isUnpublish || !showPublishedProduct)) {
                 redirectToProductList()
