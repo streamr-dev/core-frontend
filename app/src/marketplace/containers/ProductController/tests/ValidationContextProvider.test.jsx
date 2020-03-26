@@ -47,7 +47,7 @@ describe('validation context', () => {
             }))
         })
 
-        it('touch() marks a field as touched', () => {
+        it('marks a field as touched with touch()', () => {
             let currentContext
             function Test() {
                 currentContext = useContext(ValidationContext)
@@ -69,7 +69,7 @@ describe('validation context', () => {
             })
         })
 
-        it('isTouched() returns true for fields marked as touched', () => {
+        it('returns true for fields marked as touched with isTouched()', () => {
             let currentContext
             function Test() {
                 currentContext = useContext(ValidationContext)
@@ -90,7 +90,7 @@ describe('validation context', () => {
             expect(currentContext.isTouched('anotherField')).toBe(false)
         })
 
-        it('isAnyTouched() returns true if any field touched', () => {
+        it('returns true if any field touched with isAnyTouched()', () => {
             let currentContext
             function Test() {
                 currentContext = useContext(ValidationContext)
@@ -109,6 +109,32 @@ describe('validation context', () => {
             })
             expect(currentContext.isAnyTouched()).toBe(true)
         })
+
+        it('resets touched values with resetTouched()', () => {
+            let currentContext
+            function Test() {
+                currentContext = useContext(ValidationContext)
+                return null
+            }
+
+            mount((
+                <ValidationContextProvider>
+                    <Test />
+                </ValidationContextProvider>
+            ))
+
+            expect(currentContext.isAnyTouched()).toBe(false)
+            act(() => {
+                currentContext.touch('myField')
+                currentContext.touch('anotherField')
+            })
+            expect(currentContext.isAnyTouched()).toBe(true)
+
+            act(() => {
+                currentContext.resetTouched()
+            })
+            expect(currentContext.isAnyTouched()).toBe(false)
+        })
     })
 
     describe('status', () => {
@@ -118,7 +144,7 @@ describe('validation context', () => {
             }))
         })
 
-        it('setStatus() sets field error status', () => {
+        it('sets field error status with setStatus()', () => {
             let currentContext
             function Test() {
                 currentContext = useContext(ValidationContext)
@@ -143,7 +169,7 @@ describe('validation context', () => {
             })
         })
 
-        it('setStatus() throws error if no name given', () => {
+        it('throws error if no name given to setStatus()', () => {
             let currentContext
             function Test() {
                 currentContext = useContext(ValidationContext)
@@ -165,7 +191,7 @@ describe('validation context', () => {
             })
         })
 
-        it('setStatus() does nothing if unmounted', () => {
+        it('does nothing when calling setStatus() and unmounted', () => {
             let currentContext
             function Test() {
                 currentContext = useContext(ValidationContext)
@@ -185,7 +211,7 @@ describe('validation context', () => {
             expect(currentContext.status).toStrictEqual({})
         })
 
-        it('clearStatus() removes field error status', () => {
+        it('removes field error status with clearStatus()', () => {
             let currentContext
             function Test() {
                 currentContext = useContext(ValidationContext)
@@ -206,7 +232,7 @@ describe('validation context', () => {
             expect('myField' in currentContext.status).toBe(false)
         })
 
-        it('clearStatus() throws error if no name given', () => {
+        it('throws error if no name given to clearStatus()', () => {
             let currentContext
             function Test() {
                 currentContext = useContext(ValidationContext)
@@ -228,7 +254,7 @@ describe('validation context', () => {
             })
         })
 
-        it('clearStatus() does nothing if unmounted', () => {
+        it('does nothing if unmounted and calling clearStatus()', () => {
             let currentContext
             function Test() {
                 currentContext = useContext(ValidationContext)
@@ -256,7 +282,7 @@ describe('validation context', () => {
             })
         })
 
-        it('isValid() returns true if field has no error', () => {
+        it('returns true if field has no error and calling isValid()', () => {
             let currentContext
             function Test() {
                 currentContext = useContext(ValidationContext)

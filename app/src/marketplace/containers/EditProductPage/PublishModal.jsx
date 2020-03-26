@@ -107,10 +107,11 @@ export const PublishOrUnpublishModal = ({ product, api }: Props) => {
     const onClose = useCallback(({ showPublishedProduct = false }: { showPublishedProduct?: boolean } = {}) => {
         api.close({
             isUnpublish: mode === publishModes.UNPUBLISH,
+            started,
             succeeded: allSucceeded,
             showPublishedProduct,
         })
-    }, [api, mode, allSucceeded])
+    }, [api, mode, started, allSucceeded])
 
     const onConfirm = useCallback(() => {
         setStarted(true)
