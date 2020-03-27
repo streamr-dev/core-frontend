@@ -48,6 +48,16 @@ class Dialog extends Component<Props, State> {
         isHelpOpen: false,
     }
 
+    componentDidMount() {
+        const { autoCloseAfter, autoClose, onClose } = this.props
+        const timeout = autoCloseAfter || (autoClose && dialogAutoCloseTimeout) || null
+
+        if (timeout != null) {
+            this.clearCloseTimeout()
+            this.autoCloseTimeoutId = setTimeout(onClose, timeout)
+        }
+    }
+
     componentDidUpdate(prevProps: Props) {
         const { autoCloseAfter, autoClose, onClose } = this.props
         const timeout = autoCloseAfter || (autoClose && dialogAutoCloseTimeout) || null
