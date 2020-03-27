@@ -1,7 +1,6 @@
 // @flow
 
-import React, { useState, useCallback, useMemo } from 'react'
-import qs from 'query-string'
+import React, { useState, useCallback } from 'react'
 
 import { userIsNotAuthenticated } from '$auth/utils/userAuthenticated'
 import SessionProvider from '../SessionProvider'
@@ -9,16 +8,9 @@ import AuthLayout from '../AuthLayout'
 import UsernamePasswordLogin from '../UsernamePasswordLogin'
 import EthereumLogin from '../EthereumLogin'
 
-type Props = {
-    location: {
-        search: string,
-    },
-}
+type Props = {}
 
 const LoginPage = (props: Props) => {
-    const { search } = props.location
-    const hasEthLogin = useMemo(() => qs.parse(search).ethLogin || '', [search])
-
     const [useEthereum, setUseEthereum] = useState(false)
 
     const switchToEthereum = useCallback(() => {
@@ -34,7 +26,7 @@ const LoginPage = (props: Props) => {
             {useEthereum ? (
                 <EthereumLogin {...props} onBackClick={switchToUsernamePassword} />
             ) : (
-                <UsernamePasswordLogin {...props} onEthereumClick={hasEthLogin && switchToEthereum} />
+                <UsernamePasswordLogin {...props} onEthereumClick={switchToEthereum} />
             )}
         </AuthLayout>
     )
