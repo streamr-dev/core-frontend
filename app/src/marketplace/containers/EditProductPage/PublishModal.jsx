@@ -58,8 +58,8 @@ export const PublishOrUnpublishModal = ({ product, api }: Props) => {
                 .then(publishRef.current)
                 .then(
                     ({ queue: nextQueue, mode: nextMode }) => {
-                        setMode(nextMode)
                         setQueue(nextQueue)
+                        setMode(nextMode)
                     },
                     (e) => {
                         setModalError(e)
@@ -120,12 +120,21 @@ export const PublishOrUnpublishModal = ({ product, api }: Props) => {
         }
     }, [queue])
 
-    if (!!requireWeb3 && (checkingWeb3 || web3Error)) {
+    if ((!mode && !modalError) || (!!requireWeb3 && (checkingWeb3 || web3Error))) {
         return (
             <Web3ErrorDialog
-                waiting={checkingWeb3}
+                waiting={checkingWeb3 || !mode}
                 onClose={onClose}
                 error={web3Error}
+            />
+        )
+    }
+
+    if (modalError) {
+        return (
+            <ErrorDialog
+                message={modalError.message}
+                onClose={onClose}
             />
         )
     }
@@ -138,15 +147,6 @@ export const PublishOrUnpublishModal = ({ product, api }: Props) => {
                     tag="p"
                 />
             </UnlockWalletDialog>
-        )
-    }
-
-    if (modalError) {
-        return (
-            <ErrorDialog
-                message={modalError.message}
-                onClose={onClose}
-            />
         )
     }
 
