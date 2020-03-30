@@ -78,9 +78,7 @@ const Actions = (product: Product) => {
     const dispatch = useDispatch()
 
     const redirectToEditProduct = useCallback((id: ProductId) => (
-        dispatch(push(routes.editProduct({
-            id,
-        })))
+        dispatch(push(formatPath(links.marketplace.products, id, 'edit')))
     ), [dispatch])
     const redirectToProductStats = useCallback((id: ProductId) => (
         dispatch(push(routes.productStats({
