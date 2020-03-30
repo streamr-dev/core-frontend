@@ -43,6 +43,7 @@ const Copy = styled.div`
         appearance: none;
         border: none;
         outline: none;
+        background: none;
         padding: 0;
         color: #0324FF;
     }
