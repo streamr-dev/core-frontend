@@ -27,6 +27,7 @@ import useModal from '$shared/hooks/useModal'
 type ContextProps = {
     isPreview: boolean,
     setIsPreview: (boolean | Function) => void,
+    validate: () => boolean,
     back: () => void | Promise<void>,
     save: () => void | Promise<void>,
     publish: () => void | Promise<void>,
@@ -41,6 +42,8 @@ function useEditController(product: Product) {
     const { history } = useContext(RouterContext)
     const { isAnyTouched, resetTouched, status } = useContext(ValidationContext)
     const [isPreview, setIsPreview] = useState(false)
+    // lastSectionRef is stored here and set in EditorNav so it remembers its state when toggling
+    // between editor and preview
     const lastSectionRef = useRef(undefined)
     const isMounted = useIsMounted()
     const savePending = usePending('product.SAVE')
@@ -121,7 +124,7 @@ function useEditController(product: Product) {
                         imageUrl: newImageUrl,
                         thumbnailUrl: newThumbnailUrl,
                     } = await postImage(nextProduct.id || '', nextProduct.newImageToUpload)
-                    /* eslint-eanble object-curly-newline */
+                    /* eslint-enable object-curly-newline */
                     nextProduct.imageUrl = newImageUrl
                     nextProduct.thumbnailUrl = newThumbnailUrl
                     delete nextProduct.newImageToUpload
@@ -171,7 +174,9 @@ function useEditController(product: Product) {
             const memberLimit = parseInt(process.env.DATA_UNION_PUBLISH_MEMBER_LIMIT, 10) || 0
             if (dataUnion.memberCount.active < memberLimit) {
                 Notification.push({
-                    title: I18n.t('notifications.notEnoughMembers', { memberLimit }),
+                    title: I18n.t('notifications.notEnoughMembers', {
+                        memberLimit,
+                    }),
                     icon: NotificationIcon.ERROR,
                 })
                 return false
@@ -277,6 +282,7 @@ function useEditController(product: Product) {
     return useMemo(() => ({
         isPreview,
         setIsPreview,
+        validate,
         back,
         save,
         publish,
@@ -286,6 +292,7 @@ function useEditController(product: Product) {
     }), [
         isPreview,
         setIsPreview,
+        validate,
         back,
         save,
         publish,
