@@ -48,6 +48,7 @@ const CompletePurchaseDialog = ({ onCancel, purchaseState, accountLinked }: Prop
                     <Dialog
                         onClose={onCancel}
                         title={I18n.t('modal.completePurchase.confirmed.title')}
+                        autoCloseAfter={10000} // 10s
                     >
                         <SvgIcon name="checkmark" size="large" className={styles.icon} />
                         {!accountLinked && (
