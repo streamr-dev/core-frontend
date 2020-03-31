@@ -197,7 +197,7 @@ describe('Marketplace Routes', () => {
 
     describe('With community product (NEW_MP_CONTRACT="")', () => {
         it('shows main page', () => {
-            process.env.NEW_MP_CONTRACT = ''
+            delete process.env.NEW_MP_CONTRACT
             const el = mount((
                 <MemoryRouter
                     initialEntries={['/marketplace']}
@@ -212,7 +212,7 @@ describe('Marketplace Routes', () => {
         })
 
         it('shows deprecated product page', () => {
-            process.env.NEW_MP_CONTRACT = ''
+            delete process.env.NEW_MP_CONTRACT
             const el = mount((
                 <MemoryRouter
                     initialEntries={['/marketplace/products/123']}
@@ -227,7 +227,7 @@ describe('Marketplace Routes', () => {
         })
 
         it('shows stream preview', () => {
-            process.env.NEW_MP_CONTRACT = ''
+            delete process.env.NEW_MP_CONTRACT
             const el = mount((
                 <MemoryRouter
                     initialEntries={['/marketplace/products/123/streamPreview/stream456']}
@@ -242,7 +242,7 @@ describe('Marketplace Routes', () => {
         })
 
         it('shows previous new product page', () => {
-            process.env.NEW_MP_CONTRACT = ''
+            delete process.env.NEW_MP_CONTRACT
             const el = mount((
                 <MemoryRouter
                     initialEntries={['/marketplace/products/create']}
@@ -257,7 +257,7 @@ describe('Marketplace Routes', () => {
         })
 
         it('shows edit product page', () => {
-            process.env.NEW_MP_CONTRACT = ''
+            delete process.env.NEW_MP_CONTRACT
             const el = mount((
                 <MemoryRouter
                     initialEntries={['/marketplace/products/123/edit']}
@@ -272,7 +272,7 @@ describe('Marketplace Routes', () => {
         })
 
         it('shows publish route', () => {
-            process.env.NEW_MP_CONTRACT = ''
+            delete process.env.NEW_MP_CONTRACT
             const el = mount((
                 <MemoryRouter
                     initialEntries={['/marketplace/products/123/publish']}
@@ -288,7 +288,7 @@ describe('Marketplace Routes', () => {
         })
 
         it('shows purchase route', () => {
-            process.env.NEW_MP_CONTRACT = ''
+            delete process.env.NEW_MP_CONTRACT
             const el = mount((
                 <MemoryRouter
                     initialEntries={['/marketplace/products/123/purchase']}
@@ -304,7 +304,7 @@ describe('Marketplace Routes', () => {
         })
 
         it('does not show new product page', () => {
-            process.env.NEW_MP_CONTRACT = ''
+            delete process.env.NEW_MP_CONTRACT
             const el = mount((
                 <MemoryRouter
                     initialEntries={['/core/products/new']}

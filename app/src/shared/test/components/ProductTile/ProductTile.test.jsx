@@ -17,7 +17,7 @@ describe('getProductLink', () => {
     })
 
     it('returns deprecated editor link when NEW_MP_CONTRACT is not defined', () => {
-        process.env.NEW_MP_CONTRACT = ''
+        delete process.env.NEW_MP_CONTRACT
         expect(getProductLink('product123')).toBe('/marketplace/products/product123')
     })
 })

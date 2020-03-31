@@ -28,7 +28,7 @@ describe('MenuItems', () => {
         })
 
         it('creates a link to new product editor when NEW_MP_CONTRACT=off', () => {
-            process.env.NEW_MP_CONTRACT = ''
+            delete process.env.NEW_MP_CONTRACT
 
             const el = mount((
                 <MemoryRouter>

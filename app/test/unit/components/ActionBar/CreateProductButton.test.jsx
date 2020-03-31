@@ -20,8 +20,8 @@ describe('CreateProductButton', () => {
 
     describe('NEW_MP_CONTRACT=off, DATA_UNIONS=off', () => {
         it('creates a product with the deprecated editor', () => {
-            process.env.NEW_MP_CONTRACT = ''
-            process.env.DATA_UNIONS = ''
+            delete process.env.NEW_MP_CONTRACT
+            delete process.env.DATA_UNIONS
 
             const createStub = jest.fn()
             let nextProps
@@ -47,7 +47,7 @@ describe('CreateProductButton', () => {
     describe('NEW_MP_CONTRACT=on, DATA_UNIONS=off', () => {
         it('creates a product with the new product page', () => {
             process.env.NEW_MP_CONTRACT = 'on'
-            process.env.DATA_UNIONS = ''
+            delete process.env.DATA_UNIONS
 
             const createStub = jest.fn()
             let nextProps

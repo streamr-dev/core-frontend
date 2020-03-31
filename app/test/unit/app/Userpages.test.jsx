@@ -149,7 +149,7 @@ describe('Userpages Routes', () => {
 
     describe('With community product (NEW_MP_CONTRACT="")', () => {
         it('does not show the product editor', () => {
-            process.env.NEW_MP_CONTRACT = ''
+            delete process.env.NEW_MP_CONTRACT
             const el = mount((
                 <MemoryRouter
                     initialEntries={['/core/products/123/edit']}
@@ -164,7 +164,7 @@ describe('Userpages Routes', () => {
         })
 
         it('shows the data union stats page', () => {
-            process.env.NEW_MP_CONTRACT = ''
+            delete process.env.NEW_MP_CONTRACT
             const el = mount((
                 <MemoryRouter
                     initialEntries={['/core/products/123/stats']}
@@ -179,7 +179,7 @@ describe('Userpages Routes', () => {
         })
 
         it('shows the data union members page', () => {
-            process.env.NEW_MP_CONTRACT = ''
+            delete process.env.NEW_MP_CONTRACT
             const el = mount((
                 <MemoryRouter
                     initialEntries={['/core/products/123/members']}
