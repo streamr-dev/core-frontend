@@ -187,7 +187,7 @@ describe('useWeb3Status', () => {
             return null
         }
 
-        const validateWeb3Stub = sandbox.stub(web3Provider, 'validateWeb3').callsFake(() => {
+        let validateWeb3Stub = sandbox.stub(web3Provider, 'validateWeb3').callsFake(() => {
             throw new Error('unlocked')
         })
 
@@ -202,7 +202,14 @@ describe('useWeb3Status', () => {
         expect(result.isLocked).toBe(true)
 
         const account = '0x123'
+        const defaultAccountStub = sandbox.stub().callsFake(() => Promise.resolve(account))
 
+        sandbox.stub(web3Provider, 'default').callsFake(() => ({
+            getDefaultAccount: defaultAccountStub,
+        }))
+
+        validateWeb3Stub.restore()
+        validateWeb3Stub = sandbox.stub(web3Provider, 'validateWeb3')
         await act(async () => {
             emitter.emit(Web3Poller.events.ACCOUNT, account)
         })
@@ -211,6 +218,53 @@ describe('useWeb3Status', () => {
         expect(result.web3Error).toBeFalsy()
         expect(subscribeStub.calledWithExactly(Web3Poller.events.ACCOUNT, handlers[Web3Poller.events.ACCOUNT])).toBe(true)
         expect(result.isLocked).toBe(false)
+        expect(validateWeb3Stub.calledOnce).toBe(true)
+    })
+
+    it('does not overwrite the error state when new account is received', async () => {
+        const emitter = new EventEmitter()
+
+        // subscribe is called twice, once for ACCOUNT and ACCOUNT_ERROR event
+        // save handlers to differentiate between them
+        sandbox.stub(Web3Poller, 'subscribe').callsFake((event, handler) => {
+            emitter.on(event, handler)
+        })
+
+        let result
+        const Test = () => {
+            result = useWeb3Status()
+            return null
+        }
+
+        const validateWeb3Stub = sandbox.stub(web3Provider, 'validateWeb3').callsFake(() => {
+            throw new Error('wrong network')
+        })
+
+        await act(async () => {
+            mount(<Test />)
+        })
+
+        expect(result.account).toBeFalsy()
+        expect(result.web3Error).toBeTruthy()
+        expect(result.web3Error.message).toBe('wrong network')
+        expect(validateWeb3Stub.calledOnce).toBe(true)
+        expect(result.isLocked).toBe(true)
+
+        const account = '0x123'
+        const defaultAccountStub = sandbox.stub().callsFake(() => Promise.resolve(account))
+
+        sandbox.stub(web3Provider, 'default').callsFake(() => ({
+            getDefaultAccount: defaultAccountStub,
+        }))
+
+        await act(async () => {
+            emitter.emit(Web3Poller.events.ACCOUNT, account)
+        })
+
+        expect(result.account).toBeFalsy()
+        expect(result.web3Error).toBeTruthy() // validate should still return error
+        expect(validateWeb3Stub.calledTwice).toBe(true)
+        expect(result.isLocked).toBe(true)
     })
 
     it('subscribes to listen to account error when an account is received', async () => {
