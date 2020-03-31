@@ -21,6 +21,7 @@
 }
 
 .input {
+  flex-grow: 1;
   font-size: 1rem;
   letter-spacing: 0;
   height: calc(2.5rem - 2px);
@@ -30,7 +31,7 @@
   outline: none;
   background-color: white;
   border: 0;
-  width: 100%;
+  width: 4rem; /* Mixed with `flex-grow` brings magic to Firefox! ✨ */
   border-top-left-radius: 4px;
   border-bottom-left-radius: 4px;
 }
