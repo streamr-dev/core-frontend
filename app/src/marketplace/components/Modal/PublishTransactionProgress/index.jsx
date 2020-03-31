@@ -34,7 +34,7 @@ const PublishProgress = styled.div`
 `
 
 const PendingTasks = styled.div`
-    color: ${({ isPrompted }) => (isPrompted ? '#FF5C00' : '#A3A3A3')};
+    color: '#A3A3A3';
     font-size: 1rem;
     line-height: 1.5rem;
     width: 100%;
@@ -94,7 +94,7 @@ const PublishTransactionProgress = ({ publishMode, onCancel, status, isPrompted 
                 <PublishProgress>
                     <PendingTasks isPrompted={isPrompted}>
                         {!!isPrompted && (
-                            'Requires wallet confirmation'
+                            I18n.t('modal.publishProgress.confirmTransaction')
                         )}
                         {!isPrompted && pending && pending.length > 0 && pending.map((key) => (
                             I18n.t(`modal.publishProgress.${key}.pending`)

@@ -24,7 +24,7 @@ const ProductLinkContainer = styled.div`
     width: 100%;
     margin-top: 1.5rem;
     display: grid;
-    grid-template-columns: 1fr 50px;
+    grid-template-columns: 1fr 56px;
     grid-column-gap: 1rem;
 `
 

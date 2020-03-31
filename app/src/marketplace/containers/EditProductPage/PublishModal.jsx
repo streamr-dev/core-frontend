@@ -33,6 +33,7 @@ export const PublishOrUnpublishModal = ({ product, api }: Props) => {
     const [queue, setQueue] = useState(undefined)
     const [mode, setMode] = useState(null)
     const [started, setStarted] = useState(false)
+    const [finished, setFinished] = useState(false)
     const [currentAction, setCurrentAction] = useState(undefined)
     const [status, setStatus] = useState({})
     const [modalError, setModalError] = useState(null)
@@ -103,6 +104,17 @@ export const PublishOrUnpublishModal = ({ product, api }: Props) => {
     const allSucceeded = useMemo(() => Object.values(status).every((value) => (
         value === transactionStates.CONFIRMED
     )), [status])
+    const allCompleted = useMemo(() => Object.values(status).every((value) => (
+        value === transactionStates.CONFIRMED || value === transactionStates.FAILED
+    )), [status])
+
+    useEffect(() => {
+        if (!started || !allCompleted) { return }
+
+        setTimeout(() => {
+            setFinished(true)
+        }, 500)
+    }, [started, allCompleted])
 
     const onClose = useCallback(({ showPublishedProduct = false }: { showPublishedProduct?: boolean } = {}) => {
         api.close({
@@ -167,7 +179,7 @@ export const PublishOrUnpublishModal = ({ product, api }: Props) => {
                 onCancel={onClose}
             />
         )
-    } else if (somePending) {
+    } else if (somePending || (!finished && allCompleted)) {
         return (
             <PublishTransactionProgress
                 publishMode={mode}
@@ -176,7 +188,7 @@ export const PublishOrUnpublishModal = ({ product, api }: Props) => {
                 isPrompted={web3Actions.has(currentAction) && currentAction && status[currentAction] === transactionStates.STARTED}
             />
         )
-    } else if (allSucceeded) {
+    } else if (finished && allSucceeded) {
         return (
             <PublishComplete
                 publishMode={mode}
