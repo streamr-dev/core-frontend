@@ -326,3 +326,14 @@ msgstr "Go to core app"
 
 msgid "notFoundPage##publicSite"
 msgstr "Go to public site"
+
+msgid "errorPageView##imageCaption"
+msgstr "App crashed"
+
+msgid "errorPageView##message"
+msgstr ""
+"Oops. Something has broken down here. <br /> Please try one of the links "
+"below <br /> to get things back on track."
+
+msgid "errorPageView##top"
+msgstr "Marketplace top"

@@ -7,7 +7,7 @@ import { post } from '$shared/utils/api'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import useOnMount from '$shared/hooks/useOnMount'
 import { logout as logoutAction } from '$shared/modules/user/actions'
-import ErrorPageView from '$mp/components/ErrorPageView'
+import GenericErrorPage from '$shared/components/GenericErrorPage'
 import routes from '$routes'
 
 export type DispatchProps = {
@@ -40,7 +40,7 @@ const LogoutPage = ({ logout }: Props) => {
     })
 
     return !!error && (
-        <ErrorPageView />
+        <GenericErrorPage />
     )
 }
 

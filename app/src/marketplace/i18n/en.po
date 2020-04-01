@@ -254,17 +254,6 @@ msgstr "Transaction failed"
 msgid "error##wallet"
 msgstr "Wallet error"
 
-msgid "errorPageView##imageCaption"
-msgstr "App crashed"
-
-msgid "errorPageView##message"
-msgstr ""
-"Oops. Something has broken down here. <br /> Please try one of the links "
-"below <br /> to get things back on track."
-
-msgid "errorPageView##top"
-msgstr "Marketplace top"
-
 msgid "imageUpload##coverImage##replace"
 msgstr "Drag & drop to replace your cover image <br /> or click to browse for one"
 

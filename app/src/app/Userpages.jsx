@@ -9,7 +9,7 @@ import { formatPath } from '$shared/utils/url'
 import routes from '$routes'
 import links from '../links'
 
-import ErrorPageView from '$mp/components/ErrorPageView'
+import GenericErrorPage from '$shared/components/GenericErrorPage'
 
 // Userpages
 import DashboardList from '$userpages/components/DashboardPage/List'
@@ -25,7 +25,7 @@ import StatsPage from '$userpages/components/ProductsPage/Stats'
 import MembersPage from '$userpages/components/ProductsPage/Members'
 import EditProductPage2 from '$mp/containers/EditProductPage'
 
-const Route = withErrorBoundary(ErrorPageView)(RouterRoute)
+const Route = withErrorBoundary(GenericErrorPage)(RouterRoute)
 
 // Userpages Auth
 const CanvasListAuth = userIsAuthenticated(CanvasList)
