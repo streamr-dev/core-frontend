@@ -17,10 +17,10 @@ import usePending from '$shared/hooks/usePending'
 import { productStates } from '$shared/utils/constants'
 import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
 import { isEthereumAddress } from '$mp/utils/validate'
-import { notFoundRedirect } from '$auth/utils/loginInterceptor'
 import useProductPermissions from '../ProductController/useProductPermissions'
 import useProduct from '$mp/containers/ProductController/useProduct'
 import useEthereumIdentities from '$shared/modules/integrationKey/hooks/useEthereumIdentities'
+import ResourceNotFoundError from '$shared/errors/ResourceNotFoundError'
 
 import { Provider as EditControllerProvider, Context as EditControllerContext } from './EditControllerProvider'
 import BackButton from '$shared/components/BackButton'
@@ -203,7 +203,7 @@ const EditWrap = () => {
     const canEdit = !!(write || share)
 
     if (hasPermissions && !isPermissionsPending && !canEdit) {
-        notFoundRedirect()
+        throw new ResourceNotFoundError()
     }
 
     if (!product || isLoadPending || isPermissionsPending || !hasPermissions || !canEdit) {

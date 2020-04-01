@@ -6,6 +6,7 @@ import axios from 'axios'
 import routes from '$routes'
 import { formatApiUrl } from '$shared/utils/url'
 import { matchPath } from 'react-router-dom'
+import ResourceNotFoundError from '$shared/errors/ResourceNotFoundError'
 
 function shouldRedirect(error) {
     // ignore redirect to login logic for login route
@@ -73,11 +74,6 @@ async function loginRedirect() {
     await wait(3000) // stall a moment to let redirect happen
 }
 
-export async function notFoundRedirect() {
-    window.location = routes.notFound()
-    await wait(3000) // stall a moment to let redirect happen
-}
-
 function isLoggedInError(err) {
     if (!err || !err.response || !err.response.data) { return false }
     return err.response.data.user && err.response.data.user !== '<not authenticated>'
@@ -99,16 +95,16 @@ export async function handleLoadError(err) {
     }
 
     if (err.response.status === 404) {
-        await notFoundRedirect()
+        throw new ResourceNotFoundError()
     }
 
     if (err.response.status === 403 || err.response.status === 401) {
         // if already logged in and no access, do not redirect to login
         if (isLoggedInError(err)) {
-            await notFoundRedirect() // redirect to not found
-        } else {
-            await loginRedirect()
+            throw new ResourceNotFoundError()
         }
+
+        await loginRedirect()
     }
 
     throw err
