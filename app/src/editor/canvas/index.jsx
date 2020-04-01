@@ -589,7 +589,7 @@ const CanvasErrorPage = () => (
             kind="special"
             tag={Link}
             to={routes.canvases()}
-            className="d-none d-md-inline-block"
+            className="d-none d-md-inline-flex"
         >
             <Translate value="editor.general.backToCanvases" />
         </Button>
