@@ -1075,6 +1075,68 @@ describe('EditControllerProvider', () => {
             expect(props.location.pathname).toBe('/core/products/1/edit')
         })
 
+        it('does not redirect if deploy fails', async () => {
+            let currentContext
+            let validationContext
+            let props
+            const Test = withRouter((nextProps) => {
+                props = nextProps
+                currentContext = useContext(EditControllerContext)
+                validationContext = useContext(ValidationContext)
+                return null
+            })
+
+            const product = {
+                id: '1',
+                name: 'data union',
+                description: 'description',
+                type: 'DATAUNION',
+                pricePerSecond: '1',
+                priceCurrency: 'DATA',
+                category: 'test',
+                imageUrl: 'http://...',
+                streams: ['1', '2'],
+                adminFee: '0.3',
+            }
+
+            const modalOpenStub = sandbox.stub().callsFake(() => Promise.resolve(false))
+            sandbox.stub(useModal, 'default').callsFake(() => ({
+                api: {
+                    open: modalOpenStub,
+                },
+            }))
+            const putProductStub = sandbox.stub(editProductServices, 'putProduct').callsFake(() => Promise.resolve({
+                ...product,
+            }))
+
+            mount((
+                <MemoryRouter initialEntries={['/core/products/1/edit']}>
+                    <RouterContextProvider>
+                        <ValidationContextProvider>
+                            <EditControllerProvider product={product}>
+                                <Test />
+                            </EditControllerProvider>
+                        </ValidationContextProvider>
+                    </RouterContextProvider>
+                </MemoryRouter>
+            ))
+
+            expect(currentContext.publishAttempted).toBe(false)
+            expect(props.location.pathname).toBe('/core/products/1/edit')
+
+            await act(async () => {
+                await validationContext.validate(product)
+            })
+
+            await act(async () => {
+                await currentContext.deployDataUnion()
+            })
+            expect(currentContext.publishAttempted).toBe(true)
+            expect(modalOpenStub.calledOnce).toBe(true)
+            expect(putProductStub.calledOnce).toBe(true)
+            expect(props.location.pathname).toBe('/core/products/1/edit')
+        })
+
         it('updates and saves beneficiary address if deploy succeeds', async () => {
             let currentContext
             let validationContext
@@ -1100,20 +1162,20 @@ describe('EditControllerProvider', () => {
             }
 
             const beneficiaryAddress = '0x538a2Fa87E03B280e10C83AA8dD7E5B15B868BD9'
-            const modalOpenStub = sandbox.stub().callsFake(({ updateAddress }) => {
+            const modalOpenStub = sandbox.stub().callsFake(({ updateAddress }) => new Promise((resolve) => {
                 updateAddress(beneficiaryAddress)
-                return Promise.resolve(true)
-            })
+                resolve(true)
+            }))
             sandbox.stub(useModal, 'default').callsFake(() => ({
                 api: {
                     open: modalOpenStub,
                 },
             }))
-            const putProductStub = sandbox.stub(editProductServices, 'putProduct').callsFake((p) => {
+            const putProductStub = sandbox.stub(editProductServices, 'putProduct').callsFake((p) => (
                 Promise.resolve({
                     ...p,
                 })
-            })
+            ))
 
             let undoContext
             const ControllerWrap = () => {
@@ -1169,70 +1231,6 @@ describe('EditControllerProvider', () => {
                 beneficiaryAddress,
             }, product.id)).toBe(true)
             expect(props.location.pathname).toBe('/core/products')
-        })
-
-        it('does not redirect if deploy fails', async () => {
-            let currentContext
-            let validationContext
-            let props
-            const Test = withRouter((nextProps) => {
-                props = nextProps
-                currentContext = useContext(EditControllerContext)
-                validationContext = useContext(ValidationContext)
-                return null
-            })
-
-            const product = {
-                id: '1',
-                name: 'data union',
-                description: 'description',
-                type: 'DATAUNION',
-                pricePerSecond: '1',
-                priceCurrency: 'DATA',
-                category: 'test',
-                imageUrl: 'http://...',
-                streams: ['1', '2'],
-                adminFee: '0.3',
-            }
-
-            const modalOpenStub = sandbox.stub().callsFake(() => Promise.resolve(false))
-            sandbox.stub(useModal, 'default').callsFake(() => ({
-                api: {
-                    open: modalOpenStub,
-                },
-            }))
-            const putProductStub = sandbox.stub(editProductServices, 'putProduct').callsFake((p) => {
-                Promise.resolve({
-                    ...p,
-                })
-            })
-
-            mount((
-                <MemoryRouter initialEntries={['/core/products/1/edit']}>
-                    <RouterContextProvider>
-                        <ValidationContextProvider>
-                            <EditControllerProvider product={product}>
-                                <Test />
-                            </EditControllerProvider>
-                        </ValidationContextProvider>
-                    </RouterContextProvider>
-                </MemoryRouter>
-            ))
-
-            expect(currentContext.publishAttempted).toBe(false)
-            expect(props.location.pathname).toBe('/core/products/1/edit')
-
-            await act(async () => {
-                await validationContext.validate(product)
-            })
-
-            await act(async () => {
-                await currentContext.deployDataUnion()
-            })
-            expect(currentContext.publishAttempted).toBe(true)
-            expect(modalOpenStub.calledOnce).toBe(true)
-            expect(putProductStub.calledOnce).toBe(true)
-            expect(props.location.pathname).toBe('/core/products/1/edit')
         })
     })
 })
