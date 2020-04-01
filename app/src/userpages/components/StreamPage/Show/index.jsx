@@ -45,6 +45,9 @@ import PreviewView from './PreviewView'
 import HistoryView from './HistoryView'
 import SecurityView from './SecurityView'
 import StatusView from './StatusView'
+import ResourceNotFoundError from '$shared/errors/ResourceNotFoundError'
+import useFailure from '$shared/hooks/useFailure'
+import { handleLoadError } from '$auth/utils/loginInterceptor'
 
 import styles from './streamShowView.pcss'
 
@@ -286,6 +289,7 @@ function StreamLoader(props: Props) {
     const propsRef = useRef(props)
     propsRef.current = props
     const { id: streamId } = props.match.params || {}
+    const fail = useFailure()
 
     const initStream = useCallback(async (id: StreamId) => {
         let { current: currentProps } = propsRef
@@ -293,23 +297,31 @@ function StreamLoader(props: Props) {
         if (!isMounted()) { return }
         currentProps = propsRef.current
 
-        Promise.all([
-            currentProps.getStream(id).then(async () => {
-                if (!isMounted()) { return }
-                // get stream status before copying state to edit stream object
-                try {
-                    // the status query might fail due to cassandra problems.
-                    // Ignore error to prevent the stream page from getting stuck while loading
-                    await currentProps.refreshStreamStatus(id)
-                } catch (e) {
-                    console.warn(e)
-                }
-                currentProps.openStream(id)
-                currentProps.initEditStream()
-            }),
-            currentProps.getMyStreamPermissions(id),
-        ])
-    }, [isMounted, propsRef])
+        try {
+            await Promise.all([
+                currentProps.getStream(id).then(async () => {
+                    if (!isMounted()) { return }
+                    // get stream status before copying state to edit stream object
+                    try {
+                        // the status query might fail due to cassandra problems.
+                        // Ignore error to prevent the stream page from getting stuck while loading
+                        await currentProps.refreshStreamStatus(id)
+                    } catch (e) {
+                        console.warn(e)
+                    }
+                    currentProps.openStream(id)
+                    currentProps.initEditStream()
+                }),
+                currentProps.getMyStreamPermissions(id),
+            ]).catch(handleLoadError)
+        } catch (e) {
+            if (e instanceof ResourceNotFoundError) {
+                fail(e)
+                return
+            }
+            throw e
+        }
+    }, [isMounted, propsRef, fail])
 
     const createStream = useCallback(async () => {
         const { current: currentProps } = propsRef
