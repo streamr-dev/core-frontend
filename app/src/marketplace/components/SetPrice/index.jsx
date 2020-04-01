@@ -82,7 +82,9 @@ const SetPrice = ({
                         error={error}
                         className={styles.input}
                     />
-                    <SvgIcon name="transfer" className={styles.icon} onClick={onCurrencyChange} />
+                    <div>
+                        <SvgIcon name="transfer" className={styles.icon} onClick={onCurrencyChange} />
+                    </div>
                     <PriceField
                         currency={getQuoteCurrencyFor(currency)}
                         placeholder="Price"
@@ -90,7 +92,9 @@ const SetPrice = ({
                         disabled
                         className={styles.input}
                     />
-                    <span className={styles.per}>per</span>
+                    <div>
+                        <span className={styles.per}>per</span>
+                    </div>
                     <SelectField
                         placeholder="Select"
                         options={options}
