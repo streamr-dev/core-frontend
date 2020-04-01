@@ -1,9 +1,6 @@
 // @flow
 
 import React, { Component, type ComponentType, type Node } from 'react'
-import NotFoundPage from '$shared/components/NotFoundPage'
-import ResourceNotFoundError from '$shared/errors/ResourceNotFoundError'
-
 import analytics from '../../analytics'
 
 type Props = {
@@ -49,18 +46,13 @@ const withErrorBoundary = (ErrorComponent: ComponentType<any>) => (
                 const { error } = this.state
                 const { children, ...props } = this.props
 
-                switch (true) {
-                    case error instanceof ResourceNotFoundError:
-                        return <NotFoundPage {...props} />
-                    case !!error:
-                        return <ErrorComponent {...props} error={this.state.error} />
-                    default:
-                        return (
-                            <OriginalComponent {...props}>
-                                {children}
-                            </OriginalComponent>
-                        )
-                }
+                return error ? (
+                    <ErrorComponent {...props} error={this.state.error} />
+                ) : (
+                    <OriginalComponent {...props}>
+                        {children}
+                    </OriginalComponent>
+                )
             }
         }
     )

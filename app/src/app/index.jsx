@@ -93,6 +93,7 @@ import NotFoundPage from '$shared/components/NotFoundPage'
 import GoogleAnalyticsTracker from '$mp/components/GoogleAnalyticsTracker'
 import isProduction from '$mp/utils/isProduction'
 import GenericErrorPage from '$shared/components/GenericErrorPage'
+import ErrorPage from '$shared/components/ErrorPage'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import Analytics from '$shared/utils/Analytics'
 import routes from '$routes'
@@ -103,7 +104,7 @@ import routes from '$routes'
 const DashboardEditorAuth = userIsAuthenticated(DashboardEditor)
 
 // Wrap each Route to an ErrorBoundary
-const Route = withErrorBoundary(GenericErrorPage)(RouterRoute)
+const Route = withErrorBoundary(ErrorPage)(RouterRoute)
 
 const { docs, editor } = links
 
