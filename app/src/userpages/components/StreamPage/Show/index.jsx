@@ -292,7 +292,8 @@ function StreamLoader(props: Props) {
         await propsRef.current.getKeys()
         if (!isMounted()) { return }
         currentProps = propsRef.current
-        return Promise.all([
+
+        Promise.all([
             currentProps.getStream(id).then(async () => {
                 if (!isMounted()) { return }
                 // get stream status before copying state to edit stream object
