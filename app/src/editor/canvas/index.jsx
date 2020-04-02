@@ -1,7 +1,8 @@
 import React, { PureComponent, useContext } from 'react'
-import { withRouter } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
 import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
 
 import { selectAuthState } from '$shared/modules/user/selectors'
 import SessionContext from '$auth/contexts/Session'
@@ -9,13 +10,16 @@ import cx from 'classnames'
 
 import Layout from '$shared/components/Layout'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
+import { ErrorPageContent } from '$shared/components/GenericErrorPage'
 import copyToClipboard from 'copy-to-clipboard'
 
 import links from '../../links'
+import routes from '$routes'
 
 import { findNonOverlappingPositionForModule } from '$editor/shared/utils/bounds'
 import isEditableElement from '$editor/shared/utils/isEditableElement'
 import UndoControls from '$editor/shared/components/UndoControls'
+import Button from '$shared/components/Button'
 import * as UndoContext from '$shared/contexts/Undo'
 import { Provider as PendingProvider } from '$shared/contexts/Pending'
 import Subscription from '$shared/components/Subscription'
@@ -45,7 +49,6 @@ import CanvasToolbar from './components/Toolbar'
 import CanvasStatus, { CannotSaveStatus } from '$editor/shared/components/Status'
 import ModuleSearch from './components/ModuleSearch'
 import EmbedToolbar from './components/EmbedToolbar'
-import EditorError from '$shared/errors/EditorError'
 import ResourceNotFoundError from '$shared/errors/ResourceNotFoundError'
 
 import useCanvasNotifications, { pushErrorNotification, pushWarningNotification } from './hooks/useCanvasNotifications'
@@ -576,7 +579,29 @@ const CanvasErrorBoundary = ({ error }) => {
         throw error
     }
 
-    throw new EditorError(error)
+    return (
+        <ErrorPageContent>
+            <Button
+                kind="special"
+                tag={Link}
+                to=""
+                onClick={(event) => {
+                    event.preventDefault()
+                    window.location.reload()
+                }}
+            >
+                <Translate value="editor.error.refresh" />
+            </Button>
+            <Button
+                kind="special"
+                tag={Link}
+                to={routes.canvases()}
+                className="d-none d-md-inline-flex"
+            >
+                <Translate value="editor.general.backToCanvases" />
+            </Button>
+        </ErrorPageContent>
+    )
 }
 
 const CanvasContainer = withRouter(withErrorBoundary(CanvasErrorBoundary)((props) => (
