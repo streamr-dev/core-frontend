@@ -1,53 +1,34 @@
 // @flow
 
-import React, { useState } from 'react'
-import { connect } from 'react-redux'
-
+import { useDispatch } from 'react-redux'
 import { post } from '$shared/utils/api'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import useOnMount from '$shared/hooks/useOnMount'
 import { logout as logoutAction } from '$shared/modules/user/actions'
-import GenericErrorPage from '$shared/components/GenericErrorPage'
 import routes from '$routes'
+import useFailure from '$shared/hooks/useFailure'
 
-export type DispatchProps = {
-    logout: () => void,
-}
-
-type Props = DispatchProps & {}
-
-const LogoutPage = ({ logout }: Props) => {
-    const [error, setError] = useState(null)
-
+const LogoutPage = () => {
     const isMounted = useIsMounted()
 
-    useOnMount(() => {
-        post({
-            url: routes.externalLogout(),
-        })
-            .then(
-                () => {
-                    if (isMounted()) {
-                        logout()
-                    }
-                },
-                (e) => {
-                    if (isMounted()) {
-                        setError(e)
-                    }
-                },
-            )
+    const fail = useFailure()
+
+    const dispatch = useDispatch()
+
+    useOnMount(async () => {
+        try {
+            await post({
+                url: routes.externalLogout(),
+            })
+            if (isMounted()) {
+                dispatch(logoutAction())
+            }
+        } catch (e) {
+            fail(e)
+        }
     })
 
-    return !!error && (
-        <GenericErrorPage />
-    )
+    return null
 }
 
-export { LogoutPage }
-
-const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
-    logout: () => dispatch(logoutAction()),
-})
-
-export default connect(null, mapDispatchToProps)(LogoutPage)
+export default LogoutPage
