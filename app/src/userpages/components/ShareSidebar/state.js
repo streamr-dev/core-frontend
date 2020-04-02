@@ -113,6 +113,10 @@ export function findPermissionGroupName(resourceType, userPermissions = {}) {
     )) || 'custom'
 }
 
+//
+// CRUD Operations
+//
+
 export function addUser(users, userId, permissions = {}) {
     if (users[userId]) { return users } // already added
     return {
@@ -138,6 +142,10 @@ export function updatePermission(users, userId, permisssions = {}) {
     }
 }
 
+//
+// Conversion to/from permissions array from server
+//
+
 export function usersFromPermissions(permissions, resourceType) {
     if (!resourceType) { throw new Error('resourceType required') }
     const users = mapValues(groupBy(permissions, 'user'), (value) => {
@@ -154,6 +162,10 @@ export function usersFromPermissions(permissions, resourceType) {
     }
     return users
 }
+
+/**
+ * Convert userId + userPermissions to a permissions array
+ */
 
 export function userToPermissions(userId, userPermissions, resourceType) {
     return Object.entries(userPermissions).map(([operation, value]) => {

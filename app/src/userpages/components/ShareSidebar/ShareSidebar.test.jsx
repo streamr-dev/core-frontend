@@ -43,7 +43,7 @@ describe('ShareSidebar Permission Handling', () => {
     it('can add/remove users', () => {
         const newUserId = 'test@test.com'
         let users = State.usersFromPermissions(permissions)
-        users = State.addUser(users, newUserId)
+        users = State.addUser(users, newUserId, {})
         expect(users[newUserId]).toBeTruthy()
         users = State.removeUser(users, newUserId)
         expect(users[newUserId]).not.toBeTruthy() // new user gone
