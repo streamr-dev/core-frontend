@@ -14,7 +14,7 @@ import type { StoreState } from '$shared/flowtype/store-state'
 import type { ProductId, Product } from '$mp/flowtype/product-types'
 import type { StreamList } from '$shared/flowtype/stream-types'
 import { productStates } from '$shared/utils/constants'
-import NotFoundPage from '$mp/components/NotFoundPage'
+import NotFoundPage from '$shared/components/NotFoundPage'
 
 import PurchaseDialog from '$mp/containers/deprecated/ProductPage/PurchaseDialog'
 import PublishOrUnpublishDialog from '$mp/containers/deprecated/ProductPage/PublishOrUnpublishDialog'

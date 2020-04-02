@@ -14,7 +14,7 @@ import * as urlUtils from '$shared/utils/url'
 import links from '$shared/../links'
 
 import ProductPageComponent from '$mp/components/deprecated/ProductPage'
-import NotFoundPage from '$mp/components/NotFoundPage'
+import NotFoundPage from '$shared/components/NotFoundPage'
 
 describe('ProductPage', () => {
     let wrapper

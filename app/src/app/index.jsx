@@ -89,7 +89,7 @@ import '../analytics'
 
 import AutoScroll from '$shared/components/AutoScroll'
 import LocaleSetter from '$mp/containers/LocaleSetter'
-import NotFoundPage from '$mp/components/NotFoundPage'
+import NotFoundPage from '$shared/components/NotFoundPage'
 import GoogleAnalyticsTracker from '$mp/components/GoogleAnalyticsTracker'
 import isProduction from '$mp/utils/isProduction'
 import ErrorPageView from '$mp/components/ErrorPageView'

@@ -312,3 +312,17 @@ msgstr "Top"
 
 msgid "general##network"
 msgstr "Network"
+
+msgid "notFoundPage##message"
+msgstr ""
+"Whoops! We don’t seem to be able to find your data.</br>"
+"<small>Something might have been moved around or changed.<small>"
+
+msgid "notFoundPage##top"
+msgstr "Go to marketplace"
+
+msgid "notFoundPage##coreApp"
+msgstr "Go to core app"
+
+msgid "notFoundPage##publicSite"
+msgstr "Go to public site"
