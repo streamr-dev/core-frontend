@@ -226,22 +226,41 @@ const ShareSidebar = connect(({ user }) => ({
                                 <SvgIcon name="trash" className={styles.trashIcon} />
                             </Button>
                         </div>
-                        <div className={styles.permissionsCheckboxes}>
-                            {Object.entries(userPermissions).map(([permission, value]) => (
-                                <React.Fragment key={permission}>
-                                    <label htmlFor={`permission${permission}`}>
-                                        {permission}
-                                    </label>
-                                    <input
-                                        id={`permission${permission}`}
-                                        type="checkbox"
-                                        checked={value}
-                                        onChange={() => updatePermission(userId, {
-                                            [permission]: !value,
-                                        })}
-                                    />
-                                </React.Fragment>
-                            ))}
+                        <div>
+                            <div>
+                                {Object.keys(State.getPermissionGroups(resourceType)).filter((name) => name !== 'default').map((name) => (
+                                    <Button
+                                        key={name}
+                                        kind="secondary"
+                                        onClick={() => {
+                                            if (name !== 'custom') {
+                                                updatePermission(userId, State.getPermissionsForGroupName(resourceType, name))
+                                            }
+                                        }}
+                                        className={styles.button}
+                                        selected={name === State.findPermissionGroupName(resourceType, userPermissions)}
+                                    >
+                                        {name} {(name === State.findPermissionGroupName(resourceType, userPermissions) ? '*' : '')}
+                                    </Button>
+                                ))}
+                            </div>
+                            <div className={styles.permissionsCheckboxes}>
+                                {Object.entries(userPermissions).map(([permission, value]) => (
+                                    <React.Fragment key={permission}>
+                                        <label htmlFor={`permission${permission}`}>
+                                            {permission}
+                                        </label>
+                                        <input
+                                            id={`permission${permission}`}
+                                            type="checkbox"
+                                            checked={value}
+                                            onChange={() => updatePermission(userId, {
+                                                [permission]: !value,
+                                            })}
+                                        />
+                                    </React.Fragment>
+                                ))}
+                            </div>
                         </div>
                     </div>
                 ))}

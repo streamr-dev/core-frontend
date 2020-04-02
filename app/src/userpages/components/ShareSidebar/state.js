@@ -90,11 +90,13 @@ const PERMISSION_GROUPS = {
 
 export function getPermissionGroups(resourceType) {
     if (!resourceType) { throw new Error('resourceType required') }
+    if (!PERMISSION_GROUPS[resourceType]) { throw new Error(`Unknown resourceType: ${resourceType}`) }
     return PERMISSION_GROUPS[resourceType]
 }
 
+export function getDefaultGroupName() {}
+
 export function getPermissionsForGroupName(resourceType, groupName = 'default') {
-    if (!resourceType) { throw new Error('resourceType required') }
     const groups = getPermissionGroups(resourceType)
     if (groupName === 'default') {
         groupName = groups.default
@@ -106,10 +108,9 @@ export function getPermissionsForGroupName(resourceType, groupName = 'default') 
 }
 
 export function findPermissionGroupName(resourceType, userPermissions = {}) {
-    if (!resourceType) { throw new Error('resourceType required') }
     const groups = getPermissionGroups(resourceType)
-    return Object.keys(groups).find((groupName) => (
-        groupName !== 'default' && isEqual(userPermissions, groups[groupName])
+    return Object.keys(groups).filter((name) => name !== 'default').find((groupName) => (
+        isEqual(userPermissions, getPermissionsForGroupName(resourceType, groupName))
     )) || 'custom'
 }
 
@@ -146,7 +147,7 @@ export function updatePermission(users, userId, permisssions = {}) {
 // Conversion to/from permissions array from server
 //
 
-export function usersFromPermissions(permissions, resourceType) {
+export function usersFromPermissions(resourceType, permissions) {
     if (!resourceType) { throw new Error('resourceType required') }
     const users = mapValues(groupBy(permissions, 'user'), (value) => {
         const r = Object.assign({}, getEmptyPermissions(resourceType))
@@ -167,7 +168,7 @@ export function usersFromPermissions(permissions, resourceType) {
  * Convert userId + userPermissions to a permissions array
  */
 
-export function userToPermissions(userId, userPermissions, resourceType) {
+export function userToPermissions(resourceType, userId, userPermissions) {
     return Object.entries(userPermissions).map(([operation, value]) => {
         if (!value) { return undefined }
         return {
@@ -177,14 +178,14 @@ export function userToPermissions(userId, userPermissions, resourceType) {
     }).filter(Boolean)
 }
 
-export function permissionsFromUsers(users, resourceType) {
+export function permissionsFromUsers(resourceType, users) {
     return Object.entries(users).map(([userId, userPermissions]) => (
-        userToPermissions(userId, userPermissions, resourceType)
+        userToPermissions(resourceType, userId, userPermissions)
     )).flat()
 }
 
 export function diffUsersPermissions({ oldPermissions, newUsers, resourceType } = {}) {
-    const oldUsers = usersFromPermissions(oldPermissions, resourceType)
+    const oldUsers = usersFromPermissions(resourceType, oldPermissions)
     const prevUserIds = new Set(Object.keys(oldUsers))
     const newUserIds = new Set(Object.keys(newUsers))
     const allUserIds = new Set([...newUserIds, ...prevUserIds])
@@ -198,7 +199,7 @@ export function diffUsersPermissions({ oldPermissions, newUsers, resourceType } 
     allUserIds.forEach((userId) => {
         if (addedIds.has(userId)) {
             const userPermissions = newUsers[userId]
-            added.push(...userToPermissions(userId, userPermissions))
+            added.push(...userToPermissions(resourceType, userId, userPermissions))
         } else if (removedIds.has(userId)) {
             removed.push(...oldPermissions.filter((p) => p.user === userId))
         } else if (changedIds.has(userId)) {
