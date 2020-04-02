@@ -17,13 +17,17 @@
     "id": 1003,
     "name": "BooleanConstant",
     "path": "Boolean",
-    "help": {}
+    "help": {
+      "helpText": "This module represents a constant boolean value i.e. true|false, that can be connected to any boolean input. The input will have that value during the whole execution."
+    }
   },
   {
     "id": 1002,
     "name": "BooleanToNumber",
     "path": "Boolean",
-    "help": {}
+    "help": {
+      "helpText": "Converts `false` to `0` and `true` to `1`."
+    }
   },
   {
     "id": 45,
@@ -203,7 +207,9 @@
     "id": 1001,
     "name": "HTTP Request",
     "path": "Integrations",
-    "help": "{\"params\":{\"verb\":\"HTTP verb (e.g. GET, POST)\",\"URL\":\"URL to send the request to\",\"params\":\"Query parameters added to URL (?name=value)\",\"headers\":\"HTTP Request headers\"},\"paramNames\":[\"verb\",\"URL\",\"params\",\"headers\"],\"inputs\":{\"body\":\"Request body\",\"trigger\":\"Send request when input arrives\"},\"inputNames\":[\"body\",\"trigger\"],\"outputs\":{\"errors\":\"Empty list if all went correctly\",\"data\":\"Server response payload\",\"status code\":\"200..299 means all went correctly\",\"ping(ms)\":\"Round-trip response time in milliseconds\",\"headers\":\"HTTP Response headers\"},\"outputNames\":[\"errors\",\"data\",\"status code\",\"ping(ms)\",\"headers\"],\"helpText\":\"<p>HTTP Request module sends inputs as HTTP request to given URL, and returns server response.</p><p>Headers, query params and body should be Maps. Body can also be List or String.</p><p>Request body format can be changed in options (wrench icon). Default is JSON. Server is expected to return JSON formatted documents.</p><p>HTTP Request is asynchronous by default. Synchronized requests block the execution of the whole canvas until they receive the server response, but otherwise they work just like any other module; asynchronous requests on the other hand work like streams in that they activate modules they&#39;re connected to only when they receive data from the server. </p><ul><li>If a data path branches, and one branch passes through the HTTP Request module and another around it, if they also converge in a module, that latter module may experience multiple activations due to asynchronicity.</li><li>Asynchronicity also means that server responses may arrive in different order than they were sent.</li><li>If this kind of behaviour causes problems, you can try to fix it by changing sync mode to <i>synchronized</i> in options (wrench icon). <ul><li>Caveat: data throughput WILL be lower, and external servers may freeze your canvas simply by responding very slowly (or not at all).</li></ul></li><li>For simple data paths and somewhat stable response times, the two sync modes will yield precisely the same results.</li></ul>"
+    "help": {
+      "helpText": "This module sends inputs as HTTP request to given URL, and returns server response. Headers, query params and body should be Maps. Body can also be List or String. Request body format can be changed in Options. Default is JSON. Server is expected to return JSON formatted documents. HTTP Request is asynchronous by default. Synchronized requests block the execution of the whole canvas until they receive the server response, but otherwise they work just like any other module; asynchronous requests on the other hand work like streams in that they activate modules they're connected to only when they receive data from the server. If a data path branches, and one branch passes through the HTTP Request module and another around it, if they also converge in a module, that latter module may experience multiple activations due to asynchronicity. This also means that server responses may arrive in different order than they were sent. If this kind of behaviour causes problems, you can try to fix it by changing sync mode to synchronized in Options. However, data throughput WILL be lower, and external servers may freeze your canvas simply by responding very slowly or not at all. For simple data paths and somewhat stable response times, the two sync modes will yield precisely the same results."
+    }
   },
   {
     "id": 1034,
@@ -240,6 +246,7 @@
     "name": "Simple HTTP",
     "path": "Integrations",
     "help": {
+      "helpText": "There is no documentation for this module at this time.",
       "code": "FORBIDDEN",
       "resource": "ModulePackage",
       "fault": "operation",
@@ -3191,7 +3198,9 @@
     "id": 571,
     "name": "ExportCSV",
     "path": "Utils",
-    "help": {}
+    "help": {
+      "helpText": "Generates a CSV (Comma-Separated Values) file from event data that flows into this module’s inputs. The file download link becomes available once the canvas has been started, and then stopped. You may wish to connect the inputs of this module to a `stream` module with real-time data flowing."
+    }
   },
   {
     "id": 522,
@@ -3221,7 +3230,9 @@
     "id": 145,
     "name": "Label",
     "path": "Utils",
-    "help": {}
+    "help": {
+      "helpText": "Displays a text representation of the input received in real-time. This module can take any data type and is often used to debug your canvas or display a single piece of data."
+    }
   },
   {
     "id": 1011,
@@ -3351,7 +3362,9 @@
     "id": 197,
     "name": "SendToStream",
     "path": "Utils",
-    "help": {}
+    "help": {
+      "helpText": "Capable of pushing data from your canvas into a selected stream. The module will reveal its inputs based on the fields configured on your selected stream. To select your stream click into the value input inside the module and select from the dropdown menu containing all the streams you have permission to access. Ensure that your selected stream has some fields configured, otherwise the module will not show any inputs."
+    }
   },
   {
     "id": 527,
@@ -3371,13 +3384,17 @@
     "id": 215,
     "name": "ConstantColor",
     "path": "Utils",
-    "help": {}
+    "help": {
+      "helpText": "This module represents a constant color value, that can be connected to any color input. The input will have that value during the whole execution."
+    }
   },
   {
     "id": 216,
     "name": "Gradient",
     "path": "Utils",
-    "help": {}
+    "help": {
+      "helpText": "Generates an RGBA color string based on the combination of its inputs. The `Min Value` input correlates to the `Min Color` input. The `Max Value` input correlates to the `Max Color` input. The color output is determined by the `in` input in relation to these boundary values. For example, `Min Value = 0` `In = 0` `Min Color = Output Color` (e.g. White) Where, `Max Value = 1` `In = 1` `Max Color = Output Color` (e.g. Black) Where, `In = 0.5` Output color will be grey (rgba(128,128,128,1))"
+    }
   },
   {
     "id": 67,
@@ -3397,7 +3414,9 @@
     "id": 196,
     "name": "Heatmap",
     "path": "Visualizations",
-    "help": {}
+    "help": {
+      "helpText": "Displays a colored heatmap overlay on top of a geographical map. "
+    }
   },
   {
     "id": 214,
