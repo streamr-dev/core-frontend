@@ -145,6 +145,7 @@ const EditableText = ({
                             className={styles.hiddenInput}
                             id={props.id}
                             onFocus={onFocus}
+                            placeholder={placeholder}
                             disabled={disabled}
                             tabIndex="-1"
                         />

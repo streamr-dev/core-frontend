@@ -1,5 +1,7 @@
-.searchIcon {
+.searchNavIcon {
   width: 16px;
+  position: absolute;
+  top: -3.5rem;
 
   g {
     color: rgb(163, 163, 163);
@@ -15,8 +17,29 @@
 }
 
 @media (--md-down) {
-  .searchIcon {
+  .searchNavIcon {
     display: none;
+  }
+}
+
+.mobileSearchNavIcon {
+  display: none;
+}
+
+@media (--md-down) {
+  .mobileSearchNavIcon {
+    display: inline-block;
+    position: absolute;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 12;
+  }
+}
+
+@media (--sm-down) {
+  .mobileSearchNavIcon {
+    z-index: 9;
   }
 }
 

@@ -2,7 +2,7 @@
 
 import React, { useState, useCallback, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { Translate, I18n } from 'react-redux-i18n'
+import { Translate } from 'react-redux-i18n'
 
 import links from '$shared/../links'
 import SvgIcon from '$shared/components/SvgIcon'
@@ -96,8 +96,10 @@ const Search = ({ toggleOverlay }: Props) => {
                             <React.Fragment>
                                 <p className={styles.noResults}>No results found for <strong>{query}</strong></p>
                                 <p className={styles.noResultsMoreInfo}>
-                                    Please try a different search or ask on our
-                                    <a rel="noopener noreferrer" target="_blank" href={links.community.devForum}> Community Dev Forum</a> instead.
+                                    <Translate value="docs.search.noResults" tag="span" />
+                                    <br className={styles.mobileOnlyBreak} />
+                                    <a rel="noopener noreferrer" target="_blank" href={links.community.devForum}> Community Dev Forum </a>
+                                    <Translate value="docs.search.noResultsSuffix" />
                                 </p>
                             </React.Fragment>
                         )

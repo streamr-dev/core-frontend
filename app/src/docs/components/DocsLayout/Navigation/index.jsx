@@ -99,6 +99,11 @@ class Navigation extends React.Component<Props, State> {
         return (
             <React.Fragment>
                 {isSearching && <Search visible toggleOverlay={this.toggleOverlay} />}
+                {!isSearching && <SvgIcon
+                    name="search"
+                    className={cx(styles.searchNavIcon, styles.mobileSearchNavIcon)}
+                    onClick={() => { this.toggleOverlay() }}
+                />}
                 <ElevatedContainer
                     offset="64"
                     className={cx(className, styles.navigationContainer, {
@@ -110,7 +115,7 @@ class Navigation extends React.Component<Props, State> {
                 >
                     {!isSearching && <SvgIcon
                         name="search"
-                        className={styles.searchIcon}
+                        className={styles.searchNavIcon}
                         onClick={() => { this.toggleOverlay() }}
                     />}
                     <ul className={cx(styles.navList, {
