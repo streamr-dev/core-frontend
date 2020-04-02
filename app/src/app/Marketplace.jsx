@@ -9,7 +9,7 @@ import routes from '$routes'
 import links from '../links'
 import { formatPath } from '$shared/utils/url'
 
-import ErrorPageView from '$mp/components/ErrorPageView'
+import GenericErrorPage from '$shared/components/GenericErrorPage'
 
 import ProductPage from '$mp/containers/deprecated/ProductPage'
 import ProductPage2 from '$mp/containers/ProductPage'
@@ -18,7 +18,7 @@ import EditProductPage from '$mp/containers/deprecated/EditProductPage'
 import Products from '$mp/containers/Products'
 import NewProductPage from '$mp/components/NewProductPage'
 
-const Route = withErrorBoundary(ErrorPageView)(RouterRoute)
+const Route = withErrorBoundary(GenericErrorPage)(RouterRoute)
 
 const CreateProductAuth = userIsAuthenticated(EditProductPage)
 const EditProductAuth = userIsAuthenticated(EditProductPage)

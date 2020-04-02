@@ -13,7 +13,7 @@ import appCrashedImage from '$shared/assets/images/app_crashed.png'
 import appCrashedImage2x from '$shared/assets/images/app_crashed@2x.png'
 import Button from '$shared/components/Button'
 
-import styles from './errorPageView.pcss'
+import styles from './genericErrorPage.pcss'
 
 type Props = {
     children?: Node,
@@ -27,19 +27,19 @@ export const ErrorPageContent = ({ children }: Props) => (
                     className={styles.image}
                     src={appCrashedImage}
                     srcSet={`${appCrashedImage2x} 2x`}
-                    alt={I18n.t('errorPageView.imageCaption')}
+                    alt={I18n.t('genericErrorPage.imageCaption')}
                 />
             )}
             link={children}
             linkOnMobile
         >
-            <Translate value="errorPageView.message" dangerousHTML />
+            <Translate value="genericErrorPage.message" dangerousHTML />
         </EmptyState>
     </Container>
 )
 
-const ErrorPageView = () => (
-    <Layout className={styles.errorPageView}>
+const GenericErrorPage = () => (
+    <Layout className={styles.genericErrorPage}>
         <BodyClass className={PAGE_SECONDARY} />
         <ErrorPageContent>
             <Button
@@ -47,7 +47,7 @@ const ErrorPageView = () => (
                 tag={Link}
                 to={links.marketplace.main}
             >
-                <Translate value="errorPageView.top" />
+                <Translate value="genericErrorPage.top" />
             </Button>
             <Button
                 kind="special"
@@ -61,4 +61,4 @@ const ErrorPageView = () => (
     </Layout>
 )
 
-export default ErrorPageView
+export default GenericErrorPage

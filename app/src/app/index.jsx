@@ -89,10 +89,10 @@ import '../analytics'
 
 import AutoScroll from '$shared/components/AutoScroll'
 import LocaleSetter from '$mp/containers/LocaleSetter'
-import NotFoundPage from '$mp/components/NotFoundPage'
+import NotFoundPage from '$shared/components/NotFoundPage'
 import GoogleAnalyticsTracker from '$mp/components/GoogleAnalyticsTracker'
 import isProduction from '$mp/utils/isProduction'
-import ErrorPageView from '$mp/components/ErrorPageView'
+import GenericErrorPage from '$shared/components/GenericErrorPage'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import Analytics from '$shared/utils/Analytics'
 import routes from '$routes'
@@ -103,7 +103,7 @@ import routes from '$routes'
 const DashboardEditorAuth = userIsAuthenticated(DashboardEditor)
 
 // Wrap each Route to an ErrorBoundary
-const Route = withErrorBoundary(ErrorPageView)(RouterRoute)
+const Route = withErrorBoundary(GenericErrorPage)(RouterRoute)
 
 const { docs, editor } = links
 
@@ -267,7 +267,7 @@ const EditorRouter = () => ([
 ])
 
 const MiscRouter = () => ([
-    <Route exact path="/error" component={ErrorPageView} key="ErrorPageView" />,
+    <Route exact path="/error" component={GenericErrorPage} key="GenericErrorPage" />,
     <Route component={NotFoundPage} key="NotFoundPage" />,
 ])
 

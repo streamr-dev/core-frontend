@@ -2,7 +2,7 @@ import React from 'react'
 import { MemoryRouter, Route, Switch } from 'react-router-dom'
 import { mount } from 'enzyme'
 
-import ErrorPageView from '$mp/components/ErrorPageView'
+import GenericErrorPage from '$shared/components/GenericErrorPage'
 import MarketplaceRouter from '$mp/../app/Marketplace'
 
 /* eslint-disable react/prop-types */
@@ -40,7 +40,7 @@ jest.mock('$mp/components/NewProductPage', () => ({
         <div>New product</div>
     ),
 }))
-jest.mock('$mp/components/ErrorPageView', () => ({
+jest.mock('$shared/components/GenericErrorPage', () => ({
     __esModule: true,
     default: () => (
         <div>Error page</div>
@@ -154,7 +154,7 @@ describe('Marketplace Routes', () => {
                 >
                     <Switch>
                         {MarketplaceRouter()}
-                        <Route component={ErrorPageView} key="NotFoundPage" />
+                        <Route component={GenericErrorPage} key="NotFoundPage" />
                     </Switch>
                 </MemoryRouter>
             ))
@@ -170,7 +170,7 @@ describe('Marketplace Routes', () => {
                 >
                     <Switch>
                         {MarketplaceRouter()}
-                        <Route component={ErrorPageView} key="NotFoundPage" />
+                        <Route component={GenericErrorPage} key="NotFoundPage" />
                     </Switch>
                 </MemoryRouter>
             ))
@@ -186,7 +186,7 @@ describe('Marketplace Routes', () => {
                 >
                     <Switch>
                         {MarketplaceRouter()}
-                        <Route component={ErrorPageView} key="NotFoundPage" />
+                        <Route component={GenericErrorPage} key="NotFoundPage" />
                     </Switch>
                 </MemoryRouter>
             ))
@@ -311,7 +311,7 @@ describe('Marketplace Routes', () => {
                 >
                     <Switch>
                         {MarketplaceRouter()}
-                        <Route component={ErrorPageView} key="NotFoundPage" />
+                        <Route component={GenericErrorPage} key="NotFoundPage" />
                     </Switch>
                 </MemoryRouter>
             ))

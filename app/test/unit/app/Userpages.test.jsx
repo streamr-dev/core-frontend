@@ -77,7 +77,7 @@ jest.mock('$mp/containers/EditProductPage', () => ({
         <div>Product {match.params.id} editor</div>
     ),
 }))
-jest.mock('$mp/components/ErrorPageView', () => ({
+jest.mock('$shared/components/GenericErrorPage', () => ({
     __esModule: true,
     default: () => (
         <div>Error page</div>
