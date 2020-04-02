@@ -9,7 +9,7 @@ import cx from 'classnames'
 
 import Layout from '$shared/components/Layout'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
-import { ErrorPageContent } from '$mp/components/ErrorPageView'
+import { ErrorPageContent } from '$shared/components/GenericErrorPage'
 import copyToClipboard from 'copy-to-clipboard'
 
 import links from '../../links'
@@ -619,7 +619,7 @@ const CanvasErrorPage = () => (
             kind="special"
             tag={Link}
             to={routes.canvases()}
-            className="d-none d-md-inline-block"
+            className="d-none d-md-inline-flex"
         >
             <Translate value="editor.general.backToCanvases" />
         </Button>

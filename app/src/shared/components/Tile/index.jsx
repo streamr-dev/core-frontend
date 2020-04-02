@@ -218,7 +218,7 @@ type ProductTileProps = {
     showDeployingBadge?: boolean,
 }
 
-const getProductLink = (id: string) => (process.env.NEW_MP_CONTRACT ? (
+export const getProductLink = (id: string) => (process.env.NEW_MP_CONTRACT ? (
     formatPath(links.userpages.products, id, 'edit')
 ) : (
     formatPath(links.marketplace.products, id)

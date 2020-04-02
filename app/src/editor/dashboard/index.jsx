@@ -218,8 +218,13 @@ const DashboardLoader = withRouter(withErrorBoundary(ErrorComponentView)(class D
         this.init()
     }
 
-    componentDidUpdate() {
-        this.init()
+    componentDidUpdate(prevProps) {
+        const { match } = this.props
+        const { match: prevMatch } = prevProps
+
+        if (match.params.id !== prevMatch.params.id) {
+            this.init()
+        }
     }
 
     componentWillUnmount() {

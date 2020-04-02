@@ -254,17 +254,6 @@ msgstr "Transaction failed"
 msgid "error##wallet"
 msgstr "Wallet error"
 
-msgid "errorPageView##imageCaption"
-msgstr "App crashed"
-
-msgid "errorPageView##message"
-msgstr ""
-"Oops. Something has broken down here. <br /> Please try one of the links "
-"below <br /> to get things back on track."
-
-msgid "errorPageView##top"
-msgstr "Marketplace top"
-
 msgid "imageUpload##coverImage##replace"
 msgstr "Drag & drop to replace your cover image <br /> or click to browse for one"
 
@@ -858,20 +847,6 @@ msgstr "Please try some different keywords"
 
 msgid "noProductsView##message"
 msgstr "We couldn’t find anything to match your search"
-
-msgid "notFoundPage##message"
-msgstr ""
-"Whoops! We don’t seem to be able to find your data.</br>"
-"<small>Something might have been moved around or changed.<small>"
-
-msgid "notFoundPage##top"
-msgstr "Go to marketplace"
-
-msgid "notFoundPage##coreApp"
-msgstr "Go to core app"
-
-msgid "notFoundPage##publicSite"
-msgstr "Go to public site"
 
 msgid "notifications##notEnoughMembers"
 msgstr "The minimum community size for a Data Union is %{memberLimit} members."

@@ -60,7 +60,9 @@ const PriceField = ({
                     className={styles.input}
                     {...inputProps}
                 />
-                <span className={styles.currency}>{currency}</span>
+                <div>
+                    <span className={styles.currency}>{currency}</span>
+                </div>
             </div>
             {hasError && !!lastError && (
                 <Errors overlap theme={MarketplaceTheme}>
