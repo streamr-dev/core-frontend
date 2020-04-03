@@ -33,52 +33,18 @@ env:
   - IMAGE_NAME=platform
 jobs:
   include:
-  - stage: Platform tests
+  - stage: Platform Tests
     if: type IN (pull_request)
     env:
-    - DESCRIPTION=VISUAL_TEST
-    - CHROMATIC_APP_CODE=exgpyxh1il5
-    - NODE_ENV=production
-    - PORT=12345
-    - VERSION=$TRAVIS_PULL_REQUEST_BRANCH
-    - SENTRY_ENVIRONMENT=pr
-    - STREAMR_API_URL=https://staging.streamr.com/api/v1
-    - STREAMR_WS_URL=wss://staging.streamr.com/api/v1/ws
-    - STREAMR_URL=https://staging.streamr.com
-    - PLATFORM_ORIGIN_URL=https://staging.streamr.com
-    - GOOGLE_ANALYTICS_ID=55331565-5
-    - STORYBOOK_BASE_PATH=storybook
-    - MARKETPLACE_CONTRACT_ADDRESS=0xA10151D088f6f2705a05d6c83719e99E079A61C1
-    - MARKETPLACE_CONTRACT_ADDRESS_OLD=0xA10151D088f6f2705a05d6c83719e99E079A61C1
-    - DATA_TOKEN_CONTRACT_ADDRESS=0x0Cf0Ee63788A0849fE5297F3407f701E122cC023
-    - DAI_TOKEN_CONTRACT_ADDRESS=0x6B175474E89094C44Da98b954EedeAC495271d0F
-    - UNISWAP_ADAPTOR_CONTRACT_ADDRESS=0x0
-    - WEB3_REQUIRED_NETWORK_ID=1
-    - WEB3_PUBLIC_HTTP_PROVIDER=https://mainnet.infura.io/v3/17c3985baecb4c4d94a1edc2c4d23206
-    - WEB3_PUBLIC_WS_PROVIDER=wss://mainnet.infura.io/ws/v3/17c3985baecb4c4d94a1edc2c4d23206
-    - SENTRY_DSN=https://e012761929d24baa96ca82772f60b395@sentry.io/1203154
-    - LOGROCKET_SLUG=et0uhu/streamr-frontend-local
-    - DATA_UNION_PUBLISH_MEMBER_LIMIT=0
-    script: "$TRAVIS_BUILD_DIR/app/travis_scripts/visual-tests.sh"
-  - stage: Build docker (Dev/Nightly)
-    if: branch = development
-    env:
-      - TAG=dev
-    install: true
-    script:
-      - npm ci
-      - npm run build
-      - docker build -t $OWNER/$IMAGE_NAME:local --build-arg NPM_TOKEN=${NPM_TOKEN} .
-      - travis_scripts/smoke-test.sh
+    - DESCRIPTION=UNIT_TEST
+    - STREAMR_API_URL=http://localhost/api/v1
+    - STREAMR_WS_URL=ws://localhost/api/v1/ws
+    - STREAMR_URL=http://localhost
+    - PLATFORM_ORIGIN_URL=http://localhost
+    script: "travis_retry $TRAVIS_BUILD_DIR/app/travis_scripts/unit-tests.sh"
     after_failure:
       - docker ps
-      - docker logs streamr_dev_platform
-    deploy:
-      - provider: script
-        skip_cleanup: true
-        script: bash travis_scripts/deploy-docker.sh dev
-        on:
-          branch: development
+      - $TRAVIS_BUILD_DIR/streamr-docker-dev/streamr-docker-dev/bin.sh log --all
 notifications:
   slack:
     secure: MZDZjnItLHeXN+rnenRfwQd635zMZWHUExAlo/i8zmcGmrDXMhZbm8Ppf0L2mkEWAXmE0aS8r+HsZW4P9GacYUQBgrhOg2gLp0lthLbT/YJAg/5wOmXkWZbE3G1AMBS+b1O/eEyWMmlH7dmYoMIuLa8tSeY/qGaiENjauTKilska0gurm2F0HWq7TAKuWJ5x0YWOikXT+QK1UlPwdVDyut1L0FHd21JfxftpK0U+yaBiBuJRplRPMmQMWWo5IxMHaWY66eJKPl/Jrk78sKfZrex9PkTjmDKTXl9Aj8WWanJY0LuA6WYIBH5ft5znV5Of1WpnxaR915NXilDz9XL3zyRmHiWcUegSTIeYp2LNARB71iqomctrcd8sC9ti2m3ZBuj7SSli5nV65JwMf+BdJ0ZEhFRXQ9ovkacEs+e45XubsRms8z3gTghwTnfd1KcqJPwxrDzpS3KMsdEkb8GMjlS2o0Kof3OBEbbu3AF4ueF5fPCG/vYZPY995+FNdP9SCvNN+Z96CKWYWPobK6EuSuaSiIjfHj3ixrQcLA+UaXlPZzK3NTdnJXsohKh8YBeiFQCEFiy80n9AKoTMKaarcU6nNevw6url0d6CpF6IQwPoJeEwB3PAM9ITOzKzbtSKrzEAO8u66bt49dWy7VoNbY4m3WMnbgaCpqjI1AqP+SQ=
