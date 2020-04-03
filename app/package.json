@@ -6,7 +6,7 @@
   "scripts": {
     "start": "webpack-dev-server --hot --host 0.0.0.0",
     "build": "node --max_old_space_size=4096 ./node_modules/.bin/webpack --progress --profile",
-    "test": "NODE_ENV=test jest",
+    "test": "NODE_ENV=test jest EditControllerProvider",
     "flow": "flow",
     "flow-stop": "flow stop",
     "eslint": "eslint .",
@@ -36,7 +36,7 @@
   "author": "",
   "license": "UNLICENSED",
   "jest": {
-    "collectCoverage": true,
+    "collectCoverage": false,
     "coverageReporters": [
       "text-summary",
       "lcov"
