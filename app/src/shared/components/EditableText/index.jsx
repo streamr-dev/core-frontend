@@ -24,6 +24,7 @@ type Props = {
     placeholder?: ?string,
     probe?: Node,
     setEditing: (boolean) => void,
+    hidePlaceholderOnFocus?: boolean,
     immediateCommit?: boolean,
 }
 
@@ -47,6 +48,7 @@ const EditableText = ({
     probe,
     setEditing,
     title,
+    hidePlaceholderOnFocus,
     immediateCommit,
     ...props
 }: Props) => {
@@ -103,6 +105,7 @@ const EditableText = ({
                 [styles.disabled]: disabled,
                 [styles.blank]: valueIsBlank,
                 [ModuleStyles.dragCancel]: !!editing,
+                [styles.hidePlaceholderOnFocus]: hidePlaceholderOnFocus,
             }, valueIsBlank ? blankClassName : undefined)}
             onDoubleClick={startEditing}
             {...((editOnFocus && !disabled) ? {

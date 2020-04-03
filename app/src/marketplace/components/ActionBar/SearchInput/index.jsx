@@ -18,7 +18,8 @@ type Props = {
     placeholder?: string,
     className?: string,
     hideClearButton?: boolean,
-    autoFocus?: boolean
+    autoFocus?: boolean,
+    hidePlaceholderOnFocus?: boolean,
 }
 
 const SearchInput = ({
@@ -28,6 +29,7 @@ const SearchInput = ({
     placeholder = I18n.t('actionBar.searchInput.placeholder'),
     className,
     hideClearButton,
+    hidePlaceholderOnFocus,
     autoFocus,
 }: Props) => (
     <div className={cx(className, styles.searchInput)}>
@@ -46,6 +48,7 @@ const SearchInput = ({
                     editing={editing}
                     setEditing={setEditing}
                     autoFocus={autoFocus}
+                    hidePlaceholderOnFocus={hidePlaceholderOnFocus}
                 >
                     {value || ''}
                 </EditableText>
