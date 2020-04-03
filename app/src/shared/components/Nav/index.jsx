@@ -75,21 +75,28 @@ const Nav = compose(
                 label={I18n.t('general.docs')}
                 to={routes.docs()}
             >
-                <Link to={routes.docsGettingStarted()}>
-                    <Translate value="general.gettingStarted" />
-                </Link>
-                <Link to={routes.docsStreamsRoot()}>
-                    <Translate value="general.streams" />
-                </Link>
-                <Link to={routes.docsCanvasesRoot()}>
-                    <Translate value="general.canvases" />
-                </Link>
-                <Link to={routes.docsDashboards()}>
-                    <Translate value="general.dashboards" />
-                </Link>
-                <Link to={routes.docsProductsRoot()}>
-                    <Translate value="general.products" />
-                </Link>
+                {[
+                    <Link to={routes.docsGettingStarted()} key="gettingStarted">
+                        <Translate value="general.gettingStarted" />
+                    </Link>,
+                    <Link to={routes.docsStreamsRoot()} key="streams">
+                        <Translate value="general.streams" />
+                    </Link>,
+                    <Link to={routes.docsCanvasesRoot()} key="canvases">
+                        <Translate value="general.canvases" />
+                    </Link>,
+                    <Link to={routes.docsDashboards()} key="dashboards">
+                        <Translate value="general.dashboards" />
+                    </Link>,
+                    <Link to={routes.docsProductsRoot()} key="products">
+                        <Translate value="general.products" />
+                    </Link>,
+                    ...(process.env.DATA_UNIONS ? [(
+                        <Link to={routes.docsDataUnionsRoot()} key="dataUnions">
+                            <Translate value="general.dataUnions" />
+                        </Link>
+                    )] : []),
+                ]}
             </DropdownItem>
             {!!currentUser && (
                 <AvatarItem user={currentUser} />
