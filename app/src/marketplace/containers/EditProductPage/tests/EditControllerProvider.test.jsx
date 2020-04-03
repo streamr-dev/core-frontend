@@ -1076,6 +1076,8 @@ describe('EditControllerProvider', () => {
         })
 
         it('does not redirect if deploy fails', async () => {
+            process.env.DATA_UNION_PUBLISH_MEMBER_LIMIT = 0
+
             let currentContext
             let validationContext
             let props
@@ -1138,6 +1140,8 @@ describe('EditControllerProvider', () => {
         })
 
         it('updates and saves beneficiary address if deploy succeeds', async () => {
+            process.env.DATA_UNION_PUBLISH_MEMBER_LIMIT = 0
+
             let currentContext
             let validationContext
             let props
