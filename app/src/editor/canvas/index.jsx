@@ -3,7 +3,6 @@ import { Link, withRouter } from 'react-router-dom'
 import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-
 import { selectAuthState } from '$shared/modules/user/selectors'
 import SessionContext from '$auth/contexts/Session'
 import cx from 'classnames'

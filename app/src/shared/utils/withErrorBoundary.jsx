@@ -1,6 +1,7 @@
 // @flow
 
 import React, { Component, type ComponentType, type Node } from 'react'
+
 import analytics from '../../analytics'
 
 type Props = {
@@ -45,7 +46,6 @@ const withErrorBoundary = (ErrorComponent: ComponentType<any>) => (
             render() {
                 const { error } = this.state
                 const { children, ...props } = this.props
-
                 return error ? (
                     <ErrorComponent {...props} error={this.state.error} />
                 ) : (
