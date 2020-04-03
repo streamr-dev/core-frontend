@@ -64,7 +64,7 @@ describe('SessionProvider', () => {
         }
 
         const date = new Date()
-        date.setHours(date.getHours() - 2)
+        date.setHours(date.getHours() + 2)
         global.localStorage.setItem(SESSION_TOKEN_KEY, 'myToken')
         global.localStorage.setItem(SESSION_EXPIRES_AT, date)
 
@@ -87,7 +87,7 @@ describe('SessionProvider', () => {
         }
 
         const date = new Date()
-        date.setHours(date.getHours() - 8)
+        date.setHours(date.getHours() + 8)
         global.localStorage.setItem(SESSION_TOKEN_KEY, 'myToken')
         global.localStorage.setItem(SESSION_EXPIRES_AT, date)
 
@@ -98,6 +98,59 @@ describe('SessionProvider', () => {
         ))
 
         expect(currentContext.token).toBeFalsy()
+    })
+
+    it('returns token if now = 5am and date = 10am', () => {
+        const realDate = Date.now
+        global.Date.now = jest.fn(() => new Date('2020-01-01T05:00:00.000Z').getTime())
+
+        const date = new Date('2020-01-01T10:00:00.000Z')
+        global.localStorage.setItem(SESSION_TOKEN_KEY, 'myToken')
+        global.localStorage.setItem(SESSION_EXPIRES_AT, date)
+
+        let currentContext
+
+        const Test = () => {
+            currentContext = useContext(Context)
+
+            return null
+        }
+
+        mount((
+            <SessionProvider>
+                <Test />
+            </SessionProvider>
+        ))
+
+        expect(currentContext.token).toBe('myToken')
+        global.Date.now = realDate
+    })
+
+    it('returns token if now = 10am and date = 5am', () => {
+        const realDate = Date.now
+        global.Date.now = jest.fn(() => new Date('2020-01-01T10:00:00.000Z').getTime())
+
+        const date = new Date('2020-01-01T05:00:00.000Z')
+        global.localStorage.setItem(SESSION_TOKEN_KEY, 'myToken')
+        global.localStorage.setItem(SESSION_EXPIRES_AT, date)
+
+        let currentContext
+
+        const Test = () => {
+            currentContext = useContext(Context)
+
+            return null
+        }
+
+        mount((
+            <SessionProvider>
+                <Test />
+            </SessionProvider>
+        ))
+
+        expect(currentContext.token).toBeFalsy()
+
+        global.Date.now = realDate
     })
 
     it('sets session token', () => {
