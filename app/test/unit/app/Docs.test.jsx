@@ -147,8 +147,8 @@ jest.mock('$docs/components/DocsPages/DataUnions/IntroToDataUnions', () => ({
     __esModule: true,
     default: () => (
         <div>
-            /docs/data-unions
-            /docs/data-unions/intro-to-data-unions
+            /docs/dataunions
+            /docs/dataunions/intro-to-data-unions
         </div>
     ),
 }))
