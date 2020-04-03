@@ -165,8 +165,8 @@ describe('EditControllerProvider', () => {
                 await currentContext.deployDataUnion()
             })
             expect(currentContext.publishAttempted).toBe(true)
-            expect(modalOpenStub.calledOnce).toBe(true)
-            expect(putProductStub.calledOnce).toBe(true)
+            sinon.assert.calledOnce(modalOpenStub)
+            sinon.assert.calledOnce(putProductStub)
             expect(props.location.pathname).toBe('/core/products/1/edit')
         })
 
