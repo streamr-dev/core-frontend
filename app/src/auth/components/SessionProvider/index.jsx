@@ -20,12 +20,12 @@ const storage = isLocalStorageAvailable() ? window.localStorage : null
 let cachedToken // fallback if no webstorage
 let cachedDate
 
-function hasExpired(date: Date) {
+function isValid(date: Date) {
     if (!date) { return true }
 
-    const diff = Math.abs(Date.now() - date.getTime())
+    const diff = date.getTime() - Date.now()
 
-    return (diff > EXPIRES_AT_VALID_HOURS * 60 * 60 * 1000)
+    return (diff > 0 && diff < EXPIRES_AT_VALID_HOURS * 60 * 60 * 1000)
 }
 
 function getStoredToken(): ?string {
@@ -40,7 +40,7 @@ function getStoredToken(): ?string {
         date = date ? new Date(date) : null
     }
 
-    return date && !hasExpired(date) ? token : null
+    return date && isValid(date) ? token : null
 }
 
 function storeToken(value?: ?string) {
