@@ -20,14 +20,49 @@ import FilterSelector from './FilterSelector'
 import FilterDropdownItem from './FilterDropdownItem'
 import styles from './actionBar.pcss'
 
+export type CreateProductButtonProps = {
+    onCreateProduct: () => void,
+}
+
+export const CreateProductButton = ({ onCreateProduct }: CreateProductButtonProps) => {
+    if (!process.env.NEW_MP_CONTRACT) {
+        return (
+            <Button kind="secondary" tag={Link} to={links.marketplace.createProduct}>
+                <Translate value="actionBar.create" />
+            </Button>
+        )
+    } else if (process.env.DATA_UNIONS) {
+        return (
+            <Button
+                kind="secondary"
+                type="button"
+                onClick={() => onCreateProduct()}
+            >
+                <Translate value="actionBar.create" />
+            </Button>
+        )
+    }
+
+    return (
+        <Button
+            kind="secondary"
+            tag={Link}
+            to={routes.newProduct({
+                type: productTypes.NORMAL,
+            })}
+        >
+            <Translate value="actionBar.create" />
+        </Button>
+    )
+}
+
 export type Props = {
     filter: Filter,
     categories: ?Array<Category>,
     onCategoryChange: (filter: Filter) => void,
     onSortChange: (filter: Filter) => void,
     onSearchChange: (filter: Filter) => void,
-    onCreateProduct: () => void,
-}
+} & CreateProductButtonProps
 
 class ActionBar extends Component<Props> {
     static sortByOptions = ['pricePerSecond', 'free']
@@ -137,31 +172,7 @@ class ActionBar extends Component<Props> {
                                 </FilterSelector>
                             </li>
                             <li className={classNames('d-none d-md-block', styles.createProduct)}>
-                                {!!process.env.DATA_UNIONS && (
-                                    <Button
-                                        kind="secondary"
-                                        type="button"
-                                        onClick={() => onCreateProduct()}
-                                    >
-                                        <Translate value="actionBar.create" />
-                                    </Button>
-                                )}
-                                {!!process.env.NEW_MP_CONTRACT && !process.env.DATA_UNIONS && (
-                                    <Button
-                                        kind="secondary"
-                                        tag={Link}
-                                        to={routes.newProduct({
-                                            type: productTypes.NORMAL,
-                                        })}
-                                    >
-                                        <Translate value="actionBar.create" />
-                                    </Button>
-                                )}
-                                {!process.env.NEW_MP_CONTRACT && !process.env.DATA_UNIONS && (
-                                    <Button kind="secondary" tag={Link} to={links.marketplace.createProduct}>
-                                        <Translate value="actionBar.create" />
-                                    </Button>
-                                )}
+                                <CreateProductButton onCreateProduct={onCreateProduct} />
                             </li>
                         </ul>
                     </Container>

@@ -31,7 +31,7 @@ import * as MenuItems from './MenuItems'
 
 import styles from './products.pcss'
 
-const CreateProductButton = () => {
+export const CreateProductButton = () => {
     const { api: createProductDialog } = useModal('marketplace.createProduct')
 
     if (!process.env.NEW_MP_CONTRACT) {

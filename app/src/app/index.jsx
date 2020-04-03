@@ -9,13 +9,8 @@ import { ConnectedRouter } from 'connected-react-router'
 import qs from 'query-string'
 
 // Marketplace
-import ProductPage from '$mp/containers/deprecated/ProductPage'
-import ProductPage2 from '$mp/containers/ProductPage'
-import StreamPreviewPage from '$mp/containers/StreamPreviewPage'
-import EditProductPage from '$mp/containers/deprecated/EditProductPage'
-import EditProductPage2 from '$mp/containers/EditProductPage'
+import MarketplaceRouter from './Marketplace'
 import Products from '$mp/containers/Products'
-import NewProductPage from '$mp/components/NewProductPage'
 
 // Auth
 import SessionProvider from '$auth/components/SessionProvider'
@@ -27,17 +22,7 @@ import ResetPasswordPage from '$auth/components/ResetPasswordPage'
 import RegisterPage from '$auth/components/RegisterPage'
 
 // Userpages
-import DashboardList from '$userpages/components/DashboardPage/List'
-import CanvasList from '$userpages/components/CanvasPage/List'
-import StreamShowView from '$userpages/components/StreamPage/Show'
-import StreamListView from '$userpages/components/StreamPage/List'
-import StreamLivePreview from '$userpages/components/StreamLivePreview'
-import TransactionList from '$userpages/components/TransactionPage/List'
-import ProfilePage from '$userpages/components/ProfilePage'
-import PurchasesPage from '$userpages/components/PurchasesPage'
-import ProductsPage from '$userpages/components/ProductsPage'
-import StatsPage from '$userpages/components/ProductsPage/Stats'
-import MembersPage from '$userpages/components/ProductsPage/Members'
+import UserpagesRouter from './Userpages'
 
 // Docs Pages
 import IntroductionDocsPage from '$docs/components/DocsPages/Introduction'
@@ -104,44 +89,23 @@ import '../analytics'
 
 import AutoScroll from '$shared/components/AutoScroll'
 import LocaleSetter from '$mp/containers/LocaleSetter'
-import NotFoundPage from '$mp/components/NotFoundPage'
+import NotFoundPage from '$shared/components/NotFoundPage'
 import GoogleAnalyticsTracker from '$mp/components/GoogleAnalyticsTracker'
 import isProduction from '$mp/utils/isProduction'
-import ErrorPageView from '$mp/components/ErrorPageView'
+import GenericErrorPage from '$shared/components/GenericErrorPage'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import Analytics from '$shared/utils/Analytics'
 import routes from '$routes'
 
 // Wrap authenticated components here instead of render() method
-// Marketplace Auth
-const CreateProductAuth = userIsAuthenticated(EditProductPage)
-const EditProductAuth = userIsAuthenticated(EditProductPage)
-const EditProductAuth2 = userIsAuthenticated(EditProductPage2)
-
-// Userpages Auth
-const CanvasListAuth = userIsAuthenticated(CanvasList)
-const ProfilePageAuth = userIsAuthenticated(ProfilePage)
-const DashboardListAuth = userIsAuthenticated(DashboardList)
-const StreamShowViewAuth = userIsAuthenticated(StreamShowView)
-const StreamListViewAuth = userIsAuthenticated(StreamListView)
-const StreamLivePreviewAuth = userIsAuthenticated(StreamLivePreview)
-const TransactionListAuth = userIsAuthenticated(TransactionList)
-const PurchasesPageAuth = userIsAuthenticated(PurchasesPage)
-const ProductsPageAuth = userIsAuthenticated(ProductsPage)
-const StatsPageAuth = userIsAuthenticated(StatsPage)
-const MembersPageAuth = userIsAuthenticated(MembersPage)
 
 // Editor Auth
 const DashboardEditorAuth = userIsAuthenticated(DashboardEditor)
 
-// Other components
-const ProductPurchasePage = (props) => <ProductPage overlayPurchaseDialog {...props} />
-const ProductPublishPage = (props) => <ProductPage overlayPublishDialog {...props} />
-
 // Wrap each Route to an ErrorBoundary
-const Route = withErrorBoundary(ErrorPageView)(RouterRoute)
+const Route = withErrorBoundary(GenericErrorPage)(RouterRoute)
 
-const { marketplace, userpages, docs, editor } = links
+const { docs, editor } = links
 
 const forwardTo = (routeFn: Function) => ({ location: { search } }: Location) => (
     <Redirect to={routeFn(qs.parse(search))} />
@@ -158,21 +122,6 @@ const AuthenticationRouter = () => ([
     <Route exact path="/register/register" key="RegisterRedirect" render={forwardTo(routes.register)} />,
     <Route exact path="/register/resetPassword" key="ResetPasswordRedirect" render={forwardTo(routes.resetPassword)} />,
     <Redirect from="/register/forgotPassword" to={routes.forgotPassword()} key="ForgotPasswordRedirect" />,
-])
-
-const MarketplaceRouter = () => (process.env.NEW_MP_CONTRACT ? [
-    <Route exact path={marketplace.main} component={Products} key="Products" />,
-    <Route exact path={formatPath(marketplace.products, ':id', 'streamPreview', ':streamId')} component={StreamPreviewPage} key="StreamPreview" />,
-    <Route exact path={formatPath(marketplace.products, ':id')} component={ProductPage2} key="ProductPage2" />,
-    <Route exact path={routes.newProduct()} component={NewProductPage} key="NewProductPage" />,
-] : [
-    <Route exact path={marketplace.main} component={Products} key="Products" />,
-    <Route exact path={links.marketplace.createProduct} component={CreateProductAuth} key="CreateProduct" />,
-    <Route exact path={formatPath(marketplace.products, ':id', 'purchase')} component={ProductPurchasePage} key="ProductPurchasePage" />,
-    <Route exact path={formatPath(marketplace.products, ':id', 'publish')} component={ProductPublishPage} key="ProductPublishPage" />,
-    <Route exact path={formatPath(marketplace.products, ':id', 'streamPreview', ':streamId')} component={StreamPreviewPage} key="StreamPreview" />,
-    <Route exact path={formatPath(marketplace.products, ':id')} component={ProductPage} key="ProductPage" />,
-    <Route exact path={formatPath(marketplace.products, ':id', 'edit')} component={EditProductAuth} key="EditProduct" />,
 ])
 
 const DocsRouter = () => ([
@@ -310,24 +259,6 @@ const DocsRouter = () => ([
     <Redirect exact from={docs.main} to={docs.introduction} key="DocsRoot" />,
 ])
 
-const UserpagesRouter = () => ([
-    <Route exact path={userpages.canvases} component={CanvasListAuth} key="CanvasesCanvasList" />,
-    <Route exact path={userpages.profile} component={ProfilePageAuth} key="ProfilePage" />,
-    <Route exact path={userpages.dashboards} component={DashboardListAuth} key="DashboardList" />,
-    <Route exact path={formatPath(userpages.streamShow, ':id?')} component={StreamShowViewAuth} key="streamShow" />,
-    <Route exact path={userpages.streams} component={StreamListViewAuth} key="StreamListView" />,
-    <Route exact path={formatPath(userpages.streamPreview, ':streamId')} component={StreamLivePreviewAuth} key="StreamLivePreview" />,
-    <Route exact path={userpages.transactions} component={TransactionListAuth} key="TransactionList" />,
-    <Route exact path={userpages.purchases} component={PurchasesPageAuth} key="PurchasesPage" />,
-    <Route exact path={userpages.products} component={ProductsPageAuth} key="ProductsPage" />,
-    ...(process.env.NEW_MP_CONTRACT ? [
-        <Route exact path={routes.editProduct()} component={EditProductAuth2} key="EditProduct" />,
-        <Route exact path={routes.productStats()} component={StatsPageAuth} key="StatsPage" />,
-        <Route exact path={routes.productMembers()} component={MembersPageAuth} key="MembersPage" />,
-    ] : []),
-    <Redirect from={userpages.main} to={userpages.streams} component={StreamListViewAuth} key="StreamListViewRedirect" />,
-])
-
 const EditorRouter = () => ([
     <Route exact path="/" component={Products} key="root" />, // edge case for localhost
     <Route exact path={formatPath(editor.canvasEditor, ':id?')} component={CanvasEditor} key="CanvasEditor" />,
@@ -336,7 +267,7 @@ const EditorRouter = () => ([
 ])
 
 const MiscRouter = () => ([
-    <Route exact path="/error" component={ErrorPageView} key="ErrorPageView" />,
+    <Route exact path="/error" component={GenericErrorPage} key="GenericErrorPage" />,
     <Route component={NotFoundPage} key="NotFoundPage" />,
 ])
 
