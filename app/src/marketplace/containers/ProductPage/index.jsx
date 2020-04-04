@@ -34,7 +34,7 @@ const ProductPage = () => {
     } = useController()
     const product = useProduct()
     const userData = useSelector(selectUserData)
-    const isLoggedIn = userData !== null && SessionProvider.token()
+    const isLoggedIn = userData !== null && SessionProvider.token() !== null
 
     const { match } = useContext(RouterContext.Context)
 
