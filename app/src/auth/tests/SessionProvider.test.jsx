@@ -87,7 +87,7 @@ describe('SessionProvider', () => {
         }
 
         const date = new Date()
-        date.setHours(date.getHours() + 8)
+        date.setHours(date.getHours() - 2)
         global.localStorage.setItem(SESSION_TOKEN_KEY, 'myToken')
         global.localStorage.setItem(SESSION_EXPIRES_AT, date)
 
@@ -176,5 +176,46 @@ describe('SessionProvider', () => {
 
         expect(global.localStorage.getItem(SESSION_TOKEN_KEY)).toBe('myToken')
         expect(currentContext.token).toBe('myToken')
+    })
+
+    it('stores new token when changed', async () => {
+        let currentContext
+
+        const Test = () => {
+            currentContext = useContext(Context)
+
+            return null
+        }
+
+        mount((
+            <SessionProvider>
+                <Test />
+            </SessionProvider>
+        ))
+
+        expect(currentContext.token).toBeFalsy()
+
+        act(() => {
+            currentContext.setSessionToken('myToken')
+        })
+
+        expect(global.localStorage.getItem(SESSION_TOKEN_KEY)).toBe('myToken')
+        expect(currentContext.token).toBe('myToken')
+
+        const oldDate = new Date(global.localStorage.getItem(SESSION_EXPIRES_AT))
+
+        await act(async () => {
+            await (() => new Promise((resolve) => {
+                setTimeout(() => {
+                    currentContext.setSessionToken('anotherToken')
+                    resolve()
+                }, 5000)
+            }))()
+        })
+
+        expect(global.localStorage.getItem(SESSION_TOKEN_KEY)).toBe('anotherToken')
+        expect(currentContext.token).toBe('anotherToken')
+        const newDate = new Date(global.localStorage.getItem(SESSION_EXPIRES_AT))
+        expect(newDate.getTime()).toBeGreaterThan(oldDate.getTime())
     })
 })
