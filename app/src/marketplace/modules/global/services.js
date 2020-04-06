@@ -10,7 +10,8 @@ import type { NumberString } from '$shared/flowtype/common-types'
 
 const marketplaceContract = (usePublicNode: boolean = false) => getContract(getConfig().marketplace, usePublicNode)
 
-export const getDataPerUsd = (): SmartContractCall<NumberString> => call(marketplaceContract(true).methods.dataPerUsd())
+export const getDataPerUsd = (): SmartContractCall<NumberString> => (call(marketplaceContract(false).methods.dataPerUsd())
     .then((value) => fromAtto(value).toString())
+)
 
 export const checkEthereumNetworkIsCorrect = (): Promise<void> => (checkEthereumNetworkIsCorrectUtil(getWeb3()))

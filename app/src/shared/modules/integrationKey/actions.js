@@ -128,7 +128,7 @@ export const updateBalance = (account: Address) => async (dispatch: Function) =>
         accountEthBalance = await services.getBalance({
             address: account,
             type: BalanceType.ETH,
-            usePublicNode: true,
+            usePublicNode: false,
         })
     } catch (e) {
         console.warn(e)
@@ -138,7 +138,7 @@ export const updateBalance = (account: Address) => async (dispatch: Function) =>
         accountDataBalance = await services.getBalance({
             address: account,
             type: BalanceType.DATA,
-            usePublicNode: true,
+            usePublicNode: false,
         })
     } catch (e) {
         console.warn(e)
