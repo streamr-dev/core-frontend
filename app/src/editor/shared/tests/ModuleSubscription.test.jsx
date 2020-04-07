@@ -88,7 +88,7 @@ describe('Canvas Subscriptions', () => {
             expect(newRowMessages.length).toBeTruthy()
             expect(newRowMessages.length).toBeGreaterThanOrEqual(7)
             done()
-        }, 15000)
+        }, 20000)
 
         it('should get canvas module subscription messages in restarted canvas', async (done) => {
             let canvas = await Services.create()
@@ -126,6 +126,6 @@ describe('Canvas Subscriptions', () => {
             expect(newRowMessages.length).toBeTruthy()
             expect(newRowMessages.length).toBeGreaterThanOrEqual(7)
             done()
-        }, 20000)
+        }, 30000)
     })
 })

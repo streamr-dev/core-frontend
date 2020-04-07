@@ -5,7 +5,7 @@ import dotenv from '../../scripts/dotenv'
 
 dotenv()
 
-jest.setTimeout(15000) // remove when we get --timeout jest 24.9.0
+jest.setTimeout(30000) // remove when we get --timeout jest 24.9.0
 
 moxios.promiseWait = () => new Promise((resolve) => moxios.wait(resolve))
 
