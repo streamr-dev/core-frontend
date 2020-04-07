@@ -101,6 +101,9 @@ msgstr "Product"
 msgid "general##products"
 msgstr "Products"
 
+msgid "general##dataUnions"
+msgstr "Data Unions"
+
 msgid "general##profile"
 msgstr "Profile"
 
