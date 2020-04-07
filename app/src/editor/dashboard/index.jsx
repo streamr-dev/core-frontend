@@ -18,6 +18,7 @@ import Sidebar from '$editor/shared/components/Sidebar'
 import { handleLoadError } from '$auth/utils/loginInterceptor'
 import BodyClass from '$shared/components/BodyClass'
 import DashboardStatus from '$editor/shared/components/Status'
+import ResourceNotFoundError from '$shared/errors/ResourceNotFoundError'
 
 import links from '../../links'
 
@@ -210,9 +211,19 @@ const DashboardEdit = withRouter(class DashboardEdit extends Component {
     }
 })
 
-const DashboardLoader = withRouter(withErrorBoundary(ErrorComponentView)(class DashboardLoader extends React.PureComponent {
+const ErrorComponent = ({ error, ...props }) => {
+    if (error instanceof ResourceNotFoundError) {
+        throw error
+    }
+    return <ErrorComponentView {...props} error={error} />
+}
+
+const DashboardLoader = withRouter(withErrorBoundary(ErrorComponent)(class DashboardLoader extends React.PureComponent {
     static contextType = UndoContext
-    state = { isLoading: false }
+    state = {
+        isLoading: false,
+        error: null,
+    }
 
     componentDidMount() {
         this.init()
@@ -221,6 +232,11 @@ const DashboardLoader = withRouter(withErrorBoundary(ErrorComponentView)(class D
     componentDidUpdate(prevProps) {
         const { match } = this.props
         const { match: prevMatch } = prevProps
+        const { error } = this.state
+
+        if (error) {
+            throw error
+        }
 
         if (match.params.id !== prevMatch.params.id) {
             this.init()
@@ -246,7 +262,17 @@ const DashboardLoader = withRouter(withErrorBoundary(ErrorComponentView)(class D
         const dashboardId = currentId || match.params.id
         if (dashboardId && currentId !== dashboardId && this.state.isLoading !== dashboardId) {
             // load dashboard if needed and not already loading
-            this.load(dashboardId)
+            try {
+                await this.load(dashboardId)
+            } catch (error) {
+                if (!this.unmounted && error instanceof ResourceNotFoundError) {
+                    this.setState({
+                        error,
+                    })
+                    return
+                }
+                throw error
+            }
         }
     }
 
