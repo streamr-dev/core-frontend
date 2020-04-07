@@ -8,7 +8,7 @@ import Context from '$auth/contexts/Session'
 import { isLocalStorageAvailable } from '$shared/utils/storage'
 
 export const SESSION_TOKEN_KEY = 'session.token'
-export const SESSION_EXPIRES_AT = 'session.expiresAt'
+export const SESSION_LOGIN_TIME = 'session.loginTime'
 export const EXPIRES_AT_VALID_HOURS = 6
 
 type Props = {
@@ -28,30 +28,36 @@ function getStoredToken(): ?string {
         date = cachedDate || null
     } else {
         token = storage.getItem(SESSION_TOKEN_KEY) || null
-        date = storage.getItem(SESSION_EXPIRES_AT) || null
+        date = storage.getItem(SESSION_LOGIN_TIME) || null
         date = date ? new Date(date) : null
     }
 
-    return (!!date && (date.getTime() - Date.now()) > 0) ? token : null
+    if (date) {
+        // token expires after login time + interval
+        date.setHours(date.getHours() + EXPIRES_AT_VALID_HOURS)
+
+        return ((date.getTime() - Date.now()) > 0) ? token : null
+    }
+
+    return null
 }
 
 function storeToken(value?: ?string) {
-    const expiresAt = new Date()
-    expiresAt.setHours(expiresAt.getHours() + EXPIRES_AT_VALID_HOURS)
+    const loginTime = new Date()
 
     if (!storage) {
         cachedToken = value || null
-        cachedDate = expiresAt
+        cachedDate = loginTime
         return
     }
 
     if (value) {
         storage.setItem(SESSION_TOKEN_KEY, value)
-        storage.setItem(SESSION_EXPIRES_AT, expiresAt)
+        storage.setItem(SESSION_LOGIN_TIME, loginTime)
     } else {
         // remove entire key if not set
         storage.removeItem(SESSION_TOKEN_KEY)
-        storage.removeItem(SESSION_EXPIRES_AT)
+        storage.removeItem(SESSION_LOGIN_TIME)
     }
 }
 

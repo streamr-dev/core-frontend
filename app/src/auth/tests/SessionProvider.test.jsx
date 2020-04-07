@@ -4,11 +4,18 @@ import { act } from 'react-dom/test-utils'
 
 import Context from '$auth/contexts/Session'
 
-import SessionProvider, { SESSION_TOKEN_KEY, SESSION_EXPIRES_AT } from '$auth/components/SessionProvider'
+import SessionProvider, { SESSION_TOKEN_KEY, SESSION_LOGIN_TIME } from '$auth/components/SessionProvider'
 
 describe('SessionProvider', () => {
+    let realDate
+
     beforeEach(() => {
+        realDate = Date.now
         global.localStorage.clear()
+    })
+
+    afterEach(() => {
+        global.Date.now = realDate
     })
 
     afterAll(() => {
@@ -64,9 +71,9 @@ describe('SessionProvider', () => {
         }
 
         const date = new Date()
-        date.setHours(date.getHours() + 2)
+        date.setHours(date.getHours() - 2)
         global.localStorage.setItem(SESSION_TOKEN_KEY, 'myToken')
-        global.localStorage.setItem(SESSION_EXPIRES_AT, date)
+        global.localStorage.setItem(SESSION_LOGIN_TIME, date)
 
         mount((
             <SessionProvider>
@@ -87,9 +94,9 @@ describe('SessionProvider', () => {
         }
 
         const date = new Date()
-        date.setHours(date.getHours() - 2)
+        date.setHours(date.getHours() - 8)
         global.localStorage.setItem(SESSION_TOKEN_KEY, 'myToken')
-        global.localStorage.setItem(SESSION_EXPIRES_AT, date)
+        global.localStorage.setItem(SESSION_LOGIN_TIME, date)
 
         mount((
             <SessionProvider>
@@ -100,13 +107,12 @@ describe('SessionProvider', () => {
         expect(currentContext.token).toBeFalsy()
     })
 
-    it('returns token if now = 5am and date = 10am', () => {
-        const realDate = Date.now
-        global.Date.now = jest.fn(() => new Date('2020-01-01T05:00:00.000Z').getTime())
+    it('returns token if now = 22pm previous day and date = 2am', () => {
+        global.Date.now = jest.fn(() => new Date('2020-01-02T02:00:00.000Z').getTime())
 
-        const date = new Date('2020-01-01T10:00:00.000Z')
+        const date = new Date('2020-01-01T22:00:00.000Z')
         global.localStorage.setItem(SESSION_TOKEN_KEY, 'myToken')
-        global.localStorage.setItem(SESSION_EXPIRES_AT, date)
+        global.localStorage.setItem(SESSION_LOGIN_TIME, date)
 
         let currentContext
 
@@ -123,16 +129,14 @@ describe('SessionProvider', () => {
         ))
 
         expect(currentContext.token).toBe('myToken')
-        global.Date.now = realDate
     })
 
-    it('returns token if now = 10am and date = 5am', () => {
-        const realDate = Date.now
-        global.Date.now = jest.fn(() => new Date('2020-01-01T10:00:00.000Z').getTime())
+    it('does not return token if now = 10am and date = 10pm', () => {
+        global.Date.now = jest.fn(() => new Date('2020-01-01T22:00:00.000Z').getTime())
 
-        const date = new Date('2020-01-01T05:00:00.000Z')
+        const date = new Date('2020-01-01T10:00:00.000Z')
         global.localStorage.setItem(SESSION_TOKEN_KEY, 'myToken')
-        global.localStorage.setItem(SESSION_EXPIRES_AT, date)
+        global.localStorage.setItem(SESSION_LOGIN_TIME, date)
 
         let currentContext
 
@@ -149,8 +153,6 @@ describe('SessionProvider', () => {
         ))
 
         expect(currentContext.token).toBeFalsy()
-
-        global.Date.now = realDate
     })
 
     it('sets session token', () => {
@@ -202,7 +204,7 @@ describe('SessionProvider', () => {
         expect(global.localStorage.getItem(SESSION_TOKEN_KEY)).toBe('myToken')
         expect(currentContext.token).toBe('myToken')
 
-        const oldDate = new Date(global.localStorage.getItem(SESSION_EXPIRES_AT))
+        const oldDate = new Date(global.localStorage.getItem(SESSION_LOGIN_TIME))
 
         await act(async () => {
             await (() => new Promise((resolve) => {
@@ -215,7 +217,7 @@ describe('SessionProvider', () => {
 
         expect(global.localStorage.getItem(SESSION_TOKEN_KEY)).toBe('anotherToken')
         expect(currentContext.token).toBe('anotherToken')
-        const newDate = new Date(global.localStorage.getItem(SESSION_EXPIRES_AT))
+        const newDate = new Date(global.localStorage.getItem(SESSION_LOGIN_TIME))
         expect(newDate.getTime()).toBeGreaterThan(oldDate.getTime())
     })
 })
