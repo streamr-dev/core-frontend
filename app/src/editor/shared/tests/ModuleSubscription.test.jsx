@@ -54,7 +54,7 @@ describe('Canvas Subscriptions', () => {
             await setup()
         })
 
-        xit('should get canvas module subscription messages', async (done) => {
+        it('should get canvas module subscription messages', async (done) => {
             let canvas = await Services.create()
             canvas = State.addModule(canvas, await loadModuleDefinition('Clock'))
             const clock = canvas.modules.find((m) => m.name === 'Clock')
@@ -90,7 +90,7 @@ describe('Canvas Subscriptions', () => {
             done()
         }, 15000)
 
-        xit('should get canvas module subscription messages in restarted canvas', async (done) => {
+        it('should get canvas module subscription messages in restarted canvas', async (done) => {
             let canvas = await Services.create()
             canvas = State.addModule(canvas, await loadModuleDefinition('Clock'))
             const clock = canvas.modules.find((m) => m.name === 'Clock')
