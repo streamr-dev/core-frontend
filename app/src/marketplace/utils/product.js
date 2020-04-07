@@ -9,6 +9,7 @@ import { contractCurrencies as currencies, productStates } from '$shared/utils/c
 import { productTypes } from './constants'
 import { fromAtto, fromNano, toAtto, toNano } from './math'
 import { getPrefixedHexString, getUnprefixedHexString, isValidHexString } from './smartContract'
+import InvalidHexStringError from '$shared/errors/InvalidHexStringError'
 
 export const isPaidProduct = (product: Product) => product.isFree === false || BN(product.pricePerSecond).isGreaterThan(0)
 
@@ -109,7 +110,7 @@ export const mapProductToPutApi = (product: Product | EditProduct): Object => {
 
 export const getValidId = (id: string, prefix: boolean = true): string => {
     if (!isValidHexString(id) || parseInt(id, 16) === 0) {
-        throw new Error(`${id} is not valid hex string`)
+        throw new InvalidHexStringError(id)
     }
     return prefix ? getPrefixedHexString(id) : getUnprefixedHexString(id)
 }

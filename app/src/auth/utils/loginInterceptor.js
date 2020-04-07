@@ -6,7 +6,8 @@ import axios from 'axios'
 import routes from '$routes'
 import { formatApiUrl } from '$shared/utils/url'
 import { matchPath } from 'react-router-dom'
-import ResourceNotFoundError from '$shared/errors/ResourceNotFoundError'
+import ResourceNotFoundError, { ResourceType } from '$shared/errors/ResourceNotFoundError'
+import InvalidHexStringError from '$shared/errors/InvalidHexStringError'
 
 function shouldRedirect(error) {
     // ignore redirect to login logic for login route
@@ -88,22 +89,22 @@ export function canHandleLoadError(err) {
 }
 
 export async function handleLoadError(err) {
-    if (!err.response) { throw err } // unexpected error
-    // server issues
-    if (err.response.status >= 500) {
+    if (err instanceof InvalidHexStringError) {
+        throw new ResourceNotFoundError(ResourceType.PRODUCT, err.id)
+    }
+
+    const { status } = err.response || {}
+
+    if (!status || status >= 500) {
         throw err
     }
 
-    if (err.response.status === 404) {
-        throw new ResourceNotFoundError()
+    if (status === 404 || ([401, 403].includes(status) && isLoggedInError(err))) {
+        const data = err.response.data || {}
+        throw new ResourceNotFoundError(data.type, data.id)
     }
 
-    if (err.response.status === 403 || err.response.status === 401) {
-        // if already logged in and no access, do not redirect to login
-        if (isLoggedInError(err)) {
-            throw new ResourceNotFoundError()
-        }
-
+    if ([401, 403].includes(status)) {
         await loginRedirect()
     }
 

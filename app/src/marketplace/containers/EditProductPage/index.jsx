@@ -20,7 +20,7 @@ import { isEthereumAddress } from '$mp/utils/validate'
 import useProductPermissions from '../ProductController/useProductPermissions'
 import useProduct from '$mp/containers/ProductController/useProduct'
 import useEthereumIdentities from '$shared/modules/integrationKey/hooks/useEthereumIdentities'
-import ResourceNotFoundError from '$shared/errors/ResourceNotFoundError'
+import ResourceNotFoundError, { ResourceType } from '$shared/errors/ResourceNotFoundError'
 
 import { Provider as EditControllerProvider, Context as EditControllerContext } from './EditControllerProvider'
 import BackButton from '$shared/components/BackButton'
@@ -203,7 +203,7 @@ const EditWrap = () => {
     const canEdit = !!(write || share)
 
     if (hasPermissions && !isPermissionsPending && !canEdit) {
-        throw new ResourceNotFoundError()
+        throw new ResourceNotFoundError(ResourceType.PRODUCT, product.id)
     }
 
     if (!product || isLoadPending || isPermissionsPending || !hasPermissions || !canEdit) {
