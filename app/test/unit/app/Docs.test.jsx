@@ -147,27 +147,27 @@ jest.mock('$docs/components/DocsPages/DataUnions/IntroToDataUnions', () => ({
     __esModule: true,
     default: () => (
         <div>
-            /docs/dataunions
-            /docs/dataunions/intro-to-data-unions
+            /docs/data-unions
+            /docs/data-unions/intro-to-data-unions
         </div>
     ),
 }))
 jest.mock('$docs/components/DocsPages/DataUnions/DataUnionsInCore', () => ({
     __esModule: true,
     default: () => (
-        <div>/docs/dataunions/build-data-unions-in-core</div>
+        <div>/docs/data-unions/build-data-unions-in-core</div>
     ),
 }))
 jest.mock('$docs/components/DocsPages/DataUnions/DataUnionsIntegration', () => ({
     __esModule: true,
     default: () => (
-        <div>/docs/dataunions/integrate-data-unions-into-your-app</div>
+        <div>/docs/data-unions/integrate-data-unions-into-your-app</div>
     ),
 }))
 jest.mock('$docs/components/DocsPages/DataUnions/DataUnionsInSDK', () => ({
     __esModule: true,
     default: () => (
-        <div>/docs/dataunions/build-data-unions-with-sdk</div>
+        <div>/docs/data-unions/build-data-unions-with-sdk</div>
     ),
 }))
 jest.mock('$docs/components/DocsPages/Tutorials/BuildingPubSub', () => ({
