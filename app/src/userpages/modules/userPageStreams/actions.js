@@ -260,10 +260,6 @@ export const getStream = (id: StreamId) => (dispatch: Function) => {
         .then((id) => dispatch(getStreamSuccess(id)))
         .catch((e) => {
             dispatch(getStreamFailure(e))
-            Notification.push({
-                title: e.message,
-                icon: NotificationIcon.ERROR,
-            })
             throw e
         })
 }
@@ -380,10 +376,6 @@ export const getMyStreamPermissions = (id: StreamId) => (dispatch: Function, get
         })
         .catch((e) => {
             dispatch(getMyStreamPermissionsFailure(e))
-            Notification.push({
-                title: e.message,
-                icon: NotificationIcon.ERROR,
-            })
             throw e
         })
 }

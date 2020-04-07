@@ -37,6 +37,8 @@ import routes from '$routes'
 import links from '$shared/../links'
 import breakpoints from '$app/scripts/breakpoints'
 
+import Notification from '$shared/utils/Notification'
+import { NotificationIcon } from '$shared/utils/constants'
 import CoreLayout from '$shared/components/Layout/Core'
 import InfoView from './InfoView'
 import KeyView from './KeyView'
@@ -319,6 +321,10 @@ function StreamLoader(props: Props) {
                 fail(e)
                 return
             }
+            Notification.push({
+                title: e.message,
+                icon: NotificationIcon.ERROR,
+            })
             throw e
         }
     }, [isMounted, propsRef, fail])
