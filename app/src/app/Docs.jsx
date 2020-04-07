@@ -4,7 +4,7 @@ import React from 'react'
 import { Route as RouterRoute, Redirect } from 'react-router-dom'
 
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
-import ErrorPageView from '$mp/components/ErrorPageView'
+import GenericErrorPage from '$shared/components/GenericErrorPage'
 
 import links from '../links'
 
@@ -62,7 +62,7 @@ import ApiExplorerDocsPage from '$docs/components/DocsPages/API/ApiExplorer'
 // Technical Notes Docs
 import TechnicalNotesDocsPage from '$docs/components/DocsPages/TechnicalNotes'
 
-const Route = withErrorBoundary(ErrorPageView)(RouterRoute)
+const Route = withErrorBoundary(GenericErrorPage)(RouterRoute)
 
 const { docs } = links
 

@@ -2,11 +2,11 @@ import React from 'react'
 import { MemoryRouter, Route, Switch } from 'react-router-dom'
 import { mount } from 'enzyme'
 
-import ErrorPageView from '$mp/components/ErrorPageView'
+import GenericErrorPage from '$shared/components/GenericErrorPage'
 import DocsRouter from '$mp/../app/Docs'
 import { generateNav } from '$docs/components/DocsLayout/Navigation/navLinks'
 
-jest.mock('$mp/components/ErrorPageView', () => ({
+jest.mock('$shared/components/GenericErrorPage', () => ({
     __esModule: true,
     default: () => (
         <div>Error page</div>
@@ -282,7 +282,7 @@ describe('Marketplace Routes', () => {
                         <Switch>
                             {DocsRouter()}
                         </Switch>
-                        <Route component={ErrorPageView} key="NotFoundPage" />
+                        <Route component={GenericErrorPage} key="NotFoundPage" />
                     </MemoryRouter>
                 ))
 
@@ -313,7 +313,7 @@ describe('Marketplace Routes', () => {
                         <Switch>
                             {DocsRouter()}
                         </Switch>
-                        <Route component={ErrorPageView} key="NotFoundPage" />
+                        <Route component={GenericErrorPage} key="NotFoundPage" />
                     </MemoryRouter>
                 ))
 
