@@ -33,7 +33,7 @@ export function getResizedBlob(originalCanvas: HTMLCanvasElement): Promise<Blob>
         // Draw the original image on the (temp) resizing canvas
         resizedCanvasContext.drawImage(originalCanvas, 0, 0)
 
-        // Quickly reduce the dize by 50% each time in few iterations until the size is less then
+        // Quickly reduce the size by 50% each time in few iterations until the size is less then
         // 2x time the target size - the motivation for it, is to reduce the aliasing that would have been
         // created with direct reduction of very big image to small image
         while (resizedCanvas.width * 0.5 > MAX_WIDTH) {
