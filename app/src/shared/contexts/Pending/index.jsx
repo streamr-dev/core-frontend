@@ -106,5 +106,4 @@ PendingContextProvider.propTypes = {
 export {
     PendingContextProvider as Provider,
     PendingContext as Context,
-    usePendingContext,
 }

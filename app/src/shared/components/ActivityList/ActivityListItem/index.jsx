@@ -13,6 +13,8 @@ import Spinner from '$shared/components/Spinner'
 import routes from '$routes'
 import usePending from '$shared/hooks/usePending'
 
+import emptyStateIcon from '$shared/assets/images/empty_state_icon.png'
+
 const Container = styled.div`
     display: grid;
     grid-template-columns: 32px auto;
@@ -165,6 +167,18 @@ const renderContent = (activity, stream, product, canvas) => {
 const renderImage = (activity, user, stream, product, canvas, isLoading) => {
     if (product) {
         return <StyledAvatar alt={product.name} src={product.imageUrl} isLoading={isLoading} />
+    }
+    if (canvas || stream) {
+        return (
+            <img
+                src={emptyStateIcon}
+                alt="todo"
+                style={{
+                    width: '100%',
+                    height: '100%',
+                }}
+            />
+        )
     }
     if (user) {
         return <StyledAvatar alt={user.name} isLoading={isLoading} circle />

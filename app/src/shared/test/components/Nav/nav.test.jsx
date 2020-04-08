@@ -26,6 +26,12 @@ jest.mock('$shared/components/Nav/AvatarItem', () => ({
         <div id="avatar">{user.username}</div>
     ),
 }))
+jest.mock('$shared/components/Nav/ActivityItem', () => ({
+    __esModule: true,
+    default: () => (
+        <div id="activity" />
+    ),
+}))
 
 /* eslint-enable react/prop-types */
 
@@ -106,6 +112,27 @@ describe('Nav', () => {
             expect(el.find({ id: '/docs' }).children().length).toBe(5)
             expect(el.find({ id: '/login' }).exists()).toBe(false)
             expect(el.find({ id: '/signup' }).exists()).toBe(false)
+        })
+
+        it('renders the activity bell icon', () => {
+            delete process.env.DATA_UNIONS
+            const store = {
+                user: {
+                    user: {
+                        id: '1',
+                        username: 'tester1@streamr.com',
+                    },
+                },
+            }
+            const el = mount((
+                <MemoryRouter>
+                    <Provider store={mockStore(store)}>
+                        <Nav />
+                    </Provider>
+                </MemoryRouter>
+            ))
+
+            expect(el.find({ id: 'activity' }).exists()).toBe(true)
         })
 
         it('renders the user avatar', () => {

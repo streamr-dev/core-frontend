@@ -1,6 +1,6 @@
 // @flow
 
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { getMyResourceKeys } from '$shared/modules/resourceKey/actions'
@@ -9,10 +9,11 @@ import { selectAuthState } from '$shared/modules/user/selectors'
 import { useClientProvider } from '$shared/contexts/StreamrClient'
 import Activity from '$shared/utils/Activity'
 import { isLocalStorageAvailable } from '$shared/utils/storage'
+import { Provider as PendingProvider } from '$shared/contexts/Pending'
 
 const storage = isLocalStorageAvailable() ? localStorage : null
 
-const ActivityStreamHandler = () => {
+const Handler = () => {
     const dispatch = useDispatch()
     const [streamId, setStreamId] = useState(storage ? storage.getItem('user.activityStreamId') : null)
     const apiKey = useSelector(selectAuthApiKeyId)
@@ -25,7 +26,7 @@ const ActivityStreamHandler = () => {
 
     useEffect(() => {
         const publishActivity = (activity) => {
-            if (client && client.options.auth.apiKey) {
+            if (client && client.options.auth.apiKey && streamId) {
                 const data = activity.serialize()
                 client.publish(streamId, data)
             }
@@ -55,5 +56,11 @@ const ActivityStreamHandler = () => {
 
     return null
 }
+
+const ActivityStreamHandler = () => (
+    <PendingProvider name="streamr-client">
+        <Handler />
+    </PendingProvider>
+)
 
 export default ActivityStreamHandler
