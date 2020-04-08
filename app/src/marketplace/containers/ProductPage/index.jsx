@@ -18,6 +18,7 @@ import LoadingIndicator from '$userpages/components/LoadingIndicator'
 import PurchaseModal from './PurchaseModal'
 import useProduct from '$mp/containers/ProductController/useProduct'
 import { selectUserData } from '$shared/modules/user/selectors'
+import SessionProvider from '$auth/components/SessionProvider'
 
 import Page from './Page'
 import styles from './page.pcss'
@@ -33,7 +34,7 @@ const ProductPage = () => {
     } = useController()
     const product = useProduct()
     const userData = useSelector(selectUserData)
-    const isLoggedIn = userData !== null
+    const isLoggedIn = userData !== null && SessionProvider.token() !== null
 
     const { match } = useContext(RouterContext.Context)
 
