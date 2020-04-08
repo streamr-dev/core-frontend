@@ -25,6 +25,8 @@ export const publishModes = {
     ERROR: 'error',
 }
 
+export type PublishMode = $Values<typeof publishModes>
+
 export default function usePublish() {
     const dispatch = useDispatch()
 

@@ -2,7 +2,7 @@
 
 import React, { useContext, useMemo, useEffect } from 'react'
 import { withRouter } from 'react-router-dom'
-import { I18n } from 'react-redux-i18n'
+import { I18n, Translate } from 'react-redux-i18n'
 import cx from 'classnames'
 
 import CoreLayout from '$shared/components/Layout/Core'
@@ -136,9 +136,10 @@ const EditProductPage = ({ product }: { product: Product }) => {
     const toolbarMiddle = useMemo(() => {
         if (isPreview) {
             return (
-                <span className={styles.toolbarMiddle}>
-                    This is a preview of how your product will appear when published
-                </span>
+                <Translate
+                    value="editProductPage.preview"
+                    className={styles.toolbarMiddle}
+                />
             )
         }
 

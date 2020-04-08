@@ -94,6 +94,7 @@
     "docsRunningNode": "/docs/running-node",
     "privacy": "https://s3.amazonaws.com/streamr-public/streamr-privacy-policy.pdf",
     "product": "/marketplace/products/:id",
+    "externalProduct": "<streamr>/marketplace/products/:id",
     "products": "/core/products",
     "publish": "/marketplace/products/:id/publish",
     "purchase": "/marketplace/products/:id/purchase",

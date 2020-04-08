@@ -8,7 +8,7 @@ import * as productServices from '$mp/modules/product/services'
 import * as useProduct from '../useProduct'
 import * as usePending from '$shared/hooks/usePending'
 
-describe('RouterContext', () => {
+describe('PermissionContext', () => {
     let sandbox
 
     beforeEach(() => {
