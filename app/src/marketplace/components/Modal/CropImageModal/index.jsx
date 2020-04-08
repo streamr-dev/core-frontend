@@ -16,10 +16,10 @@ type Props = {
     onSave: (File) => void,
 }
 
-const MAX_WIDTH = 1080
+export const MAX_WIDTH = 1024
 
 // only width is considered because images returned from the cropper will always be wider than taller
-function getResizedBlob(originalCanvas: HTMLCanvasElement) {
+export function getResizedBlob(originalCanvas: HTMLCanvasElement): Promise<Blob> {
     let canvas = originalCanvas
 
     if (originalCanvas.width > MAX_WIDTH) {
