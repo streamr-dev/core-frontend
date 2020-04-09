@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { type Location } from 'react-router-dom'
 import styled from 'styled-components'
 import qs from 'query-string'
@@ -12,6 +12,7 @@ import routes from '$routes'
 import { type ProductType } from '$mp/flowtype/product-types'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { productTypes } from '$mp/utils/constants'
+import useFailure from '$shared/hooks/useFailure'
 
 type Props = {
     className?: ?string,
@@ -27,7 +28,7 @@ const UnstyledNewProductPage = ({ className, location: { search } }: Props) => {
 
     const isMounted = useIsMounted()
 
-    const [error, setError] = useState()
+    const fail = useFailure()
 
     useEffect(() => {
         const { type } = qs.parse(search)
@@ -40,14 +41,8 @@ const UnstyledNewProductPage = ({ className, location: { search } }: Props) => {
                         newProduct: true,
                     })))
                 }
-            }, setError)
-    }, [dispatch, isMounted, search])
-
-    useEffect(() => {
-        if (error) {
-            throw error
-        }
-    }, [error])
+            }, fail)
+    }, [dispatch, isMounted, search, fail])
 
     return (
         <LoadingIndicator className={className} loading />
