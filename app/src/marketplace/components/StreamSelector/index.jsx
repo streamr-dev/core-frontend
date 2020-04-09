@@ -97,16 +97,17 @@ export const StreamSelector = (props: Props) => {
 
     const { hasError, error } = useLastError(rest)
 
+    const isDisabled = disabled || fetchingStreams
+
     return (
         <React.Fragment>
             <div className={className}>
                 <div
                     className={classNames(styles.root, {
                         [styles.withError]: !!hasError,
-                        [styles.disabled]: !!disabled,
+                        [styles.disabled]: !!isDisabled,
                     })}
                 >
-                    {!!fetchingStreams && <Translate value="streamSelector.loading" />}
                     <div className={styles.inputContainer}>
                         <SvgIcon name="search" className={styles.SearchIcon} />
                         <Input
@@ -114,7 +115,7 @@ export const StreamSelector = (props: Props) => {
                             onChange={onSearchChange}
                             value={search}
                             placeholder={I18n.t('streamSelector.typeToSearch')}
-                            disabled={!!disabled}
+                            disabled={!!isDisabled}
                         />
                         <DropdownActions
                             className={classNames(styles.sortDropdown, styles.dropdown)}
@@ -125,7 +126,7 @@ export const StreamSelector = (props: Props) => {
                                     {sort}
                                 </span>
                             }
-                            disabled={!!disabled}
+                            disabled={!!isDisabled}
                         >
                             <DropdownActions.Item onClick={() => setSort(SORT_BY_NAME)}>
                                 <Translate value="streamSelector.sortByName" />
@@ -139,7 +140,12 @@ export const StreamSelector = (props: Props) => {
                         </DropdownActions>
                     </div>
                     <div className={styles.streams}>
-                        {!availableStreams.length && (
+                        {!!fetchingStreams && (
+                            <div className={styles.noAvailableStreams}>
+                                <Translate value="streamSelector.loading" />
+                            </div>
+                        )}
+                        {!fetchingStreams && !availableStreams.length && (
                             <div className={styles.noAvailableStreams}>
                                 <p><Translate value="streamSelector.noStreams" /></p>
                                 <a href={links.userpages.streamCreate} className={styles.streamCreateButton}>
@@ -147,7 +153,7 @@ export const StreamSelector = (props: Props) => {
                                 </a>
                             </div>
                         )}
-                        {sortedStreams.map((stream: Stream) => (
+                        {!fetchingStreams && sortedStreams.map((stream: Stream) => (
                             <div
                                 key={stream.id}
                                 className={classNames(styles.stream, {
@@ -161,7 +167,7 @@ export const StreamSelector = (props: Props) => {
                                     onClick={() => {
                                         onToggle(stream.id)
                                     }}
-                                    disabled={!!disabled}
+                                    disabled={!!isDisabled}
                                 >
                                     {stream.name}
                                 </button>
@@ -186,7 +192,7 @@ export const StreamSelector = (props: Props) => {
                                     onSelectAll(toSelect)
                                 }
                             }}
-                            disabled={!!disabled}
+                            disabled={!!isDisabled}
                         >
                             {!allVisibleStreamsSelected
                                 ? <Translate value="streamSelector.selectAll" />

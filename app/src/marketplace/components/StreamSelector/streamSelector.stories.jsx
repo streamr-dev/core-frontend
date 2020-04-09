@@ -3,7 +3,6 @@
 import React, { useState } from 'react'
 import { storiesOf } from '@storybook/react'
 import { withKnobs } from '@storybook/addon-knobs'
-import { action } from '@storybook/addon-actions'
 import styles from '@sambego/storybook-styles'
 
 import StreamSelector from '.'
@@ -17,7 +16,7 @@ const stories =
         }))
         .addDecorator(withKnobs)
 
-const availableStreams = [{
+const streamList = [{
     id: '1',
     name: 'First',
     description: '',
@@ -64,9 +63,11 @@ const availableStreams = [{
 type StreamControllerProps = {
     error?: string,
     disabled?: boolean,
+    availableStreams?: Array<Object>,
+    loading?: boolean,
 }
 
-const StreamController = ({ error, disabled }: StreamControllerProps) => {
+const StreamController = ({ error, disabled, availableStreams = [], loading = false }: StreamControllerProps) => {
     const [streams, setStreams] = useState([])
 
     return (
@@ -78,26 +79,51 @@ const StreamController = ({ error, disabled }: StreamControllerProps) => {
             availableStreams={availableStreams}
             error={error}
             disabled={disabled}
+            fetchingStreams={loading}
         />
     )
 }
 
 stories.add('basic', () => (
-    <StreamController />
+    <StreamController availableStreams={streamList} />
 ))
 
 stories.add('with error', () => (
-    <StreamController error="Something went wrong" />
+    <StreamController error="Something went wrong" availableStreams={streamList} />
 ))
 
 stories.add('disabled', () => (
-    <StreamController disabled />
+    <StreamController disabled availableStreams={streamList} />
+))
+
+stories.add('loading', () => (
+    <StreamController loading />
 ))
 
 stories.add('empty', () => (
-    <StreamSelector
-        streams={[]}
-        onEdit={action('update')}
-        availableStreams={[]}
-    />
+    <StreamController />
 ))
+
+stories.add('1500 streams', () => {
+    const longList = Array.from({
+        length: 1500,
+    }, (v, i) => ({
+        id: i + 1,
+        name: `stream ${i + 1}`,
+        description: '',
+        autoConfigure: false,
+        lastUpdated: 0,
+        inactivityThresholdHours: 0,
+        requireEncryptedData: false,
+        requireSignedData: false,
+        uiChannel: false,
+        storageDays: 0,
+        partitions: 0,
+        ownPermissions: [],
+        config: {},
+    }))
+
+    return (
+        <StreamController availableStreams={longList} />
+    )
+})
