@@ -154,11 +154,19 @@ function useValidationContext(): ContextProps {
             clearStatus('pricePerSecond')
         }
 
-        // Set pending fields
+        // Set pending fields, a change is marked pending if there was a saved pending change or
+        // we made a change that is different from the loaded product
         const changes = getPendingChanges(product)
         const isPublic = isPublished(product)
         PENDING_CHANGE_FIELDS.forEach((field) => {
-            setPendingChange(field, (field in changes) || (isPublic && isTouched(field) && !isEqual(product[field], originalProduct[field])))
+            let fieldsAreEqual = isEqual(product[field], originalProduct[field])
+
+            // special case, imageUrl will be updated if there is a new image uploaded
+            if (field === 'imageUrl') {
+                fieldsAreEqual = fieldsAreEqual && !product.newImageToUpload
+            }
+
+            setPendingChange(field, (field in changes) || (isPublic && isTouched(field) && !fieldsAreEqual))
         })
     }, [setStatus, clearStatus, isMounted, setPendingChange, isTouched, originalProduct])
 

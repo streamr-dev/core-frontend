@@ -365,8 +365,8 @@ describe('product utils', () => {
                 assert.equal(all.getValidId('1234', true), '0x1234')
             })
             it('throws with an invalid id', () => {
-                assert.throws(() => all.getValidId('test'), /is not valid hex/)
-                assert.throws(() => all.getValidId('test', true), /is not valid hex/)
+                assert.throws(() => all.getValidId('test'), /is not a valid hex/)
+                assert.throws(() => all.getValidId('test', true), /is not a valid hex/)
             })
         })
         describe('when prefix = false', () => {
@@ -377,7 +377,7 @@ describe('product utils', () => {
                 assert.equal(all.getValidId('1234', false), '1234')
             })
             it('throws with an invalid id', () => {
-                assert.throws(() => all.getValidId('test', false), /is not valid hex/)
+                assert.throws(() => all.getValidId('test', false), /is not a valid hex/)
             })
         })
     })

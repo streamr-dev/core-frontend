@@ -716,6 +716,45 @@ describe('validation context', () => {
     })
 
     describe('pending changes', () => {
+        it('marks untouched fields as pending if there were previously saved pending changes', () => {
+            let currentContext
+            function Test() {
+                currentContext = useContext(ValidationContext)
+                return null
+            }
+
+            const product = {
+                id: '1',
+                name: 'Name',
+                description: 'Description',
+                streams: ['1', '3'],
+                category: 'category',
+                state: 'DEPLOYED',
+                pendingChanges: {
+                    name: 'New Name',
+                    description: 'New Description',
+                    streams: ['2', '3', '4'],
+                },
+            }
+            sandbox.stub(useProduct, 'default').callsFake(() => product)
+
+            mount((
+                <ValidationContextProvider>
+                    <Test />
+                </ValidationContextProvider>
+            ))
+            expect(currentContext.isAnyChangePending()).toBe(false)
+
+            act(() => {
+                currentContext.validate(product)
+            })
+            expect(currentContext.isAnyChangePending()).toBe(true)
+            expect(currentContext.isPendingChange('name')).toBe(true)
+            expect(currentContext.isPendingChange('description')).toBe(true)
+            expect(currentContext.isPendingChange('category')).toBe(false)
+            expect(currentContext.isPendingChange('streams')).toBe(true)
+        })
+
         it('marks fields as pending for published products if touched & different from original product', () => {
             let currentContext
             function Test() {
@@ -759,6 +798,49 @@ describe('validation context', () => {
             expect(currentContext.isPendingChange('description')).toBe(true)
             expect(currentContext.isPendingChange('category')).toBe(false)
             expect(currentContext.isPendingChange('streams')).toBe(true)
+        })
+
+        it('marks the cover image as pending for published product if new image is uploaded', () => {
+            let currentContext
+            function Test() {
+                currentContext = useContext(ValidationContext)
+                return null
+            }
+
+            sandbox.stub(useProduct, 'default').callsFake(() => ({
+                id: '1',
+                name: 'Name',
+                description: 'Description',
+                streams: ['1', '3'],
+                category: 'category',
+                imageUrl: 'http://...',
+            }))
+
+            mount((
+                <ValidationContextProvider>
+                    <Test />
+                </ValidationContextProvider>
+            ))
+            expect(currentContext.isAnyChangePending()).toBe(false)
+
+            act(() => {
+                currentContext.touch('imageUrl')
+            })
+
+            act(() => {
+                currentContext.validate({
+                    type: 'NORMAL',
+                    name: 'New Name',
+                    description: 'New Description',
+                    category: 'category',
+                    streams: ['2', '3', '4'],
+                    imageUrl: 'http://...',
+                    newImageToUpload: new File([''], 'filename'),
+                    state: 'DEPLOYED',
+                })
+            })
+            expect(currentContext.isAnyChangePending()).toBe(true)
+            expect(currentContext.isPendingChange('imageUrl')).toBe(true)
         })
 
         it('does not mark a field as pending for published products if touched but not different from original product', () => {
