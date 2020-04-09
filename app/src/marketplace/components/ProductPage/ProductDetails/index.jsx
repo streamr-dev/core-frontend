@@ -58,7 +58,7 @@ const ProductDetails = ({ product, isValidSubscription, productSubscription, onP
                         </React.Fragment>
                     )}
                 </div>
-                {productSubscription != null && productSubscription.endTimestamp != null && (
+                {productSubscription != null && !!productSubscription.endTimestamp && (
                     <ExpirationCounter expiresAt={new Date(productSubscription.endTimestamp * 1000)} />
                 )}
             </div>
