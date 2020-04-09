@@ -10,10 +10,10 @@ import Avatar from '$shared/components/Avatar'
 import { ago } from '$shared/utils/time'
 import useInterval from '$shared/hooks/useInterval'
 import Spinner from '$shared/components/Spinner'
+import SvgIcon from '$shared/components/SvgIcon'
 import routes from '$routes'
 import usePending from '$shared/hooks/usePending'
-
-import emptyStateIcon from '$shared/assets/images/empty_state_icon.png'
+import { productTypes } from '$mp/utils/constants'
 
 const Container = styled.div`
     display: grid;
@@ -78,8 +78,13 @@ const Text = styled.div`
     }
 `
 
-const Timestamp = styled.div`
+const Details = styled.div`
     color: #a3a3a3;
+    font-size: 12px;
+`
+
+const Type = styled.span`
+    color: #323232;
 `
 
 type Props = {
@@ -90,65 +95,53 @@ type Props = {
     canvas?: any,
 }
 
-const renderStreamItem = (id, stream, action) => (
+const renderItem = (action: string, linkTitle: ?string, linkHref: ?string, id: string) => (
     <React.Fragment>
-        {I18n.t(`shared.action.${action.toLowerCase()}`)}
-        &nbsp;
-        {I18n.t('general.stream').toLowerCase()}
-        &nbsp;
-        {stream != null ? (
+        {linkHref != null ? (
             <a
-                href={routes.userPageStreamShow({
-                    streamId: stream.id,
-                })}
+                href={linkHref}
             >
-                {stream.name}
+                {linkTitle}
             </a>
         ) : (
             id
         )}
-
+        &nbsp;
+        {I18n.t(`shared.action.${action.toLowerCase()}`)}
     </React.Fragment>
+)
+
+const renderStreamItem = (id, stream, action) => (
+    renderItem(
+        action,
+        stream && stream.name,
+        stream && routes.userPageStreamShow({
+            streamId: stream.id,
+        }),
+        id,
+    )
 )
 
 const renderProductItem = (id, product, action) => (
-    <React.Fragment>
-        {I18n.t(`shared.action.${action.toLowerCase()}`)}
-        &nbsp;
-        {I18n.t('general.product').toLowerCase()}
-        &nbsp;
-        {product != null ? (
-            <a
-                href={routes.editProduct({
-                    id: product.id,
-                })}
-            >
-                {product.name}
-            </a>
-        ) : (
-            id
-        )}
-    </React.Fragment>
+    renderItem(
+        action,
+        product && product.name,
+        product && routes.editProduct({
+            id: product.id,
+        }),
+        id,
+    )
 )
 
 const renderCanvasItem = (id, canvas, action) => (
-    <React.Fragment>
-        {I18n.t(`shared.action.${action.toLowerCase()}`)}
-        &nbsp;
-        {I18n.t('general.canvas').toLowerCase()}
-        &nbsp;
-        {canvas != null ? (
-            <a
-                href={routes.canvasEdit({
-                    id: canvas.id,
-                })}
-            >
-                {canvas.name}
-            </a>
-        ) : (
-            id
-        )}
-    </React.Fragment>
+    renderItem(
+        action,
+        canvas && canvas.name,
+        canvas && routes.canvasEdit({
+            id: canvas.id,
+        }),
+        id,
+    )
 )
 
 const renderContent = (activity, stream, product, canvas) => {
@@ -168,20 +161,30 @@ const renderImage = (activity, user, stream, product, canvas, isLoading) => {
     if (product) {
         return <StyledAvatar alt={product.name} src={product.imageUrl} isLoading={isLoading} />
     }
-    if (canvas || stream) {
-        return (
-            <img
-                src={emptyStateIcon}
-                alt="todo"
-                style={{
-                    width: '100%',
-                    height: '100%',
-                }}
-            />
-        )
+    if (canvas) {
+        return <SvgIcon name="canvas" />
+    }
+    if (stream) {
+        return <SvgIcon name="stream" />
     }
     if (user) {
         return <StyledAvatar alt={user.name} isLoading={isLoading} circle />
+    }
+    return null
+}
+
+const renderType = (stream, product, canvas) => {
+    if (product && product.type === productTypes.DATAUNION) {
+        return I18n.t('general.dataUnion')
+    }
+    if (product && product.type === productTypes.NORMAL) {
+        return I18n.t('general.dataProduct')
+    }
+    if (canvas) {
+        return I18n.t('general.canvas')
+    }
+    if (stream) {
+        return I18n.t('general.stream')
     }
     return null
 }
@@ -220,7 +223,11 @@ const ActivityListItem = ({
             </ImageContainer>
             <TextContent>
                 <Text>{renderContent(activity, stream, product, canvas)}</Text>
-                <Timestamp>{activity.timestamp ? ago(new Date(activity.timestamp)) : null}</Timestamp>
+                <Details>
+                    <Type>{renderType(stream, product, canvas)}</Type>
+                    &nbsp;
+                    {activity.timestamp ? ago(new Date(activity.timestamp)) : null}
+                </Details>
             </TextContent>
         </Container>
     )

@@ -235,6 +235,11 @@ export default function usePublish() {
                             return postDeployFree(product.id || '').then(() => {
                                 update(transactionStates.CONFIRMED)
                                 done()
+
+                                Activity.push({
+                                    action: actionTypes.PUBLISH,
+                                    productId: product.id,
+                                })
                             }, (error) => {
                                 update(transactionStates.FAILED, error)
                                 done()
@@ -328,6 +333,11 @@ export default function usePublish() {
                             return postUndeployFree(product.id || '').then(() => {
                                 update(transactionStates.CONFIRMED)
                                 done()
+
+                                Activity.push({
+                                    action: actionTypes.UNPUBLISH,
+                                    productId: product.id,
+                                })
                             }, (error) => {
                                 update(transactionStates.FAILED, error)
                                 done()
