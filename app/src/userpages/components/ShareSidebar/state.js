@@ -2,6 +2,8 @@ import groupBy from 'lodash/groupBy'
 import isEqual from 'lodash/isEqual'
 import mapValues from 'lodash/mapValues'
 
+// List of all permissions
+// TODO: this should probably come from backend
 const PERMISSIONS = [
     'stream_get',
     'stream_edit',
@@ -25,6 +27,7 @@ const PERMISSIONS = [
     'product_delete',
     'product_share',
 ].reduce((o, key) => {
+    // assumes resourceType_name convention
     let [resourceType, name] = key.split('_') // eslint-disable-line prefer-const
     resourceType = resourceType.toUpperCase()
     o[resourceType] = {
@@ -62,9 +65,16 @@ export function getFullPermissions(resourceType) {
 
 const PERMISSION_GROUPS = {
     CANVAS: {
-        default: 'viewer',
-        viewer: {
+        default: 'user',
+        user: {
             get: true,
+            interact: true,
+        },
+        editor: {
+            get: true,
+            edit: true,
+            interact: true,
+            startstop: true,
         },
         owner: getFullPermissions('CANVAS'),
         custom: {},
@@ -75,13 +85,30 @@ const PERMISSION_GROUPS = {
             get: true,
             subscribe: true,
         },
+        publisher: {
+            get: true,
+            publish: true,
+        },
+        editor: {
+            get: true,
+            subscribe: true,
+            edit: true,
+            publish: true,
+        },
         owner: getFullPermissions('STREAM'),
         custom: {},
     },
     DASHBOARD: {
-        default: 'viewer',
-        viewer: {
+        default: 'user',
+        user: {
             get: true,
+            interact: true,
+        },
+        editor: {
+            get: true,
+            edit: true,
+            interact: true,
+            startstop: true,
         },
         owner: getFullPermissions('DASHBOARD'),
         custom: {},
