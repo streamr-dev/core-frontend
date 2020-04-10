@@ -492,7 +492,7 @@ describe('useEditableProductActions', () => {
                     priceCurrency: contractCurrencies.DATA,
                     price: BN(0),
                 })
-                updater.updatePrice(new BN(8))
+                updater.updatePrice(new BN(8), contractCurrencies.DATA, timeUnits.second)
             })
 
             expect(product).toStrictEqual({
@@ -504,9 +504,7 @@ describe('useEditableProductActions', () => {
             })
             expect(validation.isTouched('pricePerSecond')).toBe(true)
         })
-    })
 
-    describe('updateTimeUnit', () => {
         it('updates the product price time unit', () => {
             let updater
             let product
@@ -538,7 +536,7 @@ describe('useEditableProductActions', () => {
                     priceCurrency: contractCurrencies.DATA,
                     price: BN(60),
                 })
-                updater.updateTimeUnit(timeUnits.minute)
+                updater.updatePrice(BN(60), contractCurrencies.DATA, timeUnits.minute)
             })
 
             expect(product).toStrictEqual({
@@ -550,9 +548,7 @@ describe('useEditableProductActions', () => {
             })
             expect(validation.isTouched('pricePerSecond')).toBe(true)
         })
-    })
 
-    describe('updatePriceCurrency', () => {
         it('updates the product price currency', () => {
             let updater
             let product
@@ -584,7 +580,7 @@ describe('useEditableProductActions', () => {
                     priceCurrency: contractCurrencies.DATA,
                     price: BN(10),
                 })
-                updater.updatePriceCurrency(contractCurrencies.USD)
+                updater.updatePrice(BN(10), contractCurrencies.USD, timeUnits.second)
             })
 
             expect(product).toStrictEqual({
@@ -592,7 +588,7 @@ describe('useEditableProductActions', () => {
                 timeUnit: timeUnits.second,
                 isFree: false,
                 price: new BN(10),
-                pricePerSecond: new BN(100),
+                pricePerSecond: new BN(10),
             })
             expect(validation.isTouched('pricePerSecond')).toBe(true)
         })
