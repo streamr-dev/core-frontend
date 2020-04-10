@@ -21,6 +21,7 @@ import useEditableProductActions from '../ProductController/useEditableProductAc
 import { isPublished } from './state'
 import { Context as EditControllerContext } from './EditControllerProvider'
 import routes from '$routes'
+import { convert } from '$mp/utils/price'
 
 import BeneficiaryAddress from './BeneficiaryAddress'
 
@@ -29,14 +30,7 @@ import styles from './PriceSelector.pcss'
 const PriceSelector = () => {
     const product = useEditableProduct()
     const { publishAttempted } = useContext(EditControllerContext)
-
-    const {
-        updateIsFree,
-        updatePrice,
-        updatePriceCurrency,
-        updateTimeUnit,
-        updateBeneficiaryAddress,
-    } = useEditableProductActions()
+    const { updateIsFree, updatePrice, updateBeneficiaryAddress } = useEditableProductActions()
     const dataPerUsd = useSelector(selectDataPerUsd)
     const { isPending: savePending } = usePending('product.SAVE')
     const { isPending: contractProductLoadPending } = usePending('contractProduct.LOAD')
@@ -52,16 +46,21 @@ const PriceSelector = () => {
     }, [updateIsFree])
 
     const onPriceChange = useCallback((p) => {
-        updatePrice(p)
-    }, [updatePrice])
+        const price = convert(p, dataPerUsd, currency, product.priceCurrency)
+        updatePrice(price, product.priceCurrency, product.timeUnit)
+    }, [updatePrice, dataPerUsd, currency, product.priceCurrency, product.timeUnit])
+
     const onTimeUnitChange = useCallback((t) => {
-        updateTimeUnit(t)
-    }, [updateTimeUnit])
+        updatePrice(product.price, product.priceCurrency, t)
+    }, [updatePrice, product.price, product.priceCurrency])
 
     const fixInFiat = product.priceCurrency === currencies.USD
+
     const onFixPriceChange = useCallback((checked) => {
-        updatePriceCurrency(checked ? currencies.USD : currencies.DATA)
-    }, [updatePriceCurrency])
+        const newCurrency = checked ? currencies.USD : currencies.DATA
+        const newPrice = convert(product.price, dataPerUsd, product.priceCurrency, newCurrency)
+        updatePrice(newPrice, newCurrency, product.timeUnit)
+    }, [updatePrice, product.price, product.priceCurrency, product.timeUnit, dataPerUsd])
 
     const isFreeProduct = !!product.isFree
     const isDataUnion = isDataUnionProduct(product)
@@ -96,7 +95,7 @@ const PriceSelector = () => {
                     <SetPrice
                         className={styles.priceSelector}
                         disabled={isFreeProduct || isLoadingOrSaving}
-                        price={product.price}
+                        price={convert(product.price, dataPerUsd, product.priceCurrency, currency)}
                         onPriceChange={onPriceChange}
                         currency={currency}
                         onCurrencyChange={setCurrency}
