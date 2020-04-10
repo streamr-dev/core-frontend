@@ -135,7 +135,7 @@ const ShareSidebar = connect(({ user }) => ({
         label: I18n.t(`modal.shareResource.${o}`),
         value: o,
     }))
-    const users = State.usersFromPermissions(permissions, resourceType)
+    const users = State.usersFromPermissions(resourceType, permissions)
 
     const [currentUsers, setCurrentUsers] = useState(users)
 
@@ -193,6 +193,7 @@ const ShareSidebar = connect(({ user }) => ({
 
     const anonymousPermissions = currentUsers.anonymous
 
+    // current & anonymous user not directly editable
     const editableUsers = Object.assign({}, currentUsers)
     delete editableUsers.anonymous
     delete editableUsers[currentUser]

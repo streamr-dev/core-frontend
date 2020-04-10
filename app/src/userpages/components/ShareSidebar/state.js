@@ -34,11 +34,18 @@ const PERMISSIONS = [
     return o
 }, {})
 
+function validateResourceType(resourceType) {
+    if (!resourceType) { throw new Error('resourceType required') }
+    if (!PERMISSIONS[resourceType]) { throw new Error(`Unknown resourceType: ${resourceType}`) }
+}
+
 function getOperation(resourceType, name) {
+    validateResourceType(resourceType)
     return PERMISSIONS[resourceType][name]
 }
 
 export function getEmptyPermissions(resourceType) {
+    validateResourceType(resourceType)
     return Object.keys(PERMISSIONS[resourceType]).reduce((r, p) => {
         r[p] = false
         return r
@@ -46,6 +53,7 @@ export function getEmptyPermissions(resourceType) {
 }
 
 export function getFullPermissions(resourceType) {
+    validateResourceType(resourceType)
     return Object.keys(PERMISSIONS[resourceType]).reduce((r, p) => {
         r[p] = true
         return r
@@ -89,12 +97,9 @@ const PERMISSION_GROUPS = {
 }
 
 export function getPermissionGroups(resourceType) {
-    if (!resourceType) { throw new Error('resourceType required') }
-    if (!PERMISSION_GROUPS[resourceType]) { throw new Error(`Unknown resourceType: ${resourceType}`) }
+    validateResourceType(resourceType)
     return PERMISSION_GROUPS[resourceType]
 }
-
-export function getDefaultGroupName() {}
 
 export function getPermissionsForGroupName(resourceType, groupName = 'default') {
     const groups = getPermissionGroups(resourceType)
