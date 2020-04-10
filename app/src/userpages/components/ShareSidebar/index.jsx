@@ -119,6 +119,76 @@ function InputNewShare({ onChange }) {
     )
 }
 
+function UserPermissions({
+    resourceType,
+    userId,
+    userPermissions,
+    updatePermission,
+    removeUser,
+}) {
+    const detectedGroupName = State.findPermissionGroupName(resourceType, userPermissions)
+    // custom handling:
+    // if user edits permissions after clicking a preset, preset will be set to custom (if config doesn't match another preset)
+    // when user actively clicks the custom tab, it will use whatever permissions were currently set
+
+    const [isCustom, setIsCustom] = useState(detectedGroupName === 'custom')
+    const selectedGroupName = (isCustom && detectedGroupName !== 'custom') ? 'custom' : detectedGroupName
+
+    return (
+        <div className={styles.userPermissions}>
+            <div className={styles.permissionsHeader}>
+                <h4>{userId}</h4>
+                <Button
+                    kind="secondary"
+                    onClick={() => removeUser(userId)}
+                    className={styles.button}
+                >
+                    <SvgIcon name="trash" className={styles.trashIcon} />
+                </Button>
+            </div>
+            <div>
+                <div>
+                    {Object.keys(State.getPermissionGroups(resourceType)).filter((name) => name !== 'default').map((name) => (
+                        <Button
+                            key={name}
+                            kind="secondary"
+                            onClick={() => {
+                                if (name !== 'custom') {
+                                    updatePermission(userId, State.getPermissionsForGroupName(resourceType, name))
+                                    setIsCustom(false)
+                                } else {
+                                    setIsCustom(true)
+                                }
+                            }}
+                            className={styles.button}
+                            selected={name === selectedGroupName}
+                        >
+                            {name} {(name === selectedGroupName ? '*' : '')}
+                        </Button>
+                    ))}
+                </div>
+                <div className={styles.permissionsCheckboxes}>
+                    {Object.entries(userPermissions).map(([permission, value]) => (
+                        <React.Fragment key={permission}>
+                            <label htmlFor={`permission${permission}`}>
+                                {permission}
+                            </label>
+                            <input
+                                id={`permission${permission}`}
+                                type="checkbox"
+                                checked={value}
+                                onChange={() => updatePermission(userId, {
+                                    [permission]: !value,
+                                })}
+                            />
+                        </React.Fragment>
+                    ))}
+                </div>
+            </div>
+        </div>
+    )
+}
+
 const ShareSidebar = connect(({ user }) => ({
     currentUser: user && user.user && user.user.username,
 }))((props) => {
@@ -216,54 +286,14 @@ const ShareSidebar = connect(({ user }) => ({
             </div>
             <div className={styles.content}>
                 {Object.entries(editableUsers).map(([userId, userPermissions]) => (
-                    <div key={userId} className={styles.userPermissions}>
-                        <div className={styles.permissionsHeader}>
-                            <h4>{userId}</h4>
-                            <Button
-                                kind="secondary"
-                                onClick={() => removeUser(userId)}
-                                className={styles.button}
-                            >
-                                <SvgIcon name="trash" className={styles.trashIcon} />
-                            </Button>
-                        </div>
-                        <div>
-                            <div>
-                                {Object.keys(State.getPermissionGroups(resourceType)).filter((name) => name !== 'default').map((name) => (
-                                    <Button
-                                        key={name}
-                                        kind="secondary"
-                                        onClick={() => {
-                                            if (name !== 'custom') {
-                                                updatePermission(userId, State.getPermissionsForGroupName(resourceType, name))
-                                            }
-                                        }}
-                                        className={styles.button}
-                                        selected={name === State.findPermissionGroupName(resourceType, userPermissions)}
-                                    >
-                                        {name} {(name === State.findPermissionGroupName(resourceType, userPermissions) ? '*' : '')}
-                                    </Button>
-                                ))}
-                            </div>
-                            <div className={styles.permissionsCheckboxes}>
-                                {Object.entries(userPermissions).map(([permission, value]) => (
-                                    <React.Fragment key={permission}>
-                                        <label htmlFor={`permission${permission}`}>
-                                            {permission}
-                                        </label>
-                                        <input
-                                            id={`permission${permission}`}
-                                            type="checkbox"
-                                            checked={value}
-                                            onChange={() => updatePermission(userId, {
-                                                [permission]: !value,
-                                            })}
-                                        />
-                                    </React.Fragment>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
+                    <UserPermissions
+                        key={userId}
+                        userId={userId}
+                        userPermissions={userPermissions}
+                        resourceType={resourceType}
+                        removeUser={removeUser}
+                        updatePermission={updatePermission}
+                    />
                 ))}
             </div>
             <div className={styles.footer}>
