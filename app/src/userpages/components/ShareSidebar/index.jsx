@@ -189,6 +189,13 @@ function UserPermissions({
     )
 }
 
+function unsavedUnloadWarning(event) {
+    const confirmationMessage = 'You have unsaved changes'
+    const evt = (event || window.event)
+    evt.returnValue = confirmationMessage // Gecko + IE
+    return confirmationMessage // Webkit, Safari, Chrome etc.
+}
+
 const ShareSidebar = connect(({ user }) => ({
     currentUser: user && user.user && user.user.username,
 }))((props) => {
@@ -205,6 +212,7 @@ const ShareSidebar = connect(({ user }) => ({
         label: I18n.t(`modal.shareResource.${o}`),
         value: o,
     }))
+
     const users = State.usersFromPermissions(resourceType, permissions)
 
     const [currentUsers, setCurrentUsers] = useState(users)
@@ -229,6 +237,22 @@ const ShareSidebar = connect(({ user }) => ({
             : State.getEmptyPermissions(resourceType)
         updatePermission('anonymous', permissions)
     }, [updatePermission, resourceType])
+
+    const hasChanges = State.hasPermissionsChanges({
+        oldPermissions: permissions,
+        newUsers: currentUsers,
+        resourceType,
+    })
+
+    // warn if user navigating away before saving
+    useEffect(() => {
+        if (!hasChanges) { return }
+
+        window.addEventListener('beforeunload', unsavedUnloadWarning)
+        return () => {
+            window.removeEventListener('beforeunload', unsavedUnloadWarning)
+        }
+    }, [hasChanges])
 
     const onSaveCallback = useCallback(async () => {
         const { added, removed } = State.diffUsersPermissions({

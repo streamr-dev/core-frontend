@@ -263,3 +263,12 @@ export function diffUsersPermissions({ oldPermissions, newUsers, resourceType } 
         removed,
     }
 }
+
+export function hasPermissionsChanges({ oldPermissions, newUsers, resourceType } = {}) {
+    const diff = diffUsersPermissions({
+        oldPermissions,
+        newUsers,
+        resourceType,
+    })
+    return !!(diff.added.length || diff.removed.length)
+}

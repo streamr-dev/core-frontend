@@ -60,8 +60,25 @@ describe('ShareSidebar Permission Handling', () => {
         expect(users[user.username]).toBeTruthy() // original user still around
     })
 
-    describe('diff', () => {
+    describe('diff/hasPermissionsChanges', () => {
         const newUserId = 'test@test.com'
+        it('handles no changes', () => {
+            const users = State.usersFromPermissions(resourceType, permissions)
+            const diff = State.diffUsersPermissions({
+                newUsers: users,
+                oldPermissions: permissions,
+                resourceType,
+            })
+
+            expect(diff.added).toEqual([])
+            expect(diff.removed).toEqual([])
+
+            expect(State.hasPermissionsChanges({
+                newUsers: users,
+                oldPermissions: permissions,
+                resourceType,
+            })).toBe(false)
+        })
         it('can detect added', () => {
             const users = State.usersFromPermissions(resourceType, permissions)
             const diff = State.diffUsersPermissions({
@@ -75,6 +92,11 @@ describe('ShareSidebar Permission Handling', () => {
                 operation,
             })))
             expect(diff.removed).toEqual([])
+            expect(State.hasPermissionsChanges({
+                newUsers: users,
+                oldPermissions: [],
+                resourceType,
+            })).toBeTruthy()
         })
 
         it('can detect removed', () => {
@@ -85,6 +107,11 @@ describe('ShareSidebar Permission Handling', () => {
             })
             expect(diff.added).toEqual([])
             expect(diff.removed).toEqual(permissions)
+            expect(State.hasPermissionsChanges({
+                newUsers: {},
+                oldPermissions: permissions,
+                resourceType,
+            })).toBeTruthy()
         })
 
         it('can detect changed', () => {
@@ -102,6 +129,12 @@ describe('ShareSidebar Permission Handling', () => {
             })
             expect(diff.added).toEqual([])
             expect(diff.removed).toEqual([oldReadPerm])
+
+            expect(State.hasPermissionsChanges({
+                newUsers: users,
+                oldPermissions: updatedPermissions,
+                resourceType,
+            })).toBeTruthy()
         })
     })
 })
