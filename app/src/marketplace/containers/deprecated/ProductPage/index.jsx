@@ -22,6 +22,7 @@ import { getProductById, getProductSubscription, purchaseProduct, getUserProduct
 import { getRelatedProducts } from '$mp/modules/relatedProducts/actions'
 import { isPaidProduct } from '$mp/utils/product'
 import BackToProductsButton from '$shared/components/BackToProductsButton'
+import SessionProvider from '$auth/components/SessionProvider'
 
 import {
     selectFetchingProduct,
@@ -235,7 +236,7 @@ export const mapStateToProps = (state: StoreState): StateProps => ({
     relatedProducts: selectRelatedProductList(state),
     fetchingProduct: selectFetchingProduct(state),
     fetchingStreams: selectFetchingStreams(state),
-    isLoggedIn: selectUserData(state) !== null,
+    isLoggedIn: selectUserData(state) !== null && SessionProvider.token() !== null,
     editPermission: selectProductEditPermission(state),
     publishPermission: selectProductPublishPermission(state),
     isProductSubscriptionValid: selectSubscriptionIsValid(state),

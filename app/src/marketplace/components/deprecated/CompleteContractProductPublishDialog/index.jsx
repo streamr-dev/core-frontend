@@ -11,21 +11,21 @@ import links from '$mp/../links'
 import PngIcon from '$shared/components/PngIcon'
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
-import styles from '../CompleteUnpublishDialog/completeUnpublishDialog.pcss'
+import styles from '$mp/components/Modal/modal.pcss'
 
 export type Props = {
     publishState: ?TransactionState,
     onCancel: () => void,
 }
 
-const CompleteContractProductUnpublishDialog = ({ onCancel, publishState }: Props) => {
+const CompleteContractProductPublishDialog = ({ onCancel, publishState }: Props) => {
     switch (publishState) {
         case transactionStates.STARTED:
             return (
                 <ModalPortal>
                     <Dialog
                         onClose={onCancel}
-                        title={I18n.t('modal.completeUnpublish.started.title')}
+                        title={I18n.t('modal.completePublish.started.title')}
                         actions={{
                             cancel: {
                                 title: I18n.t('modal.common.cancel'),
@@ -41,7 +41,7 @@ const CompleteContractProductUnpublishDialog = ({ onCancel, publishState }: Prop
                         }}
                     >
                         <div>
-                            <p><Translate value="modal.completeUnpublish.started.message" dangerousHTML /></p>
+                            <p><Translate value="modal.completePublish.started.message" dangerousHTML /></p>
                         </div>
                     </Dialog>
                 </ModalPortal>
@@ -52,7 +52,7 @@ const CompleteContractProductUnpublishDialog = ({ onCancel, publishState }: Prop
                 <ModalPortal>
                     <Dialog
                         onClose={onCancel}
-                        title={I18n.t('modal.completeUnpublish.pending.title')}
+                        title={I18n.t('modal.completePublish.pending.title')}
                     >
                         <div>
                             <Spinner size="large" className={styles.icon} />
@@ -67,7 +67,7 @@ const CompleteContractProductUnpublishDialog = ({ onCancel, publishState }: Prop
                 <ModalPortal>
                     <Dialog
                         onClose={onCancel}
-                        title={I18n.t('modal.completeUnpublish.confirmed.title')}
+                        title={I18n.t('modal.completePublish.confirmed.title')}
                         autoClose
                     >
                         <div>
@@ -82,7 +82,7 @@ const CompleteContractProductUnpublishDialog = ({ onCancel, publishState }: Prop
                 <ModalPortal>
                     <Dialog
                         onClose={onCancel}
-                        title={I18n.t('modal.completeUnpublish.failed.title')}
+                        title={I18n.t('modal.completePublish.failed.title')}
                     >
                         <div>
                             <PngIcon
@@ -90,7 +90,7 @@ const CompleteContractProductUnpublishDialog = ({ onCancel, publishState }: Prop
                                 name="publishFailed"
                                 alt={I18n.t('error.publishFailed')}
                             />
-                            <Translate value="modal.completeUnpublish.failed.message" dangerousHTML tag="p" />
+                            <Translate value="modal.completePublish.failed.message" dangerousHTML tag="p" />
                         </div>
                     </Dialog>
                 </ModalPortal>
@@ -101,4 +101,4 @@ const CompleteContractProductUnpublishDialog = ({ onCancel, publishState }: Prop
     }
 }
 
-export default CompleteContractProductUnpublishDialog
+export default CompleteContractProductPublishDialog

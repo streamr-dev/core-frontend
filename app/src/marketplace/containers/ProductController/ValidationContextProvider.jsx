@@ -7,6 +7,7 @@ import { isEthereumAddress } from '$mp/utils/validate'
 import { isPaidProduct, isDataUnionProduct } from '$mp/utils/product'
 import { isPriceValid } from '$mp/utils/price'
 import { isPublished, getPendingChanges, PENDING_CHANGE_FIELDS } from '../EditProductPage/state'
+import useProduct from '../ProductController/useProduct'
 
 export const INFO = 'info'
 export const WARNING = 'warning'
@@ -24,6 +25,7 @@ type ContextProps = {
     touch: (string) => void,
     isTouched: (string) => boolean,
     isAnyTouched: () => boolean,
+    resetTouched: () => void,
     pendingChanges: Object,
     isPendingChange: (string) => boolean,
     isAnyChangePending: () => boolean,
@@ -31,10 +33,13 @@ type ContextProps = {
 
 const ValidationContext: Context<ContextProps> = React.createContext({})
 
+const isEqual = (a, b) => JSON.stringify(a) === JSON.stringify(b)
+
 function useValidationContext(): ContextProps {
     const [status, setStatusState] = useState({})
     const [pendingChanges, setPendingChanges] = useState({})
     const [touched, setTouched] = useState({})
+    const originalProduct = useProduct()
 
     const touch = useCallback((name: string) => {
         setTouched((existing) => ({
@@ -45,6 +50,8 @@ function useValidationContext(): ContextProps {
     const isTouched = useCallback((name: string) => !!touched[name], [touched])
 
     const isAnyTouched = useCallback(() => Object.values(touched).some(Boolean), [touched])
+
+    const resetTouched = useCallback(() => setTouched({}), [])
 
     const isMounted = useIsMounted()
 
@@ -151,9 +158,9 @@ function useValidationContext(): ContextProps {
         const changes = getPendingChanges(product)
         const isPublic = isPublished(product)
         PENDING_CHANGE_FIELDS.forEach((field) => {
-            setPendingChange(field, (field in changes) || (isPublic && isTouched(field)))
+            setPendingChange(field, (field in changes) || (isPublic && isTouched(field) && !isEqual(product[field], originalProduct[field])))
         })
-    }, [setStatus, clearStatus, isMounted, setPendingChange, isTouched])
+    }, [setStatus, clearStatus, isMounted, setPendingChange, isTouched, originalProduct])
 
     return useMemo(() => ({
         setStatus,
@@ -163,6 +170,7 @@ function useValidationContext(): ContextProps {
         touch,
         isTouched,
         isAnyTouched,
+        resetTouched,
         pendingChanges,
         isPendingChange,
         isAnyChangePending,
@@ -176,6 +184,7 @@ function useValidationContext(): ContextProps {
         touch,
         isTouched,
         isAnyTouched,
+        resetTouched,
         pendingChanges,
         isPendingChange,
         isAnyChangePending,

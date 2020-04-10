@@ -72,14 +72,14 @@ export const transactionTypes = {
 
 export const gasLimits = {
     DEFAULT: 3e5,
-    CREATE_PRODUCT: 3e5,
-    BUY_PRODUCT: 1e5,
-    BUY_PRODUCT_WITH_ETH: 1e6,
-    BUY_PRODUCT_WITH_ERC20: 1e6,
-    DELETE_PRODUCT: 5e4,
-    APPROVE: 5e4,
-    DEPLOY_DATA_UNION: 3e6,
-    UPDATE_ADMIN_FEE: 3e5,
+    CREATE_PRODUCT: 4e5,
+    BUY_PRODUCT: 3e5,
+    BUY_PRODUCT_WITH_ETH: 4e6,
+    BUY_PRODUCT_WITH_ERC20: 6e6,
+    DELETE_PRODUCT: 3e5,
+    APPROVE: 7e4,
+    DEPLOY_DATA_UNION: 4e6,
+    UPDATE_ADMIN_FEE: 4e5,
 }
 
 export const dialogAutoCloseTimeout = 2000 // in milliseconds

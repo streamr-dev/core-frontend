@@ -22,6 +22,11 @@ jest.mock('../useNewProductMode', () => (
         isNewProduct: false,
     }))
 ))
+jest.mock('../useProduct', () => (
+    jest.fn().mockImplementation(() => ({
+        id: '1',
+    }))
+))
 
 describe('useEditableProductActions', () => {
     describe('updateProduct', () => {

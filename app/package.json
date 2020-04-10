@@ -59,7 +59,7 @@
       "/tests/"
     ],
     "moduleNameMapper": {
-      "\\.(css|scss|pcss|po|md|mdx)$": "identity-obj-proxy",
+      "\\.(css|scss|pcss|po|md)$": "identity-obj-proxy",
       "\\.(png)$": "empty/object",
       "\\$app/(.*)$": "<rootDir>/$1",
       "\\$auth/(.*)$": "<rootDir>/src/auth/$1",

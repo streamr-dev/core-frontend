@@ -98,6 +98,9 @@ msgstr "Unpublishing"
 msgid "editProductPage##update"
 msgstr "Update"
 
+msgid "editProductPage##preview"
+msgstr "This is a preview of how your product will appear when published"
+
 msgid "editProductPage##productName##title"
 msgstr "Name your product"
 
@@ -348,6 +351,14 @@ msgstr ""
 "You can wait for the blockchain or go back to the <a "
 "href=%{marketplaceLink}>Marketplace</a>"
 
+msgid "modal##completePublish##started##title"
+msgstr "Publish confirmation"
+
+msgid "modal##completePublish##started##message"
+msgstr ""
+"You need to confirm the transaction <br /> in your wallet to publish this "
+"product."
+
 msgid "modal##completePublish##confirmed##title"
 msgstr "Publish complete"
 
@@ -362,57 +373,148 @@ msgstr "Publishing failed"
 msgid "modal##completePublish##pending##title"
 msgstr "Writing to the blockchain"
 
-msgid "modal##completePublish##started##message"
+msgid "modal##publishProgress##publish##title"
+msgstr "Publishing"
+
+msgid "modal##publishProgress##redeploy##title"
+msgstr "Redeploying"
+
+msgid "modal##publishProgress##republish##title"
+msgstr "Republishing"
+
+msgid "modal##publishProgress##unpublish##title"
+msgstr "Unpublishing"
+
+msgid "modal##publishProgress##updateContractProduct##pending"
+msgstr "Updating product"
+
+msgid "modal##publishProgress##createContractProduct##pending"
+msgstr "Publishing"
+
+msgid "modal##publishProgress##publishPaid##pending"
+msgstr "Republishing"
+
+msgid "modal##publishProgress##updateAdminFee##pending"
+msgstr "Updating data union"
+
+msgid "modal##publishProgress##undeployContractProduct##pending"
+msgstr "Unpublishing"
+
+msgid "modal##publishProgress##publishFree##pending"
+msgstr "Publishing"
+
+msgid "modal##publishProgress##unpublishFree##pending"
+msgstr "Unpublishing"
+
+msgid "modal##publishProgress##publishPendingChanges##pending"
+msgstr "Updating product"
+
+msgid "modal##publishProgress##updateContractProduct##failed"
+msgstr "Updating product failed"
+
+msgid "modal##publishProgress##createContractProduct##failed"
+msgstr "Publishing failed"
+
+msgid "modal##publishProgress##publishPaid##failed"
+msgstr "Republishing failed"
+
+msgid "modal##publishProgress##updateAdminFee##failed"
+msgstr "Updating data union failed"
+
+msgid "modal##publishProgress##undeployContractProduct##failed"
+msgstr "Unpublishing failed"
+
+msgid "modal##publishProgress##publishFree##failed"
+msgstr "Publishing failed"
+
+msgid "modal##publishProgress##unpublishFree##failed"
+msgstr "Unpublishing failed"
+
+msgid "modal##publishProgress##publishPendingChanges##failed"
+msgstr "Updating product failed"
+
+msgid "modal##publishProgress##confirmTransaction"
+msgstr "Please confirm transaction"
+
+msgid "modal##publishError##publishModes##publish"
+msgstr "Publishing"
+
+msgid "modal##publishError##publishModes##republish"
+msgstr "Republishing"
+
+msgid "modal##publishError##publishModes##redeploy"
+msgstr "Redeploying"
+
+msgid "modal##publishError##publishModes##unpublish"
+msgstr "Unpublishing"
+
+msgid "modal##publishError##someFailed##title"
+msgstr "%{publishMode} did not complete"
+
+msgid "modal##publishError##allFailed##title"
+msgstr "%{publishMode} failed"
+
+msgid "modal##publishError##actions##updateAdminFee"
+msgstr "The admin fee failed to update."
+
+msgid "modal##publishError##actions##updateContractProduct"
+msgstr "The product data failed to update."
+
+msgid "modal##publishError##actions##createContractProduct"
+msgstr "Failed to publish product."
+
+msgid "modal##publishError##actions##publishPaid"
+msgstr "Failed to publish product."
+
+msgid "modal##publishError##actions##publishFree"
+msgstr "Failed to publish product."
+
+msgid "modal##publishError##actions##publishPendingChanges"
+msgstr "Failed to publish product changes."
+
+msgid "modal##publishError##actions##unpublishFree"
+msgstr "Failed to unpublish product."
+
+msgid "modal##publishError##actions##undeployContractProduct"
+msgstr "Failed to unpublish product."
+
+msgid "modal##publishError##actions##allFailed"
+msgstr "The product failed to update."
+
+msgid "modal##publishError##actions##someFailed"
+msgstr "More than one transaction failed."
+
+msgid "modal##publishError##actions##checkWallet"
+msgstr "Please check your wallet or other settings and try again"
+
+msgid "modal##publishComplete##republish##title"
+msgstr "Republish completed"
+
+msgid "modal##publishComplete##redeploy##title"
+msgstr "Redeploy completed"
+
+msgid "modal##publishComplete##publish##title"
+msgstr "Publish completed"
+
+msgid "modal##publishComplete##viewProduct"
+msgstr "View Product"
+
+msgid "modal##publishComplete##message"
+msgstr "View on the Marketplace or get a link to share"
+
+msgid "modal##publishComplete##copyLink"
+msgstr "Copy link"
+
+msgid "modal##publishComplete##linkCopied"
+msgstr "Copied"
+
+msgid "modal##unpublishComplete##title"
+msgstr "Unpublish completed"
+
+msgid "modal##unpublishComplete##message"
 msgstr ""
-"You need to confirm the transaction <br /> in your wallet to publish this "
-"product."
-
-msgid "modal##completePublish##updateAdminFee##started##title"
-msgstr "Update admin fee"
-
-msgid "modal##completePublish##updateAdminFee##started##message"
-msgstr ""
-"You need to confirm the transaction in your wallet to update the data union admin fee."
-
-msgid "modal##completePublish##updateContractProduct##started##title"
-msgstr "Update price information"
-
-msgid "modal##completePublish##updateContractProduct##started##message"
-msgstr ""
-"You need to confirm the transaction in your wallet to update the product's price."
-
-msgid "modal##completePublish##publishPaid##started##title"
-msgstr "Publish"
-
-msgid "modal##completePublish##publishPaid##started##message"
-msgstr ""
-"You need to confirm the transaction in your wallet to publish the product."
-
-msgid "modal##completePublish##createContractProduct##started##title"
-msgstr "Publish"
-
-msgid "modal##completePublish##createContractProduct##started##message"
-msgstr ""
-"You need to confirm the transaction in your wallet to publish the product."
-
-msgid "modal##completePublish##undeployContractProduct##started##title"
-msgstr "Unpublish"
-
-msgid "modal##completePublish##undeployContractProduct##started##message"
-msgstr ""
-"You need to confirm the transaction in your wallet to unpublish the product."
-
-msgid "modal##completePublish##publishFree##started##title"
-msgstr "Publish"
-
-msgid "modal##completePublish##unpublishFree##started##title"
-msgstr "Unpublish"
-
-msgid "modal##completePublish##publishPendingChanges##started##title"
-msgstr "Update product data"
-
-msgid "modal##completePublish##started##title"
-msgstr "Publish Confirmation"
+"This product is unpublished now, <br/>"
+"but you still can see in your <a href=\"%{productLink}\">core product</a>"
 
 msgid "modal##completePurchase##confirmed##message"
 msgstr "You need to connect your Ethereum identity to your Streamr account."
@@ -581,21 +683,40 @@ msgstr "Purchase confirmation"
 msgid "modal##purchaseSummary##title"
 msgstr "Complete your purchase"
 
+msgid "modal##readyToPublish##title"
+msgstr "Publish product"
+
+msgid "modal##readyToPublish##publish##action"
+msgstr "Publish"
+
 msgid "modal##readyToPublish##message"
 msgstr ""
 "You're about to publish to the Marketplace. <br /> Paid products require an "
 "Eth balance for gas fees."
 
-msgid "modal##readyToPublish##publish"
+msgid "modal##readyToPublish##publish##title"
+msgstr "Publish your product"
+
+msgid "modal##readyToPublish##republish##title"
+msgstr "Republish your product"
+
+msgid "modal##readyToPublish##redeploy##title"
+msgstr "Republish your product"
+
+msgid "modal##readyToPublish##publish##action"
+msgstr "Publish"
+
+msgid "modal##readyToPublish##republish##action"
+msgstr "Republish"
+
+msgid "modal##readyToPublish##redeploy##action"
+msgstr "Republish"
+
+msgid "modal##readyToPublish##publish##action"
 msgstr "Publish"
 
 msgid "modal##readyToPublish##terms"
-msgstr ""
-"I have the right to publish this data as specified in the <a "
-"href=%{publisherTermsLink}>Terms</a>."
-
-msgid "modal##readyToPublish##title"
-msgstr "Publish your product"
+msgstr "I have the right to publish this<br />data as specified in the <a href=%{publisherTermsLink}>Terms</a>."
 
 msgid "modal##readyToUnpublish##message"
 msgstr "Do you want to unpublish this product?"

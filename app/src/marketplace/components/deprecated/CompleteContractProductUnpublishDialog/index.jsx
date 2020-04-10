@@ -1,47 +1,32 @@
 // @flow
 
-import React, { useMemo } from 'react'
+import React from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
 
 import Spinner from '$shared/components/Spinner'
+import SvgIcon from '$shared/components/SvgIcon'
 import type { TransactionState } from '$shared/flowtype/common-types'
 import { transactionStates } from '$shared/utils/constants'
 import links from '$mp/../links'
+import PngIcon from '$shared/components/PngIcon'
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
-import { actionsTypes } from '$mp/containers/EditProductPage/publishQueue'
 
-import styles from '../modal.pcss'
+import styles from '$mp/components/deprecated/CompleteUnpublishDialog/completeUnpublishDialog.pcss'
 
 export type Props = {
-    isUnpublish: ?boolean,
-    action: ?string,
-    waiting?: boolean,
     publishState: ?TransactionState,
     onCancel: () => void,
 }
 
-const ConfirmPublishTransaction = ({
-    isUnpublish,
-    action,
-    waiting,
-    onCancel,
-    publishState,
-}: Props) => {
-    const isWaiting = useMemo(() => waiting || [
-        actionsTypes.PUBLISH_FREE,
-        actionsTypes.UNPUBLISH_FREE,
-        actionsTypes.PUBLISH_PENDING_CHANGES,
-    ].includes(action), [action, waiting])
-
+const CompleteContractProductUnpublishDialog = ({ onCancel, publishState }: Props) => {
     switch (publishState) {
         case transactionStates.STARTED:
             return (
                 <ModalPortal>
                     <Dialog
-                        waiting={isWaiting}
                         onClose={onCancel}
-                        title={I18n.t(`modal.complete${isUnpublish ? 'Unpublish' : 'Publish'}.started.title`)}
+                        title={I18n.t('modal.completeUnpublish.started.title')}
                         actions={{
                             cancel: {
                                 title: I18n.t('modal.common.cancel'),
@@ -57,13 +42,7 @@ const ConfirmPublishTransaction = ({
                         }}
                     >
                         <div>
-                            {action && (
-                                <Translate
-                                    value={`modal.completePublish.${action}.started.message`}
-                                    tag="p"
-                                    dangerousHTML
-                                />
-                            )}
+                            <p><Translate value="modal.completeUnpublish.started.message" dangerousHTML /></p>
                         </div>
                     </Dialog>
                 </ModalPortal>
@@ -74,7 +53,7 @@ const ConfirmPublishTransaction = ({
                 <ModalPortal>
                     <Dialog
                         onClose={onCancel}
-                        title={I18n.t('modal.completePublish.pending.title')}
+                        title={I18n.t('modal.completeUnpublish.pending.title')}
                     >
                         <div>
                             <Spinner size="large" className={styles.icon} />
@@ -84,16 +63,43 @@ const ConfirmPublishTransaction = ({
                 </ModalPortal>
             )
 
-        default:
+        case transactionStates.CONFIRMED:
             return (
                 <ModalPortal>
                     <Dialog
-                        waiting
                         onClose={onCancel}
-                    />
+                        title={I18n.t('modal.completeUnpublish.confirmed.title')}
+                        autoClose
+                    >
+                        <div>
+                            <SvgIcon name="checkmark" size="large" className={styles.icon} />
+                        </div>
+                    </Dialog>
                 </ModalPortal>
             )
+
+        case transactionStates.FAILED:
+            return (
+                <ModalPortal>
+                    <Dialog
+                        onClose={onCancel}
+                        title={I18n.t('modal.completeUnpublish.failed.title')}
+                    >
+                        <div>
+                            <PngIcon
+                                className={styles.icon}
+                                name="publishFailed"
+                                alt={I18n.t('error.publishFailed')}
+                            />
+                            <Translate value="modal.completeUnpublish.failed.message" dangerousHTML tag="p" />
+                        </div>
+                    </Dialog>
+                </ModalPortal>
+            )
+
+        default:
+            return null
     }
 }
 
-export default ConfirmPublishTransaction
+export default CompleteContractProductUnpublishDialog

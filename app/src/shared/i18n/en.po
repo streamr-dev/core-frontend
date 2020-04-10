@@ -101,6 +101,9 @@ msgstr "Product"
 msgid "general##products"
 msgstr "Products"
 
+msgid "general##dataUnions"
+msgstr "Data Unions"
+
 msgid "general##profile"
 msgstr "Profile"
 
@@ -202,6 +205,9 @@ msgstr "OK"
 
 msgid "modal##common##waiting"
 msgstr "Waiting"
+
+msgid "modal##common##working"
+msgstr "Working"
 
 msgid "modal##common##close"
 msgstr "Close"
@@ -327,13 +333,13 @@ msgstr "Go to core app"
 msgid "notFoundPage##publicSite"
 msgstr "Go to public site"
 
-msgid "errorPageView##imageCaption"
+msgid "genericErrorPage##imageCaption"
 msgstr "App crashed"
 
-msgid "errorPageView##message"
+msgid "genericErrorPage##message"
 msgstr ""
 "Oops. Something has broken down here. <br /> Please try one of the links "
 "below <br /> to get things back on track."
 
-msgid "errorPageView##top"
+msgid "genericErrorPage##top"
 msgstr "Marketplace top"

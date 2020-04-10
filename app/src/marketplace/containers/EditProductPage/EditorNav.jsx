@@ -29,6 +29,7 @@ const EditorNav = () => {
     const [activeSectionId, setActiveSectionId] = useState(undefined)
 
     const { isValid, isTouched, isPendingChange } = useContext(ValidationContext)
+    // lastSectionRef is stored EditControllerContext so it remembers its state when toggling
     const { lastSectionRef, publishAttempted } = useContext(EditControllerContext)
 
     const isDataUnion = isDataUnionProduct(product)
