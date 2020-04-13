@@ -97,7 +97,7 @@ stories.add('disabled', () => (
 ))
 
 stories.add('loading', () => (
-    <StreamController loading />
+    <StreamController availableStreams={streamList} loading />
 ))
 
 stories.add('empty', () => (

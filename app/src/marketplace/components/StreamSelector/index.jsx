@@ -12,6 +12,8 @@ import Button from '$shared/components/Button'
 import DropdownActions from '$shared/components/DropdownActions'
 import SvgIcon from '$shared/components/SvgIcon'
 import Errors from '$ui/Errors'
+import LoadingIndicator from '$userpages/components/LoadingIndicator'
+
 import links from '$mp/../links'
 import { useLastError, type LastErrorProps } from '$shared/hooks/useLastError'
 
@@ -140,11 +142,6 @@ export const StreamSelector = (props: Props) => {
                         </DropdownActions>
                     </div>
                     <div className={styles.streams}>
-                        {!!fetchingStreams && (
-                            <div className={styles.noAvailableStreams}>
-                                <Translate value="streamSelector.loading" />
-                            </div>
-                        )}
                         {!fetchingStreams && !availableStreams.length && (
                             <div className={styles.noAvailableStreams}>
                                 <p><Translate value="streamSelector.noStreams" /></p>
@@ -153,7 +150,7 @@ export const StreamSelector = (props: Props) => {
                                 </a>
                             </div>
                         )}
-                        {!fetchingStreams && sortedStreams.map((stream: Stream) => (
+                        {sortedStreams.map((stream: Stream) => (
                             <div
                                 key={stream.id}
                                 className={classNames(styles.stream, {
@@ -173,6 +170,7 @@ export const StreamSelector = (props: Props) => {
                                 </button>
                             </div>
                         ))}
+                        <LoadingIndicator className={styles.loadingIndicator} loading={!!fetchingStreams} />
                     </div>
                     <div className={styles.footer}>
                         <div className={styles.selectedCount}>
