@@ -834,7 +834,6 @@ describe('validation context', () => {
                     description: 'New Description',
                     category: 'category',
                     streams: ['2', '3', '4'],
-                    imageUrl: 'http://...',
                     newImageToUpload: new File([''], 'filename'),
                     state: 'DEPLOYED',
                 })

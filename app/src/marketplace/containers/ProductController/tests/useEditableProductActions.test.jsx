@@ -184,13 +184,14 @@ describe('useEditableProductActions', () => {
     describe('updateImageFile', () => {
         it('updates the product image upload', () => {
             let updater
+            let undoContext
             let product
             let validation
             function Test() {
                 updater = useEditableProductActions()
                 validation = useContext(ValidationContext)
-                const { state } = useContext(UndoContext.Context)
-                product = state
+                undoContext = useContext(UndoContext.Context)
+                product = undoContext.state
                 return null
             }
 
@@ -205,12 +206,20 @@ describe('useEditableProductActions', () => {
             expect(product).toBeFalsy()
             expect(validation.isTouched('imageUrl')).toBe(false)
 
+            act(() => {
+                undoContext.replace(() => ({
+                    name: 'Test product',
+                    imageUrl: 'http://...',
+                }))
+            })
+
             const file = new File([''], 'filename')
             act(() => {
                 updater.updateImageFile(file)
             })
 
             expect(product).toStrictEqual({
+                name: 'Test product',
                 newImageToUpload: file,
             })
             expect(validation.isTouched('imageUrl')).toBe(true)

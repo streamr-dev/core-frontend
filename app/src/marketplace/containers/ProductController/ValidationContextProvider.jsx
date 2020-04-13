@@ -159,14 +159,7 @@ function useValidationContext(): ContextProps {
         const changes = getPendingChanges(product)
         const isPublic = isPublished(product)
         PENDING_CHANGE_FIELDS.forEach((field) => {
-            let fieldsAreEqual = isEqual(product[field], originalProduct[field])
-
-            // special case, imageUrl will be updated if there is a new image uploaded
-            if (field === 'imageUrl') {
-                fieldsAreEqual = fieldsAreEqual && !product.newImageToUpload
-            }
-
-            setPendingChange(field, (field in changes) || (isPublic && isTouched(field) && !fieldsAreEqual))
+            setPendingChange(field, (field in changes) || (isPublic && isTouched(field) && !isEqual(product[field], originalProduct[field])))
         })
     }, [setStatus, clearStatus, isMounted, setPendingChange, isTouched, originalProduct])
 
