@@ -28,6 +28,8 @@ type Props = LastErrorProps & {
     className?: string,
     onEdit: (StreamIdList) => void,
     disabled?: boolean,
+    hasMoreResults?: boolean,
+    onLoadMore?: Function,
 }
 
 const SORT_BY_NAME = 'name'
@@ -41,7 +43,9 @@ export const StreamSelector = (props: Props) => {
         onEdit,
         availableStreams,
         fetchingStreams = false,
-        disabled,
+        disabled: disabledProp,
+        hasMoreResults,
+        onLoadMore,
         ...rest
     } = props
     const [sort, setSort] = useState(SORT_BY_NAME)
@@ -99,7 +103,7 @@ export const StreamSelector = (props: Props) => {
 
     const { hasError, error } = useLastError(rest)
 
-    const isDisabled = disabled || fetchingStreams
+    const isDisabled = disabledProp || fetchingStreams
 
     return (
         <React.Fragment>
@@ -170,6 +174,18 @@ export const StreamSelector = (props: Props) => {
                                 </button>
                             </div>
                         ))}
+                        {!!hasMoreResults && (
+                            <div className={styles.loadMoreResults}>
+                                <button
+                                    type="button"
+                                    onClick={() => onLoadMore && onLoadMore()}
+                                    className={styles.loadMoreButton}
+                                    disabled={!!isDisabled}
+                                >
+                                    <Translate value="streamSelector.loadMore" />
+                                </button>
+                            </div>
+                        )}
                         <LoadingIndicator className={styles.loadingIndicator} loading={!!fetchingStreams} />
                     </div>
                     <div className={styles.footer}>

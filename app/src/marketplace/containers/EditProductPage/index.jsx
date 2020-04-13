@@ -46,13 +46,21 @@ const EditProductPage = ({ product }: { product: Product }) => {
     } = useContext(EditControllerContext)
     const { isPending: savePending } = usePending('product.SAVE')
     const { isAnyChangePending } = useContext(ValidationContext)
-    const { loadCategories, loadStreams, loadDataUnion, loadDataUnionStats } = useController()
+    const {
+        loadCategories,
+        loadProductStreams,
+        loadDataUnion,
+        loadDataUnionStats,
+        clearStreams,
+    } = useController()
 
+    const productId = product.id
     // Load categories and streams
     useEffect(() => {
+        clearStreams()
         loadCategories()
-        loadStreams()
-    }, [loadCategories, loadStreams])
+        loadProductStreams(productId)
+    }, [loadCategories, loadProductStreams, productId, clearStreams])
 
     // Load eth identities & data union (used to determine if owner account is linked)
     const { load: loadEthIdentities } = useEthereumIdentities()
