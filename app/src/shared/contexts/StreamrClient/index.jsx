@@ -59,7 +59,7 @@ function useClientProvider({
     const [client, setClient] = useState()
     const isMountedRef = useIsMountedRef()
     const hasClient = !!client
-    const hasLoaded = !!apiKey || !!(!isAuthenticating && (isAuthenticated || authenticationFailed))
+    const hasLoaded = !!apiKey || !!(!isAuthenticating && authenticationFailed)
     const loadKeyPending = usePending('client.key')
 
     useEffect(() => {
