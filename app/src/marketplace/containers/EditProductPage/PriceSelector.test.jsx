@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useMemo, useState } from 'react'
 import sinon from 'sinon'
 import { mount } from 'enzyme'
 import { act } from 'react-dom/test-utils'
@@ -8,7 +8,7 @@ import * as BeneficiaryAddress from './BeneficiaryAddress'
 import PriceSelector from './PriceSelector'
 import Select from '$ui/Select'
 import Toggle from '$shared/components/Toggle'
-import { timeUnits } from '$shared/utils/constants'
+import { Context as EditControllerContext } from './EditControllerProvider'
 
 const mockState = {
     product: {
@@ -51,6 +51,25 @@ describe('PriceSelector', () => {
         sandbox.restore()
     })
 
+    // eslint-disable-next-line react/prop-types
+    const EditContextWrap = ({ children }) => {
+        const [preferredCurrency, setPreferredCurrency] = useState('DATA')
+
+        const value = useMemo(() => ({
+            preferredCurrency,
+            setPreferredCurrency,
+        }), [
+            preferredCurrency,
+            setPreferredCurrency,
+        ])
+
+        return (
+            <EditControllerContext.Provider value={value}>
+                {children}
+            </EditControllerContext.Provider>
+        )
+    }
+
     const setup = async (product, transform) => {
         let undoContext
 
@@ -61,11 +80,13 @@ describe('PriceSelector', () => {
         }
 
         const el = mount((
-            <UndoContext.Provider>
-                <ValidationContextProvider>
-                    <WrappedPriceSelector />
-                </ValidationContextProvider>
-            </UndoContext.Provider>
+            <EditContextWrap>
+                <UndoContext.Provider>
+                    <ValidationContextProvider>
+                        <WrappedPriceSelector />
+                    </ValidationContextProvider>
+                </UndoContext.Provider>
+            </EditContextWrap>
         ))
 
         await act(async () => {
