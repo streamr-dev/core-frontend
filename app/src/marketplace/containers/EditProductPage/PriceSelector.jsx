@@ -1,13 +1,13 @@
 // @flow
 
-import React, { useState, useCallback, useContext } from 'react'
+import React, { useCallback, useContext } from 'react'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { Translate } from 'react-redux-i18n'
 
 import { isDataUnionProduct } from '$mp/utils/product'
 import { usePending } from '$shared/hooks/usePending'
-import { contractCurrencies as currencies, DEFAULT_CURRENCY } from '$shared/utils/constants'
+import { contractCurrencies as currencies } from '$shared/utils/constants'
 import { selectDataPerUsd } from '$mp/modules/global/selectors'
 import RadioButtonGroup from '$shared/components/RadioButtonGroup'
 import SetPrice from '$mp/components/SetPrice'
@@ -29,7 +29,7 @@ import styles from './PriceSelector.pcss'
 
 const PriceSelector = () => {
     const product = useEditableProduct()
-    const { publishAttempted } = useContext(EditControllerContext)
+    const { publishAttempted, preferredCurrency: currency, setPreferredCurrency: setCurrency } = useContext(EditControllerContext)
     const { updateIsFree, updatePrice, updateBeneficiaryAddress } = useEditableProductActions()
     const dataPerUsd = useSelector(selectDataPerUsd)
     const { isPending: savePending } = usePending('product.SAVE')
@@ -39,7 +39,7 @@ const PriceSelector = () => {
     const isLoadingOrSaving = !!(savePending || contractProductLoadPending)
     const isPriceTypeDisabled = !!(isLoadingOrSaving || isPublic || !!contractProduct)
 
-    const [currency, setCurrency] = useState(product.priceCurrency || DEFAULT_CURRENCY)
+    // const [currency, setCurrency] = useState(product.priceCurrency || DEFAULT_CURRENCY)
 
     const onPriceTypeChange = useCallback((type) => {
         updateIsFree(type === 'Free')
