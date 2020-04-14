@@ -7,11 +7,12 @@
   transition: margin 0.3s;
   border-top: 1px solid #EFEFEF;
   z-index: 9999;
-  overflow: auto;
   position: fixed;
   right: 0;
   top: 0;
   bottom: 0;
+  display: flex;
+  flex-direction: column;
 
   &[hidden] {
     display: block !important;
@@ -41,6 +42,7 @@
   .header {
     padding: 19px 39px 12px;
     user-select: none;
+    border-bottom: 1px solid #EFEFEF;
 
     .titleRow {
       display: flex;
@@ -95,15 +97,19 @@
 
   .content {
     color: #525252;
-    padding-bottom: 40px; /* ensure there's always a little to scroll at the end */
-    height: calc(100% - 40px);
+    padding-bottom: 1px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
   }
 }
 
 .sidebarSection {
   border-bottom: 1px solid #EFEFEF;
-  border-top: 1px solid #EFEFEF;
   padding: 25px 39px;
+  flex-shrink: 0;
+  max-height: stretch;
 
   & + & {
     border-top: none;

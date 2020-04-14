@@ -1,19 +1,23 @@
 .root {
   height: 100%;
+  max-height: stretch;
   display: flex;
   flex-direction: column;
   font-size: 14px;
-}
 
-.content {
-  padding: 1.4um 2um;
-  flex-shrink: 0;
-}
+  .row {
+    flex-shrink: 0;
+  }
 
-.userList {
-  overflow: auto;
-  flex-grow: 1;
-  flex-shrink: initial;
+  .cell {
+    padding: 1.4um 2um;
+  }
+
+  .userList {
+    overflow: auto;
+    flex-grow: 1;
+    flex-shrink: initial;
+  }
 }
 
 .InputNewShare {
@@ -34,6 +38,7 @@
 .userPermissions {
   border-top: 1px solid #EFEFEF;
   border-bottom: 1px solid #EFEFEF;
+  padding: 1.4um 2um;
 
   .permissionsHeader {
     display: grid;
@@ -76,7 +81,7 @@
 }
 
 .footer {
-  border-top: 1px solid grey;
+  border-top: 1px solid #EFEFEF;
   display: flex;
 
   :first-child {

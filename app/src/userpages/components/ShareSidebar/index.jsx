@@ -126,6 +126,7 @@ function UserPermissions({
     userPermissions,
     updatePermission,
     removeUser,
+    className,
 }) {
     const detectedGroupName = State.findPermissionGroupName(resourceType, userPermissions)
     // custom handling:
@@ -136,7 +137,7 @@ function UserPermissions({
     const selectedGroupName = (isCustom && detectedGroupName !== 'custom') ? 'custom' : detectedGroupName
 
     return (
-        <div className={styles.userPermissions} data-userid={userId}>
+        <div className={cx(styles.userPermissions, className)}>
             <div className={styles.permissionsHeader}>
                 <h4>{userId}</h4>
                 <Button
@@ -219,7 +220,6 @@ const ShareSidebar = connect(({ user }) => ({
     const [currentUsers, setCurrentUsers] = useState(users)
     const [newUserIdList, setNewUserIdList] = useState([])
 
-    const [scrollToUserId, setScrollToUserId] = useState()
     const addUser = useCallback((userId) => {
         // update state
         setCurrentUsers((prevUsers) => (
@@ -227,8 +227,6 @@ const ShareSidebar = connect(({ user }) => ({
         ))
         // add user to start of array, remove before adding to start if already in array
         setNewUserIdList((ids) => [userId, ...ids.filter((id) => id !== userId)])
-        // ensure whatever user was selected is scrolled into view
-        setScrollToUserId(userId)
     }, [setCurrentUsers, resourceType])
 
     const removeUser = useCallback((userId) => {
@@ -246,7 +244,7 @@ const ShareSidebar = connect(({ user }) => ({
         updatePermission('anonymous', permissions)
     }, [updatePermission, resourceType])
 
-    const hasChanges = State.diffUsersPermissions({
+    const hasChanges = State.hasPermissionsChanges({
         oldPermissions: permissions,
         newUsers: currentUsers,
         resourceType,
@@ -300,12 +298,6 @@ const ShareSidebar = connect(({ user }) => ({
     delete editableUsers.anonymous
     delete editableUsers[currentUser]
 
-    const usersListRef = useRef()
-    useEffect(() => {
-        if (!scrollToUserId || !usersListRef.current) { return }
-        usersListRef.current.scrollTo(usersListRef.current.querySelector(`[data-userid="${scrollToUserId}"]`))
-    }, [scrollToUserId])
-
     // users are listed in order:
     // new users in order added
     // old users in alphabetical order
@@ -320,7 +312,7 @@ const ShareSidebar = connect(({ user }) => ({
 
     return (
         <div className={styles.root}>
-            <div className={styles.content}>
+            <div className={cx(styles.row, styles.cell)}>
                 <SelectInput
                     label={I18n.t('modal.shareResource.anonymousAccess')}
                     name="name"
@@ -331,14 +323,15 @@ const ShareSidebar = connect(({ user }) => ({
                     isSearchable={false}
                 />
             </div>
-            <div className={styles.content}>
+            <div className={cx(styles.row, styles.cell)}>
                 <InputNewShare onChange={addUser} />
             </div>
-            <div className={cx(styles.content, styles.userList)} ref={usersListRef}>
+            <div className={cx(styles.row, styles.userList)}>
                 {userEntries.map(([userId, userPermissions]) => (
                     <UserPermissions
                         key={userId}
                         userId={userId}
+                        className={styles.cell}
                         userPermissions={userPermissions}
                         resourceType={resourceType}
                         removeUser={removeUser}
@@ -347,7 +340,7 @@ const ShareSidebar = connect(({ user }) => ({
                     />
                 ))}
             </div>
-            <div className={cx(styles.footer, styles.content)}>
+            <div className={cx(styles.footer, styles.row, styles.cell)}>
                 <div className={styles.copyLink}>
                     <CopyLink
                         resourceType={resourceType}
