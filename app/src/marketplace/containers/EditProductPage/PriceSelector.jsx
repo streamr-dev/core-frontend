@@ -39,8 +39,6 @@ const PriceSelector = () => {
     const isLoadingOrSaving = !!(savePending || contractProductLoadPending)
     const isPriceTypeDisabled = !!(isLoadingOrSaving || isPublic || !!contractProduct)
 
-    // const [currency, setCurrency] = useState(product.priceCurrency || DEFAULT_CURRENCY)
-
     const onPriceTypeChange = useCallback((type) => {
         updateIsFree(type === 'Free')
     }, [updateIsFree])
