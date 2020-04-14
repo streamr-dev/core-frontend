@@ -89,7 +89,8 @@ const SetPrice = ({
                         currency={getQuoteCurrencyFor(currency)}
                         placeholder="Price"
                         value={BN(quotePrice).isNaN() ? '0' : quotePrice.toString()}
-                        disabled
+                        readOnly
+                        disabled={disabled}
                         className={styles.input}
                     />
                     <div>
