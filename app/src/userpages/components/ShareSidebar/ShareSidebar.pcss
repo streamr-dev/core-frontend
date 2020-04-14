@@ -1,11 +1,19 @@
 .root {
-  display: grid;
-  grid-template-rows: 1fr auto;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
   font-size: 14px;
 }
 
 .content {
   padding: 1.4um 2um;
+  flex-shrink: 0;
+}
+
+.userList {
+  overflow: auto;
+  flex-grow: 1;
+  flex-shrink: initial;
 }
 
 .InputNewShare {
@@ -69,15 +77,9 @@
 
 .footer {
   border-top: 1px solid grey;
-  position: absolute;
-  bottom: 0;
-  width: 100%;
+  display: flex;
 
-  .content {
-    display: flex;
-
-    :first-child {
-      margin-right: auto;
-    }
+  :first-child {
+    margin-right: auto;
   }
 }

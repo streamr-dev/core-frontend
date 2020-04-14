@@ -3,6 +3,7 @@ import path from 'path'
 import React, { useCallback, useState, useRef, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { Translate, I18n } from 'react-redux-i18n'
+import cx from 'classnames'
 
 import * as api from '$shared/utils/api'
 import SelectInput from '$ui/Select'
@@ -135,7 +136,7 @@ function UserPermissions({
     const selectedGroupName = (isCustom && detectedGroupName !== 'custom') ? 'custom' : detectedGroupName
 
     return (
-        <div className={styles.userPermissions}>
+        <div className={styles.userPermissions} data-userid={userId}>
             <div className={styles.permissionsHeader}>
                 <h4>{userId}</h4>
                 <Button
@@ -216,11 +217,18 @@ const ShareSidebar = connect(({ user }) => ({
     const users = State.usersFromPermissions(resourceType, permissions)
 
     const [currentUsers, setCurrentUsers] = useState(users)
+    const [newUserIdList, setNewUserIdList] = useState([])
 
+    const [scrollToUserId, setScrollToUserId] = useState()
     const addUser = useCallback((userId) => {
+        // update state
         setCurrentUsers((prevUsers) => (
             State.addUser(prevUsers, userId, State.getPermissionsForGroupName(resourceType, 'default'))
         ))
+        // add user to start of array, remove before adding to start if already in array
+        setNewUserIdList((ids) => [userId, ...ids.filter((id) => id !== userId)])
+        // ensure whatever user was selected is scrolled into view
+        setScrollToUserId(userId)
     }, [setCurrentUsers, resourceType])
 
     const removeUser = useCallback((userId) => {
@@ -238,7 +246,7 @@ const ShareSidebar = connect(({ user }) => ({
         updatePermission('anonymous', permissions)
     }, [updatePermission, resourceType])
 
-    const hasChanges = State.hasPermissionsChanges({
+    const hasChanges = State.diffUsersPermissions({
         oldPermissions: permissions,
         newUsers: currentUsers,
         resourceType,
@@ -292,6 +300,24 @@ const ShareSidebar = connect(({ user }) => ({
     delete editableUsers.anonymous
     delete editableUsers[currentUser]
 
+    const usersListRef = useRef()
+    useEffect(() => {
+        if (!scrollToUserId || !usersListRef.current) { return }
+        usersListRef.current.scrollTo(usersListRef.current.querySelector(`[data-userid="${scrollToUserId}"]`))
+    }, [scrollToUserId])
+
+    // users are listed in order:
+    // new users in order added
+    // old users in alphabetical order
+    const oldUserIdList = Object.keys(editableUsers)
+        .filter((userId) => !newUserIdList.includes(userId))
+        .sort()
+
+    const userEntries = [
+        ...newUserIdList,
+        ...oldUserIdList,
+    ].map((userId) => [userId, editableUsers[userId]])
+
     return (
         <div className={styles.root}>
             <div className={styles.content}>
@@ -308,8 +334,8 @@ const ShareSidebar = connect(({ user }) => ({
             <div className={styles.content}>
                 <InputNewShare onChange={addUser} />
             </div>
-            <div className={styles.content}>
-                {Object.entries(editableUsers).map(([userId, userPermissions]) => (
+            <div className={cx(styles.content, styles.userList)} ref={usersListRef}>
+                {userEntries.map(([userId, userPermissions]) => (
                     <UserPermissions
                         key={userId}
                         userId={userId}
@@ -317,25 +343,24 @@ const ShareSidebar = connect(({ user }) => ({
                         resourceType={resourceType}
                         removeUser={removeUser}
                         updatePermission={updatePermission}
+                        permissions={permissions}
                     />
                 ))}
             </div>
-            <div className={styles.footer}>
-                <div className={styles.content}>
-                    <div className={styles.copyLink}>
-                        <CopyLink
-                            resourceType={resourceType}
-                            resourceId={resourceId}
-                        />
-                    </div>
-                    <div>
-                        <Button onClick={onClose}>
-                            <Translate value="modal.common.cancel" />
-                        </Button>
-                        <Button onClick={onSave} disabled={isSaving} waiting={isSaving}>
-                            <Translate value="modal.shareResource.save" />
-                        </Button>
-                    </div>
+            <div className={cx(styles.footer, styles.content)}>
+                <div className={styles.copyLink}>
+                    <CopyLink
+                        resourceType={resourceType}
+                        resourceId={resourceId}
+                    />
+                </div>
+                <div>
+                    <Button onClick={onClose}>
+                        <Translate value="modal.common.cancel" />
+                    </Button>
+                    <Button onClick={onSave} disabled={isSaving || !hasChanges} waiting={isSaving}>
+                        <Translate value="modal.shareResource.save" />
+                    </Button>
                 </div>
             </div>
         </div>
