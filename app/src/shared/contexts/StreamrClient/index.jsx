@@ -45,17 +45,10 @@ type ClientProviderProps = {
     apiKey: ?ResourceKeyId,
     loadKeys: Function,
     isAuthenticating: boolean,
-    isAuthenticated: boolean,
     authenticationFailed: boolean,
 }
 
-function useClientProvider({
-    apiKey,
-    loadKeys,
-    isAuthenticating,
-    isAuthenticated,
-    authenticationFailed,
-}: ClientProviderProps) {
+function useClientProvider({ apiKey, loadKeys, isAuthenticating, authenticationFailed }: ClientProviderProps) {
     const [client, setClient] = useState()
     const isMountedRef = useIsMountedRef()
     const hasClient = !!client
