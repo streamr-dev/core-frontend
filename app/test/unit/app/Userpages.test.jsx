@@ -17,7 +17,7 @@ jest.mock('$userpages/components/CanvasPage/List', () => ({
         <div>Canvas list</div>
     ),
 }))
-jest.mock('$userpages/components/StreamPage/Show', () => ({
+jest.mock('$userpages/components/StreamPage/Edit', () => ({
     __esModule: true,
     default: ({ match }) => (
         <div>Stream {match.params.id} page</div>
@@ -29,7 +29,7 @@ jest.mock('$userpages/components/StreamPage/List', () => ({
         <div>Stream list</div>
     ),
 }))
-jest.mock('$userpages/components/StreamPage/Show', () => ({
+jest.mock('$userpages/components/StreamPage/Edit', () => ({
     __esModule: true,
     default: ({ match }) => (
         <div>Stream {match.params.id} page</div>
