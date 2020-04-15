@@ -130,7 +130,7 @@ stories.add('1500 streams', () => {
 
 const LoadMoreController = () => {
     const results = Array.from({
-        length: 100,
+        length: 500,
     }, (v, i) => ({
         id: `${i + 1}`,
         name: `stream ${i + 1}`,
@@ -148,7 +148,7 @@ const LoadMoreController = () => {
     }))
     const [streams, setStreams] = useState([])
     const [fetching, setFetching] = useState(false)
-    const [amount, setAmount] = useState(10)
+    const [amount, setAmount] = useState(100)
     const { partialResults, hasMoreResults } = useMemo(() => ({
         partialResults: results.slice(0, amount),
         hasMoreResults: amount < results.length,
@@ -158,7 +158,7 @@ const LoadMoreController = () => {
         if (hasMoreResults) {
             setFetching(true)
             setTimeout(() => {
-                setAmount((prev) => prev + 10)
+                setAmount((prev) => prev + 100)
                 setFetching(false)
             }, 1500)
         }

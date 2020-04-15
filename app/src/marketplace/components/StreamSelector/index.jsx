@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react'
+import React, { useState, useMemo, useCallback, useEffect } from 'react'
 
 import classNames from 'classnames'
 import uniq from 'lodash/uniq'
@@ -55,7 +55,8 @@ export const StreamSelector = (props: Props) => {
     } = props
     const [sort, setSort] = useState(SORT_BY_NAME)
     const [search, setSearch] = useState('')
-    const streamContainerRef = useRef()
+    const [searchFocused, setSearchFocused] = useState()
+    const [streamContainerRef, setStreamContainerRef] = useState(undefined)
 
     const onLoadMore = useCallback(() => {
         if (hasMoreResultsProp) {
@@ -63,7 +64,7 @@ export const StreamSelector = (props: Props) => {
         }
     }, [onLoadMoreProp, hasMoreResultsProp])
 
-    useInfiniteScroll(onLoadMore, streamContainerRef.current)
+    useInfiniteScroll(onLoadMore, streamContainerRef)
 
     const onSearchChange = (event: SyntheticInputEvent<EventTarget>) => {
         setSearch(event.target.value)
@@ -136,13 +137,25 @@ export const StreamSelector = (props: Props) => {
                 >
                     <div className={styles.inputContainer}>
                         <SvgIcon name="search" className={styles.SearchIcon} />
-                        <Input
-                            className={styles.input}
-                            onChange={onSearchChange}
-                            value={search}
-                            placeholder={I18n.t('streamSelector.typeToSearch')}
-                            disabled={!!isDisabled}
-                        />
+                        <div className={styles.inputWrapper}>
+                            <Input
+                                className={styles.input}
+                                onChange={onSearchChange}
+                                value={search}
+                                placeholder={I18n.t('streamSelector.typeToSearch')}
+                                disabled={!!isDisabled && !searchFocused}
+                                onFocus={() => setSearchFocused(true)}
+                                onBlur={() => setSearchFocused(false)}
+                            />
+                            <button
+                                type="button"
+                                className={styles.clearButton}
+                                onClick={() => setSearch('')}
+                                hidden={!search}
+                            >
+                                <SvgIcon name="cross" />
+                            </button>
+                        </div>
                         <DropdownActions
                             className={classNames(styles.sortDropdown, styles.dropdown)}
                             title={
@@ -165,7 +178,7 @@ export const StreamSelector = (props: Props) => {
                             </DropdownActions.Item>
                         </DropdownActions>
                     </div>
-                    <div className={styles.streams} ref={streamContainerRef}>
+                    <div className={styles.streams} ref={(node) => setStreamContainerRef(node)}>
                         {!fetchingStreams && !availableStreams.length && (
                             <div className={styles.noAvailableStreams}>
                                 <p><Translate value="streamSelector.noStreams" /></p>
@@ -194,12 +207,14 @@ export const StreamSelector = (props: Props) => {
                                 </button>
                             </div>
                         ))}
-                        {!!hasMoreResultsProp && (
+                        {!!hasMoreResultsProp && !!fetchingStreams && (
                             <div className={styles.loadMoreResults}>
                                 <Spinner size="small" color="gray" />
                             </div>
                         )}
-                        <LoadingIndicator className={styles.loadingIndicator} loading={!!fetchingStreams} />
+                        {!!fetchingStreams && (
+                            <LoadingIndicator className={styles.loadingIndicator} loading />
+                        )}
                     </div>
                     <div className={styles.footer}>
                         <div className={styles.selectedCount}>

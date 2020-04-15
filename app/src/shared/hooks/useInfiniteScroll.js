@@ -24,7 +24,7 @@ function useInfiniteScroll(handler: Function, element?: any = undefined) {
         }
     }, [handler, element]), 250)
 
-    useEventListener('scroll', onScroll, element)
+    useEventListener('scroll', onScroll, element || null)
 }
 
 export default useInfiniteScroll
