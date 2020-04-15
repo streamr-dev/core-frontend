@@ -8,8 +8,8 @@ import { Link } from 'react-router-dom'
 import Button from '$shared/components/Button'
 import standardProductImage from '$mp/assets/product_standard.png'
 import standardProductImage2x from '$mp/assets/product_standard@2x.png'
-import communityProductImage from '$mp/assets/product_community.png'
-import communityProductImage2x from '$mp/assets/product_community@2x.png'
+import dataUnionImage from '$mp/assets/product_dataunion.png'
+import dataUnionImage2x from '$mp/assets/product_dataunion@2x.png'
 import routes from '$routes'
 import { productTypes } from '$mp/utils/constants'
 
@@ -60,26 +60,26 @@ const ProductTypeChooser = ({ className }: Props) => (
             <div className={styles.column}>
                 <img
                     className={styles.image}
-                    src={communityProductImage}
-                    srcSet={`${communityProductImage2x} 2x`}
-                    alt={I18n.t('productTypeChooser.community.title')}
+                    src={dataUnionImage}
+                    srcSet={`${dataUnionImage2x} 2x`}
+                    alt={I18n.t('productTypeChooser.dataUnion.title')}
                 />
                 <div className={styles.textContainer}>
                     <div className={styles.title}>
-                        <Translate value="productTypeChooser.community.title" />
+                        <Translate value="productTypeChooser.dataUnion.title" />
                     </div>
                     <div className={styles.description}>
-                        <Translate value="productTypeChooser.community.description" />
+                        <Translate value="productTypeChooser.dataUnion.description" />
                     </div>
                     <Button
                         kind="special"
                         className={styles.button}
                         tag={Link}
                         to={routes.newProduct({
-                            type: productTypes.COMMUNITY,
+                            type: productTypes.DATAUNION,
                         })}
                     >
-                        <Translate value="productTypeChooser.community.linkTitle" />
+                        <Translate value="productTypeChooser.dataUnion.linkTitle" />
                     </Button>
                 </div>
             </div>

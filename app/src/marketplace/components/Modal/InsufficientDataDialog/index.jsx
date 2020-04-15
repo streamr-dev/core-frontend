@@ -2,9 +2,8 @@
 
 import React from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
+import PngIcon from '$shared/components/PngIcon'
 
-import WalletNoDataPng from '$mp/assets/wallet_no_data.png'
-import WalletNoDataPng2x from '$mp/assets/wallet_no_data@2x.png'
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 
@@ -20,8 +19,12 @@ const InsufficientDataDialog = ({ onCancel }: Props) => (
             title={I18n.t('modal.insufficientDataDialog.title')}
             onClose={onCancel}
         >
-            <img className={styles.icon} src={WalletNoDataPng} srcSet={`${WalletNoDataPng2x} 2x`} alt={I18n.t('error.wallet')} />
-            <Translate value="modal.insufficientDataDialog.message" className={styles.message} />
+            <PngIcon
+                className={styles.icon}
+                name="walletNoData"
+                alt={I18n.t('modal.insufficientDataDialog.title')}
+            />
+            <Translate tag="p" dangerousHTML value="modal.insufficientDataDialog.message" className={styles.message} />
         </Dialog>
     </ModalPortal>
 )

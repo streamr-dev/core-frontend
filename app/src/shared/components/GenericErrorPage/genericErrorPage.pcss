@@ -1,0 +1,24 @@
+.image {
+  margin-bottom: -0.75em;
+}
+
+.genericErrorPage {
+  text-align: center;
+  width: 100%;
+
+  .image {
+    max-width: 180px;
+
+    @media (--sm-up) {
+      max-width: 200px;
+    }
+
+    @media (--md-up) {
+      max-width: 40%;
+    }
+
+    @media (--lg-up) {
+      max-width: 50%;
+    }
+  }
+}

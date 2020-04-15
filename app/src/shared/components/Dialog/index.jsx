@@ -25,6 +25,7 @@ export type Props = {
     containerClassname?: string,
     actionsClassName?: string,
     backdropClassName?: string,
+    titleClassName?: string,
     onClose: () => void,
     showCloseIcon?: boolean,
     autoCloseAfter?: number, // in milliseconds, use this to close the dialog after a custom timeout
@@ -44,8 +45,27 @@ class Dialog extends Component<Props, State> {
         autoClose: false,
     }
 
+    static classNames = {
+        dialog: styles.dialog,
+        backdrop: styles.backdrop,
+        container: styles.container,
+        title: styles.title,
+        content: styles.content,
+        buttons: styles.buttons,
+    }
+
     state = {
         isHelpOpen: false,
+    }
+
+    componentDidMount() {
+        const { autoCloseAfter, autoClose, onClose } = this.props
+        const timeout = autoCloseAfter || (autoClose && dialogAutoCloseTimeout) || null
+
+        if (timeout != null) {
+            this.clearCloseTimeout()
+            this.autoCloseTimeoutId = setTimeout(onClose, timeout)
+        }
     }
 
     componentDidUpdate(prevProps: Props) {
@@ -89,6 +109,7 @@ class Dialog extends Component<Props, State> {
             containerClassname,
             actionsClassName,
             backdropClassName,
+            titleClassName,
             onClose,
             showCloseIcon,
             renderActions,
@@ -103,17 +124,18 @@ class Dialog extends Component<Props, State> {
                 onClose={() => onClose && onClose()}
                 {...otherProps}
             >
-                <Container className={containerClassname}>
+                <Container className={classNames(styles.container, containerClassname)}>
                     <TitleBar
                         showCloseIcon={showCloseIcon}
                         onClose={onClose}
+                        className={classNames(styles.title, titleClassName)}
                     >
                         {title}
                         {!!helpText && (
                             <HelpToggle active={isHelpOpen} onToggle={this.onHelpToggle} />
                         )}
                     </TitleBar>
-                    <ContentArea className={contentClassName}>
+                    <ContentArea className={classNames(styles.content, contentClassName)}>
                         {(!helpText || !isHelpOpen) && (!waiting ? children : (
                             <Spinner size="large" className={styles.spinner} />
                         ))}

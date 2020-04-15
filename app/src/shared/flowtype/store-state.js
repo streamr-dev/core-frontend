@@ -13,7 +13,7 @@ import type { User, UserId } from '$shared/flowtype/user-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { DashboardEntities } from '$userpages/flowtype/dashboard-types'
 import type { CanvasEntities } from '$userpages/flowtype/canvas-types'
-import type { IntegrationKeyEntities, IntegrationKeyIdList } from '$shared/flowtype/integration-key-types'
+import type { IntegrationKeyEntities, IntegrationKeyIdList, BalanceList } from '$shared/flowtype/integration-key-types'
 import type { ResourceKeyIdList, ResourceKeyEntities } from '$shared/flowtype/resource-key-types'
 
 // entities
@@ -54,6 +54,7 @@ export type IntegrationKeyState = {
     creatingIdentityError: ?ErrorInUi,
     removingIntegrationKey: boolean,
     removingIntegrationError: ?ErrorInUi,
+    balances: BalanceList
 }
 
 // resource key

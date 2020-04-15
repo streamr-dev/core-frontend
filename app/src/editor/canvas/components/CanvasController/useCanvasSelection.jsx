@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useSelectionContext, SelectionProvider } from '$editor/shared/hooks/useSelection'
+import { useSelectionContext, SelectionProvider } from '$shared/hooks/useSelection'
 
 import { hasModule } from '../../state'
 import useCanvas from './useCanvas'

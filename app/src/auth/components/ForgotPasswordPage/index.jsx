@@ -2,23 +2,33 @@
 
 import React, { useContext, useCallback } from 'react'
 import { I18n, Translate } from 'react-redux-i18n'
-import { userIsNotAuthenticated } from '$auth/utils/userAuthenticated'
+import { useDispatch } from 'react-redux'
+import qs from 'query-string'
+import { push } from 'connected-react-router'
 
 import AuthFormProvider from '../AuthFormProvider'
 import AuthFormContext from '../../contexts/AuthForm'
 import AuthPanel from '../AuthPanel'
-import TextInput from '../TextInput'
 import Actions from '../Actions'
 import Button from '../Button'
 import AuthStep from '../AuthStep'
 import AuthLayout from '../AuthLayout'
+import Text from '$ui/Text'
+import Label from '$ui/Label'
+import Underline from '$ui/Underline'
+import Errors from '$ui/Errors'
 
 import schemas from '../../schemas/forgotPassword'
 import post from '../../utils/post'
 import onInputChange from '../../utils/onInputChange'
 import routes from '$routes'
 
-type Props = {}
+type Props = {
+    from?: string,
+    location: {
+        search: string,
+    },
+}
 
 type Form = {
     email: string,
@@ -28,7 +38,7 @@ const initialForm: Form = {
     email: '',
 }
 
-const ForgotPasswordPage = () => {
+const ForgotPasswordPage = ({ from }: Props) => {
     const {
         errors,
         form,
@@ -37,6 +47,7 @@ const ForgotPasswordPage = () => {
         setFormField,
         step,
     } = useContext(AuthFormContext)
+    const dispatch = useDispatch()
 
     const onFailure = useCallback(({ message }: Error) => {
         setFieldError('email', message)
@@ -50,30 +61,44 @@ const ForgotPasswordPage = () => {
         }, false, true)
     }, [form])
 
+    const onBack = useCallback(() => {
+        if (from === 'profile') {
+            dispatch(push(routes.editProfile()))
+        }
+    }, [from, dispatch])
+
     return (
         <AuthLayout>
             <AuthPanel
                 validationSchemas={schemas}
                 onValidationError={setFieldError}
+                onPrev={onBack}
             >
                 <AuthStep
                     title={I18n.t('auth.forgotPassword.link.get')}
                     onSubmit={submit}
                     onFailure={onFailure}
-                    showSignin
+                    showSignin={!from}
+                    showBack={!!from}
                 >
-                    <TextInput
+                    <Label state={errors.email && 'ERROR'}>
+                        <Translate value="auth.labels.email" />
+                    </Label>
+                    <Text
+                        unstyled
+                        type="email"
                         name="email"
-                        label={I18n.t('auth.labels.email')}
                         value={form.email}
                         onChange={onInputChange(setFormField)}
-                        error={errors.email}
-                        processing={step === 0 && isProcessing}
                         autoComplete="email"
                         autoFocus
-                        preserveLabelSpace
-                        preserveErrorSpace
                     />
+                    <Underline
+                        state={(step === 0 && isProcessing && 'PROCESSING') || (errors.email && 'ERROR')}
+                    />
+                    <Errors>
+                        {errors.email}
+                    </Errors>
                     <Actions>
                         <Button disabled={isProcessing}>
                             <Translate value="auth.forgotPassword.link.send" />
@@ -82,7 +107,8 @@ const ForgotPasswordPage = () => {
                 </AuthStep>
                 <AuthStep
                     title={I18n.t('auth.forgotPassword.link.sent')}
-                    showSignin
+                    showSignin={!from}
+                    showBack={!!from}
                     className={AuthStep.styles.spaceLarge}
                 >
                     <p>
@@ -96,8 +122,12 @@ const ForgotPasswordPage = () => {
 
 export { ForgotPasswordPage }
 
-export default userIsNotAuthenticated((props: Props) => (
-    <AuthFormProvider initialStep={0} initialForm={initialForm}>
-        <ForgotPasswordPage {...props} />
-    </AuthFormProvider>
-))
+export default (props: Props) => {
+    const from = qs.parse(props.location.search).from || ''
+
+    return (
+        <AuthFormProvider initialStep={0} initialForm={initialForm}>
+            <ForgotPasswordPage {...props} from={from} />
+        </AuthFormProvider>
+    )
+}

@@ -11,7 +11,7 @@ import type {
     Filter,
     Subscription,
     ProductPermissions,
-    CommunityId,
+    DataUnionId,
 } from './product-types'
 import type { Hash, Address, HashList } from '$shared/flowtype/web3-types'
 import type { StreamIdList } from '$shared/flowtype/stream-types'
@@ -46,7 +46,8 @@ export type MyProductListState = {
 
 // my purchases
 export type MyPurchaseListState = {
-    ids: ProductIdList,
+    products: ProductIdList,
+    subscriptions: ProductIdList,
     fetching: boolean,
     error: ?ErrorInUi,
     filter: ?UserpagesFilter,
@@ -80,13 +81,13 @@ export type ContractProductState = {
     contractProductError: ?ErrorInUi,
 }
 
-// Community product
-export type CommunityProductState = {
-    id: ?CommunityId,
+// Data union
+export type DataUnionState = {
+    id: ?DataUnionId,
     fetching: boolean,
     error: ?ErrorInUi,
     fetchingStats: boolean,
-    ids: Array<CommunityId>,
+    ids: Array<DataUnionId>,
     statsError: ?ErrorInUi,
 }
 
@@ -218,7 +219,7 @@ export type StoreState = {
     allowance: AllowanceState,
     categories: CategoryState,
     contractProduct: ContractProductState,
-    communityProduct: CommunityProductState,
+    dataUnion: DataUnionState,
     createContractProduct: ModifyContractProductState,
     editProduct: EditProductState,
     global: GlobalState,

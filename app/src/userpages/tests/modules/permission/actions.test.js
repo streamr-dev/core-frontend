@@ -1,4 +1,3 @@
-import assert from 'assert-diff'
 import thunk from 'redux-thunk'
 import configureMockStore from 'redux-mock-store'
 import moxios from 'moxios'
@@ -33,7 +32,7 @@ describe('Permission actions', () => {
             store.dispatch(actions.getResourcePermissions('DASHBOARD', id))
             await moxios.promiseWait()
             const request = moxios.requests.mostRecent()
-            assert(request.url.match(`dashboards/${id}/permissions`))
+            expect(request.url).toMatch(`dashboards/${id}/permissions`)
             done()
             request.respondWith({
                 status: 200,
@@ -44,7 +43,7 @@ describe('Permission actions', () => {
             store.dispatch(actions.getResourcePermissions('CANVAS', id))
             await moxios.promiseWait()
             const request = moxios.requests.mostRecent()
-            assert(request.url.match(`canvases/${id}/permissions`))
+            expect(request.url).toMatch(`canvases/${id}/permissions`)
             done()
             request.respondWith({
                 status: 200,
@@ -55,7 +54,7 @@ describe('Permission actions', () => {
             store.dispatch(actions.getResourcePermissions('STREAM', id))
             await moxios.promiseWait()
             const request = moxios.requests.mostRecent()
-            assert(request.url.match(`streams/${id}/permissions`))
+            expect(request.url).toMatch(`streams/${id}/permissions`)
             done()
             request.respondWith({
                 status: 200,
@@ -86,7 +85,7 @@ describe('Permission actions', () => {
             }]
 
             await store.dispatch(actions.getResourcePermissions(resourceType, resourceId))
-            assert.deepStrictEqual(store.getActions(), expectedActions)
+            expect(store.getActions()).toEqual(expectedActions)
         })
         it('creates GET_RESOURCE_PERMISSIONS_FAILURE with the error when fetching permissions failed', async (done) => {
             const resourceType = 'DASHBOARD'
@@ -113,7 +112,7 @@ describe('Permission actions', () => {
             try {
                 await store.dispatch(actions.getResourcePermissions(resourceType, resourceId))
             } catch (e) {
-                assert.deepStrictEqual(store.getActions().slice(0, 2), expectedActions)
+                expect(store.getActions().slice(0, 2)).toMatchObject(expectedActions)
                 done()
             }
         })
@@ -127,7 +126,7 @@ describe('Permission actions', () => {
                 user: 'test',
                 operation: 'test',
             }
-            assert.deepEqual(actions.addResourcePermission(resourceType, resourceId, permission), {
+            expect(actions.addResourcePermission(resourceType, resourceId, permission)).toEqual({
                 type: actions.ADD_RESOURCE_PERMISSION,
                 resourceType,
                 resourceId,
@@ -143,7 +142,7 @@ describe('Permission actions', () => {
             const permission = {
                 id: 'test',
             }
-            assert.deepEqual(actions.removeResourcePermission(resourceType, resourceId, permission), {
+            expect(actions.removeResourcePermission(resourceType, resourceId, permission)).toEqual({
                 type: actions.REMOVE_RESOURCE_PERMISSION,
                 resourceType,
                 resourceId,
@@ -185,10 +184,10 @@ describe('Permission actions', () => {
                 store.dispatch(actions.saveUpdatedResourcePermissions(resourceType, resourceId))
                 await moxios.promiseWait()
                 const { requests } = moxios
-                assert.equal(requests.at(0).config.method, 'post')
-                assert.equal(requests.at(1).config.method, 'post')
-                assert.deepStrictEqual(JSON.parse(requests.at(0).config.data), permissions[0])
-                assert.deepStrictEqual(JSON.parse(requests.at(1).config.data), permissions[1])
+                expect(requests.at(0).config.method).toEqual('post')
+                expect(requests.at(1).config.method).toEqual('post')
+                expect(JSON.parse(requests.at(0).config.data)).toEqual(permissions[0])
+                expect(JSON.parse(requests.at(1).config.data)).toEqual(permissions[1])
                 done()
             })
             it('should create SAVE_ADDED_RESOURCE_PERMISSION_SUCCESS for succeeded permissions', async () => {
@@ -254,7 +253,7 @@ describe('Permission actions', () => {
                 }]
 
                 await store.dispatch(actions.saveUpdatedResourcePermissions(resourceType, resourceId))
-                assert.deepStrictEqual(store.getActions().slice(0, 4), expectedActions)
+                expect(store.getActions().slice(0, 4)).toEqual(expectedActions)
             })
             it('should create SAVE_ADDED_RESOURCE_PERMISSION_FAILURE for failed permissions', async (done) => {
                 const resourceType = 'DASHBOARD'
@@ -343,7 +342,7 @@ describe('Permission actions', () => {
                 try {
                     await store.dispatch(actions.saveUpdatedResourcePermissions(resourceType, resourceId))
                 } catch (e) {
-                    assert.deepStrictEqual(store.getActions().slice(0, 4), expectedActions)
+                    expect(store.getActions().slice(0, 4)).toMatchObject(expectedActions)
                     done()
                 }
             })
@@ -381,10 +380,10 @@ describe('Permission actions', () => {
                 store.dispatch(actions.saveUpdatedResourcePermissions(resourceType, resourceId))
                 await moxios.promiseWait()
                 const { requests } = moxios
-                assert.equal(requests.at(0).config.method, 'delete')
-                assert.equal(requests.at(1).config.method, 'delete')
-                assert.equal(requests.at(0).url, `${process.env.STREAMR_API_URL}/dashboards/${resourceId}/permissions/2`)
-                assert.equal(requests.at(1).url, `${process.env.STREAMR_API_URL}/dashboards/${resourceId}/permissions/3`)
+                expect(requests.at(0).config.method).toEqual('delete')
+                expect(requests.at(1).config.method).toEqual('delete')
+                expect(requests.at(0).url).toEqual(`${process.env.STREAMR_API_URL}/dashboards/${resourceId}/permissions/2`)
+                expect(requests.at(1).url).toEqual(`${process.env.STREAMR_API_URL}/dashboards/${resourceId}/permissions/3`)
             })
             it('should create SAVE_REMOVED_RESOURCE_PERMISSION_SUCCESS for succeeded permissions', async () => {
                 const resourceType = 'DASHBOARD'
@@ -448,7 +447,7 @@ describe('Permission actions', () => {
                 }]
 
                 await store.dispatch(actions.saveUpdatedResourcePermissions(resourceType, resourceId))
-                assert.deepStrictEqual(store.getActions().slice(0, 4), expectedActions)
+                expect(store.getActions().slice(0, 4)).toEqual(expectedActions)
             })
             it('should create SAVE_REMOVED_RESOURCE_PERMISSION_FAILURE for failed permissions', async (done) => {
                 const resourceType = 'DASHBOARD'
@@ -536,7 +535,7 @@ describe('Permission actions', () => {
                 try {
                     await store.dispatch(actions.saveUpdatedResourcePermissions(resourceType, resourceId))
                 } catch (e) {
-                    assert.deepStrictEqual(store.getActions().slice(0, 4), expectedActions)
+                    expect(store.getActions().slice(0, 4)).toMatchObject(expectedActions)
                     done()
                 }
             })
@@ -605,7 +604,7 @@ describe('Permission actions', () => {
             }]
 
             store.dispatch(actions.removeAllResourcePermissionsByUser(resourceType, resourceId, user))
-            assert.deepStrictEqual(store.getActions(), expectedActions)
+            expect(store.getActions()).toEqual(expectedActions)
         })
     })
 
@@ -641,7 +640,7 @@ describe('Permission actions', () => {
                     permission,
                 }))
                 store.dispatch(actions.setResourceHighestOperationForUser(resourceType, resourceId, user, 'share'))
-                assert.deepStrictEqual(store.getActions(), expectedActions)
+                expect(store.getActions()).toEqual(expectedActions)
             })
         })
         describe('giving lower operation removes permissions', () => {
@@ -672,7 +671,7 @@ describe('Permission actions', () => {
                     permission,
                 }))
                 store.dispatch(actions.setResourceHighestOperationForUser(resourceType, resourceId, user, 'read'))
-                assert.deepStrictEqual(store.getActions(), expectedActions)
+                expect(store.getActions()).toEqual(expectedActions)
             })
         })
     })

@@ -9,19 +9,18 @@ import cx from 'classnames'
 import useEditableProduct from '../ProductController/useEditableProduct'
 import { selectStreams } from '$mp/modules/streams/selectors'
 import { selectAllCategories } from '$mp/modules/categories/selectors'
-import { isCommunityProduct, isPaidProduct } from '$mp/utils/product'
+import { isDataUnionProduct, isPaidProduct } from '$mp/utils/product'
 import useFilePreview from '$shared/hooks/useFilePreview'
 import { lg } from '$app/scripts/breakpoints'
 
 import DescriptionComponent from '$mp/components/ProductPage/Description'
 import HeroComponent from '$mp/components/Hero'
-import FallbackImage from '$shared/components/FallbackImage'
-import Tile from '$shared/components/Tile'
+import { ImageTile } from '$shared/components/Tile'
 import ProductDetails from '$mp/components/ProductPage/ProductDetails'
 import StreamListing from '$mp/components/ProductPage/StreamListing'
 import ProductContainer from '$shared/components/Container/Product'
-import StatsValues from '$shared/components/CommunityStats/Values'
-import StatsHeader from '$shared/components/CommunityStats/Header'
+import StatsValues from '$shared/components/DataUnionStats/Values'
+import StatsHeader from '$shared/components/DataUnionStats/Header'
 import DonutChart from '$shared/components/DonutChart'
 import TimeSeriesGraph from '$shared/components/TimeSeriesGraph'
 import WithShownDays from '$shared/components/TimeSeriesGraph/WithShownDays'
@@ -29,13 +28,13 @@ import WithShownDays from '$shared/components/TimeSeriesGraph/WithShownDays'
 import productPageStyles from '$mp/containers/ProductPage/page.pcss'
 import heroStyles from '$mp/containers/ProductPage/hero.pcss'
 import streamStyles from '$mp/containers/ProductPage/streams.pcss'
-import statsStyles from '$mp/containers/ProductPage/communityStats.pcss'
+import statsStyles from '$mp/containers/ProductPage/dataUnionStats.pcss'
 
 import styles from './preview.pcss'
 
 const Hero = () => {
     const product = useEditableProduct()
-    const isCommunity = !!(product && isCommunityProduct(product))
+    const isDataUnion = !!(product && isDataUnionProduct(product))
     const { preview, createPreview } = useFilePreview()
 
     const uploadedImage = product.newImageToUpload
@@ -52,19 +51,11 @@ const Hero = () => {
             containerClassName={heroStyles.heroContainer}
             product={product}
             leftContent={
-                <div className={heroStyles.productImageWrapper}>
-                    <FallbackImage
-                        className={heroStyles.productImage}
-                        src={preview || product.imageUrl || ''}
-                        alt={product.name}
-                    />
-                    <Tile.Labels
-                        topLeft
-                        labels={{
-                            community: isCommunity,
-                        }}
-                    />
-                </div>
+                <ImageTile
+                    alt={product.name}
+                    src={preview || product.imageUrl}
+                    showDataUnionBadge={isDataUnion}
+                />
             }
             rightContent={
                 <ProductDetails
@@ -110,7 +101,7 @@ const Description = () => {
     )
 }
 
-const CommunityStats = () => {
+const DataUnionStats = () => {
     const product = useEditableProduct()
 
     const { created, adminFee } = product
@@ -226,7 +217,7 @@ const Streams = () => {
 const Preview = () => {
     const product = useEditableProduct()
 
-    const isCommunity = !!(product && isCommunityProduct(product))
+    const isDataUnion = !!(product && isDataUnionProduct(product))
 
     // scroll to the top
     useEffect(() => {
@@ -239,8 +230,8 @@ const Preview = () => {
         <div className={cx(productPageStyles.productPage, styles.preview)}>
             <Hero />
             <Description />
-            {isCommunity && (
-                <CommunityStats />
+            {isDataUnion && (
+                <DataUnionStats />
             )}
             <Streams />
         </div>

@@ -4,6 +4,8 @@ import sinon from 'sinon'
 
 import * as services from '$shared/modules/integrationKey/services'
 import * as getWeb3 from '$shared/web3/web3Provider'
+import * as utils from '$mp/utils/web3'
+import { BalanceType } from '$shared/flowtype/integration-key-types'
 
 import { integrationKeyServices } from '$shared/utils/constants'
 import { Web3NotEnabledError } from '$shared/errors/Web3'
@@ -62,15 +64,28 @@ describe('integrationKey - services', () => {
     describe('createPrivateKey', () => {
         it('sends a POST request to create a new integration key', async () => {
             const name = 'My private key'
-            const privateKey = '0x876EabF441B2EE5B5b0554Fd502a8E0600950cFa'
+            const account = {
+                address: '0x1234',
+                privateKey: '1234567890abcdefgh',
+            }
             const data = {
                 id: '1',
                 name,
                 service: integrationKeyServices.PRIVATE_KEY,
                 json: {
-                    address: privateKey,
+                    address: account.address,
                 },
             }
+
+            const createStub = sandbox.stub().callsFake(() => account)
+            const publicWeb3Stub = {
+                eth: {
+                    accounts: {
+                        create: createStub,
+                    },
+                },
+            }
+            sandbox.stub(getWeb3, 'getPublicWeb3').callsFake(() => publicWeb3Stub)
 
             moxios.wait(() => {
                 const request = moxios.requests.mostRecent()
@@ -86,13 +101,14 @@ describe('integrationKey - services', () => {
                     name,
                     service: integrationKeyServices.PRIVATE_KEY,
                     json: {
-                        privateKey,
+                        privateKey: account.privateKey,
                     },
                 }))
             })
 
-            const result = await services.createPrivateKey(name, privateKey)
+            const result = await services.createPrivateKey(name)
             assert.deepStrictEqual(result, data)
+            assert(createStub.calledOnce)
         })
     })
 
@@ -236,6 +252,45 @@ describe('integrationKey - services', () => {
 
             const result = await services.deleteIntegrationKey(id)
             assert.deepStrictEqual(result, null)
+        })
+    })
+
+    describe('getBalance', () => {
+        it('gets ETH balance', async () => {
+            sandbox.stub(utils, 'getEthBalance').callsFake(() => '123')
+
+            const balance = await services.getBalance({
+                address: 'testAccount',
+                type: BalanceType.ETH,
+            })
+
+            expect(balance).toBe('123')
+        })
+
+        it('gets token balance', async () => {
+            sandbox.stub(utils, 'getDataTokenBalance').callsFake(() => '123')
+
+            const balance = await services.getBalance({
+                address: 'testAccount',
+                type: BalanceType.DATA,
+            })
+            expect(balance).toBe('123')
+        })
+
+        it('throws an error if type is unknown', async () => {
+            let balance
+            let error
+            try {
+                balance = await services.getBalance({
+                    adress: 'testAccount',
+                    type: 'someToken',
+                })
+            } catch (e) {
+                error = e
+            }
+
+            expect(error).toBeDefined()
+            expect(balance).not.toBeDefined()
         })
     })
 })

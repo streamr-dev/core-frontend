@@ -68,6 +68,20 @@
   width: 12px;
 }
 
+.dropdownActions {
+  visibility: hidden;
+}
+
+.streamRow:hover .dropdownActions,
+.streamRow:focus-within .dropdownActions,
+.dropdownActionsOpen {
+  visibility: visible;
+}
+
+.dropdownActionsOpen > * {
+  opacity: 1;
+}
+
 @media (--md-down) {
   .createStreamButton {
     display: none;

@@ -21,6 +21,8 @@ export const paymentCurrencies = {
 
 export const DEFAULT_CURRENCY = contractCurrencies.DATA
 
+export const MIN_UNISWAP_AMOUNT_USD = 0.1
+
 // The order of these must be the same than in the smart contract
 export const productStates = {
     NOT_DEPLOYED: 'NOT_DEPLOYED',
@@ -64,20 +66,20 @@ export const transactionTypes = {
     REDEPLOY_PRODUCT: 'redeployProduct',
     UNDEPLOY_PRODUCT: 'undeployProduct',
     PAYMENT: 'payment',
-    DEPLOY_COMMUNITY: 'deployCommunity',
+    DEPLOY_DATA_UNION: 'deployDataUnion',
     UPDATE_ADMIN_FEE: 'updateAdminFee',
 }
 
 export const gasLimits = {
     DEFAULT: 3e5,
-    CREATE_PRODUCT: 3e5,
-    BUY_PRODUCT: 1e5,
-    BUY_PRODUCT_WITH_ETH: 6e6,
+    CREATE_PRODUCT: 4e5,
+    BUY_PRODUCT: 3e5,
+    BUY_PRODUCT_WITH_ETH: 4e6,
     BUY_PRODUCT_WITH_ERC20: 6e6,
-    DELETE_PRODUCT: 5e4,
-    APPROVE: 5e4,
-    DEPLOY_COMMUNITY_PRODUCT: 3e6,
-    UPDATE_ADMIN_FEE: 3e5,
+    DELETE_PRODUCT: 3e5,
+    APPROVE: 7e4,
+    DEPLOY_DATA_UNION: 4e6,
+    UPDATE_ADMIN_FEE: 4e5,
 }
 
 export const dialogAutoCloseTimeout = 2000 // in milliseconds

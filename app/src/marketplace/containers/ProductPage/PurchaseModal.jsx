@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useEffect, useCallback, useState, useMemo } from 'react'
+import React, { useEffect, useCallback, useState, useMemo, useRef } from 'react'
 import BN from 'bignumber.js'
 import { useSelector, useDispatch } from 'react-redux'
 import { I18n } from 'react-redux-i18n'
@@ -12,8 +12,6 @@ import useWeb3Status from '$shared/hooks/useWeb3Status'
 import { useController } from '$mp/containers/ProductController'
 import { usePending } from '$shared/hooks/usePending'
 import { purchaseFlowSteps } from '$mp/utils/constants'
-import { areAddressesEqual } from '$mp/utils/smartContract'
-import { selectEthereumIdentities } from '$shared/modules/integrationKey/selectors'
 import { selectProduct } from '$mp/modules/product/selectors'
 import { selectContractProduct, selectContractProductError } from '$mp/modules/contractProduct/selectors'
 import { selectDataPerUsd } from '$mp/modules/global/selectors'
@@ -46,19 +44,23 @@ import {
     selectResetDaiAllowanceError,
 } from '$mp/modules/allowance/selectors'
 import { selectPurchaseTransaction, selectPurchaseStarted } from '$mp/modules/purchase/selectors'
-import type { TimeUnit, NumberString, PaymentCurrency } from '$shared/flowtype/common-types'
 import { dataForTimeUnits } from '$mp/utils/price'
 import { toSeconds } from '$mp/utils/time'
-import { validateBalanceForPurchase, getUniswapEquivalents } from '$mp/utils/web3'
+import { validateBalanceForPurchase } from '$mp/utils/web3'
 import NoBalanceError from '$mp/errors/NoBalanceError'
+import { IdentityExistsError } from '$shared/errors/Web3'
+import { DuplicateIdentityDialog } from '$userpages/components/ProfilePage/IdentityHandler/IdentityChallengeDialog'
 import SetAllowanceDialog from '$mp/components/Modal/SetAllowanceDialog'
 import ReplaceAllowanceDialog from '$mp/components/Modal/ReplaceAllowanceDialog'
 import PurchaseSummaryDialog from '$mp/components/Modal/PurchaseSummaryDialog'
 import CompletePurchaseDialog from '$mp/components/Modal/CompletePurchaseDialog'
 import ErrorDialog from '$mp/components/Modal/ErrorDialog'
 import NoBalanceDialog from '$mp/components/Modal/NoBalanceDialog'
-import ChooseAccessPeriodDialog from '$mp/components/Modal/ChooseAccessPeriodDialog'
+import ChooseAccessPeriodDialog, { type AccessPeriod } from '$mp/components/Modal/ChooseAccessPeriodDialog'
+import ConnectEthereumAddressDialog from '$mp/components/Modal/ConnectEthereumAddressDialog'
 import useIsMounted from '$shared/hooks/useIsMounted'
+import useEthereumIdentities from '$shared/modules/integrationKey/hooks/useEthereumIdentities'
+import { type Ref } from '$shared/flowtype/common-types'
 
 import Web3ErrorDialog from '$shared/components/Web3ErrorDialog'
 
@@ -75,13 +77,6 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
     const [step, setStep] = useState(null)
     const [purchaseError, setPurchaseError] = useState(null)
     const [purchaseSucceeded, setPurchaseSucceeded] = useState(false)
-    const [time, setTime] = useState('1')
-    const [timeUnit, setTimeUnit] = useState('hour')
-    const [purchasePrice, setPurchasePrice] = useState(undefined)
-    const [ethPrice, setEthPrice] = useState(undefined)
-    const [daiPrice, setDaiPrice] = useState(undefined)
-    const [paymentCurrency, setPaymentCurrency] = useState(DEFAULT_CURRENCY)
-    const ethereumIdentities = useSelector(selectEthereumIdentities)
     const dataPerUsd = useSelector(selectDataPerUsd)
     const dataAllowance = BN(useSelector(selectDataAllowanceOrPendingDataAllowance))
     const daiAllowance = BN(useSelector(selectDaiAllowanceOrPendingDaiAllowance))
@@ -89,15 +84,20 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
     const isMounted = useIsMounted()
     const contractProduct = useSelector(selectContractProduct)
     const contractProductError = useSelector(selectContractProductError)
+    const { load: loadEthIdentities, isLinked, create: createIdentity } = useEthereumIdentities()
+    const accessPeriodParams: Ref<AccessPeriod> = useRef({
+        time: '1',
+        timeUnit: 'hour',
+        paymentCurrency: DEFAULT_CURRENCY,
+        priceInEth: undefined,
+        priceInDai: undefined,
+        priceInEthUsdEquivalent: undefined,
+    })
+    const purchasePrice: Ref<BN> = useRef(undefined)
+    const [creatingIdentity, setCreatingIdentity] = useState(false)
 
     // Check if current metamask account is linked to Streamr account
-    const accountLinked = useMemo(() => (
-        !!(ethereumIdentities &&
-        account &&
-        ethereumIdentities.find(({ json }) =>
-            json && json.address && areAddressesEqual(json.address, account))
-        )
-    ), [ethereumIdentities, account])
+    const accountLinked = useMemo(() => !!account && isLinked(account), [isLinked, account])
 
     // Start loading the contract product & clear allowance state
     useEffect(() => {
@@ -106,6 +106,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
         dispatch(resetDaiAllowanceState())
         dispatch(getDaiAllowance())
         dispatch(clearPurchaseState())
+        loadEthIdentities()
 
         loadContractProduct(productId)
             .then(() => {
@@ -113,7 +114,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
                     setStep(purchaseFlowSteps.ACCESS_PERIOD)
                 }
             })
-    }, [dispatch, loadContractProduct, productId, isMounted])
+    }, [dispatch, loadEthIdentities, loadContractProduct, productId, isMounted])
 
     // Monitor reset DATA allowance state, set error or proceed after receiving the hash
     const resetDataAllowanceTx = useSelector(selectResetDataAllowanceTx)
@@ -213,119 +214,167 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
 
     const { pricePerSecond, priceCurrency } = contractProduct || {}
 
-    const onSetAccessPeriodAndCurrency =
-        useCallback(async (selectedTime: NumberString | BN, selectedTimeUnit: TimeUnit, selectedCurrency: PaymentCurrency) => {
-            const price = dataForTimeUnits(pricePerSecond, dataPerUsd, priceCurrency, selectedTime, selectedTimeUnit)
-            const [ethVal, daiVal] = await getUniswapEquivalents(price.toString())
-
-            setTime(selectedTime.toString())
-            setTimeUnit(selectedTimeUnit)
-            setPurchasePrice(price)
-            setPaymentCurrency(selectedCurrency)
-            setEthPrice(ethVal)
-            setDaiPrice(daiVal)
-
-            try {
-                await validateBalanceForPurchase(price, selectedCurrency)
-
-                if (!isMounted()) { return }
-
-                switch (selectedCurrency) {
-                    case paymentCurrencies.ETH:
-                        setStep(purchaseFlowSteps.SUMMARY)
-                        break
-
-                    // eslint-disable-next-line no-case-declarations
-                    case paymentCurrencies.DAI:
-                        const daiPurchasePrice = daiVal.toString()
-                        if (daiAllowance.isLessThan(daiPurchasePrice)) {
-                            if (daiAllowance.isGreaterThan(0)) {
-                                setStep(purchaseFlowSteps.RESET_DAI_ALLOWANCE)
-                            } else {
-                                setStep(purchaseFlowSteps.DAI_ALLOWANCE)
-                            }
-                        } else {
-                            setStep(purchaseFlowSteps.SUMMARY)
-                        }
-                        break
-
-                    default: // Pay w DATA
-                        if (dataAllowance.isLessThan(price)) {
-                            if (dataAllowance.isGreaterThan(0)) {
-                                setStep(purchaseFlowSteps.RESET_DATA_ALLOWANCE)
-                            } else {
-                                setStep(purchaseFlowSteps.DATA_ALLOWANCE)
-                            }
-                        } else {
-                            setStep(purchaseFlowSteps.SUMMARY)
-                        }
-                        break
-                }
-            } catch (e) {
-                setPurchaseError(e)
-            }
-        }, [pricePerSecond, dataPerUsd, priceCurrency, isMounted, daiAllowance, dataAllowance])
-
-    const onSetDataAllowance = useCallback(async () => {
-        if (!purchasePrice) {
+    const onVerifyAllowance = useCallback(async () => {
+        if (!accessPeriodParams.current || !purchasePrice.current) {
             throw new Error(I18n.t('error.noProductOrAccess'))
         }
 
+        const { paymentCurrency, priceInDai } = accessPeriodParams.current
+
         try {
-            await validateBalanceForPurchase(purchasePrice, paymentCurrency)
+            await validateBalanceForPurchase(purchasePrice.current, paymentCurrency)
+
+            if (!isMounted()) { return }
+
+            switch (paymentCurrency) {
+                case paymentCurrencies.ETH:
+                    setStep(purchaseFlowSteps.SUMMARY)
+                    break
+
+                // eslint-disable-next-line no-case-declarations
+                case paymentCurrencies.DAI:
+                    const daiPurchasePrice = (priceInDai || 0).toString()
+                    if (daiAllowance.isLessThan(daiPurchasePrice)) {
+                        if (daiAllowance.isGreaterThan(0)) {
+                            setStep(purchaseFlowSteps.RESET_DAI_ALLOWANCE)
+                        } else {
+                            setStep(purchaseFlowSteps.DAI_ALLOWANCE)
+                        }
+                    } else {
+                        setStep(purchaseFlowSteps.SUMMARY)
+                    }
+                    break
+
+                default: // Pay w DATA
+                    if (dataAllowance.isLessThan(purchasePrice.current)) {
+                        if (dataAllowance.isGreaterThan(0)) {
+                            setStep(purchaseFlowSteps.RESET_DATA_ALLOWANCE)
+                        } else {
+                            setStep(purchaseFlowSteps.DATA_ALLOWANCE)
+                        }
+                    } else {
+                        setStep(purchaseFlowSteps.SUMMARY)
+                    }
+                    break
+            }
+        } catch (e) {
+            setPurchaseError(e)
+        }
+    }, [isMounted, daiAllowance, dataAllowance])
+
+    const onLinkAccount = useCallback(async () => {
+        setCreatingIdentity(true)
+        let succeeded = false
+
+        try {
+            await createIdentity(account || 'Account name')
+            succeeded = true
+        } catch (e) {
+            console.warn(e)
+            setPurchaseError(e)
+        } finally {
+            if (isMounted()) {
+                setCreatingIdentity(false)
+
+                // continue with setting allowance
+                if (succeeded) {
+                    onVerifyAllowance()
+                }
+            }
+        }
+    }, [account, isMounted, createIdentity, onVerifyAllowance])
+
+    const onSetAccessPeriod = useCallback(async (accessPeriod: AccessPeriod) => {
+        accessPeriodParams.current = accessPeriod
+
+        purchasePrice.current = dataForTimeUnits(
+            pricePerSecond,
+            dataPerUsd,
+            priceCurrency,
+            accessPeriod.time,
+            accessPeriod.timeUnit,
+        )
+
+        if (accountLinked) {
+            onVerifyAllowance()
+        } else {
+            setStep(purchaseFlowSteps.LINK_ACCOUNT)
+        }
+    }, [accountLinked, pricePerSecond, dataPerUsd, onVerifyAllowance, priceCurrency])
+
+    const onSetDataAllowance = useCallback(async () => {
+        if (!accessPeriodParams.current || !purchasePrice.current) {
+            throw new Error(I18n.t('error.noProductOrAccess'))
+        }
+
+        const { paymentCurrency } = accessPeriodParams.current
+
+        try {
+            await validateBalanceForPurchase(purchasePrice.current, paymentCurrency)
 
             if (!isMounted()) { return }
 
             if (BN(dataAllowance).isGreaterThan(0)) {
                 await dispatch(resetDataAllowanceToContract())
             } else {
-                await dispatch(setDataAllowanceToContract(purchasePrice.toString()))
+                await dispatch(setDataAllowanceToContract((purchasePrice.current || 0).toString()))
             }
         } catch (e) {
             setPurchaseError(e)
         }
-    }, [purchasePrice, paymentCurrency, isMounted, dataAllowance, dispatch])
+    }, [isMounted, dataAllowance, dispatch])
 
     const onSetDaiAllowance = useCallback(async () => {
-        if (!purchasePrice) {
+        if (!accessPeriodParams.current || !purchasePrice.current) {
             throw new Error(I18n.t('error.noProductOrAccess'))
         }
 
+        const { paymentCurrency, priceInDai } = accessPeriodParams.current
+
         try {
-            await validateBalanceForPurchase(purchasePrice, paymentCurrency)
+            await validateBalanceForPurchase(purchasePrice.current, paymentCurrency)
 
             if (!isMounted()) { return }
 
             if (BN(daiAllowance).isGreaterThan(0)) {
                 await dispatch(resetDaiAllowanceToContract())
             } else {
-                const daiPurchasePrice = (await getUniswapEquivalents(purchasePrice.toString()))[1].toString()
-
-                await dispatch(setDaiAllowanceToContract(daiPurchasePrice))
+                await dispatch(setDaiAllowanceToContract(priceInDai))
             }
         } catch (e) {
             setPurchaseError(e)
         }
-    }, [purchasePrice, paymentCurrency, isMounted, daiAllowance, dispatch])
+    }, [isMounted, daiAllowance, dispatch])
 
     const onApprovePurchase = useCallback(async () => {
-        if (!time || !timeUnit || !purchasePrice) {
+        if (!accessPeriodParams.current || !purchasePrice.current) {
+            throw new Error(I18n.t('error.noProductOrAccess'))
+        }
+
+        const {
+            paymentCurrency,
+            time,
+            timeUnit,
+            priceInEth,
+            priceInDai,
+        } = accessPeriodParams.current
+
+        if (!time || !timeUnit) {
             throw new Error(I18n.t('error.noProductOrAccess'))
         }
 
         const subscriptionTimeInSeconds = toSeconds(time, timeUnit)
 
         try {
-            await validateBalanceForPurchase(purchasePrice, paymentCurrency)
-            const [ethPurchasePrice, daiPurchasePrice] = await getUniswapEquivalents(purchasePrice.toString())
+            await validateBalanceForPurchase(purchasePrice.current, paymentCurrency)
 
             if (!isMounted()) { return }
 
-            await dispatch(buyProduct(productId || '', subscriptionTimeInSeconds, paymentCurrency, ethPurchasePrice, daiPurchasePrice))
+            await dispatch(buyProduct(productId || '', subscriptionTimeInSeconds, paymentCurrency, priceInEth, priceInDai))
         } catch (e) {
             setPurchaseError(e)
         }
-    }, [time, timeUnit, purchasePrice, paymentCurrency, isMounted, dispatch, productId])
+    }, [isMounted, dispatch, productId])
 
     if (isPending || checkingWeb3 || web3Error) {
         return (
@@ -336,6 +385,15 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
             />
         )
     }
+
+    const {
+        paymentCurrency,
+        time,
+        timeUnit,
+        priceInEth,
+        priceInDai,
+        priceInEthUsdEquivalent,
+    } = accessPeriodParams.current || {}
 
     if (purchaseError || contractProductError) {
         if (purchaseError instanceof NoBalanceError) {
@@ -350,6 +408,14 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
                     currentDaiBalance={purchaseError.getCurrentDaiBalance()}
                     requiredDaiBalance={purchaseError.getRequiredDaiBalance()}
                     paymentCurrency={paymentCurrency}
+                />
+            )
+        }
+
+        if (purchaseError instanceof IdentityExistsError) {
+            return (
+                <DuplicateIdentityDialog
+                    onClose={onClose}
                 />
             )
         }
@@ -370,7 +436,17 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
                 pricePerSecond={pricePerSecond}
                 priceCurrency={priceCurrency}
                 onCancel={onClose}
-                onNext={onSetAccessPeriodAndCurrency}
+                onNext={onSetAccessPeriod}
+            />
+        )
+    }
+
+    if (step === purchaseFlowSteps.LINK_ACCOUNT) {
+        return (
+            <ConnectEthereumAddressDialog
+                onCancel={onClose}
+                onSet={onLinkAccount}
+                waiting={creatingIdentity}
             />
         )
     }
@@ -380,7 +456,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
             <ReplaceAllowanceDialog
                 onCancel={onClose}
                 onSet={onSetDataAllowance}
-                settingDataAllowance={resettingDataAllowance}
+                settingAllowance={resettingDataAllowance}
             />
         )
     }
@@ -390,7 +466,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
             <SetAllowanceDialog
                 onCancel={onClose}
                 onSet={onSetDataAllowance}
-                settingDataAllowance={settingDataAllowance}
+                settingAllowance={settingDataAllowance}
                 paymentCurrency={paymentCurrency}
             />
         )
@@ -401,7 +477,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
             <ReplaceAllowanceDialog
                 onCancel={onClose}
                 onSet={onSetDaiAllowance}
-                settingDaiAllowance={resettingDaiAllowance}
+                settingAllowance={resettingDaiAllowance}
             />
         )
     }
@@ -411,7 +487,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
             <SetAllowanceDialog
                 onCancel={onClose}
                 onSet={onSetDaiAllowance}
-                settingDaiAllowance={settingDaiAllowance}
+                settingAllowance={settingDaiAllowance}
                 paymentCurrency={paymentCurrency}
             />
         )
@@ -424,9 +500,11 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
                 name={product.name}
                 time={time}
                 timeUnit={timeUnit}
-                price={purchasePrice}
-                ethPrice={ethPrice}
-                daiPrice={daiPrice}
+                price={purchasePrice.current}
+                ethPrice={priceInEth}
+                daiPrice={priceInDai}
+                dataPerUsd={dataPerUsd}
+                ethPriceInUsd={priceInEthUsdEquivalent || ''}
                 onCancel={onClose}
                 onPay={onApprovePurchase}
                 paymentCurrency={paymentCurrency}

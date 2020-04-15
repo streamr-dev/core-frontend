@@ -10,7 +10,7 @@ import ModuleUI from '$editor/shared/components/ModuleUI'
 
 import dashboardConfig from '../config'
 
-import { SelectionContext } from '$editor/shared/hooks/useSelection'
+import { SelectionContext } from '$shared/hooks/useSelection'
 
 import Background from './Background'
 
@@ -215,7 +215,7 @@ export default WidthProvider(class DashboardEditor extends React.Component {
     }
 
     render() {
-        const { className, dashboard, editorLocked } = this.props
+        const { className, dashboard, editorLocked, children } = this.props
         if (!dashboard) { return null }
 
         const select = this.context
@@ -279,6 +279,7 @@ export default WidthProvider(class DashboardEditor extends React.Component {
                         })}
                     </ResponsiveReactGridLayout>
                 </div>
+                {children}
             </div>
         )
     }

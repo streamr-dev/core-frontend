@@ -12,11 +12,49 @@ import type { Filter, SearchFilter, CategoryFilter, SortByFilter } from '../../f
 import type { Category } from '../../flowtype/category-types'
 import { isValidSearchQuery } from '../../utils/validate'
 import Button from '$shared/components/Button'
+import routes from '$routes'
+import { productTypes } from '$mp/utils/constants'
 
 import SearchInput from './SearchInput'
 import FilterSelector from './FilterSelector'
 import FilterDropdownItem from './FilterDropdownItem'
 import styles from './actionBar.pcss'
+
+export type CreateProductButtonProps = {
+    onCreateProduct: () => void,
+}
+
+export const CreateProductButton = ({ onCreateProduct }: CreateProductButtonProps) => {
+    if (!process.env.NEW_MP_CONTRACT) {
+        return (
+            <Button kind="secondary" tag={Link} to={links.marketplace.createProduct}>
+                <Translate value="actionBar.create" />
+            </Button>
+        )
+    } else if (process.env.DATA_UNIONS) {
+        return (
+            <Button
+                kind="secondary"
+                type="button"
+                onClick={() => onCreateProduct()}
+            >
+                <Translate value="actionBar.create" />
+            </Button>
+        )
+    }
+
+    return (
+        <Button
+            kind="secondary"
+            tag={Link}
+            to={routes.newProduct({
+                type: productTypes.NORMAL,
+            })}
+        >
+            <Translate value="actionBar.create" />
+        </Button>
+    )
+}
 
 export type Props = {
     filter: Filter,
@@ -24,8 +62,7 @@ export type Props = {
     onCategoryChange: (filter: Filter) => void,
     onSortChange: (filter: Filter) => void,
     onSearchChange: (filter: Filter) => void,
-    onCreateProduct: () => void,
-}
+} & CreateProductButtonProps
 
 class ActionBar extends Component<Props> {
     static sortByOptions = ['pricePerSecond', 'free']
@@ -135,20 +172,7 @@ class ActionBar extends Component<Props> {
                                 </FilterSelector>
                             </li>
                             <li className={classNames('d-none d-md-block', styles.createProduct)}>
-                                {!!process.env.COMMUNITY_PRODUCTS && (
-                                    <Button
-                                        kind="secondary"
-                                        type="button"
-                                        onClick={() => onCreateProduct()}
-                                    >
-                                        <Translate value="actionBar.create" />
-                                    </Button>
-                                )}
-                                {!process.env.COMMUNITY_PRODUCTS && (
-                                    <Button kind="secondary" tag={Link} to={links.marketplace.createProduct}>
-                                        <Translate value="actionBar.create" />
-                                    </Button>
-                                )}
+                                <CreateProductButton onCreateProduct={onCreateProduct} />
                             </li>
                         </ul>
                     </Container>

@@ -11,7 +11,9 @@ import { Translate, I18n } from 'react-redux-i18n'
 import Button from '$shared/components/Button'
 import DropdownActions from '$shared/components/DropdownActions'
 import SvgIcon from '$shared/components/SvgIcon'
-import InputError from '$mp/components/InputError'
+import Errors from '$ui/Errors'
+import LoadingIndicator from '$userpages/components/LoadingIndicator'
+
 import links from '$mp/../links'
 import { useLastError, type LastErrorProps } from '$shared/hooks/useLastError'
 
@@ -97,16 +99,17 @@ export const StreamSelector = (props: Props) => {
 
     const { hasError, error } = useLastError(rest)
 
+    const isDisabled = disabled || fetchingStreams
+
     return (
         <React.Fragment>
             <div className={className}>
                 <div
                     className={classNames(styles.root, {
                         [styles.withError]: !!hasError,
-                        [styles.disabled]: !!disabled,
+                        [styles.disabled]: !!isDisabled,
                     })}
                 >
-                    {!!fetchingStreams && <Translate value="streamSelector.loading" />}
                     <div className={styles.inputContainer}>
                         <SvgIcon name="search" className={styles.SearchIcon} />
                         <Input
@@ -114,7 +117,7 @@ export const StreamSelector = (props: Props) => {
                             onChange={onSearchChange}
                             value={search}
                             placeholder={I18n.t('streamSelector.typeToSearch')}
-                            disabled={!!disabled}
+                            disabled={!!isDisabled}
                         />
                         <DropdownActions
                             className={classNames(styles.sortDropdown, styles.dropdown)}
@@ -125,7 +128,7 @@ export const StreamSelector = (props: Props) => {
                                     {sort}
                                 </span>
                             }
-                            disabled={!!disabled}
+                            disabled={!!isDisabled}
                         >
                             <DropdownActions.Item onClick={() => setSort(SORT_BY_NAME)}>
                                 <Translate value="streamSelector.sortByName" />
@@ -139,7 +142,7 @@ export const StreamSelector = (props: Props) => {
                         </DropdownActions>
                     </div>
                     <div className={styles.streams}>
-                        {!availableStreams.length && (
+                        {!fetchingStreams && !availableStreams.length && (
                             <div className={styles.noAvailableStreams}>
                                 <p><Translate value="streamSelector.noStreams" /></p>
                                 <a href={links.userpages.streamCreate} className={styles.streamCreateButton}>
@@ -161,12 +164,13 @@ export const StreamSelector = (props: Props) => {
                                     onClick={() => {
                                         onToggle(stream.id)
                                     }}
-                                    disabled={!!disabled}
+                                    disabled={!!isDisabled}
                                 >
                                     {stream.name}
                                 </button>
                             </div>
                         ))}
+                        <LoadingIndicator className={styles.loadingIndicator} loading={!!fetchingStreams} />
                     </div>
                     <div className={styles.footer}>
                         <div className={styles.selectedCount}>
@@ -186,7 +190,7 @@ export const StreamSelector = (props: Props) => {
                                     onSelectAll(toSelect)
                                 }
                             }}
-                            disabled={!!disabled}
+                            disabled={!!isDisabled}
                         >
                             {!allVisibleStreamsSelected
                                 ? <Translate value="streamSelector.selectAll" />
@@ -196,11 +200,9 @@ export const StreamSelector = (props: Props) => {
                     </div>
                 </div>
             </div>
-            <InputError
-                eligible={hasError}
-                message={error}
-                preserved
-            />
+            <Errors>
+                {!!hasError && error}
+            </Errors>
         </React.Fragment>
     )
 }

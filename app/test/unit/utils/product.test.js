@@ -24,32 +24,32 @@ describe('product utils', () => {
         })
     })
 
-    describe('isCommunityProduct', () => {
-        it('detects community product from object', () => {
+    describe('isDataUnionProduct', () => {
+        it('detects data union product from object', () => {
             const product1 = {
                 id: 'text',
-                type: 'COMMUNITY',
+                type: 'DATAUNION',
             }
-            assert.equal(all.isCommunityProduct(product1), true)
+            assert.equal(all.isDataUnionProduct(product1), true)
             const product2 = {
                 id: 'text',
                 type: 'NORMAL',
             }
-            assert.equal(all.isCommunityProduct(product2), false)
+            assert.equal(all.isDataUnionProduct(product2), false)
         })
 
-        it('detects community product from empty object', () => {
-            assert.equal(all.isCommunityProduct({}), false)
+        it('detects data union product from empty object', () => {
+            assert.equal(all.isDataUnionProduct({}), false)
         })
 
-        it('detects community product from value', () => {
-            assert.equal(all.isCommunityProduct('COMMUNITY'), true)
-            assert.equal(all.isCommunityProduct('NORMAL'), false)
+        it('detects data union product from value', () => {
+            assert.equal(all.isDataUnionProduct('DATAUNION'), true)
+            assert.equal(all.isDataUnionProduct('NORMAL'), false)
         })
 
-        it('detects community product from empty value', () => {
-            assert.equal(all.isCommunityProduct(''), false)
-            assert.equal(all.isCommunityProduct(), false)
+        it('detects data union product from empty value', () => {
+            assert.equal(all.isDataUnionProduct(''), false)
+            assert.equal(all.isDataUnionProduct(), false)
         })
     })
 
@@ -365,8 +365,8 @@ describe('product utils', () => {
                 assert.equal(all.getValidId('1234', true), '0x1234')
             })
             it('throws with an invalid id', () => {
-                assert.throws(() => all.getValidId('test'), /is not valid hex/)
-                assert.throws(() => all.getValidId('test', true), /is not valid hex/)
+                assert.throws(() => all.getValidId('test'), /is not a valid hex/)
+                assert.throws(() => all.getValidId('test', true), /is not a valid hex/)
             })
         })
         describe('when prefix = false', () => {
@@ -377,7 +377,7 @@ describe('product utils', () => {
                 assert.equal(all.getValidId('1234', false), '1234')
             })
             it('throws with an invalid id', () => {
-                assert.throws(() => all.getValidId('test', false), /is not valid hex/)
+                assert.throws(() => all.getValidId('test', false), /is not a valid hex/)
             })
         })
     })

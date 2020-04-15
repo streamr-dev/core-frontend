@@ -19,11 +19,14 @@ const withErrorBoundary = (ErrorComponent: ComponentType<any>) => (
                 error: undefined,
             }
 
-            static getDerivedStateFromError(error: Error, extra: any) {
-                console.error({
-                    error,
-                })
-                analytics.reportError(error, extra)
+            static getDerivedStateFromError(error: any, extra: any) {
+                if (error && !error.noReport) {
+                    console.error({
+                        error,
+                    })
+                    analytics.reportError(error, extra)
+                }
+
                 // Reset error state if route changes, otherwise error is always shown.
                 return {
                     error,

@@ -179,7 +179,8 @@ module.exports = {
             TRAVIS_BRANCH: process.env.TRAVIS_BRANCH || '',
             TRAVIS_COMMIT: process.env.TRAVIS_COMMIT || '',
             TRAVIS_PULL_REQUEST_SHA: process.env.TRAVIS_PULL_REQUEST_SHA || '',
-            COMMUNITY_PRODUCTS: process.env.COMMUNITY_PRODUCTS,
+            DATA_UNIONS: process.env.DATA_UNIONS,
+            NEW_MP_CONTRACT: process.env.NEW_MP_CONTRACT,
         }),
         new webpack.EnvironmentPlugin(loadedDotenv),
         ...(analyze ? [
@@ -240,8 +241,7 @@ module.exports = {
                     // skip conditional stubs
                     '**/stub.jsx',
                     // skip stories
-                    '**/*.stories.js',
-                    '**/*.stories.jsx',
+                    '**/*.stories.*',
                     // and files used by stories
                     'src/editor/canvas/components/ModuleRenderer/modules.js',
                     // skip MD documentation
@@ -313,6 +313,7 @@ module.exports = {
             $testUtils: path.resolve(__dirname, 'test/test-utils/'),
             $routes: path.resolve(__dirname, 'src/routes'),
             $utils: path.resolve(__dirname, 'src/utils/'),
+            $ui: path.resolve(__dirname, 'src/shared/components/Ui'),
             // When duplicate bundles point to different places.
             '@babel/runtime': path.resolve(__dirname, 'node_modules/@babel/runtime'),
             'bn.js': path.resolve(__dirname, 'node_modules/bn.js'),

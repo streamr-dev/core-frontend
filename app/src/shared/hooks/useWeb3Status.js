@@ -25,38 +25,6 @@ export function useWeb3Status(requireWeb3: boolean = true): Result {
     const isMounted = useIsMounted()
     const [account, setAccount] = useState(null)
 
-    useEffect(() => {
-        if (!requireWeb3 || checkingWeb3) { return () => {} }
-
-        const onAccount = (nextAccount) => {
-            if (!isMounted()) { return }
-            setAccount(nextAccount)
-            setWeb3Error(null)
-        }
-
-        Web3Poller.subscribe(Web3Poller.events.ACCOUNT, onAccount)
-
-        return () => {
-            Web3Poller.unsubscribe(Web3Poller.events.ACCOUNT, onAccount)
-        }
-    }, [requireWeb3, checkingWeb3, isMounted])
-
-    useEffect(() => {
-        if (!requireWeb3 || !account) { return () => {} }
-
-        const setLocked = () => {
-            if (!isMounted()) { return }
-            setWeb3Error(new WalletLockedError())
-            setAccount(null)
-        }
-
-        Web3Poller.subscribe(Web3Poller.events.ACCOUNT_ERROR, setLocked)
-
-        return () => {
-            Web3Poller.unsubscribe(Web3Poller.events.ACCOUNT_ERROR, setLocked)
-        }
-    }, [requireWeb3, account, isMounted])
-
     const validate = useCallback(async () => {
         setCheckingWeb3(true)
 
@@ -74,11 +42,43 @@ export function useWeb3Status(requireWeb3: boolean = true): Result {
             setAccount(nextAccount)
             setWeb3Error(null)
         } catch (e) {
+            setAccount(null)
             setWeb3Error(e)
         }
 
         setCheckingWeb3(false)
     }, [isMounted])
+
+    useEffect(() => {
+        if (!requireWeb3 || checkingWeb3) { return () => {} }
+
+        const onAccount = () => {
+            if (!isMounted()) { return }
+            validate()
+        }
+
+        Web3Poller.subscribe(Web3Poller.events.ACCOUNT, onAccount)
+
+        return () => {
+            Web3Poller.unsubscribe(Web3Poller.events.ACCOUNT, onAccount)
+        }
+    }, [requireWeb3, checkingWeb3, isMounted, validate])
+
+    useEffect(() => {
+        if (!requireWeb3 || !account) { return () => {} }
+
+        const setLocked = () => {
+            if (!isMounted()) { return }
+            setWeb3Error(new WalletLockedError())
+            setAccount(null)
+        }
+
+        Web3Poller.subscribe(Web3Poller.events.ACCOUNT_ERROR, setLocked)
+
+        return () => {
+            Web3Poller.unsubscribe(Web3Poller.events.ACCOUNT_ERROR, setLocked)
+        }
+    }, [requireWeb3, account, isMounted])
 
     useEffect(() => {
         if (!requireWeb3 || account || web3Error) { return }
@@ -90,7 +90,7 @@ export function useWeb3Status(requireWeb3: boolean = true): Result {
         requireWeb3,
         web3Error,
         checkingWeb3,
-        isLocked: !!checkingWeb3 || !!web3Error,
+        isLocked: !!checkingWeb3 || (!account || !!web3Error),
         account,
     }), [requireWeb3, web3Error, checkingWeb3, account])
 }

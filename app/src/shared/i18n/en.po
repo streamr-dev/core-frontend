@@ -50,9 +50,6 @@ msgstr "Editor"
 msgid "general##faq"
 msgstr "FAQ"
 
-msgid "general##footnote"
-msgstr "Made with ❤️ & ☕ by Streamr contributors in 2019"
-
 msgid "general##designAssets"
 msgstr "Design Assets"
 
@@ -103,6 +100,9 @@ msgstr "Product"
 
 msgid "general##products"
 msgstr "Products"
+
+msgid "general##dataUnions"
+msgstr "Data Unions"
 
 msgid "general##profile"
 msgstr "Profile"
@@ -155,6 +155,27 @@ msgstr "YouTube"
 msgid "general##logout"
 msgstr "Logout"
 
+msgid "general##signout"
+msgstr "Sign out"
+
+msgid "general##nav##marketplace"
+msgstr "Marketplace"
+
+msgid "general##nav##core"
+msgstr "Core"
+
+msgid "general##nav##editor"
+msgstr "Editor"
+
+msgid "general##nav##docs"
+msgstr "Docs"
+
+msgid "general##copy"
+msgstr "Copy"
+
+msgid "general##copied"
+msgstr "Copied"
+
 msgid "language##id"
 msgstr "en"
 
@@ -184,6 +205,9 @@ msgstr "OK"
 
 msgid "modal##common##waiting"
 msgstr "Waiting"
+
+msgid "modal##common##working"
+msgstr "Working"
 
 msgid "modal##common##close"
 msgstr "Close"
@@ -232,6 +256,9 @@ msgstr "No data yet"
 msgid "shared##status##error"
 msgstr "Inactive"
 
+msgid "shared##status##pending"
+msgstr "Pending"
+
 msgid "shared##date##day"
 msgstr "Day"
 
@@ -259,6 +286,9 @@ msgstr "Years"
 msgid "general##docs"
 msgstr "Docs"
 
+msgid "general##settings"
+msgstr "Settings"
+
 msgid "general##learn"
 msgstr "Learn"
 
@@ -280,11 +310,36 @@ msgstr "Telegram Group"
 msgid "general##giveFeedback"
 msgstr "Give feedback"
 
-msgid "general##labels##community"
-msgstr "Community Product"
+msgid "general##labels##dataUnion"
+msgstr "Data Union"
 
 msgid "general##top"
 msgstr "Top"
 
 msgid "general##network"
 msgstr "Network"
+
+msgid "notFoundPage##message"
+msgstr ""
+"Whoops! We don’t seem to be able to find your data.</br>"
+"<small>Something might have been moved around or changed.<small>"
+
+msgid "notFoundPage##top"
+msgstr "Go to marketplace"
+
+msgid "notFoundPage##coreApp"
+msgstr "Go to core app"
+
+msgid "notFoundPage##publicSite"
+msgstr "Go to public site"
+
+msgid "genericErrorPage##imageCaption"
+msgstr "App crashed"
+
+msgid "genericErrorPage##message"
+msgstr ""
+"Oops. Something has broken down here. <br /> Please try one of the links "
+"below <br /> to get things back on track."
+
+msgid "genericErrorPage##top"
+msgstr "Marketplace top"

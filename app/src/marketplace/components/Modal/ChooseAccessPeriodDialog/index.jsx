@@ -3,29 +3,41 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react'
 import BN from 'bignumber.js'
 import { Translate, I18n } from 'react-redux-i18n'
+import cx from 'classnames'
 
-import TextInput from '$shared/components/TextInput'
+import Buttons from '$shared/components/Buttons'
+import Text from '$ui/Text'
 import useWeb3Status from '$shared/hooks/useWeb3Status'
 import LoadingIndicator from '$userpages/components/LoadingIndicator'
 import SelectField from '$mp/components/SelectField'
 import CurrencySelector from './CurrencySelector'
-import { getBalances, getUniswapEquivalents } from '$mp/utils/web3'
+import { getBalances, uniswapDATAtoETH, uniswapDATAtoDAI, uniswapETHtoDATA } from '$mp/utils/web3'
 import { isMobile } from '$shared/utils/platform'
 import { toSeconds } from '$mp/utils/time'
 import { dataToUsd, usdToData, formatDecimals } from '$mp/utils/price'
-import { timeUnits, contractCurrencies, paymentCurrencies, DEFAULT_CURRENCY } from '$shared/utils/constants'
+import { timeUnits, contractCurrencies, paymentCurrencies, DEFAULT_CURRENCY, MIN_UNISWAP_AMOUNT_USD } from '$shared/utils/constants'
 import type { Product } from '$mp/flowtype/product-types'
 import type { ContractCurrency, PaymentCurrency, NumberString, TimeUnit } from '$shared/flowtype/common-types'
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
+import Errors, { MarketplaceTheme } from '$ui/Errors'
 
 import styles from './chooseAccessPeriod.pcss'
+
+export type AccessPeriod = {
+    time: NumberString,
+    timeUnit: TimeUnit,
+    paymentCurrency: PaymentCurrency,
+    priceInEth: ?NumberString,
+    priceInDai: ?NumberString,
+    priceInEthUsdEquivalent: ?NumberString,
+}
 
 export type Props = {
     dataPerUsd: ?NumberString,
     pricePerSecond: $ElementType<Product, 'pricePerSecond'>,
     priceCurrency: $ElementType<Product, 'priceCurrency'>,
-    onNext: (time: NumberString, timeUnit: TimeUnit, paymentCurrency: PaymentCurrency) => Promise<void>,
+    onNext: (AccessPeriod) => Promise<void>,
     onCancel: () => void,
 }
 
@@ -60,6 +72,7 @@ export const ChooseAccessPeriodDialog = ({
     const [daiBalance, setDaiBalance] = useState('-')
     const [priceInEth, setPriceInEth] = useState('-')
     const [priceInDai, setPriceInDai] = useState('-')
+    const [ethPriceInUsd, setEthPriceInUsd] = useState('-')
 
     const [priceInData, priceInUsd] = useMemo(() => {
         const pricePerSecondInData = priceCurrency === contractCurrencies.DATA ?
@@ -80,18 +93,40 @@ export const ChooseAccessPeriodDialog = ({
 
     const isValidTime = useCallback(() => !BN(time).isNaN() && BN(time).isGreaterThan(0), [time])
 
+    const isValidPrice = useCallback(() => {
+        if (paymentCurrency === paymentCurrencies.ETH) {
+            if (Number(priceInUsd) < MIN_UNISWAP_AMOUNT_USD) { return false }
+            return !(BN(priceInEth).isNaN() || !BN(priceInEth).isGreaterThan(0) || !BN(priceInEth).isFinite())
+        }
+
+        if (paymentCurrency === paymentCurrencies.DAI) {
+            if (Number(priceInUsd) < MIN_UNISWAP_AMOUNT_USD) { return false }
+            return !(BN(priceInDai).isNaN() || !BN(priceInDai).isGreaterThan(0) || !BN(priceInDai).isFinite())
+        }
+
+        return true
+    }, [paymentCurrency, priceInUsd, priceInEth, priceInDai])
+
     const getProductPrices = useCallback(async () => {
         if (isValidTime()) {
             setLoading(true)
-            const [ethValue, daiValue] = await getUniswapEquivalents(priceInData)
+
+            const ethValue = await uniswapDATAtoETH(priceInData)
+            const daiValue = await uniswapDATAtoDAI(priceInData)
+
+            let ethUSDEquivalent = await uniswapETHtoDATA(ethValue.toString())
+            ethUSDEquivalent = ethUSDEquivalent.dividedBy(Number(dataPerUsd) || 1)
+            setEthPriceInUsd(ethUSDEquivalent.isNaN() ? 'N/A' : formatDecimals(ethUSDEquivalent, contractCurrencies.USD))
+
+            setPriceInEth(BN(ethValue).isNaN() ? 'N/A' : formatDecimals(ethValue, paymentCurrencies.ETH).toString())
+            setPriceInDai(BN(daiValue).isNaN() ? 'N/A' : formatDecimals(daiValue, paymentCurrencies.DAI).toString())
+
             setLoading(false)
-            setPriceInEth(formatDecimals(ethValue, paymentCurrencies.ETH).toString())
-            setPriceInDai(formatDecimals(daiValue, paymentCurrencies.DAI).toString())
         } else {
             setPriceInEth('-')
             setPriceInDai('-')
         }
-    }, [isValidTime, priceInData])
+    }, [dataPerUsd, isValidTime, priceInData])
 
     const getAccountBalance = useCallback(async () => {
         setLoading(true)
@@ -109,6 +144,15 @@ export const ChooseAccessPeriodDialog = ({
                 return undefined
         }
     }, [paymentCurrency])
+
+    const approxUsd = () => {
+        if (paymentCurrency === paymentCurrencies.ETH) {
+            return ethPriceInUsd
+        } else if (paymentCurrency === paymentCurrencies.DAI) {
+            return priceInDai
+        }
+        return priceInUsd
+    }
 
     useEffect(() => {
         getProductPrices()
@@ -153,49 +197,126 @@ export const ChooseAccessPeriodDialog = ({
     const onNext = useCallback(async (selectedTime: NumberString | BN, selectedTimeUnit: TimeUnit, selectedPaymentCurrency: PaymentCurrency) => {
         setLoading(true)
 
-        await onNextProp(selectedTime, selectedTimeUnit, selectedPaymentCurrency)
-    }, [onNextProp])
+        await onNextProp({
+            time: selectedTime,
+            timeUnit: selectedTimeUnit,
+            paymentCurrency: selectedPaymentCurrency,
+            priceInEth,
+            priceInDai,
+            priceInEthUsdEquivalent: ethPriceInUsd,
+        })
+    }, [ethPriceInUsd, onNextProp, priceInDai, priceInEth])
 
     const onPaymentCurrencyChange = useCallback((currency: PaymentCurrency) => (setPaymentCurrency(currency)), [setPaymentCurrency])
+
+    const actions = {
+        cancel: {
+            title: I18n.t('modal.common.cancel'),
+            onClick: onCancel,
+            kind: 'link',
+        },
+        next: {
+            title: I18n.t('modal.common.next'),
+            kind: 'primary',
+            outline: true,
+            onClick: () => onNext(time, timeUnit, paymentCurrency),
+            disabled: !isValidTime() || !isValidPrice() || loading,
+        },
+    }
 
     return (
         <ModalPortal>
             <Dialog
                 onClose={onCancel}
-                title={isMobile ? I18n.t('modal.chooseAccessPeriod.mobileTitle') : I18n.t('modal.chooseAccessPeriod.title')}
-                actions={{
-                    cancel: {
-                        title: I18n.t('modal.common.cancel'),
-                        onClick: onCancel,
-                        kind: 'link',
-                    },
-                    next: {
-                        title: I18n.t('modal.common.next'),
-                        kind: 'primary',
-                        outline: true,
-                        onClick: () => onNext(time, timeUnit, paymentCurrency),
-                        disabled: !isValidTime() || loading,
-                    },
-                }}
-                className={styles.modalOverrides}
+                title={isMobile() ? I18n.t('modal.chooseAccessPeriod.mobileTitle') : I18n.t('modal.chooseAccessPeriod.title')}
+                actions={actions}
+                renderActions={() => (
+                    <div className={cx(styles.footer, {
+                        [styles.onlyButtons]: paymentCurrency === paymentCurrencies.DATA,
+                    })}
+                    >
+                        {!isMobile() && paymentCurrency !== paymentCurrencies.DATA &&
+                            <Translate
+                                value="modal.chooseAccessPeriod.uniswap"
+                                className={styles.uniswapFooter}
+                                tag="span"
+                                dangerousHTML
+                            />}
+                        <Buttons
+                            actions={actions}
+                        />
+                    </div>
+                )}
+                contentClassName={styles.noPadding}
             >
                 <div className={styles.root}>
                     <div className={styles.accessPeriod}>
-                        <TextInput
-                            label=""
-                            type="number"
-                            hideButtons
-                            value={isValidTime() ? time : ''}
-                            onChange={(e: SyntheticInputEvent<EventTarget>) => setTime(e.target.value)}
-                            className={styles.accessPeriodNumber}
-                        />
-                        <SelectField
-                            placeholder="Select"
-                            options={options}
-                            value={selectedValue}
-                            onChange={({ value: nextValue }) => onTimeUnitChange(nextValue)}
-                            className={styles.accessPeriodUnit}
-                        />
+                        <div className={styles.timeValueInput}>
+                            <Text
+                                type="number"
+                                value={isValidTime() ? time : ''}
+                                invalid={!isValidTime() || !isValidPrice()}
+                                onChange={(e: SyntheticInputEvent<EventTarget>) => setTime(e.target.value)}
+                                className={styles.accessPeriodNumber}
+                            />
+                            <SelectField
+                                placeholder="Select"
+                                options={options}
+                                value={selectedValue}
+                                onChange={({ value: nextValue }) => onTimeUnitChange(nextValue)}
+                                className={styles.accessPeriodUnit}
+                            />
+                        </div>
+                        {(!isValidTime() || !isValidPrice()) &&
+                        paymentCurrency !== paymentCurrencies.DATA &&
+                        (priceInEth !== '-' || priceInDai !== '-') && // prevent false positives during load
+                        (
+                            <Errors theme={MarketplaceTheme} className={styles.uniswapErrors}>
+                                {!isValidTime() &&
+                                    <React.Fragment>
+                                        <Translate
+                                            value="modal.chooseAccessPeriod.invalidTime"
+                                            className={styles.invalidInputDesktop}
+                                            tag="p"
+                                            dangerousHTML
+                                        />
+                                    </React.Fragment>
+                                }
+
+                                {!isValidPrice() && Number(priceInUsd) < MIN_UNISWAP_AMOUNT_USD &&
+                                    <React.Fragment>
+                                        <Translate
+                                            value="modal.chooseAccessPeriod.lowPriceDesktop"
+                                            className={styles.invalidInputDesktop}
+                                            tag="p"
+                                            dangerousHTML
+                                        />
+                                        <Translate
+                                            value="modal.chooseAccessPeriod.lowPriceMobile"
+                                            className={styles.invalidInputMobile}
+                                            tag="p"
+                                            dangerousHTML
+                                        />
+                                    </React.Fragment>
+                                }
+                                {!isValidPrice() && Number(priceInUsd) > MIN_UNISWAP_AMOUNT_USD &&
+                                    <React.Fragment>
+                                        <Translate
+                                            value="modal.chooseAccessPeriod.highPriceDesktop"
+                                            className={styles.invalidInputDesktop}
+                                            tag="p"
+                                            dangerousHTML
+                                        />
+                                        <Translate
+                                            value="modal.chooseAccessPeriod.highPriceMobile"
+                                            className={styles.invalidInputMobile}
+                                            tag="p"
+                                            dangerousHTML
+                                        />
+                                    </React.Fragment>
+                                }
+                            </Errors>
+                        )}
                     </div>
                     <div className={styles.balanceAndPrice}>
                         <span className={styles.balance}>
@@ -213,7 +334,7 @@ export const ChooseAccessPeriodDialog = ({
                             </span>
                         </span>
                         <span className={styles.usdEquiv}>
-                            {I18n.t('modal.chooseAccessPeriod.approx')} {priceInUsd} {contractCurrencies.USD}
+                            {I18n.t('modal.chooseAccessPeriod.approx')} {approxUsd()} {contractCurrencies.USD}
                         </span>
                     </div>
                     <LoadingIndicator loading={!!loading} className={styles.loadingIndicator} />
@@ -221,7 +342,7 @@ export const ChooseAccessPeriodDialog = ({
                         onChange={(c) => onPaymentCurrencyChange(c)}
                         paymentCurrency={paymentCurrency}
                     />
-                    {isMobile() ?
+                    {isMobile() && paymentCurrency !== paymentCurrencies.DATA ?
                         <Translate
                             value="modal.chooseAccessPeriod.uniswap"
                             className={styles.uniswapMsg}

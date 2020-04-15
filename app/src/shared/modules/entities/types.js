@@ -6,7 +6,7 @@ export type UpdateEntitiesParam = {
     entities: {
         products?: {},
         contractProducts?: {},
-        communityProducts?: {},
+        dataUnions?: {},
         relatedProducts?: {},
         subscriptions?: {},
         categories?: {},
@@ -15,6 +15,7 @@ export type UpdateEntitiesParam = {
         dashboards?: {},
         integrationKeys?: {},
         resourceKeys?: {},
+        joinRequests: {},
     }
 }
 

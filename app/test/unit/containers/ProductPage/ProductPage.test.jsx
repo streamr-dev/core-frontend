@@ -15,7 +15,7 @@ import links from '$shared/../links'
 import SessionProvider from '$auth/components/SessionProvider'
 
 import ProductPageComponent from '$mp/components/deprecated/ProductPage'
-import NotFoundPage from '$mp/components/NotFoundPage'
+import NotFoundPage from '$shared/components/NotFoundPage'
 
 describe('ProductPage', () => {
     let wrapper
@@ -100,7 +100,8 @@ describe('ProductPage', () => {
                 },
             },
             myPurchaseList: {
-                ids: [],
+                products: [],
+                subscriptions: [],
                 fetching: false,
                 error: null,
             },
@@ -144,6 +145,105 @@ describe('ProductPage', () => {
         }
 
         assert.deepStrictEqual(mapStateToProps(state), expectedProps)
+    })
+
+    it('maps login state to props', () => {
+        const state = {
+            categories: {
+                ids: [1, 2],
+            },
+            relatedProducts: {
+                ids: [],
+                fetching: false,
+                error: null,
+            },
+            product: {
+                id: product.id,
+                fetchingProduct: false,
+                productError: null,
+                streams: [],
+                fetchingStreams: false,
+                streamsError: null,
+                fetchingContractProduct: false,
+                contractProductError: null,
+                fetchingContractSubscription: false,
+                contractSubscriptionError: null,
+                contractSubscription: null,
+                productPermissions: {
+                    read: false,
+                    write: false,
+                    share: false,
+                    fetchingPermissions: false,
+                    permissionsError: null,
+                },
+            },
+            myPurchaseList: {
+                products: [],
+                subscriptions: [],
+                fetching: false,
+                error: null,
+            },
+            user: {
+                user: null,
+                fetchingUserData: false,
+                userDataError: null,
+                ethereumIdentities: null,
+                privateKeys: null,
+                fetchingIntegrationKeys: false,
+                integrationKeysError: null,
+            },
+            web3: {
+                accountId: null,
+                error: null,
+                enabled: false,
+            },
+            entities: {
+                products: {
+                    'product-1': product,
+                },
+                categories: {
+                    '1': categories[0],
+                    '2': categories[1],
+                },
+            },
+        }
+
+        const expectedProps = {
+            product,
+            productError: null,
+            streams: [],
+            relatedProducts: [],
+            fetchingProduct: false,
+            fetchingStreams: false,
+            isLoggedIn: false,
+            editPermission: false,
+            publishPermission: false,
+            isProductSubscriptionValid: false,
+            fetchingSharePermission: false,
+        }
+
+        assert.deepStrictEqual(mapStateToProps(state), expectedProps)
+
+        // maps login status
+        const sessionStub = sandbox.stub(SessionProvider, 'token').callsFake(() => null)
+        const nextState = {
+            ...state,
+            user: {
+                ...state.user,
+                user: {
+                    id: '1',
+                },
+            },
+        }
+        assert.deepStrictEqual(mapStateToProps(nextState), expectedProps)
+
+        sessionStub.restore()
+        sandbox.stub(SessionProvider, 'token').callsFake(() => 'myToken')
+        const nextExpectedProps = {
+            ...expectedProps,
+            isLoggedIn: true,
+        }
+        assert.deepStrictEqual(mapStateToProps(nextState), nextExpectedProps)
     })
 
     it('maps login state to props', () => {

@@ -3,11 +3,9 @@
 import React from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
 
-import ModalPortal from '$shared/components/ModalPortal'
+import PngIcon from '$shared/components/PngIcon'
 import Dialog from '$shared/components/Dialog'
-import DiscardChangesPng from '$mp/assets/discard-changes.png'
-import DiscardChangesPng2x from '$mp/assets/discard-changes@2x.png'
-import Button from '$shared/components/Button'
+import ModalPortal from '$shared/components/ModalPortal'
 import Buttons from '$shared/components/Buttons'
 
 import styles from './confirmSave.pcss'
@@ -26,15 +24,17 @@ const ConfirmSaveDialog = ({ onSave, onClose, onContinue }: Props) => (
             onClose={onClose}
             renderActions={() => (
                 <div className={styles.footer}>
-                    <div className={styles.footerText}>
-                        <Button
-                            kind="primary"
-                            onClick={onContinue}
-                            outline
-                        >
-                            {I18n.t('modal.confirmSave.dontSave')}
-                        </Button>
-                    </div>
+                    <Buttons
+                        className={styles.footerText}
+                        actions={{
+                            dontSave: {
+                                title: I18n.t('modal.confirmSave.dontSave'),
+                                kind: 'primary',
+                                outline: true,
+                                onClick: onContinue,
+                            },
+                        }}
+                    />
                     <Buttons
                         actions={{
                             cancel: {
@@ -52,10 +52,9 @@ const ConfirmSaveDialog = ({ onSave, onClose, onContinue }: Props) => (
                 </div>
             )}
         >
-            <img
+            <PngIcon
                 className={styles.icon}
-                src={DiscardChangesPng}
-                srcSet={`${DiscardChangesPng2x} 2x`}
+                name="discardChanges"
                 alt={I18n.t('modal.confirmSave.title')}
             />
             <Translate

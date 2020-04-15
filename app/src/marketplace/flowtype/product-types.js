@@ -10,7 +10,7 @@ import type { Address } from '$shared/flowtype/web3-types'
 export type ProductId = string
 export type ProductState = $Keys<typeof productStates>
 
-export type ProductType = $Keys<typeof productTypes>
+export type ProductType = $Values<typeof productTypes>
 
 export type PendingChanges = {
     adminFee?: number
@@ -45,11 +45,21 @@ export type Product = {
     pendingChanges?: PendingChanges,
 }
 
+export type ProductSubscriptionId = string
+
+export type ProductSubscriptionIdList = Array<ProductSubscriptionId>
+
 export type ProductSubscription = {
-    address: Address,
+    id: ProductSubscriptionId,
+    address?: Address,
+    user?: string,
     endsAt: Date,
     product: Product,
+    dateCreated: Date,
+    lastUpdated: Date,
 }
+
+export type ProductSubscriptionList = Array<ProductSubscription>
 
 export type EditProduct = Product
 
@@ -118,7 +128,7 @@ export type ProductPermissions = {
     permissionsError: ?ErrorInUi,
 }
 
-export type CommunityId = $ElementType<Product, 'beneficiaryAddress'>
+export type DataUnionId = $ElementType<Product, 'beneficiaryAddress'>
 
 export type MemberCount = {
     total: number,
@@ -126,8 +136,8 @@ export type MemberCount = {
     inactive: number,
 }
 
-export type Community = {
-    id: CommunityId,
+export type DataUnion = {
+    id: DataUnionId,
     adminFee: number | string,
     joinPartStreamId: StreamId,
     owner: Address,

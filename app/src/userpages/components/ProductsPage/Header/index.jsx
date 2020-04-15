@@ -8,7 +8,7 @@ import { Translate } from 'react-redux-i18n'
 import cx from 'classnames'
 
 import Tab from '$userpages/components/Header/Tab'
-import NameAndEmail from '$userpages/components/Avatar/NameAndEmail'
+import NameAndUsername from '$userpages/components/Avatar/NameAndUsername'
 import ListContainer from '$shared/components/Container/List'
 import BackButton from '$shared/components/BackButton'
 import Toolbar from '$shared/components/Toolbar'
@@ -50,6 +50,7 @@ const Header = ({ className, searchComponent, filterComponent }: Props) => {
             <Toolbar
                 left={<BackButton onBack={redirectToProductList} />}
                 altMobileLayout
+                className={styles.toolbar}
             />
             <ListContainer className={cx(styles.listTemp, className)}>
                 <div className={styles.profile}>
@@ -59,17 +60,22 @@ const Header = ({ className, searchComponent, filterComponent }: Props) => {
                             src={product.imageUrl || ''}
                             alt={product.name || ''}
                         />
-                        <NameAndEmail name={product.name} email={product.beneficiaryAddress} />
+                        <NameAndUsername name={product.name} username={product.beneficiaryAddress} />
                     </div>
                     <div className={styles.additionalComponent}>
                         <Button
                             className={styles.viewProductButton}
-                            tag={Link}
                             outline
-                            to={routes.product({
-                                id: product.id,
+                            {...(product.state === productStates.DEPLOYED ? {
+                                tag: Link,
+                                to: routes.product({
+                                    id: product.id,
+                                }),
+                            } : {
+                                type: 'button',
+                                onClick: () => {},
+                                disabled: true,
                             })}
-                            disabled={product.state !== productStates.DEPLOYED}
                         >
                             <Translate value="userpages.products.viewProduct" />
                         </Button>

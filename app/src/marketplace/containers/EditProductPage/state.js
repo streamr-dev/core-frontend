@@ -1,7 +1,7 @@
 // @flow
 
 import { productStates } from '$shared/utils/constants'
-import { isCommunityProduct } from '$mp/utils/product'
+import { isDataUnionProduct } from '$mp/utils/product'
 import type { Product, PendingChanges } from '$mp/flowtype/product-types'
 
 export const PENDING_CHANGE_FIELDS = [
@@ -17,7 +17,6 @@ export const PENDING_CHANGE_FIELDS = [
     'priceCurrency',
     'adminFee',
     'timeUnit',
-    'currency',
     'price',
 ]
 
@@ -39,9 +38,9 @@ export const getChangeObject = (original: Product, next: Product): Object => (
 
 export function getPendingChanges(product: Product): Object {
     const isPublic = isPublished(product)
-    const isCommunity = isCommunityProduct(product)
+    const isDataUnion = isDataUnionProduct(product)
 
-    if (isPublic || isCommunity) {
+    if (isPublic || isDataUnion) {
         const { adminFee, ...otherPendingChanges } = getPendingObject(product.pendingChanges || {})
 
         if (isPublic) {
@@ -51,7 +50,7 @@ export function getPendingChanges(product: Product): Object {
                     adminFee,
                 } : {}),
             }
-        } else if (isCommunity && adminFee) {
+        } else if (isDataUnion && adminFee) {
             return {
                 adminFee,
             }
@@ -64,7 +63,7 @@ export function getPendingChanges(product: Product): Object {
 export function hasPendingChange(product: Product, field: string) {
     const pendingChanges = getPendingChanges(product)
 
-    return !!pendingChanges[field]
+    return field in pendingChanges
 }
 
 export function update(product: Product, fn: Function) {
@@ -78,7 +77,7 @@ export function update(product: Product, fn: Function) {
                 ...getChangeObject(product, result),
             },
         }
-    } else if (isCommunityProduct(product)) {
+    } else if (isDataUnionProduct(product)) {
         return {
             ...otherChanges,
             pendingChanges: {
@@ -93,7 +92,7 @@ export function update(product: Product, fn: Function) {
 }
 
 export function withPendingChanges(product: Product) {
-    if (product && (isPublished(product) || isCommunityProduct(product))) {
+    if (product && (isPublished(product) || isDataUnionProduct(product))) {
         return {
             ...product,
             ...getPendingChanges(product),

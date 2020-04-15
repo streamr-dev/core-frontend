@@ -6,33 +6,43 @@ import { I18n } from 'react-redux-i18n'
 
 import styles from './statusIcon.pcss'
 
+export type Status = 'ok' | 'error' | 'inactive' | 'pending'
+
 type Props = {
-    status?: 'ok' | 'error' | 'inactive',
+    status?: Status,
     className?: string,
-    showTooltip?: boolean,
+    tooltip?: boolean | string,
 }
 
 export default class StatusIcon extends React.Component<Props> {
     static ERROR = 'error'
     static OK = 'ok'
     static INACTIVE = 'inactive'
+    static PENDING = 'pending'
 
     static defaultProps = {
         status: StatusIcon.INACTIVE,
-        showTooltip: false,
+        tooltip: false,
     }
 
     render() {
-        const { status, className, showTooltip } = this.props
+        const { status, className, tooltip } = this.props
+
+        let statusText
+
+        if (tooltip) {
+            statusText = (typeof tooltip === 'string') ? tooltip : I18n.t(`shared.status.${status || StatusIcon.INACTIVE}`)
+        }
 
         return (
             <div
-                data-statustext={!!status && showTooltip ? I18n.t(`shared.status.${status}`) : null}
+                data-statustext={statusText}
                 className={cx(className, styles.status, {
                     [styles.ok]: status === StatusIcon.OK,
                     [styles.error]: status === StatusIcon.ERROR,
                     [styles.inactive]: status === StatusIcon.INACTIVE,
-                    [styles.showTooltip]: showTooltip,
+                    [styles.pending]: status === StatusIcon.PENDING,
+                    [styles.showTooltip]: !!tooltip,
                 })}
             />
         )

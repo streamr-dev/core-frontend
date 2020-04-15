@@ -1,5 +1,599 @@
 [
   {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "datacoinAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "currencyUpdateAgentAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "prev_marketplace_address",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "timestamp",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "dataInUsd",
+        "type": "uint256"
+      }
+    ],
+    "name": "ExchangeRatesUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [],
+    "name": "Halted",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "productId",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "subscriber",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "endTimestamp",
+        "type": "uint256"
+      }
+    ],
+    "name": "NewSubscription",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "previousOwner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "OwnershipTransferred",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "id",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "beneficiary",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "pricePerSecond",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "enum IMarketplace.Currency",
+        "name": "currency",
+        "type": "uint8"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "minimumSubscriptionSeconds",
+        "type": "uint256"
+      }
+    ],
+    "name": "ProductCreated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "id",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "beneficiary",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "pricePerSecond",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "enum IMarketplace.Currency",
+        "name": "currency",
+        "type": "uint8"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "minimumSubscriptionSeconds",
+        "type": "uint256"
+      }
+    ],
+    "name": "ProductDeleted",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "id",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "beneficiary",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "pricePerSecond",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "enum IMarketplace.Currency",
+        "name": "currency",
+        "type": "uint8"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "minimumSubscriptionSeconds",
+        "type": "uint256"
+      }
+    ],
+    "name": "ProductImported",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "id",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "oldOwner",
+        "type": "address"
+      }
+    ],
+    "name": "ProductOwnershipChanged",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "id",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+      }
+    ],
+    "name": "ProductOwnershipOffered",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "id",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "beneficiary",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "pricePerSecond",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "enum IMarketplace.Currency",
+        "name": "currency",
+        "type": "uint8"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "minimumSubscriptionSeconds",
+        "type": "uint256"
+      }
+    ],
+    "name": "ProductRedeployed",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "id",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "beneficiary",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "pricePerSecond",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "enum IMarketplace.Currency",
+        "name": "currency",
+        "type": "uint8"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "minimumSubscriptionSeconds",
+        "type": "uint256"
+      }
+    ],
+    "name": "ProductUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [],
+    "name": "Resumed",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "productId",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "subscriber",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "endTimestamp",
+        "type": "uint256"
+      }
+    ],
+    "name": "Subscribed",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "productId",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "subscriber",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "endTimestamp",
+        "type": "uint256"
+      }
+    ],
+    "name": "SubscriptionExtended",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "productId",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "subscriber",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "endTimestamp",
+        "type": "uint256"
+      }
+    ],
+    "name": "SubscriptionImported",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "productId",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "from",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "secondsTransferred",
+        "type": "uint256"
+      }
+    ],
+    "name": "SubscriptionTransferred",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "newTxFee",
+        "type": "uint256"
+      }
+    ],
+    "name": "TxFeeChanged",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "productId",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "subscriber",
+        "type": "address"
+      }
+    ],
+    "name": "WhitelistApproved",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "productId",
+        "type": "bytes32"
+      }
+    ],
+    "name": "WhitelistDisabled",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "productId",
+        "type": "bytes32"
+      }
+    ],
+    "name": "WhitelistEnabled",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "productId",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "subscriber",
+        "type": "address"
+      }
+    ],
+    "name": "WhitelistRejected",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "productId",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "subscriber",
+        "type": "address"
+      }
+    ],
+    "name": "WhitelistRequested",
+    "type": "event"
+  },
+  {
     "constant": false,
     "inputs": [],
     "name": "claimOwnership",
@@ -10,53 +604,28 @@
   },
   {
     "constant": true,
-    "inputs": [
-      {
-        "name": "",
-        "type": "bytes32"
-      }
-    ],
-    "name": "products",
+    "inputs": [],
+    "name": "currencyUpdateAgent",
     "outputs": [
       {
-        "name": "id",
-        "type": "bytes32"
-      },
-      {
-        "name": "name",
-        "type": "string"
-      },
-      {
-        "name": "owner",
+        "internalType": "address",
+        "name": "",
         "type": "address"
-      },
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "dataPerUsd",
+    "outputs": [
       {
-        "name": "beneficiary",
-        "type": "address"
-      },
-      {
-        "name": "pricePerSecond",
+        "internalType": "uint256",
+        "name": "",
         "type": "uint256"
-      },
-      {
-        "name": "priceCurrency",
-        "type": "uint8"
-      },
-      {
-        "name": "minimumSubscriptionSeconds",
-        "type": "uint256"
-      },
-      {
-        "name": "state",
-        "type": "uint8"
-      },
-      {
-        "name": "newOwnerCandidate",
-        "type": "address"
-      },
-      {
-        "name": "requiresWhitelist",
-        "type": "bool"
       }
     ],
     "payable": false,
@@ -69,34 +638,7 @@
     "name": "datacoin",
     "outputs": [
       {
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "currencyUpdateAgent",
-    "outputs": [
-      {
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "owner",
-    "outputs": [
-      {
+        "internalType": "contract ERC20",
         "name": "",
         "type": "address"
       }
@@ -111,6 +653,7 @@
     "name": "halted",
     "outputs": [
       {
+        "internalType": "bool",
         "name": "",
         "type": "bool"
       }
@@ -122,11 +665,12 @@
   {
     "constant": true,
     "inputs": [],
-    "name": "dataPerUsd",
+    "name": "owner",
     "outputs": [
       {
+        "internalType": "address",
         "name": "",
-        "type": "uint256"
+        "type": "address"
       }
     ],
     "payable": false,
@@ -139,6 +683,7 @@
     "name": "pendingOwner",
     "outputs": [
       {
+        "internalType": "address",
         "name": "",
         "type": "address"
       }
@@ -148,567 +693,63 @@
     "type": "function"
   },
   {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "newOwner",
-        "type": "address"
-      }
-    ],
-    "name": "transferOwnership",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "name": "datacoinAddress",
-        "type": "address"
-      },
-      {
-        "name": "currencyUpdateAgentAddress",
-        "type": "address"
-      },
-      {
-        "name": "prev_marketplace_address",
-        "type": "address"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "constructor"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "name": "owner",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "name": "id",
-        "type": "bytes32"
-      },
-      {
-        "indexed": false,
-        "name": "name",
-        "type": "string"
-      },
-      {
-        "indexed": false,
-        "name": "beneficiary",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "name": "pricePerSecond",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "name": "currency",
-        "type": "uint8"
-      },
-      {
-        "indexed": false,
-        "name": "minimumSubscriptionSeconds",
-        "type": "uint256"
-      }
-    ],
-    "name": "ProductCreated",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "name": "owner",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "name": "id",
-        "type": "bytes32"
-      },
-      {
-        "indexed": false,
-        "name": "name",
-        "type": "string"
-      },
-      {
-        "indexed": false,
-        "name": "beneficiary",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "name": "pricePerSecond",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "name": "currency",
-        "type": "uint8"
-      },
-      {
-        "indexed": false,
-        "name": "minimumSubscriptionSeconds",
-        "type": "uint256"
-      }
-    ],
-    "name": "ProductUpdated",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "name": "owner",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "name": "id",
-        "type": "bytes32"
-      },
-      {
-        "indexed": false,
-        "name": "name",
-        "type": "string"
-      },
-      {
-        "indexed": false,
-        "name": "beneficiary",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "name": "pricePerSecond",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "name": "currency",
-        "type": "uint8"
-      },
-      {
-        "indexed": false,
-        "name": "minimumSubscriptionSeconds",
-        "type": "uint256"
-      }
-    ],
-    "name": "ProductDeleted",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "name": "owner",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "name": "id",
-        "type": "bytes32"
-      },
-      {
-        "indexed": false,
-        "name": "name",
-        "type": "string"
-      },
-      {
-        "indexed": false,
-        "name": "beneficiary",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "name": "pricePerSecond",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "name": "currency",
-        "type": "uint8"
-      },
-      {
-        "indexed": false,
-        "name": "minimumSubscriptionSeconds",
-        "type": "uint256"
-      }
-    ],
-    "name": "ProductImported",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "name": "owner",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "name": "id",
-        "type": "bytes32"
-      },
-      {
-        "indexed": false,
-        "name": "name",
-        "type": "string"
-      },
-      {
-        "indexed": false,
-        "name": "beneficiary",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "name": "pricePerSecond",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "name": "currency",
-        "type": "uint8"
-      },
-      {
-        "indexed": false,
-        "name": "minimumSubscriptionSeconds",
-        "type": "uint256"
-      }
-    ],
-    "name": "ProductRedeployed",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "name": "owner",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "name": "id",
-        "type": "bytes32"
-      },
-      {
-        "indexed": true,
-        "name": "to",
-        "type": "address"
-      }
-    ],
-    "name": "ProductOwnershipOffered",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "name": "newOwner",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "name": "id",
-        "type": "bytes32"
-      },
-      {
-        "indexed": true,
-        "name": "oldOwner",
-        "type": "address"
-      }
-    ],
-    "name": "ProductOwnershipChanged",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "name": "productId",
-        "type": "bytes32"
-      },
-      {
-        "indexed": true,
-        "name": "subscriber",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "name": "endTimestamp",
-        "type": "uint256"
-      }
-    ],
-    "name": "Subscribed",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "name": "productId",
-        "type": "bytes32"
-      },
-      {
-        "indexed": true,
-        "name": "subscriber",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "name": "endTimestamp",
-        "type": "uint256"
-      }
-    ],
-    "name": "NewSubscription",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "name": "productId",
-        "type": "bytes32"
-      },
-      {
-        "indexed": true,
-        "name": "subscriber",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "name": "endTimestamp",
-        "type": "uint256"
-      }
-    ],
-    "name": "SubscriptionExtended",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "name": "productId",
-        "type": "bytes32"
-      },
-      {
-        "indexed": true,
-        "name": "subscriber",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "name": "endTimestamp",
-        "type": "uint256"
-      }
-    ],
-    "name": "SubscriptionImported",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "name": "productId",
-        "type": "bytes32"
-      },
-      {
-        "indexed": true,
-        "name": "from",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "name": "to",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "name": "secondsTransferred",
-        "type": "uint256"
-      }
-    ],
-    "name": "SubscriptionTransferred",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "name": "timestamp",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "name": "dataInUsd",
-        "type": "uint256"
-      }
-    ],
-    "name": "ExchangeRatesUpdated",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "name": "productId",
-        "type": "bytes32"
-      },
-      {
-        "indexed": true,
-        "name": "subscriber",
-        "type": "address"
-      }
-    ],
-    "name": "WhitelistRequested",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "name": "productId",
-        "type": "bytes32"
-      },
-      {
-        "indexed": true,
-        "name": "subscriber",
-        "type": "address"
-      }
-    ],
-    "name": "WhitelistApproved",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "name": "productId",
-        "type": "bytes32"
-      },
-      {
-        "indexed": true,
-        "name": "subscriber",
-        "type": "address"
-      }
-    ],
-    "name": "WhitelistRejected",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "name": "productId",
-        "type": "bytes32"
-      }
-    ],
-    "name": "WhitelistEnabled",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "name": "productId",
-        "type": "bytes32"
-      }
-    ],
-    "name": "WhitelistDisabled",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [],
-    "name": "Halted",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [],
-    "name": "Resumed",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "name": "previousOwner",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "name": "newOwner",
-        "type": "address"
-      }
-    ],
-    "name": "OwnershipTransferred",
-    "type": "event"
-  },
-  {
     "constant": true,
     "inputs": [
       {
-        "name": "id",
+        "internalType": "bytes32",
+        "name": "",
         "type": "bytes32"
       }
     ],
-    "name": "getProduct",
+    "name": "products",
     "outputs": [
       {
+        "internalType": "bytes32",
+        "name": "id",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "string",
         "name": "name",
         "type": "string"
       },
       {
+        "internalType": "address",
         "name": "owner",
         "type": "address"
       },
       {
+        "internalType": "address",
         "name": "beneficiary",
         "type": "address"
       },
       {
+        "internalType": "uint256",
         "name": "pricePerSecond",
         "type": "uint256"
       },
       {
-        "name": "currency",
+        "internalType": "enum IMarketplace.Currency",
+        "name": "priceCurrency",
         "type": "uint8"
       },
       {
+        "internalType": "uint256",
         "name": "minimumSubscriptionSeconds",
         "type": "uint256"
       },
       {
+        "internalType": "enum IMarketplace.ProductState",
         "name": "state",
         "type": "uint8"
       },
       {
+        "internalType": "address",
+        "name": "newOwnerCandidate",
+        "type": "address"
+      },
+      {
+        "internalType": "bool",
         "name": "requiresWhitelist",
         "type": "bool"
       }
@@ -721,26 +762,118 @@
     "constant": false,
     "inputs": [
       {
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "transferOwnership",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "txFee",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "internalType": "bytes32",
         "name": "id",
         "type": "bytes32"
-      },
+      }
+    ],
+    "name": "getProduct",
+    "outputs": [
       {
+        "internalType": "string",
         "name": "name",
         "type": "string"
       },
       {
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
         "name": "beneficiary",
         "type": "address"
       },
       {
+        "internalType": "uint256",
         "name": "pricePerSecond",
         "type": "uint256"
       },
       {
+        "internalType": "enum IMarketplace.Currency",
         "name": "currency",
         "type": "uint8"
       },
       {
+        "internalType": "uint256",
+        "name": "minimumSubscriptionSeconds",
+        "type": "uint256"
+      },
+      {
+        "internalType": "enum IMarketplace.ProductState",
+        "name": "state",
+        "type": "uint8"
+      },
+      {
+        "internalType": "bool",
+        "name": "requiresWhitelist",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "id",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "internalType": "address",
+        "name": "beneficiary",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "pricePerSecond",
+        "type": "uint256"
+      },
+      {
+        "internalType": "enum IMarketplace.Currency",
+        "name": "currency",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint256",
         "name": "minimumSubscriptionSeconds",
         "type": "uint256"
       }
@@ -755,26 +888,32 @@
     "constant": false,
     "inputs": [
       {
+        "internalType": "bytes32",
         "name": "id",
         "type": "bytes32"
       },
       {
+        "internalType": "string",
         "name": "name",
         "type": "string"
       },
       {
+        "internalType": "address",
         "name": "beneficiary",
         "type": "address"
       },
       {
+        "internalType": "uint256",
         "name": "pricePerSecond",
         "type": "uint256"
       },
       {
+        "internalType": "enum IMarketplace.Currency",
         "name": "currency",
         "type": "uint8"
       },
       {
+        "internalType": "uint256",
         "name": "minimumSubscriptionSeconds",
         "type": "uint256"
       }
@@ -789,6 +928,7 @@
     "constant": false,
     "inputs": [
       {
+        "internalType": "bytes32",
         "name": "productId",
         "type": "bytes32"
       }
@@ -803,6 +943,7 @@
     "constant": false,
     "inputs": [
       {
+        "internalType": "bytes32",
         "name": "productId",
         "type": "bytes32"
       }
@@ -817,28 +958,39 @@
     "constant": false,
     "inputs": [
       {
+        "internalType": "bytes32",
         "name": "productId",
         "type": "bytes32"
       },
       {
+        "internalType": "string",
         "name": "name",
         "type": "string"
       },
       {
+        "internalType": "address",
         "name": "beneficiary",
         "type": "address"
       },
       {
+        "internalType": "uint256",
         "name": "pricePerSecond",
         "type": "uint256"
       },
       {
+        "internalType": "enum IMarketplace.Currency",
         "name": "currency",
         "type": "uint8"
       },
       {
+        "internalType": "uint256",
         "name": "minimumSubscriptionSeconds",
         "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "redeploy",
+        "type": "bool"
       }
     ],
     "name": "updateProduct",
@@ -851,10 +1003,12 @@
     "constant": false,
     "inputs": [
       {
+        "internalType": "bytes32",
         "name": "productId",
         "type": "bytes32"
       },
       {
+        "internalType": "address",
         "name": "newOwnerCandidate",
         "type": "address"
       }
@@ -869,6 +1023,7 @@
     "constant": false,
     "inputs": [
       {
+        "internalType": "bytes32",
         "name": "productId",
         "type": "bytes32"
       }
@@ -880,13 +1035,116 @@
     "type": "function"
   },
   {
-    "constant": true,
+    "constant": false,
     "inputs": [
       {
+        "internalType": "bytes32",
         "name": "productId",
         "type": "bytes32"
       },
       {
+        "internalType": "bool",
+        "name": "_requiresWhitelist",
+        "type": "bool"
+      }
+    ],
+    "name": "setRequiresWhitelist",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "productId",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "address",
+        "name": "subscriber",
+        "type": "address"
+      }
+    ],
+    "name": "whitelistApprove",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "productId",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "address",
+        "name": "subscriber",
+        "type": "address"
+      }
+    ],
+    "name": "whitelistReject",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "productId",
+        "type": "bytes32"
+      }
+    ],
+    "name": "whitelistRequest",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "productId",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "address",
+        "name": "subscriber",
+        "type": "address"
+      }
+    ],
+    "name": "getWhitelistState",
+    "outputs": [
+      {
+        "internalType": "enum IMarketplace.WhitelistState",
+        "name": "wlstate",
+        "type": "uint8"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "productId",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "address",
         "name": "subscriber",
         "type": "address"
       }
@@ -894,10 +1152,12 @@
     "name": "getSubscription",
     "outputs": [
       {
+        "internalType": "bool",
         "name": "isValid",
         "type": "bool"
       },
       {
+        "internalType": "uint256",
         "name": "endTimestamp",
         "type": "uint256"
       }
@@ -910,6 +1170,7 @@
     "constant": true,
     "inputs": [
       {
+        "internalType": "bytes32",
         "name": "productId",
         "type": "bytes32"
       }
@@ -917,10 +1178,12 @@
     "name": "getSubscriptionTo",
     "outputs": [
       {
+        "internalType": "bool",
         "name": "isValid",
         "type": "bool"
       },
       {
+        "internalType": "uint256",
         "name": "endTimestamp",
         "type": "uint256"
       }
@@ -933,10 +1196,12 @@
     "constant": true,
     "inputs": [
       {
+        "internalType": "bytes32",
         "name": "productId",
         "type": "bytes32"
       },
       {
+        "internalType": "address",
         "name": "subscriber",
         "type": "address"
       }
@@ -944,6 +1209,7 @@
     "name": "hasValidSubscription",
     "outputs": [
       {
+        "internalType": "bool",
         "name": "isValid",
         "type": "bool"
       }
@@ -956,14 +1222,17 @@
     "constant": false,
     "inputs": [
       {
+        "internalType": "bytes32",
         "name": "productId",
         "type": "bytes32"
       },
       {
+        "internalType": "uint256",
         "name": "subscriptionSeconds",
         "type": "uint256"
       },
       {
+        "internalType": "address",
         "name": "recipient",
         "type": "address"
       }
@@ -978,14 +1247,17 @@
     "constant": false,
     "inputs": [
       {
+        "internalType": "bytes32",
         "name": "productId",
         "type": "bytes32"
       },
       {
+        "internalType": "uint256",
         "name": "subscriptionSeconds",
         "type": "uint256"
       },
       {
+        "internalType": "address",
         "name": "recipient",
         "type": "address"
       }
@@ -1000,10 +1272,12 @@
     "constant": false,
     "inputs": [
       {
+        "internalType": "bytes32",
         "name": "productId",
         "type": "bytes32"
       },
       {
+        "internalType": "uint256",
         "name": "subscriptionSeconds",
         "type": "uint256"
       }
@@ -1018,10 +1292,12 @@
     "constant": false,
     "inputs": [
       {
+        "internalType": "uint256",
         "name": "timestamp",
         "type": "uint256"
       },
       {
+        "internalType": "uint256",
         "name": "dataUsd",
         "type": "uint256"
       }
@@ -1036,14 +1312,17 @@
     "constant": true,
     "inputs": [
       {
+        "internalType": "uint256",
         "name": "subscriptionSeconds",
         "type": "uint256"
       },
       {
+        "internalType": "uint256",
         "name": "price",
         "type": "uint256"
       },
       {
+        "internalType": "enum IMarketplace.Currency",
         "name": "unit",
         "type": "uint8"
       }
@@ -1051,6 +1330,7 @@
     "name": "getPriceInData",
     "outputs": [
       {
+        "internalType": "uint256",
         "name": "datacoinAmount",
         "type": "uint256"
       }
@@ -1081,14 +1361,17 @@
     "constant": false,
     "inputs": [
       {
+        "internalType": "address",
         "name": "datacoinAddress",
         "type": "address"
       },
       {
+        "internalType": "address",
         "name": "currencyUpdateAgentAddress",
         "type": "address"
       },
       {
+        "internalType": "address",
         "name": "prev_marketplace_address",
         "type": "address"
       }
@@ -1103,91 +1386,15 @@
     "constant": false,
     "inputs": [
       {
-        "name": "productId",
-        "type": "bytes32"
-      },
-      {
-        "name": "_requiresWhitelist",
-        "type": "bool"
+        "internalType": "uint256",
+        "name": "newTxFee",
+        "type": "uint256"
       }
     ],
-    "name": "setRequiresWhitelist",
+    "name": "setTxFee",
     "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "productId",
-        "type": "bytes32"
-      },
-      {
-        "name": "subscriber",
-        "type": "address"
-      }
-    ],
-    "name": "whitelistApprove",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "productId",
-        "type": "bytes32"
-      },
-      {
-        "name": "subscriber",
-        "type": "address"
-      }
-    ],
-    "name": "whitelistReject",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "productId",
-        "type": "bytes32"
-      }
-    ],
-    "name": "whitelistRequest",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "productId",
-        "type": "bytes32"
-      },
-      {
-        "name": "subscriber",
-        "type": "address"
-      }
-    ],
-    "name": "getWhitelistState",
-    "outputs": [
-      {
-        "name": "wlstate",
-        "type": "uint8"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
     "type": "function"
   }
 ]

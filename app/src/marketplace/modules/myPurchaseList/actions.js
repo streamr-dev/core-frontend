@@ -5,7 +5,12 @@ import { normalize } from 'normalizr'
 import orderBy from 'lodash/orderBy'
 import get from 'lodash/get'
 
-import type { Product, ProductSubscription } from '../../flowtype/product-types'
+import type {
+    ProductSubscription,
+    ProductIdList,
+    ProductSubscriptionIdList,
+    ProductSubscriptionList,
+} from '../../flowtype/product-types'
 import type { ErrorInUi, ReduxActionCreator } from '$shared/flowtype/common-types'
 import { subscriptionsSchema } from '$shared/modules/entities/schema'
 import { updateEntities } from '$shared/modules/entities/actions'
@@ -25,13 +30,14 @@ import {
 import type {
     MyPurchasesActionCreator,
     MyPurchasesErrorActionCreator,
+    MySubscriptionsActionCreator,
 } from './types'
-import { selectAllSubscriptions, selectFilter } from './selectors'
+import { selectSubscriptions, selectFilter } from './selectors'
 
 const getMyPurchasesRequest: ReduxActionCreator = createAction(GET_MY_PURCHASES_REQUEST)
 
-const getMyPurchasesSuccess: MyPurchasesActionCreator = createAction(GET_MY_PURCHASES_SUCCESS, (products: Array<Product>) => ({
-    products,
+const getMyPurchasesSuccess: MySubscriptionsActionCreator = createAction(GET_MY_PURCHASES_SUCCESS, (subscriptions: ProductSubscriptionIdList) => ({
+    subscriptions,
 }))
 
 const getMyPurchasesFailure: MyPurchasesErrorActionCreator = createAction(GET_MY_PURCHASES_FAILURE, (error: ErrorInUi) => ({
@@ -42,7 +48,7 @@ const updateFilterAction = createAction(UPDATE_FILTER, (filter: Filter) => ({
     filter,
 }))
 
-const updateResults: MyPurchasesActionCreator = createAction(UPDATE_RESULTS, (products: Array<Product>) => ({
+const updateResults: MyPurchasesActionCreator = createAction(UPDATE_RESULTS, (products: ProductIdList) => ({
     products,
 }))
 
@@ -50,24 +56,36 @@ export const getMyPurchases = () => (dispatch: Function) => {
     dispatch(getMyPurchasesRequest())
     return api.getMyPurchases()
         .then((data) => {
-            const { result, entities } = normalize(data, subscriptionsSchema)
+            // Reduce subscriptions to remove duplicate products
+            const uniqueSubscriptions = data.reduce((result, subscription: ProductSubscription) => {
+                const { product } = subscription
 
-            // Need to clear the streams field since API will always return an empty list
-            // that might unset values in the current product being viewed
-            const filteredEntities = {
-                ...entities,
-                products: Object.keys(entities.products).reduce((values, id) => {
-                    const { streams, ...withoutStreams } = entities.products[id]
+                if (!product || !product.id) { return result }
 
-                    return {
-                        ...values,
-                        [id]: {
-                            ...withoutStreams,
-                        },
-                    }
-                }, {}),
-            }
-            dispatch(updateEntities(filteredEntities))
+                const newSubscription = {
+                    ...subscription,
+                    id: product.id,
+                }
+
+                // if we encounter the same product again, update the subscription times
+                if (result[product.id]) {
+                    const { lastUpdated: prevLastUpdated, endsAt: prevEndsAt } = result[product.id]
+
+                    newSubscription.lastUpdated = subscription.lastUpdated > prevLastUpdated ? subscription.lastUpdated : prevLastUpdated
+                    newSubscription.endsAt = subscription.endsAt > prevEndsAt ? subscription.endsAt : prevEndsAt
+                }
+
+                return {
+                    ...result,
+                    [product.id]: {
+                        ...newSubscription,
+                    },
+                }
+            }, {})
+
+            const { result, entities } = normalize(Object.values(uniqueSubscriptions), subscriptionsSchema)
+
+            dispatch(updateEntities(entities))
 
             return result
         })
@@ -78,9 +96,9 @@ export const getMyPurchases = () => (dispatch: Function) => {
         })
 }
 
-const isSubscriptionActive = (subscription?: ProductSubscription): boolean => isActive((subscription && subscription.endsAt) || '')
+const isSubscriptionActive = (subscription): boolean => isActive((subscription && subscription.endsAt) || '')
 
-const filterPurchases = (data: Array<ProductSubscription>, filter: ?Filter) => {
+const filterPurchases = (data: ProductSubscriptionList, filter: ?Filter): ProductSubscriptionList => {
     if (!filter) {
         return data
     }
@@ -118,11 +136,11 @@ const filterPurchases = (data: Array<ProductSubscription>, filter: ?Filter) => {
 
     // Order results if needed (case insensitive)
     if (filter && filter.sortBy && filter.order) {
-        return orderBy(filtered, (subscription) => (
-            // NOTE: Flow requires another check for `filter` inside this callback. We default
-            // the identity of each item to `null` if the filter isn't there.
-            filter && filter.sortBy ? get(subscription, `product.${filter.sortBy}`).toLowerCase() : null
-        ), filter.order)
+        // When sorting by recent, the sort value is in the subscription object
+        // otherwise use the nested product value
+        const sortByField = filter.id === 'recent' ? filter.sortBy : `product.${filter.sortBy}`
+
+        return orderBy(filtered, (subscription) => get(subscription, sortByField).toLowerCase(), filter.order)
     }
 
     return filtered
@@ -130,7 +148,7 @@ const filterPurchases = (data: Array<ProductSubscription>, filter: ?Filter) => {
 
 export const applyFilter = () => (dispatch: Function, getState: () => StoreState) => {
     const filter = selectFilter(getState())
-    const subscriptions = selectAllSubscriptions(getState())
+    const subscriptions = selectSubscriptions(getState())
     const filtered = filterPurchases(subscriptions, filter)
     const { result } = normalize(filtered, subscriptionsSchema)
     dispatch(updateResults(result))

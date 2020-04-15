@@ -4,32 +4,24 @@ import React from 'react'
 
 import BrowserNotSupportedPng from '$shared/assets/images/browser_not_supported.png'
 import BrowserNotSupportedPng2x from '$shared/assets/images/browser_not_supported@2x.png'
-import WalletPng from '$shared/assets/images/wallet.png'
-import WalletPng2x from '$shared/assets/images/wallet@2x.png'
+import DiscardChangesPng from '$shared/assets/images/discard_changes.png'
+import DiscardChangesPng2x from '$shared/assets/images/discard_changes@2x.png'
 import MetamaskPng from '$shared/assets/images/metamask.png'
 import MetamaskPng2x from '$shared/assets/images/metamask@2x.png'
-import WalletIconPng from '$shared/assets/images/wallet_error.png'
-import WalletIconPng2x from '$shared/assets/images/wallet_error@2x.png'
-import TxFailedPng2x from '$shared/assets/images/tx_failed@2x.png'
-import TxFailedPng from '$shared/assets/images/tx_failed.png'
+import PublishFailedPng2x from '$shared/assets/images/publish_failed@2x.png'
+import PublishFailedPng from '$shared/assets/images/publish_failed.png'
 import ImageUploadPng from '$shared/assets/images/imgupload.png'
 import ImageUploadPng2x from '$shared/assets/images/imgupload@2x.png'
+import WalletPng from '$shared/assets/images/wallet.png'
+import WalletPng2x from '$shared/assets/images/wallet@2x.png'
+import WalletNoDataPng from '$shared/assets/images/wallet_no_data.png'
+import WalletNoDataPng2x from '$shared/assets/images/wallet_no_data@2x.png'
+import WalletNoEthPng from '$shared/assets/images/wallet_no_eth.png'
+import WalletNoEthPng2x from '$shared/assets/images/wallet_no_eth@2x.png'
+import WalletErrorPng from '$shared/assets/images/wallet_error.png'
+import WalletErrorPng2x from '$shared/assets/images/wallet_error@2x.png'
 
 const sources = {
-    wallet: (
-        <img
-            src={WalletPng}
-            srcSet={`${WalletPng2x} 2x`}
-            alt=""
-        />
-    ),
-    walletError: (
-        <img
-            src={WalletIconPng}
-            srcSet={`${WalletIconPng2x} 2x`}
-            alt=""
-        />
-    ),
     browserNotSupported: (
         <img
             src={BrowserNotSupportedPng}
@@ -37,17 +29,10 @@ const sources = {
             alt=""
         />
     ),
-    metamask: (
+    discardChanges: (
         <img
-            src={MetamaskPng}
-            srcSet={`${MetamaskPng2x} 2x`}
-            alt=""
-        />
-    ),
-    txFailed: (
-        <img
-            src={TxFailedPng}
-            srcSet={`${TxFailedPng2x} 2x`}
+            src={DiscardChangesPng}
+            srcSet={`${DiscardChangesPng2x} 2x`}
             alt=""
         />
     ),
@@ -58,10 +43,61 @@ const sources = {
             alt=""
         />
     ),
+    metamask: (
+        <img
+            src={MetamaskPng}
+            srcSet={`${MetamaskPng2x} 2x`}
+            alt=""
+        />
+    ),
+    publishFailed: (
+        <img
+            src={PublishFailedPng}
+            srcSet={`${PublishFailedPng2x} 2x`}
+            alt=""
+        />
+    ),
+    wallet: (
+        <img
+            src={WalletPng}
+            srcSet={`${WalletPng2x} 2x`}
+            alt=""
+        />
+    ),
+    walletNoData: (
+        <img
+            src={WalletNoDataPng}
+            srcSet={`${WalletNoDataPng2x} 2x`}
+            alt=""
+        />
+    ),
+    walletNoEth: (
+        <img
+            src={WalletNoEthPng}
+            srcSet={`${WalletNoEthPng2x} 2x`}
+            alt=""
+        />
+    ),
+    walletError: (
+        <img
+            src={WalletErrorPng}
+            srcSet={`${WalletErrorPng2x} 2x`}
+            alt=""
+        />
+    ),
+    txFailed: (
+        <img
+            src={WalletErrorPng}
+            srcSet={`${WalletErrorPng2x} 2x`}
+            alt=""
+        />
+    ),
 }
 
+export type PngIconName = $Keys<typeof sources>
+
 type Props = {
-    name: $Keys<typeof sources>,
+    name: PngIconName,
 }
 
 const PngIcon = ({ name, ...props }: Props) => React.cloneElement(sources[name], {

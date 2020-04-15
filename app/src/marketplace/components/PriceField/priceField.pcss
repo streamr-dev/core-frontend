@@ -21,27 +21,29 @@
 }
 
 .input {
+  flex-grow: 1;
   font-size: 1rem;
   letter-spacing: 0;
-  line-height: calc(2.5rem - 2px);
+  height: calc(2.5rem - 2px);
   text-align: center;
   margin: 0;
   padding: 0;
   outline: none;
   background-color: white;
   border: 0;
-  width: 100%;
+  width: 4rem; /* Mixed with `flex-grow` brings magic to Firefox! ✨ */
   border-top-left-radius: 4px;
   border-bottom-left-radius: 4px;
 }
 
 .currency {
   background-color: #F1F1F1;
+  display: block;
   font-size: 0.875rem;
   letter-spacing: 0;
   line-height: calc(2.5rem - 2px);
   text-align: center;
-  width: 7em;
+  width: 5em;
   outline: none;
   margin: 0;
   padding: 0;

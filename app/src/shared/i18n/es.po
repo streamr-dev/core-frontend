@@ -43,9 +43,6 @@ msgstr "Editor"
 msgid "general##faq"
 msgstr "FAQ"
 
-msgid "general##footnote"
-msgstr "Hecho con ❤️ & ☕ por Streamr Network AG en 2018"
-
 msgid "general##general"
 msgstr "General"
 
@@ -96,6 +93,10 @@ msgstr "Product"
 # missing
 msgid "general##products"
 msgstr "Products"
+
+# missing
+msgid "general##dataUnions"
+msgstr "Data Unions"
 
 # missing
 msgid "general##profile"

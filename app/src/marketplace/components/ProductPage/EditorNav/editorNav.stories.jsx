@@ -35,7 +35,7 @@ const sections = [{
     heading: 'Details',
 }]
 
-const EditNavController = () => {
+const EditNavController = (props) => {
     const [activeSection, setActiveSection] = useState('')
     const nameStatus = select('Name', statuses, statuses.EMPTY)
     const coverImageStatus = select('Cover Image', statuses, statuses.EMPTY)
@@ -68,6 +68,7 @@ const EditNavController = () => {
             <EditorNav
                 sections={sectionsData}
                 activeSection={activeSection}
+                {...props}
             />
         </div>
     )
@@ -75,4 +76,12 @@ const EditNavController = () => {
 
 stories.add('basic', () => (
     <EditNavController />
+))
+
+stories.add('with errors', () => (
+    <EditNavController showErrors />
+))
+
+stories.add('with errors & tracking', () => (
+    <EditNavController showErrors trackScrolling />
 ))

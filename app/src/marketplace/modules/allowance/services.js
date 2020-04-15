@@ -35,7 +35,7 @@ export const setMyDataAllowance = (amount: string | BN): SmartContractTransactio
 export const getMyDaiAllowance = (): SmartContractCall<BN> => {
     const web3 = getWeb3()
     return web3.getDefaultAccount()
-        .then((myAddress) => call(daiTokenContractMethods().allowance(myAddress, marketplaceContract().options.address)))
+        .then((myAddress) => call(daiTokenContractMethods().allowance(myAddress, process.env.UNISWAP_ADAPTOR_CONTRACT_ADDRESS)))
         .then(fromAtto)
 }
 

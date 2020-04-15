@@ -50,7 +50,7 @@ describe('Product services', () => {
                     id: null,
                 })
             } catch (e) {
-                assert(/not valid hex/.test(e.message))
+                assert(/not a valid hex/.test(e.message))
                 done()
             }
         })
@@ -237,7 +237,7 @@ describe('Product services', () => {
                     id: null,
                 })
             } catch (e) {
-                assert(/not valid hex/.test(e.message))
+                assert(/not a valid hex/.test(e.message))
                 done()
             }
         })

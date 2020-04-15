@@ -54,7 +54,7 @@ describe('Canvas Subscriptions', () => {
             await setup()
         })
 
-        xit('should get canvas module subscription messages', async (done) => {
+        it('should get canvas module subscription messages', async (done) => {
             let canvas = await Services.create()
             canvas = State.addModule(canvas, await loadModuleDefinition('Clock'))
             const clock = canvas.modules.find((m) => m.name === 'Clock')
@@ -82,10 +82,50 @@ describe('Canvas Subscriptions', () => {
             await wait(10000)
             const receivedMessages = messages.slice() // copy before unmounting
             result.unmount()
-            // should have roughly 10 messages
-            expect(receivedMessages.length).toBeGreaterThanOrEqual(8)
-            expect(receivedMessages.length).toBeLessThanOrEqual(13)
+            await Services.stop(canvas)
+            const newRowMessages = receivedMessages.filter(({ nr }) => nr)
+            // should have roughly 10 new row messages
+            expect(newRowMessages.length).toBeTruthy()
+            expect(newRowMessages.length).toBeGreaterThanOrEqual(7)
             done()
         }, 20000)
+
+        it('should get canvas module subscription messages in restarted canvas', async (done) => {
+            let canvas = await Services.create()
+            canvas = State.addModule(canvas, await loadModuleDefinition('Clock'))
+            const clock = canvas.modules.find((m) => m.name === 'Clock')
+            canvas = State.addModule(canvas, await loadModuleDefinition('Table'))
+            const table = canvas.modules.find((m) => m.name === 'Table')
+            const clockDateOut = State.findModulePort(canvas, clock.hash, (p) => p.name === 'date')
+            const tableIn1 = State.findModulePort(canvas, table.hash, (p) => p.displayName === 'in1')
+            canvas = State.updateCanvas(State.connectPorts(canvas, clockDateOut.id, tableIn1.id))
+            canvas = State.updateCanvas(await Services.start(canvas))
+            const messages = []
+
+            const result = mount((
+                <ClientProviderComponent apiKey={apiKey}>
+                    <ModuleSubscription
+                        module={canvas.modules.find((m) => m.name === 'Table')}
+                        onMessage={(message) => {
+                            messages.push(message)
+                        }}
+                        isSubscriptionActive
+                    />
+                </ClientProviderComponent>
+            ))
+
+            canvas = State.updateCanvas(await Services.stop(canvas))
+            canvas = State.updateCanvas(await Services.start(canvas))
+
+            await wait(10000)
+            const receivedMessages = messages.slice() // copy before unmounting
+            result.unmount()
+            await Services.stop(canvas)
+            const newRowMessages = receivedMessages.filter(({ nr }) => nr)
+            // should have roughly 10 new row messages
+            expect(newRowMessages.length).toBeTruthy()
+            expect(newRowMessages.length).toBeGreaterThanOrEqual(7)
+            done()
+        }, 30000)
     })
 })

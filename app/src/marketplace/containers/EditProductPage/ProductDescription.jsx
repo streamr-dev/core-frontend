@@ -2,19 +2,21 @@
 
 import React, { useContext } from 'react'
 import cx from 'classnames'
+import { Translate } from 'react-redux-i18n'
 
 import useEditableProduct from '../ProductController/useEditableProduct'
 import useValidation from '../ProductController/useValidation'
 import useEditableProductActions from '../ProductController/useEditableProductActions'
 import MarkdownEditor from '$mp/components/MarkdownEditor'
-import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
+import { Context as EditControllerContext } from './EditControllerProvider'
 import usePending from '$shared/hooks/usePending'
+import routes from '$routes'
 
 import styles from './productDescription.pcss'
 
 const ProductDescription = () => {
     const product = useEditableProduct()
-    const { isTouched } = useContext(ValidationContext)
+    const { publishAttempted } = useContext(EditControllerContext)
     const { isValid, message } = useValidation('description')
     const { updateDescription } = useEditableProductActions()
     const { isPending } = usePending('product.SAVE')
@@ -22,18 +24,22 @@ const ProductDescription = () => {
     return (
         <section id="description" className={cx(styles.root, styles.ProductDescription)}>
             <div>
-                <h1>Write a product description</h1>
-                <p>Sell your product — make sure you include details about the contents of
-                    your streams, historical data, and any other relevant details.
-                    Generally around a maximum of around 300 words fits best on a product
-                    detail page. Markdown formatting is ok.
-                </p>
+                <Translate
+                    tag="h1"
+                    value="editProductPage.productDescription.title"
+                />
+                <Translate
+                    tag="p"
+                    value="editProductPage.productDescription.description"
+                    docsLink={routes.docsProductsIntroToProducts()}
+                    dangerousHTML
+                />
                 <MarkdownEditor
                     placeholder="Type something great about your product"
                     value={product.description || ''}
-                    onCommit={updateDescription}
+                    onChange={updateDescription}
                     className={styles.productDescription}
-                    error={isTouched('description') && !isValid ? message : undefined}
+                    error={publishAttempted && !isValid ? message : undefined}
                     disabled={!!isPending}
                 />
             </div>

@@ -1,97 +1,318 @@
 // @flow
 
-import React, { type Node } from 'react'
-import cx from 'classnames'
+import React from 'react'
+import styled, { css } from 'styled-components'
+import { capital } from 'case'
+import { ago } from '$shared/utils/time'
+import { Translate } from 'react-redux-i18n'
+import { DataUnionBadge, IconBadge, DeployingBadge } from './Badge'
+import ImageContainer, { Image } from './ImageContainer'
+import Menu from './Menu'
+import Summary from './Summary'
+import Label, { HAPPY, ANGRY, WORRIED } from './Label'
+import { RunStates } from '$editor/canvas/state'
+import CanvasPreview from '$editor/canvas/components/Preview'
+import DashboardPreview from '$editor/dashboard/components/Preview'
+import Link from '$shared/components/Link'
+import { formatPath } from '$shared/utils/url'
+import { isPaidProduct } from '$mp/utils/product'
+import { timeUnits } from '$shared/utils/constants'
+import PaymentRate from '$mp/components/PaymentRate'
+import links from '$app/src/links'
+import useExpiresIn, { formatRemainingTime } from '$shared/hooks/useExpiresIn'
 
-import useHover from '$shared/hooks/useHover'
-import FallbackImage from '$shared/components/FallbackImage'
-import DropdownActions from '$shared/components/DropdownActions'
-import Meatball from '$shared/components/Meatball'
-import Label from '$shared/components/Label'
-import Spinner from '$shared/components/Spinner'
+const Tile = styled.div`
+    position: relative;
 
-import * as subcomponents from './subcomponents'
+    ${Menu} {
+        opacity: 0;
+        pointer-events: none;
+        transition-property: visibility, opacity;
+        transition: 200ms;
+        visibility: hidden;
+    }
 
-import styles from './tile.pcss'
+    ${Menu}.show,
+    :hover ${Menu},
+    :focus ${Menu} {
+        opacity: 1;
+        pointer-events: auto;
+        visibility: visible;
+    }
 
-type Props = {
-    children?: Node,
-    image?: ?Node,
-    imageUrl?: string,
-    dropdownActions?: Array<typeof DropdownActions.Item> | Node,
-    onMenuToggle?: (boolean) => any,
-    className?: string,
-    badges: subcomponents.BadgesType,
-    labels: subcomponents.LabelsType,
-    deploying?: boolean,
+    ${({ suppressHover }) => !suppressHover && css`
+        ${Image} {
+            filter: brightness(100%);
+            transition: 240ms ease-out filter;
+        }
+
+        ${Menu}.show + a ${Image},
+        :hover ${Image} {
+            filter: brightness(70%);
+            transition-duration: 40ms;
+        }
+    `}
+`
+
+type ImageTileProps = {
+    alt?: ?string,
+    height?: any,
+    showDataUnionBadge?: boolean,
+    src?: ?string,
 }
 
-const Tile = ({
-    imageUrl,
-    image,
-    children,
-    dropdownActions,
-    onMenuToggle,
-    className,
-    badges,
-    labels,
-    deploying,
-}: Props) => {
-    const [hoveredRef, isHovered] = useHover()
+const ImageTile = ({
+    alt,
+    height,
+    showDataUnionBadge,
+    src,
+    ...props
+}: ImageTileProps) => (
+    <Tile {...props} suppressHover>
+        <ImageContainer
+            alt={alt || ''}
+            height={height}
+            src={src || ''}
+        >
+            {!!showDataUnionBadge && (
+                <DataUnionBadge top left />
+            )}
+        </ImageContainer>
+    </Tile>
+)
 
-    return (
-        <div className={cx(styles.tile, className)} ref={hoveredRef}>
-            <div className={styles.imageWrapper}>
-                {isHovered && dropdownActions &&
-                    <DropdownActions
-                        className={styles.menu}
-                        title={<Meatball alt="Select" white />}
-                        direction="down"
-                        noCaret
-                        onMenuToggle={onMenuToggle}
-                        menuProps={{
-                            modifiers: {
-                                offset: {
-                                    // Make menu aligned to the right.
-                                    // See https://popper.js.org/popper-documentation.html#modifiers..offset
-                                    offset: '-100%p + 100%',
-                                },
-                            },
-                        }}
-                    >
-                        {dropdownActions}
-                    </DropdownActions>
-                }
-                {image || (
-                    <FallbackImage src={imageUrl || ''} alt="Tile" className={styles.image} />
-                )}
-                <subcomponents.Labels topLeft labels={labels} />
-                {!deploying && (
-                    <subcomponents.Badges bottomRight badges={badges} />
-                )}
-                {!!deploying && (
-                    <Label bottomRight>
-                        <span className={styles.deploying}>Deploying</span>
-                        <Spinner size="small" color="white" className={styles.deployingSpinner} />
+type CanvasTileProps = {
+    canvas: any,
+    onMenuToggle?: (boolean) => any,
+    actions: any,
+}
+
+export const touchedAgo = ({ updated, created }: any): string => `
+    ${updated === created ? 'Created' : 'Updated'} ${ago(new Date(updated))}
+`
+
+const CanvasTile = ({ canvas, onMenuToggle, actions, ...props }: CanvasTileProps) => (
+    <Tile {...props}>
+        <Menu onToggle={onMenuToggle}>
+            {actions}
+        </Menu>
+        <Link to={`${links.editor.canvasEditor}/${canvas.id}`}>
+            <ImageContainer>
+                <Image
+                    as={CanvasPreview}
+                    canvas={canvas}
+                />
+            </ImageContainer>
+            <Summary
+                name={canvas.name}
+                description={touchedAgo(canvas)}
+                label={(
+                    <Label mood={canvas.state === RunStates.Running && HAPPY}>
+                        {capital(canvas.state)}
                     </Label>
                 )}
-            </div>
-            <div className={styles.content}>
-                {children}
-            </div>
-        </div>
+            />
+        </Link>
+    </Tile>
+)
+
+type DashboardTileProps = {
+    dashboard: any,
+}
+
+const DashboardTile = ({ dashboard, ...props }: DashboardTileProps) => (
+    <Tile {...props}>
+        <Link to={`${links.editor.dashboardEditor}/${dashboard.id}`}>
+            <ImageContainer>
+                <Image
+                    as={DashboardPreview}
+                    dashboard={dashboard}
+                />
+            </ImageContainer>
+            <Summary
+                name={dashboard.name}
+                description={touchedAgo(dashboard)}
+            />
+        </Link>
+    </Tile>
+)
+
+type PurchaseTileProps = {
+    expiresAt: Date,
+    now?: ?Date,
+    numMembers?: number,
+    product: any,
+    showDataUnionBadge?: boolean,
+    showDeployingBadge?: boolean,
+}
+
+const remainingTimeToMood = (value: number) => {
+    switch (true) {
+        case value <= 0:
+            return undefined
+        case value < 300:
+            return ANGRY
+        case value < 3600:
+            return WORRIED
+        default:
+            return HAPPY
+    }
+}
+
+const ExpirationLabel = ({ expiresAt, now }: any) => {
+    const secondsLeft = useExpiresIn(expiresAt, now)
+    const mood = remainingTimeToMood(secondsLeft)
+
+    return (
+        <Label mood={mood}>
+            {secondsLeft > 0 ? (
+                `Expires in ${formatRemainingTime(secondsLeft)}`
+            ) : (
+                'Expired'
+            )}
+        </Label>
     )
 }
 
-Tile.defaultProps = {
-    badges: {},
-    labels: {},
-    deploying: false,
+const PurchaseTile = ({
+    expiresAt,
+    now,
+    numMembers,
+    product,
+    showDataUnionBadge,
+    showDeployingBadge,
+    ...props
+}: PurchaseTileProps) => (
+    <Tile {...props}>
+        <Link to={product.id && `${links.marketplace.products}/${product.id}`}>
+            <ImageContainer src={product.imageUrl || ''}>
+                {!!showDataUnionBadge && (
+                    <DataUnionBadge top left />
+                )}
+                {typeof numMembers !== 'undefined' && (
+                    <IconBadge icon="dataUnion" bottom right>
+                        {numMembers}
+                    </IconBadge>
+                )}
+                {!!showDeployingBadge && !!showDataUnionBadge && typeof numMembers === 'undefined' && (
+                    <DeployingBadge bottom right />
+                )}
+            </ImageContainer>
+            <Summary
+                name={product.name}
+                description={product.owner}
+                label={(
+                    <ExpirationLabel expiresAt={expiresAt} now={now} />
+                )}
+            />
+        </Link>
+    </Tile>
+)
+
+type ProductTileProps = {
+    actions?: any,
+    deployed?: boolean,
+    numMembers?: number,
+    product: any,
+    showDataUnionBadge?: boolean,
+    showDeployingBadge?: boolean,
 }
 
-// Add subcomonents as static properties
-Object.assign(Tile, {
-    ...subcomponents,
-})
+export const getProductLink = (id: string) => (process.env.NEW_MP_CONTRACT ? (
+    formatPath(links.userpages.products, id, 'edit')
+) : (
+    formatPath(links.marketplace.products, id)
+))
+
+const ProductTile = ({
+    actions,
+    deployed,
+    numMembers,
+    product,
+    showDataUnionBadge,
+    showDeployingBadge,
+    ...props
+}: ProductTileProps) => (
+    <Tile {...props}>
+        {!!actions && (
+            <Menu>
+                {actions}
+            </Menu>
+        )}
+        <Link to={product.id && getProductLink(product.id)}>
+            <ImageContainer src={product.imageUrl || ''}>
+                {!!showDataUnionBadge && (
+                    <DataUnionBadge top left />
+                )}
+                {typeof numMembers !== 'undefined' && !showDeployingBadge && (
+                    <IconBadge bottom right icon="dataUnion">
+                        {numMembers}
+                    </IconBadge>
+                )}
+                {!!showDeployingBadge && (
+                    <DeployingBadge bottom right />
+                )}
+            </ImageContainer>
+            <Summary
+                name={product.name}
+                description={touchedAgo(product)}
+                label={(
+                    <Label mood={deployed && HAPPY}>
+                        {deployed ? (
+                            <Translate value="userpages.products.published" />
+                        ) : (
+                            <Translate value="userpages.products.draft" />
+                        )}
+                    </Label>
+                )}
+            />
+        </Link>
+    </Tile>
+)
+
+type MarketplaceProductTileProps = {
+    product: any,
+    showDataUnionBadge?: boolean,
+}
+
+const MarketplaceProductTile = ({ product, showDataUnionBadge, ...props }: MarketplaceProductTileProps) => (
+    <Tile {...props}>
+        <Link to={formatPath(links.marketplace.products, product.id || '')}>
+            <ImageContainer src={product.imageUrl || ''}>
+                {!!showDataUnionBadge && (
+                    <DataUnionBadge top left />
+                )}
+                {!!showDataUnionBadge && typeof product.members !== 'undefined' && (
+                    <IconBadge icon="dataUnion" bottom right>
+                        {product.members}
+                    </IconBadge>
+                )}
+            </ImageContainer>
+            <Summary
+                name={product.name}
+                description={product.owner}
+                label={isPaidProduct(product) ? (
+                    <PaymentRate
+                        amount={product.pricePerSecond}
+                        currency={product.priceCurrency}
+                        timeUnit={timeUnits.hour}
+                        maxDigits={4}
+                    />
+                ) : (
+                    <Translate value="productTile.free" />
+                )}
+            />
+        </Link>
+    </Tile>
+)
+
+export {
+    CanvasTile,
+    DashboardTile,
+    ImageTile,
+    MarketplaceProductTile,
+    ProductTile,
+    PurchaseTile,
+}
 
 export default Tile

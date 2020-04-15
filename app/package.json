@@ -17,7 +17,8 @@
     "build-storybook": "node --max_old_space_size=4096 ./node_modules/.bin/build-storybook",
     "chromatic": "CHROMATIC_APP_CODE=exgpyxh1il5 chromatic test --exit-zero-on-changes",
     "clear-cache": "npm run clean-cache",
-    "clean-cache": "rm -rf node_modules/.cache; rm -rf .cache; rm -rf dist; jest --clearCache; killall flow; rm -rf /tmp/flow"
+    "clean-cache": "rm -rf node_modules/.cache; rm -rf .cache; rm -rf dist; jest --clearCache; killall flow; rm -rf /tmp/flow",
+    "cloc": "npx cloc --exclude-dir=node_modules,coverage,package-lock.json ."
   },
   "husky": {
     "hooks": {
@@ -58,7 +59,7 @@
       "/tests/"
     ],
     "moduleNameMapper": {
-      "\\.(css|scss|pcss|po|md|mdx)$": "identity-obj-proxy",
+      "\\.(css|scss|pcss|po|md)$": "identity-obj-proxy",
       "\\.(png)$": "empty/object",
       "\\$app/(.*)$": "<rootDir>/$1",
       "\\$auth/(.*)$": "<rootDir>/src/auth/$1",
@@ -70,6 +71,7 @@
       "\\$testUtils/(.*)$": "<rootDir>/test/test-utils/$1",
       "\\$utils/(.*)$": "<rootDir>/src/utils/$1",
       "\\$editor/(.*)$": "<rootDir>/src/editor/$1",
+      "\\$ui/(.*)$": "<rootDir>/src/shared/components/Ui/$1",
       "\\$docs/(.*)$": "<rootDir>/src/docs/$1"
     },
     "setupFilesAfterEnv": [
@@ -105,7 +107,7 @@
     "@storybook/react": "^5.2.8",
     "@streamr/po-loader": "^0.1.1",
     "@streamr/streamr-icons": "^0.1.9",
-    "@streamr/streamr-layout": "^2.1.1",
+    "@streamr/streamr-layout": "^2.1.2",
     "abi-decoder": "^1.2.0",
     "ace-builds": "^1.4.7",
     "assert-diff": "^1.2.5",
@@ -146,7 +148,6 @@
     "eslint-plugin-react-hooks": "^1.6.0",
     "ethereumjs-util": "^6.1.0",
     "events": "^3.0.0",
-    "expect": "^25.0.0",
     "extract-text-webpack-plugin": "^3.0.2",
     "file-loader": "^1.1.9",
     "file-saver": "^2.0.2",

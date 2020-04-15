@@ -30,7 +30,7 @@ msgid "auth##labels##ethereum"
 msgstr "Signing you in, hold tight"
 
 msgid "auth##signInWithEthereum"
-msgstr "Sign in with Ethereum"
+msgstr "Authenticate with Ethereum"
 
 msgid "auth##forgotPassword##link##get"
 msgstr "Get a link to reset your password"
@@ -61,9 +61,6 @@ msgstr "Password is quite strong"
 
 msgid "auth##login##failure"
 msgstr "Login failed"
-
-msgid "auth##login##rememberMe"
-msgstr "Remember me"
 
 msgid "auth##login##forgotPassword"
 msgstr "Forgot your password?"

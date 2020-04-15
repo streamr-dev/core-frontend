@@ -114,13 +114,13 @@ describe('Product State', () => {
             })
         })
 
-        it('puts admin fee as pending change for unpublished community product', () => {
+        it('puts admin fee as pending change for unpublished data union', () => {
             const product = {
                 id: '1',
                 name: 'My Product',
                 description: 'My nice product',
                 state: productStates.NOT_DEPLOYED,
-                type: productTypes.COMMUNITY,
+                type: productTypes.DATAUNION,
             }
             expect(State.update(product, (p) => ({
                 ...p,
@@ -196,24 +196,24 @@ describe('Product State', () => {
             expect(State.getPendingChanges(product)).toMatchObject({})
         })
 
-        it('returns empty object for unpublished community product', () => {
+        it('returns empty object for unpublished data union', () => {
             const product = {
                 id: '1',
                 name: 'My Product',
                 description: 'My nice product',
                 state: productStates.NOT_DEPLOYED,
-                type: productTypes.COMMUNITY,
+                type: productTypes.DATAUNION,
             }
             expect(State.getPendingChanges(product)).toMatchObject({})
         })
 
-        it('returns pending admin fee for unpublished community product', () => {
+        it('returns pending admin fee for unpublished data union', () => {
             const product = {
                 id: '1',
                 name: 'My Product',
                 description: 'My nice product',
                 state: productStates.NOT_DEPLOYED,
-                type: productTypes.COMMUNITY,
+                type: productTypes.DATAUNION,
             }
             expect(State.getPendingChanges({
                 ...product,
@@ -246,14 +246,14 @@ describe('Product State', () => {
             })
         })
 
-        it('returns pending changes for published community product', () => {
+        it('returns pending changes for published data union', () => {
             const product = {
                 id: '1',
                 name: 'My Product',
                 description: 'My nice product',
                 adminFee: '0.2',
                 state: productStates.DEPLOYED,
-                type: productTypes.COMMUNITY,
+                type: productTypes.DATAUNION,
             }
             expect(State.getPendingChanges({
                 ...product,
@@ -269,14 +269,14 @@ describe('Product State', () => {
             })
         })
 
-        it('returns pending changes for unpublished community product', () => {
+        it('returns pending changes for unpublished data union', () => {
             const product = {
                 id: '1',
                 name: 'My Product',
                 description: 'My nice product',
                 adminFee: '0.2',
                 state: productStates.NOT_DEPLOYED,
-                type: productTypes.COMMUNITY,
+                type: productTypes.DATAUNION,
             }
             expect(State.getPendingChanges(State.update(product, (p) => ({
                 ...p,
@@ -308,13 +308,13 @@ describe('Product State', () => {
             expect(State.hasPendingChange(nextProduct, 'description')).toBe(false)
         })
 
-        it('it returns true for unpublished community product admin fee change', () => {
+        it('it returns true for unpublished data union admin fee change', () => {
             const product = {
                 id: '1',
                 name: 'My Product',
                 description: 'My nice product',
                 state: productStates.NOT_DEPLOYED,
-                type: productTypes.COMMUNITY,
+                type: productTypes.DATAUNION,
             }
             const nextProduct = {
                 ...product,
@@ -346,6 +346,29 @@ describe('Product State', () => {
             expect(State.hasPendingChange(nextProduct, 'name')).toBe(true)
             expect(State.hasPendingChange(nextProduct, 'description')).toBe(true)
         })
+
+        it('it returns true if pending fields are set to empty', () => {
+            const product = {
+                id: '1',
+                name: 'My Product',
+                description: 'My nice product',
+                otherField: 'asd',
+                state: productStates.DEPLOYED,
+            }
+            const nextProduct = {
+                ...product,
+                pendingChanges: {
+                    name: '',
+                    description: null,
+                    otherField: undefined,
+                },
+            }
+            expect(State.hasPendingChange(nextProduct, 'name')).toBe(true)
+            expect(State.hasPendingChange(nextProduct, 'description')).toBe(true)
+
+            // undefined value can't be detected
+            expect(State.hasPendingChange(nextProduct, 'otherField')).toBe(false)
+        })
     })
 
     describe('withPendingChanges', () => {
@@ -370,14 +393,14 @@ describe('Product State', () => {
             })
         })
 
-        it('it returns the current data and updated admin fee for unpublished community product', () => {
+        it('it returns the current data and updated admin fee for unpublished data union', () => {
             const product = {
                 id: '1',
                 name: 'My Product',
                 description: 'My nice product',
                 adminFee: '0.2',
                 state: productStates.NOT_DEPLOYED,
-                type: productTypes.COMMUNITY,
+                type: productTypes.DATAUNION,
             }
             expect(State.withPendingChanges({
                 ...product,
@@ -392,7 +415,7 @@ describe('Product State', () => {
                 description: 'My nice product',
                 adminFee: '0.5',
                 state: productStates.NOT_DEPLOYED,
-                type: productTypes.COMMUNITY,
+                type: productTypes.DATAUNION,
             })
         })
 

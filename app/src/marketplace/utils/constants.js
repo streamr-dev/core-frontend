@@ -10,6 +10,7 @@
 // Purchase flow states
 export const purchaseFlowSteps = {
     ACCESS_PERIOD: 'accessPeriod',
+    LINK_ACCOUNT: 'linkAccount',
     RESET_DATA_ALLOWANCE: 'resetDataAllowance',
     RESET_DAI_ALLOWANCE: 'resetDaiAllowance',
     DATA_ALLOWANCE: 'dataAllowance',
@@ -42,5 +43,5 @@ export const searchCharMax = 250
 
 export const productTypes = {
     NORMAL: 'NORMAL',
-    COMMUNITY: 'COMMUNITY',
+    DATAUNION: 'DATAUNION',
 }

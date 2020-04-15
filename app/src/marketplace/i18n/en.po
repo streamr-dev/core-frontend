@@ -44,11 +44,14 @@ msgstr "View Product"
 msgid "actionsDropdown##viewStats"
 msgstr "View Stats"
 
-msgid "actionsDropdown##viewCommunity"
-msgstr "View Community"
+msgid "actionsDropdown##viewDataUnion"
+msgstr "View Data Union"
 
 msgid "actionsDropdown##copyUrl"
 msgstr "Copy URL"
+
+msgid "actionsDropdown##copyContractAddress"
+msgstr "Copy ETH address"
 
 msgid "general##backToMarketplace"
 msgstr "Back to Marketplace"
@@ -95,8 +98,49 @@ msgstr "Unpublishing"
 msgid "editProductPage##update"
 msgstr "Update"
 
+msgid "editProductPage##preview"
+msgstr "This is a preview of how your product will appear when published"
+
+msgid "editProductPage##productName##title"
+msgstr "Name your product"
+
+msgid "editProductPage##coverImage##title"
+msgstr "Add a cover image"
+
+msgid "editProductPage##coverImage##description"
+msgstr ""
+"This image will be shown as the tile image in the Marketplace browse view, "
+"and also as the main image on your product page. For best quality, "
+"an image size of around 1000 x 800px is recommended. PNG or JPEG format. Need images? "
+"See the <a href=\"%{docsLink}\">docs</a>."
+
+msgid "editProductPage##productDescription##title"
+msgstr "Write a product description"
+
+msgid "editProductPage##productDescription##description"
+msgstr ""
+"Sell your product — make sure you include details about the contents of your streams, "
+"historical data, and any other relevant details. "
+"Generally around a maximum of around 300 words fits best on a product detail page. Markdown formatting is ok."
+
+msgid "editProductPage##streams##title"
+msgstr "Add streams"
+
+msgid "editProductPage##streams##description"
+msgstr ""
+"Products can contain a range of streams, or a single \"firehose\" type stream, it's up to you. "
+"If you haven't made any streams yet, you can create one here. For help creating streams, "
+"see the <a href=\"%{docsLink}\">docs</a>."
+
 msgid "editProductPage##setPrice##title"
 msgstr "Set a price"
+
+msgid "editProductPage##setPrice##description"
+msgstr ""
+"Set the price for your product here. Note that once published, "
+"you will not be able to make a free product into a paid one or vice versa. "
+"But you can edit this while your product is a draft. For help, "
+"see the <a href=\"%{docsLink}\">docs</a>."
 
 msgid "editProductPage##setPrice##setRecipientEthAddress"
 msgstr "Set recipient ETH address"
@@ -104,17 +148,48 @@ msgstr "Set recipient ETH address"
 msgid "editProductPage##setPrice##placeholder##enterEthAddress"
 msgstr "Enter ETH address"
 
-msgid "editProductPage##setPrice##fixPrice"
+msgid "editProductPage##setPrice##dataUnion##fixPrice"
 msgstr "Fix price in fiat for protection against shifts in the DATA price"
+
+msgid "editProductPage##setPrice##dataProduct##fixPrice"
+msgstr "Fix price in fiat"
+
+msgid "editProductPage##productDetails##title"
+msgstr "Add some more details"
+
+msgid "editProductPage##connectEthIdentity##title"
+msgstr "Connect an Ethereum identity"
+
+msgid "editProductPage##connectEthIdentity##identityNotLinked"
+msgstr ""
+"You haven't connected your Ethereum address to your Streamr account yet. "
+"In order to manage your data union, you need to do this before deploying your product."
+
+msgid "editProductPage##connectEthIdentity##web3Locked"
+msgstr ""
+"In order to manage your data union, you need to unlock your wallet and "
+"connect an Ethereum address to your Streamr account before deploying your product."
+
+msgid "editProductPage##connectEthIdentity##addNewAddress"
+msgstr "Add ETH address"
 
 msgid "editProductPage##sharedSecrets##addSecret"
 msgstr "Add shared secret"
 
-msgid "editProductPage##sharedSecrets##description"
+msgid "editProductPage##sharedSecrets##title"
+msgstr "Add a shared secrect"
+
+msgid "editProductPage##sharedSecrets##notDeployed##description"
+msgstr ""
+"These settings are only available once you have deployed your product, and provides access control for your product. "
+"Create, name and revoke shared secrets them from here. "
+"For help with shared secrets, see the <a href=\"%{docsLink}\">docs</a>."
+
+msgid "editProductPage##sharedSecrets##deployed##description"
 msgstr ""
 "Shared secrets are the access control for your product. "
 "Create, name and revoke shared secrets from here. "
-"For help with shared secrets, see the docs. "
+"For help with shared secrets, see the <a href=\"%{docsLink}\">docs</a>."
 
 msgid "editProductPage##navigation##name"
 msgstr "Name"
@@ -133,6 +208,9 @@ msgstr "Set price"
 
 msgid "editProductPage##navigation##details"
 msgstr "Details"
+
+msgid "editProductPage##navigation##connectEthIdentity"
+msgstr "Ethereum identity"
 
 msgid "editProductPage##navigation##sharedSecrets"
 msgstr "Shared secrets"
@@ -167,6 +245,9 @@ msgstr "Not found"
 msgid "error##productNotFound"
 msgstr "No product found with id %{id}"
 
+msgid "error##publishFailed"
+msgstr "Publish failed"
+
 msgid "error##txAborted"
 msgstr "Transaction aborted"
 
@@ -176,22 +257,14 @@ msgstr "Transaction failed"
 msgid "error##wallet"
 msgstr "Wallet error"
 
-msgid "errorPageView##imageCaption"
-msgstr "App crashed"
-
-msgid "errorPageView##message"
-msgstr ""
-"Oops. Something has broken down here. <br /> Please try one of the links "
-"below <br /> to get things back on track."
-
-msgid "errorPageView##top"
-msgstr "Marketplace top"
-
 msgid "imageUpload##coverImage##replace"
 msgstr "Drag & drop to replace your cover image <br /> or click to browse for one"
 
 msgid "imageUpload##coverImage##tabletUpload"
 msgstr "Tap to take a photo or browse for one"
+
+msgid "imageUpload##coverImage##mobileUpload"
+msgstr "Tap to take a photo<br />or browse for one"
 
 msgid "imageUpload##coverImage##upload"
 msgstr "Drag & drop to upload a cover image <br /> or click to browse for one"
@@ -229,6 +302,29 @@ msgstr "Week"
 msgid "modal##chooseAccessPeriod##uniswap"
 msgstr "Exchange via Uniswap"
 
+msgid "modal##chooseAccessPeriod##invalidTime"
+msgstr "Access period must be a number"
+
+msgid "modal##chooseAccessPeriod##highPriceDesktop"
+msgstr "Transaction too large for Uniswap. Please try a shorter period."
+
+msgid "modal##chooseAccessPeriod##highPriceMobile"
+msgstr "Transaction too large. Please try a shorter period."
+
+msgid "modal##chooseAccessPeriod##lowPriceDesktop"
+msgstr "Transaction too small for Uniswap. Please try a longer period."
+
+msgid "modal##chooseAccessPeriod##lowPriceMobile"
+msgstr "Transaction too small. Please try a longer period."
+
+msgid "modal##connectEthereumAddress##title"
+msgstr "Connect your Ethereum address"
+
+msgid "modal##connectEthereumAddress##description"
+msgstr ""
+"Connect your Ethereum address to your Streamr account so your purchases are visible. "
+"Confirm this transaction in your wallet to proceed."
+
 msgid "modal##common##save"
 msgstr "Save"
 
@@ -255,6 +351,14 @@ msgstr ""
 "You can wait for the blockchain or go back to the <a "
 "href=%{marketplaceLink}>Marketplace</a>"
 
+msgid "modal##completePublish##started##title"
+msgstr "Publish confirmation"
+
+msgid "modal##completePublish##started##message"
+msgstr ""
+"You need to confirm the transaction <br /> in your wallet to publish this "
+"product."
+
 msgid "modal##completePublish##confirmed##title"
 msgstr "Publish complete"
 
@@ -269,57 +373,148 @@ msgstr "Publishing failed"
 msgid "modal##completePublish##pending##title"
 msgstr "Writing to the blockchain"
 
-msgid "modal##completePublish##started##message"
+msgid "modal##publishProgress##publish##title"
+msgstr "Publishing"
+
+msgid "modal##publishProgress##redeploy##title"
+msgstr "Redeploying"
+
+msgid "modal##publishProgress##republish##title"
+msgstr "Republishing"
+
+msgid "modal##publishProgress##unpublish##title"
+msgstr "Unpublishing"
+
+msgid "modal##publishProgress##updateContractProduct##pending"
+msgstr "Updating product"
+
+msgid "modal##publishProgress##createContractProduct##pending"
+msgstr "Publishing"
+
+msgid "modal##publishProgress##publishPaid##pending"
+msgstr "Republishing"
+
+msgid "modal##publishProgress##updateAdminFee##pending"
+msgstr "Updating data union"
+
+msgid "modal##publishProgress##undeployContractProduct##pending"
+msgstr "Unpublishing"
+
+msgid "modal##publishProgress##publishFree##pending"
+msgstr "Publishing"
+
+msgid "modal##publishProgress##unpublishFree##pending"
+msgstr "Unpublishing"
+
+msgid "modal##publishProgress##publishPendingChanges##pending"
+msgstr "Updating product"
+
+msgid "modal##publishProgress##updateContractProduct##failed"
+msgstr "Updating product failed"
+
+msgid "modal##publishProgress##createContractProduct##failed"
+msgstr "Publishing failed"
+
+msgid "modal##publishProgress##publishPaid##failed"
+msgstr "Republishing failed"
+
+msgid "modal##publishProgress##updateAdminFee##failed"
+msgstr "Updating data union failed"
+
+msgid "modal##publishProgress##undeployContractProduct##failed"
+msgstr "Unpublishing failed"
+
+msgid "modal##publishProgress##publishFree##failed"
+msgstr "Publishing failed"
+
+msgid "modal##publishProgress##unpublishFree##failed"
+msgstr "Unpublishing failed"
+
+msgid "modal##publishProgress##publishPendingChanges##failed"
+msgstr "Updating product failed"
+
+msgid "modal##publishProgress##confirmTransaction"
+msgstr "Please confirm transaction"
+
+msgid "modal##publishError##publishModes##publish"
+msgstr "Publishing"
+
+msgid "modal##publishError##publishModes##republish"
+msgstr "Republishing"
+
+msgid "modal##publishError##publishModes##redeploy"
+msgstr "Redeploying"
+
+msgid "modal##publishError##publishModes##unpublish"
+msgstr "Unpublishing"
+
+msgid "modal##publishError##someFailed##title"
+msgstr "%{publishMode} did not complete"
+
+msgid "modal##publishError##allFailed##title"
+msgstr "%{publishMode} failed"
+
+msgid "modal##publishError##actions##updateAdminFee"
+msgstr "The admin fee failed to update."
+
+msgid "modal##publishError##actions##updateContractProduct"
+msgstr "The product data failed to update."
+
+msgid "modal##publishError##actions##createContractProduct"
+msgstr "Failed to publish product."
+
+msgid "modal##publishError##actions##publishPaid"
+msgstr "Failed to publish product."
+
+msgid "modal##publishError##actions##publishFree"
+msgstr "Failed to publish product."
+
+msgid "modal##publishError##actions##publishPendingChanges"
+msgstr "Failed to publish product changes."
+
+msgid "modal##publishError##actions##unpublishFree"
+msgstr "Failed to unpublish product."
+
+msgid "modal##publishError##actions##undeployContractProduct"
+msgstr "Failed to unpublish product."
+
+msgid "modal##publishError##actions##allFailed"
+msgstr "The product failed to update."
+
+msgid "modal##publishError##actions##someFailed"
+msgstr "More than one transaction failed."
+
+msgid "modal##publishError##actions##checkWallet"
+msgstr "Please check your wallet or other settings and try again"
+
+msgid "modal##publishComplete##republish##title"
+msgstr "Republish completed"
+
+msgid "modal##publishComplete##redeploy##title"
+msgstr "Redeploy completed"
+
+msgid "modal##publishComplete##publish##title"
+msgstr "Publish completed"
+
+msgid "modal##publishComplete##viewProduct"
+msgstr "View Product"
+
+msgid "modal##publishComplete##message"
+msgstr "View on the Marketplace or get a link to share"
+
+msgid "modal##publishComplete##copyLink"
+msgstr "Copy link"
+
+msgid "modal##publishComplete##linkCopied"
+msgstr "Copied"
+
+msgid "modal##unpublishComplete##title"
+msgstr "Unpublish completed"
+
+msgid "modal##unpublishComplete##message"
 msgstr ""
-"You need to confirm the transaction <br /> in your wallet to publish this "
-"product."
-
-msgid "modal##completePublish##updateAdminFee##started##title"
-msgstr "Update admin fee"
-
-msgid "modal##completePublish##updateAdminFee##started##message"
-msgstr ""
-"You need to confirm the transaction in your wallet to update the community admin fee."
-
-msgid "modal##completePublish##updateContractProduct##started##title"
-msgstr "Update price information"
-
-msgid "modal##completePublish##updateContractProduct##started##message"
-msgstr ""
-"You need to confirm the transaction in your wallet to update the product's price."
-
-msgid "modal##completePublish##publishPaid##started##title"
-msgstr "Publish"
-
-msgid "modal##completePublish##publishPaid##started##message"
-msgstr ""
-"You need to confirm the transaction in your wallet to publish the product."
-
-msgid "modal##completePublish##createContractProduct##started##title"
-msgstr "Publish"
-
-msgid "modal##completePublish##createContractProduct##started##message"
-msgstr ""
-"You need to confirm the transaction in your wallet to publish the product."
-
-msgid "modal##completePublish##undeployContractProduct##started##title"
-msgstr "Unpublish"
-
-msgid "modal##completePublish##undeployContractProduct##started##message"
-msgstr ""
-"You need to confirm the transaction in your wallet to unpublish the product."
-
-msgid "modal##completePublish##publishFree##started##title"
-msgstr "Publish"
-
-msgid "modal##completePublish##unpublishFree##started##title"
-msgstr "Unpublish"
-
-msgid "modal##completePublish##publishPendingChanges##started##title"
-msgstr "Update product data"
-
-msgid "modal##completePublish##started##title"
-msgstr "Publish Confirmation"
+"This product is unpublished now, <br/>"
+"but you still can see in your <a href=\"%{productLink}\">core product</a>"
 
 msgid "modal##completePurchase##confirmed##message"
 msgstr "You need to connect your Ethereum identity to your Streamr account."
@@ -395,19 +590,26 @@ msgstr "Waiting..."
 msgid "modal##errorDialog##defaultTitle"
 msgstr "Error"
 
-msgid "modal##getCryptoDialog##link##bitfinex"
-msgstr "Bitfinex"
+msgid "modal##getCryptoDialog##link##uniswap"
+msgstr "Uniswap"
 
 msgid "modal##getCryptoDialog##link##coinbase"
 msgstr "Coinbase"
 
-msgid "modal##getCryptoDialog##link##poloniex"
-msgstr "Poloniex"
+msgid "modal##getCryptoDialog##link##binance"
+msgstr "Binance"
 
 msgid "modal##getCryptoDialog##message"
-msgstr ""
-"Ether is needed for gas, but you don't have any. Please purchase some and "
-"try again. Some exchanges near you shown below."
+msgstr "Ether is needed for gas, but you don't have any."
+"<br />"
+"Please get some and try again"
+
+msgid "modal##getCryptoDialog##mobileMessage"
+msgstr "Ether is needed for gas,"
+"<br />"
+"but you don't have any."
+"<br />"
+"Please get some and try again"
 
 msgid "modal##getCryptoDialog##title"
 msgstr "No Ether balance"
@@ -416,18 +618,26 @@ msgid "modal##insufficientDaiDialog##title"
 msgstr "Insufficient DAI"
 
 msgid "modal##insufficientDaiDialog##message"
-msgstr ""
-"It looks like you don’t have enough DAI to purchase this product. "
-"Please get some & try again or choose a different payment currency."
+msgstr "You don't have enough DAI to purchase <br /> this product. Please get some and try again"
+
+msgid "modal##insufficientDaiDialog##mobileMessage"
+msgstr "It looks like you don’t have enough DAI to purchase this product. "
+"Please get some & try again or choose a different"
+"<br />"
+"payment currency."
 
 msgid "modal##getDataTokensDialog##link##bancor"
 msgstr "Bancor"
 
 msgid "modal##getDataTokensDialog##message"
-msgstr ""
-"You have Ether in your wallet but no DATA, which you need to purchase "
-"products on the Marketplace. Please visit Bancor for the easiest way to get "
-"DATA."
+msgstr "DATA is currently required to purchase products on the Marketplace. Please purchase some and try again"
+
+msgid "modal##getDataTokensDialog##mobileMessage"
+msgstr "DATA is currently required to purchase"
+"<br />"
+"products on the Marketplace."
+"<br />"
+"Please purchase some and try again"
 
 msgid "modal##getDataTokensDialog##title"
 msgstr "No DATA balance"
@@ -436,15 +646,25 @@ msgid "modal##insufficientDataDialog##title"
 msgstr "Insufficient DATA"
 
 msgid "modal##insufficientDataDialog##message"
-msgstr ""
-"It looks like you don’t have enough DATAcoin to purchase this product. "
-"Please get some & try again."
+msgstr "You don't have enough DATA to purchase <br /> this product. Please get some and try again"
+
+msgid "modal##insufficientEthDialog##title"
+msgstr "Insufficient ETH"
+
+msgid "modal##insufficientEthDialog##message"
+msgstr "You don't have enough ETH to purchase <br /> this product. Please get some and try again"
 
 msgid "modal##purchaseSummary##access"
 msgstr "%{time} %{timeUnit} access"
 
+msgid "modal##purchaseSummary##back"
+msgstr "Back"
+
 msgid "modal##purchaseSummary##pay"
 msgstr "Pay"
+
+msgid "modal##purchaseSummary##payNow"
+msgstr "Pay now"
 
 msgid "modal##purchaseSummary##price"
 msgstr "%{price} %{priceCurrency}"
@@ -454,27 +674,49 @@ msgstr ""
 "You need to confirm the transaction <br /> in your wallet to purchase this "
 "product."
 
+msgid "modal##purchaseSummary##time"
+msgstr "%{time} %{timeUnit}"
+
 msgid "modal##purchaseSummary##started##title"
 msgstr "Purchase confirmation"
 
 msgid "modal##purchaseSummary##title"
 msgstr "Complete your purchase"
 
+msgid "modal##readyToPublish##title"
+msgstr "Publish product"
+
+msgid "modal##readyToPublish##publish##action"
+msgstr "Publish"
+
 msgid "modal##readyToPublish##message"
 msgstr ""
 "You're about to publish to the Marketplace. <br /> Paid products require an "
 "Eth balance for gas fees."
 
-msgid "modal##readyToPublish##publish"
+msgid "modal##readyToPublish##publish##title"
+msgstr "Publish your product"
+
+msgid "modal##readyToPublish##republish##title"
+msgstr "Republish your product"
+
+msgid "modal##readyToPublish##redeploy##title"
+msgstr "Republish your product"
+
+msgid "modal##readyToPublish##publish##action"
+msgstr "Publish"
+
+msgid "modal##readyToPublish##republish##action"
+msgstr "Republish"
+
+msgid "modal##readyToPublish##redeploy##action"
+msgstr "Republish"
+
+msgid "modal##readyToPublish##publish##action"
 msgstr "Publish"
 
 msgid "modal##readyToPublish##terms"
-msgstr ""
-"I have the right to publish this data as specified in the <a "
-"href=%{publisherTermsLink}>Terms</a>."
-
-msgid "modal##readyToPublish##title"
-msgstr "Publish your product"
+msgstr "I have the right to publish this<br />data as specified in the <a href=%{publisherTermsLink}>Terms</a>."
 
 msgid "modal##readyToUnpublish##message"
 msgstr "Do you want to unpublish this product?"
@@ -559,7 +801,7 @@ msgid "modal##setPrice##fixedPriceSelector##text"
 msgstr "Fix price in USD"
 
 msgid "modal##setPrice##fixedPriceSelector##tooltip"
-msgstr "Fixing the price in fiat will protect you from changes in the DATA price"
+msgstr "Fixing the price in fiat can give you protection against shifts in the DATA price"
 
 msgid "modal##setPrice##ownerAddress"
 msgstr "Your account Ethereum address (cannot be changed)"
@@ -617,14 +859,17 @@ msgstr ""
 msgid "modal##web3##installmetamask##title"
 msgstr "No wallet found"
 
-msgid "modal##web3##installmobileapplication##app##toshi"
-msgstr "Toshi"
+msgid "modal##web3##installmobileapplication##app##argent"
+msgstr "Argent"
+
+msgid "modal##web3##installmobileapplication##app##coinbase"
+msgstr "Coinbase"
 
 msgid "modal##web3##installmobileapplication##app##trust"
 msgstr "Trust"
 
 msgid "modal##web3##installmobileapplication##message"
-msgstr "We couldn't find your wallet. Please install one and try again."
+msgstr "We couldn't find your wallet. <br /> Please get one and try again"
 
 msgid "modal##web3##installmobileapplication##title"
 msgstr "No wallet found"
@@ -638,70 +883,85 @@ msgstr "Chrome"
 msgid "modal##web3##installsupportedbrowser##firefox"
 msgstr "Firefox"
 
+msgid "modal##web3##installsupportedbrowser##metamask"
+msgstr "Metamask"
+
+msgid "modal##web3##installsupportedbrowser##opera"
+msgstr "Opera"
+
 msgid "modal##web3##installsupportedbrowser##imageCaption"
 msgstr "Browser not supported"
 
 msgid "modal##web3##installsupportedbrowser##message"
 msgstr ""
 "Your browser doesn't support Web3. <br /> Please use a supported browser "
-"and try again."
+"and try again"
+
+msgid "modal##web3##installsupportedbrowser##mobileMessage"
+msgstr ""
+"Your browser doesn't support Web3. <br /> Please use a supported"
+"<br />"
+"browser and try again"
 
 msgid "modal##web3##installsupportedbrowser##title"
 msgstr "Your browser is not supported"
 
-msgid "modal##deployCommunity##confirm##title"
+msgid "modal##deployDataUnion##confirm##title"
 msgstr "Deploy %{name}"
 
-msgid "modal##deployCommunity##confirm##learnAbout"
+msgid "modal##deployDataUnion##confirm##learnAbout"
 msgstr "Learn about"
 
-msgid "modal##deployCommunity##confirm##deployingDrafts"
+msgid "modal##deployDataUnion##confirm##deployingDrafts"
 msgstr "deploying drafts"
 
-msgid "modal##deployCommunity##guide##title"
+msgid "modal##deployDataUnion##guide##title"
 msgstr "Deploy %{name}"
 
-msgid "modal##deployCommunity##guide##dontShowAgain"
+msgid "modal##deployDataUnion##guide##dontShowAgain"
 msgstr "Don't show this guide again"
 
-msgid "modal##deployCommunity##guide##preview##updated"
+msgid "modal##deployDataUnion##guide##preview##updated"
 msgstr "Updated just now"
 
-msgid "modal##deployCommunity##guide##preview##status"
+msgid "modal##deployDataUnion##guide##preview##status"
 msgstr "Draft"
 
-msgid "modal##deployCommunity##guide##step1"
+msgid "modal##deployDataUnion##guide##step1"
 msgstr ""
 "Deploying your product’s smart contract will allow"
 "<br />"
-"your users to join the community via your app."
+"your users to join the data union via your app."
 
-msgid "modal##deployCommunity##guide##step2"
+msgid "modal##deployDataUnion##guide##step2"
 msgstr ""
 "Once deployed, your product is not published, but will appear as"
 "<br />"
 "a Draft in Core &gt; Products. Publish when it has enough members."
 
-msgid "modal##deployCommunity##guide##step3"
+msgid "modal##deployDataUnion##guide##step3"
 msgstr ""
 "A minimum of one member is needed to publish the product."
 "<br />"
-"In Core, community size is shown on the Members badge."
+"In Core, data union size is shown on the Members badge."
 
-msgid "modal##deployCommunity##guide##step4"
+msgid "modal##deployDataUnion##guide##step4"
 msgstr ""
-"View analytics and manually manage your community"
+"View analytics and manually manage your data union"
 "<br />"
 "by clicking the Members badge on the product tile."
 
-msgid "modal##deployCommunity##deploying##title"
+msgid "modal##deployDataUnion##deploying##title"
 msgstr "Deploying %{name}"
 
-msgid "modal##deployCommunity##deploying##description"
+msgid "modal##deployDataUnion##deploying##description"
 msgstr ""
 "Estimated deployment time is %{time}. You can wait or close"
 "<br />"
 "this dialogue and get notified when your product is ready."
+
+msgid "modal##deployDataUnion##deploying##estimatedDeploymentTime"
+msgstr "Estimated deployment time"
 
 msgid "noProductsView##keywordHint"
 msgstr "Please try some different keywords"
@@ -709,19 +969,8 @@ msgstr "Please try some different keywords"
 msgid "noProductsView##message"
 msgstr "We couldn’t find anything to match your search"
 
-msgid "notFoundPage##message"
-msgstr ""
-"Whoops! We don’t seem to be able to find your data.</br>"
-"<small>Something might have been moved around or changed.<small>"
-
-msgid "notFoundPage##top"
-msgstr "Go to marketplace"
-
-msgid "notFoundPage##coreApp"
-msgstr "Go to core app"
-
-msgid "notFoundPage##publicSite"
-msgstr "Go to public site"
+msgid "notifications##notEnoughMembers"
+msgstr "The minimum community size for a Data Union is %{memberLimit} members."
 
 msgid "notifications##productPublished"
 msgstr "Your product has been published"
@@ -769,7 +1018,7 @@ msgid "productTypeChooser##title"
 msgstr "Choose your product type"
 
 msgid "productTypeChooser##standard##title"
-msgstr "Standard Product"
+msgstr "Data Product"
 
 msgid "productTypeChooser##standard##description"
 msgstr ""
@@ -777,16 +1026,16 @@ msgstr ""
 "For help creating streams, see the <a href=\"%{docsLink}\">docs</a>."
 
 msgid "productTypeChooser##standard##linkTitle"
-msgstr "Create standard product"
+msgstr "Create data product"
 
-msgid "productTypeChooser##community##title"
-msgstr "Community Product"
+msgid "productTypeChooser##dataUnion##title"
+msgstr "Data Union"
 
-msgid "productTypeChooser##community##description"
+msgid "productTypeChooser##dataUnion##description"
 msgstr "Gather members via your own app and crowdsell the data they provide. You take a cut, and the rest is distributed to members."
 
-msgid "productTypeChooser##community##linkTitle"
-msgstr "Create community product"
+msgid "productTypeChooser##dataUnion##linkTitle"
+msgstr "Create data union"
 
 msgid "productDetailsEditor##category"
 msgstr "Set product category"
@@ -832,6 +1081,9 @@ msgstr "Saved to my purchases"
 
 msgid "productPage##relatedProducts"
 msgstr "Related products"
+
+msgid "productPage##dataUnionPending##title"
+msgstr "Deploying your Data Union"
 
 msgid "productPage##streamListing##add"
 msgstr "Add to editor"
@@ -945,7 +1197,7 @@ msgid "streamSelector##typeToSearch"
 msgstr "Type to search & select streams or click to select individually"
 
 msgid "unlockWalletDialog##message"
-msgstr "Please select the account with address %{address}"
+msgstr "Please select the account with address"
 
 msgid "validation##invalidBeneficiaryAddress"
 msgstr "Beneficiary address is not a valid ethereum address"
