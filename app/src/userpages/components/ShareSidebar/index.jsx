@@ -4,14 +4,15 @@ import React, { useCallback, useState, useRef, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { Translate, I18n } from 'react-redux-i18n'
 import cx from 'classnames'
+import startCase from 'lodash/startCase'
 
 import * as api from '$shared/utils/api'
 import SelectInput from '$ui/Select'
+import RadioButtonGroup from './RadioButtonGroup'
 import Button from '$shared/components/Button'
 import SvgIcon from '$shared/components/SvgIcon'
 import TextInput from '$ui/Text'
 import CopyLink from '$userpages/components/ShareDialog/ShareDialogContent/CopyLink'
-
 import * as State from './state'
 import styles from './ShareSidebar.pcss'
 
@@ -135,7 +136,6 @@ function UserPermissions({
 
     const [isCustom, setIsCustom] = useState(detectedGroupName === 'custom')
     const selectedGroupName = (isCustom && detectedGroupName !== 'custom') ? 'custom' : detectedGroupName
-
     return (
         <div className={cx(styles.userPermissions, className)}>
             <div className={styles.permissionsHeader}>
@@ -148,32 +148,25 @@ function UserPermissions({
                     <SvgIcon name="trash" className={styles.trashIcon} />
                 </Button>
             </div>
-            <div>
-                <div>
-                    {Object.keys(State.getPermissionGroups(resourceType)).filter((name) => name !== 'default').map((name) => (
-                        <Button
-                            key={name}
-                            kind="secondary"
-                            onClick={() => {
-                                if (name !== 'custom') {
-                                    updatePermission(userId, State.getPermissionsForGroupName(resourceType, name))
-                                    setIsCustom(false)
-                                } else {
-                                    setIsCustom(true)
-                                }
-                            }}
-                            className={styles.button}
-                            selected={name === selectedGroupName}
-                        >
-                            {name} {(name === selectedGroupName ? '*' : '')}
-                        </Button>
-                    ))}
-                </div>
+            <div className={styles.permissionGroups}>
+                <RadioButtonGroup
+                    name={`UserPermissions${userId}`}
+                    options={Object.keys(State.getPermissionGroups(resourceType)).filter((name) => name !== 'default')}
+                    onChange={(name) => {
+                        if (name !== 'custom') {
+                            updatePermission(userId, State.getPermissionsForGroupName(resourceType, name))
+                            setIsCustom(false)
+                        } else {
+                            setIsCustom(true)
+                        }
+                    }}
+                    selectedOption={selectedGroupName}
+                />
                 <div className={styles.permissionsCheckboxes}>
                     {Object.entries(userPermissions).map(([permission, value]) => (
                         <React.Fragment key={permission}>
                             <label htmlFor={`permission${permission}`}>
-                                {permission}
+                                {startCase(permission)}
                             </label>
                             <input
                                 id={`permission${permission}`}

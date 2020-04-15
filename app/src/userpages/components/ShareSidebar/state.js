@@ -165,12 +165,12 @@ export function removeUser(users, userId) {
     return nextUsers
 }
 
-export function updatePermission(users, userId, permisssions = {}) {
+export function updatePermission(users, userId, permissions = {}) {
     return {
         ...users,
         [userId]: {
             ...users[userId],
-            ...permisssions,
+            ...permissions,
         },
     }
 }
