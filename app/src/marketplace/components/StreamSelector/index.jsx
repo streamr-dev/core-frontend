@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useState, useMemo, useCallback } from 'react'
+import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react'
 
 import classNames from 'classnames'
 import uniq from 'lodash/uniq'
@@ -13,9 +13,11 @@ import DropdownActions from '$shared/components/DropdownActions'
 import SvgIcon from '$shared/components/SvgIcon'
 import Errors from '$ui/Errors'
 import LoadingIndicator from '$userpages/components/LoadingIndicator'
+import Spinner from '$shared/components/Spinner'
 
 import links from '$mp/../links'
 import { useLastError, type LastErrorProps } from '$shared/hooks/useLastError'
+import useInfiniteScroll from '$shared/hooks/useInfiniteScroll'
 
 import type { Stream, StreamList, StreamIdList, StreamId } from '$shared/flowtype/stream-types'
 
@@ -28,6 +30,7 @@ type Props = LastErrorProps & {
     className?: string,
     onEdit: (StreamIdList) => void,
     disabled?: boolean,
+    onSearch?: (string) => void,
     hasMoreResults?: boolean,
     onLoadMore?: Function,
 }
@@ -44,16 +47,33 @@ export const StreamSelector = (props: Props) => {
         availableStreams,
         fetchingStreams = false,
         disabled: disabledProp,
-        hasMoreResults,
-        onLoadMore,
+        onSearch,
+        hasMoreResults: hasMoreResultsProp,
+        // $FlowFixMe flow errors make no sense
+        onLoadMore: onLoadMoreProp,
         ...rest
     } = props
     const [sort, setSort] = useState(SORT_BY_NAME)
     const [search, setSearch] = useState('')
+    const streamContainerRef = useRef()
+
+    const onLoadMore = useCallback(() => {
+        if (hasMoreResultsProp) {
+            onLoadMoreProp()
+        }
+    }, [onLoadMoreProp, hasMoreResultsProp])
+
+    useInfiniteScroll(onLoadMore, streamContainerRef.current)
 
     const onSearchChange = (event: SyntheticInputEvent<EventTarget>) => {
         setSearch(event.target.value)
     }
+
+    useEffect(() => {
+        if (onSearch) {
+            onSearch(search)
+        }
+    }, [search, onSearch])
 
     const matchingStreams: StreamList = useMemo(() => availableStreams.filter((stream) => (
         stream.name.toLowerCase().includes(search.toLowerCase())
@@ -145,7 +165,7 @@ export const StreamSelector = (props: Props) => {
                             </DropdownActions.Item>
                         </DropdownActions>
                     </div>
-                    <div className={styles.streams}>
+                    <div className={styles.streams} ref={streamContainerRef}>
                         {!fetchingStreams && !availableStreams.length && (
                             <div className={styles.noAvailableStreams}>
                                 <p><Translate value="streamSelector.noStreams" /></p>
@@ -174,16 +194,9 @@ export const StreamSelector = (props: Props) => {
                                 </button>
                             </div>
                         ))}
-                        {!!hasMoreResults && (
+                        {!!hasMoreResultsProp && (
                             <div className={styles.loadMoreResults}>
-                                <button
-                                    type="button"
-                                    onClick={() => onLoadMore && onLoadMore()}
-                                    className={styles.loadMoreButton}
-                                    disabled={!!isDisabled}
-                                >
-                                    <Translate value="streamSelector.loadMore" />
-                                </button>
+                                <Spinner size="small" color="gray" />
                             </div>
                         )}
                         <LoadingIndicator className={styles.loadingIndicator} loading={!!fetchingStreams} />

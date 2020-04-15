@@ -18,11 +18,12 @@ import {
     selectStreams as selectProductStreams,
     selectFetchingStreams as selectFetchingProductStreams,
 } from '$mp/modules/product/selectors'
+import { useDebounced, useThrottled } from '$shared/hooks/wrapCallback'
 import routes from '$routes'
 
 import styles from './productStreams.pcss'
 
-const STREAMS_PAGE_SIZE = 100
+const STREAMS_PAGE_SIZE = 999
 
 const ProductStreams = () => {
     const product = useEditableProduct()
@@ -35,19 +36,38 @@ const ProductStreams = () => {
     const productStreams = useSelector(selectProductStreams)
     const fetchingProductStreams = useSelector(selectFetchingProductStreams)
     const hasMoreResults = useSelector(selectHasMoreResults)
-    const { loadStreams } = useController()
-    const [offset, setOffset] = useState(0)
+    const { loadStreams, clearStreams } = useController()
+    const [params, setParams] = useState({
+        offset: 0,
+    })
 
     const onLoadMore = useCallback(() => {
-        setOffset((prevOffset) => prevOffset + STREAMS_PAGE_SIZE)
+        setParams((prevParams) => ({
+            ...prevParams,
+            offset: prevParams.offset + STREAMS_PAGE_SIZE,
+        }))
     }, [])
+
+    const clearStreamList = useThrottled(useCallback(() => {
+        clearStreams()
+    }, [clearStreams]))
+    const doSearch = useDebounced(useCallback((search) => {
+        setParams({
+            offset: 0,
+            search,
+        })
+    }, []), 500)
+    const onSearch = useCallback((search) => {
+        clearStreamList()
+        doSearch(search)
+    }, [clearStreamList, doSearch])
 
     useEffect(() => {
         loadStreams({
             max: STREAMS_PAGE_SIZE,
-            offset,
+            ...params,
         })
-    }, [loadStreams, offset])
+    }, [loadStreams, params])
 
     const availableStreams = useMemo(() => uniqBy([...streams, ...productStreams], 'id'), [streams, productStreams])
 
@@ -74,6 +94,7 @@ const ProductStreams = () => {
                     disabled={!!isPending}
                     hasMoreResults={hasMoreResults}
                     onLoadMore={onLoadMore}
+                    onSearch={onSearch}
                 />
             </div>
         </section>

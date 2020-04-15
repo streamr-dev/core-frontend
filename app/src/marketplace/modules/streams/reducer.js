@@ -54,6 +54,7 @@ const reducer: (StreamsState) => StreamsState = handleActions({
     [CLEAR_STREAM_LIST]: (state: StreamsState) => ({
         ...state,
         ids: [],
+        hasMoreResults: false,
     }),
 }, initialState)
 

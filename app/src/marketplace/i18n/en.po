@@ -1188,9 +1188,6 @@ msgstr "Recent"
 msgid "streamSelector##typeToSearch"
 msgstr "Type to search & select streams or click to select individually"
 
-msgid "streamSelector##loadMore"
-msgstr "Load more results"
-
 msgid "unlockWalletDialog##message"
 msgstr "Please select the account with address"
 
