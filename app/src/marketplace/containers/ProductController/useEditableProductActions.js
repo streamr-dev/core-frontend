@@ -50,7 +50,7 @@ export function useEditableProductActions() {
         touch('imageUrl')
     }, [commit, touch])
     const updateImageFile = useCallback((image: File) => {
-        commit('Update image file', (p) => ({
+        commit('Update image file', ({ imageUrl, ...p }) => ({
             ...p,
             newImageToUpload: image,
         }))
