@@ -64,19 +64,17 @@ const PreviewView = ({ stream, currentUser }: Props) => {
                             <Translate value="userpages.streams.edit.preview.stop" />
                         }
                     </Button>
-                    {stream && stream.id && (
-                        <Button
-                            kind="secondary"
-                            className={styles.inspectButton}
-                            tag={Link}
-                            to={routes.userPageStreamPreview({
-                                streamId: stream.id,
-                            })}
-                            disabled={!hasData}
-                        >
-                            <Translate value="userpages.streams.edit.preview.inspect" />
-                        </Button>
-                    )}
+                    <Button
+                        kind="secondary"
+                        className={styles.inspectButton}
+                        tag={Link}
+                        to={routes.userPageStreamPreview({
+                            streamId: stream.id,
+                        })}
+                        disabled={!hasData}
+                    >
+                        <Translate value="userpages.streams.edit.preview.inspect" />
+                    </Button>
                 </div>
             </div>
         </ClientProvider>
