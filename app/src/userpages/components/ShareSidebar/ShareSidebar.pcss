@@ -17,6 +17,7 @@
     overflow: auto;
     flex-grow: 1;
     flex-shrink: initial;
+    border-top: 1px solid #EFEFEF;
   }
 }
 
@@ -36,9 +37,15 @@
 }
 
 .userPermissions {
-  border-top: 1px solid #EFEFEF;
-  border-bottom: 1px solid #EFEFEF;
   padding: 1.4um 2um;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid #EFEFEF;
+  }
+
+  > *:not(:last-child) {
+    margin-bottom: 1.4um;
+  }
 
   .permissionsHeader {
     display: grid;
@@ -48,6 +55,8 @@
     h4 {
       font-size: inherit;
       margin: 0;
+      line-height: normal;
+      padding: 0;
     }
 
     .button {

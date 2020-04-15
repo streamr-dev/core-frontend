@@ -148,37 +148,35 @@ function UserPermissions({
                     <SvgIcon name="trash" className={styles.trashIcon} />
                 </Button>
             </div>
-            <div className={styles.permissionGroups}>
-                <RadioButtonGroup
-                    name={`UserPermissions${userId}`}
-                    options={Object.keys(State.getPermissionGroups(resourceType)).filter((name) => name !== 'default')}
-                    onChange={(name) => {
-                        if (name !== 'custom') {
-                            updatePermission(userId, State.getPermissionsForGroupName(resourceType, name))
-                            setIsCustom(false)
-                        } else {
-                            setIsCustom(true)
-                        }
-                    }}
-                    selectedOption={selectedGroupName}
-                />
-                <div className={styles.permissionsCheckboxes}>
-                    {Object.entries(userPermissions).map(([permission, value]) => (
-                        <React.Fragment key={permission}>
-                            <label htmlFor={`permission${permission}`}>
-                                {startCase(permission)}
-                            </label>
-                            <input
-                                id={`permission${permission}`}
-                                type="checkbox"
-                                checked={value}
-                                onChange={() => updatePermission(userId, {
-                                    [permission]: !value,
-                                })}
-                            />
-                        </React.Fragment>
-                    ))}
-                </div>
+            <RadioButtonGroup
+                name={`UserPermissions${userId}`}
+                options={Object.keys(State.getPermissionGroups(resourceType)).filter((name) => name !== 'default')}
+                onChange={(name) => {
+                    if (name !== 'custom') {
+                        updatePermission(userId, State.getPermissionsForGroupName(resourceType, name))
+                        setIsCustom(false)
+                    } else {
+                        setIsCustom(true)
+                    }
+                }}
+                selectedOption={selectedGroupName}
+            />
+            <div className={styles.permissionsCheckboxes}>
+                {Object.entries(userPermissions).map(([permission, value]) => (
+                    <React.Fragment key={permission}>
+                        <input
+                            id={`permission${permission}`}
+                            type="checkbox"
+                            checked={value}
+                            onChange={() => updatePermission(userId, {
+                                [permission]: !value,
+                            })}
+                        />
+                        <label htmlFor={`permission${permission}`}>
+                            {startCase(permission)}
+                        </label>
+                    </React.Fragment>
+                ))}
             </div>
         </div>
     )
