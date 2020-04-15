@@ -105,6 +105,7 @@
     "signUp": "/signup",
     "streamPreview": "/marketplace/products/:id/streamPreview/:streamId",
     "streams": "/core/streams",
+    "stream": "/core/streams/:id",
     "terms": "https://s3.amazonaws.com/streamr-public/streamr-terms-of-use.pdf",
     "transactions": "/core/transactions",
     "userPages": "/core",
