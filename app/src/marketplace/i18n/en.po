@@ -177,7 +177,7 @@ msgid "editProductPage##sharedSecrets##addSecret"
 msgstr "Add shared secret"
 
 msgid "editProductPage##sharedSecrets##title"
-msgstr "Add a shared secrect"
+msgstr "Add a shared secret"
 
 msgid "editProductPage##sharedSecrets##notDeployed##description"
 msgstr ""
