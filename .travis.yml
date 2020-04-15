@@ -260,6 +260,9 @@ jobs:
   - stage: Platform Build Production
     if: NOT type IN (pull_request)
     env:
+    - secure: BC16381MZ+00NWm6tRzaz+Cx2NFar4HlOOkXSf6Pm6jIj0/5Z3pD+CWIpl2Ga2KrOGNoc7wb6ASyST6/pkz5kfflEOvbpix1m1/GJrpbqdNfkkyeqsQznCaHPToP6ndnAAXw0+1944bLprsvIBQY4/ycs3HobPQypOOSPy8TYtt2PheOG3MqYnsbhLb9KC9yZ1HOBM1jwbUwmsxjtK/3BcyDum1OS3IrA59R96pWVfaoO5QfvBN8Hrgkwn8MCQdBSglVibm9D+xg41+oXhjLpgjuYM0eUIC6hngo6KT8BxSrR0BOykb1S5VGl0yZl5PtWadHrMYA6Ohop+WRWO7oWtCXk9GlTqwLC/huZQ0g9glpTkzN24/uaXsqksS0EpMBfkz6x9YwF/DSWBxdUhIOZzXrqWtw6gbPzg8VhKPYWD0bzijo8C7/2EZN7OzQd0vhdQlA6K9PR4pFD/UrmuAzw4YaGRXH6psAxHHDsx0jD9Vhz7US+m2BQcZgZUwhLwPzf88+y0/bZrHj14eKTJUEeTtKeTFCy7rPFx3gHyRNCAq11sjs1idIS74vPHia3tjYE6PBZa4x0P54P5F1I2dqvJaHk49xImMxh3EXZOobdITvUZRLPUh2E3fJSUXgpsTIw7q0vEXUH9ExiocCa9rNPtm5lkzfYUfBQKcnMXBb54c=
+    - secure: A9LE6t5J/nI2I14i3G6IrpnqwZok0TX1/0mWXawn+DscxODXvNM0BzSnpHKO1D354OJnpI+XUc2kkH56KioptyqgVuetXUFGRe4mw+ebJkwZhaKhdEuQOy383EOm70lv74ufcCCF7TKP28rdms6XyIYQncCvmAAej6HriCCEi7Cj3diACD5aZ6TsObkZR0+WkZ8HRgKYg4J8VfJdCydS5MFj5uc/E9ZX+o8J3k2zuYJKC8hMwv5FRgAwo9xN6VTj7L5dYCA3JJdcMN1wHSIn7yTDMi/ikG03/jJGnSxRhTBXheabZJl5qFW8Vq1vx9DtugkiNOkLhvh6yrh+NjV1GQm2RZtZ1M/F3Rvn0qdG2+AMsddYAMK38l2CESte82XQJtOr/0Q+C3xn9xSixfpUyXmQv0Yz1oDgttkUmar45tbpIQeAY/AAe0oPlK7ZAZ5G09SVbN1tMWc96+6oexGcAS3COC7VNTQSYhfHQN1XkYiJ3jNMJMKR9H7883WTtVyXSGzY1sfZ3VS8bD5EQte2NSCpXh70Fd2SsynxTUnlqmhbczavSXIVkj8Fdbv9hF+/Nhth3s//VyoqWMfkf8hRIYq5uETm/aoCiTc9jya1oGxdEIm9bT3vwgHBY0hk9SgJdT3Fr2nBcpCUFVgGGzuygoWL/qNC3mCKmrd1oIoWRno=
+    - secure: pQRcWoPvom7XxZmgDpNWlQ011Y1Qyb05yJqtKaj6JQSJU2BCSAiH4O3z1qsUBJVDOYn0hEc/odwvvMuFzT9XMz312fFl0kYttbt7n1Hp/O23gAUfmsEoiRsLkzNMyzhZSbVLTPs37qqbnMZL6eVPiZE0brPfb1iCJhHmEJDEa+IO8I/R2I5YvARQG/+XHVDKd4boAW+r9no9mPTS/4XdX5ONy4m3dnDjTw63BbyvAEdy1S8ZLNzWm/GmzmWp/qf5ephcJXc6z3e9ptMAEbIy3EDeONZlxcKeOhIx/iaZebufcCZGxJPWGWIt6uouN0KALYsk15qaMcZ4uiRX04xWx9C/RZzasyWwGEgHmqfC3HOI/ZCP5z/M3cXsBfdxIVZMB/4MBt88daH3aZwdQ0KK2rpfKE32BCJCDY00HLIjdimic+TohxbRdnajG07r4DiVC0enenQvcLmxrpdZpUdRcDkFSyAsgmqAlALBMQHBxITisc4cI/hguQex9nGB+EwVpQr9Oq7pvO2F2JC80PM0Gb+om/euVJ8c3Zm4UUTAcFhkHqkmwg6wVUT/QeAt+DkrBIUdgIYDXKhm1BttRc9THZ8oPnbczRzm9om34o3rTUCTQFr95LnOGmy1xO3URepNxqt9DTCRs/P0PBHLLVOY28nx0aoBiF8SC5iWmgLEPjY=
     - NODE_ENV=production
     - VERSION=$TRAVIS_TAG
     - PORT=12345
@@ -321,6 +324,11 @@ jobs:
       acl: private
       region: eu-west-1
       skip_cleanup: true
+      on:
+        tags: true
+    - provider: script
+      script:
+      - aws cloudfront create-invalidation --distribution-id $DIST_ID --paths "/*"
       on:
         tags: true
 notifications:
