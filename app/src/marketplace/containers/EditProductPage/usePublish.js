@@ -15,7 +15,7 @@ import { postSetDeploying, postDeployFree, redeployProduct } from '$mp/modules/p
 import { postSetUndeploying, postUndeployFree, deleteProduct } from '$mp/modules/unpublish/services'
 import { createContractProduct, updateContractProduct } from '$mp/modules/createContractProduct/services'
 import { addTransaction } from '$mp/modules/transactions/actions'
-import { putProduct } from '$mp/modules/deprecated/editProduct/services'
+import { putProduct } from '$mp/modules/product/services'
 
 export const publishModes = {
     REPUBLISH: 'republish', // live product update

@@ -12,7 +12,7 @@ import { Provider as RouterContextProvider } from '$shared/contexts/Router'
 import * as UndoContext from '$shared/contexts/Undo'
 import * as useModal from '$shared/hooks/useModal'
 import * as usePending from '$shared/hooks/usePending'
-import * as editProductServices from '$mp/modules/deprecated/editProduct/services'
+import * as editProductServices from '$mp/modules/product/services'
 import * as useEditableProductUpdater from '$mp/containers/ProductController/useEditableProductUpdater'
 
 const mockState = {

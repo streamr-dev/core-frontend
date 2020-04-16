@@ -13,7 +13,7 @@ import * as dataUnionServices from '$mp/modules/dataUnion/services'
 import * as publishServices from '$mp/modules/publish/services'
 import * as unpublishServices from '$mp/modules/unpublish/services'
 import * as transactionActions from '$mp/modules/transactions/actions'
-import * as editProductActions from '$mp/modules/deprecated/editProduct/services'
+import * as editProductActions from '$mp/modules/product/services'
 
 import { actionsTypes } from '../publishQueue'
 import { transactionStates, transactionTypes } from '$shared/utils/constants'

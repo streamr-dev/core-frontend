@@ -32,12 +32,6 @@ msgstr "Price, low to high"
 msgid "actionsDropdown##edit"
 msgstr "Edit"
 
-msgid "actionsDropdown##publish"
-msgstr "Publish"
-
-msgid "actionsDropdown##unpublish"
-msgstr "Unpublish"
-
 msgid "actionsDropdown##viewProduct"
 msgstr "View Product"
 

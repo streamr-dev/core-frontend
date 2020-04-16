@@ -14,12 +14,10 @@ type Props = {
     paymentCurrency: PaymentCurrency,
 }
 
-const availableCurrencies = process.env.NEW_MP_CONTRACT ? [
+const availableCurrencies = [
     paymentCurrencies.DATA,
     paymentCurrencies.ETH,
     paymentCurrencies.DAI,
-] : [
-    paymentCurrencies.DATA,
 ]
 
 const CurrencySelector = ({ onChange, paymentCurrency }: Props) => (
