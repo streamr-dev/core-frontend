@@ -10,7 +10,9 @@ import * as api from '$shared/utils/api'
 import SelectInput from '$ui/Select'
 import RadioButtonGroup from './RadioButtonGroup'
 import Button from '$shared/components/Button'
+import Checkbox from '$shared/components/Checkbox'
 import SvgIcon from '$shared/components/SvgIcon'
+import useUniqueId from '$shared/hooks/useUniqueId'
 import TextInput from '$ui/Text'
 import CopyLink from '$userpages/components/ShareDialog/ShareDialogContent/CopyLink'
 import * as State from './state'
@@ -99,13 +101,15 @@ function InputNewShare({ onChange }) {
         onChange(value)
         setValue('')
     }, [value, onChange])
+    const uid = useUniqueId('InputNewShare')
 
     return (
         <div className={styles.InputNewShare}>
+            <label htmlFor={uid}>{I18n.t('auth.labels.address')}</label>
             <TextInput
+                id={uid}
                 className={styles.input}
                 placeholder={I18n.t('modal.shareResource.enterEmailAddress')}
-                label={I18n.t('auth.labels.address')}
                 value={value}
                 onChange={onChangeValue}
             />
@@ -164,10 +168,10 @@ function UserPermissions({
             <div className={styles.permissionsCheckboxes}>
                 {Object.entries(userPermissions).map(([permission, value]) => (
                     <React.Fragment key={permission}>
-                        <input
+                        <Checkbox
+                            className={styles.checkbox}
                             id={`permission${permission}`}
-                            type="checkbox"
-                            checked={value}
+                            value={value}
                             onChange={() => updatePermission(userId, {
                                 [permission]: !value,
                             })}
@@ -301,11 +305,14 @@ const ShareSidebar = connect(({ user }) => ({
         ...oldUserIdList,
     ].map((userId) => [userId, editableUsers[userId]])
 
+    const uid = useUniqueId('ShareSidebar')
+
     return (
         <div className={styles.root}>
-            <div className={cx(styles.row, styles.cell)}>
+            <div className={cx(styles.row, styles.cell, styles.anonAccessSelect)}>
+                <label htmlFor={`${uid}AnonAccessSelect`}>{I18n.t('modal.shareResource.anonymousAccess')}</label>
                 <SelectInput
-                    label={I18n.t('modal.shareResource.anonymousAccess')}
+                    inputId={`${uid}AnonAccessSelect`}
                     name="name"
                     options={opts}
                     value={anonymousPermissions.read ? opts[1] : opts[0]}

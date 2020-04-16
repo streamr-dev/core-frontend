@@ -2,7 +2,7 @@ import React, { useRef, useContext, useCallback, useLayoutEffect, useEffect } fr
 import { createPortal } from 'react-dom'
 import cx from 'classnames'
 import { useSelectionContext, SelectionProvider } from '$shared/hooks/useSelection'
-import useUniqueId from '$editor/shared/hooks/useUniqueId'
+import useUniqueId from '$shared/hooks/useUniqueId'
 import styles from './CanvasWindow.pcss'
 
 export const CanvasWindowContext = React.createContext()
