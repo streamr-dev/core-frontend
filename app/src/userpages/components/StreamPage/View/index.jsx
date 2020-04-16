@@ -149,7 +149,7 @@ const View = ({ stream, currentUser }: any) => {
         <Layout>
             <Body>
                 <Title>
-                    {console.log(stream) || stream.name}
+                    {stream.name}
                 </Title>
                 <BusStop id="details" />
                 <Details>
