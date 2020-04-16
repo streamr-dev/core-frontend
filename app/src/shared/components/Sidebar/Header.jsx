@@ -5,7 +5,7 @@ import cx from 'classnames'
 
 import SvgIcon from '$shared/components/SvgIcon'
 
-import styles from './sidebar.pcss'
+import styles from './Sidebar.pcss'
 
 export type Props = {
     onClose: () => void,

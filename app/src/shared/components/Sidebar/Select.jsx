@@ -4,7 +4,7 @@ import React from 'react'
 import ReactSelect, { components } from 'react-select'
 import SvgIcon from '$shared/components/SvgIcon'
 
-import styles from './sidebar.pcss'
+import styles from './Sidebar.pcss'
 
 export type Props = {
     placeholder?: string,

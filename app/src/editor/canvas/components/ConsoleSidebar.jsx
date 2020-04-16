@@ -5,7 +5,7 @@ import sortBy from 'lodash/sortBy'
 import scrollIntoView from 'smooth-scroll-into-view-if-needed'
 
 import SvgIcon from '$shared/components/SvgIcon'
-import { Header, Content } from '$editor/shared/components/Sidebar'
+import { Header, Content } from '$shared/components/Sidebar'
 import { Translate } from 'react-redux-i18n'
 import * as CanvasState from '../state'
 import * as CanvasMessages from '../state/messages'

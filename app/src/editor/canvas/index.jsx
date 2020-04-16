@@ -16,7 +16,7 @@ import links from '../../links'
 import routes from '$routes'
 
 import { findNonOverlappingPositionForModule } from '$editor/shared/utils/bounds'
-import isEditableElement from '$editor/shared/utils/isEditableElement'
+import isEditableElement from '$shared/utils/isEditableElement'
 import UndoControls from '$editor/shared/components/UndoControls'
 import Button from '$shared/components/Button'
 import * as UndoContext from '$shared/contexts/Undo'
@@ -26,11 +26,11 @@ import * as SubscriptionStatus from '$shared/contexts/SubscriptionStatus'
 import { Provider as ClientProvider } from '$shared/contexts/StreamrClient'
 import * as sharedServices from '$editor/shared/services'
 import BodyClass from '$shared/components/BodyClass'
-import Sidebar from '$editor/shared/components/Sidebar'
+import Sidebar from '$shared/components/Sidebar'
 import { useCanvasSelection, SelectionProvider } from './components/CanvasController/useCanvasSelection'
 import ModuleSidebar from './components/ModuleSidebar'
 import ConsoleSidebar from './components/ConsoleSidebar'
-import ShareSidebar from './components/ShareSidebar'
+import ShareSidebar from '$userpages/components/ShareSidebar'
 import KeyboardShortcutsSidebar from './components/KeyboardShortcutsSidebar'
 import { CameraProvider, cameraControl } from './components/Camera'
 import { useCanvasCameraEffects } from './hooks/useCanvasCamera'
@@ -50,6 +50,7 @@ import CanvasStatus, { CannotSaveStatus } from '$editor/shared/components/Status
 import ModuleSearch from './components/ModuleSearch'
 import EmbedToolbar from './components/EmbedToolbar'
 import ResourceNotFoundError from '$shared/errors/ResourceNotFoundError'
+import SidebarProvider, { SidebarContext } from '$shared/components/Sidebar/SidebarProvider'
 
 import useCanvasNotifications, { pushErrorNotification, pushWarningNotification } from './hooks/useCanvasNotifications'
 
@@ -470,7 +471,9 @@ const CanvasEditComponent = class CanvasEdit extends PureComponent {
                             {sidebar.isOpen('share') && (
                                 <ShareSidebar
                                     onClose={() => sidebar.close('share')}
-                                    canvas={canvas}
+                                    resourceTitle={canvas.name}
+                                    resourceType="CANVAS"
+                                    resourceId={canvas.id}
                                 />
                             )}
                         </Sidebar>
@@ -485,63 +488,6 @@ const CanvasEditComponent = class CanvasEdit extends PureComponent {
             </div>
         )
     }
-}
-
-const SidebarContext = React.createContext()
-
-function SidebarProvider({ children }) {
-    const [currentSidebar, setCurrentSidebar] = React.useState()
-
-    const openSidebar = React.useCallback((sidebarName, doOpen = true) => {
-        setCurrentSidebar(doOpen ? sidebarName : undefined)
-    }, [])
-
-    const closeSidebar = React.useCallback((sidebarName) => {
-        setCurrentSidebar((currentSidebar) => {
-            if (sidebarName) {
-                // close if matching
-                if (currentSidebar === sidebarName) { return undefined }
-                // do nothing if no match
-                return currentSidebar
-            }
-            // close if no sidebar specified
-            return undefined
-        })
-    }, [])
-
-    const toggleSidebar = React.useCallback((sidebarName) => {
-        setCurrentSidebar((currentSidebar) => {
-            if (currentSidebar === sidebarName) { return undefined }
-            return sidebarName
-        })
-    }, [])
-
-    const isOpen = React.useCallback((sidebarName) => {
-        if (sidebarName) {
-            return currentSidebar === sidebarName
-        }
-        return currentSidebar != null
-    }, [currentSidebar])
-
-    const sidebarContext = React.useMemo(() => ({
-        current: currentSidebar,
-        open: openSidebar,
-        close: closeSidebar,
-        toggle: toggleSidebar,
-        isOpen,
-    }), [
-        currentSidebar,
-        openSidebar,
-        closeSidebar,
-        toggleSidebar,
-        isOpen,
-    ])
-
-    return (
-        <SidebarContext.Provider value={sidebarContext}>
-            {children}
-        </SidebarContext.Provider>
-    )
 }
 
 const CanvasEdit = withRouter((props) => {
