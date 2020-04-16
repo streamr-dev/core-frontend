@@ -3,10 +3,10 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { type Match } from 'react-router-dom'
-import { getStream, getMyStreamPermissions } from '$userpages/modules/userPageStreams/actions'
+import { getStream, getMyStreamPermissions, openStream } from '$userpages/modules/userPageStreams/actions'
 import { handleLoadError } from '$auth/utils/loginInterceptor'
 import { NotificationIcon } from '$shared/utils/constants'
-import { selectPermissions, selectFetching } from '$userpages/modules/userPageStreams/selectors'
+import { selectPermissions, selectFetching, selectOpenStream } from '$userpages/modules/userPageStreams/selectors'
 import Notification from '$shared/utils/Notification'
 import ResourceNotFoundError from '$shared/errors/ResourceNotFoundError'
 import useFailure from '$shared/hooks/useFailure'
@@ -31,12 +31,17 @@ const StreamPage = (props: Props) => {
 
     const readOnly = !permissions || !permissions.some((p) => p === 'write')
 
+    const stream = useSelector(selectOpenStream)
+
     useEffect(() => {
         const fetch = async () => {
             try {
                 try {
                     await Promise.all([
-                        dispatch(getStream(id)),
+                        (async () => {
+                            await dispatch(getStream(id))
+                            dispatch(openStream(id))
+                        })(),
                         dispatch(getMyStreamPermissions(id)),
                     ])
                 } catch (e) {
@@ -58,14 +63,14 @@ const StreamPage = (props: Props) => {
         fetch()
     }, [fail, dispatch, id])
 
-    if (fetching) {
+    if (fetching || !stream) {
         return (
             <Layout loading />
         )
     }
 
     return readOnly ? (
-        <View />
+        <View stream={stream} />
     ) : (
         'editable'
     )

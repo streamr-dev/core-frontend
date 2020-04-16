@@ -2,11 +2,14 @@
 
 import React from 'react'
 import styled, { css } from 'styled-components'
+import { Translate, I18n } from 'react-redux-i18n'
 import Layout from '$shared/components/Layout/Core'
 import Label from '$ui/Label'
 import UnstyledText from '$ui/Text'
 import { REGULAR, MEDIUM } from '$shared/utils/styled'
 import Preview from '../Edit/PreviewView'
+import { getSecurityLevelConfig } from '../Edit/SecurityView'
+import { convertFromStorageDays } from '../Edit/HistoryView'
 
 const BusStop = () => null
 
@@ -98,11 +101,13 @@ const Section = styled(UnstyledSection)`
 const Field = styled.div`
     display: flex;
 
-    > ${Text} {
+    > * {
         width: 80px;
     }
 
+    > ${Label} + ${Label},
     > ${Text} + * {
+        flex-shrink: 0;
         width: 176px;
     }
 
@@ -113,6 +118,7 @@ const Field = styled.div`
             width: 100%;
         }
 
+        > ${Label} + ${Label},
         > ${Text} + * {
             width: 128px;
         }
@@ -129,74 +135,91 @@ const Field = styled.div`
     `}
 `
 
-const View = () => (
-    <Layout>
-        <Body>
-            <Title>
-                Matt’s First Stream
-            </Title>
-            <BusStop id="details" />
-            <Details>
-                <Detail title="Description">
-                    All the data from my Tesla, really
-                    <br />
-                    All the data from my Tesla, really
-                </Detail>
-            </Details>
-            <Details>
-                <Detail title="Stream ID">
-                    Krmfa_5QRaa6SCCMdN1HdA
-                </Detail>
-                <Detail title="Partitions">
-                    1
-                </Detail>
-            </Details>
-            <Section title="Preview">
-                <Preview currentUser={null} stream={null} />
-            </Section>
-            <Section title="Security">
-                <p>
-                    <strong>No data security enforced.</strong>
-                    {' '}
-                    This setting is flexible, but doesn’t give
-                    subscribers any guarantees about data authenticity. Network nodes can read any
-                    unencrypted data. This setting is suitable for testing, unimportant data, or if
-                    publishers cannot use cryptography.
-                </p>
-            </Section>
-            <Section title="Fields">
-                <Field head>
-                    <Label>Field name</Label>
-                    <Label>Data type</Label>
-                </Field>
-                <Field>
-                    <Text disabled value="Price" readOnly />
-                    <Text disabled value="Number" readOnly />
-                </Field>
-                <Field>
-                    <Text disabled value="Price" readOnly />
-                    <Text disabled value="Number" readOnly />
-                </Field>
-            </Section>
-            <Section title="Historical Data">
-                <Label>Stored data</Label>
-                <Field>
-                    <Text value="No stored data. Drop a CSV file here to load some" readOnly disabled />
-                    <div />
-                </Field>
-                <Label>Delete data up to and including</Label>
-                <Field>
-                    <Text value="Select date" readOnly disabled />
-                    <div />
-                </Field>
-                <Label>Period to retain historical data until auto-removal</Label>
-                <Field narrow>
-                    <Text value="1" readOnly disabled centered />
-                    <Text value="Hour" readOnly disabled />
-                </Field>
-            </Section>
-        </Body>
-    </Layout>
-)
+const SecurityLevel = ({ stream }: any) => {
+    const { shortDescription, longDescription } = getSecurityLevelConfig(stream)
+    return (
+        <p>
+            <Translate value={shortDescription} tag="strong" />
+            {' '}
+            <Translate value={longDescription} />
+        </p>
+    )
+}
+
+const View = ({ stream }: any) => {
+    const { amount: storagePeriod, unit } = convertFromStorageDays(stream.storageDays)
+    return (
+        <Layout>
+            <Body>
+                <Title>
+                    {console.log(stream) || stream.name}
+                </Title>
+                <BusStop id="details" />
+                <Details>
+                    <Detail title="Description">
+                        {stream.description}
+                    </Detail>
+                </Details>
+                <Details>
+                    <Detail title="Stream ID">
+                        {stream.id}
+                    </Detail>
+                    <Detail title="Partitions">
+                        {stream.partitions}
+                    </Detail>
+                </Details>
+                <Section title="Preview">
+                    <Preview currentUser={null} stream={stream} />
+                </Section>
+                <Section title="Security">
+                    <SecurityLevel stream={stream} />
+                </Section>
+                <Section title="Fields">
+                    <Field head>
+                        <Label>Field name</Label>
+                        <Label>Data type</Label>
+                    </Field>
+                    {stream.config.fields.map(({ name, type }) => (
+                        <Field key={name}>
+                            <Text disabled value={name} readOnly />
+                            <Text
+                                disabled
+                                value={I18n.t(`userpages.streams.fieldTypes.${type}`)}
+                                readOnly
+                            />
+                        </Field>
+                    ))}
+                </Section>
+                <Section title="Historical Data">
+                    <Label>Stored data</Label>
+                    <Field>
+                        <Text
+                            value="No stored data. Drop a CSV file here to load some"
+                            readOnly
+                            disabled
+                        />
+                        <div />
+                    </Field>
+                    <Label>Delete data up to and including</Label>
+                    <Field>
+                        <Text value="Select date" readOnly disabled />
+                        <div />
+                    </Field>
+                    <Label>Period to retain historical data until auto-removal</Label>
+                    <Field narrow>
+                        <Text value={storagePeriod} readOnly disabled centered />
+                        <Text
+                            value={I18n.t(`shared.date.${unit.replace(/s$/, '')}`, {
+                                count: stream.storageDays,
+                            })}
+                            readOnly
+                            disabled
+                        />
+                    </Field>
+                </Section>
+            </Body>
+        </Layout>
+    )
+}
 
 export default View
