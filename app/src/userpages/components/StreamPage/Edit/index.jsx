@@ -2,7 +2,7 @@
 
 import React, { Component, useRef, useCallback, useEffect } from 'react'
 import { connect } from 'react-redux'
-import { I18n } from 'react-redux-i18n'
+import { I18n, Translate } from 'react-redux-i18n'
 import { push } from 'connected-react-router'
 import { withRouter } from 'react-router-dom'
 import MediaQuery from 'react-responsive'
@@ -251,6 +251,13 @@ export class StreamShowView extends Component<Props, State> {
                         id="preview"
                         title={I18n.t('userpages.streams.edit.details.nav.preview')}
                     >
+                        <Translate
+                            value="userpages.streams.edit.preview.description"
+                            className={styles.longText}
+                            tag="p"
+                            dangerousHTML
+                            docsLink={routes.docsGettingStarted()}
+                        />
                         <PreviewView
                             stream={editedStream}
                             currentUser={currentUser}

@@ -32,13 +32,6 @@ const PreviewView = ({ stream, currentUser }: Props) => {
 
     return (
         <ClientProvider>
-            <Translate
-                value="userpages.streams.edit.preview.description"
-                className={styles.longText}
-                tag="p"
-                dangerousHTML
-                docsLink={routes.docsGettingStarted()}
-            />
             <div
                 className={styles.previewContainer}
             >
