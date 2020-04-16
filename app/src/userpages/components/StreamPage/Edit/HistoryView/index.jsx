@@ -74,7 +74,7 @@ const DropTarget = ({ mouseOver }: { mouseOver: boolean }) => (
     </div>
 )
 
-const convertFromStorageDays = (days: number) => {
+export const convertFromStorageDays = (days: number) => {
     let amount = days
     let unit = 'days'
 
