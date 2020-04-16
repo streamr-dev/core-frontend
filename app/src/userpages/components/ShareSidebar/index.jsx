@@ -112,6 +112,7 @@ function InputNewShare({ onChange }) {
                 placeholder={I18n.t('modal.shareResource.enterEmailAddress')}
                 value={value}
                 onChange={onChangeValue}
+                autoComplete="email"
             />
             <Button
                 kind="secondary"
