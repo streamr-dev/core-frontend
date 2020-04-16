@@ -159,7 +159,7 @@ export function addUser(users, userId, permissions = {}) {
 }
 
 export function removeUser(users, userId) {
-    if (!users[userId]) { return users } // no user
+    if (!(userId in users)) { return users } // no user
     const nextUsers = Object.assign({}, users)
     delete nextUsers[userId]
     return nextUsers

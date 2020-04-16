@@ -43,10 +43,10 @@ describe('ShareSidebar Permission Handling', () => {
         const newUserId = 'test@test.com'
         let users = State.usersFromPermissions(resourceType, permissions)
         users = State.addUser(users, newUserId, {})
-        expect(users[newUserId]).toBeTruthy()
+        expect(newUserId in users).toBeTruthy()
         users = State.removeUser(users, newUserId)
-        expect(users[newUserId]).not.toBeTruthy() // new user gone
-        expect(users[user.username]).toBeTruthy() // original user still around
+        expect(newUserId in users).not.toBeTruthy() // new user gone
+        expect(user.username in users).toBeTruthy() // original user still around
     })
 
     it('can update permissions', () => {

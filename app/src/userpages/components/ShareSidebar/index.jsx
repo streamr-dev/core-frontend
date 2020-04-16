@@ -220,11 +220,12 @@ const ShareSidebar = connect(({ user }) => ({
         setCurrentUsers((prevUsers) => (
             State.addUser(prevUsers, userId, State.getPermissionsForGroupName(resourceType, 'default'))
         ))
-        // add user to start of array, remove before adding to start if already in array
+        // add user to start of new users, remove before adding to start if already in array
         setNewUserIdList((ids) => [userId, ...ids.filter((id) => id !== userId)])
     }, [setCurrentUsers, resourceType])
 
     const removeUser = useCallback((userId) => {
+        setNewUserIdList((ids) => ids.filter((id) => id !== userId)) // remove user from new users list
         setCurrentUsers((prevUsers) => State.removeUser(prevUsers, userId))
     }, [setCurrentUsers])
 
