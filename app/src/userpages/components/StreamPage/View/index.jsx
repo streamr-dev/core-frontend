@@ -7,7 +7,7 @@ import Layout from '$shared/components/Layout/Core'
 import Label from '$ui/Label'
 import UnstyledText from '$ui/Text'
 import { REGULAR, MEDIUM } from '$shared/utils/styled'
-import Preview from '../Edit/PreviewView'
+import Preview, { Controls } from '../Edit/PreviewView'
 import { getSecurityLevelConfig } from '../Edit/SecurityView'
 import { convertFromStorageDays } from '../Edit/HistoryView'
 
@@ -25,6 +25,11 @@ const Body = styled.div`
 
     strong {
         font-weight: ${MEDIUM};
+    }
+
+    ${Controls} {
+        border: solid #ebebeb;
+        border-width: 0 1px 1px;
     }
 `
 
