@@ -24,7 +24,7 @@ export const addFreeProduct = async (id: ProductId, endsAt: number): ApiResult<n
 const marketplaceContractMethods = () => getContract(getConfig().marketplace).methods
 const uniswapAdaptorContractMethods = () => getContract(getConfig().uniswapAdaptor).methods
 const ONE_DAY = '86400'
-const SLIP_ALLOWED = 0.05
+const SLIP_ALLOWED = 0.1
 
 // subscriptionWithSlip
 // When paying with ETH or DAI the DATA/ETH and DATA/DAI ratios may be volatile, especially during
