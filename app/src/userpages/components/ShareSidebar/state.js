@@ -108,7 +108,6 @@ const PERMISSION_GROUPS = {
             get: true,
             edit: true,
             interact: true,
-            startstop: true,
         },
         owner: getFullPermissions('DASHBOARD'),
         custom: {},
