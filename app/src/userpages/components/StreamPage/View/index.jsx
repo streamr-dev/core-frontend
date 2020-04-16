@@ -135,19 +135,11 @@ const Field = styled.div`
     `}
 `
 
-const SecurityLevel = ({ stream }: any) => {
-    const { shortDescription, longDescription } = getSecurityLevelConfig(stream)
-    return (
-        <p>
-            <Translate value={shortDescription} tag="strong" />
-            {' '}
-            <Translate value={longDescription} />
-        </p>
-    )
-}
-
-const View = ({ stream }: any) => {
+const View = ({ stream, currentUser }: any) => {
     const { amount: storagePeriod, unit } = convertFromStorageDays(stream.storageDays)
+
+    const { shortDescription, longDescription } = getSecurityLevelConfig(stream)
+
     return (
         <Layout>
             <Body>
@@ -169,10 +161,14 @@ const View = ({ stream }: any) => {
                     </Detail>
                 </Details>
                 <Section title="Preview">
-                    <Preview currentUser={null} stream={stream} />
+                    <Preview currentUser={currentUser} stream={stream} />
                 </Section>
                 <Section title="Security">
-                    <SecurityLevel stream={stream} />
+                    <p>
+                        <Translate value={shortDescription} tag="strong" />
+                        {' '}
+                        <Translate value={longDescription} />
+                    </p>
                 </Section>
                 <Section title="Fields">
                     <Field head>
