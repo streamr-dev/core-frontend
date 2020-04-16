@@ -1,11 +1,18 @@
 import assert from 'assert-diff'
 import sinon from 'sinon'
 import moxios from 'moxios'
+import { cloneDeep } from 'lodash'
+
+import { existingProduct } from './mockData'
 
 import * as all from '$mp/modules/product/services'
 import * as utils from '$mp/utils/smartContract'
 import * as getWeb3 from '$shared/web3/web3Provider'
 import * as productUtils from '$mp/utils/product'
+
+const mockFile = new File(['test'], 'test.jpg', {
+    type: 'image/jpeg',
+})
 
 describe('product - services', () => {
     let sandbox
@@ -215,5 +222,65 @@ describe('product - services', () => {
             assert(getIdSpy.calledOnce)
             assert(getIdSpy.calledWith(productId, false))
         })
+    })
+
+    it('puts product', async () => {
+        process.env.STREAMR_API_URL = 'TEST_API_URL'
+        const data = cloneDeep(existingProduct)
+        const expectedResult = cloneDeep(existingProduct)
+        expectedResult.pricePerSecond = '1.898e-14'
+
+        moxios.wait(() => {
+            const request = moxios.requests.mostRecent()
+            request.respondWith({
+                status: 200,
+                response: data,
+            })
+
+            assert.equal(request.config.method, 'put')
+            assert.equal(request.config.url, `${process.env.STREAMR_API_URL}/products/${data.id}`)
+        })
+        const result = await all.putProduct(data, data.id)
+        assert.deepStrictEqual(result, expectedResult)
+    })
+
+    it('posts product', async () => {
+        process.env.STREAMR_API_URL = 'TEST_API_URL'
+        const data = cloneDeep(existingProduct)
+        const expectedResult = cloneDeep(existingProduct)
+        expectedResult.pricePerSecond = '1.898e-14'
+
+        moxios.wait(() => {
+            const request = moxios.requests.mostRecent()
+            request.respondWith({
+                status: 200,
+                response: data,
+            })
+
+            assert.equal(request.config.method, 'post')
+            assert.equal(request.config.url, `${process.env.STREAMR_API_URL}/products`)
+        })
+        const result = await all.postProduct(data)
+        assert.deepStrictEqual(result, expectedResult)
+    })
+
+    it('posts image', async () => {
+        process.env.STREAMR_API_URL = 'TEST_API_URL'
+        const data = cloneDeep(existingProduct)
+        const expectedResult = cloneDeep(existingProduct)
+        expectedResult.pricePerSecond = '1.898e-14'
+
+        moxios.wait(() => {
+            const request = moxios.requests.mostRecent()
+            request.respondWith({
+                status: 200,
+                response: data,
+            })
+
+            assert.equal(request.config.method, 'post')
+            assert.equal(request.config.url, `${process.env.STREAMR_API_URL}/products/${data.id}/images`)
+        })
+        const result = await all.postImage(data.id, mockFile)
+        assert.deepStrictEqual(result, expectedResult)
     })
 })

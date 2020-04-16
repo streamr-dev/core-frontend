@@ -9,7 +9,7 @@ import { Context as ValidationContext, ERROR } from '../ProductController/Valida
 import type { Product } from '$mp/flowtype/product-types'
 import { isDataUnionProduct } from '$mp/utils/product'
 import usePending from '$shared/hooks/usePending'
-import { putProduct, postImage } from '$mp/modules/deprecated/editProduct/services'
+import { putProduct, postImage } from '$mp/modules/product/services'
 import { selectDataUnion } from '$mp/modules/dataUnion/selectors'
 import { selectProduct } from '$mp/modules/product/selectors'
 import useIsMounted from '$shared/hooks/useIsMounted'

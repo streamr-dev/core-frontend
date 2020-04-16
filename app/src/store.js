@@ -16,17 +16,13 @@ import entitiesReducer from '$shared/modules/entities/reducer'
 import userReducer from '$shared/modules/user/reducer'
 import integrationKeyReducer from '$shared/modules/integrationKey/reducer'
 import resourceKeyReducer from '$shared/modules/resourceKey/reducer'
-import purchaseDialogReducer from './marketplace/modules/deprecated/purchaseDialog/reducer'
-import publishDialogReducer from './marketplace/modules/deprecated/publishDialog/reducer'
 import purchaseReducer from './marketplace/modules/purchase/reducer'
-import saveProductReducer from './marketplace/modules/deprecated/saveProductDialog/reducer'
 import publishReducer from './marketplace/modules/publish/reducer'
 import unpublishReducer from './marketplace/modules/unpublish/reducer'
 import createContractProductReducer from './marketplace/modules/createContractProduct/reducer'
 import updateContractProductReducer from './marketplace/modules/updateContractProduct/reducer'
 import allowanceReducer from './marketplace/modules/allowance/reducer'
 import streamsReducer from './marketplace/modules/streams/reducer'
-import editProductReducer from './marketplace/modules/deprecated/editProduct/reducer'
 import web3Reducer from './marketplace/modules/web3/reducer'
 import globalReducer from './marketplace/modules/global/reducer'
 import relatedProductsReducer from './marketplace/modules/relatedProducts/reducer'
@@ -55,7 +51,6 @@ export function initStore() {
             dataUnion: dataUnionReducer,
             createContractProduct: createContractProductReducer,
             updateContractProduct: updateContractProductReducer,
-            editProduct: editProductReducer,
             entities: entitiesReducer,
             global: globalReducer,
             myProductList: myProductsReducer,
@@ -64,10 +59,7 @@ export function initStore() {
             productList: productsReducer,
             publish: publishReducer,
             unpublish: unpublishReducer,
-            publishDialog: publishDialogReducer,
             purchase: purchaseReducer,
-            purchaseDialog: purchaseDialogReducer,
-            saveProductDialog: saveProductReducer,
             router: connectRouter(history),
             streams: streamsReducer,
             user: userReducer,
