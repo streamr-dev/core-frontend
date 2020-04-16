@@ -1,5 +1,7 @@
 // @flow
 
+import withErrorBoundary from '$shared/utils/withErrorBoundary'
+import ErrorComponentView from '$shared/components/ErrorComponentView'
 import React, { type Node } from 'react'
 import cx from 'classnames'
 
@@ -16,4 +18,8 @@ const Content = ({ children, className }: Props) => (
     </div>
 )
 
-export default Content
+export default withErrorBoundary((props) => (
+    <Content {...props}>
+        <ErrorComponentView {...props} />
+    </Content>
+))(Content)
