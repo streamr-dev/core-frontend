@@ -15,7 +15,7 @@ import type { PaymentCurrency } from '$shared/flowtype/common-types'
 
 declare var ethereum: Web3
 
-const UNISWAP_SAFETY_MARGIN = 1
+const UNISWAP_SAFETY_MARGIN = 1.05
 const ETH = '0x0000000000000000000000000000000000000000'
 const DAI = process.env.DAI_TOKEN_CONTRACT_ADDRESS
 const DATA = process.env.DATA_TOKEN_CONTRACT_ADDRESS

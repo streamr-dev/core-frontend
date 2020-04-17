@@ -24,13 +24,6 @@ export const addFreeProduct = async (id: ProductId, endsAt: number): ApiResult<n
 const marketplaceContractMethods = () => getContract(getConfig().marketplace).methods
 const uniswapAdaptorContractMethods = () => getContract(getConfig().uniswapAdaptor).methods
 const ONE_DAY = '86400'
-const SLIP_ALLOWED = 0.1
-
-// subscriptionWithSlip
-// When paying with ETH or DAI the DATA/ETH and DATA/DAI ratios may be volatile, especially during
-// high usage on the Ethereum network. We accept a slip of SLIP_ALLOWED to ensure that the final transaction
-// is provided with enough DATA coin for the subscription.
-const subscriptionWithSlip = (subscriptionInSeconds) => String(Number(subscriptionInSeconds) * (1 - SLIP_ALLOWED))
 
 export const buyProduct = (
     id: ProductId,
@@ -46,7 +39,7 @@ export const buyProduct = (
         case paymentCurrencies.ETH:
             return send(uniswapAdaptorContractMethods().buyWithETH(
                 getValidId(id),
-                subscriptionWithSlip(subscriptionInSeconds.toString()),
+                subscriptionInSeconds.toString(),
                 ONE_DAY,
             ), {
                 gas: gasLimits.BUY_PRODUCT_WITH_ETH,
@@ -55,7 +48,7 @@ export const buyProduct = (
         case paymentCurrencies.DAI:
             return send(uniswapAdaptorContractMethods().buyWithERC20(
                 getValidId(id),
-                subscriptionWithSlip(subscriptionInSeconds.toString()),
+                subscriptionInSeconds.toString(),
                 ONE_DAY,
                 DAI,
                 web3.utils.toWei(daiPrice.toString()).toString(),
