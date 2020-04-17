@@ -14,6 +14,7 @@ import ProductDescription from './ProductDescription'
 import ProductStreams from './ProductStreams'
 import PriceSelector from './PriceSelector'
 import ProductDetails from './ProductDetails'
+import Whitelist from './Whitelist'
 import ConnectEthIdentity from './ConnectEthIdentity'
 import SharedSecrets from './SharedSecrets'
 import TermsOfUse from './TermsOfUse'
@@ -43,6 +44,7 @@ const Editor = ({ disabled }: Props) => {
                         <PriceSelector disabled={disabled} />
                         <ProductDetails disabled={disabled} />
                         <TermsOfUse disabled={disabled} />
+                        <Whitelist disabled={disabled} />
                         <ConnectEthIdentity disabled={disabled} />
                         {!!isDataUnion && (
                             <SharedSecrets disabled={disabled} />

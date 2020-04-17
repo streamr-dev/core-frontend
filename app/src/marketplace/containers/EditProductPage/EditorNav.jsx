@@ -154,6 +154,10 @@ const EditorNav = () => {
             id: 'details',
             heading: I18n.t('editProductPage.navigation.details'),
             status: detailsStatus,
+        }, {
+            id: 'whitelist',
+            heading: I18n.t('editProductPage.navigation.whitelist'),
+            status: getStatus('whitelist'),
         },
         ...includeIf(!!showConnectEthIdentity, [{
             id: 'connect-eth-identity',
