@@ -11,6 +11,7 @@ jest.mock('$shared/web3/abis/uniswapAdaptor', () => (['u_test', 'u_values', 'u_o
 
 describe('config', () => {
     let oldEnv
+
     describe('building the config', () => {
         beforeEach(() => {
             oldEnv = {
