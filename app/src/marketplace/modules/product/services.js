@@ -6,7 +6,7 @@ import { getContract, call } from '../../utils/smartContract'
 import getConfig from '$shared/web3/config'
 
 import type { ApiResult } from '$shared/flowtype/common-types'
-import type { Product, ProductId, Subscription, EditProduct, ProductType } from '$mp/flowtype/product-types'
+import type { Product, ProductId, Subscription, ProductType } from '$mp/flowtype/product-types'
 import type { SmartContractCall, Hash } from '$shared/flowtype/web3-types'
 import type { StreamList } from '$shared/flowtype/stream-types'
 import { getValidId, mapProductFromApi, mapProductToPostApi, mapProductToPutApi } from '$mp/utils/product'
@@ -69,7 +69,7 @@ export const getUserProductPermissions = async (id: ProductId): ApiResult<Object
     }
 }
 
-export const putProduct = (data: EditProduct, id: ProductId): ApiResult<Product> => put({
+export const putProduct = (data: Product, id: ProductId): ApiResult<Product> => put({
     url: formatApiUrl('products', id),
     data: mapProductToPutApi(data),
 })
@@ -93,7 +93,7 @@ export const postEmptyProduct = (type: ProductType): ApiResult<Product> => {
         .then(mapProductFromApi)
 }
 
-export const postImage = (id: ProductId, image: File): ApiResult<EditProduct> => {
+export const postImage = (id: ProductId, image: File): ApiResult<Product> => {
     const options = {
         headers: {
             'Content-Type': 'multipart/form-data',
