@@ -5,17 +5,26 @@ import { useDispatch } from 'react-redux'
 
 import type { Product } from '$mp/flowtype/product-types'
 import { productStates, transactionStates, transactionTypes } from '$shared/utils/constants'
-import { getProductFromContract } from '$mp/modules/contractProduct/services'
+import {
+    getProductFromContract,
+    createContractProduct,
+    updateContractProduct,
+    deleteProduct,
+    redeployProduct,
+} from '$mp/modules/contractProduct/services'
+import {
+    putProduct,
+    postUndeployFree,
+    postSetUndeploying,
+    postDeployFree,
+    postSetDeploying,
+} from '$mp/modules/product/services'
 import { getDataUnionOwner, getAdminFee, setAdminFee } from '$mp/modules/dataUnion/services'
 import { getPendingChanges, withPendingChanges } from './state'
 import { isUpdateContractProductRequired } from '$mp/utils/smartContract'
 import PublishQueue, { actionsTypes } from './publishQueue'
 import { isPaidProduct } from '$mp/utils/product'
-import { postSetDeploying, postDeployFree, redeployProduct } from '$mp/modules/publish/services'
-import { postSetUndeploying, postUndeployFree, deleteProduct } from '$mp/modules/unpublish/services'
-import { createContractProduct, updateContractProduct } from '$mp/modules/createContractProduct/services'
 import { addTransaction } from '$mp/modules/transactions/actions'
-import { putProduct } from '$mp/modules/product/services'
 
 export const publishModes = {
     REPUBLISH: 'republish', // live product update

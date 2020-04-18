@@ -7,7 +7,7 @@ import getConfig from '$shared/web3/config'
 
 import type { ApiResult } from '$shared/flowtype/common-types'
 import type { Product, ProductId, Subscription, EditProduct, ProductType } from '$mp/flowtype/product-types'
-import type { SmartContractCall } from '$shared/flowtype/web3-types'
+import type { SmartContractCall, Hash } from '$shared/flowtype/web3-types'
 import type { StreamList } from '$shared/flowtype/stream-types'
 import { getValidId, mapProductFromApi, mapProductToPostApi, mapProductToPutApi } from '$mp/utils/product'
 import { getProductFromContract } from '$mp/modules/contractProduct/services'
@@ -109,3 +109,29 @@ export const postImage = (id: ProductId, image: File): ApiResult<EditProduct> =>
         options,
     }).then(mapProductFromApi)
 }
+
+export const postUndeployFree = async (id: ProductId): ApiResult<Product> => post({
+    url: formatApiUrl('products', getValidId(id, false), 'undeployFree'),
+})
+    .then(mapProductFromApi)
+
+export const postSetUndeploying = async (id: ProductId, txHash: Hash): ApiResult<Product> => post({
+    url: formatApiUrl('products', getValidId(id, false), 'setUndeploying'),
+    data: {
+        transactionHash: txHash,
+    },
+}).then(mapProductFromApi)
+
+export const postDeployFree = async (id: ProductId): ApiResult<Product> => post({
+    url: formatApiUrl('products', getValidId(id, false), 'deployFree'),
+})
+    .then(mapProductFromApi)
+
+export const postSetDeploying = async (id: ProductId, txHash: Hash): ApiResult<Product> => (
+    post({
+        url: formatApiUrl('products', getValidId(id, false), 'setDeploying'),
+        data: {
+            transactionHash: txHash,
+        },
+    }).then(mapProductFromApi)
+)

@@ -17,10 +17,6 @@ import userReducer from '$shared/modules/user/reducer'
 import integrationKeyReducer from '$shared/modules/integrationKey/reducer'
 import resourceKeyReducer from '$shared/modules/resourceKey/reducer'
 import purchaseReducer from './marketplace/modules/purchase/reducer'
-import publishReducer from './marketplace/modules/publish/reducer'
-import unpublishReducer from './marketplace/modules/unpublish/reducer'
-import createContractProductReducer from './marketplace/modules/createContractProduct/reducer'
-import updateContractProductReducer from './marketplace/modules/updateContractProduct/reducer'
 import allowanceReducer from './marketplace/modules/allowance/reducer'
 import streamsReducer from './marketplace/modules/streams/reducer'
 import web3Reducer from './marketplace/modules/web3/reducer'
@@ -49,16 +45,12 @@ export function initStore() {
             categories: categoriesReducer,
             contractProduct: contractProductReducer,
             dataUnion: dataUnionReducer,
-            createContractProduct: createContractProductReducer,
-            updateContractProduct: updateContractProductReducer,
             entities: entitiesReducer,
             global: globalReducer,
             myProductList: myProductsReducer,
             myPurchaseList: myPurchasesReducer,
             product: productReducer,
             productList: productsReducer,
-            publish: publishReducer,
-            unpublish: unpublishReducer,
             purchase: purchaseReducer,
             router: connectRouter(history),
             streams: streamsReducer,

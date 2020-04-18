@@ -12,7 +12,7 @@ import { Provider as RouterContextProvider } from '$shared/contexts/Router'
 import * as UndoContext from '$shared/contexts/Undo'
 import * as useModal from '$shared/hooks/useModal'
 import * as usePending from '$shared/hooks/usePending'
-import * as editProductServices from '$mp/modules/product/services'
+import * as productServices from '$mp/modules/product/services'
 import * as useEditableProductUpdater from '$mp/containers/ProductController/useEditableProductUpdater'
 
 const mockState = {
@@ -326,7 +326,7 @@ describe('EditControllerProvider', () => {
                     return result
                 },
             }))
-            const putProductStub = sandbox.stub(editProductServices, 'putProduct').callsFake(() => Promise.resolve({
+            const putProductStub = sandbox.stub(productServices, 'putProduct').callsFake(() => Promise.resolve({
                 ...product,
             }))
 
@@ -380,7 +380,7 @@ describe('EditControllerProvider', () => {
                     return result
                 },
             }))
-            const putProductStub = sandbox.stub(editProductServices, 'putProduct').callsFake(() => Promise.resolve({
+            const putProductStub = sandbox.stub(productServices, 'putProduct').callsFake(() => Promise.resolve({
                 ...product,
             }))
 
@@ -433,11 +433,11 @@ describe('EditControllerProvider', () => {
             sandbox.stub(useEditableProductUpdater, 'default').callsFake(() => ({
                 replaceProduct: (fn) => replaceProductStub(fn(product)),
             }))
-            const postImageStub = sandbox.stub(editProductServices, 'postImage').callsFake(() => Promise.resolve({
+            const postImageStub = sandbox.stub(productServices, 'postImage').callsFake(() => Promise.resolve({
                 imageUrl: 'imageUrl',
                 thumbnailUrl: 'thumbnailUrl',
             }))
-            const putProductStub = sandbox.stub(editProductServices, 'putProduct').callsFake(() => Promise.resolve({
+            const putProductStub = sandbox.stub(productServices, 'putProduct').callsFake(() => Promise.resolve({
                 ...product,
             }))
 
@@ -497,7 +497,7 @@ describe('EditControllerProvider', () => {
                     return result
                 },
             }))
-            const putProductStub = sandbox.stub(editProductServices, 'putProduct').callsFake(() => Promise.resolve({
+            const putProductStub = sandbox.stub(productServices, 'putProduct').callsFake(() => Promise.resolve({
                 ...product,
             }))
 
@@ -606,7 +606,7 @@ describe('EditControllerProvider', () => {
                     open: modalOpenStub,
                 },
             }))
-            sandbox.stub(editProductServices, 'putProduct').callsFake(() => Promise.resolve({
+            sandbox.stub(productServices, 'putProduct').callsFake(() => Promise.resolve({
                 ...product,
             }))
 
@@ -674,7 +674,7 @@ describe('EditControllerProvider', () => {
                     open: modalOpenStub,
                 },
             }))
-            sandbox.stub(editProductServices, 'putProduct').callsFake(() => Promise.resolve({
+            sandbox.stub(productServices, 'putProduct').callsFake(() => Promise.resolve({
                 ...product,
             }))
             const replaceProductStub = sandbox.stub()
@@ -751,7 +751,7 @@ describe('EditControllerProvider', () => {
                     open: modalOpenStub,
                 },
             }))
-            sandbox.stub(editProductServices, 'putProduct').callsFake(() => Promise.resolve({
+            sandbox.stub(productServices, 'putProduct').callsFake(() => Promise.resolve({
                 ...product,
             }))
             const replaceProductStub = sandbox.stub()
@@ -828,7 +828,7 @@ describe('EditControllerProvider', () => {
                     open: modalOpenStub,
                 },
             }))
-            sandbox.stub(editProductServices, 'putProduct').callsFake(() => Promise.resolve({
+            sandbox.stub(productServices, 'putProduct').callsFake(() => Promise.resolve({
                 ...product,
             }))
             const replaceProductStub = sandbox.stub()
@@ -906,7 +906,7 @@ describe('EditControllerProvider', () => {
                     open: modalOpenStub,
                 },
             }))
-            sandbox.stub(editProductServices, 'putProduct').callsFake(() => Promise.resolve({
+            sandbox.stub(productServices, 'putProduct').callsFake(() => Promise.resolve({
                 ...product,
             }))
             const replaceProductStub = sandbox.stub()
@@ -983,7 +983,7 @@ describe('EditControllerProvider', () => {
                     open: modalOpenStub,
                 },
             }))
-            sandbox.stub(editProductServices, 'putProduct').callsFake(() => Promise.resolve({
+            sandbox.stub(productServices, 'putProduct').callsFake(() => Promise.resolve({
                 ...product,
             }))
             const replaceProductStub = sandbox.stub()
@@ -1107,7 +1107,7 @@ describe('EditControllerProvider', () => {
                     open: modalOpenStub,
                 },
             }))
-            const putProductStub = sandbox.stub(editProductServices, 'putProduct').callsFake(() => Promise.resolve({
+            const putProductStub = sandbox.stub(productServices, 'putProduct').callsFake(() => Promise.resolve({
                 ...product,
             }))
 
@@ -1175,7 +1175,7 @@ describe('EditControllerProvider', () => {
                     open: modalOpenStub,
                 },
             }))
-            const putProductStub = sandbox.stub(editProductServices, 'putProduct').callsFake((p) => (
+            const putProductStub = sandbox.stub(productServices, 'putProduct').callsFake((p) => (
                 Promise.resolve({
                     ...p,
                 })

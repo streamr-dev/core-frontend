@@ -156,14 +156,6 @@ export type PublishState = {
     setDeployingError: ?ErrorInUi,
 }
 
-// Create or update contract product
-export type ModifyContractProductState = {
-    productId: ?ProductId,
-    processing: boolean,
-    error: ?ErrorInUi,
-    modifyTx: ?Hash,
-}
-
 // Allowance
 export type AllowanceState = {
     // DATA
@@ -220,7 +212,6 @@ export type StoreState = {
     categories: CategoryState,
     contractProduct: ContractProductState,
     dataUnion: DataUnionState,
-    createContractProduct: ModifyContractProductState,
     editProduct: EditProductState,
     global: GlobalState,
     myProductList: MyProductListState,
@@ -235,7 +226,6 @@ export type StoreState = {
     saveProductDialog: SaveProductDialogState,
     relatedProducts: RelatedProductListState,
     streams: StreamsState,
-    updateContractProduct: ModifyContractProductState,
     web3: Web3State,
     transactions: TransactionsState,
 }
