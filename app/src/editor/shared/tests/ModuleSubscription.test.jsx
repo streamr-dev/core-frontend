@@ -2,9 +2,9 @@ import React from 'react'
 import { mount } from 'enzyme'
 
 import { setupAuthorizationHeader, loadModuleDefinition } from '$editor/shared/tests/utils'
-import api from '$editor/shared/utils/api'
 import { ClientProviderComponent, createClient } from '$shared/contexts/StreamrClient'
 import ModuleSubscription from '$editor/shared/components/ModuleSubscription'
+import SessionProvider from '$auth/components/SessionProvider'
 import * as State from '$editor/canvas/state'
 import * as Services from '$editor/canvas/services'
 
@@ -18,7 +18,7 @@ function wait(delay) {
 
 describe('Canvas Subscriptions', () => {
     let teardown
-    let apiKey
+    let sessionToken
 
     beforeAll(async () => {
         teardown = await setupAuthorizationHeader()
@@ -29,15 +29,14 @@ describe('Canvas Subscriptions', () => {
     })
 
     beforeAll(async () => {
-        const [key] = await api().get(`${process.env.STREAMR_API_URL}/users/me/keys`).then(({ data }) => data)
-        apiKey = key.id
+        sessionToken = SessionProvider.token()
     })
 
     describe('create subscription', () => {
         let client
 
         async function setup() {
-            client = await createClient(apiKey)
+            client = await createClient(sessionToken)
             client.on('error', throwError)
         }
 
@@ -68,7 +67,7 @@ describe('Canvas Subscriptions', () => {
             const messages = []
 
             const result = mount((
-                <ClientProviderComponent apiKey={apiKey}>
+                <ClientProviderComponent sessionToken={sessionToken}>
                     <ModuleSubscription
                         module={runningTable}
                         onMessage={(message) => {
@@ -103,7 +102,7 @@ describe('Canvas Subscriptions', () => {
             const messages = []
 
             const result = mount((
-                <ClientProviderComponent apiKey={apiKey}>
+                <ClientProviderComponent sessionToken={sessionToken}>
                     <ModuleSubscription
                         module={canvas.modules.find((m) => m.name === 'Table')}
                         onMessage={(message) => {
