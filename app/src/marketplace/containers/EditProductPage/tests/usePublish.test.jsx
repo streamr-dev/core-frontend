@@ -371,7 +371,7 @@ describe('usePublish', () => {
 
                 expect(startedFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_FREE)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_FREE, transactionStates.FAILED, error)
-                expect(readyFn).not.toHaveBeenCalledWith(actionsTypes.PUBLISH_FREE)
+                expect(readyFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_FREE)
                 expect(finishFn).toHaveBeenCalled()
             })
 
@@ -474,7 +474,7 @@ describe('usePublish', () => {
 
                 expect(startedFn).toHaveBeenCalledWith(actionsTypes.UNPUBLISH_FREE)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.UNPUBLISH_FREE, transactionStates.FAILED, error)
-                expect(readyFn).not.toHaveBeenCalledWith(actionsTypes.UNPUBLISH_FREE)
+                expect(readyFn).toHaveBeenCalledWith(actionsTypes.UNPUBLISH_FREE)
                 expect(finishFn).toHaveBeenCalled()
             })
 
@@ -898,6 +898,110 @@ describe('usePublish', () => {
                 expect(addTransactionStub.calledWith(hash2, transactionTypes.REDEPLOY_PRODUCT)).toBe(true)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT, transactionStates.PENDING)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT, transactionStates.CONFIRMED)
+                expect(readyFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT)
+                expect(statusFn).toHaveBeenCalledWith(actionsTypes.REDEPLOY_PAID, transactionStates.PENDING)
+                expect(statusFn).toHaveBeenCalledWith(actionsTypes.REDEPLOY_PAID, transactionStates.CONFIRMED)
+                expect(readyFn).toHaveBeenCalledWith(actionsTypes.REDEPLOY_PAID)
+                expect(finishFn).toHaveBeenCalled()
+            })
+
+            it('gives an error if contract update throws an error before starting', async () => {
+                let publish
+                function Test() {
+                    publish = usePublish()
+                    return null
+                }
+
+                mount((
+                    <Test />
+                ))
+
+                const contractProduct = {
+                    id: '1',
+                    pricePerSecond: BN(1),
+                    ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
+                    beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
+                    priceCurrency: 'DATA',
+                    minimumSubscriptionInSeconds: '0',
+                }
+                sandbox.stub(contractProductServices, 'getProductFromContract').callsFake(() => Promise.resolve(contractProduct))
+
+                const product = {
+                    id: '1',
+                    name: 'Name',
+                    state: 'NOT_DEPLOYED',
+                    isFree: false,
+                    ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
+                    priceCurrency: 'DATA',
+                    minimumSubscriptionInSeconds: '0',
+                    pricePerSecond: BN(2),
+                    beneficiaryAddress: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10',
+                }
+                const result = await publish.publish(product)
+
+                expect(result.mode).toBe(publishModes.REDEPLOY)
+                expect(result.queue).toBeTruthy()
+                expect(result.queue.getActions().map(({ id }) => id)).toStrictEqual([
+                    actionsTypes.UPDATE_CONTRACT_PRODUCT,
+                    actionsTypes.REDEPLOY_PAID,
+                ])
+                expect(result.queue.needsWeb3()).toBe(true)
+                expect(result.queue.needsOwner()).toStrictEqual(['0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0'])
+
+                const emitter1 = new EventEmitter()
+                const tx1 = new Transaction(emitter1)
+                const hash1 = 'test'
+                const receipt1 = {
+                    transactionHash: hash1,
+                }
+
+                const updateError = new Error('update failed')
+
+                const updateContractStub = sandbox.stub(createContractProductServices, 'updateContractProduct').callsFake(() => {
+                    throw updateError
+                })
+                const redeployStub = sandbox.stub(publishServices, 'redeployProduct').callsFake(() => tx1)
+                const addTransactionStub = sandbox.stub(transactionActions, 'addTransaction')
+                const postSetDeployingStub = sandbox.stub(publishServices, 'postSetDeploying').callsFake(() => Promise.resolve())
+
+                const startedFn = jest.fn()
+                const statusFn = jest.fn()
+                const readyFn = jest.fn()
+                const finishFn = jest.fn()
+
+                result.queue
+                    .subscribe('started', startedFn)
+                    .subscribe('status', statusFn)
+                    .subscribe('ready', readyFn)
+                    .subscribe('finish', finishFn)
+
+                const txPromise = new Promise((resolve) => {
+                    setTimeout(() => {
+                        emitter1.emit('transactionHash', hash1)
+                    }, 200)
+                    setTimeout(() => {
+                        emitter1.emit('receipt', receipt1)
+                        resolve()
+                    }, 400)
+                })
+
+                await Promise.all([
+                    txPromise,
+                    result.queue.start(),
+                ])
+
+                expect(startedFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT)
+                expect(startedFn).toHaveBeenCalledWith(actionsTypes.REDEPLOY_PAID)
+                expect(updateContractStub.calledWith({
+                    ...contractProduct,
+                    pricePerSecond: product.pricePerSecond,
+                    beneficiaryAddress: product.beneficiaryAddress,
+                    priceCurrency: product.priceCurrency,
+                })).toBe(true)
+                expect(redeployStub.calledWith('1')).toBe(true)
+                expect(postSetDeployingStub.calledWith('1')).toBe(true)
+                expect(addTransactionStub.calledWith(hash1, transactionTypes.REDEPLOY_PRODUCT)).toBe(true)
+                expect(statusFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT, transactionStates.FAILED, updateError)
                 expect(readyFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.REDEPLOY_PAID, transactionStates.PENDING)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.REDEPLOY_PAID, transactionStates.CONFIRMED)
