@@ -32,49 +32,6 @@ export const BusStop = ({ name }) => {
     return <div ref={ref} />
 }
 
-// export const Link = ({
-//     tag: Tag = 'a',
-//     href,
-//     to,
-//     onClick: onClickProp,
-//     ...props
-// }) => {
-//     const { wheelRef, stop, setStop, defaultStop } = useBusLine()
-
-//     const history = useHistory()
-
-//     const onClick = useCallback((e) => {
-//         const el = document.getElementById(to)
-
-//         if (el) {
-//             e.preventDefault()
-
-//             wheelRef.current = false
-
-//             setStop(to)
-
-//             history.push({
-//                 hash: to === defaultStop ? null : to,
-//             })
-
-//             scrollTo(el)
-//         }
-
-//         if (onClickProp) {
-//             onClickProp(e)
-//         }
-//     }, [to, onClickProp, history, defaultStop, setStop, wheelRef])
-
-//     return (
-//         <Tag
-//             {...props}
-//             active={to === stop}
-//             href={`#${to}`}
-//             onClick={onClick}
-//         />
-//     )
-// }
-
 const BusLine = ({ children = null, dynamicScrollPosition }) => {
     const [refs, setRefs] = useState([])
 
