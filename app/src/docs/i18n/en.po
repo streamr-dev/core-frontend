@@ -1,5 +1,8 @@
 msgid "docs##search##noResults"
 msgstr "Please try a different search or ask on our"
 
+msgid "docs##search##noResultsFoundFor"
+msgstr "No results found for "
+
 msgid "docs##search##noResultsSuffix"
 msgstr "instead."

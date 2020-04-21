@@ -81,15 +81,15 @@ class Navigation extends React.Component<Props, State> {
     toggleExpand = () => {
         this.scrollTop()
 
-        this.setState({
-            compressed: !this.state.compressed,
-        })
+        this.setState(({ compressed }) => ({
+            compressed: !compressed,
+        }))
     }
 
     toggleOverlay = () => {
-        this.setState({
-            isSearching: !this.state.isSearching,
-        })
+        this.setState(({ isSearching }) => ({
+            isSearching: !isSearching,
+        }))
     }
 
     render() {

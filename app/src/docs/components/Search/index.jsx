@@ -19,26 +19,33 @@ type Props = {
     toggleOverlay: () => void,
 }
 
+const SNIPPET_CHAR_LENGTH = 180
+const CHARS_BEFORE_MATCH_LENGTH = 50
+const CHARS_AFTER_MATCH_LENGTH = 130
+
 const generateTextSnippet = (text, matchPosition, startHighlight, endHighlight) => {
-    let textSnippet = ''
+    let textSnippet = text.slice(0, SNIPPET_CHAR_LENGTH)
 
-    if (matchPosition < 50 && text.length < 180) {
-        textSnippet = text.slice(0, text.length)
-    } else if (matchPosition < 50 && text.length > 180) {
-        textSnippet = `${text.slice(0, 177)}...`
-    } else if (text.length > 180) {
-        // start 50 characters earlier than the match
-        const startChar = matchPosition - 47 // 3 diff for 3 dots
-        const endChar = matchPosition + 127
-
+    if (matchPosition < CHARS_BEFORE_MATCH_LENGTH && text.length > SNIPPET_CHAR_LENGTH) {
+        textSnippet = `${text.slice(0, SNIPPET_CHAR_LENGTH - 3)}...` //  - 3 for 3 ...
+    } else if (text.length > SNIPPET_CHAR_LENGTH) {
+        const startChar = matchPosition - (CHARS_BEFORE_MATCH_LENGTH - 3) //  - 3 for 3 ...
+        const endChar = matchPosition + (CHARS_AFTER_MATCH_LENGTH - 3) //  - 3 for 3 ...
         textSnippet = text.slice(startChar, endChar)
         textSnippet = `...${textSnippet}...`
-    } else {
-        textSnippet = text
     }
 
-    textSnippet = [textSnippet.slice(0, endHighlight), '</span>', textSnippet.slice(endHighlight)].join('')
-    textSnippet = [textSnippet.slice(0, startHighlight), '<span class="highlight">', textSnippet.slice(startHighlight)].join('')
+    textSnippet = [
+        textSnippet.slice(0, endHighlight),
+        '</span>',
+        textSnippet.slice(endHighlight),
+    ].join('')
+
+    textSnippet = [
+        textSnippet.slice(0, startHighlight),
+        '<span class="highlight">',
+        textSnippet.slice(startHighlight),
+    ].join('')
 
     return textSnippet
 }
@@ -55,16 +62,16 @@ const getHighlightCoords = (text, matchPosition, matchLength) => {
     return [startHighlight, endHighlight]
 }
 
-const formatSearchResults = (results: Object): Array<any> => {
+const formatSearchResults = (results: Object) => {
     if (!results.length) { return [] }
 
-    return results.map((result) => {
+    return results.slice(0, 10).map((result) => {
         const { content, matchData } = result
         const [matchPosition, matchLength] = matchData
-        const text = String(content).replace(/\n/g, ' ')
+        const trimmedText = String(content).replace(/\n/g, ' ')
 
-        const [startHighlight, endHighlight] = getHighlightCoords(text, matchPosition, matchLength)
-        const textSnippet = generateTextSnippet(text, matchPosition, startHighlight, endHighlight)
+        const [startHighlight, endHighlight] = getHighlightCoords(trimmedText, matchPosition, matchLength)
+        const textSnippet = generateTextSnippet(trimmedText, matchPosition, startHighlight, endHighlight)
 
         return {
             ...result,
@@ -130,25 +137,25 @@ const Search = ({ toggleOverlay }: Props) => {
                 </div>
                 <div className={styles.searchResults}>
                     <ul>
-                        {formatSearchResults(searchResults).map((result, resultIndex) => (
-                            resultIndex <= 10
-                                ? (
-                                    <li key={result.id}>
-                                        <Link onClick={resultClick} className={styles.resultHeading} to={result.id}>
-                                            {result.title}
-                                        </Link>
-                                        <RawHtml className={styles.searchResultSnippet}>
-                                            {result.textSnippet}
-                                        </RawHtml>
-                                        <span className={styles.resultSection}>
-                                            {result.section}
-                                        </span>
-                                    </li>)
-                                : null
+                        {formatSearchResults(searchResults).map((result) => (
+                            <li key={result.id}>
+                                <Link onClick={resultClick} className={styles.resultHeading} to={result.id}>
+                                    {result.title}
+                                </Link>
+                                <RawHtml className={styles.searchResultSnippet}>
+                                    {result.textSnippet}
+                                </RawHtml>
+                                <span className={styles.resultSection}>
+                                    {result.section}
+                                </span>
+                            </li>
                         ))}
                         {!searchResults.length && !!query.length && (
                             <React.Fragment>
-                                <p className={styles.noResults}>No results found for <strong>{query}</strong></p>
+                                <p className={styles.noResults}>
+                                    <Translate value="docs.search.noResultsFoundFor" tag="span" />
+                                    <strong> {query}</strong>
+                                </p>
                                 <p className={styles.noResultsMoreInfo}>
                                     <Translate value="docs.search.noResults" tag="span" />
                                     <br className={styles.mobileOnlyBreak} />
