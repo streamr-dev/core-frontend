@@ -5,6 +5,7 @@ import { useHistory, useLocation } from 'react-router-dom'
 import scrollEventOptions from '$shared/utils/scrollEventOptions'
 import getScrollY from '$shared/utils/getScrollY'
 import scrollTo from '$shared/utils/scrollTo'
+import useIsMounted from '$shared/hooks/useIsMounted'
 
 const BusLineContext = createContext({
     link: () => {},
@@ -32,6 +33,10 @@ export const BusStop = ({ name }) => {
     return <div ref={ref} />
 }
 
+const getTop = (el) => (
+    el ? el.getBoundingClientRect().top : 0
+)
+
 const BusLine = ({ children = null, dynamicScrollPosition }) => {
     const [refs, setRefs] = useState([])
 
@@ -56,26 +61,26 @@ const BusLine = ({ children = null, dynamicScrollPosition }) => {
 
     const [stop, setStop] = useState()
 
-    const wheelRef = useRef(false)
+    const flags = useRef({
+        wheel: false,
+        mouseDown: true,
+    })
 
+    // Window resize effect responsible for updating bus stop positions in the new resized world.
     useEffect(() => {
-        const top = (el) => (
-            el ? el.getBoundingClientRect().top : 0
-        )
-
         const onResize = () => {
             setPositions(() => {
                 if (!document.body) {
                     return []
                 }
 
-                const bodyTop = top(document.body)
+                const bodyTop = getTop(document.body)
 
                 return refs
                     .reduce((memo, [name, { current: el }]) => (
                         el ? [
                             ...memo,
-                            [name, top(el) - bodyTop],
+                            [name, getTop(el) - bodyTop],
                         ] : memo
                     ), [])
                     .sort(([, a], [, b]) => b - a)
@@ -93,55 +98,55 @@ const BusLine = ({ children = null, dynamicScrollPosition }) => {
 
     useEffect(() => {
         const onWheel = () => {
-            wheelRef.current = true
+            flags.current.wheel = true
         }
 
+        const onMouseDown = () => {
+            flags.current.mouseDown = true
+            flags.current.wheel = false
+        }
+
+        window.addEventListener('mousedown', onMouseDown)
         window.addEventListener('wheel', onWheel)
 
         return () => {
             window.removeEventListener('wheel', onWheel)
+            window.removeEventListener('mousedown', onMouseDown)
         }
     }, [])
 
-    const mouseDownRef = useRef(true)
+    const isMounted = useIsMounted()
 
+    // Effect responsible for organic scrolling events. Programmatic scrolling is ignored by
+    // the handlers.
     useEffect(() => {
         let scrolled = false
 
         const touchScroll = () => {
-            if (!document.body) {
-                return
+            if (document.body && isMounted() && flags.current.wheel) {
+                const scrollY = getScrollY()
+                const { innerHeight: windowHeight } = window
+                const documentHeight = document.body.scrollHeight
+                const guideY = scrollY + (dynamicScrollPosition ? (
+                    Math.floor(windowHeight * (scrollY / (documentHeight - windowHeight)))
+                ) : (
+                    0
+                ))
+
+                const [name] = positions.find(([, posY]) => posY < guideY) || [defaultStop]
+
+                setStop(name)
             }
-
-            const scrollY = getScrollY()
-            const { innerHeight: windowHeight } = window
-            const documentHeight = document.body.scrollHeight
-            const guideY = scrollY + (dynamicScrollPosition ? (
-                Math.floor(windowHeight * (scrollY / (documentHeight - windowHeight)))
-            ) : (
-                0
-            ))
-
-            const [name] = positions.find(([, posY]) => posY < guideY) || [defaultStop]
-
-            setStop(name)
-
             scrolled = false
         }
 
         const onScroll = () => {
-            mouseDownRef.current = false
+            flags.current.mouseDown = false
 
             if (!scrolled) {
                 scrolled = true
 
-                window.requestAnimationFrame(() => {
-                    if (wheelRef.current) {
-                        touchScroll()
-                    } else {
-                        scrolled = false
-                    }
-                })
+                window.requestAnimationFrame(touchScroll)
             }
         }
 
@@ -150,25 +155,15 @@ const BusLine = ({ children = null, dynamicScrollPosition }) => {
         return () => {
             window.removeEventListener('scroll', onScroll, scrollEventOptions)
         }
-    }, [defaultStop, dynamicScrollPosition, positions])
+    }, [defaultStop, dynamicScrollPosition, positions, isMounted])
 
     const { hash } = useLocation()
 
+    // Updates current step and smooth-scrolls to it. Applied ONLY to hash changes being a result
+    // of link clicks. It's also responsible for silent scrolling to current location hash
+    // on page load.
     useEffect(() => {
-        const onMouseDown = () => {
-            mouseDownRef.current = true
-            wheelRef.current = false
-        }
-
-        window.addEventListener('mousedown', onMouseDown)
-
-        return () => {
-            window.removeEventListener('mousedown', onMouseDown)
-        }
-    }, [])
-
-    useEffect(() => {
-        if (!mouseDownRef.current) {
+        if (!flags.current.mouseDown) {
             return
         }
 
@@ -183,8 +178,10 @@ const BusLine = ({ children = null, dynamicScrollPosition }) => {
 
     const history = useHistory()
 
+    // Updates location hash without storing it in the history. Applied ONLY to organic
+    // scrolling (non-programmatic).
     useEffect(() => {
-        if (!wheelRef.current) {
+        if (!flags.current.wheel) {
             return
         }
 
@@ -196,10 +193,9 @@ const BusLine = ({ children = null, dynamicScrollPosition }) => {
     const value = useMemo(() => ({
         defaultStop,
         link,
-        stop: stop || defaultStop,
         setStop,
+        stop: stop || defaultStop,
         unlink,
-        wheelRef,
     }), [
         defaultStop,
         link,
