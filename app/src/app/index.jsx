@@ -41,7 +41,6 @@ import links from '../links'
 import history from '../history'
 import '../analytics'
 
-import AutoScroll from '$shared/components/AutoScroll'
 import LocaleSetter from '$mp/containers/LocaleSetter'
 import NotFoundPage from '$shared/components/NotFoundPage'
 import GoogleAnalyticsTracker from '$mp/components/GoogleAnalyticsTracker'
@@ -97,7 +96,6 @@ const App = () => (
             <ModalPortalProvider>
                 <ModalProvider>
                     <LocaleSetter />
-                    <AutoScroll />
                     <Analytics />
                     <Switch>
                         {AuthenticationRouter()}
