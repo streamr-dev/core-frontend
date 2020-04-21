@@ -73,7 +73,7 @@ export const transactionTypes = {
 export const gasLimits = {
     DEFAULT: 3e5,
     CREATE_PRODUCT: 4e5,
-    UPDATE_PRODUCT: 4e5,
+    UPDATE_PRODUCT: 3e5,
     BUY_PRODUCT: 3e5,
     BUY_PRODUCT_WITH_ETH: 5e5,
     BUY_PRODUCT_WITH_ERC20: 6e5,
