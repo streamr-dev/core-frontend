@@ -19,6 +19,10 @@
 
 .radio {
   display: none;
+
+  &:checked {
+    pointer-events: none;
+  }
 }
 
 .label {
@@ -26,7 +30,8 @@
   outline: none;
   cursor: pointer;
   user-select: none;
-  transition: background 100ms ease-in, color 50ms;
+  transition: all 100ms ease-in;
+  will-change: width, font-size, color, background;
   margin: 0;
   padding: 2px 4px;
   width: 100%;
@@ -46,4 +51,18 @@
 .radio:not(:checked) + .label:hover {
   color: #323232;
   background: #F2F1F1;
+}
+
+.onlyShowSelectedOption {
+  .radio:not(:checked),
+  .radio:not(:checked) + .label {
+    opacity: 0;
+  }
+
+  .radio:checked + .label {
+    width: auto;
+    font-size: 10px;
+    color: #525252;
+    background: #EFEFEF;
+  }
 }

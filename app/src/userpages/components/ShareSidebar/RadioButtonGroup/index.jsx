@@ -13,6 +13,7 @@ type Props = {
     className?: string,
     onChange?: (string, SyntheticEvent<>) => void,
     disabled?: boolean,
+    onlyShowSelectedOption?: boolean,
 }
 
 const RadioButtonGroup = ({
@@ -22,6 +23,7 @@ const RadioButtonGroup = ({
     className,
     onChange,
     disabled = false,
+    onlyShowSelectedOption = false,
 }: Props) => {
     const [selection, setSelection] = useState(selectedOption)
 
@@ -42,7 +44,11 @@ const RadioButtonGroup = ({
     }, [disabled, selection, onChange])
 
     return (
-        <div className={cx(styles.root, className)}>
+        <div
+            className={cx(styles.root, className, {
+                [styles.onlyShowSelectedOption]: onlyShowSelectedOption,
+            })}
+        >
             <div className={styles.inner}>
                 <div className={styles.buttonGrid}>
                     {options.map((option, index) => (

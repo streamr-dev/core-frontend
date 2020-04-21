@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import { Translate, I18n } from 'react-redux-i18n'
 import cx from 'classnames'
 import startCase from 'lodash/startCase'
+import { useSpring, animated } from 'react-spring'
 
 import * as api from '$shared/utils/api'
 import SelectInput from '$ui/Select'
@@ -17,6 +18,7 @@ import TextInput from '$ui/Text'
 import CopyLink from '$userpages/components/ShareDialog/ShareDialogContent/CopyLink'
 import * as State from './state'
 import styles from './ShareSidebar.pcss'
+import useMeasure from './useMeasure'
 
 const options = ['onlyInvited', 'withLink']
 
@@ -126,6 +128,14 @@ function InputNewShare({ onChange }) {
     )
 }
 
+function usePrevious(value) {
+    const ref = useRef()
+    useEffect(() => {
+        ref.current = value
+    }, [value])
+    return ref.current
+}
+
 function UserPermissions({
     resourceType,
     userId,
@@ -133,6 +143,8 @@ function UserPermissions({
     updatePermission,
     removeUser,
     className,
+    onSelect,
+    isSelected,
 }) {
     const detectedGroupName = State.findPermissionGroupName(resourceType, userPermissions)
     // custom handling:
@@ -141,8 +153,21 @@ function UserPermissions({
 
     const [isCustom, setIsCustom] = useState(detectedGroupName === 'custom')
     const selectedGroupName = (isCustom && detectedGroupName !== 'custom') ? 'custom' : detectedGroupName
+    const previousIsSelected = usePrevious(isSelected)
+
+    const [bind, { height }] = useMeasure()
+    const selectedHeight = previousIsSelected === isSelected ? 'auto' : height
+    const checkboxesStyle = useSpring({
+        height: isSelected ? selectedHeight : 0,
+    })
+    const permissionGroupOptions = Object.keys(State.getPermissionGroups(resourceType)).filter((name) => name !== 'default')
+
+    /* eslint-disable jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */
     return (
-        <div className={cx(styles.userPermissions, className)}>
+        <div
+            className={cx(styles.userPermissions, className)}
+            onClick={() => onSelect(userId)}
+        >
             <div className={styles.permissionsHeader}>
                 <h4>{userId}</h4>
                 <Button
@@ -155,7 +180,8 @@ function UserPermissions({
             </div>
             <RadioButtonGroup
                 name={`UserPermissions${userId}`}
-                options={Object.keys(State.getPermissionGroups(resourceType)).filter((name) => name !== 'default')}
+                options={permissionGroupOptions}
+                onlyShowSelectedOption={!isSelected}
                 onChange={(name) => {
                     if (name !== 'custom') {
                         updatePermission(userId, State.getPermissionsForGroupName(resourceType, name))
@@ -166,25 +192,28 @@ function UserPermissions({
                 }}
                 selectedOption={selectedGroupName}
             />
-            <div className={styles.permissionsCheckboxes}>
-                {Object.entries(userPermissions).map(([permission, value]) => (
-                    <React.Fragment key={permission}>
-                        <Checkbox
-                            className={styles.checkbox}
-                            id={`permission${permission}`}
-                            value={value}
-                            onChange={() => updatePermission(userId, {
-                                [permission]: !value,
-                            })}
-                        />
-                        <label htmlFor={`permission${permission}`}>
-                            {startCase(permission)}
-                        </label>
-                    </React.Fragment>
-                ))}
-            </div>
+            <animated.div className={styles.permissionsCheckboxesWrapper} style={checkboxesStyle}>
+                <animated.div {...bind} className={styles.permissionsCheckboxes}>
+                    {Object.entries(userPermissions).map(([permission, value]) => (
+                        <React.Fragment key={permission}>
+                            <Checkbox
+                                className={styles.checkbox}
+                                id={`permission${permission}`}
+                                value={value}
+                                onChange={() => updatePermission(userId, {
+                                    [permission]: !value,
+                                })}
+                            />
+                            <label htmlFor={`permission${permission}`}>
+                                {startCase(permission)}
+                            </label>
+                        </React.Fragment>
+                    ))}
+                </animated.div>
+            </animated.div>
         </div>
     )
+    /* eslint-enable jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */
 }
 
 function unsavedUnloadWarning(event) {
@@ -215,8 +244,10 @@ const ShareSidebar = connect(({ user }) => ({
 
     const [currentUsers, setCurrentUsers] = useState(users)
     const [newUserIdList, setNewUserIdList] = useState([])
+    const [selectedUserId, setSelectedUserId] = useState()
 
     const addUser = useCallback((userId) => {
+        setSelectedUserId(userId)
         // update state
         setCurrentUsers((prevUsers) => (
             State.addUser(prevUsers, userId, State.getPermissionsForGroupName(resourceType, 'default'))
@@ -337,6 +368,8 @@ const ShareSidebar = connect(({ user }) => ({
                         removeUser={removeUser}
                         updatePermission={updatePermission}
                         permissions={permissions}
+                        isSelected={selectedUserId === userId}
+                        onSelect={setSelectedUserId}
                     />
                 ))}
             </div>
