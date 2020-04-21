@@ -6,7 +6,6 @@ import { contractCurrencies as currencies, gasLimits } from '$shared/utils/const
 
 import type { SmartContractProduct } from '$mp/flowtype/product-types'
 import type { SmartContractTransaction } from '$shared/flowtype/web3-types'
-import type { Sendable } from '$mp/utils/smartContract'
 import {
     mapPriceToContract, validateProductPriceCurrency,
     validateContractProductPricePerSecond, getValidId,
@@ -14,7 +13,7 @@ import {
 
 const contractMethods = () => getContract(getConfig().marketplace).methods
 
-const createOrUpdateContractProduct = (method: (...any) => Sendable, product: SmartContractProduct): SmartContractTransaction => {
+export const createContractProduct = (product: SmartContractProduct): SmartContractTransaction => {
     const {
         id,
         name,
@@ -27,17 +26,42 @@ const createOrUpdateContractProduct = (method: (...any) => Sendable, product: Sm
     validateContractProductPricePerSecond(pricePerSecond)
     validateProductPriceCurrency(priceCurrency)
     const transformedPricePerSecond = mapPriceToContract(pricePerSecond)
-    const methodToSend =
-        method(getValidId(id), name, beneficiaryAddress, transformedPricePerSecond, currencyIndex, minimumSubscriptionInSeconds)
+    const methodToSend = contractMethods().createProduct(
+        getValidId(id),
+        name,
+        beneficiaryAddress,
+        transformedPricePerSecond,
+        currencyIndex,
+        minimumSubscriptionInSeconds,
+    )
     return send(methodToSend, {
         gas: gasLimits.CREATE_PRODUCT,
     })
 }
 
-export const createContractProduct = (product: SmartContractProduct): SmartContractTransaction => (
-    createOrUpdateContractProduct(contractMethods().createProduct, product)
-)
-
-export const updateContractProduct = (product: SmartContractProduct): SmartContractTransaction => (
-    createOrUpdateContractProduct(contractMethods().updateProduct, product)
-)
+export const updateContractProduct = (product: SmartContractProduct): SmartContractTransaction => {
+    const {
+        id,
+        name,
+        beneficiaryAddress,
+        pricePerSecond,
+        priceCurrency,
+        minimumSubscriptionInSeconds,
+    } = product
+    const currencyIndex = Object.keys(currencies).indexOf(priceCurrency)
+    validateContractProductPricePerSecond(pricePerSecond)
+    validateProductPriceCurrency(priceCurrency)
+    const transformedPricePerSecond = mapPriceToContract(pricePerSecond)
+    const methodToSend = contractMethods().updateProduct(
+        getValidId(id),
+        name,
+        beneficiaryAddress,
+        transformedPricePerSecond,
+        currencyIndex,
+        minimumSubscriptionInSeconds,
+        false,
+    )
+    return send(methodToSend, {
+        gas: gasLimits.UPDATE_PRODUCT,
+    })
+}
