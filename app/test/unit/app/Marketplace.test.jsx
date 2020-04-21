@@ -40,7 +40,6 @@ jest.mock('$shared/components/GenericErrorPage', () => ({
 
 describe('Marketplace Routes', () => {
     it('shows main page', () => {
-        process.env.NEW_MP_CONTRACT = 'on'
         const el = mount((
             <MemoryRouter
                 initialEntries={['/marketplace']}
@@ -55,7 +54,6 @@ describe('Marketplace Routes', () => {
     })
 
     it('shows product page', () => {
-        process.env.NEW_MP_CONTRACT = 'on'
         const el = mount((
             <MemoryRouter
                 initialEntries={['/marketplace/products/123']}
@@ -70,7 +68,6 @@ describe('Marketplace Routes', () => {
     })
 
     it('shows stream preview', () => {
-        process.env.NEW_MP_CONTRACT = 'on'
         const el = mount((
             <MemoryRouter
                 initialEntries={['/marketplace/products/123/streamPreview/stream456']}
@@ -85,7 +82,6 @@ describe('Marketplace Routes', () => {
     })
 
     it('shows new product page', () => {
-        process.env.NEW_MP_CONTRACT = 'on'
         const el = mount((
             <MemoryRouter
                 initialEntries={['/core/products/new']}
@@ -100,7 +96,6 @@ describe('Marketplace Routes', () => {
     })
 
     it('does not show previous new product page', () => {
-        process.env.NEW_MP_CONTRACT = 'on'
         const el = mount((
             <MemoryRouter
                 initialEntries={['/marketplace/products/create']}
@@ -116,7 +111,6 @@ describe('Marketplace Routes', () => {
     })
 
     it('does not show edit product page', () => {
-        process.env.NEW_MP_CONTRACT = 'on'
         const el = mount((
             <MemoryRouter
                 initialEntries={['/marketplace/products/123/edit']}
@@ -132,7 +126,6 @@ describe('Marketplace Routes', () => {
     })
 
     it('does not show publish route', () => {
-        process.env.NEW_MP_CONTRACT = 'on'
         const el = mount((
             <MemoryRouter
                 initialEntries={['/marketplace/products/123/publish']}
@@ -148,7 +141,6 @@ describe('Marketplace Routes', () => {
     })
 
     it('does not show purchase route', () => {
-        process.env.NEW_MP_CONTRACT = 'on'
         const el = mount((
             <MemoryRouter
                 initialEntries={['/marketplace/products/123/purchase']}
