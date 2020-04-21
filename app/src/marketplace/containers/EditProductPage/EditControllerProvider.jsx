@@ -14,7 +14,7 @@ import { selectDataUnion } from '$mp/modules/dataUnion/selectors'
 import { selectProduct } from '$mp/modules/product/selectors'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import Notification from '$shared/utils/Notification'
-import { NotificationIcon, productStates } from '$shared/utils/constants'
+import { NotificationIcon, productStates, contractCurrencies as currencies, DEFAULT_CURRENCY } from '$shared/utils/constants'
 import routes from '$routes'
 import useEditableProductActions from '../ProductController/useEditableProductActions'
 import { isEthereumAddress } from '$mp/utils/validate'
@@ -34,6 +34,8 @@ type ContextProps = {
     deployDataUnion: () => void | Promise<void>,
     lastSectionRef: any,
     publishAttempted: boolean,
+    preferredCurrency: $Values<typeof currencies>,
+    setPreferredCurrency: ($Values<typeof currencies>) => void,
 }
 
 const EditControllerContext: Context<ContextProps> = React.createContext({})
@@ -52,6 +54,7 @@ function useEditController(product: Product) {
     const { replaceProduct } = useEditableProductUpdater()
     const dataUnion = useSelector(selectDataUnion)
     const [publishAttempted, setPublishAttempted] = useState(false)
+    const [preferredCurrency, setPreferredCurrency] = useState(product.priceCurrency || DEFAULT_CURRENCY)
 
     useEffect(() => {
         const handleBeforeunload = (event) => {
@@ -289,6 +292,8 @@ function useEditController(product: Product) {
         deployDataUnion,
         lastSectionRef,
         publishAttempted,
+        preferredCurrency,
+        setPreferredCurrency,
     }), [
         isPreview,
         setIsPreview,
@@ -299,6 +304,8 @@ function useEditController(product: Product) {
         deployDataUnion,
         lastSectionRef,
         publishAttempted,
+        preferredCurrency,
+        setPreferredCurrency,
     ])
 }
 

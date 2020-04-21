@@ -168,7 +168,7 @@ describe('Product services', () => {
             }))
             all.createContractProduct(exampleProduct)
             assert(createProductSpy.calledOnce)
-            assert(createProductSpy.calledWith(
+            assert(createProductSpy.calledWithExactly(
                 '0x1234abcdef',
                 'Awesome Granite Sausages',
                 '0xaf16ea680090e81af0acf5e2664a19a37f5a3c43',
@@ -190,7 +190,7 @@ describe('Product services', () => {
                 priceCurrency: 'USD',
             })
             assert(createProductSpy.calledOnce)
-            assert(createProductSpy.calledWith(
+            assert(createProductSpy.calledWithExactly(
                 '0x1234abcdef',
                 'Awesome Granite Sausages',
                 '0xaf16ea680090e81af0acf5e2664a19a37f5a3c43',
@@ -350,18 +350,19 @@ describe('Product services', () => {
             sandbox.stub(utils, 'send')
             sandbox.stub(utils, 'getContract').callsFake(() => ({
                 methods: {
-                    createProduct: updateProductSpy,
+                    updateProduct: updateProductSpy,
                 },
             }))
-            all.createContractProduct(exampleProduct)
+            all.updateContractProduct(exampleProduct)
             assert(updateProductSpy.calledOnce)
-            assert(updateProductSpy.calledWith(
+            assert(updateProductSpy.calledWithExactly(
                 '0x1234abcdef',
                 'Awesome Granite Sausages',
                 '0xaf16ea680090e81af0acf5e2664a19a37f5a3c43',
                 '63000000000000000000',
                 0,
                 0,
+                false,
             ))
         })
         it('must call updateProductSpy with correct params (when USD)', () => {
@@ -369,21 +370,22 @@ describe('Product services', () => {
             sandbox.stub(utils, 'send')
             sandbox.stub(utils, 'getContract').callsFake(() => ({
                 methods: {
-                    createProduct: updateProductSpy,
+                    updateProduct: updateProductSpy,
                 },
             }))
-            all.createContractProduct({
+            all.updateContractProduct({
                 ...exampleProduct,
                 priceCurrency: 'USD',
             })
             assert(updateProductSpy.calledOnce)
-            assert(updateProductSpy.calledWith(
+            assert(updateProductSpy.calledWithExactly(
                 '0x1234abcdef',
                 'Awesome Granite Sausages',
                 '0xaf16ea680090e81af0acf5e2664a19a37f5a3c43',
                 '63000000000000000000',
                 1,
                 0,
+                false,
             ))
         })
     })

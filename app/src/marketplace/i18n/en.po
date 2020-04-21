@@ -177,19 +177,17 @@ msgid "editProductPage##sharedSecrets##addSecret"
 msgstr "Add shared secret"
 
 msgid "editProductPage##sharedSecrets##title"
-msgstr "Add a shared secrect"
+msgstr "Add a shared secret"
 
 msgid "editProductPage##sharedSecrets##notDeployed##description"
 msgstr ""
 "These settings are only available once you have deployed your product, and provides access control for your product. "
-"Create, name and revoke shared secrets them from here. "
-"For help with shared secrets, see the <a href=\"%{docsLink}\">docs</a>."
+"Create, name and revoke shared secrets them from here."
 
 msgid "editProductPage##sharedSecrets##deployed##description"
 msgstr ""
 "Shared secrets are the access control for your product. "
-"Create, name and revoke shared secrets from here. "
-"For help with shared secrets, see the <a href=\"%{docsLink}\">docs</a>."
+"Create, name and revoke shared secrets from here."
 
 msgid "editProductPage##navigation##name"
 msgstr "Name"

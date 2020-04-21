@@ -1,13 +1,13 @@
 // @flow
 
-import React, { useState, useCallback, useContext } from 'react'
+import React, { useCallback, useContext } from 'react'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { Translate } from 'react-redux-i18n'
 
 import { isDataUnionProduct } from '$mp/utils/product'
 import { usePending } from '$shared/hooks/usePending'
-import { contractCurrencies as currencies, DEFAULT_CURRENCY } from '$shared/utils/constants'
+import { contractCurrencies as currencies } from '$shared/utils/constants'
 import { selectDataPerUsd } from '$mp/modules/global/selectors'
 import RadioButtonGroup from '$shared/components/RadioButtonGroup'
 import SetPrice from '$mp/components/SetPrice'
@@ -21,6 +21,7 @@ import useEditableProductActions from '../ProductController/useEditableProductAc
 import { isPublished } from './state'
 import { Context as EditControllerContext } from './EditControllerProvider'
 import routes from '$routes'
+import { convert } from '$mp/utils/price'
 
 import BeneficiaryAddress from './BeneficiaryAddress'
 
@@ -28,15 +29,8 @@ import styles from './PriceSelector.pcss'
 
 const PriceSelector = () => {
     const product = useEditableProduct()
-    const { publishAttempted } = useContext(EditControllerContext)
-
-    const {
-        updateIsFree,
-        updatePrice,
-        updatePriceCurrency,
-        updateTimeUnit,
-        updateBeneficiaryAddress,
-    } = useEditableProductActions()
+    const { publishAttempted, preferredCurrency: currency, setPreferredCurrency: setCurrency } = useContext(EditControllerContext)
+    const { updateIsFree, updatePrice, updateBeneficiaryAddress } = useEditableProductActions()
     const dataPerUsd = useSelector(selectDataPerUsd)
     const { isPending: savePending } = usePending('product.SAVE')
     const { isPending: contractProductLoadPending } = usePending('contractProduct.LOAD')
@@ -45,23 +39,26 @@ const PriceSelector = () => {
     const isLoadingOrSaving = !!(savePending || contractProductLoadPending)
     const isPriceTypeDisabled = !!(isLoadingOrSaving || isPublic || !!contractProduct)
 
-    const [currency, setCurrency] = useState(product.priceCurrency || DEFAULT_CURRENCY)
-
     const onPriceTypeChange = useCallback((type) => {
         updateIsFree(type === 'Free')
     }, [updateIsFree])
 
     const onPriceChange = useCallback((p) => {
-        updatePrice(p)
-    }, [updatePrice])
+        const price = convert(p, dataPerUsd, currency, product.priceCurrency)
+        updatePrice(price, product.priceCurrency, product.timeUnit)
+    }, [updatePrice, dataPerUsd, currency, product.priceCurrency, product.timeUnit])
+
     const onTimeUnitChange = useCallback((t) => {
-        updateTimeUnit(t)
-    }, [updateTimeUnit])
+        updatePrice(product.price, product.priceCurrency, t)
+    }, [updatePrice, product.price, product.priceCurrency])
 
     const fixInFiat = product.priceCurrency === currencies.USD
+
     const onFixPriceChange = useCallback((checked) => {
-        updatePriceCurrency(checked ? currencies.USD : currencies.DATA)
-    }, [updatePriceCurrency])
+        const newCurrency = checked ? currencies.USD : currencies.DATA
+        const newPrice = convert(product.price, dataPerUsd, product.priceCurrency, newCurrency)
+        updatePrice(newPrice, newCurrency, product.timeUnit)
+    }, [updatePrice, product.price, product.priceCurrency, product.timeUnit, dataPerUsd])
 
     const isFreeProduct = !!product.isFree
     const isDataUnion = isDataUnionProduct(product)
@@ -96,7 +93,7 @@ const PriceSelector = () => {
                     <SetPrice
                         className={styles.priceSelector}
                         disabled={isFreeProduct || isLoadingOrSaving}
-                        price={product.price}
+                        price={convert(product.price, dataPerUsd, product.priceCurrency, currency)}
                         onPriceChange={onPriceChange}
                         currency={currency}
                         onCurrencyChange={setCurrency}
