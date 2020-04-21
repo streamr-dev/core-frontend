@@ -54,9 +54,9 @@ const getHighlightCoords = (text, matchPosition, matchLength) => {
     let startHighlight = matchPosition
     let endHighlight = matchPosition + matchLength
 
-    if (text.length > 180) {
-        startHighlight = 50
-        endHighlight = 50 + matchLength
+    if (text.length > SNIPPET_CHAR_LENGTH) {
+        startHighlight = CHARS_BEFORE_MATCH_LENGTH
+        endHighlight = CHARS_BEFORE_MATCH_LENGTH + matchLength
     }
 
     return [startHighlight, endHighlight]

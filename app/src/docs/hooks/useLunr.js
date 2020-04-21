@@ -10,6 +10,7 @@ const formatMatchData = (matchData) => {
     let matchLength = 0
 
     Object.values(matchData).forEach((match: Object, matchIndex: number) => {
+        // highlighting first match only (for now)
         if (matchIndex === 0) {
             const matches = Object.values(match)
             matches.forEach(({ content }: Object, contentIndex) => {
