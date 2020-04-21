@@ -44,40 +44,10 @@ const RadioButtonGroup = ({
         }
     }, [disabled, selection, onChange])
 
-    const buttonGridRef: Ref<HTMLDivElement> = useRef(null)
-    const [dimensions, setDimensions] = useState({})
-    useLayoutEffect(() => {
-        // capture size and offset of selected button for use as slider
-        if (!buttonGridRef.current) { return }
-        const el = buttonGridRef.current.querySelector('[data-selected=true]')
-        if (!el) { return }
-        const dimensions = el.getBoundingClientRect()
-        setDimensions({
-            width: dimensions.width,
-            height: dimensions.height,
-            top: el.offsetTop,
-            left: el.offsetLeft,
-        })
-    }, [selection])
-
     return (
         <div className={cx(styles.root, className)}>
             <div className={styles.inner}>
-                <div
-                    className={styles.slider}
-                    style={Object.assign({
-                        // have to set these or flow whines
-                        width: undefined,
-                        height: undefined,
-                        transform: undefined,
-                        transition: transitionEnabled ? 'all 250ms ease-in' : '',
-                    }, Object.keys(dimensions).length ? {
-                        width: dimensions.width,
-                        height: dimensions.height,
-                        transform: `translate3D(${dimensions.left}px, ${dimensions.top}px, 0px)`,
-                    } : {})}
-                />
-                <div className={styles.buttonGrid} ref={buttonGridRef}>
+                <div className={styles.buttonGrid}>
                     {options.map((option, index) => (
                         <div key={option} data-selected={selection === option}>
                             <input
