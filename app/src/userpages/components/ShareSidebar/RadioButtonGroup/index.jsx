@@ -1,8 +1,7 @@
 // @flow
 
-import React, { useState, useCallback, useEffect, useLayoutEffect, useRef } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import cx from 'classnames'
-import { type Ref } from '$shared/flowtype/common-types'
 import startCase from 'lodash/startCase'
 
 import styles from './RadioButtonGroup.pcss'
@@ -12,7 +11,7 @@ type Props = {
     options: Array<string>,
     selectedOption?: string,
     className?: string,
-    onChange?: (string) => void,
+    onChange?: (string, SyntheticEvent<>) => void,
     disabled?: boolean,
 }
 
@@ -25,22 +24,20 @@ const RadioButtonGroup = ({
     disabled = false,
 }: Props) => {
     const [selection, setSelection] = useState(selectedOption)
-    const [transitionEnabled, setTransitionEnabled] = useState(false)
 
     // Reflect outside changes of 'selectedOption' into the state
     useEffect(() => {
         setSelection(selectedOption)
     }, [selectedOption, setSelection])
 
-    const onCheck = useCallback((option: string) => {
+    const onCheck = useCallback((option: string, event) => {
         if (disabled || selection === option) {
             return
         }
-        setTransitionEnabled(true) // only enable transitions once user clicks
         setSelection(option)
 
         if (onChange) {
-            onChange(option)
+            onChange(option, event)
         }
     }, [disabled, selection, onChange])
 
@@ -56,7 +53,7 @@ const RadioButtonGroup = ({
                                 name={name}
                                 value={option}
                                 className={styles.radio}
-                                onChange={() => onCheck(option)}
+                                onChange={(event) => onCheck(option, event)}
                                 checked={selection === option}
                                 disabled={disabled}
                             />
