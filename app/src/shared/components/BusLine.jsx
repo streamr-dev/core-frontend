@@ -146,6 +146,8 @@ const BusLine = ({ children = null, dynamicScrollPosition }) => {
         }
     }, [])
 
+    const mouseDownRef = useRef(true)
+
     useEffect(() => {
         let scrolled = false
 
@@ -171,6 +173,8 @@ const BusLine = ({ children = null, dynamicScrollPosition }) => {
         }
 
         const onScroll = () => {
+            mouseDownRef.current = false
+
             if (!scrolled) {
                 scrolled = true
 
@@ -193,17 +197,32 @@ const BusLine = ({ children = null, dynamicScrollPosition }) => {
 
     const { hash } = useLocation()
 
-    const hashRef = useRef(hash)
+    useEffect(() => {
+        const onMouseDown = () => {
+            mouseDownRef.current = true
+            wheelRef.current = false
+        }
+
+        window.addEventListener('mousedown', onMouseDown)
+
+        return () => {
+            window.removeEventListener('mousedown', onMouseDown)
+        }
+    }, [])
 
     useEffect(() => {
-        const { current: h } = hashRef
-        const [n, ref] = refs.find(([name]) => name === h.replace(/^#/, '')) || [undefined, {}]
-        scrollTo(ref.current)
-
-        if (n) {
-            setStop(n)
+        if (!mouseDownRef.current) {
+            return
         }
-    }, [refs])
+
+        const [name, ref] = refs.find(([n]) => n === hash.replace(/^#/, '')) || [undefined, {}]
+
+        if (name) {
+            setStop(name)
+        }
+
+        scrollTo(ref.current)
+    }, [hash, refs])
 
     const history = useHistory()
 
