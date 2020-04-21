@@ -8,6 +8,24 @@ import * as all from '$mp/utils/smartContract'
 import Transaction from '$shared/utils/Transaction'
 import TransactionError from '$shared/errors/TransactionError'
 
+const PromiEvent = () => {
+    const promiEvent = Promise.resolve()
+    const emitter = new EventEmitter()
+
+    // eslint-disable-next-line no-underscore-dangle
+    promiEvent._events = emitter._events
+    promiEvent.emit = emitter.emit
+    promiEvent.on = emitter.on
+    promiEvent.once = emitter.once
+    promiEvent.off = emitter.off
+    promiEvent.listeners = emitter.listeners
+    promiEvent.addListener = emitter.addListener
+    promiEvent.removeListener = emitter.removeListener
+    promiEvent.removeAllListeners = emitter.removeAllListeners
+
+    return promiEvent
+}
+
 describe('smartContract utils', () => {
     let sandbox
     beforeEach(() => {
@@ -140,10 +158,7 @@ describe('smartContract utils', () => {
         })
 
         it('must return a Transaction', () => {
-            const fakeEmitter = {
-                on: () => fakeEmitter,
-                off: () => fakeEmitter,
-            }
+            const fakeEmitter = PromiEvent()
             const method = {
                 send: () => fakeEmitter,
                 estimateGas: () => Promise.resolve(0),
@@ -152,10 +167,7 @@ describe('smartContract utils', () => {
         })
 
         it('must ask for the default address and send the transaction with it', (done) => {
-            const fakeEmitter = {
-                on: () => fakeEmitter,
-                off: () => fakeEmitter,
-            }
+            const fakeEmitter = PromiEvent()
             all.send({
                 send: ({ from }) => {
                     done(assert.equal('testAccount', from))
@@ -183,10 +195,10 @@ describe('smartContract utils', () => {
 
         describe('error', () => {
             it('must bind errorHandler before receipt', (done) => {
-                const emitter = new EventEmitter()
-                emitter.off = emitter.removeListener
+                const promiEvent = PromiEvent()
+
                 const method = {
-                    send: () => emitter,
+                    send: () => promiEvent,
                     estimateGas: () => {},
                 }
 
@@ -197,17 +209,16 @@ describe('smartContract utils', () => {
                     })
 
                 setTimeout(() => {
-                    emitter.emit('error', 'test')
+                    promiEvent.emit('error', 'test')
                 })
             })
             it('must bind new errorHandler after receipt', (done) => {
                 const receipt = 'receipt'
-                const emitter = new EventEmitter()
-                emitter.off = emitter.removeListener
+                const promiEvent = PromiEvent()
                 const error = new Error('test')
                 const hash = '0x000'
                 const method = {
-                    send: () => emitter,
+                    send: () => promiEvent,
                     estimateGas: () => {},
                 }
                 all.send(method)
@@ -219,16 +230,15 @@ describe('smartContract utils', () => {
                     })
 
                 setTimeout(() => {
-                    emitter.emit('transactionHash', hash)
-                    emitter.emit('error', error, receipt)
+                    promiEvent.emit('transactionHash', hash)
+                    promiEvent.emit('error', error, receipt)
                 })
             })
         })
 
         describe('transactionHash', () => {
             it('must work correctly', (done) => {
-                const emitter = new EventEmitter()
-                emitter.off = emitter.removeListener
+                const emitter = PromiEvent()
                 const method = {
                     send: () => emitter,
                     estimateGas: () => {},
@@ -247,7 +257,7 @@ describe('smartContract utils', () => {
 
         describe('receipt', () => {
             it('must emit transactionComplete', (done) => {
-                const emitter = new EventEmitter()
+                const emitter = PromiEvent()
                 const receipt = {
                     status: '0x1',
                     test: 'test',
@@ -267,7 +277,7 @@ describe('smartContract utils', () => {
                 })
             })
             it('must emit error if receipt.status === 0', (done) => {
-                const emitter = new EventEmitter()
+                const emitter = PromiEvent()
                 const receipt = {
                     status: '0x0',
                     test: 'test',
