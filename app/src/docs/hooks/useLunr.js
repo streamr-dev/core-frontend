@@ -66,14 +66,10 @@ const useLunr = (query: string, providedIndex: any, providedStore: any) => {
     const [store, setStore] = useState(null)
 
     useEffect(() => {
-        if (!providedIndex) { return }
+        if (!providedIndex || !providedStore) { return }
         setIndex(providedIndex)
-    }, [providedIndex])
-
-    useEffect(() => {
-        if (!providedStore) { return }
         setStore(providedStore)
-    }, [providedStore])
+    }, [providedIndex, providedStore])
 
     return useMemo(() => runQuery({
         query, index, store,
