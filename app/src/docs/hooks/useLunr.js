@@ -3,53 +3,60 @@
 import { useState, useEffect, useMemo } from 'react'
 import lunr from 'lunr'
 
-const InvalidIndexError = Error('Lunr index could not be parsed. Check that your index exists and is valid.')
-const InvalidStoreError = Error('Lunr store could not be parsed. Check that your store exists and is valid.')
+const formatMatchData = (matchData) => {
+    // NEXT: Extract the highlight position and length.
+    // matchData keys are the keyword matches,
+    // number of characters into the string, where the match is.
+    // Only look at the first matching word for now.
+    let matchPosition = 0
+    let matchLength = 0
+
+    Object.values(matchData).forEach((match: Object, matchIndex: number) => {
+        if (matchIndex === 0) {
+            const matches = Object.values(match)
+            matches.forEach(({ content }: Object, contentIndex) => {
+                const { position } = content
+                if (contentIndex === 0 && content && position) {
+                    [[matchPosition, matchLength]] = position
+                }
+            })
+        }
+    })
+
+    return [matchPosition, matchLength]
+}
 
 const useLunr = (query: string, providedIndex: any, providedStore: any) => {
     const [index, setIndex] = useState(null)
     const [store, setStore] = useState(null)
 
     useEffect(() => {
-        const processedIndex =
-            typeof providedIndex === 'string'
-                ? lunr.Index.load(JSON.parse(providedIndex))
-                : providedIndex
-
-        if (!processedIndex) {
-            throw InvalidIndexError
-        }
-
-        setIndex(processedIndex)
+        if (!providedIndex) { return }
+        setIndex(providedIndex)
     }, [providedIndex])
 
     useEffect(() => {
-        const processedStore =
-            typeof providedStore === 'string'
-                ? JSON.parse(providedStore)
-                : providedStore
-
-        if (!processedStore) {
-            throw InvalidStoreError
-        }
-
-        setStore(processedStore)
+        if (!providedStore) { return }
+        setStore(providedStore)
     }, [providedStore])
 
     return useMemo(() => {
         if (!query || !index || !store) { return [] }
 
-        // removeTrimmer fixes some unexpected crashes while searching
-        lunr(function () {
+        // 'trimmer' causes unexplainable crashes while searching.
+        lunr(function removeTrimmer() {
             this.pipeline.remove(lunr.trimmer)
         })
 
-        const lunrResults = () =>
+        const lunrResults = () => (
+            // Search on the 'content' field of the array only.
+            // Store is built with the title as the first sentence of the 'content' field.
+            // Exact matches get a boost. Trailing wildcard (type-ahead) matches get a lower score.
             index.query((q) => {
                 q.term(lunr.tokenizer(query), {
                     fields: ['content'],
                     boost: 100,
-                    usePipeline: true,
+                    usePipeline: false,
                 })
                 q.term(lunr.tokenizer(query), {
                     fields: ['content'],
@@ -58,61 +65,17 @@ const useLunr = (query: string, providedIndex: any, providedStore: any) => {
                     wildcard: lunr.Query.wildcard.TRAILING,
                 })
             })
-        // TODO: Tidy this up, move it to its own function
-        const searchResults = lunrResults().map(({ ref, matchData }) => {
-            const res = store[ref]
-            res.matchData = matchData
-            const fullContent = String(res.content).replace(/\n/g, ' ')
-            // matchData is an object
-            // keys are the keyword matches,
+        )
 
-            // number of characters into the string, where the match is.
-            // Only look at the first matching word for now.
-            const matchPosition = []
-            const matchLength = []
-            Object.values(matchData).forEach((match, matchIndex) => {
-                if (matchIndex === 0) {
-                    // $FlowFixMe
-                    Object.values(match).forEach(({ content }, contentIndex) => {
-                        // $FlowFixMe
-                        if (contentIndex === 0 && content && content.position) {
-                            // $FlowFixMe
-                            matchPosition.push(content.position[0][0])
-                            matchLength.push(content.position[0][1])
-                        }
-                    })
-                }
-            })
-
-            let textSnippet = ''
-            let startHighlightPosition = matchPosition[0]
-            let endHighlightPosition = matchPosition[0] + matchLength[0]
-
-            if (matchPosition[0] < 50 && fullContent.length < 180) {
-                textSnippet = fullContent.slice(0, fullContent.length)
-            } else if (matchPosition[0] < 50 && fullContent.length > 180) {
-                textSnippet = `${fullContent.slice(0, 177)}...`
-            } else if (fullContent.length > 180) {
-                // start 50 characters earlier than the match
-                const startChar = matchPosition[0] - 47 // 3 diff for 3 dots
-                const endChar = matchPosition[0] + 127
-                startHighlightPosition = 50
-                endHighlightPosition = 50 + matchLength[0]
-                textSnippet = fullContent.slice(startChar, endChar)
-                textSnippet = `...${textSnippet}...`
-            } else {
-                textSnippet = fullContent
-            }
-
-            const startHighlightHtml = '<span class="highlight">'
-            const endHighlightHtml = '</span>'
-            textSnippet = [textSnippet.slice(0, endHighlightPosition), endHighlightHtml, textSnippet.slice(endHighlightPosition)].join('')
-            textSnippet = [textSnippet.slice(0, startHighlightPosition), startHighlightHtml, textSnippet.slice(startHighlightPosition)].join('')
-            res.textSnippet = textSnippet
-
-            return res
+        const results = lunrResults().map(({ ref, matchData }) => {
+            // The results are generated from the combination of combining the index with the store.
+            // matchData contains the position indexes of the matched keywords
+            const searchResults = store[ref]
+            searchResults.matchData = formatMatchData(matchData)
+            return searchResults
         })
-        return searchResults
+
+        return results
     }, [query, index, store])
 }
 

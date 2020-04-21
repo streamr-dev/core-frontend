@@ -19,6 +19,60 @@ type Props = {
     toggleOverlay: () => void,
 }
 
+const generateTextSnippet = (text, matchPosition, startHighlight, endHighlight) => {
+    let textSnippet = ''
+
+    if (matchPosition < 50 && text.length < 180) {
+        textSnippet = text.slice(0, text.length)
+    } else if (matchPosition < 50 && text.length > 180) {
+        textSnippet = `${text.slice(0, 177)}...`
+    } else if (text.length > 180) {
+        // start 50 characters earlier than the match
+        const startChar = matchPosition - 47 // 3 diff for 3 dots
+        const endChar = matchPosition + 127
+
+        textSnippet = text.slice(startChar, endChar)
+        textSnippet = `...${textSnippet}...`
+    } else {
+        textSnippet = text
+    }
+
+    textSnippet = [textSnippet.slice(0, endHighlight), '</span>', textSnippet.slice(endHighlight)].join('')
+    textSnippet = [textSnippet.slice(0, startHighlight), '<span class="highlight">', textSnippet.slice(startHighlight)].join('')
+
+    return textSnippet
+}
+
+const getHighlightCoords = (text, matchPosition, matchLength) => {
+    let startHighlight = matchPosition
+    let endHighlight = matchPosition + matchLength
+
+    if (text.length > 180) {
+        startHighlight = 50
+        endHighlight = 50 + matchLength
+    }
+
+    return [startHighlight, endHighlight]
+}
+
+const formatSearchResults = (results: Object): Array<any> => {
+    if (!results.length) { return [] }
+
+    return results.map((result) => {
+        const { content, matchData } = result
+        const [matchPosition, matchLength] = matchData
+        const text = String(content).replace(/\n/g, ' ')
+
+        const [startHighlight, endHighlight] = getHighlightCoords(text, matchPosition, matchLength)
+        const textSnippet = generateTextSnippet(text, matchPosition, startHighlight, endHighlight)
+
+        return {
+            ...result,
+            textSnippet,
+        }
+    })
+}
+
 const Search = ({ toggleOverlay }: Props) => {
     const [index, store] = useGetIndexStore()
     const [query, setQuery] = useState('')
@@ -76,7 +130,7 @@ const Search = ({ toggleOverlay }: Props) => {
                 </div>
                 <div className={styles.searchResults}>
                     <ul>
-                        {searchResults.map((result, resultIndex) => (
+                        {formatSearchResults(searchResults).map((result, resultIndex) => (
                             resultIndex <= 10
                                 ? (
                                     <li key={result.id}>
