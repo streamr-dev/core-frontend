@@ -28,6 +28,7 @@ export const PENDING_CHANGE_FIELDS = [
     'contact.social2',
     'contact.social3',
     'contact.social4',
+    'requiresWhitelist',
 ]
 
 export function isPublished(product: Product) {

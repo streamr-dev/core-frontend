@@ -195,3 +195,9 @@ export const deleteProduct = (id: ProductId): SmartContractTransaction => (
 export const redeployProduct = (id: ProductId): SmartContractTransaction => (
     send(contractMethods().redeployProduct(getValidId(id))) // TODO: figure out the gas for redeploying
 )
+
+export const setRequiresWhitelist = (id: ProductId, requiresWhitelist: boolean): SmartContractTransaction => (
+    send(contractMethods(false).setRequiresWhitelist(getValidId(id), requiresWhitelist), {
+        gas: gasLimits.SET_REQUIRES_WHITELIST,
+    })
+)
