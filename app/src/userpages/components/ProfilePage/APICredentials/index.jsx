@@ -12,6 +12,7 @@ import {
 } from '$shared/modules/resourceKey/actions'
 import { selectMyResourceKeys } from '$shared/modules/resourceKey/selectors'
 import type { ResourceKeyId } from '$shared/flowtype/resource-key-types'
+import { usePending } from '$shared/hooks/usePending'
 
 import styles from '../profilePage.pcss'
 
@@ -21,12 +22,24 @@ const APICredentials = () => {
     const keys = useSelector(selectMyResourceKeys)
     const sortedKeys = useMemo(() => keys.sort((a, b) => a.name.localeCompare(b.name)), [keys])
     const dispatch = useDispatch()
+    const { isPending } = usePending('user.SAVE')
+    const { wrap: wrapApiCredentials } = usePending('user.API_CREDENTIALS')
 
-    const addKey = useCallback((keyName: string) => dispatch(addMyResourceKey(keyName)), [dispatch])
-    const editKey = useCallback((keyName: ?string, keyId: ?ResourceKeyId) => (
-        dispatch(editMyResourceKey(keyId || '', keyName || ''))
-    ), [dispatch])
-    const removeKey = useCallback((keyId: ResourceKeyId) => dispatch(removeMyResourceKey(keyId)), [dispatch])
+    const addKey = useCallback(async (keyName: string) => (
+        wrapApiCredentials(async () => {
+            await dispatch(addMyResourceKey(keyName))
+        })
+    ), [wrapApiCredentials, dispatch])
+    const editKey = useCallback(async (keyName: ?string, keyId: ?ResourceKeyId) => (
+        wrapApiCredentials(async () => {
+            await dispatch(editMyResourceKey(keyId || '', keyName || ''))
+        })
+    ), [wrapApiCredentials, dispatch])
+    const removeKey = useCallback(async (keyId: ResourceKeyId) => (
+        wrapApiCredentials(async () => {
+            await dispatch(removeMyResourceKey(keyId))
+        })
+    ), [wrapApiCredentials, dispatch])
 
     useEffect(() => {
         dispatch(getMyResourceKeys())
@@ -46,6 +59,7 @@ const APICredentials = () => {
                 removeKey={removeKey}
                 disableDelete={keys.length <= 1}
                 className={styles.keyList}
+                disabled={isPending}
             />
         </Fragment>
     )

@@ -19,6 +19,7 @@ type Props = {
     linkToProfile?: boolean,
     onImageChange?: (?File) => Promise<void>,
     children?: Node,
+    disabled?: boolean,
 }
 
 const Avatar = ({
@@ -28,6 +29,7 @@ const Avatar = ({
     linkToProfile,
     onImageChange,
     children,
+    disabled,
 }: Props) => (
     <div className={cx(className, styles.container)}>
         {!!linkToProfile && (
@@ -44,7 +46,11 @@ const Avatar = ({
             </NameAndUsername>
         )}
         {editable && onImageChange && (
-            <AvatarUpload onImageChange={onImageChange} image={(user && user.imageUrlLarge) || ''} />
+            <AvatarUpload
+                onImageChange={onImageChange}
+                image={(user && user.imageUrlLarge) || ''}
+                disabled={disabled}
+            />
         )}
     </div>
 )

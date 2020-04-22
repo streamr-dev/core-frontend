@@ -45,10 +45,11 @@ import ConfirmCsvImportDialog from '$userpages/components/StreamPage/ConfirmCsvI
 import SnippetDialog from '$userpages/components/SnippetDialog'
 import AvatarUploadDialog from '$userpages/components/Avatar/AvatarUploadDialog'
 import CropAvatarDialog from '$userpages/components/Avatar/CropAvatarDialog'
-import { ChangePasswordDialog } from '$userpages/components/ProfilePage/ChangePassword'
+import { ChangePasswordDialogComponent } from '$userpages/components/ProfilePage/ProfileSettings/ChangePasswordDialog'
 import { SignatureRequestDialog, DuplicateIdentityDialog } from '$userpages/components/ProfilePage/IdentityHandler/IdentityChallengeDialog'
 import IdentityNameDialog from '$userpages/components/ProfilePage/IdentityHandler/IdentityNameDialog'
 import PrivateKeyNameDialog from '$userpages/components/ProfilePage/IntegrationKeyHandler/AddPrivateKeyDialog/PrivateKeyNameDialog'
+import { DeleteAccountDialogComponent } from '$userpages/components/ProfilePage/DeleteAccount/DeleteAccountDialog'
 
 // shared
 import ConfirmDialog from '$shared/components/ConfirmDialog'
@@ -909,38 +910,44 @@ story('Profile/CropAvatarDialog')
     })
 
 story('Profile/ChangePasswordDialog')
-    .add('default', () => {
-        const updatePassword = action('updatePassword')
-        const updateAction = (...args) => new Promise((resolve) => {
-            updatePassword(...args)
-            resolve()
-        })
-        return (
-            <ChangePasswordDialog
-                isOpen
-                updatePassword={updateAction}
-                onToggle={action('onToggle')}
-            />
-        )
-    })
-    .add('mobile', () => {
-        const updatePassword = action('updatePassword')
-        const updateAction = (...args) => new Promise((resolve) => {
-            updatePassword(...args)
-            resolve()
-        })
-        return (
-            <ChangePasswordDialog
-                isOpen
-                updatePassword={updateAction}
-                onToggle={action('onToggle')}
-            />
-        )
-    }, {
+    .add('default', () => (
+        <ChangePasswordDialogComponent
+            onSave={action('onSave')}
+            onClose={action('onClose')}
+        />
+    ))
+    .add('waiting', () => (
+        <ChangePasswordDialogComponent
+            onSave={action('onSave')}
+            onClose={action('onClose')}
+            waiting
+        />
+    ))
+    .add('mobile', () => (
+        <ChangePasswordDialogComponent
+            onSave={action('onSave')}
+            onClose={action('onClose')}
+        />
+    ), {
         viewport: {
             defaultViewport: 'sm',
         },
     })
+
+story('Profile/DeleteAccountDialog')
+    .add('default', () => (
+        <DeleteAccountDialogComponent
+            onClose={action('onClose')}
+            onSave={action('onSave')}
+        />
+    ))
+    .add('waiting', () => (
+        <DeleteAccountDialogComponent
+            onClose={action('onClose')}
+            onSave={action('onSave')}
+            waiting
+        />
+    ))
 
 story('EthereumIdentity/IdentityChallengeDialog')
     .add('signature request', () => (

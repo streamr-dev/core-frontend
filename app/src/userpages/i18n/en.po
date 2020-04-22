@@ -764,6 +764,15 @@ msgstr "Settings"
 msgid "userpages##profilePage##profile##title"
 msgstr "Profile"
 
+msgid "userpages##profilePage##profileSettings##userFullname"
+msgstr "Your Name"
+
+msgid "userpages##profilePage##profileSettings##userEmail"
+msgstr "Email"
+
+msgid "userpages##profilePage##profileSettings##changePassword"
+msgstr "Change Password"
+
 msgid "userpages##profilePage##apiCredentials##title"
 msgstr "API Credentials"
 
@@ -849,6 +858,12 @@ msgstr "I’m sure, go ahead and delete my account"
 
 msgid "modal##deleteAccount##confirmCheckbox##subtitle"
 msgstr "Streamr cannot recover it once deleted"
+
+msgid "modal##deleteAccount##successNotification"
+msgstr "Account disabled!"
+
+msgid "modal##deleteAccount##errorNotification"
+msgstr "Account not disabled"
 
 msgid "userpages##profile##settings##update"
 msgstr "Update"
@@ -948,6 +963,12 @@ msgstr "Forgot?"
 
 msgid "modal##changePassword##passwordsDoNotMatch"
 msgstr "The passwords do not match"
+
+msgid "modal##changePassword##errorNotification"
+msgstr "Password not changed"
+
+msgid "modal##changePassword##successNotification"
+msgstr "Password changed"
 
 msgid "modal##signatureRequest##defaultTitle"
 msgstr "Signature request"

@@ -24,7 +24,20 @@ jest.mock('$shared/hooks/useModal', () => (
         isOpen: false,
     }))
 ))
-jest.mock('$shared/hooks/useIsMounted')
+jest.mock('$shared/hooks/usePending', () => ({
+    __esModule: true,
+    usePending: () => ({
+        wrap: async (fn) => {
+            const result = await fn()
+
+            return result
+        },
+        isPending: false,
+    }),
+}))
+jest.mock('$shared/hooks/useIsMounted', () => (
+    jest.fn().mockImplementation(() => () => true)
+))
 jest.mock('$shared/hooks/useBalances')
 
 describe('IntegrationKeyHandler', () => {

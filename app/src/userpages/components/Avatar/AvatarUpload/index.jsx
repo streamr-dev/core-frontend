@@ -11,6 +11,7 @@ import styles from './avatarUpload.pcss'
 export type Props = {
     image: string,
     onImageChange: (?File) => Promise<void>,
+    disabled?: boolean,
 }
 
 type State = {
@@ -38,12 +39,12 @@ class AvatarUpload extends React.Component<Props, State> {
 
     render() {
         const { modalOpen } = this.state
-        const { image } = this.props
+        const { image, disabled } = this.props
         return (
             <div className={styles.upload}>
                 <Button
                     kind="secondary"
-                    disabled={modalOpen}
+                    disabled={disabled || modalOpen}
                     onClick={this.onShowModal}
                 >
                     <Translate value={image ? 'userpages.profile.settings.update' : 'userpages.profile.settings.upload'} />
