@@ -12,7 +12,7 @@ type Props = {
     customStyled?: boolean,
 }
 
-const Section = styled.section`
+const Section = styled.div`
     /* Use padding instead of margin so that scrolling to sections with anchor links looks nicer */
     padding-top: 1rem;
     padding-bottom: 5.5rem;
