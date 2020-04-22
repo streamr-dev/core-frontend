@@ -9,11 +9,11 @@ type Props = {
     id: string,
     title: string | Element<any>,
     children?: Node,
-    customStyled?: boolean,
+    onlyDesktop?: boolean,
 }
 
 const Section = styled.div`
-    ${({ hideOnTablet }) => !!hideOnTablet && css`
+    ${({ onlyDesktop }) => !!onlyDesktop && css`
         @media (max-width: ${LG - 1}px) {
             display: none;
         }
@@ -35,9 +35,9 @@ const Title = styled.h3`
     }
 `
 
-export const TOCSection = ({ id, title, children, customStyled }: Props) => (
+export const TOCSection = ({ id, title, children, onlyDesktop }: Props) => (
     <ScrollableAnchor id={id}>
-        <Section hideOnTablet={customStyled}>
+        <Section onlyDesktop={onlyDesktop}>
             <Title>
                 {title}
             </Title>
