@@ -20,7 +20,6 @@ import APICredentials from './APICredentials'
 import IntegrationKeyHandler from './IntegrationKeyHandler'
 import IdentityHandler from './IdentityHandler/index'
 import DeleteAccount from './DeleteAccount'
-import styles from './profilePage.pcss'
 import routes from '$routes'
 
 type StateProps = {}

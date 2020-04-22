@@ -3,7 +3,6 @@
 import React, { type Node } from 'react'
 import { useLocation } from 'react-router-dom'
 import styled from 'styled-components'
-import cx from 'classnames'
 import { XL } from '$shared/utils/styled'
 
 import TOCSection from './TOCSection'
