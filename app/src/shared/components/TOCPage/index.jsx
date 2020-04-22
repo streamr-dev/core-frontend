@@ -2,9 +2,12 @@
 
 import React, { type Node } from 'react'
 import { useLocation } from 'react-router-dom'
+import styled from 'styled-components'
 import cx from 'classnames'
+import { XL } from '$shared/utils/styled'
 
 import TOCSection from './TOCSection'
+import TOCNav, { Link } from './TOCNav'
 import styles from './tocPage.pcss'
 
 type Props = {
@@ -13,46 +16,88 @@ type Props = {
     className?: string,
 }
 
-const TOCPage = ({ children, title, className }: Props) => {
+const SectionWrapper = styled.div`
+    > div {
+        padding-top: 72px;
+    }
+
+    > div + div {
+        padding-top: 88px;
+    }
+`
+
+const UnstyledTOCPage = ({ children, title, ...props }: Props) => {
     const { hash } = useLocation()
 
     return (
-        <div className={cx(styles.root, className)}>
-            {!!title && (
-                <React.Fragment>
-                    <div className={styles.pageTitle} />
-                    <h1 className={styles.pageTitle}>{title}</h1>
-                </React.Fragment>
-            )}
+        <div {...props}>
             <div>
-                <ul className={styles.tocList}>
-                    {React.Children.map(children, (child) => (
-                        child.type === TOCSection ? (
-                            <li
-                                key={child.props.id}
-                                className={cx(styles.tocListItem, {
-                                    [styles.hideTablet]: child.props.customStyled,
-                                })}
-                            >
-                                <a
+                {!!title && (
+                    <React.Fragment>
+                        <div />
+                        <h1 className={styles.pageTitle}>{title}</h1>
+                        <div />
+                    </React.Fragment>
+                )}
+                <div>
+                    <TOCNav>
+                        {React.Children.map(children, (child) => (
+                            child.type === TOCSection ? (
+                                <Link
+                                    active={hash.substr(1) === child.props.id}
                                     href={`#${child.props.id}`}
-                                    className={cx({
-                                        [styles.active]: hash.substr(1) === child.props.id,
-                                    })}
                                 >
                                     {child.props.linkTitle || child.props.title}
-                                </a>
-                            </li>
-                        ) : null
-                    ))}
-                </ul>
-            </div>
-            <div>
-                {children}
+                                </Link>
+                            ) : null
+                        ))}
+                    </TOCNav>
+                    {/* <ul className={styles.tocList}>
+                        {React.Children.map(children, (child) => (
+                            child.type === TOCSection ? (
+                                <li
+                                    key={child.props.id}
+                                    className={cx(styles.tocListItem, {
+                                        [styles.hideTablet]: child.props.customStyled,
+                                    })}
+                                >
+                                    <a
+                                        href={`#${child.props.id}`}
+                                        className={cx({
+                                            [styles.active]: hash.substr(1) === child.props.id,
+                                        })}
+                                    >
+                                        {child.props.linkTitle || child.props.title}
+                                    </a>
+                                </li>
+                            ) : null
+                        ))}
+                    </ul> */}
+                </div>
+                <SectionWrapper>
+                    {children}
+                </SectionWrapper>
+                <div />
             </div>
         </div>
     )
 }
+
+const TOCPage = styled(UnstyledTOCPage)`
+    margin: 0 auto;
+    padding-bottom: 3rem;
+    width: 1132px;
+
+    > div {
+        display: grid;
+        grid-template-columns: 160px 1fr 160px;
+        grid-column-gap: 4rem;
+
+        @media (min-width: ${XL}px) {
+            grid-template-columns: 190px 1fr 190px;
+        }
+    }
+`
 
 TOCPage.Section = TOCSection
 
