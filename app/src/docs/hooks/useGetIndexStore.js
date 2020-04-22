@@ -3,17 +3,7 @@ import lunr from 'lunr'
 
 import docsIndex from '../components/Search/index/index'
 import docsStore from '../components/Search/index/store'
-
-const placeholderDoc = [{
-    id: 0,
-    content: '',
-}]
-
-const placeholderIndex = lunr(function generatePlaceholderIndex() {
-    this.ref('id')
-    this.field('content')
-    placeholderDoc.forEach(function addDoc(doc) { this.add(doc) }, this)
-})
+import { placeholderIndex } from '../components/Search/searchUtils'
 
 const useGetIndexStore = () => {
     const [index, setIndex] = useState(placeholderIndex)

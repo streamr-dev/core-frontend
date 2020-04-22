@@ -116,3 +116,14 @@ export const runSearchQuery = ({ query, index, store }: any) => {
 
     return results
 }
+
+const placeholderDoc = [{
+    id: 0,
+    content: '',
+}]
+
+export const placeholderIndex = lunr(function generatePlaceholderIndex() {
+    this.ref('id')
+    this.field('content')
+    placeholderDoc.forEach(function addDoc(doc) { this.add(doc) }, this)
+})
