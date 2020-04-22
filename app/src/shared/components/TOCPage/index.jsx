@@ -46,33 +46,13 @@ const UnstyledTOCPage = ({ children, title, ...props }: Props) => {
                                 <Link
                                     active={hash.substr(1) === child.props.id}
                                     href={`#${child.props.id}`}
+                                    onlyDesktop={child.props.onlyDesktop}
                                 >
                                     {child.props.linkTitle || child.props.title}
                                 </Link>
                             ) : null
                         ))}
                     </TOCNav>
-                    {/* <ul className={styles.tocList}>
-                        {React.Children.map(children, (child) => (
-                            child.type === TOCSection ? (
-                                <li
-                                    key={child.props.id}
-                                    className={cx(styles.tocListItem, {
-                                        [styles.hideTablet]: child.props.customStyled,
-                                    })}
-                                >
-                                    <a
-                                        href={`#${child.props.id}`}
-                                        className={cx({
-                                            [styles.active]: hash.substr(1) === child.props.id,
-                                        })}
-                                    >
-                                        {child.props.linkTitle || child.props.title}
-                                    </a>
-                                </li>
-                            ) : null
-                        ))}
-                    </ul> */}
                 </div>
                 <SectionWrapper>
                     {children}
