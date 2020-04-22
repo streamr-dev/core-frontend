@@ -97,7 +97,7 @@ jobs:
         on:
           branch: development
   - stage: Build docker (Production)
-    if: branch = master
+    if: tag IS present AND branch = master
     env:
       - TAG=latest
     install: true
