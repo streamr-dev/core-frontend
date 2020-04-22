@@ -9,11 +9,10 @@ const placeholderDoc = [{
     content: '',
 }]
 
-const placeholderIndex = lunr(function () {
+const placeholderIndex = lunr(function generatePlaceholderIndex() {
     this.ref('id')
     this.field('content')
-    this.metadataWhitelist = ['position']
-    placeholderDoc.forEach(function (doc) { this.add(doc) }, this)
+    placeholderDoc.forEach(function addDoc(doc) { this.add(doc) }, this)
 })
 
 const useGetIndexStore = () => {
