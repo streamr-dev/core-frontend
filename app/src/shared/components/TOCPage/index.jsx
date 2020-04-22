@@ -3,7 +3,7 @@
 import React, { type Node } from 'react'
 import { useLocation } from 'react-router-dom'
 import styled from 'styled-components'
-import { XL } from '$shared/utils/styled'
+import { MD, LG, XL } from '$shared/utils/styled'
 
 import TOCSection from './TOCSection'
 import TOCNav, { Link } from './TOCNav'
@@ -25,6 +25,14 @@ const SectionWrapper = styled.div`
     }
 `
 
+const Wing = styled.div`
+    display: none;
+
+    @media (min-width: ${LG}px) {
+        display: block;
+    }
+`
+
 const UnstyledTOCPage = ({ children, title, ...props }: Props) => {
     const { hash } = useLocation()
 
@@ -33,12 +41,12 @@ const UnstyledTOCPage = ({ children, title, ...props }: Props) => {
             <div>
                 {!!title && (
                     <React.Fragment>
-                        <div />
+                        <Wing />
                         <h1 className={styles.pageTitle}>{title}</h1>
                         <div />
                     </React.Fragment>
                 )}
-                <div>
+                <Wing>
                     <TOCNav>
                         {React.Children.map(children, (child) => (
                             child.type === TOCSection ? (
@@ -52,11 +60,11 @@ const UnstyledTOCPage = ({ children, title, ...props }: Props) => {
                             ) : null
                         ))}
                     </TOCNav>
-                </div>
+                </Wing>
                 <SectionWrapper>
                     {children}
                 </SectionWrapper>
-                <div />
+                <Wing />
             </div>
         </div>
     )
@@ -64,16 +72,30 @@ const UnstyledTOCPage = ({ children, title, ...props }: Props) => {
 
 const TOCPage = styled(UnstyledTOCPage)`
     margin: 0 auto;
-    padding-bottom: 3rem;
-    width: 1132px;
+    max-width: 624px;
+    padding: 0 32px 3rem;
 
-    > div {
-        display: grid;
-        grid-template-columns: 160px 1fr 160px;
-        grid-column-gap: 4rem;
+    @media (min-width: ${MD}px) {
+        width: 896px;
+    }
 
-        @media (min-width: ${XL}px) {
-            grid-template-columns: 190px 1fr 190px;
+    @media (min-width: ${LG}px) {
+        max-width: none;
+        padding: 0 0 3rem;
+        width: 928px;
+
+        > div {
+            display: grid;
+            grid-column-gap: 64px;
+            grid-template-columns: 160px 1fr 160px;
+        }
+    }
+
+    @media (min-width: ${XL}px) {
+        width: 1132px;
+
+        > div {
+            grid-template-columns: 192px 1fr 192px;
         }
     }
 `
