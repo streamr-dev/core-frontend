@@ -30,7 +30,7 @@ stories.add('basic', () => {
                 Use the knobs section to control the page content.
             </TOCPage.Section>
             <TOCPage.Section
-                id="section"
+                id="second"
                 title={text('Second section title', 'Second Section')}
                 linkTitle={showLinkTitle && text('Second section link', 'Second')}
             >
