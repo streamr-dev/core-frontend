@@ -53,7 +53,6 @@ const UnstyledTOCPage = ({ children, title, ...props }: Props) => {
                                 <Link
                                     active={hash.substr(1) === child.props.id}
                                     href={`#${child.props.id}`}
-                                    onlyDesktop={child.props.onlyDesktop}
                                 >
                                     {child.props.linkTitle || child.props.title}
                                 </Link>

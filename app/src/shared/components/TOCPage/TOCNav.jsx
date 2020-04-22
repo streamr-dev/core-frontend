@@ -1,19 +1,10 @@
 // @flow
 
 import styled, { css } from 'styled-components'
-import { LG } from '$shared/utils/styled'
 
 export const Link = styled.a`
     ${({ active }) => !active && css`
         color: #323232 !important;
-    `}
-
-    ${({ onlyDesktop }) => !!onlyDesktop && css`
-        @media (max-width: ${LG - 1}px) {
-            color: #c4c4c4 !important;
-            cursor: default;
-            pointer-events: none;
-        }
     `}
 `
 
