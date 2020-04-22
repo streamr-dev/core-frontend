@@ -1,13 +1,13 @@
 // @flow
 
-import React, { type Node } from 'react'
+import React, { type Node, type Element } from 'react'
 import ScrollableAnchor from 'react-scrollable-anchor'
 import styled, { css } from 'styled-components'
 import { REGULAR, MD, LG } from '$shared/utils/styled'
 
 type Props = {
     id: string,
-    title: string,
+    title: string | Element<any>,
     children?: Node,
     customStyled?: boolean,
 }
