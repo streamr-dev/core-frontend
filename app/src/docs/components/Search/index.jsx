@@ -19,59 +19,54 @@ type Props = {
     toggleOverlay: () => void,
 }
 
-const SNIPPET_CHAR_LENGTH = 180
-const CHARS_BEFORE_MATCH_LENGTH = 50
-const CHARS_AFTER_MATCH_LENGTH = 130
+const SNIPPET_CHARS = 210
+const MIN_MATCH_BUFFER_CHARS = 50
+const CHARS_AFTER_MATCH = SNIPPET_CHARS - MIN_MATCH_BUFFER_CHARS
 
-const generateTextSnippet = (text, matchPosition, startHighlight, endHighlight) => {
-    let textSnippet = text.slice(0, SNIPPET_CHAR_LENGTH)
-
-    if (matchPosition < CHARS_BEFORE_MATCH_LENGTH && text.length > SNIPPET_CHAR_LENGTH) {
-        textSnippet = `${text.slice(0, SNIPPET_CHAR_LENGTH - 3)}...` //  - 3 for 3 ...
-    } else if (text.length > SNIPPET_CHAR_LENGTH) {
-        const startChar = matchPosition - (CHARS_BEFORE_MATCH_LENGTH - 3) //  - 3 for 3 ...
-        const endChar = matchPosition + (CHARS_AFTER_MATCH_LENGTH - 3) //  - 3 for 3 ...
-        textSnippet = text.slice(startChar, endChar)
-        textSnippet = `...${textSnippet}...`
+const generateTextSnippet = (text, matchPosition) => {
+    // A) No trimming
+    if (text.length < SNIPPET_CHARS) {
+        return text
     }
 
-    textSnippet = [
-        textSnippet.slice(0, endHighlight),
-        '</span>',
-        textSnippet.slice(endHighlight),
-    ].join('')
+    // A) Trim end
+    if (matchPosition < MIN_MATCH_BUFFER_CHARS) {
+        return `${text.slice(0, SNIPPET_CHARS - 3)}...` //  - 3 for 3 ...
+    }
 
-    textSnippet = [
-        textSnippet.slice(0, startHighlight),
-        '<span class="highlight">',
-        textSnippet.slice(startHighlight),
-    ].join('')
-
-    return textSnippet
+    // A) Trim start & end
+    const startChar = matchPosition - (MIN_MATCH_BUFFER_CHARS - 3) //  - 3 for 3 ...
+    const endChar = matchPosition + (CHARS_AFTER_MATCH - 3) //  - 3 for 3 ...
+    return `...${text.slice(startChar, endChar)}...`
 }
 
-const getHighlightCoords = (text, matchPosition, matchLength) => {
-    let startHighlight = matchPosition
-    let endHighlight = matchPosition + matchLength
+const highlightMatch = (text, startHighlightChar, endHighlightChar) => {
+    let textWithHighlight = text
 
-    if (text.length > SNIPPET_CHAR_LENGTH) {
-        startHighlight = CHARS_BEFORE_MATCH_LENGTH
-        endHighlight = CHARS_BEFORE_MATCH_LENGTH + matchLength
-    }
+    textWithHighlight = [
+        text.slice(0, endHighlightChar),
+        '</span>',
+        text.slice(endHighlightChar),
+    ].join('')
 
-    return [startHighlight, endHighlight]
+    textWithHighlight = [
+        textWithHighlight.slice(0, startHighlightChar),
+        '<span class="highlight">',
+        textWithHighlight.slice(startHighlightChar),
+    ].join('')
+
+    return textWithHighlight
 }
 
 const formatSearchResults = (results: Object) => {
     if (!results.length) { return [] }
 
     return results.slice(0, 10).map((result) => {
-        const { content, matchData } = result
+        const { content: fullText, matchData } = result
         const [matchPosition, matchLength] = matchData
-        const trimmedText = String(content).replace(/\n/g, ' ')
 
-        const [startHighlight, endHighlight] = getHighlightCoords(trimmedText, matchPosition, matchLength)
-        const textSnippet = generateTextSnippet(trimmedText, matchPosition, startHighlight, endHighlight)
+        const highlightedFullText = highlightMatch(fullText, matchPosition, matchPosition + matchLength).replace(/\n/g, ' ')
+        const textSnippet = generateTextSnippet(highlightedFullText, matchPosition)
 
         return {
             ...result,
