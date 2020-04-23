@@ -33,9 +33,10 @@ export const BusStop = ({ name, ...props }) => {
     return <div {...props} ref={ref} />
 }
 
-const getTop = (el) => (
-    el ? el.getBoundingClientRect().top : 0
-)
+const getElementTop = (el) => {
+    const { width, top } = el ? el.getBoundingClientRect() : {}
+    return width ? top : null
+}
 
 const BusLine = ({ children = null, dynamicScrollPosition }) => {
     const [refs, setRefs] = useState([])
@@ -74,15 +75,23 @@ const BusLine = ({ children = null, dynamicScrollPosition }) => {
                     return []
                 }
 
-                const bodyTop = getTop(document.body)
+                const bodyTop = getElementTop(document.body)
+
+                if (bodyTop == null) {
+                    return []
+                }
 
                 return refs
-                    .reduce((memo, [name, { current: el }]) => (
-                        el ? [
-                            ...memo,
-                            [name, getTop(el) - bodyTop],
-                        ] : memo
-                    ), [])
+                    .reduce((memo, [name, { current: el }]) => {
+                        const top = getElementTop(el)
+
+                        return (
+                            bodyTop != null && top != null ? [
+                                ...memo,
+                                [name, top - bodyTop],
+                            ] : memo
+                        )
+                    }, [])
                     .sort(([, a], [, b]) => b - a)
             })
         }
