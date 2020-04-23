@@ -17,7 +17,7 @@ export const useBusLine = () => (
     useContext(BusLineContext)
 )
 
-export const BusStop = ({ name }) => {
+export const BusStop = ({ name, ...props }) => {
     const { link, unlink } = useBusLine()
 
     const ref = useRef()
@@ -30,7 +30,7 @@ export const BusStop = ({ name }) => {
         }
     }, [name, link, unlink])
 
-    return <div ref={ref} />
+    return <div {...props} ref={ref} />
 }
 
 const getTop = (el) => (
