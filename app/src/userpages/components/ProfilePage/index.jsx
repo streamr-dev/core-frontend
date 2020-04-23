@@ -5,13 +5,10 @@ import { connect } from 'react-redux'
 import { I18n } from 'react-redux-i18n'
 import { push } from 'connected-react-router'
 import Helmet from 'react-helmet'
-import MediaQuery from 'react-responsive'
 
 import { saveCurrentUser } from '$shared/modules/user/actions'
 import Toolbar from '$shared/components/Toolbar'
 import TOCPage from '$shared/components/TOCPage'
-import ConfigureAnchorOffset from '$shared/components/ConfigureAnchorOffset'
-import { lg } from '$app/scripts/breakpoints'
 import links from '$shared/../links'
 
 import CoreLayout from '$shared/components/Layout/Core'
@@ -98,9 +95,6 @@ export class ProfilePage extends Component<Props, State> {
                 )}
             >
                 <Helmet title={`Streamr Core | ${I18n.t('userpages.title.profile')}`} />
-                <MediaQuery minWidth={lg.min}>
-                    <ConfigureAnchorOffset value={-80} />
-                </MediaQuery>
                 <TOCPage title={I18n.t('userpages.profilePage.pageTitle')}>
                     <TOCPage.Section id="profile" title={I18n.t('userpages.profilePage.profile.title')}>
                         <ProfileSettings />
