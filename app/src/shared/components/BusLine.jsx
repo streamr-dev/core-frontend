@@ -159,9 +159,8 @@ const BusLine = ({ children = null, dynamicScrollPosition }) => {
 
     const { hash } = useLocation()
 
-    // Updates current step and smooth-scrolls to it. Applied ONLY to hash changes being a result
-    // of link clicks. It's also responsible for silent scrolling to current location hash
-    // on page load.
+    // Updates current stop and smooth-scrolls to it. Applied ONLY to hash changes being a result
+    // of clicks. It's also responsible for silent scrolling to current location hash on page load.
     useEffect(() => {
         if (!flags.current.mouseDown) {
             return
@@ -178,8 +177,8 @@ const BusLine = ({ children = null, dynamicScrollPosition }) => {
 
     const history = useHistory()
 
-    // Updates location hash without storing it in the history. Applied ONLY to organic
-    // scrolling (non-programmatic).
+    // Updates location hash without storing it in the history. Applied ONLY
+    // to non-programmatic scrolling.
     useEffect(() => {
         if (!flags.current.wheel) {
             return
