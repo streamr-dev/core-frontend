@@ -86,7 +86,7 @@ const BusLine = ({ children = null, dynamicScrollPosition }) => {
                         const top = getElementTop(el)
 
                         return (
-                            bodyTop != null && top != null ? [
+                            top != null ? [
                                 ...memo,
                                 [name, top - bodyTop],
                             ] : memo
