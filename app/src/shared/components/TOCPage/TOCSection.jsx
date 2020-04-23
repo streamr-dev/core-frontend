@@ -1,9 +1,9 @@
 // @flow
 
 import React, { type Node, type Element } from 'react'
-import ScrollableAnchor from 'react-scrollable-anchor'
 import styled, { css } from 'styled-components'
 import { REGULAR, MD, LG } from '$shared/utils/styled'
+import TOCBusStop from './TOCBusStop'
 
 type Props = {
     id: string,
@@ -36,14 +36,13 @@ const Title = styled.h3`
 `
 
 export const TOCSection = ({ id, title, children, onlyDesktop }: Props) => (
-    <ScrollableAnchor id={id}>
-        <Section onlyDesktop={onlyDesktop}>
-            <Title>
-                {title}
-            </Title>
-            {children}
-        </Section>
-    </ScrollableAnchor>
+    <Section onlyDesktop={onlyDesktop}>
+        <Title>
+            <TOCBusStop name={id} />
+            {title}
+        </Title>
+        {children}
+    </Section>
 )
 
 export default TOCSection
