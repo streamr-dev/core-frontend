@@ -3,7 +3,7 @@
 import React from 'react'
 import { Link, withRouter, type Location } from 'react-router-dom'
 import cx from 'classnames'
-import scrollIntoView from 'smooth-scroll-into-view-if-needed'
+import scrollTo from '$shared/utils/scrollTo'
 import ElevatedContainer from '$shared/components/ElevatedContainer'
 
 import SvgIcon from '$shared/components/SvgIcon'
@@ -56,15 +56,7 @@ class Navigation extends React.Component<Props, State> {
     }
 
     scrollTop = () => {
-        const root = document.getElementById('root')
-
-        if (root) {
-            scrollIntoView(root, {
-                behavior: 'smooth',
-                block: 'start',
-                inline: 'nearest',
-            })
-        }
+        scrollTo(document.getElementById('root'))
     }
 
     generateMobileHeader() {
