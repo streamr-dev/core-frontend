@@ -16,14 +16,6 @@ import PngIcon from '$shared/components/PngIcon'
 import croppedImage from '$mp/assets/product_standard.png'
 import { publishModes } from '$mp/containers/EditProductPage/usePublish'
 
-// deprecated
-import CompleteContractProductPublishDialog from '$mp/components/deprecated/CompleteContractProductPublishDialog'
-import CompleteContractProductUnpublishDialog from '$mp/components/deprecated/CompleteContractProductUnpublishDialog'
-import CompletePublishDialog from '$mp/components/deprecated/CompletePublishDialog'
-import CompleteUnpublishDialog from '$mp/components/deprecated/CompleteUnpublishDialog'
-import DeprecatedReadyToPublishDialog from '$mp/components/deprecated/ReadyToPublishDialog'
-import DeprecatedReadyToUnpublishDialog from '$mp/components/deprecated/ReadyToUnpublishDialog'
-
 // marketplace
 import PublishTransactionProgress from '$mp/components/Modal/PublishTransactionProgress'
 import ConfirmSaveDialog from '$mp/components/Modal/ConfirmSaveDialog'
@@ -43,7 +35,6 @@ import PurchaseSummaryDialog from '$mp/components/Modal/PurchaseSummaryDialog'
 import ReplaceAllowanceDialog from '$mp/components/Modal/ReplaceAllowanceDialog'
 import CompletePurchaseDialog from '$mp/components/Modal/CompletePurchaseDialog'
 import ReadyToPublishDialog from '$mp/components/Modal/ReadyToPublishDialog'
-import SaveContractProductDialog from '$mp/components/Modal/SaveContractProductDialog'
 import ConnectEthereumAddressDialog from '$mp/components/Modal/ConnectEthereumAddressDialog'
 import SetAllowanceDialog from '$mp/components/Modal/SetAllowanceDialog'
 import ErrorDialog from '$mp/components/Modal/ErrorDialog'
@@ -80,121 +71,6 @@ const story = (name) => storiesOf(`Modal/${name}`, module)
             <div id="content">{storyFn()}</div>
             <div id="modal-root" />
         </div>
-    ))
-
-story('Marketplace (deprecated)/CompleteContractProductPublishDialog')
-    .add('started', () => (
-        <CompleteContractProductPublishDialog
-            publishState={transactionStates.STARTED}
-            onCancel={action('onCancel')}
-        />
-    ))
-    .add('pending', () => (
-        <CompleteContractProductPublishDialog
-            publishState={transactionStates.PENDING}
-            onCancel={action('onCancel')}
-        />
-    ))
-    .add('confirmed', () => (
-        <CompleteContractProductPublishDialog
-            publishState={transactionStates.CONFIRMED}
-            onCancel={action('onCancel')}
-        />
-    ))
-    .add('error', () => (
-        <CompleteContractProductPublishDialog
-            publishState={transactionStates.FAILED}
-            onCancel={action('onCancel')}
-        />
-    ))
-
-story('Marketplace (deprecated)/CompleteContractProductUnpublishDialog')
-    .add('started', () => (
-        <CompleteContractProductUnpublishDialog
-            publishState={transactionStates.STARTED}
-            onCancel={action('onCancel')}
-        />
-    ))
-    .add('pending', () => (
-        <CompleteContractProductUnpublishDialog
-            publishState={transactionStates.PENDING}
-            onCancel={action('onCancel')}
-        />
-    ))
-    .add('confirmed', () => (
-        <CompleteContractProductUnpublishDialog
-            publishState={transactionStates.CONFIRMED}
-            onCancel={action('onCancel')}
-        />
-    ))
-    .add('error', () => (
-        <CompleteContractProductUnpublishDialog
-            publishState={transactionStates.FAILED}
-            onCancel={action('onCancel')}
-        />
-    ))
-
-story('Marketplace (deprecated)/CompletePublishDialog')
-    .add('started', () => (
-        <CompletePublishDialog
-            publishState={transactionStates.STARTED}
-            onCancel={action('onCancel')}
-        />
-    ))
-    .add('confirmed', () => (
-        <CompletePublishDialog
-            publishState={transactionStates.CONFIRMED}
-            onCancel={action('onCancel')}
-        />
-    ))
-    .add('error', () => (
-        <CompletePublishDialog
-            publishState={transactionStates.FAILED}
-            onCancel={action('onCancel')}
-        />
-    ))
-
-story('Marketplace (deprecated)/CompleteUnpublishDialog')
-    .add('started', () => (
-        <CompleteUnpublishDialog
-            publishState={transactionStates.STARTED}
-            onCancel={action('onCancel')}
-        />
-    ))
-    .add('confirmed', () => (
-        <CompleteUnpublishDialog
-            publishState={transactionStates.CONFIRMED}
-            onCancel={action('onCancel')}
-        />
-    ))
-    .add('error', () => (
-        <CompleteUnpublishDialog
-            publishState={transactionStates.FAILED}
-            onCancel={action('onCancel')}
-        />
-    ))
-
-story('Marketplace (deprecated)/ReadyToPublishDialog')
-    .add('default', () => (
-        <DeprecatedReadyToPublishDialog
-            onCancel={action('onCancel')}
-            onContinue={action('onContinue')}
-        />
-    ))
-    .add('waiting', () => (
-        <DeprecatedReadyToPublishDialog
-            waiting
-            onCancel={action('onCancel')}
-            onContinue={action('onContinue')}
-        />
-    ))
-
-story('Marketplace (deprecated)/ReadyToUnpublishDialog')
-    .add('default', () => (
-        <DeprecatedReadyToUnpublishDialog
-            onCancel={action('onCancel')}
-            onContinue={action('onContinue')}
-        />
     ))
 
 const options = [
@@ -456,32 +332,6 @@ story('Product Editor/ReadyToPublishDialog')
             onCancel={action('onCancel')}
             onContinue={action('onContinue')}
             publishMode={publishModes.UNPUBLISH}
-        />
-    ))
-
-story('Product Editor/SaveContractProductDialog')
-    .add('started', () => (
-        <SaveContractProductDialog
-            transactionState={transactionStates.STARTED}
-            onClose={action('onClose')}
-        />
-    ))
-    .add('pending', () => (
-        <SaveContractProductDialog
-            transactionState={transactionStates.PENDING}
-            onClose={action('onClose')}
-        />
-    ))
-    .add('complete', () => (
-        <SaveContractProductDialog
-            transactionState={transactionStates.CONFIRMED}
-            onClose={action('onClose')}
-        />
-    ))
-    .add('error', () => (
-        <SaveContractProductDialog
-            transactionState={transactionStates.FAILED}
-            onClose={action('onClose')}
         />
     ))
 

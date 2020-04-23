@@ -47,11 +47,6 @@ const NoBalanceDialog = ({
             }
             break
         case paymentCurrencies.DATA:
-            // Bandaid fix to avoid deprecated purchase modal crash
-            if (!currentDataBalance) {
-                return <GetDataTokensDialog onCancel={onCancel} />
-            }
-
             if (currentDataBalance.isZero()) {
                 return <GetDataTokensDialog onCancel={onCancel} />
             }

@@ -7,7 +7,6 @@ import { Link } from 'react-router-dom'
 import Helmet from 'react-helmet'
 
 import Layout from '../Layout'
-import links from '../../../links'
 import { getFilters } from '../../utils/constants'
 import { getMyProducts } from '$mp/modules/myProductList/actions'
 import { selectMyProductList, selectFetching } from '$mp/modules/myProductList/selectors'
@@ -34,17 +33,7 @@ import styles from './products.pcss'
 export const CreateProductButton = () => {
     const { api: createProductDialog } = useModal('marketplace.createProduct')
 
-    if (!process.env.NEW_MP_CONTRACT) {
-        return (
-            <Button
-                tag={Link}
-                to={links.marketplace.createProduct}
-                className={styles.createProductButton}
-            >
-                <Translate value="userpages.products.createProduct" />
-            </Button>
-        )
-    } else if (process.env.DATA_UNIONS) {
+    if (process.env.DATA_UNIONS) {
         return (
             <Button
                 type="button"
@@ -142,7 +131,6 @@ const ProductsPage = () => {
                         const isDeploying = isDataUnion && !fetchingDataUnionStats && !!beneficiaryAddress && typeof memberCount === 'undefined'
                         const contractAddress = isDataUnion ? beneficiaryAddress : null
                         const deployed = state === productStates.DEPLOYED
-                        const publishable = deployed || state === productStates.NOT_DEPLOYED
 
                         return (
                             <ProductTile
@@ -150,19 +138,14 @@ const ProductsPage = () => {
                                 actions={
                                     <Fragment>
                                         <MenuItems.Edit id={id} />
-                                        {!process.env.NEW_MP_CONTRACT && publishable && (
-                                            <MenuItems.PublishUnpublish id={id} deployed={deployed} />
-                                        )}
-                                        {!!process.env.NEW_MP_CONTRACT && (
-                                            <MenuItems.View id={id} disabled={!deployed} />
-                                        )}
-                                        {!!process.env.NEW_MP_CONTRACT && isDataUnion && !!beneficiaryAddress && (
+                                        <MenuItems.View id={id} disabled={!deployed} />
+                                        {isDataUnion && !!beneficiaryAddress && (
                                             <MenuItems.ViewStats id={id} />
                                         )}
-                                        {!!process.env.NEW_MP_CONTRACT && isDataUnion && !!beneficiaryAddress && (
+                                        {isDataUnion && !!beneficiaryAddress && (
                                             <MenuItems.ViewDataUnion id={id} />
                                         )}
-                                        {!!process.env.NEW_MP_CONTRACT && contractAddress && (
+                                        {contractAddress && (
                                             <MenuItems.CopyContractAddress address={contractAddress} />
                                         )}
                                         <MenuItems.Copy id={id} disabled={!deployed} />

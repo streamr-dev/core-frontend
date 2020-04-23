@@ -20,7 +20,7 @@ import type {
     SmartContractDeployTransaction,
     SmartContractMetadata,
 } from '$shared/flowtype/web3-types'
-import type { EditProduct, SmartContractProduct } from '../flowtype/product-types'
+import type { Product, SmartContractProduct } from '../flowtype/product-types'
 import type { NumberString } from '$shared/flowtype/common-types'
 
 import Transaction from '$shared/utils/Transaction'
@@ -69,7 +69,7 @@ export const getContract = ({ abi, address }: SmartContractConfig, usePublicNode
     return new web3.eth.Contract(abi, address)
 }
 
-export const isUpdateContractProductRequired = (contractProduct: SmartContractProduct, editProduct: EditProduct) => (
+export const isUpdateContractProductRequired = (contractProduct: SmartContractProduct, editProduct: Product) => (
     (!arePricesEqual(contractProduct.pricePerSecond, editProduct.pricePerSecond) ||
     !areAddressesEqual(contractProduct.beneficiaryAddress, editProduct.beneficiaryAddress) ||
     contractProduct.priceCurrency !== editProduct.priceCurrency)

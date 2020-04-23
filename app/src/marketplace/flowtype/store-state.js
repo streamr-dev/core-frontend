@@ -1,11 +1,8 @@
 // @flow
 
-import { purchaseFlowSteps, publishFlowSteps, saveProductSteps } from '../utils/constants'
-
 import TransactionError from '$shared/errors/TransactionError'
 import type { CategoryIdList } from './category-types'
 import type {
-    EditProduct,
     ProductId,
     ProductIdList,
     Filter,
@@ -15,8 +12,7 @@ import type {
 } from './product-types'
 import type { Hash, Address, HashList } from '$shared/flowtype/web3-types'
 import type { StreamIdList } from '$shared/flowtype/stream-types'
-import type { Purchase } from './common-types'
-import type { ErrorInUi, TransactionState, NumberString } from '$shared/flowtype/common-types'
+import type { ErrorInUi, NumberString } from '$shared/flowtype/common-types'
 import type { Filter as UserpagesFilter } from '$userpages/flowtype/common-types'
 
 // categories
@@ -98,70 +94,12 @@ export type StreamsState = {
     error: ?ErrorInUi,
 }
 
-// purchase dialog
-export type PurchaseStep = $Values<typeof purchaseFlowSteps>
-
-export type PurchaseDialogState = {
-    productId: ?ProductId,
-    step: PurchaseStep,
-    stepParams: any,
-    data: ?Purchase,
-}
-
-// save product dialog
-export type SaveProductStep = $Values<typeof saveProductSteps>
-
-export type SaveProductDialogState = {
-    step: SaveProductStep,
-    updateFinished: boolean,
-}
-
-// publish dialog
-export type PublishStep = $Values<typeof publishFlowSteps>
-
-export type PublishDialogState = {
-    productId: ?ProductId,
-    step: PublishStep,
-}
-
-// editProduct
-export type EditProductState = {
-    product: ?EditProduct,
-    sending: boolean,
-    error: ?ErrorInUi,
-    transactionState: ?TransactionState,
-    uploadingImage: boolean,
-    imageError: ?ErrorInUi,
-    imageToUpload: ?File,
-}
-
 // Purchase
 export type PurchaseState = {
     productId: ?ProductId,
     processing: boolean,
     error: ?ErrorInUi,
     purchaseTx: ?Hash,
-}
-
-// Publish
-export type PublishState = {
-    productId: ?ProductId,
-    publishingContract: boolean,
-    contractTx: ?Hash,
-    contractError: ?ErrorInUi,
-    publishingFree: boolean,
-    freeProductState: ?TransactionState,
-    freeProductError: ?ErrorInUi,
-    setDeploying: boolean,
-    setDeployingError: ?ErrorInUi,
-}
-
-// Create or update contract product
-export type ModifyContractProductState = {
-    productId: ?ProductId,
-    processing: boolean,
-    error: ?ErrorInUi,
-    modifyTx: ?Hash,
 }
 
 // Allowance
@@ -220,22 +158,14 @@ export type StoreState = {
     categories: CategoryState,
     contractProduct: ContractProductState,
     dataUnion: DataUnionState,
-    createContractProduct: ModifyContractProductState,
-    editProduct: EditProductState,
     global: GlobalState,
     myProductList: MyProductListState,
     myPurchaseList: MyPurchaseListState,
     product: ProductState,
     productList: ProductListState,
-    publish: PublishState,
-    unpublish: PublishState,
-    publishDialog: PublishDialogState,
     purchase: PurchaseState,
-    purchaseDialog: PurchaseDialogState,
-    saveProductDialog: SaveProductDialogState,
     relatedProducts: RelatedProductListState,
     streams: StreamsState,
-    updateContractProduct: ModifyContractProductState,
     web3: Web3State,
     transactions: TransactionsState,
 }

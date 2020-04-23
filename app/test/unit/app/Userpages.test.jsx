@@ -29,10 +29,16 @@ jest.mock('$userpages/components/StreamPage/List', () => ({
         <div>Stream list</div>
     ),
 }))
+jest.mock('$userpages/components/StreamPage/Show', () => ({
+    __esModule: true,
+    default: ({ match }) => (
+        <div>Stream {match.params.id} page</div>
+    ),
+}))
 jest.mock('$userpages/components/StreamLivePreview', () => ({
     __esModule: true,
     default: ({ match }) => (
-        <div>Stream {match.params.id} preview</div>
+        <div>Stream {match.params.streamId} preview</div>
     ),
 }))
 jest.mock('$userpages/components/TransactionPage/List', () => ({
@@ -50,13 +56,13 @@ jest.mock('$userpages/components/ProfilePage', () => ({
 jest.mock('$userpages/components/PurchasesPage', () => ({
     __esModule: true,
     default: () => (
-        <div>Purchases page</div>
+        <div>Purchases list</div>
     ),
 }))
 jest.mock('$userpages/components/ProductsPage', () => ({
     __esModule: true,
     default: () => (
-        <div>Products page</div>
+        <div>Products list</div>
     ),
 }))
 jest.mock('$userpages/components/ProductsPage/Stats', () => ({
@@ -77,12 +83,6 @@ jest.mock('$mp/containers/EditProductPage', () => ({
         <div>Product {match.params.id} editor</div>
     ),
 }))
-jest.mock('$shared/components/GenericErrorPage', () => ({
-    __esModule: true,
-    default: () => (
-        <div>Error page</div>
-    ),
-}))
 jest.mock('$auth/utils/userAuthenticated', () => ({
     __esModule: true,
     userIsAuthenticated: (component) => component,
@@ -90,107 +90,185 @@ jest.mock('$auth/utils/userAuthenticated', () => ({
 /* eslint-enable react/prop-types */
 
 describe('Userpages Routes', () => {
-    let oldMpContractFlag
+    it('shows list of canvases', () => {
+        const el = mount((
+            <MemoryRouter
+                initialEntries={['/core/canvases']}
+            >
+                <Switch>
+                    {UserpagesRouter()}
+                </Switch>
+            </MemoryRouter>
+        ))
 
-    beforeEach(() => {
-        oldMpContractFlag = process.env.NEW_MP_CONTRACT
+        expect(el.text()).toBe('Canvas list')
     })
 
-    afterEach(() => {
-        process.env.NEW_MP_CONTRACT = oldMpContractFlag
+    it('shows profile', () => {
+        const el = mount((
+            <MemoryRouter
+                initialEntries={['/core/profile/edit']}
+            >
+                <Switch>
+                    {UserpagesRouter()}
+                </Switch>
+            </MemoryRouter>
+        ))
+
+        expect(el.text()).toBe('Profile page')
     })
 
-    describe('With community product (NEW_MP_CONTRACT=on)', () => {
-        it('shows product editor', () => {
-            process.env.NEW_MP_CONTRACT = 'on'
-            const el = mount((
-                <MemoryRouter
-                    initialEntries={['/core/products/123/edit']}
-                >
-                    <Switch>
-                        {UserpagesRouter()}
-                    </Switch>
-                </MemoryRouter>
-            ))
+    it('shows dashboard list', () => {
+        const el = mount((
+            <MemoryRouter
+                initialEntries={['/core/dashboards']}
+            >
+                <Switch>
+                    {UserpagesRouter()}
+                </Switch>
+            </MemoryRouter>
+        ))
 
-            expect(el.text()).toBe('Product 123 editor')
-        })
-
-        it('shows the data union stats page', () => {
-            process.env.NEW_MP_CONTRACT = 'on'
-            const el = mount((
-                <MemoryRouter
-                    initialEntries={['/core/products/123/stats']}
-                >
-                    <Switch>
-                        {UserpagesRouter()}
-                    </Switch>
-                </MemoryRouter>
-            ))
-
-            expect(el.text()).toBe('Product 123 stats')
-        })
-
-        it('shows the data union members page', () => {
-            process.env.NEW_MP_CONTRACT = 'on'
-            const el = mount((
-                <MemoryRouter
-                    initialEntries={['/core/products/123/members']}
-                >
-                    <Switch>
-                        {UserpagesRouter()}
-                    </Switch>
-                </MemoryRouter>
-            ))
-
-            expect(el.text()).toBe('Product 123 members')
-        })
+        expect(el.text()).toBe('Dashboard list')
     })
 
-    describe('With community product (NEW_MP_CONTRACT="")', () => {
-        it('does not show the product editor', () => {
-            delete process.env.NEW_MP_CONTRACT
-            const el = mount((
-                <MemoryRouter
-                    initialEntries={['/core/products/123/edit']}
-                >
-                    <Switch>
-                        {UserpagesRouter()}
-                    </Switch>
-                </MemoryRouter>
-            ))
+    it('shows stream list', () => {
+        const el = mount((
+            <MemoryRouter
+                initialEntries={['/core/streams']}
+            >
+                <Switch>
+                    {UserpagesRouter()}
+                </Switch>
+            </MemoryRouter>
+        ))
 
-            expect(el.text()).toBe('Stream list')
-        })
+        expect(el.text()).toBe('Stream list')
+    })
 
-        it('shows the data union stats page', () => {
-            delete process.env.NEW_MP_CONTRACT
-            const el = mount((
-                <MemoryRouter
-                    initialEntries={['/core/products/123/stats']}
-                >
-                    <Switch>
-                        {UserpagesRouter()}
-                    </Switch>
-                </MemoryRouter>
-            ))
+    it('shows stream details', () => {
+        const el = mount((
+            <MemoryRouter
+                initialEntries={['/core/stream/show/steamid123']}
+            >
+                <Switch>
+                    {UserpagesRouter()}
+                </Switch>
+            </MemoryRouter>
+        ))
 
-            expect(el.text()).toBe('Stream list')
-        })
+        expect(el.text()).toBe('Stream steamid123 page')
+    })
 
-        it('shows the data union members page', () => {
-            delete process.env.NEW_MP_CONTRACT
-            const el = mount((
-                <MemoryRouter
-                    initialEntries={['/core/products/123/members']}
-                >
-                    <Switch>
-                        {UserpagesRouter()}
-                    </Switch>
-                </MemoryRouter>
-            ))
+    it('shows stream preview', () => {
+        const el = mount((
+            <MemoryRouter
+                initialEntries={['/core/stream/preview/steamid123']}
+            >
+                <Switch>
+                    {UserpagesRouter()}
+                </Switch>
+            </MemoryRouter>
+        ))
 
-            expect(el.text()).toBe('Stream list')
-        })
+        expect(el.text()).toBe('Stream steamid123 preview')
+    })
+
+    it('shows transactions list', () => {
+        const el = mount((
+            <MemoryRouter
+                initialEntries={['/core/transactions']}
+            >
+                <Switch>
+                    {UserpagesRouter()}
+                </Switch>
+            </MemoryRouter>
+        ))
+
+        expect(el.text()).toBe('Transaction list')
+    })
+
+    it('shows purchases list', () => {
+        const el = mount((
+            <MemoryRouter
+                initialEntries={['/core/purchases']}
+            >
+                <Switch>
+                    {UserpagesRouter()}
+                </Switch>
+            </MemoryRouter>
+        ))
+
+        expect(el.text()).toBe('Purchases list')
+    })
+
+    it('shows products list', () => {
+        const el = mount((
+            <MemoryRouter
+                initialEntries={['/core/products']}
+            >
+                <Switch>
+                    {UserpagesRouter()}
+                </Switch>
+            </MemoryRouter>
+        ))
+
+        expect(el.text()).toBe('Products list')
+    })
+
+    it('shows product editor', () => {
+        const el = mount((
+            <MemoryRouter
+                initialEntries={['/core/products/123/edit']}
+            >
+                <Switch>
+                    {UserpagesRouter()}
+                </Switch>
+            </MemoryRouter>
+        ))
+
+        expect(el.text()).toBe('Product 123 editor')
+    })
+
+    it('shows the data union stats page', () => {
+        const el = mount((
+            <MemoryRouter
+                initialEntries={['/core/products/123/stats']}
+            >
+                <Switch>
+                    {UserpagesRouter()}
+                </Switch>
+            </MemoryRouter>
+        ))
+
+        expect(el.text()).toBe('Product 123 stats')
+    })
+
+    it('shows the data union members page', () => {
+        const el = mount((
+            <MemoryRouter
+                initialEntries={['/core/products/123/members']}
+            >
+                <Switch>
+                    {UserpagesRouter()}
+                </Switch>
+            </MemoryRouter>
+        ))
+
+        expect(el.text()).toBe('Product 123 members')
+    })
+
+    it('redirects to stream list on bad route', () => {
+        const el = mount((
+            <MemoryRouter
+                initialEntries={['/core/some/route']}
+            >
+                <Switch>
+                    {UserpagesRouter()}
+                </Switch>
+            </MemoryRouter>
+        ))
+
+        expect(el.text()).toBe('Stream list')
     })
 })

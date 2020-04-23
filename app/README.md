@@ -42,8 +42,6 @@ Community contributions are encouraged, please see the [Docs Editing Guide](http
 
 To be able to use the Marketplace, you'll need to configure these variables into your `.env` file:
 
-! TEMPORARY VAR: MARKETPLACE_CONTRACT_ADDRESS_OLD = MARKETPLACE_CONTRACT_ADDRESS while the new MP contract is being tested/upgraded. Old contract is used when NEW_MP_CONTRACT=undefined.
-
 | Variable                                          | Description                                                          |
 |---------------------------------------------------|----------------------------------------------------------------------|
 | PORT                                              | Port used by webpack devServer                                       |
@@ -51,7 +49,6 @@ To be able to use the Marketplace, you'll need to configure these variables into
 | STREAMR_API_URL                                   | Address of the environment's Backend Rest API                        |
 | STREAMR_WS_URL                                    | Address of the environment's Backend Websocket API                   |
 | STREAMR_URL                                       | API Address for Dockerized Environments                              |
-| MARKETPLACE_CONTRACT_ADDRESS_OLD                  | Address of the deployed old Marketplace contract                     |
 | MARKETPLACE_CONTRACT_ADDRESS                      | Address of the deployed latest Marketplace contract                  |
 | DATA_TOKEN_CONTRACT_ADDRESS                       | Address of the deployed DATA Token contract                          |
 | DAI_TOKEN_CONTRACT_ADDRESS                        | Address of the deployed DAI Token contract                           |
@@ -75,7 +72,6 @@ Development values (set the values in your `.env`):
 | STREAMR_API_URL                                   | `http://localhost/api/v1`                    |                                 |
 | STREAMR_WS_URL                                    | `ws://localhost/api/v1/ws`                   |                                 |
 | STREAMR_URL                                       | `http://localhost`                           |                                 |
-| MARKETPLACE_CONTRACT_ADDRESS_OLD                  | `0x0af64558670a3b761B57e465Cb80B62254b39619` |                                 |
 | MARKETPLACE_CONTRACT_ADDRESS                      | `0xF1371c0f40528406dc4f4cAf89924eA9Da49E866` |                                 |
 | DATA_TOKEN_CONTRACT_ADDRESS                       | `0xbAA81A0179015bE47Ad439566374F2Bae098686F` |                                 |
 | DAI_TOKEN_CONTRACT_ADDRESS                        | `0x642d2b84a32a9a92fec78ceaa9488388b3704898` |                                 |

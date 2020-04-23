@@ -14,12 +14,12 @@ import { RunStates } from '$editor/canvas/state'
 import CanvasPreview from '$editor/canvas/components/Preview'
 import DashboardPreview from '$editor/dashboard/components/Preview'
 import Link from '$shared/components/Link'
-import { formatPath } from '$shared/utils/url'
 import { isPaidProduct } from '$mp/utils/product'
 import { timeUnits } from '$shared/utils/constants'
 import PaymentRate from '$mp/components/PaymentRate'
 import links from '$app/src/links'
 import useExpiresIn, { formatRemainingTime } from '$shared/hooks/useExpiresIn'
+import routes from '$routes'
 
 const Tile = styled.div`
     position: relative;
@@ -218,12 +218,6 @@ type ProductTileProps = {
     showDeployingBadge?: boolean,
 }
 
-export const getProductLink = (id: string) => (process.env.NEW_MP_CONTRACT ? (
-    formatPath(links.userpages.products, id, 'edit')
-) : (
-    formatPath(links.marketplace.products, id)
-))
-
 const ProductTile = ({
     actions,
     deployed,
@@ -239,7 +233,11 @@ const ProductTile = ({
                 {actions}
             </Menu>
         )}
-        <Link to={product.id && getProductLink(product.id)}>
+        <Link
+            to={product.id && routes.editProduct({
+                id: product.id,
+            })}
+        >
             <ImageContainer src={product.imageUrl || ''}>
                 {!!showDataUnionBadge && (
                     <DataUnionBadge top left />
@@ -277,7 +275,11 @@ type MarketplaceProductTileProps = {
 
 const MarketplaceProductTile = ({ product, showDataUnionBadge, ...props }: MarketplaceProductTileProps) => (
     <Tile {...props}>
-        <Link to={formatPath(links.marketplace.products, product.id || '')}>
+        <Link
+            to={routes.product({
+                id: product.id,
+            })}
+        >
             <ImageContainer src={product.imageUrl || ''}>
                 {!!showDataUnionBadge && (
                     <DataUnionBadge top left />
