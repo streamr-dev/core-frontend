@@ -9,6 +9,7 @@ import { productStates, transactionStates, transactionTypes } from '$shared/util
 import {
     getProductFromContract,
     createContractProduct,
+    createContractProductWithWhitelist,
     updateContractProduct,
     deleteProduct,
     redeployProduct,
@@ -225,6 +226,8 @@ export default function usePublish() {
         // do the actual publish action
         if (nextMode === publishModes.PUBLISH) {
             if (isPaidProduct(product)) {
+                const createFunc = requiresWhitelist ? createContractProductWithWhitelist : createContractProduct
+
                 // TODO: figure out a better to detect if deploying data union for the first time
                 // force data union product to be published by the same account as the data union itself
                 queue.add({
@@ -233,7 +236,7 @@ export default function usePublish() {
                     requireOwner: dataUnionOwner,
                     handler: (update, done) => {
                         try {
-                            return createContractProduct({
+                            return createFunc({
                                 id: product.id || '',
                                 name: product.name,
                                 beneficiaryAddress: product.beneficiaryAddress,

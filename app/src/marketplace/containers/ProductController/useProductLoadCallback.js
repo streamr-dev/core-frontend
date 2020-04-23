@@ -71,12 +71,15 @@ export default function useProductLoadCallback() {
             // Fetch whitelist status from contract product
             let requiresWhitelist = false
             try {
-                const contractProduct = await getProductFromContract(productId)
+                const contractProduct = await getProductFromContract(productId, true)
                 // eslint-disable-next-line prefer-destructuring
                 requiresWhitelist = contractProduct.requiresWhitelist
             } catch (e) {
-                // ignore error, assume contract has not been deployed
+                // ignore error, assume product is not published
+                // eslint-disable-next-line prefer-destructuring
+                requiresWhitelist = product && product.pendingChanges && product.pendingChanges.requiresWhitelist
             }
+            if (!isMounted()) { return }
 
             const nextProduct = {
                 ...product,

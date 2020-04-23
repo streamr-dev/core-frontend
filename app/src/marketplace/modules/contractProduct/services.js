@@ -159,6 +159,34 @@ export const createContractProduct = (product: SmartContractProduct): SmartContr
     })
 }
 
+export const createContractProductWithWhitelist = (product: SmartContractProduct): SmartContractTransaction => {
+    const {
+        id,
+        name,
+        beneficiaryAddress,
+        pricePerSecond,
+        priceCurrency,
+        minimumSubscriptionInSeconds,
+        requiresWhitelist,
+    } = product
+    const currencyIndex = Object.keys(currencies).indexOf(priceCurrency)
+    validateContractProductPricePerSecond(pricePerSecond)
+    validateProductPriceCurrency(priceCurrency)
+    const transformedPricePerSecond = mapPriceToContract(pricePerSecond)
+    const methodToSend = contractMethods().createProductWithWhitelist(
+        getValidId(id),
+        name,
+        beneficiaryAddress,
+        transformedPricePerSecond,
+        currencyIndex,
+        minimumSubscriptionInSeconds,
+        requiresWhitelist,
+    )
+    return send(methodToSend, {
+        gas: gasLimits.CREATE_PRODUCT,
+    })
+}
+
 export const updateContractProduct = (product: SmartContractProduct, redeploy: boolean = false): SmartContractTransaction => {
     const {
         id,
