@@ -11,10 +11,13 @@
 }
 
 .buttonGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(10px, 1fr));
-  grid-column-gap: 0.5um;
+  display: flex;
+  justify-content: space-between;
   width: 100%;
+
+  > *:not(:last-child) {
+    margin-right: 0.5um;
+  }
 }
 
 .radio {
@@ -25,17 +28,26 @@
   }
 }
 
+.option {
+  transition: all 200ms ease-in;
+  will-change: width, flex, margin, opacity;
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
 .label {
   color: #A3A3A3;
   outline: none;
   cursor: pointer;
   user-select: none;
-  transition: all 100ms ease-in;
-  will-change: width, font-size, color, background;
+  transition: all 200ms ease-in;
+  will-change: width, font-size, color, padding, background;
   margin: 0;
-  padding: 2px 4px;
-  width: 100%;
+  padding: 4px 1um;
   border-radius: 4px;
+  max-width: fit-content;
 
   &:not(:disabled):hover {
     color: #323232;
@@ -51,18 +63,4 @@
 .radio:not(:checked) + .label:hover {
   color: #323232;
   background: #F2F1F1;
-}
-
-.onlyShowSelectedOption {
-  .radio:not(:checked),
-  .radio:not(:checked) + .label {
-    opacity: 0;
-  }
-
-  .radio:checked + .label {
-    width: auto;
-    font-size: 10px;
-    color: #525252;
-    background: #EFEFEF;
-  }
 }

@@ -157,19 +157,30 @@ function UserPermissions({
 
     const [bind, { height }] = useMeasure()
     const selectedHeight = previousIsSelected === isSelected ? 'auto' : height
-    const checkboxesStyle = useSpring({
+    const permissionControlsStyle = useSpring({
         height: isSelected ? selectedHeight : 0,
+        config: {
+            mass: 1,
+            friction: 62,
+            tension: 700,
+            precision: 0.00001,
+        },
     })
     const permissionGroupOptions = Object.keys(State.getPermissionGroups(resourceType)).filter((name) => name !== 'default')
 
     /* eslint-disable jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */
     return (
         <div
-            className={cx(styles.userPermissions, className)}
+            className={cx(styles.userPermissions, className, {
+                [styles.isSelected]: isSelected,
+            })}
             onClick={() => onSelect(userId)}
         >
             <div className={styles.permissionsHeader}>
-                <h4>{userId}</h4>
+                <div className={styles.permissionsHeaderTitle}>
+                    <h4>{userId}</h4>
+                    <div className={styles.selectedGroup}>{startCase(selectedGroupName)}</div>
+                </div>
                 <Button
                     kind="secondary"
                     onClick={() => removeUser(userId)}
@@ -178,38 +189,42 @@ function UserPermissions({
                     <SvgIcon name="trash" className={styles.trashIcon} />
                 </Button>
             </div>
-            <RadioButtonGroup
-                name={`UserPermissions${userId}`}
-                options={permissionGroupOptions}
-                onlyShowSelectedOption={!isSelected}
-                onChange={(name) => {
-                    if (name !== 'custom') {
-                        updatePermission(userId, State.getPermissionsForGroupName(resourceType, name))
-                        setIsCustom(false)
-                    } else {
-                        setIsCustom(true)
-                    }
-                }}
-                selectedOption={selectedGroupName}
-            />
-            <animated.div className={styles.permissionsCheckboxesWrapper} style={checkboxesStyle}>
-                <animated.div {...bind} className={styles.permissionsCheckboxes}>
-                    {Object.entries(userPermissions).map(([permission, value]) => (
-                        <React.Fragment key={permission}>
-                            <Checkbox
-                                className={styles.checkbox}
-                                id={`permission${permission}`}
-                                value={value}
-                                onChange={() => updatePermission(userId, {
-                                    [permission]: !value,
-                                })}
-                            />
-                            <label htmlFor={`permission${permission}`}>
-                                {startCase(permission)}
-                            </label>
-                        </React.Fragment>
-                    ))}
-                </animated.div>
+            <animated.div className={styles.permissionControls} style={permissionControlsStyle}>
+                <div {...bind}>
+                    <RadioButtonGroup
+                        name={`UserPermissions${userId}`}
+                        className={cx(styles.groupSelector, {
+                            [styles.isSelected]: isSelected,
+                        })}
+                        options={permissionGroupOptions}
+                        onChange={(name) => {
+                            if (name !== 'custom') {
+                                updatePermission(userId, State.getPermissionsForGroupName(resourceType, name))
+                                setIsCustom(false)
+                            } else {
+                                setIsCustom(true)
+                            }
+                        }}
+                        selectedOption={selectedGroupName}
+                    />
+                    <div className={styles.permissionsCheckboxes}>
+                        {Object.entries(userPermissions).map(([permission, value]) => (
+                            <React.Fragment key={permission}>
+                                <Checkbox
+                                    className={styles.checkbox}
+                                    id={`permission${permission}`}
+                                    value={value}
+                                    onChange={() => updatePermission(userId, {
+                                        [permission]: !value,
+                                    })}
+                                />
+                                <label htmlFor={`permission${permission}`}>
+                                    {startCase(permission)}
+                                </label>
+                            </React.Fragment>
+                        ))}
+                    </div>
+                </div>
             </animated.div>
         </div>
     )

@@ -47,20 +47,23 @@
     border-bottom: 1px solid #EFEFEF;
   }
 
-  > *:not(:last-child) {
-    margin-bottom: 1.4um;
-  }
-
   .permissionsHeader {
     display: grid;
     grid-template-columns: 1fr auto;
     align-items: center;
+
+    .permissionsHeaderTitle {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
 
     h4 {
       font-size: inherit;
       margin: 0;
       line-height: normal;
       padding: 0;
+      margin-bottom: 2px;
     }
 
     .button {
@@ -81,9 +84,36 @@
     }
   }
 
-  .permissionsCheckboxesWrapper {
+  .permissionControls {
+    opacity: 0;
+    transition: opacity 300ms;
     overflow: hidden;
     will-change: height;
+  }
+
+  .selectedGroup {
+    padding: 2px 4px;
+    font-size: 10px;
+    color: #525252;
+    background: #EFEFEF;
+    transition: all 300ms;
+    display: inline-block;
+    line-height: normal;
+    opacity: 1;
+  }
+
+  &.isSelected {
+    .selectedGroup {
+      opacity: 0;
+    }
+
+    .permissionControls {
+      opacity: 1;
+    }
+  }
+
+  .groupSelector {
+    margin-bottom: 1.4um;
   }
 
   .permissionsCheckboxes {
