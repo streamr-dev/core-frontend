@@ -746,6 +746,9 @@ msgstr "Pending"
 msgid "userpages##transactions##status##completed"
 msgstr "Confirmed"
 
+msgid "userpages##profilePage##save##successNotification"
+msgstr "Your settings have been saved"
+
 msgid "userpages##profilePage##toolbar##cancel"
 msgstr "Cancel"
 

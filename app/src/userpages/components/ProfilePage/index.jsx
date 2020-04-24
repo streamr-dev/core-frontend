@@ -24,6 +24,8 @@ import IntegrationKeyHandler from './IntegrationKeyHandler'
 import IdentityHandler from './IdentityHandler/index'
 import DeleteAccount from './DeleteAccount'
 import LoadingIndicator from '$userpages/components/LoadingIndicator'
+import Notification from '$shared/utils/Notification'
+import { NotificationIcon } from '$shared/utils/constants'
 import styles from './profilePage.pcss'
 import routes from '$routes'
 
@@ -46,10 +48,20 @@ export const ProfilePage = () => {
                 await doSaveCurrentUser()
 
                 if (isMounted()) {
+                    Notification.push({
+                        title: I18n.t('userpages.profilePage.save.successNotification'),
+                        icon: NotificationIcon.CHECKMARK,
+                    })
+
                     redirectToUserPages()
                 }
             } catch (e) {
                 console.warn(e)
+
+                Notification.push({
+                    title: e.message,
+                    icon: NotificationIcon.ERROR,
+                })
             }
         })
     ), [wrap, doSaveCurrentUser, redirectToUserPages, isMounted])

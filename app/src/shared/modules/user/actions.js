@@ -162,17 +162,9 @@ export const saveCurrentUser = () => async (dispatch: Function, getState: Functi
     return services.putUser(user)
         .then((data) => {
             dispatch(saveCurrentUserSuccess(data))
-            Notification.push({
-                title: 'Your settings have been saved',
-                icon: NotificationIcon.CHECKMARK,
-            })
         })
         .catch((e) => {
             dispatch(saveCurrentUserFailure(e))
-            Notification.push({
-                title: e.message,
-                icon: NotificationIcon.ERROR,
-            })
             throw e
         })
 }
