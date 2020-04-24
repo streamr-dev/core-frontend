@@ -67,15 +67,22 @@
     }
 
     .button {
-      display: inline-flex;
+      display: flex;
+      align-items: center;
       justify-content: center;
-      padding: 0.5um;
+      transition: all 0.1s ease-in;
+      background: transparent;
+      height: 24px;
+      width: 24px;
       opacity: 0;
-      transition: opacity 0.1s;
+      padding: 0;
+      border: none;
     }
 
     &:hover .button {
+      background: #F8F8F8;
       opacity: 1;
+      border: none;
     }
 
     .trashIcon {
