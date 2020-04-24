@@ -6,7 +6,6 @@ import { withKnobs, text, boolean } from '@storybook/addon-knobs'
 import { action } from '@storybook/addon-actions'
 import styles from '@sambego/storybook-styles'
 
-import { Provider as ModalPortalProvider } from '$shared/contexts/ModalPortal'
 import Avatar from '.'
 
 const stories =
@@ -16,14 +15,6 @@ const stories =
             padding: '3rem',
         }))
         .addDecorator(withKnobs)
-        .addDecorator((callback) => (
-            <React.Fragment>
-                <div id="modal-root" />
-                <ModalPortalProvider>
-                    {callback()}
-                </ModalPortalProvider>
-            </React.Fragment>
-        ))
 
 const user = {
     email: 'tester1@streamr.com',
@@ -40,26 +31,8 @@ stories.add('default', () => (
     />
 ))
 
-stories.add('editable', () => (
-    <Avatar
-        editable
-        user={user}
-        onImageChange={action('onImageChange')}
-    />
-))
-
-stories.add('editable (disabled)', () => (
-    <Avatar
-        editable
-        user={user}
-        onImageChange={() => Promise.resolve()}
-        disabled
-    />
-))
-
 stories.add('default (mobile)', () => (
     <Avatar
-        editable={boolean('Editable', false)}
         user={user}
         onImageChange={() => Promise.resolve()}
     />
@@ -71,7 +44,6 @@ stories.add('default (mobile)', () => (
 
 stories.add('eth address', () => (
     <Avatar
-        editable={boolean('Editable', false)}
         user={user}
         onImageChange={() => Promise.resolve()}
     />
@@ -79,7 +51,6 @@ stories.add('eth address', () => (
 
 stories.add('eth address (mobile)', () => (
     <Avatar
-        editable={boolean('Editable', false)}
         user={user}
         onImageChange={() => Promise.resolve()}
     />

@@ -36,6 +36,7 @@ export const ProfilePage = () => {
     const { isPending: isAddPrivateKeyPending } = usePending('user.ADD_PRIVATE_KEY')
     const { isPending: isDeleteAccountPending } = usePending('user.DELETE_ACCOUNT')
     const { isPending: isChangePasswordPending } = usePending('user.CHANGE_PASSWORD')
+    const { isPending: isAvatarUploadPending } = usePending('user.UPLOAD_AVATAR')
     const isMounted = useIsMounted()
     const dispatch = useDispatch()
 
@@ -72,7 +73,8 @@ export const ProfilePage = () => {
         isAddIdentityPending ||
         isAddPrivateKeyPending ||
         isDeleteAccountPending ||
-        isChangePasswordPending
+        isChangePasswordPending ||
+        isAvatarUploadPending
     )
 
     return (

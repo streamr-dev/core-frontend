@@ -32,4 +32,10 @@
   &:focus {
     outline: none;
   }
+
+  &[disabled] {
+    filter: alpha(opacity=50);
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 }

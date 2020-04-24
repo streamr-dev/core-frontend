@@ -895,6 +895,9 @@ msgstr "Save avatar"
 msgid "modal##avatar##saveAndApplyAvatar"
 msgstr "Save & Apply"
 
+msgid "modal##avatar##successNotification"
+msgstr "Avatar updated"
+
 msgid "modal##cropImage##title"
 msgstr "Scale and crop your image"
 

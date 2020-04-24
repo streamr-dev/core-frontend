@@ -43,8 +43,8 @@ import CropImageModal from '$mp/components/Modal/CropImageModal'
 // userpages
 import ConfirmCsvImportDialog from '$userpages/components/StreamPage/ConfirmCsvImportDialog'
 import SnippetDialog from '$userpages/components/SnippetDialog'
-import AvatarUploadDialog from '$userpages/components/Avatar/AvatarUploadDialog'
-import CropAvatarDialog from '$userpages/components/Avatar/CropAvatarDialog'
+import AvatarUploadDialog from '$userpages/components/ProfilePage/ProfileSettings/EditAvatarDialog/AvatarUploadDialog'
+import CropAvatarDialog from '$userpages/components/ProfilePage/ProfileSettings/EditAvatarDialog/CropAvatarDialog'
 import { ChangePasswordDialogComponent } from '$userpages/components/ProfilePage/ProfileSettings/ChangePasswordDialog'
 import { SignatureRequestDialog, DuplicateIdentityDialog } from '$userpages/components/ProfilePage/IdentityHandler/IdentityChallengeDialog'
 import IdentityNameDialog from '$userpages/components/ProfilePage/IdentityHandler/IdentityNameDialog'
@@ -881,33 +881,33 @@ story('Profile/AvatarUploadDialog')
         <AvatarUploadDialog
             originalImage=""
             onClose={action('onClose')}
-            onSave={action('onSave')}
+            onUpload={action('onUpload')}
         />
     ))
     .add('with original image', () => (
         <AvatarUploadDialog
             originalImage="https://miro.medium.com/fit/c/256/256/1*NfJkA-ChiQtYLRBOLryZxQ.jpeg"
             onClose={action('onClose')}
-            onSave={action('onSave')}
+            onUpload={action('onUpload')}
         />
     ))
 
 story('Profile/CropAvatarDialog')
-    .add('default', () => {
-        const cropAndSave = action('cropAndSave')
-        const saveAction = (...args) => new Promise((resolve) => {
-            cropAndSave(...args)
-            resolve()
-        })
-
-        return (
-            <CropAvatarDialog
-                originalImage={croppedImage}
-                onClose={action('onClose')}
-                cropAndSave={saveAction}
-            />
-        )
-    })
+    .add('default', () => (
+        <CropAvatarDialog
+            originalImage={croppedImage}
+            onClose={action('onClose')}
+            onSave={action('onSave')}
+        />
+    ))
+    .add('waiting', () => (
+        <CropAvatarDialog
+            originalImage={croppedImage}
+            onClose={action('onClose')}
+            onSave={action('onSave')}
+            waiting
+        />
+    ))
 
 story('Profile/ChangePasswordDialog')
     .add('default', () => (
