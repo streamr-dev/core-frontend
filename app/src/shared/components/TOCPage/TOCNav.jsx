@@ -1,11 +1,9 @@
 // @flow
 
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 
 export const Link = styled.a`
-    ${({ active }) => !active && css`
-        color: #323232 !important;
-    `}
+    color: #${({ active }) => (active ? '0324ff' : '323232')} !important;
 `
 
 const TOCNav = styled.div`
