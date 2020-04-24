@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useCallback, useEffect, useRef, useMemo } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
-import scrollEventOptions from '$shared/utils/scrollEventOptions'
+import passiveEventOptions from '$shared/utils/passiveEventOptions'
 import getScrollY from '$shared/utils/getScrollY'
 import scrollTo from '$shared/utils/scrollTo'
 import useIsMounted from '$shared/hooks/useIsMounted'
@@ -116,10 +116,10 @@ const BusLine = ({ children = null, dynamicScrollPosition }) => {
         }
 
         window.addEventListener('mousedown', onMouseDown)
-        window.addEventListener('wheel', onWheel, scrollEventOptions)
+        window.addEventListener('wheel', onWheel, passiveEventOptions)
 
         return () => {
-            window.removeEventListener('wheel', onWheel, scrollEventOptions)
+            window.removeEventListener('wheel', onWheel, passiveEventOptions)
             window.removeEventListener('mousedown', onMouseDown)
         }
     }, [])
@@ -159,10 +159,10 @@ const BusLine = ({ children = null, dynamicScrollPosition }) => {
             }
         }
 
-        window.addEventListener('scroll', onScroll, scrollEventOptions)
+        window.addEventListener('scroll', onScroll)
 
         return () => {
-            window.removeEventListener('scroll', onScroll, scrollEventOptions)
+            window.removeEventListener('scroll', onScroll)
         }
     }, [defaultStop, dynamicScrollPosition, positions, isMounted])
 
