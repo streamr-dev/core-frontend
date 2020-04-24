@@ -116,10 +116,10 @@ const BusLine = ({ children = null, dynamicScrollPosition }) => {
         }
 
         window.addEventListener('mousedown', onMouseDown)
-        window.addEventListener('wheel', onWheel)
+        window.addEventListener('wheel', onWheel, scrollEventOptions)
 
         return () => {
-            window.removeEventListener('wheel', onWheel)
+            window.removeEventListener('wheel', onWheel, scrollEventOptions)
             window.removeEventListener('mousedown', onMouseDown)
         }
     }, [])
