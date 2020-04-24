@@ -72,15 +72,16 @@ const UnstyledTOCPage = ({ children, title, ...props }: Props) => {
 const TOCPage = styled(UnstyledTOCPage)`
     margin: 0 auto;
     max-width: 624px;
-    padding: 0 32px 3rem;
+    padding: 0 32px 10rem;
 
     @media (min-width: ${MD}px) {
+        padding: 0 32px 5rem;
         width: 896px;
     }
 
     @media (min-width: ${LG}px) {
         max-width: none;
-        padding: 0 0 3rem;
+        padding-top: 0;
         width: 928px;
 
         > div {
