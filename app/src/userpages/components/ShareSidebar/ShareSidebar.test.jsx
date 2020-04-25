@@ -138,5 +138,33 @@ describe('ShareSidebar Permission Handling', () => {
                 resourceType,
             })).toBeTruthy()
         })
+
+        it('can detect changed when multiple identical permissions', () => {
+            let users = State.usersFromPermissions(resourceType, permissions)
+            users = State.addUser(users, newUserId, { get: true })
+            const updatedPermissions = State.permissionsFromUsers(resourceType, users)
+            const oldReadPerm = updatedPermissions.find(({ user, operation }) => user === newUserId && operation === 'canvas_get')
+            expect(oldReadPerm).toBeTruthy()
+            const duplicateOldReadPermision = {
+                ...oldReadPerm,
+                id: Math.random(),
+            }
+            updatedPermissions.push(duplicateOldReadPermision)
+
+            users = State.updatePermission(users, newUserId, { get: false })
+            const diff = State.diffUsersPermissions({
+                newUsers: users,
+                oldPermissions: updatedPermissions,
+                resourceType,
+            })
+            expect(diff.added).toEqual([])
+            expect(diff.removed).toEqual([oldReadPerm, duplicateOldReadPermision])
+
+            expect(State.hasPermissionsChanges({
+                newUsers: users,
+                oldPermissions: updatedPermissions,
+                resourceType,
+            })).toBeTruthy()
+        })
     })
 })

@@ -247,12 +247,15 @@ export function diffUsersPermissions({ oldPermissions, newUsers, resourceType } 
                         operation,
                     })
                 } else if (prev[name] && !curr[name]) {
-                    const p = oldPermissions.find((p) => p.user === userId && p.operation === operation)
-                    if (!p) { return }
-                    removed.push({
-                        id: p.id,
-                        user: userId,
-                        operation,
+                    // note there could be multiple permissions of same operation + user, we want to remove them all
+                    const matchingPermissions = oldPermissions.filter((p) => p.user === userId && p.operation === operation)
+                    if (!matchingPermissions.length) { return }
+                    matchingPermissions.forEach((p) => {
+                        removed.push({
+                            id: p.id,
+                            user: userId,
+                            operation,
+                        })
                     })
                 }
             })
