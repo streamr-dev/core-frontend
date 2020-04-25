@@ -32,9 +32,9 @@ describe('ShareSidebar Permission Handling', () => {
     })
 
     describe('usersFromPermissions', () => {
-        it('creates dictionary of users + permissions', async () => {
+        it('creates dictionary of users + permissions', () => {
             const users = State.usersFromPermissions(resourceType, permissions)
-            expect(users.anonymous).toBeTruthy()
+            expect(users.anonymous).toBeTruthy() // anonymous user should be added
             expect(users[user.username]).toBeTruthy()
         })
     })
@@ -62,6 +62,7 @@ describe('ShareSidebar Permission Handling', () => {
 
     describe('diff/hasPermissionsChanges', () => {
         const newUserId = 'test@test.com'
+
         it('handles no changes', () => {
             const users = State.usersFromPermissions(resourceType, permissions)
             const diff = State.diffUsersPermissions({
@@ -79,6 +80,7 @@ describe('ShareSidebar Permission Handling', () => {
                 resourceType,
             })).toBe(false)
         })
+
         it('can detect added', () => {
             const users = State.usersFromPermissions(resourceType, permissions)
             const diff = State.diffUsersPermissions({

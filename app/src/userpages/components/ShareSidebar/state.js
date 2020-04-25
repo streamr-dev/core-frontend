@@ -190,7 +190,8 @@ export function usersFromPermissions(resourceType, permissions) {
     })
 
     if (!users.anonymous) {
-        users.anonymous = Object.assign({}, getPermissionsForGroupName(resourceType, 'default'))
+        // anonymous users have no permissions by default
+        users.anonymous = Object.assign({}, getEmptyPermissions(resourceType))
     }
     return users
 }
@@ -202,9 +203,10 @@ export function usersFromPermissions(resourceType, permissions) {
 export function userToPermissions(resourceType, userId, userPermissions) {
     return Object.entries(userPermissions).map(([operation, value]) => {
         if (!value) { return undefined }
+        const operationValue = PERMISSIONS[resourceType][operation]
         return {
             user: userId,
-            operation: PERMISSIONS[resourceType][operation],
+            operation: operationValue,
         }
     }).filter(Boolean)
 }
@@ -270,4 +272,35 @@ export function hasPermissionsChanges({ oldPermissions, newUsers, resourceType }
         resourceType,
     })
     return !!(diff.added.length || diff.removed.length)
+}
+
+/**
+ * Convert server anonymous permission to look like a regular user permission.
+ * Allows treating anonymous permission like regular user permission.
+ * Noop if not anonymous user.
+ * Use on permission data from server.
+ * i.e. { anonymous: true, … } -> { user: 'anonymous', … }
+ */
+
+export function fromAnonymousPermission(anonymousPermission) {
+    if (!anonymousPermission.anonymous) { return anonymousPermission }
+    const permission = Object.assign({}, anonymousPermission)
+    delete permission.anonymous
+    permission.user = 'anonymous'
+    return permission
+}
+
+/**
+ * Convert regular user permission to server anonymous permission.
+ * Noop if not anonymous user.
+ * Use on permissions before sending to server.
+ * i.e. { user: 'anonymous', … } -> { anonymous: true, … }
+ */
+
+export function toAnonymousPermission(permission) {
+    if (permission.user !== 'anonymous') { return permission }
+    const anonymousPermission = Object.assign({}, permission)
+    delete anonymousPermission.user
+    anonymousPermission.anonymous = true
+    return anonymousPermission
 }

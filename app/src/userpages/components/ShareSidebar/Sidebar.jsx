@@ -1,6 +1,6 @@
 import path from 'path'
 
-import React, { useCallback, useState, useRef, useEffect } from 'react'
+import React, { useCallback, useState, useRef, useEffect, useMemo } from 'react'
 import { connect } from 'react-redux'
 import { Translate, I18n } from 'react-redux-i18n'
 import cx from 'classnames'
@@ -36,16 +36,16 @@ const getApiUrl = (resourceType, resourceId) => {
     return `${process.env.STREAMR_API_URL}/${path.join(urlPart, resourceId)}`
 }
 
-const getResourcePermissions = ({ resourceType, resourceId }) => api.get({
+const getResourcePermissions = async ({ resourceType, resourceId }) => api.get({
     url: `${getApiUrl(resourceType, resourceId)}/permissions`,
 })
 
-const setResourcePermission = ({ resourceType, resourceId, data }) => api.post({
+const setResourcePermission = async ({ resourceType, resourceId, data }) => api.post({
     url: `${getApiUrl(resourceType, resourceId)}/permissions`,
     data,
 })
 
-const removeResourcePermission = ({ resourceType, resourceId, data }) => api.del({
+const removeResourcePermission = async ({ resourceType, resourceId, data }) => api.del({
     url: `${getApiUrl(resourceType, resourceId)}/permissions/${data.id}`,
     data,
 })
@@ -145,6 +145,7 @@ function UserPermissions({
     className,
     onSelect,
     isSelected,
+    error,
 }) {
     const detectedGroupName = State.findPermissionGroupName(resourceType, userPermissions)
     // custom handling:
@@ -226,6 +227,11 @@ function UserPermissions({
                     </div>
                 </div>
             </animated.div>
+            {error && (
+                <div className={styles.errorMessage}>
+                    {error.message}
+                </div>
+            )}
         </div>
     )
     /* eslint-enable jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */
@@ -241,27 +247,28 @@ function unsavedUnloadWarning(event) {
 const ShareSidebar = connect(({ user }) => ({
     currentUser: user && user.user && user.user.username,
 }))((props) => {
-    const {
-        currentUser,
-        permissions,
-        resourceType,
-        resourceId,
-        onClose,
-    } = props
+    const { currentUser, resourceType, resourceId, onClose } = props
+
+    let { permissions } = props
+
+    // convert permission.anonymous to permission.user = 'anonymous', if needed
+    permissions = useMemo(() => permissions.map((p) => State.fromAnonymousPermission(p)), [permissions])
+
     const propsRef = useRef(props)
     propsRef.current = props
-    const opts = options.map((o) => ({
+    const whoHasAccessOptions = options.map((o) => ({
         label: I18n.t(`modal.shareResource.${o}`),
         value: o,
     }))
 
-    const users = State.usersFromPermissions(resourceType, permissions)
+    const users = useMemo(() => State.usersFromPermissions(resourceType, permissions), [resourceType, permissions])
 
     const [currentUsers, setCurrentUsers] = useState(users)
     const [newUserIdList, setNewUserIdList] = useState([])
     const [selectedUserId, setSelectedUserId] = useState()
 
     const addUser = useCallback((userId) => {
+        if (userId === 'anonymous') { return } // don't interfere with anonymous user
         setSelectedUserId(userId)
         // update state
         setCurrentUsers((prevUsers) => (
@@ -272,6 +279,7 @@ const ShareSidebar = connect(({ user }) => ({
     }, [setCurrentUsers, resourceType])
 
     const removeUser = useCallback((userId) => {
+        if (userId === 'anonymous') { return } // don't interfere with anonymous user
         setNewUserIdList((ids) => ids.filter((id) => id !== userId)) // remove user from new users list
         setCurrentUsers((prevUsers) => State.removeUser(prevUsers, userId))
     }, [setCurrentUsers])
@@ -303,30 +311,65 @@ const ShareSidebar = connect(({ user }) => ({
         }
     }, [hasChanges])
 
+    const [userErrors, setUserErrors] = useState({})
+
+    const setUserUpdateError = useCallback((userId, err) => {
+        setUserErrors((prevUserErrors) => ({
+            ...prevUserErrors,
+            [userId]: err,
+        }))
+    }, [setUserErrors])
+
+    const resetUserUpdateError = useCallback((userId) => {
+        setUserErrors((prevUserErrors) => {
+            const nextErrors = Object.assign({}, prevUserErrors)
+            delete nextErrors[userId]
+            return nextErrors
+        })
+    }, [setUserErrors])
+
     const onSaveCallback = useCallback(async () => {
         const { added, removed } = State.diffUsersPermissions({
             oldPermissions: permissions,
             newUsers: currentUsers,
             resourceType,
         })
+        let hasError = false
         return Promise.all([
-            ...added.map((data) => (
-                setResourcePermission({
+            ...added.map(async (data) => {
+                const userId = data.user
+                return setResourcePermission({
                     resourceType,
                     resourceId,
-                    data,
+                    data: State.toAnonymousPermission(data),
+                }).then(() => (
+                    resetUserUpdateError(userId)
+                ), (error) => {
+                    hasError = true
+                    console.error(error)
+                    setUserUpdateError(userId, error)
                 })
-            )),
-            ...removed.map((data) => {
+            }),
+            ...removed.map(async (data) => {
                 if (data.id == null) { return undefined }
+                const userId = data.user
                 return removeResourcePermission({
                     resourceType,
                     resourceId,
-                    data,
+                    data: State.toAnonymousPermission(data),
+                }).then(() => (
+                    resetUserUpdateError(userId)
+                ), (error) => {
+                    hasError = true
+                    console.error(error)
+                    setUserUpdateError(userId, error)
                 })
             }),
-        ]).then(() => propsRef.current.loadPermissions())
-    }, [currentUsers, permissions, resourceType, resourceId, propsRef])
+        ]).then(() => {
+            if (hasError) { return }
+            return propsRef.current.loadPermissions()
+        })
+    }, [currentUsers, permissions, resourceType, resourceId, propsRef, resetUserUpdateError, setUserUpdateError])
 
     const [isSavingState, onSave] = useAsyncCallbackWithState(onSaveCallback)
     const { isLoading: isSaving, error } = isSavingState
@@ -362,8 +405,8 @@ const ShareSidebar = connect(({ user }) => ({
                 <SelectInput
                     inputId={`${uid}AnonAccessSelect`}
                     name="name"
-                    options={opts}
-                    value={anonymousPermissions.read ? opts[1] : opts[0]}
+                    options={whoHasAccessOptions}
+                    value={anonymousPermissions.get ? whoHasAccessOptions[1] : whoHasAccessOptions[0]}
                     onChange={onAnonymousAccessChange}
                     required
                     isSearchable={false}
@@ -385,6 +428,7 @@ const ShareSidebar = connect(({ user }) => ({
                         permissions={permissions}
                         isSelected={selectedUserId === userId}
                         onSelect={setSelectedUserId}
+                        error={userErrors[userId]}
                     />
                 ))}
             </div>
