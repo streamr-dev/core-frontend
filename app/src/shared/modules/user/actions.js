@@ -3,9 +3,6 @@
 import { createAction } from 'redux-actions'
 import { push } from 'connected-react-router'
 
-import Notification from '$shared/utils/Notification'
-import { NotificationIcon } from '$shared/utils/constants'
-
 import type { ErrorInUi, ReduxActionCreator } from '$shared/flowtype/common-types'
 import type { User, PasswordUpdate } from '$shared/flowtype/user-types'
 import type {
@@ -142,10 +139,6 @@ export const updateCurrentUserImage = (image: ?File) => (dispatch: Function, get
         })
         .catch((e) => {
             dispatch(updateAvatarFailure(e))
-            Notification.push({
-                title: e.message,
-                icon: NotificationIcon.ERROR,
-            })
             throw e
         })
 }
