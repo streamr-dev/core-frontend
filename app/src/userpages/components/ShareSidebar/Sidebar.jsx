@@ -1,6 +1,6 @@
 import path from 'path'
 
-import React, { useCallback, useState, useRef, useEffect, useMemo } from 'react'
+import React, { useCallback, useState, useRef, useEffect, useMemo, useContext, useReducer } from 'react'
 import { connect } from 'react-redux'
 import { Translate, I18n } from 'react-redux-i18n'
 import cx from 'classnames'
@@ -11,6 +11,7 @@ import * as api from '$shared/utils/api'
 import SelectInput from '$ui/Select'
 import RadioButtonGroup from './RadioButtonGroup'
 import Button from '$shared/components/Button'
+import { SidebarContext } from '$shared/components/Sidebar/SidebarProvider'
 import Checkbox from '$shared/components/Checkbox'
 import SvgIcon from '$shared/components/SvgIcon'
 import useUniqueId from '$shared/hooks/useUniqueId'
@@ -94,6 +95,44 @@ function useAsyncCallbackWithState(callback) {
     return [state, run]
 }
 
+function usePrevious(value) {
+    const ref = useRef()
+    useEffect(() => {
+        ref.current = value
+    }, [value])
+    return ref.current
+}
+
+function useSlideIn({ isVisible } = {}) {
+    isVisible = !!isVisible
+    const previousIsVisible = !!usePrevious(isVisible)
+
+    const [bind, { height }] = useMeasure()
+    const justChanged = previousIsVisible !== isVisible
+
+    const [, forceUpdate] = useReducer((x) => x + 1, 0)
+    const targetHeight = isVisible ? height : 0
+    const selectedHeight = justChanged ? height : targetHeight
+
+    useEffect(() => {
+        if (justChanged) {
+            forceUpdate()
+        }
+    }, [justChanged, forceUpdate])
+
+    const style = useSpring({
+        height: selectedHeight,
+        config: {
+            mass: 1,
+            friction: 62,
+            tension: 700,
+            precision: 0.00001,
+        },
+    })
+
+    return [bind, style]
+}
+
 function InputNewShare({ onChange }) {
     const [value, setValue] = useState('')
     const onChangeValue = useCallback((e) => {
@@ -128,14 +167,6 @@ function InputNewShare({ onChange }) {
     )
 }
 
-function usePrevious(value) {
-    const ref = useRef()
-    useEffect(() => {
-        ref.current = value
-    }, [value])
-    return ref.current
-}
-
 function UserPermissions({
     resourceType,
     userId,
@@ -154,19 +185,9 @@ function UserPermissions({
 
     const [isCustom, setIsCustom] = useState(detectedGroupName === 'custom')
     const selectedGroupName = (isCustom && detectedGroupName !== 'custom') ? 'custom' : detectedGroupName
-    const previousIsSelected = usePrevious(isSelected)
 
-    const [bind, { height }] = useMeasure()
-    const selectedHeight = previousIsSelected === isSelected ? 'auto' : height
-    const permissionControlsStyle = useSpring({
-        height: isSelected ? selectedHeight : 0,
-        config: {
-            mass: 1,
-            friction: 62,
-            tension: 700,
-            precision: 0.00001,
-        },
-    })
+    const [bind, permissionControlsStyle] = useSlideIn({ isVisible: isSelected })
+
     const permissionGroupOptions = Object.keys(State.getPermissionGroups(resourceType)).filter((name) => name !== 'default')
 
     /* eslint-disable jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */
@@ -328,7 +349,18 @@ const ShareSidebar = connect(({ user }) => ({
         })
     }, [setUserErrors])
 
+    const [didTryClose, setDidTryClose] = useState(false)
+
+    useEffect(() => {
+        if (!didTryClose) { return }
+        // hide 'save or cancel' error message after change
+        setDidTryClose(false)
+    }, [setDidTryClose, currentUsers])
+
+    const [bindTryCloseWarning, tryCloseWarningStyle] = useSlideIn({ isVisible: didTryClose })
+
     const onSaveCallback = useCallback(async () => {
+        setDidTryClose(false)
         const { added, removed } = State.diffUsersPermissions({
             oldPermissions: permissions,
             newUsers: currentUsers,
@@ -369,10 +401,30 @@ const ShareSidebar = connect(({ user }) => ({
             if (hasError) { return }
             return propsRef.current.loadPermissions()
         })
-    }, [currentUsers, permissions, resourceType, resourceId, propsRef, resetUserUpdateError, setUserUpdateError])
+    }, [currentUsers, permissions, resourceType, resourceId, propsRef, resetUserUpdateError, setUserUpdateError, setDidTryClose])
 
     const [isSavingState, onSave] = useAsyncCallbackWithState(onSaveCallback)
     const { isLoading: isSaving, error } = isSavingState
+
+    const { addTransitionCheck, removeTransitionCheck } = useContext(SidebarContext)
+    const didCancelRef = useRef(false)
+    const onCancel = useCallback(() => {
+        didCancelRef.current = true
+        onClose()
+    }, [onClose])
+
+    const check = useCallback(() => {
+        if (!hasChanges) { return true }
+        if (didCancelRef.current) { return true }
+        setDidTryClose(true)
+        if (isSaving) { return false }
+        return false
+    }, [hasChanges, isSaving, setDidTryClose])
+
+    useEffect(() => {
+        addTransitionCheck(check)
+        return () => removeTransitionCheck(check)
+    }, [check, addTransitionCheck, removeTransitionCheck])
 
     if (error) { return error.message }
     if (!permissions) { return null }
@@ -432,6 +484,14 @@ const ShareSidebar = connect(({ user }) => ({
                     />
                 ))}
             </div>
+            <animated.div className={styles.errorMessageWrapper} style={tryCloseWarningStyle}>
+                <div {...bindTryCloseWarning}>
+                    <div className={styles.errorMessage}>
+                        To update your permissions please save
+                        your changes. To discard them, click cancel.
+                    </div>
+                </div>
+            </animated.div>
             <div className={cx(styles.footer, styles.row, styles.cell)}>
                 <div className={styles.copyLink}>
                     <CopyLink
@@ -440,7 +500,7 @@ const ShareSidebar = connect(({ user }) => ({
                     />
                 </div>
                 <div>
-                    <Button onClick={onClose}>
+                    <Button onClick={onCancel}>
                         <Translate value="modal.common.cancel" />
                     </Button>
                     <Button onClick={onSave} disabled={isSaving || !hasChanges} waiting={isSaving}>
