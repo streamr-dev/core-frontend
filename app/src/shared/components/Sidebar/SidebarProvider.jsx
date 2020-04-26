@@ -7,7 +7,9 @@ type SidebarContextType = {
     open: (string, ?boolean) => void,
     close: (?string) => void,
     toggle: (string) => void,
-    isOpen: (?string) => boolean,
+    toggle: (string) => void,
+    addTransitionCheck: ((?string, ?string) => ?boolean) => void,
+    removeTransitionCheck: ((?string, ?string) => ?boolean) => void,
 }
 
 // when sidebar is closed, current sidebar value is undefined.
@@ -25,6 +27,8 @@ export const SidebarContext: Context<SidebarContextType> = React.createContext({
     close: notInitialized,
     toggle: notInitialized,
     isOpen: notInitialized,
+    addTransitionCheck: notInitialized,
+    removeTransitionCheck: notInitialized,
 })
 
 export type Props = {
@@ -33,13 +37,22 @@ export type Props = {
 
 export default function SidebarProvider({ children }: Props) {
     const [currentSidebar, setCurrentSidebar] = React.useState()
+    const [transitionChecks, setTransitionChecks] = React.useState([])
+    const trySetCurrentSidebar = React.useCallback((fn) => {
+        setCurrentSidebar((prevValue) => {
+            const nextValue = typeof fn === 'function' ? fn(prevValue) : fn
+            const canTransition = transitionChecks.every((check) => check(prevValue, nextValue))
+            if (!canTransition) { return prevValue }
+            return nextValue
+        })
+    }, [setCurrentSidebar, transitionChecks])
 
     const openSidebar = React.useCallback((sidebarName, doOpen = true) => {
-        setCurrentSidebar(doOpen ? sidebarName : CLOSED)
-    }, [])
+        trySetCurrentSidebar(doOpen ? sidebarName : CLOSED)
+    }, [trySetCurrentSidebar])
 
     const closeSidebar = React.useCallback((sidebarName) => {
-        setCurrentSidebar((prevSidebar) => {
+        trySetCurrentSidebar((prevSidebar) => {
             if (sidebarName) {
                 // only close if matching name
                 if (prevSidebar === sidebarName) { return CLOSED }
@@ -50,16 +63,18 @@ export default function SidebarProvider({ children }: Props) {
             // close any sidebar if no sidebar specified
             return CLOSED
         })
-    }, [])
+    }, [trySetCurrentSidebar])
 
     const toggleSidebar = React.useCallback((sidebarName) => {
-        setCurrentSidebar((prevSidebar) => {
+        trySetCurrentSidebar((prevSidebar) => {
             // only toggle to closed if specified sidebar currently open
-            if (prevSidebar === sidebarName) { return CLOSED }
+            if (prevSidebar === sidebarName) {
+                return CLOSED
+            }
             // open specified sidebar
             return sidebarName
         })
-    }, [])
+    }, [trySetCurrentSidebar])
 
     const isOpen = React.useCallback((sidebarName) => {
         if (sidebarName) {
@@ -69,18 +84,36 @@ export default function SidebarProvider({ children }: Props) {
         return currentSidebar !== CLOSED
     }, [currentSidebar])
 
+    const addTransitionCheck = React.useCallback((check) => {
+        setTransitionChecks((prevChecks) => {
+            if (prevChecks.includes(check)) { return prevChecks }
+            return [...prevChecks, check]
+        })
+    }, [setTransitionChecks])
+
+    const removeTransitionCheck = React.useCallback((check) => {
+        setTransitionChecks((prevChecks) => {
+            if (!prevChecks.includes(check)) { return prevChecks }
+            return prevChecks.filter((c) => c !== check)
+        })
+    }, [setTransitionChecks])
+
     const sidebarContext = React.useMemo(() => ({
         current: currentSidebar,
         open: openSidebar,
         close: closeSidebar,
         toggle: toggleSidebar,
         isOpen,
+        addTransitionCheck,
+        removeTransitionCheck,
     }), [
         currentSidebar,
         openSidebar,
         closeSidebar,
         toggleSidebar,
         isOpen,
+        addTransitionCheck,
+        removeTransitionCheck,
     ])
 
     return (
