@@ -12,7 +12,7 @@ import Button from '$shared/components/Button'
 import DropdownActions from '$shared/components/DropdownActions'
 import SvgIcon from '$shared/components/SvgIcon'
 import Errors from '$ui/Errors'
-import LoadingIndicator from '$userpages/components/LoadingIndicator'
+import LoadingIndicator from '$shared/components/LoadingIndicator'
 
 import links from '$mp/../links'
 import { useLastError, type LastErrorProps } from '$shared/hooks/useLastError'

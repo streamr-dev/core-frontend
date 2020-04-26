@@ -865,16 +865,43 @@ story('Shared/Web3NotDetectedDialog')
             onClose={action('onClose')}
         />
     ))
+    .add('install Metamask (iPhone)', () => (
+        <InstallMetaMaskDialog
+            onClose={action('onClose')}
+        />
+    ), {
+        viewport: {
+            defaultViewport: 'iPhone',
+        },
+    })
     .add('install mobile app', () => (
         <InstallMobileApplicationDialog
             onClose={action('onClose')}
         />
     ))
+    .add('install mobile app (iPhone)', () => (
+        <InstallMobileApplicationDialog
+            onClose={action('onClose')}
+        />
+    ), {
+        viewport: {
+            defaultViewport: 'iPhone',
+        },
+    })
     .add('install supported browser', () => (
         <InstallSupportedBrowserDialog
             onClose={action('onClose')}
         />
     ))
+    .add('install supported browser (iPhone)', () => (
+        <InstallSupportedBrowserDialog
+            onClose={action('onClose')}
+        />
+    ), {
+        viewport: {
+            defaultViewport: 'iPhone',
+        },
+    })
 
 story('Profile/AvatarUploadDialog')
     .add('default', () => (

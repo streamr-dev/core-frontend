@@ -1,6 +1,6 @@
 import React from 'react'
 import { useAnyPending } from '$shared/hooks/usePending'
-import LoadingIndicator from '$userpages/components/LoadingIndicator'
+import LoadingIndicator from '$shared/components/LoadingIndicator'
 import styles from './PendingLoadingIndicator.pcss'
 
 export default function PendingLoadingIndicator() {
