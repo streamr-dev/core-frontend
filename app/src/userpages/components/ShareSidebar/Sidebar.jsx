@@ -70,6 +70,8 @@ function useAsyncCallbackWithState(callback) {
     const run = useCallback(async () => {
         let error
         let result
+        if (!isMountedRef.current) { return }
+
         setState({
             error,
             result,
@@ -355,9 +357,13 @@ const ShareSidebar = connect(({ user }) => ({
         if (!didTryClose) { return }
         // hide 'save or cancel' error message after change
         setDidTryClose(false)
-    }, [setDidTryClose, currentUsers])
+    }, [didTryClose, setDidTryClose, currentUsers])
 
     const [bindTryCloseWarning, tryCloseWarningStyle] = useSlideIn({ isVisible: didTryClose })
+    const isMountedRef = useRef(true)
+    useEffect(() => () => {
+        isMountedRef.current = false
+    }, [isMountedRef])
 
     const onSaveCallback = useCallback(async () => {
         setDidTryClose(false)
@@ -374,9 +380,11 @@ const ShareSidebar = connect(({ user }) => ({
                     resourceType,
                     resourceId,
                     data: State.toAnonymousPermission(data),
-                }).then(() => (
+                }).then(() => {
+                    if (!isMountedRef.current) { return }
                     resetUserUpdateError(userId)
-                ), (error) => {
+                }, (error) => {
+                    if (!isMountedRef.current) { return }
                     hasError = true
                     console.error(error)
                     setUserUpdateError(userId, error)
@@ -389,9 +397,11 @@ const ShareSidebar = connect(({ user }) => ({
                     resourceType,
                     resourceId,
                     data: State.toAnonymousPermission(data),
-                }).then(() => (
+                }).then(() => {
+                    if (!isMountedRef.current) { return }
                     resetUserUpdateError(userId)
-                ), (error) => {
+                }, (error) => {
+                    if (!isMountedRef.current) { return }
                     hasError = true
                     console.error(error)
                     setUserUpdateError(userId, error)
@@ -399,9 +409,14 @@ const ShareSidebar = connect(({ user }) => ({
             }),
         ]).then(() => {
             if (hasError) { return }
-            return propsRef.current.loadPermissions()
+            if (!isMountedRef.current) { return }
+            propsRef.current.loadPermissions()
+            return onClose()
         })
-    }, [currentUsers, permissions, resourceType, resourceId, propsRef, resetUserUpdateError, setUserUpdateError, setDidTryClose])
+    }, [
+        isMountedRef, onClose, currentUsers, permissions, resourceType, resourceId,
+        propsRef, resetUserUpdateError, setUserUpdateError, setDidTryClose,
+    ])
 
     const [isSavingState, onSave] = useAsyncCallbackWithState(onSaveCallback)
     const { isLoading: isSaving, error } = isSavingState
@@ -487,8 +502,7 @@ const ShareSidebar = connect(({ user }) => ({
             <animated.div className={styles.errorMessageWrapper} style={tryCloseWarningStyle}>
                 <div {...bindTryCloseWarning}>
                     <div className={styles.errorMessage}>
-                        To update your permissions please save
-                        your changes. To discard them, click cancel.
+                        {isSaving ? 'Please wait while saving changes.' : 'To update your permissions please save your changes. To discard them, click cancel.'}
                     </div>
                 </div>
             </animated.div>
