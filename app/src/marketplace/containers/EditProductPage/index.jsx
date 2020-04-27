@@ -6,7 +6,7 @@ import { I18n, Translate } from 'react-redux-i18n'
 import cx from 'classnames'
 
 import CoreLayout from '$shared/components/Layout/Core'
-import CoreLayoutStyles from '$shared/components/Layout/core.pcss'
+import coreLayoutStyles from '$shared/components/Layout/core.pcss'
 import * as UndoContext from '$shared/contexts/Undo'
 import Toolbar from '$shared/components/Toolbar'
 import type { Product } from '$mp/flowtype/product-types'
@@ -160,7 +160,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
                 />
             )}
             loadingClassname={styles.loadingIndicator}
-            contentClassname={cx(CoreLayoutStyles.pad, {
+            contentClassname={cx(coreLayoutStyles.pad, {
                 [styles.editorContent]: !isPreview,
                 [styles.previewContent]: !!isPreview,
             })}
