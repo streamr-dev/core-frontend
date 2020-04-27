@@ -61,8 +61,6 @@ export type ProductSubscription = {
 
 export type ProductSubscriptionList = Array<ProductSubscription>
 
-export type EditProduct = Product
-
 export type SmartContractProduct = {
     id: ProductId,
     name: $ElementType<Product, 'name'>,

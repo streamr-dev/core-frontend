@@ -23,7 +23,7 @@ import PurchasesPage from '$userpages/components/PurchasesPage'
 import ProductsPage from '$userpages/components/ProductsPage'
 import StatsPage from '$userpages/components/ProductsPage/Stats'
 import MembersPage from '$userpages/components/ProductsPage/Members'
-import EditProductPage2 from '$mp/containers/EditProductPage'
+import EditProductPage from '$mp/containers/EditProductPage'
 
 const Route = withErrorBoundary(ErrorPage)(RouterRoute)
 
@@ -39,7 +39,7 @@ const PurchasesPageAuth = userIsAuthenticated(PurchasesPage)
 const ProductsPageAuth = userIsAuthenticated(ProductsPage)
 const StatsPageAuth = userIsAuthenticated(StatsPage)
 const MembersPageAuth = userIsAuthenticated(MembersPage)
-const EditProductAuth2 = userIsAuthenticated(EditProductPage2)
+const EditProductAuth = userIsAuthenticated(EditProductPage)
 
 const { userpages } = links
 
@@ -53,11 +53,9 @@ const UserpagesRouter = () => ([
     <Route exact path={userpages.transactions} component={TransactionListAuth} key="TransactionList" />,
     <Route exact path={userpages.purchases} component={PurchasesPageAuth} key="PurchasesPage" />,
     <Route exact path={userpages.products} component={ProductsPageAuth} key="ProductsPage" />,
-    ...(process.env.NEW_MP_CONTRACT ? [
-        <Route exact path={routes.editProduct()} component={EditProductAuth2} key="EditProduct" />,
-        <Route exact path={routes.productStats()} component={StatsPageAuth} key="StatsPage" />,
-        <Route exact path={routes.productMembers()} component={MembersPageAuth} key="MembersPage" />,
-    ] : []),
+    <Route exact path={routes.editProduct()} component={EditProductAuth} key="EditProduct" />,
+    <Route exact path={routes.productStats()} component={StatsPageAuth} key="StatsPage" />,
+    <Route exact path={routes.productMembers()} component={MembersPageAuth} key="MembersPage" />,
     <Redirect from={userpages.main} to={userpages.streams} component={StreamListViewAuth} key="StreamListViewRedirect" />,
 ])
 

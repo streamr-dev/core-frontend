@@ -8,12 +8,9 @@ import BN from 'bignumber.js'
 import Transaction from '$shared/utils/Transaction'
 import usePublish, { publishModes } from '../usePublish'
 import * as contractProductServices from '$mp/modules/contractProduct/services'
-import * as createContractProductServices from '$mp/modules/createContractProduct/services'
 import * as dataUnionServices from '$mp/modules/dataUnion/services'
-import * as publishServices from '$mp/modules/publish/services'
-import * as unpublishServices from '$mp/modules/unpublish/services'
 import * as transactionActions from '$mp/modules/transactions/actions'
-import * as editProductActions from '$mp/modules/deprecated/editProduct/services'
+import * as productServices from '$mp/modules/product/services'
 
 import { actionsTypes } from '../publishQueue'
 import { transactionStates, transactionTypes } from '$shared/utils/constants'
@@ -316,7 +313,7 @@ describe('usePublish', () => {
                     .subscribe('ready', readyFn)
                     .subscribe('finish', finishFn)
 
-                sandbox.stub(publishServices, 'postDeployFree').callsFake(() => Promise.resolve())
+                sandbox.stub(productServices, 'postDeployFree').callsFake(() => Promise.resolve())
 
                 await result.queue.start()
 
@@ -363,7 +360,7 @@ describe('usePublish', () => {
                     .subscribe('finish', finishFn)
 
                 const error = new Error('something happened')
-                sandbox.stub(publishServices, 'postDeployFree').callsFake(() => {
+                sandbox.stub(productServices, 'postDeployFree').callsFake(() => {
                     throw error
                 })
 
@@ -415,7 +412,7 @@ describe('usePublish', () => {
                     .subscribe('ready', readyFn)
                     .subscribe('finish', finishFn)
 
-                sandbox.stub(unpublishServices, 'postUndeployFree').callsFake(() => Promise.resolve())
+                sandbox.stub(productServices, 'postUndeployFree').callsFake(() => Promise.resolve())
 
                 await result.queue.start()
 
@@ -466,7 +463,7 @@ describe('usePublish', () => {
                     .subscribe('finish', finishFn)
 
                 const error = new Error('something happened')
-                sandbox.stub(unpublishServices, 'postUndeployFree').callsFake(() => {
+                sandbox.stub(productServices, 'postUndeployFree').callsFake(() => {
                     throw error
                 })
 
@@ -524,7 +521,7 @@ describe('usePublish', () => {
                     .subscribe('ready', readyFn)
                     .subscribe('finish', finishFn)
 
-                const putProductStub = sandbox.stub(editProductActions, 'putProduct').callsFake(() => Promise.resolve())
+                const putProductStub = sandbox.stub(productServices, 'putProduct').callsFake(() => Promise.resolve())
 
                 await result.queue.start()
 
@@ -582,8 +579,8 @@ describe('usePublish', () => {
                     transactionHash: hash,
                 }
 
-                sandbox.stub(createContractProductServices, 'createContractProduct').callsFake(() => tx)
-                const postSetDeployingStub = sandbox.stub(publishServices, 'postSetDeploying').callsFake(() => Promise.resolve())
+                sandbox.stub(contractProductServices, 'createContractProduct').callsFake(() => tx)
+                const postSetDeployingStub = sandbox.stub(productServices, 'postSetDeploying').callsFake(() => Promise.resolve())
 
                 const startedFn = jest.fn()
                 const statusFn = jest.fn()
@@ -665,8 +662,8 @@ describe('usePublish', () => {
                     transactionHash: hash,
                 }
 
-                sandbox.stub(unpublishServices, 'deleteProduct').callsFake(() => tx)
-                const postSetUndeployingStub = sandbox.stub(unpublishServices, 'postSetUndeploying').callsFake(() => Promise.resolve())
+                sandbox.stub(contractProductServices, 'deleteProduct').callsFake(() => tx)
+                const postSetUndeployingStub = sandbox.stub(productServices, 'postSetUndeploying').callsFake(() => Promise.resolve())
                 const addTransactionStub = sandbox.stub(transactionActions, 'addTransaction')
 
                 const startedFn = jest.fn()
@@ -751,8 +748,8 @@ describe('usePublish', () => {
                     transactionHash: hash,
                 }
 
-                sandbox.stub(publishServices, 'redeployProduct').callsFake(() => tx)
-                const postSetUndeployingStub = sandbox.stub(publishServices, 'postSetDeploying').callsFake(() => Promise.resolve())
+                sandbox.stub(contractProductServices, 'redeployProduct').callsFake(() => tx)
+                const postSetDeployingStub = sandbox.stub(productServices, 'postSetDeploying').callsFake(() => Promise.resolve())
                 const addTransactionStub = sandbox.stub(transactionActions, 'addTransaction')
 
                 const startedFn = jest.fn()
@@ -782,7 +779,7 @@ describe('usePublish', () => {
                 ])
 
                 expect(startedFn).toHaveBeenCalledWith(actionsTypes.REDEPLOY_PAID)
-                expect(postSetUndeployingStub.calledWith('1')).toBe(true)
+                expect(postSetDeployingStub.calledWith('1')).toBe(true)
                 expect(addTransactionStub.calledWith(hash, transactionTypes.REDEPLOY_PRODUCT)).toBe(true)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.REDEPLOY_PAID, transactionStates.PENDING)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.REDEPLOY_PAID, transactionStates.CONFIRMED)
@@ -847,10 +844,10 @@ describe('usePublish', () => {
                     transactionHash: hash2,
                 }
 
-                const updateContractStub = sandbox.stub(createContractProductServices, 'updateContractProduct').callsFake(() => tx1)
-                const redeployStub = sandbox.stub(publishServices, 'redeployProduct').callsFake(() => tx2)
+                const updateContractStub = sandbox.stub(contractProductServices, 'updateContractProduct').callsFake(() => tx1)
+                const redeployStub = sandbox.stub(contractProductServices, 'redeployProduct').callsFake(() => tx2)
                 const addTransactionStub = sandbox.stub(transactionActions, 'addTransaction')
-                const postSetDeployingStub = sandbox.stub(publishServices, 'postSetDeploying').callsFake(() => Promise.resolve())
+                const postSetDeployingStub = sandbox.stub(productServices, 'postSetDeploying').callsFake(() => Promise.resolve())
 
                 const startedFn = jest.fn()
                 const statusFn = jest.fn()
@@ -957,12 +954,12 @@ describe('usePublish', () => {
 
                 const updateError = new Error('update failed')
 
-                const updateContractStub = sandbox.stub(createContractProductServices, 'updateContractProduct').callsFake(() => {
+                const updateContractStub = sandbox.stub(contractProductServices, 'updateContractProduct').callsFake(() => {
                     throw updateError
                 })
-                const redeployStub = sandbox.stub(publishServices, 'redeployProduct').callsFake(() => tx1)
+                const redeployStub = sandbox.stub(contractProductServices, 'redeployProduct').callsFake(() => tx1)
                 const addTransactionStub = sandbox.stub(transactionActions, 'addTransaction')
-                const postSetDeployingStub = sandbox.stub(publishServices, 'postSetDeploying').callsFake(() => Promise.resolve())
+                const postSetDeployingStub = sandbox.stub(productServices, 'postSetDeploying').callsFake(() => Promise.resolve())
 
                 const startedFn = jest.fn()
                 const statusFn = jest.fn()
@@ -1028,7 +1025,7 @@ describe('usePublish', () => {
                     priceCurrency: 'DATA',
                     minimumSubscriptionInSeconds: '0',
                 }))
-                const putProductStub = sandbox.stub(editProductActions, 'putProduct').callsFake(() => Promise.resolve())
+                const putProductStub = sandbox.stub(productServices, 'putProduct').callsFake(() => Promise.resolve())
 
                 const result = await publish.publish({
                     id: '1',
@@ -1062,7 +1059,7 @@ describe('usePublish', () => {
                     transactionHash: hash,
                 }
 
-                sandbox.stub(publishServices, 'redeployProduct').callsFake(() => tx)
+                sandbox.stub(contractProductServices, 'redeployProduct').callsFake(() => tx)
 
                 const startedFn = jest.fn()
                 const statusFn = jest.fn()
@@ -1129,14 +1126,14 @@ describe('usePublish', () => {
                     minimumSubscriptionInSeconds: '0',
                 }
                 sandbox.stub(contractProductServices, 'getProductFromContract').callsFake(() => Promise.resolve(contractProduct))
-                const putProductStub = sandbox.stub(editProductActions, 'putProduct').callsFake(() => Promise.resolve())
+                const putProductStub = sandbox.stub(productServices, 'putProduct').callsFake(() => Promise.resolve())
                 const emitter = new EventEmitter()
                 const tx = new Transaction(emitter)
                 const hash = 'test'
                 const receipt = {
                     transactionHash: hash,
                 }
-                const updateContractStub = sandbox.stub(createContractProductServices, 'updateContractProduct').callsFake(() => tx)
+                const updateContractStub = sandbox.stub(contractProductServices, 'updateContractProduct').callsFake(() => tx)
                 const addTransactionStub = sandbox.stub(transactionActions, 'addTransaction')
 
                 const product = {
@@ -1272,8 +1269,8 @@ describe('usePublish', () => {
                     transactionHash: hash,
                 }
 
-                sandbox.stub(createContractProductServices, 'createContractProduct').callsFake(() => tx)
-                const postSetDeployingStub = sandbox.stub(publishServices, 'postSetDeploying').callsFake(() => Promise.resolve())
+                sandbox.stub(contractProductServices, 'createContractProduct').callsFake(() => tx)
+                const postSetDeployingStub = sandbox.stub(productServices, 'postSetDeploying').callsFake(() => Promise.resolve())
 
                 const startedFn = jest.fn()
                 const statusFn = jest.fn()
@@ -1339,8 +1336,8 @@ describe('usePublish', () => {
                     transactionHash: hash,
                 }
 
-                sandbox.stub(unpublishServices, 'deleteProduct').callsFake(() => tx)
-                const postSetUndeployingStub = sandbox.stub(unpublishServices, 'postSetUndeploying').callsFake(() => Promise.resolve())
+                sandbox.stub(contractProductServices, 'deleteProduct').callsFake(() => tx)
+                const postSetUndeployingStub = sandbox.stub(productServices, 'postSetUndeploying').callsFake(() => Promise.resolve())
                 const addTransactionStub = sandbox.stub(transactionActions, 'addTransaction')
 
                 const result = await publish.publish({
@@ -1437,10 +1434,10 @@ describe('usePublish', () => {
                     transactionHash: hash2,
                 }
 
-                const updateContractStub = sandbox.stub(createContractProductServices, 'updateContractProduct').callsFake(() => tx1)
-                const redeployStub = sandbox.stub(publishServices, 'redeployProduct').callsFake(() => tx2)
+                const updateContractStub = sandbox.stub(contractProductServices, 'updateContractProduct').callsFake(() => tx1)
+                const redeployStub = sandbox.stub(contractProductServices, 'redeployProduct').callsFake(() => tx2)
                 const addTransactionStub = sandbox.stub(transactionActions, 'addTransaction')
-                const postSetDeployingStub = sandbox.stub(publishServices, 'postSetDeploying').callsFake(() => Promise.resolve())
+                const postSetDeployingStub = sandbox.stub(productServices, 'postSetDeploying').callsFake(() => Promise.resolve())
 
                 const product = {
                     id: '1',
@@ -1564,10 +1561,10 @@ describe('usePublish', () => {
                 }
 
                 const setAdminFeeStub = sandbox.stub(dataUnionServices, 'setAdminFee').callsFake(() => tx1)
-                const updateContractStub = sandbox.stub(createContractProductServices, 'updateContractProduct').callsFake(() => tx2)
-                const redeployStub = sandbox.stub(publishServices, 'redeployProduct').callsFake(() => tx3)
+                const updateContractStub = sandbox.stub(contractProductServices, 'updateContractProduct').callsFake(() => tx2)
+                const redeployStub = sandbox.stub(contractProductServices, 'redeployProduct').callsFake(() => tx3)
                 const addTransactionStub = sandbox.stub(transactionActions, 'addTransaction')
-                const postSetDeployingStub = sandbox.stub(publishServices, 'postSetDeploying').callsFake(() => Promise.resolve())
+                const postSetDeployingStub = sandbox.stub(productServices, 'postSetDeploying').callsFake(() => Promise.resolve())
 
                 const product = {
                     id: '1',
@@ -1693,7 +1690,7 @@ describe('usePublish', () => {
                 }
 
                 const setAdminFeeStub = sandbox.stub(dataUnionServices, 'setAdminFee').callsFake(() => tx)
-                const putProductStub = sandbox.stub(editProductActions, 'putProduct').callsFake(() => Promise.resolve())
+                const putProductStub = sandbox.stub(productServices, 'putProduct').callsFake(() => Promise.resolve())
                 const addTransactionStub = sandbox.stub(transactionActions, 'addTransaction')
 
                 const product = {
@@ -1817,8 +1814,8 @@ describe('usePublish', () => {
                 }
 
                 const setAdminFeeStub = sandbox.stub(dataUnionServices, 'setAdminFee').callsFake(() => tx1)
-                const updateContractStub = sandbox.stub(createContractProductServices, 'updateContractProduct').callsFake(() => tx2)
-                const putProductStub = sandbox.stub(editProductActions, 'putProduct').callsFake(() => Promise.resolve())
+                const updateContractStub = sandbox.stub(contractProductServices, 'updateContractProduct').callsFake(() => tx2)
+                const putProductStub = sandbox.stub(productServices, 'putProduct').callsFake(() => Promise.resolve())
                 const addTransactionStub = sandbox.stub(transactionActions, 'addTransaction')
 
                 const product = {

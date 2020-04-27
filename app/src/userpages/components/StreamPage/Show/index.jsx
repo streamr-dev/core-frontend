@@ -30,8 +30,7 @@ import {
 import { getMyResourceKeys } from '$shared/modules/resourceKey/actions'
 import { selectEditedStream, selectPermissions, selectFetching } from '$userpages/modules/userPageStreams/selectors'
 import { selectUserData } from '$shared/modules/user/selectors'
-import DetailsContainer from '$shared/components/Container/Details'
-import TOCPage from '$userpages/components/TOCPage'
+import TOCPage from '$shared/components/TOCPage'
 import Toolbar from '$shared/components/Toolbar'
 import routes from '$routes'
 import links from '$shared/../links'
@@ -217,70 +216,68 @@ export class StreamShowView extends Component<Props, State> {
                 <MediaQuery minWidth={lg.min}>
                     <ConfigureAnchorOffset value={-80} />
                 </MediaQuery>
-                <DetailsContainer className={styles.streamShowView}>
-                    <TOCPage title={I18n.t(`userpages.streams.edit.details.pageTitle.${isNewStream ? 'newStream' : 'existingStream'}`)}>
-                        <TOCPage.Section
-                            id="details"
-                            title={I18n.t('userpages.streams.edit.details.nav.details')}
-                        >
-                            <InfoView disabled={disabled} />
-                        </TOCPage.Section>
-                        <TOCPage.Section
-                            id="security"
-                            title={I18n.t('userpages.streams.edit.details.nav.security')}
-                            customStyled
-                        >
-                            <SecurityView disabled={disabled} />
-                        </TOCPage.Section>
-                        <TOCPage.Section
-                            id="configure"
-                            title={I18n.t('userpages.streams.edit.details.nav.fields')}
-                            customStyled
-                        >
-                            <ConfigureView disabled={disabled} />
-                        </TOCPage.Section>
-                        <TOCPage.Section
-                            id="status"
-                            linkTitle={I18n.t('userpages.streams.edit.details.nav.status')}
-                            title={(
-                                <div className={styles.statusTitle}>
-                                    {I18n.t('userpages.streams.edit.details.nav.status')}
-                                    &nbsp;
-                                    <StatusIcon tooltip status={editedStream ? editedStream.streamStatus : undefined} />
-                                </div>
-                            )}
-                            customStyled
-                        >
-                            <StatusView disabled={disabled} />
-                        </TOCPage.Section>
-                        <TOCPage.Section
-                            id="preview"
-                            title={I18n.t('userpages.streams.edit.details.nav.preview')}
-                        >
-                            <PreviewView
-                                stream={editedStream}
-                                currentUser={currentUser}
-                            />
-                        </TOCPage.Section>
-                        <TOCPage.Section
-                            id="api-access"
-                            title={I18n.t('userpages.streams.edit.details.nav.apiAccess')}
-                            customStyled
-                        >
-                            <KeyView disabled={disabled || !hasSharePermission} />
-                        </TOCPage.Section>
-                        <TOCPage.Section
-                            id="historical-data"
-                            title={I18n.t('userpages.streams.edit.details.nav.historicalData')}
-                            customStyled
-                        >
-                            <HistoryView
-                                streamId={editedStream && editedStream.id}
-                                disabled={disabled}
-                            />
-                        </TOCPage.Section>
-                    </TOCPage>
-                </DetailsContainer>
+                <TOCPage title={I18n.t(`userpages.streams.edit.details.pageTitle.${isNewStream ? 'newStream' : 'existingStream'}`)}>
+                    <TOCPage.Section
+                        id="details"
+                        title={I18n.t('userpages.streams.edit.details.nav.details')}
+                    >
+                        <InfoView disabled={disabled} />
+                    </TOCPage.Section>
+                    <TOCPage.Section
+                        id="security"
+                        title={I18n.t('userpages.streams.edit.details.nav.security')}
+                        onlyDesktop
+                    >
+                        <SecurityView disabled={disabled} />
+                    </TOCPage.Section>
+                    <TOCPage.Section
+                        id="configure"
+                        title={I18n.t('userpages.streams.edit.details.nav.fields')}
+                        onlyDesktop
+                    >
+                        <ConfigureView disabled={disabled} />
+                    </TOCPage.Section>
+                    <TOCPage.Section
+                        id="status"
+                        linkTitle={I18n.t('userpages.streams.edit.details.nav.status')}
+                        title={(
+                            <div className={styles.statusTitle}>
+                                {I18n.t('userpages.streams.edit.details.nav.status')}
+                                &nbsp;
+                                <StatusIcon tooltip status={editedStream ? editedStream.streamStatus : undefined} />
+                            </div>
+                        )}
+                        onlyDesktop
+                    >
+                        <StatusView disabled={disabled} />
+                    </TOCPage.Section>
+                    <TOCPage.Section
+                        id="preview"
+                        title={I18n.t('userpages.streams.edit.details.nav.preview')}
+                    >
+                        <PreviewView
+                            stream={editedStream}
+                            currentUser={currentUser}
+                        />
+                    </TOCPage.Section>
+                    <TOCPage.Section
+                        id="api-access"
+                        title={I18n.t('userpages.streams.edit.details.nav.apiAccess')}
+                        onlyDesktop
+                    >
+                        <KeyView disabled={disabled || !hasSharePermission} />
+                    </TOCPage.Section>
+                    <TOCPage.Section
+                        id="historical-data"
+                        title={I18n.t('userpages.streams.edit.details.nav.historicalData')}
+                        onlyDesktop
+                    >
+                        <HistoryView
+                            streamId={editedStream && editedStream.id}
+                            disabled={disabled}
+                        />
+                    </TOCPage.Section>
+                </TOCPage>
             </CoreLayout>
         )
     }

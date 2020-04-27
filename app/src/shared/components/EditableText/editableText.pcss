@@ -76,3 +76,16 @@
   opacity: 0 !important;
   pointer-events: none !important;
 }
+
+.idle .spaceholder,
+.blank .spaceholder {
+  color: #CDCDCD;
+  overflow: auto;
+  visibility: visible;
+}
+
+.hidePlaceholderOnFocus.idle .spaceholder,
+.hidePlaceholderOnFocus.blank .spaceholder {
+  overflow: hidden;
+  visibility: hidden;
+}

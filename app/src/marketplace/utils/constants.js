@@ -20,23 +20,6 @@ export const purchaseFlowSteps = {
     COMPLETE: 'complete',
 }
 
-// save product dialog steps
-export const saveProductSteps = {
-    STARTED: 'start',
-    TRANSACTION: 'transaction',
-    SAVE: 'save',
-}
-
-// Publish flow states
-export const publishFlowSteps = {
-    CONFIRM: 'confirm',
-    CREATE_CONTRACT_PRODUCT: 'createContractProduct',
-    PUBLISH_CONTRACT_PRODUCT: 'publishContractProduct',
-    UNPUBLISH_CONTRACT_PRODUCT: 'unpublishContractProduct',
-    PUBLISH_FREE_PRODUCT: 'publish',
-    UNPUBLISH_FREE_PRODUCT: 'publish',
-}
-
 export const productListPageSize = 20
 
 export const searchCharMax = 250
