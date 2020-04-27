@@ -92,16 +92,20 @@ const Search = ({ toggleOverlay }: Props) => {
                         ))}
                         {!searchResults.length && !!query.length && (
                             <React.Fragment>
-                                <p className={styles.noResults}>
-                                    <Translate value="docs.search.noResultsFoundFor" tag="span" />
-                                    <strong> {query}</strong>
-                                </p>
-                                <p className={styles.noResultsMoreInfo}>
-                                    <Translate value="docs.search.noResults" tag="span" />
-                                    <br className={styles.mobileOnlyBreak} />
-                                    <a rel="noopener noreferrer" target="_blank" href={links.community.devForum}> Community Dev Forum </a>
-                                    <Translate value="docs.search.noResultsSuffix" />
-                                </p>
+                                <Translate
+                                    value="docs.search.noResultsFoundFor"
+                                    query={query}
+                                    className={styles.noResults}
+                                    tag="p"
+                                    dangerousHTML
+                                />
+                                <Translate
+                                    value="docs.search.noResults"
+                                    tag="p"
+                                    className={styles.noResultsMoreInfo}
+                                    url={links.community.devForum}
+                                    dangerousHTML
+                                />
                             </React.Fragment>
                         )
                         }
