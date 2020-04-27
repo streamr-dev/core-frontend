@@ -2,12 +2,20 @@
 
 import { I18n } from 'react-redux-i18n'
 
-import { getContract, call, hexEqualsZero } from '$mp/utils/smartContract'
+import { getContract, call, send, hexEqualsZero } from '$mp/utils/smartContract'
 import getConfig from '$shared/web3/config'
 import type { SmartContractProduct, ProductId } from '$mp/flowtype/product-types'
-import type { SmartContractCall } from '$shared/flowtype/web3-types'
-import { getValidId, mapProductFromContract } from '$mp/utils/product'
+import type { SmartContractCall, SmartContractTransaction } from '$shared/flowtype/web3-types'
+import {
+    getValidId,
+    mapProductFromContract,
+    mapPriceToContract,
+    validateProductPriceCurrency,
+    validateContractProductPricePerSecond,
+} from '$mp/utils/product'
 import { getWeb3, getPublicWeb3 } from '$shared/web3/web3Provider'
+import { contractCurrencies as currencies, gasLimits } from '$shared/utils/constants'
+import type { Sendable } from '$mp/utils/smartContract'
 
 const contractMethods = (usePublicNode: boolean = false) => getContract(getConfig().marketplace, usePublicNode).methods
 
@@ -125,3 +133,66 @@ export const getSubscribedEvents = async (id: ProductId, fromTimestamp: number, 
 
     return subscriptions
 }
+
+export const createContractProduct = (product: SmartContractProduct): SmartContractTransaction => {
+    const {
+        id,
+        name,
+        beneficiaryAddress,
+        pricePerSecond,
+        priceCurrency,
+        minimumSubscriptionInSeconds,
+    } = product
+    const currencyIndex = Object.keys(currencies).indexOf(priceCurrency)
+    validateContractProductPricePerSecond(pricePerSecond)
+    validateProductPriceCurrency(priceCurrency)
+    const transformedPricePerSecond = mapPriceToContract(pricePerSecond)
+    const methodToSend = contractMethods().createProduct(
+        getValidId(id),
+        name,
+        beneficiaryAddress,
+        transformedPricePerSecond,
+        currencyIndex,
+        minimumSubscriptionInSeconds,
+    )
+    return send(methodToSend, {
+        gas: gasLimits.CREATE_PRODUCT,
+    })
+}
+
+export const updateContractProduct = (product: SmartContractProduct): SmartContractTransaction => {
+    const {
+        id,
+        name,
+        beneficiaryAddress,
+        pricePerSecond,
+        priceCurrency,
+        minimumSubscriptionInSeconds,
+    } = product
+    const currencyIndex = Object.keys(currencies).indexOf(priceCurrency)
+    validateContractProductPricePerSecond(pricePerSecond)
+    validateProductPriceCurrency(priceCurrency)
+    const transformedPricePerSecond = mapPriceToContract(pricePerSecond)
+    const methodToSend = contractMethods().updateProduct(
+        getValidId(id),
+        name,
+        beneficiaryAddress,
+        transformedPricePerSecond,
+        currencyIndex,
+        minimumSubscriptionInSeconds,
+        false,
+    )
+    return send(methodToSend, {
+        gas: gasLimits.UPDATE_PRODUCT,
+    })
+}
+
+export const deleteProduct = (id: ProductId): SmartContractTransaction => (
+    send(contractMethods().deleteProduct(getValidId(id)), {
+        gas: gasLimits.DELETE_PRODUCT,
+    })
+)
+
+export const redeployProduct = (id: ProductId): SmartContractTransaction => (
+    send(contractMethods().redeployProduct(getValidId(id))) // TODO: figure out the gas for redeploying
+)

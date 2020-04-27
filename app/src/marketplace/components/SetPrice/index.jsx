@@ -49,8 +49,8 @@ const SetPrice = ({
 }: Props) => {
     const [quotePrice, setQuotePrice] = useState(BN(0))
 
-    const onPriceChange = useCallback((newPrice) => {
-        onPriceChangeProp(newPrice)
+    const onPriceChange = useCallback((e: SyntheticInputEvent<EventTarget>) => {
+        onPriceChangeProp(e.target.value)
     }, [onPriceChangeProp])
 
     const onCurrencyChange = useCallback(() => {
@@ -75,7 +75,7 @@ const SetPrice = ({
                 <div className={styles.priceControls}>
                     <PriceField
                         currency={currency}
-                        onCommit={onPriceChange}
+                        onChange={onPriceChange}
                         disabled={disabled}
                         placeholder="Price"
                         value={price.toString()}
@@ -89,7 +89,8 @@ const SetPrice = ({
                         currency={getQuoteCurrencyFor(currency)}
                         placeholder="Price"
                         value={BN(quotePrice).isNaN() ? '0' : quotePrice.toString()}
-                        disabled
+                        readOnly
+                        disabled={disabled}
                         className={styles.input}
                     />
                     <div>

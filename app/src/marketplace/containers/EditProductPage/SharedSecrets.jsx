@@ -3,7 +3,6 @@
 import React, { useMemo } from 'react'
 import cx from 'classnames'
 import { Translate } from 'react-redux-i18n'
-import routes from '$routes'
 
 import useProduct from '../ProductController/useProduct'
 import useDataUnion from '$mp/containers/ProductController/useDataUnion'
@@ -33,7 +32,6 @@ const SharedSecrets = ({ className }: Props) => {
             <Translate
                 value={`editProductPage.sharedSecrets.${isDeployed ? 'deployed' : 'notDeployed'}.description`}
                 tag="p"
-                docsLink={routes.docsProductsDataUnions()}
                 dangerousHTML
             />
             <SharedSecretEditor disabled={!isDeployed || !ownerLinked} />

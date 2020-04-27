@@ -9,12 +9,12 @@ import { Context as ValidationContext, ERROR } from '../ProductController/Valida
 import type { Product } from '$mp/flowtype/product-types'
 import { isDataUnionProduct } from '$mp/utils/product'
 import usePending from '$shared/hooks/usePending'
-import { putProduct, postImage } from '$mp/modules/deprecated/editProduct/services'
+import { putProduct, postImage } from '$mp/modules/product/services'
 import { selectDataUnion } from '$mp/modules/dataUnion/selectors'
 import { selectProduct } from '$mp/modules/product/selectors'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import Notification from '$shared/utils/Notification'
-import { NotificationIcon } from '$shared/utils/constants'
+import { NotificationIcon, productStates, contractCurrencies as currencies, DEFAULT_CURRENCY } from '$shared/utils/constants'
 import routes from '$routes'
 import useEditableProductActions from '../ProductController/useEditableProductActions'
 import { isEthereumAddress } from '$mp/utils/validate'
@@ -27,20 +27,25 @@ import useModal from '$shared/hooks/useModal'
 type ContextProps = {
     isPreview: boolean,
     setIsPreview: (boolean | Function) => void,
+    validate: () => boolean,
     back: () => void | Promise<void>,
     save: () => void | Promise<void>,
     publish: () => void | Promise<void>,
     deployDataUnion: () => void | Promise<void>,
     lastSectionRef: any,
     publishAttempted: boolean,
+    preferredCurrency: $Values<typeof currencies>,
+    setPreferredCurrency: ($Values<typeof currencies>) => void,
 }
 
 const EditControllerContext: Context<ContextProps> = React.createContext({})
 
 function useEditController(product: Product) {
     const { history } = useContext(RouterContext)
-    const { isAnyTouched, status } = useContext(ValidationContext)
+    const { isAnyTouched, resetTouched, status } = useContext(ValidationContext)
     const [isPreview, setIsPreview] = useState(false)
+    // lastSectionRef is stored here and set in EditorNav so it remembers its state when toggling
+    // between editor and preview
     const lastSectionRef = useRef(undefined)
     const isMounted = useIsMounted()
     const savePending = usePending('product.SAVE')
@@ -49,6 +54,7 @@ function useEditController(product: Product) {
     const { replaceProduct } = useEditableProductUpdater()
     const dataUnion = useSelector(selectDataUnion)
     const [publishAttempted, setPublishAttempted] = useState(false)
+    const [preferredCurrency, setPreferredCurrency] = useState(product.priceCurrency || DEFAULT_CURRENCY)
 
     useEffect(() => {
         const handleBeforeunload = (event) => {
@@ -92,6 +98,18 @@ function useEditController(product: Product) {
         history,
     ])
 
+    const productId = product.id
+    const redirectToProduct = useCallback(() => {
+        if (!isMounted()) { return }
+        history.replace(routes.product({
+            id: productId,
+        }))
+    }, [
+        productId,
+        isMounted,
+        history,
+    ])
+
     const save = useCallback(async (options = {
         redirect: true,
     }) => {
@@ -109,7 +127,7 @@ function useEditController(product: Product) {
                         imageUrl: newImageUrl,
                         thumbnailUrl: newThumbnailUrl,
                     } = await postImage(nextProduct.id || '', nextProduct.newImageToUpload)
-                    /* eslint-eanble object-curly-newline */
+                    /* eslint-enable object-curly-newline */
                     nextProduct.imageUrl = newImageUrl
                     nextProduct.thumbnailUrl = newThumbnailUrl
                     delete nextProduct.newImageToUpload
@@ -124,6 +142,7 @@ function useEditController(product: Product) {
             await putProduct(State.update(originalProduct, () => ({
                 ...nextProduct,
             })), nextProduct.id || '')
+            resetTouched()
 
             // TODO: handle saving errors
             return true
@@ -138,6 +157,7 @@ function useEditController(product: Product) {
         redirectToProductList,
         originalProduct,
         replaceProduct,
+        resetTouched,
     ])
 
     const validate = useCallback(() => {
@@ -157,7 +177,9 @@ function useEditController(product: Product) {
             const memberLimit = parseInt(process.env.DATA_UNION_PUBLISH_MEMBER_LIMIT, 10) || 0
             if (dataUnion.memberCount.active < memberLimit) {
                 Notification.push({
-                    title: I18n.t('notifications.notEnoughMembers', { memberLimit }),
+                    title: I18n.t('notifications.notEnoughMembers', {
+                        memberLimit,
+                    }),
                     icon: NotificationIcon.ERROR,
                 })
                 return false
@@ -174,15 +196,35 @@ function useEditController(product: Product) {
             await save({
                 redirect: false,
             })
-            const succeeded = await publishDialog.open({
+
+            const { isUnpublish, started, succeeded, showPublishedProduct } = await publishDialog.open({
                 product: productRef.current,
             })
 
-            if (succeeded) {
+            if (!isMounted()) { return }
+
+            if (started) {
+                replaceProduct((prevProduct) => ({
+                    ...prevProduct,
+                    state: isUnpublish ? productStates.UNDEPLOYING : productStates.DEPLOYING,
+                }))
+            }
+
+            if (succeeded && (isUnpublish || !showPublishedProduct)) {
                 redirectToProductList()
+            } else if (succeeded && showPublishedProduct) {
+                redirectToProduct()
             }
         }
-    }, [validate, save, publishDialog, redirectToProductList])
+    }, [
+        validate,
+        save,
+        publishDialog,
+        redirectToProductList,
+        redirectToProduct,
+        replaceProduct,
+        isMounted,
+    ])
 
     const updateBeneficiary = useCallback(async (address) => {
         const { beneficiaryAddress } = productRef.current
@@ -243,21 +285,27 @@ function useEditController(product: Product) {
     return useMemo(() => ({
         isPreview,
         setIsPreview,
+        validate,
         back,
         save,
         publish,
         deployDataUnion,
         lastSectionRef,
         publishAttempted,
+        preferredCurrency,
+        setPreferredCurrency,
     }), [
         isPreview,
         setIsPreview,
+        validate,
         back,
         save,
         publish,
         deployDataUnion,
         lastSectionRef,
         publishAttempted,
+        preferredCurrency,
+        setPreferredCurrency,
     ])
 }
 

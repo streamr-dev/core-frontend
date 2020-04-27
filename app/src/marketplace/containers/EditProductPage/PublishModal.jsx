@@ -1,69 +1,46 @@
 // @flow
 
-import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
-import { useDispatch } from 'react-redux'
+import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import { Translate } from 'react-redux-i18n'
 
 import type { Product } from '$mp/flowtype/product-types'
-import { isPaidProduct } from '$mp/utils/product'
-import { productStates, transactionStates, transactionTypes } from '$shared/utils/constants'
+import { transactionStates } from '$shared/utils/constants'
 import useModal from '$shared/hooks/useModal'
 import { getProductById } from '$mp/modules/product/services'
-import { getProductFromContract } from '$mp/modules/contractProduct/services'
-import { getDataUnionOwner, getAdminFee, setAdminFee } from '$mp/modules/dataUnion/services'
-import { areAddressesEqual, isUpdateContractProductRequired } from '$mp/utils/smartContract'
-import { putProduct } from '$mp/modules/deprecated/editProduct/services'
+import { areAddressesEqual } from '$mp/utils/smartContract'
 
 import ErrorDialog from '$mp/components/Modal/ErrorDialog'
 import Dialog from '$shared/components/Dialog'
 import ReadyToPublishDialog from '$mp/components/Modal/ReadyToPublishDialog'
-import ReadyToUnpublishDialog from '$mp/components/Modal/ReadyToUnpublishDialog'
-import ConfirmPublishTransaction from '$mp/components/Modal/ConfirmPublishTransaction'
-import CompletePublishTransaction from '$mp/components/Modal/CompletePublishTransaction'
+import PublishTransactionProgress from '$mp/components/Modal/PublishTransactionProgress'
+import PublishComplete from '$mp/components/Modal/PublishComplete'
+import PublishError from '$mp/components/Modal/PublishError'
 import Web3ErrorDialog from '$shared/components/Web3ErrorDialog'
-import { createContractProduct, updateContractProduct } from '$mp/modules/createContractProduct/services'
-import { addTransaction } from '$mp/modules/transactions/actions'
-import { postSetDeploying, postDeployFree, redeployProduct } from '$mp/modules/publish/services'
-import { postSetUndeploying, postUndeployFree, deleteProduct } from '$mp/modules/unpublish/services'
 import useWeb3Status from '$shared/hooks/useWeb3Status'
 import UnlockWalletDialog from '$shared/components/Web3ErrorDialog/UnlockWalletDialog'
-
-import PublishQueue, { actionsTypes } from './publishQueue'
-import { getPendingChanges, withPendingChanges } from './state'
+import usePublish, { publishModes } from './usePublish'
 
 type Props = {
     product: Product,
     api: Object,
 }
 
-const modes = {
-    REPUBLISH: 'republish', // live product update
-    REDEPLOY: 'redeploy', // unpublished, but published at least once
-    PUBLISH: 'publish', // unpublished, publish for the first time
-    UNPUBLISH: 'unpublish',
-    ERROR: 'error',
-}
-
-const steps = {
-    CONFIRM: 'confirm',
-    ACTIONS: 'actions',
-    COMPLETE: 'complete',
-}
-
 export const PublishOrUnpublishModal = ({ product, api }: Props) => {
-    const queueRef = useRef(new PublishQueue())
-    const dispatch = useDispatch()
+    const { publish } = usePublish()
+    const publishRef = useRef(publish)
+    publishRef.current = publish
 
+    const [queue, setQueue] = useState(undefined)
     const [mode, setMode] = useState(null)
-    const [step, setStep] = useState(steps.CONFIRM)
-    const [currentAction, setCurrentAction] = useState(null)
+    const [started, setStarted] = useState(false)
+    const [finished, setFinished] = useState(false)
+    const [currentAction, setCurrentAction] = useState(undefined)
     const [status, setStatus] = useState({})
     const [modalError, setModalError] = useState(null)
     const [requireWeb3, setRequireWeb3] = useState(false)
     const [requiredOwner, setRequiredOwner] = useState(null)
+    const [web3Actions, setWeb3Actions] = useState(new Set([]))
     const { web3Error, checkingWeb3, account } = useWeb3Status(requireWeb3)
-    const accountRef = useRef()
-    accountRef.current = account
 
     const setActionStatus = useCallback((name, s) => {
         setStatus((prevStatus) => ({
@@ -75,324 +52,101 @@ export const PublishOrUnpublishModal = ({ product, api }: Props) => {
     const productId = product.id
 
     useEffect(() => {
-        const queue = queueRef.current
+        if (!productId || !publishRef.current) { return }
 
-        async function fetchProduct() {
-            // load product
-            const p: Product = await getProductById(productId || '')
-
-            if (!p) {
-                throw new Error('no product')
-            }
-
-            // load contract product
-            let contractProduct
-            try {
-                contractProduct = await getProductFromContract(productId || '', true)
-            } catch (e) {
-                // don't need to do anything with this error necessarily,
-                // it just means that the product wasn't deployed
-            }
-
-            let currentAdminFee
-            let dataUnionOwner
-            try {
-                currentAdminFee = await getAdminFee(p.beneficiaryAddress)
-                dataUnionOwner = await getDataUnionOwner(p.beneficiaryAddress)
-            } catch (e) {
-                // ignore error, assume contract has not been deployed
-            }
-
-            const { state: productState } = p
-
-            const pendingChanges = getPendingChanges(p)
-            const productWithPendingChagnes = withPendingChanges(p)
-            const {
-                adminFee,
-                pricePerSecond,
-                beneficiaryAddress,
-                priceCurrency,
-                ...productDataChanges
-            } = pendingChanges || {}
-            const hasAdminFeeChanged = !!currentAdminFee && adminFee && currentAdminFee !== adminFee
-            const hasPriceChanged = !!contractProduct && isUpdateContractProductRequired(contractProduct, productWithPendingChagnes)
-            const hasPendingChanges = Object.keys(productDataChanges).length > 0 || hasAdminFeeChanged || hasPriceChanged
-
-            let nextMode
-
-            // is published and has pending changes?
-            if (productState === productStates.DEPLOYED) {
-                nextMode = hasPendingChanges ? modes.REPUBLISH : modes.UNPUBLISH
-            } else if (productState === productStates.NOT_DEPLOYED) {
-                nextMode = contractProduct ? modes.REDEPLOY : modes.PUBLISH
-            } else {
-                // product is either being deployed to contract or being undeployed
-                throw new Error('Invalid product state')
-            }
-
-            let requireOwner = null
-
-            // update admin fee if it has changed
-            if ([modes.REPUBLISH, modes.REDEPLOY, modes.PUBLISH].includes(nextMode)) {
-                if (adminFee && hasAdminFeeChanged) {
-                    requireOwner = dataUnionOwner
-
-                    queue.add({
-                        id: actionsTypes.UPDATE_ADMIN_FEE,
-                        requireWeb3: true,
-                        requireOwner: dataUnionOwner,
-                        handler: (update, done) => (
-                            setAdminFee(p.beneficiaryAddress, adminFee)
-                                .onTransactionHash((hash) => {
-                                    update(transactionStates.PENDING)
-                                    dispatch(addTransaction(hash, transactionTypes.UPDATE_ADMIN_FEE))
-                                    done()
-                                })
-                                .onTransactionComplete(() => {
-                                    update(transactionStates.CONFIRMED)
-                                })
-                                .onError((error) => {
-                                    done()
-                                    update(transactionStates.FAILED, error)
-                                })
-                        ),
-                    })
-                }
-            }
-
-            // update price, currency & beneficiary if changed
-            if ([modes.REPUBLISH, modes.REDEPLOY].includes(nextMode)) {
-                if (hasPriceChanged && contractProduct) {
-                    requireOwner = contractProduct.ownerAddress
-
-                    queue.add({
-                        id: actionsTypes.UPDATE_CONTRACT_PRODUCT,
-                        requireWeb3: true,
-                        requireOwner: contractProduct.ownerAddress,
-                        handler: (update, done) => {
-                            if (!contractProduct) {
-                                return null
-                            }
-
-                            return updateContractProduct({
-                                ...contractProduct,
-                                pricePerSecond: pricePerSecond || p.pricePerSecond,
-                                beneficiaryAddress: beneficiaryAddress || p.beneficiaryAddress,
-                                priceCurrency: priceCurrency || p.priceCurrency,
-                            })
-                                .onTransactionHash((hash) => {
-                                    update(transactionStates.PENDING)
-                                    done()
-                                    dispatch(addTransaction(hash, transactionTypes.UPDATE_CONTRACT_PRODUCT))
-                                })
-                                .onTransactionComplete(() => {
-                                    update(transactionStates.CONFIRMED)
-                                })
-                                .onError((error) => {
-                                    done()
-                                    update(transactionStates.FAILED, error)
-                                })
-                        },
-                    })
-                }
-            }
-
-            // do the actual publish action
-            if (nextMode === modes.PUBLISH) {
-                if (isPaidProduct(p)) {
-                    // TODO: figure out a better to detect if deploying data union for the first time
-                    // force data union product to be published by the same account as the data union itself
-                    if (dataUnionOwner) {
-                        requireOwner = dataUnionOwner
-                    }
-
-                    queue.add({
-                        id: actionsTypes.CREATE_CONTRACT_PRODUCT,
-                        requireWeb3: true,
-                        requireOwner: dataUnionOwner,
-                        handler: (update, done) => (
-                            createContractProduct({
-                                id: p.id || '',
-                                name: p.name,
-                                ownerAddress: accountRef.current || '',
-                                beneficiaryAddress: p.beneficiaryAddress,
-                                pricePerSecond: p.pricePerSecond,
-                                priceCurrency: p.priceCurrency,
-                                minimumSubscriptionInSeconds: p.minimumSubscriptionInSeconds,
-                                state: p.state,
-                            })
-                                .onTransactionHash((hash) => {
-                                    update(transactionStates.PENDING)
-                                    done()
-                                    dispatch(addTransaction(hash, transactionTypes.CREATE_CONTRACT_PRODUCT))
-                                    postSetDeploying(productId || '', hash)
-                                })
-                                .onTransactionComplete(() => {
-                                    update(transactionStates.CONFIRMED)
-                                })
-                                .onError((error) => {
-                                    update(transactionStates.FAILED, error)
-                                    done()
-                                })
-                        ),
-                    })
-                } else {
-                    queue.add({
-                        id: actionsTypes.PUBLISH_FREE,
-                        handler: (update, done) => (
-                            postDeployFree(productId || '').then(() => {
-                                update(transactionStates.CONFIRMED)
-                                done()
-                            }, (error) => {
-                                update(transactionStates.FAILED, error)
-                                done()
-                            })
-                        ),
-                    })
-                }
-            }
-
-            // do republish for products that have been at some point deployed
-            if (nextMode === modes.REDEPLOY) {
-                if (contractProduct) {
-                    requireOwner = contractProduct.ownerAddress
-
-                    queue.add({
-                        id: actionsTypes.REDEPLOY_PAID,
-                        requireWeb3: true,
-                        requireOwner: contractProduct.ownerAddress,
-                        handler: (update, done) => (
-                            redeployProduct(productId || '')
-                                .onTransactionHash((hash) => {
-                                    update(transactionStates.PENDING)
-                                    done()
-                                    dispatch(addTransaction(hash, transactionTypes.REDEPLOY_PRODUCT))
-                                    postSetDeploying(productId || '', hash)
-                                })
-                                .onTransactionComplete(() => {
-                                    update(transactionStates.CONFIRMED)
-                                })
-                                .onError((error) => {
-                                    update(transactionStates.FAILED, error)
-                                    done()
-                                })
-                        ),
-                    })
-                }
-            }
-
-            // do unpublish
-            if (nextMode === modes.UNPUBLISH) {
-                if (contractProduct) {
-                    requireOwner = contractProduct.ownerAddress
-                    queue.add({
-                        id: actionsTypes.UNDEPLOY_CONTRACT_PRODUCT,
-                        requireWeb3: true,
-                        requireOwner: contractProduct.ownerAddress,
-                        handler: (update, done) => (
-                            deleteProduct(productId || '')
-                                .onTransactionHash((hash) => {
-                                    update(transactionStates.PENDING)
-                                    done()
-                                    dispatch(addTransaction(hash, transactionTypes.UNDEPLOY_PRODUCT))
-                                    postSetUndeploying(productId || '', hash)
-                                })
-                                .onTransactionComplete(() => {
-                                    update(transactionStates.CONFIRMED)
-                                })
-                                .onError((error) => {
-                                    update(transactionStates.FAILED, error)
-                                    done()
-                                })
-                        ),
-                    })
-                } else {
-                    queue.add({
-                        id: actionsTypes.UNPUBLISH_FREE,
-                        handler: (update, done) => (
-                            postUndeployFree(productId || '').then(() => {
-                                update(transactionStates.CONFIRMED)
-                                done()
-                            }, (error) => {
-                                update(transactionStates.FAILED, error)
-                                done()
-                            })
-                        ),
-                    })
-                }
-            }
-
-            // finally update product data
-            if (nextMode === modes.REPUBLISH) {
-                queue.add({
-                    id: actionsTypes.PUBLISH_PENDING_CHANGES,
-                    handler: (update, done) => (
-                        putProduct({
-                            ...p,
-                            ...productDataChanges,
-                            pendingChanges: undefined,
-                        }, p.id || '').then(() => {
-                            update(transactionStates.CONFIRMED)
-                            done()
-                        }, (error) => {
-                            update(transactionStates.FAILED, error)
-                            done()
-                        })
-                    ),
-                })
-            }
-
-            // validate metamask based on queued actions
-            setRequireWeb3(queue.needsWeb3())
-            setRequiredOwner(requireOwner)
-            setMode(nextMode)
+        try {
+            getProductById(productId || '')
+                .then(publishRef.current)
+                .then(
+                    ({ queue: nextQueue, mode: nextMode }) => {
+                        setQueue(nextQueue)
+                        setMode(nextMode)
+                    },
+                    (e) => {
+                        setModalError(e)
+                    },
+                )
+        } catch (e) {
+            setModalError(e)
         }
+    }, [productId])
 
-        fetchProduct()
-            .then(
-                () => {
-                    queue
-                        .subscribe('started', (id) => {
-                            setCurrentAction(id)
-                            setActionStatus(id, transactionStates.STARTED)
-                        })
-                        .subscribe('status', (id, nextStatus) => {
-                            setActionStatus(id, nextStatus)
-                        })
-                        .subscribe('ready', (id) => {
-                            setCurrentAction((action) => (action === id ? null : action))
-                        })
-                        .subscribe('finish', () => {
-                            setStep((currentStep) => (currentStep !== steps.COMPLETE ? steps.COMPLETE : currentStep))
-                        })
-                },
-                (e) => {
-                    setModalError(e)
-                },
-            )
+    useEffect(() => {
+        if (!queue) { return () => {} }
+
+        const owners = queue.needsOwner()
+        // validate metamask based on queued actions
+        setRequireWeb3(queue.needsWeb3())
+        setRequiredOwner(owners && owners.length > 0 && owners[0])
+
+        setStatus(queue.getActions().reduce((result, { id }) => ({
+            ...result,
+            [id]: transactionStates.STARTED,
+        }), {}))
+        setWeb3Actions(new Set(queue.getActions().filter(({ requireWeb3: isTransaction }) => !!isTransaction).map(({ id }) => id)))
+
+        queue
+            .subscribe('started', (id) => {
+                setCurrentAction(id)
+            })
+            .subscribe('status', (id, nextStatus) => {
+                setActionStatus(id, nextStatus)
+            })
 
         return () => {
             queue.unsubscribeAll()
         }
-    }, [queueRef, setActionStatus, productId, dispatch, accountRef])
+    }, [setActionStatus, queue])
 
-    const onClose = useCallback(() => {
-        api.close([steps.ACTIONS, steps.COMPLETE].includes(step))
-    }, [api, step])
+    const somePending = useMemo(() => Object.values(status).some((value) => (
+        value !== transactionStates.CONFIRMED && value !== transactionStates.FAILED
+    )), [status])
+    const allSucceeded = useMemo(() => Object.values(status).every((value) => (
+        value === transactionStates.CONFIRMED
+    )), [status])
+    const allCompleted = useMemo(() => Object.values(status).every((value) => (
+        value === transactionStates.CONFIRMED || value === transactionStates.FAILED
+    )), [status])
 
-    const currentStatus = useMemo(() => (currentAction && status[currentAction] ? status[currentAction] : undefined), [status, currentAction])
+    useEffect(() => {
+        if (!started || !allCompleted) { return }
+
+        setTimeout(() => {
+            setFinished(true)
+        }, 500)
+    }, [started, allCompleted])
+
+    const onClose = useCallback(({ showPublishedProduct = false }: { showPublishedProduct?: boolean } = {}) => {
+        api.close({
+            isUnpublish: mode === publishModes.UNPUBLISH,
+            started,
+            succeeded: allSucceeded,
+            showPublishedProduct,
+        })
+    }, [api, mode, started, allSucceeded])
 
     const onConfirm = useCallback(() => {
-        setStep(steps.ACTIONS)
-        queueRef.current.start()
-    }, [setStep])
+        setStarted(true)
+        if (queue) {
+            queue.start()
+        }
+    }, [queue])
 
-    if (!!requireWeb3 && (checkingWeb3 || web3Error)) {
+    if ((!mode && !modalError) || (!!requireWeb3 && (checkingWeb3 || web3Error))) {
         return (
             <Web3ErrorDialog
-                waiting={checkingWeb3}
+                waiting={checkingWeb3 || !mode}
                 onClose={onClose}
                 error={web3Error}
+            />
+        )
+    }
+
+    if (modalError) {
+        return (
+            <ErrorDialog
+                message={modalError.message}
+                onClose={onClose}
             />
         )
     }
@@ -408,54 +162,52 @@ export const PublishOrUnpublishModal = ({ product, api }: Props) => {
         )
     }
 
-    if (modalError) {
+    if (!mode) {
         return (
-            <ErrorDialog
-                message={modalError.message}
+            <Dialog
+                waiting
                 onClose={onClose}
             />
         )
     }
 
-    if (step === steps.CONFIRM) {
-        if (!mode) {
-            return (
-                <Dialog
-                    waiting
-                    onClose={onClose}
-                />
-            )
-        }
-
-        const ConfirmComponent = (mode === modes.UNPUBLISH) ? ReadyToUnpublishDialog : ReadyToPublishDialog
-
+    if (!started) {
         return (
-            <ConfirmComponent
+            <ReadyToPublishDialog
+                publishMode={mode}
                 onContinue={onConfirm}
                 onCancel={onClose}
             />
         )
-    } else if (step === steps.ACTIONS) {
+    } else if (somePending || (!finished && allCompleted)) {
         return (
-            <ConfirmPublishTransaction
-                isUnpublish={mode === modes.UNPUBLISH}
-                action={currentAction}
-                waiting={!currentAction}
-                publishState={currentStatus}
-                onCancel={onClose}
-            />
-        )
-    } else if (step === steps.COMPLETE) {
-        return (
-            <CompletePublishTransaction
-                isUnpublish={mode === modes.UNPUBLISH}
+            <PublishTransactionProgress
+                publishMode={mode}
                 status={status}
                 onCancel={onClose}
+                isPrompted={web3Actions.has(currentAction) && currentAction && status[currentAction] === transactionStates.STARTED}
+            />
+        )
+    } else if (finished && allSucceeded) {
+        return (
+            <PublishComplete
+                publishMode={mode}
+                onContinue={() => onClose({
+                    showPublishedProduct: true,
+                })}
+                onClose={onClose}
+                productId={productId || ''}
             />
         )
     }
 
-    return null
+    return (
+        <PublishError
+            status={status}
+            publishMode={mode}
+            onClose={onClose}
+        />
+    )
 }
 
 export default () => {

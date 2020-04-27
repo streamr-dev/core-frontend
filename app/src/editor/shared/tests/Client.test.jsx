@@ -2,14 +2,12 @@ import React, { useContext } from 'react'
 import { mount } from 'enzyme'
 import { setupAuthorizationHeader } from '$editor/shared/tests/utils'
 import { act } from 'react-dom/test-utils'
-import api from '../utils/api'
-
-import * as Services from '../services'
 import { ClientProviderComponent, Context as ClientContext } from '$shared/contexts/StreamrClient'
+import SessionProvider from '$auth/components/SessionProvider'
 
 describe('Client', () => {
     let teardown
-    let apiKey
+    let sessionToken
 
     beforeAll(async () => {
         teardown = await setupAuthorizationHeader()
@@ -20,8 +18,7 @@ describe('Client', () => {
     })
 
     beforeAll(async () => {
-        const [key] = await api().get(`${process.env.STREAMR_API_URL}/users/me/keys`).then(Services.getData)
-        apiKey = key.id
+        sessionToken = SessionProvider.token()
     })
 
     it('creates client on mount, can unmount', (done) => {
@@ -32,7 +29,7 @@ describe('Client', () => {
         }
 
         const result = mount((
-            <ClientProviderComponent apiKey={apiKey}>
+            <ClientProviderComponent sessionToken={sessionToken}>
                 <Test />
             </ClientProviderComponent>
         ))
@@ -54,7 +51,7 @@ describe('Client', () => {
         }
 
         const result = mount((
-            <ClientProviderComponent apiKey={apiKey}>
+            <ClientProviderComponent sessionToken={sessionToken}>
                 <Test />
             </ClientProviderComponent>
         ))
@@ -85,7 +82,7 @@ describe('Client', () => {
         }
 
         const result = mount((
-            <ClientProviderComponent apiKey={apiKey}>
+            <ClientProviderComponent sessionToken={sessionToken}>
                 <Test />
             </ClientProviderComponent>
         ))
@@ -110,7 +107,7 @@ describe('Client', () => {
         }
 
         const result = mount((
-            <ClientProviderComponent apiKey={apiKey}>
+            <ClientProviderComponent sessionToken={sessionToken}>
                 <Test />
             </ClientProviderComponent>
         ))

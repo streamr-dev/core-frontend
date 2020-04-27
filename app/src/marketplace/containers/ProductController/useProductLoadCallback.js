@@ -17,6 +17,8 @@ import { isEthereumAddress } from '$mp/utils/validate'
 import { getAdminFee } from '$mp/modules/dataUnion/services'
 import { handleEntities } from '$shared/utils/entities'
 import { productSchema } from '$shared/modules/entities/schema'
+import ResourceNotFoundError from '$shared/errors/ResourceNotFoundError'
+import useFailure from '$shared/hooks/useFailure'
 
 import * as State from '../EditProductPage/state'
 import useEditableProductUpdater from './useEditableProductUpdater'
@@ -26,8 +28,9 @@ export default function useProductLoadCallback() {
     const { wrap } = usePending('product.LOAD')
     const isMounted = useIsMounted()
     const dispatch = useDispatch()
+    const fail = useFailure()
 
-    return useCallback(async (productId: ProductId) => (
+    const load = useCallback(async (productId: ProductId) => (
         wrap(async () => {
             dispatch(getProductByIdRequest(productId))
             let product
@@ -75,4 +78,17 @@ export default function useProductLoadCallback() {
             productUpdater.replaceProduct(() => State.withPendingChanges(nextProduct))
         })
     ), [wrap, dispatch, productUpdater, isMounted])
+
+    return useCallback(async (productId: ProductId) => {
+        try {
+            await load(productId)
+        } catch (e) {
+            if (e instanceof ResourceNotFoundError) {
+                fail(e)
+                return
+            }
+
+            throw e
+        }
+    }, [load, fail])
 }

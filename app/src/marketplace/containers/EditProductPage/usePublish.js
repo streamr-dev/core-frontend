@@ -5,17 +5,26 @@ import { useDispatch } from 'react-redux'
 
 import type { Product } from '$mp/flowtype/product-types'
 import { productStates, transactionStates, transactionTypes } from '$shared/utils/constants'
-import { getProductFromContract } from '$mp/modules/contractProduct/services'
+import {
+    getProductFromContract,
+    createContractProduct,
+    updateContractProduct,
+    deleteProduct,
+    redeployProduct,
+} from '$mp/modules/contractProduct/services'
+import {
+    putProduct,
+    postUndeployFree,
+    postSetUndeploying,
+    postDeployFree,
+    postSetDeploying,
+} from '$mp/modules/product/services'
 import { getDataUnionOwner, getAdminFee, setAdminFee } from '$mp/modules/dataUnion/services'
 import { getPendingChanges, withPendingChanges } from './state'
 import { isUpdateContractProductRequired } from '$mp/utils/smartContract'
 import PublishQueue, { actionsTypes } from './publishQueue'
 import { isPaidProduct } from '$mp/utils/product'
-import { postSetDeploying, postDeployFree, redeployProduct } from '$mp/modules/publish/services'
-import { postSetUndeploying, postUndeployFree, deleteProduct } from '$mp/modules/unpublish/services'
-import { createContractProduct, updateContractProduct } from '$mp/modules/createContractProduct/services'
 import { addTransaction } from '$mp/modules/transactions/actions'
-import { putProduct } from '$mp/modules/deprecated/editProduct/services'
 
 export const publishModes = {
     REPUBLISH: 'republish', // live product update
@@ -24,6 +33,8 @@ export const publishModes = {
     UNPUBLISH: 'unpublish',
     ERROR: 'error',
 }
+
+export type PublishMode = $Values<typeof publishModes>
 
 export default function usePublish() {
     const dispatch = useDispatch()
@@ -87,21 +98,28 @@ export default function usePublish() {
                     id: actionsTypes.UPDATE_ADMIN_FEE,
                     requireWeb3: true,
                     requireOwner: dataUnionOwner,
-                    handler: (update, done) => (
-                        setAdminFee(product.beneficiaryAddress, adminFee)
-                            .onTransactionHash((hash) => {
-                                update(transactionStates.PENDING)
-                                dispatch(addTransaction(hash, transactionTypes.UPDATE_ADMIN_FEE))
-                                done()
-                            })
-                            .onTransactionComplete(() => {
-                                update(transactionStates.CONFIRMED)
-                            })
-                            .onError((error) => {
-                                done()
-                                update(transactionStates.FAILED, error)
-                            })
-                    ),
+                    handler: (update, done) => {
+                        try {
+                            return setAdminFee(product.beneficiaryAddress, adminFee)
+                                .onTransactionHash((hash) => {
+                                    update(transactionStates.PENDING)
+                                    dispatch(addTransaction(hash, transactionTypes.UPDATE_ADMIN_FEE))
+                                    done()
+                                })
+                                .onTransactionComplete(() => {
+                                    update(transactionStates.CONFIRMED)
+                                })
+                                .onError((error) => {
+                                    done()
+                                    update(transactionStates.FAILED, error)
+                                })
+                        } catch (e) {
+                            done()
+                            update(transactionStates.FAILED, e)
+                        }
+
+                        return null
+                    },
                 })
             }
         }
@@ -118,24 +136,31 @@ export default function usePublish() {
                             return null
                         }
 
-                        return updateContractProduct({
-                            ...contractProduct,
-                            pricePerSecond: pricePerSecond || product.pricePerSecond,
-                            beneficiaryAddress: beneficiaryAddress || product.beneficiaryAddress,
-                            priceCurrency: priceCurrency || product.priceCurrency,
-                        })
-                            .onTransactionHash((hash) => {
-                                update(transactionStates.PENDING)
-                                done()
-                                dispatch(addTransaction(hash, transactionTypes.UPDATE_CONTRACT_PRODUCT))
+                        try {
+                            return updateContractProduct({
+                                ...contractProduct,
+                                pricePerSecond: pricePerSecond || product.pricePerSecond,
+                                beneficiaryAddress: beneficiaryAddress || product.beneficiaryAddress,
+                                priceCurrency: priceCurrency || product.priceCurrency,
                             })
-                            .onTransactionComplete(() => {
-                                update(transactionStates.CONFIRMED)
-                            })
-                            .onError((error) => {
-                                done()
-                                update(transactionStates.FAILED, error)
-                            })
+                                .onTransactionHash((hash) => {
+                                    update(transactionStates.PENDING)
+                                    done()
+                                    dispatch(addTransaction(hash, transactionTypes.UPDATE_CONTRACT_PRODUCT))
+                                })
+                                .onTransactionComplete(() => {
+                                    update(transactionStates.CONFIRMED)
+                                })
+                                .onError((error) => {
+                                    done()
+                                    update(transactionStates.FAILED, error)
+                                })
+                        } catch (e) {
+                            done()
+                            update(transactionStates.FAILED, e)
+                        }
+
+                        return null
                     },
                 })
             }
@@ -150,44 +175,58 @@ export default function usePublish() {
                     id: actionsTypes.CREATE_CONTRACT_PRODUCT,
                     requireWeb3: true,
                     requireOwner: dataUnionOwner,
-                    handler: (update, done) => (
-                        createContractProduct({
-                            id: product.id || '',
-                            name: product.name,
-                            beneficiaryAddress: product.beneficiaryAddress,
-                            pricePerSecond: product.pricePerSecond,
-                            priceCurrency: product.priceCurrency,
-                            minimumSubscriptionInSeconds: product.minimumSubscriptionInSeconds,
-                            state: product.state,
-                            ownerAddress: '', // owner address is not needed when creating
-                        })
-                            .onTransactionHash((hash) => {
-                                update(transactionStates.PENDING)
-                                done()
-                                dispatch(addTransaction(hash, transactionTypes.CREATE_CONTRACT_PRODUCT))
-                                postSetDeploying(product.id || '', hash)
+                    handler: (update, done) => {
+                        try {
+                            return createContractProduct({
+                                id: product.id || '',
+                                name: product.name,
+                                beneficiaryAddress: product.beneficiaryAddress,
+                                pricePerSecond: product.pricePerSecond,
+                                priceCurrency: product.priceCurrency,
+                                minimumSubscriptionInSeconds: product.minimumSubscriptionInSeconds,
+                                state: product.state,
+                                ownerAddress: '', // owner address is not needed when creating
                             })
-                            .onTransactionComplete(() => {
-                                update(transactionStates.CONFIRMED)
-                            })
-                            .onError((error) => {
-                                update(transactionStates.FAILED, error)
-                                done()
-                            })
-                    ),
+                                .onTransactionHash((hash) => {
+                                    update(transactionStates.PENDING)
+                                    done()
+                                    dispatch(addTransaction(hash, transactionTypes.CREATE_CONTRACT_PRODUCT))
+                                    postSetDeploying(product.id || '', hash)
+                                })
+                                .onTransactionComplete(() => {
+                                    update(transactionStates.CONFIRMED)
+                                })
+                                .onError((error) => {
+                                    update(transactionStates.FAILED, error)
+                                    done()
+                                })
+                        } catch (e) {
+                            update(transactionStates.FAILED, e)
+                            done()
+                        }
+
+                        return null
+                    },
                 })
             } else {
                 queue.add({
                     id: actionsTypes.PUBLISH_FREE,
-                    handler: (update, done) => (
-                        postDeployFree(product.id || '').then(() => {
-                            update(transactionStates.CONFIRMED)
+                    handler: (update, done) => {
+                        try {
+                            return postDeployFree(product.id || '').then(() => {
+                                update(transactionStates.CONFIRMED)
+                                done()
+                            }, (error) => {
+                                update(transactionStates.FAILED, error)
+                                done()
+                            })
+                        } catch (e) {
+                            update(transactionStates.FAILED, e)
                             done()
-                        }, (error) => {
-                            update(transactionStates.FAILED, error)
-                            done()
-                        })
-                    ),
+                        }
+
+                        return null
+                    },
                 })
             }
         }
@@ -198,22 +237,29 @@ export default function usePublish() {
                 id: actionsTypes.REDEPLOY_PAID,
                 requireWeb3: true,
                 requireOwner: contractProduct.ownerAddress,
-                handler: (update, done) => (
-                    redeployProduct(product.id || '')
-                        .onTransactionHash((hash) => {
-                            update(transactionStates.PENDING)
-                            done()
-                            dispatch(addTransaction(hash, transactionTypes.REDEPLOY_PRODUCT))
-                            postSetDeploying(product.id || '', hash)
-                        })
-                        .onTransactionComplete(() => {
-                            update(transactionStates.CONFIRMED)
-                        })
-                        .onError((error) => {
-                            update(transactionStates.FAILED, error)
-                            done()
-                        })
-                ),
+                handler: (update, done) => {
+                    try {
+                        return redeployProduct(product.id || '')
+                            .onTransactionHash((hash) => {
+                                update(transactionStates.PENDING)
+                                done()
+                                dispatch(addTransaction(hash, transactionTypes.REDEPLOY_PRODUCT))
+                                postSetDeploying(product.id || '', hash)
+                            })
+                            .onTransactionComplete(() => {
+                                update(transactionStates.CONFIRMED)
+                            })
+                            .onError((error) => {
+                                update(transactionStates.FAILED, error)
+                                done()
+                            })
+                    } catch (e) {
+                        update(transactionStates.FAILED, e)
+                        done()
+                    }
+
+                    return null
+                },
             })
         }
 
@@ -224,35 +270,49 @@ export default function usePublish() {
                     id: actionsTypes.UNDEPLOY_CONTRACT_PRODUCT,
                     requireWeb3: true,
                     requireOwner: contractProduct.ownerAddress,
-                    handler: (update, done) => (
-                        deleteProduct(product.id || '')
-                            .onTransactionHash((hash) => {
-                                update(transactionStates.PENDING)
-                                done()
-                                dispatch(addTransaction(hash, transactionTypes.UNDEPLOY_PRODUCT))
-                                postSetUndeploying(product.id || '', hash)
-                            })
-                            .onTransactionComplete(() => {
-                                update(transactionStates.CONFIRMED)
-                            })
-                            .onError((error) => {
-                                update(transactionStates.FAILED, error)
-                                done()
-                            })
-                    ),
+                    handler: (update, done) => {
+                        try {
+                            return deleteProduct(product.id || '')
+                                .onTransactionHash((hash) => {
+                                    update(transactionStates.PENDING)
+                                    done()
+                                    dispatch(addTransaction(hash, transactionTypes.UNDEPLOY_PRODUCT))
+                                    postSetUndeploying(product.id || '', hash)
+                                })
+                                .onTransactionComplete(() => {
+                                    update(transactionStates.CONFIRMED)
+                                })
+                                .onError((error) => {
+                                    update(transactionStates.FAILED, error)
+                                    done()
+                                })
+                        } catch (e) {
+                            update(transactionStates.FAILED, e)
+                            done()
+                        }
+
+                        return null
+                    },
                 })
             } else {
                 queue.add({
                     id: actionsTypes.UNPUBLISH_FREE,
-                    handler: (update, done) => (
-                        postUndeployFree(product.id || '').then(() => {
-                            update(transactionStates.CONFIRMED)
+                    handler: (update, done) => {
+                        try {
+                            return postUndeployFree(product.id || '').then(() => {
+                                update(transactionStates.CONFIRMED)
+                                done()
+                            }, (error) => {
+                                update(transactionStates.FAILED, error)
+                                done()
+                            })
+                        } catch (e) {
+                            update(transactionStates.FAILED, e)
                             done()
-                        }, (error) => {
-                            update(transactionStates.FAILED, error)
-                            done()
-                        })
-                    ),
+                        }
+
+                        return null
+                    },
                 })
             }
         }
@@ -261,19 +321,26 @@ export default function usePublish() {
         if (nextMode === publishModes.REPUBLISH) {
             queue.add({
                 id: actionsTypes.PUBLISH_PENDING_CHANGES,
-                handler: (update, done) => (
-                    putProduct({
-                        ...product,
-                        ...productDataChanges,
-                        pendingChanges: undefined,
-                    }, product.id || '').then(() => {
-                        update(transactionStates.CONFIRMED)
+                handler: (update, done) => {
+                    try {
+                        return putProduct({
+                            ...product,
+                            ...productDataChanges,
+                            pendingChanges: undefined,
+                        }, product.id || '').then(() => {
+                            update(transactionStates.CONFIRMED)
+                            done()
+                        }, (error) => {
+                            update(transactionStates.FAILED, error)
+                            done()
+                        })
+                    } catch (e) {
+                        update(transactionStates.FAILED, e)
                         done()
-                    }, (error) => {
-                        update(transactionStates.FAILED, error)
-                        done()
-                    })
-                ),
+                    }
+
+                    return null
+                },
             })
         }
 

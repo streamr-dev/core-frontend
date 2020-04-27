@@ -7,7 +7,6 @@ import classNames from 'classnames'
 import { Container } from 'reactstrap'
 import { Translate, I18n } from 'react-redux-i18n'
 
-import links from '../../../links'
 import type { Filter, SearchFilter, CategoryFilter, SortByFilter } from '../../flowtype/product-types'
 import type { Category } from '../../flowtype/category-types'
 import { isValidSearchQuery } from '../../utils/validate'
@@ -25,13 +24,7 @@ export type CreateProductButtonProps = {
 }
 
 export const CreateProductButton = ({ onCreateProduct }: CreateProductButtonProps) => {
-    if (!process.env.NEW_MP_CONTRACT) {
-        return (
-            <Button kind="secondary" tag={Link} to={links.marketplace.createProduct}>
-                <Translate value="actionBar.create" />
-            </Button>
-        )
-    } else if (process.env.DATA_UNIONS) {
+    if (process.env.DATA_UNIONS) {
         return (
             <Button
                 kind="secondary"

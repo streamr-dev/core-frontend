@@ -94,6 +94,13 @@ module.exports = {
             introToProducts: routes.docsProductsIntroToProducts(),
             dataUnions: routes.docsProductsDataUnions(),
         },
+        dataUnions: {
+            root: routes.docsDataUnionsRoot(),
+            introToDataUnions: routes.docsDataUnionsIntroToProducts(),
+            dataUnionsInCore: routes.docsDataUnionsBuildInCore(),
+            integration: routes.docsDataUnionsIntegration(),
+            dataUnionsInSDK: routes.docsDataUnionsInSDK(),
+        },
         // runningNode: routes.docsRunningNode(),
         SDKs: {
             root: routes.docsSDKs(),

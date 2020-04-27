@@ -37,13 +37,22 @@ export const buyProduct = (
 
     switch (paymentCurrency) {
         case paymentCurrencies.ETH:
-            return send(uniswapAdaptorContractMethods().buyWithETH(getValidId(id), subscriptionInSeconds.toString(), ONE_DAY), {
+            return send(uniswapAdaptorContractMethods().buyWithETH(
+                getValidId(id),
+                subscriptionInSeconds.toString(),
+                ONE_DAY,
+            ), {
                 gas: gasLimits.BUY_PRODUCT_WITH_ETH,
                 value: web3.utils.toWei(ethPrice.toString()).toString(),
             })
         case paymentCurrencies.DAI:
-            return send(uniswapAdaptorContractMethods()
-                .buyWithERC20(getValidId(id), subscriptionInSeconds.toString(), ONE_DAY, DAI, web3.utils.toWei(daiPrice.toString()).toString()), {
+            return send(uniswapAdaptorContractMethods().buyWithERC20(
+                getValidId(id),
+                subscriptionInSeconds.toString(),
+                ONE_DAY,
+                DAI,
+                web3.utils.toWei(daiPrice.toString()).toString(),
+            ), {
                 gas: gasLimits.BUY_PRODUCT_WITH_ERC20,
             })
 

@@ -1,6 +1,6 @@
 {
   "name": "marketplace",
-  "version": "2.1.20",
+  "version": "2.2.0",
   "description": "The Streamr Core App",
   "main": "src/index.jsx",
   "scripts": {
@@ -59,7 +59,7 @@
       "/tests/"
     ],
     "moduleNameMapper": {
-      "\\.(css|scss|pcss|po|md|mdx)$": "identity-obj-proxy",
+      "\\.(css|scss|pcss|po|md)$": "identity-obj-proxy",
       "\\.(png)$": "empty/object",
       "\\$app/(.*)$": "<rootDir>/$1",
       "\\$auth/(.*)$": "<rootDir>/src/auth/$1",
@@ -222,7 +222,7 @@
     "react-redux-i18n": "^1.9.3",
     "react-resizable": "^1.8.0",
     "react-responsive": "^4.1.0",
-    "react-router-dom": "^5.0.1",
+    "react-router-dom": "^5.1.2",
     "react-scrollable-anchor": "^0.6.1",
     "react-scrollspy": "^3.4.0",
     "react-select": "^2.4.3",

@@ -61,6 +61,41 @@ describe('user - reducer', () => {
                 },
             }), expectedState)
         })
+
+        it('resets current user when fetch fails', () => {
+            const user = {
+                name: 'Tester1',
+                username: 'tester1@streamr.com',
+            }
+
+            const expectedState1 = {
+                ...initialState,
+                user,
+                fetchingUserData: false,
+            }
+
+            assert.deepStrictEqual(reducer(undefined, {
+                type: constants.USER_DATA_SUCCESS,
+                payload: {
+                    user,
+                },
+            }), expectedState1)
+
+            const error = new Error('Test')
+            const expectedState2 = {
+                ...initialState,
+                user: null,
+                fetchingUserData: false,
+                userDataError: error,
+            }
+
+            assert.deepStrictEqual(reducer(undefined, {
+                type: constants.USER_DATA_FAILURE,
+                payload: {
+                    error,
+                },
+            }), expectedState2)
+        })
     })
 
     describe('UPDATE_CURRENT_USER', () => {

@@ -15,6 +15,7 @@ const { docs: {
     introduction,
     marketplace,
     products,
+    dataUnions,
     SDKs,
     technicalNotes,
     tutorials,
@@ -25,7 +26,11 @@ const { docs: {
 // - Key = Rendered navigation title.
 // - Value = Docs route.
 
-export const docsNav: DocsNav = {
+type IncludeSections = {
+    dataUnions?: boolean,
+}
+
+export const generateNav = ({ dataUnions: includeDataUnions = !!process.env.DATA_UNIONS }: IncludeSections = {}) => ({
     Introduction: {
         root: introduction.root,
     },
@@ -73,6 +78,15 @@ export const docsNav: DocsNav = {
         'Intro to products': products.introToProducts,
         'Data Unions': products.dataUnions,
     },
+    ...(includeDataUnions ? {
+        'Data Unions': {
+            root: dataUnions.root,
+            'Intro to Data Unions': dataUnions.introToDataUnions,
+            'Data Unions in Core': dataUnions.dataUnionsInCore,
+            'Data Unions Integration': dataUnions.integration,
+            'Build a Data Union': dataUnions.dataUnionsInSDK,
+        },
+    } : {}),
     Tutorials: {
         root: tutorials.root,
         'Simple pub/sub': tutorials.buildingPubSub,
@@ -110,4 +124,6 @@ export const docsNav: DocsNav = {
     'Technical Notes': {
         root: technicalNotes.root,
     },
-}
+})
+
+export const docsNav: DocsNav = generateNav()

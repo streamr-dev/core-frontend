@@ -1,70 +1,35 @@
 // @flow
 
-import React, { Component } from 'react'
-import { Translate, I18n } from 'react-redux-i18n'
-import { Label, FormGroup } from 'reactstrap'
+import React from 'react'
 
-import ModalPortal from '$shared/components/ModalPortal'
-import Dialog from '$shared/components/Dialog'
-import Checkbox from '$shared/components/Checkbox'
-import links from '../../../../links'
+import { type PublishMode, publishModes } from '$mp/containers/EditProductPage/usePublish'
+import ReadyToPublish from './ReadyToPublish'
+import ReadyToUnpublish from './ReadyToUnpublish'
 
-import styles from './readytopublish.pcss'
-
-export type Props = {
-    waiting?: boolean,
+export type BaseProps = {
     onCancel: () => void,
     onContinue: () => void,
 }
 
-export type State = {
-    termsAccepted: boolean,
+export type Props = BaseProps & {
+    publishMode: PublishMode,
 }
 
-class ReadyToPublishDialog extends Component<Props, State> {
-    state = {
-        termsAccepted: false,
-    }
-
-    render = () => {
-        const { waiting, onContinue, onCancel } = this.props
-
+export default ({ publishMode, onCancel, onContinue }: Props) => {
+    if (publishMode === publishModes.UNPUBLISH) {
         return (
-            <ModalPortal>
-                <Dialog
-                    onClose={onCancel}
-                    waiting={waiting}
-                    title={I18n.t('modal.readyToPublish.title')}
-                    actions={{
-                        cancel: {
-                            title: I18n.t('modal.common.cancel'),
-                            onClick: onCancel,
-                            kind: 'link',
-                        },
-                        publish: {
-                            title: I18n.t('modal.readyToPublish.publish'),
-                            kind: 'primary',
-                            onClick: onContinue,
-                            disabled: !this.state.termsAccepted,
-                        },
-                    }}
-                >
-                    <p><Translate value="modal.readyToPublish.message" dangerousHTML /></p>
-                    <FormGroup check>
-                        <Label check className={styles.confirm}>
-                            <Checkbox
-                                value={this.state.termsAccepted}
-                                onChange={(e: SyntheticInputEvent<HTMLInputElement>) => this.setState({
-                                    termsAccepted: e.currentTarget.checked,
-                                })}
-                            />&nbsp;
-                            <Translate value="modal.readyToPublish.terms" publisherTermsLink={links.publisherTerms} dangerousHTML />
-                        </Label>
-                    </FormGroup>
-                </Dialog>
-            </ModalPortal>
+            <ReadyToUnpublish
+                onContinue={onContinue}
+                onCancel={onCancel}
+            />
         )
     }
-}
 
-export default ReadyToPublishDialog
+    return (
+        <ReadyToPublish
+            publishMode={publishMode}
+            onContinue={onContinue}
+            onCancel={onCancel}
+        />
+    )
+}

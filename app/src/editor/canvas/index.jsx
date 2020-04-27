@@ -48,6 +48,7 @@ import CanvasToolbar from './components/Toolbar'
 import CanvasStatus, { CannotSaveStatus } from '$editor/shared/components/Status'
 import ModuleSearch from './components/ModuleSearch'
 import EmbedToolbar from './components/EmbedToolbar'
+import ResourceNotFoundError from '$shared/errors/ResourceNotFoundError'
 
 import useCanvasNotifications, { pushErrorNotification, pushWarningNotification } from './hooks/useCanvasNotifications'
 
@@ -572,31 +573,37 @@ const CanvasEditWrap = () => {
     )
 }
 
-const CanvasErrorPage = () => (
-    <ErrorPageContent>
-        <Button
-            kind="special"
-            tag={Link}
-            to=""
-            onClick={(event) => {
-                event.preventDefault()
-                window.location.reload()
-            }}
-        >
-            <Translate value="editor.error.refresh" />
-        </Button>
-        <Button
-            kind="special"
-            tag={Link}
-            to={routes.canvases()}
-            className="d-none d-md-inline-flex"
-        >
-            <Translate value="editor.general.backToCanvases" />
-        </Button>
-    </ErrorPageContent>
-)
+const CanvasErrorBoundary = ({ error }) => {
+    if (error instanceof ResourceNotFoundError) {
+        throw error
+    }
 
-const CanvasContainer = withRouter(withErrorBoundary(CanvasErrorPage)((props) => (
+    return (
+        <ErrorPageContent>
+            <Button
+                kind="special"
+                tag={Link}
+                to=""
+                onClick={(event) => {
+                    event.preventDefault()
+                    window.location.reload()
+                }}
+            >
+                <Translate value="editor.error.refresh" />
+            </Button>
+            <Button
+                kind="special"
+                tag={Link}
+                to={routes.canvases()}
+                className="d-none d-md-inline-flex"
+            >
+                <Translate value="editor.general.backToCanvases" />
+            </Button>
+        </ErrorPageContent>
+    )
+}
+
+const CanvasContainer = withRouter(withErrorBoundary(CanvasErrorBoundary)((props) => (
     <UndoContext.Provider key={props.match.params.id} enableBreadcrumbs>
         <PendingProvider name="canvas">
             <PendingLoadingIndicator />

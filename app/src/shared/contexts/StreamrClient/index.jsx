@@ -9,32 +9,29 @@
 import React, { type Node, type Context, useState, useEffect, useLayoutEffect, useCallback, useMemo } from 'react'
 import { connect } from 'react-redux'
 import StreamrClient from 'streamr-client'
+import SessionProvider from '$auth/components/SessionProvider'
 
-import { selectAuthApiKeyId } from '$shared/modules/resourceKey/selectors'
-import { getMyResourceKeys } from '$shared/modules/resourceKey/actions'
 import { selectAuthState } from '$shared/modules/user/selectors'
 import useIsMountedRef from '$shared/hooks/useIsMountedRef'
-import { usePending } from '$shared/hooks/usePending'
-import type { ResourceKeyId } from '$shared/flowtype/resource-key-types'
 
 export type ContextProps = {
     hasLoaded: boolean,
     client: any,
-    apiKey: ?ResourceKeyId,
+    sessionToken: ?string,
 }
 
 export const ClientContext: Context<ContextProps> = React.createContext({
     hasLoaded: false,
     client: undefined,
-    apiKey: undefined,
+    sessionToken: undefined,
 })
 
-export function createClient(apiKey: ?ResourceKeyId) {
+export function createClient(sessionToken: ?string) {
     return new StreamrClient({
         url: process.env.STREAMR_WS_URL,
         restUrl: process.env.STREAMR_API_URL,
-        auth: apiKey == null ? {} : {
-            apiKey,
+        auth: sessionToken == null ? {} : {
+            sessionToken,
         },
         autoConnect: true,
         autoDisconnect: false,
@@ -42,41 +39,16 @@ export function createClient(apiKey: ?ResourceKeyId) {
 }
 
 type ClientProviderProps = {
-    apiKey: ?ResourceKeyId,
-    loadKeys: Function,
+    sessionToken: ?string,
     isAuthenticating: boolean,
-    isAuthenticated: boolean,
     authenticationFailed: boolean,
 }
 
-function useClientProvider({
-    apiKey,
-    loadKeys,
-    isAuthenticating,
-    isAuthenticated,
-    authenticationFailed,
-}: ClientProviderProps) {
+function useClientProvider({ sessionToken, isAuthenticating, authenticationFailed }: ClientProviderProps) {
     const [client, setClient] = useState()
     const isMountedRef = useIsMountedRef()
     const hasClient = !!client
-    const hasLoaded = !!apiKey || !!(!isAuthenticating && (isAuthenticated || authenticationFailed))
-    const loadKeyPending = usePending('client.key')
-
-    useEffect(() => {
-        // do nothing if waiting to auth
-        if (hasLoaded || loadKeyPending.isPending) { return }
-        loadKeyPending.wrap(() => (
-            loadKeys().catch((error) => {
-                if (!isMountedRef.current) { return }
-                if (error.statusCode === 401 || error.statusCode === 403) {
-                    // ignore 401/403
-                    return
-                }
-
-                throw error
-            })
-        ))
-    }, [loadKeys, loadKeyPending, isMountedRef, hasLoaded])
+    const hasLoaded = !!sessionToken || !!(!isAuthenticating && authenticationFailed)
 
     const reset = useCallback(() => {
         if (!client) { return }
@@ -99,13 +71,13 @@ function useClientProvider({
         client.connection.once('disconnected', reset)
         client.once('error', reset)
         return reset // reset to cleanup
-    }, [reset, client, apiKey])
+    }, [reset, client, sessionToken])
 
     // (re)create client if none
     useLayoutEffect(() => {
         if (hasClient || !hasLoaded) { return }
-        setClient(createClient(apiKey))
-    }, [hasClient, setClient, apiKey, hasLoaded])
+        setClient(createClient(sessionToken))
+    }, [hasClient, setClient, sessionToken, hasLoaded])
 
     // disconnect on unmount/client change
     useEffect(() => {
@@ -118,8 +90,8 @@ function useClientProvider({
     return useMemo(() => ({
         hasLoaded,
         client,
-        apiKey,
-    }), [client, apiKey, hasLoaded])
+        sessionToken,
+    }), [client, sessionToken, hasLoaded])
 }
 
 type Props = ClientProviderProps & {
@@ -135,13 +107,12 @@ export function ClientProviderComponent({ children, ...props }: Props) {
     )
 }
 
-const withAuthApiKey = connect((state) => ({
-    apiKey: selectAuthApiKeyId(state),
-}), {
-    loadKeys: getMyResourceKeys,
+const mapStateToProps = (state) => ({
+    ...selectAuthState(state),
+    sessionToken: SessionProvider.token(),
 })
 
-export const ClientProvider = withAuthApiKey(connect(selectAuthState)(ClientProviderComponent))
+export const ClientProvider = connect(mapStateToProps)(ClientProviderComponent)
 
 export {
     ClientProvider as Provider,

@@ -20,7 +20,7 @@ import type {
     SmartContractDeployTransaction,
     SmartContractMetadata,
 } from '$shared/flowtype/web3-types'
-import type { EditProduct, SmartContractProduct } from '../flowtype/product-types'
+import type { Product, SmartContractProduct } from '../flowtype/product-types'
 import type { NumberString } from '$shared/flowtype/common-types'
 
 import Transaction from '$shared/utils/Transaction'
@@ -69,7 +69,7 @@ export const getContract = ({ abi, address }: SmartContractConfig, usePublicNode
     return new web3.eth.Contract(abi, address)
 }
 
-export const isUpdateContractProductRequired = (contractProduct: SmartContractProduct, editProduct: EditProduct) => (
+export const isUpdateContractProductRequired = (contractProduct: SmartContractProduct, editProduct: Product) => (
     (!arePricesEqual(contractProduct.pricePerSecond, editProduct.pricePerSecond) ||
     !areAddressesEqual(contractProduct.beneficiaryAddress, editProduct.beneficiaryAddress) ||
     contractProduct.priceCurrency !== editProduct.priceCurrency)
@@ -84,6 +84,7 @@ export const send = (method: Sendable, options?: {
     const web3 = getWeb3()
     const emitter = new EventEmitter()
     const errorHandler = (error: Error) => {
+        console.warn(error)
         emitter.emit('error', error)
     }
     const tx = new Transaction(emitter)
@@ -92,18 +93,19 @@ export const send = (method: Sendable, options?: {
         checkEthereumNetworkIsCorrect(web3),
     ])
         .then(([account]) => {
-            const sentMethod = method
-                .send({
-                    gas: (options && options.gas) || gasLimits.DEFAULT,
-                    from: account,
-                    value: options && options.value,
-                })
-                .on('error', errorHandler)
-                .on('transactionHash', (hash) => {
-                    sentMethod.off('error', errorHandler)
-                    sentMethod.on('error', (error, receipt) => {
+            method.send({
+                gas: (options && options.gas) || gasLimits.DEFAULT,
+                from: account,
+                value: options && options.value,
+            })
+                .on('error', (error, receipt) => {
+                    if (receipt) {
                         errorHandler(new TransactionError(error.message, receipt))
-                    })
+                    } else {
+                        errorHandler(error)
+                    }
+                })
+                .on('transactionHash', (hash) => {
                     emitter.emit('transactionHash', hash)
                 })
                 .on('receipt', (receipt) => {
@@ -113,6 +115,7 @@ export const send = (method: Sendable, options?: {
                         emitter.emit('receipt', receipt)
                     }
                 })
+                .catch(errorHandler)
         }, errorHandler)
 
     return tx

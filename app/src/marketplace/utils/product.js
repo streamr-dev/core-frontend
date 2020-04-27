@@ -3,12 +3,13 @@
 import BN from 'bignumber.js'
 
 import type { NumberString } from '$shared/flowtype/common-types'
-import type { Product, EditProduct, ProductId, SmartContractProduct, ProductType } from '../flowtype/product-types'
+import type { Product, ProductId, SmartContractProduct, ProductType } from '../flowtype/product-types'
 
 import { contractCurrencies as currencies, productStates } from '$shared/utils/constants'
 import { productTypes } from './constants'
 import { fromAtto, fromNano, toAtto, toNano } from './math'
 import { getPrefixedHexString, getUnprefixedHexString, isValidHexString } from './smartContract'
+import InvalidHexStringError from '$shared/errors/InvalidHexStringError'
 
 export const isPaidProduct = (product: Product) => product.isFree === false || BN(product.pricePerSecond).isGreaterThan(0)
 
@@ -62,7 +63,7 @@ export const mapPriceFromApi = (pricePerSecond: NumberString): string => fromNan
 
 export const mapPriceToApi = (pricePerSecond: NumberString | BN): string => toNano(pricePerSecond).toFixed(0)
 
-export const mapProductFromApi = (product: Product | EditProduct): Product => {
+export const mapProductFromApi = (product: Product): Product => {
     const pricePerSecond = mapPriceFromApi(product.pricePerSecond)
     return {
         ...product,
@@ -72,7 +73,7 @@ export const mapProductFromApi = (product: Product | EditProduct): Product => {
 
 export const mapAllProductsFromApi = (products: Array<Product>): Array<Product> => products.map(mapProductFromApi)
 
-export const mapProductToPostApi = (product: Product | EditProduct): Product => {
+export const mapProductToPostApi = (product: Product): Product => {
     const pricePerSecond = mapPriceToApi(product.pricePerSecond)
     validateApiProductPricePerSecond(pricePerSecond)
     validateProductPriceCurrency(product.priceCurrency)
@@ -82,9 +83,9 @@ export const mapProductToPostApi = (product: Product | EditProduct): Product => 
     }
 }
 
-export const isPublishedProduct = (p: Product | EditProduct) => p.state === productStates.DEPLOYED
+export const isPublishedProduct = (p: Product) => p.state === productStates.DEPLOYED
 
-export const mapProductToPutApi = (product: Product | EditProduct): Object => {
+export const mapProductToPutApi = (product: Product): Object => {
     // For published paid products, the some fields can only be updated on the smart contract
     if (isPaidProduct(product) && isPublishedProduct(product)) {
         const {
@@ -109,7 +110,7 @@ export const mapProductToPutApi = (product: Product | EditProduct): Object => {
 
 export const getValidId = (id: string, prefix: boolean = true): string => {
     if (!isValidHexString(id) || parseInt(id, 16) === 0) {
-        throw new Error(`${id} is not valid hex string`)
+        throw new InvalidHexStringError(id)
     }
     return prefix ? getPrefixedHexString(id) : getUnprefixedHexString(id)
 }

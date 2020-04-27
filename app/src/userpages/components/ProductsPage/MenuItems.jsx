@@ -9,32 +9,14 @@ import routes from '$routes'
 import useCopy from '$shared/hooks/useCopy'
 import links from '../../../links'
 
-export const Edit = ({ id }: any) => {
-    const to = process.env.NEW_MP_CONTRACT ? (
-        routes.editProduct({
+export const Edit = ({ id }: any) => (
+    <MenuItem
+        tag={Link}
+        to={routes.editProduct({
             id,
-        })
-    ) : (
-        formatPath(links.marketplace.products, id, 'edit')
-    )
-
-    return (
-        <MenuItem
-            tag={Link}
-            to={to}
-        >
-            <Translate value="actionsDropdown.edit" />
-        </MenuItem>
-    )
-}
-
-export const PublishUnpublish = ({ id, deployed }: any) => (
-    <MenuItem tag={Link} to={formatPath(links.marketplace.products, id, 'publish')}>
-        {deployed ? (
-            <Translate value="actionsDropdown.unpublish" />
-        ) : (
-            <Translate value="actionsDropdown.publish" />
-        )}
+        })}
+    >
+        <Translate value="actionsDropdown.edit" />
     </MenuItem>
 )
 
