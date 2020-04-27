@@ -8,6 +8,7 @@ import startCase from 'lodash/startCase'
 import { useSpring, animated } from 'react-spring'
 
 import * as api from '$shared/utils/api'
+import useIsMounted from '$shared/hooks/useIsMounted'
 import SelectInput from '$ui/Select'
 import RadioButtonGroup from './RadioButtonGroup'
 import Button from '$shared/components/Button'
@@ -59,18 +60,15 @@ function useAsyncCallbackWithState(callback) {
         result: undefined,
     })
 
+    const isMounted = useIsMounted()
+
     const currentCallback = useRef(callback)
     currentCallback.current = callback
-
-    const isMountedRef = useRef(true)
-    useEffect(() => () => {
-        isMountedRef.current = false
-    }, [isMountedRef])
 
     const run = useCallback(async () => {
         let error
         let result
-        if (!isMountedRef.current) { return }
+        if (!isMounted()) { return }
 
         setState({
             error,
@@ -84,7 +82,7 @@ function useAsyncCallbackWithState(callback) {
             error = err
         } finally {
             // only do something if mounted and callback didn't change
-            if (isMountedRef.current && currentCallback.current === callback) {
+            if (isMounted() && currentCallback.current === callback) {
                 setState({
                     error,
                     result,
@@ -93,7 +91,7 @@ function useAsyncCallbackWithState(callback) {
                 })
             }
         }
-    }, [callback])
+    }, [isMounted, callback])
     return [state, run]
 }
 
@@ -105,19 +103,24 @@ function usePrevious(value) {
     return ref.current
 }
 
+/**
+ * Transitions element from height: 0 to measured height.
+ */
+
 function useSlideIn({ isVisible } = {}) {
     isVisible = !!isVisible
     const previousIsVisible = !!usePrevious(isVisible)
 
-    const [bind, { height }] = useMeasure()
+    const [bind, { height }] = useMeasure() // attach bind to element to measure
     const justChanged = previousIsVisible !== isVisible
 
-    const [, forceUpdate] = useReducer((x) => x + 1, 0)
     const targetHeight = isVisible ? height : 0
-    const selectedHeight = justChanged ? height : targetHeight
+    const selectedHeight = targetHeight
 
+    const [, forceUpdate] = useReducer((x) => x + 1, 0)
     useEffect(() => {
         if (justChanged) {
+            // needs second render to perform transition correctly
             forceUpdate()
         }
     }, [justChanged, forceUpdate])
@@ -134,6 +137,10 @@ function useSlideIn({ isVisible } = {}) {
 
     return [bind, style]
 }
+
+/**
+ * Input for adding new users.
+ */
 
 function InputNewShare({ onChange }) {
     const [value, setValue] = useState('')
@@ -168,6 +175,10 @@ function InputNewShare({ onChange }) {
         </div>
     )
 }
+
+/**
+ * Individual User's Permissions UI
+ */
 
 function UserPermissions({
     resourceType,
@@ -267,6 +278,37 @@ function unsavedUnloadWarning(event) {
     return confirmationMessage // Webkit, Safari, Chrome etc.
 }
 
+/*
+ * Store update errors against user.
+ * Simple { [userid]: Error } mapping.
+ * Nothing special.
+ */
+
+function useUserErrors() {
+    const [userErrors, setUserErrors] = useState({})
+
+    const setUserUpdateError = useCallback((userId, err) => {
+        setUserErrors((prevUserErrors) => ({
+            ...prevUserErrors,
+            [userId]: err,
+        }))
+    }, [setUserErrors])
+
+    const resetUserUpdateError = useCallback((userId) => {
+        setUserErrors((prevUserErrors) => {
+            const nextErrors = Object.assign({}, prevUserErrors)
+            delete nextErrors[userId]
+            return nextErrors
+        })
+    }, [setUserErrors])
+
+    return {
+        userErrors,
+        setUserUpdateError,
+        resetUserUpdateError,
+    }
+}
+
 const ShareSidebar = connect(({ user }) => ({
     currentUser: user && user.user && user.user.username,
 }))((props) => {
@@ -286,18 +328,17 @@ const ShareSidebar = connect(({ user }) => ({
 
     const users = useMemo(() => State.usersFromPermissions(resourceType, permissions), [resourceType, permissions])
 
-    const [currentUsers, setCurrentUsers] = useState(users)
-    const [newUserIdList, setNewUserIdList] = useState([])
-    const [selectedUserId, setSelectedUserId] = useState()
+    const [currentUsers, setCurrentUsers] = useState(users) // state of user permissions to save to server
+    const [newUserIdList, setNewUserIdList] = useState([]) // users added since last save
+    const [selectedUserId, setSelectedUserId] = useState() // currently selected user
 
     const addUser = useCallback((userId) => {
         if (userId === 'anonymous') { return } // don't interfere with anonymous user
-        setSelectedUserId(userId)
-        // update state
+        setSelectedUserId(userId) // select new user on add
         setCurrentUsers((prevUsers) => (
             State.addUser(prevUsers, userId, State.getPermissionsForGroupName(resourceType, 'default'))
         ))
-        // add user to start of new users, remove before adding to start if already in array
+        // add/move user to start of new users. Remove before adding to start if already in array
         setNewUserIdList((ids) => [userId, ...ids.filter((id) => id !== userId)])
     }, [setCurrentUsers, resourceType])
 
@@ -311,10 +352,11 @@ const ShareSidebar = connect(({ user }) => ({
         setCurrentUsers((prevUsers) => State.updatePermission(prevUsers, userId, permissions))
     }, [setCurrentUsers])
 
+    // 'who has access' handler
     const onAnonymousAccessChange = useCallback(({ value }) => {
         const permissions = value === 'withLink'
             ? State.getPermissionsForGroupName(resourceType, 'default')
-            : State.getEmptyPermissions(resourceType)
+            : State.getEmptyPermissions(resourceType) // i.e. remove all permissions for anonymous
         updatePermission('anonymous', permissions)
     }, [updatePermission, resourceType])
 
@@ -324,46 +366,26 @@ const ShareSidebar = connect(({ user }) => ({
         resourceType,
     })
 
-    // warn if user navigating away before saving
     useEffect(() => {
         if (!hasChanges) { return }
-
+        // warn if user navigating away before saving
         window.addEventListener('beforeunload', unsavedUnloadWarning)
         return () => {
             window.removeEventListener('beforeunload', unsavedUnloadWarning)
         }
     }, [hasChanges])
 
-    const [userErrors, setUserErrors] = useState({})
+    const [didTryClose, setDidTryClose] = useState(false) // should be true when user tries to close sidebar
 
-    const setUserUpdateError = useCallback((userId, err) => {
-        setUserErrors((prevUserErrors) => ({
-            ...prevUserErrors,
-            [userId]: err,
-        }))
-    }, [setUserErrors])
+    const isMounted = useIsMounted()
+    const { userErrors, setUserUpdateError, resetUserUpdateError } = useUserErrors()
 
-    const resetUserUpdateError = useCallback((userId) => {
-        setUserErrors((prevUserErrors) => {
-            const nextErrors = Object.assign({}, prevUserErrors)
-            delete nextErrors[userId]
-            return nextErrors
-        })
-    }, [setUserErrors])
-
-    const [didTryClose, setDidTryClose] = useState(false)
-
-    useEffect(() => {
-        if (!didTryClose) { return }
-        // hide 'save or cancel' error message after change
-        setDidTryClose(false)
-    }, [didTryClose, setDidTryClose, currentUsers])
-
-    const [bindTryCloseWarning, tryCloseWarningStyle] = useSlideIn({ isVisible: didTryClose })
-    const isMountedRef = useRef(true)
-    useEffect(() => () => {
-        isMountedRef.current = false
-    }, [isMountedRef])
+    /*
+     * big horrible async handler for updating permission records
+     * each permission that was added needs to send a request that it be created
+     * each permission that was removed added needs to send a request that it be removed
+     * Issues all requests in parallel, should not abort if one fails.
+     */
 
     const onSaveCallback = useCallback(async () => {
         setDidTryClose(false)
@@ -372,8 +394,10 @@ const ShareSidebar = connect(({ user }) => ({
             newUsers: currentUsers,
             resourceType,
         })
+
         let hasError = false
         return Promise.all([
+            // handle added permissions
             ...added.map(async (data) => {
                 const userId = data.user
                 return setResourcePermission({
@@ -381,15 +405,17 @@ const ShareSidebar = connect(({ user }) => ({
                     resourceId,
                     data: State.toAnonymousPermission(data),
                 }).then(() => {
-                    if (!isMountedRef.current) { return }
+                    if (!isMounted()) { return }
                     resetUserUpdateError(userId)
                 }, (error) => {
-                    if (!isMountedRef.current) { return }
+                    if (!isMounted()) { return }
+                    // store failure but do not abort
                     hasError = true
                     console.error(error)
                     setUserUpdateError(userId, error)
                 })
             }),
+            // handle removed permissions
             ...removed.map(async (data) => {
                 if (data.id == null) { return undefined }
                 const userId = data.user
@@ -398,10 +424,11 @@ const ShareSidebar = connect(({ user }) => ({
                     resourceId,
                     data: State.toAnonymousPermission(data),
                 }).then(() => {
-                    if (!isMountedRef.current) { return }
+                    if (!isMounted()) { return }
                     resetUserUpdateError(userId)
                 }, (error) => {
-                    if (!isMountedRef.current) { return }
+                    if (!isMounted()) { return }
+                    // store failure but do not abort
                     hasError = true
                     console.error(error)
                     setUserUpdateError(userId, error)
@@ -409,26 +436,33 @@ const ShareSidebar = connect(({ user }) => ({
             }),
         ]).then(() => {
             if (hasError) { return }
-            if (!isMountedRef.current) { return }
+            if (!isMounted()) { return }
+            // load latest permissions in background and close if successful
             propsRef.current.loadPermissions()
             return onClose()
         })
     }, [
-        isMountedRef, onClose, currentUsers, permissions, resourceType, resourceId,
+        isMounted, onClose, currentUsers, permissions, resourceType, resourceId,
         propsRef, resetUserUpdateError, setUserUpdateError, setDidTryClose,
     ])
 
+    // wrap onSave with async state handling
     const [isSavingState, onSave] = useAsyncCallbackWithState(onSaveCallback)
     const { isLoading: isSaving, error } = isSavingState
 
+    /* prevent sidebar closing if unsaved changes */
+    const [bindTryCloseWarning, tryCloseWarningStyle] = useSlideIn({ isVisible: didTryClose })
     const { addTransitionCheck, removeTransitionCheck } = useContext(SidebarContext)
     const didCancelRef = useRef(false)
     const onCancel = useCallback(() => {
-        didCancelRef.current = true
+        // user clicked cancel button
+        didCancelRef.current = true // use ref as we don't need to trigger render
+        // no need to unset didCancelRef since cancel will lead to unmount anyway
         onClose()
     }, [onClose])
 
-    const check = useCallback(() => {
+    const checkCanClose = useCallback(() => {
+        // true if sidebar can close safely without cancel
         if (!hasChanges) { return true }
         if (didCancelRef.current) { return true }
         setDidTryClose(true)
@@ -437,11 +471,18 @@ const ShareSidebar = connect(({ user }) => ({
     }, [hasChanges, isSaving, setDidTryClose])
 
     useEffect(() => {
-        addTransitionCheck(check)
-        return () => removeTransitionCheck(check)
-    }, [check, addTransitionCheck, removeTransitionCheck])
+        addTransitionCheck(checkCanClose)
+        return () => removeTransitionCheck(checkCanClose)
+    }, [checkCanClose, addTransitionCheck, removeTransitionCheck])
 
-    if (error) { return error.message }
+    // hide 'save or cancel' warning message after change
+    useEffect(() => {
+        setDidTryClose(false)
+    }, [setDidTryClose, currentUsers])
+
+    /* render (no hooks past here) */
+
+    if (error) { return error.message } // this shouldn't happen
     if (!permissions) { return null }
 
     const anonymousPermissions = currentUsers.anonymous
@@ -500,9 +541,13 @@ const ShareSidebar = connect(({ user }) => ({
                 ))}
             </div>
             <animated.div className={styles.errorMessageWrapper} style={tryCloseWarningStyle}>
+                {/* only shows if trying to close with unsaved changes */}
                 <div {...bindTryCloseWarning}>
                     <div className={styles.errorMessage}>
-                        {isSaving ? 'Please wait while saving changes.' : 'To update your permissions please save your changes. To discard them, click cancel.'}
+                        {isSaving
+                            ? <Translate value="modal.shareResource.warnSavingChanges" />
+                            : <Translate value="modal.shareResource.warnUnsavedChanges" />
+                        }
                     </div>
                 </div>
             </animated.div>

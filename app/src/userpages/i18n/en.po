@@ -1050,6 +1050,12 @@ msgstr "Copy link"
 msgid "modal##shareResource##linkCopied"
 msgstr "Link copied"
 
+msgid "modal##shareResource##warnUnsavedChanges"
+msgstr "To update your permissions please save your changes. To discard them, click cancel."
+
+msgid "modal##shareResource##warnSavingChanges"
+msgstr "Please wait while saving changes."
+
 msgid "modal##copySnippet##defaultTitle"
 msgstr "Copy Snippet"
 
