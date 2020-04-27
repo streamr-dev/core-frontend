@@ -21,6 +21,7 @@ export type Props = {
     product: ?Product,
     fetchingStreams: boolean,
     streams: StreamList,
+    totalNumberOfStreams?: number,
     showStreamActions?: boolean,
     isLoggedIn?: boolean,
     isProductFree?: boolean,
@@ -118,6 +119,7 @@ const TitleStreamCount = ({ count }: TitleStreamCountProps) => (
 const StreamListing = ({
     product,
     streams,
+    totalNumberOfStreams,
     fetchingStreams,
     showStreamActions,
     isLoggedIn,
@@ -127,13 +129,16 @@ const StreamListing = ({
 }: Props) => (
     <ProductContainer id={styles.details} className={classNames(styles.details, className)}>
         <div className={classNames(styles.streams)}>
-            <HeaderRow title={<TitleStreamCount count={streams.length || 0} />} className={styles.headerRow}>
+            <HeaderRow
+                title={!fetchingStreams && <TitleStreamCount count={totalNumberOfStreams || streams.length || 0} />}
+                className={styles.headerRow}
+            >
                 <MediaQuery minWidth={767}>
                     <Translate value="productPage.streamListing.description" />
                 </MediaQuery>
             </HeaderRow>
             {fetchingStreams && (
-                <Row>
+                <Row className={styles.streamListingRow}>
                     <Translate value="productPage.streamListing.loading" />
                 </Row>
             )}

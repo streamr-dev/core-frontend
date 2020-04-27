@@ -2,6 +2,7 @@
 
 import React, { useContext, useMemo, useEffect } from 'react'
 import { withRouter } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import { I18n, Translate } from 'react-redux-i18n'
 import cx from 'classnames'
 
@@ -22,6 +23,7 @@ import useProductPermissions from '../ProductController/useProductPermissions'
 import useProduct from '$mp/containers/ProductController/useProduct'
 import useEthereumIdentities from '$shared/modules/integrationKey/hooks/useEthereumIdentities'
 import ResourceNotFoundError, { ResourceType } from '$shared/errors/ResourceNotFoundError'
+import { selectFetchingStreams } from '$mp/modules/streams/selectors'
 
 import { Provider as EditControllerProvider, Context as EditControllerContext } from './EditControllerProvider'
 import BackButton from '$shared/components/BackButton'
@@ -53,6 +55,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
         loadDataUnionStats,
         clearStreams,
     } = useController()
+    const fetchingAllStreams = useSelector(selectFetchingStreams)
 
     const productId = product.id
     // Load categories and streams
@@ -172,7 +175,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
                 [styles.editorContent]: !isPreview,
                 [styles.previewContent]: !!isPreview,
             })}
-            loading={isSaving}
+            loading={isSaving || (isPreview && fetchingAllStreams)}
         >
             {process.env.DATA_UNIONS && (
                 <ProductEditorDebug />

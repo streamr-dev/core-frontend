@@ -18,6 +18,7 @@ import Spinner from '$shared/components/Spinner'
 import links from '$mp/../links'
 import { useLastError, type LastErrorProps } from '$shared/hooks/useLastError'
 import useInfiniteScroll from '$shared/hooks/useInfiniteScroll'
+import { useDebounced } from '$shared/hooks/wrapCallback'
 
 import type { Stream, StreamList, StreamIdList, StreamId } from '$shared/flowtype/stream-types'
 
@@ -47,13 +48,15 @@ export const StreamSelector = (props: Props) => {
         availableStreams,
         fetchingStreams = false,
         disabled: disabledProp,
-        onSearch,
+        // $FlowFixMe flow errors make no sense
+        onSearch: onSearchProp,
         hasMoreResults: hasMoreResultsProp,
         // $FlowFixMe flow errors make no sense
         onLoadMore: onLoadMoreProp,
         ...rest
     } = props
     const [sort, setSort] = useState(SORT_BY_NAME)
+    const [searchText, setSearchText] = useState('')
     const [search, setSearch] = useState('')
     const [searchFocused, setSearchFocused] = useState()
     const [streamContainerRef, setStreamContainerRef] = useState(undefined)
@@ -67,8 +70,20 @@ export const StreamSelector = (props: Props) => {
     useInfiniteScroll(onLoadMore, streamContainerRef)
 
     const onSearchChange = (event: SyntheticInputEvent<EventTarget>) => {
-        setSearch(event.target.value)
+        setSearchText(event.target.value)
     }
+
+    const onUpdateSearch = useDebounced(useCallback((searchInput) => {
+        setSearch(searchInput)
+    }, []), 500)
+
+    useEffect(() => {
+        onUpdateSearch(searchText)
+    }, [searchText, onUpdateSearch])
+
+    const onSearch = useCallback((searchInput) => {
+        onSearchProp(searchInput)
+    }, [onSearchProp])
 
     useEffect(() => {
         if (onSearch) {
@@ -141,7 +156,7 @@ export const StreamSelector = (props: Props) => {
                             <Input
                                 className={styles.input}
                                 onChange={onSearchChange}
-                                value={search}
+                                value={searchText}
                                 placeholder={I18n.t('streamSelector.typeToSearch')}
                                 disabled={!!isDisabled && !searchFocused}
                                 onFocus={() => setSearchFocused(true)}
@@ -150,8 +165,8 @@ export const StreamSelector = (props: Props) => {
                             <button
                                 type="button"
                                 className={styles.clearButton}
-                                onClick={() => setSearch('')}
-                                hidden={!search}
+                                onClick={() => setSearchText('')}
+                                hidden={!searchText}
                             >
                                 <SvgIcon name="cross" />
                             </button>
@@ -179,12 +194,14 @@ export const StreamSelector = (props: Props) => {
                         </DropdownActions>
                     </div>
                     <div className={styles.streams} ref={(node) => setStreamContainerRef(node)}>
-                        {!fetchingStreams && !availableStreams.length && (
+                        {!fetchingStreams && !sortedStreams.length && (
                             <div className={styles.noAvailableStreams}>
-                                <p><Translate value="streamSelector.noStreams" /></p>
-                                <a href={links.userpages.streamCreate} className={styles.streamCreateButton}>
-                                    <Translate value="streamSelector.create" />
-                                </a>
+                                <p><Translate value={`streamSelector.${search ? 'noStreamResults' : 'noStreams'}`} /></p>
+                                {!search && (
+                                    <a href={links.userpages.streamCreate} className={styles.streamCreateButton}>
+                                        <Translate value="streamSelector.create" />
+                                    </a>
+                                )}
                             </div>
                         )}
                         {sortedStreams.map((stream: Stream) => (

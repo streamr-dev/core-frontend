@@ -13,12 +13,15 @@ import useEditableProductActions from '../ProductController/useEditableProductAc
 import { useController } from '../ProductController'
 import { Context as EditControllerContext } from './EditControllerProvider'
 import usePending from '$shared/hooks/usePending'
-import { selectStreams, selectFetchingStreams, selectHasMoreResults } from '$mp/modules/streams/selectors'
+import {
+    selectStreams as selectAllStreams,
+    selectFetchingStreams,
+    selectHasMoreResults,
+} from '$mp/modules/streams/selectors'
 import {
     selectStreams as selectProductStreams,
     selectFetchingStreams as selectFetchingProductStreams,
 } from '$mp/modules/product/selectors'
-import { useDebounced, useThrottled } from '$shared/hooks/wrapCallback'
 import routes from '$routes'
 
 import styles from './productStreams.pcss'
@@ -31,8 +34,8 @@ const ProductStreams = () => {
     const { updateStreams } = useEditableProductActions()
     const { publishAttempted } = useContext(EditControllerContext)
     const { isPending } = usePending('product.SAVE')
-    const streams = useSelector(selectStreams)
-    const fetching = useSelector(selectFetchingStreams)
+    const allStreams = useSelector(selectAllStreams)
+    const fetchingAllStreams = useSelector(selectFetchingStreams)
     const productStreams = useSelector(selectProductStreams)
     const fetchingProductStreams = useSelector(selectFetchingProductStreams)
     const hasMoreResults = useSelector(selectHasMoreResults)
@@ -41,6 +44,10 @@ const ProductStreams = () => {
         offset: 0,
     })
 
+    // Filter product streams based on actual selection
+    const streamIds = product.streams
+    const selectedStreams = useMemo(() => productStreams.filter((s) => streamIds.includes(s.id)), [streamIds, productStreams])
+
     const onLoadMore = useCallback(() => {
         setParams((prevParams) => ({
             ...prevParams,
@@ -48,19 +55,16 @@ const ProductStreams = () => {
         }))
     }, [])
 
-    const clearStreamList = useThrottled(useCallback(() => {
-        clearStreams()
-    }, [clearStreams]))
-    const doSearch = useDebounced(useCallback((search) => {
+    const doSearch = useCallback((search) => {
         setParams({
             offset: 0,
             search,
         })
-    }, []), 500)
+    }, [])
     const onSearch = useCallback((search) => {
-        clearStreamList()
+        clearStreams()
         doSearch(search)
-    }, [clearStreamList, doSearch])
+    }, [clearStreams, doSearch])
 
     useEffect(() => {
         loadStreams({
@@ -69,7 +73,7 @@ const ProductStreams = () => {
         })
     }, [loadStreams, params])
 
-    const availableStreams = useMemo(() => uniqBy([...streams, ...productStreams], 'id'), [streams, productStreams])
+    const availableStreams = useMemo(() => uniqBy([...allStreams, ...selectedStreams], 'id'), [allStreams, selectedStreams])
 
     return (
         <section id="streams" className={cx(styles.root, styles.StreamSelector)}>
@@ -86,7 +90,7 @@ const ProductStreams = () => {
                 />
                 <StreamSelectorComponent
                     availableStreams={availableStreams}
-                    fetchingStreams={fetchingProductStreams || fetching}
+                    fetchingStreams={fetchingProductStreams || fetchingAllStreams}
                     onEdit={updateStreams}
                     streams={product.streams}
                     className={styles.streams}

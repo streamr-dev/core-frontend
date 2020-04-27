@@ -7,11 +7,12 @@ import MediaQuery from 'react-responsive'
 import cx from 'classnames'
 
 import useEditableProduct from '../ProductController/useEditableProduct'
-import { selectStreams } from '$mp/modules/streams/selectors'
+import { selectStreams, selectFetchingStreams } from '$mp/modules/streams/selectors'
 import { selectAllCategories } from '$mp/modules/categories/selectors'
 import { isDataUnionProduct, isPaidProduct } from '$mp/utils/product'
 import useFilePreview from '$shared/hooks/useFilePreview'
 import { lg } from '$app/scripts/breakpoints'
+import { useController } from '../ProductController'
 
 import DescriptionComponent from '$mp/components/ProductPage/Description'
 import HeroComponent from '$mp/components/Hero'
@@ -199,12 +200,14 @@ const Streams = () => {
     const streams = useSelector(selectStreams) // todo: safe to assume streams are fetched?
     const selectedStreams = useMemo(() => streams.filter((s) => streamIds.includes(s.id)), [streamIds, streams])
     const isProductFree = !!(product && !isPaidProduct(product))
+    const fetchingAllStreams = useSelector(selectFetchingStreams)
 
     return (
         <StreamListing
             product={product}
             streams={selectedStreams}
-            fetchingStreams={false}
+            totalNumberOfStreams={streamIds.length || 0}
+            fetchingStreams={fetchingAllStreams}
             showStreamActions={false}
             isLoggedIn={false}
             isProductSubscriptionValid={false}
@@ -216,6 +219,7 @@ const Streams = () => {
 
 const Preview = () => {
     const product = useEditableProduct()
+    const { loadStreams, clearStreams } = useController()
 
     const isDataUnion = !!(product && isDataUnionProduct(product))
 
@@ -225,6 +229,11 @@ const Preview = () => {
             top: 0,
         })
     }, [])
+
+    useEffect(() => {
+        clearStreams()
+        loadStreams()
+    }, [clearStreams, loadStreams])
 
     return (
         <div className={cx(productPageStyles.productPage, styles.preview)}>
