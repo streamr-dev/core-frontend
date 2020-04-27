@@ -1,3 +1,7 @@
+// Safe `passive` event listener support detection mechanism. It can be passed as the 3rd argument
+// to `addEventListener` to improve performance of some event types. For more details visit:
+// https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#Improving_scrolling_performance_with_passive_listeners
+
 export default (() => {
     let options = false
 
