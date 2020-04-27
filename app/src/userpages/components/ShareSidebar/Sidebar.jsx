@@ -520,7 +520,7 @@ const ShareSidebar = connect(({ user }) => ({
                     isSearchable={false}
                 />
             </div>
-            <div className={cx(styles.row, styles.cell)}>
+            <div className={cx(styles.row, styles.cell, styles.addUserInput)}>
                 <InputNewShare onChange={addUser} />
             </div>
             <div className={cx(styles.row, styles.userList)}>
