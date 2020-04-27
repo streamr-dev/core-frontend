@@ -122,7 +122,7 @@ class ActionBar extends Component<Props> {
         const { filter: { search, categories: category, sortBy, maxPrice }, categories, onCreateProduct } = this.props
         return (
             <div className={styles.actionBar}>
-                <SearchInput value={search} onChange={this.onSearchChange} onClear={this.clearSearch} />
+                <SearchInput value={search} onChange={this.onSearchChange} onClear={this.clearSearch} hidePlaceholderOnFocus />
                 <div className={styles.searchFilter}>
                     <Container fluid className={styles.actionBarContainer}>
                         <ul>

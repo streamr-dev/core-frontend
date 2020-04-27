@@ -62,6 +62,7 @@ export const generateNav = ({ dataUnions: includeDataUnions = !!process.env.DATA
         Input: moduleReference.input,
         Integrations: moduleReference.integrations,
         List: moduleReference.list,
+        Map: moduleReference.map,
         Streams: moduleReference.streams,
         Text: moduleReference.text,
         'Time & Date': moduleReference.timeAndDate,
