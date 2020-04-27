@@ -8,6 +8,7 @@ import styles from '@sambego/storybook-styles'
 
 import Navigation from '$docs/components/DocsLayout/Navigation'
 import PageTurner from '$docs/components/PageTurner'
+import Search from '$docs/components/Search'
 
 import docsStyles from '$docs/components/DocsLayout/docsLayout.pcss'
 
@@ -17,6 +18,12 @@ const story = (name) => storiesOf(`Docs/${name}`, module)
         padding: '15px',
     }))
     .addDecorator(withKnobs)
+
+story('Search')
+    .addDecorator(StoryRouter())
+    .add('Search', () => (
+        <Search />
+    ))
 
 story('Navigation')
     .addDecorator(StoryRouter())

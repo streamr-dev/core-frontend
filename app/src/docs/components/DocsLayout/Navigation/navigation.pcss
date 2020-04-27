@@ -1,3 +1,48 @@
+.searchNavIcon {
+  width: 16px;
+  position: absolute;
+  top: -4rem;
+
+  g {
+    color: rgb(163, 163, 163);
+  }
+
+  &:--enter {
+    cursor: pointer;
+
+    g {
+      color: rgb(50, 50, 50);
+    }
+  }
+}
+
+@media (--md-down) {
+  .searchNavIcon {
+    display: none;
+  }
+}
+
+.mobileSearchNavIcon {
+  display: none;
+}
+
+@media (--md-down) {
+  .mobileSearchNavIcon {
+    display: inline-block;
+    position: absolute;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 12;
+  }
+}
+
+@media (--sm-down) {
+  .mobileSearchNavIcon {
+    z-index: 9;
+  }
+}
+
 .desktopNav {
   box-shadow: none !important;
   display: block;
