@@ -7,7 +7,7 @@ import { withRouter } from 'react-router-dom'
 import cx from 'classnames'
 
 import CoreLayout from '$shared/components/Layout/Core'
-import CoreLayoutStyles from '$shared/components/Layout/core.pcss'
+import coreLayoutStyles from '$shared/components/Layout/core.pcss'
 import Header from '../Header'
 import ListContainer from '$shared/components/Container/List'
 import LoadingIndicator from '$userpages/components/LoadingIndicator'
@@ -48,7 +48,7 @@ const Stats = () => {
             navComponent={(
                 <Header />
             )}
-            contentClassname={cx(styles.contentArea, CoreLayoutStyles.pad)}
+            contentClassname={cx(styles.contentArea, coreLayoutStyles.pad)}
         >
             <Helmet title={`Streamr Core | ${I18n.t('userpages.title.stats')}`} />
             <ListContainer>
