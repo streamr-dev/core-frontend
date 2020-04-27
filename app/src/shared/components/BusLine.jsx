@@ -171,7 +171,9 @@ const BusLine = ({ children = null, dynamicScrollPosition }) => {
     // Updates current stop and smooth-scrolls to it. Applied ONLY to hash changes being a result
     // of clicks. It's also responsible for silent scrolling to current location hash on page load.
     useEffect(() => {
-        if (!flags.current.mouseDown) {
+        const { wheel, mouseDown } = flags.current
+
+        if (!mouseDown && wheel) {
             return
         }
 
