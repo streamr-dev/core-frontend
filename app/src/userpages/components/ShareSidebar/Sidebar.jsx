@@ -558,8 +558,8 @@ const ShareSidebar = connect(({ user }) => ({
                         resourceId={resourceId}
                     />
                 </div>
-                <div>
-                    <Button onClick={onCancel}>
+                <div className={styles.saveCancelButtons}>
+                    <Button onClick={onCancel} kind="link" className={styles.cancelButton}>
                         <Translate value="modal.common.cancel" />
                     </Button>
                     <Button onClick={onSave} disabled={isSaving || !hasChanges} waiting={isSaving}>
