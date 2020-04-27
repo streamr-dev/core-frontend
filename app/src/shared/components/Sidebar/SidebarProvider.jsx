@@ -7,7 +7,7 @@ type SidebarContextType = {
     open: (string, ?boolean) => void,
     close: (?string) => void,
     toggle: (string) => void,
-    toggle: (string) => void,
+    isOpen: (?string) => boolean,
     addTransitionCheck: ((?string, ?string) => ?boolean) => void,
     removeTransitionCheck: ((?string, ?string) => ?boolean) => void,
 }
