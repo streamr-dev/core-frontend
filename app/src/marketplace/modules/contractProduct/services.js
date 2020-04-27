@@ -229,3 +229,42 @@ export const setRequiresWhitelist = (id: ProductId, requiresWhitelist: boolean):
         gas: gasLimits.SET_REQUIRES_WHITELIST,
     })
 )
+
+export const whitelistApprove = (id: ProductId, address: Address): SmartContractTransaction => (
+    send(contractMethods(false).whitelistApprove(getValidId(id), address), {
+        gas: gasLimits.WHITELIST_OPERATION,
+    })
+)
+
+export const whitelistReject = (id: ProductId, address: Address): SmartContractTransaction => (
+    send(contractMethods(false).whitelistReject(getValidId(id), address), {
+        gas: gasLimits.WHITELIST_OPERATION,
+    })
+)
+
+export const whitelistRequest = (id: ProductId, address: Address): SmartContractTransaction => (
+    send(contractMethods(false).whitelistRequest(getValidId(id), address), {
+        gas: gasLimits.WHITELIST_OPERATION,
+    })
+)
+
+export const getWhitelistAddresses = async (id: ProductId, usePublicNode: boolean = true) => {
+    const whitelist: Array<string> = []
+
+    const approvedEvents = await getMarketplaceEvents(id, 'WhitelistApproved', 0, usePublicNode)
+    const approvedAddresses = approvedEvents.map((event) => event.returnValues.subscriber)
+    const rejectedEvents = await getMarketplaceEvents(id, 'WhitelistRejected', 0, usePublicNode)
+    const rejectedAddresses = rejectedEvents.map((event) => event.returnValues.subscriber)
+
+    whitelist.concat(approvedAddresses.map((addr) => ({
+        address: addr,
+        status: 'approved',
+    })))
+
+    whitelist.concat(rejectedAddresses.map((addr) => ({
+        address: addr,
+        status: 'removed',
+    })))
+
+    return whitelist
+}

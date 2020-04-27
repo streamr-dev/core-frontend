@@ -83,6 +83,7 @@ export const gasLimits = {
     DEPLOY_DATA_UNION: 4e6,
     UPDATE_ADMIN_FEE: 4e5,
     SET_REQUIRES_WHITELIST: 1e5,
+    WHITELIST_OPERATION: 1e5,
 }
 
 export const dialogAutoCloseTimeout = 2000 // in milliseconds

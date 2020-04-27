@@ -1,21 +1,21 @@
 // @flow
 
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
+
+import { getWhitelistAddresses } from '$mp/modules/contractProduct/services'
 
 import useEditableProduct from '../ProductController/useEditableProduct'
 import useEditableProductActions from '../ProductController/useEditableProductActions'
 
 export function useWhitelist() {
     const product = useEditableProduct()
-    const [isEnabled, setIsEnabled] = useState(product.requiresWhitelist || false)
     const { updateRequiresWhitelist } = useEditableProductActions()
+    const isEnabled = product.requiresWhitelist
+    const test = getWhitelistAddresses(product.id).then((res) => {
+        console.log(res)
+    })
 
     return useMemo(() => {
-        const setEnabled = (value: boolean) => {
-            updateRequiresWhitelist(value)
-            setIsEnabled(value)
-        }
-
         const items = [
             {
                 name: 'Test 1',
@@ -41,7 +41,7 @@ export function useWhitelist() {
 
         return {
             isEnabled,
-            setEnabled,
+            setEnabled: updateRequiresWhitelist,
             items,
         }
     }, [
