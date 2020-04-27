@@ -16,7 +16,6 @@ type Props = {
     contentClassname?: string,
     navComponent?: Node,
     hideNavOnDesktop?: boolean,
-    unpadded?: boolean,
 }
 
 const CoreLayout = ({
@@ -27,7 +26,6 @@ const CoreLayout = ({
     contentClassname,
     navComponent,
     hideNavOnDesktop,
-    unpadded,
 }: Props) => (
     <Layout
         footer={false}
@@ -36,11 +34,7 @@ const CoreLayout = ({
     >
         {navComponent || null}
         <LoadingIndicator loading={!!loading} className={cx(styles.loadingIndicator, loadingClassname)} />
-        <div
-            className={cx(styles.content, contentClassname, {
-                [styles.pad]: !unpadded,
-            })}
-        >
+        <div className={cx(styles.content, contentClassname)}>
             {children || null}
         </div>
     </Layout>

@@ -72,7 +72,6 @@ export class ProfilePage extends Component<Props, State> {
         const { saving } = this.state
         return (
             <CoreLayout
-                unpadded
                 hideNavOnDesktop
                 navComponent={(
                     <Toolbar
