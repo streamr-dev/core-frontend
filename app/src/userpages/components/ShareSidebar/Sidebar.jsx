@@ -380,6 +380,8 @@ const ShareSidebar = connect(({ user }) => ({
     const isMounted = useIsMounted()
     const { userErrors, setUserUpdateError, resetUserUpdateError } = useUserErrors()
 
+    const hasUserError = Object.values(userErrors).some((v) => v)
+
     /*
      * big horrible async handler for updating permission records
      * each permission that was added needs to send a request that it be created
@@ -434,37 +436,43 @@ const ShareSidebar = connect(({ user }) => ({
                     setUserUpdateError(userId, error)
                 })
             }),
-        ]).then(() => {
-            if (hasError) { return }
-            if (!isMounted()) { return }
-            // load latest permissions in background and close if successful
-            propsRef.current.loadPermissions()
-            return onClose()
-        })
+        ])
     }, [
-        isMounted, onClose, currentUsers, permissions, resourceType, resourceId,
-        propsRef, resetUserUpdateError, setUserUpdateError, setDidTryClose,
+        isMounted, currentUsers, permissions, resourceType, resourceId,
+        resetUserUpdateError, setUserUpdateError, setDidTryClose,
     ])
 
     // wrap onSave with async state handling
     const [isSavingState, onSave] = useAsyncCallbackWithState(onSaveCallback)
     const { isLoading: isSaving, error } = isSavingState
+    const previousIsSaving = usePrevious(isSaving)
+
+    const isSuccessful = !!(previousIsSaving && !isSaving && !error && !hasUserError)
 
     /* prevent sidebar closing if unsaved changes */
     const [bindTryCloseWarning, tryCloseWarningStyle] = useSlideIn({ isVisible: didTryClose })
     const { addTransitionCheck, removeTransitionCheck } = useContext(SidebarContext)
-    const didCancelRef = useRef(false)
+    const shouldForceCloseRef = useRef(false)
+
+    useEffect(() => {
+        if (isSuccessful) {
+            shouldForceCloseRef.current = true
+            propsRef.current.loadPermissions()
+            onClose()
+        }
+    }, [isSuccessful, onClose])
+
     const onCancel = useCallback(() => {
         // user clicked cancel button
-        didCancelRef.current = true // use ref as we don't need to trigger render
-        // no need to unset didCancelRef since cancel will lead to unmount anyway
+        shouldForceCloseRef.current = true // use ref as we don't need to trigger render
+        // no need to unset shouldForceCloseRef since cancel will lead to unmount anyway
         onClose()
     }, [onClose])
 
     const checkCanClose = useCallback(() => {
         // true if sidebar can close safely without cancel
         if (!hasChanges) { return true }
-        if (didCancelRef.current) { return true }
+        if (shouldForceCloseRef.current) { return true }
         setDidTryClose(true)
         if (isSaving) { return false }
         return false
