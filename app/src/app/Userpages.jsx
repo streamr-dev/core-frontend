@@ -16,6 +16,7 @@ import DashboardList from '$userpages/components/DashboardPage/List'
 import CanvasList from '$userpages/components/CanvasPage/List'
 import StreamShowView from '$userpages/components/StreamPage/Edit'
 import StreamPage from '$userpages/components/StreamPage'
+import NewStreamPage from '$userpages/components/NewStreamPage'
 import StreamListView from '$userpages/components/StreamPage/List'
 import StreamLivePreview from '$userpages/components/StreamLivePreview'
 import TransactionList from '$userpages/components/TransactionPage/List'
@@ -42,6 +43,7 @@ const StatsPageAuth = userIsAuthenticated(StatsPage)
 const MembersPageAuth = userIsAuthenticated(MembersPage)
 const EditProductAuth = userIsAuthenticated(EditProductPage)
 const StreamPageAuth = userIsAuthenticated(StreamPage)
+const NewStreamPageAuth = userIsAuthenticated(NewStreamPage)
 
 const { userpages } = links
 
@@ -50,6 +52,7 @@ const UserpagesRouter = () => ([
     <Route exact path={userpages.profile} component={ProfilePageAuth} key="ProfilePage" />,
     <Route exact path={userpages.dashboards} component={DashboardListAuth} key="DashboardList" />,
     <Route exact path={formatPath(userpages.streamShow, ':id?')} component={StreamShowViewAuth} key="streamShow" />,
+    <Route exact path={routes.newStream()} component={NewStreamPageAuth} key="newStreamPage" />,
     <Route exact path={routes.stream()} component={StreamPageAuth} key="streamPage" />,
     <Route exact path={userpages.streams} component={StreamListViewAuth} key="StreamListView" />,
     <Route exact path={formatPath(userpages.streamPreview, ':streamId')} component={StreamLivePreviewAuth} key="StreamLivePreview" />,

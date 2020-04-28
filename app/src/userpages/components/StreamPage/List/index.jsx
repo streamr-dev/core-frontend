@@ -18,6 +18,7 @@ import {
 } from '$userpages/components/StreamPage/Edit/SecurityView'
 
 import links from '$shared/../links'
+import routes from '$routes'
 import {
     getStreams,
     deleteStream,
@@ -61,7 +62,7 @@ export const CreateStreamButton = () => (
     <Button
         className={styles.createStreamButton}
         tag={Link}
-        to={links.userpages.streamCreate}
+        to={routes.newStream()}
     >
         <Translate value="userpages.streams.createStream" />
     </Button>

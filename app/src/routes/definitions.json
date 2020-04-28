@@ -56,6 +56,7 @@
     "streamPreview": "/marketplace/products/:id/streamPreview/:streamId",
     "streams": "/core/streams",
     "stream": "/core/streams/:id",
+    "newStream": "/core/streams/new",
     "terms": "https://s3.amazonaws.com/streamr-public/streamr-terms-of-use.pdf",
     "transactions": "/core/transactions",
     "userpages": {
