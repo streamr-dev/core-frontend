@@ -10,7 +10,6 @@ import qs from 'query-string'
 
 import useIsMounted from '$shared/hooks/useIsMounted'
 import StatusIcon from '$shared/components/StatusIcon'
-import ConfigureAnchorOffset from '$shared/components/ConfigureAnchorOffset'
 import type { Stream, StreamId } from '$shared/flowtype/stream-types'
 import type { Operation } from '$userpages/flowtype/permission-types'
 import type { StoreState } from '$shared/flowtype/store-state'
@@ -213,9 +212,6 @@ export class StreamShowView extends Component<Props, State> {
                     </MediaQuery>
                 )}
             >
-                <MediaQuery minWidth={lg.min}>
-                    <ConfigureAnchorOffset value={-80} />
-                </MediaQuery>
                 <TOCPage title={I18n.t(`userpages.streams.edit.details.pageTitle.${isNewStream ? 'newStream' : 'existingStream'}`)}>
                     <TOCPage.Section
                         id="details"
