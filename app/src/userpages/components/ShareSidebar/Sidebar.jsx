@@ -302,10 +302,13 @@ function useUserErrors() {
         })
     }, [setUserErrors])
 
+    const hasUserError = Object.values(userErrors).some((v) => v)
+
     return {
         userErrors,
         setUserUpdateError,
         resetUserUpdateError,
+        hasUserError,
     }
 }
 
@@ -378,9 +381,7 @@ const ShareSidebar = connect(({ user }) => ({
     const [didTryClose, setDidTryClose] = useState(false) // should be true when user tries to close sidebar
 
     const isMounted = useIsMounted()
-    const { userErrors, setUserUpdateError, resetUserUpdateError } = useUserErrors()
-
-    const hasUserError = Object.values(userErrors).some((v) => v)
+    const { userErrors, setUserUpdateError, resetUserUpdateError, hasUserError } = useUserErrors()
 
     /*
      * big horrible async handler for updating permission records
@@ -397,46 +398,40 @@ const ShareSidebar = connect(({ user }) => ({
             resourceType,
         })
 
-        let hasError = false
-        return Promise.all([
-            // handle added permissions
-            ...added.map(async (data) => {
-                const userId = data.user
-                return setResourcePermission({
+        const allChangedUserIds = [
+            ...new Set([
+                ...added.map(({ user }) => user),
+                ...removed.map(({ user }) => user),
+            ]),
+        ]
+        await Promise.all(allChangedUserIds.map(async (userId) => {
+            const userAddedItems = added.filter((p) => p.user === userId)
+            const userRemovedItems = removed.filter((p) => p.id != null && p.user === userId)
+            let hasError = false
+            await Promise.all([
+                ...userAddedItems.map(async (data) => setResourcePermission({
                     resourceType,
                     resourceId,
                     data: State.toAnonymousPermission(data),
-                }).then(() => {
-                    if (!isMounted()) { return }
-                    resetUserUpdateError(userId)
-                }, (error) => {
-                    if (!isMounted()) { return }
-                    // store failure but do not abort
-                    hasError = true
-                    console.error(error)
-                    setUserUpdateError(userId, error)
-                })
-            }),
-            // handle removed permissions
-            ...removed.map(async (data) => {
-                if (data.id == null) { return undefined }
-                const userId = data.user
-                return removeResourcePermission({
+                })),
+                ...userRemovedItems.map(async (data) => removeResourcePermission({
                     resourceType,
                     resourceId,
                     data: State.toAnonymousPermission(data),
-                }).then(() => {
-                    if (!isMounted()) { return }
-                    resetUserUpdateError(userId)
-                }, (error) => {
-                    if (!isMounted()) { return }
-                    // store failure but do not abort
-                    hasError = true
-                    console.error(error)
-                    setUserUpdateError(userId, error)
-                })
-            }),
-        ])
+                })),
+            ].map((task) => task.catch((error) => {
+                hasError = true
+                // store failure but do not abort
+                console.error(error)
+                if (!isMounted()) { return }
+                setUserUpdateError(userId, error)
+            })))
+
+            if (!hasError) {
+                if (!isMounted()) { return }
+                resetUserUpdateError(userId)
+            }
+        }))
     }, [
         isMounted, currentUsers, permissions, resourceType, resourceId,
         resetUserUpdateError, setUserUpdateError, setDidTryClose,
