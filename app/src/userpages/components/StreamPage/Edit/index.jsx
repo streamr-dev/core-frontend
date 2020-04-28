@@ -27,10 +27,10 @@ const { lg } = breakpoints
 const Edit = ({ stream: streamProp, canShare, currentUser }: any) => {
     const stream = useMemo(() => ({
         ...streamProp,
-        config: {
+        ...(streamProp.config ? {
             ...streamProp.config,
             fields: streamProp.config.fields.map(({ id, ...field }) => field),
-        },
+        } : {}),
     }), [streamProp])
 
     // It's either that or the GET param. Let's try this first.
