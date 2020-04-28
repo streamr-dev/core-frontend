@@ -13,3 +13,11 @@ export type ProductErrorAction = PayloadAction<{
     error: ErrorFromApi
 }>
 export type ProductErrorActionCreator = (id: ProductId, error: ErrorFromApi) => ProductErrorAction
+
+export type WhitelistStatus = 'added' | 'removed' | 'subscribed'
+
+export type WhitelistItem = {
+    name: string,
+    address: string,
+    status: WhitelistStatus,
+}

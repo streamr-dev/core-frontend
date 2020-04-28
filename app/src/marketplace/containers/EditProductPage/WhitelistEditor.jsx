@@ -2,11 +2,15 @@
 
 import React from 'react'
 import styled from 'styled-components'
+import { I18n } from 'react-redux-i18n'
 
 import Button from '$shared/components/Button'
 import Toggle from '$shared/components/Toggle'
 import DropdownActions from '$shared/components/DropdownActions'
 import Meatball from '$shared/components/Meatball'
+import useModal from '$shared/hooks/useModal'
+import type { WhitelistItem } from '$mp/modules/contractProduct/types'
+
 import useWhitelist from './useWhitelist'
 
 const Container = styled.div`
@@ -18,7 +22,7 @@ const Container = styled.div`
 
 const TableRow = styled.span`
     display: grid;
-    grid-template-columns: 220px 280px 90px 90px;
+    grid-template-columns: auto 90px 90px;
 `
 
 const TableColumnBase = styled.span`
@@ -78,81 +82,106 @@ const StyledToggle = styled(Toggle)`
 `
 
 const Status = styled.span`
+    width: 16px;
+    height: 16px;
     border-radius: 50%;
     background-color: ${(props) => {
         if (props.disabled) {
             return '#cdcdcd'
+        } else if (props.status === 'added') {
+            return '#ffbc00'
+        } else if (props.status === 'removed') {
+            return '#adadad'
         }
-        if (props.status === 'added') {
-            return 'blue'
-        }
-        if (props.status === 'removed') {
-            return 'green'
-        }
-        if (props.status === 'subscribed') {
-            return 'black'
-        }
-        return 'red'
+        return '#2ac437'
     }};
+    pointer-events: ${(props) => (props.disabled ? 'none' : 'auto')};
 
-    width: 16px;
-    height: 16px;
+    &::after {
+        display: inline-block;
+        content: attr(data-tooltip);
+        visibility: hidden;
+        opacity: 0;
+        transition: 0s all;
+        position: relative;
+        background-color: #323232;
+        border-radius: 2px;
+        color: white;
+        font-size: 12px;
+        line-height: 16px;
+        top: 26px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 2px 6px;
+    }
+
+    &:hover {
+        &::after {
+            transition-delay: 0.5s;
+            visibility: visible;
+            opacity: 1;
+        }
+    }
 `
 
 const Label = styled.label`
     margin-bottom: 0;
 `
 
-type WhitelistStatus = 'added' | 'removed' | 'subscribed'
-
-type WhitelistItem = {
-    name: string,
-    address: string,
-    status: WhitelistStatus,
-}
-
 type Props = {
     className?: string,
     enabled: boolean,
     items: Array<WhitelistItem>,
     onEnableChanged: (boolean) => void,
+    addDialogApi: any,
+    removeAddress: (string) => any,
 }
 
-export const WhitelistEditorComponent = ({ className, enabled, items, onEnableChanged }: Props) => (
+export const WhitelistEditorComponent = ({
+    className,
+    enabled,
+    items,
+    onEnableChanged,
+    addDialogApi,
+    removeAddress,
+}: Props) => (
     <Container className={className}>
         <TableRow>
-            <TableHeader>Name</TableHeader>
-            <TableHeader>Ethereum address</TableHeader>
-            <TableHeader>Status</TableHeader>
+            <TableHeader>{I18n.t('editProductPage.whitelist.header.address')}</TableHeader>
+            <TableHeader>{I18n.t('editProductPage.whitelist.header.status')}</TableHeader>
             <TableHeader />
         </TableRow>
         {items.map((item, index) => (
             // eslint-disable-next-line react/no-array-index-key
             <TableRow key={index}>
-                <TableColumn disabled={!enabled}><span>{item.name}</span></TableColumn>
-                <TableColumn disabled={!enabled}><span>{item.address}</span></TableColumn>
-                <TableColumn disabled={!enabled} center><Status status={item.status} disabled={!enabled} /></TableColumn>
+                <TableColumn disabled={!enabled}>
+                    <span>{item.address}</span>
+                </TableColumn>
+                <TableColumn disabled={!enabled} center>
+                    <Status
+                        status={item.status}
+                        disabled={!enabled}
+                        data-tooltip={I18n.t(`editProductPage.whitelist.status.${item.status}`)}
+                    />
+                </TableColumn>
                 <TableColumn disabled={!enabled} center>
                     <StyledDropdownActions
                         title={<Meatball alt="Select" />}
                         noCaret
                         disabled={!enabled}
                     >
-                        <DropdownActions.Item onClick={() => console.log('edit')}>
-                            Edit name
-                        </DropdownActions.Item>
                         <DropdownActions.Item onClick={() => console.log('copy')}>
-                            Copy address
+                            {I18n.t('editProductPage.whitelist.copy')}
                         </DropdownActions.Item>
-                        <DropdownActions.Item onClick={() => console.log('remove')}>
-                            Remove
+                        <DropdownActions.Item onClick={() => removeAddress(item.address)}>
+                            {I18n.t('editProductPage.whitelist.remove')}
                         </DropdownActions.Item>
                     </StyledDropdownActions>
                 </TableColumn>
             </TableRow>
         ))}
         <Controls>
-            <Label htmlFor="whitelist">Enable whitelist</Label>
+            <Label htmlFor="whitelist">{I18n.t('editProductPage.whitelist.enable')}</Label>
             <StyledToggle
                 id="whitelist"
                 value={enabled}
@@ -164,15 +193,19 @@ export const WhitelistEditorComponent = ({ className, enabled, items, onEnableCh
                 kind="secondary"
                 size="normal"
                 disabled={!enabled}
+                onClick={() => {
+                    addDialogApi.open()
+                }}
             >
-                Add to Whitelist
+                {I18n.t('editProductPage.whitelist.add')}
             </Button>
         </Controls>
     </Container>
 )
 
 export const WhitelistEditor = () => {
-    const { isEnabled, setEnabled, items } = useWhitelist()
+    const { isEnabled, setEnabled, items, reject } = useWhitelist()
+    const { api: addDialog } = useModal('addWhitelistAddress')
 
     // TODO: Email address must be provided when we enable whitelist
 
@@ -181,6 +214,8 @@ export const WhitelistEditor = () => {
             items={items}
             enabled={isEnabled}
             onEnableChanged={(value) => setEnabled(value)}
+            addDialogApi={addDialog}
+            removeAddress={reject}
         />
     )
 }

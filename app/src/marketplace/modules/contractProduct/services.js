@@ -5,7 +5,7 @@ import { I18n } from 'react-redux-i18n'
 import { getContract, call, send, hexEqualsZero } from '$mp/utils/smartContract'
 import getConfig from '$shared/web3/config'
 import type { SmartContractProduct, ProductId } from '$mp/flowtype/product-types'
-import type { SmartContractCall, SmartContractTransaction } from '$shared/flowtype/web3-types'
+import type { SmartContractCall, SmartContractTransaction, Address } from '$shared/flowtype/web3-types'
 import {
     getValidId,
     mapProductFromContract,
@@ -13,6 +13,8 @@ import {
     validateProductPriceCurrency,
     validateContractProductPricePerSecond,
 } from '$mp/utils/product'
+import type { WhitelistItem } from '$mp/modules/contractProduct/types'
+
 import { getWeb3, getPublicWeb3 } from '$shared/web3/web3Provider'
 import { contractCurrencies as currencies, gasLimits } from '$shared/utils/constants'
 
@@ -248,23 +250,33 @@ export const whitelistRequest = (id: ProductId, address: Address): SmartContract
     })
 )
 
-export const getWhitelistAddresses = async (id: ProductId, usePublicNode: boolean = true) => {
-    const whitelist: Array<string> = []
-
+export const getWhitelistAddresses = async (id: ProductId, usePublicNode: boolean = true): Promise<Array<WhitelistItem>> => {
     const approvedEvents = await getMarketplaceEvents(id, 'WhitelistApproved', 0, usePublicNode)
     const approvedAddresses = approvedEvents.map((event) => event.returnValues.subscriber)
     const rejectedEvents = await getMarketplaceEvents(id, 'WhitelistRejected', 0, usePublicNode)
     const rejectedAddresses = rejectedEvents.map((event) => event.returnValues.subscriber)
+    const subscriptionEvents = await getMarketplaceEvents(id, 'Subscribed', 0, usePublicNode)
 
-    whitelist.concat(approvedAddresses.map((addr) => ({
-        address: addr,
-        status: 'approved',
-    })))
+    const isActiveSubscription = (address) => {
+        const activeSubs = subscriptionEvents.filter((e) => (
+            e.returnValues &&
+            e.returnValues.subscriber === address &&
+            e.returnValues.endTimestamp &&
+            ((e.returnValues.endTimestamp.toNumber() * 1000) > Date.now())
+        ))
+        return activeSubs.length > 0
+    }
 
-    whitelist.concat(rejectedAddresses.map((addr) => ({
-        address: addr,
-        status: 'removed',
-    })))
+    const whitelist: Array<WhitelistItem> = [
+        ...approvedAddresses.map((addr) => ({
+            address: addr,
+            status: isActiveSubscription(addr) ? 'subscribed' : 'added',
+        })),
+        ...rejectedAddresses.map((addr) => ({
+            address: addr,
+            status: 'removed',
+        })),
+    ]
 
     return whitelist
 }

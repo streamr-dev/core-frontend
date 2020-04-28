@@ -294,6 +294,33 @@ msgstr ""
 "Only buyers whose Ethereum addresses have been whitelisted will be able to subscribe to your product. "
 "Other buyers will be able to ask for access."
 
+msgid "editProductPage##whitelist##header##address"
+msgstr "Ethereum Address"
+
+msgid "editProductPage##whitelist##header##status"
+msgstr "Status"
+
+msgid "editProductPage##whitelist##copy"
+msgstr "Copy address"
+
+msgid "editProductPage##whitelist##remove"
+msgstr "Remove"
+
+msgid "editProductPage##whitelist##enable"
+msgstr "Enable whitelist"
+
+msgid "editProductPage##whitelist##add"
+msgstr "Add to whitelist"
+
+msgid "editProductPage##whitelist##status##subscribed"
+msgstr "Subscribed"
+
+msgid "editProductPage##whitelist##status##added"
+msgstr "Whitelisted"
+
+msgid "editProductPage##whitelist##status##removed"
+msgstr "Removed"
+
 msgid "error##general"
 msgstr "Oops. Something has broken down here."
 
@@ -1064,6 +1091,18 @@ msgstr ""
 
 msgid "modal##deployDataUnion##deploying##estimatedDeploymentTime"
 msgstr "Estimated deployment time"
+
+msgid "modal##whitelistAdd##title"
+msgstr "Add a buyer to the whitelist"
+
+msgid "modal##whitelistAdd##add"
+msgstr "Add"
+
+msgid "modal##whitelistAdd##addressLabel"
+msgstr "Ethereum Address"
+
+msgid "modal##whitelistAdd##addressPlaceholder"
+msgstr "0x..."
 
 msgid "noProductsView##keywordHint"
 msgstr "Please try some different keywords"
