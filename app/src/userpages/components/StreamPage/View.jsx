@@ -9,9 +9,9 @@ import UnstyledText from '$ui/Text'
 import { MEDIUM } from '$shared/utils/styled'
 import TOCPage from '$shared/components/TOCPage'
 import TOCSection from '$shared/components/TOCPage/TOCSection'
-import Preview, { Controls } from '../Edit/PreviewView'
-import { getSecurityLevelConfig } from '../Edit/SecurityView'
-import { convertFromStorageDays } from '../Edit/HistoryView'
+import Preview, { Controls } from './Edit/PreviewView'
+import { getSecurityLevelConfig } from './Edit/SecurityView'
+import { convertFromStorageDays } from './Edit/HistoryView'
 
 const Details = styled.div`
     border: solid #e7e7e7;
