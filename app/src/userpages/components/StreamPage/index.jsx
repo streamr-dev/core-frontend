@@ -48,7 +48,7 @@ const StreamPage = (props: Props) => {
                         dispatch(getMyStreamPermissions(id)),
                     ])
                 } catch (e) {
-                    handleLoadError(e)
+                    await handleLoadError(e)
                 }
             } catch (e) {
                 if (e instanceof ResourceNotFoundError) {
