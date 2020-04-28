@@ -87,7 +87,7 @@ const StreamPage = (props: Props) => {
             try {
                 // The status query might fail due to cassandra problems. Ignore error to prevent
                 // the stream page from getting stuck while loading
-                await dispatch(getStreamStatus(stream.id))
+                await dispatch(getStreamStatus(id))
             } catch (e) {
                 console.warn(e)
             }
@@ -96,10 +96,10 @@ const StreamPage = (props: Props) => {
             }
         }
 
-        if (stream && !readOnly) {
+        if (!readOnly) {
             initEditing()
         }
-    }, [stream, readOnly, dispatch, isMounted])
+    }, [id, readOnly, dispatch, isMounted])
 
     useEffect(() => () => {
         dispatch(updateEditStream(null))
