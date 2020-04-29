@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useContext, useMemo, useEffect } from 'react'
+import React, { useContext, useMemo, useEffect, useCallback, useState, useRef } from 'react'
 import { withRouter } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { I18n, Translate } from 'react-redux-i18n'
@@ -23,7 +23,7 @@ import useProductPermissions from '../ProductController/useProductPermissions'
 import useProduct from '$mp/containers/ProductController/useProduct'
 import useEthereumIdentities from '$shared/modules/integrationKey/hooks/useEthereumIdentities'
 import ResourceNotFoundError, { ResourceType } from '$shared/errors/ResourceNotFoundError'
-import { selectFetchingStreams } from '$mp/modules/streams/selectors'
+import { selectFetchingStreams, selectHasMoreResults } from '$mp/modules/streams/selectors'
 
 import { Provider as EditControllerProvider, Context as EditControllerContext } from './EditControllerProvider'
 import BackButton from '$shared/components/BackButton'
@@ -36,6 +36,8 @@ import PublishModal from './PublishModal'
 import CropImageModal from './CropImageModal'
 
 import styles from './editProductPage.pcss'
+
+const STREAMS_PAGE_SIZE = 999
 
 const EditProductPage = ({ product }: { product: Product }) => {
     const {
@@ -54,8 +56,22 @@ const EditProductPage = ({ product }: { product: Product }) => {
         loadDataUnion,
         loadDataUnionStats,
         clearStreams,
+        loadStreams,
     } = useController()
     const fetchingAllStreams = useSelector(selectFetchingStreams)
+    const hasMoreResults = useSelector(selectHasMoreResults)
+    const [nextPage, setNextPage] = useState(0)
+    const loadedPageRef = useRef(0)
+
+    const doLoadStreams = useCallback((page = 0) => {
+        loadedPageRef.current = page
+        loadStreams({
+            max: STREAMS_PAGE_SIZE,
+            offset: page * STREAMS_PAGE_SIZE,
+        }).then(() => {
+            setNextPage(page + 1)
+        })
+    }, [loadStreams])
 
     const productId = product.id
     // Load categories and streams
@@ -63,7 +79,15 @@ const EditProductPage = ({ product }: { product: Product }) => {
         clearStreams()
         loadCategories()
         loadProductStreams(productId)
-    }, [loadCategories, loadProductStreams, productId, clearStreams])
+        doLoadStreams()
+    }, [loadCategories, loadProductStreams, productId, clearStreams, doLoadStreams])
+
+    // Load more streams if we didn't get all in the initial load
+    useEffect(() => {
+        if (!fetchingAllStreams && hasMoreResults && nextPage > loadedPageRef.current) {
+            doLoadStreams(nextPage)
+        }
+    }, [nextPage, fetchingAllStreams, hasMoreResults, doLoadStreams])
 
     // Load eth identities & data union (used to determine if owner account is linked)
     const { load: loadEthIdentities } = useEthereumIdentities()

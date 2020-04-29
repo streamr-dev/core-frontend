@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useState, useMemo, useCallback } from 'react'
+import React, { useState } from 'react'
 import { storiesOf } from '@storybook/react'
 import { withKnobs } from '@storybook/addon-knobs'
 import styles from '@sambego/storybook-styles'
@@ -127,57 +127,3 @@ stories.add('1500 streams', () => {
         <StreamController availableStreams={longList} />
     )
 })
-
-const LoadMoreController = () => {
-    const results = Array.from({
-        length: 500,
-    }, (v, i) => ({
-        id: `${i + 1}`,
-        name: `stream ${i + 1}`,
-        description: '',
-        autoConfigure: false,
-        lastUpdated: 0,
-        inactivityThresholdHours: 0,
-        requireEncryptedData: false,
-        requireSignedData: false,
-        uiChannel: false,
-        storageDays: 0,
-        partitions: 0,
-        ownPermissions: [],
-        config: {},
-    }))
-    const [streams, setStreams] = useState([])
-    const [fetching, setFetching] = useState(false)
-    const [amount, setAmount] = useState(100)
-    const { partialResults, hasMoreResults } = useMemo(() => ({
-        partialResults: results.slice(0, amount),
-        hasMoreResults: amount < results.length,
-    }), [results, amount])
-
-    const onLoadMore = useCallback(() => {
-        if (hasMoreResults) {
-            setFetching(true)
-            setTimeout(() => {
-                setAmount((prev) => prev + 100)
-                setFetching(false)
-            }, 1500)
-        }
-    }, [hasMoreResults])
-
-    return (
-        <StreamSelector
-            streams={streams}
-            onEdit={(list) => {
-                setStreams(list)
-            }}
-            availableStreams={partialResults}
-            hasMoreResults={hasMoreResults}
-            onLoadMore={onLoadMore}
-            fetchingStreams={fetching}
-        />
-    )
-}
-
-stories.add('load more', () => (
-    <LoadMoreController />
-))

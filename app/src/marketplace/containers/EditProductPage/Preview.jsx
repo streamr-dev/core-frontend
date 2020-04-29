@@ -12,7 +12,6 @@ import { selectAllCategories } from '$mp/modules/categories/selectors'
 import { isDataUnionProduct, isPaidProduct } from '$mp/utils/product'
 import useFilePreview from '$shared/hooks/useFilePreview'
 import { lg } from '$app/scripts/breakpoints'
-import { useController } from '../ProductController'
 
 import DescriptionComponent from '$mp/components/ProductPage/Description'
 import HeroComponent from '$mp/components/Hero'
@@ -197,8 +196,9 @@ const DataUnionStats = () => {
 const Streams = () => {
     const product = useEditableProduct()
     const streamIds = product.streams
-    const streams = useSelector(selectStreams) // todo: safe to assume streams are fetched?
-    const selectedStreams = useMemo(() => streams.filter((s) => streamIds.includes(s.id)), [streamIds, streams])
+    const streamIdSet = useMemo(() => new Set(streamIds), [streamIds])
+    const streams = useSelector(selectStreams)
+    const selectedStreams = useMemo(() => streams.filter((s) => streamIdSet.has(s.id)), [streamIdSet, streams])
     const isProductFree = !!(product && !isPaidProduct(product))
     const fetchingAllStreams = useSelector(selectFetchingStreams)
 
@@ -206,7 +206,6 @@ const Streams = () => {
         <StreamListing
             product={product}
             streams={selectedStreams}
-            totalNumberOfStreams={streamIds.length || 0}
             fetchingStreams={fetchingAllStreams}
             showStreamActions={false}
             isLoggedIn={false}
@@ -219,7 +218,6 @@ const Streams = () => {
 
 const Preview = () => {
     const product = useEditableProduct()
-    const { loadStreams, clearStreams } = useController()
 
     const isDataUnion = !!(product && isDataUnionProduct(product))
 
@@ -229,11 +227,6 @@ const Preview = () => {
             top: 0,
         })
     }, [])
-
-    useEffect(() => {
-        clearStreams()
-        loadStreams()
-    }, [clearStreams, loadStreams])
 
     return (
         <div className={cx(productPageStyles.productPage, styles.preview)}>

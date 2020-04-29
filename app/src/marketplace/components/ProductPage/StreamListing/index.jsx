@@ -21,7 +21,6 @@ export type Props = {
     product: ?Product,
     fetchingStreams: boolean,
     streams: StreamList,
-    totalNumberOfStreams?: number,
     showStreamActions?: boolean,
     isLoggedIn?: boolean,
     isProductFree?: boolean,
@@ -119,7 +118,6 @@ const TitleStreamCount = ({ count }: TitleStreamCountProps) => (
 const StreamListing = ({
     product,
     streams,
-    totalNumberOfStreams,
     fetchingStreams,
     showStreamActions,
     isLoggedIn,
@@ -130,19 +128,14 @@ const StreamListing = ({
     <ProductContainer id={styles.details} className={classNames(styles.details, className)}>
         <div className={classNames(styles.streams)}>
             <HeaderRow
-                title={!fetchingStreams && <TitleStreamCount count={totalNumberOfStreams || streams.length || 0} />}
+                title={<TitleStreamCount count={streams.length || 0} />}
                 className={styles.headerRow}
             >
                 <MediaQuery minWidth={767}>
                     <Translate value="productPage.streamListing.description" />
                 </MediaQuery>
             </HeaderRow>
-            {fetchingStreams && (
-                <Row className={styles.streamListingRow}>
-                    <Translate value="productPage.streamListing.loading" />
-                </Row>
-            )}
-            {!fetchingStreams && streams.length > 0 && (
+            {streams.length > 0 && (
                 <div className={styles.tableBody}>
                     {streams.map(({ id: streamId, name, description }: Stream) => (
                         <MediaQuery key={streamId} maxWidth={768}>
@@ -182,6 +175,11 @@ const StreamListing = ({
                         </MediaQuery>
                     ))}
                 </div>
+            )}
+            {fetchingStreams && (
+                <Row className={styles.streamListingRow}>
+                    <Translate value="productPage.streamListing.loading" />
+                </Row>
             )}
             {!fetchingStreams && streams.length === 0 && (
                 <Row className={styles.streamListingRow}>
