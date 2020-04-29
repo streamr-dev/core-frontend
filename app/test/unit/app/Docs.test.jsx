@@ -110,6 +110,7 @@ jest.mock('$docs/components/DocsPages/ModuleReference/HelpModules', () => ({
             /docs/module-reference/input
             /docs/module-reference/integrations
             /docs/module-reference/list
+            /docs/module-reference/map
             /docs/module-reference/streams
             /docs/module-reference/text
             /docs/module-reference/time-and-date
