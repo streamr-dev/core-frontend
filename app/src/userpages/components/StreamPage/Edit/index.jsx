@@ -24,7 +24,7 @@ import styles from './streamShowView.pcss'
 
 const { lg } = breakpoints
 
-const Edit = ({ stream: streamProp, canShare, currentUser }: any) => {
+const Edit = ({ stream: streamProp, canShare, currentUser, disabled }: any) => {
     const stream = useMemo(() => ({
         ...streamProp,
         ...(streamProp.config ? {
@@ -85,6 +85,7 @@ const Edit = ({ stream: streamProp, canShare, currentUser }: any) => {
                                     kind: 'primary',
                                     spinner,
                                     onClick: save,
+                                    disabled,
                                 },
                             }}
                         />
@@ -97,21 +98,21 @@ const Edit = ({ stream: streamProp, canShare, currentUser }: any) => {
                     id="details"
                     title={I18n.t('userpages.streams.edit.details.nav.details')}
                 >
-                    <InfoView />
+                    <InfoView disabled={disabled} />
                 </TOCPage.Section>
                 <TOCPage.Section
                     id="security"
                     title={I18n.t('userpages.streams.edit.details.nav.security')}
                     onlyDesktop
                 >
-                    <SecurityView />
+                    <SecurityView disabled={disabled} />
                 </TOCPage.Section>
                 <TOCPage.Section
                     id="configure"
                     title={I18n.t('userpages.streams.edit.details.nav.fields')}
                     onlyDesktop
                 >
-                    <ConfigureView />
+                    <ConfigureView disabled={disabled} />
                 </TOCPage.Section>
                 <TOCPage.Section
                     id="status"
@@ -125,7 +126,7 @@ const Edit = ({ stream: streamProp, canShare, currentUser }: any) => {
                     )}
                     onlyDesktop
                 >
-                    <StatusView />
+                    <StatusView disabled={disabled} />
                 </TOCPage.Section>
                 <TOCPage.Section
                     id="preview"
@@ -148,14 +149,14 @@ const Edit = ({ stream: streamProp, canShare, currentUser }: any) => {
                     title={I18n.t('userpages.streams.edit.details.nav.apiAccess')}
                     onlyDesktop
                 >
-                    <KeyView disabled={!canShare} />
+                    <KeyView disabled={disabled || !canShare} />
                 </TOCPage.Section>
                 <TOCPage.Section
                     id="historical-data"
                     title={I18n.t('userpages.streams.edit.details.nav.historicalData')}
                     onlyDesktop
                 >
-                    <HistoryView streamId={stream.id} />
+                    <HistoryView disabled={disabled} streamId={stream.id} />
                 </TOCPage.Section>
             </TOCPage>
         </CoreLayout>
