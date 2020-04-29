@@ -2,9 +2,11 @@
 
 import React, { useCallback, useState, useMemo } from 'react'
 import { useDispatch } from 'react-redux'
+import { useLocation } from 'react-router-dom'
 import { I18n, Translate } from 'react-redux-i18n'
 import { push } from 'connected-react-router'
 import MediaQuery from 'react-responsive'
+import qs from 'query-string'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import StatusIcon from '$shared/components/StatusIcon'
 import { updateStream } from '$userpages/modules/userPageStreams/actions'
@@ -34,8 +36,7 @@ const Edit = ({ stream: streamProp, canShare, currentUser, disabled }: any) => {
         } : {}),
     }), [streamProp])
 
-    // It's either that or the GET param. Let's try this first.
-    const isNewStream = !stream.lastUpdated
+    const isNewStream = !!qs.parse(useLocation().search).newStream
 
     const dispatch = useDispatch()
 

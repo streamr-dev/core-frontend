@@ -23,6 +23,7 @@ const NewStreamPage = () => {
             if (isMounted()) {
                 dispatch(push(routes.stream({
                     id,
+                    newStream: 1,
                 })))
             }
         } catch (e) {
