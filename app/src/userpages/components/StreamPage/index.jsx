@@ -29,7 +29,7 @@ type Props = {
 }
 
 const StreamPage = (props: Props) => {
-    const { id } = props.match.params || {}
+    const { id: idProp } = props.match.params || {}
 
     const permissions = useSelector(selectPermissions)
 
@@ -51,16 +51,18 @@ const StreamPage = (props: Props) => {
 
     const isMounted = useIsMounted()
 
+    const { id } = stream || {}
+
     useEffect(() => {
         const fetch = async () => {
             try {
                 try {
                     await Promise.all([
-                        dispatch(getStream(id)),
-                        dispatch(getMyStreamPermissions(id)),
+                        dispatch(getStream(idProp)),
+                        dispatch(getMyStreamPermissions(idProp)),
                     ])
                     if (isMounted()) {
-                        dispatch(openStream(id))
+                        dispatch(openStream(idProp))
                     }
                 } catch (e) {
                     await handleLoadError(e)
@@ -79,7 +81,7 @@ const StreamPage = (props: Props) => {
         }
 
         fetch()
-    }, [fail, dispatch, id, isMounted])
+    }, [fail, dispatch, idProp, isMounted])
 
     useEffect(() => {
         const initEditing = async () => {
@@ -96,7 +98,7 @@ const StreamPage = (props: Props) => {
             }
         }
 
-        if (!readOnly) {
+        if (!readOnly && id) {
             initEditing()
         }
     }, [id, readOnly, dispatch, isMounted])
@@ -106,7 +108,7 @@ const StreamPage = (props: Props) => {
         dispatch(closeStream())
     }, [dispatch])
 
-    if (fetching || !stream || !(readOnly || editedStream)) {
+    if (fetching || !stream || (!readOnly && !editedStream)) {
         return (
             <Layout loading />
         )
