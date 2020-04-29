@@ -35,9 +35,9 @@ describe('DataUnions', () => {
         process.env.DATA_UNIONS = oldDataUnionFlag
     })
 
-    describe('without data unions (DATA_UNIONS=undefined)', () => {
+    describe('without data unions (DATA_UNIONS_DOCS=undefined)', () => {
         it('Shows placeholder article', () => {
-            delete process.env.DATA_UNIONS
+            delete process.env.DATA_UNIONS_DOCS
 
             const el = mount(<DataUnions />)
 
@@ -45,9 +45,9 @@ describe('DataUnions', () => {
         })
     })
 
-    describe('with data unions (DATA_UNIONS=on)', () => {
+    describe('with data unions (DATA_UNIONS_DOCS=on)', () => {
         it('Shows data unions article', () => {
-            process.env.DATA_UNIONS = 'on'
+            process.env.DATA_UNIONS_DOCS = 'on'
 
             const el = mount(<DataUnions />)
 

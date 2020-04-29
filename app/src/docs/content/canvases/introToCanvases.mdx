@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 
 import Warning from '$docs/components/Warning'
 import CodeSnippet from '$shared/components/CodeSnippet'
-import links from '$shared/../links'
+import { docsLinks } from '$shared/../links'
 
 import CanvasDemo from './images/intro_canvases_01_desktop.jpg'
 import CanvasDemo2x from './images/intro_canvases_01_desktop@2x.jpg'
@@ -12,7 +12,7 @@ import docsStyles from '$docs/components/DocsLayout/docsLayout.pcss'
 import canvasesStyles from '$docs/components/DocsPages/Canvases/canvasesStyles.pcss'
 
 # Intro to canvases
-A Streamr canvas is a microservice which consumes and acts upon real-time data. A canvas contains one or more <Link to={links.docs.streams.root}>streams</Link> (these provide the data) and one or more <Link to={links.docs.moduleReference.root}>modules</Link> (these do the processing). Streams and modules are connected in the configuration that you'll design. The connections determine how the data flows through the canvas.
+A Streamr canvas is a microservice which consumes and acts upon real-time data. A canvas contains one or more <Link to={docsLinks.streams}>streams</Link> (these provide the data) and one or more <Link to={docsLinks.moduleReference}>modules</Link> (these do the processing). Streams and modules are connected in the configuration that you'll design. The connections determine how the data flows through the canvas.
 
 <figure>
     <picture>
@@ -43,6 +43,6 @@ Here's a few examples of specific things you can do;
 
 **Subscribe to a stream in external web pages and applications.** You'll receive every event as soon as it’s available.
 
-There is an extensive <Link to={links.docs.moduleReference.root}>collection</Link> of built-in modules as a source of building blocks. You can abstract modules and re-use them later, and you can code custom modules in Java.
+There is an extensive <Link to={docsLinks.moduleReference}>collection</Link> of built-in modules as a source of building blocks. You can abstract modules and re-use them later, and you can code custom modules in Java.
 
-When you're ready to build a canvas, you’ll typically start by adding one or more data <Link to={links.docs.streams.root}>streams</Link> to the canvas workspace. You’ll then create the processing logic by adding modules to the canvas and connecting the streams and modules together. You can do all this interactively by dragging and dropping streams and modules from the module browser to the workspace and then drawing connections between them.
+When you're ready to build a canvas, you’ll typically start by adding one or more data <Link to={docsLinks.streams}>streams</Link> to the canvas workspace. You’ll then create the processing logic by adding modules to the canvas and connecting the streams and modules together. You can do all this interactively by dragging and dropping streams and modules from the module browser to the workspace and then drawing connections between them.

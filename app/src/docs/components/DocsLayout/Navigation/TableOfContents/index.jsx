@@ -4,7 +4,7 @@ import React from 'react'
 import { Link, withRouter, type Location } from 'react-router-dom'
 
 import cx from 'classnames'
-import { docsNav } from '$docs/components/DocsLayout/Navigation/navLinks'
+import docsMap from '$docs/docsMap'
 
 import styles from '../navigation.pcss'
 
@@ -14,17 +14,18 @@ type Props = {
 
 const TableOfContents = ({ location }: Props) => {
     const isActiveSection = (subNavList) => Object.keys(subNavList).some((subKey) => (
-        location.pathname.includes(subNavList[subKey])
+        location.pathname.includes(subNavList[subKey].path)
     ))
 
     return (
-        Object.keys(docsNav).map((topLevelNav, index) => {
-            const navItem = docsNav[topLevelNav]
+        Object.keys(docsMap).map((topLevelNav, index) => {
+            const navItem = docsMap[topLevelNav]
             const { pathname } = location
+
             return ( // eslint-disable-next-line react/no-array-index-key
                 <React.Fragment key={index}>
                     <li className={styles.navListItem}>
-                        <Link className={isActiveSection(navItem) ? styles.active : ''} to={navItem.root}>{topLevelNav}</Link>
+                        <Link className={isActiveSection(navItem) ? styles.active : ''} to={navItem.root.path}>{topLevelNav}</Link>
                     </li>
                     <ul
                         className={cx(styles.subNavList, {
@@ -36,8 +37,8 @@ const TableOfContents = ({ location }: Props) => {
                         {Object.keys(navItem).filter((subKey) => subKey !== 'root').map((subKey) => (
                             <li key={subKey} className={styles.navListItem}>
                                 <Link
-                                    className={pathname.includes(navItem[subKey]) ? styles.active : ''}
-                                    to={navItem[subKey]}
+                                    className={pathname.includes(navItem[subKey].path) ? styles.active : ''}
+                                    to={navItem[subKey].path}
                                 >
                                     {subKey}
                                 </Link>

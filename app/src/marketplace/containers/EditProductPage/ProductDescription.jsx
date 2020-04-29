@@ -10,7 +10,7 @@ import useEditableProductActions from '../ProductController/useEditableProductAc
 import MarkdownEditor from '$mp/components/MarkdownEditor'
 import { Context as EditControllerContext } from './EditControllerProvider'
 import usePending from '$shared/hooks/usePending'
-import routes from '$routes'
+import { docsLinks } from '$shared/../links'
 
 import styles from './productDescription.pcss'
 
@@ -31,7 +31,7 @@ const ProductDescription = () => {
                 <Translate
                     tag="p"
                     value="editProductPage.productDescription.description"
-                    docsLink={routes.docsProductsIntroToProducts()}
+                    docsLink={docsLinks.introToProducts}
                     dangerousHTML
                 />
                 <MarkdownEditor

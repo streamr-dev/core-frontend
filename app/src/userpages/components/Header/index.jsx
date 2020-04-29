@@ -8,7 +8,7 @@ import { Translate } from 'react-redux-i18n'
 import type { User } from '$shared/flowtype/user-types'
 import type { StoreState } from '$shared/flowtype/store-state'
 import { selectUserData } from '$shared/modules/user/selectors'
-import { userpages } from '../../../links'
+import links from '$shared/../links'
 import Tab from './Tab'
 import AccountsBalance from './AccountsBalance'
 import { formatPath } from '$shared/utils/url'
@@ -60,22 +60,22 @@ const Header = ({
                         {searchComponent}
                     </div>
                     <div className={styles.tabs}>
-                        <Tab to={formatPath(userpages.streams)}>
+                        <Tab to={formatPath(links.userpages.streams)}>
                             <Translate value="userpages.header.streams" />
                         </Tab>
-                        <Tab to={formatPath(userpages.canvases)}>
+                        <Tab to={formatPath(links.userpages.canvases)}>
                             <Translate value="userpages.header.canvases" />
                         </Tab>
-                        <Tab to={formatPath(userpages.dashboards)}>
+                        <Tab to={formatPath(links.userpages.dashboards)}>
                             <Translate value="userpages.header.dashboards" />
                         </Tab>
-                        <Tab to={formatPath(userpages.products)}>
+                        <Tab to={formatPath(links.userpages.products)}>
                             <Translate value="userpages.header.products" />
                         </Tab>
-                        <Tab to={formatPath(userpages.purchases)}>
+                        <Tab to={formatPath(links.userpages.purchases)}>
                             <Translate value="userpages.header.purchases" />
                         </Tab>
-                        <Tab to={formatPath(userpages.transactions)}>
+                        <Tab to={formatPath(links.userpages.transactions)}>
                             <Translate value="userpages.header.transactions" />
                         </Tab>
                     </div>

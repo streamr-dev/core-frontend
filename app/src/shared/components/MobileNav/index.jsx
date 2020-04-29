@@ -18,6 +18,7 @@ import { truncate } from '$shared/utils/text'
 import Bar from './Bar'
 import Hamburger from './Hamburger'
 import routes from '$routes'
+import { docsLinks } from '$shared/../links'
 import styles from './mobileNav.pcss'
 
 type StateProps = {
@@ -131,7 +132,7 @@ const MobileNav = withRouter(({ location: { pathname: redirect }, className }: P
                         <li>
                             <Link
                                 className={styles.link}
-                                to={routes.docs()}
+                                to={docsLinks.docs}
                             >
                                 <Translate value="general.docs" />
                             </Link>

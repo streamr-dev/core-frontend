@@ -9,6 +9,7 @@ import type { User } from '$shared/flowtype/user-types'
 import Button from '$shared/components/Button'
 import StreamLivePreview from '$mp/components/StreamPreviewPage/StreamLivePreview'
 import routes from '$routes'
+import { docsLinks } from '$shared/../links'
 import { Provider as ClientProvider } from '$shared/contexts/StreamrClient'
 
 import styles from './previewView.pcss'
@@ -37,7 +38,7 @@ const PreviewView = ({ stream, currentUser }: Props) => {
                 className={styles.longText}
                 tag="p"
                 dangerousHTML
-                docsLink={routes.docsGettingStarted()}
+                docsLink={docsLinks.gettingStarted}
             />
             <div
                 className={styles.previewContainer}

@@ -4,9 +4,7 @@ import React from 'react'
 import { Link, withRouter, type Location } from 'react-router-dom'
 import cx from 'classnames'
 import SvgIcon from '$shared/components/SvgIcon'
-import { docsNav } from '$docs/components/DocsLayout/Navigation/navLinks'
-
-import type { DocsNav } from '$docs/flowtype/navigation-types'
+import docsMap from '$docs/docsMap'
 
 import styles from './pageTurner.pcss'
 
@@ -46,7 +44,7 @@ class PageTurner extends React.Component<Props, State> {
     currentPathMatch: boolean = false
     firstPathMatch: boolean = false
     matchFound: boolean = false
-    navDirections: DocsNav = this.calcNavDirections()
+    navDirections = this.calcNavDirections()
 
     isExtraPaddingRequired = () => this.state.documentHeight < 2000 && this.state.documentHeight !== 0 && window.document.body.scrollWidth > 991
 
@@ -54,7 +52,7 @@ class PageTurner extends React.Component<Props, State> {
         let match = false
 
         Object.keys(pathnames).forEach((subKey) => {
-            if (this.props.location.pathname.includes(pathnames[subKey])) {
+            if (this.props.location.pathname.includes(pathnames[subKey].path)) {
                 match = true
             }
         })
@@ -69,7 +67,7 @@ class PageTurner extends React.Component<Props, State> {
         // When currentPathMatch is true, the navDirections will accept at most, the next item.
         // Edge case for firstPathMatch (navDirections: length == 1 & index == 0).
 
-        return Object.entries(docsNav).reduce((acc, [navigationTitle, navigationPath]: any, index) => {
+        return Object.entries(docsMap).reduce((acc, [navigationTitle, navigationPath]: any, index) => {
             let navDirections = {
                 ...acc,
             }
@@ -129,7 +127,7 @@ class PageTurner extends React.Component<Props, State> {
                         [styles.forward]: index === 1 || this.firstPathMatch,
                     })}
                 >
-                    <Link to={linkPath.root}>
+                    <Link to={linkPath.root.path}>
                         {(index === 0 && !this.firstPathMatch) ? 'Back to ' : ''}{linkTitle}
                         <SvgIcon
                             name="back"

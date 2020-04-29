@@ -1,7 +1,6 @@
 import cx from 'classnames'
 import { Link } from 'react-router-dom'
-import links from '$shared/../links'
-import routes from '$routes'
+import { docsLinks } from '$shared/../links'
 
 import Modules from './images/module_basics_01_desktop.jpg'
 import Modules2x from './images/module_basics_01_desktop@2x.jpg'
@@ -77,7 +76,7 @@ Many modules have parameters which control their operation. Module parameters ca
     <figcaption>The basic elements of a canvas module</figcaption>
 </figure>
 
-As an example, the <Link to={routes.docsModuleReferenceTimeSeries({}, 'roundtostep')}>RoundToStep</Link> module has three inputs, two parameters, and one output. The first two inputs correspond to the module’s parameters, i.e. precision and mode. The last input is a numeric value which will be rounded with the specified precision in the direction specified by the mode. The module output is equal to the rounded input. Inputs, outputs, and parameters can be renamed by double clicking on them and typing new text. Renaming has no bearing on functionality.
+As an example, the <Link to={`${docsLinks.moduleReferenceTimeSeries}#roundtostep`}>RoundToStep</Link> module has three inputs, two parameters, and one output. The first two inputs correspond to the module’s parameters, i.e. precision and mode. The last input is a numeric value which will be rounded with the specified precision in the direction specified by the mode. The module output is equal to the rounded input. Inputs, outputs, and parameters can be renamed by double clicking on them and typing new text. Renaming has no bearing on functionality.
 
 <figure className={docsStyles.darkBg}>
     <picture>
@@ -119,7 +118,7 @@ As a simple example, here's a canvas consisting of one stream and a chart module
 
 ### Sending data to a stream
 
-Use the SendToStream module if you want to send data that has been generated inside the canvas, into a stream. Inside the module, start typing the name of your stream and it will autocomplete for you. Remember to configure the fields of your stream before using this module as the module's inputs are defined by it's fields. Learn more about fields in the <Link to={links.docs.streams.root}>streams docs</Link>.
+Use the SendToStream module if you want to send data that has been generated inside the canvas, into a stream. Inside the module, start typing the name of your stream and it will autocomplete for you. Remember to configure the fields of your stream before using this module as the module's inputs are defined by it's fields. Learn more about fields in the <Link to={docsLinks.streams}>streams docs</Link>.
 
 <figure>
     <picture>
@@ -148,7 +147,7 @@ Along with **inputs** and **outputs**, there are also **parameters**. **Paramete
     </picture>
 </figure>
 
-You can only connect endpoints with compatible data types. As you hold your mouse down, compatible connections will glow green and incompatible connections glow red. For instance, you cannot create a connection which feeds string events to an endpoint where numerical events are expected. There are conversion modules such as <Link to={routes.docsModuleReferenceText({}, 'stringtonumber')}>StringToNumber</Link> which can help when you get stuck with the wrong data type.
+You can only connect endpoints with compatible data types. As you hold your mouse down, compatible connections will glow green and incompatible connections glow red. For instance, you cannot create a connection which feeds string events to an endpoint where numerical events are expected. There are conversion modules such as <Link to={`${docsLinks.moduleReferenceText}#stringtonumber`}>StringToNumber</Link> which can help when you get stuck with the wrong data type.
 
 All connections are unidirectional, i.e. the data always flows from an output to one or more inputs in one direction only. The modules form a directed graph. Feedback loops are discouraged, but you can create them if you really want.
 

@@ -5,7 +5,7 @@ import { Translate, I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
 import { Footer as LayoutFooter, FooterColumn, FooterColumns, SocialChannels, MadeBy as UnstyledMadeBy } from '@streamr/streamr-layout'
 
-import links from '$shared/../links'
+import links, { docsLinks } from '$shared/../links'
 
 const MadeBy = styled(UnstyledMadeBy)`
     padding: 0 0 32px;
@@ -62,16 +62,16 @@ const Footer = ({ topBorder = false }: Props) => (
                 </a>
             </FooterColumn>
             <FooterColumn title={I18n.t('general.docs')}>
-                <a href={links.docs.streams}>
+                <a href={docsLinks.streams}>
                     <Translate value="general.streams" />
                 </a>
-                <a href={links.docs.canvases}>
+                <a href={docsLinks.canvases}>
                     <Translate value="general.canvases" />
                 </a>
-                <a href={links.docs.dashboards}>
+                <a href={docsLinks.dashboards}>
                     <Translate value="general.dashboards" />
                 </a>
-                <a href={links.docs.products}>
+                <a href={docsLinks.products}>
                     <Translate value="general.products" />
                 </a>
             </FooterColumn>

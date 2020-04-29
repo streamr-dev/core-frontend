@@ -4,7 +4,7 @@ import { mount } from 'enzyme'
 
 import GenericErrorPage from '$shared/components/GenericErrorPage'
 import DocsRouter from '$mp/../app/Docs'
-import { generateNav } from '$docs/components/DocsLayout/Navigation/navLinks'
+import { generateMap } from '$docs/docsMap'
 
 jest.mock('$shared/components/GenericErrorPage', () => ({
     __esModule: true,
@@ -110,6 +110,7 @@ jest.mock('$docs/components/DocsPages/ModuleReference/HelpModules', () => ({
             /docs/module-reference/input
             /docs/module-reference/integrations
             /docs/module-reference/list
+            /docs/module-reference/map
             /docs/module-reference/streams
             /docs/module-reference/text
             /docs/module-reference/time-and-date
@@ -215,10 +216,37 @@ jest.mock('$docs/components/DocsPages/Marketplace/IntroToMarketplace', () => ({
         </div>
     ),
 }))
-jest.mock('$docs/components/DocsPages/SDKs', () => ({
+jest.mock('$docs/components/DocsPages/Sdks/SdkOverview', () => ({
     __esModule: true,
     default: () => (
-        <div>/docs/sdks</div>
+        <div>
+            /docs/sdks
+            /docs/sdks/overview
+        </div>
+    ),
+}))
+jest.mock('$docs/components/DocsPages/Sdks/JavascriptSdk', () => ({
+    __esModule: true,
+    default: () => (
+        <div>
+            /docs/sdks/javascript-sdk
+        </div>
+    ),
+}))
+jest.mock('$docs/components/DocsPages/Sdks/JavaSdk', () => ({
+    __esModule: true,
+    default: () => (
+        <div>
+            /docs/sdks/java-sdk
+        </div>
+    ),
+}))
+jest.mock('$docs/components/DocsPages/Sdks/PythonSdk', () => ({
+    __esModule: true,
+    default: () => (
+        <div>
+            /docs/sdks/python-sdk
+        </div>
     ),
 }))
 jest.mock('$docs/components/DocsPages/API/ApiOverview', () => ({
@@ -236,10 +264,10 @@ jest.mock('$docs/components/DocsPages/API/Authentication', () => ({
         <div>/docs/api/authentication</div>
     ),
 }))
-jest.mock('$docs/components/DocsPages/API/ApiExplorer', () => ({
+jest.mock('$docs/components/DocsPages/ApiExplorer', () => ({
     __esModule: true,
     default: () => (
-        <div>/docs/api/api-explorer</div>
+        <div>/docs/api-explorer</div>
     ),
 }))
 jest.mock('$docs/components/DocsPages/TechnicalNotes', () => ({
@@ -250,19 +278,19 @@ jest.mock('$docs/components/DocsPages/TechnicalNotes', () => ({
 }))
 
 const sections = ({ dataUnions }) => {
-    const docsNav = generateNav({
+    const docsMap = generateMap({
         dataUnions,
     })
 
-    return Object.keys(docsNav)
+    return Object.keys(docsMap)
 }
 
 const links = ({ section, dataUnions }) => {
-    const docsNav = generateNav({
+    const docsMap = generateMap({
         dataUnions,
     })
 
-    return Object.values(docsNav[section])
+    return Object.keys(docsMap[section]).map((doc) => docsMap[section][doc].path)
 }
 
 describe('Marketplace Routes', () => {
@@ -274,7 +302,7 @@ describe('Marketplace Routes', () => {
                 section,
                 dataUnions: true,
             }))(`${section === 'Data Unions' ? 'does not show' : 'shows'} route: %s`, (url) => {
-                delete process.env.DATA_UNIONS
+                delete process.env.DATA_UNIONS_DOCS
                 const el = mount((
                     <MemoryRouter
                         initialEntries={[url]}
@@ -305,7 +333,7 @@ describe('Marketplace Routes', () => {
                 section,
                 dataUnions: true,
             }))('shows route: %s', (url) => {
-                process.env.DATA_UNIONS = 'on'
+                process.env.DATA_UNIONS_DOCS = 'on'
                 const el = mount((
                     <MemoryRouter
                         initialEntries={[url]}

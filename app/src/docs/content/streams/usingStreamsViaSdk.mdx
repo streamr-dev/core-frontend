@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 
 import CodeSnippet from '$shared/components/CodeSnippet'
-import links from '$shared/../links'
+import { docsLinks } from '$shared/../links'
 
 import {
     CreateJavascriptClient,
@@ -16,11 +16,11 @@ import {
 
 # Work with streams via SDKs
 
-The easiest way to work with streams is to use the JavaScript client, which works in Node.js as well as the browser. See the <Link to={links.docs.SDKs.root}>SDKs section</Link> for the official and community-maintained client libraries available for various languages.
+The easiest way to work with streams is to use the JavaScript client, which works in Node.js as well as the browser. See the <Link to={docsLinks.sdks}>SDKs section</Link> for the official and community-maintained client libraries available for various languages.
 
 ### Authentication
 
-When reading from or writing to streams, you need to provide a session token or an API key, or login with an Ethereum account. To read more about API keys or obtaining a session token, refer to the <Link to={links.docs.api.authentication}>Authentication section of the API docs</Link>.
+When reading from or writing to streams, you need to provide a session token or an API key, or login with an Ethereum account. To read more about API keys or obtaining a session token, refer to the <Link to={docsLinks.authentication}>Authentication section of the API docs</Link>.
 
 ### Creating a client instance with API key
 

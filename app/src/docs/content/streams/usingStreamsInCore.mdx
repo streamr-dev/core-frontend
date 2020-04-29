@@ -1,7 +1,7 @@
 import cx from 'classnames'
 import { Link } from 'react-router-dom'
 
-import links from '$shared/../links'
+import links, { docsLinks } from '$shared/../links'
 
 import StreamListing from './images/core_streams_01_desktop_border.jpg'
 import StreamListing2x from './images/core_streams_01_desktop_border@2x.jpg'
@@ -48,7 +48,7 @@ The details section provides basic information about your stream.
 
 - The stream name is used to identify your stream in the Core app.
 - The stream description can be used to offer more information about your stream and the kind of data it contains.
-- The stream ID is the unique identifier for your stream and is needed when interacting with the <Link to={links.docs.SDKs.root}>Streamr SDKs</Link>.
+- The stream ID is the unique identifier for your stream and is needed when interacting with the <Link to={docsLinks.sdks}>Streamr SDKs</Link>.
 
 <figure>
     <picture>
