@@ -50,7 +50,7 @@ const Edit = ({ stream: streamProp, canShare, currentUser }: any) => {
         setSpinner(true)
 
         try {
-            await dispatch(updateStream(stream)) // needs to be with temp field ids
+            await dispatch(updateStream(stream))
 
             if (isMounted()) {
                 dispatch(push(routes.userPageStreamListing()))
