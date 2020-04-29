@@ -251,11 +251,20 @@ export const whitelistRequest = (id: ProductId, address: Address): SmartContract
 )
 
 export const getWhitelistAddresses = async (id: ProductId, usePublicNode: boolean = true): Promise<Array<WhitelistItem>> => {
-    const approvedEvents = await getMarketplaceEvents(id, 'WhitelistApproved', 0, usePublicNode)
-    const approvedAddresses = approvedEvents.map((event) => event.returnValues.subscriber)
-    const rejectedEvents = await getMarketplaceEvents(id, 'WhitelistRejected', 0, usePublicNode)
-    const rejectedAddresses = rejectedEvents.map((event) => event.returnValues.subscriber)
     const subscriptionEvents = await getMarketplaceEvents(id, 'Subscribed', 0, usePublicNode)
+    const approvedEvents = await getMarketplaceEvents(id, 'WhitelistApproved', 0, usePublicNode)
+    const rejectedEvents = await getMarketplaceEvents(id, 'WhitelistRejected', 0, usePublicNode)
+
+    const approvedItems = approvedEvents.map((event) => ({
+        address: event.returnValues.subscriber,
+        blockNumber: event.blockNumber,
+        approved: true,
+    }))
+    const rejectedItems = rejectedEvents.map((event) => ({
+        address: event.returnValues.subscriber,
+        blockNumber: event.blockNumber,
+        approved: false,
+    }))
 
     const isActiveSubscription = (address) => {
         const activeSubs = subscriptionEvents.filter((e) => (
@@ -267,16 +276,16 @@ export const getWhitelistAddresses = async (id: ProductId, usePublicNode: boolea
         return activeSubs.length > 0
     }
 
-    const whitelist: Array<WhitelistItem> = [
-        ...approvedAddresses.map((addr) => ({
-            address: addr,
-            status: isActiveSubscription(addr) ? 'subscribed' : 'added',
-        })),
-        ...rejectedAddresses.map((addr) => ({
-            address: addr,
-            status: 'removed',
-        })),
-    ]
+    const events = [...approvedItems, ...rejectedItems]
+
+    // Sort by blockNumber to make sure we take only the latest events into account
+    events.sort((a, b) => a.blockNumber - b.blockNumber)
+    const addresses = new Map(events.map((item) => [item.address, item]))
+
+    const whitelist: Array<WhitelistItem> = Array.from(addresses.values()).map((item) => ({
+        address: item.address,
+        status: (item.approved && (isActiveSubscription(item.address) ? 'subscribed' : 'added')) || 'removed',
+    }))
 
     return whitelist
 }

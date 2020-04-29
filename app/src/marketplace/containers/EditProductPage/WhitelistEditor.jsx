@@ -133,7 +133,7 @@ type Props = {
     enabled: boolean,
     items: Array<WhitelistItem>,
     onEnableChanged: (boolean) => void,
-    addDialogApi: any,
+    addDialog: any,
     removeAddress: (string) => any,
 }
 
@@ -142,7 +142,7 @@ export const WhitelistEditorComponent = ({
     enabled,
     items,
     onEnableChanged,
-    addDialogApi,
+    addDialog,
     removeAddress,
 }: Props) => (
     <Container className={className}>
@@ -194,7 +194,7 @@ export const WhitelistEditorComponent = ({
                 size="normal"
                 disabled={!enabled}
                 onClick={() => {
-                    addDialogApi.open()
+                    addDialog.open()
                 }}
             >
                 {I18n.t('editProductPage.whitelist.add')}
@@ -214,7 +214,7 @@ export const WhitelistEditor = () => {
             items={items}
             enabled={isEnabled}
             onEnableChanged={(value) => setEnabled(value)}
-            addDialogApi={addDialog}
+            addDialog={addDialog}
             removeAddress={reject}
         />
     )

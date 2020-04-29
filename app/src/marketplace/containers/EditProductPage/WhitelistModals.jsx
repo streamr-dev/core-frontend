@@ -58,7 +58,9 @@ const WhitelistAddAddressModal = ({ onClose, onSave }: Props) => {
                     </Footer>
                 )}
             >
-                <StyledLabel><Translate value="modal.whitelistAdd.addressLabel" /></StyledLabel>
+                <StyledLabel>
+                    <Translate value="modal.whitelistAdd.addressLabel" />
+                </StyledLabel>
                 <Text
                     onCommit={(val) => setAddress(val)}
                     placeholder={I18n.t('modal.whitelistAdd.addressPlaceholder')}
