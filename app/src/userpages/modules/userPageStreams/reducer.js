@@ -265,9 +265,9 @@ export default function (state: UserPageStreamsState = initialState, action: Str
         case UPDATE_EDIT_STREAM:
             return {
                 ...state,
-                editedStream: {
+                editedStream: action.stream ? {
                     ...action.stream,
-                },
+                } : null,
             }
 
         case UPDATE_EDIT_STREAM_FIELD: {
