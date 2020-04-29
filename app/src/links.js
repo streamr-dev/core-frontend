@@ -98,8 +98,11 @@ module.exports = {
             root: routes.docsDataUnionsRoot(),
             introToDataUnions: routes.docsDataUnionsIntroToProducts(),
             dataUnionsInCore: routes.docsDataUnionsBuildInCore(),
-            integration: routes.docsDataUnionsIntegration(),
-            dataUnionsInSDK: routes.docsDataUnionsInSDK(),
+            frameworkRoles: routes.docsDataUnionsFrameworkRoles(),
+            authAndIdentity: routes.docsDataUnionsAuthAndIdentity(),
+            createAndMonitor: routes.docsDataUnionsCreateAndMonitor(),
+            joinAndWithdraw: routes.docsDataUnionsJoinAndWithdraw(),
+            uxBestPractises: routes.docsDataUnionsUXBestPractises(),
         },
         // runningNode: routes.docsRunningNode(),
         SDKs: {

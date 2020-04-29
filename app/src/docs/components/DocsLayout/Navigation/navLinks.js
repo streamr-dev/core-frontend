@@ -82,9 +82,12 @@ export const generateNav = ({ dataUnions: includeDataUnions = !!process.env.DATA
         'Data Unions': {
             root: dataUnions.root,
             'Intro to Data Unions': dataUnions.introToDataUnions,
-            'Data Unions in Core': dataUnions.dataUnionsInCore,
-            'Data Unions Integration': dataUnions.integration,
-            'Build a Data Union': dataUnions.dataUnionsInSDK,
+            'Create a DU with Core': dataUnions.dataUnionsInCore,
+            'Framework Roles': dataUnions.frameworkRoles,
+            'Auth & Identity': dataUnions.authAndIdentity,
+            'Create & Monitor': dataUnions.createAndMonitor,
+            'Join & Withdraw': dataUnions.joinAndWithdraw,
+            'UX Best Practices': dataUnions.uxBestPractises,
         },
     } : {}),
     Tutorials: {

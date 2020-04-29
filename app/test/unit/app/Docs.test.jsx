@@ -156,19 +156,37 @@ jest.mock('$docs/components/DocsPages/DataUnions/IntroToDataUnions', () => ({
 jest.mock('$docs/components/DocsPages/DataUnions/DataUnionsInCore', () => ({
     __esModule: true,
     default: () => (
-        <div>/docs/data-unions/build-data-unions-in-core</div>
+        <div>/docs/data-unions/create-data-union-with-core</div>
     ),
 }))
-jest.mock('$docs/components/DocsPages/DataUnions/DataUnionsIntegration', () => ({
+jest.mock('$docs/components/DocsPages/DataUnions/FrameworkRoles', () => ({
     __esModule: true,
     default: () => (
-        <div>/docs/data-unions/integrate-data-unions-into-your-app</div>
+        <div>/docs/data-unions/framework-roles</div>
     ),
 }))
-jest.mock('$docs/components/DocsPages/DataUnions/DataUnionsInSDK', () => ({
+jest.mock('$docs/components/DocsPages/DataUnions/AuthAndIdentity', () => ({
     __esModule: true,
     default: () => (
-        <div>/docs/data-unions/build-data-unions-with-sdk</div>
+        <div>/docs/data-unions/auth-and-identity</div>
+    ),
+}))
+jest.mock('$docs/components/DocsPages/DataUnions/CreateAndMonitor', () => ({
+    __esModule: true,
+    default: () => (
+        <div>/docs/data-unions/create-and-monitor</div>
+    ),
+}))
+jest.mock('$docs/components/DocsPages/DataUnions/JoinAndWithdraw', () => ({
+    __esModule: true,
+    default: () => (
+        <div>/docs/data-unions/join-and-withdraw</div>
+    ),
+}))
+jest.mock('$docs/components/DocsPages/DataUnions/UXBestPractises', () => ({
+    __esModule: true,
+    default: () => (
+        <div>/docs/data-unions/ux-best-practises</div>
     ),
 }))
 jest.mock('$docs/components/DocsPages/Tutorials/BuildingPubSub', () => ({

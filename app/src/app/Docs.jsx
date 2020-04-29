@@ -36,8 +36,12 @@ import DataUnionsDocsPage from '$docs/components/DocsPages/Products/DataUnions'
 // Data Unions Docs
 import IntroToDataUnionsDocsPage from '$docs/components/DocsPages/DataUnions/IntroToDataUnions'
 import DataUnionsInCoreDocsPage from '$docs/components/DocsPages/DataUnions/DataUnionsInCore'
-import DataUnionsIntegrationDocsPage from '$docs/components/DocsPages/DataUnions/DataUnionsIntegration'
-import DataUnionsInSDKDocsPage from '$docs/components/DocsPages/DataUnions/DataUnionsInSDK'
+import FrameworkRolesDocsPage from '$docs/components/DocsPages/DataUnions/FrameworkRoles'
+import AuthAndIdentityDocsPage from '$docs/components/DocsPages/DataUnions/AuthAndIdentity'
+import CreateAndMonitorDocsPage from '$docs/components/DocsPages/DataUnions/CreateAndMonitor'
+import JoinAndWithdrawDocsPage from '$docs/components/DocsPages/DataUnions/JoinAndWithdraw'
+import UXBestPractisesDocsPage from '$docs/components/DocsPages/DataUnions/UXBestPractises'
+
 // Tutorials Docs
 import BuildingPubSubDocsPage from '$docs/components/DocsPages/Tutorials/BuildingPubSub'
 import BuildingCustomModuleDocsPage from '$docs/components/DocsPages/Tutorials/BuildingCustomModule'
@@ -99,8 +103,11 @@ const DocsRouter = () => ([
         <Route exact path={docs.dataUnions.root} component={IntroToDataUnionsDocsPage} key="DataUnionsRoot" />,
         <Route exact path={docs.dataUnions.introToDataUnions} component={IntroToDataUnionsDocsPage} key="DataUnionsIntro" />,
         <Route exact path={docs.dataUnions.dataUnionsInCore} component={DataUnionsInCoreDocsPage} key="DataUnionsInCore" />,
-        <Route exact path={docs.dataUnions.integration} component={DataUnionsIntegrationDocsPage} key="DataUnionsIntegration" />,
-        <Route exact path={docs.dataUnions.dataUnionsInSDK} component={DataUnionsInSDKDocsPage} key="DataUnionsInSDK" />,
+        <Route exact path={docs.dataUnions.frameworkRoles} component={FrameworkRolesDocsPage} key="FrameworkRoles" />,
+        <Route exact path={docs.dataUnions.authAndIdentity} component={AuthAndIdentityDocsPage} key="AuthAndIdentity" />,
+        <Route exact path={docs.dataUnions.createAndMonitor} component={CreateAndMonitorDocsPage} key="CreateAndMonitor" />,
+        <Route exact path={docs.dataUnions.joinAndWithdraw} component={JoinAndWithdrawDocsPage} key="JoinAndWithdraw" />,
+        <Route exact path={docs.dataUnions.uxBestPractises} component={UXBestPractisesDocsPage} key="UXBestPractises" />,
     ] : []),
     // Module Reference routes
     <Route
