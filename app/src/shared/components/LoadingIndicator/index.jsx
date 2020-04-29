@@ -12,8 +12,8 @@ type Props = {
     className?: ?string
 }
 
-const LoadingIndicator = ({ loading, className }: Props) => {
-    const isLoading = !!loading
+const LoadingIndicator = ({ loading: loadingProp, className }: Props) => {
+    const isLoading = !!loadingProp
     const [loadingState, setLoadingState] = useState(isLoading)
 
     // debounce loading flag changes to avoid flickering loading indicator

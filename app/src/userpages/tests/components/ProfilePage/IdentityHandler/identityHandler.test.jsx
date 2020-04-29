@@ -30,11 +30,7 @@ jest.mock('$shared/hooks/useModal', () => (
 jest.mock('$shared/hooks/usePending', () => ({
     __esModule: true,
     usePending: () => ({
-        wrap: async (fn) => {
-            const result = await fn()
-
-            return result
-        },
+        wrap: async (fn) => fn(),
         isPending: false,
     }),
 }))

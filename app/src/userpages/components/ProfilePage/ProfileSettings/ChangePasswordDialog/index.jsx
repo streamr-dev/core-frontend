@@ -34,7 +34,7 @@ export const ChangePasswordDialogComponent = ({ onSave, onClose, waiting }: Comp
     const strongEnoughPassword = !!(passwordStrength > 1)
 
     const newPasswordGiven = !!newPassword && !!confirmNewPassword
-    const passWordsMatch = newPassword === confirmNewPassword
+    const passwordsMatch = newPassword === confirmNewPassword
     const allPasswordsGiven = !!currentPassword && !!newPassword && !!confirmNewPassword
 
     const onChangeCurrentPassword = useCallback(({ target }: SyntheticInputEvent<HTMLInputElement>) => {
@@ -83,7 +83,7 @@ export const ChangePasswordDialogComponent = ({ onSave, onClose, waiting }: Comp
                                 newPassword,
                                 confirmNewPassword,
                             })}
-                            disabled={!allPasswordsGiven || !passWordsMatch || !strongEnoughPassword || waiting}
+                            disabled={!allPasswordsGiven || !passwordsMatch || !strongEnoughPassword || waiting}
                             waiting={waiting}
                             className={styles.saveButton}
                         >
@@ -142,7 +142,7 @@ export const ChangePasswordDialogComponent = ({ onSave, onClose, waiting }: Comp
                         disabled={waiting}
                     />
                     <Errors>
-                        {newPasswordGiven && !passWordsMatch && I18n.t('modal.changePassword.passwordsDoNotMatch')}
+                        {newPasswordGiven && !passwordsMatch && I18n.t('modal.changePassword.passwordsDoNotMatch')}
                     </Errors>
                 </div>
             </Dialog>
