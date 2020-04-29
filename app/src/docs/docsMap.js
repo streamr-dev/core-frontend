@@ -7,9 +7,9 @@ import { docsLinks } from '$shared/../links'
 // [Section title] {   <-- Rendered navigation section title.
 //     [Page Title] : {    <-- Rendered navigation page title.
 //          [path]: Relative URL path,
-//          [section]: Section title ***
-//          [title]: Page title ***
-//          [filePath]: Relative MDX file path ***
+//          [section]: Section title    <-- Property for the indexer
+//          [title]: Page title     <-- Property for the indexer
+//          [filePath]: Relative MDX file path     <-- Property for the indexer
 //      }
 // }
 
