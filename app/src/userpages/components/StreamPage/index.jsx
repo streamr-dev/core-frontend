@@ -14,7 +14,13 @@ import {
 } from '$userpages/modules/userPageStreams/actions'
 import { handleLoadError } from '$auth/utils/loginInterceptor'
 import { NotificationIcon } from '$shared/utils/constants'
-import { selectPermissions, selectFetching, selectOpenStream, selectEditedStream } from '$userpages/modules/userPageStreams/selectors'
+import {
+    selectPermissions,
+    selectFetching,
+    selectUpdating,
+    selectOpenStream,
+    selectEditedStream,
+} from '$userpages/modules/userPageStreams/selectors'
 import { selectUserData } from '$shared/modules/user/selectors'
 import Notification from '$shared/utils/Notification'
 import ResourceNotFoundError from '$shared/errors/ResourceNotFoundError'
@@ -34,6 +40,8 @@ const StreamPage = (props: Props) => {
     const permissions = useSelector(selectPermissions)
 
     const fetching = useSelector(selectFetching)
+
+    const updating = useSelector(selectUpdating)
 
     const dispatch = useDispatch()
 
@@ -108,7 +116,7 @@ const StreamPage = (props: Props) => {
         dispatch(closeStream())
     }, [dispatch])
 
-    if (fetching || !stream || (!readOnly && !editedStream)) {
+    if ((fetching && !updating) || !stream || (!readOnly && !editedStream)) {
         return (
             <Layout loading />
         )
