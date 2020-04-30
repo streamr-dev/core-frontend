@@ -38,7 +38,7 @@ const ProductStreams = () => {
     // Filter product streams based on actual selection
     const streamIds = product.streams
     const streamIdSet = useMemo(() => new Set(streamIds), [streamIds])
-    const selectedStreams = useMemo(() => productStreams.filter((s) => streamIdSet.has(s.id)), [streamIdSet, productStreams])
+    const selectedStreams = useMemo(() => productStreams.filter(({ id }) => streamIdSet.has(id)), [streamIdSet, productStreams])
 
     const availableStreams = useMemo(() => uniqBy([...allStreams, ...selectedStreams], 'id'), [allStreams, selectedStreams])
 
@@ -59,7 +59,7 @@ const ProductStreams = () => {
                     availableStreams={availableStreams}
                     fetchingStreams={fetchingProductStreams || fetchingAllStreams}
                     onEdit={updateStreams}
-                    streams={product.streams}
+                    streams={streamIds}
                     className={styles.streams}
                     error={publishAttempted && !isValid ? message : undefined}
                     disabled={!!isPending}

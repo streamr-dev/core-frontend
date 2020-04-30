@@ -198,7 +198,7 @@ const Streams = () => {
     const streamIds = product.streams
     const streamIdSet = useMemo(() => new Set(streamIds), [streamIds])
     const streams = useSelector(selectStreams)
-    const selectedStreams = useMemo(() => streams.filter((s) => streamIdSet.has(s.id)), [streamIdSet, streams])
+    const selectedStreams = useMemo(() => streams.filter(({ id }) => streamIdSet.has(id)), [streamIdSet, streams])
     const isProductFree = !!(product && !isPaidProduct(product))
     const fetchingAllStreams = useSelector(selectFetchingStreams)
 

@@ -151,14 +151,22 @@ export const StreamSelector = (props: Props) => {
                             </DropdownActions.Item>
                         </DropdownActions>
                     </div>
-                    <div className={styles.streams}>
+                    <div className={classNames(styles.streams, {
+                        [styles.darkBgStreams]: !fetchingStreams && !sortedStreams.length,
+                    })}
+                    >
                         {!fetchingStreams && !sortedStreams.length && (
                             <div className={styles.noAvailableStreams}>
-                                <p><Translate value={`streamSelector.${search ? 'noStreamResults' : 'noStreams'}`} /></p>
+                                <Translate value={`streamSelector.${search ? 'noStreamResults' : 'noStreams'}`} tag="p" />
                                 {!search && (
-                                    <a href={links.userpages.streamCreate} className={styles.streamCreateButton}>
+                                    <Button
+                                        tag="a"
+                                        href={links.userpages.streamCreate}
+                                        kind="special"
+                                        variant="light"
+                                    >
                                         <Translate value="streamSelector.create" />
-                                    </a>
+                                    </Button>
                                 )}
                             </div>
                         )}
