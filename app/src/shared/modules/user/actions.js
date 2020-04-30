@@ -1,9 +1,7 @@
 // @flow
 
 import { createAction } from 'redux-actions'
-
-import Notification from '$shared/utils/Notification'
-import { NotificationIcon } from '$shared/utils/constants'
+import { push } from 'connected-react-router'
 
 import type { ErrorInUi, ReduxActionCreator } from '$shared/flowtype/common-types'
 import type { User, PasswordUpdate } from '$shared/flowtype/user-types'
@@ -12,6 +10,7 @@ import type {
     UserDataActionCreator,
 } from './types'
 import { selectUserData } from '$shared/modules/user/selectors'
+import routes from '$routes'
 
 import * as services from './services'
 import {
@@ -41,8 +40,7 @@ export const resetUserData: ReduxActionCreator = createAction(RESET_USER_DATA)
 export const logout = () => (dispatch: Function) => {
     clearStorage()
     dispatch(resetUserData())
-
-    window.location.href = process.env.PLATFORM_ORIGIN_URL
+    dispatch(push(routes.logout()))
 }
 
 // Fetching user data
@@ -141,10 +139,6 @@ export const updateCurrentUserImage = (image: ?File) => (dispatch: Function, get
         })
         .catch((e) => {
             dispatch(updateAvatarFailure(e))
-            Notification.push({
-                title: e.message,
-                icon: NotificationIcon.ERROR,
-            })
             throw e
         })
 }
@@ -161,17 +155,9 @@ export const saveCurrentUser = () => async (dispatch: Function, getState: Functi
     return services.putUser(user)
         .then((data) => {
             dispatch(saveCurrentUserSuccess(data))
-            Notification.push({
-                title: 'Your settings have been saved',
-                icon: NotificationIcon.CHECKMARK,
-            })
         })
         .catch((e) => {
             dispatch(saveCurrentUserFailure(e))
-            Notification.push({
-                title: e.message,
-                icon: NotificationIcon.ERROR,
-            })
             throw e
         })
 }
@@ -181,7 +167,7 @@ export const updatePassword = (passwordUpdate: PasswordUpdate) => (dispatch: Fun
 
     const user = selectUserData(getState()) || {}
 
-    return services.postPasswordUpdate(passwordUpdate, [user.username, user.name])
+    return services.postPasswordUpdate(passwordUpdate, user.username)
         .then((data) => {
             // fancy magic to parse validation message out of HTML response
             const parser = new window.DOMParser()
@@ -193,16 +179,8 @@ export const updatePassword = (passwordUpdate: PasswordUpdate) => (dispatch: Fun
         })
         .then(() => {
             dispatch(updatePasswordSuccess())
-            Notification.push({
-                title: 'Password changed',
-                icon: NotificationIcon.CHECKMARK,
-            })
         }, (e) => {
             dispatch(updatePasswordFailure(e))
-            Notification.push({
-                title: 'Password not changed',
-                icon: NotificationIcon.ERROR,
-            })
             throw e
         })
 }
@@ -213,19 +191,10 @@ export const deleteUserAccount = () => (dispatch: Function) => {
     return services.deleteUserAccount()
         .then(() => {
             dispatch(deleteUserAccountSuccess())
-            Notification.push({
-                title: 'Account disabled!',
-                icon: NotificationIcon.CHECKMARK,
-            })
-            dispatch(logout())
         }, (error) => {
             dispatch(deleteUserAccountFailure({
                 message: error.message,
             }))
-            Notification.push({
-                title: 'Account not disabled',
-                icon: NotificationIcon.ERROR,
-            })
             throw error
         })
 }

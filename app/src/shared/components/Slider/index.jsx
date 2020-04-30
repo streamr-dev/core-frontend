@@ -12,6 +12,7 @@ type Props = {
     onChange?: (value: number) => void,
     className?: string,
     sliderClassname?: string,
+    disabled?: boolean,
 }
 
 const Slider = ({
@@ -21,6 +22,7 @@ const Slider = ({
     className,
     sliderClassname,
     onChange: onChangeProp,
+    disabled,
 }: Props) => {
     const onChange = useCallback((e: SyntheticInputEvent<HTMLInputElement>) => {
         if (onChangeProp) {
@@ -37,6 +39,7 @@ const Slider = ({
                 max={max}
                 value={value}
                 onChange={onChange}
+                disabled={disabled}
             />
         </div>
     )

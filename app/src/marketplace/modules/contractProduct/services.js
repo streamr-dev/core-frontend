@@ -15,7 +15,6 @@ import {
 } from '$mp/utils/product'
 import { getWeb3, getPublicWeb3 } from '$shared/web3/web3Provider'
 import { contractCurrencies as currencies, gasLimits } from '$shared/utils/constants'
-import type { Sendable } from '$mp/utils/smartContract'
 
 const contractMethods = (usePublicNode: boolean = false) => getContract(getConfig().marketplace, usePublicNode).methods
 

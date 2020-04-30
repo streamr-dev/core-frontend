@@ -1,6 +1,6 @@
 // @flow
 
-import React, { Fragment, useState, useCallback, useEffect, useMemo } from 'react'
+import React, { useState, useCallback, useEffect, useMemo } from 'react'
 import { I18n, Translate } from 'react-redux-i18n'
 
 import ModalPortal from '$shared/components/ModalPortal'
@@ -57,55 +57,54 @@ const SnippetDialog = ({ snippets, onClose }: Props) => {
                 title={I18n.t('modal.copySnippet.defaultTitle')}
                 onClose={onClose}
                 showCloseIcon
+                renderActions={() => (selectedLanguage ? (
+                    <div className={styles.footer}>
+                        <div className={styles.language}>
+                            <DropdownActions title={
+                                <span className={styles.languageTitle}>{selectedLanguage}</span>
+                            }
+                            >
+                                {snippetLanguages.map((language: Language) => (
+                                    <DropdownActions.Item
+                                        key={language}
+                                        onClick={() => onSelectLanguage(language)}
+                                    >
+                                        {language}
+                                    </DropdownActions.Item>
+                                ))}
+                            </DropdownActions>
+                        </div>
+                        <div className={styles.library}>
+                            <a
+                                href={StreamrClientRepositories[selectedLanguage]}
+                                target="_blank"
+                                rel="nofollow noopener noreferrer"
+                            >
+                                <Translate value="modal.copySnippet.goToLibrary" />
+                            </a>
+                        </div>
+                        <div className={styles.buttons}>
+                            <Buttons
+                                className={styles.noPadding}
+                                actions={{
+                                    copy: {
+                                        title: I18n.t(`modal.copySnippet.${isCopied ? 'copied' : 'copy'}`),
+                                        onClick: onCopy,
+                                    },
+                                }}
+                            />
+                        </div>
+                    </div>
+                ) : null)}
             >
                 {selectedLanguage && (
-                    <Fragment>
-                        <CodeSnippet
-                            language={SnippetLanguageMappings[selectedLanguage]}
-                            showLineNumbers
-                            className={styles.codeSnippet}
-                        >
-                            {snippets[selectedLanguage]}
-                        </CodeSnippet>
-                        <div className={styles.footer}>
-                            <hr className={styles.footerDivider} />
-                            <div className={styles.language}>
-                                <DropdownActions title={
-                                    <span className={styles.languageTitle}>{selectedLanguage}</span>
-                                }
-                                >
-                                    {snippetLanguages.map((language: Language) => (
-                                        <DropdownActions.Item
-                                            key={language}
-                                            onClick={() => onSelectLanguage(language)}
-                                        >
-                                            {language}
-                                        </DropdownActions.Item>
-                                    ))}
-                                </DropdownActions>
-                            </div>
-                            <div className={styles.library}>
-                                <a
-                                    href={StreamrClientRepositories[selectedLanguage]}
-                                    target="_blank"
-                                    rel="nofollow noopener noreferrer"
-                                >
-                                    <Translate value="modal.copySnippet.goToLibrary" />
-                                </a>
-                            </div>
-                            <div className={styles.buttons}>
-                                <Buttons
-                                    className={styles.noPadding}
-                                    actions={{
-                                        copy: {
-                                            title: I18n.t(`modal.copySnippet.${isCopied ? 'copied' : 'copy'}`),
-                                            onClick: onCopy,
-                                        },
-                                    }}
-                                />
-                            </div>
-                        </div>
-                    </Fragment>
+                    <CodeSnippet
+                        language={SnippetLanguageMappings[selectedLanguage]}
+                        showLineNumbers
+                        className={styles.codeSnippet}
+                    >
+                        {snippets[selectedLanguage]}
+                    </CodeSnippet>
                 )}
             </Dialog>
         </ModalPortal>
