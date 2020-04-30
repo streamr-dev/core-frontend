@@ -145,7 +145,7 @@ function useSlideIn({ isVisible } = {}) {
 function InputNewShare({ onChange, canShareToUser }) {
     const [value, setValue] = useState('')
     const onChangeValue = useCallback((e) => {
-        setValue(e.target.value)
+        setValue(e.target.value.trim())
     }, [setValue])
     const onAdd = useCallback(() => {
         onChange(value)
