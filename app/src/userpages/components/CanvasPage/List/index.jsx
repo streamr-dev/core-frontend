@@ -1,6 +1,6 @@
 // @flow
 
-import React, { Fragment, useEffect, useMemo, useCallback, useState } from 'react'
+import React, { Fragment, useEffect, useMemo, useCallback, useState, useContext } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link as RouterLink } from 'react-router-dom'
 import { push } from 'connected-react-router'
@@ -18,7 +18,6 @@ import DropdownActions from '$shared/components/DropdownActions'
 import { formatExternalUrl } from '$shared/utils/url'
 import Search from '../../Header/Search'
 import Dropdown from '$shared/components/Dropdown'
-import ShareDialog from '$userpages/components/ShareDialog'
 import confirmDialog from '$shared/utils/confirm'
 import { selectUserData } from '$shared/modules/user/selectors'
 import NoCanvasesView from './NoCanvases'
@@ -35,6 +34,29 @@ import useCopy from '$shared/hooks/useCopy'
 import styles from './canvasList.pcss'
 import { CanvasTile } from '$shared/components/Tile'
 import Grid from '$shared/components/Tile/Grid'
+import Sidebar from '$shared/components/Sidebar'
+import SidebarProvider, { SidebarContext } from '$shared/components/Sidebar/SidebarProvider'
+import ShareSidebar from '$userpages/components/ShareSidebar'
+
+function CanvasPageSidebar({ canvas }) {
+    const sidebar = useContext(SidebarContext)
+    return (
+        <Sidebar
+            className={styles.ModuleSidebar}
+            isOpen={sidebar.isOpen()}
+            onClose={() => sidebar.close()}
+        >
+            {sidebar.isOpen('share') && (
+                <ShareSidebar
+                    onClose={() => sidebar.close('share')}
+                    resourceTitle={canvas && canvas.name}
+                    resourceType="CANVAS"
+                    resourceId={canvas && canvas.id}
+                />
+            )}
+        </Sidebar>
+    )
+}
 
 const CreateCanvasButton = () => (
     <Button
@@ -73,6 +95,8 @@ const CanvasList = () => {
     const fetchingPermissions = useSelector(selectFetchingPermissions)
     const permissions = useSelector(selectCanvasPermissions)
 
+    const sidebar = useContext(SidebarContext)
+
     useEffect(() => {
         dispatch(getCanvases(filter))
     }, [dispatch, filter])
@@ -97,11 +121,8 @@ const CanvasList = () => {
     const [shareDialogCanvas, setShareDialogCanvas] = useState(undefined)
     const onOpenShareDialog = useCallback((canvas: Canvas) => {
         setShareDialogCanvas(canvas)
-    }, [])
-
-    const onCloseShareDialog = useCallback(() => {
-        setShareDialogCanvas(undefined)
-    }, [])
+        sidebar.open('share')
+    }, [sidebar])
 
     const onCopyUrl = useCallback((url: string) => {
         copy(url)
@@ -126,7 +147,7 @@ const CanvasList = () => {
         !fetchingPermissions &&
         !!user &&
         permissions[id] &&
-        permissions[id].find((p: Permission) => p.user === user.username && p.operation === 'share') !== undefined
+        permissions[id].find((p: Permission) => p.user === user.username && p.operation === 'canvas_share') !== undefined
     ), [fetchingPermissions, permissions, user])
 
     const navigate = useCallback((to) => dispatch(push(to)), [dispatch])
@@ -185,15 +206,6 @@ const CanvasList = () => {
             }
             loading={fetching}
         >
-            {!!shareDialogCanvas && (
-                <ShareDialog
-                    resourceTitle={shareDialogCanvas.name}
-                    resourceType="CANVAS"
-                    resourceId={shareDialogCanvas.id}
-                    onClose={onCloseShareDialog}
-                    allowEmbed
-                />
-            )}
             <ListContainer className={styles.corepageContentContainer}>
                 <Helmet title={`Streamr Core | ${I18n.t('userpages.canvases.title')}`} />
                 {!fetching && canvases && !canvases.length && (
@@ -216,9 +228,14 @@ const CanvasList = () => {
                     </Grid>
                 )}
             </ListContainer>
+            <CanvasPageSidebar canvas={shareDialogCanvas} />
             <DocsShortcuts />
         </Layout>
     )
 }
 
-export default CanvasList
+export default (props: any) => (
+    <SidebarProvider>
+        <CanvasList {...props} />
+    </SidebarProvider>
+)
