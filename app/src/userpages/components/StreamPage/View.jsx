@@ -1,13 +1,13 @@
 // @flow
 
-import React from 'react'
+import React, { Children } from 'react'
 import styled, { css } from 'styled-components'
 import { Translate, I18n } from 'react-redux-i18n'
 import Layout from '$shared/components/Layout/Core'
 import Label from '$ui/Label'
 import UnstyledText from '$ui/Text'
-import { MEDIUM } from '$shared/utils/styled'
-import TOCPage from '$shared/components/TOCPage'
+import { SM, MD, LG, XL, MEDIUM } from '$shared/utils/styled'
+import TOCPage, { Title } from '$shared/components/TOCPage'
 import TOCSection from '$shared/components/TOCPage/TOCSection'
 import Preview, { Controls } from './Edit/PreviewView'
 import { getSecurityLevelConfig } from './Edit/SecurityView'
@@ -16,12 +16,15 @@ import { convertFromStorageDays } from './Edit/HistoryView'
 const Details = styled.div`
     border: solid #e7e7e7;
     border-width: 1px 0;
-    display: flex;
-    justify-content: space-between;
     padding: 24px 0;
 
     & + & {
         border-top: 0;
+    }
+
+    @media (min-width: ${MD}px) {
+        display: flex;
+        justify-content: space-between;
     }
 `
 
@@ -40,7 +43,18 @@ const Detail = styled(UnstyledDetail)`
     padding-top: 2px;
 
     & + & {
-        width: 144px;
+        border-top: 1px solid #e7e7e7;
+        margin-top: 24px;
+        padding-top: 26px;
+    }
+
+    @media (min-width: ${MD}px) {
+        & + & {
+            border: 0;
+            margin: 0;
+            padding-top: 2px;
+            width: 144px;
+        }
     }
 `
 
@@ -56,41 +70,91 @@ const Text = styled(UnstyledText)`
     `}
 `
 
-const Field = styled.div`
-    display: flex;
+const FieldControls = styled.div`
+    ${({ multiple }) => !!multiple && css`
+        display: flex;
 
-    > * {
-        width: 80px;
-    }
-
-    > ${Label} + ${Label},
-    > ${Text} + * {
-        flex-shrink: 0;
-        width: 176px;
-    }
-
-    ${({ narrow }) => !narrow && css`
-        justify-content: space-between;
-
-        > ${Text} {
-            width: 100%;
+        @media (min-width: ${SM}px) {
+            width: 320px;
         }
 
-        > ${Label} + ${Label},
-        > ${Text} + * {
-            width: 128px;
+        ${Text}:first-child {
+            width: 80px;
+        }
+
+        ${Text} + ${Text} {
+            flex-grow: 1;
         }
     `}
+`
 
-    & + ${Label} {
+const UnstyledField = ({
+    label,
+    children,
+    narrow,
+    desktopOnly,
+    ...props
+}: any) => (
+    <div {...props}>
+        <Label>{label}&zwnj;</Label>
+        <FieldControls multiple={Children.count(children) > 1}>
+            {children}
+        </FieldControls>
+    </div>
+)
+
+const Field = styled(UnstyledField)`
+    flex-grow: 1;
+
+    & + & {
+        margin-top: 24px;
+    }
+
+    ${({ narrow }) => !!narrow && css`
+        flex-grow: 0;
+        width: 128px;
+    `}
+
+    @media (min-width: ${SM}px) {
+        & + & {
+            margin: 0 0 0 16px;
+        }
+    }
+
+    ${({ desktopOnly }) => !!desktopOnly && css`
+        display: none;
+
+        @media (min-width: ${XL}px) {
+            display: block;
+        }
+    `}
+`
+
+const FormGroup = styled.div`
+    & + & {
         margin-top: 32px;
     }
 
-    ${({ head }) => !head && css`
+    @media (min-width: ${SM}px) {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    ${Text} {
+        width: 100%;
+    }
+`
+
+const FieldGroup = styled(FormGroup)`
+    @media (min-width: ${SM}px) {
         & + & {
             margin-top: 16px;
         }
-    `}
+
+        & + & ${Label} {
+            display: none;
+        }
+    }
 `
 
 const UnstyledView = ({ stream, currentUser, ...props }: any) => {
@@ -127,47 +191,55 @@ const UnstyledView = ({ stream, currentUser, ...props }: any) => {
                     </p>
                 </TOCSection>
                 <TOCSection id="fields" title="Fields">
-                    <Field head>
-                        <Label>Field name</Label>
-                        <Label>Data type</Label>
-                    </Field>
                     {stream.config.fields.map(({ name, type }) => (
-                        <Field key={name}>
-                            <Text disabled value={name} readOnly />
-                            <Text
-                                disabled
-                                value={I18n.t(`userpages.streams.fieldTypes.${type}`)}
-                                readOnly
-                            />
-                        </Field>
+                        <FieldGroup key={name}>
+                            <Field label="Field name">
+                                <Text disabled value={name} readOnly />
+                            </Field>
+                            <Field label="Data type" narrow>
+                                <Text
+                                    disabled
+                                    value={I18n.t(`userpages.streams.fieldTypes.${type}`)}
+                                    readOnly
+                                />
+                            </Field>
+                        </FieldGroup>
                     ))}
                 </TOCSection>
                 <TOCSection id="historicalData" title="Historical Data">
-                    <Label>Stored data</Label>
-                    <Field>
-                        <Text
-                            value="No stored data. Drop a CSV file here to load some"
-                            readOnly
-                            disabled
-                        />
-                        <div />
-                    </Field>
-                    <Label>Delete data up to and including</Label>
-                    <Field>
-                        <Text value="Select date" readOnly disabled />
-                        <div />
-                    </Field>
-                    <Label>Period to retain historical data until auto-removal</Label>
-                    <Field narrow>
-                        <Text value={storagePeriod} readOnly disabled centered />
-                        <Text
-                            value={I18n.t(`shared.date.${unit.replace(/s$/, '')}`, {
-                                count: stream.storageDays,
-                            })}
-                            readOnly
-                            disabled
-                        />
-                    </Field>
+                    <FormGroup>
+                        <Field label="Stored data">
+                            <Text
+                                value="No stored data. Drop a CSV file here to load some"
+                                readOnly
+                                disabled
+                            />
+                        </Field>
+                        <Field narrow desktopOnly />
+                    </FormGroup>
+                    <FormGroup>
+                        <Field label="Delete data up to and including">
+                            <Text value="Select date" readOnly disabled />
+                        </Field>
+                        <Field narrow desktopOnly />
+                    </FormGroup>
+                    <FormGroup>
+                        <Field label="Period to retain historical data until auto-removal">
+                            <Text
+                                value={storagePeriod}
+                                readOnly
+                                disabled
+                                centered
+                            />
+                            <Text
+                                value={I18n.t(`shared.date.${unit.replace(/s$/, '')}`, {
+                                    count: stream.storageDays,
+                                })}
+                                readOnly
+                                disabled
+                            />
+                        </Field>
+                    </FormGroup>
                 </TOCSection>
             </TOCPage>
         </Layout>
@@ -191,6 +263,18 @@ const View = styled(UnstyledView)`
 
     ${Text} + * {
         margin-left: 16px;
+    }
+
+    ${Title} {
+        display: block;
+    }
+
+    ${TOCSection}:first-child {
+        padding-top: 24px;
+
+        @media (min-width: ${LG}px) {
+            padding-top: 72px;
+        }
     }
 `
 

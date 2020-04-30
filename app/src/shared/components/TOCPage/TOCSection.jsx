@@ -35,8 +35,14 @@ const Title = styled.h3`
     }
 `
 
-export const TOCSection = ({ id, title, children, onlyDesktop }: Props) => (
-    <Section onlyDesktop={onlyDesktop}>
+export const UnstyledTOCSection = ({
+    id,
+    title,
+    children,
+    onlyDesktop,
+    ...props
+}: Props) => (
+    <Section {...props} onlyDesktop={onlyDesktop}>
         {title ? (
             <Title>
                 <TOCBusStop name={id} />
@@ -48,5 +54,8 @@ export const TOCSection = ({ id, title, children, onlyDesktop }: Props) => (
         {children}
     </Section>
 )
+
+const TOCSection = styled(UnstyledTOCSection)`
+`
 
 export default TOCSection
