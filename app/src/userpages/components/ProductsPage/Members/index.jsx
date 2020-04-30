@@ -7,6 +7,7 @@ import { withRouter } from 'react-router-dom'
 import cx from 'classnames'
 
 import CoreLayout from '$shared/components/Layout/Core'
+import coreLayoutStyles from '$shared/components/Layout/core.pcss'
 import Header from '../Header'
 import ListContainer from '$shared/components/Container/List'
 import LoadingIndicator from '$userpages/components/LoadingIndicator'
@@ -247,6 +248,7 @@ const Members = () => {
                 />
             )}
             loading={fetchingMembers}
+            contentClassname={coreLayoutStyles.pad}
         >
             <Helmet title={`Streamr Core | ${I18n.t('userpages.title.members')}`} />
             <ListContainer className={cx(styles.container, {

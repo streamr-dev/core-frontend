@@ -3,6 +3,7 @@
 import React, { Component, type Node } from 'react'
 
 import CoreLayout from '$shared/components/Layout/Core'
+import coreLayoutStyles from '$shared/components/Layout/core.pcss'
 import BodyClass from '$shared/components/BodyClass'
 import Header from '../Header'
 
@@ -36,6 +37,7 @@ class UserpagesLayout extends Component<Props, State> {
         return (
             <CoreLayout
                 {...props}
+                contentClassname={coreLayoutStyles.pad}
                 footer={false}
                 navComponent={(
                     <React.Fragment>

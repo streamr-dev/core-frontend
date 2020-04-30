@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react'
 import cx from 'classnames'
 import groupBy from 'lodash/groupBy'
 import sortBy from 'lodash/sortBy'
-import scrollIntoView from 'smooth-scroll-into-view-if-needed'
+import scrollTo from '$shared/utils/scrollTo'
 
 import SvgIcon from '$shared/components/SvgIcon'
 import { Header, Content } from '$editor/shared/components/Sidebar'
@@ -66,12 +66,7 @@ function MessageGroup({
     useEffect(() => {
         // scroll into view if selected
         if (isSelected) {
-            scrollIntoView(elRef.current, {
-                behavior: 'smooth',
-                block: 'start',
-                inline: 'nearest',
-                scrollMode: 'if-needed',
-            })
+            scrollTo(elRef.current, true)
         }
     }, [isSelected])
 
