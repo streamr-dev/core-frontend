@@ -16,9 +16,9 @@ export const putUser = (user: User): ApiResult<User> => put({
     data: user,
 })
 
-export const postPasswordUpdate = (passwordUpdate: PasswordUpdate, userInputs?: Array<string> = []): ApiResult<null> => {
+export const postPasswordUpdate = (passwordUpdate: PasswordUpdate, username: string): ApiResult<null> => {
     const form = new FormData()
-    form.append('username', userInputs[0])
+    form.append('username', username)
     form.append('currentpassword', passwordUpdate.currentPassword)
     form.append('password', passwordUpdate.newPassword)
     form.append('password2', passwordUpdate.confirmNewPassword)

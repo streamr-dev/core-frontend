@@ -11,10 +11,17 @@ type Props = {
     title: string,
     subtitle: string,
     onToggle: (boolean) => void,
-    className?: string
+    className?: string,
+    disabled?: boolean,
 }
 
-export const ConfirmCheckbox = ({ title, subtitle, onToggle: onToggleProp, className }: Props) => {
+export const ConfirmCheckbox = ({
+    title,
+    subtitle,
+    onToggle: onToggleProp,
+    className,
+    disabled,
+}: Props) => {
     const [confirmed, setConfirmed] = useState(false)
 
     const onToggle = useCallback((e: SyntheticInputEvent<EventTarget>) => {
@@ -25,9 +32,11 @@ export const ConfirmCheckbox = ({ title, subtitle, onToggle: onToggleProp, class
     return (
         // eslint-disable-next-line jsx-a11y/label-has-associated-control
         <label
-            className={cx(styles.root, styles.ConfirmCheckbox, className)}
+            className={cx(styles.root, styles.ConfirmCheckbox, {
+                [styles.disabled]: !!disabled,
+            }, className)}
         >
-            <Checkbox value={confirmed} onChange={onToggle} />
+            <Checkbox value={confirmed} onChange={onToggle} disabled={disabled} />
             <div>
                 <div className={styles.title}>{title}</div>
                 <div className={styles.subtitle}>{subtitle}</div>

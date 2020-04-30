@@ -3,18 +3,14 @@
 }
 
 .buttonContainer {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-column-gap: 1um;
+  grid-row-gap: 1um;
   border-top: 1px solid #F2F1F1;
-  margin-top: 32px;
-  padding-top: 20px;
-
-  .externalButton {
-    width: 144px;
-
-    &:not(:last-child) {
-      margin-right: 1rem;
-    }
-  }
+  padding: 1.5um;
+  align-items: center;
+  justify-content: center;
 }
 
 .message {
@@ -39,13 +35,9 @@
   }
 
   .buttonContainer {
-    margin-top: 15px;
-    flex-direction: column;
+    grid-template-columns: 144px;
     border-top: none;
-
-    .externalButton:not(:last-child) {
-      margin-right: 0;
-      margin-bottom: 1rem;
-    }
+    margin-top: 0;
+    margin-bottom: 1rem;
   }
 }

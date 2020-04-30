@@ -24,3 +24,12 @@ stories.add('default', () => (
         onToggle={action('onToggle')}
     />
 ))
+
+stories.add('disabled', () => (
+    <ConfirmCheckbox
+        title="Are you sure?"
+        subtitle="This is an unrecoverable action"
+        onToggle={action('onToggle')}
+        disabled
+    />
+))

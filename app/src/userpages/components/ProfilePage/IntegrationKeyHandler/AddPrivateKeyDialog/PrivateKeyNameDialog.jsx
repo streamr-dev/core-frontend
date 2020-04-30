@@ -13,7 +13,7 @@ import styles from './privateKeyNameDialog.pcss'
 
 type Props = {
     onClose: () => void,
-    onSave: (string) => void,
+    onSave: (string) => void | Promise<void>,
     waiting?: boolean,
 }
 

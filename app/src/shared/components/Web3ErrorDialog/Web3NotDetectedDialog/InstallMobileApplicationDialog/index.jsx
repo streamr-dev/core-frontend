@@ -9,7 +9,7 @@ import Dialog from '$shared/components/Dialog'
 import Button from '$shared/components/Button'
 import Link from '$shared/components/Link'
 
-import styles from './installMobileApplicationDialog.pcss'
+import styles from '../web3NotDetectedDialog.pcss'
 
 export type Props = {
     onClose: () => void,
@@ -21,42 +21,41 @@ const InstallMobileApplicationDialog = ({ onClose, ...props }: Props) => (
             {...props}
             onClose={onClose}
             title={I18n.t('modal.web3.installmobileapplication.title')}
+            renderActions={() => (
+                <div className={styles.buttonContainer}>
+                    <Button
+                        kind="secondary"
+                        tag={Link}
+                        href="https://metamask.io"
+                        target="_blank"
+                    >
+                        <Translate value="modal.web3.installsupportedbrowser.metamask" />
+                    </Button>
+                    <Button
+                        kind="secondary"
+                        tag={Link}
+                        href="https://brave.com"
+                        target="_blank"
+                    >
+                        <Translate value="modal.web3.installsupportedbrowser.brave" />
+                    </Button>
+                    <Button
+                        kind="secondary"
+                        tag={Link}
+                        href="https://www.opera.com/download"
+                        target="_blank"
+                    >
+                        <Translate value="modal.web3.installsupportedbrowser.opera" />
+                    </Button>
+                </div>
+            )}
         >
             <PngIcon
                 className={styles.icon}
                 name="txFailed"
                 alt={I18n.t('error.txFailed')}
             />
-            <p><Translate value="modal.web3.installmobileapplication.message" dangerousHTML /></p>
-            <div className={styles.buttonContainer}>
-                <Button
-                    className={styles.externalButton}
-                    kind="secondary"
-                    tag={Link}
-                    href="https://metamask.io"
-                    target="_blank"
-                >
-                    <Translate value="modal.web3.installsupportedbrowser.metamask" />
-                </Button>
-                <Button
-                    className={styles.externalButton}
-                    kind="secondary"
-                    tag={Link}
-                    href="https://brave.com"
-                    target="_blank"
-                >
-                    <Translate value="modal.web3.installsupportedbrowser.brave" />
-                </Button>
-                <Button
-                    className={styles.externalButton}
-                    kind="secondary"
-                    tag={Link}
-                    href="https://www.opera.com/download"
-                    target="_blank"
-                >
-                    <Translate value="modal.web3.installsupportedbrowser.opera" />
-                </Button>
-            </div>
+            <Translate value="modal.web3.installmobileapplication.message" tag="p" dangerousHTML />
         </Dialog>
     </ModalPortal>
 )
